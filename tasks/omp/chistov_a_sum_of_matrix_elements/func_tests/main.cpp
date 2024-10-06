@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "omp/example/include/ops_omp.hpp"
+#include "omp/chistov_a_sum_of_matrix_elements/include/ops_omp.hpp"
 
 TEST(Parallel_Operations_OpenMP, Test_Sum) {
   std::vector<int> vec = nesterov_a_test_task_omp::getRandomVector(100);
