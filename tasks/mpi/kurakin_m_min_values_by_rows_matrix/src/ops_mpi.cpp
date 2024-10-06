@@ -1,5 +1,4 @@
-// Copyright 2023 Nesterov Alexander
-#include "mpi/example/include/ops_mpi.hpp"
+#include "mpi/kurakin_m_min_values_by_rows_matrix/include/ops_mpi.hpp"
 
 #include <algorithm>
 #include <functional>
@@ -10,7 +9,7 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> nesterov_a_test_task_mpi::getRandomVector(int sz) {
+std::vector<int> kurakin_m_min_values_by_rows_matrix_mpi::getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
@@ -20,7 +19,7 @@ std::vector<int> nesterov_a_test_task_mpi::getRandomVector(int sz) {
   return vec;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskSequential::pre_processing() {
+bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init vectors
   input_ = std::vector<int>(taskData->inputs_count[0]);
@@ -33,13 +32,13 @@ bool nesterov_a_test_task_mpi::TestMPITaskSequential::pre_processing() {
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskSequential::validation() {
+bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
   return taskData->outputs_count[0] == 1;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskSequential::run() {
+bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::run() {
   internal_order_test();
   if (ops == "+") {
     res = std::accumulate(input_.begin(), input_.end(), 0);
@@ -51,13 +50,13 @@ bool nesterov_a_test_task_mpi::TestMPITaskSequential::run() {
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskSequential::post_processing() {
+bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
   reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskParallel::pre_processing() {
+bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   unsigned int delta = 0;
   if (world.rank() == 0) {
@@ -87,7 +86,7 @@ bool nesterov_a_test_task_mpi::TestMPITaskParallel::pre_processing() {
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskParallel::validation() {
+bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     // Check count elements of output
@@ -96,7 +95,7 @@ bool nesterov_a_test_task_mpi::TestMPITaskParallel::validation() {
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskParallel::run() {
+bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   int local_res;
   if (ops == "+") {
@@ -116,7 +115,7 @@ bool nesterov_a_test_task_mpi::TestMPITaskParallel::run() {
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskParallel::post_processing() {
+bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     reinterpret_cast<int*>(taskData->outputs[0])[0] = res;

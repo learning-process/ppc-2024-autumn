@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #pragma once
 
 #include <gtest/gtest.h>
@@ -13,7 +12,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace nesterov_a_test_task_mpi {
+namespace kurakin_m_min_values_by_rows_matrix_mpi {
 
 std::vector<int> getRandomVector(int sz);
 
