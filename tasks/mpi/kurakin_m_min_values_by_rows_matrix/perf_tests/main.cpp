@@ -23,7 +23,7 @@ TEST(mpi_example_perf_test, test_pipeline_run) {
   }
 
   auto testMpiTaskParallel =
-      std::make_shared<kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel>(taskDataPar, "+");
+      std::make_shared<kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -43,7 +43,8 @@ TEST(mpi_example_perf_test, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(count_size_vector, global_sum[0]);
+    std::cout << global_sum[0] << "\n";
+    ASSERT_EQ(1, global_sum[0]);
   }
 }
 
@@ -64,7 +65,7 @@ TEST(mpi_example_perf_test, test_task_run) {
   }
 
   auto testMpiTaskParallel =
-      std::make_shared<kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel>(taskDataPar, "+");
+      std::make_shared<kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -84,7 +85,8 @@ TEST(mpi_example_perf_test, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(count_size_vector, global_sum[0]);
+    std::cout << global_sum[0] << "\n";
+    ASSERT_EQ(1, global_sum[0]);
   }
 }
 

@@ -40,13 +40,7 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::validation(
 
 bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-  if (ops == "+") {
-    res = std::accumulate(input_.begin(), input_.end(), 0);
-  } else if (ops == "-") {
-    res = -std::accumulate(input_.begin(), input_.end(), 0);
-  } else if (ops == "max") {
-    res = *std::max_element(input_.begin(), input_.end());
-  }
+  res = *std::min_element(input_.begin(), input_.end());
   return true;
 }
 
@@ -98,20 +92,10 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::validation() 
 bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   int local_res;
-  if (ops == "+") {
-    local_res = std::accumulate(local_input_.begin(), local_input_.end(), 0);
-  } else if (ops == "-") {
-    local_res = -std::accumulate(local_input_.begin(), local_input_.end(), 0);
-  } else if (ops == "max") {
-    local_res = *std::max_element(local_input_.begin(), local_input_.end());
-  }
+  local_res = *std::min_element(local_input_.begin(), local_input_.end());
+  
+  reduce(world, local_res, res, boost::mpi::minimum<int>(), 0);
 
-  if (ops == "+" || ops == "-") {
-    reduce(world, local_res, res, std::plus(), 0);
-  } else if (ops == "max") {
-    reduce(world, local_res, res, boost::mpi::maximum<int>(), 0);
-  }
-  std::this_thread::sleep_for(20ms);
   return true;
 }
 
