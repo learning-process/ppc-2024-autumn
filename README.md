@@ -19,7 +19,7 @@ The following parallel programming technologies are considered in practice:
   git submodule update --init --recursive
   ```
 ## 1. Set up your environment
-### Static analysis of project
+### Static analysis of project (optional)
   * **Windows (MSVC)**:
   
   Unsupported operating system!
