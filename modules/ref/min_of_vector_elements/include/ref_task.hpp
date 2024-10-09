@@ -1,4 +1,4 @@
-// Copyright 2023 Nesterov Alexander
+// Copyright 2023 chistov Alexander
 
 #ifndef MODULES_REFERENCE_MIN_OF_VECTOR_ELEMENTS_REF_TASK_HPP_
 #define MODULES_REFERENCE_MIN_OF_VECTOR_ELEMENTS_REF_TASK_HPP_

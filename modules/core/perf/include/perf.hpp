@@ -1,4 +1,4 @@
-// Copyright 2023 Nesterov Alexander
+// Copyright 2023 chistov Alexander
 
 #ifndef MODULES_CORE_INCLUDE_PERF_HPP_
 #define MODULES_CORE_INCLUDE_PERF_HPP_

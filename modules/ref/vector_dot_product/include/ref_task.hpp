@@ -1,4 +1,4 @@
-// Copyright 2023 Nesterov Alexander
+// Copyright 2023 chistov Alexander
 
 #ifndef MODULES_REFERENCE_VECTOR_DOT_PRODUCT_REF_TASK_HPP_
 #define MODULES_REFERENCE_VECTOR_DOT_PRODUCT_REF_TASK_HPP_

@@ -1,11 +1,11 @@
-// Copyright 2023 Nesterov Alexander
+// Copyright 2023 chistov Alexander
 #include <gtest/gtest.h>
 #include <oneapi/tbb.h>
 
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "tbb/example/include/ops_tbb.hpp"
+#include "tbb/chistov_a_sum_of_matrix_elements/include/ops_tbb.hpp"
 
 TEST(tbb_example_perf_test, test_pipeline_run) {
   const int count = 100;
@@ -22,7 +22,7 @@ TEST(tbb_example_perf_test, test_pipeline_run) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto testTaskTBB = std::make_shared<nesterov_a_test_task_tbb::TestTBBTaskSequential>(taskDataSeq, "+");
+  auto testTaskTBB = std::make_shared<chistov_a_test_task_tbb::TestTBBTaskSequential>(taskDataSeq, "+");
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -55,7 +55,7 @@ TEST(tbb_example_perf_test, test_task_run) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto testTaskTBB = std::make_shared<nesterov_a_test_task_tbb::TestTBBTaskSequential>(taskDataSeq, "+");
+  auto testTaskTBB = std::make_shared<chistov_a_test_task_tbb::TestTBBTaskSequential>(taskDataSeq, "+");
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();

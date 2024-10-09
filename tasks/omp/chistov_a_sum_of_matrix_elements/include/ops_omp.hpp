@@ -1,4 +1,4 @@
-// Copyright 2023 Nesterov Alexander
+// Copyright 2023 chistov Alexander
 #pragma once
 
 #include <string>
@@ -6,7 +6,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace nesterov_a_test_task_omp {
+namespace chistov_a_test_task_omp {
 
 std::vector<int> getRandomVector(int sz);
 
@@ -40,4 +40,4 @@ class TestOMPTaskParallel : public ppc::core::Task {
   std::string ops;
 };
 
-}  // namespace nesterov_a_test_task_omp
+}  // namespace chistov_a_test_task_omp

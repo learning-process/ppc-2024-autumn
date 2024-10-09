@@ -1,4 +1,4 @@
-// Copyright 2023 Nesterov Alexander
+// Copyright 2023 chistov Alexander
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
@@ -9,21 +9,21 @@
 
 TEST(mpi_example_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
+  std::vector<int> global_matrix;
   std::vector<int32_t> global_sum(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int count_size_vector;
   if (world.rank() == 0) {
     count_size_vector = 120;
-    global_vec = std::vector<int>(count_size_vector, 1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    global_matrix = std::vector<int>(count_size_vector, 1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(global_matrix.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<nesterov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar, "+");
+  auto testMpiTaskParallel = std::make_shared<chistov_a_sum_of_matrix_elements::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -49,21 +49,21 @@ TEST(mpi_example_perf_test, test_pipeline_run) {
 
 TEST(mpi_example_perf_test, test_task_run) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
+  std::vector<int> global_matrix;
   std::vector<int32_t> global_sum(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int count_size_vector;
   if (world.rank() == 0) {
     count_size_vector = 120;
-    global_vec = std::vector<int>(count_size_vector, 1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    global_matrix = std::vector<int>(count_size_vector, 1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(global_matrix.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<nesterov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar, "+");
+  auto testMpiTaskParallel = std::make_shared<chistov_a_sum_of_matrix_elements::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();

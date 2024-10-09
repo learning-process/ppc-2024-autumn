@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #pragma once
 
 #include <gtest/gtest.h>
@@ -13,14 +12,15 @@
 
 #include "core/task/include/task.hpp"
 
-namespace nesterov_a_test_task_mpi {
+namespace chistov_a_sum_of_matrix_elements {
 
-std::vector<int> getRandomVector(int sz);
+void print_matrix(const std::vector<int> matrix, int n, int m);
+std::vector<int> getRandomMatrix(int n, int m);
+int classic_way(const std::vector<int> matrix, int n, int m);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -28,14 +28,13 @@ class TestMPITaskSequential : public ppc::core::Task {
 
  private:
   std::vector<int> input_;
-  int res{};
-  std::string ops;
+  int n, m;
+  int res=0;
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_): Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -43,9 +42,9 @@ class TestMPITaskParallel : public ppc::core::Task {
 
  private:
   std::vector<int> input_, local_input_;
-  int res{};
-  std::string ops;
+  int res=0;
+  int n, m;
   boost::mpi::communicator world;
 };
 
-}  // namespace nesterov_a_test_task_mpi
+} 

@@ -1,11 +1,11 @@
-// Copyright 2023 Nesterov Alexander
+// Copyright 2023 chistov Alexander
 #include <gtest/gtest.h>
 #include <omp.h>
 
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "omp/example/include/ops_omp.hpp"
+#include "omp/chistov_a_sum_of_matrix_elements/include/ops_omp.hpp"
 
 TEST(openmp_example_perf_test, test_pipeline_run) {
   const int count = 100;
@@ -22,7 +22,7 @@ TEST(openmp_example_perf_test, test_pipeline_run) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto testTaskOMP = std::make_shared<nesterov_a_test_task_omp::TestOMPTaskSequential>(taskDataSeq, "+");
+  auto testTaskOMP = std::make_shared<chistov_a_test_task_omp::TestOMPTaskSequential>(taskDataSeq, "+");
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -54,7 +54,7 @@ TEST(openmp_example_perf_test, test_task_run) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto testTaskOMP = std::make_shared<nesterov_a_test_task_omp::TestOMPTaskSequential>(taskDataSeq, "+");
+  auto testTaskOMP = std::make_shared<chistov_a_test_task_omp::TestOMPTaskSequential>(taskDataSeq, "+");
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();

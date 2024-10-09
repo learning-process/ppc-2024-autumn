@@ -1,4 +1,4 @@
-// Copyright 2023 Nesterov Alexander
+// Copyright 2023 chistov Alexander
 #ifndef TASKS_EXAMPLES_TEST_STD_OPS_STD_H_
 #define TASKS_EXAMPLES_TEST_STD_OPS_STD_H_
 
@@ -7,7 +7,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace nesterov_a_test_task_stl {
+namespace chistov_a_test_task_stl {
 
 std::vector<int> getRandomVector(int sz);
 
@@ -41,6 +41,6 @@ class TestSTLTaskParallel : public ppc::core::Task {
   std::string ops;
 };
 
-}  // namespace nesterov_a_test_task_stl
+}  // namespace chistov_a_test_task_stl
 
 #endif  // TASKS_EXAMPLES_TEST_STD_OPS_STD_H_

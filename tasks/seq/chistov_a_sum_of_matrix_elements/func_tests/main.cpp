@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "seq/example/include/ops_seq.hpp"
+#include "seq/chistov_a_sum_of_matrix_elements/include/ops_seq.hpp"
 
 TEST(Sequential, Test_Sum_10) {
   const int count = 10;
