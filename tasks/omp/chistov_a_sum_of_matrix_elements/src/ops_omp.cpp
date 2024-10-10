@@ -1,4 +1,4 @@
-// Copyright 2023 chistov Alexander
+
 #include "omp/chistov_a_sum_of_matrix_elements/include/ops_omp.hpp"
 
 #include <omp.h>

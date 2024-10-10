@@ -12,7 +12,7 @@
 using namespace std::chrono_literals;
 
 
-int chistov_a_sum_of_matrix_elements::classic_way(const std::vector<int> matrix, int n, int m) {
+int chistov_a_sum_of_matrix_elements::classic_way(const std::vector<int> matrix, const int n, const  int m) {
   int result = 0;
   for (int i = 0; i < n; ++i) {
     for (int j = 0; j < m; ++j) {
@@ -23,7 +23,7 @@ int chistov_a_sum_of_matrix_elements::classic_way(const std::vector<int> matrix,
   return result;
 }
 
-void chistov_a_sum_of_matrix_elements::print_matrix(std::vector<int> matrix, int n, int m) { 
+void chistov_a_sum_of_matrix_elements::print_matrix(std::vector<int> matrix, const int n, const  int m) { 
   std::cout << "Matrix:" << std::endl;
   for (int i = 0; i < n; i++) {
       for (int j = 0; j < m; j++) std::cout << matrix[i * m + j] << " ";
@@ -32,7 +32,7 @@ void chistov_a_sum_of_matrix_elements::print_matrix(std::vector<int> matrix, int
   std::cout << std::endl;
 }
 
-std::vector<int> chistov_a_sum_of_matrix_elements::getRandomMatrix(int n, int m) {
+std::vector<int> chistov_a_sum_of_matrix_elements::getRandomMatrix(const int n, const int m) {
   if (n <= 0 || m <= 0) {
     throw std::invalid_argument("Incorrect entered N or M");
   }
@@ -50,6 +50,8 @@ std::vector<int> chistov_a_sum_of_matrix_elements::getRandomMatrix(int n, int m)
 }
 
 
+//Sequential
+
 bool chistov_a_sum_of_matrix_elements::TestMPITaskSequential::pre_processing() {
   internal_order_test();
 
@@ -63,7 +65,7 @@ bool chistov_a_sum_of_matrix_elements::TestMPITaskSequential::pre_processing() {
 bool chistov_a_sum_of_matrix_elements::TestMPITaskSequential::validation() {
   internal_order_test();
 
-  return taskData->outputs_count[0] == 1; //we  return one element
+  return taskData->outputs_count[0] == 1; 
 }
 
 bool chistov_a_sum_of_matrix_elements::TestMPITaskSequential::run() {
@@ -92,32 +94,31 @@ bool chistov_a_sum_of_matrix_elements::TestMPITaskParallel::pre_processing() {
 
   unsigned int delta = 0;
   if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] / world.size();
+    delta = (n * m) / world.size();  
   }
-  broadcast(world, delta, 0);
+  boost::mpi::broadcast(world, delta, 0);
 
   if (world.rank() == 0) {
-    // Init vectors
-    input_ = std::vector<int>(taskData->inputs_count[0]);
+    input_ = std::vector<int>(n * m);  
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-      input_[i] = tmp_ptr[i];
+      input_[i] = tmp_ptr[i];  
     }
     for (int proc = 1; proc < world.size(); proc++) {
       world.send(proc, 0, input_.data() + proc * delta, delta);
     }
   }
+
   local_input_ = std::vector<int>(delta);
   if (world.rank() == 0) {
     local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
   } else {
     world.recv(0, 0, local_input_.data(), delta);
   }
-  // Init value for output
+
   res = 0;
   return true;
 }
-
 
 bool chistov_a_sum_of_matrix_elements::TestMPITaskParallel::validation() {
   internal_order_test();
@@ -127,8 +128,6 @@ bool chistov_a_sum_of_matrix_elements::TestMPITaskParallel::validation() {
   }
   return true;
 }
-
-
 
 bool chistov_a_sum_of_matrix_elements::TestMPITaskParallel::run() {
   internal_order_test();

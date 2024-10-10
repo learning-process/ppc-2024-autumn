@@ -1,4 +1,4 @@
-// Copyright 2023 chistov Alexander
+
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
@@ -11,12 +11,14 @@ TEST(mpi_example_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> global_sum(1, 0);
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int count_size_vector;
   if (world.rank() == 0) {
     count_size_vector = 120;
     global_matrix = std::vector<int>(count_size_vector, 1);
+
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(global_matrix.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
@@ -24,12 +26,13 @@ TEST(mpi_example_perf_test, test_pipeline_run) {
   }
 
   auto testMpiTaskParallel = std::make_shared<chistov_a_sum_of_matrix_elements::TestMPITaskParallel>(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel->validation(), true);
-  testMpiTaskParallel->pre_processing();
-  testMpiTaskParallel->run();
-  testMpiTaskParallel->post_processing();
 
-  // Create Perf attributes
+  ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  ASSERT_EQ(testMpiTaskParallel -> pre_processing(), true);
+  ASSERT_EQ(testMpiTaskParallel -> run(), true);
+  ASSERT_EQ(testMpiTaskParallel->post_processing(), true);
+
+
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;

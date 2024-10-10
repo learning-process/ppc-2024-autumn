@@ -1,4 +1,4 @@
-// Copyright 2023 chistov Alexander
+
 #ifndef TASKS_EXAMPLES_TEST_TBB_OPS_TBB_H_
 #define TASKS_EXAMPLES_TEST_TBB_OPS_TBB_H_
 

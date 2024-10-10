@@ -1,4 +1,4 @@
-// Copyright 2023 chistov Alexander
+
 #include "core/task/include/task.hpp"
 
 #include <gtest/gtest.h>

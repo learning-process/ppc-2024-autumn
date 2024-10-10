@@ -1,4 +1,4 @@
-// Copyright 2023 chistov Alexander
+
 #include <iostream>
 #include <string>
 #include <thread>

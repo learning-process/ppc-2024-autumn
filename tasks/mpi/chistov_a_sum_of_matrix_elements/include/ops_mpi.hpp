@@ -14,13 +14,13 @@
 
 namespace chistov_a_sum_of_matrix_elements {
 
-void print_matrix(const std::vector<int> matrix, int n, int m);
-std::vector<int> getRandomMatrix(int n, int m);
-int classic_way(const std::vector<int> matrix, int n, int m);
+void print_matrix(const std::vector<int> matrix, const int n, const int m);
+std::vector<int> getRandomMatrix(const int n, const int m);
+int classic_way(const std::vector<int> matrix, const int n, const int m);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_,const int n_,const int m_) : Task(std::move(taskData_)), n(n_), m(m_) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -34,7 +34,7 @@ class TestMPITaskSequential : public ppc::core::Task {
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_): Task(std::move(taskData_)) {}
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_,const int n_, const int m_) : Task(std::move(taskData_)), n(n_), m(m_) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
