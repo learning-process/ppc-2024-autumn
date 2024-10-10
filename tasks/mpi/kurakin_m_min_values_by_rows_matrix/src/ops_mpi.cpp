@@ -28,26 +28,26 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::pre_process
     input_[i] = tmp_ptr[i];
   }
   // Init value for output
-  res = std::vector<int>(1, 0);
+  res = std::vector<int>(count_rows, 0);
   return true;
 }
 
 bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
-  return taskData->outputs_count[0] == 1;
+  return taskData->outputs_count[0] == (uint32_t)count_rows;
 }
 
 bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::run() {
   internal_order_test();
   
   for (int i = 0; i < count_rows; i++) {
-    int min_el = INT_MAX;
-    for (int j = 0; j < size_rows; j++) {
-      min_el = std::min(min_el, input_[j + i * size_rows]);  
-      //res[i] = *std::min_element(input_.begin() + i * size_rows, input_.begin() + (i + 1) * size_rows);
-    }
-    res[i] = min_el;
+    //int min_el = INT_MAX;
+    //for (int j = 0; j < size_rows; j++) {
+    //  min_el = std::min(min_el, input_[j + i * size_rows]);  
+    //}
+    //res[i] = min_el;
+    res[i] = *std::min_element(input_.begin() + i * size_rows, input_.begin() + (i + 1) * size_rows);
   }
   return true;
 }
@@ -55,7 +55,7 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::run() {
 bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
   for (int i = 0; i < count_rows; i++) {
-    reinterpret_cast<int*>(taskData->outputs[i])[0] = res[i];
+    reinterpret_cast<int*>(taskData->outputs[0])[i] = res[i];
   }
   return true;
 }
@@ -103,7 +103,7 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::validation() 
   internal_order_test();
   if (world.rank() == 0) {
     // Check count elements of output
-    return taskData->outputs_count[0] == 1;
+    return taskData->outputs_count[0] == (uint32_t)count_rows;
   }
   return true;
 }
@@ -124,7 +124,7 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::post_processi
   internal_order_test();
   if (world.rank() == 0) {
     for (int i = 0; i < count_rows; i++) {
-      reinterpret_cast<int*>(taskData->outputs[i])[0] = res[i];
+      reinterpret_cast<int*>(taskData->outputs[0])[i] = res[i];
     }
   }
   return true;
