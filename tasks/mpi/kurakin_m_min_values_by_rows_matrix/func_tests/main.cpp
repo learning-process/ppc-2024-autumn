@@ -6,7 +6,7 @@
 
 #include "mpi/kurakin_m_min_values_by_rows_matrix/include/ops_mpi.hpp"
 
-TEST(Parallel_Operations_MPI, Test_Min_Rand) {
+TEST(Parallel_Operations_MPI, Test_Min_Rand1) {
   int count_rows = 10;
   //int size_rows = 20;
   for (int size_rows = 4; size_rows < 54; size_rows+=7) {
@@ -57,8 +57,8 @@ TEST(Parallel_Operations_MPI, Test_Min_Rand) {
 }
 
 TEST(Parallel_Operations_MPI, Test_Min_Rand2) {
-  const int count_rows = 10;
-  const int size_rows = 21;
+  const int count_rows = 300;
+  const int size_rows = 2;
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_sum(count_rows, 0);
