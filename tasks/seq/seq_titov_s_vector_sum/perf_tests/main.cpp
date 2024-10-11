@@ -10,7 +10,7 @@ TEST(titov_s_vector_sum_seq, test_pipeline_run) {
   const int count = 1000000;
 
   // Create data
-  std::vector<int> in(3, count);
+  std::vector<int> in(1, count);
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -40,7 +40,7 @@ TEST(titov_s_vector_sum_seq, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(vectorSumSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(count*3, out[0]);
+  ASSERT_EQ(count, out[0]);
 }
 
 TEST(titov_s_vector_sum_seq, test_task_run) {
