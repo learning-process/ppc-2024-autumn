@@ -39,7 +39,6 @@ bool titov_s_vector_sum_seq::VectorSumSequential<InOutType>::post_processing() {
   reinterpret_cast<InOutType*>(taskData->outputs[0])[0] = res;
   return true;
 }
-template class titov_s_vector_sum_seq::VectorSumSequential<int>;
 template class titov_s_vector_sum_seq::VectorSumSequential<int32_t>;
 template class titov_s_vector_sum_seq::VectorSumSequential<double>;
 template class titov_s_vector_sum_seq::VectorSumSequential<uint8_t>;
