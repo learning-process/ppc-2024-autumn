@@ -7,10 +7,10 @@
 #include "seq/seq_titov_s_vector_sum/include/ops_seq.hpp"
 
 TEST(titov_s_vector_sum_seq, test_pipeline_run) {
-  const int count = 100;
+  const int count = 1000000;
 
   // Create data
-  std::vector<int> in(1, count);
+  std::vector<int> in(3, count);
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -21,7 +21,7 @@ TEST(titov_s_vector_sum_seq, test_pipeline_run) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto vectorSumSequential = std::make_shared<titov_s_vector_sum_seq::VectorSumSequential>(taskDataSeq);
+  auto vectorSumSequential = std::make_shared<titov_s_vector_sum_seq::VectorSumSequential<int>>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -40,11 +40,11 @@ TEST(titov_s_vector_sum_seq, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(vectorSumSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(count, out[0]);
+  ASSERT_EQ(count*3, out[0]);
 }
 
 TEST(titov_s_vector_sum_seq, test_task_run) {
-  const int count = 100;
+  const int count = 1000000;
 
   // Create data
   std::vector<int> in(1, count);
@@ -58,7 +58,7 @@ TEST(titov_s_vector_sum_seq, test_task_run) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto vectorSumSequential = std::make_shared<titov_s_vector_sum_seq::VectorSumSequential>(taskDataSeq);
+  auto vectorSumSequential = std::make_shared<titov_s_vector_sum_seq::VectorSumSequential<int>>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();

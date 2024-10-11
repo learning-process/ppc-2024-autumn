@@ -5,11 +5,9 @@
 
 #include "seq/seq_titov_s_vector_sum/include/ops_seq.hpp"
 
-TEST(titov_s_vector_sum_seq, Test_Sum_10) {
-  const int count = 10;
-
+TEST(titov_s_vector_sum_seq, Test_Int) {
   // Create data
-  std::vector<int> in(1, count);
+  std::vector<int> in(1, 10);
   const int expected_sum = 10;
   std::vector<int> out(1, 0);
 
@@ -21,7 +19,7 @@ TEST(titov_s_vector_sum_seq, Test_Sum_10) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  titov_s_vector_sum_seq::VectorSumSequential vectorSumSequential(taskDataSeq);
+  titov_s_vector_sum_seq::VectorSumSequential<int> vectorSumSequential(taskDataSeq);
   ASSERT_EQ(vectorSumSequential.validation(), true);
   vectorSumSequential.pre_processing();
   vectorSumSequential.run();

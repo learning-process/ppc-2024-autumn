@@ -3,11 +3,13 @@
 
 #include <string>
 #include <vector>
+#include <memory>
+#include <numeric>
 
 #include "core/task/include/task.hpp"
 
 namespace titov_s_vector_sum_seq {
-
+template <class InOutType>
 class VectorSumSequential : public ppc::core::Task {
  public:
   explicit VectorSumSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -17,7 +19,8 @@ class VectorSumSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  int input_{}, res{};
+  std::vector<InOutType> input_;
+  InOutType res;
 };
 
 }  // namespace titov_s_vector_sum_seq

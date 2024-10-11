@@ -5,35 +5,43 @@
 
 using namespace std::chrono_literals;
 
-bool titov_s_vector_sum_seq::VectorSumSequential::pre_processing() {
+template <class InOutType>
+bool titov_s_vector_sum_seq::VectorSumSequential<InOutType>::pre_processing() {
   internal_order_test();
-  // Init value for input and output
-  input_ = reinterpret_cast<int*>(taskData->inputs[0])[0];
+  input_ = std::vector<InOutType>(taskData->inputs_count[0]);
+  auto tmp_ptr = reinterpret_cast<InOutType*>(taskData->inputs[0]);
+  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+    input_[i] = tmp_ptr[i];
+  }
+  // Init value for output
   res = 0;
   return true;
 }
 
-bool titov_s_vector_sum_seq::VectorSumSequential::validation() {
+template <class InOutType>
+bool titov_s_vector_sum_seq::VectorSumSequential<InOutType>::validation() {
   internal_order_test();
   // Check count elements of output
   return taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1;
 }
 
-bool titov_s_vector_sum_seq::VectorSumSequential::run() {
+template <class InOutType>
+bool titov_s_vector_sum_seq::VectorSumSequential<InOutType>::run() {
   internal_order_test();
-  res = 0;
-
-  int* input_data = reinterpret_cast<int*>(taskData->inputs[0]);
-  int num_elements = taskData->inputs_count[0];
-
-  for (int i = 0; i < num_elements; ++i) {
-    res += input_data[i];
-  }
+  res = std::accumulate(input_.begin(), input_.end(), 0);
+  std::this_thread::sleep_for(20ms);
   return true;
 }
 
-bool titov_s_vector_sum_seq::VectorSumSequential::post_processing() {
+template <class InOutType>
+bool titov_s_vector_sum_seq::VectorSumSequential<InOutType>::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+  reinterpret_cast<InOutType*>(taskData->outputs[0])[0] = res;
   return true;
 }
+template class titov_s_vector_sum_seq::VectorSumSequential<int>;
+template class titov_s_vector_sum_seq::VectorSumSequential<int32_t>;
+template class titov_s_vector_sum_seq::VectorSumSequential<double>;
+template class titov_s_vector_sum_seq::VectorSumSequential<uint8_t>;
+template class titov_s_vector_sum_seq::VectorSumSequential<int64_t>;
+template class titov_s_vector_sum_seq::VectorSumSequential<float>;
