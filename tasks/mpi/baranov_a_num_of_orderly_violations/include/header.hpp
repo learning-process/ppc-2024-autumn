@@ -22,7 +22,7 @@ template <class iotype, class cntype>
       
       cntype seq_proc(std::vector<iotype> vec);
 
-      cntype mpi_proc(std::vector<iotype> vec, cntype vec_size);
+      
      private:
       std::vector<iotype> input_;
       std::vector<iotype> loc_vec_;
