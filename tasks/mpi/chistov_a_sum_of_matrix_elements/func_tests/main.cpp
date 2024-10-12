@@ -5,13 +5,13 @@
 #include <vector>
 #include "mpi/chistov_a_sum_of_matrix_elements/include/ops_mpi.hpp"
 
-TEST(TestMPITaskSequential, test_sum) {
+TEST(chistov_a_sum_of_matrix_elements, test_int_sum_sequential) {
   boost::mpi::communicator world;
 
   if (world.rank() == 0) {
      int n = 3;
      int m = 4;
-    std::vector<int> global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix(n, m);
+    std::vector<int> global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix<int>(n, m);
     std::vector<int32_t> reference_sum(1, 0);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
@@ -20,7 +20,7 @@ TEST(TestMPITaskSequential, test_sum) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_sum.data()));
     taskDataSeq->outputs_count.emplace_back(reference_sum.size());
 
-    chistov_a_sum_of_matrix_elements::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, n,m);
+    chistov_a_sum_of_matrix_elements::TestMPITaskSequential<int> testMpiTaskSequential(taskDataSeq, n,m);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     ASSERT_EQ(testMpiTaskSequential.pre_processing(), true);
     ASSERT_EQ(testMpiTaskSequential.run(), true);
@@ -31,7 +31,40 @@ TEST(TestMPITaskSequential, test_sum) {
   }
 }
 
-TEST(TestMPITaskSequential, test_sum_with_empty_matrix) {
+TEST(chistov_a_sum_of_matrix_elements, test_double_sum_sequential) {
+  boost::mpi::communicator world;
+
+  if (world.rank() == 0) {
+    int n = 3;
+    int m = 4;
+
+    std::vector<double> global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix<double>(n, m);
+
+    std::vector<double> reference_sum(1, 0.0);
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(global_matrix.size());  
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_sum.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_sum.size());  
+
+    chistov_a_sum_of_matrix_elements::TestMPITaskSequential<double> testMpiTaskSequential(taskDataSeq, n, m);
+
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    ASSERT_EQ(testMpiTaskSequential.pre_processing(), true);
+    ASSERT_EQ(testMpiTaskSequential.run(), true);
+    ASSERT_EQ(testMpiTaskSequential.post_processing(), true);
+
+
+    double sum = chistov_a_sum_of_matrix_elements::classic_way(global_matrix, n, m);
+
+    ASSERT_NEAR(reference_sum[0], sum, 1e-6);
+  }
+
+}
+
+TEST(chistov_a_sum_of_matrix_elements, test_sum_with_empty_matrix_sequential) {
   boost::mpi::communicator world;
 
   if (world.rank() == 0) {
@@ -43,7 +76,7 @@ TEST(TestMPITaskSequential, test_sum_with_empty_matrix) {
     taskDataSeq->inputs_count.emplace_back(empty_matrix.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_sum.data()));
     taskDataSeq->outputs_count.emplace_back(reference_sum.size());
-    chistov_a_sum_of_matrix_elements::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, 0, 0);
+    chistov_a_sum_of_matrix_elements::TestMPITaskSequential<int> testMpiTaskSequential(taskDataSeq, 0, 0);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     ASSERT_EQ(testMpiTaskSequential.pre_processing(), true);
     ASSERT_EQ(testMpiTaskSequential.run(), true);
@@ -53,13 +86,13 @@ TEST(TestMPITaskSequential, test_sum_with_empty_matrix) {
   }
 }
 
-TEST(TestMPITaskSequential, test_sum_with_single_element_matrix) {
+TEST(chistov_a_sum_of_matrix_elements, test_sum_with_single_element_matrix_sequential) {
   boost::mpi::communicator world;
 
   if (world.rank() == 0) {
      int n = 1;                
      int m = 1;               
-    std::vector<int> global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix(n, m);
+    std::vector<int> global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix<int>(n, m);
     std::vector<int32_t> reference_sum(1, 0);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
@@ -68,7 +101,7 @@ TEST(TestMPITaskSequential, test_sum_with_single_element_matrix) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_sum.data()));
     taskDataSeq->outputs_count.emplace_back(reference_sum.size());
 
-    chistov_a_sum_of_matrix_elements::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, n, m);
+    chistov_a_sum_of_matrix_elements::TestMPITaskSequential<int> testMpiTaskSequential(taskDataSeq, n, m);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     ASSERT_EQ(testMpiTaskSequential.pre_processing(), true);
     ASSERT_EQ(testMpiTaskSequential.run(), true);
@@ -79,21 +112,21 @@ TEST(TestMPITaskSequential, test_sum_with_single_element_matrix) {
   }
 }
 
-TEST(TestMPITaskSequential, throws_when_small_n_or_m) {
+TEST(chistov_a_sum_of_matrix_elements, throws_when_small_n_or_m_sequential) {
   boost::mpi::communicator world;
   int n, m; 
   if (world.rank() == 0) {
       n = 0;  
      m = 4;
 
-    EXPECT_THROW({ chistov_a_sum_of_matrix_elements::getRandomMatrix( n, m); }, std::invalid_argument);
+    EXPECT_THROW({ chistov_a_sum_of_matrix_elements::getRandomMatrix<int>(n, m); }, std::invalid_argument);
 
     m = 0;  
-    EXPECT_THROW({ chistov_a_sum_of_matrix_elements::getRandomMatrix(1, m); }, std::invalid_argument);
+    EXPECT_THROW({ chistov_a_sum_of_matrix_elements::getRandomMatrix<int>(1, m); }, std::invalid_argument);
   }
 }
 
-TEST(TestMPITaskSequential, test_wrong_validation) {
+TEST(chistov_a_sum_of_matrix_elements, test_wrong_validation_sequential) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> global_sum(2, 0);
@@ -103,17 +136,17 @@ TEST(TestMPITaskSequential, test_wrong_validation) {
   if (world.rank() == 0) {
     n = 3;
      m = 4;
-    global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix(n, m);
+    global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix<int>(n, m);
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataSeq->inputs_count.emplace_back(global_matrix.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataSeq->outputs_count.emplace_back(global_sum.size());
   }
-  chistov_a_sum_of_matrix_elements::TestMPITaskSequential testMpiTaskSequential(taskDataSeq,n,m);
+  chistov_a_sum_of_matrix_elements::TestMPITaskSequential<int> testMpiTaskSequential(taskDataSeq, n, m);
   ASSERT_EQ(testMpiTaskSequential.validation(), false);
 }
 
-TEST(TestMPITaskParallel, test_wrong_validation) {
+TEST(chistov_a_sum_of_matrix_elements, test_wrong_validation_parallell) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> global_sum(2, 0); 
@@ -123,20 +156,20 @@ TEST(TestMPITaskParallel, test_wrong_validation) {
   if (world.rank() == 0) {
     n = 3;
     m = 4;
-    global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix(n, m);
+    global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix<int>(n, m);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(global_matrix.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   
-    chistov_a_sum_of_matrix_elements::TestMPITaskParallel TestMPITaskParallel(taskDataPar, n, m);
+    chistov_a_sum_of_matrix_elements::TestMPITaskParallel<int> TestMPITaskParallel(taskDataPar, n, m);
 
     ASSERT_EQ(TestMPITaskParallel.validation(), false);
   
   }
 }
 
-TEST(TestMPITaskParallel, test_sum1) {
+TEST(chistov_a_sum_of_matrix_elements, test_int_sum_parallell) {
   boost::mpi::communicator world;
 
   std::vector<int> global_matrix;
@@ -147,7 +180,7 @@ TEST(TestMPITaskParallel, test_sum1) {
   int m = 4;
 
   if (world.rank() == 0) {
-    global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix(n, m);
+    global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix<int>(n, m);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(global_matrix.size());
@@ -155,7 +188,7 @@ TEST(TestMPITaskParallel, test_sum1) {
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  chistov_a_sum_of_matrix_elements::TestMPITaskParallel testMPITaskParallel(taskDataPar, n, m);
+  chistov_a_sum_of_matrix_elements::TestMPITaskParallel<int> testMPITaskParallel(taskDataPar, n, m);
   ASSERT_TRUE(testMPITaskParallel.validation());
   ASSERT_TRUE(testMPITaskParallel.pre_processing());
   ASSERT_TRUE(testMPITaskParallel.run());
@@ -170,7 +203,7 @@ TEST(TestMPITaskParallel, test_sum1) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_sum.data()));
     taskDataSeq->outputs_count.emplace_back(reference_sum.size());
 
-    chistov_a_sum_of_matrix_elements::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, n, m);
+    chistov_a_sum_of_matrix_elements::TestMPITaskSequential<int> testMpiTaskSequential(taskDataSeq, n, m);
     ASSERT_TRUE(testMpiTaskSequential.validation());
     ASSERT_TRUE(testMpiTaskSequential.pre_processing());
     ASSERT_TRUE(testMpiTaskSequential.run());
@@ -181,7 +214,54 @@ TEST(TestMPITaskParallel, test_sum1) {
   }
 }
 
-TEST(TestMPITaskParallel, test_with_empty_matrix) {
+TEST(chistov_a_sum_of_matrix_elements, test_double_sum_parallell) {
+  boost::mpi::communicator world;
+
+  std::vector<double> global_matrix;
+  std::vector<double> global_sum(1, 0.0);  
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  int n = 3;
+  int m = 4;
+
+  if (world.rank() == 0) {
+    global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix<double>(n, m);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(global_matrix.size()); 
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
+    taskDataPar->outputs_count.emplace_back(global_sum.size());  
+  }
+
+  chistov_a_sum_of_matrix_elements::TestMPITaskParallel<double> testMPITaskParallel(taskDataPar, n, m);
+  ASSERT_TRUE(testMPITaskParallel.validation());
+  ASSERT_TRUE(testMPITaskParallel.pre_processing());
+  ASSERT_TRUE(testMPITaskParallel.run());
+  ASSERT_TRUE(testMPITaskParallel.post_processing());
+
+  if (world.rank() == 0) {
+    std::vector<double> reference_sum(1, 0.0);  
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(global_matrix.size());  
+
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_sum.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_sum.size());  
+
+    chistov_a_sum_of_matrix_elements::TestMPITaskSequential<double> testMpiTaskSequential(taskDataSeq, n, m);
+    ASSERT_TRUE(testMpiTaskSequential.validation());
+    ASSERT_TRUE(testMpiTaskSequential.pre_processing());
+    ASSERT_TRUE(testMpiTaskSequential.run());
+    ASSERT_TRUE(testMpiTaskSequential.post_processing());
+
+    ASSERT_NEAR(reference_sum[0], global_sum[0], 1e-6);  
+  }
+}
+
+
+TEST(chistov_a_sum_of_matrix_elements, test_with_empty_matrix_parallell) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> global_sum(1, 0);
@@ -195,7 +275,7 @@ TEST(TestMPITaskParallel, test_with_empty_matrix) {
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  chistov_a_sum_of_matrix_elements::TestMPITaskParallel TestMPITaskParallel(taskDataPar, 0, 0);
+  chistov_a_sum_of_matrix_elements::TestMPITaskParallel<int> TestMPITaskParallel(taskDataPar, 0, 0);
   ASSERT_EQ(TestMPITaskParallel.validation(), true);
   ASSERT_EQ(TestMPITaskParallel.pre_processing(), true);
   ASSERT_EQ(TestMPITaskParallel.run(), true);
@@ -206,7 +286,7 @@ TEST(TestMPITaskParallel, test_with_empty_matrix) {
   }
 }
 
-TEST(TestMPITaskParallel, test_with_large_matrix) {
+TEST(chistov_a_sum_of_matrix_elements, test_with_large_matrix_parallell) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> global_sum(1, 0);
@@ -217,14 +297,14 @@ TEST(TestMPITaskParallel, test_with_large_matrix) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix(n, m);
+    global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix<int>(n, m);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(global_matrix.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  chistov_a_sum_of_matrix_elements::TestMPITaskParallel TestMPITaskParallel(taskDataPar, n, m);
+  chistov_a_sum_of_matrix_elements::TestMPITaskParallel<int> TestMPITaskParallel(taskDataPar, n, m);
   ASSERT_EQ(TestMPITaskParallel.validation(), true);
   ASSERT_EQ(TestMPITaskParallel.pre_processing(), true);
   ASSERT_EQ(TestMPITaskParallel.run(), true);
@@ -240,7 +320,7 @@ TEST(TestMPITaskParallel, test_with_large_matrix) {
 }
 
 
-TEST(TestMPITaskParallel, short_and_thick_test) {
+TEST(chistov_a_sum_of_matrix_elements, short_and_thick_test_parallell) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> global_sum(1, 0);
@@ -251,14 +331,14 @@ TEST(TestMPITaskParallel, short_and_thick_test) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix(n, m);
+    global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix<int>(n, m);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(global_matrix.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  chistov_a_sum_of_matrix_elements::TestMPITaskParallel TestMPITaskParallel(taskDataPar, n, m);
+  chistov_a_sum_of_matrix_elements::TestMPITaskParallel<int> TestMPITaskParallel(taskDataPar, n, m);
   ASSERT_EQ(TestMPITaskParallel.validation(), true);
   ASSERT_EQ(TestMPITaskParallel.pre_processing(), true);
   ASSERT_EQ(TestMPITaskParallel.run(), true);
@@ -273,7 +353,7 @@ TEST(TestMPITaskParallel, short_and_thick_test) {
   }
 }
 
-TEST(TestMPITaskParallel, long_and_thin_test) {
+TEST(chistov_a_sum_of_matrix_elements, long_and_thin_test_parallell) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> global_sum(1, 0);
@@ -284,14 +364,14 @@ TEST(TestMPITaskParallel, long_and_thin_test) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix(n, m);
+    global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix<int>(n, m);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(global_matrix.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  chistov_a_sum_of_matrix_elements::TestMPITaskParallel TestMPITaskParallel(taskDataPar, n, m);
+  chistov_a_sum_of_matrix_elements::TestMPITaskParallel<int> TestMPITaskParallel(taskDataPar, n, m);
   ASSERT_EQ(TestMPITaskParallel.validation(), true);
   ASSERT_EQ(TestMPITaskParallel.pre_processing(), true);
   ASSERT_EQ(TestMPITaskParallel.run(), true);
