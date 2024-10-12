@@ -27,14 +27,14 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::pre_process
   for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
     input_[i] = tmp_ptr[i];
   }
-  // Init value for output
+  // Init vector for output
   res = std::vector<int>(count_rows, 0);
   return true;
 }
 
 bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  // Check count elements of output
+  // Check input and count elements of output
   return taskData->inputs_count[0] != 0 && taskData->outputs_count[0] == (uint32_t)count_rows;
 }
 
@@ -69,7 +69,6 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::pre_processin
   broadcast(world, delta, 0);
   broadcast(world, count_rank, 0);
   if (world.rank() == 0) {
-    // Init vectors
     input_ = std::vector<int>(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     int ind = 0;
@@ -126,7 +125,7 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::pre_processin
 bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    // Check count elements of output
+    // Check input and count elements of output
     return taskData->inputs_count[0] != 0 && taskData->outputs_count[0] == (uint32_t)count_rows;
   }
   return true;

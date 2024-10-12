@@ -43,7 +43,7 @@ TEST(kurakin_m_min_values_by_rows_matrix_mpi, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    for (int i = 0; i < par_min_vec.size(); i++) {
+    for (unsigned i = 0; i < par_min_vec.size(); i++) {
       // std::cout << par_min_vec[0] << " ";
       EXPECT_EQ(1, par_min_vec[0]);
     }
@@ -88,7 +88,7 @@ TEST(kurakin_m_min_values_by_rows_matrix_mpi, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    for (int i = 0; i < par_min_vec.size(); i++) {
+    for (unsigned i = 0; i < par_min_vec.size(); i++) {
       // std::cout << par_min_vec[0] << " ";
       EXPECT_EQ(1, par_min_vec[0]);
     }

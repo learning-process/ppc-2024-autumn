@@ -44,7 +44,7 @@ TEST(kurakin_m_min_values_by_rows_matrix_seq, test_pipeline_run) {
   ppc::core::Perf::print_perf_statistic(perfResults);
   for (unsigned i = 0; i < seq_min_vec.size(); i++) {
     // std::cout << par_min_vec[0] << " ";
-    EXPECT_EQ(0, seq_min_vec[0]);
+    EXPECT_EQ(1, seq_min_vec[0]);
   }
 }
 
