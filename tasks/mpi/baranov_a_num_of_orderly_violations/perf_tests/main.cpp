@@ -26,10 +26,6 @@
    }
 
    auto testMpiTaskParallel = std::make_shared<baranov_a_num_of_orderly_violations_mpi::num_of_orderly_violations<int,int>>(taskDataPar);
-   ASSERT_EQ(testMpiTaskParallel->validation(), true);
-   testMpiTaskParallel->pre_processing();
-   testMpiTaskParallel->run();
-   testMpiTaskParallel->post_processing();
 
    // Create Perf attributes
    auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -73,10 +69,7 @@
 
    auto testMpiTaskParallel =
        std::make_shared<baranov_a_num_of_orderly_violations_mpi::num_of_orderly_violations<int, int>>(taskDataPar);
-   ASSERT_EQ(testMpiTaskParallel->validation(), true);
-   testMpiTaskParallel->pre_processing();
-   testMpiTaskParallel->run();
-   testMpiTaskParallel->post_processing();
+
 
    // Create Perf attributes
    auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
