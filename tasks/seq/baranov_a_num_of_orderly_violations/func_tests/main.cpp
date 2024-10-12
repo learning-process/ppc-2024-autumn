@@ -1,9 +1,6 @@
-
 #include <gtest/gtest.h>
 
-#include <random>
-
-#include "seq/baranov_a_num_of_orderly_violations/src/source.cpp"
+#include "seq/baranov_a_num_of_orderly_violations/include/header.hpp"
 TEST(baranov_a_num_of_orderly_violations_seq, Test_viol_10_int) {
   const int N = 10;
   // Create data

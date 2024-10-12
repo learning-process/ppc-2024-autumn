@@ -1,12 +1,8 @@
-#pragma once
-#include <boost/mpi/collectives.hpp>
-#include <boost/mpi/communicator.hpp>
-
 #include "mpi/baranov_a_num_of_orderly_violations/include/header.hpp"
+
 namespace baranov_a_num_of_orderly_violations_mpi {
 template <typename iotype, typename cntype>
-cntype baranov_a_num_of_orderly_violations_mpi::num_of_orderly_violations<iotype, cntype>::seq_proc(
-    std::vector<iotype> vec) {
+cntype num_of_orderly_violations<iotype, cntype>::seq_proc(std::vector<iotype> vec) {
   cntype num = 0;
   int n = vec.size();
   if (n == 0) {
@@ -23,7 +19,7 @@ cntype baranov_a_num_of_orderly_violations_mpi::num_of_orderly_violations<iotype
   return num;
 }
 template <class iotype, class cntype>
-bool baranov_a_num_of_orderly_violations_mpi::num_of_orderly_violations<iotype, cntype>::pre_processing() {
+bool num_of_orderly_violations<iotype, cntype>::pre_processing() {
   internal_order_test();
   int myid = world.rank();
   int world_size = world.size();
@@ -69,7 +65,7 @@ bool baranov_a_num_of_orderly_violations_mpi::num_of_orderly_violations<iotype, 
   return true;
 }
 template <class iotype, class cntype>
-bool baranov_a_num_of_orderly_violations_mpi::num_of_orderly_violations<iotype, cntype>::run() {
+bool num_of_orderly_violations<iotype, cntype>::run() {
   internal_order_test();
   int loc_num = 0;
   for (int i = 0; i != my_loc_vec_size - 1; ++i) {
@@ -81,7 +77,7 @@ bool baranov_a_num_of_orderly_violations_mpi::num_of_orderly_violations<iotype, 
   return true;
 }
 template <class iotype, class cntype>
-bool baranov_a_num_of_orderly_violations_mpi::num_of_orderly_violations<iotype, cntype>::post_processing() {
+bool num_of_orderly_violations<iotype, cntype>::post_processing() {
   internal_order_test();
 
   if (world.rank() == 0) {
@@ -90,7 +86,7 @@ bool baranov_a_num_of_orderly_violations_mpi::num_of_orderly_violations<iotype, 
   return true;
 }
 template <class iotype, class cntype>
-bool baranov_a_num_of_orderly_violations_mpi::num_of_orderly_violations<iotype, cntype>::validation() {
+bool num_of_orderly_violations<iotype, cntype>::validation() {
   internal_order_test();
   // Check count elements of output
   if (world.rank() == 0) {
@@ -101,4 +97,8 @@ bool baranov_a_num_of_orderly_violations_mpi::num_of_orderly_violations<iotype, 
   }
   return true;
 }
+
+template class baranov_a_num_of_orderly_violations_mpi::num_of_orderly_violations<int, int>;
+
+template class baranov_a_num_of_orderly_violations_mpi::num_of_orderly_violations<double, int>;
 }  // namespace baranov_a_num_of_orderly_violations_mpi

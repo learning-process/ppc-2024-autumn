@@ -1,10 +1,10 @@
 
 #include <gtest/gtest.h>
 
-#include <random>
+
 
 #include "core/perf/include/perf.hpp"
-#include "seq/baranov_a_num_of_orderly_violations/src/source.cpp"
+#include "seq/baranov_a_num_of_orderly_violations/include/header.hpp"
 
 TEST(sequential_baranov_a_num_of_orderly_violations_perf_test, test_pipeline_run) {
   const int count = 10000000;

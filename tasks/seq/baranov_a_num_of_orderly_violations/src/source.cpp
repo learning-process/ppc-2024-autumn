@@ -1,10 +1,8 @@
-#pragma once
 #include "seq/baranov_a_num_of_orderly_violations/include/header.hpp"
-
 namespace baranov_a_num_of_orderly_violations_seq {
+
 template <typename iotype, typename cntype>
-cntype baranov_a_num_of_orderly_violations_seq::num_of_orderly_violations<iotype, cntype>::seq_proc(
-    std::vector<iotype> vec) {
+cntype num_of_orderly_violations<iotype, cntype>::seq_proc(std::vector<iotype> vec) {
   cntype num = 0;
   int n = vec.size();
   if (n == 0 || n == 1) return 0;
@@ -17,7 +15,7 @@ cntype baranov_a_num_of_orderly_violations_seq::num_of_orderly_violations<iotype
 }
 
 template <class iotype, class cntype>
-bool baranov_a_num_of_orderly_violations_seq::num_of_orderly_violations<iotype, cntype>::pre_processing() {
+bool num_of_orderly_violations<iotype, cntype>::pre_processing() {
   internal_order_test();
   // Init vectors
   int n = taskData->inputs_count[0];
@@ -30,7 +28,7 @@ bool baranov_a_num_of_orderly_violations_seq::num_of_orderly_violations<iotype, 
   return true;
 }
 template <class iotype, class cntype>
-bool baranov_a_num_of_orderly_violations_seq::num_of_orderly_violations<iotype, cntype>::validation() {
+bool num_of_orderly_violations<iotype, cntype>::validation() {
   internal_order_test();
   // Check count elements of output
 
@@ -41,7 +39,7 @@ bool baranov_a_num_of_orderly_violations_seq::num_of_orderly_violations<iotype, 
   return false;
 }
 template <class iotype, class cntype>
-bool baranov_a_num_of_orderly_violations_seq::num_of_orderly_violations<iotype, cntype>::run() {
+bool num_of_orderly_violations<iotype, cntype>::run() {
   internal_order_test();
   num_ = seq_proc(input_);
 
@@ -54,4 +52,7 @@ bool baranov_a_num_of_orderly_violations_seq::num_of_orderly_violations<iotype, 
   return true;
 }
 
+template class baranov_a_num_of_orderly_violations_seq::num_of_orderly_violations<int, int>;
+
+template class baranov_a_num_of_orderly_violations_seq::num_of_orderly_violations<double, int>;
 }  // namespace baranov_a_num_of_orderly_violations_seq
