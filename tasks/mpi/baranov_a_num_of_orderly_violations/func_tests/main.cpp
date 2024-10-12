@@ -79,9 +79,9 @@ TEST(baranov_a_num_of_orderly_violations_mpi, Test_viol_10000_double) {
   ASSERT_EQ(num, out[0]);
 }
 TEST(baranov_a_num_of_orderly_violations_mpi, Test_viol_size_of_vec_is_equal_to_world_size) {
-  const int N = 3;
   // Create data
   boost::mpi::communicator world;
+  const int N = world.size();
   std::vector<double> arr(N);
   std::vector<int> out(1);
   std::shared_ptr<ppc::core::TaskData> data_seq = std::make_shared<ppc::core::TaskData>();
