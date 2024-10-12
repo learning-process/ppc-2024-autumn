@@ -7,8 +7,8 @@
 #include "mpi/kurakin_m_min_values_by_rows_matrix/include/ops_mpi.hpp"
 
 TEST(kurakin_m_min_values_by_rows_matrix_mpi, test_pipeline_run) {
-  const int count_rows = 10;
-  const int size_rows = 40;
+  const int count_rows = 100;
+  const int size_rows = 400;
   boost::mpi::communicator world;
   std::vector<int> global_mat;
   std::vector<int32_t> par_min_vec(count_rows, 0);
@@ -31,7 +31,7 @@ TEST(kurakin_m_min_values_by_rows_matrix_mpi, test_pipeline_run) {
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 1000;
+  perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
@@ -52,8 +52,8 @@ TEST(kurakin_m_min_values_by_rows_matrix_mpi, test_pipeline_run) {
 }
 
 TEST(kurakin_m_min_values_by_rows_matrix_mpi, test_task_run) {
-  const int count_rows = 10;
-  const int size_rows = 40;
+  const int count_rows = 100;
+  const int size_rows = 400;
   boost::mpi::communicator world;
   std::vector<int> global_mat;
   std::vector<int32_t> par_min_vec(count_rows, 0);
@@ -76,7 +76,7 @@ TEST(kurakin_m_min_values_by_rows_matrix_mpi, test_task_run) {
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 1000;
+  perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
