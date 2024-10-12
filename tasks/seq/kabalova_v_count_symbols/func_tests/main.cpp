@@ -6,10 +6,11 @@
 #include "seq/kabalova_v_count_symbols/include/count_symbols.hpp"
 
 TEST(kabalova_v_count_symbols_seq, EmptyString) {
-  std::string str = "";
+  std::string string = "";
   int answer = 0;
+  std::vector<char> str = kabalova_v_count_symbols_seq::fromStringToChar(string);
   // Create data
-  std::vector<std::string> in(1, str);
+  std::vector<std::vector<char>> in(1, str);
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -29,10 +30,11 @@ TEST(kabalova_v_count_symbols_seq, EmptyString) {
 }
 
 TEST(kabalova_v_count_symbols_seq, OneSymbolStringNotLetter) {
-  std::string str = "8";
+  std::string string = "8";
   int answer = 0;
+  std::vector<char> str = kabalova_v_count_symbols_seq::fromStringToChar(string);
   // Create data
-  std::vector<std::string> in(1, str);
+  std::vector<std::vector<char>> in(1, str);
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -52,10 +54,11 @@ TEST(kabalova_v_count_symbols_seq, OneSymbolStringNotLetter) {
 }
 
 TEST(kabalova_v_count_symbols_seq, OneSymbolStringLetter) {
-  std::string str = "f";
+  std::string string = "f";
   int answer = 1;
+  std::vector<char> str = kabalova_v_count_symbols_seq::fromStringToChar(string);
   // Create data
-  std::vector<std::string> in(1, str);
+  std::vector<std::vector<char>> in(1, str);
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -75,10 +78,11 @@ TEST(kabalova_v_count_symbols_seq, OneSymbolStringLetter) {
 }
 
 TEST(kabalova_v_count_symbols_seq, string1) {
-  std::string str = "04 t384mt834tm083t/..';';'; cdk jw kehjw ";
-  int answer = 5;
+  std::string string = "%^&@&^*@#$&^*";
+  int answer = 0;
+  std::vector<char> str = kabalova_v_count_symbols_seq::fromStringToChar(string);
   // Create data
-  std::vector<std::string> in(1, str);
+  std::vector<std::vector<char>> in(1, str);
   std::vector<int> out(1, 0);
 
   // Create TaskData

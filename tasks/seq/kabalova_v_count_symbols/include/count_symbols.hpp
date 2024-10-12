@@ -10,8 +10,8 @@ namespace kabalova_v_count_symbols_seq {
 
   int getRandomNumber(int left, int right);
   std::string getRandomString();
-  int countSymbols(std::string& str);
-
+  int countSymbols(std::vector<char> str);
+  std::vector<char> fromStringToChar(std::string& str);
 
 class Task1Seq : public ppc::core::Task { 
  public:
@@ -22,7 +22,7 @@ class Task1Seq : public ppc::core::Task {
   bool post_processing() override;
    
  private:
-  std::string input_{};
+  std::vector<char> input_{};
   int result{};
 };
 

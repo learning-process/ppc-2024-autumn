@@ -22,22 +22,30 @@ std::string kabalova_v_count_symbols_seq::getRandomString() {
   return str;
 }
 
-int kabalova_v_count_symbols_seq::countSymbols(const std::string& str){ 
+int kabalova_v_count_symbols_seq::countSymbols(std::vector<char> str) { 
   int result = 0;
-  
   for (std::string::size_type i = 0; i < str.size(); i++) {
-    std::cout<<str;
+
     if (isalpha(str[i])) {
       result++;
     }
   }
   return result;
 };
+std::vector<char> kabalova_v_count_symbols_seq::fromStringToChar(std::string& str) {
+  std::vector<char> vec;
+  for (int i = 0; i < str.size(); i++) {
+    vec.emplace_back(str[i]);
+  }
+  return vec;
+}
 
 bool kabalova_v_count_symbols_seq::Task1Seq::pre_processing() {
   internal_order_test();
   // Init value for input and output
-  input_ = reinterpret_cast<uint8_t*>(taskData->inputs[0]);
+  //std::cout << typeid(*reinterpret_cast<uint8_t*>(taskData->inputs[0])).name();
+  input_.emplace_back(*reinterpret_cast<uint8_t*>(taskData->inputs[0])); //так работает хот€ бы, но выводит неверные символы
+  std::cout << "\nInput[0] =" << input_[0] << "\n";
   result = 0;
   return true;
 }
