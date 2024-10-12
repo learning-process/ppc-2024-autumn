@@ -35,18 +35,13 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::pre_process
 bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
-  return taskData->outputs_count[0] == (uint32_t)count_rows;
+  return taskData->inputs_count[0]!=0 && taskData->outputs_count[0] == (uint32_t)count_rows;
 }
 
 bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::run() {
   internal_order_test();
   
   for (int i = 0; i < count_rows; i++) {
-    //int min_el = INT_MAX;
-    //for (int j = 0; j < size_rows; j++) {
-    //  min_el = std::min(min_el, input_[j + i * size_rows]);  
-    //}
-    //res[i] = min_el;
     res[i] = *std::min_element(input_.begin() + i * size_rows, input_.begin() + (i + 1) * size_rows);
   }
   return true;
@@ -136,7 +131,7 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::validation() 
   internal_order_test();
   if (world.rank() == 0) {
     // Check count elements of output
-    return taskData->outputs_count[0] == (uint32_t)count_rows;
+    return taskData->inputs_count[0] != 0 && taskData->outputs_count[0] == (uint32_t)count_rows;
   }
   return true;
 }

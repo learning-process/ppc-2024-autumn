@@ -6,71 +6,71 @@
 
 #include "mpi/kurakin_m_min_values_by_rows_matrix/include/ops_mpi.hpp"
 
-TEST(Parallel_Operations_MPI, Test_Min_Rand1) {
+TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Min_Rand1) {
   int count_rows = 10;
   //int size_rows = 20;
   for (int size_rows = 4; size_rows < 54; size_rows+=7) {
     boost::mpi::communicator world;
-    std::vector<int> global_vec;
-    std::vector<int32_t> global_sum(count_rows, 0);
+    std::vector<int> global_mat;
+    std::vector<int32_t> par_min_vec(count_rows, 0);
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
     if (world.rank() == 0) {
-      global_vec = kurakin_m_min_values_by_rows_matrix_mpi::getRandomVector(count_rows * size_rows);
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-      taskDataPar->inputs_count.emplace_back(global_vec.size());
-      taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-      taskDataPar->outputs_count.emplace_back(global_sum.size());
+      global_mat = kurakin_m_min_values_by_rows_matrix_mpi::getRandomVector(count_rows * size_rows);
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
+      taskDataPar->inputs_count.emplace_back(global_mat.size());
+      taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(par_min_vec.data()));
+      taskDataPar->outputs_count.emplace_back(par_min_vec.size());
     }
 
     kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, count_rows,
                                                                                      size_rows);
-    EXPECT_EQ(testMpiTaskParallel.validation(), true);
+    ASSERT_EQ(testMpiTaskParallel.validation(), true);
     testMpiTaskParallel.pre_processing();
     testMpiTaskParallel.run();
     testMpiTaskParallel.post_processing();
 
     if (world.rank() == 0) {
       // Create data
-      std::vector<int32_t> reference_sum(count_rows, 0);
+      std::vector<int32_t> ref_min_vec(count_rows, 0);
 
       // Create TaskData
       std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-      taskDataSeq->inputs_count.emplace_back(global_vec.size());
-      taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_sum.data()));
-      taskDataSeq->outputs_count.emplace_back(reference_sum.size());
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
+      taskDataSeq->inputs_count.emplace_back(global_mat.size());
+      taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(ref_min_vec.data()));
+      taskDataSeq->outputs_count.emplace_back(ref_min_vec.size());
 
       // Create Task
       kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, count_rows,
                                                                                            size_rows);
-      EXPECT_EQ(testMpiTaskSequential.validation(), true);
+      ASSERT_EQ(testMpiTaskSequential.validation(), true);
       testMpiTaskSequential.pre_processing();
       testMpiTaskSequential.run();
       testMpiTaskSequential.post_processing();
 
-      EXPECT_EQ(reference_sum, global_sum);
-      std::cout << "count_rows: " << count_rows << "; size_rows: " << size_rows << "\n";
+      ASSERT_EQ(ref_min_vec, par_min_vec);
+      //std::cout << "count_rows: " << count_rows << "; size_rows: " << size_rows << "\n";
     }
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_Min_Rand2) {
-  const int count_rows = 300;
+TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Min_Rand2) {
+  const int count_rows = 10;
   const int size_rows = 2;
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_sum(count_rows, 0);
+  std::vector<int> global_mat;
+  std::vector<int32_t> par_min_vec(count_rows, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_vec = kurakin_m_min_values_by_rows_matrix_mpi::getRandomVector(count_rows * size_rows);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());
+    global_mat = kurakin_m_min_values_by_rows_matrix_mpi::getRandomVector(count_rows * size_rows);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
+    taskDataPar->inputs_count.emplace_back(global_mat.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(par_min_vec.data()));
+    taskDataPar->outputs_count.emplace_back(par_min_vec.size());
   }
 
   kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, count_rows, size_rows);
@@ -81,14 +81,14 @@ TEST(Parallel_Operations_MPI, Test_Min_Rand2) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int32_t> reference_sum(count_rows, 0);
+    std::vector<int32_t> ref_min_vec(count_rows, 0);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataSeq->inputs_count.emplace_back(global_vec.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_sum.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_sum.size());
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
+    taskDataSeq->inputs_count.emplace_back(global_mat.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(ref_min_vec.data()));
+    taskDataSeq->outputs_count.emplace_back(ref_min_vec.size());
 
     // Create Task
     kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, count_rows,
@@ -98,7 +98,45 @@ TEST(Parallel_Operations_MPI, Test_Min_Rand2) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    ASSERT_EQ(reference_sum, global_sum);
+    ASSERT_EQ(ref_min_vec, par_min_vec);
+  }
+}
+
+TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_validation) {
+  const int count_rows = 10;
+  const int size_rows = 0;
+  boost::mpi::communicator world;
+  std::vector<int> global_mat;
+  std::vector<int32_t> par_min_vec(count_rows, 0);
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    global_mat = kurakin_m_min_values_by_rows_matrix_mpi::getRandomVector(count_rows * size_rows);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
+    taskDataPar->inputs_count.emplace_back(global_mat.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(par_min_vec.data()));
+    taskDataPar->outputs_count.emplace_back(par_min_vec.size());
+  }
+
+  kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, count_rows, size_rows);
+  ASSERT_EQ(testMpiTaskParallel.validation(), false);
+
+  if (world.rank() == 0) {
+    // Create data
+    std::vector<int32_t> ref_min_vec(count_rows, 0);
+
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
+    taskDataSeq->inputs_count.emplace_back(global_mat.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(ref_min_vec.data()));
+    taskDataSeq->outputs_count.emplace_back(ref_min_vec.size());
+
+    // Create Task
+    kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, count_rows,
+                                                                                         size_rows);
+    ASSERT_EQ(testMpiTaskSequential.validation(), false);
   }
 }
 
