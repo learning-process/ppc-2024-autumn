@@ -1,8 +1,6 @@
 
 #include <gtest/gtest.h>
 
-
-
 #include "core/perf/include/perf.hpp"
 #include "seq/baranov_a_num_of_orderly_violations/include/header.hpp"
 
