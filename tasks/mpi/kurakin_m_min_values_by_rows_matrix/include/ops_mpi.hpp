@@ -49,4 +49,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  // namespace nesterov_a_test_task_mpi
+}  // namespace kurakin_m_min_values_by_rows_matrix_mpi

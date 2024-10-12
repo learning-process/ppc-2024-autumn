@@ -8,7 +8,7 @@
 
 namespace kurakin_m_min_values_by_rows_matrix_seq {
 
-    std::vector<int> getRandomVector(int sz);
+std::vector<int> getRandomVector(int sz);
 
 class TestTaskSequential : public ppc::core::Task {
  public:
@@ -26,4 +26,4 @@ class TestTaskSequential : public ppc::core::Task {
   std::vector<int> res;
 };
 
-}  // namespace nesterov_a_test_task_seq
+}  // namespace kurakin_m_min_values_by_rows_matrix_seq

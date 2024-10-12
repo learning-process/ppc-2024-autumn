@@ -44,7 +44,7 @@ TEST(kurakin_m_min_values_by_rows_matrix_mpi, test_pipeline_run) {
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
     for (int i = 0; i < par_min_vec.size();i++) {
-      //std::cout << par_min_vec[0] << " ";
+      // std::cout << par_min_vec[0] << " ";
       EXPECT_EQ(1, par_min_vec[0]);
     }
     std::cout << "\n";

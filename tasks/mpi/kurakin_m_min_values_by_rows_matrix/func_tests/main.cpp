@@ -8,8 +8,8 @@
 
 TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Min_Rand1) {
   int count_rows = 10;
-  //int size_rows = 20;
-  for (int size_rows = 4; size_rows < 54; size_rows+=7) {
+  // int size_rows = 20;
+  for (int size_rows = 4; size_rows < 54; size_rows += 7) {
     boost::mpi::communicator world;
     std::vector<int> global_mat;
     std::vector<int32_t> par_min_vec(count_rows, 0);
@@ -51,7 +51,7 @@ TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Min_Rand1) {
       testMpiTaskSequential.post_processing();
 
       ASSERT_EQ(ref_min_vec, par_min_vec);
-      //std::cout << "count_rows: " << count_rows << "; size_rows: " << size_rows << "\n";
+      // std::cout << "count_rows: " << count_rows << "; size_rows: " << size_rows << "\n";
     }
   }
 }

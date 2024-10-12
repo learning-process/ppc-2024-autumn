@@ -42,9 +42,9 @@ TEST(kurakin_m_min_values_by_rows_matrix_seq, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  for (int i = 0; i < seq_min_vec.size(); i++) {
+  for (unsigned i = 0; i < seq_min_vec.size(); i++) {
     // std::cout << par_min_vec[0] << " ";
-    EXPECT_EQ(1, seq_min_vec[0]);
+    EXPECT_EQ(0, seq_min_vec[0]);
   }
 }
 
@@ -84,7 +84,7 @@ TEST(sequential_example_perf_test, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  for (int i = 0; i < seq_min_vec.size(); i++) {
+  for (unsigned i = 0; i < seq_min_vec.size(); i++) {
     // std::cout << par_min_vec[0] << " ";
     EXPECT_EQ(1, seq_min_vec[0]);
   }

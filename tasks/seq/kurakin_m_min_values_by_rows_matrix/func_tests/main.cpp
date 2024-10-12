@@ -30,7 +30,6 @@ TEST(kurakin_m_min_values_by_rows_matrix_seq, Test_Min1) {
   ASSERT_EQ(ans, seq_min_vec);
 }
 
-
 TEST(kurakin_m_min_values_by_rows_matrix_seq, Test_Min2) {
   int count_rows = 3;
   int size_rows = 6;
