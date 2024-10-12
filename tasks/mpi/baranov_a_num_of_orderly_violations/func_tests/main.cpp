@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 
-
 #include "mpi/baranov_a_num_of_orderly_violations/include/header.hpp"
 TEST(baranov_a_num_of_orderly_violations_mpi, Test_viol_100_int) {
   const int N = 100;

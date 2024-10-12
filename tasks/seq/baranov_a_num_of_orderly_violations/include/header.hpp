@@ -1,7 +1,8 @@
 #pragma once
+#include <random>
 #include <string>
 #include <vector>
-#include <random>
+
 #include "core/task/include/task.hpp"
 namespace baranov_a_num_of_orderly_violations_seq {
 template <class iotype, class cntype>
@@ -22,6 +23,5 @@ class num_of_orderly_violations : public ppc::core::Task {
   std::vector<iotype> input_;
   cntype num_;
 };
-
 
 }  // namespace baranov_a_num_of_orderly_violations_seq
