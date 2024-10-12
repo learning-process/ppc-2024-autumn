@@ -10,7 +10,7 @@ namespace kabalova_v_count_symbols_seq {
 
   int getRandomNumber(int left, int right);
   std::string getRandomString();
-  int countSymbols(std::vector<char> str);
+  int countSymbols(std::string str);
 
 
 class Task1Seq : public ppc::core::Task { 

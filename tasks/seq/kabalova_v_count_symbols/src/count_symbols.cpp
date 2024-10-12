@@ -22,9 +22,11 @@ std::string kabalova_v_count_symbols_seq::getRandomString() {
   return str;
 }
 
-int kabalova_v_count_symbols_seq::countSymbols(std::vector<char> str) { 
+int kabalova_v_count_symbols_seq::countSymbols(const std::string& str){ 
   int result = 0;
-  for (int i = 0; i < str.size(); i++) {
+  
+  for (std::string::size_type i = 0; i < str.size(); i++) {
+    std::cout<<str;
     if (isalpha(str[i])) {
       result++;
     }
@@ -35,12 +37,7 @@ int kabalova_v_count_symbols_seq::countSymbols(std::vector<char> str) {
 bool kabalova_v_count_symbols_seq::Task1Seq::pre_processing() {
   internal_order_test();
   // Init value for input and output
-  input_.emplace_back(*reinterpret_cast<uint8_t*>(taskData->inputs[0]));
-  std::cout << "\n";
-  for (int i = 0; i < input_.size(); i++) {
-    std::cout << reinterpret_cast<uint8_t*>(taskData->inputs[0])[i];
-  }
-  std::cout << "\n";
+  input_ = reinterpret_cast<uint8_t*>(taskData->inputs[0]);
   result = 0;
   return true;
 }
