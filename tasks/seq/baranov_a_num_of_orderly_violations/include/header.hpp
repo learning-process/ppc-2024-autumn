@@ -1,6 +1,5 @@
 #pragma once
-#include <string.h>
-
+#include <cstring>
 #include <random>
 #include <string>
 #include <vector>
