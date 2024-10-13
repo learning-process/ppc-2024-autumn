@@ -6,7 +6,7 @@
 #include "seq/kabalova_v_count_symbols/include/count_symbols.hpp"
 
 TEST(kabalova_v_count_symbols_seq, EmptyString) {
-  std::string str = "";
+  std::string str;
 
   // Create data
   std::vector<int> out(1, 0);
