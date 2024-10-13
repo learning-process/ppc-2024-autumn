@@ -4,7 +4,7 @@
 #include <random>
 #include <thread>
 #include <vector>
-  
+
 using namespace std::chrono_literals;
 
 int kabalova_v_count_symbols_seq::getRandomNumber(int left, int right) {
@@ -31,8 +31,6 @@ int kabalova_v_count_symbols_seq::countSymbols(std::string& str) {
   }
   return result;
 };
-
-
 
 bool kabalova_v_count_symbols_seq::Task1Seq::pre_processing() {
   internal_order_test();
