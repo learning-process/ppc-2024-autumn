@@ -6,12 +6,12 @@
 #include "mpi/chistov_a_sum_of_matrix_elements/include/ops_mpi.hpp"
 
 
-TEST(mpi_example_perf_test, test_pipeline_run) {
+TEST(chistov_a_sum_of_matrix_elements, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> global_sum(1, 0);
-  const int n =10000;
-  const int m =10000;
+  const int n = 10000;
+  const int m = 10000;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -48,7 +48,7 @@ TEST(mpi_example_perf_test, test_pipeline_run) {
   }
 }
 
-TEST(mpi_example_perf_test, test_task_run) {
+TEST(chistov_a_sum_of_matrix_elements, test_task_run) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> global_sum(1, 0);
@@ -58,7 +58,7 @@ TEST(mpi_example_perf_test, test_task_run) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    global_matrix = std::vector<int>(n * m, 1); 
+    global_matrix = std::vector<int>(n * m, 1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(global_matrix.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));

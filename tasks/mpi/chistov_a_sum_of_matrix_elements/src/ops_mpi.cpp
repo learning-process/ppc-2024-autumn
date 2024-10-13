@@ -3,11 +3,11 @@
 #include <algorithm>
 #include <functional>
 #include <random>
+#include <stdexcept>
 #include <string>
 #include <thread>
 #include <vector>
 
-#include <stdexcept>
 
 
 namespace chistov_a_sum_of_matrix_elements {}

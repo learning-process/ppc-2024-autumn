@@ -15,11 +15,11 @@ TEST(chistov_a_sum_of_matrix_elements, test_int_sum_sequential) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_sum.data()));
     taskDataSeq->outputs_count.emplace_back(reference_sum.size());
 
-    chistov_a_sum_of_matrix_elements::TestMPITaskSequential<int> testMpiTaskSequential(taskDataSeq, n, m);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    ASSERT_EQ(testMpiTaskSequential.pre_processing(), true);
-    ASSERT_EQ(testMpiTaskSequential.run(), true);
-    ASSERT_EQ(testMpiTaskSequential.post_processing(), true);
+    chistov_a_sum_of_matrix_elements::TestTaskSequential<int> TestTaskSequential(taskDataSeq, n, m);
+    ASSERT_EQ(TestTaskSequential.validation(), true);
+    ASSERT_EQ(TestTaskSequential.pre_processing(), true);
+    ASSERT_EQ(TestTaskSequential.run(), true);
+    ASSERT_EQ(TestTaskSequential.post_processing(), true);
 
     int sum = chistov_a_sum_of_matrix_elements::classic_way(global_matrix, n, m);
     ASSERT_EQ(reference_sum[0], sum);
@@ -40,12 +40,12 @@ TEST(chistov_a_sum_of_matrix_elements, test_double_sum_sequential) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_sum.data()));
     taskDataSeq->outputs_count.emplace_back(reference_sum.size());
 
-    chistov_a_sum_of_matrix_elements::TestMPITaskSequential<double> testMpiTaskSequential(taskDataSeq, n, m);
+    chistov_a_sum_of_matrix_elements::TestTaskSequential<double> TestTaskSequential(taskDataSeq, n, m);
 
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    ASSERT_EQ(testMpiTaskSequential.pre_processing(), true);
-    ASSERT_EQ(testMpiTaskSequential.run(), true);
-    ASSERT_EQ(testMpiTaskSequential.post_processing(), true);
+    ASSERT_EQ(TestTaskSequential.validation(), true);
+    ASSERT_EQ(TestTaskSequential.pre_processing(), true);
+    ASSERT_EQ(TestTaskSequential.run(), true);
+    ASSERT_EQ(TestTaskSequential.post_processing(), true);
 
     double sum = chistov_a_sum_of_matrix_elements::classic_way(global_matrix, n, m);
 
@@ -61,11 +61,11 @@ TEST(chistov_a_sum_of_matrix_elements, test_sum_with_empty_matrix_sequential) {
     taskDataSeq->inputs_count.emplace_back(empty_matrix.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_sum.data()));
     taskDataSeq->outputs_count.emplace_back(reference_sum.size());
-    chistov_a_sum_of_matrix_elements::TestMPITaskSequential<int> testMpiTaskSequential(taskDataSeq, 0, 0);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    ASSERT_EQ(testMpiTaskSequential.pre_processing(), true);
-    ASSERT_EQ(testMpiTaskSequential.run(), true);
-    ASSERT_EQ(testMpiTaskSequential.post_processing(), true);
+    chistov_a_sum_of_matrix_elements::TestTaskSequential<int> TestTaskSequential(taskDataSeq, 0, 0);
+    ASSERT_EQ(TestTaskSequential.validation(), true);
+    ASSERT_EQ(TestTaskSequential.pre_processing(), true);
+    ASSERT_EQ(TestTaskSequential.run(), true);
+    ASSERT_EQ(TestTaskSequential.post_processing(), true);
 
     ASSERT_EQ(reference_sum[0], 0);
   
@@ -83,15 +83,14 @@ TEST(chistov_a_sum_of_matrix_elements, test_sum_with_single_element_matrix_seque
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_sum.data()));
     taskDataSeq->outputs_count.emplace_back(reference_sum.size());
 
-    chistov_a_sum_of_matrix_elements::TestMPITaskSequential<int> testMpiTaskSequential(taskDataSeq, n, m);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    ASSERT_EQ(testMpiTaskSequential.pre_processing(), true);
-    ASSERT_EQ(testMpiTaskSequential.run(), true);
-    ASSERT_EQ(testMpiTaskSequential.post_processing(), true);
+    chistov_a_sum_of_matrix_elements::TestTaskSequential<int> TestTaskSequential(taskDataSeq, n, m);
+    ASSERT_EQ(TestTaskSequential.validation(), true);
+    ASSERT_EQ(TestTaskSequential.pre_processing(), true);
+    ASSERT_EQ(TestTaskSequential.run(), true);
+    ASSERT_EQ(TestTaskSequential.post_processing(), true);
 
     int sum = chistov_a_sum_of_matrix_elements::classic_way(global_matrix, n, m);
     ASSERT_EQ(reference_sum[0], sum);
-  
 }
 
 TEST(chistov_a_sum_of_matrix_elements, throws_when_small_n_or_m_sequential) {
@@ -111,8 +110,8 @@ TEST(chistov_a_sum_of_matrix_elements, test_wrong_validation_sequential) {
     taskDataSeq->inputs_count.emplace_back(global_matrix.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_sum.data()));
     taskDataSeq->outputs_count.emplace_back(global_sum.size());
-    chistov_a_sum_of_matrix_elements::TestMPITaskSequential<int> testMpiTaskSequential(taskDataSeq, n, m);
-    ASSERT_EQ(testMpiTaskSequential.validation(), false);
+    chistov_a_sum_of_matrix_elements::TestTaskSequential<int> TestTaskSequential(taskDataSeq, n, m);
+    ASSERT_EQ(TestTaskSequential.validation(), false);
 }
 
 int main(int argc, char **argv) {

@@ -1,7 +1,7 @@
 #pragma once
+#include <numeric> 
 #include <string>
 #include <vector>
-#include <numeric> 
 
 #include "core/task/include/task.hpp"
 

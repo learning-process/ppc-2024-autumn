@@ -30,7 +30,7 @@ std::vector<T> getRandomMatrix(const int n, const int m) {
 
   std::vector<T> matrix(n * m);
 
-  for (size_t  i = 0; i < n * m; ++i) {
+  for (size_t i = 0; i < n * m; ++i) {
     matrix[i] = static_cast<T>((std::rand() % 201) - 100);
   }
 
@@ -50,7 +50,7 @@ T classic_way(const std::vector<T> matrix, const int n, const int m) {
   return result;
 }
 
-template <typename T=int>
+template <typename T = int>
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, const int n_, const int m_)
@@ -73,24 +73,26 @@ class TestMPITaskSequential : public ppc::core::Task {
   }
 
 
-  bool run() override {
-  internal_order_test();
+ bool run()override {
+    internal_order_test();
 
-  res = std::accumulate(input_.begin(), input_.end(), 0);
-  return true;
-}
-
-  bool post_processing() override {
-  internal_order_test();
-
-  if (taskData->outputs.size() > 0 && taskData->outputs[0] != nullptr) {
-    reinterpret_cast<T*>(taskData->outputs[0])[0] = res;
+  
+    res = std::accumulate(input_.begin(), input_.end(), 0);
     return true;
-  } else {
-    return false;
+    
   }
-}
+ 
+ 
 
+    bool post_processing() override {
+    internal_order_test();
+    
+      if (taskData->outputs.size() > 0 && taskData->outputs[0] != nullptr) {
+        reinterpret_cast<T*>(taskData->outputs[0])[0] = res;
+        return true;
+      }
+      else {return false;}
+    }
 
  private:
   std::vector<T> input_;
@@ -101,14 +103,16 @@ class TestMPITaskSequential : public ppc::core::Task {
 template <typename T = int>
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, const int n_, const int m_) : Task(std::move(taskData_)), n(n_), m(m_), world(boost::mpi::communicator()) {}
+   explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, const int n_, const int m_)
+      :Task(std::move(taskData_)), n(n_), m(m_), world(boost::mpi::communicator()) {
+  }
 
-bool pre_processing() override {
+ bool pre_processing()override {
     internal_order_test();
 
-    unsigned int delta = 0;  
+    unsigned int delta = 0;
     if (world.rank() == 0) {
-      delta = (n * m) / world.size(); 
+      delta = (n * m) / world.size();
     }
 
     boost::mpi::broadcast(world, delta, 0);
@@ -145,22 +149,22 @@ bool pre_processing() override {
 
 
   bool run() override {
-  internal_order_test();
+    internal_order_test();
 
-  T local_res = std::accumulate(local_input_.begin(), local_input_.end(), 0);
-  reduce(world, local_res, res, std::plus<T>(), 0);
+    T local_res = std::accumulate(local_input_.begin(), local_input_.end(), 0);
+    reduce(world, local_res, res, std::plus<T>(), 0);
 
-  return true;
+    return true;
 }
 
   bool post_processing() override {
-  internal_order_test();
+      internal_order_test();
 
-  if (world.rank() == 0) {
-    reinterpret_cast<T*>(taskData->outputs[0])[0] = res;
-  }
-  return true;
-}
+      if (world.rank() == 0) {
+        reinterpret_cast<T*>(taskData->outputs[0])[0] = res;
+      }
+      return true;
+    }
 
  private:
   std::vector<T> input_, local_input_;

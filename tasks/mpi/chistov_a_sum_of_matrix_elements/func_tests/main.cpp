@@ -8,10 +8,10 @@
 TEST(chistov_a_sum_of_matrix_elements, test_wrong_validation_parallell) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
-  std::vector<int32_t> global_sum(2, 0); 
-
+  std::vector<int32_t> global_sum(2, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   unsigned int n, m;
+
   if (world.rank() == 0) {
     n = 3;
     m = 4;
@@ -33,8 +33,8 @@ TEST(chistov_a_sum_of_matrix_elements, test_int_sum_parallell) {
 
   std::vector<int> global_matrix;
   std::vector<int32_t> global_sum(1, 0);
-
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
   const int n = 3;
   const int m = 4;
 
@@ -68,7 +68,6 @@ TEST(chistov_a_sum_of_matrix_elements, test_int_sum_parallell) {
     ASSERT_TRUE(testMpiTaskSequential.run());
     ASSERT_TRUE(testMpiTaskSequential.post_processing());
 
-
     ASSERT_EQ(reference_sum[0], global_sum[0]);
   }
 }
@@ -78,10 +77,8 @@ TEST(chistov_a_sum_of_matrix_elements, test_double_sum_parallell) {
 
   std::vector<double> global_matrix;
   std::vector<double> global_sum(1, 0.0);  
-
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-    unsigned int n, m;
+  unsigned int n, m;
 
   if (world.rank() == 0) {
     n = 3;
@@ -101,7 +98,7 @@ TEST(chistov_a_sum_of_matrix_elements, test_double_sum_parallell) {
     ASSERT_TRUE(testMPITaskParallel.run());
     ASSERT_TRUE(testMPITaskParallel.post_processing());
 
-    if (world.rank() == 0) {
+   if (world.rank() == 0) {
     std::vector<double> reference_sum(1, 0.0);  
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
