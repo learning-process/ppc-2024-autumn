@@ -44,6 +44,7 @@ TEST(chistov_a_sum_of_matrix_elements, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
   ASSERT_EQ(std::accumulate(in.begin(), in.end(), 0), out[0]);
+
 }
 
 TEST(chistov_a_sum_of_matrix_elements, test_task_run) {
