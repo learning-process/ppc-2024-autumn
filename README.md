@@ -1,5 +1,5 @@
-[![Build application](https://github.com/learning-process/parallel_programming_course/actions/workflows/main.yml/badge.svg)](https://github.com/learning-process/parallel_programming_course/actions/workflows/main.yml)
-[![codecov](https://codecov.io/gh/learning-process/parallel_programming_course/graph/badge.svg?token=qCOtqeFyIz)](https://codecov.io/gh/learning-process/parallel_programming_course)
+[![Build application](https://github.com/learning-process/ppc-2024-autumn/actions/workflows/main.yml/badge.svg)](https://github.com/learning-process/ppc-2024-autumn/actions/workflows/main.yml)
+[![codecov](https://codecov.io/gh/learning-process/ppc-2024-autumn/graph/badge.svg?token=qCOtqeFyIz)](https://codecov.io/gh/learning-process/ppc-2024-autumn)
 
 # Parallel Programming Course
 
@@ -19,7 +19,7 @@ The following parallel programming technologies are considered in practice:
   git submodule update --init --recursive
   ```
 ## 1. Set up your environment
-### Static analysis of project
+### Static analysis of project (optional)
   * **Windows (MSVC)**:
   
   Unsupported operating system!
