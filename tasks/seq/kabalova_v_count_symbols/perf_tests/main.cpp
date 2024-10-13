@@ -1,8 +1,8 @@
 // Copyright 2024 Kabalova Valeria
 #include <gtest/gtest.h>
 
-#include <vector>
 #include <cstring>
+#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/kabalova_v_count_symbols/include/count_symbols.hpp"
@@ -40,7 +40,6 @@ TEST(kabalova_v_count_symbols_seq_perf_test, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 }
-
 
 TEST(kabalova_v_count_symbols_seq_perf_test, test_task_run) {
   std::string str = kabalova_v_count_symbols_seq::getRandomString();

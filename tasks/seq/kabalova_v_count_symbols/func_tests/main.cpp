@@ -1,8 +1,6 @@
 // Copyright 2024 Kabalova Valeria
 #include <gtest/gtest.h>
-
 #include <vector>
-
 #include "seq/kabalova_v_count_symbols/include/count_symbols.hpp"
 
 TEST(kabalova_v_count_symbols_seq, EmptyString) {
@@ -72,7 +70,7 @@ TEST(kabalova_v_count_symbols_seq, OneSymbolStringLetter) {
 }
 
 TEST(kabalova_v_count_symbols_seq, string1) {
-  std::string str = "string;stringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstringstring";
+  std::string str = "string;";
 
   // Create data
   std::vector<int> out(1, 0);
@@ -89,7 +87,7 @@ TEST(kabalova_v_count_symbols_seq, string1) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(120, out[0]);
+  ASSERT_EQ(6, out[0]);
 }
 
 

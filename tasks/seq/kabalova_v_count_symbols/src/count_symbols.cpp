@@ -1,17 +1,17 @@
 // Copyright 2024 Nesterov Alexander
-#include <thread>
-#include <random>
-#include <vector>
-
 #include "seq/kabalova_v_count_symbols/include/count_symbols.hpp"
 
+#include <random>
+#include <thread>
+#include <vector>
+  
 using namespace std::chrono_literals;
 
 int kabalova_v_count_symbols_seq::getRandomNumber(int left, int right) {
-	return ((rand() % (right - left + 1)) + left);
+  return ((rand() % (right - left + 1)) + left);
 }
 
-std::string kabalova_v_count_symbols_seq::getRandomString() { 
+std::string kabalova_v_count_symbols_seq::getRandomString() {
   srand(time(NULL));
   std::string str;
   std::string alphabet = "abcdefghijklmnopqrstuvwxyz1234567890";
@@ -22,7 +22,7 @@ std::string kabalova_v_count_symbols_seq::getRandomString() {
   return str;
 }
 
-int kabalova_v_count_symbols_seq::countSymbols(std::string& str) { 
+int kabalova_v_count_symbols_seq::countSymbols(std::string& str) {
   int result = 0;
   for (size_t i = 0; i < str.size(); i++) {
     if (isalpha(str[i])) {
@@ -44,9 +44,9 @@ bool kabalova_v_count_symbols_seq::Task1Seq::pre_processing() {
 
 bool kabalova_v_count_symbols_seq::Task1Seq::validation() {
   internal_order_test();
-  //На выход подается 1 строка, на выходе только 1 число - число буквенных символов в строке.
-  bool flag1 = (taskData->inputs_count[0] >=0 && taskData->outputs_count[0] == 1);
-  //Нам пришел массив char'ов?
+  // На выход подается 1 строка, на выходе только 1 число - число буквенных символов в строке.
+  bool flag1 = (taskData->inputs_count[0] >= 0 && taskData->outputs_count[0] == 1);
+  // Нам пришел массив char'ов?
   bool flag2 = false;
   if (typeid(*taskData->inputs[0]).name() == typeid(uint8_t).name()) {
     flag2 = true;
