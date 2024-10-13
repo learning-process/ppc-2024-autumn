@@ -114,10 +114,9 @@ TEST(chistov_a_sum_of_matrix_elements, test_sum_with_single_element_matrix_seque
 
 TEST(chistov_a_sum_of_matrix_elements, throws_when_small_n_or_m_sequential) {
   boost::mpi::communicator world;
-  int n, m; 
   if (world.rank() == 0) {
-      n = 0;  
-     m = 4;
+    int n = 0;
+    int m = 4;
 
     EXPECT_THROW({ chistov_a_sum_of_matrix_elements::getRandomMatrix<int>(n, m); }, std::invalid_argument);
 
@@ -132,18 +131,18 @@ TEST(chistov_a_sum_of_matrix_elements, test_wrong_validation_sequential) {
   std::vector<int32_t> global_sum(2, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  int n, m; 
-  if (world.rank() == 0) {
-    n = 3;
-     m = 4;
+  if (world.rank() == 0) { 
+    int n=3;
+    int m=4;
     global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix<int>(n, m);
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataSeq->inputs_count.emplace_back(global_matrix.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataSeq->outputs_count.emplace_back(global_sum.size());
+
+      chistov_a_sum_of_matrix_elements::TestMPITaskSequential<int> testMpiTaskSequential(taskDataSeq, n, m);
+    ASSERT_EQ(testMpiTaskSequential.validation(), false);
   }
-  chistov_a_sum_of_matrix_elements::TestMPITaskSequential<int> testMpiTaskSequential(taskDataSeq, n, m);
-  ASSERT_EQ(testMpiTaskSequential.validation(), false);
 }
 
 TEST(chistov_a_sum_of_matrix_elements, test_wrong_validation_parallell) {

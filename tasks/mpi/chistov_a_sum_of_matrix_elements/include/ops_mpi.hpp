@@ -1,12 +1,9 @@
 #pragma once
-
 #include <gtest/gtest.h>
-
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <memory>
 #include <numeric>
-#include <string>
 #include <utility>
 #include <vector>
 
@@ -104,8 +101,7 @@ class TestMPITaskSequential : public ppc::core::Task {
 template <typename T = int>
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, const int n_, const int m_)
-      : Task(std::move(taskData_)), n(n_), m(m_), world(boost::mpi::communicator()) {}
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, const int n_, const int m_) : Task(std::move(taskData_)), n(n_), m(m_), world(boost::mpi::communicator()) {}
 
 bool pre_processing() override {
     internal_order_test();
