@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "stl/chistov_a_sum_of_matrix_elements/include/ops_stl.hpp"
+#include "stl/example/include/ops_stl.hpp"
 
 TEST(stl_example_perf_test, test_pipeline_run) {
   const int count = 100;

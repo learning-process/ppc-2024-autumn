@@ -12,17 +12,17 @@
 
 namespace chistov_a_sum_of_matrix_elements {
 
-template <typename T = int>
+template <typename T>
 void print_matrix(const std::vector<T> matrix, const int n, const int m) {
   std::cout << "Matrix:" << std::endl;
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < m; j++) std::cout << matrix[i * m + j] << " ";
+  for (unsigned int i = 0; i < n; i++) {
+    for (unsigned int j = 0; j < m; j++) std::cout << matrix[i * m + j] << " ";
     std::cout << std::endl;
   }
   std::cout << std::endl;
 }
 
-template <typename T = int>
+template <typename T>
 std::vector<T> getRandomMatrix(const int n, const int m) {
   if (n <= 0 || m <= 0) {
     throw std::invalid_argument("Incorrect entered N or M");
@@ -30,7 +30,7 @@ std::vector<T> getRandomMatrix(const int n, const int m) {
 
   std::vector<T> matrix(n * m);
 
-  for (int i = 0; i < n * m; ++i) {
+  for (size_t  i = 0; i < n * m; ++i) {
     matrix[i] = static_cast<T>((std::rand() % 201) - 100);
   }
 
@@ -38,11 +38,11 @@ std::vector<T> getRandomMatrix(const int n, const int m) {
 }
 
 
-template <typename T = int>
+template <typename T>
 T classic_way(const std::vector<T> matrix, const int n, const int m) {
   T result = 0;
-  for (int i = 0; i < n; ++i) {
-    for (int j = 0; j < m; ++j) {
+  for (unsigned int i = 0; i < n; ++i) {
+    for (unsigned int j = 0; j < m; ++j) {
       result += matrix[i * m + j];
     }
   }
@@ -94,7 +94,7 @@ class TestMPITaskSequential : public ppc::core::Task {
 
  private:
   std::vector<T> input_;
-  int n, m;
+  unsigned int n, m;
   T res = 0;
 };
 
@@ -106,16 +106,17 @@ class TestMPITaskParallel : public ppc::core::Task {
 bool pre_processing() override {
     internal_order_test();
 
-    size_t delta = 0;  
+    unsigned int delta = 0;  
     if (world.rank() == 0) {
       delta = (n * m) / world.size(); 
     }
+
     boost::mpi::broadcast(world, delta, 0);
 
     if (world.rank() == 0) {
       input_ = std::vector<T>(n * m);
       auto* tmp_ptr = reinterpret_cast<T*>(taskData->inputs[0]);
-      for (size_t i = 0; i < taskData->inputs_count[0]; i++) {
+      for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
         input_[i] = tmp_ptr[i];
       }
       for (size_t proc = 1; proc < world.size(); proc++) {
@@ -129,7 +130,6 @@ bool pre_processing() override {
     } else {
       world.recv(0, 0, local_input_.data(), delta);
     }
-
     res = 0;
     return true;
   }
@@ -165,7 +165,7 @@ bool pre_processing() override {
  private:
   std::vector<T> input_, local_input_;
   T res = 0;
-  int n, m;
+  unsigned int n, m;
   boost::mpi::communicator world;
 };
 

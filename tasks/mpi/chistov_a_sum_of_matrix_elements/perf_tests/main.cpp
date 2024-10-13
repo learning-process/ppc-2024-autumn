@@ -13,7 +13,6 @@ TEST(mpi_example_perf_test, test_pipeline_run) {
   const int n =10000;
   const int m =10000;
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix<int>(n, m);
@@ -32,31 +31,19 @@ TEST(mpi_example_perf_test, test_pipeline_run) {
   ASSERT_EQ(testMpiTaskParallel->run(), true);
   ASSERT_EQ(testMpiTaskParallel->post_processing(), true);
 
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
 
     int expected_sum = std::accumulate(global_matrix.begin(), global_matrix.end(), 0);
-    // Get the elapsed time
-    double time_secs = perfAttr->current_timer();
-    std::cout << "Task execution time: " << time_secs << " secs." << std::endl;
-
-    std::cout << "Expected sum: " << expected_sum << std::endl;
-    std::cout << "Actual sum: " << global_sum[0] << std::endl;
-
-
-
     ASSERT_EQ(expected_sum, global_sum[0]);
   }
 }
@@ -66,13 +53,12 @@ TEST(mpi_example_perf_test, test_task_run) {
   std::vector<int> global_matrix;
   std::vector<int32_t> global_sum(1, 0);
 
-    const int n = 10000;
+  const int n = 10000;
   const int m = 10000;
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    global_matrix = std::vector<int>(n * m, 1);  // Увеличенный размер матрицы
+    global_matrix = std::vector<int>(n * m, 1); 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(global_matrix.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
@@ -101,12 +87,6 @@ TEST(mpi_example_perf_test, test_task_run) {
     ppc::core::Perf::print_perf_statistic(perfResults);
 
     int expected_sum = std::accumulate(global_matrix.begin(), global_matrix.end(), 0);
-
-    double time_secs = perfAttr->current_timer();
-    std::cout << "Task execution time: " << time_secs << " secs." << std::endl;
-
-    std::cout << "Expected sum: " << expected_sum << std::endl;
-    std::cout << "Actual sum: " << global_sum[0] << std::endl;
 
     ASSERT_EQ(expected_sum, global_sum[0]);
   }
