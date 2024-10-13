@@ -8,6 +8,4 @@
 #include <thread>
 #include <vector>
 
-
-
 namespace chistov_a_sum_of_matrix_elements {}
