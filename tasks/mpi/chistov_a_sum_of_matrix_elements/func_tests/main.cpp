@@ -3,6 +3,7 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <vector>
+
 #include "mpi/chistov_a_sum_of_matrix_elements/include/ops_mpi.hpp"
 
 TEST(chistov_a_sum_of_matrix_elements, test_wrong_validation_parallell) {
@@ -20,11 +21,11 @@ TEST(chistov_a_sum_of_matrix_elements, test_wrong_validation_parallell) {
     taskDataPar->inputs_count.emplace_back(global_matrix.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
-  
+
+
     chistov_a_sum_of_matrix_elements::TestMPITaskParallel<int> TestMPITaskParallel(taskDataPar, n, m);
 
     ASSERT_EQ(TestMPITaskParallel.validation(), false);
-  
   }
 }
 
@@ -76,7 +77,7 @@ TEST(chistov_a_sum_of_matrix_elements, test_double_sum_parallell) {
   boost::mpi::communicator world;
 
   std::vector<double> global_matrix;
-  std::vector<double> global_sum(1, 0.0);  
+  std::vector<double> global_sum(1, 0.0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   unsigned int n, m;
 
@@ -86,9 +87,9 @@ TEST(chistov_a_sum_of_matrix_elements, test_double_sum_parallell) {
     global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix<double>(n, m);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-    taskDataPar->inputs_count.emplace_back(global_matrix.size()); 
+    taskDataPar->inputs_count.emplace_back(global_matrix.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());  
+    taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
   chistov_a_sum_of_matrix_elements::TestMPITaskParallel<double> testMPITaskParallel(taskDataPar, n, m);
   ASSERT_TRUE(testMPITaskParallel.validation());
@@ -99,7 +100,7 @@ TEST(chistov_a_sum_of_matrix_elements, test_double_sum_parallell) {
     std::vector<double> reference_sum(1, 0.0);  
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(global_matrix.size()); 
+    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
 
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_sum.data()));
     taskDataSeq->outputs_count.emplace_back(reference_sum.size());
@@ -109,7 +110,7 @@ TEST(chistov_a_sum_of_matrix_elements, test_double_sum_parallell) {
     ASSERT_TRUE(testMpiTaskSequential.pre_processing());
     ASSERT_TRUE(testMpiTaskSequential.run());
     ASSERT_TRUE(testMpiTaskSequential.post_processing());
-   
+
     ASSERT_NEAR(reference_sum[0], global_sum[0], 1e-6);
   }
 }

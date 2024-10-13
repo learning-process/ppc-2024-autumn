@@ -66,8 +66,8 @@ TEST(chistov_a_sum_of_matrix_elements, test_sum_with_empty_matrix_sequential) {
 }
 
 TEST(chistov_a_sum_of_matrix_elements, test_sum_with_single_element_matrix_sequential) {
-  const  int n = 1;
-  const int  m = 1;
+  const int n = 1;
+  const int m = 1;
   std::vector<int> global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix<int>(n, m);
   std::vector<int32_t> reference_sum(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -89,7 +89,7 @@ TEST(chistov_a_sum_of_matrix_elements, test_sum_with_single_element_matrix_seque
 
 TEST(chistov_a_sum_of_matrix_elements, throws_when_small_n_or_m_sequential) {
   EXPECT_THROW({ chistov_a_sum_of_matrix_elements::getRandomMatrix<int>(0, 1); }, std::invalid_argument);
-  EXPECT_THROW({ chistov_a_sum_of_matrix_elements::getRandomMatrix<int>(1, 0); }, std::invalid_argument); 
+  EXPECT_THROW({ chistov_a_sum_of_matrix_elements::getRandomMatrix<int>(1, 0); }, std::invalid_argument);
 }
 
 TEST(chistov_a_sum_of_matrix_elements, test_wrong_validation_sequential) {

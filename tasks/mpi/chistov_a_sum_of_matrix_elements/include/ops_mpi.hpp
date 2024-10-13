@@ -80,10 +80,10 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool post_processing() override {
     internal_order_test();
     if (taskData->outputs.size() > 0 && taskData->outputs[0] != nullptr) {
-        reinterpret_cast<T*>(taskData->outputs[0])[0] = res;
-        return true;
+      reinterpret_cast<T*>(taskData->outputs[0])[0] = res;
+      return true;
     } else {
-        return false;
+      return false;
     }
   }   
 
@@ -163,9 +163,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-
 }  // namespace chistov_a_sum_of_matrix_elements
-
-
-
-
