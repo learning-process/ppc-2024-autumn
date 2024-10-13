@@ -4,7 +4,6 @@
 #include "seq/chistov_a_sum_of_matrix_elements/include/ops_seq.hpp"
 
 TEST(chistov_a_sum_of_matrix_elements, test_int_sum_sequential) {
-  const int count = 10;
   const int n = 3;
   const int m = 4;
   std::vector<int> global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix<int>(n, m);

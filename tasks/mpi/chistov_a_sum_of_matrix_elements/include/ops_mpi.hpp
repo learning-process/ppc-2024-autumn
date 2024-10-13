@@ -95,15 +95,11 @@ class TestMPITaskSequential : public ppc::core::Task {
 
 template <typename T = int>
 class TestMPITaskParallel : public ppc::core::Task {
- private:
-  std::vector<T> input_;
-  unsigned int n, m;
-  T res = 0;
  public:
   explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, const int n_, const int m_)
-      :Task(std::move(taskData_)), n(n_), m(m_), world(boost::mpi::communicator()) {}
+      : Task(std::move(taskData_)), n(n_), m(m_), world(boost::mpi::communicator()) {}
 
- bool pre_processing()override {
+  bool pre_processing() override {
     internal_order_test();
 
     unsigned int delta = 0;
@@ -149,13 +145,13 @@ class TestMPITaskParallel : public ppc::core::Task {
     reduce(world, local_res, res, std::plus<T>(), 0);
 
     return true;
-   }
+  }
   bool post_processing() override {
     if (taskData->outputs.size() > 0 && taskData->outputs[0] != nullptr) {
       reinterpret_cast<T*>(taskData->outputs[0])[0] = res;
       return true;
-      
-    }else {
+
+    } else {
       return false;
     }
   }
