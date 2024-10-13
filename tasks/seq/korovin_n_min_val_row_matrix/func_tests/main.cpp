@@ -3,124 +3,124 @@
 
 #include <vector>
 
-#include "seq/example/include/ops_seq.hpp"
+#include "seq/korovin_n_min_val_row_matrix/include/ops_seq.hpp"
 
-TEST(korovin_n_min_val_row_matrix_seq, Test_Sum_10) {
-  const int count = 10;
+TEST(korovin_n_min_val_row_matrix_seq, find_min_val_in_row_10x10_matrix) {
+  const int rows = 10;
+  const int cols = 10;
 
-  // Create data
-  std::vector<int> in(1, count);
-  std::vector<int> out(1, 0);
-
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
 
-  // Create Task
   korovin_n_min_val_row_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  std::vector<std::vector<int>> matrix_rnd = testTaskSequential.generate_rnd_matrix(rows, cols);
+
+  for(auto& row : matrix_rnd){
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
+  }
+
+  taskDataSeq->inputs_count.emplace_back(rows);
+  taskDataSeq->inputs_count.emplace_back(cols);
+
+  std::vector<int> v_res(rows, 0);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(v_res.data()));
+  taskDataSeq->outputs_count.emplace_back(v_res.size());
+
   ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
-  ASSERT_EQ(count, out[0]);
+  ASSERT_TRUE(testTaskSequential.pre_processing());
+  ASSERT_TRUE(testTaskSequential.run());
+  ASSERT_TRUE(testTaskSequential.post_processing());
+
+  for (size_t i = 0; i < rows; i++) {
+    ASSERT_EQ(v_res[i], -25);
+  }
 }
 
-TEST(korovin_n_min_val_row_matrix_seq, Test_Sum_20) {
-  const int count = 20;
+TEST(korovin_n_min_val_row_matrix_seq, find_min_val_in_row_100x100_matrix) {
+  const int rows = 100;
+  const int cols = 100;
 
-  // Create data
-  std::vector<int> in(1, count);
-  std::vector<int> out(1, 0);
-
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
 
-  // Create Task
   korovin_n_min_val_row_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  std::vector<std::vector<int>> matrix_rnd = testTaskSequential.generate_rnd_matrix(rows, cols);
+
+  for(auto& row : matrix_rnd){
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
+  }
+
+  taskDataSeq->inputs_count.emplace_back(rows);
+  taskDataSeq->inputs_count.emplace_back(cols);
+
+  std::vector<int> v_res(rows, 0);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(v_res.data()));
+  taskDataSeq->outputs_count.emplace_back(v_res.size());
+
   ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
-  ASSERT_EQ(count, out[0]);
+  ASSERT_TRUE(testTaskSequential.pre_processing());
+  ASSERT_TRUE(testTaskSequential.run());
+  ASSERT_TRUE(testTaskSequential.post_processing());
+
+  for (size_t i = 0; i < rows; i++) {
+    ASSERT_EQ(v_res[i], -25);
+  }
 }
 
-TEST(korovin_n_min_val_row_matrix_seq, Test_Sum_50) {
-  const int count = 50;
+TEST(korovin_n_min_val_row_matrix_seq, find_min_val_in_row_100x500_matrix) {
+  const int rows = 100;
+  const int cols = 500;
 
-  // Create data
-  std::vector<int> in(1, count);
-  std::vector<int> out(1, 0);
-
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
 
-  // Create Task
   korovin_n_min_val_row_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  std::vector<std::vector<int>> matrix_rnd = testTaskSequential.generate_rnd_matrix(rows, cols);
+
+  for(auto& row : matrix_rnd){
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
+  }
+
+  taskDataSeq->inputs_count.emplace_back(rows);
+  taskDataSeq->inputs_count.emplace_back(cols);
+
+  std::vector<int> v_res(rows, 0);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(v_res.data()));
+  taskDataSeq->outputs_count.emplace_back(v_res.size());
+
   ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
-  ASSERT_EQ(count, out[0]);
+  ASSERT_TRUE(testTaskSequential.pre_processing());
+  ASSERT_TRUE(testTaskSequential.run());
+  ASSERT_TRUE(testTaskSequential.post_processing());
+
+  for (size_t i = 0; i < rows; i++) {
+    ASSERT_EQ(v_res[i], -25);
+  }
 }
 
-TEST(korovin_n_min_val_row_matrix_seq, Test_Sum_70) {
-  const int count = 70;
+TEST(korovin_n_min_val_row_matrix_seq, find_min_val_in_row_5000x5000_matrix) {
+  const int rows = 5000;
+  const int cols = 5000;
 
-  // Create data
-  std::vector<int> in(1, count);
-  std::vector<int> out(1, 0);
-
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
 
-  // Create Task
   korovin_n_min_val_row_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  std::vector<std::vector<int>> matrix_rnd = testTaskSequential.generate_rnd_matrix(rows, cols);
+
+  for(auto& row : matrix_rnd){
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
+  }
+
+  taskDataSeq->inputs_count.emplace_back(rows);
+  taskDataSeq->inputs_count.emplace_back(cols);
+
+  std::vector<int> v_res(rows, 0);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(v_res.data()));
+  taskDataSeq->outputs_count.emplace_back(v_res.size());
+
   ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
-  ASSERT_EQ(count, out[0]);
-}
+  ASSERT_TRUE(testTaskSequential.pre_processing());
+  ASSERT_TRUE(testTaskSequential.run());
+  ASSERT_TRUE(testTaskSequential.post_processing());
 
-TEST(korovin_n_min_val_row_matrix_seq, Test_Sum_100) {
-  const int count = 100;
-
-  // Create data
-  std::vector<int> in(1, count);
-  std::vector<int> out(1, 0);
-
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
-
-  // Create Task
-  korovin_n_min_val_row_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
-  ASSERT_EQ(count, out[0]);
-}
-
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
+  for (size_t i = 0; i < rows; i++) {
+    ASSERT_EQ(v_res[i], -25);
+  }
 }
