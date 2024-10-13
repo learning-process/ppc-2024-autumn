@@ -111,7 +111,7 @@ bool ermolaev_v_min_matrix_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     // Check count elements of output
-    return taskData->outputs_count[0] == 1 && taskData->inputs.size() > 0;
+    return taskData->outputs_count[0] == 1 && !taskData->inputs.empty();
   }
   return true;
 }
