@@ -30,8 +30,7 @@ std::vector<std::vector<int>> ermolaev_v_min_matrix_mpi::getRandomMatrix(int row
 bool ermolaev_v_min_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init vectors
-  input_ = std::vector<std::vector<int>>(taskData->inputs_count[0],
-    std::vector<int>(taskData->inputs_count[1]));
+  input_ = std::vector<std::vector<int>>(taskData->inputs_count[0], std::vector<int>(taskData->inputs_count[1]));
 
   for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
@@ -55,7 +54,7 @@ bool ermolaev_v_min_matrix_mpi::TestMPITaskSequential::run() {
 
   for (unsigned int i = 0; i < input_.size(); i++) {
     local_res[i] = *std::min_element(input_[i].begin(), input_[i].end());
-  } 
+  }
 
   res = *std::min_element(local_res.begin(), local_res.end());
   return true;
@@ -72,13 +71,13 @@ bool ermolaev_v_min_matrix_mpi::TestMPITaskParallel::pre_processing() {
 
   unsigned int delta = 0;
   if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] * taskData->inputs_count[1]  / world.size();
+    delta = taskData->inputs_count[0] * taskData->inputs_count[1] / world.size();
   }
   broadcast(world, delta, 0);
 
   if (world.rank() == 0) {
     // Init vectors
-    
+
     unsigned int rows = taskData->inputs_count[0];
     unsigned int columns = taskData->inputs_count[1];
     input_ = std::vector<int>(rows * columns);
@@ -121,7 +120,7 @@ bool ermolaev_v_min_matrix_mpi::TestMPITaskParallel::run() {
 
   int local_res = *std::min_element(local_input_.begin(), local_input_.end());
   reduce(world, local_res, res, boost::mpi::minimum<int>(), 0);
-  
+
   return true;
 }
 

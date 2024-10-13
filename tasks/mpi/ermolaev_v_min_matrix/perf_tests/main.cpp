@@ -2,8 +2,8 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
-#include <vector>
 #include <random>
+#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/ermolaev_v_min_matrix/include/ops_mpi.hpp"
@@ -23,10 +23,10 @@ TEST(ermolaev_v_min_matrix_mpi, test_pipeline_run) {
   if (world.rank() == 0) {
     count_rows = 2000;
     count_columns = 2000;
-    
+
     global_matrix = ermolaev_v_min_matrix_mpi::getRandomMatrix(count_rows, count_columns);
     int index = gen() % (count_rows * count_columns);
-    global_matrix[index/count_columns][index/count_rows] = -1;
+    global_matrix[index / count_columns][index / count_rows] = -1;
 
     for (unsigned int i = 0; i < global_matrix.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
@@ -76,16 +76,16 @@ TEST(ermolaev_v_min_matrix_mpi, test_task_run) {
   if (world.rank() == 0) {
     count_rows = 2000;
     count_columns = 2000;
-    
+
     global_matrix = ermolaev_v_min_matrix_mpi::getRandomMatrix(count_rows, count_columns);
     int index = gen() % (count_rows * count_columns);
-    global_matrix[index/count_columns][index/count_rows] = -1;
+    global_matrix[index / count_columns][index / count_rows] = -1;
 
     for (unsigned int i = 0; i < global_matrix.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     taskDataPar->inputs_count.emplace_back(count_rows);
     taskDataPar->inputs_count.emplace_back(count_columns);
-    
+
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }

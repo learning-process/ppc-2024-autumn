@@ -1,8 +1,8 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
-#include <vector>
 #include <random>
+#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/ermolaev_v_min_matrix/include/ops_seq.hpp"
@@ -18,13 +18,13 @@ TEST(ermolaev_v_min_matrix_seq, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   int count_rows = 4000;
   int count_columns = 4000;
-    
+
   global_matrix = ermolaev_v_min_matrix_seq::getRandomMatrix(count_rows, count_columns);
   int index = gen() % (count_rows * count_columns);
-  global_matrix[index/count_columns][index/count_rows] = -1;
+  global_matrix[index / count_columns][index / count_rows] = -1;
 
   for (unsigned int i = 0; i < global_matrix.size(); i++)
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix[i].data()));
   taskDataSeq->inputs_count.emplace_back(count_rows);
   taskDataSeq->inputs_count.emplace_back(count_columns);
 
@@ -61,18 +61,17 @@ TEST(sequential_ermolaev_v_min_matrix_seq, test_task_run) {
   std::random_device dev;
   std::mt19937 gen(dev());
 
-
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   int count_rows = 4000;
   int count_columns = 4000;
-    
+
   global_matrix = ermolaev_v_min_matrix_seq::getRandomMatrix(count_rows, count_columns);
   int index = gen() % (count_rows * count_columns);
-  global_matrix[index/count_columns][index/count_rows] = -1;
+  global_matrix[index / count_columns][index / count_rows] = -1;
 
   for (unsigned int i = 0; i < global_matrix.size(); i++)
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix[i].data()));
   taskDataSeq->inputs_count.emplace_back(count_rows);
   taskDataSeq->inputs_count.emplace_back(count_columns);
 

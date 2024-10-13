@@ -28,8 +28,7 @@ std::vector<std::vector<int>> ermolaev_v_min_matrix_seq::getRandomMatrix(int row
 bool ermolaev_v_min_matrix_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   // Init vectors
-  input_ = std::vector<std::vector<int>>(taskData->inputs_count[0],
-    std::vector<int>(taskData->inputs_count[1]));
+  input_ = std::vector<std::vector<int>>(taskData->inputs_count[0], std::vector<int>(taskData->inputs_count[1]));
 
   for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
