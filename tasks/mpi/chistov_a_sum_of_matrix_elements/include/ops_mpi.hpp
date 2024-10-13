@@ -72,27 +72,24 @@ class TestMPITaskSequential : public ppc::core::Task {
     return taskData->outputs_count[0] == 1;
   }
 
-
- bool run()override {
+  bool run() override {
     internal_order_test();
 
-  
     res = std::accumulate(input_.begin(), input_.end(), 0);
     return true;
-    
   }
- 
+
  
 
-    bool post_processing() override {
+bool post_processing() override {
     internal_order_test();
-    
       if (taskData->outputs.size() > 0 && taskData->outputs[0] != nullptr) {
-        reinterpret_cast<T*>(taskData->outputs[0])[0] = res;
-        return true;
+      reinterpret_cast<T*>(taskData->outputs[0])[0] = res;
+      return true;
+      } else {
+      return false;
       }
-      else {return false;}
-    }
+}   
 
  private:
   std::vector<T> input_;
@@ -146,8 +143,6 @@ class TestMPITaskParallel : public ppc::core::Task {
     }
     return true;
   }
-
-
   bool run() override {
     internal_order_test();
 
@@ -155,16 +150,16 @@ class TestMPITaskParallel : public ppc::core::Task {
     reduce(world, local_res, res, std::plus<T>(), 0);
 
     return true;
-}
-
+   }
   bool post_processing() override {
-      internal_order_test();
-
-      if (world.rank() == 0) {
-        reinterpret_cast<T*>(taskData->outputs[0])[0] = res;
-      }
+    if (taskData->outputs.size() > 0 && taskData->outputs[0] != nullptr) {
+      reinterpret_cast<T*>(taskData->outputs[0])[0] = res;
       return true;
+      
+    }else {
+      return false;
     }
+  }
 
  private:
   std::vector<T> input_, local_input_;
@@ -173,7 +168,8 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-} 
+
+}  // namespace chistov_a_sum_of_matrix_elements
 
 
 

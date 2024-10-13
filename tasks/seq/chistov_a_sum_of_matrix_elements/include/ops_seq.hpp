@@ -90,5 +90,4 @@ class TestTaskSequential : public ppc::core::Task {
   T res = 0;
 };
 
-
-}  
+}  // namespace chistov_a_sum_of_matrix_elements

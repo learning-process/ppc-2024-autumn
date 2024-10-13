@@ -5,12 +5,15 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/chistov_a_sum_of_matrix_elements/include/ops_seq.hpp"
 
+
+
+
 TEST(chistov_a_sum_of_matrix_elements, test_pipeline_run) {
   const int n = 50000;
   const int m = 10000;
 
   // Create data
-  std::vector<int> in(n* m, 1);
+  std::vector<int> in(n * m, 1);
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -19,10 +22,9 @@ TEST(chistov_a_sum_of_matrix_elements, test_pipeline_run) {
   taskDataSeq->inputs_count.emplace_back(in.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
-
-  // Create Task
-  auto testTaskSequential = 
-      std::make_shared<chistov_a_sum_of_matrix_elements::TestTaskSequential<int>>(taskDataSeq,n,m);
+  
+  auto testTaskSequential =
+      std::make_shared<chistov_a_sum_of_matrix_elements::TestTaskSequential<int>>(taskDataSeq, n, m);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();

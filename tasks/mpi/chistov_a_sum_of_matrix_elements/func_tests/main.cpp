@@ -213,8 +213,6 @@ TEST(chistov_a_sum_of_matrix_elements, long_and_thin_test_parallell) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> global_sum(1, 0);
-
-
   const int n = 1;
   const int m = 100000;
 
