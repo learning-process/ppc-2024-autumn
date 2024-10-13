@@ -1,125 +1,82 @@
-// Copyright 2023 Nesterov Alexander
-#include "mpi/example/include/ops_mpi.hpp"
-
 #include <algorithm>
-#include <functional>
-#include <random>
-#include <string>
-#include <thread>
-#include <vector>
+#include <boost/mpi/collectives.hpp>
+#include <sstream>
 
-using namespace std::chrono_literals;
+#include "mpi/lopatin_i_count_words/include/countWordsMPIHeader.hpp"
 
-std::vector<int> nesterov_a_test_task_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
+namespace lopatin_i_count_words_mpi {
+
+int countWords(const std::string& str) {
+  std::istringstream iss(str);
+  return std::distance(std::istream_iterator<std::string>(iss), std::istream_iterator<std::string>());
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskSequential::pre_processing() {
+bool TestMPITaskSequential::pre_processing() {
   internal_order_test();
-  // Init vectors
-  input_ = std::vector<int>(taskData->inputs_count[0]);
-  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    input_[i] = tmp_ptr[i];
-  }
-  // Init value for output
-  res = 0;
+  boost::mpi::environment env; 
+  input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
+  word_count = 0;
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskSequential::validation() {
+bool TestMPITaskSequential::validation() {
   internal_order_test();
-  // Check count elements of output
-  return taskData->outputs_count[0] == 1;
+  return taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskSequential::run() {
+bool TestMPITaskSequential::run() {
   internal_order_test();
-  if (ops == "+") {
-    res = std::accumulate(input_.begin(), input_.end(), 0);
-  } else if (ops == "-") {
-    res = -std::accumulate(input_.begin(), input_.end(), 0);
-  } else if (ops == "max") {
-    res = *std::max_element(input_.begin(), input_.end());
-  }
+  word_count = countWords(input_);
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskSequential::post_processing() {
+bool TestMPITaskSequential::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+  reinterpret_cast<int*>(taskData->outputs[0])[0] = word_count;
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskParallel::pre_processing() {
-  internal_order_test();
-  unsigned int delta = 0;
-  if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] / world.size();
-  }
-  broadcast(world, delta, 0);
-
-  if (world.rank() == 0) {
-    // Init vectors
-    input_ = std::vector<int>(taskData->inputs_count[0]);
-    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-      input_[i] = tmp_ptr[i];
-    }
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + proc * delta, delta);
-    }
-  }
-  local_input_ = std::vector<int>(delta);
-  if (world.rank() == 0) {
-    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
-  } else {
-    world.recv(0, 0, local_input_.data(), delta);
-  }
-  // Init value for output
-  res = 0;
-  return true;
-}
-
-bool nesterov_a_test_task_mpi::TestMPITaskParallel::validation() {
+bool TestMPITaskParallel::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    // Check count elements of output
-    return taskData->outputs_count[0] == 1;
+    input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
   }
+  word_count = 0;
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskParallel::run() {
+bool TestMPITaskParallel::validation() {
   internal_order_test();
-  int local_res;
-  if (ops == "+") {
-    local_res = std::accumulate(local_input_.begin(), local_input_.end(), 0);
-  } else if (ops == "-") {
-    local_res = -std::accumulate(local_input_.begin(), local_input_.end(), 0);
-  } else if (ops == "max") {
-    local_res = *std::max_element(local_input_.begin(), local_input_.end());
-  }
+  return (world.rank() == 0) ? (taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1) : true;
+}
 
-  if (ops == "+" || ops == "-") {
-    reduce(world, local_res, res, std::plus(), 0);
-  } else if (ops == "max") {
-    reduce(world, local_res, res, boost::mpi::maximum<int>(), 0);
+bool TestMPITaskParallel::run() {
+  internal_order_test();
+  int input_length = input_.length();
+  boost::mpi::broadcast(world, input_length, 0);
+
+  if (world.rank() != 0) {
+    input_.resize(input_length);
   }
-  std::this_thread::sleep_for(20ms);
+  boost::mpi::broadcast(world, input_, 0);
+
+  int local_length = input_length / world.size();
+  int start = world.rank() * local_length;
+  int end = (world.rank() == world.size() - 1) ? input_length : start + local_length;
+  std::string local_input = input_.substr(start, end - start);
+
+  int local_word_count = countWords(local_input);
+  boost::mpi::reduce(world, local_word_count, word_count, std::plus<int>(), 0);
+
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskParallel::post_processing() {
+bool TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+    reinterpret_cast<int*>(taskData->outputs[0])[0] = word_count;
   }
   return true;
 }
+
+}  // namespace lopatin_i_count_words_mpi
