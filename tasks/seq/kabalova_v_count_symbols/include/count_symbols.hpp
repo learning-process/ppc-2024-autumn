@@ -8,12 +8,12 @@
 
 namespace kabalova_v_count_symbols_seq {
 
-  int getRandomNumber(int left, int right);
-  std::string getRandomString();
-  int countSymbols(std::string& str);
+int getRandomNumber(int left, int right);
+std::string getRandomString();
+int countSymbols(std::string& str);
 
 
-class Task1Seq : public ppc::core::Task { 
+class Task1Seq : public ppc::core::Task {
  public:
   explicit Task1Seq(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;

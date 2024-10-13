@@ -24,7 +24,7 @@ std::string kabalova_v_count_symbols_seq::getRandomString() {
 
 int kabalova_v_count_symbols_seq::countSymbols(std::string& str) { 
   int result = 0;
-  for (int i = 0; i < str.size(); i++) {
+  for (size_t i = 0; i < str.size(); i++) {
     if (isalpha(str[i])) {
       result++;
     }
