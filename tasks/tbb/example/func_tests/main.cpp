@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "tbb/chistov_a_sum_of_matrix_elements/include/ops_tbb.hpp"
+#include "tbb/example/include/ops_tbb.hpp"
 
 TEST(Parallel_Operations_TBB, Test_Sum) {
   std::vector<int> vec = chistov_a_test_task_tbb::getRandomVector(100);

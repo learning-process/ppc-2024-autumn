@@ -1,5 +1,5 @@
 
-#include "stl/chistov_a_sum_of_matrix_elements/include/ops_stl.hpp"
+#include "stl/example/include/ops_stl.hpp"
 
 #include <future>
 #include <iostream>

@@ -4,7 +4,7 @@
 #include <thread>
 #include <vector>
 
-#include "stl/chistov_a_sum_of_matrix_elements/include/ops_stl.hpp"
+#include "stl/example/include/ops_stl.hpp"
 
 TEST(Parallel_Operations_STL_Threads, Test_Sum) {
   auto nthreads = std::thread::hardware_concurrency() * 10;

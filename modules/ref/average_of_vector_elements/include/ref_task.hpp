@@ -5,8 +5,8 @@
 
 #include <gtest/gtest.h>
 
-#include <memory>
 #include <numeric>
+#include <memory>
 #include <vector>
 
 #include "core/task/include/task.hpp"
