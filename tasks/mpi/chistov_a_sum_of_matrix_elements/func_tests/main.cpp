@@ -11,7 +11,6 @@
 //  std::vector<int> global_matrix;
 //  std::vector<int32_t> global_sum(2, 0);
 //  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-//
 //  if (world.rank() == 0) {
 //    const int n = 3;
 //    const int m = 4;
