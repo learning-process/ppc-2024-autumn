@@ -156,7 +156,6 @@ class TestMPITaskParallel : public ppc::core::Task {
     if (taskData->outputs.size() > 0 && taskData->outputs[0] != nullptr) {
       reinterpret_cast<T*>(taskData->outputs[0])[0] = res;
       return true;
-
     } else {
       return false;
     }
