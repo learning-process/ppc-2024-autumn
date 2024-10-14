@@ -7,6 +7,7 @@
 namespace lopatin_i_count_words_seq {
 
 int countWords(const std::string& str);
+std::string generateLongString(int n);
 
 class TestTaskSequential : public ppc::core::Task {
  public:
