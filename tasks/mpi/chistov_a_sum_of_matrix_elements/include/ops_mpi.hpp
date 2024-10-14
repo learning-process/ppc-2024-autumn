@@ -15,9 +15,10 @@ namespace chistov_a_sum_of_matrix_elements {
 template <typename T>
 void print_matrix(const std::vector<T> matrix, const int n, const int m) {
   std::cout << "Matrix:" << std::endl;
-  for (unsigned int i = 0; i < n; i++) {
-    for (unsigned int j = 0; j < m; j++) std::cout << matrix[i * m + j] << " ";
-    std::cout << std::endl;
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < m; j++) {
+      std::cout << matrix[i * m + j] << " ";
+    }
   }
   std::cout << std::endl;
 }
@@ -30,7 +31,7 @@ std::vector<T> getRandomMatrix(const int n, const int m) {
 
   std::vector<T> matrix(n * m);
 
-  for (size_t i = 0; i < n * m; ++i) {
+  for (int i = 0; i < n * m; ++i) {
     matrix[i] = static_cast<T>((std::rand() % 201) - 100);
   }
 
@@ -40,8 +41,8 @@ std::vector<T> getRandomMatrix(const int n, const int m) {
 template <typename T>
 T classic_way(const std::vector<T> matrix, const int n, const int m) {
   T result = 0;
-  for (unsigned int i = 0; i < n; ++i) {
-    for (unsigned int j = 0; j < m; ++j) {
+  for (int i = 0; i < n; ++i) {
+    for (int j = 0; j < m; ++j) {
       result += matrix[i * m + j];
     }
   }
@@ -89,7 +90,7 @@ class TestMPITaskSequential : public ppc::core::Task {
 
  private:
   std::vector<T> input_;
-  unsigned int n, m;
+  int n, m;
   T res = 0;
 };
 
@@ -101,8 +102,8 @@ class TestMPITaskParallel : public ppc::core::Task {
 
   bool pre_processing() override {
     internal_order_test();
-
-    unsigned int delta = 0;
+    
+    int delta = 0;
     if (world.rank() == 0) {
       delta = (n * m) / world.size();
     }
@@ -112,10 +113,10 @@ class TestMPITaskParallel : public ppc::core::Task {
     if (world.rank() == 0) {
       input_ = std::vector<T>(n * m);
       auto* tmp_ptr = reinterpret_cast<T*>(taskData->inputs[0]);
-      for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
+      for (int i = 0; i < static_cast<int>(taskData->inputs_count[0]); i++) {
         input_[i] = tmp_ptr[i];
       }
-      for (size_t proc = 1; proc < world.size(); proc++) {
+      for (int  proc = 1; proc < world.size(); proc++) {
         world.send(proc, 0, input_.data() + proc * delta, delta);
       }
     }
@@ -164,7 +165,7 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   std::vector<T> input_, local_input_;
   T res = 0;
-  unsigned int n, m;
+  int n, m;
   boost::mpi::communicator world;
 };
 

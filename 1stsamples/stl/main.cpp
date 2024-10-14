@@ -11,11 +11,11 @@ int main() {
   std::cout << "Number of threads = " << num_max_threads << std::endl;
   std::vector<std::thread> thr(num_max_threads);
 
-  for (unsigned int i = 0; i < num_max_threads; ++i) {
+  for (int i = 0; i < num_max_threads; ++i) {
     thr[i] = std::thread(task, std::to_string(i));
   }
 
-  for (unsigned int i = 0; i < num_max_threads; ++i) {
+  for (int i = 0; i < num_max_threads; ++i) {
     thr[i].join();
   }
   return 0;

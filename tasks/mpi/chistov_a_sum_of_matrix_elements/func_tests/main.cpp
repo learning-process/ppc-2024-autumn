@@ -11,11 +11,10 @@ TEST(chistov_a_sum_of_matrix_elements, test_wrong_validation_parallell) {
   std::vector<int> global_matrix;
   std::vector<int32_t> global_sum(2, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  unsigned int n, m;
 
   if (world.rank() == 0) {
-    n = 3;
-    m = 4;
+    const int n = 3;
+    const int m = 4;
     global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix<int>(n, m);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(global_matrix.size());
@@ -78,11 +77,10 @@ TEST(chistov_a_sum_of_matrix_elements, test_double_sum_parallell) {
   std::vector<double> global_matrix;
   std::vector<double> global_sum(1, 0.0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  unsigned int n, m;
+  const int n = 3;
+  const int m = 4;
 
   if (world.rank() == 0) {
-    n = 3;
-    m = 4;
     global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix<double>(n, m);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
