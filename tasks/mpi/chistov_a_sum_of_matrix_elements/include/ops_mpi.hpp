@@ -159,7 +159,7 @@ class TestMPITaskParallel : public ppc::core::Task {
     } else {
       return false;
     }
-  }
+   }
 
  private:
   std::vector<T> input_, local_input_;
