@@ -59,34 +59,45 @@ bool TestMPITaskParallel::validation() {
   return (world.rank() == 0) ? (taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1) : true;
 }
 
+
 bool TestMPITaskParallel::run() {
   internal_order_test();
+  int input_length = input_.length();
+  boost::mpi::broadcast(world, input_length, 0);
+
+  if (world.rank() != 0) {
+    input_.resize(input_length);
+  }
   boost::mpi::broadcast(world, input_, 0);
 
-  // Разбиваем строку на слова
-  std::istringstream iss(input_);
+  int total_words = 0;
   std::vector<std::string> words;
+
+  std::istringstream iss(input_);
   std::string word;
   while (iss >> word) {
     words.push_back(word);
   }
 
-  // Получаем количество слов
-  int total_words = words.size();
+  total_words = words.size();
   boost::mpi::broadcast(world, total_words, 0);
 
-  // Распределяем слова между процессами
   int local_words_count = total_words / world.size();
   int remainder = total_words % world.size();
 
-  // Определяем количество слов для текущего процесса
   int start = world.rank() * local_words_count + std::min(world.rank(), remainder);
   int end = start + local_words_count + (world.rank() < remainder ? 1 : 0);
 
-  std::vector<std::string> local_words(words.begin() + start, words.begin() + end);
+  int local_word_count = end - start;
 
-  // Подсчитываем количество слов в локальной части
-  int local_word_count = local_words.size();
+  if (start < total_words) {
+    local_word_count = std::count_if(words.begin() + start, words.begin() + end, [](const std::string& w) {
+      return !w.empty();
+    });
+  } else {
+    local_word_count = 0;
+  }
+
   boost::mpi::reduce(world, local_word_count, word_count, std::plus<int>(), 0);
 
   return true;

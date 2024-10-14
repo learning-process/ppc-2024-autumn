@@ -8,9 +8,11 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/lopatin_i_count_words/include/countWordsMPIHeader.hpp"
 
+std::string testData = lopatin_i_count_words_mpi::generateLongString(1000);
+
 TEST(word_count_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  std::string input = lopatin_i_count_words_mpi::generateLongString(1000);
+  std::string input = testData;
   std::vector<int> word_count(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
@@ -42,7 +44,7 @@ TEST(word_count_mpi, test_pipeline_run) {
 
 TEST(word_count_mpi, test_task_run) {
   boost::mpi::communicator world;
-  std::string input = lopatin_i_count_words_mpi::generateLongString(1000);
+  std::string input = testData;
   std::vector<int> word_count(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
