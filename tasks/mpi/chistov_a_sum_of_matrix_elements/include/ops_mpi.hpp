@@ -147,6 +147,7 @@ class TestMPITaskParallel : public ppc::core::Task {
 
     return true;
   }
+
   bool post_processing() override {
     internal_order_test();
     if (world.rank() == 0) {
@@ -159,7 +160,7 @@ class TestMPITaskParallel : public ppc::core::Task {
     } else {
       return false;
         }
-    }
+  }
 
  private:
   std::vector<T> input_, local_input_;

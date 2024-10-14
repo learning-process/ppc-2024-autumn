@@ -45,7 +45,7 @@ TEST(chistov_a_sum_of_matrix_elements, test_double_sum_sequential) {
   ASSERT_EQ(TestTaskSequential.run(), true);
   ASSERT_EQ(TestTaskSequential.post_processing(), true);
   double sum = chistov_a_sum_of_matrix_elements::classic_way(global_matrix, n, m);
-  
+
   ASSERT_NEAR(reference_sum[0], sum, 1e-6);
 }
 
