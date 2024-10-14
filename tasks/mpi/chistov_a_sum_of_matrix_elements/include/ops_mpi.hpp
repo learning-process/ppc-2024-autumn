@@ -85,7 +85,7 @@ class TestMPITaskSequential : public ppc::core::Task {
     } else {
       return false;
     }
-  }   
+  }
 
  private:
   std::vector<T> input_;
