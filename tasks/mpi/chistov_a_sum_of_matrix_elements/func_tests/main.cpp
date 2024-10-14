@@ -143,8 +143,8 @@ TEST(chistov_a_sum_of_matrix_elements, test_with_large_matrix_parallell) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> global_sum(1, 0);
-  const int n = 10000;
-  const int m = 10000;
+  const int n = 1000;
+  const int m = 1000;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 

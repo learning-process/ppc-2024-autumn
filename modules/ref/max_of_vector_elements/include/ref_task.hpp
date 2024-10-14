@@ -5,9 +5,10 @@
 
 #include <gtest/gtest.h>
 
-#include <numeric>
+
 #include <algorithm>
 #include <memory>
+#include <numeric>
 #include <vector>
 
 #include "core/task/include/task.hpp"
