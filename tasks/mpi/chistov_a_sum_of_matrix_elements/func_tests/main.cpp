@@ -96,7 +96,7 @@ TEST(chistov_a_sum_of_matrix_elements, test_double_sum_parallell) {
   ASSERT_TRUE(testMPITaskParallel.run());
   ASSERT_TRUE(testMPITaskParallel.post_processing());
   if (world.rank() == 0) {
-    std::vector<double> reference_sum(1, 0.0);  
+    std::vector<double> reference_sum(1, 0.0);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataSeq->inputs_count.emplace_back(global_matrix.size());
