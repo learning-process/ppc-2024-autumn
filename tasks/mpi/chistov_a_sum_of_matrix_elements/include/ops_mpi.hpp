@@ -102,7 +102,7 @@ class TestMPITaskParallel : public ppc::core::Task {
 
   bool pre_processing() override {
     internal_order_test();
-    
+
     int delta = 0;
     if (world.rank() == 0) {
       delta = (n * m) / world.size();
@@ -116,7 +116,7 @@ class TestMPITaskParallel : public ppc::core::Task {
       for (int i = 0; i < static_cast<int>(taskData->inputs_count[0]); i++) {
         input_[i] = tmp_ptr[i];
       }
-      for (int  proc = 1; proc < world.size(); proc++) {
+      for (int proc = 1; proc < world.size(); proc++) {
         world.send(proc, 0, input_.data() + proc * delta, delta);
       }
     }
