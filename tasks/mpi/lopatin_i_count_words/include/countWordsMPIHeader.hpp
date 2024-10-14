@@ -10,6 +10,7 @@
 namespace lopatin_i_count_words_mpi {
 
 int countWords(const std::string& str);
+std::string generateLongString(int n);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:

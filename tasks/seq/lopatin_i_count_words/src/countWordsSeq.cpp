@@ -3,9 +3,9 @@
 
 #include "seq/lopatin_i_count_words/include/countWordsSeqHeader.hpp"
 
-int lopatin_i_count_words_seq::countWords(const std::string& str) { 
-    std::istringstream iss(str);
-    return std::distance(std::istream_iterator<std::string>(iss), std::istream_iterator<std::string>());
+int lopatin_i_count_words_seq::countWords(const std::string& str) {
+  std::istringstream iss(str);
+  return std::distance(std::istream_iterator<std::string>(iss), std::istream_iterator<std::string>());
 }
 
 bool lopatin_i_count_words_seq::TestTaskSequential::pre_processing() {

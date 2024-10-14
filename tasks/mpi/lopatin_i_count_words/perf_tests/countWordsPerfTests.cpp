@@ -9,9 +9,8 @@
 #include "mpi/lopatin_i_count_words/include/countWordsMPIHeader.hpp"
 
 TEST(word_count_mpi, test_pipeline_run) {
-  boost::mpi::environment env;
   boost::mpi::communicator world;
-  std::string input = "This is a long sentence for performance testing of the word count algorithm using MPI";
+  std::string input = lopatin_i_count_words_mpi::generateLongString(1000);
   std::vector<int> word_count(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
@@ -37,14 +36,13 @@ TEST(word_count_mpi, test_pipeline_run) {
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(word_count[0], 14);
+    ASSERT_EQ(word_count[0], 15000);
   }
 }
 
 TEST(word_count_mpi, test_task_run) {
-  boost::mpi::environment env;
   boost::mpi::communicator world;
-  std::string input = "This is another long sentence for performance testing of the word count algorithm using MPI";
+  std::string input = lopatin_i_count_words_mpi::generateLongString(1000);
   std::vector<int> word_count(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
@@ -70,6 +68,17 @@ TEST(word_count_mpi, test_task_run) {
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(word_count[0], 15);
+    ASSERT_EQ(word_count[0], 15000);
   }
+}
+
+int main(int argc, char** argv) {
+  boost::mpi::environment env(argc, argv);
+  boost::mpi::communicator world;
+  ::testing::InitGoogleTest(&argc, argv);
+  ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
+  if (world.rank() != 0) {
+    delete listeners.Release(listeners.default_result_printer());
+  }
+  return RUN_ALL_TESTS();
 }

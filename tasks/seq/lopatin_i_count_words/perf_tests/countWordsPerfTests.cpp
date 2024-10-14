@@ -45,7 +45,7 @@ std::string testData =
     "BECAUSE THIS ALBUM IS ABOUT THE BEEF. THIS ALBUM IS BEEF. ANY BEEF. MY BEEF. YOUR BEEF. FOOD BEEF. THIS IS "
     "BEEF. IF YOU HAVE BEEF, THIS IS THE ALBUM YOU BEEF TO. GET READY TO BEEF. EVABOY HAS RETURNED. FUCK YOU AND DIE.";
 
-// text for testing with 571 symbols
+// text for testing with 571 words
 
 TEST(word_count_seq, test_pipeline_run) {
   std::string input = testData;
