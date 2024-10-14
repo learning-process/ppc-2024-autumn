@@ -59,7 +59,6 @@ bool TestMPITaskParallel::validation() {
   return (world.rank() == 0) ? (taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1) : true;
 }
 
-
 bool TestMPITaskParallel::run() {
   internal_order_test();
   int input_length = input_.length();
@@ -91,9 +90,7 @@ bool TestMPITaskParallel::run() {
   int local_word_count = end - start;
 
   if (start < total_words) {
-    local_word_count = std::count_if(words.begin() + start, words.begin() + end, [](const std::string& w) {
-      return !w.empty();
-    });
+    local_word_count = std::count_if(words.begin() + start, words.begin() + end, [](const std::string& w) { return !w.empty(); });
   } else {
     local_word_count = 0;
   }
