@@ -113,7 +113,7 @@ TEST(lopatin_i_count_words_mpi, test_15k_words) {
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<char *>(input.c_str())));
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(const_cast<char *>(input.c_str())));
     taskData->inputs_count.emplace_back(input.size());
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(word_count.data()));
     taskData->outputs_count.emplace_back(word_count.size());
