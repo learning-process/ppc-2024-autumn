@@ -1,7 +1,7 @@
-#include "seq/lopatin_i_count_words/include/countWordsSeqHeader.hpp"
-
 #include <algorithm>
 #include <sstream>
+
+#include "seq/lopatin_i_count_words/include/countWordsSeqHeader.hpp"
 
 int lopatin_i_count_words_seq::countWords(const std::string& str) { 
     std::istringstream iss(str);
@@ -34,5 +34,3 @@ bool lopatin_i_count_words_seq::TestTaskSequential::post_processing() {
   reinterpret_cast<int*>(taskData->outputs[0])[0] = wordCount;
   return true;
 }
-
-

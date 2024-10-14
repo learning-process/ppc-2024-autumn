@@ -13,7 +13,7 @@ int countWords(const std::string& str) {
 
 bool TestMPITaskSequential::pre_processing() {
   internal_order_test();
-  boost::mpi::environment env; 
+  boost::mpi::environment env;
   input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
   word_count = 0;
   return true;

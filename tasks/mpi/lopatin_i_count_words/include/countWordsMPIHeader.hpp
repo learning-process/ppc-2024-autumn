@@ -38,4 +38,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  // lopatin_i_count_words_mpi
+}  // namespace lopatin_i_count_words_mpi
