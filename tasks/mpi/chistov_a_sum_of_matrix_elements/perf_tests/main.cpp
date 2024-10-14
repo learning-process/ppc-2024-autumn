@@ -25,7 +25,6 @@ TEST(chistov_a_sum_of_matrix_elements, test_pipeline_run) {
 
   auto testMpiTaskParallel =
       std::make_shared<chistov_a_sum_of_matrix_elements::TestMPITaskParallel<int>>(taskDataPar, n, m);
-
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   ASSERT_EQ(testMpiTaskParallel->pre_processing(), true);
   ASSERT_EQ(testMpiTaskParallel->run(), true);
@@ -43,8 +42,7 @@ TEST(chistov_a_sum_of_matrix_elements, test_pipeline_run) {
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
 
-    int expected_sum = std::accumulate(global_matrix.begin(), global_matrix.end(), 0);
-    ASSERT_EQ(expected_sum, global_sum[0]);
+    ASSERT_EQ(std::accumulate(global_matrix.begin(), global_matrix.end(), 0), global_sum[0]);
   }
 }
 
@@ -69,9 +67,9 @@ TEST(chistov_a_sum_of_matrix_elements, test_task_run) {
       std::make_shared<chistov_a_sum_of_matrix_elements::TestMPITaskParallel<int>>(taskDataPar, n, m);
 
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
-  testMpiTaskParallel->pre_processing();
-  testMpiTaskParallel->run();
-  testMpiTaskParallel->post_processing();
+  ASSERT_EQ(testMpiTaskParallel->pre_processing(), true);
+  ASSERT_EQ(testMpiTaskParallel->run(), true);
+  ASSERT_EQ(testMpiTaskParallel->post_processing(), true);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;

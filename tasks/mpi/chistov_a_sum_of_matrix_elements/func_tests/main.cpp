@@ -22,7 +22,6 @@ TEST(chistov_a_sum_of_matrix_elements, test_wrong_validation_parallell) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
 
-
     chistov_a_sum_of_matrix_elements::TestMPITaskParallel<int> TestMPITaskParallel(taskDataPar, n, m);
 
     ASSERT_EQ(TestMPITaskParallel.validation(), false);

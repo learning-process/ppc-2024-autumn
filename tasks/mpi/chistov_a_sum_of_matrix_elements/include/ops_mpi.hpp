@@ -138,6 +138,7 @@ class TestMPITaskParallel : public ppc::core::Task {
     }
     return true;
   }
+
   bool run() override {
     internal_order_test();
 
@@ -147,6 +148,10 @@ class TestMPITaskParallel : public ppc::core::Task {
     return true;
   }
   bool post_processing() override {
+    internal_order_test();
+    if (world.rank() == 0) {
+      reinterpret_cast<T*>(taskData->outputs[0])[0] = res;
+    }
     if (taskData->outputs.size() > 0 && taskData->outputs[0] != nullptr) {
       reinterpret_cast<T*>(taskData->outputs[0])[0] = res;
       return true;
