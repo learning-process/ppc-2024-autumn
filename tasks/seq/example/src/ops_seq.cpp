@@ -38,7 +38,7 @@ bool nesterov_a_test_task_seq::TestTaskSequential::validation() {
 }
 
 bool nesterov_a_test_task_seq::TestTaskSequential::run() {
-  internal_order_test();  
+  internal_order_test();
   for (int i = 0; i < count_rows; i++) {
     res[i] = *std::min_element(input_.begin() + i * size_rows, input_.begin() + (i + 1) * size_rows);
   }

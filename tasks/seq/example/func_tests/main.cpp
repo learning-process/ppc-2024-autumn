@@ -7,11 +7,9 @@
 
 TEST(Sequential, Test_Min1) {
   int count_rows;
-  int size_rows;
 
   // Create data
   count_rows = 3;
-  size_rows = 5;
   std::vector<int> global_mat = {1, 5, 3, 7, 9, 3, 4, 6, 7, 9, 2, 4, 2, 5, 0};
 
   std::vector<int32_t> seq_min_vec(count_rows, 0);
@@ -38,11 +36,9 @@ TEST(Sequential, Test_Min1) {
 
 TEST(Sequential, Test_Min2) {
   int count_rows;
-  int size_rows;
 
   // Create data
   count_rows = 3;
-  size_rows = 6;
   std::vector<int> global_mat = {10, 5, 3, 9, 7, 9, 13, 4, 6, 7, 7, 9, 12, 4, 2, 5, 10, 9};
 
   std::vector<int32_t> seq_min_vec(count_rows, 0);
@@ -67,11 +63,9 @@ TEST(Sequential, Test_Min2) {
 
 TEST(Sequential, Test_Min3) {
   int count_rows;
-  int size_rows;
 
   // Create data
   count_rows = 4;
-  size_rows = 5;
 
   std::vector<int> global_mat = {10, 5, 3, 9, 7, 9, 13, 4, 6, 7, 7, 9, 12, 4, 2, 5, 10, 9, 5, 8};
 
@@ -85,7 +79,6 @@ TEST(Sequential, Test_Min3) {
   taskDataSeq->inputs_count.emplace_back((size_t)1);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seq_min_vec.data()));
   taskDataSeq->outputs_count.emplace_back(seq_min_vec.size());
-
 
   // Create Task
   nesterov_a_test_task_seq::TestTaskSequential testTaskSequential(taskDataSeq);
