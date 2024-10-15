@@ -1,11 +1,12 @@
 #pragma once
 
-#include <boost/mpi/environment.hpp>
+#include <algorithm>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
-#include <algorithm>
-#include <sstream>
+#include <boost/mpi/environment.hpp>
 #include <cstring>
+#include <iterator>
+#include <sstream>
 #include <vector>
 
 #include "core/task/include/task.hpp"
