@@ -7,21 +7,28 @@
 #include "seq/example/include/ops_seq.hpp"
 
 TEST(sequential_example_perf_test, test_pipeline_run) {
-  const int count = 100;
+  int count_rows;
+  int size_rows;
 
   // Create data
-  std::vector<int> in(1, count);
-  std::vector<int> out(1, 0);
+  count_rows = 100;
+  size_rows = 400;
+  std::vector<int> global_mat(count_rows * size_rows, 1);
+  std::vector<int32_t> seq_min_vec(count_rows, 0);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
+  taskDataSeq->inputs_count.emplace_back(global_mat.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows));
+  taskDataSeq->inputs_count.emplace_back((size_t)1);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seq_min_vec.data()));
+  taskDataSeq->outputs_count.emplace_back(seq_min_vec.size());
 
   // Create Task
-  auto testTaskSequential = std::make_shared<nesterov_a_test_task_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential =
+      std::make_shared<nesterov_a_test_task_seq::TestTaskSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -40,25 +47,33 @@ TEST(sequential_example_perf_test, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(count, out[0]);
+  for (size_t i = 0; i < seq_min_vec.size(); i++) {
+    EXPECT_EQ(1, seq_min_vec[0]);
+  }
 }
 
 TEST(sequential_example_perf_test, test_task_run) {
-  const int count = 100;
+  int count_rows;
+  int size_rows;
 
   // Create data
-  std::vector<int> in(1, count);
-  std::vector<int> out(1, 0);
+  count_rows = 100;
+  size_rows = 400;
+  std::vector<int> global_mat(count_rows * size_rows, 1);
+  std::vector<int32_t> seq_min_vec(count_rows, 0);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
+  taskDataSeq->inputs_count.emplace_back(global_mat.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows));
+  taskDataSeq->inputs_count.emplace_back((size_t)1);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seq_min_vec.data()));
+  taskDataSeq->outputs_count.emplace_back(seq_min_vec.size());
 
   // Create Task
-  auto testTaskSequential = std::make_shared<nesterov_a_test_task_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential =
+      std::make_shared<nesterov_a_test_task_seq::TestTaskSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -77,7 +92,9 @@ TEST(sequential_example_perf_test, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(count, out[0]);
+  for (unsigned i = 0; i < seq_min_vec.size(); i++) {
+    EXPECT_EQ(1, seq_min_vec[0]);
+  }
 }
 
 int main(int argc, char **argv) {

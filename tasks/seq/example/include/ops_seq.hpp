@@ -8,6 +8,8 @@
 
 namespace nesterov_a_test_task_seq {
 
+std::vector<int> getRandomVector(int sz);
+
 class TestTaskSequential : public ppc::core::Task {
  public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -17,7 +19,10 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  int input_{}, res{};
+  int count_rows{};
+  int size_rows{};
+  std::vector<int> input_;
+  std::vector<int> res;
 };
 
 }  // namespace nesterov_a_test_task_seq
