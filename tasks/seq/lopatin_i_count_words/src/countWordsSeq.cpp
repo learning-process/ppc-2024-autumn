@@ -1,7 +1,3 @@
-#include <algorithm>
-#include <iterator>
-#include <sstream>
-
 #include "seq/lopatin_i_count_words/include/countWordsSeqHeader.hpp"
 
 namespace lopatin_i_count_words_seq {

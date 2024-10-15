@@ -1,9 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <boost/mpi/communicator.hpp>
-#include <boost/mpi/environment.hpp>
-#include <string>
-
 #include "mpi/lopatin_i_count_words/include/countWordsMPIHeader.hpp"
 
 TEST(lopatin_i_count_words_mpi, test_empty_string) {

@@ -1,6 +1,9 @@
 #pragma once
 
-#include <string>
+#include <algorithm>
+#include <iterator>
+#include <sstream>
+#include <cstring>
 
 #include "core/task/include/task.hpp"
 

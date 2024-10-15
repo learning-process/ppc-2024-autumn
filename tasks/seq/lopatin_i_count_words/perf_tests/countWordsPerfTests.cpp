@@ -1,11 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <algorithm>
-#include <functional>
-#include <iostream>
-#include <random>
-#include <string>
-
 #include "core/perf/include/perf.hpp"
 #include "seq/lopatin_i_count_words/include/countWordsSeqHeader.hpp"
 

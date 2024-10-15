@@ -1,7 +1,3 @@
-#include <algorithm>
-#include <boost/mpi/collectives.hpp>
-#include <sstream>
-
 #include "mpi/lopatin_i_count_words/include/countWordsMPIHeader.hpp"
 
 namespace lopatin_i_count_words_mpi {

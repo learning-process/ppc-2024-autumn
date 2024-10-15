@@ -1,9 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <boost/mpi/communicator.hpp>
-#include <boost/mpi/environment.hpp>
 #include <boost/mpi/timer.hpp>
-#include <string>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/lopatin_i_count_words/include/countWordsMPIHeader.hpp"
