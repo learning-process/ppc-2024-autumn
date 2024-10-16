@@ -1,4 +1,4 @@
-
+// Copyright 2023 Nesterov Alexander
 #ifndef TASKS_EXAMPLES_TEST_TBB_OPS_TBB_H_
 #define TASKS_EXAMPLES_TEST_TBB_OPS_TBB_H_
 
@@ -7,7 +7,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace chistov_a_test_task_tbb {
+namespace nesterov_a_test_task_tbb {
 
 std::vector<int> getRandomVector(int sz);
 
@@ -41,6 +41,6 @@ class TestTBBTaskParallel : public ppc::core::Task {
   std::string ops;
 };
 
-}  // namespace chistov_a_test_task_tbb
+}  // namespace nesterov_a_test_task_tbb
 
 #endif  // TASKS_EXAMPLES_TEST_TBB_OPS_TBB_H_

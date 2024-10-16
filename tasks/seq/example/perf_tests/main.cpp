@@ -1,13 +1,12 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
-#include <oneapi/tbb.h>
 
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "tbb/example/include/ops_tbb.hpp"
+#include "seq/example/include/ops_seq.hpp"
 
-TEST(tbb_example_perf_test, test_pipeline_run) {
+TEST(sequential_example_perf_test, test_pipeline_run) {
   const int count = 100;
 
   // Create data
@@ -22,25 +21,29 @@ TEST(tbb_example_perf_test, test_pipeline_run) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto testTaskTBB = std::make_shared<nesterov_a_test_task_tbb::TestTBBTaskSequential>(taskDataSeq, "+");
+  auto testTaskSequential = std::make_shared<nesterov_a_test_task_seq::TestTaskSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
-  const auto t0 = oneapi::tbb::tick_count::now();
-  perfAttr->current_timer = [&] { return (oneapi::tbb::tick_count::now() - t0).seconds(); };
+  const auto t0 = std::chrono::high_resolution_clock::now();
+  perfAttr->current_timer = [&] {
+    auto current_time_point = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
+    return static_cast<double>(duration) * 1e-9;
+  };
 
   // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
   // Create Perf analyzer
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskTBB);
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(count + 1, out[0]);
+  ASSERT_EQ(count, out[0]);
 }
 
-TEST(tbb_example_perf_test, test_task_run) {
+TEST(sequential_example_perf_test, test_task_run) {
   const int count = 100;
 
   // Create data
@@ -55,22 +58,26 @@ TEST(tbb_example_perf_test, test_task_run) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto testTaskTBB = std::make_shared<nesterov_a_test_task_tbb::TestTBBTaskSequential>(taskDataSeq, "+");
+  auto testTaskSequential = std::make_shared<nesterov_a_test_task_seq::TestTaskSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
-  const auto t0 = oneapi::tbb::tick_count::now();
-  perfAttr->current_timer = [&] { return (oneapi::tbb::tick_count::now() - t0).seconds(); };
+  const auto t0 = std::chrono::high_resolution_clock::now();
+  perfAttr->current_timer = [&] {
+    auto current_time_point = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
+    return static_cast<double>(duration) * 1e-9;
+  };
 
   // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
   // Create Perf analyzer
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskTBB);
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(count + 1, out[0]);
+  ASSERT_EQ(count, out[0]);
 }
 
 int main(int argc, char **argv) {
