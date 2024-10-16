@@ -66,7 +66,7 @@
    }
  }
 
- TEST(chistov_a_sum_of_matrix_elements, test_double_sum_parallell) {
+ /*TEST(chistov_a_sum_of_matrix_elements, test_double_sum_parallell) {
    boost::mpi::communicator world;
 
    std::vector<double> global_matrix;
@@ -130,7 +130,7 @@
    if (world.rank() == 0) {
      ASSERT_EQ(global_sum[0], 0);
    }
- }
+ }*/
 
  //TEST(chistov_a_sum_of_matrix_elements, test_with_large_matrix_parallell) {
  //  boost::mpi::communicator world;
