@@ -1,12 +1,12 @@
 // Copyright 2023 Nesterov Alexander
 #pragma once
 
-#include <string>
+#include <cstring>
 #include <vector>
 
 #include "core/task/include/task.hpp"
 
-namespace nesterov_a_test_task_seq {
+namespace kurakin_m_min_values_by_rows_matrix_seq {
 
 class TestTaskSequential : public ppc::core::Task {
  public:
@@ -17,7 +17,10 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  int input_{}, res{};
+  int count_rows{};
+  int size_rows{};
+  std::vector<int> input_;
+  std::vector<int> res;
 };
 
-}  // namespace nesterov_a_test_task_seq
+}  // namespace kurakin_m_min_values_by_rows_matrix_seq
