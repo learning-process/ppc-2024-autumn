@@ -8,8 +8,6 @@
 
 namespace nesterov_a_test_task_seq {
 
-std::vector<int> getRandomVector(int sz);
-
 class TestTaskSequential : public ppc::core::Task {
  public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

@@ -8,22 +8,25 @@
 #include "mpi/example/include/ops_mpi.hpp"
 
 TEST(mpi_example_perf_test, test_pipeline_run) {
+  int count_rows = 100;
+  int size_rows = 400;
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_sum(1, 0);
+  std::vector<int> global_mat;
+  std::vector<int32_t> par_min_vec(count_rows, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int count_size_vector;
+
   if (world.rank() == 0) {
-    count_size_vector = 120;
-    global_vec = std::vector<int>(count_size_vector, 1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());
+    global_mat = std::vector<int>(count_rows * size_rows, 1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
+    taskDataPar->inputs_count.emplace_back(global_mat.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&count_rows));
+    taskDataPar->inputs_count.emplace_back((size_t)1);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(par_min_vec.data()));
+    taskDataPar->outputs_count.emplace_back(par_min_vec.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<nesterov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar, "+");
+  auto testMpiTaskParallel = std::make_shared<nesterov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -43,27 +46,32 @@ TEST(mpi_example_perf_test, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(count_size_vector, global_sum[0]);
+    for (unsigned i = 0; i < par_min_vec.size(); i++) {
+      EXPECT_EQ(1, par_min_vec[0]);
+    }
   }
 }
 
 TEST(mpi_example_perf_test, test_task_run) {
+  int count_rows = 100;
+  int size_rows = 400;
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_sum(1, 0);
+  std::vector<int> global_mat;
+  std::vector<int32_t> par_min_vec(count_rows, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int count_size_vector;
+
   if (world.rank() == 0) {
-    count_size_vector = 120;
-    global_vec = std::vector<int>(count_size_vector, 1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());
+    global_mat = std::vector<int>(count_rows * size_rows, 1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
+    taskDataPar->inputs_count.emplace_back(global_mat.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&count_rows));
+    taskDataPar->inputs_count.emplace_back((size_t)1);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(par_min_vec.data()));
+    taskDataPar->outputs_count.emplace_back(par_min_vec.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<nesterov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar, "+");
+  auto testMpiTaskParallel = std::make_shared<nesterov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -83,7 +91,9 @@ TEST(mpi_example_perf_test, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(count_size_vector, global_sum[0]);
+    for (unsigned i = 0; i < par_min_vec.size(); i++) {
+      EXPECT_EQ(1, par_min_vec[0]);
+    }
   }
 }
 

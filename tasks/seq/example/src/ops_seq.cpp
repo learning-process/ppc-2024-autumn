@@ -6,16 +6,6 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> nesterov_a_test_task_seq::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
-}
-
 bool nesterov_a_test_task_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   // Init vectors
