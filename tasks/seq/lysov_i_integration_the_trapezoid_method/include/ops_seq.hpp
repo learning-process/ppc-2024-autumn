@@ -1,13 +1,8 @@
-// Copyright 2023 Nesterov Alexander
 #pragma once
-
 #include <string>
 #include <vector>
-
 #include "core/task/include/task.hpp"
-
-namespace nesterov_a_test_task_seq {
-
+ namespace lysov_i_integration_the_trapezoid_method_seq {
 class TestTaskSequential : public ppc::core::Task {
  public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -15,9 +10,10 @@ class TestTaskSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-
+  double a, b, cnt_of_splits, h;
+  double function(double x) { return x * x; }
  private:
-  int input_{}, res{};
+  std::vector<double> input_;
+  int res{};
 };
-
-}  // namespace nesterov_a_test_task_seq
+}  // namespace lysov_i_integration_the_trapezoid_method_seq
