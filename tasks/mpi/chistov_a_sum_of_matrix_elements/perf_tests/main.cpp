@@ -88,7 +88,6 @@ TEST(chistov_a_sum_of_matrix_elements, test_task_run) {
   }
 }
 
-
 int main(int argc, char** argv) {
   boost::mpi::environment env(argc, argv);
   boost::mpi::communicator world;
