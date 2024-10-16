@@ -5,7 +5,7 @@
 #include <boost/mpi/environment.hpp>
 #include <vector>
 
-#include "mpi/example/include/ops_mpi.hpp"
+#include "mpi/kurakin_m_min_values_by_rows_matrix/include/ops_mpi.hpp"
 
 TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Min_Rand1) {
   int count_rows = 10;

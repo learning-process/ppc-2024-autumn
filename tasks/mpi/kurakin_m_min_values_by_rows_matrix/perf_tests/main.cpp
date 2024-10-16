@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/example/include/ops_mpi.hpp"
+#include "mpi/kurakin_m_min_values_by_rows_matrix/include/ops_mpi.hpp"
 
 TEST(kurakin_m_min_values_by_rows_matrix_mpi, test_pipeline_run) {
   int count_rows = 100;

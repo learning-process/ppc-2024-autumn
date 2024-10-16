@@ -1,5 +1,5 @@
 // Copyright 2023 Nesterov Alexander
-#include "mpi/example/include/ops_mpi.hpp"
+#include "mpi/kurakin_m_min_values_by_rows_matrix/include/ops_mpi.hpp"
 
 #include <algorithm>
 #include <functional>

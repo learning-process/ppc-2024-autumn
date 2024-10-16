@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "seq/example/include/ops_seq.hpp"
+#include "seq/kurakin_m_min_values_by_rows_matrix/include/ops_seq.hpp"
 
 TEST(kurakin_m_min_values_by_rows_matrix_seq, Test_Min1) {
   int count_rows;
