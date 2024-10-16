@@ -90,7 +90,7 @@ class TestMPITaskSequential : public ppc::core::Task {
  private:
   std::vector<T> input_;
   int n, m;
-  T res; 
+  T res;
 };
 
 
@@ -169,6 +169,5 @@ class TestMPITaskParallel : public ppc::core::Task {
   int n, m;
   boost::mpi::communicator world;
 };
-
 
 }  // namespace chistov_a_sum_of_matrix_elements

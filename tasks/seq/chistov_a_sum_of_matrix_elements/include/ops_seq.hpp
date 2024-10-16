@@ -46,9 +46,9 @@ T classic_way(const std::vector<T> matrix, const int n, const int m) {
 }
 
 template <typename T = int>
-class TestMPITaskSequential : public ppc::core::Task {
+class TestTaskSequential : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, const int n_, const int m_)
+  explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, const int n_, const int m_)
       : Task(std::move(taskData_)), n(n_), m(m_), res(0) {}
 
   bool pre_processing() override {
