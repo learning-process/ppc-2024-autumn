@@ -8,11 +8,12 @@
 using namespace std::chrono_literals;
 
 int kabalova_v_count_symbols_seq::getRandomNumber(int left, int right) {
-  return ((rand() % (right - left + 1)) + left);
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  return ((gen() % (right - left + 1)) + left);
 }
 
 std::string kabalova_v_count_symbols_seq::getRandomString() {
-  srand(time(NULL));
   std::string str;
   std::string alphabet = "abcdefghijklmnopqrstuvwxyz1234567890";
   int strSize = getRandomNumber(1000, 10000);
@@ -30,7 +31,7 @@ int kabalova_v_count_symbols_seq::countSymbols(std::string& str) {
     }
   }
   return result;
-};
+}
 
 bool kabalova_v_count_symbols_seq::Task1Seq::pre_processing() {
   internal_order_test();
