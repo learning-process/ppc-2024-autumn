@@ -6,7 +6,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/example/include/ops_seq.hpp"
 
-TEST(sequential_example_perf_test, test_pipeline_run) {
+TEST(kurakin_m_min_values_by_rows_matrix_seq, test_pipeline_run) {
   int count_rows;
   int size_rows;
 
@@ -27,7 +27,7 @@ TEST(sequential_example_perf_test, test_pipeline_run) {
   taskDataSeq->outputs_count.emplace_back(seq_min_vec.size());
 
   // Create Task
-  auto testTaskSequential = std::make_shared<nesterov_a_test_task_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential = std::make_shared<kurakin_m_min_values_by_rows_matrix_seq::TestTaskSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -51,7 +51,7 @@ TEST(sequential_example_perf_test, test_pipeline_run) {
   }
 }
 
-TEST(sequential_example_perf_test, test_task_run) {
+TEST(kurakin_m_min_values_by_rows_matrix_seq, test_task_run) {
   int count_rows;
   int size_rows;
 
@@ -71,7 +71,7 @@ TEST(sequential_example_perf_test, test_task_run) {
   taskDataSeq->outputs_count.emplace_back(seq_min_vec.size());
 
   // Create Task
-  auto testTaskSequential = std::make_shared<nesterov_a_test_task_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential = std::make_shared<kurakin_m_min_values_by_rows_matrix_seq::TestTaskSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();

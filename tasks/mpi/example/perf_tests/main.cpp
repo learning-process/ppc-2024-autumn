@@ -7,7 +7,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/example/include/ops_mpi.hpp"
 
-TEST(mpi_example_perf_test, test_pipeline_run) {
+TEST(kurakin_m_min_values_by_rows_matrix_mpi, test_pipeline_run) {
   int count_rows = 100;
   int size_rows = 400;
   boost::mpi::communicator world;
@@ -26,7 +26,7 @@ TEST(mpi_example_perf_test, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(par_min_vec.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<nesterov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -71,7 +71,7 @@ TEST(mpi_example_perf_test, test_task_run) {
     taskDataPar->outputs_count.emplace_back(par_min_vec.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<nesterov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();

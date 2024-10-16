@@ -5,7 +5,7 @@
 
 #include "seq/example/include/ops_seq.hpp"
 
-TEST(Sequential, Test_Min1) {
+TEST(kurakin_m_min_values_by_rows_matrix_seq, Test_Min1) {
   int count_rows;
 
   // Create data
@@ -26,7 +26,7 @@ TEST(Sequential, Test_Min1) {
   taskDataSeq->outputs_count.emplace_back(seq_min_vec.size());
 
   // Create Task
-  nesterov_a_test_task_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  kurakin_m_min_values_by_rows_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
@@ -34,7 +34,7 @@ TEST(Sequential, Test_Min1) {
   ASSERT_EQ(ans, seq_min_vec);
 }
 
-TEST(Sequential, Test_Min2) {
+TEST(kurakin_m_min_values_by_rows_matrix_seq, Test_Min2) {
   int count_rows;
 
   // Create data
@@ -53,7 +53,7 @@ TEST(Sequential, Test_Min2) {
   taskDataSeq->outputs_count.emplace_back(seq_min_vec.size());
 
   // Create Task
-  nesterov_a_test_task_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  kurakin_m_min_values_by_rows_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
@@ -61,7 +61,7 @@ TEST(Sequential, Test_Min2) {
   ASSERT_EQ(ans, seq_min_vec);
 }
 
-TEST(Sequential, Test_Min3) {
+TEST(kurakin_m_min_values_by_rows_matrix_seq, Test_Min3) {
   int count_rows;
 
   // Create data
@@ -81,7 +81,7 @@ TEST(Sequential, Test_Min3) {
   taskDataSeq->outputs_count.emplace_back(seq_min_vec.size());
 
   // Create Task
-  nesterov_a_test_task_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  kurakin_m_min_values_by_rows_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
