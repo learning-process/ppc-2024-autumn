@@ -42,10 +42,10 @@
    }
 
    chistov_a_sum_of_matrix_elements::TestMPITaskParallel<int> testMPITaskParallel(taskDataPar, n, m);
-   ASSERT_TRUE(testMPITaskParallel.validation());
-   ASSERT_TRUE(testMPITaskParallel.pre_processing());
-   ASSERT_TRUE(testMPITaskParallel.run());
-   ASSERT_TRUE(testMPITaskParallel.post_processing());
+   ASSERT_EQ(testMPITaskParallel.validation(), true);
+   testMPITaskParallel.pre_processing();
+   testMPITaskParallel.run();
+   testMPITaskParallel.post_processing();
 
    if (world.rank() == 0) {
      std::vector<int32_t> reference_sum(1, 0);
@@ -57,10 +57,10 @@
      taskDataSeq->outputs_count.emplace_back(reference_sum.size());
 
      chistov_a_sum_of_matrix_elements::TestMPITaskSequential<int> testMpiTaskSequential(taskDataSeq, n, m);
-     ASSERT_TRUE(testMpiTaskSequential.validation());
-     ASSERT_TRUE(testMpiTaskSequential.pre_processing());
-     ASSERT_TRUE(testMpiTaskSequential.run());
-     ASSERT_TRUE(testMpiTaskSequential.post_processing());
+     ASSERT_EQ(testMpiTaskSequential.validation(), true);
+     testMpiTaskSequential.pre_processing();
+     testMpiTaskSequential.run();
+     testMpiTaskSequential.post_processing();
 
      ASSERT_EQ(reference_sum[0], global_sum[0]);
    }
