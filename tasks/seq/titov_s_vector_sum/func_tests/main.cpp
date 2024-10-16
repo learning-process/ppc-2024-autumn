@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "seq/seq_titov_s_vector_sum/include/ops_seq.hpp"
+#include "seq/titov_s_vector_sum/include/ops_seq.hpp"
 
 TEST(titov_s_vector_sum_seq, Test_Int) {
   // Create data

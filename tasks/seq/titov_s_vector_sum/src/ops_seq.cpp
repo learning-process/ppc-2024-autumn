@@ -1,5 +1,5 @@
 // Copyright 2024 Nesterov Alexander
-#include "seq/seq_titov_s_vector_sum/include/ops_seq.hpp"
+#include "seq/titov_s_vector_sum/include/ops_seq.hpp"
 
 #include <thread>
 

@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "seq/seq_titov_s_vector_sum/include/ops_seq.hpp"
+#include "seq/titov_s_vector_sum/include/ops_seq.hpp"
 
 TEST(titov_s_vector_sum_seq, test_pipeline_run) {
   const int count = 1000000;
