@@ -26,7 +26,8 @@ TEST(kurakin_m_min_values_by_rows_matrix_mpi, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(par_min_vec.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel =
+      std::make_shared<kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -71,7 +72,8 @@ TEST(mpi_example_perf_test, test_task_run) {
     taskDataPar->outputs_count.emplace_back(par_min_vec.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel =
+      std::make_shared<kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
