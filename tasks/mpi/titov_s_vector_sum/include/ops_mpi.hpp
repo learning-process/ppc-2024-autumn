@@ -19,8 +19,7 @@ std::vector<int> getRandomVector(int sz);
 
 class MPIVectorSumSequential : public ppc::core::Task {
  public:
-  explicit MPIVectorSumSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit MPIVectorSumSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -34,8 +33,7 @@ class MPIVectorSumSequential : public ppc::core::Task {
 
 class MPIVectorSumParallel : public ppc::core::Task {
  public:
-  explicit MPIVectorSumParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit MPIVectorSumParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
