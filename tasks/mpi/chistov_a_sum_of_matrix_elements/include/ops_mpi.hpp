@@ -9,7 +9,7 @@
 
 namespace chistov_a_sum_of_matrix_elements {
 
-template <typename T>
+template <typename T = int>
 void print_matrix(const std::vector<T> matrix, const int n, const int m) {
   std::cout << "Matrix:" << std::endl;
   for (int i = 0; i < n; i++) {
@@ -20,7 +20,7 @@ void print_matrix(const std::vector<T> matrix, const int n, const int m) {
   std::cout << std::endl;
 }
 
-template <typename T>
+template <typename T = int>
 std::vector<T> getRandomMatrix(const int n, const int m) {
   if (n <= 0 || m <= 0) {
     throw std::invalid_argument("Incorrect entered N or M");
@@ -35,7 +35,7 @@ std::vector<T> getRandomMatrix(const int n, const int m) {
   return matrix;
 }
 
-template <typename T>
+template <typename T = int>
 T classic_way(const std::vector<T> matrix, const int n, const int m) {
   T result = 0;
   for (int i = 0; i < n; ++i) {
@@ -51,7 +51,7 @@ template <typename T = int>
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, const int n_, const int m_)
-      : Task(std::move(taskData_)), n(n_), m(m_) {}
+      : Task(std::move(taskData_)), n(n_), m(m_), res(0) {}
 
   bool pre_processing() override {
     internal_order_test();
@@ -75,27 +75,30 @@ class TestMPITaskSequential : public ppc::core::Task {
     res = std::accumulate(input_.begin(), input_.end(), 0);
     return true;
   }
+
   bool post_processing() override {
     internal_order_test();
-    if (taskData->outputs.size() > 0 && taskData->outputs[0] != nullptr) {
+
+    if (!taskData->outputs.empty() && taskData->outputs[0] != nullptr) {
       reinterpret_cast<T*>(taskData->outputs[0])[0] = res;
       return true;
-    } else {
-      return false;
     }
+
+    return false;
   }
 
  private:
   std::vector<T> input_;
   int n, m;
-  T res = 0;
+  T res; 
 };
+
 
 template <typename T = int>
 class TestMPITaskParallel : public ppc::core::Task {
  public:
   explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, const int n_, const int m_)
-      : Task(std::move(taskData_)), n(n_), m(m_), world(boost::mpi::communicator()) {}
+      : Task(std::move(taskData_)), n(n_), m(m_) {}
 
   bool pre_processing() override {
     internal_order_test();
@@ -151,12 +154,13 @@ class TestMPITaskParallel : public ppc::core::Task {
     if (world.rank() == 0) {
       reinterpret_cast<T*>(taskData->outputs[0])[0] = res;
     }
-    if (taskData->outputs.size() > 0 && taskData->outputs[0] != nullptr) {
+
+    if (!taskData->outputs.empty() && taskData->outputs[0] != nullptr) {
       reinterpret_cast<T*>(taskData->outputs[0])[0] = res;
       return true;
-    } else {
-      return false;
     }
+
+    return false;
   }
 
  private:
@@ -165,5 +169,6 @@ class TestMPITaskParallel : public ppc::core::Task {
   int n, m;
   boost::mpi::communicator world;
 };
+
 
 }  // namespace chistov_a_sum_of_matrix_elements

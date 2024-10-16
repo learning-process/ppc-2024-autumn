@@ -46,10 +46,10 @@ T classic_way(const std::vector<T> matrix, const int n, const int m) {
 }
 
 template <typename T = int>
-class TestTaskSequential : public ppc::core::Task {
+class TestMPITaskSequential : public ppc::core::Task {
  public:
-  explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, const int n_, const int m_)
-      : Task(std::move(taskData_)), n(n_), m(m_) {}
+  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, const int n_, const int m_)
+      : Task(std::move(taskData_)), n(n_), m(m_), res(0) {}
 
   bool pre_processing() override {
     internal_order_test();
@@ -73,20 +73,22 @@ class TestTaskSequential : public ppc::core::Task {
     res = std::accumulate(input_.begin(), input_.end(), 0);
     return true;
   }
+
   bool post_processing() override {
     internal_order_test();
-    if (taskData->outputs.size() > 0 && taskData->outputs[0] != nullptr) {
+
+    if (!taskData->outputs.empty() && taskData->outputs[0] != nullptr) {
       reinterpret_cast<T*>(taskData->outputs[0])[0] = res;
       return true;
-    } else {
-      return false;
     }
+
+    return false;
   }
 
  private:
   std::vector<T> input_;
   int n, m;
-  T res = 0;
+  T res;
 };
 
 }  // namespace chistov_a_sum_of_matrix_elements
