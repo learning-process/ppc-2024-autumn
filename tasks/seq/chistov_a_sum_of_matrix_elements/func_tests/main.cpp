@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#include <vector>
+
 #include "seq/chistov_a_sum_of_matrix_elements/include/ops_seq.hpp"
 
 TEST(chistov_a_sum_of_matrix_elements, test_int_sum_sequential) {

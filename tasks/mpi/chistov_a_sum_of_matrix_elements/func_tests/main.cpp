@@ -1,5 +1,9 @@
 #include <gtest/gtest.h>
 
+#include <boost/mpi/communicator.hpp>
+#include <boost/mpi/environment.hpp>
+#include <vector>
+
 #include "mpi/chistov_a_sum_of_matrix_elements/include/ops_mpi.hpp"
 
 TEST(chistov_a_sum_of_matrix_elements, test_wrong_validation_parallel) {
