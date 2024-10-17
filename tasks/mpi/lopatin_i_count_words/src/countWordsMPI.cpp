@@ -93,7 +93,7 @@ bool TestMPITaskParallel::run() {
 
   int local_word_count = divideWords(words, world.rank(), world.size());
 
-  boost::mpi::reduce(world, local_word_count, word_count, std::plus<int>(), 0);
+  boost::mpi::reduce(world, local_word_count, word_count, std::plus<>(), 0);
 
   return true;
 }
