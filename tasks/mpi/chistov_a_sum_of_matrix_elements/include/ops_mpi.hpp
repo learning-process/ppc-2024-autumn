@@ -93,7 +93,6 @@ class TestMPITaskSequential : public ppc::core::Task {
   T res;
 };
 
-
 template <typename T = int>
 class TestMPITaskParallel : public ppc::core::Task {
  public:

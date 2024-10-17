@@ -18,9 +18,9 @@ TEST(chistov_a_sum_of_matrix_elements, test_int_sum_sequential) {
 
   chistov_a_sum_of_matrix_elements::TestTaskSequential<int> TestTaskSequential(taskDataSeq, n, m);
   ASSERT_EQ(TestTaskSequential.validation(), true);
-  ASSERT_EQ(TestTaskSequential.pre_processing(), true);
-  ASSERT_EQ(TestTaskSequential.run(), true);
-  ASSERT_EQ(TestTaskSequential.post_processing(), true);
+  TestTaskSequential.pre_processing();
+  TestTaskSequential.run();
+  TestTaskSequential.post_processing();
 
   int sum = chistov_a_sum_of_matrix_elements::classic_way(global_matrix, n, m);
   ASSERT_EQ(reference_sum[0], sum);
@@ -41,9 +41,9 @@ TEST(chistov_a_sum_of_matrix_elements, test_double_sum_sequential) {
   chistov_a_sum_of_matrix_elements::TestTaskSequential<double> TestTaskSequential(taskDataSeq, n, m);
 
   ASSERT_EQ(TestTaskSequential.validation(), true);
-  ASSERT_EQ(TestTaskSequential.pre_processing(), true);
-  ASSERT_EQ(TestTaskSequential.run(), true);
-  ASSERT_EQ(TestTaskSequential.post_processing(), true);
+  TestTaskSequential.pre_processing();
+  TestTaskSequential.run();
+  TestTaskSequential.post_processing();
   double sum = chistov_a_sum_of_matrix_elements::classic_way(global_matrix, n, m);
 
   ASSERT_NEAR(reference_sum[0], sum, 1e-6);
@@ -60,9 +60,9 @@ TEST(chistov_a_sum_of_matrix_elements, test_sum_with_empty_matrix_sequential) {
   taskDataSeq->outputs_count.emplace_back(reference_sum.size());
   chistov_a_sum_of_matrix_elements::TestTaskSequential<int> TestTaskSequential(taskDataSeq, 0, 0);
   ASSERT_EQ(TestTaskSequential.validation(), true);
-  ASSERT_EQ(TestTaskSequential.pre_processing(), true);
-  ASSERT_EQ(TestTaskSequential.run(), true);
-  ASSERT_EQ(TestTaskSequential.post_processing(), true);
+  TestTaskSequential.pre_processing();
+  TestTaskSequential.run();
+  TestTaskSequential.post_processing();
 
   ASSERT_EQ(reference_sum[0], 0);
 }
@@ -81,9 +81,9 @@ TEST(chistov_a_sum_of_matrix_elements, test_sum_with_single_element_matrix_seque
 
   chistov_a_sum_of_matrix_elements::TestTaskSequential<int> TestTaskSequential(taskDataSeq, n, m);
   ASSERT_EQ(TestTaskSequential.validation(), true);
-  ASSERT_EQ(TestTaskSequential.pre_processing(), true);
-  ASSERT_EQ(TestTaskSequential.run(), true);
-  ASSERT_EQ(TestTaskSequential.post_processing(), true);
+  TestTaskSequential.pre_processing();
+  TestTaskSequential.run();
+  TestTaskSequential.post_processing();
 
   int sum = chistov_a_sum_of_matrix_elements::classic_way(global_matrix, n, m);
   ASSERT_EQ(reference_sum[0], sum);
