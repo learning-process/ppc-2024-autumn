@@ -21,7 +21,7 @@ TEST(chistov_a_sum_of_matrix_elements, test_pipeline_run) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   auto testTaskSequential =
-      std::make_shared<chistov_a_sum_of_matrix_elements::TestTaskSequential<int>>(taskDataSeq, n, m);
+      std::make_shared<chistov_a_sum_of_matrix_elements::TestTaskSequential<int>>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -58,7 +58,7 @@ TEST(chistov_a_sum_of_matrix_elements, test_task_run) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   auto testTaskSequential =
-      std::make_shared<chistov_a_sum_of_matrix_elements::TestTaskSequential<int>>(taskDataSeq, n, m);
+      std::make_shared<chistov_a_sum_of_matrix_elements::TestTaskSequential<int>>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();

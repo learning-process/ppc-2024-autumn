@@ -27,7 +27,7 @@ void print_matrix(const std::vector<T> matrix, const int n, const int m) {
 }
 
 template <typename T>
-std::vector<T> getRandomMatrix(const int n, const int m) {
+std::vector<T> get_random_matrix(const int n, const int m) {
   if (n <= 0 || m <= 0) {
     return std::vector<T>();
   }
@@ -56,12 +56,11 @@ T classic_way(const std::vector<T> matrix, const int n, const int m) {
 template <typename T>
 class TestMPITaskSequential : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, const int n_, const int m_)
-      : Task(std::move(taskData_)), n(n_), m(m_), res(0) {}
+  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_): Task(std::move(taskData_)) {}
 
   bool pre_processing() override {
     internal_order_test();
-
+    res = 0;
     T* tmp_ptr = reinterpret_cast<T*>(taskData->inputs[0]);
     input_.assign(tmp_ptr, tmp_ptr + taskData->inputs_count[0]);
     return true;
@@ -93,21 +92,23 @@ class TestMPITaskSequential : public ppc::core::Task {
 
  private:
   std::vector<T> input_;
-  int n, m;
   T res;
 };
 
 template <typename T>
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, const int n_, const int m_)
-      : Task(std::move(taskData_)), n(n_), m(m_) {}
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
+      : Task(std::move(taskData_)) {}
 
   bool pre_processing() override {
     internal_order_test();
 
     int delta = 0;
     if (world.rank() == 0) {
+      res = 0;
+      n = static_cast<int>(taskData->inputs_count[1]);
+      m = static_cast<int>(taskData->inputs_count[2]);
       delta = (n * m) / world.size();
     }
 
@@ -168,8 +169,9 @@ class TestMPITaskParallel : public ppc::core::Task {
 
  private:
   std::vector<T> input_, local_input_;
-  T res = 0;
-  int n, m;
+  T res;
+  int n;
+  int m;
   boost::mpi::communicator world;
 };
 

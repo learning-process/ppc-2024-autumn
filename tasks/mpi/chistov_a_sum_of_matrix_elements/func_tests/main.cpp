@@ -16,14 +16,15 @@ TEST(chistov_a_sum_of_matrix_elements, test_wrong_validation_parallel) {
   if (world.rank() == 0) {
     const int n = 3;
     const int m = 4;
-    global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix<int>(n, m);
+    global_matrix = chistov_a_sum_of_matrix_elements::get_random_matrix<int>(n, m);
+
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(global_matrix.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
 
-    chistov_a_sum_of_matrix_elements::TestMPITaskParallel<int> TestMPITaskParallel(taskDataPar, n, m);
+    chistov_a_sum_of_matrix_elements::TestMPITaskParallel<int> TestMPITaskParallel(taskDataPar);
     ASSERT_EQ(TestMPITaskParallel.validation(), false);
   }
 }
@@ -38,15 +39,16 @@ TEST(chistov_a_sum_of_matrix_elements, test_int_sum_parallel) {
   const int m = 4;
 
   if (world.rank() == 0) {
-    global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix<int>(n, m);
-
+    global_matrix = chistov_a_sum_of_matrix_elements::get_random_matrix<int>(n, m);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(global_matrix.size());
+    taskDataPar->inputs_count.emplace_back(n);
+    taskDataPar->inputs_count.emplace_back(m);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  chistov_a_sum_of_matrix_elements::TestMPITaskParallel<int> testMPITaskParallel(taskDataPar, n, m);
+  chistov_a_sum_of_matrix_elements::TestMPITaskParallel<int> testMPITaskParallel(taskDataPar);
   ASSERT_EQ(testMPITaskParallel.validation(), true);
   testMPITaskParallel.pre_processing();
   testMPITaskParallel.run();
@@ -54,19 +56,16 @@ TEST(chistov_a_sum_of_matrix_elements, test_int_sum_parallel) {
 
   if (world.rank() == 0) {
     std::vector<int32_t> reference_sum(1, 0);
-
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataSeq->inputs_count.emplace_back(global_matrix.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_sum.data()));
     taskDataSeq->outputs_count.emplace_back(reference_sum.size());
-
-    chistov_a_sum_of_matrix_elements::TestMPITaskSequential<int> testMpiTaskSequential(taskDataSeq, n, m);
+    chistov_a_sum_of_matrix_elements::TestMPITaskSequential<int> testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
-
     ASSERT_EQ(reference_sum[0], global_sum[0]);
   }
 }
@@ -81,15 +80,17 @@ TEST(chistov_a_sum_of_matrix_elements, test_double_sum_parallel) {
   const int m = 4;
 
   if (world.rank() == 0) {
-    global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix<double>(n, m);
+    global_matrix = chistov_a_sum_of_matrix_elements::get_random_matrix<double>(n, m);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(global_matrix.size());
+    taskDataPar->inputs_count.emplace_back(n);
+    taskDataPar->inputs_count.emplace_back(m);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  chistov_a_sum_of_matrix_elements::TestMPITaskParallel<double> testMPITaskParallel(taskDataPar, n, m);
+  chistov_a_sum_of_matrix_elements::TestMPITaskParallel<double> testMPITaskParallel(taskDataPar);
   ASSERT_EQ(testMPITaskParallel.validation(), true);
   testMPITaskParallel.pre_processing();
   testMPITaskParallel.run();
@@ -104,7 +105,7 @@ TEST(chistov_a_sum_of_matrix_elements, test_double_sum_parallel) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_sum.data()));
     taskDataSeq->outputs_count.emplace_back(reference_sum.size());
 
-    chistov_a_sum_of_matrix_elements::TestMPITaskSequential<double> testMpiTaskSequential(taskDataSeq, n, m);
+    chistov_a_sum_of_matrix_elements::TestMPITaskSequential<double> testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -120,15 +121,18 @@ TEST(chistov_a_sum_of_matrix_elements, test_with_empty_matrix_parallel) {
   std::vector<int32_t> global_sum(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
+  const int n = 0;
+  const int m = 0;
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(global_matrix.size());
+    taskDataPar->inputs_count.emplace_back(n);
+    taskDataPar->inputs_count.emplace_back(m);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  chistov_a_sum_of_matrix_elements::TestMPITaskParallel<int> testMPITaskParallel(taskDataPar, 0, 0);
+  chistov_a_sum_of_matrix_elements::TestMPITaskParallel<int> testMPITaskParallel(taskDataPar);
   ASSERT_EQ(testMPITaskParallel.validation(), true);
   testMPITaskParallel.pre_processing();
   testMPITaskParallel.run();
@@ -149,15 +153,17 @@ TEST(chistov_a_sum_of_matrix_elements, test_with_large_matrix_parallel) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix<int>(n, m);
+    global_matrix = chistov_a_sum_of_matrix_elements::get_random_matrix<int>(n, m);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(global_matrix.size());
+    taskDataPar->inputs_count.emplace_back(n);
+    taskDataPar->inputs_count.emplace_back(m);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  chistov_a_sum_of_matrix_elements::TestMPITaskParallel<int> testMPITaskParallel(taskDataPar, n, m);
+  chistov_a_sum_of_matrix_elements::TestMPITaskParallel<int> testMPITaskParallel(taskDataPar);
   ASSERT_EQ(testMPITaskParallel.validation(), true);
   testMPITaskParallel.pre_processing();
   testMPITaskParallel.run();
@@ -182,15 +188,17 @@ TEST(chistov_a_sum_of_matrix_elements, short_and_thick_test_parallel) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix<int>(n, m);
+    global_matrix = chistov_a_sum_of_matrix_elements::get_random_matrix<int>(n, m);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(global_matrix.size());
+    taskDataPar->inputs_count.emplace_back(n);
+    taskDataPar->inputs_count.emplace_back(m);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  chistov_a_sum_of_matrix_elements::TestMPITaskParallel<int> testMPITaskParallel(taskDataPar, n, m);
+  chistov_a_sum_of_matrix_elements::TestMPITaskParallel<int> testMPITaskParallel(taskDataPar);
   ASSERT_EQ(testMPITaskParallel.validation(), true);
   testMPITaskParallel.pre_processing();
   testMPITaskParallel.run();
@@ -215,15 +223,17 @@ TEST(chistov_a_sum_of_matrix_elements, long_and_thin_test_parallel) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = chistov_a_sum_of_matrix_elements::getRandomMatrix<int>(n, m);
+    global_matrix = chistov_a_sum_of_matrix_elements::get_random_matrix<int>(n, m);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(global_matrix.size());
+    taskDataPar->inputs_count.emplace_back(n);
+    taskDataPar->inputs_count.emplace_back(m);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  chistov_a_sum_of_matrix_elements::TestMPITaskParallel<int> testMPITaskParallel(taskDataPar, n, m);
+  chistov_a_sum_of_matrix_elements::TestMPITaskParallel<int> testMPITaskParallel(taskDataPar);
   ASSERT_EQ(testMPITaskParallel.validation(), true);
   testMPITaskParallel.pre_processing();
   testMPITaskParallel.run();

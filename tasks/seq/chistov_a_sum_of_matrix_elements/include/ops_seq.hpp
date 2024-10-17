@@ -7,7 +7,7 @@
 namespace chistov_a_sum_of_matrix_elements {
 
 template <typename T>
-void print_matrix(const std::vector<T> matrix, const int n, const int m) {
+void print_matrix_seq(const std::vector<T> matrix, const int n, const int m) {
   std::cout << "Matrix:" << std::endl;
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < m; j++) {
@@ -18,7 +18,7 @@ void print_matrix(const std::vector<T> matrix, const int n, const int m) {
 }
 
 template <typename T>
-std::vector<T> getRandomMatrix(const int n, const int m) {
+std::vector<T> get_random_matrix_seq(const int n, const int m) {
   if (n <= 0 || m <= 0) {
     return std::vector<T>();
   }
@@ -47,12 +47,13 @@ T classic_way(const std::vector<T> matrix, const int n, const int m) {
 template <typename T>
 class TestTaskSequential : public ppc::core::Task {
  public:
-  explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, const int n_, const int m_)
-      : Task(std::move(taskData_)), n(n_), m(m_), res(0) {}
+  explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
+      : Task(std::move(taskData_)) {}
 
   bool pre_processing() override {
     internal_order_test();
 
+    res = 0;
     T* tmp_ptr = reinterpret_cast<T*>(taskData->inputs[0]);
     input_.assign(tmp_ptr, tmp_ptr + taskData->inputs_count[0]);
     return true;
@@ -84,7 +85,6 @@ class TestTaskSequential : public ppc::core::Task {
 
  private:
   std::vector<T> input_;
-  int n, m;
   T res;
 };
 
