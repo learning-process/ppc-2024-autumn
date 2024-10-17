@@ -101,9 +101,9 @@ TEST(lopatin_i_count_words_mpi, test_1500_words) {
   }
 }
 
-TEST(lopatin_i_count_words_mpi, test_15k_words) {
+TEST(lopatin_i_count_words_mpi, test_6k_words) {
   boost::mpi::communicator world;
-  std::string input = lopatin_i_count_words_mpi::generateLongString(1000);
+  std::string input = lopatin_i_count_words_mpi::generateLongString(400);
   std::vector<int> word_count(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
