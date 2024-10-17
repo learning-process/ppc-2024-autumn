@@ -18,7 +18,6 @@ TEST(chistov_a_sum_of_matrix_elements, test_wrong_validation_parallel) {
     const int m = 4;
     global_matrix = chistov_a_sum_of_matrix_elements::get_random_matrix<int>(n, m);
 
-
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(global_matrix.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));

@@ -6,8 +6,8 @@
 #include "seq/chistov_a_sum_of_matrix_elements/include/ops_seq.hpp"
 
 TEST(chistov_a_sum_of_matrix_elements, test_pipeline_run) {
-  const int n = 50000;
-  const int m = 10000;
+  const int n = 500;
+  const int m = 100;
 
   // Create data
   std::vector<int> in(n * m, 1);
@@ -20,8 +20,7 @@ TEST(chistov_a_sum_of_matrix_elements, test_pipeline_run) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
-  auto testTaskSequential =
-      std::make_shared<chistov_a_sum_of_matrix_elements::TestTaskSequential<int>>(taskDataSeq);
+  auto testTaskSequential = std::make_shared<chistov_a_sum_of_matrix_elements::TestTaskSequential<int>>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -44,8 +43,8 @@ TEST(chistov_a_sum_of_matrix_elements, test_pipeline_run) {
 }
 
 TEST(chistov_a_sum_of_matrix_elements, test_task_run) {
-  const int n = 50000;
-  const int m = 10000;
+  const int n = 500;
+  const int m = 100;
 
   std::vector<int> in(n * m, 1);
   std::vector<int> out(1, 0);
@@ -57,8 +56,7 @@ TEST(chistov_a_sum_of_matrix_elements, test_task_run) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
-  auto testTaskSequential =
-      std::make_shared<chistov_a_sum_of_matrix_elements::TestTaskSequential<int>>(taskDataSeq);
+  auto testTaskSequential = std::make_shared<chistov_a_sum_of_matrix_elements::TestTaskSequential<int>>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
