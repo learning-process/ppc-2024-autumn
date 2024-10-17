@@ -20,7 +20,7 @@ void print_matrix(const std::vector<T> matrix, const int n, const int m) {
 template <typename T>
 std::vector<T> getRandomMatrix(const int n, const int m) {
   if (n <= 0 || m <= 0) {
-    throw std::invalid_argument("Incorrect entered N or M");
+    return std::vector<T>();
   }
 
   std::vector<T> matrix(n * m);
@@ -88,4 +88,6 @@ class TestTaskSequential : public ppc::core::Task {
   T res;
 };
 
+template class chistov_a_sum_of_matrix_elements::TestTaskSequential<int>;
+template class chistov_a_sum_of_matrix_elements::TestTaskSequential<double>;
 }  // namespace chistov_a_sum_of_matrix_elements
