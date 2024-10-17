@@ -57,9 +57,7 @@ class TestMPITaskSequential : public ppc::core::Task {
     internal_order_test();
 
     T* tmp_ptr = reinterpret_cast<T*>(taskData->inputs[0]);
-    input_.resize(taskData->inputs_count[0]);
-    std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
-
+    input_.assign(tmp_ptr, tmp_ptr + taskData->inputs_count[0]);
     return true;
   }
 
