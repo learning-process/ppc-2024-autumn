@@ -83,7 +83,6 @@ bool TestMPITaskParallel::run() {
   }
   boost::mpi::broadcast(world, input_, 0);
 
-  int total_words = 0;
   std::vector<std::string> words;
 
   std::istringstream iss(input_);
@@ -92,7 +91,6 @@ bool TestMPITaskParallel::run() {
     words.push_back(word);
   }
 
-  total_words = words.size();
   int local_word_count = divideWords(words, world.rank(), world.size());
 
   boost::mpi::reduce(world, local_word_count, word_count, std::plus<int>(), 0);
