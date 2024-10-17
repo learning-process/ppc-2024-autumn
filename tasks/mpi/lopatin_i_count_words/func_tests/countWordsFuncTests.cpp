@@ -122,7 +122,7 @@ TEST(lopatin_i_count_words_mpi, test_6k_words) {
   testTask.post_processing();
 
   if (world.rank() == 0) {
-    ASSERT_EQ(word_count[0], 15000);
+    ASSERT_EQ(word_count[0], 6000);
   }
 }
 
