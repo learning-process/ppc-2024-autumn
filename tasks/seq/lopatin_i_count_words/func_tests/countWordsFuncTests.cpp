@@ -3,7 +3,7 @@
 #include "seq/lopatin_i_count_words/include/countWordsSeqHeader.hpp"
 
 TEST(lopatin_i_count_words_seq, test_empty_string) {
-  std::string input = "";
+  std::string input;
   std::vector<int> out(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();

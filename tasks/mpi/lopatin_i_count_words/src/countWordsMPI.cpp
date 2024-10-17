@@ -18,7 +18,6 @@ std::string generateLongString(int n) {
 
 bool TestMPITaskSequential::pre_processing() {
   internal_order_test();
-  boost::mpi::environment env;
   input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
   word_count = 0;
   return true;
@@ -92,7 +91,7 @@ bool TestMPITaskParallel::run() {
     world.recv(0, 0, local_word_count);
   }
 
-  boost::mpi::reduce(world, local_word_count, word_count, std::plus<int>(), 0);
+  boost::mpi::reduce(world, local_word_count, word_count, std::plus<>(), 0);
 
   return true;
 }

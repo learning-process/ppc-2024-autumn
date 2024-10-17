@@ -4,7 +4,7 @@
 
 TEST(lopatin_i_count_words_mpi, test_empty_string) {
   boost::mpi::communicator world;
-  std::string input = "";
+  std::string input;
   std::vector<int> word_count(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
@@ -17,9 +17,9 @@ TEST(lopatin_i_count_words_mpi, test_empty_string) {
 
   lopatin_i_count_words_mpi::TestMPITaskParallel testTask(taskData);
   ASSERT_FALSE(testTask.validation());
-  testTask.pre_processing();
-  testTask.run();
-  testTask.post_processing();
+  //testTask.pre_processing();
+  //testTask.run();
+  //testTask.post_processing();
 
   if (world.rank() == 0) {
     ASSERT_EQ(word_count[0], 0);
