@@ -7,6 +7,25 @@ int countWords(const std::string& str) {
   return std::distance(std::istream_iterator<std::string>(iss), std::istream_iterator<std::string>());
 }
 
+int divideWords(const std::vector<std::string>& words, int rank, int size) {
+  int total_words = words.size();
+  int local_words_count = total_words / size;
+  int remainder = total_words % size;
+
+  int start = rank * local_words_count + std::min(rank, remainder);
+  int end = start + local_words_count + (rank < remainder ? 1 : 0);
+
+  if (start >= total_words) {
+    return 0;
+  }
+
+  if (end > total_words) {
+    end = total_words;
+  }
+
+  return end - start;
+}
+
 std::string generateLongString(int n) {
   std::string testData;
   std::string testString = "This is a long sentence for performance testing of the word count algorithm using MPI. ";
@@ -56,42 +75,27 @@ bool TestMPITaskParallel::validation() {
 
 bool TestMPITaskParallel::run() {
   internal_order_test();
+  int input_length = input_.length();
+  boost::mpi::broadcast(world, input_length, 0);
+
+  if (world.rank() != 0) {
+    input_.resize(input_length);
+  }
+  boost::mpi::broadcast(world, input_, 0);
 
   int total_words = 0;
   std::vector<std::string> words;
 
-  if (world.rank() == 0) {
-    std::istringstream iss(input_);
-    std::string word;
-    while (iss >> word) {
-      words.push_back(word);
-    }
-    total_words = words.size();
+  std::istringstream iss(input_);
+  std::string word;
+  while (iss >> word) {
+    words.push_back(word);
   }
 
-  boost::mpi::broadcast(world, total_words, 0);
+  total_words = words.size();
+  int local_word_count = divideWords(words, world.rank(), world.size());
 
-  int local_words_count = total_words / world.size();
-  int remainder = total_words % world.size();
-
-  int start = world.rank() * local_words_count + std::min(world.rank(), remainder);
-  int end = start + local_words_count + (world.rank() < remainder ? 1 : 0);
-
-  int local_word_count = 0;
-  if (world.rank() == 0) {
-    local_word_count = end - start;
-
-    for (int i = 1; i < world.size(); ++i) {
-      int chunk_start = i * local_words_count + std::min(i, remainder);
-      int chunk_end = chunk_start + local_words_count + (i < remainder ? 1 : 0);
-      int chunk_size = chunk_end - chunk_start;
-      world.send(i, 0, chunk_size);
-    }
-  } else {
-    world.recv(0, 0, local_word_count);
-  }
-
-  boost::mpi::reduce(world, local_word_count, word_count, std::plus<>(), 0);
+  boost::mpi::reduce(world, local_word_count, word_count, std::plus<int>(), 0);
 
   return true;
 }
