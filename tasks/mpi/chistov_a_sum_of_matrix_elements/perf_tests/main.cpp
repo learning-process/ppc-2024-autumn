@@ -67,7 +67,7 @@ TEST(chistov_a_sum_of_matrix_elements, test_task_run) {
 
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
-  testMpiTaskParallel->run(); 
+  testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
