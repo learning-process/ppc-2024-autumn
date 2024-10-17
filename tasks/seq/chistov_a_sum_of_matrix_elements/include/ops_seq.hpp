@@ -45,7 +45,7 @@ T classic_way(const std::vector<T> matrix, const int n, const int m) {
   return result;
 }
 
-template <typename T = int>
+template <typename T>
 class TestTaskSequential : public ppc::core::Task {
  public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, const int n_, const int m_)

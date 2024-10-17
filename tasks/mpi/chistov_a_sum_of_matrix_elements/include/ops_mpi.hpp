@@ -9,7 +9,7 @@
 
 namespace chistov_a_sum_of_matrix_elements {
 
-template <typename T = int>
+template <typename T>
 void print_matrix(const std::vector<T> matrix, const int n, const int m) {
   std::cout << "Matrix:" << std::endl;
   for (int i = 0; i < n; i++) {
@@ -20,7 +20,7 @@ void print_matrix(const std::vector<T> matrix, const int n, const int m) {
   std::cout << std::endl;
 }
 
-template <typename T = int>
+template <typename T>
 std::vector<T> getRandomMatrix(const int n, const int m) {
   if (n <= 0 || m <= 0) {
     throw std::invalid_argument("Incorrect entered N or M");
@@ -35,7 +35,7 @@ std::vector<T> getRandomMatrix(const int n, const int m) {
   return matrix;
 }
 
-template <typename T = int>
+template <typename T>
 T classic_way(const std::vector<T> matrix, const int n, const int m) {
   T result = 0;
   for (int i = 0; i < n; ++i) {
@@ -47,7 +47,7 @@ T classic_way(const std::vector<T> matrix, const int n, const int m) {
   return result;
 }
 
-template <typename T = int>
+template <typename T>
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, const int n_, const int m_)
@@ -93,7 +93,7 @@ class TestMPITaskSequential : public ppc::core::Task {
   T res;
 };
 
-template <typename T = int>
+template <typename T>
 class TestMPITaskParallel : public ppc::core::Task {
  public:
   explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, const int n_, const int m_)
