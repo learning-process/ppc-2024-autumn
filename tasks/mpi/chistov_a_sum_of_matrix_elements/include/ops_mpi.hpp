@@ -157,13 +157,7 @@ class TestMPITaskParallel : public ppc::core::Task {
     if (world.rank() == 0) {
       reinterpret_cast<T*>(taskData->outputs[0])[0] = res;
     }
-
-    if (!taskData->outputs.empty() && taskData->outputs[0] != nullptr) {
-      reinterpret_cast<T*>(taskData->outputs[0])[0] = res;
-      return true;
-    }
-
-    return false;
+    return true;
   }
 
  private:
