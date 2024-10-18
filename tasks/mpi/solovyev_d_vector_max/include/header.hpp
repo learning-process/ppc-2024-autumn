@@ -15,6 +15,7 @@
 namespace solovyev_d_vector_max_mpi {
 
 std::vector<int> getRandomVector(int sz);
+int vectorMax(std::vector<int,std::allocator<int>> v);
 
 class VectorMaxSequential : public ppc::core::Task {
  public:

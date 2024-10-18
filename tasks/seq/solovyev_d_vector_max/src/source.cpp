@@ -16,6 +16,18 @@ std::vector<int> solovyev_d_vector_max_mpi::getRandomVector(int sz) {
   return vec;
 }
 
+int solovyev_d_vector_max_mpi::vectorMax(std::vector<int,std::allocator<int>> v){
+	int m=-214748364;
+	for(int i = 0; i < v.size(); i++)
+	{
+		if(v[i] > m)
+		{
+		   m = v[i];
+		}
+	}
+	return m;
+}
+
 bool solovyev_d_vector_max_mpi::VectorMaxSequential::pre_processing() {
   internal_order_test();
 
@@ -41,7 +53,7 @@ bool solovyev_d_vector_max_mpi::VectorMaxSequential::run() {
   internal_order_test();
 
   // Determine maximum value of data vector
-  result = *std::max_element(data.begin(), data.end());
+  result = solovyev_d_vector_max_mpi::vectorMax(data);
   return true;
 }
 
