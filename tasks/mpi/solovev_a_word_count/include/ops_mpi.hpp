@@ -3,18 +3,17 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>
-#include <cstring>
-#include <iterator>
-#include <sstream>
-#include <vector>
-#include <memory>
-#include <numeric>
-#include <string>
-#include <utility>
-
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <cstring>
+#include <iterator>
+#include <memory>
+#include <numeric>
+#include <sstream>
+#include <string>
+#include <utility>
+#include <vector>
 
 #include "core/task/include/task.hpp"
 
@@ -48,6 +47,6 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
   std::string input_;
   int res{};
-  };
+};
 
 }  // namespace solovev_a_word_count_mpi
