@@ -21,7 +21,7 @@ std::vector<int> solovyev_d_vector_max_mpi::getRandomVector(int sz) {
 
 int solovyev_d_vector_max_mpi::vectorMax(std::vector<int,std::allocator<int>> v){
 	int m=-214748364;
-	for(string::size_type i = 0; i < v.size(); i++)
+	for(std::string::size_type i = 0; i < v.size(); i++)
 	{
 		if(v[i] > m)
 		{
