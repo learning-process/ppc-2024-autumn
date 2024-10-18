@@ -1,5 +1,5 @@
-// Copyright 2023 Nesterov Alexander
 #include "mpi/kolodkin_g_sentence_count/include/ops_mpi.hpp"
+
 #include <algorithm>
 #include <functional>
 #include <random>
