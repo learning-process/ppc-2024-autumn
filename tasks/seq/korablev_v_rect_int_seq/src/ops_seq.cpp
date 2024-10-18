@@ -1,4 +1,4 @@
-#include "seq/korablev_v_rect_int/include/ops_seq.hpp"
+#include "seq/korablev_v_rect_int_seq/include/ops_seq.hpp"
 
 #include <functional>
 #include <string>
@@ -6,7 +6,7 @@
 
 using namespace std::chrono_literals;
 
-bool korablev_v_rect_int_seq::RectangularIntegraitionSequential::pre_processing() {
+bool korablev_v_rect_int_seq::RectangularIntegrationSequential::pre_processing() {
   internal_order_test();
 
   auto* inputs = reinterpret_cast<double*>(taskData->inputs[0]);
@@ -19,12 +19,12 @@ bool korablev_v_rect_int_seq::RectangularIntegraitionSequential::pre_processing(
   return true;
 }
 
-bool korablev_v_rect_int_seq::RectangularIntegraitionSequential::validation() {
+bool korablev_v_rect_int_seq::RectangularIntegrationSequential::validation() {
   internal_order_test();
   return taskData->inputs_count[0] == 3 && taskData->outputs_count[0] == 1;
 }
 
-bool korablev_v_rect_int_seq::RectangularIntegraitionSequential::run() {
+bool korablev_v_rect_int_seq::RectangularIntegrationSequential::run() {
   internal_order_test();
 
   result_ = integrate(func_, a_, b_, n_);
@@ -33,15 +33,15 @@ bool korablev_v_rect_int_seq::RectangularIntegraitionSequential::run() {
   return true;
 }
 
-bool korablev_v_rect_int_seq::RectangularIntegraitionSequential::post_processing() {
+bool korablev_v_rect_int_seq::RectangularIntegrationSequential::post_processing() {
   internal_order_test();
 
   reinterpret_cast<double*>(taskData->outputs[0])[0] = result_;
   return true;
 }
 
-double korablev_v_rect_int_seq::RectangularIntegraitionSequential::integrate(const std::function<double(double)>& f,
-                                                                             double a, double b, int n) {
+double korablev_v_rect_int_seq::RectangularIntegrationSequential::integrate(const std::function<double(double)>& f,
+                                                                            double a, double b, int n) {
   double step = (b - a) / n;
   double area = 0.0;
 
@@ -51,4 +51,9 @@ double korablev_v_rect_int_seq::RectangularIntegraitionSequential::integrate(con
   }
 
   return area;
+}
+
+void korablev_v_rect_int_seq::RectangularIntegrationSequential::set_function(
+    const std::function<double(double)>& func) {
+  func_ = func;
 }

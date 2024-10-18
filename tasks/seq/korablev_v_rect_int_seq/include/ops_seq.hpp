@@ -6,9 +6,9 @@
 
 namespace korablev_v_rect_int_seq {
 
-class RectangularIntegraitionSequential : public ppc::core::Task {
+class RectangularIntegrationSequential : public ppc::core::Task {
  public:
-  explicit RectangularIntegraitionSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
+  explicit RectangularIntegrationSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
       : Task(std::move(taskData_)) {}
 
   bool pre_processing() override;
@@ -16,7 +16,7 @@ class RectangularIntegraitionSequential : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  void set_function(const std::function<double(double)>& func) { func_ = func; }
+  void set_function(const std::function<double(double)>& func);
 
  private:
   static double integrate(const std::function<double(double)>& f, double a, double b, int n);

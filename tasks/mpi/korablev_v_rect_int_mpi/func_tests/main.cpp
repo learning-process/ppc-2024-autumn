@@ -6,7 +6,7 @@
 #include <cmath>
 #include <vector>
 
-#include "mpi/korablev_v_rect_int/include/ops_mpi.hpp"
+#include "mpi/korablev_v_rect_int_mpi/include/ops_mpi.hpp"
 
 TEST(korablev_v_rect_int, test_constant_function) {
   boost::mpi::communicator world;

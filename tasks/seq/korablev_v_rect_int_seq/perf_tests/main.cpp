@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "seq/korablev_v_rect_int/include/ops_seq.hpp"
+#include "seq/korablev_v_rect_int_seq/include/ops_seq.hpp"
 
 TEST(korablev_v_rect_int_seq, test_pipeline_run) {
   const double a = 0.0;
@@ -22,7 +22,7 @@ TEST(korablev_v_rect_int_seq, test_pipeline_run) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
-  auto testTaskSequential = std::make_shared<korablev_v_rect_int_seq::RectangularIntegraitionSequential>(taskDataSeq);
+  auto testTaskSequential = std::make_shared<korablev_v_rect_int_seq::RectangularIntegrationSequential>(taskDataSeq);
 
   std::function<double(double)> func = [](double x) { return x * x; };
   testTaskSequential->set_function(func);
@@ -62,7 +62,7 @@ TEST(korablev_v_rect_int_seq, test_task_run) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
-  auto testTaskSequential = std::make_shared<korablev_v_rect_int_seq::RectangularIntegraitionSequential>(taskDataSeq);
+  auto testTaskSequential = std::make_shared<korablev_v_rect_int_seq::RectangularIntegrationSequential>(taskDataSeq);
 
   std::function<double(double)> func = [](double x) { return x * x; };
   testTaskSequential->set_function(func);

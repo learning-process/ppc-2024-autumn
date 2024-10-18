@@ -1,4 +1,4 @@
-#include "mpi/korablev_v_rect_int/include/ops_mpi.hpp"
+#include "mpi/korablev_v_rect_int_mpi/include/ops_mpi.hpp"
 
 #include <algorithm>
 #include <boost/mpi.hpp>

@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/korablev_v_rect_int/include/ops_mpi.hpp"
+#include "mpi/korablev_v_rect_int_mpi/include/ops_mpi.hpp"
 
 TEST(korablev_v_rect_int, test_pipeline_run) {
   boost::mpi::communicator world;
