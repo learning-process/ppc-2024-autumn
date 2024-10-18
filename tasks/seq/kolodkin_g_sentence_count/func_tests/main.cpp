@@ -6,7 +6,6 @@
 #include "seq/kolodkin_g_sentence_count/include/ops_seq.hpp"
 
 TEST(Sequential, Test_two_sentences) {
-
   // Create data
   std::string in = "Hello! My name is Grisha!";
   std::vector<int> out(1, 0);

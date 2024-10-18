@@ -73,25 +73,19 @@ bool kolodkin_g_sentence_count_mpi::TestMPITaskParallel::validation() {
   return (flag1 && flag2);
 }
 
-
 bool kolodkin_g_sentence_count_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   int textSize = input_.length();
   MPI_Bcast(&textSize, 1, MPI_INT, 0, MPI_COMM_WORLD);
-
   std::string localText;
   int chunkSize = textSize / world.size();
   if (world.rank() < world.size() - 1) {
     localText = input_.substr(world.rank() * chunkSize, chunkSize);
   } else {
-
-    localText = input_.substr(world.rank() * chunkSize);  
+    localText = input_.substr(world.rank() * chunkSize);
   }
-
   int localSentenceCount = countSentences(localText);
-
   MPI_Reduce(&localSentenceCount, &res, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
-
   std::this_thread::sleep_for(20ms);
   return true;
 }
