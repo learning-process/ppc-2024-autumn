@@ -21,4 +21,4 @@ class TestTaskSequential : public ppc::core::Task {
   int res{};
 };
 
-}  // namespace nesterov_a_test_task_seq
+}  // namespace kolodkin_g_sentence_count_seq

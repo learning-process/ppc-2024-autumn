@@ -6,7 +6,6 @@
 #include "seq/kolodkin_g_sentence_count/include/ops_seq.hpp"
 
 TEST(Sequential, Test_two_sentences) {
-  //const int count = 2;
 
   // Create data
   std::string in = "Hello! My name is Grisha!";
@@ -28,7 +27,6 @@ TEST(Sequential, Test_two_sentences) {
   ASSERT_EQ(out[0], 2);
 }
 TEST(Sequential, Test_sentences_with_special_symbols) {
-  // const int count = 2;
 
   // Create data
   std::string in = "Hello!My name is Grisha! I have two pets: cat,dog,parrot.";
@@ -50,10 +48,10 @@ TEST(Sequential, Test_sentences_with_special_symbols) {
   ASSERT_EQ(out[0], 3);
 }
 TEST(Sequential, Test_sentences_with_special_symbols_in_end_of_sentence) {
-  // const int count = 2;
 
   // Create data
-  std::string in = "Hello!My name is Grisha! I have two pets: cat,dog,parrot. What is your name?! How are you!? Well...";
+  std::string in =
+      "Hello!My name is Grisha! I have two pets: cat,dog,parrot. What is your name?! How are you!? Well...";
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -74,7 +72,8 @@ TEST(Sequential, Test_sentences_with_special_symbols_in_end_of_sentence) {
 TEST(Sequential, Test_sentences_with_double_symbols) {
 
   // Create data
-  std::string in = "Hello!! My name is Grisha!! I have two pets: cat,dog,parrot. What is your name?! How are you!? Well...";
+  std::string in =
+      "Hello!! My name is Grisha!! I have two pets: cat,dog,parrot. What is your name?! How are you!? Well...";
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -93,10 +92,12 @@ TEST(Sequential, Test_sentences_with_double_symbols) {
   ASSERT_EQ(out[0], 6);
 }
 TEST(Sequential, Big_text) {
-  // const int count = 2;
 
   // Create data
-  std::string in ="Otche nash, ize esi na nebeseh! Da svytitsa imya tvoe, da priidet tsarstvo tvoe! Da budet volya tvoya, ako na nebeseh i na zemle. Hleb nas nasyshnii dazd nam dnes, i ostavi nam dolgi nasha. Yakozhe i my ostavlyaem dolznikom nashim! I ne vvedi nas vo iskushenie, no izbavi nas ot lukavogo... Amin!";
+  std::string in =
+      "Otche nash, ize esi na nebeseh! Da svytitsa imya tvoe, da priidet tsarstvo tvoe! Da budet volya tvoya, ako na "
+      "nebeseh i na zemle. Hleb nas nasyshnii dazd nam dnes, i ostavi nam dolgi nasha. Yakozhe i my ostavlyaem "
+      "dolznikom nashim! I ne vvedi nas vo iskushenie, no izbavi nas ot lukavogo... Amin!";
   std::vector<int> out(1, 0);
 
   // Create TaskData

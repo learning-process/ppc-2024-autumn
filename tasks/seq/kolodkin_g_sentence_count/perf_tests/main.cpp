@@ -9,7 +9,9 @@
 TEST(sequential_example_perf_test, test_pipeline_run) {
 
   // Create data
-  std::string global_str ="verifwriefnifnil!?vfnjklererjerjkerg...vrhklererffwjklfwefwejo!vefnklvevef?wfnkrkflwewefkl!vfnklvfklevf?vrrnervevrnvreiev!";
+  std::string global_str =
+      "verifwriefnifnil!?vfnjklererjerjkerg...vrhklererffwjklfwefwejo!vefnklvevef?wfnkrkflwewefkl!vfnklvfklevf?"
+      "vrrnervevrnvreiev!";
   std::vector<int> out(1, 0);
 
   // Create TaskData

@@ -21,7 +21,6 @@ int countSentences(const std::string& text) {
   return count;
 }
 
-
 bool kolodkin_g_sentence_count_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init string
@@ -83,7 +82,8 @@ bool kolodkin_g_sentence_count_mpi::TestMPITaskParallel::run() {
   int chunkSize = textSize / world.size();
   if (world.rank() < world.size() - 1) {
     localText = input_.substr(world.rank() * chunkSize, chunkSize);
-  } else {
+  } 
+  else {
     localText = input_.substr(world.rank() * chunkSize);  
   }
 
