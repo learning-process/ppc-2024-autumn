@@ -80,7 +80,7 @@ bool kolodkin_g_sentence_count_mpi::TestMPITaskParallel::run() {
     localText = input_.substr(world.rank() * chunkSize);
   }
   int localSentenceCount = countSentences(localText);
-  reduce(world, localSentenceCount, res, boost::mpi::minimum<int>(),0);
+  reduce(world, localSentenceCount, res, boost::mpi::minimum<int>(), 0);
   std::this_thread::sleep_for(20ms);
   return true;
 }
