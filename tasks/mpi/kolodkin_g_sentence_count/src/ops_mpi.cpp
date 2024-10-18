@@ -55,10 +55,8 @@ bool kolodkin_g_sentence_count_mpi::TestMPITaskSequential::post_processing() {
 bool kolodkin_g_sentence_count_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    // Init vectors
     input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
   }
-  // Init value for output
   res = 0;
   return true;
 }
@@ -81,7 +79,8 @@ bool kolodkin_g_sentence_count_mpi::TestMPITaskParallel::run() {
   int chunkSize = textSize / world.size();
   if (world.rank() < world.size() - 1) {
     localText = input_.substr(world.rank() * chunkSize, chunkSize);
-  } else {
+  } 
+  else {
     localText = input_.substr(world.rank() * chunkSize);
   }
   int localSentenceCount = countSentences(localText);
