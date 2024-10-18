@@ -8,7 +8,7 @@
 
 namespace solovyev_d_vector_max_mpi {
 std::vector<int> getRandomVector(int sz);
-int vectorMax(std::vector<int,std::allocator<int>> v);
+int vectorMax(std::vector<int, std::allocator<int>> v);
 class VectorMaxSequential : public ppc::core::Task {
  public:
   explicit VectorMaxSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -23,4 +23,4 @@ class VectorMaxSequential : public ppc::core::Task {
   std::string ops;
 };
 
-}
+}  // namespace solovyev_d_vector_max_mpi

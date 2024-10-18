@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <vector>
@@ -11,7 +10,7 @@ TEST(solovyev_d_vector_max_mpi, test_pipeline_run) {
 
   // Create data
   std::vector<int> in = solovyev_d_vector_max_mpi::getRandomVector(count);
-  in[count/2]=1024;
+  in[count / 2] = 1024;
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -49,7 +48,7 @@ TEST(solovyev_d_vector_max_mpi, test_task_run) {
 
   // Create data
   std::vector<int> in = solovyev_d_vector_max_mpi::getRandomVector(count);
-  in[count/2]=1024;
+  in[count / 2] = 1024;
   std::vector<int> out(1, 0);
 
   // Create TaskData

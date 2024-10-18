@@ -15,7 +15,7 @@
 namespace solovyev_d_vector_max_mpi {
 
 std::vector<int> getRandomVector(int sz);
-int vectorMax(std::vector<int,std::allocator<int>> v);
+int vectorMax(std::vector<int, std::allocator<int>> v);
 
 class VectorMaxSequential : public ppc::core::Task {
  public:
@@ -33,8 +33,7 @@ class VectorMaxSequential : public ppc::core::Task {
 
 class VectorMaxMPIParallel : public ppc::core::Task {
  public:
-  explicit VectorMaxMPIParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit VectorMaxMPIParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -47,4 +46,4 @@ class VectorMaxMPIParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}
+}  // namespace solovyev_d_vector_max_mpi

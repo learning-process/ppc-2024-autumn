@@ -1,8 +1,7 @@
-#include "seq/solovyev_d_vector_max/include/header.hpp"
-
-#include <thread>
 #include <random>
+#include <thread>
 
+#include "seq/solovyev_d_vector_max/include/header.hpp"
 
 using namespace std::chrono_literals;
 
@@ -16,16 +15,14 @@ std::vector<int> solovyev_d_vector_max_mpi::getRandomVector(int sz) {
   return vec;
 }
 
-int solovyev_d_vector_max_mpi::vectorMax(std::vector<int,std::allocator<int>> v){
-	int m=-214748364;
-	for(std::string::size_type i = 0; i < v.size(); i++)
-	{
-		if(v[i] > m)
-		{
-		   m = v[i];
-		}
-	}
-	return m;
+int solovyev_d_vector_max_mpi::vectorMax(std::vector<int, std::allocator<int>> v) {
+  int m = -214748364;
+  for (std::string::size_type i = 0; i < v.size(); i++) {
+    if (v[i] > m) {
+      m = v[i];
+    }
+  }
+  return m;
 }
 
 bool solovyev_d_vector_max_mpi::VectorMaxSequential::pre_processing() {
