@@ -51,8 +51,22 @@ bool kolodkin_g_sentence_count_mpi::TestMPITaskSequential::post_processing() {
 
 bool kolodkin_g_sentence_count_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
+  unsigned int delta = 0;
+  if (world.rank() == 0) {
+    delta = taskData->inputs_count[0] / world.size();
+  }
+  broadcast(world, delta, 0);
+
   if (world.rank() == 0) {
     input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
+    for (int proc = 1; proc < world.size(); proc++) {
+      world.send(proc, 0, input_.data() + proc * delta, delta);
+    }
+  }
+  if (world.rank() == 0) {
+    local_input_ = input_.substr(0, delta);
+  } else {
+    world.recv(0, 0, local_input_.data(), delta);
   }
   res = 0;
   return true;
@@ -70,16 +84,7 @@ bool kolodkin_g_sentence_count_mpi::TestMPITaskParallel::validation() {
 
 bool kolodkin_g_sentence_count_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  int textSize = input_.length();
-  broadcast(world, textSize, 0);
-  std::string localText;
-  int chunkSize = textSize / world.size();
-  if (world.rank() < world.size() - 1) {
-    localText = input_.substr(world.rank() * chunkSize, chunkSize);
-  } else {
-    localText = input_.substr(world.rank() * chunkSize);
-  }
-  int localSentenceCount = countSentences(localText);
+  int localSentenceCount = countSentences(local_input_);
   reduce(world, localSentenceCount, res, boost::mpi::minimum<int>(), 0);
   std::this_thread::sleep_for(20ms);
   return true;
