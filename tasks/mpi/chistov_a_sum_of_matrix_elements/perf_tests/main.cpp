@@ -10,12 +10,11 @@ TEST(chistov_a_sum_of_matrix_elements, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> global_sum(1, 0);
-  const int n = 500;
-  const int m = 100;
+  const int n = 4000;
+  const int m = 4000;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    global_matrix = chistov_a_sum_of_matrix_elements::get_random_matrix<int>(n, m);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(global_matrix.size());
@@ -52,8 +51,8 @@ TEST(chistov_a_sum_of_matrix_elements, test_task_run) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> global_sum(1, 0);
-  const int n = 500;
-  const int m = 100;
+  const int n = 7000;
+  const int m = 7000;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {

@@ -5,9 +5,9 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/chistov_a_sum_of_matrix_elements/include/ops_seq.hpp"
 
-TEST(chistov_a_sum_of_matrix_elements, test_pipeline_run) {
-  const int n = 500;
-  const int m = 100;
+TEST(chistov_a_sum_of_matrix_elements, test_pipeline_run_seq) {
+  const int n = 4000;
+  const int m = 3500;
 
   // Create data
   std::vector<int> in(n * m, 1);
@@ -42,9 +42,9 @@ TEST(chistov_a_sum_of_matrix_elements, test_pipeline_run) {
   ASSERT_EQ(std::accumulate(in.begin(), in.end(), 0), out[0]);
 }
 
-TEST(chistov_a_sum_of_matrix_elements, test_task_run) {
-  const int n = 500;
-  const int m = 100;
+TEST(chistov_a_sum_of_matrix_elements, test_task_run_seq) {
+  const int n = 6000;
+  const int m = 6000;
 
   std::vector<int> in(n * m, 1);
   std::vector<int> out(1, 0);
