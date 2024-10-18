@@ -1,6 +1,5 @@
 // Copyright 2023 Nesterov Alexander
 #include "mpi/kolodkin_g_sentence_count/include/ops_mpi.hpp"
-
 #include <algorithm>
 #include <functional>
 #include <random>
@@ -23,9 +22,7 @@ int countSentences(const std::string& text) {
 
 bool kolodkin_g_sentence_count_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
-  // Init string
   input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
-  // Init value for output
   res = 0;
   return true;
 }
@@ -79,8 +76,7 @@ bool kolodkin_g_sentence_count_mpi::TestMPITaskParallel::run() {
   int chunkSize = textSize / world.size();
   if (world.rank() < world.size() - 1) {
     localText = input_.substr(world.rank() * chunkSize, chunkSize);
-  } 
-  else {
+  } else {
     localText = input_.substr(world.rank() * chunkSize);
   }
   int localSentenceCount = countSentences(localText);
