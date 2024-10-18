@@ -5,10 +5,7 @@ template <typename iotype, typename cntype>
 cntype num_of_orderly_violations<iotype, cntype>::seq_proc(std::vector<iotype> vec) {
   cntype num = 0;
   int n = vec.size();
-  if (n == 0) {
-    return 0;
-  }
-  if (n == 1) {
+  if (n <= 1) {
     return 0;
   }
   for (int i = 0; i != n - 1; ++i) {
@@ -74,7 +71,7 @@ bool num_of_orderly_violations<iotype, cntype>::run() {
     }
   }
 
-  reduce(world, loc_num, num_, std::plus(), 0);
+  reduce(world, loc_num, num_, std::plus<cntype>(), 0);
   return true;
 }
 template <class iotype, class cntype>
@@ -102,4 +99,6 @@ bool num_of_orderly_violations<iotype, cntype>::validation() {
 template class baranov_a_num_of_orderly_violations_mpi::num_of_orderly_violations<int, int>;
 
 template class baranov_a_num_of_orderly_violations_mpi::num_of_orderly_violations<double, int>;
+
+template class baranov_a_num_of_orderly_violations_mpi::num_of_orderly_violations<unsigned, int>;
 }  // namespace baranov_a_num_of_orderly_violations_mpi
