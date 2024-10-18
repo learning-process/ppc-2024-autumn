@@ -11,7 +11,7 @@ using namespace std::chrono_literals;
 
 int countSentences(const std::string& text) {
   int count = 0;
-  for (int i = 0; i < text.length(); i++) {
+  for (unsigned long i = 0; i < text.length(); i++) {
     if ((text[i] == '.' || text[i] == '!' || text[i] == '?') &&
         ((text[i + 1] != '.' && text[i + 1] != '!' && text[i + 1] != '?') || i + 1 == text.length())) {
       count++;
