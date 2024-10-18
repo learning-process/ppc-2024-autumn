@@ -1,5 +1,6 @@
 #define _USE_MATH_DEFINES
 #include <gtest/gtest.h>
+
 #include <cmath>
 #include <memory>
 #include <vector>
