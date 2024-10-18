@@ -4,7 +4,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace chistov_a_sum_of_matrix_elements {
+namespace chistov_a_sum_of_matrix_elements_seq {
 
 template <typename T>
 void print_matrix_seq(const std::vector<T> matrix, const int n, const int m) {
@@ -84,9 +84,9 @@ class TestTaskSequential : public ppc::core::Task {
 
  private:
   std::vector<T> input_;
-  T res;
+  T res{};
 };
 
-template class chistov_a_sum_of_matrix_elements::TestTaskSequential<int>;
-template class chistov_a_sum_of_matrix_elements::TestTaskSequential<double>;
+template class chistov_a_sum_of_matrix_elements_seq::TestTaskSequential<int>;
+template class chistov_a_sum_of_matrix_elements_seq::TestTaskSequential<double>;
 }  // namespace chistov_a_sum_of_matrix_elements
