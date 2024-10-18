@@ -124,8 +124,3 @@ TEST(solovyev_d_vector_max_mpi, Test_Max_100000) {
   VectorMaxSequential.post_processing();
   ASSERT_EQ(1024, out[0]);
 }
-
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}
