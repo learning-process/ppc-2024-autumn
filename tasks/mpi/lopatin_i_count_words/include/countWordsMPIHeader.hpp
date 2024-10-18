@@ -1,6 +1,8 @@
 #pragma once
 
 #include <algorithm>
+#include <boost/archive/binary_oarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
@@ -14,6 +16,7 @@
 namespace lopatin_i_count_words_mpi {
 
 int countWords(const std::string& str);
+int divideWords(const std::vector<std::string>& words, int rank, int size);
 std::string generateLongString(int n);
 
 class TestMPITaskSequential : public ppc::core::Task {
