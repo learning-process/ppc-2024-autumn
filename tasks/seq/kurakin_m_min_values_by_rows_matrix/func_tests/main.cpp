@@ -88,8 +88,3 @@ TEST(kurakin_m_min_values_by_rows_matrix_seq, Test_Min3) {
   testTaskSequential.post_processing();
   ASSERT_EQ(ans, seq_min_vec);
 }
-
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}

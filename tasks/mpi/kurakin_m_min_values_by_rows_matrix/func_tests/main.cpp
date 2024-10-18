@@ -251,14 +251,3 @@ TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Min_Rand5) {
     ASSERT_EQ(ref_min_vec, par_min_vec);
   }
 }
-
-int main(int argc, char** argv) {
-  boost::mpi::environment env(argc, argv);
-  boost::mpi::communicator world;
-  ::testing::InitGoogleTest(&argc, argv);
-  ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
-  if (world.rank() != 0) {
-    delete listeners.Release(listeners.default_result_printer());
-  }
-  return RUN_ALL_TESTS();
-}
