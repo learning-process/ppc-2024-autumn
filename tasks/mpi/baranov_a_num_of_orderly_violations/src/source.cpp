@@ -5,10 +5,7 @@ template <typename iotype, typename cntype>
 cntype num_of_orderly_violations<iotype, cntype>::seq_proc(std::vector<iotype> vec) {
   cntype num = 0;
   int n = vec.size();
-  if (n <= 1) {
-    return 0;
-  }
-  for (int i = 0; i != n - 1; ++i) {
+  for (int i = 0; i < n - 1; ++i) {
     if (vec[i + 1] < vec[i]) {
       num++;
     }
