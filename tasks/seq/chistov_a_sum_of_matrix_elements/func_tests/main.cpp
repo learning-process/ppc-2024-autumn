@@ -112,7 +112,3 @@ TEST(chistov_a_sum_of_matrix_elements_seq, test_wrong_validation_sequential) {
   ASSERT_EQ(TestTaskSequential.validation(), false);
 }
 
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}

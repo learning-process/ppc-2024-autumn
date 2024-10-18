@@ -80,7 +80,3 @@ TEST(chistov_a_sum_of_matrix_elements_seq, test_task_run_seq) {
   ASSERT_EQ(std::accumulate(in.begin(), in.end(), 0), out[0]);
 }
 
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}
