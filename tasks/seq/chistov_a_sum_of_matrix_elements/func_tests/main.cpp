@@ -111,4 +111,3 @@ TEST(chistov_a_sum_of_matrix_elements_seq, test_wrong_validation_sequential) {
   chistov_a_sum_of_matrix_elements_seq::TestTaskSequential<int> TestTaskSequential(taskDataSeq);
   ASSERT_EQ(TestTaskSequential.validation(), false);
 }
-
