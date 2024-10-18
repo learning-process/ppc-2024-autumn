@@ -51,8 +51,8 @@ TEST(chistov_a_sum_of_matrix_elements, test_task_run) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> global_sum(1, 0);
-  const int n = 3000;
-  const int m = 3000;
+  const int n = 5000;
+  const int m = 5000;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -86,4 +86,15 @@ TEST(chistov_a_sum_of_matrix_elements, test_task_run) {
     ppc::core::Perf::print_perf_statistic(perfResults);
     ASSERT_EQ(std::accumulate(global_matrix.begin(), global_matrix.end(), 0), global_sum[0]);
   }
+}
+
+int main(int argc, char** argv) {
+  boost::mpi::environment env(argc, argv);
+  boost::mpi::communicator world;
+  ::testing::InitGoogleTest(&argc, argv);
+  ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
+  if (world.rank() != 0) {
+    delete listeners.Release(listeners.default_result_printer());
+  }
+  return RUN_ALL_TESTS();
 }

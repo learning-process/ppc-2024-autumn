@@ -138,7 +138,7 @@ class TestMPITaskParallel : public ppc::core::Task {
     internal_order_test();
 
     if (world.rank() == 0) {
-      return taskData->outputs_count[0] == 1;
+      return (taskData->outputs_count[0] == 1 && !(taskData->inputs.empty()));
     }
     return true;
   }
