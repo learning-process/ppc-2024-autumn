@@ -37,7 +37,7 @@ bool kolodkin_g_sentence_count_mpi::TestMPITaskSequential::validation() {
   return (flag1 && flag2);
 }
 
-bool kolodkin_g_sentence_count_mpi::TestMPITaskSequential::run() { 
+bool kolodkin_g_sentence_count_mpi::TestMPITaskSequential::run() {
   internal_order_test();
   res = countSentences(input_);
   return true;
