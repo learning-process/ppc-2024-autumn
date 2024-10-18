@@ -27,7 +27,6 @@ TEST(Sequential, Test_two_sentences) {
   ASSERT_EQ(out[0], 2);
 }
 TEST(Sequential, Test_sentences_with_special_symbols) {
-
   // Create data
   std::string in = "Hello!My name is Grisha! I have two pets: cat,dog,parrot.";
   std::vector<int> out(1, 0);
@@ -48,7 +47,6 @@ TEST(Sequential, Test_sentences_with_special_symbols) {
   ASSERT_EQ(out[0], 3);
 }
 TEST(Sequential, Test_sentences_with_special_symbols_in_end_of_sentence) {
-
   // Create data
   std::string in =
       "Hello!My name is Grisha! I have two pets: cat,dog,parrot. What is your name?! How are you!? Well...";
@@ -70,7 +68,6 @@ TEST(Sequential, Test_sentences_with_special_symbols_in_end_of_sentence) {
   ASSERT_EQ(out[0], 6);
 }
 TEST(Sequential, Test_sentences_with_double_symbols) {
-
   // Create data
   std::string in =
       "Hello!! My name is Grisha!! I have two pets: cat,dog,parrot. What is your name?! How are you!? Well...";
@@ -92,7 +89,6 @@ TEST(Sequential, Test_sentences_with_double_symbols) {
   ASSERT_EQ(out[0], 6);
 }
 TEST(Sequential, Big_text) {
-
   // Create data
   std::string in =
       "Otche nash, ize esi na nebeseh! Da svytitsa imya tvoe, da priidet tsarstvo tvoe! Da budet volya tvoya, ako na "
@@ -115,7 +111,6 @@ TEST(Sequential, Big_text) {
   testTaskSequential.post_processing();
   ASSERT_EQ(out[0], 7);
 }
-
 
 int main(int argc, char **argv) {
   testing::InitGoogleTest(&argc, argv);

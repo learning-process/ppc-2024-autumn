@@ -7,7 +7,6 @@
 #include "seq/kolodkin_g_sentence_count/include/ops_seq.hpp"
 
 TEST(sequential_example_perf_test, test_pipeline_run) {
-
   // Create data
   std::string global_str =
       "verifwriefnifnil!?vfnjklererjerjkerg...vrhklererffwjklfwefwejo!vefnklvevef?wfnkrkflwewefkl!vfnklvfklevf?"
@@ -45,7 +44,6 @@ TEST(sequential_example_perf_test, test_pipeline_run) {
 }
 
 TEST(sequential_example_perf_test, test_task_run) {
-
   // Create data
   std::string global_str = "Hello! My name is Grisha! Good morning! How are you!";
   std::vector<int> out(1, 0);

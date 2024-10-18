@@ -73,6 +73,7 @@ bool kolodkin_g_sentence_count_mpi::TestMPITaskParallel::validation() {
   return (flag1 && flag2);
 }
 
+
 bool kolodkin_g_sentence_count_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   int textSize = input_.length();
@@ -82,8 +83,7 @@ bool kolodkin_g_sentence_count_mpi::TestMPITaskParallel::run() {
   int chunkSize = textSize / world.size();
   if (world.rank() < world.size() - 1) {
     localText = input_.substr(world.rank() * chunkSize, chunkSize);
-  } 
-  else {
+  } else {
     localText = input_.substr(world.rank() * chunkSize);  
   }
 
