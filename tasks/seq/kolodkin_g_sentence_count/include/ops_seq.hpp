@@ -6,7 +6,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace nesterov_a_test_task_seq {
+namespace kolodkin_g_sentence_count_seq {
 
 class TestTaskSequential : public ppc::core::Task {
  public:
@@ -17,7 +17,8 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  int input_{}, res{};
+  std::string input_{};
+  int res{};
 };
 
 }  // namespace nesterov_a_test_task_seq
