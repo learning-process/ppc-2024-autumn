@@ -84,6 +84,6 @@ TEST(chistov_a_sum_of_matrix_elements, test_task_run) {
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(chistov_a_sum_of_matrix_elements::classic_way(global_matrix,n,m), global_sum[0]);
+    ASSERT_EQ(std::accumulate(global_matrix.begin(), global_matrix.end(), 0), global_sum[0]);
   }
 }
