@@ -85,6 +85,6 @@ TEST(chistov_a_sum_of_matrix_elements, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(1, global_sum[0]);
+    ASSERT_EQ(n*m, global_sum[0]);
   }
 }
