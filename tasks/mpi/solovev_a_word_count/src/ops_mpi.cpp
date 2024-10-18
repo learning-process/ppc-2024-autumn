@@ -8,19 +8,16 @@
 
 namespace solovev_a_word_count_mpi {
 
-std::string create_text(int quan_words) 
-{
+std::string create_text(int quan_words) {
   std::string res;
   std::string word = "word ";
-  for (int i = 0; i < quan_words; i++)
-  {
+  for (int i = 0; i < quan_words; i++) {
     res += word;
   }
   return res;
 }
 
-int word_count(const std::string& input)
-{
+int word_count(const std::string& input) {
   std::istringstream iss(input);
   return std::distance(std::istream_iterator<std::string>(iss), std::istream_iterator<std::string>());
 }
