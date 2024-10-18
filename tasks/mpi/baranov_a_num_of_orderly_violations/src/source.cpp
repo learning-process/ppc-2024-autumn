@@ -50,7 +50,7 @@ bool num_of_orderly_violations<iotype, cntype>::pre_processing() {
     loc_vec_size = send_counts[myid];
   }
   loc_vec_.reserve(loc_vec_size);
-  if (world.rank() == 0) {
+  if (myid == 0) {
     boost::mpi::scatterv(world, input_, send_counts, displs, loc_vec_.data(), loc_vec_size, 0);
   } else {
     boost::mpi::scatterv(world, loc_vec_.data(), loc_vec_size, 0);
@@ -88,7 +88,6 @@ bool num_of_orderly_violations<iotype, cntype>::validation() {
     if (taskData->outputs_count[0] == 1 && taskData->inputs_count.size() == 1 && taskData->inputs_count[0] >= 0) {
       return true;
     }
-    return false;
   }
   return true;
 }
