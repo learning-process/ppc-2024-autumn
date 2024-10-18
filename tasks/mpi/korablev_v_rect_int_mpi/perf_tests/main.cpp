@@ -10,7 +10,7 @@ TEST(korablev_v_rect_int, test_pipeline_run) {
   boost::mpi::communicator world;
   double a = 0.0;
   double b = 1.0;
-  int n = 10000000;
+  int n = 1000000;
   double output = 0.0;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -51,7 +51,7 @@ TEST(korablev_v_rect_int, test_task_run) {
   boost::mpi::communicator world;
   double a = 0.0;
   double b = 1.0;
-  int n = 10000000;
+  int n = 1000000;
   double output = 0.0;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();

@@ -2,6 +2,7 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#define _USE_MATH_DEFINES
 #include <cmath>
 #include <vector>
 

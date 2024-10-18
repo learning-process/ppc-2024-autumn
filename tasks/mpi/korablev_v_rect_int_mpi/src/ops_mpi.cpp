@@ -23,11 +23,6 @@ bool korablev_v_rect_int_mpi::RectangularIntegrationSequential::pre_processing()
   b_ = *tmp_ptr_b;
   n_ = *tmp_ptr_n;
 
-  if (!func_) {
-    std::cerr << "Error: func not found!" << std::endl;
-    return false;
-  }
-
   return true;
 }
 

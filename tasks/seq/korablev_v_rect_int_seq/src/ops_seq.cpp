@@ -27,10 +27,6 @@ bool korablev_v_rect_int_seq::RectangularIntegraitionSequential::validation() {
 bool korablev_v_rect_int_seq::RectangularIntegraitionSequential::run() {
   internal_order_test();
 
-  if (!func_) {
-    throw std::runtime_error("Error: Function for integration was not set.");
-  }
-
   result_ = integrate(func_, a_, b_, n_);
 
   std::this_thread::sleep_for(std::chrono::milliseconds(20));
