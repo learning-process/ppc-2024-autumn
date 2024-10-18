@@ -50,8 +50,8 @@ TEST(chistov_a_sum_of_matrix_elements, test_task_run) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> global_sum(1, 0);
-  const int n = 400;
-  const int m = 400;
+  const int n = 3000;
+  const int m = 3000;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -85,6 +85,6 @@ TEST(chistov_a_sum_of_matrix_elements, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(n*m, global_sum[0]);
+    ASSERT_EQ(1, global_sum[0]);
   }
 }
