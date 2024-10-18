@@ -64,10 +64,10 @@ bool solovev_a_word_count_mpi::TestMPITaskParallel::validation() {
   return true;
 }
 
-bool solovev_a_word_count_mpi::TestMPITaskParallel::run() { 
-  internal_order_test();
-  int l_size;
-  int l_count;
+bool solovev_a_word_count_mpi::TestMPITaskParallel::run() {
+   internal_order_test();
+   int l_size;
+   int l_count;
   if (input_.size() % world.size() == 0)
     l_size = input_.size() / world.size();
   else
