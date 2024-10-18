@@ -22,7 +22,7 @@ TEST(chistov_a_sum_of_matrix_elements_seq, test_int_sum_sequential) {
   TestTaskSequential.run();
   TestTaskSequential.post_processing();
 
-  int sum = chistov_a_sum_of_matrix_elements_seq::classic_way(global_matrix, n, m);
+  int sum = chistov_a_sum_of_matrix_elements_seq::classic_way_seq(global_matrix, n, m);
   ASSERT_EQ(reference_sum[0], sum);
 }
 
@@ -44,7 +44,7 @@ TEST(chistov_a_sum_of_matrix_elements_seq, test_double_sum_sequential) {
   TestTaskSequential.pre_processing();
   TestTaskSequential.run();
   TestTaskSequential.post_processing();
-  double sum = chistov_a_sum_of_matrix_elements_seq::classic_way(global_matrix, n, m);
+  double sum = chistov_a_sum_of_matrix_elements_seq::classic_way_seq(global_matrix, n, m);
 
   ASSERT_NEAR(reference_sum[0], sum, 1e-6);
 }
@@ -85,7 +85,7 @@ TEST(chistov_a_sum_of_matrix_elements_seq, test_sum_with_single_element_matrix_s
   TestTaskSequential.run();
   TestTaskSequential.post_processing();
 
-  int sum = chistov_a_sum_of_matrix_elements_seq::classic_way(global_matrix, n, m);
+  int sum = chistov_a_sum_of_matrix_elements_seq::classic_way_seq(global_matrix, n, m);
   ASSERT_EQ(reference_sum[0], sum);
 }
 

@@ -33,7 +33,7 @@ std::vector<T> get_random_matrix_seq(const int n, const int m) {
 }
 
 template <typename T>
-T classic_way(const std::vector<T> matrix, const int n, const int m) {
+T classic_way_seq(const std::vector<T> matrix, const int n, const int m) {
   T result = 0;
   for (int i = 0; i < n; ++i) {
     for (int j = 0; j < m; ++j) {
@@ -89,4 +89,4 @@ class TestTaskSequential : public ppc::core::Task {
 
 template class chistov_a_sum_of_matrix_elements_seq::TestTaskSequential<int>;
 template class chistov_a_sum_of_matrix_elements_seq::TestTaskSequential<double>;
-}  // namespace chistov_a_sum_of_matrix_elements
+}  // namespace chistov_a_sum_of_matrix_elements_seq
