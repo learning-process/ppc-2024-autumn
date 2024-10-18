@@ -26,7 +26,7 @@ bool num_of_orderly_violations<iotype, cntype>::pre_processing() {
   int n;
   if (myid == 0) {
     n = taskData->inputs_count[0];
-    input_ = std::vector<iotype>(n);
+    input_ = std::vector<iotype>(n + 1);
     void* ptr_r = taskData->inputs[0];
     void* ptr_d = input_.data();
     memcpy(ptr_d, ptr_r,
@@ -68,11 +68,12 @@ template <class iotype, class cntype>
 bool num_of_orderly_violations<iotype, cntype>::run() {
   internal_order_test();
   int loc_num = 0;
-  for (int i = 0; i != my_loc_vec_size - 1; ++i) {
+  for (int i = 0; i < my_loc_vec_size - 1; ++i) {
     if (loc_vec_[i + 1] < loc_vec_[i]) {
       loc_num++;
     }
   }
+
   reduce(world, loc_num, num_, std::plus(), 0);
   return true;
 }
