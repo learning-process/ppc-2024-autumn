@@ -19,8 +19,7 @@ TEST(solovev_a_word_count_mpi, test_em_str) {
     taskDataPar->outputs_count.emplace_back(global_out.size());
   }
 
-  solovev_a_word_count_mpi::TestMPITaskParallel testMpiTaskParallel(
-      taskDataPar);
+  solovev_a_word_count_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), false);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
