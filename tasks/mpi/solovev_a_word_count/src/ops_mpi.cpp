@@ -68,13 +68,14 @@ bool solovev_a_word_count_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   int l_size;
   int l_count;
+  int a = input_.size();
   if (input_.size() % world.size() == 0)
     l_size = input_.size() / world.size();
   else
     l_size = input_.size() / world.size() + 1;
   int first = world.rank() * l_size;
-  if (first < input_.size()) {
-    if (first + l_size >= input_.size()) {
+  if (first < a) {
+    if (first + l_size >= a) {
       l_size = input_.size() - first;
     }
     std::string l_str = input_.substr(first, l_size);
