@@ -30,7 +30,7 @@ bool drozhdinov_d_sum_cols_matrix_seq::TestTaskSequential::pre_processing() {
   // Init value for input and output
   input_ = std::vector<int>(taskData->inputs_count[0]);
   auto* ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (size_t i = 0; i < taskData->inputs_count[0]; i++) {
+  for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
     input_[i] = ptr[i];
   }
   cols = taskData->inputs_count[1];
@@ -53,7 +53,7 @@ bool drozhdinov_d_sum_cols_matrix_seq::TestTaskSequential::run() {
 
 bool drozhdinov_d_sum_cols_matrix_seq::TestTaskSequential::post_processing() {
   internal_order_test();
-  for (size_t i = 0; i < cols; i++) {
+  for (unsigned int i = 0; i < cols; i++) {
     reinterpret_cast<int*>(taskData->outputs[0])[i] = res[i];
   }
   return true;

@@ -104,4 +104,3 @@ TEST(drozhdinov_d_sum_cols_matrix, test_task_run) {
     ASSERT_EQ(expres, ans);
   }
 }
-

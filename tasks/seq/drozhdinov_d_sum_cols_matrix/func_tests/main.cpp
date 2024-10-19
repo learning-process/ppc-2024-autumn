@@ -1,12 +1,10 @@
 // Copyright 2023 Nesterov Alexander
-// seq drozhdinov_d_sum_cols_matrix func 
 #include <gtest/gtest.h>
 
 #include <random>
 #include <vector>
 
 #include "seq/drozhdinov_d_sum_cols_matrix/include/ops_seq.hpp"
-
 
 TEST(drozhdinov_d_sum_cols_matrix_seq, SquareMatrixTests1) {
   int cols = 2;

@@ -20,10 +20,7 @@ std::vector<int> drozhdinov_d_sum_cols_matrix_mpi::getRandomVector(int sz) {
   return vec;
 }
 
-
-int drozhdinov_d_sum_cols_matrix_mpi::makeLinCoords(int x, int y, int xSize) {
-    return y * xSize + x;
-}
+int drozhdinov_d_sum_cols_matrix_mpi::makeLinCoords(int x, int y, int xSize) { return y * xSize + x; }
 
 std::vector<int> drozhdinov_d_sum_cols_matrix_mpi::calculateMatrixSumSequentially(const std::vector<int>& matrix,
                                                                                   int xSize, int ySize, int fromX,
@@ -85,8 +82,7 @@ bool drozhdinov_d_sum_cols_matrix_mpi::TestMPITaskParallel::pre_processing() {
   
   if (world.rank() == 0) {
     rows = taskData->inputs_count[2];
-    cols = taskData->inputs_count[1];
-    
+    cols = taskData->inputs_count[1]; 
   }
   broadcast(world, cols, 0);
   broadcast(world, rows, 0);
@@ -107,8 +103,6 @@ bool drozhdinov_d_sum_cols_matrix_mpi::TestMPITaskParallel::pre_processing() {
   }
   broadcast(world, input_.data(), cols * rows, 0);
   
-
-
   /*local_input_ = std::vector<int>(delta);
   if (world.rank() == 0) {
     local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
@@ -134,11 +128,10 @@ bool drozhdinov_d_sum_cols_matrix_mpi::TestMPITaskParallel::run() {
   int delta = cols / world.size();
   delta += (cols % world.size() == 0) ? 0 : 1;
   int lastCol = std::min(cols, delta * (world.rank() + 1));
-  
   auto localSum = calculateMatrixSumSequentially(input_, cols, rows, delta * world.rank(), lastCol);
   localSum.resize(delta);
   
-  if (world.rank()==0) {
+  if (world.rank() == 0) {
     std::vector<int> localRes(cols + delta * world.rank());
     std::vector<int> sizes(world.size(), delta);
     boost::mpi::gatherv(world, localSum.data(), localSum.size(), localRes.data(), sizes, 0);

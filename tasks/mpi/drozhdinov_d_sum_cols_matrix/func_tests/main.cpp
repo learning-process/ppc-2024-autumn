@@ -4,7 +4,6 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-
 #include <vector>
 
 #include "mpi/drozhdinov_d_sum_cols_matrix/include/ops_mpi.hpp"
@@ -20,7 +19,6 @@ TEST(drozhdinov_d_sum_cols_matrix_mpi, ParallelTest1) {
   std::vector<int> expres_par(cols, 0);
   std::vector<int> ans = {3, 1};
 
-  
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -173,4 +171,3 @@ TEST(drozhdinov_d_sum_cols_matrix_mpi, ParallelTest3) {
     ASSERT_EQ(expres_par, expres_seq);
   }
 }
-
