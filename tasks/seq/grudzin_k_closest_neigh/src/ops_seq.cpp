@@ -26,7 +26,7 @@ bool grudzin_k_closest_neigh_seq::TestTaskSequential::validation() {
 
 bool grudzin_k_closest_neigh_seq::TestTaskSequential::run() {
   internal_order_test();
-  for (int i = 0; i < input_.size()-1; i++) {
+  for (size_t i = 0; i < input_.size()-1; i++) {
     res = std::min(res, std::abs(input_[i] - input_[i + 1]));
   }
   //std::cout << res << std::endl;
