@@ -8,8 +8,7 @@
 
 int makeLinCoords(int x, int y, int xSize);
 std::vector<int> calculateMatrixSumSequentially(const std::vector<int>& matrix, int xSize, int ySize, int fromX, 
-						int toX);
-
+						 int toX);
 namespace drozhdinov_d_sum_cols_matrix_seq {
 
 class TestTaskSequential : public ppc::core::Task {
