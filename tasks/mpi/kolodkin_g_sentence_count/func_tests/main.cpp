@@ -67,7 +67,7 @@ TEST(Parallel_Operations_MPI, Test_sentences_with_special_symbols) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    std::string str = "Hello!My name is Grisha! I have two pets: cat,dog,parrot.";
+    std::string str = "Hello! My name is Grisha! I have cat,dog,parrot.";
     for (unsigned long int i = 0; i < str.length(); i++) {
       global_str.push_back(str[i]);
     }
@@ -118,7 +118,7 @@ TEST(Parallel_Operations_MPI, Test_sentences_with_special_symbols_in_end_of_sent
   std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     std::string str =
-        "Hello!My name is Grisha! I have two pets: cat,dog,parrot. What is your name?! How are you!? Well.";
+        "Hello! My name is Grisha! I have cat, dog, parrot. What is your name?! How are you!? Well...";
     for (unsigned long int i = 0; i < str.length(); i++) {
       global_str.push_back(str[i]);
     }
@@ -168,7 +168,7 @@ TEST(Parallel_Operations_MPI, Test_sentences_with_double_symbols) {
   std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     std::string str =
-        "Hello!! My name is Grisha!! I have two pets: cat,dog,parrot. What is your name?! How are you!? Well.";
+        "Hello!! My name is Grisha!! I have two pets: cat,dog,parrot. What is your name?! How are you!? Well...";
     for (unsigned long int i = 0; i < str.length(); i++) {
       global_str.push_back(str[i]);
     }
