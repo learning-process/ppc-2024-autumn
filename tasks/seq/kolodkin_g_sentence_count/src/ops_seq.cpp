@@ -5,11 +5,11 @@
 
 using namespace std::chrono_literals;
 
-int countSentences(const std::string& text) {
+int countSentences(const std::vector<char>& text) {
   int count = 0;
-  for (unsigned long i = 0; i < text.length(); i++) {
+  for (unsigned long i = 0; i < text.size(); i++) {
     if ((text[i] == '.' || text[i] == '!' || text[i] == '?') &&
-        ((text[i + 1] != '.' && text[i + 1] != '!' && text[i + 1] != '?') || i + 1 == text.length())) {
+        ((text[i + 1] != '.' && text[i + 1] != '!' && text[i + 1] != '?') || i + 1 == text.size())) {
       count++;
     }
   }
@@ -18,9 +18,11 @@ int countSentences(const std::string& text) {
 
 bool kolodkin_g_sentence_count_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
-  // Init string
-  input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
-  // Init value for output
+  input_ = std::vector<char>(taskData->inputs_count[0]);
+  auto* tmp_ptr = reinterpret_cast<char*>(taskData->inputs[0]);
+  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+    input_[i] = tmp_ptr[i];
+  }
   res = 0;
   return true;
 }
