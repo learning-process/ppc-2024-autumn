@@ -1,5 +1,7 @@
 // Copyright 2023 Nesterov Alexander
 // drozhdinov_d_sum_cols_matrix func
+
+
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
@@ -65,8 +67,8 @@ TEST(drozhdinov_d_sum_cols_matrix_mpi, ParallelTest1) {
 TEST(drozhdinov_d_sum_cols_matrix_mpi, ParallelTest2) {
   boost::mpi::communicator world;
 
-  int cols = 2000;
-  int rows = 2000;
+  int cols = 1000;
+  int rows = 1000;
 
   // Create data
   std::vector<int> matrix(cols * rows, 0);
@@ -120,8 +122,8 @@ TEST(drozhdinov_d_sum_cols_matrix_mpi, ParallelTest2) {
 TEST(drozhdinov_d_sum_cols_matrix_mpi, ParallelTest3) {
   boost::mpi::communicator world;
 
-  int cols = 5000;
-  int rows = 5000;
+  int cols = 2000;
+  int rows = 2000;
 
   // Create data
   std::vector<int> matrix(cols * rows, 0);

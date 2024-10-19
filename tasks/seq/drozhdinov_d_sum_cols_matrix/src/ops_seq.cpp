@@ -7,8 +7,7 @@ using namespace std::chrono_literals;
 
 int makeLinCoords(int x, int y, int xSize) { return y * xSize + x; }
 
-std::vector<int> calculateMatrixSumSequentially(const std::vector<int>& matrix, int xSize, int ySize, int fromX,
-                                                int toX) {
+std::vector<int> calcMatrixSumSeq(const std::vector<int>& matrix, int xSize, int ySize, int fromX, int toX) {
   std::vector<int> result;
   for (int x = fromX; x < toX; x++) {
     int columnSum = 0;
@@ -22,7 +21,7 @@ std::vector<int> calculateMatrixSumSequentially(const std::vector<int>& matrix, 
 }
 
 std::vector<int> calculateMatrixSumSequentially(const std::vector<int>& matrix, int xSize, int ySize) {
-  return calculateMatrixSumSequentially(matrix, xSize, ySize, 0, xSize);
+  return calcMatrixSumSeq(matrix, xSize, ySize, 0, xSize);
 }
 
 bool drozhdinov_d_sum_cols_matrix_seq::TestTaskSequential::pre_processing() {

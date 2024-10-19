@@ -17,8 +17,7 @@ namespace drozhdinov_d_sum_cols_matrix_mpi {
 
 std::vector<int> getRandomVector(int sz);
 int makeLinCoords(int x, int y, int xSize);
-std::vector<int> calculateMatrixSumSequentially(const std::vector<int>& matrix, int xSize, int ySize, int fromX,
-						 int toX);
+std::vector<int> calcMatSumSeq(const std::vector<int>& matrix, int xSize, int ySize, int fromX, int toX);
 std::vector<int> calculateMatrixSumSequentially(const std::vector<int>& matrix, int xSize, int ySize);
 class TestMPITaskSequential : public ppc::core::Task {
  public:
