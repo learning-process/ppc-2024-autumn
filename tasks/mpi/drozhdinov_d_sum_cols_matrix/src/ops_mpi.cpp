@@ -70,7 +70,7 @@ bool drozhdinov_d_sum_cols_matrix_mpi::TestMPITaskSequential::run() {
 
 bool drozhdinov_d_sum_cols_matrix_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
-  for (unsigned int i = 0; i < cols; i++) {
+  for (int i = 0; i < cols; i++) {
     reinterpret_cast<int*>(taskData->outputs[0])[i] = res[i];
   }
   return true;
@@ -89,7 +89,7 @@ bool drozhdinov_d_sum_cols_matrix_mpi::TestMPITaskParallel::pre_processing() {
     // Init vectors
     input_ = std::vector<int>(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+    for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
       input_[i] = tmp_ptr[i];
     }
     /*for (int proc = 1; proc < world.size(); proc++) {
