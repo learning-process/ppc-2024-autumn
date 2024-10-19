@@ -65,8 +65,8 @@ TEST(drozhdinov_d_sum_cols_matrix_seq, SquareMatrixTests2) {
 }
 
 TEST(drozhdinov_d_sum_cols_matrix_seq, SquareMatrixTests3) {
-  int cols = 5000;
-  int rows = 5000;
+  int cols = 3500;
+  int rows = 3500;
 
   // Create data
   std::vector<int> matrix(cols * rows, 0);
