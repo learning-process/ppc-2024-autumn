@@ -53,7 +53,7 @@ bool drozhdinov_d_sum_cols_matrix_seq::TestTaskSequential::run() {
 
 bool drozhdinov_d_sum_cols_matrix_seq::TestTaskSequential::post_processing() {
   internal_order_test();
-  for (unsigned int i = 0; i < cols; i++) {
+  for (int i = 0; i < cols; i++) {
     reinterpret_cast<int*>(taskData->outputs[0])[i] = res[i];
   }
   return true;
