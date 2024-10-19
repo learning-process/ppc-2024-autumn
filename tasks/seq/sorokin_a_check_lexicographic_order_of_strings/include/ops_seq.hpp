@@ -18,7 +18,7 @@ class TestTaskSequential : public ppc::core::Task {
 
  private:
   std::vector<std::vector<char>> input_;
-  int res{};
+  int res_{};
 };
 
 }  // namespace sorokin_a_check_lexicographic_order_of_strings_seq

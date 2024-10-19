@@ -20,7 +20,7 @@ bool sorokin_a_check_lexicographic_order_of_strings_mpi::TestMPITaskSequential::
       input_[i][j] = tmp_ptr[j];
     }
   }
-  res = 0;
+  res_ = 0;
   return true;
 }
 
@@ -33,20 +33,19 @@ bool sorokin_a_check_lexicographic_order_of_strings_mpi::TestMPITaskSequential::
   internal_order_test();
   for (size_t i = 0; i < std::min(input_[0].size(), input_[1].size()); ++i) {
     if (static_cast<int>(input_[0][i]) > static_cast<int>(input_[1][i])) {
-      res = 1;
+      res_ = 1;
       break;
     }
     if (static_cast<int>(input_[0][i]) < static_cast<int>(input_[1][i])) {
       break;
     }
   }
-  std::this_thread::sleep_for(20ms);
   return true;
 }
 
 bool sorokin_a_check_lexicographic_order_of_strings_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+  reinterpret_cast<int*>(taskData->outputs[0])[0] = res_;
   return true;
 }
 
@@ -81,7 +80,7 @@ bool sorokin_a_check_lexicographic_order_of_strings_mpi::TestMPITaskParallel::pr
     world.recv(0, 0, local_input1_.data(), delta);
     world.recv(0, 1, local_input2_.data(), delta);
   }
-  res = 2;
+  res_ = 2;
   return true;
 }
 
@@ -112,19 +111,18 @@ bool sorokin_a_check_lexicographic_order_of_strings_mpi::TestMPITaskParallel::ru
   if (world.rank() == 0) {
     for (int result : all_res) {
       if (result != 2) {
-        res = result;
+        res_ = result;
         break;
       }
     }
   }
-  std::this_thread::sleep_for(20ms);
   return true;
 }
 
 bool sorokin_a_check_lexicographic_order_of_strings_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+    reinterpret_cast<int*>(taskData->outputs[0])[0] = res_;
   }
   return true;
 }

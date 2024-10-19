@@ -6,9 +6,12 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/sorokin_a_check_lexicographic_order_of_strings/include/ops_seq.hpp"
 
-TEST(sorokin_a_check_lexicographic_order_of_strings_seq, test_res_0) {
+TEST(sorokin_a_check_lexicographic_order_of_strings_seq, The_difference_is_in_20000000_characters) {
   // Create data
-  std::vector<std::vector<char>> in = {{'a', 'p', 'p'}, {'b', 'a', 'g'}};
+  std::vector<char> str1(20000000, 'a');
+  std::vector<char> str2(19999999, 'a');
+  str2.push_back('b');
+  std::vector<std::vector<char>> in = {str1, str2};
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -44,9 +47,12 @@ TEST(sorokin_a_check_lexicographic_order_of_strings_seq, test_res_0) {
   ASSERT_EQ(0, out[0]);
 }
 
-TEST(sorokin_a_check_lexicographic_order_of_strings_seq, test_res_1) {
+TEST(sorokin_a_check_lexicographic_order_of_strings_seq, The_difference_is_in_20000000_characters_res1) {
   // Create data
-  std::vector<std::vector<char>> in = {{'a', 'p', 'p'}, {'a', 'a', 'g'}};
+  std::vector<char> str1(20000000, 'b');
+  std::vector<char> str2(19999999, 'b');
+  str2.push_back('a');
+  std::vector<std::vector<char>> in = {str1, str2};
   std::vector<int> out(1, 0);
 
   // Create TaskData

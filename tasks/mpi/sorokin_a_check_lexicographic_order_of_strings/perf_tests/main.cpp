@@ -7,9 +7,12 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/sorokin_a_check_lexicographic_order_of_strings/include/ops_mpi.hpp"
 
-TEST(sorokin_a_check_lexicographic_order_of_strings_mpi, test_basic) {
+TEST(sorokin_a_check_lexicographic_order_of_strings_mpi, The_difference_is_in_20000000_characters) {
   boost::mpi::communicator world;
-  std::vector<std::vector<char>> strs = {{'a', 'p', 'p', 'p'}, {'b', 'a', 'g', 'p'}};
+  std::vector<char> str1(20000000, 'a');
+  std::vector<char> str2(19999999, 'a');
+  str2.push_back('b');
+  std::vector<std::vector<char>> strs = {str1, str2};
   std::vector<int32_t> res(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -47,9 +50,12 @@ TEST(sorokin_a_check_lexicographic_order_of_strings_mpi, test_basic) {
   }
 }
 
-TEST(sorokin_a_check_lexicographic_order_of_strings_mpi, test_basic2) {
+TEST(sorokin_a_check_lexicographic_order_of_strings_mpi, The_difference_is_in_20000000_characters_res1) {
   boost::mpi::communicator world;
-  std::vector<std::vector<char>> strs = {{'a', 'a', 'z', 'p'}, {'a', 'a', 'g', 'p'}};
+  std::vector<char> str1(20000000, 'b');
+  std::vector<char> str2(19999999, 'b');
+  str2.push_back('a');
+  std::vector<std::vector<char>> strs = {str1, str2};
   std::vector<int32_t> res(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();

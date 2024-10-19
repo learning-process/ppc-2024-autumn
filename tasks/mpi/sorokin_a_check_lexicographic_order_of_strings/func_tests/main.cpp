@@ -7,7 +7,7 @@
 
 #include "mpi/sorokin_a_check_lexicographic_order_of_strings/include/ops_mpi.hpp"
 
-TEST(sorokin_a_check_lexicographic_order_of_strings_mpi, Test_Basic) {
+TEST(sorokin_a_check_lexicographic_order_of_strings_mpi, The_difference_is_in_1_characters) {
   boost::mpi::communicator world;
   std::vector<std::vector<char>> strs = {{'a', 'p', 'p', 'p'}, {'b', 'a', 'g', 'p'}};
   std::vector<int32_t> res(1, 0);
@@ -53,7 +53,7 @@ TEST(sorokin_a_check_lexicographic_order_of_strings_mpi, Test_Basic) {
   }
 }
 
-TEST(sorokin_a_check_lexicographic_order_of_strings_mpi, Test_Basic2) {
+TEST(sorokin_a_check_lexicographic_order_of_strings_mpi, The_difference_is_in_1_characters_res1) {
   boost::mpi::communicator world;
   std::vector<std::vector<char>> strs = {{'c', 'p', 'p', 'p'}, {'b', 'a', 'g', 'p'}};
   std::vector<int32_t> res(1, 0);
@@ -98,7 +98,7 @@ TEST(sorokin_a_check_lexicographic_order_of_strings_mpi, Test_Basic2) {
     ASSERT_EQ(1, res[0]);
   }
 }
-TEST(sorokin_a_check_lexicographic_order_of_strings_mpi, Test_Basic3) {
+TEST(sorokin_a_check_lexicographic_order_of_strings_mpi, The_difference_is_in_3_characters_res1) {
   boost::mpi::communicator world;
   std::vector<std::vector<char>> strs = {{'a', 'a', 'p', 'p'}, {'a', 'a', 'g', 'p'}};
   std::vector<int32_t> res(1, 0);
@@ -143,7 +143,7 @@ TEST(sorokin_a_check_lexicographic_order_of_strings_mpi, Test_Basic3) {
     ASSERT_EQ(1, res[0]);
   }
 }
-TEST(sorokin_a_check_lexicographic_order_of_strings_mpi, Test_Basic4) {
+TEST(sorokin_a_check_lexicographic_order_of_strings_mpi, The_difference_is_in_4_characters) {
   boost::mpi::communicator world;
   std::vector<std::vector<char>> strs = {{'a', 'p', 'p', 'a'}, {'a', 'p', 'p', 'p'}};
   std::vector<int32_t> res(1, 0);

@@ -5,7 +5,7 @@
 
 #include "seq/sorokin_a_check_lexicographic_order_of_strings/include/ops_seq.hpp"
 
-TEST(sorokin_a_check_lexicographic_order_of_strings_seq, Basic) {
+TEST(sorokin_a_check_lexicographic_order_of_strings_seq, The_difference_is_in_3_characters) {
   // Create data
   std::vector<std::vector<char>> in = {{'a', 'b', 'c'}, {'a', 'b', 'd'}};
   std::vector<int> out(1, 0);
@@ -28,7 +28,7 @@ TEST(sorokin_a_check_lexicographic_order_of_strings_seq, Basic) {
   ASSERT_EQ(0, out[0]);
 }
 
-TEST(sorokin_a_check_lexicographic_order_of_strings_seq, With_1_on_1) {
+TEST(sorokin_a_check_lexicographic_order_of_strings_seq, The_difference_is_in_1_characters_res1) {
   // Create data
   std::vector<std::vector<char>> in = {{'f', 'p', 'p'}, {'a', 'p', 'g'}};
   std::vector<int> out(1, 0);
@@ -51,7 +51,7 @@ TEST(sorokin_a_check_lexicographic_order_of_strings_seq, With_1_on_1) {
   ASSERT_EQ(1, out[0]);
 }
 
-TEST(sorokin_a_check_lexicographic_order_of_strings_seq, With_1_on_2) {
+TEST(sorokin_a_check_lexicographic_order_of_strings_seq, The_difference_is_in_2_characters_res1) {
   // Create data
   std::vector<std::vector<char>> in = {{'c', 'p', 'p'}, {'c', 'a', 'g'}};
   std::vector<int> out(1, 0);
@@ -74,7 +74,7 @@ TEST(sorokin_a_check_lexicographic_order_of_strings_seq, With_1_on_2) {
   ASSERT_EQ(1, out[0]);
 }
 
-TEST(sorokin_a_check_lexicographic_order_of_strings_seq, With_0_1) {
+TEST(sorokin_a_check_lexicographic_order_of_strings_seq, The_difference_is_in_1_characters) {
   // Create data
   std::vector<std::vector<char>> in = {{'a', 'p', 'p'}, {'b', 'a', 'g'}};
   std::vector<int> out(1, 0);
@@ -97,7 +97,7 @@ TEST(sorokin_a_check_lexicographic_order_of_strings_seq, With_0_1) {
   ASSERT_EQ(0, out[0]);
 }
 
-TEST(sorokin_a_check_lexicographic_order_of_strings_seq, With_1_on_3) {
+TEST(sorokin_a_check_lexicographic_order_of_strings_seq, The_difference_is_in_3_characters_res1) {
   // Create data
   std::vector<std::vector<char>> in = {{'b', 'p', 'p'}, {'b', 'p', 'g'}};
   std::vector<int> out(1, 0);
