@@ -13,7 +13,8 @@ TEST(korovin_n_min_val_row_matrix_mpi, test_pipeline_run_min) {
   std::vector<int32_t> global_min;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int count_rows, count_columns;
+  int count_rows;
+  int count_columns;
 
   if (world.rank() == 0) {
     count_rows = 5000;
@@ -51,7 +52,8 @@ TEST(korovin_n_min_val_row_matrix_mpi_perf_test, test_task_run_min) {
   std::vector<int32_t> global_min;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int count_rows, count_columns;
+  int count_rows;
+  int count_columns;
 
   if (world.rank() == 0) {
     count_rows = 5000;

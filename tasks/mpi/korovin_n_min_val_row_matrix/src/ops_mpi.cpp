@@ -70,7 +70,9 @@ bool korovin_n_min_val_row_matrix_mpi::TestMPITaskSequential::post_processing() 
 bool korovin_n_min_val_row_matrix_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
-  int rows = 0, cols = 0;
+  int rows = 0;
+  int cols = 0;
+
   if (world.rank() == 0) {
     rows = taskData->inputs_count[0];
     cols = taskData->inputs_count[1];

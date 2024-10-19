@@ -13,7 +13,8 @@ TEST(korovin_n_min_val_row_matrix_seq, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   auto testTaskSequential = std::make_shared<korovin_n_min_val_row_matrix_seq::TestTaskSequential>(taskDataSeq);
 
-  std::vector<std::vector<int>> matrix_rnd = testTaskSequential->generate_rnd_matrix(rows, cols);
+  std::vector<std::vector<int>> matrix_rnd =
+      korovin_n_min_val_row_matrix_seq::TestTaskSequential::generate_rnd_matrix(rows, cols);
 
   for (auto& row : matrix_rnd) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
@@ -56,7 +57,8 @@ TEST(korovin_n_min_val_row_matrix_seq, test_task_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   auto testTaskSequential = std::make_shared<korovin_n_min_val_row_matrix_seq::TestTaskSequential>(taskDataSeq);
 
-  std::vector<std::vector<int>> matrix_rnd = testTaskSequential->generate_rnd_matrix(rows, cols);
+  std::vector<std::vector<int>> matrix_rnd =
+      korovin_n_min_val_row_matrix_seq::TestTaskSequential::generate_rnd_matrix(rows, cols);
 
   for (auto& row : matrix_rnd) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
