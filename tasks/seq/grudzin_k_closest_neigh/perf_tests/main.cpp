@@ -51,8 +51,7 @@ TEST(grudzin_k_closest_neigh_seq, test_task_run) {
   int size = 10000000;
   // Create data
   std::vector<int> in(size);
-  for (int i = 0; i < size; ++i)
-  {
+  for (int i = 0; i < size; ++i){
     in[i] = 2 * i;
   }
   std::vector<int> out(1, 0);

@@ -7,7 +7,7 @@
 
 TEST(grudzin_k_closest_neigh_seq, Test_Close_Lazy) {
   // Create data
-  std::vector<int> in = {2,3};
+  std::vector<int> in = {2, 3};
   std::vector<int> out(1, 0);
   int ans = 1;
 
@@ -51,7 +51,7 @@ TEST(grudzin_k_closest_neigh_seq, Test_Close_24) {
 
 TEST(grudzin_k_closest_neigh_seq, Test_Close_Negative) {
   // Create data
-  std::vector<int> in = {-1,-3,-5,-4,-2};
+  std::vector<int> in = {-1, -3, -5, -4, -2};
   std::vector<int> out(1, 0);
   int ans = 1;
 

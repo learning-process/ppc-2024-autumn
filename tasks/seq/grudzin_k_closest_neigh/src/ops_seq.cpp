@@ -1,8 +1,9 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/grudzin_k_closest_neigh/include/ops_seq.hpp"
 
-#include <thread>
 #include <climits>
+#include <thread>
+
 
 using namespace std::chrono_literals;
 
@@ -26,10 +27,9 @@ bool grudzin_k_closest_neigh_seq::TestTaskSequential::validation() {
 
 bool grudzin_k_closest_neigh_seq::TestTaskSequential::run() {
   internal_order_test();
-  for (size_t i = 0; i < input_.size()-1; i++) {
+  for (size_t i = 0; i < input_.size() - 1; i++) {
     res = std::min(res, std::abs(input_[i] - input_[i + 1]));
   }
-  //std::cout << res << std::endl;
   return true;
 }
 
