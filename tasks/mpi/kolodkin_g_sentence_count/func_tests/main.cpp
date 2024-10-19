@@ -11,7 +11,7 @@ TEST(Parallel_Operations_MPI, Test_two_sentences) {
   boost::mpi::communicator world;
   std::string str = "Hello!My name is Grisha!";
   std::vector<char> global_str;
-  for (int i = 0; i < str.length(); i++) {
+  for (unsigned long int i = 0; i < str.length(); i++) {
     global_str.push_back(str[i]);
   }
 
@@ -61,7 +61,7 @@ TEST(Parallel_Operations_MPI, Test_sentences_with_special_symbols) {
   boost::mpi::communicator world;
   std::string str = "Hello!My name is Grisha! I have two pets: cat,dog,parrot.";
   std::vector<char> global_str;
-  for (int i = 0; i < str.length(); i++) {
+  for (unsigned long int i = 0; i < str.length(); i++) {
     global_str.push_back(str[i]);
   }
 
@@ -112,7 +112,7 @@ TEST(Parallel_Operations_MPI, Test_sentences_with_special_symbols_in_end_of_sent
   std::string str =
       "Hello!My name is Grisha! I have two pets: cat,dog,parrot. What is your name?! How are you!? Well...";
   std::vector<char> global_str;
-  for (int i = 0; i < str.length(); i++) {
+  for (unsigned long int i = 0; i < str.length(); i++) {
     global_str.push_back(str[i]);
   }
   // Create data
@@ -161,7 +161,7 @@ TEST(Parallel_Operations_MPI, Test_sentences_with_double_symbols) {
   std::string str =
       "Hello!! My name is Grisha!! I have two pets: cat,dog,parrot. What is your name?! How are you!? Well...";
   std::vector<char> global_str;
-  for (int i = 0; i < str.length(); i++) {
+  for (unsigned long int i = 0; i < str.length(); i++) {
     global_str.push_back(str[i]);
   }
   // Create data
@@ -212,7 +212,8 @@ TEST(Parallel_Operations_MPI, Big_text) {
       "nebeseh i na zemle. Hleb nas nasyshnii dazd nam dnes, i ostavi nam dolgi nasha. Yakozhe i my ostavlyaem "
       "dolznikom nashim! I ne vvedi nas vo iskushenie, no izbavi nas ot lukavogo... Amin!";
   std::vector<char> global_str;
-  for (int i = 0; i < str.length(); i++) {
+  std::vector<char> global_str;
+  for (unsigned long int i = 0; i < str.length(); i++) {
     global_str.push_back(str[i]);
   }
   // Create data
