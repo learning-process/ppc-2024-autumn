@@ -1,7 +1,4 @@
 // Copyright 2023 Nesterov Alexander
-// drozhdinov_d_sum_cols_matrix func
-
-
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
