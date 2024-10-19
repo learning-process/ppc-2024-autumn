@@ -9,7 +9,6 @@
 
 TEST(Parallel_Operations_MPI, Test_two_sentences) {
   boost::mpi::communicator world;
-  std::string str = "Hello!My name is Grisha!";
   std::vector<char> global_str;
 
   // Create data
@@ -18,6 +17,7 @@ TEST(Parallel_Operations_MPI, Test_two_sentences) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
+    std::string str = "Hello!My name is Grisha!";
     for (unsigned long int i = 0; i < str.length(); i++) {
       global_str.push_back(str[i]);
     }
@@ -59,7 +59,6 @@ TEST(Parallel_Operations_MPI, Test_two_sentences) {
 
 TEST(Parallel_Operations_MPI, Test_sentences_with_special_symbols) {
   boost::mpi::communicator world;
-  std::string str = "Hello!My name is Grisha! I have two pets: cat,dog,parrot.";
   std::vector<char> global_str;
 
   // Create data
@@ -68,6 +67,7 @@ TEST(Parallel_Operations_MPI, Test_sentences_with_special_symbols) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
+    std::string str = "Hello!My name is Grisha! I have two pets: cat,dog,parrot.";
     for (unsigned long int i = 0; i < str.length(); i++) {
       global_str.push_back(str[i]);
     }
@@ -109,8 +109,6 @@ TEST(Parallel_Operations_MPI, Test_sentences_with_special_symbols) {
 
 TEST(Parallel_Operations_MPI, Test_sentences_with_special_symbols_in_end_of_sentence) {
   boost::mpi::communicator world;
-  std::string str =
-      "Hello!My name is Grisha! I have two pets: cat,dog,parrot. What is your name?! How are you!? Well...";
   std::vector<char> global_str;
 
   // Create data
@@ -119,6 +117,8 @@ TEST(Parallel_Operations_MPI, Test_sentences_with_special_symbols_in_end_of_sent
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
+    std::string str =
+        "Hello!My name is Grisha! I have two pets: cat,dog,parrot. What is your name?! How are you!? Well...";
     for (unsigned long int i = 0; i < str.length(); i++) {
       global_str.push_back(str[i]);
     }
@@ -159,8 +159,6 @@ TEST(Parallel_Operations_MPI, Test_sentences_with_special_symbols_in_end_of_sent
 }
 TEST(Parallel_Operations_MPI, Test_sentences_with_double_symbols) {
   boost::mpi::communicator world;
-  std::string str =
-      "Hello!! My name is Grisha!! I have two pets: cat,dog,parrot. What is your name?! How are you!? Well...";
   std::vector<char> global_str;
 
   // Create data
@@ -169,6 +167,8 @@ TEST(Parallel_Operations_MPI, Test_sentences_with_double_symbols) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
+    std::string str =
+        "Hello!! My name is Grisha!! I have two pets: cat,dog,parrot. What is your name?! How are you!? Well...";
     for (unsigned long int i = 0; i < str.length(); i++) {
       global_str.push_back(str[i]);
     }
@@ -209,10 +209,6 @@ TEST(Parallel_Operations_MPI, Test_sentences_with_double_symbols) {
 }
 TEST(Parallel_Operations_MPI, Big_text) {
   boost::mpi::communicator world;
-  std::string str =
-      "Otche nash, ize esi na nebeseh! Da svytitsa imya tvoe, da priidet tsarstvo tvoe! Da budet volya tvoya, ako na "
-      "nebeseh i na zemle. Hleb nas nasyshnii dazd nam dnes, i ostavi nam dolgi nasha. Yakozhe i my ostavlyaem "
-      "dolznikom nashim! I ne vvedi nas vo iskushenie, no izbavi nas ot lukavogo... Amin!";
   std::vector<char> global_str;
 
   // Create data
@@ -221,6 +217,10 @@ TEST(Parallel_Operations_MPI, Big_text) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
+    std::string str =
+        "Otche nash, ize esi na nebeseh! Da svytitsa imya tvoe, da priidet tsarstvo tvoe! Da budet volya tvoya, ako na "
+        "nebeseh i na zemle. Hleb nas nasyshnii dazd nam dnes, i ostavi nam dolgi nasha. Yakozhe i my ostavlyaem "
+        "dolznikom nashim! I ne vvedi nas vo iskushenie, no izbavi nas ot lukavogo... Amin!";
     for (unsigned long int i = 0; i < str.length(); i++) {
       global_str.push_back(str[i]);
     }
