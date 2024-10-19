@@ -45,18 +45,17 @@ class MostDiffNeighborElements : public ppc::core::Task {
     size_t curr_index = 0;
     // get iterator for current element and his neighbor element vector
     auto iter_curr = input_.begin();
-    auto iter_next = iter_curr+1;
+    auto iter_next = iter_curr + 1;
     auto iter_end = input_.end();
     auto iter_begin = input_.begin();
     // algorithm search max delta with using address arithmetic pointers
-    while (iter_curr != (iter_end-1)) {
+    while (iter_curr != (iter_end - 1)) {
       delta = fabs(*iter_next - *iter_curr);
       if (delta > max_delta) {
         if (iter_begin == iter_curr) {
           curr_index = 0;
           max_delta = delta;
-        } 
-        else {
+        } else {
           curr_index = std::distance(input_.begin(), iter_curr);
           max_delta = delta;
         }
@@ -64,16 +63,16 @@ class MostDiffNeighborElements : public ppc::core::Task {
       iter_curr++;
       iter_next = iter_curr + 1;
     }
-    //initialize results
+    // initialize results
     result = max_delta;
-    //std::cout << result; //max delta here
+    // std::cout << result; //max delta here
     right_index = curr_index + 1;
     left_index = curr_index;
     left_elem = input_[left_index];
 
     right_elem = input_[right_index];
-    //std::cout << "left el " << left_elem << "left_ind " << left_index << std::endl;
-    //std::cout << "right el" << right_elem << "right_ind" << right_index << std::endl;
+    // std::cout << "left el " << left_elem << "left_ind " << left_index << std::endl;
+    // std::cout << "right el" << right_elem << "right_ind" << right_index << std::endl;
     return true;
   }
   // get results
@@ -94,8 +93,7 @@ class MostDiffNeighborElements : public ppc::core::Task {
   TypeElem left_elem;
   TypeElem right_elem;
 };
-}
-// namespace kholin_k_vector_neighbour_diff_elems_seq
+}   // namespace kholin_k_vector_neighbour_diff_elems_seq
 
    
  
