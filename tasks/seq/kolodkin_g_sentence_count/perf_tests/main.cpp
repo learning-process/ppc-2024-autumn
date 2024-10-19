@@ -11,16 +11,12 @@ TEST(sequential_example_perf_test, test_pipeline_run) {
   std::string str =
       "verifwriefnifnil!?vfnjklererjerjkerg...vrhklererffwjklfwefwejo!vefnklvevef?wfnkrkflwewefkl!vfnklvfklevf?"
       "vrrnervevrnvreiev!";
-  std::vector<char> global_str;
-  for (unsigned long int i = 0; i < str.length(); i++) {
-    global_str.push_back(str[i]);
-  }
   std::vector<int> out(1, 0);
-
+  std::vector<std::string> in(1, str);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_str.data()));
-  taskDataSeq->inputs_count.emplace_back(global_str.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskDataSeq->inputs_count.emplace_back(in.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
@@ -50,16 +46,12 @@ TEST(sequential_example_perf_test, test_pipeline_run) {
 TEST(sequential_example_perf_test, test_task_run) {
   // Create data
   std::string str = "Hello! My name is Grisha! Good morning! How are you!";
-  std::vector<char> global_str;
-  for (unsigned long int i = 0; i < str.length(); i++) {
-    global_str.push_back(str[i]);
-  }
   std::vector<int> out(1, 0);
-
+  std::vector<std::string> in(1, str);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_str.data()));
-  taskDataSeq->inputs_count.emplace_back(global_str.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskDataSeq->inputs_count.emplace_back(in.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
