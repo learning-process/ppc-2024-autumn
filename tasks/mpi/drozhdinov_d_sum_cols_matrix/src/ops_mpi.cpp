@@ -42,13 +42,12 @@ std::vector<int> drozhdinov_d_sum_cols_matrix_mpi::calculateMatrixSumSequentiall
   return calculateMatrixSumSequentially(matrix, xSize, ySize, 0, xSize);
 }
 
-
 bool drozhdinov_d_sum_cols_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init value for input and output
   input_ = std::vector<int>(taskData->inputs_count[0]);
   auto* ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (size_t i = 0; i < taskData->inputs_count[0]; i++) {
+  for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
     input_[i] = ptr[i];
   }
   cols = taskData->inputs_count[1];
@@ -71,7 +70,7 @@ bool drozhdinov_d_sum_cols_matrix_mpi::TestMPITaskSequential::run() {
 
 bool drozhdinov_d_sum_cols_matrix_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
-  for (size_t i = 0; i < cols; i++) {
+  for (unsigned int i = 0; i < cols; i++) {
     reinterpret_cast<int*>(taskData->outputs[0])[i] = res[i];
   }
   return true;
@@ -79,15 +78,13 @@ bool drozhdinov_d_sum_cols_matrix_mpi::TestMPITaskSequential::post_processing() 
 
 bool drozhdinov_d_sum_cols_matrix_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  
   if (world.rank() == 0) {
     rows = taskData->inputs_count[2];
-    cols = taskData->inputs_count[1]; 
+    cols = taskData->inputs_count[1];
   }
   broadcast(world, cols, 0);
   broadcast(world, rows, 0);
   // broadcast(world, delta, 0);
-
   if (world.rank() == 0) {
     // Init vectors
     input_ = std::vector<int>(taskData->inputs_count[0]);
@@ -102,7 +99,6 @@ bool drozhdinov_d_sum_cols_matrix_mpi::TestMPITaskParallel::pre_processing() {
     input_ = std::vector<int>(cols * rows);
   }
   broadcast(world, input_.data(), cols * rows, 0);
-  
   /*local_input_ = std::vector<int>(delta);
   if (world.rank() == 0) {
     local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
@@ -130,7 +126,6 @@ bool drozhdinov_d_sum_cols_matrix_mpi::TestMPITaskParallel::run() {
   int lastCol = std::min(cols, delta * (world.rank() + 1));
   auto localSum = calculateMatrixSumSequentially(input_, cols, rows, delta * world.rank(), lastCol);
   localSum.resize(delta);
-  
   if (world.rank() == 0) {
     std::vector<int> localRes(cols + delta * world.rank());
     std::vector<int> sizes(world.size(), delta);

@@ -47,7 +47,6 @@ TEST(drozhdinov_d_sum_cols_matrix_seq, SquareMatrixTests2) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
   taskDataSeq->inputs_count.emplace_back(matrix.size());
   taskDataSeq->inputs_count.emplace_back(cols);
@@ -78,7 +77,6 @@ TEST(drozhdinov_d_sum_cols_matrix_seq, SquareMatrixTests3) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
   taskDataSeq->inputs_count.emplace_back(matrix.size());
   taskDataSeq->inputs_count.emplace_back(cols);
