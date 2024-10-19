@@ -38,7 +38,7 @@ bool ermolaev_v_min_matrix_seq::TestTaskSequential::pre_processing() {
   }
 
   // Init value for output
-  res = INT_MAX;
+  res_ = INT_MAX;
   return true;
 }
 
@@ -52,8 +52,8 @@ bool ermolaev_v_min_matrix_seq::TestTaskSequential::run() {
   internal_order_test();
   for (size_t i = 0; i < input_.size(); i++) {
     for (size_t j = 0; j < input_[i].size(); j++) {
-      if (input_[i][j] < res) {
-        res = input_[i][j];
+      if (input_[i][j] < res_) {
+        res_ = input_[i][j];
       }
     }
   }
@@ -62,6 +62,6 @@ bool ermolaev_v_min_matrix_seq::TestTaskSequential::run() {
 
 bool ermolaev_v_min_matrix_seq::TestTaskSequential::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+  reinterpret_cast<int*>(taskData->outputs[0])[0] = res_;
   return true;
 }

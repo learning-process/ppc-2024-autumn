@@ -38,7 +38,7 @@ bool ermolaev_v_min_matrix_mpi::TestMPITaskSequential::pre_processing() {
   }
 
   // Init value for output
-  res = INT_MAX;
+  res_ = INT_MAX;
   return true;
 }
 
@@ -56,13 +56,13 @@ bool ermolaev_v_min_matrix_mpi::TestMPITaskSequential::run() {
     local_res[i] = *std::min_element(input_[i].begin(), input_[i].end());
   }
 
-  res = *std::min_element(local_res.begin(), local_res.end());
+  res_ = *std::min_element(local_res.begin(), local_res.end());
   return true;
 }
 
 bool ermolaev_v_min_matrix_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+  reinterpret_cast<int*>(taskData->outputs[0])[0] = res_;
   return true;
 }
 
@@ -102,7 +102,7 @@ bool ermolaev_v_min_matrix_mpi::TestMPITaskParallel::pre_processing() {
   }
 
   // Init value for output
-  res = INT_MAX;
+  res_ = INT_MAX;
   return true;
 }
 
@@ -119,7 +119,7 @@ bool ermolaev_v_min_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
   int local_res = *std::min_element(local_input_.begin(), local_input_.end());
-  reduce(world, local_res, res, boost::mpi::minimum<int>(), 0);
+  reduce(world, local_res, res_, boost::mpi::minimum<int>(), 0);
 
   return true;
 }
@@ -127,7 +127,7 @@ bool ermolaev_v_min_matrix_mpi::TestMPITaskParallel::run() {
 bool ermolaev_v_min_matrix_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+    reinterpret_cast<int*>(taskData->outputs[0])[0] = res_;
   }
   return true;
 }

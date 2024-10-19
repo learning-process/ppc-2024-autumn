@@ -22,7 +22,7 @@ class TestTaskSequential : public ppc::core::Task {
 
  private:
   std::vector<std::vector<int>> input_;
-  int res{};
+  int res_{};
 };
 
 }  // namespace ermolaev_v_min_matrix_seq

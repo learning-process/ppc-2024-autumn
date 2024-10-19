@@ -28,7 +28,7 @@ class TestMPITaskSequential : public ppc::core::Task {
 
  private:
   std::vector<std::vector<int>> input_;
-  int res{};
+  int res_{};
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -41,7 +41,7 @@ class TestMPITaskParallel : public ppc::core::Task {
 
  private:
   std::vector<int> input_, local_input_;
-  int res{};
+  int res_{};
   boost::mpi::communicator world;
 };
 
