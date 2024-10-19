@@ -29,12 +29,7 @@ bool kolodkin_g_sentence_count_seq::TestTaskSequential::pre_processing() {
 
 bool kolodkin_g_sentence_count_seq::TestTaskSequential::validation() {
   internal_order_test();
-  bool flag1 = (taskData->inputs_count[0] >= 0 && taskData->outputs_count[0] == 1);
-  bool flag2 = false;
-  if (typeid(*taskData->inputs[0]).name() == typeid(uint8_t).name()) {
-    flag2 = true;
-  }
-  return (flag1 && flag2);
+  return taskData->outputs_count[0] == 1;
 }
 
 bool kolodkin_g_sentence_count_seq::TestTaskSequential::run() {

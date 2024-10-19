@@ -33,12 +33,7 @@ bool kolodkin_g_sentence_count_mpi::TestMPITaskSequential::pre_processing() {
 
 bool kolodkin_g_sentence_count_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  bool flag1 = (taskData->inputs_count[0] >= 0 && taskData->outputs_count[0] == 1);
-  bool flag2 = false;
-  if (typeid(*taskData->inputs[0]).name() == typeid(uint8_t).name()) {
-    flag2 = true;
-  }
-  return (flag1 && flag2);
+  return taskData->outputs_count[0] == 1;
 }
 
 bool kolodkin_g_sentence_count_mpi::TestMPITaskSequential::run() {
@@ -79,24 +74,23 @@ bool kolodkin_g_sentence_count_mpi::TestMPITaskParallel::pre_processing() {
   } else {
     world.recv(0, 0, local_input_.data(), delta);
   }
+  localSentenceCount = 0;
   res = 0;
   return true;
 }
 
 bool kolodkin_g_sentence_count_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
-  bool flag1 = (taskData->inputs_count[0] >= 0 && taskData->outputs_count[0] == 1);
-  bool flag2 = false;
-  if (typeid(*taskData->inputs[0]).name() == typeid(uint8_t).name()) {
-    flag2 = true;
+  if (world.rank() == 0) {
+    return taskData->outputs_count[0] == 1;
   }
-  return (flag1 && flag2);
+  return true;
 }
 
 bool kolodkin_g_sentence_count_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  int localSentenceCount = countSentences(local_input_);
-  reduce(world, localSentenceCount, res, boost::mpi::minimum<int>(), 0);
+  localSentenceCount = countSentences(local_input_);
+  reduce(world, localSentenceCount, res, std::plus<>(), 0);
   std::this_thread::sleep_for(20ms);
   return true;
 }
