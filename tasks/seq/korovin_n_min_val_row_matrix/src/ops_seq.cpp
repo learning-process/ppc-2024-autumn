@@ -13,9 +13,9 @@ bool korovin_n_min_val_row_matrix_seq::TestTaskSequential::pre_processing() {
 
   input_.resize(rows, std::vector<int>(cols));
 
-  for (size_t i = 0; i < rows; i++) {
+  for (int i = 0; i < rows; i++) {
     int* input_matrix = reinterpret_cast<int*>(taskData->inputs[i]);
-    for (size_t j = 0; j < cols; j++) {
+    for (int j = 0; j < cols; j++) {
       input_[i][j] = input_matrix[j];
     }
   }

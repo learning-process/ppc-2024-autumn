@@ -53,7 +53,7 @@ TEST(korovin_n_min_val_row_matrix_mpi, find_min_val_in_row_10x10_matrix) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    for (size_t i = 0; i < count_rows; i++) {
+    for (int i = 0; i < count_rows; i++) {
       ASSERT_EQ(global_min[i], -25);
     }
   }
@@ -105,7 +105,7 @@ TEST(korovin_n_min_val_row_matrix_mpi, find_min_val_in_row_100x100_matrix) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    for (size_t i = 0; i < count_rows; i++) {
+    for (int i = 0; i < count_rows; i++) {
       ASSERT_EQ(global_min[i], -25);
     }
   }
@@ -157,7 +157,7 @@ TEST(korovin_n_min_val_row_matrix_mpi, find_min_val_in_row_100x500_matrix) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    for (size_t i = 0; i < count_rows; i++) {
+    for (int i = 0; i < count_rows; i++) {
       ASSERT_EQ(global_min[i], -25);
     }
   }
@@ -209,7 +209,7 @@ TEST(korovin_n_min_val_row_matrix_mpi, find_min_val_in_row_5000x5000_matrix) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    for (size_t i = 0; i < count_rows; i++) {
+    for (int i = 0; i < count_rows; i++) {
       ASSERT_EQ(global_min[i], -25);
     }
   }

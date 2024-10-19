@@ -44,7 +44,7 @@ TEST(korovin_n_min_val_row_matrix_seq, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  for (size_t i = 0; i < rows; i++) {
+  for (int i = 0; i < rows; i++) {
     ASSERT_EQ(v_res[i], -25);
   }
 }
@@ -87,7 +87,7 @@ TEST(korovin_n_min_val_row_matrix_seq, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  for (size_t i = 0; i < rows; i++) {
+  for (int i = 0; i < rows; i++) {
     ASSERT_EQ(v_res[i], -25);
   }
 }

@@ -30,7 +30,7 @@ TEST(korovin_n_min_val_row_matrix_seq, find_min_val_in_row_10x10_matrix) {
   ASSERT_TRUE(testTaskSequential.run());
   ASSERT_TRUE(testTaskSequential.post_processing());
 
-  for (size_t i = 0; i < rows; i++) {
+  for (int i = 0; i < rows; i++) {
     ASSERT_EQ(v_res[i], -25);
   }
 }
@@ -60,7 +60,7 @@ TEST(korovin_n_min_val_row_matrix_seq, find_min_val_in_row_100x100_matrix) {
   ASSERT_TRUE(testTaskSequential.run());
   ASSERT_TRUE(testTaskSequential.post_processing());
 
-  for (size_t i = 0; i < rows; i++) {
+  for (int i = 0; i < rows; i++) {
     ASSERT_EQ(v_res[i], -25);
   }
 }
@@ -90,7 +90,7 @@ TEST(korovin_n_min_val_row_matrix_seq, find_min_val_in_row_100x500_matrix) {
   ASSERT_TRUE(testTaskSequential.run());
   ASSERT_TRUE(testTaskSequential.post_processing());
 
-  for (size_t i = 0; i < rows; i++) {
+  for (int i = 0; i < rows; i++) {
     ASSERT_EQ(v_res[i], -25);
   }
 }
@@ -120,7 +120,7 @@ TEST(korovin_n_min_val_row_matrix_seq, find_min_val_in_row_5000x5000_matrix) {
   ASSERT_TRUE(testTaskSequential.run());
   ASSERT_TRUE(testTaskSequential.post_processing());
 
-  for (size_t i = 0; i < rows; i++) {
+  for (int i = 0; i < rows; i++) {
     ASSERT_EQ(v_res[i], -25);
   }
 }
