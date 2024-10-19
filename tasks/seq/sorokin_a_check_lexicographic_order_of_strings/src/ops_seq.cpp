@@ -30,12 +30,10 @@ bool sorokin_a_check_lexicographic_order_of_strings_seq::TestTaskSequential::run
     if (static_cast<int>(input_[0][i]) > static_cast<int>(input_[1][i])) {
       res = 1;
       break;
-    } else if (static_cast<int>(input_[0][i]) < static_cast<int>(input_[1][i])) {
+    }
+    if (static_cast<int>(input_[0][i]) < static_cast<int>(input_[1][i])) {
       break;
     }
-  }
-  if (res == 0 && input_[0].size() > input_[1].size()) {
-    res = 1;
   }
   std::this_thread::sleep_for(20ms);
   return true;
