@@ -33,7 +33,7 @@ TEST(Sequential, Test_sentences_with_special_symbols) {
   // Create data
   std::string in = "Hello!My name is Grisha! I have two pets: cat,dog,parrot.";
   std::vector<char> global_str;
-  for (int i = 0; i < in.length(); i++) {
+  for (unsigned long int i = 0; i < in.length(); i++) {
     global_str.push_back(in[i]);
   }
   std::vector<int> out(1, 0);
