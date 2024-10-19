@@ -3,9 +3,9 @@
 
 #include <vector>
 
-#include "seq/example/include/ops_seq.hpp"
+#include "seq/suvorov_d_sum_of_vector_elements/include/vec.hpp"
 
-TEST(Sequential, Test_Sum_10) {
+TEST(suvorov_d_sum_of_vector_elements_seq, Test_Sum_10) {
   const int count = 10;
 
   // Create data
@@ -20,7 +20,7 @@ TEST(Sequential, Test_Sum_10) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  nesterov_a_test_task_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  suvorov_d_sum_of_vector_elements_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
@@ -28,7 +28,7 @@ TEST(Sequential, Test_Sum_10) {
   ASSERT_EQ(count, out[0]);
 }
 
-TEST(Sequential, Test_Sum_20) {
+TEST(suvorov_d_sum_of_vector_elements_seq, Test_Sum_20) {
   const int count = 20;
 
   // Create data
@@ -43,7 +43,7 @@ TEST(Sequential, Test_Sum_20) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  nesterov_a_test_task_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  suvorov_d_sum_of_vector_elements_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
@@ -51,7 +51,7 @@ TEST(Sequential, Test_Sum_20) {
   ASSERT_EQ(count, out[0]);
 }
 
-TEST(Sequential, Test_Sum_50) {
+TEST(suvorov_d_sum_of_vector_elements_seq, Test_Sum_50) {
   const int count = 50;
 
   // Create data
@@ -66,7 +66,7 @@ TEST(Sequential, Test_Sum_50) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  nesterov_a_test_task_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  suvorov_d_sum_of_vector_elements_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
@@ -74,7 +74,7 @@ TEST(Sequential, Test_Sum_50) {
   ASSERT_EQ(count, out[0]);
 }
 
-TEST(Sequential, Test_Sum_70) {
+TEST(suvorov_d_sum_of_vector_elements_seq, Test_Sum_70) {
   const int count = 70;
 
   // Create data
@@ -89,7 +89,7 @@ TEST(Sequential, Test_Sum_70) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  nesterov_a_test_task_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  suvorov_d_sum_of_vector_elements_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
@@ -97,7 +97,7 @@ TEST(Sequential, Test_Sum_70) {
   ASSERT_EQ(count, out[0]);
 }
 
-TEST(Sequential, Test_Sum_100) {
+TEST(suvorov_d_sum_of_vector_elements_seq, Test_Sum_100) {
   const int count = 100;
 
   // Create data
@@ -112,7 +112,7 @@ TEST(Sequential, Test_Sum_100) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  nesterov_a_test_task_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  suvorov_d_sum_of_vector_elements_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();

@@ -4,9 +4,9 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "seq/example/include/ops_seq.hpp"
+#include "seq/suvorov_d_sum_of_vector_elements/include/vec.hpp"
 
-TEST(sequential_example_perf_test, test_pipeline_run) {
+TEST(suvorov_d_sum_of_vector_elements_seq, test_pipeline_run) {
   const int count = 100;
 
   // Create data
@@ -21,7 +21,7 @@ TEST(sequential_example_perf_test, test_pipeline_run) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto testTaskSequential = std::make_shared<nesterov_a_test_task_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential = std::make_shared<suvorov_d_sum_of_vector_elements_seq::TestTaskSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -43,7 +43,7 @@ TEST(sequential_example_perf_test, test_pipeline_run) {
   ASSERT_EQ(count, out[0]);
 }
 
-TEST(sequential_example_perf_test, test_task_run) {
+TEST(suvorov_d_sum_of_vector_elements_seq, test_task_run) {
   const int count = 100;
 
   // Create data
@@ -58,7 +58,7 @@ TEST(sequential_example_perf_test, test_task_run) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto testTaskSequential = std::make_shared<nesterov_a_test_task_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential = std::make_shared<suvorov_d_sum_of_vector_elements_seq::TestTaskSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();

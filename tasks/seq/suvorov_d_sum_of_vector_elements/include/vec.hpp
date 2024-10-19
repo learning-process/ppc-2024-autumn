@@ -6,7 +6,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace nesterov_a_test_task_seq {
+namespace suvorov_d_sum_of_vector_elements_seq {
 
 class TestTaskSequential : public ppc::core::Task {
  public:
@@ -20,4 +20,4 @@ class TestTaskSequential : public ppc::core::Task {
   int input_{}, res{};
 };
 
-}  // namespace nesterov_a_test_task_seq
+}  // namespace suvorov_d_sum_of_vector_elements_seq
