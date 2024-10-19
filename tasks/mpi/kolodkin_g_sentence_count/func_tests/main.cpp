@@ -212,7 +212,6 @@ TEST(Parallel_Operations_MPI, Big_text) {
       "nebeseh i na zemle. Hleb nas nasyshnii dazd nam dnes, i ostavi nam dolgi nasha. Yakozhe i my ostavlyaem "
       "dolznikom nashim! I ne vvedi nas vo iskushenie, no izbavi nas ot lukavogo... Amin!";
   std::vector<char> global_str;
-  std::vector<char> global_str;
   for (unsigned long int i = 0; i < str.length(); i++) {
     global_str.push_back(str[i]);
   }
