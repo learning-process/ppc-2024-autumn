@@ -77,7 +77,7 @@ class TestMPITaskParallel : public ppc::core::Task {
       std::vector<int> distribution;
       std::vector<int> displacement;
       if (distribute(distribution, displacement, amount, world.size())) {
-        std::transform(std::begin(distribution), std::end(distribution) - 1, std::begin(distribution),
+        std::transform(distribution.cbegin(), distribution.cend() - 1, distribution.begin(),
                        [](auto x) { return x + 1; });
       }
 
@@ -178,7 +178,7 @@ class TestMPITaskSequential : public ppc::core::Task {
     internal_order_test();
 
     const std::size_t size = input_.size();
-    if (size > 0) {
+    if (size > 1) {
       bool neg = input_[0] < 0;
       for (std::size_t i = 1; i < size; i++) {
         bool cur = input_[i] < 0;

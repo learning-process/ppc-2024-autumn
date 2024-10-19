@@ -46,7 +46,7 @@ class TestTaskSequential : public ppc::core::Task {
     internal_order_test();
 
     const std::size_t size = input_.size();
-    if (size > 0) {
+    if (size > 1) {
       bool neg = input_[0] < 0;
       for (std::size_t i = 1; i < size; i++) {
         bool cur = input_[i] < 0;
