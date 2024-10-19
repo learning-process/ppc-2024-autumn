@@ -14,7 +14,7 @@ TEST(korovin_n_min_val_row_matrix_seq, find_min_val_in_row_10x10_matrix) {
   korovin_n_min_val_row_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   std::vector<std::vector<int>> matrix_rnd = testTaskSequential.generate_rnd_matrix(rows, cols);
 
-  for(auto& row : matrix_rnd){
+  for (auto& row : matrix_rnd) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
   }
 
@@ -22,7 +22,7 @@ TEST(korovin_n_min_val_row_matrix_seq, find_min_val_in_row_10x10_matrix) {
   taskDataSeq->inputs_count.emplace_back(cols);
 
   std::vector<int> v_res(rows, 0);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(v_res.data()));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(v_res.data()));
   taskDataSeq->outputs_count.emplace_back(v_res.size());
 
   ASSERT_EQ(testTaskSequential.validation(), true);
@@ -44,7 +44,7 @@ TEST(korovin_n_min_val_row_matrix_seq, find_min_val_in_row_100x100_matrix) {
   korovin_n_min_val_row_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   std::vector<std::vector<int>> matrix_rnd = testTaskSequential.generate_rnd_matrix(rows, cols);
 
-  for(auto& row : matrix_rnd){
+  for (auto& row : matrix_rnd) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
   }
 
@@ -52,7 +52,7 @@ TEST(korovin_n_min_val_row_matrix_seq, find_min_val_in_row_100x100_matrix) {
   taskDataSeq->inputs_count.emplace_back(cols);
 
   std::vector<int> v_res(rows, 0);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(v_res.data()));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(v_res.data()));
   taskDataSeq->outputs_count.emplace_back(v_res.size());
 
   ASSERT_EQ(testTaskSequential.validation(), true);
@@ -74,7 +74,7 @@ TEST(korovin_n_min_val_row_matrix_seq, find_min_val_in_row_100x500_matrix) {
   korovin_n_min_val_row_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   std::vector<std::vector<int>> matrix_rnd = testTaskSequential.generate_rnd_matrix(rows, cols);
 
-  for(auto& row : matrix_rnd){
+  for (auto& row : matrix_rnd) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
   }
 
@@ -82,7 +82,7 @@ TEST(korovin_n_min_val_row_matrix_seq, find_min_val_in_row_100x500_matrix) {
   taskDataSeq->inputs_count.emplace_back(cols);
 
   std::vector<int> v_res(rows, 0);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(v_res.data()));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(v_res.data()));
   taskDataSeq->outputs_count.emplace_back(v_res.size());
 
   ASSERT_EQ(testTaskSequential.validation(), true);
@@ -104,7 +104,7 @@ TEST(korovin_n_min_val_row_matrix_seq, find_min_val_in_row_5000x5000_matrix) {
   korovin_n_min_val_row_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   std::vector<std::vector<int>> matrix_rnd = testTaskSequential.generate_rnd_matrix(rows, cols);
 
-  for(auto& row : matrix_rnd){
+  for (auto& row : matrix_rnd) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
   }
 
@@ -112,7 +112,7 @@ TEST(korovin_n_min_val_row_matrix_seq, find_min_val_in_row_5000x5000_matrix) {
   taskDataSeq->inputs_count.emplace_back(cols);
 
   std::vector<int> v_res(rows, 0);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(v_res.data()));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(v_res.data()));
   taskDataSeq->outputs_count.emplace_back(v_res.size());
 
   ASSERT_EQ(testTaskSequential.validation(), true);
