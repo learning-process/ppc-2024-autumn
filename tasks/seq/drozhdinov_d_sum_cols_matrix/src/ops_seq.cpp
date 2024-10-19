@@ -5,7 +5,7 @@
 
 using namespace std::chrono_literals;
 
-int linearizeCoordinates(int x, int y, int xSize) { return y * xSize + x; }
+int makeLinCoords(int x, int y, int xSize) { return y * xSize + x; }
 
 std::vector<int> calculateMatrixSumSequentially(const std::vector<int>& matrix, int xSize, int ySize, int fromX,
                                                 int toX) {
@@ -13,7 +13,7 @@ std::vector<int> calculateMatrixSumSequentially(const std::vector<int>& matrix, 
   for (int x = fromX; x < toX; x++) {
     int columnSum = 0;
     for (int y = 0; y < ySize; y++) {
-      int linearizedCoordinate = linearizeCoordinates(x, y, xSize);
+      int linearizedCoordinate = makeLinCoords(x, y, xSize);
       columnSum += matrix[linearizedCoordinate];
     }
     result.push_back(columnSum);

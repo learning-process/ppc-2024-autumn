@@ -1,4 +1,5 @@
 // Copyright 2023 Nesterov Alexander
+// seq example func 
 #include <gtest/gtest.h>
 
 #include <vector>
@@ -121,6 +122,6 @@ TEST(Sequential, Test_Sum_100) {
 }
 
 int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
+	testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
 }

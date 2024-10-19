@@ -1,4 +1,5 @@
 // Copyright 2023 Nesterov Alexander
+// seq drozhdinov_d_sum_cols_matrix perf
 #include <gtest/gtest.h>
 
 #include <vector>
@@ -92,9 +93,4 @@ TEST(drozhdinov_d_sum_cols_matrix_seq, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
   ASSERT_EQ(expres, ans);
-}
-
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
 }
