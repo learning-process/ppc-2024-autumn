@@ -9,17 +9,6 @@
 
 using namespace std::chrono_literals;
 
-int countSentences(const std::vector<char>& text) {
-  int count = 0;
-  for (unsigned long i = 0; i < text.size(); i++) {
-    if ((text[i] == '.' || text[i] == '!' || text[i] == '?') &&
-        ((text[i + 1] != '.' && text[i + 1] != '!' && text[i + 1] != '?') || i + 1 == text.size())) {
-      count++;
-    }
-  }
-  return count;
-}
-
 bool kolodkin_g_sentence_count_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   input_ = std::vector<char>(taskData->inputs_count[0]);
@@ -38,7 +27,12 @@ bool kolodkin_g_sentence_count_mpi::TestMPITaskSequential::validation() {
 
 bool kolodkin_g_sentence_count_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-  res = countSentences(input_);
+  for (unsigned long i = 0; i < input_.size(); i++) {
+    if ((input_[i] == '.' || input_[i] == '!' || input_[i] == '?') &&
+        ((input_[i + 1] != '.' && input_[i + 1] != '!' && input_[i + 1] != '?') || i + 1 == input_.size())) {
+      res++;
+    }
+  }
   return true;
 }
 
@@ -89,7 +83,13 @@ bool kolodkin_g_sentence_count_mpi::TestMPITaskParallel::validation() {
 
 bool kolodkin_g_sentence_count_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  localSentenceCount = countSentences(local_input_);
+  for (unsigned long i = 0; i < local_input_.size(); i++) {
+    if ((local_input_[i] == '.' || local_input_[i] == '!' || local_input_[i] == '?') &&
+        ((local_input_[i + 1] != '.' && local_input_[i + 1] != '!' && local_input_[i + 1] != '?') ||
+         i + 1 == local_input_.size())) {
+      localSentenceCount++;
+    }
+  }
   reduce(world, localSentenceCount, res, std::plus<>(), 0);
   std::this_thread::sleep_for(20ms);
   return true;
