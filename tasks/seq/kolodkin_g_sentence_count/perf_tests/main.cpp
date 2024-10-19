@@ -8,9 +8,13 @@
 
 TEST(sequential_example_perf_test, test_pipeline_run) {
   // Create data
-  std::string global_str =
+  std::string str =
       "verifwriefnifnil!?vfnjklererjerjkerg...vrhklererffwjklfwefwejo!vefnklvevef?wfnkrkflwewefkl!vfnklvfklevf?"
       "vrrnervevrnvreiev!";
+  std::vector<char> global_str;
+  for (int i = 0; i < str.length(); i++) {
+    global_str.push_back(str[i]);
+  }
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -45,7 +49,11 @@ TEST(sequential_example_perf_test, test_pipeline_run) {
 
 TEST(sequential_example_perf_test, test_task_run) {
   // Create data
-  std::string global_str = "Hello! My name is Grisha! Good morning! How are you!";
+  std::string str = "Hello! My name is Grisha! Good morning! How are you!";
+  std::vector<char> global_str;
+  for (int i = 0; i < str.length(); i++) {
+    global_str.push_back(str[i]);
+  }
   std::vector<int> out(1, 0);
 
   // Create TaskData

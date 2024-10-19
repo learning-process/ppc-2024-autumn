@@ -9,9 +9,13 @@
 
 TEST(mpi_example_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
-  std::string global_str =
+  std::string str =
       "verifwriefnifnil!?vfnjklererjerjkerg...vrhklererffwjklfwefwejo!vefnklvevef?wfnkrkflwewefkl!vfnklvfklevf?"
       "vrrnervevrnvreiev!";
+  std::vector<char> global_str;
+  for (int i = 0; i < str.length(); i++) {
+    global_str.push_back(str[i]);
+  }
   std::vector<int32_t> global_sum(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -48,9 +52,13 @@ TEST(mpi_example_perf_test, test_pipeline_run) {
 
 TEST(mpi_example_perf_test, test_task_run) {
   boost::mpi::communicator world;
-  std::string global_str =
+  std::string str =
       "Na krayu dorogi stoyal dub! Eto byl ogromnuy, v dva obhvata dub. Knyaz Andrey podosel k dubu! Boze prabiy! Kak "
       "tebya zovut? Ya dub! A ya knyaz Andrey! Zdorovo! Poka-poka, dub! Poka, Andrey!";
+  std::vector<char> global_str;
+  for (int i = 0; i < str.length(); i++) {
+    global_str.push_back(str[i]);
+  }
   std::vector<int32_t> global_sum(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();

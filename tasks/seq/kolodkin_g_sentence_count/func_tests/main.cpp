@@ -8,6 +8,10 @@
 TEST(Sequential, Test_two_sentences) {
   // Create data
   std::string in = "Hello! My name is Grisha!";
+  std::vector<char> global_str;
+  for (int i = 0; i < in.length(); i++) {
+    global_str.push_back(in[i]);
+  }
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -28,6 +32,10 @@ TEST(Sequential, Test_two_sentences) {
 TEST(Sequential, Test_sentences_with_special_symbols) {
   // Create data
   std::string in = "Hello!My name is Grisha! I have two pets: cat,dog,parrot.";
+  std::vector<char> global_str;
+  for (int i = 0; i < in.length(); i++) {
+    global_str.push_back(in[i]);
+  }
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -49,6 +57,10 @@ TEST(Sequential, Test_sentences_with_special_symbols_in_end_of_sentence) {
   // Create data
   std::string in =
       "Hello!My name is Grisha! I have two pets: cat,dog,parrot. What is your name?! How are you!? Well...";
+  std::vector<char> global_str;
+  for (int i = 0; i < in.length(); i++) {
+    global_str.push_back(in[i]);
+  }
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -70,6 +82,10 @@ TEST(Sequential, Test_sentences_with_double_symbols) {
   // Create data
   std::string in =
       "Hello!! My name is Grisha!! I have two pets: cat,dog,parrot. What is your name?! How are you!? Well...";
+  std::vector<char> global_str;
+  for (int i = 0; i < in.length(); i++) {
+    global_str.push_back(in[i]);
+  }
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -93,6 +109,10 @@ TEST(Sequential, Big_text) {
       "Otche nash, ize esi na nebeseh! Da svytitsa imya tvoe, da priidet tsarstvo tvoe! Da budet volya tvoya, ako na "
       "nebeseh i na zemle. Hleb nas nasyshnii dazd nam dnes, i ostavi nam dolgi nasha. Yakozhe i my ostavlyaem "
       "dolznikom nashim! I ne vvedi nas vo iskushenie, no izbavi nas ot lukavogo... Amin!";
+  std::vector<char> global_str;
+  for (int i = 0; i < in.length(); i++) {
+    global_str.push_back(in[i]);
+  }
   std::vector<int> out(1, 0);
 
   // Create TaskData
