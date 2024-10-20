@@ -8,7 +8,7 @@
 
 //=========================================sequence=========================================
 
-const int SIZE = 1220123;
+const int SIZE = 1220000;
 
 TEST(khasanyanov_k_average_vector_seq, test_pipeline_run) {
   std::vector<int> global_vec(SIZE, 4);
