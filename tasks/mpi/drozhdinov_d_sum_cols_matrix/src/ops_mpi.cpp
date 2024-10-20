@@ -22,7 +22,7 @@ std::vector<int> drozhdinov_d_sum_cols_matrix_mpi::getRandomVector(int sz) {
 
 int drozhdinov_d_sum_cols_matrix_mpi::makeLinCoords(int x, int y, int xSize) { return y * xSize + x; }
 
-std::vector<int> drozhdinov_d_sum_cols_matrix_mpi::calcMatSumSeq(const std::vector<int>& matrix, int xSize, int ySize, 
+std::vector<int> drozhdinov_d_sum_cols_matrix_mpi::calcMatSumSeq(const std::vector<int>& matrix, int xSize, int ySize,
                                                                  int fromX, int toX) {
   std::vector<int> result;
   for (int x = fromX; x < toX; x++) {
