@@ -158,7 +158,7 @@ bool khasanyanov_k_average_vector_mpi::AvgVectorMPITaskParallel<In, Out>::run() 
   Out local_sum{};
   local_sum = static_cast<Out>(std::accumulate(local_input_.begin(), local_input_.end(), 0.0, std::plus()));
   mpi::reduce(world, local_sum, avg, std::plus(), 0);
-  std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  std::this_thread::sleep_for(std::chrono::milliseconds(5));
   return true;
 }
 
