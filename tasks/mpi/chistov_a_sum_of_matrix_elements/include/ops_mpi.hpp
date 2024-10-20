@@ -82,12 +82,8 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool post_processing() override {
     internal_order_test();
 
-    if (!taskData->outputs.empty() && taskData->outputs[0] != nullptr) {
-      reinterpret_cast<T*>(taskData->outputs[0])[0] = res;
-      return true;
-    }
-
-    return false;
+    reinterpret_cast<T*>(taskData->outputs[0])[0] = res;
+    return true;
   }
 
  private:
