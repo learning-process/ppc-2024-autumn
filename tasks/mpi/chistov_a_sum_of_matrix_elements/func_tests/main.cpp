@@ -142,12 +142,54 @@ TEST(chistov_a_sum_of_matrix_elements, test_with_empty_matrix_parallel) {
   }
 }
 
+TEST(chistov_a_sum_of_matrix_elements, returns_empty_matrix_when_small_n_or_m_) {
+  auto matrix1 = chistov_a_sum_of_matrix_elements::get_random_matrix<int>(0, 1);
+  EXPECT_TRUE(matrix1.empty());
+  auto matrix2 = chistov_a_sum_of_matrix_elements::get_random_matrix<int>(1, 0);
+  EXPECT_TRUE(matrix2.empty());
+}
+
 TEST(chistov_a_sum_of_matrix_elements, test_with_large_matrix_parallel) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> global_sum(1, 0);
   const int n = 1000;
   const int m = 1000;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    global_matrix = chistov_a_sum_of_matrix_elements::get_random_matrix<int>(n, m);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(global_matrix.size());
+    taskDataPar->inputs_count.emplace_back(n);
+    taskDataPar->inputs_count.emplace_back(m);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
+    taskDataPar->outputs_count.emplace_back(global_sum.size());
+  }
+
+  chistov_a_sum_of_matrix_elements::TestMPITaskParallel<int> testMPITaskParallel(taskDataPar);
+  ASSERT_EQ(testMPITaskParallel.validation(), true);
+  testMPITaskParallel.pre_processing();
+  testMPITaskParallel.run();
+  testMPITaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int32_t> reference_sum(1, 0);
+    for (int val : global_matrix) {
+      reference_sum[0] += val;
+    }
+    ASSERT_EQ(reference_sum[0], global_sum[0]);
+  }
+}
+
+TEST(chistov_a_sum_of_matrix_elements, test_with_one_element_matrix_parallel) {
+  boost::mpi::communicator world;
+  std::vector<int> global_matrix;
+  std::vector<int32_t> global_sum(1, 0);
+  const int n = 1;
+  const int m = 1;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
