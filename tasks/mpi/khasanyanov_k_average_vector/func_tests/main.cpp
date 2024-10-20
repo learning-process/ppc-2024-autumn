@@ -62,6 +62,20 @@ TEST(khasanyanov_k_average_vector_seq, test_wrong_input) {
 
 namespace mpi = boost::mpi;
 
+TEST(khasanyanov_k_average_vector_mpi, test_wrong_input) {
+  mpi::communicator world;
+  std::vector<double> in;
+  std::vector<double> out;
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskData = khasanyanov_k_average_vector_mpi::create_task_data<double, double>(in, out);
+  }
+  khasanyanov_k_average_vector_mpi::AvgVectorMPITaskParallel<double, double> testTask(taskData);
+  if (world.rank() == 0) {
+    ASSERT_FALSE(testTask.validation());
+  }
+}
+
 #define FUNC_MPI_TEST(InType, OutType, Size)                                                               \
   TEST(khasanyanov_k_average_vector_mpi, test_mpi_##InType##_##Size) {                                     \
     mpi::communicator world;                                                                               \
