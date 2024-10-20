@@ -3,9 +3,8 @@
 #include <thread>
 #include <vector>
 
-#include "../include/avg_mpi.hpp"
 #include "core/perf/include/perf.hpp"
-
+#include "mpi/khasanyanov_k_average_vector/include/avg_mpi.hpp"
 
 //=========================================sequence=========================================
 
