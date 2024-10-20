@@ -212,10 +212,8 @@ TEST(chistov_a_sum_of_matrix_elements, test_with_one_element_matrix_parallel) {
 
   if (world.rank() == 0) {
     std::vector<int32_t> reference_sum(1, 0);
-    for (int val : global_matrix) {
-      reference_sum[0] += val;
-    }
-    ASSERT_EQ(reference_sum[0], global_sum[0]);
+    int sum = chistov_a_sum_of_matrix_elements::classic_way(global_matrix, n, m);
+    ASSERT_EQ(reference_sum[0], sum);
   }
 }
 
