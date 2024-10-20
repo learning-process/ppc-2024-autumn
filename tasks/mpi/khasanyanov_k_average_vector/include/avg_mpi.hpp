@@ -174,14 +174,14 @@ bool khasanyanov_k_average_vector_mpi::AvgVectorMPITaskParallel<In, Out>::post_p
 template <class In, class Out>
 std::pair<std::vector<int>, std::vector<int>>
 khasanyanov_k_average_vector_mpi::AvgVectorMPITaskParallel<In, Out>::displacement(size_t input_size) const {
-  const size_t capacity = world.size();
+  size_t capacity = world.size();
   size_t count = input_size / capacity;
   size_t mod = input_size % capacity;
   std::vector<int> sizes(capacity, count);
-  std::vector<int> disp(capacity);
   for (size_t i = 0; i < mod; ++i) {
     ++sizes[i];
   }
+  std::vector<int> disp(capacity);
   disp[0] = 0;
   for (size_t i = 1; i < capacity; ++i) {
     disp[i] = disp[i - 1] + sizes[i - 1];
