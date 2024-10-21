@@ -9,6 +9,8 @@
 namespace nesterov_a_test_task_seq {
 
 class TestTaskSequential : public ppc::core::Task {
+ private:
+  int input_{}, res{};
  public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
@@ -16,8 +18,7 @@ class TestTaskSequential : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
- private:
-  int input_{}, res{};
+ 
 };
 
 }  // namespace nesterov_a_test_task_seq

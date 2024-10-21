@@ -2,10 +2,11 @@
 #include "seq/Shurygin_S_max_po_stolbam_matrix/include/ops_seq.hpp"
 
 #include <thread>
-
 using namespace std::chrono_literals;
 
-bool Shurygin_S_max_po_stolbam_matrix_seq::pre_processing() {
+namespace Shurygin_S_max_po_stolbam_matrix_seq {
+
+bool TestTaskSequential::pre_processing() {
   internal_order_test();
   int rows = taskData->inputs_count[0];
   int columns = taskData->inputs_count[1];
@@ -16,11 +17,11 @@ bool Shurygin_S_max_po_stolbam_matrix_seq::pre_processing() {
       input_[i][j] = input_matrix[j];
     }
   }
-  res_.resize(columns);  
+  res_.resize(columns);
   return true;
 }
 
-bool Shurygin_S_max_po_stolbam_matrix_seq::TestTaskSequential::validation() {
+bool TestTaskSequential::validation() {
   internal_order_test();
   if (taskData->inputs.empty() || taskData->outputs.empty()) {
     return false;
@@ -28,16 +29,16 @@ bool Shurygin_S_max_po_stolbam_matrix_seq::TestTaskSequential::validation() {
   if (taskData->inputs_count.size() < 2 || taskData->inputs_count[0] <= 0 || taskData->inputs_count[1] <= 0) {
     return false;
   }
-  if (taskData->outputs_count.size() != 1 || taskData->outputs_count[0] != taskData->inputs_count[1]) {  
+  if (taskData->outputs_count.size() != 1 || taskData->outputs_count[0] != taskData->inputs_count[1]) {
     return false;
   }
   return true;
 }
 
-bool Shurygin_S_max_po_stolbam_matrix_seq::run() {
+bool TestTaskSequential::run() {
   internal_order_test();
   for (size_t j = 0; j < input_[0].size(); j++) {
-    int max_val = input_[0][j];  
+    int max_val = input_[0][j];
     for (size_t i = 1; i < input_.size(); i++) {
       if (input_[i][j] > max_val) {
         max_val = input_[i][j];
@@ -48,7 +49,7 @@ bool Shurygin_S_max_po_stolbam_matrix_seq::run() {
   return true;
 }
 
-bool Shurygin_S_max_po_stolbam_matrix_seq::TestTaskSequential::post_processing() {
+bool TestTaskSequential::post_processing() {
   internal_order_test();
   int* output_matrix = reinterpret_cast<int*>(taskData->outputs[0]);
   for (size_t i = 0; i < res_.size(); i++) {
@@ -57,8 +58,7 @@ bool Shurygin_S_max_po_stolbam_matrix_seq::TestTaskSequential::post_processing()
   return true;
 }
 
-std::vector<int> Shurygin_S_max_po_stolbam_matrix_seq::TestTaskSequential::generating_random_vector(
-    int size, int lower_bound = 0, int upper_bound = 10) {
+std::vector<int> TestTaskSequential::generating_random_vector(int size, int lower_bound, int upper_bound) {
   std::vector<int> v1(size);
   for (auto& num : v1) {
     num = lower_bound + std::rand() % (upper_bound - lower_bound + 1);
@@ -66,13 +66,12 @@ std::vector<int> Shurygin_S_max_po_stolbam_matrix_seq::TestTaskSequential::gener
   return v1;
 }
 
-std::vector<std::vector<int>> Shurygin_S_max_po_stolbam_matrix_seq::TestTaskSequential::generate_random_matrix(
-    int rows, int columns) {
+std::vector<std::vector<int>> TestTaskSequential::generate_random_matrix(int rows, int columns) {
   std::vector<std::vector<int>> matrix1(rows, std::vector<int>(columns));
   for (auto& row : matrix1) {
     row = generating_random_vector(columns, 1, 100);
-    int rnd_index = std::rand() % columns;
-    row[rnd_index] = 101;
   }
   return matrix1;
 }
+
+}  // namespace Shurygin_S_max_po_stolbam_matrix_seq
