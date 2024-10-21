@@ -76,4 +76,5 @@ std::vector<std::vector<int>> TestTaskSequential::generate_random_matrix(int row
     matrix1[random_row][j] = 200;  // Гарантируем, что в каждом столбце есть число 200
   }
   return matrix1;
+}
 }  // namespace Shurygin_S_max_po_stolbam_matrix_seq

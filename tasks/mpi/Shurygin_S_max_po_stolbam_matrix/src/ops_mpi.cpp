@@ -163,7 +163,7 @@ std::vector<std::vector<int>> Shurygin_S_max_po_stolbam_matrix_mpi::TestMPITaskS
     int rows, int cols) {
   std::vector<std::vector<int>> matrix1(rows, std::vector<int>(cols));
   for (int i = 0; i < rows; ++i) {
-    matrix1[i] = generate_random_vector(cols, 1, 500);
+    matrix1[i] = generate_random_vector(cols, 1, 100);
   }
   for (int j = 0; j < cols; ++j) {
     int random_row = std::rand() % rows;
