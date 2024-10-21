@@ -57,8 +57,3 @@ TEST(lysov_i_integration_the_trapezoid_method_seq, test_task_run) {
   double expected_result = 1.0;
   ASSERT_NEAR(output, expected_result, 1e-1);
 }
-
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}
