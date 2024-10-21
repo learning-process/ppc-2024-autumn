@@ -1,92 +1,80 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
-#include <vector>
+#include <random>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/example/include/ops_mpi.hpp"
-
-TEST(mpi_example_perf_test, test_pipeline_run) {
+#include "mpi/baranov_a_num_of_orderly_violations/src/source.cpp"
+TEST(mpi_baranov_a_num_of_orderly_violations_perf_test, test_pipeline_run) {
+  const int count_size_vector = 10000000;
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_sum(1, 0);
+  std::vector<int> global_vec(count_size_vector);
+  std::vector<int32_t> out(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int count_size_vector;
   if (world.rank() == 0) {
-    count_size_vector = 120;
-    global_vec = std::vector<int>(count_size_vector, 1);
+    std::random_device rd;
+    std::default_random_engine reng(rd());
+    std::uniform_int_distribution<int> dist(0, global_vec.size());
+    std::generate(global_vec.begin(), global_vec.end(), [&dist, &reng] { return dist(reng); });
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
   }
-
-  auto testMpiTaskParallel = std::make_shared<nesterov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar, "+");
-  ASSERT_EQ(testMpiTaskParallel->validation(), true);
-  testMpiTaskParallel->pre_processing();
-  testMpiTaskParallel->run();
-  testMpiTaskParallel->post_processing();
-
+  auto testMpiTaskParallel =
+      std::make_shared<baranov_a_num_of_orderly_violations_mpi::num_of_orderly_violations<int, int>>(taskDataPar);
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
-
   // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(count_size_vector, global_sum[0]);
+    auto temp = testMpiTaskParallel->seq_proc(global_vec);
+    ASSERT_EQ(temp, out[0]);
   }
 }
-
-TEST(mpi_example_perf_test, test_task_run) {
+TEST(mpi_baranov_a_num_of_orderly_violations_perf_test, test_task_run) {
+  const int count_size_vector = 10000000;
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_sum(1, 0);
+  std::vector<int> global_vec(count_size_vector);
+  std::vector<int32_t> out(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int count_size_vector;
   if (world.rank() == 0) {
-    count_size_vector = 120;
-    global_vec = std::vector<int>(count_size_vector, 1);
+    std::random_device rd;
+    std::default_random_engine reng(rd());
+    std::uniform_int_distribution<int> dist(0, global_vec.size());
+    std::generate(global_vec.begin(), global_vec.end(), [&dist, &reng] { return dist(reng); });
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
   }
-
-  auto testMpiTaskParallel = std::make_shared<nesterov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar, "+");
-  ASSERT_EQ(testMpiTaskParallel->validation(), true);
-  testMpiTaskParallel->pre_processing();
-  testMpiTaskParallel->run();
-  testMpiTaskParallel->post_processing();
-
+  auto testMpiTaskParallel =
+      std::make_shared<baranov_a_num_of_orderly_violations_mpi::num_of_orderly_violations<int, int>>(taskDataPar);
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
-
   // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(count_size_vector, global_sum[0]);
+    auto temp = testMpiTaskParallel->seq_proc(global_vec);
+    ASSERT_EQ(out[0], temp);
   }
 }
-
 int main(int argc, char** argv) {
   boost::mpi::environment env(argc, argv);
   boost::mpi::communicator world;
