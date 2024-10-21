@@ -4,15 +4,15 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "seq/example/include/ops_seq.hpp"
+#include "seq/kolodkin_g_sentence_count/include/ops_seq.hpp"
 
 TEST(sequential_example_perf_test, test_pipeline_run) {
-  const int count = 100;
-
   // Create data
-  std::vector<int> in(1, count);
+  std::string str =
+      "verifwriefnifnil!?vfnjklererjerjkerg...vrhklererffwjklfwefwejo!vefnklvevef?wfnkrkflwewefkl!vfnklvfklevf?"
+      "vrrnervevrnvreiev!";
   std::vector<int> out(1, 0);
-
+  std::vector<std::string> in(1, str);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
@@ -21,7 +21,7 @@ TEST(sequential_example_perf_test, test_pipeline_run) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto testTaskSequential = std::make_shared<nesterov_a_test_task_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential = std::make_shared<kolodkin_g_sentence_count_seq::TestTaskSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -40,16 +40,14 @@ TEST(sequential_example_perf_test, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(count, out[0]);
+  ASSERT_EQ(7, out[0]);
 }
 
 TEST(sequential_example_perf_test, test_task_run) {
-  const int count = 100;
-
   // Create data
-  std::vector<int> in(1, count);
+  std::string str = "Hello! My name is Grisha! Good morning! How are you!";
   std::vector<int> out(1, 0);
-
+  std::vector<std::string> in(1, str);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
@@ -58,7 +56,7 @@ TEST(sequential_example_perf_test, test_task_run) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto testTaskSequential = std::make_shared<nesterov_a_test_task_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential = std::make_shared<kolodkin_g_sentence_count_seq::TestTaskSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -77,7 +75,7 @@ TEST(sequential_example_perf_test, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(count, out[0]);
+  ASSERT_EQ(4, out[0]);
 }
 
 int main(int argc, char **argv) {
