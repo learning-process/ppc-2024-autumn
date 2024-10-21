@@ -1,4 +1,4 @@
-// Copyright 2024 Nesterov Alexander
+﻿// Copyright 2024 Nesterov Alexander
 #include "seq/Shurygin_S_max_po_stolbam_matrix/include/ops_seq.hpp"
 
 #include <thread>

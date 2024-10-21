@@ -1,4 +1,4 @@
-// Copyright 2023 Nesterov Alexander
+ï»¿// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
@@ -15,29 +15,29 @@
 //  Shurygin_S_max_po_stolbam_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 //
 //  if (world.rank() == 0) {
-//    //ïóñòîé inputs è outputs
+//    //Ð¿ÑƒÑÑ‚Ð¾Ð¹ inputs Ð¸ outputs
 //    taskDataPar->inputs.clear();
 //    taskDataPar->outputs.clear();
 //    taskDataPar->inputs_count = {0, 0};
 //    taskDataPar->outputs_count = {0};
 //    ASSERT_EQ(testMpiTaskParallel.validation(), false);
 //
-//    //inputs_count íå ñîîòâåòñòâóåò ðàçìåðó inputs
+//    //inputs_count Ð½Ðµ ÑÐ¾Ð¾Ñ‚Ð²ÐµÑ‚ÑÑ‚Ð²ÑƒÐµÑ‚ Ñ€Ð°Ð·Ð¼ÐµÑ€Ñƒ inputs
 //    taskDataPar->inputs_count = {2, 2};
 //    ASSERT_EQ(testMpiTaskParallel.validation(), false);
 //
-//    //outputs_count íå ñîîòâåòñòâóåò îæèäàíèÿì
+//    //outputs_count Ð½Ðµ ÑÐ¾Ð¾Ñ‚Ð²ÐµÑ‚ÑÑ‚Ð²ÑƒÐµÑ‚ Ð¾Ð¶Ð¸Ð´Ð°Ð½Ð¸ÑÐ¼
 //    taskDataPar->inputs_count = {1, 1};
 //    taskDataPar->outputs_count = {2};
 //    ASSERT_EQ(testMpiTaskParallel.validation(), false);
 //
-//    //inputs ïóñò
+//    //inputs Ð¿ÑƒÑÑ‚
 //    taskDataPar->inputs.clear();
 //    taskDataPar->inputs_count = {1, 1};
 //    taskDataPar->outputs_count = {1};
 //    ASSERT_EQ(testMpiTaskParallel.validation(), false);
 //
-//    //outputs ïóñò
+//    //outputs Ð¿ÑƒÑÑ‚
 //    taskDataPar->inputs.resize(1);
 //    taskDataPar->inputs[0] = reinterpret_cast<uint8_t*>(new int[1]);
 //    taskDataPar->outputs.clear();

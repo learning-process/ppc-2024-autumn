@@ -1,4 +1,4 @@
-// Copyright 2023 Nesterov Alexander
+﻿// Copyright 2023 Nesterov Alexander
 #pragma once
 #include <gtest/gtest.h>
 

@@ -1,4 +1,4 @@
-// Copyright 2023 Nesterov Alexander
+ï»¿// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <vector>
@@ -13,14 +13,14 @@
 //  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 //  Shurygin_S_max_po_stolbam_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
 //
-//  // Ïóñòîé inputs è outputs
+//  // ÐŸÑƒÑÑ‚Ð¾Ð¹ inputs Ð¸ outputs
 //  taskDataSeq->inputs.clear();
 //  taskDataSeq->outputs.clear();
 //  taskDataSeq->inputs_count = {0, 0};
 //  taskDataSeq->outputs_count = {0};
 //  ASSERT_EQ(testTaskSequential.validation(), false) << "Failed on empty inputs and outputs";
 //
-//  // Inputs_count íå ñîîòâåòñòâóåò ðàçìåðó inputs
+//  // Inputs_count Ð½Ðµ ÑÐ¾Ð¾Ñ‚Ð²ÐµÑ‚ÑÑ‚Ð²ÑƒÐµÑ‚ Ñ€Ð°Ð·Ð¼ÐµÑ€Ñƒ inputs
 //  taskDataSeq->inputs.resize(1);
 //  int* input_data = new int[1];
 //  taskDataSeq->inputs[0] = reinterpret_cast<uint8_t*>(input_data);
@@ -31,25 +31,25 @@
 //  taskDataSeq->outputs_count = {1};
 //  ASSERT_EQ(testTaskSequential.validation(), false) << "Failed on inputs_count not matching inputs size";
 //
-//  // Outputs_count íå ñîîòâåòñòâóåò îæèäàíèÿì
+//  // Outputs_count Ð½Ðµ ÑÐ¾Ð¾Ñ‚Ð²ÐµÑ‚ÑÑ‚Ð²ÑƒÐµÑ‚ Ð¾Ð¶Ð¸Ð´Ð°Ð½Ð¸ÑÐ¼
 //  taskDataSeq->inputs_count = {1, 1};
 //  taskDataSeq->outputs_count = {2};
 //  ASSERT_EQ(testTaskSequential.validation(), false) << "Failed on outputs_count not matching expected size";
 //
-//  // Inputs ïóñò
+//  // Inputs Ð¿ÑƒÑÑ‚
 //  taskDataSeq->inputs.clear();
 //  taskDataSeq->inputs_count = {1, 1};
 //  taskDataSeq->outputs_count = {1};
 //  ASSERT_EQ(testTaskSequential.validation(), false) << "Failed on empty inputs";
 //
-//  // Outputs ïóñò
+//  // Outputs Ð¿ÑƒÑÑ‚
 //  taskDataSeq->inputs.resize(1);
 //  taskDataSeq->inputs[0] = reinterpret_cast<uint8_t*>(new int[1]);
 //  taskDataSeq->outputs.clear();
 //  taskDataSeq->outputs_count = {1};
 //  ASSERT_EQ(testTaskSequential.validation(), false) << "Failed on empty outputs";
 //
-//  // Îñâîáîæäåíèå ïàìÿòè
+//  // ÐžÑÐ²Ð¾Ð±Ð¾Ð¶Ð´ÐµÐ½Ð¸Ðµ Ð¿Ð°Ð¼ÑÑ‚Ð¸
 //  delete[] input_data;
 //  delete[] output_data;
 //}

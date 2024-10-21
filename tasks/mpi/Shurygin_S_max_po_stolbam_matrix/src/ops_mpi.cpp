@@ -1,4 +1,4 @@
-// Copyright 2023 Nesterov Alexander
+﻿// Copyright 2023 Nesterov Alexander
 #include "mpi/Shurygin_S_max_po_stolbam_matrix/include/ops_mpi.hpp"
 
 #include <algorithm>
