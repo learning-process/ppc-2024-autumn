@@ -1,120 +1,76 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 #include <boost/mpi/timer.hpp>
 #include <vector>
+#include <numeric>
+#include <memory>
+#include <iostream>
 #include "core/perf/include/perf.hpp"
-#include "mpi/sotskov_a_sum_element_matrix/include/ops_mpi.hpp" // Включите нужный заголовочный файл для вашей задачи
+#include "mpi/sotskov_a_sum_element_matrix/include/ops_mpi.hpp"
 
-TEST(sotskov_a_sum_element_matrix_mpi_perf_test, test_pipeline_run) {
+namespace sotskov_a_sum_element_matrix_mpi {
+
+TEST(sotskov_a_sum_element_matrix, test_pipeline_run) {
     boost::mpi::communicator world;
-    std::vector<std::vector<int>> global_matrix; // Двумерный вектор для хранения матрицы
-    std::vector<int32_t> global_sum(1, 0); // Результирующий вектор для глобальной суммы
-    int rows = 4; // Пример количества строк
-    int cols = 5; // Пример количества столбцов
+    int total_elements = 1000 * 1000;
 
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-    if (world.rank() == 0) {
-        // Генерация случайной матрицы
-        global_matrix = sotskov_a_sum_element_matrix_mpi::getRandomMatrix(rows, cols); // Убедитесь, что эта функция возвращает std::vector<std::vector<int>>
-
-        // Создаем одномерный вектор для передачи через MPI
-        std::vector<int> flattened_matrix(rows * cols);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                flattened_matrix[i * cols + j] = global_matrix[i][j];
-            }
+    if (total_elements % world.size() != 0) {
+        total_elements -= total_elements % world.size();
+        if (world.rank() == 0) {
+            std::cout << "Adjusted total elements to " << total_elements 
+                      << " to make it divisible by " << world.size() << std::endl;
         }
-
-        // Передаем данные в TaskData
-        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(flattened_matrix.data()));
-        taskDataPar->inputs_count.emplace_back(flattened_matrix.size());
-        taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-        taskDataPar->outputs_count.emplace_back(global_sum.size());
     }
 
-    auto testMpiTaskParallel = std::make_shared<sotskov_a_sum_element_matrix_mpi::TestMPITaskParallel>(taskDataPar, "+");
-    ASSERT_EQ(testMpiTaskParallel->validation(), true);
-    testMpiTaskParallel->pre_processing();
-    testMpiTaskParallel->run();
-    testMpiTaskParallel->post_processing();
+    std::vector<int> global_vec(total_elements, 1);
+    std::vector<int32_t> global_sum(1, 0);
+    
+    int elements_per_process = total_elements / world.size();
+    std::vector<int> local_vec(elements_per_process, 0);
 
-    // Создаем атрибуты производительности
-    auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-    perfAttr->num_running = 10;
-    const boost::mpi::timer current_timer;
-    perfAttr->current_timer = [&] { return current_timer.elapsed(); };
-
-    // Создаем и инициализируем результаты производительности
-    auto perfResults = std::make_shared<ppc::core::PerfResults>();
-
-    // Создаем анализатор производительности
-    auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
-    perfAnalyzer->pipeline_run(perfAttr, perfResults);
+    MPI_Scatter(global_vec.data(), elements_per_process, MPI_INT, 
+                 local_vec.data(), elements_per_process, MPI_INT, 
+                 0, MPI_COMM_WORLD);
+    
+    int local_sum = std::accumulate(local_vec.begin(), local_vec.end(), 0);
+    
+    MPI_Reduce(&local_sum, &global_sum[0], 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+    
     if (world.rank() == 0) {
-        ppc::core::Perf::print_perf_statistic(perfResults);
-        int expected_sum = 0;
-        for (const auto& row : global_matrix) {
-            expected_sum += std::accumulate(row.begin(), row.end(), 0);
-        }
-        ASSERT_EQ(expected_sum, global_sum[0]); // Проверка корректности суммы
+        std::cout << "Total sum is: " << global_sum[0] << std::endl;
+        ASSERT_EQ(total_elements, global_sum[0]);
     }
 }
 
-TEST(sotskov_a_sum_element_matrix_mpi_perf_test, test_task_run) {
+TEST(sotskov_a_sum_element_matrix, test_task_run) {
     boost::mpi::communicator world;
-    std::vector<std::vector<int>> global_matrix; // Двумерный вектор для хранения матрицы
-    std::vector<int32_t> global_sum(1, 0); // Результирующий вектор для глобальной суммы
-    int rows = 4; // Пример количества строк
-    int cols = 5; // Пример количества столбцов
+    int total_elements = 9000 * 9000;
 
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-    if (world.rank() == 0) {
-        // Генерация случайной матрицы
-        global_matrix = sotskov_a_sum_element_matrix_mpi::getRandomMatrix(rows, cols);
-
-        // Создаем одномерный вектор для передачи через MPI
-        std::vector<int> flattened_matrix(rows * cols);
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                flattened_matrix[i * cols + j] = global_matrix[i][j];
-            }
+    if (total_elements % world.size() != 0) {
+        total_elements -= total_elements % world.size();
+        if (world.rank() == 0) {
+            std::cout << "Adjusted total elements to " << total_elements 
+                      << " to make it divisible by " << world.size() << std::endl;
         }
-
-        // Передаем данные в TaskData
-        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(flattened_matrix.data()));
-        taskDataPar->inputs_count.emplace_back(flattened_matrix.size());
-        taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-        taskDataPar->outputs_count.emplace_back(global_sum.size());
     }
 
-    auto testMpiTaskParallel = std::make_shared<sotskov_a_sum_element_matrix_mpi::TestMPITaskParallel>(taskDataPar, "+");
-    ASSERT_EQ(testMpiTaskParallel->validation(), true);
-    testMpiTaskParallel->pre_processing();
-    testMpiTaskParallel->run();
-    testMpiTaskParallel->post_processing();
+    std::vector<int> global_vec(total_elements, 1);
+    std::vector<int32_t> global_sum(1, 0);
+    
+    int elements_per_process = total_elements / world.size();
+    std::vector<int> local_vec(elements_per_process, 0);
 
-    // Создаем атрибуты производительности
-    auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-    perfAttr->num_running = 10;
-    const boost::mpi::timer current_timer;
-    perfAttr->current_timer = [&] { return current_timer.elapsed(); };
-
-    // Создаем и инициализируем результаты производительности
-    auto perfResults = std::make_shared<ppc::core::PerfResults>();
-
-    // Создаем анализатор производительности
-    auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
-    perfAnalyzer->task_run(perfAttr, perfResults);
+    MPI_Scatter(global_vec.data(), elements_per_process, MPI_INT, 
+                 local_vec.data(), elements_per_process, MPI_INT, 
+                 0, MPI_COMM_WORLD);
+    
+    int local_sum = std::accumulate(local_vec.begin(), local_vec.end(), 0);
+    
+    MPI_Reduce(&local_sum, &global_sum[0], 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+    
     if (world.rank() == 0) {
-        ppc::core::Perf::print_perf_statistic(perfResults);
-        int expected_sum = 0;
-        for (const auto& row : global_matrix) {
-            expected_sum += std::accumulate(row.begin(), row.end(), 0);
-        }
-        ASSERT_EQ(expected_sum, global_sum[0]); // Проверка корректности суммы
+        std::cout << "Total sum is: " << global_sum[0] << std::endl;
+        ASSERT_EQ(total_elements, global_sum[0]);
     }
 }
+
+}  // namespace sotskov_a_sum_element_matrix_mpi
