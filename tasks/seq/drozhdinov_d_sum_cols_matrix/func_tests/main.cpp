@@ -181,3 +181,31 @@ TEST(drozhdinov_d_sum_cols_matrix_seq, RectangleMatrixTests3) {
   testTaskSequential.post_processing();
   ASSERT_EQ(expres, ans);
 }
+
+TEST(drozhdinov_d_sum_cols_matrix_seq, WrongValidationTest) {
+  int cols = 2;
+  int rows = 2;
+
+  // Create data
+  std::vector<int> matrix = {1, 0, 2, 1};
+  std::vector<int> expres(cols, 0);
+  std::vector<int> ans = {3, 1};
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
+  taskDataSeq->inputs_count.emplace_back(cols);
+  taskDataSeq->inputs_count.emplace_back(rows);
+  // taskDataSeq->inputs_count.emplace_back((size_t)1);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres.data()));
+  taskDataSeq->outputs_count.emplace_back(matrix.size());
+
+  // Create Task
+  drozhdinov_d_sum_cols_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_EQ(testTaskSequential.validation(), false);
+  testTaskSequential.pre_processing();
+  testTaskSequential.run();
+  testTaskSequential.post_processing();
+  ASSERT_EQ(expres, ans);
+}
