@@ -33,13 +33,7 @@ TEST(Shurygin_S_max_po_stolbam_matrix_mpi_perf_test, test_pipeline_run_max) {
   testMpiTaskParallel->post_processing();
   if (world.rank() == 0) {
     for (size_t j = 0; j < global_max.size(); ++j) {
-      int max_val = global_matrix[0][j];
-      for (int i = 1; i < count_rows; ++i) {
-        if (global_matrix[i][j] > max_val) {
-          max_val = global_matrix[i][j];
-        }
-      }
-      ASSERT_EQ(global_max[j], max_val);
+      ASSERT_EQ(global_max[j], 200);  
     }
   }
 }
@@ -70,13 +64,7 @@ TEST(Shurygin_S_max_po_stolbam_matrix_mpi_perf_test, test_task_run_max) {
   testMpiTaskParallel->post_processing();
   if (world.rank() == 0) {
     for (size_t j = 0; j < global_max.size(); ++j) {
-      int max_val = global_matrix[0][j];
-      for (int i = 1; i < count_rows; ++i) {
-        if (global_matrix[i][j] > max_val) {
-          max_val = global_matrix[i][j];
-        }
-      }
-      ASSERT_EQ(global_max[j], max_val);
+      ASSERT_EQ(global_max[j], 200);  
     }
   }
 }

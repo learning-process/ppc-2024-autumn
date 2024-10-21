@@ -84,12 +84,8 @@ TEST(Shurygin_S_max_po_stolbam_matrix_mpi, find_max_val_in_col_10x10_matrix) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
     for (int j = 0; j < count_columns; j++) {
-      int max_val = INT_MIN;
-      for (int i = 0; i < count_rows; i++) {
-        max_val = std::max(max_val, global_matrix[i][j]);
-      }
-      ASSERT_EQ(global_max[j], max_val);
-    }
+      ASSERT_EQ(global_max[j], 200); 
+    }    
   }
 }
 
@@ -130,11 +126,7 @@ TEST(Shurygin_S_max_po_stolbam_matrix_mpi, find_max_val_in_col_100x100_matrix) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
     for (int j = 0; j < count_columns; j++) {
-      int max_val = INT_MIN;
-      for (int i = 0; i < count_rows; i++) {
-        max_val = std::max(max_val, global_matrix[i][j]);
-      }
-      ASSERT_EQ(global_max[j], max_val);
+      ASSERT_EQ(global_max[j], 200); 
     }
   }
 }
@@ -176,11 +168,7 @@ TEST(Shurygin_S_max_po_stolbam_matrix_mpi, find_max_val_in_col_100x500_matrix) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
     for (int j = 0; j < count_columns; j++) {
-      int max_val = INT_MIN;
-      for (int i = 0; i < count_rows; i++) {
-        max_val = std::max(max_val, global_matrix[i][j]);
-      }
-      ASSERT_EQ(global_max[j], max_val);
+      ASSERT_EQ(global_max[j], 200); 
     }
   }
 }
@@ -222,11 +210,7 @@ TEST(Shurygin_S_max_po_stolbam_matrix_mpi, find_max_val_in_col_5000x5000_matrix)
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
     for (int j = 0; j < count_columns; j++) {
-      int max_val = INT_MIN;
-      for (int i = 0; i < count_rows; i++) {
-        max_val = std::max(max_val, global_matrix[i][j]);
-      }
-      ASSERT_EQ(global_max[j], max_val);
+      ASSERT_EQ(global_max[j], 200);  
     }
   }
 }

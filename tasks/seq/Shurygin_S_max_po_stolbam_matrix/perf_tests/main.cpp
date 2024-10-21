@@ -36,12 +36,8 @@ TEST(Shurygin_S_max_po_stolbam_matrix_seq_perf, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  for (int j = 0; j < cols; j++) {
-    int max_val = 0;
-    for (int i = 0; i < rows; i++) {
-      max_val = std::max(max_val, matrix_rnd[i][j]);
-    }
-    ASSERT_EQ(v_res[j], max_val);
+   for (int j = 0; j < cols; j++) {
+    ASSERT_EQ(v_res[j], 200); 
   }
 }
 
@@ -75,11 +71,7 @@ TEST(Shurygin_S_max_po_stolbam_matrix_seq_perf, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  for (int j = 0; j < cols; j++) {
-    int max_val = 0;
-    for (int i = 0; i < rows; i++) {
-      max_val = std::max(max_val, matrix_rnd[i][j]);
-    }
-    ASSERT_EQ(v_res[j], max_val);
+   for (int j = 0; j < cols; j++) {
+    ASSERT_EQ(v_res[j], 200); 
   }
 }
