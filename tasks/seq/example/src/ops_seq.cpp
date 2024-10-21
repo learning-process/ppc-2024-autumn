@@ -10,6 +10,7 @@ bool nesterov_a_test_task_seq::TestTaskSequential::pre_processing() {
   // Init value for input and output
   input_ = reinterpret_cast<int*>(taskData->inputs[0])[0];
   res = 0;
+  std::this_thread::sleep_for(10ms);
   return true;
 }
 
