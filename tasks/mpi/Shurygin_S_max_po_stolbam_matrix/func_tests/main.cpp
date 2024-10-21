@@ -7,9 +7,8 @@
 
 #include "mpi/Shurygin_S_max_po_stolbam_matrix/include/ops_mpi.hpp"
 
-
 //
-//TEST(Shurygin_S_max_po_stolbam_matrix_mpi, validation_invalid_data) {
+// TEST(Shurygin_S_max_po_stolbam_matrix_mpi, validation_invalid_data) {
 //  boost::mpi::communicator world;
 //  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 //  Shurygin_S_max_po_stolbam_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
@@ -45,7 +44,6 @@
 //    ASSERT_EQ(testMpiTaskParallel.validation(), false);
 //  }
 //}
-
 
 TEST(Shurygin_S_max_po_stolbam_matrix_mpi, find_max_val_in_col_10x10_matrix) {
   boost::mpi::communicator world;
@@ -84,8 +82,8 @@ TEST(Shurygin_S_max_po_stolbam_matrix_mpi, find_max_val_in_col_10x10_matrix) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
     for (int j = 0; j < count_columns; j++) {
-      ASSERT_EQ(global_max[j], 200); 
-    }    
+      ASSERT_EQ(global_max[j], 200);
+    }
   }
 }
 
@@ -126,7 +124,7 @@ TEST(Shurygin_S_max_po_stolbam_matrix_mpi, find_max_val_in_col_100x100_matrix) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
     for (int j = 0; j < count_columns; j++) {
-      ASSERT_EQ(global_max[j], 200); 
+      ASSERT_EQ(global_max[j], 200);
     }
   }
 }
@@ -168,7 +166,7 @@ TEST(Shurygin_S_max_po_stolbam_matrix_mpi, find_max_val_in_col_100x500_matrix) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
     for (int j = 0; j < count_columns; j++) {
-      ASSERT_EQ(global_max[j], 200); 
+      ASSERT_EQ(global_max[j], 200);
     }
   }
 }
@@ -210,7 +208,7 @@ TEST(Shurygin_S_max_po_stolbam_matrix_mpi, find_max_val_in_col_5000x5000_matrix)
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
     for (int j = 0; j < count_columns; j++) {
-      ASSERT_EQ(global_max[j], 200);  
+      ASSERT_EQ(global_max[j], 200);
     }
   }
 }
