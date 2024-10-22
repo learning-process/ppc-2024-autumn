@@ -1,12 +1,9 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
+#include <memory>
 #include <vector>
 
 #include "seq/lysov_i_integration_the_trapezoid_method/include/ops_seq.hpp"
-
-#include <gtest/gtest.h>
-#include <memory>
 
 TEST(lysov_i_integration_the_trapezoid_method_seq, BasicTest) {
   double a = 0.0;
@@ -24,10 +21,10 @@ TEST(lysov_i_integration_the_trapezoid_method_seq, BasicTest) {
   task.run();
   task.post_processing();
   double expected_result = 1.0;
-  ASSERT_NEAR(output, expected_result, 1e-1);  
+  ASSERT_NEAR(output, expected_result, 1e-1);
 }
 
-TEST(lysov_i_integration_the_trapezoid_method_seq, BasicTest2) { 
+TEST(lysov_i_integration_the_trapezoid_method_seq, BasicTest2) {
   double a = -1.45;
   double b = 0.0;
   int cnt_of_splits = 100;

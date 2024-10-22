@@ -1,8 +1,9 @@
 #pragma once
 #include <string>
 #include <vector>
+
 #include "core/task/include/task.hpp"
- namespace lysov_i_integration_the_trapezoid_method_seq {
+namespace lysov_i_integration_the_trapezoid_method_seq {
 class TestTaskSequential : public ppc::core::Task {
  public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -12,6 +13,7 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override;
   double a, b, cnt_of_splits, h;
   double function(double x) { return x * x; }
+
  private:
   std::vector<double> input_;
   int res{};

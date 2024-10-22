@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
+
 #include <vector>
+
 #include "core/perf/include/perf.hpp"
 #include "seq/lysov_i_integration_the_trapezoid_method/include/ops_seq.hpp"
 TEST(lysov_i_integration_the_trapezoid_method_seq, test_pipeline_run) {

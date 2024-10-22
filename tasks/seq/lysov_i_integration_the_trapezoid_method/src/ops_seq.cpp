@@ -1,4 +1,5 @@
 #include "seq/lysov_i_integration_the_trapezoid_method/include/ops_seq.hpp"
+
 #include <thread>
 using namespace std::chrono_literals;
 bool lysov_i_integration_the_trapezoid_method_seq::TestTaskSequential::validation() {
@@ -27,7 +28,6 @@ bool lysov_i_integration_the_trapezoid_method_seq::TestTaskSequential::pre_proce
   }
   return true;
 }
-
 
 bool lysov_i_integration_the_trapezoid_method_seq::TestTaskSequential::run() {
   internal_order_test();
