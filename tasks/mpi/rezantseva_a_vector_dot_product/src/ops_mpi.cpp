@@ -1,12 +1,11 @@
 // Copyright 2024 Nesterov Alexander
-#include <random>
 #include "mpi/rezantseva_a_vector_dot_product/include/ops_mpi.hpp"
-
+#include <random>
 #include <thread>
 
-static int offset = 0; 
+static int offset = 0;
 using namespace std::chrono_literals;
-//Sequential 
+//Sequential
 std::vector<int> rezantseva_a_vector_dot_product_mpi::createRandomVector(const int v_size) {
   std::vector<int> vec(v_size);
   std::mt19937 gen;
@@ -18,7 +17,7 @@ std::vector<int> rezantseva_a_vector_dot_product_mpi::createRandomVector(const i
 int rezantseva_a_vector_dot_product_mpi::vectorDotProduct(const std::vector<int>& v1, const std::vector<int>& v2) {
   if (v1.size() != v2.size()) throw "Error! Vectors must have equal size!";
   long long result = 0;
-  for (int i = 0; i < v1.size(); i++) result += v1[i] * v2[i];
+  for (size_t i = 0; i < v1.size(); i++) result += v1[i] * v2[i];
   return result;
 }
 
@@ -36,12 +35,10 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskSequential::pre_processing(
   // Init value for input and output
 
   input_ = std::vector<std::vector<int>>(taskData->inputs.size());
-  for (size_t i = 0; i < input_.size(); i++) 
-  {
+  for (size_t i = 0; i < input_.size(); i++) {
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
     input_[i] = std::vector<int>(taskData->inputs_count[i]);
-    for (size_t  j = 0; j < taskData->inputs_count[i]; j++) 
-    {
+    for (size_t  j = 0; j < taskData->inputs_count[i]; j++) {
       input_[i][j] = tmp_ptr[j];
     }
   }
@@ -51,8 +48,7 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskSequential::pre_processing(
 
 bool rezantseva_a_vector_dot_product_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-  for (size_t i = 0; i < input_[0].size(); i++) 
-  {
+  for (size_t i = 0; i < input_[0].size(); i++) {
     res += input_[0][i] * input_[1][i];
   }
 
@@ -64,6 +60,7 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskSequential::post_processing
   reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
   return true;
 }
+
 
 //Parallel
 
@@ -78,7 +75,6 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::validation() {
   }
   return true;
 }
-
 
 bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
@@ -101,14 +97,14 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::pre_processing() 
     }
     
     for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_[0].data() + proc * delta, delta);  
-      world.send(proc, 1, input_[1].data() + proc * delta, delta);   
+      world.send(proc, 0, input_[0].data() + proc * delta, delta);
+      world.send(proc, 1, input_[1].data() + proc * delta, delta);
     }
   }
-  
+
   local_input1_ = std::vector<int>(delta);
   local_input2_ = std::vector<int>(delta);
-  
+
   if (world.rank() == 0) {
     local_input1_ = std::vector<int>(input_[0].begin(), input_[0].begin() + delta);
     local_input2_ = std::vector<int>(input_[1].begin(), input_[1].begin() + delta);
@@ -129,7 +125,8 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::run() {
   for (size_t i = 0; i < local_input1_.size(); i++) {
     local_res += local_input1_[i] * local_input2_[i];
   }
-  std::vector<int> all_res; 
+
+  std::vector<int> all_res;
   boost::mpi::gather(world, local_res, all_res, 0);
 
   if (world.rank() == 0) { 

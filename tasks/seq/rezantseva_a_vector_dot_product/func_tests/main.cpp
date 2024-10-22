@@ -5,18 +5,16 @@
 
 TEST(rezantseva_a_vector_dot_product_seq, can_scalar_multiply_vec_size_10) {
   const int count = 10;
-	// Create data
+  // Create data
   std::vector<int> out(1, 0);
- 
   std::vector<int> v1 = rezantseva_a_vector_dot_product_seq::createRandomVector(count);
   std::vector<int> v2 = rezantseva_a_vector_dot_product_seq::createRandomVector(count);
- 
+  
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(v1.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(v2.data()));
-  
+
   taskDataSeq->inputs_count.emplace_back(v1.size());
   taskDataSeq->inputs_count.emplace_back(v2.size());
   
@@ -69,7 +67,7 @@ TEST(rezantseva_a_vector_dot_product_seq, check_none_equal_size_of_vec) {
   std::vector<int> out(1, 0);
 
   std::vector<int> v1 = rezantseva_a_vector_dot_product_seq::createRandomVector(count);
-  std::vector<int> v2 = rezantseva_a_vector_dot_product_seq::createRandomVector(count+1);
+  std::vector<int> v2 = rezantseva_a_vector_dot_product_seq::createRandomVector(count + 1);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -127,7 +125,7 @@ TEST(rezantseva_a_vector_dot_product_seq, check_empty_vec_product_run) {
   std::vector<int> out(1, 0);
 
   std::vector<int> v1 = rezantseva_a_vector_dot_product_seq::createRandomVector(count);
-  std::vector<int> v2 = rezantseva_a_vector_dot_product_seq::createRandomVector(count );
+  std::vector<int> v2 = rezantseva_a_vector_dot_product_seq::createRandomVector(count);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -212,7 +210,7 @@ TEST(rezantseva_a_vector_dot_product_seq, check_vectorDotProduct_right) {
   // Create data
   std::vector<int> v1 = {1, 2, 5};
   std::vector<int> v2 = {4, 7, 8};
-  ASSERT_EQ(58, rezantseva_a_vector_dot_product_seq::vectorDotProduct(v1,v2));
+  ASSERT_EQ(58, rezantseva_a_vector_dot_product_seq::vectorDotProduct(v1, v2));
 }
 
 TEST(rezantseva_a_vector_dot_product_seq, can_throw_exp_vectorDotProduct) {

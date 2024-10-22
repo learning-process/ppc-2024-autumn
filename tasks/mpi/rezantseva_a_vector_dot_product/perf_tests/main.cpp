@@ -21,11 +21,10 @@ TEST(rezantseva_a_vector_dot_product_mpi, test_pipeline_run) {
     
     global_vec = {v1, v2};
     for (size_t i = 0; i < global_vec.size(); i++) {
-      taskDataPar->inputs.emplace_back(
-          reinterpret_cast<uint8_t*>(global_vec[i].data()));  
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec[i].data()));
     }
     taskDataPar->inputs_count.emplace_back(global_vec[0].size());
-    taskDataPar->inputs_count.emplace_back(global_vec[1].size());  
+    taskDataPar->inputs_count.emplace_back(global_vec[1].size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size());
   }
@@ -46,7 +45,7 @@ TEST(rezantseva_a_vector_dot_product_mpi, test_pipeline_run) {
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
   
   // Create Perf analyzer
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel); 
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
@@ -67,11 +66,10 @@ TEST(rezantseva_a_vector_dot_product_mpi, test_task_run) {
   if (world.rank() == 0) {
     global_vec = {v1, v2};
     for (size_t i = 0; i < global_vec.size(); i++) {
-      taskDataPar->inputs.emplace_back(
-          reinterpret_cast<uint8_t*>(global_vec[i].data()));  
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec[i].data()));
     }
     taskDataPar->inputs_count.emplace_back(global_vec[0].size());
-    taskDataPar->inputs_count.emplace_back(global_vec[1].size());  
+    taskDataPar->inputs_count.emplace_back(global_vec[1].size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size());
   }

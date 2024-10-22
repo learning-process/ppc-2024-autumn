@@ -18,8 +18,7 @@ int vectorDotProduct(const std::vector<int>& v1, const std::vector<int>& v2);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -33,8 +32,7 @@ class TestMPITaskSequential : public ppc::core::Task {
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -49,4 +47,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  // namespace rezantseva_a_vector_dot_product_seq
+}  // namespace rezantseva_a_vector_dot_product_mpi

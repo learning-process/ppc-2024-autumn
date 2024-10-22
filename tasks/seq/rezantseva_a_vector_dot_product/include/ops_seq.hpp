@@ -7,7 +7,7 @@
 #include "core/task/include/task.hpp"
 
 namespace rezantseva_a_vector_dot_product_seq {
-std::vector<int> createRandomVector(const int v_size); 
+std::vector<int> createRandomVector(const int v_size);
 int vectorDotProduct(const std::vector<int>& v1, const std::vector<int>& v2);
 
 class TestTaskSequential : public ppc::core::Task {
@@ -17,6 +17,7 @@ class TestTaskSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
+
  private:
   int res{};
   std::vector<std::vector<int>> input_;

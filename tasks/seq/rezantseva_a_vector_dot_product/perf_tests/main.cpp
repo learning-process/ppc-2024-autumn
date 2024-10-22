@@ -5,8 +5,7 @@
 #include "seq/rezantseva_a_vector_dot_product/include/ops_seq.hpp"
 
 TEST(rezantseva_a_vector_dot_product_seq, test_pipeline_run) {
-
-const int count = 100000000;
+  const int count = 100000000;
   // Create data
   std::vector<int> out(1, 0);
 
