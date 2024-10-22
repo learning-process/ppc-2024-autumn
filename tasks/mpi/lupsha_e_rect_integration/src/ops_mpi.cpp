@@ -1,5 +1,7 @@
-// Copyright 2023 Nesterov Alexander
+// Copyright 2024 Lupsha Egor
 #include "mpi/lupsha_e_rect_integration/include/ops_mpi.hpp"
+
+#include <mpi.h>
 
 #include <algorithm>
 #include <functional>
@@ -7,7 +9,6 @@
 #include <string>
 #include <thread>
 #include <vector>
-#include <mpi.h>
 
 using namespace std::chrono_literals;
 
@@ -156,6 +157,7 @@ bool lupsha_e_rect_integration_mpi::TestMPITaskParallel::validation() {
       return false;
     }
   }
+
    return true;
 }
 
@@ -171,6 +173,6 @@ bool lupsha_e_rect_integration_mpi::TestMPITaskParallel::post_processing() {
   if (world.rank() == 0) {
     *reinterpret_cast<double*>(taskData->outputs[0]) = global_sum_;
   }
-  
+
   return true;
 }

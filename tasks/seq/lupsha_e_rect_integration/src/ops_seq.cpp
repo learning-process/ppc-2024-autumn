@@ -47,4 +47,3 @@ bool lupsha_e_rect_integration_seq::TestTaskSequential::post_processing() {
   *reinterpret_cast<double*>(taskData->outputs[0]) = results_[0];
   return true;
 }
-  // namespace lupsha_e_rect_integration_seq

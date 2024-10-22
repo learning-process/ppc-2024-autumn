@@ -75,7 +75,7 @@ TEST(lupsha_e_rect_integration_mpi, test_task_run) {
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
-  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 1000;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
@@ -87,8 +87,7 @@ TEST(lupsha_e_rect_integration_mpi, test_task_run) {
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    double expected_result = (upper_bound * upper_bound * upper_bound - lower_bound * lower_bound * lower_bound) /
-                             3;
+    double expected_result = (upper_bound * upper_bound * upper_bound - lower_bound * lower_bound * lower_bound) / 3;
     ASSERT_NEAR(global_sum[0], expected_result, 1e-5);
   }
 }

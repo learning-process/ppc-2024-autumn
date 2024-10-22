@@ -3,8 +3,8 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <vector>
 #include <cmath>
+#include <vector>
 
 #include "mpi/lupsha_e_rect_integration/include/ops_mpi.hpp"
 
@@ -50,7 +50,7 @@ TEST(lupsha_e_rect_integration_mpi, Test_Constant) {
 
     lupsha_e_rect_integration_mpi::TestMPITaskSequential sequential_Task(taskDataSeq);
     sequential_Task.function_set(f);
-    double expected_result = 10;
+    double expected_result = 10.0;
     ASSERT_NEAR(global_sum[0], expected_result, 1e-5);
   }
 }
@@ -93,8 +93,8 @@ TEST(lupsha_e_rect_integration_mpi, Test_Logarithm) {
 
     lupsha_e_rect_integration_mpi::TestMPITaskSequential sequential_Task(taskDataSeq);
     sequential_Task.function_set(f);
-    double expected_result = (upper_bound * log(upper_bound) - upper_bound) -
-                             (lower_bound * log(lower_bound) - lower_bound);
+    double expected_result = 
+        (upper_bound * log(upper_bound) - upper_bound) - (lower_bound * log(lower_bound) - lower_bound);
     ASSERT_NEAR(global_sum[0], expected_result, 1e-3);
   }
 }
@@ -146,7 +146,7 @@ TEST(lupsha_e_rect_integration_mpi, Test_Gaussian) {
 TEST(lupsha_e_rect_integration_mpi, Test_Cos) {
   boost::mpi::communicator world;
   double lower_bound = 0.0;
-  double upper_bound = 2*M_PI;
+  double upper_bound = 2 * M_PI;
   int num_intervals = 1000;
   std::vector<double> global_sum(1, 0.0);
 
@@ -224,8 +224,8 @@ TEST(lupsha_e_rect_integration_mpi, Test_Power) {
 
     lupsha_e_rect_integration_mpi::TestMPITaskSequential sequential_Task(taskDataSeq);
     sequential_Task.function_set(f);
-    double expected_result = (upper_bound * upper_bound * upper_bound / 3) -
-                             (lower_bound * lower_bound * lower_bound / 3);
+    double expected_result = 
+        (upper_bound * upper_bound * upper_bound / 3) - (lower_bound * lower_bound * lower_bound / 3);
     ASSERT_NEAR(global_sum[0], expected_result, 1e-3);
   }
 }

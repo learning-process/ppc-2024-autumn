@@ -1,8 +1,9 @@
 // Copyright 2024 Lupsha Egor
 #pragma once
 
-#include <vector>
 #include <functional>
+#include <vector>
+
 #include "core/task/include/task.hpp"
 
 namespace lupsha_e_rect_integration_seq {
@@ -16,6 +17,7 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
   void function_set(const std::function<double(double)>& func);
+
  private:
   double lower_bound{};
   double upper_bound{};

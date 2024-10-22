@@ -17,14 +17,14 @@ namespace lupsha_e_rect_integration_mpi {
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
   void function_set(const std::function<double(double)>& func);
+
  private:
   double lower_bound{};
   double upper_bound{};
@@ -36,16 +36,17 @@ class TestMPITaskSequential : public ppc::core::Task {
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
   void function_set(const std::function<double(double)>& func);
+
  private:
-  double integrate(const std::function<double(double)>& f_, double lower_bound_, double upper_bound_, int num_intervals_);
+  double integrate(const std::function<double(double)>& f_, double lower_bound_, double upper_bound_,
+				   int num_intervals_);
   double lower_bound{};
   double upper_bound{};
   double local_sum_{};
