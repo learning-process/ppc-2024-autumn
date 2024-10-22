@@ -158,7 +158,7 @@ bool lupsha_e_rect_integration_mpi::TestMPITaskParallel::validation() {
     }
   }
 
-   return true;
+  return true;
 }
 
 bool lupsha_e_rect_integration_mpi::TestMPITaskParallel::run() {

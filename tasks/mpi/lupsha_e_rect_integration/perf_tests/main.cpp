@@ -75,7 +75,7 @@ TEST(lupsha_e_rect_integration_mpi, test_task_run) {
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
-auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 1000;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };

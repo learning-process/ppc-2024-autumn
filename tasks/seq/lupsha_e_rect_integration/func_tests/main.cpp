@@ -1,5 +1,6 @@
-// Copyright 2024 Nesterov Alexander
+// Copyright 2024 Lupsha Egor
 #include <gtest/gtest.h>
+
 #include <vector>
 
 #include "seq/lupsha_e_rect_integration/include/ops_seq.hpp"
@@ -16,7 +17,7 @@ TEST(lupsha_e_rect_integration_seq, Test_Rect1) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&upper_bound));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&num_intervals));
   taskDataSeq->inputs_count.emplace_back(3);
-  
+
   std::vector<double> result(1, 0.0);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
   taskDataSeq->outputs_count.emplace_back(1);

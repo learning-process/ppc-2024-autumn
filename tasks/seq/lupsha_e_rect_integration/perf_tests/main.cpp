@@ -1,4 +1,4 @@
-// Copyright 2024 Nesterov Alexander
+// Copyright 2024 Lupsha Egor
 #include <gtest/gtest.h>
 
 #include <vector>
