@@ -64,11 +64,6 @@ void korablev_v_rect_int_mpi::RectangularIntegrationSequential::set_function(
 
 bool korablev_v_rect_int_mpi::RectangularIntegrationParallel::pre_processing() {
   internal_order_test();
-  unsigned int delta = 0;
-  if (world.rank() == 0) {
-    delta = n_ / world.size();
-  }
-  broadcast(world, delta, 0);
 
   if (world.rank() == 0) {
     auto* tmp_ptr_a = reinterpret_cast<double*>(taskData->inputs[0]);
