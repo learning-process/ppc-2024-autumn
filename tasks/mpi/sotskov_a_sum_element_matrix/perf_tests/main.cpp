@@ -3,7 +3,6 @@
 #include <vector>
 #include <numeric>
 #include <memory>
-#include <iostream>
 #include "core/perf/include/perf.hpp"
 #include "mpi/sotskov_a_sum_element_matrix/include/ops_mpi.hpp"
 
@@ -15,10 +14,6 @@ TEST(sotskov_a_sum_element_matrix, test_pipeline_run) {
 
     if (total_elements % world.size() != 0) {
         total_elements -= total_elements % world.size();
-        if (world.rank() == 0) {
-            std::cout << "Adjusted total elements to " << total_elements 
-                      << " to make it divisible by " << world.size() << std::endl;
-        }
     }
 
     std::vector<int> global_vec(total_elements, 1);
@@ -36,7 +31,6 @@ TEST(sotskov_a_sum_element_matrix, test_pipeline_run) {
     MPI_Reduce(&local_sum, &global_sum[0], 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
     
     if (world.rank() == 0) {
-        std::cout << "Total sum is: " << global_sum[0] << std::endl;
         ASSERT_EQ(total_elements, global_sum[0]);
     }
 }
@@ -47,10 +41,6 @@ TEST(sotskov_a_sum_element_matrix, test_task_run) {
 
     if (total_elements % world.size() != 0) {
         total_elements -= total_elements % world.size();
-        if (world.rank() == 0) {
-            std::cout << "Adjusted total elements to " << total_elements 
-                      << " to make it divisible by " << world.size() << std::endl;
-        }
     }
 
     std::vector<int> global_vec(total_elements, 1);
@@ -68,7 +58,6 @@ TEST(sotskov_a_sum_element_matrix, test_task_run) {
     MPI_Reduce(&local_sum, &global_sum[0], 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
     
     if (world.rank() == 0) {
-        std::cout << "Total sum is: " << global_sum[0] << std::endl;
         ASSERT_EQ(total_elements, global_sum[0]);
     }
 }
