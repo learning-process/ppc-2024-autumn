@@ -7,8 +7,6 @@
 #include "core/task/include/task.hpp"
 #include "gtest/gtest.h"
 
-//=========================================sequence=========================================
-
 #define FUNC_SEQ_TEST(InType, OutType, Size, Value)                                                   \
                                                                                                       \
   TEST(khasanyanov_k_average_vector_seq, test_seq_##InType##_##Size) {                                \
