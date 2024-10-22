@@ -13,7 +13,6 @@ TEST(rezantseva_a_vector_dot_product_mpi, can_scalar_multiply_vec_size_120) {
   std::vector<int32_t> res(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
   if (world.rank() == 0) {
     const int count_size_vector = 120;
     std::vector<int> v1 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);

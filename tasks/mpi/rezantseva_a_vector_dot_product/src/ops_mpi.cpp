@@ -62,7 +62,6 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskSequential::post_processing
   return true;
 }
 
-
 // Parallel
 
 bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::validation() {
@@ -96,7 +95,7 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::pre_processing() 
         input_[i][j] = tmp_ptr[j];
       }
     }
-    
+
     for (int proc = 1; proc < world.size(); proc++) {
       world.send(proc, 0, input_[0].data() + proc * delta, delta);
       world.send(proc, 1, input_[1].data() + proc * delta, delta);
