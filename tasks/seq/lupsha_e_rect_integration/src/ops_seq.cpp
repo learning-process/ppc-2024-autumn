@@ -22,9 +22,16 @@ bool lupsha_e_rect_integration_seq::TestTaskSequential::pre_processing() {
 
 bool lupsha_e_rect_integration_seq::TestTaskSequential::validation() {
   internal_order_test();
-  if (taskData->inputs.size() < 3) {
+  if (taskData->inputs.size() < 3 || !f) {
+    if (taskData->inputs.size() < 3) {
+      std::cout << "Validation failed: not enough input data." << std::endl;
+    }
+    if (!f) {
+      std::cout << "Validation failed: function is not set." << std::endl;
+    }
     return false;
   }
+
   return true;
 }
 
