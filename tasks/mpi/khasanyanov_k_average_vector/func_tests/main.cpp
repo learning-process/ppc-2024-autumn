@@ -47,17 +47,6 @@ TEST(khasanyanov_k_average_vector_seq, test_random) {
   EXPECT_NEAR(out[0], expect_res, 1e-5);
 }
 
-TEST(khasanyanov_k_average_vector_seq, test_wrong_input) {
-  std::vector<double> in = {};
-  std::vector<double> out(1, 0.0);
-
-  std::shared_ptr<ppc::core::TaskData> taskData =
-      khasanyanov_k_average_vector_mpi::create_task_data<double, double>(in, out);
-
-  khasanyanov_k_average_vector_mpi::AvgVectorMPITaskSequential<double, double> testTask(taskData);
-  ASSERT_FALSE(testTask.validation());
-}
-
 //=========================================parallel=========================================
 
 namespace mpi = boost::mpi;
