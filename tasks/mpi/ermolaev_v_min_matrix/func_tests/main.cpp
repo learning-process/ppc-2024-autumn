@@ -61,7 +61,7 @@ TEST(ermolaev_v_min_matrix_mpi, Test_Min_10x10) {
 
 TEST(ermolaev_v_min_matrix_mpi, Test_Min_10x100) {
   const int count_rows = 10;
-  const int count_columns = 50;
+  const int count_columns = 100;
 
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
