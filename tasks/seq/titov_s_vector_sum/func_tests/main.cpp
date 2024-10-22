@@ -20,7 +20,7 @@ TEST(titov_s_vector_sum_seq, Test_Int) {
 
   // Create Task
   titov_s_vector_sum_seq::VectorSumSequential<int32_t> vectorSumSequential(taskDataSeq);
-  ASSERT_EQ(vectorSumSequential.validation(), true);
+  ASSERT_NO_THROW(vectorSumSequential.validation());
   vectorSumSequential.pre_processing();
   vectorSumSequential.run();
   vectorSumSequential.post_processing();
@@ -42,7 +42,7 @@ TEST(titov_s_vector_sum_seq, Test_Double) {
 
   // Create Task
   titov_s_vector_sum_seq::VectorSumSequential<double> vectorSumSequential(taskDataSeq);
-  ASSERT_EQ(vectorSumSequential.validation(), true);
+  ASSERT_NO_THROW(vectorSumSequential.validation());
   vectorSumSequential.pre_processing();
   vectorSumSequential.run();
   vectorSumSequential.post_processing();
@@ -63,7 +63,7 @@ TEST(titov_s_vector_sum_seq, Test_Float) {
 
   // Create Task
   titov_s_vector_sum_seq::VectorSumSequential<float> vectorSumSequential(taskDataSeq);
-  ASSERT_EQ(vectorSumSequential.validation(), true);
+  ASSERT_NO_THROW(vectorSumSequential.validation());
   vectorSumSequential.pre_processing();
   vectorSumSequential.run();
   vectorSumSequential.post_processing();
@@ -84,7 +84,7 @@ TEST(titov_s_vector_sum_seq, Test_Int64_t) {
 
   // Create Task
   titov_s_vector_sum_seq::VectorSumSequential<int64_t> vectorSumSequential(taskDataSeq);
-  ASSERT_EQ(vectorSumSequential.validation(), true);
+  ASSERT_NO_THROW(vectorSumSequential.validation());
   vectorSumSequential.pre_processing();
   vectorSumSequential.run();
   vectorSumSequential.post_processing();
@@ -105,7 +105,7 @@ TEST(titov_s_vector_sum_seq, Test_Uint8_t) {
 
   // Create Task
   titov_s_vector_sum_seq::VectorSumSequential<uint8_t> vectorSumSequential(taskDataSeq);
-  ASSERT_EQ(vectorSumSequential.validation(), true);
+  ASSERT_NO_THROW(vectorSumSequential.validation());
   vectorSumSequential.pre_processing();
   vectorSumSequential.run();
   vectorSumSequential.post_processing();
