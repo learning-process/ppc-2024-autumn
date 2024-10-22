@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 #include <numeric>
+#include <memory>
+#include <utility>
 
 #include "core/task/include/task.hpp"
 

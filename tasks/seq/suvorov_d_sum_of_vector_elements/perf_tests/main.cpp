@@ -2,6 +2,8 @@
 #include <gtest/gtest.h>
 
 #include <vector>
+#include <memory>
+#include <chrono>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/suvorov_d_sum_of_vector_elements/include/vec.hpp"
