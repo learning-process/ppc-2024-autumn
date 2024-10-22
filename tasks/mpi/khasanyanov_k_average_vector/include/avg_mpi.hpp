@@ -3,6 +3,7 @@
 
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <iterator>
@@ -182,9 +183,11 @@ khasanyanov_k_average_vector_mpi::AvgVectorMPITaskParallel<In, Out>::displacemen
   std::transform(sizes.cbegin(), sizes.cbegin() + mod, sizes.begin(), [](auto i) { return i + 1; });
   std::vector<int> disp(capacity);
   disp[0] = 0;
-  for (size_t i = 1; i < capacity; ++i) {
-    disp[i] = disp[i - 1] + sizes[i - 1];
-  }
+  size_t i = 0;
+  std::generate(disp.begin() + 1, disp.end(), [&]() {
+    ++i;
+    return disp[i - 1] + sizes[i - 1];
+  });
   return {sizes, disp};
 }
 
