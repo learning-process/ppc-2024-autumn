@@ -28,7 +28,6 @@ class RectangularIntegrationSequential : public ppc::core::Task {
 
  private:
   static double integrate(const std::function<double(double)>& f, double a, double b, int n);
-
   double a_{};
   double b_{};
   int n_{};
@@ -54,7 +53,6 @@ class RectangularIntegrationParallel : public ppc::core::Task {
   double a_{};
   double b_{};
   int n_{};
-  double local_result_{};
   double global_result_{};
   std::function<double(double)> func_;
 

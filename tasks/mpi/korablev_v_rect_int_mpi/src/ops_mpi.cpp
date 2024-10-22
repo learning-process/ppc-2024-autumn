@@ -34,6 +34,7 @@ bool korablev_v_rect_int_mpi::RectangularIntegrationSequential::validation() {
 bool korablev_v_rect_int_mpi::RectangularIntegrationSequential::run() {
   internal_order_test();
   result_ = integrate(func_, a_, b_, n_);
+  std::this_thread::sleep_for(20ms);
   return true;
 }
 
@@ -63,7 +64,6 @@ void korablev_v_rect_int_mpi::RectangularIntegrationSequential::set_function(
 
 bool korablev_v_rect_int_mpi::RectangularIntegrationParallel::pre_processing() {
   internal_order_test();
-
   unsigned int delta = 0;
   if (world.rank() == 0) {
     delta = n_ / world.size();
@@ -97,11 +97,10 @@ bool korablev_v_rect_int_mpi::RectangularIntegrationParallel::validation() {
 
 bool korablev_v_rect_int_mpi::RectangularIntegrationParallel::run() {
   internal_order_test();
-
+  double local_result_{};
   local_result_ = parallel_integrate(func_, a_, b_, n_);
-
   reduce(world, local_result_, global_result_, std::plus<>(), 0);
-
+  std::this_thread::sleep_for(20ms);
   return true;
 }
 
@@ -119,18 +118,10 @@ double korablev_v_rect_int_mpi::RectangularIntegrationParallel::parallel_integra
   int size = world.size();
 
   double h = (b - a) / n;
-  int local_n = n / size;
-  int remainder = n % size;
-
-  if (rank < remainder) {
-    local_n += 1;
-  }
-
-  double local_a = a + rank * local_n * h;
-
   double local_sum = 0.0;
-  for (int i = 0; i < local_n; ++i) {
-    double x = local_a + i * h;
+
+  for (int i = rank; i < n; i += size) {
+    double x = a + i * h;
     local_sum += f(x) * h;
   }
 
