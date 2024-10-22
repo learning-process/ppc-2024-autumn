@@ -9,7 +9,7 @@ TEST(rezantseva_a_vector_dot_product_seq, can_scalar_multiply_vec_size_10) {
   std::vector<int> out(1, 0);
   std::vector<int> v1 = rezantseva_a_vector_dot_product_seq::createRandomVector(count);
   std::vector<int> v2 = rezantseva_a_vector_dot_product_seq::createRandomVector(count);
-  
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
@@ -18,7 +18,7 @@ TEST(rezantseva_a_vector_dot_product_seq, can_scalar_multiply_vec_size_10) {
 
   taskDataSeq->inputs_count.emplace_back(v1.size());
   taskDataSeq->inputs_count.emplace_back(v2.size());
-  
+
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 

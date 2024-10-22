@@ -20,14 +20,13 @@ TEST(rezantseva_a_vector_dot_product_mpi, can_scalar_multiply_vec_size_120) {
     std::vector<int> v2 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
 
     global_vec = {v1, v2};
-    for (size_t  i = 0; i < global_vec.size(); i++) {
+    for (size_t i = 0; i < global_vec.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec[i].data()));
     }
     taskDataPar->inputs_count.emplace_back(global_vec[0].size());
     taskDataPar->inputs_count.emplace_back(global_vec[1].size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size());
-
   }
 
   rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
@@ -77,7 +76,7 @@ TEST(rezantseva_a_vector_dot_product_mpi, can_scalar_multiply_vec_size_300) {
 
     global_vec = {v1, v2};
     for (size_t i = 0; i < global_vec.size(); i++) {
-        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec[i].data()));
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec[i].data()));
     }
     taskDataPar->inputs_count.emplace_back(global_vec[0].size());
     taskDataPar->inputs_count.emplace_back(global_vec[1].size());
@@ -118,7 +117,6 @@ TEST(rezantseva_a_vector_dot_product_mpi, can_scalar_multiply_vec_size_300) {
 }
 
 TEST(rezantseva_a_vector_dot_product_mpi, check_vectors_not_equal) {
- 
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vec;
   std::vector<int32_t> res(1, 0);
