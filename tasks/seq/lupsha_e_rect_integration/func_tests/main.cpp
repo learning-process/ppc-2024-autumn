@@ -30,6 +30,7 @@ TEST(lupsha_e_rect_integration_seq, Test_Rect1) {
   TestTaskSequential.run();
   TestTaskSequential.post_processing();
   
+
   ASSERT_DOUBLE_EQ(expected_result, result[0]);
 }
 

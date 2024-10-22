@@ -94,6 +94,7 @@ TEST(lupsha_e_rect_integration_mpi, Test_Logarithm) {
     lupsha_e_rect_integration_mpi::TestMPITaskSequential sequential_Task(taskDataSeq);
     sequential_Task.function_set(f);
 
+
     double expected_result = 
         (upper_bound * log(upper_bound) - upper_bound) - (lower_bound * log(lower_bound) - lower_bound);
     ASSERT_NEAR(global_sum[0], expected_result, 1e-3);
@@ -225,6 +226,7 @@ TEST(lupsha_e_rect_integration_mpi, Test_Power) {
 
     lupsha_e_rect_integration_mpi::TestMPITaskSequential sequential_Task(taskDataSeq);
     sequential_Task.function_set(f);
+
 
     double expected_result = 
         (upper_bound * upper_bound * upper_bound / 3) - (lower_bound * lower_bound * lower_bound / 3);
