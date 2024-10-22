@@ -1,11 +1,12 @@
 // Copyright 2024 Nesterov Alexander
 #include "mpi/rezantseva_a_vector_dot_product/include/ops_mpi.hpp"
+
 #include <random>
 #include <thread>
 
 static int offset = 0;
 using namespace std::chrono_literals;
-//Sequential
+// Sequential
 std::vector<int> rezantseva_a_vector_dot_product_mpi::createRandomVector(const int v_size) {
   std::vector<int> vec(v_size);
   std::mt19937 gen;
@@ -38,7 +39,7 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskSequential::pre_processing(
   for (size_t i = 0; i < input_.size(); i++) {
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
     input_[i] = std::vector<int>(taskData->inputs_count[i]);
-    for (size_t  j = 0; j < taskData->inputs_count[i]; j++) {
+    for (size_t j = 0; j < taskData->inputs_count[i]; j++) {
       input_[i][j] = tmp_ptr[j];
     }
   }
@@ -62,7 +63,7 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskSequential::post_processing
 }
 
 
-//Parallel
+// Parallel
 
 bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
@@ -121,7 +122,7 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
   int local_res = 0;
- 
+
   for (size_t i = 0; i < local_input1_.size(); i++) {
     local_res += local_input1_[i] * local_input2_[i];
   }
@@ -129,13 +130,12 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::run() {
   std::vector<int> all_res;
   boost::mpi::gather(world, local_res, all_res, 0);
 
-  if (world.rank() == 0) { 
+  if (world.rank() == 0) {
     for (int result : all_res) {
-      res += result;  
+      res += result;
     }
   }
-
- std::this_thread::sleep_for(20ms);
+  std::this_thread::sleep_for(20ms);
   return true;
 }
 

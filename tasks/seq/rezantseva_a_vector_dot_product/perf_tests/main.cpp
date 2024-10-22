@@ -44,7 +44,7 @@ TEST(rezantseva_a_vector_dot_product_seq, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
- 
+  
   int answer = rezantseva_a_vector_dot_product_seq::vectorDotProduct(v1, v2);
   ASSERT_EQ(answer, out[0]);
 }
@@ -88,7 +88,7 @@ TEST(rezantseva_a_vector_dot_product_seq, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-
+  
   int answer = rezantseva_a_vector_dot_product_seq::vectorDotProduct(v1, v2);
   ASSERT_EQ(answer, out[0]);
 }

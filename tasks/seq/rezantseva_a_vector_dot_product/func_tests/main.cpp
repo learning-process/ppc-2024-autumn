@@ -12,6 +12,7 @@ TEST(rezantseva_a_vector_dot_product_seq, can_scalar_multiply_vec_size_10) {
   
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(v1.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(v2.data()));
 
@@ -203,7 +204,6 @@ TEST(rezantseva_a_vector_dot_product_seq, check_run_right) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  
   ASSERT_EQ(58, out[0]);
 }
 TEST(rezantseva_a_vector_dot_product_seq, check_vectorDotProduct_right) {

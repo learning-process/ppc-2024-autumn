@@ -1,5 +1,6 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/rezantseva_a_vector_dot_product/include/ops_seq.hpp"
+
 #include <random>
 #include <thread>
 
@@ -23,7 +24,7 @@ bool rezantseva_a_vector_dot_product_seq::TestTaskSequential::pre_processing() {
   for (size_t i = 0; i < input_.size(); i++) {
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
     input_[i] = std::vector<int>(taskData->inputs_count[i]);
-    for (size_t  j = 0; j < taskData->inputs_count[i]; j++) {
+    for (size_t j = 0; j < taskData->inputs_count[i]; j++) {
       input_[i][j] = tmp_ptr[j];
     }
   }

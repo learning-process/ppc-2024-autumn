@@ -18,7 +18,6 @@ TEST(rezantseva_a_vector_dot_product_mpi, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    
     global_vec = {v1, v2};
     for (size_t i = 0; i < global_vec.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec[i].data()));
@@ -34,16 +33,16 @@ TEST(rezantseva_a_vector_dot_product_mpi, test_pipeline_run) {
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
-  
+
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
-  
+
   // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-  
+
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
