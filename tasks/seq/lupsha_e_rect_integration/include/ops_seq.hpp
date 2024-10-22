@@ -1,12 +1,11 @@
-// Copyright 2023 Nesterov Alexander
+// Copyright 2024 Lupsha Egor
 #pragma once
 
-#include <string>
 #include <vector>
-
+#include <functional>
 #include "core/task/include/task.hpp"
 
-namespace nesterov_a_test_task_seq {
+namespace lupsha_e_rect_integration_seq {
 
 class TestTaskSequential : public ppc::core::Task {
  public:
@@ -16,8 +15,14 @@ class TestTaskSequential : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
+  void function_set(const std::function<double(double)>& func);
  private:
-  int input_{}, res{};
+  double lower_bound{};
+  double upper_bound{};
+  int num_intervals{};
+  std::vector<double> input_;
+  std::vector<double> results_;
+  std::function<double(double)> f;
 };
 
-}  // namespace nesterov_a_test_task_seq
+}  // namespace lupsha_e_rect_integration_seq
