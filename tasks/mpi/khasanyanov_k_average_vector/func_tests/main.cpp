@@ -51,6 +51,16 @@ TEST(khasanyanov_k_average_vector_seq, test_random) {
 
 namespace mpi = boost::mpi;
 
+TEST(khasanyanov_k_average_vector_seq, test_displacement) {
+  auto displacement = khasanyanov_k_average_vector_mpi::AvgVectorMPITaskParallel<double, double>::displacement(18, 4);
+  auto sizes = displacement.first;
+  auto displacements = displacement.second;
+  std::vector<int> pattern_sizes{5, 5, 4, 4};
+  std::vector<int> pattern_displacements{0, 5, 9, 13};
+  EXPECT_EQ(sizes, pattern_sizes);
+  EXPECT_EQ(sizes, pattern_sizes);
+}
+
 TEST(khasanyanov_k_average_vector_mpi, test_wrong_input) {
   mpi::communicator world;
   std::vector<double> in;

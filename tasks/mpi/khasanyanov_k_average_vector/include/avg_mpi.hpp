@@ -102,14 +102,15 @@ class AvgVectorMPITaskParallel : public ppc::core::Task {
   Out avg = 0.0;
   mpi::communicator world;
 
-  std::pair<std::vector<int>, std::vector<int>> displacement(size_t input_size) const;
-
  public:
   explicit AvgVectorMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
+
+  static std::pair<std::vector<int>, std::vector<int>> displacement(size_t, size_t);
 };
 
 template <class In, class Out>
@@ -131,7 +132,7 @@ bool khasanyanov_k_average_vector_mpi::AvgVectorMPITaskParallel<In, Out>::pre_pr
 
   mpi::broadcast(world, input_size, 0);
 
-  std::pair<std::vector<int>, std::vector<int>> disp = displacement(input_size);
+  std::pair<std::vector<int>, std::vector<int>> disp = displacement(input_size, world.size());
   auto& displacements = disp.second;
   auto& sizes = disp.first;
   if (world.rank() == 0) {
@@ -173,14 +174,12 @@ bool khasanyanov_k_average_vector_mpi::AvgVectorMPITaskParallel<In, Out>::post_p
 
 template <class In, class Out>
 std::pair<std::vector<int>, std::vector<int>>
-khasanyanov_k_average_vector_mpi::AvgVectorMPITaskParallel<In, Out>::displacement(size_t input_size) const {
-  size_t capacity = world.size();
+khasanyanov_k_average_vector_mpi::AvgVectorMPITaskParallel<In, Out>::displacement(size_t input_size, size_t n) {
+  const size_t capacity = n;
   size_t count = input_size / capacity;
   size_t mod = input_size % capacity;
   std::vector<int> sizes(capacity, count);
-  for (size_t i = 0; i < mod; ++i) {
-    ++sizes[i];
-  }
+  std::transform(sizes.cbegin(), sizes.cbegin() + mod, sizes.begin(), [](auto i) { return i + 1; });
   std::vector<int> disp(capacity);
   disp[0] = 0;
   for (size_t i = 1; i < capacity; ++i) {
