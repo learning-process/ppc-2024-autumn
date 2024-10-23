@@ -5,7 +5,7 @@
 
 #include "seq/kolokolova_d_max_of_vector_elements/include/ops_seq.hpp"
 
-TEST(kolokolova_d_max_of_vector_elements_seq, Test_Max1) {
+TEST(kolokolova_d_max_of_vector_elements_seq, Test_Max_For_Rows1) {
   int count_rows = 3;
   // Создание данных
   std::vector<int> global_mat = {2, 5, 4, 7, 9, 3, 5, 6, 7, 9, 2, 4, 2, 5, 0};
@@ -32,7 +32,7 @@ TEST(kolokolova_d_max_of_vector_elements_seq, Test_Max1) {
   ASSERT_EQ(ans, seq_max_vec);
 }
 
-TEST(kolokolova_d_max_of_vector_elements_seq, Test_Max2) {
+TEST(kolokolova_d_max_of_vector_elements_seq, Test_Max_For_Rows2) {
   int count_rows = 3;
   // Создание данных
   std::vector<int> global_mat = {10, 5, 1, 9, 7, 3, 13, 4, 6, 7, 7, 9, 12, 4, 2, 2, 3, 9};
@@ -59,7 +59,7 @@ TEST(kolokolova_d_max_of_vector_elements_seq, Test_Max2) {
   ASSERT_EQ(ans, seq_max_vec);
 }
 
-TEST(kolokolova_d_max_of_vector_elements_seq, Test_Max3) {
+TEST(kolokolova_d_max_of_vector_elements_seq, Test_Max_For_Rows3) {
   int count_rows = 4;
   // Создание данных
   std::vector<int> global_mat = {10, 4, 3, 9, 7, 9, 13, 4, 6, 7, 5, 9, 12, 4, 2, 1, 10, 9, 0, 8};

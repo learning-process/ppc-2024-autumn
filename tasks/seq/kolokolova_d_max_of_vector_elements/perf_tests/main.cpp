@@ -56,7 +56,7 @@ TEST(kolokolova_d_max_of_vector_elements_seq, test_pipeline_run) {
   // Проверка результатов
   for (size_t i = 0; i < seq_max_vec.size(); i++) {
     EXPECT_EQ(seq_max_vec[i],
-              (size_rows + i - 1));  // Проверка, что максимальное значение в каждой строке соответствует
+              int(size_rows + i - 1));  // Проверка, что максимальное значение в каждой строке соответствует
   }
 }
 
