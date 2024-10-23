@@ -54,7 +54,7 @@ TEST(lysov_i_integration_the_trapezoid_method_mpi, test_integration_task_run) {
   std::vector<double> global_result(1, 0.0);
   double a = -1.45;
   double b = 1.45;
-  int cnt_of_splits = 100000000;  
+  int cnt_of_splits = 100000000;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
