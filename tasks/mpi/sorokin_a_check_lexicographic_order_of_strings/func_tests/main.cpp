@@ -188,3 +188,50 @@ TEST(sorokin_a_check_lexicographic_order_of_strings_mpi, The_difference_is_in_4_
     ASSERT_EQ(0, res[0]);
   }
 }
+TEST(sorokin_a_check_lexicographic_order_of_strings_mpi, Equal_strings) {
+  boost::mpi::communicator world;
+  std::vector<char> str1;
+  std::vector<char> str2;
+  std::vector<std::vector<char>> strs = {str1, str2};
+  std::vector<int32_t> res(1, 0);
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    for (unsigned int i = 0; i < strs.size(); i++)
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(strs[i].data()));
+    taskDataPar->inputs_count.emplace_back(strs.size());
+    taskDataPar->inputs_count.emplace_back(strs[0].size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
+    taskDataPar->outputs_count.emplace_back(res.size());
+  }
+
+  sorokin_a_check_lexicographic_order_of_strings_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    // Create data
+    std::vector<int32_t> reference_res(1, 0);
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    for (unsigned int i = 0; i < strs.size(); i++)
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(strs[i].data()));
+    taskDataSeq->inputs_count.emplace_back(strs.size());
+    taskDataSeq->inputs_count.emplace_back(strs[0].size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_res.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_res.size());
+
+    // Create Task
+    sorokin_a_check_lexicographic_order_of_strings_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(reference_res[0], 0);
+    ASSERT_EQ(2, res[0]);
+  }
+}
