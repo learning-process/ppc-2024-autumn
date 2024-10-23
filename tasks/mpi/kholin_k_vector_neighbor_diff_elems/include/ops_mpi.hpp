@@ -49,10 +49,10 @@ class TestTaskSequential : public ppc::core::Task {
       // get iterator for current element and his neighbor element vector
       auto iter_curr = input_.begin();
       auto iter_next = iter_curr + 1;
-      auto iter_end = input_.end();
+      auto iter_end = input_.end()-1;
       auto iter_begin = input_.begin();
       // algorithm search max delta with using address arithmetic pointers
-      while (iter_curr != (iter_end - 1)) {
+      while (iter_curr != iter_end) {
         delta = fabs(*iter_next - *iter_curr);
         if (delta > max_delta) {
           if (iter_begin == iter_curr) {
@@ -72,7 +72,6 @@ class TestTaskSequential : public ppc::core::Task {
       right_index = curr_index + 1;
       left_index = curr_index;
       left_elem = input_[left_index];
-
       right_elem = input_[right_index];
       // std::cout << "left el " << left_elem << "left_ind " << left_index << std::endl;
       // std::cout << "right el" << right_elem << "right_ind" << right_index << std::endl;
@@ -182,8 +181,10 @@ class TestMPITaskParallel : public ppc::core::Task {
       sendbuf3[0] = world.rank();
       MPI_Gather(sendbuf3, 1, MPI_INT, ranks.data(), 1, MPI_INT, 0, world);
       // output global results
-      calculate_global_delta();    // 1
-      calculate_global_indices();  // 2
+      if (world.rank() == 0) {
+        calculate_global_delta();    // 1
+        calculate_global_indices();  // 2
+      }
     }
     // finalisation
     return true;
@@ -250,10 +251,10 @@ double TestMPITaskParallel<TypeElem, TypeIndex>::max_difference() {
   // get iterator for current element and his neighbor element vector
   auto iter_curr = local_input_.begin();
   auto iter_next = iter_curr + 1;
-  auto iter_end = local_input_.end();
+  auto iter_end = local_input_.end()-1;
   auto iter_begin = local_input_.begin();
   // algorithm search max delta with using address arithmetic pointers
-  while (iter_curr != (iter_end - 1)) {
+  while (iter_curr != iter_end) {
     delta = fabs((double)(*iter_next - *iter_curr));
     if (delta > max_delta) {
       if (iter_begin == iter_curr) {
