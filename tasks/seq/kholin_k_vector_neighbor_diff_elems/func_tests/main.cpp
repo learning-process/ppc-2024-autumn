@@ -10,11 +10,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_pre_processing) {
   std::vector<int32_t> in(1256, 1);//in data 
   std::vector<int32_t> out(2, 0);//out data
   std::vector<uint64_t> out_index(2, 0);//out data
-  for (size_t i = 0; i < in.size(); i++) {
-    in[i] = 2 * i;
-  }
-  in[234] = 0;
-  in[235] = 4000;
+ 
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
@@ -38,11 +34,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_validation) {
   std::vector<int32_t> in(1256, 1);
   std::vector<int32_t> out(2, 0);
   std::vector<uint64_t> out_index(2, 0);
-  for (size_t i = 0; i < in.size(); i++) {
-    in[i] = 2 * i;
-  }
-  in[234] = 0;
-  in[235] = 4000;
+
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
@@ -64,11 +56,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_run) {
   std::vector<int32_t> in(1256, 1);
   std::vector<int32_t> out(2, 0);
   std::vector<uint64_t> out_index(2, 0);
-  for (size_t i = 0; i < in.size(); i++) {
-    in[i] = 2 * i;
-  }
-  in[234] = 0;
-  in[235] = 4000;
+
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
@@ -92,11 +80,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_post_processing) {
   std::vector<int32_t> in(1256, 1);
   std::vector<int32_t> out(2, 0);
   std::vector<uint64_t> out_index(2, 0);
-  for (size_t i = 0; i < in.size(); i++) {
-    in[i] = 2 * i;
-  }
-  in[234] = 0;
-  in[235] = 4000;
+
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();

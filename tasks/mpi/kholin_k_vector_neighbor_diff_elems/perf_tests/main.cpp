@@ -1,30 +1,41 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/example/include/ops_mpi.hpp"
+#include "mpi/kholin_k_vector_neighbor_diff_elems/include/ops_mpi.hpp"
 
-TEST(mpi_example_perf_test, test_pipeline_run) {
+TEST(kholin_k_vector_neighbor_diff_elems_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_sum(1, 0);
+  const int count_size_vector = 5000000;
+  std::vector<int> global_vec(count_size_vector, 2);
+  std::vector<double> global_delta(1, 0);
+  std::vector<int> global_elems(2, 0);
+  std::vector<uint64_t> global_indices(2, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int count_size_vector;
   if (world.rank() == 0) {
-    count_size_vector = 120;
-    global_vec = std::vector<int>(count_size_vector, 1);
+
+    /*for (int i = 0; i < global_vec.size(); i++) {
+      global_vec[i] = 2 * i + 4;
+    }*/
+
+    global_vec[10] = 5000;
+    global_vec[11] = 1;
+
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_elems.data()));
+    taskDataPar->outputs_count.emplace_back(global_elems.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_indices.data()));
+    taskDataPar->outputs_count.emplace_back(global_indices.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_delta.data()));
+    taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<nesterov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar, "+");
-  ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  auto testMpiTaskParallel = std::make_shared<kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int,uint64_t>>(taskDataPar,"MAX_DIFFERENCE");
+  testMpiTaskParallel->validation();
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
@@ -43,28 +54,38 @@ TEST(mpi_example_perf_test, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(count_size_vector, global_sum[0]);
   }
 }
 
-TEST(mpi_example_perf_test, test_task_run) {
+TEST(kholin_k_vector_neighbor_diff_elems_mpi, test_task_run) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_sum(1, 0);
+  const int count_size_vector = 64000000;
+  std::vector<int> global_vec(count_size_vector, 2);
+  std::vector<double> global_delta(1, 0);
+  std::vector<int> global_elems(2, 0);
+  std::vector<uint64_t> global_indices(2, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int count_size_vector;
   if (world.rank() == 0) {
-    count_size_vector = 120;
-    global_vec = std::vector<int>(count_size_vector, 1);
+   /* for (int i = 0; i < global_vec.size(); i++) {
+      global_vec[i] = 2 * i + 4;
+    }*/
+
+    global_vec[10] = 5000;
+    global_vec[11] = 1;
+
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_elems.data()));
+    taskDataPar->outputs_count.emplace_back(global_elems.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_indices.data()));
+    taskDataPar->outputs_count.emplace_back(global_indices.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_delta.data()));
+    taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<nesterov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar, "+");
-  ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  auto testMpiTaskParallel =std::make_shared<kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int, uint64_t>>(taskDataPar,"MAX_DIFFERENCE");
+  testMpiTaskParallel->validation();
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
@@ -83,7 +104,6 @@ TEST(mpi_example_perf_test, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(count_size_vector, global_sum[0]);
   }
 }
 

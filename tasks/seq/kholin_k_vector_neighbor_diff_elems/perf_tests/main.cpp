@@ -8,7 +8,7 @@
 
 TEST(kholin_k_vector_neighbor_diff_elems_seq, test_pipeline_run) {
   // Create data
-  const int count = 10000000;
+  const int count = 20000000;
 
   std::vector<int32_t> in(count, 1);       // in data 
   std::vector<int32_t> out(2, 0);         // out data 
@@ -51,7 +51,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, test_pipeline_run) {
 
 TEST(kholin_k_vector_neighbor_diff_elems_seq, test_task_run) {
   // Create data
-  const int count = 10000000;
+  const int count = 500000000;
 
   std::vector<int32_t> in(count, 1);      // in data
   std::vector<int32_t> out(2, 0);         // out data
