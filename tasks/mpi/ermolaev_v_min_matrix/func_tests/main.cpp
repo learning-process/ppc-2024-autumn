@@ -10,6 +10,8 @@
 TEST(ermolaev_v_min_matrix_mpi, Test_Min_10x10) {
   const int count_rows = 10;
   const int count_columns = 10;
+  const int gen_min = -500;
+  const int gen_max = 500;
 
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
@@ -18,7 +20,7 @@ TEST(ermolaev_v_min_matrix_mpi, Test_Min_10x10) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = ermolaev_v_min_matrix_mpi::getRandomMatrix(count_rows, count_columns);
+    global_matrix = ermolaev_v_min_matrix_mpi::getRandomMatrix(count_rows, count_columns, gen_min, gen_max);
     for (unsigned int i = 0; i < global_matrix.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     taskDataPar->inputs_count.emplace_back(count_rows);
@@ -62,6 +64,8 @@ TEST(ermolaev_v_min_matrix_mpi, Test_Min_10x10) {
 TEST(ermolaev_v_min_matrix_mpi, Test_Min_10x100) {
   const int count_rows = 10;
   const int count_columns = 100;
+  const int gen_min = -500;
+  const int gen_max = 500;
 
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
@@ -70,7 +74,7 @@ TEST(ermolaev_v_min_matrix_mpi, Test_Min_10x100) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = ermolaev_v_min_matrix_mpi::getRandomMatrix(count_rows, count_columns);
+    global_matrix = ermolaev_v_min_matrix_mpi::getRandomMatrix(count_rows, count_columns, gen_min, gen_max);
     for (unsigned int i = 0; i < global_matrix.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     taskDataPar->inputs_count.emplace_back(count_rows);
@@ -114,6 +118,8 @@ TEST(ermolaev_v_min_matrix_mpi, Test_Min_10x100) {
 TEST(ermolaev_v_min_matrix_mpi, Test_Min_100x10) {
   const int count_rows = 100;
   const int count_columns = 10;
+  const int gen_min = -500;
+  const int gen_max = 500;
 
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
@@ -122,7 +128,7 @@ TEST(ermolaev_v_min_matrix_mpi, Test_Min_100x10) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = ermolaev_v_min_matrix_mpi::getRandomMatrix(count_rows, count_columns);
+    global_matrix = ermolaev_v_min_matrix_mpi::getRandomMatrix(count_rows, count_columns, gen_min, gen_max);
     for (unsigned int i = 0; i < global_matrix.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     taskDataPar->inputs_count.emplace_back(count_rows);
@@ -166,6 +172,8 @@ TEST(ermolaev_v_min_matrix_mpi, Test_Min_100x10) {
 TEST(ermolaev_v_min_matrix_mpi, Test_Min_100x100) {
   const int count_rows = 100;
   const int count_columns = 100;
+  const int gen_min = -500;
+  const int gen_max = 500;
 
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
@@ -174,7 +182,7 @@ TEST(ermolaev_v_min_matrix_mpi, Test_Min_100x100) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = ermolaev_v_min_matrix_mpi::getRandomMatrix(count_rows, count_columns);
+    global_matrix = ermolaev_v_min_matrix_mpi::getRandomMatrix(count_rows, count_columns, gen_min, gen_max);
     for (unsigned int i = 0; i < global_matrix.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     taskDataPar->inputs_count.emplace_back(count_rows);

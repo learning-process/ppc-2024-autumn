@@ -15,8 +15,8 @@
 
 namespace ermolaev_v_min_matrix_mpi {
 
-std::vector<int> getRandomVector(int sz);
-std::vector<std::vector<int>> getRandomMatrix(int rows, int columns);
+std::vector<int> getRandomVector(int sz, int min = 0, int max = 100);
+std::vector<std::vector<int>> getRandomMatrix(int rows, int columns, int min = 0, int max = 100);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:

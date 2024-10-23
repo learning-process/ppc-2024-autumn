@@ -10,6 +10,7 @@
 TEST(ermolaev_v_min_matrix_seq, test_pipeline_run) {
   std::vector<std::vector<int>> global_matrix;
   std::vector<int32_t> global_min(1, INT_MAX);
+  int ref = INT_MIN;
 
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -18,10 +19,12 @@ TEST(ermolaev_v_min_matrix_seq, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   int count_rows = 4000;
   int count_columns = 4000;
+  int gen_min = -500;
+  int gen_max = 500;
 
-  global_matrix = ermolaev_v_min_matrix_seq::getRandomMatrix(count_rows, count_columns);
+  global_matrix = ermolaev_v_min_matrix_seq::getRandomMatrix(count_rows, count_columns, gen_min, gen_max);
   int index = gen() % (count_rows * count_columns);
-  global_matrix[index / count_columns][index / count_rows] = -1;
+  global_matrix[index / count_columns][index / count_rows] = ref;
 
   for (unsigned int i = 0; i < global_matrix.size(); i++)
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix[i].data()));
@@ -51,12 +54,13 @@ TEST(ermolaev_v_min_matrix_seq, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(-1, global_min[0]);
+  ASSERT_EQ(ref, global_min[0]);
 }
 
 TEST(sequential_ermolaev_v_min_matrix_seq, test_task_run) {
   std::vector<std::vector<int>> global_matrix;
   std::vector<int32_t> global_min(1, INT_MAX);
+  int ref = INT_MIN;
 
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -65,10 +69,12 @@ TEST(sequential_ermolaev_v_min_matrix_seq, test_task_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   int count_rows = 4000;
   int count_columns = 4000;
+  int gen_min = -500;
+  int gen_max = 500;
 
-  global_matrix = ermolaev_v_min_matrix_seq::getRandomMatrix(count_rows, count_columns);
+  global_matrix = ermolaev_v_min_matrix_seq::getRandomMatrix(count_rows, count_columns, gen_min, gen_max);
   int index = gen() % (count_rows * count_columns);
-  global_matrix[index / count_columns][index / count_rows] = -1;
+  global_matrix[index / count_columns][index / count_rows] = ref;
 
   for (unsigned int i = 0; i < global_matrix.size(); i++)
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix[i].data()));
@@ -98,5 +104,5 @@ TEST(sequential_ermolaev_v_min_matrix_seq, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(-1, global_min[0]);
+  ASSERT_EQ(ref, global_min[0]);
 }

@@ -13,13 +13,17 @@ TEST(ermolaev_v_min_matrix_seq, test_min_10x10) {
 
   const int count_rows = 10;
   const int count_columns = 10;
+  const int gen_min = -500;
+  const int gen_max = 500;
+  int ref = INT_MIN;
 
   // Create data
   std::vector<int> out(1, INT_MAX);
-  std::vector<std::vector<int>> in = ermolaev_v_min_matrix_seq::getRandomMatrix(count_rows, count_columns);
+  std::vector<std::vector<int>> in =
+      ermolaev_v_min_matrix_seq::getRandomMatrix(count_rows, count_columns, gen_min, gen_max);
 
   int index = gen() % (count_rows * count_columns);
-  in[index / count_columns][index / count_rows] = -1;
+  in[index / count_columns][index / count_rows] = ref;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -38,7 +42,7 @@ TEST(ermolaev_v_min_matrix_seq, test_min_10x10) {
   testTaskSequential.run();
   testTaskSequential.post_processing();
 
-  ASSERT_EQ(-1, out[0]);
+  ASSERT_EQ(ref, out[0]);
 }
 
 TEST(ermolaev_v_min_matrix_seq, test_min_10x100) {
@@ -47,12 +51,16 @@ TEST(ermolaev_v_min_matrix_seq, test_min_10x100) {
 
   const int count_rows = 10;
   const int count_columns = 50;
+  const int gen_min = -500;
+  const int gen_max = 500;
+  int ref = INT_MIN;
 
   // Create data
   std::vector<int> out(1, INT_MAX);
-  std::vector<std::vector<int>> in = ermolaev_v_min_matrix_seq::getRandomMatrix(count_rows, count_columns);
+  std::vector<std::vector<int>> in =
+      ermolaev_v_min_matrix_seq::getRandomMatrix(count_rows, count_columns, gen_min, gen_max);
   int index = gen() % (count_rows * count_columns);
-  in[index / count_columns][index / count_rows] = -1;
+  in[index / count_columns][index / count_rows] = ref;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -71,7 +79,7 @@ TEST(ermolaev_v_min_matrix_seq, test_min_10x100) {
   testTaskSequential.run();
   testTaskSequential.post_processing();
 
-  ASSERT_EQ(-1, out[0]);
+  ASSERT_EQ(ref, out[0]);
 }
 
 TEST(ermolaev_v_min_matrix_seq, test_min_100x10) {
@@ -80,13 +88,17 @@ TEST(ermolaev_v_min_matrix_seq, test_min_100x10) {
 
   const int count_rows = 100;
   const int count_columns = 10;
+  const int gen_min = -500;
+  const int gen_max = 500;
+  int ref = INT_MIN;
 
   // Create data
   std::vector<int> out(1, INT_MAX);
-  std::vector<std::vector<int>> in = ermolaev_v_min_matrix_seq::getRandomMatrix(count_rows, count_columns);
+  std::vector<std::vector<int>> in =
+      ermolaev_v_min_matrix_seq::getRandomMatrix(count_rows, count_columns, gen_min, gen_max);
 
   int index = gen() % (count_rows * count_columns);
-  in[index / count_columns][index / count_rows] = -1;
+  in[index / count_columns][index / count_rows] = ref;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -105,7 +117,7 @@ TEST(ermolaev_v_min_matrix_seq, test_min_100x10) {
   testTaskSequential.run();
   testTaskSequential.post_processing();
 
-  ASSERT_EQ(-1, out[0]);
+  ASSERT_EQ(ref, out[0]);
 }
 
 TEST(ermolaev_v_min_matrix_seq, test_min_100x100) {
@@ -114,13 +126,17 @@ TEST(ermolaev_v_min_matrix_seq, test_min_100x100) {
 
   const int count_rows = 100;
   const int count_columns = 100;
+  const int gen_min = -500;
+  const int gen_max = 500;
+  int ref = INT_MIN;
 
   // Create data
   std::vector<int> out(1, INT_MAX);
-  std::vector<std::vector<int>> in = ermolaev_v_min_matrix_seq::getRandomMatrix(count_rows, count_columns);
+  std::vector<std::vector<int>> in =
+      ermolaev_v_min_matrix_seq::getRandomMatrix(count_rows, count_columns, gen_min, gen_max);
 
   int index = gen() % (count_rows * count_columns);
-  in[index / count_columns][index / count_rows] = -1;
+  in[index / count_columns][index / count_rows] = ref;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -139,5 +155,5 @@ TEST(ermolaev_v_min_matrix_seq, test_min_100x100) {
   testTaskSequential.run();
   testTaskSequential.post_processing();
 
-  ASSERT_EQ(-1, out[0]);
+  ASSERT_EQ(ref, out[0]);
 }

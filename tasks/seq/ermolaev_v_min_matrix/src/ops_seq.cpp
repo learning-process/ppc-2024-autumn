@@ -6,21 +6,21 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> ermolaev_v_min_matrix_seq::getRandomVector(int sz) {
+std::vector<int> ermolaev_v_min_matrix_seq::getRandomVector(int sz, int min, int max) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
   for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
+    vec[i] = min + gen() % (max - min + 1);
   }
   return vec;
 }
 
-std::vector<std::vector<int>> ermolaev_v_min_matrix_seq::getRandomMatrix(int rows, int columns) {
+std::vector<std::vector<int>> ermolaev_v_min_matrix_seq::getRandomMatrix(int rows, int columns, int min, int max) {
   std::vector<std::vector<int>> vec(rows);
 
   for (int i = 0; i < rows; i++) {
-    vec[i] = ermolaev_v_min_matrix_seq::getRandomVector(columns);
+    vec[i] = ermolaev_v_min_matrix_seq::getRandomVector(columns, min, max);
   }
   return vec;
 }
