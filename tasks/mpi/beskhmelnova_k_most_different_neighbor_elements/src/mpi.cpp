@@ -79,9 +79,9 @@ struct NeighborDifference {
   // Serialization of the structure for MPI transmission
   template <class Archive>
   void serialize(Archive& ar, const unsigned int version) {
-    ar& first;
-    ar& second;
-    ar& dif;
+    ar & first;
+    ar & second;
+    ar & dif;
   }
 };
 
