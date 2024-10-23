@@ -26,9 +26,6 @@ bool lupsha_e_rect_integration_seq::TestTaskSequential::validation() {
     if (taskData->inputs.size() < 3) {
       std::cout << "Validation failed: not enough input data." << std::endl;
     }
-    if (!f) {
-      std::cout << "Validation failed: function is not set." << std::endl;
-    }
     return false;
   }
 

@@ -47,17 +47,6 @@ bool lupsha_e_rect_integration_mpi::TestMPITaskSequential::validation() {
     return false;
   }
 
-  int validation_num_intervals = *reinterpret_cast<int*>(taskData->inputs[2]);
-  if (validation_num_intervals <= 0) {
-    std::cout << "Validation failed: num_intervals <= 0." << std::endl;
-    return false;
-  }
-
-  if (!f) {
-    std::cout << "Validation failed: function is not set." << std::endl;
-    return false;
-  }
-
   return true;
 }
 
@@ -84,7 +73,7 @@ bool lupsha_e_rect_integration_mpi::TestMPITaskSequential::post_processing() {
   return true;
 }
 
-double lupsha_e_rect_integration_mpi::TestMPITaskParallel::integrate(const std::function<double(double)>& fun,
+double lupsha_e_rect_integration_mpi::TestMPITaskParallel::integrate(const std::function<double(double)>& f_,
                                                                      double lower_bound_, double upper_bound_,
                                                                      int num_intervals_) {
   int rank = world.rank();
@@ -103,7 +92,7 @@ double lupsha_e_rect_integration_mpi::TestMPITaskParallel::integrate(const std::
   double local_sum = 0.0;
   for (int i = 0; i < local_num_intervals; ++i) {
     double x = local_start + i * width;
-    local_sum += fun(x) * width;
+    local_sum += f(x) * width;
   }
 
   return local_sum;
@@ -149,11 +138,6 @@ bool lupsha_e_rect_integration_mpi::TestMPITaskParallel::validation() {
     int validation_num_intervals = *reinterpret_cast<int*>(taskData->inputs[2]);
     if (validation_num_intervals <= 0) {
       std::cout << "Validation failed: num_intervals <= 0." << std::endl;
-      return false;
-    }
-
-    if (!f) {
-      std::cout << "Validation failed: function is not set." << std::endl;
       return false;
     }
   }

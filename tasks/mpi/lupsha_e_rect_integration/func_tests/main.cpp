@@ -256,7 +256,7 @@ TEST(lupsha_e_rect_integration_mpi, Test_Power) {
     taskDataSeq->outputs_count.emplace_back(1);
 
     lupsha_e_rect_integration_mpi::TestMPITaskSequential sequential_Task(taskDataSeq);
-    sequential_Task.function_set([](double x) { return x*x; });
+    sequential_Task.function_set([](double x) { return x * x; });
 
     ASSERT_EQ(sequential_Task.validation(), true);
     sequential_Task.pre_processing();
