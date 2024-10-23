@@ -122,10 +122,10 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_int32_t) {
   testTaskSequential.run();
   testTaskSequential.post_processing();
   std::cout << out_index[0];
-  EXPECT_EQ(out[0], 0);
-  EXPECT_EQ(out[1], 4000);
-  EXPECT_EQ(out_index[0], 234);
-  EXPECT_EQ(out_index[1], 235);
+  EXPECT_EQ(out[0], 0l);
+  EXPECT_EQ(out[1], 4000l);
+  EXPECT_EQ(out_index[0], 234ull);
+  EXPECT_EQ(out_index[1], 235ull);
 }
 
 TEST(kholin_k_vector_neighbour_diff_elems_seq, check_double) {
@@ -157,8 +157,8 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_double) {
   testTaskSequential.post_processing();
   EXPECT_NEAR(out[0], -1000.1, 1e-6);
   EXPECT_NEAR(out[1], 9000.9, 1e-6);
-  EXPECT_EQ(out_index[0], 189);
-  EXPECT_EQ(out_index[1], 190);
+  EXPECT_EQ(out_index[0], 189ull);
+  EXPECT_EQ(out_index[1], 190ull);
 }
 
 TEST(kholin_k_vector_neighbour_diff_elems_seq, check_int8_t) {
@@ -194,8 +194,8 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_int8_t) {
   testTaskSequential.post_processing();
   EXPECT_EQ(out[0], 56);
   EXPECT_EQ(out[1], -56);
-  EXPECT_EQ(out_index[0], 5);
-  EXPECT_EQ(out_index[1], 6);
+  EXPECT_EQ(out_index[0], 5ull);
+  EXPECT_EQ(out_index[1], 6ull);
 }
 
 TEST(kholin_k_vector_neighbour_diff_elems_seq, check_int64_t) {
@@ -233,10 +233,10 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_int64_t) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  EXPECT_EQ(out[0], -1000);
-  EXPECT_EQ(out[1], 1119);
-  EXPECT_EQ(out_index[0], 20);
-  EXPECT_EQ(out_index[1], 21);
+  EXPECT_EQ(out[0], -1000ll);
+  EXPECT_EQ(out[1], 1119ll);
+  EXPECT_EQ(out_index[0], 20ull);
+  EXPECT_EQ(out_index[1], 21ull);
 }
 
 TEST(kholin_k_vector_neighbour_diff_elems_seq, check_float) {
@@ -268,8 +268,8 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_float) {
   testTaskSequential.post_processing();
   EXPECT_NEAR(out[0], 110.001f, 1e-4);
   EXPECT_NEAR(out[1], -990.0025f, 1e-4);
-  EXPECT_EQ(out_index[0], 0);
-  EXPECT_EQ(out_index[1], 1);
+  EXPECT_EQ(out_index[0], 0ull);
+  EXPECT_EQ(out_index[1], 1ull);
 }
 
 int main(int argc, char **argv) {

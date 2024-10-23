@@ -278,9 +278,9 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
   testMpiTaskParallel.post_processing();
   EXPECT_EQ(global_elems[0], 5000);
   EXPECT_EQ(global_elems[1], 1);
-  EXPECT_EQ(global_indices[0], 100);
-  EXPECT_EQ(global_indices[1], 101);
-  EXPECT_EQ(global_delta[0], 4999);
+  EXPECT_EQ(global_indices[0], 100ull);
+  EXPECT_EQ(global_indices[1], 101ull);
+  EXPECT_EQ(global_delta[0], 4999.0);
 
   if (world.rank() == 0) {
     // Create data
@@ -307,9 +307,9 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
     testTaskSequential.post_processing();
     EXPECT_EQ(reference_elems[0], 5000);
     EXPECT_EQ(reference_elems[1], 1);
-    EXPECT_EQ(reference_indices[0], 100);
-    EXPECT_EQ(reference_indices[1], 101);
-    EXPECT_EQ(reference_delta[0], 4999);
+    EXPECT_EQ(reference_indices[0], 100ull);
+    EXPECT_EQ(reference_indices[1], 101ull);
+    EXPECT_EQ(reference_delta[0], 4999.0);
   }
 }
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
@@ -343,11 +343,11 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  EXPECT_EQ(global_elems[0], 5000);
-  EXPECT_EQ(global_elems[1], 1);
-  EXPECT_EQ(global_indices[0], 100);
-  EXPECT_EQ(global_indices[1], 101);
-  EXPECT_EQ(global_delta[0], 4999);
+  EXPECT_EQ(global_elems[0], 5000l);
+  EXPECT_EQ(global_elems[1], 1l);
+  EXPECT_EQ(global_indices[0], 100ull);
+  EXPECT_EQ(global_indices[1], 101ull);
+  EXPECT_EQ(global_delta[0], 4999.0);
 
   if (world.rank() == 0) {
     // Create data
@@ -373,11 +373,11 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
     testTaskSequential.pre_processing();
     testTaskSequential.run();
     testTaskSequential.post_processing();
-    EXPECT_EQ(reference_elems[0], 5000);
-    EXPECT_EQ(reference_elems[1], 1);
-    EXPECT_EQ(reference_indices[0], 100);
-    EXPECT_EQ(reference_indices[1], 101);
-    EXPECT_EQ(reference_delta[0], 4999);
+    EXPECT_EQ(reference_elems[0], 5000l);
+    EXPECT_EQ(reference_elems[1], 1l);
+    EXPECT_EQ(reference_indices[0], 100ull);
+    EXPECT_EQ(reference_indices[1], 101ull);
+    EXPECT_EQ(reference_delta[0], 4999.0);
   }
 }
 
@@ -417,9 +417,9 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_float) {
   testMpiTaskParallel.post_processing();
   EXPECT_NEAR(global_elems[0], 110.001f, 1e-4);
   EXPECT_NEAR(global_elems[1], -990.0025f, 1e-4);
-  EXPECT_EQ(global_indices[0], 100);
-  EXPECT_EQ(global_indices[1], 101);
-  EXPECT_NEAR(global_delta[0], 1100, 5e-3);
+  EXPECT_EQ(global_indices[0], 100ull);
+  EXPECT_EQ(global_indices[1], 101ull);
+  EXPECT_NEAR(global_delta[0], 1100.0, 5e-3);
 
   if (world.rank() == 0) {
     // Create data
@@ -447,9 +447,9 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_float) {
     testTaskSequential.post_processing();
     EXPECT_NEAR(reference_elems[0], 110.001f, 1e-4);
     EXPECT_NEAR(reference_elems[1], -990.0025f, 1e-4);
-    EXPECT_EQ(reference_indices[0], 100);
-    EXPECT_EQ(reference_indices[1], 101);
-    EXPECT_NEAR(reference_delta[0], 1100, 5e-3);
+    EXPECT_EQ(reference_indices[0], 100ull);
+    EXPECT_EQ(reference_indices[1], 101ull);
+    EXPECT_NEAR(reference_delta[0], 1100.0, 5e-3);
   }
 }
 
@@ -489,9 +489,9 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_double) {
   testMpiTaskParallel.post_processing();
   EXPECT_NEAR(global_elems[0], 110.001f, 1e-4);
   EXPECT_NEAR(global_elems[1], -990.0025f, 1e-4);
-  EXPECT_EQ(global_indices[0], 100);
-  EXPECT_EQ(global_indices[1], 101);
-  EXPECT_NEAR(global_delta[0], 1100, 5e-3);
+  EXPECT_EQ(global_indices[0], 100ull);
+  EXPECT_EQ(global_indices[1], 101ull);
+  EXPECT_NEAR(global_delta[0], 1100.0, 5e-3);
 
   if (world.rank() == 0) {
     // Create data
@@ -519,9 +519,9 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_double) {
     testTaskSequential.post_processing();
     EXPECT_NEAR(reference_elems[0], 110.001, 1e-4);
     EXPECT_NEAR(reference_elems[1], -990.0025, 1e-4);
-    EXPECT_EQ(reference_indices[0], 100);
-    EXPECT_EQ(reference_indices[1], 101);
-    EXPECT_NEAR(reference_delta[0], 1100, 5e-3);
+    EXPECT_EQ(reference_indices[0], 100ull);
+    EXPECT_EQ(reference_indices[1], 101ull);
+    EXPECT_NEAR(reference_delta[0], 1100.0, 5e-3);
   }
 }
 
