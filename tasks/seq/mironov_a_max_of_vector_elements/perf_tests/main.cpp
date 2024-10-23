@@ -4,12 +4,12 @@
 #include "seq/mironov_a_max_of_vector_elements/include/ops_seq.hpp"
 
 TEST(mironov_a_max_of_vector_elements_seq, test_pipeline_run) {
-  constexpr int count = 200000000, start = -7890000, gold = start + 9 * (count - 1);
+  constexpr int count = 100000000, start = -789000000, gold = start + 5 * (count - 1);
 
   // Create data
   std::vector<int> in(count);
   std::vector<int> out(1);
-  for (int i = 0, j = start; i < count; ++i, j += 9) in[i] = j;
+  for (int i = 0, j = start; i < count; ++i, j += 5) in[i] = j;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -42,12 +42,12 @@ TEST(mironov_a_max_of_vector_elements_seq, test_pipeline_run) {
 }
 
 TEST(mironov_a_max_of_vector_elements_seq, test_task_run) {
-  constexpr int count = 200000000, start = -7890000, gold = start + 9 * (count - 1);
+  constexpr int count = 100000000, start = -789000000, gold = start + 5 * (count - 1);
 
   // Create data
   std::vector<int> in(count);
   std::vector<int> out(1);
-  for (int i = 0, j = start; i < count; ++i, j += 9) in[i] = j;
+  for (int i = 0, j = start; i < count; ++i, j += 5) in[i] = j;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();

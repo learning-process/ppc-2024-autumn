@@ -10,116 +10,101 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> mironov_a_max_of_vector_elements_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
-}
-
-bool mironov_a_max_of_vector_elements_mpi::TestMPITaskSequential::pre_processing() {
+bool mironov_a_max_of_vector_elements_mpi::MaxVectorSequential::pre_processing() {
   internal_order_test();
-  // Init vectors
-  input_ = std::vector<int>(taskData->inputs_count[0]);
-  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    input_[i] = tmp_ptr[i];
+
+  // Init value for input and output
+  input_ = std::vector<int32_t>(taskData->inputs_count[0]);
+  int32_t* it = reinterpret_cast<int32_t*>(taskData->inputs[0]);
+  for (int32_t i = 0; i < input_.size(); ++i) {
+    input_[i] = it[i];
   }
-  // Init value for output
-  res = 0;
+  res = input_[0];
   return true;
 }
 
-bool mironov_a_max_of_vector_elements_mpi::TestMPITaskSequential::validation() {
+bool mironov_a_max_of_vector_elements_mpi::MaxVectorSequential::validation() {
   internal_order_test();
   // Check count elements of output
-  return taskData->outputs_count[0] == 1;
+  return (taskData->inputs_count[0] > 0) && (taskData->outputs_count[0] == 1);
 }
 
-bool mironov_a_max_of_vector_elements_mpi::TestMPITaskSequential::run() {
+bool mironov_a_max_of_vector_elements_mpi::MaxVectorSequential::run() {
   internal_order_test();
-  if (ops == "+") {
-    res = std::accumulate(input_.begin(), input_.end(), 0);
-  } else if (ops == "-") {
-    res = -std::accumulate(input_.begin(), input_.end(), 0);
-  } else if (ops == "max") {
-    res = *std::max_element(input_.begin(), input_.end());
+  
+  for (int32_t i = 1; i < input_.size(); ++i) {
+      if (res < input_[i]) res = input_[i];
   }
+
   return true;
 }
 
-bool mironov_a_max_of_vector_elements_mpi::TestMPITaskSequential::post_processing() {
+bool mironov_a_max_of_vector_elements_mpi::MaxVectorSequential::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+  reinterpret_cast<int32_t*>(taskData->outputs[0])[0] = res;
   return true;
 }
 
-bool mironov_a_max_of_vector_elements_mpi::TestMPITaskParallel::pre_processing() {
+bool mironov_a_max_of_vector_elements_mpi::MaxVectorMPI::pre_processing() {
   internal_order_test();
   unsigned int delta = 0;
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
   }
+  std::cout << "broadcast in: " << world.rank() << " 1 " << std::endl;
   broadcast(world, delta, 0);
+  std::cout << "bradcast out: " << world.rank() << " 1 " << std::endl;
 
   if (world.rank() == 0) {
     // Init vectors
-    input_ = std::vector<int>(taskData->inputs_count[0]);
+   
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+    input_ = std::vector<int>(taskData->inputs_count[0]);
     for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
       input_[i] = tmp_ptr[i];
     }
     for (int proc = 1; proc < world.size(); proc++) {
+      std::cout << "Send in: " << world.rank() << " 1 " << std::endl;
       world.send(proc, 0, input_.data() + proc * delta, delta);
+      std::cout << "Send out: " << world.rank() << " 1 " << std::endl;
     }
   }
   local_input_ = std::vector<int>(delta);
   if (world.rank() == 0) {
     local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
   } else {
+    std::cout << "recv in: " << world.rank() << " 1 " << std::endl;
     world.recv(0, 0, local_input_.data(), delta);
+    std::cout << "recv out: " << world.rank() << " 1 " << std::endl;
   }
   // Init value for output
-  res = 0;
+  res = input_[0];
   return true;
 }
 
-bool mironov_a_max_of_vector_elements_mpi::TestMPITaskParallel::validation() {
+bool mironov_a_max_of_vector_elements_mpi::MaxVectorMPI::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     // Check count elements of output
-    return taskData->outputs_count[0] == 1;
+    return (taskData->inputs_count[0] > 0) && (taskData->outputs_count[0] == 1);
   }
   return true;
 }
 
-bool mironov_a_max_of_vector_elements_mpi::TestMPITaskParallel::run() {
+bool mironov_a_max_of_vector_elements_mpi::MaxVectorMPI::run() {
   internal_order_test();
-  int local_res;
-  if (ops == "+") {
-    local_res = std::accumulate(local_input_.begin(), local_input_.end(), 0);
-  } else if (ops == "-") {
-    local_res = -std::accumulate(local_input_.begin(), local_input_.end(), 0);
-  } else if (ops == "max") {
-    local_res = *std::max_element(local_input_.begin(), local_input_.end());
-  }
-
-  if (ops == "+" || ops == "-") {
-    reduce(world, local_res, res, std::plus(), 0);
-  } else if (ops == "max") {
-    reduce(world, local_res, res, boost::mpi::maximum<int>(), 0);
-  }
-  std::this_thread::sleep_for(20ms);
+  int local_res = *std::max_element(local_input_.begin(), local_input_.end());
+  std::cout << "reduce in: " << world.rank() << " 1 " << std::endl;
+  reduce(world, local_res, res, boost::mpi::maximum<int>(), 0);
+  std::cout << "reduce out: " << world.rank() << " 1 " << std::endl;
+  
   return true;
 }
 
-bool mironov_a_max_of_vector_elements_mpi::TestMPITaskParallel::post_processing() {
+bool mironov_a_max_of_vector_elements_mpi::MaxVectorMPI::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+    reinterpret_cast<int32_t*>(taskData->outputs[0])[0] = res;
   }
   return true;
 }

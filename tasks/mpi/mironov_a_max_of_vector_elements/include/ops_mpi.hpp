@@ -11,12 +11,10 @@
 
 namespace mironov_a_max_of_vector_elements_mpi {
 
-std::vector<int> getRandomVector(int sz);
-
-class TestMPITaskSequential : public ppc::core::Task {
+class MaxVectorSequential : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+  explicit MaxVectorSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
+      : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -25,13 +23,11 @@ class TestMPITaskSequential : public ppc::core::Task {
  private:
   std::vector<int> input_;
   int res{};
-  std::string ops;
 };
 
-class TestMPITaskParallel : public ppc::core::Task {
+class MaxVectorMPI : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+  explicit MaxVectorMPI(std::shared_ptr<ppc::core::TaskData> taskData_): Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -40,7 +36,6 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   std::vector<int> input_, local_input_;
   int res{};
-  std::string ops;
   boost::mpi::communicator world;
 };
 

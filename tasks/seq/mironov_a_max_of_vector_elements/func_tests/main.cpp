@@ -52,7 +52,7 @@ TEST(mironov_a_max_of_vector_elements_seq, Test_Max_2) {
 }
 
 TEST(mironov_a_max_of_vector_elements_seq, Test_Max_3) {
-  constexpr int count = 1000000, start = -7890000,
+  constexpr int count = 10000000, start = -7890000,
 				gold = start + 9 * (count - 1);
 
   // Create data
@@ -77,7 +77,7 @@ TEST(mironov_a_max_of_vector_elements_seq, Test_Max_3) {
 }
 
 TEST(mironov_a_max_of_vector_elements_seq, Test_Max_4) {
-  constexpr int count = 1000000, start = -7890000, gold = start + 4 * (count - 1);
+  constexpr int count = 10000000, start = -7890000, gold = start + 4 * (count - 1);
 
   // Create data
   std::vector<int> in(count);
@@ -122,4 +122,38 @@ TEST(mironov_a_max_of_vector_elements_seq, Test_Max_5) {
   MaxVectorSequential.run();
   MaxVectorSequential.post_processing();
   ASSERT_EQ(gold, out[0]);
+}
+
+TEST(mironov_a_max_of_vector_elements_seq, Wrong_Input_1) {
+  // Create data
+  std::vector<int> in;
+  std::vector<int> out(1);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
+
+  // Create Task
+  mironov_a_max_of_vector_elements_seq::MaxVectorSequential MaxVectorSequential(taskDataSeq);
+  ASSERT_EQ(MaxVectorSequential.validation(), false);
+}
+
+TEST(mironov_a_max_of_vector_elements_seq, Wrong_Input_2) {
+  // Create data
+  std::vector<int> in(3, 5);
+  std::vector<int> out;
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
+
+  // Create Task
+  mironov_a_max_of_vector_elements_seq::MaxVectorSequential MaxVectorSequential(taskDataSeq);
+  ASSERT_EQ(MaxVectorSequential.validation(), false);
 }

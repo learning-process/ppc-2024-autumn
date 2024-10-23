@@ -6,25 +6,34 @@
 
 TEST(mironov_a_max_of_vector_elements_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
+
+  // Create data
   std::vector<int> global_vec;
-  std::vector<int32_t> global_sum(1, 0);
+  std::vector<int> global_max(1, 0);
+  std::cout << "\n!!!!!!!!!!!!!!!!!!! " << world.size() << std::endl;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int count_size_vector;
+  int gold;
   if (world.rank() == 0) {
-    count_size_vector = 120;
-    global_vec = std::vector<int>(count_size_vector, 1);
+    const int count = 100000000, start = -789000000;
+    gold = start + 5 * (count - 1);
+    global_vec.resize(count);
+    for (int i = 0, j = start; i < count; ++i, j += 5) global_vec[i] = j;
+
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
+    taskDataPar->outputs_count.emplace_back(global_max.size());
   }
 
-  auto testMpiTaskParallel =
-      std::make_shared<mironov_a_max_of_vector_elements_mpi::TestMPITaskParallel>(taskDataPar, "+");
+  auto testMpiTaskParallel = std::make_shared<mironov_a_max_of_vector_elements_mpi::MaxVectorMPI>(taskDataPar);
+  std::cout << "\nStart validation\n";
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  std::cout << "\nStart pre_processing\n";
   testMpiTaskParallel->pre_processing();
+  std::cout << "\nStart run\n";
   testMpiTaskParallel->run();
+  std::cout << "\nStart post_processing\n";
   testMpiTaskParallel->post_processing();
 
   // Create Perf attributes
@@ -41,28 +50,32 @@ TEST(mironov_a_max_of_vector_elements_mpi, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(count_size_vector, global_sum[0]);
+    ASSERT_EQ(gold, global_max[0]);
   }
 }
 
 TEST(mironov_a_max_of_vector_elements_mpi, test_task_run) {
   boost::mpi::communicator world;
+
+  // Create data
   std::vector<int> global_vec;
-  std::vector<int32_t> global_sum(1, 0);
+  std::vector<int> global_max(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int count_size_vector;
+  int gold;
   if (world.rank() == 0) {
-    count_size_vector = 120;
-    global_vec = std::vector<int>(count_size_vector, 1);
+    const int count = 100000000, start = -789000000;
+    gold = start + 5 * (count - 1);
+    global_vec.resize(count);
+    for (int i = 0, j = start; i < count; ++i, j += 5) global_vec[i] = j;
+
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
+    taskDataPar->outputs_count.emplace_back(global_max.size());
   }
 
-  auto testMpiTaskParallel =
-      std::make_shared<mironov_a_max_of_vector_elements_mpi::TestMPITaskParallel>(taskDataPar, "+");
+  auto testMpiTaskParallel = std::make_shared<mironov_a_max_of_vector_elements_mpi::MaxVectorMPI>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -82,6 +95,6 @@ TEST(mironov_a_max_of_vector_elements_mpi, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(count_size_vector, global_sum[0]);
+    ASSERT_EQ(gold, global_max[0]);
   }
 }
