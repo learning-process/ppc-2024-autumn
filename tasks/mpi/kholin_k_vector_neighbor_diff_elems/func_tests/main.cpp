@@ -18,7 +18,6 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_validation) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-
     global_vec[100] = 5000;
     global_vec[101] = 1;
 
@@ -59,7 +58,6 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_validation) {
                                                                                                   "MAX_DIFFERENCE");
     bool IsValid_ = testTaskSequential.validation();
     ASSERT_EQ(IsValid_, true);
-
   }
 }
 
@@ -74,7 +72,6 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_pre_processing) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-
     global_vec[100] = 5000;
     global_vec[101] = 1;
 
@@ -91,7 +88,6 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_pre_processing) {
   kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int, uint64_t> testMpiTaskParallel(taskDataPar,
                                                                                                   "MAX_DIFFERENCE");
   testMpiTaskParallel.validation();
-  
   bool IsValid = testMpiTaskParallel.pre_processing();
   ASSERT_EQ(IsValid, true);
 
@@ -113,10 +109,9 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_pre_processing) {
     taskDataSeq->outputs_count.emplace_back(reference_delta.size());
 
     // Create Task
-    kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int, uint64_t> testTaskSequential(taskDataSeq, 
+    kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int, uint64_t> testTaskSequential(taskDataSeq,
                                                                                                   "MAX_DIFFERENCE");
     testTaskSequential.validation();
-       
     bool IsValid_ = testTaskSequential.pre_processing();
     ASSERT_EQ(IsValid_, true);
   }
@@ -144,7 +139,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_run) {
     taskDataPar->outputs_count.emplace_back(global_indices.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_delta.data()));
     taskDataPar->outputs_count.emplace_back(global_delta.size());
-  } 
+  }
 
   kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int, uint64_t> testMpiTaskParallel(taskDataPar,
                                                                                                   "MAX_DIFFERENCE");
@@ -152,7 +147,6 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_run) {
   testMpiTaskParallel.pre_processing();
   std::cout << std::endl;
   bool IsValid = testMpiTaskParallel.run();
-  
   ASSERT_EQ(IsValid, true);
 
   if (world.rank() == 0) {
@@ -278,10 +272,10 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
   EXPECT_EQ(global_elems[0], 5000);
-  EXPECT_EQ(global_elems[1], 1); 
+  EXPECT_EQ(global_elems[1], 1);
   EXPECT_EQ(global_indices[0], 100ull);
   EXPECT_EQ(global_indices[1], 101ull);
-  EXPECT_EQ(global_delta[0], 4999); 
+  EXPECT_EQ(global_delta[0], 4999);
 
   if (world.rank() == 0) {
     // Create data
@@ -340,7 +334,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
     
   }
 
-  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int32_t, uint64_t> testMpiTaskParallel(taskDataPar, 
+  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int32_t, uint64_t> testMpiTaskParallel(taskDataPar,
                                                                                                       "MAX_DIFFERENCE");
   testMpiTaskParallel.validation();
   testMpiTaskParallel.pre_processing();
@@ -418,11 +412,11 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_float) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  EXPECT_NEAR(global_elems[0], 110.001f,1e-4);
-  EXPECT_NEAR(global_elems[1], -990.0025f,1e-4);
+  EXPECT_NEAR(global_elems[0], 110.001f, 1e-4);
+  EXPECT_NEAR(global_elems[1], -990.0025f, 1e-4);
   EXPECT_EQ(global_indices[0], 100ull);
   EXPECT_EQ(global_indices[1], 101ull);
-  EXPECT_NEAR(global_delta[0], 1100,5e-3);
+  EXPECT_NEAR(global_delta[0], 1100, 5e-3);
 
   if (world.rank() == 0) {
     // Create data
@@ -452,7 +446,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_float) {
     EXPECT_NEAR(reference_elems[1], -990.0025f, 1e-4);
     EXPECT_EQ(reference_indices[0], 100ull);
     EXPECT_EQ(reference_indices[1], 101ull);
-    EXPECT_NEAR(reference_delta[0], 1100,5e-3);
+    EXPECT_NEAR(reference_delta[0], 1100, 5e-3);
   }
 }
 

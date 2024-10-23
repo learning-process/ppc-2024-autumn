@@ -14,10 +14,7 @@
 #include <utility>
 #include <vector>
 
- 
 #include "core/task/include/task.hpp"
-
-
 
 namespace kholin_k_vector_neighbor_diff_elems_mpi {
 
@@ -85,7 +82,6 @@ class TestTaskSequential : public ppc::core::Task {
       right_elem = input_[right_index];
       // std::cout << "left el " << left_elem << "left_ind " << left_index << std::endl;
       // std::cout << "right el" << right_elem << "right_ind" << right_index << std::endl;
-     
     }
     return true;
   }
@@ -99,7 +95,6 @@ class TestTaskSequential : public ppc::core::Task {
     reinterpret_cast<double*>(taskData->outputs[2])[0] = result;
     return true;
   }
-
 
  private:
   std::vector<TypeElem> input_;
@@ -131,8 +126,7 @@ class TestMPITaskParallel : public ppc::core::Task {
     return mpi_type;
   }
 
-
-  bool pre_processing() override { 
+  bool pre_processing() override {
     internal_order_test();
     // Data TaskData  cite to type elements of vector input_
     if (world.rank() == 0) {
@@ -146,7 +140,6 @@ class TestMPITaskParallel : public ppc::core::Task {
       for (size_t i = 0; i < taskData->inputs_count[0]; i++) {
         input_[i] = ptr[i];
       }
-      
       // distribute data processes 0 to size-1
     }
     if (world.rank() == 0) {
@@ -178,7 +171,7 @@ class TestMPITaskParallel : public ppc::core::Task {
     if (ops == "MAX_DIFFERENCE") {
       // here your algorithm task (.h files for task or all in run)
       local_result = max_difference();
-    } 
+    }
     if (ops == "MAX_DIFFERENCE") {
       // pack data
       TypeElem sendbuf[1];
@@ -195,7 +188,7 @@ class TestMPITaskParallel : public ppc::core::Task {
       }
       // everyone process send 1 element and get all local_results from everyone process 1 element
       MPI_Gather(sendbuf, 1, get_mpi_type(), global_result.data(), 1, get_mpi_type(), 0, world);
-      MPI_Gather(sendbuf2, 1, get_mpi_type2(), global_indices.data(), 1, get_mpi_type2(), 0,world);
+      MPI_Gather(sendbuf2, 1, get_mpi_type2(), global_indices.data(), 1, get_mpi_type2(), 0, world);
       MPI_Gather(sendbuf3, 1, MPI_INT, ranks.data(), 1, MPI_INT, 0, world);
       // output global results
       calculate_global_delta();    // 1
@@ -210,7 +203,7 @@ class TestMPITaskParallel : public ppc::core::Task {
       reinterpret_cast<TypeElem*>(taskData->outputs[0])[0] = left_elem;
       reinterpret_cast<TypeElem*>(taskData->outputs[0])[1] = right_elem;
       reinterpret_cast<TypeIndex*>(taskData->outputs[1])[0] = left_index;
-      reinterpret_cast<TypeIndex*>(taskData->outputs[1])[1] = right_index; 
+      reinterpret_cast<TypeIndex*>(taskData->outputs[1])[1] = right_index;
       reinterpret_cast<double*>(taskData->outputs[2])[0] = result;
     }
     return true;
@@ -326,7 +319,7 @@ void TestMPITaskParallel<TypeElem, TypeIndex>::calculate_global_indices() {
   left_index = r * delta_n + global_indices[ind];
   right_index = left_index + 1;
 
-  left_elem = input_[left_index]; 
+  left_elem = input_[left_index];
   right_elem = input_[right_index];
 }
-}  // namespace kholin_k_vector_neighbor_diff_elems
+}  // namespace kholin_k_vector_neighbor_diff_elems_mpi
