@@ -29,7 +29,6 @@ bool korablev_v_rect_int_seq::RectangularIntegrationSequential::run() {
 
   result_ = integrate(func_, a_, b_, n_);
 
-  std::this_thread::sleep_for(std::chrono::milliseconds(20));
   return true;
 }
 
