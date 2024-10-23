@@ -50,7 +50,7 @@ class TestTaskSequential : public ppc::core::Task {
   bool run() override {
     internal_order_test();
     // here your algorithm task (.h files for task or all in run)
-    if (ops == "MAX_DIFFERENCE") { // declaration operations with
+    if (ops == "MAX_DIFFERENCE") {  // declaration operations with
       // start delta between elements vector
       double max_delta = 0;
       double delta = 0;
@@ -111,9 +111,6 @@ class TestTaskSequential : public ppc::core::Task {
   std::string ops;
 };
 
-
-
-
 template <class TypeElem, class TypeIndex>
 class TestMPITaskParallel : public ppc::core::Task {
  public:
@@ -133,6 +130,7 @@ class TestMPITaskParallel : public ppc::core::Task {
     MPI_Type_commit(&mpi_type);
     return mpi_type;
   }
+
 
   bool pre_processing() override { 
     internal_order_test();
@@ -154,9 +152,9 @@ class TestMPITaskParallel : public ppc::core::Task {
     if (world.rank() == 0) {
       local_input_ = std::vector<TypeElem>(input_.begin(), input_.begin() + delta_n);
     } else {
-      local_input_ = std::vector<TypeElem>(delta_n); 
+      local_input_ = std::vector<TypeElem>(delta_n);
     }
-    MPI_Scatter(input_.data(), delta_n, get_mpi_type(), local_input_.data(), delta_n, get_mpi_type(), 0, world); 
+    MPI_Scatter(input_.data(), delta_n, get_mpi_type(), local_input_.data(), delta_n, get_mpi_type(), 0, world);
     result = {};
     left_index = {};
     right_index = 2;
@@ -174,16 +172,16 @@ class TestMPITaskParallel : public ppc::core::Task {
     return true;
   }
   bool run() override {  // everyone process will execute this code
-    internal_order_test(); 
+    internal_order_test();
     // output local_input_ vector
-    double local_result = 0; 
+    double local_result = 0;
     if (ops == "MAX_DIFFERENCE") {
       // here your algorithm task (.h files for task or all in run)
-       local_result = max_difference();
+      local_result = max_difference();
     } 
     if (ops == "MAX_DIFFERENCE") {
       // pack data
-      TypeElem sendbuf[1]; 
+      TypeElem sendbuf[1];
       sendbuf[0] = local_result;
       TypeIndex sendbuf2[1];
       sendbuf2[0] = curr_index;
@@ -196,15 +194,15 @@ class TestMPITaskParallel : public ppc::core::Task {
         ranks = std::vector<int>(world.size());
       }
       // everyone process send 1 element and get all local_results from everyone process 1 element
-      MPI_Gather(sendbuf, 1, get_mpi_type(), global_result.data(), 1, get_mpi_type(), 0, world);  
-      MPI_Gather(sendbuf2, 1, get_mpi_type2(), global_indices.data(), 1, get_mpi_type2(), 0,world);  
-      MPI_Gather(sendbuf3, 1, MPI_INT, ranks.data(), 1, MPI_INT, 0, world); 
+      MPI_Gather(sendbuf, 1, get_mpi_type(), global_result.data(), 1, get_mpi_type(), 0, world);
+      MPI_Gather(sendbuf2, 1, get_mpi_type2(), global_indices.data(), 1, get_mpi_type2(), 0,world);
+      MPI_Gather(sendbuf3, 1, MPI_INT, ranks.data(), 1, MPI_INT, 0, world);
       // output global results
       calculate_global_delta();    // 1
       calculate_global_indices();  // 2
     }
     // finalisation
-    return true; 
+    return true;
   }
   bool post_processing() override {  // proc 0 will write results
     internal_order_test();
@@ -243,15 +241,14 @@ class TestMPITaskParallel : public ppc::core::Task {
 };
 
 template <typename TypeElem, typename TypeIndex>
-    void TestMPITaskParallel<TypeElem, TypeIndex>::print_local_data() {
+void TestMPITaskParallel<TypeElem, TypeIndex>::print_local_data() {
   if (world.rank() == 0) {
     std::cout << "I'm proc 0" + << "and my local_input data is ";
     for (unsigned int i = 0; i < delta_n; i++) {
       std::cout << local_input_[i] << " ";
     }
     std::cout << std::endl;
-  }
-  else {
+  } else {
     std::cout << "I'm" << world.rank() << " proc " + << "and my local_input data is ";
     for (unsigned int i = 0; i < delta_n; i++) {
       std::cout << local_input_[i] << " ";
@@ -295,24 +292,23 @@ double TestMPITaskParallel<TypeElem, TypeIndex>::max_difference() {
 template <typename TypeElem, typename TypeIndex>
 void TestMPITaskParallel<TypeElem, TypeIndex>::print_global_results() {
   if (world.rank() == 0) {
-     result = 0;
-     std::cout << std::endl;
-     std::cout << "I`m proc" << world.rank() << " and global result vector is ";
-     for (int i = 0; i < global_result.size(); i++) {
-     std::cout << global_result[i] << " ";
-     }
-     std::cout << std::endl;
-     std::cout << "global indices vector is ";
-     for (int i = 0; i < global_indices.size(); i++) {
-     std::cout << global_indices[i] << " ";
-     }
-     std::cout << std::endl;
-     std::cout << "ranks vector is ";
-     for (int i = 0; i < ranks.size(); i++) {
-     std::cout << ranks[i] << " ";
-     }
-     
-     
+    result = 0;
+    std::cout << std::endl;
+    std::cout << "I`m proc" << world.rank() << " and global result vector is ";
+    for (int i = 0; i < global_result.size(); i++) {
+      std::cout << global_result[i] << " ";
+      
+    }
+    std::cout << std::endl;
+    std::cout << "global indices vector is ";
+    for (int i = 0; i < global_indices.size(); i++) {
+      std::cout << global_indices[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "ranks vector is ";
+    for (int i = 0; i < ranks.size(); i++) {
+      std::cout << ranks[i] << " ";
+    }
   }
 }
 
@@ -330,6 +326,7 @@ void TestMPITaskParallel<TypeElem, TypeIndex>::calculate_global_indices() {
   left_index = r * delta_n + global_indices[ind];
   right_index = left_index + 1;
 
-  left_elem = input_[left_index];   right_elem = input_[right_index];
+  left_elem = input_[left_index]; 
+  right_elem = input_[right_index];
 }
 }  // namespace kholin_k_vector_neighbor_diff_elems

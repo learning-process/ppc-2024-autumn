@@ -2,7 +2,6 @@
 
 #include <vector>
 
-
 #include "core/perf/include/perf.hpp"
 #include "seq/kholin_k_vector_neighbor_diff_elems/include/ops_seq.hpp"
 
@@ -10,11 +9,11 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, test_pipeline_run) {
   // Create data
   const int count = 20000000;
 
-  std::vector<int32_t> in(count, 1);       // in data 
-  std::vector<int32_t> out(2, 0);          // out data 
-  std::vector<uint64_t> out_index(2, 0);   // out data 
-  for (size_t i = 0; i < in.size(); i++) { 
-    in[i] = 2 * i; 
+  std::vector<int32_t> in(count, 1);      // in data
+  std::vector<int32_t> out(2, 0);         // out data
+  std::vector<uint64_t> out_index(2, 0);  // out data
+  for (size_t i = 0; i < in.size(); i++) {
+    in[i] = 2 * i;
   }
 
   // Create TaskData
@@ -32,8 +31,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, test_pipeline_run) {
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 100;                                 // num launches programm
-  const auto t0 = std::chrono::high_resolution_clock::now();   // set timer now
+  perfAttr->num_running = 100;                                // num launches programm
+  const auto t0 = std::chrono::high_resolution_clock::now();  // set timer now
   perfAttr->current_timer = [&] {
     auto current_time_point =
         std::chrono::high_resolution_clock::now();  // use timer  chrono and calculate difference between t0 and now
@@ -49,7 +48,6 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-
 }
 
 TEST(kholin_k_vector_neighbor_diff_elems_seq, test_task_run) {

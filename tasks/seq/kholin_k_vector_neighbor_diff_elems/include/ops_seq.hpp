@@ -3,11 +3,9 @@
 #include <string>
 #include <vector>
 
-
 #include "core/task/include/task.hpp"
 
 using namespace std::chrono_literals;
-
 
 namespace kholin_k_vector_neighbor_diff_elems_seq {
 template <class TypeElem, class TypeIndex>
@@ -80,13 +78,13 @@ class MostDiffNeighborElements : public ppc::core::Task {
     internal_order_test();
     reinterpret_cast<TypeElem*>(taskData->outputs[0])[0] = left_elem;
     reinterpret_cast<TypeElem*>(taskData->outputs[0])[1] = right_elem;
-    reinterpret_cast<TypeIndex*>(taskData->outputs[1])[0] = left_index; 
-    reinterpret_cast<TypeIndex*>(taskData->outputs[1])[1] = right_index; 
+    reinterpret_cast<TypeIndex*>(taskData->outputs[1])[0] = left_index;
+    reinterpret_cast<TypeIndex*>(taskData->outputs[1])[1] = right_index;
     return true;
   }
 
  private:
-  std::vector<TypeElem> input_; 
+  std::vector<TypeElem> input_;
   double result;
   TypeIndex left_index;
   TypeIndex right_index;
@@ -94,12 +92,3 @@ class MostDiffNeighborElements : public ppc::core::Task {
   TypeElem right_elem;
 };
 }   // namespace kholin_k_vector_neighbour_diff_elems_seq
-
-   
- 
-
-    
-    
-
-    
-
