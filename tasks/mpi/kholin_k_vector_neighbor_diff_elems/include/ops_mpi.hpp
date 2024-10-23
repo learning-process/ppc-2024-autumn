@@ -133,7 +133,6 @@ class TestMPITaskParallel : public ppc::core::Task {
       delta_n = taskData->inputs_count[0] / world.size();
     }
     MPI_Bcast(&delta_n, 1, MPI_UNSIGNED, 0, world);  // send all procs delta_n
-    
     if (world.rank() == 0) {
       input_ = std::vector<TypeElem>(taskData->inputs_count[0]);
       auto ptr = reinterpret_cast<TypeElem*>(taskData->inputs[0]);
@@ -290,7 +289,6 @@ void TestMPITaskParallel<TypeElem, TypeIndex>::print_global_results() {
     std::cout << "I`m proc" << world.rank() << " and global result vector is ";
     for (int i = 0; i < global_result.size(); i++) {
       std::cout << global_result[i] << " ";
-      
     }
     std::cout << std::endl;
     std::cout << "global indices vector is ";

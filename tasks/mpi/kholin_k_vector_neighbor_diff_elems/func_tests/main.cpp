@@ -330,7 +330,6 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
     taskDataPar->outputs_count.emplace_back(global_indices.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_delta.data()));
     taskDataPar->outputs_count.emplace_back(global_delta.size());
-    
   }
 
   kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int32_t, uint64_t> testMpiTaskParallel(taskDataPar,
@@ -521,7 +520,6 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_double) {
   }
 }
 
-
 int main(int argc, char** argv) {
   boost::mpi::environment env(argc, argv);
   boost::mpi::communicator world;
@@ -532,4 +530,3 @@ int main(int argc, char** argv) {
   }
   return RUN_ALL_TESTS();
 }
-

@@ -91,4 +91,4 @@ class MostDiffNeighborElements : public ppc::core::Task {
   TypeElem left_elem;
   TypeElem right_elem;
 };
-}
+}  // namespace kholin_k_vector_neighbor_diff_elems_seq
