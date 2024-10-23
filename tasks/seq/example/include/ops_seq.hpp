@@ -1,16 +1,12 @@
+// Copyright 2023 Nesterov Alexander
 #pragma once
 
-#include <algorithm>
-#include <cstring>
-#include <iterator>
-#include <sstream>
+#include <string>
+#include <vector>
 
 #include "core/task/include/task.hpp"
 
-namespace lopatin_i_count_words_seq {
-
-int countWords(const std::string& str);
-std::string generateLongString(int n);
+namespace nesterov_a_test_task_seq {
 
 class TestTaskSequential : public ppc::core::Task {
  public:
@@ -21,8 +17,7 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::string input_;
-  int wordCount{};
+  int input_{}, res{};
 };
 
-}  // namespace lopatin_i_count_words_seq
+}  // namespace nesterov_a_test_task_seq

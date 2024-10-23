@@ -1,11 +1,19 @@
 #include "seq/lopatin_i_count_words/include/countWordsSeqHeader.hpp"
 
-#include <algorithm>
-#include <sstream>
+namespace lopatin_i_count_words_seq {
 
-int lopatin_i_count_words_seq::countWords(const std::string& str) { 
-    std::istringstream iss(str);
-    return std::distance(std::istream_iterator<std::string>(iss), std::istream_iterator<std::string>());
+int countWords(const std::string& str) {
+  std::istringstream iss(str);
+  return std::distance(std::istream_iterator<std::string>(iss), std::istream_iterator<std::string>());
+}
+
+std::string generateLongString(int n) {
+  std::string testData;
+  std::string testString = "This is a long sentence for performance testing of the word count algorithm using MPI. ";
+  for (int i = 0; i < n; i++) {
+    testData += testString;
+  }
+  return testData;
 }
 
 bool lopatin_i_count_words_seq::TestTaskSequential::pre_processing() {
@@ -35,4 +43,4 @@ bool lopatin_i_count_words_seq::TestTaskSequential::post_processing() {
   return true;
 }
 
-
+}  // namespace lopatin_i_count_words_seq

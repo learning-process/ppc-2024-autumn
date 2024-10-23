@@ -1,108 +1,120 @@
 #include <gtest/gtest.h>
 
-#include <boost/mpi/communicator.hpp>
-#include <boost/mpi/environment.hpp>
-#include <string>
-
 #include "mpi/lopatin_i_count_words/include/countWordsMPIHeader.hpp"
 
-
-TEST(lopatin_i_count_words_mpi, test_empty_string) {
+TEST(lopatin_i_count_words_mpi, test_300_words) {
   boost::mpi::communicator world;
-  std::string input = "";
-  std::vector<int> word_count(1, 0);
+  std::vector<char> input = lopatin_i_count_words_mpi::generateLongString(20);
+  std::vector<int> wordCount(1, 0);
 
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<char*>(input.c_str())));
-    taskData->inputs_count.emplace_back(input.size());
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(word_count.data()));
-    taskData->outputs_count.emplace_back(word_count.size());
+    taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t *>(const_cast<char *>(input.data())));
+    taskDataParallel->inputs_count.emplace_back(input.size());
+    taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(wordCount.data()));
+    taskDataParallel->outputs_count.emplace_back(wordCount.size());
   }
 
-  lopatin_i_count_words_mpi::TestMPITaskParallel testTask(taskData);
-  ASSERT_EQ(testTask.validation(), false);
-  testTask.pre_processing();
-  testTask.run();
-  testTask.post_processing();
+  lopatin_i_count_words_mpi::TestMPITaskParallel testTaskParallel(taskDataParallel);
+  ASSERT_TRUE(testTaskParallel.validation());
+  testTaskParallel.pre_processing();
+  testTaskParallel.run();
+  testTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    ASSERT_EQ(word_count[0], 0);
+    std::vector<int> referenceWordCount(1, 0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSequential = std::make_shared<ppc::core::TaskData>();
+
+    taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t *>(const_cast<char *>(input.data())));
+    taskDataSequential->inputs_count.emplace_back(input.size());
+    taskDataSequential->outputs.emplace_back(reinterpret_cast<uint8_t *>(referenceWordCount.data()));
+    taskDataSequential->outputs_count.emplace_back(referenceWordCount.size());
+
+    lopatin_i_count_words_mpi::TestMPITaskSequential testTaskSequential(taskDataSequential);
+    ASSERT_TRUE(testTaskSequential.validation());
+    testTaskSequential.pre_processing();
+    testTaskSequential.run();
+    testTaskSequential.post_processing();
+
+    ASSERT_EQ(wordCount[0], referenceWordCount[0]);
   }
 }
 
-TEST(lopatin_i_count_words_mpi, test_single_word) {
+TEST(lopatin_i_count_words_mpi, test_1500_words) {
   boost::mpi::communicator world;
-  std::string input = "Hello";
-  std::vector<int> word_count(1, 0);
+  std::vector<char> input = lopatin_i_count_words_mpi::generateLongString(100);
+  std::vector<int> wordCount(1, 0);
 
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<char*>(input.c_str())));
-    taskData->inputs_count.emplace_back(input.size());
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(word_count.data()));
-    taskData->outputs_count.emplace_back(word_count.size());
+    taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t *>(const_cast<char *>(input.data())));
+    taskDataParallel->inputs_count.emplace_back(input.size());
+    taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(wordCount.data()));
+    taskDataParallel->outputs_count.emplace_back(wordCount.size());
   }
 
-  lopatin_i_count_words_mpi::TestMPITaskParallel testTask(taskData);
-  ASSERT_EQ(testTask.validation(), true);
-  testTask.pre_processing();
-  testTask.run();
-  testTask.post_processing();
+  lopatin_i_count_words_mpi::TestMPITaskParallel testTaskParallel(taskDataParallel);
+  ASSERT_TRUE(testTaskParallel.validation());
+  testTaskParallel.pre_processing();
+  testTaskParallel.run();
+  testTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    ASSERT_EQ(word_count[0], 1);
+    std::vector<int> referenceWordCount(1, 0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSequential = std::make_shared<ppc::core::TaskData>();
+
+    taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t *>(const_cast<char *>(input.data())));
+    taskDataSequential->inputs_count.emplace_back(input.size());
+    taskDataSequential->outputs.emplace_back(reinterpret_cast<uint8_t *>(referenceWordCount.data()));
+    taskDataSequential->outputs_count.emplace_back(referenceWordCount.size());
+
+    lopatin_i_count_words_mpi::TestMPITaskSequential testTaskSequential(taskDataSequential);
+    ASSERT_TRUE(testTaskSequential.validation());
+    testTaskSequential.pre_processing();
+    testTaskSequential.run();
+    testTaskSequential.post_processing();
+
+    ASSERT_EQ(wordCount[0], referenceWordCount[0]);
   }
 }
 
-TEST(lopatin_i_count_words_mpi, test_multiple_words) {
+TEST(lopatin_i_count_words_mpi, test_6k_words) {
   boost::mpi::communicator world;
-  std::string input = "This is a test sentence";
-  std::vector<int> word_count(1, 0);
+  std::vector<char> input = lopatin_i_count_words_mpi::generateLongString(400);
+  std::vector<int> wordCount(1, 0);
 
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<char*>(input.c_str())));
-    taskData->inputs_count.emplace_back(input.size());
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(word_count.data()));
-    taskData->outputs_count.emplace_back(word_count.size());
+    taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t *>(const_cast<char *>(input.data())));
+    taskDataParallel->inputs_count.emplace_back(input.size());
+    taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(wordCount.data()));
+    taskDataParallel->outputs_count.emplace_back(wordCount.size());
   }
 
-  lopatin_i_count_words_mpi::TestMPITaskParallel testTask(taskData);
-  ASSERT_EQ(testTask.validation(), true);
-  testTask.pre_processing();
-  testTask.run();
-  testTask.post_processing();
+  lopatin_i_count_words_mpi::TestMPITaskParallel testTaskParallel(taskDataParallel);
+  ASSERT_TRUE(testTaskParallel.validation());
+  testTaskParallel.pre_processing();
+  testTaskParallel.run();
+  testTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    ASSERT_EQ(word_count[0], 5);
-  }
-}
+    std::vector<int> referenceWordCount(1, 0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSequential = std::make_shared<ppc::core::TaskData>();
 
-TEST(lopatin_i_count_words_mpi, test_multiple_sentences) {
-  boost::mpi::communicator world;
-  std::string input = "This is a test sentence. This is another one. And one more. And another one.";
-  std::vector<int> word_count(1, 0);
+    taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t *>(const_cast<char *>(input.data())));
+    taskDataSequential->inputs_count.emplace_back(input.size());
+    taskDataSequential->outputs.emplace_back(reinterpret_cast<uint8_t *>(referenceWordCount.data()));
+    taskDataSequential->outputs_count.emplace_back(referenceWordCount.size());
 
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+    lopatin_i_count_words_mpi::TestMPITaskSequential testTaskSequential(taskDataSequential);
+    ASSERT_TRUE(testTaskSequential.validation());
+    testTaskSequential.pre_processing();
+    testTaskSequential.run();
+    testTaskSequential.post_processing();
 
-  if (world.rank() == 0) {
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<char*>(input.c_str())));
-    taskData->inputs_count.emplace_back(input.size());
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(word_count.data()));
-    taskData->outputs_count.emplace_back(word_count.size());
-  }
-
-  lopatin_i_count_words_mpi::TestMPITaskParallel testTask(taskData);
-  ASSERT_EQ(testTask.validation(), true);
-  testTask.pre_processing();
-  testTask.run();
-  testTask.post_processing();
-
-  if (world.rank() == 0) {
-    ASSERT_EQ(word_count[0], 15);
+    ASSERT_EQ(wordCount[0], referenceWordCount[0]);
   }
 }

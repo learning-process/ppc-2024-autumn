@@ -1,21 +1,26 @@
-#include <algorithm>
-#include <boost/mpi/collectives.hpp>
-#include <sstream>
-
 #include "mpi/lopatin_i_count_words/include/countWordsMPIHeader.hpp"
 
 namespace lopatin_i_count_words_mpi {
 
-int countWords(const std::string& str) {
-  std::istringstream iss(str);
-  return std::distance(std::istream_iterator<std::string>(iss), std::istream_iterator<std::string>());
+std::vector<char> generateLongString(int n) {
+  std::vector<char> testData;
+  std::string testString = "This is a long sentence for performance testing of the word count algorithm using MPI. ";
+  for (int i = 0; i < n; i++) {
+    for (unsigned long int j = 0; j < testString.length(); j++) {
+      testData.push_back(testString[j]);
+    }
+  }
+  return testData;
 }
 
 bool TestMPITaskSequential::pre_processing() {
   internal_order_test();
-  boost::mpi::environment env; 
-  input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
-  word_count = 0;
+  input_ = std::vector<char>(taskData->inputs_count[0]);
+  auto* tempPtr = reinterpret_cast<char*>(taskData->inputs[0]);
+  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+    input_[i] = tempPtr[i];
+  }
+  wordCount = 0;
   return true;
 }
 
@@ -26,22 +31,49 @@ bool TestMPITaskSequential::validation() {
 
 bool TestMPITaskSequential::run() {
   internal_order_test();
-  word_count = countWords(input_);
+  wordCount = 0;
+  bool inWord = false;
+  for (char c : input_) {
+    if (c == ' ' || c == '\n') {
+      inWord = false;
+    } else if (!inWord) {
+      wordCount++;
+      inWord = true;
+    }
+  }
   return true;
 }
 
 bool TestMPITaskSequential::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = word_count;
+  reinterpret_cast<int*>(taskData->outputs[0])[0] = wordCount;
   return true;
 }
 
 bool TestMPITaskParallel::pre_processing() {
   internal_order_test();
+  unsigned int chunkSize = 0;
   if (world.rank() == 0) {
-    input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
+    input_ = std ::vector<char>(taskData->inputs_count[0]);
+    auto* tmpPtr = reinterpret_cast<char*>(taskData->inputs[0]);
+    for (unsigned long int i = 0; i < taskData->inputs_count[0]; i++) {
+      input_[i] = tmpPtr[i];
+    }
+    chunkSize = taskData->inputs_count[0] / world.size();
   }
-  word_count = 0;
+  boost::mpi::broadcast(world, chunkSize, 0);
+
+  localInput_.resize(chunkSize);
+  if (world.rank() == 0) {
+    for (int proc = 1; proc < world.size(); proc++) {
+      world.send(proc, 0, input_.data() + proc * chunkSize, chunkSize);
+    }
+    localInput_ = std::vector<char>(input_.begin(), input_.begin() + chunkSize);
+  } else {
+    world.recv(0, 0, localInput_.data(), chunkSize);
+  }
+  wordCount = 0;
+  localWordCount = 0;
   return true;
 }
 
@@ -52,29 +84,23 @@ bool TestMPITaskParallel::validation() {
 
 bool TestMPITaskParallel::run() {
   internal_order_test();
-  int input_length = input_.length();
-  boost::mpi::broadcast(world, input_length, 0);
-
-  if (world.rank() != 0) {
-    input_.resize(input_length);
+  bool in_word = false;
+  for (char c : localInput_) {
+    if (c == ' ' || c == '\n') {
+      in_word = false;
+    } else if (!in_word) {
+      localWordCount++;
+      in_word = true;
+    }
   }
-  boost::mpi::broadcast(world, input_, 0);
-
-  int local_length = input_length / world.size();
-  int start = world.rank() * local_length;
-  int end = (world.rank() == world.size() - 1) ? input_length : start + local_length;
-  std::string local_input = input_.substr(start, end - start);
-
-  int local_word_count = countWords(local_input);
-  boost::mpi::reduce(world, local_word_count, word_count, std::plus<int>(), 0);
-
+  boost::mpi::reduce(world, localWordCount, wordCount, std::plus<>(), 0);
   return true;
 }
 
 bool TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = word_count;
+    reinterpret_cast<int*>(taskData->outputs[0])[0] = wordCount;
   }
   return true;
 }

@@ -1,7 +1,9 @@
 #pragma once
 
+#include <algorithm>
+#include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
-#include <memory>
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -9,7 +11,7 @@
 
 namespace lopatin_i_count_words_mpi {
 
-int countWords(const std::string& str);
+std::vector<char> generateLongString(int n);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
@@ -20,8 +22,8 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::string input_;
-  int word_count{};
+  std::vector<char> input_;
+  int wordCount{};
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -33,9 +35,11 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::string input_;
-  int word_count{};
+  std::vector<char> input_;
+  std::vector<char> localInput_;
+  int wordCount{};
+  int localWordCount{};
   boost::mpi::communicator world;
 };
 
-}  // lopatin_i_count_words_mpi
+}  // namespace lopatin_i_count_words_mpi
