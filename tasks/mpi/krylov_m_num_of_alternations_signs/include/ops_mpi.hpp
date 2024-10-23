@@ -125,8 +125,6 @@ class TestMPITaskParallel : public ppc::core::Task {
 
     boost::mpi::reduce(world, partial_res, res, std::plus(), 0);
 
-    std::this_thread::sleep_for(20ms);
-
     return true;
   }
 

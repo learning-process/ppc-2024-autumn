@@ -58,8 +58,6 @@ class TestTaskSequential : public ppc::core::Task {
       }
     }
 
-    std::this_thread::sleep_for(20ms);
-
     return true;
   }
 
