@@ -1,6 +1,5 @@
 #include "seq/beskhmelnova_k_most_different_neighbor_elements/include/seq.hpp"
 
-
 template <typename DataType>
 std::vector<DataType> beskhmelnova_k_most_different_neighbor_elements_seq::getRandomVector(int sz) {
   std::random_device dev;
@@ -13,7 +12,8 @@ std::vector<DataType> beskhmelnova_k_most_different_neighbor_elements_seq::getRa
 }
 
 template <typename DataType>
-int beskhmelnova_k_most_different_neighbor_elements_seq::TestTaskSequential<DataType>::position_of_first_neighbour_seq(std::vector<DataType> vector) {
+int beskhmelnova_k_most_different_neighbor_elements_seq::TestTaskSequential<DataType>::position_of_first_neighbour_seq(
+    std::vector<DataType> vector) {
   int n = vector.size();
   if (n == 0 || n == 1) return -1;
   DataType max_dif = abs(vector[0] - vector[1]);

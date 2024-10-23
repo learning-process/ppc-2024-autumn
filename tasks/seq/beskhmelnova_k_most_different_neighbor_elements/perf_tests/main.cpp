@@ -18,7 +18,8 @@ TEST(sequential_beskhmelnova_k_most_different_neighbor_element_perf_test, test_p
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-   auto testTaskSequential = std::make_shared<beskhmelnova_k_most_different_neighbor_elements_seq::TestTaskSequential<int>>(taskDataSeq);
+  auto testTaskSequential =
+      std::make_shared<beskhmelnova_k_most_different_neighbor_elements_seq::TestTaskSequential<int>>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();

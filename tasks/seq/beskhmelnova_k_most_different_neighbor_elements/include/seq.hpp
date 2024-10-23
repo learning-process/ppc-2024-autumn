@@ -1,8 +1,8 @@
 #pragma once
 
+#include <random>
 #include <string>
 #include <vector>
-#include <random>
 
 #include "core/task/include/task.hpp"
 
@@ -10,7 +10,6 @@ namespace beskhmelnova_k_most_different_neighbor_elements_seq {
 
 template <typename DataType>
 std::vector<DataType> getRandomVector(int sz);
-
 
 template <typename DataType>
 class TestTaskSequential : public ppc::core::Task {

@@ -1,6 +1,5 @@
 #include "mpi/beskhmelnova_k_most_different_neighbor_elements/include/mpi.hpp"
 
-
 template <typename DataType>
 std::vector<DataType> beskhmelnova_k_most_different_neighbor_elements_mpi::getRandomVector(int sz) {
   std::random_device dev;
@@ -70,28 +69,27 @@ bool beskhmelnova_k_most_different_neighbor_elements_mpi::TestMPITaskSequential<
   return true;
 }
 
-//Struct of 2 most different neighbour elements
+// Struct of 2 most different neighbour elements
 template <typename DataType>
 struct NeighborDifference {
   DataType first;
   DataType second;
   DataType dif;
 
-  //Serialization of the structure for MPI transmission
+  // Serialization of the structure for MPI transmission
   template <class Archive>
   void serialize(Archive& ar, const unsigned int version) {
     ar& first;
     ar& second;
-    ar & dif;
+    ar& dif;
   }
 };
 
-//Find the most different neighbors in a vector
+// Find the most different neighbors in a vector
 template <typename DataType>
 NeighborDifference<DataType> find_max_difference(const std::vector<DataType> vector) {
   int n = vector.size();
-  if (n == 0 || n == 1)
-      return NeighborDifference<DataType>{1, 1, -1};
+  if (n == 0 || n == 1) return NeighborDifference<DataType>{1, 1, -1};
   NeighborDifference<DataType> max_dif = {vector[0], vector[1], std::abs(vector[1] - vector[0])};
   for (int i = 1; i < vector.size() - 1; i++) {
     DataType dif = std::abs(vector[i + 1] - vector[i]);
@@ -102,14 +100,14 @@ NeighborDifference<DataType> find_max_difference(const std::vector<DataType> vec
   return max_dif;
 }
 
-//Functor for a custom operation in reduce
+// Functor for a custom operation in reduce
 template <typename DataType>
 struct reduce_max_difference {
-  NeighborDifference<DataType> operator()(const NeighborDifference<DataType>& a, const NeighborDifference<DataType>& b) const {
+  NeighborDifference<DataType> operator()(const NeighborDifference<DataType>& a,
+                                          const NeighborDifference<DataType>& b) const {
     return (a.dif > b.dif) ? a : b;
   }
 };
-
 
 template <typename DataType>
 bool beskhmelnova_k_most_different_neighbor_elements_mpi::TestMPITaskParallel<DataType>::pre_processing() {
@@ -131,12 +129,9 @@ bool beskhmelnova_k_most_different_neighbor_elements_mpi::TestMPITaskParallel<Da
   std::vector<int> offset(world_size, 0);
   if (world_rank == 0) {
     for (int i = 0; i < world_size; ++i) {
-      if (i < over_size)
-        send_counts[i]++;
-      if (send_counts[i] % 2 != 0)
-        send_counts[i]++;
-      if (i > 0)
-          offset[i] = offset[i - 1] + send_counts[i - 1];
+      if (i < over_size) send_counts[i]++;
+      if (send_counts[i] % 2 != 0) send_counts[i]++;
+      if (i > 0) offset[i] = offset[i - 1] + send_counts[i - 1];
     }
   }
   int local_vector_size = send_counts[world_rank];

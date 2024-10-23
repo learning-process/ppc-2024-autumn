@@ -22,7 +22,8 @@ TEST(mpi_beskhmelnova_k_most_different_neighbor_elements_perf_test, test_pipelin
     taskDataPar->outputs_count.emplace_back(global_out.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<beskhmelnova_k_most_different_neighbor_elements_mpi::TestMPITaskParallel<int>>(taskDataPar);
+  auto testMpiTaskParallel =
+      std::make_shared<beskhmelnova_k_most_different_neighbor_elements_mpi::TestMPITaskParallel<int>>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -65,7 +66,8 @@ TEST(mpi_beskhmelnova_k_most_different_neighbor_elements_perf_test, test_task_ru
     taskDataPar->outputs_count.emplace_back(global_out.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<beskhmelnova_k_most_different_neighbor_elements_mpi::TestMPITaskParallel<int>>(taskDataPar);
+  auto testMpiTaskParallel =
+      std::make_shared<beskhmelnova_k_most_different_neighbor_elements_mpi::TestMPITaskParallel<int>>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
