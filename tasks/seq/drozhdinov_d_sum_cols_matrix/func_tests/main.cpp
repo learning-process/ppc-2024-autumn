@@ -6,6 +6,18 @@
 
 #include "seq/drozhdinov_d_sum_cols_matrix/include/ops_seq.hpp"
 
+TEST(drozhdinov_d_sum_cols_matrix_seq, MySeqFuncTest) {
+  int cols = 4;
+  int rows = 2;
+
+  // Create data
+  std::vector<int> matrix = {1, 0, 2, 1, 1, 0, 2, 1};
+  std::vector<int> expres;
+  std::vector<int> ans = {2, 0, 4, 2};
+  expres = calculateMatrixSumSequentially(matrix, cols, rows);
+  ASSERT_EQ(expres, ans);
+}
+
 TEST(drozhdinov_d_sum_cols_matrix_seq, SquareMatrixTests1) {
   int cols = 2;
   int rows = 2;
