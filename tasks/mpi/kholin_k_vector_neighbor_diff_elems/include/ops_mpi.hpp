@@ -264,7 +264,7 @@ double TestMPITaskParallel<TypeElem, TypeIndex>::max_difference() {
   auto iter_begin = local_input_.begin();
   // algorithm search max delta with using address arithmetic pointers
   while (iter_curr != (iter_end - 1)) {
-    delta = fabs(*iter_next - *iter_curr);
+    delta = fabs((double)(*iter_next - *iter_curr));
     if (delta > max_delta) {
       if (iter_begin == iter_curr) {
         curr_index = 0;
