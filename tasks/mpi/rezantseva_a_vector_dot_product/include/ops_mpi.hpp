@@ -13,7 +13,7 @@
 #include "core/task/include/task.hpp"
 
 namespace rezantseva_a_vector_dot_product_mpi {
-std::vector<int> createRandomVector(const int v_size);
+std::vector<int> createRandomVector(int v_size);
 int vectorDotProduct(const std::vector<int>& v1, const std::vector<int>& v2);
 
 class TestMPITaskSequential : public ppc::core::Task {

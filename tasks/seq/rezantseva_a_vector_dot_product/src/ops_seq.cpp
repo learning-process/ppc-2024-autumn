@@ -47,10 +47,10 @@ bool rezantseva_a_vector_dot_product_seq::TestTaskSequential::post_processing() 
   return true;
 }
 
-std::vector<int> rezantseva_a_vector_dot_product_seq::createRandomVector(const int v_size) {
+std::vector<int> rezantseva_a_vector_dot_product_seq::createRandomVector(int v_size) {
   std::vector<int> vec(v_size);
   std::mt19937 gen;
-  gen.seed((unsigned)time(0) + ++offset);
+  gen.seed((unsigned)time(nullptr) + ++offset);
   for (int i = 0; i < v_size; i++) vec[i] = gen() % 100;
   return vec;
 }
