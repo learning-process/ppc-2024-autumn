@@ -29,7 +29,7 @@ template <class InOutType>
 bool titov_s_vector_sum_seq::VectorSumSequential<InOutType>::run() {
   internal_order_test();
   res = std::accumulate(input_.begin(), input_.end(), 0);
-  std::this_thread::sleep_for(20ms);
+  std::this_thread::sleep_for(5ms);
   return true;
 }
 

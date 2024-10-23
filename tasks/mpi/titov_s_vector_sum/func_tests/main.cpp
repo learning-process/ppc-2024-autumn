@@ -24,7 +24,7 @@ TEST(titov_s_vector_sum_mpi, Test_Sum_100) {
   }
 
   titov_s_vector_sum_mpi::MPIVectorSumParallel MPIVectorSumParallel(taskDataPar);
-  ASSERT_NO_THROW(MPIVectorSumParallel.validation());
+  ASSERT_TRUE(MPIVectorSumParallel.validation());
   MPIVectorSumParallel.pre_processing();
   MPIVectorSumParallel.run();
   MPIVectorSumParallel.post_processing();
@@ -42,7 +42,7 @@ TEST(titov_s_vector_sum_mpi, Test_Sum_100) {
 
     // Create Task
     titov_s_vector_sum_mpi::MPIVectorSumSequential MPIVectorSumSequential(taskDataSeq);
-    ASSERT_NO_THROW(MPIVectorSumSequential.validation());
+    ASSERT_TRUE(MPIVectorSumSequential.validation());
     MPIVectorSumSequential.pre_processing();
     MPIVectorSumSequential.run();
     MPIVectorSumSequential.post_processing();
@@ -68,7 +68,7 @@ TEST(titov_s_vector_sum_mpi, Test_Sum_1000) {
   }
 
   titov_s_vector_sum_mpi::MPIVectorSumParallel MPIVectorSumParallel(taskDataPar);
-  ASSERT_NO_THROW(MPIVectorSumParallel.validation());
+  ASSERT_TRUE(MPIVectorSumParallel.validation());
   MPIVectorSumParallel.pre_processing();
   MPIVectorSumParallel.run();
   MPIVectorSumParallel.post_processing();
@@ -86,7 +86,7 @@ TEST(titov_s_vector_sum_mpi, Test_Sum_1000) {
 
     // Create Task
     titov_s_vector_sum_mpi::MPIVectorSumSequential MPIVectorSumSequential(taskDataSeq);
-    ASSERT_NO_THROW(MPIVectorSumSequential.validation());
+    ASSERT_TRUE(MPIVectorSumSequential.validation());
     MPIVectorSumSequential.pre_processing();
     MPIVectorSumSequential.run();
     MPIVectorSumSequential.post_processing();
@@ -112,7 +112,7 @@ TEST(titov_s_vector_sum_mpi, Test_Sum_100000) {
   }
 
   titov_s_vector_sum_mpi::MPIVectorSumParallel MPIVectorSumParallel(taskDataPar);
-  ASSERT_NO_THROW(MPIVectorSumParallel.validation());
+  ASSERT_TRUE(MPIVectorSumParallel.validation());
   MPIVectorSumParallel.pre_processing();
   MPIVectorSumParallel.run();
   MPIVectorSumParallel.post_processing();
@@ -130,7 +130,7 @@ TEST(titov_s_vector_sum_mpi, Test_Sum_100000) {
 
     // Create Task
     titov_s_vector_sum_mpi::MPIVectorSumSequential MPIVectorSumSequential(taskDataSeq);
-    ASSERT_NO_THROW(MPIVectorSumSequential.validation());
+    ASSERT_TRUE(MPIVectorSumSequential.validation());
     MPIVectorSumSequential.pre_processing();
     MPIVectorSumSequential.run();
     MPIVectorSumSequential.post_processing();
