@@ -183,8 +183,7 @@ khasanyanov_k_average_vector_mpi::AvgVectorMPITaskParallel<In, Out>::displacemen
   std::transform(sizes.cbegin(), sizes.cbegin() + mod, sizes.begin(), [](auto i) { return i + 1; });
   std::vector<int> disp(capacity);
   disp[0] = 0;
-  size_t i = 0;
-  std::generate(disp.begin() + 1, disp.end(), [&]() {
+  std::generate(disp.begin() + 1, disp.end(), [&, i = 0] () mutable {
     ++i;
     return disp[i - 1] + sizes[i - 1];
   });
