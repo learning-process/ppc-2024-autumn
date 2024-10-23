@@ -91,7 +91,7 @@ NeighborDifference<DataType> find_max_difference(const std::vector<DataType> vec
   int n = vector.size();
   if (n == 0 || n == 1) return NeighborDifference<DataType>{1, 1, -1};
   NeighborDifference<DataType> max_dif = {vector[0], vector[1], std::abs(vector[1] - vector[0])};
-  for (int i = 1; i < vector.size() - 1; i++) {
+  for (unsigned long i = 1; i < vector.size() - 1; i++) {
     DataType dif = std::abs(vector[i + 1] - vector[i]);
     if (dif > max_dif.dif) {
       max_dif = {vector[i], vector[i + 1], dif};
