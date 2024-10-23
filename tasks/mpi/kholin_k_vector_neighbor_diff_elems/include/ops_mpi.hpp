@@ -13,6 +13,7 @@
 #include <thread>
 #include <utility>
 #include <vector>
+#include <cmath>
 
 #include "core/task/include/task.hpp"
 
@@ -241,7 +242,7 @@ void TestMPITaskParallel<TypeElem, TypeIndex>::print_local_data() {
     }
     std::cout << std::endl;
   } else {
-    std::cout << "I'm" << world.rank() << " proc " + << "and my local_input data is ";
+    std::cout << "I'm" << world.rank() << " proc " << "and my local_input data is ";
     for (unsigned int i = 0; i < delta_n; i++) {
       std::cout << local_input_[i] << " ";
     }

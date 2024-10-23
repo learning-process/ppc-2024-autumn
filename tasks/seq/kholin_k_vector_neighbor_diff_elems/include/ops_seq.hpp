@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <cmath>
 
 #include "core/task/include/task.hpp"
 
@@ -48,7 +49,7 @@ class MostDiffNeighborElements : public ppc::core::Task {
     auto iter_begin = input_.begin();
     // algorithm search max delta with using address arithmetic pointers
     while (iter_curr != (iter_end - 1)) {
-      delta = std::fabs(*iter_next - *iter_curr);
+      delta = fabs(*iter_next - *iter_curr);
       if (delta > max_delta) {
         if (iter_begin == iter_curr) {
           curr_index = 0;
