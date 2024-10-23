@@ -111,3 +111,25 @@ TEST(titov_s_vector_sum_seq, Test_Uint8_t) {
   vectorSumSequential.post_processing();
   ASSERT_EQ(static_cast<uint64_t>(out[0]), in.size());
 }
+
+TEST(titov_s_vector_sum_seq, Test_Empty_Array) {
+  // Create data
+  std::vector<int32_t> in(1, 0);
+  const int expected_sum = 0;
+  std::vector<int32_t> out(1, 0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
+
+  // Create Task
+  titov_s_vector_sum_seq::VectorSumSequential<int32_t> vectorSumSequential(taskDataSeq);
+  ASSERT_TRUE(vectorSumSequential.validation());
+  vectorSumSequential.pre_processing();
+  vectorSumSequential.run();
+  vectorSumSequential.post_processing();
+  ASSERT_EQ(expected_sum, out[0]);
+}

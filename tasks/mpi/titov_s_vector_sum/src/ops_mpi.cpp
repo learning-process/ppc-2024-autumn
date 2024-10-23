@@ -53,30 +53,38 @@ bool titov_s_vector_sum_mpi::MPIVectorSumSequential::post_processing() {
 
 bool titov_s_vector_sum_mpi::MPIVectorSumParallel::pre_processing() {
   internal_order_test();
-  unsigned int delta = 0;
-  if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] / world.size();
-  }
-  broadcast(world, delta, 0);
+  unsigned int delta = 0, remainder = 0;
 
   if (world.rank() == 0) {
-    // Init vectors
+    delta = taskData->inputs_count[0] / world.size();
+    remainder = taskData->inputs_count[0] % world.size();
+  }
+
+  broadcast(world, delta, 0);
+  broadcast(world, remainder, 0);
+
+  if (world.rank() == 0) {
     input_ = std::vector<int>(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+
     for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
       input_[i] = tmp_ptr[i];
     }
+
     for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + proc * delta, delta);
+      unsigned int send_size = (proc == world.size() - 1) ? delta + remainder : delta;
+      world.send(proc, 0, input_.data() + proc * delta, send_size);
     }
   }
-  local_input_ = std::vector<int>(delta);
-  if (world.rank() == 0) {
-    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
+  local_input_ = std::vector<int>((world.rank() == world.size() - 1) ? delta + remainder : delta);
+
+  if (world.rank() != 0) {
+    unsigned int recv_size = (world.rank() == world.size() - 1) ? delta + remainder : delta;
+    world.recv(0, 0, local_input_.data(), recv_size);
   } else {
-    world.recv(0, 0, local_input_.data(), delta);
+    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
   }
-  // Init value for output
+
   res = 0;
   return true;
 }
