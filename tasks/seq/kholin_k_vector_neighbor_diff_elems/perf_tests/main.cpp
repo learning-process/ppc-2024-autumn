@@ -11,8 +11,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, test_pipeline_run) {
   const int count = 20000000;
 
   std::vector<int32_t> in(count, 1);       // in data 
-  std::vector<int32_t> out(2, 0);         // out data 
-  std::vector<uint64_t> out_index(2, 0);  // out data 
+  std::vector<int32_t> out(2, 0);          // out data 
+  std::vector<uint64_t> out_index(2, 0);   // out data 
   for (size_t i = 0; i < in.size(); i++) { 
     in[i] = 2 * i; 
   }
@@ -27,20 +27,23 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, test_pipeline_run) {
   taskData->outputs_count.emplace_back(out_index.size());
 
   // Create Task
-  auto testTaskSequential = std::make_shared<kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<uint32_t,uint64_t>>(taskData);  
+  auto testTaskSequential =
+      std::make_shared<kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<uint32_t, uint64_t>>(taskData);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 100; // num launches programm
-  const auto t0 = std::chrono::high_resolution_clock::now();//set timer now
+  perfAttr->num_running = 100;                                 // num launches programm
+  const auto t0 = std::chrono::high_resolution_clock::now();   // set timer now
   perfAttr->current_timer = [&] {
-    auto current_time_point = std::chrono::high_resolution_clock::now();//use timer  chrono and calculate difference between t0 and now
-    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();//get result
+    auto current_time_point =
+        std::chrono::high_resolution_clock::now();  // use timer  chrono and calculate difference between t0 and now
+    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();  // get
+                                                                                                            // result
     return static_cast<double>(duration) * 1e-9;
   };
 
   // Create and init perf results
-  auto perfResults = std::make_shared<ppc::core::PerfResults>();//results perfomance
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();  // results perfomance
 
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
@@ -75,7 +78,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, test_task_run) {
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;                                // num launches programm
+  perfAttr->num_running = 10;                                 // num launches programm
   const auto t0 = std::chrono::high_resolution_clock::now();  // set timer now
   perfAttr->current_timer = [&] {
     auto current_time_point =

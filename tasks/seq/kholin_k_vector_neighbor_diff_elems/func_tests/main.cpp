@@ -7,12 +7,10 @@
 
 TEST(kholin_k_vector_neighbor_diff_elems_seq, check_pre_processing) {
   // Create data
-  std::vector<int32_t> in(1256, 1);//in data 
-  std::vector<int32_t> out(2, 0);//out data
-  std::vector<uint64_t> out_index(2, 0);//out data
- 
-
-  // Create TaskData
+  std::vector<int32_t> in(1256, 1);       // in data
+  std::vector<int32_t> out(2, 0);         // out data
+  std::vector<uint64_t> out_index(2, 0);  // out data
+                                          // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
   taskData->inputs_count.emplace_back(in.size());
@@ -22,11 +20,12 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_pre_processing) {
   taskData->outputs_count.emplace_back(out_index.size());
 
   // Create Task
-  kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int32_t,uint64_t> testTaskSequential(taskData);
+  kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int32_t, uint64_t> testTaskSequential(taskData);
   testTaskSequential.validation();
   bool IsValid = testTaskSequential.pre_processing();
-  EXPECT_EQ(IsValid, true); 
 
+
+  EXPECT_EQ(IsValid, true); 
 }
 
 TEST(kholin_k_vector_neighbor_diff_elems_seq, check_validation) {
@@ -265,14 +264,14 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_float) {
   taskData->outputs_count.emplace_back(out_index.size());
 
   // Create Task
-  kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<float,uint64_t> testTaskSequential(taskData);
+  kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<float, uint64_t> testTaskSequential(taskData);
   bool isValid = testTaskSequential.validation();
   EXPECT_EQ(isValid, true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  EXPECT_NEAR(out[0], 110.001f,1e-4);  
-  EXPECT_NEAR(out[1], -990.0025f,1e-4);
+  EXPECT_NEAR(out[0], 110.001f, 1e-4);
+  EXPECT_NEAR(out[1], -990.0025f, 1e-4);
   EXPECT_EQ(out_index[0], 0ull);
   EXPECT_EQ(out_index[1], 1ull);
 }
