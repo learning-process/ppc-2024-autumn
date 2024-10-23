@@ -34,7 +34,6 @@ bool korablev_v_rect_int_mpi::RectangularIntegrationSequential::validation() {
 bool korablev_v_rect_int_mpi::RectangularIntegrationSequential::run() {
   internal_order_test();
   result_ = integrate(func_, a_, b_, n_);
-  std::this_thread::sleep_for(20ms);
   return true;
 }
 
@@ -95,7 +94,6 @@ bool korablev_v_rect_int_mpi::RectangularIntegrationParallel::run() {
   double local_result_{};
   local_result_ = parallel_integrate(func_, a_, b_, n_);
   reduce(world, local_result_, global_result_, std::plus<>(), 0);
-  std::this_thread::sleep_for(20ms);
   return true;
 }
 
