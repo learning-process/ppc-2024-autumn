@@ -16,7 +16,7 @@ The following parallel programming technologies are considered in practice:
 
 ## 0. Download all submodules
   ```
-  git submodule update --init --recursive
+  git submodule update --init --recursive --depth=1
   ```
 ## 1. Set up your environment
 ### Static analysis of project (optional)
@@ -24,10 +24,16 @@ The following parallel programming technologies are considered in practice:
   
   Unsupported operating system!
   
-  * **Linux (`gcc` and `clang`)**:
+  * **Ubuntu / Debian (`gcc` and `clang`)**:
   ```
   sudo apt install -y cppcheck
   ```
+
+  * **NixOS / Nix (with flakes enabled)**:
+  ```
+  nix develop .
+  ```
+
   * **MacOS (apple clang)**:
   ```
   brew install cppcheck
@@ -44,10 +50,16 @@ Code style is checked using [clang-format](https://clang.llvm.org/docs/ClangForm
   
   [Installers link.](https://www.microsoft.com/en-us/download/details.aspx?id=105289) You have to install `msmpisdk.msi` and `msmpisetup.exe`.
   
-  * **Linux (`gcc` and `clang`)**:
+  * **Ubuntu / Debian (`gcc` and `clang`)**:
   ```
   sudo apt install -y mpich openmpi-bin libopenmpi-dev
   ```
+  
+  * **NixOS / Nix (with flakes enabled)**:
+  ```
+  nix develop .
+  ```
+
   * **MacOS (apple clang)**:
   ```
   brew install open-mpi
@@ -57,10 +69,16 @@ Code style is checked using [clang-format](https://clang.llvm.org/docs/ClangForm
   
   `OpenMP` is included into `gcc` and `msvc`, but some components should be installed additionally:
   
-  * **Linux (`gcc` and `clang`)**:
+  * **Ubuntu / Debian (`gcc` and `clang`)**:
   ```
   sudo apt install -y libomp-dev
   ```
+
+  * **NixOS / Nix (with flakes enabled)**:
+  ```
+  nix develop .
+  ```
+
   * **MacOS (`llvm`)**:
   ```
   brew install llvm
