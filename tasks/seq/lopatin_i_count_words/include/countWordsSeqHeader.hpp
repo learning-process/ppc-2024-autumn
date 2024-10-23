@@ -8,9 +8,7 @@
 #include "core/task/include/task.hpp"
 
 namespace lopatin_i_count_words_seq {
-
-int countWords(const std::string& str);
-std::string generateLongString(int n);
+std::vector<char> generateLongString(int n);
 
 class TestTaskSequential : public ppc::core::Task {
  public:
@@ -21,7 +19,7 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::string input_;
+  std::vector<char> input_;
   int wordCount{};
 };
 

@@ -3,10 +3,10 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/lopatin_i_count_words/include/countWordsSeqHeader.hpp"
 
-std::string testData = lopatin_i_count_words_seq::generateLongString(1000);
+std::vector<char> testData = lopatin_i_count_words_seq::generateLongString(1000);
 
 TEST(word_count_seq, test_pipeline_run) {
-  std::string input = testData;
+  std::vector<char> input = testData;
   std::vector<int> word_count(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
@@ -36,7 +36,7 @@ TEST(word_count_seq, test_pipeline_run) {
 }
 
 TEST(word_count_seq, test_task_run) {
-  std::string input = testData;
+  std::vector<char> input = testData;
   std::vector<int> word_count(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();

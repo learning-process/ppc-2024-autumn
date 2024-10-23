@@ -31,7 +31,6 @@ bool TestMPITaskSequential::validation() {
 
 bool TestMPITaskSequential::run() {
   internal_order_test();
-  wordCount = 0;
   bool inWord = false;
   for (char c : input_) {
     if (c == ' ' || c == '\n') {
