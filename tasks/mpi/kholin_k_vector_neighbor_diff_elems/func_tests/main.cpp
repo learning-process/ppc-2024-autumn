@@ -279,7 +279,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<double> reference_delta(1, 0); 
+    std::vector<double> reference_delta(1, 0);
     std::vector<int> reference_elems(2, 0);
     std::vector<uint64_t> reference_indices(2, 0);
     // Create TaskData
@@ -319,7 +319,6 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
   if (world.rank() == 0) {
     for (size_t i = 0; i < global_vec.size(); i++) {
       global_vec[i] = 2 * i + 4;
-      
     }
     global_vec[100] = 5000;
     global_vec[101] = 1;

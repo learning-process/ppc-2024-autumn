@@ -227,7 +227,7 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_int64_t) {
   taskData->outputs_count.emplace_back(out_index.size());
 
   // Create Task
-  kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements <int64_t, uint64_t> testTaskSequential(taskData);
+  kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int64_t, uint64_t> testTaskSequential(taskData);
   bool isValid = testTaskSequential.validation();
   EXPECT_EQ(isValid, true);
   testTaskSequential.pre_processing();
