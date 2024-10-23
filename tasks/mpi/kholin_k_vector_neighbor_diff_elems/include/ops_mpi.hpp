@@ -43,7 +43,7 @@ class TestTaskSequential : public ppc::core::Task {
   bool validation() override {
     internal_order_test();
     // Check count elements of output
-    return taskData->outputs_count[0] == 2 && taskData->outputs_count[1] == 2 && taskData->outputs_count[2] == 1;
+    return taskData->outputs_count[0] == 2 && taskData->outputs_count[1] == 2;
   }
   bool run() override {
     internal_order_test();
@@ -93,7 +93,6 @@ class TestTaskSequential : public ppc::core::Task {
     reinterpret_cast<TypeElem*>(taskData->outputs[0])[1] = right_elem;
     reinterpret_cast<TypeIndex*>(taskData->outputs[1])[0] = left_index;
     reinterpret_cast<TypeIndex*>(taskData->outputs[1])[1] = right_index;
-    reinterpret_cast<double*>(taskData->outputs[2])[0] = result;
     return true;
   }
 
@@ -160,7 +159,7 @@ class TestMPITaskParallel : public ppc::core::Task {
     internal_order_test();
     // Check count elements of output
     if (world.rank() == 0) {
-      return taskData->outputs_count[0] == 2 && taskData->outputs_count[1] == 2 && taskData->outputs_count[2] == 1;
+      return taskData->outputs_count[0] == 2 && taskData->outputs_count[1] == 2;
     }
     return true;
   }
@@ -174,7 +173,7 @@ class TestMPITaskParallel : public ppc::core::Task {
     }
     if (ops == "MAX_DIFFERENCE") {
       // pack data
-      TypeElem sendbuf[1];
+      double sendbuf[1];
       sendbuf[0] = local_result;
       TypeIndex sendbuf2[1];
       sendbuf2[0] = curr_index;
@@ -182,12 +181,12 @@ class TestMPITaskParallel : public ppc::core::Task {
       sendbuf3[0] = world.rank();
       // initialize buffers for MPI_Gather operation
       if (world.rank() == 0) {  // ONLY PROCESS 0
-        global_result = std::vector<TypeElem>(world.size());
+        global_result = std::vector<double>(world.size());
         global_indices = std::vector<TypeIndex>(world.size());
         ranks = std::vector<int>(world.size());
       }
       // everyone process send 1 element and get all local_results from everyone process 1 element
-      MPI_Gather(sendbuf, 1, get_mpi_type(), global_result.data(), 1, get_mpi_type(), 0, world);
+      MPI_Gather(sendbuf, 1, MPI_DOUBLE, global_result.data(), 1, MPI_DOUBLE, 0, world);
       MPI_Gather(sendbuf2, 1, get_mpi_type2(), global_indices.data(), 1, get_mpi_type2(), 0, world);
       MPI_Gather(sendbuf3, 1, MPI_INT, ranks.data(), 1, MPI_INT, 0, world);
       // output global results
@@ -204,7 +203,6 @@ class TestMPITaskParallel : public ppc::core::Task {
       reinterpret_cast<TypeElem*>(taskData->outputs[0])[1] = right_elem;
       reinterpret_cast<TypeIndex*>(taskData->outputs[1])[0] = left_index;
       reinterpret_cast<TypeIndex*>(taskData->outputs[1])[1] = right_index;
-      reinterpret_cast<double*>(taskData->outputs[2])[0] = result;
     }
     return true;
   }
@@ -212,7 +210,7 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   std::vector<TypeElem> input_;           // global vector
   std::vector<TypeElem> local_input_;     // local vector
-  std::vector<TypeElem> global_result;    // global result
+  std::vector<double> global_result;    // global result
   std::vector<TypeIndex> global_indices;  // indices
   std::vector<int> ranks;                 // ranks for allocating max_delta everyone process
   unsigned int delta_n;
