@@ -6,7 +6,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/lysov_i_integration_the_trapezoid_method/include/ops_mpi.hpp"
 
-TEST(integration_perf_test, test_integration_pipeline_run) {
+TEST(lysov_i_integration_the_trapezoid_method_mpi, test_integration_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<double> global_result(1, 0.0);
   double a = -1.45;
@@ -49,7 +49,7 @@ TEST(integration_perf_test, test_integration_pipeline_run) {
   }
 }
 
-TEST(integration_perf_test, test_integration_task_run) {
+TEST(lysov_i_integration_the_trapezoid_method_mpi, test_integration_task_run) {
   boost::mpi::communicator world;
   std::vector<double> global_result(1, 0.0);
   double a = -1.45;

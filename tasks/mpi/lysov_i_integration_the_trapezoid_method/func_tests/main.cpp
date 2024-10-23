@@ -6,7 +6,7 @@
 
 #include "mpi/lysov_i_integration_the_trapezoid_method/include/ops_mpi.hpp"
 
-TEST(Parallel_Integration_MPI, Test_Integration_mpi_1) {
+TEST(lysov_i_integration_the_trapezoid_method_mpi, Test_Integration_mpi_1) {
   boost::mpi::communicator world;
   std::vector<double> global_result(1, 0.0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -41,7 +41,7 @@ TEST(Parallel_Integration_MPI, Test_Integration_mpi_1) {
   }
 }
 
-TEST(Parallel_Integration_MPI, Test_Integration_mpi_2) {
+TEST(lysov_i_integration_the_trapezoid_method_mpi, Test_Integration_mpi_2) {
   boost::mpi::communicator world;
   std::vector<double> global_result(1, 0.0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -76,7 +76,7 @@ TEST(Parallel_Integration_MPI, Test_Integration_mpi_2) {
   }
 }
 
-TEST(Parallel_Integration_MPI, Test_Integration_3) {
+TEST(lysov_i_integration_the_trapezoid_method_mpi, Test_Integration_3) {
   boost::mpi::communicator world;
   std::vector<double> global_result(1, 0.0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
