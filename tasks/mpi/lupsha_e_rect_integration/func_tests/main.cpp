@@ -18,6 +18,7 @@ TEST(lupsha_e_rect_integration_mpi, Test_Constant) {
   double upper_bound = 1.0;
   int num_intervals = 1000;
   std::vector<double> global_sum(1, 0.0);
+  std::vector<double> result_seq(1, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -47,11 +48,18 @@ TEST(lupsha_e_rect_integration_mpi, Test_Constant) {
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_intervals));
     taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_seq.data()));
+    taskDataSeq->outputs_count.emplace_back(1);
 
     lupsha_e_rect_integration_mpi::TestMPITaskSequential sequential_Task(taskDataSeq);
-    sequential_Task.function_set(f);
-    double expected_result = 10.0;
-    ASSERT_NEAR(global_sum[0], expected_result, 1e-5);
+    sequential_Task.function_set([](double x) { return 10.0; });
+
+    ASSERT_EQ(sequential_Task.validation(), true);
+    sequential_Task.pre_processing();
+    sequential_Task.run();
+    sequential_Task.post_processing();
+
+    ASSERT_NEAR(global_sum[0], result_seq[0], 1e-5);
   }
 }
 
@@ -61,6 +69,7 @@ TEST(lupsha_e_rect_integration_mpi, Test_Logarithm) {
   double upper_bound = 1.0;
   int num_intervals = 10000;
   std::vector<double> global_sum(1, 0.0);
+  std::vector<double> result_seq(1, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -90,13 +99,18 @@ TEST(lupsha_e_rect_integration_mpi, Test_Logarithm) {
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_intervals));
     taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_seq.data()));
+    taskDataSeq->outputs_count.emplace_back(1);
 
     lupsha_e_rect_integration_mpi::TestMPITaskSequential sequential_Task(taskDataSeq);
-    sequential_Task.function_set(f);
+    sequential_Task.function_set([](double x) { return std::log(x); });
 
-    double expected_result =
-        (upper_bound * log(upper_bound) - upper_bound) - (lower_bound * log(lower_bound) - lower_bound);
-    ASSERT_NEAR(global_sum[0], expected_result, 1e-3);
+    ASSERT_EQ(sequential_Task.validation(), true);
+    sequential_Task.pre_processing();
+    sequential_Task.run();
+    sequential_Task.post_processing();
+
+    ASSERT_NEAR(global_sum[0], result_seq[0], 1e-3);
   }
 }
 
@@ -106,6 +120,7 @@ TEST(lupsha_e_rect_integration_mpi, Test_Gaussian) {
   double upper_bound = 1.0;
   int num_intervals = 1000;
   std::vector<double> global_sum(1, 0.0);
+  std::vector<double> result_seq(1, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -135,12 +150,18 @@ TEST(lupsha_e_rect_integration_mpi, Test_Gaussian) {
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_intervals));
     taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_seq.data()));
+    taskDataSeq->outputs_count.emplace_back(1);
 
     lupsha_e_rect_integration_mpi::TestMPITaskSequential sequential_Task(taskDataSeq);
-    sequential_Task.function_set(f);
+    sequential_Task.function_set([](double x) { return std::exp(-x * x); });
 
-    double expected_result = std::sqrt(M_PI) * (std::erf(upper_bound) - std::erf(lower_bound)) / 2;
-    ASSERT_NEAR(global_sum[0], expected_result, 1e-5);
+    ASSERT_EQ(sequential_Task.validation(), true);
+    sequential_Task.pre_processing();
+    sequential_Task.run();
+    sequential_Task.post_processing();
+
+    ASSERT_NEAR(global_sum[0], result_seq[0], 1e-5);
   }
 }
 
@@ -150,6 +171,7 @@ TEST(lupsha_e_rect_integration_mpi, Test_Cos) {
   double upper_bound = 2 * M_PI;
   int num_intervals = 1000;
   std::vector<double> global_sum(1, 0.0);
+  std::vector<double> result_seq(1, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -179,11 +201,18 @@ TEST(lupsha_e_rect_integration_mpi, Test_Cos) {
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_intervals));
     taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_seq.data()));
+    taskDataSeq->outputs_count.emplace_back(1);
 
     lupsha_e_rect_integration_mpi::TestMPITaskSequential sequential_Task(taskDataSeq);
-    sequential_Task.function_set(f);
-    double expected_result = sin(upper_bound) - sin(lower_bound);
-    ASSERT_NEAR(global_sum[0], expected_result, 1e-5);
+    sequential_Task.function_set([](double x) { return cos(x); });
+
+    ASSERT_EQ(sequential_Task.validation(), true);
+    sequential_Task.pre_processing();
+    sequential_Task.run();
+    sequential_Task.post_processing();
+
+    ASSERT_NEAR(global_sum[0], result_seq[0], 1e-5);
   }
 }
 
@@ -193,6 +222,7 @@ TEST(lupsha_e_rect_integration_mpi, Test_Power) {
   double upper_bound = 1.0;
   int num_intervals = 1000;
   std::vector<double> global_sum(1, 0.0);
+  std::vector<double> result_seq(1, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -222,23 +252,17 @@ TEST(lupsha_e_rect_integration_mpi, Test_Power) {
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_intervals));
     taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_seq.data()));
+    taskDataSeq->outputs_count.emplace_back(1);
 
     lupsha_e_rect_integration_mpi::TestMPITaskSequential sequential_Task(taskDataSeq);
-    sequential_Task.function_set(f);
+    sequential_Task.function_set([](double x) { return x*x; });
 
-    double expected_result =
-        (upper_bound * upper_bound * upper_bound / 3) - (lower_bound * lower_bound * lower_bound / 3);
-    ASSERT_NEAR(global_sum[0], expected_result, 1e-3);
-  }
-}
+    ASSERT_EQ(sequential_Task.validation(), true);
+    sequential_Task.pre_processing();
+    sequential_Task.run();
+    sequential_Task.post_processing();
 
-int main(int argc, char** argv) {
-  boost::mpi::environment env(argc, argv);
-  boost::mpi::communicator world;
-  ::testing::InitGoogleTest(&argc, argv);
-  ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
-  if (world.rank() != 0) {
-    delete listeners.Release(listeners.default_result_printer());
+    ASSERT_NEAR(global_sum[0], result_seq[0], 1e-3);
   }
-  return RUN_ALL_TESTS();
 }

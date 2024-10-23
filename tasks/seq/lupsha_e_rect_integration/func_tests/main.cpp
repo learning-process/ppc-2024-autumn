@@ -61,8 +61,3 @@ TEST(lupsha_e_rect_integration_seq, Test_Rect2) {
 
   EXPECT_NEAR(result[0], expected_result, 0.01);
 }
-
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}

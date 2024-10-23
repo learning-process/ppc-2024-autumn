@@ -91,13 +91,3 @@ TEST(lupsha_e_rect_integration_mpi, test_task_run) {
     ASSERT_NEAR(global_sum[0], expected_result, 1e-5);
   }
 }
-int main(int argc, char** argv) {
-  boost::mpi::environment env(argc, argv);
-  boost::mpi::communicator world;
-  ::testing::InitGoogleTest(&argc, argv);
-  ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
-  if (world.rank() != 0) {
-    delete listeners.Release(listeners.default_result_printer());
-  }
-  return RUN_ALL_TESTS();
-}
