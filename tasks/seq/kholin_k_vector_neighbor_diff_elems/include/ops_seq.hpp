@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 
-
 #include "core/task/include/task.hpp"
 
 using namespace std::chrono_literals;
