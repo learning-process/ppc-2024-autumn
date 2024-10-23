@@ -17,10 +17,6 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
 
-    /*for (int i = 0; i < global_vec.size(); i++) {
-      global_vec[i] = 2 * i + 4;
-    }*/
-
     global_vec[10] = 5000;
     global_vec[11] = 1;
 
@@ -67,9 +63,6 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, test_task_run) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-   /* for (int i = 0; i < global_vec.size(); i++) {
-      global_vec[i] = 2 * i + 4;
-    }*/
 
     global_vec[10] = 5000;
     global_vec[11] = 1;

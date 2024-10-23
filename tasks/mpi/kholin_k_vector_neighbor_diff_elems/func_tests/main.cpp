@@ -258,7 +258,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    for (int i = 0; i < global_vec.size(); i++) {
+    for (size_t i = 0; i < global_vec.size(); i++) {
       global_vec[i] = 4 * i + 2;
     }
 
@@ -335,7 +335,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
 
   if (world.rank() == 0) {
     
-    for (int i = 0; i < global_vec.size(); i++) {
+    for (size_t i = 0; i < global_vec.size(); i++) {
       global_vec[i] = 2 * i + 4;
     }
      
@@ -407,7 +407,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_float) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    for (int i = 0; i < global_vec.size(); i++) {
+    for (size_t i = 0; i < global_vec.size(); i++) {
       global_vec[i] = 0.25 * i + 10;
     }
 
@@ -479,7 +479,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_double) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    for (int i = 0; i < global_vec.size(); i++) {
+    for (size_t i = 0; i < global_vec.size(); i++) {
       global_vec[i] = 0.25 * i + 10;
     }
 
