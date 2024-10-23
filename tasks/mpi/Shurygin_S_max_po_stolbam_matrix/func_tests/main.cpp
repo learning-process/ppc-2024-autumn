@@ -7,43 +7,83 @@
 
 #include "mpi/Shurygin_S_max_po_stolbam_matrix/include/ops_mpi.hpp"
 
-//
-// TEST(Shurygin_S_max_po_stolbam_matrix_mpi, validation_invalid_data) {
-//  boost::mpi::communicator world;
-//  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-//  Shurygin_S_max_po_stolbam_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-//
-//  if (world.rank() == 0) {
-//    //пустой inputs и outputs
-//    taskDataPar->inputs.clear();
-//    taskDataPar->outputs.clear();
-//    taskDataPar->inputs_count = {0, 0};
-//    taskDataPar->outputs_count = {0};
-//    ASSERT_EQ(testMpiTaskParallel.validation(), false);
-//
-//    //inputs_count не соответствует размеру inputs
-//    taskDataPar->inputs_count = {2, 2};
-//    ASSERT_EQ(testMpiTaskParallel.validation(), false);
-//
-//    //outputs_count не соответствует ожиданиям
-//    taskDataPar->inputs_count = {1, 1};
-//    taskDataPar->outputs_count = {2};
-//    ASSERT_EQ(testMpiTaskParallel.validation(), false);
-//
-//    //inputs пуст
-//    taskDataPar->inputs.clear();
-//    taskDataPar->inputs_count = {1, 1};
-//    taskDataPar->outputs_count = {1};
-//    ASSERT_EQ(testMpiTaskParallel.validation(), false);
-//
-//    //outputs пуст
-//    taskDataPar->inputs.resize(1);
-//    taskDataPar->inputs[0] = reinterpret_cast<uint8_t*>(new int[1]);
-//    taskDataPar->outputs.clear();
-//    taskDataPar->outputs_count = {1};
-//    ASSERT_EQ(testMpiTaskParallel.validation(), false);
-//  }
-//}
+TEST(Shurygin_S_max_po_stolbam_matrix_mpi, EmptyInputs) {
+  boost::mpi::communicator world;
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  Shurygin_S_max_po_stolbam_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+
+  if (world.rank() == 0) {
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  }
+}
+
+TEST(Shurygin_S_max_po_stolbam_matrix_mpi, EmptyOutputs) {
+  boost::mpi::communicator world;
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  Shurygin_S_max_po_stolbam_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs_count.push_back(3);
+    taskDataPar->inputs_count.push_back(4);
+    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(new int[12]));
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  }
+}
+
+TEST(Shurygin_S_max_po_stolbam_matrix_mpi, IncorrectInputsCountSize) {
+  boost::mpi::communicator world;
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  Shurygin_S_max_po_stolbam_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs_count.push_back(3);  // Только одно значение в inputs_count
+    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(new int[12]));
+    taskDataPar->outputs_count.push_back(4);
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  }
+}
+
+TEST(Shurygin_S_max_po_stolbam_matrix_mpi, IncorrectInputsCountValue) {
+  boost::mpi::communicator world;
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  Shurygin_S_max_po_stolbam_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs_count.push_back(3);
+    taskDataPar->inputs_count.push_back(0);  // Число столбцов равно 0
+    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(new int[12]));
+    taskDataPar->outputs_count.push_back(4);
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  }
+}
+
+TEST(Shurygin_S_max_po_stolbam_matrix_mpi, IncorrectOutputsCountSize) {
+  boost::mpi::communicator world;
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  Shurygin_S_max_po_stolbam_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs_count.push_back(3);
+    taskDataPar->inputs_count.push_back(4);
+    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(new int[12]));
+    taskDataPar->outputs_count.push_back(3);  // Неверное число элементов в outputs_count
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  }
+}
+
+TEST(Shurygin_S_max_po_stolbam_matrix_mpi, IncorrectOutputsCountValue) {
+  boost::mpi::communicator world;
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  Shurygin_S_max_po_stolbam_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs_count.push_back(3);
+    taskDataPar->inputs_count.push_back(4);
+    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(new int[12]));
+    taskDataPar->outputs_count.push_back(5);  // Неверное число элементов в outputs_count
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  }
+}
 
 TEST(Shurygin_S_max_po_stolbam_matrix_mpi, find_max_val_in_col_10x10_matrix) {
   boost::mpi::communicator world;
@@ -171,10 +211,10 @@ TEST(Shurygin_S_max_po_stolbam_matrix_mpi, find_max_val_in_col_100x500_matrix) {
   }
 }
 
-TEST(Shurygin_S_max_po_stolbam_matrix_mpi, find_max_val_in_col_5000x5000_matrix) {
+TEST(Shurygin_S_max_po_stolbam_matrix_mpi, find_max_val_in_col_3000x3000_matrix) {
   boost::mpi::communicator world;
-  const int count_rows = 5000;
-  const int count_columns = 5000;
+  const int count_rows = 3000;
+  const int count_columns = 3000;
   std::vector<std::vector<int>> global_matrix;
   std::vector<int32_t> global_max(count_columns, INT_MIN);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();

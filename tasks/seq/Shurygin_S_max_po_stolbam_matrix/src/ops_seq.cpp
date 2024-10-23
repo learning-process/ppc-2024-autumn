@@ -73,7 +73,7 @@ std::vector<std::vector<int>> TestTaskSequential::generate_random_matrix(int row
   }
   for (int j = 0; j < columns; ++j) {
     int random_row = std::rand() % rows;
-    matrix1[random_row][j] = 200;  // Гарантируем, что в каждом столбце есть число 200
+    matrix1[random_row][j] = 200;
   }
   return matrix1;
 }

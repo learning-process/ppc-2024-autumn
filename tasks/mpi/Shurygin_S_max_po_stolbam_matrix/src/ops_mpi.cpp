@@ -157,14 +157,14 @@ std::vector<int> Shurygin_S_max_po_stolbam_matrix_mpi::TestMPITaskSequential::ge
 }
 
 std::vector<std::vector<int>> Shurygin_S_max_po_stolbam_matrix_mpi::TestMPITaskSequential::generate_random_matrix(
-    int rows, int cols) {
-  std::vector<std::vector<int>> matrix1(rows, std::vector<int>(cols));
+    int rows, int columns) {
+  std::vector<std::vector<int>> matrix1(rows, std::vector<int>(columns));
   for (int i = 0; i < rows; ++i) {
-    matrix1[i] = generate_random_vector(cols, 1, 100);
+    matrix1[i] = generate_random_vector(columns, 1, 100);
   }
-  for (int j = 0; j < cols; ++j) {
+  for (int j = 0; j < columns; ++j) {
     int random_row = std::rand() % rows;
-    matrix1[random_row][j] = 200;  // Гарантируем, что в каждом столбце есть число 200
+    matrix1[random_row][j] = 200;
   }
   return matrix1;
 }
