@@ -27,6 +27,8 @@ TEST(Shurygin_S_max_po_stolbam_matrix_mpi, EmptyOutputs) {
     taskDataPar->inputs_count.push_back(4);
     taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(new int[12]));
     ASSERT_FALSE(testMpiTaskParallel.validation());
+
+    delete[] reinterpret_cast<int*>(taskDataPar->inputs[0]);
   }
 }
 
@@ -36,10 +38,12 @@ TEST(Shurygin_S_max_po_stolbam_matrix_mpi, IncorrectInputsCountSize) {
   Shurygin_S_max_po_stolbam_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
   if (world.rank() == 0) {
-    taskDataPar->inputs_count.push_back(3);  // Только одно значение в inputs_count
+    taskDataPar->inputs_count.push_back(3);
     taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(new int[12]));
     taskDataPar->outputs_count.push_back(4);
     ASSERT_FALSE(testMpiTaskParallel.validation());
+
+    delete[] reinterpret_cast<int*>(taskDataPar->inputs[0]);
   }
 }
 
@@ -50,10 +54,12 @@ TEST(Shurygin_S_max_po_stolbam_matrix_mpi, IncorrectInputsCountValue) {
 
   if (world.rank() == 0) {
     taskDataPar->inputs_count.push_back(3);
-    taskDataPar->inputs_count.push_back(0);  // Число столбцов равно 0
+    taskDataPar->inputs_count.push_back(0);
     taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(new int[12]));
     taskDataPar->outputs_count.push_back(4);
     ASSERT_FALSE(testMpiTaskParallel.validation());
+
+    delete[] reinterpret_cast<int*>(taskDataPar->inputs[0]);
   }
 }
 
@@ -66,8 +72,10 @@ TEST(Shurygin_S_max_po_stolbam_matrix_mpi, IncorrectOutputsCountSize) {
     taskDataPar->inputs_count.push_back(3);
     taskDataPar->inputs_count.push_back(4);
     taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(new int[12]));
-    taskDataPar->outputs_count.push_back(3);  // Неверное число элементов в outputs_count
+    taskDataPar->outputs_count.push_back(3);
     ASSERT_FALSE(testMpiTaskParallel.validation());
+
+    delete[] reinterpret_cast<int*>(taskDataPar->inputs[0]);
   }
 }
 
@@ -80,8 +88,10 @@ TEST(Shurygin_S_max_po_stolbam_matrix_mpi, IncorrectOutputsCountValue) {
     taskDataPar->inputs_count.push_back(3);
     taskDataPar->inputs_count.push_back(4);
     taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(new int[12]));
-    taskDataPar->outputs_count.push_back(5);  // Неверное число элементов в outputs_count
+    taskDataPar->outputs_count.push_back(5);
     ASSERT_FALSE(testMpiTaskParallel.validation());
+
+    delete[] reinterpret_cast<int*>(taskDataPar->inputs[0]);
   }
 }
 

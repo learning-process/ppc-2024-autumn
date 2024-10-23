@@ -21,6 +21,8 @@ TEST(Shurygin_S_max_po_stolbam_matrix_seq, EmptyOutputs) {
   taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t*>(new int[12]));
 
   ASSERT_FALSE(testTaskSequential.validation());
+
+  delete[] reinterpret_cast<int*>(taskDataSeq->inputs[0]);
 }
 
 TEST(Shurygin_S_max_po_stolbam_matrix_seq, IncorrectInputsCountSize) {
@@ -32,6 +34,8 @@ TEST(Shurygin_S_max_po_stolbam_matrix_seq, IncorrectInputsCountSize) {
   taskDataSeq->outputs_count.push_back(4);
 
   ASSERT_FALSE(testTaskSequential.validation());
+
+  delete[] reinterpret_cast<int*>(taskDataSeq->inputs[0]);
 }
 
 TEST(Shurygin_S_max_po_stolbam_matrix_seq, IncorrectInputsCountValue) {
@@ -44,6 +48,8 @@ TEST(Shurygin_S_max_po_stolbam_matrix_seq, IncorrectInputsCountValue) {
   taskDataSeq->outputs_count.push_back(4);
 
   ASSERT_FALSE(testTaskSequential.validation());
+
+  delete[] reinterpret_cast<int*>(taskDataSeq->inputs[0]);
 }
 
 TEST(Shurygin_S_max_po_stolbam_matrix_seq, IncorrectOutputsCountSize) {
@@ -56,6 +62,8 @@ TEST(Shurygin_S_max_po_stolbam_matrix_seq, IncorrectOutputsCountSize) {
   taskDataSeq->outputs_count.push_back(3);
 
   ASSERT_FALSE(testTaskSequential.validation());
+
+  delete[] reinterpret_cast<int*>(taskDataSeq->inputs[0]);
 }
 
 TEST(Shurygin_S_max_po_stolbam_matrix_seq, IncorrectOutputsCountValue) {
@@ -68,6 +76,8 @@ TEST(Shurygin_S_max_po_stolbam_matrix_seq, IncorrectOutputsCountValue) {
   taskDataSeq->outputs_count.push_back(5);
 
   ASSERT_FALSE(testTaskSequential.validation());
+
+  delete[] reinterpret_cast<int*>(taskDataSeq->inputs[0]);
 }
 
 TEST(Shurygin_S_max_po_stolbam_matrix_seq, find_max_val_in_columns_10x10_matrix) {
