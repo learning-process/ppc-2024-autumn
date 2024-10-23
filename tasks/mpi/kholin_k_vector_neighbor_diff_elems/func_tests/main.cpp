@@ -3,7 +3,6 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <vector>
 
 #include "mpi/kholin_k_vector_neighbor_diff_elems/include/ops_mpi.hpp"
 

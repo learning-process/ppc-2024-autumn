@@ -6,13 +6,6 @@
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <cmath>
-#include <functional>
-#include <memory>
-#include <numeric>
-#include <random>
-#include <string>
-#include <thread>
-#include <utility>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -172,13 +165,6 @@ class TestMPITaskParallel : public ppc::core::Task {
       local_result = max_difference();
     }
     if (ops == "MAX_DIFFERENCE") {
-      // pack data
-      double sendbuf[1];
-      sendbuf[0] = local_result;
-      TypeIndex sendbuf2[1];
-      sendbuf2[0] = curr_index;
-      int sendbuf3[1];
-      sendbuf3[0] = world.rank();
       // initialize buffers for MPI_Gather operation
       if (world.rank() == 0) {  // ONLY PROCESS 0
         global_result = std::vector<double>(world.size());
@@ -186,8 +172,14 @@ class TestMPITaskParallel : public ppc::core::Task {
         ranks = std::vector<int>(world.size());
       }
       // everyone process send 1 element and get all local_results from everyone process 1 element
+      double sendbuf[1];
+      sendbuf[0] = local_result;
       MPI_Gather(sendbuf, 1, MPI_DOUBLE, global_result.data(), 1, MPI_DOUBLE, 0, world);
+      TypeIndex sendbuf2[1];
+      sendbuf2[0] = curr_index;
       MPI_Gather(sendbuf2, 1, get_mpi_type2(), global_indices.data(), 1, get_mpi_type2(), 0, world);
+      int sendbuf3[1];
+      sendbuf3[0] = world.rank();
       MPI_Gather(sendbuf3, 1, MPI_INT, ranks.data(), 1, MPI_INT, 0, world);
       // output global results
       calculate_global_delta();    // 1
@@ -210,7 +202,7 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   std::vector<TypeElem> input_;           // global vector
   std::vector<TypeElem> local_input_;     // local vector
-  std::vector<double> global_result;    // global result
+  std::vector<double> global_result;      // global result
   std::vector<TypeIndex> global_indices;  // indices
   std::vector<int> ranks;                 // ranks for allocating max_delta everyone process
   unsigned int delta_n;
