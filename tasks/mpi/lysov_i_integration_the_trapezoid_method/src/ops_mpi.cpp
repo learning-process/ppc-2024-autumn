@@ -7,17 +7,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
-std::vector<int> lysov_i_integration_the_trapezoid_method_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
-}
 bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
   if (taskData->inputs.size() != 3) {
@@ -30,7 +19,6 @@ bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskSequential::valida
   }
   return true;
 }
-
 bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   a = *reinterpret_cast<double*>(taskData->inputs[0]);
@@ -61,6 +49,7 @@ bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskSequential::post_p
   reinterpret_cast<double*>(taskData->outputs[0])[0] = res;
   return true;
 }
+
 bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
@@ -80,7 +69,6 @@ bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskParallel::validati
   }
   return true;
 }
-
 bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
@@ -102,7 +90,6 @@ bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskParallel::pre_proc
   local_input_.resize(local_cnt_of_splits + 1);
   return true;
 }
-
 bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   double local_res = 0.0;
@@ -115,7 +102,6 @@ bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskParallel::run() {
   boost::mpi::reduce(world, local_res, res, std::plus<double>(), 0);  // ?
   return true;
 }
-
 bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   // double global_result = 0.0;

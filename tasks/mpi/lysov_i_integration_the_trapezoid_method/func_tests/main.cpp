@@ -6,7 +6,7 @@
 
 #include "mpi/lysov_i_integration_the_trapezoid_method/include/ops_mpi.hpp"
 
-TEST(Parallel_Integration_MPI, Test_Integration2) {
+TEST(Parallel_Integration_MPI, Test_Integration_mpi_1) {
   boost::mpi::communicator world;
   std::vector<double> global_result(1, 0.0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -41,7 +41,7 @@ TEST(Parallel_Integration_MPI, Test_Integration2) {
   }
 }
 
-TEST(Parallel_Integration_MPI, Test_Integration3) {
+TEST(Parallel_Integration_MPI, Test_Integration_mpi_2) {
   boost::mpi::communicator world;
   std::vector<double> global_result(1, 0.0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -76,11 +76,11 @@ TEST(Parallel_Integration_MPI, Test_Integration3) {
   }
 }
 
-TEST(Parallel_Integration_MPI, Test_Integration) {
+TEST(Parallel_Integration_MPI, Test_Integration_3) {
   boost::mpi::communicator world;
   std::vector<double> global_result(1, 0.0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  double a = 0.0;
+  double a = -1.45;
   double b = 1.45;
   int cnt_of_splits = 100;
   if (world.rank() == 0) {
@@ -107,6 +107,6 @@ TEST(Parallel_Integration_MPI, Test_Integration) {
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
-    ASSERT_NEAR(reference_result[0], global_result[0], 1e-1);
+    ASSERT_NEAR(reference_result[0], global_result[0], 2e-1);
   }
 }

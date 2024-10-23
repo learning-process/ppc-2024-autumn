@@ -7,7 +7,7 @@
 TEST(lysov_i_integration_the_trapezoid_method_seq, test_pipeline_run) {
   double a = 0.0;
   double b = 1.45;
-  int cnt_of_splits = 1000000;
+  int cnt_of_splits = 100000000;
   auto taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&a));
   taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&b));
@@ -35,7 +35,7 @@ TEST(lysov_i_integration_the_trapezoid_method_seq, test_pipeline_run) {
 TEST(lysov_i_integration_the_trapezoid_method_seq, test_task_run) {
   double a = 0.0;
   double b = 1.45;
-  int cnt_of_splits = 1000000;
+  int cnt_of_splits = 100000000;
   auto taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&a));
   taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&b));

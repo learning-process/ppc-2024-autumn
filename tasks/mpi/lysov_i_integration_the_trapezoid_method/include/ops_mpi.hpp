@@ -14,8 +14,6 @@
 
 namespace lysov_i_integration_the_trapezoid_method_mpi {
 
-std::vector<int> getRandomVector(int sz);
-
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
@@ -55,7 +53,7 @@ class TestMPITaskParallel : public ppc::core::Task {
 
  private:
   std::vector<int> input_, local_input_;
-  double res{};
+  double res;
   std::string ops;
   boost::mpi::communicator world;
 };
