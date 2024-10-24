@@ -12,18 +12,15 @@ std::vector<char> create_text(int quan_words) {
   std::vector<char> res;
   std::string word = "word ";
   std::string last = "word.";
-  for (int i = 0; i < quan_words-1; i++)
-    for (unsigned long int symbol = 0; symbol < word.length(); symbol++) 
-      {
-      res.push_back(word[symbol]);
-  }
+  for (int i = 0; i < quan_words - 1; i++)
+     for (unsigned long int symbol = 0; symbol < word.length(); symbol++) {
+       res.push_back(word[symbol]);
+     }
   for (unsigned long int symbol = 0; symbol < last.length(); symbol++) {
     res.push_back(last[symbol]);
   }
-  
   return res;
 }
-
 
 bool solovev_a_word_count_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
@@ -35,7 +32,6 @@ bool solovev_a_word_count_mpi::TestMPITaskSequential::pre_processing() {
   res = 0;
   return true;
 }
-
 
 bool solovev_a_word_count_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
