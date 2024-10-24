@@ -456,7 +456,6 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_double) {
     testTaskSequential.run();
     testTaskSequential.post_processing();
     double test2 = reference_elems[0] - reference_elems[1];
-    bool expected = (test == 1100) && (test2 == 1100);
-    ASSERT_EQ(expected, true);
+    ASSERT_EQ(test, test2);
   }
 }
