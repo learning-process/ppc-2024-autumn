@@ -51,4 +51,3 @@ class TestMPITaskParallel : public ppc::core::Task {
 };
 
 }  // namespace solovev_a_word_count_mpi
-
