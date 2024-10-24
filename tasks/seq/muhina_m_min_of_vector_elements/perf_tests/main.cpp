@@ -10,19 +10,20 @@ TEST(muhina_m_min_of_vector_elements, test_pipeline_run) {
   const int count = 100000000;
 
   // Create data
-  std::vector<int> in(count, 100);  
-  in[0] = count;                    
+  std::vector<int> in(count, 100);
+  in[0] = 0;
   std::vector<int> out(1, 0);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
   taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto MinOfVectorSequential = std::make_shared<muhina_m_min_of_vector_elements_seq::MinOfVectorSequential>(taskDataSeq);
+  auto MinOfVectorSequential =
+      std::make_shared<muhina_m_min_of_vector_elements_seq::MinOfVectorSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -39,28 +40,29 @@ TEST(muhina_m_min_of_vector_elements, test_pipeline_run) {
 
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(MinOfVectorSequential);
-  perfAnalyzer->pipeline_run(perfAttr, perfResults);   
-  ppc::core::Perf::print_perf_statistic(perfResults);  
-  ASSERT_EQ(100, out[0]);  
+  perfAnalyzer->pipeline_run(perfAttr, perfResults);
+  ppc::core::Perf::print_perf_statistic(perfResults);
+  ASSERT_EQ(0, out[0]);
 }
 
 TEST(muhina_m_min_of_vector_elements, test_task_run) {
   const int count = 10000000;
 
   // Create data
-  std::vector<int> in(count, 100);  
-  in[0] = count;                    
+  std::vector<int> in(count, 100);
+  in[0] = 0;
   std::vector<int> out(1, 0);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
   taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto MinOfVectorSequential = std::make_shared<muhina_m_min_of_vector_elements_seq::MinOfVectorSequential>(taskDataSeq);
+  auto MinOfVectorSequential =
+      std::make_shared<muhina_m_min_of_vector_elements_seq::MinOfVectorSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -77,8 +79,8 @@ TEST(muhina_m_min_of_vector_elements, test_task_run) {
 
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(MinOfVectorSequential);
-  perfAnalyzer->task_run(perfAttr, perfResults);       
-  ppc::core::Perf::print_perf_statistic(perfResults); 
-  
-  ASSERT_EQ(100, out[0]);  
+  perfAnalyzer->task_run(perfAttr, perfResults);
+  ppc::core::Perf::print_perf_statistic(perfResults);
+
+  ASSERT_EQ(0, out[0]);
 }

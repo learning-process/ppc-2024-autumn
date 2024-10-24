@@ -14,39 +14,36 @@
 #include "core/task/include/task.hpp"
 
 namespace muhina_m_min_of_vector_elements_mpi {
+std::vector<int> GetRandomVector(int sz);
+int vectorMin(std::vector<int, std::allocator<int>> v);
 
-    std::vector<int> GetRandomVector(int sz);
-    int vectorMin(std::vector<int, std::allocator<int>> v);
+class MinOfVectorMPISequential : public ppc::core::Task {
+ public:
+  explicit MinOfVectorMPISequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  bool pre_processing() override;
+  bool validation() override;
+  bool run() override;
+  bool post_processing() override;
 
+ private:
+  std::vector<int> input_;
+  int res_{};
+  std::string ops_;
+};
 
-    class MinOfVectorMPISequential : public ppc::core::Task {
-    public:
-      explicit MinOfVectorMPISequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-        bool pre_processing() override;
-        bool validation() override;
-        bool run() override;
-        bool post_processing() override;
+class MinOfVectorMPIParallel : public ppc::core::Task {
+ public:
+  explicit MinOfVectorMPIParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  bool pre_processing() override;
+  bool validation() override;
+  bool run() override;
+  bool post_processing() override;
 
-    private:
-        std::vector<int> input_;
-        int res{};
-        std::string ops;
-    };
-
-
-    class MinOfVectorMPIParallel : public ppc::core::Task {
-    public:
-        explicit MinOfVectorMPIParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-        bool pre_processing() override;
-        bool validation() override;
-        bool run() override;
-        bool post_processing() override;
-
-    private:
-        std::vector<int> input_, local_input_;
-        int res{};
-        std::string ops;
-        boost::mpi::communicator world;
-    };
+ private:
+  std::vector<int> input_, local_input_;
+  int res_{};
+  std::string ops_;
+  boost::mpi::communicator world_;
+};
 
 }  // namespace muhina_m_min_of_vector_elements_mpi

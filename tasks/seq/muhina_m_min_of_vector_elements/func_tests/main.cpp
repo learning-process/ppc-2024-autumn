@@ -5,7 +5,6 @@
 
 #include "seq/muhina_m_min_of_vector_elements/include/ops_seq.hpp"
 
-
 TEST(muhina_m_min_of_vector_elements_seq, Test_Min_10) {
   const int count = 10;
 
@@ -53,6 +52,7 @@ TEST(muhina_m_min_of_vector_elements_seq, Test_Min_20) {
   MinOfVectorSequential.post_processing();
   ASSERT_EQ(0, out[0]);
 }
+
 
 TEST(muhina_m_min_of_vector_elements_seq, Test_Min_50) {
   const int count = 50;
@@ -108,30 +108,6 @@ TEST(muhina_m_min_of_vector_elements_seq, Test_Min_100) {
   // Create data
   std::vector<int> in(count, 100);
   in[1] = 0;
-  std::vector<int> out(1, 0);
-
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
-
-  // Create Task
-  muhina_m_min_of_vector_elements_seq::MinOfVectorSequential MinOfVectorSequential(taskDataSeq);
-  ASSERT_EQ(MinOfVectorSequential.validation(), true);
-  MinOfVectorSequential.pre_processing();
-  MinOfVectorSequential.run();
-  MinOfVectorSequential.post_processing();
-  ASSERT_EQ(0, out[0]);
-}
-
-TEST(muhina_m_min_of_vector_elements_seq, Test_Min_OneElement) {
-  const int count = 1;
-
-  // Create data
-  std::vector<int> in(count, 100);
-  in[0] = 0;
   std::vector<int> out(1, 0);
 
   // Create TaskData

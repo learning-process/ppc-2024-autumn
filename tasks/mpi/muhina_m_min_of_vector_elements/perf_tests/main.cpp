@@ -7,7 +7,6 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/muhina_m_min_of_vector_elements/include/ops_mpi.hpp"
 
-
 TEST(muhina_m_min_of_vector_elements_mpi, run_pipeline) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
@@ -19,14 +18,15 @@ TEST(muhina_m_min_of_vector_elements_mpi, run_pipeline) {
   if (world.rank() == 0) {
     count_size_vector = 10000000;
     global_vec = muhina_m_min_of_vector_elements_mpi::GetRandomVector(count_size_vector);
-    global_vec[0] = 0;
+    global_vec[0] = -100;
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
 
-  auto MinOfVectorMPIParallel = std::make_shared<muhina_m_min_of_vector_elements_mpi::MinOfVectorMPIParallel>(taskDataPar);
+  auto MinOfVectorMPIParallel =
+      std::make_shared<muhina_m_min_of_vector_elements_mpi::MinOfVectorMPIParallel>(taskDataPar);
   ASSERT_EQ(MinOfVectorMPIParallel->validation(), true);
   MinOfVectorMPIParallel->pre_processing();
   MinOfVectorMPIParallel->run();
@@ -46,7 +46,7 @@ TEST(muhina_m_min_of_vector_elements_mpi, run_pipeline) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(0, global_res[0]);
+    ASSERT_EQ(-100, global_res[0]);
   }
 }
 
@@ -60,14 +60,15 @@ TEST(muhina_m_min_of_vector_elements_mpi, run_task) {
   if (world.rank() == 0) {
     count_size_vector = 10000000;
     global_vec = muhina_m_min_of_vector_elements_mpi::GetRandomVector(count_size_vector);
-    global_vec[0] = 0;
+    global_vec[0] = -100;
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
 
-  auto MinOfVectorMPIParallel = std::make_shared<muhina_m_min_of_vector_elements_mpi::MinOfVectorMPIParallel>(taskDataPar);
+  auto MinOfVectorMPIParallel =
+      std::make_shared<muhina_m_min_of_vector_elements_mpi::MinOfVectorMPIParallel>(taskDataPar);
   ASSERT_EQ(MinOfVectorMPIParallel->validation(), true);
   MinOfVectorMPIParallel->pre_processing();
   MinOfVectorMPIParallel->run();
@@ -84,6 +85,6 @@ TEST(muhina_m_min_of_vector_elements_mpi, run_task) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(0, global_res[0]);
+    ASSERT_EQ(-100, global_res[0]);
   }
 }

@@ -10,20 +10,25 @@ std::vector<int> muhina_m_min_of_vector_elements_seq::GetRandomVector(int sz) {
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
   for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
+    vec[i] = gen() % 200 - 100;  // Generate random numbers from -100 to 99
   }
   return vec;
 }
 
 int muhina_m_min_of_vector_elements_seq::vectorMin(std::vector<int, std::allocator<int>> vect) {
-  int mini = 100000000;
-  for (std::string::size_type i = 0; i < vect.size(); i++) {
+  if (vect.empty()) {
+    return std::numeric_limits<int>::max();  // Handle empty vectors
+  }
+  int mini = vect[0];
+  for (std::string::size_type i = 1; i < vect.size(); i++) {  
     if (vect[i] < mini) {
       mini = vect[i];
     }
   }
   return mini;
 }
+
+
 
 bool muhina_m_min_of_vector_elements_seq::MinOfVectorSequential::pre_processing() {
   internal_order_test();
@@ -35,8 +40,6 @@ bool muhina_m_min_of_vector_elements_seq::MinOfVectorSequential::pre_processing(
     input_[i] = tempPtr[i];
   }
 
-  // Init result value
-  res = 0;
   return true;
 }
 
@@ -49,12 +52,12 @@ bool muhina_m_min_of_vector_elements_seq::MinOfVectorSequential::validation() {
 bool muhina_m_min_of_vector_elements_seq::MinOfVectorSequential::run() {
   internal_order_test();
   // Iterate through the vector
-  res = muhina_m_min_of_vector_elements_seq::vectorMin(input_);
+  res_ = muhina_m_min_of_vector_elements_seq::vectorMin(input_);
   return true;
 }
 
 bool muhina_m_min_of_vector_elements_seq::MinOfVectorSequential::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+  reinterpret_cast<int*>(taskData->outputs[0])[0] = res_;
   return true;
 }

@@ -10,7 +10,7 @@
 TEST(muhina_m_min_of_vector_elements, Test_Min) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
-  std::vector<int32_t> global_min(1, 0);  
+  std::vector<int32_t> global_min(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -19,15 +19,15 @@ TEST(muhina_m_min_of_vector_elements, Test_Min) {
     global_vec = muhina_m_min_of_vector_elements_mpi::GetRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_min.data()));  
-    taskDataPar->outputs_count.emplace_back(global_min.size());                        
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_min.data()));
+    taskDataPar->outputs_count.emplace_back(global_min.size());
   }
 
-  muhina_m_min_of_vector_elements_mpi::MinOfVectorMPIParallel testMpiTaskParallel(taskDataPar);  
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+  muhina_m_min_of_vector_elements_mpi::MinOfVectorMPIParallel minOfVectorMPIParalle(taskDataPar);
+  ASSERT_EQ(minOfVectorMPIParalle.validation(), true);
+  minOfVectorMPIParalle.pre_processing();
+  minOfVectorMPIParalle.run();
+  minOfVectorMPIParalle.post_processing();
 
   if (world.rank() == 0) {
     // Create data
@@ -37,15 +37,15 @@ TEST(muhina_m_min_of_vector_elements, Test_Min) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataSeq->inputs_count.emplace_back(global_vec.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));  
-    taskDataSeq->outputs_count.emplace_back(reference_min.size());                        
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
     // Create Task
-    muhina_m_min_of_vector_elements_mpi::MinOfVectorMPISequential testMpiTaskSequential(taskDataSeq);  
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
+    muhina_m_min_of_vector_elements_mpi::MinOfVectorMPISequential minOfVectorMPISequential(taskDataSeq);
+    ASSERT_EQ(minOfVectorMPISequential.validation(), true);
+    minOfVectorMPISequential.pre_processing();
+    minOfVectorMPISequential.run();
+    minOfVectorMPISequential.post_processing();
 
     ASSERT_EQ(reference_min[0], global_min[0]);
   }
@@ -59,7 +59,7 @@ TEST(muhina_m_min_of_vector_elements, Test_Min_LargeVector) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 10000;  
+    const int count_size_vector = 10000;
     global_vec = muhina_m_min_of_vector_elements_mpi::GetRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -67,11 +67,11 @@ TEST(muhina_m_min_of_vector_elements, Test_Min_LargeVector) {
     taskDataPar->outputs_count.emplace_back(global_min.size());
   }
 
-  muhina_m_min_of_vector_elements_mpi::MinOfVectorMPIParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+  muhina_m_min_of_vector_elements_mpi::MinOfVectorMPIParallel minOfVectorMPIParalle(taskDataPar);
+  ASSERT_EQ(minOfVectorMPIParalle.validation(), true);
+  minOfVectorMPIParalle.pre_processing();
+  minOfVectorMPIParalle.run();
+  minOfVectorMPIParalle.post_processing();
 
   if (world.rank() == 0) {
     // Create data
@@ -85,15 +85,16 @@ TEST(muhina_m_min_of_vector_elements, Test_Min_LargeVector) {
     taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
     // Create Task
-    muhina_m_min_of_vector_elements_mpi::MinOfVectorMPISequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
+    muhina_m_min_of_vector_elements_mpi::MinOfVectorMPISequential minOfVectorMPISequential(taskDataSeq);
+    ASSERT_EQ(minOfVectorMPISequential.validation(), true);
+    minOfVectorMPISequential.pre_processing();
+    minOfVectorMPISequential.run();
+    minOfVectorMPISequential.post_processing();
 
     ASSERT_EQ(reference_min[0], global_min[0]);
   }
 }
+
 TEST(muhina_m_min_of_vector_elements, Test_Min_NegativeValues) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
@@ -103,8 +104,8 @@ TEST(muhina_m_min_of_vector_elements, Test_Min_NegativeValues) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 120;
-    global_vec = {-50, -20, -10, -30, -40, -15, -25, -35, -45, -55};  
-    global_vec.resize(count_size_vector, -10);  
+    global_vec = {-50, -20, -10, -30, -40, -15, -25, -35, -45, -55};
+    global_vec.resize(count_size_vector, -10);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -112,11 +113,11 @@ TEST(muhina_m_min_of_vector_elements, Test_Min_NegativeValues) {
     taskDataPar->outputs_count.emplace_back(global_min.size());
   }
 
-  muhina_m_min_of_vector_elements_mpi::MinOfVectorMPIParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+  muhina_m_min_of_vector_elements_mpi::MinOfVectorMPIParallel minOfVectorMPIParalle(taskDataPar);
+  ASSERT_EQ(minOfVectorMPIParalle.validation(), true);
+  minOfVectorMPIParalle.pre_processing();
+  minOfVectorMPIParalle.run();
+  minOfVectorMPIParalle.post_processing();
 
   if (world.rank() == 0) {
     // Create data
@@ -130,11 +131,11 @@ TEST(muhina_m_min_of_vector_elements, Test_Min_NegativeValues) {
     taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
     // Create Task
-    muhina_m_min_of_vector_elements_mpi::MinOfVectorMPISequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
+    muhina_m_min_of_vector_elements_mpi::MinOfVectorMPISequential minOfVectorMPISequential(taskDataSeq);
+    ASSERT_EQ(minOfVectorMPISequential.validation(), true);
+    minOfVectorMPISequential.pre_processing();
+    minOfVectorMPISequential.run();
+    minOfVectorMPISequential.post_processing();
 
     ASSERT_EQ(reference_min[0], global_min[0]);
   }
@@ -149,8 +150,8 @@ TEST(muhina_m_min_of_vector_elements, Test_Min_RepeatingValues) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 120;
-    global_vec = {10, 10, 10, 10, 10, 10, 10, 10, 10, 10};  
-    global_vec.resize(count_size_vector, 10);               
+    global_vec = {10, 10, 10, 10, 10, 10, 10, 10, 10, 10};
+    global_vec.resize(count_size_vector, 10);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -158,11 +159,11 @@ TEST(muhina_m_min_of_vector_elements, Test_Min_RepeatingValues) {
     taskDataPar->outputs_count.emplace_back(global_min.size());
   }
 
-  muhina_m_min_of_vector_elements_mpi::MinOfVectorMPIParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+  muhina_m_min_of_vector_elements_mpi::MinOfVectorMPIParallel minOfVectorMPIParalle(taskDataPar);
+  ASSERT_EQ(minOfVectorMPIParalle.validation(), true);
+  minOfVectorMPIParalle.pre_processing();
+  minOfVectorMPIParalle.run();
+  minOfVectorMPIParalle.post_processing();
 
   if (world.rank() == 0) {
     // Create data
@@ -176,11 +177,11 @@ TEST(muhina_m_min_of_vector_elements, Test_Min_RepeatingValues) {
     taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
     // Create Task
-    muhina_m_min_of_vector_elements_mpi::MinOfVectorMPISequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
+    muhina_m_min_of_vector_elements_mpi::MinOfVectorMPISequential minOfVectorMPISequential(taskDataSeq);
+    ASSERT_EQ(minOfVectorMPISequential.validation(), true);
+    minOfVectorMPISequential.pre_processing();
+    minOfVectorMPISequential.run();
+    minOfVectorMPISequential.post_processing();
 
     ASSERT_EQ(reference_min[0], global_min[0]);
   }
