@@ -105,17 +105,17 @@ class TestMPITaskParallel : public ppc::core::Task {
       : Task(std::move(taskData_)), ops(std::move(ops_)) {}
 
   MPI_Datatype get_mpi_type() {
-    MPI_Datatype mpi_type;
-    MPI_Type_contiguous(sizeof(TypeElem), MPI_BYTE, &mpi_type);
-    MPI_Type_commit(&mpi_type);
-    return mpi_type;
+    // Создание типа данных
+    MPI_Type_contiguous(sizeof(TypeElem), MPI_BYTE, &mpi_type_elem);
+    MPI_Type_commit(&mpi_type_elem);
+    return mpi_type_elem;
   }
 
-  MPI_Datatype get_mpi_type2() {
-    MPI_Datatype mpi_type;
-    MPI_Type_contiguous(sizeof(TypeIndex), MPI_BYTE, &mpi_type);
-    MPI_Type_commit(&mpi_type);
-    return mpi_type;
+   MPI_Datatype get_mpi_type2() {
+    // Создание типа данных
+    MPI_Type_contiguous(sizeof(TypeIndex), MPI_BYTE, &mpi_type_index);
+    MPI_Type_commit(&mpi_type_index);
+    return mpi_type_index;
   }
 
   bool pre_processing() override {
@@ -200,6 +200,12 @@ class TestMPITaskParallel : public ppc::core::Task {
     return true;
   }
 
+  ~TestMPITaskParallel() {
+    // Освобождение MPI типов
+    MPI_Type_free(&mpi_type_elem);
+    MPI_Type_free(&mpi_type_index);
+  }
+
  private:
   std::vector<TypeElem> input_;           // global vector
   std::vector<TypeElem> local_input_;     // local vector
@@ -215,6 +221,8 @@ class TestMPITaskParallel : public ppc::core::Task {
   TypeElem right_elem;
   std::string ops;
   boost::mpi::communicator world;
+  MPI_Datatype mpi_type_elem;   // Хранение типа данных для TypeElem
+  MPI_Datatype mpi_type_index;  // Хранение типа данных для TypeIndex
 
  private:
   void print_local_data();
