@@ -7,6 +7,9 @@
 #include <boost/mpi/communicator.hpp>
 #include <cmath>
 #include <vector>
+#include <memory>
+#include <utility>
+#include <numeric>
 
 #include "core/task/include/task.hpp"
 
