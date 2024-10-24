@@ -25,6 +25,7 @@ int muhina_m_min_of_vector_elements_mpi::vectorMin(std::vector<int, std::allocat
     return std::numeric_limits<int>::max();  // Handle empty vectors
   }
   int mini = vect[0];
+
   for (std::string::size_type i = 1; i < vect.size(); i++) {  
     if (vect[i] < mini) {
       mini = vect[i];

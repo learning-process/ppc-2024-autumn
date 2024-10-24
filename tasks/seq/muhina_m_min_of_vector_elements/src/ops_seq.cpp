@@ -1,5 +1,6 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/muhina_m_min_of_vector_elements/include/ops_seq.hpp"
+
 #include <random>
 #include <thread>
 
@@ -20,6 +21,7 @@ int muhina_m_min_of_vector_elements_seq::vectorMin(std::vector<int, std::allocat
     return std::numeric_limits<int>::max();  // Handle empty vectors
   }
   int mini = vect[0];
+
   for (std::string::size_type i = 1; i < vect.size(); i++) {  
     if (vect[i] < mini) {
       mini = vect[i];
