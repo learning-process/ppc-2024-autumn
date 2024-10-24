@@ -6,10 +6,10 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/solovev_a_word_count/include/ops_mpi.hpp"
 
-std::string input_text = solovev_a_word_count_mpi::create_text(10000);
+std::vector<char> input_text = solovev_a_word_count_mpi::create_text(60000);
 
 TEST(solovev_a_word_count_mpi_perf_test, test_pipeline_run) {
-  std::string input = input_text;
+  std::vector<char> input = input_text;
   std::vector<int> out(1, 0);
   boost::mpi::communicator world;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -22,7 +22,7 @@ TEST(solovev_a_word_count_mpi_perf_test, test_pipeline_run) {
   auto testMpiTaskParallel = std::make_shared<solovev_a_word_count_mpi::TestMPITaskParallel>(taskDataPar);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 100;
+  perfAttr->num_running = 1000;
   const auto t0 = std::chrono::high_resolution_clock::now();
   perfAttr->current_timer = [&] {
     auto current_time_point = std::chrono::high_resolution_clock::now();
@@ -36,12 +36,12 @@ TEST(solovev_a_word_count_mpi_perf_test, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(out[0], 10000);
+    ASSERT_EQ(out[0], 60000);
   }
 }
 
 TEST(solovev_a_word_count_mpi_perf_test, test_task_run) {
-  std::string input = input_text;
+  std::vector<char> input = input_text;
   std::vector<int> out(1, 0);
   boost::mpi::communicator world;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -54,7 +54,7 @@ TEST(solovev_a_word_count_mpi_perf_test, test_task_run) {
   auto testMpiTaskParallel = std::make_shared<solovev_a_word_count_mpi::TestMPITaskParallel>(taskDataPar);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 100;
+  perfAttr->num_running = 1000;
   const auto t0 = std::chrono::high_resolution_clock::now();
   perfAttr->current_timer = [&] {
     auto current_time_point = std::chrono::high_resolution_clock::now();
@@ -68,6 +68,6 @@ TEST(solovev_a_word_count_mpi_perf_test, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(out[0], 10000);
+    ASSERT_EQ(out[0], 60000);
   }
 }
