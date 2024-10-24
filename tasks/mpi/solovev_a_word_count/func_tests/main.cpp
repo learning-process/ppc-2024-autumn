@@ -7,7 +7,7 @@
 #include "mpi/solovev_a_word_count/include/ops_mpi.hpp"
 
 TEST(solovev_a_word_count_mpi, test_em_str) {
-  std::string input = "";
+  std::vector<char> input;
   std::vector<int> global_out(1, 0);
   boost::mpi::communicator world;
 
@@ -43,8 +43,8 @@ TEST(solovev_a_word_count_mpi, test_em_str) {
   }
 }
 
-TEST(solovev_a_word_count_mpi, test_1_word) {
-  std::string input = solovev_a_word_count_mpi::create_text(1);
+TEST(solovev_a_word_count_mpi, test_120_word) {
+  std::vector<char> input = solovev_a_word_count_mpi::create_text(120);
   std::vector<int> global_out(1, 0);
   boost::mpi::communicator world;
 
@@ -80,8 +80,8 @@ TEST(solovev_a_word_count_mpi, test_1_word) {
   }
 }
 
-TEST(solovev_a_word_count_mpi, test_10_words) {
-  std::string input = solovev_a_word_count_mpi::create_text(10);
+TEST(solovev_a_word_count_mpi, test_300_words) {
+  std::vector<char> input = solovev_a_word_count_mpi::create_text(300);
   std::vector<int> global_out(1, 0);
   boost::mpi::communicator world;
 
@@ -117,8 +117,8 @@ TEST(solovev_a_word_count_mpi, test_10_words) {
   }
 }
 
-TEST(solovev_a_word_count_mpi, test_100_words) {
-  std::string input = solovev_a_word_count_mpi::create_text(100);
+TEST(solovev_a_word_count_mpi, test_480_words) {
+  std::vector<char> input = solovev_a_word_count_mpi::create_text(480);
   std::vector<int> global_out(1, 0);
   boost::mpi::communicator world;
 
@@ -154,8 +154,8 @@ TEST(solovev_a_word_count_mpi, test_100_words) {
   }
 }
 
-TEST(solovev_a_word_count_mpi, test_1000_words) {
-  std::string input = solovev_a_word_count_mpi::create_text(1000);
+TEST(solovev_a_word_count_mpi, test_600_words) {
+  std::vector<char> input = solovev_a_word_count_mpi::create_text(600);
   std::vector<int> global_out(1, 0);
   boost::mpi::communicator world;
 
@@ -190,3 +190,4 @@ TEST(solovev_a_word_count_mpi, test_1000_words) {
     ASSERT_EQ(ref_out[0], global_out[0]);
   }
 }
+
