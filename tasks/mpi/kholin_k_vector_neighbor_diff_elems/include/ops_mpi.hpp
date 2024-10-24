@@ -150,10 +150,10 @@ class TestMPITaskParallel : public ppc::core::Task {
   }
   bool validation() override {
     internal_order_test();
+    mpi_type_index = get_mpi_type2();
+    mpi_type_elem = get_mpi_type();
     // Check count elements of output
     if (world.rank() == 0) {
-      mpi_type_index = get_mpi_type2();
-      mpi_type_elem = get_mpi_type();
       return taskData->outputs_count[0] == 2 && taskData->outputs_count[1] == 2;
     }
     return true;
