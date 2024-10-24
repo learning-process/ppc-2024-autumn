@@ -5,28 +5,28 @@
 #include "core/task/include/task.hpp"
 #include "seq/kholin_k_vector_neighbor_diff_elems/include/ops_seq.hpp"
 
-//TEST(kholin_k_vector_neighbor_diff_elems_seq, check_pre_processing) {
-//  // Create data
-//  std::vector<int32_t> in(1256, 1);       // in data
-//  std::vector<int32_t> out(2, 0);         // out data
-//  std::vector<uint64_t> out_index(2, 0);  // out data
-//                                          // Create TaskData
-//  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-//  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-//  taskData->inputs_count.emplace_back(in.size());
-//  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-//  taskData->outputs_count.emplace_back(out.size());
-//  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_index.data()));
-//  taskData->outputs_count.emplace_back(out_index.size());
-//
-//  // Create Task
-//  kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int32_t, uint64_t> testTaskSequential(taskData);
-//  testTaskSequential.validation();
-//  bool IsValid = testTaskSequential.pre_processing();
-//
-//  EXPECT_EQ(IsValid, true);
-//}
-//
+TEST(kholin_k_vector_neighbor_diff_elems_seq, check_pre_processing) {
+  // Create data
+  std::vector<int32_t> in(1256, 1);       // in data
+  std::vector<int32_t> out(2, 0);         // out data
+  std::vector<uint64_t> out_index(2, 0);  // out data
+                                          // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskData->inputs_count.emplace_back(in.size());
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskData->outputs_count.emplace_back(out.size());
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_index.data()));
+  taskData->outputs_count.emplace_back(out_index.size());
+
+  // Create Task
+  kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int32_t, uint64_t> testTaskSequential(taskData);
+  testTaskSequential.validation();
+  bool IsValid = testTaskSequential.pre_processing();
+
+  EXPECT_EQ(IsValid, true);
+}
+
 //TEST(kholin_k_vector_neighbor_diff_elems_seq, check_validation) {
 //  // Create data
 //  std::vector<int32_t> in(1256, 1);
