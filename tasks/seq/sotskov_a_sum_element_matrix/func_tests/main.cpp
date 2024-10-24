@@ -16,7 +16,7 @@ TEST(Sequential, Test_Sum_Large_Matrix) {
     std::vector<double> global_matrix = sotskov_a_sum_element_matrix_seq::create_random_matrix_double(rows, columns);
     std::vector<double> reference_sum(1, 0);
 
-    reference_sum[0] = sotskov_a_sum_element_matrix_seq::sum_matrix_elements_double(global_matrix, rows, columns);
+    reference_sum[0] = sotskov_a_sum_element_matrix_seq::sum_matrix_elements_double(global_matrix);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<double*>(global_matrix.data())));
@@ -30,7 +30,7 @@ TEST(Sequential, Test_Sum_Large_Matrix) {
     testTask.run();
     testTask.post_processing();
     
-    ASSERT_EQ(reference_sum[0], sotskov_a_sum_element_matrix_seq::sum_matrix_elements_double(global_matrix, rows, columns));
+    ASSERT_EQ(reference_sum[0], sotskov_a_sum_element_matrix_seq::sum_matrix_elements_double(global_matrix));
 }
 
 TEST(Sequential, Test_Sum_Negative_Values) {
@@ -42,7 +42,7 @@ TEST(Sequential, Test_Sum_Negative_Values) {
         elem = -abs(elem);
     }
     std::vector<int32_t> reference_sum(1, 0);
-    reference_sum[0] = sotskov_a_sum_element_matrix_seq::sum_matrix_elements_int(global_matrix, rows, columns);
+    reference_sum[0] = sotskov_a_sum_element_matrix_seq::sum_matrix_elements_int(global_matrix);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<int*>(global_matrix.data())));
@@ -56,7 +56,7 @@ TEST(Sequential, Test_Sum_Negative_Values) {
     testTask.run();
     testTask.post_processing();
     
-    ASSERT_EQ(reference_sum[0], sotskov_a_sum_element_matrix_seq::sum_matrix_elements_int(global_matrix, rows, columns));
+    ASSERT_EQ(reference_sum[0], sotskov_a_sum_element_matrix_seq::sum_matrix_elements_int(global_matrix));
 }
 
 TEST(Sequential, Test_Sum_Int) {
@@ -67,7 +67,7 @@ TEST(Sequential, Test_Sum_Int) {
 
     std::vector<int> global_matrix = sotskov_a_sum_element_matrix_seq::create_random_matrix_int(rows, columns);
     std::vector<int32_t> reference_sum(1, 0);
-    reference_sum[0] = sotskov_a_sum_element_matrix_seq::sum_matrix_elements_int(global_matrix, rows, columns);
+    reference_sum[0] = sotskov_a_sum_element_matrix_seq::sum_matrix_elements_int(global_matrix);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<int*>(global_matrix.data())));
@@ -81,7 +81,7 @@ TEST(Sequential, Test_Sum_Int) {
     testTask.run();
     testTask.post_processing();
     
-    ASSERT_EQ(reference_sum[0], sotskov_a_sum_element_matrix_seq::sum_matrix_elements_int(global_matrix, rows, columns));
+    ASSERT_EQ(reference_sum[0], sotskov_a_sum_element_matrix_seq::sum_matrix_elements_int(global_matrix));
 }
 
 TEST(Sequential, Test_Sum_Double) {
@@ -92,7 +92,7 @@ TEST(Sequential, Test_Sum_Double) {
 
     std::vector<double> global_matrix = sotskov_a_sum_element_matrix_seq::create_random_matrix_double(rows, columns);
     std::vector<double> reference_sum(1, 0.0);
-    reference_sum[0] = sotskov_a_sum_element_matrix_seq::sum_matrix_elements_double(global_matrix, rows, columns);
+    reference_sum[0] = sotskov_a_sum_element_matrix_seq::sum_matrix_elements_double(global_matrix);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<double*>(global_matrix.data())));
@@ -106,14 +106,14 @@ TEST(Sequential, Test_Sum_Double) {
     testTask.run();
     testTask.post_processing();
     
-    ASSERT_EQ(reference_sum[0], sotskov_a_sum_element_matrix_seq::sum_matrix_elements_double(global_matrix, rows, columns));
+    ASSERT_EQ(reference_sum[0], sotskov_a_sum_element_matrix_seq::sum_matrix_elements_double(global_matrix));
 }
 
 TEST(Sequential, Test_Empty_Matrix) {
     std::vector<int32_t> reference_sum(1, 0);
     std::vector<int> empty_matrix;
 
-    reference_sum[0] = sotskov_a_sum_element_matrix_seq::sum_matrix_elements_int(empty_matrix, 0, 0);
+    reference_sum[0] = sotskov_a_sum_element_matrix_seq::sum_matrix_elements_int(empty_matrix);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(empty_matrix.data()));
