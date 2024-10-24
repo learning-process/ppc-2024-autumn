@@ -219,8 +219,8 @@ class TestMPITaskParallel : public ppc::core::Task {
   TypeElem right_elem;
   std::string ops;
   boost::mpi::communicator world;
-  MPI_Datatype mpi_type_elem;   // Хранение типа данных для TypeElem
-  MPI_Datatype mpi_type_index;  // Хранение типа данных для TypeIndex
+  MPI_Datatype mpi_type_elem;
+  MPI_Datatype mpi_type_index;
 
  private:
   void print_local_data();

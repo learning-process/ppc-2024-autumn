@@ -8,13 +8,18 @@
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  const int count_size_vector = 100000000;
-  std::vector<int> global_vec(count_size_vector, 2);
+  std::vector<int> global_vec;
   std::vector<int> global_elems(2, 0);
   std::vector<uint64_t> global_indices(2, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
+    const float count_size_vector = 100000000;
+    global_vec = std::vector<int>(count_size_vector);
+    for (size_t i = 0; i < global_vec.size(); i++) {
+      global_vec[i] = 4 * i + 2;
+    }
+
     global_vec[10] = 5000;
     global_vec[11] = 1;
 
@@ -31,7 +36,6 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, test_pipeline_run) {
                                                                                                     "MAX_DIFFERENCE");
   testMpiTaskParallel->validation();
   testMpiTaskParallel->pre_processing();
-  std::cout << "Hi!Your mpi_run_perf_tests will start";
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
@@ -54,13 +58,18 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, test_pipeline_run) {
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, test_task_run) {
   boost::mpi::communicator world;
-  const int count_size_vector = 100000000;
-  std::vector<int> global_vec(count_size_vector, 2);
+  std::vector<int> global_vec;
   std::vector<int> global_elems(2, 0);
   std::vector<uint64_t> global_indices(2, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
+    const float count_size_vector = 100000000;
+    global_vec = std::vector<int>(count_size_vector);
+    for (size_t i = 0; i < global_vec.size(); i++) {
+      global_vec[i] = 4 * i + 2;
+    }
+
     global_vec[10] = 5000;
     global_vec[11] = 1;
 
