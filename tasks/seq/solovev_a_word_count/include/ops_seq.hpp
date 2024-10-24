@@ -2,10 +2,10 @@
 
 #include <algorithm>
 #include <cstring>
-#include <string>
-#include <vector>
 #include <iterator>
 #include <sstream>
+#include <string>
+#include <vector>
 
 #include "core/task/include/task.hpp"
 
