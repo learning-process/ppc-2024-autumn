@@ -11,7 +11,6 @@
 #include <utility>
 #include <vector>
 
-
 #include "core/task/include/task.hpp"
 
 namespace kholin_k_vector_neighbor_diff_elems_mpi {
