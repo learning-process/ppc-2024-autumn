@@ -13,12 +13,13 @@ TEST(rezantseva_a_vector_dot_product_mpi, can_scalar_multiply_vec_size_120) {
   std::vector<int32_t> res(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    const int count_size_vector = 120;
-    std::vector<int> v1 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
-    std::vector<int> v2 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
 
-    global_vec = {v1, v2};
+  const int count_size_vector = 120;
+  std::vector<int> v1 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
+  std::vector<int> v2 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
+  global_vec = {v1, v2};
+
+  if (world.rank() == 0) {
     for (size_t i = 0; i < global_vec.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec[i].data()));
     }
@@ -64,16 +65,14 @@ TEST(rezantseva_a_vector_dot_product_mpi, can_scalar_multiply_vec_size_300) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vec;
   std::vector<int32_t> res(1, 0);
-
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  const int count_size_vector = 120;
+  std::vector<int> v1 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
+  std::vector<int> v2 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
+  global_vec = {v1, v2};
 
   if (world.rank() == 0) {
-    const int count_size_vector = 300;
-    std::vector<int> v1 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
-    std::vector<int> v2 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
-
-    global_vec = {v1, v2};
     for (size_t i = 0; i < global_vec.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec[i].data()));
     }
@@ -122,13 +121,12 @@ TEST(rezantseva_a_vector_dot_product_mpi, check_vectors_not_equal) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  const int count_size_vector = 120;
+  std::vector<int> v1 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
+  std::vector<int> v2 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector + 5);
+  global_vec = {v1, v2};
 
   if (world.rank() == 0) {
-    const int count_size_vector = 120;
-    std::vector<int> v1 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
-    std::vector<int> v2 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector + 5);
-
-    global_vec = {v1, v2};
     for (size_t i = 0; i < global_vec.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec[i].data()));
     }
@@ -149,13 +147,12 @@ TEST(rezantseva_a_vector_dot_product_mpi, check_vectors_equal_true) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  const int count_size_vector = 120;
+  std::vector<int> v1 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
+  std::vector<int> v2 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
+  global_vec = {v1, v2};
 
   if (world.rank() == 0) {
-    const int count_size_vector = 120;
-    std::vector<int> v1 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
-    std::vector<int> v2 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
-
-    global_vec = {v1, v2};
     for (size_t i = 0; i < global_vec.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec[i].data()));
     }
@@ -191,9 +188,9 @@ TEST(rezantseva_a_vector_dot_product_mpi, check_mpi_run_right) {
   std::vector<int> v2 = {4, 7, 8, 9};
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  global_vec = {v1, v2};
 
   if (world.rank() == 0) {
-    global_vec = {v1, v2};
     for (size_t i = 0; i < global_vec.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec[i].data()));
     }

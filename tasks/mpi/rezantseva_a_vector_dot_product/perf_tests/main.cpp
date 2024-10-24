@@ -14,11 +14,11 @@ TEST(rezantseva_a_vector_dot_product_mpi, test_pipeline_run) {
   std::vector<int> v1 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
   std::vector<int> v2 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
   std::vector<int32_t> res(1, 0);
+  global_vec = {v1, v2};
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_vec = {v1, v2};
     for (size_t i = 0; i < global_vec.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec[i].data()));
     }
@@ -61,9 +61,9 @@ TEST(rezantseva_a_vector_dot_product_mpi, test_task_run) {
   std::vector<int32_t> res(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  global_vec = {v1, v2};
 
   if (world.rank() == 0) {
-    global_vec = {v1, v2};
     for (size_t i = 0; i < global_vec.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec[i].data()));
     }
