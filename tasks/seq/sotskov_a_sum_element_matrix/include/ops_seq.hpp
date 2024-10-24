@@ -1,5 +1,5 @@
-// ops_seq.hpp
 #pragma once
+
 #include <vector>
 #include <memory>
 
@@ -7,14 +7,12 @@
 
 namespace sotskov_a_sum_element_matrix_seq {
 
-// Объявления функций
 std::vector<int> create_random_matrix_int(int rows, int cols);
 std::vector<double> create_random_matrix_double(int rows, int cols);
 int sum_matrix_elements_int(const std::vector<int>& matrix, int rows, int cols);
 double sum_matrix_elements_double(const std::vector<double>& matrix, int rows, int cols);
 int random_range(int min, int max);
 
-// Класс для последовательного теста с типом int
 class TestTaskSequentialInt : public ppc::core::Task {
 public:
     explicit TestTaskSequentialInt(std::shared_ptr<ppc::core::TaskData> task_data);
@@ -28,7 +26,6 @@ private:
     int result_{0};
 };
 
-// Класс для последовательного теста с типом double
 class TestTaskSequentialDouble : public ppc::core::Task {
 public:
     explicit TestTaskSequentialDouble(std::shared_ptr<ppc::core::TaskData> task_data);

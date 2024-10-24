@@ -1,28 +1,25 @@
-// ops_seq.cpp
 #include "seq/sotskov_a_sum_element_matrix/include/ops_seq.hpp"
+
 #include <algorithm>
 #include <iostream>
 #include <numeric>
 #include <random>
 
-// Функция для суммирования элементов матрицы целых чисел
 int sotskov_a_sum_element_matrix_seq::sum_matrix_elements_int(const std::vector<int>& matrix, int rows, int cols) {
     return std::accumulate(matrix.begin(), matrix.end(), 0);
 }
 
-// Функция для суммирования элементов матрицы дробных чисел
 double sotskov_a_sum_element_matrix_seq::sum_matrix_elements_double(const std::vector<double>& matrix, int rows, int cols) {
     return std::accumulate(matrix.begin(), matrix.end(), 0.0);
 }
 
 int sotskov_a_sum_element_matrix_seq::random_range(int min, int max) {
-    static std::random_device rd;  // Генератор случайных чисел
-    static std::mt19937 gen(rd());  // Мерсеннский твистер
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(min, max);
     return dis(gen);
 }
 
-// Реализация функции создания случайной матрицы для типа int
 std::vector<int> sotskov_a_sum_element_matrix_seq::create_random_matrix_int(int rows, int cols) {
     if (rows <= 0 || cols <= 0) {
         return {};
@@ -37,7 +34,6 @@ std::vector<int> sotskov_a_sum_element_matrix_seq::create_random_matrix_int(int 
     return matrix;
 }
 
-// Реализация функции создания случайной матрицы для типа double
 std::vector<double> sotskov_a_sum_element_matrix_seq::create_random_matrix_double(int rows, int cols) {
     if (rows <= 0 || cols <= 0) {
         return {};
@@ -52,7 +48,6 @@ std::vector<double> sotskov_a_sum_element_matrix_seq::create_random_matrix_doubl
     return matrix;
 }
 
-// Реализация методов для TestTaskSequentialInt
 sotskov_a_sum_element_matrix_seq::TestTaskSequentialInt::TestTaskSequentialInt(std::shared_ptr<ppc::core::TaskData> task_data) 
     : Task(std::move(task_data)) {}
 
@@ -84,7 +79,6 @@ bool sotskov_a_sum_element_matrix_seq::TestTaskSequentialInt::post_processing() 
     return false;
 }
 
-// Реализация методов для TestTaskSequentialDouble
 sotskov_a_sum_element_matrix_seq::TestTaskSequentialDouble::TestTaskSequentialDouble(std::shared_ptr<ppc::core::TaskData> task_data) 
     : Task(std::move(task_data)) {}
 
