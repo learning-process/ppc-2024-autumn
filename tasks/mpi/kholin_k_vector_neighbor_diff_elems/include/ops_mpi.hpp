@@ -199,7 +199,6 @@ class TestMPITaskParallel : public ppc::core::Task {
   }
 
   ~TestMPITaskParallel() {
-    // Освобождение MPI типов
     MPI_Type_free(&mpi_type_elem);
     MPI_Type_free(&mpi_type_index);
   }
