@@ -22,7 +22,7 @@ int muhina_m_min_of_vector_elements_seq::vectorMin(std::vector<int, std::allocat
   }
   int mini = vect[0];
 
-  for (size_t i = 1; i < vect.size(); i++) { 
+  for (size_t i = 1; i < vect.size(); i++) {
     if (vect[i] < mini) {
       mini = vect[i];
     }
