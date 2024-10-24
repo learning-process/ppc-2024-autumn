@@ -271,8 +271,3 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_float) {
   EXPECT_EQ(out_index[0], 0ull);
   EXPECT_EQ(out_index[1], 1ull);
 }
-
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}
