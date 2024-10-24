@@ -396,7 +396,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_float) {
     testTaskSequential.run();
     testTaskSequential.post_processing();
     float test2 = reference_elems[0] - reference_elems[1];
-    ASSERT_NEAR(test, test2,1e-5);
+    ASSERT_NEAR(test, test2, 1e-5);
   }
 }
 
@@ -432,7 +432,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_double) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  float test = global_elems[0] - global_elems[1];
+  double test = global_elems[0] - global_elems[1];
 
   if (world.rank() == 0) {
     // Create data
@@ -456,6 +456,6 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_double) {
     testTaskSequential.run();
     testTaskSequential.post_processing();
     double test2 = reference_elems[0] - reference_elems[1];
-    ASSERT_EQ(test, test2);
+    ASSERT_EQ(test, test2, 1e-5);
   }
 }
