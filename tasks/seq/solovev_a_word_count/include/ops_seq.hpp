@@ -2,17 +2,17 @@
 
 #include <algorithm>
 #include <cstring>
-#include <iterator>
-#include <sstream>
 #include <string>
 #include <vector>
+#include <iterator>
+#include <sstream>
 
 #include "core/task/include/task.hpp"
 
 namespace solovev_a_word_count_seq {
 
-std::string create_text(int quan_words);
-int word_count(const std::string& input);
+std::vector<char> create_text(int quan_words);
+
 
 class TestTaskSequential : public ppc::core::Task {
  public:
@@ -23,7 +23,7 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::string input_;
+  std::vector<char> input_;
   int res{};
 };
 
