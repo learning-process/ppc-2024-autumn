@@ -5,7 +5,7 @@
 #include "seq/solovev_a_word_count/include/ops_seq.hpp"
 
 TEST(solovev_a_word_count_seq, test_em_str) {
-  std::vector <char> input;
+  std::vector<char> input;
   std::vector<int> out(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
