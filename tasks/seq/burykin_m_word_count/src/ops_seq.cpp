@@ -6,14 +6,18 @@ namespace burykin_m_word_count {
 
 bool TestTaskSequential::pre_processing() {
   internal_order_test();
-  input_ = reinterpret_cast<char*>(taskData->inputs[0]);
+  if (taskData->inputs[0] != nullptr) {
+    input_ = reinterpret_cast<char*>(taskData->inputs[0]);
+  } else {
+    input_ = "";
+  }
   word_count_ = 0;
   return true;
 }
 
 bool TestTaskSequential::validation() {
   internal_order_test();
-  return taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1;
+  return (taskData->inputs_count[0] == 0 || taskData->inputs_count[0] > 0) && taskData->outputs_count[0] == 1;
 }
 
 bool TestTaskSequential::run() {
