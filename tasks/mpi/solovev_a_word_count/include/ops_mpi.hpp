@@ -21,7 +21,6 @@ namespace solovev_a_word_count_mpi {
 
 std::vector<char> create_text(int quan_words);
 
-
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
