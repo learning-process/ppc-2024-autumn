@@ -54,7 +54,7 @@ sotskov_a_sum_element_matrix_seq::TestTaskSequentialInt::TestTaskSequentialInt(s
 bool sotskov_a_sum_element_matrix_seq::TestTaskSequentialInt::pre_processing() {
     internal_order_test();
     result_ = 0;
-    int* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+    auto tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     input_data_.assign(tmp_ptr, tmp_ptr + taskData->inputs_count[0]);
     return true;
 }
@@ -85,7 +85,7 @@ sotskov_a_sum_element_matrix_seq::TestTaskSequentialDouble::TestTaskSequentialDo
 bool sotskov_a_sum_element_matrix_seq::TestTaskSequentialDouble::pre_processing() {
     internal_order_test();
     result_ = 0.0;
-    double* tmp_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
+    auto tmp_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
     input_data_.assign(tmp_ptr, tmp_ptr + taskData->inputs_count[0]);
     return true;
 }
