@@ -3,6 +3,7 @@
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <boost/serialization/serialization.hpp>
 #include <cstring>
 #include <random>
 #include <string>
