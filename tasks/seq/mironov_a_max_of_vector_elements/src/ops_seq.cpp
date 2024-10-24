@@ -1,4 +1,5 @@
 #include "seq/mironov_a_max_of_vector_elements/include/ops_seq.hpp"
+
 #include <thread>
 
 using namespace std::chrono_literals;
@@ -24,8 +25,7 @@ bool mironov_a_max_of_vector_elements_seq::MaxVectorSequential::validation() {
 
 bool mironov_a_max_of_vector_elements_seq::MaxVectorSequential::run() {
   internal_order_test();
-  
-  result_ = *max_element(input_.begin(), input_.end());
+  result_ = *std::max_element(input_.begin(), input_.end());
   return true;
 }
 

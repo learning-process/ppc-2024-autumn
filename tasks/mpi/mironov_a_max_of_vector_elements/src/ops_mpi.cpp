@@ -11,7 +11,6 @@ using namespace std::chrono_literals;
 
 bool mironov_a_max_of_vector_elements_mpi::MaxVectorSequential::pre_processing() {
   internal_order_test();
-
   // Init value for input and output
   input_ = std::vector<int>(taskData->inputs_count[0]);
   int* it = reinterpret_cast<int*>(taskData->inputs[0]);
@@ -30,7 +29,6 @@ bool mironov_a_max_of_vector_elements_mpi::MaxVectorSequential::validation() {
 
 bool mironov_a_max_of_vector_elements_mpi::MaxVectorSequential::run() {
   internal_order_test();
-  
   result_ = *std::max_element(input_.begin(), input_.end());
   return true;
 }
@@ -43,19 +41,19 @@ bool mironov_a_max_of_vector_elements_mpi::MaxVectorSequential::post_processing(
 
 bool mironov_a_max_of_vector_elements_mpi::MaxVectorMPI::pre_processing() {
   internal_order_test();
-
   unsigned int delta = 0;
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
+    if (taskData->inputs_count[0] % world.size()) delta++;
   }
   broadcast(world, delta, 0);
 
   if (world.rank() == 0) {
     // Init vectors
-    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    input_ = std::vector<int>(taskData->inputs_count[0] + (taskData->inputs_count[0] % delta));
+    int* it = reinterpret_cast<int*>(taskData->inputs[0]);
+    input_ = std::vector<int>(static_cast<int>(delta) * world.size(), it[0]);
     for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-      input_[i] = tmp_ptr[i];
+      input_[i] = it[i];
     }
 
     // Send data
@@ -71,7 +69,7 @@ bool mironov_a_max_of_vector_elements_mpi::MaxVectorMPI::pre_processing() {
     world.recv(0, 0, local_input_.data(), delta);
   }
   // Init value for output
-  result_ = INT_MIN;
+  result_ = local_input_[0];
   return true;
 }
 

@@ -1,13 +1,13 @@
 #include <gtest/gtest.h>
+
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <vector>
-#include "mpi/mironov_a_max_of_vector_elements/include/ops_mpi.hpp"
 
+#include "mpi/mironov_a_max_of_vector_elements/include/ops_mpi.hpp"
 
 TEST(mironov_a_max_of_vector_elements_mpi, Test_Max_1) {
   boost::mpi::communicator world;
-  
   // Create TaskData
   std::vector<int> global_vec;
   std::vector<int32_t> global_max(1, 0);
@@ -19,7 +19,6 @@ TEST(mironov_a_max_of_vector_elements_mpi, Test_Max_1) {
     const int count = 10000;
     global_vec.resize(count);
     for (int i = 0; i < count; ++i) global_vec[i] = i;
-    
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
@@ -55,7 +54,6 @@ TEST(mironov_a_max_of_vector_elements_mpi, Test_Max_1) {
 
 TEST(mironov_a_max_of_vector_elements_mpi, Test_Max_2) {
   boost::mpi::communicator world;
-
   // Create TaskData
   std::vector<int> global_vec;
   std::vector<int32_t> global_max(1, 0);
@@ -64,7 +62,7 @@ TEST(mironov_a_max_of_vector_elements_mpi, Test_Max_2) {
 
   if (world.rank() == 0) {
     const int count = 1;
-    global_vec.resize(std::max(count, world.size()), -100000000);
+    global_vec.resize(count, -100000000);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -101,7 +99,6 @@ TEST(mironov_a_max_of_vector_elements_mpi, Test_Max_2) {
 
 TEST(mironov_a_max_of_vector_elements_mpi, Test_Max_3) {
   boost::mpi::communicator world;
-
   // Create TaskData
   std::vector<int> global_vec;
   std::vector<int32_t> global_max(1, 0);
@@ -148,7 +145,6 @@ TEST(mironov_a_max_of_vector_elements_mpi, Test_Max_3) {
 
 TEST(mironov_a_max_of_vector_elements_mpi, Test_Max_4) {
   boost::mpi::communicator world;
-
   // Create TaskData
   std::vector<int> global_vec;
   std::vector<int32_t> global_max(1, 0);
@@ -159,7 +155,6 @@ TEST(mironov_a_max_of_vector_elements_mpi, Test_Max_4) {
     const int count = 1000000, start = -7890000;
     global_vec.resize(count);
     for (int i = count - 1, j = start; i >= 0; --i, j += 4) global_vec[i] = j;
-
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
@@ -195,7 +190,6 @@ TEST(mironov_a_max_of_vector_elements_mpi, Test_Max_4) {
 
 TEST(mironov_a_max_of_vector_elements_mpi, Test_Max_5) {
   boost::mpi::communicator world;
-
   // Create TaskData
   std::vector<int> global_vec;
   std::vector<int> global_max(1);
@@ -242,7 +236,6 @@ TEST(mironov_a_max_of_vector_elements_mpi, Test_Max_5) {
 
 TEST(mironov_a_max_of_vector_elements_mpi, Wrong_Input_1) {
   boost::mpi::communicator world;
-
   // Create TaskData
   std::vector<int> global_vec;
   std::vector<int> global_max(1);
@@ -250,7 +243,6 @@ TEST(mironov_a_max_of_vector_elements_mpi, Wrong_Input_1) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
@@ -278,7 +270,6 @@ TEST(mironov_a_max_of_vector_elements_mpi, Wrong_Input_1) {
 
 TEST(mironov_a_max_of_vector_elements_mpi, Wrong_Input_2) {
   boost::mpi::communicator world;
-
   // Create TaskData
   std::vector<int> global_vec;
   std::vector<int> global_max(3);

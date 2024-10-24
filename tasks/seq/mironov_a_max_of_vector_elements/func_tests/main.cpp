@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
+
 #include <vector>
+
 #include "seq/mironov_a_max_of_vector_elements/include/ops_seq.hpp"
 
 TEST(mironov_a_max_of_vector_elements_seq, Test_Max_1) {
