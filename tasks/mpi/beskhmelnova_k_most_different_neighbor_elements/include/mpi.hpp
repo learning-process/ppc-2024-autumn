@@ -1,5 +1,7 @@
 #pragma once
 
+#include <mpi.h>
+
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
