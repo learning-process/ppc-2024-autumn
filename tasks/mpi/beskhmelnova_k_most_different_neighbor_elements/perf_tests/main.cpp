@@ -3,6 +3,7 @@
 #include <boost/mpi/timer.hpp>
 
 #include "core/perf/include/perf.hpp"
+#include "mpi/beskhmelnova_k_most_different_neighbor_elements/include/mpi.hpp"
 #include "mpi/beskhmelnova_k_most_different_neighbor_elements/src/mpi.cpp"
 
 TEST(mpi_beskhmelnova_k_most_different_neighbor_elements_perf_test, test_pipeline_run) {

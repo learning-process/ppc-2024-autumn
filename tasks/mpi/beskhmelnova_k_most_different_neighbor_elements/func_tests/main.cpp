@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include "mpi/beskhmelnova_k_most_different_neighbor_elements/include/mpi.hpp"
 #include "mpi/beskhmelnova_k_most_different_neighbor_elements/src/mpi.cpp"
 
 TEST(beskhmelnova_k_most_different_neighbor_elements_mpi, Test_vector_int_100) {
