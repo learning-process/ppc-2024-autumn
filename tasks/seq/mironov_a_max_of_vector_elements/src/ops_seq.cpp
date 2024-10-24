@@ -25,7 +25,11 @@ bool mironov_a_max_of_vector_elements_seq::MaxVectorSequential::validation() {
 
 bool mironov_a_max_of_vector_elements_seq::MaxVectorSequential::run() {
   internal_order_test();
-  result_ = *std::max_element(input_.begin(), input_.end());
+  result_ = input_[0];
+  for (size_t it = 1; it < input_.size(); ++it)
+  {
+    if (result_ < input_[it]) result_ = input_[it];
+  }
   return true;
 }
 

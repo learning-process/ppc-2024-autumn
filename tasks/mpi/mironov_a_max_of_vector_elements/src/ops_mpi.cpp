@@ -29,7 +29,11 @@ bool mironov_a_max_of_vector_elements_mpi::MaxVectorSequential::validation() {
 
 bool mironov_a_max_of_vector_elements_mpi::MaxVectorSequential::run() {
   internal_order_test();
-  result_ = *std::max_element(input_.begin(), input_.end());
+
+  result_ = input_[0];
+  for (size_t it = 1; it < input_.size(); ++it) {
+    if (result_ < input_[it]) result_ = input_[it];
+  }
   return true;
 }
 
@@ -62,7 +66,7 @@ bool mironov_a_max_of_vector_elements_mpi::MaxVectorMPI::pre_processing() {
     }
   }
 
-  local_input_ = std::vector<int>(delta);
+  local_input_ = std::vector<int>(delta, INT_MIN);
   if (world.rank() == 0) {
     local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
   } else {
@@ -84,7 +88,10 @@ bool mironov_a_max_of_vector_elements_mpi::MaxVectorMPI::validation() {
 
 bool mironov_a_max_of_vector_elements_mpi::MaxVectorMPI::run() {
   internal_order_test();
-  int local_res = *std::max_element(local_input_.begin(), local_input_.end());
+  int local_res = local_input_[0];
+  for (size_t it = 1; it < local_input_.size(); ++it) {
+    if (local_res < local_input_[it]) local_res = local_input_[it];
+  }
   reduce(world, local_res, result_, boost::mpi::maximum<int>(), 0);
   return true;
 }
