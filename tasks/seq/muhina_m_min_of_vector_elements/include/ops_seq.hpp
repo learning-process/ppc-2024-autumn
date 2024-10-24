@@ -18,6 +18,7 @@ class MinOfVectorSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
+
  private:
   std::vector<int> input_;
   int res_{};

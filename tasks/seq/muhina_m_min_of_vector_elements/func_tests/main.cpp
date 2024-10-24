@@ -53,7 +53,6 @@ TEST(muhina_m_min_of_vector_elements_seq, Test_Min_20) {
   ASSERT_EQ(0, out[0]);
 }
 
-
 TEST(muhina_m_min_of_vector_elements_seq, Test_Min_50) {
   const int count = 50;
 

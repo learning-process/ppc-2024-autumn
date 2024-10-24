@@ -33,8 +33,6 @@ int muhina_m_min_of_vector_elements_mpi::vectorMin(std::vector<int, std::allocat
   return mini;
 }
 
-
-
 bool muhina_m_min_of_vector_elements_mpi::MinOfVectorMPISequential::pre_processing() {
   internal_order_test();
   // Init vectors
@@ -43,7 +41,6 @@ bool muhina_m_min_of_vector_elements_mpi::MinOfVectorMPISequential::pre_processi
   for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
     input_[i] = tmp_ptr[i];
   }
-
   return true;
 }
 
@@ -94,7 +91,6 @@ bool muhina_m_min_of_vector_elements_mpi::MinOfVectorMPIParallel::pre_processing
   } else {
     world_.recv(0, 0, local_input_.data(), delta);
   }
-  
   return true;
 }
 

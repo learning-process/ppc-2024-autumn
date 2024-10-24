@@ -28,8 +28,6 @@ int muhina_m_min_of_vector_elements_seq::vectorMin(std::vector<int, std::allocat
   return mini;
 }
 
-
-
 bool muhina_m_min_of_vector_elements_seq::MinOfVectorSequential::pre_processing() {
   internal_order_test();
 
