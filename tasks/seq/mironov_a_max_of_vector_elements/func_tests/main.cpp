@@ -28,8 +28,7 @@ TEST(mironov_a_max_of_vector_elements_seq, Test_Max_1) {
 }
 
 TEST(mironov_a_max_of_vector_elements_seq, Test_Max_2) {
-  const int count = 1;
-  const int gold = -100000000;
+  const int count = 1, gold = -100000000;
 
   // Create data
   std::vector<int> in(count, -100000000);
@@ -52,8 +51,7 @@ TEST(mironov_a_max_of_vector_elements_seq, Test_Max_2) {
 }
 
 TEST(mironov_a_max_of_vector_elements_seq, Test_Max_3) {
-  constexpr int count = 10000000, start = -7890000,
-				gold = start + 9 * (count - 1);
+  constexpr int count = 10000000, start = -7890000, gold = start + 9 * (count - 1);
 
   // Create data
   std::vector<int> in(count);

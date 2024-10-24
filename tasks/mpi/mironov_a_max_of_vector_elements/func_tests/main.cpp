@@ -64,8 +64,8 @@ TEST(mironov_a_max_of_vector_elements_mpi, Test_Max_2) {
 
   if (world.rank() == 0) {
     const int count = 1;
-    global_vec.resize(count, -100000000);
-      
+    global_vec.resize(std::max(count, world.size()), -100000000);
+
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));

@@ -12,7 +12,7 @@ bool mironov_a_max_of_vector_elements_seq::MaxVectorSequential::pre_processing()
   for (size_t i = 0; i < input_.size(); ++i) {
     input_[i] = it[i];
   }
-  res = input_[0];
+  result_ = input_[0];
   return true;
 }
 
@@ -25,14 +25,12 @@ bool mironov_a_max_of_vector_elements_seq::MaxVectorSequential::validation() {
 bool mironov_a_max_of_vector_elements_seq::MaxVectorSequential::run() {
   internal_order_test();
   
-  for (size_t i = 1; i < input_.size(); ++i) {
-    if (res < input_[i]) res = input_[i];
-  }
+  result_ = *max_element(input_.begin(), input_.end());
   return true;
 }
 
 bool mironov_a_max_of_vector_elements_seq::MaxVectorSequential::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+  reinterpret_cast<int*>(taskData->outputs[0])[0] = result_;
   return true;
 }

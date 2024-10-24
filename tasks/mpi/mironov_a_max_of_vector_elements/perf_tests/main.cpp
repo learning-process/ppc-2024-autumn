@@ -1,21 +1,21 @@
 #include <gtest/gtest.h>
+
 #include <boost/mpi/timer.hpp>
 #include <vector>
+
 #include "core/perf/include/perf.hpp"
 #include "mpi/mironov_a_max_of_vector_elements/include/ops_mpi.hpp"
 
 TEST(mironov_a_max_of_vector_elements_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-
-  // Create data
   std::vector<int> global_vec;
   std::vector<int> global_max(1, 0);
-  std::cout << "\n!!!!!!!!!!!!!!!!!!! " << world.size() << std::endl;
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int gold;
   if (world.rank() == 0) {
-    const int count = 100000000, start = -789000000;
+    const int count = 20000000, start = -789000000;
     gold = start + 5 * (count - 1);
     global_vec.resize(count);
     for (int i = 0, j = start; i < count; ++i, j += 5) global_vec[i] = j;
@@ -27,13 +27,9 @@ TEST(mironov_a_max_of_vector_elements_mpi, test_pipeline_run) {
   }
 
   auto testMpiTaskParallel = std::make_shared<mironov_a_max_of_vector_elements_mpi::MaxVectorMPI>(taskDataPar);
-  std::cout << "\nStart validation\n";
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
-  std::cout << "\nStart pre_processing\n";
   testMpiTaskParallel->pre_processing();
-  std::cout << "\nStart run\n";
   testMpiTaskParallel->run();
-  std::cout << "\nStart post_processing\n";
   testMpiTaskParallel->post_processing();
 
   // Create Perf attributes
@@ -56,15 +52,14 @@ TEST(mironov_a_max_of_vector_elements_mpi, test_pipeline_run) {
 
 TEST(mironov_a_max_of_vector_elements_mpi, test_task_run) {
   boost::mpi::communicator world;
-
-  // Create data
   std::vector<int> global_vec;
   std::vector<int> global_max(1, 0);
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int gold;
   if (world.rank() == 0) {
-    const int count = 100000000, start = -789000000;
+    const int count = 200000000, start = -789000000;
     gold = start + 5 * (count - 1);
     global_vec.resize(count);
     for (int i = 0, j = start; i < count; ++i, j += 5) global_vec[i] = j;
