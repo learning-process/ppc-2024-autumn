@@ -46,7 +46,7 @@ TEST(korovin_n_min_val_row_matrix_seq, test_pipeline_run) {
   ppc::core::Perf::print_perf_statistic(perfResults);
 
   for (int i = 0; i < rows; i++) {
-    ASSERT_EQ(v_res[i], -25);
+    ASSERT_EQ(v_res[i], INT_MIN);
   }
 }
 
@@ -90,6 +90,6 @@ TEST(korovin_n_min_val_row_matrix_seq, test_task_run) {
   ppc::core::Perf::print_perf_statistic(perfResults);
 
   for (int i = 0; i < rows; i++) {
-    ASSERT_EQ(v_res[i], -25);
+    ASSERT_EQ(v_res[i], INT_MIN);
   }
 }

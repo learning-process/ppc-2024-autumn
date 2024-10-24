@@ -54,7 +54,7 @@ TEST(korovin_n_min_val_row_matrix_mpi, find_min_val_in_row_10x10_matrix) {
     testMpiTaskSequential.post_processing();
 
     for (int i = 0; i < count_rows; i++) {
-      ASSERT_EQ(global_min[i], -25);
+      ASSERT_EQ(global_min[i], INT_MIN);
     }
   }
 }
@@ -106,7 +106,7 @@ TEST(korovin_n_min_val_row_matrix_mpi, find_min_val_in_row_100x100_matrix) {
     testMpiTaskSequential.post_processing();
 
     for (int i = 0; i < count_rows; i++) {
-      ASSERT_EQ(global_min[i], -25);
+      ASSERT_EQ(global_min[i], INT_MIN);
     }
   }
 }
@@ -158,7 +158,7 @@ TEST(korovin_n_min_val_row_matrix_mpi, find_min_val_in_row_100x500_matrix) {
     testMpiTaskSequential.post_processing();
 
     for (int i = 0; i < count_rows; i++) {
-      ASSERT_EQ(global_min[i], -25);
+      ASSERT_EQ(global_min[i], INT_MIN);
     }
   }
 }
@@ -210,7 +210,55 @@ TEST(korovin_n_min_val_row_matrix_mpi, find_min_val_in_row_5000x5000_matrix) {
     testMpiTaskSequential.post_processing();
 
     for (int i = 0; i < count_rows; i++) {
-      ASSERT_EQ(global_min[i], -25);
+      ASSERT_EQ(global_min[i], INT_MIN);
     }
   }
+}
+
+TEST(korovin_n_min_val_row_matrix_mpi, validation_fails_on_invalid_inputs_count_size) {
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  taskDataSeq->inputs_count = {100};
+
+  std::vector<int> v_res(100, 0);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(v_res.data()));
+  taskDataSeq->outputs_count.emplace_back(v_res.size());
+
+  korovin_n_min_val_row_matrix_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_EQ(testTaskSequential.validation(), false);
+}
+
+TEST(korovin_n_min_val_row_matrix_mpi, validation_fails_on_negative_inputs) {
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  taskDataSeq->inputs_count = {0, 100};
+
+  std::vector<int> v_res(10, 0);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(v_res.data()));
+  taskDataSeq->outputs_count.emplace_back(v_res.size());
+
+  korovin_n_min_val_row_matrix_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_EQ(testTaskSequential.validation(), false);
+}
+
+TEST(korovin_n_min_val_row_matrix_mpi, validation_fails_on_invalid_outputs_count) {
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  taskDataSeq->inputs_count = {100, 100};
+  std::vector<int> v_res(50, 0);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(v_res.data()));
+  taskDataSeq->outputs_count.emplace_back(v_res.size());
+
+  korovin_n_min_val_row_matrix_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_EQ(testTaskSequential.validation(), false);
+}
+
+TEST(korovin_n_min_val_row_matrix_mpi, validation_fails_on_empty_outputs_count) {
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  taskDataSeq->inputs_count = {100, 100};
+  taskDataSeq->outputs_count.clear();
+
+  korovin_n_min_val_row_matrix_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_FALSE(testTaskSequential.validation());
 }

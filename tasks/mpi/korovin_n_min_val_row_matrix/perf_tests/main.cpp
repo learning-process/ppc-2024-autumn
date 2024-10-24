@@ -41,7 +41,7 @@ TEST(korovin_n_min_val_row_matrix_mpi, test_pipeline_run_min) {
 
   if (world.rank() == 0) {
     for (size_t i = 0; i < global_min.size(); ++i) {
-      ASSERT_EQ(global_min[i], -25);
+      ASSERT_EQ(global_min[i], INT_MIN);
     }
   }
 }
@@ -80,7 +80,7 @@ TEST(korovin_n_min_val_row_matrix_mpi_perf_test, test_task_run_min) {
 
   if (world.rank() == 0) {
     for (size_t i = 0; i < global_min.size(); ++i) {
-      ASSERT_EQ(global_min[i], -25);
+      ASSERT_EQ(global_min[i], INT_MIN);
     }
   }
 }

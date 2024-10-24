@@ -76,9 +76,9 @@ std::vector<std::vector<int>> korovin_n_min_val_row_matrix_seq::TestTaskSequenti
                                                                                                         int cols) {
   std::vector<std::vector<int>> matrix1(rows, std::vector<int>(cols));
   for (auto& row : matrix1) {
-    row = generate_rnd_vector(cols, 1, 500);
+    row = generate_rnd_vector(cols, -1000, 1000);
     int rnd_index = std::rand() % cols;
-    row[rnd_index] = -25;
+    row[rnd_index] = INT_MIN;
   }
   return matrix1;
 }
