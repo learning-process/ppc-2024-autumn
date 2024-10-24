@@ -49,7 +49,7 @@ class TestTaskSequential : public ppc::core::Task {
       // get iterator for current element and his neighbor element vector
       auto iter_curr = input_.begin();
       auto iter_next = iter_curr + 1;
-      auto iter_end = input_.end()-1;
+      auto iter_end = input_.end() - 1;
       auto iter_begin = input_.begin();
       // algorithm search max delta with using address arithmetic pointers
       while (iter_curr != iter_end) {
@@ -251,7 +251,7 @@ double TestMPITaskParallel<TypeElem, TypeIndex>::max_difference() {
   // get iterator for current element and his neighbor element vector
   auto iter_curr = local_input_.begin();
   auto iter_next = iter_curr + 1;
-  auto iter_end = local_input_.end()-1;
+  auto iter_end = local_input_.end() - 1;
   auto iter_begin = local_input_.begin();
   // algorithm search max delta with using address arithmetic pointers
   while (iter_curr != iter_end) {

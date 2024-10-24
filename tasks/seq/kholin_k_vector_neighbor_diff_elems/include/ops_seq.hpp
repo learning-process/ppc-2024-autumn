@@ -45,7 +45,7 @@ class MostDiffNeighborElements : public ppc::core::Task {
     // get iterator for current element and his neighbor element vector
     auto iter_curr = input_.begin();
     auto iter_next = iter_curr + 1;
-    auto iter_end = input_.end()-1;
+    auto iter_end = input_.end() - 1;
     auto iter_begin = input_.begin();
     // algorithm search max delta with using address arithmetic pointers
     while (iter_curr != iter_end) {
