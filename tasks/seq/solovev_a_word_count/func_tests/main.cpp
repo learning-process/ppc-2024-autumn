@@ -5,7 +5,7 @@
 #include "seq/solovev_a_word_count/include/ops_seq.hpp"
 
 TEST(solovev_a_word_count_seq, test_em_str) {
-  std::string input = "";
+  std::vector <char> input;
   std::vector<int> out(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -23,8 +23,8 @@ TEST(solovev_a_word_count_seq, test_em_str) {
   ASSERT_EQ(out[0], 0);
 }
 
-TEST(solovev_a_word_count_seq, test_1_word) {
-  std::string input = solovev_a_word_count_seq::create_text(1);
+TEST(solovev_a_word_count_seq, test_120_word) {
+  std::vector<char> input = solovev_a_word_count_seq::create_text(120);
   std::vector<int> out(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -38,11 +38,11 @@ TEST(solovev_a_word_count_seq, test_1_word) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(out[0], 1);
+  ASSERT_EQ(out[0], 120);
 }
 
-TEST(solovev_a_word_count_seq, test_10_words) {
-  std::string input = solovev_a_word_count_seq::create_text(10);
+TEST(solovev_a_word_count_seq, test_300_words) {
+  std::vector<char> input = solovev_a_word_count_seq::create_text(300);
   std::vector<int> out(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -56,11 +56,11 @@ TEST(solovev_a_word_count_seq, test_10_words) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(out[0], 10);
+  ASSERT_EQ(out[0], 300);
 }
 
-TEST(solovev_a_word_count_seq, test_100_words) {
-  std::string input = solovev_a_word_count_seq::create_text(100);
+TEST(solovev_a_word_count_seq, test_480_words) {
+  std::vector<char> input = solovev_a_word_count_seq::create_text(480);
   std::vector<int> out(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -74,11 +74,11 @@ TEST(solovev_a_word_count_seq, test_100_words) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(out[0], 100);
+  ASSERT_EQ(out[0], 480);
 }
 
-TEST(solovev_a_word_count_seq, test_1000_words) {
-  std::string input = solovev_a_word_count_seq::create_text(1000);
+TEST(solovev_a_word_count_seq, test_600_words) {
+  std::vector<char> input = solovev_a_word_count_seq::create_text(600);
   std::vector<int> out(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -92,5 +92,5 @@ TEST(solovev_a_word_count_seq, test_1000_words) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(out[0], 1000);
+  ASSERT_EQ(out[0], 600);
 }
