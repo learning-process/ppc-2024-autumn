@@ -1,111 +1,152 @@
+// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <cstdlib>
 #include <ctime>
-#include <vector>
+#include <memory>
 #include <random>
+#include <vector>
 
 #include "seq/sotskov_a_sum_element_matrix/include/ops_seq.hpp"
 
-namespace sotskov_a_sum_element_matrix_seq {
+TEST(Sequential, Test_Sum_Large_Matrix) {
+    const int rows = 1000;
+    const int columns = 1000;
 
-int random_range(int min, int max) { return min + rand() % (max - min + 1); }
+    std::vector<double> global_matrix = sotskov_a_sum_element_matrix_seq::create_random_matrix_double(rows, columns);
+    std::vector<double> reference_sum(1, 0);
 
-template <typename T>
-void run_sum_test(
-    const std::vector<T>& matrix,
-    std::vector<typename std::conditional<std::is_same<T, double>::value, double, int32_t>::type>& reference_sum,
-    int rows, int columns) {
-  reference_sum[0] = sum_matrix_elements(matrix, rows, columns);
+    reference_sum[0] = sotskov_a_sum_element_matrix_seq::sum_matrix_elements_double(global_matrix, rows, columns);
 
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<T*>(matrix.data())));
-  taskDataSeq->inputs_count.emplace_back(matrix.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_sum.data()));
-  taskDataSeq->outputs_count.emplace_back(reference_sum.size());
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<double*>(global_matrix.data())));
+    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_sum.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_sum.size());
 
-  TestTaskSequential<T> testTask(taskDataSeq);
-  ASSERT_TRUE(testTask.validation());
-  testTask.pre_processing();
-  testTask.run();
-  testTask.post_processing();
-
-  ASSERT_EQ(reference_sum[0], sum_matrix_elements(matrix, rows, columns));
+    sotskov_a_sum_element_matrix_seq::TestTaskSequentialDouble testTask(taskDataSeq);
+    ASSERT_TRUE(testTask.validation());
+    testTask.pre_processing();
+    testTask.run();
+    testTask.post_processing();
+    
+    ASSERT_EQ(reference_sum[0], sotskov_a_sum_element_matrix_seq::sum_matrix_elements_double(global_matrix, rows, columns));
 }
 
-TEST(sotskov_a_sum_element_matrix, check_large_matrix) {
-  const int rows = 1000;
-  const int columns = 1000;
+TEST(Sequential, Test_Sum_Negative_Values) {
+    const int rows = 10;
+    const int columns = 10;
 
-  std::vector<double> global_matrix = create_random_matrix<double>(rows, columns);
-  std::vector<double> reference_sum(1, 0);
+    std::vector<int> global_matrix = sotskov_a_sum_element_matrix_seq::create_random_matrix_int(rows, columns);
+    for (auto& elem : global_matrix) {
+        elem = -abs(elem);
+    }
+    std::vector<int32_t> reference_sum(1, 0);
+    reference_sum[0] = sotskov_a_sum_element_matrix_seq::sum_matrix_elements_int(global_matrix, rows, columns);
 
-  run_sum_test(global_matrix, reference_sum, rows, columns);
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<int*>(global_matrix.data())));
+    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_sum.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_sum.size());
+
+    sotskov_a_sum_element_matrix_seq::TestTaskSequentialInt testTask(taskDataSeq);
+    ASSERT_TRUE(testTask.validation());
+    testTask.pre_processing();
+    testTask.run();
+    testTask.post_processing();
+    
+    ASSERT_EQ(reference_sum[0], sotskov_a_sum_element_matrix_seq::sum_matrix_elements_int(global_matrix, rows, columns));
 }
 
-TEST(sotskov_a_sum_element_matrix, check_negative_value) {
-  const int rows = 10;
-  const int columns = 10;
+TEST(Sequential, Test_Sum_Int) {
+    srand(static_cast<unsigned int>(time(nullptr)));
 
-  std::vector<int> global_matrix = create_random_matrix<int>(rows, columns);
-  for (auto& elem : global_matrix) {
-    elem = -abs(elem);
-  }
-  std::vector<int32_t> reference_sum(1, 0);
+    const int rows = sotskov_a_sum_element_matrix_seq::random_range(1, 100);
+    const int columns = sotskov_a_sum_element_matrix_seq::random_range(1, 100);
 
-  run_sum_test(global_matrix, reference_sum, rows, columns);
+    std::vector<int> global_matrix = sotskov_a_sum_element_matrix_seq::create_random_matrix_int(rows, columns);
+    std::vector<int32_t> reference_sum(1, 0);
+    reference_sum[0] = sotskov_a_sum_element_matrix_seq::sum_matrix_elements_int(global_matrix, rows, columns);
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<int*>(global_matrix.data())));
+    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_sum.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_sum.size());
+
+    sotskov_a_sum_element_matrix_seq::TestTaskSequentialInt testTask(taskDataSeq);
+    ASSERT_TRUE(testTask.validation());
+    testTask.pre_processing();
+    testTask.run();
+    testTask.post_processing();
+    
+    ASSERT_EQ(reference_sum[0], sotskov_a_sum_element_matrix_seq::sum_matrix_elements_int(global_matrix, rows, columns));
 }
 
-TEST(sotskov_a_sum_element_matrix, check_int) {
-  srand(static_cast<unsigned int>(time(nullptr)));
+TEST(Sequential, Test_Sum_Double) {
+    srand(static_cast<unsigned int>(time(nullptr)));
 
-  const int rows = random_range(0, 100);
-  const int columns = random_range(0, 100);
+    const int rows = sotskov_a_sum_element_matrix_seq::random_range(1, 100);
+    const int columns = sotskov_a_sum_element_matrix_seq::random_range(1, 100);
 
-  std::vector<int> global_matrix = create_random_matrix<int>(rows, columns);
-  std::vector<int32_t> reference_sum(1, 0);
+    std::vector<double> global_matrix = sotskov_a_sum_element_matrix_seq::create_random_matrix_double(rows, columns);
+    std::vector<double> reference_sum(1, 0.0);
+    reference_sum[0] = sotskov_a_sum_element_matrix_seq::sum_matrix_elements_double(global_matrix, rows, columns);
 
-  run_sum_test(global_matrix, reference_sum, rows, columns);
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<double*>(global_matrix.data())));
+    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_sum.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_sum.size());
+
+    sotskov_a_sum_element_matrix_seq::TestTaskSequentialDouble testTask(taskDataSeq);
+    ASSERT_TRUE(testTask.validation());
+    testTask.pre_processing();
+    testTask.run();
+    testTask.post_processing();
+    
+    ASSERT_EQ(reference_sum[0], sotskov_a_sum_element_matrix_seq::sum_matrix_elements_double(global_matrix, rows, columns));
 }
 
-TEST(sotskov_a_sum_element_matrix, check_double) {
-  srand(static_cast<unsigned int>(time(nullptr)));
+TEST(Sequential, Test_Empty_Matrix) {
+    std::vector<int32_t> reference_sum(1, 0);
+    std::vector<int> empty_matrix;
 
-  const int rows = random_range(0, 100);
-  const int columns = random_range(0, 100);
+    reference_sum[0] = sotskov_a_sum_element_matrix_seq::sum_matrix_elements_int(empty_matrix, 0, 0);
 
-  std::vector<double> global_matrix = create_random_matrix<double>(rows, columns);
-  std::vector<double> reference_sum(1, 0.0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(empty_matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(empty_matrix.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_sum.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_sum.size());
 
-  run_sum_test(global_matrix, reference_sum, rows, columns);
+    sotskov_a_sum_element_matrix_seq::TestTaskSequentialInt testTask(taskDataSeq);
+    ASSERT_TRUE(testTask.validation());
+    testTask.pre_processing();
+    testTask.run();
+    testTask.post_processing();
+    
+    ASSERT_EQ(reference_sum[0], 0);
 }
 
-TEST(sotskov_a_sum_element_matrix, check_empty) {
-  std::vector<int32_t> reference_sum(1, 0);
-  std::vector<int> empty_matrix;
-
-  run_sum_test(empty_matrix, reference_sum, 0, 0);
+TEST(Sequential, Test_Zero_Columns_Rows) {
+    auto zero_columns = sotskov_a_sum_element_matrix_seq::create_random_matrix_int(1, 0);
+    EXPECT_TRUE(zero_columns.empty());
+    auto zero_rows = sotskov_a_sum_element_matrix_seq::create_random_matrix_int(0, 1);
+    EXPECT_TRUE(zero_rows.empty());
 }
 
-TEST(sotskov_a_sum_element_matrix, check_zero) {
-  auto zero_columns = create_random_matrix<int>(1, 0);
-  EXPECT_TRUE(zero_columns.empty());
-  auto zero_rows = create_random_matrix<int>(0, 1);
-  EXPECT_TRUE(zero_rows.empty());
+TEST(Sequential, Test_Wrong_Validation) {
+    std::vector<int> global_matrix;
+    std::vector<int32_t> global_sum(2, 0);
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
+    taskDataSeq->outputs_count.emplace_back(global_sum.size());
+
+    sotskov_a_sum_element_matrix_seq::TestTaskSequentialInt testTask(taskDataSeq);
+    ASSERT_FALSE(testTask.validation());
 }
-
-TEST(sotskov_a_sum_element_matrix, check_wrong_valid) {
-  std::vector<int> global_matrix;
-  std::vector<int32_t> global_sum(2, 0);
-
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-  taskDataSeq->inputs_count.emplace_back(global_matrix.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-  taskDataSeq->outputs_count.emplace_back(global_sum.size());
-
-  TestTaskSequential<int> testTask(taskDataSeq);
-  ASSERT_FALSE(testTask.validation());
-}
-
-}  // namespace sotskov_a_sum_element_matrix_seq
