@@ -110,7 +110,7 @@ class TestMPITaskParallel : public ppc::core::Task {
     return mpi_type_elem;
   }
 
-   MPI_Datatype get_mpi_type2() {
+  MPI_Datatype get_mpi_type2() {
     MPI_Type_contiguous(sizeof(TypeIndex), MPI_BYTE, &mpi_type_index);
     MPI_Type_commit(&mpi_type_index);
     return mpi_type_index;

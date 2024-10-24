@@ -31,7 +31,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, test_pipeline_run) {
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;                                // num launches programm
+  perfAttr->num_running = 10;                                 // num launches programm
   const auto t0 = std::chrono::high_resolution_clock::now();  // set timer now
   perfAttr->current_timer = [&] {
     auto current_time_point =
