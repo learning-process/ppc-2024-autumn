@@ -35,7 +35,7 @@ bool sotskov_a_sum_element_matrix_mpi::TestMPITaskSequential::run() {
 
   result_ = std::accumulate(matrix_.begin(), matrix_.end(), 0.0);
 
-  std::this_thread::sleep_for(20ms);
+  //std::this_thread::sleep_for(20ms);
   return true;
 }
 
@@ -85,7 +85,7 @@ bool sotskov_a_sum_element_matrix_mpi::TestMPITaskParallel::run() {
 
   reduce(world, local_result_, global_result_, std::plus<>(), 0);
 
-  std::this_thread::sleep_for(20ms);
+  //std::this_thread::sleep_for(20ms);
   return true;
 }
 
