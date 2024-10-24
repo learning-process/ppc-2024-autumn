@@ -40,14 +40,12 @@ bool solovev_a_word_count_mpi::TestMPITaskSequential::validation() {
 
 bool solovev_a_word_count_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-  
   for (char symbol : input_) {
     if (symbol != ' ' && symbol != '.') {
     } else {
       res++;
     }
   }
-  
   return true;
 }
 bool solovev_a_word_count_mpi::TestMPITaskSequential::post_processing() {
