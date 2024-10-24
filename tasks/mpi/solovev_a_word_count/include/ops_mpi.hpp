@@ -19,8 +19,8 @@
 
 namespace solovev_a_word_count_mpi {
 
-std::string create_text(int quan_words);
-int word_count(const std::string& input);
+std::vector<char> create_text(int quan_words);
+
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
@@ -31,7 +31,7 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::string input_;
+  std::vector<char> input_;
   int res{};
 };
 
@@ -45,8 +45,11 @@ class TestMPITaskParallel : public ppc::core::Task {
 
  private:
   boost::mpi::communicator world;
-  std::string input_;
+  std::vector<char> input_;
   int res{};
+  std::vector<char> l_input_;
+  int l_res{};
 };
 
 }  // namespace solovev_a_word_count_mpi
+
