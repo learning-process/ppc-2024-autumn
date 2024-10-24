@@ -15,12 +15,26 @@
 
 namespace kolokolova_d_max_of_vector_elements_mpi {
 
-std::vector<int> getRandomVector(int sz);
+std::vector<std::vector<int>> getRandomVector(int sz);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
+      : Task(std::move(taskData_)) {}
+  bool pre_processing() override;
+  bool validation() override;
+  bool run() override;
+  bool post_processing() override;
+
+ private:
+  std::vector<std::vector<int>> input_;
+  std::vector<int> res;
+};
+
+class TestMPITaskParallel : public ppc::core::Task {
+ public:
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
+      : Task(std::move(taskData_)){}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -28,24 +42,11 @@ class TestMPITaskSequential : public ppc::core::Task {
 
  private:
   std::vector<int> input_;
-  int res{};
-  std::string ops;
-};
-
-class TestMPITaskParallel : public ppc::core::Task {
- public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
-  bool pre_processing() override;
-  bool validation() override;
-  bool run() override;
-  bool post_processing() override;
-
- private:
-  std::vector<int> input_, local_input_;
-  int res{};
-  std::string ops;
+  std::vector<int> res;
   boost::mpi::communicator world;
+  std::vector<int> local_input_;
+  int max = 0;
+  std::vector<int> elements;
 };
 
-}  // namespace nesterov_a_test_task_mpi
+}  // namespace kolokolova_d_max_of_vector_elements_mpi
