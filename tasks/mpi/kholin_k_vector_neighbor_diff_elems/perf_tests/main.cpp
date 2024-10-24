@@ -31,6 +31,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, test_pipeline_run) {
                                                                                                     "MAX_DIFFERENCE");
   testMpiTaskParallel->validation();
   testMpiTaskParallel->pre_processing();
+  std::cout << "Hi!Your mpi_run_perf_tests will start";
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
