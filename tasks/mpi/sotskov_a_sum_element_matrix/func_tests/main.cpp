@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
+
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <vector>
+
 #include "mpi/sotskov_a_sum_element_matrix/include/ops_mpi.hpp"
 
 TEST(sotskov_a_sum_element_matrix, test_constant_matrix) {
@@ -215,9 +217,8 @@ TEST(sotskov_a_sum_element_matrix, test_mixed_values_matrix) {
 
   int rows = 5;
   int cols = 5;
-  std::vector<double> matrix = {
-      1.0,  -1.0, 2.0,  -2.0, 3.0,  -3.0, 4.0,   -4.0, 5.0,   -5.0, 6.0,   -6.0, 7.0,
-      -7.0, 8.0,  -8.0, 9.0,  -9.0, 10.0, -10.0, 11.0, -11.0, 12.0, -12.0, 13.0};                                                                               
+  std::vector<double> matrix = {1.0,  -1.0, 2.0,  -2.0, 3.0,  -3.0, 4.0,   -4.0, 5.0,   -5.0, 6.0,   -6.0, 7.0,
+                                -7.0, 8.0,  -8.0, 9.0,  -9.0, 10.0, -10.0, 11.0, -11.0, 12.0, -12.0, 13.0};
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
