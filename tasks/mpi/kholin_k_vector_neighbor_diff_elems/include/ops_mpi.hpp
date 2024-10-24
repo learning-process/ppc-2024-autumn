@@ -139,7 +139,7 @@ class TestMPITaskParallel : public ppc::core::Task {
     } else {
       local_input_ = std::vector<TypeElem>(delta_n);
     }
-    MPI_Scatter(input_.data(), delta_n, get_mpi_type(), local_input_.data(), delta_n, get_mpi_type(), 0, world);
+    MPI_Scatter(input_.data(), delta_n, mpi_type_elem, local_input_.data(), delta_n, mpi_type_elem, 0, world);
     result = {};
     left_index = {};
     right_index = 2;
@@ -152,6 +152,8 @@ class TestMPITaskParallel : public ppc::core::Task {
     internal_order_test();
     // Check count elements of output
     if (world.rank() == 0) {
+      mpi_type_index = get_mpi_type2();
+      mpi_type_elem = get_mpi_type();
       return taskData->outputs_count[0] == 2 && taskData->outputs_count[1] == 2;
     }
     return true;
@@ -177,7 +179,7 @@ class TestMPITaskParallel : public ppc::core::Task {
       MPI_Gather(sendbuf, 1, MPI_DOUBLE, global_result.data(), 1, MPI_DOUBLE, 0, world);
       TypeIndex sendbuf2[1];
       sendbuf2[0] = curr_index;
-      MPI_Gather(sendbuf2, 1, get_mpi_type2(), global_indices.data(), 1, get_mpi_type2(), 0, world);
+      MPI_Gather(sendbuf2, 1, mpi_type_index, global_indices.data(), 1, mpi_type_index, 0, world);
       int sendbuf3[1];
       sendbuf3[0] = world.rank();
       MPI_Gather(sendbuf3, 1, MPI_INT, ranks.data(), 1, MPI_INT, 0, world);
@@ -202,8 +204,8 @@ class TestMPITaskParallel : public ppc::core::Task {
   }
 
   ~TestMPITaskParallel() {
-    MPI_Type_free(&mpi_type_elem);
     MPI_Type_free(&mpi_type_index);
+    MPI_Type_free(&mpi_type_elem);
   }
 
  private:
