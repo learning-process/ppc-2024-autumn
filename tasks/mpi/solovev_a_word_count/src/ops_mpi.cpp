@@ -8,27 +8,34 @@
 
 namespace solovev_a_word_count_mpi {
 
-std::string create_text(int quan_words) {
-  std::string res;
+std::vector<char> create_text(int quan_words) {
+  std::vector<char> res;
   std::string word = "word ";
-  for (int i = 0; i < quan_words; i++) {
-    res += word;
+  std::string last = "word.";
+  for (int i = 0; i < quan_words-1; i++)
+    for (unsigned long int symbol = 0; symbol < word.length(); symbol++) 
+      {
+      res.push_back(word[symbol]);
   }
+  for (unsigned long int symbol = 0; symbol < last.length(); symbol++) {
+    res.push_back(last[symbol]);
+  }
+  
   return res;
 }
 
-int word_count(const std::string& input) {
-  std::istringstream iss(input);
-  return std::distance(std::istream_iterator<std::string>(iss), std::istream_iterator<std::string>());
-}
 
 bool solovev_a_word_count_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
-  input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
+  input_ = std::vector<char>(taskData->inputs_count[0]);
+  auto* tmp_ptr = reinterpret_cast<char*>(taskData->inputs[0]);
+  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+    input_[i] = tmp_ptr[i];
+  }
   res = 0;
-  boost::mpi::environment env;
   return true;
 }
+
 
 bool solovev_a_word_count_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
@@ -37,10 +44,16 @@ bool solovev_a_word_count_mpi::TestMPITaskSequential::validation() {
 
 bool solovev_a_word_count_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-  res = word_count(input_);
+  
+  for (char symbol : input_) {
+    if (symbol != ' ' && symbol != '.') {
+    } else {
+      res++;
+    }
+  }
+  
   return true;
 }
-
 bool solovev_a_word_count_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
   reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
@@ -49,10 +62,29 @@ bool solovev_a_word_count_mpi::TestMPITaskSequential::post_processing() {
 
 bool solovev_a_word_count_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
+  unsigned int delta = 0;
   if (world.rank() == 0) {
-    input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
+    delta = taskData->inputs_count[0] / world.size();
+  }
+  boost::mpi::broadcast(world, delta, 0);
+  if (world.rank() == 0) {
+    input_ = std ::vector<char>(taskData->inputs_count[0]);
+    auto* tmp_ptr = reinterpret_cast<char*>(taskData->inputs[0]);
+    for (unsigned long int i = 0; i < taskData->inputs_count[0]; i++) {
+      input_[i] = tmp_ptr[i];
+    }
+    for (int p = 1; p < world.size(); p++) {
+      world.send(p, 0, input_.data() + p * delta, delta);
+    }
+  }
+  l_input_.resize(delta);
+  if (world.rank() == 0) {
+    l_input_ = std::vector<char>(input_.begin(), input_.begin() + delta);
+  } else {
+    world.recv(0, 0, l_input_.data(), delta);
   }
   res = 0;
+  l_res = 0;
   return true;
 }
 
@@ -66,24 +98,13 @@ bool solovev_a_word_count_mpi::TestMPITaskParallel::validation() {
 
 bool solovev_a_word_count_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  int l_size;
-  int l_count;
-  int a = input_.size();
-  if (input_.size() % world.size() == 0)
-    l_size = input_.size() / world.size();
-  else
-    l_size = input_.size() / world.size() + 1;
-  int first = world.rank() * l_size;
-  if (first < a) {
-    if (first + l_size >= a) {
-      l_size = input_.size() - first;
+  for (char symbol : input_) {
+    if (symbol != ' ' && symbol != '.') {
+    } else {
+      l_res++;
     }
-    std::string l_str = input_.substr(first, l_size);
-    l_count = word_count(l_str);
-  } else {
-    l_count = 0;
   }
-  boost::mpi::reduce(world, l_count, res, std::plus<int>(), 0);
+  boost::mpi::reduce(world, l_res, res, std::plus<>(), 0);
   return true;
 }
 
