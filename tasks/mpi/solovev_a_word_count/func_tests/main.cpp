@@ -190,4 +190,3 @@ TEST(solovev_a_word_count_mpi, test_600_words) {
     ASSERT_EQ(ref_out[0], global_out[0]);
   }
 }
-
