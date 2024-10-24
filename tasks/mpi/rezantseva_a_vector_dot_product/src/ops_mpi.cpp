@@ -80,39 +80,50 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::pre_processing() 
   internal_order_test();
 
   unsigned int delta = 0;
-  if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] / world.size();
-  }
-  broadcast(world, delta, 0);
+  const int num_processes = world.size();
 
-  if (world.rank() == 0) {
-    // Init vectors
-    input_ = std::vector<std::vector<int>>(taskData->inputs.size());
-    for (size_t i = 0; i < input_.size(); i++) {
-      auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
-      input_[i] = std::vector<int>(taskData->inputs_count[i]);
-      for (size_t j = 0; j < taskData->inputs_count[i]; j++) {
-        input_[i][j] = tmp_ptr[j];
-      }
+  if (num_processes > 1) {
+    if (world.rank() == 0) {
+      delta = taskData->inputs_count[0] / num_processes;
     }
 
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_[0].data() + proc * delta, delta);
-      world.send(proc, 1, input_[1].data() + proc * delta, delta);
+    broadcast(world, delta, 0);
+
+    if (delta == 0) {
+      return false;
     }
+  } else {
+    delta = taskData->inputs_count[0];
   }
 
   local_input1_ = std::vector<int>(delta);
   local_input2_ = std::vector<int>(delta);
 
   if (world.rank() == 0) {
+    input_ = std::vector<std::vector<int>>(taskData->inputs.size());
+
+    for (size_t i = 0; i < input_.size(); i++) {
+      auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
+      input_[i] = std::vector<int>(taskData->inputs_count[i]);
+
+      for (size_t j = 0; j < taskData->inputs_count[i]; j++) {
+        input_[i][j] = tmp_ptr[j];
+      }
+    }
+
+    for (int proc = 1; proc < num_processes; proc++) {
+      if ((proc * delta) < input_[0].size()) {
+        world.send(proc, 0, input_[0].data() + proc * delta, delta);
+        world.send(proc, 1, input_[1].data() + proc * delta, delta);
+      }
+    }
+
     local_input1_ = std::vector<int>(input_[0].begin(), input_[0].begin() + delta);
     local_input2_ = std::vector<int>(input_[1].begin(), input_[1].begin() + delta);
   } else {
     world.recv(0, 0, local_input1_.data(), delta);
     world.recv(0, 1, local_input2_.data(), delta);
   }
-  // Init value for output
   res = 0;
   return true;
 }
