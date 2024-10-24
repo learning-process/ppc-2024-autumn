@@ -14,8 +14,8 @@ bool gnitienko_k_sum_row_seq::SumByRowSeq::pre_processing() {
   input_.resize(rows * cols);
   auto* ptr = reinterpret_cast<int*>(taskData->inputs[0]);
 
-  for (size_t i = 0; i < rows; ++i) {
-    for (size_t j = 0; j < cols; ++j) {
+  for (int i = 0; i < rows; ++i) {
+    for (int j = 0; j < cols; ++j) {
       input_[i * cols + j] = ptr[i * cols + j]; 
     }
   }
