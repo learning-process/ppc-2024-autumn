@@ -4,9 +4,9 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "seq/grudzin_k_closest_neigh/include/ops_seq.hpp"
+#include "seq/grudzin_k_nearest_neighbor_elements/include/ops_seq.hpp"
 
-TEST(grudzin_k_closest_neigh_seq, test_pipeline_run) {
+TEST(grudzin_k_nearest_neighbor_elements_seq, test_pipeline_run) {
   int size = 10000000;
   // Create data
   std::vector<int> in(size);
@@ -24,7 +24,7 @@ TEST(grudzin_k_closest_neigh_seq, test_pipeline_run) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto testTaskSequential = std::make_shared<grudzin_k_closest_neigh_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential = std::make_shared<grudzin_k_nearest_neighbor_elements_seq::TestTaskSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -46,12 +46,11 @@ TEST(grudzin_k_closest_neigh_seq, test_pipeline_run) {
   ASSERT_EQ(ans, out[0]);
 }
 
-TEST(grudzin_k_closest_neigh_seq, test_task_run) {
-
+TEST(grudzin_k_nearest_neighbor_elements_seq, test_task_run) {
   int size = 10000000;
   // Create data
   std::vector<int> in(size);
-  for (int i = 0; i < size; ++i){
+  for (int i = 0; i < size; ++i) {
     in[i] = 2 * i;
   }
   std::vector<int> out(1, 0);
@@ -65,7 +64,7 @@ TEST(grudzin_k_closest_neigh_seq, test_task_run) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto testTaskSequential = std::make_shared<grudzin_k_closest_neigh_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential = std::make_shared<grudzin_k_nearest_neighbor_elements_seq::TestTaskSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -86,4 +85,3 @@ TEST(grudzin_k_closest_neigh_seq, test_task_run) {
   ppc::core::Perf::print_perf_statistic(perfResults);
   ASSERT_EQ(ans, out[0]);
 }
-

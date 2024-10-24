@@ -3,13 +3,13 @@
 
 #include <vector>
 
-#include "seq/grudzin_k_closest_neigh/include/ops_seq.hpp"
+#include "seq/grudzin_k_nearest_neighbor_elements/include/ops_seq.hpp"
 
-TEST(grudzin_k_closest_neigh_seq, Test_Close_Lazy) {
+TEST(grudzin_k_nearest_neighbor_elements_seq, Test_Close_Lazy) {
   // Create data
   std::vector<int> in = {2, 3};
   std::vector<int> out(1, 0);
-  int ans = 1;
+  int ans = 0;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -19,7 +19,7 @@ TEST(grudzin_k_closest_neigh_seq, Test_Close_Lazy) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  grudzin_k_closest_neigh_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  grudzin_k_nearest_neighbor_elements_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
@@ -27,11 +27,11 @@ TEST(grudzin_k_closest_neigh_seq, Test_Close_Lazy) {
   ASSERT_EQ(ans, out[0]);
 }
 
-TEST(grudzin_k_closest_neigh_seq, Test_Close_24) {
+TEST(grudzin_k_nearest_neighbor_elements_seq, Test_Close_24) {
   // Create data
   std::vector<int> in = {2, 3, 4, 1, 7, 3, 2, 9, -15, 3};
   std::vector<int> out(1, 0);
-  int ans = 1;
+  int ans = 0;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -41,7 +41,7 @@ TEST(grudzin_k_closest_neigh_seq, Test_Close_24) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  grudzin_k_closest_neigh_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  grudzin_k_nearest_neighbor_elements_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
@@ -49,11 +49,11 @@ TEST(grudzin_k_closest_neigh_seq, Test_Close_24) {
   ASSERT_EQ(ans, out[0]);
 }
 
-TEST(grudzin_k_closest_neigh_seq, Test_Close_Negative) {
+TEST(grudzin_k_nearest_neighbor_elements_seq, Test_Close_Negative) {
   // Create data
   std::vector<int> in = {-1, -3, -5, -4, -2};
   std::vector<int> out(1, 0);
-  int ans = 1;
+  int ans = 2;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -63,7 +63,7 @@ TEST(grudzin_k_closest_neigh_seq, Test_Close_Negative) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  grudzin_k_closest_neigh_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  grudzin_k_nearest_neighbor_elements_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();

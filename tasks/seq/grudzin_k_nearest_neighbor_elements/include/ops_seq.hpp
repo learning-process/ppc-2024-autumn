@@ -6,7 +6,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace grudzin_k_closest_neigh_seq {
+namespace grudzin_k_nearest_neighbor_elements_seq {
 
 class TestTaskSequential : public ppc::core::Task {
  public:
@@ -18,8 +18,7 @@ class TestTaskSequential : public ppc::core::Task {
   void gen_random_vector(const std::vector<int>& v);
 
  private:
-  std::vector<int> input_{};
-  int res{};
-};
-
-}  // namespace grudzin_k_closest_neigh_seq
+  std::vector<std::pair<int,int>> input_{};
+  std::pair<int, int> res{};
+}; 
+}  // namespace grudzin_k_nearest_neighbor_elements_seq
