@@ -1,65 +1,85 @@
 #include <gtest/gtest.h>
 #include <boost/mpi/timer.hpp>
 #include <vector>
-#include <numeric>
-#include <memory>
 #include "core/perf/include/perf.hpp"
 #include "mpi/sotskov_a_sum_element_matrix/include/ops_mpi.hpp"
 
-namespace sotskov_a_sum_element_matrix_mpi {
-
 TEST(sotskov_a_sum_element_matrix, test_pipeline_run) {
-    boost::mpi::communicator world;
-    int total_elements = 1000 * 1000;
+  boost::mpi::communicator world;
+  int rows = 1000;
+  int cols = 1000;
+  std::vector<double> matrix(rows * cols, 1.0);
+  double output = 0.0;
 
-    if (total_elements % world.size() != 0) {
-        total_elements -= total_elements % world.size();
-    }
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(&rows));
+    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(&cols));
+    taskDataPar->outputs.push_back(reinterpret_cast<uint8_t*>(&output));
+    taskDataPar->outputs_count.push_back(1);
+  }
 
-    std::vector<int> global_vec(total_elements, 1);
-    std::vector<int32_t> global_sum(1, 0);
-    
-    int elements_per_process = total_elements / world.size();
-    std::vector<int> local_vec(elements_per_process, 0);
+  auto testMpiTaskParallel = std::make_shared<sotskov_a_sum_element_matrix_mpi::TestMPITaskParallel>(taskDataPar);
 
-    MPI_Scatter(global_vec.data(), elements_per_process, MPI_INT, 
-                 local_vec.data(), elements_per_process, MPI_INT, 
-                 0, MPI_COMM_WORLD);
-    
-    int local_sum = std::accumulate(local_vec.begin(), local_vec.end(), 0);
-    
-    MPI_Reduce(&local_sum, &global_sum[0], 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
-    
-    if (world.rank() == 0) {
-        ASSERT_EQ(total_elements, global_sum[0]);
-    }
+  ASSERT_TRUE(testMpiTaskParallel->validation());
+  testMpiTaskParallel->pre_processing();
+  testMpiTaskParallel->run();
+  testMpiTaskParallel->post_processing();
+
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 10;
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
+  perfAnalyzer->pipeline_run(perfAttr, perfResults);
+
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
+    auto exact = static_cast<double>(rows * cols);
+    EXPECT_NEAR(output, exact, 1e-4);
+  }
 }
 
 TEST(sotskov_a_sum_element_matrix, test_task_run) {
-    boost::mpi::communicator world;
-    int total_elements = 9000 * 9000;
+  boost::mpi::communicator world;
+  int rows = 10000;
+  int cols = 10000;
+  std::vector<double> matrix(rows * cols, 1.0);
+  double output = 0.0;
 
-    if (total_elements % world.size() != 0) {
-        total_elements -= total_elements % world.size();
-    }
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(&rows));
+    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(&cols));
+    taskDataPar->outputs.push_back(reinterpret_cast<uint8_t*>(&output));
+    taskDataPar->outputs_count.push_back(1);
+  }
 
-    std::vector<int> global_vec(total_elements, 1);
-    std::vector<int32_t> global_sum(1, 0);
-    
-    int elements_per_process = total_elements / world.size();
-    std::vector<int> local_vec(elements_per_process, 0);
+  auto testMpiTaskParallel = std::make_shared<sotskov_a_sum_element_matrix_mpi::TestMPITaskParallel>(taskDataPar);
 
-    MPI_Scatter(global_vec.data(), elements_per_process, MPI_INT, 
-                 local_vec.data(), elements_per_process, MPI_INT, 
-                 0, MPI_COMM_WORLD);
-    
-    int local_sum = std::accumulate(local_vec.begin(), local_vec.end(), 0);
-    
-    MPI_Reduce(&local_sum, &global_sum[0], 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
-    
-    if (world.rank() == 0) {
-        ASSERT_EQ(total_elements, global_sum[0]);
-    }
+  ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  testMpiTaskParallel->pre_processing();
+  testMpiTaskParallel->run();
+  testMpiTaskParallel->post_processing();
+
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 10;
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
+  perfAnalyzer->task_run(perfAttr, perfResults);
+
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
+    auto exact = static_cast<double>(rows * cols);
+    EXPECT_NEAR(output, exact, 1e-4);
+  }
 }
-
-}  // namespace sotskov_a_sum_element_matrix_mpi
