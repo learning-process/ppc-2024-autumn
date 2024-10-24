@@ -53,7 +53,8 @@ bool titov_s_vector_sum_mpi::MPIVectorSumSequential::post_processing() {
 
 bool titov_s_vector_sum_mpi::MPIVectorSumParallel::pre_processing() {
   internal_order_test();
-  unsigned int delta = 0, remainder = 0;
+  unsigned int delta = 0;
+  unsigned int remainder = 0;
 
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
