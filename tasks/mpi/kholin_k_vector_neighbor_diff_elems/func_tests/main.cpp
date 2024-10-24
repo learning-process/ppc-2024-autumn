@@ -225,6 +225,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_post_processing) {
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
   boost::mpi::communicator world;
+  const int count_size_vector = 500;
   std::vector<int> global_vec;
   std::vector<int> global_elems(2, 0);
   std::vector<uint64_t> global_indices(2, 0);
@@ -232,7 +233,6 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 500;
     global_vec = std::vector<int>(count_size_vector);
     for (size_t i = 0; i < global_vec.size(); i++) {
       global_vec[i] = 4 * i + 2;
@@ -251,7 +251,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
 
   kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int, uint64_t> testMpiTaskParallel(taskDataPar,
                                                                                                   "MAX_DIFFERENCE");
-  testMpiTaskParallel.validation();
+  bool IsValid = testMpiTaskParallel.validation();
+  ASSERT_EQ(IsValid, true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
@@ -276,7 +277,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
     // Create Task
     kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int, uint64_t> testTaskSequential(taskDataSeq,
                                                                                                   "MAX_DIFFERENCE");
-    testTaskSequential.validation();
+    bool IsValid_ = testTaskSequential.validation();
+    ASSERT_EQ(IsValid_, true);
     testTaskSequential.pre_processing();
     testTaskSequential.run();
     testTaskSequential.post_processing();
