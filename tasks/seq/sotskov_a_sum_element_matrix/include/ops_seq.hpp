@@ -9,8 +9,8 @@ namespace sotskov_a_sum_element_matrix_seq {
 
 std::vector<int> create_random_matrix_int(int rows, int cols);
 std::vector<double> create_random_matrix_double(int rows, int cols);
-int sum_matrix_elements_int(const std::vector<int>& matrix, int rows, int cols);
-double sum_matrix_elements_double(const std::vector<double>& matrix, int rows, int cols);
+int sum_matrix_elements_int(const std::vector<int>& matrix);
+double sum_matrix_elements_double(const std::vector<double>& matrix);
 int random_range(int min, int max);
 
 class TestTaskSequentialInt : public ppc::core::Task {

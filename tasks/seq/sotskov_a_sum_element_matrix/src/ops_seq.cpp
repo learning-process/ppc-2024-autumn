@@ -5,11 +5,11 @@
 #include <numeric>
 #include <random>
 
-int sotskov_a_sum_element_matrix_seq::sum_matrix_elements_int(const std::vector<int>& matrix, int rows, int cols) {
+int sotskov_a_sum_element_matrix_seq::sum_matrix_elements_int(const std::vector<int>& matrix) {
     return std::accumulate(matrix.begin(), matrix.end(), 0);
 }
 
-double sotskov_a_sum_element_matrix_seq::sum_matrix_elements_double(const std::vector<double>& matrix, int rows, int cols) {
+double sotskov_a_sum_element_matrix_seq::sum_matrix_elements_double(const std::vector<double>& matrix) {
     return std::accumulate(matrix.begin(), matrix.end(), 0.0);
 }
 
@@ -54,7 +54,7 @@ sotskov_a_sum_element_matrix_seq::TestTaskSequentialInt::TestTaskSequentialInt(s
 bool sotskov_a_sum_element_matrix_seq::TestTaskSequentialInt::pre_processing() {
     internal_order_test();
     result_ = 0;
-    auto tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     input_data_.assign(tmp_ptr, tmp_ptr + taskData->inputs_count[0]);
     return true;
 }
@@ -85,7 +85,7 @@ sotskov_a_sum_element_matrix_seq::TestTaskSequentialDouble::TestTaskSequentialDo
 bool sotskov_a_sum_element_matrix_seq::TestTaskSequentialDouble::pre_processing() {
     internal_order_test();
     result_ = 0.0;
-    auto tmp_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
+    auto* tmp_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
     input_data_.assign(tmp_ptr, tmp_ptr + taskData->inputs_count[0]);
     return true;
 }
