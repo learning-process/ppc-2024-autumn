@@ -8,14 +8,15 @@
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
   boost::mpi::communicator world;
-  const int count_size_vector = 500;
-  std::vector<int> global_vec(count_size_vector, 0);
+  std::vector<int> global_vec;
   std::vector<int> global_elems(2, 0);
   std::vector<uint64_t> global_indices(2, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
+    const int count_size_vector = 500;
+    global_vec = std::vector<int>(count_size_vector);
     for (size_t i = 0; i < global_vec.size(); i++) {
       global_vec[i] = 4 * i + 2;
     }
@@ -70,13 +71,14 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
 }
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
   boost::mpi::communicator world;
-  const int count_size_vector = 500;
-  std::vector<int32_t> global_vec(count_size_vector, 0);
+  std::vector<int32_t>global_vec;
   std::vector<int32_t> global_elems(2, 0);
   std::vector<uint64_t> global_indices(2, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
+    const int count_size_vector = 500;
+    global_vec = std::vector<int32_t>(count_size_vector);
     for (size_t i = 0; i < global_vec.size(); i++) {
       global_vec[i] = 2 * i + 4;
     }
@@ -131,14 +133,15 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_float) {
   boost::mpi::communicator world;
-  const int count_size_vector = 500;
-  std::vector<float> global_vec(count_size_vector, 0);
+  std::vector<float> global_vec;
   std::vector<float> global_elems(2, 0);
   std::vector<uint64_t> global_indices(2, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
+    const int count_size_vector = 500;
+    global_vec = std::vector<float>(count_size_vector);
     for (size_t i = 0; i < global_vec.size(); i++) {
       global_vec[i] = 0.25 * i + 10;
     }
@@ -195,14 +198,15 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_float) {
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_double) {
   boost::mpi::communicator world;
-  const int count_size_vector = 500;
-  std::vector<double> global_vec(count_size_vector, 0);
+  std::vector<double> global_vec;
   std::vector<double> global_elems(2, 0);
   std::vector<uint64_t> global_indices(2, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
+    const int count_size_vector = 500;
+    global_vec = std::vector<double>(count_size_vector);
     for (size_t i = 0; i < global_vec.size(); i++) {
       global_vec[i] = 0.25 * i + 10;
     }
@@ -231,7 +235,6 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_double) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<double> reference_delta(1, 0);
     std::vector<double> reference_elems(2, 0);
     std::vector<uint64_t> reference_indices(2, 0);
 

@@ -105,14 +105,12 @@ class TestMPITaskParallel : public ppc::core::Task {
       : Task(std::move(taskData_)), ops(std::move(ops_)) {}
 
   MPI_Datatype get_mpi_type() {
-    // Создание типа данных
     MPI_Type_contiguous(sizeof(TypeElem), MPI_BYTE, &mpi_type_elem);
     MPI_Type_commit(&mpi_type_elem);
     return mpi_type_elem;
   }
 
    MPI_Datatype get_mpi_type2() {
-    // Создание типа данных
     MPI_Type_contiguous(sizeof(TypeIndex), MPI_BYTE, &mpi_type_index);
     MPI_Type_commit(&mpi_type_index);
     return mpi_type_index;
