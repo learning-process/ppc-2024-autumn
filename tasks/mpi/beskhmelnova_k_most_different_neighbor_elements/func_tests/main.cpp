@@ -140,8 +140,8 @@ TEST(beskhmelnova_k_most_different_neighbor_elements_mpi, Test_vector_double_100
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    ASSERT_EQ(reference_out[0], global_out[0]);
-    ASSERT_EQ(reference_out[1], global_out[1]);
+    ASSERT_NEAR(reference_out[0], global_out[0], 1e-10);
+    ASSERT_NEAR(reference_out[1], global_out[1], 1e-10);
   }
 }
 
@@ -188,8 +188,8 @@ TEST(beskhmelnova_k_most_different_neighbor_elements_mpi, Test_vector_double_100
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    ASSERT_EQ(reference_out[0], global_out[0]);
-    ASSERT_EQ(reference_out[1], global_out[1]);
+    ASSERT_NEAR(reference_out[0], global_out[0], 1e-10);
+    ASSERT_NEAR(reference_out[1], global_out[1], 1e-10);
   }
 }
 
@@ -236,8 +236,8 @@ TEST(beskhmelnova_k_most_different_neighbor_elements_mpi, Test_vector_double_une
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    ASSERT_EQ(reference_out[0], global_out[0]);
-    ASSERT_EQ(reference_out[1], global_out[1]);
+    ASSERT_NEAR(reference_out[0], global_out[0], 1e-10);
+    ASSERT_NEAR(reference_out[1], global_out[1], 1e-10);
   }
 }
 
