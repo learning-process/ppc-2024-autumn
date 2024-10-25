@@ -112,6 +112,7 @@ class AvgVectorMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
   static std::pair<std::vector<int>, std::vector<int>> displacement(size_t, size_t);
+  static int size_for_rank(int, int, int);
 };
 
 template <class In, class Out>
@@ -124,6 +125,13 @@ bool khasanyanov_k_average_vector_mpi::AvgVectorMPITaskParallel<In, Out>::valida
 }
 
 template <class In, class Out>
+int khasanyanov_k_average_vector_mpi::AvgVectorMPITaskParallel<In, Out>::size_for_rank(int rank, int count, int size) {
+  int average = count / size;
+  int mod = count % size;
+  return average + ((rank < mod) ? 1 : 0);
+}
+
+template <class In, class Out>
 bool khasanyanov_k_average_vector_mpi::AvgVectorMPITaskParallel<In, Out>::pre_processing() {
   internal_order_test();
   size_t input_size;
@@ -133,10 +141,10 @@ bool khasanyanov_k_average_vector_mpi::AvgVectorMPITaskParallel<In, Out>::pre_pr
 
   mpi::broadcast(world, input_size, 0);
 
-  std::pair<std::vector<int>, std::vector<int>> disp = displacement(input_size, world.size());
-  auto& displacements = disp.second;
-  auto& sizes = disp.first;
   if (world.rank() == 0) {
+    std::pair<std::vector<int>, std::vector<int>> disp = displacement(input_size, world.size());
+    auto& displacements = disp.second;
+    auto& sizes = disp.first;
     input_ = std::vector<In>(taskData->inputs_count[0]);
     auto* tmp = reinterpret_cast<In*>(taskData->inputs[0]);
 
@@ -147,8 +155,9 @@ bool khasanyanov_k_average_vector_mpi::AvgVectorMPITaskParallel<In, Out>::pre_pr
     mpi::scatterv(world, input_, sizes, displacements, local_input_.data(), sizes[0], 0);
 
   } else {
-    local_input_.resize(sizes[world.rank()]);
-    mpi::scatterv(world, local_input_.data(), sizes[world.rank()], 0);
+    auto size = size_for_rank(world.rank(), input_size, world.size());
+    local_input_.resize(size);
+    mpi::scatterv(world, local_input_.data(), size, 0);
   }
   avg = 0.0;
   return true;
@@ -187,6 +196,7 @@ khasanyanov_k_average_vector_mpi::AvgVectorMPITaskParallel<In, Out>::displacemen
     ++i;
     return disp[i - 1] + sizes[i - 1];
   });
+
   return {sizes, disp};
 }
 
