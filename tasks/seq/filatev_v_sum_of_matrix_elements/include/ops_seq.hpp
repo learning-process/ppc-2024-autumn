@@ -1,15 +1,16 @@
 // Filatev Vladislav Sum_of_matrix_elements
 #pragma once
 
-#include <string>
 #include <random>
+#include <string>
 #include <vector>
+
 #include "core/task/include/task.hpp"
 
 namespace filatev_v_sum_of_matrix_elements_seq {
 
-  long long sumVector(std::vector<int> vector);
-  std::vector<std::vector<int>> getRandomMatrix(int size_n, int size_m);
+long long sumVector(std::vector<int> vector);
+std::vector<std::vector<int>> getRandomMatrix(int size_n, int size_m);
 
 class SumMatrix : public ppc::core::Task {
  public:
@@ -25,4 +26,4 @@ class SumMatrix : public ppc::core::Task {
   int size_n, size_m;
 };
 
-}  // filatev_v_sum_of_matrix_elements_seq
+}  // namespace filatev_v_sum_of_matrix_elements_seq

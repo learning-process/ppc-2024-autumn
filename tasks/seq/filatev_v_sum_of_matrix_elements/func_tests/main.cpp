@@ -122,8 +122,8 @@ TEST(filatev_v_sum_of_matrix_elements_seq, Test_Sum_10_20_different) {
   std::vector<std::vector<int>> in(size_m, std::vector<int>(size_n, 1));
   std::vector<int> out(1, 0);
 
-  for (int i = 0;i < size_m; ++i){
-    for (int j = 0;j < size_n;++j){
+  for (int i = 0; i < size_m; ++i){
+    for (int j = 0; j < size_n; ++j){
       in[i][j] = (i * size_n + j + 1);
     }
   }
@@ -145,6 +145,5 @@ TEST(filatev_v_sum_of_matrix_elements_seq, Test_Sum_10_20_different) {
   sumMatrix.run();
   sumMatrix.post_processing();
 
- 
   ASSERT_EQ(20100, out[0]);
 }

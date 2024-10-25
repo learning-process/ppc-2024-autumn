@@ -3,7 +3,7 @@
 
 long long filatev_v_sum_of_matrix_elements_seq::sumVector(std::vector<int> vector){
   long long sum = 0;
-  for (int i = 0;i < vector.size();++i){
+  for (int i = 0; i < vector.size(); ++i){
     sum += vector[i];
   }
   return sum;
@@ -19,6 +19,7 @@ bool filatev_v_sum_of_matrix_elements_seq::SumMatrix::pre_processing() {
   
   for (int i = 0; i < size_m; ++i){
     auto* temp = reinterpret_cast<int*>(taskData->inputs[i]);
+    
     for (int j = 0; j < size_n; ++j){
       matrix[i * size_n + j] = temp[j];
     }
@@ -37,7 +38,7 @@ bool filatev_v_sum_of_matrix_elements_seq::SumMatrix::validation() {
 bool filatev_v_sum_of_matrix_elements_seq::SumMatrix::run() {
   internal_order_test();
 
-  for (int i = 0;i < matrix.size(); ++i){
+  for (int i = 0; i < matrix.size(); ++i){
     summ += matrix[i];
   }
 
