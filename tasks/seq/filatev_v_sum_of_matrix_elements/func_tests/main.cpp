@@ -1,6 +1,8 @@
 // filatev_v_sum_of_matrix_elements_seq
 #include <gtest/gtest.h>
+
 #include <vector>
+
 #include "seq/filatev_v_sum_of_matrix_elements/include/ops_seq.hpp"
 
 TEST(filatev_v_sum_of_matrix_elements_seq, Test_Sum_10_10_1) {
@@ -27,7 +29,6 @@ TEST(filatev_v_sum_of_matrix_elements_seq, Test_Sum_10_10_1) {
   sumMatrix.run();
   sumMatrix.post_processing();
 
- 
   ASSERT_EQ(100, out[0]);
 }
 
@@ -55,7 +56,6 @@ TEST(filatev_v_sum_of_matrix_elements_seq, Test_Sum_10_20_1) {
   sumMatrix.run();
   sumMatrix.post_processing();
 
- 
   ASSERT_EQ(200, out[0]);
 }
 
@@ -83,7 +83,6 @@ TEST(filatev_v_sum_of_matrix_elements_seq, Test_Sum_20_10_1) {
   sumMatrix.run();
   sumMatrix.post_processing();
 
- 
   ASSERT_EQ(200, out[0]);
 }
 
@@ -111,7 +110,6 @@ TEST(filatev_v_sum_of_matrix_elements_seq, Test_Sum_1_1_1) {
   sumMatrix.run();
   sumMatrix.post_processing();
 
- 
   ASSERT_EQ(1, out[0]);
 }
 
@@ -121,6 +119,8 @@ TEST(filatev_v_sum_of_matrix_elements_seq, Test_Sum_10_20_different) {
   // Create data
   std::vector<std::vector<int>> in(size_m, std::vector<int>(size_n, 1));
   std::vector<int> out(1, 0);
+
+
 
   for (int i = 0; i < size_m; ++i){
     for (int j = 0; j < size_n; ++j){
