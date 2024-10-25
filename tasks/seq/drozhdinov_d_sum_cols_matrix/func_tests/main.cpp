@@ -14,7 +14,7 @@ TEST(drozhdinov_d_sum_cols_matrix_seq, EmptyMatrixTest) {
   std::vector<int> matrix = {};
   std::vector<int> expres;
   std::vector<int> ans = {};
-  
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
