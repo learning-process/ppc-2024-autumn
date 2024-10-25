@@ -75,29 +75,6 @@ TEST(khasanyanov_k_average_vector_mpi, test_wrong_input) {
   }
 }
 
-TEST(khasanyanov_k_average_vector_mpi, test_small_input) {
-  mpi::communicator world;
-  std::vector<double> in = khasanyanov_k_average_vector_mpi::get_random_vector<double>(2);
-  std::vector<double> out(1, 0.0);
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    taskData = khasanyanov_k_average_vector_mpi::create_task_data<double, double>(in, out);
-  }
-  khasanyanov_k_average_vector_mpi::AvgVectorMPITaskParallel<double, double> testTask(taskData);
-  RUN_TASK(testTask);
-  if (world.rank() == 0) {
-    std::vector<double> seq_out(1, 0.0);
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq =
-        khasanyanov_k_average_vector_mpi::create_task_data<double, double>(in, seq_out);
-
-    khasanyanov_k_average_vector_mpi::AvgVectorMPITaskSequential<double, double> testMpiTaskSequential(taskDataSeq);
-
-    RUN_TASK(testMpiTaskSequential);
-
-    EXPECT_NEAR(seq_out[0], out[0], 1e-5);
-  }
-}
-
 #define FUNC_MPI_TEST(InType, OutType, Size)                                                               \
   TEST(khasanyanov_k_average_vector_mpi, test_mpi_##InType##_##Size) {                                     \
     mpi::communicator world;                                                                               \
@@ -142,7 +119,8 @@ TEST(khasanyanov_k_average_vector_mpi, test_small_input) {
   RUN_FUNC_TESTS(1234, 7.7)  \
   RUN_FUNC_TESTS(2000, 10)   \
   RUN_FUNC_TESTS(9, 77)      \
-  RUN_FUNC_TESTS(3011, 111)
+  RUN_FUNC_TESTS(3011, 111)  \
+  RUN_FUNC_TESTS(2, 23)
 
 //=======run=============
 RUN_ALL_FUNC_TESTS()
