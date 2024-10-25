@@ -93,6 +93,7 @@ TEST(khasanyanov_k_average_vector_mpi, test_small_input) {
     khasanyanov_k_average_vector_mpi::AvgVectorMPITaskSequential<double, double> testMpiTaskSequential(taskDataSeq);
 
     RUN_TASK(testMpiTaskSequential);
+
     EXPECT_NEAR(seq_out[0], out[0], 1e-5);
   }
 }
