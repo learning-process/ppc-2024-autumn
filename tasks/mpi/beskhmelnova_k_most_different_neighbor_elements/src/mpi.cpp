@@ -111,7 +111,8 @@ bool beskhmelnova_k_most_different_neighbor_elements_mpi::TestMPITaskSequential<
 
 template <typename DataType>
 bool beskhmelnova_k_most_different_neighbor_elements_mpi::TestMPITaskParallel<DataType>::pre_processing() {
-  internal_order_test();
+  /*internal_order_test();
+  std::cout << " Rank " << world.rank() << " before pre_processing \n ";
   int world_rank = world.rank();
   int world_size = world.size();
   int n;
@@ -136,11 +137,38 @@ bool beskhmelnova_k_most_different_neighbor_elements_mpi::TestMPITaskParallel<Da
   }
   int local_vector_size = send_counts[world_rank];
   local_input_.resize(local_vector_size);
+  std::cout << "Rank " << world.rank() << " before scatterv\n";
   if (world.rank() == 0)
     boost::mpi::scatterv(world, input_, send_counts, offset, local_input_.data(), local_vector_size, 0);
   else
     boost::mpi::scatterv(world, local_input_.data(), local_vector_size, 0);
+  std::cout << "Rank " << world.rank() << " after scatterv\n";
   local_input_size = local_vector_size;
+  std::cout << "Rank " << world.rank() << " got local_input_size = " << local_input_size << "\n ";
+  return true;
+}*/
+  internal_order_test();
+  unsigned int delta = 0;
+  if (world.rank() == 0) {
+    delta = taskData->inputs_count[0] / world.size();
+  }
+  broadcast(world, delta, 0);
+  if (world.rank() == 0) {
+    input_ = std::vector<DataType>(taskData->inputs_count[0]);
+    auto* tempPtr = reinterpret_cast<DataType*>(taskData->inputs[0]);
+    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+      input_[i] = tempPtr[i];
+    }
+    for (int process = 1; process < world.size(); process++) {
+      world.send(process, 0, input_.data() + process * delta, delta);
+    }
+  }
+  local_input_ = std::vector<DataType>(delta);
+  if (world.rank() == 0) {
+    local_input_ = std::vector<DataType>(input_.begin(), input_.begin() + delta);
+  } else {
+    world.recv(0, 0, local_input_.data(), delta);
+  }
   return true;
 }
 
@@ -204,11 +232,11 @@ void reduce_max_difference(const DataType* in_data, DataType* inout_data, int* l
 template <typename DataType>
 bool beskhmelnova_k_most_different_neighbor_elements_mpi::TestMPITaskParallel<DataType>::run() {
   internal_order_test();
-  if (local_input_size == 0) {
+  /*if (local_input_size == 0) {
     res[0] = -1;
     res[1] = -1;
     return true;
-  }
+  }*/
   NeighborDifference<DataType> local_result = find_max_difference(local_input_);
   DataType local_data[3] = {local_result.first, local_result.second, local_result.dif};
   DataType global_data[3] = {1, 1, 0};
