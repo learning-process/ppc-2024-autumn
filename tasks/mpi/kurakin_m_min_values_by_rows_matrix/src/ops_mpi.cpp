@@ -130,7 +130,7 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
     ++k;
     ++ind;
   }
-  
+
   for (unsigned int i = ind; i < res.size(); ++i) {
     reduce(world, INT_MAX, res[i], boost::mpi::minimum<int>(), 0);
   }
@@ -140,9 +140,7 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
 
 bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
-  
-  world.barrier();
-  
+
   if (world.rank() == 0) {
     for (int i = 0; i < count_rows; i++) {
       reinterpret_cast<int*>(taskData->outputs[0])[i] = res[i];
