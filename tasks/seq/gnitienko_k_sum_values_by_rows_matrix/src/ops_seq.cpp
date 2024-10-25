@@ -1,7 +1,8 @@
-// Copyright 2024 Nesterov Alexander
+п»ї// Copyright 2024 Nesterov Alexander
 #include "seq/gnitienko_k_sum_values_by_rows_matrix/include/ops_seq.hpp"
 
 #include <thread>
+#include <cstring>
 
 using namespace std::chrono_literals;
 
@@ -36,9 +37,9 @@ std::vector<int> gnitienko_k_sum_row_seq::SumByRowSeq::mainFunc() {
   for (int i = 0; i < rows; ++i) {
     int sum = 0;
     for (int j = 0; j < cols; ++j) {
-      sum += input_[i * cols + j];  // Индексируем вектор как двумерный
+      sum += input_[i * cols + j];
     }
-    res[i] = sum;  // Сохраняем сумму в выходной вектор
+    res[i] = sum;
   }
   return res;
 }
