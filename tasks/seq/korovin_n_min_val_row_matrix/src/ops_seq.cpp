@@ -26,16 +26,9 @@ bool korovin_n_min_val_row_matrix_seq::TestTaskSequential::pre_processing() {
 bool korovin_n_min_val_row_matrix_seq::TestTaskSequential::validation() {
   internal_order_test();
 
-  if (taskData->inputs.empty() || taskData->outputs.empty()) {
-    return false;
-  }
-  if (taskData->inputs_count.size() < 2 || taskData->inputs_count[0] == 0 || taskData->inputs_count[1] == 0) {
-    return false;
-  }
-  if (taskData->outputs_count[0] != taskData->inputs_count[0]) {
-    return false;
-  }
-  return true;
+  return ((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
+          (taskData->inputs_count.size() >= 2 && taskData->inputs_count[0] != 0 && taskData->inputs_count[1] != 0) &&
+          (taskData->outputs_count[0] == taskData->inputs_count[0]));
 }
 
 bool korovin_n_min_val_row_matrix_seq::TestTaskSequential::run() {
