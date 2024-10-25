@@ -272,7 +272,6 @@ TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Min_null1) {
   ASSERT_EQ(testMpiTaskParallel.validation(), false);
 
   if (world.rank() == 0) {
-
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
