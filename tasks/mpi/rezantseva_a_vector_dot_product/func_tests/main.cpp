@@ -7,14 +7,14 @@
 
 #include "mpi/rezantseva_a_vector_dot_product/include/ops_mpi.hpp"
 
-TEST(rezantseva_a_vector_dot_product_mpi, can_scalar_multiply_vec_size_100) {
+TEST(rezantseva_a_vector_dot_product_mpi, can_scalar_multiply_vec_size_120) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vec;
   std::vector<int32_t> res(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    const int count_size_vector = 100;
+    const int count_size_vector = 120;
     std::vector<int> v1 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
     std::vector<int> v2 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
 
