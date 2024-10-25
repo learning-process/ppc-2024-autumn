@@ -56,9 +56,7 @@ bool kolodkin_g_sentence_count_mpi::TestMPITaskParallel::pre_processing() {
     for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
       input_[i] = tmp_ptr[i];
     }
-    delta = taskData->inputs_count[0] / world.size();
   }
-  boost::mpi::broadcast(world, delta, 0);
   local_input_.resize(delta);
   if (world.rank() == 0) {
     for (int proc = 1; proc < world.size(); proc++) {
@@ -91,7 +89,6 @@ bool kolodkin_g_sentence_count_mpi::TestMPITaskParallel::run() {
     }
   }
   reduce(world, localSentenceCount, res, std::plus<>(), 0);
-  std::this_thread::sleep_for(20ms);
   return true;
 }
 

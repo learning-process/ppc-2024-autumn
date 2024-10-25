@@ -3,12 +3,13 @@
 
 #include <vector>
 
-#include "seq/kolodkin_g_sentence_count/include/ops_seq.hpp"
+#include "seq/example/include/ops_seq.hpp"
 
-TEST(Sequential, Test_two_sentences) {
+TEST(Sequential, Test_Sum_10) {
+  const int count = 10;
+
   // Create data
-  std::string str = "Hello! My name is Grisha!";
-  std::vector<std::string> in(1, str);
+  std::vector<int> in(1, count);
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -19,18 +20,21 @@ TEST(Sequential, Test_two_sentences) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  kolodkin_g_sentence_count_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  nesterov_a_test_task_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(out[0], 2);
+  ASSERT_EQ(count, out[0]);
 }
-TEST(Sequential, Test_sentences_with_special_symbols) {
+
+TEST(Sequential, Test_Sum_20) {
+  const int count = 20;
+
   // Create data
-  std::string str = "Hello!My name is Grisha! I have two pets: cat,dog,parrot.";
+  std::vector<int> in(1, count);
   std::vector<int> out(1, 0);
-  std::vector<std::string> in(1, str);
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
@@ -39,18 +43,19 @@ TEST(Sequential, Test_sentences_with_special_symbols) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  kolodkin_g_sentence_count_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  nesterov_a_test_task_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(out[0], 3);
+  ASSERT_EQ(count, out[0]);
 }
-TEST(Sequential, Test_sentences_with_special_symbols_in_end_of_sentence) {
+
+TEST(Sequential, Test_Sum_50) {
+  const int count = 50;
+
   // Create data
-  std::string str =
-      "Hello!My name is Grisha! I have two pets: cat,dog,parrot. What is your name?! How are you!? Well...";
-  std::vector<std::string> in(1, str);
+  std::vector<int> in(1, count);
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -61,19 +66,20 @@ TEST(Sequential, Test_sentences_with_special_symbols_in_end_of_sentence) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  kolodkin_g_sentence_count_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  nesterov_a_test_task_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(out[0], 6);
+  ASSERT_EQ(count, out[0]);
 }
-TEST(Sequential, Test_sentences_with_double_symbols) {
+
+TEST(Sequential, Test_Sum_70) {
+  const int count = 70;
+
   // Create data
-  std::string str =
-      "Hello!! My name is Grisha!! I have two pets: cat,dog,parrot. What is your name?! How are you!? Well...";
+  std::vector<int> in(1, count);
   std::vector<int> out(1, 0);
-  std::vector<std::string> in(1, str);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -83,21 +89,21 @@ TEST(Sequential, Test_sentences_with_double_symbols) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  kolodkin_g_sentence_count_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  nesterov_a_test_task_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(out[0], 6);
+  ASSERT_EQ(count, out[0]);
 }
-TEST(Sequential, Big_text) {
+
+TEST(Sequential, Test_Sum_100) {
+  const int count = 100;
+
   // Create data
-  std::string str =
-      "Otche nash, ize esi na nebeseh! Da svytitsa imya tvoe, da priidet tsarstvo tvoe! Da budet volya tvoya, ako na "
-      "nebeseh i na zemle. Hleb nas nasyshnii dazd nam dnes, i ostavi nam dolgi nasha. Yakozhe i my ostavlyaem "
-      "dolznikom nashim! I ne vvedi nas vo iskushenie, no izbavi nas ot lukavogo... Amin!";
+  std::vector<int> in(1, count);
   std::vector<int> out(1, 0);
-  std::vector<std::string> in(1, str);
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
@@ -106,10 +112,15 @@ TEST(Sequential, Big_text) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  kolodkin_g_sentence_count_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  nesterov_a_test_task_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(out[0], 7);
+  ASSERT_EQ(count, out[0]);
+}
+
+int main(int argc, char **argv) {
+  testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }
