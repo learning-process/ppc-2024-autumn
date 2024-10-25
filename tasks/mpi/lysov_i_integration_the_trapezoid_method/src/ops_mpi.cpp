@@ -10,11 +10,9 @@
 bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
   if (taskData->inputs.size() != 3) {
-    std::cerr << "Error: Expected 3 inputs but got " << taskData->inputs.size() << std::endl;
     return false;
   }
   if (taskData->outputs.size() != 1) {
-    std::cerr << "Error: Expected 1 output but got " << taskData->outputs.size() << std::endl;
     return false;
   }
   return true;
@@ -54,16 +52,13 @@ bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskParallel::validati
   internal_order_test();
   if (world.rank() == 0) {
     if (taskData->inputs.size() != 3) {
-      std::cerr << "Error:expected 3 inputs but got" << taskData->inputs.size() << std::endl;
       return false;
     }
     if (taskData->outputs.size() != 1) {
-      std::cerr << "Error:expected 1 outputs but got" << taskData->outputs.size() << std::endl;
       return false;
     }
     cnt_of_splits = *reinterpret_cast<int*>(taskData->inputs[2]);
     if (cnt_of_splits <= 0) {
-      std::cerr << "Error: count of splits must be greather than 0" << std::endl;
       return false;
     }
   }
@@ -99,7 +94,7 @@ bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskParallel::run() {
     local_res += function(x);
   }
   local_res *= h;
-  boost::mpi::reduce(world, local_res, res, std::plus<double>(), 0);  // ?
+  boost::mpi::reduce(world, local_res, res, std::plus<>(), 0);
   return true;
 }
 bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskParallel::post_processing() {

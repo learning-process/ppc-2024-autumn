@@ -48,7 +48,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   int cnt_of_splits = 0;
   double local_a;
   int local_cnt_of_splits;
-  double function(double x) { return x * x; }
+  static double function(double x) { return x * x; }
 
  private:
   std::vector<int> input_, local_input_;

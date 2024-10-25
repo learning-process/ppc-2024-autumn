@@ -5,11 +5,9 @@ using namespace std::chrono_literals;
 bool lysov_i_integration_the_trapezoid_method_seq::TestTaskSequential::validation() {
   internal_order_test();
   if (taskData->inputs.size() != 3) {
-    std::cerr << "Error: Expected 3 inputs but got " << taskData->inputs.size() << std::endl;
     return false;
   }
   if (taskData->outputs.size() != 1) {
-    std::cerr << "Error: Expected 1 output but got " << taskData->outputs.size() << std::endl;
     return false;
   }
   return true;
