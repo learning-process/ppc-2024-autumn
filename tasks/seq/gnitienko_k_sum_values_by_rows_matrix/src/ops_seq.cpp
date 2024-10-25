@@ -53,6 +53,6 @@ bool gnitienko_k_sum_row_seq::SumByRowSeq::run() {
 bool gnitienko_k_sum_row_seq::SumByRowSeq::post_processing() {
   internal_order_test();
   //reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
-  std::memcpy(taskData->outputs[0], res.data(), rows * sizeof(int));
+  memcpy(taskData->outputs[0], res.data(), rows * sizeof(int));
   return true;
 }
