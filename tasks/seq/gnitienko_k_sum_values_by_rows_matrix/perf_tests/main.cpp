@@ -13,12 +13,12 @@ TEST(gnitienko_k_sum_row_seq, test_pipeline_run) {
   // Create data
   std::vector<int> in(rows * cols, 0);
   for (int i = 0; i < rows; ++i) {
-    in[i * cols] = i;  // Первый элемент каждой строки
+    in[i * cols] = i;
   }
   std::vector<int> expect(rows, 0);
   for (int i = 0; i < rows; ++i) {
     for (int j = 0; j < cols; ++j) {
-      expect[i] += in[i * cols + j];  // Суммируем все элементы в строке
+      expect[i] += in[i * cols + j];
     }
   }
   std::vector<int> out(rows, 0);
@@ -26,7 +26,7 @@ TEST(gnitienko_k_sum_row_seq, test_pipeline_run) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(static_cast<uint32_t>(rows)); 
+  taskDataSeq->inputs_count.emplace_back(static_cast<uint32_t>(rows));
   taskDataSeq->inputs_count.emplace_back(static_cast<uint32_t>(cols));
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(static_cast<uint32_t>(out.size()));
@@ -61,12 +61,12 @@ TEST(gnitienko_k_sum_row_seq, test_task_run) {
   // Create data
   std::vector<int> in(rows * cols, 0);
   for (int i = 0; i < rows; ++i) {
-    in[i * cols] = i;  // Первый элемент каждой строки
+    in[i * cols] = i;
   }
   std::vector<int> expect(rows, 0);
   for (int i = 0; i < rows; ++i) {
     for (int j = 0; j < cols; ++j) {
-      expect[i] += in[i * cols + j];  // Суммируем все элементы в строке
+      expect[i] += in[i * cols + j];
     }
   }
   std::vector<int> out(rows, 0);
