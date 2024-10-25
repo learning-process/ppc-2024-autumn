@@ -1,98 +1,151 @@
 #include <gtest/gtest.h>
 
+#include <memory>
+#include <string>
+
 #include "core/perf/include/perf.hpp"
 #include "seq/burykin_m_word_count/include/ops_seq.hpp"
 
-TEST(BurykinWordCountTest, EmptyString) {
-  auto taskData = std::make_shared<ppc::core::TaskData>();
-  auto task = std::make_shared<burykin_m_word_count::TestTaskSequential>(taskData);
-  auto perf = std::make_shared<ppc::core::Perf>(task);
+using namespace ppc::core;
+using namespace burykin_m_word_count;
 
-  std::string input;
-  int output = 0;
-  taskData->inputs = {reinterpret_cast<uint8_t*>(input.data())};
-  taskData->inputs_count = {static_cast<unsigned int>(input.size())};
-  taskData->outputs = {reinterpret_cast<uint8_t*>(&output)};
-  taskData->outputs_count = {1};
+TEST(BurykinMWordCountSequential, TestSingleWord) {
+  std::string input = "Hello.";
+  int expected_count = 1;
 
-  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+  std::vector<char> input_data(input.begin(), input.end());
+  std::vector<int> output_data(1, 0);
 
-  perf->pipeline_run(perfAttr, perfResults);
+  auto taskData = std::make_shared<TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_data.data()));
+  taskData->inputs_count.emplace_back(input_data.size());
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_data.data()));
+  taskData->outputs_count.emplace_back(output_data.size());
 
-  EXPECT_EQ(output, 0);
+  TestTaskSequential task(taskData);
+  ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
+
+  ASSERT_EQ(output_data[0], expected_count);
 }
 
-TEST(BurykinWordCountTest, SingleWord) {
-  auto taskData = std::make_shared<ppc::core::TaskData>();
-  auto task = std::make_shared<burykin_m_word_count::TestTaskSequential>(taskData);
-  auto perf = std::make_shared<ppc::core::Perf>(task);
+TEST(BurykinMWordCountSequential, TestMultipleWords) {
+  std::string input = "Hello world baba gaga.";
+  int expected_count = 4;
+  std::vector<char> input_data(input.begin(), input.end());
+  std::vector<int> output_data(1, 0);
 
-  std::string input = "Hello";
-  int output = 0;
-  taskData->inputs = {reinterpret_cast<uint8_t*>(input.data())};
-  taskData->inputs_count = {static_cast<unsigned int>(input.size())};
-  taskData->outputs = {reinterpret_cast<uint8_t*>(&output)};
-  taskData->outputs_count = {1};
+  auto taskData = std::make_shared<TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_data.data()));
+  taskData->inputs_count.emplace_back(input_data.size());
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_data.data()));
+  taskData->outputs_count.emplace_back(output_data.size());
 
-  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+  TestTaskSequential task(taskData);
+  ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
 
-  perf->pipeline_run(perfAttr, perfResults);
-
-  EXPECT_EQ(output, 1);
+  ASSERT_EQ(output_data[0], expected_count);
 }
 
-TEST(BurykinWordCountTest, MultipleWords) {
-  auto taskData = std::make_shared<ppc::core::TaskData>();
-  auto task = std::make_shared<burykin_m_word_count::TestTaskSequential>(taskData);
-  auto perf = std::make_shared<ppc::core::Perf>(task);
+TEST(BurykinMWordCountSequential, TestApostrophes) {
+  std::string input = "Feels like i'm walking on sunshine.";
+  int expected_count = 6;
+  std::vector<char> input_data(input.begin(), input.end());
+  std::vector<int> output_data(1, 0);
 
-  std::string input = "This is a test sentence.";
-  int output = 0;
-  taskData->inputs = {reinterpret_cast<uint8_t*>(input.data())};
-  taskData->inputs_count = {static_cast<unsigned int>(input.size())};
-  taskData->outputs = {reinterpret_cast<uint8_t*>(&output)};
-  taskData->outputs_count = {1};
+  auto taskData = std::make_shared<TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_data.data()));
+  taskData->inputs_count.emplace_back(input_data.size());
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_data.data()));
+  taskData->outputs_count.emplace_back(output_data.size());
 
-  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+  TestTaskSequential task(taskData);
+  ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
 
-  perf->pipeline_run(perfAttr, perfResults);
-
-  EXPECT_EQ(output, 5);
+  ASSERT_EQ(output_data[0], expected_count);
 }
 
-TEST(BurykinWordCountTest, WordsWithApostrophes) {
-  auto taskData = std::make_shared<ppc::core::TaskData>();
-  auto task = std::make_shared<burykin_m_word_count::TestTaskSequential>(taskData);
-  auto perf = std::make_shared<ppc::core::Perf>(task);
+TEST(BurykinMWordCountSequential, TestNoWords) {
+  std::string input = "!!! ??? ...";
+  int expected_count = 0;
+  std::vector<char> input_data(input.begin(), input.end());
+  std::vector<int> output_data(1, 0);
 
-  std::string input = "It's a beautiful day, isn't it?";
-  int output = 0;
-  taskData->inputs = {reinterpret_cast<uint8_t*>(input.data())};
-  taskData->inputs_count = {static_cast<unsigned int>(input.size())};
-  taskData->outputs = {reinterpret_cast<uint8_t*>(&output)};
-  taskData->outputs_count = {1};
+  auto taskData = std::make_shared<TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_data.data()));
+  taskData->inputs_count.emplace_back(input_data.size());
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_data.data()));
+  taskData->outputs_count.emplace_back(output_data.size());
 
-  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+  TestTaskSequential task(taskData);
+  ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
 
-  perf->pipeline_run(perfAttr, perfResults);
-
-  EXPECT_EQ(output, 6);
+  ASSERT_EQ(output_data[0], expected_count);
 }
 
-TEST(BurykinWordCountTest, InvalidInput) {
-  auto taskData = std::make_shared<ppc::core::TaskData>();
-  auto task = std::make_shared<burykin_m_word_count::TestTaskSequential>(taskData);
+TEST(BurykinMWordCountPerformance, PipelineRunPerformance) {
+  std::string input = "This is a sample text to test the word counting functionality.";
+  std::vector<char> input_data(input.begin(), input.end());
+  std::vector<int> output_data(1, 0);
 
-  std::string input = "Test";
-  int output = 0;
-  taskData->inputs = {reinterpret_cast<uint8_t*>(input.data())};
-  taskData->inputs_count = {0};  // Устанавливаем некорректный размер входных данных
-  taskData->outputs = {reinterpret_cast<uint8_t*>(&output)};
-  taskData->outputs_count = {1};
+  auto taskData = std::make_shared<TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_data.data()));
+  taskData->inputs_count.emplace_back(input_data.size());
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_data.data()));
+  taskData->outputs_count.emplace_back(output_data.size());
 
-  EXPECT_FALSE(task->validation());
+  auto task = std::make_shared<TestTaskSequential>(taskData);
+  Perf perfAnalyzer(task);
+
+  auto perfAttr = std::make_shared<PerfAttr>();
+  perfAttr->num_running = 1000;
+  perfAttr->current_timer = []() -> double {
+    return static_cast<double>(std::chrono::steady_clock::now().time_since_epoch().count()) * 1e-9;
+  };
+
+  auto perfResults = std::make_shared<PerfResults>();
+
+  perfAnalyzer.pipeline_run(perfAttr, perfResults);
+  Perf::print_perf_statistic(perfResults);
+
+  ASSERT_EQ(output_data[0], 11);
+}
+
+TEST(BurykinMWordCountPerformance, TaskRunPerformance) {
+  std::string input = "Another example sentence to evaluate the performance of the word counting task.";
+  std::vector<char> input_data(input.begin(), input.end());
+  std::vector<int> output_data(1, 0);
+
+  auto taskData = std::make_shared<TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_data.data()));
+  taskData->inputs_count.emplace_back(input_data.size());
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_data.data()));
+  taskData->outputs_count.emplace_back(output_data.size());
+
+  auto task = std::make_shared<TestTaskSequential>(taskData);
+  Perf perfAnalyzer(task);
+
+  auto perfAttr = std::make_shared<PerfAttr>();
+  perfAttr->num_running = 1000;
+  perfAttr->current_timer = []() -> double {
+    return static_cast<double>(std::chrono::steady_clock::now().time_since_epoch().count()) * 1e-9;
+  };
+
+  auto perfResults = std::make_shared<PerfResults>();
+
+  perfAnalyzer.task_run(perfAttr, perfResults);
+  Perf::print_perf_statistic(perfResults);
+
+  ASSERT_EQ(output_data[0], 12);
 }
