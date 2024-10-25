@@ -42,6 +42,7 @@ int TestTaskSequential::count_words(const std::string& text) {
 
   for (size_t i = 0; i < text.length(); ++i) {
     char c = text[i];
+
     if (is_word_character(c)) {
       if (!in_word) {
         count++;

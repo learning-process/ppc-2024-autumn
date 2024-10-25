@@ -9,7 +9,7 @@
 using namespace ppc::core;
 using namespace burykin_m_word_count;
 
-TEST(BurykinMWordCountSequential, TestSingleWord) {
+TEST(WordCountSequential, TestSingleWord) {
   std::string input = "Hello.";
   int expected_count = 1;
 
@@ -31,7 +31,7 @@ TEST(BurykinMWordCountSequential, TestSingleWord) {
   ASSERT_EQ(output_data[0], expected_count);
 }
 
-TEST(BurykinMWordCountSequential, TestMultipleWords) {
+TEST(WordCountSequential, TestMultipleWords) {
   std::string input = "Hello world baba gaga.";
   int expected_count = 4;
   std::vector<char> input_data(input.begin(), input.end());
@@ -52,7 +52,7 @@ TEST(BurykinMWordCountSequential, TestMultipleWords) {
   ASSERT_EQ(output_data[0], expected_count);
 }
 
-TEST(BurykinMWordCountSequential, TestApostrophes) {
+TEST(WordCountSequential, TestApostrophes) {
   std::string input = "Feels like i'm walking on sunshine.";
   int expected_count = 6;
   std::vector<char> input_data(input.begin(), input.end());
@@ -73,7 +73,7 @@ TEST(BurykinMWordCountSequential, TestApostrophes) {
   ASSERT_EQ(output_data[0], expected_count);
 }
 
-TEST(BurykinMWordCountSequential, TestNoWords) {
+TEST(WordCountSequential, TestNoWords) {
   std::string input = "!!! ??? ...";
   int expected_count = 0;
   std::vector<char> input_data(input.begin(), input.end());
@@ -94,7 +94,7 @@ TEST(BurykinMWordCountSequential, TestNoWords) {
   ASSERT_EQ(output_data[0], expected_count);
 }
 
-TEST(BurykinMWordCountPerformance, PipelineRunPerformance) {
+TEST(WordCountSequential, PipelineRunPerformance) {
   std::string input = "This is a sample text to test the word counting functionality.";
   std::vector<char> input_data(input.begin(), input.end());
   std::vector<int> output_data(1, 0);
@@ -122,7 +122,7 @@ TEST(BurykinMWordCountPerformance, PipelineRunPerformance) {
   ASSERT_EQ(output_data[0], 11);
 }
 
-TEST(BurykinMWordCountPerformance, TaskRunPerformance) {
+TEST(WordCountSequential, TaskRunPerformance) {
   std::string input = "Another example sentence to evaluate the performance of the word counting task.";
   std::vector<char> input_data(input.begin(), input.end());
   std::vector<int> output_data(1, 0);
