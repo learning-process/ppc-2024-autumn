@@ -239,7 +239,6 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_1_1_r) {
   }
 }
 
-
 TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Empty_Matrix) {
   boost::mpi::communicator world;
   const int count = 0;
