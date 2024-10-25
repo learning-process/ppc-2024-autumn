@@ -232,17 +232,19 @@ void reduce_max_difference(const DataType* in_data, DataType* inout_data, int* l
 template <typename DataType>
 bool beskhmelnova_k_most_different_neighbor_elements_mpi::TestMPITaskParallel<DataType>::run() {
   internal_order_test();
-  /*if (local_input_size == 0) {
-    res[0] = -1;
-    res[1] = -1;
-    return true;
-  }*/
+  // if (local_input_size == 0) {
+  //  /* res[0] = -1;
+  //   res[1] = -1*/;
+  //   return true;
+  // }
   NeighborDifference<DataType> local_result = find_max_difference(local_input_);
   DataType local_data[3] = {local_result.first, local_result.second, local_result.dif};
   DataType global_data[3] = {1, 1, 0};
   MPI_Op custom_op;
   MPI_Op_create(reinterpret_cast<MPI_User_function*>(&reduce_max_difference<DataType>), 1, &custom_op);
-  MPI_Reduce(local_data, global_data, 3, MPI_DOUBLE, custom_op, 0, MPI_COMM_WORLD);
+  if (typeid(DataType) == typeid(int)) MPI_Reduce(local_data, global_data, 3, MPI_INT, custom_op, 0, MPI_COMM_WORLD);
+  if (typeid(DataType) == typeid(double))
+    MPI_Reduce(local_data, global_data, 3, MPI_DOUBLE, custom_op, 0, MPI_COMM_WORLD);
   if (world.rank() == 0) {
     res[0] = global_data[0];
     res[1] = global_data[1];
