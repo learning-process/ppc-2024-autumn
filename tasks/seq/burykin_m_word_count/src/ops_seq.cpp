@@ -6,8 +6,8 @@ namespace burykin_m_word_count {
 
 bool TestTaskSequential::pre_processing() {
   internal_order_test();
-  if (taskData->inputs[0] != nullptr) {
-    input_ = reinterpret_cast<char*>(taskData->inputs[0]);
+  if (taskData->inputs[0] != nullptr && taskData->inputs_count[0] > 0) {
+    input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
   } else {
     input_ = "";
   }
@@ -40,7 +40,8 @@ int TestTaskSequential::count_words(const std::string& text) {
   int count = 0;
   bool in_word = false;
 
-  for (char c : text) {
+  for (size_t i = 0; i < text.length(); ++i) {
+    char c = text[i];
     if (is_word_character(c)) {
       if (!in_word) {
         count++;
@@ -49,8 +50,17 @@ int TestTaskSequential::count_words(const std::string& text) {
     } else {
       in_word = false;
     }
+
+    if (c == '\'' && i > 0 && i < text.length() - 1) {
+      if (std::isalpha(text[i-1]) && std::isalpha(text[i+1])) {
+        in_word = true;
+      }
+    }
+
+    std::cout << "Символ: " << c << ", in_word: " << in_word << ", count: " << count << std::endl;
   }
 
+  std::cout << "Итоговый счет слов: " << count << std::endl;
   return count;
 }
 

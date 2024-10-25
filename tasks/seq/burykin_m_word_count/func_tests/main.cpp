@@ -59,7 +59,7 @@ TEST(WordCountSequential, MultipleWords) {
   ASSERT_TRUE(task.run());
   ASSERT_TRUE(task.post_processing());
 
-  ASSERT_EQ(5, out[0]);
+  ASSERT_EQ(5, out[0]) << "Ожидалось 5 слов в предложении: '" << input << "', но получено: " << out[0];
 }
 
 TEST(WordCountSequential, WordsWithApostrophes) {
