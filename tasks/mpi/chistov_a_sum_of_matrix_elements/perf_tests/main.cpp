@@ -10,8 +10,8 @@ TEST(chistov_a_sum_of_matrix_elements, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> global_sum(1, 0);
-  const int n = 3000;
-  const int m = 3000;
+  const int n = 4000;
+  const int m = 4000;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
