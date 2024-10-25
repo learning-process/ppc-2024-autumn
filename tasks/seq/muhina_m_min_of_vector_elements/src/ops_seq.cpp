@@ -6,12 +6,12 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> muhina_m_min_of_vector_elements_seq::GetRandomVector(int sz) {
+std::vector<int> muhina_m_min_of_vector_elements_seq::GetRandomVector(int sz, int min_value, int max_value) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
   for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 200 - 100;  // Generate random numbers from -100 to 99
+    vec[i] = min_value + gen() % (max_value - min_value + 1);
   }
   return vec;
 }

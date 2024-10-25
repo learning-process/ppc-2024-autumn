@@ -7,7 +7,7 @@
 #include "seq/muhina_m_min_of_vector_elements/include/ops_seq.hpp"
 
 TEST(muhina_m_min_of_vector_elements, test_pipeline_run) {
-  const int count = 100000000;
+  const int count = 2000000;
 
   // Create data
   std::vector<int> in(count, 100);

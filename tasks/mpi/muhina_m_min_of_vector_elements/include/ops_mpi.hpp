@@ -14,7 +14,7 @@
 #include "core/task/include/task.hpp"
 
 namespace muhina_m_min_of_vector_elements_mpi {
-std::vector<int> GetRandomVector(int sz);
+std::vector<int> GetRandomVector(int sz, int min_value = 0, int max_value = 100);
 int vectorMin(std::vector<int, std::allocator<int>> v);
 
 class MinOfVectorMPISequential : public ppc::core::Task {
@@ -28,7 +28,6 @@ class MinOfVectorMPISequential : public ppc::core::Task {
  private:
   std::vector<int> input_;
   int res_{};
-  std::string ops_;
 };
 
 class MinOfVectorMPIParallel : public ppc::core::Task {
@@ -42,7 +41,6 @@ class MinOfVectorMPIParallel : public ppc::core::Task {
  private:
   std::vector<int> input_, local_input_;
   int res_{};
-  std::string ops_;
   boost::mpi::communicator world_;
 };
 

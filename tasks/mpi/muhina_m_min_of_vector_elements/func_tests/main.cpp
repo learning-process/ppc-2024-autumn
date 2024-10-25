@@ -16,7 +16,9 @@ TEST(muhina_m_min_of_vector_elements, Test_Min) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 120;
-    global_vec = muhina_m_min_of_vector_elements_mpi::GetRandomVector(count_size_vector);
+    const int min_val = 0;
+    const int max_val = 100;
+    global_vec = muhina_m_min_of_vector_elements_mpi::GetRandomVector(count_size_vector, min_val, max_val);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_min.data()));
@@ -60,7 +62,9 @@ TEST(muhina_m_min_of_vector_elements, Test_Min_LargeVector) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 10000;
-    global_vec = muhina_m_min_of_vector_elements_mpi::GetRandomVector(count_size_vector);
+    const int min_val = 0;
+    const int max_val = 100;
+    global_vec = muhina_m_min_of_vector_elements_mpi::GetRandomVector(count_size_vector, min_val, max_val);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_min.data()));
@@ -104,9 +108,9 @@ TEST(muhina_m_min_of_vector_elements, Test_Min_NegativeValues) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 120;
-    global_vec = {-50, -20, -10, -30, -40, -15, -25, -35, -45, -55};
-    global_vec.resize(count_size_vector, -10);
-
+    const int min_val = -100;
+    const int max_val = -10;
+    global_vec = muhina_m_min_of_vector_elements_mpi::GetRandomVector(count_size_vector, min_val, max_val);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_min.data()));
