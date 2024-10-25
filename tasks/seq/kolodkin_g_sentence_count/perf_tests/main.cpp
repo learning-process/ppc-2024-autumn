@@ -77,4 +77,3 @@ TEST(sequential_example_perf_test, test_task_run) {
   ppc::core::Perf::print_perf_statistic(perfResults);
   ASSERT_EQ(4, out[0]);
 }
-
