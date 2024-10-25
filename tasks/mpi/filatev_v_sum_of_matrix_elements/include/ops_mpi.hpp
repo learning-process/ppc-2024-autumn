@@ -33,7 +33,8 @@ class SumMatrixSeq : public ppc::core::Task {
 
 class SumMatrixParallel : public ppc::core::Task {
  public:
-  explicit SumMatrixParallel(std::shared_ptr<ppc::core::TaskData> taskData_, boost::mpi::communicator world): Task(std::move(taskData_)), world(world) {};
+  explicit SumMatrixParallel(std::shared_ptr<ppc::core::TaskData> taskData_, boost::mpi::communicator world)
+      : Task(std::move(taskData_)), world(world) {};
   bool pre_processing() override;
   bool validation() override;
   bool run() override;

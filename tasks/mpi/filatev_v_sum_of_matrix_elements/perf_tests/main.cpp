@@ -74,7 +74,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, test_task_run) {
     taskDataPar->outputs_count.emplace_back(1);
   }
 
-  auto sumMatrixparallel = 
+  auto sumMatrixparallel =
       std::make_shared<filatev_v_sum_of_matrix_elements_mpi::SumMatrixParallel>(taskDataPar, world);
   ASSERT_EQ(sumMatrixparallel->validation(), true);
   sumMatrixparallel->pre_processing();
