@@ -128,7 +128,7 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::pre_processing() 
     local_input1_ = std::vector<int>(input_[0].begin(), input_[0].begin() + delta);
     local_input2_ = std::vector<int>(input_[1].begin(), input_[1].begin() + delta);
   } else {
-    if (world.rank() < count_rank) {
+    if (world.rank() < (int)count_rank) {
       world.recv(0, 0, local_input1_.data(), delta);
       world.recv(0, 1, local_input2_.data(), delta);
     } else {
