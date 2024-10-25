@@ -120,8 +120,6 @@ TEST(filatev_v_sum_of_matrix_elements_seq, Test_Sum_10_20_different) {
   std::vector<std::vector<int>> in(size_m, std::vector<int>(size_n, 1));
   std::vector<int> out(1, 0);
 
-
-
   for (int i = 0; i < size_m; ++i) {
     for (int j = 0; j < size_n; ++j) {
       in[i][j] = (i * size_n + j + 1);

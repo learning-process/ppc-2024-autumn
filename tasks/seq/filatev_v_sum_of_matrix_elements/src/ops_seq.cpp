@@ -1,11 +1,10 @@
 // Filatev Vladislav Sum_of_matrix_elements
 #include "seq/filatev_v_sum_of_matrix_elements/include/ops_seq.hpp"
 
-
 long long filatev_v_sum_of_matrix_elements_seq::sumVector(std::vector<int> vector) {
   long long sum = 0;
 
-  for (int i = 0; i < vector.size(); ++i){
+  for (int i = 0; i < vector.size(); ++i) {
     sum += vector[i];
   }
   return sum;
@@ -13,20 +12,19 @@ long long filatev_v_sum_of_matrix_elements_seq::sumVector(std::vector<int> vecto
 
 bool filatev_v_sum_of_matrix_elements_seq::SumMatrix::pre_processing() {
   internal_order_test();
-  
+
   summ = 0;
   size_n = taskData->inputs_count[0];
   size_m = taskData->inputs_count[1];
   matrix = std::vector<int>(size_m * size_n);
   
-  for (int i = 0; i < size_m; ++i){
+  for (int i = 0; i < size_m; ++i) {
     auto* temp = reinterpret_cast<int*>(taskData->inputs[i]);
 
     for (int j = 0; j < size_n; ++j) {
       matrix[i * size_n + j] = temp[j];
     }
   }
-
 
   return true;
 }
