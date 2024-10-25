@@ -68,8 +68,8 @@ bool filatev_v_sum_of_matrix_elements_mpi::SumMatrixParallel::pre_processing() {
   if (world.rank() == 0) {
     size_n = taskData->inputs_count[0];
     size_m = taskData->inputs_count[1];
-    delta = (size_n * size_m) / world.size();
     ras = (size_n * size_m) % world.size();
+    delta = (size_n * size_m) / world.size();
   }
   broadcast(world, delta, 0);
 
