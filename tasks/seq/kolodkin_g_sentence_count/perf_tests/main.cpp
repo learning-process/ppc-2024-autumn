@@ -6,7 +6,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/kolodkin_g_sentence_count/include/ops_seq.hpp"
 
-TEST(sequential_example_perf_test, test_pipeline_run) {
+TEST(seq_kolodkin_g_sentence_count_test, test_pipeline_run) {
   // Create data
   std::string str =
       "verifwriefnifnil!?vfnjklererjerjkerg...vrhklererffwjklfwefwejo!vefnklvevef?wfnkrkflwewefkl!vfnklvfklevf?"
@@ -43,7 +43,7 @@ TEST(sequential_example_perf_test, test_pipeline_run) {
   ASSERT_EQ(7, out[0]);
 }
 
-TEST(sequential_example_perf_test, test_task_run) {
+TEST(seq_kolodkin_g_sentence_count_test, test_task_run) {
   // Create data
   std::string str = "Hello! My name is Grisha! Good morning! How are you!";
   std::vector<int> out(1, 0);

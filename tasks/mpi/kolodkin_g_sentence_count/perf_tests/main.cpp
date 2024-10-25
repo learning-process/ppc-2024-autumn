@@ -7,7 +7,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/kolodkin_g_sentence_count/include/ops_mpi.hpp"
 
-TEST(mpi_example_perf_test, test_pipeline_run) {
+TEST(mpi_kolodkin_g_sentence_count_test, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<char> global_str;
   std::vector<int32_t> global_sum(1, 0);
@@ -50,7 +50,7 @@ TEST(mpi_example_perf_test, test_pipeline_run) {
   }
 }
 
-TEST(mpi_example_perf_test, test_task_run) {
+TEST(mpi_kolodkin_g_sentence_count_test, test_task_run) {
   boost::mpi::communicator world;
   std::vector<char> global_str;
   std::vector<int32_t> global_sum(1, 0);
