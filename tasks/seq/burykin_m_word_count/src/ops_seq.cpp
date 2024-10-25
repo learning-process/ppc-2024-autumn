@@ -52,7 +52,7 @@ int TestTaskSequential::count_words(const std::string& text) {
     }
 
     if (c == '\'' && i > 0 && i < text.length() - 1) {
-      if (std::isalpha(text[i-1]) && std::isalpha(text[i+1])) {
+      if (std::isalpha(text[i - 1]) && std::isalpha(text[i + 1])) {
         in_word = true;
       }
     }
