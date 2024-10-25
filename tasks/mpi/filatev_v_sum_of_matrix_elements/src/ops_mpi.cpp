@@ -13,7 +13,7 @@ std::vector<std::vector<int>> filatev_v_sum_of_matrix_elements_mpi::getRandomMat
   std::vector<std::vector<int>> matrix(size_m, std::vector<int>(size_n));
 
   for (int i = 0; i < size_m; ++i) {
-    for (int j = 0;j < size_n; ++j) {
+    for (int j = 0; j < size_n; ++j) {
       matrix[i][j] = gen() % 100;
     }
   }

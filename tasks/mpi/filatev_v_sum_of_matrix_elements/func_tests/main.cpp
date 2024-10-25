@@ -60,7 +60,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_10_10_r) {
     taskDataPar->outputs_count.emplace_back(1);
   }
 
-  filatev_v_sum_of_matrix_elements_mpi::SumMatrixParallel sumMatrixParallel(taskDataPar,world);
+  filatev_v_sum_of_matrix_elements_mpi::SumMatrixParallel sumMatrixParallel(taskDataPar, world);
   ASSERT_EQ(sumMatrixParallel.validation(), true);
   sumMatrixParallel.pre_processing();
   sumMatrixParallel.run();
