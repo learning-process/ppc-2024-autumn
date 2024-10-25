@@ -7,7 +7,7 @@
 
 #include "mpi/kurakin_m_min_values_by_rows_matrix/include/ops_mpi.hpp"
 
-TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Min_Rand1) {
+TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Min_Rand_10_12) {
   int count_rows = 10;
   int size_rows = 12;
   boost::mpi::communicator world;
@@ -56,7 +56,7 @@ TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Min_Rand1) {
   }
 }
 
-TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Min_Rand2) {
+TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Min_Rand_10_13) {
   int count_rows = 10;
   int size_rows = 13;
   boost::mpi::communicator world;
@@ -105,7 +105,7 @@ TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Min_Rand2) {
   }
 }
 
-TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Min_Rand3) {
+TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Min_Rand_10_14) {
   int count_rows = 10;
   int size_rows = 14;
   boost::mpi::communicator world;
@@ -154,7 +154,7 @@ TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Min_Rand3) {
   }
 }
 
-TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Min_Rand4) {
+TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Min_Rand_10_15) {
   int count_rows = 10;
   int size_rows = 15;
   boost::mpi::communicator world;
@@ -203,7 +203,7 @@ TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Min_Rand4) {
   }
 }
 
-TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Min_Rand5) {
+TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Min_Rand_10_2) {
   int count_rows = 10;
   int size_rows = 2;
   boost::mpi::communicator world;

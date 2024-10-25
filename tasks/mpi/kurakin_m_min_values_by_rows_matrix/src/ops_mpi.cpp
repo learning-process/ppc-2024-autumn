@@ -62,72 +62,34 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::pre_processin
   count_rows = 0;
   size_rows = 0;
 
-  unsigned int delta_rows = 0;
   unsigned int delta = 0;
-  unsigned int count_rank_add = 0;
-  unsigned int count_rank = 0;
+
   if (world.rank() == 0) {
     count_rows = (int)*taskData->inputs[1];
     size_rows = (int)(taskData->inputs_count[0] / count_rows);
-    delta_rows = taskData->inputs_count[0] / count_rows / world.size();
-    count_rank_add = (taskData->inputs_count[0] / count_rows) % world.size();
-    count_rank = (unsigned)world.size() - count_rank_add;
-    delta = taskData->inputs_count[0] / count_rows / world.size() * count_rows;
+    if (taskData->inputs_count[0] % world.size() == 0) {
+      delta = taskData->inputs_count[0] / world.size();
+    } else {
+      delta = taskData->inputs_count[0] / world.size() + 1;
+    }
   }
+
   broadcast(world, count_rows, 0);
+  broadcast(world, size_rows, 0);
   broadcast(world, delta, 0);
-  broadcast(world, count_rank, 0);
+
   if (world.rank() == 0) {
-    input_ = std::vector<int>(taskData->inputs_count[0]);
+    input_ = std::vector<int>(delta * world.size(), INT_MAX);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    int ind = 0;
-    for (unsigned rank = 0; rank < count_rank; rank++) {
-      for (unsigned rows = 0; rows < (unsigned)count_rows; rows++) {
-        for (unsigned i = 0; i < delta_rows; i++) {
-          input_[ind] = tmp_ptr[i + rows * size_rows + rank * delta_rows];
-          ind++;
-        }
-      }
-    }
-    for (unsigned rank = 0; rank < count_rank_add; rank++) {
-      for (unsigned rows = 0; rows < (unsigned)count_rows; rows++) {
-        for (unsigned i = 0; i < delta_rows + 1; i++) {
-          input_[ind] = tmp_ptr[i + rows * size_rows + count_rank * delta_rows + rank * (delta_rows + 1)];
-          ind++;
-        }
-      }
-    }
-    if (delta > 0) {
-      for (int proc = 1; proc < (int)count_rank; proc++) {
-        world.send(proc, 0, input_.data() + proc * delta, delta);
-      }
-    }
-    for (int proc = count_rank; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + count_rank * delta + (proc - count_rank) * (delta + count_rows),
-                 delta + count_rows);
+    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+      input_[i] = tmp_ptr[i];
     }
   }
-  if (world.rank() == 0) {
-    if (delta > 0) {
-      local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
-    } else {
-      local_input_ = std::vector<int>(0);
-    }
-  } else {
-    if (world.rank() < (int)count_rank) {
-      if (delta > 0) {
-        local_input_ = std::vector<int>(delta);
-        world.recv(0, 0, local_input_.data(), delta);
-      } else {
-        local_input_ = std::vector<int>(0);
-      }
-    } else {
-      local_input_ = std::vector<int>(delta + count_rows);
-      world.recv(0, 0, local_input_.data(), delta + count_rows);
-    }
-  }
-  // Init value for output
-  res = std::vector<int>(count_rows, 0);
+
+  local_input_ = std::vector<int>(delta);
+  boost::mpi::scatter(world, input_.data(), local_input_.data(), delta, 0);
+
+  res = std::vector<int>(count_rows, INT_MAX);
   return true;
 }
 
@@ -142,23 +104,45 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::validation() 
 
 bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  int delta = local_input_.size() / count_rows;
-  if (delta > 0) {
-    for (int i = 0; i < count_rows; i++) {
-      int local_res;
-      local_res = *std::min_element(local_input_.begin() + i * delta, local_input_.begin() + (i + 1) * delta);
-      reduce(world, local_res, res[i], boost::mpi::minimum<int>(), 0);
-    }
-  } else {
-    for (int i = 0; i < count_rows; i++) {
-      reduce(world, INT_MAX, res[i], boost::mpi::minimum<int>(), 0);
-    }
+
+  unsigned int last_delta = 0;
+  if (world.rank() == world.size() - 1) {
+    last_delta = local_input_.size() * world.size() - size_rows * count_rows;
   }
+
+  unsigned int ind = world.rank() * local_input_.size() / size_rows;
+  for (unsigned int i = 0; i < ind; ++i) {
+    reduce(world, INT_MAX, res[i], boost::mpi::minimum<int>(), 0);
+  }
+
+  unsigned int delta = std::min(local_input_.size(), size_rows - world.rank() * local_input_.size() % size_rows);
+  int local_res;
+
+  local_res = *std::min_element(local_input_.begin(), local_input_.begin() + delta);
+  reduce(world, local_res, res[ind], boost::mpi::minimum<int>(), 0);
+  ++ind;
+
+  unsigned int k = 0;
+  while (local_input_.begin() + delta + k * size_rows < local_input_.end() - last_delta) {
+    local_res = *std::min_element(local_input_.begin() + delta + k * size_rows,
+                                  std::min(local_input_.end(), local_input_.begin() + delta + (k + 1) * size_rows));
+    reduce(world, local_res, res[ind], boost::mpi::minimum<int>(), 0);
+    ++k;
+    ++ind;
+  }
+  
+  for (unsigned int i = ind; i < res.size(); ++i) {
+    reduce(world, INT_MAX, res[i], boost::mpi::minimum<int>(), 0);
+  }
+
   return true;
 }
 
 bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
+  
+  world.barrier();
+  
   if (world.rank() == 0) {
     for (int i = 0; i < count_rows; i++) {
       reinterpret_cast<int*>(taskData->outputs[0])[i] = res[i];
