@@ -1,8 +1,6 @@
 name: Collect performance statistic
 
-on:
-  schedule:
-    - cron: '0 12 * * *'
+on: [push, pull_request]
 
 jobs:
   ubuntu-gcc-build:
