@@ -12,13 +12,13 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, test_pipeline_run) {
   const int count = 10000;
   std::vector<int> out;
   std::vector<std::vector<int>> in;
-  
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
     in = std::vector<std::vector<int>>(count, std::vector<int>(count, 1));
-    out = std::vector<int>(1,0);
+    out = std::vector<int>(1, 0);
     for (int i = 0; i < count; i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[i].data()));
     }
@@ -28,7 +28,8 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(1);
   }
 
-  auto sumMatrixparallel = std::make_shared<filatev_v_sum_of_matrix_elements_mpi::SumMatrixParallel>(taskDataPar,world);
+  auto sumMatrixparallel = 
+    std::make_shared<filatev_v_sum_of_matrix_elements_mpi::SumMatrixParallel>(taskDataPar,world);
   ASSERT_EQ(sumMatrixparallel->validation(), true);
   sumMatrixparallel->pre_processing();
   sumMatrixparallel->run();
@@ -57,13 +58,13 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, test_task_run) {
   const int count = 10000;
   std::vector<int> out;
   std::vector<std::vector<int>> in;
-  
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
     in = std::vector<std::vector<int>>(count, std::vector<int>(count, 1));
-    out = std::vector<int>(1,0);
+    out = std::vector<int>(1, 0);
     for (int i = 0; i < count; i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[i].data()));
     }
@@ -73,7 +74,8 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, test_task_run) {
     taskDataPar->outputs_count.emplace_back(1);
   }
 
-  auto sumMatrixparallel = std::make_shared<filatev_v_sum_of_matrix_elements_mpi::SumMatrixParallel>(taskDataPar,world);
+  auto sumMatrixparallel = 
+    std::make_shared<filatev_v_sum_of_matrix_elements_mpi::SumMatrixParallel>(taskDataPar,world);
   ASSERT_EQ(sumMatrixparallel->validation(), true);
   sumMatrixparallel->pre_processing();
   sumMatrixparallel->run();

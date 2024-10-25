@@ -7,7 +7,7 @@
 
 #include "mpi/filatev_v_sum_of_matrix_elements/include/ops_mpi.hpp"
 
-TEST(filatev_v_sum_of_matrix_elements_mpi,  Test_Sum_10_10_1) {
+TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_10_10_1) {
   boost::mpi::communicator world;
   const int count = 10;
   std::vector<int> out;
@@ -18,7 +18,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi,  Test_Sum_10_10_1) {
 
   if (world.rank() == 0) {
     in = std::vector<std::vector<int>>(count, std::vector<int>(count, 1));
-    out = std::vector<int>(1,0);
+    out = std::vector<int>(1, 0);
     for (int i = 0; i < count; i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[i].data()));
     }
@@ -39,7 +39,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi,  Test_Sum_10_10_1) {
   }
 }
 
-TEST(filatev_v_sum_of_matrix_elements_mpi,  Test_Sum_10_10_r) {
+TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_10_10_r) {
   boost::mpi::communicator world;
   const int count = 10;
   std::vector<int> out;
@@ -48,9 +48,9 @@ TEST(filatev_v_sum_of_matrix_elements_mpi,  Test_Sum_10_10_r) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    in = filatev_v_sum_of_matrix_elements_mpi::getRandomMatrix(count,count);
+    in = filatev_v_sum_of_matrix_elements_mpi::getRandomMatrix(count, count);
     refIn = in;
-    out = std::vector<int>(1,0);
+    out = std::vector<int>(1, 0);
     for (int i = 0; i < count; i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[i].data()));
     }
@@ -70,7 +70,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi,  Test_Sum_10_10_r) {
     std::vector<int> refOut;
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> TaskDataSeq = std::make_shared<ppc::core::TaskData>();
-    refOut = std::vector<int>(1,0);
+    refOut = std::vector<int>(1, 0);
     for (int i = 0; i < count; i++) {
       TaskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(refIn[i].data()));
     }
@@ -89,7 +89,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi,  Test_Sum_10_10_r) {
   }
 }
 
-TEST(filatev_v_sum_of_matrix_elements_mpi,  Test_Sum_10_20_r) {
+TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_10_20_r) {
   boost::mpi::communicator world;
   const int size_m = 10, size_n = 20;
   std::vector<int> out;
@@ -98,9 +98,9 @@ TEST(filatev_v_sum_of_matrix_elements_mpi,  Test_Sum_10_20_r) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    in = filatev_v_sum_of_matrix_elements_mpi::getRandomMatrix(size_n,size_m);
+    in = filatev_v_sum_of_matrix_elements_mpi::getRandomMatrix(size_n, size_m);
     refIn = in;
-    out = std::vector<int>(1,0);
+    out = std::vector<int>(1, 0);
     for (int i = 0; i < size_m; i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[i].data()));
     }
@@ -110,7 +110,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi,  Test_Sum_10_20_r) {
     taskDataPar->outputs_count.emplace_back(1);
   }
 
-  filatev_v_sum_of_matrix_elements_mpi::SumMatrixParallel sumMatrixParallel(taskDataPar,world);
+  filatev_v_sum_of_matrix_elements_mpi::SumMatrixParallel sumMatrixParallel(taskDataPar, world);
   ASSERT_EQ(sumMatrixParallel.validation(), true);
   sumMatrixParallel.pre_processing();
   sumMatrixParallel.run();
@@ -120,7 +120,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi,  Test_Sum_10_20_r) {
     std::vector<int> refOut;
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> TaskDataSeq = std::make_shared<ppc::core::TaskData>();
-    refOut = std::vector<int>(1,0);
+    refOut = std::vector<int>(1, 0);
     for (int i = 0; i < size_m; i++) {
       TaskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(refIn[i].data()));
     }
@@ -139,7 +139,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi,  Test_Sum_10_20_r) {
   }
 }
 
-TEST(filatev_v_sum_of_matrix_elements_mpi,  Test_Sum_20_10_r) {
+TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_20_10_r) {
   boost::mpi::communicator world;
   const int size_m = 20, size_n = 10;
   std::vector<int> out;
@@ -148,9 +148,9 @@ TEST(filatev_v_sum_of_matrix_elements_mpi,  Test_Sum_20_10_r) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    in = filatev_v_sum_of_matrix_elements_mpi::getRandomMatrix(size_n,size_m);
+    in = filatev_v_sum_of_matrix_elements_mpi::getRandomMatrix(size_n, size_m);
     refIn = in;
-    out = std::vector<int>(1,0);
+    out = std::vector<int>(1, 0);
     for (int i = 0; i < size_m; i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[i].data()));
     }
@@ -160,7 +160,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi,  Test_Sum_20_10_r) {
     taskDataPar->outputs_count.emplace_back(1);
   }
 
-  filatev_v_sum_of_matrix_elements_mpi::SumMatrixParallel sumMatrixParallel(taskDataPar,world);
+  filatev_v_sum_of_matrix_elements_mpi::SumMatrixParallel sumMatrixParallel(taskDataPar, world);
   ASSERT_EQ(sumMatrixParallel.validation(), true);
   sumMatrixParallel.pre_processing();
   sumMatrixParallel.run();
@@ -170,7 +170,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi,  Test_Sum_20_10_r) {
     std::vector<int> refOut;
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> TaskDataSeq = std::make_shared<ppc::core::TaskData>();
-    refOut = std::vector<int>(1,0);
+    refOut = std::vector<int>(1, 0);
     for (int i = 0; i < size_m; i++) {
       TaskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(refIn[i].data()));
     }
@@ -189,7 +189,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi,  Test_Sum_20_10_r) {
   }
 }
 
-TEST(filatev_v_sum_of_matrix_elements_mpi,  Test_Sum_1_1_r) {
+TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_1_1_r) {
   boost::mpi::communicator world;
   const int size_m = 1, size_n = 1;
   std::vector<int> out;
@@ -198,9 +198,9 @@ TEST(filatev_v_sum_of_matrix_elements_mpi,  Test_Sum_1_1_r) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    in = filatev_v_sum_of_matrix_elements_mpi::getRandomMatrix(size_n,size_m);
+    in = filatev_v_sum_of_matrix_elements_mpi::getRandomMatrix(size_n, size_m);
     refIn = in;
-    out = std::vector<int>(1,0);
+    out = std::vector<int>(1, 0);
     for (int i = 0; i < size_m; i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[i].data()));
     }
@@ -210,7 +210,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi,  Test_Sum_1_1_r) {
     taskDataPar->outputs_count.emplace_back(1);
   }
 
-  filatev_v_sum_of_matrix_elements_mpi::SumMatrixParallel sumMatrixParallel(taskDataPar,world);
+  filatev_v_sum_of_matrix_elements_mpi::SumMatrixParallel sumMatrixParallel(taskDataPar, world);
   ASSERT_EQ(sumMatrixParallel.validation(), true);
   sumMatrixParallel.pre_processing();
   sumMatrixParallel.run();
@@ -220,7 +220,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi,  Test_Sum_1_1_r) {
     std::vector<int> refOut;
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> TaskDataSeq = std::make_shared<ppc::core::TaskData>();
-    refOut = std::vector<int>(1,0);
+    refOut = std::vector<int>(1, 0);
     for (int i = 0; i < size_m; i++) {
       TaskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(refIn[i].data()));
     }
