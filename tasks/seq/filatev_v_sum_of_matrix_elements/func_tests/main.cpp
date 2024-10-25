@@ -1,4 +1,4 @@
-// filatev_v_sum_of_matrix_elements_seq
+// Filatev Vladislav Sum_of_matrix_elements
 #include <gtest/gtest.h>
 
 #include <vector>
