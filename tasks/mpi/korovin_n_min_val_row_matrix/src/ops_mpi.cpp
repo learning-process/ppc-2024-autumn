@@ -120,9 +120,9 @@ bool korovin_n_min_val_row_matrix_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
 
   if (world.rank() == 0) {
-    return !((taskData->inputs.empty() || taskData->outputs.empty()) ||
-             (taskData->inputs_count.size() < 2 || taskData->inputs_count[0] == 0 || taskData->inputs_count[1] == 0) ||
-             (taskData->outputs_count[0] != taskData->inputs_count[0]));
+    return ((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
+            (taskData->inputs_count.size() >= 2 && taskData->inputs_count[0] != 0 && taskData->inputs_count[1] != 0) &&
+            (taskData->outputs_count[0] == taskData->inputs_count[0]));
   }
   return true;
 }
