@@ -80,9 +80,9 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::pre_processing() 
   internal_order_test();
 
   unsigned int delta = 0;
-  int count_rank_add = 0;
-  int count_rank = 0;
-  const int num_processes = world.size();
+  unsigned int count_rank_add = 0;
+  unsigned int count_rank = 0;
+  unsigned int num_processes = world.size();
 
   if (num_processes == 0) {
     return false;
