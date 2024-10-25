@@ -122,8 +122,8 @@ TEST(filatev_v_sum_of_matrix_elements_seq, Test_Sum_10_20_different) {
 
 
 
-  for (int i = 0; i < size_m; ++i){
-    for (int j = 0; j < size_n; ++j){
+  for (int i = 0; i < size_m; ++i) {
+    for (int j = 0; j < size_n; ++j) {
       in[i][j] = (i * size_n + j + 1);
     }
   }
