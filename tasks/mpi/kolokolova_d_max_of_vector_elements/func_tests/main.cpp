@@ -9,22 +9,23 @@
 
 TEST(kolokolova_d_max_of_vector_elements_mpi, Test_Parallel_Max1) {
   boost::mpi::communicator world;
-  int num_processes = world.size();  // Количество запущенных процессов
-  std::vector<int> global_max(num_processes, 0);  // Ожидаемый результат
-  std::vector<int> global_mat; // Матрица
-  int size_rows = num_processes * 3; // Размер ряда
+  int num_processes = world.size();           
+  std::vector<int32_t> global_max(num_processes, 0); 
+  std::vector<int> global_mat;                  
+  int size_rows = num_processes * 3;        
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  if (world.rank() == 0) {
+  if (world.rank() == 0) 
+  {
     for (int i = 0; i < size_rows; ++i) {
       global_mat.push_back(1);
     }
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
     taskDataPar->inputs_count.emplace_back(global_mat.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&num_processes));
     taskDataPar->inputs_count.emplace_back((size_t)1);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
   kolokolova_d_max_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
@@ -33,12 +34,10 @@ TEST(kolokolova_d_max_of_vector_elements_mpi, Test_Parallel_Max1) {
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
 
-  // Проверка результатов на процессе 0
   if (world.rank() == 0) {
     std::vector<int> results(num_processes);
     std::memcpy(results.data(), taskDataPar->outputs.data(), num_processes * sizeof(int));
 
-    // Ожидаемая проверка результатов
     for (int i = 0; i < num_processes; ++i) {
       EXPECT_EQ(results[i], 1);
     }
