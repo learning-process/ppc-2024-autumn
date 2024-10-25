@@ -204,11 +204,6 @@ void reduce_max_difference(const DataType* in_data, DataType* inout_data, int* l
 template <typename DataType>
 bool beskhmelnova_k_most_different_neighbor_elements_mpi::TestMPITaskParallel<DataType>::run() {
   internal_order_test();
-  if (local_input_size == 0 || taskData->inputs_count[0] == 0 || taskData->inputs_count[0] == 1) {
-    res[0] = -1;
-    res[1] = -1;
-    return true;
-  }
   NeighborDifference<DataType> local_result = find_max_difference(local_input_);
   DataType local_data[3] = {local_result.first, local_result.second, local_result.dif};
   DataType global_data[3] = {0, 0, 0};
