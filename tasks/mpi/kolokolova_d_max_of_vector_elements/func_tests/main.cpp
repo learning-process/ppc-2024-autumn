@@ -9,41 +9,52 @@
 
 TEST(kolokolova_d_max_of_vector_elements_mpi, Test_Parallel_Max1) {
   boost::mpi::communicator world;
-  int num_processes = world.size();           
-  std::vector<int32_t> global_max(num_processes, 0); 
-  std::vector<int> global_mat;                  
-  int size_rows = num_processes * 3;        
+
+  int num_processes = world.size();
+
+  std::vector<int32_t> global_max(num_processes, 0);
+  std::vector<int> global_mat;
+
+  int size_rows = num_processes * 3;
+  std::cout << "Rang in test: " << world.rank() << "\n";
+  std::cout << "Nums of procers in test: " << world.size() << "\n";
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  if (world.rank() == 0) 
-  {
-    for (int i = 0; i < size_rows; ++i) {
-      global_mat.push_back(1);
-    }
+  if (world.rank() == 0) {
+    global_mat.resize(size_rows, 1);  // Инициализируем все элементы = 1
+
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
     taskDataPar->inputs_count.emplace_back(global_mat.size());
+
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&num_processes));
-    taskDataPar->inputs_count.emplace_back((size_t)1);
+    taskDataPar->inputs_count.emplace_back(1);
+
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
+
+  // Заполняем данные для всех процессов
+  taskDataPar->outputs.resize(num_processes * sizeof(int32_t));  // Убедимся, что размер output соответствует ожидаемому
+
   kolokolova_d_max_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
+    // Проверяем результаты
     std::vector<int> results(num_processes);
-    std::memcpy(results.data(), taskDataPar->outputs.data(), num_processes * sizeof(int));
-
+    std::memcpy(results.data(), taskDataPar->outputs.data(),
+                num_processes * sizeof(int32_t));  // Обратите внимание на правильный размер
     for (int i = 0; i < num_processes; ++i) {
-      EXPECT_EQ(results[i], 1);
+      EXPECT_EQ(results[i], 1);  // Проверяем, что каждый результат равен 1
     }
   }
 }
-
 //TEST(kolokolova_d_max_of_vector_elements_mpi, Test_Parallel_Max2) {
 //  boost::mpi::communicator world;
 //  int num_processes = world.size();               // Количество запущенных процессов

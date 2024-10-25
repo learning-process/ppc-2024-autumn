@@ -64,7 +64,7 @@ bool nesterov_a_test_task_mpi::TestMPITaskParallel::pre_processing() {
     delta = taskData->inputs_count[0] / world.size();
   }
   broadcast(world, delta, 0);
-
+  std::cout << "Rang in body: " << world.rank() << "\n";
   if (world.rank() == 0) {
     // Init vectors
     input_ = std::vector<int>(taskData->inputs_count[0]);
