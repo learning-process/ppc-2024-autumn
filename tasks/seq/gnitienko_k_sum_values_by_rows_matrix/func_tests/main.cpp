@@ -12,12 +12,12 @@ TEST(gnitienko_k_sum_row_seq, Test_rows_eq_cols) {
   // Create data
   std::vector<int> in(rows * cols, 0);
   for (int i = 0; i < rows; ++i) {
-    in[i * cols] = i; 
+    in[i * cols] = i;
   }
   std::vector<int> expect(rows, 0);
   for (int i = 0; i < rows; ++i) {
     for (int j = 0; j < cols; ++j) {
-      expect[i] += in[i * cols + j]; 
+      expect[i] += in[i * cols + j];
     }
   }
   std::vector<int> out(rows, 0);
@@ -70,7 +70,7 @@ TEST(gnitienko_k_sum_row_seq, Test_arbitrary_values) {
 
   // Create data
   std::vector<int> in = {1, 2, 3, 4, 5, 6};
-  std::vector<int> expect = {6, 15};  
+  std::vector<int> expect = {6, 15};
   std::vector<int> out(rows, 0);
 
   // Create TaskData
@@ -95,7 +95,7 @@ TEST(gnitienko_k_sum_row_seq, Test_negative_values) {
 
   // Create data
   std::vector<int> in = {-1, -2, -3, -4};
-  std::vector<int> expect = {-3, -7};  
+  std::vector<int> expect = {-3, -7};
   std::vector<int> out(rows, 0);
 
   // Create TaskData
@@ -159,7 +159,7 @@ TEST(gnitienko_k_sum_row_seq, Test_output_element) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(out[1], 26);  
+  ASSERT_EQ(out[1], 26);
 }
 
 TEST(gnitienko_k_sum_row_seq, Test_empty_input) {

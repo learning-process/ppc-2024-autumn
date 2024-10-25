@@ -71,7 +71,6 @@ TEST(gnitienko_k_sum_row_seq, test_task_run) {
   }
   std::vector<int> out(rows, 0);
 
-
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));

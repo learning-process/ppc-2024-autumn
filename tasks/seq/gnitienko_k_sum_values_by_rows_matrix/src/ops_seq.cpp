@@ -1,27 +1,27 @@
 ﻿// Copyright 2024 Nesterov Alexander
 #include "seq/gnitienko_k_sum_values_by_rows_matrix/include/ops_seq.hpp"
 
-#include <thread>
 #include <cstring>
+#include <thread>
 
 using namespace std::chrono_literals;
 
 bool gnitienko_k_sum_row_seq::SumByRowSeq::pre_processing() {
   internal_order_test();
 
-  rows = taskData->inputs_count[0]; 
-  cols = taskData->inputs_count[1];  
+  rows = taskData->inputs_count[0];
+  cols = taskData->inputs_count[1];
 
   input_.resize(rows * cols);
   auto* ptr = reinterpret_cast<int*>(taskData->inputs[0]);
 
   for (int i = 0; i < rows; ++i) {
     for (int j = 0; j < cols; ++j) {
-      input_[i * cols + j] = ptr[i * cols + j]; 
+      input_[i * cols + j] = ptr[i * cols + j];
     }
   }
 
-  res = std::vector<int>(rows, 0); 
+  res = std::vector<int>(rows, 0);
 
   return true;
 }
