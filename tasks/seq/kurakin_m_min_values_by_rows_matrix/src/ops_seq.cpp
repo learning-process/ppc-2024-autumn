@@ -26,7 +26,7 @@ bool kurakin_m_min_values_by_rows_matrix_seq::TestTaskSequential::pre_processing
 bool kurakin_m_min_values_by_rows_matrix_seq::TestTaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
-  return *taskData->inputs[1] == taskData->outputs_count[0];
+  return taskData->inputs_count[0] != 0 && *taskData->inputs[1] == taskData->outputs_count[0];
 }
 
 bool kurakin_m_min_values_by_rows_matrix_seq::TestTaskSequential::run() {
