@@ -12,7 +12,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_10_10_1) {
   const int count = 10;
   std::vector<int> out;
   std::vector<std::vector<int>> in;
-  
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
