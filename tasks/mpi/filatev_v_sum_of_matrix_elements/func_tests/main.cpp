@@ -9,7 +9,6 @@
 
 TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_10_10_1) {
   boost::mpi::communicator world;
-  const int count = 10;
   std::vector<int> out;
   std::vector<std::vector<int>> in;
 
@@ -17,6 +16,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_10_10_1) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
+    const int count = 10;
     in = std::vector<std::vector<int>>(count, std::vector<int>(count, 1));
     out = std::vector<int>(1, 0);
     for (int i = 0; i < count; i++) {
@@ -236,5 +236,38 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_1_1_r) {
     sumMatriSeq.post_processing();
 
     ASSERT_EQ(out[0], refOut[0]);
+  }
+}
+
+
+TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Empty_Matrix) {
+  boost::mpi::communicator world;
+  const int count = 0;
+  std::vector<int> out;
+  std::vector<std::vector<int>> in;
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    in = std::vector<std::vector<int>>(count, std::vector<int>(count, 1));
+    out = std::vector<int>(1, 0);
+    for (int i = 0; i < count; i++) {
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[i].data()));
+    }
+    taskDataPar->inputs_count.emplace_back(count);
+    taskDataPar->inputs_count.emplace_back(count);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+    taskDataPar->outputs_count.emplace_back(1);
+  }
+
+  filatev_v_sum_of_matrix_elements_mpi::SumMatrixParallel sumMatrixparallel(taskDataPar, world);
+  ASSERT_EQ(sumMatrixparallel.validation(), true);
+  sumMatrixparallel.pre_processing();
+  sumMatrixparallel.run();
+  sumMatrixparallel.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(0, out[0]);
   }
 }

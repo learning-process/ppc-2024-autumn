@@ -14,7 +14,7 @@ std::vector<std::vector<int>> filatev_v_sum_of_matrix_elements_mpi::getRandomMat
 
   for (int i = 0; i < size_m; ++i) {
     for (int j = 0; j < size_n; ++j) {
-      matrix[i][j] = gen() % 100;
+      matrix[i][j] = gen() % 200 - 100;
     }
   }
   return matrix;
@@ -102,7 +102,7 @@ bool filatev_v_sum_of_matrix_elements_mpi::SumMatrixParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     // Check count elements of output
-    return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] == 1;
+    return taskData->inputs_count[0] >= 0 && taskData->inputs_count[1] >= 0 && taskData->outputs_count[0] == 1;
   }
   return true;
 }

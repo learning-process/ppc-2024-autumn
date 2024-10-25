@@ -32,7 +32,7 @@ bool filatev_v_sum_of_matrix_elements_seq::SumMatrix::pre_processing() {
 bool filatev_v_sum_of_matrix_elements_seq::SumMatrix::validation() {
   internal_order_test();
 
-  return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] == 1;
+  return taskData->inputs_count[0] >= 0 && taskData->inputs_count[1] >= 0 && taskData->outputs_count[0] == 1;
 }
 
 bool filatev_v_sum_of_matrix_elements_seq::SumMatrix::run() {

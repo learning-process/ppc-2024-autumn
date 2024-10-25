@@ -145,3 +145,30 @@ TEST(filatev_v_sum_of_matrix_elements_seq, Test_Sum_10_20_different) {
 
   ASSERT_EQ(20100, out[0]);
 }
+
+TEST(filatev_v_sum_of_matrix_elements_seq, Test_Empty_Matrix) {
+  const int count = 0;
+
+  // Create data
+  std::vector<std::vector<int>> in(count, std::vector<int>(count, 1));
+  std::vector<int> out(1, 0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  for (int i = 0; i < count; i++) {
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[i].data()));
+  }
+  taskDataSeq->inputs_count.emplace_back(count);
+  taskDataSeq->inputs_count.emplace_back(count);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(1);
+
+  // Create Task
+  filatev_v_sum_of_matrix_elements_seq::SumMatrix sumMatrix(taskDataSeq);
+  ASSERT_EQ(sumMatrix.validation(), true);
+  sumMatrix.pre_processing();
+  sumMatrix.run();
+  sumMatrix.post_processing();
+
+  ASSERT_EQ(0, out[0]);
+}

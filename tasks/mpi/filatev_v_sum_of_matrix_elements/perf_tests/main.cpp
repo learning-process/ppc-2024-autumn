@@ -9,7 +9,6 @@
 
 TEST(filatev_v_sum_of_matrix_elements_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  const int count = 10000;
   std::vector<int> out;
   std::vector<std::vector<int>> in;
 
@@ -17,6 +16,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
+    const int count = 10000;
     in = std::vector<std::vector<int>>(count, std::vector<int>(count, 1));
     out = std::vector<int>(1, 0);
     for (int i = 0; i < count; i++) {
@@ -55,7 +55,6 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, test_pipeline_run) {
 
 TEST(filatev_v_sum_of_matrix_elements_mpi, test_task_run) {
   boost::mpi::communicator world;
-  const int count = 10000;
   std::vector<int> out;
   std::vector<std::vector<int>> in;
 
@@ -63,6 +62,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, test_task_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
+    const int count = 10000;
     in = std::vector<std::vector<int>>(count, std::vector<int>(count, 1));
     out = std::vector<int>(1, 0);
     for (int i = 0; i < count; i++) {
