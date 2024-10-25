@@ -20,10 +20,6 @@ std::vector<int> calcMatrixSumSeq(const std::vector<int>& matrix, int xSize, int
   return result;
 }
 
-std::vector<int> calculateMatrixSumSequentially(const std::vector<int>& matrix, int xSize, int ySize) {
-  return calcMatrixSumSeq(matrix, xSize, ySize, 0, xSize);
-}
-
 bool drozhdinov_d_sum_cols_matrix_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   // Init value for input and output
@@ -46,7 +42,7 @@ bool drozhdinov_d_sum_cols_matrix_seq::TestTaskSequential::validation() {
 
 bool drozhdinov_d_sum_cols_matrix_seq::TestTaskSequential::run() {
   internal_order_test();
-  res = calculateMatrixSumSequentially(input_, cols, rows);
+  res = calcMatrixSumSeq(input_, cols, rows, 0, cols);
   return true;
 }
 

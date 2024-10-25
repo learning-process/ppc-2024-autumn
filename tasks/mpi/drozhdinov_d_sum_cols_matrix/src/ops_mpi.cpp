@@ -36,11 +36,6 @@ std::vector<int> drozhdinov_d_sum_cols_matrix_mpi::calcMatSumSeq(const std::vect
   return result;
 }
 
-std::vector<int> drozhdinov_d_sum_cols_matrix_mpi::calculateMatrixSumSequentially(const std::vector<int>& matrix,
-                                                                                  int xSize, int ySize) {
-  return calcMatSumSeq(matrix, xSize, ySize, 0, xSize);
-}
-
 bool drozhdinov_d_sum_cols_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init value for input and output
@@ -63,7 +58,7 @@ bool drozhdinov_d_sum_cols_matrix_mpi::TestMPITaskSequential::validation() {
 
 bool drozhdinov_d_sum_cols_matrix_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-  res = calculateMatrixSumSequentially(input_, cols, rows);
+  res = calcMatSumSeq(input_, cols, rows, 0, cols);
   return true;
 }
 
@@ -83,7 +78,7 @@ bool drozhdinov_d_sum_cols_matrix_mpi::TestMPITaskParallel::pre_processing() {
   }
   broadcast(world, cols, 0);
   broadcast(world, rows, 0);
-  // broadcast(world, delta, 0);
+  // fbd nt ncssr dlt
   if (world.rank() == 0) {
     // Init vectors
     input_ = std::vector<int>(taskData->inputs_count[0]);
@@ -91,19 +86,10 @@ bool drozhdinov_d_sum_cols_matrix_mpi::TestMPITaskParallel::pre_processing() {
     for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
       input_[i] = tmp_ptr[i];
     }
-    /*for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + proc * delta, delta);
-    }*/
   } else {
     input_ = std::vector<int>(cols * rows);
   }
   broadcast(world, input_.data(), cols * rows, 0);
-  /*local_input_ = std::vector<int>(delta);
-  if (world.rank() == 0) {
-    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
-  } else {
-    world.recv(0, 0, local_input_.data(), delta);
-  }*/
   // Init value for output
   res = std::vector<int>(cols, 0);
   return true;

@@ -6,15 +6,30 @@
 
 #include "seq/drozhdinov_d_sum_cols_matrix/include/ops_seq.hpp"
 
-TEST(drozhdinov_d_sum_cols_matrix_seq, MySeqFuncTest) {
-  int cols = 4;
-  int rows = 2;
+TEST(drozhdinov_d_sum_cols_matrix_seq, EmptyMatrixTest) {
+  int cols = 0;
+  int rows = 0;
 
   // Create data
-  std::vector<int> matrix = {1, 0, 2, 1, 1, 0, 2, 1};
+  std::vector<int> matrix = {};
   std::vector<int> expres;
-  std::vector<int> ans = {2, 0, 4, 2};
-  expres = calculateMatrixSumSequentially(matrix, cols, rows);
+  std::vector<int> ans = {};
+  
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
+  taskDataSeq->inputs_count.emplace_back(cols);
+  taskDataSeq->inputs_count.emplace_back(rows);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres.data()));
+  taskDataSeq->outputs_count.emplace_back(expres.size());
+
+  // Create Task
+  drozhdinov_d_sum_cols_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_EQ(testTaskSequential.validation(), true);
+  testTaskSequential.pre_processing();
+  testTaskSequential.run();
+  testTaskSequential.post_processing();
   ASSERT_EQ(expres, ans);
 }
 
@@ -63,7 +78,6 @@ TEST(drozhdinov_d_sum_cols_matrix_seq, SquareMatrixTests2) {
   taskDataSeq->inputs_count.emplace_back(matrix.size());
   taskDataSeq->inputs_count.emplace_back(cols);
   taskDataSeq->inputs_count.emplace_back(rows);
-  // taskDataSeq->inputs_count.emplace_back((size_t)1);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres.data()));
   taskDataSeq->outputs_count.emplace_back(expres.size());
 
@@ -93,7 +107,6 @@ TEST(drozhdinov_d_sum_cols_matrix_seq, SquareMatrixTests3) {
   taskDataSeq->inputs_count.emplace_back(matrix.size());
   taskDataSeq->inputs_count.emplace_back(cols);
   taskDataSeq->inputs_count.emplace_back(rows);
-  // taskDataSeq->inputs_count.emplace_back((size_t)1);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres.data()));
   taskDataSeq->outputs_count.emplace_back(expres.size());
 
@@ -121,7 +134,6 @@ TEST(drozhdinov_d_sum_cols_matrix_seq, RectangleMatrixTests1) {
   taskDataSeq->inputs_count.emplace_back(matrix.size());
   taskDataSeq->inputs_count.emplace_back(cols);
   taskDataSeq->inputs_count.emplace_back(rows);
-  // taskDataSeq->inputs_count.emplace_back((size_t)1);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres.data()));
   taskDataSeq->outputs_count.emplace_back(expres.size());
 
@@ -151,7 +163,6 @@ TEST(drozhdinov_d_sum_cols_matrix_seq, RectangleMatrixTests2) {
   taskDataSeq->inputs_count.emplace_back(matrix.size());
   taskDataSeq->inputs_count.emplace_back(cols);
   taskDataSeq->inputs_count.emplace_back(rows);
-  // taskDataSeq->inputs_count.emplace_back((size_t)1);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres.data()));
   taskDataSeq->outputs_count.emplace_back(expres.size());
 
@@ -181,7 +192,6 @@ TEST(drozhdinov_d_sum_cols_matrix_seq, RectangleMatrixTests3) {
   taskDataSeq->inputs_count.emplace_back(matrix.size());
   taskDataSeq->inputs_count.emplace_back(cols);
   taskDataSeq->inputs_count.emplace_back(rows);
-  // taskDataSeq->inputs_count.emplace_back((size_t)1);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres.data()));
   taskDataSeq->outputs_count.emplace_back(expres.size());
 
@@ -209,7 +219,6 @@ TEST(drozhdinov_d_sum_cols_matrix_seq, WrongValidationTest) {
   taskDataSeq->inputs_count.emplace_back(matrix.size());
   taskDataSeq->inputs_count.emplace_back(cols);
   taskDataSeq->inputs_count.emplace_back(rows);
-  // taskDataSeq->inputs_count.emplace_back((size_t)1);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres.data()));
   taskDataSeq->outputs_count.emplace_back(matrix.size());
 
