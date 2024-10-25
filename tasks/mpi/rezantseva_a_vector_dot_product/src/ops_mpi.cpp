@@ -80,8 +80,8 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::pre_processing() 
   internal_order_test();
 
   unsigned int delta = 0;
-  unsigned int count_rank_add = 0;
-  unsigned int count_rank = 0;
+  int count_rank_add = 0;
+  int count_rank = 0;
   const int num_processes = world.size();
 
   if (num_processes == 0) {
@@ -109,7 +109,7 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::pre_processing() 
         input_[i][j] = tmp_ptr[j];
       }
     }
-    for (int proc = 1; proc < num_processes; proc++) {
+    for (size_t proc = 1; proc < num_processes; proc++) {
       if (proc < count_rank) {
         world.send(proc, 0, input_[0].data() + proc * delta, delta);
         world.send(proc, 1, input_[1].data() + proc * delta, delta);
