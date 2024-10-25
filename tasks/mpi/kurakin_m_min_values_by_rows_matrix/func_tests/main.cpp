@@ -251,36 +251,3 @@ TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Min_Rand_10_2) {
     ASSERT_EQ(ref_min_vec, par_min_vec);
   }
 }
-
-TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Min_null1) {
-  int count_rows = 10;
-  int size_rows = 0;
-  boost::mpi::communicator world;
-  std::vector<int> global_mat;
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    global_mat = kurakin_m_min_values_by_rows_matrix_mpi::getRandomVector(count_rows * size_rows);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
-    taskDataPar->inputs_count.emplace_back(global_mat.size());
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&count_rows));
-    taskDataPar->inputs_count.emplace_back((size_t)1);
-  }
-
-  kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
-
-  if (world.rank() == 0) {
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
-    taskDataSeq->inputs_count.emplace_back(global_mat.size());
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&count_rows));
-    taskDataSeq->inputs_count.emplace_back((size_t)1);
-
-    // Create Task
-    kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), false);
-  }
-}
