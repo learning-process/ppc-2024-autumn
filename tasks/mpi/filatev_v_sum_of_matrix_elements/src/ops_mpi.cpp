@@ -48,7 +48,7 @@ bool filatev_v_sum_of_matrix_elements_mpi::SumMatrixSeq::validation() {
 bool filatev_v_sum_of_matrix_elements_mpi::SumMatrixSeq::run() {
   internal_order_test();
 
-  for (int i = 0; i < matrix.size(); ++i) {
+  for (long unsigned int i = 0; i < matrix.size(); ++i) {
     summ += matrix[i];
   }
 
