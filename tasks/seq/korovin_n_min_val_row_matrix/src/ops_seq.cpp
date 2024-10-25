@@ -29,10 +29,10 @@ bool korovin_n_min_val_row_matrix_seq::TestTaskSequential::validation() {
   if (taskData->inputs.empty() || taskData->outputs.empty()) {
     return false;
   }
-  if (taskData->inputs_count.size() < 2 || taskData->inputs_count[0] <= 0 || taskData->inputs_count[1] <= 0) {
+  if (taskData->inputs_count.size() < 2 || taskData->inputs_count[0] == 0 || taskData->inputs_count[1] == 0) {
     return false;
   }
-  if (taskData->outputs_count.size() != 1 || taskData->outputs_count[0] != taskData->inputs_count[0]) {
+  if (taskData->outputs_count[0] != taskData->inputs_count[0]) {
     return false;
   }
   return true;
