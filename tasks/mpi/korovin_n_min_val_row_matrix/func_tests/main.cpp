@@ -220,11 +220,12 @@ TEST(korovin_n_min_val_row_matrix_mpi, validation_fails_on_invalid_inputs_count_
 
   taskDataSeq->inputs_count = {100};
 
-  std::vector<int> v_res(100, 0);
+  std::vector<int> v_res(50, 0);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(v_res.data()));
   taskDataSeq->outputs_count.emplace_back(v_res.size());
 
   korovin_n_min_val_row_matrix_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
+
   ASSERT_EQ(testTaskSequential.validation(), false);
 }
 
