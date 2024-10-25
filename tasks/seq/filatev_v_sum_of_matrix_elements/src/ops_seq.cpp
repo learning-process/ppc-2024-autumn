@@ -17,7 +17,7 @@ bool filatev_v_sum_of_matrix_elements_seq::SumMatrix::pre_processing() {
   size_n = taskData->inputs_count[0];
   size_m = taskData->inputs_count[1];
   matrix = std::vector<int>(size_m * size_n);
-  
+
   for (int i = 0; i < size_m; ++i) {
     auto* temp = reinterpret_cast<int*>(taskData->inputs[i]);
 
