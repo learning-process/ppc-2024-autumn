@@ -128,7 +128,7 @@ TEST(filatev_v_sum_of_matrix_elements_seq, Test_Sum_10_20_different) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  for (int i = 0; i < size_m; i++) {
+  for (int i = 0; i < size_m; ++i) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[i].data()));
   }
   taskDataSeq->inputs_count.emplace_back(size_n);
