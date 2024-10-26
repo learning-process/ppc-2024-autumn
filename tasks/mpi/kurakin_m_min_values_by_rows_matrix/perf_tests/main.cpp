@@ -21,9 +21,9 @@ TEST(kurakin_m_min_values_by_rows_matrix_mpi_perf_test, test_pipeline_run) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
     taskDataPar->inputs_count.emplace_back(global_mat.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&count_rows));
-    taskDataPar->inputs_count.emplace_back((size_t)1);
+    taskDataPar->inputs_count.emplace_back(static_cast<size_t>(1));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&size_rows));
-    taskDataPar->inputs_count.emplace_back((size_t)1);
+    taskDataPar->inputs_count.emplace_back(static_cast<size_t>(1));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(par_min_vec.data()));
     taskDataPar->outputs_count.emplace_back(par_min_vec.size());
   }
@@ -69,9 +69,9 @@ TEST(kurakin_m_min_values_by_rows_matrix_mpi_perf_test, test_task_run) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
     taskDataPar->inputs_count.emplace_back(global_mat.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&count_rows));
-    taskDataPar->inputs_count.emplace_back((size_t)1);
+    taskDataPar->inputs_count.emplace_back(static_cast<size_t>(1));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&size_rows));
-    taskDataPar->inputs_count.emplace_back((size_t)1);
+    taskDataPar->inputs_count.emplace_back(static_cast<size_t>(1));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(par_min_vec.data()));
     taskDataPar->outputs_count.emplace_back(par_min_vec.size());
   }

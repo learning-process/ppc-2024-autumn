@@ -23,9 +23,9 @@ TEST(kurakin_m_min_values_by_rows_matrix_seq, Test_Min1) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
   taskDataSeq->inputs_count.emplace_back(global_mat.size());
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows));
-  taskDataSeq->inputs_count.emplace_back((size_t)1);
+  taskDataSeq->inputs_count.emplace_back(static_cast<size_t>(1));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&size_rows));
-  taskDataSeq->inputs_count.emplace_back((size_t)1);
+  taskDataSeq->inputs_count.emplace_back(static_cast<size_t>(1));
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seq_min_vec.data()));
   taskDataSeq->outputs_count.emplace_back(seq_min_vec.size());
 
@@ -54,9 +54,9 @@ TEST(kurakin_m_min_values_by_rows_matrix_seq, Test_Min2) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
   taskDataSeq->inputs_count.emplace_back(global_mat.size());
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows));
-  taskDataSeq->inputs_count.emplace_back((size_t)1);
+  taskDataSeq->inputs_count.emplace_back(static_cast<size_t>(1));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&size_rows));
-  taskDataSeq->inputs_count.emplace_back((size_t)1);
+  taskDataSeq->inputs_count.emplace_back(static_cast<size_t>(1));
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seq_min_vec.data()));
   taskDataSeq->outputs_count.emplace_back(seq_min_vec.size());
 
@@ -86,9 +86,9 @@ TEST(kurakin_m_min_values_by_rows_matrix_seq, Test_Min3) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
   taskDataSeq->inputs_count.emplace_back(global_mat.size());
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows));
-  taskDataSeq->inputs_count.emplace_back((size_t)1);
+  taskDataSeq->inputs_count.emplace_back(static_cast<size_t>(1));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&size_rows));
-  taskDataSeq->inputs_count.emplace_back((size_t)1);
+  taskDataSeq->inputs_count.emplace_back(static_cast<size_t>(1));
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seq_min_vec.data()));
   taskDataSeq->outputs_count.emplace_back(seq_min_vec.size());
 
@@ -115,9 +115,9 @@ TEST(kurakin_m_min_values_by_rows_matrix_seq, Test_Min_null) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
   taskDataSeq->inputs_count.emplace_back(global_mat.size());
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows));
-  taskDataSeq->inputs_count.emplace_back((size_t)1);
+  taskDataSeq->inputs_count.emplace_back(static_cast<size_t>(1));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&size_rows));
-  taskDataSeq->inputs_count.emplace_back((size_t)1);
+  taskDataSeq->inputs_count.emplace_back(static_cast<size_t>(1));
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seq_min_vec.data()));
   taskDataSeq->outputs_count.emplace_back(seq_min_vec.size());
   // Create Task
