@@ -144,3 +144,22 @@ TEST(lysov_i_integration_the_trapezoid_method_mpi, TaskMpi_OutputSizeMoreThan1) 
     ASSERT_EQ(testTaskMPIParallel.validation(), false);
   }
 }
+
+TEST(lysov_i_integration_the_trapezoid_method_mpi, TaskMpi_InputSizeMoreThan3) {
+  std::shared_ptr<ppc::core::TaskData> taskDataMPIParallel = std::make_shared<ppc::core::TaskData>();
+  boost::mpi::communicator world;
+  if (world.rank() == 0) {
+    double a = -1.0;
+    double b = 1.0;
+    int cnt_of_splits = 100;
+    double extra_input = 5.0;
+    taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
+    taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
+    taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
+    taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&extra_input));
+    double result = 0.0;
+    taskDataMPIParallel->outputs.emplace_back(reinterpret_cast<uint8_t*>(&result));
+    lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskParallel testTaskMPIParallel(taskDataMPIParallel);
+    ASSERT_EQ(testTaskMPIParallel.validation(), false);
+  }
+}
