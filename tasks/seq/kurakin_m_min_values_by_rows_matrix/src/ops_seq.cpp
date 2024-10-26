@@ -18,7 +18,7 @@ bool kurakin_m_min_values_by_rows_matrix_seq::TestTaskSequential::pre_processing
   }
   // Init value for output
   count_rows = (int)*taskData->inputs[1];
-  size_rows = (int)(taskData->inputs_count[0] / (*taskData->inputs[1]));
+  size_rows = (int)*taskData->inputs[2];
   res = std::vector<int>(count_rows, 0);
   return true;
 }
