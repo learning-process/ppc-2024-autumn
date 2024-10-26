@@ -275,3 +275,91 @@ TEST(sotskov_a_sum_element_matrix, test_large_values_matrix) {
     EXPECT_NEAR(output, exact, 1e-6);
   }
 }
+
+TEST(sotskov_a_sum_element_matrix, test_data_distribution) {
+  boost::mpi::communicator world;
+  int rank = world.rank();
+  int size = world.size();
+
+  int total_rows = 4;
+  int total_cols = 3;
+  std::vector<double> matrix(total_rows * total_cols);
+
+  if (rank == 0) {
+    for (int i = 0; i < total_rows; ++i) {
+      for (int j = 0; j < total_cols; ++j) {
+        matrix[i * total_cols + j] = static_cast<double>(i * total_cols + j + 1);
+      }
+    }
+  }
+
+  boost::mpi::broadcast(world, matrix.data(), matrix.size(), 0);
+
+  int base_elements_per_process = total_rows * total_cols / size;
+  int remainder = (total_rows * total_cols) % size;
+
+  int start_idx = rank * base_elements_per_process + std::min(rank, remainder);
+  int end_idx = start_idx + base_elements_per_process + (rank < remainder ? 1 : 0);
+
+  for (int i = start_idx; i < end_idx; ++i) {
+    double expected_value = i + 1;
+    EXPECT_EQ(matrix[i], expected_value) << "Process " << rank << " has incorrect value at index " << i;
+  }
+}
+
+TEST(sotskov_a_sum_element_matrix, test_data_distribution_single_element_matrix) {
+  boost::mpi::communicator world;
+  int rank = world.rank();
+  int size = world.size();
+
+  int total_rows = 1;
+  int total_cols = 1;
+  std::vector<double> matrix(total_rows * total_cols, 1.0);
+
+  if (rank == 0) {
+    matrix[0] = 42.0;
+  }
+
+  boost::mpi::broadcast(world, matrix.data(), matrix.size(), 0);
+
+  int base_elements_per_process = total_rows * total_cols / size;
+  int remainder = (total_rows * total_cols) % size;
+
+  int start_idx = rank * base_elements_per_process + std::min(rank, remainder);
+  int end_idx = start_idx + base_elements_per_process + (rank < remainder ? 1 : 0);
+
+  if (start_idx < end_idx) {
+    EXPECT_EQ(matrix[start_idx], 42.0) << "Process " << rank << " should have value 42.";
+  }
+}
+
+TEST(sotskov_a_sum_element_matrix, test_data_distribution_2x3_matrix) {
+  boost::mpi::communicator world;
+  int rank = world.rank();
+  int size = world.size();
+
+  int total_rows = 2;
+  int total_cols = 3;
+  std::vector<double> matrix(total_rows * total_cols);
+
+  if (rank == 0) {
+    for (int i = 0; i < total_rows; ++i) {
+      for (int j = 0; j < total_cols; ++j) {
+        matrix[i * total_cols + j] = static_cast<double>(i * total_cols + j + 1);
+      }
+    }
+  }
+
+  boost::mpi::broadcast(world, matrix.data(), matrix.size(), 0);
+
+  int base_elements_per_process = total_rows * total_cols / size;
+  int remainder = (total_rows * total_cols) % size;
+
+  int start_idx = rank * base_elements_per_process + std::min(rank, remainder);
+  int end_idx = start_idx + base_elements_per_process + (rank < remainder ? 1 : 0);
+
+  for (int i = start_idx; i < end_idx; ++i) {
+    double expected_value = i + 1;
+    EXPECT_EQ(matrix[i], expected_value) << "Process " << rank << " has incorrect value at index " << i;
+  }
+}

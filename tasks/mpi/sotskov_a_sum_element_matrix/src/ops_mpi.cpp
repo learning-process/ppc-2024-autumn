@@ -86,12 +86,21 @@ bool sotskov_a_sum_element_matrix_mpi::TestMPITaskParallel::post_processing() {
 double sotskov_a_sum_element_matrix_mpi::TestMPITaskParallel::parallel_sum_elements(const std::vector<double>& matrix) {
   int rank = world.rank();
   int size = world.size();
+  int total_elements = matrix.size();
+
+  int base_elements_per_process = total_elements / size;
+  int remainder = total_elements % size;
+
+  int start_idx = rank * base_elements_per_process + std::min(rank, remainder);
+  int end_idx = start_idx + base_elements_per_process + (rank < remainder ? 1 : 0);
+
   double local_sum = 0.0;
-  int elements_per_process = matrix.size() / size;
-  int start_idx = rank * elements_per_process;
-  int end_idx = (rank == size - 1) ? matrix.size() : start_idx + elements_per_process;
   for (int i = start_idx; i < end_idx; ++i) {
     local_sum += matrix[i];
   }
-  return local_sum;
+
+  double global_sum = 0.0;
+  MPI_Reduce(&local_sum, &global_sum, 1, MPI_DOUBLE, MPI_SUM, 0, world);
+
+  return global_sum;
 }
