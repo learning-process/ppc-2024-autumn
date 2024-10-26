@@ -1,5 +1,4 @@
 // Copyright 2023 Nesterov Alexander
-// example func
 
 #include <gtest/gtest.h>
 

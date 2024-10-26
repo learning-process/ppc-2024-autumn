@@ -1,5 +1,4 @@
 // Copyright 2023 Nesterov Alexander
-// example perf
 
 #include <gtest/gtest.h>
 

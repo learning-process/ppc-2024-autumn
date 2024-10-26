@@ -1,5 +1,5 @@
 // Copyright 2023 Nesterov Alexander
-// seq example perf
+
 #include <gtest/gtest.h>
 
 #include <vector>

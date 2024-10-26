@@ -15,7 +15,7 @@ std::vector<int> drozhdinov_d_sum_cols_matrix_mpi::getRandomVector(int sz) {
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
   for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
+    vec[i] = (gen() % 100) - 49;
   }
   return vec;
 }
