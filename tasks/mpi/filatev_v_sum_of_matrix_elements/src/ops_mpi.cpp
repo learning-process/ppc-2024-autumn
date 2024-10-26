@@ -31,9 +31,7 @@ bool filatev_v_sum_of_matrix_elements_mpi::SumMatrixSeq::pre_processing() {
   for (int i = 0; i < size_m; ++i) {
     auto* temp = reinterpret_cast<int*>(taskData->inputs[i]);
 
-    for (int j = 0; j < size_n; ++j) {
-      matrix[i * size_n + j] = temp[j];
-    }
+    matrix.insert(matrix.end(),temp,temp + size_n);
   }
 
   return true;
@@ -48,9 +46,7 @@ bool filatev_v_sum_of_matrix_elements_mpi::SumMatrixSeq::validation() {
 bool filatev_v_sum_of_matrix_elements_mpi::SumMatrixSeq::run() {
   internal_order_test();
 
-  for (long unsigned int i = 0; i < matrix.size(); ++i) {
-    summ += matrix[i];
-  }
+  summ = std::accumulate(matrix.begin(), matrix.end(), 0);
 
   return true;
 }

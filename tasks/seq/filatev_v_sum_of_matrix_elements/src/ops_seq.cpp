@@ -1,15 +1,6 @@
 // Filatev Vladislav Sum_of_matrix_elements
 #include "seq/filatev_v_sum_of_matrix_elements/include/ops_seq.hpp"
 
-long long filatev_v_sum_of_matrix_elements_seq::sumVector(std::vector<int> vector) {
-  long long sum = 0;
-
-  for (long unsigned int i = 0; i < vector.size(); ++i) {
-    sum += vector[i];
-  }
-  return sum;
-}
-
 bool filatev_v_sum_of_matrix_elements_seq::SumMatrix::pre_processing() {
   internal_order_test();
 
