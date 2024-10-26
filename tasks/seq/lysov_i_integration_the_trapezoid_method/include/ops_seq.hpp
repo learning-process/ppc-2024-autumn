@@ -13,7 +13,7 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override;
   double a, b, cnt_of_splits, h;
   static double function(double x) { return x * x; }
-  
+
  private:
   std::vector<double> input_;
   int res{};

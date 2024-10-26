@@ -122,7 +122,7 @@ TEST(lysov_i_integration_the_trapezoid_method_mpi, TaskMpi_InputSizeLessThan3) {
     double result = 0.0;
     taskDataMPIParallel->outputs.emplace_back(reinterpret_cast<uint8_t*>(&result));
     lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskParallel testTaskMPIParallel(taskDataMPIParallel);
-    ASSERT_EQ(testTaskMPIParallel.validation(),false);
+    ASSERT_EQ(testTaskMPIParallel.validation(), false);
   }
 }
 
