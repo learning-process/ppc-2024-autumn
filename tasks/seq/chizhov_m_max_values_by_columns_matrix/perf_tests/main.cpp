@@ -93,4 +93,3 @@ TEST(chizhov_m_max_values_by_columns_matrix_seq, test_task_run) {
     EXPECT_EQ(1, res[0]);
   }
 }
-

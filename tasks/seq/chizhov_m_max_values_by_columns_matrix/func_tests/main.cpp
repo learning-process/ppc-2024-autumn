@@ -108,4 +108,3 @@ TEST(chizhov_m_max_values_by_columns_matrix_seq, Test_Max_6_Columns) {
   testTaskSequential.post_processing();
   ASSERT_EQ(result, max);
 }
-

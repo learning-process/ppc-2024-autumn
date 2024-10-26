@@ -24,14 +24,6 @@ TEST(chizhov_m_max_values_by_columns_matrix_mpi, Test_Max1) {
     const int count_size_vector = cols * rows;
     matrix = chizhov_m_max_values_by_columns_matrix_mpi::getRandomVector(count_size_vector);
 
-    std::cout << "Generated Matrix:" << std::endl;
-    for (int r = 0; r < rows; ++r) {
-      for (int c = 0; c < cols; ++c) {
-        std::cout << std::setw(3) << matrix[r * cols + c] << " ";
-      }
-      std::cout << std::endl;
-    }
-
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
     taskDataPar->inputs_count.emplace_back(cols);
@@ -66,18 +58,6 @@ TEST(chizhov_m_max_values_by_columns_matrix_mpi, Test_Max1) {
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
-
-    std::cout << "Parallel Results (res_par): ";
-    for (const auto& val : res_par) {
-      std::cout << val << " ";
-    }
-    std::cout << std::endl;
-
-    std::cout << "Sequential Results (res_seq): ";
-    for (const auto& val : res_seq) {
-      std::cout << val << " ";
-    }
-    std::cout << std::endl;
 
     ASSERT_EQ(res_seq, res_par);
   }
@@ -133,18 +113,6 @@ TEST(chizhov_m_max_values_by_columns_matrix_mpi, Test_Max2) {
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
-
-    std::cout << "Parallel Results (res_par): ";
-    for (const auto& val : res_par) {
-      std::cout << val << " ";
-    }
-    std::cout << std::endl;
-
-    std::cout << "Sequential Results (res_seq): ";
-    for (const auto& val : res_seq) {
-      std::cout << val << " ";
-    }
-    std::cout << std::endl;
 
     ASSERT_EQ(res_seq, res_par);
   }
@@ -315,14 +283,3 @@ TEST(chizhov_m_max_values_by_columns_matrix_mpi, Test_Max5) {
     ASSERT_EQ(res_seq, res_par);
   }
 }
-//
-//int main(int argc, char** argv) {
-//  boost::mpi::environment env(argc, argv);
-//  boost::mpi::communicator world;
-//  ::testing::InitGoogleTest(&argc, argv);
-//  ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
-//  if (world.rank() != 0) {
-//    delete listeners.Release(listeners.default_result_printer());
-//  }
-//  return RUN_ALL_TESTS();
-//}
