@@ -10,19 +10,53 @@
 TEST(kolokolova_d_max_of_vector_elements_mpi, Test_Parallel_Max1) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
-  std::vector<int32_t> global_sum(1, 0);
+  std::vector<int32_t> global_max(world.size(), 0);
+  int count_rows = world.size();
   std::cout << "Rang in test: " << world.rank() << "\n";
   std::cout << "Nums of procers in test: " << world.size() << "\n";
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 120;
+    const int count_size_vector = world.size() * 3;
     global_vec = kolokolova_d_max_of_vector_elements_mpi::getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
+    taskDataPar->outputs_count.emplace_back(global_max.size());
+  }
+
+  kolokolova_d_max_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "+");
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+  //ASSERT_EQ(1, 1);
+
+  if (world.rank() == 0) {
+    // Create data
+    std::vector<int32_t> reference_max(world.size(), 0);
+
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows));
+    taskDataSeq->inputs_count.emplace_back((size_t)1);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_max.size());
+
+    // Create Task
+    kolokolova_d_max_of_vector_elements_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    for (int i = 0; i < int(reference_max.size()); i++) {
+      ASSERT_EQ(reference_max[i], global_max[i]);
+    }
+    
   }
 }
   //TEST(kolokolova_d_max_of_vector_elements_mpi, Test_Parallel_Max2) {

@@ -59,10 +59,12 @@ bool nesterov_a_test_task_mpi::TestMPITaskSequential::post_processing() {
 
 bool nesterov_a_test_task_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  unsigned int delta = 0;
+  unsigned int delta = 0; // Количество 
+
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
   }
+
   broadcast(world, delta, 0);
   if (world.rank() == 0) {
     // Init vectors
