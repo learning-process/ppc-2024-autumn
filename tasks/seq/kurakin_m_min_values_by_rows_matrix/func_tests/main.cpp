@@ -109,7 +109,7 @@ TEST(kurakin_m_min_values_by_rows_matrix_seq, Test_Min_null) {
   size_rows = 0;
   std::vector<int> global_mat(count_rows * size_rows);
   std::vector<int32_t> seq_min_vec(count_rows, 0);
-  std::vector<int32_t> ans(count_rows);
+  std::vector<int32_t> ans(count_rows, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
@@ -127,5 +127,5 @@ TEST(kurakin_m_min_values_by_rows_matrix_seq, Test_Min_null) {
   testTaskSequential.run();
   testTaskSequential.post_processing();
 
-  ASSERT_EQ(seq_min_vec.size(), 0);
+  ASSERT_EQ(seq_min_vec, ans);
 }
