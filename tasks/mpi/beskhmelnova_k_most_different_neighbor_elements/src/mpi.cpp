@@ -204,6 +204,25 @@ bool beskhmelnova_k_most_different_neighbor_elements_mpi::TestMPITaskParallel<Da
   //   return true;
   // }
   NeighborDifference<DataType> local_result = find_max_difference(local_input_);
+  DataType last_element = local_input_.back();
+  DataType first_element = local_input_.front();
+  DataType next_first_element, prev_last_element;
+  if (world.rank() < world.size() - 1) {
+    world.send(world.rank() + 1, 0, last_element);
+    world.recv(world.rank() + 1, 0, next_first_element);
+  }
+  if (world.rank() > 0) {
+    world.send(world.rank() - 1, 0, first_element);
+    world.recv(world.rank() - 1, 0, prev_last_element);
+  }
+  if (world.rank() > 0) {
+    DataType dif = std::abs(first_element - prev_last_element);
+    if (dif > local_result.dif) local_result = {prev_last_element, first_element, dif};
+  }
+  if (world.rank() < world.size() - 1) {
+    DataType dif = std::abs(next_first_element - last_element);
+    if (dif > local_result.dif) local_result = {last_element, next_first_element, dif};
+  }
   DataType local_data[3] = {local_result.first, local_result.second, local_result.dif};
   DataType global_data[3] = {0, 0, 0};
   MPI_Op custom_op;

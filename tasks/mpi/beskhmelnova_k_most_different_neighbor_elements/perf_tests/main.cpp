@@ -59,7 +59,7 @@ TEST(mpi_beskhmelnova_k_most_different_neighbor_elements_perf_test, test_task_ru
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int count_size_vector;
   if (world.rank() == 0) {
-    count_size_vector = 15000000;
+    count_size_vector = 25000000;
     global_vec = std::vector<int>(count_size_vector, 1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
