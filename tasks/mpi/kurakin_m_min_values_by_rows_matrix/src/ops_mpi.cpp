@@ -42,8 +42,6 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::validation(
 bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::run() {
   internal_order_test();
 
-  if (size_rows == 0 || count_rows == 0) return false;
-
   for (int i = 0; i < count_rows; i++) {
     res[i] = *std::min_element(input_.begin() + i * size_rows, input_.begin() + (i + 1) * size_rows);
   }
@@ -52,8 +50,6 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::run() {
 
 bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
-
-  if (size_rows == 0 || count_rows == 0) return false;
 
   for (int i = 0; i < count_rows; i++) {
     reinterpret_cast<int*>(taskData->outputs[0])[i] = res[i];
@@ -109,7 +105,7 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::validation() 
 bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-  if (size_rows == 0 || count_rows == 0) return false;
+  if (size_rows == 0 || count_rows == 0) return true;
 
   unsigned int last_delta = 0;
   if (world.rank() == world.size() - 1) {
@@ -147,7 +143,7 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
 bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
 
-  if (size_rows == 0 || count_rows == 0) return false;
+  if (size_rows == 0 || count_rows == 0) return true;
 
   if (world.rank() == 0) {
     for (int i = 0; i < count_rows; i++) {
