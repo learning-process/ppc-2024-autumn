@@ -11,8 +11,6 @@ TEST(Parallel_Operations_MPI, Test_Sum) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_sum(1, 0);
-  std::cout << "Rang in test: " << world.rank() << "\n";
-  std::cout << "Nums of procers in test: " << world.size() << "\n";
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 

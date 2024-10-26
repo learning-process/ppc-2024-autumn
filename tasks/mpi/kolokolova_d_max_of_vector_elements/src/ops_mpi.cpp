@@ -10,17 +10,15 @@
 
 using namespace std::chrono_literals;
 
-//std::vector<std::vector<int>> kolokolova_d_max_of_vector_elements_mpi::getRandomVector(int sz) {
-//  std::random_device dev;
-//  std::mt19937 gen(dev());
-//  std::vector<std::vector<int>> vec(sz, std::vector<int>(sz));
-//  for (int i = 0; i < sz; i++) {
-//    for (int j = 0; j < sz; j++) {
-//      vec[i][j] = gen() % 100;
-//    }  
-//  }
-//  return vec;
-//}
+std::vector<int> kolokolova_d_max_of_vector_elements_mpi::getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = gen() % 100;
+  }
+  return vec;
+}
 bool kolokolova_d_max_of_vector_elements_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init value for input and output
@@ -71,96 +69,68 @@ bool kolokolova_d_max_of_vector_elements_mpi::TestMPITaskSequential::post_proces
 
 bool kolokolova_d_max_of_vector_elements_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-
+  unsigned int delta = 0;
   if (world.rank() == 0) {
-    size_t row_count = static_cast<size_t>(*taskData->inputs[1]);
-    std::cout << "Row Count: " << row_count << "\n";
+    delta = taskData->inputs_count[0] / world.size();
   }
-  int ProcNum = world.size();
-  int ProcRank = world.rank();
-  std::cout << "Process rang: " << ProcRank << "\n";
-  int N = taskData->inputs_count[0];
-
-  std::cout << "Total Elements: " << N << "\n";
-
+  broadcast(world, delta, 0);
   if (world.rank() == 0) {
-    input_.resize(N);
-    int* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (int i = 0; i < N; i++) {
+    // Init vectors
+    input_ = std::vector<int>(taskData->inputs_count[0]);
+    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
       input_[i] = tmp_ptr[i];
     }
-  }
-
-  // Определяем размер для каждого процесса
-  int baseSize = N / ProcNum;
-  int remainder = N % ProcNum;
-
-  local_input_.resize(baseSize + (ProcRank < remainder ? 1 : 0));
-
-  if (world.rank() == 0) {
-    // Отправляем данные другим процессам
-    //int offset = 0;
-    for (int i = 1; i < ProcNum; ++i) {
-      //int sendSize = baseSize + (i < remainder ? 1 : 0);
-      world.send(i, 0, input_.data() + i * baseSize, baseSize);
-      //world.send(i, 0, input_.data() + offset, sendSize);
-      std::cout << "Rang: " << ProcRank << "Size of data " << input_.size() << "Send size" << baseSize << "\n"; 
-      //offset += baseSize + (i < remainder ? 1 : 0);
+    for (int proc = 1; proc < world.size(); proc++) {
+      world.send(proc, 0, input_.data() + proc * delta, delta);
     }
-    // Копируем оставшиеся данные для процесса 0
-    std::cout << "Rang: " << ProcRank << "Size of data " << input_.size() << "\n"; 
-    std::copy(input_.begin(), input_.begin() + local_input_.size(), local_input_.begin());
-  } else {
-    // Получаем данные от процесса 0
-    std::cout << "Rang: " << ProcRank << "Size of data " << input_.size() << "\n"; 
-    world.recv(0, 0, local_input_.data(), local_input_.size());
   }
-
-  //std::cout << "ProcRank: " << ProcRank << " Local Input Size: " << local_input_.size() << "\n";
-
+  local_input_ = std::vector<int>(delta);
+  if (world.rank() == 0) {
+    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
+  } else {
+    world.recv(0, 0, local_input_.data(), delta);
+  }
+  // Init value for output
+  res = 0;
   return true;
 }
 
 bool kolokolova_d_max_of_vector_elements_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
+  if (world.rank() == 0) {
+    // Check count elements of output
+    return taskData->outputs_count[0] == 1;
+  }
   return true;
-  //return taskData->inputs_count[0] != 0;
 }
 
 bool kolokolova_d_max_of_vector_elements_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-
-  int ProcRank = world.rank();
-  max = std::numeric_limits<int>::min();  // Для корректной работы с минимальным значением
-
-  for (size_t i = 0; i < local_input_.size(); i++) {
-    if (max < local_input_[i]) max = local_input_[i];
-    std::cout << "ProcRank: " << ProcRank << " Local Input[" << i << "] = " << local_input_[i] << "\n";
+  int local_res;
+  if (ops == "+") {
+    local_res = std::accumulate(local_input_.begin(), local_input_.end(), 0);
+  } else if (ops == "-") {
+    local_res = -std::accumulate(local_input_.begin(), local_input_.end(), 0);
+  } else if (ops == "max") {
+    local_res = *std::max_element(local_input_.begin(), local_input_.end());
   }
 
+  if (ops == "+" || ops == "-") {
+    reduce(world, local_res, res, std::plus(), 0);
+  } else if (ops == "max") {
+    reduce(world, local_res, res, boost::mpi::maximum<int>(), 0);
+  }
+  std::this_thread::sleep_for(20ms);
   return true;
 }
 
 bool kolokolova_d_max_of_vector_elements_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
 
-  // Используем send/recv для сбора максимума
+   internal_order_test();
   if (world.rank() == 0) {
-    // Получаем максимумы от других процессов
-    for (int i = 1; i < world.size(); ++i) {
-      int receivedMax;
-      world.recv(i, 0, &receivedMax, 1);
-      res.push_back(receivedMax);  // Сохраняем результат
-    }
-    // Добавляем собственный максимум
-    res.push_back(max);
-
-    // Копируем результаты в выходной массив
-    std::memcpy(reinterpret_cast<int*>(taskData->outputs.data()), res.data(), res.size() * sizeof(int));
-  } else {
-    // Отправляем данный максимум процессу 0
-    world.send(0, 0, &max, 1);
+    reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
   }
-
   return true;
 }
