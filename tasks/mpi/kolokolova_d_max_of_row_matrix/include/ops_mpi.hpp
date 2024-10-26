@@ -13,7 +13,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace kolokolova_d_max_of_vector_elements_mpi {
+namespace kolokolova_d_max_of_row_matrix_mpi {
 
 std::vector<int> getRandomVector(int sz);
 

@@ -1,5 +1,5 @@
 // Copyright 2023 Nesterov Alexander
-#include "mpi/kolokolova_d_max_of_vector_elements/include/ops_mpi.hpp"
+#include "mpi/kolokolova_d_max_of_row_matrix/include/ops_mpi.hpp"
 
 #include <algorithm>
 #include <functional>
@@ -10,7 +10,7 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> kolokolova_d_max_of_vector_elements_mpi::getRandomVector(int sz) {
+std::vector<int> kolokolova_d_max_of_row_matrix_mpi::getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
@@ -19,7 +19,7 @@ std::vector<int> kolokolova_d_max_of_vector_elements_mpi::getRandomVector(int sz
   }
   return vec;
 }
-bool kolokolova_d_max_of_vector_elements_mpi::TestMPITaskSequential::pre_processing() {
+bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init value for input and output
   size_t row_count = static_cast<size_t>(*taskData->inputs[1]);
@@ -37,13 +37,13 @@ bool kolokolova_d_max_of_vector_elements_mpi::TestMPITaskSequential::pre_process
   return true;
 }
 
-bool kolokolova_d_max_of_vector_elements_mpi::TestMPITaskSequential::validation() {
+bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
   return *taskData->inputs[1] == taskData->outputs_count[0];
 }
 
-bool kolokolova_d_max_of_vector_elements_mpi::TestMPITaskSequential::run() {
+bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskSequential::run() {
   internal_order_test();
   for (size_t i = 0; i < input_.size(); ++i) {
     int max_value = input_[i][0];
@@ -57,23 +57,23 @@ bool kolokolova_d_max_of_vector_elements_mpi::TestMPITaskSequential::run() {
   return true;
 }
 
-bool kolokolova_d_max_of_vector_elements_mpi::TestMPITaskSequential::post_processing() {
+bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
   int* output_ptr = reinterpret_cast<int*>(taskData->outputs[0]);
   for (size_t i = 0; i < res.size(); ++i) {
     output_ptr[i] = res[i];
-    //std::cout << "Output Max[" << i << "]: " << res[i] << std::endl;  // Для отладки
+    //std::cout << "Output Max[" << i << "]: " << res[i] << std::endl;  // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
   }
   return true;
 }
 
-bool kolokolova_d_max_of_vector_elements_mpi::TestMPITaskParallel::pre_processing() {
+bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
   unsigned int delta = 0;
 
   if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] / world.size(); // Сколько элементов каждому процессу
+    delta = taskData->inputs_count[0] / world.size(); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
   }
   
   broadcast(world, delta, 0);
@@ -91,10 +91,10 @@ bool kolokolova_d_max_of_vector_elements_mpi::TestMPITaskParallel::pre_processin
     }
   }
 
-  local_input_ = std::vector<int>(delta); //Матрица для локальных элементов
+  local_input_ = std::vector<int>(delta); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
   if (world.rank() == 0) {
-    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);  //  Рапределение рядов по процессам
+    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);  //  пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
   } else {
     world.recv(0, 0, local_input_.data(), delta);
   }
@@ -103,16 +103,16 @@ bool kolokolova_d_max_of_vector_elements_mpi::TestMPITaskParallel::pre_processin
   return true;
 }
 
-bool kolokolova_d_max_of_vector_elements_mpi::TestMPITaskParallel::validation() {
+bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
-  //if (world.rank() == 0) {
-  //  // Check count elements of output
-  //  return taskData->outputs_count[0] == 1;
-  //}
+  if (world.rank() == 0) {
+    // Check count elements of output and input
+    if (taskData->outputs_count[0] != 0 && taskData->inputs_count[0] != 0) return true; 
+  }
   return true;
 }
 
-bool kolokolova_d_max_of_vector_elements_mpi::TestMPITaskParallel::run() {
+bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   int local_res = 0;
   for (int i = 0; i < int(local_input_.size()); i++) {
@@ -122,7 +122,7 @@ bool kolokolova_d_max_of_vector_elements_mpi::TestMPITaskParallel::run() {
   return true;
 }
 
-bool kolokolova_d_max_of_vector_elements_mpi::TestMPITaskParallel::post_processing() {
+bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     for (int i = 0; i < world.size(); i++) {

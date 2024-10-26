@@ -5,14 +5,14 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/kolokolova_d_max_of_vector_elements/include/ops_mpi.hpp"
+#include "mpi/kolokolova_d_max_of_row_matrix/include/ops_mpi.hpp"
 
 //TEST(kolokolova_d_max_of_vector_elements_test, test_pipeline_run) {
 //  boost::mpi::communicator world;
-//  int num_processes = world.size();               // Количество запущенных процессов
+//  int num_processes = world.size();               // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //  int size_rows = num_processes * 2000000;
-//  std::vector<int> global_max(num_processes, 0);  // Ожидаемый результат
-//  std::vector<int> global_mat(size_rows);     // Матрица
+//  std::vector<int> global_max(num_processes, 0);  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+//  std::vector<int> global_mat(size_rows);     // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //
 //  // Create TaskData
 //  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -41,23 +41,23 @@
 //  perfAttr->current_timer = [&] {
 //    auto current_time_point = std::chrono::high_resolution_clock::now();
 //    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
-//    return static_cast<double>(duration) * 1e-9;  // Конвертация в секунды
+//    return static_cast<double>(duration) * 1e-9;  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //  };
-//  // Создание и инициализация результатов производительности
+//  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //  auto perfResults = std::make_shared<ppc::core::PerfResults>();
 //
-//  // Создание анализатора производительности
+//  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
 //  perfAnalyzer->pipeline_run(perfAttr, perfResults);
 //
-//  // Печать статистики производительности
+//  // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //  ppc::core::Perf::print_perf_statistic(perfResults);
 //
 //   if (world.rank() == 0) {
 //     std::vector<int> results(num_processes);
 //     std::memcpy(results.data(), taskDataPar->outputs.data(), num_processes * sizeof(int));
 //
-//    // Ожидаемая проверка результатов
+//    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //    for (int i = 0; i < num_processes; ++i) {
 //      EXPECT_EQ(results[i], 1);
 //    }
@@ -67,27 +67,27 @@
 //TEST(kolokolova_d_max_of_vector_elements_test, test_task_run) {
 //  boost::mpi::communicator world;
 //
-//  int num_processes = world.size();         // Количество запущенных процессов
-//  int size_rows = num_processes * 1800000;  // Общее количество элементов
+//  int num_processes = world.size();         // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+//  int size_rows = num_processes * 1800000;  // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //
-//  // Вектор для хранения максимума, ожидаемого для каждого процесса
+//  // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //  std::vector<int> global_max(num_processes);
 //
-//  // Вектор для хранения входных данных
+//  // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 //  std::vector<int> global_mat(size_rows);
 //
-//  // Создание TaskData
+//  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ TaskData
 //  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 //
-//  // Заполнение входных данных на процессе 0
+//  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 0
 //  if (world.rank() == 0) {
 //    for (int i = 0; i < size_rows; ++i) {
-//      global_mat[i] = i;  // Заполняем последовательными числами
+//      global_mat[i] = i;  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //    }
 //
-//    // Установка ожидаемых значений максимума
+//    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //    for (int i = 0; i < num_processes; ++i) {
-//      global_max[i] = int((i + 1) * 1800000 - 1);  // Ожидаем максимума в i-ой группе значений
+//      global_max[i] = int((i + 1) * 1800000 - 1);  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ i-пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //    }
 //
 //    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
@@ -105,7 +105,7 @@
 //  testMpiTaskParallel->run();
 //  testMpiTaskParallel->post_processing();
 //
-//  // Создание атрибутов производительности
+//  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
 //  perfAttr->num_running = 10;
 //
@@ -114,26 +114,26 @@
 //  perfAttr->current_timer = [&] {
 //    auto current_time_point = std::chrono::high_resolution_clock::now();
 //    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
-//    return static_cast<double>(duration) * 1e-9;  // Конвертация в секунды
+//    return static_cast<double>(duration) * 1e-9;  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //  };
 //
-//  // Создание и инициализация результатов производительности
+//  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //  auto perfResults = std::make_shared<ppc::core::PerfResults>();
 //
-//  // Создание анализатора производительности
+//  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
 //  perfAnalyzer->pipeline_run(perfAttr, perfResults);
 //
-//  // Печать статистики производительности
+//  // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //  ppc::core::Perf::print_perf_statistic(perfResults);
 //
 //  if (world.rank() == 0) {
 //    std::vector<int> results(num_processes);
 //    std::memcpy(results.data(), taskDataPar->outputs.data(), num_processes * sizeof(int));
 //
-//    // Ожидаемая проверка результатов
+//    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //    for (int i = 0; i < num_processes; ++i) {
-//      EXPECT_EQ(results[i], global_max[i]);  // Сравниваем с ожидаемыми значениями
+//      EXPECT_EQ(results[i], global_max[i]);  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 //    }
 //  }
 //}

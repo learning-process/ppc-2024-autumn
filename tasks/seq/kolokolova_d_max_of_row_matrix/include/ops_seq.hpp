@@ -6,7 +6,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace kolokolova_d_max_of_vector_elements_seq {
+namespace kolokolova_d_max_of_row_matrix_seq {
 
 class TestTaskSequential : public ppc::core::Task {
  public:
@@ -21,4 +21,4 @@ class TestTaskSequential : public ppc::core::Task {
   std::vector<int> res;
 };
 
-}  // namespace kolokolova_d_max_of_vector_elements_seq
+}  // namespace kolokolova_d_max_of_row_matrix_seq
