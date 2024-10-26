@@ -33,7 +33,8 @@ TEST(filatev_v_sum_of_matrix_elements_seq, Test_Sum_10_10_1) {
 }
 
 TEST(filatev_v_sum_of_matrix_elements_seq, Test_Sum_10_20_1) {
-  const int size_m = 10, size_n = 20;
+  const int size_m = 10;
+  const int size_n = 20;
 
   // Create data
   std::vector<std::vector<int>> in(size_m, std::vector<int>(size_n, 1));
@@ -60,7 +61,8 @@ TEST(filatev_v_sum_of_matrix_elements_seq, Test_Sum_10_20_1) {
 }
 
 TEST(filatev_v_sum_of_matrix_elements_seq, Test_Sum_20_10_1) {
-  const int size_m = 20, size_n = 10;
+  const int size_m = 20;
+  const int size_n = 10;
 
   // Create data
   std::vector<std::vector<int>> in(size_m, std::vector<int>(size_n, 1));
@@ -87,7 +89,8 @@ TEST(filatev_v_sum_of_matrix_elements_seq, Test_Sum_20_10_1) {
 }
 
 TEST(filatev_v_sum_of_matrix_elements_seq, Test_Sum_1_1_1) {
-  const int size_m = 1, size_n = 1;
+  const int size_m = 1;
+  const int size_n = 1;
 
   // Create data
   std::vector<std::vector<int>> in(size_m, std::vector<int>(size_n, 1));
@@ -114,7 +117,8 @@ TEST(filatev_v_sum_of_matrix_elements_seq, Test_Sum_1_1_1) {
 }
 
 TEST(filatev_v_sum_of_matrix_elements_seq, Test_Sum_10_20_different) {
-  const int size_m = 10, size_n = 20;
+  const int size_m = 10;
+  const int size_n = 20;
 
   // Create data
   std::vector<std::vector<int>> in(size_m, std::vector<int>(size_n, 1));

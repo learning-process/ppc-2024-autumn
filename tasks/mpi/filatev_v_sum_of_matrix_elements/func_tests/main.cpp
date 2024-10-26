@@ -43,7 +43,8 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_10_10_r) {
   boost::mpi::communicator world;
   const int count = 10;
   std::vector<int> out;
-  std::vector<std::vector<int>> in, refIn;
+  std::vector<std::vector<int>> in;
+  std::vector<std::vector<int>>  refIn;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -91,9 +92,11 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_10_10_r) {
 
 TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_10_20_r) {
   boost::mpi::communicator world;
-  const int size_m = 10, size_n = 20;
+  const int size_m = 10;
+  const int size_n = 20;
   std::vector<int> out;
-  std::vector<std::vector<int>> in, refIn;
+  std::vector<std::vector<int>> in;
+  std::vector<std::vector<int>>  refIn;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -141,9 +144,11 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_10_20_r) {
 
 TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_20_10_r) {
   boost::mpi::communicator world;
-  const int size_m = 20, size_n = 10;
+  const int size_m = 20;
+  const int size_n = 10;
   std::vector<int> out;
-  std::vector<std::vector<int>> in, refIn;
+  std::vector<std::vector<int>> in;
+  std::vector<std::vector<int>>  refIn;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -191,9 +196,11 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_20_10_r) {
 
 TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_1_1_r) {
   boost::mpi::communicator world;
-  const int size_m = 1, size_n = 1;
+  const int size_m = 1;
+  const int size_n = 1;
   std::vector<int> out;
-  std::vector<std::vector<int>> in, refIn;
+  std::vector<std::vector<int>> in;
+  std::vector<std::vector<int>>  refIn;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 

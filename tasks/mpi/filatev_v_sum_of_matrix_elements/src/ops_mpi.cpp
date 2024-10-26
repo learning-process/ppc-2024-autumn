@@ -64,7 +64,8 @@ bool filatev_v_sum_of_matrix_elements_mpi::SumMatrixSeq::post_processing() {
 
 bool filatev_v_sum_of_matrix_elements_mpi::SumMatrixParallel::pre_processing() {
   internal_order_test();
-  int delta = 0, ras = 0;
+  int delta = 0;
+  int ras = 0;
   if (world.rank() == 0) {
     size_n = taskData->inputs_count[0];
     size_m = taskData->inputs_count[1];
