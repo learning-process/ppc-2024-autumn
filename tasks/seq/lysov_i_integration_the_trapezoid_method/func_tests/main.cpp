@@ -89,3 +89,15 @@ TEST(lysov_i_integration_the_trapezoid_method_seq, InputSizeMoreThan3) {
   lysov_i_integration_the_trapezoid_method_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_FALSE(testTaskSequential.validation());
 }
+
+TEST(lysov_i_integration_the_trapezoid_method_seq, OutputSizeLessThan1) {
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  double a = -1.0;
+  double b = 1.0;
+  int cnt_of_splits = 100;
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&a));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&b));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&cnt_of_splits));
+  lysov_i_integration_the_trapezoid_method_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_FALSE(testTaskSequential.validation());
+}
