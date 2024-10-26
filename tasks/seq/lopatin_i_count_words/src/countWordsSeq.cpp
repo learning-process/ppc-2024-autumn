@@ -5,10 +5,14 @@ namespace lopatin_i_count_words_seq {
 std::vector<char> generateLongString(int n) {
   std::vector<char> testData;
   std::string testString = "This is a long sentence for performance testing of the word count algorithm using MPI. ";
-  for (int i = 0; i < n; i++) {
+  for (int i = 0; i < n - 1; i++) {
     for (unsigned long int j = 0; j < testString.length(); j++) {
       testData.push_back(testString[j]);
     }
+  }
+  std::string lastSentence = "This is a long sentence for performance testing of the word count algorithm using MPI.";
+  for (unsigned long int j = 0; j < lastSentence.length(); j++) {
+    testData.push_back(lastSentence[j]);
   }
   return testData;
 }
