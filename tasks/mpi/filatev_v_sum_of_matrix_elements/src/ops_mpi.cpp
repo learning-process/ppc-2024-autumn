@@ -26,12 +26,11 @@ bool filatev_v_sum_of_matrix_elements_mpi::SumMatrixSeq::pre_processing() {
   summ = 0;
   size_n = taskData->inputs_count[0];
   size_m = taskData->inputs_count[1];
-  matrix = std::vector<int>(size_m * size_n);
 
   for (int i = 0; i < size_m; ++i) {
     auto* temp = reinterpret_cast<int*>(taskData->inputs[i]);
 
-    matrix.insert(matrix.end(),temp,temp + size_n);
+    matrix.insert(matrix.end(), temp, temp + size_n);
   }
 
   return true;
@@ -72,13 +71,10 @@ bool filatev_v_sum_of_matrix_elements_mpi::SumMatrixParallel::pre_processing() {
 
   if (world.rank() == 0) {
     // Init vectors
-    matrix = std::vector<int>(size_m * size_n);
     for (int i = 0; i < size_m; ++i) {
       auto* temp = reinterpret_cast<int*>(taskData->inputs[i]);
 
-      for (int j = 0; j < size_n; ++j) {
-        matrix[i * size_n + j] = temp[j];
-      }
+      matrix.insert(matrix.end(), temp, temp + size_n);
     }
     for (int proc = 1; proc < world.size(); proc++) {
       world.send(proc, 0, matrix.data() + proc * delta + ras, delta);
