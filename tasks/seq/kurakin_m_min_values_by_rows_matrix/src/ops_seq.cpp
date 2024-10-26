@@ -18,7 +18,7 @@ bool kurakin_m_min_values_by_rows_matrix_seq::TestTaskSequential::pre_processing
   }
   // Init value for output
   count_rows = (int)*taskData->inputs[1];
-  size_rows = (int)(taskData->inputs_count[0] / (*taskData->inputs[1]));
+  size_rows = (int)*taskData->inputs[2];
   res = std::vector<int>(count_rows, 0);
   return true;
 }
@@ -26,7 +26,7 @@ bool kurakin_m_min_values_by_rows_matrix_seq::TestTaskSequential::pre_processing
 bool kurakin_m_min_values_by_rows_matrix_seq::TestTaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
-  return taskData->inputs_count[0] != 0 && *taskData->inputs[1] == taskData->outputs_count[0];
+  return *taskData->inputs[1] == taskData->outputs_count[0];
 }
 
 bool kurakin_m_min_values_by_rows_matrix_seq::TestTaskSequential::run() {
