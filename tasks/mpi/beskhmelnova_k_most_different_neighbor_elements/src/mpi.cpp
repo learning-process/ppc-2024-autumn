@@ -103,7 +103,6 @@ bool beskhmelnova_k_most_different_neighbor_elements_mpi::TestMPITaskParallel<Da
   internal_order_test();
   if (world.rank() == 0) {
     // Check count elements of output
-    // return taskData->inputs_count.size() == 1 && taskData->inputs_count[0] >= 0 && taskData->outputs_count[0] == 2;
     return taskData->outputs_count[0] == 2;
   }
   return true;
@@ -146,7 +145,8 @@ bool beskhmelnova_k_most_different_neighbor_elements_mpi::TestMPITaskParallel<Da
   NeighborDifference<DataType> local_result = find_max_difference(local_input_);
   DataType last_element = local_input_.back();
   DataType first_element = local_input_.front();
-  DataType next_first_element = 0, prev_last_element = 0;
+  DataType next_first_element = 0;
+  DataType prev_last_element = 0;
   if (world.rank() < world.size() - 1) {
     world.send(world.rank() + 1, 0, last_element);
     world.recv(world.rank() + 1, 0, next_first_element);
