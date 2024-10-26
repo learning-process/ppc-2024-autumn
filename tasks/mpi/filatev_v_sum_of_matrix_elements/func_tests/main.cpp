@@ -44,7 +44,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_10_10_r) {
   const int count = 10;
   std::vector<int> out;
   std::vector<std::vector<int>> in;
-  std::vector<std::vector<int>>  refIn;
+  std::vector<std::vector<int>> refIn;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -96,7 +96,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_10_20_r) {
   const int size_n = 20;
   std::vector<int> out;
   std::vector<std::vector<int>> in;
-  std::vector<std::vector<int>>  refIn;
+  std::vector<std::vector<int>> refIn;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -148,7 +148,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_20_10_r) {
   const int size_n = 10;
   std::vector<int> out;
   std::vector<std::vector<int>> in;
-  std::vector<std::vector<int>>  refIn;
+  std::vector<std::vector<int>> refIn;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -200,7 +200,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_1_1_r) {
   const int size_n = 1;
   std::vector<int> out;
   std::vector<std::vector<int>> in;
-  std::vector<std::vector<int>>  refIn;
+  std::vector<std::vector<int>> refIn;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
