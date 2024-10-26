@@ -61,3 +61,15 @@ TEST(lysov_i_integration_the_trapezoid_method_seq, BasicTest3) {
   double expected_result = 2.0;
   ASSERT_NEAR(output, expected_result, 1e-1);
 }
+
+TEST(lysov_i_integration_the_trapezoid_method_seq, InputSizeLessThan3) {
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  double a = -1.0;
+  double b = 1.0;
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&a));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&b));
+  double result = 0.0;
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(&result));
+  lysov_i_integration_the_trapezoid_method_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_FALSE(testTaskSequential.validation());
+}
