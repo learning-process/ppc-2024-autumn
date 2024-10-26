@@ -24,6 +24,7 @@ class TestMPITaskSequential : public ppc::core::Task {
  private:
   std::vector<char> input_;
   int wordCount{};
+  int spaceCount{};
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -38,7 +39,8 @@ class TestMPITaskParallel : public ppc::core::Task {
   std::vector<char> input_;
   std::vector<char> localInput_;
   int wordCount{};
-  int localWordCount{};
+  int spaceCount{};
+  int localSpaceCount{};
   boost::mpi::communicator world;
 };
 

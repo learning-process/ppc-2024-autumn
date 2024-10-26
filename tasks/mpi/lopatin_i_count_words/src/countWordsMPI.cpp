@@ -4,7 +4,7 @@ namespace lopatin_i_count_words_mpi {
 
 std::vector<char> generateLongString(int n) {
   std::vector<char> testData;
-  std::string testString = "This is a long sentence for performance testing of the word count algorithm using MPI. ";
+  std::string testString = "This is a long sentence for performance testing of the word count algorithm using MPI.";
   for (int i = 0; i < n; i++) {
     for (unsigned long int j = 0; j < testString.length(); j++) {
       testData.push_back(testString[j]);
@@ -20,7 +20,6 @@ bool TestMPITaskSequential::pre_processing() {
   for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
     input_[i] = tempPtr[i];
   }
-  wordCount = 0;
   return true;
 }
 
@@ -31,15 +30,12 @@ bool TestMPITaskSequential::validation() {
 
 bool TestMPITaskSequential::run() {
   internal_order_test();
-  bool inWord = false;
   for (char c : input_) {
-    if (c == ' ' || c == '\n') {
-      inWord = false;
-    } else if (!inWord) {
-      wordCount++;
-      inWord = true;
+    if (c == ' ') {
+      spaceCount++;
     }
   }
+  wordCount = spaceCount + 1;
   return true;
 }
 
@@ -71,8 +67,6 @@ bool TestMPITaskParallel::pre_processing() {
   } else {
     world.recv(0, 0, localInput_.data(), chunkSize);
   }
-  wordCount = 0;
-  localWordCount = 0;
   return true;
 }
 
@@ -83,16 +77,15 @@ bool TestMPITaskParallel::validation() {
 
 bool TestMPITaskParallel::run() {
   internal_order_test();
-  bool in_word = false;
   for (char c : localInput_) {
-    if (c == ' ' || c == '\n') {
-      in_word = false;
-    } else if (!in_word) {
-      localWordCount++;
-      in_word = true;
+    if (c == ' ') {
+      localSpaceCount++;
     }
   }
-  boost::mpi::reduce(world, localWordCount, wordCount, std::plus<>(), 0);
+  boost::mpi::reduce(world, localSpaceCount, spaceCount, std::plus<>(), 0);
+  if (world.rank() == 0) {
+    wordCount = spaceCount + 1;
+  }
   return true;
 }
 

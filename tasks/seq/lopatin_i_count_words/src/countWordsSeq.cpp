@@ -20,7 +20,6 @@ bool lopatin_i_count_words_seq::TestTaskSequential::pre_processing() {
   for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
     input_[i] = tempPtr[i];
   }
-  wordCount = 0;
   return true;
 }
 
@@ -31,15 +30,12 @@ bool lopatin_i_count_words_seq::TestTaskSequential::validation() {
 
 bool lopatin_i_count_words_seq::TestTaskSequential::run() {
   internal_order_test();
-  bool inWord = false;
   for (char c : input_) {
-    if (c == ' ' || c == '\n') {
-      inWord = false;
-    } else if (!inWord) {
-      wordCount++;
-      inWord = true;
+    if (c == ' ') {
+      spaceCount++;
     }
   }
+  wordCount = spaceCount + 1;
   return true;
 }
 
