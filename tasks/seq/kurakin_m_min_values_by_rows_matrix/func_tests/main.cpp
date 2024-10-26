@@ -122,8 +122,10 @@ TEST(kurakin_m_min_values_by_rows_matrix_seq, Test_Min_null) {
   taskDataSeq->outputs_count.emplace_back(seq_min_vec.size());
   // Create Task
   kurakin_m_min_values_by_rows_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_EQ(testTaskSequential.validation(), false);
+  ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
+
+  ASSERT_EQ(seq_min_vec.size(), 0);
 }

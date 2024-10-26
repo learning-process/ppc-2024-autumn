@@ -188,7 +188,10 @@ TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Min_Rand_0_0) {
   }
 
   kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
     // Create data
@@ -207,7 +210,11 @@ TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Min_Rand_0_0) {
 
     // Create Task
     kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), false);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
     ASSERT_EQ(ref_min_vec, par_min_vec);
   }
 }

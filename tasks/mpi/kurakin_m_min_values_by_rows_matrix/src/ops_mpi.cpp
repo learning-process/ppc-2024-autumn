@@ -36,7 +36,7 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::pre_process
 bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
 
-  return taskData->inputs_count[0] != 0 && *taskData->inputs[1] == taskData->outputs_count[0];
+  return *taskData->inputs[1] == taskData->outputs_count[0];
 }
 
 bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::run() {
@@ -97,7 +97,7 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::pre_processin
 bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    return taskData->inputs_count[0] != 0 && *taskData->inputs[1] == taskData->outputs_count[0];
+    return *taskData->inputs[1] == taskData->outputs_count[0];
   }
   return true;
 }
@@ -105,7 +105,7 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::validation() 
 bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-  if (size_rows == 0 || count_rows == 0) return true;
+  if (size_rows == 0 || count_rows == 0) return false;
 
   unsigned int last_delta = 0;
   if (world.rank() == world.size() - 1) {
@@ -143,7 +143,7 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
 bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
 
-  if (size_rows == 0 || count_rows == 0) return true;
+  if (size_rows == 0 || count_rows == 0) return false;
 
   if (world.rank() == 0) {
     for (int i = 0; i < count_rows; i++) {
