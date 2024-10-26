@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #pragma once
 
 #include <gtest/gtest.h>
@@ -33,7 +32,7 @@ class TestMPITaskSequential : public ppc::core::Task {
 class TestMPITaskParallel : public ppc::core::Task {
  public:
   explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+      : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -42,7 +41,6 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   std::vector<int> input_, local_input_;
   std::vector<int> res;
-  std::string ops;
   boost::mpi::communicator world;
 };
 
