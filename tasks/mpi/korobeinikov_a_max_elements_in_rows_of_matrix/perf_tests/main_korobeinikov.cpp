@@ -15,17 +15,17 @@ TEST(mpi_korobeinikov_a_max_elements_in_rows_of_matrix_perf_test, test_pipeline_
   int count_rows = 100;  // not const, because reinterpret_cast does not work with const
   std::vector<int> global_matrix;
   std::vector<int> mpi_res(count_rows, 0);
-  std::vector<int> right_answer (count_rows, 1);
+  std::vector<int> right_answer(count_rows, 1);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     global_matrix = std::vector<int>(count_rows * 500000, 1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(global_matrix.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows));
     taskDataPar->inputs_count.emplace_back(1);
 
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(mpi_res.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(mpi_res.data()));
     taskDataPar->outputs_count.emplace_back(mpi_res.size());
   }
 
@@ -98,4 +98,3 @@ TEST(mpi_korobeinikov_a_max_elements_in_rows_of_matrix_perf_test, test_task_run)
     ASSERT_EQ(mpi_res, right_answer);
   }
 }
-

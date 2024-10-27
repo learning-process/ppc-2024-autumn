@@ -15,10 +15,9 @@ class TestTaskSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-
- private:  
+ private:
   std::vector<int> input_;
-  std::vector<int> res;	
+  std::vector<int> res;
   int count_rows{};
   int size_rows{};
 };

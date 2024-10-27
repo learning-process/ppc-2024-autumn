@@ -6,12 +6,10 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/korobeinikov_a_max_elements_in_rows_of_matrix/include/ops_seq_korobeinikov.hpp"
 
-
 TEST(sequential_korobeinikov_perf_test, test_pipeline_run) {
-
   // Create data
   int count_rows = 500;  // not const, because reinterpret_cast does not work with const
-  std::vector<int> matrix(count_rows*10000, 10);
+  std::vector<int> matrix(count_rows * 10000, 10);
 
   std::vector<int> seq_res(count_rows, 0);
   std::vector<int> right_answer = std::vector<int>(count_rows, 10);
@@ -51,7 +49,6 @@ TEST(sequential_korobeinikov_perf_test, test_pipeline_run) {
   }
 }
 
-
 TEST(sequential_korobeinikov_perf_test, test_task_run) {
 
   // Create data
@@ -60,7 +57,6 @@ TEST(sequential_korobeinikov_perf_test, test_task_run) {
 
   std::vector<int> seq_res(count_rows, 0);
   std::vector<int> right_answer = std::vector<int>(count_rows, 10);
-
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
