@@ -1,4 +1,3 @@
-/*
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
@@ -105,7 +104,6 @@ TEST(kudryashova_i_vector_dot_product_mpi, scalar_multiply_vector_size_500) {
   }
 }
 
-
 TEST(kudryashova_i_vector_dot_product_mpi, check_vectors_equal) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vector;
@@ -151,4 +149,3 @@ TEST(kudryashova_i_vector_dot_product_mpi, check_vectors_not_equal) {
   kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), false);
 }
-*/

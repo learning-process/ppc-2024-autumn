@@ -1,4 +1,4 @@
- #pragma once
+#pragma once
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <memory>
@@ -12,28 +12,29 @@ namespace kudryashova_i_vector_dot_product_mpi {
 std::vector<int> getRandomVector(unsigned long size);
 int vectorDotProduct(const std::vector<int>& vector1, const std::vector<int>& vector2);
 class TestMPITaskSequential : public ppc::core::Task {
-  public:
+ public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-   private:
+
+ private:
   std::vector<std::vector<int>> input_;
   int result{};
 };
 class TestMPITaskParallel : public ppc::core::Task {
-  public:
+ public:
   explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  private:
-   std::vector<std::vector<int>> input_;
-   std::vector<int> local_input1_, local_input2_;
-   int result{};
-   boost::mpi::communicator world;
-   };
+ private:
+  std::vector<std::vector<int>> input_;
+  std::vector<int> local_input1_, local_input2_;
+  int result{};
+  boost::mpi::communicator world;
+  };
 }
- //namespace kudryashova_i_vector_dot_product_mpi
+//namespace kudryashova_i_vector_dot_product_mpi
