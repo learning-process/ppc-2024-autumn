@@ -85,18 +85,11 @@ bool vasenkov_a_char_freq_mpi::CharFrequencyParallel::validation() {
 }
 
 bool vasenkov_a_char_freq_mpi::CharFrequencyParallel::run() {
-  internal_order_test();
-  local_res = 0;
-  
-  #pragma omp parallel for reduction(+:local_res)
-  for (size_t i = 0; i < local_input_.size(); ++i) {
-    if (local_input_[i] == target_char_) {
-      ++local_res;
-    }
-  }
+    internal_order_test();
+    local_res = std::count(local_input_.begin(), local_input_.end(), target_char_);
 
-  boost::mpi::reduce(world, local_res, res, std::plus<>(), 0);
-  return true;
+    boost::mpi::reduce(world, local_res, res, std::plus<>(), 0);
+    return true;
 }
 
 bool vasenkov_a_char_freq_mpi::CharFrequencyParallel::post_processing() {
