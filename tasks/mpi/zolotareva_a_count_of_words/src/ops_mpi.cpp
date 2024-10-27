@@ -1,6 +1,6 @@
 // Copyright 2023 Nesterov Alexander
 //здесь писать саму задачу
-#include "mpi/example/include/ops_mpi.hpp"
+#include "mpi/zolotareva_a_count_of_words/include/ops_mpi.hpp"
 
 #include <algorithm>
 #include <functional>

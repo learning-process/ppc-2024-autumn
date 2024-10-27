@@ -119,8 +119,3 @@ TEST(zolotareva_a_count_of_words_seq, Test_Sum_100) {
   testTaskSequential.post_processing();
   ASSERT_EQ(count, out[0]);
 }
-
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}

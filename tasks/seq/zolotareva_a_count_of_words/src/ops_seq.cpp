@@ -1,5 +1,5 @@
 // Copyright 2024 Nesterov Alexander
-#include "seq/example/include/ops_seq.hpp"
+#include "seq/zolotareva_a_count_of_words/include/ops_seq.hpp"
 
 #include <thread>
 

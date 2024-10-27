@@ -4,9 +4,9 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "seq/example/include/ops_seq.hpp"
+#include "seq/zolotareva_a_count_of_words/include/ops_seq.hpp"
 
-TEST(sequential_example_perf_test, test_pipeline_run) {
+TEST(sequential_zolotareva_a_count_of_words_perf_test, test_pipeline_run) {
   const int count = 100;
 
   // Create data
@@ -43,7 +43,7 @@ TEST(sequential_example_perf_test, test_pipeline_run) {
   ASSERT_EQ(count, out[0]);
 }
 
-TEST(sequential_example_perf_test, test_task_run) {
+TEST(sequential_zolotareva_a_count_of_words_perf_test, test_task_run) {
   const int count = 100;
 
   // Create data
@@ -78,9 +78,4 @@ TEST(sequential_example_perf_test, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
   ASSERT_EQ(count, out[0]);
-}
-
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
 }
