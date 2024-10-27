@@ -269,7 +269,7 @@ TEST(filateva_e_number_sentences_line_mpi, random_text_3) {
 
 TEST(filateva_e_number_sentences_line_mpi, random_text_4) {
   boost::mpi::communicator world;
-  std::string line="";
+  std::string line;
   std::vector<int> out(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();

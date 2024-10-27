@@ -45,7 +45,7 @@ bool filateva_e_number_sentences_line_mpi::NumberSentencesLineSequential::valida
 bool filateva_e_number_sentences_line_mpi::NumberSentencesLineSequential::run() {
   internal_order_test();
   num = countSentences(line);
-  if (line.size() != 0 && line.back() != '.' && line.back() != '?' && line.back() != '!' ) {
+  if (line.size() != 0 && line.back() != '.' && line.back() != '?' && line.back() != '!') {
     ++num;
   }
   return true;
@@ -94,7 +94,7 @@ bool filateva_e_number_sentences_line_mpi::NumberSentencesLineParallel::validati
 bool filateva_e_number_sentences_line_mpi::NumberSentencesLineParallel::run() {
   internal_order_test();
   int local_num = countSentences(local_line);
-  if (world.rank() == 0 && line.size() != 0 && line.back() != '.' && line.back() != '?' && line.back() != '!' ) {
+  if (world.rank() == 0 && line.size() != 0 && line.back() != '.' && line.back() != '?' && line.back() != '!') {
     ++local_num;
   }
   reduce(world, local_num, num, std::plus(), 0);
