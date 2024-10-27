@@ -9,7 +9,7 @@
 //std::vector<int> kudryashova_i_vector_dot_product_mpi::getRandomVector(int size) {
 //    std::vector<int> vector(size);
 //    std::srand(static_cast<unsigned>(time(NULL)) + ++seedOffset);
-//    for (int i = 0; i < size; ++i) {
+//    for (unsigned long i = 0; i < size; ++i) {
 //        vector[i] = std::rand() % 10 + 1;
 //    }
 //    return vector;
@@ -17,7 +17,7 @@
 //
 //int kudryashova_i_vector_dot_product_mpi::vectorDotProduct(const std::vector<int>& vector1, const std::vector<int>& vector2) {
 //    long long result = 0;
-//    for (size_t i = 0; i < vector1.size(); i++) 
+//    for (unsigned long i = 0; i < vector1.size(); i++) 
 //        result += vector1[i] * vector2[i];
 //    return result;
 //}
@@ -26,7 +26,7 @@
 //    internal_order_test();
 //
 //    input_.resize(taskData->inputs.size());
-//    for (size_t i = 0; i < input_.size(); ++i) {
+//    for (unsigned long i = 0; i < input_.size(); ++i) {
 //        auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[i]);
 //        input_[i] = std::vector<int>(taskData->inputs_count[i]);
 //        std::copy(tempPtr, tempPtr + taskData->inputs_count[i], input_[i].begin());
@@ -46,7 +46,7 @@
 //
 //bool kudryashova_i_vector_dot_product_mpi::TestMPITaskSequential::run() {
 //    internal_order_test();
-//    for (size_t i = 0; i < input_[0].size(); i++) {
+//    for (unsigned long i = 0; i < input_[0].size(); i++) {
 //        result += input_[1][i] * input_[0][i];
 //    }
 //    return true;
