@@ -1,6 +1,7 @@
 // Copyright 2024 Korobeinikov Arseny
 #include "seq/korobeinikov_a_max_elements_in_rows_of_matrix/include/ops_seq_korobeinikov.hpp"
 
+#include <algorithm>
 #include <thread>
 
 using namespace std::chrono_literals;
