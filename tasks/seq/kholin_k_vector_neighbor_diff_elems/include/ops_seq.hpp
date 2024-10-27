@@ -1,7 +1,7 @@
 #pragma once
 
 #include <algorithm>
-#include<cmath>
+#include <cmath>
 #include <functional>
 #include <random>
 #include <string>
