@@ -1,6 +1,7 @@
 /*#include <gtest/gtest.h>
 #include <boost/mpi/timer.hpp>
 #include <vector>
+
 #include "core/perf/include/perf.hpp"
 #include "mpi/kudryashova_i_vector_dot_product/include/vectorDotProductMPI.hpp"
 
@@ -59,13 +60,11 @@ TEST(kudryashova_i_vector_dot_product_mpi, test_task_run) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
     taskDataPar->outputs_count.emplace_back(result.size());
   }
-  
   auto testMpiTaskParallel = std::make_shared<kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
-  
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
