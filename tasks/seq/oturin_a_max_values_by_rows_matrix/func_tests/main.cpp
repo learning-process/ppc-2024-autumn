@@ -3,7 +3,7 @@
 #include <numeric>
 #include <vector>
 
-#include "seq/oturin_a_max_values_by_rows_matrix_seq/include/ops_seq.hpp"
+#include "seq/oturin_a_max_values_by_rows_matrix/include/ops_seq.hpp"
 
 TEST(Sequential, Test_Max_5_5) {
   size_t n = 5;

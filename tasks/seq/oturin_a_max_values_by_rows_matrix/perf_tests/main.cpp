@@ -3,9 +3,9 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "seq/oturin_a_max_values_by_rows_matrix_seq/include/ops_seq.hpp"
+#include "seq/oturin_a_max_values_by_rows_matrix/include/ops_seq.hpp"
 
-TEST(sequential_example_perf_test, test_pipeline_run) {
+TEST(oturin_a_max_values_by_rows_matrix_seq_perftest, test_pipeline_run) {
   size_t n = 500, m = 500;
 
   // Create data
@@ -42,7 +42,7 @@ TEST(sequential_example_perf_test, test_pipeline_run) {
   ASSERT_EQ(m, taskDataSeq->outputs_count.back());
 }
 
-TEST(sequential_example_perf_test, test_task_run) {
+TEST(oturin_a_max_values_by_rows_matrix_seq_perftest, test_task_run) {
   size_t n = 500, m = 500;
 
   // Create data

@@ -6,7 +6,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/oturin_a_max_values_by_rows_matrix/include/ops_mpi.hpp"
 
-TEST(mpi_example_perf_test, test_pipeline_run) {
+TEST(oturin_a_max_values_by_rows_matrix_mpi_perftest, test_pipeline_run) {
   size_t n = 300;
   size_t m = 300;
   boost::mpi::communicator world;
@@ -43,11 +43,11 @@ TEST(mpi_example_perf_test, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(n * m, global_max[0]);
+    ASSERT_EQ((int)(n * m), global_max[0]);
   }
 }
 
-TEST(mpi_example_perf_test, test_task_run) {
+TEST(oturin_a_max_values_by_rows_matrix_mpi_perftest, test_task_run) {
   size_t n = 300;
   size_t m = 300;
   boost::mpi::communicator world;
@@ -84,6 +84,6 @@ TEST(mpi_example_perf_test, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(n * m, global_max[0]);
+    ASSERT_EQ((int)(n * m), global_max[0]);
   }
 }
