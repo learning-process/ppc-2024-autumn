@@ -69,13 +69,14 @@ bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
   unsigned int delta = 0;
+  int proc_rank = world.rank();
 
-  if (world.rank() == 0) {
+  if (proc_rank == 0) {
     delta = taskData->inputs_count[0] / world.size();
   }
   broadcast(world, delta, 0);
 
-  if (world.rank() == 0) {
+  if (proc_rank == 0) {
     // Init vectors
     input_ = std::vector<int>(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
@@ -90,7 +91,7 @@ bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel::pre_processing() {
 
   local_input_ = std::vector<int>(delta);
 
-  if (world.rank() == 0) {
+  if (proc_rank == 0) {
     local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
   } else {
     world.recv(0, 0, local_input_.data(), delta);
