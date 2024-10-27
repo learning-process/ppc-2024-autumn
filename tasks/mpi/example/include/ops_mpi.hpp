@@ -49,5 +49,3 @@ class TestMPITaskParallel : public ppc::core::Task {
 };
 
 }  // namespace nesterov_a_test_task_mpi
-
-
