@@ -50,7 +50,6 @@ bool nesterov_a_test_task_tbb::TestTBBTaskSequential::run() {
   } else if (ops == "*") {
     res = std::accumulate(input_.begin(), input_.end(), 1, std::multiplies<>());
   }
-  std::this_thread::sleep_for(20ms);
   return true;
 }
 
