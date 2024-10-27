@@ -5,7 +5,7 @@
 
 #include "seq/oturin_a_max_values_by_rows_matrix/include/ops_seq.hpp"
 
-TEST(Sequential, Test_Max_5_5) {
+TEST(oturin_a_max_values_by_rows_matrix_seq_functest, Test_Max_5_5) {
   size_t n = 5;
   size_t m = 5;
 
@@ -33,7 +33,7 @@ TEST(Sequential, Test_Max_5_5) {
   ASSERT_EQ(maxes, out);
 }
 
-TEST(Sequential, Test_Max_10_5) {
+TEST(oturin_a_max_values_by_rows_matrix_seq_functest, Test_Max_10_5) {
   size_t n = 10;
   size_t m = 5;
 
@@ -61,7 +61,7 @@ TEST(Sequential, Test_Max_10_5) {
   ASSERT_EQ(maxes, out);
 }
 
-TEST(Sequential, Test_Max_5_10) {
+TEST(oturin_a_max_values_by_rows_matrix_seq_functest, Test_Max_5_10) {
   size_t n = 5, m = 10;
 
   // Create data

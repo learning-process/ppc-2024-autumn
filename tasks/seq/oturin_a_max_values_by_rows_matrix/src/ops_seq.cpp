@@ -23,7 +23,7 @@ bool oturin_a_max_values_by_rows_matrix_seq::TestTaskSequential::pre_processing(
 bool oturin_a_max_values_by_rows_matrix_seq::TestTaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
-  return taskData->inputs_count[0] == 1 && taskData->outputs_count[0] == 1;
+  return taskData->inputs_count[0] > 0 && taskData->outputs_count[0] > 0;
 }
 
 bool oturin_a_max_values_by_rows_matrix_seq::TestTaskSequential::run() {

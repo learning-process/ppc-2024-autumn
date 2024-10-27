@@ -7,7 +7,7 @@
 #include "mpi/oturin_a_max_values_by_rows_matrix/include/ops_mpi.hpp"
 
 // squarelike
-TEST(Parallel_Operations_MPI, Test_Max_1) {
+TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_1) {
   size_t n = 5;
   size_t m = 5;
   boost::mpi::communicator world;
@@ -55,7 +55,7 @@ TEST(Parallel_Operations_MPI, Test_Max_1) {
 }
 
 // rectangular
-TEST(Parallel_Operations_MPI, Test_Max_2) {
+TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_2) {
   size_t n = 10;
   size_t m = 15;
   boost::mpi::communicator world;
@@ -102,7 +102,7 @@ TEST(Parallel_Operations_MPI, Test_Max_2) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_Max_3) {
+TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_3) {
   size_t n = 15;
   size_t m = 10;
   boost::mpi::communicator world;
@@ -149,7 +149,7 @@ TEST(Parallel_Operations_MPI, Test_Max_3) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_Max_4) {
+TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_4) {
   size_t n = 1;
   size_t m = 15;
   boost::mpi::communicator world;
@@ -194,7 +194,7 @@ TEST(Parallel_Operations_MPI, Test_Max_4) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_Max_5) {
+TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_5) {
   size_t n = 15;
   size_t m = 1;
   boost::mpi::communicator world;

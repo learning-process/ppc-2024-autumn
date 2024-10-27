@@ -37,7 +37,7 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::pre_processi
 bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
-  return taskData->inputs_count[0] == 1 && taskData->outputs_count[0] == 1;
+  return taskData->inputs_count[0] > 1 && taskData->outputs_count[0] > 1;
 }
 
 bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::run() {
@@ -77,7 +77,7 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     // Check count elements of output
-    return *taskData->inputs[1] == taskData->outputs_count[0];
+    return taskData->inputs_count[0] > 1 && taskData->outputs_count[0] > 1;
   }
   return true;
 }
