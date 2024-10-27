@@ -19,7 +19,8 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_1) {
   if (world.rank() == 0) {
     global_mat = oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(n * m);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
-    taskDataPar->inputs_count.emplace_back(global_mat.size());
+    taskDataPar->inputs_count.emplace_back(n);
+    taskDataPar->inputs_count.emplace_back(m);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
@@ -37,7 +38,8 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_1) {
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
-    taskDataSeq->inputs_count.emplace_back(global_mat.size());
+    taskDataSeq->inputs_count.emplace_back(n);
+    taskDataSeq->inputs_count.emplace_back(m);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
     taskDataSeq->outputs_count.emplace_back(reference_max.size());
 
@@ -67,7 +69,8 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_2) {
   if (world.rank() == 0) {
     global_mat = oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(n * m);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
-    taskDataPar->inputs_count.emplace_back(global_mat.size());
+    taskDataPar->inputs_count.emplace_back(n);
+    taskDataPar->inputs_count.emplace_back(m);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
@@ -85,7 +88,8 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_2) {
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
-    taskDataSeq->inputs_count.emplace_back(global_mat.size());
+    taskDataSeq->inputs_count.emplace_back(n);
+    taskDataSeq->inputs_count.emplace_back(m);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
     taskDataSeq->outputs_count.emplace_back(reference_max.size());
 
@@ -114,7 +118,8 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_3) {
   if (world.rank() == 0) {
     global_mat = oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(n * m);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
-    taskDataPar->inputs_count.emplace_back(global_mat.size());
+    taskDataPar->inputs_count.emplace_back(n);
+    taskDataPar->inputs_count.emplace_back(m);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
@@ -132,7 +137,8 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_3) {
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
-    taskDataSeq->inputs_count.emplace_back(global_mat.size());
+    taskDataSeq->inputs_count.emplace_back(n);
+    taskDataSeq->inputs_count.emplace_back(m);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
     taskDataSeq->outputs_count.emplace_back(reference_max.size());
 
@@ -161,7 +167,8 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_4) {
   if (world.rank() == 0) {
     global_mat = oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(n * m);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
-    taskDataPar->inputs_count.emplace_back(global_mat.size());
+    taskDataPar->inputs_count.emplace_back(n);
+    taskDataPar->inputs_count.emplace_back(m);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
@@ -179,7 +186,8 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_4) {
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
-    taskDataSeq->inputs_count.emplace_back(global_mat.size());
+    taskDataSeq->inputs_count.emplace_back(n);
+    taskDataSeq->inputs_count.emplace_back(m);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
     taskDataSeq->outputs_count.emplace_back(reference_max.size());
 
@@ -206,7 +214,8 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_5) {
   if (world.rank() == 0) {
     global_mat = oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(n * m);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
-    taskDataPar->inputs_count.emplace_back(global_mat.size());
+    taskDataPar->inputs_count.emplace_back(n);
+    taskDataPar->inputs_count.emplace_back(m);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
@@ -224,7 +233,8 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_5) {
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
-    taskDataSeq->inputs_count.emplace_back(global_mat.size());
+    taskDataSeq->inputs_count.emplace_back(n);
+    taskDataSeq->inputs_count.emplace_back(m);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
     taskDataSeq->outputs_count.emplace_back(reference_max.size());
 

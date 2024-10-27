@@ -17,7 +17,8 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_perftest, test_pipeline_run) {
   if (world.rank() == 0) {
     global_mat = std::vector<int>(n * m, 1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
-    taskDataPar->inputs_count.emplace_back(global_mat.size());
+    taskDataPar->inputs_count.emplace_back(n);
+    taskDataPar->inputs_count.emplace_back(m);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
@@ -58,7 +59,8 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_perftest, test_task_run) {
   if (world.rank() == 0) {
     global_mat = std::vector<int>(n * m, 1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
-    taskDataPar->inputs_count.emplace_back(global_mat.size());
+    taskDataPar->inputs_count.emplace_back(n);
+    taskDataPar->inputs_count.emplace_back(m);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }

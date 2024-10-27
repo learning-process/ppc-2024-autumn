@@ -22,8 +22,8 @@ std::vector<int> oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(int sz)
 bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init vectors
-  m = (size_t)*taskData->inputs[1];
-  n = (size_t)(taskData->inputs_count[0] / m);
+  n = (size_t)(taskData->inputs_count[0]);
+  m = (size_t)(taskData->inputs_count[1]);
   input_ = std::vector<int>(taskData->inputs_count[0]);
   int *tmp_ptr = reinterpret_cast<int *>(taskData->inputs[0]);
   for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
@@ -60,8 +60,8 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::post_process
 
 bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  m = (size_t)*taskData->inputs[1];
-  n = (size_t)(taskData->inputs_count[0] / m);
+  n = (size_t)(taskData->inputs_count[0]);
+  m = (size_t)(taskData->inputs_count[1]);
   // Init vectors
   if (world.rank() == 0) {
     // Init vectors

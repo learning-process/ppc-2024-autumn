@@ -8,9 +8,9 @@ using namespace std::chrono_literals;
 bool oturin_a_max_values_by_rows_matrix_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   // Init vectors
-  n = (size_t)(taskData->inputs_count[0] / m);
-  m = (size_t)*taskData->inputs[1];
-  input_ = std::vector<int>(taskData->inputs_count[0]);
+  n = (size_t)(taskData->inputs_count[0]);
+  m = (size_t)(taskData->inputs_count[1]);
+  input_ = std::vector<int>(n * m);
   int *tmp_ptr = reinterpret_cast<int *>(taskData->inputs[0]);
   for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
     input_[i] = tmp_ptr[i];
@@ -22,8 +22,9 @@ bool oturin_a_max_values_by_rows_matrix_seq::TestTaskSequential::pre_processing(
 
 bool oturin_a_max_values_by_rows_matrix_seq::TestTaskSequential::validation() {
   internal_order_test();
-  // Check count elements of output
-  return taskData->inputs_count[0] > 0 && taskData->outputs_count[0] > 0;
+  // Check count elements of i/o
+  // n && m && maxes:
+  return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] > 0;
 }
 
 bool oturin_a_max_values_by_rows_matrix_seq::TestTaskSequential::run() {
