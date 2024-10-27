@@ -26,7 +26,7 @@ bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskSequential::pre_processing()
 
   input_.resize(row_count, std::vector<int>(col_count));
 
-  int* input_ptr = reinterpret_cast<int*>(taskData->inputs[0]); //
+  int* input_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
   for (size_t i = 0; i < row_count; ++i) {
     for (size_t j = 0; j < col_count; ++j) {
       input_[i][j] = input_ptr[i * col_count + j];
@@ -73,7 +73,6 @@ bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel::pre_processing() {
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
   }
-  
   broadcast(world, delta, 0);
 
   if (world.rank() == 0) {
@@ -85,7 +84,7 @@ bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel::pre_processing() {
       input_[i] = tmp_ptr[i];
     }
     for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + proc * delta, delta); 
+      world.send(proc, 0, input_.data() + proc * delta, delta);
     }
   }
 
@@ -105,7 +104,7 @@ bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     // Check count elements of output and input
-    if (taskData->outputs_count[0] != 0 && taskData->inputs_count[0] != 0) return true; 
+    if (taskData->outputs_count[0] != 0 && taskData->inputs_count[0] != 0) return true;
   }
   return true;
 }
@@ -125,7 +124,7 @@ bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel::post_processing() 
   if (world.rank() == 0) {
     for (int i = 0; i < world.size(); i++) {
       reinterpret_cast<int*>(taskData->outputs[0])[i] = res[i];
-    }  
+    }
   }
   return true;
 }

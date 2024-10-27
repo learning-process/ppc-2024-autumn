@@ -8,7 +8,7 @@
 
 TEST(kolokolova_d_max_of_row_matrix_mpi, Test_Parallel_Max1) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
+  std::vector<int> global_matrix;
   std::vector<int32_t> global_max(world.size(), 0);
   int count_rows = world.size();
 
@@ -17,14 +17,14 @@ TEST(kolokolova_d_max_of_row_matrix_mpi, Test_Parallel_Max1) {
 
   if (world.rank() == 0) {
     const int count_size_vector = count_rows * 3;  // size of rows
-    global_vec = kolokolova_d_max_of_row_matrix_mpi::getRandomVector(count_size_vector);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
+    global_matrix = kolokolova_d_max_of_row_matrix_mpi::getRandomVector(count_size_vector);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(global_matrix.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
 
-  kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "+");
+  kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -36,11 +36,11 @@ TEST(kolokolova_d_max_of_row_matrix_mpi, Test_Parallel_Max1) {
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows));
     taskDataSeq->inputs_count.emplace_back((size_t)1);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_max.data()));
     taskDataSeq->outputs_count.emplace_back(reference_max.size());
 
     // Create Task
@@ -53,13 +53,12 @@ TEST(kolokolova_d_max_of_row_matrix_mpi, Test_Parallel_Max1) {
     for (int i = 0; i < int(reference_max.size()); i++) {
       ASSERT_EQ(reference_max[i], global_max[i]);
     }
-    
   }
 }
 
 TEST(kolokolova_d_max_of_row_matrix_mpi, Test_Parallel_Max2) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
+  std::vector<int> global_matrix;
   std::vector<int32_t> global_max(world.size(), 0);
   int count_rows = world.size();
 
@@ -68,14 +67,14 @@ TEST(kolokolova_d_max_of_row_matrix_mpi, Test_Parallel_Max2) {
 
   if (world.rank() == 0) {
     const int count_size_vector = count_rows * 5;  // size of rows
-    global_vec = kolokolova_d_max_of_row_matrix_mpi::getRandomVector(count_size_vector);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    global_matrix = kolokolova_d_max_of_row_matrix_mpi::getRandomVector(count_size_vector);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(global_matrix.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
 
-  kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "+");
+  kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -87,8 +86,8 @@ TEST(kolokolova_d_max_of_row_matrix_mpi, Test_Parallel_Max2) {
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
-    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows));
     taskDataSeq->inputs_count.emplace_back((size_t)1);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_max.data()));
@@ -109,7 +108,7 @@ TEST(kolokolova_d_max_of_row_matrix_mpi, Test_Parallel_Max2) {
 
 TEST(kolokolova_d_max_of_row_matrix_mpi, Test_Parallel_Max3) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
+  std::vector<int> global_matrix;
   std::vector<int32_t> global_max(world.size(), 0);
   int count_rows = world.size();
 
@@ -118,14 +117,14 @@ TEST(kolokolova_d_max_of_row_matrix_mpi, Test_Parallel_Max3) {
 
   if (world.rank() == 0) {
     const int count_size_vector = count_rows * 10;  // size of rows
-    global_vec = kolokolova_d_max_of_row_matrix_mpi::getRandomVector(count_size_vector);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    global_matrix = kolokolova_d_max_of_row_matrix_mpi::getRandomVector(count_size_vector);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(global_matrix.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
 
-  kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "+");
+  kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -137,8 +136,8 @@ TEST(kolokolova_d_max_of_row_matrix_mpi, Test_Parallel_Max3) {
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
-    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows));
     taskDataSeq->inputs_count.emplace_back((size_t)1);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_max.data()));
@@ -159,7 +158,7 @@ TEST(kolokolova_d_max_of_row_matrix_mpi, Test_Parallel_Max3) {
 
 TEST(kolokolova_d_max_of_row_matrix_mpi, Test_Parallel_Max4) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
+  std::vector<int> global_matrix;
   std::vector<int32_t> global_max(world.size(), 0);
   int count_rows = world.size();
 
@@ -168,14 +167,14 @@ TEST(kolokolova_d_max_of_row_matrix_mpi, Test_Parallel_Max4) {
 
   if (world.rank() == 0) {
     const int count_size_vector = count_rows * 15;  // size of rows
-    global_vec = kolokolova_d_max_of_row_matrix_mpi::getRandomVector(count_size_vector);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    global_matrix = kolokolova_d_max_of_row_matrix_mpi::getRandomVector(count_size_vector);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(global_matrix.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
 
-  kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "+");
+  kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -187,8 +186,8 @@ TEST(kolokolova_d_max_of_row_matrix_mpi, Test_Parallel_Max4) {
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
-    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows));
     taskDataSeq->inputs_count.emplace_back((size_t)1);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_max.data()));
@@ -209,7 +208,7 @@ TEST(kolokolova_d_max_of_row_matrix_mpi, Test_Parallel_Max4) {
 
 TEST(kolokolova_d_max_of_row_matrix_mpi, Test_Parallel_Max5) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
+  std::vector<int> global_matrix;
   std::vector<int32_t> global_max(world.size(), 0);
   int count_rows = world.size();
 
@@ -218,14 +217,14 @@ TEST(kolokolova_d_max_of_row_matrix_mpi, Test_Parallel_Max5) {
 
   if (world.rank() == 0) {
     const int count_size_vector = count_rows * 20;  // size of rows
-    global_vec = kolokolova_d_max_of_row_matrix_mpi::getRandomVector(count_size_vector);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    global_matrix = kolokolova_d_max_of_row_matrix_mpi::getRandomVector(count_size_vector);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(global_matrix.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
 
-  kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "+");
+  kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -237,8 +236,8 @@ TEST(kolokolova_d_max_of_row_matrix_mpi, Test_Parallel_Max5) {
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
-    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows));
     taskDataSeq->inputs_count.emplace_back((size_t)1);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_max.data()));
@@ -256,4 +255,3 @@ TEST(kolokolova_d_max_of_row_matrix_mpi, Test_Parallel_Max5) {
     }
   }
 }
- 
