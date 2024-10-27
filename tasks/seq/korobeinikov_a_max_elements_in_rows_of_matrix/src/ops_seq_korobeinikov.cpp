@@ -11,11 +11,11 @@ bool korobeinikov_a_test_task_seq::TestTaskSequential::pre_processing() {
   // Init value for input and output
 
   input_.reserve(taskData->inputs_count[0]);
-  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]); 
+  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
   std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], std::back_inserter(input_));
   count_rows = (int)*taskData->inputs[1];
   size_rows = (int)(taskData->inputs_count[0] / (*taskData->inputs[1]));
-  
+
   res = std::vector<int>(count_rows, 0);
   return true;
 }
