@@ -9,7 +9,7 @@ TEST(sequential_example_perf_test, test_pipeline_run) {
   size_t n = 500, m = 500;
 
   // Create data
-  std::vector<int> in(n*m, 0);
+  std::vector<int> in(n * m, 0);
   std::vector<int> out(m, 0);
 
   // Create TaskData
@@ -46,7 +46,7 @@ TEST(sequential_example_perf_test, test_task_run) {
   size_t n = 500, m = 500;
 
   // Create data
-  std::vector<int> in(n*m, 0);
+  std::vector<int> in(n * m, 0);
   std::vector<int> out(m, 0);
 
   // Create TaskData

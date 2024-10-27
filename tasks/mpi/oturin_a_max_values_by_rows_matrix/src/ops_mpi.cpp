@@ -25,7 +25,7 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::pre_processi
   m = (int)*taskData->inputs[1];
   n = (int)(taskData->inputs_count[0] / m);
   input_ = std::vector<int>(taskData->inputs_count[0]);
-  int *tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+  int *tmp_ptr = reinterpret_cast<int *>(taskData->inputs[0]);
   for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
     input_[i] = tmp_ptr[i];
   }
@@ -52,7 +52,7 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::run() {
 bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
   for (int i = 0; i < m; i++) {
-    reinterpret_cast<int*>(taskData->outputs[0])[i] = res[i];
+    reinterpret_cast<int *>(taskData->outputs[0])[i] = res[i];
   }
   return true;
 }
@@ -85,85 +85,82 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::validation() {
 bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-#define TAG_EXIT         1
-#define TAG_TOBASE       2
-#define TAG_TOSAT        3
-  
+#define TAG_EXIT 1
+#define TAG_TOBASE 2
+#define TAG_TOSAT 3
+
   int world_size;
-    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+  MPI_Comm_size(MPI_COMM_WORLD, &world_size);
 
-    int world_rank;
-    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+  int world_rank;
+  MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
-    MPI_Status status;
+  MPI_Status status;
 
-    if (world_size <= 1) {
-        //printf("too small world\n");
-        return false;
+  if (world_size <= 1) {
+    // printf("too small world\n");
+    return false;
+  }
+
+  /*
+      m
+      ^
+      | -9 99     99
+      | 12 06     12
+      +------> n
+  */
+
+  if (world_rank == 0) {  // base
+    int *arr = new int[m * n];
+    int *maxes = new int[m];
+    int exit[1] = {0};
+    int noexit[1] = {1};
+
+    std::copy(input_.begin(), input_.end(), arr);
+
+    int satellites = world_size - 1;
+
+    int row = 0;
+    while (row < m) {
+      for (size_t i = 0; i < std::min(satellites, (int)m - row); i++) {
+        MPI_Send(noexit, 1, MPI_INT, i + 1, TAG_EXIT, MPI_COMM_WORLD);
+        MPI_Send(&arr[(row + i) * n], n, MPI_INT, i + 1, TAG_TOSAT, MPI_COMM_WORLD);
+      }
+
+      for (size_t i = 0; i < std::min(satellites, (int)m - row); i++) {
+        MPI_Recv(&maxes[row + i], 1, MPI_INT, i + 1, TAG_TOBASE, MPI_COMM_WORLD, &status);
+      }
+      row += satellites;
     }
-
+    for (size_t i = 0; i < satellites; i++)  // close all satellite processes
+      MPI_Send(exit, 1, MPI_INT, i + 1, TAG_EXIT, MPI_COMM_WORLD);
     /*
-        m
-        ^
-        | -9 99     99
-        | 12 06     12
-        +------> n
-    */
+    for (size_t i = 0; i < m; i++) {
+        for (size_t j = 0; j < n; j++)
+            printf("%02d ", arr[i * n + j]);
+        printf(" max: %d\n", maxes[i]);
+    }*/
 
-    if (world_rank == 0) {  // base
-        int *arr = new int[m * n];
-        int *maxes = new int[m];
-        int exit[1] = { 0 };
-        int noexit[1] = {1};
+    res.assign(maxes, maxes + m);
 
-        std::copy(input_.begin(), input_.end(), arr);
-        
-        int satellites = world_size - 1;
+    delete[] arr;
+    delete[] maxes;
+  } else {  // satelleite
+    int *arr = new int[n];
+    int *exit = new int[1];
+    while (true) {
+      int out = INT_MIN;
+      MPI_Recv(exit, 1, MPI_INT, 0, TAG_EXIT, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+      if (exit[0] == 0) break;
+      MPI_Recv(arr, n, MPI_INT, 0, TAG_TOSAT, MPI_COMM_WORLD, &status);
 
-        int row = 0;
-        while (row < m) {
-            for (size_t i = 0; i < std::min(satellites, (int)m - row); i++) {
-                MPI_Send(noexit, 1, MPI_INT, i + 1, TAG_EXIT, MPI_COMM_WORLD);
-                MPI_Send(&arr[(row + i) * n], n, MPI_INT, i + 1, TAG_TOSAT, MPI_COMM_WORLD);
-            }
+      for (size_t i = 0; i < n; i++) out = std::max(arr[i], out);
 
-            for (size_t i = 0; i < std::min(satellites, (int)m - row); i++) {
-                MPI_Recv(&maxes[row + i], 1, MPI_INT, i + 1, TAG_TOBASE, MPI_COMM_WORLD, &status);
-            }
-            row += satellites;
-        }
-        for (size_t i = 0; i < satellites; i++) // close all satellite processes
-            MPI_Send(exit, 1, MPI_INT, i + 1, TAG_EXIT, MPI_COMM_WORLD);
-        /*
-        for (size_t i = 0; i < m; i++) {
-            for (size_t j = 0; j < n; j++)
-                printf("%02d ", arr[i * n + j]);
-            printf(" max: %d\n", maxes[i]);
-        }*/
-
-        res.assign(maxes, maxes + m);
-
-        delete[] arr;
-        delete[] maxes;
+      MPI_Send(&out, 1, MPI_INT, 0, TAG_TOBASE, MPI_COMM_WORLD);
     }
-    else {  // satelleite
-        int *arr = new int[n];
-        int *exit = new int[1];
-        while (true) {
-            int out = INT_MIN;
-            MPI_Recv(exit, 1, MPI_INT, 0, TAG_EXIT, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            if (exit[0] == 0)
-                break;
-            MPI_Recv(arr, n, MPI_INT, 0, TAG_TOSAT, MPI_COMM_WORLD, &status);
-
-            for (size_t i = 0; i < n; i++)
-                out = std::max(arr[i], out);
-
-            MPI_Send(&out, 1, MPI_INT, 0, TAG_TOBASE, MPI_COMM_WORLD);
-        }
-        delete[] arr;
-        delete[] exit;
-    }
+    delete[] arr;
+    delete[] exit;
+  }
 
 #undef TAG_EXIT
 #undef TAG_TOBASE
@@ -176,7 +173,7 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::post_processin
   internal_order_test();
   if (world.rank() == 0) {
     for (int i = 0; i < m; i++) {
-      reinterpret_cast<int*>(taskData->outputs[0])[i] = res[i];
+      reinterpret_cast<int *>(taskData->outputs[0])[i] = res[i];
     }
   }
   return true;

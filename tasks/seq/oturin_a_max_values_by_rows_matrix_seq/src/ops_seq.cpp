@@ -10,7 +10,7 @@ bool oturin_a_max_values_by_rows_matrix_seq::TestTaskSequential::pre_processing(
   n = (int)(taskData->inputs_count[0] / m);
   m = (int)*taskData->inputs[1];
   input_ = std::vector<int>(taskData->inputs_count[0]);
-  int *tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+  int *tmp_ptr = reinterpret_cast<int *>(taskData->inputs[0]);
   for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
     input_[i] = tmp_ptr[i];
   }
@@ -27,15 +27,14 @@ bool oturin_a_max_values_by_rows_matrix_seq::TestTaskSequential::validation() {
 
 bool oturin_a_max_values_by_rows_matrix_seq::TestTaskSequential::run() {
   internal_order_test();
-  for (int i = 0; i < m; i++)
-    res[i] = *std::max_element(input_.begin() + i * n, input_.begin() + (i + 1) * n);
+  for (int i = 0; i < m; i++) res[i] = *std::max_element(input_.begin() + i * n, input_.begin() + (i + 1) * n);
   return true;
 }
 
 bool oturin_a_max_values_by_rows_matrix_seq::TestTaskSequential::post_processing() {
   internal_order_test();
   for (int i = 0; i < m; i++) {
-    reinterpret_cast<int*>(taskData->outputs[0])[i] = res[i];
+    reinterpret_cast<int *>(taskData->outputs[0])[i] = res[i];
   }
   return true;
 }

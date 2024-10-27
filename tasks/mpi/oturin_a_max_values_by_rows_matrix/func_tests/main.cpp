@@ -17,7 +17,7 @@ TEST(Parallel_Operations_MPI, Test_Max_1) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_mat = oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(n*m);
+    global_mat = oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(n * m);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
     taskDataPar->inputs_count.emplace_back(global_mat.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
@@ -65,7 +65,7 @@ TEST(Parallel_Operations_MPI, Test_Max_2) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_mat = oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(n*m);
+    global_mat = oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(n * m);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
     taskDataPar->inputs_count.emplace_back(global_mat.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
@@ -112,7 +112,7 @@ TEST(Parallel_Operations_MPI, Test_Max_3) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_mat = oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(n*m);
+    global_mat = oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(n * m);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
     taskDataPar->inputs_count.emplace_back(global_mat.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
@@ -159,7 +159,7 @@ TEST(Parallel_Operations_MPI, Test_Max_4) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_mat = oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(n*m);
+    global_mat = oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(n * m);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
     taskDataPar->inputs_count.emplace_back(global_mat.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
@@ -189,7 +189,7 @@ TEST(Parallel_Operations_MPI, Test_Max_4) {
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
-    
+
     ASSERT_EQ(reference_max, global_max);
   }
 }
@@ -204,7 +204,7 @@ TEST(Parallel_Operations_MPI, Test_Max_5) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_mat = oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(n*m);
+    global_mat = oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(n * m);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
     taskDataPar->inputs_count.emplace_back(global_mat.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
