@@ -75,6 +75,6 @@ TEST(kudryashova_i_vector_dot_product_mpi, test_task_run) {
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
     ASSERT_EQ(kudryashova_i_vector_dot_product_mpi::vectorDotProduct(global_vector[0], global_vector[1]), result[0]);
-  }   
+  }
 }
 */

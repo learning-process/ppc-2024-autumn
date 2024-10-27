@@ -15,9 +15,8 @@ std::vector<int> kudryashova_i_vector_dot_product_mpi::getRandomVector(int size)
   return vector;
 }
 
-int kudryashova_i_vector_dot_product_mpi::vectorDotProduct(const std::vector<int>& vector1, const std::vector<int>& vector2) {
-  long long result = 0;
-  for (unsigned long i = 0; i < vector1.size(); i++) result += vector1[i] * vector2[i];
+int kudryashova_i_vector_dot_product_mpi::vectorDotProduct(const std::vector<int>& vector1, const std::vector<int>&
+vector2) { long long result = 0; for (unsigned long i = 0; i < vector1.size(); i++) result += vector1[i] * vector2[i];
   return result;
 }
 
@@ -39,7 +38,7 @@ bool kudryashova_i_vector_dot_product_mpi::TestMPITaskSequential::validation() {
   return (taskData->inputs_count[0] == taskData->inputs_count[1]) &&
          (taskData->inputs.size() == taskData->inputs_count.size() && taskData->inputs.size() == 2) &&
          taskData->outputs_count[0] == 1 && (taskData->outputs.size() == taskData->outputs_count.size()) &&
-         taskData->outputs.size() == 1;
+taskData->outputs.size() == 1;
 }
 
 bool kudryashova_i_vector_dot_product_mpi::TestMPITaskSequential::run() {
@@ -74,9 +73,9 @@ bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::pre_processing()
 
       if (source_ptr != nullptr) {
         std::copy(source_ptr, source_ptr + taskData->inputs_count[i], input_[i].begin());
-      } 
-      else 
-      return false; 
+      }
+      else
+      return false;
       }
       for (int proc = 1; proc < world.size(); ++proc) {
       world.send(proc, 0, input_[0].data() + proc * delta, delta);
@@ -110,7 +109,7 @@ bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::validation() {
 
 
 bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::run() {
-  internal_order_test(); 
+  internal_order_test();
 
   int local_result = std::inner_product(local_input1_.begin(), local_input1_.end(), local_input2_.begin(), 0);
 
@@ -120,7 +119,7 @@ bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::run() {
   if (world.rank() == 0) {
     result = std::accumulate(full_results.begin(), full_results.end(), 0);
   }
-  return true;  
+  return true;
 }
 
 

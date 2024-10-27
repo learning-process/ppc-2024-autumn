@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+
 #include "core/perf/include/perf.hpp"
 #include "seq/kudryashova_i_vector_dot_product/include/vectorDotProductSeq.hpp"
 

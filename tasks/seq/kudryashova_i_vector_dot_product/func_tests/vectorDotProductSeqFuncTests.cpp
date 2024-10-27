@@ -30,7 +30,7 @@ TEST(kudryashova_i_vector_dot_product_seq, scalar_multiply_vector_size_10) {
   testTaskSequential.run();
   testTaskSequential.post_processing();
   ASSERT_EQ(kudryashova_i_vector_dot_product::vectorDotProduct(vector1, vector2), out[0]);
-}   
+}
 
 TEST(kudryashova_i_vector_dot_product_seq, scalar_multiply_vector_size_100) {
   const int count = 100;
