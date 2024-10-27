@@ -68,7 +68,7 @@ TEST(max_elements_in_rows_of_matrix_mpi, Test_2_random_matrix) {
 
   int count_rows = 10;  // not const, because reinterpret_cast does not work with const
   int size_rows = 20;
-  std::vector<int> global_matrix{3, 17, 5, -1, 2, -3, 11, 12, 13, -7, 4, 9};
+  std::vector<int> global_matrix;
   std::vector<int> mpi_res(count_rows, 0);
 
   // Create TaskData
@@ -115,4 +115,30 @@ TEST(max_elements_in_rows_of_matrix_mpi, Test_2_random_matrix) {
 
     ASSERT_EQ(right_answer, mpi_res);
   }
+}
+
+TEST(max_elements_in_rows_of_matrix_mpi, Test_3_false_validation) {
+  boost::mpi::communicator world;
+
+  // Create data
+
+  int count_rows = 10;  // not const, because reinterpret_cast does not work with const
+  std::vector<int> global_matrix{3, 17, 5, -1, 2, -3, 11, 12, 13, -7, 4, 9};
+  std::vector<int> mpi_res(count_rows, 0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(global_matrix.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows));
+    taskDataPar->inputs_count.emplace_back(1);
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(mpi_res.data()));
+    taskDataPar->outputs_count.emplace_back(mpi_res.size());
+  }
+
+  korobeinikov_a_test_task_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), false);
 }
