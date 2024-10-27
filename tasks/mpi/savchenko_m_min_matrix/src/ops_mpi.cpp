@@ -30,7 +30,7 @@ std::vector<int> savchenko_m_min_matrix_mpi::getRandomMatrix(int rows, int colum
 bool savchenko_m_min_matrix_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
-  return taskData->outputs_count[0] == 1 && taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 ;
+  return taskData->outputs_count[0] == 1 && taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0;
 }
 
 bool savchenko_m_min_matrix_mpi::TestMPITaskSequential::pre_processing() {
@@ -66,7 +66,7 @@ bool savchenko_m_min_matrix_mpi::TestMPITaskSequential::run() {
 
 bool savchenko_m_min_matrix_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+  reinterpret_cast<int *>(taskData->outputs[0])[0] = res;
   return true;
 }
 
@@ -83,7 +83,7 @@ bool savchenko_m_min_matrix_mpi::TestMPITaskParallel::validation() {
 
 bool savchenko_m_min_matrix_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  
+
   unsigned int delta = 0;
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] * taskData->inputs_count[1] / world.size();
@@ -96,7 +96,7 @@ bool savchenko_m_min_matrix_mpi::TestMPITaskParallel::pre_processing() {
     // WIP HERE
 
     input_ = std::vector<int>(taskData->inputs_count[0]);
-    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+    auto *tmp_ptr = reinterpret_cast<int *>(taskData->inputs[0]);
     for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
       input_[i] = tmp_ptr[i];
     }
@@ -137,7 +137,7 @@ bool savchenko_m_min_matrix_mpi::TestMPITaskParallel::run() {
 bool savchenko_m_min_matrix_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+    reinterpret_cast<int *>(taskData->outputs[0])[0] = res;
   }
   return true;
 }
