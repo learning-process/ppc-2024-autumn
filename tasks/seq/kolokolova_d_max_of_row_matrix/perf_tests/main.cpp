@@ -8,7 +8,7 @@
 
 TEST(kolokolova_d_max_of_row_matrix_seq, test_pipeline_run) {
   int count_rows = 200;
-  int size_rows = 900;
+  int size_rows = 90000;
 
   // Создание данных (массив с различными значениями)
   std::vector<int> global_mat;

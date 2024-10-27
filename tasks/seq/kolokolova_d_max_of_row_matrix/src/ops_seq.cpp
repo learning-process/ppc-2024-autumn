@@ -46,7 +46,6 @@ bool kolokolova_d_max_of_row_matrix_seq::TestTaskSequential::post_processing() {
   int* output_ptr = reinterpret_cast<int*>(taskData->outputs[0]);
   for (size_t i = 0; i < res.size(); ++i) {
     output_ptr[i] = res[i];
-    std::cout << "Output Max[" << i << "]: " << res[i] << std::endl;  // Для отладки
   }
   return true;
 }
