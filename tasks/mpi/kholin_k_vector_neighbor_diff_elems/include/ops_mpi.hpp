@@ -107,7 +107,7 @@ class TestTaskSequential : public ppc::core::Task {
   std::string ops;
 };
 
-template <class TypeElem, class TypeIndex>
+template <class TypeElem>
 class TestMPITaskParallel : public ppc::core::Task {
  public:
   explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
@@ -203,8 +203,8 @@ class TestMPITaskParallel : public ppc::core::Task {
   double max_difference();
 };
 
-template <typename TypeElem, typename TypeIndex>
-void TestMPITaskParallel<TypeElem, TypeIndex>::print_local_data() {
+template <typename TypeElem>
+void TestMPITaskParallel<TypeElem>::print_local_data() {
   if (world.rank() == 0) {
     std::cout << "I'm proc 0" << "and my local_input data is ";
     for (unsigned int i = 0; i < delta_n_r; i++) {
@@ -220,8 +220,8 @@ void TestMPITaskParallel<TypeElem, TypeIndex>::print_local_data() {
   }
 }
 
-template <typename TypeElem, typename TypeIndex>
-double TestMPITaskParallel<TypeElem, TypeIndex>::max_difference() {
+template <typename TypeElem>
+double TestMPITaskParallel<TypeElem>::max_difference() {
   // start delta between elements vector
   double max_delta = 0;
   double delta = 0;
@@ -231,7 +231,6 @@ double TestMPITaskParallel<TypeElem, TypeIndex>::max_difference() {
   auto iter_curr = local_input_.begin();
   auto iter_next = iter_curr + 1;
   auto iter_end = local_input_.end() - 1;
-  auto iter_begin = local_input_.begin();
   // algorithm search max delta with using address arithmetic pointers
   while (iter_curr != iter_end) {
     delta = abs((double)(*iter_next - *iter_curr));

@@ -27,7 +27,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_validation) {
     taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
-  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int, uint64_t> testMpiTaskParallel(taskDataPar,
+  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int> testMpiTaskParallel(taskDataPar,
                                                                                                   "MAX_DIFFERENCE");
   bool IsValid = testMpiTaskParallel.validation();
   ASSERT_EQ(IsValid, true);
@@ -77,7 +77,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_pre_processing) {
     taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
-  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int, uint64_t> testMpiTaskParallel(taskDataPar,
+  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int> testMpiTaskParallel(taskDataPar,
                                                                                                   "MAX_DIFFERENCE");
   testMpiTaskParallel.validation();
   bool IsValid = testMpiTaskParallel.pre_processing();
@@ -131,7 +131,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_run) {
     taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
-  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int, uint64_t> testMpiTaskParallel(taskDataPar,
+  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int> testMpiTaskParallel(taskDataPar,
                                                                                                   "MAX_DIFFERENCE");
   testMpiTaskParallel.validation();
   testMpiTaskParallel.pre_processing();
@@ -156,7 +156,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_run) {
     taskDataSeq->outputs_count.emplace_back(reference_delta.size());
 
     // Create Task
-    kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int, uint64_t> testTaskSequential(taskDataSeq,
+    kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int> testTaskSequential(taskDataSeq,
                                                                                                   "MAX_DIFFERENCE");
     testTaskSequential.validation();
     testTaskSequential.pre_processing();
@@ -187,7 +187,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_post_processing) {
     taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
-  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int, uint64_t> testMpiTaskParallel(taskDataPar,
+  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int> testMpiTaskParallel(taskDataPar,
                                                                                                   "MAX_DIFFERENCE");
   testMpiTaskParallel.validation();
   testMpiTaskParallel.pre_processing();
@@ -246,7 +246,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
     taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
-  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int, uint64_t> testMpiTaskParallel(taskDataPar,
+  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int> testMpiTaskParallel(taskDataPar,
                                                                                                   "MAX_DIFFERENCE");
   bool IsValid = testMpiTaskParallel.validation();
   ASSERT_EQ(IsValid, true);
@@ -303,7 +303,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
     taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
-  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int32_t, uint64_t> testMpiTaskParallel(taskDataPar,
+  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int32_t> testMpiTaskParallel(taskDataPar,
                                                                                                       "MAX_DIFFERENCE");
   testMpiTaskParallel.validation();
   testMpiTaskParallel.pre_processing();
@@ -363,7 +363,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_float) {
     taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
-  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<float, uint64_t> testMpiTaskParallel(taskDataPar,
+  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<float> testMpiTaskParallel(taskDataPar,
                                                                                                     "MAX_DIFFERENCE");
   testMpiTaskParallel.validation();
   testMpiTaskParallel.pre_processing();
@@ -423,7 +423,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_double) {
     taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
-  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<double, uint64_t> testMpiTaskParallel(taskDataPar,
+  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<double> testMpiTaskParallel(taskDataPar,
                                                                                                      "MAX_DIFFERENCE");
   testMpiTaskParallel.validation();
   testMpiTaskParallel.pre_processing();
