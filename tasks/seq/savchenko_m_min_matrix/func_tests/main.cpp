@@ -8,29 +8,30 @@
 #include "seq/savchenko_m_min_matrix/include/ops_seq.hpp"
 
 TEST(savchenko_m_min_matrix_seq, test_min_10x10) {
+  std::vector<int> matrix;
+  std::vector<int32_t> min_value(1, INT_MAX);
+
   std::random_device dev;
   std::mt19937 gen(dev());
 
+  // Create data
   const int rows = 10;
   const int columns = 10;
   const int gen_min = -1000;
   const int gen_max = 1000;
   int ref = INT_MIN;
 
-  // Create data
-  std::vector<int> out(1, INT_MAX);
-  std::vector<int> in = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
-
+  matrix = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
   int index = gen() % (rows * columns);
-  in[index] = ref;
+  matrix[index] = INT_MIN;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
 
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(min_value.data()));
+  taskDataSeq->outputs_count.emplace_back(min_value.size());
 
   // Create Task
   savchenko_m_min_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
@@ -38,33 +39,34 @@ TEST(savchenko_m_min_matrix_seq, test_min_10x10) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(ref, out[0]);
+  ASSERT_EQ(ref, min_value[0]);
 }
 
 TEST(savchenko_m_min_matrix_seq, test_min_100x10) {
+  std::vector<int> matrix;
+  std::vector<int32_t> min_value(1, INT_MAX);
+
   std::random_device dev;
   std::mt19937 gen(dev());
 
+  // Create data
   const int rows = 100;
   const int columns = 10;
   const int gen_min = -1000;
   const int gen_max = 1000;
   int ref = INT_MIN;
 
-  // Create data
-  std::vector<int> out(1, INT_MAX);
-  std::vector<int> in = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
-
+  matrix = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
   int index = gen() % (rows * columns);
-  in[index] = ref;
+  matrix[index] = INT_MIN;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
 
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(min_value.data()));
+  taskDataSeq->outputs_count.emplace_back(min_value.size());
 
   // Create Task
   savchenko_m_min_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
@@ -72,33 +74,34 @@ TEST(savchenko_m_min_matrix_seq, test_min_100x10) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(ref, out[0]);
+  ASSERT_EQ(ref, min_value[0]);
 }
 
 TEST(savchenko_m_min_matrix_seq, test_min_10x100) {
+  std::vector<int> matrix;
+  std::vector<int32_t> min_value(1, INT_MAX);
+
   std::random_device dev;
   std::mt19937 gen(dev());
 
+  // Create data
   const int rows = 10;
   const int columns = 100;
   const int gen_min = -1000;
   const int gen_max = 1000;
   int ref = INT_MIN;
 
-  // Create data
-  std::vector<int> out(1, INT_MAX);
-  std::vector<int> in = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
-
+  matrix = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
   int index = gen() % (rows * columns);
-  in[index] = ref;
+  matrix[index] = INT_MIN;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
 
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(min_value.data()));
+  taskDataSeq->outputs_count.emplace_back(min_value.size());
 
   // Create Task
   savchenko_m_min_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
@@ -106,33 +109,34 @@ TEST(savchenko_m_min_matrix_seq, test_min_10x100) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(ref, out[0]);
+  ASSERT_EQ(ref, min_value[0]);
 }
 
 TEST(savchenko_m_min_matrix_seq, test_min_100x100) {
+  std::vector<int> matrix;
+  std::vector<int32_t> min_value(1, INT_MAX);
+
   std::random_device dev;
   std::mt19937 gen(dev());
 
+  // Create data
   const int rows = 100;
   const int columns = 100;
   const int gen_min = -1000;
   const int gen_max = 1000;
   int ref = INT_MIN;
 
-  // Create data
-  std::vector<int> out(1, INT_MAX);
-  std::vector<int> in = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
-
+  matrix = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
   int index = gen() % (rows * columns);
-  in[index] = ref;
+  matrix[index] = INT_MIN;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
 
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(min_value.data()));
+  taskDataSeq->outputs_count.emplace_back(min_value.size());
 
   // Create Task
   savchenko_m_min_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
@@ -140,7 +144,7 @@ TEST(savchenko_m_min_matrix_seq, test_min_100x100) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(ref, out[0]);
+  ASSERT_EQ(ref, min_value[0]);
 }
 
 int main(int argc, char **argv) {
