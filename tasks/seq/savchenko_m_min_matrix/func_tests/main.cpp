@@ -15,14 +15,14 @@ TEST(savchenko_m_min_matrix_seq, test_min_10x10) {
   std::mt19937 gen(dev());
 
   // Create data
-  const int rows = 10;
-  const int columns = 10;
+  const size_t rows = 10;
+  const size_t columns = 10;
   const int gen_min = -1000;
   const int gen_max = 1000;
-  int ref = INT_MIN;
+  const int ref = INT_MIN;
 
   matrix = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
-  int index = gen() % (rows * columns);
+  const size_t index = gen() % (rows * columns);
   matrix[index] = INT_MIN;
 
   // Create TaskData
@@ -50,14 +50,14 @@ TEST(savchenko_m_min_matrix_seq, test_min_100x10) {
   std::mt19937 gen(dev());
 
   // Create data
-  const int rows = 100;
-  const int columns = 10;
+  const size_t rows = 100;
+  const size_t columns = 10;
   const int gen_min = -1000;
   const int gen_max = 1000;
-  int ref = INT_MIN;
+  const int ref = INT_MIN;
 
   matrix = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
-  int index = gen() % (rows * columns);
+  const size_t index = gen() % (rows * columns);
   matrix[index] = INT_MIN;
 
   // Create TaskData
@@ -85,14 +85,14 @@ TEST(savchenko_m_min_matrix_seq, test_min_10x100) {
   std::mt19937 gen(dev());
 
   // Create data
-  const int rows = 10;
-  const int columns = 100;
+  const size_t rows = 10;
+  const size_t columns = 100;
   const int gen_min = -1000;
   const int gen_max = 1000;
-  int ref = INT_MIN;
+  const int ref = INT_MIN;
 
   matrix = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
-  int index = gen() % (rows * columns);
+  const size_t index = gen() % (rows * columns);
   matrix[index] = INT_MIN;
 
   // Create TaskData
@@ -120,14 +120,14 @@ TEST(savchenko_m_min_matrix_seq, test_min_100x100) {
   std::mt19937 gen(dev());
 
   // Create data
-  const int rows = 100;
-  const int columns = 100;
+  const size_t rows = 100;
+  const size_t columns = 100;
   const int gen_min = -1000;
   const int gen_max = 1000;
-  int ref = INT_MIN;
+  const int ref = INT_MIN;
 
   matrix = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
-  int index = gen() % (rows * columns);
+  const size_t index = gen() % (rows * columns);
   matrix[index] = INT_MIN;
 
   // Create TaskData
