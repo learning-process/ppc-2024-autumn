@@ -32,8 +32,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, test_pipeline_run) {
   }
 
   auto testMpiTaskParallel =
-      std::make_shared<kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int, uint64_t>>(taskDataPar,
-                                                                                                    "MAX_DIFFERENCE");
+      std::make_shared<kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int>>(taskDataPar,
+                                                                                          "MAX_DIFFERENCE");
   testMpiTaskParallel->validation();
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -82,8 +82,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, test_task_run) {
   }
 
   auto testMpiTaskParallel =
-      std::make_shared<kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int, uint64_t>>(taskDataPar,
-                                                                                                    "MAX_DIFFERENCE");
+      std::make_shared<kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int>>(taskDataPar,
+                                                                                          "MAX_DIFFERENCE");
   testMpiTaskParallel->validation();
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
