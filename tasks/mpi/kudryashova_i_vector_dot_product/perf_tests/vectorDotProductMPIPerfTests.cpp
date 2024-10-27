@@ -1,4 +1,4 @@
-/*#include <gtest/gtest.h>
+#include <gtest/gtest.h>
 #include <boost/mpi/timer.hpp>
 #include <vector>
 
@@ -77,4 +77,3 @@ TEST(kudryashova_i_vector_dot_product_mpi, test_task_run) {
     ASSERT_EQ(kudryashova_i_vector_dot_product_mpi::vectorDotProduct(global_vector[0], global_vector[1]), result[0]);
   }
 }
-*/
