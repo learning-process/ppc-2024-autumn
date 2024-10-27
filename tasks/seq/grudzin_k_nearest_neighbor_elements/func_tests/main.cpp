@@ -70,4 +70,3 @@ TEST(grudzin_k_nearest_neighbor_elements_seq, Test_Close_Negative) {
   testTaskSequential.post_processing();
   ASSERT_EQ(ans, out[0]);
 }
-

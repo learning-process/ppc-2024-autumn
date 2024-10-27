@@ -18,7 +18,8 @@ class TestTaskSequential : public ppc::core::Task {
   void gen_random_vector(const std::vector<int>& v);
 
  private:
-  std::vector<std::pair<int,int>> input_{};
+  std::vector<std::pair<int, int>> input_{};
   std::pair<int, int> res{};
-}; 
+};
+
 }  // namespace grudzin_k_nearest_neighbor_elements_seq

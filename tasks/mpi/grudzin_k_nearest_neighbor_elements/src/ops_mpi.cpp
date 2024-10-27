@@ -64,7 +64,7 @@ bool grudzin_k_nearest_neighbor_elements_mpi::TestMPITaskParallel::pre_processin
 
   if (world.rank() == 0) {
     // Init vectors
-    input_ = std::vector<std::pair<int,int>>(world.size()*delta);
+    input_ = std::vector<std::pair<int, int>>(world.size() * delta);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     for (unsigned int i = 0; i < taskData->inputs_count[0] - 1; i++) {
       input_[i] = {abs(tmp_ptr[i + 1] - tmp_ptr[i]), i};
