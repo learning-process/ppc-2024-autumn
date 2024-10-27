@@ -14,9 +14,7 @@ bool mironov_a_max_of_vector_elements_mpi::MaxVectorSequential::pre_processing()
   // Init value for input and output
   input_ = std::vector<int>(taskData->inputs_count[0]);
   int* it = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (size_t i = 0; i < input_.size(); ++i) {
-    input_[i] = it[i];
-  }
+  std::copy(it, it + taskData->inputs_count[0], input_.begin());
   result_ = input_[0];
   return true;
 }
@@ -55,10 +53,8 @@ bool mironov_a_max_of_vector_elements_mpi::MaxVectorMPI::pre_processing() {
   if (world.rank() == 0) {
     // Init vectors
     int* it = reinterpret_cast<int*>(taskData->inputs[0]);
-    input_ = std::vector<int>(static_cast<int>(delta) * world.size(), it[0]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-      input_[i] = it[i];
-    }
+    input_ = std::vector<int>(static_cast<int>(delta) * world.size(), INT_MIN);
+    std::copy(it, it + taskData->inputs_count[0], input_.begin());
 
     // Send data
     for (int proc = 1; proc < world.size(); proc++) {

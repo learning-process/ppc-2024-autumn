@@ -10,9 +10,7 @@ bool mironov_a_max_of_vector_elements_seq::MaxVectorSequential::pre_processing()
   // Init value for input and output
   input_ = std::vector<int>(taskData->inputs_count[0]);
   int* it = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (size_t i = 0; i < input_.size(); ++i) {
-    input_[i] = it[i];
-  }
+  std::copy(it, it + taskData->inputs_count[0], input_.begin());
   result_ = input_[0];
   return true;
 }
@@ -26,8 +24,7 @@ bool mironov_a_max_of_vector_elements_seq::MaxVectorSequential::validation() {
 bool mironov_a_max_of_vector_elements_seq::MaxVectorSequential::run() {
   internal_order_test();
   result_ = input_[0];
-  for (size_t it = 1; it < input_.size(); ++it)
-  {
+  for (size_t it = 1; it < input_.size(); ++it) {
     if (result_ < input_[it]) result_ = input_[it];
   }
   return true;
