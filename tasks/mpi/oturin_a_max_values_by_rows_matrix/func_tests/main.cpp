@@ -48,7 +48,7 @@ TEST(Parallel_Operations_MPI, Test_Max_1) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    for (int i = 0; i < global_max.size(); i++) {
+    for (size_t i = 0; i < global_max.size(); i++) {
       ASSERT_EQ(reference_max[i], global_max[i]);
     }
   }
@@ -96,7 +96,7 @@ TEST(Parallel_Operations_MPI, Test_Max_2) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    for (int i = 0; i < global_max.size(); i++) {
+    for (size_t i = 0; i < global_max.size(); i++) {
       ASSERT_EQ(reference_max[i], global_max[i]);
     }
   }
@@ -143,7 +143,7 @@ TEST(Parallel_Operations_MPI, Test_Max_3) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    for (int i = 0; i < global_max.size(); i++) {
+    for (size_t i = 0; i < global_max.size(); i++) {
       ASSERT_EQ(reference_max[i], global_max[i]);
     }
   }
@@ -235,7 +235,7 @@ TEST(Parallel_Operations_MPI, Test_Max_5) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    for (int i = 0; i < global_max.size(); i++) {
+    for (size_t i = 0; i < global_max.size(); i++) {
       ASSERT_EQ(reference_max[i], global_max[i]);
     }
   }
