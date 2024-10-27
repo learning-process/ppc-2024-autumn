@@ -22,8 +22,8 @@ std::vector<int> oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(int sz)
 bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init vectors
-  m = (int)*taskData->inputs[1];
-  n = (int)(taskData->inputs_count[0] / m);
+  m = (size_t)*taskData->inputs[1];
+  n = (size_t)(taskData->inputs_count[0] / m);
   input_ = std::vector<int>(taskData->inputs_count[0]);
   int *tmp_ptr = reinterpret_cast<int *>(taskData->inputs[0]);
   for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
@@ -42,7 +42,7 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::validation()
 
 bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-  for (int i = 0; i < m; i++) {
+  for (size_t i = 0; i < m; i++) {
     // ops == max
     res[i] = *std::max_element(input_.begin() + i * n, input_.begin() + (i + 1) * n);
   }
@@ -51,7 +51,7 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::run() {
 
 bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
-  for (int i = 0; i < m; i++) {
+  for (size_t i = 0; i < m; i++) {
     reinterpret_cast<int *>(taskData->outputs[0])[i] = res[i];
   }
   return true;
@@ -60,8 +60,8 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::post_process
 
 bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  m = (int)*taskData->inputs[1];
-  n = (int)(taskData->inputs_count[0] / m);
+  m = (size_t)*taskData->inputs[1];
+  n = (size_t)(taskData->inputs_count[0] / m);
   // Init vectors
   if (world.rank() == 0) {
     // Init vectors
@@ -118,16 +118,16 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
 
     std::copy(input_.begin(), input_.end(), arr);
 
-    int satellites = world_size - 1;
+    size_t satellites = world_size - 1;
 
-    int row = 0;
+    size_t row = 0;
     while (row < m) {
-      for (size_t i = 0; i < std::min(satellites, (int)m - row); i++) {
+      for (size_t i = 0; i < std::min(satellites, m - row); i++) {
         MPI_Send(noexit, 1, MPI_INT, i + 1, TAG_EXIT, MPI_COMM_WORLD);
         MPI_Send(&arr[(row + i) * n], n, MPI_INT, i + 1, TAG_TOSAT, MPI_COMM_WORLD);
       }
 
-      for (size_t i = 0; i < std::min(satellites, (int)m - row); i++) {
+      for (size_t i = 0; i < std::min(satellites, m - row); i++) {
         MPI_Recv(&maxes[row + i], 1, MPI_INT, i + 1, TAG_TOBASE, MPI_COMM_WORLD, &status);
       }
       row += satellites;
@@ -172,7 +172,7 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
 bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    for (int i = 0; i < m; i++) {
+    for (size_t i = 0; i < m; i++) {
       reinterpret_cast<int *>(taskData->outputs[0])[i] = res[i];
     }
   }
