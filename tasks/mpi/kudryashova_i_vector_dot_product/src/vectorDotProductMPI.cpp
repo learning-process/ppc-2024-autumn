@@ -16,8 +16,8 @@ std::vector<int> kudryashova_i_vector_dot_product_mpi::getRandomVector(unsigned 
   return vector;
 }
 
-int kudryashova_i_vector_dot_product_mpi::vectorDotProduct(const std::vector<int>& vector1, 
-                                                           const std::vector<int>& vector2) { 
+int kudryashova_i_vector_dot_product_mpi::vectorDotProduct(const std::vector<int>& vector1,
+                                                           const std::vector<int>& vector2) {
   long long result = 0;
   for (unsigned long i = 0; i < vector1.size(); i++) result += vector1[i] * vector2[i];
   return result;
@@ -103,7 +103,7 @@ bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::validation() {
   if (world.rank() == 0) {
     return (taskData->inputs.size() == taskData->inputs_count.size() && taskData->inputs.size() == 2) &&
            (taskData->inputs_count[0] == taskData->inputs_count[1]) && taskData->outputs_count[0] == 1 &&
-           (taskData->outputs.size() == taskData->outputs_count.size()) && taskData->outputs.size() == 1 ;
+           (taskData->outputs.size() == taskData->outputs_count.size()) && taskData->outputs.size() == 1;
   }
   return true;
 }
@@ -122,10 +122,21 @@ bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::run() {
   return true;
 }
 
+//bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::post_processing() {
+//  internal_order_test();
+//  if (world.rank() == 0) {
+//    reinterpret_cast<int*>(taskData->outputs[0])[0] = result;
+//  }
+//  return true;
+//}
 bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = result;
+    if (taskData->outputs.size() > 0) {
+      reinterpret_cast<int*>(taskData->outputs[0])[0] = result;
+    } else {
+      return false;
+    }
   }
   return true;
 }
