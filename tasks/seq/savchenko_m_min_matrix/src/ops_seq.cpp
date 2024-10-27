@@ -6,9 +6,7 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> savchenko_m_min_matrix_seq::getRandomMatrix(int rows,
-                                                             int columns,
-                                                             int min, int max) {
+std::vector<int> savchenko_m_min_matrix_seq::getRandomMatrix(int rows, int columns, int min, int max) {
   std::random_device dev;
   std::mt19937 gen(dev());
 
@@ -26,8 +24,7 @@ std::vector<int> savchenko_m_min_matrix_seq::getRandomMatrix(int rows,
 bool savchenko_m_min_matrix_seq::TestTaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
-  return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 &&
-         taskData->outputs_count[0] == 1;
+  return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] == 1;
 }
 
 bool savchenko_m_min_matrix_seq::TestTaskSequential::pre_processing() {
