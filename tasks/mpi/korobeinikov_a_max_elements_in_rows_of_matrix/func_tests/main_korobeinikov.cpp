@@ -141,4 +141,23 @@ TEST(max_elements_in_rows_of_matrix_mpi, Test_3_false_validation) {
 
   korobeinikov_a_test_task_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  if (world.rank() == 0) {
+    // Create data
+
+    std::vector<int> right_answer(count_rows, 0);
+
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows));
+    taskDataSeq->inputs_count.emplace_back(1);
+
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(right_answer.data()));
+    taskDataSeq->outputs_count.emplace_back(right_answer.size());
+
+    // Create Task
+    korobeinikov_a_test_task_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), false);
+  }
 }
