@@ -24,8 +24,7 @@ TEST(chizhov_m_max_values_by_columns_matrix_seq, test_pipeline_run) {
   taskDataSeq->outputs_count.emplace_back(result.size());
 
   // Create Task
-  auto testTaskSequential = 
-      std::make_shared<chizhov_m_max_values_by_columns_matrix_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential = std::make_shared<chizhov_m_max_values_by_columns_matrix_seq::TestTaskSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -47,7 +46,6 @@ TEST(chizhov_m_max_values_by_columns_matrix_seq, test_pipeline_run) {
   for (size_t i = 0; i < result.size(); i++) {
     EXPECT_EQ(1, result[0]);
   }
-  
 }
 
 TEST(chizhov_m_max_values_by_columns_matrix_seq, test_task_run) {
@@ -71,8 +69,7 @@ TEST(chizhov_m_max_values_by_columns_matrix_seq, test_task_run) {
   taskDataSeq->outputs_count.emplace_back(res.size());
 
   // Create Task
-  auto testTaskSequential = 
-      std::make_shared<chizhov_m_max_values_by_columns_matrix_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential = std::make_shared<chizhov_m_max_values_by_columns_matrix_seq::TestTaskSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();

@@ -43,7 +43,6 @@ bool chizhov_m_max_values_by_columns_matrix_seq::TestTaskSequential::run() {
   internal_order_test();
 
   for (int j = 0; j < cols; j++) {
-
     int maxElement = input_[j];
     for (int i = 1; i < rows; i++) {
       if (input_[i * cols + j] > maxElement) {
