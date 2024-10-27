@@ -1,6 +1,7 @@
 // Filateva Elizaveta Number_of_sentences_per_line
 #include <gtest/gtest.h>
 
+#include <cmatch>
 #include <boost/mpi/timer.hpp>
 #include <string>
 #include <vector>
@@ -45,7 +46,7 @@ TEST(filateva_e_number_sentences_line_mpi, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(pow(2, count), out[0]);
+    ASSERT_EQ(4194304, out[0]);
   }
 }
 
@@ -86,6 +87,6 @@ TEST(filateva_e_number_sentences_line_mpi, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(pow(2, count), out[0]);
+    ASSERT_EQ(4194304, out[0]);
   }
 }
