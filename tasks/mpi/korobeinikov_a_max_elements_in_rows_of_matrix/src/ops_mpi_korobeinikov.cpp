@@ -167,8 +167,8 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::run() {
     reduce(world, INT_MIN, res[i], boost::mpi::maximum<int>(), 0);
   }
 
-  return true;  
-  }
+ return true;
+}
 
 bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();

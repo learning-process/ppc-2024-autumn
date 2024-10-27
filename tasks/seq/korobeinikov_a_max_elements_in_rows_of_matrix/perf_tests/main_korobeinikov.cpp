@@ -50,7 +50,6 @@ TEST(sequential_korobeinikov_perf_test, test_pipeline_run) {
 }
 
 TEST(sequential_korobeinikov_perf_test, test_task_run) {
-
   // Create data
   int count_rows = 500;  // not const, because reinterpret_cast does not work with const
   std::vector<int> matrix(count_rows * 100000, 10);

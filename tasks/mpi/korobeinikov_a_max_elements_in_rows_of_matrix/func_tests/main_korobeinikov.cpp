@@ -20,7 +20,7 @@ TEST(max_elements_in_rows_of_matrix_mpi, Test_1_const__matrix) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(global_matrix.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows));
     taskDataPar->inputs_count.emplace_back(1);
@@ -42,7 +42,7 @@ TEST(max_elements_in_rows_of_matrix_mpi, Test_1_const__matrix) {
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
     taskDataSeq->inputs_count.emplace_back(global_matrix.size());
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows));
     taskDataSeq->inputs_count.emplace_back(1);
