@@ -103,29 +103,29 @@ TEST(kudryashova_i_vector_dot_product_mpi, scalar_multiply_vector_size_300) {
     ASSERT_EQ(reference[0], result[0]);
   }
 }
-//
-//TEST(kudryashova_i_vector_dot_product_mpi, check_vectors_equal) {
-//  boost::mpi::communicator world;
-//  std::vector<std::vector<int>> global_vector;
-//  std::vector<int32_t> result(1, 0);
-//  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-//  if (world.rank() == 0) {
-//    const int count_size_vector = 100;
-//    std::vector<int> vector1 = kudryashova_i_vector_dot_product_mpi::getRandomVector(count_size_vector);
-//    std::vector<int> vector2 = kudryashova_i_vector_dot_product_mpi::getRandomVector(count_size_vector);
-//    global_vector = {vector1, vector2};
-//    for (size_t i = 0; i < global_vector.size(); i++) {
-//      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector[i].data()));
-//    }
-//    taskDataPar->inputs_count.emplace_back(global_vector[0].size());
-//    taskDataPar->inputs_count.emplace_back(global_vector[1].size());
-//    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
-//    taskDataPar->outputs_count.emplace_back(result.size());
-//  }
-//  kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-//  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-//}
-//
+
+TEST(kudryashova_i_vector_dot_product_mpi, check_vectors_equal) {
+  boost::mpi::communicator world;
+  std::vector<std::vector<int>> global_vector;
+  std::vector<int32_t> result(1, 0);
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    const int count_size_vector = 100;
+    std::vector<int> vector1 = kudryashova_i_vector_dot_product_mpi::getRandomVector(count_size_vector);
+    std::vector<int> vector2 = kudryashova_i_vector_dot_product_mpi::getRandomVector(count_size_vector);
+    global_vector = {vector1, vector2};
+    for (size_t i = 0; i < global_vector.size(); i++) {
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector[i].data()));
+    }
+    taskDataPar->inputs_count.emplace_back(global_vector[0].size());
+    taskDataPar->inputs_count.emplace_back(global_vector[1].size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
+    taskDataPar->outputs_count.emplace_back(result.size());
+  }
+  kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+}
+
 //TEST(kudryashova_i_vector_dot_product_mpi, check_vectors_not_equal) {
 //  boost::mpi::communicator world;
 //  std::vector<std::vector<int>> global_vector;
