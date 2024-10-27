@@ -19,7 +19,6 @@ TEST(kudryashova_i_vector_dot_product_mpi, test_pipeline_run) {
     }
     taskDataPar->inputs_count.emplace_back(global_vector[0].size());
     taskDataPar->inputs_count.emplace_back(global_vector[1].size());
-     
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
     taskDataPar->outputs_count.emplace_back(result.size());
   }
@@ -28,14 +27,11 @@ TEST(kudryashova_i_vector_dot_product_mpi, test_pipeline_run) {
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
-  
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
-  
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-  
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {

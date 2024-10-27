@@ -13,7 +13,7 @@ std::vector<int> kudryashova_i_vector_dot_product::GetRandomVector(const int siz
   return vector;
 }
 
-int kudryashova_i_vector_dot_product::vectorDotProduct(const std::vector<int>& vector1, const std::vector<int>& vector2) {
+int kudryashova_i_vector_dot_product::vectorDotProduct(const std::vector<int>& vector1,const std::vector<int>& vector2) {
   long long result = 0;
   for (unsigned long i = 0; i < vector1.size(); ++i) {
     result += vector1[i] * vector2[i];
