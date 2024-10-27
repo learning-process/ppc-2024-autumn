@@ -1,9 +1,9 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
-#include <vector>
-#include <random>
 #include <climits>
+#include <random>
+#include <vector>
 
 #include "seq/savchenko_m_min_matrix/include/ops_seq.hpp"
 

@@ -1,8 +1,8 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/savchenko_m_min_matrix/include/ops_seq.hpp"
 
-#include <thread>
 #include <random>
+#include <thread>
 
 using namespace std::chrono_literals;
 
@@ -13,7 +13,7 @@ std::vector<int> savchenko_m_min_matrix_seq::getRandomMatrix(int rows, int colum
   // Forming a random matrix
   std::vector<int> matrix(rows * columns);
   for (int i = 0; i < rows; i++) {
-    for (int j = 0; j < columns; j++){
+    for (int j = 0; j < columns; j++) {
       matrix[i * columns + j] = min + gen() % (max - min + 1);
     }
   }
@@ -48,7 +48,7 @@ bool savchenko_m_min_matrix_seq::TestTaskSequential::pre_processing() {
 
 bool savchenko_m_min_matrix_seq::TestTaskSequential::run() {
   internal_order_test();
-  for (int i = 0; i < matrix.size(); i++){
+  for (int i = 0; i < matrix.size(); i++) {
     if (matrix[i] < res){
       res = matrix[i];
     }
