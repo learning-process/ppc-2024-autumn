@@ -1,135 +1,135 @@
-#include "mpi/kudryashova_i_vector_dot_product/include/vectorDotProductMPI.hpp"
-
-#include <random>
-#include <thread>
-#include <boost/mpi.hpp>
-static int seedOffset = 0;
-using namespace std::chrono_literals;
-
-std::vector<int> kudryashova_i_vector_dot_product_mpi::getRandomVector(int size) {
-    std::vector<int> vector(size);
-    std::srand(static_cast<unsigned>(time(NULL)) + ++seedOffset);
-    for (int i = 0; i < size; ++i) {
-        vector[i] = std::rand() % 10 + 1;
-    }
-    return vector;
-}
-
-int kudryashova_i_vector_dot_product_mpi::vectorDotProduct(const std::vector<int>& vector1, const std::vector<int>& vector2) {
-    long long result = 0;
-    for (size_t i = 0; i < vector1.size(); i++) 
-        result += vector1[i] * vector2[i];
-    return result;
-}
-
-bool kudryashova_i_vector_dot_product_mpi::TestMPITaskSequential::pre_processing() {
-    internal_order_test();
-
-    input_.resize(taskData->inputs.size());
-    for (size_t i = 0; i < input_.size(); ++i) {
-        auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[i]);
-        input_[i] = std::vector<int>(taskData->inputs_count[i]);
-        std::copy(tempPtr, tempPtr + taskData->inputs_count[i], input_[i].begin());
-    }
-    result = 0;
-    return true;
-}
-
-bool kudryashova_i_vector_dot_product_mpi::TestMPITaskSequential::validation() {
-    internal_order_test();
-    return (taskData->inputs_count[0] == taskData->inputs_count[1]) &&
-           (taskData->inputs.size() == taskData->inputs_count.size() && taskData->inputs.size() == 2) &&
-           taskData->outputs_count[0] == 1 && (taskData->outputs.size() == taskData->outputs_count.size()) &&
-           taskData->outputs.size() == 1;
-}
-
-
-bool kudryashova_i_vector_dot_product_mpi::TestMPITaskSequential::run() {
-    internal_order_test();
-    for (size_t i = 0; i < input_[0].size(); i++) {
-        result += input_[1][i] * input_[0][i];
-    }
-    return true;
-}
-
-bool kudryashova_i_vector_dot_product_mpi::TestMPITaskSequential::post_processing() {
-    internal_order_test();
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = result;
-    return true;
-}
-
-bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::pre_processing() {
-    internal_order_test();
-    unsigned int delta = 0;
-
-    if (world.rank() == 0) {
-          delta = taskData->inputs_count[0] / world.size();
-    }
-    broadcast(world, delta, 0);
-
-    if (world.rank() == 0) {
-          input_.resize(taskData->inputs.size());
-          for (size_t i = 0; i < taskData->inputs.size(); ++i) {
-          input_[i].resize(taskData->inputs_count[i]);
-
-          int* source_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
-
-          if (source_ptr != nullptr) {
-              std::copy(source_ptr, source_ptr + taskData->inputs_count[i], input_[i].begin());
-          } 
-          else 
-            return false; 
-          }
-          for (int proc = 1; proc < world.size(); ++proc) {
-          world.send(proc, 0, input_[0].data() + proc * delta, delta);
-          world.send(proc, 1, input_[1].data() + proc * delta, delta);
-          }
-    }
-
-    local_input1_.resize(delta);
-    local_input2_.resize(delta);
-
-    if (world.rank() == 0) {
-          std::copy(input_[0].begin(), input_[0].begin() + delta, local_input1_.begin());
-          std::copy(input_[1].begin(), input_[1].begin() + delta, local_input2_.begin());
-    } else {
-          world.recv(0, 0, local_input1_.data(), delta);
-          world.recv(0, 1, local_input2_.data(), delta);
-    }
-    result = 0;
-    return true;
-}
-
-bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::validation() {
-    internal_order_test();
-    if (world.rank() == 0) {    
-        return (taskData->inputs.size() == taskData->inputs_count.size() && taskData->inputs.size() == 2) &&
-                 (taskData->inputs_count[0] == taskData->inputs_count[1]) &&
-                 taskData->outputs_count[0] == 1 && (taskData->outputs.size() == taskData->outputs_count.size()) && taskData->outputs.size() == 1 ;
-    }
-    return true;
-}
-
-
-bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::run() {
-    internal_order_test(); 
-
-    int local_result = std::inner_product(local_input1_.begin(), local_input1_.end(), local_input2_.begin(), 0);
-
-    std::vector<int> full_results;
-    gather(world, local_result, full_results, 0);
-
-    if (world.rank() == 0) {
-        result = std::accumulate(full_results.begin(), full_results.end(), 0);
-    }
-    return true;  
-}
-
-
-bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::post_processing() {
-    internal_order_test();
-    if (world.rank() == 0) {
-        reinterpret_cast<int*>(taskData->outputs[0])[0] = result;
-    }
-    return true;
-}
+//#include "mpi/kudryashova_i_vector_dot_product/include/vectorDotProductMPI.hpp"
+//
+//#include <random>
+//#include <thread>
+//#include <boost/mpi.hpp>
+//static int seedOffset = 0;
+//using namespace std::chrono_literals;
+//
+//std::vector<int> kudryashova_i_vector_dot_product_mpi::getRandomVector(int size) {
+//    std::vector<int> vector(size);
+//    std::srand(static_cast<unsigned>(time(NULL)) + ++seedOffset);
+//    for (int i = 0; i < size; ++i) {
+//        vector[i] = std::rand() % 10 + 1;
+//    }
+//    return vector;
+//}
+//
+//int kudryashova_i_vector_dot_product_mpi::vectorDotProduct(const std::vector<int>& vector1, const std::vector<int>& vector2) {
+//    long long result = 0;
+//    for (size_t i = 0; i < vector1.size(); i++) 
+//        result += vector1[i] * vector2[i];
+//    return result;
+//}
+//
+//bool kudryashova_i_vector_dot_product_mpi::TestMPITaskSequential::pre_processing() {
+//    internal_order_test();
+//
+//    input_.resize(taskData->inputs.size());
+//    for (size_t i = 0; i < input_.size(); ++i) {
+//        auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[i]);
+//        input_[i] = std::vector<int>(taskData->inputs_count[i]);
+//        std::copy(tempPtr, tempPtr + taskData->inputs_count[i], input_[i].begin());
+//    }
+//    result = 0;
+//    return true;
+//}
+//
+//bool kudryashova_i_vector_dot_product_mpi::TestMPITaskSequential::validation() {
+//    internal_order_test();
+//    return (taskData->inputs_count[0] == taskData->inputs_count[1]) &&
+//           (taskData->inputs.size() == taskData->inputs_count.size() && taskData->inputs.size() == 2) &&
+//           taskData->outputs_count[0] == 1 && (taskData->outputs.size() == taskData->outputs_count.size()) &&
+//           taskData->outputs.size() == 1;
+//}
+//
+//
+//bool kudryashova_i_vector_dot_product_mpi::TestMPITaskSequential::run() {
+//    internal_order_test();
+//    for (size_t i = 0; i < input_[0].size(); i++) {
+//        result += input_[1][i] * input_[0][i];
+//    }
+//    return true;
+//}
+//
+//bool kudryashova_i_vector_dot_product_mpi::TestMPITaskSequential::post_processing() {
+//    internal_order_test();
+//    reinterpret_cast<int*>(taskData->outputs[0])[0] = result;
+//    return true;
+//}
+//
+//bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::pre_processing() {
+//    internal_order_test();
+//    unsigned int delta = 0;
+//
+//    if (world.rank() == 0) {
+//          delta = taskData->inputs_count[0] / world.size();
+//    }
+//    broadcast(world, delta, 0);
+//
+//    if (world.rank() == 0) {
+//          input_.resize(taskData->inputs.size());
+//          for (size_t i = 0; i < taskData->inputs.size(); ++i) {
+//          input_[i].resize(taskData->inputs_count[i]);
+//
+//          int* source_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
+//
+//          if (source_ptr != nullptr) {
+//              std::copy(source_ptr, source_ptr + taskData->inputs_count[i], input_[i].begin());
+//          } 
+//          else 
+//            return false; 
+//          }
+//          for (int proc = 1; proc < world.size(); ++proc) {
+//          world.send(proc, 0, input_[0].data() + proc * delta, delta);
+//          world.send(proc, 1, input_[1].data() + proc * delta, delta);
+//          }
+//    }
+//
+//    local_input1_.resize(delta);
+//    local_input2_.resize(delta);
+//
+//    if (world.rank() == 0) {
+//          std::copy(input_[0].begin(), input_[0].begin() + delta, local_input1_.begin());
+//          std::copy(input_[1].begin(), input_[1].begin() + delta, local_input2_.begin());
+//    } else {
+//          world.recv(0, 0, local_input1_.data(), delta);
+//          world.recv(0, 1, local_input2_.data(), delta);
+//    }
+//    result = 0;
+//    return true;
+//}
+//
+//bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::validation() {
+//    internal_order_test();
+//    if (world.rank() == 0) {    
+//        return (taskData->inputs.size() == taskData->inputs_count.size() && taskData->inputs.size() == 2) &&
+//                 (taskData->inputs_count[0] == taskData->inputs_count[1]) &&
+//                 taskData->outputs_count[0] == 1 && (taskData->outputs.size() == taskData->outputs_count.size()) && taskData->outputs.size() == 1 ;
+//    }
+//    return true;
+//}
+//
+//
+//bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::run() {
+//    internal_order_test(); 
+//
+//    int local_result = std::inner_product(local_input1_.begin(), local_input1_.end(), local_input2_.begin(), 0);
+//
+//    std::vector<int> full_results;
+//    gather(world, local_result, full_results, 0);
+//
+//    if (world.rank() == 0) {
+//        result = std::accumulate(full_results.begin(), full_results.end(), 0);
+//    }
+//    return true;  
+//}
+//
+//
+//bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::post_processing() {
+//    internal_order_test();
+//    if (world.rank() == 0) {
+//        reinterpret_cast<int*>(taskData->outputs[0])[0] = result;
+//    }
+//    return true;
+//}
