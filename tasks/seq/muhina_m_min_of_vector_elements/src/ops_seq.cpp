@@ -34,7 +34,7 @@ bool muhina_m_min_of_vector_elements_seq::MinOfVectorSequential::validation() {
   internal_order_test();
   // Handle empty input vector
   if (taskData->inputs_count[0] == 0) {
-    return taskData->outputs_count[0] == 0;  
+    return taskData->outputs_count[0] == 0;
   }
   return taskData->outputs_count[0] == 1;
 }
