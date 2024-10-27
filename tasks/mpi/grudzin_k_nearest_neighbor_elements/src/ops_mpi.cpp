@@ -58,7 +58,7 @@ bool grudzin_k_nearest_neighbor_elements_mpi::TestMPITaskParallel::pre_processin
   unsigned int delta = 0;
   if (world.rank() == 0) {
     delta = (taskData->inputs_count[0] - 1) / world.size();
-    if ((taskData->inputs_count[0] - 1) % world.size()) delta++;
+    if ((taskData->inputs_count[0] - 1) % world.size() > 0u) delta++;
   }
   broadcast(world, delta, 0);
 
