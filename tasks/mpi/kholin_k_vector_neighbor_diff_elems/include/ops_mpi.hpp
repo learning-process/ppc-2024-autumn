@@ -10,6 +10,10 @@
 #include <numeric>
 #include <utility>
 #include <vector>
+#include <functional>
+#include <random>
+#include <string>
+#include <thread>
 
 #include "core/task/include/task.hpp"
 
@@ -135,7 +139,12 @@ class TestMPITaskParallel : public ppc::core::Task {
       // distribute data processes 0 to size-1
     }
     if (world.rank() == 0) {
-      local_input_ = std::vector<TypeElem>(input_.begin(), input_.begin() + delta_n);
+      unsigned int residue = taskData->inputs_count[0] % world.size();
+      if (residue != 0) {
+        local_input_ = std::vector<TypeElem>(input_.begin(), input_.begin() + delta_n + residue);
+      } else {
+        local_input_ = std::vector<TypeElem>(input_.begin(), input_.begin() + delta_n);
+      }
     } else {
       local_input_ = std::vector<TypeElem>(delta_n);
     }
