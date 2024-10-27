@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+
 #include "seq/kudryashova_i_vector_dot_product/include/vectorDotProductSeq.hpp"
 
 TEST(kudryashova_i_vector_dot_product_seq, check_vectorDotProduct) {
@@ -22,7 +23,6 @@ TEST(kudryashova_i_vector_dot_product_seq, scalar_multiply_vector_size_10) {
   taskDataSeq->inputs_count.emplace_back(vector2.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
-  
   // Create Task
   kudryashova_i_vector_dot_product::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
