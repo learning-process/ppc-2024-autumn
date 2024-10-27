@@ -1,4 +1,4 @@
-/* #pragma once
+ #pragma once
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <memory>
@@ -9,7 +9,7 @@
 
 #include "core/task/include/task.hpp"
 namespace kudryashova_i_vector_dot_product_mpi {
-std::vector<int> getRandomVector(int size);
+std::vector<int> getRandomVector(unsigned long size);
 int vectorDotProduct(const std::vector<int>& vector1, const std::vector<int>& vector2);
 class TestMPITaskSequential : public ppc::core::Task {
   public:
@@ -36,5 +36,4 @@ class TestMPITaskParallel : public ppc::core::Task {
    boost::mpi::communicator world;
    };
 }
- namespace kudryashova_i_vector_dot_product_mpi
-*/
+ //namespace kudryashova_i_vector_dot_product_mpi

@@ -1,4 +1,4 @@
-/*#include "mpi/kudryashova_i_vector_dot_product/include/vectorDotProductMPI.hpp"
+#include "mpi/kudryashova_i_vector_dot_product/include/vectorDotProductMPI.hpp"
 #include <boost/mpi.hpp>
 #include <random>
 #include <thread>
@@ -6,7 +6,7 @@
 static int seedOffset = 0;
 using namespace std::chrono_literals;
 
-std::vector<int> kudryashova_i_vector_dot_product_mpi::getRandomVector(int size) {
+std::vector<int> kudryashova_i_vector_dot_product_mpi::getRandomVector(unsigned long size) {
   std::vector<int> vector(size);
   std::srand(static_cast<unsigned>(time(NULL)) + ++seedOffset);
   for (unsigned long i = 0; i < size; ++i) {
@@ -131,4 +131,3 @@ bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::post_processing(
   }
   return true;
 }
-*/
