@@ -13,7 +13,7 @@ std::string filateva_e_number_sentences_line_mpi::getRandomLine(int max_count) {
   std::string line = "Hello world. How many words are in this sentence? The task of parallel programming!";
   int count = gen() % max_count;
   for (int i = 0; i < count; i++) {
-    line = line + line;
+    line += line;
   }
   return line;
 }
@@ -45,7 +45,7 @@ bool filateva_e_number_sentences_line_mpi::NumberSentencesLineSequential::valida
 bool filateva_e_number_sentences_line_mpi::NumberSentencesLineSequential::run() {
   internal_order_test();
   num = countSentences(line);
-  if (line.size() != 0 && line.back() != '.' && line.back() != '?' && line.back() != '!') {
+  if (!line.empty() && line.back() != '.' && line.back() != '?' && line.back() != '!') {
     ++num;
   }
   return true;
@@ -94,7 +94,7 @@ bool filateva_e_number_sentences_line_mpi::NumberSentencesLineParallel::validati
 bool filateva_e_number_sentences_line_mpi::NumberSentencesLineParallel::run() {
   internal_order_test();
   int local_num = countSentences(local_line);
-  if (world.rank() == 0 && line.size() != 0 && line.back() != '.' && line.back() != '?' && line.back() != '!') {
+  if (world.rank() == 0 && !line.empty() && line.back() != '.' && line.back() != '?' && line.back() != '!') {
     ++local_num;
   }
   reduce(world, local_num, num, std::plus(), 0);

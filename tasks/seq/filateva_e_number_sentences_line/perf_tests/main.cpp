@@ -14,7 +14,7 @@ TEST(filateva_e_number_sentences_line_seq, test_pipeline_run) {
   std::vector<int> out(1, 0);
 
   for (int i = 0; i < count; ++i) {
-    line = line + line;
+    line += line;
   }
 
   // Create TaskData
@@ -55,7 +55,7 @@ TEST(filateva_e_number_sentences_line_seq, test_task_run) {
   std::vector<int> out(1, 0);
 
   for (int i = 0; i < count; ++i) {
-    line = line + line;
+    line += line;
   }
 
   // Create TaskData

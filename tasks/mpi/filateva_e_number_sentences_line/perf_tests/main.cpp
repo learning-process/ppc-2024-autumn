@@ -15,7 +15,7 @@ TEST(filateva_e_number_sentences_line_mpi, test_pipeline_run) {
   std::vector<int> out(1, 0);
   // // Create TaskData
   for (int i = 0; i < count; i++) {
-    line = line + line;
+    line += line;
   }
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -56,7 +56,7 @@ TEST(filateva_e_number_sentences_line_mpi, test_task_run) {
   std::vector<int> out(1, 0);
   // // Create TaskData
   for (int i = 0; i < count; i++) {
-    line = line + line;
+    line += line;
   }
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {

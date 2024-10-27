@@ -25,7 +25,7 @@ bool filateva_e_number_sentences_line_seq::NumberSentencesLine::run() {
       ++num;
     }
   }
-  if (line.size() != 0 && line.back() != '.' && line.back() != '?' && line.back() != '!') {
+  if (!line.empty() && line.back() != '.' && line.back() != '?' && line.back() != '!') {
     ++num;
   }
   return true;

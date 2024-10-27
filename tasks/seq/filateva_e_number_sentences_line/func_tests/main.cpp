@@ -133,7 +133,7 @@ TEST(filateva_e_number_sentences_line_seq, several_sentence_line_2) {
 
 TEST(filateva_e_number_sentences_line_seq, empty_string) {
   // Create data
-  std::string line = "";
+  std::string line;
   std::vector<int> out(1, 0);
 
   // Create TaskData

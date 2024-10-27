@@ -114,7 +114,7 @@ TEST(filateva_e_number_sentences_line_mpi, one_sentence_line_4) {
 
 TEST(filateva_e_number_sentences_line_mpi, empty_string) {
   boost::mpi::communicator world;
-  std::string line = "";
+  std::string line;
   std::vector<int> out(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
