@@ -1,11 +1,11 @@
 #pragma once
 
 #include <algorithm>
+#include<cmath>
 #include <functional>
 #include <random>
 #include <string>
 #include <thread>
-#include <cmath>
 #include <vector>
 
 #include "core/task/include/task.hpp"

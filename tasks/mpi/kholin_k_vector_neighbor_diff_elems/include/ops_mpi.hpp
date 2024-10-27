@@ -6,14 +6,14 @@
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <cmath>
+#include <functional>
 #include <memory>
 #include <numeric>
-#include <utility>
-#include <vector>
-#include <functional>
 #include <random>
 #include <string>
 #include <thread>
+#include <utility>
+#include <vector>
 
 #include "core/task/include/task.hpp"
 
@@ -212,7 +212,7 @@ class TestMPITaskParallel : public ppc::core::Task {
     return true;
   }
 
-  ~TestMPITaskParallel() {
+  ~TestMPITaskParallel() override {
     MPI_Type_free(&mpi_type_index);
     MPI_Type_free(&mpi_type_elem);
   }
@@ -234,8 +234,6 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
   MPI_Datatype mpi_type_elem;
   MPI_Datatype mpi_type_index;
-
- private:
   void print_local_data();
   double max_difference();
   void print_global_results();
