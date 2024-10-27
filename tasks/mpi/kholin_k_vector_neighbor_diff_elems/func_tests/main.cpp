@@ -11,8 +11,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_validation) {
   boost::mpi::communicator world;
   const int count_size_vector = 500;
   std::vector<int> global_vec;
-  std::vector<int> global_elems(2, 0);
-  std::vector<uint64_t> global_indices(2, 0);
+  std::vector<double> global_delta(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -24,10 +23,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_validation) {
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_elems.data()));
-    taskDataPar->outputs_count.emplace_back(global_elems.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_indices.data()));
-    taskDataPar->outputs_count.emplace_back(global_indices.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_delta.data()));
+    taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
   kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int, uint64_t> testMpiTaskParallel(taskDataPar,
@@ -37,6 +34,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_validation) {
 
   if (world.rank() == 0) {
     // Create data
+    std::vector<double> reference_delta(1, 0);
     std::vector<int> reference_elems(2, 0);
     std::vector<uint64_t> reference_indices(2, 0);
 
@@ -48,6 +46,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_validation) {
     taskDataSeq->outputs_count.emplace_back(reference_elems.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_indices.data()));
     taskDataSeq->outputs_count.emplace_back(reference_indices.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_delta.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_delta.size());
 
     // Create Task
     kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int, uint64_t> testMPITaskSequential(taskDataSeq,
@@ -61,8 +61,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_pre_processing) {
   boost::mpi::communicator world;
   const int count_size_vector = 500;
   std::vector<int> global_vec;
-  std::vector<int> global_elems(2, 0);
-  std::vector<uint64_t> global_indices(2, 0);
+  std::vector<double> global_delta(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -74,10 +73,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_pre_processing) {
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_elems.data()));
-    taskDataPar->outputs_count.emplace_back(global_elems.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_indices.data()));
-    taskDataPar->outputs_count.emplace_back(global_indices.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_delta.data()));
+    taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
   kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int, uint64_t> testMpiTaskParallel(taskDataPar,
@@ -88,6 +85,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_pre_processing) {
 
   if (world.rank() == 0) {
     // Create data
+    std::vector<double> reference_delta(1, 0);
     std::vector<int> reference_elems(2, 0);
     std::vector<uint64_t> reference_indices(2, 0);
 
@@ -99,6 +97,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_pre_processing) {
     taskDataSeq->outputs_count.emplace_back(reference_elems.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_indices.data()));
     taskDataSeq->outputs_count.emplace_back(reference_indices.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_delta.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_delta.size());
 
     // Create Task
     kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int, uint64_t> testTaskSequential(taskDataSeq,
@@ -111,10 +111,9 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_pre_processing) {
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_run) {
   boost::mpi::communicator world;
-  const int count_size_vector = 500;
+  const int count_size_vector = 50;
   std::vector<int> global_vec;
-  std::vector<int> global_elems(2, 0);
-  std::vector<uint64_t> global_indices(2, 0);
+  std::vector<double> global_delta(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -128,10 +127,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_run) {
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_elems.data()));
-    taskDataPar->outputs_count.emplace_back(global_elems.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_indices.data()));
-    taskDataPar->outputs_count.emplace_back(global_indices.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_delta.data()));
+    taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
   kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int, uint64_t> testMpiTaskParallel(taskDataPar,
@@ -143,6 +140,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_run) {
 
   if (world.rank() == 0) {
     // Create data
+    std::vector<double> reference_delta(1, 0);
     std::vector<int> reference_elems(2, 0);
     std::vector<uint64_t> reference_indices(2, 0);
 
@@ -154,6 +152,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_run) {
     taskDataSeq->outputs_count.emplace_back(reference_elems.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_indices.data()));
     taskDataSeq->outputs_count.emplace_back(reference_indices.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_delta.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_delta.size());
 
     // Create Task
     kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int, uint64_t> testTaskSequential(taskDataSeq,
@@ -169,8 +169,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_post_processing) {
   boost::mpi::communicator world;
   const int count_size_vector = 500;
   std::vector<int> global_vec;
-  std::vector<int> global_elems(2, 0);
-  std::vector<uint64_t> global_indices(2, 0);
+  std::vector<double> global_delta(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -184,10 +183,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_post_processing) {
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_elems.data()));
-    taskDataPar->outputs_count.emplace_back(global_elems.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_indices.data()));
-    taskDataPar->outputs_count.emplace_back(global_indices.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_delta.data()));
+    taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
   kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int, uint64_t> testMpiTaskParallel(taskDataPar,
@@ -200,6 +197,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_post_processing) {
 
   if (world.rank() == 0) {
     // Create data
+    std::vector<double> reference_delta(1, 0);
     std::vector<int> reference_elems(2, 0);
     std::vector<uint64_t> reference_indices(2, 0);
 
@@ -211,6 +209,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_post_processing) {
     taskDataSeq->outputs_count.emplace_back(reference_elems.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_indices.data()));
     taskDataSeq->outputs_count.emplace_back(reference_indices.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_delta.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_delta.size());
 
     // Create Task
     kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int, uint64_t> testTaskSequential(taskDataSeq,
@@ -225,10 +225,9 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_post_processing) {
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
   boost::mpi::communicator world;
-  const int count_size_vector = 500;
+  const int count_size_vector = 200;
   std::vector<int> global_vec;
-  std::vector<int> global_elems(2, 0);
-  std::vector<uint64_t> global_indices(2, 0);
+  std::vector<double> global_delta(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -243,10 +242,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_elems.data()));
-    taskDataPar->outputs_count.emplace_back(global_elems.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_indices.data()));
-    taskDataPar->outputs_count.emplace_back(global_indices.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_delta.data()));
+    taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
   kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int, uint64_t> testMpiTaskParallel(taskDataPar,
@@ -256,10 +253,11 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  int test = global_elems[0] - global_elems[1];
+  int test = global_delta[0];
 
   if (world.rank() == 0) {
     // Create data
+    std::vector<double> reference_delta(1, 0);
     std::vector<int> reference_elems(2, 0);
     std::vector<uint64_t> reference_indices(2, 0);
     // Create TaskData
@@ -270,6 +268,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
     taskDataSeq->outputs_count.emplace_back(reference_elems.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_indices.data()));
     taskDataSeq->outputs_count.emplace_back(reference_indices.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_delta.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_delta.size());
 
     // Create Task
     kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int, uint64_t> testTaskSequential(taskDataSeq,
@@ -286,12 +286,11 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
   boost::mpi::communicator world;
   std::vector<int32_t> global_vec;
-  std::vector<int32_t> global_elems(2, 0);
-  std::vector<uint64_t> global_indices(2, 0);
+  std::vector<double> global_delta(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    const int count_size_vector = 500;
+    const int count_size_vector = 300;
     global_vec = std::vector<int32_t>(count_size_vector);
     for (size_t i = 0; i < global_vec.size(); i++) {
       global_vec[i] = 2 * i + 4;
@@ -300,10 +299,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
     global_vec[101] = 1;
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_elems.data()));
-    taskDataPar->outputs_count.emplace_back(global_elems.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_indices.data()));
-    taskDataPar->outputs_count.emplace_back(global_indices.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_delta.data()));
+    taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
   kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int32_t, uint64_t> testMpiTaskParallel(taskDataPar,
@@ -312,10 +309,11 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  int32_t test = global_elems[0] - global_elems[1];
+  int32_t test = global_delta[0];
 
   if (world.rank() == 0) {
     // Create data
+    std::vector<double> reference_delta(1, 0);
     std::vector<int32_t> reference_elems(2, 0);
     std::vector<uint64_t> reference_indices(2, 0);
 
@@ -327,6 +325,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
     taskDataSeq->outputs_count.emplace_back(reference_elems.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_indices.data()));
     taskDataSeq->outputs_count.emplace_back(reference_indices.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_delta.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_delta.size());
 
     // Create Task
     kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int32_t, uint64_t> testTaskSequential(taskDataSeq,
@@ -343,13 +343,12 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_float) {
   boost::mpi::communicator world;
   std::vector<float> global_vec;
-  std::vector<float> global_elems(2, 0);
-  std::vector<uint64_t> global_indices(2, 0);
+  std::vector<double> global_delta(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 500;
+    const int count_size_vector = 1000;
     global_vec = std::vector<float>(count_size_vector);
     for (size_t i = 0; i < global_vec.size(); i++) {
       global_vec[i] = 0.25 * i + 10;
@@ -360,10 +359,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_float) {
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_elems.data()));
-    taskDataPar->outputs_count.emplace_back(global_elems.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_indices.data()));
-    taskDataPar->outputs_count.emplace_back(global_indices.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_delta.data()));
+    taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
   kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<float, uint64_t> testMpiTaskParallel(taskDataPar,
@@ -372,10 +369,11 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_float) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  float test = global_elems[0] - global_elems[1];
+  float test = global_delta[0];
 
   if (world.rank() == 0) {
     // Create data
+    std::vector<double> reference_delta(1, 0);
     std::vector<float> reference_elems(2, 0);
     std::vector<uint64_t> reference_indices(2, 0);
 
@@ -387,6 +385,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_float) {
     taskDataSeq->outputs_count.emplace_back(reference_elems.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_indices.data()));
     taskDataSeq->outputs_count.emplace_back(reference_indices.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_delta.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_delta.size());
 
     // Create Task
     kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<float, uint64_t> testTaskSequential(taskDataSeq,
@@ -403,13 +403,12 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_float) {
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_double) {
   boost::mpi::communicator world;
   std::vector<double> global_vec;
-  std::vector<double> global_elems(2, 0);
-  std::vector<uint64_t> global_indices(2, 0);
+  std::vector<double> global_delta(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 500;
+    const int count_size_vector = 750;
     global_vec = std::vector<double>(count_size_vector);
     for (size_t i = 0; i < global_vec.size(); i++) {
       global_vec[i] = 0.25 * i + 10;
@@ -420,10 +419,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_double) {
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_elems.data()));
-    taskDataPar->outputs_count.emplace_back(global_elems.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_indices.data()));
-    taskDataPar->outputs_count.emplace_back(global_indices.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_delta.data()));
+    taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
   kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<double, uint64_t> testMpiTaskParallel(taskDataPar,
@@ -432,10 +429,11 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_double) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  double test = global_elems[0] - global_elems[1];
+  double test = global_delta[0];
 
   if (world.rank() == 0) {
     // Create data
+    std::vector<double> reference_delta(1, 0);
     std::vector<double> reference_elems(2, 0);
     std::vector<uint64_t> reference_indices(2, 0);
 
@@ -447,6 +445,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_double) {
     taskDataSeq->outputs_count.emplace_back(reference_elems.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_indices.data()));
     taskDataSeq->outputs_count.emplace_back(reference_indices.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_delta.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_delta.size());
 
     // Create Task
     kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<double, uint64_t> testTaskSequential(taskDataSeq,
