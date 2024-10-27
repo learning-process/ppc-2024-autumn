@@ -21,7 +21,7 @@ std::vector<int> kolokolova_d_max_of_row_matrix_mpi::getRandomVector(int sz) {
 bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init value for input and output
-  size_t row_count = static_cast<size_t>(*taskData->inputs[1]);
+  auto row_count = static_cast<size_t>(*taskData->inputs[1]);
   size_t col_count = taskData->inputs_count[0] / row_count;
 
   input_.resize(row_count, std::vector<int>(col_count));
