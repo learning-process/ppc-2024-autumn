@@ -235,3 +235,21 @@ TEST(mironov_a_max_of_vector_elements_mpi, Test_Max_5) {
     ASSERT_EQ(reference_max[0], global_max[0]);
   }
 }
+
+TEST(mironov_a_max_of_vector_elements_mpi, Wrong_Input) {
+  boost::mpi::communicator world;
+  // Create TaskData
+  std::vector<int> global_vec;
+  std::vector<int> global_max(1);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
+    taskDataPar->outputs_count.emplace_back(global_max.size());
+    mironov_a_max_of_vector_elements_mpi::MaxVectorMPI testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  }
+}
