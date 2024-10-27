@@ -171,12 +171,17 @@ bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::pre_processing()
 
 bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
+  if (taskData == nullptr) {
+    return false;
+  }
+  if (taskData->inputs.size() != taskData->inputs_count.size()) {
+    return false;
+  }
   if (world.rank() == 0) {
-    if ((taskData->inputs.size() != taskData->inputs_count.size()) || (taskData->inputs.size() != 2) ||
-        (taskData->inputs_count[0] != taskData->inputs_count[1]) || (taskData->outputs_count[0] != 1) ||
-        (taskData->outputs.size() != taskData->outputs_count.size()) || (taskData->outputs.size() != 1)) {
-      return false;
-    }
+    bool validInputs = (taskData->inputs.size() == taskData->inputs_count.size() && taskData->inputs.size() == 2);
+    bool validInputCounts = (taskData->inputs_count[0] == taskData->inputs_count[1]);
+    bool validOutputs = (taskData->outputs.size() == taskData->outputs_count.size() && taskData->outputs.size() == 1);
+    return validInputs && validInputCounts && validOutputs && (taskData->outputs_count[0] == 1);
   }
   return true;
 }
