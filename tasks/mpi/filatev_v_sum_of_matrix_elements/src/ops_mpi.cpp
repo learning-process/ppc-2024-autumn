@@ -3,22 +3,8 @@
 
 #include <algorithm>
 #include <functional>
-#include <random>
 #include <string>
 #include <vector>
-
-std::vector<std::vector<int>> filatev_v_sum_of_matrix_elements_mpi::getRandomMatrix(int size_n, int size_m) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<std::vector<int>> matrix(size_m, std::vector<int>(size_n));
-
-  for (int i = 0; i < size_m; ++i) {
-    for (int j = 0; j < size_n; ++j) {
-      matrix[i][j] = gen() % 200 - 100;
-    }
-  }
-  return matrix;
-}
 
 bool filatev_v_sum_of_matrix_elements_mpi::SumMatrixSeq::pre_processing() {
   internal_order_test();

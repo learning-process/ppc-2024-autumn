@@ -15,8 +15,6 @@
 
 namespace filatev_v_sum_of_matrix_elements_mpi {
 
-std::vector<std::vector<int>> getRandomMatrix(int size_n, int size_m);
-
 class SumMatrixSeq : public ppc::core::Task {
  public:
   explicit SumMatrixSeq(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

@@ -4,8 +4,22 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <vector>
+#include <random>
 
 #include "mpi/filatev_v_sum_of_matrix_elements/include/ops_mpi.hpp"
+
+std::vector<std::vector<int>> getRandomMatrix(int size_n, int size_m) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<std::vector<int>> matrix(size_m, std::vector<int>(size_n));
+
+  for (int i = 0; i < size_m; ++i) {
+    for (int j = 0; j < size_n; ++j) {
+      matrix[i][j] = gen() % 200 - 100;
+    }
+  }
+  return matrix;
+}
 
 TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_10_10_1) {
   boost::mpi::communicator world;
@@ -49,7 +63,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_10_10_r) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    in = filatev_v_sum_of_matrix_elements_mpi::getRandomMatrix(count, count);
+    in = getRandomMatrix(count, count);
     refIn = in;
     out = std::vector<int>(1, 0);
     for (int i = 0; i < count; i++) {
@@ -101,7 +115,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_10_20_r) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    in = filatev_v_sum_of_matrix_elements_mpi::getRandomMatrix(size_n, size_m);
+    in = getRandomMatrix(size_n, size_m);
     refIn = in;
     out = std::vector<int>(1, 0);
     for (int i = 0; i < size_m; i++) {
@@ -153,7 +167,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_20_10_r) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    in = filatev_v_sum_of_matrix_elements_mpi::getRandomMatrix(size_n, size_m);
+    in = getRandomMatrix(size_n, size_m);
     refIn = in;
     out = std::vector<int>(1, 0);
     for (int i = 0; i < size_m; i++) {
@@ -205,7 +219,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, Test_Sum_1_1_r) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    in = filatev_v_sum_of_matrix_elements_mpi::getRandomMatrix(size_n, size_m);
+    in = getRandomMatrix(size_n, size_m);
     refIn = in;
     out = std::vector<int>(1, 0);
     for (int i = 0; i < size_m; i++) {
