@@ -1,99 +1,125 @@
 // Copyright 2023 Nesterov Alexander
-#include <gtest/gtest.h>
-
-#include <boost/mpi/timer.hpp>
-#include <vector>
-
-#include "core/perf/include/perf.hpp"
 #include "mpi/example/include/ops_mpi.hpp"
 
-TEST(mpi_example_perf_test, test_pipeline_run) {
-  boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_sum(1, 0);
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int count_size_vector;
-  if (world.rank() == 0) {
-    count_size_vector = 120;
-    global_vec = std::vector<int>(count_size_vector, 1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());
+#include <algorithm>
+#include <functional>
+#include <random>
+#include <string>
+#include <thread>
+#include <vector>
+
+using namespace std::chrono_literals;
+
+std::vector<int> nesterov_a_test_task_mpi::getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = gen() % 100;
   }
-
-  auto testMpiTaskParallel = std::make_shared<nesterov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar, "+");
-  ASSERT_EQ(testMpiTaskParallel->validation(), true);
-  testMpiTaskParallel->pre_processing();
-  testMpiTaskParallel->run();
-  testMpiTaskParallel->post_processing();
-
-  // Create Perf attributes
-  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;
-  const boost::mpi::timer current_timer;
-  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
-
-  // Create and init perf results
-  auto perfResults = std::make_shared<ppc::core::PerfResults>();
-
-  // Create Perf analyzer
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
-  perfAnalyzer->pipeline_run(perfAttr, perfResults);
-  if (world.rank() == 0) {
-    ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(count_size_vector, global_sum[0]);
-  }
+  return vec;
 }
 
-TEST(mpi_example_perf_test, test_task_run) {
-  boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_sum(1, 0);
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int count_size_vector;
-  if (world.rank() == 0) {
-    count_size_vector = 120;
-    global_vec = std::vector<int>(count_size_vector, 1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());
+bool nesterov_a_test_task_mpi::TestMPITaskSequential::pre_processing() {
+  internal_order_test();
+  // Init vectors
+  input_ = std::vector<int>(taskData->inputs_count[0]);
+  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+    input_[i] = tmp_ptr[i];
   }
-
-  auto testMpiTaskParallel = std::make_shared<nesterov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar, "+");
-  ASSERT_EQ(testMpiTaskParallel->validation(), true);
-  testMpiTaskParallel->pre_processing();
-  testMpiTaskParallel->run();
-  testMpiTaskParallel->post_processing();
-
-  // Create Perf attributes
-  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;
-  const boost::mpi::timer current_timer;
-  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
-
-  // Create and init perf results
-  auto perfResults = std::make_shared<ppc::core::PerfResults>();
-
-  // Create Perf analyzer
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
-  perfAnalyzer->task_run(perfAttr, perfResults);
-  if (world.rank() == 0) {
-    ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(count_size_vector, global_sum[0]);
-  }
+  // Init value for output
+  res = 0;
+  return true;
 }
 
-int main(int argc, char** argv) {
-  boost::mpi::environment env(argc, argv);
-  boost::mpi::communicator world;
-  ::testing::InitGoogleTest(&argc, argv);
-  ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
-  if (world.rank() != 0) {
-    delete listeners.Release(listeners.default_result_printer());
+bool nesterov_a_test_task_mpi::TestMPITaskSequential::validation() {
+  internal_order_test();
+  // Check count elements of output
+  return taskData->outputs_count[0] == 1;
+}
+
+bool nesterov_a_test_task_mpi::TestMPITaskSequential::run() {
+  internal_order_test();
+  if (ops == "+") {
+    res = std::accumulate(input_.begin(), input_.end(), 0);
+  } else if (ops == "-") {
+    res = -std::accumulate(input_.begin(), input_.end(), 0);
+  } else if (ops == "max") {
+    res = *std::max_element(input_.begin(), input_.end());
   }
-  return RUN_ALL_TESTS();
+  return true;
+}
+
+bool nesterov_a_test_task_mpi::TestMPITaskSequential::post_processing() {
+  internal_order_test();
+  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+  return true;
+}
+
+bool nesterov_a_test_task_mpi::TestMPITaskParallel::pre_processing() {
+  internal_order_test();
+  unsigned int delta = 0;
+  if (world.rank() == 0) {
+    delta = taskData->inputs_count[0] / world.size();
+  }
+  broadcast(world, delta, 0);
+
+  if (world.rank() == 0) {
+    // Init vectors
+    input_ = std::vector<int>(taskData->inputs_count[0]);
+    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+      input_[i] = tmp_ptr[i];
+    }
+    for (int proc = 1; proc < world.size(); proc++) {
+      world.send(proc, 0, input_.data() + proc * delta, delta);
+    }
+  }
+  local_input_ = std::vector<int>(delta);
+  if (world.rank() == 0) {
+    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
+  } else {
+    world.recv(0, 0, local_input_.data(), delta);
+  }
+  // Init value for output
+  res = 0;
+  return true;
+}
+
+bool nesterov_a_test_task_mpi::TestMPITaskParallel::validation() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    // Check count elements of output
+    return taskData->outputs_count[0] == 1;
+  }
+  return true;
+}
+
+bool nesterov_a_test_task_mpi::TestMPITaskParallel::run() {
+  internal_order_test();
+  int local_res;
+  if (ops == "+") {
+    local_res = std::accumulate(local_input_.begin(), local_input_.end(), 0);
+  } else if (ops == "-") {
+    local_res = -std::accumulate(local_input_.begin(), local_input_.end(), 0);
+  } else if (ops == "max") {
+    local_res = *std::max_element(local_input_.begin(), local_input_.end());
+  }
+
+  if (ops == "+" || ops == "-") {
+    reduce(world, local_res, res, std::plus(), 0);
+  } else if (ops == "max") {
+    reduce(world, local_res, res, boost::mpi::maximum<int>(), 0);
+  }
+  std::this_thread::sleep_for(20ms);
+  return true;
+}
+
+bool nesterov_a_test_task_mpi::TestMPITaskParallel::post_processing() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+  }
+  return true;
 }
