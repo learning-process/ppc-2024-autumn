@@ -23,7 +23,7 @@ TEST(filateva_e_number_sentences_line_seq, one_sentence_line_1) {
   NumS.pre_processing();
   NumS.run();
   NumS.post_processing();
-  ASSERT_EQ(1,out[0]);
+  ASSERT_EQ(1, out[0]);
 }
 
 TEST(filateva_e_number_sentences_line_seq, one_sentence_line_2) {
@@ -44,7 +44,7 @@ TEST(filateva_e_number_sentences_line_seq, one_sentence_line_2) {
   NumS.pre_processing();
   NumS.run();
   NumS.post_processing();
-  ASSERT_EQ(1,out[0]);
+  ASSERT_EQ(1, out[0]);
 }
 
 TEST(filateva_e_number_sentences_line_seq, one_sentence_line_3) {
@@ -86,7 +86,7 @@ TEST(filateva_e_number_sentences_line_seq, one_sentence_line_4) {
   NumS.pre_processing();
   NumS.run();
   NumS.post_processing();
-  ASSERT_EQ(1,out[0]);
+  ASSERT_EQ(1, out[0]);
 }
 
 TEST(filateva_e_number_sentences_line_seq, several_sentence_line_1) {
@@ -107,7 +107,7 @@ TEST(filateva_e_number_sentences_line_seq, several_sentence_line_1) {
   NumS.pre_processing();
   NumS.run();
   NumS.post_processing();
-  ASSERT_EQ(3,out[0]);
+  ASSERT_EQ(3, out[0]);
 }
 
 TEST(filateva_e_number_sentences_line_seq, several_sentence_line_2) {
@@ -128,7 +128,7 @@ TEST(filateva_e_number_sentences_line_seq, several_sentence_line_2) {
   NumS.pre_processing();
   NumS.run();
   NumS.post_processing();
-  ASSERT_EQ(3,out[0]);
+  ASSERT_EQ(3, out[0]);
 }
 
 TEST(filateva_e_number_sentences_line_seq, empty_string) {
@@ -149,5 +149,5 @@ TEST(filateva_e_number_sentences_line_seq, empty_string) {
   NumS.pre_processing();
   NumS.run();
   NumS.post_processing();
-  ASSERT_EQ(0,out[0]);
+  ASSERT_EQ(0, out[0]);
 }

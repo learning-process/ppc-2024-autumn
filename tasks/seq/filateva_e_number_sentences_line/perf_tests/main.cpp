@@ -13,7 +13,7 @@ TEST(filateva_e_number_sentences_line_seq, test_pipeline_run) {
   std::string line("Helo world.");
   std::vector<int> out(1, 0);
 
-  for (int i = 0; i < count; ++i){
+  for (int i = 0; i < count; ++i) {
     line = line + line;
   }
 
@@ -44,7 +44,7 @@ TEST(filateva_e_number_sentences_line_seq, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(NumS);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(pow(2,count), out[0]);
+  ASSERT_EQ(pow(2, count), out[0]);
 }
 
 TEST(filateva_e_number_sentences_line_seq, test_task_run) {
@@ -54,7 +54,7 @@ TEST(filateva_e_number_sentences_line_seq, test_task_run) {
   std::string line("Helo world.");
   std::vector<int> out(1, 0);
 
-  for (int i = 0; i < count; ++i){
+  for (int i = 0; i < count; ++i) {
     line = line + line;
   }
 
@@ -85,5 +85,5 @@ TEST(filateva_e_number_sentences_line_seq, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(NumS);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(pow(2,count), out[0]);
+  ASSERT_EQ(pow(2, count), out[0]);
 }

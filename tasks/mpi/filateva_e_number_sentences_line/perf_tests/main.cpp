@@ -2,8 +2,8 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/filateva_e_number_sentences_line/include/ops_mpi.hpp"
@@ -14,7 +14,7 @@ TEST(filateva_e_number_sentences_line_mpi, test_pipeline_run) {
   std::string line = "Hello world.";
   std::vector<int> out(1, 0);
   // // Create TaskData
-  for (int i = 0; i < count; i++){
+  for (int i = 0; i < count; i++) {
     line = line + line;
   }
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -45,7 +45,7 @@ TEST(filateva_e_number_sentences_line_mpi, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(pow(2,count), out[0]);
+    ASSERT_EQ(pow(2, count), out[0]);
   }
 }
 
@@ -55,7 +55,7 @@ TEST(filateva_e_number_sentences_line_mpi, test_task_run) {
   std::string line = "Hello world.";
   std::vector<int> out(1, 0);
   // // Create TaskData
-  for (int i = 0; i < count; i++){
+  for (int i = 0; i < count; i++) {
     line = line + line;
   }
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -86,6 +86,6 @@ TEST(filateva_e_number_sentences_line_mpi, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(pow(2,count), out[0]);
+    ASSERT_EQ(pow(2, count), out[0]);
   }
 }

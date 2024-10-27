@@ -20,12 +20,12 @@ bool filateva_e_number_sentences_line_seq::NumberSentencesLine::validation() {
 
 bool filateva_e_number_sentences_line_seq::NumberSentencesLine::run() {
   internal_order_test();
-  for (auto i = 0; i < line.size(); ++i){
-    if (line[i] == '.' || line[i] == '?' || line[i] == '!'){
+  for (auto i = 0; i < line.size(); ++i) {
+    if (line[i] == '.' || line[i] == '?' || line[i] == '!') {
       ++num;
     }
   }
-  if (line.size() != 0 && line.back() != '.' && line.back() != '?' && line.back() != '!' ){
+  if (line.size() != 0 && line.back() != '.' && line.back() != '?' && line.back() != '!' ) {
     ++num;
   }
   return true;

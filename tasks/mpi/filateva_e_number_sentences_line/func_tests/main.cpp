@@ -165,13 +165,13 @@ TEST(filateva_e_number_sentences_line_mpi, random_text_1) {
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(line.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(line.data()));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(ref_out.data()));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(ref_out.data()));
     taskDataSeq->outputs_count.emplace_back(ref_out.size());
 
     // Create Task
-    filateva_e_number_sentences_line_mpi::NumberSentencesLineSequential  NumSSeq(taskDataSeq);
+    filateva_e_number_sentences_line_mpi::NumberSentencesLineSequential NumSSeq(taskDataSeq);
     ASSERT_EQ(NumSSeq.validation(), true);
     NumSSeq.pre_processing();
     NumSSeq.run();
@@ -183,7 +183,7 @@ TEST(filateva_e_number_sentences_line_mpi, random_text_1) {
 
 TEST(filateva_e_number_sentences_line_mpi, random_text_2) {
   boost::mpi::communicator world;
-  std::string line="";
+  std::string line;
   std::vector<int> out(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -208,13 +208,13 @@ TEST(filateva_e_number_sentences_line_mpi, random_text_2) {
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(line.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(line.data()));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(ref_out.data()));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(ref_out.data()));
     taskDataSeq->outputs_count.emplace_back(ref_out.size());
 
     // Create Task
-    filateva_e_number_sentences_line_mpi::NumberSentencesLineSequential  NumSSeq(taskDataSeq);
+    filateva_e_number_sentences_line_mpi::NumberSentencesLineSequential NumSSeq(taskDataSeq);
     ASSERT_EQ(NumSSeq.validation(), true);
     NumSSeq.pre_processing();
     NumSSeq.run();
@@ -226,7 +226,7 @@ TEST(filateva_e_number_sentences_line_mpi, random_text_2) {
 
 TEST(filateva_e_number_sentences_line_mpi, random_text_3) {
   boost::mpi::communicator world;
-  std::string line="";
+  std::string line;
   std::vector<int> out(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -251,13 +251,13 @@ TEST(filateva_e_number_sentences_line_mpi, random_text_3) {
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(line.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(line.data()));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(ref_out.data()));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(ref_out.data()));
     taskDataSeq->outputs_count.emplace_back(ref_out.size());
 
     // Create Task
-    filateva_e_number_sentences_line_mpi::NumberSentencesLineSequential  NumSSeq(taskDataSeq);
+    filateva_e_number_sentences_line_mpi::NumberSentencesLineSequential NumSSeq(taskDataSeq);
     ASSERT_EQ(NumSSeq.validation(), true);
     NumSSeq.pre_processing();
     NumSSeq.run();
@@ -294,13 +294,13 @@ TEST(filateva_e_number_sentences_line_mpi, random_text_4) {
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(line.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(line.data()));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(ref_out.data()));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(ref_out.data()));
     taskDataSeq->outputs_count.emplace_back(ref_out.size());
 
     // Create Task
-    filateva_e_number_sentences_line_mpi::NumberSentencesLineSequential  NumSSeq(taskDataSeq);
+    filateva_e_number_sentences_line_mpi::NumberSentencesLineSequential NumSSeq(taskDataSeq);
     ASSERT_EQ(NumSSeq.validation(), true);
     NumSSeq.pre_processing();
     NumSSeq.run();
