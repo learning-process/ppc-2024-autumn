@@ -209,7 +209,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_post_processing) {
     taskDataSeq->outputs_count.emplace_back(reference_delta.size());
 
     // Create Task
-    kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int, uint64_t> testTaskSequential(taskDataSeq, 
+    kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int, uint64_t> testTaskSequential(taskDataSeq,
                                                                                                   "MAX_DIFFERENCE");
     testTaskSequential.validation();
     testTaskSequential.pre_processing();
