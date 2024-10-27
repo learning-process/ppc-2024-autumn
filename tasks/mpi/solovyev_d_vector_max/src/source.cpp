@@ -9,16 +9,6 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> solovyev_d_vector_max_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
-}
-
 int solovyev_d_vector_max_mpi::vectorMax(std::vector<int, std::allocator<int>> v) {
   int m = -214748364;
   for (std::string::size_type i = 0; i < v.size(); i++) {
@@ -43,11 +33,8 @@ bool solovyev_d_vector_max_mpi::VectorMaxMPIParallel::pre_processing() {
 
   if (world.rank() == 0) {
     // Convert input data to vector
-    data = std::vector<int>(taskData->inputs_count[0]);
-    auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-      data[i] = tempPtr[i];
-    }
+    int* input_=reinterpret_cast<int *>(taskData->inputs[0]);
+    data = std::vector<int>(input_,input_+taskData->inputs_count[0]);
 
     // Send each of processes their portion of data
     for (int process = 1; process < world.size(); process++) {
@@ -84,7 +71,7 @@ bool solovyev_d_vector_max_mpi::VectorMaxMPIParallel::run() {
   int localResult;
 
   // Search for maximum vector element in current process data
-  localResult = solovyev_d_vector_max_mpi::vectorMax(localData);
+  localResult = vectorMax(localData);
 
   // Search for maximum vector element using all processes data
   reduce(world, localResult, result, boost::mpi::maximum<int>(), 0);
@@ -103,11 +90,8 @@ bool solovyev_d_vector_max_mpi::VectorMaxSequential::pre_processing() {
   internal_order_test();
 
   // Init data vector
-  data = std::vector<int>(taskData->inputs_count[0]);
-  auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    data[i] = tempPtr[i];
-  }
+  int* input_=reinterpret_cast<int *>(taskData->inputs[0]);
+  data = std::vector<int>(input_,input_+taskData->inputs_count[0]);
 
   // Init result value
   result = 0;
@@ -124,7 +108,7 @@ bool solovyev_d_vector_max_mpi::VectorMaxSequential::run() {
   internal_order_test();
 
   // Determine maximum value of data vector
-  result = solovyev_d_vector_max_mpi::vectorMax(data);
+  result = vectorMax(data);
   return true;
 }
 

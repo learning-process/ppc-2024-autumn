@@ -1,18 +1,28 @@
 #include <gtest/gtest.h>
 
 #include <vector>
-
+#include <random>
+#include <iostream>
 #include "core/perf/include/perf.hpp"
 #include "seq/solovyev_d_vector_max/include/header.hpp"
+
+std::vector<int> getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = gen() % 100;
+  }
+  return vec;
+}
 
 TEST(solovyev_d_vector_max_mpi, test_pipeline_run) {
   const int count = 12000000;
 
   // Create data
-  std::vector<int> in = solovyev_d_vector_max_mpi::getRandomVector(count);
+  std::vector<int> in = getRandomVector(count);
   in[count / 2] = 1024;
   std::vector<int> out(1, 0);
-
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
@@ -47,7 +57,7 @@ TEST(solovyev_d_vector_max_mpi, test_task_run) {
   const int count = 12000000;
 
   // Create data
-  std::vector<int> in = solovyev_d_vector_max_mpi::getRandomVector(count);
+  std::vector<int> in = getRandomVector(count);
   in[count / 2] = 1024;
   std::vector<int> out(1, 0);
 
