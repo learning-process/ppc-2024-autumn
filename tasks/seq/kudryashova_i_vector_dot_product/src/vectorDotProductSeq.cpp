@@ -37,8 +37,8 @@ bool kudryashova_i_vector_dot_product::TestTaskSequential::pre_processing() {
 
 bool kudryashova_i_vector_dot_product::TestTaskSequential::validation() {
   internal_order_test();
-  return (taskData->inputs_count[0] == taskData->inputs_count[1]) && 
-         (taskData->inputs.size() == taskData->inputs_count.size() && taskData->inputs.size() == 2) && 
+  return (taskData->inputs_count[0] == taskData->inputs_count[1]) &&
+         (taskData->inputs.size() == taskData->inputs_count.size() && taskData->inputs.size() == 2) &&
          taskData->outputs_count[0] == 1 && (taskData->outputs.size() == taskData->outputs_count.size()) &&
          taskData->outputs.size() == 1;
 }
