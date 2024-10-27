@@ -4,8 +4,19 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <vector>
+#include <random>
 
 #include "mpi/muhina_m_min_of_vector_elements/include/ops_mpi.hpp"
+
+std::vector<int> GetRandomVector(int sz, int min_value, int max_value) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = min_value + gen() % (max_value - min_value + 1);
+  }
+  return vec;
+}
 
 TEST(muhina_m_min_of_vector_elements, Test_Min) {
   boost::mpi::communicator world;
@@ -18,7 +29,7 @@ TEST(muhina_m_min_of_vector_elements, Test_Min) {
     const int count_size_vector = 120;
     const int min_val = 0;
     const int max_val = 100;
-    global_vec = muhina_m_min_of_vector_elements_mpi::GetRandomVector(count_size_vector, min_val, max_val);
+    global_vec = GetRandomVector(count_size_vector, min_val, max_val);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_min.data()));
@@ -64,7 +75,7 @@ TEST(muhina_m_min_of_vector_elements, Test_Min_LargeVector) {
     const int count_size_vector = 10000;
     const int min_val = 0;
     const int max_val = 100;
-    global_vec = muhina_m_min_of_vector_elements_mpi::GetRandomVector(count_size_vector, min_val, max_val);
+    global_vec = GetRandomVector(count_size_vector, min_val, max_val);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_min.data()));
@@ -110,7 +121,7 @@ TEST(muhina_m_min_of_vector_elements, Test_Min_NegativeValues) {
     const int count_size_vector = 120;
     const int min_val = -100;
     const int max_val = -10;
-    global_vec = muhina_m_min_of_vector_elements_mpi::GetRandomVector(count_size_vector, min_val, max_val);
+    global_vec = GetRandomVector(count_size_vector, min_val, max_val);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_min.data()));

@@ -1,16 +1,27 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
-
+#include <random>
 #include <vector>
 
 #include "seq/muhina_m_min_of_vector_elements/include/ops_seq.hpp"
 
+std::vector<int> GetRandomVector(int sz, int min_value, int max_value) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = min_value + gen() % (max_value - min_value + 1);
+  }
+  return vec;
+}
+
 TEST(muhina_m_min_of_vector_elements_seq, Test_Min_10) {
   const int count = 10;
-
+  const int min_val = 0;
+  const int max_val = 100;
   // Create data
-  std::vector<int> in(count, 100);
-  in[1] = 0;
+  std::vector<int> in = GetRandomVector(count, min_val, max_val);
+  in[0] = 0;
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -31,9 +42,10 @@ TEST(muhina_m_min_of_vector_elements_seq, Test_Min_10) {
 
 TEST(muhina_m_min_of_vector_elements_seq, Test_Min_20) {
   const int count = 20;
-
+  const int min_val = 0;
+  const int max_val = 100;
   // Create data
-  std::vector<int> in(count, 100);
+  std::vector<int> in = GetRandomVector(count, min_val, max_val);
   in[1] = 0;
   std::vector<int> out(1, 0);
 
@@ -55,9 +67,10 @@ TEST(muhina_m_min_of_vector_elements_seq, Test_Min_20) {
 
 TEST(muhina_m_min_of_vector_elements_seq, Test_Min_50) {
   const int count = 50;
-
+  const int min_val = 0;
+  const int max_val = 100;
   // Create data
-  std::vector<int> in(count, 100);
+  std::vector<int> in = GetRandomVector(count, min_val, max_val);
   in[1] = 0;
   std::vector<int> out(1, 0);
 
@@ -79,9 +92,10 @@ TEST(muhina_m_min_of_vector_elements_seq, Test_Min_50) {
 
 TEST(muhina_m_min_of_vector_elements_seq, Test_Min_70) {
   const int count = 70;
-
+  const int min_val = 0;
+  const int max_val = 100;
   // Create data
-  std::vector<int> in(count, 100);
+  std::vector<int> in = GetRandomVector(count, min_val, max_val);
   in[1] = 0;
   std::vector<int> out(1, 0);
 
@@ -103,9 +117,10 @@ TEST(muhina_m_min_of_vector_elements_seq, Test_Min_70) {
 
 TEST(muhina_m_min_of_vector_elements_seq, Test_Min_100) {
   const int count = 100;
-
+  const int min_val = 0;
+  const int max_val = 100;
   // Create data
-  std::vector<int> in(count, 100);
+  std::vector<int> in = GetRandomVector(count, min_val, max_val);
   in[1] = 0;
   std::vector<int> out(1, 0);
 

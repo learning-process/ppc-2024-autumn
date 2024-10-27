@@ -10,20 +10,7 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> muhina_m_min_of_vector_elements_mpi::GetRandomVector(int sz, int min_value, int max_value) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = min_value + gen() % (max_value - min_value + 1);
-  }
-  return vec;
-}
-
 int muhina_m_min_of_vector_elements_mpi::vectorMin(std::vector<int, std::allocator<int>> vect) {
-  if (vect.empty()) {
-    return std::numeric_limits<int>::max();  // Handle empty vectors
-  }
   int mini = vect[0];
 
   for (size_t i = 1; i < vect.size(); i++) {
