@@ -11,7 +11,7 @@
 TEST(savchenko_m_min_matrix_seq, test_pipeline_run) {
   std::vector<int> matrix;
   std::vector<int32_t> min_value(1, INT_MAX);
-  
+
   std::random_device dev;
   std::mt19937 gen(dev());
 
