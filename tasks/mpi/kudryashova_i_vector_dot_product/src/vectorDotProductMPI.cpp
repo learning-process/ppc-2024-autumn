@@ -174,10 +174,11 @@ bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::validation() {
   if (taskData == nullptr) {
     return false;
   }
-  if (taskData->inputs.size() != taskData->inputs_count.size()) {
-    return false;
-  }
-  if (world.rank() == 0) {
+
+  if (world.rank() == 0) {  
+      if (taskData->inputs.size() != taskData->inputs_count.size()) {
+          return false;
+      }
     bool validInputs = (taskData->inputs.size() == taskData->inputs_count.size() && taskData->inputs.size() == 2);
     bool validInputCounts = (taskData->inputs_count[0] == taskData->inputs_count[1]);
     bool validOutputs = (taskData->outputs.size() == taskData->outputs_count.size() && taskData->outputs.size() == 1);
@@ -200,21 +201,21 @@ bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::run() {
   return true;
 }
 
- bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::post_processing() {
-   internal_order_test();
-   if (world.rank() == 0) {
-     reinterpret_cast<int*>(taskData->outputs[0])[0] = result;
-   }
-   return true;
- }
-//bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::post_processing() {
-//  internal_order_test();
-//  if (world.rank() == 0) {
-//    if (taskData->outputs.size() > 0) {
-//      reinterpret_cast<int*>(taskData->outputs[0])[0] = result;
-//    } else {
-//      return false;
-//    }
-//  }
-//  return true;
-//}
+ //bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::post_processing() {
+ //  internal_order_test();
+ //  if (world.rank() == 0) {
+ //    reinterpret_cast<int*>(taskData->outputs[0])[0] = result;
+ //  }
+ //  return true;
+ //}
+bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::post_processing() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    if (taskData->outputs.size() > 0) {
+      reinterpret_cast<int*>(taskData->outputs[0])[0] = result;
+    } else {
+      return false;
+    }
+  }
+  return true;
+}
