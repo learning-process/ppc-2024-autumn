@@ -1,11 +1,8 @@
 #include "seq/kudryashova_i_vector_dot_product/include/vectorDotProductSeq.hpp"
 #include <random>
 #include <thread>
-
 using namespace std::chrono_literals;
 static int seedOffset = 0;
-
-
 std::vector<int> kudryashova_i_vector_dot_product::GetRandomVector(const int size) {
   std::vector<int> vector(size);
   std::srand(static_cast<unsigned>(time(NULL)) + ++seedOffset);

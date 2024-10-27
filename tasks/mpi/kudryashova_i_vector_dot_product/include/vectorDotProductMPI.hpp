@@ -7,15 +7,10 @@
 //#include <string>
 //#include <utility>
 //#include <vector>
-//
 //#include "core/task/include/task.hpp"
-//
 //namespace kudryashova_i_vector_dot_product_mpi {
-//
 //std::vector<int> getRandomVector(int size);
-//
 //int vectorDotProduct(const std::vector<int>& vector1, const std::vector<int>& vector2);
-//
 //class TestMPITaskSequential : public ppc::core::Task {
 //	public:
 //  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -23,12 +18,10 @@
 //  bool validation() override;
 //  bool run() override;
 //  bool post_processing() override;
-//
 //   private:
 //  std::vector<std::vector<int>> input_;
 //  int result{};
 //};
-//
 //class TestMPITaskParallel : public ppc::core::Task {
 //  public:
 //  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -36,11 +29,11 @@
 //  bool validation() override;
 //  bool run() override;
 //  bool post_processing() override;
-//   
 //  private:
 //   std::vector<std::vector<int>> input_;
 //   std::vector<int> local_input1_, local_input2_;
 //   int result{};
 //   boost::mpi::communicator world;
 //   };
-//}  // namespace kudryashova_i_vector_dot_product_mpi
+//}  
+// namespace kudryashova_i_vector_dot_product_mpi
