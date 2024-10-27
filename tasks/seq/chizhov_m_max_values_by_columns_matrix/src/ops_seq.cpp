@@ -1,8 +1,8 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/chizhov_m_max_values_by_columns_matrix/include/ops_seq.hpp"
 
-#include <functional>
 #include <algorithm>
+#include <functional>
 #include <random>
 #include <thread>
 
@@ -19,7 +19,6 @@ bool chizhov_m_max_values_by_columns_matrix_seq::TestTaskSequential::pre_process
   for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
     input_[i] = tmp_ptr[i];
   }
-
 
   res_ = std::vector<int>(cols, 0);
 
@@ -44,6 +43,7 @@ bool chizhov_m_max_values_by_columns_matrix_seq::TestTaskSequential::run() {
   internal_order_test();
 
   for (int j = 0; j < cols; j++) {
+
     int maxElement = input_[j];
     for (int i = 1; i < rows; i++) {
       if (input_[i * cols + j] > maxElement) {

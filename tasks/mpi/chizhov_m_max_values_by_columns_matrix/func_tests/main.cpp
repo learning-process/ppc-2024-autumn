@@ -3,8 +3,8 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <vector>
 #include <iomanip>
+#include <vector>
 
 #include "mpi/chizhov_m_max_values_by_columns_matrix/include/ops_mpi.hpp"
 
@@ -116,7 +116,6 @@ TEST(chizhov_m_max_values_by_columns_matrix_mpi, Test_Max2) {
 
     ASSERT_EQ(res_seq, res_par);
   }
-  
 }
 
 TEST(chizhov_m_max_values_by_columns_matrix_mpi, Test_Max3) {

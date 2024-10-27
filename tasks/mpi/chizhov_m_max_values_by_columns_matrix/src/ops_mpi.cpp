@@ -44,10 +44,10 @@ bool chizhov_m_max_values_by_columns_matrix_mpi::TestMPITaskSequential::validati
   if (taskData->inputs_count[1] == 0 || taskData->inputs_count[2] == 0) {
     return false;
   }
-  if (taskData->inputs.empty()|| taskData->inputs_count[0] <= 0) {
+  if (taskData->inputs.empty() || taskData->inputs_count[0] <= 0) {
     return false;
   }
-  if (taskData->inputs_count[1] != taskData->outputs_count[0]){
+  if (taskData->inputs_count[1] != taskData->outputs_count[0]) {
     return false;
   }
   return true;
