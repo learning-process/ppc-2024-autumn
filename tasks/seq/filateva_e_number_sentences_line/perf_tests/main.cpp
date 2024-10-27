@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 
 #include <vector>
+#include <cmath>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/filateva_e_number_sentences_line/include/ops_seq.hpp"

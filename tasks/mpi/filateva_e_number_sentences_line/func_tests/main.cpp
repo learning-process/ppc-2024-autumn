@@ -35,7 +35,6 @@ TEST(filateva_e_number_sentences_line_mpi, one_sentence_line_1) {
   if (world.rank() == 0) {
     ASSERT_EQ(1, out[0]);
   }
-  
 }
 
 TEST(filateva_e_number_sentences_line_mpi, one_sentence_line_2) {
