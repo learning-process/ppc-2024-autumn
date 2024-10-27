@@ -24,11 +24,9 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init value for input and output
 
-  input_ = std::vector<int>(taskData->inputs_count[0]);
+  input_.reserve(taskData->inputs_count[0]);
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    input_[i] = tmp_ptr[i];
-  }
+  std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], std::back_inserter(input_));
 
   count_rows = (int)*taskData->inputs[1];
   size_rows = (int)(taskData->inputs_count[0] / (*taskData->inputs[1]));
@@ -39,16 +37,8 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskSequential::pre_processing() {
 bool korobeinikov_a_test_task_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
 
-  bool flag = true;
-  // Check count elements of output == count rows
-  if (*taskData->inputs[1] != taskData->outputs_count[0]) {
-    flag = false;
-  }
-  // Check equal number of elements in rows
-  if ((taskData->inputs_count[0] % (*taskData->inputs[1])) != 0) {
-    flag = false;
-  }
-  return flag;
+  return (*taskData->inputs[1] == taskData->outputs_count[0] &&
+          (taskData->inputs_count[0] % (*taskData->inputs[1])) == 0);
 }
 
 bool korobeinikov_a_test_task_mpi::TestMPITaskSequential::run() {
@@ -82,11 +72,9 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::pre_processing() {
 
   if (world.rank() == 0) {
     // Init vectors
-    input_ = std::vector<int>(taskData->inputs_count[0]);
+    input_.reserve(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-      input_[i] = tmp_ptr[i];
-    }
+    std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], std::back_inserter(input_));
 
     for (int proc = 1; proc < world.size() - 1; proc++) {
       world.send(proc, 0, input_.data() + proc * delta, delta);
@@ -119,16 +107,8 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::pre_processing() {
 bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    bool flag = true;
-    // Check count elements of output == count rows
-    if (*taskData->inputs[1] != taskData->outputs_count[0]) {
-      flag = false;
-    }
-    // Check equal number of elements in rows
-    if ((taskData->inputs_count[0] % (*taskData->inputs[1])) != 0) {
-      flag = false;
-    }
-    return flag;
+    return (*taskData->inputs[1] == taskData->outputs_count[0] &&
+            (taskData->inputs_count[0] % (*taskData->inputs[1])) == 0);
   }
   return true;
 }
