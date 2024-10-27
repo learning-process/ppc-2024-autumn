@@ -135,7 +135,7 @@ TEST(kudryashova_i_vector_dot_product_mpi, check_vectors_not_equal) {
   if (world.rank() == 0) {
     const int count_size_vector = 100;
     std::vector<int> vector1 = kudryashova_i_vector_dot_product_mpi::getRandomVector(count_size_vector);
-    std::vector<int> vector2 = kudryashova_i_vector_dot_product_mpi::getRandomVector(count_size_vector + 5);
+    std::vector<int> vector2 = kudryashova_i_vector_dot_product_mpi::getRandomVector(125);
     global_vector = {vector1, vector2};
     for (size_t i = 0; i < global_vector.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector[i].data()));
