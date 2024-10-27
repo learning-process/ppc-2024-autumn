@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
-#include <vector>
 #include <random>
-#include <iostream>
+#include <vector>
+
 #include "core/perf/include/perf.hpp"
 #include "seq/solovyev_d_vector_max/include/header.hpp"
 

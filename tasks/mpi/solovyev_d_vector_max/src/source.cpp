@@ -33,8 +33,8 @@ bool solovyev_d_vector_max_mpi::VectorMaxMPIParallel::pre_processing() {
 
   if (world.rank() == 0) {
     // Convert input data to vector
-    int* input_=reinterpret_cast<int *>(taskData->inputs[0]);
-    data = std::vector<int>(input_,input_+taskData->inputs_count[0]);
+    int* input_ = reinterpret_cast<int*>(taskData->inputs[0]);
+    data = std::vector<int>(input_, input_ + taskData->inputs_count[0]);
 
     // Send each of processes their portion of data
     for (int process = 1; process < world.size(); process++) {
@@ -90,8 +90,8 @@ bool solovyev_d_vector_max_mpi::VectorMaxSequential::pre_processing() {
   internal_order_test();
 
   // Init data vector
-  int* input_=reinterpret_cast<int *>(taskData->inputs[0]);
-  data = std::vector<int>(input_,input_+taskData->inputs_count[0]);
+  int* input_ = reinterpret_cast<int*>(taskData->inputs[0]);
+  data = std::vector<int>(input_, input_ + taskData->inputs_count[0]);
 
   // Init result value
   result = 0;

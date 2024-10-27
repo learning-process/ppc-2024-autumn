@@ -1,7 +1,8 @@
 #include <gtest/gtest.h>
-#include <random>
+
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <random>
 #include <vector>
 
 #include "mpi/solovyev_d_vector_max/include/header.hpp"
