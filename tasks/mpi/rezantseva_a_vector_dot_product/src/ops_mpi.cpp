@@ -16,7 +16,6 @@ std::vector<int> rezantseva_a_vector_dot_product_mpi::createRandomVector(int v_s
 }
 
 int rezantseva_a_vector_dot_product_mpi::vectorDotProduct(const std::vector<int>& v1, const std::vector<int>& v2) {
-  if (v1.size() != v2.size()) throw "Error! Vectors must have equal size!";
   long long result = 0;
   for (size_t i = 0; i < v1.size(); i++) result += v1[i] * v2[i];
   return result;
@@ -79,67 +78,53 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::validation() {
 bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
-  unsigned int delta = 0;
-  unsigned int count_rank_add = 0;
-  unsigned int count_rank = 0;
+  unsigned int total_elements = 0;
   unsigned int num_processes = world.size();
 
-  if (num_processes == 0) {
-    return false;
+  if (world.rank() == 0) {
+    total_elements = taskData->inputs_count[0];
   }
+  boost::mpi::broadcast(world, total_elements, 0);
 
-  if (num_processes > 1) {
-    if (world.rank() == 0) {
-      delta = taskData->inputs_count[0] / num_processes;
-      count_rank_add = taskData->inputs_count[0] % num_processes;
-      count_rank = num_processes - count_rank_add;
-    }
+  unsigned int delta = total_elements / num_processes;      // Calculate base size for each process
+  unsigned int remainder = total_elements % num_processes;  // Calculate remaining elements
+  std::vector<unsigned int> counts(num_processes);          // Vector to store counts for each process
 
-    broadcast(world, delta, 0);
-    broadcast(world, count_rank, 0);
-    broadcast(world, count_rank_add, 0);
+  // Distribute sizes to each process
+  for (unsigned int i = 0; i < num_processes; ++i) {
+    counts[i] = delta + (i < remainder ? 1 : 0);  // Assign 1 additional element to the first 'remainder' processes
   }
+  boost::mpi::broadcast(world, counts.data(), num_processes, 0);
 
   if (world.rank() == 0) {
     input_ = std::vector<std::vector<int>>(taskData->inputs.size());
     for (size_t i = 0; i < input_.size(); i++) {
       auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
-      input_[i] = std::vector<int>(taskData->inputs_count[0]);
-      for (size_t j = 0; j < taskData->inputs_count[0]; j++) {
+      input_[i] = std::vector<int>(taskData->inputs_count[i]);
+      for (size_t j = 0; j < taskData->inputs_count[i]; j++) {
         input_[i][j] = tmp_ptr[j];
       }
     }
+
+    size_t offset_remainder = counts[0];
     for (unsigned int proc = 1; proc < num_processes; proc++) {
-      if (proc < count_rank) {
-        world.send(proc, 0, input_[0].data() + proc * delta, delta);
-        world.send(proc, 1, input_[1].data() + proc * delta, delta);
-      } else {
-        int remaining_elements = delta + 1;
-        world.send(proc, 0, input_[0].data() + count_rank * delta, remaining_elements);
-        world.send(proc, 1, input_[1].data() + count_rank * delta, remaining_elements);
-      }
+      size_t current_count = counts[proc];
+      world.send(proc, 0, input_[0].data() + offset_remainder, current_count);
+      world.send(proc, 1, input_[1].data() + offset_remainder, current_count);
+      offset_remainder += current_count;
     }
   }
 
-  local_input1_ = std::vector<int>(delta);
-  local_input2_ = std::vector<int>(delta);
+  local_input1_ = std::vector<int>(counts[world.rank()]);
+  local_input2_ = std::vector<int>(counts[world.rank()]);
 
-  if (world.rank() == 0) {
-    local_input1_ = std::vector<int>(input_[0].begin(), input_[0].begin() + delta);
-    local_input2_ = std::vector<int>(input_[1].begin(), input_[1].begin() + delta);
+  if (world.rank() > 0) {
+    world.recv(0, 0, local_input1_.data(), counts[world.rank()]);
+    world.recv(0, 1, local_input2_.data(), counts[world.rank()]);
   } else {
-    if (world.rank() < (int)count_rank) {
-      world.recv(0, 0, local_input1_.data(), delta);
-      world.recv(0, 1, local_input2_.data(), delta);
-    } else {
-      int remaining_elements = delta + 1;
-      local_input1_ = std::vector<int>(remaining_elements);
-      local_input2_ = std::vector<int>(remaining_elements);
-      world.recv(0, 0, local_input1_.data(), remaining_elements);
-      world.recv(0, 1, local_input2_.data(), remaining_elements);
-    }
+    local_input1_ = std::vector<int>(input_[0].begin(), input_[0].begin() + counts[0]);
+    local_input2_ = std::vector<int>(input_[1].begin(), input_[1].begin() + counts[0]);
   }
-  res = 0;
   return true;
 }
 
@@ -151,7 +136,6 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::run() {
   for (size_t i = 0; i < local_input1_.size(); i++) {
     local_res += local_input1_[i] * local_input2_[i];
   }
-
   std::vector<int> all_res;
   boost::mpi::gather(world, local_res, all_res, 0);
 
@@ -160,7 +144,7 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::run() {
       res += result;
     }
   }
-  std::this_thread::sleep_for(20ms);
+
   return true;
 }
 

@@ -42,18 +42,18 @@ TEST(rezantseva_a_vector_dot_product_mpi, test_pipeline_run) {
 
   // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-
+  int answer = res[0];
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(rezantseva_a_vector_dot_product_mpi::vectorDotProduct(global_vec[0], global_vec[1]), res[0]);
+    ASSERT_EQ(rezantseva_a_vector_dot_product_mpi::vectorDotProduct(global_vec[0], global_vec[1]), answer);
   }
 }
 
 TEST(rezantseva_a_vector_dot_product_mpi, test_task_run) {
-  const int count_size_vector = 20000000;
+  const int count_size_vector = 40000000;
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vec;
   std::vector<int> v1 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
@@ -87,12 +87,13 @@ TEST(rezantseva_a_vector_dot_product_mpi, test_task_run) {
 
   // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-
+  int answer = res[0];
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
+
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(rezantseva_a_vector_dot_product_mpi::vectorDotProduct(global_vec[0], global_vec[1]), res[0]);
+    ASSERT_EQ(rezantseva_a_vector_dot_product_mpi::vectorDotProduct(global_vec[0], global_vec[1]), answer);
   }
 }

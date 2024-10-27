@@ -27,7 +27,6 @@ class TestMPITaskSequential : public ppc::core::Task {
  private:
   std::vector<std::vector<int>> input_;
   int res{};
-  std::string ops;
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
