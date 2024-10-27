@@ -8,6 +8,7 @@
 #include "mpi/filatev_v_sum_of_matrix_elements/include/ops_mpi.hpp"
 
 TEST(filatev_v_sum_of_matrix_elements_mpi, test_pipeline_run) {
+  const int count = 3000;
   boost::mpi::communicator world;
   std::vector<int> out;
   std::vector<std::vector<int>> in;
@@ -16,7 +17,6 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count = 10000;
     in = std::vector<std::vector<int>>(count, std::vector<int>(count, 1));
     out = std::vector<int>(1, 0);
     for (int i = 0; i < count; i++) {
@@ -49,11 +49,12 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(100000000, out[0]);
+    ASSERT_EQ(count * count, out[0]);
   }
 }
 
 TEST(filatev_v_sum_of_matrix_elements_mpi, test_task_run) {
+  const int count = 3000;
   boost::mpi::communicator world;
   std::vector<int> out;
   std::vector<std::vector<int>> in;
@@ -62,7 +63,6 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, test_task_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count = 10000;
     in = std::vector<std::vector<int>>(count, std::vector<int>(count, 1));
     out = std::vector<int>(1, 0);
     for (int i = 0; i < count; i++) {
@@ -83,7 +83,7 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, test_task_run) {
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;
+  perfAttr->num_running = 30;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
@@ -95,6 +95,6 @@ TEST(filatev_v_sum_of_matrix_elements_mpi, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(100000000, out[0]);
+    ASSERT_EQ(count * count, out[0]);
   }
 }
