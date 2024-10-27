@@ -6,11 +6,11 @@
 #include "core/task/include/task.hpp"
 
 namespace kudryashova_i_vector_dot_product {
-  std::vector<int> GetRandomVector(const int size);
-  int vectorDotProduct(const std::vector<int>& vector1, const std::vector<int>& vector2);
+std::vector<int> GetRandomVector(const int size);
+int vectorDotProduct(const std::vector<int>& vector1, const std::vector<int>& vector2);
 
 class TestTaskSequential : public ppc::core::Task {
-public:
+ public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
