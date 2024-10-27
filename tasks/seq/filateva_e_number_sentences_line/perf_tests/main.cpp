@@ -2,7 +2,6 @@
 #include <gtest/gtest.h>
 
 #include <vector>
-#include <cmath>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/filateva_e_number_sentences_line/include/ops_seq.hpp"
@@ -45,7 +44,7 @@ TEST(filateva_e_number_sentences_line_seq, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(NumS);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(pow(2, count), out[0]);
+  ASSERT_EQ(1048576, out[0]);
 }
 
 TEST(filateva_e_number_sentences_line_seq, test_task_run) {
@@ -86,5 +85,5 @@ TEST(filateva_e_number_sentences_line_seq, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(NumS);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(pow(2, count), out[0]);
+  ASSERT_EQ(1048576, out[0]);
 }
