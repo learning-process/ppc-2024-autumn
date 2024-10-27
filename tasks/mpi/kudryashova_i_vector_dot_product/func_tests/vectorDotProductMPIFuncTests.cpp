@@ -12,180 +12,180 @@
 //}
 //
 //TEST(kudryashova_i_vector_dot_product_mpi, scalar_multiply_vector_size_120) {
-//    boost::mpi::communicator world;
-//    std::vector<std::vector<int>> global_vector;
-//    std::vector<int32_t> result(1, 0);
-//    
-//    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-//    
-//    if (world.rank() == 0) {
-//        const int count_size_vector = 120;
+//  boost::mpi::communicator world;
+//  std::vector<std::vector<int>> global_vector;
+//  std::vector<int32_t> result(1, 0);
+//  
+//  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+//  
+//  if (world.rank() == 0) {
+//    const int count_size_vector = 120;
 //
-//        std::vector<int> vector1 = kudryashova_i_vector_dot_product_mpi::getRandomVector(count_size_vector);
-//        std::vector<int> vector2 = kudryashova_i_vector_dot_product_mpi::getRandomVector(count_size_vector);
-//        
-//        global_vector = {vector1, vector2};
-//        for (size_t i = 0; i < global_vector.size(); i++) {
-//            taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector[i].data()));
-//        }
-//        taskDataPar->inputs_count.emplace_back(global_vector[0].size());
-//        taskDataPar->inputs_count.emplace_back(global_vector[1].size());
-//
-//        taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
-//        taskDataPar->outputs_count.emplace_back(result.size());
+//    std::vector<int> vector1 = kudryashova_i_vector_dot_product_mpi::getRandomVector(count_size_vector);
+//    std::vector<int> vector2 = kudryashova_i_vector_dot_product_mpi::getRandomVector(count_size_vector);
+//    
+//    global_vector = {vector1, vector2};
+//    for (size_t i = 0; i < global_vector.size(); i++) {
+//      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector[i].data()));
 //    }
-//    
-//    kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-//    
-//    ASSERT_EQ(testMpiTaskParallel.validation(), true);
-//    testMpiTaskParallel.pre_processing();
-//    testMpiTaskParallel.run();
-//    testMpiTaskParallel.post_processing();
-//    
-//    if (world.rank() == 0) {
-//        // Create data
-//        std::vector<int32_t> reference(1, 0);
-//       
-//        // Create TaskData
-//        std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+//    taskDataPar->inputs_count.emplace_back(global_vector[0].size());
+//    taskDataPar->inputs_count.emplace_back(global_vector[1].size());
 //
-//        for (size_t i = 0; i < global_vector.size(); i++) {
-//            taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector[i].data()));
-//        }
-//        taskDataSeq->inputs_count.emplace_back(global_vector[0].size());
-//        taskDataSeq->inputs_count.emplace_back(global_vector[1].size());
+//    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
+//    taskDataPar->outputs_count.emplace_back(result.size());
+//  }
+//  
+//  kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+//  
+//  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+//  testMpiTaskParallel.pre_processing();
+//  testMpiTaskParallel.run();
+//  testMpiTaskParallel.post_processing();
+//  
+//  if (world.rank() == 0) {
+//    // Create data
+//    std::vector<int32_t> reference(1, 0);
+//     
+//    // Create TaskData
+//    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 //
-//        taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference.data()));
-//        taskDataSeq->outputs_count.emplace_back(reference.size());
-//       
-//        // Create Task
-//        kudryashova_i_vector_dot_product_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-//
-//        ASSERT_EQ(testMpiTaskSequential.validation(), true);
-//        testMpiTaskSequential.pre_processing();
-//        testMpiTaskSequential.run();
-//        testMpiTaskSequential.post_processing();
-//       
-//        ASSERT_EQ(kudryashova_i_vector_dot_product_mpi::vectorDotProduct(global_vector[0], global_vector[1]), result[0]);
-//
-//        ASSERT_EQ(reference[0], result[0]);
+//    for (size_t i = 0; i < global_vector.size(); i++) {
+//      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector[i].data()));
 //    }
+//    taskDataSeq->inputs_count.emplace_back(global_vector[0].size());
+//    taskDataSeq->inputs_count.emplace_back(global_vector[1].size());
+//
+//    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference.data()));
+//    taskDataSeq->outputs_count.emplace_back(reference.size());
+//     
+//    // Create Task
+//    kudryashova_i_vector_dot_product_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+//
+//    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+//    testMpiTaskSequential.pre_processing();
+//    testMpiTaskSequential.run();
+//    testMpiTaskSequential.post_processing();
+//     
+//    ASSERT_EQ(kudryashova_i_vector_dot_product_mpi::vectorDotProduct(global_vector[0], global_vector[1]), result[0]);
+//
+//    ASSERT_EQ(reference[0], result[0]);
+//  }
 //}
 //
 //TEST(kudryashova_i_vector_dot_product_mpi, scalar_multiply_vector_size_500) {
-//    boost::mpi::communicator world;
-//    std::vector<std::vector<int>> global_vector;
-//    std::vector<int32_t> result(1, 0);
-//    
-//    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+//  boost::mpi::communicator world;
+//  std::vector<std::vector<int>> global_vector;
+//  std::vector<int32_t> result(1, 0);
+//  
+//  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 //
-//    if (world.rank() == 0) {
-//        const int count_size_vector = 500;
+//  if (world.rank() == 0) {
+//    const int count_size_vector = 500;
 //
-//        std::vector<int> vector1 = kudryashova_i_vector_dot_product_mpi::getRandomVector(count_size_vector);
-//        std::vector<int> vector2 = kudryashova_i_vector_dot_product_mpi::getRandomVector(count_size_vector);
+//    std::vector<int> vector1 = kudryashova_i_vector_dot_product_mpi::getRandomVector(count_size_vector);
+//    std::vector<int> vector2 = kudryashova_i_vector_dot_product_mpi::getRandomVector(count_size_vector);
 //
-//        global_vector = {vector1, vector2};
-//        for (size_t i = 0; i < global_vector.size(); i++) {
-//            taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector[i].data()));
-//        }
-//        taskDataPar->inputs_count.emplace_back(global_vector[0].size());
-//        taskDataPar->inputs_count.emplace_back(global_vector[1].size());
-//
-//        taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
-//        taskDataPar->outputs_count.emplace_back(result.size());
+//    global_vector = {vector1, vector2};
+//    for (size_t i = 0; i < global_vector.size(); i++) {
+//      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector[i].data()));
 //    }
+//    taskDataPar->inputs_count.emplace_back(global_vector[0].size());
+//    taskDataPar->inputs_count.emplace_back(global_vector[1].size());
 //
-//    kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+//    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
+//    taskDataPar->outputs_count.emplace_back(result.size());
+//  }
 //
-//    ASSERT_EQ(testMpiTaskParallel.validation(), true);
-//    testMpiTaskParallel.pre_processing();
-//    testMpiTaskParallel.run();
-//    testMpiTaskParallel.post_processing();
+//  kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 //
-//    if (world.rank() == 0) {
-//        // Create data
-//        std::vector<int32_t> reference(1, 0);
+//  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+//  testMpiTaskParallel.pre_processing();
+//  testMpiTaskParallel.run();
+//  testMpiTaskParallel.post_processing();
 //
-//        // Create TaskData
-//        std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+//  if (world.rank() == 0) {
+//    // Create data
+//    std::vector<int32_t> reference(1, 0);
 //
-//        for (size_t i = 0; i < global_vector.size(); i++) {
-//            taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector[i].data()));
-//        }
-//        taskDataSeq->inputs_count.emplace_back(global_vector[0].size());
-//        taskDataSeq->inputs_count.emplace_back(global_vector[1].size());
+//    // Create TaskData
+//    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 //
-//        taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference.data()));
-//        taskDataSeq->outputs_count.emplace_back(reference.size());
-//
-//        // Create Task
-//        kudryashova_i_vector_dot_product_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-//
-//        ASSERT_EQ(testMpiTaskSequential.validation(), true);
-//        testMpiTaskSequential.pre_processing();
-//        testMpiTaskSequential.run();
-//        testMpiTaskSequential.post_processing();
-//
-//        ASSERT_EQ(kudryashova_i_vector_dot_product_mpi::vectorDotProduct(global_vector[0], global_vector[1]),result[0]);
-//
-//        ASSERT_EQ(reference[0], result[0]);
+//    for (size_t i = 0; i < global_vector.size(); i++) {
+//      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector[i].data()));
 //    }
+//    taskDataSeq->inputs_count.emplace_back(global_vector[0].size());
+//    taskDataSeq->inputs_count.emplace_back(global_vector[1].size());
+//
+//    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference.data()));
+//    taskDataSeq->outputs_count.emplace_back(reference.size());
+//
+//    // Create Task
+//    kudryashova_i_vector_dot_product_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+//
+//    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+//    testMpiTaskSequential.pre_processing();
+//    testMpiTaskSequential.run();
+//    testMpiTaskSequential.post_processing();
+//
+//    ASSERT_EQ(kudryashova_i_vector_dot_product_mpi::vectorDotProduct(global_vector[0], global_vector[1]),result[0]);
+//
+//    ASSERT_EQ(reference[0], result[0]);
+//  }
 //}
 //
 //
 //TEST(kudryashova_i_vector_dot_product_mpi, check_vectors_equal) {
-//    boost::mpi::communicator world;
-//    std::vector<std::vector<int>> global_vector;
-//    std::vector<int32_t> result(1, 0);
+//  boost::mpi::communicator world;
+//  std::vector<std::vector<int>> global_vector;
+//  std::vector<int32_t> result(1, 0);
 //
-//    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+//  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 //
-//    if (world.rank() == 0) {
-//        const int count_size_vector = 100;
-//        std::vector<int> vector1 = kudryashova_i_vector_dot_product_mpi::getRandomVector(count_size_vector);
-//        std::vector<int> vector2 = kudryashova_i_vector_dot_product_mpi::getRandomVector(count_size_vector);
+//  if (world.rank() == 0) {
+//    const int count_size_vector = 100;
+//    std::vector<int> vector1 = kudryashova_i_vector_dot_product_mpi::getRandomVector(count_size_vector);
+//    std::vector<int> vector2 = kudryashova_i_vector_dot_product_mpi::getRandomVector(count_size_vector);
 //
-//        global_vector = {vector1, vector2};
-//        for (size_t i = 0; i < global_vector.size(); i++) {
-//            taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector[i].data()));
-//        }
-//        taskDataPar->inputs_count.emplace_back(global_vector[0].size());
-//        taskDataPar->inputs_count.emplace_back(global_vector[1].size());
-//
-//        taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
-//        taskDataPar->outputs_count.emplace_back(result.size());
+//    global_vector = {vector1, vector2};
+//    for (size_t i = 0; i < global_vector.size(); i++) {
+//      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector[i].data()));
 //    }
-//    kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+//    taskDataPar->inputs_count.emplace_back(global_vector[0].size());
+//    taskDataPar->inputs_count.emplace_back(global_vector[1].size());
 //
-//    ASSERT_EQ(testMpiTaskParallel.validation(), true);
+//    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
+//    taskDataPar->outputs_count.emplace_back(result.size());
+//  }
+//  kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+//
+//  ASSERT_EQ(testMpiTaskParallel.validation(), true);
 //}
 //
 //TEST(kudryashova_i_vector_dot_product_mpi, check_vectors_not_equal) {
-//    boost::mpi::communicator world;
-//    std::vector<std::vector<int>> global_vector;
-//    std::vector<int32_t> result(1, 0);
+//  boost::mpi::communicator world;
+//  std::vector<std::vector<int>> global_vector;
+//  std::vector<int32_t> result(1, 0);
+//  
+//  // Create TaskData
+//  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+//  
+//  if (world.rank() == 0) {
+//    const int count_size_vector = 100;
+//    std::vector<int> vector1 = kudryashova_i_vector_dot_product_mpi::getRandomVector(count_size_vector);
+//    std::vector<int> vector2 = kudryashova_i_vector_dot_product_mpi::getRandomVector(count_size_vector + 5);
 //    
-//    // Create TaskData
-//    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-//    
-//    if (world.rank() == 0) {
-//        const int count_size_vector = 100;
-//        std::vector<int> vector1 = kudryashova_i_vector_dot_product_mpi::getRandomVector(count_size_vector);
-//        std::vector<int> vector2 = kudryashova_i_vector_dot_product_mpi::getRandomVector(count_size_vector + 5);
-//        
-//        global_vector = {vector1, vector2};
-//        for (size_t i = 0; i < global_vector.size(); i++) {
-//            taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector[i].data()));
-//        }
-//        taskDataPar->inputs_count.emplace_back(global_vector[0].size());
-//        taskDataPar->inputs_count.emplace_back(global_vector[1].size());
-//
-//        taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
-//        taskDataPar->outputs_count.emplace_back(result.size());
+//    global_vector = {vector1, vector2};
+//    for (size_t i = 0; i < global_vector.size(); i++) {
+//      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector[i].data()));
 //    }
-//    // Create Task
-//    kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+//    taskDataPar->inputs_count.emplace_back(global_vector[0].size());
+//    taskDataPar->inputs_count.emplace_back(global_vector[1].size());
 //
-//    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+//    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
+//    taskDataPar->outputs_count.emplace_back(result.size());
+//  }
+//  // Create Task
+//  kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+//
+//  ASSERT_EQ(testMpiTaskParallel.validation(), false);
 //}

@@ -18,29 +18,29 @@
 //
 //class TestMPITaskSequential : public ppc::core::Task {
 //	public:
-//        explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-//        bool pre_processing() override;
-//        bool validation() override;
-//        bool run() override;
-//        bool post_processing() override;
+//  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+//  bool pre_processing() override;
+//  bool validation() override;
+//  bool run() override;
+//  bool post_processing() override;
 //
 //   private:
-//      std::vector<std::vector<int>> input_;
-//      int result{};
+//  std::vector<std::vector<int>> input_;
+//  int result{};
 //};
 //
 //class TestMPITaskParallel : public ppc::core::Task {
-//    public:
-//        explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-//        bool pre_processing() override;
-//        bool validation() override;
-//        bool run() override;
-//        bool post_processing() override;
+//  public:
+//  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+//  bool pre_processing() override;
+//  bool validation() override;
+//  bool run() override;
+//  bool post_processing() override;
 //   
-//    private:
-//       std::vector<std::vector<int>> input_;
-//       std::vector<int> local_input1_, local_input2_;
-//       int result{};
-//       boost::mpi::communicator world;
+//  private:
+//   std::vector<std::vector<int>> input_;
+//   std::vector<int> local_input1_, local_input2_;
+//   int result{};
+//   boost::mpi::communicator world;
 //   };
 //}  // namespace kudryashova_i_vector_dot_product_mpi
