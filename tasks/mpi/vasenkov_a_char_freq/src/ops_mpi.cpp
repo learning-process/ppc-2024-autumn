@@ -42,11 +42,10 @@ bool vasenkov_a_char_freq_mpi::CharFrequencySequential::post_processing() {
 }
 
 bool vasenkov_a_char_freq_mpi::CharFrequencyParallel::pre_processing() {
-    internal_order_test();
-
-    int myid = world.rank();
-    int world_size = world.size();
-    unsigned int n = 0;
+  internal_order_test();
+  int myid = world.rank();
+  int world_size = world.size();
+  unsigned int n = 0;
 
     if (myid == 0) {
       n = taskData->inputs_count[0];
@@ -54,26 +53,25 @@ bool vasenkov_a_char_freq_mpi::CharFrequencyParallel::pre_processing() {
       target_char_ = *reinterpret_cast<char*>(taskData->inputs[1]);
     }
 
-    boost::mpi::broadcast(world, n, 0);
-    boost::mpi::broadcast(world, target_char_, 0);
+  boost::mpi::broadcast(world, n, 0);
+  boost::mpi::broadcast(world, target_char_, 0);
 
-    unsigned int vec_send_size = n / world_size;
-    unsigned int overflow_size = n % world_size;
+  unsigned int vec_send_size = n / world_size;
+  unsigned int overflow_size = n % world_size;
 
-    std::vector<int> send_counts(world_size, vec_send_size + (overflow_size > 0 ? 1 : 0));
-    std::vector<int> displs(world_size, 0);
+  std::vector<int> send_counts(world_size, vec_send_size + (overflow_size > 0 ? 1 : 0));
+  std::vector<int> displs(world_size, 0);
 
-    for (unsigned int i = 1; i < static_cast<unsigned int>(world_size); ++i) {
-      if (i >= overflow_size) send_counts[i] = vec_send_size;
-      displs[i] = displs[i - 1] + send_counts[i - 1];
-    }
+  for (unsigned int i = 1; i < static_cast<unsigned int>(world_size); ++i) {
+    if (i >= overflow_size) send_counts[i] = vec_send_size;
+    displs[i] = displs[i - 1] + send_counts[i - 1];
+  }
 
-    local_input_.resize(send_counts[myid]);
-    boost::mpi::scatterv(world, str_input_.data(), send_counts, displs, local_input_.data(), send_counts[myid], 0);
-
-    local_res = 0;
-    res = 0;
-    return true;
+  local_input_.resize(send_counts[myid]);
+  boost::mpi::scatterv(world, str_input_.data(), send_counts, displs, local_input_.data(), send_counts[myid], 0);
+  local_res = 0;
+  res = 0;
+  return true;
 }
 
 bool vasenkov_a_char_freq_mpi::CharFrequencyParallel::validation() {
@@ -85,11 +83,11 @@ bool vasenkov_a_char_freq_mpi::CharFrequencyParallel::validation() {
 }
 
 bool vasenkov_a_char_freq_mpi::CharFrequencyParallel::run() {
-    internal_order_test();
-    local_res = std::count(local_input_.begin(), local_input_.end(), target_char_);
+  internal_order_test();
+  local_res = std::count(local_input_.begin(), local_input_.end(), target_char_);
 
-    boost::mpi::reduce(world, local_res, res, std::plus<>(), 0);
-    return true;
+  boost::mpi::reduce(world, local_res, res, std::plus<>(), 0);
+  return true;
 }
 
 bool vasenkov_a_char_freq_mpi::CharFrequencyParallel::post_processing() {

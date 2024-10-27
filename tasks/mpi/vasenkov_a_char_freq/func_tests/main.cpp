@@ -104,7 +104,6 @@ TEST(vasenkov_a_char_freq_mpi, test_mixed_characters) {
   std::vector<char> global_str;
   std::vector<int32_t> global_count(1, 0);
   char target_char = 'b';
-
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -327,7 +326,6 @@ TEST(vasenkov_a_char_freq_mpi, test_string_length_1_no_target_char) {
   std::vector<char> global_str;
   std::vector<int32_t> global_count(1, 0);
   char target_char = 'b'; 
-
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {

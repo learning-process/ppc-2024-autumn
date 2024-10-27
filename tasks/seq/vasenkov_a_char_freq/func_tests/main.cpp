@@ -1,9 +1,8 @@
 #include <gtest/gtest.h>
-
-#include <string>
-#include <vector>
 #include <memory>
 #include <string>
+#include <vector>
+
 #include "seq/vasenkov_a_char_freq/include/ops_seq.hpp"
 
 TEST(vasenkov_a_char_frequency_seq, test_char_frequency_a_in_abc) {
