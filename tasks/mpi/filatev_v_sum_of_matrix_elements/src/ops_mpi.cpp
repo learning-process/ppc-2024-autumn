@@ -91,7 +91,7 @@ bool filatev_v_sum_of_matrix_elements_mpi::SumMatrixParallel::run() {
     ras = (size_n * size_m) % (world.size() - 1);
     delta = (size_n * size_m) / (world.size() - 1);
   } else if (world.rank() == 0 && world.size() == 1) {
-    ras =  (size_n * size_m);
+    ras = (size_n * size_m);
   }
   broadcast(world, delta, 0);
 
