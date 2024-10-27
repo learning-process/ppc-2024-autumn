@@ -15,7 +15,8 @@ TEST(mironov_a_max_of_vector_elements_mpi, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int gold;
   if (world.rank() == 0) {
-    const int count = 20000000, start = -789000000;
+    const int count = 20000000;
+    const int start = -789000000;
     gold = start + 5 * (count - 1);
     global_vec.resize(count);
     for (int i = 0, j = start; i < count; ++i, j += 5) global_vec[i] = j;
@@ -59,7 +60,8 @@ TEST(mironov_a_max_of_vector_elements_mpi, test_task_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int gold;
   if (world.rank() == 0) {
-    const int count = 200000000, start = -789000000;
+    const int count = 200000000;
+    const int start = -789000000;
     gold = start + 5 * (count - 1);
     global_vec.resize(count);
     for (int i = 0, j = start; i < count; ++i, j += 5) global_vec[i] = j;

@@ -6,7 +6,9 @@
 #include "seq/mironov_a_max_of_vector_elements/include/ops_seq.hpp"
 
 TEST(mironov_a_max_of_vector_elements_seq, test_pipeline_run) {
-  constexpr int count = 20000000, start = -789000000, gold = start + 5 * (count - 1);
+  constexpr int count = 20000000;
+  constexpr int start = -789000000;
+  constexpr int gold = start + 5 * (count - 1);
 
   // Create data
   std::vector<int> in(count);
@@ -44,7 +46,9 @@ TEST(mironov_a_max_of_vector_elements_seq, test_pipeline_run) {
 }
 
 TEST(mironov_a_max_of_vector_elements_seq, test_task_run) {
-  constexpr int count = 20000000, start = -789000000, gold = start + 5 * (count - 1);
+  constexpr int count = 20000000;
+  constexpr int start = -789000000;
+  constexpr int gold = start + 5 * (count - 1);
 
   // Create data
   std::vector<int> in(count);

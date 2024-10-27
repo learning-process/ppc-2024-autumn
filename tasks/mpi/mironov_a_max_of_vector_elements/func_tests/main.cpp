@@ -106,7 +106,8 @@ TEST(mironov_a_max_of_vector_elements_mpi, Test_Max_3) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count = 1000000, start = -7890000;
+    const int count = 1000000;
+    const int start = -7890000;
     global_vec.resize(count);
     for (int i = 0, j = start; i < count; ++i, j += 9) global_vec[i] = j;
 
@@ -152,7 +153,8 @@ TEST(mironov_a_max_of_vector_elements_mpi, Test_Max_4) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count = 1000000, start = -7890000;
+    const int count = 1000000;
+    const int start = -7890000;
     global_vec.resize(count);
     for (int i = count - 1, j = start; i >= 0; --i, j += 4) global_vec[i] = j;
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
@@ -199,7 +201,7 @@ TEST(mironov_a_max_of_vector_elements_mpi, Test_Max_5) {
   if (world.rank() == 0) {
     const int count = 100;
     global_vec.resize(count);
-    for (int i = 0; i < 100; ++i) global_vec[i] = i % 2 ? INT_MAX : 0;
+    for (int i = 0; i < 100; ++i) global_vec[i] = i % 2 == 1 ? INT_MAX : 0;
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
