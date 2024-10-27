@@ -30,11 +30,12 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
+
  private:
   std::vector<std::vector<int>> input_;
   std::vector<int> local_input1_, local_input2_;
   int result{};
   boost::mpi::communicator world;
-  };
-}
+};
+}  // namespace kudryashova_i_vector_dot_product_mpi
 //namespace kudryashova_i_vector_dot_product_mpi

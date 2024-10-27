@@ -17,8 +17,8 @@ std::vector<int> kudryashova_i_vector_dot_product_mpi::getRandomVector(unsigned 
 }
 
 int kudryashova_i_vector_dot_product_mpi::vectorDotProduct(const std::vector<int>& vector1, 
-                                                          const std::vector<int>& vector2) { 
-  long long result = 0; 
+                                                           const std::vector<int>& vector2) { 
+  long long result = 0;
   for (unsigned long i = 0; i < vector1.size(); i++) result += vector1[i] * vector2[i];
   return result;
 }
@@ -76,14 +76,13 @@ bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::pre_processing()
 
       if (source_ptr != nullptr) {
         std::copy(source_ptr, source_ptr + taskData->inputs_count[i], input_[i].begin());
-      }
-      else
-      return false;
-      }
-      for (int proc = 1; proc < world.size(); ++proc) {
+      } else
+        return false;
+    }
+    for (int proc = 1; proc < world.size(); ++proc) {
       world.send(proc, 0, input_[0].data() + proc * delta, delta);
       world.send(proc, 1, input_[1].data() + proc * delta, delta);
-      }
+    }
   }
   local_input1_.resize(delta);
   local_input2_.resize(delta);
@@ -103,8 +102,8 @@ bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     return (taskData->inputs.size() == taskData->inputs_count.size() && taskData->inputs.size() == 2) &&
-           (taskData->inputs_count[0] == taskData->inputs_count[1]) &&
-           taskData->outputs_count[0] == 1 && (taskData->outputs.size() == taskData->outputs_count.size()) && taskData->outputs.size() == 1 ;
+           (taskData->inputs_count[0] == taskData->inputs_count[1]) && taskData->outputs_count[0] == 1 &&
+           (taskData->outputs.size() == taskData->outputs_count.size()) && taskData->outputs.size() == 1 ;
   }
   return true;
 }
