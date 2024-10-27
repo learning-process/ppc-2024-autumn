@@ -111,7 +111,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_pre_processing) {
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_run) {
   boost::mpi::communicator world;
-  const int count_size_vector = 50;
+  const int count_size_vector = 150;
   std::vector<int> global_vec;
   std::vector<double> global_delta(1, 0);
   // Create TaskData

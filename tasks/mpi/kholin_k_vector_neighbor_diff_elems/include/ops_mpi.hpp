@@ -187,13 +187,11 @@ class TestMPITaskParallel : public ppc::core::Task {
     return true;
   }
 
-  ~TestMPITaskParallel() override {
-    MPI_Type_free(&mpi_type_elem);
-  }
+  ~TestMPITaskParallel() override { MPI_Type_free(&mpi_type_elem); }
 
  private:
-  std::vector<TypeElem> input_;           // global vector
-  std::vector<TypeElem> local_input_;     // local vector
+  std::vector<TypeElem> input_;        // global vector
+  std::vector<TypeElem> local_input_;  // local vector
   unsigned int delta_n;
   unsigned int delta_n_r;
   double result;
