@@ -22,7 +22,7 @@ bool lysov_i_integration_the_trapezoid_method_seq::TestTaskSequential::pre_proce
   input_.resize(cnt_of_splits + 1);
   for (int i = 0; i <= cnt_of_splits; ++i) {
     double x = a + i * h;
-    input_[i] = function(x);
+    input_[i] = function_square(x);
   }
   return true;
 }
@@ -30,10 +30,10 @@ bool lysov_i_integration_the_trapezoid_method_seq::TestTaskSequential::pre_proce
 bool lysov_i_integration_the_trapezoid_method_seq::TestTaskSequential::run() {
   internal_order_test();
   double result = 0.0;
-  result += 0.5 * (function(a) + function(b));
+  result += 0.5 * (function_square(a) + function_square(b));
   for (int i = 1; i < cnt_of_splits; ++i) {
     double x = a + i * h;
-    result += function(x);
+    result += function_square(x);
   }
   result *= h;
   res = result;

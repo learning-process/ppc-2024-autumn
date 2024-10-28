@@ -26,17 +26,17 @@ bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskSequential::pre_pr
   input_.resize(cnt_of_splits + 1);
   for (int i = 0; i <= cnt_of_splits; ++i) {
     double x = a + i * h;
-    input_[i] = function(x);
+    input_[i] = function_square(x);
   }
   return true;
 }
 bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskSequential::run() {
   internal_order_test();
   double result = 0.0;
-  result += 0.5 * (function(a) + function(b));
+  result += 0.5 * (function_square(a) + function_square(b));
   for (int i = 1; i < cnt_of_splits; ++i) {
     double x = a + i * h;
-    result += function(x);
+    result += function_square(x);
   }
   result *= h;
   res = result;
@@ -88,10 +88,10 @@ bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskParallel::pre_proc
 bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   double local_res = 0.0;
-  local_res += 0.5 * (function(local_a) + function(local_a + local_cnt_of_splits * h));
+  local_res += 0.5 * (function_square(local_a) + function_square(local_a + local_cnt_of_splits * h));
   for (int i = 0; i < local_cnt_of_splits; i++) {
     double x = local_a + i * h;
-    local_res += function(x);
+    local_res += function_square(x);
   }
   local_res *= h;
   boost::mpi::reduce(world, local_res, res, std::plus<>(), 0);
