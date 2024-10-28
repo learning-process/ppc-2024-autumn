@@ -59,4 +59,4 @@ class TrapezoidalIntegrationParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  // namespace gusev_n_trapezoidal_rule
+}  // namespace gusev_n_trapezoidal_rule_mpi

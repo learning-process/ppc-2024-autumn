@@ -44,7 +44,7 @@ bool gusev_n_trapezoidal_rule_mpi::TrapezoidalIntegrationSequential::post_proces
 }
 
 double gusev_n_trapezoidal_rule_mpi::TrapezoidalIntegrationSequential::integrate(const std::function<double(double)>& f,
-                                                                            double a, double b, int n) {
+                                                                                 double a, double b, int n) {
   double h = (b - a) / n;
   double sum = 0.5 * (f(a) + f(b));
 
@@ -125,6 +125,7 @@ double gusev_n_trapezoidal_rule_mpi::TrapezoidalIntegrationParallel::parallel_in
   return local_sum * h;
 }
 
-void gusev_n_trapezoidal_rule_mpi::TrapezoidalIntegrationParallel::set_function(const std::function<double(double)>& func) {
+void gusev_n_trapezoidal_rule_mpi::TrapezoidalIntegrationParallel::set_function(
+    const std::function<double(double)>& func) {
   func_ = func;
 }

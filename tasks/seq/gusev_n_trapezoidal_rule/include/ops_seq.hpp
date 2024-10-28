@@ -1,9 +1,10 @@
 // Copyright 2024 Nesterov Alexander
 #pragma once
 
-#include <vector>
 #include <functional>
 #include <memory>
+#include <vector>
+
 #include "core/task/include/task.hpp"
 
 namespace gusev_n_trapezoidal_rule_seq {
@@ -30,4 +31,4 @@ class TrapezoidalIntegrationSequential : public ppc::core::Task {
   std::function<double(double)> func_;
 };
 
-}  // namespace gusev_n_trapezoidal_rule
+}  // namespace gusev_n_trapezoidal_rule_seq

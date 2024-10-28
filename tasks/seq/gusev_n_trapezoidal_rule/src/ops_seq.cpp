@@ -40,7 +40,7 @@ bool gusev_n_trapezoidal_rule_seq::TrapezoidalIntegrationSequential::post_proces
 }
 
 double gusev_n_trapezoidal_rule_seq::TrapezoidalIntegrationSequential::integrate(const std::function<double(double)>& f,
-                                                                             double a, double b, int n) {
+                                                                                 double a, double b, int n) {
   double step = (b - a) / n;
   double area = 0.0;
 

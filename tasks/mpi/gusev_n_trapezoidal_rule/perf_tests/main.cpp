@@ -22,7 +22,8 @@ TEST(gusev_n_trapezoidal_rule_mpi, test_pipeline_run) {
     taskDataPar->outputs_count.push_back(1);
   }
 
-  auto testMpiTaskParallel = std::make_shared<gusev_n_trapezoidal_rule_mpi::TrapezoidalIntegrationParallel>(taskDataPar);
+  auto testMpiTaskParallel =
+      std::make_shared<gusev_n_trapezoidal_rule_mpi::TrapezoidalIntegrationParallel>(taskDataPar);
   testMpiTaskParallel->set_function([](double x) { return x * x; });
 
   ASSERT_TRUE(testMpiTaskParallel->validation());
@@ -63,7 +64,8 @@ TEST(gusev_n_trapezoidal_rule_mpi, test_task_run) {
     taskDataPar->outputs_count.push_back(1);
   }
 
-  auto testMpiTaskParallel = std::make_shared<gusev_n_trapezoidal_rule_mpi::TrapezoidalIntegrationParallel>(taskDataPar);
+  auto testMpiTaskParallel =
+      std::make_shared<gusev_n_trapezoidal_rule_mpi::TrapezoidalIntegrationParallel>(taskDataPar);
   testMpiTaskParallel->set_function([](double x) { return x * x; });
 
   ASSERT_TRUE(testMpiTaskParallel->validation());

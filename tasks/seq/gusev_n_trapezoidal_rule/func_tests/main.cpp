@@ -1,9 +1,10 @@
 ﻿// Copyright 2023 Nesterov Alexander
+#include <corecrt_math_defines.h>
 #include <gtest/gtest.h>
 
 #include <cmath>
 #include <random>
-#include <corecrt_math_defines.h>
+
 #include "seq/gusev_n_trapezoidal_rule/include/ops_seq.hpp"
 
 TEST(gusev_n_trapezoidal_rule_seq, test_integration_x_squared) {
@@ -21,7 +22,8 @@ TEST(gusev_n_trapezoidal_rule_seq, test_integration_x_squared) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
-  auto testTaskSequential = std::make_shared<gusev_n_trapezoidal_rule_seq::TrapezoidalIntegrationSequential>(taskDataSeq);
+  auto testTaskSequential =
+      std::make_shared<gusev_n_trapezoidal_rule_seq::TrapezoidalIntegrationSequential>(taskDataSeq);
 
   std::function<double(double)> func = [](double x) { return x * x; };
   testTaskSequential->set_function(func);
