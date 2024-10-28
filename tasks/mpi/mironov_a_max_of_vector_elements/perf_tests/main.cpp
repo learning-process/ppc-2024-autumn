@@ -19,7 +19,8 @@ TEST(mironov_a_max_of_vector_elements_mpi, test_pipeline_run) {
     const int start = -789000000;
     gold = start + 5 * (count - 1);
     global_vec.resize(count);
-    for (int i = 0, j = start; i < count; ++i, j += 5) global_vec[i] = j;
+    for (int i = 0, j = start; i < count; ++i, j += 5)
+        global_vec[i] = j;
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -64,7 +65,8 @@ TEST(mironov_a_max_of_vector_elements_mpi, test_task_run) {
     const int start = -789000000;
     gold = start + 5 * (count - 1);
     global_vec.resize(count);
-    for (int i = 0, j = start; i < count; ++i, j += 5) global_vec[i] = j;
+    for (int i = 0, j = start; i < count; ++i, j += 5)
+        global_vec[i] = j;
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());

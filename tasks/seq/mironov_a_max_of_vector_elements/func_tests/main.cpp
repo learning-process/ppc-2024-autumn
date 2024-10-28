@@ -11,7 +11,8 @@ TEST(mironov_a_max_of_vector_elements_seq, Test_Max_1) {
   // Create data
   std::vector<int> in(count);
   std::vector<int> out(1);
-  for (int i = 0; i < count; ++i) in[i] = i;
+  for (int i = 0; i < count; ++i)
+	  in[i] = i;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -61,7 +62,8 @@ TEST(mironov_a_max_of_vector_elements_seq, Test_Max_3) {
   // Create data
   std::vector<int> in(count);
   std::vector<int> out(1);
-  for (int i = 0, j = start; i < count; ++i, j += 9) in[i] = j;
+  for (int i = 0, j = start; i < count; ++i, j += 9)
+	  in[i] = j;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -87,7 +89,8 @@ TEST(mironov_a_max_of_vector_elements_seq, Test_Max_4) {
   // Create data
   std::vector<int> in(count);
   std::vector<int> out(1);
-  for (int i = count - 1, j = start; i >= 0; --i, j += 4) in[i] = j;
+  for (int i = count - 1, j = start; i >= 0; --i, j += 4)
+	  in[i] = j;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -110,9 +113,10 @@ TEST(mironov_a_max_of_vector_elements_seq, Test_Max_5) {
   const int gold = INT_MAX;
 
   // Create data
-  std::vector<int> in(count);
+  std::vector<int> in(count, 0);
   std::vector<int> out(1);
-  for (int i = 0; i < 100; ++i) in[i] = i % 2 == 1 ? INT_MAX : 0;
+  for (int i = 1; i < 100; i += 2)
+	  in[i] = INT_MAX;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
