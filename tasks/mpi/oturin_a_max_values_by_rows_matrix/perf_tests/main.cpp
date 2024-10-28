@@ -55,7 +55,6 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_perftest, test_pipeline_run) {
     ppc::core::Perf::print_perf_statistic(perfResults);
     ASSERT_EQ((int)(n * m), global_max[0]);
   }
-  MPI_Finalize();
 }
 
 TEST(oturin_a_max_values_by_rows_matrix_mpi_perftest, test_task_run) {
@@ -107,5 +106,4 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_perftest, test_task_run) {
     ppc::core::Perf::print_perf_statistic(perfResults);
     ASSERT_EQ((int)(n * m), global_max[0]);
   }
-  MPI_Finalize();
 }

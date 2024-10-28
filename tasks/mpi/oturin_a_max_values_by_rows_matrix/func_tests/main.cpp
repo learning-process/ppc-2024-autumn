@@ -121,7 +121,6 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_2) {
       ASSERT_EQ(reference_max[i], global_max[i]);
     }
   }
-  MPI_Finalize();
 }
 
 TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_3) {
@@ -179,7 +178,6 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_3) {
       ASSERT_EQ(reference_max[i], global_max[i]);
     }
   }
-  MPI_Finalize();
 }
 
 TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_4) {
@@ -237,7 +235,6 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_4) {
       ASSERT_EQ(reference_max[i], global_max[i]);
     }
   }
-  MPI_Finalize();
 }
 
 TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_5) {
@@ -295,5 +292,4 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_5) {
       ASSERT_EQ(reference_max[i], global_max[i]);
     }
   }
-  MPI_Finalize();
 }
