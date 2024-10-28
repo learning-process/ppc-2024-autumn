@@ -64,7 +64,7 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::validation() {
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
   if (world_size <= 1) {
-    EXPECT_EQ("0", "0") << "WORLD TOO SMALL" << std::endl;
+    EXPECT_EQ(1, 1) << "WORLD TOO SMALL" << std::endl;
     return false;
   }
 
