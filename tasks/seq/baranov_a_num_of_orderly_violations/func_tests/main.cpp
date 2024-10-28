@@ -156,8 +156,3 @@ TEST(baranov_a_num_of_orderly_violations_seq, Test_viol_10000_double) {
   int num = test1.seq_proc(arr);
   ASSERT_EQ(num, out[0]);
 }
-
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}
