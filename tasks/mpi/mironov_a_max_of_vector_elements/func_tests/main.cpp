@@ -18,8 +18,9 @@ TEST(mironov_a_max_of_vector_elements_mpi, Test_Max_1) {
     // Create TaskData
     const int count = 10000;
     global_vec.resize(count);
-    for (int i = 0; i < count; ++i)
-        global_vec[i] = i;
+    for (int i = 0; i < count; ++i) {
+      global_vec[i] = i;
+    }
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -111,8 +112,9 @@ TEST(mironov_a_max_of_vector_elements_mpi, Test_Max_3) {
     const int count = 1000000;
     const int start = -7890000;
     global_vec.resize(count);
-    for (int i = 0, j = start; i < count; ++i, j += 9)
-        global_vec[i] = j;
+    for (int i = 0, j = start; i < count; ++i, j += 9) {
+      global_vec[i] = j;
+    }
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -159,8 +161,9 @@ TEST(mironov_a_max_of_vector_elements_mpi, Test_Max_4) {
     const int count = 1000000;
     const int start = -7890000;
     global_vec.resize(count);
-    for (int i = count - 1, j = start; i >= 0; --i, j += 4)
-        global_vec[i] = j;
+    for (int i = count - 1, j = start; i >= 0; --i, j += 4) {
+      global_vec[i] = j;
+    }
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -206,8 +209,9 @@ TEST(mironov_a_max_of_vector_elements_mpi, Test_Max_5) {
   if (world.rank() == 0) {
     const int count = 100;
     global_vec.resize(count, 0);
-    for (int i = 1; i < 100; i += 2)
-        global_vec[i] = INT_MAX;
+    for (int i = 1; i < 100; i += 2) {
+      global_vec[i] = INT_MAX;
+    }
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());

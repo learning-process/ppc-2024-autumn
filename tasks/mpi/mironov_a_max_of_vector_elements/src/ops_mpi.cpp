@@ -30,8 +30,9 @@ bool mironov_a_max_of_vector_elements_mpi::MaxVectorSequential::run() {
 
   result_ = input_[0];
   for (size_t it = 1; it < input_.size(); ++it) {
-    if (result_ < input_[it])
-        result_ = input_[it];
+    if (result_ < input_[it]) {
+      result_ = input_[it];
+    }
   }
   return true;
 }
@@ -47,8 +48,9 @@ bool mironov_a_max_of_vector_elements_mpi::MaxVectorMPI::pre_processing() {
   unsigned int delta = 0;
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
-    if (taskData->inputs_count[0] % world.size() != 0u)
-        delta++;
+    if (taskData->inputs_count[0] % world.size() != 0u) {
+      delta++;
+    }
   }
   broadcast(world, delta, 0);
 
@@ -88,8 +90,9 @@ bool mironov_a_max_of_vector_elements_mpi::MaxVectorMPI::run() {
   internal_order_test();
   int local_res = local_input_[0];
   for (size_t it = 1; it < local_input_.size(); ++it) {
-    if (local_res < local_input_[it])
-        local_res = local_input_[it];
+    if (local_res < local_input_[it]) {
+      local_res = local_input_[it];
+    }
   }
   reduce(world, local_res, result_, boost::mpi::maximum<int>(), 0);
   return true;

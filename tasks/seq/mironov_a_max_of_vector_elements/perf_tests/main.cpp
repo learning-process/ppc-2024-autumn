@@ -13,7 +13,9 @@ TEST(mironov_a_max_of_vector_elements_seq, test_pipeline_run) {
   // Create data
   std::vector<int> in(count);
   std::vector<int> out(1);
-  for (int i = 0, j = start; i < count; ++i, j += 5) in[i] = j;
+  for (int i = 0, j = start; i < count; ++i, j += 5) {
+    in[i] = j;
+  }
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -53,7 +55,9 @@ TEST(mironov_a_max_of_vector_elements_seq, test_task_run) {
   // Create data
   std::vector<int> in(count);
   std::vector<int> out(1);
-  for (int i = 0, j = start; i < count; ++i, j += 5) in[i] = j;
+  for (int i = 0, j = start; i < count; ++i, j += 5) {
+    in[i] = j;
+  }
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
