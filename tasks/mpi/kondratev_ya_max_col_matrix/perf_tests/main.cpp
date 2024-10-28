@@ -22,7 +22,7 @@ void fillTaskData(std::shared_ptr<ppc::core::TaskData> taskData, uint32_t row, u
   taskData->outputs_count.emplace_back(res.size());
 }
 
-TEST(kondratev_ya_max_col_matrix_mpi, test_pipeline_run_min) {
+TEST(kondratev_ya_max_col_matrix_mpi, test_pipeline_run) {
   uint32_t row = 6000;
   uint32_t col = 6000;
   int32_t ref_val = INT_MAX;
@@ -61,7 +61,7 @@ TEST(kondratev_ya_max_col_matrix_mpi, test_pipeline_run_min) {
   }
 }
 
-TEST(kondratev_ya_max_col_matrix_mpi_perf_test, test_task_run_min) {
+TEST(kondratev_ya_max_col_matrix_mpi_perf_test, test_task_run) {
   uint32_t row = 6000;
   uint32_t col = 6000;
   int32_t ref_val = INT_MAX;

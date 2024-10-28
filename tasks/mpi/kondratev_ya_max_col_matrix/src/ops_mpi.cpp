@@ -16,8 +16,8 @@ std::vector<std::vector<int32_t>> kondratev_ya_max_col_matrix_mpi::getRandomMatr
     throw std::invalid_argument("Args should be greater then zero");
   }
 
-  uint32_t low = -200;
-  uint32_t high = 200;
+  int32_t low = -200;
+  int32_t high = 200;
 
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -94,57 +94,54 @@ bool kondratev_ya_max_col_matrix_mpi::TestMPITaskSequential::post_processing() {
 bool kondratev_ya_max_col_matrix_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
-  uint32_t rows = 0;
-  uint32_t cols = 0;
-  uint32_t step = 0;
   uint32_t recvSize = 0;
 
   if (world.rank() == 0) {
-    rows = taskData->inputs_count[0];
-    cols = taskData->inputs_count[1];
-    step = std::ceil((double)cols / world.size());
+    row_ = taskData->inputs_count[0];
+    col_ = taskData->inputs_count[1];
+    step_ = col_ / world.size();
+    remain_ = col_ % world.size();
   }
 
-  broadcast(world, rows, 0);
-  broadcast(world, cols, 0);
-  broadcast(world, step, 0);
+  broadcast(world, row_, 0);
+  broadcast(world, col_, 0);
+  broadcast(world, step_, 0);
+  broadcast(world, remain_, 0);
 
   if (world.rank() == 0) {
-    std::vector<int32_t*> tmp(rows);
-    for (uint32_t i = 0; i < rows; i++) {
+    std::vector<int32_t*> tmp(row_);
+    for (uint32_t i = 0; i < row_; i++) {
       tmp[i] = reinterpret_cast<int32_t*>(taskData->inputs[i]);
     }
 
-    input_ = std::vector(cols, std::vector<int32_t>(rows));
-    for (uint32_t j = 0; j < cols; j++) {
-      for (uint32_t i = 0; i < rows; i++) {
+    input_ = std::vector(col_, std::vector<int32_t>(row_));
+    for (uint32_t j = 0; j < col_; j++) {
+      for (uint32_t i = 0; i < row_; i++) {
         input_[j][i] = tmp[i][j];
       }
     }
-    res_ = std::vector<int32_t>(cols);
+    res_ = std::vector<int32_t>(col_);
+
+    local_input_ = std::vector(step_ + remain_, std::vector<int32_t>(row_));
+    std::copy(input_.begin(), input_.begin() + step_ + remain_, local_input_.begin());
 
     uint32_t worldSize = world.size();
-
-    auto it = input_.begin() + step;
-    auto end = input_.end();
-    for (uint32_t i = 1; i < worldSize && it < end; i++) {
-      recvSize = std::min(step, static_cast<uint32_t>(end - it));
-      world.send(i, 0, recvSize);
+    uint32_t ind = local_input_.size();
+    for (uint32_t i = 1; i < worldSize && ind < col_; i++) {
+      recvSize = step_;
+      if (i < remain_) recvSize++;
 
       for (uint32_t j = 0; j < recvSize; j++) {
-        world.send(i, 0, *(it++));
+        world.send(i, 0, input_[ind++].data(), row_);
       }
     }
-  }
-
-  if (world.rank() == 0) {
-    local_input_ = std::vector(step, std::vector<int32_t>(rows));
-    std::copy(input_.begin(), input_.begin() + step, local_input_.begin());
   } else {
-    world.recv(0, 0, recvSize);
-    local_input_.resize(recvSize);
+    recvSize = step_;
+    if (static_cast<uint32_t>(world.rank()) < remain_) recvSize++;
+
+    local_input_ = std::vector(recvSize, std::vector<int32_t>(row_));
     for (uint32_t i = 0; i < recvSize; i++) {
-      world.recv(0, 0, local_input_[i]);
+      world.recv(0, 0, local_input_[i].data(), row_);
     }
   }
 
@@ -162,13 +159,27 @@ bool kondratev_ya_max_col_matrix_mpi::TestMPITaskParallel::validation() {
 
 bool kondratev_ya_max_col_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+  uint32_t recvSize = 0;
 
   std::vector<int32_t> loc_max(local_input_.size());
   for (size_t i = 0; i < loc_max.size(); i++) {
     loc_max[i] = *std::max_element(local_input_[i].begin(), local_input_[i].end());
   }
 
-  gather(world, loc_max.data(), loc_max.size(), res_, 0);
+  if (world.rank() == 0) {
+    std::copy(loc_max.begin(), loc_max.end(), res_.begin());
+
+    uint32_t worldSize = world.size();
+    uint32_t ind = loc_max.size();
+    for (uint32_t i = 1; i < worldSize && ind < col_; i++) {
+      recvSize = step_;
+      if (i < remain_) recvSize++;
+
+      world.recv(i, 0, res_.data() + ind, recvSize);
+      ind += recvSize;
+    }
+  } else
+    world.send(0, 0, loc_max.data(), loc_max.size());
 
   return true;
 }
