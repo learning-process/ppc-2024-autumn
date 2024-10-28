@@ -1,17 +1,6 @@
 // Copyright 2024 Nesterov Alexander
 #include "mpi/rezantseva_a_vector_dot_product/include/ops_mpi.hpp"
 
-#include <random>
-static int offset = 0;
-
-std::vector<int> rezantseva_a_vector_dot_product_mpi::createRandomVector(int v_size) {
-  std::vector<int> vec(v_size);
-  std::mt19937 gen;
-  gen.seed((unsigned)time(nullptr) + ++offset);
-  for (int i = 0; i < v_size; i++) vec[i] = gen() % 100;
-  return vec;
-}
-
 int rezantseva_a_vector_dot_product_mpi::vectorDotProduct(const std::vector<int>& v1, const std::vector<int>& v2) {
   long long result = 0;
   for (size_t i = 0; i < v1.size(); i++) result += v1[i] * v2[i];

@@ -2,14 +2,25 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
+#include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/rezantseva_a_vector_dot_product/include/ops_mpi.hpp"
 
+static int offset = 0;
+
+std::vector<int> createRandomVector(int v_size) {
+  std::vector<int> vec(v_size);
+  std::mt19937 gen;
+  gen.seed((unsigned)time(nullptr) + ++offset);
+  for (int i = 0; i < v_size; i++) vec[i] = gen() % 100;
+  return vec;
+}
+
 const int count_size_vector = 49000000;
-std::vector<int> v1 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
-std::vector<int> v2 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
+std::vector<int> v1 = createRandomVector(count_size_vector);
+std::vector<int> v2 = createRandomVector(count_size_vector);
 
 TEST(rezantseva_a_vector_dot_product_mpi, test_pipeline_run) {
   boost::mpi::communicator world;

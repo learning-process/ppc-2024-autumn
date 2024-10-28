@@ -2,9 +2,20 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
+#include <random>
 #include <vector>
 
 #include "mpi/rezantseva_a_vector_dot_product/include/ops_mpi.hpp"
+
+static int offset = 0;
+
+std::vector<int> createRandomVector(int v_size) {
+  std::vector<int> vec(v_size);
+  std::mt19937 gen;
+  gen.seed((unsigned)time(nullptr) + ++offset);
+  for (int i = 0; i < v_size; i++) vec[i] = gen() % 100;
+  return vec;
+}
 
 TEST(rezantseva_a_vector_dot_product_mpi, can_scalar_multiply_vec_size_125) {
   boost::mpi::communicator world;
@@ -14,8 +25,8 @@ TEST(rezantseva_a_vector_dot_product_mpi, can_scalar_multiply_vec_size_125) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     const int count_size_vector = 125;
-    std::vector<int> v1 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
-    std::vector<int> v2 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
+    std::vector<int> v1 = createRandomVector(count_size_vector);
+    std::vector<int> v2 = createRandomVector(count_size_vector);
 
     global_vec = {v1, v2};
     for (size_t i = 0; i < global_vec.size(); i++) {
@@ -68,8 +79,8 @@ TEST(rezantseva_a_vector_dot_product_mpi, can_scalar_multiply_vec_size_300) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 300;
-    std::vector<int> v1 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
-    std::vector<int> v2 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
+    std::vector<int> v1 = createRandomVector(count_size_vector);
+    std::vector<int> v2 = createRandomVector(count_size_vector);
 
     global_vec = {v1, v2};
     for (size_t i = 0; i < global_vec.size(); i++) {
@@ -122,8 +133,8 @@ TEST(rezantseva_a_vector_dot_product_mpi, check_vectors_not_equal) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 120;
-    std::vector<int> v1 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
-    std::vector<int> v2 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector + 5);
+    std::vector<int> v1 = createRandomVector(count_size_vector);
+    std::vector<int> v2 = createRandomVector(count_size_vector + 5);
 
     global_vec = {v1, v2};
     for (size_t i = 0; i < global_vec.size(); i++) {
@@ -149,8 +160,8 @@ TEST(rezantseva_a_vector_dot_product_mpi, check_vectors_equal_true) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 120;
-    std::vector<int> v1 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
-    std::vector<int> v2 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
+    std::vector<int> v1 = createRandomVector(count_size_vector);
+    std::vector<int> v2 = createRandomVector(count_size_vector);
 
     global_vec = {v1, v2};
     for (size_t i = 0; i < global_vec.size(); i++) {
