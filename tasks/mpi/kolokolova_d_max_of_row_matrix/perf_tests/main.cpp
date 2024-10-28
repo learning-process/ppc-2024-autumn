@@ -56,7 +56,7 @@ TEST(kolokolova_d_max_of_row_matrix_mpi, test_task_run) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  const int count_size_vector = count_rows * 8000000;
+  const int count_size_vector = count_rows * 8500000;
   if (world.rank() == 0) {
     global_matrix = std::vector<int>(count_size_vector, 1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));

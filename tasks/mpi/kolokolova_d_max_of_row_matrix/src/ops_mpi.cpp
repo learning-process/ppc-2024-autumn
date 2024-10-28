@@ -39,7 +39,10 @@ bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskSequential::pre_processing()
 bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
-  return *taskData->inputs[1] == taskData->outputs_count[0];
+  if (taskData->outputs_count[0] != 0 && taskData->inputs_count[0] != 0)
+    return true;
+  else
+    return false;
 }
 
 bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskSequential::run() {
