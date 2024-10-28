@@ -94,7 +94,7 @@ bool gnitienko_k_sum_row_mpi::SumByRowMPIParallel::pre_processing() {
 bool gnitienko_k_sum_row_mpi::SumByRowMPIParallel::validation() {
   internal_order_test();
   if (world.rank() == 0)
-    return (taskData->inputs_count.size() == 2 && taskData->inputs_count[0] >= 0 && taskData->inputs_count[1] >= 0 && 
+    return (taskData->inputs_count.size() == 2 && taskData->inputs_count[0] >= 0 && taskData->inputs_count[1] >= 0 &&
             taskData->outputs_count[0] == taskData->inputs_count[0]);
   return true;
 }
