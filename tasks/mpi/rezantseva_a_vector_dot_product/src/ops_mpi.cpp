@@ -78,21 +78,28 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::validation() {
 bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
-  unsigned int total_elements = 0;
-  unsigned int num_processes = world.size();
+  size_t total_elements = 0;
+  size_t num_processes = 0;
+  size_t delta = 0;
+  size_t remainder = 0;
 
   if (world.rank() == 0) {
     total_elements = taskData->inputs_count[0];
+    num_processes = world.size();
+    delta = total_elements / num_processes;      // Calculate base size for each process
+    remainder = total_elements % num_processes;  // Calculate remaining elements
   }
-  boost::mpi::broadcast(world, total_elements, 0);
+  boost::mpi::broadcast(world, num_processes, 0);
+  boost::mpi::broadcast(world, delta, 0);
+  boost::mpi::broadcast(world, remainder, 0);
 
-  unsigned int delta = total_elements / num_processes;      // Calculate base size for each process
-  unsigned int remainder = total_elements % num_processes;  // Calculate remaining elements
-  std::vector<unsigned int> counts(num_processes);          // Vector to store counts for each process
+  std::vector<unsigned int> counts(num_processes);  // Vector to store counts for each process
 
-  // Distribute sizes to each process
-  for (unsigned int i = 0; i < num_processes; ++i) {
-    counts[i] = delta + (i < remainder ? 1 : 0);  // Assign 1 additional element to the first 'remainder' processes
+  if (world.rank() == 0) {
+    // Distribute sizes to each process
+    for (unsigned int i = 0; i < num_processes; ++i) {
+      counts[i] = delta + (i < remainder ? 1 : 0);  // Assign 1 additional element to the first 'remainder' processes
+    }
   }
   boost::mpi::broadcast(world, counts.data(), num_processes, 0);
 
