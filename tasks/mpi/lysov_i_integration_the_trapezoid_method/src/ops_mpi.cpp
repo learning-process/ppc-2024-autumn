@@ -9,10 +9,7 @@
 
 bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  if (taskData->inputs.size() != 3) {
-    return false;
-  }
-  if (taskData->outputs.size() != 1) {
+  if ((taskData->inputs.size() != 3) || (taskData->outputs.size() != 1) ){
     return false;
   }
   return true;
@@ -51,10 +48,7 @@ bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskSequential::post_p
 bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    if (taskData->inputs.size() != 3) {
-      return false;
-    }
-    if (taskData->outputs.size() != 1) {
+    if ((taskData->inputs.size() != 3) || (taskData->outputs.size() != 1)) {
       return false;
     }
     cnt_of_splits = *reinterpret_cast<int*>(taskData->inputs[2]);
