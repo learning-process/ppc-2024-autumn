@@ -7,8 +7,6 @@
 
 namespace chernykh_a_num_of_alternations_signs_mpi {
 
-std::vector<int> getRandomVector(size_t size);
-
 class SequentialTask : public ppc::core::Task {
  public:
   explicit SequentialTask(std::shared_ptr<ppc::core::TaskData> task_data) : Task(std::move(task_data)) {}

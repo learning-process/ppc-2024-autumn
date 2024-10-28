@@ -1,9 +1,21 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
+#include <random>
 #include <vector>
 
 #include "mpi/chernykh_a_num_of_alternations_signs/include/ops_mpi.hpp"
+
+std::vector<int> getRandomVector(size_t size) {
+  auto dev = std::random_device();
+  auto gen = std::mt19937(dev());
+  auto dist = std::uniform_int_distribution<int>(-100'000, 100'000);
+  auto result = std::vector<int>(size);
+  for (auto &val : result) {
+    val = dist(gen);
+  }
+  return result;
+}
 
 TEST(chernykh_a_num_of_alternations_signs_mpi, random_input) {
   auto world = boost::mpi::communicator();
@@ -15,7 +27,7 @@ TEST(chernykh_a_num_of_alternations_signs_mpi, random_input) {
   // Create TaskData
   auto par_task_data = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    input = chernykh_a_num_of_alternations_signs_mpi::getRandomVector(100'000);
+    input = getRandomVector(100'000);
     par_task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
     par_task_data->inputs_count.emplace_back(input.size());
     par_task_data->outputs.emplace_back(reinterpret_cast<uint8_t *>(par_output.data()));
@@ -62,7 +74,7 @@ TEST(chernykh_a_num_of_alternations_signs_mpi, large_random_input) {
   // Create TaskData
   auto par_task_data = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    input = chernykh_a_num_of_alternations_signs_mpi::getRandomVector(1'000'000);
+    input = getRandomVector(1'000'000);
     par_task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
     par_task_data->inputs_count.emplace_back(input.size());
     par_task_data->outputs.emplace_back(reinterpret_cast<uint8_t *>(par_output.data()));
@@ -150,7 +162,7 @@ TEST(chernykh_a_num_of_alternations_signs_mpi, output_size_not_equal_one_fails_v
   // Create TaskData
   auto par_task_data = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    input = chernykh_a_num_of_alternations_signs_mpi::getRandomVector(1000);
+    input = getRandomVector(1000);
     par_task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
     par_task_data->inputs_count.emplace_back(input.size());
     par_task_data->outputs.emplace_back(reinterpret_cast<uint8_t *>(par_output.data()));

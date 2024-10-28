@@ -1,19 +1,7 @@
 #include "mpi/chernykh_a_num_of_alternations_signs/include/ops_mpi.hpp"
 
 #include <boost/mpi/collectives.hpp>
-#include <random>
 #include <vector>
-
-std::vector<int> chernykh_a_num_of_alternations_signs_mpi::getRandomVector(size_t size) {
-  auto dev = std::random_device();
-  auto gen = std::mt19937(dev());
-  auto dist = std::uniform_int_distribution<int>(-100'000, 100'000);
-  auto result = std::vector<int>(size);
-  for (auto& val : result) {
-    val = dist(gen);
-  }
-  return result;
-}
 
 bool chernykh_a_num_of_alternations_signs_mpi::SequentialTask::validation() {
   internal_order_test();
