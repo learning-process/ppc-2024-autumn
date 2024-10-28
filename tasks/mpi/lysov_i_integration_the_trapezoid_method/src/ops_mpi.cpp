@@ -9,10 +9,7 @@
 
 bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  if ((taskData->inputs.size() != 3) || (taskData->outputs.size() != 1) ){
-    return false;
-  }
-  return true;
+  return (taskData->inputs.size() == 3 && taskData->outputs.size() == 1);
 }
 bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
