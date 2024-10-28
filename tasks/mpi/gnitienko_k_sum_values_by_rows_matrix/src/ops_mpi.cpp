@@ -23,13 +23,10 @@ std::vector<int> gnitienko_k_sum_row_mpi::SumByRowMPISeq::mainFunc() {
 
 bool gnitienko_k_sum_row_mpi::SumByRowMPISeq::pre_processing() {
   internal_order_test();
-
   rows = taskData->inputs_count[0];
   cols = taskData->inputs_count[1];
-
   input_.resize(rows * cols);
   auto* ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-
   for (int i = 0; i < rows; ++i) {
     for (int j = 0; j < cols; ++j) {
       input_[i * cols + j] = ptr[i * cols + j];
@@ -37,7 +34,6 @@ bool gnitienko_k_sum_row_mpi::SumByRowMPISeq::pre_processing() {
   }
 
   res = std::vector<int>(rows, 0);
-
   return true;
 }
 
@@ -65,14 +61,12 @@ bool gnitienko_k_sum_row_mpi::SumByRowMPISeq::post_processing() {
 
 bool gnitienko_k_sum_row_mpi::SumByRowMPIParallel::pre_processing() {
   internal_order_test();
-
   if (world.rank() == 0) {
     rows = taskData->inputs_count[0];
     cols = taskData->inputs_count[1];
   }
   boost::mpi::broadcast(world, rows, 0);
   boost::mpi::broadcast(world, cols, 0);
-
   if (world.rank() == 0) {
     input_.resize(rows * cols);
     auto* ptr = reinterpret_cast<int*>(taskData->inputs[0]);
@@ -85,9 +79,7 @@ bool gnitienko_k_sum_row_mpi::SumByRowMPIParallel::pre_processing() {
   } else {
     input_.resize(rows * cols);
   }
-
   boost::mpi::broadcast(world, input_.data(), rows * cols, 0);
-
   return true;
 }
 
@@ -113,14 +105,12 @@ std::vector<int> gnitienko_k_sum_row_mpi::SumByRowMPIParallel::mainFunc(int star
 
 bool gnitienko_k_sum_row_mpi::SumByRowMPIParallel::run() {
   internal_order_test();
-  
   int rows_per_process = rows / world.size();
   int extra_rows = rows % world.size();
   if (extra_rows != 0) rows_per_process += 1;
   int process_last_row = std::min(rows, rows_per_process * (world.rank() + 1));
   std::vector<int> local_sum = mainFunc(rows_per_process * world.rank(), process_last_row);
   local_sum.resize(rows_per_process);
-
   if (world.rank() == 0) {
     std::vector<int> local_res(rows + rows_per_process * world.size());
     std::vector<int> sizes(world.size(), rows_per_process);
@@ -130,7 +120,6 @@ bool gnitienko_k_sum_row_mpi::SumByRowMPIParallel::run() {
   } else {
     boost::mpi::gatherv(world, local_sum.data(), local_sum.size(), 0);
   }
-
   return true;
 }
 
@@ -139,6 +128,5 @@ bool gnitienko_k_sum_row_mpi::SumByRowMPIParallel::post_processing() {
   if (world.rank() == 0) {
     std::copy(res.begin(), res.end(), reinterpret_cast<int*>(taskData->outputs[0]));
   }
-
   return true;
 }
