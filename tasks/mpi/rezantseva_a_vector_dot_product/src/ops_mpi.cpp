@@ -2,11 +2,8 @@
 #include "mpi/rezantseva_a_vector_dot_product/include/ops_mpi.hpp"
 
 #include <random>
-#include <thread>
-
 static int offset = 0;
-using namespace std::chrono_literals;
-// Sequential
+
 std::vector<int> rezantseva_a_vector_dot_product_mpi::createRandomVector(int v_size) {
   std::vector<int> vec(v_size);
   std::mt19937 gen;
@@ -60,8 +57,6 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskSequential::post_processing
   reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
   return true;
 }
-
-// Parallel
 
 bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
@@ -145,15 +140,6 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::run() {
     local_res += local_input1_[i] * local_input2_[i];
   }
   boost::mpi::reduce(world, local_res, res, std::plus<>(), 0);
-  // std::vector<int> all_res;
-  // boost::mpi::gather(world, local_res, all_res, 0);
-
-  // if (world.rank() == 0) {
-  //   for (int result : all_res) {
-  //     res += result;
-  //   }
-  // }
-
   return true;
 }
 
