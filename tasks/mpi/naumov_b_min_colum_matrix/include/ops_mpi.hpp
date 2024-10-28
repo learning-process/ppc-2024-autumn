@@ -19,7 +19,7 @@ std::vector<int> getRandomVector(int sz);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
+  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops)
       : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
@@ -27,13 +27,14 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
+  std::string ops = "+";
   std::vector<int> input_;
   int res{};
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_,)
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops)
       : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
@@ -41,6 +42,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
+  std::string ops = "+";
   std::vector<int> input_, local_input_;
   int res{};
   boost::mpi::communicator world;
