@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include "mpi/example/include/ops_mpi.hpp"
 
 #include <algorithm>
@@ -10,76 +9,119 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> nesterov_a_test_task_mpi::getRandomVector(int sz) {
+std::vector<char> volochaev_s_count_characters_27_mpi::get_random_string(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
+
+  std::vector<char> vec(sz);
+  for (size_t i = 0; i < sz; i++)
+  {
+    vec[i] += gen() % 256;
   }
   return vec;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskSequential::pre_processing() {
+bool volochaev_s_count_characters_27_mpi::Lab1_27_seq::pre_processing() {
   internal_order_test();
   // Init vectors
-  input_ = std::vector<int>(taskData->inputs_count[0]);
-  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    input_[i] = tmp_ptr[i];
+  input1_ = std::vector<char>(taskData->inputs_count[0]);
+  input2_ = std::vector<char>(taskData->inputs_count[1]);
+  auto* tmp_ptr = reinterpret_cast<char*>(taskData->inputs[0]);
+  for (size_t i = 0; i < taskData->inputs_count[0]; i++) 
+  {
+    input1_[i] = tmp_ptr[i];
   }
+
+  tmp_ptr = reinterpret_cast<char*>(taskData->inputs[1]);
+  for (size_t i = 0; i < taskData->inputs_count[1]; i++)
+  {
+    input2_[i] = tmp_ptr[i];
+  }
+
   // Init value for output
   res = 0;
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskSequential::validation() {
+bool volochaev_s_count_characters_27_mpi::Lab1_27_seq::validation() {
   internal_order_test();
   // Check count elements of output
   return taskData->outputs_count[0] == 1;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskSequential::run() {
+bool volochaev_s_count_characters_27_mpi::Lab1_27_seq::run() {
   internal_order_test();
-  if (ops == "+") {
-    res = std::accumulate(input_.begin(), input_.end(), 0);
-  } else if (ops == "-") {
-    res = -std::accumulate(input_.begin(), input_.end(), 0);
-  } else if (ops == "max") {
-    res = *std::max_element(input_.begin(), input_.end());
+  
+  res = abs((int)input1_.size() - (int)input2_.size());
+
+  for (size_t i = 0; i < std::min(input1_.size(), input2_.size()); ++i)
+  {
+     if (input1_[i] != input2_[i])
+     {
+       res += 2;
+     }
   }
+
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskSequential::post_processing() {
+bool volochaev_s_count_characters_27_mpi::Lab1_27_seq::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+  *reinterpret_cast<int*>(taskData->outputs[0]) = res;
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskParallel::pre_processing() {
+bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::pre_processing() {
   internal_order_test();
+
   unsigned int delta = 0;
-  if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] / world.size();
+  if (world.rank() == 0) 
+  {
+     delta = (std::max(taskData->inputs_count[0] - 1, taskData->inputs_count[1] - 1)) / world.size();
+     if (std::max(taskData->inputs_count[0] - 1, taskData->inputs_count[1] - 1) % world.size() > 0u) ++delta;
   }
+
   broadcast(world, delta, 0);
 
-  if (world.rank() == 0) {
+  if (world.rank() == 0) 
+  {
     // Init vectors
-    input_ = std::vector<int>(taskData->inputs_count[0]);
-    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-      input_[i] = tmp_ptr[i];
+    input_ = std::vector<std::pair<char, char>>(world.size() * delta);
+    auto tmp1_ptr = reinterpret_cast<char*>(taskData->inputs[0]);
+    auto tmp2_ptr = reinterpret_cast<char*>(taskData->inputs[1]);
+    for (unsigned i = 0; i < std::min(taskData->inputs_count[0], taskData->inputs_count[1]); i++) {
+      input_[i].first = tmp1_ptr[i];
+      input_[i].second = tmp2_ptr[i];
     }
-    for (int proc = 1; proc < world.size(); proc++) {
+
+    for (size_t i = std::min(taskData->inputs_count[0], taskData->inputs_count[1]);
+         i < std::max(taskData->inputs_count[0], taskData->inputs_count[1]); i++)
+    {
+      if (taskData->inputs_count[0] > taskData->inputs_count[1])
+      {
+        input_[i].first = tmp1_ptr[i];
+        input_[i].second = -255;
+      }
+      else
+      {
+        input_[i].first = -255;
+        input_[i].second = tmp2_ptr[i];
+      }
+    }
+
+    for (size_t proc = 1; proc < world.size(); proc++) 
+    {
       world.send(proc, 0, input_.data() + proc * delta, delta);
     }
   }
-  local_input_ = std::vector<int>(delta);
-  if (world.rank() == 0) {
-    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
-  } else {
+
+  local_input_ = std::vector<std::pair<char,char>>(delta);
+  if (world.rank() == 0) 
+  {
+    local_input_ = std::vector<std::pair<char,char>>(input_.begin(), input_.begin() + delta);
+  }
+  else
+  {
     world.recv(0, 0, local_input_.data(), delta);
   }
   // Init value for output
@@ -87,39 +129,34 @@ bool nesterov_a_test_task_mpi::TestMPITaskParallel::pre_processing() {
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskParallel::validation() {
+bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::validation() {
   internal_order_test();
-  if (world.rank() == 0) {
+  if (world.rank() == 0)
+  {
     // Check count elements of output
     return taskData->outputs_count[0] == 1;
   }
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskParallel::run() {
+bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::run() {
   internal_order_test();
-  int local_res;
-  if (ops == "+") {
-    local_res = std::accumulate(local_input_.begin(), local_input_.end(), 0);
-  } else if (ops == "-") {
-    local_res = -std::accumulate(local_input_.begin(), local_input_.end(), 0);
-  } else if (ops == "max") {
-    local_res = *std::max_element(local_input_.begin(), local_input_.end());
+  int local_res = 0;
+  
+  for (size_t i = 0; i < local_input_.size(); ++i)
+  {
+    if (local_input_[i].first != local_input_[i].second) local_res += 2;
   }
 
-  if (ops == "+" || ops == "-") {
-    reduce(world, local_res, res, std::plus(), 0);
-  } else if (ops == "max") {
-    reduce(world, local_res, res, boost::mpi::maximum<int>(), 0);
-  }
-  std::this_thread::sleep_for(20ms);
+  reduce(world, local_res, res, std::plus(), 0);
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskParallel::post_processing() {
+bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::post_processing() {
   internal_order_test();
-  if (world.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
-  }
+  if (world.rank() == 0) 
+  {
+    *reinterpret_cast<int*>(taskData->outputs[0]) = res;
+  } 
   return true;
 }

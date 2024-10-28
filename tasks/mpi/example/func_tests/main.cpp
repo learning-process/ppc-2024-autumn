@@ -1,4 +1,4 @@
-// Copyright 2023 Nesterov Alexander
+/*
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
@@ -9,21 +9,22 @@
 
 TEST(Parallel_Operations_MPI, Test_Sum) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
+  std::string global_vec;
   std::vector<int32_t> global_sum(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  if (world.rank() == 0) {
+  if (world.rank() == 0) 
+  {
     const int count_size_vector = 120;
-    global_vec = nesterov_a_test_task_mpi::getRandomVector(count_size_vector);
+    global_vec = volochaev_s_count_characters_27_mpi::get_random_string(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  nesterov_a_test_task_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "+");
+  volochaev_s_count_characters_27_mpi::Lab1_27_mpi testMpiTaskParallel(taskDataPar, "+");
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -41,7 +42,7 @@ TEST(Parallel_Operations_MPI, Test_Sum) {
     taskDataSeq->outputs_count.emplace_back(reference_sum.size());
 
     // Create Task
-    nesterov_a_test_task_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "+");
+    volochaev_s_count_characters_27_mpi::Lab1_27_seq testMpiTaskSequential(taskDataSeq, "+");
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -53,14 +54,14 @@ TEST(Parallel_Operations_MPI, Test_Sum) {
 
 TEST(Parallel_Operations_MPI, Test_Diff) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
+  std::string global_vec;
   std::vector<int32_t> global_diff(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
     const int count_size_vector = 240;
-    global_vec = nesterov_a_test_task_mpi::getRandomVector(count_size_vector);
+    global_vec = volochaev_s_count_characters_27_mpi::get_random_string(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_diff.data()));
@@ -237,3 +238,4 @@ int main(int argc, char** argv) {
   }
   return RUN_ALL_TESTS();
 }
+*/

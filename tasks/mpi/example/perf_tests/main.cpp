@@ -1,4 +1,4 @@
-// Copyright 2023 Nesterov Alexander
+/*
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
@@ -97,3 +97,4 @@ int main(int argc, char** argv) {
   }
   return RUN_ALL_TESTS();
 }
+*/

@@ -5,12 +5,12 @@
 
 #include "seq/example/include/ops_seq.hpp"
 
-TEST(Sequential, Test_Sum_10) {
-  const int count = 10;
-
+TEST(Sequential, Test_1) {
   // Create data
-  std::vector<int> in(1, count);
+  std::vector<std::string> in = {"aa", "aa"};
   std::vector<int> out(1, 0);
+
+  int ans = 0;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -20,21 +20,20 @@ TEST(Sequential, Test_Sum_10) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  nesterov_a_test_task_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  volochaev_s_count_characters_27_seq::Lab1_27 testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(count, out[0]);
+  ASSERT_EQ(ans, out[0]);
 }
 
-TEST(Sequential, Test_Sum_20) {
-  const int count = 20;
+TEST(Sequential, Test_2) {
 
   // Create data
-  std::vector<int> in(1, count);
+  std::vector<std::string> in = {"ab", "aa"};
   std::vector<int> out(1, 0);
-
+  int ans = 1;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
@@ -43,20 +42,20 @@ TEST(Sequential, Test_Sum_20) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  nesterov_a_test_task_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  volochaev_s_count_characters_27_seq::Lab1_27 testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(count, out[0]);
+  ASSERT_EQ(ans, out[0]);
 }
 
-TEST(Sequential, Test_Sum_50) {
-  const int count = 50;
+TEST(Sequential, Test_3) {
 
   // Create data
-  std::vector<int> in(1, count);
+  std::vector<std::string> in = {"aaabbc", "ab"};
   std::vector<int> out(1, 0);
+  int ans = 5;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -66,20 +65,20 @@ TEST(Sequential, Test_Sum_50) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  nesterov_a_test_task_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  volochaev_s_count_characters_27_seq::Lab1_27 testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(count, out[0]);
+  ASSERT_EQ(ans, out[0]);
 }
 
-TEST(Sequential, Test_Sum_70) {
-  const int count = 70;
-
+TEST(Sequential, Test_4) {
   // Create data
-  std::vector<int> in(1, count);
+  std::vector<std::string> in = {"ab", "aaabbc"};
   std::vector<int> out(1, 0);
+  int ans = 5;
+
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -89,20 +88,20 @@ TEST(Sequential, Test_Sum_70) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  nesterov_a_test_task_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  volochaev_s_count_characters_27_seq::Lab1_27 testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(count, out[0]);
+  ASSERT_EQ(ans, out[0]);
 }
 
-TEST(Sequential, Test_Sum_100) {
-  const int count = 100;
-
+TEST(Sequential, Test_5)
+{
   // Create data
-  std::vector<int> in(1, count);
+  std::vector<std::string> in = {"aaabbc", "aaabbc"};
   std::vector<int> out(1, 0);
+  int ans = 0;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -112,12 +111,12 @@ TEST(Sequential, Test_Sum_100) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  nesterov_a_test_task_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  volochaev_s_count_characters_27_seq::Lab1_27 testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(count, out[0]);
+  ASSERT_EQ(ans, out[0]);
 }
 
 int main(int argc, char **argv) {

@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #pragma once
 
 #include <string>
@@ -6,18 +5,21 @@
 
 #include "core/task/include/task.hpp"
 
-namespace nesterov_a_test_task_seq {
+namespace volochaev_s_count_characters_27_seq {
 
-class TestTaskSequential : public ppc::core::Task {
+class Lab1_27 : public ppc::core::Task {
  public:
-  explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit Lab1_27(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
  private:
-  int input_{}, res{};
+  std::string input1_{};
+  std::string input2_{};
+
+  int res{};
 };
 
-}  // namespace nesterov_a_test_task_seq
+}  // namespace volochaev_s_count_characters_27_seq

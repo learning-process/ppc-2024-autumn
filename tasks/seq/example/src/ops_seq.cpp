@@ -1,35 +1,41 @@
-// Copyright 2024 Nesterov Alexander
 #include "seq/example/include/ops_seq.hpp"
-
+#include<math.h>
 #include <thread>
 
 using namespace std::chrono_literals;
 
-bool nesterov_a_test_task_seq::TestTaskSequential::pre_processing() {
+bool volochaev_s_count_characters_27_seq::Lab1_27::pre_processing() {
   internal_order_test();
   // Init value for input and output
-  input_ = reinterpret_cast<int*>(taskData->inputs[0])[0];
+  //input_ = reinterpret_cast<int*>(taskData->inputs[0])[0];
+  input1_ = *reinterpret_cast<std::string*>(taskData->inputs[0]);
+  input2_ = *reinterpret_cast<std::string*>(taskData->inputs[1]);
   res = 0;
   return true;
 }
 
-bool nesterov_a_test_task_seq::TestTaskSequential::validation() {
+bool volochaev_s_count_characters_27_seq::Lab1_27::validation() {
   internal_order_test();
   // Check count elements of output
-  return taskData->inputs_count[0] == 1 && taskData->outputs_count[0] == 1;
+  return taskData->inputs_count[0] == 1 && taskData->inputs_count[1] == 1 && taskData->outputs_count[0] == 1;
 }
 
-bool nesterov_a_test_task_seq::TestTaskSequential::run() {
+bool volochaev_s_count_characters_27_seq::Lab1_27::run() {
   internal_order_test();
-  for (int i = 0; i < input_; i++) {
-    res++;
+  res = abs((int)input1_.size() - (int)input2_.size());
+
+  for (int i = 0; i < std::min(input1_.length(), input2_.length()); ++i)
+  {
+    if (input1_[i] != input2_[i]) {
+      res += 2;
+    }
   }
-  std::this_thread::sleep_for(20ms);
+
   return true;
 }
 
-bool nesterov_a_test_task_seq::TestTaskSequential::post_processing() {
+bool volochaev_s_count_characters_27_seq::Lab1_27::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+  *reinterpret_cast<int*>(taskData->outputs[0]) = res;
   return true;
 }
