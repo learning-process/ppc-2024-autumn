@@ -20,6 +20,7 @@ std::vector<int> oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(int sz)
 }
 
 bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::pre_processing() {
+  internal_order_test();
   // Init vectors
   n = (size_t)(taskData->inputs_count[0]);
   m = (size_t)(taskData->inputs_count[1]);
