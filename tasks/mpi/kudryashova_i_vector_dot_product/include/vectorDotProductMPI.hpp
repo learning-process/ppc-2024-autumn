@@ -37,5 +37,5 @@ class TestMPITaskParallel : public ppc::core::Task {
   int result{};
   boost::mpi::communicator world;
 };
-}  // namespace kudryashova_i_vector_dot_product_mpi
+}
 // namespace kudryashova_i_vector_dot_product_mpi
