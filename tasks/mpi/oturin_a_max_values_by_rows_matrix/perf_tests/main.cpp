@@ -10,9 +10,10 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_perftest, test_pipeline_run) {
   size_t n = 300;
   size_t m = 300;
 
-  int argc = 1;
-  char **argv;
-  MPI_Init(&argc, &argv);
+  int mpi_initialized;
+  MPI_Initialized(&mpi_initialized);
+  if (!mpi_initialized) MPI_Init(NULL, NULL);
+
   int world_size, world_rank;
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
@@ -61,9 +62,10 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_perftest, test_task_run) {
   size_t n = 300;
   size_t m = 300;
 
-  int argc = 1;
-  char **argv;
-  MPI_Init(&argc, &argv);
+  int mpi_initialized;
+  MPI_Initialized(&mpi_initialized);
+  if (!mpi_initialized) MPI_Init(NULL, NULL);
+
   int world_size, world_rank;
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);

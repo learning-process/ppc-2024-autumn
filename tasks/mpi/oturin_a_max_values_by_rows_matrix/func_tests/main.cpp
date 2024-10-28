@@ -11,9 +11,10 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_1) {
   size_t n = 5;
   size_t m = 5;
 
-  int argc = 1;
-  char **argv;
-  MPI_Init(&argc, &argv);
+  int mpi_initialized;
+  MPI_Initialized(&mpi_initialized);
+  if (!mpi_initialized) MPI_Init(NULL, NULL);
+
   int world_size, world_rank;
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
@@ -68,9 +69,11 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_1) {
 TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_2) {
   size_t n = 10;
   size_t m = 15;
-  int argc = 1;
-  char **argv;
-  MPI_Init(&argc, &argv);
+
+  int mpi_initialized;
+  MPI_Initialized(&mpi_initialized);
+  if (!mpi_initialized) MPI_Init(NULL, NULL);
+
   int world_size, world_rank;
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
@@ -124,9 +127,11 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_2) {
 TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_3) {
   size_t n = 15;
   size_t m = 10;
-  int argc = 1;
-  char **argv;
-  MPI_Init(&argc, &argv);
+
+  int mpi_initialized;
+  MPI_Initialized(&mpi_initialized);
+  if (!mpi_initialized) MPI_Init(NULL, NULL);
+
   int world_size, world_rank;
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
@@ -180,9 +185,11 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_3) {
 TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_4) {
   size_t n = 1;
   size_t m = 15;
-  int argc = 1;
-  char **argv;
-  MPI_Init(&argc, &argv);
+
+  int mpi_initialized;
+  MPI_Initialized(&mpi_initialized);
+  if (!mpi_initialized) MPI_Init(NULL, NULL);
+
   int world_size, world_rank;
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
@@ -236,9 +243,11 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_4) {
 TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_5) {
   size_t n = 15;
   size_t m = 1;
-  int argc = 1;
-  char **argv;
-  MPI_Init(&argc, &argv);
+
+  int mpi_initialized;
+  MPI_Initialized(&mpi_initialized);
+  if (!mpi_initialized) MPI_Init(NULL, NULL);
+
   int world_size, world_rank;
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
