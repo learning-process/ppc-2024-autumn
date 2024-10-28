@@ -54,7 +54,6 @@ bool gnitienko_k_sum_row_mpi::SumByRowMPISeq::run() {
   return true;
 }
 
-
 bool gnitienko_k_sum_row_mpi::SumByRowMPISeq::post_processing() {
   internal_order_test();
   // reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
@@ -75,7 +74,7 @@ bool gnitienko_k_sum_row_mpi::SumByRowMPIParallel::pre_processing() {
   boost::mpi::broadcast(world, cols, 0);
 
   if (world.rank() == 0) {
-    input_.resize(rows*cols);
+    input_.resize(rows * cols);
     auto* ptr = reinterpret_cast<int*>(taskData->inputs[0]);
 
     for (int i = 0; i < rows; ++i) {
@@ -84,19 +83,19 @@ bool gnitienko_k_sum_row_mpi::SumByRowMPIParallel::pre_processing() {
       }
     }
   } else {
-    input_.resize(rows*cols);
+    input_.resize(rows * cols);
   }
 
-  boost::mpi::broadcast(world, input_.data(), rows*cols, 0);
+  boost::mpi::broadcast(world, input_.data(), rows * cols, 0);
 
   return true;
 }
 
 bool gnitienko_k_sum_row_mpi::SumByRowMPIParallel::validation() {
   internal_order_test();
-  if (world.rank()==0)
-    return (taskData->inputs_count.size() == 2 && taskData->inputs_count[0] >= 0 && taskData->inputs_count[1] >= 0 &&
-          taskData->outputs_count[0] == taskData->inputs_count[0]);
+  if (world.rank() == 0)
+    return (taskData->inputs_count.size() == 2 && taskData->inputs_count[0] >= 0 && taskData->inputs_count[1] >= 0 && 
+            taskData->outputs_count[0] == taskData->inputs_count[0]);
   return true;
 }
 
@@ -117,8 +116,7 @@ bool gnitienko_k_sum_row_mpi::SumByRowMPIParallel::run() {
   
   int rows_per_process = rows / world.size();
   int extra_rows = rows % world.size();
-  if (extra_rows != 0)
-    rows_per_process += 1;
+  if (extra_rows != 0) rows_per_process += 1;
   int process_last_row = std::min(rows, rows_per_process * (world.rank() + 1));
   std::vector<int> local_sum = mainFunc(rows_per_process * world.rank(), process_last_row);
   local_sum.resize(rows_per_process);
@@ -138,7 +136,6 @@ bool gnitienko_k_sum_row_mpi::SumByRowMPIParallel::run() {
 
 bool gnitienko_k_sum_row_mpi::SumByRowMPIParallel::post_processing() {
   internal_order_test();
-  
   if (world.rank() == 0) {
     std::copy(res.begin(), res.end(), reinterpret_cast<int*>(taskData->outputs[0]));
   }

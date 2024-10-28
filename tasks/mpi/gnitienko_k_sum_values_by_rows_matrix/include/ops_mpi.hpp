@@ -29,7 +29,7 @@ class SumByRowMPISeq : public ppc::core::Task {
   int rows{}, cols{};
 };
 
-class SumByRowMPIParallel: public ppc::core::Task {
+class SumByRowMPIParallel : public ppc::core::Task {
  public:
   explicit SumByRowMPIParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;

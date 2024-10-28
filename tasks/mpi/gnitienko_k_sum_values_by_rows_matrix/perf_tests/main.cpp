@@ -14,7 +14,8 @@ TEST(gnitienko_k_sum_by_row_mpi, test_pipeline_run) {
   std::vector<int> expect;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int rows, cols;
+  int rows;
+  int cols;
   if (world.rank() == 0) {
     rows = 10000;
     cols = 10000;
@@ -56,7 +57,8 @@ TEST(gnitienko_k_sum_by_row_mpi, test_task_run) {
   std::vector<int> expect;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int rows, cols;
+  int rows;
+  int cols;
   if (world.rank() == 0) {
     rows = 10000;
     cols = 10000;
