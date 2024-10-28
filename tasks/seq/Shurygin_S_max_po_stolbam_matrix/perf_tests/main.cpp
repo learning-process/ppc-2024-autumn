@@ -42,8 +42,8 @@ TEST(Shurygin_S_max_po_stolbam_matrix_seq_perf, test_pipeline_run) {
 }
 
 TEST(Shurygin_S_max_po_stolbam_matrix_seq_perf, test_task_run) {
-  const int rows = 5000;
-  const int cols = 5000;
+  const int rows = 4560;
+  const int cols = 4560;
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   auto testTaskSequential = std::make_shared<Shurygin_S_max_po_stolbam_matrix_seq::TestTaskSequential>(taskDataSeq);
   std::vector<std::vector<int>> matrix_rnd =

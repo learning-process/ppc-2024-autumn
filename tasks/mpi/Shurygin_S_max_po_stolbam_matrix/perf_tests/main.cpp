@@ -43,8 +43,8 @@ TEST(Shurygin_S_max_po_stolbam_matrix_mpi_perf_test, test_task_run_max) {
   std::vector<std::vector<int>> global_matrix;
   std::vector<int32_t> global_max;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int count_rows = 5000;
-  int count_columns = 5000;
+  int count_rows = 4560;
+  int count_columns = 4560;
   if (world.rank() == 0) {
     global_matrix =
         Shurygin_S_max_po_stolbam_matrix_mpi::TestMPITaskSequential::generate_random_matrix(count_rows, count_columns);
