@@ -31,11 +31,12 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_perftest, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
 
-  oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "max");
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+  auto testMpiTaskParallel =
+      std::make_shared<oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel>(taskDataPar, "max");
+  ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  testMpiTaskParallel->pre_processing();
+  testMpiTaskParallel->run();
+  testMpiTaskParallel->post_processing();
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -81,11 +82,12 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_perftest, test_task_run) {
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
 
-  oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "max");
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+  auto testMpiTaskParallel =
+      std::make_shared<oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel>(taskDataPar, "max");
+  ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  testMpiTaskParallel->pre_processing();
+  testMpiTaskParallel->run();
+  testMpiTaskParallel->post_processing();
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
