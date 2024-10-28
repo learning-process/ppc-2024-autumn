@@ -132,6 +132,7 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::pre_processing() 
     local_input1_ = std::vector<int>(input_[0].begin(), input_[0].begin() + counts[0]);
     local_input2_ = std::vector<int>(input_[1].begin(), input_[1].begin() + counts[0]);
   }
+  res = 0;
   return true;
 }
 
@@ -143,14 +144,15 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::run() {
   for (size_t i = 0; i < local_input1_.size(); i++) {
     local_res += local_input1_[i] * local_input2_[i];
   }
-  std::vector<int> all_res;
-  boost::mpi::gather(world, local_res, all_res, 0);
+  boost::mpi::reduce(world, local_res, res, std::plus<int>(), 0);
+  // std::vector<int> all_res;
+  // boost::mpi::gather(world, local_res, all_res, 0);
 
-  if (world.rank() == 0) {
-    for (int result : all_res) {
-      res += result;
-    }
-  }
+  // if (world.rank() == 0) {
+  //   for (int result : all_res) {
+  //     res += result;
+  //   }
+  // }
 
   return true;
 }

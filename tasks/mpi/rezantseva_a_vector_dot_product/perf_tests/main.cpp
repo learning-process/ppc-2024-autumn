@@ -6,7 +6,7 @@
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/rezantseva_a_vector_dot_product/include/ops_mpi.hpp"
-/*
+
 const int count_size_vector = 49000000;
 std::vector<int> v1 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
 std::vector<int> v2 = rezantseva_a_vector_dot_product_mpi::createRandomVector(count_size_vector);
@@ -35,7 +35,6 @@ TEST(rezantseva_a_vector_dot_product_mpi, test_pipeline_run) {
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
-  std::cerr << "parallel res 0 = " << res[0] << std::endl;
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -43,16 +42,14 @@ TEST(rezantseva_a_vector_dot_product_mpi, test_pipeline_run) {
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
   // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-  // int answer = res[0];
+  int answer = rezantseva_a_vector_dot_product_mpi::vectorDotProduct(v1, v2);
   //  Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
-  std::cerr << "parallel res 1 = " << res[0] << std::endl;
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
-  std::cerr << "parallel res 2 = " << res[0] << std::endl;  // тут ломается результат
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    // ASSERT_EQ(rezantseva_a_vector_dot_product_mpi::vectorDotProduct(global_vec[0], global_vec[1]), res[0]);
+    ASSERT_EQ(answer, res[0]);
   }
 }
 
@@ -89,13 +86,12 @@ TEST(rezantseva_a_vector_dot_product_mpi, test_task_run) {
   // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
   // int answer = res[0];
-  //  Create Perf analyzer
+  //   Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    // ASSERT_EQ(rezantseva_a_vector_dot_product_mpi::vectorDotProduct(global_vec[0], global_vec[1]), answer);
+    ASSERT_EQ(rezantseva_a_vector_dot_product_mpi::vectorDotProduct(global_vec[0], global_vec[1]), res[0]);
   }
 }
-*/
