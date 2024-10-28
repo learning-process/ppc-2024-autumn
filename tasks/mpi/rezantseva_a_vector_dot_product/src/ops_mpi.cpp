@@ -144,7 +144,7 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::run() {
   for (size_t i = 0; i < local_input1_.size(); i++) {
     local_res += local_input1_[i] * local_input2_[i];
   }
-  boost::mpi::reduce(world, local_res, res, std::plus<int>(), 0);
+  boost::mpi::reduce(world, local_res, res, std::plus<>(), 0);
   // std::vector<int> all_res;
   // boost::mpi::gather(world, local_res, all_res, 0);
 

@@ -134,10 +134,10 @@ TEST(rezantseva_a_vector_dot_product_mpi, check_vectors_not_equal) {
     taskDataPar->inputs_count.emplace_back(global_vec[1].size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size());
+    rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
   // Create Task
-  rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
 }
 
 TEST(rezantseva_a_vector_dot_product_mpi, check_vectors_equal_true) {
@@ -161,10 +161,10 @@ TEST(rezantseva_a_vector_dot_product_mpi, check_vectors_equal_true) {
     taskDataPar->inputs_count.emplace_back(global_vec[1].size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size());
+    rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), true);
   }
   // Create Task
-  rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
 }
 
 TEST(rezantseva_a_vector_dot_product_mpi, check_mpi_vectorDotProduct_right) {
@@ -193,14 +193,16 @@ TEST(rezantseva_a_vector_dot_product_mpi, check_mpi_run_right) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size());
   }
-
   rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  ASSERT_EQ(rezantseva_a_vector_dot_product_mpi::vectorDotProduct(v1, v2), res[0]);
+  if (world.rank() == 0) {
+    ASSERT_EQ(rezantseva_a_vector_dot_product_mpi::vectorDotProduct(v1, v2), res[0]);
+  }
 }
+
 TEST(rezantseva_a_vector_dot_product_mpi, check_mpi_run_right_58) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vec;
@@ -220,13 +222,14 @@ TEST(rezantseva_a_vector_dot_product_mpi, check_mpi_run_right_58) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size());
   }
-
   rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  ASSERT_EQ(rezantseva_a_vector_dot_product_mpi::vectorDotProduct(v1, v2), res[0]);
+  if (world.rank() == 0) {
+    ASSERT_EQ(58, res[0]);
+  }
 }
 TEST(rezantseva_a_vector_dot_product_mpi, check_mpi_run_right_empty) {
   boost::mpi::communicator world;
@@ -247,11 +250,12 @@ TEST(rezantseva_a_vector_dot_product_mpi, check_mpi_run_right_empty) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size());
   }
-
   rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  ASSERT_EQ(rezantseva_a_vector_dot_product_mpi::vectorDotProduct(v1, v2), res[0]);
+  if (world.rank() == 0) {
+    ASSERT_EQ(rezantseva_a_vector_dot_product_mpi::vectorDotProduct(v1, v2), res[0]);
+  }
 }
