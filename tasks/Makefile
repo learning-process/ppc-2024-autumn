@@ -754,77 +754,77 @@ seq/example/src/ops_seq.cpp.s:
 	cd /home/user/VScode/ppc/ppc-2024-autumn && $(MAKE) $(MAKESILENT) -f tasks/CMakeFiles/seq_module_lib.dir/build.make tasks/CMakeFiles/seq_module_lib.dir/seq/example/src/ops_seq.cpp.s
 .PHONY : seq/example/src/ops_seq.cpp.s
 
-seq/oturin_a_max_values_by_rows_matrix_seq/func_tests/main.o: seq/oturin_a_max_values_by_rows_matrix_seq/func_tests/main.cpp.o
-.PHONY : seq/oturin_a_max_values_by_rows_matrix_seq/func_tests/main.o
+seq/oturin_a_max_values_by_rows_matrix/func_tests/main.o: seq/oturin_a_max_values_by_rows_matrix/func_tests/main.cpp.o
+.PHONY : seq/oturin_a_max_values_by_rows_matrix/func_tests/main.o
 
 # target to build an object file
-seq/oturin_a_max_values_by_rows_matrix_seq/func_tests/main.cpp.o:
-	cd /home/user/VScode/ppc/ppc-2024-autumn && $(MAKE) $(MAKESILENT) -f tasks/CMakeFiles/seq_func_tests.dir/build.make tasks/CMakeFiles/seq_func_tests.dir/seq/oturin_a_max_values_by_rows_matrix_seq/func_tests/main.cpp.o
-.PHONY : seq/oturin_a_max_values_by_rows_matrix_seq/func_tests/main.cpp.o
+seq/oturin_a_max_values_by_rows_matrix/func_tests/main.cpp.o:
+	cd /home/user/VScode/ppc/ppc-2024-autumn && $(MAKE) $(MAKESILENT) -f tasks/CMakeFiles/seq_func_tests.dir/build.make tasks/CMakeFiles/seq_func_tests.dir/seq/oturin_a_max_values_by_rows_matrix/func_tests/main.cpp.o
+.PHONY : seq/oturin_a_max_values_by_rows_matrix/func_tests/main.cpp.o
 
-seq/oturin_a_max_values_by_rows_matrix_seq/func_tests/main.i: seq/oturin_a_max_values_by_rows_matrix_seq/func_tests/main.cpp.i
-.PHONY : seq/oturin_a_max_values_by_rows_matrix_seq/func_tests/main.i
+seq/oturin_a_max_values_by_rows_matrix/func_tests/main.i: seq/oturin_a_max_values_by_rows_matrix/func_tests/main.cpp.i
+.PHONY : seq/oturin_a_max_values_by_rows_matrix/func_tests/main.i
 
 # target to preprocess a source file
-seq/oturin_a_max_values_by_rows_matrix_seq/func_tests/main.cpp.i:
-	cd /home/user/VScode/ppc/ppc-2024-autumn && $(MAKE) $(MAKESILENT) -f tasks/CMakeFiles/seq_func_tests.dir/build.make tasks/CMakeFiles/seq_func_tests.dir/seq/oturin_a_max_values_by_rows_matrix_seq/func_tests/main.cpp.i
-.PHONY : seq/oturin_a_max_values_by_rows_matrix_seq/func_tests/main.cpp.i
+seq/oturin_a_max_values_by_rows_matrix/func_tests/main.cpp.i:
+	cd /home/user/VScode/ppc/ppc-2024-autumn && $(MAKE) $(MAKESILENT) -f tasks/CMakeFiles/seq_func_tests.dir/build.make tasks/CMakeFiles/seq_func_tests.dir/seq/oturin_a_max_values_by_rows_matrix/func_tests/main.cpp.i
+.PHONY : seq/oturin_a_max_values_by_rows_matrix/func_tests/main.cpp.i
 
-seq/oturin_a_max_values_by_rows_matrix_seq/func_tests/main.s: seq/oturin_a_max_values_by_rows_matrix_seq/func_tests/main.cpp.s
-.PHONY : seq/oturin_a_max_values_by_rows_matrix_seq/func_tests/main.s
+seq/oturin_a_max_values_by_rows_matrix/func_tests/main.s: seq/oturin_a_max_values_by_rows_matrix/func_tests/main.cpp.s
+.PHONY : seq/oturin_a_max_values_by_rows_matrix/func_tests/main.s
 
 # target to generate assembly for a file
-seq/oturin_a_max_values_by_rows_matrix_seq/func_tests/main.cpp.s:
-	cd /home/user/VScode/ppc/ppc-2024-autumn && $(MAKE) $(MAKESILENT) -f tasks/CMakeFiles/seq_func_tests.dir/build.make tasks/CMakeFiles/seq_func_tests.dir/seq/oturin_a_max_values_by_rows_matrix_seq/func_tests/main.cpp.s
-.PHONY : seq/oturin_a_max_values_by_rows_matrix_seq/func_tests/main.cpp.s
+seq/oturin_a_max_values_by_rows_matrix/func_tests/main.cpp.s:
+	cd /home/user/VScode/ppc/ppc-2024-autumn && $(MAKE) $(MAKESILENT) -f tasks/CMakeFiles/seq_func_tests.dir/build.make tasks/CMakeFiles/seq_func_tests.dir/seq/oturin_a_max_values_by_rows_matrix/func_tests/main.cpp.s
+.PHONY : seq/oturin_a_max_values_by_rows_matrix/func_tests/main.cpp.s
 
-seq/oturin_a_max_values_by_rows_matrix_seq/perf_tests/main.o: seq/oturin_a_max_values_by_rows_matrix_seq/perf_tests/main.cpp.o
-.PHONY : seq/oturin_a_max_values_by_rows_matrix_seq/perf_tests/main.o
+seq/oturin_a_max_values_by_rows_matrix/perf_tests/main.o: seq/oturin_a_max_values_by_rows_matrix/perf_tests/main.cpp.o
+.PHONY : seq/oturin_a_max_values_by_rows_matrix/perf_tests/main.o
 
 # target to build an object file
-seq/oturin_a_max_values_by_rows_matrix_seq/perf_tests/main.cpp.o:
-	cd /home/user/VScode/ppc/ppc-2024-autumn && $(MAKE) $(MAKESILENT) -f tasks/CMakeFiles/seq_perf_tests.dir/build.make tasks/CMakeFiles/seq_perf_tests.dir/seq/oturin_a_max_values_by_rows_matrix_seq/perf_tests/main.cpp.o
-.PHONY : seq/oturin_a_max_values_by_rows_matrix_seq/perf_tests/main.cpp.o
+seq/oturin_a_max_values_by_rows_matrix/perf_tests/main.cpp.o:
+	cd /home/user/VScode/ppc/ppc-2024-autumn && $(MAKE) $(MAKESILENT) -f tasks/CMakeFiles/seq_perf_tests.dir/build.make tasks/CMakeFiles/seq_perf_tests.dir/seq/oturin_a_max_values_by_rows_matrix/perf_tests/main.cpp.o
+.PHONY : seq/oturin_a_max_values_by_rows_matrix/perf_tests/main.cpp.o
 
-seq/oturin_a_max_values_by_rows_matrix_seq/perf_tests/main.i: seq/oturin_a_max_values_by_rows_matrix_seq/perf_tests/main.cpp.i
-.PHONY : seq/oturin_a_max_values_by_rows_matrix_seq/perf_tests/main.i
+seq/oturin_a_max_values_by_rows_matrix/perf_tests/main.i: seq/oturin_a_max_values_by_rows_matrix/perf_tests/main.cpp.i
+.PHONY : seq/oturin_a_max_values_by_rows_matrix/perf_tests/main.i
 
 # target to preprocess a source file
-seq/oturin_a_max_values_by_rows_matrix_seq/perf_tests/main.cpp.i:
-	cd /home/user/VScode/ppc/ppc-2024-autumn && $(MAKE) $(MAKESILENT) -f tasks/CMakeFiles/seq_perf_tests.dir/build.make tasks/CMakeFiles/seq_perf_tests.dir/seq/oturin_a_max_values_by_rows_matrix_seq/perf_tests/main.cpp.i
-.PHONY : seq/oturin_a_max_values_by_rows_matrix_seq/perf_tests/main.cpp.i
+seq/oturin_a_max_values_by_rows_matrix/perf_tests/main.cpp.i:
+	cd /home/user/VScode/ppc/ppc-2024-autumn && $(MAKE) $(MAKESILENT) -f tasks/CMakeFiles/seq_perf_tests.dir/build.make tasks/CMakeFiles/seq_perf_tests.dir/seq/oturin_a_max_values_by_rows_matrix/perf_tests/main.cpp.i
+.PHONY : seq/oturin_a_max_values_by_rows_matrix/perf_tests/main.cpp.i
 
-seq/oturin_a_max_values_by_rows_matrix_seq/perf_tests/main.s: seq/oturin_a_max_values_by_rows_matrix_seq/perf_tests/main.cpp.s
-.PHONY : seq/oturin_a_max_values_by_rows_matrix_seq/perf_tests/main.s
+seq/oturin_a_max_values_by_rows_matrix/perf_tests/main.s: seq/oturin_a_max_values_by_rows_matrix/perf_tests/main.cpp.s
+.PHONY : seq/oturin_a_max_values_by_rows_matrix/perf_tests/main.s
 
 # target to generate assembly for a file
-seq/oturin_a_max_values_by_rows_matrix_seq/perf_tests/main.cpp.s:
-	cd /home/user/VScode/ppc/ppc-2024-autumn && $(MAKE) $(MAKESILENT) -f tasks/CMakeFiles/seq_perf_tests.dir/build.make tasks/CMakeFiles/seq_perf_tests.dir/seq/oturin_a_max_values_by_rows_matrix_seq/perf_tests/main.cpp.s
-.PHONY : seq/oturin_a_max_values_by_rows_matrix_seq/perf_tests/main.cpp.s
+seq/oturin_a_max_values_by_rows_matrix/perf_tests/main.cpp.s:
+	cd /home/user/VScode/ppc/ppc-2024-autumn && $(MAKE) $(MAKESILENT) -f tasks/CMakeFiles/seq_perf_tests.dir/build.make tasks/CMakeFiles/seq_perf_tests.dir/seq/oturin_a_max_values_by_rows_matrix/perf_tests/main.cpp.s
+.PHONY : seq/oturin_a_max_values_by_rows_matrix/perf_tests/main.cpp.s
 
-seq/oturin_a_max_values_by_rows_matrix_seq/src/ops_seq.o: seq/oturin_a_max_values_by_rows_matrix_seq/src/ops_seq.cpp.o
-.PHONY : seq/oturin_a_max_values_by_rows_matrix_seq/src/ops_seq.o
+seq/oturin_a_max_values_by_rows_matrix/src/ops_seq.o: seq/oturin_a_max_values_by_rows_matrix/src/ops_seq.cpp.o
+.PHONY : seq/oturin_a_max_values_by_rows_matrix/src/ops_seq.o
 
 # target to build an object file
-seq/oturin_a_max_values_by_rows_matrix_seq/src/ops_seq.cpp.o:
-	cd /home/user/VScode/ppc/ppc-2024-autumn && $(MAKE) $(MAKESILENT) -f tasks/CMakeFiles/seq_module_lib.dir/build.make tasks/CMakeFiles/seq_module_lib.dir/seq/oturin_a_max_values_by_rows_matrix_seq/src/ops_seq.cpp.o
-.PHONY : seq/oturin_a_max_values_by_rows_matrix_seq/src/ops_seq.cpp.o
+seq/oturin_a_max_values_by_rows_matrix/src/ops_seq.cpp.o:
+	cd /home/user/VScode/ppc/ppc-2024-autumn && $(MAKE) $(MAKESILENT) -f tasks/CMakeFiles/seq_module_lib.dir/build.make tasks/CMakeFiles/seq_module_lib.dir/seq/oturin_a_max_values_by_rows_matrix/src/ops_seq.cpp.o
+.PHONY : seq/oturin_a_max_values_by_rows_matrix/src/ops_seq.cpp.o
 
-seq/oturin_a_max_values_by_rows_matrix_seq/src/ops_seq.i: seq/oturin_a_max_values_by_rows_matrix_seq/src/ops_seq.cpp.i
-.PHONY : seq/oturin_a_max_values_by_rows_matrix_seq/src/ops_seq.i
+seq/oturin_a_max_values_by_rows_matrix/src/ops_seq.i: seq/oturin_a_max_values_by_rows_matrix/src/ops_seq.cpp.i
+.PHONY : seq/oturin_a_max_values_by_rows_matrix/src/ops_seq.i
 
 # target to preprocess a source file
-seq/oturin_a_max_values_by_rows_matrix_seq/src/ops_seq.cpp.i:
-	cd /home/user/VScode/ppc/ppc-2024-autumn && $(MAKE) $(MAKESILENT) -f tasks/CMakeFiles/seq_module_lib.dir/build.make tasks/CMakeFiles/seq_module_lib.dir/seq/oturin_a_max_values_by_rows_matrix_seq/src/ops_seq.cpp.i
-.PHONY : seq/oturin_a_max_values_by_rows_matrix_seq/src/ops_seq.cpp.i
+seq/oturin_a_max_values_by_rows_matrix/src/ops_seq.cpp.i:
+	cd /home/user/VScode/ppc/ppc-2024-autumn && $(MAKE) $(MAKESILENT) -f tasks/CMakeFiles/seq_module_lib.dir/build.make tasks/CMakeFiles/seq_module_lib.dir/seq/oturin_a_max_values_by_rows_matrix/src/ops_seq.cpp.i
+.PHONY : seq/oturin_a_max_values_by_rows_matrix/src/ops_seq.cpp.i
 
-seq/oturin_a_max_values_by_rows_matrix_seq/src/ops_seq.s: seq/oturin_a_max_values_by_rows_matrix_seq/src/ops_seq.cpp.s
-.PHONY : seq/oturin_a_max_values_by_rows_matrix_seq/src/ops_seq.s
+seq/oturin_a_max_values_by_rows_matrix/src/ops_seq.s: seq/oturin_a_max_values_by_rows_matrix/src/ops_seq.cpp.s
+.PHONY : seq/oturin_a_max_values_by_rows_matrix/src/ops_seq.s
 
 # target to generate assembly for a file
-seq/oturin_a_max_values_by_rows_matrix_seq/src/ops_seq.cpp.s:
-	cd /home/user/VScode/ppc/ppc-2024-autumn && $(MAKE) $(MAKESILENT) -f tasks/CMakeFiles/seq_module_lib.dir/build.make tasks/CMakeFiles/seq_module_lib.dir/seq/oturin_a_max_values_by_rows_matrix_seq/src/ops_seq.cpp.s
-.PHONY : seq/oturin_a_max_values_by_rows_matrix_seq/src/ops_seq.cpp.s
+seq/oturin_a_max_values_by_rows_matrix/src/ops_seq.cpp.s:
+	cd /home/user/VScode/ppc/ppc-2024-autumn && $(MAKE) $(MAKESILENT) -f tasks/CMakeFiles/seq_module_lib.dir/build.make tasks/CMakeFiles/seq_module_lib.dir/seq/oturin_a_max_values_by_rows_matrix/src/ops_seq.cpp.s
+.PHONY : seq/oturin_a_max_values_by_rows_matrix/src/ops_seq.cpp.s
 
 stl/example/func_tests/main.o: stl/example/func_tests/main.cpp.o
 .PHONY : stl/example/func_tests/main.o
@@ -1039,15 +1039,15 @@ help:
 	@echo "... seq/example/src/ops_seq.o"
 	@echo "... seq/example/src/ops_seq.i"
 	@echo "... seq/example/src/ops_seq.s"
-	@echo "... seq/oturin_a_max_values_by_rows_matrix_seq/func_tests/main.o"
-	@echo "... seq/oturin_a_max_values_by_rows_matrix_seq/func_tests/main.i"
-	@echo "... seq/oturin_a_max_values_by_rows_matrix_seq/func_tests/main.s"
-	@echo "... seq/oturin_a_max_values_by_rows_matrix_seq/perf_tests/main.o"
-	@echo "... seq/oturin_a_max_values_by_rows_matrix_seq/perf_tests/main.i"
-	@echo "... seq/oturin_a_max_values_by_rows_matrix_seq/perf_tests/main.s"
-	@echo "... seq/oturin_a_max_values_by_rows_matrix_seq/src/ops_seq.o"
-	@echo "... seq/oturin_a_max_values_by_rows_matrix_seq/src/ops_seq.i"
-	@echo "... seq/oturin_a_max_values_by_rows_matrix_seq/src/ops_seq.s"
+	@echo "... seq/oturin_a_max_values_by_rows_matrix/func_tests/main.o"
+	@echo "... seq/oturin_a_max_values_by_rows_matrix/func_tests/main.i"
+	@echo "... seq/oturin_a_max_values_by_rows_matrix/func_tests/main.s"
+	@echo "... seq/oturin_a_max_values_by_rows_matrix/perf_tests/main.o"
+	@echo "... seq/oturin_a_max_values_by_rows_matrix/perf_tests/main.i"
+	@echo "... seq/oturin_a_max_values_by_rows_matrix/perf_tests/main.s"
+	@echo "... seq/oturin_a_max_values_by_rows_matrix/src/ops_seq.o"
+	@echo "... seq/oturin_a_max_values_by_rows_matrix/src/ops_seq.i"
+	@echo "... seq/oturin_a_max_values_by_rows_matrix/src/ops_seq.s"
 	@echo "... stl/example/func_tests/main.o"
 	@echo "... stl/example/func_tests/main.i"
 	@echo "... stl/example/func_tests/main.s"

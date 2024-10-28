@@ -10,18 +10,25 @@
 TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_1) {
   size_t n = 5;
   size_t m = 5;
-  boost::mpi::communicator world;
+
+  int argc = 1;
+  char **argv;
+  MPI_Init(&argc, &argv);
+  int world_size, world_rank;
+  MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+  MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+
   std::vector<int> global_mat;
   std::vector<int32_t> global_max(m, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  if (world.rank() == 0) {
+  taskDataPar->inputs_count.emplace_back(n);
+  taskDataPar->inputs_count.emplace_back(m);
+  if (world_rank == 0) {
     global_mat = oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(n * m);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
-    taskDataPar->inputs_count.emplace_back(n);
-    taskDataPar->inputs_count.emplace_back(m);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
 
@@ -31,16 +38,16 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_1) {
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
 
-  if (world.rank() == 0) {
+  if (world_rank == 0) {
     // Create data
     std::vector<int32_t> reference_max(m, 0);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
     taskDataSeq->inputs_count.emplace_back(n);
     taskDataSeq->inputs_count.emplace_back(m);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_max.data()));
     taskDataSeq->outputs_count.emplace_back(reference_max.size());
 
     // Create Task
@@ -54,24 +61,31 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_1) {
       ASSERT_EQ(reference_max[i], global_max[i]);
     }
   }
+  MPI_Finalize();
 }
 
 // rectangular
 TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_2) {
   size_t n = 10;
   size_t m = 15;
-  boost::mpi::communicator world;
+  int argc = 1;
+  char **argv;
+  MPI_Init(&argc, &argv);
+  int world_size, world_rank;
+  MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+  MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+
   std::vector<int> global_mat;
   std::vector<int32_t> global_max(m, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  if (world.rank() == 0) {
+  taskDataPar->inputs_count.emplace_back(n);
+  taskDataPar->inputs_count.emplace_back(m);
+  if (world_rank == 0) {
     global_mat = oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(n * m);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
-    taskDataPar->inputs_count.emplace_back(n);
-    taskDataPar->inputs_count.emplace_back(m);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
 
@@ -81,16 +95,16 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_2) {
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
 
-  if (world.rank() == 0) {
+  if (world_rank == 0) {
     // Create data
     std::vector<int32_t> reference_max(m, 0);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
     taskDataSeq->inputs_count.emplace_back(n);
     taskDataSeq->inputs_count.emplace_back(m);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_max.data()));
     taskDataSeq->outputs_count.emplace_back(reference_max.size());
 
     // Create Task
@@ -104,23 +118,30 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_2) {
       ASSERT_EQ(reference_max[i], global_max[i]);
     }
   }
+  MPI_Finalize();
 }
 
 TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_3) {
   size_t n = 15;
   size_t m = 10;
-  boost::mpi::communicator world;
+  int argc = 1;
+  char **argv;
+  MPI_Init(&argc, &argv);
+  int world_size, world_rank;
+  MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+  MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+
   std::vector<int> global_mat;
   std::vector<int32_t> global_max(m, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  if (world.rank() == 0) {
+  taskDataPar->inputs_count.emplace_back(n);
+  taskDataPar->inputs_count.emplace_back(m);
+  if (world_rank == 0) {
     global_mat = oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(n * m);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
-    taskDataPar->inputs_count.emplace_back(n);
-    taskDataPar->inputs_count.emplace_back(m);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
 
@@ -130,16 +151,16 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_3) {
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
 
-  if (world.rank() == 0) {
+  if (world_rank == 0) {
     // Create data
     std::vector<int32_t> reference_max(m, 0);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
     taskDataSeq->inputs_count.emplace_back(n);
     taskDataSeq->inputs_count.emplace_back(m);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_max.data()));
     taskDataSeq->outputs_count.emplace_back(reference_max.size());
 
     // Create Task
@@ -153,23 +174,30 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_3) {
       ASSERT_EQ(reference_max[i], global_max[i]);
     }
   }
+  MPI_Finalize();
 }
 
 TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_4) {
   size_t n = 1;
   size_t m = 15;
-  boost::mpi::communicator world;
+  int argc = 1;
+  char **argv;
+  MPI_Init(&argc, &argv);
+  int world_size, world_rank;
+  MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+  MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+
   std::vector<int> global_mat;
   std::vector<int32_t> global_max(m, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  if (world.rank() == 0) {
+  taskDataPar->inputs_count.emplace_back(n);
+  taskDataPar->inputs_count.emplace_back(m);
+  if (world_rank == 0) {
     global_mat = oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(n * m);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
-    taskDataPar->inputs_count.emplace_back(n);
-    taskDataPar->inputs_count.emplace_back(m);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
 
@@ -179,63 +207,16 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_4) {
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
 
-  if (world.rank() == 0) {
+  if (world_rank == 0) {
     // Create data
     std::vector<int32_t> reference_max(m, 0);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
     taskDataSeq->inputs_count.emplace_back(n);
     taskDataSeq->inputs_count.emplace_back(m);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_max.size());
-
-    // Create Task
-    oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "max");
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
-
-    ASSERT_EQ(reference_max, global_max);
-  }
-}
-
-TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_5) {
-  size_t n = 15;
-  size_t m = 1;
-  boost::mpi::communicator world;
-  std::vector<int> global_mat;
-  std::vector<int32_t> global_max(m, 0);
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    global_mat = oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(n * m);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
-    taskDataPar->inputs_count.emplace_back(n);
-    taskDataPar->inputs_count.emplace_back(m);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
-    taskDataPar->outputs_count.emplace_back(global_max.size());
-  }
-
-  oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "max");
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
-
-  if (world.rank() == 0) {
-    // Create data
-    std::vector<int32_t> reference_max(m, 0);
-
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
-    taskDataSeq->inputs_count.emplace_back(n);
-    taskDataSeq->inputs_count.emplace_back(m);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_max.data()));
     taskDataSeq->outputs_count.emplace_back(reference_max.size());
 
     // Create Task
@@ -249,4 +230,61 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_5) {
       ASSERT_EQ(reference_max[i], global_max[i]);
     }
   }
+  MPI_Finalize();
+}
+
+TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_5) {
+  size_t n = 15;
+  size_t m = 1;
+  int argc = 1;
+  char **argv;
+  MPI_Init(&argc, &argv);
+  int world_size, world_rank;
+  MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+  MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+
+  std::vector<int> global_mat;
+  std::vector<int32_t> global_max(m, 0);
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  taskDataPar->inputs_count.emplace_back(n);
+  taskDataPar->inputs_count.emplace_back(m);
+  if (world_rank == 0) {
+    global_mat = oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(n * m);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
+    taskDataPar->outputs_count.emplace_back(global_max.size());
+  }
+
+  oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "max");
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world_rank == 0) {
+    // Create data
+    std::vector<int32_t> reference_max(m, 0);
+
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
+    taskDataSeq->inputs_count.emplace_back(n);
+    taskDataSeq->inputs_count.emplace_back(m);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_max.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_max.size());
+
+    // Create Task
+    oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "max");
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    for (size_t i = 0; i < global_max.size(); i++) {
+      ASSERT_EQ(reference_max[i], global_max[i]);
+    }
+  }
+  MPI_Finalize();
 }

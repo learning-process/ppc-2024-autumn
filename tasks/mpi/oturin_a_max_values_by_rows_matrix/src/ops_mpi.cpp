@@ -20,13 +20,12 @@ std::vector<int> oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(int sz)
 }
 
 bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::pre_processing() {
-  internal_order_test();
   // Init vectors
   n = (size_t)(taskData->inputs_count[0]);
   m = (size_t)(taskData->inputs_count[1]);
-  input_ = std::vector<int>(taskData->inputs_count[0]);
+  input_ = std::vector<int>(n * m);
   int *tmp_ptr = reinterpret_cast<int *>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+  for (unsigned i = 0; i < n * m; i++) {
     input_[i] = tmp_ptr[i];
   }
   // Init values for output
@@ -36,14 +35,14 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::pre_processi
 
 bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  // Check count elements of output
-  return taskData->inputs_count[0] > 1 && taskData->outputs_count[0] > 1;
+  // Check count elements of i/o
+  // n && m && maxes:
+  return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] > 0;
 }
 
 bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::run() {
   internal_order_test();
   for (size_t i = 0; i < m; i++) {
-    // ops == max
     res[i] = *std::max_element(input_.begin() + i * n, input_.begin() + (i + 1) * n);
   }
   return true;
@@ -56,29 +55,43 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::post_process
   }
   return true;
 }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::pre_processing() {
-  internal_order_test();
-  n = (size_t)(taskData->inputs_count[0]);
-  m = (size_t)(taskData->inputs_count[1]);
-  // Init vectors
-  if (world.rank() == 0) {
-    // Init vectors
-    input_ = std::vector<int>(taskData->inputs_count[0]);
-  }
-
-  // Init value for output
-
-  return true;
-}
+////////////////////////////////////////////////////////////////////////////////////////
 
 bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
-  if (world.rank() == 0) {
+
+  MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+  MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+
+  if (world_size <= 1) {
+    EXPECT_EQ("0", "0") << "WORLD TOO SMALL" << std::endl;
+    return false;
+  }
+
+  if (world_rank == 0) {
     // Check count elements of output
     return taskData->inputs_count[0] > 1 && taskData->outputs_count[0] > 1;
   }
+  return true;
+}
+
+bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::pre_processing() {
+  internal_order_test();
+
+  // Init vectors
+  n = (size_t)(taskData->inputs_count[0]);
+  m = (size_t)(taskData->inputs_count[1]);
+
+  if (world_rank == 0) {
+    input_ = std::vector<int>(n * m);
+    int *tmp_ptr = reinterpret_cast<int *>(taskData->inputs[0]);
+    for (unsigned i = 0; i < n * m; i++) {
+      input_[i] = tmp_ptr[i];
+    }
+    // Init values for output
+    res = std::vector<int>(m, 0);
+  }
+
   return true;
 }
 
@@ -89,25 +102,14 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
 #define TAG_TOBASE 2
 #define TAG_TOSAT 3
 
-  int world_size;
-  MPI_Comm_size(MPI_COMM_WORLD, &world_size);
-
-  int world_rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
-
   MPI_Status status;
 
-  if (world_size <= 1) {
-    // printf("too small world\n");
-    return false;
-  }
-
   /*
-      m
-      ^
-      | -9 99     99
-      | 12 06     12
-      +------> n
+        m           maxes:
+        ^
+        | -9 99    :  99
+        | 12 06    :  12
+        +------> n
   */
 
   if (world_rank == 0) {  // base
@@ -134,12 +136,6 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
     }
     for (size_t i = 0; i < satellites; i++)  // close all satellite processes
       MPI_Send(exit, 1, MPI_INT, i + 1, TAG_EXIT, MPI_COMM_WORLD);
-    /*
-    for (size_t i = 0; i < m; i++) {
-        for (size_t j = 0; j < n; j++)
-            printf("%02d ", arr[i * n + j]);
-        printf(" max: %d\n", maxes[i]);
-    }*/
 
     res.assign(maxes, maxes + m);
 
@@ -165,13 +161,12 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
 #undef TAG_EXIT
 #undef TAG_TOBASE
 #undef TAG_TOSAT
-
   return true;
 }
 
 bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
-  if (world.rank() == 0) {
+  if (world_rank == 0) {
     for (size_t i = 0; i < m; i++) {
       reinterpret_cast<int *>(taskData->outputs[0])[i] = res[i];
     }
