@@ -90,11 +90,16 @@ TEST(grudzin_k_nearest_neighbor_elements_seq, Test_Close_40) {
 
 TEST(grudzin_k_nearest_neighbor_elements_seq, Test_Close_60) {
   // Create data
-  std::vector<int> in = {2, 3, 4, 1, 7, 3, 2, 9, -15, 3, -1, 5, 8, 5, 12, 9, 24, 12,
-                         2, 3, 4, 1, 7, 3, 2, 9, -15, 3, -1, 5, 8, 5, 12, 9, 24, 12,
-                         2,3, 4, 1, 7, 3, 2, 9, -15, 3, -1, 5,  8, 5, 12, 9,  24, 12};
+  std::vector<int> in = {2, 3};
   std::vector<int> out(1, 0);
-  int ans = 0;
+  for (int i = 0; i < 58; ++i) {
+    if (i % 2 == 0) {
+      in.push_back(100);
+    } else {
+      in.push_back(0);
+    }
+  }
+  int ans = 59;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();

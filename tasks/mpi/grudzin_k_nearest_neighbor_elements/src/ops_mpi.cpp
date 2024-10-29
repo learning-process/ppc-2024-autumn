@@ -64,7 +64,7 @@ bool grudzin_k_nearest_neighbor_elements_mpi::TestMPITaskParallel::pre_processin
 
   if (world.rank() == 0) {
     // Init vectors
-    input_ = std::vector<int>(world.size() * delta + 1);
+    input_ = std::vector<int>(world.size() * delta + 1, 0);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
     for (int proc = 1; proc < world.size(); proc++) {
@@ -87,7 +87,7 @@ bool grudzin_k_nearest_neighbor_elements_mpi::TestMPITaskParallel::validation() 
   internal_order_test();
   if (world.rank() == 0) {
     // Check count elements of output
-  return taskData->inputs_count[0] > 1 && taskData->outputs_count[0] == 1;
+    return taskData->inputs_count[0] > 1 && taskData->outputs_count[0] == 1;
   }
   return true;
 }
@@ -96,7 +96,7 @@ bool grudzin_k_nearest_neighbor_elements_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   std::pair<int, int> local_ans_ = {INT_MAX, -1};
   for (size_t i = 0; i < local_input_.size() - 1 && (i + start) < size - 1; ++i) {
-    local_ans_ = std::min(local_ans_, {abs(local_input_[i] - local_input_[i + 1]), i});
+    local_ans_ = std::min(local_ans_, {abs(local_input_[i] - local_input_[i + 1]), i + start});
   }
   reduce(world, local_ans_, res, boost::mpi::minimum<std::pair<int, int>>(), 0);
   return true;
