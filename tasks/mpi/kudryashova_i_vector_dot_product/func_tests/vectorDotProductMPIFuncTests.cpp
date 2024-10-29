@@ -6,15 +6,13 @@
 
 #include "mpi/kudryashova_i_vector_dot_product/include/vectorDotProductMPI.hpp"
 
-TEST(kudryashova_i_vector_dot_product_mpi, mpi_vectorDotProduct_right) {
+TEST(kudryashova_i_vector_dot_product_mpi, mpi_vectorDotProduct) {
   std::vector<int> vector1 = {8, 7, 6};
   std::vector<int> vector2 = {3, 2, 1};
   ASSERT_EQ(44, kudryashova_i_vector_dot_product_mpi::vectorDotProduct(vector1, vector2));
 }
 
-// test
-
-TEST(kudryashova_i_vector_dot_product_mpi, scalar_multiply_vector_size_120) {
+TEST(kudryashova_i_vector_dot_product_mpi, scalar_multiply_vector_120) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vector;
   std::vector<int32_t> result(1, 0);
@@ -60,7 +58,7 @@ TEST(kudryashova_i_vector_dot_product_mpi, scalar_multiply_vector_size_120) {
   }
 }
 
-TEST(kudryashova_i_vector_dot_product_mpi, scalar_multiply_vector_size_300) {
+TEST(kudryashova_i_vector_dot_product_mpi, scalar_multiply_vector_300) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vector;
   std::vector<int32_t> result(1, 0);

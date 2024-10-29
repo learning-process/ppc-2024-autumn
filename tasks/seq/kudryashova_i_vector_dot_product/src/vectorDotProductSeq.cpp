@@ -8,7 +8,7 @@ std::vector<int> kudryashova_i_vector_dot_product::GetRandomVector(const int siz
   std::vector<int> vector(size);
   std::srand(static_cast<unsigned>(time(NULL)) + ++seedOffset);
   for (int i = 0; i < size; ++i) {
-    vector[i] = std::rand() % 10 + 1;
+    vector[i] = std::rand() % 100 + 1;
   }
   return vector;
 }
