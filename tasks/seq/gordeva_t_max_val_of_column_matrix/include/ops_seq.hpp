@@ -25,4 +25,4 @@ class TestTaskSequential : public ppc::core::Task {
   std::vector<int> res_;
 };
 
-}  // namespace gordeeva_t_max_val_of_column_matrix_seq
+}  // namespace gordeva_t_max_val_of_column_matrix_seq
