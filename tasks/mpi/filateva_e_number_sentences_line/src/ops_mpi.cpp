@@ -12,7 +12,7 @@ std::string filateva_e_number_sentences_line_mpi::getRandomLine(int max_count) {
   std::mt19937 gen(dev());
   std::string line = "Hello world. How many words are in this sentence? The task of parallel programming!";
   int count = gen() % max_count;
-  for (int i = 0; i < count; i++) {
+  for (int i = 0; i < count; ++i) {
     line += line;
   }
   return line;
