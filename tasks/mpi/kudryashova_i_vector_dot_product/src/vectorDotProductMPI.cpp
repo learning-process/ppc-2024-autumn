@@ -64,15 +64,12 @@ bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::pre_processing()
     }
     delta = taskData->inputs_count[0] / world.size();
   }
-  broadcast(world, delta, 0);
-
   if (world.rank() == 0) {
     input_.resize(taskData->inputs.size());
     for (size_t i = 0; i < taskData->inputs.size(); ++i) {
       if (taskData->inputs[i] == nullptr || taskData->inputs_count[i] == 0) {
         return false;
       }
-
       input_[i].resize(taskData->inputs_count[i]);
       int* source_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
 
@@ -96,7 +93,7 @@ bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::validation() {
 
 bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-
+  broadcast(world, delta, 0);
   if (world.rank() == 0) {
     for (int proc = 1; proc < world.size(); ++proc) {
       world.send(proc, 0, input_[0].data() + proc * delta, delta);
@@ -105,7 +102,6 @@ bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::run() {
   }
   local_input1_.resize(delta);
   local_input2_.resize(delta);
-
   if (world.rank() == 0) {
     std::copy(input_[0].begin(), input_[0].begin() + delta, local_input1_.begin());
     std::copy(input_[1].begin(), input_[1].begin() + delta, local_input2_.begin());
@@ -113,9 +109,7 @@ bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::run() {
     world.recv(0, 0, local_input1_.data(), delta);
     world.recv(0, 1, local_input2_.data(), delta);
   }
-
   int local_result = std::inner_product(local_input1_.begin(), local_input1_.end(), local_input2_.begin(), 0);
-
   std::vector<int> full_results;
   gather(world, local_result, full_results, 0);
 
