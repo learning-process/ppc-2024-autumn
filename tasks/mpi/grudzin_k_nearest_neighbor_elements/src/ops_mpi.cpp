@@ -67,19 +67,17 @@ bool grudzin_k_nearest_neighbor_elements_mpi::TestMPITaskParallel::pre_processin
     input_ = std::vector<int>(world.size() * delta + 2, 0);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
-    size_t strt = world.rank() * delta;  
     for (int proc = 1; proc < world.size(); proc++) {
       world.send(proc, 0, input_.data() + proc * delta, delta + 1);
-      world.send(proc, 0, &strt, 1);
     }
   }
+
   local_input_ = std::vector<int>(delta + 1);
+  start = world.rank() * delta;
   if (world.rank() == 0) {
     local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta + 1);
-    start = 0;
   } else {
     world.recv(0, 0, local_input_.data(), delta + 1);
-    world.recv(0, 0, &start, 1);
   }
   // Init value for output
   res = {INT_MAX, -1};

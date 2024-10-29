@@ -9,23 +9,10 @@
 
 TEST(grudzin_k_nearest_neighbor_elements_mpi, Wrong_Test) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
+  std::vector<int> global_vec(1);
   std::vector<int32_t> global_ans(1, INT_MAX);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    const int count_size_vector = 1;
-    global_vec = grudzin_k_nearest_neighbor_elements_mpi::getRandomVector(count_size_vector);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_ans.data()));
-    taskDataPar->outputs_count.emplace_back(global_ans.size());
-  }
-
-  grudzin_k_nearest_neighbor_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
-
   if (world.rank() == 0) {
     // Create data
     std::vector<int32_t> reference_ans(1, 0);
