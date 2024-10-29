@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../arch/libcore_module_lib.a CMakeFiles/core_module_lib.dir/perf/src/perf.cpp.o CMakeFiles/core_module_lib.dir/task/src/task.cpp.o
+/usr/bin/ranlib ../../arch/libcore_module_lib.a

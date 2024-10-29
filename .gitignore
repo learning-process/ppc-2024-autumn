@@ -1,6 +1,5 @@
 build
 mpich
-CMakeFiles/
 cmake-build-release*
 cmake-build-debug*
 .idea/

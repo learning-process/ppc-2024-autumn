@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wsign-compare -Werror -fopenmp -O3 -DNDEBUG CMakeFiles/omp_func_tests.dir/omp/example/func_tests/main.cpp.o -o ../bin/omp_func_tests   -L/home/user/VScode/ppc/ppc-2024-autumn/ppc_googletest/install/lib  -Wl,-rpath,/home/user/VScode/ppc/ppc-2024-autumn/ppc_googletest/install/lib ../arch/libcore_module_lib.a ../arch/libomp_module_lib.a -lgtest -lgtest_main

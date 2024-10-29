@@ -1,1 +1,0 @@
-cmd='/usr/bin/cmake;-S;/home/user/VScode/ppc/ppc-2024-autumn/3rdparty/onetbb/;-B;/home/user/VScode/ppc/ppc-2024-autumn/ppc_onetbb/build/;-DCMAKE_CXX_COMPILER=/usr/bin/c++;-DCMAKE_C_COMPILER=/usr/bin/cc;-GUnix Makefiles;-DTBB_TEST=OFF;-DCMAKE_BUILD_TYPE=Release'

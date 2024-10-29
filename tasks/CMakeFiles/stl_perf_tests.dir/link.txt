@@ -1,0 +1,1 @@
+/usr/bin/c++  -Wall -Wsign-compare -Werror -fopenmp -O3 -DNDEBUG CMakeFiles/stl_perf_tests.dir/stl/example/perf_tests/main.cpp.o -o ../bin/stl_perf_tests   -L/home/user/VScode/ppc/ppc-2024-autumn/ppc_googletest/install/lib  -Wl,-rpath,/home/user/VScode/ppc/ppc-2024-autumn/ppc_googletest/install/lib ../arch/libcore_module_lib.a ../arch/libstl_module_lib.a -lgtest -lgtest_main

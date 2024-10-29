@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../arch/libtbb_module_lib.a CMakeFiles/tbb_module_lib.dir/tbb/example/src/ops_tbb.cpp.o
+/usr/bin/ranlib ../arch/libtbb_module_lib.a
