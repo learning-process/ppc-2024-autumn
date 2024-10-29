@@ -27,7 +27,7 @@ TEST(Parallel_Operations_MPI, Test_SquareMatrix_10) {
 
   if (world.rank() == 0) {
     global_matr = vladimirova_j_max_of_vector_elements_mpi::CreateInputMatrix(size, size, spread);
-    for (int i = 0; i < global_matr.size(); i++)
+    for (unsigned int i = 0; i < global_matr.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matr[i].data()));
     taskDataPar->inputs_count.emplace_back(size);
     taskDataPar->inputs_count.emplace_back(size);
@@ -79,7 +79,7 @@ TEST(Parallel_Operations_MPI, Test_SquareMatrix_50) {
 
   if (world.rank() == 0) {
     global_matr = vladimirova_j_max_of_vector_elements_mpi::CreateInputMatrix(size, size, spread);
-    for (int i = 0; i < global_matr.size(); i++)
+    for (unsigned int i = 0; i < global_matr.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matr[i].data()));
     taskDataPar->inputs_count.emplace_back(size);
     taskDataPar->inputs_count.emplace_back(size);
@@ -131,7 +131,7 @@ TEST(Parallel_Operations_MPI, Test_SquareMatrix_100) {
 
   if (world.rank() == 0) {
     global_matr = vladimirova_j_max_of_vector_elements_mpi::CreateInputMatrix(size, size, spread);
-    for (int i = 0; i < global_matr.size(); i++)
+    for (unsigned int i = 0; i < global_matr.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matr[i].data()));
     taskDataPar->inputs_count.emplace_back(size);
     taskDataPar->inputs_count.emplace_back(size);
@@ -183,7 +183,7 @@ TEST(Parallel_Operations_MPI, Test_Matrix_10_50) {
 
   if (world.rank() == 0) {
     global_matr = vladimirova_j_max_of_vector_elements_mpi::CreateInputMatrix(row, col, spread);
-    for (int i = 0; i < global_matr.size(); i++)
+    for (unsigned int i = 0; i < global_matr.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matr[i].data()));
     taskDataPar->inputs_count.emplace_back(row);
     taskDataPar->inputs_count.emplace_back(col);
@@ -235,7 +235,7 @@ TEST(Parallel_Operations_MPI, Test_Matrix_100_50) {
 
   if (world.rank() == 0) {
     global_matr = vladimirova_j_max_of_vector_elements_mpi::CreateInputMatrix(row, col, spread);
-    for (int i = 0; i < global_matr.size(); i++)
+    for (unsigned int i = 0; i < global_matr.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matr[i].data()));
     taskDataPar->inputs_count.emplace_back(row);
     taskDataPar->inputs_count.emplace_back(col);
@@ -289,7 +289,7 @@ TEST(Parallel_Operations_MPI, Test_SquareMatrix_50_WithSeveralMax) {
     global_matr = vladimirova_j_max_of_vector_elements_mpi::CreateInputMatrix(size, size, spread);
     global_matr[0][0] = spread;
     global_matr[5][25] = spread;
-    for (int i = 0; i < global_matr.size(); i++)
+    for (unsigned int i = 0; i < global_matr.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matr[i].data()));
     taskDataPar->inputs_count.emplace_back(size);
     taskDataPar->inputs_count.emplace_back(size);
@@ -343,7 +343,7 @@ TEST(Parallel_Operations_MPI, Test_Matrix_100_50_WithSeveralMax) {
     global_matr = vladimirova_j_max_of_vector_elements_mpi::CreateInputMatrix(row, col, spread);
     global_matr[25][10] = spread;
     global_matr[5][25] = spread;
-    for (int i = 0; i < global_matr.size(); i++)
+    for (unsigned int i = 0; i < global_matr.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matr[i].data()));
     taskDataPar->inputs_count.emplace_back(row);
     taskDataPar->inputs_count.emplace_back(col);
