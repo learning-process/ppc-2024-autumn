@@ -12,12 +12,13 @@ TEST(beresnev_a_min_values_by_matrix_columns_seq, Empty_Input_0) {
   const int N = 0;
   const int M = 3;
 
+  std::vector<int> in(N*M, 0);
   std::vector<int> out(M, 0);
   std::vector<int> n(1, N);
   std::vector<int> m(1, M);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>{}));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&in));
   taskDataSeq->inputs_count.emplace_back(0);
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(n.data()));
   taskDataSeq->inputs_count.emplace_back(n.size());

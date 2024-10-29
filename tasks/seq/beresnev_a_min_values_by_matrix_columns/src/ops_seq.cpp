@@ -35,7 +35,7 @@ bool beresnev_a_min_values_by_matrix_columns_seq::TestTaskSequential::run() {
       if (input_[j * m_ + i] < min) {
         min = input_[j * m_ + i];
       }
-   }
+    }
     res_[i] = min;
   }
   return true;
