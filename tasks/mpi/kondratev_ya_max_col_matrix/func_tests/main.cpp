@@ -46,8 +46,7 @@ TEST(kondratev_ya_max_col_matrix_mpi, test_1) {
 
     kondratev_ya_max_col_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     runTask(testMpiTaskSequential);
-    // ASSERT_EQ(res, ref);
-    SUCCEED();
+    ASSERT_EQ(res, ref);
   }
 }
 
@@ -74,8 +73,7 @@ TEST(kondratev_ya_max_col_matrix_mpi, test_2) {
 
     kondratev_ya_max_col_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     runTask(testMpiTaskSequential);
-    // ASSERT_EQ(res, ref);
-    SUCCEED();
+    ASSERT_EQ(res, ref);
   }
 }
 
@@ -103,7 +101,40 @@ TEST(kondratev_ya_max_col_matrix_mpi, test_3) {
 
     kondratev_ya_max_col_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     runTask(testMpiTaskSequential);
-    // ASSERT_EQ(res, ref);
-    SUCCEED();
+    ASSERT_EQ(res, ref);
+  }
+}
+
+TEST(kondratev_ya_max_col_matrix_mpi, throw_gen_mtrx) {
+  boost::mpi::communicator world;
+
+  if (world.rank() == 0) {
+    ASSERT_ANY_THROW(kondratev_ya_max_col_matrix_mpi::getRandomMatrix(-1, -1));
+  }
+}
+
+TEST(kondratev_ya_max_col_matrix_mpi, right_insert_ref) {
+  boost::mpi::communicator world;
+  
+  if (world.rank() == 0) {
+    uint32_t row = 3;
+    uint32_t col = 3;
+    int32_t ref = INT_MAX;
+
+    auto mtrx = kondratev_ya_max_col_matrix_mpi::getRandomMatrix(row, col);
+    kondratev_ya_max_col_matrix_mpi::insertRefValue(mtrx, ref);
+
+    bool flag;
+    for (uint32_t j = 0; j < col; j++) {
+      flag = false;
+      for (uint32_t i = 0; i < row; i++) {
+        if (mtrx[i][j] == ref) {
+          flag = true;
+          break;
+        }
+      }
+
+      ASSERT_TRUE(flag);
+    }
   }
 }
