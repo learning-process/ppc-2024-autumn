@@ -163,6 +163,8 @@ bool kondratev_ya_max_col_matrix_mpi::TestMPITaskParallel::validation() {
 bool kondratev_ya_max_col_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
+  uint32_t recvSize = 0;
+
   std::vector<int32_t> loc_max(local_input_.size());
   for (size_t i = 0; i < loc_max.size(); i++) {
     loc_max[i] = *std::max_element(local_input_[i].begin(), local_input_[i].end());
@@ -176,6 +178,10 @@ bool kondratev_ya_max_col_matrix_mpi::TestMPITaskParallel::run() {
     uint32_t worldSize = world.size();
 
     for (uint32_t i = 1; i < worldSize; i++) {
+      recvSize = step_;
+      if (i < remain_) recvSize++;
+
+      tmp = std::vector<int32_t>(recvSize);
       world.recv(i, 0, tmp);
       copy(tmp.begin(), tmp.end(), res_.data() + ind);
       ind += tmp.size();
