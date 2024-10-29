@@ -46,8 +46,7 @@ TEST(kondratev_ya_max_col_matrix_mpi, test_1) {
 
     kondratev_ya_max_col_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     runTask(testMpiTaskSequential);
-    //ASSERT_EQ(res, ref);
-    SUCCEED();
+    ASSERT_EQ(res, ref);
   }
 }
 
@@ -74,8 +73,7 @@ TEST(kondratev_ya_max_col_matrix_mpi, test_2) {
 
     kondratev_ya_max_col_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     runTask(testMpiTaskSequential);
-    //ASSERT_EQ(res, ref);
-    SUCCEED();
+    ASSERT_EQ(res, ref);
   }
 }
 
@@ -103,7 +101,6 @@ TEST(kondratev_ya_max_col_matrix_mpi, test_3) {
 
     kondratev_ya_max_col_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     runTask(testMpiTaskSequential);
-    //ASSERT_EQ(res, ref);
-    SUCCEED();
+    ASSERT_EQ(res, ref);
   }
 }

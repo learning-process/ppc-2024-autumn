@@ -55,9 +55,7 @@ TEST(kondratev_ya_max_col_matrix_mpi, test_pipeline_run) {
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
-
-  //ASSERT_EQ(res, ref);
-  SUCCEED();
+  ASSERT_EQ(res, ref);
 }
 
 TEST(kondratev_ya_max_col_matrix_mpi_perf_test, test_task_run) {
@@ -94,6 +92,5 @@ TEST(kondratev_ya_max_col_matrix_mpi_perf_test, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
 
-  //ASSERT_EQ(res, ref);
-  SUCCEED();
+  ASSERT_EQ(res, ref);
 }
