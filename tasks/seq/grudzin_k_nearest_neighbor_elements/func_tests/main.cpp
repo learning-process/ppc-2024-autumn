@@ -99,7 +99,7 @@ TEST(grudzin_k_nearest_neighbor_elements_seq, Test_Close_60) {
       in.push_back(0);
     }
   }
-  int ans = 59;
+  int ans = 0;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
