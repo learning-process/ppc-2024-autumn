@@ -226,4 +226,3 @@ TEST(naumov_b_min_colum_matrix_mpi, Test_Max_2) {
     ASSERT_EQ(reference_max[0], global_max[0]);
   }
 }
-
