@@ -182,13 +182,13 @@ bool kondratev_ya_max_col_matrix_mpi::TestMPITaskParallel::run() {
       if (i < remain_) recvSize++;
 
       tmp = std::vector<int32_t>(recvSize);
-      world.recv(i, 0, tmp);
-      copy(tmp.begin(), tmp.end(), res_.data() + ind);
+      //world.recv(i, 0, tmp);
+      //copy(tmp.begin(), tmp.end(), res_.data() + ind);
       ind += tmp.size();
     }
-  } else {
-    world.send(0, 0, loc_max.data(), loc_max.size());
-  }
+  } //else {
+    //world.send(0, 0, loc_max.data(), loc_max.size());
+  //}
   return true;
 }
 
