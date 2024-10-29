@@ -59,25 +59,10 @@ bool filateva_e_number_sentences_line_mpi::NumberSentencesLineSequential::post_p
 
 bool filateva_e_number_sentences_line_mpi::NumberSentencesLineParallel::pre_processing() {
   internal_order_test();
-  unsigned int delta = 0;
-  unsigned int remains = 0;
   if (world.rank() == 0) {
     line = std::string(std::move(reinterpret_cast<char*>(taskData->inputs[0])));
-    delta = line.size() / world.size();
-    remains = line.size() % world.size();
   }
-  broadcast(world, delta, 0);
 
-  if (world.rank() == 0) {
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, line.data() + proc * delta + remains, delta);
-    }
-    local_line = std::string(line.begin(), line.begin() + delta + remains);
-  } else {
-    local_line = std::string(delta, '*');
-    world.recv(0, 0, local_line.data(), delta);
-  }
-  // Init value for output
   num = 0;
   return true;
 }
@@ -93,7 +78,28 @@ bool filateva_e_number_sentences_line_mpi::NumberSentencesLineParallel::validati
 
 bool filateva_e_number_sentences_line_mpi::NumberSentencesLineParallel::run() {
   internal_order_test();
-  int local_num = countSentences(local_line);
+  unsigned int delta = 0;
+  unsigned int remains = 0;
+  int local_num;
+  if (world.rank() == 0 && world.size() > 1) {
+    delta = line.size() / (world.size() - 1);
+    remains = line.size() % (world.size() - 1);
+  }else if (world.rank() == 0 && world.size() == 1) {
+    remains = line.size();
+  }
+  broadcast(world, delta, 0);
+
+  if (world.rank() == 0) {
+    for (int proc = 0; proc < (world.size() - 1); proc++) {
+      world.send(proc + 1, 0, line.data() + proc * delta + remains, delta);
+    }
+    local_line = std::string(line.begin(), line.begin() + remains);
+  } else {
+    local_line = std::string(delta, '*');
+    world.recv(0, 0, local_line.data(), delta);
+  }
+
+  local_num = countSentences(local_line);
   if (world.rank() == 0 && !line.empty() && line.back() != '.' && line.back() != '?' && line.back() != '!') {
     ++local_num;
   }
