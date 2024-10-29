@@ -84,7 +84,7 @@ bool filateva_e_number_sentences_line_mpi::NumberSentencesLineParallel::run() {
   if (world.rank() == 0 && world.size() > 1) {
     delta = line.size() / (world.size() - 1);
     remains = line.size() % (world.size() - 1);
-  }else if (world.rank() == 0 && world.size() == 1) {
+  } else if (world.rank() == 0 && world.size() == 1) {
     remains = line.size();
   }
   broadcast(world, delta, 0);
