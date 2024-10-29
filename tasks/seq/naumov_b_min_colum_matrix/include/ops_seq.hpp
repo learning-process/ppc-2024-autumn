@@ -17,7 +17,8 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  int input_{}, res{};
+  std::vector<std::vector<int>> input_;
+  std::vector<int> res;
 };
 
 }  // namespace naumov_b_min_colum_matrix_seq
