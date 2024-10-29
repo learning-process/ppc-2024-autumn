@@ -12,6 +12,8 @@ TEST(kudryashova_i_vector_dot_product_mpi, mpi_vectorDotProduct_right) {
   ASSERT_EQ(44, kudryashova_i_vector_dot_product_mpi::vectorDotProduct(vector1, vector2));
 }
 
+// test
+
 TEST(kudryashova_i_vector_dot_product_mpi, scalar_multiply_vector_size_120) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vector;
