@@ -61,6 +61,11 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::post_process
 bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
 
+  if (world.size() <= 1) {
+    EXPECT_NE(1, 1) << "WORLD TOO SMALL" << std::endl;
+    return false;
+  }
+
   if (world.rank() == 0) {
     // Check count elements of output
     bool valid = taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] > 0;
