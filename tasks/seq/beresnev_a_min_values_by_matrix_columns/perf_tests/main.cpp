@@ -1,4 +1,4 @@
-// Copyright 2023 Nesterov Alexander
+п»ї// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <vector>
@@ -9,8 +9,8 @@
 #include "seq/beresnev_a_min_values_by_matrix_columns/include/ops_seq.hpp"
 
 TEST(sequential_beresnev_a_min_values_by_matrix_columns_perf_test, test_pipeline_run) {
-  const std::uint32_t N = 2000;  // Количество строк
-  const std::uint32_t M = 10000;  // Количество столбцов
+  const std::uint32_t N = 2000;  // РљРѕР»РёС‡РµСЃС‚РІРѕ СЃС‚СЂРѕРє
+  const std::uint32_t M = 10000;  // РљРѕР»РёС‡РµСЃС‚РІРѕ СЃС‚РѕР»Р±С†РѕРІ
 
   std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
@@ -65,8 +65,8 @@ TEST(sequential_beresnev_a_min_values_by_matrix_columns_perf_test, test_pipeline
 }
 
 TEST(sequential_beresnev_a_min_values_by_matrix_columns_perf_test, test_task_run) {
-  const std::uint32_t N = 2000;  // Количество строк
-  const std::uint32_t M = 10000;  // Количество столбцов
+  const std::uint32_t N = 2000;  // РљРѕР»РёС‡РµСЃС‚РІРѕ СЃС‚СЂРѕРє
+  const std::uint32_t M = 10000;  // РљРѕР»РёС‡РµСЃС‚РІРѕ СЃС‚РѕР»Р±С†РѕРІ
 
   std::srand(static_cast<unsigned int>(std::time(nullptr)));
 

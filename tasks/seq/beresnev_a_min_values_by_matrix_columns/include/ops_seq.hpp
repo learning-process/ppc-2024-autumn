@@ -20,6 +20,4 @@ class TestTaskSequential : public ppc::core::Task {
   std::vector<int> input_, res_;
 };
 
-bool willMultiplyOverflow(int a, int b);
-
 }  // namespace nesterov_a_test_task_seq
