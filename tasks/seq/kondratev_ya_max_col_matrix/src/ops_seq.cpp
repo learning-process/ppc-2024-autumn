@@ -11,8 +11,8 @@ std::vector<std::vector<int32_t>> kondratev_ya_max_col_matrix_seq::getRandomMatr
     throw std::invalid_argument("Args should be greater then zero");
   }
 
-  uint32_t low = -200;
-  uint32_t high = 200;
+  int32_t low = -200;
+  int32_t high = 200;
 
   std::random_device dev;
   std::mt19937 gen(dev());
