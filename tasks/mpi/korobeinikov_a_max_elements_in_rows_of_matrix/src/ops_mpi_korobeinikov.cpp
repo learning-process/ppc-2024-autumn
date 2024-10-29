@@ -91,9 +91,7 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::pre_processing() {
   }
   broadcast(world, size_rows, 0);
   broadcast(world, num_use_proc, 0);
-  
 
-  
   if (world.rank() == 0) {
     // Init vectors
     input_.reserve(taskData->inputs_count[0]);
@@ -133,12 +131,12 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::pre_processing() {
 bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    if ((*taskData->inputs[1]) == 0){
-        return true;
+    if ((*taskData->inputs[1]) == 0) {
+      return true;
     } else {
-        return (*taskData->inputs[1] == taskData->outputs_count[0] &&
-                (taskData->inputs_count[0] % (*taskData->inputs[1])) == 0);
-    }    
+      return (*taskData->inputs[1] == taskData->outputs_count[0] &&
+              (taskData->inputs_count[0] % (*taskData->inputs[1])) == 0);
+    }
   }
   return true;
 }
@@ -160,7 +158,7 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::run() {
   if (world.rank() < num_use_proc) {
     unsigned int ind = (world.rank() * default_local_size) / size_rows;
     for (unsigned int i = 0; i < ind; ++i) {
-        reduce(world, INT_MIN, res[i], boost::mpi::maximum<int>(), 0);
+      reduce(world, INT_MIN, res[i], boost::mpi::maximum<int>(), 0);
     }
 
     unsigned int near_end = std::min(local_input_.size(), size_rows - (world.rank() * default_local_size) % size_rows);
@@ -172,20 +170,20 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::run() {
 
     unsigned int k = 0;
     while (local_input_.begin() + near_end + k * size_rows < local_input_.end()) {
-        local_res =
-            *std::max_element(local_input_.begin() + near_end + k * size_rows,
-                              std::min(local_input_.end(), local_input_.begin() + near_end + (k + 1) * size_rows));
-        reduce(world, local_res, res[ind], boost::mpi::maximum<int>(), 0);
-        ++k;
-        ++ind;
+      local_res =
+          *std::max_element(local_input_.begin() + near_end + k * size_rows,
+                             std::min(local_input_.end(), local_input_.begin() + near_end + (k + 1) * size_rows));
+      reduce(world, local_res, res[ind], boost::mpi::maximum<int>(), 0);
+      ++k;
+      ++ind;
     }
 
     for (unsigned int i = ind; i < res.size(); ++i) {
-        reduce(world, INT_MIN, res[i], boost::mpi::maximum<int>(), 0);
+      reduce(world, INT_MIN, res[i], boost::mpi::maximum<int>(), 0);
     }
   } else {
     for (unsigned int i = 0; i < res.size(); ++i) {
-        reduce(world, INT_MIN, res[i], boost::mpi::maximum<int>(), 0);
+      reduce(world, INT_MIN, res[i], boost::mpi::maximum<int>(), 0);
     }
   }
   return true;
