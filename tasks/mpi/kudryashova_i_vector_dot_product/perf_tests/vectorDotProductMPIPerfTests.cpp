@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+
 #include <boost/mpi/timer.hpp>
 #include <vector>
 
@@ -53,7 +54,7 @@ TEST(kudryashova_i_vector_dot_product_mpi, test_task_run) {
   if (world.rank() == 0) {
     global_vector = {vector1, vector2};
     for (size_t i = 0; i < global_vector.size(); i++) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector[i].data()));
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector[i].data()));
     }
     taskDataPar->inputs_count.emplace_back(global_vector[0].size());
     taskDataPar->inputs_count.emplace_back(global_vector[1].size());
