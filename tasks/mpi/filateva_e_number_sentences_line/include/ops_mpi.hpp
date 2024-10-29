@@ -28,7 +28,7 @@ class NumberSentencesLineSequential : public ppc::core::Task {
 
  private:
   std::string line;
-  int num;
+  int sentence_count;
 };
 
 class NumberSentencesLineParallel : public ppc::core::Task {
@@ -42,7 +42,7 @@ class NumberSentencesLineParallel : public ppc::core::Task {
  private:
   std::string line;
   std::string local_line;
-  int num;
+  int sentence_count;
   boost::mpi::communicator world;
 };
 

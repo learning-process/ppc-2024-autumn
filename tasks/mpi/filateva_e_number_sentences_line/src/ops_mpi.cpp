@@ -32,7 +32,7 @@ bool filateva_e_number_sentences_line_mpi::NumberSentencesLineSequential::pre_pr
   internal_order_test();
   // Init vectors
   line = std::string(std::move(reinterpret_cast<char*>(taskData->inputs[0])));
-  num = 0;
+  sentence_count = 0;
   return true;
 }
 
@@ -44,16 +44,16 @@ bool filateva_e_number_sentences_line_mpi::NumberSentencesLineSequential::valida
 
 bool filateva_e_number_sentences_line_mpi::NumberSentencesLineSequential::run() {
   internal_order_test();
-  num = countSentences(line);
+  sentence_count = countSentences(line);
   if (!line.empty() && line.back() != '.' && line.back() != '?' && line.back() != '!') {
-    ++num;
+    ++sentence_count;
   }
   return true;
 }
 
 bool filateva_e_number_sentences_line_mpi::NumberSentencesLineSequential::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = num;
+  reinterpret_cast<int*>(taskData->outputs[0])[0] = sentence_count;
   return true;
 }
 
@@ -63,7 +63,7 @@ bool filateva_e_number_sentences_line_mpi::NumberSentencesLineParallel::pre_proc
     line = std::string(std::move(reinterpret_cast<char*>(taskData->inputs[0])));
   }
 
-  num = 0;
+  sentence_count = 0;
   return true;
 }
 
@@ -80,7 +80,7 @@ bool filateva_e_number_sentences_line_mpi::NumberSentencesLineParallel::run() {
   internal_order_test();
   unsigned int delta = 0;
   unsigned int remains = 0;
-  int local_num;
+  int local_sentence_count;
   if (world.rank() == 0 && world.size() > 1) {
     delta = line.size() / (world.size() - 1);
     remains = line.size() % (world.size() - 1);
@@ -99,18 +99,18 @@ bool filateva_e_number_sentences_line_mpi::NumberSentencesLineParallel::run() {
     world.recv(0, 0, local_line.data(), delta);
   }
 
-  local_num = countSentences(local_line);
+  local_sentence_count = countSentences(local_line);
   if (world.rank() == 0 && !line.empty() && line.back() != '.' && line.back() != '?' && line.back() != '!') {
-    ++local_num;
+    ++local_sentence_count;
   }
-  reduce(world, local_num, num, std::plus(), 0);
+  reduce(world, local_sentence_count, sentence_count, std::plus(), 0);
   return true;
 }
 
 bool filateva_e_number_sentences_line_mpi::NumberSentencesLineParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = num;
+    reinterpret_cast<int*>(taskData->outputs[0])[0] = sentence_count;
   }
   return true;
 }

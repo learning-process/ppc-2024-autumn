@@ -17,7 +17,7 @@ class NumberSentencesLine : public ppc::core::Task {
 
  private:
   std::string line;
-  int num;
+  int sentence_count;
 };
 
 }  // namespace filateva_e_number_sentences_line_seq

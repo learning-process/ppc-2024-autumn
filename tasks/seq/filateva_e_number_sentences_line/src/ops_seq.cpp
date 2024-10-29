@@ -8,7 +8,7 @@ bool filateva_e_number_sentences_line_seq::NumberSentencesLine::pre_processing()
   internal_order_test();
   // Init value for input and output
   line = std::string(std::move(reinterpret_cast<char*>(taskData->inputs[0])));
-  num = 0;
+  sentence_count = 0;
   return true;
 }
 
@@ -22,17 +22,17 @@ bool filateva_e_number_sentences_line_seq::NumberSentencesLine::run() {
   internal_order_test();
   for (long unsigned int i = 0; i < line.size(); ++i) {
     if (line[i] == '.' || line[i] == '?' || line[i] == '!') {
-      ++num;
+      ++sentence_count;
     }
   }
   if (!line.empty() && line.back() != '.' && line.back() != '?' && line.back() != '!') {
-    ++num;
+    ++sentence_count;
   }
   return true;
 }
 
 bool filateva_e_number_sentences_line_seq::NumberSentencesLine::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = num;
+  reinterpret_cast<int*>(taskData->outputs[0])[0] = sentence_count;
   return true;
 }
