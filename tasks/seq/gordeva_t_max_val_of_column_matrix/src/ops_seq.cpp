@@ -49,7 +49,7 @@ bool gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::run() {
 
   for (int i = 0; i < input_[0].size(); i++) {
     int max_el = input_[0][i];
-    for (int j = 1; j < input_.size(); j++) 
+    for (int j = 1; j < input_.size(); j++)
       if (input_[j][i] > max_el) max_el = input_[j][i];
 
     res_[i] = max_el;
@@ -77,7 +77,7 @@ std::vector<int> gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::gen
 std::vector<std::vector<int>> gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::gen_rand_matr(int rows,
                                                                                                         int cols) {
   std::vector<std::vector<int>> matr(rows, std::vector<int>(cols));
-  
+
   for (int i = 0; i < rows; ++i) {
     matr[i] = gen_rand_vec(cols, 0, 200);
   }
@@ -90,4 +90,4 @@ std::vector<std::vector<int>> gordeva_t_max_val_of_column_matrix_seq::TestTaskSe
   return matr;
 }
 
-}   // namespace gordeva_t_max_val_of_column_matrix_seq
+}  // namespace gordeva_t_max_val_of_column_matrix_seq

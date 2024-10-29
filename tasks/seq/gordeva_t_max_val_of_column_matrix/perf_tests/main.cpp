@@ -24,14 +24,13 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, test_pipeline_run) {
   std::vector<std::vector<int>> matrix =
       gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::gen_rand_matr(rows, cols);
 
-  for (auto &i : matrix) taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(i.data())); 
+  for (auto &i : matrix) taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(i.data()));
 
   taskDataSeq->inputs_count.emplace_back(rows);
   taskDataSeq->inputs_count.emplace_back(cols);
   std::vector<int> res_vec(cols, 0);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_vec.data()));
   taskDataSeq->outputs_count.emplace_back(res_vec.size());
-
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -99,4 +98,3 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, test_task_run) {
   ppc::core::Perf::print_perf_statistic(perfResults);
   for (int i = 0; i < cols; i++) ASSERT_EQ(res_vec[i], 200);
 }
-

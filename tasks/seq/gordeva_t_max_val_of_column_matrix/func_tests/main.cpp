@@ -14,7 +14,7 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, IsEmptyInput) {
 TEST(gordeva_t_max_val_of_column_matrix_seq, IsEmptyOutput) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  
+
   taskDataSeq->inputs_count.push_back(5);
   taskDataSeq->inputs_count.push_back(5);
   taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t *>(new int[25]));
@@ -32,7 +32,7 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, Max_val_of_10_columns_with_random) 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  std::vector<std::vector<int>> matrix = 
+  std::vector<std::vector<int>> matrix =
       gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::gen_rand_matr(rows, cols);
   for (auto &i : matrix) taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(i.data()));
   taskDataSeq->inputs_count.emplace_back(rows);
