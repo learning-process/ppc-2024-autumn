@@ -13,10 +13,10 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, test_pipeline_run) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  //taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  //taskDataSeq->inputs_count.emplace_back(in.size());
-  //taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  //taskDataSeq->outputs_count.emplace_back(out.size());
+  // taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  // taskDataSeq->inputs_count.emplace_back(in.size());
+  // taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  // taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
   auto testTaskSequential = std::make_shared<gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential>(taskDataSeq);
@@ -24,8 +24,7 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, test_pipeline_run) {
   std::vector<std::vector<int>> matrix =
       gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::gen_rand_matr(rows, cols);
 
-  for (auto& i : matrix) 
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(i.data())); 
+  for (auto& i : matrix) taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(i.data())); 
 
   taskDataSeq->inputs_count.emplace_back(rows);
   taskDataSeq->inputs_count.emplace_back(cols);
@@ -53,7 +52,7 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  for (int i=0; i<cols; i++) ASSERT_EQ(res_vec[i], 200);
+  for (int i = 0; i < cols; i++) ASSERT_EQ(res_vec[i], 200);
 }
 
 TEST(gordeva_t_max_val_of_column_matrix_seq, test_task_run) {
@@ -63,10 +62,10 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, test_task_run) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  //taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  //taskDataSeq->inputs_count.emplace_back(in.size());
-  //taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  //taskDataSeq->outputs_count.emplace_back(out.size());
+  // taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  // taskDataSeq->inputs_count.emplace_back(in.size());
+  // taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  // taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
   auto testTaskSequential = std::make_shared<gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential>(taskDataSeq);
@@ -105,7 +104,3 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, test_task_run) {
   for (int i = 0; i < cols; i++) ASSERT_EQ(res_vec[i], 200);
 }
 
-//int main(int argc, char **argv) {
-//  testing::InitGoogleTest(&argc, argv);
-//  return RUN_ALL_TESTS();
-//}
