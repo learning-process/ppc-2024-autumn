@@ -1,21 +1,21 @@
 ﻿// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
-#include <vector>
-#include <ctime>
 #include <cstdlib>
+#include <ctime>
+#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/beresnev_a_min_values_by_matrix_columns/include/ops_seq.hpp"
 
 TEST(sequential_beresnev_a_min_values_by_matrix_columns_perf_test, test_pipeline_run) {
-  const std::uint32_t N = 2000;  // Количество строк
-  const std::uint32_t M = 10000;  // Количество столбцов
+  const std::uint32_t N = 2000;
+  const std::uint32_t M = 10000;
 
   std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
   std::vector<int> in(N * M);
-  for (int i = 0; i < N * M; ++i) {
+  for (std::uint32_t i = 0; i < N * M; ++i) {
     in[i] = std::rand() % 2000 - 1000;
   }
 
@@ -33,7 +33,8 @@ TEST(sequential_beresnev_a_min_values_by_matrix_columns_perf_test, test_pipeline
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(&out));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
-  auto testTaskSequential = std::make_shared<beresnev_a_min_values_by_matrix_columns_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential =
+      std::make_shared<beresnev_a_min_values_by_matrix_columns_seq::TestTaskSequential>(taskDataSeq);
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -65,13 +66,13 @@ TEST(sequential_beresnev_a_min_values_by_matrix_columns_perf_test, test_pipeline
 }
 
 TEST(sequential_beresnev_a_min_values_by_matrix_columns_perf_test, test_task_run) {
-  const std::uint32_t N = 2000;  // Количество строк
-  const std::uint32_t M = 10000;  // Количество столбцов
+  const std::uint32_t N = 2000;
+  const std::uint32_t M = 10000;
 
   std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
   std::vector<int> in(N * M);
-  for (int i = 0; i < N * M; ++i) {
+  for (std::uint32_t i = 0; i < N * M; ++i) {
     in[i] = std::rand() % 2000 - 1000;
   }
 
@@ -89,7 +90,8 @@ TEST(sequential_beresnev_a_min_values_by_matrix_columns_perf_test, test_task_run
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(&out));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
-  auto testTaskSequential = std::make_shared<beresnev_a_min_values_by_matrix_columns_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential =
+      std::make_shared<beresnev_a_min_values_by_matrix_columns_seq::TestTaskSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -108,7 +110,7 @@ TEST(sequential_beresnev_a_min_values_by_matrix_columns_perf_test, test_task_run
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  
+
   for (std::uint32_t i = 0; i < M; ++i) {
     int expectedMin = in[i];
     for (std::uint32_t j = 1; j < N; ++j) {

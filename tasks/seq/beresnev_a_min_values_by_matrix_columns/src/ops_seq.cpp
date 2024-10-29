@@ -1,8 +1,8 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/beresnev_a_min_values_by_matrix_columns/include/ops_seq.hpp"
 
-#include <thread>
 #include <limits>
+#include <thread>
 
 using namespace std::chrono_literals;
 
@@ -21,8 +21,8 @@ bool beresnev_a_min_values_by_matrix_columns_seq::TestTaskSequential::validation
   // Check count elements of output
   return taskData->inputs_count[0] > 0 &&
          taskData->inputs_count[0] == reinterpret_cast<std::vector<int>*>(taskData->inputs[0])[0].size() &&
-         taskData->inputs_count[1] == 1 && taskData->inputs_count[2] == 1 &&
-         taskData->inputs_count[0] == (uint32_t)reinterpret_cast<int*>(taskData->inputs[1])[0] * 
+         taskData->inputs_count[0] == (uint32_t) reinterpret_cast<int*>(taskData->inputs[1])[0] *
+                                          reinterpret_cast<int*>(taskData->inputs[2])[0] &&
          reinterpret_cast<int*>(taskData->inputs[2])[0] &&
          taskData->outputs_count[0] == reinterpret_cast<std::vector<int>*>(taskData->outputs[0])[0].size();
 }
@@ -30,15 +30,14 @@ bool beresnev_a_min_values_by_matrix_columns_seq::TestTaskSequential::validation
 bool beresnev_a_min_values_by_matrix_columns_seq::TestTaskSequential::run() {
   internal_order_test();
   for (int i = 0; i < m_; i++) {
-   int min = input_[i];
-   for (int j = 1; j < n_; j++) {
-    if (input_[j * m_ + i] < min) {
-     min = input_[j * m_ + i];
-    }
+    int min = input_[i];
+    for (int j = 1; j < n_; j++) {
+      if (input_[j * m_ + i] < min) {
+        min = input_[j * m_ + i];
+      }
    }
-   res_[i] = min;
+    res_[i] = min;
   }
-  //std::this_thread::sleep_for(20ms);
   return true;
 }
 

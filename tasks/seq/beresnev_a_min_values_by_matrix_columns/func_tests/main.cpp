@@ -1,10 +1,10 @@
 ﻿// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
-#include <vector>
-#include <ctime>
 #include <cstdlib>
+#include <ctime>
 #include <limits>
+#include <vector>
 
 #include "seq/beresnev_a_min_values_by_matrix_columns/include/ops_seq.hpp"
 
@@ -163,7 +163,7 @@ TEST(beresnev_a_min_values_by_matrix_columns_seq, Test_Base_1) {
 
   std::vector<int> in(N * M);
   for (int i = 0; i < N * M; ++i) {
-    in[i] = std::rand() % 200 - 100;  
+    in[i] = std::rand() % 200 - 100;
   }
 
   std::vector<int> out(M, 0);
@@ -202,7 +202,6 @@ TEST(beresnev_a_min_values_by_matrix_columns_seq, Test_Base_2) {
   const int N = 10000;
   const int M = 1;
 
- 
   std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
   std::vector<int> in(N * M);

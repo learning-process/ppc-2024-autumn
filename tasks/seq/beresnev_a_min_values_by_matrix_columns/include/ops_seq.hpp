@@ -15,9 +15,10 @@ class TestTaskSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
+
  private:
   int n_{}, m_{};
   std::vector<int> input_, res_;
 };
 
-}  // namespace nesterov_a_test_task_seq
+}  // namespace beresnev_a_min_values_by_matrix_columns_seq
