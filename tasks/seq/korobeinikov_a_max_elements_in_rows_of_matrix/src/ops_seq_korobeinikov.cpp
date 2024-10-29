@@ -29,10 +29,9 @@ bool korobeinikov_a_test_task_seq::TestTaskSequential::validation() {
 
   if ((*taskData->inputs[1]) == 0) {
     return true;
-  } else {
-    return (*taskData->inputs[1] == taskData->outputs_count[0] &&
-            (taskData->inputs_count[0] % (*taskData->inputs[1])) == 0);
   }
+  return (*taskData->inputs[1] == taskData->outputs_count[0] &&
+          (taskData->inputs_count[0] % (*taskData->inputs[1])) == 0);
 }
 
 bool korobeinikov_a_test_task_seq::TestTaskSequential::run() {
