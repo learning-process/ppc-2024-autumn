@@ -7,17 +7,20 @@
 #include "seq/vladimirova_j_max_of_vector_elements/include/ops_seq.hpp"
 
 TEST(vladimirova_j_max_of_vector_elements_seq, Test_CanCreate_10) {
-  const size_t col = 10, row = 10, spread = 10;
+  const size_t col = 10, row = 10;
+  const int spread = 10;
   EXPECT_NO_THROW(vladimirova_j_max_of_vector_elements_seq::CreateInputMatrix(row, col, spread));
 }
 
 TEST(vladimirova_j_max_of_vector_elements_seq, Test_CantCreate_0) {
-  const size_t col = 0, row = 0, spread = 0;
+  const size_t col = 0, row = 0;
+  const int spread = 0;
   EXPECT_ANY_THROW(vladimirova_j_max_of_vector_elements_seq::CreateInputMatrix(row, col, spread));
 }
 
 TEST(vladimirova_j_max_of_vector_elements_seq, Test_SquareMatrix_10) {
-  const size_t size = 10, spread = 10;  // spread is excepted answer
+  const size_t size = 10;
+  const int spread = 10;  // spread is excepted answer
 
   // Create data
   std::vector<int> out(1, -((int)spread + 10));
@@ -49,7 +52,8 @@ TEST(vladimirova_j_max_of_vector_elements_seq, Test_SquareMatrix_10) {
 }
 
 TEST(vladimirova_j_max_of_vector_elements_seq, Test_SquareMatrix_20) {
-  const size_t size = 20, spread = 50;  // spread is excepted answer
+  const size_t size = 20;
+  const int spread = 50;  // spread is excepted answer
 
   // Create data
   std::vector<int> out(1, -((int)spread + 10));
@@ -81,7 +85,8 @@ TEST(vladimirova_j_max_of_vector_elements_seq, Test_SquareMatrix_20) {
 }
 
 TEST(vladimirova_j_max_of_vector_elements_seq, Test_SquareMatrix_50) {
-  const size_t size = 50, spread = 50;  // spread is excepted answer
+  const size_t size = 50;
+  const int spread = 50;  // spread is excepted answer
 
   // Create data
   std::vector<int> out(1, -((int)spread + 10));
@@ -113,7 +118,8 @@ TEST(vladimirova_j_max_of_vector_elements_seq, Test_SquareMatrix_50) {
 }
 
 TEST(vladimirova_j_max_of_vector_elements_seq, Test_SquareMatrix_100) {
-  const size_t size = 100, spread = 100;  // spread is excepted answer
+  const size_t size = 100;
+  const int spread = 100;  // spread is excepted answer
 
   // Create data
   std::vector<int> out(1, -((int)spread + 10));
@@ -145,7 +151,8 @@ TEST(vladimirova_j_max_of_vector_elements_seq, Test_SquareMatrix_100) {
 }
 
 TEST(vladimirova_j_max_of_vector_elements_seq, Test_SquareMatrix_100_WithSeveralMax) {
-  const size_t size = 100, spread = 100;  // spread is excepted answer
+  const size_t size = 100;
+  const int spread = 100;  // spread is excepted answer
 
   // Create data
   std::vector<int> out(1, -((int)spread + 10));
@@ -180,7 +187,8 @@ TEST(vladimirova_j_max_of_vector_elements_seq, Test_SquareMatrix_100_WithSeveral
 }
 
 TEST(vladimirova_j_max_of_vector_elements_seq, Test_NotSquareMatrix_100_50_WithSeveralMax) {
-  const size_t col = 100, row = 50, spread = 100;  // spread is excepted answer
+  const size_t col = 100, row = 50;
+  const int spread = 100;  // spread is excepted answer
 
   // Create data
   std::vector<int> out(1, -110);
@@ -215,7 +223,8 @@ TEST(vladimirova_j_max_of_vector_elements_seq, Test_NotSquareMatrix_100_50_WithS
 }
 
 TEST(vladimirova_j_max_of_vector_elements_seq, Test_NotSquareMatrix_100_50) {
-  const size_t col = 100, row = 50, spread = 100;  // spread is excepted answer
+  const size_t col = 100, row = 50;
+  const int spread = 100;  // spread is excepted answer
 
   // Create data
   std::vector<int> out(1, -((int)spread + 10));
