@@ -122,26 +122,29 @@ bool kondratev_ya_max_col_matrix_mpi::TestMPITaskParallel::pre_processing() {
     }
     res_ = std::vector<int32_t>(col_);
 
-    local_input_ = std::vector(step_ + remain_, std::vector<int32_t>(row_));
-    std::copy(input_.begin(), input_.begin() + step_ + remain_, local_input_.begin());
-
     uint32_t worldSize = world.size();
-    uint32_t ind = local_input_.size();
-    for (uint32_t i = 1; i < worldSize && ind < col_; i++) {
+    uint32_t ind = step_;
+    if (remain_ > 0) ind++;
+
+    for (uint32_t i = 1; i < worldSize; i++) {
       recvSize = step_;
       if (i < remain_) recvSize++;
 
       for (uint32_t j = 0; j < recvSize; j++) {
-        world.send(i, 0, input_[ind++].data(), row_);
+        world.send(i, 0, input_[ind++]);
       }
     }
-  } else {
-    recvSize = step_;
-    if (static_cast<uint32_t>(world.rank()) < remain_) recvSize++;
+  }
 
-    local_input_ = std::vector(recvSize, std::vector<int32_t>(row_));
+  recvSize = step_;
+  if (static_cast<uint32_t>(world.rank()) < remain_) recvSize++;
+  local_input_ = std::vector(recvSize, std::vector<int32_t>(row_));
+
+  if (world.rank() == 0) {
+    std::copy(input_.begin(), input_.begin() + recvSize, local_input_.begin());
+  } else {
     for (uint32_t i = 0; i < recvSize; i++) {
-      world.recv(0, 0, local_input_[i].data(), row_);
+      world.recv(0, 0, local_input_[i]);
     }
   }
 
@@ -159,7 +162,6 @@ bool kondratev_ya_max_col_matrix_mpi::TestMPITaskParallel::validation() {
 
 bool kondratev_ya_max_col_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  uint32_t recvSize = 0;
 
   std::vector<int32_t> loc_max(local_input_.size());
   for (size_t i = 0; i < loc_max.size(); i++) {
@@ -169,18 +171,18 @@ bool kondratev_ya_max_col_matrix_mpi::TestMPITaskParallel::run() {
   if (world.rank() == 0) {
     std::copy(loc_max.begin(), loc_max.end(), res_.begin());
 
-    uint32_t worldSize = world.size();
+    std::vector<int32_t> tmp;
     uint32_t ind = loc_max.size();
-    for (uint32_t i = 1; i < worldSize && ind < col_; i++) {
-      recvSize = step_;
-      if (i < remain_) recvSize++;
+    uint32_t worldSize = world.size();
 
-      world.recv(i, 0, res_.data() + ind, recvSize);
-      ind += recvSize;
+    for (uint32_t i = 1; i < worldSize; i++) {
+      world.recv(i, 0, tmp);
+      copy(tmp.begin(), tmp.end(), res_.data() + ind);
+      ind += tmp.size();
     }
-  } else
+  } else {
     world.send(0, 0, loc_max.data(), loc_max.size());
-
+  }
   return true;
 }
 
@@ -188,8 +190,8 @@ bool kondratev_ya_max_col_matrix_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
 
   if (world.rank() == 0) {
-    auto* output_matrix = reinterpret_cast<uint32_t*>(taskData->outputs[0]);
-    std::copy(res_.begin(), res_.end(), output_matrix);
+    auto* output = reinterpret_cast<int32_t*>(taskData->outputs[0]);
+    std::copy(res_.begin(), res_.end(), output);
   }
 
   return true;
