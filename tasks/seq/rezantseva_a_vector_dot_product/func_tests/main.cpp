@@ -1,14 +1,25 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
+#include <random>
+
 #include "seq/rezantseva_a_vector_dot_product/include/ops_seq.hpp"
+static int offset = 0;
+
+std::vector<int> createRandomVector(int v_size) {
+  std::vector<int> vec(v_size);
+  std::mt19937 gen;
+  gen.seed((unsigned)time(nullptr) + ++offset);
+  for (int i = 0; i < v_size; i++) vec[i] = gen() % 100;
+  return vec;
+}
 
 TEST(rezantseva_a_vector_dot_product_seq, can_scalar_multiply_vec_size_10) {
   const int count = 10;
   // Create data
   std::vector<int> out(1, 0);
-  std::vector<int> v1 = rezantseva_a_vector_dot_product_seq::createRandomVector(count);
-  std::vector<int> v2 = rezantseva_a_vector_dot_product_seq::createRandomVector(count);
+  std::vector<int> v1 = createRandomVector(count);
+  std::vector<int> v2 = createRandomVector(count);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -37,8 +48,8 @@ TEST(rezantseva_a_vector_dot_product_seq, can_scalar_multiply_vec_size_100) {
   // Create data
   std::vector<int> out(1, 0);
 
-  std::vector<int> v1 = rezantseva_a_vector_dot_product_seq::createRandomVector(count);
-  std::vector<int> v2 = rezantseva_a_vector_dot_product_seq::createRandomVector(count);
+  std::vector<int> v1 = createRandomVector(count);
+  std::vector<int> v2 = createRandomVector(count);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -67,8 +78,8 @@ TEST(rezantseva_a_vector_dot_product_seq, check_none_equal_size_of_vec) {
   // Create data
   std::vector<int> out(1, 0);
 
-  std::vector<int> v1 = rezantseva_a_vector_dot_product_seq::createRandomVector(count);
-  std::vector<int> v2 = rezantseva_a_vector_dot_product_seq::createRandomVector(count + 1);
+  std::vector<int> v1 = createRandomVector(count);
+  std::vector<int> v2 = createRandomVector(count + 1);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -92,8 +103,8 @@ TEST(rezantseva_a_vector_dot_product_seq, check_equal_size_of_vec) {
   // Create data
   std::vector<int> out(1, 0);
 
-  std::vector<int> v1 = rezantseva_a_vector_dot_product_seq::createRandomVector(count);
-  std::vector<int> v2 = rezantseva_a_vector_dot_product_seq::createRandomVector(count);
+  std::vector<int> v1 = createRandomVector(count);
+  std::vector<int> v2 = createRandomVector(count);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -114,8 +125,8 @@ TEST(rezantseva_a_vector_dot_product_seq, check_equal_size_of_vec) {
 
 TEST(rezantseva_a_vector_dot_product_seq, check_empty_vec_product_func) {
   const int count = 0;
-  std::vector<int> v1 = rezantseva_a_vector_dot_product_seq::createRandomVector(count);
-  std::vector<int> v2 = rezantseva_a_vector_dot_product_seq::createRandomVector(count);
+  std::vector<int> v1 = createRandomVector(count);
+  std::vector<int> v2 = createRandomVector(count);
   int answer = rezantseva_a_vector_dot_product_seq::vectorDotProduct(v1, v2);
   ASSERT_EQ(0, answer);
 }
@@ -125,8 +136,8 @@ TEST(rezantseva_a_vector_dot_product_seq, check_empty_vec_product_run) {
   // Create data
   std::vector<int> out(1, 0);
 
-  std::vector<int> v1 = rezantseva_a_vector_dot_product_seq::createRandomVector(count);
-  std::vector<int> v2 = rezantseva_a_vector_dot_product_seq::createRandomVector(count);
+  std::vector<int> v1 = createRandomVector(count);
+  std::vector<int> v2 = createRandomVector(count);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -155,8 +166,8 @@ TEST(rezantseva_a_vector_dot_product_seq, v1_dot_product_v2_equal_v2_dot_product
   // Create data
   std::vector<int> out(1, 0);
 
-  std::vector<int> v1 = rezantseva_a_vector_dot_product_seq::createRandomVector(count);
-  std::vector<int> v2 = rezantseva_a_vector_dot_product_seq::createRandomVector(count);
+  std::vector<int> v1 = createRandomVector(count);
+  std::vector<int> v2 = createRandomVector(count);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();

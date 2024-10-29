@@ -1,16 +1,28 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
+#include <random>
+
 #include "core/perf/include/perf.hpp"
 #include "seq/rezantseva_a_vector_dot_product/include/ops_seq.hpp"
+
+static int offset = 0;
+
+std::vector<int> createRandomVector(int v_size) {
+  std::vector<int> vec(v_size);
+  std::mt19937 gen;
+  gen.seed((unsigned)time(nullptr) + ++offset);
+  for (int i = 0; i < v_size; i++) vec[i] = gen() % 100;
+  return vec;
+}
 
 TEST(rezantseva_a_vector_dot_product_seq, test_pipeline_run) {
   const int count = 100000000;
   // Create data
   std::vector<int> out(1, 0);
 
-  std::vector<int> v1 = rezantseva_a_vector_dot_product_seq::createRandomVector(count);
-  std::vector<int> v2 = rezantseva_a_vector_dot_product_seq::createRandomVector(count);
+  std::vector<int> v1 = createRandomVector(count);
+  std::vector<int> v2 = createRandomVector(count);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -54,8 +66,8 @@ TEST(rezantseva_a_vector_dot_product_seq, test_task_run) {
   // Create data
   std::vector<int> out(1, 0);
 
-  std::vector<int> v1 = rezantseva_a_vector_dot_product_seq::createRandomVector(count);
-  std::vector<int> v2 = rezantseva_a_vector_dot_product_seq::createRandomVector(count);
+  std::vector<int> v1 = createRandomVector(count);
+  std::vector<int> v2 = createRandomVector(count);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();

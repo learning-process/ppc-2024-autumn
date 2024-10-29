@@ -1,11 +1,6 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/rezantseva_a_vector_dot_product/include/ops_seq.hpp"
 
-#include <random>
-#include <thread>
-
-static int offset = 0;
-
 bool rezantseva_a_vector_dot_product_seq::TestTaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
@@ -46,13 +41,6 @@ bool rezantseva_a_vector_dot_product_seq::TestTaskSequential::post_processing() 
   return true;
 }
 
-std::vector<int> rezantseva_a_vector_dot_product_seq::createRandomVector(int v_size) {
-  std::vector<int> vec(v_size);
-  std::mt19937 gen;
-  gen.seed((unsigned)time(nullptr) + ++offset);
-  for (int i = 0; i < v_size; i++) vec[i] = gen() % 100;
-  return vec;
-}
 int rezantseva_a_vector_dot_product_seq::vectorDotProduct(const std::vector<int>& v1, const std::vector<int>& v2) {
   long long result = 0;
   for (size_t i = 0; i < v1.size(); i++) result += v1[i] * v2[i];
