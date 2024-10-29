@@ -35,7 +35,7 @@ std::vector<std::vector<int>> vladimirova_j_max_of_vector_elements_mpi::CreateIn
                                                                                           size_t spread_of_val) {
   if ((row_c == 0) || (col_c == 0)) throw "null size";
   std::vector<std::vector<int>> m(row_c);
-  for (int i = 0; i < row_c; i++) {
+  for (size_t i = 0; i < row_c; i++) {
     m[i] = vladimirova_j_max_of_vector_elements_mpi::CreateVector(col_c, spread_of_val);
   }
   return m;

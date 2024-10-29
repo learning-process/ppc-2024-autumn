@@ -1,5 +1,4 @@
 // Copyright 2024 Nesterov Alexander
-#pragma once
 #include "seq/vladimirova_j_max_of_vector_elements/include/ops_seq.hpp"
 
 #include <random>
