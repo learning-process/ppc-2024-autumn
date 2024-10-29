@@ -58,7 +58,6 @@ bool kudryashova_i_vector_dot_product_mpi::TestMPITaskSequential::post_processin
   return true;
 }
 
-
 bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   unsigned int delta = 0;
