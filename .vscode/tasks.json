@@ -1,0 +1,125 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cmake",
+			"label": "CMake: build all",
+			"command": "build",
+			"targets": [
+				"all"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+
+		// mpi
+		{
+			"type": "cmake",
+			"label": "CMake: build mpi_func_tests",
+			"command": "build",
+			"targets": [
+				"mpi_func_tests"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"type": "cmake",
+			"label": "CMake: build mpi_perf_tests",
+			"command": "build",
+			"targets": [
+				"mpi_perf_tests"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+
+		// omp
+		{
+			"type": "cmake",
+			"label": "CMake: build omp_func_tests",
+			"command": "build",
+			"targets": [
+				"omp_func_tests"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"type": "cmake",
+			"label": "CMake: build omp_perf_tests",
+			"command": "build",
+			"targets": [
+				"omp_perf_tests"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+
+		// seq
+		{
+			"type": "cmake",
+			"label": "CMake: build seq_func_tests",
+			"command": "build",
+			"targets": [
+				"seq_func_tests"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"type": "cmake",
+			"label": "CMake: build seq_perf_tests",
+			"command": "build",
+			"targets": [
+				"seq_perf_tests"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+
+		// stl
+		{
+			"type": "cmake",
+			"label": "CMake: build stl_func_tests",
+			"command": "build",
+			"targets": [
+				"stl_func_tests"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"type": "cmake",
+			"label": "CMake: build stl_perf_tests",
+			"command": "build",
+			"targets": [
+				"stl_perf_tests"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+
+		// tbb
+		{
+			"type": "cmake",
+			"label": "CMake: build tbb_func_tests",
+			"command": "build",
+			"targets": [
+				"tbb_func_tests"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"type": "cmake",
+			"label": "CMake: build tbb_perf_tests",
+			"command": "build",
+			"targets": [
+				"tbb_perf_tests"
+			],
+			"group": "build",
+			"problemMatcher": []
+		}
+	]
+}

@@ -1,0 +1,128 @@
+{
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "[cpp]": {
+        "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
+        "editor.formatOnSave": true,
+    },
+    "cmake.configureSettings": {
+        "USE_SEQ": "ON",
+        "USE_MPI": "ON",
+        "USE_OMP": "ON",
+        "USE_TBB": "ON",
+        "USE_STL": "ON",
+        "USE_FUNC_TESTS": "ON",
+        "USE_PERF_TESTS": "ON",
+        "USE_CPPCHECK": "ON"
+    },
+    "testMate.cpp.debug.configTemplate": {
+        "type": "cppvsdbg",
+        "linux": {
+            "type": "cppdbg",
+            "MIMode": "gdb"
+        },
+        "darwin": {
+            "type": "cppdbg",
+            "MIMode": "lldb"
+        },
+        "win32": {
+            "type": "cppvsdbg"
+        },
+        "program": "${exec}",
+        "args": "${argsArray}",
+        "cwd": "${cwd}",
+        "env": "${envObj}",
+        "environment": "${envObjArray}",
+        "sourceFileMap": "${sourceFileMapObj}",
+    },
+    "testMate.cpp.test.advancedExecutables": [
+        // rest
+        {
+            "pattern": "build/bin/*_tests"
+        },
+        // mpi
+        {
+            "pattern": "build/bin/mpi_func_tests",
+            "runTask": {
+                "before": [
+                    "CMake: build mpi_func_tests",
+                ],
+            },
+        },
+        {
+            "pattern": "build/bin/mpi_perf_tests",
+            "runTask": {
+                "before": [
+                    "CMake: build mpi_perf_tests",
+                ],
+            },
+        },
+        // omp
+        {
+            "pattern": "build/bin/omp_func_tests",
+            "runTask": {
+                "before": [
+                    "CMake: build omp_func_tests",
+                ],
+            },
+        },
+        {
+            "pattern": "build/bin/omp_perf_tests",
+            "runTask": {
+                "before": [
+                    "CMake: build omp_perf_tests",
+                ],
+            },
+        },
+        // seq
+        {
+            "pattern": "build/bin/seq_func_tests",
+            "runTask": {
+                "before": [
+                    "CMake: build seq_func_tests",
+                ],
+            },
+        },
+        {
+            "pattern": "build/bin/seq_perf_tests",
+            "runTask": {
+                "before": [
+                    "CMake: build seq_perf_tests",
+                ],
+            },
+        },
+        // stl
+        {
+            "pattern": "build/bin/stl_func_tests",
+            "runTask": {
+                "before": [
+                    "CMake: build stl_func_tests",
+                ],
+            },
+        },
+        {
+            "pattern": "build/bin/stl_perf_tests",
+            "runTask": {
+                "before": [
+                    "CMake: build stl_perf_tests",
+                ],
+            },
+        },
+        // tbb
+        {
+            "pattern": "build/bin/tbb_func_tests",
+            "runTask": {
+                "before": [
+                    "CMake: build tbb_func_tests",
+                ],
+            },
+        },
+        {
+            "pattern": "build/bin/tbb_perf_tests",
+            "runTask": {
+                "before": [
+                    "CMake: build tbb_perf_tests",
+                ],
+            },
+        }
+    ]
+}
