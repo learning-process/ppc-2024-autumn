@@ -12,11 +12,11 @@ TEST(lysov_i_integration_the_trapezoid_method_mpi, Test_Integration_mpi_1) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   double a = -1.45;
   double b = 0.0;
-  int cnt_of_splits = 100;
+  double epsilon = 0.01;
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
   }
   lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
@@ -30,7 +30,7 @@ TEST(lysov_i_integration_the_trapezoid_method_mpi, Test_Integration_mpi_1) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
     lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
@@ -47,11 +47,11 @@ TEST(lysov_i_integration_the_trapezoid_method_mpi, Test_Integration_mpi_2) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   double a = 0.0;
   double b = 1.45;
-  int cnt_of_splits = 100;
+  double epsilon = 0.01;
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
   }
   lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
@@ -65,7 +65,7 @@ TEST(lysov_i_integration_the_trapezoid_method_mpi, Test_Integration_mpi_2) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
     lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
@@ -82,11 +82,11 @@ TEST(lysov_i_integration_the_trapezoid_method_mpi, Test_Integration_3) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   double a = -1.45;
   double b = 1.45;
-  int cnt_of_splits = 100;
+  double epsilon = 0.01;
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
   }
   lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
@@ -100,7 +100,7 @@ TEST(lysov_i_integration_the_trapezoid_method_mpi, Test_Integration_3) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
     lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
@@ -132,11 +132,11 @@ TEST(lysov_i_integration_the_trapezoid_method_mpi, TaskMpi_InputSizeMoreThan3) {
   if (world.rank() == 0) {
     double a = -1.0;
     double b = 1.0;
-    int cnt_of_splits = 100;
+    double epsilon = 0.01;
     double extra_input = 5.0;
     taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
+    taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&extra_input));
     double result = 0.0;
     taskDataMPIParallel->outputs.emplace_back(reinterpret_cast<uint8_t*>(&result));
@@ -151,10 +151,10 @@ TEST(lysov_i_integration_the_trapezoid_method_mpi, TaskMpi_OutputSizeMoreThan1) 
   if (world.rank() == 0) {
     double a = -1.0;
     double b = 1.0;
-    int cnt_of_splits = 100;
+    double epsilon = 0.01;
     taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
+    taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     double result1 = 0.0;
     double result2 = 0.0;
     taskDataMPIParallel->outputs.emplace_back(reinterpret_cast<uint8_t*>(&result1));
@@ -170,10 +170,10 @@ TEST(lysov_i_integration_the_trapezoid_method_mpi, TaskMpi_OutputSizeLessThan1) 
   if (world.rank() == 0) {
     double a = -1.0;
     double b = 1.0;
-    int cnt_of_splits = 100;
+    double epsilon = 0.01;
     taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
+    taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskParallel testTaskMPIParallel(taskDataMPIParallel);
     ASSERT_EQ(testTaskMPIParallel.validation(), false);
   }

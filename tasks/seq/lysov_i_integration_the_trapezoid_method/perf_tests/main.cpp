@@ -7,11 +7,11 @@
 TEST(lysov_i_integration_the_trapezoid_method_seq, test_pipeline_run) {
   double a = 0.0;
   double b = 1.45;
-  int cnt_of_splits = 100000000;
+  double epsilon = 0.0000001;
   auto taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&a));
   taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&b));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&cnt_of_splits));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&epsilon));
   double output = 1.0;
   taskData->outputs.push_back(reinterpret_cast<uint8_t *>(&output));
   auto testTaskSequential =
@@ -35,11 +35,11 @@ TEST(lysov_i_integration_the_trapezoid_method_seq, test_pipeline_run) {
 TEST(lysov_i_integration_the_trapezoid_method_seq, test_task_run) {
   double a = 0.0;
   double b = 1.45;
-  int cnt_of_splits = 100000000;
+  double epsilon = 0.0000001;
   auto taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&a));
   taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&b));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&cnt_of_splits));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&epsilon));
   double output = 1.0;
   taskData->outputs.push_back(reinterpret_cast<uint8_t *>(&output));
   auto testTaskSequential =

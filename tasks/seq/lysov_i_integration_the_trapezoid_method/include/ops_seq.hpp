@@ -11,7 +11,7 @@ class TestTaskSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  double a, b, cnt_of_splits, h;
+  double a, b, cnt_of_splits,epsilon, h;
   static double function_square(double x) { return x * x; }
 
  private:
