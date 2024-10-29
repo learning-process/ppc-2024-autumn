@@ -2,9 +2,6 @@
 
 #include <functional>
 #include <string>
-#include <thread>
-
-using namespace std::chrono_literals;
 
 bool gusev_n_trapezoidal_rule_seq::TrapezoidalIntegrationSequential::pre_processing() {
   internal_order_test();

@@ -2,15 +2,11 @@
 
 #include <algorithm>
 #include <boost/mpi.hpp>
-#include <chrono>
 #include <functional>
 #include <numeric>
 #include <random>
 #include <string>
-#include <thread>
 #include <vector>
-
-using namespace std::chrono_literals;
 
 bool gusev_n_trapezoidal_rule_mpi::TrapezoidalIntegrationSequential::pre_processing() {
   internal_order_test();
@@ -74,9 +70,7 @@ bool gusev_n_trapezoidal_rule_mpi::TrapezoidalIntegrationParallel::pre_processin
     n_ = *tmp_ptr_n;
   }
 
-  broadcast(world, a_, 0);
-  broadcast(world, b_, 0);
-  broadcast(world, n_, 0);
+  MPI_Bcast(&a_, sizeof(a_) + sizeof(b_) + sizeof(n_), MPI_BYTE, 0, world);
 
   return true;
 }
