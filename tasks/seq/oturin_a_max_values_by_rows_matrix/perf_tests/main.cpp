@@ -6,7 +6,8 @@
 #include "seq/oturin_a_max_values_by_rows_matrix/include/ops_seq.hpp"
 
 TEST(oturin_a_max_values_by_rows_matrix_seq_perftest, test_pipeline_run) {
-  size_t n = 500, m = 500;
+  size_t n = 500;
+  size_t m = 500;
 
   // Create data
   std::vector<int> in(n * m, 0);
@@ -44,7 +45,8 @@ TEST(oturin_a_max_values_by_rows_matrix_seq_perftest, test_pipeline_run) {
 }
 
 TEST(oturin_a_max_values_by_rows_matrix_seq_perftest, test_task_run) {
-  size_t n = 500, m = 500;
+  size_t n = 500;
+  size_t m = 500;
 
   // Create data
   std::vector<int> in(n * m, 0);

@@ -64,7 +64,8 @@ TEST(oturin_a_max_values_by_rows_matrix_seq_functest, Test_Max_10_5) {
 }
 
 TEST(oturin_a_max_values_by_rows_matrix_seq_functest, Test_Max_5_10) {
-  size_t n = 5, m = 10;
+  size_t n = 5;
+  size_t m = 10;
 
   // Create data
   std::vector<int> in(n * m);
