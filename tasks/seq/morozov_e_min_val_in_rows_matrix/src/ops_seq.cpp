@@ -24,7 +24,7 @@ std::vector<std::vector<int>> morozov_e_min_val_in_rows_matrix::getRandomMatrix(
       matrix[i][j] = dis(gen);
     }
   }
-  matrix = {{1, 2, 3}, {1, 2, 3}, {1, 2, 1}};
+  //matrix = {{1, 2, 3}, {1, 2, 3}, {1, 2, 1}};
   return matrix;
 }
 std::vector<int> morozov_e_min_val_in_rows_matrix::minValInRowsMatrix(const std::vector<std::vector<int>>& matrix) {
@@ -38,7 +38,7 @@ std::vector<int> morozov_e_min_val_in_rows_matrix::minValInRowsMatrix(const std:
   }
   return res;
 }
-bool morozov_e_min_val_in_rows_matrix::TestMPITaskSequential::pre_processing() {
+bool morozov_e_min_val_in_rows_matrix::TestTaskSequential::pre_processing() {
   internal_order_test();
   int n = taskData->inputs_count[0];
   int m = taskData->inputs_count[1];
@@ -53,7 +53,7 @@ bool morozov_e_min_val_in_rows_matrix::TestMPITaskSequential::pre_processing() {
   // std::cout << "HELLO";
   return true;
 }
-bool morozov_e_min_val_in_rows_matrix::TestMPITaskSequential::validation() {
+bool morozov_e_min_val_in_rows_matrix::TestTaskSequential::validation() {
   internal_order_test();
   if (taskData->outputs_count.empty() || taskData->inputs_count.empty() ||
       taskData->outputs_count[0] != taskData->inputs_count[0]) {
@@ -61,7 +61,7 @@ bool morozov_e_min_val_in_rows_matrix::TestMPITaskSequential::validation() {
   }
   return true;
 }
-bool morozov_e_min_val_in_rows_matrix::TestMPITaskSequential::run() {
+bool morozov_e_min_val_in_rows_matrix::TestTaskSequential::run() {
   internal_order_test();
   for (size_t i = 0; i < matrix_.size(); ++i) {
     int cur_max = matrix_[i][0];
@@ -72,7 +72,7 @@ bool morozov_e_min_val_in_rows_matrix::TestMPITaskSequential::run() {
   }
   return true;
 }
-bool morozov_e_min_val_in_rows_matrix::TestMPITaskSequential::post_processing() {
+bool morozov_e_min_val_in_rows_matrix::TestTaskSequential::post_processing() {
   internal_order_test();
   int* outputs = reinterpret_cast<int*>(taskData->outputs[0]);
   for (size_t i = 0; i < min_val_list_.size(); i++) {
