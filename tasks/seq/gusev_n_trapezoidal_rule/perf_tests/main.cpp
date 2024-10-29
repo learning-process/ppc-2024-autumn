@@ -1,5 +1,5 @@
 ﻿// Copyright 2024 Nesterov Alexander
-#include <corecrt_math_defines.h>
+#define _USE_MATH_DEFINES
 #include <gtest/gtest.h>
 
 #include <random>
