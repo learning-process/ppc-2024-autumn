@@ -183,7 +183,7 @@ bool kondratev_ya_max_col_matrix_mpi::TestMPITaskParallel::run() {
 
       tmp.resize(recvSize);
       world.recv(i, 0, tmp);
-      copy(tmp.begin(), tmp.end(), res_.data() + ind);
+      //copy(tmp.begin(), tmp.end(), res_.data() + ind);
       ind += recvSize;
     }
   } else {
