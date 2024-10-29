@@ -19,8 +19,8 @@ std::vector<std::vector<int>> morozov_e_min_val_in_rows_matrix::getRandomMatrix(
   std::vector<std::vector<int>> matrix(n, std::vector<int>(m));
 
   // «аполн€ем матрицу случайными значени€ми
-  for (size_t i = 0; i < n; ++i) {
-    for (size_t j = 0; j < m; ++j) {
+  for (int i = 0; i < n; ++i) {
+    for (int j = 0; j < m; ++j) {
       matrix[i][j] = dis(gen);
     }
   }
@@ -29,9 +29,11 @@ std::vector<std::vector<int>> morozov_e_min_val_in_rows_matrix::getRandomMatrix(
 }
 std::vector<int> morozov_e_min_val_in_rows_matrix::minValInRowsMatrix(const std::vector<std::vector<int>>& matrix) {
   std::vector<int> res;
-  for (int i = 0; i < matrix.size(); ++i) {
+  int n = matrix.size();
+  int m = matrix[0].size();
+  for (int i = 0; i < n; ++i) {
     int cur_min = matrix[i][0];
-    for (int j = 1; j < matrix[i].size(); ++j) {
+    for (int j = 1; j < m; ++j) {
       cur_min = std::min(cur_min, matrix[i][j]);
     }
     res.push_back(cur_min);
@@ -44,9 +46,9 @@ bool morozov_e_min_val_in_rows_matrix::TestTaskSequential::pre_processing() {
   int m = taskData->inputs_count[1];
   matrix_ = std::vector<std::vector<int>>(n, std::vector<int>(m));
   min_val_list_ = std::vector<int>(n);
-  for (size_t i = 0; i < n; ++i) {
+  for (int i = 0; i < n; ++i) {
     int* input_matrix = reinterpret_cast<int*>(taskData->inputs[i]);
-    for (size_t j = 0; j < m; ++j) {
+    for (int j = 0; j < m; ++j) {
       matrix_[i][j] = input_matrix[j];
     }
   }
@@ -63,9 +65,11 @@ bool morozov_e_min_val_in_rows_matrix::TestTaskSequential::validation() {
 }
 bool morozov_e_min_val_in_rows_matrix::TestTaskSequential::run() {
   internal_order_test();
-  for (size_t i = 0; i < matrix_.size(); ++i) {
+  int n = taskData->inputs_count[0];
+  int m = taskData->inputs_count[1];
+  for (int i = 0; i < n; ++i) {
     int cur_max = matrix_[i][0];
-    for (size_t j = 0; j < matrix_[i].size(); ++j) {
+    for (int j = 0; j < m; ++j) {
       cur_max = std::min(cur_max, matrix_[i][j]);
     }
     min_val_list_[i] = cur_max;
