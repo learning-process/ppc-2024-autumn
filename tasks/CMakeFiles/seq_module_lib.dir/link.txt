@@ -1,2 +1,0 @@
-/usr/bin/ar qc ../arch/libseq_module_lib.a CMakeFiles/seq_module_lib.dir/seq/example/src/ops_seq.cpp.o CMakeFiles/seq_module_lib.dir/seq/oturin_a_max_values_by_rows_matrix/src/ops_seq.cpp.o
-/usr/bin/ranlib ../arch/libseq_module_lib.a

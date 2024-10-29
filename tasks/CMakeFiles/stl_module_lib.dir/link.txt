@@ -1,2 +1,0 @@
-/usr/bin/ar qc ../arch/libstl_module_lib.a CMakeFiles/stl_module_lib.dir/stl/example/src/ops_stl.cpp.o
-/usr/bin/ranlib ../arch/libstl_module_lib.a

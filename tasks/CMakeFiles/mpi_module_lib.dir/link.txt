@@ -1,2 +1,0 @@
-/usr/bin/ar qc ../arch/libmpi_module_lib.a CMakeFiles/mpi_module_lib.dir/mpi/example/src/ops_mpi.cpp.o CMakeFiles/mpi_module_lib.dir/mpi/oturin_a_max_values_by_rows_matrix/src/ops_mpi.cpp.o
-/usr/bin/ranlib ../arch/libmpi_module_lib.a

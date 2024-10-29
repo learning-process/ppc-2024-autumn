@@ -1,1 +1,0 @@
-/usr/bin/c++  -Wall -Wsign-compare -Werror -fopenmp -O3 -DNDEBUG CMakeFiles/sample_stl.dir/main.cpp.o -o ../../bin/sample_stl

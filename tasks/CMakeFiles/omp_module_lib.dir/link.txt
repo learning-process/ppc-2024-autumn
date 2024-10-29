@@ -1,2 +1,0 @@
-/usr/bin/ar qc ../arch/libomp_module_lib.a CMakeFiles/omp_module_lib.dir/omp/example/src/ops_omp.cpp.o
-/usr/bin/ranlib ../arch/libomp_module_lib.a

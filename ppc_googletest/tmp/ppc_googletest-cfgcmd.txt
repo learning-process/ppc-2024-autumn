@@ -1,0 +1,1 @@
+cmd='/usr/bin/cmake;-S;/home/user/VScode/ppc/ppc-2024-autumn/3rdparty/googletest/;-B;/home/user/VScode/ppc/ppc-2024-autumn/ppc_googletest/build/;-DCMAKE_CXX_COMPILER=/usr/bin/c++;-DCMAKE_C_COMPILER=/usr/bin/cc;-GUnix Makefiles;-DCMAKE_BUILD_TYPE=Release;-Dgtest_force_shared_crt=ON'

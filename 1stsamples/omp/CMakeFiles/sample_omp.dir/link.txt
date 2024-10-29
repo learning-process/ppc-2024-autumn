@@ -1,1 +1,0 @@
-/usr/bin/c++  -Wall -Wsign-compare -Werror -fopenmp -O3 -DNDEBUG CMakeFiles/sample_omp.dir/main.cpp.o -o ../../bin/sample_omp
