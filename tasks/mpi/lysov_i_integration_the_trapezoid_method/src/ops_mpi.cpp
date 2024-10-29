@@ -64,7 +64,7 @@ bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskParallel::pre_proc
     double epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
     cnt_of_splits = static_cast<int>(std::abs((b - a)) / epsilon);
   }
-  
+
   boost::mpi::broadcast(world, a, 0);
   boost::mpi::broadcast(world, b, 0);
   boost::mpi::broadcast(world, cnt_of_splits, 0);
