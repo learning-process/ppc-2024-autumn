@@ -52,9 +52,9 @@ TEST(sequential_beresnev_a_min_values_by_matrix_columns_perf_test, test_pipeline
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  for (int i = 0; i < M; ++i) {
+  for (std::uint32_t i = 0; i < M; ++i) {
     int expectedMin = in[i];
-    for (int j = 1; j < N; ++j) {
+    for (std::uint32_t j = 1; j < N; ++j) {
       int currentValue = in[j * M + i];
       if (currentValue < expectedMin) {
         expectedMin = currentValue;
@@ -109,9 +109,9 @@ TEST(sequential_beresnev_a_min_values_by_matrix_columns_perf_test, test_task_run
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
   
-  for (int i = 0; i < M; ++i) {
+  for (std::uint32_t i = 0; i < M; ++i) {
     int expectedMin = in[i];
-    for (int j = 1; j < N; ++j) {
+    for (std::uint32_t j = 1; j < N; ++j) {
       int currentValue = in[j * M + i];
       if (currentValue < expectedMin) {
         expectedMin = currentValue;
