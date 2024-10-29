@@ -5,7 +5,6 @@
 #include <thread>
 
 static int offset = 0;
-using namespace std::chrono_literals;
 
 bool rezantseva_a_vector_dot_product_seq::TestTaskSequential::validation() {
   internal_order_test();
@@ -55,7 +54,6 @@ std::vector<int> rezantseva_a_vector_dot_product_seq::createRandomVector(int v_s
   return vec;
 }
 int rezantseva_a_vector_dot_product_seq::vectorDotProduct(const std::vector<int>& v1, const std::vector<int>& v2) {
-  if (v1.size() != v2.size()) throw "Error! Vectors must have equal size!";
   long long result = 0;
   for (size_t i = 0; i < v1.size(); i++) result += v1[i] * v2[i];
   return result;

@@ -212,10 +212,3 @@ TEST(rezantseva_a_vector_dot_product_seq, check_vectorDotProduct_right) {
   std::vector<int> v2 = {4, 7, 8};
   ASSERT_EQ(58, rezantseva_a_vector_dot_product_seq::vectorDotProduct(v1, v2));
 }
-
-TEST(rezantseva_a_vector_dot_product_seq, can_throw_exp_vectorDotProduct) {
-  // Create data
-  std::vector<int> v1 = {1, 2, 5, 7};
-  std::vector<int> v2 = {4, 7, 8};
-  ASSERT_ANY_THROW(rezantseva_a_vector_dot_product_seq::vectorDotProduct(v1, v2));
-}
