@@ -7,11 +7,11 @@
 static int seedOffset = 0;
 using namespace std::chrono_literals;
 
-std::vector<int> kudryashova_i_vector_dot_product_mpi::getRandomVector(unsigned long size) {
+std::vector<int> kudryashova_i_vector_dot_product_mpi::getRandomVector(const int size) {
   std::vector<int> vector(size);
-  std::srand(static_cast<unsigned>(time(NULL)) + ++seedOffset);
-  for (unsigned long i = 0; i < size; ++i) {
-    vector[i] = std::rand() % 10 + 1;
+  std::srand(static_cast<unsigned>(time(nullptr)) + ++seedOffset);
+  for (int i = 0; i < size; ++i) {
+    vector[i] = std::rand() % 100 + 1;
   }
   return vector;
 }
@@ -131,7 +131,7 @@ bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::run() {
 bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    if (taskData->outputs.size() > 0) {
+    if (!taskData->outputs.empty()) {
       reinterpret_cast<int*>(taskData->outputs[0])[0] = result;
     } else {
       return false;
