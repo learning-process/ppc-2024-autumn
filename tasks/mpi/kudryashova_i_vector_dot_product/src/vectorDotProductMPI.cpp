@@ -2,10 +2,8 @@
 
 #include <boost/mpi.hpp>
 #include <random>
-#include <thread>
 
 static int seedOffset = 0;
-using namespace std::chrono_literals;
 
 std::vector<int> kudryashova_i_vector_dot_product_mpi::getRandomVector(int size) {
   std::vector<int> vector(size);
@@ -60,8 +58,6 @@ bool kudryashova_i_vector_dot_product_mpi::TestMPITaskSequential::post_processin
 
 bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  unsigned int delta = 0;
-
   if (world.rank() == 0) {
     if (taskData->inputs_count[0] % world.size() != 0) {
       return false;
@@ -82,23 +78,7 @@ bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::pre_processing()
 
       std::copy(source_ptr, source_ptr + taskData->inputs_count[i], input_[i].begin());
     }
-    for (int proc = 1; proc < world.size(); ++proc) {
-      world.send(proc, 0, input_[0].data() + proc * delta, delta);
-      world.send(proc, 1, input_[1].data() + proc * delta, delta);
-    }
   }
-
-  local_input1_.resize(delta);
-  local_input2_.resize(delta);
-
-  if (world.rank() == 0) {
-    std::copy(input_[0].begin(), input_[0].begin() + delta, local_input1_.begin());
-    std::copy(input_[1].begin(), input_[1].begin() + delta, local_input2_.begin());
-  } else {
-    world.recv(0, 0, local_input1_.data(), delta);
-    world.recv(0, 1, local_input2_.data(), delta);
-  }
-
   result = 0;
   return true;
 }
@@ -116,6 +96,23 @@ bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::validation() {
 
 bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+
+  if (world.rank() == 0) {
+    for (int proc = 1; proc < world.size(); ++proc) {
+      world.send(proc, 0, input_[0].data() + proc * delta, delta);
+      world.send(proc, 1, input_[1].data() + proc * delta, delta);
+    }
+  }
+  local_input1_.resize(delta);
+  local_input2_.resize(delta);
+
+  if (world.rank() == 0) {
+    std::copy(input_[0].begin(), input_[0].begin() + delta, local_input1_.begin());
+    std::copy(input_[1].begin(), input_[1].begin() + delta, local_input2_.begin());
+  } else {
+    world.recv(0, 0, local_input1_.data(), delta);
+    world.recv(0, 1, local_input2_.data(), delta);
+  }
 
   int local_result = std::inner_product(local_input1_.begin(), local_input1_.end(), local_input2_.begin(), 0);
 

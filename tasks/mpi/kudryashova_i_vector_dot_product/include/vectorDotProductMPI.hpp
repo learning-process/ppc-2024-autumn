@@ -36,5 +36,6 @@ class TestMPITaskParallel : public ppc::core::Task {
   std::vector<int> local_input1_, local_input2_;
   int result{};
   boost::mpi::communicator world;
+  unsigned int delta;
 };
 }  // namespace kudryashova_i_vector_dot_product_mpi
