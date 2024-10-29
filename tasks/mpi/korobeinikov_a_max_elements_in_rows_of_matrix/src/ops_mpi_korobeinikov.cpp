@@ -172,7 +172,7 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::run() {
     while (local_input_.begin() + near_end + k * size_rows < local_input_.end()) {
       local_res =
           *std::max_element(local_input_.begin() + near_end + k * size_rows,
-                             std::min(local_input_.end(), local_input_.begin() + near_end + (k + 1) * size_rows));
+                            std::min(local_input_.end(), local_input_.begin() + near_end + (k + 1) * size_rows));
       reduce(world, local_res, res[ind], boost::mpi::maximum<int>(), 0);
       ++k;
       ++ind;
