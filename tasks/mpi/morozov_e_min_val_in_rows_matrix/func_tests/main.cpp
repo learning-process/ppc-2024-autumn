@@ -10,7 +10,7 @@
 TEST(morozov_e_min_val_in_rows_matrix_MPI, Test_Validation_isFalse) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   std::vector<std::vector<int>> matrix = {{1, 1}, {2, 2}};
-  for (int i = 0; i < matrix.size(); ++i) 
+  for (size_t i = 0; i < matrix.size(); ++i) 
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
   morozov_e_min_val_in_rows_matrix::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
   morozov_e_min_val_in_rows_matrix::TestMPITaskParallel testMpiTaskParallel(taskDataSeq);
@@ -22,7 +22,7 @@ TEST(morozov_e_min_val_in_rows_matrix_MPI, Test_Validation_isTrue) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   std::vector<std::vector<int>> matrix = {{1, 1}, {2, 2}};
   std::vector<int> res = {1, 2};
-  for (int i = 0; i < matrix.size(); ++i) taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+  for (size_t i = 0; i < matrix.size(); ++i) taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
   taskDataSeq->inputs_count.emplace_back(matrix.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res.data()));
   taskDataSeq->outputs_count.emplace_back(2);
@@ -45,7 +45,7 @@ TEST(morozov_e_min_val_in_rows_matrix_MPI, Test_Main) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   matrix = morozov_e_min_val_in_rows_matrix::getRandomMatrix(n, m);
   res = morozov_e_min_val_in_rows_matrix::minValInRowsMatrix(matrix);
-  for (int i = 0; i < matrix.size(); ++i) {
+  for (size_t i = 0; i < matrix.size(); ++i) {
      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
   }
