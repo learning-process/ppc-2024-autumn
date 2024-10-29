@@ -46,7 +46,6 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskSequential::validation() {
   }
   return (*taskData->inputs[1] == taskData->outputs_count[0] &&
           (taskData->inputs_count[0] % (*taskData->inputs[1])) == 0);
-
 }
 
 bool korobeinikov_a_test_task_mpi::TestMPITaskSequential::run() {
@@ -135,7 +134,7 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::validation() {
       return true;
     }
     return (*taskData->inputs[1] == taskData->outputs_count[0] &&
-            (taskData->inputs_count[0] % (*taskData->inputs[1])) == 0);    
+            (taskData->inputs_count[0] % (*taskData->inputs[1])) == 0);
   }
   return true;
 }
