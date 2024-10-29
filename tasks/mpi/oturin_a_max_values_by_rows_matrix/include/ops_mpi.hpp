@@ -56,8 +56,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   std::vector<int> res;
   std::string ops;
 
-  int world_size = -1;
-  int world_rank = -1;
+  boost::mpi::communicator world;
 };
 
 }  // namespace oturin_a_max_values_by_rows_matrix_mpi
