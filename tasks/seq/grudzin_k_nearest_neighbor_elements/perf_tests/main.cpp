@@ -10,12 +10,11 @@ TEST(grudzin_k_nearest_neighbor_elements_seq, test_pipeline_run) {
   int size = 10000000;
   // Create data
   std::vector<int> in(size);
+  std::vector<int> out(1, 0);
+  int ans = 3;
   for (int i = 0; i < size; ++i) {
     in[i] = 3 * i;
   }
-  std::vector<int> out(1, 0);
-  int ans = 3;
-
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
@@ -50,12 +49,11 @@ TEST(grudzin_k_nearest_neighbor_elements_seq, test_task_run) {
   int size = 10000000;
   // Create data
   std::vector<int> in(size);
+  std::vector<int> out(1, 0);
+  int ans = 2;
   for (int i = 0; i < size; ++i) {
     in[i] = 2 * i;
   }
-  std::vector<int> out(1, 0);
-  int ans = 2;
-
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));

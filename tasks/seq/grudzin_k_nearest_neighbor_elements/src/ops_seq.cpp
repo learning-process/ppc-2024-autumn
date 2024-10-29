@@ -9,11 +9,9 @@ using namespace std::chrono_literals;
 bool grudzin_k_nearest_neighbor_elements_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   // Init value for input and output
-  input_ = std::vector<std::pair<int, int>>(taskData->inputs_count[0] - 1);
+  input_ = std::vector<int>(taskData->inputs_count[0]);
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0] - 1; i++) {
-    input_[i] = {abs(tmp_ptr[i] - tmp_ptr[i + 1]), i};
-  }
+  std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
   // Init value for output
   res = {INT_MAX, -1};
   return true;
@@ -28,7 +26,7 @@ bool grudzin_k_nearest_neighbor_elements_seq::TestTaskSequential::validation() {
 bool grudzin_k_nearest_neighbor_elements_seq::TestTaskSequential::run() {
   internal_order_test();
   for (size_t i = 0; i < input_.size(); i++) {
-    res = std::min(res, input_[i]);
+    res = std::min(res, {abs(input_[i] - input_[i + 1]), i});
   }
   return true;
 }
