@@ -9,7 +9,7 @@
 
 #include "core/task/include/task.hpp"
 namespace kudryashova_i_vector_dot_product_mpi {
-std::vector<int> getRandomVector(const int size);
+std::vector<int> getRandomVector(int size);
 int vectorDotProduct(const std::vector<int>& vector1, const std::vector<int>& vector2);
 class TestMPITaskSequential : public ppc::core::Task {
  public:

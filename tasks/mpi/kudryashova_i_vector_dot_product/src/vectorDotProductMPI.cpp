@@ -7,7 +7,7 @@
 static int seedOffset = 0;
 using namespace std::chrono_literals;
 
-std::vector<int> kudryashova_i_vector_dot_product_mpi::getRandomVector(const int size) {
+std::vector<int> kudryashova_i_vector_dot_product_mpi::getRandomVector(int size) {
   std::vector<int> vector(size);
   std::srand(static_cast<unsigned>(time(nullptr)) + ++seedOffset);
   for (int i = 0; i < size; ++i) {
