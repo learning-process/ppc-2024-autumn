@@ -15,7 +15,6 @@ class TestTaskSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  void gen_random_vector(const std::vector<int>& v);
 
  private:
   std::vector<int> input_{};
