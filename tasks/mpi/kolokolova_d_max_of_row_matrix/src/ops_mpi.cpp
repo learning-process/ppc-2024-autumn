@@ -105,7 +105,7 @@ bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     // Check count elements of output and input
-    if (taskData->outputs_count[0] != 0 && taskData->inputs_count[0] != 0) return true;
+    if (taskData->outputs_count[0] == 0 || taskData->inputs_count[0] == 0) return false;
   }
   return true;
 }
