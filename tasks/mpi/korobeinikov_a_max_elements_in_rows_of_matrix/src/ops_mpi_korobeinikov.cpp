@@ -66,6 +66,25 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskSequential::post_processing() {
 
 bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
+
+  return true;
+}
+
+bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::validation() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    if ((*taskData->inputs[1]) == 0) {
+      return true;
+    }
+    return (*taskData->inputs[1] == taskData->outputs_count[0] &&
+            (taskData->inputs_count[0] % (*taskData->inputs[1])) == 0);
+  }
+  return true;
+}
+
+bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::run() {
+  internal_order_test();
+
   unsigned int delta = 0;
 
   if (world.rank() == 0) {
@@ -85,7 +104,6 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::pre_processing() {
   broadcast(world, delta, 0);
   broadcast(world, count_rows, 0);
   if (count_rows == 0) {
-    res = std::vector<int>(count_rows, 0);
     return true;
   }
   broadcast(world, size_rows, 0);
@@ -121,37 +139,13 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::pre_processing() {
     }
   }
 
-  // Init value for output
   res = std::vector<int>(count_rows, 0);
 
-  return true;
-}
-
-bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::validation() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    if ((*taskData->inputs[1]) == 0) {
-      return true;
-    }
-    return (*taskData->inputs[1] == taskData->outputs_count[0] &&
-            (taskData->inputs_count[0] % (*taskData->inputs[1])) == 0);
-  }
-  return true;
-}
-
-bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::run() {
-  internal_order_test();
   size_t default_local_size = 0;
   if (world.rank() == 0) {
-    num_use_proc = std::min(world.size(), count_rows * size_rows);
     default_local_size = local_input_.size();
   }
   broadcast(world, default_local_size, 0);
-  broadcast(world, size_rows, 0);
-  broadcast(world, num_use_proc, 0);
-  if (size_rows == 0) {
-    return true;
-  }
 
   if (world.rank() < num_use_proc) {
     unsigned int ind = (world.rank() * default_local_size) / size_rows;
