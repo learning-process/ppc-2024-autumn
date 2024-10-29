@@ -163,7 +163,7 @@ bool kondratev_ya_max_col_matrix_mpi::TestMPITaskParallel::validation() {
 bool kondratev_ya_max_col_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-  uint32_t recvSize = 0;
+  // uint32_t recvSize = 0;
 
   std::vector<int32_t> loc_max(local_input_.size());
   for (size_t i = 0; i < loc_max.size(); i++) {
@@ -173,28 +173,18 @@ bool kondratev_ya_max_col_matrix_mpi::TestMPITaskParallel::run() {
   if (world.rank() == 0) {
     std::copy(loc_max.begin(), loc_max.end(), res_.begin());
 
-    uint32_t ind = loc_max.size();
-    uint32_t worldSize = world.size();
+    std::vector<int32_t> sizes(world.size(), step_);
+    for (uint32_t i = 0; i < remain_; i++) sizes[i]++;
 
-    std::vector<int32_t> tmp;
-    for (uint32_t i = 1; i < worldSize; i++) {
-      recvSize = step_;
-      if (i < remain_) recvSize++;
-
-      tmp.resize(recvSize);
-      world.recv(i, 0, tmp.data(), recvSize);
-      copy(tmp.begin(), tmp.end(), res_.data() + ind);
-      ind += recvSize;
-
-      std::cout << "From rank " << i << " recv tmp size " << tmp.size() << " tmp adress " << loc_max.data() << " recvSize " << recvSize << "\n";  
+    uint32_t ind = sizes[0];
+    for (int32_t i = 1; i < world.size(); i++) {
+      world.recv(i, 0, &res_[ind], sizes[i]);
+      ind += sizes[i];
     }
   } else {
-    recvSize = step_;
-    if ((uint32_t)world.rank() < remain_) recvSize++;
-
-    world.send(0, 0, loc_max.data(), recvSize);
-    std::cout << "Rank " << world.rank() << " send loc_max size " << loc_max.size() << " loc_max adress " << loc_max.data() << " recvSize " << recvSize << "\n";  
+    world.send(0, 0, loc_max.data(), loc_max.size());
   }
+
   return true;
 }
 
