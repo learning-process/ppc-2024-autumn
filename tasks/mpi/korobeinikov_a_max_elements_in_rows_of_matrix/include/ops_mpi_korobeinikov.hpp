@@ -45,6 +45,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   std::vector<int> res;
   int count_rows;
   int size_rows;
+  int num_use_proc;
   boost::mpi::communicator world;
 };
 

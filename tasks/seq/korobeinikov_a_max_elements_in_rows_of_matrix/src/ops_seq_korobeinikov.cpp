@@ -14,7 +14,11 @@ bool korobeinikov_a_test_task_seq::TestTaskSequential::pre_processing() {
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
   std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], std::back_inserter(input_));
   count_rows = (int)*taskData->inputs[1];
-  size_rows = (int)(taskData->inputs_count[0] / (*taskData->inputs[1]));
+  if (count_rows != 0) {
+    size_rows = (int)(taskData->inputs_count[0] / (*taskData->inputs[1]));
+  } else {
+    size_rows = 0;
+  }
 
   res = std::vector<int>(count_rows, 0);
   return true;
@@ -23,8 +27,12 @@ bool korobeinikov_a_test_task_seq::TestTaskSequential::pre_processing() {
 bool korobeinikov_a_test_task_seq::TestTaskSequential::validation() {
   internal_order_test();
 
-  return (*taskData->inputs[1] == taskData->outputs_count[0] &&
-          (taskData->inputs_count[0] % (*taskData->inputs[1])) == 0);
+  if ((*taskData->inputs[1]) == 0) {
+    return true;
+  } else {
+    return (*taskData->inputs[1] == taskData->outputs_count[0] &&
+            (taskData->inputs_count[0] % (*taskData->inputs[1])) == 0);
+  }
 }
 
 bool korobeinikov_a_test_task_seq::TestTaskSequential::run() {

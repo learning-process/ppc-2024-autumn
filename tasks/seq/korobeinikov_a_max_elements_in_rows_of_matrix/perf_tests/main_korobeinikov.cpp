@@ -87,7 +87,6 @@ TEST(sequential_korobeinikov_perf_test, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  // ASSERT_EQ(right_answer,seq_res);
   for (unsigned i = 0; i < seq_res.size(); i++) {
     EXPECT_EQ(10, seq_res[0]);
   }

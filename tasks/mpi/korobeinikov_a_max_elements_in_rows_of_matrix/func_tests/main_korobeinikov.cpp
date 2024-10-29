@@ -141,3 +141,111 @@ TEST(max_elements_in_rows_of_matrix_mpi, Test_3_false_validation) {
     ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
 }
+
+TEST(max_elements_in_rows_of_matrix_mpi, Test_4_empty_matrix) {
+  boost::mpi::communicator world;
+
+  // Create data
+
+  int count_rows = 0;  // not const, because reinterpret_cast does not work with const
+  std::vector<int> global_matrix;
+  std::vector<int> mpi_res(count_rows, 0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(global_matrix.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows));
+    taskDataPar->inputs_count.emplace_back(1);
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(mpi_res.data()));
+    taskDataPar->outputs_count.emplace_back(mpi_res.size());
+  }
+
+  korobeinikov_a_test_task_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    // Create data
+
+    std::vector<int> right_answer(count_rows, 0);
+
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows));
+    taskDataSeq->inputs_count.emplace_back(1);
+
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(right_answer.data()));
+    taskDataSeq->outputs_count.emplace_back(right_answer.size());
+
+    // Create Task
+    korobeinikov_a_test_task_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(right_answer, mpi_res);
+  }
+}
+
+TEST(max_elements_in_rows_of_matrix_mpi, Test_5_one_row_matrix) {
+  boost::mpi::communicator world;
+
+  // Create data
+
+  int count_rows = 1;  // not const, because reinterpret_cast does not work with const
+  std::vector<int> global_matrix{1, 3, 2};
+  std::vector<int> mpi_res(count_rows, 0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(global_matrix.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows));
+    taskDataPar->inputs_count.emplace_back(1);
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(mpi_res.data()));
+    taskDataPar->outputs_count.emplace_back(mpi_res.size());
+  }
+
+  korobeinikov_a_test_task_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    // Create data
+
+    std::vector<int> right_answer(count_rows, 0);
+
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows));
+    taskDataSeq->inputs_count.emplace_back(1);
+
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(right_answer.data()));
+    taskDataSeq->outputs_count.emplace_back(right_answer.size());
+
+    // Create Task
+    korobeinikov_a_test_task_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(right_answer, mpi_res);
+  }
+}

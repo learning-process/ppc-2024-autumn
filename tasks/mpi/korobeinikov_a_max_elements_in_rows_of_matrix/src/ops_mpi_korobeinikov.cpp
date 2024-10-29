@@ -29,7 +29,11 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskSequential::pre_processing() {
   std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], std::back_inserter(input_));
 
   count_rows = (int)*taskData->inputs[1];
-  size_rows = (int)(taskData->inputs_count[0] / (*taskData->inputs[1]));
+  if (count_rows != 0) {
+    size_rows = (int)(taskData->inputs_count[0] / (*taskData->inputs[1]));
+  } else {
+    size_rows = 0;
+  }
   res = std::vector<int>(count_rows, 0);
   return true;
 }
@@ -37,8 +41,12 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskSequential::pre_processing() {
 bool korobeinikov_a_test_task_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
 
-  return (*taskData->inputs[1] == taskData->outputs_count[0] &&
-          (taskData->inputs_count[0] % (*taskData->inputs[1])) == 0);
+  if ((*taskData->inputs[1]) == 0) {
+    return true;
+  } else {
+    return (*taskData->inputs[1] == taskData->outputs_count[0] &&
+            (taskData->inputs_count[0] % (*taskData->inputs[1])) == 0);
+  }
 }
 
 bool korobeinikov_a_test_task_mpi::TestMPITaskSequential::run() {
@@ -62,26 +70,42 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::pre_processing() {
   unsigned int delta = 0;
 
   if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] / world.size();
     count_rows = (int)*taskData->inputs[1];
-    size_rows = (int)(taskData->inputs_count[0] / (*taskData->inputs[1]));
+    if (count_rows != 0) {
+      size_rows = (int)(taskData->inputs_count[0] / (*taskData->inputs[1]));
+    } else {
+      size_rows = 0;
+    }
+    if (count_rows != 0) {
+      num_use_proc = std::min(world.size(), count_rows * size_rows);
+    } else {
+      num_use_proc = world.size();
+    }
+    delta = taskData->inputs_count[0] / num_use_proc;
   }
   broadcast(world, delta, 0);
   broadcast(world, count_rows, 0);
+  if (count_rows == 0) {
+    res = std::vector<int>(count_rows, 0);
+    return true;
+  }
   broadcast(world, size_rows, 0);
+  broadcast(world, num_use_proc, 0);
+  
 
+  
   if (world.rank() == 0) {
     // Init vectors
     input_.reserve(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], std::back_inserter(input_));
 
-    for (int proc = 1; proc < world.size() - 1; proc++) {
+    for (int proc = 1; proc < num_use_proc - 1; proc++) {
       world.send(proc, 0, input_.data() + proc * delta, delta);
     }
-    if (world.size() != 1) {
-      int proc = world.size() - 1;
-      world.send(proc, 0, input_.data() + proc * delta, delta + taskData->inputs_count[0] % world.size());
+    if (num_use_proc != 1) {
+      int proc = num_use_proc - 1;
+      world.send(proc, 0, input_.data() + proc * delta, delta + taskData->inputs_count[0] % num_use_proc);
     }
   }
 
@@ -89,12 +113,14 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::pre_processing() {
     local_input_ = std::vector<int>(delta);
     local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
   } else {
-    if (world.rank() == world.size() - 1 && world.size() != 0) {
-      local_input_ = std::vector<int>(delta + (count_rows * size_rows) % world.size());
-      world.recv(0, 0, local_input_.data(), delta + count_rows * size_rows % world.size());
+    if (world.rank() == num_use_proc - 1 && num_use_proc != 0) {
+      local_input_ = std::vector<int>(delta + (count_rows * size_rows) % num_use_proc);
+      world.recv(0, 0, local_input_.data(), delta + (count_rows * size_rows) % num_use_proc);
     } else {
-      local_input_ = std::vector<int>(delta);
-      world.recv(0, 0, local_input_.data(), delta);
+      if (world.rank() < num_use_proc) {
+        local_input_ = std::vector<int>(delta);
+        world.recv(0, 0, local_input_.data(), delta);
+      }
     }
   }
 
@@ -107,8 +133,12 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::pre_processing() {
 bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    return (*taskData->inputs[1] == taskData->outputs_count[0] &&
-            (taskData->inputs_count[0] % (*taskData->inputs[1])) == 0);
+    if ((*taskData->inputs[1]) == 0){
+        return true;
+    } else {
+        return (*taskData->inputs[1] == taskData->outputs_count[0] &&
+                (taskData->inputs_count[0] % (*taskData->inputs[1])) == 0);
+    }    
   }
   return true;
 }
@@ -117,36 +147,47 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   size_t default_local_size = 0;
   if (world.rank() == 0) {
+    num_use_proc = std::min(world.size(), count_rows * size_rows);
     default_local_size = local_input_.size();
   }
   broadcast(world, default_local_size, 0);
   broadcast(world, size_rows, 0);
-
-  unsigned int ind = (world.rank() * default_local_size) / size_rows;
-  for (unsigned int i = 0; i < ind; ++i) {
-    reduce(world, INT_MIN, res[i], boost::mpi::maximum<int>(), 0);
+  broadcast(world, num_use_proc, 0);
+  if (size_rows == 0) {
+    return true;
   }
 
-  unsigned int near_end = std::min(local_input_.size(), size_rows - (world.rank() * default_local_size) % size_rows);
-  int local_res;
+  if (world.rank() < num_use_proc) {
+    unsigned int ind = (world.rank() * default_local_size) / size_rows;
+    for (unsigned int i = 0; i < ind; ++i) {
+        reduce(world, INT_MIN, res[i], boost::mpi::maximum<int>(), 0);
+    }
 
-  local_res = *std::max_element(local_input_.begin(), local_input_.begin() + near_end);
-  reduce(world, local_res, res[ind], boost::mpi::maximum<int>(), 0);
-  ++ind;
+    unsigned int near_end = std::min(local_input_.size(), size_rows - (world.rank() * default_local_size) % size_rows);
+    int local_res;
 
-  unsigned int k = 0;
-  while (local_input_.begin() + near_end + k * size_rows < local_input_.end()) {
-    local_res = *std::max_element(local_input_.begin() + near_end + k * size_rows,
-                                  std::min(local_input_.end(), local_input_.begin() + near_end + (k + 1) * size_rows));
+    local_res = *std::max_element(local_input_.begin(), local_input_.begin() + near_end);
     reduce(world, local_res, res[ind], boost::mpi::maximum<int>(), 0);
-    ++k;
     ++ind;
-  }
 
-  for (unsigned int i = ind; i < res.size(); ++i) {
-    reduce(world, INT_MIN, res[i], boost::mpi::maximum<int>(), 0);
-  }
+    unsigned int k = 0;
+    while (local_input_.begin() + near_end + k * size_rows < local_input_.end()) {
+        local_res =
+            *std::max_element(local_input_.begin() + near_end + k * size_rows,
+                              std::min(local_input_.end(), local_input_.begin() + near_end + (k + 1) * size_rows));
+        reduce(world, local_res, res[ind], boost::mpi::maximum<int>(), 0);
+        ++k;
+        ++ind;
+    }
 
+    for (unsigned int i = ind; i < res.size(); ++i) {
+        reduce(world, INT_MIN, res[i], boost::mpi::maximum<int>(), 0);
+    }
+  } else {
+    for (unsigned int i = 0; i < res.size(); ++i) {
+        reduce(world, INT_MIN, res[i], boost::mpi::maximum<int>(), 0);
+    }
+  }
   return true;
 }
 
