@@ -68,7 +68,7 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::validation() {
 
   if (world.rank() == 0) {
     // Check count elements of output
-    return taskData->inputs_count[0] > 1 && taskData->outputs_count[0] > 1;
+    return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] > 0;
   }
   return true;
 }
