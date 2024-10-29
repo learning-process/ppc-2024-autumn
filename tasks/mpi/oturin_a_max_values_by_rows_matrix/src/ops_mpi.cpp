@@ -60,18 +60,18 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::post_process
 
 bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
-
-  if (world.size() <= 1) {
+  /*
+  if (world.size() <= 1) {  // triggerred on MSVC
     EXPECT_NE(1, 1) << "WORLD TOO SMALL" << std::endl;
     return false;
-  }
+  }*/
 
   if (world.rank() == 0) {
     // Check count elements of output
     bool valid = taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] > 0;
-    if (valid)
-      return true;
-    EXPECT_NE(1, 1) << taskData->inputs_count[0] << ' ' << taskData->inputs_count[1] << ' ' << taskData->outputs_count[0] << std::endl;
+    if (valid) return true;
+    EXPECT_NE(1, 1) << taskData->inputs_count[0] << ' ' << taskData->inputs_count[1] << ' '
+                    << taskData->outputs_count[0] << std::endl;
     return false;
   }
   return true;
@@ -99,6 +99,15 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::pre_processing
 
 bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+
+#if defined(_MSC_VER) && !defined(__clang__)
+  if (world.size() == 1) {
+    for (size_t i = 0; i < m; i++) {
+      res[i] = *std::max_element(input_.begin() + i * n, input_.begin() + (i + 1) * n);
+    }
+    return true;
+  }
+#endif
 
 #define TAG_EXIT 1
 #define TAG_TOBASE 2
