@@ -9,6 +9,7 @@
 #include "mpi/rezantseva_a_vector_dot_product/include/ops_mpi.hpp"
 
 static int offset = 0;
+const int count_size_vector = 49000000;
 
 std::vector<int> createRandomVector(int v_size) {
   std::vector<int> vec(v_size);
@@ -18,13 +19,12 @@ std::vector<int> createRandomVector(int v_size) {
   return vec;
 }
 
-const int count_size_vector = 49000000;
-std::vector<int> v1 = createRandomVector(count_size_vector);
-std::vector<int> v2 = createRandomVector(count_size_vector);
-
 TEST(rezantseva_a_vector_dot_product_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vec;
+
+  std::vector<int> v1 = createRandomVector(count_size_vector);
+  std::vector<int> v2 = createRandomVector(count_size_vector);
 
   std::vector<int32_t> res(1, 0);
   global_vec = {v1, v2};
@@ -68,6 +68,8 @@ TEST(rezantseva_a_vector_dot_product_mpi, test_task_run) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vec;
   std::vector<int32_t> res(1, 0);
+  std::vector<int> v1 = createRandomVector(count_size_vector);
+  std::vector<int> v2 = createRandomVector(count_size_vector);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   global_vec = {v1, v2};
