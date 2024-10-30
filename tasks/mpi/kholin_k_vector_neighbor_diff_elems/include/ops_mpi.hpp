@@ -138,7 +138,6 @@ class TestMPITaskParallel : public ppc::core::Task {
   double result;
   unsigned int residue;
   std::string ops;
-  MPI_Comm world;
   MPI_Datatype mpi_type_elem;
   void print_local_data();
   double max_difference();
@@ -156,14 +155,14 @@ bool TestMPITaskParallel<TypeElem>::pre_processing() {
   internal_order_test();
   int ProcRank = 0;
   int size = 0;
-  MPI_Comm_rank(world, &ProcRank);
-  MPI_Comm_size(world, &size);
+  MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
+  MPI_Comm_size(MPI_COMM_WORLD, &size);
   // Data TaskData  cite to type elements of vector input_
   if (ProcRank == 0) {
     delta_n = taskData->inputs_count[0] / size;
     delta_n_r = {};
   }
-  MPI_Bcast(&delta_n, 1, MPI_UNSIGNED, 0, world);  // send all procs delta_n
+  MPI_Bcast(&delta_n, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);  // send all procs delta_n
   if (ProcRank == 0) {
     input_ = std::vector<TypeElem>(taskData->inputs_count[0]);
     auto ptr = reinterpret_cast<TypeElem*>(taskData->inputs[0]);
@@ -177,7 +176,7 @@ bool TestMPITaskParallel<TypeElem>::pre_processing() {
   } else {
     local_input_ = std::vector<TypeElem>(delta_n);
   }
-  MPI_Scatter(input_.data(), delta_n, mpi_type_elem, local_input_.data(), delta_n, mpi_type_elem, 0, world);
+  MPI_Scatter(input_.data(), delta_n, mpi_type_elem, local_input_.data(), delta_n, mpi_type_elem, 0, MPI_COMM_WORLD);
   if (ProcRank == 0) {
     // write residue into vector process 0
     for (unsigned int i = delta_n; i < delta_n_r; i++) {
@@ -192,10 +191,9 @@ bool TestMPITaskParallel<TypeElem>::pre_processing() {
 template <typename TypeElem>
 bool TestMPITaskParallel<TypeElem>::validation() {
   internal_order_test();
-  world = MPI_COMM_WORLD;
   mpi_type_elem = get_mpi_type();
   int ProcRank = 0;
-  MPI_Comm_rank(world, &ProcRank);
+  MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   // Check count elements of output
   if (ProcRank == 0) {
     return taskData->outputs_count[0] == 1;
@@ -214,7 +212,7 @@ bool TestMPITaskParallel<TypeElem>::run() {
     // everyone process send 1 element and get all local_results from everyone process 1 element
     double sendbuf1[1];
     sendbuf1[0] = local_result;
-    MPI_Reduce(sendbuf1, &result, 1, MPI_DOUBLE, MPI_MAX, 0, world);
+    MPI_Reduce(sendbuf1, &result, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
   }
   // finalisation
   return true;
@@ -224,7 +222,7 @@ template <typename TypeElem>
 bool TestMPITaskParallel<TypeElem>::post_processing() {
   internal_order_test();
   int ProcRank = 0;
-  MPI_Comm_rank(world, &ProcRank);
+  MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   if (ProcRank == 0) {
     reinterpret_cast<double*>(taskData->outputs[0])[0] = result;
   }
@@ -234,7 +232,7 @@ bool TestMPITaskParallel<TypeElem>::post_processing() {
 template <typename TypeElem>
 void TestMPITaskParallel<TypeElem>::print_local_data() {
   int ProcRank = 0;
-  MPI_Comm_rank(world, &ProcRank);
+  MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   if (ProcRank == 0) {
     std::cout << "I'm proc 0" << "and my local_input data is ";
     for (unsigned int i = 0; i < delta_n_r; i++) {

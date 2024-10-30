@@ -8,8 +8,7 @@
 #include "mpi/kholin_k_vector_neighbor_diff_elems/include/ops_mpi.hpp"
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_validation) {
-  MPI_Comm world = MPI_COMM_WORLD;
-  int ProcRank = MPI_Comm_rank(world, &ProcRank);
+  int ProcRank = MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   const int count_size_vector = 500;
   std::vector<int> global_vec;
   std::vector<double> global_delta(1, 0);
@@ -56,8 +55,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_validation) {
 }
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_pre_processing) {
-  MPI_Comm world = MPI_COMM_WORLD;
-  int ProcRank = MPI_Comm_rank(world, &ProcRank);
+  int ProcRank = MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   const int count_size_vector = 500;
   std::vector<int> global_vec;
   std::vector<double> global_delta(1, 0);
@@ -106,8 +104,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_pre_processing) {
 }
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_run) {
-  MPI_Comm world = MPI_COMM_WORLD;
-  int ProcRank = MPI_Comm_rank(world, &ProcRank);
+  int ProcRank = MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   const int count_size_vector = 150;
   std::vector<int> global_vec;
   std::vector<double> global_delta(1, 0);
@@ -160,8 +157,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_run) {
 }
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_post_processing) {
-  MPI_Comm world = MPI_COMM_WORLD;
-  int ProcRank = MPI_Comm_rank(world, &ProcRank);
+  int ProcRank = MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   const int count_size_vector = 500;
   std::vector<int> global_vec;
   std::vector<double> global_delta(1, 0);
@@ -216,8 +212,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_post_processing) {
 }
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
-  MPI_Comm world = MPI_COMM_WORLD;
-  int ProcRank = MPI_Comm_rank(world, &ProcRank);
+  int ProcRank = MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   const int count_size_vector = 200;
   std::vector<int> global_vec;
   std::vector<double> global_delta(1, 0);
@@ -274,8 +269,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
   }
 }
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
-  MPI_Comm world = MPI_COMM_WORLD;
-  int ProcRank = MPI_Comm_rank(world, &ProcRank);
+  int ProcRank = MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   std::vector<int32_t> global_vec;
   std::vector<double> global_delta(1, 0);
   // Create TaskData
@@ -332,8 +326,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
 }
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_float) {
-  MPI_Comm world = MPI_COMM_WORLD;
-  int ProcRank = MPI_Comm_rank(world, &ProcRank);
+  int ProcRank = MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   std::vector<float> global_vec;
   std::vector<double> global_delta(1, 0);
   // Create TaskData
@@ -393,8 +386,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_float) {
 }
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_double) {
-  MPI_Comm world = MPI_COMM_WORLD;
-  int ProcRank = MPI_Comm_rank(world, &ProcRank);
+  int ProcRank = MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   std::vector<double> global_vec;
   std::vector<double> global_delta(1, 0);
   // Create TaskData
