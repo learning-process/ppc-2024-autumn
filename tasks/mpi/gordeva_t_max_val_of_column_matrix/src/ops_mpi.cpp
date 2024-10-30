@@ -10,15 +10,15 @@
 
 using namespace std::chrono_literals;
 
-//std::vector<int> gordeva_t_max_val_of_column_matrix_mpi::getRandomVector(int sz) {
-//  std::random_device dev;
-//  std::mt19937 gen(dev());
-//  std::vector<int> vec(sz);
-//  for (int i = 0; i < sz; i++) {
-//    vec[i] = gen() % 100;
-//  }
-//  return vec;
-//}
+// std::vector<int> gordeva_t_max_val_of_column_matrix_mpi::getRandomVector(int sz) {
+//   std::random_device dev;
+//   std::mt19937 gen(dev());
+//   std::vector<int> vec(sz);
+//   for (int i = 0; i < sz; i++) {
+//     vec[i] = gen() % 100;
+//   }
+//   return vec;
+// }
 
 bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
@@ -84,7 +84,7 @@ std::vector<int> gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::
 }
 
 std::vector<std::vector<int>> gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::gen_rand_matr(int rows,   
-                                                                                                        int cols) {
+                                                                                                           int cols) {
   std::vector<std::vector<int>> matr(rows, std::vector<int>(cols));
 
   for (int i = 0; i < rows; ++i) {
@@ -118,7 +118,6 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::pre_processing
   broadcast(world, cols, 0);
 
   if (world.rank() == 0) {
-
     // Init vectors
     input_.resize(rows, std::vector<int>(cols));
     for (int i = 0; i < rows; i++) {
@@ -154,7 +153,6 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
 
   if (world.rank() == 0) {
-
     // Check count elements of output
     if ((taskData->inputs.empty() || taskData->outputs.empty()) ||
         (taskData->inputs_count.size() < 2 || taskData->inputs_count[0] < 0 || taskData->inputs_count[1] < 0) ||
