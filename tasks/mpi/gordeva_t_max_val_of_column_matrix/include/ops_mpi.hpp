@@ -51,4 +51,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  // namespace nesterov_a_test_task_mpi
+}  // namespace gordeva_t_max_val_of_column_matrix_mpi

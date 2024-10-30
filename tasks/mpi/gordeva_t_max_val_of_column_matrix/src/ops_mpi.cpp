@@ -83,7 +83,7 @@ std::vector<int> gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::
   return v;
 }
 
-std::vector<std::vector<int>> gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::gen_rand_matr(int rows,   
+std::vector<std::vector<int>> gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::gen_rand_matr(int rows,
                                                                                                            int cols) {
   std::vector<std::vector<int>> matr(rows, std::vector<int>(cols));
 
@@ -165,7 +165,7 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::validation() {
 bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-  std::vector<int> tmp_max (local_input_[0].size(), INT_MIN);
+  std::vector<int> tmp_max(local_input_[0].size(), INT_MIN);
 
   for (int i = 0; i < local_input_[0].size(); i++) {
     for (int j = 0; j < local_input_.size(); j++) {
@@ -197,7 +197,7 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::post_processin
   internal_order_test();
 
   if (world.rank() == 0) {
-    //reinterpret_cast<int*>(taskData->outputs[0]) = res;
+    // reinterpret_cast<int*>(taskData->outputs[0]) = res;
     std::copy(res.begin(), res.end(), reinterpret_cast<int*>(taskData->outputs[0]));
   }
   return true;
