@@ -9,10 +9,6 @@ bool petrov_o_num_of_alternations_signs_seq::TestTaskSequential::pre_processing(
 
   const auto count = taskData->inputs_count[0];
 
-  // // Проверка на корректность типа данных во время компиляции.
-  // static_assert(std::is_same_v<decltype(taskData->inputs[0]), ElementType*>, 
-  //               "Type mismatch in taskData->inputs[0]. Expected ElementType*.");
-
   const int* input = reinterpret_cast<int*>(taskData->inputs[0]);
   this->input_.resize(count);
   std::copy(input, input + count, std::begin(this->input_));
