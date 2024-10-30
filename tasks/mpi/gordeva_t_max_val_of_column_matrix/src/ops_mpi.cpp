@@ -73,7 +73,7 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::post_process
 
   int* output_matr = reinterpret_cast<int*>(taskData->outputs[0]);
 
-  for (int i = 0; i < res.size(); i++) output_matr[i] = res[i];
+  for (size_t i = 0; i < res.size(); i++) output_matr[i] = res[i];
   return true;
 }
 
@@ -167,8 +167,8 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::run() {
 
   std::vector<int> tmp_max(local_input_[0].size(), INT_MIN);
 
-  for (int i = 0; i < local_input_[0].size(); i++) {
-    for (int j = 0; j < local_input_.size(); j++) {
+  for (size_t i = 0; i < local_input_[0].size(); i++) {
+    for (size_t j = 0; j < local_input_.size(); j++) {
       tmp_max[i] = std::max(local_maxes[i], local_input_[j][i]);
     }
   }
@@ -181,7 +181,7 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::run() {
       std::vector<int> proc_max(res.size());
       world.recv(proc, 0, proc_max.data(), res.size());
 
-      for (int i = 0; i < res_.size(); i++) {
+      for (size_t i = 0; i < res_.size(); i++) {
         max_s[i] = std::max(max_s[i], proc_max[i]);
       }
     }
