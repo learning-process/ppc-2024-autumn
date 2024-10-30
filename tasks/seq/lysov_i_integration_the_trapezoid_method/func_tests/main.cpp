@@ -96,7 +96,7 @@ TEST(lysov_i_integration_the_trapezoid_method_seq, BasicTest5) {
   task.pre_processing();
   task.run();
   task.post_processing();
-  double expected_result =333333.333510;
+  double expected_result = 333333.333510;
   ASSERT_NEAR(output, expected_result, epsilon);
 }
 

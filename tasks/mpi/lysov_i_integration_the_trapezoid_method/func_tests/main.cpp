@@ -174,7 +174,7 @@ TEST(lysov_i_integration_the_trapezoid_method_mpi, Test_Integration_mpi_7) {
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
 
-   if (world.rank() == 0) {
+  if (world.rank() == 0) {
     std::vector<double> reference_result(1, 0.0);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
