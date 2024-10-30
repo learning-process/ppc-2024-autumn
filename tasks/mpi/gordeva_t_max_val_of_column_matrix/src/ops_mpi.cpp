@@ -198,8 +198,8 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::post_processin
 
   if (world.rank() == 0) {
     // reinterpret_cast<int*>(taskData->outputs[0]) = res;
-    int* tmp = reinterpret_cast<int*>(taskData->outputs[0]);
-    std::copy(res.begin(), res.end(), tmp);
+      int* tmp = 
+    std::copy(res.begin(), res.end(), reinterpret_cast<int*>(taskData->outputs[0]));
   }
   return true;
 }
