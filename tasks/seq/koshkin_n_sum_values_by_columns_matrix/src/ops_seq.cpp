@@ -29,14 +29,9 @@ bool koshkin_n_sum_values_by_columns_matrix_seq::TestTaskSequential::pre_process
 bool koshkin_n_sum_values_by_columns_matrix_seq::TestTaskSequential::validation() {
   internal_order_test();
 
-  if (taskData->inputs_count.size() < 1 || taskData->outputs_count.size() < 1) {
-    return false;
-  }
-
-
-  rows = reinterpret_cast<int*>(taskData->inputs[0])[0];
-  columns = reinterpret_cast<int*>(taskData->inputs[1])[0];
-  return rows > 0 && columns > 0 && taskData->inputs_count[0] == 2 && taskData->outputs_count[0] == columns;
+  return ((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
+          (taskData->inputs_count.size() >= 2 && taskData->inputs_count[0] != 0 && taskData->inputs_count[1] != 0) &&
+          taskData->inputs_count[1] == taskData->outputs_count[0]);
 }
 
 bool koshkin_n_sum_values_by_columns_matrix_seq::TestTaskSequential::run() {
