@@ -12,11 +12,11 @@ bool koshkin_n_sum_values_by_columns_matrix_seq::TestTaskSequential::pre_process
   rows = taskData->inputs_count[0];
   columns = taskData->inputs_count[1];
 
-  // Извлечение данных из TaskData
+  // TaskData
   input_.resize(rows, std::vector<int>(columns));
 
-  // Заполнение матрицы из входных данных
-  uint8_t* inputMatrix = taskData->inputs[0];  // Указатель на матрицу
+
+  uint8_t* inputMatrix = taskData->inputs[0];  
   for (int i = 0; i < rows; ++i) {
     for (int j = 0; j < columns; ++j) {
       input_[i][j] = reinterpret_cast<int*>(inputMatrix)[i * columns + j];
@@ -33,7 +33,7 @@ bool koshkin_n_sum_values_by_columns_matrix_seq::TestTaskSequential::validation(
     return false;
   }
 
-  // Проверка размера входных данных
+
   rows = reinterpret_cast<int*>(taskData->inputs[0])[0];
   columns = reinterpret_cast<int*>(taskData->inputs[1])[0];
   return rows > 0 && columns > 0 && taskData->inputs_count[0] == 2 && taskData->outputs_count[0] == columns;
@@ -41,7 +41,7 @@ bool koshkin_n_sum_values_by_columns_matrix_seq::TestTaskSequential::validation(
 
 bool koshkin_n_sum_values_by_columns_matrix_seq::TestTaskSequential::run() {
   internal_order_test();
-  // Вычисление суммы по столбцам
+
   for (int j = 0; j < columns; ++j) {
     for (int i = 0; i < rows; ++i) {
       res[j] += input_[i][j];
