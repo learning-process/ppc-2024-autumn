@@ -92,7 +92,7 @@ TEST(alputov_i_most_diff_neighbor_elem_perf_test, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  // Изменена проверка результата
+
   int expectedMaxDifference = std::abs(in.back() - in[in.size() - 2]);  
   ASSERT_EQ(std::abs(out[0].second - out[0].first), expectedMaxDifference);
 }

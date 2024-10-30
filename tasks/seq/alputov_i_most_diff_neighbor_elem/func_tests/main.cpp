@@ -9,7 +9,7 @@
 // Test for maximum difference in a typical case
 TEST(alputov_i_most_diff_neighbor_elem_seq, Test_MaxDiff_Typical) {
   std::vector<int> inputVector = {10, 20, 40, 80, 128, 78, -12, -15, 44, 90, 51};
-  std::pair<int, int> expectedResult = {78, -12};  // ќжидаема€ пара максимальной разности
+  std::pair<int, int> expectedResult = {78, -12}; 
 
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
