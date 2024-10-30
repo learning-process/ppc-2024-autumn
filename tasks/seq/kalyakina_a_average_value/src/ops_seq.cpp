@@ -2,7 +2,6 @@
 #include "seq/kalyakina_a_average_value/include/ops_seq.hpp"
 
 #include <cstdlib>
-
 #include <random>
 #include <thread>
 
