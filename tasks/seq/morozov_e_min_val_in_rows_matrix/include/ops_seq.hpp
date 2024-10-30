@@ -22,4 +22,4 @@ class TestTaskSequential : public ppc::core::Task {
   std::vector<int> min_val_list_;
 };
 
-}  // namespace nesterov_a_test_task_seq
+}  // namespace morozov_e_min_val_in_rows_matrix

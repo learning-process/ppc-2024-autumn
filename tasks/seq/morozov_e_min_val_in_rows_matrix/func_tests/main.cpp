@@ -7,7 +7,8 @@
 TEST(Sequential, Test_Validation_False) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   std::vector<std::vector<int>> matrix = {{1, 1}, {2, 2}};
-  for (size_t i = 0; i < matrix.size(); ++i) taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+  for (size_t i = 0; i < matrix.size(); ++i)
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
   morozov_e_min_val_in_rows_matrix::TestTaskSequential testMpiTaskSequential(taskDataSeq);
   ASSERT_FALSE(testMpiTaskSequential.validation());
 }
@@ -16,14 +17,15 @@ TEST(Sequential, Test_Validation_True) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   std::vector<std::vector<int>> matrix = {{1, 1}, {2, 2}};
   std::vector<int> res = {1, 2};
-  for (size_t i = 0; i < matrix.size(); ++i) taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+  for (size_t i = 0; i < matrix.size(); ++i)
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
   taskDataSeq->inputs_count.emplace_back(matrix.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res.data()));
   taskDataSeq->outputs_count.emplace_back(2);
   morozov_e_min_val_in_rows_matrix::TestTaskSequential testMpiTaskSequential(taskDataSeq);
   ASSERT_TRUE(testMpiTaskSequential.validation());
 }
-TEST(Sequential,  Test_Main) {
+TEST(Sequential, Test_Main) {
   std::vector<std::vector<int>> matrix;
   const int n = 1000;
   const int m = 1000;

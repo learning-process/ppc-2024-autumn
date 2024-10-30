@@ -13,15 +13,15 @@ TEST(sequential_example_perf_test, test_pipeline_run_my) {
   std::vector<int> res(n);
   std::vector<int> res_ = morozov_e_min_val_in_rows_matrix::minValInRowsMatrix(matrix);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-    for (int i = 0; i < n; ++i) taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix[i].data()));
-    taskDataPar->inputs_count.emplace_back(n);
-    taskDataPar->inputs_count.emplace_back(m);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
-    taskDataPar->outputs_count.emplace_back(n);
-  auto testTaskSeq= std::make_shared<morozov_e_min_val_in_rows_matrix::TestTaskSequential>(taskDataPar);
-    ASSERT_EQ(testTaskSeq->validation(), true);
+  for (int i = 0; i < n; ++i) taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix[i].data()));
+  taskDataPar->inputs_count.emplace_back(n);
+  taskDataPar->inputs_count.emplace_back(m);
+  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
+  taskDataPar->outputs_count.emplace_back(n);
+  auto testTaskSeq = std::make_shared<morozov_e_min_val_in_rows_matrix::TestTaskSequential>(taskDataPar);
+  ASSERT_EQ(testTaskSeq->validation(), true);
   testTaskSeq->pre_processing();
-    testTaskSeq->run();
+  testTaskSeq->run();
   testTaskSeq->post_processing();
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -38,11 +38,9 @@ TEST(sequential_example_perf_test, test_pipeline_run_my) {
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSeq);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
-    ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(n, res.size());
-
+  ppc::core::Perf::print_perf_statistic(perfResults);
+  ASSERT_EQ(n, res.size());
 }
-
 
 TEST(sequential_example_perf_test, test_task_run_my) {
   const int n = 5000;

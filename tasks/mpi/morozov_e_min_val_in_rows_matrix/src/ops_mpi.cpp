@@ -6,7 +6,6 @@
 #include <string>
 #include <thread>
 #include <vector>
-#include <algorithm>
 
 #define uint unsigned int
 
@@ -40,27 +39,26 @@ std::vector<int> morozov_e_min_val_in_rows_matrix::minValInRowsMatrix(const std:
   }
   return res;
 }
-bool morozov_e_min_val_in_rows_matrix::TestMPITaskSequential::pre_processing() { 
-    internal_order_test();
+bool morozov_e_min_val_in_rows_matrix::TestMPITaskSequential::pre_processing() {
+  internal_order_test();
   int n = taskData->inputs_count[0];
   int m = taskData->inputs_count[1];
-  matrix_ =  std::vector<std::vector<int>>(n, std::vector<int>(m));
+  matrix_ = std::vector<std::vector<int>>(n, std::vector<int>(m));
   min_val_list_ = std::vector<int>(n);
-  for (int i = 0; i < n;++i) {
+  for (int i = 0; i < n; ++i) {
     int* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
     for (int j = 0; j < m; ++j) {
       matrix_[i][j] = tmp_ptr[j];
     }
   }
-  //std::cout << "HELLO";
+  // std::cout << "HELLO";
   return true;
 }
 bool morozov_e_min_val_in_rows_matrix::TestMPITaskSequential::validation() {
   internal_order_test();
-  if (taskData->outputs_count.empty()
-      || taskData->inputs_count.empty()
-      || taskData->outputs_count[0] != taskData->inputs_count[0]) {
-      return false;
+  if (taskData->outputs_count.empty() || taskData->inputs_count.empty() ||
+      taskData->outputs_count[0] != taskData->inputs_count[0]) {
+    return false;
   }
   return true;
 }
@@ -75,13 +73,13 @@ bool morozov_e_min_val_in_rows_matrix::TestMPITaskSequential::run() {
   }
   return true;
 }
-bool morozov_e_min_val_in_rows_matrix::TestMPITaskSequential::post_processing() { 
-    internal_order_test();
-    int* outputs = reinterpret_cast<int*>(taskData->outputs[0]);
-    for (size_t i = 0; i < min_val_list_.size(); i++) {
-      outputs[i] = min_val_list_[i];
-    }
-    return true;
+bool morozov_e_min_val_in_rows_matrix::TestMPITaskSequential::post_processing() {
+  internal_order_test();
+  int* outputs = reinterpret_cast<int*>(taskData->outputs[0]);
+  for (size_t i = 0; i < min_val_list_.size(); i++) {
+    outputs[i] = min_val_list_[i];
+  }
+  return true;
 }
 bool morozov_e_min_val_in_rows_matrix::TestMPITaskParallel::pre_processing() {
   internal_order_test();
@@ -107,7 +105,7 @@ bool morozov_e_min_val_in_rows_matrix::TestMPITaskParallel::pre_processing() {
       int begin_pos = i * delta;
       int cur_count = delta;
       if (i < mod) {
-          cur_count++;
+        cur_count++;
       }
       for (int j = begin_pos; j < begin_pos + cur_count; j++) {
         world.send(i, 0, matrix_[j].data(), m);
@@ -123,7 +121,6 @@ bool morozov_e_min_val_in_rows_matrix::TestMPITaskParallel::pre_processing() {
       }
     }
     min_val_list_.resize(m);
-    
   }
   return true;
 }

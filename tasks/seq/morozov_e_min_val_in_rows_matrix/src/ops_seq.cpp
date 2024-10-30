@@ -1,11 +1,11 @@
+#include "seq/morozov_e_min_val_in_rows_matrix/include/ops_seq.hpp"
+
 #include <algorithm>
 #include <functional>
 #include <random>
 #include <string>
 #include <thread>
 #include <vector>
-
-#include "seq/morozov_e_min_val_in_rows_matrix/include/ops_seq.hpp"
 
 #define uint unsigned int
 
@@ -24,7 +24,7 @@ std::vector<std::vector<int>> morozov_e_min_val_in_rows_matrix::getRandomMatrix(
       matrix[i][j] = dis(gen);
     }
   }
-  //matrix = {{1, 2, 3}, {1, 2, 3}, {1, 2, 1}};
+  // matrix = {{1, 2, 3}, {1, 2, 3}, {1, 2, 1}};
   return matrix;
 }
 std::vector<int> morozov_e_min_val_in_rows_matrix::minValInRowsMatrix(const std::vector<std::vector<int>>& matrix) {
