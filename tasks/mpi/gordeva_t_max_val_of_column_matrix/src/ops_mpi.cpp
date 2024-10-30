@@ -169,19 +169,19 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::run() {
 
   for (size_t i = 0; i < local_input_[0].size(); i++) {
     for (size_t j = 0; j < local_input_.size(); j++) {
-      tmp_max[i] = std::max(local_maxes[i], local_input_[j][i]);
+      tmp_max[i] = std::max(tmp_max[i], local_input_[j][i]);
     }
   }
 
   if (world.rank() == 0) {
-    std::vector<int> max_s(res_.size(), INT_MIN);
+    std::vector<int> max_s(res.size(), INT_MIN);
     std::copy(tmp_max.begin(), tmp_max.end(), max_s.begin());
 
     for (int proc = 1; proc < world.size(); proc++) {
       std::vector<int> proc_max(res.size());
       world.recv(proc, 0, proc_max.data(), res.size());
 
-      for (size_t i = 0; i < res_.size(); i++) {
+      for (size_t i = 0; i < res.size(); i++) {
         max_s[i] = std::max(max_s[i], proc_max[i]);
       }
     }

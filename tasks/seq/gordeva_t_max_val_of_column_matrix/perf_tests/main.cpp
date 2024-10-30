@@ -8,8 +8,8 @@
 
 TEST(gordeva_t_max_val_of_column_matrix_seq, test_pipeline_run) {
   // Create data
-  const int cols = 3000;
-  const int rows = 3000;
+  const int cols = 5000;
+  const int rows = 5000;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -55,8 +55,8 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, test_pipeline_run) {
 
 TEST(gordeva_t_max_val_of_column_matrix_seq, test_task_run) {
   // Create data
-  const int cols = 3000;
-  const int rows = 3000;
+  const int cols = 7000;
+  const int rows = 7000;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
