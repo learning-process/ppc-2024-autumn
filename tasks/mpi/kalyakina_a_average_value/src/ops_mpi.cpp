@@ -73,7 +73,7 @@ bool kalyakina_a_average_value_mpi::FindingAverageMPITaskParallel::pre_processin
     input_vector.resize(delta * world.size(), 0);
   }
   local_input_vector = std::vector<int>(delta);
-  boost::mpi::scatter(world, &input_vector[0], &local_input_vector[0], delta, 0);
+  boost::mpi::scatter(world, input_vector.data(), local_input_vector.data(), delta, 0);
 
   // Init value for output
   if (world.rank() == 0) {
