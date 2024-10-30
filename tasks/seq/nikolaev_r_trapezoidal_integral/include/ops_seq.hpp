@@ -1,0 +1,23 @@
+#pragma once
+
+#include <vector>
+#include <functional>
+
+#include "core/task/include/task.hpp"
+
+namespace nikolaev_r_trapezoidal_integral_seq {
+
+class TrapezoidalIntegralSequential : public ppc::core::Task {
+ public:
+  explicit TrapezoidalIntegralSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  bool pre_processing() override;
+  bool validation() override;
+  bool run() override;
+  bool post_processing() override;
+  void set_function(const std::function<double(double)>& f);
+ private:
+  double a_{}, b_{}, n_{}, res_{};
+  std::function<double(double)> function_;
+  double integrate_function(double a, double b, int n, const std::function<double(double)>& f);
+};
+}  
