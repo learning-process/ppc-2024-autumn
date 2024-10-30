@@ -13,7 +13,9 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, IsEmptyInput) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
-  if (world.rank() == 0) ASSERT_FALSE(testMpiTaskParallel.validation());
+  if (world.rank() == 0) {
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  }
 }
 
 TEST(gordeva_t_max_val_of_column_matrix_mpi, IsEmptyOutput) {
