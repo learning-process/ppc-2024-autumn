@@ -154,27 +154,31 @@ MPI_Datatype TestMPITaskParallel<TypeElem>::get_mpi_type() {
 template <typename TypeElem>
 bool TestMPITaskParallel<TypeElem>::pre_processing() {
   internal_order_test();
+  int ProcRank = 0;
+  int size = 0;
+  MPI_Comm_rank(world, &ProcRank);
+  MPI_Comm_size(world, &size);
   // Data TaskData  cite to type elements of vector input_
-  if (world.rank() == 0) {
-    delta_n = taskData->inputs_count[0] / world.size();
+  if (ProcRank == 0) {
+    delta_n = taskData->inputs_count[0] / size;
     delta_n_r = {};
   }
   MPI_Bcast(&delta_n, 1, MPI_UNSIGNED, 0, world);  // send all procs delta_n
-  if (world.rank() == 0) {
+  if (ProcRank == 0) {
     input_ = std::vector<TypeElem>(taskData->inputs_count[0]);
     auto ptr = reinterpret_cast<TypeElem*>(taskData->inputs[0]);
     std::copy(ptr, ptr + taskData->inputs_count[0], input_.begin());
     // distribute data processes 0 to size-1
   }
-  if (world.rank() == 0) {
-    residue = taskData->inputs_count[0] % world.size();
+  if (ProcRank == 0) {
+    residue = taskData->inputs_count[0] % size;
     delta_n_r = delta_n + residue;
     local_input_ = std::vector<TypeElem>(delta_n_r);
   } else {
     local_input_ = std::vector<TypeElem>(delta_n);
   }
   MPI_Scatter(input_.data(), delta_n, mpi_type_elem, local_input_.data(), delta_n, mpi_type_elem, 0, world);
-  if (world.rank() == 0) {
+  if (ProcRank == 0) {
     // write residue into vector process 0
     for (unsigned int i = delta_n; i < delta_n_r; i++) {
       local_input_[i] = input_[i];
@@ -190,8 +194,10 @@ bool TestMPITaskParallel<TypeElem>::validation() {
   internal_order_test();
   world = MPI_COMM_WORLD;
   mpi_type_elem = get_mpi_type();
+  int ProcRank = 0;
+  MPI_Comm_rank(world, &ProcRank);
   // Check count elements of output
-  if (world.rank() == 0) {
+  if (ProcRank == 0) {
     return taskData->outputs_count[0] == 1;
   }
   return true;
@@ -217,7 +223,9 @@ bool TestMPITaskParallel<TypeElem>::run() {
 template <typename TypeElem>
 bool TestMPITaskParallel<TypeElem>::post_processing() {
   internal_order_test();
-  if (world.rank() == 0) {
+  int ProcRank = 0;
+  MPI_Comm_rank(world, &ProcRank);
+  if (ProcRank == 0) {
     reinterpret_cast<double*>(taskData->outputs[0])[0] = result;
   }
   return true;
@@ -225,14 +233,16 @@ bool TestMPITaskParallel<TypeElem>::post_processing() {
 
 template <typename TypeElem>
 void TestMPITaskParallel<TypeElem>::print_local_data() {
-  if (world.rank() == 0) {
+  int ProcRank = 0;
+  MPI_Comm_rank(world, &ProcRank);
+  if (ProcRank == 0) {
     std::cout << "I'm proc 0" << "and my local_input data is ";
     for (unsigned int i = 0; i < delta_n_r; i++) {
       std::cout << local_input_[i] << " ";
     }
     std::cout << std::endl;
   } else {
-    std::cout << "I'm" << world.rank() << " proc " << "and my local_input data is ";
+    std::cout << "I'm" << ProcRank << " proc " << "and my local_input data is ";
     for (unsigned int i = 0; i < delta_n; i++) {
       std::cout << local_input_[i] << " ";
     }

@@ -8,14 +8,15 @@
 #include "mpi/kholin_k_vector_neighbor_diff_elems/include/ops_mpi.hpp"
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_validation) {
-  boost::mpi::communicator world;
+  MPI_Comm world = MPI_COMM_WORLD;
+  int ProcRank = MPI_Comm_rank(world,&ProcRank);
   const int count_size_vector = 500;
   std::vector<int> global_vec;
   std::vector<double> global_delta(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  if (world.rank() == 0) {
+  if (ProcRank == 0) {
     global_vec = std::vector<int>(count_size_vector);
 
     global_vec[100] = 5000;
@@ -30,7 +31,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_validation) {
   kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int> testMpiTaskParallel(taskDataPar, "MAX_DIFFERENCE");
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
 
-  if (world.rank() == 0) {
+  if (ProcRank == 0) {
     // Create data
     std::vector<double> reference_delta(1, 0);
     std::vector<int> reference_elems(2, 0);
@@ -55,14 +56,15 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_validation) {
 }
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_pre_processing) {
-  boost::mpi::communicator world;
+  MPI_Comm world = MPI_COMM_WORLD;
+  int ProcRank = MPI_Comm_rank(world, &ProcRank);
   const int count_size_vector = 500;
   std::vector<int> global_vec;
   std::vector<double> global_delta(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  if (world.rank() == 0) {
+  if (ProcRank == 0) {
     global_vec = std::vector<int>(count_size_vector);
 
     global_vec[100] = 5000;
@@ -78,7 +80,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_pre_processing) {
   testMpiTaskParallel.validation();
   ASSERT_EQ(testMpiTaskParallel.pre_processing(), true);
 
-  if (world.rank() == 0) {
+  if (ProcRank == 0) {
     // Create data
     std::vector<double> reference_delta(1, 0);
     std::vector<int> reference_elems(2, 0);
@@ -104,14 +106,15 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_pre_processing) {
 }
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_run) {
-  boost::mpi::communicator world;
+  MPI_Comm world = MPI_COMM_WORLD;
+  int ProcRank = MPI_Comm_rank(world, &ProcRank);
   const int count_size_vector = 150;
   std::vector<int> global_vec;
   std::vector<double> global_delta(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  if (world.rank() == 0) {
+  if (ProcRank == 0) {
     global_vec = std::vector<int>(count_size_vector);
     for (size_t i = 0; i < global_vec.size(); i++) {
       global_vec[i] = 4 * i + 2;
@@ -130,7 +133,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_run) {
   testMpiTaskParallel.pre_processing();
   ASSERT_EQ(testMpiTaskParallel.run(), true);
 
-  if (world.rank() == 0) {
+  if (ProcRank == 0) {
     // Create data
     std::vector<double> reference_delta(1, 0);
     std::vector<int> reference_elems(2, 0);
@@ -157,14 +160,15 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_run) {
 }
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_post_processing) {
-  boost::mpi::communicator world;
+  MPI_Comm world = MPI_COMM_WORLD;
+  int ProcRank = MPI_Comm_rank(world, &ProcRank);
   const int count_size_vector = 500;
   std::vector<int> global_vec;
   std::vector<double> global_delta(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  if (world.rank() == 0) {
+  if (ProcRank == 0) {
     global_vec = std::vector<int>(count_size_vector);
     for (size_t i = 0; i < global_vec.size(); i++) {
       global_vec[i] = 4 * i + 2;
@@ -184,7 +188,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_post_processing) {
   testMpiTaskParallel.run();
   ASSERT_EQ(testMpiTaskParallel.post_processing(), true);
 
-  if (world.rank() == 0) {
+  if (ProcRank == 0) {
     // Create data
     std::vector<double> reference_delta(1, 0);
     std::vector<int> reference_elems(2, 0);
@@ -212,14 +216,15 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_post_processing) {
 }
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
-  boost::mpi::communicator world;
+  MPI_Comm world = MPI_COMM_WORLD;
+  int ProcRank = MPI_Comm_rank(world, &ProcRank);
   const int count_size_vector = 200;
   std::vector<int> global_vec;
   std::vector<double> global_delta(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  if (world.rank() == 0) {
+  if (ProcRank == 0) {
     global_vec = std::vector<int>(count_size_vector);
     for (size_t i = 0; i < global_vec.size(); i++) {
       global_vec[i] = 4 * i + 2;
@@ -241,7 +246,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
   testMpiTaskParallel.post_processing();
   int test = global_delta[0];
 
-  if (world.rank() == 0) {
+  if (ProcRank == 0) {
     // Create data
     std::vector<double> reference_delta(1, 0);
     std::vector<int> reference_elems(2, 0);
@@ -269,12 +274,13 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
   }
 }
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
-  boost::mpi::communicator world;
+  MPI_Comm world = MPI_COMM_WORLD;
+  int ProcRank = MPI_Comm_rank(world, &ProcRank);
   std::vector<int32_t> global_vec;
   std::vector<double> global_delta(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
+  if (ProcRank == 0) {
     const int count_size_vector = 300;
     global_vec = std::vector<int32_t>(count_size_vector);
     for (size_t i = 0; i < global_vec.size(); i++) {
@@ -296,7 +302,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
   testMpiTaskParallel.post_processing();
   int32_t test = global_delta[0];
 
-  if (world.rank() == 0) {
+  if (ProcRank == 0) {
     // Create data
     std::vector<double> reference_delta(1, 0);
     std::vector<int32_t> reference_elems(2, 0);
@@ -326,13 +332,14 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
 }
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_float) {
-  boost::mpi::communicator world;
+  MPI_Comm world = MPI_COMM_WORLD;
+  int ProcRank = MPI_Comm_rank(world, &ProcRank);
   std::vector<float> global_vec;
   std::vector<double> global_delta(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  if (world.rank() == 0) {
+  if (ProcRank == 0) {
     const int count_size_vector = 1000;
     global_vec = std::vector<float>(count_size_vector);
     for (size_t i = 0; i < global_vec.size(); i++) {
@@ -356,7 +363,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_float) {
   testMpiTaskParallel.post_processing();
   float test = global_delta[0];
 
-  if (world.rank() == 0) {
+  if (ProcRank == 0) {
     // Create data
     std::vector<double> reference_delta(1, 0);
     std::vector<float> reference_elems(2, 0);
@@ -386,13 +393,14 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_float) {
 }
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_double) {
-  boost::mpi::communicator world;
+  MPI_Comm world = MPI_COMM_WORLD;
+  int ProcRank = MPI_Comm_rank(world, &ProcRank);
   std::vector<double> global_vec;
   std::vector<double> global_delta(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  if (world.rank() == 0) {
+  if (ProcRank == 0) {
     const int count_size_vector = 750;
     global_vec = std::vector<double>(count_size_vector);
     for (size_t i = 0; i < global_vec.size(); i++) {
@@ -416,7 +424,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_double) {
   testMpiTaskParallel.post_processing();
   double test = global_delta[0];
 
-  if (world.rank() == 0) {
+  if (ProcRank == 0) {
     // Create data
     std::vector<double> reference_delta(1, 0);
     std::vector<double> reference_elems(2, 0);

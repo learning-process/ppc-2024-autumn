@@ -7,13 +7,14 @@
 #include "mpi/kholin_k_vector_neighbor_diff_elems/include/ops_mpi.hpp"
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, test_pipeline_run) {
-  boost::mpi::communicator world;
+  MPI_Comm world = MPI_COMM_WORLD;
+  int ProcRank = MPI_Comm_rank(world, &ProcRank);
   std::vector<int> global_vec;
   std::vector<int> global_elems(2, 0);
   std::vector<uint64_t> global_indices(2, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
+  if (ProcRank == 0) {
     const float count_size_vector = 100000000;
     global_vec = std::vector<int>(count_size_vector);
     for (size_t i = 0; i < global_vec.size(); i++) {
@@ -50,19 +51,20 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, test_pipeline_run) {
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
-  if (world.rank() == 0) {
+  if (ProcRank == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
   }
 }
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, test_task_run) {
-  boost::mpi::communicator world;
+  MPI_Comm world = MPI_COMM_WORLD;
+  int ProcRank = MPI_Comm_rank(world, &ProcRank);
   std::vector<int> global_vec;
   std::vector<int> global_elems(2, 0);
   std::vector<uint64_t> global_indices(2, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
+  if (ProcRank == 0) {
     const float count_size_vector = 100000000;
     global_vec = std::vector<int>(count_size_vector);
     for (size_t i = 0; i < global_vec.size(); i++) {
@@ -99,7 +101,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, test_task_run) {
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
-  if (world.rank() == 0) {
+  if (ProcRank == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
   }
 }
