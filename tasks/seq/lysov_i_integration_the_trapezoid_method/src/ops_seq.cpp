@@ -13,7 +13,6 @@ bool lysov_i_integration_the_trapezoid_method_seq::TestTaskSequential::pre_proce
   b = *reinterpret_cast<double*>(taskData->inputs[1]);
   epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
   cnt_of_splits = static_cast<int>(std::abs((b - a)) / epsilon);
-  std::cout << cnt_of_splits << std::endl;
   h = (b - a) / cnt_of_splits;
   input_.resize(cnt_of_splits + 1);
   for (int i = 0; i <= cnt_of_splits; ++i) {

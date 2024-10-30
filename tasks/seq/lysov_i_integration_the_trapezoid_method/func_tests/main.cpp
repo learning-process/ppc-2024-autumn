@@ -40,7 +40,6 @@ TEST(lysov_i_integration_the_trapezoid_method_seq, BasicTest2) {
   task.run();
   task.post_processing();
   double expected_result = 1.016;
-  std::cout << output << std::endl;
   ASSERT_NEAR(output, expected_result, epsilon);
 }
 
@@ -98,7 +97,6 @@ TEST(lysov_i_integration_the_trapezoid_method_seq, BasicTest5) {
   task.run();
   task.post_processing();
   double expected_result =333333.333510;
-  std::cout << output << std::endl;
   ASSERT_NEAR(output, expected_result, epsilon);
 }
 
@@ -117,8 +115,7 @@ TEST(lysov_i_integration_the_trapezoid_method_seq, BasicTest6) {
   task.pre_processing();
   task.run();
   task.post_processing();
-  double expected_result = 91875.001;  //
-  std::cout << output << std::endl;
+  double expected_result = 91875.001;
   ASSERT_NEAR(output, expected_result, epsilon);
 }
 
@@ -138,8 +135,7 @@ TEST(lysov_i_integration_the_trapezoid_method_seq, BasicTest7) {
   task.run();
   task.post_processing();
   std::cout << output << std::endl;
-  double expected_result = 666.66666;  //
-  std::cout << output << std::endl;
+  double expected_result = 666.66666;
   ASSERT_NEAR(output, expected_result, 1e-2);
 }
 

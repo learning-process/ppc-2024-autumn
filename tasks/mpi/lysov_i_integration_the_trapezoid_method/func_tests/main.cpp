@@ -190,8 +190,6 @@ TEST(lysov_i_integration_the_trapezoid_method_mpi, Test_Integration_mpi_7) {
   }
 }
 
-
-
 TEST(lysov_i_integration_the_trapezoid_method_mpi, TaskMpi_InputSizeLessThan3) {
   std::shared_ptr<ppc::core::TaskData> taskDataMPIParallel = std::make_shared<ppc::core::TaskData>();
   boost::mpi::communicator world;
