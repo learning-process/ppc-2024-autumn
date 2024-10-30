@@ -64,7 +64,7 @@ bool kalyakina_a_average_value_mpi::FindingAverageMPITaskParallel::pre_processin
     delta = taskData->inputs_count[0] / world.size() + 1;
   }
   broadcast(world, delta, 0);
-  
+
   if (world.rank() == 0) {
     // Init vectors
     input_vector = std::vector<int>(taskData->inputs_count[0]);

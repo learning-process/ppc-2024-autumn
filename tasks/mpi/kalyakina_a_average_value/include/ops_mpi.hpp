@@ -19,7 +19,8 @@ std::vector<int> RandomVectorWithFixSum(int sum, const int& count);
 
 class FindingAverageMPITaskSequential : public ppc::core::Task {
  public:
-  explicit FindingAverageMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit FindingAverageMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
+	  : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
