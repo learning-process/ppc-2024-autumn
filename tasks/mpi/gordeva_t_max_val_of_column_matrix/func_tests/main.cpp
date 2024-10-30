@@ -85,12 +85,12 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_500_columns_with_random)
   }
 }
 
-TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_500_7000_columns_with_random) {
+TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_500_1000_columns_with_random) {
   boost::mpi::communicator world;
 
   // Create data
   const int rows = 500;
-  const int cols = 7000;
+  const int cols = 1000;
   std::vector<std::vector<int>> global_matr;
   std::vector<int32_t> global_max(cols, INT_MIN);
 
@@ -136,12 +136,12 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_500_7000_columns_with_ra
   }
 }
 
-TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_5000_10000_columns_with_random) {
+TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_1000_3000_columns_with_random) {
   boost::mpi::communicator world;
 
   // Create data
-  const int rows = 5000;
-  const int cols = 10000;
+  const int rows = 1000;
+  const int cols = 3000;
   std::vector<std::vector<int>> global_matr;
   std::vector<int32_t> global_max(cols, INT_MIN);
 

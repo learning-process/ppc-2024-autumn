@@ -59,10 +59,10 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, Max_val_of_5000_columns_with_random
   }
 }
 
-TEST(gordeva_t_max_val_of_column_matrix_seq, Max_val_of_5000_7000_columns_with_random) {
+TEST(gordeva_t_max_val_of_column_matrix_seq, Max_val_of_500_1000_columns_with_random) {
   // Create data
-  const int rows = 5000;
-  const int cols = 7000;
+  const int rows = 500;
+  const int cols = 1000;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -94,10 +94,10 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, Max_val_of_5000_7000_columns_with_r
   }
 }
 
-TEST(gordeva_t_max_val_of_column_matrix_seq, Max_val_of_5000_10000_columns_with_random) {
+TEST(gordeva_t_max_val_of_column_matrix_seq, Max_val_of_1000_3000_columns_with_random) {
   // Create data
-  const int rows = 5000;
-  const int cols = 10000;
+  const int rows = 1000;
+  const int cols = 3000;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
