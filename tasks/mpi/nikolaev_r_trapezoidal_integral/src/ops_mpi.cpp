@@ -12,9 +12,9 @@
 
 bool nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralSequential::pre_processing() {
   internal_order_test();
-  double* tmp_ptr_a = reinterpret_cast<double*>(taskData->inputs[0]);
-  double* tmp_ptr_b = reinterpret_cast<double*>(taskData->inputs[1]);
-  int* tmp_ptr_n = reinterpret_cast<int*>(taskData->inputs[2]);
+  auto* tmp_ptr_a = reinterpret_cast<double*>(taskData->inputs[0]);
+  auto* tmp_ptr_b = reinterpret_cast<double*>(taskData->inputs[1]);
+  auto* tmp_ptr_n = reinterpret_cast<int*>(taskData->inputs[2]);
   a_ = *tmp_ptr_a, b_ = *tmp_ptr_b, n_ = *tmp_ptr_n;
   return true;
 }
@@ -40,9 +40,9 @@ bool nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralParallel::pre_proce
   internal_order_test();
   double params[3] = {0.0};
   if (world.rank() == 0) {
-    double* tmp_ptr_a = reinterpret_cast<double*>(taskData->inputs[0]);
-    double* tmp_ptr_b = reinterpret_cast<double*>(taskData->inputs[1]);
-    int* tmp_ptr_n = reinterpret_cast<int*>(taskData->inputs[2]);
+    auto* tmp_ptr_a = reinterpret_cast<double*>(taskData->inputs[0]);
+    auto* tmp_ptr_b = reinterpret_cast<double*>(taskData->inputs[1]);
+    auto* tmp_ptr_n = reinterpret_cast<int*>(taskData->inputs[2]);
     params[0] = *tmp_ptr_a;
     params[1] = *tmp_ptr_b;
     params[2] = static_cast<double>(*tmp_ptr_n);

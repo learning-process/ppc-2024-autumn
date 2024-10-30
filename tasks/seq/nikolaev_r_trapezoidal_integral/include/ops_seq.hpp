@@ -20,6 +20,6 @@ class TrapezoidalIntegralSequential : public ppc::core::Task {
  private:
   double a_{}, b_{}, n_{}, res_{};
   std::function<double(double)> function_;
-  double integrate_function(double a, double b, int n, const std::function<double(double)>& f);
+  static double integrate_function(double a, double b, int n, const std::function<double(double)>& f);
 };
 }  // namespace nikolaev_r_trapezoidal_integral_seq

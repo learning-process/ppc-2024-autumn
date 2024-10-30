@@ -26,7 +26,7 @@ class TrapezoidalIntegralSequential : public ppc::core::Task {
   double a_{}, b_{}, n_{}, res_{};
   std::function<double(double)> function_;
 
-  double integrate_function(double a, double b, int n, const std::function<double(double)>& f);
+  static double integrate_function(double a, double b, int n, const std::function<double(double)>& f);
 };
 
 class TrapezoidalIntegralParallel : public ppc::core::Task {
@@ -43,6 +43,6 @@ class TrapezoidalIntegralParallel : public ppc::core::Task {
   std::function<double(double)> function_;
   boost::mpi::communicator world;
 
-  double integrate_function(double a, double b, int n, const std::function<double(double)>& f);
+  static double integrate_function(double a, double b, int n, const std::function<double(double)>& f);
 };
 }  // namespace nikolaev_r_trapezoidal_integral_mpi

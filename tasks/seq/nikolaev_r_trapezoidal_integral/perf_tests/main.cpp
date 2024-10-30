@@ -7,7 +7,9 @@
 #include "seq/nikolaev_r_trapezoidal_integral/include/ops_seq.hpp"
 
 TEST(nikolaev_r_trapezoidal_integral_seq, test_pipeline_run) {
-  const double a = -1.0, b = 2.0, expected = 14.05;
+  const double a = -1.0;
+  const double b = 2.0;
+  const double expected = 14.05;
   const int n = 100000;
 
   std::vector<double> in = {a, b, static_cast<double>(n)};
@@ -42,7 +44,9 @@ TEST(nikolaev_r_trapezoidal_integral_seq, test_pipeline_run) {
 }
 
 TEST(nikolaev_r_trapezoidal_integral_seq, test_task_run) {
-  const double a = -1.0, b = 2.0, expected = 14.05;
+  const double a = -1.0;
+  const double b = 2.0;
+  const double expected = 14.05;
   const int n = 100000;
 
   std::vector<double> in = {a, b, static_cast<double>(n)};
