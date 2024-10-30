@@ -9,7 +9,7 @@
 
 // Test for pipeline run performance of the MostDiffNeighborElemSeq task
 TEST(alputov_i_most_diff_neighbor_elem_perf_test, test_pipeline_run) {
-  const int count = 10000000; 
+  const int count = 10000000;
 
   // Create input data: a vector with a sequence of increasing integers
   std::vector<int> in(count);
@@ -47,21 +47,20 @@ TEST(alputov_i_most_diff_neighbor_elem_perf_test, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-
   int expectedMaxDifference = std::abs(in.back() - in[in.size() - 2]);  // expected max difference adjusted
   ASSERT_EQ(std::abs(out[0].second - out[0].first), expectedMaxDifference);
 }
 
 // Test for direct task run performance of the MostDiffNeighborElemSeq task
 TEST(alputov_i_most_diff_neighbor_elem_perf_test, test_task_run) {
-  const int count = 10000000;  
+  const int count = 10000000;
 
   // Create input data: a vector with a sequence of increasing integers
   std::vector<int> in(count);
   for (int i = 0; i < count; ++i) {
     in[i] = i;  // Fill with increasing values for difference testing
   }
-  std::vector<std::pair<int, int>> out(1, {0, 0}); 
+  std::vector<std::pair<int, int>> out(1, {0, 0});
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -92,7 +91,6 @@ TEST(alputov_i_most_diff_neighbor_elem_perf_test, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-
-  int expectedMaxDifference = std::abs(in.back() - in[in.size() - 2]);  
+  int expectedMaxDifference = std::abs(in.back() - in[in.size() - 2]);
   ASSERT_EQ(std::abs(out[0].second - out[0].first), expectedMaxDifference);
 }

@@ -1,18 +1,17 @@
 // Copyright 2024 Alputov Ivan
 #include "seq/alputov_i_most_diff_neighbor_elem/include/ops_seq.hpp"
 
-#include <algorithm>  
-#include <stdexcept>  
+#include <algorithm>
+#include <stdexcept>
 #include <thread>
 
 using namespace std::chrono_literals;
 
 namespace alputov_i_most_diff_neighbor_elem_seq {
 
-
 std::pair<int, int> MostDiffNeighborElemSeq::findMaxDifferencePair(const std::vector<int>& vec) {
   if (vec.empty()) {
-    return {0, 0};  
+    return {0, 0};
   }
 
   std::pair<int, int> maxPair = {0, 0};
@@ -36,7 +35,7 @@ std::pair<int, int> MostDiffNeighborElemSeq::findMaxDifferencePair(const std::ve
 bool MostDiffNeighborElemSeq::pre_processing() {
   internal_order_test();
 
-   if (taskData->inputs.empty() || taskData->inputs[0] == nullptr || taskData->inputs_count.empty() ||
+  if (taskData->inputs.empty() || taskData->inputs[0] == nullptr || taskData->inputs_count.empty() ||
       taskData->inputs_count[0] == 0) {
     throw std::runtime_error("Input data is invalid.");
   }

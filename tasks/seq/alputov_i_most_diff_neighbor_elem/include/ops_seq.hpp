@@ -22,7 +22,6 @@ class MostDiffNeighborElemSeq : public ppc::core::Task {
   std::vector<int> inputVec_;
   std::pair<int, int> maxDifferencePair_;
 
-
   static std::pair<int, int> findMaxDifferencePair(const std::vector<int>& vec);
 };
 

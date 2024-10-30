@@ -1,21 +1,20 @@
 // Copyright 2024 Alputov Ivan
 #include <gtest/gtest.h>
 
+#include <random>
 #include <utility>
 #include <vector>
-#include <random> 
+
 #include "seq/alputov_i_most_diff_neighbor_elem/include/ops_seq.hpp"
 
 // Test for maximum difference in a typical case
 TEST(alputov_i_most_diff_neighbor_elem_seq, Test_MaxDiff_Typical) {
   std::vector<int> inputVector = {10, 20, 40, 80, 128, 78, -12, -15, 44, 90, 51};
-  std::pair<int, int> expectedResult = {78, -12}; 
-
+  std::pair<int, int> expectedResult = {78, -12};
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputVector.data()));
   taskDataSeq->inputs_count.emplace_back(inputVector.size());
-
 
   std::vector<std::pair<int, int>> outputPairs(1);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(outputPairs.data()));
@@ -23,12 +22,12 @@ TEST(alputov_i_most_diff_neighbor_elem_seq, Test_MaxDiff_Typical) {
 
   alputov_i_most_diff_neighbor_elem_seq::MostDiffNeighborElemSeq testTaskSequential(taskDataSeq);
 
-  ASSERT_TRUE(testTaskSequential.validation());  
-  testTaskSequential.pre_processing();           
-  testTaskSequential.run();                      
-  testTaskSequential.post_processing();         
+  ASSERT_TRUE(testTaskSequential.validation());
+  testTaskSequential.pre_processing();
+  testTaskSequential.run();
+  testTaskSequential.post_processing();
 
-  ASSERT_EQ(outputPairs[0], expectedResult);  
+  ASSERT_EQ(outputPairs[0], expectedResult);
 }
 
 // Test for maximum difference with negative values
@@ -132,16 +131,15 @@ TEST(alputov_i_most_diff_neighbor_elem_seq, Test_MaxDiff_EmptyVector) {
   ASSERT_FALSE(testTaskSequential.validation());
 }
 TEST(alputov_i_most_diff_neighbor_elem_seq, Test_MaxDiff_RandomLargeVector) {
-  const int count = 1000000;  
-  const int fixedSeed = 12345;  
-  std::mt19937 gen(fixedSeed);  
-  std::uniform_int_distribution<> dist(-1000, 1000);  
+  const int count = 1000000;
+  const int fixedSeed = 12345;
+  std::mt19937 gen(fixedSeed);
+  std::uniform_int_distribution<> dist(-1000, 1000);
 
   std::vector<int> inputVector(count);
   for (int i = 0; i < count; ++i) {
-    inputVector[i] = dist(gen); 
+    inputVector[i] = dist(gen);
   }
-
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputVector.data()));
@@ -150,14 +148,13 @@ TEST(alputov_i_most_diff_neighbor_elem_seq, Test_MaxDiff_RandomLargeVector) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(&outputPair));
   taskDataSeq->outputs_count.emplace_back(1);
 
-
   alputov_i_most_diff_neighbor_elem_seq::MostDiffNeighborElemSeq testTaskSequential(taskDataSeq);
 
   ASSERT_TRUE(testTaskSequential.validation());
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  std::pair<int, int> expectedResult = {1000, -1000}; 
+  std::pair<int, int> expectedResult = {1000, -1000};
 
   ASSERT_EQ(outputPair, expectedResult);
 }
