@@ -11,9 +11,9 @@ using namespace std::chrono_literals;
 std::vector<int> kalyakina_a_average_value_seq::RandomVectorWithFixSum(int sum, const int& count) {
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::vector<int> result_vector;
-  for (int i = 0; i < count - 1; i++) {
-    result_vector.push_back(gen() % (__min(sum, 255) - 1));
+  std::vector<int> result_vector(count);
+  for (unsigned int i = 0; i < count - 1; i++) {
+    result_vector[i] = gen() % (std::min(sum, 255) - 1);
     sum -= result_vector[i];
   }
   result_vector.push_back(sum);
