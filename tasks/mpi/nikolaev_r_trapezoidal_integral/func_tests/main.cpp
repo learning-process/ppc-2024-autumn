@@ -30,7 +30,8 @@ TEST(nikolaev_r_trapezoidal_integral_mpi, test_int_linear_func) {
   }
 
   nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralParallel testMpiTaskParallel(taskDataPar);
-  testMpiTaskParallel.set_function([](double x) { return 2 * x + 8; });
+  auto f = [](double x) { return 2 * x + 8; };
+  testMpiTaskParallel.set_function(f);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -50,7 +51,7 @@ TEST(nikolaev_r_trapezoidal_integral_mpi, test_int_linear_func) {
     taskDataSeq->outputs_count.emplace_back(reference_result.size());
 
     nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralSequential testMpiTaskSequential(taskDataSeq);
-    testMpiTaskSequential.set_function([](double x) { return 2 * x + 8; });
+    testMpiTaskSequential.set_function(f);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -81,7 +82,8 @@ TEST(nikolaev_r_trapezoidal_integral_mpi, test_int_squared_func) {
   }
 
   nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralParallel testMpiTaskParallel(taskDataPar);
-  testMpiTaskParallel.set_function([](double x) { return x * x + 2 * x + 1; });
+  auto f = [](double x) { return x * x + 2 * x + 1; };
+  testMpiTaskParallel.set_function(f);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -101,7 +103,7 @@ TEST(nikolaev_r_trapezoidal_integral_mpi, test_int_squared_func) {
     taskDataSeq->outputs_count.emplace_back(reference_result.size());
 
     nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralSequential testMpiTaskSequential(taskDataSeq);
-    testMpiTaskSequential.set_function([](double x) { return x * x + 2 * x + 1; });
+    testMpiTaskSequential.set_function(f);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -132,7 +134,8 @@ TEST(nikolaev_r_trapezoidal_integral_mpi, test_int_trippled_func) {
   }
 
   nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralParallel testMpiTaskParallel(taskDataPar);
-  testMpiTaskParallel.set_function([](double x) { return std::pow(x, 3) + 2 * x * x + 8; });
+  auto f = [](double x) { return pow(x, 3) + 2 * x * x + 8; };
+  testMpiTaskParallel.set_function(f);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -152,7 +155,7 @@ TEST(nikolaev_r_trapezoidal_integral_mpi, test_int_trippled_func) {
     taskDataSeq->outputs_count.emplace_back(reference_result.size());
 
     nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralSequential testMpiTaskSequential(taskDataSeq);
-    testMpiTaskSequential.set_function([](double x) { return std::pow(x, 3) + 2 * x * x + 8; });
+    testMpiTaskSequential.set_function(f);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -183,7 +186,8 @@ TEST(nikolaev_r_trapezoidal_integral_mpi, test_int_cosine_func) {
   }
 
   nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralParallel testMpiTaskParallel(taskDataPar);
-  testMpiTaskParallel.set_function([](double x) { return std::cos(x); });
+  auto f = [](double x) { return cos(x); };
+  testMpiTaskParallel.set_function(f);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -203,7 +207,7 @@ TEST(nikolaev_r_trapezoidal_integral_mpi, test_int_cosine_func) {
     taskDataSeq->outputs_count.emplace_back(reference_result.size());
 
     nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralSequential testMpiTaskSequential(taskDataSeq);
-    testMpiTaskSequential.set_function([](double x) { return std::cos(x); });
+    testMpiTaskSequential.set_function(f);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -234,7 +238,8 @@ TEST(nikolaev_r_trapezoidal_integral_mpi, test_int_sine_func) {
   }
 
   nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralParallel testMpiTaskParallel(taskDataPar);
-  testMpiTaskParallel.set_function([](double x) { return std::sin(x); });
+  auto f = [](double x) { return sin(x); };
+  testMpiTaskParallel.set_function(f);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -254,7 +259,7 @@ TEST(nikolaev_r_trapezoidal_integral_mpi, test_int_sine_func) {
     taskDataSeq->outputs_count.emplace_back(reference_result.size());
 
     nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralSequential testMpiTaskSequential(taskDataSeq);
-    testMpiTaskSequential.set_function([](double x) { return std::sin(x); });
+    testMpiTaskSequential.set_function(f);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -285,7 +290,8 @@ TEST(nikolaev_r_trapezoidal_integral_mpi, test_int_pow_func) {
   }
 
   nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralParallel testMpiTaskParallel(taskDataPar);
-  testMpiTaskParallel.set_function([](double x) { return std::pow(3, x); });
+  auto f = [](double x) { return pow(3, x); };
+  testMpiTaskParallel.set_function(f);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -305,7 +311,7 @@ TEST(nikolaev_r_trapezoidal_integral_mpi, test_int_pow_func) {
     taskDataSeq->outputs_count.emplace_back(reference_result.size());
 
     nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralSequential testMpiTaskSequential(taskDataSeq);
-    testMpiTaskSequential.set_function([](double x) { return std::pow(3, x); });
+    testMpiTaskSequential.set_function(f);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -336,7 +342,8 @@ TEST(nikolaev_r_trapezoidal_integral_mpi, test_int_exp_func) {
   }
 
   nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralParallel testMpiTaskParallel(taskDataPar);
-  testMpiTaskParallel.set_function([](double x) { return std::exp(x * 2); });
+  auto f = [](double x) { return exp(x * 2); };
+  testMpiTaskParallel.set_function(f);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -356,7 +363,7 @@ TEST(nikolaev_r_trapezoidal_integral_mpi, test_int_exp_func) {
     taskDataSeq->outputs_count.emplace_back(reference_result.size());
 
     nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralSequential testMpiTaskSequential(taskDataSeq);
-    testMpiTaskSequential.set_function([](double x) { return std::exp(x * 2); });
+    testMpiTaskSequential.set_function(f);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -387,7 +394,8 @@ TEST(nikolaev_r_trapezoidal_integral_mpi, test_int_mixed_func) {
   }
 
   nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralParallel testMpiTaskParallel(taskDataPar);
-  testMpiTaskParallel.set_function([](double x) { return std::pow(x, 4) - std::exp(x) + std::pow(4, x); });
+  auto f = [](double x) { return pow(x, 4) - exp(x) + pow(4, x); };
+  testMpiTaskParallel.set_function(f);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -407,7 +415,7 @@ TEST(nikolaev_r_trapezoidal_integral_mpi, test_int_mixed_func) {
     taskDataSeq->outputs_count.emplace_back(reference_result.size());
 
     nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralSequential testMpiTaskSequential(taskDataSeq);
-    testMpiTaskSequential.set_function([](double x) { return std::pow(x, 4) - std::exp(x) + std::pow(4, x); });
+    testMpiTaskSequential.set_function(f);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();

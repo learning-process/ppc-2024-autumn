@@ -24,7 +24,8 @@ TEST(nikolaev_r_trapezoidal_integral_mpi, test_pipeline_run) {
 
   auto testMpiTaskParallel =
       std::make_shared<nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralParallel>(taskDataPar);
-  testMpiTaskParallel->set_function([](double x) { return std::pow(x, 3) - std::pow(3, x) + std::exp(x); });
+  auto f = [](double x) { return pow(x, 3) - pow(3, x) + exp(x); };
+  testMpiTaskParallel->set_function(f);
 
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
@@ -65,7 +66,8 @@ TEST(nikolaev_r_trapezoidal_integral_mpi, test_task_run) {
 
   auto testMpiTaskParallel =
       std::make_shared<nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralParallel>(taskDataPar);
-  testMpiTaskParallel->set_function([](double x) { return std::pow(x, 3) - std::pow(3, x) + std::exp(x); });
+  auto f = [](double x) { return pow(x, 3) - pow(3, x) + exp(x); };
+  testMpiTaskParallel->set_function(f);
 
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
