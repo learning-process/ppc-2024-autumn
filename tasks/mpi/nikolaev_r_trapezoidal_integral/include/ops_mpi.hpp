@@ -43,6 +43,6 @@ class TrapezoidalIntegralParallel : public ppc::core::Task {
   std::function<double(double)> function_;
   boost::mpi::communicator world;
 
-  static double integrate_function(double a, double b, int n, const std::function<double(double)>& f);
+  double integrate_function(double a, double b, int n, const std::function<double(double)>& f);
 };
 }  // namespace nikolaev_r_trapezoidal_integral_mpi
