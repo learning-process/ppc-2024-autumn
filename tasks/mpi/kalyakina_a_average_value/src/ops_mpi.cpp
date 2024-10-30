@@ -14,7 +14,7 @@ std::vector<int> kalyakina_a_average_value_mpi::RandomVectorWithFixSum(int sum, 
   std::random_device rd;
   std::mt19937 gen(rd());
   std::vector<int> result_vector(count);
-  for (unsigned int i = 0; i < count - 1; i++) {
+  for (int i = 0; i < count - 1; i++) {
     result_vector[i] = gen() % (std::min(sum, 255) - 1);
     sum -= result_vector[i];
   }
@@ -44,7 +44,7 @@ bool kalyakina_a_average_value_mpi::FindingAverageMPITaskSequential::validation(
 
 bool kalyakina_a_average_value_mpi::FindingAverageMPITaskSequential::run() {
   internal_order_test();
-  for (int i = 0; i < input_vector.size(); i++) {
+  for (unsigned int i = 0; i < input_vector.size(); i++) {
     average_value += input_vector[i];
   }
   average_value /= input_vector.size();
