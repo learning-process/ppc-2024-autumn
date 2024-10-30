@@ -99,14 +99,12 @@ bool kondratev_ya_max_col_matrix_mpi::TestMPITaskParallel::pre_processing() {
   if (world.rank() == 0) {
     row_ = taskData->inputs_count[0];
     col_ = taskData->inputs_count[1];
-    step_ = col_ / world.size();
-    remain_ = col_ % world.size();
   }
 
   broadcast(world, row_, 0);
   broadcast(world, col_, 0);
-  broadcast(world, step_, 0);
-  broadcast(world, remain_, 0);
+  step_ = col_ / world.size();
+  remain_ = col_ % world.size();
 
   if (world.rank() == 0) {
     std::vector<int32_t*> tmp(row_);
