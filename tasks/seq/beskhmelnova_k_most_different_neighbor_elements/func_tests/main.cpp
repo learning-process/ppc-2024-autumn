@@ -104,8 +104,3 @@ TEST(beskhmelnova_k_most_different_neighbor_elements_seq, Test_1_size_vector_int
   ASSERT_EQ(-1, out[0]);
   ASSERT_EQ(-1, out[1]);
 }
-
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}

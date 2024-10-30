@@ -82,8 +82,3 @@ TEST(sequential_beskhmelnova_k_most_different_neighbor_element_perf_test, test_t
   ASSERT_EQ(in[index], out[0]);
   ASSERT_EQ(in[index + 1], out[1]);
 }
-
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}

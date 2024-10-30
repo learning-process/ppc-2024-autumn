@@ -242,14 +242,3 @@ TEST(beskhmelnova_k_most_different_neighbor_elements_mpi, Test_vector_size_10000
     ASSERT_NEAR(reference_out[1], global_out[1], 1e-10);
   }
 }
-
-int main(int argc, char** argv) {
-  boost::mpi::environment env(argc, argv);
-  boost::mpi::communicator world;
-  ::testing::InitGoogleTest(&argc, argv);
-  ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
-  if (world.rank() != 0) {
-    delete listeners.Release(listeners.default_result_printer());
-  }
-  return RUN_ALL_TESTS();
-}
