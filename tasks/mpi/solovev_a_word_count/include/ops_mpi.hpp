@@ -6,13 +6,7 @@
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <cstring>
-#include <iterator>
-#include <memory>
-#include <numeric>
-#include <sstream>
 #include <string>
-#include <utility>
 #include <vector>
 
 #include "core/task/include/task.hpp"
