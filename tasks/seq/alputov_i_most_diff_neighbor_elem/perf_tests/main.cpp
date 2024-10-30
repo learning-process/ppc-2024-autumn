@@ -9,7 +9,7 @@
 
 // Test for pipeline run performance of the MostDiffNeighborElemSeq task
 TEST(alputov_i_most_diff_neighbor_elem_perf_test, test_pipeline_run) {
-  const int count = 10000000;  // Увеличен размер вектора
+  const int count = 10000000; 
 
   // Create input data: a vector with a sequence of increasing integers
   std::vector<int> in(count);

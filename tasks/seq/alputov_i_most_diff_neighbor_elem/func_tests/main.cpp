@@ -142,7 +142,7 @@ TEST(alputov_i_most_diff_neighbor_elem_seq, Test_MaxDiff_RandomLargeVector) {
     inputVector[i] = dist(gen); 
   }
 
-  // Создаем TaskData
+
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputVector.data()));
   taskDataSeq->inputs_count.emplace_back(inputVector.size());
@@ -150,7 +150,7 @@ TEST(alputov_i_most_diff_neighbor_elem_seq, Test_MaxDiff_RandomLargeVector) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(&outputPair));
   taskDataSeq->outputs_count.emplace_back(1);
 
-  // Создаем задачу
+
   alputov_i_most_diff_neighbor_elem_seq::MostDiffNeighborElemSeq testTaskSequential(taskDataSeq);
 
   ASSERT_TRUE(testTaskSequential.validation());
