@@ -1,7 +1,7 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/kalyakina_a_average_value/include/ops_seq.hpp"
 
-#include <stdlib.h>
+#include <cstdlib>
 
 #include <random>
 #include <thread>
