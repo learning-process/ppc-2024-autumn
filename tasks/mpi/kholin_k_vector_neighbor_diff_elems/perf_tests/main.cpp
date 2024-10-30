@@ -7,7 +7,8 @@
 #include "mpi/kholin_k_vector_neighbor_diff_elems/include/ops_mpi.hpp"
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, test_pipeline_run) {
-  int ProcRank = MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
+  int ProcRank = 0;
+  MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   std::vector<int> global_vec;
   std::vector<int> global_elems(2, 0);
   std::vector<uint64_t> global_indices(2, 0);
@@ -56,7 +57,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, test_pipeline_run) {
 }
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, test_task_run) {
-  int ProcRank = MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
+  int ProcRank = 0;
+  MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   std::vector<int> global_vec;
   std::vector<int> global_elems(2, 0);
   std::vector<uint64_t> global_indices(2, 0);
