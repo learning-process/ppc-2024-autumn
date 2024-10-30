@@ -10,7 +10,6 @@
 TEST(grudzin_k_nearest_neighbor_elements_mpi, Wrong_Test) {
   boost::mpi::communicator world;
   std::vector<int> global_vec(1);
-  std::vector<int32_t> global_ans(1, INT_MAX);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {

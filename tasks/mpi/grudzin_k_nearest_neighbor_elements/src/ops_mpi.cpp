@@ -15,7 +15,7 @@ std::vector<int> grudzin_k_nearest_neighbor_elements_mpi::getRandomVector(int sz
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
   for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
+    vec[i] = -100 + gen() % 201;
   }
   return vec;
 }
@@ -40,7 +40,8 @@ bool grudzin_k_nearest_neighbor_elements_mpi::TestMPITaskSequential::validation(
 bool grudzin_k_nearest_neighbor_elements_mpi::TestMPITaskSequential::run() {
   internal_order_test();
   for (size_t i = 0; i < input_.size() - 1; ++i) {
-    res = std::min(res, {abs(input_[i] - input_[i + 1]), i});
+    std::pair<int, int> tmp = {abs(input_[i] - input_[i + 1]), i};
+    res = std::min(res, tmp);
   }
   return true;
 }
@@ -97,7 +98,8 @@ bool grudzin_k_nearest_neighbor_elements_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   std::pair<int, int> local_ans_ = {INT_MAX, -1};
   for (size_t i = 0; i < local_input_.size() - 1 && (i + start) < size - 1; ++i) {
-    local_ans_ = std::min(local_ans_, {abs(local_input_[i] - local_input_[i + 1]), i + start});
+    std::pair<int, int> tmp = {abs(local_input_[i] - local_input_[i + 1]), i + start};
+    local_ans_ = std::min(local_ans_, tmp);
   }
   reduce(world, local_ans_, res, boost::mpi::minimum<std::pair<int, int>>(), 0);
   return true;
