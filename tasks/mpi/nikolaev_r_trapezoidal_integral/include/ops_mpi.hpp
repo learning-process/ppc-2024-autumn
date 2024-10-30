@@ -4,10 +4,10 @@
 
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <cmath>
 #include <functional>
 #include <memory>
 #include <vector>
-#include <cmath>
 
 #include "core/task/include/task.hpp"
 

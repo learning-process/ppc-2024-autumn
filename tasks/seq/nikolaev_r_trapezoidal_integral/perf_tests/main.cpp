@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include <vector>
 #include <cmath>
+#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/nikolaev_r_trapezoidal_integral/include/ops_seq.hpp"
