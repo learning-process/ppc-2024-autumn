@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <random>
@@ -20,7 +19,8 @@ TEST(vladimirova_j_max_of_vector_elements_seq, test_pipeline_run) {
   matrix_in = vladimirova_j_max_of_vector_elements_seq::CreateInputMatrix(size, size, spread);
   std::vector<int32_t> out(1, matrix_in[0][0]);
 
-  int some_row = random() % size, some_col = random() % size;
+  int some_row = random() % size;
+  int some_col = random() % size;
   matrix_in[some_row][some_col] = spread;
 
   for (unsigned int i = 0; i < matrix_in.size(); i++)
@@ -65,7 +65,8 @@ TEST(sequential_vladimirova_j_max_of_vector_elements_seq, test_task_run) {
   matrix_in = vladimirova_j_max_of_vector_elements_seq::CreateInputMatrix(size, size, spread);
   std::vector<int32_t> out(1, matrix_in[0][0]);
 
-  int some_row = random() % size, some_col = random() % size;
+  int some_row = random() % size;
+  int some_col = random() % size;
   matrix_in[some_row][some_col] = spread;
 
   for (unsigned int i = 0; i < matrix_in.size(); i++)

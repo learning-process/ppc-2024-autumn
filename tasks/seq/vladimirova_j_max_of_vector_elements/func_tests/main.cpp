@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <random>
@@ -7,13 +6,15 @@
 #include "seq/vladimirova_j_max_of_vector_elements/include/ops_seq.hpp"
 
 TEST(vladimirova_j_max_of_vector_elements_seq, Test_CanCreate_10) {
-  const size_t col = 10, row = 10;
+  const size_t col = 10;
+  const size_t  row = 10;
   const int spread = 10;
   EXPECT_NO_THROW(vladimirova_j_max_of_vector_elements_seq::CreateInputMatrix(row, col, spread));
 }
 
 TEST(vladimirova_j_max_of_vector_elements_seq, Test_CantCreate_0) {
-  const size_t col = 0, row = 0;
+  const size_t col = 0;
+  const size_t  row = 0;
   const int spread = 0;
   EXPECT_ANY_THROW(vladimirova_j_max_of_vector_elements_seq::CreateInputMatrix(row, col, spread));
 }
@@ -28,7 +29,8 @@ TEST(vladimirova_j_max_of_vector_elements_seq, Test_SquareMatrix_10) {
 
   std::random_device dev;
   std::mt19937 random(dev());
-  int some_row = random() % size, some_col = random() % size;
+  int some_row = random() % size;
+  int some_col = random() % size;
   in[some_row][some_col] = spread;
 
   // Create TaskData
@@ -61,7 +63,8 @@ TEST(vladimirova_j_max_of_vector_elements_seq, Test_SquareMatrix_20) {
 
   std::random_device dev;
   std::mt19937 random(dev());
-  int some_row = random() % size, some_col = random() % size;
+  int some_row = random() % size;
+  int some_col = random() % size;
   in[some_row][some_col] = spread;
 
   // Create TaskData
@@ -94,7 +97,8 @@ TEST(vladimirova_j_max_of_vector_elements_seq, Test_SquareMatrix_50) {
 
   std::random_device dev;
   std::mt19937 random(dev());
-  int some_row = random() % size, some_col = random() % size;
+  int some_row = random() % size;
+  int some_col = random() % size;
   in[some_row][some_col] = spread;
 
   // Create TaskData
@@ -127,7 +131,8 @@ TEST(vladimirova_j_max_of_vector_elements_seq, Test_SquareMatrix_100) {
 
   std::random_device dev;
   std::mt19937 random(dev());
-  int some_row = random() % size, some_col = random() % size;
+  int some_row = random() % size;
+  int some_col = random() % size;
   in[some_row][some_col] = spread;
 
   // Create TaskData
@@ -160,7 +165,8 @@ TEST(vladimirova_j_max_of_vector_elements_seq, Test_SquareMatrix_100_WithSeveral
 
   std::random_device dev;
   std::mt19937 random(dev());
-  int some_row = random() % size, some_col = random() % size;
+  int some_row = random() % size;
+  int some_col = random() % size;
   in[some_row][some_col] = spread;
   some_row = random() % size;
   some_col = random() % size;
@@ -187,7 +193,8 @@ TEST(vladimirova_j_max_of_vector_elements_seq, Test_SquareMatrix_100_WithSeveral
 }
 
 TEST(vladimirova_j_max_of_vector_elements_seq, Test_NotSquareMatrix_100_50_WithSeveralMax) {
-  const size_t col = 100, row = 50;
+  const size_t col = 100;
+  const size_t  row = 50;
   const int spread = 100;  // spread is excepted answer
 
   // Create data
@@ -223,7 +230,8 @@ TEST(vladimirova_j_max_of_vector_elements_seq, Test_NotSquareMatrix_100_50_WithS
 }
 
 TEST(vladimirova_j_max_of_vector_elements_seq, Test_NotSquareMatrix_100_50) {
-  const size_t col = 100, row = 50;
+  const size_t col = 100;
+  const size_t  row = 50;
   const int spread = 100;  // spread is excepted answer
 
   // Create data
@@ -232,7 +240,8 @@ TEST(vladimirova_j_max_of_vector_elements_seq, Test_NotSquareMatrix_100_50) {
 
   std::random_device dev;
   std::mt19937 random(dev());
-  int some_row = random() % row, some_col = random() % col;
+  int some_row = random() % row;
+  int some_col = random() % col;
   in[some_row][some_col] = spread;
 
   // Create TaskData

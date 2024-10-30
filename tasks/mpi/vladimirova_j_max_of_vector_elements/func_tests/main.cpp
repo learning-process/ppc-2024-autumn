@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
@@ -16,7 +15,8 @@ TEST(Parallel_Operations_MPI, Test_CantCreate_0) {
 }
 
 TEST(Parallel_Operations_MPI, Test_SquareMatrix_10) {
-  const size_t size = 10, spread = 30;
+  const size_t size = 10;
+  const size_t spread = 30;
 
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matr;
@@ -68,7 +68,8 @@ TEST(Parallel_Operations_MPI, Test_SquareMatrix_10) {
 }
 
 TEST(Parallel_Operations_MPI, Test_SquareMatrix_50) {
-  const size_t size = 50, spread = 30;
+  const size_t size = 50;
+  const size_t spread = 30;
 
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matr;
@@ -120,7 +121,8 @@ TEST(Parallel_Operations_MPI, Test_SquareMatrix_50) {
 }
 
 TEST(Parallel_Operations_MPI, Test_SquareMatrix_100) {
-  const size_t size = 200, spread = 30;
+  const size_t size = 200;
+  const size_t spread = 30;
 
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matr;
@@ -172,7 +174,9 @@ TEST(Parallel_Operations_MPI, Test_SquareMatrix_100) {
 }
 
 TEST(Parallel_Operations_MPI, Test_Matrix_10_50) {
-  const size_t row = 10, col = 50, spread = 30;
+  const size_t row = 10;
+  const size_t col = 50;
+  const size_t spread = 30;
 
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matr;
@@ -224,7 +228,9 @@ TEST(Parallel_Operations_MPI, Test_Matrix_10_50) {
 }
 
 TEST(Parallel_Operations_MPI, Test_Matrix_100_50) {
-  const size_t row = 100, col = 50, spread = 30;
+  const size_t row = 100;
+  const size_t col = 50;
+  const size_t spread = 30;
 
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matr;
@@ -276,7 +282,8 @@ TEST(Parallel_Operations_MPI, Test_Matrix_100_50) {
 }
 
 TEST(Parallel_Operations_MPI, Test_SquareMatrix_50_WithSeveralMax) {
-  const size_t size = 50, spread = 30;
+  const size_t size = 50;
+  const size_t spread = 30;
 
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matr;
@@ -330,7 +337,9 @@ TEST(Parallel_Operations_MPI, Test_SquareMatrix_50_WithSeveralMax) {
 }
 
 TEST(Parallel_Operations_MPI, Test_Matrix_100_50_WithSeveralMax) {
-  const size_t row = 100, col = 50, spread = 30;
+  const size_t row = 100;
+  const size_t col = 50;
+  const size_t spread = 30;
 
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matr;
