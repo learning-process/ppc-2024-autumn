@@ -8,7 +8,7 @@
 TEST(lysov_i_integration_the_trapezoid_method_seq, BasicTest) {
   double a = 0.0;
   double b = 1.45;
-  double epsilon = 1e-1;
+  double epsilon = 1e-2;
   auto taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&a));
   taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&b));
@@ -20,7 +20,7 @@ TEST(lysov_i_integration_the_trapezoid_method_seq, BasicTest) {
   task.pre_processing();
   task.run();
   task.post_processing();
-  double expected_result = (b * b * b / 3.0 - a * a * a / 3.0);
+  double expected_result = 1.016;
   ASSERT_NEAR(output, expected_result, epsilon);
 }
 
@@ -40,7 +40,8 @@ TEST(lysov_i_integration_the_trapezoid_method_seq, BasicTest2) {
   task.run();
   task.post_processing();
   double expected_result = 1.016;
-  ASSERT_NEAR(output, expected_result, 1e-1);
+  std::cout << output << std::endl;
+  ASSERT_NEAR(output, expected_result, epsilon);
 }
 
 TEST(lysov_i_integration_the_trapezoid_method_seq, BasicTest3) {
@@ -51,7 +52,7 @@ TEST(lysov_i_integration_the_trapezoid_method_seq, BasicTest3) {
   taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&a));
   taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&b));
   taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&epsilon));
-  double output = 1.0;
+  double output = 0.0;
   taskData->outputs.push_back(reinterpret_cast<uint8_t *>(&output));
   lysov_i_integration_the_trapezoid_method_seq::TestTaskSequential task(taskData);
   ASSERT_TRUE(task.validation());
@@ -59,7 +60,7 @@ TEST(lysov_i_integration_the_trapezoid_method_seq, BasicTest3) {
   task.run();
   task.post_processing();
   double expected_result = 2.03;
-  ASSERT_NEAR(output, expected_result, 1e-1);
+  ASSERT_NEAR(output, expected_result, epsilon);
 }
 
 TEST(lysov_i_integration_the_trapezoid_method_seq, BasicTest4) {
@@ -70,7 +71,7 @@ TEST(lysov_i_integration_the_trapezoid_method_seq, BasicTest4) {
   taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&a));
   taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&b));
   taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&epsilon));
-  double output = 1.0;
+  double output = 0.0;
   taskData->outputs.push_back(reinterpret_cast<uint8_t *>(&output));
   lysov_i_integration_the_trapezoid_method_seq::TestTaskSequential task(taskData);
   ASSERT_TRUE(task.validation());
@@ -78,7 +79,68 @@ TEST(lysov_i_integration_the_trapezoid_method_seq, BasicTest4) {
   task.run();
   task.post_processing();
   double expected_result = -1.016;
-  ASSERT_NEAR(output, expected_result, 1e-1);
+  ASSERT_NEAR(output, expected_result, epsilon);
+}
+
+TEST(lysov_i_integration_the_trapezoid_method_seq, BasicTest5) {
+	double a = 0.0;
+	double b = 100.0;
+    double epsilon = 0.001;
+    auto taskData = std::make_shared<ppc::core::TaskData>();
+    taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&a));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&b));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&epsilon));
+    double output = 0.0;
+    taskData->outputs.push_back(reinterpret_cast<uint8_t *>(&output));
+    lysov_i_integration_the_trapezoid_method_seq::TestTaskSequential task(taskData);
+    ASSERT_TRUE(task.validation());
+    task.pre_processing();
+    task.run();
+    task.post_processing();
+    double expected_result =333333.333510;
+    std::cout << output << std::endl;
+    ASSERT_NEAR(output, expected_result, epsilon);
+}
+
+TEST(lysov_i_integration_the_trapezoid_method_seq, BasicTest6) {
+  double a = -10.0;
+  double b = 65.0;
+  double epsilon = 0.01;
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&a));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&b));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&epsilon));
+  double output = 0.0;
+  taskData->outputs.push_back(reinterpret_cast<uint8_t *>(&output));
+  lysov_i_integration_the_trapezoid_method_seq::TestTaskSequential task(taskData);
+  ASSERT_TRUE(task.validation());
+  task.pre_processing();
+  task.run();
+  task.post_processing();
+  double expected_result = 91875.001;  //
+  std::cout << output << std::endl;
+  ASSERT_NEAR(output, expected_result, epsilon);
+}
+
+TEST(lysov_i_integration_the_trapezoid_method_seq, BasicTest7) {
+  double a = -10.0;
+  double b = 10.0;
+  double epsilon = 0.001;
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&a));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&b));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&epsilon));
+  double output = 0.0;
+  taskData->outputs.push_back(reinterpret_cast<uint8_t *>(&output));
+  lysov_i_integration_the_trapezoid_method_seq::TestTaskSequential task(taskData);
+  ASSERT_TRUE(task.validation());
+  task.pre_processing();
+  task.run();
+  task.post_processing();
+  std::cout << output << std::endl;
+  double expected_result = 666.66666;  //
+  std::cout << output << std::endl;
+  ASSERT_NEAR(output, expected_result, 1e-2);
 }
 
 TEST(lysov_i_integration_the_trapezoid_method_seq, InputSizeLessThan3) {

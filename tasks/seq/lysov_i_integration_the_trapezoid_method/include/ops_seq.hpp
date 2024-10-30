@@ -16,6 +16,6 @@ class TestTaskSequential : public ppc::core::Task {
 
  private:
   std::vector<double> input_;
-  int res{};
+  double res{};
 };
 }  // namespace lysov_i_integration_the_trapezoid_method_seq

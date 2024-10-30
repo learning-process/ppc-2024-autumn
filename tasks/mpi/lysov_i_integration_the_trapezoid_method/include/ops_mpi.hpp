@@ -30,7 +30,7 @@ class TestMPITaskSequential : public ppc::core::Task {
 
  private:
   std::vector<int> input_;
-  int res{};
+  double res{};
   std::string ops;
 };
 
