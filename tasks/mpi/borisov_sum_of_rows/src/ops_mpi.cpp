@@ -76,14 +76,12 @@ bool borisov_sum_of_rows::SumOfRowsTaskSequential ::post_processing() {
   return true;
 }
 
-std::vector<std::vector<int>> borisov_sum_of_rows::getRandomMatrix(int rows, int cols) {
+std::vector<int> borisov_sum_of_rows::getRandomMatrix(int rows, int cols) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  std::vector<std::vector<int>> matrix(rows, std::vector<int>(cols));
-  for (auto& row : matrix) {
-    for (auto& element : row) {
-      element = static_cast<int>(gen() % 100);
-    }
+  std::vector<int> matrix(rows * cols);
+  for (auto& element : matrix) {
+    element = static_cast<int>(gen() % 100);
   }
   return matrix;
 }
@@ -100,29 +98,29 @@ bool borisov_sum_of_rows::SumOfRowsTaskParallel::pre_processing() {
 
     if (rows > 0 && cols > 0) {
       int* data = reinterpret_cast<int*>(taskData->inputs[0]);
-      matrix_.resize(rows, std::vector<int>(cols));
+      matrix_.resize(rows * cols);
 
       for (size_t i = 0; i < rows; i++) {
         for (size_t j = 0; j < cols; j++) {
-          matrix_[i][j] = data[(i * cols) + j];
+          matrix_[i * cols + j] = data[(i * cols) + j];
         }
       }
 
       for (int pr = 1; pr < world.size(); pr++) {
         int size = static_cast<int>(delta * cols);
-        world.send(pr, 0, matrix_[pr * delta].data(), size);
+        world.send(pr, 0, matrix_.data() + (pr * delta * cols), size);
       }
     }
   }
 
   broadcast(world, delta, 0);
 
-  loc_matrix_.resize(delta, std::vector<int>(taskData->inputs_count[1]));
+  loc_matrix_.resize(delta * taskData->inputs_count[1]);
   if (world.rank() == 0) {
-    loc_matrix_.assign(matrix_.begin(), matrix_.begin() + delta);
+    loc_matrix_.assign(matrix_.begin(), matrix_.begin() + (delta * taskData->inputs_count[1]));
   } else {
     int size = static_cast<int>(delta * taskData->inputs_count[1]);
-    world.recv(0, 0, loc_matrix_[0].data(), size);
+    world.recv(0, 0, loc_matrix_.data(), size);
   }
 
   loc_row_sums_.resize(delta, 0);
@@ -152,10 +150,10 @@ bool borisov_sum_of_rows::SumOfRowsTaskParallel::validation() {
 bool borisov_sum_of_rows::SumOfRowsTaskParallel::run() {
   internal_order_test();
 
-  for (size_t i = 0; i < loc_matrix_.size(); i++) {
+  for (size_t i = 0; i < loc_row_sums_.size(); i++) {
     loc_row_sums_[i] = 0;
-    for (const auto& element : loc_matrix_[i]) {
-      loc_row_sums_[i] += element;
+    for (size_t j = 0; j < taskData->inputs_count[1]; j++) {
+      loc_row_sums_[i] += loc_matrix_[i * taskData->inputs_count[1] + j];
     }
   }
 

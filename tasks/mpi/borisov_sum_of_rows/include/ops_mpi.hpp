@@ -15,7 +15,7 @@
 
 namespace borisov_sum_of_rows {
 
-std::vector<std::vector<int>> getRandomMatrix(int rows, int cols);
+std::vector<int> getRandomMatrix(int rows, int cols);
 
 class SumOfRowsTaskSequential : public ppc::core::Task {
  public:
@@ -39,7 +39,7 @@ class SumOfRowsTaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<std::vector<int>> matrix_, loc_matrix_;
+  std::vector<int> matrix_, loc_matrix_;
   std::vector<int> row_sums_, loc_row_sums_;
   boost::mpi::communicator world;
   int res = 0;

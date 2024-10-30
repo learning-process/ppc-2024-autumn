@@ -91,13 +91,14 @@ TEST(borisov_sum_of_rows, Test_Zero_Matrix) {
 
 TEST(borisov_sum_of_rows, Test_Sum_Rows) {
   boost::mpi::communicator world;
-  std::vector<std::vector<int>> global_matrix;
+  std::vector<int> global_matrix;
   std::vector<int> global_row_sums;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   int rows = 15;
   int cols = 15;
+
   if (world.rank() == 0) {
     global_matrix = borisov_sum_of_rows::getRandomMatrix(rows, cols);
     global_row_sums.resize(rows, 0);
@@ -106,13 +107,13 @@ TEST(borisov_sum_of_rows, Test_Sum_Rows) {
     taskDataPar->inputs_count.push_back(rows);
     taskDataPar->inputs_count.push_back(cols);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_row_sums.data()));
-    taskDataPar->outputs_count.emplace_back(global_row_sums.size());
+    taskDataPar->outputs_count.push_back(global_row_sums.size());
   } else {
     taskDataPar->inputs.emplace_back(nullptr);
     taskDataPar->outputs.emplace_back(nullptr);
     taskDataPar->inputs_count.push_back(rows);
     taskDataPar->inputs_count.push_back(cols);
-    taskDataPar->inputs_count.push_back(rows);
+    taskDataPar->outputs_count.push_back(0);
   }
 
   borisov_sum_of_rows::SumOfRowsTaskParallel sumOfRowsTaskParallel(taskDataPar);
@@ -127,10 +128,10 @@ TEST(borisov_sum_of_rows, Test_Sum_Rows) {
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-    taskDataSeq->inputs_count.push_back(global_matrix.size());
-    taskDataSeq->inputs_count.push_back(global_matrix[0].size());
+    taskDataSeq->inputs_count.push_back(rows);
+    taskDataSeq->inputs_count.push_back(cols);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_row_sums.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_row_sums.size());
+    taskDataSeq->outputs_count.push_back(reference_row_sums.size());
 
     borisov_sum_of_rows::SumOfRowsTaskSequential sumOfRowsTaskSequential(taskDataSeq);
     ASSERT_EQ(sumOfRowsTaskSequential.validation(), true);
@@ -146,7 +147,7 @@ TEST(borisov_sum_of_rows, Test_Sum_Rows) {
 
 TEST(borisov_sum_of_rows, Test_Empty_Matrix) {
   boost::mpi::communicator world;
-  std::vector<std::vector<int>> global_matrix;
+  std::vector<int> global_matrix;
   std::vector<int> global_row_sums;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -154,7 +155,6 @@ TEST(borisov_sum_of_rows, Test_Empty_Matrix) {
   if (world.rank() == 0) {
     int rows = 0;
     int cols = 0;
-    global_matrix.resize(rows, std::vector<int>(cols, 0));
     global_row_sums.resize(rows, 0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
