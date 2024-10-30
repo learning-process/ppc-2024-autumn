@@ -9,7 +9,7 @@
 
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_validation) {
   MPI_Comm world = MPI_COMM_WORLD;
-  int ProcRank = MPI_Comm_rank(world,&ProcRank);
+  int ProcRank = MPI_Comm_rank(world, &ProcRank);
   const int count_size_vector = 500;
   std::vector<int> global_vec;
   std::vector<double> global_delta(1, 0);
