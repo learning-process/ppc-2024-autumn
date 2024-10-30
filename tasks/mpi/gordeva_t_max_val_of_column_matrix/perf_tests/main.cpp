@@ -9,7 +9,7 @@
 
 TEST(gordeva_t_max_val_of_column_matrix_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  std::vector <std::vector<int>> global_matr;
+  std::vector<std::vector<int>> global_matr;
   std::vector<int32_t> max_s;
 
   // Create TaskData
@@ -18,7 +18,7 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, test_pipeline_run) {
 
   if (world.rank() == 0) {
       global_matr =
-        gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::gen_rand_matr(rows, cols);
+ gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::gen_rand_matr(rows, cols);
     max_s.resize(cols, INT_MIN);
     for (auto& i : global_matr) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(i.data()));
@@ -32,7 +32,6 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, test_pipeline_run) {
   // Create Perf attributes
   auto testMpiTaskParallel =
       std::make_shared<gordeva_t_max_val_of_column_matrix_mpi ::TestMPITaskParallel>(taskDataPar);
-    // Create and init perf results
 
   // Create and init perf results
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
@@ -59,8 +58,8 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, test_task_run) {
   int cols = 7000;
 
   if (world.rank() == 0) {
-    global_matr = gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::gen_rand_matr(
-        rows, cols);
+      global_matr = 
+ gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::gen_rand_matr(rows, cols);
     max_s.resize(cols, INT_MIN);
 
     for (auto& i : global_matr) {
@@ -75,7 +74,7 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, test_task_run) {
 
   // Create Perf attributes
   auto testMpiTaskParallel = std::make_shared<gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel>(taskDataPar);
-  
+
   // Create and init perf results
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
@@ -90,15 +89,13 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, test_task_run) {
   }
 }
 
-
-
-//int main(int argc, char** argv) {
-//  boost::mpi::environment env(argc, argv);
-//  boost::mpi::communicator world;
-//  ::testing::InitGoogleTest(&argc, argv);
-//  ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
-//  if (world.rank() != 0) {
-//    delete listeners.Release(listeners.default_result_printer());
-//  }
-//  return RUN_ALL_TESTS();
-//}
+// int main(int argc, char** argv) {
+//   boost::mpi::environment env(argc, argv);
+//   boost::mpi::communicator world;
+//   ::testing::InitGoogleTest(&argc, argv);
+//   ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
+//   if (world.rank() != 0) {
+//     delete listeners.Release(listeners.default_result_printer());
+//   }
+//   return RUN_ALL_TESTS();
+// }
