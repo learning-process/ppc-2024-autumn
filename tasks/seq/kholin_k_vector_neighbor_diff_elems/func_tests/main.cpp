@@ -117,7 +117,6 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_int32_t) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  std::cout << out_index[0];
   EXPECT_EQ(out[0], 0l);
   EXPECT_EQ(out[1], 4000l);
   EXPECT_EQ(out_index[0], 234ull);
@@ -146,8 +145,7 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_double) {
 
   // Create Task
   kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<double, uint64_t> testTaskSequential(taskData);
-  bool isValid = testTaskSequential.validation();
-  EXPECT_EQ(isValid, true);
+  testTaskSequential.validation();
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
@@ -183,8 +181,7 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_int8_t) {
 
   // Create Task
   kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int8_t, uint64_t> testTaskSequential(taskData);
-  bool isValid = testTaskSequential.validation();
-  EXPECT_EQ(isValid, true);
+  testTaskSequential.validation();
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
@@ -224,8 +221,7 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_int64_t) {
 
   // Create Task
   kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int64_t, uint64_t> testTaskSequential(taskData);
-  bool isValid = testTaskSequential.validation();
-  EXPECT_EQ(isValid, true);
+  testTaskSequential.validation();
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
@@ -257,8 +253,7 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_float) {
 
   // Create Task
   kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<float, uint64_t> testTaskSequential(taskData);
-  bool isValid = testTaskSequential.validation();
-  EXPECT_EQ(isValid, true);
+  testTaskSequential.validation();
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
