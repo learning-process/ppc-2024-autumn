@@ -69,7 +69,7 @@ bool borisov_sum_of_rows::SumOfRowsTaskSequential ::post_processing() {
 
   if (!row_sums_.empty()) {
     int* out = reinterpret_cast<int*>(taskData->outputs[0]);
-    for (int i = 0; i < row_sums_.size(); i++) {
+    for (size_t i = 0; i < row_sums_.size(); i++) {
       out[i] = row_sums_[i];
     }
   }
