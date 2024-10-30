@@ -131,5 +131,5 @@ TEST(Sequential, TestAlternations_LargeInput) {
   ASSERT_TRUE(task.run());
   ASSERT_TRUE(task.post_processing());
 
-  ASSERT_EQ(output[0], input.size() - 1);  // Ожидаемое количество чередований для чередующихся знаков
+  ASSERT_EQ(output[0], static_cast<int>(input.size() - 1));  // Ожидаемое количество чередований для чередующихся знаков
 }

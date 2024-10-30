@@ -45,7 +45,7 @@ TEST(petrov_o_num_of_alternations_signs_seq, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(out[0], in.size() - 1);  // Проверка на ожидаемое количество чередований (size - 1 для чередующихся знаков)
+  ASSERT_EQ(out[0], static_cast<int>(in.size() - 1));  // Проверка на ожидаемое количество чередований (size - 1 для чередующихся знаков)
 }
 
 TEST(petrov_o_num_of_alternations_signs_seq, test_task_run) {
@@ -86,5 +86,5 @@ TEST(petrov_o_num_of_alternations_signs_seq, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(out[0], in.size() - 1);  // Проверка на ожидаемое количество чередований (size - 1 для чередующихся знаков)
+  ASSERT_EQ(out[0], static_cast<int>(in.size() - 1));  // Проверка на ожидаемое количество чередований (size - 1 для чередующихся знаков)
 }
