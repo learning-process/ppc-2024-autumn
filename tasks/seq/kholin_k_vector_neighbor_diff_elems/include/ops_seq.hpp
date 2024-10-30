@@ -38,9 +38,7 @@ bool MostDiffNeighborElements<TypeElem, TypeIndex>::pre_processing() {
   // Data TaskData  cite to type elements of vector input_
   input_ = std::vector<TypeElem>(taskData->inputs_count[0]);
   auto ptr = reinterpret_cast<TypeElem*>(taskData->inputs[0]);
-  for (size_t i = 0; i < taskData->inputs_count[0]; i++) {
-    input_[i] = ptr[i];
-  }
+  std::copy(ptr, ptr + taskData->inputs_count[0], std::back_inserter(input_));
   // Execute the actions as if this were the default constructor
   result = {};
   left_index = {};

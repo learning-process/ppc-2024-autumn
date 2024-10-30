@@ -38,7 +38,6 @@ class TestTaskSequential : public ppc::core::Task {
   TypeElem left_elem;
   TypeElem right_elem;
   std::string ops;
-  TypeElem convert(const auto& elem);
 };
 
 template <class TypeElem, class TypeIndex>
@@ -164,9 +163,7 @@ bool TestMPITaskParallel<TypeElem>::pre_processing() {
   if (world.rank() == 0) {
     input_ = std::vector<TypeElem>(taskData->inputs_count[0]);
     auto ptr = reinterpret_cast<TypeElem*>(taskData->inputs[0]);
-    for (size_t i = 0; i < taskData->inputs_count[0]; i++) {
-      input_[i] = ptr[i];
-    }
+    std::copy(ptr, ptr + taskData->inputs_count[0], std::back_inserter(input_));
     // distribute data processes 0 to size-1
   }
   if (world.rank() == 0) {
