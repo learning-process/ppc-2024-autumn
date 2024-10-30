@@ -13,6 +13,7 @@ std::vector<int> kolokolova_d_max_of_row_matrix_mpi::getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
+  std::uniform_int_distribution<int> dist(-100, 99);
   for (int i = 0; i < sz; i++) {
     vec[i] = gen() % 100;
   }
