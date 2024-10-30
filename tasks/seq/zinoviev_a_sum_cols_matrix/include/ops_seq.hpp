@@ -20,4 +20,4 @@ class TestTaskSequential : public ppc::core::Task {
   int input_{}, res{};
 };
 
-}  // namespace zinoviev_a_sum_cols_matrix
+}  
