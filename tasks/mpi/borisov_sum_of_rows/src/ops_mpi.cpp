@@ -98,7 +98,6 @@ bool borisov_sum_of_rows::SumOfRowsTaskParallel::pre_processing() {
     unsigned int rows = taskData->inputs_count[0];
     unsigned int cols = taskData->inputs_count.size() > 1 ? taskData->inputs_count[1] : 0;
 
-
     if (rows > 0 && cols > 0) {
       int* data = reinterpret_cast<int*>(taskData->inputs[0]);
       matrix_.resize(rows, std::vector<int>(cols));
