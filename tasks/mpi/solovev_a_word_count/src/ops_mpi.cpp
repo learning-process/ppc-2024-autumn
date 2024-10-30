@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <functional>
 #include <string>
-#include <thread>
 #include <vector>
 
 namespace solovev_a_word_count_mpi {
