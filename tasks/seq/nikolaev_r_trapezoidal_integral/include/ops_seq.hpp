@@ -1,7 +1,7 @@
 #pragma once
 
-#include <vector>
 #include <functional>
+#include <vector>
 
 #include "core/task/include/task.hpp"
 
@@ -15,9 +15,10 @@ class TrapezoidalIntegralSequential : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
   void set_function(const std::function<double(double)>& f);
+
  private:
   double a_{}, b_{}, n_{}, res_{};
   std::function<double(double)> function_;
   double integrate_function(double a, double b, int n, const std::function<double(double)>& f);
 };
-}  
+}  // namespace nikolaev_r_trapezoidal_integral_seq

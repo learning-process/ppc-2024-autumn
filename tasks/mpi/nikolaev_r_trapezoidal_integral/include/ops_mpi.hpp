@@ -4,9 +4,9 @@
 
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <functional>
 #include <memory>
 #include <vector>
-#include <functional>
 
 #include "core/task/include/task.hpp"
 
@@ -14,8 +14,7 @@ namespace nikolaev_r_trapezoidal_integral_mpi {
 
 class TrapezoidalIntegralSequential : public ppc::core::Task {
  public:
-  explicit TrapezoidalIntegralSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit TrapezoidalIntegralSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -25,14 +24,13 @@ class TrapezoidalIntegralSequential : public ppc::core::Task {
  private:
   double a_{}, b_{}, n_{}, res_{};
   std::function<double(double)> function_;
-  
+
   double integrate_function(double a, double b, int n, const std::function<double(double)>& f);
 };
 
 class TrapezoidalIntegralParallel : public ppc::core::Task {
  public:
-  explicit TrapezoidalIntegralParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit TrapezoidalIntegralParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -46,4 +44,4 @@ class TrapezoidalIntegralParallel : public ppc::core::Task {
 
   double integrate_function(double a, double b, int n, const std::function<double(double)>& f);
 };
-} 
+}  // namespace nikolaev_r_trapezoidal_integral_mpi

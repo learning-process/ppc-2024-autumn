@@ -29,12 +29,13 @@ bool nikolaev_r_trapezoidal_integral_seq::TrapezoidalIntegralSequential::post_pr
   return true;
 }
 
-void nikolaev_r_trapezoidal_integral_seq::TrapezoidalIntegralSequential::set_function(const std::function<double(double)>& f) {
+void nikolaev_r_trapezoidal_integral_seq::TrapezoidalIntegralSequential::set_function(
+    const std::function<double(double)>& f) {
   function_ = f;
 }
 
-double nikolaev_r_trapezoidal_integral_seq::TrapezoidalIntegralSequential::integrate_function(double a,
-	double b, int n, const std::function<double(double)>& f) {
+double nikolaev_r_trapezoidal_integral_seq::TrapezoidalIntegralSequential::integrate_function(
+    double a, double b, int n, const std::function<double(double)>& f) {
   const double width = (b - a) / n;
 
   double result = 0.0;

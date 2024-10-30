@@ -1,8 +1,9 @@
 #define _USE_MATH_DEFINES
 
 #include <gtest/gtest.h>
-#include <vector>
+
 #include <cmath>
+#include <vector>
 
 #include "seq/nikolaev_r_trapezoidal_integral/include/ops_seq.hpp"
 
@@ -22,7 +23,7 @@ TEST(nikolaev_r_trapezoidal_integral_seq, test_int_linear_func) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   auto testTaskSequential =
-	  std::make_shared<nikolaev_r_trapezoidal_integral_seq::TrapezoidalIntegralSequential>(taskDataSeq);
+      std::make_shared<nikolaev_r_trapezoidal_integral_seq::TrapezoidalIntegralSequential>(taskDataSeq);
   testTaskSequential->set_function([](double x) { return 4 * x + 3; });
   ASSERT_EQ(testTaskSequential->validation(), true);
   testTaskSequential->pre_processing();
@@ -73,7 +74,7 @@ TEST(nikolaev_r_trapezoidal_integral_seq, test_int_4th_degree_pol_func) {
 
   auto testTaskSequential =
       std::make_shared<nikolaev_r_trapezoidal_integral_seq::TrapezoidalIntegralSequential>(taskDataSeq);
-  testTaskSequential->set_function([](double x) { return pow(x, 4) + 3 * pow(x, 3) - 5 * x * x + 2; });
+  testTaskSequential->set_function([](double x) { return std::pow(x, 4) + 3 * std::pow(x, 3) - 5 * x * x + 2; });
   ASSERT_EQ(testTaskSequential->validation(), true);
   testTaskSequential->pre_processing();
   testTaskSequential->run();
@@ -98,7 +99,7 @@ TEST(nikolaev_r_trapezoidal_integral_seq, test_int_exp_func) {
 
   auto testTaskSequential =
       std::make_shared<nikolaev_r_trapezoidal_integral_seq::TrapezoidalIntegralSequential>(taskDataSeq);
-  testTaskSequential->set_function([](double x) { return exp(3 * x); });
+  testTaskSequential->set_function([](double x) { return std::exp(3 * x); });
   ASSERT_EQ(testTaskSequential->validation(), true);
   testTaskSequential->pre_processing();
   testTaskSequential->run();
@@ -123,7 +124,7 @@ TEST(nikolaev_r_trapezoidal_integral_seq, test_int_pow_func) {
 
   auto testTaskSequential =
       std::make_shared<nikolaev_r_trapezoidal_integral_seq::TrapezoidalIntegralSequential>(taskDataSeq);
-  testTaskSequential->set_function([](double x) { return pow(4, x) + 6; });
+  testTaskSequential->set_function([](double x) { return std::pow(4, x) + 6; });
   ASSERT_EQ(testTaskSequential->validation(), true);
   testTaskSequential->pre_processing();
   testTaskSequential->run();
@@ -148,7 +149,7 @@ TEST(nikolaev_r_trapezoidal_integral_seq, test_int_cosine_func) {
 
   auto testTaskSequential =
       std::make_shared<nikolaev_r_trapezoidal_integral_seq::TrapezoidalIntegralSequential>(taskDataSeq);
-  testTaskSequential->set_function([](double x) { return cos(x); });
+  testTaskSequential->set_function([](double x) { return std::cos(x); });
   ASSERT_EQ(testTaskSequential->validation(), true);
   testTaskSequential->pre_processing();
   testTaskSequential->run();
@@ -173,7 +174,7 @@ TEST(nikolaev_r_trapezoidal_integral_seq, test_int_sin_func) {
 
   auto testTaskSequential =
       std::make_shared<nikolaev_r_trapezoidal_integral_seq::TrapezoidalIntegralSequential>(taskDataSeq);
-  testTaskSequential->set_function([](double x) { return sin(x); });
+  testTaskSequential->set_function([](double x) { return std::sin(x); });
   ASSERT_EQ(testTaskSequential->validation(), true);
   testTaskSequential->pre_processing();
   testTaskSequential->run();
@@ -198,7 +199,7 @@ TEST(nikolaev_r_trapezoidal_integral_seq, test_int_mixed_func) {
 
   auto testTaskSequential =
       std::make_shared<nikolaev_r_trapezoidal_integral_seq::TrapezoidalIntegralSequential>(taskDataSeq);
-  testTaskSequential->set_function([](double x) { return 3 * x * x + pow(5, x) - exp(x); });
+  testTaskSequential->set_function([](double x) { return 3 * x * x + std::pow(5, x) - std::exp(x); });
   ASSERT_EQ(testTaskSequential->validation(), true);
   testTaskSequential->pre_processing();
   testTaskSequential->run();

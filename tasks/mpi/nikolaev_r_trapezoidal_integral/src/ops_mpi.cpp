@@ -106,7 +106,7 @@ double nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralParallel::integra
     double a, double b, int n, const std::function<double(double)>& f) {
   int rank = world.rank();
   int size = world.size();
-  
+
   const double width = (b - a) / n;
   double result = 0.0;
   for (int step = rank; step < n; step += size) {

@@ -18,7 +18,8 @@ TEST(nikolaev_r_trapezoidal_integral_seq, test_pipeline_run) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
-  auto testTaskSequential = std::make_shared<nikolaev_r_trapezoidal_integral_seq::TrapezoidalIntegralSequential>(taskDataSeq);
+  auto testTaskSequential =
+      std::make_shared<nikolaev_r_trapezoidal_integral_seq::TrapezoidalIntegralSequential>(taskDataSeq);
 
   testTaskSequential->set_function([](double x) { return pow(2, x) + 3 * x * x; });
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -51,7 +52,8 @@ TEST(nikolaev_r_trapezoidal_integral_seq, test_task_run) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
-  auto testTaskSequential = std::make_shared<nikolaev_r_trapezoidal_integral_seq::TrapezoidalIntegralSequential>(taskDataSeq);
+  auto testTaskSequential =
+      std::make_shared<nikolaev_r_trapezoidal_integral_seq::TrapezoidalIntegralSequential>(taskDataSeq);
 
   testTaskSequential->set_function([](double x) { return pow(2, x) + 3 * x * x; });
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
