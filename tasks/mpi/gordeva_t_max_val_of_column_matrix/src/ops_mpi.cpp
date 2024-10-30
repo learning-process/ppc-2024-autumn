@@ -57,9 +57,9 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::run() {
   // int cols = input_[0].size();
   // int rows = input_.size();
 
-  for (int i = 0; i < input_[0].size(); i++) {
+  for (size_t i = 0; i < input_[0].size(); i++) {
     int max_el = input_[0][i];
-    for (int j = 1; j < input_.size(); j++)
+    for (size_t j = 1; j < input_.size(); j++)
       if (input_[j][i] > max_el) max_el = input_[j][i];
 
     res[i] = max_el;
@@ -109,11 +109,13 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::pre_processing
   int* input_matr;
 
   if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] / world.size();
-    delta_1 = taskData->inputs_count[0] % world.size();
+    
     rows = taskData->inputs_count[0];
     cols = taskData->inputs_count[1];
   }
+  delta = taskData->inputs_count[0] / world.size();
+  delta_1 = taskData->inputs_count[0] % world.size();
+
   broadcast(world, rows, 0);
   broadcast(world, cols, 0);
 
@@ -186,10 +188,7 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::run() {
       }
     }
     std::copy(max_s.begin(), max_s.end(), res.begin());
-  } else {
-    world.send(0, 0, tmp_max.data(), tmp_max.size());
-  }
-
+  } else world.send(0, 0, tmp_max.data(), tmp_max.size());
   return true;
 }
 
