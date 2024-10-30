@@ -3,9 +3,21 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <random>
 #include <vector>
 
 #include "mpi/filateva_e_number_sentences_line/include/ops_mpi.hpp"
+
+std::string getRandomLine(int max_count) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::string line = "Hello world. How many words are in this sentence? The task of parallel programming!";
+  int count = gen() % max_count;
+  for (int i = 0; i < count; ++i) {
+    line += line;
+  }
+  return line;
+}
 
 TEST(filateva_e_number_sentences_line_mpi, Test_countSentences) {
   std::string line = "Hello world. How many words are in this sentence? The task of parallel programming!";
@@ -145,7 +157,7 @@ TEST(filateva_e_number_sentences_line_mpi, random_text_1) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    line = filateva_e_number_sentences_line_mpi::getRandomLine(1);
+    line = getRandomLine(1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(line.data()));
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
@@ -188,7 +200,7 @@ TEST(filateva_e_number_sentences_line_mpi, random_text_2) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    line = filateva_e_number_sentences_line_mpi::getRandomLine(3);
+    line = getRandomLine(3);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(line.data()));
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
@@ -231,7 +243,7 @@ TEST(filateva_e_number_sentences_line_mpi, random_text_3) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    line = filateva_e_number_sentences_line_mpi::getRandomLine(5);
+    line = getRandomLine(5);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(line.data()));
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
@@ -274,7 +286,7 @@ TEST(filateva_e_number_sentences_line_mpi, random_text_4) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    line = filateva_e_number_sentences_line_mpi::getRandomLine(10);
+    line = getRandomLine(10);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(line.data()));
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
@@ -306,5 +318,30 @@ TEST(filateva_e_number_sentences_line_mpi, random_text_4) {
     NumSSeq.post_processing();
 
     ASSERT_EQ(out[0], ref_out[0]);
+  }
+}
+
+TEST(filateva_e_number_sentences_line_mpi, sentence_without_dot) {
+  boost::mpi::communicator world;
+  std::string line = "Hello world. Hello world! Hello world";
+  std::vector<int> out(1, 0);
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(line.data()));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
+  }
+
+  filateva_e_number_sentences_line_mpi::NumberSentencesLineParallel NumS(taskDataPar);
+  ASSERT_EQ(NumS.validation(), true);
+  NumS.pre_processing();
+  NumS.run();
+  NumS.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(3, out[0]);
   }
 }

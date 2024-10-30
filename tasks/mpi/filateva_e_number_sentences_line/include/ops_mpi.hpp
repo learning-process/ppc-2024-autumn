@@ -15,7 +15,6 @@
 
 namespace filateva_e_number_sentences_line_mpi {
 
-std::string getRandomLine(int max_count);
 int countSentences(std::string line);
 
 class NumberSentencesLineSequential : public ppc::core::Task {
