@@ -138,7 +138,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   double result;
   unsigned int residue;
   std::string ops;
-  boost::mpi::communicator world;
+  MPI_Comm world;
   MPI_Datatype mpi_type_elem;
   void print_local_data();
   double max_difference();
@@ -188,6 +188,7 @@ bool TestMPITaskParallel<TypeElem>::pre_processing() {
 template <typename TypeElem>
 bool TestMPITaskParallel<TypeElem>::validation() {
   internal_order_test();
+  world = MPI_COMM_WORLD;
   mpi_type_elem = get_mpi_type();
   // Check count elements of output
   if (world.rank() == 0) {
@@ -201,10 +202,8 @@ bool TestMPITaskParallel<TypeElem>::run() {
   internal_order_test();
   // output local_input_ vector
   double local_result = 0;
-  if (ops == "MAX_DIFFERENCE") {
-    // here your algorithm task (.h files for task or all in run)
-    local_result = max_difference();
-  }
+  // here your algorithm task (.h files for task or all in run)
+  local_result = max_difference();
   if (ops == "MAX_DIFFERENCE") {
     // everyone process send 1 element and get all local_results from everyone process 1 element
     double sendbuf1[1];
