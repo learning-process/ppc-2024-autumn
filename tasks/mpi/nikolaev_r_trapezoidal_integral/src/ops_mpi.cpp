@@ -43,7 +43,6 @@ bool nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralParallel::pre_proce
     double* tmp_ptr_a = reinterpret_cast<double*>(taskData->inputs[0]);
     double* tmp_ptr_b = reinterpret_cast<double*>(taskData->inputs[1]);
     int* tmp_ptr_n = reinterpret_cast<int*>(taskData->inputs[2]);
-
     params[0] = *tmp_ptr_a;
     params[1] = *tmp_ptr_b;
     params[2] = static_cast<double>(*tmp_ptr_n);
