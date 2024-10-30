@@ -188,7 +188,8 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::run() {
       }
     }
     std::copy(max_s.begin(), max_s.end(), res.begin());
-  } else world.send(0, 0, tmp_max.data(), tmp_max.size());
+  } else
+      world.send(0, 0, tmp_max.data(), tmp_max.size());
   return true;
 }
 
