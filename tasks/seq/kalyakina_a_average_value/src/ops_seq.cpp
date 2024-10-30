@@ -1,9 +1,10 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/kalyakina_a_average_value/include/ops_seq.hpp"
 
-#include <thread>
-#include <random>
 #include <stdlib.h>
+
+#include <random>
+#include <thread>
 
 using namespace std::chrono_literals;
 
@@ -11,8 +12,7 @@ std::vector<int> kalyakina_a_average_value_seq::RandomVectorWithFixSum(int sum, 
   std::random_device rd;
   std::mt19937 gen(rd());
   std::vector<int> result_vector;
-  for (int i = 0; i < count - 1; i++)
-  {
+  for (int i = 0; i < count - 1; i++) {
     result_vector.push_back(gen() % (__min(sum, 255) - 1));
     sum -= result_vector[i];
   }

@@ -76,7 +76,7 @@ bool kalyakina_a_average_value_mpi::FindingAverageMPITaskParallel::pre_processin
   boost::mpi::scatter(world, &input_vector[0], &local_input_vector[0], delta, 0);
 
   // Init value for output
-  if (world.rank() == 0){
+  if (world.rank() == 0) {
     result = 0;
   }
   return true;
