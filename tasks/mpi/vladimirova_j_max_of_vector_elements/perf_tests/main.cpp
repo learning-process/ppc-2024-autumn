@@ -24,7 +24,8 @@ TEST(vladimirova_j_max_of_vector_elements_mpi, test_pipeline_run) {
     std::mt19937 random(dev());
 
     global_matrix = vladimirova_j_max_of_vector_elements_mpi::CreateInputMatrix(row, col, spread);
-    int some_row = random() % row, some_column = random() % col;
+    int some_row = random() % row;
+    int some_column = random() % col;
     global_matrix[some_row][some_column] = spread;
 
     for (unsigned int i = 0; i < global_matrix.size(); i++)
@@ -77,7 +78,8 @@ TEST(vladimirova_j_max_of_vector_elements_mpi, test_task_run) {
     std::mt19937 random(dev());
 
     global_matrix = vladimirova_j_max_of_vector_elements_mpi::CreateInputMatrix(row, col, spread);
-    int some_row = random() % row, some_column = random() % col;
+    int some_row = random() % row;
+    int some_column = random() % col;
     global_matrix[some_row][some_column] = spread;
 
     for (unsigned int i = 0; i < global_matrix.size(); i++)

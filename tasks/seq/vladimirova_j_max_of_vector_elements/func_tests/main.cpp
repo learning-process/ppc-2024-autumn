@@ -203,7 +203,8 @@ TEST(vladimirova_j_max_of_vector_elements_seq, Test_NotSquareMatrix_100_50_WithS
 
   std::random_device dev;
   std::mt19937 random(dev());
-  int some_row = random() % row, some_col = random() % col;
+  int some_row = random() % row;
+  int some_col = random() % col;
   in[some_row][some_col] = spread;
   some_row = random() % row;
   some_col = random() % col;
