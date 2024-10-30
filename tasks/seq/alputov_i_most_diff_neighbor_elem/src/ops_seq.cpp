@@ -1,21 +1,21 @@
 // Copyright 2024 Alputov Ivan
 #include "seq/alputov_i_most_diff_neighbor_elem/include/ops_seq.hpp"
 
-#include <algorithm>  // для std::copy
-#include <stdexcept>  // для std::runtime_error
+#include <algorithm>  
+#include <stdexcept>  
 #include <thread>
 
 using namespace std::chrono_literals;
 
 namespace alputov_i_most_diff_neighbor_elem_seq {
 
-// Реализация findMaxDifferencePair внутри пространства имен и класса
+
 std::pair<int, int> MostDiffNeighborElemSeq::findMaxDifferencePair(const std::vector<int>& vec) {
   if (vec.empty()) {
-    return {0, 0};  // Или выбросить исключение, если пустой вектор - ошибка
+    return {0, 0};  
   }
 
-  std::pair<int, int> maxPair = {0, 0};  // Инициализируем нулями
+  std::pair<int, int> maxPair = {0, 0};
   int maxDifference = 0;
 
   if (vec.size() > 1) {

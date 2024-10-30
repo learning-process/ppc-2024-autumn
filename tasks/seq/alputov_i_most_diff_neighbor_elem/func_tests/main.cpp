@@ -11,25 +11,24 @@ TEST(alputov_i_most_diff_neighbor_elem_seq, Test_MaxDiff_Typical) {
   std::vector<int> inputVector = {10, 20, 40, 80, 128, 78, -12, -15, 44, 90, 51};
   std::pair<int, int> expectedResult = {78, -12};  // Ожидаемая пара максимальной разности
 
-  // Создаем TaskData
+
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputVector.data()));
   taskDataSeq->inputs_count.emplace_back(inputVector.size());
 
-  // Используем вектор для хранения результата
+
   std::vector<std::pair<int, int>> outputPairs(1);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(outputPairs.data()));
   taskDataSeq->outputs_count.emplace_back(outputPairs.size());
 
-  // Создаем задачу
   alputov_i_most_diff_neighbor_elem_seq::MostDiffNeighborElemSeq testTaskSequential(taskDataSeq);
 
-  ASSERT_TRUE(testTaskSequential.validation());  // Проверяем валидацию
-  testTaskSequential.pre_processing();           // Предварительная обработка
-  testTaskSequential.run();                      // Запускаем задачу
-  testTaskSequential.post_processing();          // Постобработка
+  ASSERT_TRUE(testTaskSequential.validation());  
+  testTaskSequential.pre_processing();           
+  testTaskSequential.run();                      
+  testTaskSequential.post_processing();         
 
-  ASSERT_EQ(outputPairs[0], expectedResult);  // Проверяем результат
+  ASSERT_EQ(outputPairs[0], expectedResult);  
 }
 
 // Test for maximum difference with negative values
@@ -133,14 +132,14 @@ TEST(alputov_i_most_diff_neighbor_elem_seq, Test_MaxDiff_EmptyVector) {
   ASSERT_FALSE(testTaskSequential.validation());
 }
 TEST(alputov_i_most_diff_neighbor_elem_seq, Test_MaxDiff_RandomLargeVector) {
-  const int count = 1000000;  // Размер вектора
-  const int fixedSeed = 12345;  // Фиксированное зерно для генератора случайных чисел
-  std::mt19937 gen(fixedSeed);  // Стандартный генератор случайных чисел Mersenne Twister
-  std::uniform_int_distribution<> dist(-1000, 1000);  // Равномерное распределение от -1000 до 1000
+  const int count = 1000000;  
+  const int fixedSeed = 12345;  
+  std::mt19937 gen(fixedSeed);  
+  std::uniform_int_distribution<> dist(-1000, 1000);  
 
   std::vector<int> inputVector(count);
   for (int i = 0; i < count; ++i) {
-    inputVector[i] = dist(gen);  // Заполняем вектор случайными числами
+    inputVector[i] = dist(gen); 
   }
 
   // Создаем TaskData
@@ -158,10 +157,7 @@ TEST(alputov_i_most_diff_neighbor_elem_seq, Test_MaxDiff_RandomLargeVector) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-
-  // Ожидаемый результат (рассчитывается один раз при фиксированном зерне)
-  // Для fixedSeed = 12345, count = 10000:
-  std::pair<int, int> expectedResult = {1000, -1000};  // Замените на ваши значения
+  std::pair<int, int> expectedResult = {1000, -1000}; 
 
   ASSERT_EQ(outputPair, expectedResult);
 }
