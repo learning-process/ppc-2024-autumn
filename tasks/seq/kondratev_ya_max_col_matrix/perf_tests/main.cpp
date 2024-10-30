@@ -6,7 +6,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/kondratev_ya_max_col_matrix/include/ops_seq.hpp"
 
-void fillTaskData(std::shared_ptr<ppc::core::TaskData> taskData, uint32_t row, uint32_t col, auto& mtrx, auto& res) {
+void fillTaskData(std::shared_ptr<ppc::core::TaskData>& taskData, uint32_t row, uint32_t col, auto& mtrx, auto& res) {
   for (auto& mtrxRow : mtrx) taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(mtrxRow.data()));
   taskData->inputs_count.emplace_back(row);
   taskData->inputs_count.emplace_back(col);
@@ -47,7 +47,7 @@ TEST(kondratev_ya_max_col_matrix_seq, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  ASSERT_EQ(res, ref);
+  for (uint32_t i = 0; i < res.size(); i++) ASSERT_EQ(res[i], ref[i]);
 }
 
 TEST(kondratev_ya_max_col_matrix_seq, test_task_run) {
@@ -83,5 +83,5 @@ TEST(kondratev_ya_max_col_matrix_seq, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  ASSERT_EQ(res, ref);
+  for (uint32_t i = 0; i < res.size(); i++) ASSERT_EQ(res[i], ref[i]);
 }

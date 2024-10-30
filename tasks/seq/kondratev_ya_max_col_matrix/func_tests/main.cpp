@@ -12,7 +12,7 @@ void runTask(ppc::core::Task& task) {
   task.post_processing();
 }
 
-void fillTaskData(std::shared_ptr<ppc::core::TaskData> taskData, uint32_t row, uint32_t col, auto& mtrx, auto& res) {
+void fillTaskData(std::shared_ptr<ppc::core::TaskData>& taskData, uint32_t row, uint32_t col, auto& mtrx, auto& res) {
   for (auto& mtrxRow : mtrx) taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(mtrxRow.data()));
   taskData->inputs_count.emplace_back(row);
   taskData->inputs_count.emplace_back(col);
@@ -36,7 +36,7 @@ TEST(kondratev_ya_max_col_matrix_seq, test_1) {
   kondratev_ya_max_col_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   runTask(testTaskSequential);
 
-  ASSERT_EQ(res, ref);
+  for (uint32_t i = 0; i < res.size(); i++) ASSERT_EQ(res[i], ref[i]);
 }
 
 TEST(kondratev_ya_max_col_matrix_seq, test_2) {
@@ -55,7 +55,7 @@ TEST(kondratev_ya_max_col_matrix_seq, test_2) {
   kondratev_ya_max_col_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   runTask(testTaskSequential);
 
-  ASSERT_EQ(res, ref);
+  for (uint32_t i = 0; i < res.size(); i++) ASSERT_EQ(res[i], ref[i]);
 }
 
 TEST(kondratev_ya_max_col_matrix_seq, test_3) {
@@ -73,5 +73,31 @@ TEST(kondratev_ya_max_col_matrix_seq, test_3) {
   kondratev_ya_max_col_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   runTask(testTaskSequential);
 
-  ASSERT_EQ(res, ref);
+  for (uint32_t i = 0; i < res.size(); i++) ASSERT_EQ(res[i], ref[i]);
+}
+
+TEST(kondratev_ya_max_col_matrix_mpi, throw_gen_mtrx) {
+  ASSERT_ANY_THROW(kondratev_ya_max_col_matrix_seq::getRandomMatrix(0, 0));
+}
+
+TEST(kondratev_ya_max_col_matrix_mpi, right_insert_ref) {
+  uint32_t row = 3;
+  uint32_t col = 3;
+  int32_t ref = INT_MAX;
+
+  auto mtrx = kondratev_ya_max_col_matrix_seq::getRandomMatrix(row, col);
+  kondratev_ya_max_col_matrix_seq::insertRefValue(mtrx, ref);
+
+  bool flag;
+  for (uint32_t j = 0; j < col; j++) {
+    flag = false;
+    for (uint32_t i = 0; i < row; i++) {
+      if (mtrx[i][j] == ref) {
+        flag = true;
+        break;
+      }
+    }
+
+    ASSERT_TRUE(flag);
+  }
 }
