@@ -42,18 +42,12 @@ class TestTaskSequential : public ppc::core::Task {
 };
 
 template <class TypeElem, class TypeIndex>
-TypeElem TestTaskSequential<TypeElem, TypeIndex>::convert(const auto& elem) {
-  return static_cast<TypeElem>(elem);
-}
-
-template <class TypeElem, class TypeIndex>
 bool TestTaskSequential<TypeElem, TypeIndex>::pre_processing() {
   internal_order_test();
   // Data TaskData  cite to type elements of vector input_
   input_ = std::vector<TypeElem>(taskData->inputs_count[0]);
-  std::transform(reinterpret_cast<TypeElem*>(taskData->inputs[0]),
-                 reinterpret_cast<TypeElem*>(taskData->inputs[0]) + taskData->inputs_count[0],
-                 std::back_inserter(input_), [](const auto& elem) { return convert<TypeElem, TypeIndex>(elem); });
+  auto ptr = reinterpret_cast<TypeElem*>(taskData->inputs[0]);
+  std::copy(ptr, ptr + taskData->inputs_count[0], std::back_inserter(input_));
   // Execute the actions as if this were the default constructor
   result = {};
   left_index = {};
