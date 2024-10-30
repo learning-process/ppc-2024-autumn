@@ -17,8 +17,7 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, test_pipeline_run) {
   int rows = 5000, cols = 5000;
 
   if (world.rank() == 0) {
-      global_matr =
- gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::gen_rand_matr(rows, cols);
+      global_matr = gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::gen_rand_matr(rows, cols);
     max_s.resize(cols, INT_MIN);
     for (auto& i : global_matr) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(i.data()));
@@ -58,8 +57,7 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, test_task_run) {
   int cols = 7000;
 
   if (world.rank() == 0) {
-      global_matr = 
- gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::gen_rand_matr(rows, cols);
+      global_matr = gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::gen_rand_matr(rows, cols);
     max_s.resize(cols, INT_MIN);
 
     for (auto& i : global_matr) {
