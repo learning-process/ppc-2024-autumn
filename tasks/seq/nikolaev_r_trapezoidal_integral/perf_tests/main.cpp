@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <vector>
+#include <cmath>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/nikolaev_r_trapezoidal_integral/include/ops_seq.hpp"
@@ -21,7 +22,7 @@ TEST(nikolaev_r_trapezoidal_integral_seq, test_pipeline_run) {
   auto testTaskSequential =
       std::make_shared<nikolaev_r_trapezoidal_integral_seq::TrapezoidalIntegralSequential>(taskDataSeq);
 
-  auto f = [](double x) { return pow(2, x) + 3 * x * x; };
+  auto f = [](double x) { return std::pow(2, x) + 3 * x * x; };
   testTaskSequential->set_function(f);
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -56,7 +57,7 @@ TEST(nikolaev_r_trapezoidal_integral_seq, test_task_run) {
   auto testTaskSequential =
       std::make_shared<nikolaev_r_trapezoidal_integral_seq::TrapezoidalIntegralSequential>(taskDataSeq);
 
-  auto f = [](double x) { return pow(2, x) + 3 * x * x; };
+  auto f = [](double x) { return std::pow(2, x) + 3 * x * x; };
   testTaskSequential->set_function(f);
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;

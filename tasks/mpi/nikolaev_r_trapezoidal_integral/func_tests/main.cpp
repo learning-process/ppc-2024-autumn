@@ -134,7 +134,7 @@ TEST(nikolaev_r_trapezoidal_integral_mpi, test_int_trippled_func) {
   }
 
   nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralParallel testMpiTaskParallel(taskDataPar);
-  auto f = [](double x) { return pow(x, 3) + 2 * x * x + 8; };
+  auto f = [](double x) { return std::pow(x, 3) + 2 * x * x + 8; };
   testMpiTaskParallel.set_function(f);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
@@ -186,7 +186,7 @@ TEST(nikolaev_r_trapezoidal_integral_mpi, test_int_cosine_func) {
   }
 
   nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralParallel testMpiTaskParallel(taskDataPar);
-  auto f = [](double x) { return cos(x); };
+  auto f = [](double x) { return std::cos(x); };
   testMpiTaskParallel.set_function(f);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
@@ -238,7 +238,7 @@ TEST(nikolaev_r_trapezoidal_integral_mpi, test_int_sine_func) {
   }
 
   nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralParallel testMpiTaskParallel(taskDataPar);
-  auto f = [](double x) { return sin(x); };
+  auto f = [](double x) { return std::sin(x); };
   testMpiTaskParallel.set_function(f);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
@@ -290,7 +290,7 @@ TEST(nikolaev_r_trapezoidal_integral_mpi, test_int_pow_func) {
   }
 
   nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralParallel testMpiTaskParallel(taskDataPar);
-  auto f = [](double x) { return pow(3, x); };
+  auto f = [](double x) { return std::pow(3, x); };
   testMpiTaskParallel.set_function(f);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
@@ -342,7 +342,7 @@ TEST(nikolaev_r_trapezoidal_integral_mpi, test_int_exp_func) {
   }
 
   nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralParallel testMpiTaskParallel(taskDataPar);
-  auto f = [](double x) { return exp(x * 2); };
+  auto f = [](double x) { return std::exp(x * 2); };
   testMpiTaskParallel.set_function(f);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
@@ -394,7 +394,7 @@ TEST(nikolaev_r_trapezoidal_integral_mpi, test_int_mixed_func) {
   }
 
   nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralParallel testMpiTaskParallel(taskDataPar);
-  auto f = [](double x) { return pow(x, 4) - exp(x) + pow(4, x); };
+  auto f = [](double x) { return std::pow(x, 4) - std::exp(x) + std::pow(4, x); };
   testMpiTaskParallel.set_function(f);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();

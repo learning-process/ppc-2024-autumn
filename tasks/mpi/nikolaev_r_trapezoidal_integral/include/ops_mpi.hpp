@@ -7,6 +7,7 @@
 #include <functional>
 #include <memory>
 #include <vector>
+#include <cmath>
 
 #include "core/task/include/task.hpp"
 

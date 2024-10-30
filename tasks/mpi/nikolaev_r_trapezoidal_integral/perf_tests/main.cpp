@@ -2,6 +2,7 @@
 
 #include <boost/mpi/timer.hpp>
 #include <vector>
+#include <cmath>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/nikolaev_r_trapezoidal_integral/include/ops_mpi.hpp"
@@ -24,7 +25,7 @@ TEST(nikolaev_r_trapezoidal_integral_mpi, test_pipeline_run) {
 
   auto testMpiTaskParallel =
       std::make_shared<nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralParallel>(taskDataPar);
-  auto f = [](double x) { return pow(x, 3) - pow(3, x) + exp(x); };
+  auto f = [](double x) { return std::pow(x, 3) - std::pow(3, x) + std::exp(x); };
   testMpiTaskParallel->set_function(f);
 
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
@@ -66,7 +67,7 @@ TEST(nikolaev_r_trapezoidal_integral_mpi, test_task_run) {
 
   auto testMpiTaskParallel =
       std::make_shared<nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralParallel>(taskDataPar);
-  auto f = [](double x) { return pow(x, 3) - pow(3, x) + exp(x); };
+  auto f = [](double x) { return std::pow(x, 3) - std::pow(3, x) + std::exp(x); };
   testMpiTaskParallel->set_function(f);
 
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
