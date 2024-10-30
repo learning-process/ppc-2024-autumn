@@ -18,7 +18,7 @@ std::vector<int> kalyakina_a_average_value_mpi::RandomVectorWithFixSum(int sum, 
     result_vector[i] = gen() % (std::min(sum, 255) - 1);
     sum -= result_vector[i];
   }
-  result_vector.push_back(sum);
+  result_vector[count - 1] = sum;
   return result_vector;
 }
 
