@@ -156,7 +156,7 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::validation() {
   if (world.rank() == 0) {
     // Check count elements of output
     if ((taskData->inputs.empty() || taskData->outputs.empty()) ||
-        (taskData->inputs_count.size() < 2 || taskData->inputs_count[0] < 0 || taskData->inputs_count[1] < 0) ||
+        (taskData->inputs_count.size() < 2 || taskData->inputs_count[0] <= 0 || taskData->inputs_count[1] <= 0) ||
         (taskData->outputs_count.size() != 1 || taskData->outputs_count[0] != taskData->inputs_count[1]))
       return false;
   }
