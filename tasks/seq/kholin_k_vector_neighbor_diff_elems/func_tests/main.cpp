@@ -22,9 +22,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_pre_processing) {
   // Create Task
   kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int32_t, uint64_t> testTaskSequential(taskData);
   testTaskSequential.validation();
-  bool IsValid = testTaskSequential.pre_processing();
 
-  EXPECT_EQ(IsValid, true);
+  EXPECT_EQ(testTaskSequential.pre_processing(), true);
 }
 
 TEST(kholin_k_vector_neighbor_diff_elems_seq, check_validation) {
@@ -44,8 +43,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_validation) {
 
   // Create Task
   kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int32_t, uint64_t> testTaskSequential(taskData);
-  bool isValid = testTaskSequential.validation();
-  EXPECT_EQ(isValid, true);
+  EXPECT_EQ(testTaskSequential.validation(), true);
 }
 
 TEST(kholin_k_vector_neighbor_diff_elems_seq, check_run) {
@@ -67,8 +65,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_run) {
   kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int32_t, uint64_t> testTaskSequential(taskData);
   testTaskSequential.validation();
   testTaskSequential.pre_processing();
-  bool IsValid = testTaskSequential.run();
-  EXPECT_EQ(IsValid, true);
+  EXPECT_EQ(testTaskSequential.run(), true);
 }
 
 TEST(kholin_k_vector_neighbor_diff_elems_seq, check_post_processing) {
@@ -91,8 +88,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_post_processing) {
   testTaskSequential.validation();
   testTaskSequential.pre_processing();
   testTaskSequential.run();
-  bool IsValid = testTaskSequential.post_processing();
-  EXPECT_EQ(IsValid, true);
+  EXPECT_EQ(testTaskSequential.post_processing(), true);
 }
 
 TEST(kholin_k_vector_neighbor_diff_elems_seq, check_int32_t) {

@@ -28,8 +28,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_validation) {
   }
 
   kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int> testMpiTaskParallel(taskDataPar, "MAX_DIFFERENCE");
-  bool IsValid = testMpiTaskParallel.validation();
-  ASSERT_EQ(IsValid, true);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
 
   if (world.rank() == 0) {
     // Create data
@@ -51,8 +50,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_validation) {
     // Create Task
     kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int, uint64_t> testMPITaskSequential(taskDataSeq,
                                                                                                      "MAX_DIFFERENCE");
-    bool IsValid_ = testMPITaskSequential.validation();
-    ASSERT_EQ(IsValid_, true);
+    ASSERT_EQ(testMPITaskSequential.validation(), true);
   }
 }
 
@@ -78,8 +76,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_pre_processing) {
 
   kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int> testMpiTaskParallel(taskDataPar, "MAX_DIFFERENCE");
   testMpiTaskParallel.validation();
-  bool IsValid = testMpiTaskParallel.pre_processing();
-  ASSERT_EQ(IsValid, true);
+  ASSERT_EQ(testMpiTaskParallel.pre_processing(), true);
 
   if (world.rank() == 0) {
     // Create data
@@ -102,8 +99,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_pre_processing) {
     kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int, uint64_t> testTaskSequential(taskDataSeq,
                                                                                                   "MAX_DIFFERENCE");
     testTaskSequential.validation();
-    bool IsValid_ = testTaskSequential.pre_processing();
-    ASSERT_EQ(IsValid_, true);
+    ASSERT_EQ(testTaskSequential.pre_processing(), true);
   }
 }
 
@@ -132,8 +128,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_run) {
   kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int> testMpiTaskParallel(taskDataPar, "MAX_DIFFERENCE");
   testMpiTaskParallel.validation();
   testMpiTaskParallel.pre_processing();
-  bool IsValid = testMpiTaskParallel.run();
-  ASSERT_EQ(IsValid, true);
+  ASSERT_EQ(testMpiTaskParallel.run(), true);
 
   if (world.rank() == 0) {
     // Create data
@@ -157,8 +152,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_run) {
                                                                                                   "MAX_DIFFERENCE");
     testTaskSequential.validation();
     testTaskSequential.pre_processing();
-    bool IsValid_ = testTaskSequential.run();
-    ASSERT_EQ(IsValid_, true);
+    ASSERT_EQ(testTaskSequential.run(), true);
   }
 }
 
@@ -188,8 +182,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_post_processing) {
   testMpiTaskParallel.validation();
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
-  bool IsValid = testMpiTaskParallel.post_processing();
-  ASSERT_EQ(IsValid, true);
+  ASSERT_EQ(testMpiTaskParallel.post_processing(), true);
 
   if (world.rank() == 0) {
     // Create data
@@ -214,8 +207,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_post_processing) {
     testTaskSequential.validation();
     testTaskSequential.pre_processing();
     testTaskSequential.run();
-    bool IsValid_ = testTaskSequential.post_processing();
-    ASSERT_EQ(IsValid_, true);
+    ASSERT_EQ(testTaskSequential.post_processing(), true);
   }
 }
 
@@ -243,8 +235,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
   }
 
   kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int> testMpiTaskParallel(taskDataPar, "MAX_DIFFERENCE");
-  bool IsValid = testMpiTaskParallel.validation();
-  ASSERT_EQ(IsValid, true);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
@@ -269,8 +260,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
     // Create Task
     kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int, uint64_t> testTaskSequential(taskDataSeq,
                                                                                                   "MAX_DIFFERENCE");
-    bool IsValid_ = testTaskSequential.validation();
-    ASSERT_EQ(IsValid_, true);
+    ASSERT_EQ(testTaskSequential.validation(), true);
     testTaskSequential.pre_processing();
     testTaskSequential.run();
     testTaskSequential.post_processing();
