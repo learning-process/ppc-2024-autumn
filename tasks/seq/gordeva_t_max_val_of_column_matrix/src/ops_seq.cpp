@@ -79,7 +79,7 @@ std::vector<std::vector<int>> gordeva_t_max_val_of_column_matrix_seq::TestTaskSe
   std::vector<std::vector<int>> matr(rows, std::vector<int>(cols));
 
   for (int i = 0; i < rows; ++i) {
-    matr[i] = gen_rand_vec(cols, 0, 200);
+    matr[i] = gen_rand_vec(cols, -500, 500);
   }
   for (int j = 0; j < cols; ++j) {
     int row_rand = std::rand() % rows;

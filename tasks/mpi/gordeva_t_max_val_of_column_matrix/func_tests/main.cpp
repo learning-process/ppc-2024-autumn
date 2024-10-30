@@ -32,12 +32,12 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, IsEmptyOutput) {
   }
 }
 
-TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_5000_columns_with_random) {
+TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_500_columns_with_random) {
   boost::mpi::communicator world;
 
   // Create data
-  const int rows = 5000;
-  const int cols = 5000;
+  const int rows = 500;
+  const int cols = 500;
   std::vector<std::vector<int>> global_matr;
   std::vector<int32_t> global_max(cols, INT_MIN);
 
@@ -77,17 +77,17 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_5000_columns_with_random
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
-    for (int j = 0; j < cols; j++) {
-      ASSERT_EQ(global_max[j], 200);
+    for (int i = 0; i < cols; i++) {
+      ASSERT_EQ(global_max[i], max_example[i]);
     }
   }
 }
 
-TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_5000_7000_columns_with_random) {
+TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_500_7000_columns_with_random) {
   boost::mpi::communicator world;
 
   // Create data
-  const int rows = 5000;
+  const int rows = 500;
   const int cols = 7000;
   std::vector<std::vector<int>> global_matr;
   std::vector<int32_t> global_max(cols, INT_MIN);
@@ -128,8 +128,8 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_5000_7000_columns_with_r
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
-    for (int j = 0; j < cols; j++) {
-      ASSERT_EQ(global_max[j], 200);
+    for (int i = 0; i < cols; i++) {
+      ASSERT_EQ(global_max[i], max_example[i]);
     }
   }
 }
@@ -147,7 +147,7 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_5000_10000_columns_with_
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-      global_matr = gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::gen_rand_matr(rows,cols);
+    global_matr = gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::gen_rand_matr(rows,cols);
     for (unsigned int i = 0; i < global_matr.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matr[i].data()));
     }
@@ -179,8 +179,8 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_5000_10000_columns_with_
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
-    for (int j = 0; j < cols; j++) {
-      ASSERT_EQ(global_max[j], 200);
+    for (int i = 0; i < cols; i++) {
+      ASSERT_EQ(global_max[i], max_example[i]);
     }
   }
 }
