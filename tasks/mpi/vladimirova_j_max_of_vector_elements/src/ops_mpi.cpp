@@ -76,6 +76,20 @@ bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskSequential::post_proce
 bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
+  if (world.rank() == 0) {
+    unsigned int rows = taskData->inputs_count[0];
+    unsigned int columns = taskData->inputs_count[1];
+
+    input_ = std::vector<int>(rows * columns);
+
+    for (unsigned int i = 0; i < rows; i++) {
+      auto *input_data = reinterpret_cast<int *>(taskData->inputs[i]);
+      for (unsigned int j = 0; j < columns; j++) {
+        input_[i * columns + j] = input_data[j];
+      }
+    }
+  }
+
   return true;
 }
 
@@ -94,15 +108,6 @@ bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel::run() {
 
     unsigned int rows = taskData->inputs_count[0];
     unsigned int columns = taskData->inputs_count[1];
-
-    input_ = std::vector<int>(rows * columns);
-
-    for (unsigned int i = 0; i < rows; i++) {
-      auto *input_data = reinterpret_cast<int *>(taskData->inputs[i]);
-      for (unsigned int j = 0; j < columns; j++) {
-        input_[i * columns + j] = input_data[j];
-      }
-    }
 
     delta = columns * rows / world.size();
     int div_r = columns * rows % world.size() + 1;
