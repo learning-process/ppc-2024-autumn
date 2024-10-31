@@ -10,7 +10,8 @@
 
 using namespace std::chrono_literals;
 
-std::vector<double> korotin_e_min_val_matrix_mpi::getRandomMatrix(const unsigned rows, const unsigned columns, double scal) {
+std::vector<double> korotin_e_min_val_matrix_mpi::getRandomMatrix(const unsigned rows, const unsigned columns,
+                                                                  double scal) {
   if (rows == 0 || columns == 0) {
     throw std::invalid_argument("Can't creaate matrix with 0 rows or columns");
   }

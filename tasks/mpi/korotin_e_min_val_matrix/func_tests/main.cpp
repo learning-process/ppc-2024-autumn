@@ -40,7 +40,6 @@ TEST(korotin_e_min_val_matrix, minval_is_correct) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-
     std::vector<double> reference(1, 0);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
