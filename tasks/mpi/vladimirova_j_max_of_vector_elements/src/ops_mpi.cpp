@@ -51,8 +51,6 @@ bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskSequential::pre_proces
       input_[i * taskData->inputs_count[1] + j] = input_data[j];
     }
   }
-
-  res = INT_MIN;
   return true;
 }
 
@@ -103,10 +101,10 @@ bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel::pre_processi
     }
 
     for (int i = 1; i < div_r; i++) {
-      world.send(i, 0, input_.data() + (delta + 1) * i, delta + 1);
+      world.send(i, 0, input_.data() + delta * i + i - 1, delta + 1);
     }
     for (int i = div_r; i < world.size(); i++) {
-      world.send(i, 0, input_.data() + delta * i + div_r, delta);
+      world.send(i, 0, input_.data() + delta * i + div_r - 1, delta);
     }
 
     local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
@@ -118,7 +116,6 @@ bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel::pre_processi
     world.recv(0, 0, local_input_.data(), delta);
   }
 
-  res = INT_MIN;
   return true;
 }
 
