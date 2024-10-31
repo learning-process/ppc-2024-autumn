@@ -54,7 +54,6 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, test_pipeline_run) {
 }
 
 TEST(gordeva_t_max_val_of_column_matrix_seq, test_task_run) {
-
   // Create data
   const int cols = 7000;
   const int rows = 7000;
