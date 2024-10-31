@@ -29,7 +29,6 @@ TEST(volochaev_s_count_characters_27_seq, Test_1) {
 }
 
 TEST(volochaev_s_count_characters_27_seq, Test_2) {
-
   // Create data
   std::vector<std::string> in = {"ab", "aa"};
   std::vector<int> out(1, 0);
@@ -51,7 +50,6 @@ TEST(volochaev_s_count_characters_27_seq, Test_2) {
 }
 
 TEST(volochaev_s_count_characters_27_seq, Test_3) {
-
   // Create data
   std::vector<std::string> in = {"aaabbc", "ab"};
   std::vector<int> out(1, 0);
@@ -78,7 +76,6 @@ TEST(volochaev_s_count_characters_27_seq, Test_4) {
   std::vector<std::string> in = {"ab", "aaabbc"};
   std::vector<int> out(1, 0);
   int ans = 6;
-
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
