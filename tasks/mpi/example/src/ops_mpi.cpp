@@ -112,8 +112,9 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::run() {
   internal_order_test();
   int local_res = 0;
   
-  for (size_t i = 0; i < local_input_.size(); ++i) {
-    if (local_input_[i].first != local_input_[i].second) local_res += 2;
+  for (auto [x, y] : local_input_)
+  {
+    if (x != y) local_res += 2;
   }
 
   reduce(world, local_res, res, std::plus(), 0);

@@ -18,8 +18,7 @@ std::string get_random_string(int sz);
 
 class Lab1_27_seq : public ppc::core::Task { 
  public:
-  explicit Lab1_27_seq(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit Lab1_27_seq(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -32,8 +31,7 @@ class Lab1_27_seq : public ppc::core::Task {
 
 class Lab1_27_mpi : public ppc::core::Task {
  public:
-  explicit Lab1_27_mpi(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit Lab1_27_mpi(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
