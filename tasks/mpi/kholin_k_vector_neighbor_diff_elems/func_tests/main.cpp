@@ -230,7 +230,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  int test = global_delta[0];
+  double test = global_delta[0];
 
   if (ProcRank == 0) {
     std::vector<double> reference_delta(1, 0);
@@ -284,7 +284,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  int32_t test = global_delta[0];
+  double test = global_delta[0];
 
   if (ProcRank == 0) {
     std::vector<double> reference_delta(1, 0);
@@ -329,12 +329,12 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int_with_random) {
     taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
-  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int32_t> testMpiTaskParallel(taskDataPar, op);
+  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int> testMpiTaskParallel(taskDataPar, op);
   testMpiTaskParallel.validation();
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  int32_t test = global_delta[0];
+  double test = global_delta[0];
 
   if (ProcRank == 0) {
     std::vector<double> reference_delta(1, 0);
@@ -356,7 +356,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int_with_random) {
     testTaskSequential.pre_processing();
     testTaskSequential.run();
     testTaskSequential.post_processing();
-    int32_t test2 = reference_elems[0] - reference_elems[1];
+    int test2 = reference_elems[0] - reference_elems[1];
     ASSERT_EQ(test, test2);
   }
 }
@@ -443,7 +443,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_float_with_random) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  float test = global_delta[0];
+  double test = global_delta[0];
 
   if (ProcRank == 0) {
     std::vector<double> reference_delta(1, 0);
