@@ -24,6 +24,29 @@ enum operations { MAX_DIFFERENCE };
 
 namespace kholin_k_vector_neighbor_diff_elems_mpi {
 
+template <class TypeElem>
+std::vector<TypeElem> get_random_vector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<TypeElem> vec(sz);
+
+  if (std::is_integral<TypeElem>::value) {
+    std::uniform_int_distribution<int> dist(0, 99);
+    for (int i = 0; i < sz; i++) {
+      vec[i] = dist(gen);
+    }
+  } else if (std::is_floating_point<TypeElem>::value) {
+    std::uniform_real_distribution<float> dist(0.0, 99.0);
+    for (int i = 0; i < sz; i++) {
+      vec[i] = dist(gen);
+    }
+  } else {
+    throw std::invalid_argument("TypeElem must be an integral or floating point type");
+  }
+
+  return vec;
+}
+
 template <class TypeElem, class TypeIndex>
 class TestTaskSequential : public ppc::core::Task {
  public:
