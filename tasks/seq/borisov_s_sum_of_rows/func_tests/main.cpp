@@ -6,8 +6,8 @@
 #include "seq/borisov_s_sum_of_rows/include/ops_seq.hpp"
 
 TEST(borisov_s_sum_of_rows, Test_Sum_Matrix_10) {
-  const int rows = 10;
-  const int cols = 10;
+  size_t rows = 10;
+  size_t cols = 10;
 
   // Create data
   std::vector<int> matrix(rows * cols, 1);
@@ -35,8 +35,8 @@ TEST(borisov_s_sum_of_rows, Test_Sum_Matrix_10) {
 }
 
 TEST(borisov_s_sum_of_rows, Test_Sum_Matrix_30) {
-  const int rows = 30;
-  const int cols = 30;
+  size_t rows = 30;
+  size_t cols = 30;
 
   // Create data
   std::vector<int> matrix(rows * cols, 1);
@@ -65,8 +65,8 @@ TEST(borisov_s_sum_of_rows, Test_Sum_Matrix_30) {
 }
 
 TEST(borisov_s_sum_of_rows, Test_Sum_Matrix_100) {
-  const int rows = 100;
-  const int cols = 100;
+  size_t rows = 100;
+  size_t cols = 100;
 
   // Create data
   std::vector<int> matrix(rows * cols, 1);
@@ -95,8 +95,8 @@ TEST(borisov_s_sum_of_rows, Test_Sum_Matrix_100) {
 }
 
 TEST(borisov_s_sum_of_rows, EmptyMatrix) {
-  const int rows = 0;
-  const int cols = 0;
+  size_t rows = 0;
+  size_t cols = 0;
 
   std::vector<int> matrix;
   std::vector<int> row_sums;

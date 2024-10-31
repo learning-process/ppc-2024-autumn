@@ -14,8 +14,8 @@ TEST(borisov_s_sum_of_rows, Test_Unit_Matrix) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  int rows = 10;
-  int cols = 10;
+  size_t rows = 10;
+  size_t cols = 10;
 
   if (world.rank() == 0) {
     global_matrix.resize(rows * cols, 1);
@@ -42,7 +42,7 @@ TEST(borisov_s_sum_of_rows, Test_Unit_Matrix) {
   sumOfRowsTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    for (int i = 0; i < global_row_sums.size(); i++) {
+    for (size_t i = 0; i < global_row_sums.size(); i++) {
       ASSERT_EQ(global_row_sums[i], cols);
     }
   }
@@ -55,8 +55,8 @@ TEST(borisov_s_sum_of_rows, Test_Zero_Matrix) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  int rows = 10;
-  int cols = 10;
+  size_t rows = 10;
+  size_t cols = 10;
 
   if (world.rank() == 0) {
     global_matrix.resize(rows * cols, 0);
@@ -96,8 +96,8 @@ TEST(borisov_s_sum_of_rows, Test_Sum_Rows) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  int rows = 15;
-  int cols = 15;
+  size_t rows = 15;
+  size_t cols = 15;
 
   if (world.rank() == 0) {
     global_matrix = borisov_s_sum_of_rows::getRandomMatrix(rows, cols);
@@ -153,8 +153,8 @@ TEST(borisov_s_sum_of_rows, Test_Empty_Matrix) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    int rows = 0;
-    int cols = 0;
+    size_t rows = 0;
+    size_t cols = 0;
     global_row_sums.resize(rows, 0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));

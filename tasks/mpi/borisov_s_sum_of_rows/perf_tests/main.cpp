@@ -12,8 +12,8 @@ TEST(borisov_s_sum_of_rows, test_pipeline_run) {
   std::vector<int> global_matrix;
   std::vector<int> global_row_sums;
 
-  int rows = 5000;
-  int cols = 5000;
+  size_t rows = 5000;
+  size_t cols = 5000;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -56,8 +56,8 @@ TEST(borisov_s_sum_of_rows, test_task_run) {
   std::vector<int> global_matrix;
   std::vector<int> global_row_sums;
 
-  int rows = 5000;
-  int cols = 5000;
+  size_t rows = 5000;
+  size_t cols = 5000;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
