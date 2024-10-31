@@ -104,8 +104,11 @@ std::vector<std::vector<int>> gordeva_t_max_val_of_column_matrix_mpi::TestMPITas
 bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
-  int rows = 0, cols = 0;
-  int delta = 0, delta_1 = 0;
+  int rows = 0;
+  int cols = 0;
+
+  int delta = 0;
+  int delta_1 = 0;
   // int* input_matr;
 
   if (world.rank() == 0) {
