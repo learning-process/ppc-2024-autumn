@@ -25,11 +25,11 @@ bool volochaev_s_count_characters_27_seq::Lab1_27::pre_processing() {
 
   input_ = std::vector<std::pair<char, char>>(std::min(input1_.size(), input2_.size()));
 
-  for (size_t i = 0; i < std::min(input1_.size(), input2_.size()); ++i)
-  {
+  for (size_t i = 0; i < std::min(input1_.size(), input2_.size()); ++i) {
     input_[i].first = input1_[i];
     input_[i].second = input2_[i];
   }
+
   sz1 = input1_.size();
   sz2 = input2_.size();
   res = 0;
@@ -47,10 +47,8 @@ bool volochaev_s_count_characters_27_seq::Lab1_27::run() {
 
   res = abs(sz1 - sz2);
 
-  for (auto [x,y]:input_)
-  {
-    if (x != y)
-    {
+  for (auto [x,y]:input_) {
+    if (x != y) {
       res += 2;
     }
   }
