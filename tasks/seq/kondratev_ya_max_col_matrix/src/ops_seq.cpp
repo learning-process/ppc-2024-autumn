@@ -64,7 +64,8 @@ bool kondratev_ya_max_col_matrix_seq::TestTaskSequential::pre_processing() {
 bool kondratev_ya_max_col_matrix_seq::TestTaskSequential::validation() {
   internal_order_test();
 
-  return taskData->outputs_count[0] == taskData->inputs_count[1];
+  return taskData->outputs_count[0] == taskData->inputs_count[1] && !taskData->outputs.empty() &&
+         !taskData->inputs.empty();
 }
 
 bool kondratev_ya_max_col_matrix_seq::TestTaskSequential::run() {
