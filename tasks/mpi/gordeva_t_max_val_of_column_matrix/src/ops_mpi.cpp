@@ -35,7 +35,7 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::validation()
   // Check count elements of output
   if (taskData->inputs.empty() || taskData->outputs.empty()) return false;
   if (taskData->inputs_count[0] <= 0 || taskData->inputs_count[1] <= 0) return false;
-  if (taskData->inputs_count.size() < 2) return false; 
+  if (taskData->inputs_count.size() < 2) return false;
   if (taskData->outputs_count.size() != 1) return false;
   if (taskData->outputs_count[0] != taskData->inputs_count[1]) return false;
 
