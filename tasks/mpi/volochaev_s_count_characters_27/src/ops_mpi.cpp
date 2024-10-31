@@ -117,7 +117,7 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::run() {
       res1 += 2;
     }
   }
-  reduce(world, res1, res, std::plus(), 0);
+  reduce(world, res1, res, std::plus<int>(), 0);
   return true;
 }
 
