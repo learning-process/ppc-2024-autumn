@@ -19,7 +19,7 @@ bool koshkin_n_sum_values_by_columns_matrix_seq::TestTaskSequential::pre_process
   for (int i = 0; i < rows; ++i) {
     for (int j = 0; j < columns; ++j) {
       input_[i][j] = reinterpret_cast<int*>(inputMatrix)[i * columns + j];
-      //std::cout << "input_[" << i << "][" << j << "] = " << input_[i][j] << std::endl;
+      // std::cout << "input_[" << i << "][" << j << "] = " << input_[i][j] << std::endl;
     }
   }
   res.resize(columns, 0);  // sumColumns
@@ -42,10 +42,8 @@ bool koshkin_n_sum_values_by_columns_matrix_seq::TestTaskSequential::run() {
     for (int i = 0; i < rows; ++i) {
       res[j] += input_[i][j];
     }
-    //std::cout << "res[" << j << "] = " << res[j] << std::endl; //for debugging
+    // std::cout << "res[" << j << "] = " << res[j] << std::endl; // for debugging
   }
-
-
   return true;
 }
 

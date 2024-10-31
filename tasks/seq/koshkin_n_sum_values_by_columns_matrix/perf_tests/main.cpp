@@ -22,7 +22,8 @@ TEST(koshkin_n_sum_values_by_columns_matrix_seq, test_pipeline_run) {
   // Create Task
   auto testTaskSequential =
       std::make_shared<koshkin_n_sum_values_by_columns_matrix_seq::TestTaskSequential>(taskDataSeq);
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));  
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
   taskDataSeq->inputs_count.emplace_back(rows);
   taskDataSeq->inputs_count.emplace_back(columns);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_out.data()));
