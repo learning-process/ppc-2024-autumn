@@ -1,4 +1,3 @@
-// Copyright 2024 Nesterov Alexander
 #include "seq/borisov_s_sum_of_rows/include/ops_seq.hpp"
 
 #include <thread>
@@ -44,7 +43,7 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskSequential::validation() {
     return false;
   }
 
-  if (!taskData->inputs[0] || !taskData->outputs[0]) {
+  if (taskData->inputs[0] == nullptr || taskData->outputs[0] == nullptr) {
     return false;
   }
 
@@ -61,7 +60,7 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskSequential::run() {
     for (size_t i = 0; i < rows; i++) {
       int row_sum = 0;
       for (size_t j = 0; j < cols; j++) {
-        row_sum += matrix_[i * cols + j];
+        row_sum += matrix_[(i * cols) + j];
       }
       row_sums_[i] = row_sum;
     }

@@ -1,11 +1,7 @@
-// Copyright 2023 Nesterov Alexander
 #include "mpi/borisov_s_sum_of_rows/include/ops_mpi.hpp"
 
 #include <algorithm>
-#include <functional>
 #include <random>
-#include <string>
-#include <thread>
 #include <vector>
 
 using namespace std::chrono_literals;
@@ -42,7 +38,7 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskSequential::validation() {
     return false;
   }
 
-  if (!taskData->inputs[0] || !taskData->outputs[0]) {
+  if (taskData->inputs[0] == nullptr || taskData->outputs[0] == nullptr) {
     return false;
   }
 
@@ -154,7 +150,7 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::validation() {
         is_valid = false;
       }
 
-      if (!taskData->inputs[0] || !taskData->outputs[0]) {
+      if (taskData->inputs[0] == nullptr || taskData->outputs[0] == nullptr) {
         is_valid = false;
       }
     }
