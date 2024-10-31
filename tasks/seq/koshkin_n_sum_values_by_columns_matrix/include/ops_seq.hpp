@@ -6,7 +6,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace koshkin_n_sum_values_by_columns_matrix_seq { 
+namespace koshkin_n_sum_values_by_columns_matrix_seq {
 
 class TestTaskSequential : public ppc::core::Task {
  public:
@@ -18,10 +18,10 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<std::vector<int>> input_;  
-  std::vector<int> res;           
-  int rows;                              
-  int columns;                              
+  std::vector<std::vector<int>> input_;
+  std::vector<int> res;
+  int rows;
+  int columns;
 };
 
 }  // namespace koshkin_n_sum_values_by_columns_matrix_seq

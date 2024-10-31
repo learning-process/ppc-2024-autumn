@@ -15,14 +15,13 @@ bool koshkin_n_sum_values_by_columns_matrix_seq::TestTaskSequential::pre_process
   // TaskData
   input_.resize(rows, std::vector<int>(columns));
 
-
-  uint8_t* inputMatrix = taskData->inputs[0];  
+  uint8_t* inputMatrix = taskData->inputs[0];
   for (int i = 0; i < rows; ++i) {
     for (int j = 0; j < columns; ++j) {
       input_[i][j] = reinterpret_cast<int*>(inputMatrix)[i * columns + j];
     }
   }
-  res.resize(columns, 0); //sumColumns
+  res.resize(columns, 0);  // sumColumns
   return true;
 }
 
@@ -48,7 +47,7 @@ bool koshkin_n_sum_values_by_columns_matrix_seq::TestTaskSequential::run() {
 bool koshkin_n_sum_values_by_columns_matrix_seq::TestTaskSequential::post_processing() {
   internal_order_test();
 
-  uint8_t* outputSums = taskData->outputs[0];  
+  uint8_t* outputSums = taskData->outputs[0];
   for (int j = 0; j < columns; ++j) {
     reinterpret_cast<int*>(outputSums)[j] = res[j];
   }
