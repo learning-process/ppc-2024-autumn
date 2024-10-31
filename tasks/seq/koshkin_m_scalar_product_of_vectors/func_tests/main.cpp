@@ -139,7 +139,6 @@ int generateRandomNumber(int min, int max) {
 }
 
 TEST(koshkin_m_scalar_product_of_vectors, check_calculateDotProduct_random_size) {
-
   // Create data
   int size = generateRandomNumber(1, 100);
   std::vector<int> vec_1(size);

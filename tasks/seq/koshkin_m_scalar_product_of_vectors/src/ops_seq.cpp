@@ -4,9 +4,8 @@
 bool koshkin_m_scalar_product_of_vectors::VectorDotProduct::validation() {
   internal_order_test();
   if (taskData->inputs.size() == 2 && taskData->inputs.size() == taskData->inputs_count.size() &&
-      taskData->inputs_count[0] == taskData->inputs_count[1] &&
-      taskData->outputs.size() == 1 && taskData->outputs.size() == taskData->outputs_count.size() &&
-      taskData->outputs_count[0] == 1) {
+      taskData->inputs_count[0] == taskData->inputs_count[1] && taskData->outputs.size() == 1 &&
+      taskData->outputs.size() == taskData->outputs_count.size() && taskData->outputs_count[0] == 1) {
     return true;
   }
   return true;
