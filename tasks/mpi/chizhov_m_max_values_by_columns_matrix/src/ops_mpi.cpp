@@ -5,20 +5,7 @@
 #include <functional>
 #include <random>
 #include <string>
-#include <thread>
 #include <vector>
-
-using namespace std::chrono_literals;
-
-std::vector<int> chizhov_m_max_values_by_columns_matrix_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
-}
 
 bool chizhov_m_max_values_by_columns_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
@@ -84,9 +71,6 @@ bool chizhov_m_max_values_by_columns_matrix_mpi::TestMPITaskParallel::pre_proces
     rows = taskData->inputs_count[2];
   }
 
-  broadcast(world, cols, 0);
-  broadcast(world, rows, 0);
-
   if (world.rank() == 0) {
     // Init vectors
     input_ = std::vector<int>(taskData->inputs_count[0]);
@@ -97,8 +81,6 @@ bool chizhov_m_max_values_by_columns_matrix_mpi::TestMPITaskParallel::pre_proces
   } else {
     input_ = std::vector<int>(cols * rows, 0);
   }
-
-  broadcast(world, input_.data(), cols * rows, 0);
 
   res_ = std::vector<int>(cols, 0);
 
@@ -123,6 +105,15 @@ bool chizhov_m_max_values_by_columns_matrix_mpi::TestMPITaskParallel::validation
 
 bool chizhov_m_max_values_by_columns_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+
+  broadcast(world, cols, 0);
+  broadcast(world, rows, 0);
+
+  if (world.rank() != 0) {
+    input_ = std::vector<int>(cols * rows, 0);
+  }
+  broadcast(world, input_.data(), cols * rows, 0);
+
   int delta = cols / world.size();
   int extra = cols % world.size();
   if (extra != 0) {

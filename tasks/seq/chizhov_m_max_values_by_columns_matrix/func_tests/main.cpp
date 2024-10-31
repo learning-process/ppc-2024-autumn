@@ -5,6 +5,41 @@
 
 #include "seq/chizhov_m_max_values_by_columns_matrix/include/ops_seq.hpp"
 
+TEST(chizhov_m_max_values_by_columns_matrix_seq, Test_ZeroColumns) {
+  int columns = 0;
+
+  std::vector<int> matrix = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+  std::vector<int> res_seq(columns, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&columns));
+  taskDataSeq->inputs_count.emplace_back((size_t)1);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_seq.data()));
+  taskDataSeq->outputs_count.emplace_back(res_seq.size());
+
+  chizhov_m_max_values_by_columns_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+
+  ASSERT_EQ(testTaskSequential.validation(), false);
+}
+
+TEST(chizhov_m_max_values_by_columns_matrix_seq, Test_EmptyMatrix) {
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  int columns = 3;
+  std::vector<int> matrix = {};
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&columns));
+  taskDataSeq->inputs_count.emplace_back((size_t)1);
+
+  chizhov_m_max_values_by_columns_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+
+  ASSERT_EQ(testTaskSequential.validation(), false);
+}
+
 TEST(chizhov_m_max_values_by_columns_matrix_seq, Test_Max_3_Columns) {
   int columns = 3;
 
