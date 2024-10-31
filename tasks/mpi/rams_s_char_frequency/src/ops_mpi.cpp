@@ -42,10 +42,6 @@ bool rams_s_char_frequency_mpi::TestMPITaskSequential::post_processing() {
 
 bool rams_s_char_frequency_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  unsigned int total = 0;
-  if (world.rank() == 0) {
-    total = taskData->inputs_count[0];
-  }
 
   if (world.rank() == 0) {
     input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
@@ -68,6 +64,10 @@ bool rams_s_char_frequency_mpi::TestMPITaskParallel::validation() {
 
 bool rams_s_char_frequency_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+  unsigned int total = 0;
+  if (world.rank() == 0) {
+    total = taskData->inputs_count[0];
+  }
   broadcast(world, total, 0);
   broadcast(world, target_, 0);
   unsigned int delta = total / world.size();
