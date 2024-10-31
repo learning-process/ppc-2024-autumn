@@ -55,26 +55,12 @@ bool solovev_a_word_count_mpi::TestMPITaskSequential::post_processing() {
 
 bool solovev_a_word_count_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  unsigned int delta = 0;
-  if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] / world.size();
-  }
-  boost::mpi::broadcast(world, delta, 0);
   if (world.rank() == 0) {
     input_ = std ::vector<char>(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<char*>(taskData->inputs[0]);
     for (unsigned long int i = 0; i < taskData->inputs_count[0]; i++) {
       input_[i] = tmp_ptr[i];
     }
-    for (int p = 1; p < world.size(); p++) {
-      world.send(p, 0, input_.data() + p * delta, delta);
-    }
-  }
-  l_input_.resize(delta);
-  if (world.rank() == 0) {
-    l_input_ = std::vector<char>(input_.begin(), input_.begin() + delta);
-  } else {
-    world.recv(0, 0, l_input_.data(), delta);
   }
   res = 0;
   l_res = 0;
@@ -91,6 +77,22 @@ bool solovev_a_word_count_mpi::TestMPITaskParallel::validation() {
 
 bool solovev_a_word_count_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+  unsigned int delta = 0;
+  if (world.rank() == 0) {
+    delta = taskData->inputs_count[0] / world.size();
+  }
+  boost::mpi::broadcast(world, delta, 0);
+  if (world.rank() == 0) {
+    for (int p = 1; p < world.size(); p++) {
+      world.send(p, 0, input_.data() + p * delta, delta);
+    }
+  }
+  l_input_.resize(delta);
+  if (world.rank() == 0) {
+    l_input_ = std::vector<char>(input_.begin(), input_.begin() + delta);
+  } else {
+    world.recv(0, 0, l_input_.data(), delta);
+  }
   for (char symbol : input_) {
     if (symbol != ' ' && symbol != '.') {
     } else {
