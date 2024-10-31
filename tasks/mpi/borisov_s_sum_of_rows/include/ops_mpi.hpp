@@ -42,7 +42,6 @@ class SumOfRowsTaskParallel : public ppc::core::Task {
   std::vector<int> matrix_, loc_matrix_;
   std::vector<int> row_sums_, loc_row_sums_;
   boost::mpi::communicator world;
-  int res = 0;
 };
 
 }  // namespace borisov_s_sum_of_rows
