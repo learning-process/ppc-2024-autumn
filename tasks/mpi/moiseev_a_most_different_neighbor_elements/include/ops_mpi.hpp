@@ -49,23 +49,27 @@ class MostDifferentNeighborElementsParallel : public ppc::core::Task {
 
     chunk_size_ = total_size_ / size_;
     remainder = total_size_ % size_;
-
     std::vector<int> sizes(world.size());
     std::vector<int> displs(world.size());
     std::vector<int> real_indicies(world.size());
 
-    if (static_cast<int>(total_size_) < static_cast<int>(world.size())) {
+    if ((int)total_size_ < (int)world.size()) {
       sizes[0] = total_size_;
     } else {
       for (int i = 0; i < world.size(); i++) {
-        sizes[i] = chunk_size_ + (i < remainder ? 1 : 0);
+        if (i == world.size() - 1) {
+          if ((chunk_size_ + remainder) > 1) {
+            sizes[i] = chunk_size_ + remainder;
+          }
+        } else {
+          sizes[i] = chunk_size_ + 1;
+        }
         if (i > 0) {
-          real_indicies[i] = real_indicies[i - 1] + sizes[i - 1] - 1;
-          displs[i] = displs[i - 1] + sizes[i - 1] - 1;
+          real_indicies[i] = real_indicies[i - 1] + (sizes[i - 1] - 1);
+          displs[i] = displs[i - 1] + (sizes[i - 1] - 1);
         }
       }
     }
-
     int actual_chunk_size = sizes[world.rank()];
     displ = real_indicies[world.rank()];
 
@@ -134,5 +138,4 @@ class MostDifferentNeighborElementsParallel : public ppc::core::Task {
   int rank_ = 0;
   int size_ = 0;
 };
-
 }  // namespace moiseev_a_most_different_neighbor_elements_mpi
