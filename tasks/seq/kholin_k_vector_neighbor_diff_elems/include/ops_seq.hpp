@@ -6,14 +6,38 @@
 #include <random>
 #include <string>
 #include <thread>
-#include <vector>
 #include <type_traits>
+#include <vector>
 
 #include "core/task/include/task.hpp"
 
 using namespace std::chrono_literals;
 
 namespace kholin_k_vector_neighbor_diff_elems_seq {
+
+template <class TypeElem>
+std::vector<TypeElem> get_random_vector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<TypeElem> vec(sz);
+
+  if (std::is_integral<TypeElem>::value) {
+    std::uniform_int_distribution<TypeElem> dist(0, 999);
+    for (int i = 0; i < sz; i++) {
+      vec[i] = dist(gen);
+    }
+  } else if (std::is_floating_point<TypeElem>::value) {
+    std::uniform_real_distribution<TypeElem> dist(0.0, 999.0);
+    for (int i = 0; i < sz; i++) {
+      vec[i] = dist(gen);
+    }
+  } else {
+    throw std::invalid_argument("TypeElem must be an integral or floating point type");
+  }
+
+  return vec;
+}
+
 template <class TypeElem, class TypeIndex>
 class MostDiffNeighborElements : public ppc::core::Task {
  public:
@@ -30,31 +54,7 @@ class MostDiffNeighborElements : public ppc::core::Task {
   TypeIndex right_index;
   TypeElem left_elem;
   TypeElem right_elem;
-  std::vector<TypeElem> get_random_vector(int sz);
 };
-
-template <class TypeElem, class TypeIndex>
-std::vector<TypeElem> MostDiffNeighborElements<TypeElem, TypeIndex>::get_random_vector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<TypeElem> vec(sz);
-
-  if (std::is_integral<TypeElem>::value) {
-    std::uniform_int_distribution<TypeElem> dist(0, 9999);
-    for (int i = 0; i < sz; i++) {
-      vec[i] = dist(gen);
-    }
-  } else if (std::is_floating_point<TypeElem>::value) {
-    std::uniform_real_distribution<TypeElem> dist(0.0, 9999.0);
-    for (int i = 0; i < sz; i++) {
-      vec[i] = dist(gen);
-    }
-  } else {
-    throw std::invalid_argument("TypeElem must be an integral or floating point type");
-  }
-
-  return vec;
-}
 
 template <class TypeElem, class TypeIndex>
 bool MostDiffNeighborElements<TypeElem, TypeIndex>::pre_processing() {

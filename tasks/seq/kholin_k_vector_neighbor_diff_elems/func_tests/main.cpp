@@ -108,6 +108,35 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_int32_t) {
   EXPECT_EQ(out_index[1], 235ull);
 }
 
+TEST(kholin_k_vector_neighbor_diff_elems_seq, check_int32_t_with_random) {
+  std::vector<int32_t> in(1256, 1);
+  std::vector<int32_t> out(2, 0);
+  std::vector<uint64_t> out_index(2, 0);
+  
+  in = kholin_k_vector_neighbor_diff_elems_seq::get_random_vector<int32_t>(1256);
+
+  in[234] = 0;
+  in[235] = 4000;
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskData->inputs_count.emplace_back(in.size());
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskData->outputs_count.emplace_back(out.size());
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_index.data()));
+  taskData->outputs_count.emplace_back(out_index.size());
+
+  kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int32_t, uint64_t> testTaskSequential(taskData);
+  testTaskSequential.validation();
+  testTaskSequential.pre_processing();
+  testTaskSequential.run();
+  testTaskSequential.post_processing();
+  EXPECT_EQ(out[0], 0l);
+  EXPECT_EQ(out[1], 4000l);
+  EXPECT_EQ(out_index[0], 234ull);
+  EXPECT_EQ(out_index[1], 235ull);
+}
+
 TEST(kholin_k_vector_neighbour_diff_elems_seq, check_double) {
   std::vector<double> in(25680, 1);
   std::vector<double> out(2, 0);
@@ -214,6 +243,35 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_float) {
   for (size_t i = 0; i < in.size(); i++) {
     in[i] += (i + 1.0f) * 2.5f;
   }
+  in[0] = 110.001f;
+  in[1] = -990.0025f;
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskData->inputs_count.emplace_back(in.size());
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskData->outputs_count.emplace_back(out.size());
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_index.data()));
+  taskData->outputs_count.emplace_back(out_index.size());
+
+  kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<float, uint64_t> testTaskSequential(taskData);
+  testTaskSequential.validation();
+  testTaskSequential.pre_processing();
+  testTaskSequential.run();
+  testTaskSequential.post_processing();
+  EXPECT_NEAR(out[0], 110.001f, 1e-4);
+  EXPECT_NEAR(out[1], -990.0025f, 1e-4);
+  EXPECT_EQ(out_index[0], 0ull);
+  EXPECT_EQ(out_index[1], 1ull);
+}
+
+TEST(kholin_k_vector_neighbour_diff_elems_seq, check_float_with_random) {
+  std::vector<float> in(20, 1.0f);
+  std::vector<float> out(2, 0.0f);
+  std::vector<uint64_t> out_index(2, 0);
+
+  in = kholin_k_vector_neighbor_diff_elems_seq::get_random_vector<float>(20);
+
   in[0] = 110.001f;
   in[1] = -990.0025f;
 

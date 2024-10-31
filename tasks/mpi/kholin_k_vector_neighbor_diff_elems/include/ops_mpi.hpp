@@ -67,7 +67,7 @@ bool TestTaskSequential<TypeElem, TypeIndex>::validation() {
 template <class TypeElem, class TypeIndex>
 bool TestTaskSequential<TypeElem, TypeIndex>::run() {
   internal_order_test();
-  if (ops == MAX_DIFFERENCE) {
+  if (ops == enum_ops::MAX_DIFFERENCE) {
     double max_delta = 0;
     double delta = 0;
     size_t curr_index = 0;
