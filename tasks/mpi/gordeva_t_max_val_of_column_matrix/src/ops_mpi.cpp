@@ -27,11 +27,11 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::pre_processi
 
   int rows = taskData->inputs_count[0];
   int cols = taskData->inputs_count[1];
-  // int* input_matr;
+  int* input_matr;
   input_.resize(rows, std::vector<int>(cols));
 
   for (int i = 0; i < rows; i++) {
-    int* input_matr = reinterpret_cast<int*>(taskData->inputs[i]);
+    input_matr = reinterpret_cast<int*>(taskData->inputs[i]);
     for (int j = 0; j < cols; j++) input_[i][j] = input_matr[j];
   }
 
@@ -106,7 +106,7 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::pre_processing
 
   int rows = 0, cols = 0;
   int delta = 0, delta_1 = 0;
-  // int* input_matr;
+  int* input_matr;
 
   if (world.rank() == 0) {
     rows = taskData->inputs_count[0];
@@ -125,7 +125,7 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::pre_processing
     // Init vectors
     input_.resize(rows, std::vector<int>(cols));
     for (int i = 0; i < rows; i++) {
-      int* input_matr = reinterpret_cast<int*>(taskData->inputs[i]);
+      input_matr = reinterpret_cast<int*>(taskData->inputs[i]);
       input_[i].assign(input_matr, input_matr + cols);
     }
 
