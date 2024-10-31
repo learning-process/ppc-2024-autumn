@@ -19,7 +19,7 @@
 #include "core/task/include/task.hpp"
 
 namespace enum_ops {
-    enum operations { MAX_DIFFERENCE };
+enum operations { MAX_DIFFERENCE };
 };
 
 namespace kholin_k_vector_neighbor_diff_elems_mpi {
@@ -253,4 +253,4 @@ double TestMPITaskParallel<TypeElem>::max_difference() {
   }
   return local_result;
 }
-}
+}  // namespace kholin_k_vector_neighbor_diff_elems_mpi

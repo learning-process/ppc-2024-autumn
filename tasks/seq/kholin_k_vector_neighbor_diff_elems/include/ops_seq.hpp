@@ -7,6 +7,7 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <type_traits>
 
 #include "core/task/include/task.hpp"
 
@@ -37,9 +38,21 @@ std::vector<TypeElem> MostDiffNeighborElements<TypeElem, TypeIndex>::get_random_
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<TypeElem> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
+
+  if (std::is_integral<TypeElem>::value) {
+    std::uniform_int_distribution<TypeElem> dist(0, 9999);
+    for (int i = 0; i < sz; i++) {
+      vec[i] = dist(gen);
+    }
+  } else if (std::is_floating_point<TypeElem>::value) {
+    std::uniform_real_distribution<TypeElem> dist(0.0, 9999.0);
+    for (int i = 0; i < sz; i++) {
+      vec[i] = dist(gen);
+    }
+  } else {
+    throw std::invalid_argument("TypeElem must be an integral or floating point type");
   }
+
   return vec;
 }
 
@@ -105,4 +118,4 @@ bool MostDiffNeighborElements<TypeElem, TypeIndex>::post_processing() {
   reinterpret_cast<TypeIndex*>(taskData->outputs[1])[1] = right_index;
   return true;
 }
-}
+}  // namespace kholin_k_vector_neighbor_diff_elems_seq
