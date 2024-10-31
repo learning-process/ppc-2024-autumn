@@ -30,7 +30,7 @@ class MostDifferentNeighborElementsSequential : public ppc::core::Task {
     l_elem_index = 0;
     r_elem_index = 1;
 
-    for (size_t i = 0; i < input_.size() - 1; ++i) {
+    for (size_t i = 0; i + 1 < input_.size(); ++i) {
       DataType diff = std::abs(input_[i] - input_[i + 1]);
       if (diff > max_diff) {
         max_diff = diff;
@@ -59,5 +59,4 @@ class MostDifferentNeighborElementsSequential : public ppc::core::Task {
   size_t l_elem_index;
   size_t r_elem_index;
 };
-
 }  // namespace moiseev_a_most_different_neighbor_elements_seq
