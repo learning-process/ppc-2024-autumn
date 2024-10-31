@@ -15,8 +15,6 @@
 
 namespace gordeva_t_max_val_of_column_matrix_mpi {
 
-// std::vector<int> getRandomVector(int sz);
-
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -30,8 +28,6 @@ class TestMPITaskSequential : public ppc::core::Task {
 
  private:
   std::vector<std::vector<int>> input_;
-  // int res{};
-  // std::string ops;
   std::vector<int> res;
 };
 
@@ -45,8 +41,6 @@ class TestMPITaskParallel : public ppc::core::Task {
 
  private:
   std::vector<std::vector<int>> input_, local_input_;
-  // int res{};
-  // std::string ops;
   std::vector<int> res;
   boost::mpi::communicator world;
 };

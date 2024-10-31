@@ -13,10 +13,6 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, test_pipeline_run) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  // taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  // taskDataSeq->inputs_count.emplace_back(in.size());
-  // taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  // taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
   auto testTaskSequential = std::make_shared<gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential>(taskDataSeq);
@@ -60,10 +56,6 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, test_task_run) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  // taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  // taskDataSeq->inputs_count.emplace_back(in.size());
-  // taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  // taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
   auto testTaskSequential = std::make_shared<gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential>(taskDataSeq);

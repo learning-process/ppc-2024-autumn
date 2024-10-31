@@ -10,9 +10,6 @@ namespace gordeva_t_max_val_of_column_matrix_seq {
 
 bool gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
-  // Init value for input and output
-  // input_ = reinterpret_cast<int*>(taskData->inputs[0])[0];
-  // res = 0;
 
   int rows = taskData->inputs_count[0];
   int cols = taskData->inputs_count[1];
@@ -38,14 +35,11 @@ bool gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::validation() {
       (taskData->outputs_count.size() != 1 || taskData->outputs_count[0] != taskData->inputs_count[1]))
     return false;
   return true;
-  // return taskData->inputs_count[0] == 1 && taskData->outputs_count[0] == 1;
 }
 
 bool gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::run() {
   internal_order_test();
 
-  // int cols = input_[0].size();
-  // int rows = input_.size();
 
   for (size_t i = 0; i < input_[0].size(); i++) {
     int max_el = input_[0][i];
