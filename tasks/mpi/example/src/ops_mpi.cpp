@@ -111,7 +111,6 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::validation() {
 bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::run() {
   internal_order_test();
   int local_res = 0;
-  
   for (auto [x, y] : local_input_) {
     if (x != y) {
       local_res += 2;
