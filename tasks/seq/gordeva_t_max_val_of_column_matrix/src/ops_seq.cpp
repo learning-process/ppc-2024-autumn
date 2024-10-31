@@ -86,8 +86,6 @@ std::vector<std::vector<int>> gordeva_t_max_val_of_column_matrix_seq::TestTaskSe
     matr[row_rand][j] = 10;
   }
   return matr;
-
-  return matr;
 }
 
 }  // namespace gordeva_t_max_val_of_column_matrix_seq
