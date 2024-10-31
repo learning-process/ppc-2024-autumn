@@ -7,8 +7,8 @@
 #include "seq/gnitienko_k_sum_values_by_rows_matrix/include/ops_seq.hpp"
 
 TEST(gnitienko_k_sum_row_seq, test_pipeline_run) {
-  const int rows = 3000;
-  const int cols = 3000;
+  const int rows = 4000;
+  const int cols = 4000;
 
   // Create data
   std::vector<int> in(rows * cols, 0);
@@ -55,8 +55,8 @@ TEST(gnitienko_k_sum_row_seq, test_pipeline_run) {
 }
 
 TEST(gnitienko_k_sum_row_seq, test_task_run) {
-  const int rows = 3000;
-  const int cols = 3000;
+  const int rows = 4000;
+  const int cols = 4000;
 
   // Create data
   std::vector<int> in(rows * cols, 0);

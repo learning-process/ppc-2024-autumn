@@ -1,11 +1,6 @@
 ﻿// Copyright 2024 Nesterov Alexander
 #include "seq/gnitienko_k_sum_values_by_rows_matrix/include/ops_seq.hpp"
 
-#include <cstring>
-#include <thread>
-
-using namespace std::chrono_literals;
-
 bool gnitienko_k_sum_row_seq::SumByRowSeq::pre_processing() {
   internal_order_test();
 
@@ -47,7 +42,6 @@ std::vector<int> gnitienko_k_sum_row_seq::SumByRowSeq::mainFunc() {
 bool gnitienko_k_sum_row_seq::SumByRowSeq::run() {
   internal_order_test();
   mainFunc();
-  std::this_thread::sleep_for(20ms);
   return true;
 }
 

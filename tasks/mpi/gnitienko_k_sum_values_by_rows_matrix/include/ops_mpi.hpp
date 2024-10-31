@@ -15,6 +15,8 @@
 
 namespace gnitienko_k_sum_row_mpi {
 
+std::vector<int> getRandomVector(int sz);
+
 class SumByRowMPISeq : public ppc::core::Task {
  public:
   explicit SumByRowMPISeq(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
