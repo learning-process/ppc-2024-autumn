@@ -14,7 +14,8 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, test_pipeline_run) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int rows = 5000, cols = 5000;
+  int rows = 5000;
+  int cols = 5000;
 
   if (world.rank() == 0) {
     global_matr = gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::gen_rand_matr(rows, cols);

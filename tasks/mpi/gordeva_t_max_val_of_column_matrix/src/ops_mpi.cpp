@@ -95,8 +95,6 @@ std::vector<std::vector<int>> gordeva_t_max_val_of_column_matrix_mpi::TestMPITas
     matr[row_rand][j] = 10;
   }
   return matr;
-
-  return matr;
 }
 
 // Parallel
