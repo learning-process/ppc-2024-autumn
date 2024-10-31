@@ -88,8 +88,8 @@ TEST(ermilova_d_min_element_matrix_seq, Test_min_matrix_10x10) {
 
   std::random_device dev;
   std::mt19937 gen(dev());
-  int rnd_rows = gen() % rows_test;
-  int rnd_cols = gen() % cols_test;
+  int rnd_rows = 1 + gen() % rows_test;
+  int rnd_cols = 1 + gen() % cols_test;
   in[rnd_rows][rnd_cols] = reference_min;
 
   // Create TaskData
@@ -125,8 +125,8 @@ TEST(ermilova_d_min_element_matrix_seq, Test_min_matrix_100x100) {
 
   std::random_device dev;
   std::mt19937 gen(dev());
-  int rnd_rows = gen() % rows_test;
-  int rnd_cols = gen() % cols_test;
+  int rnd_rows = 1 + gen() % rows_test;
+  int rnd_cols = 1 + gen() % cols_test;
   in[rnd_rows][rnd_cols] = reference_min;
 
   // Create TaskData
@@ -162,8 +162,8 @@ TEST(ermilova_d_min_element_matrix_seq, Test_min_matrix_50x100) {
 
   std::random_device dev;
   std::mt19937 gen(dev());
-  int rnd_rows = gen() % rows_test;
-  int rnd_cols = gen() % cols_test;
+  int rnd_rows = 1 + gen() % rows_test;
+  int rnd_cols = 1 + gen() % cols_test;
   in[rnd_rows][rnd_cols] = reference_min;
 
   // Create TaskData
@@ -199,8 +199,8 @@ TEST(ermilova_d_min_element_matrix_seq, Test_min_matrix_100x50) {
 
   std::random_device dev;
   std::mt19937 gen(dev());
-  int rnd_rows = gen() % rows_test;
-  int rnd_cols = gen() % cols_test;
+  int rnd_rows = 1 + gen() % rows_test;
+  int rnd_cols = 1 + gen() % cols_test;
   in[rnd_rows][rnd_cols] = reference_min;
 
   // Create TaskData
