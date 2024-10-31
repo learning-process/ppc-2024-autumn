@@ -82,20 +82,21 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::pre_processing() {
       input_[i].first = tmp1[i];
       input_[i].second = tmp2[i];
     }
-
+   
     for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + proc * delta, delta);
+      world.send(proc, 0, input_.data() + proc * delta, delta+1);
     }
   }
 
-  local_input_ = std::vector<std::pair<char, char>>(delta);
+  local_input_ = std::vector<std::pair<char, char>>(delta + 1);
   if (world.rank() == 0) {
-    local_input_ = std::vector<std::pair<char, char>>(input_.begin(), std::min(input_.begin() + delta, input_.end()));
+    local_input_ = std::vector<std::pair<char, char>>(input_.begin(), input_.begin() + delta + 1);
   } else {
-    world.recv(0, 0, local_input_.data(), delta);
+    world.recv(0, 0, local_input_.data(), delta + 1);
   }
   // Init value for output
   res = abs((int)tmp1.size() - (int)tmp2.size());
+  
   return true;
 }
 
