@@ -3,9 +3,24 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <random>
 #include <vector>
 
 #include "mpi/grudzin_k_nearest_neighbor_elements/include/ops_mpi.hpp"
+
+namespace grudzin_k_nearest_neighbor_elements_mpi {
+
+std::vector<int> getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = -100 + gen() % 201;
+  }
+  return vec;
+}
+
+}  // namespace grudzin_k_nearest_neighbor_elements_mpi
 
 TEST(grudzin_k_nearest_neighbor_elements_mpi, Wrong_Test) {
   boost::mpi::communicator world;

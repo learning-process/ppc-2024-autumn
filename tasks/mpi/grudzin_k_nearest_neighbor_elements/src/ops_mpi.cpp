@@ -10,16 +10,6 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> grudzin_k_nearest_neighbor_elements_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = -100 + gen() % 201;
-  }
-  return vec;
-}
-
 bool grudzin_k_nearest_neighbor_elements_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init vectors
