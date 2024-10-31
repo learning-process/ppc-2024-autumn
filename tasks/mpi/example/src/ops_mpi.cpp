@@ -126,6 +126,6 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     *reinterpret_cast<int*>(taskData->outputs[0]) = res;
-  } 
+  }
   return true;
 }
