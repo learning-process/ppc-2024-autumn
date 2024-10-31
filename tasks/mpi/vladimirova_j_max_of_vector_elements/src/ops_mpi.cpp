@@ -31,7 +31,7 @@ std::vector<int> vladimirova_j_max_of_vector_elements_mpi::CreateVector(size_t s
 }
 
 std::vector<std::vector<int>> vladimirova_j_max_of_vector_elements_mpi::CreateInputMatrix(size_t row_c, size_t col_c,
-                                                                                   size_t spread_of_val) {
+                                                                                          size_t spread_of_val) {
   std::vector<std::vector<int>> m(row_c);
   for (size_t i = 0; i < row_c; i++) {
     m[i] = vladimirova_j_max_of_vector_elements_mpi::CreateVector(col_c, spread_of_val);
@@ -75,7 +75,7 @@ bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskSequential::post_proce
 
 bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  
+
   return true;
 }
 
