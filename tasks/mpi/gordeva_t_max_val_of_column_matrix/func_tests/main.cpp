@@ -40,6 +40,7 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_500_columns_with_random)
   // Create data
   const int rows = 500;
   const int cols = 500;
+  // int* input_matr;
   std::vector<std::vector<int32_t>> global_matr;
   std::vector<int32_t> global_max(cols, INT_MIN);
 
