@@ -2,12 +2,8 @@
 
 #include <algorithm>
 #include <boost/mpi.hpp>
-#include <chrono>
 #include <functional>
-#include <numeric>
-#include <random>
 #include <string>
-#include <thread>
 #include <vector>
 
 bool nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralSequential::pre_processing() {
