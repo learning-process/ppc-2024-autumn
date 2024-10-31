@@ -38,16 +38,18 @@ template <typename T>
 bool TestMPITaskParallel<T>::pre_processing() {
   internal_order_test();
 
-  int delta = 0, delta2 = 0;
+  int delta1 = 0;
+  int delta2 = 0;
+
   if (world.rank() == 0) {
     n = static_cast<int>(taskData->inputs_count[1]);
     m = static_cast<int>(taskData->inputs_count[2]);
     int total_elements = n * m;
-    delta = total_elements / world.size();
+    delta1 = total_elements / world.size();
     delta2 = total_elements % world.size();
   }
 
-  boost::mpi::broadcast(world, delta, 0);
+  boost::mpi::broadcast(world, delta1, 0);
   boost::mpi::broadcast(world, delta2, 0);
 
   if (world.rank() == 0) {
@@ -57,15 +59,15 @@ bool TestMPITaskParallel<T>::pre_processing() {
       input_[i] = tmp_ptr[i];
     }
 
-    int start_index = delta + (delta2 > 0 ? 1 : 0);
+    int start_index = delta1 + (delta2 > 0 ? 1 : 0);
     for (int proc = 1; proc < world.size(); proc++) {
-      int current_delta = delta + (proc < delta2 ? 1 : 0);
+      int current_delta = delta1 + (proc < delta2 ? 1 : 0);
       world.send(proc, 0, input_.data() + start_index, current_delta);
       start_index += current_delta;
     }
   }
 
-  int local_size = delta + (world.rank() < delta2 ? 1 : 0);
+  int local_size = delta1 + (world.rank() < delta2 ? 1 : 0);
   local_input_ = std::vector<T>(local_size);
 
   if (world.rank() == 0) {
