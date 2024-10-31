@@ -62,7 +62,9 @@ TEST(morozov_e_min_val_in_rows_matrix_MPI, Test_Main) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  for (int i = 0; i < n; ++i) {
-    ASSERT_EQ(resPar[i], -1);
+  if (world.rank() == 0) {
+    for (int i = 0; i < n; ++i) {
+      ASSERT_EQ(resPar[i], -1);
+    }
   }
 }
