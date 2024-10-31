@@ -108,8 +108,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_int32_t) {
   EXPECT_EQ(out_index[1], 235ull);
 }
 
-TEST(kholin_k_vector_neighbor_diff_elems_seq, check_int32_t_with_random) {
-  std::vector<int32_t> in(1256, 1);
+TEST(kholin_k_vector_neighbor_diff_elems_seq, check_int_with_random) {
+  std::vector<int> in(1256, 1);
   std::vector<int32_t> out(2, 0);
   std::vector<uint64_t> out_index(2, 0);
   in = kholin_k_vector_neighbor_diff_elems_seq::get_random_vector<int32_t>(1256);
@@ -124,7 +124,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_int32_t_with_random) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_index.data()));
   taskData->outputs_count.emplace_back(out_index.size());
 
-  kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int32_t, uint64_t> testTaskSequential(taskData);
+  kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int, uint64_t> testTaskSequential(taskData);
   testTaskSequential.validation();
   testTaskSequential.pre_processing();
   testTaskSequential.run();

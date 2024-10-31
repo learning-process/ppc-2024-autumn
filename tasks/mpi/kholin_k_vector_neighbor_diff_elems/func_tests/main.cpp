@@ -310,17 +310,17 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
     ASSERT_EQ(test, test2);
   }
 }
-TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t_with_random) {
+TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int_with_random) {
   int ProcRank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
-  std::vector<int32_t> global_vec;
+  std::vector<int> global_vec;
   std::vector<double> global_delta(1, 0);
   enum_ops::operations op = enum_ops::MAX_DIFFERENCE;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (ProcRank == 0) {
     const int count_size_vector = 300;
-    global_vec = kholin_k_vector_neighbor_diff_elems_mpi::get_random_vector<int32_t>(count_size_vector);
+    global_vec = kholin_k_vector_neighbor_diff_elems_mpi::get_random_vector<int>(count_size_vector);
     global_vec[100] = 5000;
     global_vec[101] = 1;
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
@@ -338,7 +338,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t_with_random) {
 
   if (ProcRank == 0) {
     std::vector<double> reference_delta(1, 0);
-    std::vector<int32_t> reference_elems(2, 0);
+    std::vector<int> reference_elems(2, 0);
     std::vector<uint64_t> reference_indices(2, 0);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -351,7 +351,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t_with_random) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_delta.data()));
     taskDataSeq->outputs_count.emplace_back(reference_delta.size());
 
-    kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int32_t, uint64_t> testTaskSequential(taskDataSeq, op);
+    kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int, uint64_t> testTaskSequential(taskDataSeq, op);
     testTaskSequential.validation();
     testTaskSequential.pre_processing();
     testTaskSequential.run();
