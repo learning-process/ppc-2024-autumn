@@ -66,9 +66,10 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::pre_processing() {
   internal_order_test();
 
   unsigned int delta = 0;
-  auto tmp1 = reinterpret_cast<std::string*>(taskData->inputs[0])[0];
-  auto tmp2 = reinterpret_cast<std::string*>(taskData->inputs[0])[1];
   if (world.rank() == 0) {
+    auto tmp1 = reinterpret_cast<std::string*>(taskData->inputs[0])[0];
+    auto tmp2 = reinterpret_cast<std::string*>(taskData->inputs[0])[1];
+    for_res = abs((int)tmp1.size() - (int)tmp2.size());
     delta = (std::min(tmp1.size(), tmp2.size())) / world.size();
     if (std::min(tmp1.size(), tmp2.size()) % world.size()) ++delta;
   }
@@ -77,13 +78,15 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::pre_processing() {
 
   if (world.rank() == 0) {
     // Init vectors
+    auto tmp1 = reinterpret_cast<std::string*>(taskData->inputs[0])[0];
+    auto tmp2 = reinterpret_cast<std::string*>(taskData->inputs[0])[1];
     input_ = std::vector<std::pair<char, char>>(world.size() * delta);
     for (size_t i = 0; i < std::min(tmp1.size(), tmp2.size()); i++) {
       input_[i].first = tmp1[i];
       input_[i].second = tmp2[i];
     }
     for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + (proc-1) * delta, delta);
+      world.send(proc, 0, input_.data() + proc * delta, delta);
     }
   }
 
@@ -94,7 +97,6 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::pre_processing() {
     world.recv(0, 0, local_input_.data(), delta);
   }
   // Init value for output
-  for_res = abs((int)tmp1.size() - (int)tmp2.size());
   res = 0;
   return true;
 }
