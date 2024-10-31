@@ -15,10 +15,10 @@ std::vector<std::vector<int>> morozov_e_min_val_in_rows_matrix::getRandomMatrix(
   std::mt19937 gen(rd());
   std::uniform_int_distribution<> dis(-100, 100);
 
-  // Создаем матрицу
+  // РЎРѕР·РґР°РµРј РјР°С‚СЂРёС†Сѓ
   std::vector<std::vector<int>> matrix(n, std::vector<int>(m));
 
-  // Заполняем матрицу случайными значениями
+  // Р—Р°РїРѕР»РЅСЏРµРј РјР°С‚СЂРёС†Сѓ СЃР»СѓС‡Р°Р№РЅС‹РјРё Р·РЅР°С‡РµРЅРёСЏРјРё
   for (int i = 0; i < n; ++i) {
     for (int j = 0; j < m; ++j) {
       matrix[i][j] = dis(gen);
