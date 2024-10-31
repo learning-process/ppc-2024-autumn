@@ -13,8 +13,7 @@ TEST(Parallel_Operations_MPI, Test_Sum) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  if (world.rank() == 0) 
-  {
+  if (world.rank() == 0) {
     const int count_size_vector = 120;
     global_vec = std::vector<std::string>(2, volochaev_s_count_characters_27_mpi::get_random_string(count_size_vector));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));

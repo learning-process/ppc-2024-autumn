@@ -114,7 +114,9 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::run() {
   
   for (auto [x, y] : local_input_)
   {
-    if (x != y) local_res += 2;
+    if (x != y) {
+      local_res += 2;
+    }
   }
 
   reduce(world, local_res, res, std::plus(), 0);
