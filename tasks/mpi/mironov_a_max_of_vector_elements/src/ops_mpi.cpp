@@ -45,35 +45,21 @@ bool mironov_a_max_of_vector_elements_mpi::MaxVectorSequential::post_processing(
 
 bool mironov_a_max_of_vector_elements_mpi::MaxVectorMPI::pre_processing() {
   internal_order_test();
-  unsigned int delta = 0;
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
     if (taskData->inputs_count[0] % world.size() != 0u) {
       delta++;
     }
-  }
-  broadcast(world, delta, 0);
 
-  if (world.rank() == 0) {
-    // Init vectors
+    // Init vector
     int* it = reinterpret_cast<int*>(taskData->inputs[0]);
     input_ = std::vector<int>(static_cast<int>(delta) * world.size(), INT_MIN);
     std::copy(it, it + taskData->inputs_count[0], input_.begin());
 
-    // Send data
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + proc * delta, delta);
-    }
+    // Init value for output
+    result_ = input_[0];
   }
 
-  local_input_ = std::vector<int>(delta, INT_MIN);
-  if (world.rank() == 0) {
-    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
-  } else {
-    world.recv(0, 0, local_input_.data(), delta);
-  }
-  // Init value for output
-  result_ = local_input_[0];
   return true;
 }
 
@@ -88,6 +74,23 @@ bool mironov_a_max_of_vector_elements_mpi::MaxVectorMPI::validation() {
 
 bool mironov_a_max_of_vector_elements_mpi::MaxVectorMPI::run() {
   internal_order_test();
+  broadcast(world, delta, 0);
+
+  if (world.rank() == 0) {
+    // probably better to use isend
+    for (int proc = 1; proc < world.size(); proc++) {
+      world.send(proc, 0, input_.data() + proc * delta, delta);
+    }
+  }
+
+  local_input_ = std::vector<int>(delta, INT_MIN);
+  if (world.rank() == 0) {
+    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
+  } else {
+    world.recv(0, 0, local_input_.data(), delta);
+  }
+
+  // Init value for result
   int local_res = local_input_[0];
   for (size_t it = 1; it < local_input_.size(); ++it) {
     if (local_res < local_input_[it]) {

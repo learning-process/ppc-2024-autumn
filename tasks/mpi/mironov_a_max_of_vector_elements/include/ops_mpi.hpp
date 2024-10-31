@@ -38,6 +38,7 @@ class MaxVectorMPI : public ppc::core::Task {
  private:
   std::vector<int> input_, local_input_;
   int result_{};
+  unsigned int delta = 0u;
   boost::mpi::communicator world;
 };
 
