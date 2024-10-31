@@ -51,7 +51,6 @@ bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskSequential::pre_proces
       input_[i * taskData->inputs_count[1] + j] = input_data[j];
     }
   }
-  res = INT_MIN;
   return true;
 }
 
@@ -80,13 +79,6 @@ bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel::pre_processi
   //
   unsigned int delta = 0;
   if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] * taskData->inputs_count[1] / world.size();
-  }
-  broadcast(world, delta, 0);
-
-  local_input_ = std::vector<int>(delta);
-
-  if (world.rank() == 0) {
     // Init vectors
 
     unsigned int rows = taskData->inputs_count[0];
@@ -101,19 +93,29 @@ bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel::pre_processi
       }
     }
 
-    int div_r = columns * rows % world.size();
+    delta = columns * rows / world.size();
+    int div_r = columns * rows % world.size() + 1;
+
     for (int i = 1; i < world.size(); i++) {
+      world.send(i, 0, delta + (int)(i < div_r));
+    }
+
+    for (int i = 1; i < div_r; i++) {
+      world.send(i, 0, input_.data() + (delta + 1) * i, delta + 1);
+    }
+    for (int i = div_r; i < world.size(); i++) {
       world.send(i, 0, input_.data() + delta * i + div_r, delta);
     }
-    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta + div_r);
+
+    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
   }
 
   if (world.rank() != 0) {
+    world.recv(0, 0, delta);
+    local_input_ = std::vector<int>(delta);
     world.recv(0, 0, local_input_.data(), delta);
   }
 
-  // Init value for output
-  res = INT_MAX;
   return true;
 }
 

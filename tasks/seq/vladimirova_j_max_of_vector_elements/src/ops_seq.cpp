@@ -53,7 +53,6 @@ bool vladimirova_j_max_of_vector_elements_seq::TestTaskSequential::pre_processin
       input_[i * taskData->inputs_count[1] + j] = input_data[j];
     }
   }
-  res = INT_MIN;
   return true;
 }
 
