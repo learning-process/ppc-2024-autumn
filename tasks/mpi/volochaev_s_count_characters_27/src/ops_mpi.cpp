@@ -73,11 +73,13 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::pre_processing() {
     if (std::min(tmp1.size(), tmp2.size()) % world.size() > 0u) ++delta;
   }
 
-  broadcast(world, std::min(tmp1.size(), tmp2.size()), 0);
+  int deltax = delta * 10;
+
+  broadcast(world, deltax, 0);
 
   if (world.rank() == 0) {
     // Init vectors
-    input_ = std::vector<std::pair<char, char>>(world.size() * (delta * 10));
+    input_ = std::vector<std::pair<char, char>>(world.size() * (delta + 1));
     for (size_t i = 0; i < std::min(tmp1.size(), tmp2.size()); i++) {
       input_[i].first = tmp1[i];
       input_[i].second = tmp2[i];
