@@ -20,8 +20,9 @@ TEST(Sequential, Test_Validation_True) {
   for (size_t i = 0; i < matrix.size(); ++i)
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
   taskDataSeq->inputs_count.emplace_back(matrix.size());
+  taskDataSeq->inputs_count.emplace_back(matrix[0].size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res.data()));
-  taskDataSeq->outputs_count.emplace_back(2);
+  taskDataSeq->outputs_count.emplace_back(res.size());
   morozov_e_min_val_in_rows_matrix::TestTaskSequential testMpiTaskSequential(taskDataSeq);
   ASSERT_TRUE(testMpiTaskSequential.validation());
 }
@@ -49,5 +50,7 @@ TEST(Sequential, Test_Main) {
   testMpiTaskSequential.run();
   testMpiTaskSequential.post_processing();
   // ASSERT_EQ(v, res2);
-  ASSERT_EQ(resSeq, res);
+  for (int i = 0; i < n; ++i) {
+    ASSERT_EQ(resSeq[i], res[i]);
+  }
 }

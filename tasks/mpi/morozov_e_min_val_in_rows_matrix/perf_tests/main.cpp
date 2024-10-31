@@ -40,7 +40,9 @@ TEST(morozov_e_min_val_in_rows_matrix_perf_test, test_pipeline_run_my) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(res_, res);
+    for (int i = 0; i < n; ++i) {
+      ASSERT_EQ(res_[i], res[i]);
+    }
   }
 }
 TEST(morozov_e_min_val_in_rows_matrix_perf_test, test_task_run_my) {
@@ -64,6 +66,8 @@ TEST(morozov_e_min_val_in_rows_matrix_perf_test, test_task_run_my) {
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
   if (world.rank() == 0) {
-    ASSERT_EQ(res_, res);
+    for (int i = 0; i < n; ++i) {
+      ASSERT_EQ(res_[i], res[i]);
+    }
   }
 }

@@ -11,12 +11,10 @@ TEST(morozov_e_min_val_in_rows_matrix_MPI, Test_Validation_isFalse) {
   boost::mpi::communicator world;
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   std::vector<std::vector<int>> matrix = {{1, 1}, {2, 2}};
-
-  for (size_t i = 0; i < matrix.size(); ++i)
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-  morozov_e_min_val_in_rows_matrix::TestMPITaskParallel testMpiTaskParallel(taskDataSeq);
-
   if (world.rank() == 0) {
+    for (size_t i = 0; i < matrix.size(); ++i)
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    morozov_e_min_val_in_rows_matrix::TestMPITaskParallel testMpiTaskParallel(taskDataSeq);
     ASSERT_FALSE(testMpiTaskParallel.validation());
   }
 }
@@ -51,7 +49,7 @@ TEST(morozov_e_min_val_in_rows_matrix_MPI, Test_Main) {
   if (world.rank() == 0) {
     matrix = morozov_e_min_val_in_rows_matrix::getRandomMatrix(n, m);
     res = morozov_e_min_val_in_rows_matrix::minValInRowsMatrix(matrix);
-    for (int i = 0; i < matrix.size(); ++i) {
+    for (size_t i = 0; i < matrix.size(); ++i) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
     }
 
@@ -66,5 +64,7 @@ TEST(morozov_e_min_val_in_rows_matrix_MPI, Test_Main) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  ASSERT_EQ(resPar, res);
+  for (int i = 0; i < n; ++i) {
+    ASSERT_EQ(resPar[i], res[i]);
+  }
 }
