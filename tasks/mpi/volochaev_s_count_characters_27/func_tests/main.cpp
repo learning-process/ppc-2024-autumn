@@ -7,7 +7,7 @@
 
 #include "mpi/volochaev_s_count_characters_27/include/ops_mpi.hpp"
 
-TEST(Parallel_Operations_MPI, Test_Diff) {
+TEST(Parallel_Operations_MPI, Test_1) {
   boost::mpi::communicator world;
   std::vector<std::string> global_vec;
   std::vector<int32_t> global_diff(1, 0);
@@ -15,8 +15,9 @@ TEST(Parallel_Operations_MPI, Test_Diff) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 240;
-    global_vec = std::vector<std::string>(2, volochaev_s_count_characters_27_mpi::get_random_string(count_size_vector));
+    const int size_str1 = 240;
+    const int size_str2 = 120;
+    global_vec = {volochaev_s_count_characters_27_mpi::get_random_string(size_str1), volochaev_s_count_characters_27_mpi::get_random_string(size_str2)};
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_diff.data()));
@@ -51,7 +52,7 @@ TEST(Parallel_Operations_MPI, Test_Diff) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_Diff_2) {
+TEST(Parallel_Operations_MPI, Test_2) {
   boost::mpi::communicator world;
   std::vector<std::string> global_vec;
   std::vector<int32_t> global_diff(1, 0);
@@ -59,8 +60,9 @@ TEST(Parallel_Operations_MPI, Test_Diff_2) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 120;
-    global_vec = std::vector<std::string>(2, volochaev_s_count_characters_27_mpi::get_random_string(count_size_vector));
+    const int string_sz = 120;
+    std::string s = volochaev_s_count_characters_27_mpi::get_random_string(string_sz);
+    global_vec = {s, s};
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_diff.data()));
@@ -95,7 +97,7 @@ TEST(Parallel_Operations_MPI, Test_Diff_2) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_Max) {
+TEST(Parallel_Operations_MPI, Test_3) {
   boost::mpi::communicator world;
   std::vector<std::string> global_vec;
   std::vector<int32_t> global_max(1, 0);
@@ -103,8 +105,9 @@ TEST(Parallel_Operations_MPI, Test_Max) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 240;
-    global_vec = std::vector<std::string>(2, volochaev_s_count_characters_27_mpi::get_random_string(count_size_vector));
+    const int size_str1 = 240;
+    const int size_str2 = 120;
+    global_vec = {volochaev_s_count_characters_27_mpi::get_random_string(size_str2), volochaev_s_count_characters_27_mpi::get_random_string(size_str1)};
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
@@ -139,7 +142,7 @@ TEST(Parallel_Operations_MPI, Test_Max) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_Max_2) {
+TEST(Parallel_Operations_MPI, Test_4) {
   boost::mpi::communicator world;
   std::vector<std::string> global_vec;
   std::vector<int32_t> global_max(1, 0);
@@ -147,8 +150,8 @@ TEST(Parallel_Operations_MPI, Test_Max_2) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 120;
-    global_vec = std::vector<std::string>(2, volochaev_s_count_characters_27_mpi::get_random_string(count_size_vector));
+    const int size_str = 120;
+    global_vec = {volochaev_s_count_characters_27_mpi::get_random_string(size_str), volochaev_s_count_characters_27_mpi::get_random_string(size_str)};
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
