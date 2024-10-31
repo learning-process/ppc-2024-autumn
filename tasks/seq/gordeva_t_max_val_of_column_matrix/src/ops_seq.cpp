@@ -40,7 +40,6 @@ bool gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::validation() {
 bool gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::run() {
   internal_order_test();
 
-
   for (size_t i = 0; i < input_[0].size(); i++) {
     int max_el = input_[0][i];
     for (size_t j = 1; j < input_.size(); j++)
