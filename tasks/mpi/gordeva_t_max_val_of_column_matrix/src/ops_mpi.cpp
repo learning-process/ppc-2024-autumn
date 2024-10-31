@@ -114,11 +114,10 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::pre_processing
   }
   // delta = taskData->inputs_count[0] / world.size();
   // delta_1 = taskData->inputs_count[0] % world.size();
-  
 
   broadcast(world, rows, 0);
   broadcast(world, cols, 0);
-  
+
   delta = rows / world.size();
   delta_1 = rows % world.size();
 
