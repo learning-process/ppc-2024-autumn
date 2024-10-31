@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "omp/volochaev_s_count_characters_27/include/ops_omp.hpp"
+#include "omp/example/include/ops_omp.hpp"
 
 TEST(openmp_example_perf_test, test_pipeline_run) {
   const int count = 100;
