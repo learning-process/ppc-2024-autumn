@@ -17,7 +17,7 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, test_pipeline_run) {
   // taskDataSeq->inputs_count.emplace_back(in.size());
   // taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   // taskDataSeq->outputs_count.emplace_back(out.size());
- 
+
   // Create Task
   auto testTaskSequential = std::make_shared<gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential>(taskDataSeq);
 
@@ -64,7 +64,7 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, test_task_run) {
   // taskDataSeq->inputs_count.emplace_back(in.size());
   // taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   // taskDataSeq->outputs_count.emplace_back(out.size());
- 
+
   // Create Task
   auto testTaskSequential = std::make_shared<gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential>(taskDataSeq);
 

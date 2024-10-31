@@ -107,7 +107,6 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::pre_processing
   int cols = 0;
   // int* input_matr;
 
-
   int delta = 0;
   int delta_1 = 0;
 

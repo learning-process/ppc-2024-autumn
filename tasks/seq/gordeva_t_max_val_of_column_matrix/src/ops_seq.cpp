@@ -13,7 +13,7 @@ bool gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::pre_processing(
   // Init value for input and output
   // input_ = reinterpret_cast<int*>(taskData->inputs[0])[0];
   // res = 0;
- 
+
   int rows = taskData->inputs_count[0];
   int cols = taskData->inputs_count[1];
   int* input_matr;
