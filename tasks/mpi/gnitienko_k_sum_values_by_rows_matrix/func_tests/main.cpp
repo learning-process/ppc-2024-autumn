@@ -261,7 +261,7 @@ TEST(gnitienko_k_sum_values_by_rows_MPI, test_random_matrix) {
   int cols = 3;
   int rows = 4;
 
-  std::vector<int> global_vec = gnitienko_k_sum_row_mpi::getRandomVector(rows*cols);
+  std::vector<int> global_vec = gnitienko_k_sum_row_mpi::getRandomVector(rows * cols);
   std::vector<int> resMPI(rows, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();

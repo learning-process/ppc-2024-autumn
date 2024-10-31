@@ -3,6 +3,8 @@
 
 #include <random>
 #include <vector>
+#include <cstring>
+
 
 std::vector<int> gnitienko_k_sum_row_mpi::SumByRowMPISeq::mainFunc() {
   for (int i = 0; i < rows; ++i) {
