@@ -12,8 +12,8 @@ TEST(vladimirova_j_max_of_vector_elements_seq, test_pipeline_run) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  int size = 5000;
-  int spread = 5000;
+  int size = 7000;
+  int spread = 7000;
 
   std::vector<std::vector<int>> matrix_in;
   matrix_in = vladimirova_j_max_of_vector_elements_seq::CreateInputMatrix(size, size, spread);
@@ -59,8 +59,8 @@ TEST(sequential_vladimirova_j_max_of_vector_elements_seq, test_task_run) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  int size = 5000;
-  int spread = 5000;
+  int size =7000;
+  int spread = 7000;
   std::vector<std::vector<int>> matrix_in;
   matrix_in = vladimirova_j_max_of_vector_elements_seq::CreateInputMatrix(size, size, spread);
   std::vector<int32_t> out(1, matrix_in[0][0]);

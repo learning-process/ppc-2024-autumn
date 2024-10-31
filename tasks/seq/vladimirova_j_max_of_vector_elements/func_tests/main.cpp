@@ -12,13 +12,6 @@ TEST(vladimirova_j_max_of_vector_elements_seq, Test_CanCreate_10) {
   EXPECT_NO_THROW(vladimirova_j_max_of_vector_elements_seq::CreateInputMatrix(row, col, spread));
 }
 
-TEST(vladimirova_j_max_of_vector_elements_seq, Test_CantCreate_0) {
-  const size_t col = 0;
-  const size_t row = 0;
-  const int spread = 0;
-  EXPECT_ANY_THROW(vladimirova_j_max_of_vector_elements_seq::CreateInputMatrix(row, col, spread));
-}
-
 TEST(vladimirova_j_max_of_vector_elements_seq, Test_SquareMatrix_10) {
   const size_t size = 10;
   const int spread = 10;  // spread is excepted answer

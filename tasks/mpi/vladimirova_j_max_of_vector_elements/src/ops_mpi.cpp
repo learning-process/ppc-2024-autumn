@@ -31,8 +31,7 @@ std::vector<int> vladimirova_j_max_of_vector_elements_mpi::CreateVector(size_t s
 }
 
 std::vector<std::vector<int>> vladimirova_j_max_of_vector_elements_mpi::CreateInputMatrix(size_t row_c, size_t col_c,
-                                                                                          size_t spread_of_val) {
-  if ((row_c == 0) || (col_c == 0)) throw "null size";
+                                                                                   size_t spread_of_val) {
   std::vector<std::vector<int>> m(row_c);
   for (size_t i = 0; i < row_c; i++) {
     m[i] = vladimirova_j_max_of_vector_elements_mpi::CreateVector(col_c, spread_of_val);
@@ -76,7 +75,19 @@ bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskSequential::post_proce
 
 bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  //
+  
+  return true;
+}
+
+bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel::validation() {
+  internal_order_test();
+
+  return (world.rank() != 0) || ((taskData->outputs_count[0] == 1) && (!taskData->inputs.empty()));
+}
+
+bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel::run() {
+  internal_order_test();
+
   unsigned int delta = 0;
   if (world.rank() == 0) {
     // Init vectors
@@ -115,18 +126,6 @@ bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel::pre_processi
     local_input_ = std::vector<int>(delta);
     world.recv(0, 0, local_input_.data(), delta);
   }
-
-  return true;
-}
-
-bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel::validation() {
-  internal_order_test();
-
-  return (world.rank() != 0) || ((taskData->outputs_count[0] == 1) && (!taskData->inputs.empty()));
-}
-
-bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel::run() {
-  internal_order_test();
 
   int local_res = vladimirova_j_max_of_vector_elements_mpi::FindMaxElem(local_input_);
   reduce(world, local_res, res, boost::mpi::maximum<int>(), 0);

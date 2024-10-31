@@ -10,10 +10,6 @@ TEST(Parallel_Operations_MPI, Test_CanCreate_10) {
   EXPECT_NO_THROW(vladimirova_j_max_of_vector_elements_mpi::CreateInputMatrix(10, 10, 10));
 }
 
-TEST(Parallel_Operations_MPI, Test_CantCreate_0) {
-  EXPECT_ANY_THROW(vladimirova_j_max_of_vector_elements_mpi::CreateInputMatrix(0, 10, 10));
-}
-
 TEST(Parallel_Operations_MPI, Test_SquareMatrix_10) {
   const size_t size = 10;
   const size_t spread = 30;

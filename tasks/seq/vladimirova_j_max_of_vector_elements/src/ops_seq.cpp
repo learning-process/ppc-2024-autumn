@@ -6,9 +6,6 @@
 using namespace std::chrono_literals;
 
 std::vector<int> vladimirova_j_max_of_vector_elements_seq::CreateVector(size_t size, size_t spread_of_val) {
-  if (size == 0) {
-    throw "null size";
-  }
   std::random_device dev;
   std::mt19937 random(dev());
   std::vector<int> v(size);
@@ -20,10 +17,6 @@ std::vector<int> vladimirova_j_max_of_vector_elements_seq::CreateVector(size_t s
 
 std::vector<std::vector<int>> vladimirova_j_max_of_vector_elements_seq::CreateInputMatrix(size_t row_c, size_t column_c,
                                                                                           size_t spread_of_val) {
-  if ((row_c == 0) || (column_c == 0)) {
-    throw "null size";
-  }
-
   //  Init value for input and output
   std::vector<std::vector<int>> m(row_c);
   for (size_t i = 0; i < row_c; i++) {

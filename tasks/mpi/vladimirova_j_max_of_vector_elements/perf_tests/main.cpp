@@ -8,9 +8,9 @@
 #include "mpi/vladimirova_j_max_of_vector_elements/include/ops_mpi.hpp"
 
 TEST(vladimirova_j_max_of_vector_elements_mpi, test_pipeline_run) {
-  int row = 5000;
-  int col = 5000;
-  int spread = 500;
+  int row = 7000;
+  int col = 7000;
+  int spread = 7000;
 
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
@@ -63,9 +63,9 @@ TEST(vladimirova_j_max_of_vector_elements_mpi, test_pipeline_run) {
 }
 
 TEST(vladimirova_j_max_of_vector_elements_mpi, test_task_run) {
-  int row = 5000;
-  int col = 5000;
-  int spread = 500;
+  int row = 7000;
+  int col = 7000;
+  int spread = 7000;
 
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
