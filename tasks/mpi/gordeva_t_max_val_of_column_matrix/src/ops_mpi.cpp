@@ -31,7 +31,7 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::pre_processi
   input_.resize(rows, std::vector<int>(cols));
 
   for (int i = 0; i < rows; i++) {
-    input_matr = reinterpret_cast<int*>(taskData->inputs[i]);
+    int* input_matr = reinterpret_cast<int*>(taskData->inputs[i]);
     for (int j = 0; j < cols; j++) input_[i][j] = input_matr[j];
   }
 
