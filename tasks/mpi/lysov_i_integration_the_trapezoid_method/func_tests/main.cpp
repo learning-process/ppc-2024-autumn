@@ -161,8 +161,7 @@ TEST(lysov_i_integration_the_trapezoid_method_mpi, Test_Integration_mpi_random) 
   std::mt19937 gen(dev());
   double a = (gen() % 100) / 100.0;
   double b = (gen() % 100) / 100.0;
-  if (a == b) 
-      b += 0.1;
+  if (a == b) b += 0.1;
   double epsilon = 0.0001;
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
