@@ -17,9 +17,9 @@ bool ermilova_d_min_element_matrix_mpi::TestMPITaskSequential::pre_processing() 
 
   input_.resize(rows, std::vector<int>(cols));
 
-  for (unsigned int i = 0; i < rows; i++) {
+  for (int i = 0; i < rows; i++) {
     auto* tpr_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
-    for (unsigned int j = 0; j < cols; j++) {
+    for (int j = 0; j < cols; j++) {
       input_[i][j] = tpr_ptr[j];
     }
   }
@@ -126,9 +126,9 @@ bool ermilova_d_min_element_matrix_mpi::TestMPITaskParallel::post_processing() {
 std::vector<int> ermilova_d_min_element_matrix_mpi::getRandomVector(int size, int upper_border, int lower_border) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  if (sz <= 0) throw "Incorrect size";
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
+  if (size <= 0) throw "Incorrect size";
+  std::vector<int> vec(size);
+  for (int i = 0; i < size; i++) {
     vec[i] = lower_border + gen() % (upper_border - lower_border + 1);
   }
   return vec;
