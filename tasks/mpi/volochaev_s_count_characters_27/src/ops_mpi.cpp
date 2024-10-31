@@ -1,4 +1,4 @@
-#include "mpi/example/include/ops_mpi.hpp"
+#include "mpi/volochaev_s_count_characters_27/include/ops_mpi.hpp"
 
 #include <algorithm>
 #include <functional>

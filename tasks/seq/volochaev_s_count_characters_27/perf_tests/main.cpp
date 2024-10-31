@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "seq/example/include/ops_seq.hpp"
+#include "seq/volochaev_s_count_characters_27/include/ops_seq.hpp"
 
 TEST(volochaev_s_count_characters_27_seq_perf_test, test_pipeline_run) {
   // Create data

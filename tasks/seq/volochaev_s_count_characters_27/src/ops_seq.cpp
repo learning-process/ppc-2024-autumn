@@ -1,4 +1,4 @@
-#include "seq/example/include/ops_seq.hpp"
+#include "seq/volochaev_s_count_characters_27/include/ops_seq.hpp"
 
 #include <functional>
 #include <random>

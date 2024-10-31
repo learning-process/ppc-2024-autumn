@@ -4,7 +4,7 @@
 #include <boost/mpi/environment.hpp>
 #include <vector>
 
-#include "mpi/example/include/ops_mpi.hpp"
+#include "mpi/volochaev_s_count_characters_27/include/ops_mpi.hpp"
 
 TEST(Parallel_Operations_MPI, Test_Sum) {
   boost::mpi::communicator world;
