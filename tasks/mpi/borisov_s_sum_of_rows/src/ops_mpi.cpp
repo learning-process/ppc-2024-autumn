@@ -101,7 +101,7 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::pre_processing() {
   boost::mpi::broadcast(world, cols, 0);
 
   size_t base_rows_per_proc = rows / world.size();
-  size_t remainder_rows = rows % world.size();
+  int remainder_rows = static_cast<int>(rows % world.size());
 
   size_t local_rows = base_rows_per_proc + (world.rank() < remainder_rows ? 1 : 0);
 
@@ -110,7 +110,7 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::pre_processing() {
 
   if (world.rank() == 0) {
     size_t offset = 0;
-    for (int i = 0; i < world.size(); ++i) {
+    for (int i = 0; i < world.size(); i++) {
       size_t rows_for_proc = base_rows_per_proc + (i < remainder_rows ? 1 : 0);
       sendcounts[i] = static_cast<int>(rows_for_proc * cols);
       displs[i] = static_cast<int>(offset * cols);
@@ -182,7 +182,7 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::run() {
   }
 
   size_t base_rows_per_proc = taskData->inputs_count[0] / world.size();
-  size_t remainder_rows = taskData->inputs_count[0] % world.size();
+  int remainder_rows = static_cast<int>(taskData->inputs_count[0] % world.size());
 
   std::vector<int> recvcounts(world.size());
   std::vector<int> displs(world.size());
