@@ -40,7 +40,7 @@ bool ermilova_d_min_element_matrix_seq::TestTaskSequential::validation() {
 bool ermilova_d_min_element_matrix_seq::TestTaskSequential::run() {
   internal_order_test();
   for (size_t i = 0; i < input_.size(); i++) {
-    for (size_t = 0; j < input_[i].size(); j++) {
+    for (size_t j = 0; j < input_[i].size(); j++) {
       if (res > input_[i][j]) {
         res = input_[i][j];
       }
