@@ -16,7 +16,6 @@ std::vector<double> korotin_e_min_val_matrix_mpi::getRandomMatrix(const unsigned
     throw std::invalid_argument("Can't creaate matrix with 0 rows or columns");
   }
 
-
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<double> matrix(rows * columns);
