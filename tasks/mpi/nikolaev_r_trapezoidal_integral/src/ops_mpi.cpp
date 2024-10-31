@@ -66,10 +66,9 @@ bool nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralParallel::run() {
     params[1] = b_;
     params[2] = static_cast<double>(n_);
   }
-  MPI_Bcast(&params, 3, MPI_DOUBLE, 0, world);
-  double local_res{};
-  local_res = integrate_function(a_, b_, n_, function_);
-  MPI_Reduce(&local_res, &res_, 1, MPI_DOUBLE, MPI_SUM, 0, world);
+  boost::mpi::broadcast(world, params, std::size(params), 0);
+  double local_res = integrate_function(params[0], params[1], static_cast<int>(params[2]), function_);
+  boost::mpi::reduce(world, local_res, res_, std::plus(), 0);
   return true;
 }
 

@@ -15,7 +15,7 @@ class TrapezoidalIntegralSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  void set_function(const std::function<double(double)>& f);
+  void set_function(std::function<double(double)> f);
 
  private:
   double a_{}, b_{}, n_{}, res_{};

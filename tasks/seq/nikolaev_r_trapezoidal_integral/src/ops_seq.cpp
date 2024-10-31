@@ -29,9 +29,8 @@ bool nikolaev_r_trapezoidal_integral_seq::TrapezoidalIntegralSequential::post_pr
   return true;
 }
 
-void nikolaev_r_trapezoidal_integral_seq::TrapezoidalIntegralSequential::set_function(
-    const std::function<double(double)>& f) {
-  function_ = f;
+void nikolaev_r_trapezoidal_integral_seq::TrapezoidalIntegralSequential::set_function(std::function<double(double)> f) {
+  function_ = std::move(f);
 }
 
 double nikolaev_r_trapezoidal_integral_seq::TrapezoidalIntegralSequential::integrate_function(
