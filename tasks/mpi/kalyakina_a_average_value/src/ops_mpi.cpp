@@ -59,21 +59,37 @@ bool kalyakina_a_average_value_mpi::FindingAverageMPITaskSequential::post_proces
 
 bool kalyakina_a_average_value_mpi::FindingAverageMPITaskParallel::pre_processing() {
   internal_order_test();
-  unsigned int delta = 0;
+  std::vector<int> input_vector;
+  unsigned int part = 0;
+  unsigned int reminder = 0;
   if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] / world.size() + 1;
+    part = taskData->inputs_count[0] / world.size();
+    reminder = taskData->inputs_count[0] % world.size();
   }
-  broadcast(world, delta, 0);
+  boost::mpi::broadcast(world, part, 0);
+  boost::mpi::broadcast(world, reminder, 0);
 
   if (world.rank() == 0) {
     // Init vectors
     input_vector = std::vector<int>(taskData->inputs_count[0]);
     int* it = reinterpret_cast<int*>(taskData->inputs[0]);
     std::copy(it, it + taskData->inputs_count[0], input_vector.begin());
-    input_vector.resize(delta * world.size(), 0);
   }
-  local_input_vector = std::vector<int>(delta);
-  boost::mpi::scatter(world, input_vector.data(), local_input_vector.data(), delta, 0);
+  std::vector<int> distr(world.size(), part);
+  std::vector<int> displ(world.size());
+  for (unsigned int i = 0; i < static_cast<unsigned int>(world.size()); i++) {
+    if (reminder > 0) {
+      distr[i]++;
+      reminder--;
+    }
+    if (i == 0) {
+      displ[i] = 0;
+    } else {
+      displ[i] = displ[i - 1] + distr[i - 1];
+    }
+  }
+  local_input_vector = std::vector<int>(distr[world.rank()]);
+  boost::mpi::scatterv(world, input_vector.data(), distr, displ, local_input_vector.data(), distr[world.rank()], 0);
 
   // Init value for output
   if (world.rank() == 0) {
@@ -97,7 +113,7 @@ bool kalyakina_a_average_value_mpi::FindingAverageMPITaskParallel::run() {
   for (unsigned int i = 0; i < local_input_vector.size(); i++) {
     local_res += local_input_vector[i];
   }
-  reduce(world, local_res, result, std::plus(), 0);
+  boost::mpi::reduce(world, local_res, result, std::plus<>(), 0);
   return true;
 }
 

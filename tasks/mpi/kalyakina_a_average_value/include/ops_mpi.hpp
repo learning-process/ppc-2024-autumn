@@ -40,7 +40,6 @@ class FindingAverageMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> input_vector;
   std::vector<int> local_input_vector;
   int result{};
   boost::mpi::communicator world;
