@@ -51,22 +51,7 @@ bool rams_s_char_frequency_mpi::TestMPITaskParallel::pre_processing() {
     input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
     target_ = *reinterpret_cast<char*>(taskData->inputs[1]);
   }
-  broadcast(world, total, 0);
-  broadcast(world, target_, 0);
-  unsigned int delta = total / world.size();
-  unsigned int overflow = total % world.size();
 
-  std::vector<int> sizes(world.size(), delta);
-  sizes[world.size() - 1] = delta + overflow;
-  std::vector<int> displs(world.size());
-  for (int i = 1; i < world.size(); i++) {
-    displs[i] = displs[i - 1] + delta;
-  }
-
-  unsigned int local_delta = sizes[world.rank()];
-  local_input_.resize(local_delta);
-
-  boost::mpi::scatterv(world, input_.data(), sizes, displs, local_input_.data(), local_delta, 0);
   res = 0;
   local_res = 0;
   return true;
@@ -83,6 +68,22 @@ bool rams_s_char_frequency_mpi::TestMPITaskParallel::validation() {
 
 bool rams_s_char_frequency_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+  broadcast(world, total, 0);
+  broadcast(world, target_, 0);
+  unsigned int delta = total / world.size();
+  unsigned int overflow = total % world.size();
+
+  std::vector<int> sizes(world.size(), delta);
+  sizes[world.size() - 1] = delta + overflow;
+  std::vector<int> displs(world.size());
+  for (int i = 1; i < world.size(); i++) {
+    displs[i] = displs[i - 1] + delta;
+  }
+
+  unsigned int local_delta = sizes[world.rank()];
+  local_input_.resize(local_delta);
+
+  boost::mpi::scatterv(world, input_.data(), sizes, displs, local_input_.data(), local_delta, 0);
   local_res = std::count(local_input_.begin(), local_input_.end(), target_);
   reduce(world, local_res, res, std::plus(), 0);
   return true;
