@@ -47,9 +47,9 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_seq::validation() {
 bool volochaev_s_count_characters_27_mpi::Lab1_27_seq::run() {
   internal_order_test();
 
-  for (size_t i = 0; i < input_.size(); ++i) {
-    if (input_[i].first != input_[i].second) {
-       res += 2;
+  for (auto [x, y] : input_) {
+    if (x != y) {
+      res += 2;
     }
   }
 
@@ -112,8 +112,7 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::run() {
   internal_order_test();
   int local_res = 0;
   
-  for (auto [x, y] : local_input_)
-  {
+  for (auto [x, y] : local_input_) {
     if (x != y) {
       local_res += 2;
     }
