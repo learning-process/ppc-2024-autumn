@@ -48,9 +48,9 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_seq::run() {
   internal_order_test();
 
   for (size_t i = 0; i < input_.size(); ++i) {
-     if (input_[i].first != input_[i].second) {
+    if (input_[i].first != input_[i].second) {
        res += 2;
-     }
+    }
   }
 
   return true;
@@ -69,8 +69,8 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::pre_processing() {
   auto tmp1 = reinterpret_cast<std::string*>(taskData->inputs[0])[0];
   auto tmp2 = reinterpret_cast<std::string*>(taskData->inputs[0])[1];
   if (world.rank() == 0) {
-     delta = (std::min(tmp1.size(), tmp2.size())) / world.size();
-     if (std::min(tmp1.size(), tmp2.size()) % world.size() > 0u) ++delta;
+    delta = (std::min(tmp1.size(), tmp2.size())) / world.size();
+    if (std::min(tmp1.size(), tmp2.size()) % world.size() > 0u) ++delta;
   }
 
   broadcast(world, delta, 0);
@@ -78,7 +78,7 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::pre_processing() {
   if (world.rank() == 0) {
     // Init vectors
     input_ = std::vector<std::pair<char, char>>(world.size() * delta);
-     for (unsigned i = 0; i < std::min(tmp1.size(), tmp2.size()); i++) {
+    for (unsigned i = 0; i < std::min(tmp1.size(), tmp2.size()); i++) {
       input_[i].first = tmp1[i];
       input_[i].second = tmp2[i];
     }
@@ -88,7 +88,7 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::pre_processing() {
     }
   }
 
-  local_input_ = std::vector<std::pair<char,char>>(delta);
+  local_input_ = std::vector<std::pair<char, char>>(delta);
   if (world.rank() == 0) {
     local_input_ = std::vector<std::pair<char, char>>(input_.begin(), std::min(input_.begin() + delta, input_.end()));
   } else {

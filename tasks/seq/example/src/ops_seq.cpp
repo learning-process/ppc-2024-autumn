@@ -1,5 +1,4 @@
 #include "seq/example/include/ops_seq.hpp"
-#include<math.h>
 #include <functional>
 #include <random>
 #include <thread>
@@ -47,7 +46,7 @@ bool volochaev_s_count_characters_27_seq::Lab1_27::run() {
 
   res = abs(sz1 - sz2);
 
-  for (auto [x,y]:input_) {
+  for (auto [x, y]:input_) {
     if (x != y) {
       res += 2;
     }

@@ -16,7 +16,7 @@ namespace volochaev_s_count_characters_27_mpi {
 
 std::string get_random_string(int sz);
 
-class Lab1_27_seq: public ppc::core::Task {
+class Lab1_27_seq: public ppc::core::Task { 
  public:
   explicit Lab1_27_seq(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
       : Task(std::move(taskData_)), ops(std::move(ops_)) {}
@@ -26,7 +26,7 @@ class Lab1_27_seq: public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<std::pair<char,char>> input_;
+  std::vector<std::pair<char, char>> input_;
   int res{};
   std::string ops;
 };
@@ -41,7 +41,7 @@ class Lab1_27_mpi : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<std::pair<char,char>> input_, local_input_;
+  std::vector<std::pair<char, char>> input_, local_input_;
   int res{};
   std::string ops;
   boost::mpi::communicator world;
