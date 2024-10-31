@@ -6,20 +6,20 @@
 #include "seq/korotin_e_min_val_matrix/include/ops_seq.hpp"
 
 TEST(korotin_e_min_val_matrix_seq, test_matrix_0) {
-  ASSERT_ANY_THROW(korotin_e_min_val_matrix_seq::getRandomMatrix(0,10,100));
-  ASSERT_ANY_THROW(korotin_e_min_val_matrix_seq::getRandomMatrix(10,0,100));
-  ASSERT_ANY_THROW(korotin_e_min_val_matrix_seq::getRandomMatrix(0,0,100));
+  ASSERT_ANY_THROW(korotin_e_min_val_matrix_seq::getRandomMatrix(0, 10, 100));
+  ASSERT_ANY_THROW(korotin_e_min_val_matrix_seq::getRandomMatrix(10, 0, 100));
+  ASSERT_ANY_THROW(korotin_e_min_val_matrix_seq::getRandomMatrix(0, 0, 100));
 }
 
 TEST(korotin_e_min_val_matrix_seq, test_matrix_5_5) {
-  const unsigned rows=5, columns=5;
+  const unsigned rows = 5, columns = 5;
   double res;
 
   // Create data
   std::vector<double> matrix;
   std::vector<double> min_val(1, -5);
 
-  matrix = korotin_e_min_val_matrix_seq::getRandomMatrix(rows, columns,100.0);
+  matrix = korotin_e_min_val_matrix_seq::getRandomMatrix(rows, columns, 100.0);
   res = *std::min_element(matrix.begin(), matrix.end());
 
   // Create TaskData

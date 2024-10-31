@@ -11,7 +11,7 @@
 using namespace std::chrono_literals;
 
 std::vector<double> korotin_e_min_val_matrix_mpi::getRandomMatrix(const unsigned rows, const unsigned columns, double scal) {
-  if (rows==0 || columns==0) {
+  if (rows == 0 || columns == 0) {
     throw std::invalid_argument("Can't creaate matrix with 0 rows or columns");
   }
 
@@ -74,7 +74,6 @@ bool korotin_e_min_val_matrix_mpi::TestMPITaskParallel::pre_processing() {
     for (int proc = 1; proc < world.size(); proc++) {
       world.send(proc, 0, input_.data() + proc * delta, delta);
     }
-    //world.send(world.size(), 0, input_.data() + (world.size() - 1) * delta, taskData->inputs_count[0] - (world.size() - 1) * delta);
   }
   local_input_ = std::vector<double>(delta);
   if (world.rank() == 0) {
@@ -103,7 +102,7 @@ bool korotin_e_min_val_matrix_mpi::TestMPITaskParallel::run() {
   local_res = *std::min_element(local_input_.begin(), local_input_.end());
 
   reduce(world, local_res, res, boost::mpi::minimum<double>(), 0);
-  
+
   std::this_thread::sleep_for(20ms);
   return true;
 }

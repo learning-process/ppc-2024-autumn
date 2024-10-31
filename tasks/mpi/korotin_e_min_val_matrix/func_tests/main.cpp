@@ -21,7 +21,7 @@ TEST(korotin_e_min_val_matrix, minval_is_correct) {
   boost::mpi::communicator world;
   std::vector<double> matrix;
   std::vector<double> min_val(1, 0);
-  
+
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -40,17 +40,15 @@ TEST(korotin_e_min_val_matrix, minval_is_correct) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    
+
     std::vector<double> reference(1, 0);
 
-    
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataSeq->inputs_count.emplace_back(matrix.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference.data()));
     taskDataSeq->outputs_count.emplace_back(reference.size());
 
-    
     korotin_e_min_val_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
@@ -60,5 +58,3 @@ TEST(korotin_e_min_val_matrix, minval_is_correct) {
     ASSERT_EQ(reference[0], min_val[0]);
   }
 }
-
-

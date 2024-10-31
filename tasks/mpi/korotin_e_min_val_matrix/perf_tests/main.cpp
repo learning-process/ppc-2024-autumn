@@ -86,4 +86,3 @@ TEST(korotin_e_min_val_matrix, test_task_run) {
     ASSERT_EQ(1, min_val[0]);
   }
 }
-
