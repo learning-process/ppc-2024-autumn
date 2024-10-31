@@ -31,14 +31,11 @@ TEST(morozov_e_min_val_in_rows_matrix_MPI, Test_Validation_isTrue) {
     for (size_t i = 0; i < matrix.size(); ++i)
       taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataSeq->inputs_count.emplace_back(matrix.size());
+    taskDataSeq->inputs_count.emplace_back(matrix[0].size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res.data()));
-    taskDataSeq->outputs_count.emplace_back(2);
+    taskDataSeq->outputs_count.emplace_back(res.size());
     morozov_e_min_val_in_rows_matrix::TestMPITaskParallel testMpiTaskParallel(taskDataSeq);
     ASSERT_TRUE(testMpiTaskParallel.validation());
-
-    for (size_t i = 0; i < matrix.size(); ++i) {
-      delete[] reinterpret_cast<int*>(taskDataSeq->inputs[i]);
-    }
   }
 }
 TEST(morozov_e_min_val_in_rows_matrix_MPI, Test_Main) {
