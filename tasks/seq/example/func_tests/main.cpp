@@ -5,7 +5,7 @@
 
 #include "seq/example/include/ops_seq.hpp"
 
-TEST(Sequential, Test_1) {
+TEST(volochaev_s_count_characters_27_seq, Test_1) {
   // Create data
   std::vector<std::string> in = {"aa", "aa"};
   std::vector<int> out(1, 0);
@@ -28,12 +28,12 @@ TEST(Sequential, Test_1) {
   ASSERT_EQ(ans, out[0]);
 }
 
-TEST(Sequential, Test_2) {
+TEST(volochaev_s_count_characters_27_seq, Test_2) {
 
   // Create data
   std::vector<std::string> in = {"ab", "aa"};
   std::vector<int> out(1, 0);
-  int ans = 1;
+  int ans = 2;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
@@ -50,12 +50,12 @@ TEST(Sequential, Test_2) {
   ASSERT_EQ(ans, out[0]);
 }
 
-TEST(Sequential, Test_3) {
+TEST(volochaev_s_count_characters_27_seq, Test_3) {
 
   // Create data
   std::vector<std::string> in = {"aaabbc", "ab"};
   std::vector<int> out(1, 0);
-  int ans = 5;
+  int ans = 6;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -73,11 +73,11 @@ TEST(Sequential, Test_3) {
   ASSERT_EQ(ans, out[0]);
 }
 
-TEST(Sequential, Test_4) {
+TEST(volochaev_s_count_characters_27_seq, Test_4) {
   // Create data
   std::vector<std::string> in = {"ab", "aaabbc"};
   std::vector<int> out(1, 0);
-  int ans = 5;
+  int ans = 6;
 
 
   // Create TaskData
@@ -96,8 +96,7 @@ TEST(Sequential, Test_4) {
   ASSERT_EQ(ans, out[0]);
 }
 
-TEST(Sequential, Test_5)
-{
+TEST(volochaev_s_count_characters_27_seq, Test_5) {
   // Create data
   std::vector<std::string> in = {"aaabbc", "aaabbc"};
   std::vector<int> out(1, 0);

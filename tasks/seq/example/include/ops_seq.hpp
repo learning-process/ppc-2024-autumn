@@ -7,6 +7,8 @@
 
 namespace volochaev_s_count_characters_27_seq {
 
+std::string get_random_string(int sz);
+
 class Lab1_27 : public ppc::core::Task {
  public:
   explicit Lab1_27(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -16,9 +18,8 @@ class Lab1_27 : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::string input1_{};
-  std::string input2_{};
-
+  std::vector<std::pair<char, char>> input_;
+  int sz1, sz2;
   int res{};
 };
 

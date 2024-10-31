@@ -1,4 +1,3 @@
-/*
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
@@ -9,21 +8,24 @@
 
 TEST(mpi_example_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
+  std::vector<std::string> global_vec;
   std::vector<int32_t> global_sum(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int count_size_vector;
+  int count_size_string;
   if (world.rank() == 0) {
-    count_size_vector = 120;
-    global_vec = std::vector<int>(count_size_vector, 1);
+    count_size_string = 120;
+    std::string s = volochaev_s_count_characters_27_mpi::get_random_string(count_size_string);
+    global_vec = std::vector<std::string>(2, s);
+    global_vec[2].back() = char(((int)s.back() + 1) % 256);
+
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<nesterov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar, "+");
+  auto testMpiTaskParallel = std::make_shared<volochaev_s_count_characters_27_mpi::Lab1_27_mpi>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -43,27 +45,28 @@ TEST(mpi_example_perf_test, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(count_size_vector, global_sum[0]);
+    ASSERT_EQ(2, global_sum[0]);
   }
 }
 
 TEST(mpi_example_perf_test, test_task_run) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
+  std::vector<std::string> global_vec;
   std::vector<int32_t> global_sum(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int count_size_vector;
+  int string_size;
   if (world.rank() == 0) {
-    count_size_vector = 120;
-    global_vec = std::vector<int>(count_size_vector, 1);
+    string_size = 200000000;
+    std::string s = volochaev_s_count_characters_27_mpi::get_random_string(string_size);
+    global_vec = std::vector<std::string>(2, s);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<nesterov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar, "+");
+  auto testMpiTaskParallel = std::make_shared<volochaev_s_count_characters_27_mpi::Lab1_27_mpi>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -83,7 +86,7 @@ TEST(mpi_example_perf_test, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(count_size_vector, global_sum[0]);
+    ASSERT_EQ(0, global_sum[0]);
   }
 }
 
@@ -97,4 +100,3 @@ int main(int argc, char** argv) {
   }
   return RUN_ALL_TESTS();
 }
-*/

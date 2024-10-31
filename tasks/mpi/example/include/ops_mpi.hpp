@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #pragma once
 
 #include <gtest/gtest.h>
@@ -15,7 +14,7 @@
 
 namespace volochaev_s_count_characters_27_mpi {
 
-std::vector<char> get_random_string(int sz);
+std::string get_random_string(int sz);
 
 class Lab1_27_seq: public ppc::core::Task {
  public:
@@ -27,8 +26,7 @@ class Lab1_27_seq: public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<char> input1_;
-  std::vector<char> input2_;
+  std::vector<std::pair<char,char>> input_;
   int res{};
   std::string ops;
 };
@@ -49,4 +47,4 @@ class Lab1_27_mpi : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  // namespace nesterov_a_test_task_mpi
+}  // namespace volochaev_s_count_characters_27_mpi

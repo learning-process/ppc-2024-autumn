@@ -9,7 +9,7 @@
 
 using namespace std::chrono_literals;
 
-std::vector<char> volochaev_s_count_characters_27_mpi::get_random_string(int sz) {
+std::string volochaev_s_count_characters_27_mpi::get_random_string(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
 
@@ -24,22 +24,19 @@ std::vector<char> volochaev_s_count_characters_27_mpi::get_random_string(int sz)
 bool volochaev_s_count_characters_27_mpi::Lab1_27_seq::pre_processing() {
   internal_order_test();
   // Init vectors
-  input1_ = std::vector<char>(taskData->inputs_count[0]);
-  input2_ = std::vector<char>(taskData->inputs_count[1]);
-  auto* tmp_ptr = reinterpret_cast<char*>(taskData->inputs[0]);
-  for (size_t i = 0; i < taskData->inputs_count[0]; i++) 
-  {
-    input1_[i] = tmp_ptr[i];
-  }
+  auto tmp1 = reinterpret_cast<std::string*>(taskData->inputs[0])[0];
+  auto tmp2 = reinterpret_cast<std::string*>(taskData->inputs[0])[1];
 
-  tmp_ptr = reinterpret_cast<char*>(taskData->inputs[1]);
-  for (size_t i = 0; i < taskData->inputs_count[1]; i++)
+  input_ = std::vector<std::pair<char, char>>(std::min(tmp1.size(), tmp2.size()));
+
+  for (size_t i = 0; i < std::min(tmp1.size(), tmp2.size()); i++) 
   {
-    input2_[i] = tmp_ptr[i];
+    input_[i].first = tmp1[i];
+    input_[i].second = tmp2[i];
   }
 
   // Init value for output
-  res = 0;
+  res = abs((int)tmp1.size() - (int)tmp2.size());
   return true;
 }
 
@@ -51,12 +48,10 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_seq::validation() {
 
 bool volochaev_s_count_characters_27_mpi::Lab1_27_seq::run() {
   internal_order_test();
-  
-  res = abs((int)input1_.size() - (int)input2_.size());
 
-  for (size_t i = 0; i < std::min(input1_.size(), input2_.size()); ++i)
+  for (size_t i = 0; i < input_.size(); ++i)
   {
-     if (input1_[i] != input2_[i])
+     if (input_[i].first != input_[i].second)
      {
        res += 2;
      }
@@ -75,10 +70,12 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::pre_processing() {
   internal_order_test();
 
   unsigned int delta = 0;
+  auto tmp1 = reinterpret_cast<std::string*>(taskData->inputs[0])[0];
+  auto tmp2 = reinterpret_cast<std::string*>(taskData->inputs[0])[1];
   if (world.rank() == 0) 
   {
-     delta = (std::max(taskData->inputs_count[0] - 1, taskData->inputs_count[1] - 1)) / world.size();
-     if (std::max(taskData->inputs_count[0] - 1, taskData->inputs_count[1] - 1) % world.size() > 0u) ++delta;
+     delta = (std::min(tmp1.size(), tmp2.size())) / world.size();
+     if (std::min(tmp1.size(), tmp2.size()) % world.size() > 0u) ++delta;
   }
 
   broadcast(world, delta, 0);
@@ -87,26 +84,9 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::pre_processing() {
   {
     // Init vectors
     input_ = std::vector<std::pair<char, char>>(world.size() * delta);
-    auto tmp1_ptr = reinterpret_cast<char*>(taskData->inputs[0]);
-    auto tmp2_ptr = reinterpret_cast<char*>(taskData->inputs[1]);
-    for (unsigned i = 0; i < std::min(taskData->inputs_count[0], taskData->inputs_count[1]); i++) {
-      input_[i].first = tmp1_ptr[i];
-      input_[i].second = tmp2_ptr[i];
-    }
-
-    for (size_t i = std::min(taskData->inputs_count[0], taskData->inputs_count[1]);
-         i < std::max(taskData->inputs_count[0], taskData->inputs_count[1]); i++)
-    {
-      if (taskData->inputs_count[0] > taskData->inputs_count[1])
-      {
-        input_[i].first = tmp1_ptr[i];
-        input_[i].second = -255;
-      }
-      else
-      {
-        input_[i].first = -255;
-        input_[i].second = tmp2_ptr[i];
-      }
+     for (unsigned i = 0; i < std::min(tmp1.size(), tmp2.size()); i++) {
+      input_[i].first = tmp1[i];
+      input_[i].second = tmp2[i];
     }
 
     for (size_t proc = 1; proc < world.size(); proc++) 
@@ -118,14 +98,14 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::pre_processing() {
   local_input_ = std::vector<std::pair<char,char>>(delta);
   if (world.rank() == 0) 
   {
-    local_input_ = std::vector<std::pair<char,char>>(input_.begin(), input_.begin() + delta);
+    local_input_ = std::vector<std::pair<char, char>>(input_.begin(), std::min(input_.begin() + delta, input_.end()));
   }
   else
   {
     world.recv(0, 0, local_input_.data(), delta);
   }
   // Init value for output
-  res = 0;
+  res = abs((int)tmp1.size() - (int)tmp2.size());
   return true;
 }
 

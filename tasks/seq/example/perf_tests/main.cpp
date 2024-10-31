@@ -6,12 +6,13 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/example/include/ops_seq.hpp"
 
-TEST(sequential_example_perf_test, test_pipeline_run) {
-  const int count = 100;
-
+TEST(volochaev_s_count_characters_27_seq_perf_test, test_pipeline_run) {
   // Create data
-  std::vector<int> in(1, count);
+  std::string s = volochaev_s_count_characters_27_seq::get_random_string(200000000);
+  std::vector<std::string> in = {s, s};
   std::vector<int> out(1, 0);
+
+  int ans = 0;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -40,15 +41,18 @@ TEST(sequential_example_perf_test, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(count, out[0]);
+  ASSERT_EQ(ans, out[0]);
 }
 
-TEST(sequential_example_perf_test, test_task_run) {
-  const int count = 100;
-
+TEST(volochaev_s_count_characters_27_seq_perf_test, test_task_run) {
   // Create data
-  std::vector<int> in(1, count);
+  std::string s = volochaev_s_count_characters_27_seq::get_random_string(200000000);
+  s.back() = 'a';
+  std::string s1 = s;
+  s1.back() = 'b';
+  std::vector<std::string> in = {s, s1};
   std::vector<int> out(1, 0);
+  int ans = 2;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -77,7 +81,7 @@ TEST(sequential_example_perf_test, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(count, out[0]);
+  ASSERT_EQ(ans, out[0]);
 }
 
 int main(int argc, char **argv) {
