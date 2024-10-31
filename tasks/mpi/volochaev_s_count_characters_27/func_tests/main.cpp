@@ -2,6 +2,7 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <boost/serialization/map.hpp>
 #include <vector>
 
 #include "mpi/volochaev_s_count_characters_27/include/ops_mpi.hpp"

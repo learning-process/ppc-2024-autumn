@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <boost/serialization/map.hpp>
 #include <boost/mpi/timer.hpp>
 #include <vector>
 
