@@ -18,7 +18,7 @@ TEST(Parallel_Operations_MPI, Test_1) {
     const int size_str1 = 240;
     const int size_str2 = 120;
     global_vec = {volochaev_s_count_characters_27_mpi::get_random_string(size_str1),
-        volochaev_s_count_characters_27_mpi::get_random_string(size_str2)};
+                  volochaev_s_count_characters_27_mpi::get_random_string(size_str2)};
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_diff.data()));
