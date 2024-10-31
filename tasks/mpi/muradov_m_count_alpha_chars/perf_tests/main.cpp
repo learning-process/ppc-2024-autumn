@@ -32,7 +32,7 @@ TEST(muradov_m_count_alpha_chars_mpi, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int expected_alpha_count;
   if (world.rank() == 0) {
-    global_str = generate_string(1000000);
+    global_str = generate_string(9999999);
 
     expected_alpha_count = std::count_if(global_str.begin(), global_str.end(),
                                          [](char c) { return std::isalpha(static_cast<unsigned char>(c)); });
@@ -72,7 +72,7 @@ TEST(muradov_m_count_alpha_chars_mpi, test_task_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int expected_alpha_count;
   if (world.rank() == 0) {
-    global_str = generate_string(1000000);
+    global_str = generate_string(9999999);
 
     expected_alpha_count = std::count_if(global_str.begin(), global_str.end(),
                                          [](char c) { return std::isalpha(static_cast<unsigned char>(c)); });

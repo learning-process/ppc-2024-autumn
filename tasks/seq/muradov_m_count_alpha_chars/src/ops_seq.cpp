@@ -23,7 +23,6 @@ bool muradov_m_count_alpha_chars_seq::AlphaCharCountTaskSequential::run() {
   internal_order_test();
   alpha_count_ = std::count_if(input_str_.begin(), input_str_.end(),
                                [](char c) { return std::isalpha(static_cast<unsigned char>(c)); });
-  std::this_thread::sleep_for(20ms);
   return true;
 }
 
