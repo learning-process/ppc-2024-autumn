@@ -33,12 +33,12 @@ std::vector<TypeElem> get_random_vector(int sz) {
   if (std::is_integral<TypeElem>::value) {
     std::uniform_int_distribution<int> dist(0, 99);
     for (int i = 0; i < sz; i++) {
-      vec[i] = dist(gen);
+      vec[i] = static_cast<TypeElem>(dist(gen));
     }
   } else if (std::is_floating_point<TypeElem>::value) {
     std::uniform_real_distribution<float> dist(0.0, 99.0);
     for (int i = 0; i < sz; i++) {
-      vec[i] = dist(gen);
+      vec[i] = static_cast<TypeElem>(dist(gen));
     }
   } else {
     throw std::invalid_argument("TypeElem must be an integral or floating point type");
