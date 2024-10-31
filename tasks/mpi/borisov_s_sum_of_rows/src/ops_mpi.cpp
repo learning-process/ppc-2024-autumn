@@ -106,7 +106,7 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::pre_processing() {
         }
       }
 
-      for (size_t pr = 1; pr < world.size(); pr++) {
+      for (int pr = 1; pr < world.size(); pr++) {
         int size = static_cast<int>(delta * cols);
         world.send(pr, 0, matrix_.data() + (pr * delta * cols), size);
       }
