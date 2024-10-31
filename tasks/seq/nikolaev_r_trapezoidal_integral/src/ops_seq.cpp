@@ -4,7 +4,7 @@
 
 bool nikolaev_r_trapezoidal_integral_seq::TrapezoidalIntegralSequential::pre_processing() {
   internal_order_test();
-  double* inputs = reinterpret_cast<double*>(taskData->inputs[0]);
+  auto* inputs = reinterpret_cast<double*>(taskData->inputs[0]);
   a_ = inputs[0];
   b_ = inputs[1];
   n_ = static_cast<int>(inputs[2]);
