@@ -50,13 +50,13 @@ bool kondratev_ya_max_col_matrix_seq::TestTaskSequential::pre_processing() {
     tmp[i] = reinterpret_cast<int32_t*>(taskData->inputs[i]);
   }
 
-  input_ = std::vector(col, std::vector<int32_t>(row));
+  input_.resize(col, std::vector<int32_t>(row));
   for (uint32_t j = 0; j < col; j++) {
     for (uint32_t i = 0; i < row; i++) {
       input_[j][i] = tmp[i][j];
     }
   }
-  res_ = std::vector<int32_t>(col);
+  res_.resize(col);
 
   return true;
 }

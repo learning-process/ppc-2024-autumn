@@ -55,13 +55,13 @@ bool kondratev_ya_max_col_matrix_mpi::TestMPITaskSequential::pre_processing() {
     tmp[i] = reinterpret_cast<int32_t*>(taskData->inputs[i]);
   }
 
-  input_ = std::vector(col, std::vector<int32_t>(row));
+  input_.resize(col, std::vector<int32_t>(row));
   for (uint32_t j = 0; j < col; j++) {
     for (uint32_t i = 0; i < row; i++) {
       input_[j][i] = tmp[i][j];
     }
   }
-  res_ = std::vector<int32_t>(col);
+  res_.resize(col);
 
   return true;
 }
@@ -112,13 +112,13 @@ bool kondratev_ya_max_col_matrix_mpi::TestMPITaskParallel::pre_processing() {
       tmp[i] = reinterpret_cast<int32_t*>(taskData->inputs[i]);
     }
 
-    input_ = std::vector(col_, std::vector<int32_t>(row_));
+    input_.resize(col_, std::vector<int32_t>(row_));
     for (uint32_t j = 0; j < col_; j++) {
       for (uint32_t i = 0; i < row_; i++) {
         input_[j][i] = tmp[i][j];
       }
     }
-    res_ = std::vector<int32_t>(col_);
+    res_.resize(col_);
 
     uint32_t worldSize = world.size();
     uint32_t ind = step_;
@@ -136,7 +136,7 @@ bool kondratev_ya_max_col_matrix_mpi::TestMPITaskParallel::pre_processing() {
 
   recvSize = step_;
   if (static_cast<uint32_t>(world.rank()) < remain_) recvSize++;
-  local_input_ = std::vector(recvSize, std::vector<int32_t>(row_));
+  local_input_.resize(recvSize, std::vector<int32_t>(row_));
 
   if (world.rank() == 0) {
     std::copy(input_.begin(), input_.begin() + recvSize, local_input_.begin());
