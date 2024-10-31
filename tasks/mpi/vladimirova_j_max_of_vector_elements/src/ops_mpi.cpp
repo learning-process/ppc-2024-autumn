@@ -51,6 +51,8 @@ bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskSequential::pre_proces
       input_[i * taskData->inputs_count[1] + j] = input_data[j];
     }
   }
+
+  res = INT_MIN;
   return true;
 }
 
@@ -116,6 +118,7 @@ bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel::pre_processi
     world.recv(0, 0, local_input_.data(), delta);
   }
 
+  res = INT_MIN;
   return true;
 }
 
