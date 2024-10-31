@@ -109,8 +109,10 @@ bool ermilova_d_min_element_matrix_mpi::TestMPITaskParallel::validation() {
 
 bool ermilova_d_min_element_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-
-  int local_min = *std::min_element(local_input_.begin(), local_input_.end());
+  int local_min = 0;
+  if (!local_input_.empty()) {
+    local_min = *std::min_element(local_input_.begin(), local_input_.end());
+  }
   reduce(world, local_min, res, boost::mpi::minimum<int>(), 0);
   return true;
 }
