@@ -75,7 +75,7 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::pre_processing() {
 
   int deltax = delta * 10;
 
-  broadcast(world, deltax, 0);
+  broadcast(world, delta, 0);
 
   if (world.rank() == 0) {
     // Init vectors
