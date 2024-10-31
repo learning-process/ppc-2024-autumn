@@ -20,7 +20,7 @@ class TestTaskSequential : public ppc::core::Task {
  private:
   std::vector<std::vector<int>> input_;
   int res{};
-  unsigned int cols, rows;
+  int cols, rows;
 };
 
 }  // namespace ermilova_d_min_element_matrix_seq

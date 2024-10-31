@@ -18,9 +18,9 @@ bool ermilova_d_min_element_matrix_seq::TestTaskSequential::pre_processing() {
 
   input_.resize(rows, std::vector<int>(cols));
 
-  for (size_t i = 0; i < rows; i++) {
+  for (int i = 0; i < rows; i++) {
     auto* tpr_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
-    for (size_t j = 0; j < cols; j++) {
+    for (int j = 0; j < cols; j++) {
       input_[i][j] = tpr_ptr[j];
     }
   }
@@ -39,8 +39,8 @@ bool ermilova_d_min_element_matrix_seq::TestTaskSequential::validation() {
 
 bool ermilova_d_min_element_matrix_seq::TestTaskSequential::run() {
   internal_order_test();
-  for (size_t i = 0; i < input_.size(); i++) {
-    for (size_t j = 0; j < input_[i].size(); j++) {
+  for (int i = 0; i < input_.size(); i++) {
+    for (int j = 0; j < input_[i].size(); j++) {
       if (res > input_[i][j]) {
         res = input_[i][j];
       }

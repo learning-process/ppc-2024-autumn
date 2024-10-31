@@ -37,8 +37,8 @@ bool ermilova_d_min_element_matrix_mpi::TestMPITaskSequential::validation() {
 bool ermilova_d_min_element_matrix_mpi::TestMPITaskSequential::run() {
   internal_order_test();
 
-  for (size_t i = 0; i < input_.size(); i++) {
-    for (size_t j = 0; j < input_[i].size(); j++) {
+  for (int i = 0; i < input_.size(); i++) {
+    for (int j = 0; j < input_[i].size(); j++) {
       if (res > input_[i][j]) {
         res = input_[i][j];
       }
@@ -73,9 +73,9 @@ bool ermilova_d_min_element_matrix_mpi::TestMPITaskParallel::pre_processing() {
 
     input_ = std::vector<int>(rows * cols);
 
-    for (size_t i = 0; i < rows; i++) {
+    for (int i = 0; i < rows; i++) {
       auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
-      for (size_t j = 0; j < cols; j++) {
+      for (int j = 0; j < cols; j++) {
         input_[i * cols + j] = tmp_ptr[j];
       }
     }
