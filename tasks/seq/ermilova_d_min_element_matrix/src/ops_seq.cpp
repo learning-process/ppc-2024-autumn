@@ -39,8 +39,8 @@ bool ermilova_d_min_element_matrix_seq::TestTaskSequential::validation() {
 
 bool ermilova_d_min_element_matrix_seq::TestTaskSequential::run() {
   internal_order_test();
-  for (int i = 0; i < input_.size(); i++) {
-    for (int j = 0; j < input_[i].size(); j++) {
+  for (size_t i = 0; i < input_.size(); i++) {
+    for (size_t = 0; j < input_[i].size(); j++) {
       if (res > input_[i][j]) {
         res = input_[i][j];
       }
@@ -55,7 +55,7 @@ bool ermilova_d_min_element_matrix_seq::TestTaskSequential::post_processing() {
   return true;
 }
 
-std::vector<int> ermilova_d_min_element_matrix_seq::getRandomVector(int sz, int upper_border, int lower_border) {
+std::vector<int> ermilova_d_min_element_matrix_seq::getRandomVector(int size, int upper_border, int lower_border) {
   std::random_device dev;
   std::mt19937 gen(dev());
   if (sz <= 0) throw "Incorrect size";

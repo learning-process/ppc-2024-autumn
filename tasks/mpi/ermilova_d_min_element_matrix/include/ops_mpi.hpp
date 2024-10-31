@@ -28,7 +28,7 @@ class TestMPITaskSequential : public ppc::core::Task {
  private:
   std::vector<std::vector<int>> input_;
   int res{};
-  cols, rows;
+  int cols, rows;
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
