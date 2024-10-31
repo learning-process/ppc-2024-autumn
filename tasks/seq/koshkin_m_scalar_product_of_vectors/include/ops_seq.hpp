@@ -17,8 +17,8 @@ class VectorDotProduct : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  int res{};
-  std::vector<std::vector<int>> input_;
+  int dot_product_res{};
+  std::vector<std::vector<int>> entry_;
 };
 
 }  // namespace koshkin_m_scalar_product_of_vectors

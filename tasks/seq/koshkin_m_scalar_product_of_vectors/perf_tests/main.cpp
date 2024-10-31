@@ -17,7 +17,7 @@ std::vector<int> createRandomVector(int v_size) {
 }
 
 TEST(koshkin_m_scalar_product_of_vectors, test_pipeline_run) {
-  const int count = 1000000;
+  const int count = 22800000;
   // Create dat
   std::vector<int> out(1, 0);
 
@@ -62,7 +62,7 @@ TEST(koshkin_m_scalar_product_of_vectors, test_pipeline_run) {
 }
 
 TEST(koshkin_m_scalar_product_of_vectors, test_task_run) {
-  const int count = 1000000;
+  const int count = 22800000;
   // Create data
   std::vector<int> out(1, 0);
 
