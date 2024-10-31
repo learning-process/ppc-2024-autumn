@@ -11,9 +11,8 @@
 
 using namespace std::chrono_literals;
 std::vector<std::vector<int>> morozov_e_min_val_in_rows_matrix::getRandomMatrix(int n, int m) {
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<> dis(-100, 100);
+  int left = 0;
+  int right = 10005;
 
   // Создаем матрицу
   std::vector<std::vector<int>> matrix(n, std::vector<int>(m));
@@ -21,24 +20,14 @@ std::vector<std::vector<int>> morozov_e_min_val_in_rows_matrix::getRandomMatrix(
   // Заполняем матрицу случайными значениями
   for (int i = 0; i < n; ++i) {
     for (int j = 0; j < m; ++j) {
-      matrix[i][j] = dis(gen);
+      matrix[i][j] = left + std::rand() % (right - left + 1);
     }
   }
-  // matrix = {{1, 2, 3}, {1, 2, 3}, {1, 2, 1}};
-  return matrix;
-}
-std::vector<int> morozov_e_min_val_in_rows_matrix::minValInRowsMatrix(const std::vector<std::vector<int>>& matrix) {
-  std::vector<int> res;
-  int n = matrix.size();
-  int m = matrix[0].size();
   for (int i = 0; i < n; ++i) {
-    int cur_min = matrix[i][0];
-    for (int j = 1; j < m; ++j) {
-      cur_min = std::min(cur_min, matrix[i][j]);
-    }
-    res.push_back(cur_min);
+    int m_ = std::rand() % m;
+    matrix[i][m_] = -1;
   }
-  return res;
+  return matrix;
 }
 bool morozov_e_min_val_in_rows_matrix::TestTaskSequential::pre_processing() {
   internal_order_test();
