@@ -76,12 +76,15 @@ bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskSequential::post_proce
 bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
-  input_ = std::vector<int>(taskData->inputs_count[0] * taskData->inputs_count[1]);
+  unsigned int rows = taskData->inputs_count[0];
+  unsigned int columns = taskData->inputs_count[1];
 
-  for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
+  input_ = std::vector<int>(rows * columns);
+
+  for (unsigned int i = 0; i < rows; i++) {
     auto *input_data = reinterpret_cast<int *>(taskData->inputs[i]);
-    for (unsigned int j = 0; j < taskData->inputs_count[1]; j++) {
-      input_[i * taskData->inputs_count[1] + j] = input_data[j];
+    for (unsigned int j = 0; j < columns; j++) {
+      input_[i * columns + j] = input_data[j];
     }
   }
 
