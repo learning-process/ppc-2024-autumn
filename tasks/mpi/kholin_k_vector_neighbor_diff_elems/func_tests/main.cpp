@@ -11,9 +11,9 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_validation) {
   int ProcRank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   const int count_size_vector = 500;
+  enum_ops::operations op = enum_ops::MAX_DIFFERENCE;
   std::vector<int> global_vec;
   std::vector<double> global_delta(1, 0);
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (ProcRank == 0) {
@@ -28,16 +28,14 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_validation) {
     taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
-  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int> testMpiTaskParallel(taskDataPar, "MAX_DIFFERENCE");
+  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int> testMpiTaskParallel(taskDataPar, op);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
 
   if (ProcRank == 0) {
-    // Create data
     std::vector<double> reference_delta(1, 0);
     std::vector<int> reference_elems(2, 0);
     std::vector<uint64_t> reference_indices(2, 0);
 
-    // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataSeq->inputs_count.emplace_back(global_vec.size());
@@ -48,9 +46,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_validation) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_delta.data()));
     taskDataSeq->outputs_count.emplace_back(reference_delta.size());
 
-    // Create Task
-    kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int, uint64_t> testMPITaskSequential(taskDataSeq,
-                                                                                                     "MAX_DIFFERENCE");
+    kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int, uint64_t> testMPITaskSequential(taskDataSeq, op);
     ASSERT_EQ(testMPITaskSequential.validation(), true);
   }
 }
@@ -59,9 +55,9 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_pre_processing) {
   int ProcRank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   const int count_size_vector = 500;
+  enum_ops::operations op = enum_ops::MAX_DIFFERENCE;
   std::vector<int> global_vec;
   std::vector<double> global_delta(1, 0);
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (ProcRank == 0) {
@@ -76,17 +72,15 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_pre_processing) {
     taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
-  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int> testMpiTaskParallel(taskDataPar, "MAX_DIFFERENCE");
+  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int> testMpiTaskParallel(taskDataPar, op);
   testMpiTaskParallel.validation();
   ASSERT_EQ(testMpiTaskParallel.pre_processing(), true);
 
   if (ProcRank == 0) {
-    // Create data
     std::vector<double> reference_delta(1, 0);
     std::vector<int> reference_elems(2, 0);
     std::vector<uint64_t> reference_indices(2, 0);
 
-    // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataSeq->inputs_count.emplace_back(global_vec.size());
@@ -97,9 +91,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_pre_processing) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_delta.data()));
     taskDataSeq->outputs_count.emplace_back(reference_delta.size());
 
-    // Create Task
-    kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int, uint64_t> testTaskSequential(taskDataSeq,
-                                                                                                  "MAX_DIFFERENCE");
+    kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int, uint64_t> testTaskSequential(taskDataSeq, op);
     testTaskSequential.validation();
     ASSERT_EQ(testTaskSequential.pre_processing(), true);
   }
@@ -109,9 +101,9 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_run) {
   int ProcRank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   const int count_size_vector = 150;
+  enum_ops::operations op = enum_ops::MAX_DIFFERENCE;
   std::vector<int> global_vec;
   std::vector<double> global_delta(1, 0);
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (ProcRank == 0) {
@@ -128,18 +120,16 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_run) {
     taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
-  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int> testMpiTaskParallel(taskDataPar, "MAX_DIFFERENCE");
+  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int> testMpiTaskParallel(taskDataPar, op);
   testMpiTaskParallel.validation();
   testMpiTaskParallel.pre_processing();
   ASSERT_EQ(testMpiTaskParallel.run(), true);
 
   if (ProcRank == 0) {
-    // Create data
     std::vector<double> reference_delta(1, 0);
     std::vector<int> reference_elems(2, 0);
     std::vector<uint64_t> reference_indices(2, 0);
 
-    // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataSeq->inputs_count.emplace_back(global_vec.size());
@@ -150,9 +140,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_run) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_delta.data()));
     taskDataSeq->outputs_count.emplace_back(reference_delta.size());
 
-    // Create Task
-    kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int, uint64_t> testTaskSequential(taskDataSeq,
-                                                                                                  "MAX_DIFFERENCE");
+    kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int, uint64_t> testTaskSequential(taskDataSeq, op);
     testTaskSequential.validation();
     testTaskSequential.pre_processing();
     ASSERT_EQ(testTaskSequential.run(), true);
@@ -163,9 +151,10 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_post_processing) {
   int ProcRank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   const int count_size_vector = 500;
+  enum_ops::operations op = enum_ops::MAX_DIFFERENCE;
   std::vector<int> global_vec;
   std::vector<double> global_delta(1, 0);
-  // Create TaskData
+
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (ProcRank == 0) {
@@ -182,19 +171,17 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_post_processing) {
     taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
-  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int> testMpiTaskParallel(taskDataPar, "MAX_DIFFERENCE");
+  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int> testMpiTaskParallel(taskDataPar, op);
   testMpiTaskParallel.validation();
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   ASSERT_EQ(testMpiTaskParallel.post_processing(), true);
 
   if (ProcRank == 0) {
-    // Create data
     std::vector<double> reference_delta(1, 0);
     std::vector<int> reference_elems(2, 0);
     std::vector<uint64_t> reference_indices(2, 0);
 
-    // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataSeq->inputs_count.emplace_back(global_vec.size());
@@ -205,9 +192,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_post_processing) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_delta.data()));
     taskDataSeq->outputs_count.emplace_back(reference_delta.size());
 
-    // Create Task
-    kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int, uint64_t> testTaskSequential(taskDataSeq,
-                                                                                                  "MAX_DIFFERENCE");
+    kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int, uint64_t> testTaskSequential(taskDataSeq, op);
     testTaskSequential.validation();
     testTaskSequential.pre_processing();
     testTaskSequential.run();
@@ -221,7 +206,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
   const int count_size_vector = 200;
   std::vector<int> global_vec;
   std::vector<double> global_delta(1, 0);
-  // Create TaskData
+  enum_ops::operations op = enum_ops::MAX_DIFFERENCE;
+
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (ProcRank == 0) {
@@ -239,7 +225,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
     taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
-  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int> testMpiTaskParallel(taskDataPar, "MAX_DIFFERENCE");
+  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int> testMpiTaskParallel(taskDataPar, op);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -247,12 +233,12 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
   int test = global_delta[0];
 
   if (ProcRank == 0) {
-    // Create data
     std::vector<double> reference_delta(1, 0);
     std::vector<int> reference_elems(2, 0);
     std::vector<uint64_t> reference_indices(2, 0);
-    // Create TaskData
+
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataSeq->inputs_count.emplace_back(global_vec.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_elems.data()));
@@ -262,9 +248,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_delta.data()));
     taskDataSeq->outputs_count.emplace_back(reference_delta.size());
 
-    // Create Task
-    kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int, uint64_t> testTaskSequential(taskDataSeq,
-                                                                                                  "MAX_DIFFERENCE");
+    kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int, uint64_t> testTaskSequential(taskDataSeq, op);
     ASSERT_EQ(testTaskSequential.validation(), true);
     testTaskSequential.pre_processing();
     testTaskSequential.run();
@@ -278,7 +262,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   std::vector<int32_t> global_vec;
   std::vector<double> global_delta(1, 0);
-  // Create TaskData
+  enum_ops::operations op = enum_ops::MAX_DIFFERENCE;
+
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (ProcRank == 0) {
     const int count_size_vector = 300;
@@ -294,8 +279,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
     taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
-  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int32_t> testMpiTaskParallel(taskDataPar,
-                                                                                            "MAX_DIFFERENCE");
+  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int32_t> testMpiTaskParallel(taskDataPar, op);
   testMpiTaskParallel.validation();
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -303,12 +287,10 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
   int32_t test = global_delta[0];
 
   if (ProcRank == 0) {
-    // Create data
     std::vector<double> reference_delta(1, 0);
     std::vector<int32_t> reference_elems(2, 0);
     std::vector<uint64_t> reference_indices(2, 0);
 
-    // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataSeq->inputs_count.emplace_back(global_vec.size());
@@ -319,9 +301,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_delta.data()));
     taskDataSeq->outputs_count.emplace_back(reference_delta.size());
 
-    // Create Task
-    kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int32_t, uint64_t> testTaskSequential(taskDataSeq,
-                                                                                                      "MAX_DIFFERENCE");
+    kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<int32_t, uint64_t> testTaskSequential(taskDataSeq, op);
     testTaskSequential.validation();
     testTaskSequential.pre_processing();
     testTaskSequential.run();
@@ -336,7 +316,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_float) {
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   std::vector<float> global_vec;
   std::vector<double> global_delta(1, 0);
-  // Create TaskData
+  enum_ops::operations op = enum_ops::MAX_DIFFERENCE;
+
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (ProcRank == 0) {
@@ -355,8 +336,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_float) {
     taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
-  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<float> testMpiTaskParallel(taskDataPar,
-                                                                                          "MAX_DIFFERENCE");
+  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<float> testMpiTaskParallel(taskDataPar, op);
   testMpiTaskParallel.validation();
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -364,12 +344,10 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_float) {
   float test = global_delta[0];
 
   if (ProcRank == 0) {
-    // Create data
     std::vector<double> reference_delta(1, 0);
     std::vector<float> reference_elems(2, 0);
     std::vector<uint64_t> reference_indices(2, 0);
 
-    // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataSeq->inputs_count.emplace_back(global_vec.size());
@@ -380,9 +358,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_float) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_delta.data()));
     taskDataSeq->outputs_count.emplace_back(reference_delta.size());
 
-    // Create Task
-    kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<float, uint64_t> testTaskSequential(taskDataSeq,
-                                                                                                    "MAX_DIFFERENCE");
+    kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<float, uint64_t> testTaskSequential(taskDataSeq, op);
     testTaskSequential.validation();
     testTaskSequential.pre_processing();
     testTaskSequential.run();
@@ -397,7 +373,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_double) {
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   std::vector<double> global_vec;
   std::vector<double> global_delta(1, 0);
-  // Create TaskData
+  enum_ops::operations op = enum_ops::MAX_DIFFERENCE;
+
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (ProcRank == 0) {
@@ -416,8 +393,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_double) {
     taskDataPar->outputs_count.emplace_back(global_delta.size());
   }
 
-  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<double> testMpiTaskParallel(taskDataPar,
-                                                                                           "MAX_DIFFERENCE");
+  kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<double> testMpiTaskParallel(taskDataPar, op);
   testMpiTaskParallel.validation();
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -425,12 +401,10 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_double) {
   double test = global_delta[0];
 
   if (ProcRank == 0) {
-    // Create data
     std::vector<double> reference_delta(1, 0);
     std::vector<double> reference_elems(2, 0);
     std::vector<uint64_t> reference_indices(2, 0);
 
-    // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataSeq->inputs_count.emplace_back(global_vec.size());
@@ -441,9 +415,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_double) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_delta.data()));
     taskDataSeq->outputs_count.emplace_back(reference_delta.size());
 
-    // Create Task
-    kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<double, uint64_t> testTaskSequential(taskDataSeq,
-                                                                                                     "MAX_DIFFERENCE");
+    kholin_k_vector_neighbor_diff_elems_mpi::TestTaskSequential<double, uint64_t> testTaskSequential(taskDataSeq, op);
     testTaskSequential.validation();
     testTaskSequential.pre_processing();
     testTaskSequential.run();

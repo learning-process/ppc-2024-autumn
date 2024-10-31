@@ -6,11 +6,9 @@
 #include "seq/kholin_k_vector_neighbor_diff_elems/include/ops_seq.hpp"
 
 TEST(kholin_k_vector_neighbor_diff_elems_seq, check_pre_processing) {
-  // Create data
-  std::vector<int32_t> in(1256, 1);       // in data
-  std::vector<int32_t> out(2, 0);         // out data
-  std::vector<uint64_t> out_index(2, 0);  // out data
-                                          // Create TaskData
+  std::vector<int32_t> in(1256, 1);
+  std::vector<int32_t> out(2, 0);
+  std::vector<uint64_t> out_index(2, 0);
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
   taskData->inputs_count.emplace_back(in.size());
@@ -19,7 +17,6 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_pre_processing) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_index.data()));
   taskData->outputs_count.emplace_back(out_index.size());
 
-  // Create Task
   kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int32_t, uint64_t> testTaskSequential(taskData);
   testTaskSequential.validation();
 
@@ -27,12 +24,10 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_pre_processing) {
 }
 
 TEST(kholin_k_vector_neighbor_diff_elems_seq, check_validation) {
-  // Create data
   std::vector<int32_t> in(1256, 1);
   std::vector<int32_t> out(2, 0);
   std::vector<uint64_t> out_index(2, 0);
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
   taskData->inputs_count.emplace_back(in.size());
@@ -41,18 +36,15 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_validation) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_index.data()));
   taskData->outputs_count.emplace_back(out_index.size());
 
-  // Create Task
   kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int32_t, uint64_t> testTaskSequential(taskData);
   EXPECT_EQ(testTaskSequential.validation(), true);
 }
 
 TEST(kholin_k_vector_neighbor_diff_elems_seq, check_run) {
-  // Create data
   std::vector<int32_t> in(1256, 1);
   std::vector<int32_t> out(2, 0);
   std::vector<uint64_t> out_index(2, 0);
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
   taskData->inputs_count.emplace_back(in.size());
@@ -61,7 +53,6 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_run) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_index.data()));
   taskData->outputs_count.emplace_back(out_index.size());
 
-  // Create Task
   kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int32_t, uint64_t> testTaskSequential(taskData);
   testTaskSequential.validation();
   testTaskSequential.pre_processing();
@@ -69,12 +60,10 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_run) {
 }
 
 TEST(kholin_k_vector_neighbor_diff_elems_seq, check_post_processing) {
-  // Create data
   std::vector<int32_t> in(1256, 1);
   std::vector<int32_t> out(2, 0);
   std::vector<uint64_t> out_index(2, 0);
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
   taskData->inputs_count.emplace_back(in.size());
@@ -83,7 +72,6 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_post_processing) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_index.data()));
   taskData->outputs_count.emplace_back(out_index.size());
 
-  // Create Task
   kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int32_t, uint64_t> testTaskSequential(taskData);
   testTaskSequential.validation();
   testTaskSequential.pre_processing();
@@ -92,7 +80,6 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_post_processing) {
 }
 
 TEST(kholin_k_vector_neighbor_diff_elems_seq, check_int32_t) {
-  // Create data
   std::vector<int32_t> in(1256, 1);
   std::vector<int32_t> out(2, 0);
   std::vector<uint64_t> out_index(2, 0);
@@ -102,7 +89,6 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_int32_t) {
   in[234] = 0;
   in[235] = 4000;
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
   taskData->inputs_count.emplace_back(in.size());
@@ -111,7 +97,6 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_int32_t) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_index.data()));
   taskData->outputs_count.emplace_back(out_index.size());
 
-  // Create Task
   kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int32_t, uint64_t> testTaskSequential(taskData);
   testTaskSequential.validation();
   testTaskSequential.pre_processing();
@@ -124,7 +109,6 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_int32_t) {
 }
 
 TEST(kholin_k_vector_neighbour_diff_elems_seq, check_double) {
-  // Create data
   std::vector<double> in(25680, 1);
   std::vector<double> out(2, 0);
   std::vector<uint64_t> out_index(2, 0);
@@ -134,7 +118,6 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_double) {
   in[189] = -1000.1;
   in[190] = 9000.9;
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
   taskData->inputs_count.emplace_back(in.size());
@@ -143,7 +126,6 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_double) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_index.data()));
   taskData->outputs_count.emplace_back(out_index.size());
 
-  // Create Task
   kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<double, uint64_t> testTaskSequential(taskData);
   testTaskSequential.validation();
   testTaskSequential.pre_processing();
@@ -156,7 +138,6 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_double) {
 }
 
 TEST(kholin_k_vector_neighbour_diff_elems_seq, check_int8_t) {
-  // Create data
   std::vector<int8_t> in(250, -1);
   std::vector<int8_t> out(2, 0);
   std::vector<uint64_t> out_index(2, 0);
@@ -170,7 +151,6 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_int8_t) {
   in[5] = 56;
   in[6] = -56;
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
   taskData->inputs_count.emplace_back(in.size());
@@ -179,7 +159,6 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_int8_t) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_index.data()));
   taskData->outputs_count.emplace_back(out_index.size());
 
-  // Create Task
   kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int8_t, uint64_t> testTaskSequential(taskData);
   testTaskSequential.validation();
   testTaskSequential.pre_processing();
@@ -192,7 +171,6 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_int8_t) {
 }
 
 TEST(kholin_k_vector_neighbour_diff_elems_seq, check_int64_t) {
-  // Create data
   std::vector<int64_t> in(75836, 1);
   std::vector<int64_t> out(2, 0);
   std::vector<uint64_t> out_index(2, 0);
@@ -210,7 +188,6 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_int64_t) {
   in[20] = -1000;
   in[21] = 1119;
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
   taskData->inputs_count.emplace_back(in.size());
@@ -219,7 +196,6 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_int64_t) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_index.data()));
   taskData->outputs_count.emplace_back(out_index.size());
 
-  // Create Task
   kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int64_t, uint64_t> testTaskSequential(taskData);
   testTaskSequential.validation();
   testTaskSequential.pre_processing();
@@ -232,7 +208,6 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_int64_t) {
 }
 
 TEST(kholin_k_vector_neighbour_diff_elems_seq, check_float) {
-  // Create data
   std::vector<float> in(20, 1.0f);
   std::vector<float> out(2, 0.0f);
   std::vector<uint64_t> out_index(2, 0);
@@ -242,7 +217,6 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_float) {
   in[0] = 110.001f;
   in[1] = -990.0025f;
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
   taskData->inputs_count.emplace_back(in.size());
@@ -251,7 +225,6 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_float) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_index.data()));
   taskData->outputs_count.emplace_back(out_index.size());
 
-  // Create Task
   kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<float, uint64_t> testTaskSequential(taskData);
   testTaskSequential.validation();
   testTaskSequential.pre_processing();

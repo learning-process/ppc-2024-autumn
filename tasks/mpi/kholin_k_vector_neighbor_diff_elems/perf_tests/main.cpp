@@ -12,7 +12,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, test_pipeline_run) {
   std::vector<int> global_vec;
   std::vector<int> global_elems(2, 0);
   std::vector<uint64_t> global_indices(2, 0);
-  // Create TaskData
+  enum_ops::operations op = enum_ops::MAX_DIFFERENCE;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (ProcRank == 0) {
     const float count_size_vector = 100000000;
@@ -33,22 +33,19 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, test_pipeline_run) {
   }
 
   auto testMpiTaskParallel = std::make_shared<kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int>>(
-      taskDataPar, "MAX_DIFFERENCE");
+      taskDataPar, op);
   testMpiTaskParallel->validation();
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (ProcRank == 0) {
@@ -62,7 +59,8 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, test_task_run) {
   std::vector<int> global_vec;
   std::vector<int> global_elems(2, 0);
   std::vector<uint64_t> global_indices(2, 0);
-  // Create TaskData
+  enum_ops::operations op = enum_ops::MAX_DIFFERENCE;
+
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (ProcRank == 0) {
     const float count_size_vector = 100000000;
@@ -83,22 +81,19 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, test_task_run) {
   }
 
   auto testMpiTaskParallel = std::make_shared<kholin_k_vector_neighbor_diff_elems_mpi::TestMPITaskParallel<int>>(
-      taskDataPar, "MAX_DIFFERENCE");
+      taskDataPar, op);
   testMpiTaskParallel->validation();
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (ProcRank == 0) {

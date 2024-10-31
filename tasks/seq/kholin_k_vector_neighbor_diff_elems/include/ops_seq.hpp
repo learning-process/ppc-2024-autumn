@@ -20,7 +20,6 @@ class MostDiffNeighborElements : public ppc::core::Task {
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
-  // get results
   bool post_processing() override;
 
  private:
@@ -30,16 +29,26 @@ class MostDiffNeighborElements : public ppc::core::Task {
   TypeIndex right_index;
   TypeElem left_elem;
   TypeElem right_elem;
+  std::vector<TypeElem> get_random_vector(int sz);
 };
+
+template <class TypeElem, class TypeIndex>
+std::vector<TypeElem> MostDiffNeighborElements<TypeElem, TypeIndex>::get_random_vector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<TypeElem> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = gen() % 100;
+  }
+  return vec;
+}
 
 template <class TypeElem, class TypeIndex>
 bool MostDiffNeighborElements<TypeElem, TypeIndex>::pre_processing() {
   internal_order_test();
-  // Data TaskData  cite to type elements of vector input_
   input_ = std::vector<TypeElem>(taskData->inputs_count[0]);
   auto ptr = reinterpret_cast<TypeElem*>(taskData->inputs[0]);
   std::copy(ptr, ptr + taskData->inputs_count[0], input_.begin());
-  // Execute the actions as if this were the default constructor
   result = {};
   left_index = {};
   right_index = 2;
@@ -51,25 +60,19 @@ bool MostDiffNeighborElements<TypeElem, TypeIndex>::pre_processing() {
 template <class TypeElem, class TypeIndex>
 bool MostDiffNeighborElements<TypeElem, TypeIndex>::validation() {
   internal_order_test();
-  // Check count elements of output
   return taskData->outputs_count[0] == 2 && taskData->outputs_count[1] == 2;
 }
 
 template <class TypeElem, class TypeIndex>
 bool MostDiffNeighborElements<TypeElem, TypeIndex>::run() {
   internal_order_test();
-  // here your algorithm task (.h files for task or all in run)
-  //
-  // start delta between elements vector
   double max_delta = 0;
   double delta = 0;
   size_t curr_index = 0;
-  // get iterator for current element and his neighbor element vector
   auto iter_curr = input_.begin();
   auto iter_next = iter_curr + 1;
   auto iter_end = input_.end() - 1;
   auto iter_begin = input_.begin();
-  // algorithm search max delta with using address arithmetic pointers
   while (iter_curr != iter_end) {
     delta = fabs((double)(*iter_next - *iter_curr));
     if (delta > max_delta) {
@@ -84,16 +87,12 @@ bool MostDiffNeighborElements<TypeElem, TypeIndex>::run() {
     iter_curr++;
     iter_next = iter_curr + 1;
   }
-  // initialize results
   result = max_delta;
-  // std::cout << result; //max delta here
   right_index = curr_index + 1;
   left_index = curr_index;
   left_elem = input_[left_index];
 
   right_elem = input_[right_index];
-  // std::cout << "left el " << left_elem << "left_ind " << left_index << std::endl;
-  // std::cout << "right el" << right_elem << "right_ind" << right_index << std::endl;
   return true;
 }
 
@@ -106,4 +105,4 @@ bool MostDiffNeighborElements<TypeElem, TypeIndex>::post_processing() {
   reinterpret_cast<TypeIndex*>(taskData->outputs[1])[1] = right_index;
   return true;
 }
-}  // namespace kholin_k_vector_neighbor_diff_elems_seq
+}

@@ -18,13 +18,17 @@
 
 #include "core/task/include/task.hpp"
 
+namespace enum_ops {
+    enum operations { MAX_DIFFERENCE };
+};
+
 namespace kholin_k_vector_neighbor_diff_elems_mpi {
 
 template <class TypeElem, class TypeIndex>
 class TestTaskSequential : public ppc::core::Task {
  public:
-  explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+  explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, enum_ops::operations ops_)
+      : Task(std::move(taskData_)), ops(ops_) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -37,17 +41,15 @@ class TestTaskSequential : public ppc::core::Task {
   TypeIndex right_index;
   TypeElem left_elem;
   TypeElem right_elem;
-  std::string ops;
+  enum_ops::operations ops;
 };
 
 template <class TypeElem, class TypeIndex>
 bool TestTaskSequential<TypeElem, TypeIndex>::pre_processing() {
   internal_order_test();
-  // Data TaskData  cite to type elements of vector input_
   input_ = std::vector<TypeElem>(taskData->inputs_count[0]);
   auto ptr = reinterpret_cast<TypeElem*>(taskData->inputs[0]);
   std::copy(ptr, ptr + taskData->inputs_count[0], input_.begin());
-  // Execute the actions as if this were the default constructor
   result = {};
   left_index = {};
   right_index = 2;
@@ -59,25 +61,20 @@ bool TestTaskSequential<TypeElem, TypeIndex>::pre_processing() {
 template <class TypeElem, class TypeIndex>
 bool TestTaskSequential<TypeElem, TypeIndex>::validation() {
   internal_order_test();
-  // Check count elements of output
   return taskData->outputs_count[0] == 2 && taskData->outputs_count[1] == 2;
 }
 
 template <class TypeElem, class TypeIndex>
 bool TestTaskSequential<TypeElem, TypeIndex>::run() {
   internal_order_test();
-  // here your algorithm task (.h files for task or all in run)
-  if (ops == "MAX_DIFFERENCE") {  // declaration operations with
-    // start delta between elements vector
+  if (ops == MAX_DIFFERENCE) {
     double max_delta = 0;
     double delta = 0;
     size_t curr_index = 0;
-    // get iterator for current element and his neighbor element vector
     auto iter_curr = input_.begin();
     auto iter_next = iter_curr + 1;
     auto iter_end = input_.end() - 1;
     auto iter_begin = input_.begin();
-    // algorithm search max delta with using address arithmetic pointers
     while (iter_curr != iter_end) {
       delta = abs(*iter_next - *iter_curr);
       if (delta > max_delta) {
@@ -92,15 +89,11 @@ bool TestTaskSequential<TypeElem, TypeIndex>::run() {
       iter_curr++;
       iter_next = iter_curr + 1;
     }
-    // initialize results
     result = max_delta;
-    // std::cout << result; //max delta here
     right_index = curr_index + 1;
     left_index = curr_index;
     left_elem = input_[left_index];
     right_elem = input_[right_index];
-    // std::cout << "left el " << left_elem << "left_ind " << left_index << std::endl;
-    // std::cout << "right el" << right_elem << "right_ind" << right_index << std::endl;
   }
   return true;
 }
@@ -119,8 +112,8 @@ bool TestTaskSequential<TypeElem, TypeIndex>::post_processing() {
 template <class TypeElem>
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, enum_ops::operations ops_)
+      : Task(std::move(taskData_)), ops(ops_) {}
 
   MPI_Datatype get_mpi_type();
 
@@ -131,13 +124,13 @@ class TestMPITaskParallel : public ppc::core::Task {
   ~TestMPITaskParallel() override { MPI_Type_free(&mpi_type_elem); }
 
  private:
-  std::vector<TypeElem> input_;        // global vector
-  std::vector<TypeElem> local_input_;  // local vector
+  std::vector<TypeElem> input_;
+  std::vector<TypeElem> local_input_;
   unsigned int delta_n;
   unsigned int delta_n_r;
   double result;
   unsigned int residue;
-  std::string ops;
+  enum_ops::operations ops;
   MPI_Datatype mpi_type_elem;
   void print_local_data();
   double max_difference();
@@ -157,17 +150,15 @@ bool TestMPITaskParallel<TypeElem>::pre_processing() {
   int size = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
-  // Data TaskData  cite to type elements of vector input_
   if (ProcRank == 0) {
     delta_n = taskData->inputs_count[0] / size;
     delta_n_r = {};
   }
-  MPI_Bcast(&delta_n, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);  // send all procs delta_n
+  MPI_Bcast(&delta_n, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
   if (ProcRank == 0) {
     input_ = std::vector<TypeElem>(taskData->inputs_count[0]);
     auto ptr = reinterpret_cast<TypeElem*>(taskData->inputs[0]);
     std::copy(ptr, ptr + taskData->inputs_count[0], input_.begin());
-    // distribute data processes 0 to size-1
   }
   if (ProcRank == 0) {
     residue = taskData->inputs_count[0] % size;
@@ -178,7 +169,6 @@ bool TestMPITaskParallel<TypeElem>::pre_processing() {
   }
   MPI_Scatter(input_.data(), delta_n, mpi_type_elem, local_input_.data(), delta_n, mpi_type_elem, 0, MPI_COMM_WORLD);
   if (ProcRank == 0) {
-    // write residue into vector process 0
     for (unsigned int i = delta_n; i < delta_n_r; i++) {
       local_input_[i] = input_[i];
     }
@@ -194,7 +184,6 @@ bool TestMPITaskParallel<TypeElem>::validation() {
   mpi_type_elem = get_mpi_type();
   int ProcRank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
-  // Check count elements of output
   if (ProcRank == 0) {
     return taskData->outputs_count[0] == 1;
   }
@@ -204,12 +193,9 @@ bool TestMPITaskParallel<TypeElem>::validation() {
 template <typename TypeElem>
 bool TestMPITaskParallel<TypeElem>::run() {
   internal_order_test();
-  // output local_input_ vector
   double local_result = 0;
-  // here your algorithm task (.h files for task or all in run)
   local_result = max_difference();
-  if (ops == "MAX_DIFFERENCE") {
-    // everyone process send 1 element and get all local_results from everyone process 1 element
+  if (ops == MAX_DIFFERENCE) {
     double sendbuf1[1];
     sendbuf1[0] = local_result;
     MPI_Reduce(sendbuf1, &result, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
@@ -250,16 +236,12 @@ void TestMPITaskParallel<TypeElem>::print_local_data() {
 
 template <typename TypeElem>
 double TestMPITaskParallel<TypeElem>::max_difference() {
-  // start delta between elements vector
   double max_delta = 0;
   double delta = 0;
   double local_result = 0;
-
-  // get iterator for current element and his neighbor element vector
   auto iter_curr = local_input_.begin();
   auto iter_next = iter_curr + 1;
   auto iter_end = local_input_.end() - 1;
-  // algorithm search max delta with using address arithmetic pointers
   while (iter_curr != iter_end) {
     delta = abs((double)(*iter_next - *iter_curr));
     if (delta > max_delta) {
@@ -267,9 +249,8 @@ double TestMPITaskParallel<TypeElem>::max_difference() {
     }
     iter_curr++;
     iter_next = iter_curr + 1;
-    // initialize results
     local_result = max_delta;
   }
   return local_result;
 }
-}  // namespace kholin_k_vector_neighbor_diff_elems_mpi
+}
