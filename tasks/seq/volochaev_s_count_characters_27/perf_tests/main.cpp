@@ -5,7 +5,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/volochaev_s_count_characters_27/include/ops_seq.hpp"
 
-TEST(volochaev_s_count_characters_27_seq_perf_test, test_pipeline_run) {
+TEST(volochaev_s_count_characters_27_seq, test_pipeline_run) {
   // Create data
   std::string s = volochaev_s_count_characters_27_seq::get_random_string(200000000);
   std::vector<std::string> in = {s, s};
@@ -43,7 +43,7 @@ TEST(volochaev_s_count_characters_27_seq_perf_test, test_pipeline_run) {
   ASSERT_EQ(ans, out[0]);
 }
 
-TEST(volochaev_s_count_characters_27_seq_perf_test, test_task_run) {
+TEST(volochaev_s_count_characters_27_seq, test_task_run) {
   // Create data
   std::string s = volochaev_s_count_characters_27_seq::get_random_string(200000000);
   s.back() = 'a';

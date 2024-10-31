@@ -7,7 +7,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/volochaev_s_count_characters_27/include/ops_mpi.hpp"
 
-TEST(mpi_example_perf_test, test_pipeline_run) {
+TEST(volochaev_s_count_characters_27_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<std::string> global_vec;
   std::vector<int32_t> global_sum(1, 0);
@@ -50,7 +50,7 @@ TEST(mpi_example_perf_test, test_pipeline_run) {
   }
 }
 
-TEST(mpi_example_perf_test, test_task_run) {
+TEST(volochaev_s_count_characters_27_mpi, test_task_run) {
   boost::mpi::communicator world;
   std::vector<std::string> global_vec;
   std::vector<int32_t> global_sum(1, 0);

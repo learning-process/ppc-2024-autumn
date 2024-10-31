@@ -7,7 +7,7 @@
 
 #include "mpi/volochaev_s_count_characters_27/include/ops_mpi.hpp"
 
-TEST(Parallel_Operations_MPI, Test_1) {
+TEST(volochaev_s_count_characters_27_MPI, Test_1) {
   boost::mpi::communicator world;
   std::vector<std::string> global_vec;
   std::vector<int32_t> global_diff(1, 0);
@@ -53,7 +53,7 @@ TEST(Parallel_Operations_MPI, Test_1) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_2) {
+TEST(volochaev_s_count_characters_27_MPI, Test_2) {
   boost::mpi::communicator world;
   std::vector<std::string> global_vec;
   std::vector<int32_t> global_diff(1, 0);
@@ -98,7 +98,7 @@ TEST(Parallel_Operations_MPI, Test_2) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_3) {
+TEST(volochaev_s_count_characters_27_MPI, Test_3) {
   boost::mpi::communicator world;
   std::vector<std::string> global_vec;
   std::vector<int32_t> global_max(1, 0);
@@ -144,7 +144,7 @@ TEST(Parallel_Operations_MPI, Test_3) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_4) {
+TEST(volochaev_s_count_characters_27_MPI, Test_4) {
   boost::mpi::communicator world;
   std::vector<std::string> global_vec;
   std::vector<int32_t> global_max(1, 0);
