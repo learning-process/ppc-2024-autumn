@@ -6,11 +6,11 @@ using namespace std::chrono_literals;
 bool petrov_o_num_of_alternations_signs_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
 
-  const auto count = taskData->inputs_count[0];
+  const auto input_size = taskData->inputs_count[0];
 
   const int* input = reinterpret_cast<int*>(taskData->inputs[0]);
-  this->input_.resize(count);
-  std::copy(input, input + count, std::begin(this->input_));
+  this->input_.resize(input_size);
+  std::copy(input, input + input_size, std::begin(this->input_));
 
   this->res = 0;  // Обнуляем счетчик каждый новый запуск
 
