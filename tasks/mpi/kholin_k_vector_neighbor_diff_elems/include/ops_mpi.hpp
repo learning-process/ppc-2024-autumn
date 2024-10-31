@@ -31,14 +31,14 @@ std::vector<TypeElem> get_random_vector(int sz) {
   std::vector<TypeElem> vec(sz);
 
   if (std::is_integral<TypeElem>::value) {
-    std::uniform_int_distribution<int> dist(0, 99);
+    std::uniform_int_distribution<int> dist(-99, 99);
     for (int i = 0; i < sz; i++) {
-      vec[i] = static_cast<TypeElem>(dist(gen));
+      vec[i] = dist(gen);
     }
   } else if (std::is_floating_point<TypeElem>::value) {
-    std::uniform_real_distribution<float> dist(0.0, 99.0);
+    std::uniform_real_distribution<float> dist(-99.0, 99.0);
     for (int i = 0; i < sz; i++) {
-      vec[i] = static_cast<TypeElem>(dist(gen));
+      vec[i] = dist(gen);
     }
   } else {
     throw std::invalid_argument("TypeElem must be an integral or floating point type");
