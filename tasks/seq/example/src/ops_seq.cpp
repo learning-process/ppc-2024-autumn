@@ -1,4 +1,5 @@
 #include "seq/example/include/ops_seq.hpp"
+
 #include <functional>
 #include <random>
 #include <thread>
@@ -51,7 +52,7 @@ bool volochaev_s_count_characters_27_seq::Lab1_27::run() {
       res += 2;
     }
   }
-  
+
   return true;
 }
 
