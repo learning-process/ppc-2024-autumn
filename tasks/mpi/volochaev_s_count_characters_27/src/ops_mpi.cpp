@@ -83,7 +83,7 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::pre_processing() {
       input_[i].second = tmp2[i];
     }
     for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + proc * delta, delta);
+      world.send(proc, 0, input_.data() + (proc-1) * delta, delta);
     }
   }
 
