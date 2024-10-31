@@ -1,10 +1,9 @@
 // Copyright 2023 Nesterov Alexander
 #include "mpi/gnitienko_k_sum_values_by_rows_matrix/include/ops_mpi.hpp"
 
+#include <cstring>
 #include <random>
 #include <vector>
-#include <cstring>
-
 
 std::vector<int> gnitienko_k_sum_row_mpi::SumByRowMPISeq::mainFunc() {
   for (int i = 0; i < rows; ++i) {
