@@ -44,7 +44,7 @@ template <typename DataType>
 bool beskhmelnova_k_most_different_neighbor_elements_mpi::TestMPITaskSequential<DataType>::validation() {
   internal_order_test();
   // Check count elements of output
-  return taskData->outputs_count[0] == 2;
+  return taskData->outputs_count[0] == 2 && taskData->inputs_count[0] > 1;
 }
 
 template <typename DataType>
@@ -103,7 +103,7 @@ bool beskhmelnova_k_most_different_neighbor_elements_mpi::TestMPITaskParallel<Da
   internal_order_test();
   if (world.rank() == 0) {
     // Check count elements of output
-    return taskData->outputs_count[0] == 2;
+    return taskData->outputs_count[0] == 2 && taskData->inputs_count[0] > 1;
   }
   return true;
 }
