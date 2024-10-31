@@ -11,7 +11,7 @@ std::string volochaev_s_count_characters_27_seq::get_random_string(int sz) {
   std::mt19937 gen(dev());
 
   std::string vec(sz, ' ');
-  for (size_t i = 0; i < sz; i++) {
+  for (int i = 0; i < sz; i++) {
     vec[i] += gen() % 256;
   }
   return vec;
