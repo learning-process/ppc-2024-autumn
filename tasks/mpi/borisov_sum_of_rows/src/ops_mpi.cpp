@@ -19,8 +19,8 @@ bool borisov_sum_of_rows::SumOfRowsTaskSequential ::pre_processing() {
   if (rows > 0 && cols > 0) {
     matrix_.resize(rows, std::vector<int>(cols));
     int* data = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (int i = 0; i < rows; i++) {
-      for (int j = 0; j < cols; j++) {
+    for (size_t i = 0; i < rows; i++) {
+      for (size_t j = 0; j < cols; j++) {
         matrix_[i][j] = data[(i * cols) + j];
       }
     }
@@ -53,9 +53,9 @@ bool borisov_sum_of_rows::SumOfRowsTaskSequential ::run() {
   internal_order_test();
 
   if (!matrix_.empty() && !matrix_[0].empty()) {
-    for (int i = 0; i < matrix_.size(); i++) {
+    for (size_t i = 0; i < matrix_.size(); i++) {
       int row_sum = 0;
-      for (int j = 0; j < matrix_[i].size(); j++) {
+      for (size_t j = 0; j < matrix_[i].size(); j++) {
         row_sum += matrix_[i][j];
       }
       row_sums_[i] = row_sum;
@@ -106,7 +106,7 @@ bool borisov_sum_of_rows::SumOfRowsTaskParallel::pre_processing() {
         }
       }
 
-      for (int pr = 1; pr < world.size(); pr++) {
+      for (size_t pr = 1; pr < world.size(); pr++) {
         int size = static_cast<int>(delta * cols);
         world.send(pr, 0, matrix_.data() + (pr * delta * cols), size);
       }
@@ -171,7 +171,7 @@ bool borisov_sum_of_rows::SumOfRowsTaskParallel::post_processing() {
   if (world.rank() == 0) {
     if (!row_sums_.empty()) {
       int* out = reinterpret_cast<int*>(taskData->outputs[0]);
-      for (int i = 0; i < row_sums_.size(); i++) {
+      for (size_t i = 0; i < row_sums_.size(); i++) {
         out[i] = row_sums_[i];
       }
     }

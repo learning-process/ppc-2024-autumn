@@ -29,7 +29,7 @@ TEST(borisov_sum_of_rows, Test_Sum_Matrix_10) {
   sumOfRowsTask.run();
   sumOfRowsTask.post_processing();
 
-  for (int i = 0; i < rows; i++) {
+  for (size_t i = 0; i < rows; i++) {
     ASSERT_EQ(row_sums[i], cols);
   }
 }
@@ -59,7 +59,7 @@ TEST(borisov_sum_of_rows, Test_Sum_Matrix_30) {
   sumOfRowsTask.run();
   sumOfRowsTask.post_processing();
 
-  for (int i = 0; i < rows; i++) {
+  for (size_t i = 0; i < rows; i++) {
     ASSERT_EQ(row_sums[i], cols);
   }
 }
@@ -89,7 +89,7 @@ TEST(borisov_sum_of_rows, Test_Sum_Matrix_100) {
   sumOfRowsTask.run();
   sumOfRowsTask.post_processing();
 
-  for (int i = 0; i < rows; i++) {
+  for (size_t i = 0; i < rows; i++) {
     ASSERT_EQ(row_sums[i], cols);
   }
 }

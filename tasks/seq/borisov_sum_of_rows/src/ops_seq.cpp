@@ -22,8 +22,8 @@ bool borisov_sum_of_rows::SumOfRowsTaskSequential::pre_processing() {
   matrix_.resize(rows * cols);
   int* data = reinterpret_cast<int*>(taskData->inputs[0]);
 
-  for (int i = 0; i < rows; i++) {
-    for (int j = 0; j < cols; j++) {
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < cols; j++) {
       matrix_[(i * cols) + j] = data[(i * cols) + j];
     }
   }
@@ -74,7 +74,7 @@ bool borisov_sum_of_rows::SumOfRowsTaskSequential ::post_processing() {
 
   if (!row_sums_.empty()) {
     int* out = reinterpret_cast<int*>(taskData->outputs[0]);
-    for (int i = 0; i < row_sums_.size(); i++) {
+    for (size_t i = 0; i < row_sums_.size(); i++) {
       out[i] = row_sums_[i];
     }
   }

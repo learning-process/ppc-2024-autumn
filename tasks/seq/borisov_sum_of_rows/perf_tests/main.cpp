@@ -37,7 +37,7 @@ TEST(borisov_sum_of_rows, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  for (int i = 0; i < rows; i++) {
+  for (size_t i = 0; i < rows; i++) {
     ASSERT_EQ(row_sums[i], cols);
   }
 }
@@ -73,7 +73,7 @@ TEST(borisov_sum_of_rows, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  for (int i = 0; i < rows; i++) {
+  for (size_t i = 0; i < rows; i++) {
     ASSERT_EQ(row_sums[i], cols);
   }
 }

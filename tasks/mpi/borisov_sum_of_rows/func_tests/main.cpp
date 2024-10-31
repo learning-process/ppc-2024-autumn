@@ -83,7 +83,7 @@ TEST(borisov_sum_of_rows, Test_Zero_Matrix) {
   sumOfRowsTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    for (int i = 0; i < global_row_sums.size(); i++) {
+    for (size_t i = 0; i < global_row_sums.size(); i++) {
       ASSERT_EQ(global_row_sums[i], 0);
     }
   }
@@ -139,7 +139,7 @@ TEST(borisov_sum_of_rows, Test_Sum_Rows) {
     sumOfRowsTaskSequential.run();
     sumOfRowsTaskSequential.post_processing();
 
-    for (int i = 0; i < global_row_sums.size(); i++) {
+    for (size_t i = 0; i < global_row_sums.size(); i++) {
       ASSERT_EQ(reference_row_sums[i], global_row_sums[i]);
     }
   }
