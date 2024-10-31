@@ -11,7 +11,8 @@ bool lysov_i_integration_the_trapezoid_method_seq::TestTaskSequential::pre_proce
   internal_order_test();
   a = *reinterpret_cast<double*>(taskData->inputs[0]);
   b = *reinterpret_cast<double*>(taskData->inputs[1]);
-  cnt_of_splits = *reinterpret_cast<int*>(taskData->inputs[2]);
+  epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
+  cnt_of_splits = static_cast<int>(std::abs((b - a)) / epsilon);
   h = (b - a) / cnt_of_splits;
   input_.resize(cnt_of_splits + 1);
   for (int i = 0; i <= cnt_of_splits; ++i) {

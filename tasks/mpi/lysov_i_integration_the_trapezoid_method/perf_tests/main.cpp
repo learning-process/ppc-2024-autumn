@@ -11,12 +11,12 @@ TEST(lysov_i_integration_the_trapezoid_method_mpi, test_integration_pipeline_run
   std::vector<double> global_result(1, 0.0);
   double a = -1.45;
   double b = 1.45;
-  int cnt_of_splits = 100000000;
+  double epsilon = 0.0000001;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
   }
   auto testMpiTaskParallel =
@@ -38,7 +38,7 @@ TEST(lysov_i_integration_the_trapezoid_method_mpi, test_integration_pipeline_run
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
     lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
@@ -54,12 +54,12 @@ TEST(lysov_i_integration_the_trapezoid_method_mpi, test_integration_task_run) {
   std::vector<double> global_result(1, 0.0);
   double a = -1.45;
   double b = 1.45;
-  int cnt_of_splits = 100000000;
+  double epsilon = 0.0000001;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
   }
   auto testMpiTaskParallel =
