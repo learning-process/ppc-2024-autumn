@@ -94,19 +94,10 @@ bool kondratev_ya_max_col_matrix_mpi::TestMPITaskSequential::post_processing() {
 bool kondratev_ya_max_col_matrix_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
-  uint32_t recvSize = 0;
-
   if (world.rank() == 0) {
     row_ = taskData->inputs_count[0];
     col_ = taskData->inputs_count[1];
-  }
 
-  broadcast(world, row_, 0);
-  broadcast(world, col_, 0);
-  step_ = col_ / world.size();
-  remain_ = col_ % world.size();
-
-  if (world.rank() == 0) {
     std::vector<int32_t*> tmp(row_);
     for (uint32_t i = 0; i < row_; i++) {
       tmp[i] = reinterpret_cast<int32_t*>(taskData->inputs[i]);
@@ -119,7 +110,32 @@ bool kondratev_ya_max_col_matrix_mpi::TestMPITaskParallel::pre_processing() {
       }
     }
     res_.resize(col_);
+  }
 
+  return true;
+}
+
+bool kondratev_ya_max_col_matrix_mpi::TestMPITaskParallel::validation() {
+  internal_order_test();
+
+  if (world.rank() == 0) {
+    return taskData->outputs_count[0] == taskData->inputs_count[1];
+  }
+  return true;
+}
+
+bool kondratev_ya_max_col_matrix_mpi::TestMPITaskParallel::run() {
+  internal_order_test();
+
+  broadcast(world, row_, 0);
+  broadcast(world, col_, 0);
+
+  step_ = col_ / world.size();
+  remain_ = col_ % world.size();
+
+  uint32_t recvSize = 0;
+
+  if (world.rank() == 0) {
     uint32_t worldSize = world.size();
     uint32_t ind = step_;
     if (remain_ > 0) ind++;
@@ -145,23 +161,6 @@ bool kondratev_ya_max_col_matrix_mpi::TestMPITaskParallel::pre_processing() {
       world.recv(0, 0, local_input_[i]);
     }
   }
-
-  return true;
-}
-
-bool kondratev_ya_max_col_matrix_mpi::TestMPITaskParallel::validation() {
-  internal_order_test();
-
-  if (world.rank() == 0) {
-    return taskData->outputs_count[0] == taskData->inputs_count[1];
-  }
-  return true;
-}
-
-bool kondratev_ya_max_col_matrix_mpi::TestMPITaskParallel::run() {
-  internal_order_test();
-
-  // uint32_t recvSize = 0;
 
   std::vector<int32_t> loc_max(local_input_.size());
   for (size_t i = 0; i < loc_max.size(); i++) {
