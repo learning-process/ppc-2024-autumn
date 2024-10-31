@@ -4,9 +4,9 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "seq/borisov_sum_of_rows/include/ops_seq.hpp"
+#include "seq/borisov_s_sum_of_rows/include/ops_seq.hpp"
 
-TEST(borisov_sum_of_rows, test_pipeline_run) {
+TEST(borisov_s_sum_of_rows, test_pipeline_run) {
   const int rows = 5000;
   const int cols = 5000;
 
@@ -20,7 +20,7 @@ TEST(borisov_sum_of_rows, test_pipeline_run) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(row_sums.data()));
   taskDataSeq->outputs_count.push_back(row_sums.size());
 
-  auto sumOfRowsTask = std::make_shared<borisov_sum_of_rows::SumOfRowsTaskSequential>(taskDataSeq);
+  auto sumOfRowsTask = std::make_shared<borisov_s_sum_of_rows::SumOfRowsTaskSequential>(taskDataSeq);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -42,7 +42,7 @@ TEST(borisov_sum_of_rows, test_pipeline_run) {
   }
 }
 
-TEST(borisov_sum_of_rows, test_task_run) {
+TEST(borisov_s_sum_of_rows, test_task_run) {
   const int rows = 5000;
   const int cols = 5000;
 
@@ -56,7 +56,7 @@ TEST(borisov_sum_of_rows, test_task_run) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(row_sums.data()));
   taskDataSeq->outputs_count.push_back(row_sums.size());
 
-  auto sumOfRowsTask = std::make_shared<borisov_sum_of_rows::SumOfRowsTaskSequential>(taskDataSeq);
+  auto sumOfRowsTask = std::make_shared<borisov_s_sum_of_rows::SumOfRowsTaskSequential>(taskDataSeq);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;

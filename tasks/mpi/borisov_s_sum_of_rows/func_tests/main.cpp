@@ -5,9 +5,9 @@
 #include <boost/mpi/environment.hpp>
 #include <vector>
 
-#include "mpi/borisov_sum_of_rows/include/ops_mpi.hpp"
+#include "mpi/borisov_s_sum_of_rows/include/ops_mpi.hpp"
 
-TEST(borisov_sum_of_rows, Test_Unit_Matrix) {
+TEST(borisov_s_sum_of_rows, Test_Unit_Matrix) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int> global_row_sums;
@@ -34,7 +34,7 @@ TEST(borisov_sum_of_rows, Test_Unit_Matrix) {
     taskDataPar->outputs_count.push_back(0);
   }
 
-  borisov_sum_of_rows::SumOfRowsTaskParallel sumOfRowsTaskParallel(taskDataPar);
+  borisov_s_sum_of_rows::SumOfRowsTaskParallel sumOfRowsTaskParallel(taskDataPar);
   ASSERT_EQ(sumOfRowsTaskParallel.validation(), true);
 
   sumOfRowsTaskParallel.pre_processing();
@@ -48,7 +48,7 @@ TEST(borisov_sum_of_rows, Test_Unit_Matrix) {
   }
 }
 
-TEST(borisov_sum_of_rows, Test_Zero_Matrix) {
+TEST(borisov_s_sum_of_rows, Test_Zero_Matrix) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int> global_row_sums;
@@ -75,7 +75,7 @@ TEST(borisov_sum_of_rows, Test_Zero_Matrix) {
     taskDataPar->outputs_count.push_back(0);
   }
 
-  borisov_sum_of_rows::SumOfRowsTaskParallel sumOfRowsTaskParallel(taskDataPar);
+  borisov_s_sum_of_rows::SumOfRowsTaskParallel sumOfRowsTaskParallel(taskDataPar);
   ASSERT_EQ(sumOfRowsTaskParallel.validation(), true);
 
   sumOfRowsTaskParallel.pre_processing();
@@ -89,7 +89,7 @@ TEST(borisov_sum_of_rows, Test_Zero_Matrix) {
   }
 }
 
-TEST(borisov_sum_of_rows, Test_Sum_Rows) {
+TEST(borisov_s_sum_of_rows, Test_Sum_Rows) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int> global_row_sums;
@@ -100,7 +100,7 @@ TEST(borisov_sum_of_rows, Test_Sum_Rows) {
   int cols = 15;
 
   if (world.rank() == 0) {
-    global_matrix = borisov_sum_of_rows::getRandomMatrix(rows, cols);
+    global_matrix = borisov_s_sum_of_rows::getRandomMatrix(rows, cols);
     global_row_sums.resize(rows, 0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
@@ -116,7 +116,7 @@ TEST(borisov_sum_of_rows, Test_Sum_Rows) {
     taskDataPar->outputs_count.push_back(0);
   }
 
-  borisov_sum_of_rows::SumOfRowsTaskParallel sumOfRowsTaskParallel(taskDataPar);
+  borisov_s_sum_of_rows::SumOfRowsTaskParallel sumOfRowsTaskParallel(taskDataPar);
   ASSERT_EQ(sumOfRowsTaskParallel.validation(), true);
 
   sumOfRowsTaskParallel.pre_processing();
@@ -133,7 +133,7 @@ TEST(borisov_sum_of_rows, Test_Sum_Rows) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_row_sums.data()));
     taskDataSeq->outputs_count.push_back(reference_row_sums.size());
 
-    borisov_sum_of_rows::SumOfRowsTaskSequential sumOfRowsTaskSequential(taskDataSeq);
+    borisov_s_sum_of_rows::SumOfRowsTaskSequential sumOfRowsTaskSequential(taskDataSeq);
     ASSERT_EQ(sumOfRowsTaskSequential.validation(), true);
     sumOfRowsTaskSequential.pre_processing();
     sumOfRowsTaskSequential.run();
@@ -145,7 +145,7 @@ TEST(borisov_sum_of_rows, Test_Sum_Rows) {
   }
 }
 
-TEST(borisov_sum_of_rows, Test_Empty_Matrix) {
+TEST(borisov_s_sum_of_rows, Test_Empty_Matrix) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int> global_row_sums;
@@ -164,7 +164,7 @@ TEST(borisov_sum_of_rows, Test_Empty_Matrix) {
     taskDataPar->outputs_count.push_back(global_row_sums.size());
   }
 
-  borisov_sum_of_rows::SumOfRowsTaskParallel sumOfRowsTaskParallel(taskDataPar);
+  borisov_s_sum_of_rows::SumOfRowsTaskParallel sumOfRowsTaskParallel(taskDataPar);
 
   ASSERT_FALSE(sumOfRowsTaskParallel.validation());
 

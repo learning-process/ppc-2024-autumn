@@ -6,7 +6,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace borisov_sum_of_rows {
+namespace borisov_s_sum_of_rows {
 
 class SumOfRowsTaskSequential : public ppc::core::Task {
  public:
@@ -21,4 +21,4 @@ class SumOfRowsTaskSequential : public ppc::core::Task {
   std::vector<int> row_sums_;
 };
 
-}  // namespace borisov_sum_of_rows
+}  // namespace borisov_s_sum_of_rows

@@ -1,5 +1,5 @@
 // Copyright 2023 Nesterov Alexander
-#include "mpi/borisov_sum_of_rows/include/ops_mpi.hpp"
+#include "mpi/borisov_s_sum_of_rows/include/ops_mpi.hpp"
 
 #include <algorithm>
 #include <functional>
@@ -10,11 +10,11 @@
 
 using namespace std::chrono_literals;
 
-bool borisov_sum_of_rows::SumOfRowsTaskSequential ::pre_processing() {
+bool borisov_s_sum_of_rows::SumOfRowsTaskSequential ::pre_processing() {
   internal_order_test();
 
-  int rows = taskData->inputs_count[0];
-  int cols = taskData->inputs_count[1];
+  size_t rows = taskData->inputs_count[0];
+  size_t cols = taskData->inputs_count[1];
 
   if (rows > 0 && cols > 0) {
     matrix_.resize(rows, std::vector<int>(cols));
@@ -30,14 +30,14 @@ bool borisov_sum_of_rows::SumOfRowsTaskSequential ::pre_processing() {
   return true;
 }
 
-bool borisov_sum_of_rows::SumOfRowsTaskSequential::validation() {
+bool borisov_s_sum_of_rows::SumOfRowsTaskSequential::validation() {
   internal_order_test();
 
   if (taskData->outputs_count[0] != taskData->inputs_count[0]) {
     return false;
   }
 
-  int cols = taskData->inputs_count.size() > 1 ? taskData->inputs_count[1] : 0;
+  size_t cols = taskData->inputs_count.size() > 1 ? taskData->inputs_count[1] : 0;
   if (cols <= 0) {
     return false;
   }
@@ -49,7 +49,7 @@ bool borisov_sum_of_rows::SumOfRowsTaskSequential::validation() {
   return true;
 }
 
-bool borisov_sum_of_rows::SumOfRowsTaskSequential ::run() {
+bool borisov_s_sum_of_rows::SumOfRowsTaskSequential ::run() {
   internal_order_test();
 
   if (!matrix_.empty() && !matrix_[0].empty()) {
@@ -64,7 +64,7 @@ bool borisov_sum_of_rows::SumOfRowsTaskSequential ::run() {
   return true;
 }
 
-bool borisov_sum_of_rows::SumOfRowsTaskSequential ::post_processing() {
+bool borisov_s_sum_of_rows::SumOfRowsTaskSequential ::post_processing() {
   internal_order_test();
 
   if (!row_sums_.empty()) {
@@ -76,7 +76,7 @@ bool borisov_sum_of_rows::SumOfRowsTaskSequential ::post_processing() {
   return true;
 }
 
-std::vector<int> borisov_sum_of_rows::getRandomMatrix(int rows, int cols) {
+std::vector<int> borisov_s_sum_of_rows::getRandomMatrix(size_t rows, size_t cols) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> matrix(rows * cols);
@@ -86,15 +86,15 @@ std::vector<int> borisov_sum_of_rows::getRandomMatrix(int rows, int cols) {
   return matrix;
 }
 
-bool borisov_sum_of_rows::SumOfRowsTaskParallel::pre_processing() {
+bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::pre_processing() {
   internal_order_test();
   unsigned int delta = 0;
 
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
 
-    unsigned int rows = taskData->inputs_count[0];
-    unsigned int cols = taskData->inputs_count.size() > 1 ? taskData->inputs_count[1] : 0;
+    size_t rows = taskData->inputs_count[0];
+    size_t cols = taskData->inputs_count.size() > 1 ? taskData->inputs_count[1] : 0;
 
     if (rows > 0 && cols > 0) {
       int* data = reinterpret_cast<int*>(taskData->inputs[0]);
@@ -128,14 +128,14 @@ bool borisov_sum_of_rows::SumOfRowsTaskParallel::pre_processing() {
   return true;
 }
 
-bool borisov_sum_of_rows::SumOfRowsTaskParallel::validation() {
+bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     if (taskData->outputs_count[0] != taskData->inputs_count[0]) {
       return false;
     }
 
-    int cols = taskData->inputs_count.size() > 1 ? taskData->inputs_count[1] : 0;
+    size_t cols = taskData->inputs_count.size() > 1 ? taskData->inputs_count[1] : 0;
     if (cols <= 0) {
       return false;
     }
@@ -147,7 +147,7 @@ bool borisov_sum_of_rows::SumOfRowsTaskParallel::validation() {
   return true;
 }
 
-bool borisov_sum_of_rows::SumOfRowsTaskParallel::run() {
+bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::run() {
   internal_order_test();
 
   for (size_t i = 0; i < loc_row_sums_.size(); i++) {
@@ -166,7 +166,7 @@ bool borisov_sum_of_rows::SumOfRowsTaskParallel::run() {
   return true;
 }
 
-bool borisov_sum_of_rows::SumOfRowsTaskParallel::post_processing() {
+bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     if (!row_sums_.empty()) {

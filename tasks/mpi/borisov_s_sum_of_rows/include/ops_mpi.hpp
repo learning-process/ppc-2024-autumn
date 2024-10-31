@@ -13,9 +13,9 @@
 
 #include "core/task/include/task.hpp"
 
-namespace borisov_sum_of_rows {
+namespace borisov_s_sum_of_rows {
 
-std::vector<int> getRandomMatrix(int rows, int cols);
+std::vector<int> getRandomMatrix(size_t rows, size_t cols);
 
 class SumOfRowsTaskSequential : public ppc::core::Task {
  public:
@@ -45,4 +45,4 @@ class SumOfRowsTaskParallel : public ppc::core::Task {
   int res = 0;
 };
 
-}  // namespace borisov_sum_of_rows
+}  // namespace borisov_s_sum_of_rows

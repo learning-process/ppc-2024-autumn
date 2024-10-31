@@ -5,9 +5,9 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/borisov_sum_of_rows/include/ops_mpi.hpp"
+#include "mpi/borisov_s_sum_of_rows/include/ops_mpi.hpp"
 
-TEST(borisov_sum_of_rows, test_pipeline_run) {
+TEST(borisov_s_sum_of_rows, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int> global_row_sums;
@@ -27,7 +27,7 @@ TEST(borisov_sum_of_rows, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(global_row_sums.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<borisov_sum_of_rows::SumOfRowsTaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<borisov_s_sum_of_rows::SumOfRowsTaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
 
   testMpiTaskParallel->pre_processing();
@@ -51,7 +51,7 @@ TEST(borisov_sum_of_rows, test_pipeline_run) {
   }
 }
 
-TEST(borisov_sum_of_rows, test_task_run) {
+TEST(borisov_s_sum_of_rows, test_task_run) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int> global_row_sums;
@@ -71,7 +71,7 @@ TEST(borisov_sum_of_rows, test_task_run) {
     taskDataPar->outputs_count.emplace_back(global_row_sums.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<borisov_sum_of_rows::SumOfRowsTaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<borisov_s_sum_of_rows::SumOfRowsTaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();

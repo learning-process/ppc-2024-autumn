@@ -1,15 +1,15 @@
 // Copyright 2024 Nesterov Alexander
-#include "seq/borisov_sum_of_rows/include/ops_seq.hpp"
+#include "seq/borisov_s_sum_of_rows/include/ops_seq.hpp"
 
 #include <thread>
 
 using namespace std::chrono_literals;
 
-bool borisov_sum_of_rows::SumOfRowsTaskSequential::pre_processing() {
+bool borisov_s_sum_of_rows::SumOfRowsTaskSequential::pre_processing() {
   internal_order_test();
 
-  int rows = taskData->inputs_count[0];
-  int cols = taskData->inputs_count[1];
+  size_t rows = taskData->inputs_count[0];
+  size_t cols = taskData->inputs_count[1];
 
   if (rows <= 0 || cols <= 0) {
     return false;
@@ -32,14 +32,14 @@ bool borisov_sum_of_rows::SumOfRowsTaskSequential::pre_processing() {
   return true;
 }
 
-bool borisov_sum_of_rows::SumOfRowsTaskSequential::validation() {
+bool borisov_s_sum_of_rows::SumOfRowsTaskSequential::validation() {
   internal_order_test();
 
   if (taskData->outputs_count[0] != taskData->inputs_count[0]) {
     return false;
   }
 
-  int cols = taskData->inputs_count.size() > 1 ? taskData->inputs_count[1] : 0;
+  size_t cols = taskData->inputs_count.size() > 1 ? taskData->inputs_count[1] : 0;
   if (cols <= 0) {
     return false;
   }
@@ -51,7 +51,7 @@ bool borisov_sum_of_rows::SumOfRowsTaskSequential::validation() {
   return true;
 }
 
-bool borisov_sum_of_rows::SumOfRowsTaskSequential::run() {
+bool borisov_s_sum_of_rows::SumOfRowsTaskSequential::run() {
   internal_order_test();
 
   size_t rows = taskData->inputs_count[0];
@@ -69,7 +69,7 @@ bool borisov_sum_of_rows::SumOfRowsTaskSequential::run() {
   return true;
 }
 
-bool borisov_sum_of_rows::SumOfRowsTaskSequential ::post_processing() {
+bool borisov_s_sum_of_rows::SumOfRowsTaskSequential ::post_processing() {
   internal_order_test();
 
   if (!row_sums_.empty()) {
