@@ -76,10 +76,6 @@ TEST(kondratev_ya_max_col_matrix_seq, test_3) {
   for (uint32_t i = 0; i < res.size(); i++) ASSERT_EQ(res[i], ref[i]);
 }
 
-TEST(kondratev_ya_max_col_matrix_mpi, throw_gen_mtrx) {
-  ASSERT_ANY_THROW(kondratev_ya_max_col_matrix_seq::getRandomMatrix(0, 0));
-}
-
 TEST(kondratev_ya_max_col_matrix_mpi, right_insert_ref) {
   uint32_t row = 3;
   uint32_t col = 3;

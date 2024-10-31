@@ -12,10 +12,6 @@
 using namespace std::chrono_literals;
 
 std::vector<std::vector<int32_t>> kondratev_ya_max_col_matrix_mpi::getRandomMatrix(uint32_t row, uint32_t col) {
-  if (row == 0 || col == 0) {
-    throw std::invalid_argument("Args should be greater then zero");
-  }
-
   int32_t low = -200;
   int32_t high = 200;
 

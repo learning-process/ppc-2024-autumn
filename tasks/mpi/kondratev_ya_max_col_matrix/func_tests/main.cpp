@@ -108,14 +108,6 @@ TEST(kondratev_ya_max_col_matrix_mpi, test_3) {
   }
 }
 
-TEST(kondratev_ya_max_col_matrix_mpi, throw_gen_mtrx) {
-  boost::mpi::communicator world;
-
-  if (world.rank() == 0) {
-    ASSERT_ANY_THROW(kondratev_ya_max_col_matrix_mpi::getRandomMatrix(0, 0));
-  }
-}
-
 TEST(kondratev_ya_max_col_matrix_mpi, right_insert_ref) {
   boost::mpi::communicator world;
 
