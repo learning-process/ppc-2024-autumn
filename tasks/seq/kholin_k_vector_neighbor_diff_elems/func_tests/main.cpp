@@ -112,9 +112,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_int32_t_with_random) {
   std::vector<int32_t> in(1256, 1);
   std::vector<int32_t> out(2, 0);
   std::vector<uint64_t> out_index(2, 0);
-  
   in = kholin_k_vector_neighbor_diff_elems_seq::get_random_vector<int32_t>(1256);
-
   in[234] = 0;
   in[235] = 4000;
 
@@ -269,9 +267,7 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_float_with_random) {
   std::vector<float> in(20, 1.0f);
   std::vector<float> out(2, 0.0f);
   std::vector<uint64_t> out_index(2, 0);
-
   in = kholin_k_vector_neighbor_diff_elems_seq::get_random_vector<float>(20);
-
   in[0] = 110.001f;
   in[1] = -990.0025f;
 

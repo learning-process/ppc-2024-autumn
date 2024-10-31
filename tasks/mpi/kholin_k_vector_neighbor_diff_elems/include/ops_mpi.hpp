@@ -195,7 +195,7 @@ bool TestMPITaskParallel<TypeElem>::run() {
   internal_order_test();
   double local_result = 0;
   local_result = max_difference();
-  if (ops == MAX_DIFFERENCE) {
+  if (ops == enum_ops::MAX_DIFFERENCE) {
     double sendbuf1[1];
     sendbuf1[0] = local_result;
     MPI_Reduce(sendbuf1, &result, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
