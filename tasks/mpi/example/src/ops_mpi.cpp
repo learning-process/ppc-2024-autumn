@@ -52,7 +52,6 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_seq::run() {
       res += 2;
     }
   }
-
   return true;
 }
 

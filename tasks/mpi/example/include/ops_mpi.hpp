@@ -15,7 +15,6 @@
 namespace volochaev_s_count_characters_27_mpi {
 
 std::string get_random_string(int sz);
-
 class Lab1_27_seq : public ppc::core::Task { 
  public:
   explicit Lab1_27_seq(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
