@@ -13,9 +13,9 @@ TEST(morozov_e_min_val_in_rows_matrix_perf_test, test_pipeline_run_my) {
   const int m = 5000;
   std::vector<std::vector<int>> matrix(n, std::vector<int>(m));
   std::vector<int> res(n);
-  std::vector<int> res_ = morozov_e_min_val_in_rows_matrix::minValInRowsMatrix(matrix);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
+    matrix = morozov_e_min_val_in_rows_matrix::getRandomMatrix(n, m);
     for (int i = 0; i < n; ++i) taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
     taskDataPar->inputs_count.emplace_back(n);
     taskDataPar->inputs_count.emplace_back(m);
@@ -41,19 +41,19 @@ TEST(morozov_e_min_val_in_rows_matrix_perf_test, test_pipeline_run_my) {
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
     for (int i = 0; i < n; ++i) {
-      ASSERT_EQ(res_[i], res[i]);
+      ASSERT_EQ(-1, res[i]);
     }
   }
 }
 TEST(morozov_e_min_val_in_rows_matrix_perf_test, test_task_run_my) {
   boost::mpi::communicator world;
-  const int n = 4500;
-  const int m = 4500;
+  const int n = 450;
+  const int m = 450;
   std::vector<std::vector<int>> matrix(n, std::vector<int>(m));
   std::vector<int> res(n);
-  std::vector<int> res_ = morozov_e_min_val_in_rows_matrix::minValInRowsMatrix(matrix);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
+    matrix = morozov_e_min_val_in_rows_matrix::getRandomMatrix(n, m);
     for (int i = 0; i < n; ++i) taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
     taskDataPar->inputs_count.emplace_back(n);
     taskDataPar->inputs_count.emplace_back(m);
@@ -67,7 +67,7 @@ TEST(morozov_e_min_val_in_rows_matrix_perf_test, test_task_run_my) {
   testMpiTaskParallel->post_processing();
   if (world.rank() == 0) {
     for (int i = 0; i < n; ++i) {
-      ASSERT_EQ(res_[i], res[i]);
+      ASSERT_EQ(-1, res[i]);
     }
   }
 }

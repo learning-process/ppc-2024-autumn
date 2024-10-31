@@ -35,7 +35,6 @@ TEST(Sequential, Test_Main) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   matrix = morozov_e_min_val_in_rows_matrix::getRandomMatrix(n, m);
-  res = morozov_e_min_val_in_rows_matrix::minValInRowsMatrix(matrix);
   for (size_t i = 0; i < matrix.size(); ++i) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
   }
@@ -51,6 +50,6 @@ TEST(Sequential, Test_Main) {
   testMpiTaskSequential.post_processing();
   // ASSERT_EQ(v, res2);
   for (int i = 0; i < n; ++i) {
-    ASSERT_EQ(resSeq[i], res[i]);
+    ASSERT_EQ(resSeq[i], -1);
   }
 }

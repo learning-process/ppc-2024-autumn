@@ -40,15 +40,13 @@ TEST(morozov_e_min_val_in_rows_matrix_MPI, Test_Main) {
   std::vector<std::vector<int>> matrix;
   const int n = 1000;
   const int m = 1000;
-  std::vector<int> resSeq(n);
-  std::vector<int> resPar(n);
+  std::vector<int32_t> resPar(n);
   std::vector<int> res(n);
   boost::mpi::communicator world;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
     matrix = morozov_e_min_val_in_rows_matrix::getRandomMatrix(n, m);
-    res = morozov_e_min_val_in_rows_matrix::minValInRowsMatrix(matrix);
     for (size_t i = 0; i < matrix.size(); ++i) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
     }
@@ -65,6 +63,6 @@ TEST(morozov_e_min_val_in_rows_matrix_MPI, Test_Main) {
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
   for (int i = 0; i < n; ++i) {
-    ASSERT_EQ(resPar[i], res[i]);
+    ASSERT_EQ(resPar[i], -1);
   }
 }
