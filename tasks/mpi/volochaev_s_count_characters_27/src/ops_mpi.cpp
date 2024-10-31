@@ -1,7 +1,7 @@
 #include "mpi/volochaev_s_count_characters_27/include/ops_mpi.hpp"
 
-#include <boost/serialization/map.hpp>
 #include <algorithm>
+#include <boost/serialization/map.hpp>
 #include <functional>
 #include <random>
 #include <string>
