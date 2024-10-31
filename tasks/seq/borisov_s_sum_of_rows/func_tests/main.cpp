@@ -30,7 +30,7 @@ TEST(borisov_s_sum_of_rows, Test_Sum_Matrix_10) {
   sumOfRowsTask.post_processing();
 
   for (size_t i = 0; i < rows; i++) {
-    ASSERT_EQ(row_sums[i], cols);
+    ASSERT_EQ(row_sums[i], 10);
   }
 }
 
@@ -60,7 +60,7 @@ TEST(borisov_s_sum_of_rows, Test_Sum_Matrix_30) {
   sumOfRowsTask.post_processing();
 
   for (size_t i = 0; i < rows; i++) {
-    ASSERT_EQ(row_sums[i], cols);
+    ASSERT_EQ(row_sums[i], 30);
   }
 }
 
@@ -90,7 +90,7 @@ TEST(borisov_s_sum_of_rows, Test_Sum_Matrix_100) {
   sumOfRowsTask.post_processing();
 
   for (size_t i = 0; i < rows; i++) {
-    ASSERT_EQ(row_sums[i], cols);
+    ASSERT_EQ(row_sums[i], 100);
   }
 }
 

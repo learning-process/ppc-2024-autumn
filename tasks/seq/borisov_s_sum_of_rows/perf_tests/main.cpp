@@ -7,8 +7,8 @@
 #include "seq/borisov_s_sum_of_rows/include/ops_seq.hpp"
 
 TEST(borisov_s_sum_of_rows, test_pipeline_run) {
-  const int rows = 5000;
-  const int cols = 5000;
+  size_t rows = 5000;
+  size_t cols = 5000;
 
   std::vector<int> matrix(rows * cols, 1);
   std::vector<int> row_sums(rows, 0);
@@ -38,13 +38,13 @@ TEST(borisov_s_sum_of_rows, test_pipeline_run) {
   ppc::core::Perf::print_perf_statistic(perfResults);
 
   for (size_t i = 0; i < rows; i++) {
-    ASSERT_EQ(row_sums[i], cols);
+    ASSERT_EQ(row_sums[i], 5000);
   }
 }
 
 TEST(borisov_s_sum_of_rows, test_task_run) {
-  const int rows = 5000;
-  const int cols = 5000;
+  size_t rows = 5000;
+  size_t cols = 5000;
 
   std::vector<int> matrix(rows * cols, 1);
   std::vector<int> row_sums(rows, 0);
@@ -74,6 +74,6 @@ TEST(borisov_s_sum_of_rows, test_task_run) {
   ppc::core::Perf::print_perf_statistic(perfResults);
 
   for (size_t i = 0; i < rows; i++) {
-    ASSERT_EQ(row_sums[i], cols);
+    ASSERT_EQ(row_sums[i], 5000);
   }
 }

@@ -43,7 +43,7 @@ TEST(borisov_s_sum_of_rows, Test_Unit_Matrix) {
 
   if (world.rank() == 0) {
     for (size_t i = 0; i < global_row_sums.size(); i++) {
-      ASSERT_EQ(global_row_sums[i], cols);
+      ASSERT_EQ(global_row_sums[i], 10);
     }
   }
 }

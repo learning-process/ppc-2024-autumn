@@ -45,8 +45,8 @@ TEST(borisov_s_sum_of_rows, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    for (size_t i = 0; i < rows; ++i) {
-      ASSERT_EQ(global_row_sums[i], cols);
+    for (size_t i = 0; i < rows; i++) {
+      ASSERT_EQ(global_row_sums[i], 5000);
     }
   }
 }
@@ -90,7 +90,7 @@ TEST(borisov_s_sum_of_rows, test_task_run) {
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
     for (size_t i = 0; i < rows; i++) {
-      ASSERT_EQ(global_row_sums[i], cols);
+      ASSERT_EQ(global_row_sums[i], 5000);
     }
   }
 }
