@@ -119,8 +119,9 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
   if (world.rank() == 0) {  // base
     int *arr = new int[m * n];
     int *maxes = new int[m];
-    int exit[1] = {0};
-    int noexit[1] = {1};
+
+    int proc_exit = 0;
+    int proc_wait = 1;
 
     std::copy(input_.begin(), input_.end(), arr);
 
@@ -129,7 +130,7 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
     size_t row = 0;
     while (row < m) {
       for (size_t i = 0; i < std::min(satellites, m - row); i++) {
-        world.send(i + 1, TAG_EXIT, noexit, 1);
+        world.send(i + 1, TAG_EXIT, &proc_wait, 1);
         world.send(i + 1, TAG_TOSAT, &arr[(row + i) * n], n);
       }
 
@@ -139,7 +140,7 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
       row += satellites;
     }
     for (size_t i = 0; i < satellites; i++)  // close all satellite processes
-      world.send(i + 1, TAG_EXIT, exit, 1);
+      world.send(i + 1, TAG_EXIT, &proc_exit, 1);
 
     res.assign(maxes, maxes + m);
 
@@ -147,11 +148,11 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
     delete[] maxes;
   } else {  // satelleite
     int *arr = new int[n];
-    int *exit = new int[1];
+    int proc_exit;
     while (true) {
       int out = INT_MIN;
-      world.recv(0, TAG_EXIT, exit, 1);
-      if (exit[0] == 0) break;
+      world.recv(0, TAG_EXIT, &proc_exit, 1);
+      if (proc_exit == 0) break;
 
       world.recv(0, TAG_TOSAT, arr, n);
 
@@ -160,7 +161,6 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
       world.send(0, TAG_TOBASE, &out, 1);
     }
     delete[] arr;
-    delete[] exit;
   }
 
 #undef TAG_EXIT
