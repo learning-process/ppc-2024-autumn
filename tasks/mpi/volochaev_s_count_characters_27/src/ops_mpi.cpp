@@ -73,8 +73,6 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::pre_processing() {
     if (std::min(tmp1.size(), tmp2.size()) % world.size() > 0u) ++delta;
   }
 
-  int deltax = delta * 10;
-
   broadcast(world, delta, 0);
 
   if (world.rank() == 0) {
@@ -84,9 +82,9 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::pre_processing() {
       input_[i].first = tmp1[i];
       input_[i].second = tmp2[i];
     }
-   
+  
     for (int proc = 0; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + proc * delta, delta+1);
+      world.send(proc, 0, input_.data() + proc * delta, delta + 1);
     }
   }
 
