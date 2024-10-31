@@ -38,19 +38,15 @@ bool nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralSequential::post_pr
 
 bool nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralParallel::pre_processing() {
   internal_order_test();
-  double params[3] = {0.0};
   if (world.rank() == 0) {
     auto* tmp_ptr_a = reinterpret_cast<double*>(taskData->inputs[0]);
     auto* tmp_ptr_b = reinterpret_cast<double*>(taskData->inputs[1]);
     auto* tmp_ptr_n = reinterpret_cast<int*>(taskData->inputs[2]);
-    params[0] = *tmp_ptr_a;
-    params[1] = *tmp_ptr_b;
-    params[2] = static_cast<double>(*tmp_ptr_n);
+
+    a_ = *tmp_ptr_a;
+    b_ = *tmp_ptr_b;
+    n_ = static_cast<int>(*tmp_ptr_n);
   }
-  MPI_Bcast(&params, 3, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-  a_ = params[0];
-  b_ = params[1];
-  n_ = static_cast<int>(params[2]);
   return true;
 }
 
@@ -64,6 +60,13 @@ bool nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralParallel::validatio
 
 bool nikolaev_r_trapezoidal_integral_mpi::TrapezoidalIntegralParallel::run() {
   internal_order_test();
+  double params[3] = {0.0};
+  if (world.rank() == 0) {
+    params[0] = a_;
+    params[1] = b_;
+    params[2] = static_cast<double>(n_);
+  }
+  MPI_Bcast(&params, 3, MPI_DOUBLE, 0, MPI_COMM_WORLD);
   double local_res{};
   local_res = integrate_function(a_, b_, n_, function_);
   MPI_Reduce(&local_res, &res_, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
