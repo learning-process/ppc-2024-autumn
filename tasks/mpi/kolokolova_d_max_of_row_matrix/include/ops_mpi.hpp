@@ -41,6 +41,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   std::vector<int> input_, local_input_;
   std::vector<int> res;
   boost::mpi::communicator world;
+  unsigned int delta = 0;
 };
 
 }  // namespace kolokolova_d_max_of_row_matrix_mpi
