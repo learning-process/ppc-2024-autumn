@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
-#include <random>
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <memory>
+#include <random>
 
 #include "mpi/lysov_i_integration_the_trapezoid_method/include/ops_mpi.hpp"
 
