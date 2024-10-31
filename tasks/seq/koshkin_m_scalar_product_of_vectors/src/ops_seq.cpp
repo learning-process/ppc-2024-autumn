@@ -3,10 +3,12 @@
 
 bool koshkin_m_scalar_product_of_vectors::VectorDotProduct::validation() {
   internal_order_test();
-  return (taskData->inputs.size() == taskData->inputs_count.size() && taskData->inputs.size() == 2) && // check, then the sizes of vectors are equal to, vector size is equal to two
-         (taskData->inputs_count[0] == taskData->inputs_count[1]) && // check the number of elements in both arrays
-         (taskData->outputs.size() == taskData->outputs_count.size()) && taskData->outputs.size() == 1 && 
-         taskData->outputs_count[0] == 1;
+  return (taskData->inputs.size() == taskData->inputs_count.size() &&
+        taskData->inputs.size() ==
+               +2) &&  // check, then the sizes of vectors are equal to, vector size is equal to two
+      (taskData->inputs_count[0] == taskData->inputs_count[1]) &&  // check the number of elements in both arrays
+      (taskData->outputs.size() == taskData->outputs_count.size()) &&
+      taskData->outputs.size() == 1 && taskData->outputs_count[0] == 1;
 }
 
 bool koshkin_m_scalar_product_of_vectors::VectorDotProduct::pre_processing() {
@@ -38,7 +40,8 @@ bool koshkin_m_scalar_product_of_vectors::VectorDotProduct::post_processing() {
   return true;
 }
 
-int koshkin_m_scalar_product_of_vectors::calculateDotProduct(const std::vector<int>& vec_1, const std::vector<int>& vec_2) {                                                            
+int koshkin_m_scalar_product_of_vectors::calculateDotProduct(const std::vector<int>& vec_1,
+                                                             const std::vector<int>& vec_2) {                                                           
   long result = 0;
   for (size_t i = 0; i < vec_1.size(); i++) result += vec_1[i] * vec_2[i];
   return result;

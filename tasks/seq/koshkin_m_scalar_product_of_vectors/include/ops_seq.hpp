@@ -7,7 +7,7 @@
 #include "core/task/include/task.hpp"
 
 namespace koshkin_m_scalar_product_of_vectors {
-	int calculateDotProduct(const std::vector<int>& vec_1, const std::vector<int>& vec_2);
+int calculateDotProduct(const std::vector<int>& vec_1, const std::vector<int>& vec_2);
 class VectorDotProduct : public ppc::core::Task {
  public:
   explicit VectorDotProduct(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -21,4 +21,4 @@ class VectorDotProduct : public ppc::core::Task {
   std::vector<std::vector<int>> input_;
 };
 
-}
+}  // namespace koshkin_m_scalar_product_of_vectors
