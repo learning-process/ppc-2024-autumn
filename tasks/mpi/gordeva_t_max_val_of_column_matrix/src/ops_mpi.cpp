@@ -2,12 +2,12 @@
 #include "mpi/gordeva_t_max_val_of_column_matrix/include/ops_mpi.hpp"
 
 #include <algorithm>
+#include <climits>
 #include <functional>
 #include <random>
 #include <string>
 #include <thread>
 #include <vector>
-#include <climits>
 
 using namespace std::chrono_literals;
 
