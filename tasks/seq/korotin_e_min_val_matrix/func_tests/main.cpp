@@ -38,3 +38,87 @@ TEST(korotin_e_min_val_matrix_seq, test_matrix_5_5) {
   testTaskSequential.post_processing();
   ASSERT_EQ(res, min_val[0]);
 }
+
+TEST(korotin_e_min_val_matrix_seq, test_matrix_59_59) {
+  const unsigned rows = 59;
+  const unsigned columns = 59;
+  double res;
+
+  // Create data
+  std::vector<double> matrix;
+  std::vector<double> min_val(1, -5);
+
+  matrix = korotin_e_min_val_matrix_seq::getRandomMatrix(rows, columns, 100.0);
+  res = *std::min_element(matrix.begin(), matrix.end());
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(min_val.data()));
+  taskDataSeq->outputs_count.emplace_back(min_val.size());
+
+  // Create Task
+  korotin_e_min_val_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_EQ(testTaskSequential.validation(), true);
+  testTaskSequential.pre_processing();
+  testTaskSequential.run();
+  testTaskSequential.post_processing();
+  ASSERT_EQ(res, min_val[0]);
+}
+
+TEST(korotin_e_min_val_matrix_seq, test_matrix_10_100) {
+  const unsigned rows = 10;
+  const unsigned columns = 100;
+  double res;
+
+  // Create data
+  std::vector<double> matrix;
+  std::vector<double> min_val(1, -5);
+
+  matrix = korotin_e_min_val_matrix_seq::getRandomMatrix(rows, columns, 100.0);
+  res = *std::min_element(matrix.begin(), matrix.end());
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(min_val.data()));
+  taskDataSeq->outputs_count.emplace_back(min_val.size());
+
+  // Create Task
+  korotin_e_min_val_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_EQ(testTaskSequential.validation(), true);
+  testTaskSequential.pre_processing();
+  testTaskSequential.run();
+  testTaskSequential.post_processing();
+  ASSERT_EQ(res, min_val[0]);
+}
+
+TEST(korotin_e_min_val_matrix_seq, test_matrix_100_10) {
+  const unsigned rows = 100;
+  const unsigned columns = 10;
+  double res;
+
+  // Create data
+  std::vector<double> matrix;
+  std::vector<double> min_val(1, -5);
+
+  matrix = korotin_e_min_val_matrix_seq::getRandomMatrix(rows, columns, 100.0);
+  res = *std::min_element(matrix.begin(), matrix.end());
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(min_val.data()));
+  taskDataSeq->outputs_count.emplace_back(min_val.size());
+
+  // Create Task
+  korotin_e_min_val_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_EQ(testTaskSequential.validation(), true);
+  testTaskSequential.pre_processing();
+  testTaskSequential.run();
+  testTaskSequential.post_processing();
+  ASSERT_EQ(res, min_val[0]);
+}
