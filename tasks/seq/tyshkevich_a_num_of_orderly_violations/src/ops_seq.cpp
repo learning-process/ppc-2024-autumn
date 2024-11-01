@@ -14,7 +14,7 @@ bool tyshkevich_a_num_of_orderly_violations_seq::TestTaskSequential::pre_process
 
   input_ = std::vector<int>(size);
   int *tmp_ptr = reinterpret_cast<int *>(taskData->inputs[0]);
-  for (unsigned i = 0; i < size; i++) {
+  for (int i = 0; i < size; i++) {
     input_[i] = tmp_ptr[i];
   }
   // Init values for output
