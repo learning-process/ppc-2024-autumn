@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "core/task/include/task.hpp" 
+
 #include "seq/sedova_o_max_of_vector_elements/include/ops_seq.hpp"
 
 TEST(sedova_o_max_of_vector_elements_seq, Test_Sum_Empty) {
@@ -103,5 +104,3 @@ TEST(sedova_o_max_of_vector_elements_seq, Test_Matrix_3x3) {
   std::vector<int> matrix_input = {in[0], in[1], in[2], in2[0], in2[1], in2[2], in3[0], in3[1], in3[2]};
   ASSERT_EQ(sedova_o_max_of_vector_elements_seq::find_max_of_matrix(matrix_input), out[0]);
 }
-
-
