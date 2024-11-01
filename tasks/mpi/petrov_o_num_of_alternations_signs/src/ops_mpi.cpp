@@ -36,7 +36,8 @@ bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::pre_processing() {
 
     for (int i = 0; i < world.size(); ++i) {
       distribution[i] =
-          chunk_size + (i < remainder);  // Добавим 1 элемент к некоторым чанкам, чтобы распределить остаток
+          chunk_size +
+          static_cast<int>(i < remainder);  // Добавим 1 элемент к некоторым чанкам, чтобы распределить остаток
       displacement[i] =
           (i == 0) ? 0 : displacement[i - 1] + distribution[i - 1];  // Смещение текущего ненулевого блока равно
                                                                      // смещению предыдущего блока + его размеру
@@ -50,10 +51,13 @@ bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::pre_processing() {
     int chunk_size = input_size / world.size();
     int remainder = input_size % world.size();
 
-    int distribution = chunk_size + (world.rank() < remainder);
+    int distribution = chunk_size + static_cast<int>(world.rank() < remainder);
 
     chunk.resize(distribution);  // Зарезервируем необходимое место под данные
-    boost::mpi::scatterv(world, chunk.data(), distribution, 0);
+    // boost::mpi::scatterv(world, chunk.data(), distribution, 0);
+    int input;  // Функция при тестировании clang-tidy требует наличия указателя на input, который в дальнейшем не
+                // используется. Поэтому создаем фиктивную переменную
+    boost::mpi::scatterv(world, &input, chunk.data(), distribution, 0);
   }
 
   this->res = 0;
@@ -75,7 +79,7 @@ bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::validation() {
     return false;
   }
 
-  if (world.rank()) return true;
+  if (world.rank() != 0) return true;
   return taskData->outputs_count[0] == 1;
 }
 
