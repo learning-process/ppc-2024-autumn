@@ -20,7 +20,7 @@ std::vector<int> sedova_o_max_of_vector_elements_mpi::generate_random_vector(int
 }
 
 std::vector<std::vector<int>> sedova_o_max_of_vector_elements_mpi::generate_random_matrix(int rows, int cols, 
-                                                                                          int value) {
+                                                                                                   int value) {
   std::vector<std::vector<int>> matrix(rows);
   for (int i = 0; i < rows; i++) {
     matrix[i] = sedova_o_max_of_vector_elements_mpi::generate_random_vector(cols, value);
