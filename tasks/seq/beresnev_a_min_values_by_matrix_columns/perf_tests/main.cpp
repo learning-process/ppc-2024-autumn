@@ -8,7 +8,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/beresnev_a_min_values_by_matrix_columns/include/ops_seq.hpp"
 
-TEST(sequential_beresnev_a_min_values_by_matrix_columns_perf_test, test_pipeline_run) {
+TEST(beresnev_a_min_values_by_matrix_columns_seq, test_pipeline_run) {
   const std::uint32_t N = 2000;
   const std::uint32_t M = 10000;
 
@@ -65,7 +65,7 @@ TEST(sequential_beresnev_a_min_values_by_matrix_columns_perf_test, test_pipeline
   }
 }
 
-TEST(sequential_beresnev_a_min_values_by_matrix_columns_perf_test, test_task_run) {
+TEST(beresnev_a_min_values_by_matrix_columns_seq, test_task_run) {
   const std::uint32_t N = 2000;
   const std::uint32_t M = 10000;
 

@@ -23,7 +23,6 @@ bool beresnev_a_min_values_by_matrix_columns_seq::TestTaskSequential::validation
          taskData->inputs_count[0] == reinterpret_cast<std::vector<int>*>(taskData->inputs[0])[0].size() &&
          taskData->inputs_count[0] == (uint32_t) reinterpret_cast<int*>(taskData->inputs[1])[0] *
                                           reinterpret_cast<int*>(taskData->inputs[2])[0] &&
-         reinterpret_cast<int*>(taskData->inputs[2])[0] &&
          taskData->outputs_count[0] == reinterpret_cast<std::vector<int>*>(taskData->outputs[0])[0].size();
 }
 

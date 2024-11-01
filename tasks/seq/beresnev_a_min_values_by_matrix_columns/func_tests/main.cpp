@@ -12,7 +12,7 @@ TEST(beresnev_a_min_values_by_matrix_columns_seq, Empty_Input_0) {
   const int N = 0;
   const int M = 3;
 
-  std::vector<int> in(N*M, 0);
+  std::vector<int> in(N * M, 0);
   std::vector<int> out(M, 0);
   std::vector<int> n(1, N);
   std::vector<int> m(1, M);
