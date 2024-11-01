@@ -1,7 +1,7 @@
 #include "mpi/burykin_m_word_count/include/ops_mpi.hpp"
 
 namespace burykin_m_word_count {
-//baba baab
+
 bool TestTaskSequential::pre_processing() {
   internal_order_test();
   if (taskData->inputs[0] != nullptr && taskData->inputs_count[0] > 0) {

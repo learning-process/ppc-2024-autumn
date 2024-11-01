@@ -8,7 +8,7 @@
 #include <vector>
 
 #include "core/task/include/task.hpp"
-//baba baab
+
 namespace burykin_m_word_count {
 
 // Последовательная версия
