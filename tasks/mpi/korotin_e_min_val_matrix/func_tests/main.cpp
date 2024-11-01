@@ -100,3 +100,31 @@ TEST(korotin_e_min_val_matrix, matrix_minval_with_prime_rows_and_columns) {
     ASSERT_EQ(reference[0], min_val[0]);
   }
 }
+
+TEST(korotin_e_min_val_matrix, minval_in_1_1_matrix) {
+  boost::mpi::communicator world;
+  std::vector<double> matrix;
+  std::vector<double> min_val(1, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    const unsigned M = 1;
+    const unsigned N = 1;
+    matrix = korotin_e_min_val_matrix_mpi::getRandomMatrix(M, N, 100);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataPar->inputs_count.emplace_back(matrix.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(min_val.data()));
+    taskDataPar->outputs_count.emplace_back(min_val.size());
+  }
+
+  korotin_e_min_val_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(matrix[0], min_val[0]);
+  }
+}
