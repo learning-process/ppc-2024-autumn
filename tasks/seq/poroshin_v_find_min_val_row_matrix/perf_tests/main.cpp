@@ -8,15 +8,12 @@
 
 TEST(poroshin_v_find_min_val_row_matrix_seq, test_pipeline_run) {
   // Create data
-
   const int n = 5000, m = 5000;
 
   // Create TaskData
-
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   // Create Task
-
   auto testTaskSequential = std::make_shared<poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential>(taskDataSeq);
 
   std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::gen(m, n);
@@ -27,7 +24,8 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, test_pipeline_run) {
   std::vector<int> result(m);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
   taskDataSeq->outputs_count.emplace_back(m);
- // Create Perf attributes
+
+  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;  // Set the number of runs as needed
   const auto t0 = std::chrono::high_resolution_clock::now();
@@ -52,15 +50,12 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, test_pipeline_run) {
 
 TEST(poroshin_v_find_min_val_row_matrix_seq, test_task_run) {
   // Create data
-
   const int n = 5000, m = 5000;
 
   // Create TaskData
-
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   // Create Task
-
   auto testTaskSequential = std::make_shared<poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential>(taskDataSeq);
 
   std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::gen(m, n);
@@ -71,6 +66,7 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, test_task_run) {
   std::vector<int> result(m);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
   taskDataSeq->outputs_count.emplace_back(m);
+
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;

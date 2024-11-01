@@ -1,6 +1,7 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/poroshin_v_find_min_val_row_matrix/include/ops_seq.hpp"
 
+#include <limits>  // Для INT_MAX и INT_MIN
 #include <thread>
 
 using namespace std::chrono_literals;
@@ -8,15 +9,17 @@ using namespace std::chrono_literals;
 bool poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   // Init value for input and output
-
   int m = taskData->inputs_count[0];
   int n = taskData->inputs_count[1];
   int size = m * n;
+
   input_.resize(size);
   res.resize(m);
+
   for (int i = 0; i < size; i++) {
-    input_[i] = (reinterpret_cast<int*>(taskData->inputs[0])[i]);
+    input_[i] = reinterpret_cast<int*>(taskData->inputs[0])[i];
   }
+
   return true;
 }
 
@@ -33,8 +36,9 @@ bool poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential::run() {
   int m = taskData->inputs_count[0];
   int n = taskData->inputs_count[1];
 
-  int mn = INT_MAX;
+  int mn;
   for (int i = 0; i < m; i++) {
+    mn = std::numeric_limits<int>::max();  // Используем std::numeric_limits для INT_MAX
     for (int j = n * i; j < n * i + n; j++) {
       mn = std::min(mn, input_[j]);
     }
@@ -56,11 +60,14 @@ std::vector<int> poroshin_v_find_min_val_row_matrix_seq::gen(int m, int n) {
   std::vector<int> tmp(m * n);
   int n1 = std::max(n, m);
   int m1 = std::min(n, m);
+
   for (auto& t : tmp) {
     t = n1 + (std::rand() % (m1 - n1 + 7));
   }
+
   for (int i = 0; i < m; i++) {
-    tmp[(std::rand() % n) + i*n] = INT_MIN; //in 1 of n columns the value must be INT_MIN (needed to check answer)
+    tmp[(std::rand() % n) + i * n] = INT_MIN;  // In 1 of n columns, the value must be INT_MIN (needed to check answer)
   }
+
   return tmp;
 }

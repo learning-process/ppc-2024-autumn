@@ -15,32 +15,37 @@
 
 namespace poroshin_v_find_min_val_row_matrix_mpi {
 
-std::vector<int> gen(int m, int n);  // generate vector (matrix)
+std::vector<int> gen(int m, int n);  // Generate vector (matrix)
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)){}
+  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
  private:
-  std::vector<int> input_{}, res{};
+  std::vector<int> input_;  // Input vector
+  std::vector<int> res;     // Result vector
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
+      : Task(std::move(taskData_)), world(boost::mpi::communicator()) {}
+
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
  private:
-  std::vector<int> input_{}, local_input_{}, res{};
-  boost::mpi::communicator world;
+  std::vector<int> input_;         // Input vector
+  std::vector<int> local_input_;   // Local input vector
+  std::vector<int> res;            // Result vector
+  boost::mpi::communicator world;  // MPI communicator
 };
 
 }  // namespace poroshin_v_find_min_val_row_matrix_mpi

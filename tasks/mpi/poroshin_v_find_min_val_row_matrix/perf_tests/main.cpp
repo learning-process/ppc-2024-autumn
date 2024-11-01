@@ -12,6 +12,7 @@ TEST(poroshin_v_find_min_val_row_matrix_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> m_vec(m, 0);
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -45,10 +46,11 @@ TEST(poroshin_v_find_min_val_row_matrix_mpi, test_pipeline_run) {
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
+
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
     for (unsigned i = 0; i < m_vec.size(); i++) {
-      EXPECT_EQ(1, m_vec[0]);
+      EXPECT_EQ(1, m_vec[i]);
     }
   }
 }
@@ -58,6 +60,7 @@ TEST(poroshin_v_find_min_val_row_matrix_mpi, test_task_run) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> m_vec(m, 0);
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -91,10 +94,11 @@ TEST(poroshin_v_find_min_val_row_matrix_mpi, test_task_run) {
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
+
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
     for (unsigned i = 0; i < m_vec.size(); i++) {
-      EXPECT_EQ(1, m_vec[0]);
+      EXPECT_EQ(1, m_vec[i]);
     }
   }
 }

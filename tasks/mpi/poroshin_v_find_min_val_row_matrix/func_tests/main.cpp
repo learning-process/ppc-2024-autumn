@@ -8,7 +8,6 @@
 #include "mpi/poroshin_v_find_min_val_row_matrix/include/ops_mpi.hpp"
 
 TEST(poroshin_v_find_min_val_row_matrix_mpi, Test_2_4_0) {
-
   int n = 5, m = 3;
 
   boost::mpi::communicator world;
@@ -183,6 +182,7 @@ TEST(poroshin_v_find_min_val_row_matrix_mpi, Test_rand_10_12) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> m_vec(m);
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -235,6 +235,7 @@ TEST(poroshin_v_find_min_val_row_matrix_mpi, Test_rand_10_15) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> m_vec(m);
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -287,6 +288,7 @@ TEST(poroshin_v_find_min_val_row_matrix_mpi, Test_rand_10_2) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> m_vec(m, 0);
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -339,6 +341,7 @@ TEST(poroshin_v_find_min_val_row_matrix_mpi, Test_rand_0_0) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> m_vec(m, 0);
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
