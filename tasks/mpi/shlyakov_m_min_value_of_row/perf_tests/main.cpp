@@ -48,7 +48,8 @@ TEST(shlyakov_m_min_value_of_row_mpi_perf, test_task_run_min) {
   std::vector<int32_t> main_min;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int sz_row, sz_col;
+  int sz_row;
+  int sz_col;
 
   if (world.rank() == 0) {
     sz_row = 5000;
