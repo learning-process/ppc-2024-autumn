@@ -18,8 +18,7 @@ std::vector<int> generate_random_vector(size_t size, size_t value) {
   return vec;
 }
 
-std::vector<std::vector<int>> generate_random_matrix(size_t rows, size_t cols,
-                                                                                          size_t value) {
+std::vector<std::vector<int>> generate_random_matrix(size_t rows, size_t cols, size_t value) {
   std::vector<std::vector<int>> matrix(rows);
   for (size_t i = 0; i < rows; i++) {
     matrix[i] = generate_random_vector(cols, value);
