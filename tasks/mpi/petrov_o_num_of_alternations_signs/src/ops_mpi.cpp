@@ -1,13 +1,6 @@
-// Copyright 2023 Nesterov Alexander
 #include "mpi/petrov_o_num_of_alternations_signs/include/ops_mpi.hpp"
 
-#include <algorithm>
 #include <boost/mpi/datatype.hpp>
-#include <functional>
-#include <iostream>
-#include <random>
-#include <string>
-#include <thread>
 #include <vector>
 
 using namespace std::chrono_literals;
@@ -54,7 +47,7 @@ bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::pre_processing() {
     int distribution = chunk_size + static_cast<int>(world.rank() < remainder);
 
     chunk.resize(distribution);  // Зарезервируем необходимое место под данные
-    // boost::mpi::scatterv(world, chunk.data(), distribution, 0);
+
     int input;  // Функция при тестировании clang-tidy требует наличия указателя на input, который в дальнейшем не
                 // используется. Поэтому создаем фиктивную переменную
     boost::mpi::scatterv(world, &input, chunk.data(), distribution, 0);

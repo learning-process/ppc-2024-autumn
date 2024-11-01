@@ -4,6 +4,7 @@
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <numeric>
+#include <random>
 #include <vector>
 
 #include "mpi/petrov_o_num_of_alternations_signs/include/ops_mpi.hpp"
@@ -262,4 +263,53 @@ TEST(Parallel, TestAlternations_LargeInput) {
   if (world.rank() == 0) {
     ASSERT_EQ(output[0], static_cast<int>(input.size() - 1));
   }  // Ожидаемое количество чередований для чередующихся знаков
+}
+
+TEST(Parallel, TestAlternations_Random) {
+  boost::mpi::communicator world;
+
+  const int size = 1000;
+  std::vector<int> input(size);
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> dist(-100, 100);
+
+  for (int i = 0; i < size; ++i) {
+    input[i] = dist(gen);
+  }
+
+  std::vector<int> seq_output(1);
+  std::vector<int> par_output(1);
+
+  // Sequential run
+  std::shared_ptr<ppc::core::TaskData> seq_taskData = std::make_shared<ppc::core::TaskData>();
+  seq_taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
+  seq_taskData->inputs_count.push_back(input.size());
+  seq_taskData->outputs.push_back(reinterpret_cast<uint8_t*>(seq_output.data()));
+  seq_taskData->outputs_count.push_back(seq_output.size());
+
+  petrov_o_num_of_alternations_signs_mpi::SequentialTask seq_task(seq_taskData);
+  ASSERT_TRUE(seq_task.validation());
+  ASSERT_TRUE(seq_task.pre_processing());
+  ASSERT_TRUE(seq_task.run());
+  ASSERT_TRUE(seq_task.post_processing());
+
+  // Parallel run
+  std::shared_ptr<ppc::core::TaskData> par_taskData = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    par_taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
+    par_taskData->inputs_count.push_back(input.size());
+    par_taskData->outputs.push_back(reinterpret_cast<uint8_t*>(par_output.data()));
+    par_taskData->outputs_count.push_back(par_output.size());
+  }
+
+  petrov_o_num_of_alternations_signs_mpi::ParallelTask par_task(par_taskData);
+  ASSERT_TRUE(par_task.validation());
+  ASSERT_TRUE(par_task.pre_processing());
+  ASSERT_TRUE(par_task.run());
+  ASSERT_TRUE(par_task.post_processing());
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(par_output[0], seq_output[0]);
+  }
 }
