@@ -86,7 +86,6 @@ TEST(kozlova_e_lexic_order_mpi, test_task_run) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    
     resMPI = {0, 0};
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(const_cast<char *>(str1.c_str())));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(const_cast<char *>(str2.c_str())));

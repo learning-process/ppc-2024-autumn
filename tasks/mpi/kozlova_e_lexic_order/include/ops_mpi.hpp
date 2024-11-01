@@ -15,8 +15,6 @@
 
 namespace kozlova_e_lexic_order_mpi {
 
-std::vector<int> getRandomVector(int sz);
-
 class StringComparatorSeq : public ppc::core::Task {
  public:
   explicit StringComparatorSeq(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -33,8 +31,7 @@ class StringComparatorSeq : public ppc::core::Task {
 
 class StringComparatorMPI : public ppc::core::Task {
  public:
-  explicit StringComparatorMPI(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit StringComparatorMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -42,7 +39,7 @@ class StringComparatorMPI : public ppc::core::Task {
 
  private:
   std::vector<std::string> input_strings;
-  std::vector<int> res;  
+  std::vector<int> res;
   boost::mpi::communicator world;
 };
 

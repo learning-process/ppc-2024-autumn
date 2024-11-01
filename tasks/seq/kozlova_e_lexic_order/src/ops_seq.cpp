@@ -1,10 +1,7 @@
 
 #include "seq/kozlova_e_lexic_order/include/ops_seq.hpp"
 
-#include <thread>
 #include <algorithm>
-
-using namespace std::chrono_literals;
 
 bool kozlova_e_lexic_order::StringComparator::pre_processing() {
   internal_order_test();

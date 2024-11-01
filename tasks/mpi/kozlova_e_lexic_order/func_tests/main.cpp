@@ -15,11 +15,11 @@ TEST(kozlova_e_lexic_order, Test_mixed_strings) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    for (const auto& str : input_strings) {
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(const_cast<char *> (str.c_str())));
+    for (const auto &str : input_strings) {
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(const_cast<char *>(str.c_str())));
     }
     taskDataPar->inputs_count.emplace_back(2);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(resMPI.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(resMPI.data()));
     taskDataPar->outputs_count.emplace_back(resMPI.size());
   }
 
@@ -94,7 +94,7 @@ TEST(kozlova_e_lexic_order, Test_Unordered_Strings) {
   boost::mpi::communicator world;
   std::vector<std::string> input_strings = {"cba", "fedcba"};
   std::vector<int> resMPI(2, 0);
-  std::vector<int> answer(2,0);
+  std::vector<int> answer(2, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {

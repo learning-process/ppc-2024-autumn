@@ -1,21 +1,9 @@
 // Copyright 2023 Nesterov Alexander
 #include "mpi/kozlova_e_lexic_order/include/ops_mpi.hpp"
 
-#include <algorithm>
-#include <functional>
 #include <random>
 #include <string>
 #include <vector>
-
-std::vector<int> kozlova_e_lexic_order_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
-}
 
 std::vector<int> LexicographicallyOrdered(const std::string& str1, const std::string& str2) {
   int flag1 = 1;
@@ -64,12 +52,9 @@ bool kozlova_e_lexic_order_mpi::StringComparatorSeq::validation() {
 bool kozlova_e_lexic_order_mpi::StringComparatorSeq::run() {
   internal_order_test();
   res.resize(2);
-  if (str1.empty())
-    res[0] = 1;
-  if (str2.empty())
-    res[1] = 1;
-  else
-    res = LexicographicallyOrdered(str1, str2);
+  if (str1.empty()) res[0] = 1;
+  if (str2.empty()) res[1] = 1;
+  else res = LexicographicallyOrdered(str1, str2);
   return true;
 }
 
@@ -94,7 +79,7 @@ bool kozlova_e_lexic_order_mpi::StringComparatorMPI::pre_processing() {
     input_strings.resize(2);
   }
 
-  for (int i =0; i < 2; i++) boost::mpi::broadcast(world, input_strings[i], 0);
+  for (int i = 0; i < 2; i++) boost::mpi::broadcast(world, input_strings[i], 0);
   res.resize(2, 0);
   return true;
 }
