@@ -153,7 +153,6 @@ class TestMPITaskParallel : public ppc::core::Task {
   int delta_n_r;
   double result;
   int residue;
-  double joint_result;
   enum_ops::operations ops;
   MPI_Datatype mpi_type_elem;
   void print_local_data();
@@ -186,7 +185,7 @@ bool TestMPITaskParallel<TypeElem>::pre_processing() {
     std::copy(ptr, ptr + taskData->inputs_count[0], input_.begin());
   }
   if (ProcRank == 0) {
-    residue = taskData->inputs_count[0] % size;
+    residue = taskData->inputs_count[0] - (delta_n * size);
     delta_n_r = delta_n + residue;
     local_input_ = std::vector<TypeElem>(delta_n_r);
   } else {
@@ -199,8 +198,6 @@ bool TestMPITaskParallel<TypeElem>::pre_processing() {
     }
   }
   result = {};
-  residue = {};
-  joint_result = {};
   return true;
 }
 
@@ -230,6 +227,10 @@ bool TestMPITaskParallel<TypeElem>::run() {
   int ProcRank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   if (ProcRank == 0) {
+    //std::cout << "global vec is ";
+    //for (size_t i = 0; i < input_.size(); i++) {
+    //  std::cout << input_[i] << " ";
+    //}
     double joint_result = IsJoints_max();
     if (joint_result > result) {
       result = joint_result;
@@ -292,31 +293,37 @@ template <typename TypeElem>
 double TestMPITaskParallel<TypeElem>::IsJoints_max() {
   double joint_delta = 0;
   auto iter_curr = input_.begin();
-  auto iter_next = iter_curr + 1;
-  auto iter_end = input_.end() - 1;
+  auto iter_prev = iter_curr + 1;
+  auto iter_end = input_.end();
   double max_joint_delta = 0;
   int res_i = 0;
   while (iter_curr != iter_end) {
     if (residue == 0) {
-      iter_curr = iter_curr + (delta_n - 1);
-      iter_next = iter_curr + 1;
-      joint_delta = abs(*iter_next - *iter_curr);
+      iter_curr = iter_curr + delta_n;
+      iter_prev = iter_curr - 1;
+      if (iter_curr == iter_end) {
+        break;
+      }
+      joint_delta = abs(*iter_curr - *iter_prev);
       if (joint_delta > max_joint_delta) {
         max_joint_delta = joint_delta;
       }
     } else {
       if (res_i == 0) {
-        iter_curr = iter_curr + (delta_n_r - 1);
-        iter_next = iter_curr + 1;
-        joint_delta = abs(*iter_next - *iter_curr);
+        iter_curr = iter_curr + delta_n_r;
+        iter_prev = iter_curr - 1;
+        joint_delta = abs(*iter_curr - *iter_prev);
         if (joint_delta > max_joint_delta) {
           max_joint_delta = joint_delta;
         }
         res_i++;
       } else {
-        iter_curr = iter_curr + (delta_n - 1);
-        iter_next = iter_curr + 1;
-        joint_delta = abs(*iter_next - *iter_curr);
+        iter_curr = iter_curr + delta_n;
+        iter_prev = iter_curr - 1;
+        if (iter_curr == iter_end) {
+          break;
+        }
+        joint_delta = abs(*iter_curr - *iter_prev);
         if (joint_delta > max_joint_delta) {
           max_joint_delta = joint_delta;
         }

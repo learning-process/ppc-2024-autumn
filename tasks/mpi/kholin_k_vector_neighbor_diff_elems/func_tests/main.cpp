@@ -100,7 +100,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_pre_processing) {
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_run) {
   int ProcRank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
-  const int count_size_vector = 150;
+  const int count_size_vector = 160;
   enum_ops::operations op = enum_ops::MAX_DIFFERENCE;
   std::vector<int> global_vec;
   std::vector<double> global_delta(1, 0);
@@ -319,7 +319,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int_with_random) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (ProcRank == 0) {
-    const int count_size_vector = 300;
+    const int count_size_vector = 299;
     global_vec = kholin_k_vector_neighbor_diff_elems_mpi::get_random_vector<int>(count_size_vector);
     global_vec[99] = 5000;
     global_vec[100] = 1;
@@ -480,7 +480,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_double) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (ProcRank == 0) {
-    const int count_size_vector = 750;
+    const int count_size_vector = 200;
     global_vec = std::vector<double>(count_size_vector);
     for (size_t i = 0; i < global_vec.size(); i++) {
       global_vec[i] = 0.25 * i + 10;

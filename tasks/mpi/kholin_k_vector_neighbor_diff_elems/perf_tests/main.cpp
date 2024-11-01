@@ -15,7 +15,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, test_pipeline_run) {
   enum_ops::operations op = enum_ops::MAX_DIFFERENCE;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (ProcRank == 0) {
-    const float count_size_vector = 100000000;
+    const int count_size_vector = 100000001;
     global_vec = std::vector<int>(count_size_vector);
     for (size_t i = 0; i < global_vec.size(); i++) {
       global_vec[i] = 4 * i + 2;
@@ -63,7 +63,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, test_task_run) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (ProcRank == 0) {
-    const float count_size_vector = 100000000;
+    const int count_size_vector = 100000001;
     global_vec = std::vector<int>(count_size_vector);
     for (size_t i = 0; i < global_vec.size(); i++) {
       global_vec[i] = 4 * i + 2;
