@@ -134,7 +134,9 @@ TEST(beresnev_a_min_values_by_matrix_columns_mpi, Test_Identity_Matrix) {
   testMPITaskParallel.pre_processing();
   testMPITaskParallel.run();
   testMPITaskParallel.post_processing();
-  ASSERT_EQ(gold, out);
+  if (world.rank() == 0) {
+    ASSERT_EQ(gold, out);
+  }
 }
 TEST(beresnev_a_min_values_by_matrix_columns_mpi, Test_Base_0) {
   boost::mpi::communicator world;
