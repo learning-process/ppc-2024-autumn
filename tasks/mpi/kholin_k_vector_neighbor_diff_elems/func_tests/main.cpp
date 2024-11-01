@@ -20,7 +20,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_validation) {
     global_vec = std::vector<int>(count_size_vector);
 
     global_vec[99] = 5000;
-    global_vec[100] = 0;
+    global_vec[100] = 1;
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -64,7 +64,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_pre_processing) {
     global_vec = std::vector<int>(count_size_vector);
 
     global_vec[99] = 5000;
-    global_vec[100] = 0;
+    global_vec[100] = 1;
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -112,7 +112,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_run) {
       global_vec[i] = 4 * i + 2;
     }
     global_vec[99] = 5000;
-    global_vec[100] = 0;
+    global_vec[100] = 1;
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -163,7 +163,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_post_processing) {
       global_vec[i] = 4 * i + 2;
     }
     global_vec[99] = 5000;
-    global_vec[100] = 0;
+    global_vec[100] = 1;
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -213,11 +213,11 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
     const int count_size_vector = 300;
     global_vec = std::vector<int>(count_size_vector);
     for (size_t i = 0; i < global_vec.size(); i++) {
-      global_vec[i] = 2 * i + 4;
+      global_vec[i] = 4 * i + 1;
     }
 
     global_vec[99] = 5000;
-    global_vec[100] = 0;
+    global_vec[100] = 1;
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -272,7 +272,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int32_t) {
       global_vec[i] = 2 * i + 4;
     }
     global_vec[99] = 5000;
-    global_vec[100] = 0;
+    global_vec[100] = 1;
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_delta.data()));
@@ -322,7 +322,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int_with_random) {
     const int count_size_vector = 300;
     global_vec = kholin_k_vector_neighbor_diff_elems_mpi::get_random_vector<int>(count_size_vector);
     global_vec[99] = 5000;
-    global_vec[100] = 0;
+    global_vec[100] = 1;
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_delta.data()));
