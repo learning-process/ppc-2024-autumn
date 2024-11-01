@@ -10,44 +10,30 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> zinoviev_a_sum_cols_matrix_mpi::getRandomVector(int sz) {
+std::vector<int> getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
+  std::uniform_int_distribution<> dist(0, 100);
   std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
+  std::generate(vec.begin(), vec.end(), [&]() { return dist(gen); });
   return vec;
 }
 
 bool zinoviev_a_sum_cols_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init vectors
-  input_ = std::vector<int>(taskData->inputs_count[0]);
-  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    input_[i] = tmp_ptr[i];
-  }
-  // Init value for output
-  res = 0;
+  input_ = getRandomVector(100);  // например, 100 элементов
   return true;
 }
 
 bool zinoviev_a_sum_cols_matrix_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  // Check count elements of output
-  return taskData->outputs_count[0] == 1;
+  return true;
 }
 
 bool zinoviev_a_sum_cols_matrix_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-  if (ops == "+") {
-    res = std::accumulate(input_.begin(), input_.end(), 0);
-  } else if (ops == "-") {
-    res = -std::accumulate(input_.begin(), input_.end(), 0);
-  } else if (ops == "max") {
-    res = *std::max_element(input_.begin(), input_.end());
-  }
+  res = std::accumulate(input_.begin(), input_.end(), 0);
   return true;
 }
 
@@ -59,66 +45,38 @@ bool zinoviev_a_sum_cols_matrix_mpi::TestMPITaskSequential::post_processing() {
 
 bool zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  unsigned int delta = 0;
-  if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] / world.size();
-  }
-  broadcast(world, delta, 0);
-
-  if (world.rank() == 0) {
-    // Init vectors
-    input_ = std::vector<int>(taskData->inputs_count[0]);
-    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-      input_[i] = tmp_ptr[i];
-    }
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + proc * delta, delta);
-    }
-  }
-  local_input_ = std::vector<int>(delta);
-  if (world.rank() == 0) {
-    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
-  } else {
-    world.recv(0, 0, local_input_.data(), delta);
-  }
-  // Init value for output
-  res = 0;
+  std::cout << "Sequential Result: " << res << std::endl;
   return true;
 }
 
 bool zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
-  if (world.rank() == 0) {
-    // Check count elements of output
-    return taskData->outputs_count[0] == 1;
-  }
+  input_ = getRandomVector(100);  // например, 100 элементов
   return true;
 }
 
 bool zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  int local_res;
-  if (ops == "+") {
-    local_res = std::accumulate(local_input_.begin(), local_input_.end(), 0);
-  } else if (ops == "-") {
-    local_res = -std::accumulate(local_input_.begin(), local_input_.end(), 0);
-  } else if (ops == "max") {
-    local_res = *std::max_element(local_input_.begin(), local_input_.end());
-  }
+  int world_size = world.size();
+  int world_rank = world.rank();
 
-  if (ops == "+" || ops == "-") {
-    reduce(world, local_res, res, std::plus(), 0);
-  } else if (ops == "max") {
-    reduce(world, local_res, res, boost::mpi::maximum<int>(), 0);
-  }
+  // Разделяем вектор на части, каждая часть для своего процесса
+  int chunk_size = input_.size() / world_size;
+  local_input_ =
+      std::vector<int>(input_.begin() + world_rank * chunk_size, input_.begin() + (world_rank + 1) * chunk_size);
+
+  // Вычисляем сумму на локальном уровне
+  int local_sum = std::accumulate(local_input_.begin(), local_input_.end(), 0);
+
+  // Объединяем результаты с других процессов
+  boost::mpi::reduce(world, local_sum, res, std::plus<int>(), 0);
   return true;
 }
 
 bool zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+    std::cout << "Parallel Result: " << res << std::endl;
   }
   return true;
 }

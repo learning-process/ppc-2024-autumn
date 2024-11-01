@@ -86,3 +86,78 @@ TEST(zinoviev_a_sum_cols_matrix_mpi, test_task_run) {
     ASSERT_EQ(count_size_vector, global_sum[0]);
   }
 }
+
+TEST(zinoviev_a_sum_cols_matrix_mpi, test_negative_values) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;
+  std::vector<int32_t> global_sum(1, 0);
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    global_vec = std::vector<int>{-1, -1, -1, -1, -1};  // Отрицательные значения
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
+    taskDataPar->outputs_count.emplace_back(global_sum.size());
+  }
+
+  auto testMpiTaskParallel = std::make_shared<zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel>(taskDataPar, "+");
+  ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  testMpiTaskParallel->pre_processing();
+  testMpiTaskParallel->run();
+  testMpiTaskParallel->post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(-5, global_sum[0]);  // Ожидаемая сумма
+  }
+}
+
+TEST(zinoviev_a_sum_cols_matrix_mpi, test_zero_values) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;
+  std::vector<int32_t> global_sum(1, 0);
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    global_vec = std::vector<int>{0, 0, 0, 0, 0};  // Все нулевые значения
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
+    taskDataPar->outputs_count.emplace_back(global_sum.size());
+  }
+
+  auto testMpiTaskParallel = std::make_shared<zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel>(taskDataPar, "+");
+  ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  testMpiTaskParallel->pre_processing();
+  testMpiTaskParallel->run();
+  testMpiTaskParallel->post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(0, global_sum[0]);  // Ожидаемая сумма
+  }
+}
+
+TEST(zinoviev_a_sum_cols_matrix_mpi, test_different_values) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;
+  std::vector<int32_t> global_sum(1, 0);
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    global_vec = std::vector<int>{1, 2, 3, 4, 5};  // Разные значения
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
+    taskDataPar->outputs_count.emplace_back(global_sum.size());
+  }
+
+  auto testMpiTaskParallel = std::make_shared<zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel>(taskDataPar, "+");
+  ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  testMpiTaskParallel->pre_processing();
+  testMpiTaskParallel->run();
+  testMpiTaskParallel->post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(15, global_sum[0]);  // Ожидаемая сумма
+  }
+}
