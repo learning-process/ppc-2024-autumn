@@ -48,9 +48,9 @@ bool vasenkov_a_char_freq_mpi::CharFrequencyParallel::pre_processing() {
   unsigned int n = 0;
 
   if (myid == 0) {
-    n = taskData->inputs_count[0];
-    str_input_ = std::vector<char>(taskData->inputs[0], taskData->inputs[0] + n);
-    target_char_ = *reinterpret_cast<char*>(taskData->inputs[1]);
+      n = taskData->inputs_count[0];
+      str_input_ = std::vector<char>(taskData->inputs[0], taskData->inputs[0] + n);
+      target_char_ = *reinterpret_cast<char*>(taskData->inputs[1]);
   }
 
   boost::mpi::broadcast(world, n, 0);
@@ -69,8 +69,16 @@ bool vasenkov_a_char_freq_mpi::CharFrequencyParallel::pre_processing() {
 
   local_input_.resize(send_counts[myid]);
   boost::mpi::scatterv(world, str_input_.data(), send_counts, displs, local_input_.data(), send_counts[myid], 0);
-  local_res = 0;
-  res = 0;
+
+  return true;
+}
+
+bool vasenkov_a_char_freq_mpi::CharFrequencyParallel::run() {
+  internal_order_test();
+  
+  local_res = std::count(local_input_.begin(), local_input_.end(), target_char_);
+  boost::mpi::reduce(world, local_res, res, std::plus<>(), 0);
+
   return true;
 }
 
@@ -79,14 +87,6 @@ bool vasenkov_a_char_freq_mpi::CharFrequencyParallel::validation() {
   if (world.rank() == 0) {
     return taskData->outputs_count[0] == 1;
   }
-  return true;
-}
-
-bool vasenkov_a_char_freq_mpi::CharFrequencyParallel::run() {
-  internal_order_test();
-  local_res = std::count(local_input_.begin(), local_input_.end(), target_char_);
-
-  boost::mpi::reduce(world, local_res, res, std::plus<>(), 0);
   return true;
 }
 
@@ -99,3 +99,4 @@ bool vasenkov_a_char_freq_mpi::CharFrequencyParallel::post_processing() {
 
   return true;
 }
+

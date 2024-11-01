@@ -14,8 +14,6 @@
 
 namespace vasenkov_a_char_freq_mpi {
 
-std::vector<int> getRandomVector(int sz);
-
 class CharFrequencySequential : public ppc::core::Task {
  public:
   explicit CharFrequencySequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
