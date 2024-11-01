@@ -2,13 +2,8 @@
 #include "mpi/grudzin_k_nearest_neighbor_elements/include/ops_mpi.hpp"
 
 #include <algorithm>
-#include <functional>
 #include <random>
-#include <string>
-#include <thread>
 #include <vector>
-
-using namespace std::chrono_literals;
 
 bool grudzin_k_nearest_neighbor_elements_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
@@ -44,6 +39,22 @@ bool grudzin_k_nearest_neighbor_elements_mpi::TestMPITaskSequential::post_proces
 
 bool grudzin_k_nearest_neighbor_elements_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
+  // Init value for output
+  res = {INT_MAX, -1};
+  return true;
+}
+
+bool grudzin_k_nearest_neighbor_elements_mpi::TestMPITaskParallel::validation() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    // Check count elements of output
+    return taskData->inputs_count[0] > 1 && taskData->outputs_count[0] == 1;
+  }
+  return true;
+}
+
+bool grudzin_k_nearest_neighbor_elements_mpi::TestMPITaskParallel::run() {
+  internal_order_test();
   unsigned int delta = 0;
   if (world.rank() == 0) {
     delta = (taskData->inputs_count[0]) / world.size();
@@ -70,22 +81,7 @@ bool grudzin_k_nearest_neighbor_elements_mpi::TestMPITaskParallel::pre_processin
   } else {
     world.recv(0, 0, local_input_.data(), delta + 1);
   }
-  // Init value for output
-  res = {INT_MAX, -1};
-  return true;
-}
 
-bool grudzin_k_nearest_neighbor_elements_mpi::TestMPITaskParallel::validation() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    // Check count elements of output
-    return taskData->inputs_count[0] > 1 && taskData->outputs_count[0] == 1;
-  }
-  return true;
-}
-
-bool grudzin_k_nearest_neighbor_elements_mpi::TestMPITaskParallel::run() {
-  internal_order_test();
   std::pair<int, int> local_ans_ = {INT_MAX, -1};
   for (size_t i = 0; i < local_input_.size() - 1 && (i + start) < size - 1; ++i) {
     std::pair<int, int> tmp = {abs(local_input_[i] - local_input_[i + 1]), i + start};
