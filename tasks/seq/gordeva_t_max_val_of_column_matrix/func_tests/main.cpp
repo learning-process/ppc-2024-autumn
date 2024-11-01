@@ -1,7 +1,7 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
-#include<climits>
+#include <climits>
 #include <vector>
 
 #include "seq/gordeva_t_max_val_of_column_matrix/include/ops_seq.hpp"
