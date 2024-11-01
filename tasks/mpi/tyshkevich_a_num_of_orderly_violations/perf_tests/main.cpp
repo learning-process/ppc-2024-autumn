@@ -11,7 +11,7 @@ TEST(tyshkevich_a_num_of_orderly_violations_mpi_ptest, test_pipeline_run) {
 
   // Create data
   std::vector<int> global_vec(size);
-  int result = 0;
+  std::vector<int> result(1, 0);
 
   boost::mpi::communicator world;
 
@@ -22,8 +22,8 @@ TEST(tyshkevich_a_num_of_orderly_violations_mpi_ptest, test_pipeline_run) {
     global_vec = tyshkevich_a_num_of_orderly_violations_mpi::getRandomVector(size);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(size);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(result));
-    taskDataPar->outputs_count.emplace_back(1);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
+    taskDataPar->outputs_count.emplace_back(result.size());
   }
 
   // Create Task
@@ -57,7 +57,7 @@ TEST(tyshkevich_a_num_of_orderly_violations_mpi_ptest, test_task_run) {
 
   // Create data
   std::vector<int> global_vec(size);
-  int result = 0;
+  std::vector<int> result(1, 0);
 
   boost::mpi::communicator world;
 
@@ -68,8 +68,8 @@ TEST(tyshkevich_a_num_of_orderly_violations_mpi_ptest, test_task_run) {
     global_vec = tyshkevich_a_num_of_orderly_violations_mpi::getRandomVector(size);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(size);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(result));
-    taskDataPar->outputs_count.emplace_back(1);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
+    taskDataPar->outputs_count.emplace_back(result.size());
   }
 
   // Create Task

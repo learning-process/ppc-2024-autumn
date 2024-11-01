@@ -18,8 +18,7 @@ bool tyshkevich_a_num_of_orderly_violations_seq::TestTaskSequential::pre_process
     input_[i] = tmp_ptr[i];
   }
   // Init values for output
-  res[0] = 0;
-
+  res = std::vector<int>(1, 0);
   return true;
 }
 
