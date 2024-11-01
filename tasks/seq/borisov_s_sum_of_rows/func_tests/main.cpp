@@ -262,3 +262,19 @@ TEST(borisov_s_sum_of_rows, Test_Single_Column_Matrix) {
     ASSERT_EQ(row_sums[i], 1);
   }
 }
+
+TEST(borisov_s_sum_of_rows, Test_Null_Pointers) {
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  size_t rows = 10;
+  size_t cols = 10;
+
+  taskDataPar->inputs.emplace_back(nullptr);
+  taskDataPar->outputs.emplace_back(nullptr);
+  taskDataPar->inputs_count.push_back(rows);
+  taskDataPar->inputs_count.push_back(cols);
+  taskDataPar->outputs_count.push_back(rows);
+
+  borisov_s_sum_of_rows::SumOfRowsTaskSequential sumOfRowsTaskSequential(taskDataPar);
+  ASSERT_FALSE(sumOfRowsTaskSequential.validation());
+}
