@@ -7,7 +7,7 @@
 
 #include "seq/alputov_i_most_diff_neighb_elem/include/ops_seq.hpp"
 
-TEST(alputov_i_most_diff_neighbor_elem_seq, Test_MaxDiff_Typical) {
+TEST(alputov_i_most_diff_neighb_elem_seq, Test_MaxDiff_Typical) {
   std::vector<int> inputVector = {10, 20, 40, 80, 128, 78, -12, -15, 44, 90, 51};
   int outputPair[2] = {0, 0};
 
@@ -29,7 +29,7 @@ TEST(alputov_i_most_diff_neighbor_elem_seq, Test_MaxDiff_Typical) {
   ASSERT_EQ(outputPair[1], -12);
 }
 
-TEST(alputov_i_most_diff_neighbor_elem_seq, Test_MaxDiff_NegativeValues) {
+TEST(alputov_i_most_diff_neighb_elem_seq, Test_MaxDiff_NegativeValues) {
   std::vector<int> inputVector = {-3, -6, -9, -11};
   int outputPair[2] = {0, 0};
 
@@ -52,7 +52,7 @@ TEST(alputov_i_most_diff_neighbor_elem_seq, Test_MaxDiff_NegativeValues) {
   ASSERT_EQ(outputPair[1], -6);
 }
 
-TEST(alputov_i_most_diff_neighbor_elem_seq, Test_MaxDiff_EqualElements) {
+TEST(alputov_i_most_diff_neighb_elem_seq, Test_MaxDiff_EqualElements) {
   std::vector<int> inputVector = {2, 2, 2, 2, 2};
   int outputPair[2] = {0, 0};
 
@@ -74,7 +74,7 @@ TEST(alputov_i_most_diff_neighbor_elem_seq, Test_MaxDiff_EqualElements) {
   ASSERT_EQ(outputPair[1], 2);
 }
 
-TEST(alputov_i_most_diff_neighbor_elem_seq, Test_MaxDiff_TwoElements) {
+TEST(alputov_i_most_diff_neighb_elem_seq, Test_MaxDiff_TwoElements) {
   std::vector<int> inputVector = {5, 10};
   int outputPair[2] = {0, 0};
 
@@ -96,7 +96,7 @@ TEST(alputov_i_most_diff_neighbor_elem_seq, Test_MaxDiff_TwoElements) {
   ASSERT_EQ(outputPair[1], 10);
 }
 
-TEST(alputov_i_most_diff_neighbor_elem_seq, Test_MaxDiff_SingleElement) {
+TEST(alputov_i_most_diff_neighb_elem_seq, Test_MaxDiff_SingleElement) {
   std::vector<int> inputVector = {100};
   int outputPair[2] = {0, 0};
   // Create TaskData
@@ -111,7 +111,7 @@ TEST(alputov_i_most_diff_neighbor_elem_seq, Test_MaxDiff_SingleElement) {
   ASSERT_FALSE(testTaskSequential.validation());
 }
 
-TEST(alputov_i_most_diff_neighbor_elem_seq, Test_MaxDiff_EmptyVector) {
+TEST(alputov_i_most_diff_neighb_elem_seq, Test_MaxDiff_EmptyVector) {
   std::vector<int> inputVector = {};
   int outputPair[2] = {0, 0};
   // Create TaskData
@@ -126,7 +126,7 @@ TEST(alputov_i_most_diff_neighbor_elem_seq, Test_MaxDiff_EmptyVector) {
 
   ASSERT_FALSE(testTaskSequential.validation());
 }
-TEST(alputov_i_most_diff_neighbor_elem_seq, Test_MaxDiff_RandomLargeVector) {
+TEST(alputov_i_most_diff_neighb_elem_seq, Test_MaxDiff_RandomLargeVector) {
   const int count = 1000000;
   const int fixedSeed = 12345;
   std::mt19937 gen(fixedSeed);
