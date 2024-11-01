@@ -61,7 +61,7 @@ bool solovyev_d_vector_max_mpi::VectorMaxMPIParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     // Check count elements of output
-    return taskData->outputs_count[0] == 1;
+    return (taskData->outputs_count[0] == 1 and taskData->inputs[0] != 0);
   }
   return true;
 }
@@ -101,7 +101,7 @@ bool solovyev_d_vector_max_mpi::VectorMaxSequential::pre_processing() {
 bool solovyev_d_vector_max_mpi::VectorMaxSequential::validation() {
   internal_order_test();
   // Check count elements of output
-  return taskData->outputs_count[0] == 1;
+  return (taskData->outputs_count[0] == 1 and taskData->inputs[0] != 0);
 }
 
 bool solovyev_d_vector_max_mpi::VectorMaxSequential::run() {

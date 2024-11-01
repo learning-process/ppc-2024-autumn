@@ -17,6 +17,24 @@ std::vector<int> getRandomVector(int sz) {
   return vec;
 }
 
+TEST(solovyev_d_vector_max_mpi, Test_Empty) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec(0,0);
+  std::vector<int32_t> global_max(1, 0);
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
+    taskDataPar->outputs_count.emplace_back(global_max.size());
+  }
+
+  solovyev_d_vector_max_mpi::VectorMaxMPIParallel VectorMaxMPIParallel(taskDataPar);
+  ASSERT_EQ(VectorMaxMPIParallel.validation(), false);
+}
+
 TEST(solovyev_d_vector_max_mpi, Test_Max) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
