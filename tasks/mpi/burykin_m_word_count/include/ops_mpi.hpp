@@ -8,10 +8,10 @@
 #include <vector>
 
 #include "core/task/include/task.hpp"
-
+//baba baab
 namespace burykin_m_word_count {
 
-// Последовательная версия задачи для подсчёта слов
+// Последовательная версия
 class TestTaskSequential : public ppc::core::Task {
  public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -29,7 +29,7 @@ class TestTaskSequential : public ppc::core::Task {
   static int count_words(const std::string& text);
 };
 
-// Параллельная версия задачи для подсчёта слов с использованием MPI
+// Параллельная версия
 class TestTaskParallel : public ppc::core::Task {
  public:
   explicit TestTaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)

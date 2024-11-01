@@ -1,7 +1,7 @@
 #include "mpi/burykin_m_word_count/include/ops_mpi.hpp"
 
 namespace burykin_m_word_count {
-
+//baba baab
 bool TestTaskSequential::pre_processing() {
   internal_order_test();
   if (taskData->inputs[0] != nullptr && taskData->inputs_count[0] > 0) {
@@ -64,7 +64,6 @@ bool TestTaskParallel::pre_processing() {
 
   local_input_.resize(chunkSize);
   if (world.rank() == 0) {
-    // Отправляем части данных другим процессам
     for (int proc = 1; proc < world.size(); proc++) {
       world.send(proc, 0, input_.data() + proc * chunkSize, chunkSize);
     }

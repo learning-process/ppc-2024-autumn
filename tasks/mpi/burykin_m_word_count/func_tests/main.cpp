@@ -3,8 +3,8 @@
 #include "mpi/burykin_m_word_count/include/ops_mpi.hpp"
 
 namespace burykin_m_word_count {
-
-// Тестирование пустой строки
+//baba baab
+// Тестирование пустой строки.
 TEST(CountWordsMPI, TestEmptyString) {
   boost::mpi::communicator world;
   std::vector<char> input = {};
@@ -30,7 +30,7 @@ TEST(CountWordsMPI, TestEmptyString) {
   }
 }
 
-// Тестирование стpоки с 3 словами
+// Тестирование стpоки с 3 словами.
 TEST(CountWordsMPI, TestThreeWords) {
   boost::mpi::communicator world;
   std::vector<char> input;

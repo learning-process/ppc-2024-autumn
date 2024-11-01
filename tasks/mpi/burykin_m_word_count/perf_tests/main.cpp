@@ -4,8 +4,8 @@
 #include <string>
 
 #include "core/perf/include/perf.hpp"
-#include "seq/burykin_m_word_count/include/ops_seq.hpp"
-
+#include "mpi/burykin_m_word_count/include/ops_mpi.hpp"
+//baba baab
 using namespace ppc::core;
 using namespace burykin_m_word_count;
 
