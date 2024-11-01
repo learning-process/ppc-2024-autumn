@@ -109,9 +109,9 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, find_min_500x100_matrix) {
   }
 }
 
-TEST(poroshin_v_find_min_val_row_matrix_seq, find_min_5000x5000_matrix) {
+TEST(poroshin_v_find_min_val_row_matrix_seq, find_min_2500x2500_matrix) {
   // Create data
-  const int n = 5000, m = 5000;
+  const int n = 2500, m = 2500;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> test = std::make_shared<ppc::core::TaskData>();
