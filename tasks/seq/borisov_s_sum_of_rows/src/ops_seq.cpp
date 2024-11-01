@@ -1,7 +1,5 @@
 #include "seq/borisov_s_sum_of_rows/include/ops_seq.hpp"
 
-#include <thread>
-
 using namespace std::chrono_literals;
 
 bool borisov_s_sum_of_rows::SumOfRowsTaskSequential::pre_processing() {
