@@ -5,24 +5,6 @@
 #include <thread>
 
 using namespace std::chrono_literals;
-std::vector<int> sedova_o_max_of_vector_elements_seq::generate_random_vector(size_t size, size_t value) {
-  std::random_device dev;
-  std::mt19937 random(dev());
-  std::vector<int> vec(size);
-  for (size_t i = 0; i < size; i++) {
-    vec[i] = random() % (value + 1);
-  }
-  return vec;
-}
-
-std::vector<std::vector<int>> sedova_o_max_of_vector_elements_seq::generate_random_matrix(size_t rows, size_t cols,
-                                                                                          size_t value) {
-  std::vector<std::vector<int>> matrix(rows);
-  for (size_t i = 0; i < rows; i++) {
-    matrix[i] = sedova_o_max_of_vector_elements_seq::generate_random_vector(cols, value);
-  }
-  return matrix;
-}
 
 int sedova_o_max_of_vector_elements_seq::find_max_of_matrix(const std::vector<int> matrix) {
   int max = matrix[0];

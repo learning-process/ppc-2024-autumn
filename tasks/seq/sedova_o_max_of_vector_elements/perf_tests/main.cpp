@@ -9,20 +9,39 @@
 #include "core/task/include/task.hpp"
 #include "seq/sedova_o_max_of_vector_elements/include/ops_seq.hpp"
 
+std::vector<int> generate_random_vector(size_t size, size_t value) {
+  std::random_device dev;
+  std::mt19937 random(dev());
+  std::vector<int> vec(size);
+  for (size_t i = 0; i < size; i++) {
+    vec[i] = random() % (value + 1);
+  }
+  return vec;
+}
+
+std::vector<std::vector<int>> generate_random_matrix(size_t rows, size_t cols,
+                                                                                          size_t value) {
+  std::vector<std::vector<int>> matrix(rows);
+  for (size_t i = 0; i < rows; i++) {
+    matrix[i] = generate_random_vector(cols, value);
+  }
+  return matrix;
+}
+
 TEST(sedova_o_max_of_vector_elements_seq, test_pipeline_run_small_matrix) {
   std::random_device dev;
   std::mt19937 random(dev());
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  int size = 5000;
-  int value = 5000;
+  size_t size = 5000;
+  size_t value = 5000;
 
   std::vector<std::vector<int>> in;
   in = sedova_o_max_of_vector_elements_seq::generate_random_matrix(size, size, value);
   std::vector<int32_t> out(1, in[0][0]);
 
-  int rows = random() % size;
-  int cols = random() % size;
+  size_t rows = random() % size;
+  size_t cols = random() % size;
   in[rows][cols] = value;
 
   for (unsigned int i = 0; i < in.size(); i++)
@@ -56,15 +75,15 @@ TEST(sedova_o_max_of_vector_elements_seq, test_pipeline_run_large_matrix) {
   std::mt19937 random(dev());
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  int size = 50000;
-  int value = 50000;
+  size_t size = 50000;
+  size_t value = 50000;
 
   std::vector<std::vector<int>> in;
   in = sedova_o_max_of_vector_elements_seq::generate_random_matrix(size, size, value);
   std::vector<int32_t> out(1, in[0][0]);
 
-  int rows = random() % size;
-  int cols = random() % size;
+  size_t rows = random() % size;
+  size_t cols = random() % size;
   in[rows][cols] = value;
 
   for (unsigned int i = 0; i < in.size(); i++)
@@ -98,15 +117,15 @@ TEST(sedova_o_max_of_vector_elements_seq, test_pipeline_run_different_values) {
   std::mt19937 random(dev());
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  int size = 15000;
-  int value = 15000;
+  size_t size = 15000;
+  size_t value = 15000;
 
   std::vector<std::vector<int>> in;
   in = sedova_o_max_of_vector_elements_seq::generate_random_matrix(size, size, value);
   std::vector<int32_t> out(1, in[0][0]);
 
-  int rows = random() % size;
-  int cols = random() % size;
+  size_t rows = random() % size;
+  size_t cols = random() % size;
   in[rows][cols] = value + 1;  // Изменил значение, чтобы найти максимальное
 
   for (unsigned int i = 0; i < in.size(); i++)
