@@ -32,7 +32,7 @@ bool shlyakov_m_min_value_of_row_mpi::TestMPITaskSequential::validation() {
   int flag = 1;
 
   if (flag ==
-      ((taskData->inputs.size() == 0 && taskData->outputs.size() == 0) &&
+      ((!taskData->inputs.size() && !taskData->outputs.size()) &&
        (taskData->inputs_count.size() >= 2 && taskData->inputs_count[0] != 0 && taskData->inputs_count[1] != 0)))
     return (true);
 
@@ -121,7 +121,7 @@ bool shlyakov_m_min_value_of_row_mpi::TestMPITaskParallel::validation() {
   if (world.rank() == 0) {
     int flag = 1;
     if (flag ==
-        ((taskData->inputs.size() == 0 && taskData->outputs.size() == 0) &&
+        ((!taskData->inputs.size() && !taskData->outputs.size()) &&
          (taskData->inputs_count.size() >= 2 && taskData->inputs_count[0] != 0 && taskData->inputs_count[1] != 0)))
       return (true);
     return (false);
