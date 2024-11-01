@@ -1,12 +1,10 @@
-#pragma once
-
 #include <gtest/gtest.h>
 
 #include <iostream>
 #include <thread>
 
 #include "core/perf/include/perf.hpp"
-#include "seq/Sadikov_I_sum_values_by_columns_matrix/include/sq_task.h"
+#include "seq/sadikov_I_sum_values_by_columns_matrix/include/sq_task.h"
 
 TEST(Sadikov_sequential_perf_test, matrix_test_pipeline_run) {
   size_t rows_count = 3000;

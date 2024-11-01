@@ -1,11 +1,9 @@
-#pragma once
-
 #include <gtest/gtest.h>
 
 #include <iostream>
 #include <vector>
 
-#include "seq/Sadikov_I_sum_values_by_columns_matrix/include/sq_task.h"
+#include "seq/sadikov_I_sum_values_by_columns_matrix/include/sq_task.h"
 
 TEST(sum_values_by_columns_matrix, check_validation1) {
   std::vector<double> in(144, 1);
