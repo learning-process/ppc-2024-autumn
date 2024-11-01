@@ -5,54 +5,51 @@
 
 using namespace std::chrono_literals;
 
+int createLinearCoordinates(int col, int row, int totalWidth) { return row * totalWidth + col; }
+
+std::vector<int> computeMatrixSumSequential(const std::vector<int>& matrixData, int width, int height, int startCol, int endCol) {
+  std::vector<int> sums;
+  for (int col = startCol; col < endCol; ++col) {
+    int totalColumnSum = 0;
+    for (int row = 0; row < height; ++row) {
+      int index = createLinearCoordinates(col, row, width);
+      totalColumnSum += matrixData[index];
+    }
+    sums.push_back(totalColumnSum);
+  }
+  return sums;
+}
+
 bool zinoviev_a_sum_cols_matrix::TestTaskSequential::pre_processing() {
   internal_order_test();
-
-  // Чтение размеров матрицы
-  totalRows = reinterpret_cast<int*>(taskData->inputs[0])[0];
-  totalCols = reinterpret_cast<int*>(taskData->inputs[0])[1];
-
-  // Инициализация векторов для хранения значений матрицы и сумм по столбцам
-  matrixData.resize(totalRows * totalCols);
-  columnSums.resize(totalCols, 0);
-
-  // Чтение значений матрицы из входных данных
-  for (int i = 0; i < totalRows * totalCols; i++) {
-    matrixData[i] = reinterpret_cast<int*>(taskData->inputs[0])[i + 2];
+  // Prepare input and output data structures
+  inputData_ = std::vector<int>(taskData->inputs_count[0]);
+  int* dataPointer = reinterpret_cast<int*>(taskData->inputs[0]);
+  for (unsigned int i = 0; i < taskData->inputs_count[0]; ++i) {
+    inputData_[i] = dataPointer[i];
   }
-
+  numCols = taskData->inputs_count[1];
+  numRows = taskData->inputs_count[2];
+  resultData_ = std::vector<int>(numCols, 0);
   return true;
 }
 
 bool zinoviev_a_sum_cols_matrix::TestTaskSequential::validation() {
   internal_order_test();
-  // Проверка количества элементов входных и выходных данных
-  return taskData->inputs_count[0] == 1 && taskData->outputs_count[0] == 1;
+  // Ensure output element count matches expectations
+  return taskData->inputs_count[1] == taskData->outputs_count[0];
 }
 
 bool zinoviev_a_sum_cols_matrix::TestTaskSequential::run() {
   internal_order_test();
-  // Вычисление суммы по столбцам
-  calculateColumnSums();
+  resultData_ = computeMatrixSumSequential(inputData_, numCols, numRows, 0, numCols);
   return true;
 }
 
 bool zinoviev_a_sum_cols_matrix::TestTaskSequential::post_processing() {
   internal_order_test();
-
-  // Запись результатов суммы по столбцам в выходные данные
-  for (int j = 0; j < totalCols; j++) {
-    reinterpret_cast<int*>(taskData->outputs[0])[j] = columnSums[j];
+  for (int i = 0; i < numCols; ++i) {
+    reinterpret_cast<int*>(taskData->outputs[0])[i] = resultData_[i];
   }
-
   return true;
-}
-
-void zinoviev_a_sum_cols_matrix::TestTaskSequential::calculateColumnSums() {
-  // Проход по всем элементам матрицы и вычисление сумм по столбцам
-  for (int i = 0; i < totalRows; i++) {
-    for (int j = 0; j < totalCols; j++) {
-      columnSums[j] += matrixData[i * totalCols + j];
-    }
-  }
 }

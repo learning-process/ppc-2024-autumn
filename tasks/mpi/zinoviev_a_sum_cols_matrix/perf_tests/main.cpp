@@ -7,157 +7,174 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/zinoviev_a_sum_cols_matrix/include/ops_mpi.hpp"
 
-TEST(zinoviev_a_sum_cols_matrix_mpi, test_pipeline_run) {
+TEST(zinoviev_a_sum_cols_matrix, test_task_run_small_matrix) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_sum(1, 0);
-  // Create TaskData
+  int cols = 10;
+  int rows = 10;
+
+  // Создание данных
+  std::vector<int> matrix(cols * rows, 0);
+  matrix[3] = 1;  // Устанавливаем случайное значение
+  std::vector<int> expres(cols, 0);
+  std::vector<int> ans(cols, 0);
+  ans[3] = 1;
+
+  // Создание TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int count_size_vector;
+
   if (world.rank() == 0) {
-    count_size_vector = 120;
-    global_vec = std::vector<int>(count_size_vector, 1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataPar->inputs_count.emplace_back(matrix.size());
+    taskDataPar->inputs_count.emplace_back(cols);
+    taskDataPar->inputs_count.emplace_back(rows);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(expres.data()));
+    taskDataPar->outputs_count.emplace_back(expres.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel>(taskDataPar, "+");
+  auto testMpiTaskParallel = std::make_shared<zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
-  // Create Perf attributes
-  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;
-  const boost::mpi::timer current_timer;
-  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
-
-  // Create and init perf results
-  auto perfResults = std::make_shared<ppc::core::PerfResults>();
-
-  // Create Perf analyzer
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
-  perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
-    ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(count_size_vector, global_sum[0]);
+    ASSERT_EQ(expres, ans);
   }
 }
 
-TEST(zinoviev_a_sum_cols_matrix_mpi, test_task_run) {
+TEST(zinoviev_a_sum_cols_matrix, test_task_run_zero_matrix) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_sum(1, 0);
-  // Create TaskData
+  int cols = 100;
+  int rows = 100;
+
+  // Создание нулевой матрицы
+  std::vector<int> matrix(cols * rows, 0);
+  std::vector<int> expres(cols, 0);
+  std::vector<int> ans(cols, 0);
+
+  // Создание TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int count_size_vector;
+
   if (world.rank() == 0) {
-    count_size_vector = 120;
-    global_vec = std::vector<int>(count_size_vector, 1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataPar->inputs_count.emplace_back(matrix.size());
+    taskDataPar->inputs_count.emplace_back(cols);
+    taskDataPar->inputs_count.emplace_back(rows);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(expres.data()));
+    taskDataPar->outputs_count.emplace_back(expres.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel>(taskDataPar, "+");
+  auto testMpiTaskParallel = std::make_shared<zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
-  // Create Perf attributes
-  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;
-  const boost::mpi::timer current_timer;
-  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
-
-  // Create and init perf results
-  auto perfResults = std::make_shared<ppc::core::PerfResults>();
-
-  // Create Perf analyzer
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
-  perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
-    ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(count_size_vector, global_sum[0]);
+    ASSERT_EQ(expres, ans);
   }
 }
 
-TEST(zinoviev_a_sum_cols_matrix_mpi, test_negative_values) {
+TEST(zinoviev_a_sum_cols_matrix, test_pipeline_run_identical_rows) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_sum(1, 0);
+
+  int cols = 50;
+  int rows = 1000;
+
+  // Создание матрицы с идентичными строками
+  std::vector<int> matrix(cols * rows, 1);  // Каждое значение равно 1
+  std::vector<int> expres(cols, 1000);      // Сумма каждого столбца
+  std::vector<int> ans(cols, 1000);
+
+  // Создание TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_vec = std::vector<int>{-1, -1, -1, -1, -1};  // Отрицательные значения
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataPar->inputs_count.emplace_back(matrix.size());
+    taskDataPar->inputs_count.emplace_back(cols);
+    taskDataPar->inputs_count.emplace_back(rows);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(expres.data()));
+    taskDataPar->outputs_count.emplace_back(expres.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel>(taskDataPar, "+");
+  auto testMpiTaskParallel = std::make_shared<zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
   if (world.rank() == 0) {
-    ASSERT_EQ(-5, global_sum[0]);  // Ожидаемая сумма
+    ASSERT_EQ(expres, ans);
   }
 }
 
-TEST(zinoviev_a_sum_cols_matrix_mpi, test_zero_values) {
+TEST(zinoviev_a_sum_cols_matrix, test_run_for_1_col) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_sum(1, 0);
+
+  int cols = 1;
+  int rows = 100;
+
+  // Создание данных
+  std::vector<int> matrix(cols * rows, 1);  // Все значения равны 1
+  std::vector<int> expres(cols, 100);       // Ожидаемая сумма равна 100
+  std::vector<int> ans(cols, 100);
+
+  // Создание TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_vec = std::vector<int>{0, 0, 0, 0, 0};  // Все нулевые значения
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataPar->inputs_count.emplace_back(matrix.size());
+    taskDataPar->inputs_count.emplace_back(cols);
+    taskDataPar->inputs_count.emplace_back(rows);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(expres.data()));
+    taskDataPar->outputs_count.emplace_back(expres.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel>(taskDataPar, "+");
+  auto testMpiTaskParallel = std::make_shared<zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
   if (world.rank() == 0) {
-    ASSERT_EQ(0, global_sum[0]);  // Ожидаемая сумма
+    ASSERT_EQ(expres, ans);
   }
 }
 
-TEST(zinoviev_a_sum_cols_matrix_mpi, test_different_values) {
+TEST(zinoviev_a_sum_cols_matrix, test_run_for_1_row) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_sum(1, 0);
+
+  int cols = 10;
+  int rows = 1;
+
+  // Создание данных
+  std::vector<int> matrix(cols * rows, 0);
+  matrix[2] = 7;  // Установим значение в столбце 2
+  std::vector<int> expres(cols, 0);
+  std::vector<int> ans(cols, 0);
+  ans[2] = 7;  // Ожидаемая сумма в третьем столбце
+
+  // Создание TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_vec = std::vector<int>{1, 2, 3, 4, 5};  // Разные значения
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataPar->inputs_count.emplace_back(matrix.size());
+    taskDataPar->inputs_count.emplace_back(cols);
+    taskDataPar->inputs_count.emplace_back(rows);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(expres.data()));
+    taskDataPar->outputs_count.emplace_back(expres.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel>(taskDataPar, "+");
+  auto testMpiTaskParallel = std::make_shared<zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
   if (world.rank() == 0) {
-    ASSERT_EQ(15, global_sum[0]);  // Ожидаемая сумма
+    ASSERT_EQ(expres, ans);
   }
 }

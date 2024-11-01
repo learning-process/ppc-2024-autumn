@@ -15,37 +15,39 @@
 
 namespace zinoviev_a_sum_cols_matrix_mpi {
 
-std::vector<int> getRandomVector(int sz);
+std::vector<int> generateRandomVector(int size);
+int computeLinearCoordinates(int xCoord, int yCoord, int width);
+std::vector<int> calculateMatrixSumSequential(const std::vector<int>& mat, int width, int height, int startX, int endX);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> data) : Task(std::move(data)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
  private:
-  std::vector<int> input_;
-  int res{};
-  std::string ops;
+  std::vector<int> inputData_;
+  std::vector<int> resultData_;
+  int numCols{};
+  int numRows{};
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> data) : Task(std::move(data)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
  private:
-  std::vector<int> input_, local_input_;
-  int res{};
-  std::string ops;
-  boost::mpi::communicator world;
+  std::vector<int> inputData_;
+  std::vector<int> resultData_;
+  int numCols{};
+  int numRows{};
+  boost::mpi::communicator mpiWorld;
 };
 
-}  // namespace zinoviev_a_sum_cols_matrix_mpi
+}  // namespace nesterov_a_test_task_mpi

@@ -5,214 +5,194 @@
 
 #include "seq/zinoviev_a_sum_cols_matrix/include/ops_seq.hpp"
 
-TEST(zinoviev_a_sum_cols_matrix, Test_Sum_10) {
-  const int count = 10;
+TEST(zinoviev_a_sum_cols_matrix, TrialEmptyMatrix) {
+  int cols = 0;
+  int rows = 5;
 
-  // Create data
-  std::vector<int> in(1, count);
-  std::vector<int> out(1, 0);
+  std::vector<int> matrix = {};
+  std::vector<int> expres;
+  std::vector<int> ans(cols, 0);
 
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
+  taskDataSeq->inputs_count.emplace_back(cols);
+  taskDataSeq->inputs_count.emplace_back(rows);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres.data()));
+  taskDataSeq->outputs_count.emplace_back(expres.size());
 
-  // Create Task
   zinoviev_a_sum_cols_matrix::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(count, out[0]);
+  ASSERT_EQ(expres, ans);
 }
 
-TEST(zinoviev_a_sum_cols_matrix, Test_Sum_20) {
-  const int count = 20;
+TEST(zinoviev_a_sum_cols_matrix, Test1x1Matrix) {
+  int cols = 1;
+  int rows = 1;
 
-  // Create data
-  std::vector<int> in(1, count);
-  std::vector<int> out(1, 0);
+  std::vector<int> matrix = {5};
+  std::vector<int> expres(cols, 0);
+  std::vector<int> ans = {5};
 
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
+  taskDataSeq->inputs_count.emplace_back(cols);
+  taskDataSeq->inputs_count.emplace_back(rows);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres.data()));
+  taskDataSeq->outputs_count.emplace_back(expres.size());
 
-  // Create Task
   zinoviev_a_sum_cols_matrix::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(count, out[0]);
+  ASSERT_EQ(expres, ans);
 }
 
-TEST(zinoviev_a_sum_cols_matrix, Test_Sum_50) {
-  const int count = 50;
+TEST(zinoviev_a_sum_cols_matrix, Test3x3Matrix) {
+  int cols = 3;
+  int rows = 3;
 
-  // Create data
-  std::vector<int> in(1, count);
-  std::vector<int> out(1, 0);
+  std::vector<int> matrix = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+  std::vector<int> expres(cols, 0);
+  std::vector<int> ans = {12, 15, 18};  // Суммы по столбцам
 
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
+  taskDataSeq->inputs_count.emplace_back(cols);
+  taskDataSeq->inputs_count.emplace_back(rows);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres.data()));
+  taskDataSeq->outputs_count.emplace_back(expres.size());
 
-  // Create Task
   zinoviev_a_sum_cols_matrix::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(count, out[0]);
+  ASSERT_EQ(expres, ans);
 }
 
-TEST(zinoviev_a_sum_cols_matrix, Test_Sum_70) {
-  const int count = 70;
+TEST(zinoviev_a_sum_cols_matrix, Test5x5IdentityMatrix) {
+  int cols = 5;
+  int rows = 5;
 
-  // Create data
-  std::vector<int> in(1, count);
-  std::vector<int> out(1, 0);
+  std::vector<int> matrix = {1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1};
+  std::vector<int> expres(cols, 0);
+  std::vector<int> ans = {1, 1, 1, 1, 1};  // Суммы по столбцам
 
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
+  taskDataSeq->inputs_count.emplace_back(cols);
+  taskDataSeq->inputs_count.emplace_back(rows);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres.data()));
+  taskDataSeq->outputs_count.emplace_back(expres.size());
 
-  // Create Task
   zinoviev_a_sum_cols_matrix::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(count, out[0]);
+  ASSERT_EQ(expres, ans);
 }
 
-TEST(zinoviev_a_sum_cols_matrix, Test_Sum_100) {
-  const int count = 100;
+TEST(zinoviev_a_sum_cols_matrix, Test2x100Matrix) {
+  int cols = 2;
+  int rows = 100;
 
-  // Create data
-  std::vector<int> in(1, count);
-  std::vector<int> out(1, 0);
+  std::vector<int> matrix(200, 1);  // все единицы
+  std::vector<int> expres(cols, 0);
+  std::vector<int> ans = {100, 100};  // Суммы по столбцам
 
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
+  taskDataSeq->inputs_count.emplace_back(cols);
+  taskDataSeq->inputs_count.emplace_back(rows);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres.data()));
+  taskDataSeq->outputs_count.emplace_back(expres.size());
 
-  // Create Task
   zinoviev_a_sum_cols_matrix::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(count, out[0]);
+  ASSERT_EQ(expres, ans);
 }
 
-TEST(zinoviev_a_sum_cols_matrix, Test_Sum_Zero) {
-  const int count = 0;
+TEST(zinoviev_a_sum_cols_matrix, TestNegativeValuesMatrix) {
+  int cols = 4;
+  int rows = 2;
 
-  // Create data
-  std::vector<int> in(1, count);
-  std::vector<int> out(1, 0);
+  std::vector<int> matrix = {-1, -2, -3, -4, -5, -6, -7, -8};
+  std::vector<int> expres(cols, 0);
+  std::vector<int> ans = {-6, -8, -10, -12};  // Суммы по столбцам
 
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
+  taskDataSeq->inputs_count.emplace_back(cols);
+  taskDataSeq->inputs_count.emplace_back(rows);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres.data()));
+  taskDataSeq->outputs_count.emplace_back(expres.size());
 
-  // Create Task
   zinoviev_a_sum_cols_matrix::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(count, out[0]);
+  ASSERT_EQ(expres, ans);
 }
 
-// Тест на сумму с отрицательным значением
-TEST(zinoviev_a_sum_cols_matrix, Test_Sum_Negative) {
-  const int count = -10;
+TEST(zinoviev_a_sum_cols_matrix, TestLargeValuesMatrix) {
+  int cols = 3;
+  int rows = 2;
 
-  // Create data
-  std::vector<int> in(1, count);
-  std::vector<int> out(1, 0);
+  std::vector<int> matrix = {1000000, 2000000, 3000000, 4000000, 5000000, 6000000};
+  std::vector<int> expres(cols, 0);
+  std::vector<int> ans = {5000000, 7000000, 9000000};  // Суммы по столбцам
 
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
+  taskDataSeq->inputs_count.emplace_back(cols);
+  taskDataSeq->inputs_count.emplace_back(rows);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres.data()));
+  taskDataSeq->outputs_count.emplace_back(expres.size());
 
-  // Create Task
   zinoviev_a_sum_cols_matrix::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(count, out[0]);
+  ASSERT_EQ(expres, ans);
 }
 
-// Тест на сумму с массивом из нескольких элементов
-TEST(zinoviev_a_sum_cols_matrix, Test_Sum_Multiple_Elements) {
-  const std::vector<int> inputData = {10, 20, 30, 40};  // Общая сумма = 100
-  const int expectedSum = 100;
+TEST(zinoviev_a_sum_cols_matrix, TestRectangularMatrix) {
+  int cols = 3;
+  int rows = 4;
 
-  // Create data
-  std::vector<int> in(inputData);
-  std::vector<int> out(1, 0);
+  std::vector<int> matrix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+  std::vector<int> expres(cols, 0);
+  std::vector<int> ans = {22, 26, 30};  // Суммы по столбцам
 
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
+  taskDataSeq->inputs_count.emplace_back(cols);
+  taskDataSeq->inputs_count.emplace_back(rows);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres.data()));
+  taskDataSeq->outputs_count.emplace_back(expres.size());
 
-  // Create Task
   zinoviev_a_sum_cols_matrix::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(expectedSum, out[0]);
-}
-
-// Тест на сумму с массивом, содержащим отрицательные и положительные значения
-TEST(zinoviev_a_sum_cols_matrix, Test_Sum_Negative_And_Positive) {
-  const std::vector<int> inputData = {10, -20, 30, -10};  // Общая сумма = 10
-  const int expectedSum = 10;
-
-  // Create data
-  std::vector<int> in(inputData);
-  std::vector<int> out(1, 0);
-
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
-
-  // Create Task
-  zinoviev_a_sum_cols_matrix::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
-  ASSERT_EQ(expectedSum, out[0]);
+  ASSERT_EQ(expres, ans);
 }

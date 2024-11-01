@@ -1,11 +1,14 @@
 // Copyright 2023 Nesterov Alexander
 #pragma once
 
-#include <memory>
 #include <string>
 #include <vector>
 
 #include "core/task/include/task.hpp"
+
+std::vector<int> computeMatrixSumSequential(const std::vector<int>& matrix, int width, int height, int startX, int endX);
+int createLinearCoordinates(int x, int y, int width);
+
 
 namespace zinoviev_a_sum_cols_matrix {
 
@@ -19,16 +22,10 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  int input_{};
-  int res{};
-  std::vector<int> matrixData;  // для хранения значений матрицы
-  std::vector<int> columnSums;  // для хранения сумм по столбцам
-  int totalRows{};
-  int totalCols{};
-
-  // Функция для вычисления суммы по столбцам
-  void calculateColumnSums();
+  int numRows{};
+  int numCols{};
+  std::vector<int> inputData_;
+  std::vector<int> resultData_;
 };
 
 }  // namespace zinoviev_a_sum_cols_matrix
-
