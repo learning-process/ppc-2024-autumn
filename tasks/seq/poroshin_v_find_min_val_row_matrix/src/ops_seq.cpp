@@ -1,7 +1,7 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/poroshin_v_find_min_val_row_matrix/include/ops_seq.hpp"
 
-#include <limits>  // Для INT_MAX и INT_MIN
+#include <limits>  // for INT_MAX and INT_MIN
 #include <thread>
 
 using namespace std::chrono_literals;
@@ -38,7 +38,7 @@ bool poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential::run() {
 
   int mn;
   for (int i = 0; i < m; i++) {
-    mn = std::numeric_limits<int>::max();  // Используем std::numeric_limits для INT_MAX
+    mn = std::numeric_limits<int>::max();  // Use std::numeric_limits for INT_MAX
     for (int j = n * i; j < n * i + n; j++) {
       mn = std::min(mn, input_[j]);
     }
