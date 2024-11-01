@@ -192,7 +192,7 @@ bool TestMPITaskParallel<TypeElem>::pre_processing() {
   }
   MPI_Scatter(input_.data(), delta_n, mpi_type_elem, local_input_.data(), delta_n, mpi_type_elem, 0, MPI_COMM_WORLD);
   if (ProcRank == 0) {
-    for (unsigned int i = delta_n; i < delta_n_r; i++) {
+    for (int i = delta_n; i < delta_n_r; i++) {
       local_input_[i] = input_[i];
     }
   }
