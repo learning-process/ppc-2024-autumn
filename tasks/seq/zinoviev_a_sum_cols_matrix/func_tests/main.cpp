@@ -59,7 +59,7 @@ TEST(zinoviev_a_sum_cols_matrix, Test3x3Matrix) {
 
   std::vector<int> matrix = {1, 2, 3, 4, 5, 6, 7, 8, 9};
   std::vector<int> expres(cols, 0);
-  std::vector<int> ans = {12, 15, 18};  // Ñףללû ןמ סעמכבצאל
+  std::vector<int> ans = {12, 15, 18};
 
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
@@ -83,7 +83,7 @@ TEST(zinoviev_a_sum_cols_matrix, Test5x5IdentityMatrix) {
 
   std::vector<int> matrix = {1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1};
   std::vector<int> expres(cols, 0);
-  std::vector<int> ans = {1, 1, 1, 1, 1};  // Ñףללû ןמ סעמכבצאל
+  std::vector<int> ans = {1, 1, 1, 1, 1};
 
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
@@ -105,9 +105,9 @@ TEST(zinoviev_a_sum_cols_matrix, Test2x100Matrix) {
   int cols = 2;
   int rows = 100;
 
-  std::vector<int> matrix(200, 1);  // גסו והטםטצû
+  std::vector<int> matrix(200, 1);
   std::vector<int> expres(cols, 0);
-  std::vector<int> ans = {100, 100};  // Ñףללû ןמ סעמכבצאל
+  std::vector<int> ans = {100, 100};
 
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
@@ -131,7 +131,7 @@ TEST(zinoviev_a_sum_cols_matrix, TestNegativeValuesMatrix) {
 
   std::vector<int> matrix = {-1, -2, -3, -4, -5, -6, -7, -8};
   std::vector<int> expres(cols, 0);
-  std::vector<int> ans = {-6, -8, -10, -12};  // Ñףללû ןמ סעמכבצאל
+  std::vector<int> ans = {-6, -8, -10, -12};
 
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
@@ -155,7 +155,7 @@ TEST(zinoviev_a_sum_cols_matrix, TestLargeValuesMatrix) {
 
   std::vector<int> matrix = {1000000, 2000000, 3000000, 4000000, 5000000, 6000000};
   std::vector<int> expres(cols, 0);
-  std::vector<int> ans = {5000000, 7000000, 9000000};  // Ñףללû ןמ סעמכבצאל
+  std::vector<int> ans = {5000000, 7000000, 9000000};
 
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
@@ -179,7 +179,7 @@ TEST(zinoviev_a_sum_cols_matrix, TestRectangularMatrix) {
 
   std::vector<int> matrix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
   std::vector<int> expres(cols, 0);
-  std::vector<int> ans = {22, 26, 30};  // Ñףללû ןמ סעמכבצאל
+  std::vector<int> ans = {22, 26, 30};
 
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));

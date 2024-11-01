@@ -12,14 +12,12 @@ TEST(zinoviev_a_sum_cols_matrix, test_task_run_small_matrix) {
   int cols = 10;
   int rows = 10;
 
-  // Создание данных
   std::vector<int> matrix(cols * rows, 0);
-  matrix[3] = 1;  // Устанавливаем случайное значение
+  matrix[3] = 1;
   std::vector<int> expres(cols, 0);
   std::vector<int> ans(cols, 0);
   ans[3] = 1;
 
-  // Создание TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -47,12 +45,10 @@ TEST(zinoviev_a_sum_cols_matrix, test_task_run_zero_matrix) {
   int cols = 100;
   int rows = 100;
 
-  // Создание нулевой матрицы
   std::vector<int> matrix(cols * rows, 0);
   std::vector<int> expres(cols, 0);
   std::vector<int> ans(cols, 0);
 
-  // Создание TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -81,12 +77,10 @@ TEST(zinoviev_a_sum_cols_matrix, test_pipeline_run_identical_rows) {
   int cols = 50;
   int rows = 1000;
 
-  // Создание матрицы с идентичными строками
-  std::vector<int> matrix(cols * rows, 1);  // Каждое значение равно 1
-  std::vector<int> expres(cols, 1000);      // Сумма каждого столбца
+  std::vector<int> matrix(cols * rows, 1);
+  std::vector<int> expres(cols, 1000);
   std::vector<int> ans(cols, 1000);
 
-  // Создание TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -115,12 +109,10 @@ TEST(zinoviev_a_sum_cols_matrix, test_run_for_1_col) {
   int cols = 1;
   int rows = 100;
 
-  // Создание данных
-  std::vector<int> matrix(cols * rows, 1);  // Все значения равны 1
-  std::vector<int> expres(cols, 100);       // Ожидаемая сумма равна 100
+  std::vector<int> matrix(cols * rows, 1);
+  std::vector<int> expres(cols, 100);
   std::vector<int> ans(cols, 100);
 
-  // Создание TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -149,14 +141,12 @@ TEST(zinoviev_a_sum_cols_matrix, test_run_for_1_row) {
   int cols = 10;
   int rows = 1;
 
-  // Создание данных
   std::vector<int> matrix(cols * rows, 0);
-  matrix[2] = 7;  // Установим значение в столбце 2
+  matrix[2] = 7;
   std::vector<int> expres(cols, 0);
   std::vector<int> ans(cols, 0);
-  ans[2] = 7;  // Ожидаемая сумма в третьем столбце
+  ans[2] = 7;
 
-  // Создание TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
