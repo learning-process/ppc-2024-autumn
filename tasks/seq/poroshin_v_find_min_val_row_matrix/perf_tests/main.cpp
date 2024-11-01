@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "seq/example/include/ops_seq.hpp"
+#include "seq/poroshin_v_find_min_val_row_matrix/include/ops_seq.hpp"
 
 TEST(poroshin_v_find_min_val_row_matrix_seq, test_pipeline_run) {
   // Create data
@@ -27,7 +27,6 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, test_pipeline_run) {
   std::vector<int> result(m);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
   taskDataSeq->outputs_count.emplace_back(m);
-  
  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;  // Set the number of runs as needed
@@ -72,7 +71,6 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, test_task_run) {
   std::vector<int> result(m);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
   taskDataSeq->outputs_count.emplace_back(m);
-
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;

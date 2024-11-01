@@ -5,7 +5,7 @@
 #include <boost/mpi/environment.hpp>
 #include <vector>
 
-#include "mpi/example/include/ops_mpi.hpp"
+#include "mpi/poroshin_v_find_min_val_row_matrix/include/ops_mpi.hpp"
 
 TEST(poroshin_v_find_min_val_row_matrix_mpi, Test_2_4_0) {
 

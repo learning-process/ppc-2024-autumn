@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/example/include/ops_mpi.hpp"
+#include "mpi/poroshin_v_find_min_val_row_matrix/include/ops_mpi.hpp"
 
 TEST(poroshin_v_find_min_val_row_matrix_mpi, test_pipeline_run) {
   int m = 100, n = 400;

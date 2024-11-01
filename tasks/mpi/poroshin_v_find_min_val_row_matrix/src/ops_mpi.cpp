@@ -1,5 +1,5 @@
 // Copyright 2023 Nesterov Alexander
-#include "mpi/example/include/ops_mpi.hpp"
+#include "mpi/poroshin_v_find_min_val_row_matrix/include/ops_mpi.hpp"
 
 #include <algorithm>
 #include <functional>
@@ -77,7 +77,7 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskSequential::post_process
 bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
-  int n  = 0;
+  int n = 0;
   int m = 0;
   int delta = 0;
 
@@ -97,7 +97,7 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::pre_processing
 
   if (world.rank() == 0) {
     input_ = std::vector<int>(delta * world.size(), INT_MAX);
-    for (int i = 0; i < n*m; i++) {
+    for (int i = 0; i < n * m; i++) {
       input_[i] = (reinterpret_cast<int*>(taskData->inputs[0])[i]);
     }
   }
@@ -108,7 +108,6 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::pre_processing
 
   return true;
 }
-
 
 bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
@@ -143,7 +142,8 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::run() {
   int k = 0;
 
   while (local_input_.begin() + delta + k * n < local_input_.end() - last) {
-    l_res = *std::min_element(local_input_.begin() + delta + k * n, std::min(local_input_.end(), local_input_.begin() + delta + (k + 1) * n));
+    l_res = *std::min_element(local_input_.begin() + delta + k * n,
+                              +std::min(local_input_.end(), local_input_.begin() + delta + (k + 1) * n));
     reduce(world, l_res, res[id], boost::mpi::minimum<int>(), 0);
     k++;
     id++;

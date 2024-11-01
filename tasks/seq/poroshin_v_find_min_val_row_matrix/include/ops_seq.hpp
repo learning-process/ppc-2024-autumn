@@ -8,7 +8,7 @@
 
 namespace poroshin_v_find_min_val_row_matrix_seq {
 
-  std::vector<int> gen(int m, int n);  // generate vector (matrix)
+std::vector<int> gen(int m, int n);  // generate vector (matrix)
 
 class TestTaskSequential : public ppc::core::Task {
  public:
@@ -20,9 +20,9 @@ class TestTaskSequential : public ppc::core::Task {
 
  private:
   std::vector<int> input_{}, res{};
-  //inputs = vector (matrix)
-  //inputs_count[0] = m, inputs_count[1] = n 
-  // m - num of rows, n - num of columns
+  // inputs = vector (matrix)
+  // inputs_count[0] = m, inputs_count[1] = n
+  //  m - num of rows, n - num of columns
 };
 
 }  // namespace poroshin_v_find_min_val_row_matrix_seq

@@ -1,5 +1,5 @@
 // Copyright 2024 Nesterov Alexander
-#include "seq/example/include/ops_seq.hpp"
+#include "seq/poroshin_v_find_min_val_row_matrix/include/ops_seq.hpp"
 
 #include <thread>
 
@@ -30,13 +30,12 @@ bool poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential::validation() {
 
 bool poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential::run() {
   internal_order_test();
-  
   int m = taskData->inputs_count[0];
   int n = taskData->inputs_count[1];
 
   int mn = INT_MAX;
   for (int i = 0; i < m; i++) {
-    for (int j = n*i; j < n*i+n; j++) {
+    for (int j = n * i; j < n * i + n; j++) {
       mn = std::min(mn, input_[j]);
     }
     res[i] = mn;
@@ -54,7 +53,7 @@ bool poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential::post_processing
 }
 
 std::vector<int> poroshin_v_find_min_val_row_matrix_seq::gen(int m, int n) {
-  std::vector<int> tmp(m*n);
+  std::vector<int> tmp(m * n);
   int n1 = std::max(n, m);
   int m1 = std::min(n, m);
   for (auto& t : tmp) {
