@@ -3,7 +3,7 @@
 
 template <class T>
 bool kovalev_k_num_of_orderly_violations_seq::NumOfOrderlyViolations<T>::count_num_of_orderly_violations_seq() {
-  res=0;	
+  res = 0;	
   for(size_t i=1; i<n; i++)
 	  if(v[i-1] > v[i]) res++;	  
   return true;
@@ -13,9 +13,9 @@ template <class T>
 bool kovalev_k_num_of_orderly_violations_seq::NumOfOrderlyViolations<T>::pre_processing() {
   internal_order_test();
   // Init vector<T> of size n
-  v = std::vector<T>(n);  
+  v = std::vector<T>(n);
   void* ptr_input = taskData->inputs[0];
-  void* ptr_vec = v.data();  
+  void* ptr_vec = v.data();
   memcpy(ptr_vec, ptr_input, sizeof(T) * n);
   // Init counter
   res = 0;

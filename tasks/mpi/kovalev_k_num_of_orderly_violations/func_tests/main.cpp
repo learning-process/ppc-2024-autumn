@@ -1,5 +1,6 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
+
 #include "mpi/kovalev_k_num_of_orderly_violations/include/header.hpp"
 
 TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_viol_0_int_) {
