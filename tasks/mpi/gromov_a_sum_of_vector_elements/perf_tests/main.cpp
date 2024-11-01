@@ -22,7 +22,7 @@ TEST(gromov_a_sum_of_vector_elements_mpi, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  auto MPISumOfVectorParallel = 
+  auto MPISumOfVectorParallel =
       std::make_shared<gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel>(taskDataPar, "+");
   ASSERT_EQ(MPISumOfVectorParallel->validation(), true);
   MPISumOfVectorParallel->pre_processing();
@@ -63,7 +63,7 @@ TEST(gromov_a_sum_of_vector_elements_mpi, test_task_run) {
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  auto MPISumOfVectorParallel = 
+  auto MPISumOfVectorParallel =
       std::make_shared<gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel>(taskDataPar, "+");
   ASSERT_EQ(MPISumOfVectorParallel->validation(), true);
   MPISumOfVectorParallel->pre_processing();
