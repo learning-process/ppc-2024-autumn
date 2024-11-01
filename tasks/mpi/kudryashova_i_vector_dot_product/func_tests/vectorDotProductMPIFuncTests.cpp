@@ -194,7 +194,6 @@ TEST(kudryashova_i_vector_dot_product_mpi, check_dot_product_empty_vectors) {
   ASSERT_EQ(testMpiTaskParallel.validation(), false);
 }
 
-
 TEST(kudryashova_i_vector_dot_product_mpi, check_dot_product_empty_and_nonempty_vectors) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vector;
@@ -236,7 +235,6 @@ TEST(kudryashova_i_vector_dot_product_mpi, scalar_multiply_vector_1_with_zero) {
   kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
 }
-
 
 TEST(kudryashova_i_vector_dot_product_mpi, scalar_multiply_vector_1) {
   boost::mpi::communicator world;
