@@ -74,10 +74,9 @@ TEST(sum_values_by_columns_matrix, check_square_matrix2) {
 }
 
 TEST(sum_values_by_columns_matrix, check_square_matrix3) {
-  std::vector<double> in(256);
+  std::vector<double> in(256, 1.0 / 16.0);
   std::vector<size_t> in_index{16, 16};
   std::vector<double> out(16, 0);
-  in = sadikov_I_Sum_values_by_columns_matrix_seq::Randvector(256);
   std::shared_ptr<ppc::core::TaskData> taskData =
       sadikov_I_Sum_values_by_columns_matrix_seq::CreateTaskData(in, in_index, out);
   sadikov_I_Sum_values_by_columns_matrix_seq::MatrixTask sv(taskData);
@@ -86,7 +85,7 @@ TEST(sum_values_by_columns_matrix, check_square_matrix3) {
   sv.run();
   sv.post_processing();
   for (size_t i = 0; i < in_index[1]; ++i) {
-    ASSERT_LE(out[i], 1.0);
+    EXPECT_NEAR(out[i], 1.0, 1e-6);
   }
 }
 
