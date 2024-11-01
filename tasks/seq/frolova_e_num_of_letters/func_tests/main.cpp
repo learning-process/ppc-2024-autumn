@@ -115,4 +115,3 @@ TEST(frolova_e_num_of_letters_seq, str_with_letters_and_other_symbols_test) {
   testTaskSequential.post_processing();
   ASSERT_EQ(4, out[0]);
 }
-

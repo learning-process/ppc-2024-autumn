@@ -86,5 +86,3 @@ TEST(frolova_e_num_of_letters, test_task_run) {
     ASSERT_EQ(count_size_, global_sum[0]);
   }
 }
-
-

@@ -7,6 +7,7 @@ using namespace std::chrono_literals;
 
 std::string frolova_e_num_of_letters_seq::GenStr(int n) {
   std::string str = "test";
+
   std::string result;     
   result.resize(n);  
 
@@ -46,7 +47,7 @@ bool frolova_e_num_of_letters_seq::TestTaskSequential::pre_processing() {
 bool frolova_e_num_of_letters_seq::TestTaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
-  return taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1; 
+  return taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1;
 }
 
 bool frolova_e_num_of_letters_seq::TestTaskSequential::run() {

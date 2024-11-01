@@ -66,8 +66,7 @@ bool frolova_e_num_of_letters_mpi::TestMPITaskSequential::post_processing() {
 bool frolova_e_num_of_letters_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   unsigned int delta = 0;
-  unsigned int remainder = 0;
-  
+  unsigned int remainder = 0;  
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
     remainder = taskData->inputs_count[0] % world.size();
@@ -76,8 +75,7 @@ bool frolova_e_num_of_letters_mpi::TestMPITaskParallel::pre_processing() {
 
   if (world.rank() == 0) {
     // Init vectors
-    input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
- 
+    input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]); 
     for (int proc = 1; proc < world.size(); proc++) {
       world.send(proc, 0, input_.data() + remainder + proc * delta, delta);
     }
@@ -110,8 +108,7 @@ bool frolova_e_num_of_letters_mpi::TestMPITaskParallel::validation() {
 
 bool frolova_e_num_of_letters_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  int local_res = 0;
-  
+  int local_res = 0;  
   for (char c : local_input_) {
     if (isalpha(c)) local_res++;
   }
