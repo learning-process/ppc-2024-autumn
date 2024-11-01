@@ -41,7 +41,7 @@ TEST(tyshkevich_a_num_of_orderly_violations_mpi_ftest, Test_Max_10) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
     taskDataSeq->inputs_count.emplace_back(size);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(local_count.data()));
-    taskDataSeq->outputs_count.emplace_back(local_count.data());
+    taskDataSeq->outputs_count.emplace_back(local_count.size());
 
     // Create Task
     tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
@@ -89,7 +89,7 @@ TEST(tyshkevich_a_num_of_orderly_violations_mpi_ftest, Test_Max_20) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
     taskDataSeq->inputs_count.emplace_back(size);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(local_count.data()));
-    taskDataSeq->outputs_count.emplace_back(local_count.data());
+    taskDataSeq->outputs_count.emplace_back(local_count.size());
 
     // Create Task
     tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
@@ -137,7 +137,7 @@ TEST(tyshkevich_a_num_of_orderly_violations_mpi_ftest, Test_Max_50) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
     taskDataSeq->inputs_count.emplace_back(size);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(local_count.data()));
-    taskDataSeq->outputs_count.emplace_back(local_count.data());
+    taskDataSeq->outputs_count.emplace_back(local_count.size());
 
     // Create Task
     tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
