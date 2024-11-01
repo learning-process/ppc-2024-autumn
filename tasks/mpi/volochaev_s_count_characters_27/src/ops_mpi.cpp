@@ -71,7 +71,7 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::pre_processing() {
   if (world.rank() == 0) {
     tmp1 = reinterpret_cast<std::string*>(taskData->inputs[0])[0];
     tmp2 = reinterpret_cast<std::string*>(taskData->inputs[0])[1];
-    for_res = abs((int)tmp1.size() - (int)tmp2.size());
+    for_res = abs(static_cast<int>(tmp1.size()) - static_cast<int>(tmp2.size()));
     delta = (std::min(tmp1.size(), tmp2.size())) / world.size();
     if (std::min(tmp1.size(), tmp2.size()) % world.size() > 0u) ++delta;
   }
