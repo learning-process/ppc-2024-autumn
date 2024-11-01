@@ -27,9 +27,9 @@ std::vector<std::vector<int>> vladimirova_j_max_of_vector_elements_seq::CreateIn
 
 int vladimirova_j_max_of_vector_elements_seq::FindMaxElem(std::vector<int> m) {
   int max_elem = m[0];
-  for (size_t i = 0; i < m.size(); i++) {
-    if (m[i] > max_elem) {
-      max_elem = m[i];
+  for (int& i : m) {
+    if (i > max_elem) {
+      max_elem = i;
     }
   }
   return max_elem;

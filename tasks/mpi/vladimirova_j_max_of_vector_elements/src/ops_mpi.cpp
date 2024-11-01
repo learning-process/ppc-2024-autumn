@@ -11,15 +11,14 @@ using namespace std::chrono_literals;
 
 int vladimirova_j_max_of_vector_elements_mpi::FindMaxElem(std::vector<int> m) {
   int max_elem = m[0];
-  for (size_t i = 0; i < m.size(); i++) {
-    if (m[i] > max_elem) {
-      max_elem = m[i];
+  for (int &i : m) {
+    if (i > max_elem) {
+      max_elem = i;
     }
   }
   return max_elem;
 }
 std::vector<int> vladimirova_j_max_of_vector_elements_mpi::CreateVector(size_t size, size_t spread_of_val) {
-  if (size == 0) throw "null size";
   // Init value for input and output
   std::random_device dev;
   std::mt19937 random(dev());
