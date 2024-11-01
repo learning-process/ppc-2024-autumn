@@ -122,7 +122,7 @@ TEST(matyunina_a_average_of_vector_elements_seq, Test_100_5) {
 
 TEST(matyunina_a_average_of_vector_elements_seq, Test_3) {
   // Create data
-  std::vector<int> in {1, 2, 3, 4, 5};
+  std::vector<int> in{1, 2, 3, 4, 5};
   std::vector<int> out(1, 0);
 
   // Create TaskData

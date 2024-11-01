@@ -23,7 +23,8 @@ TEST(matyunina_a_average_of_vector_elements_mpi, test_1000) {
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<matyunina_a_average_of_vector_elements_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel =
+      std::make_shared<matyunina_a_average_of_vector_elements_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -63,7 +64,8 @@ TEST(matyunina_a_average_of_vector_elements_mpi, test_100) {
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<matyunina_a_average_of_vector_elements_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel =
+      std::make_shared<matyunina_a_average_of_vector_elements_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
