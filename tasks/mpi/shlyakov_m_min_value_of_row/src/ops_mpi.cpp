@@ -68,7 +68,6 @@ bool shlyakov_m_min_value_of_row_mpi::TestMPITaskSequential::post_processing() {
   return true;
 }
 
-
 bool shlyakov_m_min_value_of_row_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
@@ -104,7 +103,8 @@ bool shlyakov_m_min_value_of_row_mpi::TestMPITaskParallel::pre_processing() {
 
   local_input_.resize(local_rows, std::vector<int>(sz_col));
 
-  if (world.rank() == 0) std::copy(input_.begin(), input_.begin() + local_rows, local_input_.begin());
+  if (world.rank() == 0)
+    std::copy(input_.begin(), input_.begin() + local_rows, local_input_.begin());
   else {
     for (int r = 0; r < local_rows; r++) world.recv(0, 0, local_input_[r].data(), sz_col);
   }
@@ -173,7 +173,7 @@ bool shlyakov_m_min_value_of_row_mpi::TestMPITaskParallel::post_processing() {
 }
 
 std::vector<std::vector<int>> shlyakov_m_min_value_of_row_mpi::TestMPITaskSequential::get_random_matr(int sz_row,
-                                                                                                   int sz_col) {
+                                                                                                      int sz_col) {
   std::vector<int> rand_vec(sz_row);
   std::vector<std::vector<int>> rand_matr(sz_row, std::vector<int>(sz_col));
 
