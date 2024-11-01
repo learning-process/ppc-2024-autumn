@@ -85,7 +85,8 @@ TEST(volochaev_s_count_characters_27_seq, test_task_run_1) {
 
 TEST(volochaev_s_count_characters_27_seq, test_task_run_2) {
   // Create data
-  std::vector<std::string> in = {volochaev_s_count_characters_27_seq::get_random_string(200000000), volochaev_s_count_characters_27_seq::get_random_string(300000000)};
+  std::vector<std::string> in = {volochaev_s_count_characters_27_seq::get_random_string(200000000),
+                                 volochaev_s_count_characters_27_seq::get_random_string(300000000)};
   std::vector<int> out(1, 0);
   int ans = 2;
 
