@@ -17,8 +17,7 @@ namespace petrov_o_num_of_alternations_signs_mpi {
 
 class SequentialTask : public ppc::core::Task {
  public:
-  explicit SequentialTask(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit SequentialTask(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -31,8 +30,7 @@ class SequentialTask : public ppc::core::Task {
 
 class ParallelTask : public ppc::core::Task {
  public:
-  explicit ParallelTask(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit ParallelTask(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -44,4 +42,4 @@ class ParallelTask : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  // namespace nesterov_a_test_task_mpi
+}  // namespace petrov_o_num_of_alternations_signs_mpi

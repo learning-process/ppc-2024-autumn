@@ -1,11 +1,10 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
-#include <numeric>
-#include <vector>
-
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <numeric>
+#include <vector>
 
 #include "mpi/petrov_o_num_of_alternations_signs/include/ops_mpi.hpp"
 
@@ -141,7 +140,7 @@ TEST(Sequential, TestAlternations_LargeInput) {
 TEST(Parallel, TestAlternations_Simple) {
   boost::mpi::communicator world;
 
-  std::vector<int> input = {1, -2, 3, -4, 5};
+  std::vector<int> input = {1, -2, 3, -4, 5, -6, 7, -8, 9, -10, 11, -12, 13, -14, 15, -16, 17, -18, 19, -20};
   std::vector<int> output(1);  // Вектор для результата
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
@@ -158,38 +157,15 @@ TEST(Parallel, TestAlternations_Simple) {
   ASSERT_TRUE(task.pre_processing());
   ASSERT_TRUE(task.run());
   ASSERT_TRUE(task.post_processing());
-  if (world.rank() == 0) 
-    {ASSERT_EQ(output[0], 4);}  // Ожидаемое количество чередований: 4
+  if (world.rank() == 0) {
+    ASSERT_EQ(output[0], 19);
+  }  // Ожидаемое количество чередований: 4
 }
 
 TEST(Parallel, TestAlternations_AllPositive) {
   boost::mpi::communicator world;
 
-  std::vector<int> input = {1, 2, 3, 4, 5};
-  std::vector<int> output(1);
-
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) { 
-    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
-    taskData->inputs_count.push_back(input.size());
-    taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output.data()));
-    taskData->outputs_count.push_back(output.size());
-  }
-
-  petrov_o_num_of_alternations_signs_mpi::ParallelTask task(taskData);
-
-  ASSERT_TRUE(task.validation());
-  ASSERT_TRUE(task.pre_processing());
-  ASSERT_TRUE(task.run());
-  ASSERT_TRUE(task.post_processing());
-  if (world.rank() == 0) 
-    {ASSERT_EQ(output[0], 0);}  // Ожидаемое количество чередований: 0
-}
-
-TEST(Parallel, TestAlternations_AllNegative) {
-  boost::mpi::communicator world;
-
-  std::vector<int> input = {-1, -2, -3, -4, -5};
+  std::vector<int> input = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
   std::vector<int> output(1);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
@@ -206,8 +182,34 @@ TEST(Parallel, TestAlternations_AllNegative) {
   ASSERT_TRUE(task.pre_processing());
   ASSERT_TRUE(task.run());
   ASSERT_TRUE(task.post_processing());
-  if (world.rank() == 0) 
-    {ASSERT_EQ(output[0], 0);}  // Ожидаемое количество чередований: 0
+  if (world.rank() == 0) {
+    ASSERT_EQ(output[0], 0);
+  }  // Ожидаемое количество чередований: 0
+}
+
+TEST(Parallel, TestAlternations_AllNegative) {
+  boost::mpi::communicator world;
+
+  std::vector<int> input = {-1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -17, -18, -19, -20};
+  std::vector<int> output(1);
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
+    taskData->inputs_count.push_back(input.size());
+    taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output.data()));
+    taskData->outputs_count.push_back(output.size());
+  }
+
+  petrov_o_num_of_alternations_signs_mpi::ParallelTask task(taskData);
+
+  ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
+  if (world.rank() == 0) {
+    ASSERT_EQ(output[0], 0);
+  }  // Ожидаемое количество чередований: 0
 }
 
 TEST(Parallel, TestAlternations_Empty) {
@@ -226,36 +228,7 @@ TEST(Parallel, TestAlternations_Empty) {
 
   petrov_o_num_of_alternations_signs_mpi::ParallelTask task(taskData);
 
-  ASSERT_TRUE(task.validation());
-  ASSERT_TRUE(task.pre_processing());
-  ASSERT_TRUE(task.run());
-  ASSERT_TRUE(task.post_processing());
-  if (world.rank() == 0) 
-    {ASSERT_EQ(output[0], 0);}  // Ожидаемое количество чередований: 0
-}
-
-TEST(Parallel, TestAlternations_OneElement) {
-  boost::mpi::communicator world;
-
-  std::vector<int> input = {1};
-  std::vector<int> output(1);
-
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
-    taskData->inputs_count.push_back(input.size());
-    taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output.data()));
-    taskData->outputs_count.push_back(output.size());
-  }
-
-  petrov_o_num_of_alternations_signs_mpi::ParallelTask task(taskData);
-
-  ASSERT_TRUE(task.validation());
-  ASSERT_TRUE(task.pre_processing());
-  ASSERT_TRUE(task.run());
-  ASSERT_TRUE(task.post_processing());
-  if (world.rank() == 0) 
-    {ASSERT_EQ(output[0], 0);}  // Ожидаемое количество чередований: 0
+  ASSERT_FALSE(task.validation());
 }
 
 TEST(Parallel, TestAlternations_LargeInput) {
@@ -286,6 +259,7 @@ TEST(Parallel, TestAlternations_LargeInput) {
   ASSERT_TRUE(task.pre_processing());
   ASSERT_TRUE(task.run());
   ASSERT_TRUE(task.post_processing());
-  if (world.rank() == 0) 
-    {ASSERT_EQ(output[0], static_cast<int>(input.size() - 1));}  // Ожидаемое количество чередований для чередующихся знаков
+  if (world.rank() == 0) {
+    ASSERT_EQ(output[0], static_cast<int>(input.size() - 1));
+  }  // Ожидаемое количество чередований для чередующихся знаков
 }

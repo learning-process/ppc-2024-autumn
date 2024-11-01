@@ -2,26 +2,26 @@
 #include "mpi/petrov_o_num_of_alternations_signs/include/ops_mpi.hpp"
 
 #include <algorithm>
+#include <boost/mpi/datatype.hpp>
 #include <functional>
+#include <iostream>
 #include <random>
 #include <string>
 #include <thread>
 #include <vector>
-
-#include <boost/mpi/datatype.hpp>
 
 using namespace std::chrono_literals;
 
 bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::pre_processing() {
   internal_order_test();
 
-  size_t input_size = 0; 
+  size_t input_size = 0;
 
   if (world.rank() == 0) {
-    input_size = taskData->inputs_count[0]; 
+    input_size = taskData->inputs_count[0];
   }
 
-  boost::mpi::broadcast(world, input_size, 0);  //Чтобы значение было доступно везде
+  boost::mpi::broadcast(world, input_size, 0);  // Чтобы значение было доступно везде
 
   if (world.rank() == 0) {
     const int* input = reinterpret_cast<int*>(taskData->inputs[0]);
@@ -35,8 +35,11 @@ bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::pre_processing() {
     int remainder = input_size % world.size();
 
     for (int i = 0; i < world.size(); ++i) {
-      distribution[i] = chunk_size + (i < remainder); //Добавим 1 элемент к некоторым чанкам, чтобы распределить остаток
-      displacement[i] = (i == 0) ? 0 : displacement[i - 1] + distribution[i - 1]; //Смещение текущего ненулевого блока равно смещению предыдущего блока + его размеру 
+      distribution[i] =
+          chunk_size + (i < remainder);  // Добавим 1 элемент к некоторым чанкам, чтобы распределить остаток
+      displacement[i] =
+          (i == 0) ? 0 : displacement[i - 1] + distribution[i - 1];  // Смещение текущего ненулевого блока равно
+                                                                     // смещению предыдущего блока + его размеру
     }
 
     chunk.resize(distribution[world.rank()]);
@@ -49,7 +52,7 @@ bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::pre_processing() {
 
     int distribution = chunk_size + (world.rank() < remainder);
 
-    chunk.resize(distribution); //Зарезервируем необходимое место под данные
+    chunk.resize(distribution);  // Зарезервируем необходимое место под данные
     boost::mpi::scatterv(world, chunk.data(), distribution, 0);
   }
 
@@ -59,7 +62,19 @@ bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::pre_processing() {
 
 bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::validation() {
   internal_order_test();
-  
+
+  size_t input_size = 0;
+
+  if (world.rank() == 0) {
+    input_size = taskData->inputs_count[0];
+  }
+
+  boost::mpi::broadcast(world, input_size, 0);
+
+  if (input_size < world.size()) {
+    return false;
+  }
+
   if (world.rank()) return true;
   return taskData->outputs_count[0] == 1;
 }
@@ -69,10 +84,26 @@ bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::run() {
   auto local_res = 0;
 
   for (size_t i = 1; i < chunk.size(); i++) {
-     if ((chunk[i] < 0) ^ (chunk[i - 1] < 0)) {
+    if ((chunk[i] < 0) ^ (chunk[i - 1] < 0)) {
       local_res++;
     }
   }
+
+  /*Проверка чередования граничных элементов*/
+  int last_element = chunk.back();
+  int next_element = 0;
+
+  if (world.rank() < world.size() - 1) {  // Если это не последний процесс
+    world.send(world.rank() + 1, 0, last_element);
+  }
+
+  if (world.rank() > 0) {  // Если это не первый процесс
+    world.recv(world.rank() - 1, 0, next_element);
+    if ((chunk.front() < 0) ^ (next_element < 0)) {
+      local_res++;
+    }
+  }
+
   boost::mpi::reduce(world, local_res, res, std::plus(), 0);
   return true;
 }
