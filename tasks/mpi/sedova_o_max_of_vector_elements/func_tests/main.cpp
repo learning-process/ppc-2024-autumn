@@ -4,6 +4,7 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <vector>
+
 #include "mpi/sedova_o_max_of_vector_elements/include/ops_mpi.hpp"
 
 TEST(Parallel_Operations_MPI, Test_CanCreate_10) {
@@ -24,7 +25,7 @@ TEST(Parallel_Operations_MPI, Test_SquareMatrix_10) {
   if (world.rank() == 0) {
     global_matr = sedova_o_max_of_vector_elements_mpi::generate_random_matrix(size, size, value);
     for (unsigned int i = 0; i < global_matr.size(); i++)
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matr[i].data()));
+        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matr[i].data()));
     taskDataPar->inputs_count.emplace_back(size);
     taskDataPar->inputs_count.emplace_back(size);
 
@@ -45,7 +46,7 @@ TEST(Parallel_Operations_MPI, Test_SquareMatrix_10) {
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     for (unsigned int i = 0; i < global_matr.size(); i++)
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matr[i].data()));
+        taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matr[i].data()));
     taskDataSeq->inputs_count.emplace_back(size);
     taskDataSeq->inputs_count.emplace_back(size);
 
@@ -77,7 +78,7 @@ TEST(Parallel_Operations_MPI, Test_SquareMatrix_50) {
   if (world.rank() == 0) {
     global_matrix = sedova_o_max_of_vector_elements_mpi::generate_random_matrix(size, size, spread);
     for (unsigned int i = 0; i < global_matrix.size(); i++)
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     taskDataPar->inputs_count.emplace_back(size);
     taskDataPar->inputs_count.emplace_back(size);
 
@@ -98,7 +99,7 @@ TEST(Parallel_Operations_MPI, Test_SquareMatrix_50) {
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     for (unsigned int i = 0; i < global_matrix.size(); i++)
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+        taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     taskDataSeq->inputs_count.emplace_back(size);
     taskDataSeq->inputs_count.emplace_back(size);
 
@@ -128,9 +129,9 @@ TEST(Parallel_Operations_MPI, Test_SquareMatrix_100) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matr = sedova_o_max_of_vector_elements_mpi::generate_random_matrix(size, size, spread);
+    global_matrix = sedova_o_max_of_vector_elements_mpi::generate_random_matrix(size, size, spread);
     for (unsigned int i = 0; i < global_matrix.size(); i++)
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     taskDataPar->inputs_count.emplace_back(size);
     taskDataPar->inputs_count.emplace_back(size);
 
@@ -151,7 +152,7 @@ TEST(Parallel_Operations_MPI, Test_SquareMatrix_100) {
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     for (unsigned int i = 0; i < global_matrix.size(); i++)
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+        taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     taskDataSeq->inputs_count.emplace_back(size);
     taskDataSeq->inputs_count.emplace_back(size);
 
@@ -184,7 +185,7 @@ TEST(Parallel_Operations_MPI, Test_Matrix_10_50) {
   if (world.rank() == 0) {
     global_matr = sedova_o_max_of_vector_elements_mpi::generate_random_matrix(rows, cols, value);
     for (unsigned int i = 0; i < global_matrix.size(); i++)
-     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matr[i].data()));
+        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matr[i].data()));
     taskDataPar->inputs_count.emplace_back(rows);
     taskDataPar->inputs_count.emplace_back(cols);
 
@@ -205,7 +206,7 @@ TEST(Parallel_Operations_MPI, Test_Matrix_10_50) {
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     for (unsigned int i = 0; i < global_matr.size(); i++)
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matr[i].data()));
+        taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matr[i].data()));
     taskDataSeq->inputs_count.emplace_back(row);
     taskDataSeq->inputs_count.emplace_back(col);
 
@@ -238,7 +239,7 @@ TEST(Parallel_Operations_MPI, Test_Matrix_100_50) {
   if (world.rank() == 0) {
     global_matr = sedova_o_max_of_vector_elements_mpi::generate_random_matrix(row, col, spread);
     for (unsigned int i = 0; i < global_matr.size(); i++)
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matr[i].data()));
+        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matr[i].data()));
     taskDataPar->inputs_count.emplace_back(row);
     taskDataPar->inputs_count.emplace_back(col);
 
@@ -259,7 +260,7 @@ TEST(Parallel_Operations_MPI, Test_Matrix_100_50) {
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     for (unsigned int i = 0; i < global_matr.size(); i++)
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matr[i].data()));
+        taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matr[i].data()));
     taskDataSeq->inputs_count.emplace_back(row);
     taskDataSeq->inputs_count.emplace_back(col);
 
@@ -293,7 +294,7 @@ TEST(Parallel_Operations_MPI, Test_SquareMatrix_50_WithSeveralMax) {
     global_matrix[0][0] = value;
     global_matrix[5][25] = value;
     for (unsigned int i = 0; i < global_matrix.size(); i++)
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     taskDataPar->inputs_count.emplace_back(size);
     taskDataPar->inputs_count.emplace_back(size);
 
@@ -314,7 +315,7 @@ TEST(Parallel_Operations_MPI, Test_SquareMatrix_50_WithSeveralMax) {
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     for (unsigned int i = 0; i < global_matrix.size(); i++)
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+        taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     taskDataSeq->inputs_count.emplace_back(size);
     taskDataSeq->inputs_count.emplace_back(size);
 
@@ -349,7 +350,7 @@ TEST(Parallel_Operations_MPI, Test_Matrix_100_50_WithSeveralMax) {
     global_matrix[25][10] = value;
     global_matrix[5][25] = value;
     for (unsigned int i = 0; i < global_matrix.size(); i++)
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     taskDataPar->inputs_count.emplace_back(rows);
     taskDataPar->inputs_count.emplace_back(cols);
 
@@ -370,7 +371,7 @@ TEST(Parallel_Operations_MPI, Test_Matrix_100_50_WithSeveralMax) {
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     for (unsigned int i = 0; i < global_matr.size(); i++)
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+        taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     taskDataSeq->inputs_count.emplace_back(rows);
     taskDataSeq->inputs_count.emplace_back(cols);
 
