@@ -264,7 +264,7 @@ double TestMPITaskParallel<TypeElem>::max_difference() {
   double local_result = 0;
   auto iter_curr = local_input_.begin();
   auto iter_next = iter_curr + 1;
-  auto iter_end = local_input_.end() - 1;
+  auto iter_end = local_input_.end();
   while (iter_curr != iter_end) {
     delta = abs(*iter_next - *iter_curr);
     if (delta > max_delta) {
