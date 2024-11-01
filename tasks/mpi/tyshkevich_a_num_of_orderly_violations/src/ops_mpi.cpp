@@ -31,7 +31,7 @@ bool tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskSequential::pre_proc
     input_[i] = tmp_ptr[i];
   }
   // Init values for output
-  res[0] = 0;
+  res = std::vector<int>(1, 0);
 
   return true;
 }
@@ -69,7 +69,7 @@ bool tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskParallel::pre_proces
       input_[i] = tmp_ptr[i];
     }
     // Init values for output
-    res[0] = 0;
+    res = std::vector<int>(1, 0);
   }
 
   return true;

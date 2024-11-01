@@ -27,11 +27,11 @@ TEST(tyshkevich_a_num_of_orderly_violations_mpi_ftest, Test_Max_10) {
   }
 
   // Create Task
-  tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskParallel testTaskSequential(taskDataPar);
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
+  tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskParallel testTaskParallel(taskDataPar);
+  ASSERT_EQ(testTaskParallel.validation(), true);
+  testTaskParallel.pre_processing();
+  testTaskParallel.run();
+  testTaskParallel.post_processing();
 
   if (world.rank() == 0) {
     std::vector<int> local_count(1, 0);
@@ -75,11 +75,11 @@ TEST(tyshkevich_a_num_of_orderly_violations_mpi_ftest, Test_Max_20) {
   }
 
   // Create Task
-  tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskParallel testTaskSequential(taskDataPar);
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
+  tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskParallel testTaskParallel(taskDataPar);
+  ASSERT_EQ(testTaskParallel.validation(), true);
+  testTaskParallel.pre_processing();
+  testTaskParallel.run();
+  testTaskParallel.post_processing();
 
   if (world.rank() == 0) {
     std::vector<int> local_count(1, 0);
@@ -123,11 +123,11 @@ TEST(tyshkevich_a_num_of_orderly_violations_mpi_ftest, Test_Max_50) {
   }
 
   // Create Task
-  tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskParallel testTaskSequential(taskDataPar);
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
+  tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskParallel testTaskParallel(taskDataPar);
+  ASSERT_EQ(testTaskParallel.validation(), true);
+  testTaskParallel.pre_processing();
+  testTaskParallel.run();
+  testTaskParallel.post_processing();
 
   if (world.rank() == 0) {
     std::vector<int> local_count(1, 0);
