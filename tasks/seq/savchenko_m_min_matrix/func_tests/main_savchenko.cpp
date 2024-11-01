@@ -5,7 +5,7 @@
 #include <random>
 #include <vector>
 
-#include "seq/savchenko_m_min_matrix/include/ops_seq.hpp"
+#include "seq/savchenko_m_min_matrix/include/ops_seq_savchenko.hpp"
 
 TEST(savchenko_m_min_matrix_seq, test_min_10x10) {
   std::vector<int> matrix;
@@ -28,7 +28,8 @@ TEST(savchenko_m_min_matrix_seq, test_min_10x10) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-  taskDataSeq->inputs_count.emplace_back(matrix.size());
+  taskDataSeq->inputs_count.emplace_back(rows);
+  taskDataSeq->inputs_count.emplace_back(columns);
 
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(min_value.data()));
   taskDataSeq->outputs_count.emplace_back(min_value.size());
@@ -63,7 +64,8 @@ TEST(savchenko_m_min_matrix_seq, test_min_100x10) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-  taskDataSeq->inputs_count.emplace_back(matrix.size());
+  taskDataSeq->inputs_count.emplace_back(rows);
+  taskDataSeq->inputs_count.emplace_back(columns);
 
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(min_value.data()));
   taskDataSeq->outputs_count.emplace_back(min_value.size());
@@ -98,7 +100,8 @@ TEST(savchenko_m_min_matrix_seq, test_min_10x100) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-  taskDataSeq->inputs_count.emplace_back(matrix.size());
+  taskDataSeq->inputs_count.emplace_back(rows);
+  taskDataSeq->inputs_count.emplace_back(columns);
 
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(min_value.data()));
   taskDataSeq->outputs_count.emplace_back(min_value.size());
@@ -133,7 +136,8 @@ TEST(savchenko_m_min_matrix_seq, test_min_100x100) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-  taskDataSeq->inputs_count.emplace_back(matrix.size());
+  taskDataSeq->inputs_count.emplace_back(rows);
+  taskDataSeq->inputs_count.emplace_back(columns);
 
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(min_value.data()));
   taskDataSeq->outputs_count.emplace_back(min_value.size());

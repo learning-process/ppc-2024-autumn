@@ -1,8 +1,7 @@
 // Copyright 2024 Nesterov Alexander
-#include "seq/savchenko_m_min_matrix/include/ops_seq.hpp"
+#include "seq/savchenko_m_min_matrix/include/ops_seq_savchenko.hpp"
 
 #include <random>
-#include <thread>
 
 using namespace std::chrono_literals;
 
@@ -34,11 +33,10 @@ bool savchenko_m_min_matrix_seq::TestTaskSequential::pre_processing() {
   rows = taskData->inputs_count[1];
   matrix = std::vector<int>(rows * columns);
 
-  for (size_t i = 0; i < rows; ++i) {
-    auto *temp = reinterpret_cast<int *>(taskData->inputs[i]);
-
+  auto *tmp = reinterpret_cast<int *>(taskData->inputs[0]);
+  for (size_t i = 0; i < rows; i++) {
     for (size_t j = 0; j < columns; ++j) {
-      matrix[i * columns + j] = temp[j];
+      matrix[i * columns + j] = tmp[i * columns + j];
     }
   }
   res = matrix[0];
