@@ -25,7 +25,8 @@ TEST(yasakova_t_min_of_vector_elements_mpi, test_pipeline_run) {
     int gen_minimum = -500;
     int gen_maximum = 500;
 
-    global_matrix = yasakova_t_min_of_vector_elements_mpi::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
+    global_matrix =
+        yasakova_t_min_of_vector_elements_mpi::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
     int index = gen() % (count_rows * count_columns);
     global_matrix[index / count_columns][index / count_rows] = ref;
 
@@ -75,7 +76,8 @@ TEST(yasakova_t_min_of_vector_elements_mpi, test_task_run) {
     int gen_minimum = -500;
     int gen_maximum = 500;
 
-    global_matrix = yasakova_t_min_of_vector_elements_mpi::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
+    global_matrix =
+        yasakova_t_min_of_vector_elements_mpi::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
     int index = gen() % (count_rows * count_columns);
     global_matrix[index / count_columns][index / count_rows] = ref;
 

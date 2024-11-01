@@ -9,7 +9,8 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> yasakova_t_min_of_vector_elements_mpi::RandomVector(int size, int minimum, int maximum) {
+std::vector<int> yasakova_t_min_of_vector_elements_mpi::RandomVector(int size, int minimum,
+                                                                     int maximum) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(size);
@@ -19,7 +20,8 @@ std::vector<int> yasakova_t_min_of_vector_elements_mpi::RandomVector(int size, i
   return vec;
 }
 
-std::vector<std::vector<int>> yasakova_t_min_of_vector_elements_mpi::RandomMatrix(int rows, int columns, int minimum, int maximum) {
+std::vector<std::vector<int>> yasakova_t_min_of_vector_elements_mpi::RandomMatrix(int rows, int columns, int minimum,
+                                                                                  int maximum) {
   std::vector<std::vector<int>> vec(rows);
   for (int i = 0; i < rows; i++) {
     vec[i] = yasakova_t_min_of_vector_elements_mpi::RandomVector(columns, minimum, maximum);

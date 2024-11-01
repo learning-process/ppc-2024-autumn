@@ -19,7 +19,8 @@ TEST(yasakova_t_min_of_vector_elements_mpi, testFindMinimumIn10x10Matrix) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = yasakova_t_min_of_vector_elements_mpi::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
+    global_matrix =
+        yasakova_t_min_of_vector_elements_mpi::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
     for (unsigned int i = 0; i < global_matrix.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     taskDataPar->inputs_count.emplace_back(count_rows);
@@ -69,7 +70,8 @@ TEST(yasakova_t_min_of_vector_elements_mpi, testFindMinimumIn10x100Matrix) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = yasakova_t_min_of_vector_elements_mpi::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
+    global_matrix =
+        yasakova_t_min_of_vector_elements_mpi::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
     for (unsigned int i = 0; i < global_matrix.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     taskDataPar->inputs_count.emplace_back(count_rows);
@@ -119,7 +121,8 @@ TEST(yasakova_t_min_of_vector_elements_mpi, testFindMinimumIn100x10Matrix) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = yasakova_t_min_of_vector_elements_mpi::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
+    global_matrix =
+        yasakova_t_min_of_vector_elements_mpi::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
     for (unsigned int i = 0; i < global_matrix.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     taskDataPar->inputs_count.emplace_back(count_rows);
@@ -172,7 +175,8 @@ TEST(yasakova_t_minof_vector_elements_mpi, testFindMinimumIn100x100Matrix) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = yasakova_t_min_of_vector_elements_mpi::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
+    global_matrix =
+        yasakova_t_min_of_vector_elements_mpi::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
     for (unsigned int i = 0; i < global_matrix.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     taskDataPar->inputs_count.emplace_back(count_rows);
