@@ -22,7 +22,8 @@ std::vector<int> zinoviev_a_sum_cols_matrix_mpi::generateRandomVector(int sz) {
 
 int zinoviev_a_sum_cols_matrix_mpi::computeLinearCoordinates(int x, int y, int width) { return y * width + x; }
 
-std::vector<int> zinoviev_a_sum_cols_matrix_mpi::calculateMatrixSumSequential(const std::vector<int>& matrix, int width, int height, int startX, int endX) {
+std::vector<int> zinoviev_a_sum_cols_matrix_mpi::calculateMatrixSumSequential(const std::vector<int>& matrix, int width,
+                                                                              int height, int startX, int endX) {
   std::vector<int> sums;
 
   for (int x = startX; x < endX; ++x) {
@@ -113,7 +114,8 @@ bool zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel::run() {
   int sizePerTask = numCols / mpiWorld.size();
   sizePerTask += (numCols % mpiWorld.size() == 0) ? 0 : 1;
   int lastColumn = std::min(numCols, sizePerTask * (mpiWorld.rank() + 1));
-  auto localSums = calculateMatrixSumSequential(inputData_, numCols, numRows, sizePerTask * mpiWorld.rank(), lastColumn);
+  auto localSums =
+      calculateMatrixSumSequential(inputData_, numCols, numRows, sizePerTask * mpiWorld.rank(), lastColumn);
 
   localSums.resize(sizePerTask);
 

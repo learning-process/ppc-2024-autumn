@@ -6,9 +6,9 @@
 
 #include "core/task/include/task.hpp"
 
-std::vector<int> computeMatrixSumSequential(const std::vector<int>& matrix, int width, int height, int startX, int endX);
+std::vector<int> computeMatrixSumSequential(const std::vector<int>& matrix, int width, int height, int startX,
+                                            int endX);
 int createLinearCoordinates(int x, int y, int width);
-
 
 namespace zinoviev_a_sum_cols_matrix {
 

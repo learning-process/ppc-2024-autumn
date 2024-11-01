@@ -17,7 +17,8 @@ namespace zinoviev_a_sum_cols_matrix_mpi {
 
 std::vector<int> generateRandomVector(int size);
 int computeLinearCoordinates(int xCoord, int yCoord, int width);
-std::vector<int> calculateMatrixSumSequential(const std::vector<int>& mat, int width, int height, int startX, int endX);
+std::vector<int> calculateMatrixSumSequential(const std::vector<int>& matrix, int width, int height, int startX,
+                                              int endX);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
@@ -50,4 +51,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator mpiWorld;
 };
 
-}  // namespace nesterov_a_test_task_mpi
+}  // namespace zinoviev_a_sum_cols_matrix_mpi

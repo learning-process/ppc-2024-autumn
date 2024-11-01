@@ -269,5 +269,3 @@ TEST(zinoviev_a_sum_cols_matrix_mpi, EdgeCaseTest) {
     ASSERT_EQ(expected_result, expected_seq);
   }
 }
-
-

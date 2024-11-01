@@ -7,7 +7,8 @@ using namespace std::chrono_literals;
 
 int createLinearCoordinates(int col, int row, int totalWidth) { return row * totalWidth + col; }
 
-std::vector<int> computeMatrixSumSequential(const std::vector<int>& matrixData, int width, int height, int startCol, int endCol) {
+std::vector<int> computeMatrixSumSequential(const std::vector<int>& matrixData, int width, int height, int startCol,
+                                            int endCol) {
   std::vector<int> sums;
   for (int col = startCol; col < endCol; ++col) {
     int totalColumnSum = 0;
