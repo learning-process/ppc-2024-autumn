@@ -28,25 +28,27 @@ std::vector<std::vector<int>> CreateInputMatrix(size_t row_c, size_t col_c, size
 
 TEST(vladimirova_j_max_of_vector_elements_mpi, Test_ValMatrix_0) {
   const size_t size = 0;
-  const int spread = 10;  // spread is excepted answer
+  const size_t spread = 30;
 
-  // Create data
-  std::vector<int> out(1, -((int)spread + 10));
-  std::vector<std::vector<int>> in = CreateInputMatrix(size, size, spread);
+  boost::mpi::communicator world;
+  std::vector<std::vector<int>> global_matr;
+  std::vector<int32_t> global_max(1, -((int)(spread + 10)));
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataPar->inputs_count.emplace_back(size);
-  taskDataPar->inputs_count.emplace_back(size);
-  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataPar->outputs_count.emplace_back(out.size());
 
-  // Create Task
+  if (world.rank() == 0) {
+    global_matr = CreateInputMatrix(size, size, spread);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matr.data()));
+    taskDataPar->inputs_count.emplace_back(size);
+    taskDataPar->inputs_count.emplace_back(size);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
+    taskDataPar->outputs_count.emplace_back(global_max.size());
+  }
+
   vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), false);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+
 }
 
 TEST(vladimirova_j_max_of_vector_elements_mpi, Test_CanCreate_10) { EXPECT_NO_THROW(CreateInputMatrix(10, 10, 10)); }
