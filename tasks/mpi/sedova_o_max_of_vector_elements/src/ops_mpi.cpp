@@ -7,8 +7,6 @@
 #include <thread>
 #include <vector>
 
-
-
 using namespace std::chrono_literals;
 
 std::vector<int> sedova_o_max_of_vector_elements_mpi::generate_random_vector(int size, int value) {
@@ -21,7 +19,8 @@ std::vector<int> sedova_o_max_of_vector_elements_mpi::generate_random_vector(int
   return vec;
 }
 
-std::vector<std::vector<int>> sedova_o_max_of_vector_elements_mpi::generate_random_matrix(int rows, int cols, int value) {
+std::vector<std::vector<int>> sedova_o_max_of_vector_elements_mpi::generate_random_matrix(int rows, int cols, 
+                                                                                          int value) {
   std::vector<std::vector<int>> matrix(rows);
   for (int i = 0; i < rows; i++) {
     matrix[i] = sedova_o_max_of_vector_elements_mpi::generate_random_vector(cols, value);
@@ -43,7 +42,7 @@ bool sedova_o_max_of_vector_elements_mpi::TestMPITaskSequential::pre_processing(
   internal_order_test();
   input_ = std::vector<int>(taskData->inputs_count[0] * taskData->inputs_count[1]);
   for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
-    auto* input_data = reinterpret_cast<int *>(taskData->inputs[i]);
+    auto *input_data = reinterpret_cast<int *>(taskData->inputs[i]);
     for (unsigned int j = 0; j < taskData->inputs_count[1]; j++) {
       input_[i * taskData->inputs_count[1] + j] = input_data[j];
     }
@@ -67,8 +66,6 @@ bool sedova_o_max_of_vector_elements_mpi::TestMPITaskSequential::post_processing
   reinterpret_cast<int *>(taskData->outputs[0])[0] = res_;
   return true;
 }
-
-
 
 bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
