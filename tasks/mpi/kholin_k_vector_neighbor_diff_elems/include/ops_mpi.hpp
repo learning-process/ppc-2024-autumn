@@ -153,10 +153,12 @@ class TestMPITaskParallel : public ppc::core::Task {
   int delta_n_r;
   double result;
   int residue;
+  double joint_result;
   enum_ops::operations ops;
   MPI_Datatype mpi_type_elem;
   void print_local_data();
   double max_difference();
+  double IsJoints_max();
 };
 
 template <typename TypeElem>
@@ -198,6 +200,7 @@ bool TestMPITaskParallel<TypeElem>::pre_processing() {
   }
   result = {};
   residue = {};
+  joint_result = {};
   return true;
 }
 
@@ -224,6 +227,14 @@ bool TestMPITaskParallel<TypeElem>::run() {
     MPI_Reduce(sendbuf1, &result, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
   }
   // finalisation
+  int ProcRank = 0;
+  MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
+  if (ProcRank == 0) {
+    double joint_result = IsJoints_max();
+    if (joint_result > result) {
+      result = joint_result;
+    }
+  }
   return true;
 }
 
@@ -265,7 +276,7 @@ double TestMPITaskParallel<TypeElem>::max_difference() {
   auto iter_curr = local_input_.begin();
   auto iter_next = iter_curr + 1;
   auto iter_end = local_input_.end();
-  while (iter_curr != iter_end) {
+  while (iter_curr != iter_end - 1) {
     delta = abs(*iter_next - *iter_curr);
     if (delta > max_delta) {
       max_delta = delta;
@@ -275,5 +286,43 @@ double TestMPITaskParallel<TypeElem>::max_difference() {
   }
   local_result = max_delta;
   return local_result;
+}
+
+template <typename TypeElem>
+double TestMPITaskParallel<TypeElem>::IsJoints_max() {
+  double joint_delta = 0;
+  auto iter_curr = input_.begin();
+  auto iter_next = iter_curr + 1;
+  auto iter_end = input_.end() - 1;
+  double max_joint_delta = 0;
+  int res_i = 0;
+  while (iter_curr != iter_end) {
+    if (residue == 0) {
+      iter_curr = iter_curr + (delta_n-1);
+      iter_next = iter_curr + 1;
+      joint_delta = abs(*iter_next - *iter_curr);
+      if (joint_delta > max_delta) {
+        max_joint_delta = joint_delta;
+      }
+    } else {
+      if (res_i == 0) {
+        iter_curr = iter_curr + (delta_n_r - 1);
+        iter_next = iter_curr + 1;
+        joint_delta = abs(*iter_next - *iter_curr);
+        if (joint_delta > max_delta) {
+          max_joint_delta = joint_delta;
+        }
+        res_i++;
+      } else {
+        iter_curr = iter_curr + (delta_n - 1);
+        iter_next = iter_curr + 1;
+        joint_delta = abs(*iter_next - *iter_curr);
+        if (joint_delta > max_delta) {
+          max_joint_delta = joint_delta;
+        }
+      }
+    }
+  }
+  return max_joint_delta;
 }
 }  // namespace kholin_k_vector_neighbor_diff_elems_mpi
