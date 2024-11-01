@@ -110,9 +110,9 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_int32_t) {
 
 TEST(kholin_k_vector_neighbor_diff_elems_seq, check_int_with_random) {
   std::vector<int> in(1256, 1);
-  std::vector<int32_t> out(2, 0);
+  std::vector<int> out(2, 0);
   std::vector<uint64_t> out_index(2, 0);
-  in = kholin_k_vector_neighbor_diff_elems_seq::get_random_vector<int32_t>(1256);
+  in = kholin_k_vector_neighbor_diff_elems_seq::get_random_vector<int>(1256);
   in[234] = 0;
   in[235] = 4000;
 
