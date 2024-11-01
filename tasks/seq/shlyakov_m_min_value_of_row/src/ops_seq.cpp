@@ -26,7 +26,7 @@ bool shlyakov_m_min_value_of_row_seq::TestTaskSequential::pre_processing() {
 
 bool shlyakov_m_min_value_of_row_seq::TestTaskSequential::validation() {
   internal_order_test();
-  int flag = 1;
+  bool flag = 1;
 
   if (flag ==
       ((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
