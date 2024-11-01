@@ -18,10 +18,10 @@ TEST(sozonov_i_nearest_neighbor_elements_mpi, test_for_empty_vector) {
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_ans.data()));
     taskDataPar->outputs_count.emplace_back(global_ans.size());
-  }
 
-  sozonov_i_nearest_neighbor_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_FALSE(testMpiTaskParallel.validation());
+    sozonov_i_nearest_neighbor_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  }
 }
 
 TEST(sozonov_i_nearest_neighbor_elements_mpi, test_on_10_elements) {
