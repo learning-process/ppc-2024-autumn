@@ -31,7 +31,7 @@ int sedova_o_max_of_vector_elements_seq::find_max_of_matrix(const std::vector<in
       max = matrix[i];
     }
     return max;
- }
+  }
 
   bool sedova_o_max_of_vector_elements_seq::TestTaskSequential::pre_processing() {
     internal_order_test();
@@ -43,7 +43,7 @@ int sedova_o_max_of_vector_elements_seq::find_max_of_matrix(const std::vector<in
       }
     }
     return true;
-   }
+  }
 
   bool sedova_o_max_of_vector_elements_seq::TestTaskSequential::validation() {
     internal_order_test();
@@ -61,4 +61,3 @@ int sedova_o_max_of_vector_elements_seq::find_max_of_matrix(const std::vector<in
     reinterpret_cast<int*>(taskData->outputs[0])[0] = res_;
     return true;
   }
-
