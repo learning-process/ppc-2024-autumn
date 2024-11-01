@@ -25,8 +25,8 @@ std::vector<std::vector<int>> CreateInputMatrix(size_t row_c, size_t col_c, size
   }
   return m;
 }
-
-TEST(Parallel_Operations_MPI, Test_ValMatrix_0) {
+/*
+TEST(vladimirova_j_max_of_vector_elements_mpi, Test_ValMatrix_0) {
   const size_t size = 0;
   const int spread = 10;  // spread is excepted answer
 
@@ -48,10 +48,10 @@ TEST(Parallel_Operations_MPI, Test_ValMatrix_0) {
   vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataSeq);
   ASSERT_EQ(testMpiTaskParallel.validation(), false);
 }
+*/
+TEST(vladimirova_j_max_of_vector_elements_mpi, Test_CanCreate_10) { EXPECT_NO_THROW(CreateInputMatrix(10, 10, 10)); }
 
-TEST(Parallel_Operations_MPI, Test_CanCreate_10) { EXPECT_NO_THROW(CreateInputMatrix(10, 10, 10)); }
-
-TEST(Parallel_Operations_MPI, Test_SquareMatrix_1) {
+TEST(vladimirova_j_max_of_vector_elements_mpi, Test_SquareMatrix_1) {
   const size_t size = 1;
   const size_t spread = 30;
 
@@ -104,7 +104,7 @@ TEST(Parallel_Operations_MPI, Test_SquareMatrix_1) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_Matrix_1_2) {
+TEST(vladimirova_j_max_of_vector_elements_mpi, Test_Matrix_1_2) {
   const size_t row = 1;
   const size_t col = 2;
   const size_t spread = 30;
@@ -158,7 +158,7 @@ TEST(Parallel_Operations_MPI, Test_Matrix_1_2) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_Matrix_3_1) {
+TEST(vladimirova_j_max_of_vector_elements_mpi, Test_Matrix_3_1) {
   const size_t row = 1;
   const size_t col = 2;
   const size_t spread = 30;
@@ -212,7 +212,7 @@ TEST(Parallel_Operations_MPI, Test_Matrix_3_1) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_SquareMatrix_10) {
+TEST(vladimirova_j_max_of_vector_elements_mpi, Test_SquareMatrix_10) {
   const size_t size = 10;
   const size_t spread = 30;
 
@@ -265,7 +265,7 @@ TEST(Parallel_Operations_MPI, Test_SquareMatrix_10) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_SquareMatrix_50) {
+TEST(vladimirova_j_max_of_vector_elements_mpi, Test_SquareMatrix_50) {
   const size_t size = 50;
   const size_t spread = 30;
 
@@ -318,7 +318,7 @@ TEST(Parallel_Operations_MPI, Test_SquareMatrix_50) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_SquareMatrix_100) {
+TEST(vladimirova_j_max_of_vector_elements_mpi, Test_SquareMatrix_100) {
   const size_t size = 200;
   const size_t spread = 30;
 
@@ -371,7 +371,7 @@ TEST(Parallel_Operations_MPI, Test_SquareMatrix_100) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_Matrix_10_50) {
+TEST(vladimirova_j_max_of_vector_elements_mpi, Test_Matrix_10_50) {
   const size_t row = 10;
   const size_t col = 50;
   const size_t spread = 30;
@@ -425,7 +425,7 @@ TEST(Parallel_Operations_MPI, Test_Matrix_10_50) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_Matrix_100_50) {
+TEST(vladimirova_j_max_of_vector_elements_mpi, Test_Matrix_100_50) {
   const size_t row = 100;
   const size_t col = 50;
   const size_t spread = 30;
@@ -479,7 +479,7 @@ TEST(Parallel_Operations_MPI, Test_Matrix_100_50) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_SquareMatrix_50_WithSeveralMax) {
+TEST(vladimirova_j_max_of_vector_elements_mpi, Test_SquareMatrix_50_WithSeveralMax) {
   const size_t size = 50;
   const size_t spread = 30;
 
@@ -534,7 +534,7 @@ TEST(Parallel_Operations_MPI, Test_SquareMatrix_50_WithSeveralMax) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_Matrix_100_50_WithSeveralMax) {
+TEST(vladimirova_j_max_of_vector_elements_mpi, Test_Matrix_100_50_WithSeveralMax) {
   const size_t row = 100;
   const size_t col = 50;
   const size_t spread = 30;

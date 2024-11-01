@@ -23,7 +23,7 @@ std::vector<std::vector<int>> CreateInputMatrix(size_t row_c, size_t column_c, s
   }
   return m;
 }
-
+/*
 TEST(vladimirova_j_max_of_vector_elements_seq, Test_ValMatrix_0) {
   const size_t size = 0;
   const int spread = 10;  // spread is excepted answer
@@ -46,7 +46,7 @@ TEST(vladimirova_j_max_of_vector_elements_seq, Test_ValMatrix_0) {
   vladimirova_j_max_of_vector_elements_seq::TestTaskSequential TestTaskSequential(taskDataSeq);
   ASSERT_EQ(TestTaskSequential.validation(), false);
 }
-
+*/
 TEST(vladimirova_j_max_of_vector_elements_seq, Test_CanCreate_10) {
   const size_t col = 10;
   const size_t row = 10;

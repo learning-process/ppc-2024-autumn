@@ -10,6 +10,7 @@
 using namespace std::chrono_literals;
 
 int vladimirova_j_max_of_vector_elements_mpi::FindMaxElem(std::vector<int> m) {
+  if (m.size() == 0) return INT_MIN;
   int max_elem = m[0];
   for (int &i : m) {
     if (i > max_elem) {
