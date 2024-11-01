@@ -27,9 +27,9 @@ TEST(beresnev_a_min_values_by_matrix_columns_mpi, Empty_Input_0) {
     taskDataPar->inputs_count.emplace_back(m.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     taskDataPar->outputs_count.emplace_back(out.size());
+    beresnev_a_min_values_by_matrix_columns_mpi::TestMPITaskParallel testMPITaskParallel(taskDataPar);
+    ASSERT_EQ(testMPITaskParallel.validation(), false);
   }
-  beresnev_a_min_values_by_matrix_columns_mpi::TestMPITaskParallel testMPITaskParallel(taskDataPar);
-  ASSERT_EQ(testMPITaskParallel.validation(), false);
 }
 
 TEST(beresnev_a_min_values_by_matrix_columns_mpi, Empty_Input_1) {
@@ -52,9 +52,9 @@ TEST(beresnev_a_min_values_by_matrix_columns_mpi, Empty_Input_1) {
     taskDataPar->inputs_count.emplace_back(m.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     taskDataPar->outputs_count.emplace_back(out.size());
+    beresnev_a_min_values_by_matrix_columns_mpi::TestMPITaskParallel testMPITaskParallel(taskDataPar);
+    ASSERT_EQ(testMPITaskParallel.validation(), false);
   }
-  beresnev_a_min_values_by_matrix_columns_mpi::TestMPITaskParallel testMPITaskParallel(taskDataPar);
-  ASSERT_EQ(testMPITaskParallel.validation(), false);
 }
 
 TEST(beresnev_a_min_values_by_matrix_columns_mpi, Wrong_Size_0) {
@@ -77,9 +77,9 @@ TEST(beresnev_a_min_values_by_matrix_columns_mpi, Wrong_Size_0) {
     taskDataPar->inputs_count.emplace_back(m.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     taskDataPar->outputs_count.emplace_back(out.size());
+    beresnev_a_min_values_by_matrix_columns_mpi::TestMPITaskParallel testMPITaskParallel(taskDataPar);
+    ASSERT_EQ(testMPITaskParallel.validation(), false);
   }
-  beresnev_a_min_values_by_matrix_columns_mpi::TestMPITaskParallel testMPITaskParallel(taskDataPar);
-  ASSERT_EQ(testMPITaskParallel.validation(), false);
 }
 
 TEST(beresnev_a_min_values_by_matrix_columns_mpi, Wrong_Size_1) {
@@ -102,9 +102,9 @@ TEST(beresnev_a_min_values_by_matrix_columns_mpi, Wrong_Size_1) {
     taskDataPar->inputs_count.emplace_back(m.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     taskDataPar->outputs_count.emplace_back(out.size());
+    beresnev_a_min_values_by_matrix_columns_mpi::TestMPITaskParallel testMPITaskParallel(taskDataPar);
+    ASSERT_EQ(testMPITaskParallel.validation(), false);
   }
-  beresnev_a_min_values_by_matrix_columns_mpi::TestMPITaskParallel testMPITaskParallel(taskDataPar);
-  ASSERT_EQ(testMPITaskParallel.validation(), false);
 }
 
 TEST(beresnev_a_min_values_by_matrix_columns_mpi, Test_Identity_Matrix) {
