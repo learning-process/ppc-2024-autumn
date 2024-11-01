@@ -17,7 +17,7 @@ std::vector<int> getRandomVector(int sz) {
 
 TEST(solovyev_d_vector_max_mpi, Test_Empty) {
   // Create data
-  std::vector<int> in(0,0);
+  std::vector<int> in(0, 0);
   std::vector<int> out(1, 0);
 
   // Create TaskData
