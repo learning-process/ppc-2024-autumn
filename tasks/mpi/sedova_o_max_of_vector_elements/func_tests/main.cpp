@@ -77,7 +77,7 @@ TEST(Parallel_Operations_MPI, Test_SquareMatrix_50) {
   if (world.rank() == 0) {
     global_matr = sedova_o_max_of_vector_elements_mpi::generate_random_matrix(size, size, spread);
     for (unsigned int i = 0; i < global_matr.size(); i++)
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matr[i].data()));
+        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matr[i].data()));
     taskDataPar->inputs_count.emplace_back(size);
     taskDataPar->inputs_count.emplace_back(size);
 
