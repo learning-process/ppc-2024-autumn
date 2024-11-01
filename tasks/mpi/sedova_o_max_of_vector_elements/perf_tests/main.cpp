@@ -82,7 +82,7 @@ TEST(sedova_o_max_of_vector_elements_mpi, test_task_run) {
     global_matrix[rows][cols] = value;
 
     for (unsigned int i = 0; i < global_matrix.size(); i++)
-        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     taskDataPar->inputs_count.emplace_back(rows);
     taskDataPar->inputs_count.emplace_back(cols);
 
