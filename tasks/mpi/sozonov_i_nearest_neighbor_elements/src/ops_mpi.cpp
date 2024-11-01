@@ -68,7 +68,7 @@ bool sozonov_i_nearest_neighbor_elements_mpi::TestMPITaskParallel::pre_processin
     }
   }
   // Init value for output
-  res = {INT_MAX, 0};
+  res = {INT_MAX, -1};
   return true;
 }
 
@@ -91,8 +91,7 @@ bool sozonov_i_nearest_neighbor_elements_mpi::TestMPITaskParallel::run() {
   if (world.rank() == 0) {
     diff = std::vector<std::pair<int, int>>(taskData->inputs_count[0] - 1);
     for (size_t i = 0; i < input_.size() - 1; ++i) {
-      diff[i].first = abs(input_[i + 1] - input_[i]);
-      diff[i].second = i;
+      diff[i] = {abs(input_[i + 1] - input_[i]), i};
     }
     for (int proc = 1; proc < world.size(); proc++) {
       world.send(proc, 0, diff.data() + proc * delta, delta);
@@ -105,12 +104,7 @@ bool sozonov_i_nearest_neighbor_elements_mpi::TestMPITaskParallel::run() {
     world.recv(0, 0, local_input_.data(), delta);
   }
   std::pair<int, int> local_res(INT_MAX, 0);
-  for (size_t i = 0; i < local_input_.size(); ++i) {
-    if (local_input_[i].first < local_res.first) {
-      local_res.first = local_input_[i].first;
-      local_res.second = local_input_[i].second;
-    }
-  }
+  local_res = *std::min_element(local_input_.begin(), local_input_.end());
   reduce(world, local_res, res, boost::mpi::minimum<std::pair<int, int>>(), 0);
   return true;
 }
