@@ -1,16 +1,22 @@
-// Copyright 2023 Nesterov Alexander
+// Copyright 2024 Tarakanov Denis
 #include <gtest/gtest.h>
 
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "seq/example/include/ops_seq.hpp"
+#include "seq/tarakanov_d_integration_the_trapezoid_method/include/ops_seq.hpp"
 
-TEST(sequential_example_perf_test, test_pipeline_run) {
-  const int count = 100;
+TEST(tarakanov_d_integration_the_trapezoid_method_perf_test, test_pipeline_run) {
+  double a = 0;
+  double b = 1;
+  double h = 0.1;
 
   // Create data
-  std::vector<int> in(1, count);
+  std::vector<double> in(3, 0);
+  in[0] = a;
+  in[1] = b;
+  in[2] = h;
+
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -40,14 +46,20 @@ TEST(sequential_example_perf_test, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(count, out[0]);
+  ASSERT_EQ(out[0], 3);
 }
 
-TEST(sequential_example_perf_test, test_task_run) {
-  const int count = 100;
+TEST(tarakanov_d_integration_the_trapezoid_method_perf_test, test_task_run) {
+  double a = 0;
+  double b = 1;
+  double h = 0.1;
 
   // Create data
-  std::vector<int> in(1, count);
+  std::vector<double> in(3, 0);
+  in[0] = a;
+  in[1] = b;
+  in[2] = h;
+
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -77,10 +89,5 @@ TEST(sequential_example_perf_test, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(count, out[0]);
-}
-
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
+  ASSERT_EQ(out[0], 3);
 }

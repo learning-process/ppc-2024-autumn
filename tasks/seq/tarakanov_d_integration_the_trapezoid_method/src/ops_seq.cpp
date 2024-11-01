@@ -1,5 +1,5 @@
-// Copyright 2024 Nesterov Alexander
-#include "seq/example/include/ops_seq.hpp"
+// Copyright 2024 Tarakanov Denis
+#include "seq/tarakanov_d_integration_the_trapezoid_method/include/ops_seq.hpp"
 
 #include <thread>
 
@@ -8,7 +8,9 @@ using namespace std::chrono_literals;
 bool tarakanov_d_integration_the_trapezoid_method_seq::integration_the_trapezoid_method::pre_processing() {
   internal_order_test();
   // Init value for input and output
-  input_ = reinterpret_cast<int*>(taskData->inputs[0])[0];
+  a = reinterpret_cast<double*>(taskData->inputs[0])[0];
+  b = reinterpret_cast<double*>(taskData->inputs[0])[1];
+  h = reinterpret_cast<double*>(taskData->inputs[0])[2];
   res = 0;
   return true;
 }
@@ -16,14 +18,16 @@ bool tarakanov_d_integration_the_trapezoid_method_seq::integration_the_trapezoid
 bool tarakanov_d_integration_the_trapezoid_method_seq::integration_the_trapezoid_method::validation() {
   internal_order_test();
   // Check count elements of output
-  return taskData->inputs_count[0] == 1 && taskData->outputs_count[0] == 1;
+  return taskData->inputs_count[0] == 4 && taskData->outputs_count[0] == 1;
 }
 
 bool tarakanov_d_integration_the_trapezoid_method_seq::integration_the_trapezoid_method::run() {
   internal_order_test();
-  for (int i = 0; i < input_; i++) {
-    res++;
+  double integral = 0.5 * (f(a) + f(b));
+  for (double x = a + h; x < b; x += h) {
+    integral += f(x);
   }
+  res = static_cast<int>(integral * h);
   return true;
 }
 

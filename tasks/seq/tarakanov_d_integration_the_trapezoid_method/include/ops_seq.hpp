@@ -18,6 +18,13 @@ class integration_the_trapezoid_method : public ppc::core::Task {
 
  private:
   int input_{}, res{};
+  double a{}, b{}, h{};
+
+  //write here any function of x
+  double f(double x) 
+  {
+    return x * x;
+  };
 };
 
 }  // namespace tarakanov_d_integration_the_trapezoid_method_seq
