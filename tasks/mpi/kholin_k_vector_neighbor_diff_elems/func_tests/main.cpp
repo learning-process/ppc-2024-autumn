@@ -213,7 +213,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
     const int count_size_vector = 300;
     global_vec = std::vector<int>(count_size_vector);
     for (size_t i = 0; i < global_vec.size(); i++) {
-      global_vec[i] = 4 * i + 1;
+      global_vec[i] = 4 * i + 2;
     }
 
     global_vec[99] = 5000;
