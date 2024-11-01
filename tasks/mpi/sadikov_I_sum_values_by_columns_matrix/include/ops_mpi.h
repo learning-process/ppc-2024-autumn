@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include <boost/mpi/collectives.hpp>

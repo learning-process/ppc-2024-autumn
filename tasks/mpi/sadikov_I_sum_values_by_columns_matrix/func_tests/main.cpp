@@ -113,7 +113,7 @@ TEST(ParallelOperations, check_square_matrix2) {
   const size_t columns = 500;
   const size_t rows = 500;
   std::vector<int> out_seq(columns, 0);
-  std::vector<int> in = sadikov_I_Sum_values_by_columns_matrix_mpi::getRandomVector(columns*rows);
+  std::vector<int> in = sadikov_I_Sum_values_by_columns_matrix_mpi::getRandomVector(columns * rows);
   std::vector<size_t> in_index{rows, columns};
   std::vector<int> out_par(columns, 0);
   auto taskData_seq = std::make_shared<ppc::core::TaskData>();
@@ -142,7 +142,7 @@ TEST(ParallelOperations, check_rect_matrix2) {
   const size_t columns = 500;
   const size_t rows = 600;
   std::vector<int> out_seq(columns, 0);
-  std::vector<int> in = sadikov_I_Sum_values_by_columns_matrix_mpi::getRandomVector(columns*rows);
+  std::vector<int> in = sadikov_I_Sum_values_by_columns_matrix_mpi::getRandomVector(columns * rows);
   std::vector<size_t> in_index{rows, columns};
   std::vector<int> out_par(columns, 0);
   auto taskData_seq = std::make_shared<ppc::core::TaskData>();
@@ -171,7 +171,7 @@ TEST(ParallelOperations, check_rand_matrix) {
   const size_t columns = 1500;
   const size_t rows = 1500;
   std::vector<int> out_seq(columns, 0);
-  std::vector<int> in = sadikov_I_Sum_values_by_columns_matrix_mpi::getRandomVector(columns*rows);
+  std::vector<int> in = sadikov_I_Sum_values_by_columns_matrix_mpi::getRandomVector(columns * rows);
   std::vector<size_t> in_index{rows, columns};
   std::vector<int> out_par(columns, 0);
   auto taskData_seq = std::make_shared<ppc::core::TaskData>();
@@ -200,7 +200,7 @@ TEST(ParallelOperations, check_rand_matrix2) {
   const size_t columns = 2500;
   const size_t rows = 2500;
   std::vector<int> out_seq(columns, 0);
-  std::vector<int> in = sadikov_I_Sum_values_by_columns_matrix_mpi::getRandomVector(columns*rows);
+  std::vector<int> in = sadikov_I_Sum_values_by_columns_matrix_mpi::getRandomVector(columns * rows);
   std::vector<size_t> in_index{rows, columns};
   std::vector<int> out_par(columns, 0);
   auto taskData_seq = std::make_shared<ppc::core::TaskData>();

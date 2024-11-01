@@ -11,7 +11,7 @@
 TEST(Sadikov_sequential_perf_test, matrix_test_pipeline_run) {
   size_t rows_count = 3000;
   size_t columns_count = 3000;
-  std::vector<double> in(rows_count*columns_count, 1);
+  std::vector<double> in(rows_count * columns_count, 1);
   std::vector<size_t> in_index{rows_count, columns_count};
   std::vector<double> out(columns_count, 0);
   std::shared_ptr<ppc::core::TaskData> taskData =
@@ -40,7 +40,7 @@ TEST(Sadikov_sequential_perf_test, matrix_test_pipeline_run) {
 TEST(Sadikov_sequential_perf_test, matrix_test_run) {
   size_t rows_count = 3000;
   size_t columns_count = 3000;
-  std::vector<double> in(rows_count*columns_count, 1);
+  std::vector<double> in(rows_count * columns_count, 1);
   std::vector<size_t> in_index{rows_count, columns_count};
   std::vector<double> out(columns_count, 0);
   std::shared_ptr<ppc::core::TaskData> taskData =

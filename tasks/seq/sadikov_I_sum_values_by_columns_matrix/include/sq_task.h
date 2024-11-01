@@ -27,4 +27,4 @@ class MatrixTask : public ppc::core::Task {
   bool post_processing() override;
   void calculate(size_t size);
 };
-}  // namespace Sadikov_I_Sum_values_by_columns_matrix_seq
+}  // namespace sadikov_I_Sum_values_by_columns_matrix_seq
