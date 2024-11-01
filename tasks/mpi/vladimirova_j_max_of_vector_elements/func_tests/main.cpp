@@ -25,7 +25,7 @@ std::vector<std::vector<int>> CreateInputMatrix(size_t row_c, size_t col_c, size
   }
   return m;
 }
-/*
+
 TEST(vladimirova_j_max_of_vector_elements_mpi, Test_ValMatrix_0) {
   const size_t size = 0;
   const int spread = 10;  // spread is excepted answer
@@ -47,8 +47,11 @@ TEST(vladimirova_j_max_of_vector_elements_mpi, Test_ValMatrix_0) {
   // Create Task
   vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataSeq);
   ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
 }
-*/
+
 TEST(vladimirova_j_max_of_vector_elements_mpi, Test_CanCreate_10) { EXPECT_NO_THROW(CreateInputMatrix(10, 10, 10)); }
 
 TEST(vladimirova_j_max_of_vector_elements_mpi, Test_SquareMatrix_1) {
