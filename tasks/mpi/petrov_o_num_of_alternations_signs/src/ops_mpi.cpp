@@ -15,7 +15,7 @@ using namespace std::chrono_literals;
 bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::pre_processing() {
   internal_order_test();
 
-  size_t input_size = 0;
+  int input_size = 0;
 
   if (world.rank() == 0) {
     input_size = taskData->inputs_count[0];
@@ -63,7 +63,7 @@ bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::pre_processing() {
 bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::validation() {
   internal_order_test();
 
-  size_t input_size = 0;
+  int input_size = 0;
 
   if (world.rank() == 0) {
     input_size = taskData->inputs_count[0];
