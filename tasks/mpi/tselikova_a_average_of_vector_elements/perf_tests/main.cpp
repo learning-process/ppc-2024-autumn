@@ -47,4 +47,3 @@ TEST(mpi_example_perf_test1, test_pipeline_run) {
     ASSERT_FLOAT_EQ(1.0f, global_avg[0]);
   }
 }
-

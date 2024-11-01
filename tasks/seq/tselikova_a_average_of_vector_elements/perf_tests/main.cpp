@@ -79,4 +79,3 @@ TEST(tselikova_a_average_of_vector_elements, test_task_run) {
   ppc::core::Perf::print_perf_statistic(perfResults);
   ASSERT_EQ(count, out[0]);
 }
-

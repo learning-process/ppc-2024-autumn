@@ -1,9 +1,9 @@
 // Copyright 2024 Tselikova Arina
 #include "seq/tselikova_a_average_of_vector_elements/include/ops_seq.hpp"
 
+#include <algorithm>
 #include <thread>
 #include <vector>
-#include <algorithm>
 
 using namespace std::chrono_literals;
 

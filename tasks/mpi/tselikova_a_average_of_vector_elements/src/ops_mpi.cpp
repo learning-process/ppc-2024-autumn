@@ -100,5 +100,3 @@ bool tselikova_a_average_of_vector_elements_mpi::TestMPITaskParallel::post_proce
   }
   return true;
 }
-
-

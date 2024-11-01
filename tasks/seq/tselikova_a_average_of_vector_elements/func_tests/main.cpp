@@ -29,7 +29,6 @@ TEST(tselikova_a_average_of_vector_elements, check_vector_with_similar_elem) {
 }
 
 TEST(tselikova_a_average_of_vector_elements, check_vector_with_integer_value) {
- 
   // Create data
   std::vector<int> in{2, 4, 6, 8, 10};
   std::vector<float> out(1, 0);
@@ -149,7 +148,6 @@ TEST(tselikova_a_average_of_vector_elements, check_vector_with_fraction_value) {
   testTaskSequential.run();
   testTaskSequential.post_processing();
   ASSERT_NEAR(9.67, out[0], 0.1);
-  //out[0]=9??????
 }
 
 TEST(tselikova_a_average_of_vector_elements, check_vector_with_negative_elem) {
@@ -172,5 +170,3 @@ TEST(tselikova_a_average_of_vector_elements, check_vector_with_negative_elem) {
   testTaskSequential.post_processing();
   ASSERT_EQ(-6, out[0]);
 }
-
-
