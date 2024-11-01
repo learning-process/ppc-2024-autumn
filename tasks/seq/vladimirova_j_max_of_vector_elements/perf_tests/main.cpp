@@ -6,6 +6,25 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/vladimirova_j_max_of_vector_elements/include/ops_seq.hpp"
 
+std::vector<int> CreateVector(size_t size, size_t spread_of_val) {
+  std::random_device dev;
+  std::mt19937 random(dev());
+  std::vector<int> v(size);
+  for (size_t i = 0; i < size; i++) {
+    v[i] = (random() % (2 * spread_of_val + 1)) - spread_of_val;
+  }
+  return v;
+}
+
+std::vector<std::vector<int>> CreateInputMatrix(size_t row_c, size_t column_c, size_t spread_of_val) {
+  //  Init value for input and output
+  std::vector<std::vector<int>> m(row_c);
+  for (size_t i = 0; i < row_c; i++) {
+    m[i] = CreateVector(column_c, spread_of_val);
+  }
+  return m;
+}
+
 TEST(vladimirova_j_max_of_vector_elements_seq, test_pipeline_run) {
   std::random_device dev;
   std::mt19937 random(dev());
@@ -16,7 +35,7 @@ TEST(vladimirova_j_max_of_vector_elements_seq, test_pipeline_run) {
   int spread = 7000;
 
   std::vector<std::vector<int>> matrix_in;
-  matrix_in = vladimirova_j_max_of_vector_elements_seq::CreateInputMatrix(size, size, spread);
+  matrix_in = CreateInputMatrix(size, size, spread);
   std::vector<int32_t> out(1, matrix_in[0][0]);
 
   int some_row = random() % size;
@@ -62,7 +81,7 @@ TEST(sequential_vladimirova_j_max_of_vector_elements_seq, test_task_run) {
   int size = 7000;
   int spread = 7000;
   std::vector<std::vector<int>> matrix_in;
-  matrix_in = vladimirova_j_max_of_vector_elements_seq::CreateInputMatrix(size, size, spread);
+  matrix_in = CreateInputMatrix(size, size, spread);
   std::vector<int32_t> out(1, matrix_in[0][0]);
 
   int some_row = random() % size;

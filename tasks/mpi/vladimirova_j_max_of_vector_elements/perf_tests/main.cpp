@@ -7,6 +7,25 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/vladimirova_j_max_of_vector_elements/include/ops_mpi.hpp"
 
+std::vector<int> CreateVector(size_t size, size_t spread_of_val) {
+  // Init value for input and output
+  std::random_device dev;
+  std::mt19937 random(dev());
+  std::vector<int> v(size);
+  for (size_t i = 0; i < size; i++) {
+    v[i] = (random() % (2 * spread_of_val + 1)) - spread_of_val;
+  }
+  return v;
+}
+
+std::vector<std::vector<int>> CreateInputMatrix(size_t row_c, size_t col_c, size_t spread_of_val) {
+  std::vector<std::vector<int>> m(row_c);
+  for (size_t i = 0; i < row_c; i++) {
+    m[i] = CreateVector(col_c, spread_of_val);
+  }
+  return m;
+}
+
 TEST(vladimirova_j_max_of_vector_elements_mpi, test_pipeline_run) {
   int row = 7000;
   int col = 7000;
@@ -23,7 +42,7 @@ TEST(vladimirova_j_max_of_vector_elements_mpi, test_pipeline_run) {
     std::random_device dev;
     std::mt19937 random(dev());
 
-    global_matrix = vladimirova_j_max_of_vector_elements_mpi::CreateInputMatrix(row, col, spread);
+    global_matrix = CreateInputMatrix(row, col, spread);
     int some_row = random() % row;
     int some_column = random() % col;
     global_matrix[some_row][some_column] = spread;
@@ -77,7 +96,7 @@ TEST(vladimirova_j_max_of_vector_elements_mpi, test_task_run) {
     std::random_device dev;
     std::mt19937 random(dev());
 
-    global_matrix = vladimirova_j_max_of_vector_elements_mpi::CreateInputMatrix(row, col, spread);
+    global_matrix = CreateInputMatrix(row, col, spread);
     int some_row = random() % row;
     int some_column = random() % col;
     global_matrix[some_row][some_column] = spread;

@@ -18,25 +18,6 @@ int vladimirova_j_max_of_vector_elements_mpi::FindMaxElem(std::vector<int> m) {
   }
   return max_elem;
 }
-std::vector<int> vladimirova_j_max_of_vector_elements_mpi::CreateVector(size_t size, size_t spread_of_val) {
-  // Init value for input and output
-  std::random_device dev;
-  std::mt19937 random(dev());
-  std::vector<int> v(size);
-  for (size_t i = 0; i < size; i++) {
-    v[i] = (random() % (2 * spread_of_val + 1)) - spread_of_val;
-  }
-  return v;
-}
-
-std::vector<std::vector<int>> vladimirova_j_max_of_vector_elements_mpi::CreateInputMatrix(size_t row_c, size_t col_c,
-                                                                                          size_t spread_of_val) {
-  std::vector<std::vector<int>> m(row_c);
-  for (size_t i = 0; i < row_c; i++) {
-    m[i] = vladimirova_j_max_of_vector_elements_mpi::CreateVector(col_c, spread_of_val);
-  }
-  return m;
-}
 
 bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
@@ -102,6 +83,7 @@ bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
   unsigned int delta = 0;
+
   if (world.rank() == 0) {
     // Init vectors
 
@@ -111,6 +93,14 @@ bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel::run() {
     delta = columns * rows / world.size();
     int div_r = columns * rows % world.size() + 1;
 
+    if (delta == 0) {
+      for (int i = 1; i < world.size(); i++) {
+        world.send(i, 0, 0);
+      }
+      local_input_ = std::vector<int>(input_.begin(), input_.begin() + div_r);
+      res = vladimirova_j_max_of_vector_elements_mpi::FindMaxElem(local_input_);
+      return true;
+    }
     for (int i = 1; i < world.size(); i++) {
       world.send(i, 0, delta + (int)(i < div_r));
     }
@@ -127,6 +117,7 @@ bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel::run() {
 
   if (world.rank() != 0) {
     world.recv(0, 0, delta);
+    if (delta == 0) return true;
     local_input_ = std::vector<int>(delta);
     world.recv(0, 0, local_input_.data(), delta);
   }

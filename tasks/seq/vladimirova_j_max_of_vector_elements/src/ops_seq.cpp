@@ -5,26 +5,6 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> vladimirova_j_max_of_vector_elements_seq::CreateVector(size_t size, size_t spread_of_val) {
-  std::random_device dev;
-  std::mt19937 random(dev());
-  std::vector<int> v(size);
-  for (size_t i = 0; i < size; i++) {
-    v[i] = (random() % (2 * spread_of_val + 1)) - spread_of_val;
-  }
-  return v;
-}
-
-std::vector<std::vector<int>> vladimirova_j_max_of_vector_elements_seq::CreateInputMatrix(size_t row_c, size_t column_c,
-                                                                                          size_t spread_of_val) {
-  //  Init value for input and output
-  std::vector<std::vector<int>> m(row_c);
-  for (size_t i = 0; i < row_c; i++) {
-    m[i] = vladimirova_j_max_of_vector_elements_seq::CreateVector(column_c, spread_of_val);
-  }
-  return m;
-}
-
 int vladimirova_j_max_of_vector_elements_seq::FindMaxElem(std::vector<int> m) {
   int max_elem = m[0];
   for (int& i : m) {

@@ -14,8 +14,6 @@
 
 namespace vladimirova_j_max_of_vector_elements_mpi {
 
-std::vector<int> CreateVector(size_t size, size_t spread_of_val);
-std::vector<std::vector<int>> CreateInputMatrix(size_t row_c, size_t col_c, size_t spread_of_val);
 int FindMaxElem(std::vector<int> m);
 
 class TestMPITaskSequential : public ppc::core::Task {
