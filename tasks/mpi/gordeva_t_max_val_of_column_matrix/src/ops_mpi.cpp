@@ -7,6 +7,7 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <climits>
 
 using namespace std::chrono_literals;
 
@@ -74,7 +75,8 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::post_process
 
   int* output_matr = reinterpret_cast<int*>(taskData->outputs[0]);
 
-  for (size_t i = 0; i < res.size(); i++) output_matr[i] = res[i];
+  // for (size_t i = 0; i < res.size(); i++) output_matr[i] = res[i];
+  std::copy(res.begin(), res.end(), output_matr);
   return true;
 }
 

@@ -2,7 +2,8 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
-#include <boost/mpi/environment.hpp>
+// #include <boost/mpi/environment.hpp>
+#include <climits>
 #include <vector>
 
 #include "mpi/gordeva_t_max_val_of_column_matrix/include/ops_mpi.hpp"
@@ -80,9 +81,8 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_500_columns_with_random)
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
-    for (int i = 0; i < cols; i++) {
-      ASSERT_EQ(global_max[i], max_example[i]);
-    }
+    // for (int i = 0; i < cols; i++) ASSERT_EQ(global_max[i], max_example[i]);
+    ASSERT_EQ(global_max, max_example);
   }
 }
 

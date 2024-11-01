@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include<climits>
+
 #include "seq/gordeva_t_max_val_of_column_matrix/include/ops_seq.hpp"
 
 TEST(gordeva_t_max_val_of_column_matrix_seq, IsEmptyInput) {

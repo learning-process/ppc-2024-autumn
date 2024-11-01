@@ -2,7 +2,7 @@
 #include "seq/gordeva_t_max_val_of_column_matrix/include/ops_seq.hpp"
 
 #include <random>
-#include <thread>
+// #include <thread>
 
 using namespace std::chrono_literals;
 
@@ -64,7 +64,8 @@ bool gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::post_processing
 
   int* output_matr = reinterpret_cast<int*>(taskData->outputs[0]);
 
-  for (size_t i = 0; i < res_.size(); i++) output_matr[i] = res_[i];
+  // for (size_t i = 0; i < res_.size(); i++) output_matr[i] = res_[i];
+  std::copy(res_.begin(), res_.end(), output_matr);
   return true;
 }
 

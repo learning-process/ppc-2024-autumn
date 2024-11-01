@@ -75,7 +75,7 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, test_task_run) {
   taskDataSeq->inputs_count.emplace_back(rows);
   taskDataSeq->inputs_count.emplace_back(cols);
 
-  std::vector<int> res_vec(rows, 0);
+  std::vector<int> res_vec(cols, 0);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_vec.data()));
   taskDataSeq->outputs_count.emplace_back(res_vec.size());
 
