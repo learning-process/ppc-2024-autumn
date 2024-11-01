@@ -10,9 +10,10 @@ TEST(guseynov_e_check_lex_order_of_two_string_mpi, Test_equal_words) {
   boost::mpi::communicator world;
   std::vector<std::vector<char>> global_vec(2, std::vector<char>(120, 'a'));
   std::vector<int32_t> global_res(1, -1);
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  
+
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec[0].data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec[1].data()));
@@ -57,7 +58,8 @@ TEST(guseynov_e_check_lex_order_of_two_string_mpi, Test_second_string_is_greater
   boost::mpi::communicator world;
   std::vector<std::vector<char>> global_vec(2, std::vector<char>(240, 'a'));
   global_vec[1][239] = 'b';
-  std::vector<int32_t> global_res(1, -1);  
+  std::vector<int32_t> global_res(1, -1);
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -105,7 +107,8 @@ TEST(guseynov_e_check_lex_order_of_two_string_mpi, Test_first_string_is_greater)
   boost::mpi::communicator world;
   std::vector<std::vector<char>> global_vec(2, std::vector<char>(240, 'a'));
   global_vec[0][0] = 'b';
-  std::vector<int32_t> global_res(1, -1);  
+  std::vector<int32_t> global_res(1, -1);
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -153,7 +156,8 @@ TEST(guseynov_e_check_lex_order_of_two_string_mpi, Test_first_string_is_prefix) 
   boost::mpi::communicator world;
   std::vector<std::vector<char>> global_vec(2, std::vector<char>(360, 'a'));
   global_vec[1].push_back('b');
-  std::vector<int32_t> global_res(1, -1);  
+  std::vector<int32_t> global_res(1, -1);
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -202,9 +206,10 @@ TEST(guseynov_e_check_lex_order_of_two_string_mpi, Test_second_string_is_prefix)
   std::vector<std::vector<char>> global_vec(2, std::vector<char>(360, 'a'));
   global_vec[0].push_back('b');
   std::vector<int32_t> global_res(1, -1);
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
- 
+
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec[0].data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec[1].data()));
