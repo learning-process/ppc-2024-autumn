@@ -20,7 +20,6 @@ bool kudryashova_i_vector_dot_product::TestTaskSequential::pre_processing() {
     input_[i] = std::vector<int>(taskData->inputs_count[i]);
     std::copy(tempPtr, tempPtr + taskData->inputs_count[i], input_[i].begin());
   }
-  result = 0;
   return true;
 }
 

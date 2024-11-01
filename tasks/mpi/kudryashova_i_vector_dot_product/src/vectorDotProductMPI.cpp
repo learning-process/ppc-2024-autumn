@@ -19,7 +19,6 @@ bool kudryashova_i_vector_dot_product_mpi::TestMPITaskSequential::pre_processing
     input_[i] = std::vector<int>(taskData->inputs_count[i]);
     std::copy(tempPtr, tempPtr + taskData->inputs_count[i], input_[i].begin());
   }
-  result = 0;
   return true;
 }
 
@@ -65,13 +64,13 @@ bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::pre_processing()
       std::copy(source_ptr, source_ptr + taskData->inputs_count[i], input_[i].begin());
     }
   }
-  result = 0;
   return true;
 }
 
 bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
+    if (taskData->inputs_count[0] == 0 || taskData->inputs_count[1] == 0) return false;
     return (taskData->inputs_count[0] == taskData->inputs_count[1]) &&
            (taskData->inputs.size() == taskData->inputs_count.size() && taskData->inputs.size() == 2) &&
            taskData->outputs_count[0] == 1 && (taskData->outputs.size() == taskData->outputs_count.size()) &&
