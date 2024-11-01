@@ -33,7 +33,7 @@ bool vladimirova_j_max_of_vector_elements_seq::TestTaskSequential::pre_processin
 bool vladimirova_j_max_of_vector_elements_seq::TestTaskSequential::validation() {
   internal_order_test();
 
-  return (taskData->outputs_count[0] == 1) && ((taskData->inputs_count[0] > 0) && (taskData->inputs_count[1] > 0));
+  return ((taskData->inputs_count[0] > 0) && (taskData->inputs_count[1] > 0)) && (taskData->outputs_count[0] == 1);
 }
 
 bool vladimirova_j_max_of_vector_elements_seq::TestTaskSequential::run() {

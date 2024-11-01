@@ -33,19 +33,16 @@ TEST(vladimirova_j_max_of_vector_elements_mpi, Test_ValMatrix_0) {
   // Create data
   std::vector<int> out(1, -((int)spread + 10));
   std::vector<std::vector<int>> in = CreateInputMatrix(size, size, spread);
-
   // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  for (unsigned int i = 0; i < in.size(); i++)
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[i].data()));
-  taskDataSeq->inputs_count.emplace_back(size);
-  taskDataSeq->inputs_count.emplace_back(size);
-
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskDataPar->inputs_count.emplace_back(size);
+  taskDataPar->inputs_count.emplace_back(size);
+  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataPar->outputs_count.emplace_back(out.size());
 
   // Create Task
-  vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataSeq);
+  vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), false);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -71,7 +68,6 @@ TEST(vladimirova_j_max_of_vector_elements_mpi, Test_SquareMatrix_1) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matr[i].data()));
     taskDataPar->inputs_count.emplace_back(size);
     taskDataPar->inputs_count.emplace_back(size);
-
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
