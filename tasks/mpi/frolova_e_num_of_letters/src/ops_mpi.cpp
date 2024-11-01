@@ -84,9 +84,6 @@ bool frolova_e_num_of_letters_mpi::TestMPITaskParallel::pre_processing() {
     local_input_.resize(delta);
   }
 
-  /*if (world.rank() == 0) {
-    local_input_.resize(delta*world.size());
-  }*/
   if (world.rank() == 0) {
     local_input_ = std::string(input_.begin(), input_.begin() + delta + remainder);
   } else {
