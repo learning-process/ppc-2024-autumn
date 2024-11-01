@@ -39,6 +39,7 @@ bool grudzin_k_nearest_neighbor_elements_mpi::TestMPITaskSequential::post_proces
 
 bool grudzin_k_nearest_neighbor_elements_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
+
   // Init value for output
   res = {INT_MAX, -1};
   return true;

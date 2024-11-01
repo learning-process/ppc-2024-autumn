@@ -2,9 +2,6 @@
 #include "seq/grudzin_k_nearest_neighbor_elements/include/ops_seq.hpp"
 
 #include <climits>
-#include <thread>
-
-using namespace std::chrono_literals;
 
 bool grudzin_k_nearest_neighbor_elements_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
