@@ -5,7 +5,7 @@ template <class T>
 bool kovalev_k_num_of_orderly_violations_seq::NumOfOrderlyViolations<T>::count_num_of_orderly_violations_seq() {
   res = 0;	
   for(size_t i=1; i<n; i++)
-	  if(v[i-1] > v[i]) res++;	  
+	  if(v[i-1] > v[i]) res++;
   return true;
 }
 
