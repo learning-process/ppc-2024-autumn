@@ -272,8 +272,8 @@ double TestMPITaskParallel<TypeElem>::max_difference() {
     }
     iter_curr++;
     iter_next = iter_curr + 1;
-    local_result = max_delta;
   }
+  local_result = max_delta;
   return local_result;
 }
 }  // namespace kholin_k_vector_neighbor_diff_elems_mpi
