@@ -15,7 +15,7 @@ TEST(volochaev_s_count_characters_27_mpi, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int count_size_string;
   if (world.rank() == 0) {
-    count_size_string = 2000000;
+    count_size_string = 200000000;
     std::string s = volochaev_s_count_characters_27_mpi::get_random_string(count_size_string);
     global_vec = std::vector<std::string>(2, s);
     global_vec[1].back() = char(((int)s.back() + 1) % 256);

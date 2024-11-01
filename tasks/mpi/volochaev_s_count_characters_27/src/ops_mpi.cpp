@@ -43,7 +43,7 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_seq::pre_processing() {
 bool volochaev_s_count_characters_27_mpi::Lab1_27_seq::validation() {
   internal_order_test();
   // Check count elements of output
-  return taskData->outputs_count[0] == 1;
+  return taskData->inputs_count[0] == 2 && taskData->outputs_count[0] == 1;
 }
 
 bool volochaev_s_count_characters_27_mpi::Lab1_27_seq::run() {
@@ -65,11 +65,13 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_seq::post_processing() {
 bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::pre_processing() {
   internal_order_test();
 
+  std::string tmp1, tmp2;
+
   unsigned int delta = 0;
   if (world.rank() == 0) {
-    auto tmp1 = reinterpret_cast<std::string*>(taskData->inputs[0])[0];
-    auto tmp2 = reinterpret_cast<std::string*>(taskData->inputs[0])[1];
-    for_res = abs((int)tmp1.size() - (int)tmp2.size());
+    tmp1 = reinterpret_cast<std::string*>(taskData->inputs[0])[0];
+    tmp2 = reinterpret_cast<std::string*>(taskData->inputs[0])[1];
+    for_res = abs(static_cast<int>(tmp1.size()) - static_cast<int>(tmp2.size()));
     delta = (std::min(tmp1.size(), tmp2.size())) / world.size();
     if (std::min(tmp1.size(), tmp2.size()) % world.size() > 0u) ++delta;
   }
@@ -78,8 +80,6 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::pre_processing() {
 
   if (world.rank() == 0) {
     // Init vectors
-    auto tmp1 = reinterpret_cast<std::string*>(taskData->inputs[0])[0];
-    auto tmp2 = reinterpret_cast<std::string*>(taskData->inputs[0])[1];
     input_ = std::vector<std::pair<char, char>>(world.size() * delta);
     for (size_t i = 0; i < std::min(tmp1.size(), tmp2.size()); i++) {
       input_[i].first = tmp1[i];
@@ -106,7 +106,7 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::validation() {
 
   if (world.rank() == 0) {
     // Check count elements of output
-    return taskData->outputs_count[0] == 1;
+    return taskData->inputs_count[0] == 2 && taskData->outputs_count[0] == 1;
   }
   return true;
 }
