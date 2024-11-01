@@ -65,7 +65,8 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_seq::post_processing() {
 bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::pre_processing() {
   internal_order_test();
 
-  std::string tmp1, tmp2;
+  std::string tmp1;
+  std::string tmp2;
 
   unsigned int delta = 0;
   if (world.rank() == 0) {
