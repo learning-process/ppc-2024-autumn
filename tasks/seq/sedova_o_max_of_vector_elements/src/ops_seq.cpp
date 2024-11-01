@@ -31,9 +31,9 @@ int sedova_o_max_of_vector_elements_seq::find_max_of_matrix(const std::vector<in
       max = matrix[i];
     }
     return max;
-  }
+ }
 
-bool sedova_o_max_of_vector_elements_seq::TestTaskSequential::pre_processing() {
+  bool sedova_o_max_of_vector_elements_seq::TestTaskSequential::pre_processing() {
     internal_order_test();
     input_ = std::vector<int>(taskData->inputs_count[0] * taskData->inputs_count[1]);
     for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
@@ -45,20 +45,20 @@ bool sedova_o_max_of_vector_elements_seq::TestTaskSequential::pre_processing() {
     return true;
    }
 
-bool sedova_o_max_of_vector_elements_seq::TestTaskSequential::validation() {
+  bool sedova_o_max_of_vector_elements_seq::TestTaskSequential::validation() {
     internal_order_test();
     return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] == 1;
-}
+  }
 
-bool sedova_o_max_of_vector_elements_seq::TestTaskSequential::run() {
+  bool sedova_o_max_of_vector_elements_seq::TestTaskSequential::run() {
     internal_order_test();
     res_ = sedova_o_max_of_vector_elements_seq::find_max_of_matrix(input_);
     return true;
-}
+  }
 
-bool sedova_o_max_of_vector_elements_seq::TestTaskSequential::post_processing() {
+  bool sedova_o_max_of_vector_elements_seq::TestTaskSequential::post_processing() {
     internal_order_test();
     reinterpret_cast<int*>(taskData->outputs[0])[0] = res_;
     return true;
-}
+  }
 
