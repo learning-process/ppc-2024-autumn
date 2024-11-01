@@ -66,7 +66,7 @@ std::vector<int> poroshin_v_find_min_val_row_matrix_seq::gen(int m, int n) {
   }
 
   for (int i = 0; i < m; i++) {
-    tmp[(std::rand() % n) + i * n] =  
+    tmp[(std::rand() % n) + i * n] =
         std::numeric_limits<int>::min();  // In 1 of n columns, the value must be INT_MIN (needed to check answer)
   }
 
