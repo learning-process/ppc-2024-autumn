@@ -19,7 +19,7 @@ std::vector<int> yasakova_t_min_of_vector_elements_mpi::RandomVector(int size, i
   return vec;
 }
 
-std::vector<std::vector<int>> yasakova_t_min_of_vector_elements_seq::RandomMatrix(int rows, int columns, int minimum,
+std::vector<std::vector<int>> yasakova_t_min_of_vector_elements_mpi::RandomMatrix(int rows, int columns, int minimum,
                                                                                   int maximum) {
   std::vector<std::vector<int>> vec(rows);
   for (int i = 0; i < rows; i++) {
