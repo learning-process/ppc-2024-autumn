@@ -4,9 +4,6 @@
 #include <algorithm>
 #include <functional>
 #include <random>
-#include <thread>
-
-using namespace std::chrono_literals;
 
 bool chizhov_m_max_values_by_columns_matrix_seq::TestTaskSequential::pre_processing() {
   internal_order_test();

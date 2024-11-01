@@ -6,9 +6,6 @@
 #include <random>
 #include <string>
 #include <vector>
-#include <thread>
-
-using namespace std::chrono_literals;
 
 bool chizhov_m_max_values_by_columns_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
