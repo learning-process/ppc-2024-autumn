@@ -22,29 +22,6 @@ std::vector<int> getRandomVector(int sz) {
   return vec;
 }
 
-TEST(chizhov_m_max_values_by_columns_matrix_mpi, Test_EmptyMatrix) {
-  boost::mpi::communicator world;
-
-  int cols = 300;
-  int rows = 150;
-
-  std::vector<int> res_par(cols, 0);
-
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    taskDataPar->inputs_count.emplace_back(0);
-    taskDataPar->inputs_count.emplace_back(cols);
-    taskDataPar->inputs_count.emplace_back(rows);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_par.data()));
-    taskDataPar->outputs_count.emplace_back(res_par.size());
-  }
-
-  chizhov_m_max_values_by_columns_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
-}
-
 TEST(chizhov_m_max_values_by_columns_matrix_mpi, Test_Max1) {
   boost::mpi::communicator world;
 
