@@ -5,9 +5,10 @@
 #include <random>
 #include <vector>
 
-#include "seq/sedova_o_max_of_vector_elements/include/ops_seq.hpp"
 #include "core/task/include/task.hpp"
 #include "core/perf/include/perf.hpp"
+#include "seq/sedova_o_max_of_vector_elements/include/ops_seq.hpp"
+
 TEST(sedova_o_max_of_vector_elements_seq, test_pipeline_run_small_matrix) {
   std::random_device dev;
   std::mt19937 random(dev());
@@ -25,7 +26,7 @@ TEST(sedova_o_max_of_vector_elements_seq, test_pipeline_run_small_matrix) {
   in[rows][cols] = value;
 
   for (unsigned int i = 0; i < in.size(); i++)
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[i].data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[i].data()));
   taskDataSeq->inputs_count.emplace_back(size);
   taskDataSeq->inputs_count.emplace_back(size);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
@@ -133,5 +134,3 @@ TEST(sedova_o_max_of_vector_elements_seq, test_pipeline_run_different_values) {
   ppc::core::Perf::print_perf_statistic(perfResults);
   ASSERT_EQ(value + 1, out[0]);
 }
-
- 

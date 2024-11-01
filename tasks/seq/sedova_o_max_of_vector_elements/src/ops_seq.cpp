@@ -1,37 +1,37 @@
 // Copyright 2024 Sedova Olga
 #include "seq/sedova_o_max_of_vector_elements/include/ops_seq.hpp"
+
 #include <random>
 #include <thread>
 
 using namespace std::chrono_literals;
-std::vector<int> sedova_o_max_of_vector_elements_seq::generate_random_vector(int size,int value) {
-   std::random_device dev;
-   std::mt19937 random(dev());
-   std::vector<int> vec(size);
-   for (int i = 0; i < size; i++) {
-     vec[i] = random() % (value + 1);
-   }
-   return vec;
- }
+std::vector<int> sedova_o_max_of_vector_elements_seq::generate_random_vector(int size, int value) {
+  std::random_device dev;
+  std::mt19937 random(dev());
+  std::vector<int> vec(size);
+  for (int i = 0; i < size; i++) {
+    vec[i] = random() % (value + 1);
+  }
+  return vec;
+}
 
 std::vector<std::vector<int>> sedova_o_max_of_vector_elements_seq::generate_random_matrix(int rows, int cols,
                                                                                          int value) {
-   std::vector<std::vector<int>> matrix(rows);
-   for (int i = 0; i < rows; i++) {
-     matrix[i] = sedova_o_max_of_vector_elements_seq::generate_random_vector(cols, value);
-   }
-   return matrix;
- }
+  std::vector<std::vector<int>> matrix(rows);
+  for (int i = 0; i < rows; i++) {
+    matrix[i] = sedova_o_max_of_vector_elements_seq::generate_random_vector(cols, value);
+  }
+  return matrix;
+}
 
 int sedova_o_max_of_vector_elements_seq::find_max_of_matrix(const std::vector<int> matrix) {
-int max = matrix[0];
-for (int i = 0; i < matrix.size(); i++) {
+  int max = matrix[0];
+  for (int i = 0; i < matrix.size(); i++) {
     if (matrix[i] > max) {
-        max = matrix[i];
-        }
+      max = matrix[i];
     }
-return max;
-}
+    return max;
+  }
 
 bool sedova_o_max_of_vector_elements_seq::TestTaskSequential::pre_processing() {
   internal_order_test();

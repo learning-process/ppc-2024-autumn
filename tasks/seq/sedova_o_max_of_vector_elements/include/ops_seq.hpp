@@ -12,7 +12,7 @@ int find_max_of_matrix(std::vector<int> matrix);
 
 class TestTaskSequential : public ppc::core::Task {
  public:
-  explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)){};
+  explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_))	{};
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
