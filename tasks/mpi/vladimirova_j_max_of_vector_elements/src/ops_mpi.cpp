@@ -97,7 +97,7 @@ bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel::run() {
       for (int i = 1; i < world.size(); i++) {
         world.send(i, 0, 0);
       }
-      local_input_ = std::vector<int>(input_.begin(), input_.begin() + div_r);
+      local_input_ = std::vector<int>(input_.begin(), input_.begin() + div_r - 1);
       res = vladimirova_j_max_of_vector_elements_mpi::FindMaxElem(local_input_);
       return true;
     }
