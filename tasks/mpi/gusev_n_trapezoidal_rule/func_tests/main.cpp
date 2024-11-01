@@ -4,6 +4,7 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <cmath>
+#include <random>
 #include <vector>
 
 #include "mpi/gusev_n_trapezoidal_rule/include/ops_mpi.hpp"
@@ -251,6 +252,116 @@ TEST(gusev_n_trapezoidal_rule_mpi, RemainderCaseTest) {
 
     gusev_n_trapezoidal_rule_mpi::TrapezoidalIntegrationSequential sequentialTask(taskDataSequential);
     sequentialTask.set_function([](double x) { return x * x; });
+    ASSERT_EQ(sequentialTask.validation(), true);
+    sequentialTask.pre_processing();
+    sequentialTask.run();
+    sequentialTask.post_processing();
+
+    ASSERT_NEAR(reference_result[0], result_global[0], 1e-3);
+  }
+}
+
+TEST(gusev_n_trapezoidal_rule_mpi, RandomizedConstantFunctionTest) {
+  boost::mpi::communicator world;
+  std::vector<double> result_global(1, 0);
+  auto taskDataParallel = std::make_shared<ppc::core::TaskData>();
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<double> dis(0.0, 10.0);
+  int intervals = 1000000;
+
+  double lower_bound = dis(gen);
+  double upper_bound = dis(gen);
+  if (lower_bound > upper_bound) std::swap(lower_bound, upper_bound);
+
+  if (world.rank() == 0) {
+    taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_bound));
+    taskDataParallel->inputs_count.emplace_back(1);
+    taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_bound));
+    taskDataParallel->inputs_count.emplace_back(1);
+    taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&intervals));
+    taskDataParallel->inputs_count.emplace_back(1);
+    taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_global.data()));
+    taskDataParallel->outputs_count.emplace_back(result_global.size());
+  }
+
+  gusev_n_trapezoidal_rule_mpi::TrapezoidalIntegrationParallel parallelTask(taskDataParallel);
+  parallelTask.set_function([](double x) { return 5.0; });
+  ASSERT_EQ(parallelTask.validation(), true);
+  parallelTask.pre_processing();
+  parallelTask.run();
+  parallelTask.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<double> reference_result(1, 0);
+    auto taskDataSequential = std::make_shared<ppc::core::TaskData>();
+    taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_bound));
+    taskDataSequential->inputs_count.emplace_back(1);
+    taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_bound));
+    taskDataSequential->inputs_count.emplace_back(1);
+    taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t*>(&intervals));
+    taskDataSequential->inputs_count.emplace_back(1);
+    taskDataSequential->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
+    taskDataSequential->outputs_count.emplace_back(reference_result.size());
+
+    gusev_n_trapezoidal_rule_mpi::TrapezoidalIntegrationSequential sequentialTask(taskDataSequential);
+    sequentialTask.set_function([](double x) { return 5.0; });
+    ASSERT_EQ(sequentialTask.validation(), true);
+    sequentialTask.pre_processing();
+    sequentialTask.run();
+    sequentialTask.post_processing();
+
+    ASSERT_NEAR(reference_result[0], result_global[0], 1e-3);
+  }
+}
+
+TEST(gusev_n_trapezoidal_rule_mpi, RandomizedSineFunctionTest) {
+  boost::mpi::communicator world;
+  std::vector<double> result_global(1, 0);
+  auto taskDataParallel = std::make_shared<ppc::core::TaskData>();
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<double> dis(0.0, M_PI);
+  int intervals = 1000000;
+
+  double lower_bound = dis(gen);
+  double upper_bound = dis(gen);
+  if (lower_bound > upper_bound) std::swap(lower_bound, upper_bound);
+
+  if (world.rank() == 0) {
+    taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_bound));
+    taskDataParallel->inputs_count.emplace_back(1);
+    taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_bound));
+    taskDataParallel->inputs_count.emplace_back(1);
+    taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&intervals));
+    taskDataParallel->inputs_count.emplace_back(1);
+    taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_global.data()));
+    taskDataParallel->outputs_count.emplace_back(result_global.size());
+  }
+
+  gusev_n_trapezoidal_rule_mpi::TrapezoidalIntegrationParallel parallelTask(taskDataParallel);
+  parallelTask.set_function([](double x) { return std::sin(x); });
+  ASSERT_EQ(parallelTask.validation(), true);
+  parallelTask.pre_processing();
+  parallelTask.run();
+  parallelTask.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<double> reference_result(1, 0);
+    auto taskDataSequential = std::make_shared<ppc::core::TaskData>();
+    taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_bound));
+    taskDataSequential->inputs_count.emplace_back(1);
+    taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_bound));
+    taskDataSequential->inputs_count.emplace_back(1);
+    taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t*>(&intervals));
+    taskDataSequential->inputs_count.emplace_back(1);
+    taskDataSequential->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
+    taskDataSequential->outputs_count.emplace_back(reference_result.size());
+
+    gusev_n_trapezoidal_rule_mpi::TrapezoidalIntegrationSequential sequentialTask(taskDataSequential);
+    sequentialTask.set_function([](double x) { return std::sin(x); });
     ASSERT_EQ(sequentialTask.validation(), true);
     sequentialTask.pre_processing();
     sequentialTask.run();

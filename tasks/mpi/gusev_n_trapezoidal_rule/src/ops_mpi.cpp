@@ -70,8 +70,6 @@ bool gusev_n_trapezoidal_rule_mpi::TrapezoidalIntegrationParallel::pre_processin
     n_ = *tmp_ptr_n;
   }
 
-  MPI_Bcast(&a_, sizeof(a_) + sizeof(b_) + sizeof(n_), MPI_BYTE, 0, world);
-
   return true;
 }
 
@@ -85,8 +83,8 @@ bool gusev_n_trapezoidal_rule_mpi::TrapezoidalIntegrationParallel::validation() 
 
 bool gusev_n_trapezoidal_rule_mpi::TrapezoidalIntegrationParallel::run() {
   internal_order_test();
-  double local_result{};
-  local_result = parallel_integrate(func_, a_, b_, n_);
+  MPI_Bcast(&a_, sizeof(a_) + sizeof(b_) + sizeof(n_), MPI_BYTE, 0, world);
+  double local_result = parallel_integrate(func_, a_, b_, n_);
   reduce(world, local_result, global_result_, std::plus<>(), 0);
   return true;
 }
