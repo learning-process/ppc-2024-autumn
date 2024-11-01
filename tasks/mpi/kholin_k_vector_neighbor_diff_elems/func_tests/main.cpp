@@ -203,7 +203,6 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_post_processing) {
 TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
   int ProcRank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
-  const int count_size_vector = 200;
   std::vector<int> global_vec;
   std::vector<double> global_delta(1, 0);
   enum_ops::operations op = enum_ops::MAX_DIFFERENCE;
@@ -211,9 +210,10 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (ProcRank == 0) {
+    const int count_size_vector = 300;
     global_vec = std::vector<int>(count_size_vector);
-    for (size_t i = 0; i < global_vec.size(); i++) {
-      global_vec[i] = 4 * i + 2;
+    for (int i = 0; i < global_vec.size(); i++) {
+      global_vec[i] = 2*i + 4;
     }
 
     global_vec[99] = 5000;
