@@ -18,8 +18,7 @@ TEST(shlyakov_m_min_value_of_row_mpi, test_pipeline_run_min) {
   if (world.rank() == 0) {
     sz_row = 5000;
     sz_col = 5000;
-    main_matr =
-        shlyakov_m_min_value_of_row_mpi::TestMPITaskSequential::get_random_matr(sz_row, sz_col);
+    main_matr = shlyakov_m_min_value_of_row_mpi::TestMPITaskSequential::get_random_matr(sz_row, sz_col);
     main_min.resize(sz_row, INT_MAX);
 
     for (auto& row : main_matr) taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
@@ -53,8 +52,7 @@ TEST(shlyakov_m_min_value_of_row_mpi_perf, test_task_run_min) {
   if (world.rank() == 0) {
     sz_row = 5000;
     sz_col = 5000;
-    main_matr =
-        shlyakov_m_min_value_of_row_mpi::TestMPITaskSequential::get_random_matr(sz_row, sz_col);
+    main_matr = shlyakov_m_min_value_of_row_mpi::TestMPITaskSequential::get_random_matr(sz_row, sz_col);
     main_min.resize(sz_row, INT_MAX);
 
     for (auto& row : main_matr) taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));

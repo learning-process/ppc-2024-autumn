@@ -18,9 +18,9 @@ TEST(shlyakov_m_min_value_of_row_mpi, test_validation) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    main_matr =
-        shlyakov_m_min_value_of_row_mpi::TestMPITaskSequential::get_random_matr(sz_row, sz_col);
-    for (unsigned int i = 0; i < main_matr.size(); i++) taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(main_matr[i].data()));
+    main_matr = shlyakov_m_min_value_of_row_mpi::TestMPITaskSequential::get_random_matr(sz_row, sz_col);
+    for (unsigned int i = 0; i < main_matr.size(); i++)
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(main_matr[i].data()));
 
     taskDataPar->inputs_count = {sz_row, sz_col};
 
@@ -43,9 +43,9 @@ TEST(shlyakov_m_min_value_of_row_mpi, test_pre_processing) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    main_matr =
-        shlyakov_m_min_value_of_row_mpi::TestMPITaskSequential::get_random_matr(sz_row, sz_col);
-    for (unsigned int i = 0; i < main_matr.size(); i++) taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(main_matr[i].data()));
+    main_matr = shlyakov_m_min_value_of_row_mpi::TestMPITaskSequential::get_random_matr(sz_row, sz_col);
+    for (unsigned int i = 0; i < main_matr.size(); i++)
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(main_matr[i].data()));
 
     taskDataPar->inputs_count = {sz_row, sz_col};
 
@@ -69,9 +69,9 @@ TEST(shlyakov_m_min_value_of_row_mpi, test_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    main_matr =
-        shlyakov_m_min_value_of_row_mpi::TestMPITaskSequential::get_random_matr(sz_row, sz_col);
-    for (unsigned int i = 0; i < main_matr.size(); i++) taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(main_matr[i].data()));
+    main_matr = shlyakov_m_min_value_of_row_mpi::TestMPITaskSequential::get_random_matr(sz_row, sz_col);
+    for (unsigned int i = 0; i < main_matr.size(); i++)
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(main_matr[i].data()));
 
     taskDataPar->inputs_count = {sz_row, sz_col};
 
@@ -97,7 +97,8 @@ TEST(shlyakov_m_min_value_of_row_mpi, test_post_processing) {
 
   if (world.rank() == 0) {
     main_matr = shlyakov_m_min_value_of_row_mpi::TestMPITaskSequential::get_random_matr(sz_row, sz_col);
-    for (unsigned int i = 0; i < main_matr.size(); i++) taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(main_matr[i].data()));
+    for (unsigned int i = 0; i < main_matr.size(); i++)
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(main_matr[i].data()));
 
     taskDataPar->inputs_count = {sz_row, sz_col};
 
@@ -123,9 +124,9 @@ TEST(shlyakov_m_min_value_of_row_mpi, test_with_square_matr) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    main_matr =
-        shlyakov_m_min_value_of_row_mpi::TestMPITaskSequential::get_random_matr(sz_row, sz_col);
-    for (unsigned int i = 0; i < main_matr.size(); i++) taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(main_matr[i].data()));
+    main_matr = shlyakov_m_min_value_of_row_mpi::TestMPITaskSequential::get_random_matr(sz_row, sz_col);
+    for (unsigned int i = 0; i < main_matr.size(); i++)
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(main_matr[i].data()));
 
     taskDataPar->inputs_count = {sz_row, sz_col};
 
@@ -143,7 +144,8 @@ TEST(shlyakov_m_min_value_of_row_mpi, test_with_square_matr) {
     std::vector<int> seq_min(sz_row, INT_MAX);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
-    for (unsigned int i = 0; i < main_matr.size(); i++) taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(main_matr[i].data()));
+    for (unsigned int i = 0; i < main_matr.size(); i++)
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(main_matr[i].data()));
 
     taskDataSeq->inputs_count = {sz_row, sz_col};
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(seq_min.data()));
@@ -173,7 +175,8 @@ TEST(shlyakov_m_min_value_of_row_mpi, test_with_not_square_matr) {
 
   if (world.rank() == 0) {
     main_matr = shlyakov_m_min_value_of_row_mpi::TestMPITaskSequential::get_random_matr(sz_row, sz_col);
-    for (unsigned int i = 0; i < main_matr.size(); i++) taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(main_matr[i].data()));
+    for (unsigned int i = 0; i < main_matr.size(); i++)
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(main_matr[i].data()));
 
     taskDataPar->inputs_count = {sz_row, sz_col};
 
@@ -191,7 +194,8 @@ TEST(shlyakov_m_min_value_of_row_mpi, test_with_not_square_matr) {
     std::vector<int> seq_min(sz_row, INT_MAX);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
-    for (unsigned int i = 0; i < main_matr.size(); i++) taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(main_matr[i].data()));
+    for (unsigned int i = 0; i < main_matr.size(); i++)
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(main_matr[i].data()));
 
     taskDataSeq->inputs_count = {sz_row, sz_col};
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(seq_min.data()));
@@ -216,12 +220,13 @@ TEST(shlyakov_m_min_value_of_row_mpi, test_with_large_matr) {
 
   std::vector<std::vector<int>> main_matr;
   std::vector<int32_t> main_min(sz_row, INT_MAX);
-  
+
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
     main_matr = shlyakov_m_min_value_of_row_mpi::TestMPITaskSequential::get_random_matr(sz_row, sz_col);
-    for (unsigned int i = 0; i < main_matr.size(); i++) taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(main_matr[i].data()));
+    for (unsigned int i = 0; i < main_matr.size(); i++)
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(main_matr[i].data()));
 
     taskDataPar->inputs_count = {sz_row, sz_col};
 
@@ -239,7 +244,8 @@ TEST(shlyakov_m_min_value_of_row_mpi, test_with_large_matr) {
     std::vector<int> seq_min(sz_row, INT_MAX);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
-    for (unsigned int i = 0; i < main_matr.size(); i++) taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(main_matr[i].data()));
+    for (unsigned int i = 0; i < main_matr.size(); i++)
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(main_matr[i].data()));
 
     taskDataSeq->inputs_count = {sz_row, sz_col};
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(seq_min.data()));
