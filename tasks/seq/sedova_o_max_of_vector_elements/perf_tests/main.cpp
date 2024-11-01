@@ -1,4 +1,4 @@
-// Copyright 2024 Sedova Olga
+п»ї// Copyright 2024 Sedova Olga
 #include <gtest/gtest.h>
 
 #include <chrono>
@@ -106,7 +106,7 @@ TEST(sedova_o_max_of_vector_elements_seq, test_pipeline_run_different_values) {
 
   int rows = random() % size;
   int cols = random() % size;
-  in[rows][cols] = value + 1;  // Изменил значение, чтобы найти максимальное
+  in[rows][cols] = value + 1;  // РР·РјРµРЅРёР» Р·РЅР°С‡РµРЅРёРµ, С‡С‚РѕР±С‹ РЅР°Р№С‚Рё РјР°РєСЃРёРјР°Р»СЊРЅРѕРµ
 
   for (unsigned int i = 0; i < in.size(); i++)
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[i].data()));
