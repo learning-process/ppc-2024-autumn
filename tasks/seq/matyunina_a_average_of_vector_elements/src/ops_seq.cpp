@@ -8,7 +8,7 @@ using namespace std::chrono_literals;
 bool matyunina_a_average_of_vector_elements_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   input_ = std::vector<int>(taskData->inputs_count[0]);
-  auto tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+  auto *tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
   for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
     input_[i] = tmp_ptr[i];
   }

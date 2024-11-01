@@ -24,7 +24,8 @@ TEST(matyunina_a_average_of_vector_elements_seq, test_100) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto testTaskSequential = std::make_shared<matyunina_a_average_of_vector_elements_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential =
+      std::make_shared<matyunina_a_average_of_vector_elements_seq::TestTaskSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -64,7 +65,8 @@ TEST(matyunina_a_average_of_vector_elements_seq, test_1000) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto testTaskSequential = std::make_shared<matyunina_a_average_of_vector_elements_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential =
+      std::make_shared<matyunina_a_average_of_vector_elements_seq::TestTaskSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
