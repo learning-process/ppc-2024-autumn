@@ -1,8 +1,8 @@
 // Copyright 2024 Nesterov Alexander
 #include "mpi/rezantseva_a_vector_dot_product/include/ops_mpi.hpp"
 
-int rezantseva_a_vector_dot_product_mpi::vectorDotProduct(const std::vector<int>& v1, const std::vector<int>& v2) {
-  long long result = 0;
+int64_t rezantseva_a_vector_dot_product_mpi::vectorDotProduct(const std::vector<int>& v1, const std::vector<int>& v2) {
+  int64_t result = 0;
   for (size_t i = 0; i < v1.size(); i++) result += v1[i] * v2[i];
   return result;
 }
@@ -123,7 +123,7 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::run() {
     local_input2_ = std::vector<int>(input_[1].begin(), input_[1].begin() + counts_[0]);
   }
 
-  int local_res = 0;
+  int64_t local_res = 0;
 
   for (size_t i = 0; i < local_input1_.size(); i++) {
     local_res += local_input1_[i] * local_input2_[i];
@@ -135,7 +135,7 @@ bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::run() {
 bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+    reinterpret_cast<int64_t*>(taskData->outputs[0])[0] = res;
   }
   return true;
 }

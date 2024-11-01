@@ -13,7 +13,7 @@
 #include "core/task/include/task.hpp"
 
 namespace rezantseva_a_vector_dot_product_mpi {
-int vectorDotProduct(const std::vector<int>& v1, const std::vector<int>& v2);
+int64_t vectorDotProduct(const std::vector<int>& v1, const std::vector<int>& v2);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
@@ -41,7 +41,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   std::vector<int> local_input1_{}, local_input2_{};
   std::vector<unsigned int> counts_{};
   size_t num_processes_ = 0;
-  int res{};
+  int64_t res = 0;
   boost::mpi::communicator world;
 };
 
