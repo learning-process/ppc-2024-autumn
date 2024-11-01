@@ -25,7 +25,8 @@ TEST(korotin_e_min_val_matrix, minval_is_correct) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const unsigned M = 30, N = 30;
+    const unsigned M = 30;
+    const unsigned N = 30;
     matrix = korotin_e_min_val_matrix_mpi::getRandomMatrix(M, N, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());

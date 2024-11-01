@@ -7,7 +7,8 @@
 #include "seq/korotin_e_min_val_matrix/include/ops_seq.hpp"
 
 TEST(korotin_e_min_val_matrix_seq, test_pipeline_run) {
-  const unsigned rows = 50, columns = 50;
+  const unsigned rows = 50;
+  const unsigned columns = 50;
 
   // Create data
   std::vector<double> matrix(rows * columns, 1);
@@ -44,7 +45,8 @@ TEST(korotin_e_min_val_matrix_seq, test_pipeline_run) {
 }
 
 TEST(korotin_e_min_val_matrix_seq, test_task_run) {
-  const unsigned rows = 50, columns = 50;
+  const unsigned rows = 50;
+  const unsigned columns = 50;
 
   // Create data
   std::vector<double> matrix(rows * columns, 1);

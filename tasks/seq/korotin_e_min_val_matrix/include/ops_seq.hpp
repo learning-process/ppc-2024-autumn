@@ -9,7 +9,7 @@
 
 namespace korotin_e_min_val_matrix_seq {
 
-std::vector<double> getRandomMatrix(const unsigned rows, const unsigned columns, double scal);
+std::vector<double> getRandomMatrix(unsigned rows, unsigned columns, double scal);
 
 class TestTaskSequential : public ppc::core::Task {
  public:

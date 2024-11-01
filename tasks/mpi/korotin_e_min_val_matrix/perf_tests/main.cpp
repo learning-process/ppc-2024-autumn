@@ -13,7 +13,8 @@ TEST(korotin_e_min_val_matrix, test_pipeline_run) {
   std::vector<double> min_val(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int rows, columns;
+  int rows;
+  int columns;
   if (world.rank() == 0) {
     rows = columns = 60;
     matrix = std::vector<double>(rows * columns, 1);
@@ -53,7 +54,8 @@ TEST(korotin_e_min_val_matrix, test_task_run) {
   std::vector<double> min_val(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int rows, columns;
+  int rows;
+  int columns;
   if (world.rank() == 0) {
     rows = columns = 60;
     matrix = std::vector<double>(rows * columns, 1);

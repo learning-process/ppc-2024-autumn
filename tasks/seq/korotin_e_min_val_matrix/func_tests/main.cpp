@@ -12,7 +12,8 @@ TEST(korotin_e_min_val_matrix_seq, test_matrix_0) {
 }
 
 TEST(korotin_e_min_val_matrix_seq, test_matrix_5_5) {
-  const unsigned rows = 5, columns = 5;
+  const unsigned rows = 5;
+  const unsigned columns = 5;
   double res;
 
   // Create data
