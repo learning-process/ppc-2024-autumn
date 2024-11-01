@@ -29,7 +29,7 @@ bool shlyakov_m_min_value_of_row_seq::TestTaskSequential::validation() {
   int flag = 1;
 
   if (flag ==
-      ((taskData->inputs.empty() == false && taskData->outputs.empty() == false) &&
+      ((taskData->inputs.size() == 0 && taskData->outputs.size() == 0) &&
        (taskData->inputs_count.size() >= 2 && taskData->inputs_count[0] != 0 && taskData->inputs_count[1] != 0)))
     return (true);
 
