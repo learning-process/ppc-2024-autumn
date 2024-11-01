@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "seq/Sadikov_I_sum_values_by_columns_matrix/include/sq_task.h"
+#include "seq/sadikov_I_sum_values_by_columns_matrix/include/sq_task.h"
 
 using namespace std::chrono_literals;
 

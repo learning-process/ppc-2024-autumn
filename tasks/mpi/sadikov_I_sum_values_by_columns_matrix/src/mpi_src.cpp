@@ -1,5 +1,3 @@
-#pragma once
-
 #include <algorithm>
 #include <iostream>
 #include <numeric>
@@ -43,7 +41,7 @@ bool sadikov_I_Sum_values_by_columns_matrix_mpi::MPITask::run() {
 
 bool sadikov_I_Sum_values_by_columns_matrix_mpi::MPITask::post_processing() {
   internal_order_test();
-  for (int i = 0; i < columns_count; ++i) {
+  for (size_t i = 0; i < columns_count; ++i) {
     reinterpret_cast<int *>(taskData->outputs[0])[i] = sum[i];
   }
   return true;
@@ -155,7 +153,7 @@ std::vector<int> sadikov_I_Sum_values_by_columns_matrix_mpi::getRandomVector(siz
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(size);
-  for (int i = 0; i < size; i++) {
+  for (size_t i = 0; i < size; i++) {
     vec[i] = (gen() % 100) - 49;
   }
   return vec;
