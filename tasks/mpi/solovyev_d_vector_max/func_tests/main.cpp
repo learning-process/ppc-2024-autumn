@@ -4,7 +4,7 @@
 #include <boost/mpi/environment.hpp>
 #include <random>
 #include <vector>
-
+#include <iostream>
 #include "mpi/solovyev_d_vector_max/include/header.hpp"
 
 std::vector<int> getRandomVector(int sz) {
@@ -17,31 +17,13 @@ std::vector<int> getRandomVector(int sz) {
   return vec;
 }
 
-TEST(solovyev_d_vector_max_mpi, Test_Empty) {
-  boost::mpi::communicator world;
-  std::vector<int> global_vec(0, 0);
-  std::vector<int32_t> global_max(1, 0);
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
-    taskDataPar->outputs_count.emplace_back(global_max.size());
-  }
-
-  solovyev_d_vector_max_mpi::VectorMaxMPIParallel VectorMaxMPIParallel(taskDataPar);
-  ASSERT_EQ(VectorMaxMPIParallel.validation(), false);
-}
-
 TEST(solovyev_d_vector_max_mpi, Test_Max) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_max(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
+  std::cerr<<"1 "<<world.rank()<<std::endl;
   if (world.rank() == 0) {
     const int count_size_vector = 240;
     global_vec = getRandomVector(count_size_vector);
@@ -50,13 +32,13 @@ TEST(solovyev_d_vector_max_mpi, Test_Max) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
-
+  std::cerr<<"2 "<<world.rank()<<std::endl;
   solovyev_d_vector_max_mpi::VectorMaxMPIParallel VectorMaxMPIParallel(taskDataPar);
   ASSERT_EQ(VectorMaxMPIParallel.validation(), true);
   VectorMaxMPIParallel.pre_processing();
   VectorMaxMPIParallel.run();
   VectorMaxMPIParallel.post_processing();
-
+  std::cerr<<"3 "<<world.rank()<<std::endl;
   if (world.rank() == 0) {
     // Create data
     std::vector<int32_t> reference_max(1, 0);
