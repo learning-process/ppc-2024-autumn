@@ -36,7 +36,8 @@ bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::pre_processing() {
 
     for (int i = 0; i < world.size(); ++i) {
       distribution[i] =
-          chunk_size + static_cast<int>(i < remainder);  // Добавим 1 элемент к некоторым чанкам, чтобы распределить остаток
+          chunk_size +
+          static_cast<int>(i < remainder);  // Добавим 1 элемент к некоторым чанкам, чтобы распределить остаток
       displacement[i] =
           (i == 0) ? 0 : displacement[i - 1] + distribution[i - 1];  // Смещение текущего ненулевого блока равно
                                                                      // смещению предыдущего блока + его размеру
