@@ -79,5 +79,3 @@ TEST(frolova_e_num_of_letters_seq, test_task_run) {
   ppc::core::Perf::print_perf_statistic(perfResults);
   ASSERT_EQ(100, out[0]);
 }
-
-
