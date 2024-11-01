@@ -16,7 +16,7 @@ std::string frolova_e_num_of_letters_mpi::GenStr(int n) {
   result.resize(n);
 
   int i = 0;
-  int j = 0;
+  size_t j = 0;
 
   while (i < n) {
     result[i] = str[j];
@@ -34,10 +34,6 @@ bool frolova_e_num_of_letters_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init vectors
   input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
-  /*auto* tmp_ptr = reinterpret_cast<char*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    input_[i] = tmp_ptr[i];
-  }*/
   // Init value for output
   res = 0;
   return true;
@@ -46,7 +42,7 @@ bool frolova_e_num_of_letters_mpi::TestMPITaskSequential::pre_processing() {
 bool frolova_e_num_of_letters_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
-  return taskData->outputs_count[0] == 1;
+  return taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1;
 }
 
 bool frolova_e_num_of_letters_mpi::TestMPITaskSequential::run() {
@@ -86,7 +82,6 @@ bool frolova_e_num_of_letters_mpi::TestMPITaskParallel::pre_processing() {
       world.send(proc, 0, input_.data() + remainder + proc * delta, delta);
     }
   }
-  /*local_input_.resize(delta);*/
   if (world.rank() != 0) {
     local_input_.resize(delta);
   }
@@ -108,14 +103,14 @@ bool frolova_e_num_of_letters_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     // Check count elements of output
-    return taskData->outputs_count[0] == 1;
+    return taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1;
   }
   return true;
 }
 
 bool frolova_e_num_of_letters_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  int local_res=0;
+  int local_res = 0;
   
   for (char c : local_input_) {
     if (isalpha(c)) local_res++;
@@ -132,4 +127,3 @@ bool frolova_e_num_of_letters_mpi::TestMPITaskParallel::post_processing() {
   }
   return true;
 }
-

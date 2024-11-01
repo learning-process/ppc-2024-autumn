@@ -28,7 +28,6 @@ class TestMPITaskSequential : public ppc::core::Task {
  private:
   std::string input_;
   int res{};
-//  std::string ops;
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -40,11 +39,8 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-//  std::vector<int> input_, local_input_;
   std::string input_, local_input_;
   int res{};
-//  std::string ops;
   boost::mpi::communicator world;
 };
-
 }  // namespace frolova_e_num_of_letters_mpi

@@ -11,7 +11,7 @@ std::string frolova_e_num_of_letters_seq::GenStr(int n) {
   result.resize(n);  
 
   int i = 0;
-  int j = 0;
+  size_t j = 0;
 
   while (i < n) {
     result[i] = str[j];
