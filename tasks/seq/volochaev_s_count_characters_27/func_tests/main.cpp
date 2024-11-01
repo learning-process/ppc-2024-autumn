@@ -19,7 +19,6 @@ TEST(volochaev_s_count_characters_27_seq, Test_0) {
   // Create Task
   volochaev_s_count_characters_27_seq::Lab1_27 testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), false);
- 
 }
 
 TEST(volochaev_s_count_characters_27_seq, Test_1) {
