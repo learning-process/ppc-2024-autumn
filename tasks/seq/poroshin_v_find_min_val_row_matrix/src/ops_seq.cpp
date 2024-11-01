@@ -50,7 +50,7 @@ bool poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential::run() {
 
 bool poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential::post_processing() {
   internal_order_test();
-  for (int i = 0; i < res.size(); i++) {
+  for (size_t i = 0; i < res.size(); i++) {
     reinterpret_cast<int*>(taskData->outputs[0])[i] = res[i];
   }
   return true;
