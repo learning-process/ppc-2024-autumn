@@ -3,10 +3,21 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/kudryashova_i_vector_dot_product/include/vectorDotProductSeq.hpp"
 
+
+static int seedOffset = 0;
+std::vector<int> GetRandomVector(int size) {
+  std::vector<int> vector(size);
+  std::srand(static_cast<unsigned>(time(nullptr)) + ++seedOffset);
+  for (int i = 0; i < size; ++i) {
+    vector[i] = std::rand() % 100 + 1;
+  }
+  return vector;
+}
+
 TEST(kudryashova_i_vector_dot_product_seq, test_pipeline_run) {
   const int count_size = 15000000;
-  std::vector<int> vector1 = kudryashova_i_vector_dot_product::GetRandomVector(count_size);
-  std::vector<int> vector2 = kudryashova_i_vector_dot_product::GetRandomVector(count_size);
+  std::vector<int> vector1 = GetRandomVector(count_size);
+  std::vector<int> vector2 = GetRandomVector(count_size);
   std::vector<int> out(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector1.data()));
@@ -33,8 +44,8 @@ TEST(kudryashova_i_vector_dot_product_seq, test_pipeline_run) {
 
 TEST(kudryashova_i_vector_dot_product_seq, test_task_run) {
   const int count = 15000000;
-  std::vector<int> vector1 = kudryashova_i_vector_dot_product::GetRandomVector(count);
-  std::vector<int> vector2 = kudryashova_i_vector_dot_product::GetRandomVector(count);
+  std::vector<int> vector1 = GetRandomVector(count);
+  std::vector<int> vector2 = GetRandomVector(count);
   std::vector<int> out(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector1.data()));

@@ -2,15 +2,6 @@
 
 #include <random>
 
-static int seedOffset = 0;
-std::vector<int> kudryashova_i_vector_dot_product::GetRandomVector(int size) {
-  std::vector<int> vector(size);
-  std::srand(static_cast<unsigned>(time(nullptr)) + ++seedOffset);
-  for (int i = 0; i < size; ++i) {
-    vector[i] = std::rand() % 100 + 1;
-  }
-  return vector;
-}
 
 int kudryashova_i_vector_dot_product::vectorDotProduct(const std::vector<int>& vector1,
                                                        const std::vector<int>& vector2) {

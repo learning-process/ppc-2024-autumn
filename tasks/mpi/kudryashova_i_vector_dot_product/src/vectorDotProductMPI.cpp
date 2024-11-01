@@ -3,17 +3,6 @@
 #include <boost/mpi.hpp>
 #include <random>
 
-static int seedOffset = 0;
-
-std::vector<int> kudryashova_i_vector_dot_product_mpi::getRandomVector(int size) {
-  std::vector<int> vector(size);
-  std::srand(static_cast<unsigned>(time(nullptr)) + ++seedOffset);
-  for (int i = 0; i < size; ++i) {
-    vector[i] = std::rand() % 100 + 1;
-  }
-  return vector;
-}
-
 int kudryashova_i_vector_dot_product_mpi::vectorDotProduct(const std::vector<int>& vector1,
                                                            const std::vector<int>& vector2) {
   long long result = 0;
@@ -59,10 +48,10 @@ bool kudryashova_i_vector_dot_product_mpi::TestMPITaskSequential::post_processin
 bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    if (taskData->inputs_count[0] % world.size() != 0) {
-      return false;
-    }
     delta = taskData->inputs_count[0] / world.size();
+    if ((int)(taskData->inputs_count[0]) < world.size()) {
+      delta = taskData->inputs_count[0];
+    }
   }
   if (world.rank() == 0) {
     input_.resize(taskData->inputs.size());
@@ -115,6 +104,9 @@ bool kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel::run() {
 
   if (world.rank() == 0) {
     result = std::accumulate(full_results.begin(), full_results.end(), 0);
+  }
+  if (world.rank() == 0 && (int)(taskData->inputs_count[0]) < world.size()) {
+    result = std::inner_product(input_[0].begin(), input_[0].end(), input_[1].begin(), 0);
   }
   return true;
 }

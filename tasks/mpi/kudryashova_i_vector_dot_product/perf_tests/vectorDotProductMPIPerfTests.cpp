@@ -6,12 +6,22 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/kudryashova_i_vector_dot_product/include/vectorDotProductMPI.hpp"
 
+static int seedOffset = 0;
+std::vector<int> GetRandomVector(int size) {
+  std::vector<int> vector(size);
+  std::srand(static_cast<unsigned>(time(nullptr)) + ++seedOffset);
+  for (int i = 0; i < size; ++i) {
+    vector[i] = std::rand() % 100 + 1;
+  }
+  return vector;
+}
+
 TEST(kudryashova_i_vector_dot_product_mpi, test_pipeline_run) {
   const int count = 15000000;
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vector;
-  std::vector<int> vector1 = kudryashova_i_vector_dot_product_mpi::getRandomVector(count);
-  std::vector<int> vector2 = kudryashova_i_vector_dot_product_mpi::getRandomVector(count);
+  std::vector<int> vector1 = GetRandomVector(count);
+  std::vector<int> vector2 = GetRandomVector(count);
   std::vector<int32_t> result(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -46,8 +56,8 @@ TEST(kudryashova_i_vector_dot_product_mpi, test_task_run) {
   const int count_size_vector = 15000000;
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vector;
-  std::vector<int> vector1 = kudryashova_i_vector_dot_product_mpi::getRandomVector(count_size_vector);
-  std::vector<int> vector2 = kudryashova_i_vector_dot_product_mpi::getRandomVector(count_size_vector);
+  std::vector<int> vector1 = GetRandomVector(count_size_vector);
+  std::vector<int> vector2 = GetRandomVector(count_size_vector);
   std::vector<int32_t> result(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();

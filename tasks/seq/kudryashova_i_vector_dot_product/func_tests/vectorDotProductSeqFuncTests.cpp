@@ -2,6 +2,16 @@
 
 #include "seq/kudryashova_i_vector_dot_product/include/vectorDotProductSeq.hpp"
 
+static int seedOffset = 0;
+std::vector<int> GetRandomVector(int size) {
+  std::vector<int> vector(size);
+  std::srand(static_cast<unsigned>(time(nullptr)) + ++seedOffset);
+  for (int i = 0; i < size; ++i) {
+    vector[i] = std::rand() % 100 + 1;
+  }
+  return vector;
+}
+
 TEST(kudryashova_i_vector_dot_product_seq, check_vectorDotProduct) {
   // Create data
   std::vector<int> vector1 = {1, 8, 14};
@@ -12,8 +22,8 @@ TEST(kudryashova_i_vector_dot_product_seq, check_vectorDotProduct) {
 TEST(kudryashova_i_vector_dot_product_seq, scalar_multiply_vector_size_50) {
   const int count = 50;
   // Create data
-  std::vector<int> vector1 = kudryashova_i_vector_dot_product::GetRandomVector(count);
-  std::vector<int> vector2 = kudryashova_i_vector_dot_product::GetRandomVector(count);
+  std::vector<int> vector1 = GetRandomVector(count);
+  std::vector<int> vector2 = GetRandomVector(count);
   std::vector<int> out(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -36,8 +46,8 @@ TEST(kudryashova_i_vector_dot_product_seq, scalar_multiply_vector_size_120) {
   const int count = 120;
   // Create data
   std::vector<int> out(1, 0);
-  std::vector<int> vector1 = kudryashova_i_vector_dot_product::GetRandomVector(count);
-  std::vector<int> vector2 = kudryashova_i_vector_dot_product::GetRandomVector(count);
+  std::vector<int> vector1 = GetRandomVector(count);
+  std::vector<int> vector2 = GetRandomVector(count);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector1.data()));
@@ -59,8 +69,8 @@ TEST(kudryashova_i_vector_dot_product_seq, check_equal_vectors) {
   const int count = 10;
   // Create data
   std::vector<int> out(1, 0);
-  std::vector<int> vector1 = kudryashova_i_vector_dot_product::GetRandomVector(count);
-  std::vector<int> vector2 = kudryashova_i_vector_dot_product::GetRandomVector(count);
+  std::vector<int> vector1 = GetRandomVector(count);
+  std::vector<int> vector2 = GetRandomVector(count);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector1.data()));
@@ -77,8 +87,8 @@ TEST(kudryashova_i_vector_dot_product_seq, check_equal_vectors) {
 TEST(kudryashova_i_vector_dot_product_seq, checks_not_equal_vector) {
   const int count = 10;
   // Create data
-  std::vector<int> vector1 = kudryashova_i_vector_dot_product::GetRandomVector(count);
-  std::vector<int> vector2 = kudryashova_i_vector_dot_product::GetRandomVector(count + 1);
+  std::vector<int> vector1 = GetRandomVector(count);
+  std::vector<int> vector2 = GetRandomVector(count + 1);
   std::vector<int> out(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -95,8 +105,8 @@ TEST(kudryashova_i_vector_dot_product_seq, checks_not_equal_vector) {
 
 TEST(kudryashova_i_vector_dot_product_seq, check_empty_vectors) {
   const int count = 0;
-  std::vector<int> vector1 = kudryashova_i_vector_dot_product::GetRandomVector(count);
-  std::vector<int> vector2 = kudryashova_i_vector_dot_product::GetRandomVector(count);
+  std::vector<int> vector1 = GetRandomVector(count);
+  std::vector<int> vector2 = GetRandomVector(count);
   ASSERT_EQ(kudryashova_i_vector_dot_product::vectorDotProduct(vector1, vector2), 0);
 }
 
