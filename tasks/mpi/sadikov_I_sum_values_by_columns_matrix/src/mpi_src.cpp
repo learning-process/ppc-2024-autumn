@@ -49,7 +49,8 @@ bool sadikov_I_Sum_values_by_columns_matrix_mpi::MPITask::post_processing() {
 
 void sadikov_I_Sum_values_by_columns_matrix_mpi::MPITask::calculate(size_t size) {
   for (size_t i = 0; i < size; ++i) {
-    sum[i] = std::accumulate(matrix.begin() + i * rows_count, matrix.begin() + (i + 1) * rows_count, 0);
+    sum[i] = std::accumulate(matrix.begin() + static_cast<int>(i * rows_count),
+                             matrix.begin() + static_cast<int>((i + 1) * rows_count), 0);
   }
 }
 
@@ -146,7 +147,8 @@ std::shared_ptr<ppc::core::TaskData> sadikov_I_Sum_values_by_columns_matrix_mpi:
 std::vector<int> sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel::calculate(size_t size) {
   std::vector<int> in(size);
   for (size_t i = 0; i < size; ++i) {
-    in[i] = std::accumulate(local_input.begin() + i * rows_count, local_input.begin() + (i + 1) * rows_count, 0);
+    in[i] = std::accumulate(local_input.begin() + static_cast<int>(i * rows_count),
+                            local_input.begin() + static_cast<int>((i + 1) * rows_count), 0);
   }
   return in;
 }

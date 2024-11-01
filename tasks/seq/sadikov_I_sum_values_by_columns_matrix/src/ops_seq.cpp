@@ -52,7 +52,8 @@ bool sadikov_I_Sum_values_by_columns_matrix_seq::MatrixTask::post_processing() {
 
 void sadikov_I_Sum_values_by_columns_matrix_seq::MatrixTask::calculate(size_t size) {
   for (size_t i = 0; i < size; ++i) {
-    sum[i] = std::accumulate(matrix.begin() + i * rows_count, matrix.begin() + (i + 1) * rows_count, 0);
+    sum[i] = std::accumulate(matrix.begin() + static_cast<int>(i * rows_count),
+                             matrix.begin() + static_cast<int>((i + 1) * rows_count), 0);
   }
 }
 
