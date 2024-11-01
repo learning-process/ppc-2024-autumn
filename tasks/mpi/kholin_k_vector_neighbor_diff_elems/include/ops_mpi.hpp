@@ -298,10 +298,10 @@ double TestMPITaskParallel<TypeElem>::IsJoints_max() {
   int res_i = 0;
   while (iter_curr != iter_end) {
     if (residue == 0) {
-      iter_curr = iter_curr + (delta_n-1);
+      iter_curr = iter_curr + (delta_n - 1);
       iter_next = iter_curr + 1;
       joint_delta = abs(*iter_next - *iter_curr);
-      if (joint_delta > max_delta) {
+      if (joint_delta > max_joint_delta) {
         max_joint_delta = joint_delta;
       }
     } else {
@@ -309,7 +309,7 @@ double TestMPITaskParallel<TypeElem>::IsJoints_max() {
         iter_curr = iter_curr + (delta_n_r - 1);
         iter_next = iter_curr + 1;
         joint_delta = abs(*iter_next - *iter_curr);
-        if (joint_delta > max_delta) {
+        if (joint_delta > max_joint_delta) {
           max_joint_delta = joint_delta;
         }
         res_i++;
@@ -317,7 +317,7 @@ double TestMPITaskParallel<TypeElem>::IsJoints_max() {
         iter_curr = iter_curr + (delta_n - 1);
         iter_next = iter_curr + 1;
         joint_delta = abs(*iter_next - *iter_curr);
-        if (joint_delta > max_delta) {
+        if (joint_delta > max_joint_delta) {
           max_joint_delta = joint_delta;
         }
       }
