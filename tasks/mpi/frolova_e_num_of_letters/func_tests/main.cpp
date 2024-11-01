@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "mpi/frolova_e_num_of_letters/include/ops_mpi.hpp"
-/*
+
 TEST(frolova_e_num_of_letters_mpi, Test_100_symbols) {
   boost::mpi::communicator world;
   std::string global_str;
@@ -199,4 +199,3 @@ TEST(frolova_e_num_of_letters_mpi, Test_different_symbols) {
      ASSERT_EQ(reference_diff[0], global_diff[0]);
    }
 }
-*/

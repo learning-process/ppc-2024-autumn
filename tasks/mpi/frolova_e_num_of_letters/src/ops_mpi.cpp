@@ -80,14 +80,15 @@ bool frolova_e_num_of_letters_mpi::TestMPITaskParallel::pre_processing() {
       world.send(proc, 0, input_.data() + remainder + proc * delta, delta);
     }
   }
-  if (world.rank() != 0) {
-    local_input_.resize(delta);
-  }
 
   if (world.rank() == 0) {
-    local_input_ = std::string(input_.begin(), input_.begin() + delta + remainder);
-  } else {
-    world.recv(0, 0, local_input_.data(), delta);
+    local_input_ = std::string(input_.begin(),input_.begin()+delta+remainder);
+  } 
+  else {
+    std::string time_variable;
+    time_variable.resize(delta);
+    world.recv(0, 0, time_variable.data(), delta);
+    local_input_ = time_variable;
   }
   // Init value for output
   res = 0;
