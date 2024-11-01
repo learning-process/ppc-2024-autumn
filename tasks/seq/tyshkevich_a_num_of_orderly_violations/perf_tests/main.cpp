@@ -41,7 +41,7 @@ TEST(tyshkevich_a_num_of_orderly_violations_seq_perftest, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(1, taskDataSeq->outputs_count.back());
+  ASSERT_EQ((uint32_t)(1), taskDataSeq->outputs_count.back());
 }
 
 TEST(tyshkevich_a_num_of_orderly_violations_seq_perftest, test_task_run) {
@@ -80,5 +80,5 @@ TEST(tyshkevich_a_num_of_orderly_violations_seq_perftest, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(1, taskDataSeq->outputs_count.back());
+  ASSERT_EQ((uint32_t)(1), taskDataSeq->outputs_count.back());
 }

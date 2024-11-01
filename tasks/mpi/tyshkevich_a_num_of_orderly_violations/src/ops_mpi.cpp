@@ -26,8 +26,8 @@ bool tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskSequential::pre_proc
   size = taskData->inputs_count[0];
 
   input_ = std::vector<int>(size);
-  int* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < size; i++) {
+  int *tmp_ptr = reinterpret_cast<int *>(taskData->inputs[0]);
+  for (int i = 0; i < size; i++) {
     input_[i] = tmp_ptr[i];
   }
   // Init values for output
@@ -52,7 +52,7 @@ bool tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskSequential::run() {
 
 bool tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = res[0];
+  reinterpret_cast<int *>(taskData->outputs[0])[0] = res[0];
   return true;
 }
 
@@ -64,8 +64,8 @@ bool tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskParallel::pre_proces
 
   if (world.rank() == 0) {
     input_ = std::vector<int>(size);
-    int* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (unsigned i = 0; i < size; i++) {
+    int *tmp_ptr = reinterpret_cast<int *>(taskData->inputs[0]);
+    for (int i = 0; i < size; i++) {
       input_[i] = tmp_ptr[i];
     }
     // Init values for output
@@ -138,7 +138,7 @@ bool tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskParallel::run() {
 bool tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = res[0];
+    reinterpret_cast<int *>(taskData->outputs[0])[0] = res[0];
   }
   return true;
 }

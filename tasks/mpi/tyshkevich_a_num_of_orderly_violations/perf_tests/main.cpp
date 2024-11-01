@@ -48,7 +48,7 @@ TEST(tyshkevich_a_num_of_orderly_violations_mpi_ptest, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(1, taskDataPar->outputs_count[0]);
+    ASSERT_EQ((uint32_t)(1), taskDataPar->outputs_count[0]);
   }
 }
 
@@ -94,6 +94,6 @@ TEST(tyshkevich_a_num_of_orderly_violations_mpi_ptest, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(1, taskDataPar->outputs_count[0]);
+    ASSERT_EQ((uint32_t)(1), taskDataPar->outputs_count[0]);
   }
 }

@@ -26,7 +26,7 @@ TEST(tyshkevich_a_num_of_orderly_violations_seq_ftest, Test_10) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(solution, out);
+  ASSERT_EQ(solution, out[0]);
 }
 
 TEST(tyshkevich_a_num_of_orderly_violations_seq_ftest, Test_1) {
@@ -50,7 +50,7 @@ TEST(tyshkevich_a_num_of_orderly_violations_seq_ftest, Test_1) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(solution, out);
+  ASSERT_EQ(solution, out[0]);
 }
 
 TEST(tyshkevich_a_num_of_orderly_violations_seq_ftest, Test_12) {
@@ -74,5 +74,5 @@ TEST(tyshkevich_a_num_of_orderly_violations_seq_ftest, Test_12) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(solution, out);
+  ASSERT_EQ(solution, out[0]);
 }
