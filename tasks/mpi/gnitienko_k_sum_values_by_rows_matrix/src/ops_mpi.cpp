@@ -69,10 +69,6 @@ bool gnitienko_k_sum_row_mpi::SumByRowMPIParallel::pre_processing() {
   if (world.rank() == 0) {
     rows = taskData->inputs_count[0];
     cols = taskData->inputs_count[1];
-  }
-  boost::mpi::broadcast(world, rows, 0);
-  boost::mpi::broadcast(world, cols, 0);
-  if (world.rank() == 0) {
     input_.resize(rows * cols);
     auto* ptr = reinterpret_cast<int*>(taskData->inputs[0]);
 
@@ -81,10 +77,7 @@ bool gnitienko_k_sum_row_mpi::SumByRowMPIParallel::pre_processing() {
         input_[i * cols + j] = ptr[i * cols + j];
       }
     }
-  } else {
-    input_.resize(rows * cols);
   }
-  boost::mpi::broadcast(world, input_.data(), rows * cols, 0);
   return true;
 }
 
@@ -110,6 +103,10 @@ std::vector<int> gnitienko_k_sum_row_mpi::SumByRowMPIParallel::mainFunc(int star
 
 bool gnitienko_k_sum_row_mpi::SumByRowMPIParallel::run() {
   internal_order_test();
+  boost::mpi::broadcast(world, rows, 0);
+  boost::mpi::broadcast(world, cols, 0);
+  input_.resize(rows * cols);
+  boost::mpi::broadcast(world, input_.data(), rows * cols, 0);
   int rows_per_process = rows / world.size();
   int extra_rows = rows % world.size();
   if (extra_rows != 0) rows_per_process += 1;
