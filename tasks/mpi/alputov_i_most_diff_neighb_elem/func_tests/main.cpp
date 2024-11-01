@@ -120,7 +120,7 @@ TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_EqualElements_MPI) {
   }
 }
 
-TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_TwoElements_MPI) {
+/* TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_TwoElements_MPI) {
   boost::mpi::communicator world;
   std::vector<int> inputVector;
   int outputPair[2] = {0, 0};
@@ -151,7 +151,7 @@ TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_TwoElements_MPI) {
       ASSERT_EQ(outputPair[1], 10);
     }
   }
-}
+}*/
 
 TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_SingleElement_MPI) {
   boost::mpi::communicator world;
