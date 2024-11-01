@@ -1,4 +1,4 @@
-// Copyright 2023 Nesterov Alexander
+// Copyright 2024 Tselikova Arina
 #include "mpi/tselikova_a_average_of_vector_elements/include/ops_mpi.hpp"
 
 #include <algorithm>
@@ -10,38 +10,29 @@
 
 using namespace std::chrono_literals;
 
-
 bool tselikova_a_average_of_vector_elements_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
-  // Init value for input and output
   int* tmp = reinterpret_cast<int*>(taskData->inputs[0]);
   input_ = std::vector<int>(taskData->inputs_count[0]);
   for (int i = 0; i < (int)taskData->inputs_count[0]; i++) {
     input_[i] = tmp[i];
-    // std::cout << input_[i] << " ";
   }
-  // std::cout << std::endl;
-  // std::copy(&tmp[0], &taskData->inputs_count[0], input_);
   res = 0;
   return true;
 }
 
 bool tselikova_a_average_of_vector_elements_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  // Check count elements of output
-  return taskData->inputs_count[0] >= 0 && taskData->outputs_count[0] == 1;
+  return taskData->inputs_count[0] >= 1 && taskData->outputs_count[0] == 1;
 }
 
 bool tselikova_a_average_of_vector_elements_mpi::TestMPITaskSequential::run() {
   internal_order_test();
   int sum = 0;
-  for (int i = 0; i < input_.size(); i++) {
+  for (std::size_t i = 0; i < input_.size(); i++) {
     sum += input_[i];
-    // std::cout << sum << " ";
   }
-  // std::cout << std::endl;
-  // std::cout << input_.size();
-  res = sum / input_.size();
+  res = static_cast<float>(sum) / input_.size();
   return true;
 }
 
@@ -52,17 +43,17 @@ bool tselikova_a_average_of_vector_elements_mpi::TestMPITaskSequential::post_pro
   return true;
 }
 
-
 bool tselikova_a_average_of_vector_elements_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   unsigned int delta = 0;
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
+    total_elements = taskData->inputs_count[0];
   }
   broadcast(world, delta, 0);
+  broadcast(world, total_elements, 0);
 
   if (world.rank() == 0) {
-    // Init vectors
     input_ = std::vector<int>(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
@@ -78,7 +69,6 @@ bool tselikova_a_average_of_vector_elements_mpi::TestMPITaskParallel::pre_proces
   } else {
     world.recv(0, 0, local_input_.data(), delta);
   }
-  // Init value for output
   res = 0;
   return true;
 }
@@ -86,28 +76,29 @@ bool tselikova_a_average_of_vector_elements_mpi::TestMPITaskParallel::pre_proces
 bool tselikova_a_average_of_vector_elements_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    // Check count elements of output
-    return taskData->outputs_count[0] == 1 && taskData->inputs_count[0] >= 0;
+    return taskData->outputs_count[0] == 1 && taskData->inputs_count[0] >= 1;
   }
   return true;
 }
 
 bool tselikova_a_average_of_vector_elements_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+  internal_order_test();
   int local_sum = 0;
   for (unsigned int i = 0; i < local_input_.size(); i++) {
     local_sum += local_input_[i];
   }
-  reduce(world, local_sum, sum_, std::plus(), 0);
+  reduce(world, local_sum, sum_, std::plus<int>(), 0);
   return true;
 }
 
 bool tselikova_a_average_of_vector_elements_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    res = sum_ / world.size();
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+    res = static_cast<float>(sum_) / total_elements;
+    reinterpret_cast<float*>(taskData->outputs[0])[0] = res;
   }
   return true;
 }
+
 

@@ -1,4 +1,4 @@
-// Copyright 2023 Nesterov Alexander
+// Copyright 2024 Tselikova Arina
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
@@ -10,21 +10,21 @@
 TEST(mpi_example_perf_test1, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
-  std::vector<int32_t> global_sum(1, 0);
+  std::vector<float> global_avg(1, 0.0f);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int count_size_vector;
   if (world.rank() == 0) {
-    count_size_vector = 120;
+    count_size_vector = 10;
     global_vec = std::vector<int>(count_size_vector, 1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_avg.data()));
+    taskDataPar->outputs_count.emplace_back(global_avg.size());
   }
 
   auto testMpiTaskParallel =
-      std::make_shared<tselikova_a_average_of_vector_elements_mpi::TestMPITaskParallel>(taskDataPar, "+");
+      std::make_shared<tselikova_a_average_of_vector_elements_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -44,7 +44,7 @@ TEST(mpi_example_perf_test1, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(count_size_vector, global_sum[0]);
+    ASSERT_FLOAT_EQ(1.0f, global_avg[0]);
   }
 }
 

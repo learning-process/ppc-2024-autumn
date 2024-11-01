@@ -6,12 +6,12 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/tselikova_a_average_of_vector_elements/include/ops_seq.hpp"
 
-TEST(sequential_example_perf_test, test_pipeline_run) {
+TEST(tselikova_a_average_of_vector_elements, test_pipeline_run) {
   const int count = 100;
 
   // Create data
   std::vector<int> in(1, count);
-  std::vector<int> out(1, 0);
+  std::vector<float> out(1, 0.0f);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -40,15 +40,15 @@ TEST(sequential_example_perf_test, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(count, out[0]);
+  ASSERT_FLOAT_EQ(count, out[0]);
 }
 
-TEST(sequential_example_perf_test, test_task_run) {
+TEST(tselikova_a_average_of_vector_elements, test_task_run) {
   const int count = 100;
 
   // Create data
   std::vector<int> in(1, count);
-  std::vector<int> out(1, 0);
+  std::vector<float> out(1, 0.0f);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -58,7 +58,7 @@ TEST(sequential_example_perf_test, test_task_run) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto testTaskSequential = std::make_shared<nesterov_a_test_task_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential = std::make_shared<tselikova_a_average_of_vector_elements::TestTaskSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -80,7 +80,3 @@ TEST(sequential_example_perf_test, test_task_run) {
   ASSERT_EQ(count, out[0]);
 }
 
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}

@@ -28,7 +28,6 @@ class TestMPITaskSequential : public ppc::core::Task {
  private:
   std::vector<int> input_;
   int res{};
-  std::string ops;
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -44,8 +43,8 @@ class TestMPITaskParallel : public ppc::core::Task {
   std::vector<int> input_, local_input_;
   int res{};
   int sum_;
-  std::string ops;
   boost::mpi::communicator world;
+  int total_elements{};
 };
 
 }  // namespace tselikova_a_average_of_vector_elements_mpi
