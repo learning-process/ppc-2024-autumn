@@ -1,4 +1,4 @@
-// Copyright 2024 Sedova Olga
+п»ї// Copyright 2024 Sedova Olga
 #include <gtest/gtest.h>
 
 #include <chrono>
@@ -27,7 +27,7 @@ TEST(sedova_o_max_of_vector_elements_seq, Test_Sum_Output_Incorrect) {
   const int count = 10;
   // Create data
   std::vector<int> in(count, 0);
-  std::vector<int> out(2, 0);  // Изменен размер выходного вектора
+  std::vector<int> out(2, 0);  // РР·РјРµРЅРµРЅ СЂР°Р·РјРµСЂ РІС‹С…РѕРґРЅРѕРіРѕ РІРµРєС‚РѕСЂР°
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
@@ -47,7 +47,7 @@ TEST(sedova_o_max_of_vector_elements_seq, Test_Sum_Input_Incorrect) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(0);  // Неверный размер входного вектора
+  taskDataSeq->inputs_count.emplace_back(0);  // РќРµРІРµСЂРЅС‹Р№ СЂР°Р·РјРµСЂ РІС…РѕРґРЅРѕРіРѕ РІРµРєС‚РѕСЂР°
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
   // Create Task
