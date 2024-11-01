@@ -356,7 +356,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_mpi, check_int_with_random) {
     testTaskSequential.pre_processing();
     testTaskSequential.run();
     testTaskSequential.post_processing();
-    int test2 = reference_elems[0] - reference_elems[1];
+    int test2 = abs(reference_elems[0] - reference_elems[1]);
     ASSERT_EQ(test, test2);
   }
 }
