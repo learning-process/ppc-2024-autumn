@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
-#include <cctype>
 #include <memory>
 #include <string>
 #include <vector>

@@ -2,7 +2,6 @@
 
 namespace burykin_m_word_count {
 
-// Реализация последовательного подсчета слов
 bool TestTaskSequential::pre_processing() {
   internal_order_test();
   if (taskData->inputs[0] != nullptr && taskData->inputs_count[0] > 0) {
@@ -51,33 +50,26 @@ int TestTaskSequential::count_words(const std::string& text) {
   return count;
 }
 
-// Реализация параллельного подсчета слов с использованием MPI
 bool TestTaskParallel::pre_processing() {
   internal_order_test();
   unsigned int chunkSize = 0;
   if (world.rank() == 0) {
-    // Копируем входные данные
     input_ = std::vector<char>(taskData->inputs_count[0]);
     auto* tempPtr = reinterpret_cast<char*>(taskData->inputs[0]);
     std::copy(tempPtr, tempPtr + taskData->inputs_count[0], input_.begin());
 
-    // Вычисляем размер чанка для каждого процесса
     chunkSize = taskData->inputs_count[0] / world.size();
   }
-  // Рассылаем размер чанка всем процессам
   boost::mpi::broadcast(world, chunkSize, 0);
 
-  // Резервируем место для локальных данных
   local_input_.resize(chunkSize);
   if (world.rank() == 0) {
     // Отправляем части данных другим процессам
     for (int proc = 1; proc < world.size(); proc++) {
       world.send(proc, 0, input_.data() + proc * chunkSize, chunkSize);
     }
-    // Локальные данные для корневого процесса
     std::copy(input_.begin(), input_.begin() + chunkSize, local_input_.begin());
   } else {
-    // Получаем данные от корневого процесса
     world.recv(0, 0, local_input_.data(), chunkSize);
   }
   return true;
@@ -85,16 +77,14 @@ bool TestTaskParallel::pre_processing() {
 
 bool TestTaskParallel::validation() {
   internal_order_test();
-  // Корневой процесс проверяет количество входных и выходных данных
   return (world.rank() == 0) ? (taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1) : true;
 }
 
 bool TestTaskParallel::run() {
   internal_order_test();
-  bool in_word = false;   // Объявляем переменную локально
-  local_word_count_ = 0;  // Инициализируем локальный счетчик
+  bool in_word = false;
+  local_word_count_ = 0;
 
-  // Локальный подсчёт слов
   for (char c : local_input_) {
     if (is_word_character(c)) {
       if (!in_word) {
@@ -106,7 +96,6 @@ bool TestTaskParallel::run() {
     }
   }
 
-  // Суммирование результатов со всех процессов
   boost::mpi::reduce(world, local_word_count_, word_count_, std::plus<>(), 0);
   return true;
 }
@@ -114,7 +103,6 @@ bool TestTaskParallel::run() {
 bool TestTaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    // Отправляем результат в выходные данные
     reinterpret_cast<int*>(taskData->outputs[0])[0] = word_count_;
   }
   return true;

@@ -30,7 +30,7 @@ TEST(CountWordsMPI, TestEmptyString) {
   }
 }
 
-// Тестирование строки с 3 словами
+// Тестирование стpоки с 3 словами
 TEST(CountWordsMPI, TestThreeWords) {
   boost::mpi::communicator world;
   std::vector<char> input;
