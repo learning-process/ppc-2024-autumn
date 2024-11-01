@@ -55,7 +55,8 @@ bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::pre_processing() {
 
     chunk.resize(distribution);  // Зарезервируем необходимое место под данные
     // boost::mpi::scatterv(world, chunk.data(), distribution, 0);
-    int input; //Костыль
+    int input;  // Функция при тестировании clang-tidy требует наличия указателя на input, который в дальнейшем не
+                // используется. Поэтому создаем фиктивную переменную
     boost::mpi::scatterv(world, &input, chunk.data(), distribution, 0);
   }
 
