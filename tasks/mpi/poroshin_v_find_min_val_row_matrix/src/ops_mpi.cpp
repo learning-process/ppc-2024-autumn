@@ -82,8 +82,8 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskSequential::post_process
 bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
-  int n = 0;
-  int m = 0;
+  int n = taskData->inputs_count[1];
+  int m = taskData->inputs_count[0];
   int size = n * m;
   int delta = 0;
 
