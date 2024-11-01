@@ -149,10 +149,10 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   std::vector<TypeElem> input_;
   std::vector<TypeElem> local_input_;
-  unsigned int delta_n;
-  unsigned int delta_n_r;
+  int delta_n;
+  int delta_n_r;
   double result;
-  unsigned int residue;
+  int residue;
   enum_ops::operations ops;
   MPI_Datatype mpi_type_elem;
   void print_local_data();
