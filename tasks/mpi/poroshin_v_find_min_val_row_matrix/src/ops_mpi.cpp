@@ -56,8 +56,8 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskSequential::run() {
   int m = taskData->inputs_count[0];
   int n = taskData->inputs_count[1];
 
-  int mn = INT_MAX;
   for (int i = 0; i < m; i++) {
+    int mn = INT_MAX;
     for (int j = n * i; j < n * i + n; j++) {
       mn = std::min(mn, input_[j]);
     }
@@ -84,13 +84,14 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::pre_processing
 
   int n = 0;
   int m = 0;
+  int size = n * m;
   int delta = 0;
 
   if (world.rank() == 0) {
     m = taskData->inputs_count[0];
     n = taskData->inputs_count[1];
-    delta = (taskData->inputs_count[0] % world.size() == 0) ? (taskData->inputs_count[0] / world.size())
-                                                            : (taskData->inputs_count[0] / world.size() + 1);
+    size = n * m;
+    delta = (size % world.size() == 0) ? (size / world.size()) : (size / world.size() + 1);
   }
 
   broadcast(world, m, 0);

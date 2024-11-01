@@ -11,7 +11,7 @@ TEST(poroshin_v_find_min_val_row_matrix_mpi, test_pipeline_run) {
   int m = 100, n = 400;
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
-  std::vector<int32_t> m_vec(m, 0);
+  std::vector<int32_t> m_vec(m);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -19,11 +19,8 @@ TEST(poroshin_v_find_min_val_row_matrix_mpi, test_pipeline_run) {
   if (world.rank() == 0) {
     global_matrix = std::vector<int>(m * n, 1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-    taskDataPar->inputs_count.emplace_back(global_matrix.size());
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&m));
-    taskDataPar->inputs_count.emplace_back(static_cast<size_t>(1));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
-    taskDataPar->inputs_count.emplace_back(static_cast<size_t>(1));
+    taskDataPar->inputs_count.emplace_back(m);
+    taskDataPar->inputs_count.emplace_back(n);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(m_vec.data()));
     taskDataPar->outputs_count.emplace_back(m_vec.size());
   }
@@ -59,7 +56,7 @@ TEST(poroshin_v_find_min_val_row_matrix_mpi, test_task_run) {
   int m = 100, n = 400;
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
-  std::vector<int32_t> m_vec(m, 0);
+  std::vector<int32_t> m_vec(m);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -67,11 +64,8 @@ TEST(poroshin_v_find_min_val_row_matrix_mpi, test_task_run) {
   if (world.rank() == 0) {
     global_matrix = std::vector<int>(m * n, 1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-    taskDataPar->inputs_count.emplace_back(global_matrix.size());
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&m));
-    taskDataPar->inputs_count.emplace_back(static_cast<size_t>(1));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
-    taskDataPar->inputs_count.emplace_back(static_cast<size_t>(1));
+    taskDataPar->inputs_count.emplace_back(m);
+    taskDataPar->inputs_count.emplace_back(n);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(m_vec.data()));
     taskDataPar->outputs_count.emplace_back(m_vec.size());
   }
