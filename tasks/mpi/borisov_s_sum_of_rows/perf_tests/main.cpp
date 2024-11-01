@@ -7,7 +7,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/borisov_s_sum_of_rows/include/ops_mpi.hpp"
 
-TEST(borisov_s_sum_of_rows, test_pipeline_run) {
+TEST(borisov_s_sum_of_rows, Test_Pipeline_Run) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int> global_row_sums;
@@ -21,14 +21,20 @@ TEST(borisov_s_sum_of_rows, test_pipeline_run) {
     global_row_sums.resize(rows, 0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-    taskDataPar->inputs_count.emplace_back(rows);
-    taskDataPar->inputs_count.emplace_back(cols);
+    taskDataPar->inputs_count.push_back(rows);
+    taskDataPar->inputs_count.push_back(cols);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_row_sums.data()));
-    taskDataPar->outputs_count.emplace_back(global_row_sums.size());
+    taskDataPar->outputs_count.push_back(global_row_sums.size());
+  } else {
+    taskDataPar->inputs.emplace_back(nullptr);
+    taskDataPar->outputs.emplace_back(nullptr);
+    taskDataPar->inputs_count.push_back(rows);
+    taskDataPar->inputs_count.push_back(cols);
+    taskDataPar->outputs_count.push_back(0);
   }
 
   auto testMpiTaskParallel = std::make_shared<borisov_s_sum_of_rows::SumOfRowsTaskParallel>(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  ASSERT_TRUE(testMpiTaskParallel->validation());
 
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -43,15 +49,16 @@ TEST(borisov_s_sum_of_rows, test_pipeline_run) {
 
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
+
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    for (size_t i = 0; i < rows; i++) {
+    for (size_t i = 0; i < rows; ++i) {
       ASSERT_EQ(global_row_sums[i], 5000);
     }
   }
 }
 
-TEST(borisov_s_sum_of_rows, test_task_run) {
+TEST(borisov_s_sum_of_rows, Test_Task_Run) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int> global_row_sums;
@@ -65,14 +72,21 @@ TEST(borisov_s_sum_of_rows, test_task_run) {
     global_row_sums.resize(rows, 0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-    taskDataPar->inputs_count.emplace_back(rows);
-    taskDataPar->inputs_count.emplace_back(cols);
+    taskDataPar->inputs_count.push_back(rows);
+    taskDataPar->inputs_count.push_back(cols);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_row_sums.data()));
-    taskDataPar->outputs_count.emplace_back(global_row_sums.size());
+    taskDataPar->outputs_count.push_back(global_row_sums.size());
+  } else {
+    taskDataPar->inputs.emplace_back(nullptr);
+    taskDataPar->outputs.emplace_back(nullptr);
+    taskDataPar->inputs_count.push_back(rows);
+    taskDataPar->inputs_count.push_back(cols);
+    taskDataPar->outputs_count.push_back(0);
   }
 
   auto testMpiTaskParallel = std::make_shared<borisov_s_sum_of_rows::SumOfRowsTaskParallel>(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  ASSERT_TRUE(testMpiTaskParallel->validation());
+
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
@@ -89,7 +103,7 @@ TEST(borisov_s_sum_of_rows, test_task_run) {
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    for (size_t i = 0; i < rows; i++) {
+    for (size_t i = 0; i < rows; ++i) {
       ASSERT_EQ(global_row_sums[i], 5000);
     }
   }
