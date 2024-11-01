@@ -168,9 +168,10 @@ TEST(kudryashova_i_vector_dot_product_mpi, check_vectors_dot_product) {
     taskDataPar->inputs_count.emplace_back(global_vector[1].size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
     taskDataPar->outputs_count.emplace_back(result.size());
+    kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), true);
   }
-  kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+
 }
 
 TEST(kudryashova_i_vector_dot_product_mpi, check_dot_product_empty_vectors) {
@@ -189,9 +190,9 @@ TEST(kudryashova_i_vector_dot_product_mpi, check_dot_product_empty_vectors) {
     taskDataPar->inputs_count.emplace_back(global_vector[1].size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
     taskDataPar->outputs_count.emplace_back(result.size());
+    kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
-  kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
 }
 
 TEST(kudryashova_i_vector_dot_product_mpi, check_dot_product_empty_and_nonempty_vectors) {
@@ -210,9 +211,9 @@ TEST(kudryashova_i_vector_dot_product_mpi, check_dot_product_empty_and_nonempty_
     taskDataPar->inputs_count.emplace_back(global_vector[1].size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
     taskDataPar->outputs_count.emplace_back(result.size());
+    kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
-  kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
 }
 
 TEST(kudryashova_i_vector_dot_product_mpi, scalar_multiply_vector_1_with_zero) {
@@ -231,9 +232,9 @@ TEST(kudryashova_i_vector_dot_product_mpi, scalar_multiply_vector_1_with_zero) {
     taskDataPar->inputs_count.emplace_back(global_vector[1].size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
     taskDataPar->outputs_count.emplace_back(result.size());
+    kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), true);
   }
-  kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
 }
 
 TEST(kudryashova_i_vector_dot_product_mpi, scalar_multiply_vector_1) {
