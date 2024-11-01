@@ -171,7 +171,6 @@ TEST(kudryashova_i_vector_dot_product_mpi, check_vectors_dot_product) {
     kudryashova_i_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
     ASSERT_EQ(testMpiTaskParallel.validation(), true);
   }
-
 }
 
 TEST(kudryashova_i_vector_dot_product_mpi, check_dot_product_empty_vectors) {
