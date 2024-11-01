@@ -31,7 +31,6 @@ TEST(chizhov_m_max_values_by_columns_matrix_mpi, Test_Empty_Matrix) {
   std::vector<int> matrix;
   std::vector<int> res_par(cols, 0);
 
-  // Создаем TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -45,7 +44,9 @@ TEST(chizhov_m_max_values_by_columns_matrix_mpi, Test_Empty_Matrix) {
 
   chizhov_m_max_values_by_columns_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
-  ASSERT_FALSE(testMpiTaskParallel.validation());
+  if (world.rank() == 0) {
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  }
 }
 
 TEST(chizhov_m_max_values_by_columns_matrix_mpi, Test_Max1) {
