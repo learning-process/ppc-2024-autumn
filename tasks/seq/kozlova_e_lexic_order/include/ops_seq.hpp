@@ -22,4 +22,4 @@ class StringComparator : public ppc::core::Task {
   std::vector<int> res{};
 };
 
-}// namespace kozlova_e_lexic_order
+}  // namespace kozlova_e_lexic_order

@@ -54,9 +54,9 @@ bool kozlova_e_lexic_order_mpi::StringComparatorSeq::run() {
   res.resize(2);
   if (str1.empty()) res[0] = 1;
   if (str2.empty())
-      res[1] = 1;
+    res[1] = 1;
   else
-      res = LexicographicallyOrdered(str1, str2);
+    res = LexicographicallyOrdered(str1, str2);
   return true;
 }
 

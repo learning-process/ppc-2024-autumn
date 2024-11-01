@@ -43,4 +43,4 @@ class StringComparatorMPI : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}// namespace kozlova_e_lexic_order_mpi
+}  // namespace kozlova_e_lexic_order_mpi
