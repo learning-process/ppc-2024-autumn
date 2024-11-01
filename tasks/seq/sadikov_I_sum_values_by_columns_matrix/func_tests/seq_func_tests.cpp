@@ -36,7 +36,7 @@ TEST(sum_values_by_columns_matrix, check_empty_matrix) {
   sv.pre_processing();
   sv.run();
   sv.post_processing();
-  for (size_t i = 0; i < in_index[1]; ++i) {
+  for (int i = 0; i < in_index[1]; ++i) {
     EXPECT_NEAR(out[i], 0.0, 1e-6);
   }
 }
@@ -52,7 +52,7 @@ TEST(sum_values_by_columns_matrix, check_square_matrix) {
   sv.pre_processing();
   sv.run();
   sv.post_processing();
-  for (size_t i = 0; i < in_index[1]; ++i) {
+  for (int i = 0; i < in_index[1]; ++i) {
     ASSERT_EQ(out[i], in_index[0]);
   }
 }
@@ -68,7 +68,7 @@ TEST(sum_values_by_columns_matrix, check_square_matrix2) {
   sv.pre_processing();
   sv.run();
   sv.post_processing();
-  for (size_t i = 0; i < in_index[1]; ++i) {
+  for (int i = 0; i < in_index[1]; ++i) {
     ASSERT_EQ(out[i], in_index[0]);
   }
 }
@@ -84,7 +84,7 @@ TEST(sum_values_by_columns_matrix, check_square_matrix3) {
   sv.pre_processing();
   sv.run();
   sv.post_processing();
-  for (size_t i = 0; i < in_index[1]; ++i) {
+  for (int i = 0; i < in_index[1]; ++i) {
     ASSERT_EQ(out[i], in_index[0]);
   }
 }
@@ -100,7 +100,7 @@ TEST(sum_values_by_columns_matrix, check_rect_matrix1) {
   sv.pre_processing();
   sv.run();
   sv.post_processing();
-  for (size_t i = 0; i < in_index[1]; ++i) {
+  for (int i = 0; i < in_index[1]; ++i) {
     ASSERT_EQ(out[i], in_index[0]);
   }
 }
@@ -116,7 +116,7 @@ TEST(sum_values_by_columns_matrix, check_rect_matrix2) {
   sv.pre_processing();
   sv.run();
   sv.post_processing();
-  for (size_t i = 0; i < in_index[1]; ++i) {
+  for (int i = 0; i < in_index[1]; ++i) {
     ASSERT_EQ(out[i], in_index[0]);
   }
 }
@@ -132,7 +132,7 @@ TEST(sum_values_by_columns_matrix, check_rect_matrix3) {
   sv.pre_processing();
   sv.run();
   sv.post_processing();
-  for (size_t i = 0; i < in_index[1]; ++i) {
+  for (int i = 0; i < in_index[1]; ++i) {
     ASSERT_EQ(out[i], in_index[0]);
   }
 }
