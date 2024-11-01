@@ -188,7 +188,7 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_1000_3000_columns_with_r
   }
 }
 
- // Incorrect input for parallel
+// Incorrect input for parallel
 TEST(gordeva_t_max_val_of_column_matrix_mpi, Incorrect_val_size_of_input) {
   boost::mpi::communicator world;
 
