@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
+
 #include <vector>
+
 #include "core/perf/include/perf.hpp"
 #include "seq/gromov_a_sum_of_vector_elements/include/ops_seq.hpp"
 

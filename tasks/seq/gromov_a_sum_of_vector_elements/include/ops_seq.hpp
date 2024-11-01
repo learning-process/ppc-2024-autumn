@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+
 #include "core/task/include/task.hpp"
 
 namespace gromov_a_sum_of_vector_elements_seq {

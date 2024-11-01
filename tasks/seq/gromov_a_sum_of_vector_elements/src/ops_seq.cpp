@@ -1,4 +1,5 @@
 #include "seq/gromov_a_sum_of_vector_elements/include/ops_seq.hpp"
+
 #include <thread>
 
 using namespace std::chrono_literals;
