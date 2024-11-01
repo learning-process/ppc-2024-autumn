@@ -7,7 +7,7 @@
 
 #include "mpi/matyunina_a_average_of_vector_elements/include/ops_mpi.hpp"
 
-TEST(matyunina_a_average_of_vector_elements_mpi, Test_9) {
+TEST(matyunina_a_average_of_vector_elements_mpi, CalculateAverageOfVectorElements) {
   boost::mpi::communicator world;
   std::vector<int> global_vec(9);
   std::vector<int32_t> global_sum(1, 0);
@@ -50,7 +50,7 @@ TEST(matyunina_a_average_of_vector_elements_mpi, Test_9) {
   }
 }
 
-TEST(matyunina_a_average_of_vector_elements_mpi, Test_99) {
+TEST(matyunina_a_average_of_vector_elements_mpi, CalculateAverageOfVectorElements_2) {
   boost::mpi::communicator world;
   std::vector<int> global_vec(99);
   std::vector<int32_t> global_sum(1, 0);
@@ -90,7 +90,7 @@ TEST(matyunina_a_average_of_vector_elements_mpi, Test_99) {
   }
 }
 
-TEST(matyunina_a_average_of_vector_elements_mpi, Test_999) {
+TEST(matyunina_a_average_of_vector_elements_mpi, CalculateAverageOfVectorElements_3) {
   boost::mpi::communicator world;
   std::vector<int> global_vec(999);
   std::vector<int32_t> global_sum(1, 0);
