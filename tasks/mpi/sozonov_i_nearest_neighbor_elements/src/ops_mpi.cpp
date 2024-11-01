@@ -94,8 +94,6 @@ bool sozonov_i_nearest_neighbor_elements_mpi::TestMPITaskParallel::run() {
       diff[i].first = abs(input_[i + 1] - input_[i]);
       diff[i].second = i;
     }
-  }
-  if (world.rank() == 0) {
     for (int proc = 1; proc < world.size(); proc++) {
       world.send(proc, 0, diff.data() + proc * delta, delta);
     }
