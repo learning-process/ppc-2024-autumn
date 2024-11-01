@@ -104,10 +104,21 @@ TEST(kudryashova_i_vector_dot_product_seq, checks_not_equal_vector) {
 }
 
 TEST(kudryashova_i_vector_dot_product_seq, check_empty_vectors) {
-  const int count = 0;
-  std::vector<int> vector1 = GetRandomVector(count);
-  std::vector<int> vector2 = GetRandomVector(count);
-  ASSERT_EQ(kudryashova_i_vector_dot_product::vectorDotProduct(vector1, vector2), 0);
+  // Create data
+  std::vector<int> vector1 = {};
+  std::vector<int> vector2 = {};
+  std::vector<int> out(1, 0);
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector1.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector2.data()));
+  taskDataSeq->inputs_count.emplace_back(vector1.size());
+  taskDataSeq->inputs_count.emplace_back(vector2.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
+  // Create Task
+  kudryashova_i_vector_dot_product::TestTaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_EQ(testTaskSequential.validation(), false);
 }
 
 TEST(kudryashova_i_vector_dot_product_seq, check_run) {

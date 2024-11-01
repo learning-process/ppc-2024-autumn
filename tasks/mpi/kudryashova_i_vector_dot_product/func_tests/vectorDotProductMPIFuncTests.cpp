@@ -201,7 +201,7 @@ TEST(kudryashova_i_vector_dot_product_mpi, check_dot_product_empty_and_nonempty_
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     std::vector<int> vector1 = {};
-    std::vector<int> vector2 = {1, 2, 3};
+    std::vector<int> vector2 = {1};
     global_vector = {vector1, vector2};
     for (size_t i = 0; i < global_vector.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector[i].data()));
