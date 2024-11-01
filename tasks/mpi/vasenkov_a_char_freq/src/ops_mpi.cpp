@@ -75,7 +75,7 @@ bool vasenkov_a_char_freq_mpi::CharFrequencyParallel::pre_processing() {
 
 bool vasenkov_a_char_freq_mpi::CharFrequencyParallel::run() {
   internal_order_test();
-  
+
   local_res = std::count(local_input_.begin(), local_input_.end(), target_char_);
   boost::mpi::reduce(world, local_res, res, std::plus<>(), 0);
 
@@ -99,4 +99,3 @@ bool vasenkov_a_char_freq_mpi::CharFrequencyParallel::post_processing() {
 
   return true;
 }
-
