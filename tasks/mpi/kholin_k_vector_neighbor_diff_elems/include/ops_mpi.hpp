@@ -227,10 +227,10 @@ bool TestMPITaskParallel<TypeElem>::run() {
   int ProcRank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   if (ProcRank == 0) {
-    //std::cout << "global vec is ";
-    //for (size_t i = 0; i < input_.size(); i++) {
-    //  std::cout << input_[i] << " ";
-    //}
+    // std::cout << "global vec is ";
+    // for (size_t i = 0; i < input_.size(); i++) {
+    //   std::cout << input_[i] << " ";
+    // }
     double joint_result = IsJoints_max();
     if (joint_result > result) {
       result = joint_result;
