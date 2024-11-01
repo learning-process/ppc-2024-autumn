@@ -1,11 +1,13 @@
 // Copyright 2023 Nesterov Alexander
 #pragma once
 
+#include <mpi.h>
+
+#include <cstdlib>
+#include <cstring>
 #include <string>
 #include <vector>
-#include <cstdlib>
-#include <mpi.h>
-#include <cstring>
+
 #include "core/task/include/task.hpp"
 
 namespace kovalev_k_num_of_orderly_violations_mpi {
