@@ -11,7 +11,6 @@ TEST(tyshkevich_a_num_of_orderly_violations_seq_perftest, test_pipeline_run) {
   // Create data
   std::vector<int> in(size, 0);
   std::vector<int> out(1, 0);
-  int solution = 0;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -50,7 +49,6 @@ TEST(tyshkevich_a_num_of_orderly_violations_seq_perftest, test_task_run) {
   // Create data
   std::vector<int> in(size, 0);
   std::vector<int> out(1, 0);
-  int solution = 0;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
