@@ -95,8 +95,7 @@ bool tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskParallel::run() {
   int world_size = world.size();
 
   if (world.rank() > size) {
-    MPI_Finalize();
-    return 0;
+    return true;
   }
   if (world.rank() > size + 1) world_size = size + 1;
 
