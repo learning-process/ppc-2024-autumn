@@ -22,12 +22,12 @@ std::vector<TypeElem> get_random_vector(int sz) {
   std::vector<TypeElem> vec(sz);
 
   if (std::is_integral<TypeElem>::value) {
-    std::uniform_int_distribution<int> dist(5, 99);
+    std::uniform_int_distribution<int> dist(0, 99);
     for (int i = 0; i < sz; i++) {
       vec[i] = dist(gen);
     }
   } else if (std::is_floating_point<TypeElem>::value) {
-    std::uniform_real_distribution<float> dist(5.0, 99.0);
+    std::uniform_real_distribution<float> dist(0, 99);
     for (int i = 0; i < sz; i++) {
       vec[i] = dist(gen);
     }
