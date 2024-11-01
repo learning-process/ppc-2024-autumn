@@ -28,7 +28,6 @@ TEST(savchenko_m_min_matrix_seq, test_pipeline_run) {
   matrix[index] = INT_MIN;
 
   // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
   taskDataSeq->inputs_count.emplace_back(matrix.size());
 
@@ -78,7 +77,6 @@ TEST(savchenko_m_min_matrix_seq, test_task_run) {
   matrix[index] = INT_MIN;
 
   // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
   taskDataSeq->inputs_count.emplace_back(matrix.size());
 
@@ -106,9 +104,4 @@ TEST(savchenko_m_min_matrix_seq, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
   ASSERT_EQ(ref, min_value[0]);
-}
-
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
 }

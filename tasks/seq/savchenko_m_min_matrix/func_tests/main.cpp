@@ -146,8 +146,3 @@ TEST(savchenko_m_min_matrix_seq, test_min_100x100) {
   testTaskSequential.post_processing();
   ASSERT_EQ(ref, min_value[0]);
 }
-
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}

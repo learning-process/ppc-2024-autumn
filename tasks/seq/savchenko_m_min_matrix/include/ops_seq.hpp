@@ -11,17 +11,17 @@ namespace savchenko_m_min_matrix_seq {
 std::vector<int> getRandomMatrix(size_t rows, size_t columns, int min, int max);
 
 class TestTaskSequential : public ppc::core::Task {
-public:
+ public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool validation() override;
   bool pre_processing() override;
   bool run() override;
   bool post_processing() override;
 
-private:
+ private:
   std::vector<int> matrix{};
   int res{};
   size_t rows, columns;
 };
 
-} // namespace savchenko_m_min_matrix_seq
+}  // namespace savchenko_m_min_matrix_seq
