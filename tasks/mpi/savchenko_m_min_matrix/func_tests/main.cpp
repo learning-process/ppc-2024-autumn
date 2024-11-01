@@ -7,23 +7,30 @@
 
 #include "mpi/savchenko_m_min_matrix/include/ops_mpi.hpp"
 
-TEST(savchenko_m_min_matrix_mpi, Test_Sum) {
+TEST(savchenko_m_min_matrix_mpi, test_min_10x10) {
+  // Create data
+  const size_t rows = 10;
+  const size_t columns = 10;
+  const int gen_min = -1000;
+  const int gen_max = 1000;
+
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_sum(1, 0);
+  std::vector<int> global_matrix;
+  std::vector<int32_t> global_min(1, INT_MAX);
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 120;
-    global_vec = savchenko_m_min_matrix_mpi::getRandomVector(count_size_vector);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());
+    global_matrix = savchenko_m_min_matrix_mpi::getRandomMatrix(rows, columns, gen_min, gen_max);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(global_matrix.size());
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_min.data()));
+    taskDataPar->outputs_count.emplace_back(global_min.size());
   }
 
-  savchenko_m_min_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "+");
+  savchenko_m_min_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -31,43 +38,51 @@ TEST(savchenko_m_min_matrix_mpi, Test_Sum) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int32_t> reference_sum(1, 0);
+    std::vector<int32_t> reference_min(1, INT_MAX);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataSeq->inputs_count.emplace_back(global_vec.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_sum.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_sum.size());
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_min.data()));
+    taskDataPar->outputs_count.emplace_back(global_min.size());
 
     // Create Task
-    savchenko_m_min_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "+");
+    savchenko_m_min_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    ASSERT_EQ(reference_sum[0], global_sum[0]);
+    ASSERT_EQ(reference_min[0], global_min[0]);
   }
 }
 
-TEST(savchenko_m_min_matrix_mpi, Test_Diff) {
+TEST(savchenko_m_min_matrix_mpi, test_min_100x10) {
+  // Create data
+  const size_t rows = 100;
+  const size_t columns = 10;
+  const int gen_min = -1000;
+  const int gen_max = 1000;
+
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_diff(1, 0);
+  std::vector<int> global_matrix;
+  std::vector<int32_t> global_min(1, INT_MAX);
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 240;
-    global_vec = savchenko_m_min_matrix_mpi::getRandomVector(count_size_vector);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_diff.data()));
-    taskDataPar->outputs_count.emplace_back(global_diff.size());
+    global_matrix = savchenko_m_min_matrix_mpi::getRandomMatrix(rows, columns, gen_min, gen_max);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(global_matrix.size());
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_min.data()));
+    taskDataPar->outputs_count.emplace_back(global_min.size());
   }
 
-  savchenko_m_min_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "-");
+  savchenko_m_min_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -75,43 +90,51 @@ TEST(savchenko_m_min_matrix_mpi, Test_Diff) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int32_t> reference_diff(1, 0);
+    std::vector<int32_t> reference_min(1, INT_MAX);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataSeq->inputs_count.emplace_back(global_vec.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_diff.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_diff.size());
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_min.data()));
+    taskDataPar->outputs_count.emplace_back(global_min.size());
 
     // Create Task
-    savchenko_m_min_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "-");
+    savchenko_m_min_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    ASSERT_EQ(reference_diff[0], global_diff[0]);
+    ASSERT_EQ(reference_min[0], global_min[0]);
   }
 }
 
-TEST(savchenko_m_min_matrix_mpi, Test_Diff_2) {
+TEST(savchenko_m_min_matrix_mpi, test_min_10x100) {
+  // Create data
+  const size_t rows = 10;
+  const size_t columns = 100;
+  const int gen_min = -1000;
+  const int gen_max = 1000;
+
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_diff(1, 0);
+  std::vector<int> global_matrix;
+  std::vector<int32_t> global_min(1, INT_MAX);
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 120;
-    global_vec = savchenko_m_min_matrix_mpi::getRandomVector(count_size_vector);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_diff.data()));
-    taskDataPar->outputs_count.emplace_back(global_diff.size());
+    global_matrix = savchenko_m_min_matrix_mpi::getRandomMatrix(rows, columns, gen_min, gen_max);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(global_matrix.size());
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_min.data()));
+    taskDataPar->outputs_count.emplace_back(global_min.size());
   }
 
-  savchenko_m_min_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "-");
+  savchenko_m_min_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -119,43 +142,51 @@ TEST(savchenko_m_min_matrix_mpi, Test_Diff_2) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int32_t> reference_diff(1, 0);
+    std::vector<int32_t> reference_min(1, INT_MAX);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataSeq->inputs_count.emplace_back(global_vec.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_diff.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_diff.size());
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_min.data()));
+    taskDataPar->outputs_count.emplace_back(global_min.size());
 
     // Create Task
-    savchenko_m_min_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "-");
+    savchenko_m_min_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    ASSERT_EQ(reference_diff[0], global_diff[0]);
+    ASSERT_EQ(reference_min[0], global_min[0]);
   }
 }
 
-TEST(savchenko_m_min_matrix_mpi, Test_Max) {
+TEST(savchenko_m_min_matrix_mpi, test_min_100x100) {
+  // Create data
+  const size_t rows = 100;
+  const size_t columns = 100;
+  const int gen_min = -1000;
+  const int gen_max = 1000;
+
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_max(1, 0);
+  std::vector<int> global_matrix;
+  std::vector<int32_t> global_min(1, INT_MAX);
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 240;
-    global_vec = savchenko_m_min_matrix_mpi::getRandomVector(count_size_vector);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
-    taskDataPar->outputs_count.emplace_back(global_max.size());
+    global_matrix = savchenko_m_min_matrix_mpi::getRandomMatrix(rows, columns, gen_min, gen_max);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(global_matrix.size());
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_min.data()));
+    taskDataPar->outputs_count.emplace_back(global_min.size());
   }
 
-  savchenko_m_min_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "max");
+  savchenko_m_min_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -163,77 +194,23 @@ TEST(savchenko_m_min_matrix_mpi, Test_Max) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int32_t> reference_max(1, 0);
+    std::vector<int32_t> reference_min(1, INT_MAX);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataSeq->inputs_count.emplace_back(global_vec.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_max.size());
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_min.data()));
+    taskDataPar->outputs_count.emplace_back(global_min.size());
 
     // Create Task
-    savchenko_m_min_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "max");
+    savchenko_m_min_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    ASSERT_EQ(reference_max[0], global_max[0]);
+    ASSERT_EQ(reference_min[0], global_min[0]);
   }
-}
-
-TEST(savchenko_m_min_matrix_mpi, Test_Max_2) {
-  boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_max(1, 0);
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    const int count_size_vector = 120;
-    global_vec = savchenko_m_min_matrix_mpi::getRandomVector(count_size_vector);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
-    taskDataPar->outputs_count.emplace_back(global_max.size());
-  }
-
-  savchenko_m_min_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "max");
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
-
-  if (world.rank() == 0) {
-    // Create data
-    std::vector<int32_t> reference_max(1, 0);
-
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataSeq->inputs_count.emplace_back(global_vec.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_max.size());
-
-    // Create Task
-    savchenko_m_min_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "max");
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
-
-    ASSERT_EQ(reference_max[0], global_max[0]);
-  }
-}
-
-int main(int argc, char** argv) {
-  boost::mpi::environment env(argc, argv);
-  boost::mpi::communicator world;
-  ::testing::InitGoogleTest(&argc, argv);
-  ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
-  if (world.rank() != 0) {
-    delete listeners.Release(listeners.default_result_printer());
-  }
-  return RUN_ALL_TESTS();
 }
