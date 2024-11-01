@@ -90,6 +90,7 @@ bool tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskParallel::run() {
     for (int i = 1; i < size; i++) {
       if (input_[i - 1] > input_[i]) res[0]++;
     }
+    return true;
   }
 
   int world_size = world.size();
@@ -97,7 +98,7 @@ bool tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskParallel::run() {
   if (world.rank() > size) {
     return true;
   }
-  if (world.rank() > size + 1) world_size = size + 1;
+  if (world_size > size + 1) world_size = size + 1;
 
   int chunkSize = size / (world_size - 1);
   int lastChunkSize = size - chunkSize * (world_size - 2);
@@ -105,15 +106,12 @@ bool tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskParallel::run() {
   if (world.rank() == 0) {
     for (int i = 0; i < world_size - 2; i++) {
       world.send(i + 1, 0, &input_.data()[i * chunkSize], chunkSize + 1);
-      MPI_Send(&input_.data()[i * chunkSize], chunkSize + 1, MPI_INT, i + 1, 0, MPI_COMM_WORLD);
     }
     world.send(world_size - 1, 0, &input_.data()[(world_size - 2) * chunkSize], lastChunkSize);
-    MPI_Send(&input_.data()[(world_size - 2) * chunkSize], lastChunkSize, MPI_INT, world_size - 1, 0, MPI_COMM_WORLD);
 
     int tempDef;
     for (int i = 0; i < world_size - 1; i++) {
       world.recv(i + 1, 1, &tempDef, 1);
-      MPI_Recv(&tempDef, 1, MPI_INT, i + 1, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
       res[0] += tempDef;
     }
   } else {
@@ -122,13 +120,11 @@ bool tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskParallel::run() {
     std::vector<int> chunk(localChunk);
     int counter = 0;
     world.recv(0, 0, chunk.data(), localChunk);
-    MPI_Recv(chunk.data(), localChunk, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
     for (int i = 1; i < localChunk; i++) {
       if (chunk[i - 1] > chunk[i]) counter++;
     }
     world.send(0, 1, &counter, 1);
-    MPI_Send(&counter, 1, MPI_INT, 0, 1, MPI_COMM_WORLD);
   }
 
   return true;
