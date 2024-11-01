@@ -10,7 +10,7 @@
 TEST(beresnev_a_min_values_by_matrix_columns_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   const int N = 1000;
-  const int M = 1000;
+  const int M = 1000; //
 
   std::vector<int> in;
   std::vector<int> out(M, 0);
