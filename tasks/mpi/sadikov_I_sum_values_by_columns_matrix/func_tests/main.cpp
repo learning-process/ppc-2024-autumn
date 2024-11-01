@@ -12,7 +12,7 @@ TEST(ParallelOperations, checkvalidation) {
   std::shared_ptr<ppc::core::TaskData> taskData;
   if (world.rank() == 0) {
     std::vector<int> in(900, 1);
-    std::vector<size_t> in_index{30, 30};
+    std::vector<int> in_index{30, 30};
     std::vector<int> out(30, 0);
     taskData = sadikov_I_Sum_values_by_columns_matrix_mpi::CreateTaskData(in, in_index, out);
   }
@@ -25,7 +25,7 @@ TEST(ParallelOperations, checkvalidation2) {
   std::shared_ptr<ppc::core::TaskData> taskData;
   if (world.rank() == 0) {
     std::vector<int> in(900, 1);
-    std::vector<size_t> in_index{30, 30};
+    std::vector<int> in_index{30, 30};
     std::vector<int> out(30, 0);
     taskData = sadikov_I_Sum_values_by_columns_matrix_mpi::CreateTaskData(in, in_index, out);
   }
@@ -38,7 +38,7 @@ TEST(ParallelOperations, checkvalidation3) {
   std::shared_ptr<ppc::core::TaskData> taskData;
   if (world.rank() == 0) {
     std::vector<int> in(900, 1);
-    std::vector<size_t> in_index{30, 30};
+    std::vector<int> in_index{30, 30};
     std::vector<int> out(30, 0);
     taskData = sadikov_I_Sum_values_by_columns_matrix_mpi::CreateTaskData(in, in_index, out);
   }
@@ -50,11 +50,11 @@ TEST(ParallelOperations, checkvalidation3) {
 
 TEST(ParallelOperations, check_square_matrix) {
   boost::mpi::communicator world;
-  const size_t columns = 300;
-  const size_t rows = 300;
+  const int columns = 300;
+  const int rows = 300;
   std::vector<int> out_seq(columns, 0);
   std::vector<int> in(columns * rows, 1);
-  std::vector<size_t> in_index{rows, columns};
+  std::vector<int> in_index{rows, columns};
   std::vector<int> out_par(columns, 0);
   auto taskData_seq = std::make_shared<ppc::core::TaskData>();
   auto taskData_par = std::make_shared<ppc::core::TaskData>();
@@ -79,11 +79,11 @@ TEST(ParallelOperations, check_square_matrix) {
 
 TEST(ParallelOperations, check_rect_matrix) {
   boost::mpi::communicator world;
-  const size_t columns = 200;
-  const size_t rows = 300;
+  const int columns = 200;
+  const int rows = 300;
   std::vector<int> out_seq(columns, 0);
   std::vector<int> in(columns * rows, 1);
-  std::vector<size_t> in_index{rows, columns};
+  std::vector<int> in_index{rows, columns};
   std::vector<int> out_par(columns, 0);
   auto taskData_seq = std::make_shared<ppc::core::TaskData>();
   auto taskData_par = std::make_shared<ppc::core::TaskData>();
@@ -108,11 +108,11 @@ TEST(ParallelOperations, check_rect_matrix) {
 
 TEST(ParallelOperations, check_square_matrix2) {
   boost::mpi::communicator world;
-  const size_t columns = 500;
-  const size_t rows = 500;
+  const int columns = 500;
+  const int rows = 500;
   std::vector<int> out_seq(columns, 0);
   std::vector<int> in = sadikov_I_Sum_values_by_columns_matrix_mpi::getRandomVector(columns * rows);
-  std::vector<size_t> in_index{rows, columns};
+  std::vector<int> in_index{rows, columns};
   std::vector<int> out_par(columns, 0);
   auto taskData_seq = std::make_shared<ppc::core::TaskData>();
   auto taskData_par = std::make_shared<ppc::core::TaskData>();
@@ -137,11 +137,11 @@ TEST(ParallelOperations, check_square_matrix2) {
 
 TEST(ParallelOperations, check_rect_matrix2) {
   boost::mpi::communicator world;
-  const size_t columns = 500;
-  const size_t rows = 600;
+  const int columns = 500;
+  const int rows = 600;
   std::vector<int> out_seq(columns, 0);
   std::vector<int> in = sadikov_I_Sum_values_by_columns_matrix_mpi::getRandomVector(columns * rows);
-  std::vector<size_t> in_index{rows, columns};
+  std::vector<int> in_index{rows, columns};
   std::vector<int> out_par(columns, 0);
   auto taskData_seq = std::make_shared<ppc::core::TaskData>();
   auto taskData_par = std::make_shared<ppc::core::TaskData>();
@@ -166,11 +166,11 @@ TEST(ParallelOperations, check_rect_matrix2) {
 
 TEST(ParallelOperations, check_rand_matrix) {
   boost::mpi::communicator world;
-  const size_t columns = 1500;
-  const size_t rows = 1500;
+  const int columns = 1500;
+  const int rows = 1500;
   std::vector<int> out_seq(columns, 0);
   std::vector<int> in = sadikov_I_Sum_values_by_columns_matrix_mpi::getRandomVector(columns * rows);
-  std::vector<size_t> in_index{rows, columns};
+  std::vector<int> in_index{rows, columns};
   std::vector<int> out_par(columns, 0);
   auto taskData_seq = std::make_shared<ppc::core::TaskData>();
   auto taskData_par = std::make_shared<ppc::core::TaskData>();
@@ -195,11 +195,11 @@ TEST(ParallelOperations, check_rand_matrix) {
 
 TEST(ParallelOperations, check_rand_matrix2) {
   boost::mpi::communicator world;
-  const size_t columns = 2500;
-  const size_t rows = 2500;
+  const int columns = 2500;
+  const int rows = 2500;
   std::vector<int> out_seq(columns, 0);
   std::vector<int> in = sadikov_I_Sum_values_by_columns_matrix_mpi::getRandomVector(columns * rows);
-  std::vector<size_t> in_index{rows, columns};
+  std::vector<int> in_index{rows, columns};
   std::vector<int> out_par(columns, 0);
   auto taskData_seq = std::make_shared<ppc::core::TaskData>();
   auto taskData_par = std::make_shared<ppc::core::TaskData>();

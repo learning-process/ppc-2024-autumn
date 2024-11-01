@@ -8,10 +8,10 @@
 
 TEST(ParallelOperations, mpi_pipline_run) {
   boost::mpi::communicator world;
-  const size_t columns = 3000;
-  const size_t rows = 3000;
+  const int columns = 3000;
+  const int rows = 3000;
   std::vector<int> in(columns * rows, 1);
-  std::vector<size_t> in_index{rows, columns};
+  std::vector<int> in_index{rows, columns};
   std::vector<int> out_par(columns, 0);
   std::vector<int> answer(columns, columns);
   auto taskData_par = std::make_shared<ppc::core::TaskData>();
@@ -42,10 +42,10 @@ TEST(ParallelOperations, mpi_pipline_run) {
 
 TEST(ParallelOperations, mpi_task_run) {
   boost::mpi::communicator world;
-  const size_t columns = 3000;
-  const size_t rows = 3000;
+  const int columns = 3000;
+  const int rows = 3000;
   std::vector<int> in(columns * rows, 1);
-  std::vector<size_t> in_index{rows, columns};
+  std::vector<int> in_index{rows, columns};
   std::vector<int> out_par(columns, 0);
   std::vector<int> answer(columns, columns);
   auto taskData_par = std::make_shared<ppc::core::TaskData>();

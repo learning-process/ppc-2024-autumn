@@ -7,10 +7,10 @@
 #include "seq/sadikov_I_sum_values_by_columns_matrix/include/sq_task.h"
 
 TEST(Sadikov_sequential_perf_test, matrix_test_pipeline_run) {
-  size_t rows_count = 3000;
-  size_t columns_count = 3000;
+  int rows_count = 3000;
+  int columns_count = 3000;
   std::vector<int> in(rows_count * columns_count, 1);
-  std::vector<size_t> in_index{rows_count, columns_count};
+  std::vector<int> in_index{rows_count, columns_count};
   std::vector<int> out(columns_count, 0);
   std::shared_ptr<ppc::core::TaskData> taskData =
       sadikov_I_Sum_values_by_columns_matrix_seq::CreateTaskData(in, in_index, out);
@@ -36,10 +36,10 @@ TEST(Sadikov_sequential_perf_test, matrix_test_pipeline_run) {
 }
 
 TEST(Sadikov_sequential_perf_test, matrix_test_run) {
-  size_t rows_count = 3000;
-  size_t columns_count = 3000;
+  int rows_count = 3000;
+  int columns_count = 3000;
   std::vector<int> in(rows_count * columns_count, 1);
-  std::vector<size_t> in_index{rows_count, columns_count};
+  std::vector<int> in_index{rows_count, columns_count};
   std::vector<int> out(columns_count, 0);
   std::shared_ptr<ppc::core::TaskData> taskData =
       sadikov_I_Sum_values_by_columns_matrix_seq::CreateTaskData(in, in_index, out);

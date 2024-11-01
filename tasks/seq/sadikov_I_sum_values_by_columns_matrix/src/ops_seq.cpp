@@ -23,8 +23,8 @@ bool sadikov_I_Sum_values_by_columns_matrix_seq::MatrixTask::validation() {
 
 bool sadikov_I_Sum_values_by_columns_matrix_seq::MatrixTask::pre_processing() {
   internal_order_test();
-  rows_count = taskData->inputs_count[0];
-  columns_count = taskData->inputs_count[1];
+  rows_count = static_cast<size_t>(taskData->inputs_count[0]);
+  columns_count = static_cast<size_t>(taskData->inputs_count[1]);
   matrix.reserve(rows_count * columns_count);
   auto *tmp_ptr = reinterpret_cast<int *>(taskData->inputs[0]);
   for (size_t i = 0; i < columns_count; ++i) {
@@ -57,7 +57,7 @@ void sadikov_I_Sum_values_by_columns_matrix_seq::MatrixTask::calculate(size_t si
 }
 
 std::shared_ptr<ppc::core::TaskData> sadikov_I_Sum_values_by_columns_matrix_seq::CreateTaskData(
-    std::vector<int> &InV, const std::vector<size_t> &CeV, std::vector<int> &OtV) {
+    std::vector<int> &InV, const std::vector<int> &CeV, std::vector<int> &OtV) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(InV.data()));
   taskData->inputs_count.emplace_back(CeV[0]);

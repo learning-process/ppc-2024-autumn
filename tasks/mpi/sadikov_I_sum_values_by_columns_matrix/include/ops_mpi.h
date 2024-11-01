@@ -10,7 +10,7 @@
 
 #include "core/task/include/task.hpp"
 namespace sadikov_I_Sum_values_by_columns_matrix_mpi {
-std::shared_ptr<ppc::core::TaskData> CreateTaskData(std::vector<int> &InV, std::vector<size_t> &CeV,
+std::shared_ptr<ppc::core::TaskData> CreateTaskData(std::vector<int> &InV, std::vector<int> &CeV,
                                                     std::vector<int> &OtV);
 std::vector<int> getRandomVector(size_t size);
 class MPITask : public ppc::core::Task {
