@@ -1,5 +1,5 @@
 // Copyright 2023 Nesterov Alexander
-#include "mpi/savchenko_m_min_matrix/include/ops_mpi.hpp"
+#include "mpi/savchenko_m_min_matrix/include/ops_mpi_savchenko.hpp"
 
 #include <algorithm>
 #include <functional>
@@ -30,7 +30,7 @@ bool savchenko_m_min_matrix_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
 
   // Check count elements of output
-  return taskData->outputs_count[0] == 1 && taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0;
+  return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] == 1;
 }
 
 bool savchenko_m_min_matrix_mpi::TestMPITaskSequential::pre_processing() {
@@ -41,11 +41,10 @@ bool savchenko_m_min_matrix_mpi::TestMPITaskSequential::pre_processing() {
   rows = taskData->inputs_count[1];
   matrix = std::vector<int>(rows * columns);
 
-  for (size_t i = 0; i < rows; ++i) {
-    auto *temp = reinterpret_cast<int *>(taskData->inputs[i]);
-
+  auto *tmp = reinterpret_cast<int *>(taskData->inputs[0]);
+  for (size_t i = 0; i < rows; i++) {
     for (size_t j = 0; j < columns; ++j) {
-      matrix[i * columns + j] = temp[j];
+      matrix[i * columns + j] = tmp[i * columns + j];
     }
   }
   res = matrix[0];
@@ -79,7 +78,9 @@ bool savchenko_m_min_matrix_mpi::TestMPITaskParallel::validation() {
 
   if (world.rank() == 0) {
     // Check count elements of output
-    return taskData->outputs_count[0] == 1 && !taskData->inputs.empty();
+    //return taskData->outputs_count[0] == 1 && !taskData->inputs.empty();
+    return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] == 1 &&
+           !taskData->inputs.empty();
   }
   return true;
 }
@@ -100,10 +101,10 @@ bool savchenko_m_min_matrix_mpi::TestMPITaskParallel::pre_processing() {
     columns = taskData->inputs_count[1];
     matrix = std::vector<int>(rows * columns);
 
+    auto *tmp = reinterpret_cast<int *>(taskData->inputs[0]);
     for (size_t i = 0; i < rows; i++) {
-      auto *tmp_ptr = reinterpret_cast<int *>(taskData->inputs[i]);
-      for (size_t j = 0; j < columns; j++) {
-        matrix[i * columns + j] = tmp_ptr[j];
+      for (size_t j = 0; j < columns; ++j) {
+        matrix[i * columns + j] = tmp[i * columns + j];
       }
     }
 

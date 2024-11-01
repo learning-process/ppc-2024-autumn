@@ -28,7 +28,7 @@ class TestMPITaskSequential : public ppc::core::Task {
  private:
   std::vector<int> matrix{};
   int res{};
-  unsigned rows, columns;
+  size_t rows, columns;
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -42,7 +42,7 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   std::vector<int> matrix, local_matrix;
   int res{};
-  unsigned rows, columns;
+  size_t rows, columns;
 
   boost::mpi::communicator world;
 };

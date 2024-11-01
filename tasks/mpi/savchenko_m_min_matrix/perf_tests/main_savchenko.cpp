@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/savchenko_m_min_matrix/include/ops_mpi.hpp"
+#include "mpi/savchenko_m_min_matrix/include/ops_mpi_savchenko.hpp"
 
 TEST(savchenko_m_min_matrix_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
@@ -21,17 +21,18 @@ TEST(savchenko_m_min_matrix_mpi, test_pipeline_run) {
     std::random_device dev;
     std::mt19937 gen(dev());
 
-    int count_rows = 5000;
-    int count_columns = 5000;
+    int rows = 5000;
+    int columns = 5000;
     int gen_min = -1000;
     int gen_max = 1000;
 
-    global_matrix = savchenko_m_min_matrix_mpi::getRandomMatrix(count_rows, count_columns, gen_min, gen_max);
-    int index = gen() % (count_rows * count_columns);
+    global_matrix = savchenko_m_min_matrix_mpi::getRandomMatrix(rows, columns, gen_min, gen_max);
+    int index = gen() % (rows * columns);
     global_min[index] = ref;
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
-    taskDataPar->inputs_count.emplace_back(global_matrix.size());
+    taskDataPar->inputs_count.emplace_back(rows);
+    taskDataPar->inputs_count.emplace_back(columns);
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_min.data()));
     taskDataPar->outputs_count.emplace_back(global_min.size());
@@ -74,17 +75,18 @@ TEST(savchenko_m_min_matrix_mpi, test_task_run) {
     std::random_device dev;
     std::mt19937 gen(dev());
 
-    int count_rows = 5000;
-    int count_columns = 5000;
+    int rows = 5000;
+    int columns = 5000;
     int gen_min = -1000;
     int gen_max = 1000;
 
-    global_matrix = savchenko_m_min_matrix_mpi::getRandomMatrix(count_rows, count_columns, gen_min, gen_max);
-    int index = gen() % (count_rows * count_columns);
+    global_matrix = savchenko_m_min_matrix_mpi::getRandomMatrix(rows, columns, gen_min, gen_max);
+    int index = gen() % (rows * columns);
     global_min[index] = ref;
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
-    taskDataPar->inputs_count.emplace_back(global_matrix.size());
+    taskDataPar->inputs_count.emplace_back(rows);
+    taskDataPar->inputs_count.emplace_back(columns);
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_min.data()));
     taskDataPar->outputs_count.emplace_back(global_min.size());
