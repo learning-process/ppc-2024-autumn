@@ -48,9 +48,9 @@ bool vasenkov_a_char_freq_mpi::CharFrequencyParallel::pre_processing() {
   unsigned int n = 0;
 
   if (myid == 0) {
-      n = taskData->inputs_count[0];
-      str_input_ = std::vector<char>(taskData->inputs[0], taskData->inputs[0] + n);
-      target_char_ = *reinterpret_cast<char*>(taskData->inputs[1]);
+    n = taskData->inputs_count[0];
+    str_input_ = std::vector<char>(taskData->inputs[0], taskData->inputs[0] + n);
+    target_char_ = *reinterpret_cast<char*>(taskData->inputs[1]);
   }
 
   boost::mpi::broadcast(world, n, 0);
