@@ -108,8 +108,3 @@ TEST(gromov_a_sum_of_vector_elements_seq, Test_BigVector) {
   sumOfVector.post_processing();
   ASSERT_EQ(count, out[0]);
 }
-
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}

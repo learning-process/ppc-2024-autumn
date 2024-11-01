@@ -76,8 +76,3 @@ TEST(gromov_a_sum_of_vector_elements_seq, test_task_run) {
   ppc::core::Perf::print_perf_statistic(perfResults);
   ASSERT_EQ(0, out[0]);
 }
-
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}
