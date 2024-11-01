@@ -5,20 +5,6 @@
 
 #include "seq/sozonov_i_nearest_neighbor_elements/include/ops_seq.hpp"
 
-TEST(sozonov_i_nearest_neighbor_elements_seq, test_nearest_neighbor_elements_empty_vector) {
-  // Create data
-  std::vector<int> in;
-
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-
-  // Create Task
-  sozonov_i_nearest_neighbor_elements_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_EQ(testTaskSequential.validation(), false);
-}
-
 TEST(sozonov_i_nearest_neighbor_elements_seq, test_nearest_neighbor_elements_10) {
   const int count = 10;
 

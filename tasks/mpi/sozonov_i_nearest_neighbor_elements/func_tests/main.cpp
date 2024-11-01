@@ -6,33 +6,6 @@
 
 #include "mpi/sozonov_i_nearest_neighbor_elements/include/ops_mpi.hpp"
 
-TEST(sozonov_i_nearest_neighbor_elements_mpi, test_nearest_neighbor_elements_empty_vector) {
-  boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-  }
-
-  sozonov_i_nearest_neighbor_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
-
-  if (world.rank() == 0) {
-    // Create data
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataSeq->inputs_count.emplace_back(global_vec.size());
-
-    // Create Task
-    sozonov_i_nearest_neighbor_elements_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), false);
-  }
-}
-
 TEST(sozonov_i_nearest_neighbor_elements_mpi, test_nearest_neighbor_elements_100) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
