@@ -54,7 +54,8 @@ bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::pre_processing() {
     int distribution = chunk_size + static_cast<int>(world.rank() < remainder);
 
     chunk.resize(distribution);  // Зарезервируем необходимое место под данные
-    boost::mpi::scatterv(world, chunk.data(), distribution, 0);
+    // boost::mpi::scatterv(world, chunk.data(), distribution, 0);
+    boost::mpi::scatterv(world, (int*)nullptr, chunk.data(), distribution, 0);
   }
 
   this->res = 0;
