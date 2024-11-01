@@ -11,7 +11,7 @@ bool tselikova_a_average_of_vector_elements::TestTaskSequential::pre_processing(
   internal_order_test();
   int* tmp = reinterpret_cast<int*>(taskData->inputs[0]);
   input_ = std::vector<int>(taskData->inputs_count[0]);
-  for (int i = 0; i < (int)taskData->inputs_count[0]; i++) {
+  for (std::size_t i = 0; i < (int)taskData->inputs_count[0]; i++) {
     input_[i] = tmp[i];
   }
   res = 0;
@@ -26,7 +26,7 @@ bool tselikova_a_average_of_vector_elements::TestTaskSequential::validation() {
 bool tselikova_a_average_of_vector_elements::TestTaskSequential::run() {
   internal_order_test();
   int sum = 0;
-  for (int i = 0; i < input_.size(); i++) {
+  for (std::size_t i = 0; i < input_.size(); i++) {
     sum += input_[i];
   }
   res = static_cast<float>(sum) / input_.size();

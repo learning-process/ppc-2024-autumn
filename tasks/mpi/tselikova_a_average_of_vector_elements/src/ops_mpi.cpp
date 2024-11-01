@@ -14,7 +14,7 @@ bool tselikova_a_average_of_vector_elements_mpi::TestMPITaskSequential::pre_proc
   internal_order_test();
   int* tmp = reinterpret_cast<int*>(taskData->inputs[0]);
   input_ = std::vector<int>(taskData->inputs_count[0]);
-  for (std::size_t i = 0; i < (int)taskData->inputs_count[0]; i++) {
+  for (std::size_t i = 0; i < static_cast<std::size_t>(taskData->inputs_count[0]); i++) {
     input_[i] = tmp[i];
   }
   res = 0;
@@ -56,7 +56,7 @@ bool tselikova_a_average_of_vector_elements_mpi::TestMPITaskParallel::pre_proces
   if (world.rank() == 0) {
     input_ = std::vector<int>(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+    for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
       input_[i] = tmp_ptr[i];
     }
     for (int proc = 1; proc < world.size(); proc++) {
