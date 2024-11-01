@@ -53,10 +53,11 @@ void smirnov_i_integration_by_rectangles::TestMPITaskParallel::set_function(doub
 double smirnov_i_integration_by_rectangles::TestMPITaskParallel::mpi_integrate_rect(double (*func)(double),
                                                                                     double left_, double right_,
                                                                                     int n) {
-  if (func == NULL) {
+  if (func == nullptr) {
     return -1;
   }
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
@@ -64,7 +65,8 @@ double smirnov_i_integration_by_rectangles::TestMPITaskParallel::mpi_integrate_r
   double res_integr = 0;
 
   if (rank == 0) {
-    const double self_left = left_, self_right = left_ + (right_ - left_) / size;
+    const double self_left = left_;
+    const double self_right = left_ + (right_ - left_) / size;
     const double len_of_rect = (self_right - self_left) / chunks;
     for (int i = 0; i < chunks; i++) {
       const double left_rect = self_left + i * len_of_rect;
@@ -78,7 +80,8 @@ double smirnov_i_integration_by_rectangles::TestMPITaskParallel::mpi_integrate_r
   } else {
     const double gap_for_proc = (right_ - left_) / size;
     double self_res_integr = 0;
-    const double self_left = left_ + gap_for_proc * rank, self_right = left_ + gap_for_proc * (rank + 1);
+    const double self_left = left_ + gap_for_proc * rank;
+    const double self_right = left_ + gap_for_proc * (rank + 1);
     const double len_of_rect = (self_right - self_left) / chunks;
     for (int i = 0; i < chunks; i++) {
       const double left_rect = self_left + i * len_of_rect;
@@ -118,11 +121,12 @@ void smirnov_i_integration_by_rectangles::TestMPITaskSequential::set_function(do
 double smirnov_i_integration_by_rectangles::TestMPITaskSequential::seq_integrate_rect(double (*func)(double),
                                                                                       double left_, double right_,
                                                                                       int n) {
-  if (func == NULL) {
+  if (func == nullptr) {
     return -1;
   }
   double res_integr = 0;
-  const double self_left = left_, self_right = right_;
+  const double self_left = left_;
+  const double self_right = right_;
   const double len_of_rect = (self_right - self_left) / n;
   for (int i = 0; i < n; i++) {
     const double left_rect = self_left + i * len_of_rect;

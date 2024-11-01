@@ -34,11 +34,12 @@ void smirnov_i_integration_by_rectangles::TestMPITaskSequential::set_function(do
 double smirnov_i_integration_by_rectangles::TestMPITaskSequential::seq_integrate_rect(double (*func)(double),
                                                                                       double left, double right,
                                                                                       int n) {
-  if (func == NULL) {
+  if (func == nullptr) {
     return -1;
   }
   double res_integr = 0;
-  const double self_left = left, self_right = right;
+  const double self_left = left;
+  const double self_right = right;
   const double len_of_rect = (self_right - self_left) / n;
   for (int i = 0; i < n; i++) {
     const double left_rect = self_left + i * len_of_rect;
