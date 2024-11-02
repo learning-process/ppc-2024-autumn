@@ -6,7 +6,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/anufriev_d_max_of_vector_elements/include/ops_mpi_anufriev.hpp"
 
-#define DATA_SIZE 50'000'000
+#define DATA_SIZE 50000000
 
 TEST(anufriev_d_max_of_vector_elements_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
