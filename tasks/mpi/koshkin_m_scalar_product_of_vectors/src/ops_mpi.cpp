@@ -8,7 +8,6 @@
 #include <vector>
 
 using namespace std::chrono_literals;
-static int offset = 0;
 
 bool koshkin_m_scalar_product_of_vectors::TestMPITaskSequential::pre_processing() {
   internal_order_test();
@@ -59,14 +58,13 @@ bool koshkin_m_scalar_product_of_vectors::TestMPITaskParallel::pre_processing() 
     base_el = total_el / count_processes_;
     extra_el = total_el % count_processes_;
   }
-  boost::mpi::broadcast(world, count_processes_, 0);
-  counts_.resize(count_processes_);
+  counts_.resize(world.size());
 
   if (world.rank() == 0) {
-    counts_.assign(count_processes_, base_el);
+    counts_.assign(world.size(), base_el);
     std::fill(counts_.begin(), counts_.begin() + extra_el, base_el + 1);
   }
-  boost::mpi::broadcast(world, counts_.data(), count_processes_, 0);
+  boost::mpi::broadcast(world, counts_.data(), world.size(), 0);
 
   if (world.rank() == 0) {
     input_ = std::vector<std::vector<int>>(taskData->inputs.size());
@@ -96,7 +94,7 @@ bool koshkin_m_scalar_product_of_vectors::TestMPITaskParallel::run() {
   internal_order_test();
   if (world.rank() == 0) {
     size_t offset_extra = counts_[0];
-    for (unsigned int proces = 1; proces < count_processes_; proces++) {
+    for (int proces = 1; proces < world.size(); proces++) {
       size_t cur_accout = counts_[proces];
       world.send(proces, 0, input_[0].data() + offset_extra, cur_accout);
       world.send(proces, 1, input_[1].data() + offset_extra, cur_accout);
