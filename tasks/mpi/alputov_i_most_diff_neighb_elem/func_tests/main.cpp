@@ -168,7 +168,7 @@ TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_RandomVector_MPI_100k_ele
     ASSERT_EQ(inputVector[index + 1], outputPair[1]);
   }
 }
-/*
+
 /* TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_RandomLargeVector_MPI_1_million_elem) {
   boost::mpi::communicator world;
   std::vector<int> inputVector(1000000);
