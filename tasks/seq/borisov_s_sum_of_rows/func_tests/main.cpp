@@ -279,6 +279,42 @@ TEST(borisov_s_sum_of_rows, Test_Null_Pointers) {
   ASSERT_FALSE(sumOfRowsTaskSequential.validation());
 }
 
+TEST(borisov_s_sum_of_rows, Test_Null_One_Pointers1) {
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  size_t rows = 10;
+  size_t cols = 10;
+
+  std::vector<int> matrix(rows * cols, 1);
+
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataPar->outputs.emplace_back(nullptr);
+  taskDataPar->inputs_count.push_back(rows);
+  taskDataPar->inputs_count.push_back(cols);
+  taskDataPar->outputs_count.push_back(rows);
+
+  borisov_s_sum_of_rows::SumOfRowsTaskSequential sumOfRowsTaskSequential(taskDataPar);
+  ASSERT_FALSE(sumOfRowsTaskSequential.validation());
+}
+
+TEST(borisov_s_sum_of_rows, Test_Null_One_Pointers2) {
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  size_t rows = 10;
+  size_t cols = 10;
+
+  std::vector<int> row_sums(rows, 0);
+
+  taskDataPar->inputs.emplace_back(nullptr);
+  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(row_sums.data()));
+  taskDataPar->inputs_count.push_back(rows);
+  taskDataPar->inputs_count.push_back(cols);
+  taskDataPar->outputs_count.push_back(rows);
+
+  borisov_s_sum_of_rows::SumOfRowsTaskSequential sumOfRowsTaskSequential(taskDataPar);
+  ASSERT_FALSE(sumOfRowsTaskSequential.validation());
+}
+
 TEST(borisov_s_sum_of_rows, Test_Validation_Invalid_Output_Count_Sequential) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 

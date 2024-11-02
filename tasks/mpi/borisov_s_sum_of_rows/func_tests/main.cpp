@@ -11,7 +11,7 @@ std::vector<int> getRandomMatrix(size_t rows, size_t cols) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> matrix(rows * cols);
-  for (auto& element : matrix) {
+  for (auto &element : matrix) {
     element = static_cast<int>(gen() % 100);
   }
   return matrix;
@@ -31,10 +31,10 @@ TEST(borisov_s_sum_of_rows, Test_Unit_Matrix) {
     global_matrix.resize(rows * cols, 1);
     global_row_sums.resize(rows, 0);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
     taskDataPar->inputs_count.push_back(rows);
     taskDataPar->inputs_count.push_back(cols);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_row_sums.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_row_sums.data()));
     taskDataPar->outputs_count.push_back(global_row_sums.size());
   } else {
     taskDataPar->inputs.emplace_back(nullptr);
@@ -72,10 +72,10 @@ TEST(borisov_s_sum_of_rows, Test_Zero_Matrix) {
     global_matrix.resize(rows * cols, 0);
     global_row_sums.resize(rows, 0);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
     taskDataPar->inputs_count.push_back(rows);
     taskDataPar->inputs_count.push_back(cols);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_row_sums.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_row_sums.data()));
     taskDataPar->outputs_count.push_back(global_row_sums.size());
   } else {
     taskDataPar->inputs.emplace_back(nullptr);
@@ -113,10 +113,10 @@ TEST(borisov_s_sum_of_rows, Test_Sum_Rows) {
     global_matrix = getRandomMatrix(rows, cols);
     global_row_sums.resize(rows, 0);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
     taskDataPar->inputs_count.push_back(rows);
     taskDataPar->inputs_count.push_back(cols);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_row_sums.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_row_sums.data()));
     taskDataPar->outputs_count.push_back(global_row_sums.size());
   } else {
     taskDataPar->inputs.emplace_back(nullptr);
@@ -137,10 +137,10 @@ TEST(borisov_s_sum_of_rows, Test_Sum_Rows) {
     std::vector<int> reference_row_sums(global_row_sums.size(), 0);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
     taskDataSeq->inputs_count.push_back(rows);
     taskDataSeq->inputs_count.push_back(cols);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_row_sums.data()));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_row_sums.data()));
     taskDataSeq->outputs_count.push_back(reference_row_sums.size());
 
     borisov_s_sum_of_rows::SumOfRowsTaskSequential sumOfRowsTaskSequential(taskDataSeq);
@@ -166,8 +166,8 @@ TEST(borisov_s_sum_of_rows, Test_Empty_Matrix) {
   size_t cols = 0;
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_row_sums.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_row_sums.data()));
     global_row_sums.resize(rows, 0);
   } else {
     taskDataPar->inputs.emplace_back(nullptr);
@@ -197,10 +197,10 @@ TEST(borisov_s_sum_of_rows, Test_NonDivisibleRows) {
     global_matrix = getRandomMatrix(rows, cols);
     global_row_sums.resize(rows, 0);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
     taskDataPar->inputs_count.push_back(rows);
     taskDataPar->inputs_count.push_back(cols);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_row_sums.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_row_sums.data()));
     taskDataPar->outputs_count.push_back(global_row_sums.size());
   } else {
     taskDataPar->inputs.emplace_back(nullptr);
@@ -221,10 +221,10 @@ TEST(borisov_s_sum_of_rows, Test_NonDivisibleRows) {
     std::vector<int> reference_row_sums(global_row_sums.size(), 0);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
     taskDataSeq->inputs_count.push_back(rows);
     taskDataSeq->inputs_count.push_back(cols);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_row_sums.data()));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_row_sums.data()));
     taskDataSeq->outputs_count.push_back(reference_row_sums.size());
 
     borisov_s_sum_of_rows::SumOfRowsTaskSequential sumOfRowsTaskSequential(taskDataSeq);
@@ -253,10 +253,10 @@ TEST(borisov_s_sum_of_rows, Test_Large_Matrix) {
     global_matrix = getRandomMatrix(rows, cols);
     global_row_sums.resize(rows, 0);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
     taskDataPar->inputs_count.push_back(rows);
     taskDataPar->inputs_count.push_back(cols);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_row_sums.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_row_sums.data()));
     taskDataPar->outputs_count.push_back(global_row_sums.size());
   } else {
     taskDataPar->inputs.emplace_back(nullptr);
@@ -294,10 +294,10 @@ TEST(borisov_s_sum_of_rows, Test_Max_Min_Int) {
     global_matrix = {INT_MAX, INT_MIN, INT_MAX, INT_MIN};
     global_row_sums.resize(rows, 0);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
     taskDataPar->inputs_count.push_back(rows);
     taskDataPar->inputs_count.push_back(cols);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_row_sums.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_row_sums.data()));
     taskDataPar->outputs_count.push_back(global_row_sums.size());
   } else {
     taskDataPar->inputs.emplace_back(nullptr);
@@ -342,10 +342,10 @@ TEST(borisov_s_sum_of_rows, Test_Same_Numbers_In_Row) {
     }
     global_row_sums.resize(rows, 0);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
     taskDataPar->inputs_count.push_back(rows);
     taskDataPar->inputs_count.push_back(cols);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_row_sums.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_row_sums.data()));
     taskDataPar->outputs_count.push_back(global_row_sums.size());
   } else {
     taskDataPar->inputs.emplace_back(nullptr);
@@ -398,15 +398,37 @@ TEST(borisov_s_sum_of_rows, Test_Invalid_Output_Count_Sequential) {
   global_matrix.resize(rows * cols, 1);
   global_row_sums.resize(rows - 1, 0);
 
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
   taskDataSeq->inputs_count.push_back(rows);
   taskDataSeq->inputs_count.push_back(cols);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_row_sums.data()));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_row_sums.data()));
   taskDataSeq->outputs_count.push_back(global_row_sums.size());
 
   borisov_s_sum_of_rows::SumOfRowsTaskSequential sumOfRowsTaskSequential(taskDataSeq);
 
   ASSERT_FALSE(sumOfRowsTaskSequential.validation());
+}
+
+TEST(borisov_s_sum_of_rows, Test_Invalid_Output_Counts_Parallel) {
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::vector<int> global_matrix;
+  std::vector<int> global_row_sums;
+
+  size_t rows = 10;
+  size_t cols = 9;
+
+  global_matrix.resize(rows * cols, 1);
+  global_row_sums.resize(rows - 1, 0);
+
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+  taskDataPar->inputs_count.push_back(rows);
+  taskDataPar->inputs_count.push_back(cols);
+  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_row_sums.data()));
+  taskDataPar->outputs_count.push_back(global_row_sums.size());
+
+  borisov_s_sum_of_rows::SumOfRowsTaskParallel sumOfRowsTaskParallel(taskDataPar);
+
+  ASSERT_FALSE(sumOfRowsTaskParallel.validation());
 }
 
 TEST(borisov_s_sum_of_rows, Test_Invalid_Input_Output_Size_Sequential) {
@@ -433,10 +455,10 @@ TEST(borisov_s_sum_of_rows, Test_Validation_Invalid_Output_Count_Sequential) {
   global_matrix.resize(rows * cols, 1);
   global_row_sums.resize(rows - 1, 0);
 
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
   taskDataSeq->inputs_count.push_back(rows);
   taskDataSeq->inputs_count.push_back(cols);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_row_sums.data()));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_row_sums.data()));
   taskDataSeq->outputs_count.push_back(global_row_sums.size());
 
   borisov_s_sum_of_rows::SumOfRowsTaskSequential sumOfRowsTaskSequential(taskDataSeq);
@@ -487,10 +509,10 @@ TEST(borisov_s_sum_of_rows, Test_Run_NonEmpty_Matrix_Sequential) {
   global_matrix = {1, 2, 3, 4, 5, 6, 7, 8, 9};
   global_row_sums.resize(rows, 0);
 
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
   taskDataSeq->inputs_count.push_back(rows);
   taskDataSeq->inputs_count.push_back(cols);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_row_sums.data()));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_row_sums.data()));
   taskDataSeq->outputs_count.push_back(global_row_sums.size());
 
   borisov_s_sum_of_rows::SumOfRowsTaskSequential sumOfRowsTaskSequential(taskDataSeq);
@@ -505,4 +527,40 @@ TEST(borisov_s_sum_of_rows, Test_Run_NonEmpty_Matrix_Sequential) {
   for (size_t i = 0; i < rows; i++) {
     ASSERT_EQ(global_row_sums[i], expected_sums[i]);
   }
+}
+
+TEST(borisov_s_sum_of_rows, Test_Null_One_Pointers1) {
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  size_t rows = 10;
+  size_t cols = 10;
+
+  std::vector<int> matrix(rows * cols, 1);
+
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataPar->outputs.emplace_back(nullptr);
+  taskDataPar->inputs_count.push_back(rows);
+  taskDataPar->inputs_count.push_back(cols);
+  taskDataPar->outputs_count.push_back(rows);
+
+  borisov_s_sum_of_rows::SumOfRowsTaskSequential sumOfRowsTaskSequential(taskDataPar);
+  ASSERT_FALSE(sumOfRowsTaskSequential.validation());
+}
+
+TEST(borisov_s_sum_of_rows, Test_Null_One_Pointers2) {
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  size_t rows = 10;
+  size_t cols = 10;
+
+  std::vector<int> row_sums(rows, 0);
+
+  taskDataPar->inputs.emplace_back(nullptr);
+  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(row_sums.data()));
+  taskDataPar->inputs_count.push_back(rows);
+  taskDataPar->inputs_count.push_back(cols);
+  taskDataPar->outputs_count.push_back(rows);
+
+  borisov_s_sum_of_rows::SumOfRowsTaskSequential sumOfRowsTaskSequential(taskDataPar);
+  ASSERT_FALSE(sumOfRowsTaskSequential.validation());
 }
