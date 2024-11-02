@@ -8,8 +8,6 @@
 
 namespace solovev_a_word_count_seq {
 
-std::vector<char> create_text(int quan_words);
-
 class TestTaskSequential : public ppc::core::Task {
  public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
