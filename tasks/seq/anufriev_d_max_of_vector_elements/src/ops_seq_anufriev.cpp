@@ -1,6 +1,6 @@
 #include "seq/anufriev_d_max_of_vector_elements/include/ops_seq_anufriev.hpp"
 
-#include <limits>  
+#include <limits>
 
 namespace anufriev_d_max_of_vector_elements_seq {
 
@@ -24,10 +24,10 @@ bool VectorMaxSeq::run() {
   internal_order_test();
 
   if (input_.empty()) {
-    return true;  
+    return true;
   }
 
-  max_ = input_[0];  
+  max_ = input_[0];
   for (int32_t num : input_) {
     if (num > max_) {
       max_ = num;
@@ -40,7 +40,7 @@ bool VectorMaxSeq::run() {
 bool VectorMaxSeq::post_processing() {
   internal_order_test();
 
-  *reinterpret_cast<int32_t*>(taskData->outputs[0]) = max_;  
+  *reinterpret_cast<int32_t*>(taskData->outputs[0]) = max_;
   return true;
 }
 

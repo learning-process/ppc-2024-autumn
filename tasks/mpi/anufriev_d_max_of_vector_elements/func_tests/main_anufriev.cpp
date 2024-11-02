@@ -51,7 +51,8 @@ TEST(anufriev_d_max_of_vector_elements_mpi, randomVector50000) {
   if (world.rank() == 0) {
     input_vector = anufriev_d_max_of_vector_elements_parallel::make_random_vector(50000, -500, 5000);
   }
-  boost::mpi::broadcast(world, input_vector, 0);  
+
+  boost::mpi::broadcast(world, input_vector, 0);
 
   int32_t expected_max = std::numeric_limits<int32_t>::min();
   if (world.rank() == 0) {

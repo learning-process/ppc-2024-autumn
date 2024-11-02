@@ -1,8 +1,9 @@
+#include "mpi/anufriev_d_max_of_vector_elements/include/ops_mpi_anufriev.hpp"
+
 #include <limits>
 #include <numeric>
 #include <random>
 
-#include "mpi/anufriev_d_max_of_vector_elements/include/ops_mpi_anufriev.hpp"
 
 namespace anufriev_d_max_of_vector_elements_parallel {
 
