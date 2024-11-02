@@ -24,10 +24,16 @@ The following parallel programming technologies are considered in practice:
   
   Unsupported operating system!
   
-  * **Linux (`gcc` and `clang`)**:
+  * **Ubuntu / Debian (`gcc` and `clang`)**:
   ```
   sudo apt install -y cppcheck
   ```
+
+  * **NixOS / Nix (with flakes enabled)**:
+  ```
+  nix develop .
+  ```
+
   * **MacOS (apple clang)**:
   ```
   brew install cppcheck
@@ -44,10 +50,16 @@ Code style is checked using [clang-format](https://clang.llvm.org/docs/ClangForm
   
   [Installers link.](https://www.microsoft.com/en-us/download/details.aspx?id=105289) You have to install `msmpisdk.msi` and `msmpisetup.exe`.
   
-  * **Linux (`gcc` and `clang`)**:
+  * **Ubuntu / Debian (`gcc` and `clang`)**:
   ```
   sudo apt install -y mpich openmpi-bin libopenmpi-dev
   ```
+  
+  * **NixOS / Nix (with flakes enabled)**:
+  ```
+  nix develop .
+  ```
+
   * **MacOS (apple clang)**:
   ```
   brew install open-mpi
@@ -57,10 +69,16 @@ Code style is checked using [clang-format](https://clang.llvm.org/docs/ClangForm
   
   `OpenMP` is included into `gcc` and `msvc`, but some components should be installed additionally:
   
-  * **Linux (`gcc` and `clang`)**:
+  * **Ubuntu / Debian (`gcc` and `clang`)**:
   ```
   sudo apt install -y libomp-dev
   ```
+
+  * **NixOS / Nix (with flakes enabled)**:
+  ```
+  nix develop .
+  ```
+
   * **MacOS (`llvm`)**:
   ```
   brew install llvm
@@ -81,7 +99,7 @@ Navigate to a source code folder.
 
   ```
   mkdir build && cd build
-  cmake -D USE_SEQ=ON -D USE_MPI=ON -D USE_OMP=ON -D USE_TBB=ON -D USE_STL=ON -D USE_FUNC_TESTS=ON -D USE_PERF_TESTS=ON -D USE_CPPCHECK=ON -D CMAKE_BUILD_TYPE=Release ..
+  cmake -D USE_SEQ=ON -D USE_MPI=ON -D USE_OMP=ON -D USE_TBB=ON -D USE_STL=ON -D USE_FUNC_TESTS=ON -D USE_PERF_TESTS=ON -D CMAKE_BUILD_TYPE=Release ..
   ```
 *Help on CMake keys:*
 - `-D USE_SEQ=ON` enable `Sequential` labs (based on OpenMP's CMakeLists.txt).
