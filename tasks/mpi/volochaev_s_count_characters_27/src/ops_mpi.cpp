@@ -71,17 +71,6 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::pre_processing() {
   if (world.rank() == 0) {
     tmp1 = reinterpret_cast<std::string*>(taskData->inputs[0])[0];
     tmp2 = reinterpret_cast<std::string*>(taskData->inputs[0])[1];
-    delta = (std::min(tmp1.size(), tmp2.size())) / world.size();
-    if (std::min(tmp1.size(), tmp2.size()) % world.size() > 0u) ++delta;
-  }
-
-  if (world.rank() == 0) {
-    // Init vectors
-    input_ = std::vector<std::pair<char, char>>(world.size() * delta);
-    for (size_t i = 0; i < std::min(tmp1.size(), tmp2.size()); i++) {
-      input_[i].first = tmp1[i];
-      input_[i].second = tmp2[i];
-    }
   }
 
   // Init value for output
@@ -101,19 +90,28 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::validation() {
 
 bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::run() {
   internal_order_test();
-  int res1 = 0;
 
-  int delta = 0;
-
+  unsigned int delta = 0;
   if (world.rank() == 0) {
-    delta = static_cast<int>(input_.size()) / world.size();
+    delta = (taskData->inputs_count[0]) / world.size();
+    if (taskData->inputs_count[0] % world.size() > 0u) delta++;
   }
 
   broadcast(world, delta, 0);
 
   if (world.rank() == 0) {
+    // Init vectors
+    input_ = std::vector<std::pair<char, char>>(world.size() * delta);
+    std::string tmp1 = reinterpret_cast<std::string*>(taskData->inputs[0])[0];
+    std::string tmp2 = reinterpret_cast<std::string*>(taskData->inputs[0])[1];
+
+    for (size_t i = 0; i < std::min(tmp1.size(), tmp2.size(); ++i) {
+      input_[i].first = tmp1[i];
+      input_[i].second = tmp2[i];
+    }
+
     for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + proc * delta, delta);
+      world.send(proc, 0, input_.data() + proc * delta, delta + 1);
     }
   }
 
@@ -124,6 +122,7 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::run() {
     world.recv(0, 0, local_input_.data(), delta);
   }
 
+  int res1 = 0;
   for (auto [x, y] : local_input_) {
     if (x != y) {
       res1 += 2;
