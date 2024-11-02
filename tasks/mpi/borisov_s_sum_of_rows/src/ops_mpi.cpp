@@ -107,6 +107,8 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::validation() {
     }
   }
 
+  boost::mpi::broadcast(world, is_valid, 0);
+
   return is_valid;
 }
 
