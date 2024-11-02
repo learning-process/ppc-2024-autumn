@@ -15,4 +15,4 @@ namespace nasedkin_e_matrix_column_max_value {
         return maxValues;
     }
 
-}  // namespace nasedkin_e_matrix_column_max_value
+}
