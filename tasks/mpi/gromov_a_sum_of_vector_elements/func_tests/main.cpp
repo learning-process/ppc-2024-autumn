@@ -14,7 +14,7 @@ TEST(gromov_a_sum_of_vector_elements_mpi, Test_Subtraction) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 150;
+    const int count_size_vector = 300;
     global_vec = gromov_a_sum_of_vector_elements_mpi::getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -102,7 +102,7 @@ TEST(gromov_a_sum_of_vector_elements_mpi, Test_Addition) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 150;
+    const int count_size_vector = 200;
     global_vec = gromov_a_sum_of_vector_elements_mpi::getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
