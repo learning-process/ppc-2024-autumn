@@ -1,4 +1,3 @@
-
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
@@ -17,7 +16,7 @@ TEST(vasenkov_a_char_freq_mpi, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int count_size_str;
   if (world.rank() == 0) {
-    count_size_str = 120;
+    count_size_str = 150000000;
     global_str = std::vector<char>(count_size_str, 'a');
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_str.data()));
     taskDataPar->inputs_count.emplace_back(global_str.size());
@@ -57,7 +56,7 @@ TEST(vasenkov_a_char_freq_mpi, test_task_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int count_size_str;
   if (world.rank() == 0) {
-    count_size_str = 120;
+    count_size_str = 150000000;
     global_str = std::vector<char>(count_size_str, 'a');
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_str.data()));
     taskDataPar->inputs_count.emplace_back(global_str.size());

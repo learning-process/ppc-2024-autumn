@@ -15,9 +15,8 @@ bool vasenkov_a_char_freq_mpi::CharFrequencySequential::pre_processing() {
 
   str_input_ = std::vector<char>(taskData->inputs_count[0]);
   auto* tmp_ptr = reinterpret_cast<char*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    str_input_[i] = tmp_ptr[i];
-  }
+
+  std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], str_input_.begin());
 
   target_char_ = *reinterpret_cast<char*>(taskData->inputs[1]);
   res = 0;
