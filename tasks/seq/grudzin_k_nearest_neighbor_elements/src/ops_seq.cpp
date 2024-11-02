@@ -23,7 +23,8 @@ bool grudzin_k_nearest_neighbor_elements_seq::TestTaskSequential::validation() {
 bool grudzin_k_nearest_neighbor_elements_seq::TestTaskSequential::run() {
   internal_order_test();
   for (size_t i = 0; i < input_.size() - 1; i++) {
-    res = std::min(res, {abs(input_[i] - input_[i + 1]), i});
+    std::pair<int, int> tmp = {abs(input_[i] - input_[i + 1]), i};
+    res = std::min(res, tmp);
   }
   return true;
 }
