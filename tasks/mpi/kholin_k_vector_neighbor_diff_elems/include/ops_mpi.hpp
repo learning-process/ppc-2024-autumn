@@ -207,6 +207,8 @@ bool TestMPITaskParallel<TypeElem>::validation() {
 template <typename TypeElem>
 bool TestMPITaskParallel<TypeElem>::run() {
   internal_order_test();
+  int ProcRank = 0;
+  MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   MPI_Scatter(input_.data(), delta_n, mpi_type_elem, local_input_.data(), delta_n, mpi_type_elem, 0, MPI_COMM_WORLD);
   if (ProcRank == 0) {
     for (int i = delta_n; i < delta_n_r; i++) {
