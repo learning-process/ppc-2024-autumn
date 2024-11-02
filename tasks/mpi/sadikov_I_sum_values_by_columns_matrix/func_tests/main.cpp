@@ -50,8 +50,8 @@ TEST(ParallelOperations, checkvalidation3) {
 
 TEST(ParallelOperations, check_square_matrix) {
   boost::mpi::communicator world;
-  const int columns = 30;
-  const int rows = 30;
+  const int columns = 130;
+  const int rows = 130;
   std::vector<int> out_seq(columns, 0);
   std::vector<int> in(columns * rows, 1);
   std::vector<int> in_index{rows, columns};
@@ -66,20 +66,21 @@ TEST(ParallelOperations, check_square_matrix) {
   sv_par.pre_processing();
   sv_par.run();
   sv_par.post_processing();
+  ASSERT_EQ(out_par[0], in_index[0]);
   if (world.rank() == 0) {
-    /*taskData_seq = sadikov_I_Sum_values_by_columns_matrix_mpi::CreateTaskData(in, in_index, out_seq);
+    taskData_seq = sadikov_I_Sum_values_by_columns_matrix_mpi::CreateTaskData(in, in_index, out_seq);
     sadikov_I_Sum_values_by_columns_matrix_mpi::MPITask sv_seq(taskData_seq);
     ASSERT_EQ(sv_seq.validation(), true);
     sv_seq.pre_processing();
     sv_seq.run();
     sv_seq.post_processing();
-    ASSERT_EQ(out_seq, out_par);*/
+    ASSERT_EQ(out_seq, out_par);
   }
 }
 
 TEST(ParallelOperations, check_rect_matrix) {
   boost::mpi::communicator world;
-  const int columns = 30;
+  const int columns = 80;
   const int rows = 50;
   std::vector<int> out_seq(columns, 0);
   std::vector<int> in;
@@ -139,7 +140,7 @@ TEST(ParallelOperations, check_square_matrix2) {
 TEST(ParallelOperations, check_rect_matrix2) {
   boost::mpi::communicator world;
   const int columns = 50;
-  const int rows = 60;
+  const int rows = 260;
   std::vector<int> out_seq(columns, 0);
   std::vector<int> in = sadikov_I_Sum_values_by_columns_matrix_mpi::getRandomVector(columns * rows);
   std::vector<int> in_index{rows, columns};
@@ -167,8 +168,8 @@ TEST(ParallelOperations, check_rect_matrix2) {
 
 TEST(ParallelOperations, check_rand_matrix) {
   boost::mpi::communicator world;
-  const int columns = 15;
-  const int rows = 15;
+  const int columns = 150;
+  const int rows = 150;
   std::vector<int> out_seq(columns, 0);
   std::vector<int> in = sadikov_I_Sum_values_by_columns_matrix_mpi::getRandomVector(columns * rows);
   std::vector<int> in_index{rows, columns};
@@ -196,8 +197,8 @@ TEST(ParallelOperations, check_rand_matrix) {
 
 TEST(ParallelOperations, check_rand_matrix2) {
   boost::mpi::communicator world;
-  const int columns = 25;
-  const int rows = 25;
+  const int columns = 73;
+  const int rows = 73;
   std::vector<int> out_seq(columns, 0);
   std::vector<int> in = sadikov_I_Sum_values_by_columns_matrix_mpi::getRandomVector(columns * rows);
   std::vector<int> in_index{rows, columns};

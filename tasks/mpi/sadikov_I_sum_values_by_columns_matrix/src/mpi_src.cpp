@@ -22,14 +22,14 @@ bool sadikov_I_Sum_values_by_columns_matrix_mpi::MPITask::pre_processing() {
   internal_order_test();
   rows_count = static_cast<size_t>(taskData->inputs_count[0]);
   columns_count = static_cast<size_t>(taskData->inputs_count[1]);
-  matrix.reserve(rows_count * columns_count);
   auto *tmp_ptr = reinterpret_cast<int *>(taskData->inputs[0]);
+  matrix.reserve(columns_count * rows_count);
   for (size_t i = 0; i < columns_count; ++i) {
     for (size_t j = 0; j < rows_count; ++j) {
       matrix.emplace_back(tmp_ptr[j * columns_count + i]);
     }
   }
-  sum.reserve(rows_count);
+  sum = std::vector<int>(columns_count);
   return true;
 }
 
@@ -49,8 +49,7 @@ bool sadikov_I_Sum_values_by_columns_matrix_mpi::MPITask::post_processing() {
 
 void sadikov_I_Sum_values_by_columns_matrix_mpi::MPITask::calculate(size_t size) {
   for (size_t i = 0; i < size; ++i) {
-    sum[i] = std::accumulate(matrix.begin() + static_cast<int>(i * rows_count),
-                             matrix.begin() + static_cast<int>((i + 1) * rows_count), 0);
+    sum[i] = std::accumulate(matrix.begin() + i * rows_count, matrix.begin() + (i + 1) * rows_count, 0);
   }
 }
 
@@ -72,7 +71,6 @@ bool sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel::pre_processing
     columns_count = static_cast<size_t>(taskData->inputs_count[1]);
     delta = columns_count / world.size();
     last_column = columns_count % world.size();
-    sum.reserve(columns_count);
     matrix.reserve(columns_count * rows_count);
     int *tmp_ptr = reinterpret_cast<int *>(taskData->inputs[0]);
     for (size_t i = 0; i < columns_count; ++i) {
@@ -107,6 +105,9 @@ bool sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel::run() {
                                                      : std::vector<int>(rows_count * (delta + last_column));
     world.recv(0, 0, local_input.data(),
                (world.rank() != world.size() - 1) ? rows_count * delta : rows_count * (delta + last_column));
+  }
+  if (local_input.size() == 0) {
+    return true;
   }
   size_t size = local_input.size() / rows_count;
   std::vector<int> intermediate_res = calculate(size);
