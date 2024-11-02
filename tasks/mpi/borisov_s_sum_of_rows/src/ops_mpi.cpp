@@ -107,8 +107,6 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::validation() {
     }
   }
 
-  boost::mpi::broadcast(world, is_valid, 0);
-
   return is_valid;
 }
 
@@ -125,6 +123,10 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::run() {
 
   boost::mpi::broadcast(world, rows, 0);
   boost::mpi::broadcast(world, cols, 0);
+
+  if (rows == 0 || cols == 0) {
+    return false;
+  }
 
   size_t base_rows_per_proc = rows / world.size();
   int remainder_rows = static_cast<int>(rows % world.size());
