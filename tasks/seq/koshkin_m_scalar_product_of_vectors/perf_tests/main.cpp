@@ -6,23 +6,13 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/koshkin_m_scalar_product_of_vectors/include/ops_seq.hpp"
 
-static int offset = 0;
-
-std::vector<int> createRandomVector(int v_size) {
-  std::vector<int> vec(v_size);
-  std::mt19937 gen;
-  gen.seed((unsigned)time(nullptr) + ++offset);
-  for (int i = 0; i < v_size; i++) vec[i] = gen() % 100;
-  return vec;
-}
-
 TEST(koshkin_m_scalar_product_of_vectors, test_pipeline_run) {
   const int count = 22800000;
   // Create dat
   std::vector<int> out(1, 0);
 
-  std::vector<int> vec_1 = createRandomVector(count);
-  std::vector<int> vec_2 = createRandomVector(count);
+  std::vector<int> vec_1 = koshkin_m_scalar_product_of_vectors::createRandomVector(count);
+  std::vector<int> vec_2 = koshkin_m_scalar_product_of_vectors::createRandomVector(count);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -66,8 +56,8 @@ TEST(koshkin_m_scalar_product_of_vectors, test_task_run) {
   // Create data
   std::vector<int> out(1, 0);
 
-  std::vector<int> vec_1 = createRandomVector(count);
-  std::vector<int> vec_2 = createRandomVector(count);
+  std::vector<int> vec_1 = koshkin_m_scalar_product_of_vectors::createRandomVector(count);
+  std::vector<int> vec_2 = koshkin_m_scalar_product_of_vectors::createRandomVector(count);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
