@@ -51,7 +51,7 @@ TEST(Parallel_Operations_MPI, Test_MaxElem) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  
+
   if (world.rank() == 0) {
     // Create data
     std::vector<int32_t> reference_max(1, global_matrix[0][0]);
