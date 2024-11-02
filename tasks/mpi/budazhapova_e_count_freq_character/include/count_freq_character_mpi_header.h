@@ -40,7 +40,8 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   std::string input_, local_input_;
   int res{};
-  char symb{}, local_symb{};
+  char symb{};
+  char local_symb{};
   int local_res{};
   boost::mpi::communicator world;
 };

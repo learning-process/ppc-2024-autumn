@@ -15,7 +15,7 @@ bool budazhapova_e_count_freq_character_seq::TestTaskSequential::pre_processing(
 
 bool budazhapova_e_count_freq_character_seq::TestTaskSequential::validation() {
   internal_order_test();
-  return taskData->inputs_count[0] == 1 && taskData->inputs_count[0] != NULL;  //// но хз можно ли так
+  return taskData->inputs_count[0] == 1;
 }
 
 bool budazhapova_e_count_freq_character_seq::TestTaskSequential::run() {

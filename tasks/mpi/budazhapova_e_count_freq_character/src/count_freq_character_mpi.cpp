@@ -14,7 +14,7 @@ std::string budazhapova_e_count_freq_character_mpi::getRandomString(int length) 
   std::string result;
   result.resize(length);
 
-  srand(time(NULL));
+  srand(time(nullptr));
   for (int i = 0; i < length; i++) result[i] = charset[rand() % charset.length()];
 
   return result;
@@ -22,7 +22,7 @@ std::string budazhapova_e_count_freq_character_mpi::getRandomString(int length) 
 
 bool budazhapova_e_count_freq_character_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
-  input_ = std::string(taskData->inputs_count[0]);
+  input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
   for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
     input_[i] = tmp_ptr[i];
@@ -63,7 +63,7 @@ bool budazhapova_e_count_freq_character_mpi::TestMPITaskParallel::pre_processing
   broadcast(world, delta, 0);
 
   if (world.rank() == 0) {
-    input_ = std::string(taskData->inputs_count[0]);
+    input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<char*>(taskData->inputs[0]);
     for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
       input_[i] = tmp_ptr[i];

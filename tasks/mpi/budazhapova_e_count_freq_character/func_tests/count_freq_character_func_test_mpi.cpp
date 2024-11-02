@@ -23,7 +23,7 @@ TEST(budazhapova_e_count_freq_character_mpi, ordinary_test) {
     taskDataPar->outputs_count.emplace_back(global_out.size());
   }
 
-  budazhapova_e_count_freq_character_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
+  budazhapova_e_count_freq_character_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -67,7 +67,7 @@ TEST(budazhapova_e_count_freq_character_mpi, test_with_one_symb) {
     taskDataPar->outputs_count.emplace_back(global_out.size());
   }
 
-  budazhapova_e_count_freq_character_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
+  budazhapova_e_count_freq_character_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -110,7 +110,7 @@ TEST(budazhapova_e_count_freq_character_mpi, big_string) {
     taskDataPar->outputs_count.emplace_back(global_out.size());
   }
 
-  budazhapova_e_count_freq_character_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
+  budazhapova_e_count_freq_character_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
