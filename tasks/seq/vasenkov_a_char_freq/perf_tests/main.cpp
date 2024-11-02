@@ -39,7 +39,6 @@ TEST(vasenkov_a_char_frequency_seq, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(charFrequencyTask);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-
   ASSERT_EQ(expected_frequency, out[0]);
 }
 
