@@ -1,7 +1,6 @@
 #include "mpi/borisov_s_sum_of_rows/include/ops_mpi.hpp"
 
 #include <algorithm>
-#include <random>
 #include <vector>
 
 using namespace std::chrono_literals;
@@ -72,17 +71,46 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskSequential ::post_processing() {
   return true;
 }
 
-std::vector<int> borisov_s_sum_of_rows::getRandomMatrix(size_t rows, size_t cols) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> matrix(rows * cols);
-  for (auto& element : matrix) {
-    element = static_cast<int>(gen() % 100);
-  }
-  return matrix;
+bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::pre_processing() {
+  internal_order_test();
+
+  loc_row_sums_.clear();
+  loc_matrix_.clear();
+
+  return true;
 }
 
-bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::pre_processing() {
+bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::validation() {
+  internal_order_test();
+
+  bool is_valid = true;
+
+  size_t inputs_count_size = taskData->inputs_count.size();
+  size_t outputs_count_size = taskData->outputs_count.size();
+
+  if (world.rank() == 0) {
+    if (inputs_count_size < 2 || outputs_count_size < 1) {
+      is_valid = false;
+    } else {
+      if (taskData->outputs_count[0] != taskData->inputs_count[0]) {
+        is_valid = false;
+      }
+
+      size_t cols = taskData->inputs_count[1];
+      if (cols == 0) {
+        is_valid = false;
+      }
+
+      if (taskData->inputs[0] == nullptr || taskData->outputs[0] == nullptr) {
+        is_valid = false;
+      }
+    }
+  }
+
+  return is_valid;
+}
+
+bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::run() {
   internal_order_test();
 
   size_t rows = 0;
@@ -126,47 +154,7 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::pre_processing() {
 
   loc_row_sums_.resize(local_rows, 0);
 
-  return true;
-}
-
-bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::validation() {
-  internal_order_test();
-
-  bool is_valid = true;
-
-  size_t inputs_count_size = taskData->inputs_count.size();
-  size_t outputs_count_size = taskData->outputs_count.size();
-
-  if (world.rank() == 0) {
-    if (inputs_count_size < 2 || outputs_count_size < 1) {
-      is_valid = false;
-    } else {
-      if (taskData->outputs_count[0] != taskData->inputs_count[0]) {
-        is_valid = false;
-      }
-
-      size_t cols = taskData->inputs_count[1];
-      if (cols == 0) {
-        is_valid = false;
-      }
-
-      if (taskData->inputs[0] == nullptr || taskData->outputs[0] == nullptr) {
-        is_valid = false;
-      }
-    }
-  }
-
-  boost::mpi::broadcast(world, is_valid, 0);
-
-  return is_valid;
-}
-
-bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::run() {
-  internal_order_test();
-
-  size_t cols = taskData->inputs_count[1];
-
-  for (size_t i = 0; i < loc_row_sums_.size(); i++) {
+  for (size_t i = 0; i < local_rows; i++) {
     loc_row_sums_[i] = 0;
     for (size_t j = 0; j < cols; j++) {
       loc_row_sums_[i] += loc_matrix_[(i * cols) + j];
@@ -174,25 +162,19 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::run() {
   }
 
   if (world.rank() == 0) {
-    row_sums_.resize(taskData->inputs_count[0], 0);
+    row_sums_.resize(rows, 0);
   }
-
-  size_t base_rows_per_proc = taskData->inputs_count[0] / world.size();
-  int remainder_rows = static_cast<int>(taskData->inputs_count[0] % world.size());
-
-  std::vector<int> recvcounts(world.size());
-  std::vector<int> displs(world.size());
 
   size_t offset = 0;
   for (int i = 0; i < world.size(); ++i) {
     size_t rows_for_proc = base_rows_per_proc + (i < remainder_rows ? 1 : 0);
-    recvcounts[i] = static_cast<int>(rows_for_proc);
+    sendcounts[i] = static_cast<int>(rows_for_proc);
     displs[i] = static_cast<int>(offset);
     offset += rows_for_proc;
   }
 
   MPI_Gatherv(loc_row_sums_.data(), static_cast<int>(loc_row_sums_.size()), MPI_INT, row_sums_.data(),
-              recvcounts.data(), displs.data(), MPI_INT, 0, MPI_COMM_WORLD);
+              sendcounts.data(), displs.data(), MPI_INT, 0, MPI_COMM_WORLD);
 
   return true;
 }

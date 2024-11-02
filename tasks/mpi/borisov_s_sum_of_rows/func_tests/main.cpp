@@ -2,9 +2,20 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <climits>
+#include <random>
 #include <vector>
 
 #include "mpi/borisov_s_sum_of_rows/include/ops_mpi.hpp"
+
+std::vector<int> getRandomMatrix(size_t rows, size_t cols) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> matrix(rows * cols);
+  for (auto& element : matrix) {
+    element = static_cast<int>(gen() % 100);
+  }
+  return matrix;
+}
 
 TEST(borisov_s_sum_of_rows, Test_Unit_Matrix) {
   boost::mpi::communicator world;
@@ -99,7 +110,7 @@ TEST(borisov_s_sum_of_rows, Test_Sum_Rows) {
   size_t cols = 15;
 
   if (world.rank() == 0) {
-    global_matrix = borisov_s_sum_of_rows::getRandomMatrix(rows, cols);
+    global_matrix = getRandomMatrix(rows, cols);
     global_row_sums.resize(rows, 0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
@@ -183,7 +194,7 @@ TEST(borisov_s_sum_of_rows, Test_NonDivisibleRows) {
   size_t cols = 10;
 
   if (world.rank() == 0) {
-    global_matrix = borisov_s_sum_of_rows::getRandomMatrix(rows, cols);
+    global_matrix = getRandomMatrix(rows, cols);
     global_row_sums.resize(rows, 0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
@@ -239,7 +250,7 @@ TEST(borisov_s_sum_of_rows, Test_Large_Matrix) {
   size_t cols = 1000;
 
   if (world.rank() == 0) {
-    global_matrix = borisov_s_sum_of_rows::getRandomMatrix(rows, cols);
+    global_matrix = getRandomMatrix(rows, cols);
     global_row_sums.resize(rows, 0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));

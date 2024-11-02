@@ -14,8 +14,6 @@
 
 namespace borisov_s_sum_of_rows {
 
-std::vector<int> getRandomMatrix(size_t rows, size_t cols);
-
 class SumOfRowsTaskSequential : public ppc::core::Task {
  public:
   explicit SumOfRowsTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
