@@ -20,7 +20,7 @@ std::vector<int> RandomVector(int size, int minimum = 0, int maximum = 100) {
 std::vector<std::vector<int>> RandomMatrix(int rows, int columns, int minimum = 0, int maximum = 100) {
   std::vector<std::vector<int>> vec(rows);
   for (int i = 0; i < rows; i++) {
-    vec[i] = yasakova_t_min_of_vector_elements_seq::RandomVector(columns, minimum, maximum);
+    vec[i] = RandomVector(columns, minimum, maximum);
   }
   return vec;
 }
@@ -35,7 +35,7 @@ TEST(yasakova_t_min_of_vector_elements_seq, testFindMinimumInMatrixWithOneRow) {
   int ref = INT_MIN;
   std::vector<int> out(1, INT_MAX);
   std::vector<std::vector<int>> in =
-      yasakova_t_min_of_vector_elements_seq::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
+      RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
   int index = gen() % count_columns;
   in[0][index] = ref;
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -62,8 +62,7 @@ TEST(yasakova_t_min_of_vector_elements_seq, testFindMinimumIn10x10Matrix) {
   const int gen_maximum = 500;
   int ref = INT_MIN;
   std::vector<int> out(1, INT_MAX);
-  std::vector<std::vector<int>> in =
-      yasakova_t_min_of_vector_elements_seq::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
+  std::vector<std::vector<int>> in = RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
   int index = gen() % (count_rows * count_columns);
   in[index / count_columns][index / count_rows] = ref;
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -90,8 +89,7 @@ TEST(yasakova_t_min_of_vector_elements_seq, testFindMinimumIn10x100Matrix) {
   const int gen_maximum = 500;
   int ref = INT_MIN;
   std::vector<int> out(1, INT_MAX);
-  std::vector<std::vector<int>> in =
-      yasakova_t_min_of_vector_elements_seq::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
+  std::vector<std::vector<int>> in = RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
   int index = gen() % (count_rows * count_columns);
   in[index / count_columns][index / count_rows] = ref;
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -118,8 +116,7 @@ TEST(yasakova_t_min_of_vector_elements_seq, testFindMinimumIn100x10Matrix) {
   const int gen_maximum = 500;
   int ref = INT_MIN;
   std::vector<int> out(1, INT_MAX);
-  std::vector<std::vector<int>> in =
-      yasakova_t_min_of_vector_elements_seq::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
+  std::vector<std::vector<int>> in = RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
   int index = gen() % (count_rows * count_columns);
   in[index / count_columns][index / count_rows] = ref;
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -146,8 +143,7 @@ TEST(yasakova_t_min_of_vector_elements_seq, testFindMinimumIn100x100Matrix) {
   const int gen_maximum = 500;
   int ref = INT_MIN;
   std::vector<int> out(1, INT_MAX);
-  std::vector<std::vector<int>> in =
-      yasakova_t_min_of_vector_elements_seq::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
+  std::vector<std::vector<int>> in = RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
   int index = gen() % (count_rows * count_columns);
   in[index / count_columns][index / count_rows] = ref;
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();

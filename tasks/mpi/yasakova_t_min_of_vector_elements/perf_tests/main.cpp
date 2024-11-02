@@ -2,26 +2,25 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
-#include <random>
 #include <vector>
+#include <random>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/yasakova_t_min_of_vector_elements/include/ops_mpi_yasakova.hpp"
 
 std::vector<int> RandomVector(int size, int minimum = 0, int maximum = 100) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
+  std::mt19937 gen;
   std::vector<int> vec(size);
   for (int i = 0; i < size; i++) {
     vec[i] = minimum + gen() % (maximum - minimum + 1);
-  }
+    }
   return vec;
 }
 
 std::vector<std::vector<int>> RandomMatrix(int rows, int columns, int minimum = 0, int maximum = 100) {
   std::vector<std::vector<int>> vec(rows);
   for (int i = 0; i < rows; i++) {
-    vec[i] = yasakova_t_min_of_vector_elements_mpi::RandomVector(columns, minimum, maximum);
+    vec[i] = RandomVector(columns, minimum, maximum);
   }
   return vec;
 }
@@ -32,17 +31,16 @@ TEST(yasakova_t_min_of_vector_elements_mpi, test_pipeline_run) {
   std::vector<int32_t> global_minimum(1, INT_MAX);
   int ref = INT_MIN;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  int count_rows = 4000;
+  int count_columns = 4000;
+  int gen_minimum = -500;
+  int gen_maximum = 500;
+  global_matrix =
+      RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
+  std::mt19937 gen;
+  int index = gen() % (count_rows * count_columns);
+  global_matrix[index / count_columns][index / count_rows] = ref;
   if (world.rank() == 0) {
-    std::random_device dev;
-    std::mt19937 gen(dev());
-    int count_rows = 4000;
-    int count_columns = 4000;
-    int gen_minimum = -500;
-    int gen_maximum = 500;
-    global_matrix =
-        yasakova_t_min_of_vector_elements_mpi::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
-    int index = gen() % (count_rows * count_columns);
-    global_matrix[index / count_columns][index / count_rows] = ref;
     for (unsigned int i = 0; i < global_matrix.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     taskDataPar->inputs_count.emplace_back(count_rows);
@@ -74,17 +72,15 @@ TEST(yasakova_t_min_of_vector_elements_mpi, test_task_run) {
   std::vector<int32_t> global_sum(1, INT_MAX);
   int ref = INT_MIN;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  int count_rows = 4000;
+  int count_columns = 4000;
+  int gen_minimum = -500;
+  int gen_maximum = 500;
+  global_matrix = RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
+  std::mt19937 gen;
+  int index = gen() % (count_rows * count_columns);
+  global_matrix[index / count_columns][index / count_rows] = ref;
   if (world.rank() == 0) {
-    std::random_device dev;
-    std::mt19937 gen(dev());
-    int count_rows = 4000;
-    int count_columns = 4000;
-    int gen_minimum = -500;
-    int gen_maximum = 500;
-    global_matrix =
-        yasakova_t_min_of_vector_elements_mpi::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
-    int index = gen() % (count_rows * count_columns);
-    global_matrix[index / count_columns][index / count_rows] = ref;
     for (unsigned int i = 0; i < global_matrix.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     taskDataPar->inputs_count.emplace_back(count_rows);
