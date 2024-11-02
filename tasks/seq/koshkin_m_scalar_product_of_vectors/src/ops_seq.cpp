@@ -3,8 +3,6 @@
 
 #include <random>
 
-static int offset = 0;
-
 bool koshkin_m_scalar_product_of_vectors::VectorDotProduct::pre_processing() {
   internal_order_test();
   input_ = std::vector<std::vector<int>>(taskData->inputs.size());
