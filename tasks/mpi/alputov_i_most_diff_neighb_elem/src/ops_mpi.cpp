@@ -4,6 +4,17 @@
 #include <algorithm>
 #include <iostream>
 
+std::vector<int> alputov_i_most_diff_neighb_elem_mpi::RandomVector(int sz) {
+  std::random_device rd;                                 
+  std::mt19937 gen(rd());                               
+  std::uniform_int_distribution<> distrib(-1000, 1000);  
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; ++i) {
+    vec[i] = distrib(gen); 
+  }
+  return vec;
+}
+
 int alputov_i_most_diff_neighb_elem_mpi::Max_Neighbour_Seq_Pos(const std::vector<int>& data) {
   if (data.size() < 2) {
     return -1;

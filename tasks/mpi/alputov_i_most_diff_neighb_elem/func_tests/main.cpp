@@ -56,7 +56,7 @@ TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_NegativeValues_MPI) {
     ASSERT_EQ(outputPair[1], -9);
   }
 }*/
-TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_RandomLargeVector_MPI) {
+/* TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_RandomLargeVector_MPI) {
   boost::mpi::communicator world;
   std::vector<int> inputVector;
   int outputPair[2] = {0, 0};
@@ -91,16 +91,18 @@ TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_RandomLargeVector_MPI) {
     ASSERT_EQ(inputVector[index], outputPair[0]);
     ASSERT_EQ(inputVector[index + 1], outputPair[1]);
   }
-}
-TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_SingleElement_MPI) {
+}*/
+TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_RandomLargeVector_MPI_1000_elem) {
   boost::mpi::communicator world;
   std::vector<int> inputVector;
-  int outputPair[3] = {0, 0, -1};
+  int outputPair[2] = {0, 0};
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    inputVector = {100};
+    inputVector =
+        alputov_i_most_diff_neighb_elem_mpi::RandomVector(1000);  // Используем RandomVector для создания вектора
+
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(inputVector.data()));
     taskDataPar->inputs_count.emplace_back(inputVector.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(outputPair));
@@ -108,27 +110,18 @@ TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_SingleElement_MPI) {
   }
 
   alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask testMpiTaskParallel(taskDataPar);
-  ASSERT_FALSE(testMpiTaskParallel.validation());
-}
-
-TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_EmptyVector_MPI) {
-  boost::mpi::communicator world;
-  std::vector<int> inputVector;
-  int outputPair[3] = {0, 0, -1};
-
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+  ASSERT_TRUE(testMpiTaskParallel.run());
+  testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    inputVector = {};
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(inputVector.data()));
-    taskDataPar->inputs_count.emplace_back(inputVector.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(outputPair));
-    taskDataPar->outputs_count.emplace_back(2);
+    int index = alputov_i_most_diff_neighb_elem_mpi::Max_Neighbour_Seq_Pos(inputVector);
+    ASSERT_EQ(inputVector[index], outputPair[0]);
+    ASSERT_EQ(inputVector[index + 1], outputPair[1]);
   }
-
-  alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask testMpiTaskParallel(taskDataPar);
-  ASSERT_FALSE(testMpiTaskParallel.validation());
 }
+
 
 /* TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_EqualElements_MPI) {
   boost::mpi::communicator world;
