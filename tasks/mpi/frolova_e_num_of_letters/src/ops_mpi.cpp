@@ -11,23 +11,22 @@
 using namespace std::chrono_literals;
 
 std::string frolova_e_num_of_letters_mpi::GenStr(int n) {
-  std::string str = "test";
-  std::string result;
-  result.resize(n);
+    std::string str = "test";
+    std::string result;
+    result.resize(n);
 
-  int i = 0;
-  size_t j = 0;
+    int i = 0;
+    size_t j = 0;
 
-  while (i < n) {
-    result[i] = str[j];
-    j++;
-    i++;
-    if (j >= str.size()) {
-      j = 0;
+    while (i < n) {
+        result[i] = str[j];
+        j++;
+        i++;
+        if (j >= str.size()) {
+            j = 0;
+        }
     }
-  }
-
-  return result;
+    return result;
 }
 
 bool frolova_e_num_of_letters_mpi::TestMPITaskSequential::pre_processing() {
@@ -132,12 +131,10 @@ bool frolova_e_num_of_letters_mpi::TestMPITaskParallel::run() {
       world.send(proc, 0, input_.data() + (proc - 1) * delta, delta);
     }
     local_input_ = std::string(input_.begin() + (world.size() - 1) * delta, input_.end());
-  } 
-  else {
+  } else {
     local_input_.resize(delta);
     world.recv(0, 0, local_input_.data(), delta);
   }
-
   int local_res = 0;  
   for (char c : local_input_) {
     if (isalpha(c)) local_res++;
