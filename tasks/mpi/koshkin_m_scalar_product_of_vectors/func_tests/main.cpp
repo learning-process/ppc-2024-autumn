@@ -2,7 +2,6 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
-
 #include <vector>
 
 #include "mpi/koshkin_m_scalar_product_of_vectors/include/ops_mpi.hpp"
