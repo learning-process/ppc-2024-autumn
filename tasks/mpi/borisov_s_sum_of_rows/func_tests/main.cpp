@@ -529,4 +529,3 @@ TEST(borisov_s_sum_of_rows, Test_Run_NonEmpty_Matrix_Sequential) {
     ASSERT_EQ(global_row_sums[i], expected_sums[i]);
   }
 }
-
