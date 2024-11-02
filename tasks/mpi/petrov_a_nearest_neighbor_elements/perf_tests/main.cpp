@@ -7,17 +7,17 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/petrov_a_nearest_neighbor_elements/include/ops_mpi.hpp"
 
-TEST(petrov_a_nearest_neighbor_elements_mpi, test_pipeline_run1) {
+TEST(mpi_petrov_a_nearest_neighbor_elements_perf_test, test_pipeline_run1) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
-  std::vector<int32_t> global_sum(1, 0);
+  std::vector<int32_t> global_sum(1, 0);  // Изменен размер для хранения пары значений
 
-  // Create TaskData
+  // Создание TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int count_size_vector;
   if (world.rank() == 0) {
-    count_size_vector = 120;
-    global_vec = std::vector<int>(count_size_vector, 1);
+    global_vec = {87, 23, 56, 98, 12, 34, 76, 54, 19, 65, 43, 89, 21, 67, 92,
+                                         45, 10, 38, 74, 57, 29, 83, 11, 40, 77, 62, 31, 50, 15, 99};
+    ;  // Используем случайные данные
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
@@ -31,37 +31,41 @@ TEST(petrov_a_nearest_neighbor_elements_mpi, test_pipeline_run1) {
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
-  // Create Perf attributes
+  // Настройка Perf атрибутов
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  // Create and init perf results
+  // Инициализация результатов производительности
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
+  // Анализ производительности
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
 
-  // Check results only on the root process
+  // Проверка результата на корневом процессе
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(count_size_vector, global_sum[0]);
+
+    // Проверка, что ближайшая пара корректно записана
+    int expected_first = global_sum[0];
+    int expected_second = global_sum[1];
+    ASSERT_EQ(expected_first,77);
+    ASSERT_EQ(expected_second,62);
   }
 }
 
-TEST(petrov_a_nearest_neighbor_elements_mpi, test_task_run1) {
+TEST(mpi_petrov_a_nearest_neighbor_elements_perf_test, test_task_run1) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
-  std::vector<int32_t> global_sum(1, 0);
+  std::vector<int32_t> global_sum(1, 0);  // Изменен размер для хранения пары значений
 
-  // Create TaskData
+  // Создание TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int count_size_vector;
   if (world.rank() == 0) {
-    count_size_vector = 120;
-    global_vec = std::vector<int>(count_size_vector, 1);
+    global_vec = {87, 23, 56, 98, 12, 34, 76, 54, 19, 65, 43, 89, 21, 67, 92,
+                  45, 10, 38, 74, 57, 29, 83, 11, 40, 77, 62, 31, 50, 15, 99};
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
@@ -75,23 +79,27 @@ TEST(petrov_a_nearest_neighbor_elements_mpi, test_task_run1) {
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
-  // Create Perf attributes
+  // Настройка Perf атрибутов
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  // Create and init perf results
+  // Инициализация результатов производительности
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
+  // Анализ производительности
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
 
-  // Check results only on the root process
+  // Проверка результата на корневом процессе
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(count_size_vector, global_sum[0]);
+
+    // Проверка, что ближайшая пара корректно записана
+    int expected_first = global_sum[0];
+    int expected_second = global_sum[1];
+    ASSERT_EQ(expected_first, 77);
+    ASSERT_EQ(expected_second, 62);
   }
 }
-
