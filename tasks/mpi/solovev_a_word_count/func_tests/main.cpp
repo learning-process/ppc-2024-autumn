@@ -6,6 +6,20 @@
 
 #include "mpi/solovev_a_word_count/include/ops_mpi.hpp"
 
+std::vector<char> create_text(int quan_words) {
+  std::vector<char> res;
+  std::string word = "word ";
+  std::string last = "word.";
+  for (int i = 0; i < quan_words - 1; i++)
+    for (unsigned long int symbol = 0; symbol < word.length(); symbol++) {
+      res.push_back(word[symbol]);
+    }
+  for (unsigned long int symbol = 0; symbol < last.length(); symbol++) {
+    res.push_back(last[symbol]);
+  }
+  return res;
+}
+
 TEST(solovev_a_word_count_mpi, test_0_word) {
   std::vector<char> input = {};
   std::vector<int> global_out(1, 0);
@@ -24,7 +38,7 @@ TEST(solovev_a_word_count_mpi, test_0_word) {
 }
 
 TEST(solovev_a_word_count_mpi, test_5_word) {
-  std::vector<char> input = solovev_a_word_count_mpi::create_text(5);
+  std::vector<char> input = create_text(5);
   std::vector<int> global_out(1, 0);
   boost::mpi::communicator world;
 
@@ -61,7 +75,7 @@ TEST(solovev_a_word_count_mpi, test_5_word) {
 }
 
 TEST(solovev_a_word_count_mpi, test_120_word) {
-  std::vector<char> input = solovev_a_word_count_mpi::create_text(120);
+  std::vector<char> input = create_text(120);
   std::vector<int> global_out(1, 0);
   boost::mpi::communicator world;
 
@@ -98,7 +112,7 @@ TEST(solovev_a_word_count_mpi, test_120_word) {
 }
 
 TEST(solovev_a_word_count_mpi, test_300_words) {
-  std::vector<char> input = solovev_a_word_count_mpi::create_text(300);
+  std::vector<char> input = create_text(300);
   std::vector<int> global_out(1, 0);
   boost::mpi::communicator world;
 
@@ -135,7 +149,7 @@ TEST(solovev_a_word_count_mpi, test_300_words) {
 }
 
 TEST(solovev_a_word_count_mpi, test_480_words) {
-  std::vector<char> input = solovev_a_word_count_mpi::create_text(480);
+  std::vector<char> input = create_text(480);
   std::vector<int> global_out(1, 0);
   boost::mpi::communicator world;
 
@@ -172,7 +186,7 @@ TEST(solovev_a_word_count_mpi, test_480_words) {
 }
 
 TEST(solovev_a_word_count_mpi, test_600_words) {
-  std::vector<char> input = solovev_a_word_count_mpi::create_text(600);
+  std::vector<char> input = create_text(600);
   std::vector<int> global_out(1, 0);
   boost::mpi::communicator world;
 
@@ -209,7 +223,7 @@ TEST(solovev_a_word_count_mpi, test_600_words) {
 }
 
 TEST(solovev_a_word_count_mpi, test_1200_word) {
-  std::vector<char> input = solovev_a_word_count_mpi::create_text(1200);
+  std::vector<char> input = create_text(1200);
   std::vector<int> global_out(1, 0);
   boost::mpi::communicator world;
 
