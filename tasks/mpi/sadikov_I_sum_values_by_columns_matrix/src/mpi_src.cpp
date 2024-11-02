@@ -116,7 +116,7 @@ bool sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel::run() {
   if (world.rank() == 0) {
     std::vector<int> localRes(columns_count);
     std::vector<int> sizes(world.size(), delta);
-    sizes.back() = delta + last_column + 1;
+    sizes.back() = delta + last_column;
     boost::mpi::gatherv(world, intermediate_res.data(), intermediate_res.size(), localRes.data(), sizes, 0);
     localRes.resize(columns_count);
     sum = localRes;
