@@ -12,6 +12,34 @@ double f3(double x) { return std::sin(x); }
 double f_const(double x) { return 5 + 0 * x; }
 double f_lin(double x) { return x; }
 
+TEST(smirnov_i_integration_by_rectangles_mpi, Test_invalid_fun_mpi) {
+  boost::mpi::communicator world;
+  double left = 0.0;
+  double right = 1.0;
+  int n_ = 1000;
+  std::vector<double> global_res(1, 0.0);
+  std::vector<double> result_seq(1, 0.0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    std::uint32_t o_size = 1;
+    std::uint32_t i_size = 3;
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&left));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&right));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n_));
+    taskDataPar->inputs_count.emplace_back(i_size);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
+    taskDataPar->outputs_count.emplace_back(o_size);
+  }
+
+  smirnov_i_integration_by_rectangles::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  testMpiTaskParallel.set_function(nullptr);
+
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  ASSERT_ANY_THROW(testMpiTaskParallel.run());
+}
 TEST(smirnov_i_integration_by_rectangles_mpi, Test_const) {
   boost::mpi::communicator world;
   double left = 0.0;

@@ -3,22 +3,19 @@
 #include <algorithm>
 #include <functional>
 #include <random>
-#include <string>
 #include <thread>
 #include <vector>
+#include <exception>
+#include <stdexcept>
 
 using namespace std::chrono_literals;
 
 bool smirnov_i_integration_by_rectangles::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    auto* tmp_ptr_left = reinterpret_cast<double*>(taskData->inputs[0]);
-    auto* tmp_ptr_right = reinterpret_cast<double*>(taskData->inputs[1]);
-    auto* tmp_ptr_n = reinterpret_cast<int*>(taskData->inputs[2]);
-
-    left = *tmp_ptr_left;
-    right = *tmp_ptr_right;
-    n_ = *tmp_ptr_n;
+    left = reinterpret_cast<double*>(taskData->inputs[0])[0];
+    right = reinterpret_cast<double*>(taskData->inputs[1])[0];
+    n_ = reinterpret_cast<int*>(taskData->inputs[2])[0];   
   }
 
   broadcast(world, left, 0);
@@ -54,14 +51,20 @@ double smirnov_i_integration_by_rectangles::TestMPITaskParallel::mpi_integrate_r
                                                                                     double left_, double right_,
                                                                                     int n) {
   if (func == nullptr) {
-    return -1;
+    throw std::logic_error("func is nullptr");
   }
   int rank;
   int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-  const int chunks = n;
+  int chunks = n / size;
+  int dop = n % size;
+  if (dop != 0) {
+    if (rank < dop) {
+      chunks++;
+    }
+  }
   double res_integr = 0;
 
   if (rank == 0) {
@@ -70,8 +73,9 @@ double smirnov_i_integration_by_rectangles::TestMPITaskParallel::mpi_integrate_r
     const double len_of_rect = (self_right - self_left) / chunks;
     for (int i = 0; i < chunks; i++) {
       const double left_rect = self_left + i * len_of_rect;
-      res_integr += f(left_rect + len_of_rect / 2) * len_of_rect;
+      res_integr += f(left_rect + len_of_rect / 2);
     }
+    res_integr *= len_of_rect;
     double recv;
     for (int i = 1; i < size; i++) {
       MPI_Recv(&recv, 1, MPI_DOUBLE, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, MPI_STATUSES_IGNORE);
@@ -85,11 +89,12 @@ double smirnov_i_integration_by_rectangles::TestMPITaskParallel::mpi_integrate_r
     const double len_of_rect = (self_right - self_left) / chunks;
     for (int i = 0; i < chunks; i++) {
       const double left_rect = self_left + i * len_of_rect;
-      self_res_integr += f(left_rect + len_of_rect / 2) * len_of_rect;
+      self_res_integr += f(left_rect + len_of_rect / 2);
     }
+    self_res_integr *= len_of_rect;
     MPI_Send(&self_res_integr, 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
   }
-
+  
   return res_integr;
 }
 
@@ -122,7 +127,7 @@ double smirnov_i_integration_by_rectangles::TestMPITaskSequential::seq_integrate
                                                                                       double left_, double right_,
                                                                                       int n) {
   if (func == nullptr) {
-    return -1;
+    throw std::logic_error("func is nullptr");
   }
   double res_integr = 0;
   const double self_left = left_;
@@ -130,7 +135,8 @@ double smirnov_i_integration_by_rectangles::TestMPITaskSequential::seq_integrate
   const double len_of_rect = (self_right - self_left) / n;
   for (int i = 0; i < n; i++) {
     const double left_rect = self_left + i * len_of_rect;
-    res_integr += f(left_rect + len_of_rect / 2) * len_of_rect;
+    res_integr += f(left_rect + len_of_rect / 2);
   }
+  res_integr *= len_of_rect;
   return res_integr;
 }

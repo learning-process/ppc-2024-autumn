@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <thread>
 #include <vector>
+#include <exception>
+#include <stdexcept>
 
 using namespace std::chrono_literals;
 bool smirnov_i_integration_by_rectangles::TestMPITaskSequential::pre_processing() {
@@ -35,7 +37,7 @@ double smirnov_i_integration_by_rectangles::TestMPITaskSequential::seq_integrate
                                                                                       double left, double right,
                                                                                       int n) {
   if (func == nullptr) {
-    return -1;
+    throw std::logic_error("func is nullptr");
   }
   double res_integr = 0;
   const double self_left = left;
@@ -43,7 +45,8 @@ double smirnov_i_integration_by_rectangles::TestMPITaskSequential::seq_integrate
   const double len_of_rect = (self_right - self_left) / n;
   for (int i = 0; i < n; i++) {
     const double left_rect = self_left + i * len_of_rect;
-    res_integr += f(left_rect + len_of_rect / 2) * len_of_rect;
+    res_integr += f(left_rect + len_of_rect / 2);
   }
+  res_integr *= len_of_rect;
   return res_integr;
 }
