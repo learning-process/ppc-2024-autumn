@@ -2,8 +2,8 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
-#include <vector>
 #include <random>
+#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/koshkin_m_scalar_product_of_vectors/include/ops_mpi.hpp"

@@ -2,8 +2,8 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
-#include <vector>
 #include <random>
+#include <vector>
 
 #include "mpi/koshkin_m_scalar_product_of_vectors/include/ops_mpi.hpp"
 static int offset = 0;
@@ -220,7 +220,7 @@ TEST(koshkin_m_scalar_product_of_vectors, check_mpi_vectorDotProduct_ternary) {
   std::vector<int> vec_1 = {5, 2, 10};
   std::vector<int> vec_2 = {6, 10, 1};
   ASSERT_EQ(60, koshkin_m_scalar_product_of_vectors::calculateDotProduct(vec_1, vec_2));
-}   
+}
 
 TEST(koshkin_m_scalar_product_of_vectors, check_mpi_run_size_4) {
   boost::mpi::communicator world;

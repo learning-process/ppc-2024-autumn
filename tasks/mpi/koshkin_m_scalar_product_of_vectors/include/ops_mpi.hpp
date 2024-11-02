@@ -45,4 +45,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  // koshkin_m_scalar_product_of_vectors
+}  // namespace koshkin_m_scalar_product_of_vectors
