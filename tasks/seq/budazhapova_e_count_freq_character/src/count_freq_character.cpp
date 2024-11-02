@@ -1,7 +1,6 @@
-﻿#include <filesystem>
-#include <thread>
+﻿#include <thread>
 
-#include "seq/budazhapova_e_count_freq_character/include/count_freq_character_header.h"
+#include "seq/budazhapova_e_count_freq_character/include/count_freq_character_header.hpp"
 
 using namespace std::chrono_literals;
 

@@ -26,7 +26,7 @@ class TestMPITaskSequential : public ppc::core::Task {
  private:
   std::string input_;
   int res{};
-  char symb{},
+  char symb{};
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
