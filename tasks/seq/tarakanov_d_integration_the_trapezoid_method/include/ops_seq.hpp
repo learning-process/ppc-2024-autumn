@@ -6,9 +6,11 @@
 
 #include "core/task/include/task.hpp"
 
-namespace tarakanov_d_integration_the_trapezoid_method_seq {
+namespace tarakanov_d_integration_the_trapezoid_method_seq 
+{
 
-class integration_the_trapezoid_method : public ppc::core::Task {
+class integration_the_trapezoid_method : public ppc::core::Task 
+{
  public:
   explicit integration_the_trapezoid_method(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
@@ -17,10 +19,8 @@ class integration_the_trapezoid_method : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  int input_{}, res{};
-  double a{}, b{}, h{};
+  double a{}, b{}, h{}, res{};;
 
-  //write here any function of x
   double f(double x) 
   {
     return x * x;
