@@ -13,10 +13,8 @@ using namespace std::chrono_literals;
 std::vector<int> compute_minimums(std::vector<int>& data, int part_size) {
   std::vector<int> minimums;
   for (size_t i = 0; i < data.size(); i += part_size) {
-    // Определяем границы текущей части
     auto start = data.begin() + i;
     auto end = (i + part_size < data.size()) ? data.begin() + i + part_size : data.end();
-    // Находим минимум в текущей части
     int min_value = *std::min_element(start, end);
     minimums.push_back(min_value);
   }
