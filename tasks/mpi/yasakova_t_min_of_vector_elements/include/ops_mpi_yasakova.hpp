@@ -31,12 +31,12 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
-  bool post_processing() override; 
-
+  bool post_processing() override;
+ 
  private:
   std::vector<int> inputValues_, localInputValues_;
   int res_{};
   boost::mpi::communicator world;
 };
 
-} // namespace yasakova_t_min_of_vector_elements_mpi
+}  // namespace yasakova_t_min_of_vector_elements_mpi

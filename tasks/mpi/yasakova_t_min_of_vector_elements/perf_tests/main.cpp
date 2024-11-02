@@ -5,7 +5,6 @@
 #include <random>
 #include <vector>
 
-
 #include "core/perf/include/perf.hpp"
 #include "mpi/yasakova_t_min_of_vector_elements/include/ops_mpi_yasakova.hpp"
 

@@ -13,7 +13,7 @@ std::vector<int> RandomVector(int size, int minimum = 0, int maximum = 100) {
   std::vector<int> vec(size);
   for (int i = 0; i < size; i++) {
     vec[i] = minimum + gen() % (maximum - minimum + 1);
-    }
+  }
   return vec;
 }
 
