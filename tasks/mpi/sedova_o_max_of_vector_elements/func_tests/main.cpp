@@ -3,8 +3,8 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <vector>
 #include <random>
+#include <vector>
 
 #include "mpi/sedova_o_max_of_vector_elements/include/ops_mpi.hpp"
 
@@ -25,9 +25,8 @@ std::vector<std::vector<int>> generate_random_matrix(size_t rows, size_t cols, s
   return matrix;
 }
 
-TEST(sedova_o_max_of_vector_elements, Test_CanCreate_10) {
-  EXPECT_NO_THROW(generate_random_matrix(10, 10, 10));
-}
+ TEST(sedova_o_max_of_vector_elements, Test_CanCreate_10) {
+EXPECT_NO_THROW(generate_random_matrix(10, 10, 10)); }
 
 TEST(sedova_o_max_of_vector_elements, Test_SquareMatrix_10) {
   const int size = 10;

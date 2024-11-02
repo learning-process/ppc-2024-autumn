@@ -100,19 +100,19 @@ bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::run() {
     linput_ = std::vector<int>(input_.begin(), input_.begin() + a);
   }
 
-    if (world.rank() != 0) {
-      world.recv(0, 0, a);
-      if (a == 0) {
-        return true;
-      }
-      linput_ = std::vector<int>(a);
-      world.recv(0, 0, input_.data(), a);
+  if (world.rank() != 0) {
+    world.recv(0, 0, a);
+    if (a == 0) {
+      return true;
     }
-
-    int lres_ = sedova_o_max_of_vector_elements_mpi::find_max_of_matrix(input_);
-    reduce(world, lres_, res_, boost::mpi::maximum<int>(), 0);
-    return true;
+    linput_ = std::vector<int>(a);
+    world.recv(0, 0, input_.data(), a);
   }
+
+  int lres_ = sedova_o_max_of_vector_elements_mpi::find_max_of_matrix(input_);
+  reduce(world, lres_, res_, boost::mpi::maximum<int>(), 0);
+  return true;
+}
 bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
 
