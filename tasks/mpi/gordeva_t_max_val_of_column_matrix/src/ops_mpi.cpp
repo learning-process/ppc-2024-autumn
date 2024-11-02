@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include "mpi/gordeva_t_max_val_of_column_matrix/include/ops_mpi.hpp"
 
 #include <algorithm>
@@ -11,24 +10,11 @@
 
 using namespace std::chrono_literals;
 
-// std::vector<int> gordeva_t_max_val_of_column_matrix_mpi::getRandomVector(int sz) {
-//   std::random_device dev;
-//   std::mt19937 gen(dev());
-//   std::vector<int> vec(sz);
-//   for (int i = 0; i < sz; i++) {
-//     vec[i] = gen() % 100;
-//   }
-//   return vec;
-// }
-
 bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
 
-  // Init matrix
-
   int rows = taskData->inputs_count[0];
   int cols = taskData->inputs_count[1];
-  // int* input_matr;
 
   input_.resize(rows, std::vector<int>(cols));
 
@@ -45,7 +31,6 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::pre_processi
 bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
 
-  // Check count elements of output
   if (taskData->inputs.empty() || taskData->outputs.empty()) return false;
   if (taskData->inputs_count[0] <= 0 || taskData->inputs_count[1] <= 0) return false;
   if (taskData->outputs_count.size() != 1) return false;
@@ -75,7 +60,6 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::post_process
 
   int* output_matr = reinterpret_cast<int*>(taskData->outputs[0]);
 
-  // for (size_t i = 0; i < res.size(); i++) output_matr[i] = res[i];
   std::copy(res.begin(), res.end(), output_matr);
   return true;
 }
@@ -100,14 +84,31 @@ std::vector<std::vector<int>> gordeva_t_max_val_of_column_matrix_mpi::TestMPITas
   return matr;
 }
 
-// Parallel
 
 bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
+  return true;
+}
+
+bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::validation() {
+  internal_order_test();
+
+  if (world.rank() == 0) {
+    if (taskData->inputs.empty() || taskData->outputs.empty()) return false;
+    if (taskData->inputs_count[0] <= 0 || taskData->inputs_count[1] <= 0) return false;
+    if (taskData->outputs_count.size() != 1) return false;
+    if (taskData->inputs_count.size() < 2) return false;
+    if (taskData->outputs_count[0] != taskData->inputs_count[1]) return false;
+  }
+  return true;
+}
+
+bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::run() {
+  internal_order_test();
+
   int rows = 0;
   int cols = 0;
-  // int* input_matr;
 
   int delta = 0;
   int delta_1 = 0;
@@ -117,8 +118,6 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::pre_processing
     cols = taskData->inputs_count[1];
   }
 
-  // delta = taskData->inputs_count[0] / world.size();
-  // delta_1 = taskData->inputs_count[0] % world.size();
   broadcast(world, rows, 0);
   broadcast(world, cols, 0);
 
@@ -126,7 +125,6 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::pre_processing
   delta_1 = rows % world.size();
 
   if (world.rank() == 0) {
-    // Init vectors
     input_.resize(rows, std::vector<int>(cols));
     for (int i = 0; i < rows; i++) {
       int* input_matr = reinterpret_cast<int*>(taskData->inputs[i]);
@@ -134,7 +132,6 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::pre_processing
     }
 
     for (int proc = 1; proc < world.size(); proc++) {
-      // world.send(proc, 0, input_.data() + proc * delta, delta);
       int row_1 = proc * delta + std::min(proc, delta_1);
       int kol_vo = delta + (proc < delta_1 ? 1 : 0);
 
@@ -148,31 +145,10 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::pre_processing
   if (world.rank() == 0) {
     std::copy(input_.begin(), input_.begin() + local_input_rows, local_input_.begin());
   } else {
-    // world.recv(0, 0, local_input_.data(), delta);
     for (int i = 0; i < local_input_rows; i++) world.recv(0, 0, local_input_[i].data(), cols);
   }
 
-  // Init value for output
   res.resize(cols);
-  return true;
-}
-
-bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::validation() {
-  internal_order_test();
-
-  if (world.rank() == 0) {
-    // Check count elements of output
-    if (taskData->inputs.empty() || taskData->outputs.empty()) return false;
-    if (taskData->inputs_count[0] <= 0 || taskData->inputs_count[1] <= 0) return false;
-    if (taskData->outputs_count.size() != 1) return false;
-    if (taskData->inputs_count.size() < 2) return false;
-    if (taskData->outputs_count[0] != taskData->inputs_count[1]) return false;
-  }
-  return true;
-}
-
-bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::run() {
-  internal_order_test();
 
   std::vector<int> tmp_max(local_input_[0].size(), INT_MIN);
 
@@ -205,7 +181,6 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::post_processin
   internal_order_test();
 
   if (world.rank() == 0) {
-    // reinterpret_cast<int*>(taskData->outputs[0]) = res;
     std::copy(res.begin(), res.end(), reinterpret_cast<int*>(taskData->outputs[0]));
   }
   return true;

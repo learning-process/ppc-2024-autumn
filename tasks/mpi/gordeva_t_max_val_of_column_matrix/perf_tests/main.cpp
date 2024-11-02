@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
@@ -13,7 +12,6 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, test_pipeline_run) {
   std::vector<std::vector<int>> global_matr;
   std::vector<int32_t> max_s;
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int rows = 5000;
   int cols = 5000;
@@ -30,17 +28,14 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(max_s.size());
   }
 
-  // Create Perf attributes
   auto testMpiTaskParallel =
       std::make_shared<gordeva_t_max_val_of_column_matrix_mpi ::TestMPITaskParallel>(taskDataPar);
 
-  // Create and init perf results
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
-  // Create Perf analyzer
   if (world.rank() == 0) {
     for (size_t j = 0; j < max_s.size(); ++j) {
       ASSERT_EQ(max_s[j], 200);
@@ -51,7 +46,6 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, test_pipeline_run) {
 TEST(gordeva_t_max_val_of_column_matrix_mpi, test_task_run) {
   boost::mpi::communicator world;
 
-  // Create TaskData
   std::vector<std::vector<int>> global_matr;
   std::vector<int32_t> max_s;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -72,30 +66,16 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, test_task_run) {
     taskDataPar->outputs_count.emplace_back(max_s.size());
   }
 
-  // Create Perf attributes
   auto testMpiTaskParallel = std::make_shared<gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel>(taskDataPar);
 
-  // Create and init perf results
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
-  // Create Perf analyzer
   if (world.rank() == 0) {
     for (size_t j = 0; j < max_s.size(); ++j) {
       ASSERT_EQ(max_s[j], 200);
     }
   }
 }
-
-// int main(int argc, char** argv) {
-//   boost::mpi::environment env(argc, argv);
-//   boost::mpi::communicator world;
-//   ::testing::InitGoogleTest(&argc, argv);
-//   ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
-//   if (world.rank() != 0) {
-//     delete listeners.Release(listeners.default_result_printer());
-//   }
-//   return RUN_ALL_TESTS();
-// }

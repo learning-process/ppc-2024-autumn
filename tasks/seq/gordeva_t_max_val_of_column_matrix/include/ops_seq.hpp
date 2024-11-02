@@ -1,7 +1,5 @@
-// Copyright 2023 Nesterov Alexander
 #pragma once
 
-// #include <string>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -20,7 +18,6 @@ class TestTaskSequential : public ppc::core::Task {
   static std::vector<std::vector<int>> gen_rand_matr(int rows, int cols);
 
  private:
-  // int input_{}, res{};
   std::vector<std::vector<int>> input_;
   std::vector<int> res_;
 };

@@ -1,8 +1,6 @@
-// Copyright 2024 Nesterov Alexander
 #include "seq/gordeva_t_max_val_of_column_matrix/include/ops_seq.hpp"
 
 #include <random>
-// #include <thread>
 
 using namespace std::chrono_literals;
 
@@ -10,9 +8,6 @@ namespace gordeva_t_max_val_of_column_matrix_seq {
 
 bool gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
-  // Init value for input and output
-  // input_ = reinterpret_cast<int*>(taskData->inputs[0])[0];
-  // res = 0;
 
   int rows = taskData->inputs_count[0];
   int cols = taskData->inputs_count[1];
@@ -31,7 +26,6 @@ bool gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::pre_processing(
 
 bool gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::validation() {
   internal_order_test();
-  // Check count elements of output
 
   if (taskData->inputs.empty() || taskData->outputs.empty()) return false;
   if (taskData->inputs_count[0] <= 0 || taskData->inputs_count[1] <= 0) return false;
@@ -40,13 +34,10 @@ bool gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::validation() {
   if (taskData->outputs_count[0] != taskData->inputs_count[1]) return false;
 
   return true;
-  // return taskData->inputs_count[0] == 1 && taskData->outputs_count[0] == 1;
 }
 
 bool gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::run() {
   internal_order_test();
-  // int cols = input_[0].size();
-  // int rows = input_.size();
 
   for (size_t i = 0; i < input_[0].size(); i++) {
     int max_el = input_[0][i];
@@ -64,7 +55,6 @@ bool gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::post_processing
 
   int* output_matr = reinterpret_cast<int*>(taskData->outputs[0]);
 
-  // for (size_t i = 0; i < res_.size(); i++) output_matr[i] = res_[i];
   std::copy(res_.begin(), res_.end(), output_matr);
   return true;
 }

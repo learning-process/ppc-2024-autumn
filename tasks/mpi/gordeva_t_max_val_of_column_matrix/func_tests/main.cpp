@@ -1,8 +1,6 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
-// #include <boost/mpi/environment.hpp>
 #include <climits>
 #include <vector>
 
@@ -38,14 +36,11 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, IsEmptyOutput) {
 TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_500_columns_with_random) {
   boost::mpi::communicator world;
 
-  // Create data
   const int rows = 500;
   const int cols = 500;
-  // int* input_matr;
   std::vector<std::vector<int32_t>> global_matr;
   std::vector<int32_t> global_max(cols, INT_MIN);
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -58,7 +53,6 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_500_columns_with_random)
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
 
-  // Create Task
   gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
@@ -81,7 +75,6 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_500_columns_with_random)
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
-    // for (int i = 0; i < cols; i++) ASSERT_EQ(global_max[i], max_example[i]);
     ASSERT_EQ(global_max, max_example);
   }
 }
@@ -89,13 +82,11 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_500_columns_with_random)
 TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_500_1000_columns_with_random) {
   boost::mpi::communicator world;
 
-  // Create data
   const int rows = 500;
   const int cols = 1000;
   std::vector<std::vector<int>> global_matr;
   std::vector<int32_t> global_max(cols, INT_MIN);
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -108,7 +99,6 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_500_1000_columns_with_ra
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
 
-  // Create Task
   gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
@@ -140,13 +130,11 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_500_1000_columns_with_ra
 TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_1000_3000_columns_with_random) {
   boost::mpi::communicator world;
 
-  // Create data
   const int rows = 1000;
   const int cols = 3000;
   std::vector<std::vector<int>> global_matr;
   std::vector<int32_t> global_max(cols, INT_MIN);
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -159,7 +147,6 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_1000_3000_columns_with_r
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
 
-  // Create Task
   gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
@@ -188,7 +175,6 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, Max_val_of_1000_3000_columns_with_r
   }
 }
 
-// Incorrect input for parallel
 TEST(gordeva_t_max_val_of_column_matrix_mpi, Incorrect_val_size_of_input) {
   boost::mpi::communicator world;
 
@@ -206,7 +192,6 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, Incorrect_val_size_of_input) {
   }
 }
 
-// Incorrect output for parallel
 TEST(gordeva_t_max_val_of_column_matrix_mpi, Incorrect_val_of_output) {
   boost::mpi::communicator world;
 
