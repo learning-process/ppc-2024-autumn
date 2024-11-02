@@ -1,7 +1,9 @@
 // Copyright 2024 Nesterov Alexander
 #include <gtest/gtest.h>
+
 #include <boost/mpi/timer.hpp>
 #include <vector>
+
 #include "core/perf/include/perf.hpp"
 #include "mpi/sidorina_p_check_lexicographic_order/include/ops_mpi.hpp"
 

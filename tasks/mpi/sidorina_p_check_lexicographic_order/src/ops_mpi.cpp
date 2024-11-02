@@ -33,7 +33,7 @@ bool sidorina_p_check_lexicographic_order_mpi::TestMPITaskSequential::run() {
       break;
     }
     if (input_[0][i] < input_[1][i]) {
-      break;          
+      break; 
     }
   }
   return true;
