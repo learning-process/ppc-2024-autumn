@@ -31,11 +31,11 @@ TEST(suvorov_d_sum_of_vector_elements_seq, Test_Sum_10) {
   taskDataSeq->outputs_count.emplace_back(test_output.size());
 
   // Create Task
-  suvorov_d_sum_of_vector_elements_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
+  suvorov_d_sum_of_vector_elements_seq::Sum_of_vector_elements_seq SumOfVectorElementsSeq(taskDataSeq);
+  ASSERT_EQ(SumOfVectorElementsSeq.validation(), true);
+  SumOfVectorElementsSeq.pre_processing();
+  SumOfVectorElementsSeq.run();
+  SumOfVectorElementsSeq.post_processing();
   ASSERT_EQ(right_result, test_output[0]);
 }
 
@@ -63,11 +63,11 @@ TEST(suvorov_d_sum_of_vector_elements_seq, Test_Sum_100) {
   taskDataSeq->outputs_count.emplace_back(test_output.size());
 
   // Create Task
-  suvorov_d_sum_of_vector_elements_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
+  suvorov_d_sum_of_vector_elements_seq::Sum_of_vector_elements_seq SumOfVectorElementsSeq(taskDataSeq);
+  ASSERT_EQ(SumOfVectorElementsSeq.validation(), true);
+  SumOfVectorElementsSeq.pre_processing();
+  SumOfVectorElementsSeq.run();
+  SumOfVectorElementsSeq.post_processing();
   ASSERT_EQ(right_result, test_output[0]);
 }
 
@@ -95,11 +95,11 @@ TEST(suvorov_d_sum_of_vector_elements_seq, Test_Sum_10000) {
   taskDataSeq->outputs_count.emplace_back(test_output.size());
 
   // Create Task
-  suvorov_d_sum_of_vector_elements_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
+  suvorov_d_sum_of_vector_elements_seq::Sum_of_vector_elements_seq SumOfVectorElementsSeq(taskDataSeq);
+  ASSERT_EQ(SumOfVectorElementsSeq.validation(), true);
+  SumOfVectorElementsSeq.pre_processing();
+  SumOfVectorElementsSeq.run();
+  SumOfVectorElementsSeq.post_processing();
   ASSERT_EQ(right_result, test_output[0]);
 }
 
@@ -127,11 +127,11 @@ TEST(suvorov_d_sum_of_vector_elements_seq, Test_Sum_1000000) {
   taskDataSeq->outputs_count.emplace_back(test_output.size());
 
   // Create Task
-  suvorov_d_sum_of_vector_elements_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
+  suvorov_d_sum_of_vector_elements_seq::Sum_of_vector_elements_seq SumOfVectorElementsSeq(taskDataSeq);
+  ASSERT_EQ(SumOfVectorElementsSeq.validation(), true);
+  SumOfVectorElementsSeq.pre_processing();
+  SumOfVectorElementsSeq.run();
+  SumOfVectorElementsSeq.post_processing();
   ASSERT_EQ(right_result, test_output[0]);
 }
 
@@ -159,10 +159,10 @@ TEST(suvorov_d_sum_of_vector_elements_seq, Test_Sum_10000000) {
   taskDataSeq->outputs_count.emplace_back(test_output.size());
 
   // Create Task
-  suvorov_d_sum_of_vector_elements_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
+  suvorov_d_sum_of_vector_elements_seq::Sum_of_vector_elements_seq SumOfVectorElementsSeq(taskDataSeq);
+  ASSERT_EQ(SumOfVectorElementsSeq.validation(), true);
+  SumOfVectorElementsSeq.pre_processing();
+  SumOfVectorElementsSeq.run();
+  SumOfVectorElementsSeq.post_processing();
   ASSERT_EQ(right_result, test_output[0]);
 }

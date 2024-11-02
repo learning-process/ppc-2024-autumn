@@ -13,13 +13,13 @@
 
 #include "core/task/include/task.hpp"
 
-namespace suvorov_d_sum_of_vector_elements {
+namespace suvorov_d_sum_of_vector_elements_mpi {
 
 std::vector<int> getRandomVector(int sz);
 
-class TestMPITaskSequential : public ppc::core::Task {
+class Sum_of_vector_elements_seq : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
+  explicit Sum_of_vector_elements_seq(std::shared_ptr<ppc::core::TaskData> taskData_)
       : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
@@ -31,9 +31,9 @@ class TestMPITaskSequential : public ppc::core::Task {
   int res{};
 };
 
-class TestMPITaskParallel : public ppc::core::Task {
+class Sum_of_vector_elements_parallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
+  explicit Sum_of_vector_elements_parallel(std::shared_ptr<ppc::core::TaskData> taskData_)
       : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;

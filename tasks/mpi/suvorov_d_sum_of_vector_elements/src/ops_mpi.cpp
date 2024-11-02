@@ -10,7 +10,7 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> suvorov_d_sum_of_vector_elements::getRandomVector(int sz) {
+std::vector<int> suvorov_d_sum_of_vector_elements_mpi::getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
@@ -20,7 +20,7 @@ std::vector<int> suvorov_d_sum_of_vector_elements::getRandomVector(int sz) {
   return vec;
 }
 
-bool suvorov_d_sum_of_vector_elements::TestMPITaskSequential::pre_processing() {
+bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_seq::pre_processing() {
   internal_order_test();
   // Init vectors
   input_ = std::vector<int>(taskData->inputs_count[0]);
@@ -33,25 +33,25 @@ bool suvorov_d_sum_of_vector_elements::TestMPITaskSequential::pre_processing() {
   return true;
 }
 
-bool suvorov_d_sum_of_vector_elements::TestMPITaskSequential::validation() {
+bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_seq::validation() {
   internal_order_test();
   // Check count elements of output
   return taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1;
 }
 
-bool suvorov_d_sum_of_vector_elements::TestMPITaskSequential::run() {
+bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_seq::run() {
   internal_order_test();
   res = std::accumulate(input_.begin(), input_.end(), 0);
   return true;
 }
 
-bool suvorov_d_sum_of_vector_elements::TestMPITaskSequential::post_processing() {
+bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_seq::post_processing() {
   internal_order_test();
   reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
   return true;
 }
 
-bool suvorov_d_sum_of_vector_elements::TestMPITaskParallel::pre_processing() {
+bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel::pre_processing() {
   internal_order_test();
   unsigned int delta = 0;
   if (world.rank() == 0) {
@@ -81,7 +81,7 @@ bool suvorov_d_sum_of_vector_elements::TestMPITaskParallel::pre_processing() {
   return true;
 }
 
-bool suvorov_d_sum_of_vector_elements::TestMPITaskParallel::validation() {
+bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     // Check count elements of output
@@ -90,7 +90,7 @@ bool suvorov_d_sum_of_vector_elements::TestMPITaskParallel::validation() {
   return true;
 }
 
-bool suvorov_d_sum_of_vector_elements::TestMPITaskParallel::run() {
+bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel::run() {
   internal_order_test();
   int local_res;
 
@@ -101,7 +101,7 @@ bool suvorov_d_sum_of_vector_elements::TestMPITaskParallel::run() {
   return true;
 }
 
-bool suvorov_d_sum_of_vector_elements::TestMPITaskParallel::post_processing() {
+bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     reinterpret_cast<int*>(taskData->outputs[0])[0] = res;

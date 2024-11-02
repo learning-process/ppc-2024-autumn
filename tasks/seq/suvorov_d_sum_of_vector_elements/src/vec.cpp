@@ -5,7 +5,7 @@
 
 using namespace std::chrono_literals;
 
-bool suvorov_d_sum_of_vector_elements_seq::TestTaskSequential::pre_processing() {
+bool suvorov_d_sum_of_vector_elements_seq::Sum_of_vector_elements_seq::pre_processing() {
   internal_order_test();
   // Init value for input and output
   int* input_pointer = reinterpret_cast<int*>(taskData->inputs[0]);
@@ -14,13 +14,13 @@ bool suvorov_d_sum_of_vector_elements_seq::TestTaskSequential::pre_processing() 
   return true;
 }
 
-bool suvorov_d_sum_of_vector_elements_seq::TestTaskSequential::validation() {
+bool suvorov_d_sum_of_vector_elements_seq::Sum_of_vector_elements_seq::validation() {
   internal_order_test();
   // Check count elements of output
   return taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1;
 }
 
-bool suvorov_d_sum_of_vector_elements_seq::TestTaskSequential::run() {
+bool suvorov_d_sum_of_vector_elements_seq::Sum_of_vector_elements_seq::run() {
   internal_order_test();
   
   res_ = std::accumulate(input_.begin(), input_.end(), 0);
@@ -28,7 +28,7 @@ bool suvorov_d_sum_of_vector_elements_seq::TestTaskSequential::run() {
   return true;
 }
 
-bool suvorov_d_sum_of_vector_elements_seq::TestTaskSequential::post_processing() {
+bool suvorov_d_sum_of_vector_elements_seq::Sum_of_vector_elements_seq::post_processing() {
   internal_order_test();
   reinterpret_cast<int*>(taskData->outputs[0])[0] = res_;
   return true;

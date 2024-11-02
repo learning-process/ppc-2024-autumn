@@ -16,18 +16,18 @@ TEST(suvorov_d_sum_of_vector_elements_mpi, Test_Sum) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 120;
-    global_vec = suvorov_d_sum_of_vector_elements::getRandomVector(count_size_vector);
+    global_vec = suvorov_d_sum_of_vector_elements_mpi::getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  suvorov_d_sum_of_vector_elements::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+  suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel SumOfVectorElementsParallel(taskDataPar);
+  ASSERT_EQ(SumOfVectorElementsParallel.validation(), true);
+  SumOfVectorElementsParallel.pre_processing();
+  SumOfVectorElementsParallel.run();
+  SumOfVectorElementsParallel.post_processing();
 
   if (world.rank() == 0) {
     // Create data
@@ -41,11 +41,11 @@ TEST(suvorov_d_sum_of_vector_elements_mpi, Test_Sum) {
     taskDataSeq->outputs_count.emplace_back(reference_sum.size());
 
     // Create Task
-    suvorov_d_sum_of_vector_elements::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
+    suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_seq SumOfVectorElementsSeq(taskDataSeq);
+    ASSERT_EQ(SumOfVectorElementsSeq.validation(), true);
+    SumOfVectorElementsSeq.pre_processing();
+    SumOfVectorElementsSeq.run();
+    SumOfVectorElementsSeq.post_processing();
 
     ASSERT_EQ(reference_sum[0], global_sum[0]);
   }

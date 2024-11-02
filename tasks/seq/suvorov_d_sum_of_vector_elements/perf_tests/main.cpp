@@ -23,7 +23,7 @@ TEST(suvorov_d_sum_of_vector_elements_seq, test_pipeline_run) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto testTaskSequential = std::make_shared<suvorov_d_sum_of_vector_elements_seq::TestTaskSequential>(taskDataSeq);
+  auto SumOfVectorElementsSeq = std::make_shared<suvorov_d_sum_of_vector_elements_seq::Sum_of_vector_elements_seq>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -39,7 +39,7 @@ TEST(suvorov_d_sum_of_vector_elements_seq, test_pipeline_run) {
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
   // Create Perf analyzer
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(SumOfVectorElementsSeq);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
   ASSERT_EQ(count, out[0]);
@@ -60,7 +60,7 @@ TEST(suvorov_d_sum_of_vector_elements_seq, test_task_run) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto testTaskSequential = std::make_shared<suvorov_d_sum_of_vector_elements_seq::TestTaskSequential>(taskDataSeq);
+  auto SumOfVectorElementsSeq = std::make_shared<suvorov_d_sum_of_vector_elements_seq::Sum_of_vector_elements_seq>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -76,7 +76,7 @@ TEST(suvorov_d_sum_of_vector_elements_seq, test_task_run) {
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
   // Create Perf analyzer
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(SumOfVectorElementsSeq);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
   ASSERT_EQ(count, out[0]);

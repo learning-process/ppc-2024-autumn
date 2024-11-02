@@ -23,11 +23,11 @@ TEST(suvorov_d_sum_of_vector_elements_mpi, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<suvorov_d_sum_of_vector_elements::TestMPITaskParallel>(taskDataPar, "+");
-  ASSERT_EQ(testMpiTaskParallel->validation(), true);
-  testMpiTaskParallel->pre_processing();
-  testMpiTaskParallel->run();
-  testMpiTaskParallel->post_processing();
+  auto SumOfVectorElementsParallel = std::make_shared<suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel>(taskDataPar, "+");
+  ASSERT_EQ(SumOfVectorElementsParallel->validation(), true);
+  SumOfVectorElementsParallel->pre_processing();
+  SumOfVectorElementsParallel->run();
+  SumOfVectorElementsParallel->post_processing();
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -39,7 +39,7 @@ TEST(suvorov_d_sum_of_vector_elements_mpi, test_pipeline_run) {
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
   // Create Perf analyzer
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(SumOfVectorElementsParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
@@ -63,11 +63,11 @@ TEST(suvorov_d_sum_of_vector_elements_mpi, test_task_run) {
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<suvorov_d_sum_of_vector_elements::TestMPITaskParallel>(taskDataPar, "+");
-  ASSERT_EQ(testMpiTaskParallel->validation(), true);
-  testMpiTaskParallel->pre_processing();
-  testMpiTaskParallel->run();
-  testMpiTaskParallel->post_processing();
+  auto SumOfVectorElementsParallel = std::make_shared<suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel>(taskDataPar, "+");
+  ASSERT_EQ(SumOfVectorElementsParallel->validation(), true);
+  SumOfVectorElementsParallel->pre_processing();
+  SumOfVectorElementsParallel->run();
+  SumOfVectorElementsParallel->post_processing();
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -79,7 +79,7 @@ TEST(suvorov_d_sum_of_vector_elements_mpi, test_task_run) {
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
   // Create Perf analyzer
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(SumOfVectorElementsParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
