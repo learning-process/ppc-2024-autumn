@@ -1,9 +1,20 @@
 #include <gtest/gtest.h>
 
 #include <iostream>
+#include <random>
 #include <vector>
 
 #include "seq/sadikov_I_sum_values_by_columns_matrix/include/sq_task.h"
+
+std::vector<int> getRandomVector(size_t size) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(size);
+  for (size_t i = 0; i < size; i++) {
+    vec[i] = (gen() % 100) - 49;
+  }
+  return vec;
+}
 
 TEST(sum_values_by_columns_matrix, check_validation1) {
   std::vector<int> in(144, 1);
@@ -124,7 +135,7 @@ TEST(sum_values_by_columns_matrix, check_rect_matrix2) {
 TEST(sum_values_by_columns_matrix, check_rect_matrix3) {
   std::vector<int> in_index{500, 20};
   std::vector<int> out(20, 0);
-  std::vector<int> in = sadikov_I_Sum_values_by_columns_matrix_seq::getRandomVector(in_index[0] * in_index[1]);
+  std::vector<int> in = getRandomVector(in_index[0] * in_index[1]);
   std::shared_ptr<ppc::core::TaskData> taskData =
       sadikov_I_Sum_values_by_columns_matrix_seq::CreateTaskData(in, in_index, out);
   sadikov_I_Sum_values_by_columns_matrix_seq::MatrixTask sv(taskData);

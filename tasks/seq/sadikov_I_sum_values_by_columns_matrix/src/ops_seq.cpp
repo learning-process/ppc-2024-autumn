@@ -59,12 +59,3 @@ std::shared_ptr<ppc::core::TaskData> sadikov_I_Sum_values_by_columns_matrix_seq:
   taskData->outputs_count.emplace_back(OtV.size());
   return taskData;
 }
-std::vector<int> sadikov_I_Sum_values_by_columns_matrix_seq::getRandomVector(size_t size) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(size);
-  for (size_t i = 0; i < size; i++) {
-    vec[i] = (gen() % 100) - 49;
-  }
-  return vec;
-}
