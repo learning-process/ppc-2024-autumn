@@ -71,7 +71,8 @@ bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::pre_processing() 
 bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
 
-  return 
+  
+  return true;
 }
 
 bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::run() {
@@ -102,6 +103,7 @@ bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::run() {
   }
   linput_ = std::vector<int>(input_.begin(), input_.begin() + a);
 }
+
 
 if (world.rank() != 0) { 
   world.recv(0, 0, a);
