@@ -61,11 +61,11 @@ std::string make_random_sentence(size_t length) {
 
 TEST(vedernikova_k_word_num_in_str_mpi, empty) { run_test(""); }
 
-TEST(vedernikova_k_word_num_in_str_seq, empty_strlen_1) { run_test(std::string(1, ' ')); }
-TEST(vedernikova_k_word_num_in_str_seq, empty_strlen_2) { run_test(std::string(2, ' ')); }
-TEST(vedernikova_k_word_num_in_str_seq, empty_strlen_3) { run_test(std::string(3, ' ')); }
-TEST(vedernikova_k_word_num_in_str_seq, empty_strlen_4) { run_test(std::string(4, ' ')); }
-TEST(vedernikova_k_word_num_in_str_seq, empty_strlen_5) { run_test(std::string(5, ' ')); }
+TEST(vedernikova_k_word_num_in_str_mpi, empty_strlen_1) { run_test(std::string(1, ' ')); }
+TEST(vedernikova_k_word_num_in_str_mpi, empty_strlen_2) { run_test(std::string(2, ' ')); }
+TEST(vedernikova_k_word_num_in_str_mpi, empty_strlen_3) { run_test(std::string(3, ' ')); }
+TEST(vedernikova_k_word_num_in_str_mpi, empty_strlen_4) { run_test(std::string(4, ' ')); }
+TEST(vedernikova_k_word_num_in_str_mpi, empty_strlen_5) { run_test(std::string(5, ' ')); }
 
 TEST(vedernikova_k_word_num_in_str_mpi, strlen_1) { run_test("1"); }
 TEST(vedernikova_k_word_num_in_str_mpi, strlen_2) { run_test("2"); }

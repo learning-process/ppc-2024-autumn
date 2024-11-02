@@ -98,8 +98,7 @@ bool vedernikova_k_word_num_in_str_mpi::TestMPITaskParallel::run() {
   auto it = local_input.begin();
   if (world.rank() != 0 && it != local_input.end()) {
     bool skip_is_space = *it == ' ';
-    for (; it != local_input.end() && (skip_is_space == (*it == ' ')); ++it)
-      ;
+    for (; it != local_input.end() && (skip_is_space == (*it == ' ')); ++it);
   }
   const bool ended = it == local_input.end();
   bool is_space = !ended && *it == ' ';
