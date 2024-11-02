@@ -57,7 +57,7 @@ TEST(tyshkevich_a_num_of_orderly_violations_seq_ftest, Test_12) {
   int size = 12;
 
   // Create data
-  std::vector<int> in{1, 2, 3, 6, 1, 8, 3, 0, 5, 9, 4, 4};
+  std::vector<int> in{1, 2, 4, 6, 1, 8, 3, 0, 5, 9, 4, 4};
   std::vector<int> out(1, 0);
   int solution = 4;
 
