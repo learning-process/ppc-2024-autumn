@@ -15,7 +15,7 @@ bool smirnov_i_integration_by_rectangles::TestMPITaskParallel::pre_processing() 
   if (world.rank() == 0) {
     left = reinterpret_cast<double*>(taskData->inputs[0])[0];
     right = reinterpret_cast<double*>(taskData->inputs[1])[0];
-    n_ = reinterpret_cast<int*>(taskData->inputs[2])[0];   
+    n_ = reinterpret_cast<int*>(taskData->inputs[2])[0];
   }
 
   broadcast(world, left, 0);
@@ -94,7 +94,7 @@ double smirnov_i_integration_by_rectangles::TestMPITaskParallel::mpi_integrate_r
     self_res_integr *= len_of_rect;
     MPI_Send(&self_res_integr, 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
   }
-  
+
   return res_integr;
 }
 
