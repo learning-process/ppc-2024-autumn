@@ -71,6 +71,7 @@ bool grudzin_k_nearest_neighbor_elements_mpi::TestMPITaskParallel::run() {
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
     for (int proc = 1; proc < world.size(); proc++) {
+      // to prevent sending a false data
       if (proc * delta < size) {
         size_t dpo = delta + 1;
         size_t pack_size = std::min(dpo, size - proc * delta);
@@ -79,17 +80,21 @@ bool grudzin_k_nearest_neighbor_elements_mpi::TestMPITaskParallel::run() {
     }
   }
 
-  local_input_ = std::vector<int>(delta + 1);
   start = world.rank() * delta;
+  if (start < size) {
+    size_t dpo = delta + 1;
+    size_t pack_size = std::min(dpo, size - start);
+    local_input_ = std::vector<int>(pack_size);
+  }
+  std::pair<int, int> local_ans_ = {INT_MAX, -1};
   if (world.rank() == 0) {
     local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta + 1);
-  } else if (world.rank() * delta < size) {
+  } else if (start < size) {
+    // calculating actual data size
     size_t dpo = delta + 1;
-    size_t pack_size = std::min(dpo, size - world.rank() * delta);
+    size_t pack_size = std::min(dpo, size - start);
     world.recv(0, 0, local_input_.data(), pack_size);
   }
-
-  std::pair<int, int> local_ans_ = {INT_MAX, -1};
   for (size_t i = 0; i < local_input_.size() - 1 && (i + start) < size - 1; ++i) {
     std::pair<int, int> tmp = {abs(local_input_[i] - local_input_[i + 1]), i + start};
     local_ans_ = std::min(local_ans_, tmp);
