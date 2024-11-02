@@ -96,24 +96,11 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::pre_processing
     } else {
       delta = size / world.size() + 1;
     }
-  }
-
-  // broadcast(world, m, 0);
-  // broadcast(world, n, 0);
-  // broadcast(world, delta, 0);
-  // broadcast(world, size, 0);
-
-  if (world.rank() == 0) {
     input_ = std::vector<int>(delta * world.size(), INT_MAX);
     for (int i = 0; i < size; i++) {
       input_[i] = reinterpret_cast<int*>(taskData->inputs[0])[i];
     }
   }
-
-  local_input_ = std::vector<int>(delta);
-  // boost::mpi::scatter(world, input_.data(), local_input_.data(), delta, 0);
-
-  res.resize(m, INT_MAX);
 
   return true;
 }
@@ -125,9 +112,9 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::validation() {
     return ((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
             (taskData->inputs_count.size() >= 2 && taskData->inputs_count[0] != 0 && taskData->inputs_count[1] != 0) &&
             (taskData->outputs_count[0] == taskData->inputs_count[0]));
-  } else {
-    return true;
   }
+
+  return true;
 }
 
 bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::run() {
@@ -149,17 +136,13 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::run() {
     }
   }
 
-  if (world.rank() == 0) {
-    m = taskData->inputs_count[0];
-    n = taskData->inputs_count[1];
-  }
-
   broadcast(world, m, 0);
   broadcast(world, n, 0);
   broadcast(world, delta, 0);
 
+  local_input_ = std::vector<int>(delta);
   boost::mpi::scatter(world, input_.data(), local_input_.data(), delta, 0);
-
+  res.resize(m, INT_MAX);
   unsigned int last = 0;
 
   if (world.rank() == world.size() - 1) {
