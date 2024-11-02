@@ -10,7 +10,7 @@ TEST(tyshkevich_a_num_of_orderly_violations_mpi_ftest, Test_Max_10) {
   int size = 10;
 
   // Create data
-  std::vector<int> global_vec(size);
+  std::vector<int> global_vec(size);//test
   std::vector<int> result(1, 0);
 
   boost::mpi::communicator world;
