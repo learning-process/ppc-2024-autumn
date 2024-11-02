@@ -296,7 +296,7 @@ TEST(savchenko_m_min_matrix_seq, test_min_1x1000) {
 }
 
 TEST(savchenko_m_min_matrix_seq, test_min_0x10) {
-  std::vector<int> matrix;
+  std::vector<int> matrix(1, 0);
   std::vector<int32_t> min_value(1, INT_MAX);
 
   // Create data
@@ -318,7 +318,7 @@ TEST(savchenko_m_min_matrix_seq, test_min_0x10) {
 }
 
 TEST(savchenko_m_min_matrix_seq, test_min_10x0) {
-  std::vector<int> matrix;
+  std::vector<int> matrix(1, 0);
   std::vector<int32_t> min_value(1, INT_MAX);
 
   // Create data

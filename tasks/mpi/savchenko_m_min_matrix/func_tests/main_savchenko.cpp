@@ -428,7 +428,7 @@ TEST(savchenko_m_min_matrix_mpi, test_min_0x10) {
   const int columns = 10;
 
   boost::mpi::communicator world;
-  std::vector<int> global_matrix;
+  std::vector<int> global_matrix(1, 0);
   std::vector<int32_t> global_min(1, INT_MAX);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -469,7 +469,7 @@ TEST(savchenko_m_min_matrix_mpi, test_min_10x0) {
   const int columns = 0;
 
   boost::mpi::communicator world;
-  std::vector<int> global_matrix;
+  std::vector<int> global_matrix(1, 0);
   std::vector<int32_t> global_min(1, INT_MAX);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
