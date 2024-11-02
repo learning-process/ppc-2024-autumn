@@ -42,9 +42,9 @@ class integration_the_trapezoid_method_par : public ppc::core::Task
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-
- private:
-  double a{}, b{}, h{}, res{}, local_res{}, local_a{};
+  double res{};
+  
+  double a{}, b{}, h{}, /*local_res{},*/ local_a{};
   uint32_t partsCount{}, localPartsCount{};
 
   double f(double x) 
