@@ -42,7 +42,7 @@ bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::run(
   internal_order_test();
   count_num_of_orderly_violations_mpi();
   // Объединение локальных результатов в глобальный результат
-  MPI_Reduce(&l_res, &global_res, 1, MPI_UNSIGNED_LONG, MPI_SUM, 0, MPI_COMM_WORLD);
+  MPI_Reduce(&l_res, &g_res, 1, MPI_UNSIGNED_LONG, MPI_SUM, 0, MPI_COMM_WORLD);
   return true;
 }
 
