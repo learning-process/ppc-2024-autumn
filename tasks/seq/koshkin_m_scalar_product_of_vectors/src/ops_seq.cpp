@@ -1,5 +1,6 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/koshkin_m_scalar_product_of_vectors/include/ops_seq.hpp"
+
 #include <random>
 
 static int offset = 0;
