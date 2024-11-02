@@ -5,7 +5,6 @@
 #include <functional>
 #include <random>
 #include <string>
-#include <thread>
 #include <vector>
 
 using namespace std::chrono_literals;
@@ -29,10 +28,8 @@ bool shlyakov_m_min_value_of_row_mpi::TestMPITaskSequential::pre_processing() {
 
 bool shlyakov_m_min_value_of_row_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  bool flag = true;
 
-  if (flag ==
-      ((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
+  if (((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
        (taskData->inputs_count.size() >= 2 && taskData->inputs_count[0] != 0 && taskData->inputs_count[1] != 0)))
     return (true);
 
@@ -119,9 +116,7 @@ bool shlyakov_m_min_value_of_row_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
 
   if (world.rank() == 0) {
-    bool flag = true;
-    if (flag ==
-        ((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
+    if (((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
          (taskData->inputs_count.size() >= 2 && taskData->inputs_count[0] != 0 && taskData->inputs_count[1] != 0)))
       return (true);
     return (false);
