@@ -4,7 +4,6 @@
 #include <numeric>
 #include <random>
 
-
 namespace anufriev_d_max_of_vector_elements_parallel {
 
 std::vector<int32_t> make_random_vector(int32_t size, int32_t val_min, int32_t val_max) {
