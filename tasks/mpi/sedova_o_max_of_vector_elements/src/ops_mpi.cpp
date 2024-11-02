@@ -103,7 +103,9 @@ bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::run() {
 
 if (world.rank() != 0) {
   world.recv(0, 0, a);
-  if (a == 0) return true;
+  if (a == 0) {
+    return true;
+  }
   linput_ = std::vector<int>(a);
   world.recv(0, 0, input_.data(), a);
 }
