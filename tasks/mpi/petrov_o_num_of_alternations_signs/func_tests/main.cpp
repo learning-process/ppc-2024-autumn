@@ -10,7 +10,7 @@
 
 TEST(petrov_o_num_of_alternations_signs_seq, TestAlternations_Simple) {
   std::vector<int> input = {1, -2, 3, -4, 5};
-  std::vector<int> output(1);  // Вектор для результата
+  std::vector<int> output(1);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
@@ -25,7 +25,7 @@ TEST(petrov_o_num_of_alternations_signs_seq, TestAlternations_Simple) {
   ASSERT_TRUE(task.run());
   ASSERT_TRUE(task.post_processing());
 
-  ASSERT_EQ(output[0], 4);  // Ожидаемое количество чередований: 4
+  ASSERT_EQ(output[0], 4);
 }
 
 TEST(petrov_o_num_of_alternations_signs_seq, TestAlternations_AllPositive) {
@@ -45,7 +45,7 @@ TEST(petrov_o_num_of_alternations_signs_seq, TestAlternations_AllPositive) {
   ASSERT_TRUE(task.run());
   ASSERT_TRUE(task.post_processing());
 
-  ASSERT_EQ(output[0], 0);  // Ожидаемое количество чередований: 0
+  ASSERT_EQ(output[0], 0);
 }
 
 TEST(petrov_o_num_of_alternations_signs_seq, TestAlternations_AllNegative) {
@@ -65,7 +65,7 @@ TEST(petrov_o_num_of_alternations_signs_seq, TestAlternations_AllNegative) {
   ASSERT_TRUE(task.run());
   ASSERT_TRUE(task.post_processing());
 
-  ASSERT_EQ(output[0], 0);  // Ожидаемое количество чередований: 0
+  ASSERT_EQ(output[0], 0);
 }
 
 TEST(petrov_o_num_of_alternations_signs_seq, TestAlternations_Empty) {
@@ -85,7 +85,7 @@ TEST(petrov_o_num_of_alternations_signs_seq, TestAlternations_Empty) {
   ASSERT_TRUE(task.run());
   ASSERT_TRUE(task.post_processing());
 
-  ASSERT_EQ(output[0], 0);  // Ожидаемое количество чередований: 0
+  ASSERT_EQ(output[0], 0);
 }
 
 TEST(petrov_o_num_of_alternations_signs_seq, TestAlternations_OneElement) {
@@ -105,13 +105,13 @@ TEST(petrov_o_num_of_alternations_signs_seq, TestAlternations_OneElement) {
   ASSERT_TRUE(task.run());
   ASSERT_TRUE(task.post_processing());
 
-  ASSERT_EQ(output[0], 0);  // Ожидаемое количество чередований: 0
+  ASSERT_EQ(output[0], 0);
 }
 
 TEST(petrov_o_num_of_alternations_signs_seq, TestAlternations_LargeInput) {
   const int size = 1000;
   std::vector<int> input(size);
-  std::iota(input.begin(), input.end(), 1);  // Заполняем числами от 1 до 1000
+  std::iota(input.begin(), input.end(), 1);
   for (size_t i = 0; i < input.size(); ++i) {
     if (i % 2 != 0) {
       input[i] *= -1;
@@ -133,15 +133,14 @@ TEST(petrov_o_num_of_alternations_signs_seq, TestAlternations_LargeInput) {
   ASSERT_TRUE(task.run());
   ASSERT_TRUE(task.post_processing());
 
-  ASSERT_EQ(output[0], static_cast<int>(input.size() - 1));  // Ожидаемое количество чередований для чередующихся знаков
+  ASSERT_EQ(output[0], static_cast<int>(input.size() - 1));
 }
 
-/*Параллельные тесты*/
 TEST(petrov_o_num_of_alternations_signs_par, TestAlternations_Simple) {
   boost::mpi::communicator world;
 
   std::vector<int> input = {1, -2, 3, -4, 5, -6, 7, -8, 9, -10, 11, -12, 13, -14, 15, -16, 17, -18, 19, -20};
-  std::vector<int> output(1);  // Вектор для результата
+  std::vector<int> output(1);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -159,7 +158,7 @@ TEST(petrov_o_num_of_alternations_signs_par, TestAlternations_Simple) {
   ASSERT_TRUE(task.post_processing());
   if (world.rank() == 0) {
     ASSERT_EQ(output[0], 19);
-  }  // Ожидаемое количество чередований: 4
+  }
 }
 
 TEST(petrov_o_num_of_alternations_signs_par, TestAlternations_AllPositive) {
@@ -184,7 +183,7 @@ TEST(petrov_o_num_of_alternations_signs_par, TestAlternations_AllPositive) {
   ASSERT_TRUE(task.post_processing());
   if (world.rank() == 0) {
     ASSERT_EQ(output[0], 0);
-  }  // Ожидаемое количество чередований: 0
+  }
 }
 
 TEST(petrov_o_num_of_alternations_signs_par, TestAlternations_AllNegative) {
@@ -209,7 +208,7 @@ TEST(petrov_o_num_of_alternations_signs_par, TestAlternations_AllNegative) {
   ASSERT_TRUE(task.post_processing());
   if (world.rank() == 0) {
     ASSERT_EQ(output[0], 0);
-  }  // Ожидаемое количество чередований: 0
+  }
 }
 
 TEST(petrov_o_num_of_alternations_signs_par, TestAlternations_Empty) {
@@ -236,7 +235,7 @@ TEST(petrov_o_num_of_alternations_signs_par, TestAlternations_LargeInput) {
 
   const int size = 1000;
   std::vector<int> input(size);
-  std::iota(input.begin(), input.end(), 1);  // Заполняем числами от 1 до 1000
+  std::iota(input.begin(), input.end(), 1);
   for (size_t i = 0; i < input.size(); ++i) {
     if (i % 2 != 0) {
       input[i] *= -1;
@@ -261,7 +260,7 @@ TEST(petrov_o_num_of_alternations_signs_par, TestAlternations_LargeInput) {
   ASSERT_TRUE(task.post_processing());
   if (world.rank() == 0) {
     ASSERT_EQ(output[0], static_cast<int>(input.size() - 1));
-  }  // Ожидаемое количество чередований для чередующихся знаков
+  }
 }
 
 TEST(petrov_o_num_of_alternations_signs_par, TestAlternations_Random) {

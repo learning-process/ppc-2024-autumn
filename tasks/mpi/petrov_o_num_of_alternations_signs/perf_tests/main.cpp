@@ -7,7 +7,6 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/petrov_o_num_of_alternations_signs/include/ops_mpi.hpp"  // Обновленный include path
 
-// Вспомогательная функция для создания и запуска задачи
 template <typename TaskType>
 void runPerformanceTest(int size, int num_running) {
   std::vector<int> in(size);
@@ -44,8 +43,6 @@ void runPerformanceTest(int size, int num_running) {
 
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(task);
-
-  // Запуск теста производительности (pipeline_run или task_run)
 }
 
 TEST(petrov_o_num_of_alternations_signs_seq, test_pipeline_run) {
