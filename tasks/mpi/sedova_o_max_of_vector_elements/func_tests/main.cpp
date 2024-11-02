@@ -35,7 +35,11 @@ TEST(Parallel_Operations_MPI, Test_MaxElem) {
 
   // Create TaskData example
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
+  sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
   if (world.rank() == 0) {
     global_matrix = generate_random_matrix(rows, cols, value);
     for (size_t i = 0; i < global_matrix.size(); i++)
@@ -53,21 +57,19 @@ TEST(Parallel_Operations_MPI, Test_MaxElem) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Create data
-    std::vector<int32_t> reference_max(1, global_matrix[0][0]);
+    global_matrix = generate_random_matrix(rows, cols, value);
+    for (size_t i = 0; i < global_matrix.size(); i++)
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix[i].data()));
+    taskDataPar->inputs_count.emplace_back(rows);
+    taskDataPar->inputs_count.emplace_back(cols);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
+    taskDataPar->outputs_count.emplace_back(global_max.size());
+  }
 
-    // Create TaskData example
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    for (unsigned int i = 0; i < global_matrix.size(); i++)
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix[i].data()));
-    taskDataSeq->inputs_count.emplace_back(rows);
-    taskDataSeq->inputs_count.emplace_back(cols);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_max.data()));
-    sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-    ASSERT_EQ(testMpiTaskParallel.validation(), true);
-    testMpiTaskParallel.pre_processing();
-    testMpiTaskParallel.run();
-    testMpiTaskParallel.post_processing();
-    ASSERT_EQ(reference_max[0], global_max[0]);
+  sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
   }
 }
