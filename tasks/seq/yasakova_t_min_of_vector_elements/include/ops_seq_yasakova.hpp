@@ -1,8 +1,6 @@
 // Copyright 2023 Nesterov Alexander
 #pragma once
 
-#include <limits>
-#include <string>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -17,7 +15,7 @@ class TestTaskSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  
+
  private:
   std::vector<std::vector<int>> input_;
   int res_{};
