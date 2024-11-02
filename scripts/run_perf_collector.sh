@@ -1,4 +1,7 @@
 #!/bin/bash
+
+set -e
+
 # separate tests for debug
 for test_item in $(./build/bin/mpi_perf_tests --gtest_list_tests | awk '/\./{ SUITE=$1 }  /  / { print SUITE $1 }')
 do
