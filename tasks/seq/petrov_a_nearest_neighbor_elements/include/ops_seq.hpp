@@ -17,9 +17,9 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-	 
-	std::vector<int> input_;
-	std::vector<int> res;
+
+  std::vector<int> input_;
+  std::vector<int> res;
 };
 
 }  // namespace petrov_a_nearest_neighbor_elements_seq
