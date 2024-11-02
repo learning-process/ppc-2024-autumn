@@ -5,6 +5,13 @@
 
 #include "seq/frolova_e_num_of_letters/include/ops_seq.hpp"
 
+TEST(frolova_e_num_of_letters_seq, returns_empty_str_) {
+  std::string str = frolova_e_num_of_letters_seq::GenStr(-2);
+  EXPECT_TRUE(str.empty());
+  std::string str2 = frolova_e_num_of_letters_seq::GenStr(0);
+  EXPECT_TRUE(str2.empty());
+}
+
 TEST(frolova_e_num_of_letters_seq, empty_str_test) {
   std::string str;
 

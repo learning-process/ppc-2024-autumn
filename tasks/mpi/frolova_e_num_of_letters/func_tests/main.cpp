@@ -7,6 +7,13 @@
 
 #include "mpi/frolova_e_num_of_letters/include/ops_mpi.hpp"
 
+TEST(frolova_e_num_of_letters_mpi, returns_empty_str_) {
+  std::string str = frolova_e_num_of_letters_mpi::GenStr(-2);
+  EXPECT_TRUE(str.empty());
+  std::string str2 = frolova_e_num_of_letters_mpi::GenStr(0);
+  EXPECT_TRUE(str2.empty());
+}
+
 TEST(frolova_e_num_of_letters_mpi, Test_100_symbols) {
   boost::mpi::communicator world;
   std::string global_str;

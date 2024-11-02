@@ -11,6 +11,9 @@
 using namespace std::chrono_literals;
 
 std::string frolova_e_num_of_letters_mpi::GenStr(int n) {
+  if (n <= 0) {
+    return std::string();
+  }
   std::string str = "test";
   std::string result;
   result.resize(n);

@@ -6,8 +6,10 @@
 using namespace std::chrono_literals;
 
 std::string frolova_e_num_of_letters_seq::GenStr(int n) {
+  if (n <= 0) {
+    return std::string();
+  }
   std::string str = "test";
-
   std::string result;
   result.resize(n);
 
@@ -22,7 +24,6 @@ std::string frolova_e_num_of_letters_seq::GenStr(int n) {
       j = 0;
     }
   }
-
   return result;
 }
 
