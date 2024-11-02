@@ -15,7 +15,7 @@ TEST(tarakanov_d_integration_the_trapezoid_method_mpi_func_tests, Test_Integrati
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   double a = 0.0;
   double b = 1.0;
-  double h = 1e-14;
+  double h = 1e-8;
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));

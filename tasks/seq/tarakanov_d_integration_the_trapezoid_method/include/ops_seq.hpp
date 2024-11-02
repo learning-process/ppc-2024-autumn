@@ -1,7 +1,6 @@
 // Copyright 2024 Tarakanov Denis
 #pragma once
 
-#include <string>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -20,7 +19,7 @@ class integration_the_trapezoid_method : public ppc::core::Task {
  private:
   double a{}, b{}, h{}, res{};
 
-  double f(double x) { return x * x; };
+  static double f(double x) { return x * x; };
 };
 
 }  // namespace tarakanov_d_integration_the_trapezoid_method_seq

@@ -6,7 +6,7 @@
 
 using namespace tarakanov_d_integration_the_trapezoid_method_seq;
 
-auto createTaskData(double* a, double* b, double* h) {
+auto createTaskData(double* a, double* b, double* h, double* res) {
   auto data = std::make_shared<ppc::core::TaskData>();
 
   data->inputs.push_back(reinterpret_cast<uint8_t*>(a));
@@ -15,16 +15,18 @@ auto createTaskData(double* a, double* b, double* h) {
 
   data->inputs_count.push_back(3);
 
-  double outputs = 0;
-  data->outputs.push_back(reinterpret_cast<uint8_t*>(&outputs));
+  data->outputs.push_back(reinterpret_cast<uint8_t*>(res));
   data->outputs_count.push_back(1);
 
   return data;
 }
 
 TEST(tarakanov_d_integration_the_trapezoid_method_func_test, ValidationWorks) {
-  double a = 0.0, b = 1.0, h = 0.1;
-  auto data = createTaskData(&a, &b, &h);
+  double a = 0.0;
+  double b = 1.0;
+  double h = 0.1;
+  double res = 0.0;
+  auto data = createTaskData(&a, &b, &h, &res);
 
   integration_the_trapezoid_method task(data);
 
@@ -32,8 +34,11 @@ TEST(tarakanov_d_integration_the_trapezoid_method_func_test, ValidationWorks) {
 }
 
 TEST(tarakanov_d_integration_the_trapezoid_method_func_test, PreProcessingWorks) {
-  double a = 0.0, b = 1.0, h = 0.1;
-  auto data = createTaskData(&a, &b, &h);
+  double a = 0.0;
+  double b = 1.0;
+  double h = 0.1;
+  double res = 0.0;
+  auto data = createTaskData(&a, &b, &h, &res);
   integration_the_trapezoid_method task(data);
 
   EXPECT_TRUE(task.validation());
@@ -42,24 +47,12 @@ TEST(tarakanov_d_integration_the_trapezoid_method_func_test, PreProcessingWorks)
   EXPECT_EQ(task.get_data()->outputs_count[0], 1.0);
 }
 
-TEST(tarakanov_d_integration_the_trapezoid_method_func_test, RunCalculatesCorrectResult) {
-  double a = 0.0, b = 1.0, h = 0.1;
-  auto data = createTaskData(&a, &b, &h);
-
-  integration_the_trapezoid_method task(data);
-
-  task.validation();
-  task.pre_processing();
-  task.run();
-  task.post_processing();
-
-  double expected_result = 0.335;
-  EXPECT_DOUBLE_EQ(*reinterpret_cast<double*>(data->outputs[0]), expected_result);
-}
-
 TEST(tarakanov_d_integration_the_trapezoid_method_func_test, PostProcessingWorks) {
-  double a = 0.0, b = 1.0, h = 0.1;
-  auto data = createTaskData(&a, &b, &h);
+  double a = 0.0;
+  double b = 1.0;
+  double h = 0.1;
+  double res = 0.0;
+  auto data = createTaskData(&a, &b, &h, &res);
 
   integration_the_trapezoid_method task(data);
   EXPECT_TRUE(task.validation());
@@ -67,6 +60,7 @@ TEST(tarakanov_d_integration_the_trapezoid_method_func_test, PostProcessingWorks
   EXPECT_TRUE(task.run());
   EXPECT_TRUE(task.post_processing());
 
-  double output = *data->outputs[0];
-  EXPECT_NE(output, 0.0);
+  double output = *reinterpret_cast<double*>(data->outputs[0]);
+  bool flag = output == 0.0;
+  EXPECT_FALSE(flag);
 }

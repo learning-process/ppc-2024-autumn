@@ -1,8 +1,6 @@
 // Copyright 2024 Tarakanov Denis
 #include "mpi/tarakanov_d_integration_the_trapezoid_method/include/ops_mpi.hpp"
 
-#include <thread>
-
 using namespace std::chrono_literals;
 
 bool tarakanov_d_integration_the_trapezoid_method_mpi::integration_the_trapezoid_method_seq::pre_processing() {
@@ -60,10 +58,6 @@ bool tarakanov_d_integration_the_trapezoid_method_mpi::integration_the_trapezoid
     res = 0;
   }
 
-  boost::mpi::broadcast(world, a, 0);
-  boost::mpi::broadcast(world, b, 0);
-  boost::mpi::broadcast(world, h, 0);
-
   partsCount = (b - a) / h;
   localPartsCount = partsCount / world.size();
   localPartsCount = world.rank() < static_cast<int>(partsCount) % world.size() ? localPartsCount + 1 : localPartsCount;
@@ -86,6 +80,10 @@ bool tarakanov_d_integration_the_trapezoid_method_mpi::integration_the_trapezoid
 
 bool tarakanov_d_integration_the_trapezoid_method_mpi::integration_the_trapezoid_method_par::run() {
   internal_order_test();
+
+  boost::mpi::broadcast(world, a, 0);
+  boost::mpi::broadcast(world, b, 0);
+  boost::mpi::broadcast(world, h, 0);
 
   double local_res = 0.0;
   local_res += (f(local_a) + f(local_a + localPartsCount * h)) * 0.5;

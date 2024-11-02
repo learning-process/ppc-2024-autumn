@@ -5,7 +5,6 @@
 #include <boost/mpi/communicator.hpp>
 #include <memory>
 #include <numeric>
-#include <string>
 #include <utility>
 #include <vector>
 
@@ -25,7 +24,7 @@ class integration_the_trapezoid_method_seq : public ppc::core::Task {
  private:
   double a{}, b{}, h{}, res{};
 
-  double f(double x) { return x * x; };
+  static double f(double x) { return x * x; };
 };
 
 class integration_the_trapezoid_method_par : public ppc::core::Task {
@@ -41,7 +40,7 @@ class integration_the_trapezoid_method_par : public ppc::core::Task {
   double a{}, b{}, h{}, /*local_res{},*/ local_a{};
   uint32_t partsCount{}, localPartsCount{};
 
-  double f(double x) { return x * x; };
+  static double f(double x) { return x * x; };
 
   boost::mpi::communicator world;
 };

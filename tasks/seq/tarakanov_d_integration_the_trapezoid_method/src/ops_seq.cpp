@@ -1,8 +1,6 @@
 // Copyright 2024 Tarakanov Denis
 #include "seq/tarakanov_d_integration_the_trapezoid_method/include/ops_seq.hpp"
 
-#include <thread>
-
 using namespace std::chrono_literals;
 
 bool tarakanov_d_integration_the_trapezoid_method_seq::integration_the_trapezoid_method::pre_processing() {
