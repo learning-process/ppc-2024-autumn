@@ -12,7 +12,6 @@ TEST(petrov_a_nearest_neighbor_elements_seq, test_pipeline_run) {
 
   std::vector<int> out(2, 0);
 
-
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
