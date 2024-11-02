@@ -28,8 +28,8 @@ std::vector<std::vector<int>> generate_random_matrix(size_t rows, size_t cols, s
 TEST(sedova_o_max_of_vector_elements, Test_CanCreate_10) { EXPECT_NO_THROW(generate_random_matrix(10, 10, 10)); }
 
 TEST(sedova_o_max_of_vector_elements, Test_SquareMatrix_10) {
-  const int size = 10;
-  const int value = 30;
+  size_t size = 10;
+  size_t value = 30;
 
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
@@ -81,8 +81,8 @@ TEST(sedova_o_max_of_vector_elements, Test_SquareMatrix_10) {
 }
 
 TEST(sedova_o_max_of_vector_elements, Test_SquareMatrix_50) {
-  const int size = 50;
-  const int value = 30;
+  size_t size = 50;
+  size_t value = 30;
 
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
@@ -134,8 +134,8 @@ TEST(sedova_o_max_of_vector_elements, Test_SquareMatrix_50) {
 }
 
 TEST(sedova_o_max_of_vector_elements, Test_SquareMatrix_50_WithSeveralMax) {
-  const int size = 50;
-  const int value = 30;
+  size_t size = 50;
+  size_t value = 30;
 
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
@@ -189,9 +189,9 @@ TEST(sedova_o_max_of_vector_elements, Test_SquareMatrix_50_WithSeveralMax) {
 }
 
 TEST(sedova_o_max_of_vector_elements, Test_Matrix_100_50_WithSeveralMax) {
-  const int rows = 100;
-  const int cols = 50;
-  const int value = 30;
+  size_t rows = 100;
+  size_t cols = 50;
+  size_t value = 30;
 
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;

@@ -43,6 +43,6 @@ class TestMPITaskParallel : public ppc::core::Task {
   int res_{};
 };
 
-int find_max_of_matrix(const std::vector<int> matrix);
+int find_max_of_matrix(std::vector<int> matrix);
 
 }  // namespace sedova_o_max_of_vector_elements_mpi
