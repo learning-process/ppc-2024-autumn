@@ -105,9 +105,9 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::pre_processing
 
   if (world.rank() == 0) {
     input_ = std::vector<int>(delta * world.size(), INT_MAX);
-    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+    // auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     for (int i = 0; i < size; i++) {
-      input_[i] = tmp_ptr[i];
+      input_[i] = reinterpret_cast<int*>(taskData->inputs[0])[i];
     }
   }
 
