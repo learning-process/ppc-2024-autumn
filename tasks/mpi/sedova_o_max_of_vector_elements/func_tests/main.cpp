@@ -1,5 +1,4 @@
-﻿// Copyright 2023 Nesterov Alexander
-#include <gtest/gtest.h>
+﻿#include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
@@ -17,6 +16,7 @@ std::vector<int> generate_random_vector(size_t size, size_t value) {
   }
   return vec;
 }
+
 std::vector<std::vector<int>> generate_random_matrix(size_t rows, size_t cols, size_t value) {
   std::vector<std::vector<int>> matrix(rows);
   for (size_t i = 0; i < rows; i++) {
@@ -51,7 +51,7 @@ TEST(Parallel_Operations_MPI, Test_MaxElem) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-
+  
   if (world.rank() == 0) {
     // Create data
     std::vector<int32_t> reference_max(1, global_matrix[0][0]);
@@ -62,10 +62,7 @@ TEST(Parallel_Operations_MPI, Test_MaxElem) {
       taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix[i].data()));
     taskDataSeq->inputs_count.emplace_back(rows);
     taskDataSeq->inputs_count.emplace_back(cols);
-
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_max.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_max.size());
-    sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
     ASSERT_EQ(testMpiTaskParallel.validation(), true);
     testMpiTaskParallel.pre_processing();
     testMpiTaskParallel.run();
