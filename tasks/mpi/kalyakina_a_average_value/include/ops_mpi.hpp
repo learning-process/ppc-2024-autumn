@@ -15,8 +15,6 @@
 
 namespace kalyakina_a_average_value_mpi {
 
-std::vector<int> RandomVectorWithFixSum(int sum, const int& count);
-
 class FindingAverageMPITaskSequential : public ppc::core::Task {
  public:
   explicit FindingAverageMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
@@ -40,6 +38,7 @@ class FindingAverageMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
+  std::vector<int> input_vector;
   std::vector<int> local_input_vector;
   int result{};
   boost::mpi::communicator world;

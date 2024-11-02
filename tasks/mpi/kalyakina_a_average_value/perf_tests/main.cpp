@@ -3,9 +3,22 @@
 
 #include <boost/mpi/timer.hpp>
 #include <vector>
+#include <random>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/kalyakina_a_average_value/include/ops_mpi.hpp"
+
+std::vector<int> RandomVectorWithFixSum(int sum, const int& count) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> result_vector(count);
+  for (int i = 0; i < count - 1; i++) {
+    result_vector[i] = gen() % (std::min(sum, 255) - 1);
+    sum -= result_vector[i];
+  }
+  result_vector[count - 1] = sum;
+  return result_vector;
+}
 
 TEST(kalyakina_a_average_value_mpi, Avg_pipeline_run) {
   boost::mpi::communicator world;
@@ -17,7 +30,7 @@ TEST(kalyakina_a_average_value_mpi, Avg_pipeline_run) {
   int count = 120;
   int sum = 25000;
   if (world.rank() == 0) {
-    in = kalyakina_a_average_value_mpi::RandomVectorWithFixSum(sum, count);
+    in = RandomVectorWithFixSum(sum, count);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
     taskDataPar->inputs_count.emplace_back(in.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_mpi.data()));
@@ -58,7 +71,7 @@ TEST(kalyakina_a_average_value_mpi, Avg_task_run) {
   int count = 120;
   int sum = 25000;
   if (world.rank() == 0) {
-    in = kalyakina_a_average_value_mpi::RandomVectorWithFixSum(sum, count);
+    in = RandomVectorWithFixSum(sum, count);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
     taskDataPar->inputs_count.emplace_back(in.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_mpi.data()));

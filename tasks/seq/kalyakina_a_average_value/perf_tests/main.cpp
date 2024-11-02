@@ -2,9 +2,22 @@
 #include <gtest/gtest.h>
 
 #include <vector>
+#include <random>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/kalyakina_a_average_value/include/ops_seq.hpp"
+
+std::vector<int> RandomVectorWithFixSum(int sum, const int &count) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> result_vector(count);
+  for (int i = 0; i < count - 1; i++) {
+    result_vector[i] = gen() % (std::min(sum, 255) - 1);
+    sum -= result_vector[i];
+  }
+  result_vector[count - 1] = sum;
+  return result_vector;
+}
 
 TEST(kalyakina_a_average_value_seq, test_pipeline_run) {
   const int count = 100;
@@ -12,7 +25,7 @@ TEST(kalyakina_a_average_value_seq, test_pipeline_run) {
   const double expected_value = (double)sum / count;
 
   // Create data
-  std::vector<int> in = kalyakina_a_average_value_seq::RandomVectorWithFixSum(sum, count);
+  std::vector<int> in = RandomVectorWithFixSum(sum, count);
   std::vector<double> out(1, 0.0);
 
   // Create TaskData
@@ -54,7 +67,7 @@ TEST(kalyakina_a_average_value_seq, test_task_run) {
   const double expected_value = (double)sum / count;
 
   // Create data
-  std::vector<int> in = kalyakina_a_average_value_seq::RandomVectorWithFixSum(sum, count);
+  std::vector<int> in = RandomVectorWithFixSum(sum, count);
   std::vector<double> out(1, 0.0);
 
   // Create TaskData

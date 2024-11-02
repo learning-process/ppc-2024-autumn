@@ -7,18 +7,6 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> kalyakina_a_average_value_seq::RandomVectorWithFixSum(int sum, const int& count) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> result_vector(count);
-  for (int i = 0; i < count - 1; i++) {
-    result_vector[i] = gen() % (std::min(sum, 255) - 1);
-    sum -= result_vector[i];
-  }
-  result_vector[count - 1] = sum;
-  return result_vector;
-}
-
 bool kalyakina_a_average_value_seq::FindingAverageOfVectorElementsTaskSequential::pre_processing() {
   internal_order_test();
 

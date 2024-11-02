@@ -3,24 +3,11 @@
 
 #include <algorithm>
 #include <functional>
-#include <random>
 #include <string>
 #include <thread>
 #include <vector>
 
 using namespace std::chrono_literals;
-
-std::vector<int> kalyakina_a_average_value_mpi::RandomVectorWithFixSum(int sum, const int& count) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> result_vector(count);
-  for (int i = 0; i < count - 1; i++) {
-    result_vector[i] = gen() % (std::min(sum, 255) - 1);
-    sum -= result_vector[i];
-  }
-  result_vector[count - 1] = sum;
-  return result_vector;
-}
 
 bool kalyakina_a_average_value_mpi::FindingAverageMPITaskSequential::pre_processing() {
   internal_order_test();
@@ -59,38 +46,13 @@ bool kalyakina_a_average_value_mpi::FindingAverageMPITaskSequential::post_proces
 
 bool kalyakina_a_average_value_mpi::FindingAverageMPITaskParallel::pre_processing() {
   internal_order_test();
-  std::vector<int> input_vector;
-  unsigned int part = 0;
-  unsigned int reminder = 0;
-  if (world.rank() == 0) {
-    part = taskData->inputs_count[0] / world.size();
-    reminder = taskData->inputs_count[0] % world.size();
-  }
-  boost::mpi::broadcast(world, part, 0);
-  boost::mpi::broadcast(world, reminder, 0);
-
   if (world.rank() == 0) {
     // Init vectors
     input_vector = std::vector<int>(taskData->inputs_count[0]);
     int* it = reinterpret_cast<int*>(taskData->inputs[0]);
     std::copy(it, it + taskData->inputs_count[0], input_vector.begin());
   }
-  std::vector<int> distr(world.size(), part);
-  std::vector<int> displ(world.size());
-  for (unsigned int i = 0; i < static_cast<unsigned int>(world.size()); i++) {
-    if (reminder > 0) {
-      distr[i]++;
-      reminder--;
-    }
-    if (i == 0) {
-      displ[i] = 0;
-    } else {
-      displ[i] = displ[i - 1] + distr[i - 1];
-    }
-  }
-  local_input_vector = std::vector<int>(distr[world.rank()]);
-  boost::mpi::scatterv(world, input_vector.data(), distr, displ, local_input_vector.data(), distr[world.rank()], 0);
-
+  
   // Init value for output
   if (world.rank() == 0) {
     result = 0;
@@ -109,6 +71,30 @@ bool kalyakina_a_average_value_mpi::FindingAverageMPITaskParallel::validation() 
 
 bool kalyakina_a_average_value_mpi::FindingAverageMPITaskParallel::run() {
   internal_order_test();
+  unsigned int part = 0;
+  unsigned int reminder = 0;
+  if (world.rank() == 0) {
+    part = taskData->inputs_count[0] / world.size();
+    reminder = taskData->inputs_count[0] % world.size();
+  }
+  boost::mpi::broadcast(world, part, 0);
+  boost::mpi::broadcast(world, reminder, 0);
+  std::vector<int> distr(world.size(), part);
+  std::vector<int> displ(world.size());
+  for (unsigned int i = 0; i < static_cast<unsigned int>(world.size()); i++) {
+    if (reminder > 0) {
+      distr[i]++;
+      reminder--;
+    }
+    if (i == 0) {
+      displ[i] = 0;
+    } else {
+      displ[i] = displ[i - 1] + distr[i - 1];
+    }
+  }
+  local_input_vector = std::vector<int>(distr[world.rank()]);
+  boost::mpi::scatterv(world, input_vector.data(), distr, displ, local_input_vector.data(), distr[world.rank()], 0);
+
   int local_res = 0;
   for (unsigned int i = 0; i < local_input_vector.size(); i++) {
     local_res += local_input_vector[i];

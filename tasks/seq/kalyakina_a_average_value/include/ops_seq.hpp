@@ -8,8 +8,6 @@
 
 namespace kalyakina_a_average_value_seq {
 
-std::vector<int> RandomVectorWithFixSum(int sum, const int& count);
-
 class FindingAverageOfVectorElementsTaskSequential : public ppc::core::Task {
  public:
   explicit FindingAverageOfVectorElementsTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_)

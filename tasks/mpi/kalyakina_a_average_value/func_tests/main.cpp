@@ -4,8 +4,21 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <vector>
+#include <random>
 
 #include "mpi/kalyakina_a_average_value/include/ops_mpi.hpp"
+
+std::vector<int> RandomVectorWithFixSum(int sum, const int& count) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> result_vector(count);
+  for (int i = 0; i < count - 1; i++) {
+    result_vector[i] = gen() % (std::min(sum, 255) - 1);
+    sum -= result_vector[i];
+  }
+  result_vector[count - 1] = sum;
+  return result_vector;
+}
 
 TEST(kalyakina_a_average_value_mpi, Test_Avg_10) {
   boost::mpi::communicator world;
@@ -18,7 +31,7 @@ TEST(kalyakina_a_average_value_mpi, Test_Avg_10) {
   if (world.rank() == 0) {
     const int count = 10;
     const int sum = 1000;
-    in = kalyakina_a_average_value_mpi::RandomVectorWithFixSum(sum, count);
+    in = RandomVectorWithFixSum(sum, count);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
     taskDataPar->inputs_count.emplace_back(in.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_mpi.data()));
@@ -64,7 +77,7 @@ TEST(kalyakina_a_average_value_mpi, Test_Avg_20) {
   if (world.rank() == 0) {
     const int count = 20;
     const int sum = 3500;
-    in = kalyakina_a_average_value_mpi::RandomVectorWithFixSum(sum, count);
+    in = RandomVectorWithFixSum(sum, count);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
     taskDataPar->inputs_count.emplace_back(in.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_mpi.data()));
@@ -110,7 +123,7 @@ TEST(kalyakina_a_average_value_mpi, Test_Avg_50) {
   if (world.rank() == 0) {
     const int count = 50;
     const int sum = 8000;
-    in = kalyakina_a_average_value_mpi::RandomVectorWithFixSum(sum, count);
+    in = RandomVectorWithFixSum(sum, count);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
     taskDataPar->inputs_count.emplace_back(in.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_mpi.data()));
@@ -156,7 +169,7 @@ TEST(kalyakina_a_average_value_mpi, Test_Avg_70) {
   if (world.rank() == 0) {
     const int count = 70;
     const int sum = 10000;
-    in = kalyakina_a_average_value_mpi::RandomVectorWithFixSum(sum, count);
+    in = RandomVectorWithFixSum(sum, count);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
     taskDataPar->inputs_count.emplace_back(in.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_mpi.data()));
@@ -202,7 +215,7 @@ TEST(kalyakina_a_average_value_mpi, Test_Avg_100) {
   if (world.rank() == 0) {
     const int count = 100;
     const int sum = 20000;
-    in = kalyakina_a_average_value_mpi::RandomVectorWithFixSum(sum, count);
+    in = RandomVectorWithFixSum(sum, count);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
     taskDataPar->inputs_count.emplace_back(in.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_mpi.data()));
