@@ -126,46 +126,58 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::validation() {
 bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-  int m = taskData->inputs_count[0];
-  int n = taskData->inputs_count[1];
+  int m = taskData->inputs_count[0];  // Number of rows
+  int n = taskData->inputs_count[1];  // Number of columns
   int last = 0;
 
   if (world.rank() == world.size() - 1) {
-    last = local_input_.size() * world.size() - n * m;
-    if (last < 0) {
-      last = 0;
-    }
+    last = local_input_.size() * world.size() -
+           n * m;  // Determine the number of elements that are not included in the last part
   }
 
-  int id = world.rank() * local_input_.size() / n;
+  std::vector<int> res_(m, INT_MAX);  // Vector to store results (minimums)
 
-  for (int i = 0; i < id; i++) {
-    reduce(world, INT_MAX, res[i], boost::mpi::minimum<int>(), 0);
-  }
-
-  int delta = std::min(local_input_.size(), n - (world.rank() * local_input_.size() % n));
-  if (delta > 0) {
-    int l_res = *std::min_element(local_input_.begin(), local_input_.begin() + delta);
-    reduce(world, l_res, res[id], boost::mpi::minimum<int>(), 0);
-    id++;
-  }
+  // Find local minima and save them in res_
+  int delta = std::min(local_input_.size(), n - world.rank() * local_input_.size() % n);
+  int local_min = *std::min_element(local_input_.begin(), local_input_.begin() + delta);
+  res_[world.rank()] =
+      local_min;  // Save the local minimum into the resulting vector at the index corresponding to the process rank
+  int id = world.rank() + 1;  // Index to store results
 
   int k = 0;
-
   while (local_input_.begin() + delta + k * n < local_input_.end() - last) {
-    auto start_iter = local_input_.begin() + delta + k * n;
-    auto end_iter = local_input_.begin() + delta + (k + 1) * n;
-    if (end_iter > local_input_.end()) {
-      end_iter = local_input_.end();
+    local_min = *std::min_element(local_input_.begin() + delta + k * n,
+                                  std::min(local_input_.end(), local_input_.begin() + delta + (k + 1) * n));
+    if (id < m) {
+      res_[id] = local_min;  // Save the local minimum into the resulting vector
     }
-    int l_res = *std::min_element(start_iter, end_iter);
-    reduce(world, l_res, res[id], boost::mpi::minimum<int>(), 0);
     k++;
     id++;
   }
 
-  for (size_t i = id; i < res.size(); i++) {
-    reduce(world, INT_MAX, res[i], boost::mpi::minimum<int>(), 0);
+  // Send results to process 0
+  if (world.rank() != 0) {
+    world.send(0, 0, res_);  // Send local minima
+  } else {
+    // Process 0 collects minimums from other processes
+    for (int i = 0; i < world.size(); ++i) {
+      if (i == 0) {
+        // Save our minimums
+        continue;
+      }
+      std::vector<int> received_res(m);
+      world.recv(i, 0, received_res);  // Get minimums from other processes
+      for (int j = 0; j < m; ++j) {
+        if (received_res[j] < res_[j]) {
+          res_[j] = received_res[j];  // Update global minimums
+        }
+      }
+    }
+
+    // Save the results
+    for (int i = 0; i < m; ++i) {
+      res[i] = res_[i];
+    }
   }
 
   return true;
