@@ -36,7 +36,7 @@ bool petrov_a_nearest_neighbor_elements_seq::TestTaskSequential::validation() {
 
   internal_order_test();
   
-  bool isValid = (taskData->inputs_count.size() >= 1) && (!taskData->inputs.empty()) && (!taskData->outputs.empty());
+  bool isValid = (!taskData->inputs_count.empty()) && (!taskData->inputs.empty()) && (!taskData->outputs.empty());
  // std::cout << "Validation result: " << (isValid ? "Passed" : "Failed") << std::endl;
 
   return isValid;
