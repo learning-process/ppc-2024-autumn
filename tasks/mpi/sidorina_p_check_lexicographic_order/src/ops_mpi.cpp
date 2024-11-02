@@ -112,7 +112,6 @@ bool sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel::run() {
   }
   return true;
 }
-
 bool sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {

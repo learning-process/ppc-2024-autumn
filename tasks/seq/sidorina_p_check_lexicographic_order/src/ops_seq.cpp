@@ -1,6 +1,5 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/sidorina_p_check_lexicographic_order/include/ops_seq.hpp"
-
 #include <thread>
 
 using namespace std::chrono_literals;

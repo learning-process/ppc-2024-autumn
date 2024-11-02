@@ -79,7 +79,6 @@ TEST(sidorina_p_check_lexicographic_order_mpi, Test_1) {
 
   // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);

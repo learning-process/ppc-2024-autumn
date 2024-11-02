@@ -2,7 +2,6 @@
 #pragma once
 
 #include <gtest/gtest.h>
-
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <memory>

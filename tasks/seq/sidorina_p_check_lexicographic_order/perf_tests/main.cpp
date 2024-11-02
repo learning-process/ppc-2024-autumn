@@ -6,7 +6,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/sidorina_p_check_lexicographic_order/include/ops_seq.hpp"
 
-TEST(sidorina_p_check_lexicographic_order_seq, AAAAAAAAAAAAAA) {
+TEST(sidorina_p_check_lexicographic_order_seq, Test_0) {
   // Create data
   std::vector<char> str1(40000000, 'a');
   std::vector<char> str2(39999999, 'a');
