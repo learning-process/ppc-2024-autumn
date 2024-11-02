@@ -8,7 +8,7 @@
 #include "mpi/tsatsyn_a_vector_dot_product/include/ops_mpi.hpp"
 std::vector<int> toGetRandomVector(int size) {
   std::vector<int> vector(size);
-  std::srand((time(NULL)));
+  std::srand((time(nullptr)));
   for (int i = 0; i < size; ++i) vector[i] = std::rand() % 100 + 1;
 
   return vector;
