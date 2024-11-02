@@ -79,7 +79,7 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::pre_processing() {
 
   if (world.rank() == 0) {
     local_rows = taskData->inputs_count[0] / world.size();
-    if (taskData->inputs_count[0] % world.size() > world.rank()) {
+    if (static_cast<int>(taskData->inputs_count[0] % world.size()) > world.rank()) {
       local_rows += 1;
     }
     cols = taskData->inputs_count[1];
