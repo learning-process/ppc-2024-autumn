@@ -107,8 +107,6 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::validation() {
     }
   }
 
-  boost::mpi::broadcast(world, is_valid, 0);
-
   return is_valid;
 }
 
@@ -167,18 +165,18 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::run() {
     row_sums_.resize(rows, 0);
   }
 
-  sendcounts.clear();
+  std::vector<int> recvcounts(world.size());
 
   size_t offset = 0;
   for (int i = 0; i < world.size(); i++) {
     size_t rows_for_proc = base_rows_per_proc + (i < remainder_rows ? 1 : 0);
-    sendcounts[i] = static_cast<int>(rows_for_proc);
+    recvcounts[i] = static_cast<int>(rows_for_proc);
     displs[i] = static_cast<int>(offset);
     offset += rows_for_proc;
   }
 
   MPI_Gatherv(loc_row_sums_.data(), static_cast<int>(loc_row_sums_.size()), MPI_INT, row_sums_.data(),
-              sendcounts.data(), displs.data(), MPI_INT, 0, MPI_COMM_WORLD);
+              recvcounts.data(), displs.data(), MPI_INT, 0, MPI_COMM_WORLD);
 
   return true;
 }
