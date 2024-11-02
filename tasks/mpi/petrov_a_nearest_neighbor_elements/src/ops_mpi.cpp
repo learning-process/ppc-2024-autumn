@@ -15,7 +15,7 @@ std::vector<int> petrov_a_nearest_neighbor_elements_mpi::getRandomVector(int sz)
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
   for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
+    vec[i] = gen() % 10000;
   }
   return vec;
 }
@@ -28,13 +28,13 @@ bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskSequential::pre_processi
     input_[i] = tmp_ptr[i];
   }
   min_distance_ = std::numeric_limits<int>::max();
-  closest_pair_ = {0, 1};  // ��������� ��������
+  closest_pair_ = {0, 1};
   return true;
 }
 
 bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  return taskData->outputs_count[0] == 1;
+  return taskData->outputs_count[0] == 2;
 }
 
 bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskSequential::run() {
@@ -70,13 +70,18 @@ bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskParallel::pre_processing
     for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
       input_[i] = tmp_ptr[i];
     }
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + proc * delta, delta);
+    for (int proc = 1; proc < world.size() - 1; proc++) {
+      world.send(proc, 0, input_.data() + proc * delta, delta + 1);
+    }
+    if (world.size() != 1) {
+      world.send(world.size() - 1, 0, input_.data() + (world.size() - 1) * delta, delta);
     }
   }
   local_input_ = std::vector<int>(delta);
   if (world.rank() == 0) {
-    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
+    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta + ((world.size() == 1) ? 0 : 1));
+  } else if (world.rank() < world.size() - 1) {
+    world.recv(0, 0, local_input_.data(), delta + 1);
   } else {
     world.recv(0, 0, local_input_.data(), delta);
   }
@@ -87,7 +92,7 @@ bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskParallel::pre_processing
 bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    return taskData->outputs_count[0] == 1;
+    return taskData->outputs_count[0] == 2;
   }
   return true;
 }
@@ -113,9 +118,11 @@ bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskParallel::run() {
       },
       0);
 
-  // ���������, ��� �� �������������� closest_pair_ � ���������� ����
+  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ closest_pair_ пїЅ
+  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
   if (world.rank() == 0) {
-    closest_pair_ = global_pair;  // ���� ��� ������, ����������� ���������� ����
+    closest_pair_ = global_pair;  // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+                                  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
   }
 
   return true;
