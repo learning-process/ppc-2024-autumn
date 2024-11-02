@@ -2,8 +2,9 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
-#include <vector>
 #include <random>
+#include <vector>
+
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/yasakova_t_min_of_vector_elements/include/ops_mpi_yasakova.hpp"
@@ -13,7 +14,7 @@ std::vector<int> RandomVector(int size, int minimum = 0, int maximum = 100) {
   std::vector<int> vec(size);
   for (int i = 0; i < size; i++) {
     vec[i] = minimum + gen() % (maximum - minimum + 1);
-    }
+  }
   return vec;
 }
 
@@ -35,8 +36,7 @@ TEST(yasakova_t_min_of_vector_elements_mpi, test_pipeline_run) {
   int count_columns = 4000;
   int gen_minimum = -500;
   int gen_maximum = 500;
-  global_matrix =
-      RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
+  global_matrix = RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
   std::mt19937 gen;
   int index = gen() % (count_rows * count_columns);
   global_matrix[index / count_columns][index / count_rows] = ref;

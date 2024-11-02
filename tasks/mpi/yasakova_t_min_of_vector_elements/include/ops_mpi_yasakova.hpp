@@ -38,4 +38,5 @@ class TestMPITaskParallel : public ppc::core::Task {
   int res_{};
   boost::mpi::communicator world;
 };
-}  // namespace yasakova_t_min_of_vector_elements_mpi
+
+} // namespace yasakova_t_min_of_vector_elements_mpi

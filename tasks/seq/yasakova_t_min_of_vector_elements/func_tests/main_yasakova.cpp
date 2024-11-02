@@ -34,8 +34,7 @@ TEST(yasakova_t_min_of_vector_elements_seq, testFindMinimumInMatrixWithOneRow) {
   const int gen_maximum = 500;
   int ref = INT_MIN;
   std::vector<int> out(1, INT_MAX);
-  std::vector<std::vector<int>> in =
-      RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
+  std::vector<std::vector<int>> in = RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
   int index = gen() % count_columns;
   in[0][index] = ref;
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
