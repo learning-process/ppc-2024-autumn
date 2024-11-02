@@ -14,7 +14,6 @@ class TestTaskSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  
 
  private:
   std::vector<char> input_;
@@ -22,4 +21,4 @@ class TestTaskSequential : public ppc::core::Task {
   std::vector<char> clean_string(const std::vector<char>& input);
 };
 
-}  // chernova_n_word_count_seq
+}  // namespace chernova_n_word_count_seq

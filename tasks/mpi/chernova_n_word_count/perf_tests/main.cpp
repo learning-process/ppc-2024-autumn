@@ -7,19 +7,19 @@
 #include "mpi/chernova_n_word_count/include/ops_mpi.hpp"
 
 std::vector<char> generateWords(int k) {
-    const std::string words[] = {"one", "two", "three"};
-    const int wordArraySize = sizeof(words) / sizeof(words[0]);
+  const std::string words[] = {"one", "two", "three"};
+  const int wordArraySize = sizeof(words) / sizeof(words[0]);
 
-    std::string result;
+  std::string result;
 
-    for (int i = 0; i < k; ++i) {
-        result += words[i % wordArraySize];
-        if (i < k - 1) {
-            result += ' ';
-        }
+  for (int i = 0; i < k; ++i) {
+    result += words[i % wordArraySize];
+    if (i < k - 1) {
+      result += ' ';
     }
+  }
 
-    return std::vector<char>(result.begin(), result.end());
+  return std::vector<char>(result.begin(), result.end());
 }
 
 const int k = 10000;

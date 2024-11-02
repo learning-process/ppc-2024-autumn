@@ -92,7 +92,8 @@ TEST(Sequential_chernova_n_word_count, Test_five_words_with_a_lot_of_space) {
 
 TEST(Sequential_chernova_n_word_count, Test_twenty_words) {
   std::vector<char> in;
-  std::string testString = "This is a test phrase, I really love this phrase. This is a test phrase, I really love this phrase";
+  std::string testString =
+      "This is a test phrase, I really love this phrase. This is a test phrase, I really love this phrase";
   for (unsigned long int j = 0; j < testString.length(); j++) {
     in.push_back(testString[j]);
   }

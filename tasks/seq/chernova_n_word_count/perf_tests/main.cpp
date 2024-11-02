@@ -1,26 +1,26 @@
 #include <gtest/gtest.h>
 
 #include <iostream>
-#include <vector>
-#include <string>
 #include <sstream>
+#include <string>
+#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/chernova_n_word_count/include/ops_seq.hpp"
 
 std::vector<char> generateWords(int k) {
-    const std::string words[] = {"one", "two", "three"};
-    const int wordArraySize = sizeof(words) / sizeof(words[0]);
-    std::string result;
+  const std::string words[] = {"one", "two", "three"};
+  const int wordArraySize = sizeof(words) / sizeof(words[0]);
+  std::string result;
 
-    for (int i = 0; i < k; ++i) {
-        result += words[i % wordArraySize];
-        if (i < k - 1) {
-            result += ' ';
-        }
+  for (int i = 0; i < k; ++i) {
+    result += words[i % wordArraySize];
+    if (i < k - 1) {
+      result += ' ';
     }
+  }
 
-    return std::vector<char>(result.begin(), result.end());
+  return std::vector<char>(result.begin(), result.end());
 }
 
 int k = 100000;

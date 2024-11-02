@@ -10,32 +10,32 @@
 using namespace std::chrono_literals;
 
 std::vector<char> chernova_n_word_count_mpi::clean_string(const std::vector<char>& input) {
-    std::string result;
-    std::string str(input.begin(), input.end());
+  std::string result;
+  std::string str(input.begin(), input.end());
 
-    std::string::size_type pos = 0;
-    while ((pos = str.find("  ", pos)) != std::string::npos) {
-        str.erase(pos, 1);
-    }
+  std::string::size_type pos = 0;
+  while ((pos = str.find("  ", pos)) != std::string::npos) {
+    str.erase(pos, 1);
+  }
 
-    pos = 0;
-    while ((pos = str.find(" - ", pos)) != std::string::npos) {
-        str.erase(pos, 2);
-    }
-    
-    pos = str.size() - 1;
-    if(str[pos] == ' '){
-      str.erase(pos, 1);
-    }
-    
-    result.assign(str.begin(), str.end());
-    return std::vector<char>(result.begin(), result.end());
+  pos = 0;
+  while ((pos = str.find(" - ", pos)) != std::string::npos) {
+    str.erase(pos, 2);
+  }
+
+  pos = str.size() - 1;
+  if (str[pos] == ' ') {
+    str.erase(pos, 1);
+  }
+
+  result.assign(str.begin(), str.end());
+  return std::vector<char>(result.begin(), result.end());
 }
 
 bool chernova_n_word_count_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
- input_ = std::vector<char>(taskData->inputs_count[0]);
- spaceCount = 0;
+  input_ = std::vector<char>(taskData->inputs_count[0]);
+  spaceCount = 0;
   auto* tmp_ptr = reinterpret_cast<char*>(taskData->inputs[0]);
   for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
     input_[i] = tmp_ptr[i];
@@ -46,7 +46,7 @@ bool chernova_n_word_count_mpi::TestMPITaskSequential::pre_processing() {
 
 bool chernova_n_word_count_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  return taskData->inputs_count[0] >=0 && taskData->outputs_count[0] == 1;
+  return taskData->inputs_count[0] >= 0 && taskData->outputs_count[0] == 1;
 }
 
 bool chernova_n_word_count_mpi::TestMPITaskSequential::run() {
