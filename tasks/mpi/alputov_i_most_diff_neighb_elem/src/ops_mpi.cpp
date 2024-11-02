@@ -98,27 +98,34 @@ bool alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::validation() {
 bool alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::pre_processing() {
   internal_order_test();
   int data_chunk = 0;
+  int del = 0;
   if (world.rank() == 0) {
     data_chunk = taskData->inputs_count[0] / world.size();
-    //if (taskData->inputs_count[0] % world.size() > 0u) ++data_chunk;
+    del = taskData->inputs_count[0] % world.size();
   }
   boost::mpi::broadcast(world, data_chunk, 0);
-
+  boost::mpi::broadcast(world, del, 0);
   if (world.rank() == 0) {
     inputData = std::vector<int>(taskData->inputs_count[0]);
     memcpy(inputData.data(), taskData->inputs[0], sizeof(int) * taskData->inputs_count[0]);
+
     for (int proc = 1; proc < world.size(); ++proc) {
       world.send(proc, 0, inputData.data() + proc * data_chunk, data_chunk);
     }
   }
-  localData = std::vector<int>(data_chunk);
+  int localDataSize = data_chunk;
+  if (world.rank() == world.size() - 1 && del > 0) {
+    localDataSize += del;
+  }
+  localData = std::vector<int>(localDataSize);
+
   if (world.rank() == 0) {
     localData = std::vector<int>(inputData.begin(), inputData.begin() + data_chunk);
   } else {
     world.recv(0, 0, localData.data(), data_chunk);
   }
-  result[0] = 0;
-  result[1] = 1;
+  //result[0] = 0;
+  //result[1] = 0 ;
   return true;
 }
 
