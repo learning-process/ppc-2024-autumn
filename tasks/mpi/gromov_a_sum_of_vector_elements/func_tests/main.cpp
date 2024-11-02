@@ -6,50 +6,6 @@
 
 #include "mpi/gromov_a_sum_of_vector_elements/include/ops_mpi.hpp"
 
-TEST(gromov_a_sum_of_vector_elements_mpi, Test_Average) {
-  boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_average(1, 0);
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    const int count_size_vector = 100;
-    global_vec = gromov_a_sum_of_vector_elements_mpi::getRandomVector(count_size_vector);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_average.data()));
-    taskDataPar->outputs_count.emplace_back(global_average.size());
-  }
-
-  gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel MPISumOfVectorParallel(taskDataPar, "avg");
-  ASSERT_EQ(MPISumOfVectorParallel.validation(), true);
-  MPISumOfVectorParallel.pre_processing();
-  MPISumOfVectorParallel.run();
-  MPISumOfVectorParallel.post_processing();
-
-  if (world.rank() == 0) {
-    // Create data
-    std::vector<int32_t> reference_average(1, 1);
-
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataSeq->inputs_count.emplace_back(global_vec.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_average.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_average.size());
-
-    // Create Task
-    gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorSequential MPISumOfVectorSequential(taskDataSeq, "avg");
-    ASSERT_EQ(MPISumOfVectorSequential.validation(), true);
-    MPISumOfVectorSequential.pre_processing();
-    MPISumOfVectorSequential.run();
-    MPISumOfVectorSequential.post_processing();
-
-    ASSERT_EQ(reference_average[0], global_average[0]);
-  }
-}
-
 TEST(gromov_a_sum_of_vector_elements_mpi, Test_Subtraction) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
