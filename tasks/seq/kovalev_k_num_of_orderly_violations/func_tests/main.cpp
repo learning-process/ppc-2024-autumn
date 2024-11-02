@@ -21,7 +21,8 @@ TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_viol_0_int_) {
   tmpTaskSeq.pre_processing();
   tmpTaskSeq.run();
   tmpTaskSeq.post_processing();
-  ASSERT_EQ(0, out[0]);
+  size_t result = 0;
+  ASSERT_EQ(result, out[0]);
 }
 
 TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_len_10_int_) {
@@ -43,7 +44,8 @@ TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_len_10_int_) {
   tmpTaskSeq.pre_processing();
   tmpTaskSeq.run();
   tmpTaskSeq.post_processing();
-  ASSERT_EQ(2, out[0]);
+  size_t result = 2;
+  ASSERT_EQ(result, out[0]);
 }
 
 TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_len_10000_int_) {
@@ -75,7 +77,8 @@ TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_len_10000_int_) {
   tmpTaskSeq.pre_processing();
   tmpTaskSeq.run();
   tmpTaskSeq.post_processing();
-  ASSERT_EQ(11, out[0]);
+  size_t result = 11;
+  ASSERT_EQ(result, out[0]);
 }
 
 TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_viol_0_double_) {
@@ -96,7 +99,8 @@ TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_viol_0_double_) {
   tmpTaskSeq.pre_processing();
   tmpTaskSeq.run();
   tmpTaskSeq.post_processing();
-  ASSERT_EQ(0, out[0]);
+  size_t result = 0;
+  ASSERT_EQ(result, out[0]);
 }
 
 TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_len_10_double_) {
@@ -118,7 +122,8 @@ TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_len_10_double_) {
   tmpTaskSeq.pre_processing();
   tmpTaskSeq.run();
   tmpTaskSeq.post_processing();
-  ASSERT_EQ(2, out[0]);
+  size_t result = 2;
+  ASSERT_EQ(result, out[0]);
 }
 
 TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_len_10000_double) {
@@ -151,7 +156,8 @@ TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_len_10000_double) {
   tmpTaskSeq.pre_processing();
   tmpTaskSeq.run();
   tmpTaskSeq.post_processing();
-  ASSERT_EQ(11, out[0]);
+  size_t result = 11;
+  ASSERT_EQ(result, out[0]);
 }
 
 int main(int argc, char **argv) {

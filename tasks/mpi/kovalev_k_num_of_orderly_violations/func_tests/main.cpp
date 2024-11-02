@@ -25,7 +25,8 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_viol_0_int_) {
   tmpTaskSeq.pre_processing();
   tmpTaskSeq.run();
   tmpTaskSeq.post_processing();
-  ASSERT_EQ(1, out[0]);
+  size_t result = 1;
+  ASSERT_EQ(result, out[0]);
 }
 
 int main(int argc, char **argv) {
