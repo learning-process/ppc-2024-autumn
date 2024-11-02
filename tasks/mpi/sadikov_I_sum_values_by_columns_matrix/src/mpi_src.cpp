@@ -106,7 +106,7 @@ bool sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel::run() {
     world.recv(0, 0, local_input.data(),
                (world.rank() != world.size() - 1) ? rows_count * delta : rows_count * (delta + last_column));
   }
-  if (local_input.size() == 0) {
+  if (local_input.empty()) {
     return true;
   }
   size_t size = local_input.size() / rows_count;

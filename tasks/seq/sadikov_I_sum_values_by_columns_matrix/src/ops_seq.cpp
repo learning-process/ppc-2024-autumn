@@ -5,7 +5,7 @@
 using namespace std::chrono_literals;
 
 std::vector<double> sadikov_I_Sum_values_by_columns_matrix_seq::Randvector(size_t size) {
-  srand(time(0));
+  srand(time(nullptr));
   std::vector<double> vec(size);
   for (size_t i = 0; i < size; ++i) {
     vec[i] = static_cast<int>(rand()) / static_cast<int>(size * 100000);
