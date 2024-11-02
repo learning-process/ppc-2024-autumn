@@ -78,7 +78,7 @@ void updateMaxDifferencePair(const int* currentPair, int* maxDiffPair, int* arra
 
 int* findMaxDifference(const std::vector<int>& vec) {
   if (vec.size() < 2) {
-    int* result = new int[3]{1, 1, 0};  // Выделяем память и инициализируем
+    int* result = new int[3]{1, 1, 0};  // ???????? ?????? ? ??????????????
     return result;
   }
   int* max_dif = new int[3];
@@ -162,7 +162,7 @@ bool alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::pre_processing() {
   result[0] = 0;
   result[1] = 0 ;
   return true;
-}норм*/
+}????*/
 
 /* bool alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::pre_processing() {
   internal_order_test();
