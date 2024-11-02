@@ -361,3 +361,24 @@ TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Min_Rand_0_0) {
     ASSERT_FALSE(testMpiTaskParallel.validation());
   }
 }
+
+TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_Check_valdation) {
+  int count_rows = 10;
+  int size_rows = 10;
+  boost::mpi::communicator world;
+  std::vector<int> global_mat;
+  std::vector<int32_t> par_min_vec(count_rows, 0);
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    global_mat = kurakin_m_min_values_by_rows_matrix_mpi::getRandomVector(count_rows * size_rows);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
+    taskDataPar->inputs_count.emplace_back(global_mat.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(par_min_vec.data()));
+    taskDataPar->outputs_count.emplace_back(par_min_vec.size());
+
+    kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  }
+}

@@ -10,6 +10,11 @@ using namespace std::chrono_literals;
 
 bool kurakin_m_min_values_by_rows_matrix_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
+  input_ = std::vector<int>(taskData->inputs_count[0]);
+  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+    input_[i] = tmp_ptr[i];
+  }
   return true;
 }
 
@@ -21,11 +26,6 @@ bool kurakin_m_min_values_by_rows_matrix_seq::TestTaskSequential::validation() {
 
 bool kurakin_m_min_values_by_rows_matrix_seq::TestTaskSequential::run() {
   internal_order_test();
-  input_ = std::vector<int>(taskData->inputs_count[0]);
-  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    input_[i] = tmp_ptr[i];
-  }
   // Init value for output
   count_rows = (int)*taskData->inputs[1];
   size_rows = (int)*taskData->inputs[2];

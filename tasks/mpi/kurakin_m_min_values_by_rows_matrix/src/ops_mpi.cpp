@@ -36,7 +36,9 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::pre_process
 bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
 
-  return *taskData->inputs[1] != 0 && *taskData->inputs[2] != 0 && *taskData->inputs[1] == taskData->outputs_count[0];
+  return taskData->inputs.size() == 3 && taskData->inputs_count.size() == 3 && taskData->outputs.size() == 1 &&
+         taskData->outputs_count.size() == 1 && *taskData->inputs[1] != 0 && *taskData->inputs[2] != 0 &&
+         *taskData->inputs[1] == taskData->outputs_count[0];
 }
 
 bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::run() {
@@ -59,24 +61,6 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskSequential::post_proces
 
 bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  return true;
-}
-
-bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::validation() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    return *taskData->inputs[1] != 0 && *taskData->inputs[2] != 0 && *taskData->inputs[1] == taskData->outputs_count[0];
-  }
-  return true;
-}
-
-bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
-  internal_order_test();
-
-  count_rows = 0;
-  size_rows = 0;
-
-  unsigned int delta_proc = 0;
 
   if (world.rank() == 0) {
     count_rows = (int)*taskData->inputs[1];
@@ -86,19 +70,31 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
     } else {
       delta_proc = taskData->inputs_count[0] / world.size() + 1;
     }
-  }
-
-  broadcast(world, count_rows, 0);
-  broadcast(world, size_rows, 0);
-  broadcast(world, delta_proc, 0);
-
-  if (world.rank() == 0) {
     input_ = std::vector<int>(delta_proc * world.size(), INT_MAX);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
       input_[i] = tmp_ptr[i];
     }
   }
+  return true;
+}
+
+bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::validation() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    return taskData->inputs.size() == 3 && taskData->inputs_count.size() == 3 && taskData->outputs.size() == 1 &&
+           taskData->outputs_count.size() == 1 && *taskData->inputs[1] != 0 && *taskData->inputs[2] != 0 &&
+           *taskData->inputs[1] == taskData->outputs_count[0];
+  }
+  return true;
+}
+
+bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
+  internal_order_test();
+
+  broadcast(world, count_rows, 0);
+  broadcast(world, size_rows, 0);
+  broadcast(world, delta_proc, 0);
 
   local_input_ = std::vector<int>(delta_proc);
   boost::mpi::scatter(world, input_.data(), local_input_.data(), delta_proc, 0);
@@ -130,7 +126,6 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
   for (unsigned int i = 0; i < res.size(); ++i) {
     reduce(world, local_res[i], res[i], boost::mpi::minimum<int>(), 0);
   }
-
   return true;
 }
 
