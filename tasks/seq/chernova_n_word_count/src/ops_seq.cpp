@@ -2,7 +2,6 @@
 #include <vector>
 #include <string>
 #include <thread>
-
 #include "seq/chernova_n_word_count/include/ops_seq.hpp"
 
 using namespace std::chrono_literals;
