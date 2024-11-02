@@ -50,8 +50,8 @@ TEST(ParallelOperations, checkvalidation3) {
 
 TEST(ParallelOperations, check_square_matrix) {
   boost::mpi::communicator world;
-  const int columns = 130;
-  const int rows = 130;
+  const int columns = 5;
+  const int rows = 5;
   std::vector<int> out_seq(columns, 0);
   std::vector<int> in(columns * rows, 1);
   std::vector<int> in_index{rows, columns};

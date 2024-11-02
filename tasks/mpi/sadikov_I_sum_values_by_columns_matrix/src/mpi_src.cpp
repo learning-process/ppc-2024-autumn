@@ -78,8 +78,6 @@ bool sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel::pre_processing
         matrix.emplace_back(tmp_ptr[j * columns_count + i]);
       }
     }
-  } else {
-    matrix = std::vector<int>(rows_count * columns_count, 0);
   }
   return true;
 }
@@ -90,6 +88,8 @@ bool sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel::run() {
   broadcast(world, columns_count, 0);
   broadcast(world, delta, 0);
   broadcast(world, last_column, 0);
+  local_input = (world.rank() != world.size() - 1) ? std::vector<int>(rows_count * delta)
+                                                   : std::vector<int>(rows_count * (delta + last_column));
   if (world.rank() == 0) {
     for (int proc = 1; proc < world.size(); proc++) {
       if (proc != world.size() - 1) {
@@ -98,13 +98,9 @@ bool sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel::run() {
         world.send(proc, 0, matrix.data() + proc * rows_count * (delta), rows_count * (delta + last_column));
       }
     }
-  }
-  local_input = (world.rank() != world.size() - 1) ? std::vector<int>(rows_count * delta)
-                                                   : std::vector<int>(rows_count * (delta + last_column));
-  if (world.rank() == 0) {
     local_input = std::vector<int>(matrix.begin(), matrix.begin() + rows_count * delta);
-
-  } else {
+  }
+  if (world.rank() != 0) {
     world.recv(0, 0, local_input.data(),
                (world.rank() != world.size() - 1) ? rows_count * delta : rows_count * (delta + last_column));
   }
@@ -118,7 +114,6 @@ bool sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel::run() {
     std::vector<int> sizes(world.size(), delta);
     sizes.back() = delta + last_column;
     boost::mpi::gatherv(world, intermediate_res.data(), intermediate_res.size(), localRes.data(), sizes, 0);
-    localRes.resize(columns_count);
     sum = localRes;
   } else {
     boost::mpi::gatherv(world, intermediate_res.data(), intermediate_res.size(), 0);
