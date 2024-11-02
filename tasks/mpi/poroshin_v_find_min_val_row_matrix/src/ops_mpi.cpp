@@ -134,8 +134,8 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::run() {
     n = taskData->inputs_count[1];  // Number of columns
   }
 
-   broadcast(world, m, 0);
-   broadcast(world, n, 0);
+  broadcast(world, m, 0);
+  broadcast(world, n, 0);
 
   int last = 0;
 
