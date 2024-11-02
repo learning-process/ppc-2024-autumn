@@ -48,7 +48,8 @@ bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorSequential::run() {
     res = std::accumulate(input_.begin(), input_.end());
   } else if (ops == "avg") {
     res = std::accumulate(input_.begin(), input_.end(), 0) / input_.size();
-  } 
+  }
+
   return true;
 }
 
