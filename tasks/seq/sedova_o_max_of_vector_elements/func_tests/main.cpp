@@ -72,4 +72,3 @@ TEST(sedova_o_max_of_vector_elements_seq, Test_Sum_Input_Incorrect) {
   sedova_o_max_of_vector_elements_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), false);
 }
-
