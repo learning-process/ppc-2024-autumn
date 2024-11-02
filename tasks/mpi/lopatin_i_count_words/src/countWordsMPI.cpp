@@ -57,9 +57,7 @@ bool TestMPITaskParallel::pre_processing() {
     for (unsigned long int i = 0; i < taskData->inputs_count[0]; i++) {
       input_[i] = tmpPtr[i];
     }
-    chunkSize = taskData->inputs_count[0] / world.size();
   }
-  boost::mpi::broadcast(world, chunkSize, 0);
   return true;
 }
 
@@ -74,7 +72,9 @@ bool TestMPITaskParallel::run() {
   unsigned long totalSize = 0;
   if (world.rank() == 0) {
     totalSize = input_.size();
+    chunkSize = taskData->inputs_count[0] / world.size();
   }
+  boost::mpi::broadcast(world, chunkSize, 0);
   boost::mpi::broadcast(world, totalSize, 0);
 
   unsigned long startPos = world.rank() * chunkSize;
