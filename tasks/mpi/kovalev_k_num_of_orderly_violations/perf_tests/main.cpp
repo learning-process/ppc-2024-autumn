@@ -10,7 +10,7 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_pipeline_run) {
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   std::vector<int> g_vec;
-  std::vector<size_t> g_num_viol(1,0);
+  std::vector<size_t> g_num_viol(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   size_t length;

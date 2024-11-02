@@ -8,7 +8,7 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_viol_0_int_) {
   const int alpha = 1;
   // Create data
   std::vector<int> in(length, alpha);
-  std::vector<size_t> out(1,0);
+  std::vector<size_t> out(1, 0);
   in[1] = -1;
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);

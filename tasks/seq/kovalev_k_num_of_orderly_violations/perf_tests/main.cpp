@@ -19,7 +19,8 @@ TEST(kovalev_k_num_of_orderly_violations_seq, test_pipeline_run) {
   taskSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskSeq->outputs_count.emplace_back(out.size());
   // Create Task
-  auto testTaskSequential = std::make_shared<kovalev_k_num_of_orderly_violations_seq::NumOfOrderlyViolations<int>>(taskSeq);
+  auto testTaskSequential =
+      std::make_shared<kovalev_k_num_of_orderly_violations_seq::NumOfOrderlyViolations<int>>(taskSeq);
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
