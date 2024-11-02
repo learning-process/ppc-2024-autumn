@@ -147,7 +147,6 @@ bool MaxValueOfMatrixElementsParallel<T>::post_processing() {
   return true;
 }
 
-//////////
 
 template <typename T>
 class MaxValueOfMatrixElementsSequential : public ppc::core::Task {
