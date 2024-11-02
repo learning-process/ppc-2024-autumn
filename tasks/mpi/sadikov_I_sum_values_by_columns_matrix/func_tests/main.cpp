@@ -9,53 +9,50 @@
 
 TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, checkvalidation) {
   boost::mpi::communicator world;
-  std::shared_ptr<ppc::core::TaskData> taskData;
+  const int columns = 15;
+  const int rows = 15;
+  std::vector<int> in;
+  std::vector<int> in_index;
+  std::vector<int> out;
   if (world.rank() == 0) {
-    std::vector<int> in(900, 1);
-    std::vector<int> in_index{30, 30};
-    std::vector<int> out(30, 0);
-    taskData = sadikov_I_Sum_values_by_columns_matrix_mpi::CreateTaskData(in, in_index, out);
+    in = std::vector<int>(rows * columns, 1);
+    in_index = std::vector<int>{rows, columns};
+    out = std::vector<int>(columns, 0);
   }
+  auto taskData = sadikov_I_Sum_values_by_columns_matrix_mpi::CreateTaskData(in, in_index, out);
   sadikov_I_Sum_values_by_columns_matrix_mpi::MPITask sv(taskData);
   ASSERT_EQ(sv.validation(), true);
 }
 
 TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, checkvalidation2) {
   boost::mpi::communicator world;
-  std::shared_ptr<ppc::core::TaskData> taskData;
+  const int columns = 15;
+  const int rows = 15;
+  std::vector<int> in;
+  std::vector<int> in_index;
+  std::vector<int> out;
   if (world.rank() == 0) {
-    std::vector<int> in(900, 1);
-    std::vector<int> in_index{30, 30};
-    std::vector<int> out(30, 0);
-    taskData = sadikov_I_Sum_values_by_columns_matrix_mpi::CreateTaskData(in, in_index, out);
+    in = std::vector<int>(rows * columns, 1);
+    in_index = std::vector<int>{rows, columns};
+    out = std::vector<int>(columns, 0);
   }
+  auto taskData = sadikov_I_Sum_values_by_columns_matrix_mpi::CreateTaskData(in, in_index, out);
   sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel sv(taskData);
   ASSERT_EQ(sv.validation(), true);
-}
-
-TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, checkvalidation3) {
-  boost::mpi::communicator world;
-  std::shared_ptr<ppc::core::TaskData> taskData;
-  if (world.rank() == 0) {
-    std::vector<int> in(900, 1);
-    std::vector<int> in_index{30, 30};
-    std::vector<int> out(30, 0);
-    taskData = sadikov_I_Sum_values_by_columns_matrix_mpi::CreateTaskData(in, in_index, out);
-  }
-  sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel sv(taskData);
-  sadikov_I_Sum_values_by_columns_matrix_mpi::MPITask sv2(taskData);
-  ASSERT_EQ(sv.validation(), true);
-  ASSERT_EQ(sv2.validation(), true);
 }
 
 TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_square_matrix) {
   boost::mpi::communicator world;
   const int columns = 15;
   const int rows = 15;
-  std::vector<int> out_seq(columns, 0);
-  std::vector<int> in(columns * rows, 1);
-  std::vector<int> in_index{rows, columns};
-  std::vector<int> out_par(columns, 0);
+  std::vector<int> out_seq;
+  std::vector<int> in;
+  std::vector<int> in_index;
+  std::vector<int> out_par;
+  in = std::vector<int>(rows * columns, 1);
+  in_index = std::vector<int>{rows, columns};
+  out_seq = std::vector<int>(columns, 0);
+  out_par = std::vector<int>(columns, 0);
   auto taskData_par = sadikov_I_Sum_values_by_columns_matrix_mpi::CreateTaskData(in, in_index, out_par);
   sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel sv_par(taskData_par);
   ASSERT_EQ(sv_par.validation(), true);
@@ -77,10 +74,14 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_rect_matrix) {
   boost::mpi::communicator world;
   const int columns = 15;
   const int rows = 40;
-  std::vector<int> out_seq(columns, 0);
-  std::vector<int> in(columns * rows, 1);
-  std::vector<int> in_index{rows, columns};
-  std::vector<int> out_par(columns, 0);
+  std::vector<int> out_seq;
+  std::vector<int> in;
+  std::vector<int> in_index;
+  std::vector<int> out_par;
+  in = std::vector<int>(rows * columns, 1);
+  in_index = std::vector<int>{rows, columns};
+  out_seq = std::vector<int>(columns, 0);
+  out_par = std::vector<int>(columns, 0);
   auto taskData_par = sadikov_I_Sum_values_by_columns_matrix_mpi::CreateTaskData(in, in_index, out_par);
   sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel sv_par(taskData_par);
   ASSERT_EQ(sv_par.validation(), true);
@@ -102,10 +103,14 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_rect_matrix2) {
   boost::mpi::communicator world;
   const int columns = 150;
   const int rows = 40;
-  std::vector<int> out_seq(columns, 0);
-  std::vector<int> in = sadikov_I_Sum_values_by_columns_matrix_mpi::getRandomVector(columns * rows);
-  std::vector<int> in_index{rows, columns};
-  std::vector<int> out_par(columns, 0);
+  std::vector<int> out_seq;
+  std::vector<int> in;
+  std::vector<int> in_index;
+  std::vector<int> out_par;
+  in = sadikov_I_Sum_values_by_columns_matrix_mpi::getRandomVector(columns * rows);
+  in_index = std::vector<int>{rows, columns};
+  out_seq = std::vector<int>(columns, 0);
+  out_par = std::vector<int>(columns, 0);
   auto taskData_par = sadikov_I_Sum_values_by_columns_matrix_mpi::CreateTaskData(in, in_index, out_par);
   sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel sv_par(taskData_par);
   ASSERT_EQ(sv_par.validation(), true);
@@ -127,10 +132,14 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_rect_matrix3) {
   boost::mpi::communicator world;
   const int columns = 179;
   const int rows = 91;
-  std::vector<int> out_seq(columns, 0);
-  std::vector<int> in = sadikov_I_Sum_values_by_columns_matrix_mpi::getRandomVector(columns * rows);
-  std::vector<int> in_index{rows, columns};
-  std::vector<int> out_par(columns, 0);
+  std::vector<int> out_seq;
+  std::vector<int> in;
+  std::vector<int> in_index;
+  std::vector<int> out_par;
+  in = sadikov_I_Sum_values_by_columns_matrix_mpi::getRandomVector(columns * rows);
+  in_index = std::vector<int>{rows, columns};
+  out_seq = std::vector<int>(columns, 0);
+  out_par = std::vector<int>(columns, 0);
   auto taskData_par = sadikov_I_Sum_values_by_columns_matrix_mpi::CreateTaskData(in, in_index, out_par);
   sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel sv_par(taskData_par);
   ASSERT_EQ(sv_par.validation(), true);
@@ -152,10 +161,14 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_square_matrix2) {
   boost::mpi::communicator world;
   const int columns = 153;
   const int rows = 153;
-  std::vector<int> out_seq(columns, 0);
-  std::vector<int> in = sadikov_I_Sum_values_by_columns_matrix_mpi::getRandomVector(columns * rows);
-  std::vector<int> in_index{rows, columns};
-  std::vector<int> out_par(columns, 0);
+  std::vector<int> out_seq;
+  std::vector<int> in;
+  std::vector<int> in_index;
+  std::vector<int> out_par;
+  in = sadikov_I_Sum_values_by_columns_matrix_mpi::getRandomVector(columns * rows);
+  in_index = std::vector<int>{rows, columns};
+  out_seq = std::vector<int>(columns, 0);
+  out_par = std::vector<int>(columns, 0);
   auto taskData_par = sadikov_I_Sum_values_by_columns_matrix_mpi::CreateTaskData(in, in_index, out_par);
   sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel sv_par(taskData_par);
   ASSERT_EQ(sv_par.validation(), true);
@@ -177,10 +190,14 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_square_matrix3) {
   boost::mpi::communicator world;
   const int columns = 450;
   const int rows = 450;
-  std::vector<int> out_seq(columns, 0);
-  std::vector<int> in = sadikov_I_Sum_values_by_columns_matrix_mpi::getRandomVector(columns * rows);
-  std::vector<int> in_index{rows, columns};
-  std::vector<int> out_par(columns, 0);
+  std::vector<int> out_seq;
+  std::vector<int> in;
+  std::vector<int> in_index;
+  std::vector<int> out_par;
+  in = sadikov_I_Sum_values_by_columns_matrix_mpi::getRandomVector(columns * rows);
+  in_index = std::vector<int>{rows, columns};
+  out_seq = std::vector<int>(columns, 0);
+  out_par = std::vector<int>(columns, 0);
   auto taskData_par = sadikov_I_Sum_values_by_columns_matrix_mpi::CreateTaskData(in, in_index, out_par);
   sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel sv_par(taskData_par);
   ASSERT_EQ(sv_par.validation(), true);
