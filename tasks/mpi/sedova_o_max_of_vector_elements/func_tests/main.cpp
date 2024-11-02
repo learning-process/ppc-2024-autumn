@@ -156,4 +156,3 @@ TEST(sedova_o_max_of_vector_elements_mpi, Test_Matrix_1_2) {
     ASSERT_EQ(reference_max[0], global_max[0]);
   }
 }
-
