@@ -7,7 +7,6 @@
 #include "seq/petrov_a_nearest_neighbor_elements/include/ops_seq.hpp"
 
 TEST(petrov_a_nearest_neighbor_elements_seq, test_pipeline_run) {
-  const int count = 10;
 
   // Create data
   std::vector<int> in = {1, 3, 7, 5, 6, 10, 12, 14, 15, 2};
@@ -40,16 +39,13 @@ TEST(petrov_a_nearest_neighbor_elements_seq, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(out[0], 3);
-  ASSERT_EQ(out[1], 4);
+  ASSERT_EQ(out[0], 5);
+  ASSERT_EQ(out[1], 6);
 }
 
 TEST(petrov_a_nearest_neighbor_elements_seq, test_task_run) {
-  const int count = 100;
-
-  // Create data
-  std::vector<int> in(1, count);
-  std::vector<int> out(1, 0);
+  std::vector<int> in = {1, 3, 7, 5, 6, 10, 12, 14, 15, 2};
+  std::vector<int> out(2, 0); 
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -78,5 +74,6 @@ TEST(petrov_a_nearest_neighbor_elements_seq, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(count, out[0]);
+  ASSERT_EQ(out[0], 5);
+  ASSERT_EQ(out[1], 6);
 }
