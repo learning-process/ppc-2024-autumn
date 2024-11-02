@@ -53,30 +53,40 @@ bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_seq::post_proc
 
 bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel::pre_processing() {
   internal_order_test();
-  unsigned int delta = 0;
-  if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] / world.size();
+  unsigned int input_size = taskData->inputs_count[0];
+  if (input_size == 0) {
+    res = 0;
+    return true;
   }
-  broadcast(world, delta, 0);
 
-  if (world.rank() == 0) {
-    // Init vectors
-    input_ = std::vector<int>(taskData->inputs_count[0]);
-    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-      input_[i] = tmp_ptr[i];
-    }
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + proc * delta, delta);
-    }
-  }
-  local_input_ = std::vector<int>(delta);
-  if (world.rank() == 0) {
-    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
+  if (input_size <= world.size()) {
+    local_input_ = std::vector<int>(1, (world.rank() < input_size) ? input_[world.rank()] : 0);
   } else {
-    world.recv(0, 0, local_input_.data(), delta);
+    unsigned int delta = input_size / world.size();
+    unsigned int rest = input_size % world.size();
+    unsigned int local_size = delta + (world.rank() < rest ? 1 : 0);
+    local_input_ = std::vector<int>(local_size);
+
+    if (world.rank() == 0) {
+      // Init vectors
+      input_ = std::vector<int>(input_size);
+      auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+      std::copy(tmp_ptr, tmp_ptr + input_size, input_.begin());
+
+      int beginning = 0;
+      for (int proc = 1; proc < world.size(); ++proc) {
+        int send_elems_count = delta + (proc < rest ? 1 : 0);
+        world.send(proc, 0, input_.data() + beginning, send_elems_count);
+        beginning += send_elems_count;
+      }
+
+      local_input_.assign(input_.begin(), input_.begin() + local_size);
+      // Init value for output
+    } else {
+      world.recv(0, 0, local_input_.data(), local_size);
+    }
   }
-  // Init value for output
+
   res = 0;
   return true;
 }

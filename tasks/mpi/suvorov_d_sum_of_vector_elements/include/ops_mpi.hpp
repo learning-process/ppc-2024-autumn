@@ -19,8 +19,7 @@ std::vector<int> getRandomVector(int sz);
 
 class Sum_of_vector_elements_seq : public ppc::core::Task {
  public:
-  explicit Sum_of_vector_elements_seq(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit Sum_of_vector_elements_seq(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -46,4 +45,4 @@ class Sum_of_vector_elements_parallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  // namespace suvorov_d_sum_of_vector_elements
+}  // namespace suvorov_d_sum_of_vector_elements_mpi
