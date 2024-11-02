@@ -114,7 +114,7 @@ bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel::run() {
     reduce(world, local_res, res, std::plus(), 0);
   } else if (ops == "max") {
     reduce(world, local_res, res, boost::mpi::maximum<int>(), 0);
-  } else if (ops == 'production') {
+  } else if (ops == "production") {
     reduce(world, local_res, res, std::multiplies<int>(), 0);
   }
   std::this_thread::sleep_for(20ms);
