@@ -127,36 +127,37 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::validation() {
 bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-  int m = taskData->inputs_count[0];
-  int n = taskData->inputs_count[1];
-  int last = 0;
-
+  auto size_rows = taskData->inputs_count[1];
+  auto count_rows = taskData->inputs_count[0];
+  unsigned int last_delta = 0;
   if (world.rank() == world.size() - 1) {
-    last = local_input_.size() * world.size() - n * m;
-  }
-  int id = world.rank() * local_input_.size() / n;
-
-  // for (int i = 0; i < id; i++) {
-  //   reduce(world, INT_MAX, res[i], boost::mpi::minimum<int>(), 0);
-  // }
-
-  int delta = std::min(local_input_.size(), n - world.rank() * local_input_.size() % n);
-  int l_res = *std::min_element(local_input_.begin(), local_input_.begin() + delta);
-  reduce(world, l_res, res[id], boost::mpi::minimum<int>(), 0);
-  id++;
-  int k = 0;
-
-  while (local_input_.begin() + delta + k * n < local_input_.end() - last) {
-    l_res = *std::min_element(local_input_.begin() + delta + k * n,
-                              std::min(local_input_.end(), local_input_.begin() + delta + (k + 1) * n));
-    reduce(world, l_res, res[id], boost::mpi::minimum<int>(), 0);
-    k++;
-    id++;
+    last_delta = local_input_.size() * world.size() - size_rows * count_rows;
   }
 
-  // for (size_t i = id; i < res.size(); i++) {
-  //   reduce(world, INT_MAX, res[i], boost::mpi::minimum<int>(), 0);
-  // }
+  unsigned int ind = world.rank() * local_input_.size() / size_rows;
+  for (unsigned int i = 0; i < ind; ++i) {
+    reduce(world, INT_MAX, res[i], boost::mpi::minimum<int>(), 0);
+  }
+
+  unsigned int delta = std::min(local_input_.size(), size_rows - world.rank() * local_input_.size() % size_rows);
+  int local_res;
+
+  local_res = *std::min_element(local_input_.begin(), local_input_.begin() + delta);
+  reduce(world, local_res, res[ind], boost::mpi::minimum<int>(), 0);
+  ++ind;
+
+  unsigned int k = 0;
+  while (local_input_.begin() + delta + k * size_rows < local_input_.end() - last_delta) {
+    local_res = *std::min_element(local_input_.begin() + delta + k * size_rows,
+                                  std::min(local_input_.end(), local_input_.begin() + delta + (k + 1) * size_rows));
+    reduce(world, local_res, res[ind], boost::mpi::minimum<int>(), 0);
+    ++k;
+    ++ind;
+  }
+
+  for (unsigned int i = ind; i < res.size(); ++i) {
+    reduce(world, INT_MAX, res[i], boost::mpi::minimum<int>(), 0);
+  }
 
   return true;
 }
