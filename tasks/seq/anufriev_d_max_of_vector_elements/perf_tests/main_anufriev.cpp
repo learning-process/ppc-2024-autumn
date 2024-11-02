@@ -1,4 +1,3 @@
-// seq/perf_tests.cpp
 #include <gtest/gtest.h>
 
 #include <limits>

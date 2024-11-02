@@ -1,4 +1,3 @@
-// mpi/src/ops_mpi.cpp
 #include <limits>
 #include <numeric>
 #include <random>

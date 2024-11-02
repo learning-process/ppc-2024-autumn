@@ -1,7 +1,6 @@
-// seq/include/ops_seq_anufriev.hpp
 #pragma once
 
-#include <limits>  // For numeric_limits
+#include <limits> 
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -18,7 +17,7 @@ class VectorMaxSeq : public ppc::core::Task {
 
  private:
   std::vector<int32_t> input_;
-  int32_t max_ = std::numeric_limits<int32_t>::min();  // Initialize with the smallest possible value
+  int32_t max_ = std::numeric_limits<int32_t>::min();  
 };
 
 }  // namespace anufriev_d_max_of_vector_elements_seq

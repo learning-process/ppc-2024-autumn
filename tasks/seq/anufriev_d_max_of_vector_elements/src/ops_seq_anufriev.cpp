@@ -1,7 +1,6 @@
-// seq/src/ops_seq_anufriev.cpp
 #include "seq/anufriev_d_max_of_vector_elements/include/ops_seq_anufriev.hpp"
 
-#include <limits>  // Required for numeric_limits
+#include <limits>  
 
 namespace anufriev_d_max_of_vector_elements_seq {
 

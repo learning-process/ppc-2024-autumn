@@ -1,4 +1,3 @@
-// func_tests.cpp
 #include <gtest/gtest.h>
 
 #include <limits>
@@ -97,7 +96,7 @@ TEST(anufriev_d_max_of_vector_elements, emptyVector) {
   vectorMaxSeq.pre_processing();
   vectorMaxSeq.run();
   vectorMaxSeq.post_processing();
-  ASSERT_EQ(std::numeric_limits<int32_t>::min(), actual);  // Check for unchanged initial value
+  ASSERT_EQ(std::numeric_limits<int32_t>::min(), actual);  
 }
 
 TEST(anufriev_d_max_of_vector_elements, validationNotPassed) {

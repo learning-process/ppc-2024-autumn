@@ -1,4 +1,3 @@
-// mpi/func_tests.cpp
 #include <gtest/gtest.h>
 
 #include <boost/mpi.hpp>

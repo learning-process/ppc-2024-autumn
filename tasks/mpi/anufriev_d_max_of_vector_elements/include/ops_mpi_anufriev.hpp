@@ -1,4 +1,3 @@
-// mpi/include/ops_mpi.hpp
 #pragma once
 
 #include <boost/mpi.hpp>
