@@ -6,7 +6,21 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/solovev_a_word_count/include/ops_mpi.hpp"
 
-std::vector<char> input_text = solovev_a_word_count_mpi::create_text(60000);
+std::vector<char> create_text(int quan_words) {
+  std::vector<char> res;
+  std::string word = "word ";
+  std::string last = "word.";
+  for (int i = 0; i < quan_words - 1; i++)
+    for (unsigned long int symbol = 0; symbol < word.length(); symbol++) {
+      res.push_back(word[symbol]);
+    }
+  for (unsigned long int symbol = 0; symbol < last.length(); symbol++) {
+    res.push_back(last[symbol]);
+  }
+  return res;
+}
+
+std::vector<char> input_text = create_text(60000);
 
 TEST(solovev_a_word_count_mpi_perf_test, test_pipeline_run) {
   std::vector<char> input = input_text;
