@@ -44,7 +44,7 @@ TEST(korotin_e_min_val_matrix, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(1, min_val[0]);
+    ASSERT_DOUBLE_EQ(1, min_val[0]);
   }
 }
 
@@ -85,6 +85,6 @@ TEST(korotin_e_min_val_matrix, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(1, min_val[0]);
+    ASSERT_DOUBLE_EQ(1, min_val[0]);
   }
 }

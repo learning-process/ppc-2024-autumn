@@ -36,5 +36,5 @@ TEST(korotin_e_min_val_matrix_seq, test_matrix_5_5) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(res, min_val[0]);
+  ASSERT_DOUBLE_EQ(res, min_val[0]);
 }

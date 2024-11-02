@@ -55,7 +55,7 @@ TEST(korotin_e_min_val_matrix, minval_is_correct) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    ASSERT_EQ(reference[0], min_val[0]);
+    ASSERT_DOUBLE_EQ(reference[0], min_val[0]);
   }
 }
 
@@ -97,7 +97,7 @@ TEST(korotin_e_min_val_matrix, matrix_minval_with_prime_rows_and_columns) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    ASSERT_EQ(reference[0], min_val[0]);
+    ASSERT_DOUBLE_EQ(reference[0], min_val[0]);
   }
 }
 
@@ -125,6 +125,6 @@ TEST(korotin_e_min_val_matrix, minval_in_1_1_matrix) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    ASSERT_EQ(matrix[0], min_val[0]);
+    ASSERT_DOUBLE_EQ(matrix[0], min_val[0]);
   }
 }

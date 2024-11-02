@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <functional>
 #include <random>
-#include <string>
 #include <thread>
 #include <vector>
 
@@ -29,10 +28,8 @@ bool korotin_e_min_val_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init matrixes
   input_ = std::vector<double>(taskData->inputs_count[0]);
-  auto* tmp_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    input_[i] = tmp_ptr[i];
-  }
+  double* start = reinterpret_cast<double*>(taskData->inputs[0]);
+  std::copy(start, start + taskData->inputs_count[0], input_.begin());
   // Init value for output
   res = 0.0;
   return true;
@@ -47,7 +44,7 @@ bool korotin_e_min_val_matrix_mpi::TestMPITaskSequential::validation() {
 bool korotin_e_min_val_matrix_mpi::TestMPITaskSequential::run() {
   internal_order_test();
   res = input_[0];
-  for (std::vector<double>::size_type i = 1; i < input_.size(); i++) {
+  for (unsigned i = 1; i < taskData->inputs_count[0]; i++) {
     if (input_[i] < res) res = input_[i];
   }
   return true;
@@ -74,10 +71,8 @@ bool korotin_e_min_val_matrix_mpi::TestMPITaskParallel::pre_processing() {
     // Init matixes
     int counter = 1;
     input_ = std::vector<double>(taskData->inputs_count[0]);
-    auto* tmp_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-      input_[i] = tmp_ptr[i];
-    }
+    double* start = reinterpret_cast<double*>(taskData->inputs[0]); 
+    std::copy(start, start + taskData->inputs_count[0], input_.begin()); 
 
     for (int proc = 1; proc < world.size(); proc++) {
       if (counter < remainder) {
@@ -133,7 +128,6 @@ bool korotin_e_min_val_matrix_mpi::TestMPITaskParallel::run() {
 
   reduce(world, local_res, res, boost::mpi::minimum<double>(), 0);
 
-  std::this_thread::sleep_for(20ms);
   return true;
 }
 

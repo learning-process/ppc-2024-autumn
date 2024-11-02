@@ -25,10 +25,8 @@ bool korotin_e_min_val_matrix_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   // Init value for input and output
   input_ = std::vector<double>(taskData->inputs_count[0]);
-  auto* tmp_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    input_[i] = tmp_ptr[i];
-  }
+  auto* start = reinterpret_cast<double*>(taskData->inputs[0]);
+  std::copy(start, start + taskData->inputs_count[0], input_.begin());
   // Init value for output
   res = 0.0;
   return true;
@@ -43,10 +41,9 @@ bool korotin_e_min_val_matrix_seq::TestTaskSequential::validation() {
 bool korotin_e_min_val_matrix_seq::TestTaskSequential::run() {
   internal_order_test();
   res = input_[0];
-  for (std::vector<double>::size_type i = 1; i < input_.size(); i++) {
+  for (unsigned i = 1; i < taskData->inputs_count[0]; i++) {
     if (input_[i] < res) res = input_[i];
   }
-  std::this_thread::sleep_for(20ms);
   return true;
 }
 

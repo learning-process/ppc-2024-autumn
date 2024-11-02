@@ -41,7 +41,7 @@ TEST(korotin_e_min_val_matrix_seq, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(1, min_val[0]);
+  ASSERT_DOUBLE_EQ(1, min_val[0]);
 }
 
 TEST(korotin_e_min_val_matrix_seq, test_task_run) {
@@ -79,5 +79,5 @@ TEST(korotin_e_min_val_matrix_seq, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(1, min_val[0]);
+  ASSERT_DOUBLE_EQ(1, min_val[0]);
 }
