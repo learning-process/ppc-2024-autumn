@@ -154,7 +154,7 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::run() {
     id++;
   }
 
-  for (size_t i = id; i < res.size()-1; i++) {
+  for (size_t i = id; i < res.size() - 1; i++) {
     reduce(world, INT_MAX, res[i], boost::mpi::minimum<int>(), 0);
   }
 
