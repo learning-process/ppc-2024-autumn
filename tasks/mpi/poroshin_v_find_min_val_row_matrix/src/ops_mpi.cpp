@@ -133,8 +133,8 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::validation() {
 bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-  unsigned int m = 0;
-  unsigned int n = 0;
+  int m = 0;
+  int n = 0;
 
   if (world.rank() == 0) {
     m = taskData->inputs_count[0];
@@ -150,11 +150,11 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::run() {
     last = local_input_.size() * world.size() - n * m;
   }
 
-  unsigned int id = world.rank() * local_input_.size() / n;
+  int id = world.rank() * local_input_.size() / n;
 
   std::vector<int> local_mins(m, INT_MAX);
 
-  for (unsigned int i = 0; i < id; i++) {
+  for (int i = 0; i < id; i++) {
     local_mins[i] = INT_MAX;
   }
 
@@ -179,24 +179,24 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::run() {
     world.send(0, 0, local_mins);
   } else {
     std::vector<int> global_mins(world.size() * m, INT_MAX);
-    for (unsigned int i = 0; i < m; ++i) {
+    for (int i = 0; i < m; ++i) {
       global_mins[i] = local_mins[i];
     }
 
     for (int i = 1; i < world.size(); ++i) {
       std::vector<int> received_mins(m);
       world.recv(i, 0, received_mins);
-      for (unsigned int j = 0; j < m; ++j) {
+      for (int j = 0; j < m; ++j) {
         global_mins[i * m + j] = received_mins[j];
       }
     }
 
-    for (unsigned int i = 0; i < m; ++i) {
+    for (int i = 0; i < m; ++i) {
       local_mins[i] =
           *std::min_element(global_mins.begin() + i * world.size(), global_mins.begin() + (i + 1) * world.size());
     }
 
-    for (unsigned int i = 0; i < m; ++i) {
+    for (int i = 0; i < m; ++i) {
       res[i] = local_mins[i];
     }
   }
