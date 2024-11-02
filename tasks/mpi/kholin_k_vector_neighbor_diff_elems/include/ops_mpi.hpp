@@ -200,9 +200,11 @@ bool TestMPITaskParallel<TypeElem>::run() {
   int size = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
-  delta_n = taskData->inputs_count[0] / size;
-  delta_n_r = {};
-  MPI_Bcast(&delta_n, 1, MPI_INT, 0, MPI_COMM_WORLD);
+  if (ProcRank == 0) {
+    delta_n = taskData->inputs_count[0] / size;
+    delta_n_r = {};
+  }
+  MPI_Bcast(&delta_n, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
   if (ProcRank == 0) {
     residue = taskData->inputs_count[0] - (delta_n * size);
     delta_n_r = delta_n + residue;
