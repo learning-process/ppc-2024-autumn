@@ -8,7 +8,7 @@ TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_viol_0_int_) {
   const int alpha = 1;
   // Create data
   std::vector<int> in(length, alpha);
-  std::vector<size_t> out(1);
+  std::vector<size_t> out(1,0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
   taskSeq->inputs_count.emplace_back(in.size());
@@ -31,7 +31,7 @@ TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_len_10_int_) {
   // Create data
   std::vector<int> in(length, alpha);
   in[2] = in[8] = -1;
-  std::vector<size_t> out(1);
+  std::vector<size_t> out(1,0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
   taskSeq->inputs_count.emplace_back(in.size());
@@ -64,7 +64,7 @@ TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_len_10000_int_) {
   in[71] *= 965;
   in[666] = 532;
   in[228] = 666;
-  std::vector<size_t> out(1);
+  std::vector<size_t> out(1,0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
   taskSeq->inputs_count.emplace_back(in.size());
@@ -86,7 +86,7 @@ TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_viol_0_double_) {
   const double alpha = 5.7960;
   // Create data
   std::vector<double> in(length, alpha);
-  std::vector<size_t> out(1);
+  std::vector<size_t> out(1,0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
   taskSeq->inputs_count.emplace_back(in.size());
@@ -109,7 +109,7 @@ TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_len_10_double_) {
   // Create data
   std::vector<double> in(length, alpha);
   in[2] = in[8] = -1.487;
-  std::vector<size_t> out(1);
+  std::vector<size_t> out(1,0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
   taskSeq->inputs_count.emplace_back(in.size());
@@ -143,7 +143,7 @@ TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_len_10000_double) {
   in[71] *= 965.7634;
   in[666] = 532.8976;
   in[228] = 666.00001;
-  std::vector<size_t> out(1);
+  std::vector<size_t> out(1,0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
   taskSeq->inputs_count.emplace_back(in.size());
