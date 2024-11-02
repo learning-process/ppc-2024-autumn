@@ -18,7 +18,6 @@ bool petrov_a_nearest_neighbor_elements_seq::TestTaskSequential::pre_processing(
     input_[i] = input_data[i];
   }
 
-
   res.resize(2); 
   return true;
 }
