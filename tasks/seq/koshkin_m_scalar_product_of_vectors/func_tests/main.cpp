@@ -14,7 +14,7 @@ int generateRandomNumber(int min, int max) {
   return distrib(gen);
 }
 
-std::vector<int>createRandomVector(int v_size) {
+std::vector<int> createRandomVector(int v_size) {
   std::vector<int> vec(v_size);
   std::mt19937 gen;
   gen.seed((unsigned)time(nullptr) + ++offset);
