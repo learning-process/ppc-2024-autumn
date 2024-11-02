@@ -12,12 +12,12 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskSequential::pre_processing() {
     return false;
   }
 
-  if (taskData->inputs[0] == nullptr) {
+  int* data = reinterpret_cast<int*>(taskData->inputs[0]);
+  if (data == nullptr) {
     return false;
   }
 
   matrix_.resize(rows * cols);
-  int* data = reinterpret_cast<int*>(taskData->inputs[0]);
 
   for (size_t i = 0; i < rows; i++) {
     for (size_t j = 0; j < cols; j++) {

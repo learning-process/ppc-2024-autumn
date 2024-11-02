@@ -278,3 +278,61 @@ TEST(borisov_s_sum_of_rows, Test_Null_Pointers) {
   borisov_s_sum_of_rows::SumOfRowsTaskSequential sumOfRowsTaskSequential(taskDataPar);
   ASSERT_FALSE(sumOfRowsTaskSequential.validation());
 }
+
+TEST(borisov_s_sum_of_rows, Test_Validation_Invalid_Output_Count_Sequential) {
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  size_t rows = 10;
+  size_t cols = 10;
+
+  std::vector<int> matrix(rows * cols, 1);
+  std::vector<int> row_sums(rows - 1, 0);
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs_count.push_back(rows);
+  taskDataSeq->inputs_count.push_back(cols);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(row_sums.data()));
+  taskDataSeq->outputs_count.push_back(row_sums.size());
+
+  borisov_s_sum_of_rows::SumOfRowsTaskSequential sumOfRowsTask(taskDataSeq);
+
+  ASSERT_FALSE(sumOfRowsTask.validation());
+}
+
+TEST(borisov_s_sum_of_rows, Test_Validation_Null_Inputs_Outputs_Sequential) {
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  size_t rows = 10;
+  size_t cols = 10;
+
+  taskDataSeq->inputs.emplace_back(nullptr);
+  taskDataSeq->outputs.emplace_back(nullptr);
+  taskDataSeq->inputs_count.push_back(rows);
+  taskDataSeq->inputs_count.push_back(cols);
+  taskDataSeq->outputs_count.push_back(rows);
+
+  borisov_s_sum_of_rows::SumOfRowsTaskSequential sumOfRowsTask(taskDataSeq);
+
+  ASSERT_FALSE(sumOfRowsTask.validation());
+}
+
+TEST(borisov_s_sum_of_rows, Test_Run_Empty_Matrix_Sequential) {
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  size_t rows = 10;
+  size_t cols = 10;
+
+  std::vector<int> row_sums;
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(new int[rows * cols]));
+  taskDataSeq->inputs_count.push_back(rows);
+  taskDataSeq->inputs_count.push_back(cols);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(row_sums.data()));
+  taskDataSeq->outputs_count.push_back(rows);
+
+  borisov_s_sum_of_rows::SumOfRowsTaskSequential sumOfRowsTask(taskDataSeq);
+
+  sumOfRowsTask.validation();
+  sumOfRowsTask.pre_processing();
+
+  ASSERT_TRUE(sumOfRowsTask.run());
+}
