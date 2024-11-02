@@ -105,7 +105,7 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::run() {
     std::string tmp1 = reinterpret_cast<std::string*>(taskData->inputs[0])[0];
     std::string tmp2 = reinterpret_cast<std::string*>(taskData->inputs[0])[1];
 
-    for (size_t i = 0; i < std::min(tmp1.size(), tmp2.size(); ++i) {
+    for (size_t i = 0; i < std::min(tmp1.size(), tmp2.size()); ++i) {
       input_[i].first = tmp1[i];
       input_[i].second = tmp2[i];
     }
