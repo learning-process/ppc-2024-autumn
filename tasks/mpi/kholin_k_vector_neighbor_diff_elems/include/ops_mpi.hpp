@@ -171,22 +171,11 @@ template <typename TypeElem>
 bool TestMPITaskParallel<TypeElem>::pre_processing() {
   internal_order_test();
   int ProcRank = 0;
-  int size = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
-  MPI_Comm_size(MPI_COMM_WORLD, &size);
-  delta_n = taskData->inputs_count[0] / size;
-  delta_n_r = {};
   if (ProcRank == 0) {
     input_ = std::vector<TypeElem>(taskData->inputs_count[0]);
     auto ptr = reinterpret_cast<TypeElem*>(taskData->inputs[0]);
     std::copy(ptr, ptr + taskData->inputs_count[0], input_.begin());
-  }
-  if (ProcRank == 0) {
-    residue = taskData->inputs_count[0] - (delta_n * size);
-    delta_n_r = delta_n + residue;
-    local_input_ = std::vector<TypeElem>(delta_n_r);
-  } else {
-    local_input_ = std::vector<TypeElem>(delta_n);
   }
   result = {};
   return true;
@@ -208,7 +197,19 @@ template <typename TypeElem>
 bool TestMPITaskParallel<TypeElem>::run() {
   internal_order_test();
   int ProcRank = 0;
+  int size = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
+  MPI_Comm_size(MPI_COMM_WORLD, &size);
+  delta_n = taskData->inputs_count[0] / size;
+  delta_n_r = {};
+  MPI_Bcast(&delta_n, 1, MPI_INT, 0, MPI_COMM_WORLD);
+  if (ProcRank == 0) {
+    residue = taskData->inputs_count[0] - (delta_n * size);
+    delta_n_r = delta_n + residue;
+    local_input_ = std::vector<TypeElem>(delta_n_r);
+  } else {
+    local_input_ = std::vector<TypeElem>(delta_n);
+  }
   MPI_Scatter(input_.data(), delta_n, mpi_type_elem, local_input_.data(), delta_n, mpi_type_elem, 0, MPI_COMM_WORLD);
   if (ProcRank == 0) {
     for (int i = delta_n; i < delta_n_r; i++) {
