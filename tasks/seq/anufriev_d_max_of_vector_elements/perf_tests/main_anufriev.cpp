@@ -5,10 +5,8 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/anufriev_d_max_of_vector_elements/include/ops_seq_anufriev.hpp"
 
-#define DATA_SIZE 50000000
-
 TEST(anufriev_d_max_of_vector_elements_seq, test_pipeline_run) {
-  const int32_t vec_size = DATA_SIZE;
+  const int32_t vec_size = 50000000;
   std::vector<int32_t> input_data(vec_size, 1);
   input_data[vec_size / 2] = 10;
   int32_t expected_max = 10;

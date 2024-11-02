@@ -6,14 +6,12 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/anufriev_d_max_of_vector_elements/include/ops_mpi_anufriev.hpp"
 
-#define DATA_SIZE 50000000
-
 TEST(anufriev_d_max_of_vector_elements_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<int32_t> input_vector;
   int32_t result_parallel = std::numeric_limits<int32_t>::min();
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int vector_size = DATA_SIZE;
+  int vector_size = 50000000;
 
   if (world.rank() == 0) {
     input_vector.resize(vector_size, 1);
