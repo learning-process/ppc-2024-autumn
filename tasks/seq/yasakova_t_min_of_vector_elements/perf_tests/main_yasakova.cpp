@@ -7,6 +7,25 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/yasakova_t_min_of_vector_elements/include/ops_seq_yasakova.hpp"
 
+std::vector<int> yasakova_t_min_of_vector_elements_seq::RandomVector(int size, int minimum, int maximum) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(size);
+  for (int i = 0; i < size; i++) {
+    vec[i] = minimum + gen() % (maximum - minimum + 1);
+  }
+  return vec;
+}
+
+std::vector<std::vector<int>> yasakova_t_min_of_vector_elements_seq::RandomMatrix(int rows, int columns, int minimum,
+                                                                                  int maximum) {
+  std::vector<std::vector<int>> vec(rows);
+  for (int i = 0; i < rows; i++) {
+    vec[i] = yasakova_t_min_of_vector_elements_seq::RandomVector(columns, minimum, maximum);
+  }
+  return vec;
+}
+
 TEST(yasakova_t_min_of_vector_elements_seq, test_pipeline_run) {
   std::vector<std::vector<int>> global_matrix;
   std::vector<int32_t> global_minimum(1, INT_MAX);
