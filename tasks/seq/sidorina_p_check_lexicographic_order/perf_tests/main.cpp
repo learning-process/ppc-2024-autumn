@@ -7,7 +7,6 @@
 #include "seq/sidorina_p_check_lexicographic_order/include/ops_seq.hpp"
 
 TEST(sidorina_p_check_lexicographic_order_seq, Test_0) {
-  
   std::vector<char> str1(40000000, 'a');
   std::vector<char> str2(39999999, 'a');
   str2.push_back('b');
@@ -47,7 +46,6 @@ TEST(sidorina_p_check_lexicographic_order_seq, Test_1) {
   str2.push_back('a');
   std::vector<std::vector<char>> input = {str1, str2};
   std::vector<int> out(1, 0);
-
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input[0].data()));

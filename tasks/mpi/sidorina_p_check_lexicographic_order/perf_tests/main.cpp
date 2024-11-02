@@ -21,20 +21,17 @@ TEST(sidorina_p_check_lexicographic_order_mpi, Test_0) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size());
   }
-
-  auto testMpiTaskParallel =
-      std::make_shared<sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
-
  
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
-  
+
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
@@ -51,7 +48,7 @@ TEST(sidorina_p_check_lexicographic_order_mpi, Test_1) {
   str2.push_back('a');
   std::vector<std::vector<char>> str_ = {str1, str2};
   std::vector<int32_t> res(1, 0);
-  
+
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(str_[0].data()));
@@ -62,8 +59,7 @@ TEST(sidorina_p_check_lexicographic_order_mpi, Test_1) {
     taskDataPar->outputs_count.emplace_back(res.size());
   }
 
-  auto testMpiTaskParallel =
-      std::make_shared<sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -74,9 +70,8 @@ TEST(sidorina_p_check_lexicographic_order_mpi, Test_1) {
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
- 
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-  
+
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {

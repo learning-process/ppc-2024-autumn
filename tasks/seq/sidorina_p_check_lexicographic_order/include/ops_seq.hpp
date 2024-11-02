@@ -2,8 +2,8 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "core/task/include/task.hpp"
 
+#include "core/task/include/task.hpp"
 
 namespace sidorina_p_check_lexicographic_order_seq {
 
