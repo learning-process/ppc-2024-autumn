@@ -68,7 +68,8 @@ TEST(gromov_a_sum_of_vector_elements_seq, Test_Min_Element) {
 }
 
 TEST(gromov_a_sum_of_vector_elements_seq, Test_SumTwoElements) {
-  const int a = 2, b = 3;
+  const int a = 2;
+  const int b = 3;
   std::vector<int> in = {a, b};
   std::vector<int> out(1, 0);
 
