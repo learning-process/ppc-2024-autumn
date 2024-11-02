@@ -1,12 +1,12 @@
 #include "mpi/smirnov_i_integration_by_rectangles/include/ops_mpi.hpp"
 
 #include <algorithm>
+#include <exception>
 #include <functional>
 #include <random>
+#include <stdexcept>
 #include <thread>
 #include <vector>
-#include <exception>
-#include <stdexcept>
 
 using namespace std::chrono_literals;
 

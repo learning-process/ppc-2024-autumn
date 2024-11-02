@@ -1,10 +1,10 @@
 #include "seq/smirnov_i_integration_by_rectangles/include/ops_seq.hpp"
 
 #include <algorithm>
-#include <thread>
-#include <vector>
 #include <exception>
 #include <stdexcept>
+#include <thread>
+#include <vector>
 
 using namespace std::chrono_literals;
 bool smirnov_i_integration_by_rectangles::TestMPITaskSequential::pre_processing() {
