@@ -112,7 +112,7 @@ TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_LargeVector_MPI_with_1000
     ASSERT_EQ(inputVector[index + 1], outputPair[1]);
   }
 }
- /* TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_Vector_MPI_with_777_elem) {
+  TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_Vector_MPI_with_777_elem) {
   boost::mpi::communicator world;
   std::vector<int> inputVector(777);
   int outputPair[2] = {};
@@ -140,6 +140,7 @@ TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_LargeVector_MPI_with_1000
     ASSERT_EQ(inputVector[index + 1], outputPair[1]);
   }
 }
+  /*
 TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_RandomVector_MPI_100k_elem) {
   boost::mpi::communicator world;
   std::vector<int> inputVector(100000);
