@@ -1,4 +1,4 @@
-// Copyright 2023 Nesterov Alexander
+// Copyright 2024 Khovansky Dmitry
 #include <gtest/gtest.h>
 
 #include <memory>

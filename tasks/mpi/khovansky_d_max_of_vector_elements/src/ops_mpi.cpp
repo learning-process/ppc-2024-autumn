@@ -1,4 +1,4 @@
-// Copyright 2023 Nesterov Alexander
+// Copyright 2024 Khovansky Dmitry
 #include "mpi/khovansky_d_max_of_vector_elements/include/ops_mpi.hpp"
 
 #include <algorithm>
@@ -29,9 +29,7 @@ bool khovansky_d_max_of_vector_elements_mpi::MaxOfVectorMPISequential::pre_proce
   // Init vectors
   input_ = std::vector<int>(taskData->inputs_count[0]);
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    input_[i] = tmp_ptr[i];
-  }
+  std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
   return true;
 }
 

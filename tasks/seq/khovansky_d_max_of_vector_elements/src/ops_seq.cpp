@@ -1,4 +1,4 @@
-// Copyright 2024 Nesterov Alexander
+// Copyright 2024 Khovansky Dmitry
 #include "seq/khovansky_d_max_of_vector_elements/include/ops_seq.hpp"
 
 #include <algorithm>
