@@ -5,8 +5,6 @@
 #include <random>
 #include <vector>
 
-using namespace std::chrono_literals;
-
 std::vector<int> yasakova_t_min_of_vector_elements_mpi::RandomVector(int size, int minimum, int maximum) {
   std::random_device dev;
   std::mt19937 gen(dev());

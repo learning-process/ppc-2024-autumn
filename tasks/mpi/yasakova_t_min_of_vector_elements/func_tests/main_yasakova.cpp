@@ -16,7 +16,8 @@ TEST(yasakova_t_min_of_vector_elements_mpi, testFindMinimumIn1xNMatrix) {
   std::vector<int32_t> global_minimum(1, INT_MAX); 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    global_matrix.resize(1, yasakova_t_min_of_vector_elements_mpi::RandomVector(count_columns, gen_minimum, gen_maximum));
+    global_matrix.resize(1,
+                         yasakova_t_min_of_vector_elements_mpi::RandomVector(count_columns, gen_minimum, gen_maximum));
     for (unsigned int j = 0; j < global_matrix[0].size(); j++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&global_matrix[0][j]));
     taskDataPar->inputs_count.emplace_back(1); 
