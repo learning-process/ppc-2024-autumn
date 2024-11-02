@@ -6,7 +6,8 @@ bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::coun
   for (size_t i = 0; i < loc_v.size(); i++) {
     std::cout << loc_v[i] << ' ';
   }
-  std::cout << rank << " I am starting to count. loc_v size = " << loc_v.size() << ' ' << bool(1 < loc_v.size()) << std::endl;
+  std::cout << rank << " I am starting to count. loc_v size = " << loc_v.size() << ' ' << bool(1 < loc_v.size())
+            << std::endl;
   for (size_t i = 1; i < loc_v.size(); i++) {
     std::cout << "i = " << i;
     if (loc_v[i - 1] > loc_v[i]) {
