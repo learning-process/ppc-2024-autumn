@@ -120,3 +120,25 @@ TEST(sum_values_by_columns_matrix, check_rect_matrix2) {
     ASSERT_EQ(out[i], in_index[0]);
   }
 }
+
+TEST(sum_values_by_columns_matrix, check_rect_matrix3) {
+  std::vector<int> in_index{500, 20};
+  std::vector<int> out(20, 0);
+  std::vector<int> in = sadikov_I_Sum_values_by_columns_matrix_seq::getRandomVector(in_index[0] * in_index[1]);
+  std::shared_ptr<ppc::core::TaskData> taskData =
+      sadikov_I_Sum_values_by_columns_matrix_seq::CreateTaskData(in, in_index, out);
+  sadikov_I_Sum_values_by_columns_matrix_seq::MatrixTask sv(taskData);
+  ASSERT_EQ(sv.validation(), true);
+  sv.pre_processing();
+  sv.run();
+  sv.post_processing();
+  std::vector<int> check_answer(in_index[1], 0);
+  for (int i = 0; i < in_index[1]; ++i) {
+    for (int j = 0; j < in_index[0]; ++j) {
+      check_answer[i] += in[j * in_index[1] + i];
+    }
+  }
+  for (int i = 0; i < in_index[1]; ++i) {
+    ASSERT_EQ(out[i], check_answer[i]);
+  }
+}

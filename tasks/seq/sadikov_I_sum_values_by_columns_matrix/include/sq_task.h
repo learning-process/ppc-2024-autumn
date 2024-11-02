@@ -8,11 +8,11 @@
 #include <vector>
 
 #include "core/task/include/task.hpp"
-// commit
+
 namespace sadikov_I_Sum_values_by_columns_matrix_seq {
 std::shared_ptr<ppc::core::TaskData> CreateTaskData(std::vector<int> &InV, const std::vector<int> &CeV,
                                                     std::vector<int> &OtV);
-std::vector<double> Randvector(size_t size);
+std::vector<int> getRandomVector(size_t size);
 class MatrixTask : public ppc::core::Task {
  private:
   std::vector<int> sum;
