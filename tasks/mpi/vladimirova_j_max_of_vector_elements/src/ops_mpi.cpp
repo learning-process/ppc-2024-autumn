@@ -76,7 +76,8 @@ bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel::pre_processi
 bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
 
-  return true;
+  return (world.rank() != 0) ||
+         ((taskData->outputs_count[0] == 1) && (taskData->inputs_count[0] > 0) && (!taskData->inputs.empty()));
 }
 
 bool vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel::run() {
