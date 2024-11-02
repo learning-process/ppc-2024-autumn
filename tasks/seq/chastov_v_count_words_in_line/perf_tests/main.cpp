@@ -6,7 +6,6 @@
 std::vector<char> wordCountInput = chastov_v_count_words_in_line_seq::createString(1000);
 
 TEST(word_count_seq, test_pipeline_run) {
-
   // Create data
   std::vector<char> input = wordCountInput;
   std::vector<int> word_count(1, 0);
@@ -43,7 +42,6 @@ TEST(word_count_seq, test_pipeline_run) {
 }
 
 TEST(word_count_seq, test_task_run) {
-
   // Create data
   std::vector<char> input = wordCountInput;
   std::vector<int> word_count(1, 0);

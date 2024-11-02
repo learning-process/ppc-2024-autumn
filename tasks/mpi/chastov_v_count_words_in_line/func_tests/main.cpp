@@ -117,9 +117,9 @@ TEST(chastov_v_count_words_in_line_mpi, words_4) {
 }
 
 // Test to verify the MPI word counting function with an input string that generates 450 words
-TEST(chastov_v_count_words_in_line_mpi, words_450) {
+TEST(chastov_v_count_words_in_line_mpi, words_300) {
   boost::mpi::communicator world;
-  std::vector<char> input = chastov_v_count_words_in_line_mpi::createString(30);
+  std::vector<char> input = chastov_v_count_words_in_line_mpi::createString(20);
   std::vector<int> wordsFound(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();

@@ -168,12 +168,3 @@ TEST(chastov_v_count_words_in_line_seq, words_with_special_characters) {
 
   ASSERT_EQ(outputData[0], 2);
 }
-
-
-
-
-
-
-
-
-
