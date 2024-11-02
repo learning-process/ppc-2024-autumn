@@ -9,7 +9,6 @@ TEST(sidorina_p_check_lexicographic_order_seq, Test_3_elements) {
   std::vector<std::vector<char>> in = {{'e', 'f', 'g'}, {'e', 'k', 'g'}};
   std::vector<int> out(1, 0);
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[0].data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[1].data()));
@@ -18,7 +17,7 @@ TEST(sidorina_p_check_lexicographic_order_seq, Test_3_elements) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
-  // Create Task
+  
   sidorina_p_check_lexicographic_order_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
@@ -30,7 +29,7 @@ TEST(sidorina_p_check_lexicographic_order_seq, Test_difference_1st_element_0) {
   std::vector<std::vector<char>> in = {{'a', 'b', 'c'}, {'d', 'b', 'c'}};
   std::vector<int> out(1, 0);
 
-  // Create TaskData
+  
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[0].data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[1].data()));
@@ -39,7 +38,7 @@ TEST(sidorina_p_check_lexicographic_order_seq, Test_difference_1st_element_0) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
-  // Create Task
+ 
   sidorina_p_check_lexicographic_order_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
@@ -52,7 +51,6 @@ TEST(sidorina_p_check_lexicographic_order_seq, Test_difference_1st_element_1) {
   std::vector<std::vector<char>> in = {{'b', 'c', 'g'}, {'a', 'c', 'g'}};
   std::vector<int> out(1, 0);
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[0].data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[1].data()));
@@ -61,7 +59,7 @@ TEST(sidorina_p_check_lexicographic_order_seq, Test_difference_1st_element_1) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
-  // Create Task
+ 
   sidorina_p_check_lexicographic_order_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
@@ -74,7 +72,7 @@ TEST(sidorina_p_check_lexicographic_order_seq, Test_difference_2nd_element_1) {
   std::vector<std::vector<char>> in = {{'e', 'c', 'g'}, {'e', 'a', 'g'}};
   std::vector<int> out(1, 0);
 
-  // Create TaskData
+
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[0].data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[1].data()));
@@ -82,7 +80,7 @@ TEST(sidorina_p_check_lexicographic_order_seq, Test_difference_2nd_element_1) {
   taskDataSeq->inputs_count.emplace_back(in[0].size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
-  // Create Task
+  
   sidorina_p_check_lexicographic_order_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
@@ -93,7 +91,7 @@ TEST(sidorina_p_check_lexicographic_order_seq, Test_difference_2nd_element_1) {
 TEST(sidorina_p_check_lexicographic_order_seq, Test_difference_3d_element_1) {
   std::vector<std::vector<char>> in = {{'a', 'b', 'g'}, {'a', 'b', 'a'}};
   std::vector<int> out(1, 0);
-  // Create TaskData
+  
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[0].data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[1].data()));
@@ -102,7 +100,7 @@ TEST(sidorina_p_check_lexicographic_order_seq, Test_difference_3d_element_1) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
-  // Create Task
+  
   sidorina_p_check_lexicographic_order_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();

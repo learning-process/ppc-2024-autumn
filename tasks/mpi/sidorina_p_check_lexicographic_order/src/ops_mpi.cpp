@@ -101,7 +101,6 @@ bool sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel::run() {
   }
   std::vector<int> full_result;
   boost::mpi::gather(world, local_res, full_result, 0);
-
   if (world.rank() == 0) {
     for (int result : full_result) {
       if (result != 2) {

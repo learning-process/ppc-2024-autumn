@@ -40,4 +40,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  // namespace sidorina_p_check_lexicographic_order
+}  // namespace sidorina_p_check_lexicographic_order_mpi

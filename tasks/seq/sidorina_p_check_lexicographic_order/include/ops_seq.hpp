@@ -18,4 +18,4 @@ class TestTaskSequential : public ppc::core::Task {
   std::vector<std::vector<char>> input_;
   int res{};
 };
-}  // namespace sidorina_p_check_lexicographic_order
+}  // namespace sidorina_p_check_lexicographic_order_seq

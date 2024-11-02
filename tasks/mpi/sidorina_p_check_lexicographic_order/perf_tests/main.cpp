@@ -12,7 +12,7 @@ TEST(sidorina_p_check_lexicographic_order_mpi, Test_0) {
   str2.push_back('f');
   std::vector<std::vector<char>> str_ = {str1, str2};
   std::vector<int32_t> res(1, 0);
-  // Create TaskData
+
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(str_[0].data()));
@@ -30,15 +30,14 @@ TEST(sidorina_p_check_lexicographic_order_mpi, Test_0) {
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
-  // Create Perf attributes
+ 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
-  // Create and init perf results
+  
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
@@ -53,7 +52,7 @@ TEST(sidorina_p_check_lexicographic_order_mpi, Test_1) {
   str2.push_back('a');
   std::vector<std::vector<char>> str_ = {str1, str2};
   std::vector<int32_t> res(1, 0);
-  // Create TaskData
+  
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(str_[0].data()));
@@ -71,15 +70,14 @@ TEST(sidorina_p_check_lexicographic_order_mpi, Test_1) {
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  // Create and init perf results
+ 
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-  // Create Perf analyzer
+  
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
