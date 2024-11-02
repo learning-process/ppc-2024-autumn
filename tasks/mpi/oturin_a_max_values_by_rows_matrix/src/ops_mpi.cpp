@@ -2,22 +2,9 @@
 
 #include <algorithm>
 #include <functional>
-#include <random>
 #include <string>
 #include <thread>
 #include <vector>
-
-using namespace std::chrono_literals;
-
-std::vector<int> oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
-}
 
 bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
@@ -34,9 +21,9 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::pre_processi
 
 bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  // Check count elements of i/o
-  // n && m && maxes:
-  return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] > 0;
+  // Check elements count in i/o
+  // m & maxes:
+  return taskData->inputs_count[1] == taskData->outputs_count[0];
 }
 
 bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::run() {
@@ -58,14 +45,8 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential::post_process
 
 bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
-  /*
-  if (world.size() <= 1) {  // triggerred on MSVC
-    EXPECT_NE(1, 1) << "WORLD TOO SMALL" << std::endl;
-    return false;
-  }*/
-
   if (world.rank() == 0) {
-    return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] > 0;
+    return taskData->inputs_count[1] == taskData->outputs_count[0];
   }
   return true;
 }
@@ -90,6 +71,9 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::pre_processing
 
 bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+  const int TAG_EXIT = 1;
+  const int TAG_TOBASE = 2;
+  const int TAG_TOSAT = 3;
 
 #if defined(_MSC_VER) && !defined(__clang__)
   if (world.size() == 1) {
@@ -100,28 +84,23 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
   }
 #endif
 
-#define TAG_EXIT 1
-#define TAG_TOBASE 2
-#define TAG_TOSAT 3
-
-  /*
-        m           maxes:
-        ^
-        | -9 99    :  99
-        | 12 06    :  12
-        +------> n
-  */
-
   if (world.rank() == 0) {  // base
-    int *arr = new int[m * n];
-    int *maxes = new int[m];
+    size_t satellites = world.size() - 1;
 
     int proc_exit = 0;
     int proc_wait = 1;
 
-    std::copy(input_.begin(), input_.end(), arr);
+    if (m == 0 || n == 0) {
+      for (size_t i = 0; i < satellites; i++) {
+        world.send(i + 1, TAG_EXIT, &proc_exit, 1);
+      }
+      return true;
+    }
 
-    size_t satellites = world.size() - 1;
+    int *arr = new int[m * n];
+    int *maxes = new int[m];
+
+    std::copy(input_.begin(), input_.end(), arr);
 
     size_t row = 0;
     while (row < m) {

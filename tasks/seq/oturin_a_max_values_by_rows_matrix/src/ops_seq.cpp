@@ -23,9 +23,9 @@ bool oturin_a_max_values_by_rows_matrix_seq::TestTaskSequential::pre_processing(
 
 bool oturin_a_max_values_by_rows_matrix_seq::TestTaskSequential::validation() {
   internal_order_test();
-  // Check count elements of i/o
-  // n && m && maxes:
-  return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] > 0;
+  // Check elements count in i/o
+  // m & maxes:
+  return taskData->inputs_count[1] == taskData->outputs_count[0];
 }
 
 bool oturin_a_max_values_by_rows_matrix_seq::TestTaskSequential::run() {

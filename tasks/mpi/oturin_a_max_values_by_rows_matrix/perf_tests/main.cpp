@@ -1,10 +1,21 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
+#include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/oturin_a_max_values_by_rows_matrix/include/ops_mpi.hpp"
+
+std::vector<int> oturin_a_max_values_by_rows_matrix_mpi::getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = gen() % 100;
+  }
+  return vec;
+}
 
 TEST(oturin_a_max_values_by_rows_matrix_mpi_perftest, test_pipeline_run) {
   size_t n = 300;
