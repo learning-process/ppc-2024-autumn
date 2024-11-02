@@ -13,8 +13,6 @@
 
 namespace muradov_m_count_alpha_chars_mpi {
 
-std::string generate_string(size_t length);
-
 class AlphaCharCountTaskSequential : public ppc::core::Task {
  public:
   explicit AlphaCharCountTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

@@ -15,9 +15,7 @@ bool muradov_m_count_alpha_chars_mpi::AlphaCharCountTaskSequential::pre_processi
 
   input_str_ = std::vector<char>(taskData->inputs_count[0]);
   auto* tmp_ptr = reinterpret_cast<char*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    input_str_[i] = tmp_ptr[i];
-  }
+  std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_str_.begin());
 
   alpha_count_ = 0;
   return true;
