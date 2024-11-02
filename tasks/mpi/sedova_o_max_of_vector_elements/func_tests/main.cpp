@@ -63,6 +63,7 @@ TEST(Parallel_Operations_MPI, Test_MaxElem) {
     taskDataSeq->inputs_count.emplace_back(rows);
     taskDataSeq->inputs_count.emplace_back(cols);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_max.data()));
+    sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
     ASSERT_EQ(testMpiTaskParallel.validation(), true);
     testMpiTaskParallel.pre_processing();
     testMpiTaskParallel.run();
