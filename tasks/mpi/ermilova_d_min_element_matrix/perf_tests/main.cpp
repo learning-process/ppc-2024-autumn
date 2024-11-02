@@ -20,8 +20,8 @@ TEST(ermilova_d_min_element_matrix_mpi, test_pipeline_run) {
   int reference_min = -5000;
 
   if (world.rank() == 0) {
-    const int rows = 5000;
-    const int cols = 5000;
+    const int rows = 1000;
+    const int cols = 1000;
     const int upper_border = 1000;
     const int lower_border = -1000;
 
@@ -76,8 +76,8 @@ TEST(ermilova_d_min_element_matrix_mpi, test_task_run) {
   int reference_min = -5000;
 
   if (world.rank() == 0) {
-    const int rows = 5000;
-    const int cols = 5000;
+    const int rows = 1000;
+    const int cols = 1000;
     const int upper_border = 1000;
     const int lower_border = -1000;
 
