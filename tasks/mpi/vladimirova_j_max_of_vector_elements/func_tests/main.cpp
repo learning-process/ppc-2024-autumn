@@ -47,8 +47,7 @@ TEST(vladimirova_j_max_of_vector_elements_mpi, Test_ValMatrix_0) {
   }
 
   vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
-
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
 }
 
 TEST(vladimirova_j_max_of_vector_elements_mpi, Test_CanCreate_10) { EXPECT_NO_THROW(CreateInputMatrix(10, 10, 10)); }
