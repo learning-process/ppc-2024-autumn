@@ -3,7 +3,7 @@
 
 #include <boost/mpi/timer.hpp>
 #include <vector>
-
+#include <string>
 #include "core/perf/include/perf.hpp"
 #include "mpi/budazhapova_e_count_freq_character/include/count_freq_character_mpi_header.hpp"
 
@@ -57,9 +57,9 @@ TEST(budazhapova_e_count_freq_character_mpi, test_task_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_str.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->inputs_count.emplace_back(global_str.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_out.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());
+    taskDataPar->outputs_count.emplace_back(global_out.size());
   }
 
   auto testMpiTaskParallel = std::make_shared<budazhapova_e_count_freq_character_mpi::TestMPITaskParallel>(taskDataPar);
