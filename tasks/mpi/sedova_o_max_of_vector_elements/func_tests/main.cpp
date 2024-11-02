@@ -29,23 +29,23 @@ TEST(sedova_o_max_of_vector_elements_mpi, Test_CanCreate_10) { EXPECT_NO_THROW(g
 
 TEST(sedova_o_max_of_vector_elements_mpi, Test_ValMatrix_0) {
   const size_t size = 0;
-  const size_t spread = 30;
+  const size_t value = 30;
 
   boost::mpi::communicator world;
-  std::vector<std::vector<int>> global_matr;
-  std::vector<int32_t> global_max(1, -((int)(spread + 10)));
+  std::vector<std::vector<int>> global_matrix;
+  std::vector<int32_t> global_max(1, -((int)(value + 10)));
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matr = CreateInputMatrix(size, size, spread);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matr.data()));
+    global_matrix = generate_random_matrix(size, size, value);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(size);
     taskDataPar->inputs_count.emplace_back(size);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
-    vladimirova_j_max_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
     ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
 }
@@ -109,14 +109,14 @@ TEST(sedova_o_max_of_vector_elements_mpi, Test_Matrix_1_2) {
   const size_t value = 30;
 
   boost::mpi::communicator world;
-  std::vector<std::vector<int>> ix;
+  std::vector<std::vector<int>> global_matrix;
   std::vector<int32_t> global_max(1, -((int)(value + 10)));
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = CreateInputMatrix(row, col, spread);
+    global_matrix = generate_random_matrix(row, col, value);
     for (unsigned int i = 0; i < global_matrix.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix[i].data()));
     taskDataPar->inputs_count.emplace_back(row);
