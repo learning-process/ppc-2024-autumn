@@ -34,13 +34,6 @@ class VectorMaxPar : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  //friend class boost::serialization::access;
-  //template <class Archive>
-  //void serialize(Archive& ar, const unsigned int version) {
-  //  ar& boost::serialization::make_nvp("input", input_);
-  //  ar& boost::serialization::make_nvp("local_input", local_input_);
-  //  // ... (сериализация других членов класса, если необходимо)
-  //}
   std::vector<int32_t> input_, local_input_;
   int32_t max_ = std::numeric_limits<int32_t>::min();
   boost::mpi::communicator world;
