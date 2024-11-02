@@ -100,7 +100,6 @@ TEST(sidorina_p_check_lexicographic_order_seq, Test_difference_3d_element_1) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
-
   sidorina_p_check_lexicographic_order_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();

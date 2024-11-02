@@ -39,5 +39,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   int res{};
   boost::mpi::communicator world;
 };
-
 }  // namespace sidorina_p_check_lexicographic_order_mpi

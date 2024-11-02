@@ -42,7 +42,6 @@ TEST(sidorina_p_check_lexicographic_order_seq, Test_0) {
 }
 
 TEST(sidorina_p_check_lexicographic_order_seq, Test_1) {
-
   std::vector<char> str1(40000000, 'b');
   std::vector<char> str2(39999999, 'b');
   str2.push_back('a');

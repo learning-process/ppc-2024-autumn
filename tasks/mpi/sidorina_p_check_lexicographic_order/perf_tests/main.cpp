@@ -12,7 +12,6 @@ TEST(sidorina_p_check_lexicographic_order_mpi, Test_0) {
   str2.push_back('f');
   std::vector<std::vector<char>> str_ = {str1, str2};
   std::vector<int32_t> res(1, 0);
-
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(str_[0].data()));

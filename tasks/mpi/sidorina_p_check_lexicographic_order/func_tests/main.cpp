@@ -344,7 +344,7 @@ TEST(sidorina_p_check_lexicographic_order_mpi, Test_difference_4_element_1) {
 
   if (world.rank() == 0) {
     std::vector<int32_t> ref_res(1, 0);
-    
+   
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(str_[0].data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(str_[1].data()));

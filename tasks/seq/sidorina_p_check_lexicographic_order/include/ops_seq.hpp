@@ -4,6 +4,7 @@
 #include <vector>
 #include "core/task/include/task.hpp"
 
+
 namespace sidorina_p_check_lexicographic_order_seq {
 
 class TestTaskSequential : public ppc::core::Task {

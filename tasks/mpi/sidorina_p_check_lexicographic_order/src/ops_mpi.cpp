@@ -85,7 +85,6 @@ bool sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel::validation()
   }
   return true;
 }
-
 bool sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   int local_res = 2;
