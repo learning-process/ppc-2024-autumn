@@ -31,7 +31,7 @@ TEST(khovansky_d_max_of_vector_elements_mpi, run_pipeline) {
     const int left = 0;
     const int right = 100;
     global_vec = khovansky_d_max_of_vector_elements_mpi::GetRandomVector(count_size_vector, left, right);
-    global_vec[0] = 101;
+    global_vec[0] = 102;
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -59,7 +59,7 @@ TEST(khovansky_d_max_of_vector_elements_mpi, run_pipeline) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(101, global_res[0]);
+    ASSERT_EQ(102, global_res[0]);
   }
 }
 
@@ -75,7 +75,7 @@ TEST(khovansky_d_max_of_vector_elements_mpi, run_task) {
     const int left = 0;
     const int right = 100;
     global_vec = khovansky_d_max_of_vector_elements_mpi::GetRandomVector(count_size_vector, left, right);
-    global_vec[0] = 101;
+    global_vec[0] = 102;
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -100,6 +100,6 @@ TEST(khovansky_d_max_of_vector_elements_mpi, run_task) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(101, global_res[0]);
+    ASSERT_EQ(102, global_res[0]);
   }
 }

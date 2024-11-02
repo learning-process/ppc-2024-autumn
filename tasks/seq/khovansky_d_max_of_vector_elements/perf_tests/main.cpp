@@ -24,6 +24,7 @@ TEST(khovansky_d_max_of_vector_elements, test_max_of_vector_with_positive_number
   const int right = 1000000;
   // Create data
   std::vector<int> in = khovansky_d_max_of_vector_elements_seq::GetRandomVector(count, left, right);
+  in[0] = 1000002;
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -53,8 +54,7 @@ TEST(khovansky_d_max_of_vector_elements, test_max_of_vector_with_positive_number
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(MaxOfVectorSeq);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  int ex = *std::max_element(in.begin(), in.end());
-  ASSERT_EQ(ex, out[0]);
+  ASSERT_EQ(1000002, out[0]);
 }
 
 TEST(khovansky_d_max_of_vector_elements, test_max_of_vector_with_positive_numbers_long) {
@@ -63,6 +63,7 @@ TEST(khovansky_d_max_of_vector_elements, test_max_of_vector_with_positive_number
   const int right = 1000000;
   // Create data
   std::vector<int> in = khovansky_d_max_of_vector_elements_seq::GetRandomVector(count, left, right);
+  in[0] = 1000002;
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -92,8 +93,7 @@ TEST(khovansky_d_max_of_vector_elements, test_max_of_vector_with_positive_number
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(MaxOfVectorSeq);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  int ex = *std::max_element(in.begin(), in.end());
-  ASSERT_EQ(ex, out[0]);
+  ASSERT_EQ(1000002, out[0]);
 }
 
 TEST(khovansky_d_max_of_vector_elements, test_max_of_vector_with_negative_numbers) {
@@ -102,6 +102,7 @@ TEST(khovansky_d_max_of_vector_elements, test_max_of_vector_with_negative_number
   const int right = -1;
   // Create data
   std::vector<int> in = khovansky_d_max_of_vector_elements_seq::GetRandomVector(count, left, right);
+  in[0] = 0;
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -131,8 +132,7 @@ TEST(khovansky_d_max_of_vector_elements, test_max_of_vector_with_negative_number
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(MaxOfVectorSeq);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  int ex = *std::max_element(in.begin(), in.end());
-  ASSERT_EQ(ex, out[0]);
+  ASSERT_EQ(0, out[0]);
 }
 
 TEST(khovansky_d_max_of_vector_elements, test_max_of_vector_with_negative_numbers_long) {
@@ -141,6 +141,7 @@ TEST(khovansky_d_max_of_vector_elements, test_max_of_vector_with_negative_number
   const int right = -1;
   // Create data
   std::vector<int> in = khovansky_d_max_of_vector_elements_seq::GetRandomVector(count, left, right);
+  in[0] = 0;
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -170,6 +171,5 @@ TEST(khovansky_d_max_of_vector_elements, test_max_of_vector_with_negative_number
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(MaxOfVectorSeq);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  int ex = *std::max_element(in.begin(), in.end());
-  ASSERT_EQ(ex, out[0]);
+  ASSERT_EQ(0, out[0]);
 }
