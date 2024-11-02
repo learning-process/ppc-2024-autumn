@@ -12,7 +12,7 @@ using namespace std::chrono_literals;
 
 int tsatsyn_a_vector_dot_product_mpi::resulting(const std::vector<int>& v1, const std::vector<int>& v2) {
   int res = 0;
-  for (int i = 0; i < v1.size(); ++i) {
+  for (size_t i = 0; i < v1.size(); ++i) {
     res += v1[i] * v2[i];
   }
   return res;
@@ -50,7 +50,7 @@ bool tsatsyn_a_vector_dot_product_mpi::TestMPITaskSequential::validation() {
 
 bool tsatsyn_a_vector_dot_product_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-  for (int i = 0; i < v1.size(); i++) res += v1[i] * v2[i];
+  for (size_t i = 0; i < v1.size(); i++) res += v1[i] * v2[i];
   return true;
 }
 
