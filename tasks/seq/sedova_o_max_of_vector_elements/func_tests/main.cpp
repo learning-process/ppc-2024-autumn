@@ -42,7 +42,7 @@ TEST(sedova_o_max_of_vector_elements_seq, Test_Sum_Empty) {
 }
 
 TEST(sedova_o_max_of_vector_elements_seq, Test_Sum_Output_Incorrect) {
-  const size_t count = 10;
+  int count = 10;
   // Create data
   std::vector<int> in(count, 0);
   std::vector<int> out(2, 0);  // Изменен размер выходного вектора
@@ -58,7 +58,7 @@ TEST(sedova_o_max_of_vector_elements_seq, Test_Sum_Output_Incorrect) {
 }
 
 TEST(sedova_o_max_of_vector_elements_seq, Test_Sum_Input_Incorrect) {
-  const size_t count = 10;
+  int count = 10;
   // Create data
   std::vector<int> in(count, 0);
   std::vector<int> out(1, 0);
