@@ -351,4 +351,3 @@ TEST(borisov_s_sum_of_rows, Test_Validation_Null_Inputs_Outputs_Sequential) {
 
   ASSERT_FALSE(sumOfRowsTask.validation());
 }
-
