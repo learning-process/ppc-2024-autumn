@@ -73,10 +73,6 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskSequential ::post_processing() {
 
 bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::pre_processing() {
   internal_order_test();
-
-  loc_row_sums_.clear();
-  loc_matrix_.clear();
-
   return true;
 }
 
@@ -107,6 +103,8 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::validation() {
     }
   }
 
+  boost::mpi::broadcast(world, is_valid, 0);
+
   return is_valid;
 }
 
@@ -123,10 +121,6 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::run() {
 
   boost::mpi::broadcast(world, rows, 0);
   boost::mpi::broadcast(world, cols, 0);
-
-  if (rows == 0 || cols == 0) {
-    return false;
-  }
 
   size_t base_rows_per_proc = rows / world.size();
   int remainder_rows = static_cast<int>(rows % world.size());
@@ -158,7 +152,7 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::run() {
 
   loc_row_sums_.resize(local_rows, 0);
 
-  for (size_t i = 0; i < local_rows; i++) {
+  for (size_t i = 0; i < loc_row_sums_.size(); i++) {
     loc_row_sums_[i] = 0;
     for (size_t j = 0; j < cols; j++) {
       loc_row_sums_[i] += loc_matrix_[(i * cols) + j];
@@ -166,21 +160,22 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::run() {
   }
 
   if (world.rank() == 0) {
-    row_sums_.resize(rows, 0);
+    row_sums_.resize(taskData->inputs_count[0], 0);
   }
 
   std::vector<int> recvcounts(world.size());
+  std::vector<int> displs2(world.size());
 
   size_t offset = 0;
-  for (int i = 0; i < world.size(); i++) {
+  for (int i = 0; i < world.size(); ++i) {
     size_t rows_for_proc = base_rows_per_proc + (i < remainder_rows ? 1 : 0);
     recvcounts[i] = static_cast<int>(rows_for_proc);
-    displs[i] = static_cast<int>(offset);
+    displs2[i] = static_cast<int>(offset);
     offset += rows_for_proc;
   }
 
   MPI_Gatherv(loc_row_sums_.data(), static_cast<int>(loc_row_sums_.size()), MPI_INT, row_sums_.data(),
-              recvcounts.data(), displs.data(), MPI_INT, 0, MPI_COMM_WORLD);
+              recvcounts.data(), displs2.data(), MPI_INT, 0, MPI_COMM_WORLD);
 
   return true;
 }
