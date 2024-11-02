@@ -10,7 +10,6 @@ TEST(petrov_a_nearest_neighbor_elements_seq, SUM20) {
   std::vector<int> in{8, 3};
   std::vector<int> out(2, 0);
 
-   
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
@@ -53,7 +52,7 @@ TEST(petrov_a_nearest_neighbor_elements_seq, SUM50) {
   std::vector<int> T{-5, -3};
   ASSERT_EQ(T[0], out[0]);
   ASSERT_EQ(T[1], out[1]);
-  }
+}
 
 TEST(petrov_a_nearest_neighbor_elements_seq, SUM70) {
   // Create data

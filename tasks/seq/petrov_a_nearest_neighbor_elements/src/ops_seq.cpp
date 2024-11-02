@@ -1,6 +1,6 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/petrov_a_nearest_neighbor_elements/include/ops_seq.hpp"
-  
+
 #include <cmath>
 #include <iostream>
 #include <limits>
@@ -17,6 +17,7 @@ bool petrov_a_nearest_neighbor_elements_seq::TestTaskSequential::pre_processing(
   for (int i = 0; i < size; ++i) {
     input_[i] = input_data[i];
   }
+
 
   res.resize(2); 
   return true;

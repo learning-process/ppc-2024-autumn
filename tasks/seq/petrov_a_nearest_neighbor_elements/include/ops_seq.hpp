@@ -18,7 +18,7 @@ class TestTaskSequential : public ppc::core::Task {
 
  private:
 
-  std::vector <int> input_;
+  std::vector<int> input_;
   std::vector<int> res;
 };
 
