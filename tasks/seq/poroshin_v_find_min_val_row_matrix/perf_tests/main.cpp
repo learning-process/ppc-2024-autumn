@@ -8,7 +8,8 @@
 
 TEST(poroshin_v_find_min_val_row_matrix_seq, test_pipeline_run) {
   // Create data
-  const int n = 5000, m = 5000;
+  const int n = 5000;
+  const int m = 5000;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -50,7 +51,8 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, test_pipeline_run) {
 
 TEST(poroshin_v_find_min_val_row_matrix_seq, test_task_run) {
   // Create data
-  const int n = 5000, m = 5000;
+  const int n = 5000;
+  const int m = 5000;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();

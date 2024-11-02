@@ -7,7 +7,8 @@
 
 TEST(poroshin_v_find_min_val_row_matrix_seq, find_min_10x10_matrix) {
   // Create data
-  const int n = 10, m = 10;
+  const int n = 10;
+  const int m = 10;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> test = std::make_shared<ppc::core::TaskData>();
@@ -33,7 +34,8 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, find_min_10x10_matrix) {
 
 TEST(poroshin_v_find_min_val_row_matrix_seq, find_min_100x100_matrix) {
   // Create data
-  const int n = 100, m = 100;
+  const int n = 100;
+  const int m = 100;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> test = std::make_shared<ppc::core::TaskData>();
@@ -59,7 +61,8 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, find_min_100x100_matrix) {
 
 TEST(poroshin_v_find_min_val_row_matrix_seq, find_min_100x500_matrix) {
   // Create data
-  const int n = 500, m = 100;
+  const int n = 500;
+  const int m = 100;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> test = std::make_shared<ppc::core::TaskData>();
@@ -85,7 +88,8 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, find_min_100x500_matrix) {
 
 TEST(poroshin_v_find_min_val_row_matrix_seq, find_min_500x100_matrix) {
   // Create data
-  const int n = 100, m = 500;
+  const int n = 100;
+  const int m = 500;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> test = std::make_shared<ppc::core::TaskData>();
@@ -111,7 +115,8 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, find_min_500x100_matrix) {
 
 TEST(poroshin_v_find_min_val_row_matrix_seq, find_min_2500x2500_matrix) {
   // Create data
-  const int n = 2500, m = 2500;
+  const int n = 2500;
+  const int m = 2500;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> test = std::make_shared<ppc::core::TaskData>();
@@ -137,7 +142,8 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, find_min_2500x2500_matrix) {
 
 TEST(poroshin_v_find_min_val_row_matrix_seq, validation_input_empty_100x100_matrix) {
   // Create data
-  const int n = 100, m = 100;
+  const int n = 100;
+  const int m = 100;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> test = std::make_shared<ppc::core::TaskData>();
@@ -156,7 +162,8 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, validation_input_empty_100x100_matr
 
 TEST(poroshin_v_find_min_val_row_matrix_seq, validation_output_empty_100x100_matrix) {
   // Create data
-  const int n = 100, m = 100;
+  const int n = 100;
+  const int m = 100;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> test = std::make_shared<ppc::core::TaskData>();
@@ -175,7 +182,8 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, validation_output_empty_100x100_mat
 
 TEST(poroshin_v_find_min_val_row_matrix_seq, validation_less_two_1_empty_100x100_matrix) {
   // Create data
-  const int n = 100, m = 100;
+  const int n = 100;
+  const int m = 100;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> test = std::make_shared<ppc::core::TaskData>();
@@ -194,7 +202,8 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, validation_less_two_1_empty_100x100
 
 TEST(poroshin_v_find_min_val_row_matrix_seq, validation_less_two_2_empty_100x100_matrix) {
   // Create data
-  const int n = 100, m = 100;
+  const int n = 100;
+  const int m = 100;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> test = std::make_shared<ppc::core::TaskData>();
@@ -213,7 +222,8 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, validation_less_two_2_empty_100x100
 
 TEST(poroshin_v_find_min_val_row_matrix_seq, validation_find_min_0x100_matrix) {
   // Create data
-  const int n = 100, m = 0;
+  const int n = 100;
+  const int m = 0;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> test = std::make_shared<ppc::core::TaskData>();
@@ -232,7 +242,8 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, validation_find_min_0x100_matrix) {
 
 TEST(poroshin_v_find_min_val_row_matrix_seq, validation_fails_on_invalid_output_size) {
   // Create data
-  const int n = 100, m = 100;
+  const int n = 100;
+  const int m = 100;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> test = std::make_shared<ppc::core::TaskData>();

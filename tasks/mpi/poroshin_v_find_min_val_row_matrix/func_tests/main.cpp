@@ -8,7 +8,8 @@
 #include "mpi/poroshin_v_find_min_val_row_matrix/include/ops_mpi.hpp"
 
 TEST(poroshin_v_find_min_val_row_matrix_mpi, Test_2_4_0) {
-  int n = 5, m = 3;
+  int n = 5;
+  int m = 3;
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> ans;
@@ -58,7 +59,8 @@ TEST(poroshin_v_find_min_val_row_matrix_mpi, Test_2_4_0) {
 }
 
 TEST(poroshin_v_find_min_val_row_matrix_mpi, Test_4_4_2) {
-  int m = 3, n = 6;
+  int m = 3;
+  int n = 6;
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> ans;
@@ -108,7 +110,8 @@ TEST(poroshin_v_find_min_val_row_matrix_mpi, Test_4_4_2) {
 }
 
 TEST(poroshin_v_find_min_val_row_matrix_mpi, Test_3_4_0_0) {
-  int m = 4, n = 5;
+  int m = 4;
+  int n = 5;
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> ans;
@@ -158,7 +161,8 @@ TEST(poroshin_v_find_min_val_row_matrix_mpi, Test_3_4_0_0) {
 }
 
 TEST(poroshin_v_find_min_val_row_matrix_mpi, Test_rand_10_12) {
-  int m = 10, n = 12;
+  int m = 10;
+  int n = 12;
 
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
@@ -206,7 +210,8 @@ TEST(poroshin_v_find_min_val_row_matrix_mpi, Test_rand_10_12) {
 }
 
 TEST(poroshin_v_find_min_val_row_matrix_mpi, Test_rand_10_15) {
-  int m = 10, n = 15;
+  int m = 10;
+  int n = 15;
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> m_vec(m);
@@ -254,7 +259,8 @@ TEST(poroshin_v_find_min_val_row_matrix_mpi, Test_rand_10_15) {
 }
 
 TEST(poroshin_v_find_min_val_row_matrix_mpi, Test_rand_10_2) {
-  int m = 10, n = 2;
+  int m = 10;
+  int n = 2;
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> m_vec(m, 0);
@@ -301,7 +307,8 @@ TEST(poroshin_v_find_min_val_row_matrix_mpi, Test_rand_10_2) {
 }
 
 TEST(poroshin_v_find_min_val_row_matrix_mpi, Test_rand_0_0) {
-  int m = 0, n = 0;
+  int m = 0;
+  int n = 0;
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> m_vec(m, 0);

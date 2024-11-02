@@ -8,7 +8,8 @@
 #include "mpi/poroshin_v_find_min_val_row_matrix/include/ops_mpi.hpp"
 
 TEST(poroshin_v_find_min_val_row_matrix_mpi, test_pipeline_run) {
-  int m = 100, n = 400;
+  int m = 100;
+  int n = 400;
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> m_vec(m);
@@ -53,7 +54,8 @@ TEST(poroshin_v_find_min_val_row_matrix_mpi, test_pipeline_run) {
 }
 
 TEST(poroshin_v_find_min_val_row_matrix_mpi, test_task_run) {
-  int m = 100, n = 400;
+  int m = 100;
+  int n = 400;
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> m_vec(m);

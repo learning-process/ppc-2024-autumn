@@ -98,10 +98,10 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::pre_processing
     }
   }
 
-  broadcast(world, m, 0);
-  broadcast(world, n, 0);
-  broadcast(world, delta, 0);
-  broadcast(world, size, 0);
+  // broadcast(world, m, 0);
+  // broadcast(world, n, 0);
+  // broadcast(world, delta, 0);
+  // broadcast(world, size, 0);
 
   if (world.rank() == 0) {
     input_ = std::vector<int>(delta * world.size(), INT_MAX);
@@ -111,7 +111,7 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::pre_processing
   }
 
   local_input_ = std::vector<int>(delta);
-  boost::mpi::scatter(world, input_.data(), local_input_.data(), delta, 0);
+  // boost::mpi::scatter(world, input_.data(), local_input_.data(), delta, 0);
 
   res.resize(m, INT_MAX);
 
@@ -135,6 +135,19 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::run() {
 
   int m = 0;
   int n = 0;
+  int size = 0;
+  unsigned int delta = 0;
+
+  if (world.rank() == 0) {
+    m = taskData->inputs_count[0];
+    n = taskData->inputs_count[1];
+    size = n * m;
+    if (size % world.size() == 0) {
+      delta = size / world.size();
+    } else {
+      delta = size / world.size() + 1;
+    }
+  }
 
   if (world.rank() == 0) {
     m = taskData->inputs_count[0];
@@ -143,6 +156,9 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::run() {
 
   broadcast(world, m, 0);
   broadcast(world, n, 0);
+  broadcast(world, delta, 0);
+
+  boost::mpi::scatter(world, input_.data(), local_input_.data(), delta, 0);
 
   unsigned int last = 0;
 
@@ -155,7 +171,7 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::run() {
     reduce(world, INT_MAX, res[i], boost::mpi::minimum<int>(), 0);
   }
 
-  unsigned int delta = std::min(local_input_.size(), n - world.rank() * local_input_.size() % n);
+  delta = std::min(local_input_.size(), n - world.rank() * local_input_.size() % n);
   int l_res = *std::min_element(local_input_.begin(), local_input_.begin() + delta);
   reduce(world, l_res, res[id], boost::mpi::minimum<int>(), 0);
   id++;
