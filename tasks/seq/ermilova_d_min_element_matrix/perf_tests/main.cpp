@@ -24,7 +24,7 @@ TEST(ermilova_d_min_element_matrix_seq, test_pipeline_run) {
   int rnd_cols = gen() % cols_test;
   in[rnd_rows][rnd_cols] = reference_min;
 
-  // Create TaskData
+  // Create  TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   for (unsigned int i = 0; i < in.size(); i++) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[i].data()));
