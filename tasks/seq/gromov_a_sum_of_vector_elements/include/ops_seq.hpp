@@ -16,7 +16,7 @@ class SumOfVector : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  int input_{}, res{};
+  int res{};
 };
 
 }  // namespace gromov_a_sum_of_vector_elements_seq
