@@ -47,7 +47,7 @@ bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorSequential::run() {
   } else if (ops == "max") {
     res = *std::max_element(input_.begin(), input_.end());
   } else if (ops == "production") {
-      res = std::accumulate(input_.begin(), input_.end(), 1, std::multiplies<int>());
+    res = std::accumulate(input_.begin(), input_.end(), 1, std::multiplies<int>());
   }
   return true;
 }

@@ -139,47 +139,48 @@ TEST(gromov_a_sum_of_vector_elements_mpi, Test_Max) {
 }
 
 TEST(gromov_a_sum_of_vector_elements_mpi, Test_Max2) {
-    boost::mpi::communicator world;
-    std::vector<int> global_vec;
-    std::vector<int32_t> global_max(1, std::numeric_limits<int32_t>::min());
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;
+  std::vector<int32_t> global_max(1, std::numeric_limits<int32_t>::min());
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    const int count_size_vector = 200;
+    global_vec = gromov_a_sum_of_vector_elements_mpi::getRandomVector(count_size_vector);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
+    taskDataPar->outputs_count.emplace_back(global_max.size());
+  }
+
+  gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel MPISumOfVectorParallel(taskDataPar, "max");
+  ASSERT_EQ(MPISumOfVectorParallel.validation(), true);
+  MPISumOfVectorParallel.pre_processing();
+  MPISumOfVectorParallel.run();
+  MPISumOfVectorParallel.post_processing();
+
+  if (world.rank() == 0) {
+    // Create data
+    std::vector<int32_t> reference_max(1, std::numeric_limits<int32_t>::min());
+
     // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_max.size());
 
-    if (world.rank() == 0) {
-        const int count_size_vector = 200;
-        global_vec = gromov_a_sum_of_vector_elements_mpi::getRandomVector(count_size_vector);
-        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-        taskDataPar->inputs_count.emplace_back(global_vec.size());
-        taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
-        taskDataPar->outputs_count.emplace_back(global_max.size());
-    }
+    // Create Task
+    gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorSequential MPISumOfVectorSequential(taskDataSeq, "max");
+    ASSERT_EQ(MPISumOfVectorSequential.validation(), true);
+    MPISumOfVectorSequential.pre_processing();
+    MPISumOfVectorSequential.run();
+    MPISumOfVectorSequential.post_processing();
 
-    gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel MPISumOfVectorParallel(taskDataPar, "max");
-    ASSERT_EQ(MPISumOfVectorParallel.validation(), true);
-    MPISumOfVectorParallel.pre_processing();
-    MPISumOfVectorParallel.run();
-    MPISumOfVectorParallel.post_processing();
-
-    if (world.rank() == 0) {
-        // Create data
-        std::vector<int32_t> reference_max(1, std::numeric_limits<int32_t>::min());
-
-        // Create TaskData
-        std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-        taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-        taskDataSeq->inputs_count.emplace_back(global_vec.size());
-        taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
-        taskDataSeq->outputs_count.emplace_back(reference_max.size());
-
-        // Create Task
-        gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorSequential MPISumOfVectorSequential(taskDataSeq, "max");
-        ASSERT_EQ(MPISumOfVectorSequential.validation(), true);
-        MPISumOfVectorSequential.pre_processing();
-        MPISumOfVectorSequential.run();
-        MPISumOfVectorSequential.post_processing();
-
-        ASSERT_EQ(reference_max[0], global_max[0]);
-    }
+    ASSERT_EQ(reference_max[0], global_max[0]);
+  }
+}
 
     TEST(gromov_a_sum_of_vector_elements_mpi, Test_Addition) {
         boost::mpi::communicator world;
