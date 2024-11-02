@@ -1,6 +1,8 @@
 // Copyright 2024 Alputov Ivan
 #include <gtest/gtest.h>
+
 #include <boost/mpi/timer.hpp>
+
 #include "core/perf/include/perf.hpp"
 #include "mpi/alputov_i_most_diff_neighb_elem/include/ops_mpi.hpp"
 #include "mpi/alputov_i_most_diff_neighb_elem/src/ops_mpi.cpp"

@@ -1,5 +1,6 @@
 // Copyright 2024 Alputov Ivan
 #include "seq/alputov_i_most_diff_neighb_elem/include/ops_seq.hpp"
+
 #include <algorithm>
 #include <iostream>
 
