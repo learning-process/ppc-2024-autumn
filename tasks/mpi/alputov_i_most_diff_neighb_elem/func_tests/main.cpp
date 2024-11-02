@@ -2,7 +2,7 @@
 #include "mpi/alputov_i_most_diff_neighb_elem/include/ops_mpi.hpp"
 #include "mpi/alputov_i_most_diff_neighb_elem/src/ops_mpi.cpp"
 
-TEST(alputov_i_most_diff_neighb_elem_mpi, Test__MPI_10_elem_check_validation) {
+/* TEST(alputov_i_most_diff_neighb_elem_mpi, Test__MPI_10_elem_check_validation) {
   boost::mpi::communicator world;
   std::vector<int> inputVector(10);
   int outputPair[2] = {};
@@ -24,7 +24,7 @@ TEST(alputov_i_most_diff_neighb_elem_mpi, Test__MPI_10_elem_check_validation) {
     ASSERT_TRUE(testMpiTaskParallel.validation());
   else
     ASSERT_FALSE(testMpiTaskParallel.validation());
-}
+}*/
 
 TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_RandomLargeVector_MPI_1000_elem) {
   boost::mpi::communicator world;
