@@ -2,8 +2,9 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
-#include <vector>
 #include <string>
+#include <vector>
+
 #include "core/perf/include/perf.hpp"
 #include "mpi/budazhapova_e_count_freq_character/include/count_freq_character_mpi_header.hpp"
 
