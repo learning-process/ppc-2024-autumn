@@ -35,7 +35,9 @@ bool tsatsyn_a_vector_dot_product_seq::TestTaskSequential::validation() {
 
 bool tsatsyn_a_vector_dot_product_seq::TestTaskSequential::run() {
   internal_order_test();
-  for (size_t i = 0; i < v1.size(); i++) res += v1[i] * v2[i];
+  for (size_t i = 0; i < v1.size(); i++) {
+    res += v1[i] * v2[i];
+  }
   return true;
 }
 

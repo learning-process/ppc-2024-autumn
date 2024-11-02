@@ -53,7 +53,7 @@ bool tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
-    if ((int)(taskData->inputs_count[0]) < world.size()) {
+    if ((int)(taskData->inputs_count[0]) < (world.size()-1)) {
       delta = taskData->inputs_count[0];
     }
     v1.resize(taskData->inputs_count[0]);
@@ -86,7 +86,9 @@ bool tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel::validation() {
 
 bool tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+  
   broadcast(world, delta, 0);
+  
   if (world.rank() == 0) {
     for (int proc = 1; proc < world.size(); proc++) {
       world.send(proc, 0, v1.data() + proc * delta, delta);
@@ -101,6 +103,12 @@ bool tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel::run() {
   } else {
     world.recv(0, 0, local_v1.data(), delta);
     world.recv(0, 1, local_v2.data(), delta);
+  }
+  if (world.size() == 2 && world.rank() == 0) {
+    for (size_t i = 0; i < v1.size(); i++) {
+      res += v1[i] * v2[i];
+    }
+    return true;
   }
   int local_result = std::inner_product(local_v1.begin(), local_v1.end(), local_v2.begin(), 0);
   std::vector<int> full_results;

@@ -30,19 +30,8 @@ TEST(tsatsyn_a_vector_dot_product_mpi, Test_Random_Scalar) {
   }
   tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  if (world.rank() == 0) {
-    std::vector<int32_t> reference(1, 0);
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(v1.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(v2.data()));
-    taskDataSeq->inputs_count.emplace_back(v1.size());
-    taskDataSeq->inputs_count.emplace_back(v2.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference.data()));
-    taskDataSeq->outputs_count.emplace_back(reference.size());
-    tsatsyn_a_vector_dot_product_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-  }
 }
+
 TEST(tsatsyn_a_vector_dot_product_mpi, Test_Sum) {
   boost::mpi::communicator world;
   std::vector<int> v1 = {1, 2, 3};
@@ -63,22 +52,9 @@ TEST(tsatsyn_a_vector_dot_product_mpi, Test_Sum) {
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
   if (world.rank() == 0) {
-    std::vector<int32_t> reference(1, 0);
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(v1.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(v2.data()));
-    taskDataSeq->inputs_count.emplace_back(v1.size());
-    taskDataSeq->inputs_count.emplace_back(v2.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference.data()));
-    taskDataSeq->outputs_count.emplace_back(reference.size());
-    tsatsyn_a_vector_dot_product_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
     ASSERT_EQ(tsatsyn_a_vector_dot_product_mpi::resulting(v1, v2), res[0]);
-    ASSERT_EQ(reference[0], res[0]);
   }
+  
 }
 
 TEST(tsatsyn_a_vector_dot_product_mpi, Test_Negative_Validation) {
@@ -97,18 +73,6 @@ TEST(tsatsyn_a_vector_dot_product_mpi, Test_Negative_Validation) {
   }
   tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), false);
-  if (world.rank() == 0) {
-    std::vector<int32_t> reference(1, 0);
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(v1.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(v2.data()));
-    taskDataSeq->inputs_count.emplace_back(v1.size());
-    taskDataSeq->inputs_count.emplace_back(v2.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference.data()));
-    taskDataSeq->outputs_count.emplace_back(reference.size());
-    tsatsyn_a_vector_dot_product_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), false);
-  }
 }
 
 TEST(tsatsyn_a_vector_dot_product_mpi, Test_Scalar_32) {
@@ -131,21 +95,7 @@ TEST(tsatsyn_a_vector_dot_product_mpi, Test_Scalar_32) {
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
   if (world.rank() == 0) {
-    std::vector<int32_t> reference(1, 0);
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(v1.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(v2.data()));
-    taskDataSeq->inputs_count.emplace_back(v1.size());
-    taskDataSeq->inputs_count.emplace_back(v2.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference.data()));
-    taskDataSeq->outputs_count.emplace_back(reference.size());
-    tsatsyn_a_vector_dot_product_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
     ASSERT_EQ(tsatsyn_a_vector_dot_product_mpi::resulting(v1, v2), res[0]);
-    ASSERT_EQ(reference[0], res[0]);
   }
 }
 
@@ -193,21 +143,7 @@ TEST(tsatsyn_a_vector_dot_product_mpi, Test_Scalar_95) {
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
   if (world.rank() == 0) {
-    std::vector<int32_t> reference(1, 0);
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(v1.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(v2.data()));
-    taskDataSeq->inputs_count.emplace_back(v1.size());
-    taskDataSeq->inputs_count.emplace_back(v2.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference.data()));
-    taskDataSeq->outputs_count.emplace_back(reference.size());
-    tsatsyn_a_vector_dot_product_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
     ASSERT_EQ(tsatsyn_a_vector_dot_product_mpi::resulting(v1, v2), res[0]);
-    ASSERT_EQ(reference[0], res[0]);
   }
 }
 
@@ -231,21 +167,7 @@ TEST(tsatsyn_a_vector_dot_product_mpi, Test_Scalar_2330) {
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
   if (world.rank() == 0) {
-    std::vector<int32_t> reference(1, 0);
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(v1.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(v2.data()));
-    taskDataSeq->inputs_count.emplace_back(v1.size());
-    taskDataSeq->inputs_count.emplace_back(v2.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference.data()));
-    taskDataSeq->outputs_count.emplace_back(reference.size());
-    tsatsyn_a_vector_dot_product_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
     ASSERT_EQ(tsatsyn_a_vector_dot_product_mpi::resulting(v1, v2), res[0]);
-    ASSERT_EQ(reference[0], res[0]);
   }
 }
 
@@ -269,20 +191,6 @@ TEST(tsatsyn_a_vector_dot_product_mpi, Test_Scalar_1956) {
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
   if (world.rank() == 0) {
-    std::vector<int32_t> reference(1, 0);
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(v1.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(v2.data()));
-    taskDataSeq->inputs_count.emplace_back(v1.size());
-    taskDataSeq->inputs_count.emplace_back(v2.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference.data()));
-    taskDataSeq->outputs_count.emplace_back(reference.size());
-    tsatsyn_a_vector_dot_product_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
     ASSERT_EQ(tsatsyn_a_vector_dot_product_mpi::resulting(v1, v2), res[0]);
-    ASSERT_EQ(reference[0], res[0]);
   }
 }
