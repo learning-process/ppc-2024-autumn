@@ -60,7 +60,9 @@ bool tselikova_a_average_of_vector_elements_mpi::TestMPITaskParallel::pre_proces
       input_[i] = tmp_ptr[i];
     }
     for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + proc * delta, delta);
+      unsigned int start_index = proc * delta;
+      unsigned int count = (proc == world.size() - 1) ? (total_elements - start_index) : delta;
+      world.send(proc, 0, input_.data() + start_index, count);
     }
   }
   local_input_ = std::vector<int>(delta);
