@@ -21,13 +21,13 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_viol_0_int_) {
     taskSeq->outputs_count.emplace_back(out.size());
   }
   kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<int> tmpTaskSeq(taskSeq);
-  std::cout << rank << " validation" << endl;
+  std::cout << rank << " validation" << std::endl;
   ASSERT_EQ(tmpTaskSeq.validation(), true);
-  std::cout << rank << " pre_processing" << endl;
+  std::cout << rank << " pre_processing" << std::endl;
   tmpTaskSeq.pre_processing();
-  std::cout << rank << " run" << endl;
+  std::cout << rank << " run" << std::endl;
   tmpTaskSeq.run();
-  std::cout << rank << " post_processing" << endl;
+  std::cout << rank << " post_processing" << std::endl;
   tmpTaskSeq.post_processing();
   size_t result = 1;
   ASSERT_EQ(result, out[0]);

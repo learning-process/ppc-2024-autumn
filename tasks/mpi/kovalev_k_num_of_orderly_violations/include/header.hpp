@@ -14,8 +14,9 @@ namespace kovalev_k_num_of_orderly_violations_mpi {
 template <class T>
 class NumOfOrderlyViolationsPar : public ppc::core::Task {
  private:
-  std::vector<T> v;
-  size_t n, l_res = 0, g_res = 0;
+  std::vector<T> glob_v;
+  std::vector<T> loc_v;
+  size_t n, l_res = 0, g_res = 0;  // counters initialisation
   int rank, size;
 
  public:
