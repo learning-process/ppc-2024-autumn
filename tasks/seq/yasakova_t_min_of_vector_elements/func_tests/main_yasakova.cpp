@@ -5,6 +5,7 @@
 #include <random>
 #include <vector>
 
+
 #include "seq/yasakova_t_min_of_vector_elements/include/ops_seq_yasakova.hpp"
 
 TEST(yasakova_t_min_of_vector_elements_seq, testFindMinimumInMatrixWithOneRow) {

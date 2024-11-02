@@ -2,6 +2,7 @@
 #include "seq/yasakova_t_min_of_vector_elements/include/ops_seq_yasakova.hpp"
 #include <climits>
 #include <random>
+using namespace std::chrono_literals;
 
 std::vector<int> yasakova_t_min_of_vector_elements_seq::RandomVector(int size, int minimum, int maximum) {
   std::random_device dev;
@@ -12,7 +13,8 @@ std::vector<int> yasakova_t_min_of_vector_elements_seq::RandomVector(int size, i
   }
   return vec;
 }
-std::vector<std::vector<int>> yasakova_t_min_of_vector_elements_seq::RandomMatrix(int rows, int columns, int minimum, int maximum) {
+std::vector<std::vector<int>> yasakova_t_min_of_vector_elements_seq::RandomMatrix(int rows, int columns, int minimum,
+                                                                                  int maximum) {
   std::vector<std::vector<int>> vec(rows);
   for (int i = 0; i < rows; i++) {
     vec[i] = yasakova_t_min_of_vector_elements_seq::RandomVector(columns, minimum, maximum);
