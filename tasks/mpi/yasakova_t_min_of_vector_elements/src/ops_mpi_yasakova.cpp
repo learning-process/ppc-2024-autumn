@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+using namespace std::chrono_literals;
+
 std::vector<int> yasakova_t_min_of_vector_elements_mpi::RandomVector(int size, int minimum, int maximum) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -97,18 +99,14 @@ bool yasakova_t_min_of_vector_elements_mpi::TestMPITaskParallel::pre_processing(
 
 bool yasakova_t_min_of_vector_elements_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
-  if (taskData->inputs_count[0] == 0 || taskData->inputs_count[1] == 0) {
-        return false; 
+  if (world.rank() == 0) {
+    return taskData->outputs_count[0] == 1 && !taskData->inputs.empty();
   }
   return true;
 }
 
 bool yasakova_t_min_of_vector_elements_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  if (localInputValues_.empty()) {
-      res_ = INT_MAX; 
-      return true;
-  }
   int local_res = *std::min_element(localInputValues_.begin(), localInputValues_.end());
   reduce(world, local_res, res_, boost::mpi::minimum<int>(), 0);
   return true;
