@@ -27,7 +27,6 @@ TEST(sequential_makhov_m_num_of_diff_elements_in_two_str_perf_test, test_pipelin
   str2 = makhov_m_num_of_diff_elements_in_two_str_seq::getRandStr(size);
   std::vector<int> out(1, 0);
 
-
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(str2.data()));

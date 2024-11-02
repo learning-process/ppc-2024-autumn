@@ -144,4 +144,3 @@ TEST(makhov_m_num_of_diff_elements_in_two_str_seq, SameStrings) {
   testTaskmakhov_m_num_of_diff_elements_in_two_str_seq.post_processing();
   ASSERT_EQ(ref, out[0]);
 }
-
