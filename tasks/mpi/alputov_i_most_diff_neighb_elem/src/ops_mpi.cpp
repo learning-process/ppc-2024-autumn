@@ -96,7 +96,7 @@ int* findMaxDifference(const std::vector<int>& vec) {
   return max_dif;
 }
 
- bool alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::validation() {
+bool alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     return taskData->inputs_count[0] >= 2 && taskData->outputs_count[0] == 2 && getElementsPerProcess() >= 2;
@@ -104,7 +104,7 @@ int* findMaxDifference(const std::vector<int>& vec) {
   return true;
 }
 
- bool alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::pre_processing() {
+bool alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::pre_processing() {
   internal_order_test();
   int data_chunk = 0;
   int remainder = 0;

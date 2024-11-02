@@ -91,6 +91,5 @@ TEST(mpi_alputov_i_most_diff_neighb_elem_mpi_perf_test, test_task_run) {
     int expectedMaxDifferenceindex = alputov_i_most_diff_neighb_elem_mpi::Max_Neighbour_Seq_Pos(inputVector);
     ASSERT_EQ(std::abs(outputPair[1] - outputPair[0]),
               std::abs(inputVector[expectedMaxDifferenceindex + 1] - inputVector[expectedMaxDifferenceindex]));
-    ;
   }
 }
