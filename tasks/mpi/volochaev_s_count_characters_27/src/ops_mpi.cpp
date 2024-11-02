@@ -86,13 +86,6 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::pre_processing() {
     }
   }
 
-  local_input_ = std::vector<std::pair<char, char>>(delta);
-  if (world.rank() == 0) {
-    local_input_ = std::vector<std::pair<char, char>>(input_.begin(), input_.begin() + delta);
-  } else {
-    world.recv(0, 0, local_input_.data(), delta);
-  }
-
   // Init value for output
   res = abs(static_cast<int>(tmp1.size()) - static_cast<int>(tmp2.size()));
   return true;
