@@ -139,23 +139,24 @@ TEST(frolova_e_num_of_letters_mpi, Test_only_numbers) {
   }
 }
 
-//TEST(frolova_e_num_of_letters_mpi, Test_empty_str) {
-//   boost::mpi::communicator world;
-//   std::string global_str;
-//   std::vector<int32_t> global_diff(1, 0);
-//    // Create TaskData
-//   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-//
-//   if (world.rank() == 0) {
-//     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_str.data()));
-//     taskDataPar->inputs_count.emplace_back(global_str.size());
-//     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_diff.data()));
-//     taskDataPar->outputs_count.emplace_back(global_diff.size());
-//   }
-//
-//   frolova_e_num_of_letters_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-//   ASSERT_EQ(testMpiTaskParallel.validation(), false);
-//}
+TEST(frolova_e_num_of_letters_mpi, Test_empty_str) {
+   boost::mpi::communicator world;
+   std::string global_str;
+   std::vector<int32_t> global_diff(1, 0);
+    // Create TaskData
+   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+   if (world.rank() == 0) {
+     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_str.data()));
+     taskDataPar->inputs_count.emplace_back(global_str.size());
+     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_diff.data()));
+     taskDataPar->outputs_count.emplace_back(global_diff.size());
+
+     frolova_e_num_of_letters_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+     ASSERT_EQ(testMpiTaskParallel.validation(), false);
+
+   }
+}
 
 TEST(frolova_e_num_of_letters_mpi, Test_different_symbols) {
    boost::mpi::communicator world;
