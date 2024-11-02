@@ -19,12 +19,12 @@ std::string frolova_e_num_of_letters_mpi::GenStr(int n) {
   size_t j = 0;
 
   while (i < n) {
-      result[i] = str[j];
-      j++;
-      i++;
-      if (j >= str.size()) {
-          j = 0;
-      }
+    result[i] = str[j];
+    j++;
+    i++;
+    if (j >= str.size()) {
+      j = 0;
+    }
   }
   return result;
 }
@@ -49,10 +49,6 @@ bool frolova_e_num_of_letters_mpi::TestMPITaskSequential::run() {
   for (char c : input_) {
     if (isalpha(c)) res++;
   }
-
-  /*for (char ch: str) {
-    if (isalpha(ch)) res++;
-  }*/
   return true;
 }
 
@@ -67,7 +63,7 @@ bool frolova_e_num_of_letters_mpi::TestMPITaskParallel::pre_processing() {
 
   if (world.rank() == 0) {
     // Init vectors
-      input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]); 
+    input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]); 
   } 
 
   res = 0;
@@ -102,9 +98,11 @@ bool frolova_e_num_of_letters_mpi::TestMPITaskParallel::run() {
     local_input_.resize(delta);
     world.recv(0, 0, local_input_.data(), delta);
   }
-  int local_res = 0;  
+  int local_res = 0;
   for (char c : local_input_) {
-    if (isalpha(c)) local_res++;
+    if (isalpha(c)) {
+      local_res++;
+    }
   }
 
   reduce(world, local_res, res, std::plus(), 0);
