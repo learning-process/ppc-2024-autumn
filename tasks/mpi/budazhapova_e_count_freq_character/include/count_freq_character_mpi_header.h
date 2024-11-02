@@ -1,5 +1,6 @@
 #pragma once
 #include <gtest/gtest.h>
+
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <memory>
@@ -7,11 +8,12 @@
 #include <string>
 #include <utility>
 #include <vector>
+
 #include "core/task/include/task.hpp"
 
-namespace budazhapova_e_count_freq_character_mpi{
+namespace budazhapova_e_count_freq_character_mpi {
 
-  std::string getRandomString(int length);
+std::string getRandomString(int length);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
@@ -20,7 +22,7 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  
+
  private:
   std::string input_;
   int res{};
@@ -43,4 +45,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-} 
+}  // namespace budazhapova_e_count_freq_character_mpi

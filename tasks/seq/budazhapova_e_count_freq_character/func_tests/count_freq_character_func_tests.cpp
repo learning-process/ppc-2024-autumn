@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+
 #include "seq/budazhapova_e_count_freq_character/include/count_freq_character_header.h"
 
 TEST(budazhapova_e_count_freq_character_seq, ordinary_test) {
@@ -19,7 +20,7 @@ TEST(budazhapova_e_count_freq_character_seq, ordinary_test) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(out[0],11);
+  ASSERT_EQ(out[0], 11);
 }
 
 TEST(budazhapova_e_count_freq_character_seq, test_if_character_is_not_in_line) {
@@ -63,4 +64,3 @@ TEST(budazhapova_e_count_freq_character_seq, test_if_character_is_one) {
   testTaskSequential.post_processing();
   ASSERT_EQ(out[0], 1);
 }
-

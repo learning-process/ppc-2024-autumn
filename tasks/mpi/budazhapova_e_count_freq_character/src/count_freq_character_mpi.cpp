@@ -9,7 +9,7 @@
 
 using namespace std::chrono_literals;
 
-std::string budazhapova_e_count_freq_character_mpi::getRandomString(int length){
+std::string budazhapova_e_count_freq_character_mpi::getRandomString(int length) {
   static std::string charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
   std::string result;
   result.resize(length);

@@ -1,5 +1,6 @@
 
 #include <gtest/gtest.h>
+
 #include "core/perf/include/perf.hpp"
 #include "seq/budazhapova_e_count_freq_character/include/count_freq_character_header.h"
 
@@ -22,8 +23,7 @@ TEST(budazhapova_e_count_freq_character_seq, test_pipeline_run) {
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();
-  perfAttr->current_timer = [&] 
-  {
+  perfAttr->current_timer = [&] {
     auto current_time_point = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
     return static_cast<double>(duration) * 1e-9;
