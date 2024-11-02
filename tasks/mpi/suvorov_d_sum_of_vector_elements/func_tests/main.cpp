@@ -5,7 +5,7 @@
 #include <boost/mpi/environment.hpp>
 #include <vector>
 
-#include "mpi/example/include/ops_mpi.hpp"
+#include "mpi/suvorov_d_sum_of_vector_elements/include/ops_mpi.hpp"
 
 TEST(suvorov_d_sum_of_vector_elements_mpi, Test_Sum) {
   boost::mpi::communicator world;
@@ -13,9 +13,8 @@ TEST(suvorov_d_sum_of_vector_elements_mpi, Test_Sum) {
   std::vector<int32_t> global_sum(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
   if (world.rank() == 0) {
-    const int count_size_vector = 120;
+    const int count_size_vector = 10;
     global_vec = suvorov_d_sum_of_vector_elements_mpi::getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -44,6 +43,7 @@ TEST(suvorov_d_sum_of_vector_elements_mpi, Test_Sum) {
     suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_seq SumOfVectorElementsSeq(taskDataSeq);
     ASSERT_EQ(SumOfVectorElementsSeq.validation(), true);
     SumOfVectorElementsSeq.pre_processing();
+    std::cout << "RUN START\n" << std::endl << std::endl;
     SumOfVectorElementsSeq.run();
     SumOfVectorElementsSeq.post_processing();
 

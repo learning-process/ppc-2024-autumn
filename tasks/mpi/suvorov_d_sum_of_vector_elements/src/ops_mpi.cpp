@@ -1,5 +1,5 @@
 // Copyright 2023 Nesterov Alexander
-#include "mpi/example/include/ops_mpi.hpp"
+#include "mpi/suvorov_d_sum_of_vector_elements/include/ops_mpi.hpp"
 
 #include <algorithm>
 #include <functional>
@@ -54,7 +54,7 @@ bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_seq::post_proc
 
 bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel::pre_processing() {
   internal_order_test();
-  unsigned int input_size = taskData->inputs_count[0];
+  int input_size = taskData->inputs_count[0];
   if (input_size == 0) {
     res = 0;
     return true;
@@ -64,7 +64,7 @@ bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel::pre_
     local_input_ = std::vector<int>(1, (world.rank() < input_size) ? input_[world.rank()] : 0);
   } else {
     unsigned int delta = input_size / world.size();
-    unsigned int rest = input_size % world.size();
+    int rest = input_size % world.size();
     unsigned int local_size = delta + (world.rank() < rest ? 1 : 0);
     local_input_ = std::vector<int>(local_size);
 

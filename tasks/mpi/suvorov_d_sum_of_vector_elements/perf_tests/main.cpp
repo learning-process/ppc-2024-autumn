@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/example/include/ops_mpi.hpp"
+#include "mpi/suvorov_d_sum_of_vector_elements/include/ops_mpi.hpp"
 
 TEST(suvorov_d_sum_of_vector_elements_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
@@ -24,7 +24,7 @@ TEST(suvorov_d_sum_of_vector_elements_mpi, test_pipeline_run) {
   }
 
   auto SumOfVectorElementsParallel =
-      std::make_shared<suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel>(taskDataPar, "+");
+      std::make_shared<suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel>(taskDataPar);
   ASSERT_EQ(SumOfVectorElementsParallel->validation(), true);
   SumOfVectorElementsParallel->pre_processing();
   SumOfVectorElementsParallel->run();
@@ -65,7 +65,7 @@ TEST(suvorov_d_sum_of_vector_elements_mpi, test_task_run) {
   }
 
   auto SumOfVectorElementsParallel =
-      std::make_shared<suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel>(taskDataPar, "+");
+      std::make_shared<suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel>(taskDataPar);
   ASSERT_EQ(SumOfVectorElementsParallel->validation(), true);
   SumOfVectorElementsParallel->pre_processing();
   SumOfVectorElementsParallel->run();
