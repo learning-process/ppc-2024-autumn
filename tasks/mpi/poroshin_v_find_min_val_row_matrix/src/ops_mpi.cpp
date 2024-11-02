@@ -10,17 +10,6 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> compute_minimums(std::vector<int>& data, int part_size) {
-  std::vector<int> minimums;
-  for (size_t i = 0; i < data.size(); i += part_size) {
-    auto start = data.begin() + i;
-    auto end = (i + part_size < data.size()) ? data.begin() + i + part_size : data.end();
-    int min_value = *std::min_element(start, end);
-    minimums.push_back(min_value);
-  }
-  return minimums;
-}
-
 std::vector<int> poroshin_v_find_min_val_row_matrix_mpi::gen(int m, int n) {
   std::vector<int> tmp(m * n);
   int n1 = std::max(n, m);
@@ -95,14 +84,14 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::pre_processing
 
   int n = 0;
   int m = 0;
-  int size = n * m;
+  int size = 0;
   int delta = 0;
 
   if (world.rank() == 0) {
     m = taskData->inputs_count[0];
     n = taskData->inputs_count[1];
     size = n * m;
-    delta = (size % world.size() == 0) ? (size / world.size()) : (size / world.size() + 1);
+    delta = (size + world.size() - 1) / world.size();
   }
 
   broadcast(world, m, 0);
@@ -110,15 +99,15 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::pre_processing
   broadcast(world, delta, 0);
 
   if (world.rank() == 0) {
-    input_ = std::vector<int>(delta * world.size(), INT_MAX);
-    for (int i = 0; i < n * m; i++) {
-      input_[i] = (reinterpret_cast<int*>(taskData->inputs[0])[i]);
+    input_.resize(size);
+    for (int i = 0; i < size; i++) {
+      input_[i] = reinterpret_cast<int*>(taskData->inputs[0])[i];
     }
   }
 
-  local_input_ = std::vector<int>(delta);
+  local_input_.resize(delta);
   boost::mpi::scatter(world, input_.data(), local_input_.data(), delta, 0);
-  res = std::vector<int>(m, INT_MAX);
+  res.resize(m, INT_MAX);
 
   return true;
 }
@@ -144,22 +133,33 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::run() {
 
   if (world.rank() == world.size() - 1) {
     last = local_input_.size() * world.size() - n * m;
+    if (last < 0) {
+      last = 0;
+    }
   }
+
   int id = world.rank() * local_input_.size() / n;
 
   for (int i = 0; i < id; i++) {
     reduce(world, INT_MAX, res[i], boost::mpi::minimum<int>(), 0);
   }
 
-  int delta = std::min(local_input_.size(), n - world.rank() * local_input_.size() % n);
-  int l_res = *std::min_element(local_input_.begin(), local_input_.begin() + delta);
-  reduce(world, l_res, res[id], boost::mpi::minimum<int>(), 0);
-  id++;
+  int delta = std::min(local_input_.size(), n - (world.rank() * local_input_.size() % n));
+  if (delta > 0) {
+    int l_res = *std::min_element(local_input_.begin(), local_input_.begin() + delta);
+    reduce(world, l_res, res[id], boost::mpi::minimum<int>(), 0);
+    id++;
+  }
+
   int k = 0;
 
   while (local_input_.begin() + delta + k * n < local_input_.end() - last) {
-    l_res = *std::min_element(local_input_.begin() + delta + k * n,
-                              std::min(local_input_.end(), local_input_.begin() + delta + (k + 1) * n));
+    auto start_iter = local_input_.begin() + delta + k * n;
+    auto end_iter = local_input_.begin() + delta + (k + 1) * n;
+    if (end_iter > local_input_.end()) {
+      end_iter = local_input_.end();
+    }
+    int l_res = *std::min_element(start_iter, end_iter);
     reduce(world, l_res, res[id], boost::mpi::minimum<int>(), 0);
     k++;
     id++;
@@ -176,8 +176,9 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::post_processin
   internal_order_test();
 
   if (world.rank() == 0) {
-    int* output_matrix = reinterpret_cast<int*>(taskData->outputs[0]);
-    std::copy(res.begin(), res.end(), output_matrix);
+    for (size_t i = 0; i < res.size(); i++) {
+      reinterpret_cast<int*>(taskData->outputs[0])[i] = res[i];
+    }
   }
 
   return true;
