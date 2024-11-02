@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/budazhapova_e_count_freq_character/include/count_freq_character_mpi_header.h"
+#include "mpi/budazhapova_e_count_freq_character/include/count_freq_character_mpi_header.hpp"
 
 TEST(budazhapova_e_count_freq_character_mpi, test_pipeline_run) {
   boost::mpi::communicator world;

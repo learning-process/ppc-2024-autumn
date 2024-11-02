@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "seq/budazhapova_e_count_freq_character/include/count_freq_character_header.h"
+#include "seq/budazhapova_e_count_freq_character/include/count_freq_character_header.hpp"
 
 TEST(budazhapova_e_count_freq_character_seq, ordinary_test) {
   std::string line = "aaaaaaa pochemu tak neponyatno ya hochu spat!!!!";

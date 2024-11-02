@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 
 #include "core/perf/include/perf.hpp"
-#include "seq/budazhapova_e_count_freq_character/include/count_freq_character_header.h"
+#include "seq/budazhapova_e_count_freq_character/include/count_freq_character_header.hpp"
 
 TEST(budazhapova_e_count_freq_character_seq, test_pipeline_run) {
   // Create data

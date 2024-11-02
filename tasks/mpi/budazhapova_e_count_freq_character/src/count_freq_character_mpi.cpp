@@ -5,7 +5,7 @@
 #include <thread>
 #include <vector>
 
-#include "mpi/budazhapova_e_count_freq_character/include/count_freq_character_mpi_header.h"
+#include "mpi/budazhapova_e_count_freq_character/include/count_freq_character_mpi_header.hpp"
 
 using namespace std::chrono_literals;
 
