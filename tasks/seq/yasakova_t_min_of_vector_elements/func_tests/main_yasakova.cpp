@@ -17,7 +17,8 @@ TEST(yasakova_t_min_of_vector_elements_seq, testFindMinimumInEmptyMatrix) {
   const int gen_maximum = 0;
 
   std::vector<int> out(1, INT_MIN);
-  std::vector<std::vector<int>> in = yasakova_t_min_of_vector_elements_seq::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
+  std::vector<std::vector<int>> in =
+      yasakova_t_min_of_vector_elements_seq::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   for (unsigned int i = 0; i < in.size(); i++)
@@ -49,7 +50,8 @@ TEST(yasakova_t_min_of_vector_elements_seq, testFindMinimumInMatrixWithOneRow) {
 
   int ref = INT_MIN;
   std::vector<int> out(1, INT_MAX);
-  std::vector<std::vector<int>> in = yasakova_t_min_of_vector_elements_seq::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
+  std::vector<std::vector<int>> in =
+      yasakova_t_min_of_vector_elements_seq::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
 
   int index = gen() % count_columns;
   in[0][index] = ref;
