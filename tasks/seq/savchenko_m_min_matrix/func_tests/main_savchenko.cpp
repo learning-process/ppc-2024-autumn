@@ -299,16 +299,9 @@ TEST(savchenko_m_min_matrix_seq, test_min_0x10) {
   std::vector<int> matrix;
   std::vector<int32_t> min_value(1, INT_MAX);
 
-  std::random_device dev;
-  std::mt19937 gen(dev());
-
   // Create data
   const int rows = 0;
   const int columns = 10;
-  const int gen_min = -1000;
-  const int gen_max = 1000;
-
-  matrix = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -328,16 +321,9 @@ TEST(savchenko_m_min_matrix_seq, test_min_10x0) {
   std::vector<int> matrix;
   std::vector<int32_t> min_value(1, INT_MAX);
 
-  std::random_device dev;
-  std::mt19937 gen(dev());
-
   // Create data
   const int rows = 10;
   const int columns = 0;
-  const int gen_min = -1000;
-  const int gen_max = 1000;
-
-  matrix = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
