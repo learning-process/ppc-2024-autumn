@@ -12,7 +12,6 @@ TEST(mpi_alputov_i_most_diff_neighb_elem_mpi_perf_test, test_pipeline_run) {
   std::vector<int> inputVector;
   int outputPair[2];
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int count = 125000000;
 
@@ -35,16 +34,13 @@ TEST(mpi_alputov_i_most_diff_neighb_elem_mpi_perf_test, test_pipeline_run) {
   ASSERT_TRUE(run_result);
   testMpiTaskParallel->post_processing();
 
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
@@ -60,7 +56,6 @@ TEST(mpi_alputov_i_most_diff_neighb_elem_mpi_perf_test, test_task_run) {
   std::vector<int> inputVector;
   int32_t outputPair[2];
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int count = 125000000;
   if (world.rank() == 0) {
@@ -82,16 +77,13 @@ TEST(mpi_alputov_i_most_diff_neighb_elem_mpi_perf_test, test_task_run) {
   ASSERT_TRUE(run_result);
   testMpiTaskParallel->post_processing();
 
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {

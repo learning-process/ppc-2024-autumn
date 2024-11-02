@@ -78,7 +78,7 @@ void updateMaxDifferencePair(const int* currentPair, int* maxDiffPair, int* arra
 
 int* findMaxDifference(const std::vector<int>& vec) {
   if (vec.size() < 2) {
-    int* result = new int[3]{1, 1, 0};  // Âûäåëÿåì ïàìÿòü è èíèöèàëèçèðóåì
+    int* result = new int[3]{1, 1, 0};
     return result;
   }
   int* max_dif = new int[3];
@@ -103,33 +103,6 @@ int* findMaxDifference(const std::vector<int>& vec) {
   }
   return true;
 }
- /* bool alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::pre_processing() {
-  internal_order_test();
-  unsigned int delta = 0;
-  if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] / world.size();
-  }
-  broadcast(world, delta, 0);
-  if (world.rank() == 0) {
-    inputData = std::vector<int>(taskData->inputs_count[0]);
-    auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-      inputData[i] = tempPtr[i];
-    }
-    for (int process = 1; process < world.size(); process++) {
-      world.send(process, 0, inputData.data() + process * delta, delta);
-    }
-  }
-  localData = std::vector<int>(delta);
-  if (world.rank() == 0) {
-    localData = std::vector<int>(inputData.begin(), inputData.begin() + delta);
-  } else {
-    world.recv(0, 0, localData.data(), delta);
-  }
-  result[0] = 0;
-  result[1] = 1;
-  return true;
-}*/
 
  bool alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::pre_processing() {
   internal_order_test();
@@ -171,149 +144,6 @@ int* findMaxDifference(const std::vector<int>& vec) {
   return true;
 }
 
-/* bool alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::pre_processing() {
-  internal_order_test();
-  int data_chunk = 0;
-  int del = 0;
-  if (world.rank() == 0) {
-    data_chunk = taskData->inputs_count[0] / world.size();
-    del = taskData->inputs_count[0] % world.size();
-  }
-  boost::mpi::broadcast(world, data_chunk, 0);
-  boost::mpi::broadcast(world, del, 0);
-  if (world.rank() == 0) {
-    inputData = std::vector<int>(taskData->inputs_count[0]);
-    memcpy(inputData.data(), taskData->inputs[0], sizeof(int) * taskData->inputs_count[0]);
-
-    for (int proc = 1; proc < world.size(); ++proc) {
-      world.send(proc, 0, inputData.data() + proc * data_chunk, data_chunk);
-    }
-  }
-  int localDataSize = data_chunk;
-  if (world.rank() == world.size() - 1 && del > 0) {
-    localDataSize += del;
-  }
-  localData = std::vector<int>(localDataSize);
-
-  if (world.rank() == 0) {
-    localData = std::vector<int>(inputData.begin(), inputData.begin() + data_chunk);
-  } else {
-    world.recv(0, 0, localData.data(), localDataSize);  // data_chunk);
-  }
-  result[0] = 0;
-  result[1] = 0 ;
-  return true;
-}íîðì*/
-
-/* bool alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::pre_processing() {
-  internal_order_test();
-  int data_chunk = 0;
-  int del = 0;
-
-  if (world.rank() == 0) {
-    data_chunk = taskData->inputs_count[0] / world.size();
-    del = taskData->inputs_count[0] % world.size();
-  }
-
-  boost::mpi::broadcast(world, data_chunk, 0);
-  boost::mpi::broadcast(world, del, 0);
-
-  if (world.rank() == 0) {
-    inputData = std::vector<int>(taskData->inputs_count[0]);
-    memcpy(inputData.data(), taskData->inputs[0], sizeof(int) * taskData->inputs_count[0]);
-
-    int offset = 0;
-    for (int proc = 1; proc < world.size(); ++proc) {
-      int send_size = data_chunk;
-      if (proc == world.size() - 1) {
-        if (del >= 2) {
-          send_size += del;
-        }
-      } else if (proc == world.size() - 2 && del > 0 && del < 2) {
-        send_size += del;
-      }
-
-      world.send(proc, 0, inputData.data() + offset, send_size);
-      offset += data_chunk;
-    }
-  }
-
-  int localDataSize = data_chunk;
-  if (world.rank() == world.size() - 1 && del >= 2) {
-    localDataSize += del;
-  } else if (world.rank() == world.size() - 2 && del > 0 && del < 2) {
-    localDataSize += del;
-  }
-
-  localData.resize(localDataSize);
-
-  if (world.rank() == 0) {
-    localData = std::vector<int>(inputData.begin(), inputData.begin() + data_chunk);
-  } else {
-    world.recv(0, 0, localData.data(), localDataSize);
-  }
-  return true;
-}*/
-
-/* bool alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::run() {
-  internal_order_test();
-
-  int* localResult = findMaxDifference(localData);
-  if (localResult == nullptr) {
-    return true;
-  }
-  localMaxDiff[0] = localResult[0];
-  localMaxDiff[1] = localResult[1];
-  localMaxDiff[2] = localResult[2];
-  delete[] localResult;
-
-  int lastElement = localData.back();
-  int firstElement = localData.front();
-  int nextFirstElement = 0;
-  int prevLastElement = 0;
-
-  if (world.rank() == 0) {
-    if (world.size() > 1) {
-      world.send(world.rank() + 1, 0, lastElement);
-      world.recv(world.rank() + 1, 0, nextFirstElement);
-    }
-  } else if (world.rank() == world.size() - 1) {
-    world.send(world.rank() - 1, 0, firstElement);
-    world.recv(world.rank() - 1, 0, prevLastElement);
-  } else {
-    world.send(world.rank() + 1, 0, lastElement);
-    world.recv(world.rank() + 1, 0, nextFirstElement);
-    world.send(world.rank() - 1, 0, firstElement);
-    world.recv(world.rank() - 1, 0, prevLastElement);
-  }
-
-  if (world.rank() > 0) {
-    int diff = std::abs(firstElement - prevLastElement);
-    if (diff > localMaxDiff[2]) {
-      localMaxDiff[0] = prevLastElement;
-      localMaxDiff[1] = firstElement;
-      localMaxDiff[2] = diff;
-    }
-  }
-  if (world.rank() < world.size() - 1) {
-    int diff = std::abs(nextFirstElement - lastElement);
-    if (diff > localMaxDiff[2]) {
-      localMaxDiff[0] = lastElement;
-      localMaxDiff[1] = nextFirstElement;
-      localMaxDiff[2] = diff;
-    }
-  }
-  int globalDataArr[3] = {0, 0, 0};
-  MPI_Op customOperation;
-  MPI_Op_create(reinterpret_cast<MPI_User_function*>(&updateMaxDifferencePair), 1, &customOperation);
-  MPI_Reduce(localMaxDiff, globalDataArr, 3, MPI_INT, customOperation, 0, MPI_COMM_WORLD);
-  if (world.rank() == 0) {
-    result[0] = globalDataArr[0];
-    result[1] = globalDataArr[1];
-  }
-  MPI_Op_free(&customOperation);
-  return true;
-}*/
 bool alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::run() {
   internal_order_test();
   int* localResult = findMaxDifference(localData);
