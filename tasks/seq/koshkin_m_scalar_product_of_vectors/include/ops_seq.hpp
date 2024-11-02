@@ -10,7 +10,7 @@ namespace koshkin_m_scalar_product_of_vectors {
 int calculateDotProduct(const std::vector<int>& vec_1, const std::vector<int>& vec_2);
 int generateRandomNumber(int min, int max);
 std::vector<int> createRandomVector(int v_size);
- class VectorDotProduct : public ppc::core::Task {
+class VectorDotProduct : public ppc::core::Task {
  public:
   explicit VectorDotProduct(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
