@@ -18,7 +18,7 @@ std::vector<int> createRandomVector(int v_size) {
   return vec;
 }
 
-TEST(koshkin_m_scalar_product_of_vectors_mpi, test_pipeline_run) {
+TEST(koshkin_m_scalar_product_of_vectors, test_pipeline_run) {
   int count_size = 10000000;
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vec;
@@ -40,7 +40,7 @@ TEST(koshkin_m_scalar_product_of_vectors_mpi, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(res.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<koshkin_m_scalar_product_of_vectors_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<koshkin_m_scalar_product_of_vectors::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -50,7 +50,7 @@ TEST(koshkin_m_scalar_product_of_vectors_mpi, test_pipeline_run) {
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-  int ans = koshkin_m_scalar_product_of_vectors_mpi::calculateDotProduct(vec_1, vec_2);
+  int ans = koshkin_m_scalar_product_of_vectors::calculateDotProduct(vec_1, vec_2);
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
 
@@ -60,7 +60,7 @@ TEST(koshkin_m_scalar_product_of_vectors_mpi, test_pipeline_run) {
   }
 }
 
-TEST(koshkin_m_scalar_product_of_vectors_mpi, test_task_run) {
+TEST(koshkin_m_scalar_product_of_vectors, test_task_run) {
   int count_size = 10000000;
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vec;
@@ -80,7 +80,7 @@ TEST(koshkin_m_scalar_product_of_vectors_mpi, test_task_run) {
     taskDataPar->outputs_count.emplace_back(res.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<koshkin_m_scalar_product_of_vectors_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<koshkin_m_scalar_product_of_vectors::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -97,6 +97,6 @@ TEST(koshkin_m_scalar_product_of_vectors_mpi, test_task_run) {
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(koshkin_m_scalar_product_of_vectors_mpi::calculateDotProduct(global_vec[0], global_vec[1]), res[0]);
+    ASSERT_EQ(koshkin_m_scalar_product_of_vectors::calculateDotProduct(global_vec[0], global_vec[1]), res[0]);
   }
 }

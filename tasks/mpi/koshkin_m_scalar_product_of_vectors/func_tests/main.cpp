@@ -17,7 +17,7 @@ std::vector<int> createRandomVector(int v_size) {
   return vec;
 }
 
-TEST(koshkin_m_scalar_product_of_vectors_mpi, check_vec_equal) {
+TEST(koshkin_m_scalar_product_of_vectors, check_vec_equal) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vec;
   std::vector<int32_t> res(1, 0);
@@ -37,12 +37,12 @@ TEST(koshkin_m_scalar_product_of_vectors_mpi, check_vec_equal) {
     taskDataPar->inputs_count.emplace_back(global_vec[1].size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size());
-    koshkin_m_scalar_product_of_vectors_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    koshkin_m_scalar_product_of_vectors::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
     ASSERT_EQ(testMpiTaskParallel.validation(), true);
   }
 }
 
-TEST(koshkin_m_scalar_product_of_vectors_mpi, check_vec_no_equal) {
+TEST(koshkin_m_scalar_product_of_vectors, check_vec_no_equal) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vec;
   std::vector<int32_t> res(1, 0);
@@ -62,12 +62,12 @@ TEST(koshkin_m_scalar_product_of_vectors_mpi, check_vec_no_equal) {
     taskDataPar->inputs_count.emplace_back(global_vec[1].size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size());
-    koshkin_m_scalar_product_of_vectors_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    koshkin_m_scalar_product_of_vectors::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
     ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
 }
 
-TEST(koshkin_m_scalar_product_of_vectors_mpi, multiply_vec_size_100) {
+TEST(koshkin_m_scalar_product_of_vectors, multiply_vec_size_100) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vec;
   std::vector<int32_t> res(1, 0);
@@ -87,7 +87,7 @@ TEST(koshkin_m_scalar_product_of_vectors_mpi, multiply_vec_size_100) {
     taskDataPar->outputs_count.emplace_back(res.size());
   }
 
-  koshkin_m_scalar_product_of_vectors_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  koshkin_m_scalar_product_of_vectors::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -105,17 +105,17 @@ TEST(koshkin_m_scalar_product_of_vectors_mpi, multiply_vec_size_100) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_res.data()));
     taskDataSeq->outputs_count.emplace_back(reference_res.size());
 
-    koshkin_m_scalar_product_of_vectors_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    koshkin_m_scalar_product_of_vectors::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
     ASSERT_EQ(reference_res[0], res[0]);
-    ASSERT_EQ(koshkin_m_scalar_product_of_vectors_mpi::calculateDotProduct(global_vec[0], global_vec[1]), res[0]);
+    ASSERT_EQ(koshkin_m_scalar_product_of_vectors::calculateDotProduct(global_vec[0], global_vec[1]), res[0]);
   }
 }
 
-TEST(koshkin_m_scalar_product_of_vectors_mpi, multiply_vec_size_300) {
+TEST(koshkin_m_scalar_product_of_vectors, multiply_vec_size_300) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vec;
   std::vector<int32_t> res(1, 0);
@@ -135,7 +135,7 @@ TEST(koshkin_m_scalar_product_of_vectors_mpi, multiply_vec_size_300) {
     taskDataPar->outputs_count.emplace_back(res.size());
   }
 
-  koshkin_m_scalar_product_of_vectors_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  koshkin_m_scalar_product_of_vectors::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -153,17 +153,17 @@ TEST(koshkin_m_scalar_product_of_vectors_mpi, multiply_vec_size_300) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_res.data()));
     taskDataSeq->outputs_count.emplace_back(reference_res.size());
 
-    koshkin_m_scalar_product_of_vectors_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    koshkin_m_scalar_product_of_vectors::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
     ASSERT_EQ(reference_res[0], res[0]);
-    ASSERT_EQ(koshkin_m_scalar_product_of_vectors_mpi::calculateDotProduct(global_vec[0], global_vec[1]), res[0]);
+    ASSERT_EQ(koshkin_m_scalar_product_of_vectors::calculateDotProduct(global_vec[0], global_vec[1]), res[0]);
   }
 }
 
-TEST(koshkin_m_scalar_product_of_vectors_mpi, multiply_vec_size_600) {
+TEST(koshkin_m_scalar_product_of_vectors, multiply_vec_size_600) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vec;
   std::vector<int32_t> res(1, 0);
@@ -183,7 +183,7 @@ TEST(koshkin_m_scalar_product_of_vectors_mpi, multiply_vec_size_600) {
     taskDataPar->outputs_count.emplace_back(res.size());
   }
 
-  koshkin_m_scalar_product_of_vectors_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  koshkin_m_scalar_product_of_vectors::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -201,29 +201,29 @@ TEST(koshkin_m_scalar_product_of_vectors_mpi, multiply_vec_size_600) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_res.data()));
     taskDataSeq->outputs_count.emplace_back(reference_res.size());
 
-    koshkin_m_scalar_product_of_vectors_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    koshkin_m_scalar_product_of_vectors::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
     ASSERT_EQ(reference_res[0], res[0]);
-    ASSERT_EQ(koshkin_m_scalar_product_of_vectors_mpi::calculateDotProduct(global_vec[0], global_vec[1]), res[0]);
+    ASSERT_EQ(koshkin_m_scalar_product_of_vectors::calculateDotProduct(global_vec[0], global_vec[1]), res[0]);
   }
 }
 
-TEST(koshkin_m_scalar_product_of_vectors_mpi, check_mpi_vectorDotProduct_binary) {
+TEST(koshkin_m_scalar_product_of_vectors, check_mpi_vectorDotProduct_binary) {
   std::vector<int> vec_1 = {5, 2};
   std::vector<int> vec_2 = {6, 10};
-  ASSERT_EQ(50, koshkin_m_scalar_product_of_vectors_mpi::calculateDotProduct(vec_1, vec_2));
+  ASSERT_EQ(50, koshkin_m_scalar_product_of_vectors::calculateDotProduct(vec_1, vec_2));
 }
 
-TEST(koshkin_m_scalar_product_of_vectors_mpi, check_mpi_vectorDotProduct_ternary) {
+TEST(koshkin_m_scalar_product_of_vectors, check_mpi_vectorDotProduct_ternary) {
   std::vector<int> vec_1 = {5, 2, 10};
   std::vector<int> vec_2 = {6, 10, 1};
-  ASSERT_EQ(60, koshkin_m_scalar_product_of_vectors_mpi::calculateDotProduct(vec_1, vec_2));
+  ASSERT_EQ(60, koshkin_m_scalar_product_of_vectors::calculateDotProduct(vec_1, vec_2));
 }
 
-TEST(koshkin_m_scalar_product_of_vectors_mpi, check_mpi_run_size_4) {
+TEST(koshkin_m_scalar_product_of_vectors, check_mpi_run_size_4) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vec;
   std::vector<int32_t> res(1, 0);
@@ -241,17 +241,17 @@ TEST(koshkin_m_scalar_product_of_vectors_mpi, check_mpi_run_size_4) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size());
   }
-  koshkin_m_scalar_product_of_vectors_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  koshkin_m_scalar_product_of_vectors::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
   if (world.rank() == 0) {
-    ASSERT_EQ(koshkin_m_scalar_product_of_vectors_mpi::calculateDotProduct(vec_1, vec_2), res[0]);
+    ASSERT_EQ(koshkin_m_scalar_product_of_vectors::calculateDotProduct(vec_1, vec_2), res[0]);
   }
 }
 
-TEST(koshkin_m_scalar_product_of_vectors_mpi, check_mpi_run_size_7) {
+TEST(koshkin_m_scalar_product_of_vectors, check_mpi_run_size_7) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vec;
   std::vector<int32_t> res(1, 0);
@@ -269,17 +269,17 @@ TEST(koshkin_m_scalar_product_of_vectors_mpi, check_mpi_run_size_7) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size());
   }
-  koshkin_m_scalar_product_of_vectors_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  koshkin_m_scalar_product_of_vectors::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
   if (world.rank() == 0) {
-    ASSERT_EQ(koshkin_m_scalar_product_of_vectors_mpi::calculateDotProduct(vec_1, vec_2), res[0]);
+    ASSERT_EQ(koshkin_m_scalar_product_of_vectors::calculateDotProduct(vec_1, vec_2), res[0]);
   }
 }
 
-TEST(koshkin_m_scalar_product_of_vectors_mpi, check_mpi_run_random_size) {
+TEST(koshkin_m_scalar_product_of_vectors, check_mpi_run_random_size) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vec;
   std::vector<int32_t> res(1, 0);
@@ -302,7 +302,7 @@ TEST(koshkin_m_scalar_product_of_vectors_mpi, check_mpi_run_random_size) {
     taskDataPar->outputs_count.emplace_back(res.size());
   }
 
-  koshkin_m_scalar_product_of_vectors_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  koshkin_m_scalar_product_of_vectors::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
 
@@ -311,6 +311,6 @@ TEST(koshkin_m_scalar_product_of_vectors_mpi, check_mpi_run_random_size) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    ASSERT_EQ(koshkin_m_scalar_product_of_vectors_mpi::calculateDotProduct(global_vec[0], global_vec[1]), res[0]);
+    ASSERT_EQ(koshkin_m_scalar_product_of_vectors::calculateDotProduct(global_vec[0], global_vec[1]), res[0]);
   }
 }

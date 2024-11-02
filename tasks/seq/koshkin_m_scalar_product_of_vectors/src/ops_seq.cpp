@@ -49,18 +49,3 @@ int koshkin_m_scalar_product_of_vectors::calculateDotProduct(const std::vector<i
   for (size_t i = 0; i < vec_1.size(); i++) result += vec_1[i] * vec_2[i];
   return result;
 }
-
-std::vector<int> koshkin_m_scalar_product_of_vectors::createRandomVector(int v_size) {
-  std::vector<int> vec(v_size);
-  std::mt19937 gen;
-  gen.seed((unsigned)time(nullptr) + ++offset);
-  for (int i = 0; i < v_size; i++) vec[i] = gen() % 100;
-  return vec;
-}
-
-int koshkin_m_scalar_product_of_vectors::generateRandomNumber(int min, int max) {
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<> distrib(min, max);
-  return distrib(gen);
-}
