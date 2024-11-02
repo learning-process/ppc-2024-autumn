@@ -1,4 +1,4 @@
-#include "mpi\malyshev_v_monte_carlo_integration\include\malyshev_v_monte_carlo_integration.hpp"
+#include "mpi/malyshev_v_monte_carlo_integration/include/malyshev_v_monte_carlo_integration.hpp"
 
 #include <algorithm>
 #include <random>

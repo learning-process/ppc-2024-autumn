@@ -5,7 +5,7 @@
 #include <memory>
 #include <random>
 
-#include "mpi\malyshev_v_monte_carlo_integration\include\malyshev_v_monte_carlo_integration.hpp"  
+#include "mpi/malyshev_v_monte_carlo_integration/include/malyshev_v_monte_carlo_integration.hpp"  
 
 TEST(malyshev_v_monte_carlo_integration, Test_Integration_mpi_1) {
   boost::mpi::communicator world;

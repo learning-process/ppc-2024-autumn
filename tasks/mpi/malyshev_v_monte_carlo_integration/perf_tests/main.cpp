@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi\malyshev_v_monte_carlo_integration\include\malyshev_v_monte_carlo_integration.hpp"  
+#include "mpi/malyshev_v_monte_carlo_integration/include/malyshev_v_monte_carlo_integration.hpp"  
 
 TEST(malyshev_v_monte_carlo_integration_mpi, test_integration_pipeline_run) {
   boost::mpi::communicator world;
