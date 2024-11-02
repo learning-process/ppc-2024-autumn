@@ -166,8 +166,3 @@ TEST(suvorov_d_sum_of_vector_elements_seq, Test_Sum_10000000) {
   testTaskSequential.post_processing();
   ASSERT_EQ(right_result, test_output[0]);
 }
-
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}

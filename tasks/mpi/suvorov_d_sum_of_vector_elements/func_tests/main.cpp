@@ -50,14 +50,3 @@ TEST(suvorov_d_sum_of_vector_elements_mpi, Test_Sum) {
     ASSERT_EQ(reference_sum[0], global_sum[0]);
   }
 }
-
-int main(int argc, char** argv) {
-  boost::mpi::environment env(argc, argv);
-  boost::mpi::communicator world;
-  ::testing::InitGoogleTest(&argc, argv);
-  ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
-  if (world.rank() != 0) {
-    delete listeners.Release(listeners.default_result_printer());
-  }
-  return RUN_ALL_TESTS();
-}

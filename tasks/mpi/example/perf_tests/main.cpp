@@ -7,7 +7,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/example/include/ops_mpi.hpp"
 
-TEST(suvorov_d_sum_of_vector_elements_mpi, test_pipeline_run) {
+TEST(mpi_example_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_sum(1, 0);
@@ -23,7 +23,7 @@ TEST(suvorov_d_sum_of_vector_elements_mpi, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<suvorov_d_sum_of_vector_elements::TestMPITaskParallel>(taskDataPar, "+");
+  auto testMpiTaskParallel = std::make_shared<nesterov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar, "+");
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -47,7 +47,7 @@ TEST(suvorov_d_sum_of_vector_elements_mpi, test_pipeline_run) {
   }
 }
 
-TEST(suvorov_d_sum_of_vector_elements_mpi, test_task_run) {
+TEST(mpi_example_perf_test, test_task_run) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_sum(1, 0);
@@ -63,7 +63,7 @@ TEST(suvorov_d_sum_of_vector_elements_mpi, test_task_run) {
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<suvorov_d_sum_of_vector_elements::TestMPITaskParallel>(taskDataPar, "+");
+  auto testMpiTaskParallel = std::make_shared<nesterov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar, "+");
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -85,4 +85,15 @@ TEST(suvorov_d_sum_of_vector_elements_mpi, test_task_run) {
     ppc::core::Perf::print_perf_statistic(perfResults);
     ASSERT_EQ(count_size_vector, global_sum[0]);
   }
+}
+
+int main(int argc, char** argv) {
+  boost::mpi::environment env(argc, argv);
+  boost::mpi::communicator world;
+  ::testing::InitGoogleTest(&argc, argv);
+  ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
+  if (world.rank() != 0) {
+    delete listeners.Release(listeners.default_result_printer());
+  }
+  return RUN_ALL_TESTS();
 }
