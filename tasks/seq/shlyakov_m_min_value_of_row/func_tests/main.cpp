@@ -200,7 +200,7 @@ TEST(shlyakov_m_min_value_of_row_seq, test_then_input_sz_not_eq_output_sz) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   shlyakov_m_min_value_of_row_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   std::vector<std::vector<int>> matrix_rnd =
-      shlyakov_m_min_value_of_row_seq::TestTaskSequential::generate_rnd_matrix(rows, cols);
+      shlyakov_m_min_value_of_row_seq::TestTaskSequential::get_random_matr(rows, cols);
 
   for (auto& row : matrix_rnd) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
