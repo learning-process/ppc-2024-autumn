@@ -7,11 +7,29 @@
 
 #include "mpi/sedova_o_max_of_vector_elements/include/ops_mpi.hpp"
 
-TEST(Parallel_Operations_MPI, Test_CanCreate_10) {
+std::vector<int> sedova_o_max_of_vector_elements_mpi::generate_random_vector(size_t size, size_t value) {
+  std::random_device dev;
+  std::mt19937 random(dev());
+  std::vector<int> vec(size);
+  for (size_t i = 0; i < size; i++) {
+    vec[i] = random() % (value + 1);
+  }
+  return vec;
+}
+std::vector<std::vector<int>> sedova_o_max_of_vector_elements_mpi::generate_random_matrix(size_t rows, size_t cols,
+                                                                                          size_t value) {
+  std::vector<std::vector<int>> matrix(rows);
+  for (size_t i = 0; i < rows; i++) {
+    matrix[i] = sedova_o_max_of_vector_elements_mpi::generate_random_vector(cols, value);
+  }
+  return matrix;
+}
+
+TEST(sedova_o_max_of_vector_elements, Test_CanCreate_10) {
   EXPECT_NO_THROW(sedova_o_max_of_vector_elements_mpi::generate_random_matrix(10, 10, 10));
 }
 
-TEST(Parallel_Operations_MPI, Test_SquareMatrix_10) {
+TEST(sedova_o_max_of_vector_elements, Test_SquareMatrix_10) {
   const int size = 10;
   const int value = 30;
 
@@ -64,7 +82,7 @@ TEST(Parallel_Operations_MPI, Test_SquareMatrix_10) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_SquareMatrix_50) {
+TEST(sedova_o_max_of_vector_elements, Test_SquareMatrix_50) {
   const int size = 50;
   const int value = 30;
 
@@ -117,7 +135,7 @@ TEST(Parallel_Operations_MPI, Test_SquareMatrix_50) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_SquareMatrix_100) {
+TEST(sedova_o_max_of_vector_elements, Test_SquareMatrix_100) {
   const int size = 200;
   const int value = 30;
 
@@ -170,7 +188,7 @@ TEST(Parallel_Operations_MPI, Test_SquareMatrix_100) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_Matrix_10_50) {
+TEST(sedova_o_max_of_vector_elements, Test_Matrix_10_50) {
   const int rows = 10;
   const int cols = 50;
   const int value = 20;
@@ -224,7 +242,7 @@ TEST(Parallel_Operations_MPI, Test_Matrix_10_50) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_SquareMatrix_50_WithSeveralMax) {
+TEST(sedova_o_max_of_vector_elements, Test_SquareMatrix_50_WithSeveralMax) {
   const int size = 50;
   const int value = 30;
 
@@ -279,7 +297,7 @@ TEST(Parallel_Operations_MPI, Test_SquareMatrix_50_WithSeveralMax) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_Matrix_100_50_WithSeveralMax) {
+TEST(sedova_o_max_of_vector_elements, Test_Matrix_100_50_WithSeveralMax) {
   const int rows = 100;
   const int cols = 50;
   const int value = 30;

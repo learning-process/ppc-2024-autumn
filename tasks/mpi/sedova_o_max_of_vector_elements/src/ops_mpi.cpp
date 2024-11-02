@@ -9,24 +9,6 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> sedova_o_max_of_vector_elements_mpi::generate_random_vector(size_t size, size_t value) {
-  std::random_device dev;
-  std::mt19937 random(dev());
-  std::vector<int> vec(size);
-  for (size_t i = 0; i < size; i++) {
-    vec[i] = random() % (value + 1);
-  }
-  return vec;
-}
-std::vector<std::vector<int>> sedova_o_max_of_vector_elements_mpi::generate_random_matrix(size_t rows, size_t cols,
-                                                                                          size_t value) {
-  std::vector<std::vector<int>> matrix(rows);
-  for (size_t i = 0; i < rows; i++) {
-    matrix[i] = sedova_o_max_of_vector_elements_mpi::generate_random_vector(cols, value);
-  }
-  return matrix;
-}
-
 int sedova_o_max_of_vector_elements_mpi::find_max_of_matrix(const std::vector<int> matrix) {
   int max = matrix[0];
   for (int i = 0; i < matrix.size(); i++) {
@@ -88,41 +70,45 @@ bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::pre_processing() 
 
 bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
-  return (world.rank() != 0) || ((taskData->outputs_count[0] == 1) && (!taskData->inputs.empty()));
+  return 
 }
 
 bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+  int a = 0, b = 0;
+  if (world.rank() == 0) {
+    int rows = taskData->inputs_count[0];
+    int cols = taskData->inputs_count[1];
+  }
+  a = rows * cols / world.size();
+  b = rows * cols % world.size();
+  if (a == 0) {
+    for (int i = 1; i < world.size(); i++) {world.send(i, 0, 0);}
+    linput_ = std::vector<int>(input_.begin(), input_.begin() + b);
+    res_ = sedova_o_max_of_vector_elements_mpi::find_max_of_matrix(input_);
+    return true;
+  }
+  for (int i = 1; i < world.size(); i++) {world.send(i, 0, a + (int)(i < b));}
+  for (int i = 1; i < b; i++) {world.send(i, 0, input_.data() + a * i + i - 1, a + 1);}
+  for (int i = b; i < world.size(); i++) {world.send(i, 0, input_.data() + a * i + b, a);}
+  linput_ = std::vector<int>(input_.begin(), input_.begin() + a);
+}
 
-  // Get rank and size of the communicator
-  int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  int size;
-  MPI_Comm_size(MPI_COMM_WORLD, &size);
+if (world.rank() != 0) { world.recv(0, 0, a);
+  if (a == 0) return true;
+  linput_ = std::vector<int>(a);
+  world.recv(0, 0, input_.data(), a);
+}
 
-  // Calculate chunk size and boundaries
-  int chunk_size = input_.size() / size;
-  int start = rank * chunk_size;
-  int end = (rank == size - 1) ? input_.size() : start + chunk_size;
-
-  // Find local maximum
-  auto max_it = std::max_element(input_.begin() + start, input_.begin() + end);
-  int local_max = *(max_it);
-
-  // Use MPI_Reduce to find global maximum
-  int global_max;
-  MPI_Reduce(&local_max, &global_max, 1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
-  res_ = global_max;
-
-  return true;
+int lres_ = sedova_o_max_of_vector_elements_mpi::find_max_of_matrix(input_);
+reduce(world, lres_, res_, boost::mpi::maximum<int>(), 0);
+return true;
 }
 
 bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
-  int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-  if (rank == 0) {
+  if (world.rank() == 0) {
     reinterpret_cast<int *>(taskData->outputs[0])[0] = res_;
   }
   return true;

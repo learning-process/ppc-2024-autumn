@@ -7,6 +7,24 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/sedova_o_max_of_vector_elements/include/ops_mpi.hpp"
 
+std::vector<int> sedova_o_max_of_vector_elements_mpi::generate_random_vector(size_t size, size_t value) {
+  std::random_device dev;
+  std::mt19937 random(dev());
+  std::vector<int> vec(size);
+  for (size_t i = 0; i < size; i++) {
+    vec[i] = random() % (value + 1);
+  }
+  return vec;
+}
+std::vector<std::vector<int>> sedova_o_max_of_vector_elements_mpi::generate_random_matrix(size_t rows, size_t cols,
+                                                                                          size_t value) {
+  std::vector<std::vector<int>> matrix(rows);
+  for (size_t i = 0; i < rows; i++) {
+    matrix[i] = sedova_o_max_of_vector_elements_mpi::generate_random_vector(cols, value);
+  }
+  return matrix;
+}
+
 TEST(sedova_o_max_of_vector_elements_mpi, test_pipeline_run) {
   int rows = 7000;
   int cols = 7000;

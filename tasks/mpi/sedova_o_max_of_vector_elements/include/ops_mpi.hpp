@@ -30,8 +30,6 @@ class TestMPITaskSequential : public ppc::core::Task {
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  std::vector<int> input_{};
-  int res_{};
   explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {};
   bool pre_processing() override;
   bool validation() override;
@@ -41,10 +39,10 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   std::string ops;
   boost::mpi::communicator world;
+  std::vector<int> input_{};
+  int res_{};
 };
 
-std::vector<int> generate_random_vector(size_t size, size_t value);
-std::vector<std::vector<int>> generate_random_matrix(size_t rows, size_t cols, size_t value);
 int find_max_of_matrix(const std::vector<int> matrix);
 
 }  // namespace sedova_o_max_of_vector_elements_mpi
