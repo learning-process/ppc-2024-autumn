@@ -14,7 +14,7 @@
 #include "core/task/include/task.hpp"
 
 namespace tsatsyn_a_vector_dot_product_mpi {
-int resulting(const std::vector<int>& vector1, const std::vector<int>& vector2);
+int resulting(const std::vector<int>& v1, const std::vector<int>& v2);
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
