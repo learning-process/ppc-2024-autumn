@@ -136,9 +136,9 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::run() {
   }
   int id = world.rank() * local_input_.size() / n;
 
-  for (int i = 0; i < id; i++) {
-    reduce(world, INT_MAX, res[i], boost::mpi::minimum<int>(), 0);
-  }
+  // for (int i = 0; i < id; i++) {
+  //   reduce(world, INT_MAX, res[i], boost::mpi::minimum<int>(), 0);
+  // }
 
   int delta = std::min(local_input_.size(), n - world.rank() * local_input_.size() % n);
   int l_res = *std::min_element(local_input_.begin(), local_input_.begin() + delta);
@@ -154,7 +154,7 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::run() {
     id++;
   }
 
-  // for (size_t i = id; i < res.size() - 1; i++) {
+  // for (size_t i = id; i < res.size(); i++) {
   //   reduce(world, INT_MAX, res[i], boost::mpi::minimum<int>(), 0);
   // }
 
