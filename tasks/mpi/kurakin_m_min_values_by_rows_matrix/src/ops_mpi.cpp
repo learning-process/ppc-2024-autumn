@@ -106,7 +106,7 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
     last_delta = local_input_.size() * world.size() - size_rows * count_rows;
   }
 
-  unsigned int ind = world.rank() * local_input_.size() / size_rows;
+  unsigned int ind = std::min(world.rank() * local_input_.size() / size_rows, static_cast<size_t>(count_rows - 1));
 
   unsigned int delta = std::min(local_input_.size(), size_rows - world.rank() * local_input_.size() % size_rows);
   std::vector<int> local_res(count_rows, INT_MAX);
