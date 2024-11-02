@@ -43,11 +43,12 @@ bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorSequential::run() {
   if (ops == "add") {
     res = std::accumulate(input_.begin(), input_.end(), 0);
   } else if (ops == "sub") {
-    res = std::accumulate(input_.begin() + 1, input_[0], std::minus<int>());
+    res = std::accumulate(input_.begin() + 1, input_.end(), input_[0], std::minus<int>());
   } else if (ops == "max") {
     res = *std::max_element(input_.begin(), input_.end());
+  } else if (ops == "production") {
+      res = std::accumulate(input_.begin(), input_.end(), 1, std::multiplies<int>());
   }
-
   return true;
 }
 
@@ -98,19 +99,23 @@ bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel::validation() {
 
 bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel::run() {
   internal_order_test();
-  int local_res;
+  int local_res = 0;
   if (ops == "add") {
     local_res = std::accumulate(local_input_.begin(), local_input_.end(), 0);
   } else if (ops == "sub") {
     local_res = std::accumulate(local_input_.begin() + 1, local_input_.end(), local_input_[0], std::minus<int>());
   } else if (ops == "max") {
     local_res = *std::max_element(local_input_.begin(), local_input_.end());
+  } else if (ops == "production") {
+    local_res = res = std::accumulate(local_input_.begin(), local_input_.end(), 1, std::multiplies<int>());
   }
 
   if (ops == "add" || ops == "sub") {
     reduce(world, local_res, res, std::plus(), 0);
   } else if (ops == "max") {
     reduce(world, local_res, res, boost::mpi::maximum<int>(), 0);
+  } else if (ops == 'production') {
+    reduce(world, local_res, res, std::multiplies<int>(), 0);
   }
   std::this_thread::sleep_for(20ms);
   return true;
