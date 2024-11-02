@@ -83,7 +83,6 @@ bool tselikova_a_average_of_vector_elements_mpi::TestMPITaskParallel::validation
 
 bool tselikova_a_average_of_vector_elements_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  internal_order_test();
   int local_sum = 0;
   for (unsigned int i = 0; i < local_input_.size(); i++) {
     local_sum += local_input_[i];
