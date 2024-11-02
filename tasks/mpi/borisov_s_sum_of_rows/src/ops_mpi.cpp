@@ -81,25 +81,18 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::validation() {
 
   bool is_valid = true;
 
-  size_t inputs_count_size = taskData->inputs_count.size();
-  size_t outputs_count_size = taskData->outputs_count.size();
-
   if (world.rank() == 0) {
-    if (inputs_count_size < 2 || outputs_count_size < 1) {
+    if (taskData->outputs_count[0] != taskData->inputs_count[0]) {
       is_valid = false;
-    } else {
-      if (taskData->outputs_count[0] != taskData->inputs_count[0]) {
-        is_valid = false;
-      }
+    }
 
-      size_t cols = taskData->inputs_count[1];
-      if (cols == 0) {
-        is_valid = false;
-      }
+    size_t cols = taskData->inputs_count[1];
+    if (cols == 0) {
+      is_valid = false;
+    }
 
-      if (taskData->inputs[0] == nullptr || taskData->outputs[0] == nullptr) {
-        is_valid = false;
-      }
+    if (taskData->inputs[0] == nullptr || taskData->outputs[0] == nullptr) {
+      is_valid = false;
     }
   }
 
