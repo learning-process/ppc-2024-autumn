@@ -54,12 +54,12 @@ template <typename T>
 bool MaxValueOfMatrixElementsSequential<T>::pre_processing() {
   internal_order_test();
 
-  auto dimensions = reinterpret_cast<int*>(taskData->inputs[0]);
+  auto* dimensions = reinterpret_cast<int*>(taskData->inputs[0]);
   rows_ = dimensions[0];
   cols_ = dimensions[1];
 
   if (rows_ <= 0 || cols_ <= 0) {
-    std::cerr << "Error: Matrix dimensions must be positive." << std::endl;
+    //std::cerr << "Error: Matrix dimensions must be positive." << std::endl;
     return false;
   }
 
