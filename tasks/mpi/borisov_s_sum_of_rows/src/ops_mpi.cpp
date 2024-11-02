@@ -73,21 +73,6 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskSequential ::post_processing() {
 
 bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::pre_processing() {
   internal_order_test();
-
-  size_t local_rows = 0;
-  size_t cols = 0;
-
-  if (world.rank() == 0) {
-    local_rows = taskData->inputs_count[0] / world.size();
-    if (static_cast<int>(taskData->inputs_count[0] % world.size()) > world.rank()) {
-      local_rows += 1;
-    }
-    cols = taskData->inputs_count[1];
-  }
-
-  loc_matrix_.resize(local_rows * cols);
-  loc_row_sums_.resize(local_rows, 0);
-
   return true;
 }
 
@@ -140,6 +125,8 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::run() {
   size_t base_rows_per_proc = rows / world.size();
   int remainder_rows = static_cast<int>(rows % world.size());
 
+  size_t local_rows = base_rows_per_proc + (world.rank() < remainder_rows ? 1 : 0);
+
   std::vector<int> sendcounts(world.size());
   std::vector<int> displs(world.size());
 
@@ -153,6 +140,8 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::run() {
     }
   }
 
+  loc_matrix_.resize(local_rows * cols);
+
   int* sendbuf = nullptr;
   if (world.rank() == 0) {
     sendbuf = reinterpret_cast<int*>(taskData->inputs[0]);
@@ -160,6 +149,8 @@ bool borisov_s_sum_of_rows::SumOfRowsTaskParallel::run() {
 
   MPI_Scatterv(sendbuf, sendcounts.data(), displs.data(), MPI_INT, loc_matrix_.data(),
                static_cast<int>(loc_matrix_.size()), MPI_INT, 0, MPI_COMM_WORLD);
+
+  loc_row_sums_.resize(local_rows, 0);
 
   for (size_t i = 0; i < loc_row_sums_.size(); i++) {
     loc_row_sums_[i] = 0;
