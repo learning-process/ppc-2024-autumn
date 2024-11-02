@@ -5,7 +5,7 @@
 #include <thread>
 
 using namespace std::chrono_literals;
-    
+
 int sedova_o_max_of_vector_elements_seq::find_max_of_matrix(const std::vector<int> matrix) {
   int max = matrix[0];
   for (int i = 0; i < matrix.size(); i++) {
