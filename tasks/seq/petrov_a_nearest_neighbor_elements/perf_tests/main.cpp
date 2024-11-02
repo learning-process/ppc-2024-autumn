@@ -9,8 +9,9 @@
 TEST(petrov_a_nearest_neighbor_elements_seq, test_pipeline_run) {
   // Create data
   std::vector<int> in = {1, 3, 7, 5, 6, 10, 12, 14, 15, 2};
-  
-  std::vector<int> out(2, 0); 
+
+  std::vector<int> out(2, 0);
+
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -45,8 +46,8 @@ TEST(petrov_a_nearest_neighbor_elements_seq, test_pipeline_run) {
 
 TEST(petrov_a_nearest_neighbor_elements_seq, test_task_run) {
   std::vector<int> in = {1, 3, 7, 5, 6, 10, 12, 14, 15, 2};
-  
-  std::vector<int> out(2, 0); 
+
+  std::vector<int> out(2, 0);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
