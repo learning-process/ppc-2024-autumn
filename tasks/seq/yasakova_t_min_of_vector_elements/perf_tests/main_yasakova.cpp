@@ -5,7 +5,6 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-
 #include "seq/yasakova_t_min_of_vector_elements/include/ops_seq_yasakova.hpp"
 
 TEST(yasakova_t_min_of_vector_elements_seq, test_pipeline_run) {
@@ -19,7 +18,8 @@ TEST(yasakova_t_min_of_vector_elements_seq, test_pipeline_run) {
   int count_columns = 4000;
   int gen_minimum = -500;
   int gen_maximum = 500;
-  global_matrix = yasakova_t_min_of_vector_elements_seq::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
+  global_matrix =
+      yasakova_t_min_of_vector_elements_seq::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
   int index = gen() % (count_rows * count_columns);
   global_matrix[index / count_columns][index / count_rows] = ref;
   for (unsigned int i = 0; i < global_matrix.size(); i++)
@@ -55,7 +55,8 @@ TEST(yasakova_t_min_of_vector_elements_seq, test_task_run) {
   int count_columns = 4000;
   int gen_minimum = -500;
   int gen_maximum = 500;
-  global_matrix = yasakova_t_min_of_vector_elements_seq::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
+  global_matrix =
+      yasakova_t_min_of_vector_elements_seq::RandomMatrix(count_rows, count_columns, gen_minimum, gen_maximum);
   int index = gen() % (count_rows * count_columns);
   global_matrix[index / count_columns][index / count_rows] = ref;
   for (unsigned int i = 0; i < global_matrix.size(); i++)
