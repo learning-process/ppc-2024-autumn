@@ -13,7 +13,7 @@ TEST(ermilova_d_min_element_matrix_seq, test_pipeline_run) {
   const int upper_border_test = 1000;
   const int lower_border_test = -1000;
   int reference_min = -5000;
-  // Create data
+  //  Create data
   std::vector<std::vector<int>> in =
       ermilova_d_min_element_matrix_seq::getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
   std::vector<int> out(1, INT_MAX);
