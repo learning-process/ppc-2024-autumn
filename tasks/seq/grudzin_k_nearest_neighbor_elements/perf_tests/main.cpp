@@ -11,7 +11,7 @@ TEST(grudzin_k_nearest_neighbor_elements_seq, test_pipeline_run) {
   // Create data
   std::vector<int> in(size);
   std::vector<int> out(1, 0);
-  int ans = 3;
+  int ans = 0;
   for (int i = 0; i < size; ++i) {
     in[i] = 3 * i;
   }
@@ -50,7 +50,7 @@ TEST(grudzin_k_nearest_neighbor_elements_seq, test_task_run) {
   // Create data
   std::vector<int> in(size);
   std::vector<int> out(1, 0);
-  int ans = 2;
+  int ans = 0;
   for (int i = 0; i < size; ++i) {
     in[i] = 2 * i;
   }
