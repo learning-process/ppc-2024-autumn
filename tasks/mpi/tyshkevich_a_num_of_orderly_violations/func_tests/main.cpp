@@ -50,7 +50,7 @@ TEST(tyshkevich_a_num_of_orderly_violations_mpi_ftest, Test_Max_10) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    ASSERT_EQ(result, local_count);
+    ASSERT_EQ(result, local_count) << global_vec << ' ' << size << ' ' << world.size() << std::endl;
   }
 }
 
@@ -98,7 +98,7 @@ TEST(tyshkevich_a_num_of_orderly_violations_mpi_ftest, Test_Max_20) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    ASSERT_EQ(result, local_count);
+    ASSERT_EQ(result, local_count) << global_vec << ' ' << size << ' ' << world.size() << std::endl;
   }
 }
 
@@ -146,6 +146,6 @@ TEST(tyshkevich_a_num_of_orderly_violations_mpi_ftest, Test_Max_50) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    ASSERT_EQ(result, local_count);
+    ASSERT_EQ(result, local_count) << global_vec << ' ' << size << ' ' << world.size() << std::endl;
   }
 }
