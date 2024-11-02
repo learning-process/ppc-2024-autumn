@@ -1,4 +1,4 @@
-{
+// Copyright 2023 Nesterov Alexander
 #include "mpi/kovalev_k_num_of_orderly_violations/include/header.hpp"
 
   template <class T>

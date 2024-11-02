@@ -15,12 +15,12 @@ template <class T>
 class NumOfOrderlyViolationsPar : public ppc::core::Task {
  private:
   std::vector<T> v;
-  size_t n, l_res, g_res;
+  size_t n, l_res = 0, g_res = 0;
   int rank, size;
 
  public:
   explicit NumOfOrderlyViolationsPar(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(taskData_), n(taskData_->inputs_count[0]), l_res(0), g_res(0) {}
+      : Task(taskData_), n(taskData_->inputs_count[0]) {}
   bool count_num_of_orderly_violations_mpi();
   bool pre_processing() override;
   bool validation() override;

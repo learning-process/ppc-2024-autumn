@@ -2,6 +2,7 @@
 #pragma once
 
 #include <cstdlib>
+#include <cstring>
 #include <string>
 #include <vector>
 
@@ -13,11 +14,11 @@ template <class T>
 class NumOfOrderlyViolations : public ppc::core::Task {
  private:
   std::vector<T> v;
-  size_t n, res;
+  size_t n, res = 0;
 
  public:
   explicit NumOfOrderlyViolations(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(taskData_), n(taskData_->inputs_count[0]), res(0) {}
+      : Task(taskData_), n(taskData_->inputs_count[0]) {}
   bool count_num_of_orderly_violations_seq();
   bool pre_processing() override;
   bool validation() override;
