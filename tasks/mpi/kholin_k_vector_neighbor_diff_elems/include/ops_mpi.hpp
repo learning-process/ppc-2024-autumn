@@ -188,11 +188,6 @@ bool TestMPITaskParallel<TypeElem>::pre_processing() {
   } else {
     local_input_ = std::vector<TypeElem>(delta_n);
   }
-  if (ProcRank == 0) {
-    for (int i = delta_n; i < delta_n_r; i++) {
-      local_input_[i] = input_[i];
-    }
-  }
   result = {};
   return true;
 }
@@ -213,6 +208,11 @@ template <typename TypeElem>
 bool TestMPITaskParallel<TypeElem>::run() {
   internal_order_test();
   MPI_Scatter(input_.data(), delta_n, mpi_type_elem, local_input_.data(), delta_n, mpi_type_elem, 0, MPI_COMM_WORLD);
+  if (ProcRank == 0) {
+    for (int i = delta_n; i < delta_n_r; i++) {
+      local_input_[i] = input_[i];
+    }
+  }
   double local_result = 0;
   local_result = max_difference();
   if (ops == enum_ops::MAX_DIFFERENCE) {
