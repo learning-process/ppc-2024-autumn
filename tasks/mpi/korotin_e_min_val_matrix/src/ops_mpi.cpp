@@ -28,7 +28,7 @@ bool korotin_e_min_val_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init matrixes
   input_ = std::vector<double>(taskData->inputs_count[0]);
-  double* start = reinterpret_cast<double*>(taskData->inputs[0]);
+  auto* start = reinterpret_cast<double*>(taskData->inputs[0]);
   std::copy(start, start + taskData->inputs_count[0], input_.begin());
   // Init value for output
   res = 0.0;
@@ -71,8 +71,8 @@ bool korotin_e_min_val_matrix_mpi::TestMPITaskParallel::pre_processing() {
     // Init matixes
     int counter = 1;
     input_ = std::vector<double>(taskData->inputs_count[0]);
-    double* start = reinterpret_cast<double*>(taskData->inputs[0]); 
-    std::copy(start, start + taskData->inputs_count[0], input_.begin()); 
+    auto* start = reinterpret_cast<double*>(taskData->inputs[0]);
+    std::copy(start, start + taskData->inputs_count[0], input_.begin());
 
     for (int proc = 1; proc < world.size(); proc++) {
       if (counter < remainder) {
