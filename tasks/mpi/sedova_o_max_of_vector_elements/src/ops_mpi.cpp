@@ -85,7 +85,7 @@ bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::run() {
   b = rows * cols % world.size();
   if (a == 0) {
     for (int i = 1; i < world.size(); i++) {
-        world.send(i, 0, 0);
+      world.send(i, 0, 0);
     }
     linput_ = std::vector<int>(input_.begin(), input_.begin() + b);
     res_ = sedova_o_max_of_vector_elements_mpi::find_max_of_matrix(input_);
@@ -104,7 +104,7 @@ bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::run() {
 }
 
 if (world.rank() != 0) { 
-    world.recv(0, 0, a);
+  world.recv(0, 0, a);
   if (a == 0) return true;
   linput_ = std::vector<int>(a);
   world.recv(0, 0, input_.data(), a);
