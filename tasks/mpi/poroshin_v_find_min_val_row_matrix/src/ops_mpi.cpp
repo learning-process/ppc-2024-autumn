@@ -82,33 +82,37 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskSequential::post_process
 bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
-  int n = 0;
-  int m = 0;
-  int size = n * m;
-  int delta = 0;
+  int count_rows = 0;
+  int size_rows = 0;
+
+  unsigned int delta = 0;
 
   if (world.rank() == 0) {
-    m = taskData->inputs_count[0];
-    n = taskData->inputs_count[1];
-    size = n * m;
-    delta = (size % world.size() == 0) ? (size / world.size()) : (size / world.size() + 1);
+    count_rows = taskData->inputs_count[0];
+    size_rows = taskData->inputs_count[1];
+    if ((count_rows * size_rows) % world.size() == 0) {
+      delta = (count_rows * size_rows) / world.size();
+    } else {
+      delta = (count_rows * size_rows) / world.size() + 1;
+    }
   }
 
-  broadcast(world, m, 0);
-  broadcast(world, n, 0);
+  broadcast(world, count_rows, 0);
+  broadcast(world, size_rows, 0);
   broadcast(world, delta, 0);
 
   if (world.rank() == 0) {
     input_ = std::vector<int>(delta * world.size(), INT_MAX);
-    for (int i = 0; i < n * m; i++) {
-      input_[i] = (reinterpret_cast<int*>(taskData->inputs[0])[i]);
+    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+    for (int i = 0; i < (count_rows * size_rows); i++) {
+      input_[i] = tmp_ptr[i];
     }
   }
 
   local_input_ = std::vector<int>(delta);
   boost::mpi::scatter(world, input_.data(), local_input_.data(), delta, 0);
-  res = std::vector<int>(m, INT_MAX);
 
+  res = std::vector<int>(count_rows, INT_MAX);
   return true;
 }
 
