@@ -103,11 +103,10 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::pre_processing
     for (int i = 0; i < size; i++) {
       input_[i] = reinterpret_cast<int*>(taskData->inputs[0])[i];
     }
+    local_input_.resize(delta);
+    boost::mpi::scatter(world, input_.data(), local_input_.data(), delta, 0);
+    res.resize(m, INT_MAX);
   }
-
-  local_input_.resize(delta);
-  boost::mpi::scatter(world, input_.data(), local_input_.data(), delta, 0);
-  res.resize(m, INT_MAX);
 
   return true;
 }
