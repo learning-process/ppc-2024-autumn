@@ -5,12 +5,12 @@
 #include <iostream>
 
 std::vector<int> alputov_i_most_diff_neighb_elem_mpi::RandomVector(int sz) {
-  std::random_device rd;                                 
-  std::mt19937 gen(rd());                               
-  std::uniform_int_distribution<> distrib(-1000, 1000);  
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> distrib(-1000, 1000);
   std::vector<int> vec(sz);
   for (int i = 0; i < sz; ++i) {
-    vec[i] = distrib(gen); 
+    vec[i] = distrib(gen);
   }
   return vec;
 }
@@ -80,7 +80,6 @@ int* findMaxDifference(const std::vector<int>& vec) {
   if (vec.size() < 2) {
     int* result = new int[3]{1, 1, 0};  // Выделяем память и инициализируем
     return result;
-    
   }
   int* max_dif = new int[3];
   max_dif[0] = vec[0];
@@ -97,7 +96,6 @@ int* findMaxDifference(const std::vector<int>& vec) {
   return max_dif;
 }
 
-
 bool alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::validation() {
   internal_order_test();
   if (world.rank() == 0) {
@@ -105,8 +103,34 @@ bool alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::validation() {
   }
   return true;
 }
-
 bool alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::pre_processing() {
+  internal_order_test();
+  unsigned int delta = 0;
+  if (world.rank() == 0) {
+    delta = taskData->inputs_count[0] / world.size();
+  }
+  broadcast(world, delta, 0);
+  if (world.rank() == 0) {
+    inputData = std::vector<int>(taskData->inputs_count[0]);
+    auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[0]);
+    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+      inputData[i] = tempPtr[i];
+    }
+    for (int process = 1; process < world.size(); process++) {
+      world.send(process, 0, inputData.data() + process * delta, delta);
+    }
+  }
+  localData = std::vector<int>(delta);
+  if (world.rank() == 0) {
+    localData = std::vector<int>(inputData.begin(), inputData.begin() + delta);
+  } else {
+    world.recv(0, 0, localData.data(), delta);
+  }
+  result[0] = 0;
+  result[1] = 1;
+  return true;
+}
+/* bool alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::pre_processing() {
   internal_order_test();
   int data_chunk = 0;
   int del = 0;
@@ -133,12 +157,62 @@ bool alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::pre_processing() {
   if (world.rank() == 0) {
     localData = std::vector<int>(inputData.begin(), inputData.begin() + data_chunk);
   } else {
-    world.recv(0, 0, localData.data(), data_chunk);
+    world.recv(0, 0, localData.data(), localDataSize);  // data_chunk);
   }
-  //result[0] = 0;
-  //result[1] = 0 ;
+  result[0] = 0;
+  result[1] = 0 ;
   return true;
-}
+}норм*/
+
+/* bool alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::pre_processing() {
+  internal_order_test();
+  int data_chunk = 0;
+  int del = 0;
+
+  if (world.rank() == 0) {
+    data_chunk = taskData->inputs_count[0] / world.size();
+    del = taskData->inputs_count[0] % world.size();
+  }
+
+  boost::mpi::broadcast(world, data_chunk, 0);
+  boost::mpi::broadcast(world, del, 0);
+
+  if (world.rank() == 0) {
+    inputData = std::vector<int>(taskData->inputs_count[0]);
+    memcpy(inputData.data(), taskData->inputs[0], sizeof(int) * taskData->inputs_count[0]);
+
+    int offset = 0;
+    for (int proc = 1; proc < world.size(); ++proc) {
+      int send_size = data_chunk;
+      if (proc == world.size() - 1) {
+        if (del >= 2) {
+          send_size += del;
+        }
+      } else if (proc == world.size() - 2 && del > 0 && del < 2) {
+        send_size += del;
+      }
+
+      world.send(proc, 0, inputData.data() + offset, send_size);
+      offset += data_chunk;
+    }
+  }
+
+  int localDataSize = data_chunk;
+  if (world.rank() == world.size() - 1 && del >= 2) {
+    localDataSize += del;
+  } else if (world.rank() == world.size() - 2 && del > 0 && del < 2) {
+    localDataSize += del;
+  }
+
+  localData.resize(localDataSize);
+
+  if (world.rank() == 0) {
+    localData = std::vector<int>(inputData.begin(), inputData.begin() + data_chunk);
+  } else {
+    world.recv(0, 0, localData.data(), localDataSize);
+  }
+  return true;
+}*/
 
 /* bool alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::run() {
   internal_order_test();
@@ -249,8 +323,6 @@ bool alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::run() {
   MPI_Op_free(&customOperation);
   return true;
 }
-
-
 
 bool alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::post_processing() {
   internal_order_test();

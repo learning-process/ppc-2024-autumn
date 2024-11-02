@@ -16,7 +16,6 @@
 
 namespace alputov_i_most_diff_neighb_elem_mpi {
 
-
 std::vector<int> RandomVector(int sz);
 int Max_Neighbour_Seq_Pos(const std::vector<int>& data);
 
