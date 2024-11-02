@@ -33,7 +33,7 @@ TEST(sedova_o_max_of_vector_elements_seq, test_pipeline_run_small_matrix) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   size_t size = 5000;
-  size_t value = 5000;
+  int value = 5000;
 
   std::vector<std::vector<int>> in;
   in = generate_random_matrix(size, size, value);
@@ -75,7 +75,7 @@ TEST(sedova_o_max_of_vector_elements_seq, test_pipeline_run_large_matrix) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   size_t size = 50000;
-  size_t value = 50000;
+  int value = 50000;
 
   std::vector<std::vector<int>> in;
   in = generate_random_matrix(size, size, value);
@@ -117,7 +117,7 @@ TEST(sedova_o_max_of_vector_elements_seq, test_pipeline_run_different_values) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   size_t size = 15000;
-  size_t value = 15000;
+  int value = 15000;
 
   std::vector<std::vector<int>> in;
   in = generate_random_matrix(size, size, value);
