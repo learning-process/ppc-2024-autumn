@@ -6,7 +6,7 @@
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/frolova_e_num_of_letters/include/ops_mpi.hpp"
-/*
+
 TEST(frolova_e_num_of_letters, test_pipeline_run) {
   boost::mpi::communicator world;
   std::string global_str;
@@ -86,4 +86,3 @@ TEST(frolova_e_num_of_letters, test_task_run) {
     ASSERT_EQ(count_size_, global_sum[0]);
   }
 }
-*/
