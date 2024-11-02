@@ -36,7 +36,7 @@ TEST(sedova_o_max_of_vector_elements_seq, test_pipeline_run_small_matrix) {
   size_t value = 5000;
 
   std::vector<std::vector<int>> in;
-  in = sedova_o_max_of_vector_elements_seq::generate_random_matrix(size, size, value);
+  in = generate_random_matrix(size, size, value);
   std::vector<int32_t> out(1, in[0][0]);
 
   size_t rows = random() % size;
@@ -78,7 +78,7 @@ TEST(sedova_o_max_of_vector_elements_seq, test_pipeline_run_large_matrix) {
   size_t value = 50000;
 
   std::vector<std::vector<int>> in;
-  in = sedova_o_max_of_vector_elements_seq::generate_random_matrix(size, size, value);
+  in = generate_random_matrix(size, size, value);
   std::vector<int32_t> out(1, in[0][0]);
 
   size_t rows = random() % size;
@@ -120,7 +120,7 @@ TEST(sedova_o_max_of_vector_elements_seq, test_pipeline_run_different_values) {
   size_t value = 15000;
 
   std::vector<std::vector<int>> in;
-  in = sedova_o_max_of_vector_elements_seq::generate_random_matrix(size, size, value);
+  in = generate_random_matrix(size, size, value);
   std::vector<int32_t> out(1, in[0][0]);
 
   size_t rows = random() % size;

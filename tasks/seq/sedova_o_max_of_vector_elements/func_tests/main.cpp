@@ -75,8 +75,8 @@ TEST(sedova_o_max_of_vector_elements_seq, Test_Sum_Input_Incorrect) {
 
 TEST(sedova_o_max_of_vector_elements_seq, Test_Matrix_2x2) {
   // Create data
-  std::vector<int> in = sedova_o_max_of_vector_elements_seq::generate_random_vector(2, 10);
-  std::vector<int> in2 = sedova_o_max_of_vector_elements_seq::generate_random_vector(2, 10);
+  std::vector<int> in = generate_random_vector(2, 10);
+  std::vector<int> in2 = generate_random_vector(2, 10);
   std::vector<int> out(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -98,9 +98,9 @@ TEST(sedova_o_max_of_vector_elements_seq, Test_Matrix_2x2) {
 
 TEST(sedova_o_max_of_vector_elements_seq, Test_Matrix_3x3) {
   // Create data
-  std::vector<int> in = sedova_o_max_of_vector_elements_seq::generate_random_vector(3, 10);
-  std::vector<int> in2 = sedova_o_max_of_vector_elements_seq::generate_random_vector(3, 10);
-  std::vector<int> in3 = sedova_o_max_of_vector_elements_seq::generate_random_vector(3, 10);
+  std::vector<int> in = generate_random_vector(3, 10);
+  std::vector<int> in2 = generate_random_vector(3, 10);
+  std::vector<int> in3 = generate_random_vector(3, 10);
   std::vector<int> out(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();

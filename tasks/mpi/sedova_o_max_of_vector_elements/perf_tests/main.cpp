@@ -7,7 +7,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/sedova_o_max_of_vector_elements/include/ops_mpi.hpp"
 
-std::vector<int> sedova_o_max_of_vector_elements_mpi::generate_random_vector(size_t size, size_t value) {
+std::vector<int> generate_random_vector(size_t size, size_t value) {
   std::random_device dev;
   std::mt19937 random(dev());
   std::vector<int> vec(size);
@@ -16,11 +16,10 @@ std::vector<int> sedova_o_max_of_vector_elements_mpi::generate_random_vector(siz
   }
   return vec;
 }
-std::vector<std::vector<int>> sedova_o_max_of_vector_elements_mpi::generate_random_matrix(size_t rows, size_t cols,
-                                                                                          size_t value) {
+std::vector<std::vector<int>> generate_random_matrix(size_t rows, size_t cols, size_t value) {
   std::vector<std::vector<int>> matrix(rows);
   for (size_t i = 0; i < rows; i++) {
-    matrix[i] = sedova_o_max_of_vector_elements_mpi::generate_random_vector(cols, value);
+    matrix[i] = generate_random_vector(cols, value);
   }
   return matrix;
 }
@@ -33,7 +32,6 @@ TEST(sedova_o_max_of_vector_elements_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
   std::vector<int32_t> global_max(1, -(int)value);
-
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -41,7 +39,7 @@ TEST(sedova_o_max_of_vector_elements_mpi, test_pipeline_run) {
     std::random_device dev;
     std::mt19937 random(dev());
 
-    global_matrix = sedova_o_max_of_vector_elements_mpi::generate_random_matrix(rows, cols, value);
+    global_matrix = generate_random_matrix(rows, cols, value);
     rows = random() % rows;
     cols = random() % cols;
     global_matrix[rows][cols] = value;
@@ -72,7 +70,7 @@ TEST(sedova_o_max_of_vector_elements_mpi, test_pipeline_run) {
 
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
-  perfAnalyzer->pipeline_run(perfAttr, perfResults);
+  perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
     ASSERT_EQ(value, global_max[0]);
@@ -94,7 +92,7 @@ TEST(sedova_o_max_of_vector_elements_mpi, test_task_run) {
     std::random_device dev;
     std::mt19937 random(dev());
 
-    global_matrix = sedova_o_max_of_vector_elements_mpi::generate_random_matrix(rows, cols, value);
+    global_matrix = generate_random_matrix(rows, cols, value);
     rows = random() % rows;
     cols = random() % cols;
     global_matrix[rows][cols] = value;
