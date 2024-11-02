@@ -83,18 +83,27 @@ bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::run() {
   a = rows * cols / world.size();
   b = rows * cols % world.size();
   if (a == 0) {
-    for (int i = 1; i < world.size(); i++) {world.send(i, 0, 0);}
+    for (int i = 1; i < world.size(); i++) {
+        world.send(i, 0, 0);
+    }
     linput_ = std::vector<int>(input_.begin(), input_.begin() + b);
     res_ = sedova_o_max_of_vector_elements_mpi::find_max_of_matrix(input_);
     return true;
   }
-  for (int i = 1; i < world.size(); i++) {world.send(i, 0, a + (int)(i < b));}
-  for (int i = 1; i < b; i++) {world.send(i, 0, input_.data() + a * i + i - 1, a + 1);}
-  for (int i = b; i < world.size(); i++) {world.send(i, 0, input_.data() + a * i + b, a);}
+  for (int i = 1; i < world.size(); i++) {
+      world.send(i, 0, a + (int)(i < b));
+  }
+  for (int i = 1; i < b; i++) {
+      world.send(i, 0, input_.data() + a * i + i - 1, a + 1);
+  }
+  for (int i = b; i < world.size(); i++) {
+      world.send(i, 0, input_.data() + a * i + b, a);
+  }
   linput_ = std::vector<int>(input_.begin(), input_.begin() + a);
 }
 
-if (world.rank() != 0) { world.recv(0, 0, a);
+if (world.rank() != 0) { 
+    world.recv(0, 0, a);
   if (a == 0) return true;
   linput_ = std::vector<int>(a);
   world.recv(0, 0, input_.data(), a);
