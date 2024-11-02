@@ -18,7 +18,9 @@ bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::validation() {
 
   if (world.rank() == 0) {
     input_size = taskData->inputs_count[0];
-    return false;
+    if (input_size < world.size()) {
+      return false;
+    }
   }
 
   // boost::mpi::broadcast(world, input_size, 0);
