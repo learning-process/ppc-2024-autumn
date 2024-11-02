@@ -78,9 +78,8 @@ bool sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel::pre_processing
         matrix.emplace_back(tmp_ptr[j * columns_count + i]);
       }
     }
-  }
-  else {
-      matrix = std::vector<int>(rows_count * columns_count, 0);
+  } else {
+    matrix = std::vector<int>(rows_count * columns_count, 0);
   }
   return true;
 }
@@ -117,8 +116,9 @@ bool sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel::run() {
   if (world.rank() == 0) {
     std::vector<int> localRes(columns_count);
     std::vector<int> sizes(world.size(), delta);
-    sizes.back() = delta + last_column;
+    sizes.back() = delta + last_column + 1;
     boost::mpi::gatherv(world, intermediate_res.data(), intermediate_res.size(), localRes.data(), sizes, 0);
+    localRes.resize(columns_count);
     sum = localRes;
   } else {
     boost::mpi::gatherv(world, intermediate_res.data(), intermediate_res.size(), 0);
