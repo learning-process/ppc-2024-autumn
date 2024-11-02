@@ -5,7 +5,7 @@
 
 #include "seq/petrov_o_num_of_alternations_signs/include/ops_seq.hpp"
 
-TEST(Sequential, TestAlternations_Simple) {
+TEST(petrov_o_num_of_alternations_signs_seq, TestAlternations_Simple) {
   std::vector<int> input = {1, -2, 3, -4, 5};
   std::vector<int> output(1);  // Вектор для результата
 
@@ -25,7 +25,7 @@ TEST(Sequential, TestAlternations_Simple) {
   ASSERT_EQ(output[0], 4);  // Ожидаемое количество чередований: 4
 }
 
-TEST(Sequential, TestAlternations_AllPositive) {
+TEST(petrov_o_num_of_alternations_signs_seq, TestAlternations_AllPositive) {
   std::vector<int> input = {1, 2, 3, 4, 5};
   std::vector<int> output(1);
 
@@ -45,7 +45,7 @@ TEST(Sequential, TestAlternations_AllPositive) {
   ASSERT_EQ(output[0], 0);  // Ожидаемое количество чередований: 0
 }
 
-TEST(Sequential, TestAlternations_AllNegative) {
+TEST(petrov_o_num_of_alternations_signs_seq, TestAlternations_AllNegative) {
   std::vector<int> input = {-1, -2, -3, -4, -5};
   std::vector<int> output(1);
 
@@ -65,7 +65,7 @@ TEST(Sequential, TestAlternations_AllNegative) {
   ASSERT_EQ(output[0], 0);  // Ожидаемое количество чередований: 0
 }
 
-TEST(Sequential, TestAlternations_Empty) {
+TEST(petrov_o_num_of_alternations_signs_seq, TestAlternations_Empty) {
   std::vector<int> input = {};
   std::vector<int> output(1);
 
@@ -85,7 +85,7 @@ TEST(Sequential, TestAlternations_Empty) {
   ASSERT_EQ(output[0], 0);  // Ожидаемое количество чередований: 0
 }
 
-TEST(Sequential, TestAlternations_OneElement) {
+TEST(petrov_o_num_of_alternations_signs_seq, TestAlternations_OneElement) {
   std::vector<int> input = {1};
   std::vector<int> output(1);
 
@@ -105,7 +105,7 @@ TEST(Sequential, TestAlternations_OneElement) {
   ASSERT_EQ(output[0], 0);  // Ожидаемое количество чередований: 0
 }
 
-TEST(Sequential, TestAlternations_LargeInput) {
+TEST(petrov_o_num_of_alternations_signs_seq, TestAlternations_LargeInput) {
   const int size = 1000;
   std::vector<int> input(size);
   std::iota(input.begin(), input.end(), 1);  // Заполняем числами от 1 до 1000
