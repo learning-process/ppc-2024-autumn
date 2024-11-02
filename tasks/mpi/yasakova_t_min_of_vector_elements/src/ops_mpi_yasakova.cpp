@@ -96,23 +96,22 @@ bool yasakova_t_min_of_vector_elements_mpi::TestMPITaskParallel::pre_processing(
 }
 
 bool yasakova_t_min_of_vector_elements_mpi::TestMPITaskParallel::validation() {
-    internal_order_test();
-    if (taskData->inputs_count[0] == 0 || taskData->inputs_count[1] == 0) {
+  internal_order_test();
+  if (taskData->inputs_count[0] == 0 || taskData->inputs_count[1] == 0) {
         return false; 
-    }
-    return true;
+  }
+  return true;
 }
 
 bool yasakova_t_min_of_vector_elements_mpi::TestMPITaskParallel::run() {
-    internal_order_test();
-    if (localInputValues_.empty()) {
-        res_ = INT_MAX; 
-        return true;
-    }
-
-    int local_res = *std::min_element(localInputValues_.begin(), localInputValues_.end());
-    reduce(world, local_res, res_, boost::mpi::minimum<int>(), 0);
-    return true;
+  internal_order_test();
+  if (localInputValues_.empty()) {
+      res_ = INT_MAX; 
+      return true;
+  }
+  int local_res = *std::min_element(localInputValues_.begin(), localInputValues_.end());
+  reduce(world, local_res, res_, boost::mpi::minimum<int>(), 0);
+  return true;
 }
 
 bool yasakova_t_min_of_vector_elements_mpi::TestMPITaskParallel::post_processing() {
