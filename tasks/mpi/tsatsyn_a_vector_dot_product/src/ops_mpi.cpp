@@ -1,10 +1,8 @@
 // Copyright 2023 Nesterov Alexander
 #include "mpi/tsatsyn_a_vector_dot_product/include/ops_mpi.hpp"
 
-#include <algorithm>
-#include <functional>
+#include <boost/mpi.hpp>
 #include <random>
-#include <string>
 #include <thread>
 #include <vector>
 
@@ -55,20 +53,22 @@ bool tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
-    // Init vectors
-    v1 = std::vector<int>(taskData->inputs_count[0]);
-    v2 = std::vector<int>(taskData->inputs_count[1]);
-    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    auto* tmp_ptr2 = reinterpret_cast<int*>(taskData->inputs[1]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-      v1[i] = tmp_ptr[i];
-      v2[i] = tmp_ptr2[i];
+    if ((int)(taskData->inputs_count[0]) < world.size()) {
+      delta = taskData->inputs_count[0];
     }
-    for (int proc = 1; proc < world.size(); proc++) world.send(proc, 0, delta);
-  } else {
+    v1.resize(taskData->inputs_count[0]);
+    v2.resize(taskData->inputs_count[1]);
+    for (size_t i = 0; i < taskData->inputs.size(); ++i) {
+      if (taskData->inputs[i] == nullptr || taskData->inputs_count[i] == 0) {
+        return false;
+      }
+    }
+    int* source_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+    std::copy(source_ptr, source_ptr + taskData->inputs_count[0], v1.begin());
+
+    source_ptr = reinterpret_cast<int*>(taskData->inputs[1]);
+    std::copy(source_ptr, source_ptr + taskData->inputs_count[1], v2.begin());
   }
-  // Init value for output
-  res = 0;
   return true;
 }
 
@@ -86,9 +86,12 @@ bool tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel::validation() {
 
 bool tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  // broadcast(world, delta, 0);
+  broadcast(world, delta, 0);
   if (world.rank() == 0) {
-    for (int proc = 1; proc < world.size(); ++proc) world.send(proc, 0, delta);
+    for (int proc = 1; proc < world.size(); proc++) {
+      world.send(proc, 0, v1.data() + proc * delta, delta);
+      world.send(proc, 1, v2.data() + proc * delta, delta);
+    }
   }
   local_v1.resize(delta);
   local_v2.resize(delta);
@@ -96,7 +99,8 @@ bool tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel::run() {
     std::copy(v1.begin(), v1.begin() + delta, local_v1.begin());
     std::copy(v2.begin(), v2.begin() + delta, local_v2.begin());
   } else {
-    world.recv(0, 0, delta);
+    world.recv(0, 0, local_v1.data(), delta);
+    world.recv(0, 1, local_v2.data(), delta);
   }
   int local_result = std::inner_product(local_v1.begin(), local_v1.end(), local_v2.begin(), 0);
   std::vector<int> full_results;
@@ -114,6 +118,7 @@ bool tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel::run() {
 bool tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
+    if (taskData->outputs.empty()) return false;
     reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
   }
   return true;

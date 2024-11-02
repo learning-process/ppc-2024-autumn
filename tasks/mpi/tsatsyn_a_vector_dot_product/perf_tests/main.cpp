@@ -12,7 +12,6 @@ std::vector<int> toGetRandomVector(int size) {
   for (int i = 0; i < size; ++i) {
     vector[i] = std::rand() % 100 + 1;
   }
-
   return vector;
 }
 TEST(mpi_tsatsyn_a_vector_dot_product_perf_test, test_pipeline_run) {

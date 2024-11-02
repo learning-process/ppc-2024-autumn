@@ -20,7 +20,7 @@ bool tsatsyn_a_vector_dot_product_seq::TestTaskSequential::pre_processing() {
   auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[0]);
   std::copy(tempPtr, tempPtr + taskData->inputs_count[0], v1.begin());
   tempPtr = reinterpret_cast<int*>(taskData->inputs[1]);
-  std::copy(tempPtr, tempPtr + taskData->inputs_count[0], v2.begin());
+  std::copy(tempPtr, tempPtr + taskData->inputs_count[1], v2.begin());
   res = 0;
   return true;
 }
