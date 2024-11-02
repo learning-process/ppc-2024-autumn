@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include "mpi/korotin_e_min_val_matrix/include/ops_mpi.hpp"
 
 #include <algorithm>
@@ -26,18 +25,15 @@ std::vector<double> korotin_e_min_val_matrix_mpi::getRandomMatrix(const unsigned
 
 bool korotin_e_min_val_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
-  // Init matrixes
   input_ = std::vector<double>(taskData->inputs_count[0]);
   auto* start = reinterpret_cast<double*>(taskData->inputs[0]);
   std::copy(start, start + taskData->inputs_count[0], input_.begin());
-  // Init value for output
   res = 0.0;
   return true;
 }
 
 bool korotin_e_min_val_matrix_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  // Check count elements of output
   return taskData->outputs_count[0] == 1;
 }
 
@@ -58,6 +54,25 @@ bool korotin_e_min_val_matrix_mpi::TestMPITaskSequential::post_processing() {
 
 bool korotin_e_min_val_matrix_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
+  if (world.rank() == 0) {
+    input_ = std::vector<double>(taskData->inputs_count[0]);
+    auto* start = reinterpret_cast<double*>(taskData->inputs[0]);
+    std::copy(start, start + taskData->inputs_count[0], input_.begin());
+  }
+  res = 0.0;
+  return true;
+}
+
+bool korotin_e_min_val_matrix_mpi::TestMPITaskParallel::validation() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    return taskData->outputs_count[0] == 1;
+  }
+  return true;
+}
+
+bool korotin_e_min_val_matrix_mpi::TestMPITaskParallel::run() {
+  internal_order_test();
   unsigned int delta = 0;
   int remainder = 0;
   if (world.rank() == 0) {
@@ -68,12 +83,7 @@ bool korotin_e_min_val_matrix_mpi::TestMPITaskParallel::pre_processing() {
   broadcast(world, remainder, 0);
 
   if (world.rank() == 0) {
-    // Init matixes
     int counter = 1;
-    input_ = std::vector<double>(taskData->inputs_count[0]);
-    auto* start = reinterpret_cast<double*>(taskData->inputs[0]);
-    std::copy(start, start + taskData->inputs_count[0], input_.begin());
-
     for (int proc = 1; proc < world.size(); proc++) {
       if (counter < remainder) {
         world.send(proc, 0, input_.data() + proc * delta + counter, delta + 1);
@@ -99,22 +109,6 @@ bool korotin_e_min_val_matrix_mpi::TestMPITaskParallel::pre_processing() {
     } else
       world.recv(0, 0, local_input_.data(), delta);
   }
-  // Init value for output
-  res = 0.0;
-  return true;
-}
-
-bool korotin_e_min_val_matrix_mpi::TestMPITaskParallel::validation() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    // Check count elements of output
-    return taskData->outputs_count[0] == 1;
-  }
-  return true;
-}
-
-bool korotin_e_min_val_matrix_mpi::TestMPITaskParallel::run() {
-  internal_order_test();
   double local_res;
 
   if (local_input_.empty())
