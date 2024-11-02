@@ -45,7 +45,7 @@ bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorSequential::run() {
   } else if (ops == "sub") {
     res = std::accumulate(input_.begin(), input_.end(), 0);
   } else if (ops == "max") {
-    res = std::accumulate(input_.begin(), input_.end());
+    res = *std::max_element(input_.begin(), input_.end());
   } else if (ops == "avg") {
     res = std::accumulate(input_.begin(), input_.end(), 0) / input_.size();
   }
@@ -106,7 +106,7 @@ bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel::run() {
   } else if (ops == "sub") {
     local_res = std::accumulate(local_input_.begin(), local_input_.end(), 0);
   } else if (ops == "max") {
-    local_res = std::accumulate(local_input_.begin(), local_input_.end());
+    local_res = *std::max_element(local_input_.begin(), local_input_.end());
   } else if (ops == "avg") {
     local_res = std::accumulate(local_input_.begin(), local_input_.end(), 0) / local_input_.size();
   }
