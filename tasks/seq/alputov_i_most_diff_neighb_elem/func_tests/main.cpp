@@ -2,7 +2,6 @@
 #include <gtest/gtest.h>
 
 #include <random>
-#include <utility>
 #include <vector>
 
 #include "seq/alputov_i_most_diff_neighb_elem/include/ops_seq.hpp"
@@ -33,14 +32,12 @@ TEST(alputov_i_most_diff_neighb_elem_seq, Test_MaxDiff_NegativeValues) {
   std::vector<int> inputVector = {-3, -6, -9, -11};
   int outputPair[2] = {0, 0};
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputVector.data()));
   taskDataSeq->inputs_count.emplace_back(inputVector.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(outputPair));
   taskDataSeq->outputs_count.emplace_back(2);
 
-  // Create Task
   alputov_i_most_diff_neighb_elem_seq::SequentialTask testTaskSequential(taskDataSeq);
 
   ASSERT_TRUE(testTaskSequential.validation());
@@ -56,14 +53,12 @@ TEST(alputov_i_most_diff_neighb_elem_seq, Test_MaxDiff_EqualElements) {
   std::vector<int> inputVector = {2, 2, 2, 2, 2};
   int outputPair[2] = {0, 0};
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputVector.data()));
   taskDataSeq->inputs_count.emplace_back(inputVector.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(outputPair));
   taskDataSeq->outputs_count.emplace_back(2);
 
-  // Create Task
   alputov_i_most_diff_neighb_elem_seq::SequentialTask testTaskSequential(taskDataSeq);
   ASSERT_TRUE(testTaskSequential.validation());
   testTaskSequential.pre_processing();
@@ -78,14 +73,12 @@ TEST(alputov_i_most_diff_neighb_elem_seq, Test_MaxDiff_TwoElements) {
   std::vector<int> inputVector = {5, 10};
   int outputPair[2] = {0, 0};
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputVector.data()));
   taskDataSeq->inputs_count.emplace_back(inputVector.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(outputPair));
   taskDataSeq->outputs_count.emplace_back(2);
 
-  // Create Task
   alputov_i_most_diff_neighb_elem_seq::SequentialTask testTaskSequential(taskDataSeq);
   ASSERT_TRUE(testTaskSequential.validation());
   testTaskSequential.pre_processing();
@@ -99,14 +92,13 @@ TEST(alputov_i_most_diff_neighb_elem_seq, Test_MaxDiff_TwoElements) {
 TEST(alputov_i_most_diff_neighb_elem_seq, Test_MaxDiff_SingleElement) {
   std::vector<int> inputVector = {100};
   int outputPair[2] = {0, 0};
-  // Create TaskData
+
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputVector.data()));
   taskDataSeq->inputs_count.emplace_back(inputVector.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(outputPair));
   taskDataSeq->outputs_count.emplace_back(2);
 
-  // Create Task
   alputov_i_most_diff_neighb_elem_seq::SequentialTask testTaskSequential(taskDataSeq);
   ASSERT_FALSE(testTaskSequential.validation());
 }
@@ -114,14 +106,12 @@ TEST(alputov_i_most_diff_neighb_elem_seq, Test_MaxDiff_SingleElement) {
 TEST(alputov_i_most_diff_neighb_elem_seq, Test_MaxDiff_EmptyVector) {
   std::vector<int> inputVector = {};
   int outputPair[2] = {0, 0};
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputVector.data()));
   taskDataSeq->inputs_count.emplace_back(inputVector.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(outputPair));
   taskDataSeq->outputs_count.emplace_back(2);
 
-  // Create Task
   alputov_i_most_diff_neighb_elem_seq::SequentialTask testTaskSequential(taskDataSeq);
 
   ASSERT_FALSE(testTaskSequential.validation());

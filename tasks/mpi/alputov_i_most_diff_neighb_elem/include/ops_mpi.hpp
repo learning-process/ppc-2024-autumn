@@ -9,15 +9,14 @@
 #include <boost/mpi/environment.hpp>
 #include <cstring>
 #include <random>
-#include <stdexcept>
 #include <vector>
 
 #include "core/task/include/task.hpp"
 
 namespace alputov_i_most_diff_neighb_elem_mpi {
 
-std::vector<int> RandomVector(int sz);
 int Max_Neighbour_Seq_Pos(const std::vector<int>& data);
+std::vector<int> RandomVector(int sz);
 
 class MPISequentialTask : public ppc::core::Task {
  public:
@@ -28,8 +27,8 @@ class MPISequentialTask : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> inputData;
   int result[2];
+  std::vector<int> inputData;
 };
 
 class MPIParallelTask : public ppc::core::Task {
@@ -42,10 +41,9 @@ class MPIParallelTask : public ppc::core::Task {
   int getElementsPerProcess() const;
 
  private:
-  std::vector<int> inputData, localData;
-  int result[2];
   boost::mpi::communicator world;
+  int result[2];
   int localMaxDiff[3];
+  std::vector<int> inputData, localData;
 };
-
 }  // namespace alputov_i_most_diff_neighb_elem_mpi

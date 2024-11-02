@@ -146,15 +146,15 @@ TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_RandomVector_MPI_10k_elem
   }
 }
 
-TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_RandomVector_MPI_10_elem) {
+TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_RandomVector_MPI_20_elem) {
   boost::mpi::communicator world;
-  std::vector<int> inputVector(10);
+  std::vector<int> inputVector(20);
   int outputPair[2] = {};
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    inputVector = alputov_i_most_diff_neighb_elem_mpi::RandomVector(10);
+    inputVector = alputov_i_most_diff_neighb_elem_mpi::RandomVector(20);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(inputVector.data()));
     taskDataPar->inputs_count.emplace_back(inputVector.size());

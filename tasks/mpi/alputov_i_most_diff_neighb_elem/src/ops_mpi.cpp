@@ -15,24 +15,24 @@ std::vector<int> alputov_i_most_diff_neighb_elem_mpi::RandomVector(int sz) {
   return vec;
 }
 
+int alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::getElementsPerProcess() const {
+  return taskData->inputs_count[0] / world.size();
+}
+
 int alputov_i_most_diff_neighb_elem_mpi::Max_Neighbour_Seq_Pos(const std::vector<int>& data) {
   if (data.size() < 2) {
-    return -1;
+    return 0;
   }
-  int maxDiff = std::abs(data[0] - data[1]);
+  int maxDifference = std::abs(data[0] - data[1]);
   int maxIndex = 0;
   for (size_t i = 1; i < data.size() - 1; ++i) {
-    int diff = std::abs(data[i] - data[i + 1]);
-    if (diff > maxDiff) {
-      maxDiff = diff;
+    int difference = std::abs(data[i] - data[i + 1]);
+    if (difference > maxDifference) {
+      maxDifference = difference;
       maxIndex = i;
     }
   }
   return maxIndex;
-}
-
-int alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::getElementsPerProcess() const {
-  return taskData->inputs_count[0] / world.size();
 }
 
 bool alputov_i_most_diff_neighb_elem_mpi::MPISequentialTask::validation() {
@@ -140,7 +140,7 @@ bool alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::pre_processing() {
   }
 
   result[0] = 0;
-  result[1] = 1;
+  result[1] = 0;
   return true;
 }
 
@@ -187,6 +187,7 @@ bool alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask::run() {
   MPI_Op customOperation;
   MPI_Op_create(reinterpret_cast<MPI_User_function*>(&updateMaxDifferencePair), 1, &customOperation);
   MPI_Reduce(localMaxDiff, globalDataArr, 3, MPI_INT, customOperation, 0, MPI_COMM_WORLD);
+
   if (world.rank() == 0) {
     result[0] = globalDataArr[0];
     result[1] = globalDataArr[1];

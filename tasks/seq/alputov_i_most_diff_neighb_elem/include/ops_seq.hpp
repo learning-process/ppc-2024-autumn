@@ -4,14 +4,15 @@
 #include <cmath>
 #include <cstring>
 #include <memory>
-#include <stdexcept>
+#include <random>
 #include <string>
-#include <utility>
 #include <vector>
 
 #include "core/task/include/task.hpp"
 
 namespace alputov_i_most_diff_neighb_elem_seq {
+
+std::vector<int> RandomVector(int sz);
 
 class SequentialTask : public ppc::core::Task {
  public:
@@ -27,5 +28,4 @@ class SequentialTask : public ppc::core::Task {
   std::vector<int> inputData;
   int result[2];
 };
-
 }  // namespace alputov_i_most_diff_neighb_elem_seq
