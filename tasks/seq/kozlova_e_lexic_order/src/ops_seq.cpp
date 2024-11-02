@@ -19,7 +19,7 @@ bool kozlova_e_lexic_order::StringComparator::validation() {
   return taskData->inputs_count[0] == 2;
 }
 
-std::vector<int> LexicographicallyOrdered(const std::string& str1, const std::string& str2) {
+std::vector<int> kozlova_e_lexic_order::StringComparator::LexicographicallyOrdered() {
   int flag1 = 1;
   int flag2 = 1;
   std::vector<int> localres;
@@ -48,7 +48,7 @@ std::vector<int> LexicographicallyOrdered(const std::string& str1, const std::st
 
 bool kozlova_e_lexic_order::StringComparator::run() {
   internal_order_test();
-  res = LexicographicallyOrdered(str1, str2);
+  res = LexicographicallyOrdered();
   return true;
 }
 

@@ -20,6 +20,7 @@ class StringComparator : public ppc::core::Task {
   std::string str1{};
   std::string str2{};
   std::vector<int> res{};
+  std::vector<int> LexicographicallyOrdered();
 };
 
 }  // namespace kozlova_e_lexic_order

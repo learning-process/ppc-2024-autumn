@@ -1,11 +1,10 @@
 // Copyright 2023 Nesterov Alexander
 #include "mpi/kozlova_e_lexic_order/include/ops_mpi.hpp"
 
-#include <random>
 #include <string>
 #include <vector>
 
-std::vector<int> LexicographicallyOrdered(const std::string& str1, const std::string& str2) {
+std::vector<int> kozlova_e_lexic_order_mpi::LexicographicallyOrdered(const std::string& str1, const std::string& str2) {
   int flag1 = 1;
   int flag2 = 1;
   std::vector<int> localres;

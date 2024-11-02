@@ -15,6 +15,8 @@
 
 namespace kozlova_e_lexic_order_mpi {
 
+std::vector<int> LexicographicallyOrdered(const std::string& str1, const std::string& str2);
+
 class StringComparatorSeq : public ppc::core::Task {
  public:
   explicit StringComparatorSeq(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
