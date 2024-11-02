@@ -39,9 +39,6 @@ bool yasakova_t_min_of_vector_elements_seq::TestTaskSequential::pre_processing()
 
 bool yasakova_t_min_of_vector_elements_seq::TestTaskSequential::validation() {
   internal_order_test();
-  if (taskData->inputs_count[0] == 0 && taskData->inputs_count[1] == 0) {
-    return taskData->outputs_count[0] == 1;
-  }
   return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] == 1;
 }
 
