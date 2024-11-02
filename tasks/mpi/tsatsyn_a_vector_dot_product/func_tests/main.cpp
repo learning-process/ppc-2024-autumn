@@ -54,7 +54,6 @@ TEST(tsatsyn_a_vector_dot_product_mpi, Test_Sum) {
   if (world.rank() == 0) {
     ASSERT_EQ(tsatsyn_a_vector_dot_product_mpi::resulting(v1, v2), res[0]);
   }
-  
 }
 
 TEST(tsatsyn_a_vector_dot_product_mpi, Test_Negative_Validation) {

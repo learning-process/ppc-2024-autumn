@@ -53,7 +53,7 @@ bool tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
-    if ((int)(taskData->inputs_count[0]) < (world.size()-1)) {
+    if ((int)(taskData->inputs_count[0]) < (world.size() - 1)) {
       delta = taskData->inputs_count[0];
     }
     v1.resize(taskData->inputs_count[0]);
@@ -86,9 +86,9 @@ bool tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel::validation() {
 
 bool tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  
+
   broadcast(world, delta, 0);
-  
+
   if (world.rank() == 0) {
     for (int proc = 1; proc < world.size(); proc++) {
       world.send(proc, 0, v1.data() + proc * delta, delta);
