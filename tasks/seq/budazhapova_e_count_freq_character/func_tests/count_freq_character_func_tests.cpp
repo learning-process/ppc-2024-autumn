@@ -45,7 +45,7 @@ TEST(budazhapova_e_count_freq_character_seq, test_if_character_is_not_in_line) {
 }
 
 TEST(budazhapova_e_count_freq_character_seq, test_if_character_is_one) {
-  std::string line = "Â";
+  std::string line = " ";
   std::vector<std::string> in(1, line);
   std::vector<int> out(1, 0);
 
