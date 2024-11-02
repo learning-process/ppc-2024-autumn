@@ -4,8 +4,24 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <vector>
+#include <random>
 
 #include "mpi/kondratev_ya_max_col_matrix/include/ops_mpi.hpp"
+
+std::vector<std::vector<int32_t>> getRandomMatrix(uint32_t row, uint32_t col) {
+  int32_t low = -200;
+  int32_t high = 200;
+
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<std::vector<int32_t>> mtrx(row, std::vector<int32_t>(col));
+  for (uint32_t i = 0; i < row; i++) {
+    for (uint32_t j = 0; j < col; j++) {
+      mtrx[i][j] = low + gen() % (high - low + 1);
+    }
+  }
+  return mtrx;
+}
 
 void runTask(ppc::core::Task& task) {
   ASSERT_TRUE(task.validation());
@@ -32,7 +48,7 @@ TEST(kondratev_ya_max_col_matrix_mpi, test_1) {
 
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    mtrx = kondratev_ya_max_col_matrix_mpi::getRandomMatrix(row, col);
+    mtrx = getRandomMatrix(row, col);
     fillTaskData(taskDataPar, row, col, mtrx, res);
   }
 
@@ -61,7 +77,7 @@ TEST(kondratev_ya_max_col_matrix_mpi, test_2) {
 
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    mtrx = kondratev_ya_max_col_matrix_mpi::getRandomMatrix(row, col);
+    mtrx = getRandomMatrix(row, col);
     fillTaskData(taskDataPar, row, col, mtrx, res);
   }
 
@@ -89,7 +105,7 @@ TEST(kondratev_ya_max_col_matrix_mpi, test_3) {
 
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    mtrx = kondratev_ya_max_col_matrix_mpi::getRandomMatrix(row, col);
+    mtrx = getRandomMatrix(row, col);
     fillTaskData(taskDataPar, row, col, mtrx, res);
   }
 
@@ -105,31 +121,5 @@ TEST(kondratev_ya_max_col_matrix_mpi, test_3) {
     runTask(testMpiTaskSequential);
 
     for (uint32_t i = 0; i < res.size(); i++) ASSERT_EQ(res[i], ref[i]);
-  }
-}
-
-TEST(kondratev_ya_max_col_matrix_mpi, right_insert_ref) {
-  boost::mpi::communicator world;
-
-  if (world.rank() == 0) {
-    uint32_t row = 3;
-    uint32_t col = 3;
-    int32_t ref = INT_MAX;
-
-    auto mtrx = kondratev_ya_max_col_matrix_mpi::getRandomMatrix(row, col);
-    kondratev_ya_max_col_matrix_mpi::insertRefValue(mtrx, ref);
-
-    bool flag;
-    for (uint32_t j = 0; j < col; j++) {
-      flag = false;
-      for (uint32_t i = 0; i < row; i++) {
-        if (mtrx[i][j] == ref) {
-          flag = true;
-          break;
-        }
-      }
-
-      ASSERT_TRUE(flag);
-    }
   }
 }

@@ -15,9 +15,6 @@
 
 namespace kondratev_ya_max_col_matrix_mpi {
 
-std::vector<std::vector<int32_t>> getRandomMatrix(uint32_t row, uint32_t col);
-void insertRefValue(std::vector<std::vector<int32_t>>& mtrx, int32_t ref);
-
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

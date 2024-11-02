@@ -4,41 +4,11 @@
 #include <algorithm>
 #include <boost/serialization/vector.hpp>
 #include <functional>
-#include <random>
 #include <string>
 #include <thread>
 #include <vector>
 
 using namespace std::chrono_literals;
-
-std::vector<std::vector<int32_t>> kondratev_ya_max_col_matrix_mpi::getRandomMatrix(uint32_t row, uint32_t col) {
-  int32_t low = -200;
-  int32_t high = 200;
-
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<std::vector<int32_t>> mtrx(row, std::vector<int32_t>(col));
-  for (uint32_t i = 0; i < row; i++) {
-    for (uint32_t j = 0; j < col; j++) {
-      mtrx[i][j] = low + gen() % (high - low + 1);
-    }
-  }
-  return mtrx;
-}
-
-void kondratev_ya_max_col_matrix_mpi::insertRefValue(std::vector<std::vector<int32_t>>& mtrx, int32_t ref) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-
-  uint32_t ind;
-  uint32_t row = mtrx.size();
-  uint32_t col = mtrx[0].size();
-
-  for (uint32_t j = 0; j < col; j++) {
-    ind = gen() % row;
-    mtrx[ind][j] = ref;
-  }
-}
 
 bool kondratev_ya_max_col_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
