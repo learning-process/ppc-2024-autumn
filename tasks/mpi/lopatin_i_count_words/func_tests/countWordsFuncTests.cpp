@@ -20,7 +20,7 @@ TEST(lopatin_i_count_words_mpi, test_empty_string) {
   }
 }
 
-TEST(lopatin_i_count_words_mpi, test_1_word) {
+TEST(lopatin_i_count_words_mpi, test_3_chars) {
   boost::mpi::communicator world;
   std::vector<char> input;
   std::string testString = "sym";
