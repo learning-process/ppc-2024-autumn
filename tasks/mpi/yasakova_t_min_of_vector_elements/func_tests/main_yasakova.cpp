@@ -7,8 +7,7 @@
 
 #include "mpi/yasakova_t_min_of_vector_elements/include/ops_mpi_yasakova.hpp"
 
-std::vector<int> yasakova_t_min_of_vector_elements_mpi::RandomVector(int size, int minimum = 0,
-                                                                    int maximum = 100) {
+std::vector<int> RandomVector(int size, int minimum = 0, int maximum = 100) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(size);
@@ -18,8 +17,7 @@ std::vector<int> yasakova_t_min_of_vector_elements_mpi::RandomVector(int size, i
   return vec;
 }
 
-std::vector<std::vector<int>> yasakova_t_min_of_vector_elements_mpi::RandomMatrix(int rows, int columns, int minimum = 0,
-                                                                                  int maximum = 100) {
+std::vector<std::vector<int>> RandomMatrix(int rows, int columns, int minimum = 0, int maximum = 100) {
   std::vector<std::vector<int>> vec(rows);
   for (int i = 0; i < rows; i++) {
     vec[i] = yasakova_t_min_of_vector_elements_mpi::RandomVector(columns, minimum, maximum);
