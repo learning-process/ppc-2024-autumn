@@ -2,9 +2,20 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <random>
 #include <vector>
 
 #include "mpi/sozonov_i_nearest_neighbor_elements/include/ops_mpi.hpp"
+
+std::vector<int> getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = gen() % 100;
+  }
+  return vec;
+}
 
 TEST(sozonov_i_nearest_neighbor_elements_mpi, test_for_empty_vector) {
   boost::mpi::communicator world;
@@ -228,7 +239,7 @@ TEST(sozonov_i_nearest_neighbor_elements_mpi, test_random_on_500_elements) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 500;
-    global_vec = sozonov_i_nearest_neighbor_elements_mpi::getRandomVector(count_size_vector);
+    global_vec = getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_ans.data()));
@@ -272,7 +283,7 @@ TEST(sozonov_i_nearest_neighbor_elements_mpi, test_random_on_1000_elements) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 1000;
-    global_vec = sozonov_i_nearest_neighbor_elements_mpi::getRandomVector(count_size_vector);
+    global_vec = getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_ans.data()));
