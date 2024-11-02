@@ -60,7 +60,6 @@ TEST(sidorina_p_check_lexicographic_order_seq, Test_1) {
 
   auto testTaskSequential = std::make_shared<sidorina_p_check_lexicographic_order_seq::TestTaskSequential>(taskDataSeq);
 
-
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();
