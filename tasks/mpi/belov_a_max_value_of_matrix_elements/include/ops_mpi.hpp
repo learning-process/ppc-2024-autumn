@@ -117,8 +117,7 @@ bool MaxValueOfMatrixElementsParallel<T>::run() {
   std::vector<int> distr(size, delta);
   std::vector<int> displ(size, 0);
 
-  for (int i = 0; i < remainder; ++distr[i], ++i)
-    ;
+  for (int i = 0; i < remainder; ++distr[i], ++i);
   for (int i = 1; i < size; ++i) {
     displ[i] = displ[i - 1] + distr[i - 1];
   }
