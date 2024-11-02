@@ -7,9 +7,9 @@
 #include "seq/vasenkov_a_char_freq/include/ops_seq.hpp"
 
 TEST(vasenkov_a_char_frequency_seq, test_pipeline_run) {
-  std::string input_str(100000, 'a');
+  std::string input_str(150000000, 'a');
   char target_char = 'a';
-  int expected_frequency = 100000;
+  int expected_frequency = 150000000;
 
   std::vector<std::string> in_str(1, input_str);
   std::vector<char> in_char(1, target_char);
@@ -44,9 +44,9 @@ TEST(vasenkov_a_char_frequency_seq, test_pipeline_run) {
 }
 
 TEST(vasenkov_a_char_frequency_seq, test_task_run) {
-  std::string input_str(100000, 'a');
+  std::string input_str(150000000, 'a');
   char target_char = 'a';
-  int expected_frequency = 100000;
+  int expected_frequency = 150000000;
 
   std::vector<std::string> in_str(1, input_str);
   std::vector<char> in_char(1, target_char);
