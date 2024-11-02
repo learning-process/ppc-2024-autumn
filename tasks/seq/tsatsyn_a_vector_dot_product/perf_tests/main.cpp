@@ -61,8 +61,8 @@ TEST(sequential_tsatsyn_a_vector_dot_product_perf_test, test_task_run) {
   const int size = 10000000;
 
   // Create data
-  std::vector<int> v1 = GetRandomVector(size);
-  std::vector<int> v2 = GetRandomVector(size);
+  std::vector<int> v1 = toGetRandomVector(size);
+  std::vector<int> v2 = toGetRandomVector(size);
   std::vector<int> ans(1, 0);
 
   // Create TaskData

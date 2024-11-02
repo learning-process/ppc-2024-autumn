@@ -57,8 +57,8 @@ TEST(mpi_tsatsyn_a_vector_dot_product_perf_test, test_pipeline_run) {
 TEST(mpi_tsatsyn_a_vector_dot_product_perf_test, test_task_run) {
   int size = 10000000;
   boost::mpi::communicator world;
-  std::vector<int> v1 = GetRandomVector(size);
-  std::vector<int> v2 = GetRandomVector(size);
+  std::vector<int> v1 = toGetRandomVector(size);
+  std::vector<int> v2 = toGetRandomVector(size);
   std::vector<int> ans(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
