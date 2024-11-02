@@ -75,8 +75,6 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::pre_processing() {
     if (std::min(tmp1.size(), tmp2.size()) % world.size() > 0u) ++delta;
   }
 
-  broadcast(world, delta, 0);
-
   if (world.rank() == 0) {
     // Init vectors
     input_ = std::vector<std::pair<char, char>>(world.size() * delta);
@@ -106,9 +104,14 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::run() {
   int res1 = 0;
 
   int delta = 0;
-  if (world.rank() == 0) {
-    int delta = static_cast<int>(input_.size()) / world.size();
 
+  if (world.rank() == 0) {
+    delta = static_cast<int>(input_.size()) / world.size();
+  }
+
+  broadcast(world, delta, 0);
+
+  if (world.rank() == 0) {
     for (int proc = 1; proc < world.size(); proc++) {
       world.send(proc, 0, input_.data() + proc * delta, delta);
     }
