@@ -105,8 +105,8 @@ bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel::run() {
     local_res = -std::accumulate(local_input_.begin(), local_input_.end(), 0);
   } else if (ops == "max") {
     local_res = *std::max_element(local_input_.begin(), local_input_.end());
-  } 
-
+  }
+}
   if (ops == "add" || ops == "sub") {
     reduce(world, local_res, res, std::plus(), 0);
   } else if (ops == "max") {
