@@ -47,7 +47,7 @@ bool frolova_e_num_of_letters_mpi::TestMPITaskSequential::validation() {
 bool frolova_e_num_of_letters_mpi::TestMPITaskSequential::run() {
   internal_order_test();
   for (char c : input_) {
-    if (isalpha(c)) res++;
+    if (static_cast<bool>(isalpha(c))) res++;
   }
   return true;
 }
@@ -99,7 +99,7 @@ bool frolova_e_num_of_letters_mpi::TestMPITaskParallel::run() {
   }
   int local_res = 0;
   for (char c : local_input_) {
-    if (isalpha(c)) {
+    if (static_cast<bool>(isalpha(c))) {
       local_res++;
     }
   }

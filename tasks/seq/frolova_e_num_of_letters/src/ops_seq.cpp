@@ -29,7 +29,7 @@ std::string frolova_e_num_of_letters_seq::GenStr(int n) {
 int frolova_e_num_of_letters_seq::Count(std::string& str) {
   int count = 0;
   for (char c : str) {
-    if (isalpha(c)) {
+    if (static_cast<bool>(isalpha(c))) {
       count++;
     }
   }
