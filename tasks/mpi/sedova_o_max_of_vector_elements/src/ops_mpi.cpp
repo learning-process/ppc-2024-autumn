@@ -6,7 +6,7 @@
 #include <random>
 
 int sedova_o_max_of_vector_elements_mpi::find_max_of_matrix(std::vector<int> matrix) {
-  size_t max = matrix[0];
+  int max = matrix[0];
   for (size_t i = 0; i < matrix.size(); i++) {
     if (matrix[i] > max) {
       max = matrix[i];
@@ -66,9 +66,7 @@ bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::pre_processing() 
 
 bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
-  if (world.rank() == 0) {
-    return taskData->outputs_count[0] == 1 && !taskData->inputs.empty();
-  }
+  return (world.rank() != 0) || ((taskData->outputs_count[0] == 1) && (!taskData->inputs.empty()));
 }
 
 bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::run() {
