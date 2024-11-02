@@ -6,19 +6,24 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/sadikov_I_sum_values_by_columns_matrix/include/ops_mpi.h"
 
-TEST(ParallelOperations, mpi_pipline_run) {
+TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, mpi_pipline_run) {
   boost::mpi::communicator world;
   const int columns = 3000;
   const int rows = 3000;
-  std::vector<int> in(columns * rows, 1);
+  std::vector<int> in;
   std::vector<int> in_index{rows, columns};
   std::vector<int> out_par(columns, 0);
   std::vector<int> answer(columns, columns);
-  auto taskData_par = std::make_shared<ppc::core::TaskData>();
+  auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskData_par = sadikov_I_Sum_values_by_columns_matrix_mpi::CreateTaskData(in, in_index, out_par);
+    in = std::vector<int>(rows * columns, 1);
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    taskData->inputs_count.emplace_back(in_index[0]);
+    taskData->inputs_count.emplace_back(in_index[1]);
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_par.data()));
+    taskData->outputs_count.emplace_back(out_par.size());
   }
-  auto sv_par = std::make_shared<sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel>(taskData_par);
+  auto sv_par = std::make_shared<sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel>(taskData);
   ASSERT_EQ(sv_par->validation(), true);
   sv_par->pre_processing();
   sv_par->run();
@@ -40,7 +45,7 @@ TEST(ParallelOperations, mpi_pipline_run) {
   }
 }
 
-TEST(ParallelOperations, mpi_task_run) {
+TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, mpi_task_run) {
   boost::mpi::communicator world;
   const int columns = 3000;
   const int rows = 3000;
@@ -48,11 +53,16 @@ TEST(ParallelOperations, mpi_task_run) {
   std::vector<int> in_index{rows, columns};
   std::vector<int> out_par(columns, 0);
   std::vector<int> answer(columns, columns);
-  auto taskData_par = std::make_shared<ppc::core::TaskData>();
+  auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskData_par = sadikov_I_Sum_values_by_columns_matrix_mpi::CreateTaskData(in, in_index, out_par);
+    in = std::vector<int>(rows * columns, 1);
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    taskData->inputs_count.emplace_back(in_index[0]);
+    taskData->inputs_count.emplace_back(in_index[1]);
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_par.data()));
+    taskData->outputs_count.emplace_back(out_par.size());
   }
-  auto sv_par = std::make_shared<sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel>(taskData_par);
+  auto sv_par = std::make_shared<sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel>(taskData);
   ASSERT_EQ(sv_par->validation(), true);
   sv_par->pre_processing();
   sv_par->run();

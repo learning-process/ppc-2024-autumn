@@ -133,23 +133,10 @@ bool sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel::post_processin
   return true;
 }
 
-std::shared_ptr<ppc::core::TaskData> sadikov_I_Sum_values_by_columns_matrix_mpi::CreateTaskData(std::vector<int> &InV,
-                                                                                                std::vector<int> &CeV,
-                                                                                                std::vector<int> &OtV) {
-  auto taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(InV.data()));
-  taskData->inputs_count.emplace_back(CeV[0]);
-  taskData->inputs_count.emplace_back(CeV[1]);
-  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(OtV.data()));
-  taskData->outputs_count.emplace_back(OtV.size());
-  return taskData;
-}
-
 std::vector<int> sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel::calculate(size_t size) {
   std::vector<int> in(size);
   for (size_t i = 0; i < size; ++i) {
-    in[i] = std::accumulate(local_input.begin() + static_cast<int>(i * rows_count),
-                            local_input.begin() + static_cast<int>((i + 1) * rows_count), 0);
+    in[i] = std::accumulate(local_input.begin() + i * rows_count, local_input.begin() + (i + 1) * rows_count, 0);
   }
   return in;
 }
