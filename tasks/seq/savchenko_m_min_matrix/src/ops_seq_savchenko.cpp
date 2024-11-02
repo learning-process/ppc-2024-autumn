@@ -3,8 +3,6 @@
 
 #include <random>
 
-using namespace std::chrono_literals;
-
 std::vector<int> savchenko_m_min_matrix_seq::getRandomMatrix(size_t rows, size_t columns, int min, int max) {
   std::random_device dev;
   std::mt19937 gen(dev());
