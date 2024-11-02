@@ -98,30 +98,12 @@ bool frolova_e_num_of_letters_mpi::TestMPITaskParallel::pre_processing() {
 
 bool frolova_e_num_of_letters_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  /*
-  size_t delta = 0;
-  if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] / world.size();
-  }
-  broadcast(world, delta, 0);
-  */
 
   if (world.rank() == 0) {
     // Init vectors
     input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]); 
-
-    /*for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + (proc-1) * delta, delta);
-    }
-
-    local_input_ = std::string(input_.begin() + (world.size() - 1) * delta, input_.end());*/
   } 
-  /*else {
-    local_input_.resize(delta);
-    world.recv(0, 0, local_input_.data(), delta);
-  }  */
-  // Init value for output
-  local_input_ = "";
+
   res = 0;
   return true;
 }
@@ -138,7 +120,7 @@ bool frolova_e_num_of_letters_mpi::TestMPITaskParallel::validation() {
 
 bool frolova_e_num_of_letters_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-
+  std::string local_input_;
   size_t delta = 0;
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
