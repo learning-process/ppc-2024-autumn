@@ -17,7 +17,7 @@ int tsatsyn_a_vector_dot_product_mpi::resulting(const std::vector<int>& v1, cons
   }
   return res;
 }
-std::vector<int> tsatsyn_a_vector_dot_product_mpi::getRandomVector(int sz) {
+std::vector<int> tsatsyn_a_vector_dot_product_mpi::toGetRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);

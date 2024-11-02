@@ -6,7 +6,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/tsatsyn_a_vector_dot_product/include/ops_seq.hpp"
 
-std::vector<int> GetRandomVector(int size) {
+std::vector<int> toGetRandomVector(int size) {
   std::vector<int> vector(size);
   std::srand((time(NULL)));
   for (int i = 0; i < size; ++i) {
@@ -19,8 +19,8 @@ TEST(sequential_tsatsyn_a_vector_dot_product_perf_test, test_pipeline_run) {
   const int size = 10000000;
 
   // Create data
-  std::vector<int> v1 = GetRandomVector(size);
-  std::vector<int> v2 = GetRandomVector(size);
+  std::vector<int> v1 = toGetRandomVector(size);
+  std::vector<int> v2 = toGetRandomVector(size);
   std::vector<int> ans(1, 0);
 
   // Create TaskData

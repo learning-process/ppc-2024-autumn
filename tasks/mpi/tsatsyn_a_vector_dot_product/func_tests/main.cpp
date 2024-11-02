@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "mpi/tsatsyn_a_vector_dot_product/include/ops_mpi.hpp"
-std::vector<int> GetRandomVector(int size) {
+std::vector<int> toGetRandomVector(int size) {
   std::vector<int> vector(size);
   std::srand((time(NULL)));
   for (int i = 0; i < size; ++i) {
@@ -16,8 +16,8 @@ std::vector<int> GetRandomVector(int size) {
 }
 TEST(tsatsyn_a_vector_dot_product_mpi, Test_Random_Scalar) {
   boost::mpi::communicator world;
-  std::vector<int> v1 = GetRandomVector(3);
-  std::vector<int> v2 = GetRandomVector(3);
+  std::vector<int> v1 = toGetRandomVector(3);
+  std::vector<int> v2 = toGetRandomVector(3);
   std::vector<int32_t> res(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {

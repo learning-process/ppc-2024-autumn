@@ -15,7 +15,7 @@
 
 namespace tsatsyn_a_vector_dot_product_mpi {
 int resulting(const std::vector<int>& vector1, const std::vector<int>& vector2);
-std::vector<int> getRandomVector(int sz);
+std::vector<int> toGetRandomVector(int sz);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
