@@ -2,6 +2,7 @@
 #pragma once
 
 #include <gtest/gtest.h>
+
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <memory>
@@ -9,8 +10,8 @@
 #include <string>
 #include <utility>
 #include <vector>
-#include "core/task/include/task.hpp"
 
+#include "core/task/include/task.hpp"
 
 namespace sidorina_p_check_lexicographic_order_mpi {
 class TestMPITaskSequential : public ppc::core::Task {

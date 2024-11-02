@@ -7,7 +7,6 @@
 
 #include "mpi/sidorina_p_check_lexicographic_order/include/ops_mpi.hpp"
 
-
 TEST(sidorina_p_check_lexicographic_order_mpi, Test_difference_1st_element_0) {
   boost::mpi::communicator world;
   std::vector<std::vector<char>> str_ = {{'e', 'f', 'g', 'u'}, {'z', 'f', 'l', 'p'}};
@@ -20,7 +19,6 @@ TEST(sidorina_p_check_lexicographic_order_mpi, Test_difference_1st_element_0) {
     taskDataPar->inputs_count.emplace_back(str_[0].size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size());
-    
   }
   sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
@@ -61,7 +59,6 @@ TEST(sidorina_p_check_lexicographic_order_mpi, Test_difference_1st_element_1) {
     taskDataPar->inputs_count.emplace_back(str_[0].size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size());
-    
   }
   sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
@@ -101,7 +98,6 @@ TEST(sidorina_p_check_lexicographic_order_mpi, Test_difference_2nd_element_0) {
     taskDataPar->inputs_count.emplace_back(str_[0].size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size());
-    
   }
   sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
@@ -140,7 +136,6 @@ TEST(sidorina_p_check_lexicographic_order_mpi, Test_difference_2nd_element_1) {
     taskDataPar->inputs_count.emplace_back(str_[0].size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size());
-    
   }
   sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
@@ -180,7 +175,6 @@ TEST(sidorina_p_check_lexicographic_order_mpi, Test_difference_3d_element_0) {
     taskDataPar->inputs_count.emplace_back(str_[0].size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size());
-    
   }
   sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
@@ -219,7 +213,6 @@ TEST(sidorina_p_check_lexicographic_order_mpi, Test_difference_3d_element_1) {
     taskDataPar->inputs_count.emplace_back(str_[0].size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size());
-    
   }
   sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
@@ -258,7 +251,6 @@ TEST(sidorina_p_check_lexicographic_order_mpi, Test_difference_4_element_0) {
     taskDataPar->inputs_count.emplace_back(str_[0].size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size());
-   
   }
   sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
@@ -274,7 +266,6 @@ TEST(sidorina_p_check_lexicographic_order_mpi, Test_difference_4_element_0) {
     taskDataSeq->inputs_count.emplace_back(str_[0].size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(ref_res.data()));
     taskDataSeq->outputs_count.emplace_back(ref_res.size());
-    
     
     sidorina_p_check_lexicographic_order_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
@@ -298,7 +289,6 @@ TEST(sidorina_p_check_lexicographic_order_mpi, Test_difference_4_element_1) {
     taskDataPar->inputs_count.emplace_back(str_[0].size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size());
-    
   }
   sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
