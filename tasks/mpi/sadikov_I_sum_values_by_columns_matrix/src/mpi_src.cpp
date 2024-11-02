@@ -103,7 +103,6 @@ bool sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel::run() {
     local_input = std::vector<int>(matrix.begin(), matrix.begin() + rows_count * delta);
 
   } else {
-    std::cout << "Before recevieng" << std::endl;
     world.recv(0, 0, local_input.data(),
                (world.rank() != world.size() - 1) ? rows_count * delta : rows_count * (delta + last_column));
   }
@@ -116,11 +115,9 @@ bool sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel::run() {
     std::vector<int> localRes(columns_count);
     std::vector<int> sizes(world.size(), delta);
     sizes.back() = delta + last_column;
-    std::cout << "Before main gatherv" << std::endl;
     boost::mpi::gatherv(world, intermediate_res, localRes.data(), sizes, 0);
     sum = localRes;
   } else {
-    std::cout << "Before not main gatherv" << std::endl;
     boost::mpi::gatherv(world, intermediate_res, 0);
   }
   return true;
