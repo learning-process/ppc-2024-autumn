@@ -21,7 +21,7 @@ bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::validation() {
   }
 
   boost::mpi::broadcast(world, input_size,
-                        0);  // Без broadcast не получается сделать проверку на избыточное число процессов
+                        0);  // Process count check can not work without broadcast
 
   if (input_size < world.size()) {
     return false;
@@ -40,7 +40,7 @@ bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::run() {
     input_size = taskData->inputs_count[0];
   }
 
-  boost::mpi::broadcast(world, input_size, 0);  // Чтобы значение было доступно везде
+  boost::mpi::broadcast(world, input_size, 0);
 
   if (world.rank() == 0) {
     const int* input = reinterpret_cast<int*>(taskData->inputs[0]);
@@ -54,12 +54,8 @@ bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::run() {
     int remainder = input_size % world.size();
 
     for (int i = 0; i < world.size(); ++i) {
-      distribution[i] =
-          chunk_size +
-          static_cast<int>(i < remainder);  // Добавим 1 элемент к некоторым чанкам, чтобы распределить остаток
-      displacement[i] =
-          (i == 0) ? 0 : displacement[i - 1] + distribution[i - 1];  // Смещение текущего ненулевого блока равно
-                                                                     // смещению предыдущего блока + его размеру
+      distribution[i] = chunk_size + static_cast<int>(i < remainder);  // Distribute remainder
+      displacement[i] = (i == 0) ? 0 : displacement[i - 1] + distribution[i - 1];
     }
 
     chunk.resize(distribution[world.rank()]);
@@ -72,10 +68,9 @@ bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::run() {
 
     int distribution = chunk_size + static_cast<int>(world.rank() < remainder);
 
-    chunk.resize(distribution);  // Зарезервируем необходимое место под данные
+    chunk.resize(distribution);
 
-    int input;  // Функция при тестировании clang-tidy требует наличия указателя на input, который в дальнейшем не
-                // используется. Поэтому создаем фиктивную переменную
+    int input;  // clang-tidy needs unused input
     boost::mpi::scatterv(world, &input, chunk.data(), distribution, 0);
   }
 
@@ -87,15 +82,14 @@ bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::run() {
     }
   }
 
-  /*Проверка чередования граничных элементов*/
   int last_element = chunk.back();
   int next_element = 0;
 
-  if (world.rank() < world.size() - 1) {  // Если это не последний процесс
+  if (world.rank() < world.size() - 1) {
     world.send(world.rank() + 1, 0, last_element);
   }
 
-  if (world.rank() > 0) {  // Если это не первый процесс
+  if (world.rank() > 0) {
     world.recv(world.rank() - 1, 0, next_element);
     if ((chunk.front() < 0) ^ (next_element < 0)) {
       local_res++;
@@ -123,14 +117,14 @@ bool petrov_o_num_of_alternations_signs_mpi::SequentialTask::pre_processing() {
   this->input_.resize(input_size);
   std::copy(input, input + input_size, std::begin(this->input_));
 
-  this->res = 0;  // Обнуляем счетчик каждый новый запуск
+  this->res = 0;
 
   return true;
 }
 
 bool petrov_o_num_of_alternations_signs_mpi::SequentialTask::validation() {
   internal_order_test();
-  return taskData->outputs_count[0] == 1;  // Проверяем, что на выходе ожидается одно число
+  return taskData->outputs_count[0] == 1;
 }
 
 bool petrov_o_num_of_alternations_signs_mpi::SequentialTask::run() {
@@ -149,6 +143,6 @@ bool petrov_o_num_of_alternations_signs_mpi::SequentialTask::run() {
 
 bool petrov_o_num_of_alternations_signs_mpi::SequentialTask::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;  // Передаем резульбтат
+  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
   return true;
 }
