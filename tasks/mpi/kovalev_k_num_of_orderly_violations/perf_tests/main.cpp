@@ -18,7 +18,7 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_pipeline_run) {
   const int alpha = 1;
   if (rank == 0) {
     length = 10;
-    g_vec = std::vector<int>(length, 1);
+    g_vec = std::vector<int>(length, alpha);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(g_vec.data()));
     taskDataPar->inputs_count.emplace_back(g_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(g_num_viol.data()));
