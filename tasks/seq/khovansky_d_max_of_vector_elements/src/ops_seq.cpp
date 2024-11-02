@@ -8,8 +8,11 @@
 using namespace std::chrono_literals;
 
 int khovansky_d_max_of_vector_elements_seq::VectorMax(std::vector<int, std::allocator<int>> r) {
-  int max = r[0];
+  if (r.empty()) {
+    return 0;
+  }
 
+  int max = r[0];
   for (size_t i = 1; i < r.size(); i++) {
     if (r[i] > max) {
       max = r[i];
@@ -32,9 +35,7 @@ bool khovansky_d_max_of_vector_elements_seq::MaxOfVectorSeq::pre_processing() {
 bool khovansky_d_max_of_vector_elements_seq::MaxOfVectorSeq::validation() {
   internal_order_test();
   // Check count elements of output
-  if (taskData->inputs_count[0] == 0) {
-    return taskData->outputs_count[0] == 0;
-  }
+  
   return taskData->outputs_count[0] == 1;
 }
 

@@ -11,6 +11,10 @@
 using namespace std::chrono_literals;
 
 int khovansky_d_max_of_vector_elements_mpi::VectorMax(std::vector<int, std::allocator<int>> r) {
+  if (r.empty()) {
+    return 0;
+  }
+
   int max = r[0];
   for (size_t i = 1; i < r.size(); i++) {
     if (r[i] > max) {
