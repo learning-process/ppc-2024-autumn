@@ -4,6 +4,38 @@
 
 #include "seq/solovev_a_word_count/include/ops_seq.hpp"
 
+TEST(solovev_a_word_count_seq, test_0_word) {
+  std::vector<char> input = {};
+  std::vector<int> out(1, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskDataSeq->inputs_count.emplace_back(input.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
+
+  solovev_a_word_count_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_EQ(testTaskSequential.validation(), false);
+}
+
+TEST(solovev_a_word_count_seq, test_5_word) {
+  std::vector<char> input = solovev_a_word_count_seq::create_text(5);
+  std::vector<int> out(1, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskDataSeq->inputs_count.emplace_back(input.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
+
+  solovev_a_word_count_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_EQ(testTaskSequential.validation(), true);
+  testTaskSequential.pre_processing();
+  testTaskSequential.run();
+  testTaskSequential.post_processing();
+  ASSERT_EQ(out[0], 5);
+}
+
 TEST(solovev_a_word_count_seq, test_120_word) {
   std::vector<char> input = solovev_a_word_count_seq::create_text(120);
   std::vector<int> out(1, 0);
