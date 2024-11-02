@@ -15,7 +15,7 @@ std::vector<int> petrov_a_nearest_neighbor_elements_mpi::getRandomVector(int sz)
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
   for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 10000;
+    vec[i] = gen() % 100;
   }
   return vec;
 }
@@ -59,8 +59,10 @@ bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskSequential::post_process
 bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   unsigned int delta = 0;
+  unsigned int dop = 0;
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
+    dop = taskData->inputs_count[0] % world.size();
   }
   broadcast(world, delta, 0);
 
@@ -70,21 +72,25 @@ bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskParallel::pre_processing
     for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
       input_[i] = tmp_ptr[i];
     }
+
     for (int proc = 1; proc < world.size() - 1; proc++) {
-      world.send(proc, 0, input_.data() + proc * delta, delta + 1);
+      world.send(proc, 0, input_.data() + proc * delta + dop, delta + 1);
     }
     if (world.size() != 1) {
-      world.send(world.size() - 1, 0, input_.data() + (world.size() - 1) * delta, delta);
+      world.send(world.size() - 1, 0, input_.data() + dop + (world.size() - 1) * delta, delta);
     }
   }
-  local_input_ = std::vector<int>(delta);
   if (world.rank() == 0) {
-    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta + ((world.size() == 1) ? 0 : 1));
+    local_input_ = std::vector<int>(delta + dop + ((world.size() == 1) ? 0 : 1));
+    local_input_ = std::vector<int>(input_.begin(), input_.begin() + dop + delta + ((world.size() == 1) ? 0 : 1));
   } else if (world.rank() < world.size() - 1) {
+    local_input_ = std::vector<int>(delta + 1);
     world.recv(0, 0, local_input_.data(), delta + 1);
   } else {
+    local_input_ = std::vector<int>(delta);
     world.recv(0, 0, local_input_.data(), delta);
   }
+
   min_distance_ = std::numeric_limits<int>::max();
   return true;
 }
@@ -109,7 +115,12 @@ bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskParallel::run() {
       local_pair = {local_input_[i], local_input_[i + 1]};
     }
   }
-
+  // std::cout << "Proc: " << world.rank() << " ";
+  // for (int i = 0; i < local_input_.size();i++){
+  //   std::cout << local_input_[i] << " ";
+  // }
+  // std::cout << std::endl;
+  // std::cout << "proc: " << world.rank() << " " << "locla_min: " << local_min_distance  << std::endl;
   std::pair<int, int> global_pair;
   reduce(
       world, local_pair, global_pair,
