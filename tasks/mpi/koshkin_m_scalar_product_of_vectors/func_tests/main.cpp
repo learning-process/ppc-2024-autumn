@@ -9,7 +9,7 @@
 
 static int offset = 0;
 
-std::vector<int> createRandomVector(int v_size) {
+std::vector<int> generateRandomVector(int v_size) {
   std::vector<int> vec(v_size);
   std::mt19937 gen;
   gen.seed((unsigned)time(nullptr) + ++offset);
@@ -26,8 +26,8 @@ TEST(koshkin_m_scalar_product_of_vectors, check_vec_equal) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 100;
-    std::vector<int> vec_1 = createRandomVector(count_size_vector);
-    std::vector<int> vec_2 = createRandomVector(count_size_vector);
+    std::vector<int> vec_1 = generateRandomVector(count_size_vector);
+    std::vector<int> vec_2 = generateRandomVector(count_size_vector);
 
     global_vec = {vec_1, vec_2};
     for (size_t i = 0; i < global_vec.size(); i++) {
@@ -51,8 +51,8 @@ TEST(koshkin_m_scalar_product_of_vectors, check_vec_no_equal) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 100;
-    std::vector<int> vec_1 = createRandomVector(count_size_vector);
-    std::vector<int> vec_2 = createRandomVector(count_size_vector + 10);
+    std::vector<int> vec_1 = generateRandomVector(count_size_vector);
+    std::vector<int> vec_2 = generateRandomVector(count_size_vector + 10);
 
     global_vec = {vec_1, vec_2};
     for (size_t i = 0; i < global_vec.size(); i++) {
@@ -74,8 +74,8 @@ TEST(koshkin_m_scalar_product_of_vectors, multiply_vec_size_100) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     const int count_size_vector = 100;
-    std::vector<int> vec_1 = createRandomVector(count_size_vector);
-    std::vector<int> vec_2 = createRandomVector(count_size_vector);
+    std::vector<int> vec_1 = generateRandomVector(count_size_vector);
+    std::vector<int> vec_2 = generateRandomVector(count_size_vector);
 
     global_vec = {vec_1, vec_2};
     for (size_t i = 0; i < global_vec.size(); i++) {
@@ -122,8 +122,8 @@ TEST(koshkin_m_scalar_product_of_vectors, multiply_vec_size_300) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     const int count_size_vector = 300;
-    std::vector<int> vec_1 = createRandomVector(count_size_vector);
-    std::vector<int> vec_2 = createRandomVector(count_size_vector);
+    std::vector<int> vec_1 = generateRandomVector(count_size_vector);
+    std::vector<int> vec_2 = generateRandomVector(count_size_vector);
 
     global_vec = {vec_1, vec_2};
     for (size_t i = 0; i < global_vec.size(); i++) {
@@ -170,8 +170,8 @@ TEST(koshkin_m_scalar_product_of_vectors, multiply_vec_size_600) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     const int count_size_vector = 600;
-    std::vector<int> vec_1 = createRandomVector(count_size_vector);
-    std::vector<int> vec_2 = createRandomVector(count_size_vector);
+    std::vector<int> vec_1 = generateRandomVector(count_size_vector);
+    std::vector<int> vec_2 = generateRandomVector(count_size_vector);
 
     global_vec = {vec_1, vec_2};
     for (size_t i = 0; i < global_vec.size(); i++) {
@@ -289,8 +289,8 @@ TEST(koshkin_m_scalar_product_of_vectors, check_mpi_run_random_size) {
   int random_size = 1 + std::rand() % 100;
 
   if (world.rank() == 0) {
-    std::vector<int> vec_1 = createRandomVector(random_size);
-    std::vector<int> vec_2 = createRandomVector(random_size);
+    std::vector<int> vec_1 = generateRandomVector(random_size);
+    std::vector<int> vec_2 = generateRandomVector(random_size);
 
     global_vec = {vec_1, vec_2};
     for (size_t i = 0; i < global_vec.size(); i++) {

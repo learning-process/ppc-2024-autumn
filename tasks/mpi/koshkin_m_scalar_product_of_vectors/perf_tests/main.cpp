@@ -10,7 +10,7 @@
 
 static int offset = 0;
 
-std::vector<int> createRandomVector(int v_size) {
+std::vector<int> generateRandomVector(int v_size) {
   std::vector<int> vec(v_size);
   std::mt19937 gen;
   gen.seed((unsigned)time(nullptr) + ++offset);
@@ -23,8 +23,8 @@ TEST(koshkin_m_scalar_product_of_vectors, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vec;
 
-  std::vector<int> vec_1 = createRandomVector(count_size);
-  std::vector<int> vec_2 = createRandomVector(count_size);
+  std::vector<int> vec_1 = generateRandomVector(count_size);
+  std::vector<int> vec_2 = generateRandomVector(count_size);
 
   std::vector<int32_t> res(1, 0);
   global_vec = {vec_1, vec_2};
@@ -65,8 +65,8 @@ TEST(koshkin_m_scalar_product_of_vectors, test_task_run) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vec;
   std::vector<int32_t> res(1, 0);
-  std::vector<int> vec_1 = createRandomVector(count_size);
-  std::vector<int> vec_2 = createRandomVector(count_size);
+  std::vector<int> vec_1 = generateRandomVector(count_size);
+  std::vector<int> vec_2 = generateRandomVector(count_size);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   global_vec = {vec_1, vec_2};
 

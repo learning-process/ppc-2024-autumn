@@ -14,7 +14,7 @@ int generateRandomNumber(int min, int max) {
   return distrib(gen);
 }
 
-std::vector<int> createRandomVector(int v_size) {
+std::vector<int> generateRandomVector(int v_size) {
   std::vector<int> vec(v_size);
   std::mt19937 gen;
   gen.seed((unsigned)time(nullptr) + ++offset);
@@ -24,8 +24,8 @@ std::vector<int> createRandomVector(int v_size) {
 
 TEST(koshkin_m_scalar_product_of_vectors, check_empty_func_vector_product) {
   const int count = 0;
-  std::vector<int> vec_1 = createRandomVector(count);
-  std::vector<int> vec_2 = createRandomVector(count);
+  std::vector<int> vec_1 = generateRandomVector(count);
+  std::vector<int> vec_2 = generateRandomVector(count);
   int answer = koshkin_m_scalar_product_of_vectors::calculateDotProduct(vec_1, vec_2);
   ASSERT_EQ(0, answer);
 }
@@ -35,8 +35,8 @@ TEST(koshkin_m_scalar_product_of_vectors, check_scalary_product_of_vectors_size_
 
   // Create data
   std::vector<int> out(1, 0);
-  std::vector<int> vec_1 = createRandomVector(count);
-  std::vector<int> vec_2 = createRandomVector(count);
+  std::vector<int> vec_1 = generateRandomVector(count);
+  std::vector<int> vec_2 = generateRandomVector(count);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -65,8 +65,8 @@ TEST(koshkin_m_scalar_product_of_vectors, check_scalary_product_of_vectors_size_
 
   // Create data
   std::vector<int> out(1, 0);
-  std::vector<int> vec_1 = createRandomVector(count);
-  std::vector<int> vec_2 = createRandomVector(count);
+  std::vector<int> vec_1 = generateRandomVector(count);
+  std::vector<int> vec_2 = generateRandomVector(count);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
