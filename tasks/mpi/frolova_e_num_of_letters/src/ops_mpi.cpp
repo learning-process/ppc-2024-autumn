@@ -11,22 +11,22 @@
 using namespace std::chrono_literals;
 
 std::string frolova_e_num_of_letters_mpi::GenStr(int n) {
-    std::string str = "test";
-    std::string result;
-    result.resize(n);
+  std::string str = "test";
+  std::string result;
+  result.resize(n);
 
-    int i = 0;
-    size_t j = 0;
+  int i = 0;
+  size_t j = 0;
 
-    while (i < n) {
-        result[i] = str[j];
-        j++;
-        i++;
-        if (j >= str.size()) {
-            j = 0;
-        }
-    }
-    return result;
+  while (i < n) {
+      result[i] = str[j];
+      j++;
+      i++;
+      if (j >= str.size()) {
+          j = 0;
+      }
+  }
+  return result;
 }
 
 bool frolova_e_num_of_letters_mpi::TestMPITaskSequential::pre_processing() {
@@ -61,39 +61,6 @@ bool frolova_e_num_of_letters_mpi::TestMPITaskSequential::post_processing() {
   reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
   return true;
 }
-/*
-bool frolova_e_num_of_letters_mpi::TestMPITaskParallel::pre_processing() {
-  internal_order_test();
-  unsigned int delta = 0;
-  unsigned int remainder = 0;  
-  if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] / world.size();
-    remainder = taskData->inputs_count[0] % world.size();
-  }
-  broadcast(world, delta, 0);
-
-  if (world.rank() == 0) {
-    // Init vectors
-    input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]); 
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + remainder + proc * delta, delta);
-    }
-  }
-
-  if (world.rank() == 0) {
-    local_input_ = std::string(input_.begin(),input_.begin()+delta+remainder);
-  } 
-  else {
-    std::string time_variable;
-    time_variable.resize(delta);
-    world.recv(0, 0, time_variable.data(), delta);
-    local_input_ = time_variable;
-  }
-  // Init value for output
-  res = 0;
-  return true;
-}
-*/
 
 bool frolova_e_num_of_letters_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
