@@ -51,7 +51,7 @@ bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::post
   internal_order_test();
 
   if (rank == 0) {
-    reinterpret_cast<size_t*>(taskData->outputs[0])[0] = global_res;
+    reinterpret_cast<size_t*>(taskData->outputs[0])[0] = g_res;
   }
   return true;
 }
