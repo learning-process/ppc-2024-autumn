@@ -222,8 +222,6 @@ bool TestMPITaskParallel<TypeElem>::run() {
     sendbuf1[0] = local_result;
     MPI_Reduce(sendbuf1, &result, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
   }
-  int ProcRank = 0;
-  MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   if (ProcRank == 0) {
     double joint_result = IsJoints_max();
     if (joint_result > result) {
