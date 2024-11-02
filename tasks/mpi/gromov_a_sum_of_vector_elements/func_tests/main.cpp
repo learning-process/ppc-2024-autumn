@@ -6,10 +6,10 @@
 
 #include "mpi/gromov_a_sum_of_vector_elements/include/ops_mpi.hpp"
 
-TEST(gromov_a_sum_of_vector_elements_mpi, Test_Product) {
+TEST(gromov_a_sum_of_vector_elements_mpi, Test_Average) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
-  std::vector<int32_t> global_product(1, 1);
+  std::vector<int32_t> global_average(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -18,11 +18,11 @@ TEST(gromov_a_sum_of_vector_elements_mpi, Test_Product) {
     global_vec = gromov_a_sum_of_vector_elements_mpi::getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_product.data()));
-    taskDataPar->outputs_count.emplace_back(global_product.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_average.data()));
+    taskDataPar->outputs_count.emplace_back(global_average.size());
   }
 
-  gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel MPISumOfVectorParallel(taskDataPar, "*");
+  gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel MPISumOfVectorParallel(taskDataPar, "avg");
   ASSERT_EQ(MPISumOfVectorParallel.validation(), true);
   MPISumOfVectorParallel.pre_processing();
   MPISumOfVectorParallel.run();
@@ -30,30 +30,30 @@ TEST(gromov_a_sum_of_vector_elements_mpi, Test_Product) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int32_t> reference_product(1, 1);
+    std::vector<int32_t> reference_average(1, 1);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataSeq->inputs_count.emplace_back(global_vec.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_product.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_product.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_average.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_average.size());
 
     // Create Task
-    gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorSequential MPISumOfVectorSequential(taskDataSeq, "*");
+    gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorSequential MPISumOfVectorSequential(taskDataSeq, "avg");
     ASSERT_EQ(MPISumOfVectorSequential.validation(), true);
     MPISumOfVectorSequential.pre_processing();
     MPISumOfVectorSequential.run();
     MPISumOfVectorSequential.post_processing();
 
-    ASSERT_EQ(reference_product[0], global_product[0]);
+    ASSERT_EQ(reference_average[0], global_average[0]);
   }
 }
 
-TEST(gromov_a_sum_of_vector_elements_mpi, Test_Min) {
+TEST(gromov_a_sum_of_vector_elements_mpi, Test_Subtraction) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
-  std::vector<int32_t> global_min(1, std::numeric_limits<int32_t>::max());
+  std::vector<int32_t> global_sub(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -62,11 +62,11 @@ TEST(gromov_a_sum_of_vector_elements_mpi, Test_Min) {
     global_vec = gromov_a_sum_of_vector_elements_mpi::getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_min.data()));
-    taskDataPar->outputs_count.emplace_back(global_min.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sub.data()));
+    taskDataPar->outputs_count.emplace_back(global_sub.size());
   }
 
-  gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel MPISumOfVectorParallel(taskDataPar, "min");
+  gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel MPISumOfVectorParallel(taskDataPar, "sub");
   ASSERT_EQ(MPISumOfVectorParallel.validation(), true);
   MPISumOfVectorParallel.pre_processing();
   MPISumOfVectorParallel.run();
@@ -74,23 +74,23 @@ TEST(gromov_a_sum_of_vector_elements_mpi, Test_Min) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int32_t> reference_min(1, std::numeric_limits<int32_t>::max());
+    std::vector<int32_t> reference_sub(1, 0);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataSeq->inputs_count.emplace_back(global_vec.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_min.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_sub.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_sub.size());
 
     // Create Task
-    gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorSequential MPISumOfVectorSequential(taskDataSeq, "min");
+    gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorSequential MPISumOfVectorSequential(taskDataSeq, "sub");
     ASSERT_EQ(MPISumOfVectorSequential.validation(), true);
     MPISumOfVectorSequential.pre_processing();
     MPISumOfVectorSequential.run();
     MPISumOfVectorSequential.post_processing();
 
-    ASSERT_EQ(reference_min[0], global_min[0]);
+    ASSERT_EQ(reference_sub[0], global_sub[0]);
   }
 }
 
@@ -138,10 +138,10 @@ TEST(gromov_a_sum_of_vector_elements_mpi, Test_Max) {
   }
 }
 
-TEST(gromov_a_sum_of_vector_elements_mpi, Test_Min2) {
+TEST(gromov_a_sum_of_vector_elements_mpi, Test_Addition) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
-  std::vector<int32_t> global_min(1, std::numeric_limits<int32_t>::max());
+  std::vector<int32_t> global_add(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -150,11 +150,11 @@ TEST(gromov_a_sum_of_vector_elements_mpi, Test_Min2) {
     global_vec = gromov_a_sum_of_vector_elements_mpi::getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_min.data()));
-    taskDataPar->outputs_count.emplace_back(global_min.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_add.data()));
+    taskDataPar->outputs_count.emplace_back(global_add.size());
   }
 
-  gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel MPISumOfVectorParallel(taskDataPar, "min");
+  gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel MPISumOfVectorParallel(taskDataPar, "add");
   ASSERT_EQ(MPISumOfVectorParallel.validation(), true);
   MPISumOfVectorParallel.pre_processing();
   MPISumOfVectorParallel.run();
@@ -162,22 +162,22 @@ TEST(gromov_a_sum_of_vector_elements_mpi, Test_Min2) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int32_t> reference_min(1, std::numeric_limits<int32_t>::max());
+    std::vector<int32_t> reference_add(1, 0);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataSeq->inputs_count.emplace_back(global_vec.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_min.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_add.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_add.size());
 
     // Create Task
-    gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorSequential MPISumOfVectorSequential(taskDataSeq, "min");
+    gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorSequential MPISumOfVectorSequential(taskDataSeq, "add");
     ASSERT_EQ(MPISumOfVectorSequential.validation(), true);
     MPISumOfVectorSequential.pre_processing();
     MPISumOfVectorSequential.run();
     MPISumOfVectorSequential.post_processing();
 
-    ASSERT_EQ(reference_min[0], global_min[0]);
+    ASSERT_EQ(reference_add[0], global_add[0]);
   }
 }

@@ -40,17 +40,15 @@ bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorSequential::validation()
 
 bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorSequential::run() {
   internal_order_test();
-  if (ops == "+") {
+  if (ops == "add") {
     res = std::accumulate(input_.begin(), input_.end(), 0);
-  } else if (ops == "-") {
-    res = -std::accumulate(input_.begin(), input_.end(), 0);
+  } else if (ops == "sub") {
+    res = std::accumulate(input_.begin(), input_.end(), 0);
   } else if (ops == "max") {
-    res = *std::max_element(input_.begin(), input_.end());
+    res = std::accumulate(input_.begin(), input_.end());
   } else if (ops == "avg") {
     res = std::accumulate(input_.begin(), input_.end(), 0) / input_.size();
-  } else if (ops == "sum") {
-    res = std::accumulate(input_.begin(), input_.end(), 0);
-  }
+  } 
   return true;
 }
 
@@ -102,19 +100,17 @@ bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel::validation() {
 bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel::run() {
   internal_order_test();
   int local_res;
-  if (ops == "+") {
+  if (ops == "add") {
     local_res = std::accumulate(local_input_.begin(), local_input_.end(), 0);
-  } else if (ops == "-") {
-    local_res = -std::accumulate(local_input_.begin(), local_input_.end(), 0);
+  } else if (ops == "sub") {
+    local_res = std::accumulate(local_input_.begin(), local_input_.end(), 0);
   } else if (ops == "max") {
-    local_res = *std::max_element(local_input_.begin(), local_input_.end());
+    local_res = std::accumulate(local_input_.begin(), local_input_.end());
   } else if (ops == "avg") {
     local_res = std::accumulate(local_input_.begin(), local_input_.end(), 0) / local_input_.size();
-  } else if (ops == "sum") {
-    local_res = std::accumulate(local_input_.begin(), local_input_.end(), 0);
   }
 
-  if (ops == "+" || ops == "-") {
+  if (ops == "add" || ops == "sub") {
     reduce(world, local_res, res, std::plus(), 0);
   } else if (ops == "max") {
     reduce(world, local_res, res, boost::mpi::maximum<int>(), 0);
