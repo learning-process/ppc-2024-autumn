@@ -39,7 +39,7 @@ TEST(anufriev_d_max_of_vector_elements_seq, test_pipeline_run) {
 }
 
 TEST(anufriev_d_max_of_vector_elements_seq, first_negative) {
-  const int32_t count = DATA_SIZE;
+  const int32_t count = 50000000;
   std::vector<int32_t> input_data(count, 1);
   input_data[0] = -5;
   int32_t expected_max = 1;
