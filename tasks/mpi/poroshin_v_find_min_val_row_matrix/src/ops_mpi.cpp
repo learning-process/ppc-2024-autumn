@@ -105,7 +105,6 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::pre_processing
 
   if (world.rank() == 0) {
     input_ = std::vector<int>(delta * world.size(), INT_MAX);
-    // auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     for (int i = 0; i < size; i++) {
       input_[i] = reinterpret_cast<int*>(taskData->inputs[0])[i];
     }
@@ -138,15 +137,15 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::run() {
   int count_rows = 0;
   int size = 0;
 
-  if (world.rank() == 0) {
-    size_rows = taskData->inputs_count[1];
-    count_rows = taskData->inputs_count[0];
-    size = size_rows * count_rows;
-  }
+  // if (world.rank() == 0) {
+  size_rows = taskData->inputs_count[1];
+  count_rows = taskData->inputs_count[0];
+  size = size_rows * count_rows;
+  // }
 
-  broadcast(world, count_rows, 0);
-  broadcast(world, size_rows, 0);
-  broadcast(world, size, 0);
+  // broadcast(world, count_rows, 0);
+  // broadcast(world, size_rows, 0);
+  // broadcast(world, size, 0);
 
   unsigned int last_delta = 0;
   if (world.rank() == world.size() - 1) {
