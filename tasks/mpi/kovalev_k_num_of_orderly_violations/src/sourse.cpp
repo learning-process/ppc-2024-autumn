@@ -22,9 +22,10 @@ bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::pre_
   // Инициализация вектора<T> размером n
   v.resize(n);
   void* ptr_input = taskData->inputs[0];
+  std::cout << rank << " ptr_input sucs"
   void* ptr_vec = v.data();
-  MPI_Bcast(ptr_input, n * sizeof(T), MPI_BYTE, 0, MPI_COMM_WORLD);
   memcpy(ptr_vec, ptr_input, sizeof(T) * n);
+  MPI_Bcast(ptr_input, n * sizeof(T), MPI_BYTE, 0, MPI_COMM_WORLD);
   // Инициализация счетчика
   l_res = 0;
   return true;
