@@ -79,6 +79,9 @@ bool sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel::pre_processing
       }
     }
   }
+  else {
+      matrix = std::vector<int>(rows_count * columns_count, 0);
+  }
   return true;
 }
 
@@ -97,12 +100,12 @@ bool sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel::run() {
       }
     }
   }
+  local_input = (world.rank() != world.size() - 1) ? std::vector<int>(rows_count * delta)
+                                                   : std::vector<int>(rows_count * (delta + last_column));
   if (world.rank() == 0) {
     local_input = std::vector<int>(matrix.begin(), matrix.begin() + rows_count * delta);
 
   } else {
-    local_input = (world.rank() != world.size() - 1) ? std::vector<int>(rows_count * delta)
-                                                     : std::vector<int>(rows_count * (delta + last_column));
     world.recv(0, 0, local_input.data(),
                (world.rank() != world.size() - 1) ? rows_count * delta : rows_count * (delta + last_column));
   }

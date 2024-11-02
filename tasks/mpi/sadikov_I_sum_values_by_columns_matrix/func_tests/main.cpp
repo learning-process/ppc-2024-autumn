@@ -59,6 +59,12 @@ TEST(ParallelOperations, check_square_matrix) {
   auto taskData_seq = std::make_shared<ppc::core::TaskData>();
   auto taskData_par = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
+    taskData_seq = sadikov_I_Sum_values_by_columns_matrix_mpi::CreateTaskData(in, in_index, out_seq);
+    sadikov_I_Sum_values_by_columns_matrix_mpi::MPITask sv_seq(taskData_seq);
+    ASSERT_EQ(sv_seq.validation(), true);
+    sv_seq.pre_processing();
+    sv_seq.run();
+    sv_seq.post_processing();
     taskData_par = sadikov_I_Sum_values_by_columns_matrix_mpi::CreateTaskData(in, in_index, out_par);
   }
   sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel sv_par(taskData_par);
@@ -66,14 +72,7 @@ TEST(ParallelOperations, check_square_matrix) {
   sv_par.pre_processing();
   sv_par.run();
   sv_par.post_processing();
-  ASSERT_EQ(out_par[0], in_index[0]);
   if (world.rank() == 0) {
-    taskData_seq = sadikov_I_Sum_values_by_columns_matrix_mpi::CreateTaskData(in, in_index, out_seq);
-    sadikov_I_Sum_values_by_columns_matrix_mpi::MPITask sv_seq(taskData_seq);
-    ASSERT_EQ(sv_seq.validation(), true);
-    sv_seq.pre_processing();
-    sv_seq.run();
-    sv_seq.post_processing();
     ASSERT_EQ(out_seq, out_par);
   }
 }
