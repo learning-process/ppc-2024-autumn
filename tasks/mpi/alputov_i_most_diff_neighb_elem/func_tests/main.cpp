@@ -92,6 +92,43 @@ TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_RandomLargeVector_MPI) {
     ASSERT_EQ(inputVector[index + 1], outputPair[1]);
   }
 }
+TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_SingleElement_MPI) {
+  boost::mpi::communicator world;
+  std::vector<int> inputVector;
+  int outputPair[3] = {0, 0, -1};
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    inputVector = {100};
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(inputVector.data()));
+    taskDataPar->inputs_count.emplace_back(inputVector.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(outputPair));
+    taskDataPar->outputs_count.emplace_back(2);
+  }
+
+  alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask testMpiTaskParallel(taskDataPar);
+  ASSERT_FALSE(testMpiTaskParallel.validation());
+}
+
+TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_EmptyVector_MPI) {
+  boost::mpi::communicator world;
+  std::vector<int> inputVector;
+  int outputPair[3] = {0, 0, -1};
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    inputVector = {};
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(inputVector.data()));
+    taskDataPar->inputs_count.emplace_back(inputVector.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(outputPair));
+    taskDataPar->outputs_count.emplace_back(2);
+  }
+
+  alputov_i_most_diff_neighb_elem_mpi::MPIParallelTask testMpiTaskParallel(taskDataPar);
+  ASSERT_FALSE(testMpiTaskParallel.validation());
+}
 
 /* TEST(alputov_i_most_diff_neighb_elem_mpi, Test_MaxDiff_EqualElements_MPI) {
   boost::mpi::communicator world;
