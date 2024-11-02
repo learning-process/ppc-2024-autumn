@@ -1,9 +1,5 @@
 #include "seq/guseynov_e_check_lex_order_of_two_string/include/ops_seq.hpp"
 
-#include <thread>
-
-using namespace std::chrono_literals;
-
 bool guseynov_e_check_lex_order_of_two_string_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   input_ = std::vector<std::vector<char>>(taskData->inputs_count[0]);
@@ -26,7 +22,8 @@ bool guseynov_e_check_lex_order_of_two_string_seq::TestTaskSequential::validatio
 
 bool guseynov_e_check_lex_order_of_two_string_seq::TestTaskSequential::run() {
   internal_order_test();
-  for (size_t i = 0; i < std::min(input_[0].size(), input_[1].size()); i++) {
+  size_t min_string_len = std::min(input_[0].size(), input_[1].size());
+  for (size_t i = 0; i < min_string_len; i++) {
     if (input_[0][i] < input_[1][i]) {
       res_ = 1;
       break;
