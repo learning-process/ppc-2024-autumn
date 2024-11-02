@@ -14,9 +14,7 @@ bool matyunina_a_average_of_vector_elements_mpi::TestMPITaskSequential::pre_proc
   internal_order_test();
   input_ = std::vector<int>(taskData->inputs_count[0]);
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    input_[i] = tmp_ptr[i];
-  }
+  std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
   res_ = 0;
   return true;
 }
@@ -41,31 +39,6 @@ bool matyunina_a_average_of_vector_elements_mpi::TestMPITaskSequential::post_pro
 
 bool matyunina_a_average_of_vector_elements_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  unsigned int delta = 0;
-  unsigned int remainder = 0;
-  if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] / world.size();
-    remainder = taskData->inputs_count[0] % world.size();
-  }
-  broadcast(world, delta, 0);
-
-  if (world.rank() == 0) {
-    input_ = std::vector<int>(taskData->inputs_count[0]);
-
-    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-      input_[i] = tmp_ptr[i];
-    }
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + delta * proc + remainder, delta);
-    }
-  }
-  local_input_ = std::vector<int>(delta);
-  if (world.rank() == 0) {
-    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta + remainder);
-  } else {
-    world.recv(0, 0, local_input_.data(), delta);
-  }
   res_ = 0;
   return true;
 }
@@ -80,6 +53,30 @@ bool matyunina_a_average_of_vector_elements_mpi::TestMPITaskParallel::validation
 
 bool matyunina_a_average_of_vector_elements_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+  unsigned int delta = 0;
+  unsigned int remainder = 0;
+  if (world.rank() == 0) {
+    delta = taskData->inputs_count[0] / world.size();
+    remainder = taskData->inputs_count[0] % world.size();
+  }
+  broadcast(world, delta, 0);
+
+  if (world.rank() == 0) {
+    input_ = std::vector<int>(taskData->inputs_count[0]);
+
+    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+    std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
+    for (int proc = 1; proc < world.size(); proc++) {
+      world.send(proc, 0, input_.data() + delta * proc + remainder, delta);
+    }
+  }
+  local_input_ = std::vector<int>(delta);
+  if (world.rank() == 0) {
+    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta + remainder);
+  } else {
+    world.recv(0, 0, local_input_.data(), delta);
+  }
+
   int local_res = 0;
   for (size_t i = 0; i < local_input_.size(); i++) {
     local_res += local_input_[i];
