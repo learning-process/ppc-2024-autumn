@@ -40,6 +40,32 @@ TEST(smirnov_i_integration_by_rectangles_mpi, Test_invalid_fun_mpi) {
   testMpiTaskParallel.pre_processing();
   ASSERT_ANY_THROW(testMpiTaskParallel.run());
 }
+TEST(smirnov_i_integration_by_rectangles_seq, Test_prime_n) {
+  double left = 0;
+  double right = 1;
+  int n = 997;
+  double expected_result = 5;
+  std::vector<double> res(1, 0.0);
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&left));
+  taskDataSeq->inputs_count.emplace_back(1);
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&right));
+  taskDataSeq->inputs_count.emplace_back(1);
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
+  taskDataSeq->inputs_count.emplace_back(1);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res.data()));
+  taskDataSeq->outputs_count.emplace_back(1);
+
+  smirnov_i_integration_by_rectangles::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+
+  testMpiTaskSequential.set_function(f_const);
+
+  ASSERT_EQ(testMpiTaskSequential.validation(), true);
+  testMpiTaskSequential.pre_processing();
+  testMpiTaskSequential.run();
+  testMpiTaskSequential.post_processing();
+  ASSERT_NEAR(res[0], expected_result, 1e-6);
+}
 TEST(smirnov_i_integration_by_rectangles_mpi, Test_const) {
   boost::mpi::communicator world;
   double left = 0.0;
