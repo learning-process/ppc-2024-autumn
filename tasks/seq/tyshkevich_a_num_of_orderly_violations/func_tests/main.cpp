@@ -9,7 +9,7 @@ TEST(tyshkevich_a_num_of_orderly_violations_seq_ftest, Test_10) {
   int size = 10;
 
   // Create data
-  std::vector<int> in{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};//test commit cline
+  std::vector<int> in{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
   std::vector<int> out(1, 0);
   int solution = 0;
 

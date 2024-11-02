@@ -103,9 +103,6 @@ bool tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskParallel::run() {
   int chunkSize = size / (world_size - 1);
   int lastChunkSize = size - chunkSize * (world_size - 2);
 
-  EXPECT_NE(1, 1) << size << ' ' << chunkSize << ' ' << lastChunkSize << ' ' << world.size() << ' ' << world.rank()
-                  << std::endl;
-
   if (world.rank() == 0) {
     for (int i = 0; i < world_size - 2; i++) {
       world.send(i + 1, 0, &input_.data()[i * chunkSize], chunkSize + 1);

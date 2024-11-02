@@ -2,9 +2,20 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <string>
 #include <vector>
 
 #include "mpi/tyshkevich_a_num_of_orderly_violations/include/ops_mpi.hpp"
+
+std::string VecToStrTY(std::vector<int> v) {
+  std::ostringstream oss;
+
+  if (!v.empty()) {
+    std::copy(v.begin(), v.end() - 1, std::ostream_iterator<int>(oss, ","));
+    oss << v.back();
+  }
+  return oss.str();
+}
 
 TEST(tyshkevich_a_num_of_orderly_violations_mpi_ftest, Test_Max_10) {
   int size = 10;
@@ -18,10 +29,10 @@ TEST(tyshkevich_a_num_of_orderly_violations_mpi_ftest, Test_Max_10) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
+  taskDataPar->inputs_count.emplace_back(size);
   if (world.rank() == 0) {
     global_vec = tyshkevich_a_num_of_orderly_violations_mpi::getRandomVector(size);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(size);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
     taskDataPar->outputs_count.emplace_back(result.size());
   }
@@ -50,7 +61,7 @@ TEST(tyshkevich_a_num_of_orderly_violations_mpi_ftest, Test_Max_10) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    ASSERT_EQ(result, local_count);
+    ASSERT_EQ(result, local_count) << VecToStrTY(global_vec) << ' ' << size << ' ' << world.size() << std::endl;
   }
 }
 
@@ -66,10 +77,10 @@ TEST(tyshkevich_a_num_of_orderly_violations_mpi_ftest, Test_Max_20) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
+  taskDataPar->inputs_count.emplace_back(size);
   if (world.rank() == 0) {
     global_vec = tyshkevich_a_num_of_orderly_violations_mpi::getRandomVector(size);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(size);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
     taskDataPar->outputs_count.emplace_back(result.size());
   }
@@ -98,7 +109,7 @@ TEST(tyshkevich_a_num_of_orderly_violations_mpi_ftest, Test_Max_20) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    ASSERT_EQ(result, local_count);
+    ASSERT_EQ(result, local_count) << VecToStrTY(global_vec) << ' ' << size << ' ' << world.size() << std::endl;
   }
 }
 
@@ -114,10 +125,10 @@ TEST(tyshkevich_a_num_of_orderly_violations_mpi_ftest, Test_Max_50) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
+  taskDataPar->inputs_count.emplace_back(size);
   if (world.rank() == 0) {
     global_vec = tyshkevich_a_num_of_orderly_violations_mpi::getRandomVector(size);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(size);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
     taskDataPar->outputs_count.emplace_back(result.size());
   }
@@ -146,6 +157,6 @@ TEST(tyshkevich_a_num_of_orderly_violations_mpi_ftest, Test_Max_50) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    ASSERT_EQ(result, local_count);
+    ASSERT_EQ(result, local_count) << VecToStrTY(global_vec) << ' ' << size << ' ' << world.size() << std::endl;
   }
 }

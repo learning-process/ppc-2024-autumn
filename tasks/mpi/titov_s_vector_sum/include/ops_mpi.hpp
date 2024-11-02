@@ -1,3 +1,4 @@
+// Copyright 2023 Nesterov Alexander
 #pragma once
 
 #include <gtest/gtest.h>
@@ -12,37 +13,37 @@
 
 #include "core/task/include/task.hpp"
 
-namespace tyshkevich_a_num_of_orderly_violations_mpi {
+namespace titov_s_vector_sum_mpi {
 
 std::vector<int> getRandomVector(int sz);
 
-class TestMPITaskSequential : public ppc::core::Task {
-public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+class MPIVectorSumSequential : public ppc::core::Task {
+ public:
+  explicit MPIVectorSumSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
-private:
-  int size = 0;
+ private:
   std::vector<int> input_;
-  std::vector<int> res;
+  int res{};
+  std::string ops;
 };
 
-class TestMPITaskParallel : public ppc::core::Task {
-public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+class MPIVectorSumParallel : public ppc::core::Task {
+ public:
+  explicit MPIVectorSumParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
-private:
-  int size = 0;
+ private:
   std::vector<int> input_, local_input_;
-  std::vector<int> res;
+  int res{};
+  std::string ops;
   boost::mpi::communicator world;
 };
 
-}  // namespace tyshkevich_a_num_of_orderly_violations_mpi
+}  // namespace titov_s_vector_sum_mpi
