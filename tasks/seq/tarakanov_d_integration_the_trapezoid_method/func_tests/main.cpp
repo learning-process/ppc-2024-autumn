@@ -2,18 +2,13 @@
 #include <memory>
 #include "seq/tarakanov_d_integration_the_trapezoid_method/include/ops_seq.hpp"
 
-#include <iostream>
-
-// Используем пространство имен для удобства
 using namespace tarakanov_d_integration_the_trapezoid_method_seq;
-using namespace ppc::core;
 
 // Вспомогательная функция для создания TaskData с заданными входными и выходными значениями
 auto createTaskData(double* a, double* b, double* h) {
-    auto data = std::make_shared<TaskData>();
+    auto data = std::make_shared<ppc::core::TaskData>();
 
     // Входные данные: массив с элементами a, b и h
-    //double inputs[] = {a, b, h};
     data->inputs.push_back(reinterpret_cast<uint8_t*>(a));
     data->inputs.push_back(reinterpret_cast<uint8_t*>(b));
     data->inputs.push_back(reinterpret_cast<uint8_t*>(h));
@@ -58,7 +53,7 @@ TEST(tarakanov_d_integration_the_trapezoid_method_func_test, RunCalculatesCorrec
     task.run(); 
     task.post_processing();
 
-    double expected_result = 0.5 * (0.0 + 1.0) * 0.1 + 0.1 * (0.1 * 0.1 + 0.2 * 0.2 + 0.3 * 0.3 + 0.4 * 0.4 + 0.5 * 0.5 + 0.6 * 0.6 + 0.7 * 0.7 + 0.8 * 0.8 + 0.9 * 0.9);
+    double expected_result = 0.335;
     EXPECT_DOUBLE_EQ(*reinterpret_cast<double*>(data->outputs[0]), expected_result);
 }
 

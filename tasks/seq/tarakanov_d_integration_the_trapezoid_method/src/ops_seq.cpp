@@ -2,7 +2,6 @@
 #include "seq/tarakanov_d_integration_the_trapezoid_method/include/ops_seq.hpp"
 
 #include <thread>
-#include <iostream>
 
 using namespace std::chrono_literals;
 
@@ -41,23 +40,13 @@ bool tarakanov_d_integration_the_trapezoid_method_seq::integration_the_trapezoid
     }
 
     res = integral;
-    std::cout << "RES = " << res << "\n\n\n\n";
 
     return true;
-  // internal_order_test();
-  // double integral = 0.5 * (f(a) + f(b));
-  // for (double x = a + h; x < b; x += h) 
-  // {
-  //   integral += f(x);
-  // }
-  // res = integral * h;
-  // return true;
 }
 
 bool tarakanov_d_integration_the_trapezoid_method_seq::integration_the_trapezoid_method::post_processing() 
 {
   internal_order_test();
-  taskData->outputs[0] = reinterpret_cast<uint8_t*>(&res);
-  std::cout << "outputs[0] = " << *reinterpret_cast<double*>(taskData->outputs[0]) << "\n\n\n\n";
+  *reinterpret_cast<double*>(taskData->outputs[0]) = res;
   return true;
 }
