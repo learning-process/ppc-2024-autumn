@@ -17,7 +17,7 @@ class MonteCarloIntegration : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  static double function_to_integrate(double x);  
+  double function_to_integrate(double x);  
 
  private:
   double a, b;

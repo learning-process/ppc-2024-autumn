@@ -30,7 +30,7 @@ class TestMPITaskSequential : public ppc::core::Task {
   int n_samples = 0;
   double res = 0.0;
 
-  static double function_square(double x) { return x * x; }
+  double function_square(double x) { return x * x; }
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
