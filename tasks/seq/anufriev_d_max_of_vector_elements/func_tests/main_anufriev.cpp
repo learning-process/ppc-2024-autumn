@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
 #include <limits>
-#include <vector>
 #include <random>
+#include <vector>
 
 #include "seq/anufriev_d_max_of_vector_elements/include/ops_seq_anufriev.hpp"
 
@@ -88,8 +88,7 @@ TEST(anufriev_d_max_of_vector_elements, randomVector) {
   std::uniform_int_distribution<> distrib(-1000, 1000);
 
   std::vector<int32_t> input_vector(50000);
-  std::generate(input_vector.begin(), input_vector.end(),
-                [&]() { return distrib(gen); });
+  std::generate(input_vector.begin(), input_vector.end(), [&]() { return distrib(gen); });
 
   int32_t expected_max = *std::max_element(input_vector.begin(), input_vector.end());
 
