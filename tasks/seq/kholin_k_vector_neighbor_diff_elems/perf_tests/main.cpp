@@ -24,7 +24,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, test_pipeline_run) {
   taskData->outputs_count.emplace_back(out_index.size());
 
   auto testTaskSequential =
-      std::make_shared<kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int32_t, uint64_t>>(taskData);
+      std::make_shared<kholin_k_vector_neighbor_diff_elems_seq::TestTaskSequential<int32_t, uint64_t>>(taskData);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -61,7 +61,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, test_task_run) {
   taskData->outputs_count.emplace_back(out_index.size());
 
   auto testTaskSequential =
-      std::make_shared<kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int32_t, uint64_t>>(taskData);
+      std::make_shared<kholin_k_vector_neighbor_diff_elems_seq::TestTaskSequential<int32_t, uint64_t>>(taskData);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;

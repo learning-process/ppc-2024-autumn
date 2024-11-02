@@ -17,7 +17,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_pre_processing) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_index.data()));
   taskData->outputs_count.emplace_back(out_index.size());
 
-  kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int32_t, uint64_t> testTaskSequential(taskData);
+  kholin_k_vector_neighbor_diff_elems_seq::TestTaskSequential<int32_t, uint64_t> testTaskSequential(taskData);
   testTaskSequential.validation();
 
   EXPECT_EQ(testTaskSequential.pre_processing(), true);
@@ -36,7 +36,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_validation) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_index.data()));
   taskData->outputs_count.emplace_back(out_index.size());
 
-  kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int32_t, uint64_t> testTaskSequential(taskData);
+  kholin_k_vector_neighbor_diff_elems_seq::TestTaskSequential<int32_t, uint64_t> testTaskSequential(taskData);
   EXPECT_EQ(testTaskSequential.validation(), true);
 }
 
@@ -53,7 +53,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_run) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_index.data()));
   taskData->outputs_count.emplace_back(out_index.size());
 
-  kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int32_t, uint64_t> testTaskSequential(taskData);
+  kholin_k_vector_neighbor_diff_elems_seq::TestTaskSequential<int32_t, uint64_t> testTaskSequential(taskData);
   testTaskSequential.validation();
   testTaskSequential.pre_processing();
   EXPECT_EQ(testTaskSequential.run(), true);
@@ -72,7 +72,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_post_processing) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_index.data()));
   taskData->outputs_count.emplace_back(out_index.size());
 
-  kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int32_t, uint64_t> testTaskSequential(taskData);
+  kholin_k_vector_neighbor_diff_elems_seq::TestTaskSequential<int32_t, uint64_t> testTaskSequential(taskData);
   testTaskSequential.validation();
   testTaskSequential.pre_processing();
   testTaskSequential.run();
@@ -97,7 +97,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_int32_t) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_index.data()));
   taskData->outputs_count.emplace_back(out_index.size());
 
-  kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int32_t, uint64_t> testTaskSequential(taskData);
+  kholin_k_vector_neighbor_diff_elems_seq::TestTaskSequential<int32_t, uint64_t> testTaskSequential(taskData);
   testTaskSequential.validation();
   testTaskSequential.pre_processing();
   testTaskSequential.run();
@@ -124,7 +124,7 @@ TEST(kholin_k_vector_neighbor_diff_elems_seq, check_int_with_random) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_index.data()));
   taskData->outputs_count.emplace_back(out_index.size());
 
-  kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int, uint64_t> testTaskSequential(taskData);
+  kholin_k_vector_neighbor_diff_elems_seq::TestTaskSequential<int, uint64_t> testTaskSequential(taskData);
   testTaskSequential.validation();
   testTaskSequential.pre_processing();
   testTaskSequential.run();
@@ -153,7 +153,7 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_double) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_index.data()));
   taskData->outputs_count.emplace_back(out_index.size());
 
-  kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<double, uint64_t> testTaskSequential(taskData);
+  kholin_k_vector_neighbor_diff_elems_seq::TestTaskSequential<double, uint64_t> testTaskSequential(taskData);
   testTaskSequential.validation();
   testTaskSequential.pre_processing();
   testTaskSequential.run();
@@ -186,7 +186,7 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_int8_t) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_index.data()));
   taskData->outputs_count.emplace_back(out_index.size());
 
-  kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int8_t, uint64_t> testTaskSequential(taskData);
+  kholin_k_vector_neighbor_diff_elems_seq::TestTaskSequential<int8_t, uint64_t> testTaskSequential(taskData);
   testTaskSequential.validation();
   testTaskSequential.pre_processing();
   testTaskSequential.run();
@@ -223,7 +223,7 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_int64_t) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_index.data()));
   taskData->outputs_count.emplace_back(out_index.size());
 
-  kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<int64_t, uint64_t> testTaskSequential(taskData);
+  kholin_k_vector_neighbor_diff_elems_seq::TestTaskSequential<int64_t, uint64_t> testTaskSequential(taskData);
   testTaskSequential.validation();
   testTaskSequential.pre_processing();
   testTaskSequential.run();
@@ -252,7 +252,7 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_float) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_index.data()));
   taskData->outputs_count.emplace_back(out_index.size());
 
-  kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<float, uint64_t> testTaskSequential(taskData);
+  kholin_k_vector_neighbor_diff_elems_seq::TestTaskSequential<float, uint64_t> testTaskSequential(taskData);
   testTaskSequential.validation();
   testTaskSequential.pre_processing();
   testTaskSequential.run();
@@ -279,7 +279,7 @@ TEST(kholin_k_vector_neighbour_diff_elems_seq, check_float_with_random) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_index.data()));
   taskData->outputs_count.emplace_back(out_index.size());
 
-  kholin_k_vector_neighbor_diff_elems_seq::MostDiffNeighborElements<float, uint64_t> testTaskSequential(taskData);
+  kholin_k_vector_neighbor_diff_elems_seq::TestTaskSequential<float, uint64_t> testTaskSequential(taskData);
   testTaskSequential.validation();
   testTaskSequential.pre_processing();
   testTaskSequential.run();

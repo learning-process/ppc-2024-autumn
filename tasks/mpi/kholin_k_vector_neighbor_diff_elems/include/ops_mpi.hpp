@@ -223,14 +223,9 @@ bool TestMPITaskParallel<TypeElem>::run() {
     sendbuf1[0] = local_result;
     MPI_Reduce(sendbuf1, &result, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
   }
-  // finalisation
   int ProcRank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   if (ProcRank == 0) {
-    // std::cout << "global vec is ";
-    // for (size_t i = 0; i < input_.size(); i++) {
-    //   std::cout << input_[i] << " ";
-    // }
     double joint_result = IsJoints_max();
     if (joint_result > result) {
       result = joint_result;

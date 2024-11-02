@@ -39,9 +39,9 @@ std::vector<TypeElem> get_random_vector(int sz) {
 }
 
 template <class TypeElem, class TypeIndex>
-class MostDiffNeighborElements : public ppc::core::Task {
+class TestTaskSequential : public ppc::core::Task {
  public:
-  explicit MostDiffNeighborElements(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -57,7 +57,7 @@ class MostDiffNeighborElements : public ppc::core::Task {
 };
 
 template <class TypeElem, class TypeIndex>
-bool MostDiffNeighborElements<TypeElem, TypeIndex>::pre_processing() {
+bool TestTaskSequential<TypeElem, TypeIndex>::pre_processing() {
   internal_order_test();
   input_ = std::vector<TypeElem>(taskData->inputs_count[0]);
   auto ptr = reinterpret_cast<TypeElem*>(taskData->inputs[0]);
@@ -71,13 +71,13 @@ bool MostDiffNeighborElements<TypeElem, TypeIndex>::pre_processing() {
 }
 
 template <class TypeElem, class TypeIndex>
-bool MostDiffNeighborElements<TypeElem, TypeIndex>::validation() {
+bool TestTaskSequential<TypeElem, TypeIndex>::validation() {
   internal_order_test();
   return taskData->outputs_count[0] == 2 && taskData->outputs_count[1] == 2;
 }
 
 template <class TypeElem, class TypeIndex>
-bool MostDiffNeighborElements<TypeElem, TypeIndex>::run() {
+bool TestTaskSequential<TypeElem, TypeIndex>::run() {
   internal_order_test();
   double max_delta = 0;
   double delta = 0;
@@ -110,7 +110,7 @@ bool MostDiffNeighborElements<TypeElem, TypeIndex>::run() {
 }
 
 template <class TypeElem, class TypeIndex>
-bool MostDiffNeighborElements<TypeElem, TypeIndex>::post_processing() {
+bool TestTaskSequential<TypeElem, TypeIndex>::post_processing() {
   internal_order_test();
   reinterpret_cast<TypeElem*>(taskData->outputs[0])[0] = left_elem;
   reinterpret_cast<TypeElem*>(taskData->outputs[0])[1] = right_elem;
