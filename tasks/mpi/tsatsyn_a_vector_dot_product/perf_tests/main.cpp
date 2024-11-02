@@ -9,9 +9,8 @@
 std::vector<int> GetRandomVector(int size) {
   std::vector<int> vector(size);
   std::srand((time(NULL)));
-  for (int i = 0; i < size; ++i) 
-    vector[i] = std::rand() % 100 + 1;
-  
+  for (int i = 0; i < size; ++i) vector[i] = std::rand() % 100 + 1;
+
   return vector;
 }
 TEST(mpi_tsatsyn_a_vector_dot_product_perf_test, test_pipeline_run) {

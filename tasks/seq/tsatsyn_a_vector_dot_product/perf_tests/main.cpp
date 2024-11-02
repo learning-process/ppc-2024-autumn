@@ -52,8 +52,8 @@ TEST(sequential_tsatsyn_a_vector_dot_product_perf_test, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  
- // ASSERT_EQ(tsatsyn_a_vector_dot_product::resulting(v1, v2), ans[0]);
+
+  // ASSERT_EQ(tsatsyn_a_vector_dot_product::resulting(v1, v2), ans[0]);
   ASSERT_EQ(tsatsyn_a_vector_dot_product_seq::resulting(v1, v2), ans[0]);
 }
 

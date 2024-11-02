@@ -73,11 +73,8 @@ bool tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel::pre_processing() {
       v1[i] = tmp_ptr[i];
       v2[i] = tmp_ptr2[i];
     }
-    for (int proc = 1; proc < world.size(); proc++) 
-      world.send(proc, 0, delta);
-  }
-  else {
-   
+    for (int proc = 1; proc < world.size(); proc++) world.send(proc, 0, delta);
+  } else {
   }
   // Init value for output
   res = 0;
@@ -98,10 +95,9 @@ bool tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel::validation() {
 
 bool tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  //broadcast(world, delta, 0);
+  // broadcast(world, delta, 0);
   if (world.rank() == 0) {
-    for (int proc = 1; proc < world.size(); ++proc)
-      world.send(proc, 0, delta);
+    for (int proc = 1; proc < world.size(); ++proc) world.send(proc, 0, delta);
   }
   local_v1.resize(delta);
   local_v2.resize(delta);
