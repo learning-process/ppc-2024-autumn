@@ -126,8 +126,17 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::validation() {
 bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-  int m = taskData->inputs_count[0];  // Number of rows
-  int n = taskData->inputs_count[1];  // Number of columns
+  int n = 0;
+  int m = 0;
+
+  if (world.rank() == 0) {
+    m = taskData->inputs_count[0];  // Number of rows
+    n = taskData->inputs_count[1];  // Number of columns
+  }
+
+   broadcast(world, m, 0);
+   broadcast(world, n, 0);
+
   int last = 0;
 
   if (world.rank() == world.size() - 1) {
