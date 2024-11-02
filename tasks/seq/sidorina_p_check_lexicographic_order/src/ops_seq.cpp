@@ -28,7 +28,8 @@ bool sidorina_p_check_lexicographic_order_seq::TestTaskSequential::run() {
       res = 1;
       break;
     }
-    if (input_[0][i] < input_[1][i]) break;      
+    if (input_[0][i] < input_[1][i]) 
+        break;      
   }
   return true;
 }
