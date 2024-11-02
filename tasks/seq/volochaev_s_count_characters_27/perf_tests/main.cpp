@@ -8,7 +8,7 @@
 TEST(volochaev_s_count_characters_27_seq, test_pipeline_run) {
   // Create data
   std::string s = volochaev_s_count_characters_27_seq::get_random_string(20000000);
-  std::vector<std::string> in = {s, s};
+  std::vector<std::string> in(2, s);
   std::vector<int> out(1, 0);
 
   int ans = 0;
@@ -46,9 +46,9 @@ TEST(volochaev_s_count_characters_27_seq, test_pipeline_run) {
 TEST(volochaev_s_count_characters_27_seq, test_task_run) {
   // Create data
   std::string s = volochaev_s_count_characters_27_seq::get_random_string(20000000);
-  std::vector<std::string> in = {s, s};
+  std::vector<std::string> in(2, s);
   std::vector<int> out(1, 0);
-  int ans = 2;
+  int ans = 0;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();

@@ -6,7 +6,7 @@
 
 TEST(volochaev_s_count_characters_27_seq, Test_0) {
   // Create data
-  std::vector<std::string> in = {"aa"};
+  std::vector<std::string> in = {volochaev_s_count_characters_27_seq::get_random_string(20)};
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -23,7 +23,8 @@ TEST(volochaev_s_count_characters_27_seq, Test_0) {
 
 TEST(volochaev_s_count_characters_27_seq, Test_1) {
   // Create data
-  std::vector<std::string> in = {"aa", "aa"};
+  std::string s = volochaev_s_count_characters_27_seq::get_random_string(20);
+  std::vector<std::string> in(2, s);
   std::vector<int> out(1, 0);
 
   int ans = 0;
@@ -46,7 +47,12 @@ TEST(volochaev_s_count_characters_27_seq, Test_1) {
 
 TEST(volochaev_s_count_characters_27_seq, Test_2) {
   // Create data
-  std::vector<std::string> in = {"ab", "aa"};
+  std::string s = volochaev_s_count_characters_27_seq::get_random_string(20);
+  std::string s1 = s;
+
+  s1.back() = static_cast<char>((static_cast<int>(s1.back()) + 1) % 256);
+
+  std::vector<std::string> in = {s, s1};
   std::vector<int> out(1, 0);
   int ans = 2;
   // Create TaskData
@@ -67,7 +73,11 @@ TEST(volochaev_s_count_characters_27_seq, Test_2) {
 
 TEST(volochaev_s_count_characters_27_seq, Test_3) {
   // Create data
-  std::vector<std::string> in = {"aaabbc", "ab"};
+
+  std::string s = volochaev_s_count_characters_27_seq::get_random_string(6);
+  std::string s1 = s.substr(0, 2);
+
+  std::vector<std::string> in = {s, s1};
   std::vector<int> out(1, 0);
   int ans = 6;
 
@@ -89,7 +99,10 @@ TEST(volochaev_s_count_characters_27_seq, Test_3) {
 
 TEST(volochaev_s_count_characters_27_seq, Test_4) {
   // Create data
-  std::vector<std::string> in = {"ab", "aaabbc"};
+  std::string s = volochaev_s_count_characters_27_seq::get_random_string(6);
+  std::string s1 = s.substr(0, 2);
+
+  std::vector<std::string> in = {s1, s};
   std::vector<int> out(1, 0);
   int ans = 6;
 
@@ -111,7 +124,8 @@ TEST(volochaev_s_count_characters_27_seq, Test_4) {
 
 TEST(volochaev_s_count_characters_27_seq, Test_5) {
   // Create data
-  std::vector<std::string> in = {"aaabbc", "aaabbc"};
+  std::string s = volochaev_s_count_characters_27_seq::get_random_string(6);
+  std::vector<std::string> in(2, s);
   std::vector<int> out(1, 0);
   int ans = 0;
 
@@ -133,7 +147,8 @@ TEST(volochaev_s_count_characters_27_seq, Test_5) {
 
 TEST(volochaev_s_count_characters_27_seq, Test_6) {
   // Create data
-  std::vector<std::string> in = {"aaabbcс", "aaabbcс"};
+  std::string s = volochaev_s_count_characters_27_seq::get_random_string(7);
+  std::vector<std::string> in(2, s);
   std::vector<int> out(1, 0);
   int ans = 0;
 
