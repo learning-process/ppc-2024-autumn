@@ -65,8 +65,6 @@ bool frolova_e_num_of_letters_mpi::TestMPITaskParallel::pre_processing() {
     // Init vectors
     input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
   }
-
-
   res = 0;
   return true;
 }

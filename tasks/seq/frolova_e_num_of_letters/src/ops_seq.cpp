@@ -8,8 +8,8 @@ using namespace std::chrono_literals;
 std::string frolova_e_num_of_letters_seq::GenStr(int n) {
   std::string str = "test";
 
-  std::string result;     
-  result.resize(n);  
+  std::string result;
+  result.resize(n);
 
   int i = 0;
   size_t j = 0;

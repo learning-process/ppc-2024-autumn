@@ -137,7 +137,6 @@ TEST(frolova_e_num_of_letters_mpi, Test_empty_str) {
   }
 }
 
-
 TEST(frolova_e_num_of_letters_mpi, Test_different_symbols) {
   boost::mpi::communicator world;
   std::string global_str;
