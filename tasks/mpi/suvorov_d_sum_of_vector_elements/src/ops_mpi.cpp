@@ -10,7 +10,7 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> nesterov_a_test_task_mpi::getRandomVector(int sz) {
+std::vector<int> suvorov_d_sum_of_vector_elements::getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
@@ -20,7 +20,7 @@ std::vector<int> nesterov_a_test_task_mpi::getRandomVector(int sz) {
   return vec;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskSequential::pre_processing() {
+bool suvorov_d_sum_of_vector_elements::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init vectors
   input_ = std::vector<int>(taskData->inputs_count[0]);
@@ -33,31 +33,25 @@ bool nesterov_a_test_task_mpi::TestMPITaskSequential::pre_processing() {
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskSequential::validation() {
+bool suvorov_d_sum_of_vector_elements::TestMPITaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
-  return taskData->outputs_count[0] == 1;
+  return taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskSequential::run() {
+bool suvorov_d_sum_of_vector_elements::TestMPITaskSequential::run() {
   internal_order_test();
-  if (ops == "+") {
-    res = std::accumulate(input_.begin(), input_.end(), 0);
-  } else if (ops == "-") {
-    res = -std::accumulate(input_.begin(), input_.end(), 0);
-  } else if (ops == "max") {
-    res = *std::max_element(input_.begin(), input_.end());
-  }
+  res = std::accumulate(input_.begin(), input_.end(), 0);
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskSequential::post_processing() {
+bool suvorov_d_sum_of_vector_elements::TestMPITaskSequential::post_processing() {
   internal_order_test();
   reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskParallel::pre_processing() {
+bool suvorov_d_sum_of_vector_elements::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   unsigned int delta = 0;
   if (world.rank() == 0) {
@@ -87,7 +81,7 @@ bool nesterov_a_test_task_mpi::TestMPITaskParallel::pre_processing() {
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskParallel::validation() {
+bool suvorov_d_sum_of_vector_elements::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     // Check count elements of output
@@ -96,27 +90,18 @@ bool nesterov_a_test_task_mpi::TestMPITaskParallel::validation() {
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskParallel::run() {
+bool suvorov_d_sum_of_vector_elements::TestMPITaskParallel::run() {
   internal_order_test();
   int local_res;
-  if (ops == "+") {
-    local_res = std::accumulate(local_input_.begin(), local_input_.end(), 0);
-  } else if (ops == "-") {
-    local_res = -std::accumulate(local_input_.begin(), local_input_.end(), 0);
-  } else if (ops == "max") {
-    local_res = *std::max_element(local_input_.begin(), local_input_.end());
-  }
 
-  if (ops == "+" || ops == "-") {
-    reduce(world, local_res, res, std::plus(), 0);
-  } else if (ops == "max") {
-    reduce(world, local_res, res, boost::mpi::maximum<int>(), 0);
-  }
-  std::this_thread::sleep_for(20ms);
+  local_res = std::accumulate(local_input_.begin(), local_input_.end(), 0);
+
+  reduce(world, local_res, res, std::plus(), 0);
+
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskParallel::post_processing() {
+bool suvorov_d_sum_of_vector_elements::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
