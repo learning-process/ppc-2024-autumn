@@ -52,7 +52,7 @@ bool kalyakina_a_average_value_mpi::FindingAverageMPITaskParallel::pre_processin
     int* it = reinterpret_cast<int*>(taskData->inputs[0]);
     std::copy(it, it + taskData->inputs_count[0], input_vector.begin());
   }
-  
+
   // Init value for output
   if (world.rank() == 0) {
     result = 0;
