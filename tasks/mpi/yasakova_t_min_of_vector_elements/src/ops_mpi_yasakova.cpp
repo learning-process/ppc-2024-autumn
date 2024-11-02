@@ -2,8 +2,11 @@
 #include "mpi/yasakova_t_min_of_vector_elements/include/ops_mpi_yasakova.hpp"
 
 #include <algorithm>
+#include <functional>
 #include <random>
+#include <string>
 #include <vector>
+
 using namespace std::chrono_literals;
 
 std::vector<int> yasakova_t_min_of_vector_elements_mpi::RandomVector(int size, int minimum, int maximum) {
@@ -28,7 +31,6 @@ std::vector<std::vector<int>> yasakova_t_min_of_vector_elements_mpi::RandomMatri
 bool yasakova_t_min_of_vector_elements_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   inputValues_ = std::vector<std::vector<int>>(taskData->inputs_count[0], std::vector<int>(taskData->inputs_count[1]));
-
   for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
     std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[1], inputValues_[i].begin());
@@ -45,7 +47,6 @@ bool yasakova_t_min_of_vector_elements_mpi::TestMPITaskSequential::validation() 
 bool yasakova_t_min_of_vector_elements_mpi::TestMPITaskSequential::run() {
   internal_order_test();
   std::vector<int> local_res(inputValues_.size());
-
   for (unsigned int i = 0; i < inputValues_.size(); i++) {
     local_res[i] = *std::min_element(inputValues_[i].begin(), inputValues_[i].end());
   }
@@ -61,18 +62,15 @@ bool yasakova_t_min_of_vector_elements_mpi::TestMPITaskSequential::post_processi
 
 bool yasakova_t_min_of_vector_elements_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-
   unsigned int delta = 0;
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] * taskData->inputs_count[1] / world.size();
   }
   broadcast(world, delta, 0);
-
   if (world.rank() == 0) {
     unsigned int rows = taskData->inputs_count[0];
     unsigned int columns = taskData->inputs_count[1];
     inputValues_ = std::vector<int>(rows * columns);
-
     for (unsigned int i = 0; i < rows; i++) {
       auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
       for (unsigned int j = 0; j < columns; j++) {
@@ -83,7 +81,6 @@ bool yasakova_t_min_of_vector_elements_mpi::TestMPITaskParallel::pre_processing(
       world.send(proc, 0, inputValues_.data() + delta * proc, delta);
     }
   }
-
   localInputValues_ = std::vector<int>(delta);
   if (world.rank() == 0) {
     localInputValues_ = std::vector<int>(inputValues_.begin(), inputValues_.begin() + delta);
