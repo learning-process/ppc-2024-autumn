@@ -183,6 +183,62 @@ TEST(borisov_s_sum_of_rows, Test_Empty_Matrix) {
   ASSERT_FALSE(sumOfRowsTaskParallel.validation());
 }
 
+TEST(borisov_s_sum_of_rows, Test_Empty_Matrix1) {
+  boost::mpi::communicator world;
+  std::vector<int> global_matrix;
+  std::vector<int> global_row_sums;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  size_t rows = 1;
+  size_t cols = 0;
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_row_sums.data()));
+    global_row_sums.resize(rows, 0);
+  } else {
+    taskDataPar->inputs.emplace_back(nullptr);
+    taskDataPar->outputs.emplace_back(nullptr);
+  }
+
+  taskDataPar->inputs_count.push_back(rows);
+  taskDataPar->inputs_count.push_back(cols);
+  taskDataPar->outputs_count.push_back(global_row_sums.size());
+
+  borisov_s_sum_of_rows::SumOfRowsTaskParallel sumOfRowsTaskParallel(taskDataPar);
+
+  ASSERT_FALSE(sumOfRowsTaskParallel.validation());
+}
+
+TEST(borisov_s_sum_of_rows, Test_Empty_Matrix2) {
+  boost::mpi::communicator world;
+  std::vector<int> global_matrix;
+  std::vector<int> global_row_sums;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  size_t rows = 0;
+  size_t cols = 1;
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_row_sums.data()));
+    global_row_sums.resize(rows, 0);
+  } else {
+    taskDataPar->inputs.emplace_back(nullptr);
+    taskDataPar->outputs.emplace_back(nullptr);
+  }
+
+  taskDataPar->inputs_count.push_back(rows);
+  taskDataPar->inputs_count.push_back(cols);
+  taskDataPar->outputs_count.push_back(global_row_sums.size());
+
+  borisov_s_sum_of_rows::SumOfRowsTaskParallel sumOfRowsTaskParallel(taskDataPar);
+
+  ASSERT_FALSE(sumOfRowsTaskParallel.validation());
+}
+
 TEST(borisov_s_sum_of_rows, Test_NonDivisibleRows) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
@@ -415,16 +471,16 @@ TEST(borisov_s_sum_of_rows, Test_Invalid_Output_Counts_Parallel) {
   std::vector<int> global_row_sums;
 
   size_t rows = 10;
-  size_t cols = 9;
+  size_t cols = 10;
 
   global_matrix.resize(rows * cols, 1);
-  global_row_sums.resize(rows - 1, 0);
+  global_row_sums.resize(rows, 0);
 
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
   taskDataPar->inputs_count.push_back(rows);
   taskDataPar->inputs_count.push_back(cols);
   taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_row_sums.data()));
-  taskDataPar->outputs_count.push_back(global_row_sums.size());
+  taskDataPar->outputs_count.push_back(7);
 
   borisov_s_sum_of_rows::SumOfRowsTaskParallel sumOfRowsTaskParallel(taskDataPar);
 
@@ -563,4 +619,40 @@ TEST(borisov_s_sum_of_rows, Test_Null_One_Pointers2) {
 
   borisov_s_sum_of_rows::SumOfRowsTaskSequential sumOfRowsTaskSequential(taskDataPar);
   ASSERT_FALSE(sumOfRowsTaskSequential.validation());
+}
+
+TEST(borisov_s_sum_of_rows, Test_Null_One_Pointers1_Parallel) {
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  size_t rows = 10;
+  size_t cols = 10;
+
+  std::vector<int> matrix(rows * cols, 1);
+
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataPar->outputs.emplace_back(nullptr);
+  taskDataPar->inputs_count.push_back(rows);
+  taskDataPar->inputs_count.push_back(cols);
+  taskDataPar->outputs_count.push_back(rows);
+
+  borisov_s_sum_of_rows::SumOfRowsTaskParallel SumOfRowsTaskParallel(taskDataPar);
+  ASSERT_FALSE(SumOfRowsTaskParallel.validation());
+}
+
+TEST(borisov_s_sum_of_rows, Test_Null_One_Pointers2_Parallel) {
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  size_t rows = 10;
+  size_t cols = 10;
+
+  std::vector<int> row_sums(rows, 0);
+
+  taskDataPar->inputs.emplace_back(nullptr);
+  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(row_sums.data()));
+  taskDataPar->inputs_count.push_back(rows);
+  taskDataPar->inputs_count.push_back(cols);
+  taskDataPar->outputs_count.push_back(rows);
+
+  borisov_s_sum_of_rows::SumOfRowsTaskParallel SumOfRowsTaskParallel(taskDataPar);
+  ASSERT_FALSE(SumOfRowsTaskParallel.validation());
 }
