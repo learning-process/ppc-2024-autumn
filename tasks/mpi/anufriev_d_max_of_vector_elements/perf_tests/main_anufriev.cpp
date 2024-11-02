@@ -43,7 +43,6 @@ TEST(anufriev_d_max_of_vector_elements_mpi, test_pipeline_run) {
 }
 
 TEST(anufriev_d_max_of_vector_elements_mpi, test_task_run) {
-  // Аналогично test_pipeline_run, но с task_run вместо pipeline_run
   boost::mpi::communicator world;
   std::vector<int32_t> input_vector;
   int32_t result_parallel = std::numeric_limits<int32_t>::min();
@@ -52,7 +51,7 @@ TEST(anufriev_d_max_of_vector_elements_mpi, test_task_run) {
 
   if (world.rank() == 0) {
     input_vector.resize(vector_size, 1);
-    input_vector[0] = -5;  // Добавим отрицательный элемент для проверки
+    input_vector[0] = -5;  
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_vector.data()));
     taskDataPar->inputs_count.emplace_back(input_vector.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&result_parallel));
@@ -72,6 +71,6 @@ TEST(anufriev_d_max_of_vector_elements_mpi, test_task_run) {
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(1, result_parallel);  // Ожидаемый максимум - 1
+    ASSERT_EQ(1, result_parallel); 
   }
 }
