@@ -11,7 +11,7 @@
 using namespace std::chrono_literals;
 static int offset = 0;
 
-bool koshkin_m_scalar_product_of_vectors::TestMPITaskSequential::pre_processing() {
+bool koshkin_m_scalar_product_of_vectors_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   input_ = std::vector<std::vector<int>>(taskData->inputs.size());
   for (size_t i = 0; i < input_.size(); i++) {
@@ -25,7 +25,7 @@ bool koshkin_m_scalar_product_of_vectors::TestMPITaskSequential::pre_processing(
   return true;
 }
 
-bool koshkin_m_scalar_product_of_vectors::TestMPITaskSequential::validation() {
+bool koshkin_m_scalar_product_of_vectors_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
   if (taskData->inputs.size() == 2 && taskData->inputs.size() == taskData->inputs_count.size() &&
       taskData->inputs_count[0] == taskData->inputs_count[1] && taskData->outputs.size() == 1 &&
@@ -35,7 +35,7 @@ bool koshkin_m_scalar_product_of_vectors::TestMPITaskSequential::validation() {
   return false;
 }
 
-bool koshkin_m_scalar_product_of_vectors::TestMPITaskSequential::run() {
+bool koshkin_m_scalar_product_of_vectors_mpi::TestMPITaskSequential::run() {
   internal_order_test();
   for (size_t i = 0; i < input_[0].size(); i++) {
     res += input_[0][i] * input_[1][i];
@@ -43,13 +43,13 @@ bool koshkin_m_scalar_product_of_vectors::TestMPITaskSequential::run() {
   return true;
 }
 
-bool koshkin_m_scalar_product_of_vectors::TestMPITaskSequential::post_processing() {
+bool koshkin_m_scalar_product_of_vectors_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
   reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
   return true;
 }
 
-bool koshkin_m_scalar_product_of_vectors::TestMPITaskParallel::pre_processing() {
+bool koshkin_m_scalar_product_of_vectors_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   size_t total_el = 0;
   size_t base_el = 0;
@@ -83,7 +83,7 @@ bool koshkin_m_scalar_product_of_vectors::TestMPITaskParallel::pre_processing() 
   return true;
 }
 
-bool koshkin_m_scalar_product_of_vectors::TestMPITaskParallel::validation() {
+bool koshkin_m_scalar_product_of_vectors_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     return (taskData->inputs.size() == 2 && taskData->inputs.size() == taskData->inputs_count.size() &&
@@ -93,7 +93,7 @@ bool koshkin_m_scalar_product_of_vectors::TestMPITaskParallel::validation() {
   return true;
 }
 
-bool koshkin_m_scalar_product_of_vectors::TestMPITaskParallel::run() {
+bool koshkin_m_scalar_product_of_vectors_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   if (world.rank() == 0) {
     size_t offset_extra = counts_[0];
@@ -125,7 +125,7 @@ bool koshkin_m_scalar_product_of_vectors::TestMPITaskParallel::run() {
   return true;
 }
 
-bool koshkin_m_scalar_product_of_vectors::TestMPITaskParallel::post_processing() {
+bool koshkin_m_scalar_product_of_vectors_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
@@ -133,17 +133,9 @@ bool koshkin_m_scalar_product_of_vectors::TestMPITaskParallel::post_processing()
   return true;
 }
 
-int koshkin_m_scalar_product_of_vectors::calculateDotProduct(const std::vector<int>& vec_1,
+int koshkin_m_scalar_product_of_vectors_mpi::calculateDotProduct(const std::vector<int>& vec_1,
                                                              const std::vector<int>& vec_2) {
   long result = 0;
   for (size_t i = 0; i < vec_1.size(); i++) result += vec_1[i] * vec_2[i];
   return result;
-}
-
-std::vector<int> createRandomVector(int v_size) {
-  std::vector<int> vec(v_size);
-  std::mt19937 gen;
-  gen.seed((unsigned)time(nullptr) + ++offset);
-  for (int i = 0; i < v_size; i++) vec[i] = gen() % 100;
-  return vec;
 }

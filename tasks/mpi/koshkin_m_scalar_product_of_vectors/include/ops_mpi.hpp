@@ -13,7 +13,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace koshkin_m_scalar_product_of_vectors {
+namespace koshkin_m_scalar_product_of_vectors_mpi {
 int calculateDotProduct(const std::vector<int>& vec_1, const std::vector<int>& vec_2);
 std::vector<int> createRandomVector(int v_size);
 class TestMPITaskSequential : public ppc::core::Task {
@@ -46,4 +46,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  // namespace koshkin_m_scalar_product_of_vectors
+}  // namespace koshkin_m_scalar_product_of_vectors_mpi
