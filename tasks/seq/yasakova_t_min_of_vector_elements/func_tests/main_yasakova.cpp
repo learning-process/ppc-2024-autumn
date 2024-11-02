@@ -35,7 +35,6 @@ TEST(yasakova_t_min_of_vector_elements_seq, testFindMinimumInMatrixWithOneRow) {
   ASSERT_EQ(ref, out[0]);
 }
 
-
 TEST(yasakova_t_min_of_vector_elements_seq, testFindMinimumIn10x10Matrix) {
   std::random_device dev;
   std::mt19937 gen(dev());
