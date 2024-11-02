@@ -54,10 +54,6 @@ TEST(tsatsyn_a_vector_dot_product_seq, Test_Negative_Validation) {
   // Create Task
   tsatsyn_a_vector_dot_product_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), false);
-  /*testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
-  ASSERT_EQ(scale, ans[0]);*/
 }
 
 TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_32) {
