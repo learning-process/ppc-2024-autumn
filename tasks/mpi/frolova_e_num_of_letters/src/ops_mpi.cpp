@@ -120,8 +120,9 @@ bool frolova_e_num_of_letters_mpi::TestMPITaskParallel::validation() {
 
 bool frolova_e_num_of_letters_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  std::string local_input_;
-  size_t delta = 0;
+//  std::string local_input_;
+  unsigned int delta = 0;
+
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
   }
@@ -134,6 +135,7 @@ bool frolova_e_num_of_letters_mpi::TestMPITaskParallel::run() {
 
     local_input_ = std::string(input_.begin() + (world.size() - 1) * delta, input_.end());
   } 
+
   else {
     local_input_.resize(delta);
     world.recv(0, 0, local_input_.data(), delta);

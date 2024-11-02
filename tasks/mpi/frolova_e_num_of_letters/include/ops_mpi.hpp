@@ -39,8 +39,8 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::string input_;
-//  std::string local_input_;
+  std::string input_{};
+  std::string local_input_{};
   int res{};
   boost::mpi::communicator world;
 };
