@@ -25,7 +25,6 @@ class Lab1_27_seq : public ppc::core::Task {
 
  private:
   std::vector<std::pair<char, char>> input_;
-  int for_res{};
   int res{};
 };
 
@@ -39,7 +38,6 @@ class Lab1_27_mpi : public ppc::core::Task {
 
  private:
   std::vector<std::pair<char, char>> input_, local_input_;
-  int for_res{};
   int res{};
   boost::mpi::communicator world;
 };
