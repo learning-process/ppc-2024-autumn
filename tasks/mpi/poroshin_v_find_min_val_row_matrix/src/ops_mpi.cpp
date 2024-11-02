@@ -91,22 +91,30 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::pre_processing
     m = taskData->inputs_count[0];
     n = taskData->inputs_count[1];
     size = n * m;
-    delta = (size + world.size() - 1) / world.size();
+    if (size % world.size() == 0) {
+      delta = size / world.size();
+    } else {
+      delta = size / world.size() + 1;
+    }
   }
 
   broadcast(world, m, 0);
   broadcast(world, n, 0);
   broadcast(world, delta, 0);
+  broadcast(world, size, 0);
 
   if (world.rank() == 0) {
-    input_.resize(size);
+    input_ = std::vector<int>(delta * world.size(), INT_MAX);
+    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     for (int i = 0; i < size; i++) {
-      input_[i] = reinterpret_cast<int*>(taskData->inputs[0])[i];
+      input_[i] = tmp_ptr[i];
     }
-    local_input_.resize(delta);
-    boost::mpi::scatter(world, input_.data(), local_input_.data(), delta, 0);
-    res.resize(m, INT_MAX);
   }
+
+  local_input_ = std::vector<int>(delta);
+  boost::mpi::scatter(world, input_.data(), local_input_.data(), delta, 0);
+
+  res.resize(m, INT_MAX);
 
   return true;
 }
@@ -126,67 +134,48 @@ bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::validation() {
 bool poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-  int n = 0;
-  int m = 0;
+  int size_rows = 0;
+  int count_rows = 0;
+  int size = 0;
 
   if (world.rank() == 0) {
-    m = taskData->inputs_count[0];  // Number of rows
-    n = taskData->inputs_count[1];  // Number of columns
+    size_rows = taskData->inputs_count[1];
+    count_rows = taskData->inputs_count[0];
+    size = size_rows * count_rows;
   }
 
-  broadcast(world, m, 0);
-  broadcast(world, n, 0);
+  broadcast(world, count_rows, 0);
+  broadcast(world, size_rows, 0);
+  broadcast(world, size, 0);
 
-  int last = 0;
-
+  unsigned int last_delta = 0;
   if (world.rank() == world.size() - 1) {
-    last = local_input_.size() * world.size() -
-           n * m;  // Determine the number of elements that are not included in the last part
+    last_delta = local_input_.size() * world.size() - size_rows * count_rows;
   }
 
-  std::vector<int> res_(m, INT_MAX);  // Vector to store results (minimums)
-
-  // Find local minima and save them in res_
-  int delta = std::min(local_input_.size(), n - world.rank() * local_input_.size() % n);
-  int local_min = *std::min_element(local_input_.begin(), local_input_.begin() + delta);
-  res_[world.rank()] =
-      local_min;  // Save the local minimum into the resulting vector at the index corresponding to the process rank
-  int id = world.rank() + 1;  // Index to store results
-
-  int k = 0;
-  while (local_input_.begin() + delta + k * n < local_input_.end() - last) {
-    local_min = *std::min_element(local_input_.begin() + delta + k * n,
-                                  std::min(local_input_.end(), local_input_.begin() + delta + (k + 1) * n));
-    if (id < m) {
-      res_[id] = local_min;  // Save the local minimum into the resulting vector
-    }
-    k++;
-    id++;
+  unsigned int ind = world.rank() * local_input_.size() / size_rows;
+  for (unsigned int i = 0; i < ind; ++i) {
+    reduce(world, INT_MAX, res[i], boost::mpi::minimum<int>(), 0);
   }
 
-  // Send results to process 0
-  if (world.rank() != 0) {
-    world.send(0, 0, res_);  // Send local minima
-  } else {
-    // Process 0 collects minimums from other processes
-    for (int i = 0; i < world.size(); ++i) {
-      if (i == 0) {
-        // Save our minimums
-        continue;
-      }
-      std::vector<int> received_res(m);
-      world.recv(i, 0, received_res);  // Get minimums from other processes
-      for (int j = 0; j < m; ++j) {
-        if (received_res[j] < res_[j]) {
-          res_[j] = received_res[j];  // Update global minimums
-        }
-      }
-    }
+  unsigned int delta = std::min(local_input_.size(), size_rows - world.rank() * local_input_.size() % size_rows);
+  int local_res;
 
-    // Save the results
-    for (int i = 0; i < m; ++i) {
-      res[i] = res_[i];
-    }
+  local_res = *std::min_element(local_input_.begin(), local_input_.begin() + delta);
+  reduce(world, local_res, res[ind], boost::mpi::minimum<int>(), 0);
+  ++ind;
+
+  unsigned int k = 0;
+  while (local_input_.begin() + delta + k * size_rows < local_input_.end() - last_delta) {
+    local_res = *std::min_element(local_input_.begin() + delta + k * size_rows,
+                                  std::min(local_input_.end(), local_input_.begin() + delta + (k + 1) * size_rows));
+    reduce(world, local_res, res[ind], boost::mpi::minimum<int>(), 0);
+    ++k;
+    ++ind;
+  }
+
+  for (unsigned int i = ind; i < res.size(); ++i) {
+    reduce(world, INT_MAX, res[i], boost::mpi::minimum<int>(), 0);
   }
 
   return true;
