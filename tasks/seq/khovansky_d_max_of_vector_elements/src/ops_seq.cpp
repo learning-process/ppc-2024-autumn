@@ -35,7 +35,6 @@ bool khovansky_d_max_of_vector_elements_seq::MaxOfVectorSeq::pre_processing() {
 bool khovansky_d_max_of_vector_elements_seq::MaxOfVectorSeq::validation() {
   internal_order_test();
   // Check count elements of output
-  
   return taskData->outputs_count[0] == 1;
 }
 

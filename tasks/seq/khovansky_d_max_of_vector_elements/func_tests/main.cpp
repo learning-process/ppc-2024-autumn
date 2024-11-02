@@ -317,7 +317,6 @@ TEST(khovansky_d_max_of_vector_elements_seq, Test_Max_1000_Negative_Numbers) {
 }
 
 TEST(khovansky_d_max_of_vector_elements_seq, Test_Max_Empty_Vector) {
-  
   // Create data
   std::vector<int> in = {};
   std::vector<int> out(1, 0);
@@ -335,6 +334,5 @@ TEST(khovansky_d_max_of_vector_elements_seq, Test_Max_Empty_Vector) {
   MaxOfVectorSeq.pre_processing();
   MaxOfVectorSeq.run();
   MaxOfVectorSeq.post_processing();
-  
   ASSERT_EQ(0, out[0]);
 }
