@@ -1,11 +1,11 @@
 // Copyright 2023 Nesterov Alexander
 #pragma once
 
-#include <string>
-#include <vector>
-#include <numeric>
 #include <memory>
+#include <numeric>
+#include <string>
 #include <utility>
+#include <vector>
 
 #include "core/task/include/task.hpp"
 

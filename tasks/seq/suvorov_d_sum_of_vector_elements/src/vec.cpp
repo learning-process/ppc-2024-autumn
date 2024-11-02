@@ -22,7 +22,7 @@ bool suvorov_d_sum_of_vector_elements_seq::Sum_of_vector_elements_seq::validatio
 
 bool suvorov_d_sum_of_vector_elements_seq::Sum_of_vector_elements_seq::run() {
   internal_order_test();
-  
+
   res_ = std::accumulate(input_.begin(), input_.end(), 0);
 
   return true;

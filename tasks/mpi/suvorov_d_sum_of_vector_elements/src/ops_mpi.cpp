@@ -17,6 +17,7 @@ std::vector<int> suvorov_d_sum_of_vector_elements_mpi::getRandomVector(int sz) {
   for (int i = 0; i < sz; i++) {
     vec[i] = gen() % 100;
   }
+
   return vec;
 }
 

@@ -1,9 +1,9 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
-#include <vector>
-#include <memory>
 #include <chrono>
+#include <memory>
+#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/suvorov_d_sum_of_vector_elements/include/vec.hpp"
@@ -23,7 +23,8 @@ TEST(suvorov_d_sum_of_vector_elements_seq, test_pipeline_run) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto SumOfVectorElementsSeq = std::make_shared<suvorov_d_sum_of_vector_elements_seq::Sum_of_vector_elements_seq>(taskDataSeq);
+  auto SumOfVectorElementsSeq =
+      std::make_shared<suvorov_d_sum_of_vector_elements_seq::Sum_of_vector_elements_seq>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -60,7 +61,8 @@ TEST(suvorov_d_sum_of_vector_elements_seq, test_task_run) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto SumOfVectorElementsSeq = std::make_shared<suvorov_d_sum_of_vector_elements_seq::Sum_of_vector_elements_seq>(taskDataSeq);
+  auto SumOfVectorElementsSeq =
+      std::make_shared<suvorov_d_sum_of_vector_elements_seq::Sum_of_vector_elements_seq>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();

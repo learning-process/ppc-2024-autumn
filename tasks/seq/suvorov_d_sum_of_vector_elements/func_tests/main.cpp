@@ -1,9 +1,9 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
-#include <vector>
 #include <memory>
-#include <random> 
+#include <random>
+#include <vector>
 
 #include "seq/suvorov_d_sum_of_vector_elements/include/vec.hpp"
 

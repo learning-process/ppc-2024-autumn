@@ -23,7 +23,8 @@ TEST(suvorov_d_sum_of_vector_elements_mpi, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  auto SumOfVectorElementsParallel = std::make_shared<suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel>(taskDataPar, "+");
+  auto SumOfVectorElementsParallel =
+      std::make_shared<suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel>(taskDataPar, "+");
   ASSERT_EQ(SumOfVectorElementsParallel->validation(), true);
   SumOfVectorElementsParallel->pre_processing();
   SumOfVectorElementsParallel->run();
@@ -63,7 +64,8 @@ TEST(suvorov_d_sum_of_vector_elements_mpi, test_task_run) {
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  auto SumOfVectorElementsParallel = std::make_shared<suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel>(taskDataPar, "+");
+  auto SumOfVectorElementsParallel =
+      std::make_shared<suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel>(taskDataPar, "+");
   ASSERT_EQ(SumOfVectorElementsParallel->validation(), true);
   SumOfVectorElementsParallel->pre_processing();
   SumOfVectorElementsParallel->run();
