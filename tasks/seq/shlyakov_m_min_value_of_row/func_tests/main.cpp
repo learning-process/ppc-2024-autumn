@@ -192,3 +192,26 @@ TEST(shlyakov_m_min_value_of_row_seq, test_validation_uncorrect_input) {
 
   ASSERT_EQ(testTaskSequential.validation(), false);
 }
+
+TEST(shlyakov_m_min_value_of_row_seq, test_then_input_sz_not_eq_output_sz) {
+  const int rows = 100;
+  const int cols = 100;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  shlyakov_m_min_value_of_row_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  std::vector<std::vector<int>> matrix_rnd =
+      shlyakov_m_min_value_of_row_seq::TestTaskSequential::generate_rnd_matrix(rows, cols);
+
+  for (auto& row : matrix_rnd) {
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
+  }
+
+  taskDataSeq->inputs_count.emplace_back(rows);
+  taskDataSeq->inputs_count.emplace_back(cols);
+
+  std::vector<int> v_res(rows - 1, 0);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(v_res.data()));
+  taskDataSeq->outputs_count.emplace_back(v_res.size());
+
+  ASSERT_EQ(testTaskSequential.validation(), false);
+}
