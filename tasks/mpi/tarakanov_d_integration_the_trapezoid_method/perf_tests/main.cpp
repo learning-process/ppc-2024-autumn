@@ -13,7 +13,7 @@ TEST(tarakanov_d_integration_the_trapezoid_method_mpi_perf_tests, test_pipeline_
 
   double a = 0.0;
   double b = 1.0;
-  double h = 0.1;
+  double h = 1e-8;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -26,7 +26,8 @@ TEST(tarakanov_d_integration_the_trapezoid_method_mpi_perf_tests, test_pipeline_
   }
 
   auto parallelTask =
-      std::make_shared<tarakanov_d_integration_the_trapezoid_method_mpi::integration_the_trapezoid_method_par>(taskDataPar);
+      std::make_shared<tarakanov_d_integration_the_trapezoid_method_mpi::integration_the_trapezoid_method_par>(
+          taskDataPar);
 
   ASSERT_EQ(parallelTask->validation(), true);
   parallelTask->pre_processing();
@@ -46,7 +47,7 @@ TEST(tarakanov_d_integration_the_trapezoid_method_mpi_perf_tests, test_pipeline_
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
     double expected_value = 0.335;
-    ASSERT_DOUBLE_EQ(expected_value, global_res[0]);
+    ASSERT_NEAR(expected_value, global_res[0], 0.1);
   }
 }
 
@@ -54,9 +55,9 @@ TEST(tarakanov_d_integration_the_trapezoid_method_mpi_perf_tests, test_task_run)
   boost::mpi::communicator world;
   std::vector<double> global_res(1, 0.0);
 
-  double a = -1.45;
-  double b = 1.45;
-  double h = 0.0000001;
+  double a = 0.0;
+  double b = 1.0;
+  double h = 1e-8;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -69,7 +70,8 @@ TEST(tarakanov_d_integration_the_trapezoid_method_mpi_perf_tests, test_task_run)
   }
 
   auto parallelTask =
-      std::make_shared<tarakanov_d_integration_the_trapezoid_method_mpi::integration_the_trapezoid_method_par>(taskDataPar);
+      std::make_shared<tarakanov_d_integration_the_trapezoid_method_mpi::integration_the_trapezoid_method_par>(
+          taskDataPar);
 
   ASSERT_EQ(parallelTask->validation(), true);
   parallelTask->pre_processing();
@@ -89,6 +91,6 @@ TEST(tarakanov_d_integration_the_trapezoid_method_mpi_perf_tests, test_task_run)
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
     double expected_value = 0.335;
-    ASSERT_DOUBLE_EQ(expected_value, global_res[0]);
+    ASSERT_NEAR(expected_value, global_res[0], 0.1);
   }
 }

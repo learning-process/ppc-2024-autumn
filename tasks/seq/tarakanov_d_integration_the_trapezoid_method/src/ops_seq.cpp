@@ -5,8 +5,7 @@
 
 using namespace std::chrono_literals;
 
-bool tarakanov_d_integration_the_trapezoid_method_seq::integration_the_trapezoid_method::pre_processing() 
-{
+bool tarakanov_d_integration_the_trapezoid_method_seq::integration_the_trapezoid_method::pre_processing() {
   internal_order_test();
 
   // Init value for input and output
@@ -17,35 +16,32 @@ bool tarakanov_d_integration_the_trapezoid_method_seq::integration_the_trapezoid
   return true;
 }
 
-bool tarakanov_d_integration_the_trapezoid_method_seq::integration_the_trapezoid_method::validation() 
-{
+bool tarakanov_d_integration_the_trapezoid_method_seq::integration_the_trapezoid_method::validation() {
   internal_order_test();
 
   // Check count elements of output
   return taskData->inputs_count[0] == 3 && taskData->outputs_count[0] == 1;
 }
 
-bool tarakanov_d_integration_the_trapezoid_method_seq::integration_the_trapezoid_method::run() 
-{
-    internal_order_test();
+bool tarakanov_d_integration_the_trapezoid_method_seq::integration_the_trapezoid_method::run() {
+  internal_order_test();
 
-    int n = static_cast<int>((b - a) / h);
-    double integral = 0.0;
+  int n = static_cast<int>((b - a) / h);
+  double integral = 0.0;
 
-    // summing trapezoid areas
-    for (int i = 0; i < n; ++i) {
-        double x0 = a + i * h;        // left trapezoid edge
-        double x1 = a + (i + 1) * h;  // right trapezoid edge
-        integral += 0.5 * (x0 * x0 + x1 * x1) * h; // trapezoid area
-    }
+  // summing trapezoid areas
+  for (int i = 0; i < n; ++i) {
+    double x0 = a + i * h;                      // left trapezoid edge
+    double x1 = a + (i + 1) * h;                // right trapezoid edge
+    integral += 0.5 * (x0 * x0 + x1 * x1) * h;  // trapezoid area
+  }
 
-    res = integral;
+  res = integral;
 
-    return true;
+  return true;
 }
 
-bool tarakanov_d_integration_the_trapezoid_method_seq::integration_the_trapezoid_method::post_processing() 
-{
+bool tarakanov_d_integration_the_trapezoid_method_seq::integration_the_trapezoid_method::post_processing() {
   internal_order_test();
   *reinterpret_cast<double*>(taskData->outputs[0]) = res;
   return true;

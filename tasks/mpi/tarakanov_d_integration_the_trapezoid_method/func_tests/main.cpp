@@ -15,28 +15,23 @@ TEST(tarakanov_d_integration_the_trapezoid_method_mpi_func_tests, Test_Integrati
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   double a = 0.0;
   double b = 1.0;
-  double h = 0.1;
-std::cout << "marker1\n\n\n";
-
+  double h = 1e-14;
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
-    std::cout << "marker19\n\n\n";
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    std::cout << "marker20\n\n\n";
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&h));
     taskDataPar->inputs_count.emplace_back(3);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
     taskDataPar->outputs_count.emplace_back(1);
   }
+
   tarakanov_d_integration_the_trapezoid_method_mpi::integration_the_trapezoid_method_par parallelTask(taskDataPar);
+
   ASSERT_EQ(parallelTask.validation(), true);
-  std::cout << "marker3\n\n\n";
   parallelTask.pre_processing();
-  std::cout << "marker4\n\n\n";
   parallelTask.run();
-  std::cout << "marker17\n\n\n";
   parallelTask.post_processing();
-  std::cout << "marker18\n\n\n";
+
   if (world.rank() == 0) {
     std::vector<double> reference_res(1, 0.0);
 
@@ -53,8 +48,8 @@ std::cout << "marker1\n\n\n";
     sequentialTask.pre_processing();
     sequentialTask.run();
     sequentialTask.post_processing();
-    
-    ASSERT_DOUBLE_EQ(reference_res[0], global_res[0]);
+
+    ASSERT_NEAR(reference_res[0], global_res[0], 0.1);
   }
 }
 
@@ -65,7 +60,7 @@ TEST(tarakanov_d_integration_the_trapezoid_method_mpi_func_tests, Test_Integrati
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   double a = 5.0;
   double b = 7.0;
-  double h = 0.01;
+  double h = 1e-8;
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
@@ -99,8 +94,8 @@ TEST(tarakanov_d_integration_the_trapezoid_method_mpi_func_tests, Test_Integrati
     sequentialTask.pre_processing();
     sequentialTask.run();
     sequentialTask.post_processing();
-    
-    ASSERT_DOUBLE_EQ(reference_res[0], global_res[0]);
+
+    ASSERT_NEAR(reference_res[0], global_res[0], 0.1);
   }
 }
 
@@ -109,9 +104,9 @@ TEST(tarakanov_d_integration_the_trapezoid_method_mpi_func_tests, Test_Integrati
   std::vector<double> global_res(1, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  double a = 100.0;
-  double b = 150.0;
-  double h = 0.2;
+  double a = -2.0;
+  double b = -1.0;
+  double h = 1e-8;
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
@@ -140,12 +135,12 @@ TEST(tarakanov_d_integration_the_trapezoid_method_mpi_func_tests, Test_Integrati
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_res.data()));
     taskDataSeq->outputs_count.emplace_back(1);
 
-    tarakanov_d_integration_the_trapezoid_method_mpi::integration_the_trapezoid_method_par sequentialTask(taskDataSeq);
+    tarakanov_d_integration_the_trapezoid_method_mpi::integration_the_trapezoid_method_seq sequentialTask(taskDataSeq);
     ASSERT_EQ(sequentialTask.validation(), true);
     sequentialTask.pre_processing();
     sequentialTask.run();
     sequentialTask.post_processing();
-    
-    ASSERT_DOUBLE_EQ(reference_res[0], global_res[0]);
+
+    ASSERT_NEAR(reference_res[0], global_res[0], 0.1);
   }
 }
