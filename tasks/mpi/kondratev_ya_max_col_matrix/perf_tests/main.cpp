@@ -2,8 +2,8 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
-#include <vector>
 #include <random>
+#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/kondratev_ya_max_col_matrix/include/ops_mpi.hpp"
@@ -36,7 +36,6 @@ void insertRefValue(std::vector<std::vector<int32_t>>& mtrx, int32_t ref) {
     mtrx[ind][j] = ref;
   }
 }
-
 
 void runTask(ppc::core::Task& task) {
   ASSERT_TRUE(task.validation());

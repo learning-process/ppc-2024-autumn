@@ -8,7 +8,7 @@
 #include "core/task/include/task.hpp"
 
 namespace kondratev_ya_max_col_matrix_seq {
-  
+
 class TestTaskSequential : public ppc::core::Task {
  public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
