@@ -53,7 +53,7 @@ TEST(petrov_a_nearest_neighbor_elements_mpi, Test_NearestNeighbor1) {
   }
 }
 
- TEST(petrov_a_nearest_neighbor_elements_mpi, Test_NearestNeighbor2) {
+TEST(petrov_a_nearest_neighbor_elements_mpi, Test_NearestNeighbor2) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_neighbors(2, 0);
@@ -99,7 +99,6 @@ TEST(petrov_a_nearest_neighbor_elements_mpi, Test_NearestNeighbor1) {
               std::abs(global_neighbors[0] - global_neighbors[1]));
   }
 }
-
 
 TEST(petrov_a_nearest_neighbor_elements_mpi, Test_NearestNeighbor3) {
   boost::mpi::communicator world;
@@ -148,7 +147,7 @@ TEST(petrov_a_nearest_neighbor_elements_mpi, Test_NearestNeighbor3) {
   }
 }
 
- TEST(petrov_a_nearest_neighbor_elements_mpi, Test_NearestNeighbor4) {
+TEST(petrov_a_nearest_neighbor_elements_mpi, Test_NearestNeighbor4) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_neighbors(2, 0);
@@ -195,7 +194,7 @@ TEST(petrov_a_nearest_neighbor_elements_mpi, Test_NearestNeighbor3) {
   }
 }
 
- TEST(petrov_a_nearest_neighbor_elements_mpi, Test_NearestNeighbor5) {
+TEST(petrov_a_nearest_neighbor_elements_mpi, Test_NearestNeighbor5) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_neighbors(2, 0);

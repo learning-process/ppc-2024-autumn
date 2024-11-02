@@ -28,6 +28,7 @@ class TestMPITaskSequential : public ppc::core::Task {
 
  private:
   std::vector<int> input_;
+
   std::pair<int, int> closest_pair_;  
   int min_distance_;
 };
@@ -43,9 +44,10 @@ class TestMPITaskParallel : public ppc::core::Task {
 
  private:
   std::vector<int> input_, local_input_;
+
   std::pair<int, int> closest_pair_;  
   int min_distance_;
   boost::mpi::communicator world;
 };
 
-}  
+}  // namespace petrov_a_nearest_neighbor_elements_mpi
