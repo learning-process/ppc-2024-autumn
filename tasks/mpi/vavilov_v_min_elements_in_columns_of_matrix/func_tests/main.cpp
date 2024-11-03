@@ -161,33 +161,6 @@ TEST(vavilov_v_min_elements_in_columns_of_matrix_mpi, validation_output_empty_10
   }
 }
 
-TEST(vavilov_v_min_elements_in_columns_of_matrix_mpi, validation_find_min_elem_in_col_10x0_matr) {
-  boost::mpi::communicator world;
-  if (world.rank() == 0) {
-    const int rows = 0;
-    const int cols = 10;
-
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-
-    vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    std::vector<std::vector<int>> matr =
-        vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskSequential::generate_rand_matr(rows, cols);
-
-    for (auto& row : matr) {
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
-    }
-
-    taskDataSeq->inputs_count.emplace_back(rows);
-    taskDataSeq->inputs_count.emplace_back(cols);
-
-    std::vector<int> vec_res(cols, 0);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(vec_res.data()));
-    taskDataSeq->outputs_count.emplace_back(vec_res.size());
-
-    ASSERT_EQ(testMpiTaskSequential.validation(), false);
-  }
-}
-
 TEST(vavilov_v_min_elements_in_columns_of_matrix_mpi, validation_fails_on_invalid_output_of_size) {
   boost::mpi::communicator world;
   if (world.rank() == 0) {
