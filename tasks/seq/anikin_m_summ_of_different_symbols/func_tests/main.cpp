@@ -17,7 +17,7 @@ TEST(SumDifSymSequential_count, ans_0) {
   // Create Task Data
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[0]));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[0]));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[1]));
   taskDataSeq->inputs_count.emplace_back(in.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
@@ -42,7 +42,7 @@ TEST(SumDifSymSequential_count, ans_1) {
   // Create Task Data
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[0]));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[0]));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[1]));
   taskDataSeq->inputs_count.emplace_back(in.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
@@ -66,7 +66,7 @@ TEST(SumDifSymSequential_count, ans_2) {
   // Create Task Data
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[0]));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[0]));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[1]));
   taskDataSeq->inputs_count.emplace_back(in.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
@@ -91,7 +91,7 @@ TEST(SumDifSymSequential_count, ans_6) {
   // Create Task Data
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[0]));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[0]));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[1]));
   taskDataSeq->inputs_count.emplace_back(in.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());

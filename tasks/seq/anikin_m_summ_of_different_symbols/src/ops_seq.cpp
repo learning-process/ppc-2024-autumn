@@ -25,17 +25,28 @@ bool anikin_m_sum_of_differnt_symbols_seq::SumDifSymSequential::validation() {
 
 bool anikin_m_sum_of_differnt_symbols_seq::SumDifSymSequential::run() {
   internal_order_test();
-  std::string str1 = input[0];
+
+  int dif = 0;
+  std::string str1 = input[0];  
   std::string str2 = input[1];
+  if(str1.size() >= str2.size()) {
+    dif = str1.size() - str2.size();
+  }
+  else {
+    dif = str2.size() - str1.size();
+  }
   auto i1 = str1.begin();
   auto i2 = str2.begin();
-  while(i1 != str1.end() || i2 != str2.end()) {
-    if(*i1 != *i2) {
-      res++;
-    }
-    if(i1 != str1.end()) i1++;
-    if(i2 != str2.end()) i2++;
+
+  while(i1 != str1.end() && i2 != str2.end()) {
+    if(*i1 != *i2) res++;
+    i1++;
+    i2++;
   }
+
+  res += dif;
+  std::cout << res;
+
   return true;
 }
 
