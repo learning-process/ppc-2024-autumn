@@ -71,7 +71,7 @@ int rows, int cols) {
   std::vector<std::vector<int>> matr(rows, std::vector<int>(cols));
 
   for (size_t i = 0; i < rows; i++) {
-    matr[i] = generate_rand_vector(cols, -1000, 1000);
+    matr[i] = generate_rand_vec(cols, -1000, 1000);
   }
   for (size_t j = 0; j < cols; j++) {
     int r_row = std::rand() % rows;
