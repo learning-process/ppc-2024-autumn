@@ -16,12 +16,12 @@ void MonteCarloMPITask::set_function(std::function<double(double)> func, double 
 
 bool MonteCarloMPITask::pre_processing() {
   if (world.rank() == 0) {
-    // Настройка границ интегрирования и количества выборок
+    // РќР°СЃС‚СЂРѕР№РєР° РіСЂР°РЅРёС† РёРЅС‚РµРіСЂРёСЂРѕРІР°РЅРёСЏ Рё РєРѕР»РёС‡РµСЃС‚РІР° РІС‹Р±РѕСЂРѕРє
     broadcast(world, a_, 0);
     broadcast(world, b_, 0);
     broadcast(world, num_samples_, 0);
   } else {
-    // Инициализация переменных на каждом процессе
+    // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РїРµСЂРµРјРµРЅРЅС‹С… РЅР° РєР°Р¶РґРѕРј РїСЂРѕС†РµСЃСЃРµ
     broadcast(world, a_, 0);
     broadcast(world, b_, 0);
     broadcast(world, num_samples_, 0);
