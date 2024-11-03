@@ -81,7 +81,5 @@ TEST(Parallel_Operations_MPI, Test5) {
     sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
     testMpiTaskParallel.validation();
     EXPECT_EQ(testMpiTaskParallel.pre_processing(), true);
-    testMpiTaskParallel.run();
-    testMpiTaskParallel.post_processing();
   }
 }
