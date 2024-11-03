@@ -28,8 +28,6 @@ class MaxValueOfMatrixElementsParallel : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  static std::vector<T> generate_random_matrix(int rows, int cols);
-
  private:
   boost::mpi::communicator world;
 
@@ -46,18 +44,6 @@ class MaxValueOfMatrixElementsParallel : public ppc::core::Task {
 template <typename T>
 T MaxValueOfMatrixElementsParallel<T>::get_max_matrix_element(const std::vector<T>& matrix) {
   return matrix.empty() ? 0 : *std::max_element(matrix.begin(), matrix.end());
-}
-
-template <typename T>
-std::vector<T> MaxValueOfMatrixElementsParallel<T>::generate_random_matrix(int rows, int cols) {
-  std::vector<T> res(rows * cols);
-
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  for (size_t i = 0; i < res.size(); i++) {
-    res[i] = static_cast<T>(gen() % 1000);
-  }
-  return res;
 }
 
 template <typename T>

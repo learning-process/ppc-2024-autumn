@@ -1,10 +1,23 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
+#include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/belov_a_max_value_of_matrix_elements/include/ops_mpi.hpp"
+
+template <typename T>
+std::vector<T> generate_random_matrix(int rows, int cols) {
+  std::vector<T> res(rows * cols);
+
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  for (size_t i = 0; i < res.size(); i++) {
+    res[i] = static_cast<T>(gen() % 1000);
+  }
+  return res;
+}
 
 TEST(belov_a_max_value_matrix_mpi_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
@@ -16,9 +29,7 @@ TEST(belov_a_max_value_matrix_mpi_perf_test, test_pipeline_run) {
 
   if (world.rank() == 0) {
     dimensions = std::vector<int>{3, 4};
-    global_matrix =
-        belov_a_max_value_of_matrix_elements_mpi::MaxValueOfMatrixElementsParallel<double>::generate_random_matrix(
-            dimensions[0], dimensions[1]);
+    global_matrix = generate_random_matrix<double>(dimensions[0], dimensions[1]);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(dimensions.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(global_matrix.size());
@@ -72,9 +83,7 @@ TEST(belov_a_max_value_matrix_mpi_perf_test, test_task_run) {
 
   if (world.rank() == 0) {
     dimensions = std::vector<int>{3, 4};
-    global_matrix =
-        belov_a_max_value_of_matrix_elements_mpi::MaxValueOfMatrixElementsParallel<double>::generate_random_matrix(
-            dimensions[0], dimensions[1]);
+    global_matrix = generate_random_matrix<double>(dimensions[0], dimensions[1]);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(dimensions.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(global_matrix.size());

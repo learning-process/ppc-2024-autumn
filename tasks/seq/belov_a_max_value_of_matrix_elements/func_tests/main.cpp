@@ -1,10 +1,23 @@
 #include <gtest/gtest.h>
 
+#include <random>
 #include <vector>
 
 #include "seq/belov_a_max_value_of_matrix_elements/include/ops_seq.hpp"
 
 using namespace belov_a_max_value_of_matrix_elements_seq;
+
+template <typename T>
+std::vector<T> generate_random_matrix(int rows, int cols) {
+  std::vector<T> res(rows * cols);
+
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  for (size_t i = 0; i < res.size(); i++) {
+    res[i] = static_cast<T>(gen() % 1000);
+  }
+  return res;
+}
 
 TEST(belov_a_max_value_of_matrix_elements_seq, Test_Max_Value_Positive_Integers) {
   const int rows = 2;
@@ -353,8 +366,7 @@ TEST(belov_a_max_value_of_matrix_elements_seq, Test_PreProcessing_NonPositiveDim
 }
 
 TEST(belov_a_max_value_of_matrix_elements_seq, Test_Random_Matrix_Integers) {
-  std::vector<int> matrix =
-      belov_a_max_value_of_matrix_elements_seq::MaxValueOfMatrixElementsSequential<int>::generate_random_matrix(10, 10);
+  std::vector<int> matrix = generate_random_matrix<int>(10, 10);
   bool flag = true;
 
   for (const auto& item : matrix) {

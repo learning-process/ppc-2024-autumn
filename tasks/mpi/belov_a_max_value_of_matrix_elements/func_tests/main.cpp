@@ -2,19 +2,30 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <random>
 #include <vector>
 
 #include "mpi/belov_a_max_value_of_matrix_elements/include/ops_mpi.hpp"
 
 using namespace belov_a_max_value_of_matrix_elements_mpi;
 
+template <typename T>
+std::vector<T> generate_random_matrix(int rows, int cols) {
+  std::vector<T> res(rows * cols);
+
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  for (size_t i = 0; i < res.size(); i++) {
+    res[i] = static_cast<T>(gen() % 1000);
+  }
+  return res;
+}
+
 TEST(belov_a_max_value_of_matrix_elements_mpi, Test_Equality_Reference_Max_With_Calculated_Max) {
   boost::mpi::communicator world;
   std::vector<int> dimensions = {3, 4};
 
-  std::vector<int> global_matrix =
-      belov_a_max_value_of_matrix_elements_mpi::MaxValueOfMatrixElementsParallel<int>::generate_random_matrix(
-          dimensions[0], dimensions[1]);
+  std::vector<int> global_matrix = generate_random_matrix<int>(dimensions[0], dimensions[1]);
   std::vector<int32_t> global_max(1, 0);
 
   // Create TaskData
@@ -62,9 +73,7 @@ TEST(belov_a_max_value_of_matrix_elements_mpi, Test_Large_Matrix_Int) {
   boost::mpi::communicator world;
   std::vector<int> dimensions = {1000, 1000};
 
-  std::vector<int> global_matrix =
-      belov_a_max_value_of_matrix_elements_mpi::MaxValueOfMatrixElementsParallel<int>::generate_random_matrix(
-          dimensions[0], dimensions[1]);
+  std::vector<int> global_matrix = generate_random_matrix<int>(dimensions[0], dimensions[1]);
   std::vector<int32_t> global_max(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -107,9 +116,7 @@ TEST(belov_a_max_value_of_matrix_elements_mpi, Test_Large_Matrix_Double) {
   boost::mpi::communicator world;
   std::vector<int> dimensions = {1000, 1000};
 
-  std::vector<double> global_matrix =
-      belov_a_max_value_of_matrix_elements_mpi::MaxValueOfMatrixElementsParallel<double>::generate_random_matrix(
-          dimensions[0], dimensions[1]);
+  std::vector<double> global_matrix = generate_random_matrix<double>(dimensions[0], dimensions[1]);
   std::vector<double> global_max(1, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -152,9 +159,7 @@ TEST(belov_a_max_value_of_matrix_elements_mpi, Test_NonDivisibleDimensions) {
   boost::mpi::communicator world;
   std::vector<int> dimensions = {1023, 1027};
 
-  std::vector<int> global_matrix =
-      belov_a_max_value_of_matrix_elements_mpi::MaxValueOfMatrixElementsParallel<int>::generate_random_matrix(
-          dimensions[0], dimensions[1]);
+  std::vector<int> global_matrix = generate_random_matrix<int>(dimensions[0], dimensions[1]);
   std::vector<int32_t> global_max(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -197,9 +202,7 @@ TEST(belov_a_max_value_of_matrix_elements_mpi, Test_One_Row_Matrix) {
   boost::mpi::communicator world;
   std::vector<int> dimensions = {1, 1000};
 
-  std::vector<int> global_matrix =
-      belov_a_max_value_of_matrix_elements_mpi::MaxValueOfMatrixElementsParallel<int>::generate_random_matrix(
-          dimensions[0], dimensions[1]);
+  std::vector<int> global_matrix = generate_random_matrix<int>(dimensions[0], dimensions[1]);
   std::vector<int32_t> global_max(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -242,9 +245,7 @@ TEST(belov_a_max_value_of_matrix_elements_mpi, Test_Small_Matrix_Double) {
   boost::mpi::communicator world;
   std::vector<int> dimensions = {3, 3};
 
-  std::vector<double> global_matrix =
-      belov_a_max_value_of_matrix_elements_mpi::MaxValueOfMatrixElementsParallel<double>::generate_random_matrix(
-          dimensions[0], dimensions[1]);
+  std::vector<double> global_matrix = generate_random_matrix<double>(dimensions[0], dimensions[1]);
   std::vector<double> global_max(1, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -422,9 +423,7 @@ TEST(belov_a_max_value_of_matrix_elements_mpi, Test_Rectangular_Matrix_More_Rows
   boost::mpi::communicator world;
   std::vector<int> dimensions = {50, 5};
 
-  std::vector<int> global_matrix =
-      belov_a_max_value_of_matrix_elements_mpi::MaxValueOfMatrixElementsParallel<int>::generate_random_matrix(
-          dimensions[0], dimensions[1]);
+  std::vector<int> global_matrix = generate_random_matrix<int>(dimensions[0], dimensions[1]);
   std::vector<int32_t> global_max(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -553,9 +552,7 @@ TEST(belov_a_max_value_of_matrix_elements_mpi, Test_Small_2x2_Matrix) {
   boost::mpi::communicator world;
   std::vector<int> dimensions = {2, 2};
 
-  std::vector<int> global_matrix =
-      belov_a_max_value_of_matrix_elements_mpi::MaxValueOfMatrixElementsParallel<int>::generate_random_matrix(
-          dimensions[0], dimensions[1]);
+  std::vector<int> global_matrix = generate_random_matrix<int>(dimensions[0], dimensions[1]);
   std::vector<int32_t> global_max(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -592,4 +589,44 @@ TEST(belov_a_max_value_of_matrix_elements_mpi, Test_Small_2x2_Matrix) {
 
     ASSERT_EQ(reference_max[0], global_max[0]);
   }
+}
+
+TEST(belov_a_max_value_of_matrix_elements_mpi, Test_Zero_Rows) {
+  boost::mpi::communicator world;
+  std::vector<int> dimensions = {0, 10};
+
+  std::vector<int> global_matrix = {};
+  std::vector<int32_t> global_max(1, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(dimensions.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(global_matrix.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
+    taskDataPar->outputs_count.emplace_back(global_max.size());
+  }
+
+  belov_a_max_value_of_matrix_elements_mpi::MaxValueOfMatrixElementsParallel<int> testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), false);
+}
+
+TEST(belov_a_max_value_of_matrix_elements_mpi, Test_Zero_Columns) {
+  boost::mpi::communicator world;
+  std::vector<int> dimensions = {10, 0};
+
+  std::vector<int> global_matrix = {};
+  std::vector<int32_t> global_max(1, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(dimensions.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(global_matrix.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
+    taskDataPar->outputs_count.emplace_back(global_max.size());
+  }
+
+  belov_a_max_value_of_matrix_elements_mpi::MaxValueOfMatrixElementsParallel<int> testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), false);
 }

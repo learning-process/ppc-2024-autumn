@@ -1,18 +1,29 @@
 #include <gtest/gtest.h>
 
+#include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/belov_a_max_value_of_matrix_elements/include/ops_seq.hpp"
+
+template <typename T>
+std::vector<T> generate_random_matrix(int rows, int cols) {
+  std::vector<T> res(rows * cols);
+
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  for (size_t i = 0; i < res.size(); i++) {
+    res[i] = static_cast<T>(gen() % 1000);
+  }
+  return res;
+}
 
 TEST(belov_a_max_value_matrix_seq_perf_test, test_pipeline_run) {
   const int rows = 600;
   const int cols = 950;
 
   // Create data
-  std::vector<int> matrix =
-      belov_a_max_value_of_matrix_elements_seq::MaxValueOfMatrixElementsSequential<int>::generate_random_matrix(rows,
-                                                                                                                cols);
+  std::vector<int> matrix = generate_random_matrix<int>(rows, cols);
 
   std::vector<int> dimensions = {rows, cols};
   std::vector<int> out(1, 0);
@@ -55,9 +66,7 @@ TEST(belov_a_max_value_matrix_seq_perf_test, test_task_run) {
   const int cols = 950;
 
   // Create data
-  std::vector<int> matrix =
-      belov_a_max_value_of_matrix_elements_seq::MaxValueOfMatrixElementsSequential<int>::generate_random_matrix(rows,
-                                                                                                                cols);
+  std::vector<int> matrix = generate_random_matrix<int>(rows, cols);
 
   std::vector<int> dimensions = {rows, cols};
   std::vector<int> out(1, 0);
