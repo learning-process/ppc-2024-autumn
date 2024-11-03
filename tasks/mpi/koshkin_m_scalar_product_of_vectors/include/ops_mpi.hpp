@@ -14,6 +14,7 @@
 #include "core/task/include/task.hpp"
 
 namespace koshkin_m_scalar_product_of_vectors {
+std::vector<int> generateRandomVector(int v_size);
 int calculateDotProduct(const std::vector<int>& vec_1, const std::vector<int>& vec_2);
 class TestMPITaskSequential : public ppc::core::Task {
  public:

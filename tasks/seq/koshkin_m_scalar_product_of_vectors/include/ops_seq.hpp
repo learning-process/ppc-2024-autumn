@@ -7,6 +7,8 @@
 #include "core/task/include/task.hpp"
 
 namespace koshkin_m_scalar_product_of_vectors {
+std::vector<int> generateRandomVector(int v_size);
+int generateRandomNumber(int min, int max);
 int calculateDotProduct(const std::vector<int>& vec_1, const std::vector<int>& vec_2);
 class VectorDotProduct : public ppc::core::Task {
  public:

@@ -2,29 +2,18 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
-#include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/koshkin_m_scalar_product_of_vectors/include/ops_mpi.hpp"
-
-static int offset = 0;
-
-std::vector<int> generateRandomVector(int v_size) {
-  std::vector<int> vec(v_size);
-  std::mt19937 gen;
-  gen.seed((unsigned)time(nullptr) + ++offset);
-  for (int i = 0; i < v_size; i++) vec[i] = gen() % 100;
-  return vec;
-}
 
 TEST(koshkin_m_scalar_product_of_vectors, test_pipeline_run) {
   int count_size = 10000000;
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vec;
 
-  std::vector<int> vec_1 = generateRandomVector(count_size);
-  std::vector<int> vec_2 = generateRandomVector(count_size);
+  std::vector<int> vec_1 = koshkin_m_scalar_product_of_vectors::generateRandomVector(count_size);
+  std::vector<int> vec_2 = koshkin_m_scalar_product_of_vectors::generateRandomVector(count_size);
 
   std::vector<int32_t> res(1, 0);
   global_vec = {vec_1, vec_2};
@@ -65,8 +54,8 @@ TEST(koshkin_m_scalar_product_of_vectors, test_task_run) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vec;
   std::vector<int32_t> res(1, 0);
-  std::vector<int> vec_1 = generateRandomVector(count_size);
-  std::vector<int> vec_2 = generateRandomVector(count_size);
+  std::vector<int> vec_1 = koshkin_m_scalar_product_of_vectors::generateRandomVector(count_size);
+  std::vector<int> vec_2 = koshkin_m_scalar_product_of_vectors::generateRandomVector(count_size);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   global_vec = {vec_1, vec_2};
 
