@@ -58,6 +58,31 @@ bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskSequential::post_process
 
 bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
+
+  if (world.rank() == 0) {
+    input_ = std::vector<int>(taskData->inputs_count[0]);
+    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+      input_[i] = tmp_ptr[i];
+    }
+  }
+
+  min_distance_ = std::numeric_limits<int>::max();
+  return true;
+}
+
+bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskParallel::validation() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    return taskData->outputs_count[0] == 2;
+  }
+  return true;
+}
+
+bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskParallel::run() {
+  internal_order_test();
+  std::pair<int, int> local_pair;
+
   unsigned int delta = 0;
   unsigned int dop = 0;
   if (world.rank() == 0) {
@@ -66,13 +91,9 @@ bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskParallel::pre_processing
   }
   broadcast(world, delta, 0);
 
-  if (world.rank() == 0) {
-    input_ = std::vector<int>(taskData->inputs_count[0]);
-    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-      input_[i] = tmp_ptr[i];
-    }
+  int local_min_distance = std::numeric_limits<int>::max();
 
+  if (world.rank() == 0) {
     for (int proc = 1; proc < world.size() - 1; proc++) {
       world.send(proc, 0, input_.data() + proc * delta + dop, delta + 1);
     }
@@ -91,23 +112,6 @@ bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskParallel::pre_processing
     world.recv(0, 0, local_input_.data(), delta);
   }
 
-  min_distance_ = std::numeric_limits<int>::max();
-  return true;
-}
-
-bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskParallel::validation() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    return taskData->outputs_count[0] == 2;
-  }
-  return true;
-}
-
-bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskParallel::run() {
-  internal_order_test();
-  std::pair<int, int> local_pair;
-  int local_min_distance = std::numeric_limits<int>::max();
-
   for (size_t i = 0; i < local_input_.size() - 1; i++) {
     int distance = abs(local_input_[i + 1] - local_input_[i]);
     if (distance < local_min_distance) {
@@ -115,12 +119,7 @@ bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskParallel::run() {
       local_pair = {local_input_[i], local_input_[i + 1]};
     }
   }
-  // std::cout << "Proc: " << world.rank() << " ";
-  // for (int i = 0; i < local_input_.size();i++){
-  //   std::cout << local_input_[i] << " ";
-  // }
-  // std::cout << std::endl;
-  // std::cout << "proc: " << world.rank() << " " << "locla_min: " << local_min_distance  << std::endl;
+ 
   std::pair<int, int> global_pair;
   reduce(
       world, local_pair, global_pair,
@@ -129,11 +128,8 @@ bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskParallel::run() {
       },
       0);
 
-  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ closest_pair_ пїЅ
-  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
   if (world.rank() == 0) {
-    closest_pair_ = global_pair;  // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-                                  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+    closest_pair_ = global_pair;
   }
 
   return true;

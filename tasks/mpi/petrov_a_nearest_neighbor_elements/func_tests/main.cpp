@@ -46,8 +46,6 @@ TEST(petrov_a_nearest_neighbor_elements_mpi, Test_NearestNeighbor1) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    std::cout << reference_neighbors[0] << " " << global_neighbors[0] << std::endl;
-    std::cout << reference_neighbors[1] << " " << global_neighbors[1] << std::endl;
     ASSERT_EQ(std::abs(reference_neighbors[0] - reference_neighbors[1]),
               std::abs(global_neighbors[0] - global_neighbors[1]));
   }
@@ -93,8 +91,6 @@ TEST(petrov_a_nearest_neighbor_elements_mpi, Test_NearestNeighbor2) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    std::cout << reference_neighbors[0] << " " << global_neighbors[0] << std::endl;
-    std::cout << reference_neighbors[1] << " " << global_neighbors[1] << std::endl;
     ASSERT_EQ(std::abs(reference_neighbors[0] - reference_neighbors[1]),
               std::abs(global_neighbors[0] - global_neighbors[1]));
   }
@@ -140,8 +136,6 @@ TEST(petrov_a_nearest_neighbor_elements_mpi, Test_NearestNeighbor3) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    std::cout << reference_neighbors[0] << " " << global_neighbors[0] << std::endl;
-    std::cout << reference_neighbors[1] << " " << global_neighbors[1] << std::endl;
     ASSERT_EQ(std::abs(reference_neighbors[0] - reference_neighbors[1]),
               std::abs(global_neighbors[0] - global_neighbors[1]));
   }
@@ -187,8 +181,6 @@ TEST(petrov_a_nearest_neighbor_elements_mpi, Test_NearestNeighbor4) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    std::cout << reference_neighbors[0] << " " << global_neighbors[0] << std::endl;
-    std::cout << reference_neighbors[1] << " " << global_neighbors[1] << std::endl;
     ASSERT_EQ(std::abs(reference_neighbors[0] - reference_neighbors[1]),
               std::abs(global_neighbors[0] - global_neighbors[1]));
   }
@@ -234,8 +226,6 @@ TEST(petrov_a_nearest_neighbor_elements_mpi, Test_NearestNeighbor5) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    std::cout << reference_neighbors[0] << " " << global_neighbors[0] << std::endl;
-    std::cout << reference_neighbors[1] << " " << global_neighbors[1] << std::endl;
     ASSERT_EQ(std::abs(reference_neighbors[0] - reference_neighbors[1]),
               std::abs(global_neighbors[0] - global_neighbors[1]));
   }
