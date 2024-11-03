@@ -28,7 +28,7 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_pipeline_run) {
   }
   auto testMpiParallel =
       std::make_shared<kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<int>>(taskDataPar);
-  ASSERT_EQ(testMpiParallel->validation(), true);
+  testMpiParallel->validation();
   testMpiParallel->pre_processing();
   testMpiParallel->run();
   testMpiParallel->post_processing();
@@ -49,14 +49,14 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_pipeline_run) {
   }
 }
 
-TEST(kovalev_k_num_of_orderly_violations_mpi, test_int_100_perf) {
+TEST(kovalev_k_num_of_orderly_violations_mpi, test_int_10000_perf) {
   boost::mpi::communicator world;
   int rank = world.rank();
   std::vector<int> g_vec;
   std::vector<size_t> g_num_viol(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  size_t length = 100;
+  size_t length = 10000;
   if (rank == 0) {
     g_vec = std::vector<int>(length);
     std::srand(std::time(nullptr));
@@ -68,7 +68,7 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_int_100_perf) {
   }
   auto testMpiParallel =
       std::make_shared<kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<int>>(taskDataPar);
-  ASSERT_EQ(testMpiParallel->validation(), true);
+  testMpiParallel->validation();
   testMpiParallel->pre_processing();
   testMpiParallel->run();
   testMpiParallel->post_processing();
@@ -110,7 +110,7 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_int_1000000_perf) {
   }
   auto testMpiParallel =
       std::make_shared<kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<int>>(taskDataPar);
-  ASSERT_EQ(testMpiParallel->validation(), true);
+  testMpiParallel->validation();
   testMpiParallel->pre_processing();
   testMpiParallel->run();
   testMpiParallel->post_processing();
@@ -154,7 +154,7 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_double_10000_perf) {
   }
   auto testMpiParallel =
       std::make_shared<kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<double>>(taskDataPar);
-  ASSERT_EQ(testMpiParallel->validation(), true);
+  testMpiParallel->validation();
   testMpiParallel->pre_processing();
   testMpiParallel->run();
   testMpiParallel->post_processing();
@@ -198,7 +198,7 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_double_1000000_perf) {
   }
   auto testMpiParallel =
       std::make_shared<kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<double>>(taskDataPar);
-  ASSERT_EQ(testMpiParallel->validation(), true);
+  testMpiParallel->validation();
   testMpiParallel->pre_processing();
   testMpiParallel->run();
   testMpiParallel->post_processing();

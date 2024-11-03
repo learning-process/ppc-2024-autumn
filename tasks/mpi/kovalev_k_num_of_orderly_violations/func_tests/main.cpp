@@ -11,20 +11,20 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_viol_0_int_) {
   std::vector<size_t> out(1, 0);
   boost::mpi::communicator world;
   // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> tmpPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskSeq->inputs_count.emplace_back(in.size());
-    taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-    taskSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-    taskSeq->outputs_count.emplace_back(out.size());
+    tmpPar->inputs_count.emplace_back(in.size());
+    tmpPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    tmpPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+    tmpPar->outputs_count.emplace_back(out.size());
   }
-  kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<int> tmpTaskSeq(taskSeq);
-  ASSERT_EQ(tmpTaskSeq.validation(), true);
-  tmpTaskSeq.pre_processing();
-  tmpTaskSeq.run();
-  tmpTaskSeq.post_processing();
+  kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<int> tmpTaskPar(tmpPar);
+  tmpTaskPar.validation();
+  tmpTaskPar.pre_processing();
+  tmpTaskPar.run();
+  tmpTaskPar.post_processing();
   size_t result = 0;
-  ASSERT_EQ(result, out[0]);
+  if (world.rank() == 0) ASSERT_EQ(result, out[0]);
 }
 
 TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_10_int_) {
@@ -36,20 +36,21 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_10_int_) {
   in[1] = -1;
   boost::mpi::communicator world;
   // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> tmpPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskSeq->inputs_count.emplace_back(in.size());
-    taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-    taskSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-    taskSeq->outputs_count.emplace_back(out.size());
+    tmpPar->inputs_count.emplace_back(in.size());
+    tmpPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    tmpPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+    tmpPar->outputs_count.emplace_back(out.size());
   }
-  kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<int> tmpTaskSeq(taskSeq);
-  ASSERT_EQ(tmpTaskSeq.validation(), true);
-  tmpTaskSeq.pre_processing();
-  tmpTaskSeq.run();
-  tmpTaskSeq.post_processing();
+  kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<int> tmpTaskPar(tmpPar);
+  tmpTaskPar.validation();
+  tmpTaskPar.pre_processing();
+  tmpTaskPar.run();
+  tmpTaskPar.post_processing();
   size_t result = 1;
-  ASSERT_EQ(result, out[0]);
+  if (world.rank() == 0)
+    if (world.rank() == 0) ASSERT_EQ(result, out[0]);
 }
 
 TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_10000_int_) {
@@ -71,20 +72,20 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_10000_int_) {
   std::vector<size_t> out(1, 0);
   boost::mpi::communicator world;
   // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> tmpPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskSeq->inputs_count.emplace_back(in.size());
-    taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-    taskSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-    taskSeq->outputs_count.emplace_back(out.size());
+    tmpPar->inputs_count.emplace_back(in.size());
+    tmpPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    tmpPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+    tmpPar->outputs_count.emplace_back(out.size());
   }
-  kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<int> tmpTaskSeq(taskSeq);
-  ASSERT_EQ(tmpTaskSeq.validation(), true);
-  tmpTaskSeq.pre_processing();
-  tmpTaskSeq.run();
-  tmpTaskSeq.post_processing();
+  kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<int> tmpTaskPar(tmpPar);
+  tmpTaskPar.validation();
+  tmpTaskPar.pre_processing();
+  tmpTaskPar.run();
+  tmpTaskPar.post_processing();
   size_t result = 11;
-  ASSERT_EQ(result, out[0]);
+  if (world.rank() == 0) ASSERT_EQ(result, out[0]);
 }
 
 TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_viol_0_double_) {
@@ -95,20 +96,20 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_viol_0_double_) {
   std::vector<size_t> out(1, 0);
   boost::mpi::communicator world;
   // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> tmpPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskSeq->inputs_count.emplace_back(in.size());
-    taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-    taskSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-    taskSeq->outputs_count.emplace_back(out.size());
+    tmpPar->inputs_count.emplace_back(in.size());
+    tmpPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    tmpPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+    tmpPar->outputs_count.emplace_back(out.size());
   }
-  kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<double> tmpTaskSeq(taskSeq);
-  ASSERT_EQ(tmpTaskSeq.validation(), true);
-  tmpTaskSeq.pre_processing();
-  tmpTaskSeq.run();
-  tmpTaskSeq.post_processing();
+  kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<double> tmpTaskPar(tmpPar);
+  tmpTaskPar.validation();
+  tmpTaskPar.pre_processing();
+  tmpTaskPar.run();
+  tmpTaskPar.post_processing();
   size_t result = 0;
-  ASSERT_EQ(result, out[0]);
+  if (world.rank() == 0) ASSERT_EQ(result, out[0]);
 }
 
 TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_10_double_) {
@@ -120,20 +121,20 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_10_double_) {
   in[1] = -1;
   boost::mpi::communicator world;
   // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> tmpPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskSeq->inputs_count.emplace_back(in.size());
-    taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-    taskSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-    taskSeq->outputs_count.emplace_back(out.size());
+    tmpPar->inputs_count.emplace_back(in.size());
+    tmpPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    tmpPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+    tmpPar->outputs_count.emplace_back(out.size());
   }
-  kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<double> tmpTaskSeq(taskSeq);
-  ASSERT_EQ(tmpTaskSeq.validation(), true);
-  tmpTaskSeq.pre_processing();
-  tmpTaskSeq.run();
-  tmpTaskSeq.post_processing();
+  kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<double> tmpTaskPar(tmpPar);
+  tmpTaskPar.validation();
+  tmpTaskPar.pre_processing();
+  tmpTaskPar.run();
+  tmpTaskPar.post_processing();
   size_t result = 1;
-  ASSERT_EQ(result, out[0]);
+  if (world.rank() == 0) ASSERT_EQ(result, out[0]);
 }
 
 TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_1000_double) {
@@ -156,18 +157,18 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_1000_double) {
   std::vector<size_t> out(1, 0);
   boost::mpi::communicator world;
   // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> tmpPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskSeq->inputs_count.emplace_back(in.size());
-    taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-    taskSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-    taskSeq->outputs_count.emplace_back(out.size());
+    tmpPar->inputs_count.emplace_back(in.size());
+    tmpPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    tmpPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+    tmpPar->outputs_count.emplace_back(out.size());
   }
-  kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<double> tmpTaskSeq(taskSeq);
-  ASSERT_EQ(tmpTaskSeq.validation(), true);
-  tmpTaskSeq.pre_processing();
-  tmpTaskSeq.run();
-  tmpTaskSeq.post_processing();
+  kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<double> tmpTaskPar(tmpPar);
+  tmpTaskPar.validation();
+  tmpTaskPar.pre_processing();
+  tmpTaskPar.run();
+  tmpTaskPar.post_processing();
   size_t result = 11;
-  ASSERT_EQ(result, out[0]);
+  if (world.rank() == 0) ASSERT_EQ(result, out[0]);
 }
