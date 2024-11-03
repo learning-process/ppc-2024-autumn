@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #pragma once
 
 #include <gtest/gtest.h>
@@ -13,7 +12,9 @@
 
 #include "core/task/include/task.hpp"
 
-namespace korovin_n_min_val_row_matrix_mpi {
+namespace oturin_a_max_values_by_rows_matrix_mpi {
+
+std::vector<int> getRandomVector(int sz);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
@@ -22,12 +23,12 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  static std::vector<int> generate_rnd_vector(int size, int lower_bound = 0, int upper_bound = 50);
-  static std::vector<std::vector<int>> generate_rnd_matrix(int rows, int cols);
 
  private:
-  std::vector<std::vector<int>> input_;
-  std::vector<int> res_;
+  size_t n = 0;
+  size_t m = 0;
+  std::vector<int> input_;
+  std::vector<int> res;
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -39,10 +40,19 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<std::vector<int>> input_;
-  std::vector<std::vector<int>> local_input_;
-  std::vector<int> res_;
+  /*
+        m           maxes:
+        ^
+        | -9 99    :  99
+        | 12 06    :  12
+        +------> n
+  */
+  size_t n = 0;
+  size_t m = 0;
+  std::vector<int> input_, local_input_;
+  std::vector<int> res;
+
   boost::mpi::communicator world;
 };
 
-}  // namespace korovin_n_min_val_row_matrix_mpi
+}  // namespace oturin_a_max_values_by_rows_matrix_mpi
