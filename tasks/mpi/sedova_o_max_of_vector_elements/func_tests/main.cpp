@@ -84,20 +84,23 @@ TEST(sedova_o_max_of_vector_elements_mpi, Test5) {
   }
 }
 
-TEST(sedova_o_max_of_vector_elements_mpi, Test_1_1) {
+TEST(sedova_o_max_of_vector_elements_mpi, Test_1_5) {
+  size_t rows = 1;
+  size_t cols = 5;
+  size_t value = 30;
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
-  std::vector<int32_t> global_max(1, -30);
+  std::vector<int32_t> global_max(1, -((int)(value)));
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = generate_random_matrix(1, 1, 30);
+    global_matrix = generate_random_matrix(rows, cols, value);
     for (unsigned int i = 0; i < global_matrix.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix[i].data()));
-    taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->inputs_count.emplace_back(rows);
+    taskDataPar->inputs_count.emplace_back(cols);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
@@ -115,8 +118,8 @@ TEST(sedova_o_max_of_vector_elements_mpi, Test_1_1) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     for (unsigned int i = 0; i < global_matrix.size(); i++)
       taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix[i].data()));
-    taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->inputs_count.emplace_back(rows);
+    taskDataSeq->inputs_count.emplace_back(cols);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_max.data()));
     taskDataSeq->outputs_count.emplace_back(reference_max.size());
     // Create Task
