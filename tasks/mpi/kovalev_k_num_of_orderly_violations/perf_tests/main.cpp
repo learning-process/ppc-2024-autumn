@@ -58,8 +58,8 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_int_100_perf) {
   size_t length = 100;
   if (rank == 0) {
     g_vec = std::vector<int>(length);
-    srand(time(NULL));
-    for (size_t i = 0; i < length; i++) g_vec[i] = rand() * pow(-1, rand());
+    std::srand(std::time(0))
+    for (size_t i = 0; i < length; i++) g_vec[i] = rand() * std::pow(-1, rand());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(g_vec.data()));
     taskDataPar->inputs_count.emplace_back(g_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(g_num_viol.data()));
@@ -100,8 +100,8 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_int_1000000_perf) {
   size_t length = 1000000;
   if (rank == 0) {
     g_vec = std::vector<int>(length);
-    srand(time(NULL));
-    for (size_t i = 0; i < length; i++) g_vec[i] = rand() * pow(-1, rand());
+    std::srand(std::time(0))
+    for (size_t i = 0; i < length; i++) g_vec[i] = rand() * std::pow(-1, rand());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(g_vec.data()));
     taskDataPar->inputs_count.emplace_back(g_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(g_num_viol.data()));
@@ -144,7 +144,7 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_double_10000_perf) {
     g_vec = std::vector<double>(length);
     double max = 1000000;
     double min = -1000000;
-    srand(time(NULL));
+    std::srand(std::time(0))
     for (size_t i = 0; i < length; i++) g_vec[i] = min + static_cast<double>(rand()) / RAND_MAX * (max - min);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(g_vec.data()));
     taskDataPar->inputs_count.emplace_back(g_vec.size());
@@ -188,7 +188,7 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_double_1000000_perf) {
     g_vec = std::vector<double>(length);
     double max = 1000000;
     double min = -1000000;
-    srand(time(NULL));
+    std::srand(std::time(0))
     for (size_t i = 0; i < length; i++) g_vec[i] = min + static_cast<double>(rand()) / RAND_MAX * (max - min);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(g_vec.data()));
     taskDataPar->inputs_count.emplace_back(g_vec.size());
