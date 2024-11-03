@@ -45,7 +45,6 @@ class TestMPITaskParallel : public ppc::core::Task {
   int res{};
   boost::mpi::communicator world;
   unsigned int delta;
-  int local_ans;
 };
 
 }  // namespace tsatsyn_a_vector_dot_product_mpi
