@@ -48,5 +48,4 @@ TEST(tselikova_a_average_of_vector_elements_mpi, Test_EmptyVector) {
     tselikova_a_average_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
     ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
-
 }
