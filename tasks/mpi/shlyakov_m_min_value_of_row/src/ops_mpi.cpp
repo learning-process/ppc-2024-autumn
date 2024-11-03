@@ -74,6 +74,20 @@ bool shlyakov_m_min_value_of_row_mpi::TestMPITaskParallel::pre_processing() {
 bool shlyakov_m_min_value_of_row_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
 
+  if (world.rank() == 0) {
+    if (((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
+         (taskData->inputs_count.size() >= 2 && taskData->inputs_count[0] != 0 && taskData->inputs_count[1] != 0)) &&
+        (taskData->outputs_count[0] == taskData->inputs_count[0]))
+      return (true);
+    return (false);
+  }
+
+  return true;
+}
+
+bool shlyakov_m_min_value_of_row_mpi::TestMPITaskParallel::run() {
+  internal_order_test();
+
   int sz_row = 0;
   int sz_col = 0;
 
@@ -114,20 +128,6 @@ bool shlyakov_m_min_value_of_row_mpi::TestMPITaskParallel::validation() {
   }
 
   res_.resize(sz_row);
-
-  if (world.rank() == 0) {
-    if (((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
-         (taskData->inputs_count.size() >= 2 && taskData->inputs_count[0] != 0 && taskData->inputs_count[1] != 0)) &&
-        (taskData->outputs_count[0] == taskData->inputs_count[0]))
-      return (true);
-    return (false);
-  }
-
-  return true;
-}
-
-bool shlyakov_m_min_value_of_row_mpi::TestMPITaskParallel::run() {
-  internal_order_test();
 
   std::vector<int> local_mins(local_input_.size(), INT_MAX);
   for (size_t i = 0; i < local_input_.size(); i++) {
