@@ -1,17 +1,79 @@
-#include <mpi.h>
+// Copyright 2023 Konkov Ilya
+#include <gtest/gtest.h>
 
-#include "gtest/gtest.h"
+#include <boost/mpi/timer.hpp>
+#include <string>
+#include <vector>
+
+#include "core/perf/include/perf.hpp"
 #include "mpi/konkov_i_count_words/include/ops_mpi.hpp"
 
-namespace konkov_i_count_words_mpi {
+TEST(konkov_i_count_words_mpi, test_pipeline_run) {
+  boost::mpi::communicator world;
+  std::string input = "Hello world this is a test";
+  int expected_count = 6;
 
-TEST(konkov_i_count_words_mpi, test_performance) {
-  int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  std::string input = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
-  for (int i = 0; i < 1000000; ++i) {
-    countWords(input, rank);
+  std::vector<int> out(1, 0);
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&input));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
+  }
+
+  auto testMpiTaskParallel = std::make_shared<konkov_i_count_words_mpi::CountWordsTaskParallel>(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  testMpiTaskParallel->pre_processing();
+  testMpiTaskParallel->run();
+  testMpiTaskParallel->post_processing();
+
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 10;
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
+  perfAnalyzer->pipeline_run(perfAttr, perfResults);
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
+    ASSERT_EQ(expected_count, out[0]);
   }
 }
 
-}  // namespace konkov_i_count_words_mpi
+TEST(konkov_i_count_words_mpi, test_task_run) {
+  boost::mpi::communicator world;
+  std::string input = "Hello world this is a test";
+  int expected_count = 6;
+
+  std::vector<int> out(1, 0);
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&input));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
+  }
+
+  auto testMpiTaskParallel = std::make_shared<konkov_i_count_words_mpi::CountWordsTaskParallel>(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  testMpiTaskParallel->pre_processing();
+  testMpiTaskParallel->run();
+  testMpiTaskParallel->post_processing();
+
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 10;
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
+  perfAnalyzer->task_run(perfAttr, perfResults);
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
+    ASSERT_EQ(expected_count, out[0]);
+  }
+}
