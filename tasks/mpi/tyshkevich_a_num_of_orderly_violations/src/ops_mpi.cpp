@@ -75,14 +75,6 @@ bool tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskParallel::pre_proces
   return true;
 }
 
-bool tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskParallel::validation() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    return taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1;
-  }
-  return true;
-}
-
 bool tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
@@ -105,9 +97,9 @@ bool tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskParallel::run() {
 
   if (world.rank() == 0) {
     for (int i = 0; i < world_size - 2; i++) {
-      world.send(i + 1, 0, &input_.data()[i * chunkSize], chunkSize + 1);
+      world.send(i + 1, 0, &input_.data() + i * chunkSize, chunkSize + 1);
     }
-    world.send(world_size - 1, 0, &input_.data()[(world_size - 2) * chunkSize], lastChunkSize);
+    world.send(world_size - 1, 0, &input_.data() + (world_size - 2) * lastChunkSize, lastChunkSize);
 
     int tempDef;
     for (int i = 0; i < world_size - 1; i++) {
