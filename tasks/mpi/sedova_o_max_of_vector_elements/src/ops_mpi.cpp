@@ -44,9 +44,9 @@ bool sedova_o_max_of_vector_elements_mpi::TestMPITaskSequential::post_processing
 
 bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  unsigned int rows = taskData->inputs_count[0];
-  unsigned int cols = taskData->inputs_count[1];
   if (world.rank() == 0) {
+    unsigned int rows = taskData->inputs_count[0];
+    unsigned int cols = taskData->inputs_count[1];
     input_ = std::vector<int>(rows * cols);
     for (unsigned int i = 0; i < rows; i++) {
       auto *input_data = reinterpret_cast<int *>(taskData->inputs[i]);
@@ -68,9 +68,9 @@ bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::validation() {
 bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   unsigned int a = 0;
-  unsigned int rows = taskData->inputs_count[0];
-  unsigned int cols = taskData->inputs_count[1];
   if (world.rank() == 0) {
+    unsigned int rows = taskData->inputs_count[0];
+    unsigned int cols = taskData->inputs_count[1];
     a = rows * cols / world.size();
     int b = rows * cols % world.size() + 1;
     if (a == 0) {
