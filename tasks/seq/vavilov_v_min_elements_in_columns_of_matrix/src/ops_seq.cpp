@@ -11,9 +11,9 @@ bool vavilov_v_min_elements_in_columns_of_matrix_seq::TestTaskSequential::pre_pr
   int cols = taskData->inputs_count[1];
   input_.resize(rows, std::vector<int>(cols));
 
-  for (size_t i = 0; i < rows; i++) {
+  for (int i = 0; i < rows; i++) {
     int* input_row = reinterpret_cast<int*>(taskData->inputs[i]);
-    for (size_t j = 0; j < cols; j++) {
+    for (int j = 0; j < cols; j++) {
       input_[i][j] = input_row[j];
     }
   }
@@ -67,10 +67,10 @@ std::vector<int> vavilov_v_min_elements_in_columns_of_matrix_seq::TestTaskSequen
 std::vector<std::vector<int>> vavilov_v_min_elements_in_columns_of_matrix_seq::TestTaskSequential::generate_rand_matr(
     int rows, int cols) {
   std::vector<std::vector<int>> matr(rows, std::vector<int>(cols)); 
-  for (size_t i = 0; i < rows; i++) {
+  for (int i = 0; i < rows; i++) {
     matr[i] = generate_rand_vec(cols, -1000, 1000);
   }
-  for (size_t j = 0; j < cols; j++) {
+  for (int j = 0; j < cols; j++) {
     int r_row = std::rand() % rows;
     matr[r_row][j] = INT_MIN;
   }
