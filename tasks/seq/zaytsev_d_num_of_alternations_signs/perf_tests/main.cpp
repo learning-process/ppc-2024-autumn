@@ -7,7 +7,7 @@
 #include "seq/zaytsev_d_num_of_alternations_signs/include/ops_seq.hpp"
 
 TEST(sequential_zaytsev_d_num_of_alternations_signs_perf_test, test_pipeline_run) {
-  const int input_size = 10000000; 
+  const int input_size = 10000000;
 
   std::vector<int> in(input_size);
   for (int i = 0; i < input_size; ++i) {
@@ -37,15 +37,15 @@ TEST(sequential_zaytsev_d_num_of_alternations_signs_perf_test, test_pipeline_run
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ((input_size - 1), out[0]);  
+  ASSERT_EQ((input_size - 1), out[0]);
 }
 
 TEST(sequential_zaytsev_d_num_of_alternations_signs_perf_test, test_task_run) {
-  const int input_size = 10000000;  
+  const int input_size = 10000000;
 
   std::vector<int> in(input_size);
   for (int i = 0; i < input_size; ++i) {
-    in[i] = (i % 2 == 0) ? 1 : -1; 
+    in[i] = (i % 2 == 0) ? 1 : -1;
   }
   std::vector<int> out(1, 0);
 
@@ -71,5 +71,5 @@ TEST(sequential_zaytsev_d_num_of_alternations_signs_perf_test, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ((input_size - 1), out[0]); 
+  ASSERT_EQ((input_size - 1), out[0]);
 }

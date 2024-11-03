@@ -33,9 +33,9 @@ TEST(zaytsev_d_num_of_alternations_signs_mpi, Test_CountAlternations_MixedValues
 
 TEST(zaytsev_d_num_of_alternations_signs_mpi, Test_CountAlternations_RandomVector) {
   boost::mpi::communicator world;
-  int vector_size = 24;  
+  int vector_size = 24;
   std::vector<int> test_vector = zaytsev_d_num_of_alternations_signs_mpi::getRandomVector(vector_size);
-  std::vector<int32_t> global_count(1, 0);  
+  std::vector<int32_t> global_count(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -59,10 +59,9 @@ TEST(zaytsev_d_num_of_alternations_signs_mpi, Test_CountAlternations_RandomVecto
         expected_count++;
       }
     }
-    ASSERT_EQ(global_count[0], expected_count);  
+    ASSERT_EQ(global_count[0], expected_count);
   }
 }
-
 
 TEST(zaytsev_d_num_of_alternations_signs_mpi, Test_CountAlternations_OnlyPositive) {
   boost::mpi::communicator world;
@@ -84,7 +83,7 @@ TEST(zaytsev_d_num_of_alternations_signs_mpi, Test_CountAlternations_OnlyPositiv
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    ASSERT_EQ(global_count[0], 0);  
+    ASSERT_EQ(global_count[0], 0);
   }
 }
 
@@ -108,7 +107,7 @@ TEST(zaytsev_d_num_of_alternations_signs_mpi, Test_CountAlternations_OnlyNegativ
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    ASSERT_EQ(global_count[0], 0); 
+    ASSERT_EQ(global_count[0], 0);
   }
 }
 
@@ -132,10 +131,9 @@ TEST(zaytsev_d_num_of_alternations_signs_mpi, Test_CountAlternations_SameElement
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    ASSERT_EQ(global_count[0], 0); 
+    ASSERT_EQ(global_count[0], 0);
   }
 }
-
 
 TEST(zaytsev_d_num_of_alternations_signs_mpi, Test_CountAlternations_NegativeStartEnd) {
   boost::mpi::communicator world;
@@ -157,7 +155,7 @@ TEST(zaytsev_d_num_of_alternations_signs_mpi, Test_CountAlternations_NegativeSta
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    ASSERT_EQ(global_count[0], 10);  
+    ASSERT_EQ(global_count[0], 10);
   }
 }
 
@@ -184,4 +182,3 @@ TEST(zaytsev_d_num_of_alternations_signs_mpi, Test_CountAlternations_LessAlterna
     ASSERT_EQ(global_count[0], 3);
   }
 }
-

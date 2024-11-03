@@ -41,7 +41,7 @@ TEST(mpi_zaytsev_d_num_of_alternations_signs_perf_test, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_GE(global_result[0], 0);  
+    ASSERT_GE(global_result[0], 0);
   }
 }
 
