@@ -21,4 +21,4 @@ class TestTaskSequential : public ppc::core::Task {
   std::vector<int> data_;
 };
 
-}  // namespace zaytsev_d_num_of_alternations_signs_seq
+}

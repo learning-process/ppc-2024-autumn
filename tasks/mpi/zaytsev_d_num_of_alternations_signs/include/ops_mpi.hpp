@@ -19,8 +19,7 @@ std::vector<int> getRandomVector(int sz);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_ )
-      : Task(std::move(taskData_)) {}
+  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -35,8 +34,7 @@ class TestMPITaskSequential : public ppc::core::Task {
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -49,4 +47,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  // namespace zaytsev_d_num_of_alternations_signs_mpi
+}  
