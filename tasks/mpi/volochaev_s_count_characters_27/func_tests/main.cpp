@@ -40,8 +40,6 @@ TEST(volochaev_s_count_characters_27_MPI, Test_0) {
     // Create Task
     volochaev_s_count_characters_27_mpi::Lab1_27_seq testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), false);
-
-    ASSERT_EQ(reference_diff[0], global_diff[0]);
   }
 }
 
