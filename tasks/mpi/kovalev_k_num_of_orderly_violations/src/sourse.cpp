@@ -28,7 +28,7 @@ bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::pre_
   try {
     boost::mpi::broadcast(world, n, 0);
   } catch (const boost::mpi::exception& e) {
-    std::cerr << "Ошибка в MPI broadcast: " << e.what() << std::endl;
+    std::cerr << "MPI broadcast: " << e.what() << std::endl;
   }
   size_t scratter_length = n / size;  // minimum length to each process
   loc_v.resize(scratter_length);      // resize the local copy
@@ -38,7 +38,7 @@ bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::pre_
     char errorString[MPI_MAX_ERROR_STRING];
     int errorStringLength;
     MPI_Error_string(scatterResult, errorString, &errorStringLength);
-    std::cerr << "Ошибка MPI_Scatter: " << errorString << std::endl;
+    std::cerr << "MPI_Scatter: " << errorString << std::endl;
   }
   return true;
 }
@@ -62,7 +62,7 @@ bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::run(
   try {
     boost::mpi::reduce(world, l_res, g_res, std::plus<unsigned long>(), 0);
   } catch (const boost::mpi::exception& e) {
-    std::cerr << "Ошибка в MPI reduce: " << e.what() << std::endl;
+    std::cerr << "MPI reduce: " << e.what() << std::endl;
     return 1;  // Завершение программы с кодом ошибки
   }
   if (rank == 0) {

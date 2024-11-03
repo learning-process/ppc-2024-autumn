@@ -27,7 +27,7 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_viol_0_int_) {
   size_t result = 0;
   ASSERT_EQ(result, out[0]);
   } catch (const boost::mpi::exception &e) {
-    std::cerr << "Îøèáêà â MPI broadcast: " << e.what() << std::endl;
+    std::cerr << "Test_NoOV_viol_0_int_: " << e.what() << std::endl;
   }
 }
 
