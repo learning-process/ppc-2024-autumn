@@ -170,8 +170,8 @@ std::vector<int> vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskSeq
   return vec;
 }
 
-std::vector<std::vector<int>> vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskSequential::generate_rand_matr(
-    int rows, int cols) {
+std::vector<std::vector<int>>
+vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskSequential::generate_rand_matr(int rows, int cols) {
   std::vector<std::vector<int>> matr(rows, std::vector<int>(cols));
   for (int i = 0; i < rows; i++) {
     matr[i] = generate_rand_vec(cols, -1000, 1000);
