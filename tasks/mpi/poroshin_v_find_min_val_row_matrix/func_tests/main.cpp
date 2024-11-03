@@ -7,6 +7,54 @@
 
 #include "mpi/poroshin_v_find_min_val_row_matrix/include/ops_mpi.hpp"
 
+TEST(poroshin_v_find_min_val_row_matrix_mpi, Test_rand_100_100) {
+  int n = 100;
+  int m = 100;
+  boost::mpi::communicator world;
+  std::vector<int> global_matrix;
+  std::vector<int32_t> m_vec(m);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    global_matrix = poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskSequential::gen(m, n);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(m);
+    taskDataPar->inputs_count.emplace_back(n);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(m_vec.data()));
+    taskDataPar->outputs_count.emplace_back(m);
+  }
+
+  poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    // Create data
+    std::vector<int32_t> rm_vec(m);
+
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(m);
+    taskDataSeq->inputs_count.emplace_back(n);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(rm_vec.data()));
+    taskDataSeq->outputs_count.emplace_back(m);
+
+    // Create Task
+    poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(m_vec, rm_vec);
+  }
+}
+
 TEST(poroshin_v_find_min_val_row_matrix_mpi, Test_2_4_0) {
   int n = 5;
   int m = 3;
@@ -172,7 +220,7 @@ TEST(poroshin_v_find_min_val_row_matrix_mpi, Test_rand_10_12) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = poroshin_v_find_min_val_row_matrix_mpi::gen(m, n);
+    global_matrix = poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskSequential::gen(m, n);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(m);
     taskDataPar->inputs_count.emplace_back(n);
@@ -220,7 +268,7 @@ TEST(poroshin_v_find_min_val_row_matrix_mpi, Test_rand_10_15) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = poroshin_v_find_min_val_row_matrix_mpi::gen(m, n);
+    global_matrix = poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskSequential::gen(m, n);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(m);
@@ -269,7 +317,7 @@ TEST(poroshin_v_find_min_val_row_matrix_mpi, Test_rand_10_2) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = poroshin_v_find_min_val_row_matrix_mpi::gen(m, n);
+    global_matrix = poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskSequential::gen(m, n);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(m);
     taskDataPar->inputs_count.emplace_back(n);
@@ -317,7 +365,7 @@ TEST(poroshin_v_find_min_val_row_matrix_mpi, Test_rand_0_0) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = poroshin_v_find_min_val_row_matrix_mpi::gen(m, n);
+    global_matrix = poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskSequential::gen(m, n);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(m);
     taskDataPar->inputs_count.emplace_back(n);

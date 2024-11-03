@@ -10,7 +10,7 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> poroshin_v_find_min_val_row_matrix_mpi::gen(int m, int n) {
+std::vector<int> poroshin_v_find_min_val_row_matrix_mpi::TestMPITaskSequential::gen(int m, int n) {
   std::vector<int> tmp(m * n);
   int n1 = std::max(n, m);
   int m1 = std::min(n, m);

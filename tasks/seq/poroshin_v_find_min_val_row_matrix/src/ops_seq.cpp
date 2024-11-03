@@ -56,7 +56,7 @@ bool poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential::post_processing
   return true;
 }
 
-std::vector<int> poroshin_v_find_min_val_row_matrix_seq::gen(int m, int n) {
+std::vector<int> poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential::gen(int m, int n) {
   std::vector<int> tmp(m * n);
   int n1 = std::max(n, m);
   int m1 = std::min(n, m);

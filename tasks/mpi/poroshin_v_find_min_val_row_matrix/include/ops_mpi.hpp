@@ -15,8 +15,6 @@
 
 namespace poroshin_v_find_min_val_row_matrix_mpi {
 
-std::vector<int> gen(int m, int n);  // Generate vector (matrix)
-
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -25,7 +23,7 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-
+  static std::vector<int> gen(int m, int n);  // Generate vector (matrix)
  private:
   std::vector<int> input_;  // Input vector
   std::vector<int> res;     // Result vector
@@ -39,7 +37,6 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-
  private:
   std::vector<int> input_;         // Input vector
   std::vector<int> local_input_;   // Local input vector

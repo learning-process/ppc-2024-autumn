@@ -17,7 +17,7 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, test_pipeline_run) {
   // Create Task
   auto testTaskSequential = std::make_shared<poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential>(taskDataSeq);
 
-  std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::gen(m, n);
+  std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential::gen(m, n);
 
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(tmp.data()));
   taskDataSeq->inputs_count.emplace_back(m);
@@ -60,7 +60,7 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, test_task_run) {
   // Create Task
   auto testTaskSequential = std::make_shared<poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential>(taskDataSeq);
 
-  std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::gen(m, n);
+  std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential::gen(m, n);
 
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(tmp.data()));
   taskDataSeq->inputs_count.emplace_back(m);

@@ -13,7 +13,7 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, find_min_10x10_matrix) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> test = std::make_shared<ppc::core::TaskData>();
   poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential testTaskSequential(test);
-  std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::gen(m, n);
+  std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential::gen(m, n);
 
   test->inputs.emplace_back(reinterpret_cast<uint8_t *>(tmp.data()));
   test->inputs_count.emplace_back(m);
@@ -40,7 +40,7 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, find_min_100x100_matrix) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> test = std::make_shared<ppc::core::TaskData>();
   poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential testTaskSequential(test);
-  std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::gen(m, n);
+  std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential::gen(m, n);
 
   test->inputs.emplace_back(reinterpret_cast<uint8_t *>(tmp.data()));
   test->inputs_count.emplace_back(m);
@@ -67,7 +67,7 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, find_min_100x500_matrix) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> test = std::make_shared<ppc::core::TaskData>();
   poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential testTaskSequential(test);
-  std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::gen(m, n);
+  std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential::gen(m, n);
 
   test->inputs.emplace_back(reinterpret_cast<uint8_t *>(tmp.data()));
   test->inputs_count.emplace_back(m);
@@ -94,7 +94,7 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, find_min_500x100_matrix) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> test = std::make_shared<ppc::core::TaskData>();
   poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential testTaskSequential(test);
-  std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::gen(m, n);
+  std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential::gen(m, n);
 
   test->inputs.emplace_back(reinterpret_cast<uint8_t *>(tmp.data()));
   test->inputs_count.emplace_back(m);
@@ -121,7 +121,7 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, find_min_2500x2500_matrix) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> test = std::make_shared<ppc::core::TaskData>();
   poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential testTaskSequential(test);
-  std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::gen(m, n);
+  std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential::gen(m, n);
 
   test->inputs.emplace_back(reinterpret_cast<uint8_t *>(tmp.data()));
   test->inputs_count.emplace_back(m);
@@ -148,9 +148,8 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, validation_input_empty_100x100_matr
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> test = std::make_shared<ppc::core::TaskData>();
   poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential testTaskSequential(test);
-  std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::gen(m, n);
+  std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential::gen(m, n);
 
-  // test->inputs.emplace_back(reinterpret_cast<uint8_t *>(tmp.data()));
   test->inputs_count.emplace_back(m);
   test->inputs_count.emplace_back(n);
   std::vector<int> result(m);
@@ -168,13 +167,12 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, validation_output_empty_100x100_mat
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> test = std::make_shared<ppc::core::TaskData>();
   poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential testTaskSequential(test);
-  std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::gen(m, n);
+  std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential::gen(m, n);
 
   test->inputs.emplace_back(reinterpret_cast<uint8_t *>(tmp.data()));
   test->inputs_count.emplace_back(m);
   test->inputs_count.emplace_back(n);
   std::vector<int> result(m);
-  // test->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
   test->outputs_count.emplace_back(m);
 
   ASSERT_EQ(testTaskSequential.validation(), false);
@@ -188,11 +186,10 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, validation_less_two_1_empty_100x100
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> test = std::make_shared<ppc::core::TaskData>();
   poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential testTaskSequential(test);
-  std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::gen(m, n);
+  std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential::gen(m, n);
 
   test->inputs.emplace_back(reinterpret_cast<uint8_t *>(tmp.data()));
   test->inputs_count.emplace_back(m);
-  // test->inputs_count.emplace_back(n);
   std::vector<int> result(m);
   test->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
   test->outputs_count.emplace_back(m);
@@ -208,10 +205,9 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, validation_less_two_2_empty_100x100
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> test = std::make_shared<ppc::core::TaskData>();
   poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential testTaskSequential(test);
-  std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::gen(m, n);
+  std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential::gen(m, n);
 
   test->inputs.emplace_back(reinterpret_cast<uint8_t *>(tmp.data()));
-  // test->inputs_count.emplace_back(m);
   test->inputs_count.emplace_back(n);
   std::vector<int> result(m);
   test->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
@@ -228,7 +224,7 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, validation_find_min_0x100_matrix) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> test = std::make_shared<ppc::core::TaskData>();
   poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential testTaskSequential(test);
-  std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::gen(m, n);
+  std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential::gen(m, n);
 
   test->inputs.emplace_back(reinterpret_cast<uint8_t *>(tmp.data()));
   test->inputs_count.emplace_back(m);
@@ -248,7 +244,7 @@ TEST(poroshin_v_find_min_val_row_matrix_seq, validation_fails_on_invalid_output_
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> test = std::make_shared<ppc::core::TaskData>();
   poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential testTaskSequential(test);
-  std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::gen(m, n);
+  std::vector<int> tmp = poroshin_v_find_min_val_row_matrix_seq::TestTaskSequential::gen(m, n);
 
   test->inputs.emplace_back(reinterpret_cast<uint8_t *>(tmp.data()));
   test->inputs_count.emplace_back(m);
