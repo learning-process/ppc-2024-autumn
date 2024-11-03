@@ -54,6 +54,19 @@ bool guseynov_e_check_lex_order_of_two_string_mpi::TestMPITaskSequential::post_p
 
 bool guseynov_e_check_lex_order_of_two_string_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
+  return true;
+}
+
+bool guseynov_e_check_lex_order_of_two_string_mpi::TestMPITaskParallel::validation() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    return taskData->inputs_count[0] == 2 && taskData->outputs_count[0] == 1;
+  }
+  return true;
+}
+
+bool guseynov_e_check_lex_order_of_two_string_mpi::TestMPITaskParallel::run() {
+  internal_order_test();
   unsigned int delta = 0;
   if (world.rank() == 0) {
     delta = std::min(taskData->inputs_count[1], taskData->inputs_count[2]) / world.size();
@@ -86,19 +99,8 @@ bool guseynov_e_check_lex_order_of_two_string_mpi::TestMPITaskParallel::pre_proc
   }
   // Init value for output
   res_ = 0;
-  return true;
-}
 
-bool guseynov_e_check_lex_order_of_two_string_mpi::TestMPITaskParallel::validation() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    return taskData->inputs_count[0] == 2 && taskData->outputs_count[0] == 1;
-  }
-  return true;
-}
-
-bool guseynov_e_check_lex_order_of_two_string_mpi::TestMPITaskParallel::run() {
-  internal_order_test();
+  // Transfer data to processes
   int local_res = 0;
   for (size_t i = 0; i < local_input_1_.size(); i++) {
     if (local_input_1_[i] < local_input_2_[i]) {
