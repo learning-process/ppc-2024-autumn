@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <numeric>
 #include <vector>
 
 #include "seq/tyshkevich_a_num_of_orderly_violations/include/ops_seq.hpp"

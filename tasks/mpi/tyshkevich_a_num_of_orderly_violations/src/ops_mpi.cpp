@@ -1,10 +1,6 @@
 #include "mpi/tyshkevich_a_num_of_orderly_violations/include/ops_mpi.hpp"
 
-#include <algorithm>
-#include <functional>
 #include <random>
-#include <string>
-#include <thread>
 #include <vector>
 
 using namespace std::chrono_literals;

@@ -1,9 +1,5 @@
 #include "seq/tyshkevich_a_num_of_orderly_violations/include/ops_seq.hpp"
 
-#include <algorithm>
-#include <iostream>
-#include <thread>
-
 using namespace std::chrono_literals;
 
 bool tyshkevich_a_num_of_orderly_violations_seq::TestTaskSequential::pre_processing() {
