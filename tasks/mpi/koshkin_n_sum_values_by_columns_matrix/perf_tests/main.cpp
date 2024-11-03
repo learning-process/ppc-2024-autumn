@@ -19,7 +19,6 @@ TEST(koshkin_n_sum_values_by_columns_matrix_mpi, test_pipeline_run) {
   matrix[5] = 1;
   exp_res_paral[5] = 1;
 
-
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -31,7 +30,8 @@ TEST(koshkin_n_sum_values_by_columns_matrix_mpi, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(res_out_paral.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel =
+      std::make_shared<koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -77,7 +77,8 @@ TEST(koshkin_n_sum_values_by_columns_matrix_mpi, test_task_run) {
     taskDataPar->outputs_count.emplace_back(res_out_paral.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel =
+      std::make_shared<koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();

@@ -22,7 +22,7 @@ bool koshkin_n_sum_values_by_columns_matrix_seq::TestTaskSequential::pre_process
       // std::cout << "input_[" << i << "][" << j << "] = " << input_[i][j] << std::endl;
     }
   }
- 
+
   res.resize(columns, 0);  // sumColumns
   return true;
 }

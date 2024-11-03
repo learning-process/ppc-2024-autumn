@@ -23,5 +23,4 @@ class TestTaskSequential : public ppc::core::Task {
   int rows;
   int columns;
 };
-
 }  // namespace koshkin_n_sum_values_by_columns_matrix_seq

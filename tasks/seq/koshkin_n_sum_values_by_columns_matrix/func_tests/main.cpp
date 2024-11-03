@@ -5,7 +5,6 @@
 
 #include "seq/koshkin_n_sum_values_by_columns_matrix/include/ops_seq.hpp"
 
-
 TEST(koshkin_n_sum_values_by_columns_matrix_seq, Test_invalid_matrix_validation_columns) {
   int rows = 5;
   int columns = 0;
@@ -14,7 +13,7 @@ TEST(koshkin_n_sum_values_by_columns_matrix_seq, Test_invalid_matrix_validation_
   koshkin_n_sum_values_by_columns_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
 
   std::vector<int> matrix = {1, 2, 3, 4, 5};
-  std::vector<int> res_out = {0, 0}; 
+  std::vector<int> res_out = {0, 0};
 
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
 
@@ -43,7 +42,7 @@ TEST(koshkin_n_sum_values_by_columns_matrix_seq, Test_invalid_matrix_validation_
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_out.data()));
   taskDataSeq->outputs_count.emplace_back(res_out.size());
 
-  //ASSERT_NE(testTaskSequential.validation(), true);
+  // ASSERT_NE(testTaskSequential.validation(), true);
   ASSERT_EQ(testTaskSequential.validation(), false);
 }
 

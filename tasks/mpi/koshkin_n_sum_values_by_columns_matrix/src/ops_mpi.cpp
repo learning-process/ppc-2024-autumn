@@ -30,13 +30,13 @@ bool koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskSequential::pre_proc
   // TaskData
   input_.resize(rows, std::vector<int>(columns));
 
-  
   uint8_t* inputMatrix = taskData->inputs[0];
   for (int i = 0; i < rows; ++i) {
     for (int j = 0; j < columns; ++j) {
       input_[i][j] = reinterpret_cast<int*>(inputMatrix)[i * columns + j];
     }
   }
+
   res.resize(columns, 0);  // sumColumns
   return true;
 }
@@ -84,7 +84,7 @@ bool koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskParallel::pre_proces
       }
     }
   }
- 
+
   res.resize(columns, 0);
   return true;
 }
@@ -94,16 +94,14 @@ bool koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskParallel::validation
   if (world.rank() == 0) {
     // Check count elements of output
     return ((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
-          (taskData->inputs_count.size() >= 2 && taskData->inputs_count[0] != 0 && taskData->inputs_count[1] != 0) &&
-          taskData->inputs_count[1] == taskData->outputs_count[0]);
-            
+            (taskData->inputs_count.size() >= 2 && taskData->inputs_count[0] != 0 && taskData->inputs_count[1] != 0) &&
+            taskData->inputs_count[1] == taskData->outputs_count[0]);
   }
   return true;
 }
 
 bool koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-
 
   if (world.rank() == 0) {
     rows = taskData->inputs_count[0];
@@ -138,7 +136,7 @@ bool koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskParallel::run() {
     }
   }
 
-  res.resize(columns, 0);  
+  res.resize(columns, 0);
   boost::mpi::reduce(world, local_sum.data(), columns, res.data(), std::plus<int>(), 0);
 
   return true;
