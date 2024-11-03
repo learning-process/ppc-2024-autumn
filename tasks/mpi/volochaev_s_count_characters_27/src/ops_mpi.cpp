@@ -64,17 +64,8 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_seq::post_processing() {
 bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::pre_processing() {
   internal_order_test();
 
-  std::string tmp1;
-  std::string tmp2;
-
-  if (world.rank() == 0) {
-    tmp1 = reinterpret_cast<std::string*>(taskData->inputs[0])[0];
-    tmp2 = reinterpret_cast<std::string*>(taskData->inputs[0])[1];
-  }
-
   // Init value for output
   res = 0;
-  del = abs(static_cast<int>(tmp1.size()) - static_cast<int>(tmp2.size()));
   return true;
 }
 
@@ -97,6 +88,8 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::run() {
   if (world.rank() == 0) {
     tmp1 = reinterpret_cast<std::string*>(taskData->inputs[0])[0];
     tmp2 = reinterpret_cast<std::string*>(taskData->inputs[0])[1];
+
+    del = abs(static_cast<int>(tmp1.size()) - static_cast<int>(tmp2.size()));
 
     delta = static_cast<int>(std::min(tmp1.size(), tmp2.size())) / world.size();
     if (taskData->inputs_count[0] % world.size() > 0u) ++delta;
