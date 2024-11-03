@@ -10,7 +10,7 @@ TEST(konkov_i_count_words_seq, test_simple) {
 }
 
 TEST(konkov_i_count_words_seq, test_empty) {
-  std::string input = "";
+  std::string input =;
   int result = countWords(input);
   EXPECT_EQ(result, 0);
 }
