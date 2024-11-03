@@ -137,10 +137,6 @@ bool oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
     }
     delete[] arr;
   }
-
-#undef TAG_EXIT
-#undef TAG_TOBASE
-#undef TAG_TOSAT
   return true;
 }
 
