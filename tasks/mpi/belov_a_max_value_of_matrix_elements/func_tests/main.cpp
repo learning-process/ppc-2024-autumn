@@ -605,10 +605,10 @@ TEST(belov_a_max_value_of_matrix_elements_mpi, Test_Zero_Rows) {
     taskDataPar->inputs_count.emplace_back(global_matrix.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
-  }
 
-  belov_a_max_value_of_matrix_elements_mpi::MaxValueOfMatrixElementsParallel<int> testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
+    belov_a_max_value_of_matrix_elements_mpi::MaxValueOfMatrixElementsParallel<int> testMpiTaskParallel(taskDataPar);
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  }
 }
 
 TEST(belov_a_max_value_of_matrix_elements_mpi, Test_Zero_Columns) {
@@ -625,8 +625,8 @@ TEST(belov_a_max_value_of_matrix_elements_mpi, Test_Zero_Columns) {
     taskDataPar->inputs_count.emplace_back(global_matrix.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
-  }
 
-  belov_a_max_value_of_matrix_elements_mpi::MaxValueOfMatrixElementsParallel<int> testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
+    belov_a_max_value_of_matrix_elements_mpi::MaxValueOfMatrixElementsParallel<int> testMpiTaskParallel(taskDataPar);
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  }
 }
