@@ -3,18 +3,11 @@
 
 template <class T>
 bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::count_num_of_orderly_violations_mpi() {
-  for (size_t i = 0; i < loc_v.size(); i++) {
-    std::cout << loc_v[i] << ' ';
-  }
-  std::cout << rank << " I am starting to count. loc_v size = " << loc_v.size() << ' ' << bool(1 < loc_v.size())
-            << std::endl;
   for (size_t i = 1; i < loc_v.size(); i++) {
-    std::cout << "i = " << i;
     if (loc_v[i - 1] > loc_v[i]) {
       l_res++;
     }
   }
-  std::cout << ' ' << l_res << std::endl;
   return true;
 }
 
@@ -42,8 +35,11 @@ bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::pre_
 template <class T>
 bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::validation() {
   internal_order_test();
-  // input && output counts check
-  return /* (taskData->inputs_count[0] == n && taskData->outputs_count[0] == 1);*/ true;
+  // input && output data check
+  if (rank == 0 && !taskData->inputs.empty() && !taskData->outputs.empty() && taskData->outputs_count[0] == 1) {
+    return true;
+  }
+  return true;
 }
 
 template <class T>
@@ -52,16 +48,12 @@ bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::run(
   // counting violations locally
   count_num_of_orderly_violations_mpi();
   // redusing results
-  std::cout << rank << " I am starting to reduse. loc = " << l_res << std::endl;
   MPI_Reduce(&l_res, &g_res, 1, MPI_UNSIGNED_LONG, MPI_SUM, 0, MPI_COMM_WORLD);
-  std::cout << rank << " I have redused." << std::endl;
   if (rank == 0) {
-    for (size_t i = 1; i < size; i++)  // are there any violations between local copies?
+    for (int i = 1; i < size; i++)  // are there any violations between local copies?
       if (glob_v[i * (n / size) - 1] > glob_v[i * (n / size)]) g_res++;
-    std::cout << rank << " I have done 1 sycle." << std::endl;
     for (size_t i = n - n % size; i < n; i++)  // are there any violations in the remainder?
       if (glob_v[i - 1] > glob_v[i]) g_res++;
-    std::cout << rank << " I have done 2 sycle." << std::endl;
   }
   return true;
 }
