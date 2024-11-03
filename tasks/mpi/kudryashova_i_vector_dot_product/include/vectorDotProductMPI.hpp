@@ -1,55 +1,36 @@
 #pragma once
-
-#include <gtest/gtest.h>
-
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
-#include <memory>
-#include <numeric>
-#include <random>
-#include <string>
-#include <utility>
 #include <vector>
 
 #include "core/task/include/task.hpp"
-
-namespace malyshev_v_monte_carlo_integration {
-
+namespace kudryashova_i_vector_dot_product_mpi {
+int vectorDotProduct(const std::vector<int>& vector1, const std::vector<int>& vector2);
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
-  double function_square(double x) { return x * x; }
-
  private:
-  double a = 0.0;
-  double b = 0.0;
-  int n_samples = 0;
-  double res = 0.0;
-
+  std::vector<std::vector<int>> input_;
+  int result{};
 };
-
 class TestMPITaskParallel : public ppc::core::Task {
  public:
   explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
  private:
-  double a = 0.0;
-  double b = 0.0;
-  int n_samples = 0;
-  double res = 0.0;
-  double local_res = 0.0;
+  std::vector<std::vector<int>> input_;
+  std::vector<int> local_input1_, local_input2_;
+  int result{};
   boost::mpi::communicator world;
+  unsigned int delta;
 };
-
-}  // namespace malyshev_v_monte_carlo_integration
+}  // namespace kudryashova_i_vector_dot_product_mpi
