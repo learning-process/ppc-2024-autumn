@@ -52,6 +52,7 @@ bool beresnev_a_min_values_by_matrix_columns_mpi::TestMPITaskSequential::post_pr
 
 bool beresnev_a_min_values_by_matrix_columns_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
+  boost::mpi::request r;
 
   if (world.rank() == 0) {
     n_ = reinterpret_cast<int*>(taskData->inputs[1])[0];
@@ -66,7 +67,7 @@ bool beresnev_a_min_values_by_matrix_columns_mpi::TestMPITaskParallel::pre_proce
     }
 
     for (int proc = 1; proc < world.size(); proc++) {
-      world.isend(proc, 0, input_.data() + (col_on_pr * proc + remainder) * n_, n_ * col_on_pr);
+      r = world.isend(proc, 0, input_.data() + (col_on_pr * proc + remainder) * n_, n_ * col_on_pr);
     }
   }
   broadcast(world, col_on_pr, 0);
@@ -78,6 +79,7 @@ bool beresnev_a_min_values_by_matrix_columns_mpi::TestMPITaskParallel::pre_proce
   local_mins_ = std::vector<int>(col_on_pr);
   global_mins_ = std::vector<int>(m_, 0);
   if (world.rank() == 0) {
+    r.wait();
     local_input_ = std::vector<int>(input_.begin(), input_.begin() + (col_on_pr + remainder) * n_);
     local_mins_.resize(col_on_pr + remainder);
   } else {

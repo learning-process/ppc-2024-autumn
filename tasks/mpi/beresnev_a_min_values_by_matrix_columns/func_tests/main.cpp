@@ -200,7 +200,8 @@ TEST(beresnev_a_min_values_by_matrix_columns_mpi, Test_Base_1) {
   const int N = 100;
   const int M = 100;
 
-  std::vector<int> in, tr;
+  std::vector<int> in;
+  std::vector<int> tr;
   std::vector<int> out(M, 0);
   std::vector<int> n(1, N);
   std::vector<int> m(1, M);
@@ -253,7 +254,8 @@ TEST(beresnev_a_min_values_by_matrix_columns_mpi, Test_Base_2) {
   const int N = 43;
   const int M = 563;
 
-  std::vector<int> in, tr;
+  std::vector<int> in;
+  std::vector<int> tr;
   std::vector<int> out(M, 0);
   std::vector<int> n(1, N);
   std::vector<int> m(1, M);
@@ -306,7 +308,8 @@ TEST(beresnev_a_min_values_by_matrix_columns_mpi, Test_Base_3) {
   const int N = 908;
   const int M = 510;
 
-  std::vector<int> in, tr;
+  std::vector<int> in;
+  std::vector<int> tr;
   std::vector<int> out(M, 0);
   std::vector<int> n(1, N);
   std::vector<int> m(1, M);
@@ -359,7 +362,8 @@ TEST(beresnev_a_min_values_by_matrix_columns_mpi, Test_Base_4) {
   const int N = 1;
   const int M = 1000;
 
-  std::vector<int> in, tr;
+  std::vector<int> in;
+  std::vector<int> tr;
   std::vector<int> out(M, 0);
   std::vector<int> n(1, N);
   std::vector<int> m(1, M);
@@ -412,7 +416,8 @@ TEST(beresnev_a_min_values_by_matrix_columns_mpi, Test_Base_5) {
   const int N = 1000;
   const int M = 1000;
 
-  std::vector<int> in, tr;
+  std::vector<int> in;
+  std::vector<int> tr;
   std::vector<int> out(M, 0);
   std::vector<int> n(1, N);
   std::vector<int> m(1, M);
