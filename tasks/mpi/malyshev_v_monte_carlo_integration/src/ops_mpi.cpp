@@ -1,8 +1,8 @@
-﻿
+﻿#include "mpi/malyshev_v_monte_carlo_integration/include/ops_mpi.hpp"
+
 #include <boost/mpi/collectives.hpp>
 #include <random>
 
-#include "mpi/malyshev_v_monte_carlo_integration/include/ops_mpi.hpp"
 
 namespace malyshev_v_monte_carlo_integration {
 
