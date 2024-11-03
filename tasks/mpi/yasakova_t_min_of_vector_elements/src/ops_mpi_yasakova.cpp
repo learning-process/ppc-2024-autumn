@@ -39,7 +39,6 @@ bool yasakova_t_min_of_vector_elements_mpi::TestMPITaskSequential::post_processi
 
 bool yasakova_t_min_of_vector_elements_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  
   res_ = INT_MAX;
   return true;
 }
