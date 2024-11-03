@@ -27,8 +27,8 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<std::vector<int>> input_;  // Матрица
-  std::vector<int> res;  // Вектор для хранения результатов по столбцам
+  std::vector<std::vector<int>> input_;
+  std::vector<int> res;
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -42,9 +42,9 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<std::vector<int>> input_;  // Матрица
-  std::vector<std::vector<int>> local_input_;  // Локальная часть матрицы для каждого процесса
-  std::vector<int> res;  // Вектор для хранения результатов по столбцам
+  std::vector<std::vector<int>> input_;
+  std::vector<std::vector<int>> local_input_;
+  std::vector<int> res;
   boost::mpi::communicator world;
 };
 

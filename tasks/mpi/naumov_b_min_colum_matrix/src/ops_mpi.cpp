@@ -13,8 +13,8 @@ using namespace std::chrono_literals;
 
 std::vector<int> naumov_b_min_colum_matrix_mpi::getRandomVector(int size) {
   std::vector<int> vec(size);
-  for (int i = 0; i < size; ++i) {
-    vec[i] = rand() % 201 - 100;  // Генерируем числа от -100 до 100
+  for (int& element : vec) {
+    element = rand() % 201 - 100;
   }
   return vec;
 }
@@ -22,7 +22,6 @@ std::vector<int> naumov_b_min_colum_matrix_mpi::getRandomVector(int size) {
 bool naumov_b_min_colum_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
 
-  // Init matrix
   input_.resize(taskData->inputs_count[0], std::vector<int>(taskData->inputs_count[1]));
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
   for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
@@ -31,8 +30,7 @@ bool naumov_b_min_colum_matrix_mpi::TestMPITaskSequential::pre_processing() {
     }
   }
 
-  // Init value for output
-  res.resize(taskData->inputs_count[1]);
+  res.resize(taskData->inputs_count[1], std::numeric_limits<int>::max());
   return true;
 }
 
@@ -50,9 +48,7 @@ bool naumov_b_min_colum_matrix_mpi::TestMPITaskSequential::run() {
   for (size_t j = 0; j < numCols; j++) {
     res[j] = input_[0][j];
     for (size_t i = 1; i < numRows; i++) {
-      if (input_[i][j] < res[j]) {
-        res[j] = input_[i][j];
-      }
+      res[j] = std::min(res[j], input_[i][j]);
     }
   }
 
@@ -61,9 +57,7 @@ bool naumov_b_min_colum_matrix_mpi::TestMPITaskSequential::run() {
 
 bool naumov_b_min_colum_matrix_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
-  for (size_t i = 0; i < res.size(); i++) {
-    reinterpret_cast<int*>(taskData->outputs[0])[i] = res[i];
-  }
+  std::copy(res.begin(), res.end(), reinterpret_cast<int*>(taskData->outputs[0]));
   return true;
 }
 
@@ -73,25 +67,21 @@ bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::pre_processing() {
   int rows = 0;
   int cols = 0;
 
-  // Получаем количество строк и столбцов
   if (world.rank() == 0) {
     rows = taskData->inputs_count[0];
     cols = taskData->inputs_count[1];
   }
 
-  // Распространяем количество строк и столбцов среди всех процессов
   broadcast(world, rows, 0);
   broadcast(world, cols, 0);
 
   int delta = rows / world.size();
   int extra = rows % world.size();
 
-  // Определяем количество строк, которые будет обрабатывать текущий процесс
   int local_rows = (world.rank() < extra) ? (delta + 1) : delta;
-  local_input_.resize(local_rows, std::vector<int>(cols));  // Инициализация вектора
+  local_input_.resize(local_rows, std::vector<int>(cols));
 
   if (world.rank() == 0) {
-    // Инициализация матрицы
     input_.resize(rows, std::vector<int>(cols));
     auto* input_matrix = reinterpret_cast<int*>(taskData->inputs[0]);
     for (int i = 0; i < rows; i++) {
@@ -100,7 +90,6 @@ bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::pre_processing() {
       }
     }
 
-    // Отправка данных другим процессам
     for (int proc = 1; proc < world.size(); proc++) {
       int start_row = proc * delta + std::min(proc, extra);
       int num_rows = delta + (proc < extra ? 1 : 0);
@@ -110,7 +99,6 @@ bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::pre_processing() {
     }
   }
 
-  // Получаем данные для текущего процесса
   if (world.rank() == 0) {
     std::copy(input_.begin(), input_.begin() + local_rows, local_input_.begin());
   } else {
@@ -119,8 +107,7 @@ bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::pre_processing() {
     }
   }
 
-  // Инициализация вектора для хранения результатов
-  res.resize(cols);
+  res.resize(cols, std::numeric_limits<int>::max());
   return true;
 }
 
@@ -133,44 +120,43 @@ bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::validation() {
            (taskData->outputs_count[0] == taskData->inputs_count[1]);
   }
 
-  return true;  // Остальные процессы просто возвращают true
+  return true;
 }
 
 bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
   int local_rows = local_input_.size();
-  if (local_rows == 0) return true;  // Если нет локальных строк, завершаем
+  if (local_rows == 0) return true;
 
   int numCols = local_input_[0].size();
   std::vector<int> local_minima(numCols, std::numeric_limits<int>::max());
 
-  // Поиск локальных минимумов по столбцам
   for (int j = 0; j < numCols; ++j) {
     for (int i = 0; i < local_rows; ++i) {
-      int value = local_input_.at(i).at(j);
-      if (value < local_minima[j]) {
-        local_minima[j] = value;
-      }
+      local_minima[j] = std::min(local_minima[j], local_input_[i][j]);
     }
   }
 
-  // Сбор всех локальных минимумов на процессе с rank 0
-  std::vector<int> all_minima(world.size() * numCols);
-  MPI_Gather(local_minima.data(), numCols, MPI_INT, all_minima.data(), numCols, MPI_INT, 0, MPI_COMM_WORLD);
-
   if (world.rank() == 0) {
-    res.resize(numCols);
-    std::fill(res.begin(), res.end(), std::numeric_limits<int>::max());
+    std::vector<int> all_minima(numCols, std::numeric_limits<int>::max());
 
-    for (int i = 0; i < world.size(); ++i) {
+    for (int j = 0; j < numCols; ++j) {
+      all_minima[j] = local_minima[j];
+    }
+
+    for (int proc = 1; proc < world.size(); ++proc) {
+      std::vector<int> recv_minima(numCols, std::numeric_limits<int>::max());
+      world.recv(proc, 0, recv_minima.data(), numCols);
+
       for (int j = 0; j < numCols; ++j) {
-        int value = all_minima[i * numCols + j];
-        if (value < res[j]) {
-          res[j] = value;
-        }
+        all_minima[j] = std::min(all_minima[j], recv_minima[j]);
       }
     }
+
+    res.assign(all_minima.begin(), all_minima.end());
+  } else {
+    world.send(0, 0, local_minima.data(), numCols);
   }
 
   return true;
@@ -180,8 +166,7 @@ bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
 
   if (world.rank() == 0) {
-    int* output_matrix = reinterpret_cast<int*>(taskData->outputs[0]);
-    std::copy(res.begin(), res.end(), output_matrix);  // Записываем глобальные минимумы
+    std::copy(res.begin(), res.end(), reinterpret_cast<int*>(taskData->outputs[0]));
   }
 
   return true;
