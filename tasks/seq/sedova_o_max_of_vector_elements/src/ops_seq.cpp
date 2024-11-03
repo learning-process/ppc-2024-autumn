@@ -7,6 +7,7 @@
 using namespace std::chrono_literals;
 
 int sedova_o_max_of_vector_elements_seq::find_max_of_matrix(std::vector<int> matrix) {
+  if (matrix.empty()) return 1;
   int max = matrix[0];
   for (size_t i = 0; i < matrix.size(); i++) {
     if (matrix[i] > max) {
@@ -30,7 +31,7 @@ bool sedova_o_max_of_vector_elements_seq::TestTaskSequential::pre_processing() {
 
 bool sedova_o_max_of_vector_elements_seq::TestTaskSequential::validation() {
   internal_order_test();
-  return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] == 1;
+  return taskData->inputs_count[0] >= 1 && taskData->inputs_count[1] >= 1 && taskData->outputs_count[0] == 1;
 }
 
 bool sedova_o_max_of_vector_elements_seq::TestTaskSequential::run() {

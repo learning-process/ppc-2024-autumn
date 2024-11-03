@@ -125,7 +125,7 @@ TEST(sedova_o_max_of_vector_elements_seq, test_pipeline_run_different_values) {
 
   size_t rows = random() % size;
   size_t cols = random() % size;
-  in[rows][cols] = value + 1;  // Изменил значение, чтобы найти максимальное
+  in[rows][cols] = value + 1;
 
   for (unsigned int i = 0; i < in.size(); i++)
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[i].data()));

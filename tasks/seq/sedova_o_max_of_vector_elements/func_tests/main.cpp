@@ -26,7 +26,7 @@ std::vector<std::vector<int>> generate_random_matrix(size_t rows, size_t cols, s
   return matrix;
 }
 
-TEST(sedova_o_max_of_vector_elements_seq, Test_Sum_Empty1) {
+TEST(sedova_o_max_of_vector_elements_seq1, Test_Sum_Empty1) {
   // Create data
   std::vector<int> in;
   std::vector<int> out(1, 0);
@@ -41,7 +41,7 @@ TEST(sedova_o_max_of_vector_elements_seq, Test_Sum_Empty1) {
   ASSERT_EQ(testTaskSequential.validation(), false);
 }
 
-TEST(sedova_o_max_of_vector_elements_seq, Test_Sum_Input_Incorrect) {
+TEST(sedova_o_max_of_vector_elements_seq1, Test_Sum_Input_Incorrect) {
   int count = 10;
   // Create data
   std::vector<int> in(count, 0);
@@ -57,7 +57,7 @@ TEST(sedova_o_max_of_vector_elements_seq, Test_Sum_Input_Incorrect) {
   ASSERT_EQ(testTaskSequential.validation(), false);
 }
 
-TEST(sedova_o_max_of_vector_elements_seq, Test_Matrix_2x2) {
+TEST(sedova_o_max_of_vector_elements_seq1, Test_Matrix_2x2) {
   // Create data
   std::vector<int> in = generate_random_vector(2, 10);
   std::vector<int> in2 = generate_random_vector(2, 10);
@@ -80,7 +80,7 @@ TEST(sedova_o_max_of_vector_elements_seq, Test_Matrix_2x2) {
   ASSERT_EQ(sedova_o_max_of_vector_elements_seq::find_max_of_matrix(matrix_input), out[0]);
 }
 
-TEST(sedova_o_max_of_vector_elements_seq, Test_Matrix_3x3) {
+TEST(sedova_o_max_of_vector_elements_seq1, Test_Matrix_3x3) {
   // Create data
   std::vector<int> in = generate_random_vector(3, 10);
   std::vector<int> in2 = generate_random_vector(3, 10);

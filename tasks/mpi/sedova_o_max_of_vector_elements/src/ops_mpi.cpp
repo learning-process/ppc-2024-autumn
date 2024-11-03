@@ -5,14 +5,12 @@
 
 #include <random>
 
-int sedova_o_max_of_vector_elements_mpi::find_max_of_matrix(std::vector<int> matrix) {
-  int max = matrix[0];
-  for (size_t i = 0; i < matrix.size(); i++) {
-    if (matrix[i] > max) {
-      max = matrix[i];
-    }
+int sedova_o_max_of_vector_elements_mpi::find_max_of_matrix(std::vector<int> &matrix) {
+  if (matrix.empty()) {
+    return std::numeric_limits<int>::min();
   }
-  return max;
+  auto max_it = std::max_element(matrix.begin(), matrix.end());
+  return *max_it;
 }
 
 bool sedova_o_max_of_vector_elements_mpi::TestMPITaskSequential::pre_processing() {
@@ -29,7 +27,7 @@ bool sedova_o_max_of_vector_elements_mpi::TestMPITaskSequential::pre_processing(
 
 bool sedova_o_max_of_vector_elements_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] == 1;
+  return taskData->inputs_count[0] >= 1 && taskData->inputs_count[1] >= 1 && taskData->outputs_count[0] == 1;
 }
 
 bool sedova_o_max_of_vector_elements_mpi::TestMPITaskSequential::run() {
