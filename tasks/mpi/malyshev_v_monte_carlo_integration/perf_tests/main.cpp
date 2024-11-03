@@ -25,7 +25,8 @@ TEST(malyshev_v_monte_carlo_integration_mpi, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(1);
   }
 
-  auto mpiTaskParallel = std::make_shared<malyshev_v_monte_carlo_integration::MonteCarloIntegrationParallel>(taskDataPar);
+  auto mpiTaskParallel =
+      std::make_shared<malyshev_v_monte_carlo_integration::MonteCarloIntegrationParallel>(taskDataPar);
   ASSERT_TRUE(mpiTaskParallel->validation());
   mpiTaskParallel->pre_processing();
   mpiTaskParallel->run();
@@ -65,7 +66,8 @@ TEST(malyshev_v_monte_carlo_integration_mpi, test_task_run) {
     taskDataPar->outputs_count.emplace_back(1);
   }
 
-  auto mpiTaskParallel = std::make_shared<malyshev_v_monte_carlo_integration::MonteCarloIntegrationParallel>(taskDataPar);
+  auto mpiTaskParallel =
+      std::make_shared<malyshev_v_monte_carlo_integration::MonteCarloIntegrationParallel>(taskDataPar);
   ASSERT_TRUE(mpiTaskParallel->validation());
   mpiTaskParallel->pre_processing();
   mpiTaskParallel->run();
