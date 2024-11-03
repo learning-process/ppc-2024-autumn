@@ -6,6 +6,11 @@ jobs:
   clang-tidy:
     runs-on: ubuntu-latest
     steps:
+    - name: Cache .git
+      uses: actions/cache@v3
+      with:
+        path: ./.git
+        key: git-dir-${{ github.job }}
     - uses: actions/checkout@v4
       with:
         submodules: recursive
@@ -31,6 +36,11 @@ jobs:
   clang-tidy-for-gcc-build:
     runs-on: ubuntu-latest
     steps:
+    - name: Cache .git
+      uses: actions/cache@v3
+      with:
+        path: ./.git
+        key: git-dir-${{ github.job }}
     - uses: actions/checkout@v4
       with:
         submodules: recursive

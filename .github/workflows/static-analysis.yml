@@ -6,6 +6,11 @@ jobs:
   clang-format:
     runs-on: ubuntu-latest
     steps:
+    - name: Cache .git
+      uses: actions/cache@v3
+      with:
+        path: ./.git
+        key: git-dir-${{ github.job }}
     - uses: actions/checkout@v4
     - uses: DoozyX/clang-format-lint-action@v0.18.2
       with:
@@ -13,6 +18,11 @@ jobs:
   python-lint:
     runs-on: ubuntu-latest
     steps:
+    - name: Cache .git
+      uses: actions/cache@v3
+      with:
+        path: ./.git
+        key: git-dir-${{ github.job }}
     - uses: actions/checkout@v4
     - name: Setup environment
       run: |

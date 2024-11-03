@@ -11,6 +11,11 @@ jobs:
   ubuntu-gcc-build:
     runs-on: ubuntu-latest
     steps:
+    - name: Cache .git
+      uses: actions/cache@v3
+      with:
+        path: ./.git
+        key: git-dir-${{ github.job }}
     - uses: actions/checkout@v4
       with:
         submodules: recursive
@@ -63,6 +68,11 @@ jobs:
   ubuntu-clang-build:
     runs-on: ubuntu-latest
     steps:
+    - name: Cache .git
+      uses: actions/cache@v3
+      with:
+        path: ./.git
+        key: git-dir-${{ github.job }}
     - uses: actions/checkout@v4
       with:
         submodules: recursive
@@ -115,6 +125,11 @@ jobs:
   ubuntu-clang-sanitizer-build:
     runs-on: ubuntu-latest
     steps:
+    - name: Cache .git
+      uses: actions/cache@v3
+      with:
+        path: ./.git
+        key: git-dir-${{ github.job }}
     - uses: actions/checkout@v4
       with:
         submodules: recursive
@@ -158,6 +173,11 @@ jobs:
   macos-clang-build:
     runs-on: macOS-latest
     steps:
+    - name: Cache .git
+      uses: actions/cache@v3
+      with:
+        path: ./.git
+        key: git-dir-${{ github.job }}
     - uses: actions/checkout@v4
       with:
         submodules: recursive
@@ -195,6 +215,11 @@ jobs:
       run:
         shell: bash
     steps:
+    - name: Cache .git
+      uses: actions/cache@v3
+      with:
+        path: ./.git
+        key: git-dir-${{ github.job }}
     - uses: actions/checkout@v4
       with:
         submodules: recursive
@@ -234,6 +259,11 @@ jobs:
       run:
         shell: bash
     steps:
+    - name: Cache .git
+      uses: actions/cache@v3
+      with:
+        path: ./.git
+        key: git-dir-${{ github.job }}
     - uses: actions/checkout@v4
       with:
         submodules: recursive
@@ -263,6 +293,11 @@ jobs:
   ubuntu-gcc-build-codecov:
     runs-on: ubuntu-latest
     steps:
+    - name: Cache .git
+      uses: actions/cache@v3
+      with:
+        path: ./.git
+        key: git-dir-${{ github.job }}
     - uses: actions/checkout@v4
       with:
         submodules: recursive
