@@ -15,36 +15,35 @@
 
 namespace makhov_m_num_of_diff_elements_in_two_str_mpi {
 
-std::vector<int> getRandomVector(int sz);
+int countDiffElem(std::string str1_, std::string str2_);
+std::string getShorterStr(std::string str1_, std::string str2_);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
  private:
-  std::vector<int> input_;
+  std::string str1{};
+  std::string str2{};
   int res{};
-  std::string ops;
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
  private:
-  std::vector<int> input_, local_input_;
+  std::string str1{}, str1_local{}, str2{}, str2_local{};
+  int sizeDiff{};
   int res{};
-  std::string ops;
   boost::mpi::communicator world;
 };
 

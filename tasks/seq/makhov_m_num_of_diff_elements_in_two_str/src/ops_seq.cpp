@@ -7,7 +7,7 @@ using namespace std::chrono_literals;
 
 int makhov_m_num_of_diff_elements_in_two_str_seq::countDiffElem(std::string str1_, std::string str2_) {
   int count = 0;
-  int sizeDiff = std::abs((int)(str1_.size() - str2_.size()));
+  int sizeDiff = std::abs(((int)str1_.size() - (int)str2_.size()));
   size_t minSize = std::min(str1_.size(), str2_.size());
   for (size_t i = 0; i < minSize; i++) {
     if (str1_[i] != str2_[i]) count++;

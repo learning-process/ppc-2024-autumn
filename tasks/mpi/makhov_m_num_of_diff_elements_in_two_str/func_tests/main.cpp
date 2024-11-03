@@ -7,222 +7,237 @@
 
 #include "mpi/makhov_m_num_of_diff_elements_in_two_str/include/ops_mpi.hpp"
 
-// TEST(makhov_m_num_of_diff_elements_in_two_str_mpi, Test_Sum) {
-//   boost::mpi::communicator world;
-//   std::vector<int> global_vec;
-//   std::vector<int32_t> global_sum(1, 0);
-//   // Create TaskData
-//   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+TEST(makhov_m_num_of_diff_elements_in_two_str_mpi, SameEmptySymbolsStrings) {
+  boost::mpi::communicator world;
+  std::string str1, str2;
+  std::vector<int32_t> global_sum(1, 0);
+  std::vector<int32_t> reference_sum(1, 0);
+  str1 = "   ";
+  str2 = str1;
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-//   if (world.rank() == 0) {
-//     const int count_size_vector = 120;
-//     global_vec = makhov_m_num_of_diff_elements_in_two_str_mpi::getRandomVector(count_size_vector);
-//     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-//     taskDataPar->inputs_count.emplace_back(global_vec.size());
-//     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-//     taskDataPar->outputs_count.emplace_back(global_sum.size());
-//   }
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(str1.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(str2.data()));
+    taskDataPar->inputs_count.emplace_back(str1.size());
+    taskDataPar->inputs_count.emplace_back(str2.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_sum.data()));
+    taskDataPar->outputs_count.emplace_back(global_sum.size());
+  }
 
-//   makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "+");
-//   ASSERT_EQ(testMpiTaskParallel.validation(), true);
-//   testMpiTaskParallel.pre_processing();
-//   testMpiTaskParallel.run();
-//   testMpiTaskParallel.post_processing();
+  // Create Task
+  makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
 
-//   if (world.rank() == 0) {
-//     // Create data
-//     std::vector<int32_t> reference_sum(1, 0);
+  if (world.rank() == 0) {
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(str1.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(str2.data()));
+    taskDataSeq->inputs_count.emplace_back(str1.size());
+    taskDataSeq->inputs_count.emplace_back(str2.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_sum.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_sum.size());
 
-//     // Create TaskData
-//     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-//     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-//     taskDataSeq->inputs_count.emplace_back(global_vec.size());
-//     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_sum.data()));
-//     taskDataSeq->outputs_count.emplace_back(reference_sum.size());
+    // Create Task
+    makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_TRUE(testMpiTaskSequential.validation());
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
 
-//     // Create Task
-//     makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "+");
-//     ASSERT_EQ(testMpiTaskSequential.validation(), true);
-//     testMpiTaskSequential.pre_processing();
-//     testMpiTaskSequential.run();
-//     testMpiTaskSequential.post_processing();
+    ASSERT_EQ(reference_sum[0], global_sum[0]);
+  }
+}
 
-//     ASSERT_EQ(reference_sum[0], global_sum[0]);
-//   }
-// }
+TEST(makhov_m_num_of_diff_elements_in_two_str_mpi, DiffSizeEmptySymbolsStrings) {
+  boost::mpi::communicator world;
+  std::string str1, str2;
+  std::vector<int32_t> global_sum(1, 0);
+  std::vector<int32_t> reference_sum(1, 0);
+  str1 = "   ";
+  str2 = "      ";
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-// TEST(makhov_m_num_of_diff_elements_in_two_str_mpi, Test_Diff) {
-//   boost::mpi::communicator world;
-//   std::vector<int> global_vec;
-//   std::vector<int32_t> global_diff(1, 0);
-//   // Create TaskData
-//   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(str1.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(str2.data()));
+    taskDataPar->inputs_count.emplace_back(str1.size());
+    taskDataPar->inputs_count.emplace_back(str2.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_sum.data()));
+    taskDataPar->outputs_count.emplace_back(global_sum.size());
+  }
 
-//   if (world.rank() == 0) {
-//     const int count_size_vector = 240;
-//     global_vec = makhov_m_num_of_diff_elements_in_two_str_mpi::getRandomVector(count_size_vector);
-//     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-//     taskDataPar->inputs_count.emplace_back(global_vec.size());
-//     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_diff.data()));
-//     taskDataPar->outputs_count.emplace_back(global_diff.size());
-//   }
+  // Create Task
+  makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
 
-//   makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "-");
-//   ASSERT_EQ(testMpiTaskParallel.validation(), true);
-//   testMpiTaskParallel.pre_processing();
-//   testMpiTaskParallel.run();
-//   testMpiTaskParallel.post_processing();
+  if (world.rank() == 0) {
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(str1.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(str2.data()));
+    taskDataSeq->inputs_count.emplace_back(str1.size());
+    taskDataSeq->inputs_count.emplace_back(str2.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_sum.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_sum.size());
 
-//   if (world.rank() == 0) {
-//     // Create data
-//     std::vector<int32_t> reference_diff(1, 0);
+    // Create Task
+    makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_TRUE(testMpiTaskSequential.validation());
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
 
-//     // Create TaskData
-//     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-//     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-//     taskDataSeq->inputs_count.emplace_back(global_vec.size());
-//     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_diff.data()));
-//     taskDataSeq->outputs_count.emplace_back(reference_diff.size());
+    ASSERT_EQ(reference_sum[0], global_sum[0]);
+  }
+}
 
-//     // Create Task
-//     makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "-");
-//     ASSERT_EQ(testMpiTaskSequential.validation(), true);
-//     testMpiTaskSequential.pre_processing();
-//     testMpiTaskSequential.run();
-//     testMpiTaskSequential.post_processing();
+TEST(makhov_m_num_of_diff_elements_in_two_str_mpi, EqualSizeDiffStrings) {
+  boost::mpi::communicator world;
+  std::string str1, str2;
+  std::vector<int32_t> global_sum(1, 0);
+  std::vector<int32_t> reference_sum(1, 0);
+  str1 = "Hello, World!!";
+  str2 = "Goodbye, World";
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-//     ASSERT_EQ(reference_diff[0], global_diff[0]);
-//   }
-// }
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(str1.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(str2.data()));
+    taskDataPar->inputs_count.emplace_back(str1.size());
+    taskDataPar->inputs_count.emplace_back(str2.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_sum.data()));
+    taskDataPar->outputs_count.emplace_back(global_sum.size());
+  }
 
-// TEST(makhov_m_num_of_diff_elements_in_two_str_mpi, Test_Diff_2) {
-//   boost::mpi::communicator world;
-//   std::vector<int> global_vec;
-//   std::vector<int32_t> global_diff(1, 0);
-//   // Create TaskData
-//   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  // Create Task
+  makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
 
-//   if (world.rank() == 0) {
-//     const int count_size_vector = 120;
-//     global_vec = makhov_m_num_of_diff_elements_in_two_str_mpi::getRandomVector(count_size_vector);
-//     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-//     taskDataPar->inputs_count.emplace_back(global_vec.size());
-//     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_diff.data()));
-//     taskDataPar->outputs_count.emplace_back(global_diff.size());
-//   }
+  if (world.rank() == 0) {
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(str1.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(str2.data()));
+    taskDataSeq->inputs_count.emplace_back(str1.size());
+    taskDataSeq->inputs_count.emplace_back(str2.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_sum.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_sum.size());
 
-//   makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "-");
-//   ASSERT_EQ(testMpiTaskParallel.validation(), true);
-//   testMpiTaskParallel.pre_processing();
-//   testMpiTaskParallel.run();
-//   testMpiTaskParallel.post_processing();
+    // Create Task
+    makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_TRUE(testMpiTaskSequential.validation());
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
 
-//   if (world.rank() == 0) {
-//     // Create data
-//     std::vector<int32_t> reference_diff(1, 0);
+    ASSERT_EQ(reference_sum[0], global_sum[0]);
+  }
+}
 
-//     // Create TaskData
-//     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-//     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-//     taskDataSeq->inputs_count.emplace_back(global_vec.size());
-//     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_diff.data()));
-//     taskDataSeq->outputs_count.emplace_back(reference_diff.size());
+TEST(makhov_m_num_of_diff_elements_in_two_str_mpi, DiffSizeDiffStrings) {
+  boost::mpi::communicator world;
+  std::string str1, str2;
+  std::vector<int32_t> global_sum(1, 0);
+  std::vector<int32_t> reference_sum(1, 0);
+  str1 = "1x1xx111";
+  str2 = "11111111dfgdfg";
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-//     // Create Task
-//     makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "-");
-//     ASSERT_EQ(testMpiTaskSequential.validation(), true);
-//     testMpiTaskSequential.pre_processing();
-//     testMpiTaskSequential.run();
-//     testMpiTaskSequential.post_processing();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(str1.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(str2.data()));
+    taskDataPar->inputs_count.emplace_back(str1.size());
+    taskDataPar->inputs_count.emplace_back(str2.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_sum.data()));
+    taskDataPar->outputs_count.emplace_back(global_sum.size());
+  }
 
-//     ASSERT_EQ(reference_diff[0], global_diff[0]);
-//   }
-// }
+  // Create Task
+  makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
 
-// TEST(makhov_m_num_of_diff_elements_in_two_str_mpi, Test_Max) {
-//   boost::mpi::communicator world;
-//   std::vector<int> global_vec;
-//   std::vector<int32_t> global_max(1, 0);
-//   // Create TaskData
-//   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(str1.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(str2.data()));
+    taskDataSeq->inputs_count.emplace_back(str1.size());
+    taskDataSeq->inputs_count.emplace_back(str2.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_sum.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_sum.size());
 
-//   if (world.rank() == 0) {
-//     const int count_size_vector = 240;
-//     global_vec = makhov_m_num_of_diff_elements_in_two_str_mpi::getRandomVector(count_size_vector);
-//     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-//     taskDataPar->inputs_count.emplace_back(global_vec.size());
-//     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
-//     taskDataPar->outputs_count.emplace_back(global_max.size());
-//   }
+    // Create Task
+    makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_TRUE(testMpiTaskSequential.validation());
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
 
-//   makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "max");
-//   ASSERT_EQ(testMpiTaskParallel.validation(), true);
-//   testMpiTaskParallel.pre_processing();
-//   testMpiTaskParallel.run();
-//   testMpiTaskParallel.post_processing();
+    ASSERT_EQ(reference_sum[0], global_sum[0]);
+  }
+}
 
-//   if (world.rank() == 0) {
-//     // Create data
-//     std::vector<int32_t> reference_max(1, 0);
+TEST(makhov_m_num_of_diff_elements_in_two_str_mpi, SameStrings) {
+  boost::mpi::communicator world;
+  std::string str1, str2;
+  std::vector<int32_t> global_sum(1, 0);
+  std::vector<int32_t> reference_sum(1, 0);
+  str1 = "Hello, World!";
+  str2 = str1;
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-//     // Create TaskData
-//     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-//     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-//     taskDataSeq->inputs_count.emplace_back(global_vec.size());
-//     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
-//     taskDataSeq->outputs_count.emplace_back(reference_max.size());
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(str1.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(str2.data()));
+    taskDataPar->inputs_count.emplace_back(str1.size());
+    taskDataPar->inputs_count.emplace_back(str2.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_sum.data()));
+    taskDataPar->outputs_count.emplace_back(global_sum.size());
+  }
 
-//     // Create Task
-//     makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "max");
-//     ASSERT_EQ(testMpiTaskSequential.validation(), true);
-//     testMpiTaskSequential.pre_processing();
-//     testMpiTaskSequential.run();
-//     testMpiTaskSequential.post_processing();
+  // Create Task
+  makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
 
-//     ASSERT_EQ(reference_max[0], global_max[0]);
-//   }
-// }
+  if (world.rank() == 0) {
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(str1.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(str2.data()));
+    taskDataSeq->inputs_count.emplace_back(str1.size());
+    taskDataSeq->inputs_count.emplace_back(str2.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_sum.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_sum.size());
 
-// TEST(makhov_m_num_of_diff_elements_in_two_str_mpi, Test_Max_2) {
-//   boost::mpi::communicator world;
-//   std::vector<int> global_vec;
-//   std::vector<int32_t> global_max(1, 0);
-//   // Create TaskData
-//   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+    // Create Task
+    makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_TRUE(testMpiTaskSequential.validation());
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
 
-//   if (world.rank() == 0) {
-//     const int count_size_vector = 120;
-//     global_vec = makhov_m_num_of_diff_elements_in_two_str_mpi::getRandomVector(count_size_vector);
-//     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-//     taskDataPar->inputs_count.emplace_back(global_vec.size());
-//     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
-//     taskDataPar->outputs_count.emplace_back(global_max.size());
-//   }
-
-//   makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "max");
-//   ASSERT_EQ(testMpiTaskParallel.validation(), true);
-//   testMpiTaskParallel.pre_processing();
-//   testMpiTaskParallel.run();
-//   testMpiTaskParallel.post_processing();
-
-//   if (world.rank() == 0) {
-//     // Create data
-//     std::vector<int32_t> reference_max(1, 0);
-
-//     // Create TaskData
-//     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-//     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-//     taskDataSeq->inputs_count.emplace_back(global_vec.size());
-//     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
-//     taskDataSeq->outputs_count.emplace_back(reference_max.size());
-
-//     // Create Task
-//     makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "max");
-//     ASSERT_EQ(testMpiTaskSequential.validation(), true);
-//     testMpiTaskSequential.pre_processing();
-//     testMpiTaskSequential.run();
-//     testMpiTaskSequential.post_processing();
-
-//     ASSERT_EQ(reference_max[0], global_max[0]);
-//   }
-// }
+    ASSERT_EQ(reference_sum[0], global_sum[0]);
+  }
+}

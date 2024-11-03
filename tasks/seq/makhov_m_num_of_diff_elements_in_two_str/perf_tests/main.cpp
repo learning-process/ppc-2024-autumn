@@ -8,7 +8,7 @@
 #include "seq/makhov_m_num_of_diff_elements_in_two_str/include/ops_seq.hpp"
 
 // Generates random string with given size filled with digits 0-9
-std::string makhov_m_num_of_diff_elements_in_two_str_seq::getRandStr(size_t size_, char min = '0', char max = '9') {
+std::string getRandStr(size_t size_, char min = '0', char max = '9') {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::string str;
@@ -23,8 +23,8 @@ TEST(sequential_makhov_m_num_of_diff_elements_in_two_str_perf_test, test_pipelin
   std::string str1, str2;
 
   // Create data
-  str1 = makhov_m_num_of_diff_elements_in_two_str_seq::getRandStr(size);
-  str2 = makhov_m_num_of_diff_elements_in_two_str_seq::getRandStr(size);
+  str1 = getRandStr(size);
+  str2 = getRandStr(size);
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -64,8 +64,8 @@ TEST(sequential_makhov_m_num_of_diff_elements_in_two_str_perf_test, test_task_ru
   std::string str1, str2;
 
   // Create data
-  str1 = makhov_m_num_of_diff_elements_in_two_str_seq::getRandStr(size);
-  str2 = makhov_m_num_of_diff_elements_in_two_str_seq::getRandStr(size);
+  str1 = getRandStr(size);
+  str2 = getRandStr(size);
   std::vector<int> out(1, 0);
 
   // Create TaskData

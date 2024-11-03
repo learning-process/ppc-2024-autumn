@@ -2,29 +2,43 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
+#include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/makhov_m_num_of_diff_elements_in_two_str/include/ops_mpi.hpp"
 
+// Generates random string with given size filled with digits 0-9
+std::string getRandStr(size_t size_, char min = '0', char max = '9') {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::string str;
+  for (int i = 0; i < size_; i++) {
+    str += (char)(min + gen() % (max - min + 1));
+  }
+  return str;
+}
+
 TEST(mpi_makhov_m_num_of_diff_elements_in_two_str_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
+  std::string str1, str2;
   std::vector<int32_t> global_sum(1, 0);
+  str1 = getRandStr(10000000);
+  str2 = getRandStr(10000000);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int count_size_vector;
   if (world.rank() == 0) {
-    count_size_vector = 120;
-    global_vec = std::vector<int>(count_size_vector, 1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(str1.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(str2.data()));
+    taskDataPar->inputs_count.emplace_back(str1.size());
+    taskDataPar->inputs_count.emplace_back(str2.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskParallel>(taskDataPar, "+");
-  ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  auto testMpiTaskParallel =
+      std::make_shared<makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskParallel>(taskDataPar);
+  ASSERT_TRUE(testMpiTaskParallel->validation());
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
@@ -43,28 +57,29 @@ TEST(mpi_makhov_m_num_of_diff_elements_in_two_str_perf_test, test_pipeline_run) 
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(count_size_vector, global_sum[0]);
   }
 }
 
-TEST(mpi_makhov_m_num_of_diff_elements_in_two_str_perf_test, test_task_run) {
+ TEST(mpi_makhov_m_num_of_diff_elements_in_two_str_perf_test, test_task_run) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
+  std::string str1, str2;
   std::vector<int32_t> global_sum(1, 0);
+  str1 = getRandStr(10000000);
+  str2 = getRandStr(10000000);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int count_size_vector;
   if (world.rank() == 0) {
-    count_size_vector = 120;
-    global_vec = std::vector<int>(count_size_vector, 1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(str1.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(str2.data()));
+    taskDataPar->inputs_count.emplace_back(str1.size());
+    taskDataPar->inputs_count.emplace_back(str2.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskParallel>(taskDataPar, "+");
-  ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  auto testMpiTaskParallel =
+  std::make_shared<makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskParallel>(taskDataPar);
+  ASSERT_TRUE(testMpiTaskParallel->validation());
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
@@ -83,6 +98,5 @@ TEST(mpi_makhov_m_num_of_diff_elements_in_two_str_perf_test, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(count_size_vector, global_sum[0]);
   }
 }
