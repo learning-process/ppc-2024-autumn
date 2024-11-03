@@ -1,7 +1,8 @@
 #include <gtest/gtest.h>
 
+#include <random>
 #include <vector>
-#include<random>
+
 #include "seq/volochaev_s_count_characters_27/include/ops_seq.hpp"
 
 namespace volochaev_s_count_characters_27_seq {
