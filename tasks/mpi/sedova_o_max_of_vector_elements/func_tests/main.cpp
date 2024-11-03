@@ -84,9 +84,9 @@ TEST(sedova_o_max_of_vector_elements_mpi, Test5) {
   }
 }
 
-TEST(sedova_o_max_of_vector_elements_mpi, Test_1_5) {
-  size_t rows = 1;
-  size_t cols = 5;
+TEST(sedova_o_max_of_vector_elements_mpi, Test_2_2) {
+  size_t rows = 2;
+  size_t cols = 2;
   size_t value = 30;
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
