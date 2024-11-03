@@ -13,7 +13,7 @@ std::string getRandStr(size_t size_, char min = '0', char max = '9') {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::string str;
-  for (int i = 0; i < size_; i++) {
+  for (size_t i = 0; i < size_; i++) {
     str += (char)(min + gen() % (max - min + 1));
   }
   return str;
