@@ -19,27 +19,27 @@ bool TestMPITaskSequential::pre_processing() {
   return true;
   
 }
-  bool TestMPITaskSequential::run() {
+ bool TestMPITaskSequential::run() {
   internal_order_test();
   double sum = 0.0;
   std::mt19937 rng(12345);
   std::uniform_real_distribution<> dist(a, b);
-   for (int i = 0; i < num_samples; ++i) {
+  for (int i = 0; i < num_samples; ++i) {
     double x = dist(rng);
     sum += function_square(x);
     
   }
-   res = (b - a) * sum / num_samples;
+  res = (b - a) * sum / num_samples;
   return true;
   
 }
- bool TestMPITaskSequential::post_processing() {
+  bool TestMPITaskSequential::post_processing() {
   internal_order_test();
   reinterpret_cast<double*>(taskData->outputs[0])[0] = res;
   return true;
   
 }
-+  bool TestMPITaskParallel::validation() {
+  bool TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     if ((taskData->inputs.size() != 3) || (taskData->outputs.size() != 1)) {
@@ -53,17 +53,17 @@ bool TestMPITaskSequential::pre_processing() {
     }
     
   }
-  +return true;
+  return true;
   
 }
-  bool TestMPITaskParallel::pre_processing() {
+bool TestMPITaskParallel::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-        a = *reinterpret_cast<double*>(taskData->inputs[0]);
-        b = *reinterpret_cast<double*>(taskData->inputs[1]);
-        epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
-        num_samples = static_cast<int>(1.0 / epsilon);
-    }
+    a = *reinterpret_cast<double*>(taskData->inputs[0]);
+    b = *reinterpret_cast<double*>(taskData->inputs[1]);
+    epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
+    num_samples = static_cast<int>(1.0 / epsilon);
+  }
 
   boost::mpi::broadcast(world, a, 0);
   boost::mpi::broadcast(world, b, 0);
@@ -78,7 +78,7 @@ bool TestMPITaskParallel::run() {
   std::mt19937 rng(world.rank());
   std::uniform_real_distribution<> dist(a, b);
 
-for (int i = 0; i < local_num_samples; ++i) {
+  for (int i = 0; i < local_num_samples; ++i) {
     double x = dist(rng);
     local_sum += function_square(x);
     
