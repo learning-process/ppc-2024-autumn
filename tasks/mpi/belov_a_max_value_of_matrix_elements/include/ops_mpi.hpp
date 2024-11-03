@@ -70,7 +70,6 @@ bool MaxValueOfMatrixElementsParallel<T>::pre_processing() {
     cols_ = dimensions[1];
 
     if (rows_ <= 0 || cols_ <= 0) {
-      // std::cerr << "Error: Matrix dimensions must be positive." << std::endl;
       return false;
     }
 
@@ -87,13 +86,11 @@ bool MaxValueOfMatrixElementsParallel<T>::validation() {
 
   if (world.rank() == 0) {
     if (taskData->inputs.empty() || taskData->outputs.empty()) {
-      // std::cerr << "Validation error: Missing input or output data." << std::endl;
       return false;
     }
 
     auto* dimensions = reinterpret_cast<int*>(taskData->inputs[0]);
     if (dimensions[0] <= 0 || dimensions[1] <= 0) {
-      // std::cerr << "Validation error: Matrix dimensions must be positive." << std::endl;
       return false;
     }
   }
@@ -147,7 +144,6 @@ bool MaxValueOfMatrixElementsParallel<T>::post_processing() {
   return true;
 }
 
-
 template <typename T>
 class MaxValueOfMatrixElementsSequential : public ppc::core::Task {
  public:
@@ -182,7 +178,6 @@ bool MaxValueOfMatrixElementsSequential<T>::pre_processing() {
   cols_ = dimensions[1];
 
   if (rows_ <= 0 || cols_ <= 0) {
-    // std::cerr << "Error: Matrix dimensions must be positive." << std::endl;
     return false;
   }
 
@@ -214,7 +209,7 @@ bool MaxValueOfMatrixElementsSequential<T>::run() {
 template <typename T>
 bool MaxValueOfMatrixElementsSequential<T>::post_processing() {
   internal_order_test();
-  // std::cout << "Maximum value in the matrix: " << res << std::endl;
+
   return true;
 }
 

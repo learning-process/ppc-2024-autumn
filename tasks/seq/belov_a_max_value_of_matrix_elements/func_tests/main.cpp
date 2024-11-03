@@ -351,3 +351,18 @@ TEST(belov_a_max_value_of_matrix_elements_seq, Test_PreProcessing_NonPositiveDim
   bool pre_processing_result = testTaskSequential.pre_processing();
   ASSERT_EQ(pre_processing_result, false);
 }
+
+TEST(belov_a_max_value_of_matrix_elements_seq, Test_Random_Matrix_Integers) {
+  std::vector<int> matrix =
+      belov_a_max_value_of_matrix_elements_seq::MaxValueOfMatrixElementsSequential<int>::generate_random_matrix(10, 10);
+  bool flag = true;
+
+  for (const auto& item : matrix) {
+    if (item < 0 || item > 1000) {
+      flag = false;
+      break;
+    }
+  }
+
+  ASSERT_TRUE(flag && matrix.size() == 100);
+}
