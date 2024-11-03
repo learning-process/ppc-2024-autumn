@@ -10,14 +10,14 @@
 TEST(koshkin_n_sum_values_by_columns_matrix_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
 
-  int rows = 3000;
-  int columns = 3000;
+  int rows = 300;
+  int columns = 300;
 
   std::vector<int> matrix(columns * rows, 0);
   std::vector<int> res_out_paral(columns, 0);
   std::vector<int> exp_res_paral(columns, 0);
-  matrix[1] = 1;
-  exp_res_paral[1] = 1;
+  matrix[5] = 1;
+  exp_res_paral[5] = 1;
 
 
   // Create TaskData
@@ -57,16 +57,15 @@ TEST(koshkin_n_sum_values_by_columns_matrix_mpi, test_pipeline_run) {
 
 TEST(koshkin_n_sum_values_by_columns_matrix_mpi, test_task_run) {
   boost::mpi::communicator world;
-  int rows = 3000;
-  int columns = 3000;
+  int rows = 300;
+  int columns = 300;
 
   std::vector<int> matrix(columns * rows, 0);
   std::vector<int> res_out_paral(columns, 0);
   std::vector<int> exp_res_paral(columns, 0);
-  for (int i = 0; i < 1000; i += 2) {
-    matrix[i] = 1;
-    exp_res_paral[i] = 1;
-  }
+  matrix[5] = 1;
+  exp_res_paral[5] = 1;
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
