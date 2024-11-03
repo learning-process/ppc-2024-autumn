@@ -58,7 +58,8 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_int_100_perf) {
   size_t length = 100;
   if (rank == 0) {
     g_vec = std::vector<int>(length);
-    std::srand(std::time(0));
+    const int nl = 0;
+    std::srand(std::time(nl));
     for (size_t i = 0; i < length; i++) g_vec[i] = rand() * std::pow(-1, rand());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(g_vec.data()));
     taskDataPar->inputs_count.emplace_back(g_vec.size());
@@ -100,7 +101,8 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_int_1000000_perf) {
   size_t length = 1000000;
   if (rank == 0) {
     g_vec = std::vector<int>(length);
-    std::srand(std::time(0));
+    const int nl = 0;
+    std::srand(std::time(nl));
     for (size_t i = 0; i < length; i++) g_vec[i] = rand() * std::pow(-1, rand());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(g_vec.data()));
     taskDataPar->inputs_count.emplace_back(g_vec.size());
@@ -144,7 +146,8 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_double_10000_perf) {
     g_vec = std::vector<double>(length);
     double max = 1000000;
     double min = -1000000;
-    std::srand(std::time(0));
+    const int nl = 0;
+    std::srand(std::time(nl));
     for (size_t i = 0; i < length; i++) g_vec[i] = min + static_cast<double>(rand()) / RAND_MAX * (max - min);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(g_vec.data()));
     taskDataPar->inputs_count.emplace_back(g_vec.size());
@@ -188,7 +191,8 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_double_1000000_perf) {
     g_vec = std::vector<double>(length);
     double max = 1000000;
     double min = -1000000;
-    std::srand(std::time(0));
+    const int nl = 0;
+    std::srand(std::time(nl));
     for (size_t i = 0; i < length; i++) g_vec[i] = min + static_cast<double>(rand()) / RAND_MAX * (max - min);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(g_vec.data()));
     taskDataPar->inputs_count.emplace_back(g_vec.size());
@@ -218,18 +222,4 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_double_1000000_perf) {
       if (g_vec[i - 1] > g_vec[i]) res++;
     ASSERT_EQ(res, g_num_viol[0]);
   }
-}
-
-int main(int argc, char** argv) {
-  MPI_Init(&argc, &argv);
-  int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  ::testing::InitGoogleTest(&argc, argv);
-  ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
-  if (rank != 0) {
-    delete listeners.Release(listeners.default_result_printer());
-  }
-  int res = RUN_ALL_TESTS();
-  MPI_Finalize();
-  return res;
 }

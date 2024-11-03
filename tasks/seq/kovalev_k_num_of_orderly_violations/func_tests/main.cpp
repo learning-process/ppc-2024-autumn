@@ -159,8 +159,3 @@ TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_len_10000_double) {
   size_t result = 11;
   ASSERT_EQ(result, out[0]);
 }
-
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}
