@@ -64,50 +64,16 @@ bool naumov_b_min_colum_matrix_mpi::TestMPITaskSequential::post_processing() {
 bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
-  int rows = 0;
-  int cols = 0;
-
   if (world.rank() == 0) {
-    rows = taskData->inputs_count[0];
-    cols = taskData->inputs_count[1];
-  }
-
-  broadcast(world, rows, 0);
-  broadcast(world, cols, 0);
-
-  int delta = rows / world.size();
-  int extra = rows % world.size();
-
-  int local_rows = (world.rank() < extra) ? (delta + 1) : delta;
-  local_input_.resize(local_rows, std::vector<int>(cols));
-
-  if (world.rank() == 0) {
-    input_.resize(rows, std::vector<int>(cols));
-    auto* input_matrix = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (int i = 0; i < rows; i++) {
-      for (int j = 0; j < cols; j++) {
-        input_[i][j] = input_matrix[i * cols + j];
-      }
-    }
-
-    for (int proc = 1; proc < world.size(); proc++) {
-      int start_row = proc * delta + std::min(proc, extra);
-      int num_rows = delta + (proc < extra ? 1 : 0);
-      for (int r = start_row; r < start_row + num_rows; r++) {
-        world.send(proc, 0, input_[r].data(), cols);
+    input_ = std::vector(taskData->inputs_count[1] * taskData->inputs_count[0], 0);
+    auto* temp = reinterpret_cast<int*>(taskData->inputs[0]);
+    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+      for (unsigned j = 0; j < taskData->inputs_count[1]; j++) {
+        input_[i + j * taskData->inputs_count[0]] = temp[j + i * taskData->inputs_count[1]];
       }
     }
   }
 
-  if (world.rank() == 0) {
-    std::copy(input_.begin(), input_.begin() + local_rows, local_input_.begin());
-  } else {
-    for (int r = 0; r < local_rows; r++) {
-      world.recv(0, 0, local_input_[r].data(), cols);
-    }
-  }
-
-  res.resize(cols, std::numeric_limits<int>::max());
   return true;
 }
 
@@ -125,38 +91,47 @@ bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::validation() {
 
 bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+  int rows = 0;
+  int cols = 0;
 
-  int local_rows = local_input_.size();
-  if (local_rows == 0) return true;
+  if (world.rank() == 0) {
+    rows = taskData->inputs_count[0];
+    cols = taskData->inputs_count[1];
+  }
 
-  int numCols = local_input_[0].size();
-  std::vector<int> local_minima(numCols, std::numeric_limits<int>::max());
+  broadcast(world, rows, 0);
+  broadcast(world, cols, 0);
 
-  for (int j = 0; j < numCols; ++j) {
-    for (int i = 0; i < local_rows; ++i) {
-      local_minima[j] = std::min(local_minima[j], local_input_[i][j]);
+  int delta = cols / world.size();
+  int extra = cols % world.size();
+
+  if (world.rank() == 0) {
+    for (int proc = 1; proc < world.size(); proc++) {
+      world.send(proc, 0, input_.data() + (proc * delta + extra) * rows, delta * rows);
+    }
+    local_vector_ = std::vector<int>(input_.begin(), input_.begin() + (delta + extra) * rows);
+  } else {
+    local_vector_ = std::vector<int>(delta * cols);
+    world.recv(0, 0, local_vector_.data(), delta * rows);
+  }
+
+  std::vector<int> local_res(delta + ((world.rank() == 0) ? extra : 0), std::numeric_limits<int>::max());
+
+  for (int i = 0; i < local_res.size(); i++) {
+    for (int j = 0; j < rows; j++) {
+      local_res[i] = std::min(local_res[i], local_vector_[j + rows * i]);
     }
   }
 
   if (world.rank() == 0) {
-    std::vector<int> all_minima(numCols, std::numeric_limits<int>::max());
-
-    for (int j = 0; j < numCols; ++j) {
-      all_minima[j] = local_minima[j];
+    std::vector<int> temp(delta, 0);
+    res.insert(res.end(), local_res.begin(), local_res.end());
+    for (int i = 1; i < world.size(); i++) {
+      world.recv(i, 0, temp.data(), delta);
+      res.insert(res.end(), temp.begin(), temp.end());
     }
-
-    for (int proc = 1; proc < world.size(); ++proc) {
-      std::vector<int> recv_minima(numCols, std::numeric_limits<int>::max());
-      world.recv(proc, 0, recv_minima.data(), numCols);
-
-      for (int j = 0; j < numCols; ++j) {
-        all_minima[j] = std::min(all_minima[j], recv_minima[j]);
-      }
-    }
-
-    res.assign(all_minima.begin(), all_minima.end());
   } else {
-    world.send(0, 0, local_minima.data(), numCols);
+    world.send(0, 0, local_res.data(), delta);
   }
 
   return true;
