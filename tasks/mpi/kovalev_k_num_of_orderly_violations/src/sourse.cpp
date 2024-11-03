@@ -59,7 +59,6 @@ bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::run(
     boost::mpi::reduce(world, l_res, g_res, std::plus<unsigned long>(), 0);
   } catch (const boost::mpi::exception& e) {
     std::cerr << "MPI reduce: " << e.what() << std::endl;
-    return 1;  // Завершение программы с кодом ошибки
   }
   if (rank == 0) {
     for (int i = 1; i < size; i++)  // are there any violations between local copies?
