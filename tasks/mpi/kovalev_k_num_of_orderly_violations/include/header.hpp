@@ -16,12 +16,11 @@ class NumOfOrderlyViolationsPar : public ppc::core::Task {
  private:
   std::vector<T> glob_v;
   std::vector<T> loc_v;
-  size_t n, l_res = 0, g_res = 0;  // counters initialisation
+  size_t n = 0, l_res = 0, g_res = 0;  // counters initialisation
   int rank, size;
 
  public:
-  explicit NumOfOrderlyViolationsPar(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(taskData_), n(taskData_->inputs_count[0]) {}
+  explicit NumOfOrderlyViolationsPar(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(taskData_) {}
   bool count_num_of_orderly_violations_mpi();
   bool pre_processing() override;
   bool validation() override;
