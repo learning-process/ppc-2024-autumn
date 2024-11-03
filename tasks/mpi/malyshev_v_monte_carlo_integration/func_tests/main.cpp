@@ -21,7 +21,7 @@ void run_monte_carlo_test(const std::function<double(double)>& func, double a, d
                           double expected_result) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   double result = 0.0;
-    
+  
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
