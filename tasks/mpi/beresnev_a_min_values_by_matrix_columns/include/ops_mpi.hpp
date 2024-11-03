@@ -47,6 +47,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   int remainder;
   std::string ops;
   boost::mpi::communicator world;
+  boost::mpi::request req;
 };
 
 }  // namespace beresnev_a_min_values_by_matrix_columns_mpi
