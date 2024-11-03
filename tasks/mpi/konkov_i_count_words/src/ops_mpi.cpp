@@ -1,5 +1,6 @@
 // Copyright 2023 Konkov Ivan
 #include "mpi/konkov_i_count_words/include/ops_mpi.hpp"
+
 #include <boost/mpi/collectives.hpp>
 #include <sstream>
 
