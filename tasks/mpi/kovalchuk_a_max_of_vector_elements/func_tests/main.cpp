@@ -1,201 +1,223 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
-#include <algorithm>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <limits>
-#include <random>
 #include <vector>
 
 #include "mpi/kovalchuk_a_max_of_vector_elements/include/ops_mpi.hpp"
 
-using namespace kovalchuk_a_max_of_vector_elements_mpi;
-
-std::vector<std::vector<int>> generateRandomMatrix(int rows, int columns, int start_gen = -99, int fin_gen = 99) {
-  static std::random_device dev;
-  static std::mt19937 gen(dev());
-  std::uniform_int_distribution<int> dist(start_gen, fin_gen);
-  std::vector<std::vector<int>> matrix(rows, std::vector<int>(columns));
-  for (int i = 0; i < rows; ++i) {
-    for (int j = 0; j < columns; ++j) {
-      matrix[i][j] = dist(gen);
-    }
-  }
-  return matrix;
-}
-
-TEST(kovalchuk_a_max_of_vector_elements_mpi, test_max_5_5) {
-  boost::mpi::environment env;
+TEST(kovalchuk_a_max_of_vector_elements, Test_Max_5_5) {
+  const int count_rows = 5;
+  const int count_columns = 5;
   boost::mpi::communicator world;
-
-  const int rows = 5;
-  const int columns = 5;
-  int reference = std::numeric_limits<int>::max();
-
-  std::vector<int> max_value(1, std::numeric_limits<int>::min());
-  auto matrix = generateRandomMatrix(rows, columns);
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::uniform_int_distribution<int> row_dist(0, rows - 1);
-  std::uniform_int_distribution<int> col_dist(0, columns - 1);
-  int random_row = row_dist(gen);
-  int random_col = col_dist(gen);
-  matrix[random_row][random_col] = reference;
-
-  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  for (unsigned int i = 0; i < matrix.size(); i++)
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
-  taskDataSeq->inputs_count = {rows, columns};
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(max_value.data()));
-  taskDataSeq->outputs_count.emplace_back(max_value.size());
-
-  TestMPITaskParallel testMPITaskParallel(taskDataSeq);
-  ASSERT_TRUE(testMPITaskParallel.validation());
-  testMPITaskParallel.pre_processing();
-  testMPITaskParallel.run();
-  testMPITaskParallel.post_processing();
+  std::vector<std::vector<int>> global_matrix;
+  std::vector<int32_t> global_max(1, INT_MIN);
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    ASSERT_EQ(reference, max_value[0]);
+    global_matrix = kovalchuk_a_max_of_vector_elements::getRandomMatrix(count_rows, count_columns);
+    for (unsigned int i = 0; i < global_matrix.size(); i++)
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+    taskDataPar->inputs_count.emplace_back(count_rows);
+    taskDataPar->inputs_count.emplace_back(count_columns);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
+    taskDataPar->outputs_count.emplace_back(global_max.size());
+  }
+  kovalchuk_a_max_of_vector_elements::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+  if (world.rank() == 0) {
+    // Create data
+    std::vector<int32_t> reference_max(1, INT_MIN);
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    for (unsigned int i = 0; i < global_matrix.size(); i++)
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+    taskDataSeq->inputs_count.emplace_back(count_rows);
+    taskDataSeq->inputs_count.emplace_back(count_columns);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_max.size());
+    // Create Task
+    kovalchuk_a_max_of_vector_elements::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+    ASSERT_EQ(reference_max[0], global_max[0]);
   }
 }
 
-TEST(kovalchuk_a_max_of_vector_elements_mpi, test_max_10_10) {
-  boost::mpi::environment env;
+TEST(kovalchuk_a_max_of_vector_elements, Test_Max_10_10) {
+  const int count_rows = 10;
+  const int count_columns = 10;
   boost::mpi::communicator world;
-
-  const int rows = 10;
-  const int columns = 10;
-  int reference = std::numeric_limits<int>::max();
-
-  std::vector<int> max_value(1, std::numeric_limits<int>::min());
-  auto matrix = generateRandomMatrix(rows, columns);
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::uniform_int_distribution<int> row_dist(0, rows - 1);
-  std::uniform_int_distribution<int> col_dist(0, columns - 1);
-  int random_row = row_dist(gen);
-  int random_col = col_dist(gen);
-  matrix[random_row][random_col] = reference;
-
-  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  for (unsigned int i = 0; i < matrix.size(); i++)
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
-  taskDataSeq->inputs_count = {rows, columns};
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(max_value.data()));
-  taskDataSeq->outputs_count.emplace_back(max_value.size());
-
-  TestMPITaskParallel testMPITaskParallel(taskDataSeq);
-  ASSERT_TRUE(testMPITaskParallel.validation());
-  testMPITaskParallel.pre_processing();
-  testMPITaskParallel.run();
-  testMPITaskParallel.post_processing();
+  std::vector<std::vector<int>> global_matrix;
+  std::vector<int32_t> global_max(1, INT_MIN);
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    ASSERT_EQ(reference, max_value[0]);
+    global_matrix = kovalchuk_a_max_of_vector_elements::getRandomMatrix(count_rows, count_columns);
+    for (unsigned int i = 0; i < global_matrix.size(); i++)
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+    taskDataPar->inputs_count.emplace_back(count_rows);
+    taskDataPar->inputs_count.emplace_back(count_columns);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
+    taskDataPar->outputs_count.emplace_back(global_max.size());
+  }
+  kovalchuk_a_max_of_vector_elements::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+  if (world.rank() == 0) {
+    // Create data
+    std::vector<int32_t> reference_max(1, INT_MIN);
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    for (unsigned int i = 0; i < global_matrix.size(); i++)
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+    taskDataSeq->inputs_count.emplace_back(count_rows);
+    taskDataSeq->inputs_count.emplace_back(count_columns);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_max.size());
+    // Create Task
+    kovalchuk_a_max_of_vector_elements::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+    ASSERT_EQ(reference_max[0], global_max[0]);
   }
 }
 
-TEST(kovalchuk_a_max_of_vector_elements_mpi, test_max_50_50) {
-  boost::mpi::environment env;
+TEST(kovalchuk_a_max_of_vector_elements, Test_Max_50x20) {
+  const int count_rows = 50;
+  const int count_columns = 20;
   boost::mpi::communicator world;
-
-  const int rows = 50;
-  const int columns = 50;
-  int reference = std::numeric_limits<int>::max();
-
-  std::vector<int> max_value(1, std::numeric_limits<int>::min());
-  auto matrix = generateRandomMatrix(rows, columns);
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::uniform_int_distribution<int> row_dist(0, rows - 1);
-  std::uniform_int_distribution<int> col_dist(0, columns - 1);
-  int random_row = row_dist(gen);
-  int random_col = col_dist(gen);
-  matrix[random_row][random_col] = reference;
-
-  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  for (unsigned int i = 0; i < matrix.size(); i++)
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
-  taskDataSeq->inputs_count = {rows, columns};
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(max_value.data()));
-  taskDataSeq->outputs_count.emplace_back(max_value.size());
-
-  TestMPITaskParallel testMPITaskParallel(taskDataSeq);
-  ASSERT_TRUE(testMPITaskParallel.validation());
-  testMPITaskParallel.pre_processing();
-  testMPITaskParallel.run();
-  testMPITaskParallel.post_processing();
+  std::vector<std::vector<int>> global_matrix;
+  std::vector<int32_t> global_max(1, INT_MIN);
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    ASSERT_EQ(reference, max_value[0]);
+    global_matrix = kovalchuk_a_max_of_vector_elements::getRandomMatrix(count_rows, count_columns);
+    for (unsigned int i = 0; i < global_matrix.size(); i++)
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+    taskDataPar->inputs_count.emplace_back(count_rows);
+    taskDataPar->inputs_count.emplace_back(count_columns);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
+    taskDataPar->outputs_count.emplace_back(global_max.size());
+  }
+  kovalchuk_a_max_of_vector_elements::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+  if (world.rank() == 0) {
+    // Create data
+    std::vector<int32_t> reference_max(1, INT_MIN);
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    for (unsigned int i = 0; i < global_matrix.size(); i++)
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+    taskDataSeq->inputs_count.emplace_back(count_rows);
+    taskDataSeq->inputs_count.emplace_back(count_columns);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_max.size());
+    // Create Task
+    kovalchuk_a_max_of_vector_elements::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+    ASSERT_EQ(reference_max[0], global_max[0]);
   }
 }
 
-TEST(kovalchuk_a_max_of_vector_elements_mpi, test_max_100_100) {
-  boost::mpi::environment env;
+TEST(kovalchuk_a_max_of_vector_elements, Test_Max_100_100) {
+  const int count_rows = 100;
+  const int count_columns = 100;
   boost::mpi::communicator world;
-
-  const int rows = 100;
-  const int columns = 100;
-  int reference = std::numeric_limits<int>::max();
-
-  std::vector<int> max_value(1, std::numeric_limits<int>::min());
-  auto matrix = generateRandomMatrix(rows, columns);
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::uniform_int_distribution<int> row_dist(0, rows - 1);
-  std::uniform_int_distribution<int> col_dist(0, columns - 1);
-  int random_row = row_dist(gen);
-  int random_col = col_dist(gen);
-  matrix[random_row][random_col] = reference;
-
-  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  for (unsigned int i = 0; i < matrix.size(); i++)
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
-  taskDataSeq->inputs_count = {rows, columns};
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(max_value.data()));
-  taskDataSeq->outputs_count.emplace_back(max_value.size());
-
-  TestMPITaskParallel testMPITaskParallel(taskDataSeq);
-  ASSERT_TRUE(testMPITaskParallel.validation());
-  testMPITaskParallel.pre_processing();
-  testMPITaskParallel.run();
-  testMPITaskParallel.post_processing();
+  std::vector<std::vector<int>> global_matrix;
+  std::vector<int32_t> global_max(1, INT_MIN);
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    ASSERT_EQ(reference, max_value[0]);
+    global_matrix = kovalchuk_a_max_of_vector_elements::getRandomMatrix(count_rows, count_columns);
+    for (unsigned int i = 0; i < global_matrix.size(); i++)
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+    taskDataPar->inputs_count.emplace_back(count_rows);
+    taskDataPar->inputs_count.emplace_back(count_columns);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
+    taskDataPar->outputs_count.emplace_back(global_max.size());
+  }
+  kovalchuk_a_max_of_vector_elements::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+  if (world.rank() == 0) {
+    // Create data
+    std::vector<int32_t> reference_max(1, INT_MIN);
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    for (unsigned int i = 0; i < global_matrix.size(); i++)
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+    taskDataSeq->inputs_count.emplace_back(count_rows);
+    taskDataSeq->inputs_count.emplace_back(count_columns);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_max.size());
+    // Create Task
+    kovalchuk_a_max_of_vector_elements::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+    ASSERT_EQ(reference_max[0], global_max[0]);
   }
 }
 
-TEST(kovalchuk_a_max_of_vector_elements_mpi, test_max_1_100) {
-  boost::mpi::environment env;
+TEST(kovalchuk_a_max_of_vector_elements, Test_Max_1_100) {
+  const int count_rows = 1;
+  const int count_columns = 100;
   boost::mpi::communicator world;
-
-  const int rows = 1;
-  const int columns = 100;
-  int reference = std::numeric_limits<int>::max();
-
-  std::vector<int> max_value(1, std::numeric_limits<int>::min());
-  auto matrix = generateRandomMatrix(rows, columns);
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::uniform_int_distribution<int> row_dist(0, rows - 1);
-  std::uniform_int_distribution<int> col_dist(0, columns - 1);
-  int random_row = row_dist(gen);
-  int random_col = col_dist(gen);
-  matrix[random_row][random_col] = reference;
-
-  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  for (unsigned int i = 0; i < matrix.size(); i++)
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
-  taskDataSeq->inputs_count = {rows, columns};
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(max_value.data()));
-  taskDataSeq->outputs_count.emplace_back(max_value.size());
-
-  TestMPITaskParallel testMPITaskParallel(taskDataSeq);
-  ASSERT_TRUE(testMPITaskParallel.validation());
-  testMPITaskParallel.pre_processing();
-  testMPITaskParallel.run();
-  testMPITaskParallel.post_processing();
+  std::vector<std::vector<int>> global_matrix;
+  std::vector<int32_t> global_max(1, INT_MIN);
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    ASSERT_EQ(reference, max_value[0]);
+    global_matrix = kovalchuk_a_max_of_vector_elements::getRandomMatrix(count_rows, count_columns);
+    for (unsigned int i = 0; i < global_matrix.size(); i++)
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+    taskDataPar->inputs_count.emplace_back(count_rows);
+    taskDataPar->inputs_count.emplace_back(count_columns);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
+    taskDataPar->outputs_count.emplace_back(global_max.size());
+  }
+  kovalchuk_a_max_of_vector_elements::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+  if (world.rank() == 0) {
+    // Create data
+    std::vector<int32_t> reference_max(1, INT_MIN);
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    for (unsigned int i = 0; i < global_matrix.size(); i++)
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+    taskDataSeq->inputs_count.emplace_back(count_rows);
+    taskDataSeq->inputs_count.emplace_back(count_columns);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_max.size());
+    // Create Task
+    kovalchuk_a_max_of_vector_elements::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+    ASSERT_EQ(reference_max[0], global_max[0]);
   }
 }

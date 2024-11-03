@@ -1,63 +1,62 @@
 // Copyright 2023 Nesterov Alexander
+#include <algorithm>
+#include <functional>
+#include <random>
+#include <string>
+#include <vector>
+
 #include "seq/kovalchuk_a_max_of_vector_elements/include/ops_seq.hpp"
 
-#include <algorithm>
-#include <climits>
-#include <limits>
-#include <numeric>
-#include <random>
-
-namespace kovalchuk_a_max_of_vector_elements_seq {
-
-std::vector<int> getRandomVector(int size, int start_gen, int fin_gen) {
-  static std::random_device dev;
-  static std::mt19937 gen(dev());
-  std::uniform_int_distribution<int> dist(start_gen, fin_gen);
-  std::vector<int> vec(size);
-  for (int i = 0; i < size; i++) {
-    vec[i] = dist(gen);
+std::vector<int> kovalchuk_a_max_of_vector_elements_seq::getRandomVector(int sz, int min, int max) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = min + gen() % (max - min + 1);
   }
   return vec;
 }
 
-std::vector<std::vector<int>> getRandomMatrix(int rows, int columns, int start_gen, int fin_gen) {
-  std::vector<std::vector<int>> matrix(rows, std::vector<int>(columns));
+std::vector<std::vector<int>> kovalchuk_a_max_of_vector_elements_seq::getRandomMatrix(int rows, int columns, int min,
+                                                                                      int max) {
+  std::vector<std::vector<int>> vec(rows);
   for (int i = 0; i < rows; i++) {
-    matrix[i] = getRandomVector(columns, start_gen, fin_gen);
+    vec[i] = kovalchuk_a_max_of_vector_elements_seq::getRandomVector(columns, min, max);
   }
-  return matrix;
+  return vec;
 }
 
-bool TestTaskSequential::pre_processing() {
-  inputMatrix_ = std::vector<std::vector<int>>(taskData->inputs_count[0], std::vector<int>(taskData->inputs_count[1]));
+bool kovalchuk_a_max_of_vector_elements_seq::TestSequentialTask::pre_processing() {
+  internal_order_test();
+  // Init vectors
+  input_ = std::vector<std::vector<int>>(taskData->inputs_count[0], std::vector<int>(taskData->inputs_count[1]));
   for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
-    for (unsigned int j = 0; j < taskData->inputs_count[1]; j++) {
-      inputMatrix_[i][j] = tmp_ptr[j];
-    }
+    std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[1], input_[i].begin());
   }
-  result_ = std::numeric_limits<int>::min();
+  // Init value for output
+  res_ = INT_MIN;
   return true;
 }
 
-bool TestTaskSequential::validation() {
-  return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] == 1;
+bool kovalchuk_a_max_of_vector_elements_seq::TestSequentialTask::validation() {
+  internal_order_test();
+  // Check count elements of output
+  return taskData->outputs_count[0] == 1 && taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0;
 }
 
-bool TestTaskSequential::run() {
-  result_ = std::numeric_limits<int>::min();
-  for (const auto& row : inputMatrix_) {
-    int row_max = *std::max_element(row.begin(), row.end());
-    if (row_max > result_) {
-      result_ = row_max;
-    }
+bool kovalchuk_a_max_of_vector_elements_seq::TestSequentialTask::run() {
+  internal_order_test();
+  std::vector<int> local_res(input_.size());
+  for (unsigned int i = 0; i < input_.size(); i++) {
+    local_res[i] = *std::max_element(input_[i].begin(), input_[i].end());
   }
+  res_ = *std::max_element(local_res.begin(), local_res.end());
   return true;
 }
 
-bool TestTaskSequential::post_processing() {
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = result_;
+bool kovalchuk_a_max_of_vector_elements_seq::TestSequentialTask::post_processing() {
+  internal_order_test();
+  reinterpret_cast<int*>(taskData->outputs[0])[0] = res_;
   return true;
 }
-
-}  // namespace kovalchuk_a_max_of_vector_elements_seq
