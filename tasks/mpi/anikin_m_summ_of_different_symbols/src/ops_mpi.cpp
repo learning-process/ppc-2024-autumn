@@ -10,15 +10,6 @@
 
 using namespace std::chrono_literals;
 
-std::string anikin_m_summ_of_different_symbols_mpi::getRandomString(int sz) {
-  std::string alphabet = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
-  std::string str = "";
-  for (int i = 0; i < sz; i++) {
-    str += alphabet[std::rand() % alphabet.size()];
-  }
-  return str;
-}
-
 // SEQ
 bool anikin_m_summ_of_different_symbols_mpi::SumDifSymMPISequential::pre_processing() {
   internal_order_test();

@@ -7,6 +7,15 @@
 
 #include "mpi/anikin_m_summ_of_different_symbols/include/ops_mpi.hpp"
 
+std::string anikin_m_summ_of_different_symbols_mpi::getRandomString(int sz) {
+  std::string alphabet = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
+  std::string str = "";
+  for (int i = 0; i < sz; i++) {
+    str += alphabet[std::rand() % alphabet.size()];
+  }
+  return str;
+}
+
 TEST(anikin_m_Parallel_SummDifSym_count, size_0) {
   boost::mpi::communicator com;
   char str1[] = "";
@@ -35,7 +44,7 @@ TEST(anikin_m_Parallel_SummDifSym_count, size_0) {
     taskDataSeq->inputs_count.emplace_back(in.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_s.data()));
     taskDataSeq->outputs_count.emplace_back(out_s.size());
-    anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel testClassSeq(taskDataSeq);
+    anikin_m_summ_of_different_symbols_mpi::SumDifSymMPISequential testClassSeq(taskDataSeq);
     ASSERT_EQ(testClassSeq.validation(), true);
     testClassSeq.pre_processing();
     testClassSeq.run();
@@ -75,7 +84,7 @@ TEST(anikin_m_Parallel_SummDifSym_count, size_25) {
     taskDataSeq->inputs_count.emplace_back(in.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_s.data()));
     taskDataSeq->outputs_count.emplace_back(out_s.size());
-    anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel testClassSeq(taskDataSeq);
+    anikin_m_summ_of_different_symbols_mpi::SumDifSymMPISequential testClassSeq(taskDataSeq);
     ASSERT_EQ(testClassSeq.validation(), true);
     testClassSeq.pre_processing();
     testClassSeq.run();
