@@ -61,7 +61,7 @@ TEST(vavilov_v_min_elements_in_columns_of_matrix_seq, test_task_run) {
   std::vector<std::vector<int>> matr =
       vavilov_v_min_elements_in_columns_of_matrix_seq::TestTaskSequential::generate_rnd_matrix(rows, cols);
 
-  for (auto& row : matr {
+  for (auto& row : matr) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
   }
 
