@@ -9,7 +9,7 @@
 TEST(gromov_a_sum_of_vector_elements_mpi, Test_Production) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
-  std::vector<int32_t> global_production(1, 1);
+  std::vector<int64_t> global_production(1, 1);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -30,7 +30,7 @@ TEST(gromov_a_sum_of_vector_elements_mpi, Test_Production) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int32_t> reference_production(1, 1);
+    std::vector<int64_t> reference_production(1, 1);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
