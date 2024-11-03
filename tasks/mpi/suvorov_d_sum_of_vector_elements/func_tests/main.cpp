@@ -241,7 +241,7 @@ TEST(suvorov_d_sum_of_vector_elements_mpi, Test_Sum_With_Not_Multiple_Of_Num_Pro
     // The number of elements should not be a multiple of the number of processes
     // Set prime number
     int count_size_vector = 101;
-    
+
     global_vec = suvorov_d_sum_of_vector_elements_mpi::getRandomVector(count_size_vector);
 
     // Calculating the sum sequentially for verification
