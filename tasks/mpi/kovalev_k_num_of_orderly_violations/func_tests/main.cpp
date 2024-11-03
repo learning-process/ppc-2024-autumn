@@ -24,7 +24,9 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_viol_0_int_) {
   tmpTaskPar.run();
   tmpTaskPar.post_processing();
   size_t result = 0;
-  if (world.rank() == 0) ASSERT_EQ(result, out[0]);
+  if (world.rank() == 0) {
+    ASSERT_EQ(result, out[0]);
+  }
 }
 
 TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_10_int_) {
@@ -49,8 +51,9 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_10_int_) {
   tmpTaskPar.run();
   tmpTaskPar.post_processing();
   size_t result = 1;
-  if (world.rank() == 0)
-    if (world.rank() == 0) ASSERT_EQ(result, out[0]);
+  if (world.rank() == 0) {
+    ASSERT_EQ(result, out[0]);
+  }
 }
 
 TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_10000_int_) {
@@ -85,7 +88,9 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_10000_int_) {
   tmpTaskPar.run();
   tmpTaskPar.post_processing();
   size_t result = 11;
-  if (world.rank() == 0) ASSERT_EQ(result, out[0]);
+  if (world.rank() == 0) {
+    ASSERT_EQ(result, out[0]);
+  }
 }
 
 TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_viol_0_double_) {
@@ -109,7 +114,9 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_viol_0_double_) {
   tmpTaskPar.run();
   tmpTaskPar.post_processing();
   size_t result = 0;
-  if (world.rank() == 0) ASSERT_EQ(result, out[0]);
+  if (world.rank() == 0) {
+    ASSERT_EQ(result, out[0]);
+  }
 }
 
 TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_10_double_) {
@@ -134,7 +141,9 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_10_double_) {
   tmpTaskPar.run();
   tmpTaskPar.post_processing();
   size_t result = 1;
-  if (world.rank() == 0) ASSERT_EQ(result, out[0]);
+  if (world.rank() == 0) {
+    ASSERT_EQ(result, out[0]);
+  }
 }
 
 TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_1000_double) {
@@ -170,5 +179,7 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_1000_double) {
   tmpTaskPar.run();
   tmpTaskPar.post_processing();
   size_t result = 11;
-  if (world.rank() == 0) ASSERT_EQ(result, out[0]);
+  if (world.rank() == 0) {
+    ASSERT_EQ(result, out[0]);
+  }
 }
