@@ -53,24 +53,3 @@ bool ermilova_d_min_element_matrix_seq::TestTaskSequential::post_processing() {
   reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
   return true;
 }
-
-std::vector<int> ermilova_d_min_element_matrix_seq::getRandomVector(int size, int upper_border, int lower_border) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  if (size <= 0) throw "Incorrect size";
-  std::vector<int> vec(size);
-  for (int i = 0; i < size; i++) {
-    vec[i] = lower_border + gen() % (upper_border - lower_border + 1);
-  }
-  return vec;
-}
-
-std::vector<std::vector<int>> ermilova_d_min_element_matrix_seq::getRandomMatrix(int rows, int cols, int upper_border,
-                                                                                 int lower_border) {
-  if (rows <= 0 || cols <= 0) throw "Incorrect size";
-  std::vector<std::vector<int>> vec(rows);
-  for (int i = 0; i < rows; i++) {
-    vec[i] = ermilova_d_min_element_matrix_seq::getRandomVector(cols, upper_border, lower_border);
-  }
-  return vec;
-}

@@ -3,8 +3,8 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <vector>
 #include <random>
+#include <vector>
 
 #include "mpi/ermilova_d_min_element_matrix/include/ops_mpi.hpp"
 
@@ -19,8 +19,7 @@ std::vector<int> getRandomVector(int size, int upper_border, int lower_border) {
   return vec;
 }
 
-std::vector<std::vector<int>> getRandomMatrix(int rows, int cols, int upper_border,
-                                                                                 int lower_border) {
+std::vector<std::vector<int>> getRandomMatrix(int rows, int cols, int upper_border, int lower_border) {
   if (rows <= 0 || cols <= 0) throw "Incorrect size";
   std::vector<std::vector<int>> vec(rows);
   for (int i = 0; i < rows; i++) {

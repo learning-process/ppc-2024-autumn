@@ -97,13 +97,13 @@ bool ermilova_d_min_element_matrix_mpi::TestMPITaskParallel::run() {
   }
   broadcast(world, delta, 0);
 
-local_input_ = std::vector<int>(delta);
+  local_input_ = std::vector<int>(delta);
 
-if (world.rank() == 0) {
-  local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta + extra);
-} else {
-  world.recv(0, 0, local_input_.data(), delta);
-}
+  if (world.rank() == 0) {
+    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta + extra);
+  } else {
+    world.recv(0, 0, local_input_.data(), delta);
+  }
 
   int local_min = INT_MAX;
   if (!local_input_.empty()) {
@@ -120,4 +120,3 @@ bool ermilova_d_min_element_matrix_mpi::TestMPITaskParallel::post_processing() {
   }
   return true;
 }
-
