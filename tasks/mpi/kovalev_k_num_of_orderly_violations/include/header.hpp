@@ -1,9 +1,9 @@
 // Copyright 2023 Nesterov Alexander
 #pragma once
 
+#include <boost/mpi.hpp>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
-#include <boost/mpi.hpp>
 #include <cstdlib>
 #include <cstring>
 #include <string>
