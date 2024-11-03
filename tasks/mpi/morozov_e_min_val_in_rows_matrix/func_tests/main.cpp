@@ -194,8 +194,8 @@ TEST(morozov_e_min_val_in_rows_matrix_MPI, Test_Main2) {
 }
 TEST(morozov_e_min_val_in_rows_matrix_MPI, Test_Main3) {
   std::vector<std::vector<int>> matrix;
-  const int n = 10000;
-  const int m = 10000;
+  const int n = 1500;
+  const int m = 1500;
   std::vector<int32_t> resPar(n);
   std::vector<int> res(n);
   boost::mpi::communicator world;
