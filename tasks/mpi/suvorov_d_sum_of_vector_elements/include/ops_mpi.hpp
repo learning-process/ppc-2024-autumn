@@ -27,7 +27,7 @@ class Sum_of_vector_elements_seq : public ppc::core::Task {
 
  private:
   std::vector<int> input_;
-  int res{};
+  int res_{};
 };
 
 class Sum_of_vector_elements_parallel : public ppc::core::Task {
@@ -41,8 +41,8 @@ class Sum_of_vector_elements_parallel : public ppc::core::Task {
 
  private:
   std::vector<int> input_, local_input_;
-  int res{};
-  boost::mpi::communicator world;
+  int res_{};
+  boost::mpi::communicator world_;
 };
 
 }  // namespace suvorov_d_sum_of_vector_elements_mpi

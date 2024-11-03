@@ -30,7 +30,7 @@ bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_seq::pre_proce
     input_[i] = tmp_ptr[i];
   }
   // Init value for output
-  res = 0;
+  res_ = 0;
   return true;
 }
 
@@ -42,59 +42,61 @@ bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_seq::validatio
 
 bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_seq::run() {
   internal_order_test();
-  res = std::accumulate(input_.begin(), input_.end(), 0);
+  res_ = std::accumulate(input_.begin(), input_.end(), 0);
   return true;
 }
 
 bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_seq::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+  reinterpret_cast<int*>(taskData->outputs[0])[0] = res_;
   return true;
 }
 
 bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel::pre_processing() {
   internal_order_test();
-  int input_size = taskData->inputs_count[0];
-  if (input_size == 0) {
-    res = 0;
-    return true;
+  int input_size;
+
+  if (world_.rank() == 0) {
+    input_size = taskData->inputs_count[0];
+    input_ = std::vector<int>(input_size);
+    auto *tmp_ptr = reinterpret_cast<int *>(taskData->inputs[0]);
+    std::copy(tmp_ptr, tmp_ptr + input_size, input_.begin());
   }
+  broadcast(world_, input_size, 0);
 
-  if (input_size <= world.size()) {
-    local_input_ = std::vector<int>(1, (world.rank() < input_size) ? input_[world.rank()] : 0);
-  } else {
-    unsigned int delta = input_size / world.size();
-    int rest = input_size % world.size();
-    unsigned int local_size = delta + (world.rank() < rest ? 1 : 0);
-    local_input_ = std::vector<int>(local_size);
+  int rest = input_size % world_.size();
+  std::vector<int> sizes(world_.size(), input_size / world_.size());
+  std::vector<int> displacements(world_.size(), 0);
+  int local_size;
 
-    if (world.rank() == 0) {
-      // Init vectors
-      input_ = std::vector<int>(input_size);
-      auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-      std::copy(tmp_ptr, tmp_ptr + input_size, input_.begin());
-
-      int beginning = 0;
-      for (int proc = 1; proc < world.size(); ++proc) {
-        int send_elems_count = delta + (proc < rest ? 1 : 0);
-        world.send(proc, 0, input_.data() + beginning, send_elems_count);
-        beginning += send_elems_count;
-      }
-
-      local_input_.assign(input_.begin(), input_.begin() + local_size);
-      // Init value for output
-    } else {
-      world.recv(0, 0, local_input_.data(), local_size);
+  if (world_.rank() == 0) {
+    for (int i = 0; i < rest; ++i) {
+      sizes[i]++;
     }
+    for (int i = 1; i < world_.size(); ++i) {
+      displacements[i] = displacements[i - 1] + sizes[i - 1];
+    }
+
+    local_size = sizes[world_.rank()];
+    local_input_.resize(local_size);
+
+    scatterv(world_, input_, sizes, displacements, local_input_.data(), local_size, 0);
+  } else {
+    if (world_.rank() < rest) {
+      sizes[world_.rank()]++;
+    }
+    local_size = sizes[world_.rank()];
+    local_input_.resize(local_size);
+
+    scatterv(world_, local_input_.data(), local_size, 0);
   }
 
-  res = 0;
   return true;
 }
 
 bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel::validation() {
   internal_order_test();
-  if (world.rank() == 0) {
+  if (world_.rank() == 0) {
     // Check count elements of output
     return taskData->outputs_count[0] == 1;
   }
@@ -105,17 +107,23 @@ bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel::run(
   internal_order_test();
   int local_res;
 
+  std::cout << world_.rank() << std::endl; // NEED_TO_DELETE
+  for (int element : local_input_) { // NEED_TO_DELETE
+    std::cout << element << " "; // NEED_TO_DELETE
+  } // NEED_TO_DELETE
+  std::cout << std::endl << std::endl; // NEED_TO_DELETE
+
   local_res = std::accumulate(local_input_.begin(), local_input_.end(), 0);
 
-  reduce(world, local_res, res, std::plus(), 0);
+  reduce(world_, local_res, res_, std::plus(), 0);
 
   return true;
 }
 
 bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel::post_processing() {
   internal_order_test();
-  if (world.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+  if (world_.rank() == 0) {
+    reinterpret_cast<int*>(taskData->outputs[0])[0] = res_;
   }
   return true;
 }
