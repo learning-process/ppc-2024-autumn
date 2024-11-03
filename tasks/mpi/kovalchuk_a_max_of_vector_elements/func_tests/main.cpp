@@ -1,13 +1,13 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <climits>
 #include <limits>
 #include <random>
 #include <vector>
-#include <algorithm>
 
 #include "mpi/kovalchuk_a_max_of_vector_elements/include/ops_mpi.hpp"
 
@@ -47,7 +47,7 @@ TEST(kovalchuk_a_max_of_vector_elements_mpi, test_max_5_5) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   for (unsigned int i = 0; i < matrix.size(); i++)
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
+   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
   taskDataSeq->inputs_count.emplace_back(rows);
   taskDataSeq->inputs_count.emplace_back(columns);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(max_value.data()));
@@ -84,7 +84,7 @@ TEST(kovalchuk_a_max_of_vector_elements_mpi, test_max_10_10) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   for (unsigned int i = 0; i < matrix.size(); i++)
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
+   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
   taskDataSeq->inputs_count.emplace_back(rows);
   taskDataSeq->inputs_count.emplace_back(columns);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(max_value.data()));
@@ -121,7 +121,7 @@ TEST(kovalchuk_a_max_of_vector_elements_mpi, test_max_50_50) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   for (unsigned int i = 0; i < matrix.size(); i++)
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
+   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
   taskDataSeq->inputs_count.emplace_back(rows);
   taskDataSeq->inputs_count.emplace_back(columns);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(max_value.data()));
@@ -158,7 +158,7 @@ TEST(kovalchuk_a_max_of_vector_elements_mpi, test_max_100_100) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   for (unsigned int i = 0; i < matrix.size(); i++)
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
+   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
   taskDataSeq->inputs_count.emplace_back(rows);
   taskDataSeq->inputs_count.emplace_back(columns);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(max_value.data()));
@@ -194,7 +194,7 @@ TEST(kovalchuk_a_max_of_vector_elements_mpi, test_max_1_100) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   for (unsigned int i = 0; i < matrix.size(); i++)
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
+   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
   taskDataSeq->inputs_count.emplace_back(rows);
   taskDataSeq->inputs_count.emplace_back(columns);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(max_value.data()));

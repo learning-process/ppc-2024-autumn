@@ -1,12 +1,12 @@
 // Copyright 2023 Nesterov Alexander
 #include "mpi/kovalchuk_a_max_of_vector_elements/include/ops_mpi.hpp"
 
+#include <algorithm>
 #include <boost/mpi/collectives.hpp>
 #include <climits>
 #include <limits>
 #include <numeric>
 #include <random>
-#include <algorithm>
 
 namespace kovalchuk_a_max_of_vector_elements_mpi {
 

@@ -30,7 +30,7 @@ TEST(sequential_kovalchuk_a_max_of_vector_elements_seq, test_task_run) {
   matrix[random_row][random_col] = reference;
 
   for (unsigned int i = 0; i < matrix.size(); i++)
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix[i].data()));
+   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix[i].data()));
   taskDataSeq->inputs_count.emplace_back(rows);
   taskDataSeq->inputs_count.emplace_back(columns);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(max_value.data()));
@@ -80,7 +80,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, test_pipeline_run) {
   matrix[random_row][random_col] = reference;
 
   for (unsigned int i = 0; i < matrix.size(); i++)
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix[i].data()));
+   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix[i].data()));
   taskDataSeq->inputs_count.emplace_back(rows);
   taskDataSeq->inputs_count.emplace_back(columns);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(max_value.data()));
