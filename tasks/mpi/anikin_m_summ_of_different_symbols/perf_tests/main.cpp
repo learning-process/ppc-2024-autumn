@@ -7,7 +7,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/anikin_m_summ_of_different_symbols/include/ops_mpi.hpp"
 
-TEST(SummDifSymMPI_parallel_perf_test, test_pipeline_run) {
+TEST(anikin_m_SummDifSymMPI_parallel_perf_test, test_pipeline_run) {
   boost::mpi::communicator com;
   char str1[] = "kdfoew";
   char str2[] = "hfgeew";
@@ -24,8 +24,7 @@ TEST(SummDifSymMPI_parallel_perf_test, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(out.size());
   }
   // Create Task
-  auto testClassPar =
-      std::make_shared<Odintsov_M_CountingMismatchedCharactersStr_mpi::CountingCharacterMPIParallel>(taskDataPar);
+  auto testClassPar = std::make_shared<anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel>(taskDataPar);
   ASSERT_EQ(testClassPar->validation(), true);
   testClassPar->pre_processing();
   testClassPar->run();
@@ -48,7 +47,7 @@ TEST(SummDifSymMPI_parallel_perf_test, test_pipeline_run) {
     ASSERT_EQ(4, out[0]);
   }
 }
-TEST(SummDifSymMPI_parallel_perf_test, test_task_run) {
+TEST(anikin_m_SummDifSymMPI_parallel_perf_test, test_task_run) {
   boost::mpi::communicator com;
   char str1[] = "herwrwer";
   char str2[] = "httrrewr";
@@ -66,7 +65,8 @@ TEST(SummDifSymMPI_parallel_perf_test, test_task_run) {
   }
   // Create Task
   auto testClassPar =
-      std::make_shared<Odintsov_M_CountingMismatchedCharactersStr_mpi::CountingCharacterMPIParallel>(taskDataPar);
+      std::make_shared<anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel>(
+          taskDataPar);
   ASSERT_EQ(testClassPar->validation(), true);
   testClassPar->pre_processing();
   testClassPar->run();

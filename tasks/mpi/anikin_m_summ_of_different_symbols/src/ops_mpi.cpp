@@ -121,7 +121,7 @@ bool anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel::run() {
   int loc_res = 0;
   for (int i = 0; i < size_1; i++) {
     if (local_input[0][i] != local_input[1][i]) {
-      loc_res += 2;
+      loc_res += 1;
     }
   }
   reduce(com, loc_res, res, std::plus(), 0);

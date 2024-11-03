@@ -6,7 +6,7 @@
 
 #include "seq/anikin_m_summ_of_different_symbols/include/ops_seq.hpp"
 
-TEST(SumDifSymSequential_count, ans_0) {
+TEST(anikin_m_SumDifSymSequential_count, ans_0) {
   // Create Data
   char str1[] = "abcd";
   char str2[] = "abcd";
@@ -31,7 +31,7 @@ TEST(SumDifSymSequential_count, ans_0) {
   ASSERT_EQ(0, out[0]);
 }
 
-TEST(SumDifSymSequential_count, ans_1) {
+TEST(anikin_m_SumDifSymSequential_count, ans_1) {
   // Create Data
   char str1[] = "abcde";
   char str2[] = "abcd";
@@ -56,7 +56,7 @@ TEST(SumDifSymSequential_count, ans_1) {
   ASSERT_EQ(1, out[0]);
 }
 
-TEST(SumDifSymSequential_count, ans_2) {
+TEST(anikin_m_SumDifSymSequential_count, ans_2) {
   char str1[] = "abcd";
   char str2[] = "abcdef";
 
@@ -80,7 +80,7 @@ TEST(SumDifSymSequential_count, ans_2) {
   ASSERT_EQ(2, out[0]);
 }
 
-TEST(SumDifSymSequential_count, ans_6) {
+TEST(anikin_m_SumDifSymSequential_count, ans_6) {
   // Create Data
   char str1[] = "xzashe";
   char str2[] = "abcd";

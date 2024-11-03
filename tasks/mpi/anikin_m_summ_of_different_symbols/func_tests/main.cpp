@@ -7,7 +7,7 @@
 
 #include "mpi/anikin_m_summ_of_different_symbols/include/ops_mpi.hpp"
 
-TEST(Parallel_SummDifSym_count, size_0) {
+TEST(anikin_m_Parallel_SummDifSym_count, size_0) {
   boost::mpi::communicator com;
   char str1[] = "";
   char str2[] = "";
@@ -44,7 +44,7 @@ TEST(Parallel_SummDifSym_count, size_0) {
   }
 }
 
-TEST(Parallel_SummDifSym_count, size_50) {
+TEST(anikin_m_Parallel_SummDifSym_count, size_50) {
   // Create data//
   boost::mpi::communicator com;
   std::string s1 = anikin_m_summ_of_different_symbols_mpi::getRandomString(50);
