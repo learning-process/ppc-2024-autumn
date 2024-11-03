@@ -6,7 +6,6 @@
 
 #include "mpi/vavilov_v_min_elements_in_columns_of_matrix/include/ops_mpi.hpp"
 
-
 TEST(vavilov_v_min_elements_in_columns_of_matrix_mpi, find_min_elem_in_col_400x500_matr) {
   boost::mpi::communicator world;
   const int rows = 400;
@@ -18,8 +17,8 @@ TEST(vavilov_v_min_elements_in_columns_of_matrix_mpi, find_min_elem_in_col_400x5
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matr = vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskSequential::generate_rnd_matrix(
-        rows, cols);
+    global_matr =
+        vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskSequential::generate_rnd_matrix(rows, cols);
     for (unsigned int i = 0; i < global_matr.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matr[i].data()));
     }
@@ -70,8 +69,8 @@ TEST(vavilov_v_min_elements_in_columns_of_matrix_mpi, find_min_elem_in_col_3000x
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matr = vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskSequential::generate_rnd_matrix(
-        rows, cols);
+    global_matr =
+        vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskSequential::generate_rnd_matrix(rows, cols);
     for (unsigned int i = 0; i < global_matr.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matr[i].data()));
     }
@@ -161,7 +160,6 @@ TEST(vavilov_v_min_elements_in_columns_of_matrix_mpi, validation_output_empty_10
     ASSERT_EQ(testMpiTaskSequential.validation(), false);
   }
 }
-
 
 TEST(vavilov_v_min_elements_in_columns_of_matrix_mpi, validation_find_min_elem_in_col_10x0_matr) {
   boost::mpi::communicator world;
