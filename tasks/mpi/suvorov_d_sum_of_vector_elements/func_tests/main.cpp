@@ -240,13 +240,16 @@ TEST(suvorov_d_sum_of_vector_elements_mpi, Test_Sum_With_Not_Multiple_Of_Num_Pro
   if (world.rank() == 0) {
     // The number of elements should not be a multiple of the number of processes
     int count_size_vector = 120;
-    if (count_size_vector % world.size() == 0) {
-      std::random_device dev;
-      std::mt19937 gen(dev());
-      std::uniform_int_distribution<int> dist(1, world.size() - 1);
+    if (world.size() < count_size_vector) {
+      if (count_size_vector % world.size() == 0) {
+        std::random_device dev;
+        std::mt19937 gen(dev());
+        std::uniform_int_distribution<int> dist(1, world.size() - 1);
 
-      count_size_vector -= dist(gen);
+        count_size_vector -= dist(gen);
+      }
     }
+    count_size_vector = 0;
     global_vec = suvorov_d_sum_of_vector_elements_mpi::getRandomVector(count_size_vector);
 
     // Calculating the sum sequentially for verification
