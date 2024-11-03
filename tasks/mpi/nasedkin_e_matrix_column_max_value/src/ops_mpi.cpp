@@ -1,41 +1,36 @@
-#include "ops_mpi.hpp"
-
-#include <algorithm>
-#include <limits>
 #include <vector>
+#include <limits>
+#include <mpi.h>
 
 namespace nasedkin_e_matrix_column_max_value_mpi {
 
-    std::vector<int> FindColumnMaxMPI(const std::vector<std::vector<int>>& matrix) {
-        if (matrix.empty() || matrix[0].empty()) {
-            return {};
+std::vector<double> findMaxInColumns(const std::vector<std::vector<double>>& matrix) {
+    int rank, size;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+
+    size_t rows = matrix.size();
+    if (rows == 0) return {};
+
+    size_t cols = matrix[0].size();
+    std::vector<double> localMax(cols, std::numeric_limits<double>::lowest());
+
+    // Определяем диапазон строк для текущего процесса
+    size_t localRows = rows / size;
+    size_t startRow = rank * localRows;
+    size_t endRow = (rank == size - 1) ? rows : startRow + localRows;
+
+    // Находим максимальные значения в своих строках
+    for (size_t i = startRow; i < endRow; ++i) {
+        for (size_t j = 0; j < cols; ++j) {
+            localMax[j] = std::max(localMax[j], matrix[i][j]);
         }
-
-        int world_size;
-        int world_rank;
-        boost::mpi::communicator world;
-        world_size = world.size();
-        world_rank = world.rank();
-
-        int num_rows = static_cast<int>(matrix.size());
-        int num_cols = static_cast<int>(matrix[0].size());
-        int local_rows = num_rows / world_size;
-        int remainder = num_rows % world_size;
-
-        std::vector<std::vector<int>> local_matrix(local_rows + (world_rank < remainder ? 1 : 0), std::vector<int>(num_cols));
-        boost::mpi::scatter(world, matrix.data(), local_matrix.data(), local_matrix.size(), 0);
-
-        std::vector<int> local_max(num_cols, std::numeric_limits<int>::min());
-        for (const auto& row : local_matrix) {
-            for (size_t col = 0; col < row.size(); ++col) {
-                local_max[col] = std::max(local_max[col], row[col]);
-            }
-        }
-
-        std::vector<int> global_max(num_cols);
-        boost::mpi::reduce(world, local_max.data(), global_max.data(), num_cols, std::greater<int>(), 0);
-
-        return global_max;
     }
 
+    std::vector<double> globalMax(cols);
+    MPI_Reduce(localMax.data(), globalMax.data(), cols, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+
+    return globalMax;
 }
+
+}  // namespace nasedkin_e_matrix_column_max_value_mpi

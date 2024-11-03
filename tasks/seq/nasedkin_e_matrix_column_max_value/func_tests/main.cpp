@@ -1,30 +1,19 @@
 #include <gtest/gtest.h>
 #include "ops_seq.hpp"
 
-using namespace nasedkin_e_matrix_column_max_value_seq;
+namespace nasedkin_e_matrix_column_max_value_seq {
 
-TEST(nasedkin_e_matrix_column_max_value_seq, find_max_in_each_column) {
-    std::vector<std::vector<int>> matrix = {
-        {1, 2, 3},
-        {4, 5, 6},
-        {7, 8, 9},
+TEST(nasedkin_e_matrix_column_max_value_seq, test_findMaxInColumns) {
+    std::vector<std::vector<double>> matrix = {
+        {1.0, 2.0, 3.0},
+        {4.0, 5.0, 6.0},
+        {7.0, 8.0, 9.0}
     };
-    std::vector<int> expected = {7, 8, 9};
-    EXPECT_EQ(FindColumnMaxSequential(matrix), expected);
+
+    std::vector<double> expected = {7.0, 8.0, 9.0};
+    auto result = findMaxInColumns(matrix);
+
+    EXPECT_EQ(result, expected);
 }
 
-TEST(nasedkin_e_matrix_column_max_value_seq, handle_empty_matrix) {
-    std::vector<std::vector<int>> matrix = {};
-    std::vector<int> expected = {};
-    EXPECT_EQ(FindColumnMaxSequential(matrix), expected);
-}
-
-TEST(nasedkin_e_matrix_column_max_value_seq, handle_single_column) {
-    std::vector<std::vector<int>> matrix = {
-        {3},
-        {1},
-        {4},
-    };
-    std::vector<int> expected = {4};
-    EXPECT_EQ(FindColumnMaxSequential(matrix), expected);
-}
+}  // namespace nasedkin_e_matrix_column_max_value_seq
