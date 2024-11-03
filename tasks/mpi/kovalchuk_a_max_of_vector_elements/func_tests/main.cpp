@@ -29,7 +29,7 @@ std::vector<std::vector<int>> generateRandomMatrix(int rows, int columns, int st
   return matrix;
 }
 
-// Тест для матрицы 5x5
+// РўРµСЃС‚ РґР»СЏ РјР°С‚СЂРёС†С‹ 5x5
 TEST(kovalchuk_a_max_of_vector_elements_mpi, test_max_5_5) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
@@ -66,7 +66,7 @@ TEST(kovalchuk_a_max_of_vector_elements_mpi, test_max_5_5) {
   }
 }
 
-// Тест для матрицы 10x10
+// РўРµСЃС‚ РґР»СЏ РјР°С‚СЂРёС†С‹ 10x10
 TEST(kovalchuk_a_max_of_vector_elements_mpi, test_max_10_10) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
@@ -103,7 +103,7 @@ TEST(kovalchuk_a_max_of_vector_elements_mpi, test_max_10_10) {
   }
 }
 
-// Тест для матрицы 50x50
+// РўРµСЃС‚ РґР»СЏ РјР°С‚СЂРёС†С‹ 50x50
 TEST(kovalchuk_a_max_of_vector_elements_mpi, test_max_50_50) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
@@ -140,7 +140,7 @@ TEST(kovalchuk_a_max_of_vector_elements_mpi, test_max_50_50) {
   }
 }
 
-// Тест для матрицы 100x100
+// РўРµСЃС‚ РґР»СЏ РјР°С‚СЂРёС†С‹ 100x100
 TEST(kovalchuk_a_max_of_vector_elements_mpi, test_max_100_100) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
