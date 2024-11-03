@@ -27,11 +27,11 @@ TEST(kovalchuk_a_max_of_vector_elements, Test_Max_5_5) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
-  kovalchuk_a_max_of_vector_elements::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+  kovalchuk_a_max_of_vector_elements::TestMPITaskSequential testMpiTaskSequential(taskDataPar);
+  ASSERT_EQ(testMpiTaskSequential.validation(), true);
+  testMpiTaskSequential.pre_processing();
+  testMpiTaskSequential.run();
+  testMpiTaskSequential.post_processing();
   if (world.rank() == 0) {
     // Create data
     std::vector<int32_t> reference_max(1, INT_MIN);
@@ -71,11 +71,11 @@ TEST(kovalchuk_a_max_of_vector_elements, Test_Max_10_10) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
-  kovalchuk_a_max_of_vector_elements::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+  kovalchuk_a_max_of_vector_elements::TestMPITaskSequential testMpiTaskSequential(taskDataPar);
+  ASSERT_EQ(testMpiTaskSequential.validation(), true);
+  testMpiTaskSequential.pre_processing();
+  testMpiTaskSequential.run();
+  testMpiTaskSequential.post_processing();
   if (world.rank() == 0) {
     // Create data
     std::vector<int32_t> reference_max(1, INT_MIN);
@@ -115,11 +115,11 @@ TEST(kovalchuk_a_max_of_vector_elements, Test_Max_50_20) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
-  kovalchuk_a_max_of_vector_elements::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+  kovalchuk_a_max_of_vector_elements::TestMPITaskSequential testMpiTaskSequential(taskDataPar);
+  ASSERT_EQ(testMpiTaskSequential.validation(), true);
+  testMpiTaskSequential.pre_processing();
+  testMpiTaskSequential.run();
+  testMpiTaskSequential.post_processing();
   if (world.rank() == 0) {
     // Create data
     std::vector<int32_t> reference_max(1, INT_MIN);
@@ -159,11 +159,11 @@ TEST(kovalchuk_a_max_of_vector_elements, Test_Max_100_100) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
-  kovalchuk_a_max_of_vector_elements::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+  kovalchuk_a_max_of_vector_elements::TestMPITaskSequential testMpiTaskSequential(taskDataPar);
+  ASSERT_EQ(testMpiTaskSequential.validation(), true);
+  testMpiTaskSequential.pre_processing();
+  testMpiTaskSequential.run();
+  testMpiTaskSequential.post_processing();
   if (world.rank() == 0) {
     // Create data
     std::vector<int32_t> reference_max(1, INT_MIN);
@@ -203,11 +203,11 @@ TEST(kovalchuk_a_max_of_vector_elements, Test_Max_1_100) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
-  kovalchuk_a_max_of_vector_elements::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+  kovalchuk_a_max_of_vector_elements::TestMPITaskSequential testMpiTaskSequential(taskDataPar);
+  ASSERT_EQ(testMpiTaskSequential.validation(), true);
+  testMpiTaskSequential.pre_processing();
+  testMpiTaskSequential.run();
+  testMpiTaskSequential.post_processing();
   if (world.rank() == 0) {
     // Create data
     std::vector<int32_t> reference_max(1, INT_MIN);
