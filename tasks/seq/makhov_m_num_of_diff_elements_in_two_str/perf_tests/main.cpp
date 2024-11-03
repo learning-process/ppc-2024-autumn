@@ -20,7 +20,8 @@ std::string getRandStr(size_t size_, char min = '0', char max = '9') {
 
 TEST(sequential_makhov_m_num_of_diff_elements_in_two_str_perf_test, test_pipeline_run) {
   const size_t size = 10000000;
-  std::string str1, str2;
+  std::string str1;
+  std::string str2;
 
   // Create data
   str1 = getRandStr(size);
@@ -61,7 +62,8 @@ TEST(sequential_makhov_m_num_of_diff_elements_in_two_str_perf_test, test_pipelin
 
 TEST(sequential_makhov_m_num_of_diff_elements_in_two_str_perf_test, test_task_run) {
   const size_t size = 10000000;
-  std::string str1, str2;
+  std::string str1;
+  std::string str2;
 
   // Create data
   str1 = getRandStr(size);
