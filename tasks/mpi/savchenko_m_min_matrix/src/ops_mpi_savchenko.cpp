@@ -47,32 +47,14 @@ bool savchenko_m_min_matrix_mpi::TestMPITaskSequential::post_processing() {
 bool savchenko_m_min_matrix_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
-  unsigned int delta = 0;
   if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] * taskData->inputs_count[1] / world.size();
-  }
-  broadcast(world, delta, 0);
-
-  if (world.rank() == 0) {
-    // Init vectors
-
+    // Init matrix
     rows = taskData->inputs_count[0];
     columns = taskData->inputs_count[1];
     matrix = std::vector<int>(rows * columns);
 
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     std::copy(tmp_ptr, tmp_ptr + rows * columns, matrix.begin());
-
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, matrix.data() + delta * proc, delta);
-    }
-  }
-
-  local_matrix = std::vector<int>(delta);
-  if (world.rank() == 0) {
-    local_matrix = std::vector<int>(matrix.begin(), matrix.begin() + delta);
-  } else {
-    world.recv(0, 0, local_matrix.data(), delta);
   }
 
   // Init value for output
@@ -91,6 +73,25 @@ bool savchenko_m_min_matrix_mpi::TestMPITaskParallel::validation() {
 
 bool savchenko_m_min_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+
+  unsigned int delta = 0;
+  if (world.rank() == 0) {
+    delta = taskData->inputs_count[0] * taskData->inputs_count[1] / world.size();
+  }
+  broadcast(world, delta, 0);
+
+  if (world.rank() == 0) {
+    for (int proc = 1; proc < world.size(); proc++) {
+      world.send(proc, 0, matrix.data() + delta * proc, delta);
+    }
+  }
+
+  local_matrix = std::vector<int>(delta);
+  if (world.rank() == 0) {
+    local_matrix = std::vector<int>(matrix.begin(), matrix.begin() + delta);
+  } else {
+    world.recv(0, 0, local_matrix.data(), delta);
+  }
 
   local_res = *std::min_element(local_matrix.begin(), local_matrix.end());
   reduce(world, local_res, res, boost::mpi::minimum<int>(), 0);
