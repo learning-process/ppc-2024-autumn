@@ -1,8 +1,8 @@
 #pragma once
 
+#include <random>
 #include <string>
 #include <vector>
-#include <random>
 
 #include "core/task/include/task.hpp"
 
@@ -20,8 +20,8 @@ class OrderlyViolationsCounter : public ppc::core::Task {
   cntype count_orderly_violations(std::vector<iotype> data);
 
  private:
-  std::vector<iotype> input_; // Input vector
-  cntype result_;             // Number of violations
+  std::vector<iotype> input_;  // Input vector
+  cntype result_;              // Number of violations
 };
 
-}  // korneeva_e_num_of_orderly_violations
+}  // namespace korneeva_e_num_of_orderly_violations_seq

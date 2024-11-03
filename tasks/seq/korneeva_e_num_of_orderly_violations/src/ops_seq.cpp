@@ -6,7 +6,7 @@ namespace korneeva_e_num_of_orderly_violations_seq {
 template <typename iotype, typename cntype>
 bool OrderlyViolationsCounter<iotype, cntype>::pre_processing() {
   internal_order_test();
-  
+
   int n = taskData->inputs_count[0];
   input_.resize(n);
   void* ptr_r = taskData->inputs[0];
@@ -33,8 +33,8 @@ template <typename iotype, typename cntype>
 bool OrderlyViolationsCounter<iotype, cntype>::post_processing() {
   internal_order_test();
   if (!taskData || taskData->outputs.empty()) {
-      return false;
-    }
+    return false;
+  }
   *reinterpret_cast<cntype*>(taskData->outputs[0]) = result_;
   return true;
 }
@@ -52,4 +52,4 @@ cntype OrderlyViolationsCounter<iotype, cntype>::count_orderly_violations(std::v
 
 template class korneeva_e_num_of_orderly_violations_seq::OrderlyViolationsCounter<int, int>;
 template class korneeva_e_num_of_orderly_violations_seq::OrderlyViolationsCounter<double, int>;
-}
+}  // namespace korneeva_e_num_of_orderly_violations_seq
