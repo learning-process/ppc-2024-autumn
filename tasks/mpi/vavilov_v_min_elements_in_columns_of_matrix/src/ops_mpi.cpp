@@ -23,7 +23,7 @@ bool vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskSequential::pre
       input_[i][j] = input_row[j];
     }
   }
-  res_.resize(rows);
+  res_.resize(cols);
   return true;
 }
 
