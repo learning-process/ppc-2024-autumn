@@ -40,7 +40,7 @@ bool chastov_v_count_words_in_line_seq::TestTaskSequential::run() {
   bool inWord = false;
 
   for (char c : inputString) {
-    if (std::isspace(c)) {
+    if (std::isspace(c) !=0) {
       if (inWord) {
         inWord = false;
         spacesFound++;
