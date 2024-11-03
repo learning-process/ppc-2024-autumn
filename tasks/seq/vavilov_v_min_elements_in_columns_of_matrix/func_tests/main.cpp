@@ -30,7 +30,7 @@ TEST(vavilov_v_min_elements_in_columns_of_matrix_seq, find_min_elem_in_col_400x5
   ASSERT_TRUE(testTaskSequential.run());
   ASSERT_TRUE(testTaskSequential.post_processing());
 
-for (int j = 0; j < cols; j++) {
+  for (int j = 0; j < cols; j++) {
     int min = matrix[0][j];
     for (int i = 1; i < rows; i++) {
       if (matrix[i][j] < min) {
