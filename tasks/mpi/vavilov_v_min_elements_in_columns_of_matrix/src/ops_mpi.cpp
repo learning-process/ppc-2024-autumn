@@ -117,8 +117,8 @@ bool vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskParallel::valid
 
   if (world.rank() == 0) {
     return ((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
-           (taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0) &&
-           (taskData->outputs_count[0] == taskData->inputs_count[1]));
+            (taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0) &&
+            (taskData->outputs_count[0] == taskData->inputs_count[1]));
   }
   return true;
 }
