@@ -16,7 +16,7 @@ bool TestMPITaskSequential::pre_processing() {
   a = *reinterpret_cast<double*>(taskData->inputs[0]);
   b = *reinterpret_cast<double*>(taskData->inputs[1]);
   epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
-  num_samples = static_cast<int>(40 / epsilon);  // Further increased number of samples to improve accuracy
+  num_samples = static_cast<int>(80 / epsilon);  // Further increase number of samples for accuracy
   return true;
 }
 
@@ -63,7 +63,7 @@ bool TestMPITaskParallel::pre_processing() {
     a = *reinterpret_cast<double*>(taskData->inputs[0]);
     b = *reinterpret_cast<double*>(taskData->inputs[1]);
     epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
-    num_samples = static_cast<int>(40 / epsilon);  // Increased samples for accuracy
+    num_samples = static_cast<int>(80 / epsilon);  // Increased samples for accuracy
   }
 
   boost::mpi::broadcast(world, a, 0);
