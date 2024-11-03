@@ -29,7 +29,7 @@ std::vector<std::vector<int>> getRandomMatrix(int rows, int columns, int start_g
   return matrix;
 }
 
-bool TestTaskMPI::pre_processing() {
+bool TestMPITaskParallel::pre_processing() {
   internal_order_test();
   inputMatrix_ = std::vector<std::vector<int>>(taskData->inputs_count[0], std::vector<int>(taskData->inputs_count[1]));
   for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
@@ -42,18 +42,23 @@ bool TestTaskMPI::pre_processing() {
   return true;
 }
 
-bool TestTaskMPI::validation() {
+bool TestMPITaskParallel::validation() {
   internal_order_test();
   return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] == 1;
 }
 
-bool TestTaskMPI::run() {
+bool TestMPITaskParallel::run() {
   internal_order_test();
-  result_ = std::numeric_limits<int>::min();
+
   int local_max = std::numeric_limits<int>::min();
 
   int start_row = world.rank() * inputMatrix_.size() / world.size();
   int end_row = (world.rank() + 1) * inputMatrix_.size() / world.size();
+
+  // Проверка на правильное разбиение матрицы
+  if (static_cast<size_t>(end_row) > inputMatrix_.size()) {
+    end_row = inputMatrix_.size();
+  }
 
   for (int i = start_row; i < end_row; i++) {
     int row_max = *std::max_element(inputMatrix_[i].begin(), inputMatrix_[i].end());
@@ -67,7 +72,7 @@ bool TestTaskMPI::run() {
   return true;
 }
 
-bool TestTaskMPI::post_processing() {
+bool TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     reinterpret_cast<int*>(taskData->outputs[0])[0] = result_;

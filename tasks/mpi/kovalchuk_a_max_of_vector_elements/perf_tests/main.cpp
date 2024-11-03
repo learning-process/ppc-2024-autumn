@@ -12,6 +12,7 @@
 #include "mpi/kovalchuk_a_max_of_vector_elements/include/ops_mpi.hpp"
 
 using namespace kovalchuk_a_max_of_vector_elements_mpi;
+
 TEST(kovalchuk_a_max_of_vector_elements_mpi, test_task_run) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
@@ -34,15 +35,14 @@ TEST(kovalchuk_a_max_of_vector_elements_mpi, test_task_run) {
     int random_col = col_dist(gen);
     matrix[random_row][random_col] = reference;
 
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
     for (unsigned int i = 0; i < matrix.size(); i++)
-     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix[i].data()));
-    taskDataSeq->inputs_count.emplace_back(rows);
-    taskDataSeq->inputs_count.emplace_back(columns);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(max_value.data()));
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
+    taskDataSeq->inputs_count = {rows, columns};
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(max_value.data()));
     taskDataSeq->outputs_count.emplace_back(max_value.size());
 
-    auto testTaskMPI = std::make_shared<TestTaskMPI>(taskDataSeq);
+    auto testMPITaskParallel = std::make_shared<TestMPITaskParallel>(taskDataSeq);
 
     auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
     perfAttr->num_running = 10;
@@ -54,7 +54,7 @@ TEST(kovalchuk_a_max_of_vector_elements_mpi, test_task_run) {
     };
 
     auto perfResults = std::make_shared<ppc::core::PerfResults>();
-    auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskMPI);
+    auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMPITaskParallel);
     perfAnalyzer->pipeline_run(perfAttr, perfResults);
     ppc::core::Perf::print_perf_statistic(perfResults);
 
@@ -84,15 +84,14 @@ TEST(kovalchuk_a_max_of_vector_elements_mpi, test_pipeline_run) {
     int random_col = col_dist(gen);
     matrix[random_row][random_col] = reference;
 
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
     for (unsigned int i = 0; i < matrix.size(); i++)
-     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix[i].data()));
-    taskDataSeq->inputs_count.emplace_back(rows);
-    taskDataSeq->inputs_count.emplace_back(columns);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(max_value.data()));
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
+    taskDataSeq->inputs_count = {rows, columns};
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(max_value.data()));
     taskDataSeq->outputs_count.emplace_back(max_value.size());
 
-    auto testTaskMPI = std::make_shared<TestTaskMPI>(taskDataSeq);
+    auto testMPITaskParallel = std::make_shared<TestMPITaskParallel>(taskDataSeq);
 
     auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
     perfAttr->num_running = 10;
@@ -104,11 +103,10 @@ TEST(kovalchuk_a_max_of_vector_elements_mpi, test_pipeline_run) {
     };
 
     auto perfResults = std::make_shared<ppc::core::PerfResults>();
-    auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskMPI);
+    auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMPITaskParallel);
     perfAnalyzer->pipeline_run(perfAttr, perfResults);
     ppc::core::Perf::print_perf_statistic(perfResults);
 
     ASSERT_EQ(reference, max_value[0]);
   }
 }
-

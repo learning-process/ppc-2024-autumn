@@ -24,7 +24,7 @@ std::vector<std::vector<int>> generateRandomMatrix(int rows, int columns, int st
   return matrix;
 }
 
-// Тест для матрицы 5x5
+// Г’ГҐГ±ГІ Г¤Г«Гї Г¬Г ГІГ°ГЁГ¶Г» 5x5
 TEST(kovalchuk_a_max_of_vector_elements_seq, test_max_5x5) {
   const int rows = 5;
   const int columns = 5;
@@ -42,7 +42,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, test_max_5x5) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   for (unsigned int i = 0; i < matrix.size(); i++)
-   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
   taskDataSeq->inputs_count.emplace_back(rows);
   taskDataSeq->inputs_count.emplace_back(columns);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(max_value.data()));
@@ -56,7 +56,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, test_max_5x5) {
   ASSERT_EQ(reference, max_value[0]);
 }
 
-// Тест для матрицы 10x10
+// Г’ГҐГ±ГІ Г¤Г«Гї Г¬Г ГІГ°ГЁГ¶Г» 10x10
 TEST(kovalchuk_a_max_of_vector_elements_seq, test_max_10x10) {
   const int rows = 10;
   const int columns = 10;
@@ -74,7 +74,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, test_max_10x10) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   for (unsigned int i = 0; i < matrix.size(); i++)
-   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
   taskDataSeq->inputs_count.emplace_back(rows);
   taskDataSeq->inputs_count.emplace_back(columns);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(max_value.data()));
@@ -88,7 +88,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, test_max_10x10) {
   ASSERT_EQ(reference, max_value[0]);
 }
 
-// Тест для матрицы 50x50
+// Г’ГҐГ±ГІ Г¤Г«Гї Г¬Г ГІГ°ГЁГ¶Г» 50x50
 TEST(kovalchuk_a_max_of_vector_elements_seq, test_max_50x50) {
   const int rows = 50;
   const int columns = 50;
@@ -106,7 +106,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, test_max_50x50) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   for (unsigned int i = 0; i < matrix.size(); i++)
-   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
   taskDataSeq->inputs_count.emplace_back(rows);
   taskDataSeq->inputs_count.emplace_back(columns);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(max_value.data()));
@@ -120,7 +120,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, test_max_50x50) {
   ASSERT_EQ(reference, max_value[0]);
 }
 
-// Тест для матрицы 100x100
+// Г’ГҐГ±ГІ Г¤Г«Гї Г¬Г ГІГ°ГЁГ¶Г» 100x100
 TEST(kovalchuk_a_max_of_vector_elements_seq, test_max_100x100) {
   const int rows = 100;
   const int columns = 100;
@@ -138,7 +138,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, test_max_100x100) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   for (unsigned int i = 0; i < matrix.size(); i++)
-   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
   taskDataSeq->inputs_count.emplace_back(rows);
   taskDataSeq->inputs_count.emplace_back(columns);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(max_value.data()));
@@ -169,7 +169,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, test_max_1x100) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   for (unsigned int i = 0; i < matrix.size(); i++)
-   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
   taskDataSeq->inputs_count.emplace_back(rows);
   taskDataSeq->inputs_count.emplace_back(columns);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(max_value.data()));

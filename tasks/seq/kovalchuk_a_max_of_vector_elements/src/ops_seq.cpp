@@ -1,11 +1,11 @@
 // Copyright 2023 Nesterov Alexander
+#include "seq/kovalchuk_a_max_of_vector_elements/include/ops_seq.hpp"
+
+#include <algorithm>
 #include <climits>
 #include <limits>
 #include <numeric>
 #include <random>
-#include <algorithm>
-
-#include "seq/kovalchuk_a_max_of_vector_elements/include/ops_seq.hpp"
 
 namespace kovalchuk_a_max_of_vector_elements_seq {
 
