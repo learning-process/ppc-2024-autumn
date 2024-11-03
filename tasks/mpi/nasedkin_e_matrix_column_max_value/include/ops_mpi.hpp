@@ -1,7 +1,6 @@
 #pragma once
 
 #include <gtest/gtest.h>
-
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <memory>
@@ -9,7 +8,6 @@
 #include <string>
 #include <utility>
 #include <vector>
-
 #include "core/task/include/task.hpp"
 
 namespace nasedkin_e_matrix_column_max_value_mpi {
@@ -34,7 +32,7 @@ class MatrixColumnMaxTaskSequential : public ppc::core::Task {
 class MatrixColumnMaxTaskParallel : public ppc::core::Task {
  public:
   explicit MatrixColumnMaxTaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+      : Task(std::move(taskData_)), ops(std::move(ops_)), world() {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
