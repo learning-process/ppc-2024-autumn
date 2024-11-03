@@ -89,7 +89,7 @@ bool vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskParallel::pre_p
     for (int proc = 1; proc < world.size(); proc++) {
       int start_row = proc * delta_1 + std::min(proc, delta_2);
       int counts = delta_1 + (proc < delta_2 ? 1 : 0);
-      for (size_t i = start_row; i < start_row + counts; i++) {
+      for (int i = start_row; i < start_row + counts; i++) {
         world.send(proc, 0, input_[i].data(), cols);
       }
     }
