@@ -13,9 +13,11 @@ using namespace std::chrono_literals;
 std::vector<int> suvorov_d_sum_of_vector_elements_mpi::getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
+  std::uniform_int_distribution<int> dist(-1000, 1000);
+
   std::vector<int> vec(sz);
   for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
+    vec[i] = dist(gen);
   }
 
   return vec;
@@ -67,7 +69,7 @@ bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel::vali
   internal_order_test();
   if (world_.rank() == 0) {
     // Check count elements of output
-    return taskData->outputs_count[0] == 1 && taskData->inputs_count.size() == 1;
+    return taskData->outputs_count[0] == 1 && taskData->inputs_count.size() == 1 && taskData->inputs_count[0] >= 0;
   }
   return true;
 }
@@ -75,12 +77,6 @@ bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel::vali
 bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel::run() {
   internal_order_test();
   int local_res;
-
-  std::cout << world_.rank() << std::endl; // NEED_TO_DELETE
-  for (int element : local_input_) { // NEED_TO_DELETE
-    std::cout << element << " "; // NEED_TO_DELETE
-  } // NEED_TO_DELETE
-  std::cout << std::endl << std::endl; // NEED_TO_DELETE
 
   local_res = std::accumulate(local_input_.begin(), local_input_.end(), 0);
 
