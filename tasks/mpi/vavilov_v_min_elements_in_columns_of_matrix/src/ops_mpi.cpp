@@ -173,10 +173,10 @@ std::vector<int> vavilov_v_min_elements_in_columns_of_matrix_mpi::TestTaskSequen
 std::vector<std::vector<int>> vavilov_v_min_elements_in_columns_of_matrix_mpi::TestTaskSequential::generate_rand_matr(
     int rows, int cols) {
   std::vector<std::vector<int>> matr(rows, std::vector<int>(cols));
-  for (size_t i = 0; i < rows; i++) {
+  for (int i = 0; i < rows; i++) {
     matr[i] = generate_rand_vector(cols, -1000, 1000);
   }
-  for (size_t j = 0; j < cols; j++) {
+  for (int j = 0; j < cols; j++) {
     int r_row = std::rand() % rows;
     matr[r_row][j] = INT_MIN;
   }
