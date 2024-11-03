@@ -1,6 +1,6 @@
 #pragma once
 #include <gtest/gtest.h>
-
+#include "core/task/include/task.hpp" 
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <memory>
