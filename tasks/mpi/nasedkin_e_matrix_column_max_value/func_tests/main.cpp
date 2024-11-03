@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
+
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+
 #include "mpi/nasedkin_e_matrix_column_max_value/include/ops_mpi.hpp"
 
 TEST(MatrixColumnMaxTest, SequentialMaxTest) {
@@ -33,13 +35,13 @@ TEST(MatrixColumnMaxTest, ParallelMaxTest) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-      vec = nasedkin_e_matrix_column_max_value_mpi::getRandomVector(size);
-      expected_max = *std::max_element(vec.begin(), vec.end());
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(vec.data()));
-      taskDataPar->inputs_count.emplace_back(vec.size());
-      std::vector<int> output(1, 0);
-      taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
-      taskDataPar->outputs_count.emplace_back(output.size());
+    vec = nasedkin_e_matrix_column_max_value_mpi::getRandomVector(size);
+    expected_max = *std::max_element(vec.begin(), vec.end());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(vec.data()));
+    taskDataPar->inputs_count.emplace_back(vec.size());
+    std::vector<int> output(1, 0);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+    taskDataPar->outputs_count.emplace_back(output.size());
   }
 
   auto parTask =
@@ -50,7 +52,7 @@ TEST(MatrixColumnMaxTest, ParallelMaxTest) {
   parTask->post_processing();
 
   if (world.rank() == 0) {
-      ASSERT_EQ(reinterpret_cast<int*>(taskDataPar->outputs[0])[0], expected_max);
+    ASSERT_EQ(reinterpret_cast<int*>(taskDataPar->outputs[0])[0], expected_max);
   }
 }
 
