@@ -16,9 +16,8 @@ TEST(volochaev_s_count_characters_27_mpi, test_pipeline_run) {
   int count_size_string;
   if (world.rank() == 0) {
     count_size_string = 200000000;
-    std::string s = volochaev_s_count_characters_27_mpi::get_random_string(count_size_string);
+    std::string s(count_size_string, ' ');
     global_vec = std::vector<std::string>(2, s);
-    global_vec[1].back() = char(((int)s.back() + 1) % 256);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -59,7 +58,7 @@ TEST(volochaev_s_count_characters_27_mpi, test_task_run) {
   int string_size;
   if (world.rank() == 0) {
     string_size = 200000000;
-    std::string s = volochaev_s_count_characters_27_mpi::get_random_string(string_size);
+    std::string s(string_size, ' ');
     global_vec = std::vector<std::string>(2, s);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());

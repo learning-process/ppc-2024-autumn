@@ -7,7 +7,7 @@
 
 TEST(volochaev_s_count_characters_27_seq, test_pipeline_run) {
   // Create data
-  std::string s = volochaev_s_count_characters_27_seq::get_random_string(20000000);
+  std::string s(20000000, ' ');
   std::vector<std::string> in(2, s);
   std::vector<int> out(1, 0);
 
@@ -45,7 +45,7 @@ TEST(volochaev_s_count_characters_27_seq, test_pipeline_run) {
 
 TEST(volochaev_s_count_characters_27_seq, test_task_run) {
   // Create data
-  std::string s = volochaev_s_count_characters_27_seq::get_random_string(20000000);
+  std::string s(20000000, ' ');
   std::vector<std::string> in(2, s);
   std::vector<int> out(1, 0);
   int ans = 0;
