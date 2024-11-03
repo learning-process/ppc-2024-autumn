@@ -2,6 +2,18 @@
 
 #include "seq/kovalev_k_num_of_orderly_violations/include/header.hpp"
 
+TEST(kovalev_k_num_of_orderly_violations_seq, zero_length) {
+  std::vector<int> in;
+  std::vector<size_t> out;
+  std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
+  taskSeq->inputs_count.emplace_back(in.size());
+  taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskSeq->outputs_count.emplace_back(out.size());
+  kovalev_k_num_of_orderly_violations_seq::NumOfOrderlyViolations<int> tmpTaskSeq(taskSeq);
+  ASSERT_FALSE(tmpTaskSeq.validation());
+}
+
 TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_viol_0_int_) {
   const size_t length = 10;
   const int alpha = 1;

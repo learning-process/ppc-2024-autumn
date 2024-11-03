@@ -22,7 +22,7 @@ bool kovalev_k_num_of_orderly_violations_seq::NumOfOrderlyViolations<T>::pre_pro
 template <class T>
 bool kovalev_k_num_of_orderly_violations_seq::NumOfOrderlyViolations<T>::validation() {
   internal_order_test();
-  return (taskData->inputs_count[0] == n && taskData->outputs_count[0] == 1);
+  return (taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1 && taskData->inputs_count[0] == n);
 }
 
 template <class T>

@@ -167,8 +167,8 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_double_10000_perf) {
   size_t length = 10000;
   if (rank == 0) {
     g_vec = std::vector<double>(length);
-    double max = static_cast<double>(1000000);
-    double min = static_cast<double>(-1000000);
+    auto max = static_cast<double>(1000000);
+    auto min = static_cast<double>(-1000000);
     std::srand(std::time(nullptr));
     for (size_t i = 0; i < length; i++) g_vec[i] = min + static_cast<double>(rand()) / RAND_MAX * (max - min);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(g_vec.data()));
@@ -207,8 +207,8 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_double_random_size_perf) {
   size_t length = 9871;
   if (rank == 0) {
     g_vec = std::vector<double>(length);
-    double max = static_cast<double>(1000000);
-    double min = static_cast<double>(-1000000);
+    auto max = static_cast<double>(1000000);
+    auto min = static_cast<double>(-1000000);
     std::srand(std::time(nullptr));
     for (size_t i = 0; i < length; i++) g_vec[i] = min + static_cast<double>(rand()) / RAND_MAX * (max - min);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(g_vec.data()));
@@ -247,8 +247,8 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_double_1000000_perf) {
   size_t length = 1000000;
   if (rank == 0) {
     g_vec = std::vector<double>(length);
-    double max = static_cast<double>(1000000);
-    double min = static_cast<double>(-1000000);
+    auto max = static_cast<double>(1000000);
+    auto min = static_cast<double>(-1000000);
     std::srand(std::time(nullptr));
     for (size_t i = 0; i < length; i++) g_vec[i] = min + static_cast<double>(rand()) / RAND_MAX * (max - min);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(g_vec.data()));
