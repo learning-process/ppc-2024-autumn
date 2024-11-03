@@ -8,18 +8,18 @@
 
 TEST(SumDifSymSequential_count, ans_0) {
   // Create Data
-  std::string str1 = "abcd";
-  std::string str2 = "abcd";
+  char str1[] = "abcd";
+  char str2[] = "abcd";
 
-  std::vector<std::string> to_input_vector{str1, str2};
+  std::vector<char*> in{str1, str2};
   std::vector<int> out(1,0);
 
   // Create Task Data
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(to_input_vector[0]);
-  taskDataSeq->inputs.emplace_back(to_input_vector[1]);
-  taskDataSeq->inputs_count.emplace_back(to_input_vector.size());
-  taskDataSeq->outputs.emplace_back(out[0]);
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[0]));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[0]));
+  taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
@@ -30,19 +30,19 @@ TEST(SumDifSymSequential_count, ans_0) {
   testClass.post_processing();
   ASSERT_EQ(0, out[0]);
 }
-/*
+
 TEST(SumDifSymSequential_count, ans_1) {
   // Create Data
-  std::string str1 = "abcde";
-  std::string str2 = "abcd";
+  char str1[] = "abcde";
+  char str2[] = "abcd";
 
-  std::vector<std::string> to_input_vector{str1, str2};
-  std::vector<int> out(1,1);
+  std::vector<char*> in{str1, str2};
+  std::vector<int> out(1,0);
 
   // Create Task Data
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<char*>(to_input_vector[0]));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<char*>(to_input_vector[1]));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[0]));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[0]));
   taskDataSeq->inputs_count.emplace_back(in.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
@@ -57,17 +57,16 @@ TEST(SumDifSymSequential_count, ans_1) {
 }
 
 TEST(SumDifSymSequential_count, ans_2) {
-  // Create Data
-  std::string str1 = "abcd";
-  std::string str2 = "abcded";
+  char str1[] = "abcd";
+  char str2[] = "abcdef";
 
-  std::vector<std::string> to_input_vector{str1, str2};
-  std::vector<int> out(1,1);
+  std::vector<char*> in{str1, str2};
+  std::vector<int> out(1,0);
 
   // Create Task Data
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<char*>(to_input_vector[0]));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<char*>(to_input_vector[1]));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[0]));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[0]));
   taskDataSeq->inputs_count.emplace_back(in.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
@@ -83,16 +82,16 @@ TEST(SumDifSymSequential_count, ans_2) {
 
 TEST(SumDifSymSequential_count, ans_6) {
   // Create Data
-  std::string str1 = "zxvn";
-  std::string str2 = "abcded";
+  char str1[] = "xzashe";
+  char str2[] = "abcd";
 
-  std::vector<std::string> to_input_vector{str1, str2};
-  std::vector<int> out(1,1);
+  std::vector<char*> in{str1, str2};
+  std::vector<int> out(1,0);
 
   // Create Task Data
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<char*>(to_input_vector[0]));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<char*>(to_input_vector[1]));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[0]));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[0]));
   taskDataSeq->inputs_count.emplace_back(in.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
@@ -105,4 +104,3 @@ TEST(SumDifSymSequential_count, ans_6) {
   testClass.post_processing();
   ASSERT_EQ(6, out[0]);
 }
-*/

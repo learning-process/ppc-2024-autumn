@@ -5,21 +5,21 @@
 
 #include "core/perf/include/perf.hpp"
 #include "seq/anikin_m_summ_of_different_symbols/include/ops_seq.hpp"
-/*
+
 TEST(SumDifSymSequential_perf_test, test_pipeline_run) {
   // Create data
-  std::string str1 = "abcd";
-  std::string str2 = "acdb"
+  char str1[] = "abcd";
+  char str2[] = "acdb"
 
-  std::vector<std::string> to_input_vector{str1, str2};
+  std::vector<std::string> in{str1, str2};
   std::vector<int> out(1, 1);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<char*>(to_input_vector[0]));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<char*>(to_input_vector[1]));
-  taskDataSeq->inputs_count.emplace_back(to_input_vector.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[0]));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[1]));
+  taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
@@ -47,18 +47,18 @@ TEST(SumDifSymSequential_perf_test, test_pipeline_run) {
 
 TEST(SumDifSymSequential_perf_test, test_task_run) {
   // Create data
-  std::string str1 = "abcd";
-  std::string str2 = "acdb"
+  char str1[] = "abcd";
+  char str2[] = "acdb"
 
-  std::vector<std::string> to_input_vector{str1, str2};
+  std::vector<std::string> in{str1, str2};
   std::vector<int> out(1, 1);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<char*>(to_input_vector[0]));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<char*>(to_input_vector[1]));
-  taskDataSeq->inputs_count.emplace_back(to_input_vector.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[0]));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[1]));
+  taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
@@ -83,4 +83,3 @@ TEST(SumDifSymSequential_perf_test, test_task_run) {
   ppc::core::Perf::print_perf_statistic(perfResults);
   ASSERT_EQ(count, out[0]);
 }
-*/

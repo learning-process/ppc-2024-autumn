@@ -17,7 +17,7 @@ class SumDifSymSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<std::string> input;
+  std::vector<char*> input;
   int res;
 };
 
