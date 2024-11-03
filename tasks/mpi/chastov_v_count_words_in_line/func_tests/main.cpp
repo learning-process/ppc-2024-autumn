@@ -246,7 +246,7 @@ TEST(chastov_v_count_words_in_line_mpi, words_7500) {
   }
 }
 
-// Test checks the word count in a string with multiple spaces between words
+// The test tests the functionality of counting words in a string with many spaces between words
 TEST(chastov_v_count_words_in_line_mpi, multiple_spaces) {
   boost::mpi::communicator world;
   std::vector<char> input = {'T', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 't', 'e', 's', 't'};
@@ -271,7 +271,7 @@ TEST(chastov_v_count_words_in_line_mpi, multiple_spaces) {
   }
 }
 
-// The test tests the functionality of counting words in a string with many spaces between words
+// Test checks the word count in a string with multiple spaces between words
 TEST(chastov_v_count_words_in_line_mpi, multiple_consecutive_spaces) {
   boost::mpi::communicator world;
   std::vector<char> input;
