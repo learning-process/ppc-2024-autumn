@@ -49,8 +49,7 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_int_10000_perf) {
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
   size_t length = 10000;
   g_vec = std::vector<int>(length);
-  const int nl = 0;
-  std::srand(std::time(nl));
+  std::srand(std::time(nullptr));
   for (size_t i = 0; i < length; i++) g_vec[i] = rand() * std::pow(-1, rand());
   taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(g_vec.data()));
   taskSeq->inputs_count.emplace_back(g_vec.size());
@@ -88,8 +87,7 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_int_1000000_perf) {
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
   size_t length = 1000000;
   g_vec = std::vector<int>(length);
-  const int nl = 0;
-  std::srand(std::time(nl));
+  std::srand(std::time(nullptr));
   for (size_t i = 0; i < length; i++) g_vec[i] = rand() * std::pow(-1, rand());
   taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(g_vec.data()));
   taskSeq->inputs_count.emplace_back(g_vec.size());
@@ -129,8 +127,7 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_double_10000_perf) {
   double max = 1000000;
   double min = -1000000;
   g_vec = std::vector<double>(length);
-  const int nl = 0;
-  std::srand(std::time(nl));
+  std::srand(std::time(nullptr));
   for (size_t i = 0; i < length; i++) g_vec[i] = min + static_cast<double>(rand()) / RAND_MAX * (max - min);
   taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(g_vec.data()));
   taskSeq->inputs_count.emplace_back(g_vec.size());
@@ -170,8 +167,7 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_double_1000000_perf) {
   double max = 1000000;
   double min = -1000000;
   g_vec = std::vector<double>(length);
-  const int nl = 0;
-  std::srand(std::time(nl));
+  std::srand(std::time(nullptr));
   for (size_t i = 0; i < length; i++) g_vec[i] = min + static_cast<double>(rand()) / RAND_MAX * (max - min);
   taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(g_vec.data()));
   taskSeq->inputs_count.emplace_back(g_vec.size());
