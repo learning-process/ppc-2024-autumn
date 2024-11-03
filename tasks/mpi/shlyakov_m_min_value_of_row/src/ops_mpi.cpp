@@ -68,6 +68,11 @@ bool shlyakov_m_min_value_of_row_mpi::TestMPITaskSequential::post_processing() {
 
 bool shlyakov_m_min_value_of_row_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
+  return true;
+}
+
+bool shlyakov_m_min_value_of_row_mpi::TestMPITaskParallel::validation() {
+  internal_order_test();
 
   int sz_row = 0;
   int sz_col = 0;
@@ -109,12 +114,6 @@ bool shlyakov_m_min_value_of_row_mpi::TestMPITaskParallel::pre_processing() {
   }
 
   res_.resize(sz_row);
-
-  return true;
-}
-
-bool shlyakov_m_min_value_of_row_mpi::TestMPITaskParallel::validation() {
-  internal_order_test();
 
   if (world.rank() == 0) {
     if (((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
@@ -177,6 +176,7 @@ std::vector<std::vector<int>> shlyakov_m_min_value_of_row_mpi::TestMPITaskSequen
 
   for (auto& row : rand_matr) {
     for (auto& el : rand_vec) el = std::rand() % (1001) - 500;
+    row = rand_vec;
     row[std::rand() % sz_col] = INT_MIN;
   }
 

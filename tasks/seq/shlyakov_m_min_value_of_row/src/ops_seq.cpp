@@ -71,6 +71,7 @@ std::vector<std::vector<int>> shlyakov_m_min_value_of_row_seq::TestTaskSequentia
 
   for (auto& row : rand_matr) {
     for (auto& el : rand_vec) el = std::rand() % (1001) - 500;
+    row = rand_vec;
     row[std::rand() % sz_col] = INT_MIN;
   }
 
