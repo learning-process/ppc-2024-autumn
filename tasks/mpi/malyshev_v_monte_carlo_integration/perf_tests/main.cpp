@@ -22,18 +22,18 @@ TEST(malyshev_v_monte_carlo_integration_mpi, test_monte_carlo_pipeline_run) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
   }
 
-  auto testMpiTaskParallel = std::make_shared<malyshev_v_monte_carlo_integration::TestMPITaskParallel>(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel->validation(), true);
-  testMpiTaskParallel->pre_processing();
-  testMpiTaskParallel->run();
-  testMpiTaskParallel->post_processing();
+  auto MonteCarloIntegrationParallel = std::make_shared<malyshev_v_monte_carlo_integration::MonteCarloIntegrationParallel>(taskDataPar);
+  ASSERT_EQ(MonteCarloIntegrationParallel->validation(), true);
+  MonteCarloIntegrationParallel->pre_processing();
+  MonteCarloIntegrationParallel->run();
+  MonteCarloIntegrationParallel->post_processing();
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(MonteCarloIntegrationParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
 
   if (world.rank() == 0) {
@@ -45,11 +45,11 @@ TEST(malyshev_v_monte_carlo_integration_mpi, test_monte_carlo_pipeline_run) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_samples));
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
 
-    malyshev_v_monte_carlo_integration::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
+    malyshev_v_monte_carlo_integration::MonteCarloIntegrationSequential MonteCarloIntegrationSequential(taskDataSeq);
+    ASSERT_EQ(MonteCarloIntegrationSequential.validation(), true);
+    MonteCarloIntegrationSequential.pre_processing();
+    MonteCarloIntegrationSequential.run();
+    MonteCarloIntegrationSequential.post_processing();
     ASSERT_NEAR(reference_result[0], global_result[0], 1e-1);
   }
 }
@@ -69,18 +69,18 @@ TEST(malyshev_v_monte_carlo_integration_mpi, test_monte_carlo_task_run) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
   }
 
-  auto testMpiTaskParallel = std::make_shared<malyshev_v_monte_carlo_integration::TestMPITaskParallel>(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel->validation(), true);
-  testMpiTaskParallel->pre_processing();
-  testMpiTaskParallel->run();
-  testMpiTaskParallel->post_processing();
+  auto MonteCarloIntegrationParallel = std::make_shared<malyshev_v_monte_carlo_integration::MonteCarloIntegrationParallel>(taskDataPar);
+  ASSERT_EQ(MonteCarloIntegrationParallel->validation(), true);
+  MonteCarloIntegrationParallel->pre_processing();
+  MonteCarloIntegrationParallel->run();
+  MonteCarloIntegrationParallel->post_processing();
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(MonteCarloIntegrationParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
 
   if (world.rank() == 0) {

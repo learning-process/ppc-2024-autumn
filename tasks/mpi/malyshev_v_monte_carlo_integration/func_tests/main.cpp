@@ -23,11 +23,11 @@ TEST(malyshev_v_monte_carlo_integration, Test_Integration_mpi_small_interval) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
   }
 
-  malyshev_v_monte_carlo_integration::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+  malyshev_v_monte_carlo_integration::MonteCarloIntegrationParallel MonteCarloIntegrationParallel(taskDataPar);
+  ASSERT_EQ(MonteCarloIntegrationParallel.validation(), true);
+  MonteCarloIntegrationParallel.pre_processing();
+  MonteCarloIntegrationParallel.run();
+  MonteCarloIntegrationParallel.post_processing();
 
   if (world.rank() == 0) {
     std::vector<double> reference_result(1, 0.0);
@@ -36,11 +36,11 @@ TEST(malyshev_v_monte_carlo_integration, Test_Integration_mpi_small_interval) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
-    malyshev_v_monte_carlo_integration::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
+    malyshev_v_monte_carlo_integration::MonteCarloIntegrationSequential MonteCarloIntegrationSequential(taskDataSeq);
+    ASSERT_EQ(MonteCarloIntegrationSequential.validation(), true);
+    MonteCarloIntegrationSequential.pre_processing();
+    MonteCarloIntegrationSequential.run();
+    MonteCarloIntegrationSequential.post_processing();
     ASSERT_NEAR(reference_result[0], global_result[0], 1e-1);
   }
 }
@@ -61,11 +61,11 @@ TEST(malyshev_v_monte_carlo_integration, Test_Integration_mpi_large_range) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
   }
 
-  malyshev_v_monte_carlo_integration::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+  malyshev_v_monte_carlo_integration::MonteCarloIntegrationParallel MonteCarloIntegrationParallel(taskDataPar);
+  ASSERT_EQ(MonteCarloIntegrationParallel.validation(), true);
+  MonteCarloIntegrationParallel.pre_processing();
+  MonteCarloIntegrationParallel.run();
+  MonteCarloIntegrationParallel.post_processing();
 
   if (world.rank() == 0) {
     std::vector<double> reference_result(1, 0.0);
@@ -74,11 +74,11 @@ TEST(malyshev_v_monte_carlo_integration, Test_Integration_mpi_large_range) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
-    malyshev_v_monte_carlo_integration::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
+    malyshev_v_monte_carlo_integration::MonteCarloIntegrationSequential MonteCarloIntegrationSequential(taskDataSeq);
+    ASSERT_EQ(MonteCarloIntegrationSequential.validation(), true);
+    MonteCarloIntegrationSequential.pre_processing();
+    MonteCarloIntegrationSequential.run();
+    MonteCarloIntegrationSequential.post_processing();
     ASSERT_NEAR(reference_result[0], global_result[0], 1e-1);
   }
 }
@@ -104,11 +104,11 @@ TEST(malyshev_v_monte_carlo_integration, Test_Integration_mpi_random) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
   }
 
-  malyshev_v_monte_carlo_integration::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+  malyshev_v_monte_carlo_integration::MonteCarloIntegrationParallel MonteCarloIntegrationParallel(taskDataPar);
+  ASSERT_EQ(MonteCarloIntegrationParallel.validation(), true);
+  MonteCarloIntegrationParallel.pre_processing();
+  MonteCarloIntegrationParallel.run();
+  MonteCarloIntegrationParallel.post_processing();
 
   if (world.rank() == 0) {
     std::vector<double> reference_result(1, 0.0);
@@ -117,11 +117,11 @@ TEST(malyshev_v_monte_carlo_integration, Test_Integration_mpi_random) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
-    malyshev_v_monte_carlo_integration::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
+    malyshev_v_monte_carlo_integration::MonteCarloIntegrationSequential MonteCarloIntegrationSequential(taskDataSeq);
+    ASSERT_EQ(MonteCarloIntegrationSequential.validation(), true);
+    MonteCarloIntegrationSequential.pre_processing();
+    MonteCarloIntegrationSequential.run();
+    MonteCarloIntegrationSequential.post_processing();
     ASSERT_NEAR(reference_result[0], global_result[0], 1e-1);
   }
 }
@@ -138,7 +138,7 @@ TEST(malyshev_v_monte_carlo_integration, Test_Validation_InputSizeLessThan3) {
     double result = 0.0;
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(&result));
   }
-  malyshev_v_monte_carlo_integration::TestMPITaskParallel task(taskData);
+  malyshev_v_monte_carlo_integration::MonteCarloIntegrationParallel task(taskData);
   ASSERT_FALSE(task.validation());
 }
 
@@ -158,6 +158,6 @@ TEST(malyshev_v_monte_carlo_integration, Test_Validation_ExtraInput) {
     double result = 0.0;
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(&result));
   }
-  malyshev_v_monte_carlo_integration::TestMPITaskParallel task(taskData);
+  malyshev_v_monte_carlo_integration::MonteCarloIntegrationParallel task(taskData);
   ASSERT_FALSE(task.validation());
 }
