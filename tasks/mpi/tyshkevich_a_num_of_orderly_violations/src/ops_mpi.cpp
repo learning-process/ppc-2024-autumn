@@ -99,7 +99,7 @@ bool tyshkevich_a_num_of_orderly_violations_mpi::TestMPITaskParallel::run() {
     for (int i = 0; i < world_size - 2; i++) {
       world.send(i + 1, 0, input_.data() + i * chunkSize, chunkSize + 1);
     }
-    world.send(world_size - 1, 0, input_.data() + (world_size - 2) * сhunkSize, lastChunkSize);
+    world.send(world_size - 1, 0, input_.data() + (world_size - 2) * chunkSize, lastChunkSize);
 
     int tempDef;
     for (int i = 0; i < world_size - 1; i++) {
