@@ -31,7 +31,7 @@ bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::pre_
   std::vector<int> sendcounts(size, scratter_length);
   std::vector<int> displs(size, 0);
   for (int i = 1; i < size; i++) displs[i] = displs[i] + scratter_length;
-  boost::mpi::scatter(world, (T*)glob_v.data(), (T*)loc_v.data(), scratter_length, 0);
+  boost::mpi::scatter(world, glob_v.data(), loc_v.data(), scratter_length, 0);
   return true;
 }
 
