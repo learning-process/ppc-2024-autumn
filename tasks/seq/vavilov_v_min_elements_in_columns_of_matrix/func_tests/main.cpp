@@ -115,7 +115,7 @@ TEST(vavilov_v_min_elements_in_columns_of_matrix_seq, validation_find_min_elem_i
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
-  vavilov_v_min_elemrnts_in_columns_of_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  vavilov_v_min_elements_in_columns_of_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   std::vector<std::vector<int>> matr =
       vavilov_v_min_elements_in_columns_of_matrix_seq::TestTaskSequential::generate_rand_matr(rows, cols);
 
