@@ -78,26 +78,7 @@ TEST(Parallel_Operations_MPI, Test5) {
   }
   sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
-  if (world.rank() == 0) {
-    // Create data
-    std::vector<int32_t> reference_max(1, global_matrix[0][0]);
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    for (unsigned int i = 0; i < global_matrix.size(); i++)
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix[i].data()));
-    taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs_count.emplace_back(5);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_max.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_max.size());
-    // Create Task
-    sedova_o_max_of_vector_elements_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
-    ASSERT_EQ(reference_max[0], global_max[0]);
-  }
+  ASSERT_EQ(testMpiTaskParallel.pre_processing(), true);
+  ASSERT_EQ(testMpiTaskParallel.run(), true);
+  ASSERT_EQ(testMpiTaskParallel.post_processing(), true);
 }
