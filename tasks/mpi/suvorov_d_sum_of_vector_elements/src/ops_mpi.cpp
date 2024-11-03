@@ -88,7 +88,7 @@ bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel::run(
 bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel::post_processing() {
   internal_order_test();
   if (world_.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = res_;
+    reinterpret_cast<int *>(taskData->outputs[0])[0] = res_;
   }
   return true;
 }

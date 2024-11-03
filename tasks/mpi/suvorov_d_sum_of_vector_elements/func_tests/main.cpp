@@ -3,8 +3,8 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <vector>
 #include <random>
+#include <vector>
 
 #include "mpi/suvorov_d_sum_of_vector_elements/include/ops_mpi.hpp"
 
