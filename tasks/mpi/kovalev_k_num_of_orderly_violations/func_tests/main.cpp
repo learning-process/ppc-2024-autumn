@@ -14,7 +14,9 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, zero_length) {
     tmpPar->outputs_count.emplace_back(out.size());
   }
   kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<int> tmpTaskPar(tmpPar);
-  if (world.rank() == 0) ASSERT_FALSE(tmpTaskPar.validation());
+  if (world.rank() == 0) {
+    ASSERT_FALSE(tmpTaskPar.validation());
+  }
 }
 
 TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_viol_0_int_) {
