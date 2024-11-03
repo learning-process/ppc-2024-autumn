@@ -5,6 +5,7 @@
 
 namespace malyshev_v_monte_carlo_integration {
 
+// Sequential Monte Carlo Integration
 bool TestMPITaskSequential::validation() {
   internal_order_test();
   return (taskData->inputs.size() == 3 && taskData->outputs.size() == 1);
@@ -15,7 +16,7 @@ bool TestMPITaskSequential::pre_processing() {
   a = *reinterpret_cast<double*>(taskData->inputs[0]);
   b = *reinterpret_cast<double*>(taskData->inputs[1]);
   epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
-  num_samples = static_cast<int>(20 / epsilon);
+  num_samples = static_cast<int>(40 / epsilon);  // Further increased number of samples to improve accuracy
   return true;
 }
 
@@ -23,7 +24,7 @@ bool TestMPITaskSequential::run() {
   internal_order_test();
   double sum = 0.0;
   std::random_device rd;
-  std::mt19937 rng(rd());
+  std::mt19937 rng(rd());  // Non-deterministic seed
   std::uniform_real_distribution<> dist(a, b);
 
   for (int i = 0; i < num_samples; ++i) {
@@ -41,6 +42,7 @@ bool TestMPITaskSequential::post_processing() {
   return true;
 }
 
+// Parallel Monte Carlo Integration
 bool TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
@@ -61,7 +63,7 @@ bool TestMPITaskParallel::pre_processing() {
     a = *reinterpret_cast<double*>(taskData->inputs[0]);
     b = *reinterpret_cast<double*>(taskData->inputs[1]);
     epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
-    num_samples = static_cast<int>(20 / epsilon);
+    num_samples = static_cast<int>(40 / epsilon);  // Increased samples for accuracy
   }
 
   boost::mpi::broadcast(world, a, 0);
@@ -75,7 +77,7 @@ bool TestMPITaskParallel::run() {
   internal_order_test();
   double local_sum = 0.0;
   std::random_device rd;
-  std::mt19937 rng(rd() + world.rank());
+  std::mt19937 rng(rd() + world.rank());  // Non-deterministic seed based on rank for parallel tasks
   std::uniform_real_distribution<> dist(a, b);
 
   for (int i = 0; i < local_num_samples; ++i) {
