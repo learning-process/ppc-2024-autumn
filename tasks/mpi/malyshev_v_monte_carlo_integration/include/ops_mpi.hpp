@@ -31,7 +31,7 @@ class MonteCarloIntegrationSequential : public ppc::core::Task {
   static double integrate(const std::function<double(double)>& f, double a, double b, int n);
   double a_{};
   double b_{};
-  int n_{};    
+  int n_{};
   double result_{};
   std::function<double(double)> func_;
 };
