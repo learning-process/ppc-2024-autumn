@@ -85,14 +85,14 @@ bool zaytsev_d_num_of_alternations_signs_mpi::TestMPITaskParallel::pre_processin
   return true;
 }
 
-  bool zaytsev_d_num_of_alternations_signs_mpi::TestMPITaskParallel::validation() {
-    internal_order_test();
+bool zaytsev_d_num_of_alternations_signs_mpi::TestMPITaskParallel::validation() {
+  internal_order_test();
 
-    if (world.rank() == 0) {
-      return taskData->outputs_count[0] == 1;
-    }
+  if (world.rank() == 0) {
+    return taskData->outputs_count[0] == 1;
+  }
 
-    return true;  
+  return true;
 }
 
 bool zaytsev_d_num_of_alternations_signs_mpi::TestMPITaskParallel::run() {
@@ -111,21 +111,21 @@ bool zaytsev_d_num_of_alternations_signs_mpi::TestMPITaskParallel::run() {
       local_count++;
     }
   }
-  int last_value = local_input_.back();  
+  int last_value = local_input_.back();
   if (world.rank() < world.size() - 1) {
-    world.send(world.rank() + 1, 0, &last_value, 1); 
+    world.send(world.rank() + 1, 0, &last_value, 1);
   }
-  boost::mpi::reduce(world, local_count, res, std::plus<int>(), 0);  
+  boost::mpi::reduce(world, local_count, res, std::plus<int>(), 0);
 
-  return true;  
+  return true;
 }
 
 bool zaytsev_d_num_of_alternations_signs_mpi::TestMPITaskParallel::post_processing() {
-  internal_order_test();  
-  
+  internal_order_test();
+
   if (world.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = res;  
+    reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
   }
 
-  return true;  
+  return true;
 }

@@ -47,4 +47,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  
+}  // namespace zaytsev_d_num_of_alternations_signs_mpi
