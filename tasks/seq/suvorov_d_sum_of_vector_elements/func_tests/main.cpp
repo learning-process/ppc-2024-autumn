@@ -125,3 +125,27 @@ TEST(suvorov_d_sum_of_vector_elements_seq, Test_Sum_With_Zero_Vector) {
   SumOfVectorElementsSeq.post_processing();
   ASSERT_EQ(right_result, test_output[0]);
 }
+
+TEST(suvorov_d_sum_of_vector_elements_seq, Test_Sum_With_Empte_Vector) {
+  // Create data
+  std::vector<int> input_test_vector;
+  std::vector<int> test_output(1, 0);
+
+  // Initialize an input vector with random integers and getting the correct sum result
+  int right_result = 0;
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_test_vector.data()));
+  taskDataSeq->inputs_count.emplace_back(input_test_vector.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(test_output.data()));
+  taskDataSeq->outputs_count.emplace_back(test_output.size());
+
+  // Create Task
+  suvorov_d_sum_of_vector_elements_seq::Sum_of_vector_elements_seq SumOfVectorElementsSeq(taskDataSeq);
+  ASSERT_EQ(SumOfVectorElementsSeq.validation(), true);
+  SumOfVectorElementsSeq.pre_processing();
+  SumOfVectorElementsSeq.run();
+  SumOfVectorElementsSeq.post_processing();
+  ASSERT_EQ(right_result, test_output[0]);
+}

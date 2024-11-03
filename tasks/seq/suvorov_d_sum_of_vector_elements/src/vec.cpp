@@ -17,7 +17,7 @@ bool suvorov_d_sum_of_vector_elements_seq::Sum_of_vector_elements_seq::pre_proce
 bool suvorov_d_sum_of_vector_elements_seq::Sum_of_vector_elements_seq::validation() {
   internal_order_test();
   // Check count elements of output
-  return taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1;
+  return taskData->inputs_count[0] >= 0 && taskData->outputs_count[0] == 1;
 }
 
 bool suvorov_d_sum_of_vector_elements_seq::Sum_of_vector_elements_seq::run() {
