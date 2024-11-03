@@ -6,7 +6,7 @@
 #include "seq/stroganov_m_count_symbols_in_string/include/ops_seq.hpp"
 
 TEST(stroganov_m_count_symbols_in_string_seq, EmptyString) {
-  std::string str = "";
+  std::string str;
 
   // Create data
   std::vector<int> out(1, 0);

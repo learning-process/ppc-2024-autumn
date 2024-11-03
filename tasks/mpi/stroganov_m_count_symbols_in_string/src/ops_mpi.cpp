@@ -17,7 +17,7 @@ int stroganov_m_count_symbols_in_string_mpi::getRandomNum(int min, int max) {
 }
 
 std::string stroganov_m_count_symbols_in_string_mpi::getRandomString() {
-  std::string result = "";
+  std::string result;
   std::string dictionary = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890";
   int str_len = getRandomNum(1000, 20000);
   for (int i = 0; i < str_len; i++) {

@@ -9,7 +9,7 @@
 
 TEST(stroganov_m_count_symbols_in_string_mpi, EmptyString) {
   boost::mpi::communicator world;
-  std::string global_str = "";
+  std::string global_str;
 
   // Create data
   std::vector<int> global_out(1, 0);
