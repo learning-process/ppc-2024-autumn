@@ -59,11 +59,21 @@ bool anikin_m_summ_of_different_symbols_mpi::SumDifSymMPISequential::post_proces
 bool anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel::pre_processing() {
   internal_order_test();
   if (com.rank() == 0) {
-    input.push_back(reinterpret_cast<char *>(taskData->inputs[0]));
-    input.push_back(reinterpret_cast<char *>(taskData->inputs[1]));
+    if (strlen(reinterpret_cast<char *>(taskData->inputs[0])) >=
+        strlen(reinterpret_cast<char *>(taskData->inputs[1]))) {
+      input.push_back(reinterpret_cast<char *>(taskData->inputs[0]));
+      input.push_back(reinterpret_cast<char *>(taskData->inputs[1]));
+    } else {
+      input.push_back(reinterpret_cast<char *>(taskData->inputs[1]));
+      input.push_back(reinterpret_cast<char *>(taskData->inputs[0]));
+    }
+    if (strlen(input[0]) != (strlen(input[1]))) {
+      res = strlen(input[0]) - strlen(input[1]);
+      input[0][strlen(input[1])] = '\0';
+    } else {
+      res = 0;
+    }
   }
-  // Init value for output
-  res = 0;
   return true;
 }
 
