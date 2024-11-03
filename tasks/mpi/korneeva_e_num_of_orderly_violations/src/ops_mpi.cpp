@@ -30,29 +30,31 @@ bool num_of_orderly_violations<iotype, cntype>::pre_processing() {
   }
 
   // Calculate the chunk size for each process
-  int chunk_size = (input_size < total_processes) ? 1 : input_size / total_processes;
-  int remainder = (input_size < total_processes) ? 0 : input_size % total_processes;
+  int active_processes = std::min(input_size, total_processes);
+  int chunk_size = input_size / active_processes;
+  int remainder = input_size % active_processes;
 
   // Prepare send sizes for each process
-  std::vector<int> send_sizes(total_processes, chunk_size);
-  for (int i = 0; i < remainder; ++i) {
-    send_sizes[i]++;  // Distribute remainder
+  std::vector<int> send_sizes(total_processes, 0);  // By default, no data is assigned to any process
+  for (int i = 0; i < active_processes; ++i) {
+    send_sizes[i] = chunk_size + (i < remainder ? 1 : 0);  // First `remainder` processes receive one extra element
   }
 
-  local_vector_size_ = send_sizes[process_rank];  // Get the local size for this process
+  local_vector_size_ = send_sizes[process_rank];  // Local data size for this process
   if (local_vector_size_ <= 0) {
-    return true;  // No data to process
+    return true;  // If no data is assigned to this process, exit early
   }
 
-  received_data_.resize(local_vector_size_);     // Resize the received data buffer
-  std::vector<int> offsets(total_processes, 0);  // Initialize offsets for scatter operation
+  // If the process has data to process, allocate a buffer
+  if (local_vector_size_ > 0) {
+    received_data_.resize(local_vector_size_);
+  }
 
-  // Calculate offsets for scattering data
+  // Perform data scatter across processes
+  std::vector<int> offsets(total_processes, 0);
   for (int i = 1; i < total_processes; ++i) {
     offsets[i] = offsets[i - 1] + send_sizes[i - 1];
   }
-
-  // Scatter the input data among processes
   boost::mpi::scatterv(mpi_comm, input_data_, send_sizes, offsets, received_data_.data(), local_vector_size_, 0);
 
   return true;
@@ -147,9 +149,4 @@ cntype num_of_orderly_violations<iotype, cntype>::count_orderly_violations(std::
   }
   return violation_count;  // Return the total violation count
 }
-
-// Explicit template instantiation for specific types
-template class korneeva_e_num_of_orderly_violations_mpi::num_of_orderly_violations<int, int>;
-template class korneeva_e_num_of_orderly_violations_mpi::num_of_orderly_violations<double, int>;
-
 }  // namespace korneeva_e_num_of_orderly_violations_mpi

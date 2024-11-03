@@ -28,7 +28,7 @@ TEST(korneeva_e_num_of_orderly_violations_mpi, NoViolations_SingleElement) {
   // Check the result only on the root process
   if (rank == 0) {
     int expected_count = 0;
-    ASSERT_EQ(out[0], expected_count) << "[Rank 0] Test failed: expected " << expected_count << ", got " << out[0];
+    ASSERT_EQ(out[0], expected_count);
   }
 }
 
@@ -207,5 +207,30 @@ TEST(korneeva_e_num_of_orderly_violations_mpi, CountViolations_Int_10000) {
   if (world.rank() == 0) {
     int expected_count = task.count_orderly_violations(arr);  // Calculate expected count
     ASSERT_EQ(out[0], expected_count);                        // Compare with output
+  }
+}
+// Test for a vector with a number of elements less than the number of processes
+TEST(korneeva_e_num_of_orderly_violations_mpi, CountViolations_SmallData_FewerThanProcesses) {
+  boost::mpi::communicator world;
+  std::vector<int> arr = {3, 2, 1};
+  std::vector<int> out(1);
+  std::shared_ptr<ppc::core::TaskData> data_seq = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    data_seq->inputs.emplace_back(reinterpret_cast<uint8_t*>(arr.data()));
+    data_seq->inputs_count.emplace_back(arr.size());
+    data_seq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    data_seq->outputs_count.emplace_back(1);
+  }
+
+  korneeva_e_num_of_orderly_violations_mpi::num_of_orderly_violations<int, int> task(data_seq);
+  ASSERT_TRUE(task.validation());
+  task.pre_processing();
+  task.run();
+  task.post_processing();
+
+  if (world.rank() == 0) {
+    int expected_count = task.count_orderly_violations(arr);
+    ASSERT_EQ(out[0], expected_count);
   }
 }

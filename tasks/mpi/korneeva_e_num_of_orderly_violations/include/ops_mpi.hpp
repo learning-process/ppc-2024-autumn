@@ -32,4 +32,6 @@ class num_of_orderly_violations : public ppc::core::Task {
   std::vector<iotype> received_data_;  // Buffer for data received from other processes
 };
 
+template class korneeva_e_num_of_orderly_violations_mpi::num_of_orderly_violations<int, int>;
+template class korneeva_e_num_of_orderly_violations_mpi::num_of_orderly_violations<double, int>;
 }  // namespace korneeva_e_num_of_orderly_violations_mpi

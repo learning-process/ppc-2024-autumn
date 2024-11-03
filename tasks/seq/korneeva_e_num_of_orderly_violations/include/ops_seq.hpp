@@ -17,11 +17,13 @@ class OrderlyViolationsCounter : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  cntype count_orderly_violations(std::vector<iotype> data);
+  cntype count_orderly_violations(const std::vector<iotype>& data);
 
  private:
   std::vector<iotype> input_;  // Input vector
   cntype result_;              // Number of violations
 };
 
+template class korneeva_e_num_of_orderly_violations_seq::OrderlyViolationsCounter<int, int>;
+template class korneeva_e_num_of_orderly_violations_seq::OrderlyViolationsCounter<double, int>;
 }  // namespace korneeva_e_num_of_orderly_violations_seq

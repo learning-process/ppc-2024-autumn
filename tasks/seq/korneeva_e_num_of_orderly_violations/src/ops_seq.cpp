@@ -40,7 +40,7 @@ bool OrderlyViolationsCounter<iotype, cntype>::post_processing() {
 }
 
 template <typename iotype, typename cntype>
-cntype OrderlyViolationsCounter<iotype, cntype>::count_orderly_violations(std::vector<iotype> data) {
+cntype OrderlyViolationsCounter<iotype, cntype>::count_orderly_violations(const std::vector<iotype>& data) {
   cntype count = 0;
   for (size_t i = 1; i < data.size(); ++i) {
     if (data[i - 1] > data[i]) {
@@ -49,7 +49,4 @@ cntype OrderlyViolationsCounter<iotype, cntype>::count_orderly_violations(std::v
   }
   return count;
 }
-
-template class korneeva_e_num_of_orderly_violations_seq::OrderlyViolationsCounter<int, int>;
-template class korneeva_e_num_of_orderly_violations_seq::OrderlyViolationsCounter<double, int>;
 }  // namespace korneeva_e_num_of_orderly_violations_seq
