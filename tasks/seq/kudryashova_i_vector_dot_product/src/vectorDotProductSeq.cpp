@@ -3,7 +3,7 @@
 #include <random>
 
 int kudryashova_i_vector_dot_product::vectorDotProduct(const std::vector<int>& vector1,
-                                                           const std::vector<int>& vector2) {
+                                                       const std::vector<int>& vector2) {
   long long result = 0;
   for (unsigned long i = 0; i < vector1.size(); i++) result += vector1[i] * vector2[i];
   return result;
@@ -15,7 +15,7 @@ bool kudryashova_i_vector_dot_product::TestTaskSequential::pre_processing() {
   input_.resize(taskData->inputs.size());
   for (unsigned long i = 0; i < taskData->inputs.size(); ++i) {
     int* source_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
-    input_[i].resize(taskData->inputs_count[i]);    
+    input_[i].resize(taskData->inputs_count[i]);
     std::copy(source_ptr, source_ptr + taskData->inputs_count[i], input_[i].begin());
   }
   result = 0;
