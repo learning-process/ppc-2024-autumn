@@ -6,7 +6,10 @@
 #include <limits>
 #include <random>
 #include <vector>
+<<<<<<< HEAD
 #include <algorithm>
+=======
+>>>>>>> d8cdde3175d86a868290c246bfeb882051127316
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/kovalchuk_a_max_of_vector_elements/include/ops_mpi.hpp"

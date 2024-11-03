@@ -3,7 +3,10 @@
 #include <limits>
 #include <numeric>
 #include <random>
+<<<<<<< HEAD
 #include <algorithm>
+=======
+>>>>>>> d8cdde3175d86a868290c246bfeb882051127316
 
 #include "seq/kovalchuk_a_max_of_vector_elements/include/ops_seq.hpp"
 
