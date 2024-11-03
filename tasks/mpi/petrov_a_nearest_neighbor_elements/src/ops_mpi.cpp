@@ -119,7 +119,7 @@ bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskParallel::run() {
       local_pair = {local_input_[i], local_input_[i + 1]};
     }
   }
- 
+
   std::pair<int, int> global_pair;
   reduce(
       world, local_pair, global_pair,
