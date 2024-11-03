@@ -40,8 +40,6 @@ bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::vali
     if (taskData->inputs.empty() || taskData->outputs.empty() || taskData->inputs_count[0] <= 0 ||
         taskData->outputs_count[0] != 1) {
       return false;
-    } else {
-      return true;
     }
   }
   return true;
