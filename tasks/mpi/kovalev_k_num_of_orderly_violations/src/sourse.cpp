@@ -14,6 +14,7 @@ bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::coun
 template <class T>
 bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::pre_processing() {
   internal_order_test();
+  g_res = l_res = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
   if (rank == 0) {
@@ -24,7 +25,7 @@ bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::pre_
     void* ptr_input = taskData->inputs[0];
     memcpy(ptr_vec, ptr_input, sizeof(T) * n);
   }
-  MPI_Bcast(&n, 1, MPI_UNSIGNED_LONG, 0, MPI_COMM_WORLD);
+  MPI_Bcast(&n, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
   size_t scratter_length = n / size;  // minimum length to each process
   loc_v.resize(scratter_length);      // resize the local copy
   MPI_Scatter(glob_v.data(), scratter_length * sizeof(T), MPI_BYTE, loc_v.data(), scratter_length * sizeof(T), MPI_BYTE,
