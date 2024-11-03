@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "seq/morozov_e_min_val_in_rows_matrix/include/ops_seq.hpp"
-std::vector<std::vector<int>> getRandomMatrix(int n, int m) {
+std::vector<std::vector<int>> getRandomMatrix_(int n, int m) {
   int left = 0;
   int right = 10005;
 
@@ -91,7 +91,7 @@ TEST(morozov_e_min_val_in_rows_matrix_Sequential, Test_Main1) {
   std::vector<int> res(n);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  matrix = getRandomMatrix(n, m);
+  matrix = getRandomMatrix_(n, m);
   for (size_t i = 0; i < matrix.size(); ++i) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
   }
@@ -118,7 +118,7 @@ TEST(morozov_e_min_val_in_rows_matrix_Sequential, Test_Main2) {
   std::vector<int> res(n);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  matrix = getRandomMatrix(n, m);
+  matrix = getRandomMatrix_(n, m);
   for (size_t i = 0; i < matrix.size(); ++i) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
   }
@@ -145,7 +145,7 @@ TEST(morozov_e_min_val_in_rows_matrix_Sequential, Test_Main3) {
   std::vector<int> res(n);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  matrix = getRandomMatrix(n, m);
+  matrix = getRandomMatrix_(n, m);
   for (size_t i = 0; i < matrix.size(); ++i) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
   }

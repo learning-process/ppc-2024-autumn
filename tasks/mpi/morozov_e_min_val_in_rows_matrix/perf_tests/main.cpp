@@ -6,7 +6,7 @@
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/morozov_e_min_val_in_rows_matrix/include/ops_mpi.hpp"
-std::vector<std::vector<int>> getRandomMatrix(int n, int m) {
+std::vector<std::vector<int>> getRandomMatrix_(int n, int m) {
   int left = 0;
   int right = 10005;
 
@@ -33,7 +33,7 @@ TEST(morozov_e_min_val_in_rows_matrix_perf_test, test_pipeline_run_my) {
   std::vector<int> res(n);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    matrix = getRandomMatrix(n, m);
+    matrix = getRandomMatrix_(n, m);
     for (int i = 0; i < n; ++i) taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
     taskDataPar->inputs_count.emplace_back(n);
     taskDataPar->inputs_count.emplace_back(m);
@@ -71,7 +71,7 @@ TEST(morozov_e_min_val_in_rows_matrix_perf_test, test_task_run_my) {
   std::vector<int> res(n);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    matrix = getRandomMatrix(n, m);
+    matrix = getRandomMatrix_(n, m);
     for (int i = 0; i < n; ++i) taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
     taskDataPar->inputs_count.emplace_back(n);
     taskDataPar->inputs_count.emplace_back(m);
