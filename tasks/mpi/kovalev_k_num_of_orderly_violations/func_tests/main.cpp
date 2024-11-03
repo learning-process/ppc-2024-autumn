@@ -9,11 +9,10 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_viol_0_int_) {
   // Create data
   std::vector<int> in(length, alpha);
   std::vector<size_t> out(1, 0);
-  int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  boost::mpi::communicator world;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
-  if (rank == 0) {
+  if (world.rank() == 0) {
     taskSeq->inputs_count.emplace_back(in.size());
     taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
@@ -35,11 +34,10 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_10_int_) {
   std::vector<int> in(length, alpha);
   std::vector<size_t> out(1, 0);
   in[1] = -1;
-  int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  boost::mpi::communicator world;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
-  if (rank == 0) {
+  if (world.rank() == 0) {
     taskSeq->inputs_count.emplace_back(in.size());
     taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
@@ -71,11 +69,10 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_10000_int_) {
   in[666] = 532;
   in[228] = 666;
   std::vector<size_t> out(1, 0);
-  int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  boost::mpi::communicator world;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
-  if (rank == 0) {
+  if (world.rank() == 0) {
     taskSeq->inputs_count.emplace_back(in.size());
     taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
@@ -96,11 +93,10 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_viol_0_double_) {
   // Create data
   std::vector<double> in(length, alpha);
   std::vector<size_t> out(1, 0);
-  int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  boost::mpi::communicator world;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
-  if (rank == 0) {
+  if (world.rank() == 0) {
     taskSeq->inputs_count.emplace_back(in.size());
     taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
@@ -122,11 +118,10 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_10_double_) {
   std::vector<double> in(length, alpha);
   std::vector<size_t> out(1, 0);
   in[1] = -1;
-  int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  boost::mpi::communicator world;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
-  if (rank == 0) {
+  if (world.rank() == 0) {
     taskSeq->inputs_count.emplace_back(in.size());
     taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
@@ -159,11 +154,10 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_1000_double) {
   in[666] = 532.8976;
   in[228] = 666.00001;
   std::vector<size_t> out(1, 0);
-  int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  boost::mpi::communicator world;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
-  if (rank == 0) {
+  if (world.rank() == 0) {
     taskSeq->inputs_count.emplace_back(in.size());
     taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));

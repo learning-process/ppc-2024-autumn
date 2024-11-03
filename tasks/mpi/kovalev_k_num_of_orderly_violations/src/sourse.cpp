@@ -15,8 +15,8 @@ template <class T>
 bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::pre_processing() {
   internal_order_test();
   g_res = l_res = 0;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  MPI_Comm_size(MPI_COMM_WORLD, &size);
+  rank = world.rank();
+  size = world.size();
   if (rank == 0) {
     n = taskData->inputs_count[0];
     // Initialization global_vector <T> with input data
@@ -25,7 +25,7 @@ bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::pre_
     void* ptr_input = taskData->inputs[0];
     memcpy(ptr_vec, ptr_input, sizeof(T) * n);
   }
-  MPI_Bcast(&n, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
+  boost::mpi::broadcast(world, n, 0);
   size_t scratter_length = n / size;  // minimum length to each process
   loc_v.resize(scratter_length);      // resize the local copy
   MPI_Scatter(glob_v.data(), scratter_length * sizeof(T), MPI_BYTE, loc_v.data(), scratter_length * sizeof(T), MPI_BYTE,
@@ -49,7 +49,7 @@ bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::run(
   // counting violations locally
   count_num_of_orderly_violations_mpi();
   // redusing results
-  MPI_Reduce(&l_res, &g_res, 1, MPI_UNSIGNED_LONG, MPI_SUM, 0, MPI_COMM_WORLD);
+  boost::mpi::reduce(world, l_res, g_res, std::plus<unsigned long>(), 0);
   if (rank == 0) {
     for (int i = 1; i < size; i++)  // are there any violations between local copies?
       if (glob_v[i * (n / size) - 1] > glob_v[i * (n / size)]) g_res++;

@@ -1,7 +1,8 @@
 // Copyright 2023 Nesterov Alexander
 #pragma once
 
-#include <mpi.h>
+#include <boost/mpi/collectives.hpp>
+#include <boost/mpi/communicator.hpp>
 
 #include <cstdlib>
 #include <cstring>
@@ -18,6 +19,7 @@ class NumOfOrderlyViolationsPar : public ppc::core::Task {
   std::vector<T> loc_v;
   size_t n = 0, l_res = 0, g_res = 0;  // counters initialisation
   int rank, size;
+  boost::mpi::communicator world;
 
  public:
   explicit NumOfOrderlyViolationsPar(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(taskData_) {}
