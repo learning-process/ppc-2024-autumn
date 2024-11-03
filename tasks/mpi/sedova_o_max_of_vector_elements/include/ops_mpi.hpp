@@ -5,8 +5,6 @@
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <memory>
-#include <numeric>
-#include <string>
 #include <utility>
 #include <vector>
 
@@ -23,8 +21,7 @@ class TestMPITaskSequential : public ppc::core::Task {
 
  private:
   int res_{};
-  std::vector<int> input_{};
-  std::string ops;
+  std::vector<std::vector<int>> input_;
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -36,12 +33,8 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::string ops;
   boost::mpi::communicator world;
-  std::vector<int> input_{}, linput_{};
+  std::vector<int> input_, loc_input_;
   int res_{};
 };
-
-int find_max_of_matrix(std::vector<int> &matrix);
-
 }  // namespace sedova_o_max_of_vector_elements_mpi

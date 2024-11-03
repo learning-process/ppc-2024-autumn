@@ -5,7 +5,7 @@
 
 #include <random>
 
-int sedova_o_max_of_vector_elements_mpi::find_max_of_matrix(std::vector<int> &matrix) {
+int find_max_of_matrix(std::vector<int> &matrix) {
   if (matrix.empty()) {
     return std::numeric_limits<int>::min();
   }
@@ -20,7 +20,7 @@ bool sedova_o_max_of_vector_elements_mpi::TestMPITaskSequential::pre_processing(
     auto *tmp_ptr = reinterpret_cast<int *>(taskData->inputs[i]);
     std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[1], input_[i].begin());
   }
-  res_ = INT_MAX;
+  res_ = INT_MIN;
   return true;
 }
 
