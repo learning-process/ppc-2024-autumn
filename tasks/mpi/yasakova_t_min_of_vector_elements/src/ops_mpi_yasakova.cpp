@@ -39,11 +39,21 @@ bool yasakova_t_min_of_vector_elements_mpi::TestMPITaskSequential::post_processi
 
 bool yasakova_t_min_of_vector_elements_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  unsigned int delta = 0;
+  res_ = INT_MAX;
+  return true;
+}
+
+bool yasakova_t_min_of_vector_elements_mpi::TestMPITaskParallel::validation() {
+  internal_order_test();
   if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] * taskData->inputs_count[1] / world.size();
+    return taskData->outputs_count[0] == 1 && !taskData->inputs.empty();
   }
-  broadcast(world, delta, 0);
+  return true;
+}
+
+bool yasakova_t_min_of_vector_elements_mpi::TestMPITaskParallel::run() {
+  internal_order_test();
+  unsigned int delta = taskData->inputs_count[0] * taskData->inputs_count[1] / world.size();
   if (world.rank() == 0) {
     unsigned int rows = taskData->inputs_count[0];
     unsigned int columns = taskData->inputs_count[1];
@@ -64,20 +74,6 @@ bool yasakova_t_min_of_vector_elements_mpi::TestMPITaskParallel::pre_processing(
   } else {
     world.recv(0, 0, localInputValues_.data(), delta);
   }
-  res_ = INT_MAX;
-  return true;
-}
-
-bool yasakova_t_min_of_vector_elements_mpi::TestMPITaskParallel::validation() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    return taskData->outputs_count[0] == 1 && !taskData->inputs.empty();
-  }
-  return true;
-}
-
-bool yasakova_t_min_of_vector_elements_mpi::TestMPITaskParallel::run() {
-  internal_order_test();
   int local_res = *std::min_element(localInputValues_.begin(), localInputValues_.end());
   reduce(world, local_res, res_, boost::mpi::minimum<int>(), 0);
   return true;
