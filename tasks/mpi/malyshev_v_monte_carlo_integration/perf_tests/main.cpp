@@ -22,7 +22,8 @@ TEST(malyshev_v_monte_carlo_integration_mpi, test_monte_carlo_pipeline_run) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
   }
 
-  auto MonteCarloIntegrationParallel = std::make_shared<malyshev_v_monte_carlo_integration::MonteCarloIntegrationParallel>(taskDataPar);
+  auto MonteCarloIntegrationParallel =
+      std::make_shared<malyshev_v_monte_carlo_integration::MonteCarloIntegrationParallel>(taskDataPar);
   ASSERT_EQ(MonteCarloIntegrationParallel->validation(), true);
   MonteCarloIntegrationParallel->pre_processing();
   MonteCarloIntegrationParallel->run();
@@ -69,7 +70,8 @@ TEST(malyshev_v_monte_carlo_integration_mpi, test_monte_carlo_task_run) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
   }
 
-  auto MonteCarloIntegrationParallel = std::make_shared<malyshev_v_monte_carlo_integration::MonteCarloIntegrationParallel>(taskDataPar);
+  auto MonteCarloIntegrationParallel =
+      std::make_shared<malyshev_v_monte_carlo_integration::MonteCarloIntegrationParallel>(taskDataPar);
   ASSERT_EQ(MonteCarloIntegrationParallel->validation(), true);
   MonteCarloIntegrationParallel->pre_processing();
   MonteCarloIntegrationParallel->run();
