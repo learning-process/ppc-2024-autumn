@@ -91,11 +91,11 @@ bool ermilova_d_min_element_matrix_mpi::TestMPITaskParallel::run() {
     delta = rows * cols / world.size();
     extra = rows * cols % world.size();
 
+    broadcast(world, delta, 0);
     for (int proc = 1; proc < world.size(); proc++) {
       world.send(proc, 0, input_.data() + delta * proc + extra, delta);
     }
   }
-  broadcast(world, delta, 0);
 
   local_input_ = std::vector<int>(delta);
 
