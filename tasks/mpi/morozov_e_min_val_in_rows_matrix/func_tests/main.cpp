@@ -61,6 +61,7 @@ TEST(morozov_e_min_val_in_rows_matrix_MPI, Test_Validation_isFalse2) {
     ASSERT_FALSE(testMpiTaskSequential.validation());
   }
 }
+
 TEST(morozov_e_min_val_in_rows_matrix_MPI, Test_Validation_isTrue) {
   boost::mpi::communicator world;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();

@@ -28,15 +28,10 @@ bool morozov_e_min_val_in_rows_matrix::TestMPITaskSequential::pre_processing() {
 }
 bool morozov_e_min_val_in_rows_matrix::TestMPITaskSequential::validation() {
   internal_order_test();
-  if (taskData->inputs.empty() || taskData->outputs.empty()) {
+  if (taskData->inputs.empty() || taskData->outputs.empty() || taskData->inputs_count.size() < 2 ||
+      taskData->inputs_count[0] <= 0 || taskData->inputs_count[1] <= 0 || taskData->outputs_count.size() != 1 ||
+      taskData->outputs_count[0] != taskData->inputs_count[0])
     return false;
-  }
-  if (taskData->inputs_count.size() < 2 || taskData->inputs_count[0] <= 0 || taskData->inputs_count[1] <= 0) {
-    return false;
-  }
-  if (taskData->outputs_count.size() != 1 || taskData->outputs_count[0] != taskData->inputs_count[1]) {
-    return false;
-  }
   return true;
 }
 bool morozov_e_min_val_in_rows_matrix::TestMPITaskSequential::run() {
@@ -77,10 +72,10 @@ bool morozov_e_min_val_in_rows_matrix::TestMPITaskParallel::pre_processing() {
 bool morozov_e_min_val_in_rows_matrix::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    if (taskData->inputs.empty() || taskData->outputs.empty()) return false;
-    if (taskData->inputs_count.size() < 2 || taskData->inputs_count[0] <= 0 || taskData->inputs_count[1] <= 0)
+    if (taskData->inputs.empty() || taskData->outputs.empty() || taskData->inputs_count.size() < 2 ||
+        taskData->inputs_count[0] <= 0 || taskData->inputs_count[1] <= 0 || taskData->outputs_count.size() != 1 ||
+        taskData->outputs_count[0] != taskData->inputs_count[0])
       return false;
-    if (taskData->outputs_count.size() != 1 || taskData->outputs_count[0] != taskData->inputs_count[1]) return false;
   }
   return true;
 }
@@ -116,17 +111,17 @@ bool morozov_e_min_val_in_rows_matrix::TestMPITaskParallel::run() {
 
   min_val_list_.resize(n);
 
-  std::vector<int> local_mins(local_matrix_.size(), INT_MAX);
+  std::vector<int> cur_min_vector(local_matrix_.size(), INT_MAX);
   for (size_t i = 0; i < local_matrix_.size(); i++) {
     for (const auto& val : local_matrix_[i]) {
-      local_mins[i] = std::min(local_mins[i], val);
+      cur_min_vector[i] = std::min(cur_min_vector[i], val);
     }
   }
 
   if (world.rank() == 0) {
     int i_cur = 0;
-    std::copy(local_mins.begin(), local_mins.end(), min_val_list_.begin());
-    i_cur += local_mins.size();
+    std::copy(cur_min_vector.begin(), cur_min_vector.end(), min_val_list_.begin());
+    i_cur += cur_min_vector.size();
     for (int proc = 1; proc < world.size(); proc++) {
       int loc_size;
       world.recv(proc, 0, &loc_size, 1);
@@ -136,9 +131,9 @@ bool morozov_e_min_val_in_rows_matrix::TestMPITaskParallel::run() {
       i_cur += loc_res_.size();
     }
   } else {
-    int count = (int)local_mins.size();
-    world.send(0, 0, &count, 1);
-    world.send(0, 0, local_mins.data(), count);
+    int cur_count = (int)cur_min_vector.size();
+    world.send(0, 0, &cur_count, 1);
+    world.send(0, 0, cur_min_vector.data(), cur_count);
   }
   return true;
 }
