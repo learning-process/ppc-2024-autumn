@@ -25,7 +25,7 @@ bool vavilov_v_min_elements_in_columns_of_matrix_seq::TestTaskSequential::valida
   internal_order_test();
 
   return ((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
-          (taskData->outputs_count[0] == taskData->inputs_count[0]));
+          (taskData->outputs_count[0] == taskData->inputs_count[1]));
 }
 
 bool vavilov_v_min_elements_in_columns_of_matrix_seq::TestTaskSequential::run() {
