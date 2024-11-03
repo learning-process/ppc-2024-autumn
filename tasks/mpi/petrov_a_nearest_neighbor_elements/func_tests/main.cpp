@@ -74,7 +74,7 @@ TEST(petrov_a_nearest_neighbor_elements_mpi, Test_NearestNeighbor2) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    //Create deta
+    // Create data
     std::vector<int32_t> reference_neighbors(2, 0);
 
     // Create TaskData
@@ -209,7 +209,7 @@ TEST(petrov_a_nearest_neighbor_elements_mpi, Test_NearestNeighbor5) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Create data 
+    // Create data
     std::vector<int32_t> reference_neighbors(2, 0);
 
     // Create TaskData
