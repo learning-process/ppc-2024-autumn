@@ -1,4 +1,4 @@
-// Copyright 2023 Nesterov Alexander
+// Copyright 2023 Tarakanov Denis
 #include <gtest/gtest.h>
 
 #include <iostream>

@@ -37,7 +37,7 @@ class integration_the_trapezoid_method_par : public ppc::core::Task {
   bool post_processing() override;
   double res{};
 
-  double a{}, b{}, h{}, /*local_res{},*/ local_a{};
+  double a{}, b{}, h{}, local_a{};
   uint32_t partsCount{}, localPartsCount{};
 
   static double f(double x) { return x * x; };
