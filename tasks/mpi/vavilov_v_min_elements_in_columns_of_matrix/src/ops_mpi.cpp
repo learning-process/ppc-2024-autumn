@@ -124,7 +124,7 @@ bool vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskParallel::valid
 bool vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-  std::vector<int> local_mins(local_input_[0].size(), INT_MAX);
+  std::vector<int> tmp_min(local_input_[0].size(), INT_MAX);
   for (size_t i = 0; i < local_input_[0].size(); i++) {
     for (size_t j = 0; j < local_input_.size(); j++) {
       tmp_min[i] = std::min(tmp_min[i], local_input_[j][i]);
