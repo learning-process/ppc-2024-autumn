@@ -2,8 +2,8 @@
 
 #include <vector>
 
-namespace nasedkin_e_matrix_column_max_value {
+namespace nasedkin_e_matrix_column_max_value_seq {
 
-    std::vector<int> getMaxValuesPerColumn(const std::vector<std::vector<int>>& matrix);
+    std::vector<int> FindColumnMaxSequential(const std::vector<std::vector<int>>& matrix);
 
 }

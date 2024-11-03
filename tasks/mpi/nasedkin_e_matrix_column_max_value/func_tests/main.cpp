@@ -1,22 +1,40 @@
 #include <gtest/gtest.h>
 #include "ops_mpi.hpp"
-#include <mpi.h>
+#include <boost/mpi.hpp>
 
-namespace nasedkin_e_matrix_column_max_value_mpi {
+using namespace nasedkin_e_matrix_column_max_value_mpi;
 
-TEST(nasedkin_e_matrix_column_max_value_mpi, test_column_max) {
-    int rank;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+TEST(nasedkin_e_matrix_column_max_value_mpi, find_max_in_each_column) {
+    boost::mpi::environment env;
+    boost::mpi::communicator world;
 
-    std::vector<int> matrix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    int rows = 2, cols = 5;
-    std::vector<int> result = find_max_by_columns(matrix, rows, cols, rank, 1);
-
-    if (rank == 0) {
-        std::vector<int> expected = {6, 7, 8, 9, 10};
-        EXPECT_EQ(result, expected);
-    }
+    std::vector<std::vector<int>> matrix = {
+        {1, 2, 3},
+        {4, 5, 6},
+        {7, 8, 9},
+    };
+    std::vector<int> expected = {7, 8, 9};
+    EXPECT_EQ(FindColumnMaxMPI(matrix), expected);
 }
 
+TEST(nasedkin_e_matrix_column_max_value_mpi, handle_empty_matrix) {
+    boost::mpi::environment env;
+    boost::mpi::communicator world;
+
+    std::vector<std::vector<int>> matrix = {};
+    std::vector<int> expected = {};
+    EXPECT_EQ(FindColumnMaxMPI(matrix), expected);
 }
 
+TEST(nasedkin_e_matrix_column_max_value_mpi, handle_single_column) {
+    boost::mpi::environment env;
+    boost::mpi::communicator world;
+
+    std::vector<std::vector<int>> matrix = {
+        {3},
+        {1},
+        {4},
+    };
+    std::vector<int> expected = {4};
+    EXPECT_EQ(FindColumnMaxMPI(matrix), expected);
+}

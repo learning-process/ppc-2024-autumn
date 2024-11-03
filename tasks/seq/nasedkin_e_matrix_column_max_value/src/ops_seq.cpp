@@ -1,18 +1,21 @@
 #include "ops_seq.hpp"
 
-namespace nasedkin_e_matrix_column_max_value {
+#include <algorithm>
+#include <vector>
 
-    std::vector<int> getMaxValuesPerColumn(const std::vector<std::vector<int>>& matrix) {
-        int numRows = matrix.size();
-        int numCols = matrix[0].size();
-        std::vector<int> maxValues(numCols, INT_MIN);
+namespace nasedkin_e_matrix_column_max_value_seq {
 
-        for (int j = 0; j < numCols; ++j) {
-            for (int i = 0; i < numRows; ++i) {
-                maxValues[j] = std::max(maxValues[j], matrix[i][j]);
+    std::vector<int> FindColumnMaxSequential(const std::vector<std::vector<int>>& matrix) {
+        if (matrix.empty() || matrix[0].empty()) {
+            return {};
+        }
+        std::vector<int> max_values(matrix[0].size(), std::numeric_limits<int>::min());
+        for (const auto& row : matrix) {
+            for (size_t col = 0; col < row.size(); ++col) {
+                max_values[col] = std::max(max_values[col], row[col]);
             }
         }
-        return maxValues;
+        return max_values;
     }
 
 }
