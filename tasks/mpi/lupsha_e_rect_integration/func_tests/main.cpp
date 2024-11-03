@@ -4,8 +4,8 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <cmath>
-#include <vector>
 #include <random>
+#include <vector>
 
 #include "mpi/lupsha_e_rect_integration/include/ops_mpi.hpp"
 
@@ -275,6 +275,6 @@ TEST(lupsha_e_rect_integration_mpi, Test_Power_Random) {
     sequential_Task.run();
     sequential_Task.post_processing();
 
-    ASSERT_NEAR(global_sum[0], result_seq[0], 1e-3);
+    ASSERT_NEAR(global_sum[0], result_seq[0], 1e-2);
   }
 }

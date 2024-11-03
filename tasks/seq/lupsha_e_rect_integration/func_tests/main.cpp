@@ -1,8 +1,8 @@
 // Copyright 2024 Lupsha Egor
 #include <gtest/gtest.h>
 
-#include <vector>
 #include <random>
+#include <vector>
 
 #include "seq/lupsha_e_rect_integration/include/ops_seq.hpp"
 
