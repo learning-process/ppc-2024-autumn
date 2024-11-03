@@ -44,8 +44,9 @@ TEST(tselikova_a_average_of_vector_elements_mpi, Test_EmptyVector) {
     taskDataPar->inputs_count.emplace_back(empty_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_avg.data()));
     taskDataPar->outputs_count.emplace_back(global_avg.size());
+
+    tselikova_a_average_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
 
-  tselikova_a_average_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
 }
