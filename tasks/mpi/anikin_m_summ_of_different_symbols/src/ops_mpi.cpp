@@ -85,27 +85,27 @@ bool anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel::run() {
   broadcast(com, loc_size, 0);
   if (com.rank() == 0) {
     for (int pr = 1; pr < com.size(); pr++) {
-      int send_size = (loc_size <= strlen(input[0] - pr * loc_size)) ? loc_size : strlen(input[0] - pr * loc_size);
+      size_t send_size = (loc_size <= strlen(input[0] - pr * loc_size)) ? loc_size : strlen(input[0] - pr * loc_size);
       com.send(pr, 0, input[0] + pr * loc_size, send_size);
       com.send(pr, 0, input[1] + pr * loc_size, send_size);
     }
   }
   if (com.rank() == 0) {
     std::string str1(input[0], loc_size);
-    local_input.push_back(str1);
     std::string str2(input[1], loc_size);
+    local_input.push_back(str1);
     local_input.push_back(str2);
   } else {
     std::string str1('0', loc_size);
-    com.recv(0, 0, str1.data(), loc_size);
-    local_input.push_back(str1);
     std::string str2('0', loc_size);
+    com.recv(0, 0, str1.data(), loc_size);
     com.recv(0, 0, str2.data(), loc_size);
+    local_input.push_back(str1);
     local_input.push_back(str2);
   }
-  int size_1 = local_input[0].size();
+  size_t size_1 = local_input[0].size();
   int loc_res = 0;
-  for (int i = 0; i < size_1; i++) {
+  for (size_t i = 0; i < size_1; i++) {
     if (local_input[0][i] != local_input[1][i]) {
       loc_res += 1;
     }

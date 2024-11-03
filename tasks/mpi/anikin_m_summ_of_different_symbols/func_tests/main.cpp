@@ -89,6 +89,6 @@ TEST(anikin_m_Parallel_SummDifSym_count, size_25) {
     testClassSeq.pre_processing();
     testClassSeq.run();
     testClassSeq.post_processing();
-    ASSERT_EQ(out[0], out_s[0]);
+    ASSERT_EQ(out_s[0], out[0]);
   }
 }
