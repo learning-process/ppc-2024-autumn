@@ -17,7 +17,6 @@ TEST(kovalchuk_a_max_of_vector_elements, Test_Max_5_5) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    std::mt19937 gen(42);
     global_matrix = kovalchuk_a_max_of_vector_elements::getRandomMatrix(count_rows, count_columns);
     for (unsigned int i = 0; i < global_matrix.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
@@ -61,7 +60,6 @@ TEST(kovalchuk_a_max_of_vector_elements, Test_Max_10_10) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    std::mt19937 gen(42);
     global_matrix = kovalchuk_a_max_of_vector_elements::getRandomMatrix(count_rows, count_columns);
     for (unsigned int i = 0; i < global_matrix.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
@@ -105,7 +103,6 @@ TEST(kovalchuk_a_max_of_vector_elements, Test_Max_50x20) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    std::mt19937 gen(42);
     global_matrix = kovalchuk_a_max_of_vector_elements::getRandomMatrix(count_rows, count_columns);
     for (unsigned int i = 0; i < global_matrix.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
@@ -149,7 +146,6 @@ TEST(kovalchuk_a_max_of_vector_elements, Test_Max_100_100) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    std::mt19937 gen(42);
     global_matrix = kovalchuk_a_max_of_vector_elements::getRandomMatrix(count_rows, count_columns);
     for (unsigned int i = 0; i < global_matrix.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
@@ -193,7 +189,6 @@ TEST(kovalchuk_a_max_of_vector_elements, Test_Max_1_100) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    std::mt19937 gen(42);
     global_matrix = kovalchuk_a_max_of_vector_elements::getRandomMatrix(count_rows, count_columns);
     for (unsigned int i = 0; i < global_matrix.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
