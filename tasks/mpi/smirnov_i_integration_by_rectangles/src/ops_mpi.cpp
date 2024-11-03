@@ -125,4 +125,3 @@ bool smirnov_i_integration_by_rectangles::TestMPITaskSequential::post_processing
   return true;
 }
 void smirnov_i_integration_by_rectangles::TestMPITaskSequential::set_function(double (*func)(double)) { f = func; }
-
