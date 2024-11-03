@@ -60,7 +60,7 @@ TEST(mpi_makhov_m_num_of_diff_elements_in_two_str_perf_test, test_pipeline_run) 
   }
 }
 
- TEST(mpi_makhov_m_num_of_diff_elements_in_two_str_perf_test, test_task_run) {
+TEST(mpi_makhov_m_num_of_diff_elements_in_two_str_perf_test, test_task_run) {
   boost::mpi::communicator world;
   std::string str1, str2;
   std::vector<int32_t> global_sum(1, 0);
@@ -78,7 +78,7 @@ TEST(mpi_makhov_m_num_of_diff_elements_in_two_str_perf_test, test_pipeline_run) 
   }
 
   auto testMpiTaskParallel =
-  std::make_shared<makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskParallel>(taskDataPar);
+      std::make_shared<makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_TRUE(testMpiTaskParallel->validation());
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
