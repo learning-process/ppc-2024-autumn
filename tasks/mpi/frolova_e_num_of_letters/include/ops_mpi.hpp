@@ -15,8 +15,6 @@
 
 namespace frolova_e_num_of_letters_mpi {
 
-std::string GenStr(int n);
-
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

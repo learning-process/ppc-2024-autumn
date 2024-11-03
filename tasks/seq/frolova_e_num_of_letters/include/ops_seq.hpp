@@ -8,8 +8,6 @@
 
 namespace frolova_e_num_of_letters_seq {
 
-std::string GenStr(int n);
-
 int Count(std::string& str);
 
 class TestTaskSequential : public ppc::core::Task {

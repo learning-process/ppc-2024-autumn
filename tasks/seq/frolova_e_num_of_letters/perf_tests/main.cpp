@@ -6,8 +6,30 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/frolova_e_num_of_letters/include/ops_seq.hpp"
 
+std::string GenStr(int n) {
+  if (n <= 0) {
+    return std::string();
+  }
+  std::string str = "test";
+  std::string result;
+  result.resize(n);
+
+  int i = 0;
+  size_t j = 0;
+
+  while (i < n) {
+    result[i] = str[j];
+    j++;
+    i++;
+    if (j >= str.size()) {
+      j = 0;
+    }
+  }
+  return result;
+}
+
 TEST(frolova_e_num_of_letters_seq, test_pipeline_run) {
-  std::string str = frolova_e_num_of_letters_seq::GenStr(100);
+  std::string str = GenStr(100);
 
   // Create data
   std::vector<std::string> in(1, str);
@@ -44,7 +66,7 @@ TEST(frolova_e_num_of_letters_seq, test_pipeline_run) {
 }
 
 TEST(frolova_e_num_of_letters_seq, test_task_run) {
-  std::string str = frolova_e_num_of_letters_seq::GenStr(100);
+  std::string str = GenStr(100);
 
   // Create data
   std::vector<std::string> in(1, str);

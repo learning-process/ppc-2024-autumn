@@ -7,10 +7,32 @@
 
 #include "mpi/frolova_e_num_of_letters/include/ops_mpi.hpp"
 
+std::string GenStr(int n) {
+  if (n <= 0) {
+    return std::string();
+  }
+  std::string str = "test";
+  std::string result;
+  result.resize(n);
+
+  int i = 0;
+  size_t j = 0;
+
+  while (i < n) {
+    result[i] = str[j];
+    j++;
+    i++;
+    if (j >= str.size()) {
+      j = 0;
+    }
+  }
+  return result;
+}
+
 TEST(frolova_e_num_of_letters_mpi, returns_empty_str_) {
-  std::string str = frolova_e_num_of_letters_mpi::GenStr(-2);
+  std::string str = GenStr(-2);
   EXPECT_TRUE(str.empty());
-  std::string str2 = frolova_e_num_of_letters_mpi::GenStr(0);
+  std::string str2 = GenStr(0);
   EXPECT_TRUE(str2.empty());
 }
 
@@ -22,7 +44,7 @@ TEST(frolova_e_num_of_letters_mpi, Test_100_symbols) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     const int count_size_ = 100;
-    global_str = frolova_e_num_of_letters_mpi::GenStr(count_size_);
+    global_str = GenStr(count_size_);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_str.data()));
     taskDataPar->inputs_count.emplace_back(global_str.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
@@ -60,7 +82,7 @@ TEST(frolova_e_num_of_letters_mpi, Test_with_number) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     const int count_size_ = 240;
-    global_str = frolova_e_num_of_letters_mpi::GenStr(count_size_);
+    global_str = GenStr(count_size_);
     global_str.push_back(1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_str.data()));
     taskDataPar->inputs_count.emplace_back(global_str.size());

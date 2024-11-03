@@ -5,15 +5,37 @@
 
 #include "seq/frolova_e_num_of_letters/include/ops_seq.hpp"
 
+std::string GenStr(int n) {
+  if (n <= 0) {
+    return std::string();
+  }
+  std::string str = "test";
+  std::string result;
+  result.resize(n);
+
+  int i = 0;
+  size_t j = 0;
+
+  while (i < n) {
+    result[i] = str[j];
+    j++;
+    i++;
+    if (j >= str.size()) {
+      j = 0;
+    }
+  }
+  return result;
+}
+
 TEST(frolova_e_num_of_letters_seq, returns_empty_str_) {
-  std::string str = frolova_e_num_of_letters_seq::GenStr(-2);
+  std::string str = GenStr(-2);
   EXPECT_TRUE(str.empty());
-  std::string str2 = frolova_e_num_of_letters_seq::GenStr(0);
+  std::string str2 = GenStr(0);
   EXPECT_TRUE(str2.empty());
 }
 
 TEST(frolova_e_num_of_letters_seq, returns__str_) {
-  std::string str = frolova_e_num_of_letters_seq::GenStr(2);
+  std::string str = GenStr(2);
   unsigned long size = 2;
   ASSERT_EQ(str.size(), size);
 }

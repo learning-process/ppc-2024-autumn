@@ -1,28 +1,6 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/frolova_e_num_of_letters/include/ops_seq.hpp"
 
-std::string frolova_e_num_of_letters_seq::GenStr(int n) {
-  if (n <= 0) {
-    return std::string();
-  }
-  std::string str = "test";
-  std::string result;
-  result.resize(n);
-
-  int i = 0;
-  size_t j = 0;
-
-  while (i < n) {
-    result[i] = str[j];
-    j++;
-    i++;
-    if (j >= str.size()) {
-      j = 0;
-    }
-  }
-  return result;
-}
-
 int frolova_e_num_of_letters_seq::Count(std::string& str) {
   int count = 0;
   for (char c : str) {

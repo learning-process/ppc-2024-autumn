@@ -7,6 +7,28 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/frolova_e_num_of_letters/include/ops_mpi.hpp"
 
+std::string GenStr(int n) {
+  if (n <= 0) {
+    return std::string();
+  }
+  std::string str = "test";
+  std::string result;
+  result.resize(n);
+
+  int i = 0;
+  size_t j = 0;
+
+  while (i < n) {
+    result[i] = str[j];
+    j++;
+    i++;
+    if (j >= str.size()) {
+      j = 0;
+    }
+  }
+  return result;
+}
+
 TEST(frolova_e_num_of_letters, test_pipeline_run) {
   boost::mpi::communicator world;
   std::string global_str;
@@ -16,7 +38,7 @@ TEST(frolova_e_num_of_letters, test_pipeline_run) {
   int count_size_;
   if (world.rank() == 0) {
     count_size_ = 120;
-    global_str = frolova_e_num_of_letters_mpi::GenStr(count_size_);
+    global_str = GenStr(count_size_);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_str.data()));
     taskDataPar->inputs_count.emplace_back(global_str.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
@@ -56,7 +78,7 @@ TEST(frolova_e_num_of_letters, test_task_run) {
   int count_size_;
   if (world.rank() == 0) {
     count_size_ = 120;
-    global_str = frolova_e_num_of_letters_mpi::GenStr(count_size_);
+    global_str = GenStr(count_size_);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_str.data()));
     taskDataPar->inputs_count.emplace_back(global_str.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));

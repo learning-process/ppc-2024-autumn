@@ -7,28 +7,6 @@
 #include <string>
 #include <vector>
 
-std::string frolova_e_num_of_letters_mpi::GenStr(int n) {
-  if (n <= 0) {
-    return std::string();
-  }
-  std::string str = "test";
-  std::string result;
-  result.resize(n);
-
-  int i = 0;
-  size_t j = 0;
-
-  while (i < n) {
-    result[i] = str[j];
-    j++;
-    i++;
-    if (j >= str.size()) {
-      j = 0;
-    }
-  }
-  return result;
-}
-
 bool frolova_e_num_of_letters_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init vectors
