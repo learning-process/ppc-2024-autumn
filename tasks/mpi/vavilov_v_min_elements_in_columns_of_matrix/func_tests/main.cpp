@@ -191,7 +191,6 @@ TEST(vavilov_v_min_elements_in_columns_of_matrix_mpi, validation_find_min_elem_i
 TEST(vavilov_v_min_elements_in_columns_of_matrix_mpi, validation_fails_on_invalid_output_of_size) {
   boost::mpi::communicator world;
   if (world.rank() == 0) {
-
     const int rows = 10;
     const int cols = 10;
 
