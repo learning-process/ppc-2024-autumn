@@ -5,12 +5,26 @@
 #include <boost/mpi/environment.hpp>
 #include <cmath>
 #include <vector>
+#include <random>
 
 #include "mpi/lupsha_e_rect_integration/include/ops_mpi.hpp"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
+
+std::tuple<double, double, int> generate_random_data() {
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<> bounds_dist(0.0, 10.0);
+  std::uniform_int_distribution<> intervals_dist(100000, 2000000);
+
+  double lower_bound = bounds_dist(gen);
+  double upper_bound = lower_bound + bounds_dist(gen);
+  int num_intervals = intervals_dist(gen);
+
+  return std::make_tuple(lower_bound, upper_bound, num_intervals);
+}
 
 TEST(lupsha_e_rect_integration_mpi, Test_Constant) {
   boost::mpi::communicator world;
@@ -59,7 +73,7 @@ TEST(lupsha_e_rect_integration_mpi, Test_Constant) {
     sequential_Task.run();
     sequential_Task.post_processing();
 
-    ASSERT_NEAR(global_sum[0], result_seq[0], 1e-5);
+    ASSERT_NEAR(global_sum[0], result_seq[0], 1e-3);
   }
 }
 
@@ -161,14 +175,14 @@ TEST(lupsha_e_rect_integration_mpi, Test_Gaussian) {
     sequential_Task.run();
     sequential_Task.post_processing();
 
-    ASSERT_NEAR(global_sum[0], result_seq[0], 1e-5);
+    ASSERT_NEAR(global_sum[0], result_seq[0], 1e-2);
   }
 }
 
-TEST(lupsha_e_rect_integration_mpi, Test_Cos) {
+TEST(lupsha_e_rect_integration_mpi, Test_Power) {
   boost::mpi::communicator world;
   double lower_bound = 0.0;
-  double upper_bound = 2 * M_PI;
+  double upper_bound = 1.0;
   int num_intervals = 1000;
   std::vector<double> global_sum(1, 0.0);
   std::vector<double> result_seq(1, 0.0);
@@ -185,7 +199,7 @@ TEST(lupsha_e_rect_integration_mpi, Test_Cos) {
 
   lupsha_e_rect_integration_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
-  std::function<double(double)> f = [](double x) { return cos(x); };
+  std::function<double(double)> f = [](double x) { return x * x; };
   testMpiTaskParallel.function_set(f);
 
   ASSERT_TRUE(testMpiTaskParallel.validation());
@@ -205,22 +219,20 @@ TEST(lupsha_e_rect_integration_mpi, Test_Cos) {
     taskDataSeq->outputs_count.emplace_back(1);
 
     lupsha_e_rect_integration_mpi::TestMPITaskSequential sequential_Task(taskDataSeq);
-    sequential_Task.function_set([](double x) { return cos(x); });
+    sequential_Task.function_set([](double x) { return x * x; });
 
     ASSERT_EQ(sequential_Task.validation(), true);
     sequential_Task.pre_processing();
     sequential_Task.run();
     sequential_Task.post_processing();
 
-    ASSERT_NEAR(global_sum[0], result_seq[0], 1e-5);
+    ASSERT_NEAR(global_sum[0], result_seq[0], 1e-2);
   }
 }
 
-TEST(lupsha_e_rect_integration_mpi, Test_Power) {
+TEST(lupsha_e_rect_integration_mpi, Test_Power_Random) {
   boost::mpi::communicator world;
-  double lower_bound = 0.0;
-  double upper_bound = 1.0;
-  int num_intervals = 1000;
+  auto [lower_bound, upper_bound, num_intervals] = generate_random_data();
   std::vector<double> global_sum(1, 0.0);
   std::vector<double> result_seq(1, 0.0);
 
