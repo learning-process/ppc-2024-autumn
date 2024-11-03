@@ -137,7 +137,7 @@ bool koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskParallel::run() {
   }
 
   res.resize(columns, 0);
-  boost::mpi::reduce(world, local_sum.data(), columns, res.data(), std::plus<int>(), 0);
+  boost::mpi::reduce(world, local_sum.data(), columns, res.data(), std::plus<>(), 0);
 
   return true;
 }
