@@ -15,8 +15,6 @@
 
 namespace morozov_e_min_val_in_rows_matrix {
 
-std::vector<std::vector<int>> getRandomMatrix(int n, int m);
-
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

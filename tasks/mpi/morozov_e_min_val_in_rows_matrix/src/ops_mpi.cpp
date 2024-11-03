@@ -10,26 +10,6 @@
 #define uint unsigned int
 
 using namespace std::chrono_literals;
-
-std::vector<std::vector<int>> morozov_e_min_val_in_rows_matrix::getRandomMatrix(int n, int m) {
-  int lower_bound = 0;
-  int upper_bound = 10005;
-
-  // Создаем матрицу
-  std::vector<std::vector<int>> matrix(n, std::vector<int>(m));
-
-  // Заполняем матрицу случайными значениями
-  for (int i = 0; i < n; ++i) {
-    for (int j = 0; j < m; ++j) {
-      matrix[i][j] = lower_bound + std::rand() % (upper_bound - lower_bound + 1);
-    }
-  }
-  for (int i = 0; i < n; ++i) {
-    int m_ = std::rand() % m;
-    matrix[i][m_] = -1;
-  }
-  return matrix;
-}
 bool morozov_e_min_val_in_rows_matrix::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   int n = taskData->inputs_count[0];
@@ -100,27 +80,9 @@ bool morozov_e_min_val_in_rows_matrix::TestMPITaskParallel::pre_processing() {
       int* input_matrix = reinterpret_cast<int*>(taskData->inputs[i]);
       matrix_[i].assign(input_matrix, input_matrix + m);
     }
-
-    for (int proc = 1; proc < world.size(); proc++) {
-      int begin = proc * delta + std::min(proc, mod);
-      int count = delta + (proc < mod ? 1 : 0);
-      for (int r = begin; r < begin + count; r++) {
-        world.send(proc, 0, matrix_[r].data(), m);
-      }
-    }
   }
-
   int cur_n = delta + (world.rank() < mod ? 1 : 0);
   local_matrix_.resize(cur_n, std::vector<int>(m));
-
-  if (world.rank() == 0) {
-    std::copy(matrix_.begin(), matrix_.begin() + cur_n, local_matrix_.begin());
-  } else {
-    for (int r = 0; r < cur_n; r++) {
-      world.recv(0, 0, local_matrix_[r].data(), m);
-    }
-  }
-
   min_val_list_.resize(n);
   return true;
 }
@@ -136,6 +98,39 @@ bool morozov_e_min_val_in_rows_matrix::TestMPITaskParallel::validation() {
 }
 bool morozov_e_min_val_in_rows_matrix::TestMPITaskParallel::run() {
   internal_order_test();
+  int n = 0;
+  int m = 0;
+
+  if (world.rank() == 0) {
+    n = taskData->inputs_count[0];
+    m = taskData->inputs_count[1];
+  }
+
+  broadcast(world, n, 0);
+  broadcast(world, m, 0);
+
+  int delta = n / world.size();
+  int mod = n % world.size();
+
+  if (world.rank() == 0) {
+    for (int proc = 1; proc < world.size(); proc++) {
+      int begin = proc * delta + std::min(proc, mod);
+      int count = delta + (proc < mod ? 1 : 0);
+      for (int r = begin; r < begin + count; r++) {
+        world.send(proc, 0, matrix_[r].data(), m);
+      }
+    }
+  }
+
+  int cur_n = delta + (world.rank() < mod ? 1 : 0);
+
+  if (world.rank() == 0) {
+    std::copy(matrix_.begin(), matrix_.begin() + cur_n, local_matrix_.begin());
+  } else {
+    for (int r = 0; r < cur_n; r++) {
+      world.recv(0, 0, local_matrix_[r].data(), m);
+    }
+  }
 
   std::vector<int> local_mins(local_matrix_.size(), INT_MAX);
   for (size_t i = 0; i < local_matrix_.size(); i++) {

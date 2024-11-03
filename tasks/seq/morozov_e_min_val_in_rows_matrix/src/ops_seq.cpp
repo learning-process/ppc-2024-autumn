@@ -10,25 +10,6 @@
 #define uint unsigned int
 
 using namespace std::chrono_literals;
-std::vector<std::vector<int>> morozov_e_min_val_in_rows_matrix::getRandomMatrix(int n, int m) {
-  int left = 0;
-  int right = 10005;
-
-  // Создаем матрицу
-  std::vector<std::vector<int>> matrix(n, std::vector<int>(m));
-
-  // Заполняем матрицу случайными значениями
-  for (int i = 0; i < n; ++i) {
-    for (int j = 0; j < m; ++j) {
-      matrix[i][j] = left + std::rand() % (right - left + 1);
-    }
-  }
-  for (int i = 0; i < n; ++i) {
-    int m_ = std::rand() % m;
-    matrix[i][m_] = -1;
-  }
-  return matrix;
-}
 bool morozov_e_min_val_in_rows_matrix::TestTaskSequential::pre_processing() {
   internal_order_test();
   int n = taskData->inputs_count[0];

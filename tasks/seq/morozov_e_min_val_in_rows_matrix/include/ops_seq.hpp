@@ -6,7 +6,6 @@
 #include "core/task/include/task.hpp"
 
 namespace morozov_e_min_val_in_rows_matrix {
-std::vector<std::vector<int>> getRandomMatrix(int n, int m);
 
 class TestTaskSequential : public ppc::core::Task {
  public:
