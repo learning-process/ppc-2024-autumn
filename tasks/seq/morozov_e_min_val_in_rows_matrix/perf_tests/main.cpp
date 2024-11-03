@@ -9,10 +9,10 @@ std::vector<std::vector<int>> getRandomMatrix(int n, int m) {
   int left = 0;
   int right = 10005;
 
-  // Создаем матрицу
+  // РЎРѕР·РґР°РµРј РјР°С‚СЂРёС†Сѓ
   std::vector<std::vector<int>> matrix(n, std::vector<int>(m));
 
-  // Заполняем матрицу случайными значениями
+  // Р—Р°РїРѕР»РЅСЏРµРј РјР°С‚СЂРёС†Сѓ СЃР»СѓС‡Р°Р№РЅС‹РјРё Р·РЅР°С‡РµРЅРёСЏРјРё
   for (int i = 0; i < n; ++i) {
     for (int j = 0; j < m; ++j) {
       matrix[i][j] = left + std::rand() % (right - left + 1);
