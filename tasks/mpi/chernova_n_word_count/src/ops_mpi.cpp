@@ -122,7 +122,7 @@ bool chernova_n_word_count_mpi::TestMPITaskParallel::run() {
       world.recv(0, 0, local_input_.data(), actualPartSize);
     }
   }
-
+  local_input_ = clean_string(local_input_);
   localSpaceCount = 0;
   for (std::size_t i = 0; i < local_input_.size(); ++i) {
     if (local_input_[i] == ' ') {
