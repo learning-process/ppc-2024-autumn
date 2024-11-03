@@ -9,7 +9,7 @@ std::vector<int> toGetRandomVector(int size) {
   std::vector<int> vector(size);
   std::srand((time(nullptr)));
   for (int i = 0; i < size; ++i) {
-    vector[i] = std::rand() % 100 + 1;
+    vector[i] = std::rand() % 200 + std::rand() % 10;
   }
   return vector;
 }

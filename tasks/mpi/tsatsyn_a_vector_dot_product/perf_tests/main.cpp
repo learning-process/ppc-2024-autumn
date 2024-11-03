@@ -10,12 +10,12 @@ std::vector<int> toGetRandomVector(int size) {
   std::vector<int> vector(size);
   std::srand((time(nullptr)));
   for (int i = 0; i < size; ++i) {
-    vector[i] = std::rand() % 100 + 1;
+    vector[i] = std::rand() % 200 + std::rand() % 10;
   }
   return vector;
 }
 TEST(mpi_tsatsyn_a_vector_dot_product_perf_test, test_pipeline_run) {
-  int size = 10000000;
+  int size = 12000000;
   boost::mpi::communicator world;
   std::vector<int> v1 = toGetRandomVector(size);
   std::vector<int> v2 = toGetRandomVector(size);
@@ -56,7 +56,7 @@ TEST(mpi_tsatsyn_a_vector_dot_product_perf_test, test_pipeline_run) {
 }
 
 TEST(mpi_tsatsyn_a_vector_dot_product_perf_test, test_task_run) {
-  int size = 10000000;
+  int size = 12000000;
   boost::mpi::communicator world;
   std::vector<int> v1 = toGetRandomVector(size);
   std::vector<int> v2 = toGetRandomVector(size);
@@ -95,14 +95,3 @@ TEST(mpi_tsatsyn_a_vector_dot_product_perf_test, test_task_run) {
     ASSERT_EQ(tsatsyn_a_vector_dot_product_mpi::resulting(v1, v2), ans[0]);
   }
 }
-
-// int main(int argc, char** argv) {
-//   boost::mpi::environment env(argc, argv);
-//   boost::mpi::communicator world;
-//   ::testing::InitGoogleTest(&argc, argv);
-//   ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
-//   if (world.rank() != 0) {
-//     delete listeners.Release(listeners.default_result_printer());
-//   }
-//   return RUN_ALL_TESTS();
-// }
