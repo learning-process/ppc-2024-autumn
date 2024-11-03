@@ -1,11 +1,11 @@
 // Copyright 2023 Nesterov Alexander
+#include "seq/kovalchuk_a_max_of_vector_elements/include/ops_seq.hpp"
+
 #include <algorithm>
 #include <functional>
 #include <random>
 #include <string>
 #include <vector>
-
-#include "seq/kovalchuk_a_max_of_vector_elements/include/ops_seq.hpp"
 
 std::vector<int> kovalchuk_a_max_of_vector_elements_seq::getRandomVector(int sz, int min, int max) {
   std::random_device dev;
