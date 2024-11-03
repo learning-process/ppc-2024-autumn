@@ -136,14 +136,14 @@ bool vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskParallel::run()
     std::copy(tmp_min.begin(), tmp_min.end(), min_s.begin());
 
     for (int proc = 1; proc < world.size(); proc++) {
-      std::vector<int> proc_min(res.size());
-      world.recv(proc, 0, proc_min.data(), res.size());
+      std::vector<int> proc_min(res_.size());
+      world.recv(proc, 0, proc_min.data(), res_.size());
 
-      for (size_t i = 0; i < res.size(); i++) {
+      for (size_t i = 0; i < res_.size(); i++) {
         min_s[i] = std::min(min_s[i], proc_min[i]);
       }
     }
-    std::copy(min_s.begin(), min_s.end(), res.begin());
+    std::copy(min_s.begin(), min_s.end(), res_.begin());
   } else {
     world.send(0, 0, tmp_min.data(), tmp_min.size());
   }
