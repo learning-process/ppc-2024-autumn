@@ -109,6 +109,7 @@ bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::run() {
   reduce(world, lres_, res_, boost::mpi::maximum<int>(), 0);
   return true;
 }
+
 bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
 
