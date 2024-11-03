@@ -5,10 +5,7 @@
 #include <functional>
 #include <random>
 #include <string>
-#include <thread>
 #include <vector>
-
-using namespace std::chrono_literals;
 
 std::string frolova_e_num_of_letters_mpi::GenStr(int n) {
   if (n <= 0) {

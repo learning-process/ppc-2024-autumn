@@ -1,10 +1,6 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/frolova_e_num_of_letters/include/ops_seq.hpp"
 
-#include <thread>
-
-using namespace std::chrono_literals;
-
 std::string frolova_e_num_of_letters_seq::GenStr(int n) {
   if (n <= 0) {
     return std::string();
