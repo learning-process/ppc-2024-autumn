@@ -1,4 +1,4 @@
-// Copyright 2024 Nesterov Alexander
+// Copyright 2024 Stroganov Mikhail
 #include "seq/stroganov_m_count_symbols_in_string/include/ops_seq.hpp"
 
 #include <random>
