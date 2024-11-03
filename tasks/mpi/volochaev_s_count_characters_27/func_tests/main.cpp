@@ -2,10 +2,25 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <boost/serialization/map.hpp>
+#include <random>
 #include <vector>
 
 #include "mpi/volochaev_s_count_characters_27/include/ops_mpi.hpp"
+
+namespace volochaev_s_count_characters_27_mpi {
+
+std::string get_random_string(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+
+  std::string vec(sz, ' ');
+  for (int i = 0; i < sz; i++) {
+    vec[i] += gen() % 256;
+  }
+  return vec;
+}
+
+}  // namespace volochaev_s_count_characters_27_mpi
 
 TEST(volochaev_s_count_characters_27_MPI, Test_0) {
   boost::mpi::communicator world;

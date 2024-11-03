@@ -10,17 +10,6 @@
 
 using namespace std::chrono_literals;
 
-std::string volochaev_s_count_characters_27_mpi::get_random_string(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-
-  std::string vec(sz, ' ');
-  for (int i = 0; i < sz; i++) {
-    vec[i] += gen() % 256;
-  }
-  return vec;
-}
-
 bool volochaev_s_count_characters_27_mpi::Lab1_27_seq::pre_processing() {
   internal_order_test();
   // Init vectors
