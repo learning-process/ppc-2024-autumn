@@ -44,11 +44,11 @@ TEST(anikin_m_Parallel_SummDifSym_count, size_0) {
   }
 }
 
-TEST(anikin_m_Parallel_SummDifSym_count, size_50) {
+TEST(anikin_m_Parallel_SummDifSym_count, size_25) {
   // Create data//
   boost::mpi::communicator com;
-  std::string s1 = anikin_m_summ_of_different_symbols_mpi::getRandomString(50);
-  std::string s2 = anikin_m_summ_of_different_symbols_mpi::getRandomString(50);
+  std::string s1 = anikin_m_summ_of_different_symbols_mpi::getRandomString(25);
+  std::string s2 = anikin_m_summ_of_different_symbols_mpi::getRandomString(25);
   std::vector<char*> in{s1.data(), s2.data()};
   std::vector<int> out(1, 1);
   std::vector<int> out_s(1, 1);

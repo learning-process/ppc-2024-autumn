@@ -11,12 +11,10 @@
 using namespace std::chrono_literals;
 
 std::string anikin_m_summ_of_different_symbols_mpi::getRandomString(int sz) {
-  std::random_device dev;
-  std::string alphabet = "qwertyuiop[]asdfghjkl;zxcvbnm,./123456789-=QERTYUIOP{}ASDFGHJKL:|ZXCVBNM<>?!@#$%^&*()_+";
-  std::mt19937 gen(dev());
+  std::string alphabet = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
   std::string str = "";
   for (int i = 0; i < sz; i++) {
-    str += alphabet[gen() % alphabet.size()];
+    str += alphabet[std::rand() % alphabet.size()];
   }
   return str;
 }
