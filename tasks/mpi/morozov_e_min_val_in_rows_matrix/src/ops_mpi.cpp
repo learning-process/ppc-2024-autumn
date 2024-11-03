@@ -61,7 +61,6 @@ bool morozov_e_min_val_in_rows_matrix::TestMPITaskSequential::post_processing() 
 bool morozov_e_min_val_in_rows_matrix::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
-
   if (world.rank() == 0) {
     n = taskData->inputs_count[0];
     m = taskData->inputs_count[1];
