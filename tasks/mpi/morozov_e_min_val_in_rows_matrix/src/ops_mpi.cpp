@@ -10,6 +10,7 @@
 #define uint unsigned int
 
 using namespace std::chrono_literals;
+
 bool morozov_e_min_val_in_rows_matrix::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   int n = taskData->inputs_count[0];
@@ -60,30 +61,18 @@ bool morozov_e_min_val_in_rows_matrix::TestMPITaskSequential::post_processing() 
 bool morozov_e_min_val_in_rows_matrix::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
-  int n = 0;
-  int m = 0;
 
   if (world.rank() == 0) {
     n = taskData->inputs_count[0];
     m = taskData->inputs_count[1];
-  }
 
-  broadcast(world, n, 0);
-  broadcast(world, m, 0);
-
-  int delta = n / world.size();
-  int mod = n % world.size();
-
-  if (world.rank() == 0) {
     matrix_.resize(n, std::vector<int>(m));
     for (int i = 0; i < n; i++) {
       int* input_matrix = reinterpret_cast<int*>(taskData->inputs[i]);
       matrix_[i].assign(input_matrix, input_matrix + m);
     }
   }
-  int cur_n = delta + (world.rank() < mod ? 1 : 0);
-  local_matrix_.resize(cur_n, std::vector<int>(m));
-  min_val_list_.resize(n);
+
   return true;
 }
 bool morozov_e_min_val_in_rows_matrix::TestMPITaskParallel::validation() {
@@ -98,13 +87,6 @@ bool morozov_e_min_val_in_rows_matrix::TestMPITaskParallel::validation() {
 }
 bool morozov_e_min_val_in_rows_matrix::TestMPITaskParallel::run() {
   internal_order_test();
-  int n = 0;
-  int m = 0;
-
-  if (world.rank() == 0) {
-    n = taskData->inputs_count[0];
-    m = taskData->inputs_count[1];
-  }
 
   broadcast(world, n, 0);
   broadcast(world, m, 0);
@@ -123,6 +105,7 @@ bool morozov_e_min_val_in_rows_matrix::TestMPITaskParallel::run() {
   }
 
   int cur_n = delta + (world.rank() < mod ? 1 : 0);
+  local_matrix_.resize(cur_n, std::vector<int>(m));
 
   if (world.rank() == 0) {
     std::copy(matrix_.begin(), matrix_.begin() + cur_n, local_matrix_.begin());
@@ -131,6 +114,8 @@ bool morozov_e_min_val_in_rows_matrix::TestMPITaskParallel::run() {
       world.recv(0, 0, local_matrix_[r].data(), m);
     }
   }
+
+  min_val_list_.resize(n);
 
   std::vector<int> local_mins(local_matrix_.size(), INT_MAX);
   for (size_t i = 0; i < local_matrix_.size(); i++) {

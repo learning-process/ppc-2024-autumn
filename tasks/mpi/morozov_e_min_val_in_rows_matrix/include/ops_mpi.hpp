@@ -39,6 +39,7 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   std::vector<std::vector<int>> matrix_, local_matrix_;
   std::vector<int> min_val_list_;
+  int n, m;
   boost::mpi::communicator world;
 };
 
