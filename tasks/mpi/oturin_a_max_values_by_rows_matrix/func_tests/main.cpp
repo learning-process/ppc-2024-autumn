@@ -38,7 +38,7 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_1) {
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
 
-  oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "max");
+  oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -57,7 +57,7 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_1) {
     taskDataSeq->outputs_count.emplace_back(reference_max.size());
 
     // Create Task
-    oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "max");
+    oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -90,7 +90,7 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_2) {
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
 
-  oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "max");
+  oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -109,7 +109,7 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_2) {
     taskDataSeq->outputs_count.emplace_back(reference_max.size());
 
     // Create Task
-    oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "max");
+    oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -141,7 +141,7 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_3) {
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
 
-  oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "max");
+  oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -160,7 +160,7 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_3) {
     taskDataSeq->outputs_count.emplace_back(reference_max.size());
 
     // Create Task
-    oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "max");
+    oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -192,7 +192,7 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_4) {
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
 
-  oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "max");
+  oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -211,7 +211,7 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_4) {
     taskDataSeq->outputs_count.emplace_back(reference_max.size());
 
     // Create Task
-    oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "max");
+    oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -243,7 +243,7 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_5) {
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
 
-  oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "max");
+  oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -262,7 +262,7 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_5) {
     taskDataSeq->outputs_count.emplace_back(reference_max.size());
 
     // Create Task
-    oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "max");
+    oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -294,7 +294,7 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_EMPTY) {
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
 
-  oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "max");
+  oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -313,7 +313,7 @@ TEST(oturin_a_max_values_by_rows_matrix_mpi_functest, Test_Max_EMPTY) {
     taskDataSeq->outputs_count.emplace_back(reference_max.size());
 
     // Create Task
-    oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "max");
+    oturin_a_max_values_by_rows_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
