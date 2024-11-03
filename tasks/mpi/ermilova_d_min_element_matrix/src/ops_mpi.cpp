@@ -92,7 +92,7 @@ bool ermilova_d_min_element_matrix_mpi::TestMPITaskParallel::run() {
     extra = rows * cols % world.size();
   }
 
-    broadcast(world, delta, 0);
+  broadcast(world, delta, 0);
 
   if (world.rank() == 0) {
     for (int proc = 1; proc < world.size(); proc++) {
