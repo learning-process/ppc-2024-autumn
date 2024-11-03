@@ -12,6 +12,12 @@ TEST(frolova_e_num_of_letters_seq, returns_empty_str_) {
   EXPECT_TRUE(str2.empty());
 }
 
+TEST(frolova_e_num_of_letters_seq, returns__str_) {
+  std::string str = frolova_e_num_of_letters_seq::GenStr(2);
+  ASSERT_EQ(str.size(), 2);
+  ASSERT_EQ("te", str);
+}
+
 TEST(frolova_e_num_of_letters_seq, empty_str_test) {
   std::string str;
 
