@@ -9,10 +9,10 @@
 #include "seq/suvorov_d_sum_of_vector_elements/include/vec.hpp"
 
 TEST(suvorov_d_sum_of_vector_elements_seq, test_pipeline_run) {
-  const int count = 100;
+  const int count = 100000000;
 
   // Create data
-  std::vector<int> in(1, count);
+  std::vector<int> in(count, 1);
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -47,10 +47,10 @@ TEST(suvorov_d_sum_of_vector_elements_seq, test_pipeline_run) {
 }
 
 TEST(suvorov_d_sum_of_vector_elements_seq, test_task_run) {
-  const int count = 100;
+  const int count = 100000000;
 
   // Create data
-  std::vector<int> in(1, count);
+  std::vector<int> in(count, 1);
   std::vector<int> out(1, 0);
 
   // Create TaskData
