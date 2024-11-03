@@ -18,7 +18,7 @@ TEST(konkov_i_count_words_mpi, test_simple) {
 TEST(konkov_i_count_words_mpi, test_empty) {
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  std::string input = "";
+  std::string input =;
   int result = countWords(input, rank);
   if (rank == 0) {
     EXPECT_EQ(result, 0);
