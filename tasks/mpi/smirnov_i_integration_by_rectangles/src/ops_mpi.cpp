@@ -17,10 +17,6 @@ bool smirnov_i_integration_by_rectangles::TestMPITaskParallel::pre_processing() 
     right = reinterpret_cast<double*>(taskData->inputs[1])[0];
     n_ = reinterpret_cast<int*>(taskData->inputs[2])[0];
   }
-
-  broadcast(world, left, 0);
-  broadcast(world, right, 0);
-  broadcast(world, n_, 0);
   return true;
 }
 bool smirnov_i_integration_by_rectangles::TestMPITaskParallel::validation() {
@@ -33,6 +29,9 @@ bool smirnov_i_integration_by_rectangles::TestMPITaskParallel::validation() {
 }
 bool smirnov_i_integration_by_rectangles::TestMPITaskParallel::run() {
   internal_order_test();
+  broadcast(world, left, 0);
+  broadcast(world, right, 0);
+  broadcast(world, n_, 0);
   double local_result_{};
   local_result_ = mpi_integrate_rect(f, left, right, n_);
   reduce(world, local_result_, glob_res, std::plus<>(), 0);
@@ -113,7 +112,12 @@ bool smirnov_i_integration_by_rectangles::TestMPITaskSequential::validation() {
 }
 bool smirnov_i_integration_by_rectangles::TestMPITaskSequential::run() {
   internal_order_test();
-  res = seq_integrate_rect(f, left, right, n_);
+  const double len_of_rect = (right - left) / n_;
+  for (int i = 0; i < n_; i++) {
+    const double left_rect = left + i * len_of_rect;
+    res += f(left_rect + len_of_rect / 2);
+  }
+  res *= len_of_rect;
   return true;
 }
 bool smirnov_i_integration_by_rectangles::TestMPITaskSequential::post_processing() {
@@ -123,20 +127,3 @@ bool smirnov_i_integration_by_rectangles::TestMPITaskSequential::post_processing
 }
 void smirnov_i_integration_by_rectangles::TestMPITaskSequential::set_function(double (*func)(double)) { f = func; }
 
-double smirnov_i_integration_by_rectangles::TestMPITaskSequential::seq_integrate_rect(double (*func)(double),
-                                                                                      double left_, double right_,
-                                                                                      int n) {
-  if (func == nullptr) {
-    throw std::logic_error("func is nullptr");
-  }
-  double res_integr = 0;
-  const double self_left = left_;
-  const double self_right = right_;
-  const double len_of_rect = (self_right - self_left) / n;
-  for (int i = 0; i < n; i++) {
-    const double left_rect = self_left + i * len_of_rect;
-    res_integr += f(left_rect + len_of_rect / 2);
-  }
-  res_integr *= len_of_rect;
-  return res_integr;
-}
