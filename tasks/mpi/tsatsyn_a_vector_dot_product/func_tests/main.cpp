@@ -59,11 +59,15 @@ TEST(tsatsyn_a_vector_dot_product_mpi, Test_Scalar_Positive_Value) {
     taskDataPar->outputs_count.emplace_back(res.size());
   }
   tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
+
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  ASSERT_EQ(tsatsyn_a_vector_dot_product_mpi::resulting(v1, v2), res[0]);
+  if (world.rank() == 0) {
+    ASSERT_EQ(tsatsyn_a_vector_dot_product_mpi::resulting(v1, v2), res[0]);
+  }
 }
 TEST(tsatsyn_a_vector_dot_product_mpi, Test_Random_Scalar) {
   boost::mpi::communicator world;
@@ -83,10 +87,13 @@ TEST(tsatsyn_a_vector_dot_product_mpi, Test_Random_Scalar) {
   }
   tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
+
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  ASSERT_EQ(tsatsyn_a_vector_dot_product_mpi::resulting(v1, v2), res[0]);
+  if (world.rank() == 0) {
+    ASSERT_EQ(tsatsyn_a_vector_dot_product_mpi::resulting(v1, v2), res[0]);
+  }
 }
 TEST(tsatsyn_a_vector_dot_product_mpi, 10xTest_Random_Scalar) {
   boost::mpi::communicator world;
@@ -106,10 +113,13 @@ TEST(tsatsyn_a_vector_dot_product_mpi, 10xTest_Random_Scalar) {
   }
   tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
+
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  ASSERT_EQ(tsatsyn_a_vector_dot_product_mpi::resulting(v1, v2), res[0]);
+  if (world.rank() == 0) {
+    ASSERT_EQ(tsatsyn_a_vector_dot_product_mpi::resulting(v1, v2), res[0]);
+  }
 }
 TEST(tsatsyn_a_vector_dot_product_mpi, 100xTest_Random_Scalar) {
   boost::mpi::communicator world;
@@ -129,10 +139,13 @@ TEST(tsatsyn_a_vector_dot_product_mpi, 100xTest_Random_Scalar) {
   }
   tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
+
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  ASSERT_EQ(tsatsyn_a_vector_dot_product_mpi::resulting(v1, v2), res[0]);
+  if (world.rank() == 0) {
+    ASSERT_EQ(tsatsyn_a_vector_dot_product_mpi::resulting(v1, v2), res[0]);
+  }
 }
 TEST(tsatsyn_a_vector_dot_product_mpi, 1000xTest_Random_Scalar) {
   boost::mpi::communicator world;
@@ -152,10 +165,13 @@ TEST(tsatsyn_a_vector_dot_product_mpi, 1000xTest_Random_Scalar) {
   }
   tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
+
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  ASSERT_EQ(tsatsyn_a_vector_dot_product_mpi::resulting(v1, v2), res[0]);
+  if (world.rank() == 0) {
+    ASSERT_EQ(tsatsyn_a_vector_dot_product_mpi::resulting(v1, v2), res[0]);
+  }
 }
 TEST(tsatsyn_a_vector_dot_product_mpi, Test_Negative_Validation) {
   boost::mpi::communicator world;
