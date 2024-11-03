@@ -18,7 +18,8 @@ namespace malyshev_v_monte_carlo_integration {
 
 class MonteCarloIntegrationSequential : public ppc::core::Task {
  public:
-  explicit MonteCarloIntegrationSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit MonteCarloIntegrationSequential(std::shared_ptr<ppc::core::TaskData> taskData_) 
+      : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -28,7 +29,6 @@ class MonteCarloIntegrationSequential : public ppc::core::Task {
 
  private:
   static double integrate(const std::function<double(double)>& f, double a, double b, int n);
-  
   double a_{}; 
   double b_{}; 
   int n_{};    
