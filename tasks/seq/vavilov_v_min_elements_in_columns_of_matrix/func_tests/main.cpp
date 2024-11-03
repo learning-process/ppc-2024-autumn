@@ -110,7 +110,6 @@ TEST(vavilov_v_min_elements_in_columns_of_matrix_seq, validation_output_empty_10
 }
 
 TEST(vavilov_v_min_elements_in_columns_of_matrix_seq, validation_find_min_elem_in_col_10x0_matr) {
-
   const int rows = 10;
   const int cols = 0;
 
@@ -133,7 +132,6 @@ TEST(vavilov_v_min_elements_in_columns_of_matrix_seq, validation_find_min_elem_i
 
   ASSERT_EQ(testTaskSequential.validation(), false);
 }
-
 
 TEST(vavilov_v_min_elements_in_columns_of_matrix_seq, validation_fails_on_invalid_output_of_size) {
   const int rows = 10;
