@@ -1,8 +1,22 @@
 #include <gtest/gtest.h>
 
 #include <vector>
-
+#include<random>
 #include "seq/volochaev_s_count_characters_27/include/ops_seq.hpp"
+
+namespace volochaev_s_count_characters_27_seq {
+
+std::string get_random_string(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+
+  std::string vec(sz, ' ');
+  for (int i = 0; i < sz; i++) {
+    vec[i] += gen() % 256;
+  }
+  return vec;
+}
+}  // namespace volochaev_s_count_characters_27_seq
 
 TEST(volochaev_s_count_characters_27_seq, Test_0) {
   // Create data
