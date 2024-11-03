@@ -28,9 +28,6 @@ class TestMPITaskSequential : public ppc::core::Task {
   std::vector<char> input_;
   std::string ops;
   int spaceCount{};
-  int wordCount{};
-  int localSpaceCount{};
-  int partSize{};
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -44,7 +41,6 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   std::vector<char> input_, local_input_;
   int spaceCount{};
-  int wordCount{};
   int localSpaceCount{};
   int partSize{};
   std::string ops;

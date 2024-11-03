@@ -21,6 +21,11 @@ std::vector<char> chernova_n_word_count_seq::TestTaskSequential::clean_string(co
     str.erase(pos, 2);
   }
 
+  pos = 0;
+  if (str[pos] == ' ') {
+    str.erase(pos, 1);
+  }
+
   pos = str.size() - 1;
   if (str[pos] == ' ') {
     str.erase(pos, 1);
@@ -49,7 +54,7 @@ bool chernova_n_word_count_seq::TestTaskSequential::validation() {
 
 bool chernova_n_word_count_seq::TestTaskSequential::run() {
   internal_order_test();
-  for (int i = 0; i < input_.size(); i++) {
+  for (size_t i = 0; i < input_.size(); i++) {
     char c = input_[i];
     if (c == ' ') {
       spaceCount++;

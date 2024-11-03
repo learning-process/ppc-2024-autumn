@@ -22,7 +22,7 @@ std::vector<char> generateWords(int k) {
   return std::vector<char>(result.begin(), result.end());
 }
 
-const int k = 10000;
+const int k = 100000;
 std::vector<char> testData = generateWords(k);
 
 TEST(chernova_n_word_count_mpi, test_pipeline_run) {

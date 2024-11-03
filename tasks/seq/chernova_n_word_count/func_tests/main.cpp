@@ -4,7 +4,7 @@
 
 TEST(Sequential_chernova_n_word_count, Test_five_words) {
   std::vector<char> in;
-  std::string testString = "This is a test phrase";
+  std::string testString = "   This is a test phrase";
   for (unsigned long int j = 0; j < testString.length(); j++) {
     in.push_back(testString[j]);
   }
