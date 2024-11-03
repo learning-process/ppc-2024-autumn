@@ -3,9 +3,28 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <random>
 #include <vector>
 
 #include "mpi/korotin_e_min_val_matrix/include/ops_mpi.hpp"
+
+namespace korotin_e_min_val_matrix_mpi {
+
+std::vector<double> getRandomMatrix(const unsigned rows, const unsigned columns, double scal) {
+  if (rows == 0 || columns == 0) {
+    throw std::invalid_argument("Can't creaate matrix with 0 rows or columns");
+  }
+
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<double> matrix(rows * columns);
+  for (unsigned i = 0; i < rows * columns; i++) {
+    matrix[i] = gen() / scal;
+  }
+  return matrix;
+}
+
+}  // namespace korotin_e_min_val_matrix_mpi
 
 TEST(korotin_e_min_val_matrix, cant_create_zeroed_matrix) {
   boost::mpi::communicator world;

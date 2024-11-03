@@ -14,8 +14,6 @@
 
 namespace korotin_e_min_val_matrix_mpi {
 
-std::vector<double> getRandomMatrix(unsigned rows, unsigned columns, double scal);
-
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

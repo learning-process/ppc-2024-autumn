@@ -5,6 +5,24 @@
 
 #include "seq/korotin_e_min_val_matrix/include/ops_seq.hpp"
 
+namespace korotin_e_min_val_matrix_seq {
+
+std::vector<double> getRandomMatrix(const unsigned rows, const unsigned columns, double scal) {
+  if (rows == 0 || columns == 0) {
+    throw std::invalid_argument("Can't creaate matrix with 0 rows or columns");
+  }
+
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<double> matrix(rows * columns);
+  for (unsigned i = 0; i < rows * columns; i++) {
+    matrix[i] = gen() / scal;
+  }
+  return matrix;
+}
+
+}  // namespace korotin_e_min_val_matrix_seq
+
 TEST(korotin_e_min_val_matrix_seq, test_matrix_0) {
   ASSERT_ANY_THROW(korotin_e_min_val_matrix_seq::getRandomMatrix(0, 10, 100));
   ASSERT_ANY_THROW(korotin_e_min_val_matrix_seq::getRandomMatrix(10, 0, 100));

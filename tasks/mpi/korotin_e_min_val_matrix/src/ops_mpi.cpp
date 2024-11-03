@@ -1,27 +1,12 @@
 #include "mpi/korotin_e_min_val_matrix/include/ops_mpi.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <functional>
-#include <random>
 #include <thread>
 #include <vector>
 
 using namespace std::chrono_literals;
-
-std::vector<double> korotin_e_min_val_matrix_mpi::getRandomMatrix(const unsigned rows, const unsigned columns,
-                                                                  double scal) {
-  if (rows == 0 || columns == 0) {
-    throw std::invalid_argument("Can't creaate matrix with 0 rows or columns");
-  }
-
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<double> matrix(rows * columns);
-  for (unsigned i = 0; i < rows * columns; i++) {
-    matrix[i] = gen() / scal;
-  }
-  return matrix;
-}
 
 bool korotin_e_min_val_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
