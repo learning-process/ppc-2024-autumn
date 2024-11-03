@@ -3,6 +3,7 @@
 
 #include <boost/mpi/timer.hpp>
 #include <ctime>
+#include <cmath>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
