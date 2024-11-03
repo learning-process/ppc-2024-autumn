@@ -5,18 +5,38 @@
 
 #include "seq/ermilova_d_min_element_matrix/include/ops_seq.hpp"
 
+std::vector<int> getRandomVector(int size, int upper_border, int lower_border) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  if (size <= 0) throw "Incorrect size";
+  std::vector<int> vec(size);
+  for (int i = 0; i < size; i++) {
+    vec[i] = lower_border + gen() % (upper_border - lower_border + 1);
+  }
+  return vec;
+}
+
+std::vector<std::vector<int>> getRandomMatrix(int rows, int cols, int upper_border, int lower_border) {
+  if (rows <= 0 || cols <= 0) throw "Incorrect size";
+  std::vector<std::vector<int>> vec(rows);
+  for (int i = 0; i < rows; i++) {
+    vec[i] = getRandomVector(cols, upper_border, lower_border);
+  }
+  return vec;
+}
+
 TEST(ermilova_d_min_element_matrix_seq, Can_create_vector) {
   const int size_test = 10;
   const int upper_border_test = 100;
   const int lower_border_test = -100;
-  EXPECT_NO_THROW(ermilova_d_min_element_matrix_seq::getRandomVector(size_test, upper_border_test, lower_border_test));
+  EXPECT_NO_THROW(getRandomVector(size_test, upper_border_test, lower_border_test));
 }
 
 TEST(ermilova_d_min_element_matrix_seq, Cant_create_incorrect_vector) {
   const int size_test = -10;
   const int upper_border_test = 100;
   const int lower_border_test = -100;
-  EXPECT_ANY_THROW(ermilova_d_min_element_matrix_seq::getRandomVector(size_test, upper_border_test, lower_border_test));
+  EXPECT_ANY_THROW(getRandomVector(size_test, upper_border_test, lower_border_test));
 }
 
 TEST(ermilova_d_min_element_matrix_seq, Can_create_matrix) {
@@ -24,8 +44,7 @@ TEST(ermilova_d_min_element_matrix_seq, Can_create_matrix) {
   const int cols_test = 10;
   const int upper_border_test = 100;
   const int lower_border_test = -100;
-  EXPECT_NO_THROW(
-      ermilova_d_min_element_matrix_seq::getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test));
+  EXPECT_NO_THROW(getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test));
 }
 
 TEST(ermilova_d_min_element_matrix_seq, Cant_create_incorrect_matrix) {
@@ -33,8 +52,7 @@ TEST(ermilova_d_min_element_matrix_seq, Cant_create_incorrect_matrix) {
   const int cols_test = 0;
   const int upper_border_test = 100;
   const int lower_border_test = -100;
-  EXPECT_ANY_THROW(
-      ermilova_d_min_element_matrix_seq::getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test));
+  EXPECT_ANY_THROW(getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test));
 }
 
 TEST(ermilova_d_min_element_matrix_seq, Test_min_matrix_1x1) {
@@ -45,8 +63,7 @@ TEST(ermilova_d_min_element_matrix_seq, Test_min_matrix_1x1) {
   int reference_min = -5000;
 
   // Create data
-  std::vector<std::vector<int>> in =
-      ermilova_d_min_element_matrix_seq::getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
+  std::vector<std::vector<int>> in = getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
   std::vector<int> out(1, INT_MAX);
 
   std::random_device dev;
@@ -82,8 +99,7 @@ TEST(ermilova_d_min_element_matrix_seq, Test_min_matrix_10x10) {
   int reference_min = -500;
 
   // Create data
-  std::vector<std::vector<int>> in =
-      ermilova_d_min_element_matrix_seq::getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
+  std::vector<std::vector<int>> in = getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
   std::vector<int> out(1, INT_MAX);
 
   std::random_device dev;
@@ -119,8 +135,7 @@ TEST(ermilova_d_min_element_matrix_seq, Test_min_matrix_100x100) {
   int reference_min = -5000;
 
   // Create data
-  std::vector<std::vector<int>> in =
-      ermilova_d_min_element_matrix_seq::getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
+  std::vector<std::vector<int>> in = getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
   std::vector<int> out(1, INT_MAX);
 
   std::random_device dev;
@@ -156,8 +171,7 @@ TEST(ermilova_d_min_element_matrix_seq, Test_min_matrix_50x100) {
   int reference_min = -5000;
 
   // Create data
-  std::vector<std::vector<int>> in =
-      ermilova_d_min_element_matrix_seq::getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
+  std::vector<std::vector<int>> in = getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
   std::vector<int> out(1, INT_MAX);
 
   std::random_device dev;
@@ -193,8 +207,7 @@ TEST(ermilova_d_min_element_matrix_seq, Test_min_matrix_100x50) {
   int reference_min = -5000;
 
   // Create data
-  std::vector<std::vector<int>> in =
-      ermilova_d_min_element_matrix_seq::getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
+  std::vector<std::vector<int>> in = getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
   std::vector<int> out(1, INT_MAX);
 
   std::random_device dev;

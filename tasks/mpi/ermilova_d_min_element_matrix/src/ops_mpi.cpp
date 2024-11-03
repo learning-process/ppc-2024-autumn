@@ -3,7 +3,6 @@
 
 #include <algorithm>
 #include <functional>
-#include <random>
 #include <thread>
 #include <vector>
 
@@ -56,20 +55,9 @@ bool ermilova_d_min_element_matrix_mpi::TestMPITaskSequential::post_processing()
 bool ermilova_d_min_element_matrix_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
-  unsigned int delta = 0;
-  unsigned int extra = 0;
-
   if (world.rank() == 0) {
     rows = taskData->inputs_count[0];
     cols = taskData->inputs_count[1];
-
-    delta = rows * cols / world.size();
-    extra = rows * cols % world.size();
-  }
-  broadcast(world, delta, 0);
-
-  if (world.rank() == 0) {
-    // Init vectors
 
     input_ = std::vector<int>(rows * cols);
 
@@ -79,21 +67,7 @@ bool ermilova_d_min_element_matrix_mpi::TestMPITaskParallel::pre_processing() {
         input_[i * cols + j] = tmp_ptr[j];
       }
     }
-
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + delta * proc + extra, delta);
-    }
   }
-
-  local_input_ = std::vector<int>(delta);
-
-  if (world.rank() == 0) {
-    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta + extra);
-  } else {
-    world.recv(0, 0, local_input_.data(), delta);
-  }
-
-  // Init value for output
   res = INT_MAX;
   return true;
 }
@@ -109,6 +83,28 @@ bool ermilova_d_min_element_matrix_mpi::TestMPITaskParallel::validation() {
 
 bool ermilova_d_min_element_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+
+  unsigned int delta = 0;
+  unsigned int extra = 0;
+
+  if (world.rank() == 0) {
+    delta = rows * cols / world.size();
+    extra = rows * cols % world.size();
+
+    for (int proc = 1; proc < world.size(); proc++) {
+      world.send(proc, 0, input_.data() + delta * proc + extra, delta);
+    }
+  }
+  broadcast(world, delta, 0);
+
+local_input_ = std::vector<int>(delta);
+
+if (world.rank() == 0) {
+  local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta + extra);
+} else {
+  world.recv(0, 0, local_input_.data(), delta);
+}
+
   int local_min = INT_MAX;
   if (!local_input_.empty()) {
     local_min = *std::min_element(local_input_.begin(), local_input_.end());
@@ -125,23 +121,3 @@ bool ermilova_d_min_element_matrix_mpi::TestMPITaskParallel::post_processing() {
   return true;
 }
 
-std::vector<int> ermilova_d_min_element_matrix_mpi::getRandomVector(int size, int upper_border, int lower_border) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  if (size <= 0) throw "Incorrect size";
-  std::vector<int> vec(size);
-  for (int i = 0; i < size; i++) {
-    vec[i] = lower_border + gen() % (upper_border - lower_border + 1);
-  }
-  return vec;
-}
-
-std::vector<std::vector<int>> ermilova_d_min_element_matrix_mpi::getRandomMatrix(int rows, int cols, int upper_border,
-                                                                                 int lower_border) {
-  if (rows <= 0 || cols <= 0) throw "Incorrect size";
-  std::vector<std::vector<int>> vec(rows);
-  for (int i = 0; i < rows; i++) {
-    vec[i] = ermilova_d_min_element_matrix_mpi::getRandomVector(cols, upper_border, lower_border);
-  }
-  return vec;
-}

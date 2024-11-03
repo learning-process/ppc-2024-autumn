@@ -8,6 +8,26 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/ermilova_d_min_element_matrix/include/ops_mpi.hpp"
 
+std::vector<int> getRandomVector(int size, int upper_border, int lower_border) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  if (size <= 0) throw "Incorrect size";
+  std::vector<int> vec(size);
+  for (int i = 0; i < size; i++) {
+    vec[i] = lower_border + gen() % (upper_border - lower_border + 1);
+  }
+  return vec;
+}
+
+std::vector<std::vector<int>> getRandomMatrix(int rows, int cols, int upper_border, int lower_border) {
+  if (rows <= 0 || cols <= 0) throw "Incorrect size";
+  std::vector<std::vector<int>> vec(rows);
+  for (int i = 0; i < rows; i++) {
+    vec[i] = getRandomVector(cols, upper_border, lower_border);
+  }
+  return vec;
+}
+
 TEST(ermilova_d_min_element_matrix_mpi, test_pipeline_run) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -25,7 +45,7 @@ TEST(ermilova_d_min_element_matrix_mpi, test_pipeline_run) {
     const int upper_border = 1000;
     const int lower_border = -1000;
 
-    global_matrix = ermilova_d_min_element_matrix_mpi::getRandomMatrix(rows, cols, upper_border, lower_border);
+    global_matrix = getRandomMatrix(rows, cols, upper_border, lower_border);
 
     int rnd_rows = gen() % rows;
     int rnd_cols = gen() % cols;
@@ -81,7 +101,7 @@ TEST(ermilova_d_min_element_matrix_mpi, test_task_run) {
     const int upper_border = 1000;
     const int lower_border = -1000;
 
-    global_matrix = ermilova_d_min_element_matrix_mpi::getRandomMatrix(rows, cols, upper_border, lower_border);
+    global_matrix = getRandomMatrix(rows, cols, upper_border, lower_border);
     int rnd_rows = gen() % rows;
     int rnd_cols = gen() % cols;
     global_matrix[rnd_rows][rnd_cols] = reference_min;
