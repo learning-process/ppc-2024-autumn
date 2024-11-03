@@ -249,7 +249,6 @@ TEST(suvorov_d_sum_of_vector_elements_mpi, Test_Sum_With_Not_Multiple_Of_Num_Pro
         count_size_vector -= dist(gen);
       }
     }
-    count_size_vector = 0;
     global_vec = suvorov_d_sum_of_vector_elements_mpi::getRandomVector(count_size_vector);
 
     // Calculating the sum sequentially for verification
