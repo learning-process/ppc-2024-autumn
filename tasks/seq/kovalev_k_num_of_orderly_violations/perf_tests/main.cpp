@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 
 #include <vector>
+#include <cmath>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/kovalev_k_num_of_orderly_violations/include/header.hpp"
