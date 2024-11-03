@@ -1,6 +1,8 @@
-﻿#include "mpi/malyshev_v_monte_carlo_integration/include/ops_mpi.hpp"
-
+﻿
+#include <boost/mpi/collectives.hpp>
 #include <random>
+
+#include "mpi/malyshev_v_monte_carlo_integration/include/ops_mpi.hpp"
 
 namespace malyshev_v_monte_carlo_integration {
 
@@ -33,8 +35,10 @@ bool TestMPITaskParallel::pre_processing() {
   if (world.rank() == 0) {
     a = *reinterpret_cast<double*>(taskData->inputs[0]);
     b = *reinterpret_cast<double*>(taskData->inputs[1]);
-    num_samples = static_cast<int>(1.0 / (*reinterpret_cast<double*>(taskData->inputs[2])));
+    epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
+    num_samples = static_cast<int>(1.0 / epsilon);
   }
+
   boost::mpi::broadcast(world, a, 0);
   boost::mpi::broadcast(world, b, 0);
   boost::mpi::broadcast(world, num_samples, 0);

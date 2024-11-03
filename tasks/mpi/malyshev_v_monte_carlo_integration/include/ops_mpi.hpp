@@ -2,6 +2,7 @@
 
 #include <gtest/gtest.h>
 
+#include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <random>
 #include <vector>
@@ -19,6 +20,7 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool post_processing() override;
   double a = 0.0;
   double b = 0.0;
+  double epsilon = 0.0;
   int num_samples = 0;
   static double function_square(double x) { return x * x; }
 
@@ -35,6 +37,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
   double a = 0.0;
   double b = 0.0;
+  double epsilon = 0.0;
   int num_samples = 0;
   int local_num_samples = 0;
   static double function_square(double x) { return x * x; }
