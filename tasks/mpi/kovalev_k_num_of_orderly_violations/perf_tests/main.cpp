@@ -2,8 +2,8 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
-#include <vector>
 #include <ctime>
+#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/kovalev_k_num_of_orderly_violations/include/header.hpp"
@@ -101,7 +101,7 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_int_1000000_perf) {
   if (rank == 0) {
     g_vec = std::vector<int>(length);
     srand(time(NULL));
-    for (size_t i = 0; i < length; i++) g_vec[i] = rand() * pow(-1,rand());
+    for (size_t i = 0; i < length; i++) g_vec[i] = rand() * pow(-1, rand());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(g_vec.data()));
     taskDataPar->inputs_count.emplace_back(g_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(g_num_viol.data()));
