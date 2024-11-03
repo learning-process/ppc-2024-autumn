@@ -132,7 +132,6 @@ bool vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskParallel::run()
   }
 
   if (world.rank() == 0) {
-    
     std::vector<int> min_s(res.size(), INT_MAX);
     std::copy(tmp_min.begin(), tmp_min.end(), min_s.begin());
 
