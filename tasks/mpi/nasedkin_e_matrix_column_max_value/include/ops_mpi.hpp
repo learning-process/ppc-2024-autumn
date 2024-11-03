@@ -1,6 +1,8 @@
+// Copyright 2023 Nasedkin Egor
 #pragma once
 
 #include <gtest/gtest.h>
+
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <memory>
@@ -8,16 +10,17 @@
 #include <string>
 #include <utility>
 #include <vector>
+
 #include "core/task/include/task.hpp"
 
 namespace nasedkin_e_matrix_column_max_value_mpi {
 
-std::vector<int> getRandomVector(int sz);
+std::vector<int> getRandomMatrix(int rows, int cols);
 
-class MatrixColumnMaxTaskSequential : public ppc::core::Task {
+class MatrixColumnMaxSequential : public ppc::core::Task {
  public:
-  explicit MatrixColumnMaxTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+  explicit MatrixColumnMaxSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
+      : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -25,14 +28,13 @@ class MatrixColumnMaxTaskSequential : public ppc::core::Task {
 
  private:
   std::vector<int> input_;
-  int res{};
-  std::string ops;
+  std::vector<int> res_;
 };
 
-class MatrixColumnMaxTaskParallel : public ppc::core::Task {
+class MatrixColumnMaxParallel : public ppc::core::Task {
  public:
-  explicit MatrixColumnMaxTaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)), world() {}
+  explicit MatrixColumnMaxParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
+      : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -40,8 +42,7 @@ class MatrixColumnMaxTaskParallel : public ppc::core::Task {
 
  private:
   std::vector<int> input_, local_input_;
-  int res{};
-  std::string ops;
+  std::vector<int> res_;
   boost::mpi::communicator world;
 };
 

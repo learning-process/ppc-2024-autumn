@@ -1,4 +1,6 @@
+// Copyright 2023 Nasedkin Egor
 #include "mpi/nasedkin_e_matrix_column_max_value/include/ops_mpi.hpp"
+
 #include <algorithm>
 #include <functional>
 #include <random>
@@ -6,76 +8,121 @@
 #include <thread>
 #include <vector>
 
-std::vector<int> nasedkin_e_matrix_column_max_value_mpi::getRandomVector(int sz) {
-    std::random_device dev;
-    std::mt19937 gen(dev());
-    std::vector<int> vec(sz);
-    for (int i = 0; i < sz; i++) {
-        vec[i] = gen() % 100;
-    }
-    return vec;
+using namespace std::chrono_literals;
+
+std::vector<int> nasedkin_e_matrix_column_max_value_mpi::getRandomMatrix(int rows, int cols) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(rows * cols);
+  for (int i = 0; i < rows * cols; i++) {
+    vec[i] = gen() % 100;
+  }
+  return vec;
 }
 
-bool nasedkin_e_matrix_column_max_value_mpi::MatrixColumnMaxTaskSequential::pre_processing() {
-    input_.resize(taskData->inputs_count[0]);
+bool nasedkin_e_matrix_column_max_value_mpi::MatrixColumnMaxSequential::pre_processing() {
+  internal_order_test();
+  // Init vectors
+  input_ = std::vector<int>(taskData->inputs_count[0]);
+  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+    input_[i] = tmp_ptr[i];
+  }
+  // Init value for output
+  res_ = std::vector<int>(taskData->outputs_count[0], 0);
+  return true;
+}
+
+bool nasedkin_e_matrix_column_max_value_mpi::MatrixColumnMaxSequential::validation() {
+  internal_order_test();
+  // Check count elements of output
+  return taskData->outputs_count[0] == taskData->inputs_count[0] / taskData->inputs_count[1];
+}
+
+bool nasedkin_e_matrix_column_max_value_mpi::MatrixColumnMaxSequential::run() {
+  internal_order_test();
+  int rows = taskData->inputs_count[0] / taskData->inputs_count[1];
+  int cols = taskData->inputs_count[1];
+  for (int col = 0; col < cols; col++) {
+    int max_val = input_[col];
+    for (int row = 1; row < rows; row++) {
+      max_val = std::max(max_val, input_[row * cols + col]);
+    }
+    res_[col] = max_val;
+  }
+  return true;
+}
+
+bool nasedkin_e_matrix_column_max_value_mpi::MatrixColumnMaxSequential::post_processing() {
+  internal_order_test();
+  for (unsigned i = 0; i < res_.size(); i++) {
+    reinterpret_cast<int*>(taskData->outputs[0])[i] = res_[i];
+  }
+  return true;
+}
+
+bool nasedkin_e_matrix_column_max_value_mpi::MatrixColumnMaxParallel::pre_processing() {
+  internal_order_test();
+  unsigned int delta = 0;
+  if (world.rank() == 0) {
+    delta = taskData->inputs_count[0] / world.size();
+  }
+  broadcast(world, delta, 0);
+
+  if (world.rank() == 0) {
+    // Init vectors
+    input_ = std::vector<int>(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
-    res = 0;
-    return true;
-}
-
-bool nasedkin_e_matrix_column_max_value_mpi::MatrixColumnMaxTaskSequential::validation() {
-    return taskData->outputs_count[0] == 1;
-}
-
-bool nasedkin_e_matrix_column_max_value_mpi::MatrixColumnMaxTaskSequential::run() {
-    res = *std::max_element(input_.begin(), input_.end());
-    return true;
-}
-
-bool nasedkin_e_matrix_column_max_value_mpi::MatrixColumnMaxTaskSequential::post_processing() {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
-    return true;
-}
-
-bool nasedkin_e_matrix_column_max_value_mpi::MatrixColumnMaxTaskParallel::pre_processing() {
-    unsigned int delta = 0;
-    if (world.rank() == 0) {
-        delta = taskData->inputs_count[0] / world.size();
+    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+      input_[i] = tmp_ptr[i];
     }
-    boost::mpi::broadcast(world, delta, 0);
-
-    if (world.rank() == 0) {
-        input_.resize(taskData->inputs_count[0]);
-        auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-        std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
-        for (int proc = 1; proc < world.size(); proc++) {
-            world.send(proc, 0, input_.data() + proc * delta, delta);
-        }
+    for (int proc = 1; proc < world.size(); proc++) {
+      world.send(proc, 0, input_.data() + proc * delta, delta);
     }
-    local_input_.resize(delta);
-    if (world.rank() == 0) {
-        local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
-    } else {
-        world.recv(0, 0, local_input_.data(), delta);
-    }
-    res = *std::max_element(local_input_.begin(), local_input_.end());
-    return true;
+  }
+  local_input_ = std::vector<int>(delta);
+  if (world.rank() == 0) {
+    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
+  } else {
+    world.recv(0, 0, local_input_.data(), delta);
+  }
+  // Init value for output
+  res_ = std::vector<int>(taskData->outputs_count[0], 0);
+  return true;
 }
 
-bool nasedkin_e_matrix_column_max_value_mpi::MatrixColumnMaxTaskParallel::validation() {
-    return taskData->outputs_count[0] == 1;
+bool nasedkin_e_matrix_column_max_value_mpi::MatrixColumnMaxParallel::validation() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    // Check count elements of output
+    return taskData->outputs_count[0] == taskData->inputs_count[0] / taskData->inputs_count[1];
+  }
+  return true;
 }
 
-bool nasedkin_e_matrix_column_max_value_mpi::MatrixColumnMaxTaskParallel::run() {
-    int global_max;
-    boost::mpi::reduce(world, &res, &global_max, 1, std::greater<int>(), 0);
-    if (world.rank() == 0) {
-        reinterpret_cast<int*>(taskData->outputs[0])[0] = global_max;
+bool nasedkin_e_matrix_column_max_value_mpi::MatrixColumnMaxParallel::run() {
+  internal_order_test();
+  int rows = taskData->inputs_count[0] / taskData->inputs_count[1];
+  int cols = taskData->inputs_count[1];
+  std::vector<int> local_res(cols, 0);
+  for (int col = 0; col < cols; col++) {
+    int max_val = local_input_[col];
+    for (int row = 1; row < rows; row++) {
+      max_val = std::max(max_val, local_input_[row * cols + col]);
     }
-    return true;
+    local_res[col] = max_val;
+  }
+
+  reduce(world, local_res.data(), res_.data(), cols, boost::mpi::maximum<int>(), 0);
+  return true;
 }
 
-bool nasedkin_e_matrix_column_max_value_mpi::MatrixColumnMaxTaskParallel::post_processing() {
-    return true;
+bool nasedkin_e_matrix_column_max_value_mpi::MatrixColumnMaxParallel::post_processing() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    for (unsigned i = 0; i < res_.size(); i++) {
+      reinterpret_cast<int*>(taskData->outputs[0])[i] = res_[i];
+    }
+  }
+  return true;
 }

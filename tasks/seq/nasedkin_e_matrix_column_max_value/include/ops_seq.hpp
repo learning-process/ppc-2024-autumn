@@ -1,3 +1,4 @@
+// Copyright 2023 Nasedkin Egor
 #pragma once
 
 #include <gtest/gtest.h>
@@ -12,19 +13,20 @@
 
 namespace nasedkin_e_matrix_column_max_value_seq {
 
-class MatrixColumnMaxTaskSequential : public ppc::core::Task {
- public:
-  explicit MatrixColumnMaxTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+std::vector<int> getRandomMatrix(int rows, int cols);
+
+class MatrixColumnMaxSequential : public ppc::core::Task {
+public:
+  explicit MatrixColumnMaxSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
+      : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
- private:
+private:
   std::vector<int> input_;
-  int res{};
-  std::string ops;
+  std::vector<int> res_;
 };
 
 }  // namespace nasedkin_e_matrix_column_max_value_seq
