@@ -18,7 +18,7 @@ bool TestMPITaskSequential::pre_processing() {
   num_samples = static_cast<int>(1.0 / epsilon);
   return true;
 }
- bool TestMPITaskSequential::run() {
+bool TestMPITaskSequential::run() {
   internal_order_test();
   double sum = 0.0;
   std::mt19937 rng(12345);
@@ -28,14 +28,14 @@ bool TestMPITaskSequential::pre_processing() {
     sum += function_square(x);
   }
   res = (b - a) * sum / num_samples;
-  return true; 
+  return true;
 }
- bool TestMPITaskSequential::post_processing() {
+bool TestMPITaskSequential::post_processing() {
   internal_order_test();
   reinterpret_cast<double*>(taskData->outputs[0])[0] = res;
   return true;
 }
- bool TestMPITaskParallel::validation() {
+bool TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     if ((taskData->inputs.size() != 3) || (taskData->outputs.size() != 1)) {
