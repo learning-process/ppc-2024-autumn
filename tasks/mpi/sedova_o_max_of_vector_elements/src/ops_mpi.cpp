@@ -15,13 +15,12 @@ int sedova_o_max_of_vector_elements_mpi::find_max_of_matrix(std::vector<int> &ma
 
 bool sedova_o_max_of_vector_elements_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
-  input_ = std::vector<int>(taskData->inputs_count[0] * taskData->inputs_count[1]);
+  input_ = std::vector<std::vector<int>>(taskData->inputs_count[0], std::vector<int>(taskData->inputs_count[1]));
   for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
-    auto *input_data = reinterpret_cast<int *>(taskData->inputs[i]);
-    for (unsigned int j = 0; j < taskData->inputs_count[1]; j++) {
-      input_[i * taskData->inputs_count[1] + j] = input_data[j];
-    }
+    auto *tmp_ptr = reinterpret_cast<int *>(taskData->inputs[i]);
+    std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[1], input_[i].begin());
   }
+  res_ = INT_MAX;
   return true;
 }
 
@@ -32,7 +31,11 @@ bool sedova_o_max_of_vector_elements_mpi::TestMPITaskSequential::validation() {
 
 bool sedova_o_max_of_vector_elements_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-  res_ = sedova_o_max_of_vector_elements_mpi::find_max_of_matrix(input_);
+  std::vector<int> local_(input_.size());
+  for (unsigned int i = 0; i < input_.size(); i++) {
+    local_[i] = *std::max_element(input_[i].begin(), input_[i].end());
+  }
+  res_ = *std::max_element(local_.begin(), local_.end());
   return true;
 }
 
@@ -55,7 +58,6 @@ bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::pre_processing() 
       }
     }
   }
-
   return true;
 }
 
@@ -69,41 +71,31 @@ bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   unsigned int a = 0;
   if (world.rank() == 0) {
+    a = taskData->inputs_count[0] * taskData->inputs_count[1] / world.size();
+  }
+  broadcast(world, a, 0);
+  if (world.rank() == 0) {
     unsigned int rows = taskData->inputs_count[0];
     unsigned int cols = taskData->inputs_count[1];
-    a = rows * cols / world.size();
-    int b = rows * cols % world.size() + 1;
-    if (a == 0) {
-      for (int i = 1; i < world.size(); i++) {
-        world.send(i, 0, 0);
+    input_ = std::vector<int>(rows * cols);
+    for (unsigned int i = 0; i < rows; i++) {
+      auto *tmp_ = reinterpret_cast<int *>(taskData->inputs[i]);
+      for (unsigned int j = 0; j < cols; j++) {
+        input_[i * cols + j] = tmp_[j];
       }
-      linput_ = std::vector<int>(input_.begin(), input_.begin() + b - 1);
-      res_ = sedova_o_max_of_vector_elements_mpi::find_max_of_matrix(linput_);
-      return true;
     }
     for (int i = 1; i < world.size(); i++) {
-      world.send(i, 0, a + (int)(i < b));
+      world.send(i, 0, input_.data() + a * i, a);
     }
-    for (int i = 1; i < b; i++) {
-      world.send(i, 0, input_.data() + a * i + i - 1, a + 1);
-    }
-    for (int i = b; i < world.size(); i++) {
-      world.send(i, 0, input_.data() + a * i + b - 1, a);
-    }
-    linput_ = std::vector<int>(input_.begin(), input_.begin() + a);
   }
-
-  if (world.rank() != 0) {
-    world.recv(0, 0, a);
-    if (a == 0) {
-      return true;
-    }
-    linput_ = std::vector<int>(a);
-    world.recv(0, 0, input_.data(), a);
+  loc_input_ = std::vector<int>(a);
+  if (world.rank() == 0) {
+    loc_input_ = std::vector<int>(input_.begin(), input_.begin() + a);
+  } else {
+    world.recv(0, 0, loc_input_.data(), a);
   }
-
-  int lres_ = sedova_o_max_of_vector_elements_mpi::find_max_of_matrix(input_);
-  reduce(world, lres_, res_, boost::mpi::maximum<int>(), 0);
+  int loc_res = *std::max_element(loc_input_.begin(), loc_input_.end());
+  reduce(world, loc_res, res_, boost::mpi::maximum<int>(), 0);
   return true;
 }
 
