@@ -30,12 +30,13 @@ TEST(vavilov_v_min_elements_in_columns_of_matrix_seq, find_min_elem_in_col_400x5
   ASSERT_TRUE(testTaskSequential.run());
   ASSERT_TRUE(testTaskSequential.post_processing());
 
-  for (int j = 0; j < cols; j++) {
-    int expected_min = INT_MAX;
-    for (int i = 0; i < rows; i++) {
-      expected_min = std::min(expected_min, matr[i][j]);
-    }
-    ASSERT_EQ(vec_res[j], expected_min);
+  for (size_t i = 0; i < input_[0].size(); i++) {
+    int min = input_[0][i];
+    for (size_t j = 1; j < input_.size(); j++) {
+      if (input_[j][i] < min) {
+        min = input_[j][i];
+      }
+    ASSERT_EQ(vec_res[j], min);
   }
 }
 
