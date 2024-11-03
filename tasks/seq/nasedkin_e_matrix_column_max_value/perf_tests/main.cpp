@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
-#include <vector>
+
 #include <memory>
+#include <vector>
+
 #include "core/perf/include/perf.hpp"
 #include "seq/nasedkin_e_matrix_column_max_value/include/ops_seq.hpp"
 

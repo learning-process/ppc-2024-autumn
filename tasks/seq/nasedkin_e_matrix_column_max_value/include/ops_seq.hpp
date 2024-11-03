@@ -26,4 +26,4 @@ class MatrixColumnMaxTaskSequential : public ppc::core::Task {
   std::string ops;
 };
 
-}
+}  // namespace nasedkin_e_matrix_column_max_value_seq

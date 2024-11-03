@@ -46,4 +46,4 @@ class MatrixColumnMaxTaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}
+}  // namespace nasedkin_e_matrix_column_max_value_mpi
