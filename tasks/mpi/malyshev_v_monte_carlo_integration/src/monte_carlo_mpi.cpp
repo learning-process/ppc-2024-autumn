@@ -45,8 +45,6 @@ bool MonteCarloMPITask::post_processing() {
 }
 
 double MonteCarloMPITask::parallel_integration() {
-  int rank = world.rank();
-  int size = world.size();
 
   int samples_per_process = num_samples_ / size;
   std::random_device rd;
