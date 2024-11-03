@@ -1,4 +1,4 @@
-#include "mpi/malyshev_v_monte_carlo_integration/include/ops_mpi.hpp"
+﻿#include "mpi/malyshev_v_monte_carlo_integration/include/ops_mpi.hpp"
 
 #include <boost/mpi.hpp>
 #include <random>
@@ -100,7 +100,7 @@ double malyshev_v_monte_carlo_integration::MonteCarloIntegrationParallel::parall
   int rank = world.rank();
   int size = world.size();
 
-  std::mt19937 rng(rank); // Seed with rank to ensure different streams
+  std::mt19937 rng(rank);  // Seed with rank to ensure different streams
   std::uniform_real_distribution<double> dist(a, b);
 
   double local_sum = 0.0;
