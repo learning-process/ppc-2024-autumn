@@ -39,6 +39,7 @@ class Lab1_27_mpi : public ppc::core::Task {
  private:
   std::vector<std::pair<char, char>> input_, local_input_;
   int res{};
+  int del{};
   boost::mpi::communicator world;
 };
 

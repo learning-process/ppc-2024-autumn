@@ -73,7 +73,8 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::pre_processing() {
   }
 
   // Init value for output
-  res = abs(static_cast<int>(tmp1.size()) - static_cast<int>(tmp2.size()));
+  res = 0;
+  del = abs(static_cast<int>(tmp1.size()) - static_cast<int>(tmp2.size()));
   return true;
 }
 
@@ -137,7 +138,7 @@ bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::run() {
 bool volochaev_s_count_characters_27_mpi::Lab1_27_mpi::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    *reinterpret_cast<int*>(taskData->outputs[0]) = res;
+    *reinterpret_cast<int*>(taskData->outputs[0]) = res + del;
   }
   return true;
 }
