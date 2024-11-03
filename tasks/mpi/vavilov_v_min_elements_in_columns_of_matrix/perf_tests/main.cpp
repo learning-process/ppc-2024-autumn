@@ -19,7 +19,7 @@ TEST(vavilov_v_min_elements_in_columns_of_matrix_mpi, test_pipeline_run_min) {
     count_row = 5000;
     count_col = 5000;
     global_matr = vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskSequential::generate_rand_matr(count_row,
-                                                                                                            count_col);
+                                                                                                             count_col);
     min_col.resize(count_col, INT_MAX);
 
     for (auto& row : global_matr) {
@@ -59,7 +59,7 @@ TEST(vavilov_v_min_elements_in_columns_of_matrix_mpi, test_task_run) {
     count_row = 5000;
     count_col = 5000;
     global_matr = vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskSequential::generate_rand_matr(count_row,
-                                                                                                            count_col);
+                                                                                                             count_col);
     min_col.resize(count_col, INT_MAX);
 
     for (auto& row : global_matr) {
