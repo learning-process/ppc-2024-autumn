@@ -1,4 +1,4 @@
-// Copyright 2023 Konkov Ilya
+// Copyright 2023 Konkov Ivan
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>

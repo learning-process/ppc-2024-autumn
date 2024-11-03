@@ -1,7 +1,6 @@
-// Copyright 2023 Konkov Ilya
-#include <sstream>
-
+// Copyright 2023 Konkov Ivan
 #include "seq/konkov_i_count_words/include/ops_seq.hpp"
+#include <sstream>
 
 bool konkov_i_count_words_seq::CountWordsTaskSequential::pre_processing() {
   internal_order_test();

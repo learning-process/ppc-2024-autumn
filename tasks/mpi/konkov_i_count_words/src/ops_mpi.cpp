@@ -1,8 +1,7 @@
-// Copyright 2023 Konkov Ilya
+// Copyright 2023 Konkov Ivan
+#include "mpi/konkov_i_count_words/include/ops_mpi.hpp"
 #include <boost/mpi/collectives.hpp>
 #include <sstream>
-
-#include "mpi/konkov_i_count_words/include/ops_mpi.hpp"
 
 bool konkov_i_count_words_mpi::CountWordsTaskParallel::pre_processing() {
   internal_order_test();

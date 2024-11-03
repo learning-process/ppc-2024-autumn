@@ -1,4 +1,4 @@
-// Copyright 2023 Konkov Ilya
+// Copyright 2023 Konkov Ivan
 #pragma once
 
 #include <string>
