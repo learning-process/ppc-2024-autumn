@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstring>
+
 #include "core/task/include/task.hpp"
 
 namespace kovalev_k_num_of_orderly_violations_seq {
