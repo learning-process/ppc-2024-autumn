@@ -85,7 +85,7 @@ bool tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   broadcast(world, delta, 0);
   if (world.rank() == 0) {
-    for (int proc = 1; proc < world.size(); proc++) {
+    for (int proc = 1; proc < world.size(); ++proc) {
       world.send(proc, 0, v1.data() + proc * delta, delta);
       world.send(proc, 1, v2.data() + proc * delta, delta);
     }

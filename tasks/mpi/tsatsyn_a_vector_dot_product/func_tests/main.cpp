@@ -189,6 +189,7 @@ TEST(tsatsyn_a_vector_dot_product_mpi, Test_Negative_Validation) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size());
   }
+
   tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), false);
 }
