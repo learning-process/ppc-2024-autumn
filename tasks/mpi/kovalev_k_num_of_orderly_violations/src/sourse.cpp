@@ -30,16 +30,12 @@ bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::pre_
   } catch (const boost::mpi::exception& e) {
     std::cerr << "MPI broadcast: " << e.what() << std::endl;
   }
-  size_t scratter_length = n / size;  // minimum length to each process
-  loc_v.resize(scratter_length);      // resize the local copy
-  int scatterResult = MPI_Scatter(glob_v.data(), scratter_length * sizeof(T), MPI_BYTE, loc_v.data(),
-                                  scratter_length * sizeof(T), MPI_BYTE, 0, MPI_COMM_WORLD);
-  if (scatterResult != MPI_SUCCESS) {
-    char errorString[MPI_MAX_ERROR_STRING];
-    int errorStringLength;
-    MPI_Error_string(scatterResult, errorString, &errorStringLength);
-    std::cerr << "MPI_Scatter: " << errorString << std::endl;
-  }
+  int scratter_length = n / size;  // minimum length to each process
+  loc_v.resize(scratter_length);   // resize the local copy
+  std::vector<int> sendcounts(size, scratter_length);
+  std::vector<int> displs(size, 0);
+  for (int i = 1; i < size; i++) displs[i] = displs[i] + scratter_length;
+  boost::mpi::scatter(world, (T*)glob_v.data(), (T*)loc_v.data(), scratter_length, 0);
   return true;
 }
 
