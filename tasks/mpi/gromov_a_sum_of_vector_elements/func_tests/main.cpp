@@ -8,14 +8,12 @@
 
 TEST(gromov_a_sum_of_vector_elements_mpi, Test_Min1) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
+  std::vector<int> global_vec = {-10, -20, 0, 15, 30};
   std::vector<int32_t> global_min(1, std::numeric_limits<int32_t>::max());
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 50;
-    global_vec = gromov_a_sum_of_vector_elements_mpi::getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_min.data()));
@@ -52,14 +50,12 @@ TEST(gromov_a_sum_of_vector_elements_mpi, Test_Min1) {
 
 TEST(gromov_a_sum_of_vector_elements_mpi, Test_Min2) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
+  std::vector<int> global_vec = {-10, -17, 1, 19, 28};
   std::vector<int32_t> global_min(1, std::numeric_limits<int32_t>::max());
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 150;
-    global_vec = gromov_a_sum_of_vector_elements_mpi::getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_min.data()));
