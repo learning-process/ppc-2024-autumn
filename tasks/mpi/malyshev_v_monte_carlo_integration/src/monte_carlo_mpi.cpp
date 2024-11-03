@@ -45,7 +45,6 @@ bool MonteCarloMPITask::post_processing() {
 }
 
 double MonteCarloMPITask::parallel_integration() {
-
   int samples_per_process = num_samples_ / size;
   std::random_device rd;
   std::mt19937 gen(rd());
