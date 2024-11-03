@@ -101,18 +101,33 @@ TEST(morozov_e_min_val_in_rows_matrix_MPI, Test_Validation_isTrue) {
 }
 
 TEST(morozov_e_min_val_in_rows_matrix_MPI, Test_Main1) {
-  std::vector<std::vector<int>> matrix;
-  const int n = 10;
-  const int m = 10;
+  std::vector<std::vector<int>> matrixPar;
+  std::vector<std::vector<int>> matrixSeq;
+  const int n = 3;
+  const int m = 3;
   std::vector<int32_t> resPar(n);
-  std::vector<int> res(n);
+  std::vector<int32_t> resSeq(n);
   boost::mpi::communicator world;
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  matrixSeq = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+  for (size_t i = 0; i < matrixSeq.size(); ++i) {
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrixSeq[i].data()));
+  }
+  taskDataSeq->inputs_count.emplace_back(n);
+  taskDataSeq->inputs_count.emplace_back(m);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(resSeq.data()));
+  taskDataSeq->outputs_count.emplace_back(resSeq.size());
+  morozov_e_min_val_in_rows_matrix::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+  ASSERT_EQ(testMpiTaskSequential.validation(), true);
+  testMpiTaskSequential.pre_processing();
+  testMpiTaskSequential.run();
+  testMpiTaskSequential.post_processing();
 
   if (world.rank() == 0) {
-    matrix = getRandomMatrix_(n, m);
-    for (size_t i = 0; i < matrix.size(); ++i) {
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix[i].data()));
+    matrixPar = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    for (size_t i = 0; i < matrixPar.size(); ++i) {
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrixPar[i].data()));
     }
 
     taskDataPar->inputs_count.emplace_back(n);
@@ -123,13 +138,18 @@ TEST(morozov_e_min_val_in_rows_matrix_MPI, Test_Main1) {
   morozov_e_min_val_in_rows_matrix::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
+
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
+
+  ASSERT_EQ(resSeq[0], 1);
+  ASSERT_EQ(resSeq[1], 4);
+  ASSERT_EQ(resSeq[2], 7);
   if (world.rank() == 0) {
-    for (int i = 0; i < n; ++i) {
-      ASSERT_EQ(resPar[i], -1);
-    }
+    ASSERT_EQ(resPar[0], 1);
+    ASSERT_EQ(resPar[1], 4);
+    ASSERT_EQ(resPar[2], 7);
   }
 }
 TEST(morozov_e_min_val_in_rows_matrix_MPI, Test_Main2) {

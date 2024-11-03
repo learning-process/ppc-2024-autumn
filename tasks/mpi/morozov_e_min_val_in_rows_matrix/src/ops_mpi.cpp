@@ -23,10 +23,10 @@ bool morozov_e_min_val_in_rows_matrix::TestMPITaskSequential::pre_processing() {
       matrix_[i][j] = tmp_ptr[j];
     }
   }
-  // std::cout << "HELLO";
   return true;
 }
 bool morozov_e_min_val_in_rows_matrix::TestMPITaskSequential::validation() {
+  internal_order_test();
   if (taskData->inputs.empty() || taskData->outputs.empty()) return false;
   if (taskData->inputs_count.size() < 2 || taskData->inputs_count[0] <= 0 || taskData->inputs_count[1] <= 0)
     return false;
