@@ -1,19 +1,34 @@
 #include <gtest/gtest.h>
-#include "ops_seq.hpp"
+#include <vector>
+#include <memory>
+#include "core/task/include/task.hpp"
+#include "seq/nasedkin_e_matrix_column_max_value/include/ops_seq.hpp"
 
-namespace nasedkin_e_matrix_column_max_value_seq {
+namespace nasedkin_e_matrix_column_max_value_test {
 
-TEST(nasedkin_e_matrix_column_max_value_seq, test_findMaxInColumns) {
-    std::vector<std::vector<double>> matrix = {
-        {1.0, 2.0, 3.0},
-        {4.0, 5.0, 6.0},
-        {7.0, 8.0, 9.0}
-    };
+TEST(SeqMatrixColumnMaxTest, BasicTest) {
+    std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+    std::vector<int> input = {1, 2, 3, 4, 5};
+    int output = 0;
 
-    std::vector<double> expected = {7.0, 8.0, 9.0};
-    auto result = findMaxInColumns(matrix);
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
+    taskData->inputs_count.emplace_back(input.size());
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(&output));
+    taskData->outputs_count.emplace_back(1);
 
-    EXPECT_EQ(result, expected);
+    auto task = std::make_shared<nasedkin_e_matrix_column_max_value_seq::MatrixColumnMaxTaskSequential>(taskData, "max");
+
+    ASSERT_TRUE(task->validation());
+    task->pre_processing();
+    task->run();
+    task->post_processing();
+
+    ASSERT_EQ(output, 5);
 }
 
-}  // namespace nasedkin_e_matrix_column_max_value_seq
+}
+
+int main(int argc, char** argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}

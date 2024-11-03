@@ -1,21 +1,28 @@
-#include <vector>
-#include <limits>
+#include "seq/nasedkin_e_matrix_column_max_value/include/ops_seq.hpp"
 
-namespace nasedkin_e_matrix_column_max_value_seq {
+#include <algorithm>
+#include <numeric>
 
-std::vector<double> findMaxInColumns(const std::vector<std::vector<double>>& matrix) {
-    if (matrix.empty()) return {};
-
-    size_t cols = matrix[0].size();
-    std::vector<double> maxValues(cols, std::numeric_limits<double>::lowest());
-
-    for (const auto& row : matrix) {
-        for (size_t j = 0; j < cols; ++j) {
-            maxValues[j] = std::max(maxValues[j], row[j]);
-        }
-    }
-
-    return maxValues;
+bool nasedkin_e_matrix_column_max_value_seq::MatrixColumnMaxTaskSequential::pre_processing() {
+  input_ = std::vector<int>(taskData->inputs_count[0]);
+  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+    input_[i] = tmp_ptr[i];
+  }
+  res = 0;
+  return true;
 }
 
-}  // namespace nasedkin_e_matrix_column_max_value_seq
+bool nasedkin_e_matrix_column_max_value_seq::MatrixColumnMaxTaskSequential::validation() {
+  return taskData->outputs_count[0] == 1;
+}
+
+bool nasedkin_e_matrix_column_max_value_seq::MatrixColumnMaxTaskSequential::run() {
+  res = *std::max_element(input_.begin(), input_.end());
+  return true;
+}
+
+bool nasedkin_e_matrix_column_max_value_seq::MatrixColumnMaxTaskSequential::post_processing() {
+  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+  return true;
+}
