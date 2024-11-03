@@ -24,6 +24,7 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
   static std::vector<int> gen(int m, int n);  // Generate vector (matrix)
+
  private:
   std::vector<int> input_;  // Input vector
   std::vector<int> res;     // Result vector
@@ -37,6 +38,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
+
  private:
   std::vector<int> input_;         // Input vector
   std::vector<int> local_input_;   // Local input vector

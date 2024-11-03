@@ -16,6 +16,7 @@ class TestTaskSequential : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
   static std::vector<int> gen(int m, int n);  // generate vector (matrix)
+
  private:
   std::vector<int> input_{}, res{};
   // notation for TaskData
