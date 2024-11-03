@@ -8,7 +8,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/khovansky_d_max_of_vector_elements/include/ops_seq.hpp"
 
-std::vector<int> khovansky_d_max_of_vector_elements_seq::GetRandomVector(int sz, int left, int right) {
+std::vector<int> GetRandomVectorForMax(int sz, int left, int right) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> v(sz);
@@ -23,7 +23,7 @@ TEST(khovansky_d_max_of_vector_elements, test_max_of_vector_with_positive_number
   const int left = 0;
   const int right = 1000000;
   // Create data
-  std::vector<int> in = khovansky_d_max_of_vector_elements_seq::GetRandomVector(count, left, right);
+  std::vector<int> in = GetRandomVectorForMax(count, left, right);
   in[0] = 1000002;
   std::vector<int> out(1, 0);
 
@@ -62,7 +62,7 @@ TEST(khovansky_d_max_of_vector_elements, test_max_of_vector_with_positive_number
   const int left = 0;
   const int right = 1000000;
   // Create data
-  std::vector<int> in = khovansky_d_max_of_vector_elements_seq::GetRandomVector(count, left, right);
+  std::vector<int> in = GetRandomVectorForMax(count, left, right);
   in[0] = 1000002;
   std::vector<int> out(1, 0);
 
@@ -101,7 +101,7 @@ TEST(khovansky_d_max_of_vector_elements, test_max_of_vector_with_negative_number
   const int left = -1000000;
   const int right = -1;
   // Create data
-  std::vector<int> in = khovansky_d_max_of_vector_elements_seq::GetRandomVector(count, left, right);
+  std::vector<int> in = GetRandomVectorForMax(count, left, right);
   in[0] = 0;
   std::vector<int> out(1, 0);
 
@@ -140,7 +140,7 @@ TEST(khovansky_d_max_of_vector_elements, test_max_of_vector_with_negative_number
   const int left = -1000000;
   const int right = -1;
   // Create data
-  std::vector<int> in = khovansky_d_max_of_vector_elements_seq::GetRandomVector(count, left, right);
+  std::vector<int> in = GetRandomVectorForMax(count, left, right);
   in[0] = 0;
   std::vector<int> out(1, 0);
 

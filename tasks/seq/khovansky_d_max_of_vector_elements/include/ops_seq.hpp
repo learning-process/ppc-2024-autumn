@@ -7,8 +7,6 @@
 #include "core/task/include/task.hpp"
 
 namespace khovansky_d_max_of_vector_elements_seq {
-int VectorMax(std::vector<int, std::allocator<int>> r);
-std::vector<int> GetRandomVector(int sz, int left, int right);
 
 class MaxOfVectorSeq : public ppc::core::Task {
  public:

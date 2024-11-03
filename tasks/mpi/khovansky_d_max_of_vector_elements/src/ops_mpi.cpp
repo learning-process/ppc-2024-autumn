@@ -10,7 +10,7 @@
 
 using namespace std::chrono_literals;
 
-int khovansky_d_max_of_vector_elements_mpi::VectorMax(std::vector<int, std::allocator<int>> r) {
+int VectorMax(std::vector<int, std::allocator<int>> r) {
   if (r.empty()) {
     return 0;
   }
@@ -45,7 +45,7 @@ bool khovansky_d_max_of_vector_elements_mpi::MaxOfVectorMPISequential::run() {
     // Handle the case when the input vector is empty
     return true;
   }
-  res = khovansky_d_max_of_vector_elements_mpi::VectorMax(input_);
+  res = VectorMax(input_);
   return true;
 }
 
@@ -56,6 +56,20 @@ bool khovansky_d_max_of_vector_elements_mpi::MaxOfVectorMPISequential::post_proc
 }
 
 bool khovansky_d_max_of_vector_elements_mpi::MaxOfVectorMPIParallel::pre_processing() {
+  internal_order_test();
+  return true;
+}
+
+bool khovansky_d_max_of_vector_elements_mpi::MaxOfVectorMPIParallel::validation() {
+  internal_order_test();
+  if (world_.rank() == 0) {
+    // Check count elements of output
+    return taskData->outputs_count[0] == 1;
+  }
+  return true;
+}
+
+bool khovansky_d_max_of_vector_elements_mpi::MaxOfVectorMPIParallel::run() {
   internal_order_test();
   unsigned int delta = 0;
   if (world_.rank() == 0) {
@@ -80,25 +94,11 @@ bool khovansky_d_max_of_vector_elements_mpi::MaxOfVectorMPIParallel::pre_process
   } else {
     world_.recv(0, 0, local_input_.data(), delta);
   }
-  return true;
-}
-
-bool khovansky_d_max_of_vector_elements_mpi::MaxOfVectorMPIParallel::validation() {
-  internal_order_test();
-  if (world_.rank() == 0) {
-    // Check count elements of output
-    return taskData->outputs_count[0] == 1;
-  }
-  return true;
-}
-
-bool khovansky_d_max_of_vector_elements_mpi::MaxOfVectorMPIParallel::run() {
-  internal_order_test();
   if (local_input_.empty()) {
     // Handle the case when the local input vector is empty
     return true;
   }
-  int max = khovansky_d_max_of_vector_elements_mpi::VectorMax(local_input_);
+  int max = VectorMax(local_input_);
 
   reduce(world_, max, res_, boost::mpi::maximum<int>(), 0);
   return true;

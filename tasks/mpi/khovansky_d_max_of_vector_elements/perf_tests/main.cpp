@@ -8,7 +8,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/khovansky_d_max_of_vector_elements/include/ops_mpi.hpp"
 
-std::vector<int> khovansky_d_max_of_vector_elements_mpi::GetRandomVector(int sz, int left, int right) {
+std::vector<int> GetRandomVectorForMax(int sz, int left, int right) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> v(sz);
@@ -30,7 +30,7 @@ TEST(khovansky_d_max_of_vector_elements_mpi, run_pipeline) {
     count_size_vector = 10000000;
     const int left = 0;
     const int right = 100;
-    global_vec = khovansky_d_max_of_vector_elements_mpi::GetRandomVector(count_size_vector, left, right);
+    global_vec = GetRandomVectorForMax(count_size_vector, left, right);
     global_vec[0] = 102;
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -74,7 +74,7 @@ TEST(khovansky_d_max_of_vector_elements_mpi, run_task) {
     count_size_vector = 10000000;
     const int left = 0;
     const int right = 100;
-    global_vec = khovansky_d_max_of_vector_elements_mpi::GetRandomVector(count_size_vector, left, right);
+    global_vec = GetRandomVectorForMax(count_size_vector, left, right);
     global_vec[0] = 102;
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());

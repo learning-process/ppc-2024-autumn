@@ -7,7 +7,7 @@
 
 using namespace std::chrono_literals;
 
-int khovansky_d_max_of_vector_elements_seq::VectorMax(std::vector<int, std::allocator<int>> r) {
+int VectorMax(std::vector<int, std::allocator<int>> r) {
   if (r.empty()) {
     return 0;
   }
@@ -40,7 +40,7 @@ bool khovansky_d_max_of_vector_elements_seq::MaxOfVectorSeq::validation() {
 
 bool khovansky_d_max_of_vector_elements_seq::MaxOfVectorSeq::run() {
   internal_order_test();
-  res = khovansky_d_max_of_vector_elements_seq::VectorMax(input_);
+  res = VectorMax(input_);
   return true;
 }
 

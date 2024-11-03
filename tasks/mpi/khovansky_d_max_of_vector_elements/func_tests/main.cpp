@@ -8,7 +8,7 @@
 
 #include "mpi/khovansky_d_max_of_vector_elements/include/ops_mpi.hpp"
 
-std::vector<int> khovansky_d_max_of_vector_elements_mpi::GetRandomVector(int sz, int left, int right) {
+std::vector<int> GetRandomVectorForMax(int sz, int left, int right) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> v(sz);
@@ -29,7 +29,7 @@ TEST(khovansky_d_max_of_vector_elements, Test_Max) {
     const int count_size_vector = 120;
     const int left = 0;
     const int right = 100;
-    global_vec = khovansky_d_max_of_vector_elements_mpi::GetRandomVector(count_size_vector, left, right);
+    global_vec = GetRandomVectorForMax(count_size_vector, left, right);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
@@ -75,7 +75,7 @@ TEST(khovansky_d_max_of_vector_elements, Test_Max_LargeVector) {
     const int count_size_vector = 10000;
     const int left = 0;
     const int right = 100;
-    global_vec = khovansky_d_max_of_vector_elements_mpi::GetRandomVector(count_size_vector, left, right);
+    global_vec = GetRandomVectorForMax(count_size_vector, left, right);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
@@ -121,7 +121,7 @@ TEST(khovansky_d_max_of_vector_elements, Test_Max_Negative_Values) {
     const int count_size_vector = 120;
     const int left = -100;
     const int right = -1;
-    global_vec = khovansky_d_max_of_vector_elements_mpi::GetRandomVector(count_size_vector, left, right);
+    global_vec = GetRandomVectorForMax(count_size_vector, left, right);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));

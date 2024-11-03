@@ -6,7 +6,7 @@
 
 #include "seq/khovansky_d_max_of_vector_elements/include/ops_seq.hpp"
 
-std::vector<int> khovansky_d_max_of_vector_elements_seq::GetRandomVector(int sz, int left, int right) {
+std::vector<int> GetRandomVectorForMax(int sz, int left, int right) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> v(sz);
@@ -21,7 +21,7 @@ TEST(khovansky_d_max_of_vector_elements_seq, Test_Max_10_Positive_Numbers) {
   const int left = 0;
   const int right = 1000;
   // Create data
-  std::vector<int> in = khovansky_d_max_of_vector_elements_seq::GetRandomVector(count, left, right);
+  std::vector<int> in = GetRandomVectorForMax(count, left, right);
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -46,7 +46,7 @@ TEST(khovansky_d_max_of_vector_elements_seq, Test_Max_10_Negative_Numbers) {
   const int left = -1000;
   const int right = -1;
   // Create data
-  std::vector<int> in = khovansky_d_max_of_vector_elements_seq::GetRandomVector(count, left, right);
+  std::vector<int> in = GetRandomVectorForMax(count, left, right);
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -71,7 +71,7 @@ TEST(khovansky_d_max_of_vector_elements_seq, Test_Max_20_Positive_Numbers) {
   const int left = 0;
   const int right = 1000;
   // Create data
-  std::vector<int> in = khovansky_d_max_of_vector_elements_seq::GetRandomVector(count, left, right);
+  std::vector<int> in = GetRandomVectorForMax(count, left, right);
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -96,7 +96,7 @@ TEST(khovansky_d_max_of_vector_elements_seq, Test_Max_20_Negative_Numbers) {
   const int left = -1000;
   const int right = -1;
   // Create data
-  std::vector<int> in = khovansky_d_max_of_vector_elements_seq::GetRandomVector(count, left, right);
+  std::vector<int> in = GetRandomVectorForMax(count, left, right);
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -121,7 +121,7 @@ TEST(khovansky_d_max_of_vector_elements_seq, Test_Max_50_Positive_Numbers) {
   const int left = 0;
   const int right = 100;
   // Create data
-  std::vector<int> in = khovansky_d_max_of_vector_elements_seq::GetRandomVector(count, left, right);
+  std::vector<int> in = GetRandomVectorForMax(count, left, right);
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -146,7 +146,7 @@ TEST(khovansky_d_max_of_vector_elements_seq, Test_Max_50_Negative_Numbers) {
   const int left = -1000;
   const int right = -1;
   // Create data
-  std::vector<int> in = khovansky_d_max_of_vector_elements_seq::GetRandomVector(count, left, right);
+  std::vector<int> in = GetRandomVectorForMax(count, left, right);
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -171,7 +171,7 @@ TEST(khovansky_d_max_of_vector_elements_seq, Test_Max_70_Positive_Numbers) {
   const int left = 0;
   const int right = 100;
   // Create data
-  std::vector<int> in = khovansky_d_max_of_vector_elements_seq::GetRandomVector(count, left, right);
+  std::vector<int> in = GetRandomVectorForMax(count, left, right);
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -196,7 +196,7 @@ TEST(khovansky_d_max_of_vector_elements_seq, Test_Max_70_Negative_Numbers) {
   const int left = -1000;
   const int right = -1;
   // Create data
-  std::vector<int> in = khovansky_d_max_of_vector_elements_seq::GetRandomVector(count, left, right);
+  std::vector<int> in = GetRandomVectorForMax(count, left, right);
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -221,7 +221,7 @@ TEST(khovansky_d_max_of_vector_elements_seq, Test_Max_100_Positive_Numbers) {
   const int left = 0;
   const int right = 100;
   // Create data
-  std::vector<int> in = khovansky_d_max_of_vector_elements_seq::GetRandomVector(count, left, right);
+  std::vector<int> in = GetRandomVectorForMax(count, left, right);
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -246,7 +246,7 @@ TEST(khovansky_d_max_of_vector_elements_seq, Test_Max_100_Negative_Numbers) {
   const int left = -1000;
   const int right = -1;
   // Create data
-  std::vector<int> in = khovansky_d_max_of_vector_elements_seq::GetRandomVector(count, left, right);
+  std::vector<int> in = GetRandomVectorForMax(count, left, right);
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -271,7 +271,7 @@ TEST(khovansky_d_max_of_vector_elements_seq, Test_Max_1000_Positive_Numbers) {
   const int left = 0;
   const int right = 100;
   // Create data
-  std::vector<int> in = khovansky_d_max_of_vector_elements_seq::GetRandomVector(count, left, right);
+  std::vector<int> in = GetRandomVectorForMax(count, left, right);
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -296,7 +296,7 @@ TEST(khovansky_d_max_of_vector_elements_seq, Test_Max_1000_Negative_Numbers) {
   const int left = -1000;
   const int right = -1;
   // Create data
-  std::vector<int> in = khovansky_d_max_of_vector_elements_seq::GetRandomVector(count, left, right);
+  std::vector<int> in = GetRandomVectorForMax(count, left, right);
   std::vector<int> out(1, 0);
 
   // Create TaskData

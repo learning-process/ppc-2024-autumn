@@ -15,9 +15,6 @@
 
 namespace khovansky_d_max_of_vector_elements_mpi {
 
-int VectorMax(std::vector<int, std::allocator<int>> r);
-std::vector<int> GetRandomVector(int sz, int left, int right);
-
 class MaxOfVectorMPISequential : public ppc::core::Task {
  public:
   explicit MaxOfVectorMPISequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
