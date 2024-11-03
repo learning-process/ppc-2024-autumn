@@ -6,10 +6,10 @@
 
 #include "mpi/gromov_a_sum_of_vector_elements/include/ops_mpi.hpp"
 
-TEST(gromov_a_sum_of_vector_elements_mpi, Test_Production) {
+TEST(gromov_a_sum_of_vector_elements_mpi, Test_Min1) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
-  std::vector<int64_t> global_production(1, 1);
+  std::vector<int32_t> global_min(1, std::numeric_limits<int32_t>::max());
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -18,11 +18,11 @@ TEST(gromov_a_sum_of_vector_elements_mpi, Test_Production) {
     global_vec = gromov_a_sum_of_vector_elements_mpi::getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_production.data()));
-    taskDataPar->outputs_count.emplace_back(global_production.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_min.data()));
+    taskDataPar->outputs_count.emplace_back(global_min.size());
   }
 
-  gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel MPISumOfVectorParallel(taskDataPar, "production");
+  gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel MPISumOfVectorParallel(taskDataPar, "min");
   ASSERT_EQ(MPISumOfVectorParallel.validation(), true);
   MPISumOfVectorParallel.pre_processing();
   MPISumOfVectorParallel.run();
@@ -30,27 +30,27 @@ TEST(gromov_a_sum_of_vector_elements_mpi, Test_Production) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int64_t> reference_production(1, 1);
+    std::vector<int32_t> reference_min(1, std::numeric_limits<int32_t>::max());
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataSeq->inputs_count.emplace_back(global_vec.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_production.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_production.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
     // Create Task
-    gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorSequential MPISumOfVectorSequential(taskDataSeq, "production");
+    gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorSequential MPISumOfVectorSequential(taskDataSeq, "min");
     ASSERT_EQ(MPISumOfVectorSequential.validation(), true);
     MPISumOfVectorSequential.pre_processing();
     MPISumOfVectorSequential.run();
     MPISumOfVectorSequential.post_processing();
 
-    ASSERT_EQ(reference_production[0], global_production[0]);
+    ASSERT_EQ(reference_min[0], global_min[0]);
   }
 }
 
-TEST(gromov_a_sum_of_vector_elements_mpi, Test_Min) {
+TEST(gromov_a_sum_of_vector_elements_mpi, Test_Min2) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_min(1, std::numeric_limits<int32_t>::max());
