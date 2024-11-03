@@ -116,7 +116,6 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_int_1000000_perf) {
   ASSERT_EQ(res, g_num_viol[0]);
 }
 
-
 TEST(kovalev_k_num_of_orderly_violations_mpi, test_double_10000_perf) {
   // Create data
   std::vector<double> g_vec;
