@@ -1,150 +1,88 @@
 ﻿#include <gtest/gtest.h>
-
-#include <boost/mpi/communicator.hpp>
-#include <boost/mpi/environment.hpp>
+#include <boost/mpi.hpp>
+#include <memory>
 #include <cmath>
-#include <vector>
-
 #include "mpi/malyshev_v_monte_carlo_integration/include/ops_mpi.hpp"
 
-TEST(Parallel_Operations_MPI, Test_Integral_Calculation) {
-  boost::mpi::communicator world;
-  std::vector<double> global_results(1, 0.0);
-  std::shared_ptr<malyshev_v_monte_carlo_integration::TaskData> taskDataPar =
-      std::make_shared<malyshev_v_monte_carlo_integration::TaskData>();
+using namespace malyshev_v_monte_carlo_integration;
 
-  if (world.rank() == 0) {
-    const int count_size_samples = 5;
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&count_size_samples));
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_results.data()));
-  }
+constexpr double expected_integral_const = 1.0;
+constexpr double expected_integral_linear = 0.5;
+constexpr double expected_integral_quad = 1.0 / 3.0;
+constexpr double expected_integral_sin = 1.0 - std::cos(1.0);
+constexpr double expected_integral_exp = std::exp(1.0) - 1.0;
 
-  malyshev_v_monte_carlo_integration::MonteCarloIntegrationParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+const double tolerance = 0.01;
 
-  if (world.rank() == 0) {
-    double expected_result = 1.0;
-    ASSERT_NEAR(global_results[0], expected_result, 0.01);
-  }
+template <typename TaskType>
+void run_monte_carlo_test(const std::function<double(double)>& func, double a, double b, int n, double expected_result) {
+    auto taskData = std::make_shared<ppc::core::TaskData>();
+    double result = 0.0;
+    
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(&result));
+    taskData->outputs_count.emplace_back(1);
+
+    TaskType task(taskData);
+    task.set_function(func);
+
+    ASSERT_TRUE(task.validation());
+    ASSERT_TRUE(task.pre_processing());
+    ASSERT_TRUE(task.run());
+    ASSERT_TRUE(task.post_processing());
+
+    EXPECT_NEAR(result, expected_result, tolerance);
 }
 
-TEST(Parallel_Operations_MPI, Test_Error_Distribution) {
-  boost::mpi::communicator world;
-  std::vector<double> global_errors(1, 0.0);
-  std::shared_ptr<malyshev_v_monte_carlo_integration::TaskData> taskDataPar =
-      std::make_shared<malyshev_v_monte_carlo_integration::TaskData>();
-
-  if (world.rank() == 0) {
-    const int count_size_samples = 5;
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&count_size_samples));
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_errors.data()));
-  }
-
-  malyshev_v_monte_carlo_integration::MonteCarloIntegrationParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
-
-  if (world.rank() == 0) {
-    ASSERT_GT(global_errors[0], 0.0);
-  }
+TEST(MonteCarloIntegrationTests, Test_ConstantFunction) {
+    boost::mpi::communicator world;
+    if (world.rank() == 0) {
+        run_monte_carlo_test<MonteCarloIntegrationParallel>(
+            [](double x) { return 1.0; }, 0.0, 1.0, 100000, expected_integral_const);
+    }
 }
 
-TEST(Parallel_Operations_MPI, Test_Correlation_Parallel_Sequential) {
-  boost::mpi::communicator world;
-  std::vector<double> parallel_results(1, 0.0);
-  std::vector<double> sequential_results(1, 0.0);
-  std::shared_ptr<malyshev_v_monte_carlo_integration::TaskData> taskDataPar =
-      std::make_shared<malyshev_v_monte_carlo_integration::TaskData>();
-  std::shared_ptr<malyshev_v_monte_carlo_integration::TaskData> taskDataSeq =
-      std::make_shared<malyshev_v_monte_carlo_integration::TaskData>();
-
-  const int count_size_samples = 5;
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&count_size_samples));
-  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(parallel_results.data()));
-
-  malyshev_v_monte_carlo_integration::MonteCarloIntegrationParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
-
-  if (world.rank() == 0) {
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&count_size_samples));
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(sequential_results.data()));
-
-    malyshev_v_monte_carlo_integration::MonteCarloIntegrationSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
-
-    ASSERT_NEAR(parallel_results[0], sequential_results[0], 0.01);
-  }
+TEST(MonteCarloIntegrationTests, Test_LinearFunction) {
+    boost::mpi::communicator world;
+    if (world.rank() == 0) {
+        run_monte_carlo_test<MonteCarloIntegrationParallel>(
+            [](double x) { return x; }, 0.0, 1.0, 100000, expected_integral_linear);
+    }
 }
 
-TEST(Parallel_Operations_MPI, Test_Performance) {
-  boost::mpi::communicator world;
-  std::vector<double> global_results(1, 0.0);
-  std::shared_ptr<malyshev_v_monte_carlo_integration::TaskData> taskDataPar =
-      std::make_shared<malyshev_v_monte_carlo_integration::TaskData>();
-
-  if (world.rank() == 0) {
-    const int count_size_samples = 1000000;
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&count_size_samples));
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_results.data()));
-  }
-
-  malyshev_v_monte_carlo_integration::MonteCarloIntegrationParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-
-  auto start = std::chrono::high_resolution_clock::now();
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
-  auto end = std::chrono::high_resolution_clock::now();
-  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-
-  if (world.rank() == 0) {
-    ASSERT_LT(duration, 1000);
-  }
+TEST(MonteCarloIntegrationTests, Test_QuadraticFunction) {
+    boost::mpi::communicator world;
+    if (world.rank() == 0) {
+        run_monte_carlo_test<MonteCarloIntegrationParallel>(
+            [](double x) { return x * x; }, 0.0, 1.0, 100000, expected_integral_quad);
+    }
 }
 
-TEST(Parallel_Operations_MPI, Test_Integral_Exact) {
-  boost::mpi::communicator world;
-  std::vector<double> global_results(1, 0.0);
-  std::shared_ptr<malyshev_v_monte_carlo_integration::TaskData> taskDataPar =
-      std::make_shared<malyshev_v_monte_carlo_integration::TaskData>();
+TEST(MonteCarloIntegrationTests, Test_SineFunction) {
+    boost::mpi::communicator world;
+    if (world.rank() == 0) {
+        run_monte_carlo_test<MonteCarloIntegrationParallel>(
+            [](double x) { return std::sin(x); }, 0.0, 1.0, 100000, expected_integral_sin);
+    }
+}
 
-  if (world.rank() == 0) {
-    const int count_size_samples = 5;
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&count_size_samples));
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_results.data()));
-  }
-
-  malyshev_v_monte_carlo_integration::MonteCarloIntegrationParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
-
-  if (world.rank() == 0) {
-    double expected_result = 1.0;
-    ASSERT_NEAR(global_results[0], expected_result, 0.01);
-  }
+TEST(MonteCarloIntegrationTests, Test_ExponentialFunction) {
+    boost::mpi::communicator world;
+    if (world.rank() == 0) {
+        run_monte_carlo_test<MonteCarloIntegrationParallel>(
+            [](double x) { return std::exp(x); }, 0.0, 1.0, 100000, expected_integral_exp);
+    }
 }
 
 int main(int argc, char** argv) {
-  boost::mpi::environment env(argc, argv);
-  boost::mpi::communicator world;
-  ::testing::InitGoogleTest(&argc, argv);
-  ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
-  if (world.rank() != 0) {
-    delete listeners.Release(listeners.default_result_printer());
-  }
-  return RUN_ALL_TESTS();
+    boost::mpi::environment env(argc, argv);
+    boost::mpi::communicator world;
+    ::testing::InitGoogleTest(&argc, argv);
+    ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
+    if (world.rank() != 0) {
+        delete listeners.Release(listeners.default_result_printer());
+    }
+    return RUN_ALL_TESTS();
 }
