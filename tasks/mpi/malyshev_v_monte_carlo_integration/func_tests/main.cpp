@@ -21,6 +21,12 @@ TEST(malyshev_v_monte_carlo_integration, Test_Integration_mpi_small_interval) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
+
+    assert(taskDataPar->inputs[0] != nullptr);
+    assert(taskDataPar->inputs[1] != nullptr);
+    assert(taskDataPar->inputs[2] != nullptr);
+
+    assert(taskDataPar->outputs[0] != nullptr);
   }
 
   malyshev_v_monte_carlo_integration::MonteCarloIntegrationParallel MonteCarloIntegrationParallel(taskDataPar);
@@ -59,6 +65,12 @@ TEST(malyshev_v_monte_carlo_integration, Test_Integration_mpi_large_range) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
+
+    assert(taskDataPar->inputs[0] != nullptr);
+    assert(taskDataPar->inputs[1] != nullptr);
+    assert(taskDataPar->inputs[2] != nullptr);
+
+    assert(taskDataPar->outputs[0] != nullptr);
   }
 
   malyshev_v_monte_carlo_integration::MonteCarloIntegrationParallel MonteCarloIntegrationParallel(taskDataPar);
@@ -102,6 +114,12 @@ TEST(malyshev_v_monte_carlo_integration, Test_Integration_mpi_random) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
+
+    assert(taskDataPar->inputs[0] != nullptr);
+    assert(taskDataPar->inputs[1] != nullptr);
+    assert(taskDataPar->inputs[2] != nullptr);
+
+    assert(taskDataPar->outputs[0] != nullptr);
   }
 
   malyshev_v_monte_carlo_integration::MonteCarloIntegrationParallel MonteCarloIntegrationParallel(taskDataPar);
@@ -117,6 +135,13 @@ TEST(malyshev_v_monte_carlo_integration, Test_Integration_mpi_random) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
+
+    assert(taskDataPar->inputs[0] != nullptr);
+    assert(taskDataPar->inputs[1] != nullptr);
+    assert(taskDataPar->inputs[2] != nullptr);
+
+    assert(taskDataPar->outputs[0] != nullptr);
+
     malyshev_v_monte_carlo_integration::MonteCarloIntegrationSequential MonteCarloIntegrationSequential(taskDataSeq);
     ASSERT_EQ(MonteCarloIntegrationSequential.validation(), true);
     MonteCarloIntegrationSequential.pre_processing();
