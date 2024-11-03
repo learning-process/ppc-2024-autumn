@@ -30,6 +30,7 @@ bool koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskSequential::pre_proc
   // TaskData
   input_.resize(rows, std::vector<int>(columns));
 
+  
   uint8_t* inputMatrix = taskData->inputs[0];
   for (int i = 0; i < rows; ++i) {
     for (int j = 0; j < columns; ++j) {
@@ -75,17 +76,15 @@ bool koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskParallel::pre_proces
   if (world.rank() == 0) {
     rows = taskData->inputs_count[0];
     columns = taskData->inputs_count[1];
-  }
-
-  input_.resize(rows, std::vector<int>(columns));
-  if (world.rank() == 0) {
+    input_.resize(rows * columns);
     uint8_t* inputMatrix = taskData->inputs[0];
     for (int i = 0; i < rows; ++i) {
       for (int j = 0; j < columns; ++j) {
-        input_[i][j] = reinterpret_cast<int*>(inputMatrix)[i * columns + j];
+        input_[i * columns + j] = reinterpret_cast<int*>(inputMatrix)[i * columns + j];
       }
     }
-  } 
+  }
+ 
   res.resize(columns, 0);
   return true;
 }
@@ -94,8 +93,9 @@ bool koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskParallel::validation
   internal_order_test();
   if (world.rank() == 0) {
     // Check count elements of output
-    return ((taskData->inputs_count.size() >= 2 && taskData->inputs_count[0] != 0 && taskData->inputs_count[1] != 0) &&
-            taskData->inputs_count[1] == taskData->outputs_count[0]);
+    return ((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
+          (taskData->inputs_count.size() >= 2 && taskData->inputs_count[0] != 0 && taskData->inputs_count[1] != 0) &&
+          taskData->inputs_count[1] == taskData->outputs_count[0]);
             
   }
   return true;
@@ -104,39 +104,42 @@ bool koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskParallel::validation
 bool koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-  broadcast(world, rows, 0);
-  broadcast(world, columns, 0);
 
-  int local_rows = rows / world.size();
-  if (world.rank() < rows % world.size()) {
-    local_rows += 1; 
-  }
-
-  std::vector<int> local_input(local_rows * columns, 0);
-
-  std::vector<int> flattened_input;  
   if (world.rank() == 0) {
-    flattened_input.resize(rows * columns);
-    for (int i = 0; i < rows; ++i) {
-      for (int j = 0; j < columns; ++j) {
-        flattened_input[i * columns + j] = input_[i][j];
-      }
+    rows = taskData->inputs_count[0];
+    columns = taskData->inputs_count[1];
+  }
+  boost::mpi::broadcast(world, rows, 0);
+  boost::mpi::broadcast(world, columns, 0);
+
+  int rows_per_process = rows / world.size();
+  int extra_rows = rows % world.size();
+  int local_rows = rows_per_process + (world.rank() < extra_rows ? 1 : 0);
+
+  local_input_.resize(local_rows * columns);
+
+  if (world.rank() == 0) {
+    int offset = local_rows * columns;
+    for (int proc = 1; proc < world.size(); ++proc) {
+      int proc_rows = rows_per_process + (proc < extra_rows ? 1 : 0);
+      world.send(proc, 2, input_.data() + offset, proc_rows * columns);
+      offset += proc_rows * columns;
     }
+    std::copy(input_.begin(), input_.begin() + local_rows * columns, local_input_.begin());
+  } else {
+    world.recv(0, 2, local_input_.data(), local_rows * columns);
   }
 
-  scatter(world, flattened_input.data(), local_input.data(), local_rows * columns, 0);
+  std::vector<int> local_sum(columns, 0);
 
-  std::vector<int> local_res(columns, 0);
   for (int i = 0; i < local_rows; ++i) {
     for (int j = 0; j < columns; ++j) {
-      local_res[j] += local_input[i * columns + j];
+      local_sum[j] += local_input_[i * columns + j];
     }
   }
 
-  if (world.rank() == 0) {
-    res.resize(columns, 0);  
-  }
-  reduce(world, local_res.data(), columns, res.data(), std::plus<int>(), 0);
+  res.resize(columns, 0);  
+  boost::mpi::reduce(world, local_sum.data(), columns, res.data(), std::plus<int>(), 0);
 
   return true;
 }

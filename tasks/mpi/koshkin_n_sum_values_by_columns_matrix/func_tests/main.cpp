@@ -7,14 +7,14 @@
 
 #include "mpi/koshkin_n_sum_values_by_columns_matrix/include/ops_mpi.hpp"
 
-TEST(koshkin_n_sum_values_by_columns_matrix_MPI, Test_1) {
+TEST(koshkin_n_sum_values_by_columns_matrix_MPI, Test1) {
   boost::mpi::communicator world;
 
-  int rows = 2;
-  int columns = 2;
+  int rows = 10;
+  int columns = 10;
 
   std::vector<int> matrix = koshkin_n_sum_values_by_columns_matrix_mpi::getRandomVector(columns * rows);
-  std::vector<int32_t> res_out_paral(columns, 0);
+  std::vector<int> res_out_paral(columns, 0);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -35,7 +35,7 @@ TEST(koshkin_n_sum_values_by_columns_matrix_MPI, Test_1) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int32_t> res_out_seq(columns, 0);
+    std::vector<int> res_out_seq(columns, 0);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
