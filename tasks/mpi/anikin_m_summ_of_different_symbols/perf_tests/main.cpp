@@ -64,9 +64,7 @@ TEST(anikin_m_SummDifSymMPI_parallel_perf_test, test_task_run) {
     taskDataPar->outputs_count.emplace_back(out.size());
   }
   // Create Task
-  auto testClassPar =
-      std::make_shared<anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel>(
-          taskDataPar);
+  auto testClassPar = std::make_shared<anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel>(taskDataPar);
   ASSERT_EQ(testClassPar->validation(), true);
   testClassPar->pre_processing();
   testClassPar->run();

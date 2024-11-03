@@ -19,8 +19,7 @@ std::string getRandomString(int sz);
 
 class SumDifSymMPISequential : public ppc::core::Task {
  public:
-  explicit SumDifSymMPISequential(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit SumDifSymMPISequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -33,8 +32,7 @@ class SumDifSymMPISequential : public ppc::core::Task {
 
 class SumDifSymMPIParallel : public ppc::core::Task {
  public:
-  explicit SumDifSymMPIParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit SumDifSymMPIParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;

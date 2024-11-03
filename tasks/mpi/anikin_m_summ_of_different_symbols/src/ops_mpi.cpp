@@ -21,12 +21,12 @@ std::string anikin_m_summ_of_different_symbols_mpi::getRandomString(int sz) {
   return str;
 }
 
-//SEQ
+// SEQ
 bool anikin_m_summ_of_different_symbols_mpi::SumDifSymMPISequential::pre_processing() {
   internal_order_test();
   // Init vectors
-  input.push_back(reinterpret_cast<char*>(taskData->inputs[0]));
-  input.push_back(reinterpret_cast<char*>(taskData->inputs[1]));
+  input.push_back(reinterpret_cast<char *>(taskData->inputs[0]));
+  input.push_back(reinterpret_cast<char *>(taskData->inputs[1]));
   // Init value for output
   res = 0;
   return true;
@@ -43,15 +43,14 @@ bool anikin_m_summ_of_different_symbols_mpi::SumDifSymMPISequential::run() {
   int dif = 0;
   std::string str1 = input[0];  
   std::string str2 = input[1];
-  if(str1.size() >= str2.size()) {
+  if (str1.size() >= str2.size()) {
     dif = str1.size() - str2.size();
-  }
-  else {
+  } else {
     dif = str2.size() - str1.size();
   }
   auto i1 = str1.begin();
   auto i2 = str2.begin();
-  while(i1 != str1.end() && i2 != str2.end()) {
+  while (i1 != str1.end() && i2 != str2.end()) {
     if(*i1 != *i2) res++;
     i1++;
     i2++;
@@ -63,14 +62,14 @@ bool anikin_m_summ_of_different_symbols_mpi::SumDifSymMPISequential::run() {
 
 bool anikin_m_summ_of_different_symbols_mpi::SumDifSymMPISequential::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+  reinterpret_cast<int *>(taskData->outputs[0])[0] = res;
   return true;
 }
 
-//MPI
+// MPI
 bool anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel::pre_processing() {
   internal_order_test();
-  if(com.rank() == 0) {
+  if (com.rank() == 0) {
     input.push_back(reinterpret_cast<char *>(taskData->inputs[0]));
     input.push_back(reinterpret_cast<char *>(taskData->inputs[1]));
   }
@@ -97,9 +96,7 @@ bool anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel::run() {
   broadcast(com, loc_size, 0);
   if (com.rank() == 0) {
     for (int pr = 1; pr < com.size(); pr++) {
-      int send_size = 
-        (loc_size <= strlen(input[0] - pr * loc_size)) ?
-          loc_size : strlen(input[0] - pr * loc_size);
+      int send_size = (loc_size <= strlen(input[0] - pr * loc_size)) ? loc_size : strlen(input[0] - pr * loc_size);
       com.send(pr, 0, input[0] + pr * loc_size, send_size);
       com.send(pr, 0, input[1] + pr * loc_size, send_size);
     }
@@ -131,7 +128,7 @@ bool anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel::run() {
 bool anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel::post_processing() {
   internal_order_test();
   if (com.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+    reinterpret_cast<int *>(taskData->outputs[0])[0] = res;
   }
   return true;
 }
