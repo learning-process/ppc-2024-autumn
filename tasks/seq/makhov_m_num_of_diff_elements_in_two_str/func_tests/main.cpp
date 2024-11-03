@@ -6,7 +6,8 @@
 #include "seq/makhov_m_num_of_diff_elements_in_two_str/include/ops_seq.hpp"
 
 TEST(makhov_m_num_of_diff_elements_in_two_str_seq, SameEmptySymbolsStrings) {
-  std::string str1, str2;
+  std::string str1;
+  std::string str2;
 
   // Create data
   str1 = "   ";
@@ -34,7 +35,8 @@ TEST(makhov_m_num_of_diff_elements_in_two_str_seq, SameEmptySymbolsStrings) {
 }
 
 TEST(makhov_m_num_of_diff_elements_in_two_str_seq, DiffSizeEmptySymbolsStrings) {
-  std::string str1, str2;
+  std::string str1;
+  std::string str2;
 
   // Create data
   str1 = "   ";
@@ -62,7 +64,8 @@ TEST(makhov_m_num_of_diff_elements_in_two_str_seq, DiffSizeEmptySymbolsStrings) 
 }
 
 TEST(makhov_m_num_of_diff_elements_in_two_str_seq, EqualSizeDiffStrings) {
-  std::string str1, str2;
+  std::string str1;
+  std::string str2;
 
   // Create data
   str1 = "Hello, World!!";
@@ -90,7 +93,8 @@ TEST(makhov_m_num_of_diff_elements_in_two_str_seq, EqualSizeDiffStrings) {
 }
 
 TEST(makhov_m_num_of_diff_elements_in_two_str_seq, DiffSizeDiffStrings) {
-  std::string str1, str2;
+  std::string str1;
+  std::string str2;
 
   // Create data
   str2 = "12341278";
@@ -118,7 +122,8 @@ TEST(makhov_m_num_of_diff_elements_in_two_str_seq, DiffSizeDiffStrings) {
 }
 
 TEST(makhov_m_num_of_diff_elements_in_two_str_seq, SameStrings) {
-  std::string str1, str2;
+  std::string str1;
+  std::string str2;
 
   // Create data
   str1 = "Hello, World!";

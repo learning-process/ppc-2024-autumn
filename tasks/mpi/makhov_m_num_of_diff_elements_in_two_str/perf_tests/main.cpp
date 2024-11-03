@@ -21,7 +21,8 @@ std::string getRandStr(size_t size_, char min = '0', char max = '9') {
 
 TEST(mpi_makhov_m_num_of_diff_elements_in_two_str_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
-  std::string str1, str2;
+  std::string str1;
+  std::string str2;
   std::vector<int32_t> global_sum(1, 0);
   str1 = getRandStr(10000000);
   str2 = getRandStr(10000000);
@@ -62,7 +63,8 @@ TEST(mpi_makhov_m_num_of_diff_elements_in_two_str_perf_test, test_pipeline_run) 
 
 TEST(mpi_makhov_m_num_of_diff_elements_in_two_str_perf_test, test_task_run) {
   boost::mpi::communicator world;
-  std::string str1, str2;
+  std::string str1;
+  std::string str2;
   std::vector<int32_t> global_sum(1, 0);
   str1 = getRandStr(10000000);
   str2 = getRandStr(10000000);

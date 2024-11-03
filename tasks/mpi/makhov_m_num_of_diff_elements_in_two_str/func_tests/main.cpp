@@ -9,7 +9,8 @@
 
 TEST(makhov_m_num_of_diff_elements_in_two_str_mpi, SameEmptySymbolsStrings) {
   boost::mpi::communicator world;
-  std::string str1, str2;
+  std::string str1;
+  std::string str2;
   std::vector<int32_t> global_sum(1, 0);
   std::vector<int32_t> reference_sum(1, 0);
   str1 = "   ";
@@ -56,7 +57,8 @@ TEST(makhov_m_num_of_diff_elements_in_two_str_mpi, SameEmptySymbolsStrings) {
 
 TEST(makhov_m_num_of_diff_elements_in_two_str_mpi, DiffSizeEmptySymbolsStrings) {
   boost::mpi::communicator world;
-  std::string str1, str2;
+  std::string str1;
+  std::string str2;
   std::vector<int32_t> global_sum(1, 0);
   std::vector<int32_t> reference_sum(1, 0);
   str1 = "   ";
@@ -103,7 +105,8 @@ TEST(makhov_m_num_of_diff_elements_in_two_str_mpi, DiffSizeEmptySymbolsStrings) 
 
 TEST(makhov_m_num_of_diff_elements_in_two_str_mpi, EqualSizeDiffStrings) {
   boost::mpi::communicator world;
-  std::string str1, str2;
+  std::string str1;
+  std::string str2;
   std::vector<int32_t> global_sum(1, 0);
   std::vector<int32_t> reference_sum(1, 0);
   str1 = "Hello, World!!";
@@ -150,7 +153,8 @@ TEST(makhov_m_num_of_diff_elements_in_two_str_mpi, EqualSizeDiffStrings) {
 
 TEST(makhov_m_num_of_diff_elements_in_two_str_mpi, DiffSizeDiffStrings) {
   boost::mpi::communicator world;
-  std::string str1, str2;
+  std::string str1;
+  std::string str2;
   std::vector<int32_t> global_sum(1, 0);
   std::vector<int32_t> reference_sum(1, 0);
   str1 = "1x1xx111";
@@ -197,7 +201,8 @@ TEST(makhov_m_num_of_diff_elements_in_two_str_mpi, DiffSizeDiffStrings) {
 
 TEST(makhov_m_num_of_diff_elements_in_two_str_mpi, SameStrings) {
   boost::mpi::communicator world;
-  std::string str1, str2;
+  std::string str1;
+  std::string str2;
   std::vector<int32_t> global_sum(1, 0);
   std::vector<int32_t> reference_sum(1, 0);
   str1 = "Hello, World!";
