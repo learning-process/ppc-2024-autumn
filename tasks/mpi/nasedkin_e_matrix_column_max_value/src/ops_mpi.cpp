@@ -59,26 +59,23 @@ bool nasedkin_e_matrix_column_max_value_mpi::MatrixColumnMaxTaskParallel::pre_pr
     } else {
         world.recv(0, 0, local_input_.data(), delta);
     }
-    res = 0;
+    res = *std::max_element(local_input_.begin(), local_input_.end());
     return true;
 }
 
 bool nasedkin_e_matrix_column_max_value_mpi::MatrixColumnMaxTaskParallel::validation() {
-    if (world.rank() == 0) {
-        return taskData->outputs_count[0] == 1;
-    }
-    return true;
+    return taskData->outputs_count[0] == 1;
 }
 
 bool nasedkin_e_matrix_column_max_value_mpi::MatrixColumnMaxTaskParallel::run() {
-    int local_res = *std::max_element(local_input_.begin(), local_input_.end());
-    boost::mpi::reduce(world, local_res, res, boost::mpi::maximum<int>(), 0);
+    int global_max;
+    boost::mpi::reduce(world, &res, &global_max, 1, std::greater<int>(), 0);
+    if (world.rank() == 0) {
+        reinterpret_cast<int*>(taskData->outputs[0])[0] = global_max;
+    }
     return true;
 }
 
 bool nasedkin_e_matrix_column_max_value_mpi::MatrixColumnMaxTaskParallel::post_processing() {
-    if (world.rank() == 0) {
-        reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
-    }
     return true;
 }
