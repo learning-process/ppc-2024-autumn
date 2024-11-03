@@ -9,6 +9,12 @@ TEST(konkov_i_count_words_seq, test_simple) {
   EXPECT_EQ(result, 2);
 }
 
+TEST(konkov_i_count_words_seq, test_empty) {
+  std::string input;
+  int result = countWords(input);
+  EXPECT_EQ(result, 0);
+}
+
 TEST(konkov_i_count_words_seq, test_single_word) {
   std::string input = "Hello";
   int result = countWords(input);
