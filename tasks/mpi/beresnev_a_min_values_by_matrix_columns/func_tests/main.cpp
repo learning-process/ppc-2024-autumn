@@ -9,7 +9,7 @@
 
 #include "mpi/beresnev_a_min_values_by_matrix_columns/include/ops_mpi.hpp"
 
-std::vector<int> getRandomVector(int sz) {
+static std::vector<int> getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
@@ -19,7 +19,7 @@ std::vector<int> getRandomVector(int sz) {
   return vec;
 }
 
-std::vector<int> transpose(const std::vector<int> &data, int n, int m) {
+static std::vector<int> transpose(const std::vector<int> &data, int n, int m) {
   std::vector<int> transposed(m * n);
 
   for (int i = 0; i < n; ++i) {
