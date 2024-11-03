@@ -10,6 +10,8 @@
 
 namespace guseynov_e_check_lex_order_of_two_string_mpi {
 
+std::vector<char> getRandomVector(int sz);
+
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

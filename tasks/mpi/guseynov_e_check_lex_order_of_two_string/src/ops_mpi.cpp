@@ -1,6 +1,17 @@
 #include "mpi/guseynov_e_check_lex_order_of_two_string/include/ops_mpi.hpp"
 
+#include <random>
 #include <vector>
+
+std::vector<char> guseynov_e_check_lex_order_of_two_string_mpi::getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<char> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = static_cast<char>(gen() % (126 - 32 + 1) + 32);
+  }
+  return vec;
+}
 
 bool guseynov_e_check_lex_order_of_two_string_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
