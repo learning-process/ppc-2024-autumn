@@ -44,11 +44,6 @@ bool MaxValueOfMatrixElementsSequential<T>::pre_processing() {
   rows_ = dimensions[0];
   cols_ = dimensions[1];
 
-  if (rows_ <= 0 || cols_ <= 0) {
-    // std::cerr << "Error: Matrix dimensions must be positive." << std::endl;
-    return false;
-  }
-
   auto inputMatrixData = reinterpret_cast<T*>(taskData->inputs[1]);
   matrix.assign(inputMatrixData, inputMatrixData + rows_ * cols_);
 
@@ -58,11 +53,9 @@ bool MaxValueOfMatrixElementsSequential<T>::pre_processing() {
 template <typename T>
 bool MaxValueOfMatrixElementsSequential<T>::validation() {
   internal_order_test();
-  if (taskData->inputs.empty() || taskData->outputs.empty()) {
-    std::cerr << "Validation error: Missing input or output data." << std::endl;
-    return false;
-  }
-  return true;
+
+  return !taskData->inputs.empty() && reinterpret_cast<int*>(taskData->inputs[0])[0] > 0 &&
+         reinterpret_cast<int*>(taskData->inputs[0])[1] > 0;
 }
 
 template <typename T>
@@ -70,17 +63,14 @@ bool MaxValueOfMatrixElementsSequential<T>::run() {
   internal_order_test();
 
   res = get_max_matrix_element(matrix);
-
-  auto outputData = reinterpret_cast<T*>(taskData->outputs[0]);
-  outputData[0] = res;
-
   return true;
 }
 
 template <typename T>
 bool MaxValueOfMatrixElementsSequential<T>::post_processing() {
   internal_order_test();
-  // std::cout << "Maximum value in the matrix: " << res << std::endl;
+
+  reinterpret_cast<T*>(taskData->outputs[0])[0] = res;
   return true;
 }
 

@@ -54,11 +54,6 @@ bool MaxValueOfMatrixElementsParallel<T>::pre_processing() {
     auto* dimensions = reinterpret_cast<int*>(taskData->inputs[0]);
     rows_ = dimensions[0];
     cols_ = dimensions[1];
-
-    if (rows_ <= 0 || cols_ <= 0) {
-      return false;
-    }
-
     auto* inputMatrixData = reinterpret_cast<T*>(taskData->inputs[1]);
     matrix.assign(inputMatrixData, inputMatrixData + rows_ * cols_);
   }
@@ -71,16 +66,9 @@ bool MaxValueOfMatrixElementsParallel<T>::validation() {
   internal_order_test();
 
   if (world.rank() == 0) {
-    if (taskData->inputs.empty() || taskData->outputs.empty()) {
-      return false;
-    }
-
-    auto* dimensions = reinterpret_cast<int*>(taskData->inputs[0]);
-    if (dimensions[0] <= 0 || dimensions[1] <= 0) {
-      return false;
-    }
+    return !taskData->inputs.empty() && reinterpret_cast<int*>(taskData->inputs[0])[0] > 0 &&
+           reinterpret_cast<int*>(taskData->inputs[0])[1] > 0;
   }
-
   return true;
 }
 
@@ -163,10 +151,6 @@ bool MaxValueOfMatrixElementsSequential<T>::pre_processing() {
   rows_ = dimensions[0];
   cols_ = dimensions[1];
 
-  if (rows_ <= 0 || cols_ <= 0) {
-    return false;
-  }
-
   auto* inputMatrixData = reinterpret_cast<T*>(taskData->inputs[1]);
   matrix.assign(inputMatrixData, inputMatrixData + rows_ * cols_);
 
@@ -177,7 +161,8 @@ template <typename T>
 bool MaxValueOfMatrixElementsSequential<T>::validation() {
   internal_order_test();
 
-  return !(taskData->inputs.empty()) && !(taskData->outputs.empty());
+  return !taskData->inputs.empty() && reinterpret_cast<int*>(taskData->inputs[0])[0] > 0 &&
+         reinterpret_cast<int*>(taskData->inputs[0])[1] > 0;
 }
 
 template <typename T>
@@ -185,10 +170,6 @@ bool MaxValueOfMatrixElementsSequential<T>::run() {
   internal_order_test();
 
   res = get_max_matrix_element(matrix);
-
-  auto* outputData = reinterpret_cast<T*>(taskData->outputs[0]);
-  outputData[0] = res;
-
   return true;
 }
 
@@ -196,6 +177,7 @@ template <typename T>
 bool MaxValueOfMatrixElementsSequential<T>::post_processing() {
   internal_order_test();
 
+  reinterpret_cast<T*>(taskData->outputs[0])[0] = res;
   return true;
 }
 

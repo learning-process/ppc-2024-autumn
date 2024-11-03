@@ -340,8 +340,7 @@ TEST(belov_a_max_value_of_matrix_elements_seq, Test_Validation_EmptyData) {
 
   MaxValueOfMatrixElementsSequential<int> testTaskSequential(taskDataSeq);
 
-  // validation() should return false for missing input data
-  ASSERT_EQ(testTaskSequential.validation(), false);
+  ASSERT_FALSE(testTaskSequential.validation());
 }
 
 TEST(belov_a_max_value_of_matrix_elements_seq, Test_PreProcessing_NonPositiveDimensions) {
@@ -359,10 +358,7 @@ TEST(belov_a_max_value_of_matrix_elements_seq, Test_PreProcessing_NonPositiveDim
 
   belov_a_max_value_of_matrix_elements_seq::MaxValueOfMatrixElementsSequential<double> testTaskSequential(taskDataSeq);
 
-  ASSERT_EQ(testTaskSequential.validation(), true);
-
-  bool pre_processing_result = testTaskSequential.pre_processing();
-  ASSERT_EQ(pre_processing_result, false);
+  ASSERT_FALSE(testTaskSequential.validation());
 }
 
 TEST(belov_a_max_value_of_matrix_elements_seq, Test_Random_Matrix_Integers) {
