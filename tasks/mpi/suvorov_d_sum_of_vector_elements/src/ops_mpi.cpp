@@ -21,37 +21,6 @@ std::vector<int> suvorov_d_sum_of_vector_elements_mpi::getRandomVector(int sz) {
   return vec;
 }
 
-bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_seq::pre_processing() {
-  internal_order_test();
-  // Init vectors
-  input_ = std::vector<int>(taskData->inputs_count[0]);
-  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    input_[i] = tmp_ptr[i];
-  }
-  // Init value for output
-  res_ = 0;
-  return true;
-}
-
-bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_seq::validation() {
-  internal_order_test();
-  // Check count elements of output
-  return taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1;
-}
-
-bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_seq::run() {
-  internal_order_test();
-  res_ = std::accumulate(input_.begin(), input_.end(), 0);
-  return true;
-}
-
-bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_seq::post_processing() {
-  internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = res_;
-  return true;
-}
-
 bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel::pre_processing() {
   internal_order_test();
   int input_size;
@@ -98,7 +67,7 @@ bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_parallel::vali
   internal_order_test();
   if (world_.rank() == 0) {
     // Check count elements of output
-    return taskData->outputs_count[0] == 1;
+    return taskData->outputs_count[0] == 1 && taskData->inputs_count.size() == 1;
   }
   return true;
 }
