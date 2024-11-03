@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <cmath>
@@ -10,19 +9,15 @@
 TEST(kovalev_k_num_of_orderly_violations_seq, test_pipeline_run) {
   const size_t length = 10;
   const int alpha = 1;
-  // Create data
   std::vector<int> in(length, alpha);
   std::vector<size_t> out(1, 0);
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
   taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
   taskSeq->inputs_count.emplace_back(in.size());
   taskSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskSeq->outputs_count.emplace_back(out.size());
-  // Create Task
   auto testTaskSequential =
       std::make_shared<kovalev_k_num_of_orderly_violations_seq::NumOfOrderlyViolations<int>>(taskSeq);
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();
@@ -31,9 +26,7 @@ TEST(kovalev_k_num_of_orderly_violations_seq, test_pipeline_run) {
     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
     return static_cast<double>(duration) * 1e-9;
   };
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
@@ -42,10 +35,8 @@ TEST(kovalev_k_num_of_orderly_violations_seq, test_pipeline_run) {
 }
 
 TEST(kovalev_k_num_of_orderly_violations_mpi, test_int_10000_perf) {
-  // Create data
   std::vector<int> g_vec;
   std::vector<size_t> g_num_viol(1, 0);
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
   size_t length = 10000;
   g_vec = std::vector<int>(length);
@@ -55,10 +46,8 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_int_10000_perf) {
   taskSeq->inputs_count.emplace_back(g_vec.size());
   taskSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(g_num_viol.data()));
   taskSeq->outputs_count.emplace_back(g_num_viol.size());
-  // Create Task
   auto testTaskSequential =
       std::make_shared<kovalev_k_num_of_orderly_violations_seq::NumOfOrderlyViolations<int>>(taskSeq);
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();
@@ -67,9 +56,7 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_int_10000_perf) {
     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
     return static_cast<double>(duration) * 1e-9;
   };
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
@@ -80,10 +67,8 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_int_10000_perf) {
 }
 
 TEST(kovalev_k_num_of_orderly_violations_mpi, test_int_1000000_perf) {
-  // Create data
   std::vector<int> g_vec;
   std::vector<size_t> g_num_viol(1, 0);
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
   size_t length = 1000000;
   g_vec = std::vector<int>(length);
@@ -93,10 +78,8 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_int_1000000_perf) {
   taskSeq->inputs_count.emplace_back(g_vec.size());
   taskSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(g_num_viol.data()));
   taskSeq->outputs_count.emplace_back(g_num_viol.size());
-  // Create Task
   auto testTaskSequential =
       std::make_shared<kovalev_k_num_of_orderly_violations_seq::NumOfOrderlyViolations<int>>(taskSeq);
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();
@@ -105,9 +88,7 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_int_1000000_perf) {
     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
     return static_cast<double>(duration) * 1e-9;
   };
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
@@ -118,10 +99,8 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_int_1000000_perf) {
 }
 
 TEST(kovalev_k_num_of_orderly_violations_mpi, test_double_10000_perf) {
-  // Create data
   std::vector<double> g_vec;
   std::vector<size_t> g_num_viol(1, 0);
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
   size_t length = 10000;
   double max = 1000000;
@@ -133,10 +112,8 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_double_10000_perf) {
   taskSeq->inputs_count.emplace_back(g_vec.size());
   taskSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(g_num_viol.data()));
   taskSeq->outputs_count.emplace_back(g_num_viol.size());
-  // Create Task
   auto testTaskSequential =
       std::make_shared<kovalev_k_num_of_orderly_violations_seq::NumOfOrderlyViolations<double>>(taskSeq);
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();
@@ -145,9 +122,7 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_double_10000_perf) {
     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
     return static_cast<double>(duration) * 1e-9;
   };
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
@@ -158,10 +133,8 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_double_10000_perf) {
 }
 
 TEST(kovalev_k_num_of_orderly_violations_mpi, test_double_1000000_perf) {
-  // Create data
   std::vector<double> g_vec;
   std::vector<size_t> g_num_viol(1, 0);
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
   size_t length = 1000000;
   double max = 1000000;
@@ -173,10 +146,8 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_double_1000000_perf) {
   taskSeq->inputs_count.emplace_back(g_vec.size());
   taskSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(g_num_viol.data()));
   taskSeq->outputs_count.emplace_back(g_num_viol.size());
-  // Create Task
   auto testTaskSequential =
       std::make_shared<kovalev_k_num_of_orderly_violations_seq::NumOfOrderlyViolations<double>>(taskSeq);
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();
@@ -185,9 +156,7 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_double_1000000_perf) {
     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
     return static_cast<double>(duration) * 1e-9;
   };
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
