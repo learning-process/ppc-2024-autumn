@@ -17,7 +17,6 @@ bool TestMPITaskSequential::pre_processing() {
   epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
   num_samples = static_cast<int>(1.0 / epsilon);
   return true;
-  
 }
  bool TestMPITaskSequential::run() {
   internal_order_test();
@@ -27,34 +26,27 @@ bool TestMPITaskSequential::pre_processing() {
   for (int i = 0; i < num_samples; ++i) {
     double x = dist(rng);
     sum += function_square(x);
-    
   }
   res = (b - a) * sum / num_samples;
-  return true;
-  
+  return true; 
 }
-  bool TestMPITaskSequential::post_processing() {
+ bool TestMPITaskSequential::post_processing() {
   internal_order_test();
   reinterpret_cast<double*>(taskData->outputs[0])[0] = res;
   return true;
-  
 }
-  bool TestMPITaskParallel::validation() {
+ bool TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     if ((taskData->inputs.size() != 3) || (taskData->outputs.size() != 1)) {
       return false;
-      
     }
     double epsilon = 1e-7;
     if (epsilon <= 0) {
       return false;
-      
     }
-    
   }
   return true;
-  
 }
 bool TestMPITaskParallel::pre_processing() {
   internal_order_test();
@@ -81,7 +73,6 @@ bool TestMPITaskParallel::run() {
   for (int i = 0; i < local_num_samples; ++i) {
     double x = dist(rng);
     local_sum += function_square(x);
-    
   }
 
   local_sum *= (b - a) / num_samples;
