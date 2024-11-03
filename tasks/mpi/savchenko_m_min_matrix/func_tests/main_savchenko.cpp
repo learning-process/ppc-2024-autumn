@@ -3,9 +3,26 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <climits>
+#include <random>
 #include <vector>
 
 #include "mpi/savchenko_m_min_matrix/include/ops_mpi_savchenko.hpp"
+
+std::vector<int> getRandomMatrix(size_t rows, size_t columns, int min, int max) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+
+  // Forming a random matrix
+  std::vector<int> matrix(rows * columns);
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < columns; j++) {
+      matrix[i * columns + j] = min + gen() % (max - min + 1);
+    }
+  }
+
+  return matrix;
+}
 
 TEST(savchenko_m_min_matrix_mpi, test_min_10x10) {
   const int rows = 10;
@@ -20,7 +37,7 @@ TEST(savchenko_m_min_matrix_mpi, test_min_10x10) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = savchenko_m_min_matrix_mpi::getRandomMatrix(rows, columns, gen_min, gen_max);
+    global_matrix = getRandomMatrix(rows, columns, gen_min, gen_max);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(rows);
     taskDataPar->inputs_count.emplace_back(columns);
@@ -72,7 +89,7 @@ TEST(savchenko_m_min_matrix_mpi, test_min_100x10) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = savchenko_m_min_matrix_mpi::getRandomMatrix(rows, columns, gen_min, gen_max);
+    global_matrix = getRandomMatrix(rows, columns, gen_min, gen_max);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(rows);
     taskDataPar->inputs_count.emplace_back(columns);
@@ -124,7 +141,7 @@ TEST(savchenko_m_min_matrix_mpi, test_min_10x100) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = savchenko_m_min_matrix_mpi::getRandomMatrix(rows, columns, gen_min, gen_max);
+    global_matrix = getRandomMatrix(rows, columns, gen_min, gen_max);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(rows);
     taskDataPar->inputs_count.emplace_back(columns);
@@ -176,7 +193,7 @@ TEST(savchenko_m_min_matrix_mpi, test_min_100x100) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = savchenko_m_min_matrix_mpi::getRandomMatrix(rows, columns, gen_min, gen_max);
+    global_matrix = getRandomMatrix(rows, columns, gen_min, gen_max);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(rows);
     taskDataPar->inputs_count.emplace_back(columns);
@@ -228,7 +245,7 @@ TEST(savchenko_m_min_matrix_mpi, test_min_100x1) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = savchenko_m_min_matrix_mpi::getRandomMatrix(rows, columns, gen_min, gen_max);
+    global_matrix = getRandomMatrix(rows, columns, gen_min, gen_max);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(rows);
     taskDataPar->inputs_count.emplace_back(columns);
@@ -280,7 +297,7 @@ TEST(savchenko_m_min_matrix_mpi, test_min_1000x1) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = savchenko_m_min_matrix_mpi::getRandomMatrix(rows, columns, gen_min, gen_max);
+    global_matrix = getRandomMatrix(rows, columns, gen_min, gen_max);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(rows);
     taskDataPar->inputs_count.emplace_back(columns);
@@ -332,7 +349,7 @@ TEST(savchenko_m_min_matrix_mpi, test_min_1x100) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = savchenko_m_min_matrix_mpi::getRandomMatrix(rows, columns, gen_min, gen_max);
+    global_matrix = getRandomMatrix(rows, columns, gen_min, gen_max);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(rows);
     taskDataPar->inputs_count.emplace_back(columns);
@@ -384,7 +401,7 @@ TEST(savchenko_m_min_matrix_mpi, test_min_1x1000) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = savchenko_m_min_matrix_mpi::getRandomMatrix(rows, columns, gen_min, gen_max);
+    global_matrix = getRandomMatrix(rows, columns, gen_min, gen_max);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(rows);
     taskDataPar->inputs_count.emplace_back(columns);
@@ -436,7 +453,7 @@ TEST(savchenko_m_min_matrix_mpi, test_min_0x0) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = savchenko_m_min_matrix_mpi::getRandomMatrix(rows, columns, gen_min, gen_max);
+    global_matrix = getRandomMatrix(rows, columns, gen_min, gen_max);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(rows);
     taskDataPar->inputs_count.emplace_back(columns);
@@ -464,7 +481,7 @@ TEST(savchenko_m_min_matrix_mpi, test_min_0x10) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = savchenko_m_min_matrix_mpi::getRandomMatrix(rows, columns, gen_min, gen_max);
+    global_matrix = getRandomMatrix(rows, columns, gen_min, gen_max);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(rows);
     taskDataPar->inputs_count.emplace_back(columns);
@@ -492,7 +509,7 @@ TEST(savchenko_m_min_matrix_mpi, test_min_10x0) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = savchenko_m_min_matrix_mpi::getRandomMatrix(rows, columns, gen_min, gen_max);
+    global_matrix = getRandomMatrix(rows, columns, gen_min, gen_max);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(rows);
     taskDataPar->inputs_count.emplace_back(columns);

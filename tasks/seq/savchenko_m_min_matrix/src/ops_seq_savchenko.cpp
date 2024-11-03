@@ -1,23 +1,6 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/savchenko_m_min_matrix/include/ops_seq_savchenko.hpp"
 
-#include <random>
-
-std::vector<int> savchenko_m_min_matrix_seq::getRandomMatrix(size_t rows, size_t columns, int min, int max) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-
-  // Forming a random matrix
-  std::vector<int> matrix(rows * columns);
-  for (size_t i = 0; i < rows; i++) {
-    for (size_t j = 0; j < columns; j++) {
-      matrix[i * columns + j] = min + gen() % (max - min + 1);
-    }
-  }
-
-  return matrix;
-}
-
 bool savchenko_m_min_matrix_seq::TestTaskSequential::validation() {
   internal_order_test();
   // Check count elements of output

@@ -8,6 +8,21 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/savchenko_m_min_matrix/include/ops_seq_savchenko.hpp"
 
+std::vector<int> getRandomMatrix(size_t rows, size_t columns, int min, int max) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+
+  // Forming a random matrix
+  std::vector<int> matrix(rows * columns);
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < columns; j++) {
+      matrix[i * columns + j] = min + gen() % (max - min + 1);
+    }
+  }
+
+  return matrix;
+}
+
 TEST(savchenko_m_min_matrix_seq, test_pipeline_run) {
   std::vector<int> matrix;
   std::vector<int32_t> min_value(1, INT_MAX);
@@ -23,7 +38,7 @@ TEST(savchenko_m_min_matrix_seq, test_pipeline_run) {
   const int gen_max = 1000;
   const int ref = INT_MIN;
 
-  matrix = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
+  matrix = getRandomMatrix(rows, columns, gen_min, gen_max);
   size_t index = gen() % (rows * columns);
   matrix[index] = INT_MIN;
 
@@ -73,7 +88,7 @@ TEST(savchenko_m_min_matrix_seq, test_task_run) {
   const int gen_max = 1000;
   const int ref = INT_MIN;
 
-  matrix = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
+  matrix = getRandomMatrix(rows, columns, gen_min, gen_max);
   size_t index = gen() % (rows * columns);
   matrix[index] = INT_MIN;
 

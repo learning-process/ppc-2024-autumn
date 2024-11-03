@@ -7,6 +7,21 @@
 
 #include "seq/savchenko_m_min_matrix/include/ops_seq_savchenko.hpp"
 
+std::vector<int> getRandomMatrix(size_t rows, size_t columns, int min, int max) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+
+  // Forming a random matrix
+  std::vector<int> matrix(rows * columns);
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < columns; j++) {
+      matrix[i * columns + j] = min + gen() % (max - min + 1);
+    }
+  }
+
+  return matrix;
+}
+
 TEST(savchenko_m_min_matrix_seq, test_min_10x10) {
   std::vector<int> matrix;
   std::vector<int32_t> min_value(1, INT_MAX);
@@ -21,7 +36,7 @@ TEST(savchenko_m_min_matrix_seq, test_min_10x10) {
   const int gen_max = 1000;
   const int ref = INT_MIN;
 
-  matrix = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
+  matrix = getRandomMatrix(rows, columns, gen_min, gen_max);
   const int index = gen() % (rows * columns);
   matrix[index] = INT_MIN;
 
@@ -57,7 +72,7 @@ TEST(savchenko_m_min_matrix_seq, test_min_100x10) {
   const int gen_max = 1000;
   const int ref = INT_MIN;
 
-  matrix = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
+  matrix = getRandomMatrix(rows, columns, gen_min, gen_max);
   const int index = gen() % (rows * columns);
   matrix[index] = INT_MIN;
 
@@ -93,7 +108,7 @@ TEST(savchenko_m_min_matrix_seq, test_min_10x100) {
   const int gen_max = 1000;
   const int ref = INT_MIN;
 
-  matrix = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
+  matrix = getRandomMatrix(rows, columns, gen_min, gen_max);
   const int index = gen() % (rows * columns);
   matrix[index] = INT_MIN;
 
@@ -129,7 +144,7 @@ TEST(savchenko_m_min_matrix_seq, test_min_100x100) {
   const int gen_max = 1000;
   const int ref = INT_MIN;
 
-  matrix = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
+  matrix = getRandomMatrix(rows, columns, gen_min, gen_max);
   const int index = gen() % (rows * columns);
   matrix[index] = INT_MIN;
 
@@ -165,7 +180,7 @@ TEST(savchenko_m_min_matrix_seq, test_min_100x1) {
   const int gen_max = 1000;
   const int ref = INT_MIN;
 
-  matrix = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
+  matrix = getRandomMatrix(rows, columns, gen_min, gen_max);
   const int index = gen() % (rows * columns);
   matrix[index] = INT_MIN;
 
@@ -201,7 +216,7 @@ TEST(savchenko_m_min_matrix_seq, test_min_1000x1) {
   const int gen_max = 1000;
   const int ref = INT_MIN;
 
-  matrix = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
+  matrix = getRandomMatrix(rows, columns, gen_min, gen_max);
   const int index = gen() % (rows * columns);
   matrix[index] = INT_MIN;
 
@@ -237,7 +252,7 @@ TEST(savchenko_m_min_matrix_seq, test_min_1x100) {
   const int gen_max = 1000;
   const int ref = INT_MIN;
 
-  matrix = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
+  matrix = getRandomMatrix(rows, columns, gen_min, gen_max);
   const int index = gen() % (rows * columns);
   matrix[index] = INT_MIN;
 
@@ -273,7 +288,7 @@ TEST(savchenko_m_min_matrix_seq, test_min_1x1000) {
   const int gen_max = 1000;
   const int ref = INT_MIN;
 
-  matrix = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
+  matrix = getRandomMatrix(rows, columns, gen_min, gen_max);
   const int index = gen() % (rows * columns);
   matrix[index] = INT_MIN;
 
@@ -305,7 +320,7 @@ TEST(savchenko_m_min_matrix_seq, test_min_0x0) {
   const int gen_min = -1000;
   const int gen_max = 1000;
 
-  matrix = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
+  matrix = getRandomMatrix(rows, columns, gen_min, gen_max);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -331,7 +346,7 @@ TEST(savchenko_m_min_matrix_seq, test_min_0x10) {
   const int gen_min = -1000;
   const int gen_max = 1000;
 
-  matrix = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
+  matrix = getRandomMatrix(rows, columns, gen_min, gen_max);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -357,7 +372,7 @@ TEST(savchenko_m_min_matrix_seq, test_min_10x0) {
   const int gen_min = -1000;
   const int gen_max = 1000;
 
-  matrix = savchenko_m_min_matrix_seq::getRandomMatrix(rows, columns, gen_min, gen_max);
+  matrix = getRandomMatrix(rows, columns, gen_min, gen_max);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();

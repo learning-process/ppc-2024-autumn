@@ -2,11 +2,27 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
+#include <climits>
 #include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/savchenko_m_min_matrix/include/ops_mpi_savchenko.hpp"
+
+std::vector<int> getRandomMatrix(size_t rows, size_t columns, int min, int max) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+
+  // Forming a random matrix
+  std::vector<int> matrix(rows * columns);
+  for (size_t i = 0; i < rows; i++) {
+    for (size_t j = 0; j < columns; j++) {
+      matrix[i * columns + j] = min + gen() % (max - min + 1);
+    }
+  }
+
+  return matrix;
+}
 
 TEST(savchenko_m_min_matrix_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
@@ -26,7 +42,7 @@ TEST(savchenko_m_min_matrix_mpi, test_pipeline_run) {
     const int gen_min = -1000;
     const int gen_max = 1000;
 
-    global_matrix = savchenko_m_min_matrix_mpi::getRandomMatrix(rows, columns, gen_min, gen_max);
+    global_matrix = getRandomMatrix(rows, columns, gen_min, gen_max);
     int index = gen() % (rows * columns);
     global_matrix[index] = ref;
 
@@ -80,7 +96,7 @@ TEST(savchenko_m_min_matrix_mpi, test_task_run) {
     const int gen_min = -1000;
     const int gen_max = 1000;
 
-    global_matrix = savchenko_m_min_matrix_mpi::getRandomMatrix(rows, columns, gen_min, gen_max);
+    global_matrix = getRandomMatrix(rows, columns, gen_min, gen_max);
     int index = gen() % (rows * columns);
     global_matrix[index] = ref;
 

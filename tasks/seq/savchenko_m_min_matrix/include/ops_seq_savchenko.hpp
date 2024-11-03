@@ -8,8 +8,6 @@
 
 namespace savchenko_m_min_matrix_seq {
 
-std::vector<int> getRandomMatrix(size_t rows, size_t columns, int min, int max);
-
 class TestTaskSequential : public ppc::core::Task {
  public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
