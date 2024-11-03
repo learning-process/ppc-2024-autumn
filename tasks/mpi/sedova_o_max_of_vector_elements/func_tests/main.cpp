@@ -72,13 +72,12 @@ TEST(Parallel_Operations_MPI, Test5) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix[i].data()));
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->inputs_count.emplace_back(5);
-
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
+    sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), true);
+    ASSERT_EQ(testMpiTaskParallel.pre_processing(), true);
+    ASSERT_EQ(testMpiTaskParallel.run(), true);
+    ASSERT_EQ(testMpiTaskParallel.post_processing(), true);
   }
-  sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  ASSERT_EQ(testMpiTaskParallel.pre_processing(), true);
-  ASSERT_EQ(testMpiTaskParallel.run(), true);
-  ASSERT_EQ(testMpiTaskParallel.post_processing(), true);
 }
