@@ -79,6 +79,7 @@ TEST(Parallel_Operations_MPI, Test5) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
     sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    testMpiTaskParallel.validation();
     ASSERT_EQ(testMpiTaskParallel.pre_processing(), true);
   }
 }
@@ -101,6 +102,8 @@ TEST(Parallel_Operations_MPI, Test6) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
     sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    testMpiTaskParallel.validation();
+    testMpiTaskParallel.pre_processing();
     ASSERT_EQ(testMpiTaskParallel.run(), true);
   }
 }
@@ -123,6 +126,9 @@ TEST(Parallel_Operations_MPI, Test7) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
     sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    testMpiTaskParallel.validation();
+    testMpiTaskParallel.pre_processing();
+    testMpiTaskParallel.run();
     ASSERT_EQ(testMpiTaskParallel.post_processing(), true);
   }
 }
