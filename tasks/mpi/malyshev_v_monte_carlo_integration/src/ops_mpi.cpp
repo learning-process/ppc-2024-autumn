@@ -15,26 +15,32 @@ bool TestMPITaskSequential::pre_processing() {
   a = *reinterpret_cast<double*>(taskData->inputs[0]);
   b = *reinterpret_cast<double*>(taskData->inputs[1]);
   epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
-  num_samples = static_cast<int>(1.0 / epsilon);
+  num_samples = static_cast<int>(20 / epsilon);
   return true;
 }
+
 bool TestMPITaskSequential::run() {
   internal_order_test();
   double sum = 0.0;
-  std::mt19937 rng(12345);
+  std::random_device rd;
+  std::mt19937 rng(rd());
   std::uniform_real_distribution<> dist(a, b);
+
   for (int i = 0; i < num_samples; ++i) {
     double x = dist(rng);
     sum += function_square(x);
   }
+
   res = (b - a) * sum / num_samples;
   return true;
 }
+
 bool TestMPITaskSequential::post_processing() {
   internal_order_test();
   reinterpret_cast<double*>(taskData->outputs[0])[0] = res;
   return true;
 }
+
 bool TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
@@ -48,13 +54,14 @@ bool TestMPITaskParallel::validation() {
   }
   return true;
 }
+
 bool TestMPITaskParallel::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     a = *reinterpret_cast<double*>(taskData->inputs[0]);
     b = *reinterpret_cast<double*>(taskData->inputs[1]);
     epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
-    num_samples = static_cast<int>(1.0 / epsilon);
+    num_samples = static_cast<int>(20 / epsilon);
   }
 
   boost::mpi::broadcast(world, a, 0);
@@ -67,7 +74,8 @@ bool TestMPITaskParallel::pre_processing() {
 bool TestMPITaskParallel::run() {
   internal_order_test();
   double local_sum = 0.0;
-  std::mt19937 rng(world.rank());
+  std::random_device rd;
+  std::mt19937 rng(rd() + world.rank());
   std::uniform_real_distribution<> dist(a, b);
 
   for (int i = 0; i < local_num_samples; ++i) {
