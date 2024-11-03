@@ -105,7 +105,6 @@ bool smirnov_i_integration_by_rectangles::TestMPITaskSequential::pre_processing(
   res = 0;
   return true;
 }
-
 bool smirnov_i_integration_by_rectangles::TestMPITaskSequential::validation() {
   internal_order_test();
   return taskData->outputs_count[0] == 1;
