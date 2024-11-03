@@ -15,10 +15,6 @@
 
 namespace beresnev_a_min_values_by_matrix_columns_mpi {
 
-std::vector<int> getRandomVector(int sz);
-
-std::vector<int> transpose(const std::vector<int>& data, int n, int m);
-
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

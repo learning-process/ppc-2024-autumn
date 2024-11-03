@@ -3,9 +3,33 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <functional>
+#include <random>
 #include <vector>
 
 #include "mpi/beresnev_a_min_values_by_matrix_columns/include/ops_mpi.hpp"
+
+std::vector<int> getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = gen() % 100;
+  }
+  return vec;
+}
+
+std::vector<int> transpose(const std::vector<int> &data, int n, int m) {
+  std::vector<int> transposed(m * n);
+
+  for (int i = 0; i < n; ++i) {
+    for (int j = 0; j < m; ++j) {
+      transposed[j * n + i] = data[i * m + j];
+    }
+  }
+
+  return transposed;
+}
 
 TEST(beresnev_a_min_values_by_matrix_columns_mpi, Empty_Input_0) {
   boost::mpi::communicator world;
@@ -151,6 +175,7 @@ TEST(beresnev_a_min_values_by_matrix_columns_mpi, Test_Base_0) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
+    in = transpose(in, N, M);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskDataPar->inputs_count.emplace_back(in.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(n.data()));
@@ -175,15 +200,16 @@ TEST(beresnev_a_min_values_by_matrix_columns_mpi, Test_Base_1) {
   const int N = 100;
   const int M = 100;
 
-  std::vector<int> in;
+  std::vector<int> in, tr;
   std::vector<int> out(M, 0);
   std::vector<int> n(1, N);
   std::vector<int> m(1, M);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    in = beresnev_a_min_values_by_matrix_columns_mpi::getRandomVector(N * M);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    in = getRandomVector(N * M);
+    tr = transpose(in, N, M);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(tr.data()));
     taskDataPar->inputs_count.emplace_back(in.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(n.data()));
     taskDataPar->inputs_count.emplace_back(n.size());
@@ -227,15 +253,16 @@ TEST(beresnev_a_min_values_by_matrix_columns_mpi, Test_Base_2) {
   const int N = 43;
   const int M = 563;
 
-  std::vector<int> in;
+  std::vector<int> in, tr;
   std::vector<int> out(M, 0);
   std::vector<int> n(1, N);
   std::vector<int> m(1, M);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    in = beresnev_a_min_values_by_matrix_columns_mpi::getRandomVector(N * M);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    in = getRandomVector(N * M);
+    tr = transpose(in, N, M);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(tr.data()));
     taskDataPar->inputs_count.emplace_back(in.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(n.data()));
     taskDataPar->inputs_count.emplace_back(n.size());
@@ -279,15 +306,16 @@ TEST(beresnev_a_min_values_by_matrix_columns_mpi, Test_Base_3) {
   const int N = 908;
   const int M = 510;
 
-  std::vector<int> in;
+  std::vector<int> in, tr;
   std::vector<int> out(M, 0);
   std::vector<int> n(1, N);
   std::vector<int> m(1, M);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    in = beresnev_a_min_values_by_matrix_columns_mpi::getRandomVector(N * M);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    in = getRandomVector(N * M);
+    tr = transpose(in, N, M);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(tr.data()));
     taskDataPar->inputs_count.emplace_back(in.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(n.data()));
     taskDataPar->inputs_count.emplace_back(n.size());
@@ -331,15 +359,16 @@ TEST(beresnev_a_min_values_by_matrix_columns_mpi, Test_Base_4) {
   const int N = 1;
   const int M = 1000;
 
-  std::vector<int> in;
+  std::vector<int> in, tr;
   std::vector<int> out(M, 0);
   std::vector<int> n(1, N);
   std::vector<int> m(1, M);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    in = beresnev_a_min_values_by_matrix_columns_mpi::getRandomVector(N * M);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    in = getRandomVector(N * M);
+    tr = transpose(in, N, M);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(tr.data()));
     taskDataPar->inputs_count.emplace_back(in.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(n.data()));
     taskDataPar->inputs_count.emplace_back(n.size());
@@ -383,15 +412,16 @@ TEST(beresnev_a_min_values_by_matrix_columns_mpi, Test_Base_5) {
   const int N = 1000;
   const int M = 1000;
 
-  std::vector<int> in;
+  std::vector<int> in, tr;
   std::vector<int> out(M, 0);
   std::vector<int> n(1, N);
   std::vector<int> m(1, M);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    in = beresnev_a_min_values_by_matrix_columns_mpi::getRandomVector(N * M);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    in = getRandomVector(N * M);
+    tr = transpose(in, N, M);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(tr.data()));
     taskDataPar->inputs_count.emplace_back(in.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(n.data()));
     taskDataPar->inputs_count.emplace_back(n.size());

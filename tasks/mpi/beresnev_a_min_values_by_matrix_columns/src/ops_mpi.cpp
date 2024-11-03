@@ -10,28 +10,6 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> beresnev_a_min_values_by_matrix_columns_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
-}
-
-std::vector<int> beresnev_a_min_values_by_matrix_columns_mpi::transpose(const std::vector<int>& data, int n, int m) {
-  std::vector<int> transposed(m * n);
-
-  for (int i = 0; i < n; ++i) {
-    for (int j = 0; j < m; ++j) {
-      transposed[j * n + i] = data[i * m + j];
-    }
-  }
-
-  return transposed;
-}
-
 bool beresnev_a_min_values_by_matrix_columns_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init value for input and output
@@ -86,8 +64,6 @@ bool beresnev_a_min_values_by_matrix_columns_mpi::TestMPITaskParallel::pre_proce
     for (int i = 0; i < total_elements; i++) {
       input_[i] = tmp_ptr[i];
     }
-
-    input_ = transpose(input_, n_, m_);
 
     for (int proc = 1; proc < world.size(); proc++) {
       world.isend(proc, 0, input_.data() + (col_on_pr * proc + remainder) * n_, n_ * col_on_pr);
