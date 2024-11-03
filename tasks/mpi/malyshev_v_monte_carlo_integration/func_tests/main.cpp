@@ -2,13 +2,12 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <memory>
 #include <random>
 #include <vector>
-#include <memory>
 
 #include "mpi/malyshev_v_monte_carlo_integration/include/ops_mpi.hpp"
 
-// Тест с большим количеством случайных точек
 TEST(malyshev_v_monte_carlo_integration_mpi, test_large_random_points) {
   boost::mpi::communicator world;
   std::vector<double> global_points;
@@ -22,7 +21,6 @@ TEST(malyshev_v_monte_carlo_integration_mpi, test_large_random_points) {
     std::mt19937 eng(rd());
     std::uniform_real_distribution<> distr(0.0, 1.0);
 
-    // Генерация случайных точек для интеграции
     std::generate(global_points.begin(), global_points.end(), [&]() { return distr(eng); });
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_points.data()));
     taskDataPar->inputs_count.emplace_back(global_points.size());
@@ -54,7 +52,6 @@ TEST(malyshev_v_monte_carlo_integration_mpi, test_large_random_points) {
   }
 }
 
-// Тест с пустым набором точек
 TEST(malyshev_v_monte_carlo_integration_mpi, test_empty_points) {
   boost::mpi::communicator world;
   std::vector<double> global_points;
@@ -79,10 +76,9 @@ TEST(malyshev_v_monte_carlo_integration_mpi, test_empty_points) {
   }
 }
 
-// Тест с точками, расположенными в одной позиции
 TEST(malyshev_v_monte_carlo_integration_mpi, test_single_position_points) {
   boost::mpi::communicator world;
-  std::vector<double> global_points(1000, 0.5); // Все точки имеют одно и то же значение
+  std::vector<double> global_points(1000, 0.5);
   double global_result = 0.0;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
