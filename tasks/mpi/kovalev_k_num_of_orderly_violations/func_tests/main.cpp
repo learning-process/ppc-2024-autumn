@@ -35,8 +35,7 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_100_opposite_sort_in
   // Create data
   std::vector<int> in(length, alpha);
   std::vector<size_t> out(1, 0);
-  for (size_t i = 0; i < length; i++)
-  {
+  for (size_t i = 0; i < length; i++) {
     in[i] = 2 * length - i;
   }
   boost::mpi::communicator world;
@@ -53,7 +52,7 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_100_opposite_sort_in
   tmpTaskPar.pre_processing();
   tmpTaskPar.run();
   tmpTaskPar.post_processing();
-  size_t result = length-1;
+  size_t result = length - 1;
   if (world.rank() == 0) {
     ASSERT_EQ(result, out[0]);
   }
@@ -171,7 +170,7 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_100_opposite_sort_do
   tmpTaskPar.pre_processing();
   tmpTaskPar.run();
   tmpTaskPar.post_processing();
-  size_t result = length-1;
+  size_t result = length - 1;
   if (world.rank() == 0) {
     ASSERT_EQ(result, out[0]);
   }
