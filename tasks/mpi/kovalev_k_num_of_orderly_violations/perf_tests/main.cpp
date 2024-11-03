@@ -10,8 +10,8 @@
 #include "mpi/kovalev_k_num_of_orderly_violations/include/header.hpp"
 
 TEST(kovalev_k_num_of_orderly_violations_mpi, test_pipeline_run) {
-  int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  boost::mpi::communicator world;
+  int rank = world.rank();
   std::vector<int> g_vec;
   std::vector<size_t> g_num_viol(1, 0);
   // Create TaskData
@@ -50,8 +50,8 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_pipeline_run) {
 }
 
 TEST(kovalev_k_num_of_orderly_violations_mpi, test_int_100_perf) {
-  int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  boost::mpi::communicator world;
+  int rank = world.rank();
   std::vector<int> g_vec;
   std::vector<size_t> g_num_viol(1, 0);
   // Create TaskData
@@ -92,8 +92,8 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_int_100_perf) {
 }
 
 TEST(kovalev_k_num_of_orderly_violations_mpi, test_int_1000000_perf) {
-  int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  boost::mpi::communicator world;
+  int rank = world.rank();
   std::vector<int> g_vec;
   std::vector<size_t> g_num_viol(1, 0);
   // Create TaskData
@@ -134,8 +134,8 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_int_1000000_perf) {
 }
 
 TEST(kovalev_k_num_of_orderly_violations_mpi, test_double_10000_perf) {
-  int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  boost::mpi::communicator world;
+  int rank = world.rank();
   std::vector<double> g_vec;
   std::vector<size_t> g_num_viol(1, 0);
   // Create TaskData
@@ -178,8 +178,8 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, test_double_10000_perf) {
 }
 
 TEST(kovalev_k_num_of_orderly_violations_mpi, test_double_1000000_perf) {
-  int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  boost::mpi::communicator world;
+  int rank = world.rank();
   std::vector<double> g_vec;
   std::vector<size_t> g_num_viol(1, 0);
   // Create TaskData

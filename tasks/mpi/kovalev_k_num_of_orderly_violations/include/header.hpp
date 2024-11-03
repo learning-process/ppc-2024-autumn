@@ -3,6 +3,7 @@
 
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <boost/mpi.hpp>
 #include <cstdlib>
 #include <cstring>
 #include <string>

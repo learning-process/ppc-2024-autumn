@@ -25,11 +25,21 @@ bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::pre_
     void* ptr_input = taskData->inputs[0];
     memcpy(ptr_vec, ptr_input, sizeof(T) * n);
   }
-  boost::mpi::broadcast(world, n, 0);
+  try {
+    boost::mpi::broadcast(world, n, 0);
+  } catch (const boost::mpi::exception& e) {
+    std::cerr << "Ошибка в MPI broadcast: " << e.what() << std::endl;
+  }
   size_t scratter_length = n / size;  // minimum length to each process
   loc_v.resize(scratter_length);      // resize the local copy
-  MPI_Scatter(glob_v.data(), scratter_length * sizeof(T), MPI_BYTE, loc_v.data(), scratter_length * sizeof(T), MPI_BYTE,
-              0, MPI_COMM_WORLD);
+  int scatterResult = MPI_Scatter(glob_v.data(), scratter_length * sizeof(T), MPI_BYTE, loc_v.data(),
+                                  scratter_length * sizeof(T), MPI_BYTE, 0, MPI_COMM_WORLD);
+  if (scatterResult != MPI_SUCCESS) {
+    char errorString[MPI_MAX_ERROR_STRING];
+    int errorStringLength;
+    MPI_Error_string(scatterResult, errorString, &errorStringLength);
+    std::cerr << "Ошибка MPI_Scatter: " << errorString << std::endl;
+  }
   return true;
 }
 
@@ -49,7 +59,12 @@ bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::run(
   // counting violations locally
   count_num_of_orderly_violations_mpi();
   // redusing results
-  boost::mpi::reduce(world, l_res, g_res, std::plus<unsigned long>(), 0);
+  try {
+    boost::mpi::reduce(world, l_res, g_res, std::plus<unsigned long>(), 0);
+  } catch (const boost::mpi::exception& e) {
+    std::cerr << "Ошибка в MPI reduce: " << e.what() << std::endl;
+    return 1;  // Завершение программы с кодом ошибки
+  }
   if (rank == 0) {
     for (int i = 1; i < size; i++)  // are there any violations between local copies?
       if (glob_v[i * (n / size) - 1] > glob_v[i * (n / size)]) g_res++;

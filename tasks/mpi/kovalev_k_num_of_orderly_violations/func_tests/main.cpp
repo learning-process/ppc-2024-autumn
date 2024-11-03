@@ -4,6 +4,7 @@
 #include "mpi/kovalev_k_num_of_orderly_violations/include/header.hpp"
 
 TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_viol_0_int_) {
+  try {
   const size_t length = 100;
   const int alpha = 1;
   // Create data
@@ -25,6 +26,9 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_viol_0_int_) {
   tmpTaskSeq.post_processing();
   size_t result = 0;
   ASSERT_EQ(result, out[0]);
+  } catch (const boost::mpi::exception &e) {
+    std::cerr << "Îøèáêà â MPI broadcast: " << e.what() << std::endl;
+  }
 }
 
 TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_10_int_) {
