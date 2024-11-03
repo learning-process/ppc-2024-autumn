@@ -3,7 +3,6 @@
 #include <boost/mpi/collectives.hpp>
 #include <random>
 
-
 namespace malyshev_v_monte_carlo_integration {
 
 bool TestMPITaskSequential::pre_processing() {
