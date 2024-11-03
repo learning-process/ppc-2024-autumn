@@ -13,7 +13,9 @@ TEST(mpi_example_perf_test, test_pipeline_run) {
   std::vector<int> global_max(3, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int rows, cols;
+
+  int rows;
+  int cols;
   if (world.rank() == 0) {
     rows = 4;
     cols = 3;
@@ -34,7 +36,7 @@ TEST(mpi_example_perf_test, test_pipeline_run) {
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
-  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+  perfAttr->current_timer = [&current_timer] { return current_timer.elapsed().wall; };
 
   // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
@@ -54,7 +56,9 @@ TEST(mpi_example_perf_test, test_task_run) {
   std::vector<int> global_max(3, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int rows, cols;
+
+  int rows;
+  int cols;
   if (world.rank() == 0) {
     rows = 4;
     cols = 3;
@@ -62,4 +66,40 @@ TEST(mpi_example_perf_test, test_task_run) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(global_matrix.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
-    taskDataPar
+    taskDataPar->outputs_count.emplace_back(global_max.size());
+  }
+
+  auto testMpiTaskParallel = std::make_shared<nasedkin_e_matrix_column_max_value_mpi::MatrixColumnMaxParallel>(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  testMpiTaskParallel->pre_processing();
+  testMpiTaskParallel->run();
+  testMpiTaskParallel->post_processing();
+
+  // Create Perf attributes
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 10;
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&current_timer] { return current_timer.elapsed().wall; };
+
+  // Create and init perf results
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+
+  // Create Perf analyzer
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
+  perfAnalyzer->task_run(perfAttr, perfResults);
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
+    ASSERT_EQ(global_max, std::vector<int>(3, 1));
+  }
+}
+
+int main(int argc, char** argv) {
+  boost::mpi::environment env(argc, argv);
+  boost::mpi::communicator world;
+  ::testing::InitGoogleTest(&argc, argv);
+  ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
+  if (world.rank() != 0) {
+    delete listeners.Release(listeners.default_result_printer());
+  }
+  return RUN_ALL_TESTS();
+}

@@ -113,7 +113,8 @@ bool nasedkin_e_matrix_column_max_value_mpi::MatrixColumnMaxParallel::run() {
     local_res[col] = max_val;
   }
 
-  reduce(world, local_res.data(), res_.data(), cols, boost::mpi::maximum<int>(), 0);
+  // Используем векторы вместо указателей на данные
+  reduce(world, local_res, res_, boost::mpi::maximum<int>(), 0);
   return true;
 }
 

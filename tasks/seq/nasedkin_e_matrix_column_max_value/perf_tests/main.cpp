@@ -30,7 +30,7 @@ TEST(seq_example_perf_test, test_pipeline_run) {
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::timer::cpu_timer current_timer;
-  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+  perfAttr->current_timer = [&current_timer] { return current_timer.elapsed().wall; };
 
   // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
@@ -65,7 +65,7 @@ TEST(seq_example_perf_test, test_task_run) {
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::timer::cpu_timer current_timer;
-  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+  perfAttr->current_timer = [&current_timer] { return current_timer.elapsed().wall; };
 
   // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
