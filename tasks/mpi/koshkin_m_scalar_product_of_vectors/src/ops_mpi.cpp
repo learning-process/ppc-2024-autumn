@@ -25,12 +25,9 @@ bool koshkin_m_scalar_product_of_vectors::TestMPITaskSequential::pre_processing(
 
 bool koshkin_m_scalar_product_of_vectors::TestMPITaskSequential::validation() {
   internal_order_test();
-  if (taskData->inputs.size() == 2 && taskData->inputs.size() == taskData->inputs_count.size() &&
-      taskData->inputs_count[0] == taskData->inputs_count[1] && taskData->outputs.size() == 1 &&
-      taskData->outputs.size() == taskData->outputs_count.size() && taskData->outputs_count[0] == 1) {
-    return true;
-  }
-  return false;
+  return (taskData->inputs.size() == 2 && taskData->inputs.size() == taskData->inputs_count.size() &&
+          taskData->inputs_count[0] == taskData->inputs_count[1] && taskData->outputs.size() == 1 &&
+          taskData->outputs.size() == taskData->outputs_count.size() && taskData->outputs_count[0] == 1);
 }
 
 bool koshkin_m_scalar_product_of_vectors::TestMPITaskSequential::run() {
@@ -54,9 +51,8 @@ bool koshkin_m_scalar_product_of_vectors::TestMPITaskParallel::pre_processing() 
   size_t extra_el = 0;
   if (world.rank() == 0) {
     total_el = taskData->inputs_count[0];
-    count_processes_ = world.size();
-    base_el = total_el / count_processes_;
-    extra_el = total_el % count_processes_;
+    base_el = total_el / world.size();
+    extra_el = total_el % world.size();
   }
   counts_.resize(world.size());
 
