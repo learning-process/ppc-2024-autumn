@@ -7,7 +7,7 @@
 #include "seq/konkov_i_count_words/include/ops_seq.hpp"
 
 TEST(konkov_i_count_words_seq, Test_Empty_String) {
-  std::string input = "";
+  std::string input;
   int expected_count = 0;
 
   std::vector<int> out(1, 0);

@@ -22,7 +22,6 @@ bool konkov_i_count_words_mpi::CountWordsTaskParallel::validation() {
   return true;
 }
 
-
 bool konkov_i_count_words_mpi::CountWordsTaskParallel::run() {
   internal_order_test();
   int num_processes = world.size();

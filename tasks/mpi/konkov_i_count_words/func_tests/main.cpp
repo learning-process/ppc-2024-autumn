@@ -10,7 +10,7 @@
 
 TEST(konkov_i_count_words_mpi, Test_Empty_String) {
   boost::mpi::communicator world;
-  std::string input = "";
+  std::string input;
   int expected_count = 0;
 
   std::vector<int> out(1, 0);
