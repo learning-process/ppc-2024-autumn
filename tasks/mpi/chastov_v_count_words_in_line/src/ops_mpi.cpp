@@ -5,7 +5,7 @@ namespace chastov_v_count_words_in_line_mpi {
 
 std::vector<char> createString(int n) {
   std::vector<char> wordCountInput;
-  std::string testString = "This is a proposal to evaluate the performance of a word counting algorithm via MPI. ";
+  std::string testString = "This is a proposal to evaluate the \n performance of a word counting algorithm via MPI. ";
   for (int i = 0; i < n; i++) {
     for (unsigned long int j = 0; j < testString.length(); j++) {
       wordCountInput.push_back(testString[j]);
@@ -48,6 +48,16 @@ bool TestMPITaskSequential::post_processing() {
 
 bool TestMPITaskParallel::pre_processing() {
   internal_order_test();
+  return true;
+}
+
+bool TestMPITaskParallel::validation() {
+  internal_order_test();
+  return (world.rank() == 0) ? (taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1) : true;
+}
+
+bool TestMPITaskParallel::run() {
+  internal_order_test();
   unsigned int blockSize = 0;
   if (world.rank() == 0) {
     input_ = std ::vector<char>(taskData->inputs_count[0]);
@@ -68,16 +78,6 @@ bool TestMPITaskParallel::pre_processing() {
   } else {
     world.recv(0, 0, local_input_.data(), blockSize);
   }
-  return true;
-}
-
-bool TestMPITaskParallel::validation() {
-  internal_order_test();
-  return (world.rank() == 0) ? (taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1) : true;
-}
-
-bool TestMPITaskParallel::run() {
-  internal_order_test();
   for (char c : local_input_) {
     if (c == ' ') {
       localSpaceFound++;
