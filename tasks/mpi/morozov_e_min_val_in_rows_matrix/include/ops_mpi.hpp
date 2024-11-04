@@ -37,7 +37,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<std::vector<int>> matrix_, local_matrix_;
+  std::vector<std::vector<int>> matrix_;
   std::vector<int> min_val_list_;
   int n, m;
   boost::mpi::communicator world;

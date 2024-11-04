@@ -96,21 +96,22 @@ bool morozov_e_min_val_in_rows_matrix::TestMPITaskParallel::run() {
   }
 
   int cur_n = delta + (world.rank() < mod ? 1 : 0);
-  local_matrix_.resize(cur_n, std::vector<int>(m));
+  std::vector<std::vector<int>> local_matrix(cur_n, std::vector<int>(m));
+  //local_matrix_.resize(cur_n, std::vector<int>(m));
 
   if (world.rank() == 0) {
-    std::copy(matrix_.begin(), matrix_.begin() + cur_n, local_matrix_.begin());
+    std::copy(matrix_.begin(), matrix_.begin() + cur_n, local_matrix.begin());
   } else {
     for (int r = 0; r < cur_n; r++) {
-      world.recv(0, 0, local_matrix_[r].data(), m);
+      world.recv(0, 0, local_matrix[r].data(), m);
     }
   }
 
   min_val_list_.resize(n);
 
-  std::vector<int> cur_min_vector(local_matrix_.size(), INT_MAX);
-  for (size_t i = 0; i < local_matrix_.size(); i++) {
-    for (const auto& val : local_matrix_[i]) {
+  std::vector<int> cur_min_vector(local_matrix.size(), INT_MAX);
+  for (size_t i = 0; i < local_matrix.size(); i++) {
+    for (const auto& val : local_matrix[i]) {
       cur_min_vector[i] = std::min(cur_min_vector[i], val);
     }
   }
