@@ -65,7 +65,7 @@ std::vector<int> gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::ran
   return v;
 }
 
-std::vector<std::vector<int>> gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::rand_matr(int rows, 
+std::vector<std::vector<int>> gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::rand_matr(int rows,
                                                                                                     int cols) {
   std::vector<std::vector<int>> matr(rows, std::vector<int>(cols));
 
