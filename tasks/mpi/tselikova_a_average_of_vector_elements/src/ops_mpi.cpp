@@ -44,13 +44,6 @@ bool tselikova_a_average_of_vector_elements_mpi::TestMPITaskSequential::post_pro
 
 bool tselikova_a_average_of_vector_elements_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  unsigned int delta = 0;
-  if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] / world.size();
-    total_elements = taskData->inputs_count[0];
-  }
-  broadcast(world, delta, 0);
-  broadcast(world, total_elements, 0);
 
   if (world.rank() == 0) {
     input_ = std::vector<int>(taskData->inputs_count[0]);
@@ -58,21 +51,12 @@ bool tselikova_a_average_of_vector_elements_mpi::TestMPITaskParallel::pre_proces
     for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
       input_[i] = tmp_ptr[i];
     }
-    for (int proc = 1; proc < world.size(); proc++) {
-      unsigned int start_index = proc * delta;
-      unsigned int count = (proc == world.size() - 1) ? (total_elements - start_index) : delta;
-      world.send(proc, 0, input_.data() + start_index, count);
-    }
   }
-  local_input_ = std::vector<int>(delta);
-  if (world.rank() == 0) {
-    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
-  } else {
-    world.recv(0, 0, local_input_.data(), delta);
-  }
+
   res = 0;
   return true;
 }
+
 
 bool tselikova_a_average_of_vector_elements_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
@@ -84,6 +68,28 @@ bool tselikova_a_average_of_vector_elements_mpi::TestMPITaskParallel::validation
 
 bool tselikova_a_average_of_vector_elements_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+
+  unsigned int delta = 0;
+  if (world.rank() == 0) {
+    delta = taskData->inputs_count[0] / world.size();
+    total_elements = taskData->inputs_count[0];
+  }
+  broadcast(world, delta, 0);
+  broadcast(world, total_elements, 0);
+  if (world.rank() == 0) {
+    for (int proc = 1; proc < world.size(); proc++) {
+       unsigned int start_index = proc * delta;
+       unsigned int count = (proc == world.size() - 1) ? (total_elements - start_index) : delta;
+       world.send(proc, 0, input_.data() + start_index, count);
+    }
+  }
+  local_input_ = std::vector<int>(delta);
+  if (world.rank() == 0) {
+    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
+  } else {
+    world.recv(0, 0, local_input_.data(), delta);
+  }
+
   int local_sum = 0;
   for (unsigned int i = 0; i < local_input_.size(); i++) {
     local_sum += local_input_[i];
