@@ -108,24 +108,30 @@ bool zaytsev_d_num_of_alternations_signs_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
   int local_count = 0;
-  for (size_t i = 1; i < local_input_.size(); i++) {
-    if ((local_input_[i - 1] >= 0 && local_input_[i] < 0) || (local_input_[i - 1] < 0 && local_input_[i] >= 0)) {
-      local_count++;
+
+  if (local_input_.size() > 1) {
+    for (size_t i = 1; i < local_input_.size(); i++) {
+      if ((local_input_[i - 1] >= 0 && local_input_[i] < 0) || (local_input_[i - 1] < 0 && local_input_[i] >= 0)) {
+        local_count++;
+      }
     }
   }
+
   int prev_value = 0;
   if (world.rank() > 0) {
     world.recv(world.rank() - 1, 0, &prev_value, 1);
-    if ((prev_value >= 0 && local_input_[0] < 0) || (prev_value < 0 && local_input_[0] >= 0)) {
+    if (!local_input_.empty() &&
+        ((prev_value >= 0 && local_input_[0] < 0) || (prev_value < 0 && local_input_[0] >= 0))) {
       local_count++;
     }
   }
-  int last_value = local_input_.back();
+
+  int last_value = local_input_.empty() ? 0 : local_input_.back();
   if (world.rank() < world.size() - 1) {
     world.send(world.rank() + 1, 0, &last_value, 1);
   }
 
-  boost::mpi::reduce(world, local_count, res, std::plus<int>(), 0);
+  boost::mpi::reduce(world, local_count, res, std::plus<>(), 0);
   return true;
 }
 

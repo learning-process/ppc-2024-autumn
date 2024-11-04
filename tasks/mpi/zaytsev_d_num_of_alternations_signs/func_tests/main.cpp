@@ -127,6 +127,54 @@ TEST(zaytsev_d_num_of_alternations_signs_mpi, BigVector) {
   }
 }
 
+TEST(zaytsev_d_num_of_alternations_signs_mpi, SmallVector) {
+  boost::mpi::communicator world;
+  std::vector<int> test_vector = {1, -1};
+  std::vector<int32_t> global_count(1, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(test_vector.data()));
+    taskDataPar->inputs_count.emplace_back(test_vector.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_count.data()));
+    taskDataPar->outputs_count.emplace_back(global_count.size());
+  }
+
+  zaytsev_d_num_of_alternations_signs_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(global_count[0], 1);
+  }
+}
+
+TEST(zaytsev_d_num_of_alternations_signs_mpi, EmptyVector) {
+  boost::mpi::communicator world;
+  std::vector<int> test_vector = {};
+  std::vector<int32_t> global_count(1, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(test_vector.data()));
+    taskDataPar->inputs_count.emplace_back(test_vector.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_count.data()));
+    taskDataPar->outputs_count.emplace_back(global_count.size());
+  }
+
+  zaytsev_d_num_of_alternations_signs_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(global_count[0], 0);
+  }
+}
+
 TEST(zaytsev_d_num_of_alternations_signs_mpi, WithRandomVector) {
   boost::mpi::communicator world;
   int vector_size = 100;
