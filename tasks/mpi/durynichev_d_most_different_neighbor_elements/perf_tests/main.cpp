@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/durynichev_d_most_different_neighbor_elements_mpi/include/ops_mpi.hpp"
+#include "mpi/durynichev_d_most_different_neighbor_elements/include/ops_mpi.hpp"
 
 TEST(durynichev_d_most_different_neighbor_elements_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
