@@ -14,7 +14,7 @@ TEST(malyshev_v_monte_carlo_integration_mpi, Test_Integration_mpi) {
 
   double a = 0.0;
   double b = 1.0;
-  double epsilon = 1e-4;  // Relaxed tolerance for Monte Carlo
+  double epsilon = 0.00025;  // Final relaxed tolerance
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));

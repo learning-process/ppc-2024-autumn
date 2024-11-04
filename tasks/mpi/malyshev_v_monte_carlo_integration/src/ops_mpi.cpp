@@ -16,15 +16,14 @@ bool TestMPITaskSequential::pre_processing() {
   a = *reinterpret_cast<double*>(taskData->inputs[0]);
   b = *reinterpret_cast<double*>(taskData->inputs[1]);
   epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
-  num_samples = static_cast<int>(100 / epsilon);  // Further increase for improved accuracy
+  num_samples = static_cast<int>(100 / epsilon);
   return true;
 }
 
 bool TestMPITaskSequential::run() {
   internal_order_test();
   double sum = 0.0;
-  std::random_device rd;
-  std::mt19937 rng(rd());  // Non-deterministic seed
+  std::mt19937 rng(12345);  // Fixed seed for consistency in tests
   std::uniform_real_distribution<> dist(a, b);
 
   for (int i = 0; i < num_samples; ++i) {
@@ -63,7 +62,7 @@ bool TestMPITaskParallel::pre_processing() {
     a = *reinterpret_cast<double*>(taskData->inputs[0]);
     b = *reinterpret_cast<double*>(taskData->inputs[1]);
     epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
-    num_samples = static_cast<int>(100 / epsilon);  // Increased samples for accuracy
+    num_samples = static_cast<int>(100 / epsilon);
   }
 
   boost::mpi::broadcast(world, a, 0);
@@ -76,8 +75,7 @@ bool TestMPITaskParallel::pre_processing() {
 bool TestMPITaskParallel::run() {
   internal_order_test();
   double local_sum = 0.0;
-  std::random_device rd;
-  std::mt19937 rng(rd() + world.rank());  // Non-deterministic seed based on rank for parallel tasks
+  std::mt19937 rng(12345 + world.rank());  // Deterministic seed for each process
   std::uniform_real_distribution<> dist(a, b);
 
   for (int i = 0; i < local_num_samples; ++i) {
