@@ -66,10 +66,8 @@ bool zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsParallel::pre_proc
     // Init vectors
     input_ = std::vector<int>(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-      input_[i] = tmp_ptr[i];
-    }
-    for (int proc = 1; proc < world.size() - 1; proc++) {
+    std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
+    for (int proc = 1; proc < world.size(); proc++) {
       world.send(proc, 0, input_.data() + (proc - 1) * delta, delta);
     }
   }
@@ -79,6 +77,7 @@ bool zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsParallel::pre_proc
     local_input_ = std::vector<int>(delta);
     world.recv(0, 0, local_input_.data(), delta);
   }
+
   return true;
 }
 
@@ -93,18 +92,13 @@ bool zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsParallel::validati
 
 bool zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsParallel::run() {
   internal_order_test();
-  if (local_input_.empty()) return true;
-  int local_res = local_input_[0];
-  for (auto i : local_input_) local_res = (local_res > i) ? i : local_res;
 
-  reduce(world, local_res, res, boost::mpi::minimum<int>(), 0);
-  return true;
-}
-
-bool zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsParallel::post_processing() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+  int local_res = INT_MAX;
+  if (!local_input_.empty()) {
+    local_res = local_input_[0];
+    for (auto i : local_input_) local_res = (local_res > i) ? i : local_res;
   }
+  reduce(world, local_res, res, boost::mpi::minimum<int>(), 0);
+
   return true;
 }
