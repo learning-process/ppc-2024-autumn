@@ -1,10 +1,10 @@
 ﻿#include "mpi/malyshev_v_monte_carlo_integration/include/ops_mpi.hpp"
 
 #include <boost/mpi/collectives.hpp>
+#include <random>
 
 namespace malyshev_v_monte_carlo_integration {
 
-// Sequential Trapezoidal Integration (for Testing)
 bool TestMPITaskSequential::validation() {
   internal_order_test();
   return (taskData->inputs.size() == 3 && taskData->outputs.size() == 1);
@@ -14,7 +14,8 @@ bool TestMPITaskSequential::pre_processing() {
   internal_order_test();
   a = *reinterpret_cast<double*>(taskData->inputs[0]);
   b = *reinterpret_cast<double*>(taskData->inputs[1]);
-  epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
+  double input_epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
+  epsilon = input_epsilon;
   num_samples = static_cast<int>(100 / epsilon);
   return true;
 }
@@ -38,15 +39,14 @@ bool TestMPITaskSequential::post_processing() {
   return true;
 }
 
-// Parallel Trapezoidal Integration (for Testing)
 bool TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     if ((taskData->inputs.size() != 3) || (taskData->outputs.size() != 1)) {
       return false;
     }
-    double epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
-    if (epsilon <= 0) {
+    double input_epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
+    if (input_epsilon <= 0) {
       return false;
     }
   }
@@ -58,7 +58,8 @@ bool TestMPITaskParallel::pre_processing() {
   if (world.rank() == 0) {
     a = *reinterpret_cast<double*>(taskData->inputs[0]);
     b = *reinterpret_cast<double*>(taskData->inputs[1]);
-    epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
+    double input_epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
+    epsilon = input_epsilon;
     num_samples = static_cast<int>(100 / epsilon);
   }
 
