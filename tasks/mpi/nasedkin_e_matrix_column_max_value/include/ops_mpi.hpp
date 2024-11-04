@@ -12,12 +12,9 @@
 
 namespace nasedkin_e_matrix_column_max_value_mpi {
 
-std::vector<int> getRandomMatrix(int rows, int cols);
-
-class MatrixColumnMaxMPI : public ppc::core::Task {
+class TestMPITaskSequential : public ppc::core::Task {
  public:
-  explicit MatrixColumnMaxMPI(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -25,8 +22,24 @@ class MatrixColumnMaxMPI : public ppc::core::Task {
 
  private:
   std::vector<int> input_;
-  std::vector<int> local_input_;
-  std::vector<int> res_;
+  std::vector<int> res_{};
+  int cols{};
+  int rows{};
+};
+
+class TestMPITaskParallel : public ppc::core::Task {
+ public:
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  bool pre_processing() override;
+  bool validation() override;
+  bool run() override;
+  bool post_processing() override;
+
+ private:
+  std::vector<int> input_, local_input_;
+  std::vector<int> res_{};
+  int cols{};
+  int rows{};
   boost::mpi::communicator world;
 };
 
