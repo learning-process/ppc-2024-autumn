@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
+
 #include <boost/mpi/timer.hpp>
 #include <random>
 #include <vector>
+
 #include "core/perf/include/perf.hpp"
 #include "mpi/Sdobnov_V_sum_of_vector_elements/include/ops_mpi.hpp"
 
@@ -24,12 +26,10 @@ TEST(Sdobnov_V_sum_of_vector_elements_par, test_pipeline_run) {
   }
   auto test = std::make_shared<Sdobnov_V_sum_of_vector_elements::SumVecElemParallel>(taskDataPar);
  
-
   ASSERT_TRUE(test->validation());
   test->pre_processing();
   test->run();
   test->post_processing();
-
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();

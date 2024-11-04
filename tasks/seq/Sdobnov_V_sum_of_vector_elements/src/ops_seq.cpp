@@ -4,8 +4,6 @@
 #include <random>
 #include <vector>
 
-
-
 std::vector<int> Sdobnov_V_sum_of_vector_elements::generate_random_vector(int size, int lower_bound, int upper_bound) {
   std::vector<int> res(size);
   for (int i = 0; i < size; i++) {

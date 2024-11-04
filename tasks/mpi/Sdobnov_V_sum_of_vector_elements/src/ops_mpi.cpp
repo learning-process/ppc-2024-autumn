@@ -1,5 +1,6 @@
 // Copyright 2024 Sdobnov Vladimir
 #include "mpi/Sdobnov_V_sum_of_vector_elements/include/ops_mpi.hpp"
+
 #include <random>
 #include <vector>
 
@@ -11,8 +12,8 @@ std::vector<int> Sdobnov_V_sum_of_vector_elements::generate_random_vector(int si
   return res;
 }
 
-std::vector<std::vector<int>> Sdobnov_V_sum_of_vector_elements::generate_random_matrix(int rows, int columns, 
-                                                                                       int lower_bound, 
+std::vector<std::vector<int>> Sdobnov_V_sum_of_vector_elements::generate_random_matrix(int rows, int columns,
+                                                                                       int lower_bound,
                                                                                        int upper_bound) {
   std::vector<std::vector<int>> res(rows);
   for (int i = 0; i < rows; i++) {
@@ -62,8 +63,8 @@ bool Sdobnov_V_sum_of_vector_elements::SumVecElemSequential::run() {
   return true;
 }
 
-bool Sdobnov_V_sum_of_vector_elements::SumVecElemSequential::post_processing() { 
-  internal_order_test(); 
+bool Sdobnov_V_sum_of_vector_elements::SumVecElemSequential::post_processing() {
+  internal_order_test();
   reinterpret_cast<int*>(taskData->outputs[0])[0] = res_;
   return true;
 }
@@ -83,7 +84,7 @@ bool Sdobnov_V_sum_of_vector_elements::SumVecElemParallel::pre_processing() {
       }
     }
   }
-  
+
   return true;
 }
 
@@ -97,7 +98,7 @@ bool Sdobnov_V_sum_of_vector_elements::SumVecElemParallel::validation() {
 
 bool Sdobnov_V_sum_of_vector_elements::SumVecElemParallel::run() {
   internal_order_test();
-  
+
   int input_size = 0;
   if (world.rank() == 0) input_size = input_.size();
   boost::mpi::broadcast(world, input_size, 0);
@@ -120,7 +121,7 @@ bool Sdobnov_V_sum_of_vector_elements::SumVecElemParallel::run() {
 
   int process_sum = vec_elem_sum(local_input_);
   boost::mpi::reduce(world, process_sum, res_, std::plus<int>(), 0);
- 
+
   return true;
 }
 
