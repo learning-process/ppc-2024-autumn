@@ -7,7 +7,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
 
 bool dormidontov_e_min_value_by_columns_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
@@ -72,17 +71,16 @@ bool dormidontov_e_min_value_by_columns_mpi::TestMPITaskParallel::pre_processing
 bool dormidontov_e_min_value_by_columns_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    
     return (((taskData->inputs_count.size() >= 2 && taskData->inputs_count[0] != 0 && taskData->inputs_count[1] != 0) &&
-             taskData->inputs_count[1] == taskData->outputs_count[0] ));
+             taskData->inputs_count[1] == taskData->outputs_count[0]));
   }
   return true;
 }
 
 bool dormidontov_e_min_value_by_columns_mpi::TestMPITaskParallel::run() {
   internal_order_test();
- 
-  if(world.rank() == 0) {
+
+  if (world.rank() == 0) {
     rs = taskData->inputs_count[0];
     cs = taskData->inputs_count[1];
   }
@@ -94,8 +92,7 @@ bool dormidontov_e_min_value_by_columns_mpi::TestMPITaskParallel::run() {
   int locrs;
   int prs;
   int a;
-  if (world.rank() < unfitrs)
-  {
+  if (world.rank() < unfitrs) {
     locrs = rsperpro + 1;
   } else {
     locrs = rsperpro;
