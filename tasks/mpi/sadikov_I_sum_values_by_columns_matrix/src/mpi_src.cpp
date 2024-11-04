@@ -8,8 +8,6 @@
 
 #include "mpi/sadikov_I_sum_values_by_columns_matrix/include/ops_mpi.h"
 
-using namespace std::literals::chrono_literals;
-
 sadikov_I_Sum_values_by_columns_matrix_mpi::MPITask::MPITask(std::shared_ptr<ppc::core::TaskData> td)
     : Task(std::move(td)) {}
 
