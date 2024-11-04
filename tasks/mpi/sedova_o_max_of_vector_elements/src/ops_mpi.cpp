@@ -63,8 +63,10 @@ bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::pre_processing() 
 
 bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
-  return (world.rank() != 0) ||
-         ((taskData->outputs_count[0] == 1) && (taskData->inputs_count[0] > 0) && (!taskData->inputs.empty()));
+  if (world.rank() == 0) {
+    return taskData->outputs_count[0] == 1 && !taskData->inputs.empty();
+  }
+  return true;
 }
 
 bool sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel::run() {

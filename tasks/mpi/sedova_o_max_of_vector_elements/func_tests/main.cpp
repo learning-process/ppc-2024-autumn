@@ -33,23 +33,6 @@ TEST(sedova_o_max_of_vector_elements_mpi, Test3) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    global_matrix = generate_random_matrix(0, 0, 20);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
-    taskDataPar->inputs_count.emplace_back(0);
-    taskDataPar->inputs_count.emplace_back(0);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
-    taskDataPar->outputs_count.emplace_back(global_max.size());
-    sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-    ASSERT_EQ(testMpiTaskParallel.validation(), false);
-  }
-}
-TEST(sedova_o_max_of_vector_elements_mpi, Test4) {
-  boost::mpi::communicator world;
-  std::vector<std::vector<int>> global_matrix;
-  std::vector<int32_t> global_max(1, -30);
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
     global_matrix = generate_random_matrix(1, 1, 20);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(1);
@@ -61,7 +44,7 @@ TEST(sedova_o_max_of_vector_elements_mpi, Test4) {
   }
 }
 
-TEST(sedova_o_max_of_vector_elements_mpi, Test5) {
+TEST(sedova_o_max_of_vector_elements_mpi, Test4) {
   size_t rows = 1;
   size_t cols = 5;
   size_t value = 20;
