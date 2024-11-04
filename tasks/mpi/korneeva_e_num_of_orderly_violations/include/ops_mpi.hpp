@@ -53,7 +53,7 @@ bool num_of_orderly_violations<iotype, cntype>::pre_processing() {
     }
 
     input_data_.resize(input_size);
-    const iotype* source_ptr = reinterpret_cast<const iotype*>(taskData->inputs[0]);
+    const auto* source_ptr = reinterpret_cast<const iotype*>(taskData->inputs[0]);
     std::copy(source_ptr, source_ptr + input_size, input_data_.begin());
 
     violation_count_ = 0;

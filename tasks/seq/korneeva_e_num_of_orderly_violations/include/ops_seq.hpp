@@ -17,7 +17,7 @@ class OrderlyViolationsCounter : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  cntype count_orderly_violations(std::vector<iotype> data);
+  cntype count_orderly_violations(const std::vector<iotype>& data);
 
  private:
   std::vector<iotype> input_;  // Input vector
@@ -61,7 +61,7 @@ bool OrderlyViolationsCounter<iotype, cntype>::post_processing() {
 }
 
 template <typename iotype, typename cntype>
-cntype OrderlyViolationsCounter<iotype, cntype>::count_orderly_violations(std::vector<iotype> data) {
+cntype OrderlyViolationsCounter<iotype, cntype>::count_orderly_violations(const std::vector<iotype>& data) {
   cntype count = 0;
   for (size_t i = 1; i < data.size(); ++i) {
     if (data[i - 1] > data[i]) {
