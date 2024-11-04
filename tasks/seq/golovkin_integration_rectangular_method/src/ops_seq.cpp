@@ -20,7 +20,7 @@ IntegralCalculator::IntegralCalculator(std::shared_ptr<ppc::core::TaskData> task
       res(0.0) {}
 
 bool IntegralCalculator::validation() {
-    // Ïðîâåðÿåì êîëè÷åñòâî âõîäíûõ äàííûõ è âûõîäíûõ äàííûõ
+    // ÐŸÑ€Ð¾Ð²ÐµÑ€ÑÐµÐ¼ ÐºÐ¾Ð»Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾ Ð²Ñ…Ð¾Ð´Ð½Ñ‹Ñ… Ð´Ð°Ð½Ð½Ñ‹Ñ… Ð¸ Ð²Ñ‹Ñ…Ð¾Ð´Ð½Ñ‹Ñ… Ð´Ð°Ð½Ð½Ñ‹Ñ…
     if (taskData->inputs.size() != 3) {
         std::cerr << "Error: 3 inputs were expected, but received " << taskData->inputs.size() << std::endl;
         return false;
@@ -33,7 +33,7 @@ bool IntegralCalculator::validation() {
 }
 
 bool IntegralCalculator::pre_processing() {
-    // Ïðîâåðêà íà íàëè÷èå âõîäíûõ äàííûõ
+    // ÐŸÑ€Ð¾Ð²ÐµÑ€ÐºÐ° Ð½Ð° Ð½Ð°Ð»Ð¸Ñ‡Ð¸Ðµ Ð²Ñ…Ð¾Ð´Ð½Ñ‹Ñ… Ð´Ð°Ð½Ð½Ñ‹Ñ…
     if (taskData->inputs.size() < 3 || taskData->outputs.empty()) {
         std::cerr << "Error: There is not enough data to process." << std::endl;
         return false;
@@ -60,14 +60,14 @@ bool IntegralCalculator::pre_processing() {
         return false;
     }
 
-    h = (b - a) / cnt_of_splits;  // Øàã èíòåãðèðîâàíèÿ
+    h = (b - a) / cnt_of_splits;  // Ð¨Ð°Ð³ Ð¸Ð½Ñ‚ÐµÐ³Ñ€Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ
     return true;
 }
 
 bool IntegralCalculator::run() {
     double result = 0.0;
 
-    // Âû÷èñëåíèå èíòåãðàëà ìåòîäîì ïðÿìîóãîëüíèêîâ
+    // Ð’Ñ‹Ñ‡Ð¸ÑÐ»ÐµÐ½Ð¸Ðµ Ð¸Ð½Ñ‚ÐµÐ³Ñ€Ð°Ð»Ð° Ð¼ÐµÑ‚Ð¾Ð´Ð¾Ð¼ Ð¿Ñ€ÑÐ¼Ð¾ÑƒÐ³Ð¾Ð»ÑŒÐ½Ð¸ÐºÐ¾Ð²
     for (int i = 0; i < cnt_of_splits; ++i) {
         double x = a + (i + 0.5) * h;  
         result += function_square(x);  

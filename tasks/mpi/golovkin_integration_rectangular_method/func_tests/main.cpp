@@ -230,6 +230,7 @@ TEST(golovkin_integration_rectangular_method, test_polynomial_function) {
   double epsilon = 0.1;
 
   if (world.rank() == 0) {
+
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));

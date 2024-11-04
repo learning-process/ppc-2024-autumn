@@ -25,7 +25,7 @@ TEST(golovkin_integration_rectangular_method, test_pipeline_run) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  // Òîëüêî ïðîöåññ 0 èíèöèàëèçèðóåò äàííûå è äåëèòñÿ èìè ñ äðóãèìè
+  // Ð¢Ð¾Ð»ÑŒÐºÐ¾ Ð¿Ñ€Ð¾Ñ†ÐµÑÑ 0 Ð¸Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð¸Ñ€ÑƒÐµÑ‚ Ð´Ð°Ð½Ð½Ñ‹Ðµ Ð¸ Ð´ÐµÐ»Ð¸Ñ‚ÑÑ Ð¸Ð¼Ð¸ Ñ Ð´Ñ€ÑƒÐ³Ð¸Ð¼Ð¸
   if (world.rank() == 0) {
     taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(&a));
     taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(&b));
@@ -38,7 +38,7 @@ TEST(golovkin_integration_rectangular_method, test_pipeline_run) {
   auto testMpiTaskParallel =
       std::make_shared<golovkin_integration_rectangular_method::MPIIntegralCalculator>(taskDataPar);
 
-  // Ïðîâåðêà âàëèäíîñòè äàííûõ íà êàæäîì ïðîöåññå
+  // ÐŸÑ€Ð¾Ð²ÐµÑ€ÐºÐ° Ð²Ð°Ð»Ð¸Ð´Ð½Ð¾ÑÑ‚Ð¸ Ð´Ð°Ð½Ð½Ñ‹Ñ… Ð½Ð° ÐºÐ°Ð¶Ð´Ð¾Ð¼ Ð¿Ñ€Ð¾Ñ†ÐµÑÑÐµ
   ASSERT_TRUE(testMpiTaskParallel->validation());
 
   testMpiTaskParallel->pre_processing();

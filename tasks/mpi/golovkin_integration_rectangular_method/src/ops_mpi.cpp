@@ -25,7 +25,7 @@ bool MPIIntegralCalculator::pre_processing() {
     cnt_of_splits = *reinterpret_cast<int*>(taskData->inputs[2]); 
   }
 
-  // Распространение значений на все процессы
+  // Р Р°СЃРїСЂРѕСЃС‚СЂР°РЅРµРЅРёРµ Р·РЅР°С‡РµРЅРёР№ РЅР° РІСЃРµ РїСЂРѕС†РµСЃСЃС‹
   MPI_Bcast(&a, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
   MPI_Bcast(&b, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
   MPI_Bcast(&cnt_of_splits, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -45,19 +45,19 @@ bool MPIIntegralCalculator::run() {
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-  // Распределение разбиений
+  // Р Р°СЃРїСЂРµРґРµР»РµРЅРёРµ СЂР°Р·Р±РёРµРЅРёР№
   int splits_per_proc = cnt_of_splits / size;
   int remaining_splits = cnt_of_splits % size;
   int start = rank * splits_per_proc + std::min(rank, remaining_splits);
   int end = start + splits_per_proc + (rank < remaining_splits ? 1 : 0);
 
-  // Проверка правильности диапазона
+  // РџСЂРѕРІРµСЂРєР° РїСЂР°РІРёР»СЊРЅРѕСЃС‚Рё РґРёР°РїР°Р·РѕРЅР°
   if (start >= end) {
     //std::cerr << "Process " << rank << " has no work to do." << std::endl;
     return false;  
   }
 
-  // Вычисление локального результата
+  // Р’С‹С‡РёСЃР»РµРЅРёРµ Р»РѕРєР°Р»СЊРЅРѕРіРѕ СЂРµР·СѓР»СЊС‚Р°С‚Р°
   double local_result = 0.0;
   for (int i = start; i < end; ++i) {
     double x = a + i * h;
@@ -67,7 +67,7 @@ bool MPIIntegralCalculator::run() {
 
   //std::cout << "Process " << rank << " calculated local_res: " << local_res << std::endl;
 
-  // Сбор результатов
+  // РЎР±РѕСЂ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ
   MPI_Reduce(&local_res, &global_res, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
   if (rank == 0) {
@@ -84,12 +84,12 @@ bool MPIIntegralCalculator::post_processing() {
   if (rank == 0) {
     if (taskData->outputs.empty()) return false;
     *reinterpret_cast<double*>(taskData->outputs[0]) = global_res;  
-    // Если есть дополнительные выходные данные
+    // Р•СЃР»Рё РµСЃС‚СЊ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РІС‹С…РѕРґРЅС‹Рµ РґР°РЅРЅС‹Рµ
     // taskData->outputs[1] = <some other value>;
     // taskData->outputs[2] = <another value>;
   }
 
-  // Рассылка результата всем процессам
+  // Р Р°СЃСЃС‹Р»РєР° СЂРµР·СѓР»СЊС‚Р°С‚Р° РІСЃРµРј РїСЂРѕС†РµСЃСЃР°Рј
   MPI_Bcast(&global_res, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
   if (rank != 0) {
     *reinterpret_cast<double*>(taskData->outputs[0]) = global_res;

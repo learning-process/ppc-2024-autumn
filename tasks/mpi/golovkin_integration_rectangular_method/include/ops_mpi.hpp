@@ -23,7 +23,6 @@ class MPIIntegralCalculator : public ppc::core::Task {
   std::shared_ptr<ppc::core::TaskData> taskData;
   double a;
   double b;
-  double epsilon;  
   int cnt_of_splits;
   double h;
   double local_res;   // Локальный результат для каждого процесса
