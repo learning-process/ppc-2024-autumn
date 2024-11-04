@@ -18,7 +18,7 @@ class MinOfVectorElementsSequential : public ppc::core::Task {
 
  private:
   std::vector<int> input{};
-  public: int res{};
+  int res{};
 };
 
 }  // namespace zaitsev_a_min_of_vector_elements_seq

@@ -15,27 +15,25 @@
 
 namespace zaitsev_a_min_of_vector_elements_mpi {
 
-std::vector<int> getRandomVector(int sz);
+std::vector<int> getRandomVector(int sz, int minRangeValue, int maxRangeValue);
 
-class TestMPITaskSequential : public ppc::core::Task {
+class MinOfVectorElementsSequential : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+  explicit MinOfVectorElementsSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
  private:
-  std::vector<int> input_;
+  std::vector<int> input{};
   int res{};
-  std::string ops;
 };
 
-class TestMPITaskParallel : public ppc::core::Task {
+class MinOfVectorElementsParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+  explicit MinOfVectorElementsParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
+      : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -44,7 +42,6 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   std::vector<int> input_, local_input_;
   int res{};
-  std::string ops;
   boost::mpi::communicator world;
 };
 

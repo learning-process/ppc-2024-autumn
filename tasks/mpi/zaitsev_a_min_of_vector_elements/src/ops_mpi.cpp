@@ -1,5 +1,5 @@
 // Copyright 2023 Nesterov Alexander
-#include "mpi/example/include/ops_mpi.hpp"
+#include "mpi/zaitsev_a_min_of_vector_elements/include/ops_mpi.hpp"
 
 #include <algorithm>
 #include <functional>
@@ -10,54 +10,54 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> nesterov_a_test_task_mpi::getRandomVector(int sz) {
+std::vector<int> zaitsev_a_min_of_vector_elements_mpi::getRandomVector(int sz, int minRangeValue, int maxRangeValue) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
   for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
+    vec[i] = minRangeValue + gen() % (maxRangeValue - minRangeValue + 1);
   }
   return vec;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskSequential::pre_processing() {
+bool zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsSequential::pre_processing() {
   internal_order_test();
-  // Init vectors
-  input_ = std::vector<int>(taskData->inputs_count[0]);
-  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    input_[i] = tmp_ptr[i];
+
+  // Init value for input and output
+  input = std::vector<int>(taskData->inputs_count[0]);
+  auto* interpreted_input = reinterpret_cast<int*>(taskData->inputs[0]);
+  for (size_t i = 0; i < taskData->inputs_count[0]; i++) {
+    input[i] = interpreted_input[i];
   }
-  // Init value for output
-  res = 0;
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskSequential::validation() {
+bool zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsSequential::validation() {
   internal_order_test();
   // Check count elements of output
-  return taskData->outputs_count[0] == 1;
+  return taskData->inputs_count[0] != 0 && taskData->outputs_count[0] == 1 ||
+         taskData->inputs_count[0] == 0 && taskData->outputs_count[0] == 0;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskSequential::run() {
+bool zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsSequential::run() {
   internal_order_test();
-  if (ops == "+") {
-    res = std::accumulate(input_.begin(), input_.end(), 0);
-  } else if (ops == "-") {
-    res = -std::accumulate(input_.begin(), input_.end(), 0);
-  } else if (ops == "max") {
-    res = *std::max_element(input_.begin(), input_.end());
-  }
+
+  int currentMin = input[0];
+  for (auto i : input) currentMin = (currentMin > i) ? i : currentMin;
+  res = currentMin;
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskSequential::post_processing() {
+bool zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsSequential::post_processing() {
   internal_order_test();
   reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskParallel::pre_processing() {
+
+
+
+bool zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsParallel::pre_processing() {
   internal_order_test();
   unsigned int delta = 0;
   if (world.rank() == 0) {
@@ -87,7 +87,7 @@ bool nesterov_a_test_task_mpi::TestMPITaskParallel::pre_processing() {
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskParallel::validation() {
+bool zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     // Check count elements of output
@@ -96,26 +96,17 @@ bool nesterov_a_test_task_mpi::TestMPITaskParallel::validation() {
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskParallel::run() {
+bool zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsParallel::run() {
   internal_order_test();
-  int local_res;
-  if (ops == "+") {
-    local_res = std::accumulate(local_input_.begin(), local_input_.end(), 0);
-  } else if (ops == "-") {
-    local_res = -std::accumulate(local_input_.begin(), local_input_.end(), 0);
-  } else if (ops == "max") {
-    local_res = *std::max_element(local_input_.begin(), local_input_.end());
-  }
-
-  if (ops == "+" || ops == "-") {
-    reduce(world, local_res, res, std::plus(), 0);
-  } else if (ops == "max") {
-    reduce(world, local_res, res, boost::mpi::maximum<int>(), 0);
-  }
+  if (local_input_.empty()) return true;
+  int local_res = local_input_[0];
+  for (auto i : local_input_) local_res = (local_res > i) ? i : local_res;
+  
+  reduce(world, local_res, res, boost::mpi::minimum<int>(), 0);
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskParallel::post_processing() {
+bool zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     reinterpret_cast<int*>(taskData->outputs[0])[0] = res;

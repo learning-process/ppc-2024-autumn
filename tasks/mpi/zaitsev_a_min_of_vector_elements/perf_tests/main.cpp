@@ -5,84 +5,95 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/example/include/ops_mpi.hpp"
+#include "mpi/zaitsev_a_min_of_vector_elements/include/ops_mpi.hpp"
 
 TEST(zaitsev_a_min_of_vector_elements_mpi, test_pipeline_run) {
-  //boost::mpi::communicator world;
-  //std::vector<int> global_vec;
-  //std::vector<int32_t> global_sum(1, 0);
-  //// Create TaskData
-  //std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  //int count_size_vector;
-  //if (world.rank() == 0) {
-  //  count_size_vector = 120;
-  //  global_vec = std::vector<int>(count_size_vector, 1);
-  //  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-  //  taskDataPar->inputs_count.emplace_back(global_vec.size());
-  //  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-  //  taskDataPar->outputs_count.emplace_back(global_sum.size());
-  //}
+  const int extrema = -1;
+  const int minRangeValue = 0;
+  const int maxRangeValue = 1000;
 
-  //auto testMpiTaskParallel = std::make_shared<nesterov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar, "+");
-  //ASSERT_EQ(testMpiTaskParallel->validation(), true);
-  //testMpiTaskParallel->pre_processing();
-  //testMpiTaskParallel->run();
-  //testMpiTaskParallel->post_processing();
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;
+  std::vector<int32_t> global_min(1, maxRangeValue + 1);
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  int count_size_vector;
+  if (world.rank() == 0) {
+    count_size_vector = 10e6;
+    global_vec = zaitsev_a_min_of_vector_elements_mpi::getRandomVector(count_size_vector, minRangeValue, maxRangeValue);
+    global_vec[global_vec.size() / 2] = extrema;
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_min.data()));
+    taskDataPar->outputs_count.emplace_back(global_min.size());
+  }
 
-  //// Create Perf attributes
-  //auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  //perfAttr->num_running = 10;
-  //const boost::mpi::timer current_timer;
-  //perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+  auto minOfVectorElementsParallel =
+      std::make_shared<zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsParallel>(taskDataPar);
+  ASSERT_EQ(minOfVectorElementsParallel->validation(), true);
+  minOfVectorElementsParallel->pre_processing();
+  minOfVectorElementsParallel->run();
+  minOfVectorElementsParallel->post_processing();
 
-  //// Create and init perf results
-  //auto perfResults = std::make_shared<ppc::core::PerfResults>();
+  // Create Perf attributes
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 10;
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  //// Create Perf analyzer
-  //auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
-  //perfAnalyzer->pipeline_run(perfAttr, perfResults);
-  //if (world.rank() == 0) {
-  //  ppc::core::Perf::print_perf_statistic(perfResults);
-  //  ASSERT_EQ(count_size_vector, global_sum[0]);
-  //}
+  // Create and init perf results
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+
+  // Create Perf analyzer
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(minOfVectorElementsParallel);
+  perfAnalyzer->pipeline_run(perfAttr, perfResults);
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
+    ASSERT_EQ(extrema, global_min[0]);
+  }
 }
 
 TEST(zaitsev_a_min_of_vector_elements_mpi, test_task_run) {
-  //boost::mpi::communicator world;
-  //std::vector<int> global_vec;
-  //std::vector<int32_t> global_sum(1, 0);
-  //// Create TaskData
-  //std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  //int count_size_vector;
-  //if (world.rank() == 0) {
-  //  count_size_vector = 120;
-  //  global_vec = std::vector<int>(count_size_vector, 1);
-  //  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-  //  taskDataPar->inputs_count.emplace_back(global_vec.size());
-  //  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-  //  taskDataPar->outputs_count.emplace_back(global_sum.size());
-  //}
+  const int extrema = -1;
+  const int minRangeValue = 100;
+  const int maxRangeValue = 31415;
 
-  //auto testMpiTaskParallel = std::make_shared<nesterov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar, "+");
-  //ASSERT_EQ(testMpiTaskParallel->validation(), true);
-  //testMpiTaskParallel->pre_processing();
-  //testMpiTaskParallel->run();
-  //testMpiTaskParallel->post_processing();
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;
+  std::vector<int32_t> global_min(1, maxRangeValue + 1);
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  int count_size_vector;
+  if (world.rank() == 0) {
+    count_size_vector = 10e6;
+    global_vec = zaitsev_a_min_of_vector_elements_mpi::getRandomVector(count_size_vector, minRangeValue, maxRangeValue);
+    global_vec[count_size_vector / 2] = extrema;
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_min.data()));
+    taskDataPar->outputs_count.emplace_back(global_min.size());
+  }
 
-  //// Create Perf attributes
-  //auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  //perfAttr->num_running = 10;
-  //const boost::mpi::timer current_timer;
-  //perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+  auto minOfVectorElementsParallel = std::make_shared<zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsParallel>(taskDataPar);
+  ASSERT_EQ(minOfVectorElementsParallel->validation(), true);
+  minOfVectorElementsParallel->pre_processing();
+  minOfVectorElementsParallel->run();
+  minOfVectorElementsParallel->post_processing();
 
-  //// Create and init perf results
-  //auto perfResults = std::make_shared<ppc::core::PerfResults>();
+  // Create Perf attributes
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 10;
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  //// Create Perf analyzer
-  //auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
-  //perfAnalyzer->task_run(perfAttr, perfResults);
-  //if (world.rank() == 0) {
-  //  ppc::core::Perf::print_perf_statistic(perfResults);
-  //  ASSERT_EQ(count_size_vector, global_sum[0]);
-  //}
+  // Create and init perf results
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+
+  // Create Perf analyzer
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(minOfVectorElementsParallel);
+  perfAnalyzer->task_run(perfAttr, perfResults);
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
+    ASSERT_EQ(extrema, global_min[0]);
+  }
 }
