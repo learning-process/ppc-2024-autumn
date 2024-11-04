@@ -90,7 +90,7 @@ TEST(gromov_a_sum_of_vector_elements_mpi, Test_Min2) {
   }
 }
 
-TEST(gromov_a_sum_of_vector_elements_mpi, Test_Max) {
+TEST(gromov_a_sum_of_vector_elements_mpi, Test_Max1) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_max(1, std::numeric_limits<int32_t>::min());
@@ -98,7 +98,7 @@ TEST(gromov_a_sum_of_vector_elements_mpi, Test_Max) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 150;
+    const int count_size_vector = 250;
     global_vec = gromov_a_sum_of_vector_elements_mpi::getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
