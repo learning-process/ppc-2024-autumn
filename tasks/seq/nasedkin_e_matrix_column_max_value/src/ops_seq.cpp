@@ -19,7 +19,6 @@ std::vector<int> getRandomMatrix(int rows, int cols) {
 
 bool MatrixColumnMaxSeq::pre_processing() {
   internal_order_test();
-  int rows = taskData->inputs_count[0] / taskData->inputs_count[1];
   int cols = taskData->inputs_count[1];
   input_ = std::vector<int>(taskData->inputs_count[0]);
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
@@ -39,7 +38,7 @@ bool MatrixColumnMaxSeq::validation() {
 bool MatrixColumnMaxSeq::run() {
   internal_order_test();
   int rows = input_.size() / res_.size();
-  for (int col = 0; col < res_.size(); col++) {
+  for (size_t col = 0; col < res_.size(); col++) {
     res_[col] = input_[col];
     for (int row = 1; row < rows; row++) {
       if (input_[row * res_.size() + col] > res_[col]) {

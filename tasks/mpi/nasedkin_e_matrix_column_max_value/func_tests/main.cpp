@@ -13,7 +13,8 @@ TEST(Parallel_Operations_MPI, Test_Matrix_Column_Max) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int rows = 6, cols = 3;
+    const int rows = 6;
+    const int cols = 3;
     global_matrix = nasedkin_e_matrix_column_max_value_mpi::getRandomMatrix(rows, cols);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(global_matrix.size());

@@ -1,6 +1,7 @@
 // Copyright 2023 Nasedkin Egor
 #include <gtest/gtest.h>
 #include <vector>
+#include <boost/mpi/timer.hpp>
 #include "core/perf/include/perf.hpp"
 #include "seq/nasedkin_e_matrix_column_max_value/include/ops_seq.hpp"
 
@@ -9,7 +10,8 @@ TEST(seq_matrix_column_max_value_perf_test, test_pipeline_run) {
   std::vector<int> global_max(3, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  const int rows = 120, cols = 3;
+  const int rows = 120;
+  const int cols = 3;
   global_matrix = std::vector<int>(rows * cols, 1);
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
   taskDataSeq->inputs_count.emplace_back(global_matrix.size());
@@ -27,7 +29,7 @@ TEST(seq_matrix_column_max_value_perf_test, test_pipeline_run) {
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
-  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+  perfAttr->current_timer = [&current_timer] { return current_timer.elapsed(); };
 
   // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
@@ -45,7 +47,8 @@ TEST(seq_matrix_column_max_value_perf_test, test_task_run) {
   std::vector<int> global_max(3, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  const int rows = 120, cols = 3;
+  const int rows = 120;
+  const int cols = 3;
   global_matrix = std::vector<int>(rows * cols, 1);
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
   taskDataSeq->inputs_count.emplace_back(global_matrix.size());
@@ -63,7 +66,7 @@ TEST(seq_matrix_column_max_value_perf_test, test_task_run) {
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
-  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+  perfAttr->current_timer = [&current_timer] { return current_timer.elapsed(); };
 
   // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();

@@ -23,12 +23,20 @@ bool MatrixColumnMaxMPI::pre_processing() {
   int cols = taskData->inputs_count[1];
   input_ = std::vector<int>(taskData->inputs_count[0]);
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+
+  // Проверка на корректность значения taskData->inputs_count[0]
+  if (taskData->inputs_count[0] <= 0) {
+    // Выполните соответствующие действия, например, выброс исключения или возврат ошибки
+    throw std::invalid_argument("Invalid input count");
+  }
+
   for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
     input_[i] = tmp_ptr[i];
   }
 
   int delta = rows / world.size();
   local_input_ = std::vector<int>(delta * cols);
+  // NOLINTNEXTLINE(clang-analyzer-optin.cplusplus.UninitializedObject)
   if (world.rank() == 0) {
     for (int proc = 1; proc < world.size(); proc++) {
       world.send(proc, 0, input_.data() + proc * delta * cols, delta * cols);
@@ -53,7 +61,7 @@ bool MatrixColumnMaxMPI::validation() {
 bool MatrixColumnMaxMPI::run() {
   internal_order_test();
   int rows = local_input_.size() / res_.size();
-  for (int col = 0; col < res_.size(); col++) {
+  for (size_t col = 0; col < res_.size(); col++) {
     int local_max = local_input_[col];
     for (int row = 1; row < rows; row++) {
       if (local_input_[row * res_.size() + col] > local_max) {

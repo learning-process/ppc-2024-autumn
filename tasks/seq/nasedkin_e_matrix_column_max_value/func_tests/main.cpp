@@ -9,7 +9,8 @@ TEST(Sequential_Operations_Seq, Test_Matrix_Column_Max) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
-  const int rows = 6, cols = 3;
+  const int rows = 6;
+  const int cols = 3;
   global_matrix = nasedkin_e_matrix_column_max_value_seq::getRandomMatrix(rows, cols);
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
   taskDataSeq->inputs_count.emplace_back(global_matrix.size());

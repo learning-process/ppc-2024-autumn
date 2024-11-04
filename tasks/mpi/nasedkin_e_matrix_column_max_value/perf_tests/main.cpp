@@ -11,7 +11,8 @@ TEST(mpi_matrix_column_max_value_perf_test, test_pipeline_run) {
   std::vector<int> global_max(3, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int rows, cols;
+  int rows;
+  int cols;
   if (world.rank() == 0) {
     rows = 120, cols = 3;
     global_matrix = std::vector<int>(rows * cols, 1);
@@ -53,7 +54,8 @@ TEST(mpi_matrix_column_max_value_perf_test, test_task_run) {
   std::vector<int> global_max(3, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int rows, cols;
+  int rows;
+  int cols;
   if (world.rank() == 0) {
     rows = 120, cols = 3;
     global_matrix = std::vector<int>(rows * cols, 1);
