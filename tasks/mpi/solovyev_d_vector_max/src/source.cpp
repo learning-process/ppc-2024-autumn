@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <functional>
+#include <limits>
 #include <random>
 #include <string>
 #include <thread>
@@ -7,10 +8,8 @@
 
 #include "mpi/solovyev_d_vector_max/include/header.hpp"
 
-using namespace std::chrono_literals;
-
 int solovyev_d_vector_max_mpi::vectorMax(std::vector<int, std::allocator<int>> v) {
-  int m = -214748364;
+  int m = std::numeric_limits<int>::min();
   for (std::string::size_type i = 0; i < v.size(); i++) {
     if (v[i] > m) {
       m = v[i];
