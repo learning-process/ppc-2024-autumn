@@ -2,8 +2,6 @@
 
 #include <thread>
 
-using namespace std::chrono_literals;
-
 bool koshkin_n_sum_values_by_columns_matrix_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   // Init value for input and output
