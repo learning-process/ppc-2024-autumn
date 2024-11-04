@@ -1,16 +1,14 @@
-//Golovkin Maksim
+// Golovkin Maksim
 
 #include <gtest/gtest.h>
+
+#include <boost/mpi/timer.hpp>
 #include <string>
 #include <vector>
-#include <boost/mpi/timer.hpp>
-
 
 #include "core/perf/include/perf.hpp"
 #include "core/task/include/task.hpp"
 #include "mpi/golovkin_integration_rectangular_method/include/ops_mpi.hpp"
-
-
 
 using namespace golovkin_integration_rectangular_method;
 using ppc::core::Perf;
@@ -33,7 +31,6 @@ TEST(golovkin_integration_rectangular_method, test_pipeline_run) {
     taskDataPar->outputs.push_back(reinterpret_cast<uint8_t*>(&output));
     taskDataPar->outputs_count.push_back(1);
   }
-
 
   auto testMpiTaskParallel =
       std::make_shared<golovkin_integration_rectangular_method::MPIIntegralCalculator>(taskDataPar);

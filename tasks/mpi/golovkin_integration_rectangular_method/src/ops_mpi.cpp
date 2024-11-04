@@ -1,4 +1,4 @@
-//Golovkin Maksim
+// Golovkin Maksim
 #include "mpi/golovkin_integration_rectangular_method/include/ops_mpi.hpp"
 
 #include <mpi.h>
@@ -22,6 +22,7 @@ bool MPIIntegralCalculator::pre_processing() {
   if (rank == 0) {
     a = *reinterpret_cast<double*>(taskData->inputs[0]);
     b = *reinterpret_cast<double*>(taskData->inputs[1]);
+
     cnt_of_splits = *reinterpret_cast<int*>(taskData->inputs[2]); 
   }
 
@@ -34,8 +35,8 @@ bool MPIIntegralCalculator::pre_processing() {
 
   h = (b - a) / cnt_of_splits;
 
- // std::cout << "Process " << rank << " - a: " << a << ", b: " << b << ", cnt_of_splits: " << cnt_of_splits
-            //<< ", h: " << h << std::endl;
+  // std::cout << "Process " << rank << " - a: " << a << ", b: " << b << ", cnt_of_splits: " << cnt_of_splits
+  // << ", h: " << h << std::endl;
 
   return true;
 }
@@ -53,7 +54,7 @@ bool MPIIntegralCalculator::run() {
 
   // Проверка правильности диапазона
   if (start >= end) {
-    //std::cerr << "Process " << rank << " has no work to do." << std::endl;
+    // std::cerr << "Process " << rank << " has no work to do." << std::endl;
     return false;  
   }
 
@@ -65,13 +66,13 @@ bool MPIIntegralCalculator::run() {
   }
   local_res = local_result * h;
 
-  //std::cout << "Process " << rank << " calculated local_res: " << local_res << std::endl;
+  // std::cout << "Process " << rank << " calculated local_res: " << local_res << std::endl;
 
   // Сбор результатов
   MPI_Reduce(&local_res, &global_res, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
   if (rank == 0) {
-    //std::cout << "Root process has global result after reduction: " << global_res << std::endl;
+    // std::cout << "Root process has global result after reduction: " << global_res << std::endl;
   }
 
   return true;
@@ -98,6 +99,4 @@ bool MPIIntegralCalculator::post_processing() {
   return true;
 }
 
-double MPIIntegralCalculator::function_square(double x) {
-  return x * x; 
-}
+double MPIIntegralCalculator::function_square(double x) { return x * x; }

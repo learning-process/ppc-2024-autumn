@@ -1,4 +1,4 @@
-// Copyright 2024 Golovkin Maksim
+// Golovkin Maksim
 
 #include <gtest/gtest.h>
 
@@ -91,7 +91,6 @@ TEST(golovkin_integration_rectangular_method_seq, Calculate_LargeInterval_HighPr
   taskData->outputs_count.push_back(sizeof(double));
 
   IntegralCalculator calculator(taskData);
-
 
   ASSERT_TRUE(calculator.validation());
   ASSERT_TRUE(calculator.pre_processing());

@@ -21,7 +21,6 @@ TEST(golovkin_integration_rectangular_method, test_pipeline_run) {
   const double b = 1.0;
   const double epsilon = 0.01;
   const double expected_result = 1.0 / 3.0;
-  
   std::vector<double> in = {a, b, epsilon};
   std::vector<double> out(1, 0.0);
 

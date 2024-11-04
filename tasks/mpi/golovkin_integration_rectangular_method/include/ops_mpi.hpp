@@ -19,6 +19,7 @@ class MPIIntegralCalculator : public ppc::core::Task {
   bool post_processing() override;  // Пост-обработка результатов и сборка итогового значения
 
  private:
+
   boost::mpi::communicator world;  
   std::shared_ptr<ppc::core::TaskData> taskData;
   double a;
