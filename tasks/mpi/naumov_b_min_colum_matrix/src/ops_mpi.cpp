@@ -107,11 +107,13 @@ bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::run() {
 
   if (world.rank() == 0) {
     for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + (proc * delta + extra) * rows, delta * rows);
+      int send_size = delta * rows;
+      world.send(proc, 0, input_.data() + (proc * delta + extra) * rows, send_size);
     }
+
     local_vector_ = std::vector<int>(input_.begin(), input_.begin() + (delta + extra) * rows);
   } else {
-    local_vector_ = std::vector<int>(delta * cols);
+    local_vector_ = std::vector<int>(delta * rows);
     world.recv(0, 0, local_vector_.data(), delta * rows);
   }
 
