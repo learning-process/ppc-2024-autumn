@@ -2,12 +2,8 @@
 #include "mpi/Sdobnov_V_sum_of_vector_elements/include/ops_mpi.hpp"
 #include <random>
 #include <vector>
-#include <cstdlib>
-#include <fstream>
-#include <conio.h>
 
-std::vector<int> Sdobnov_V_sum_of_vector_elements::generate_random_vector(int size, int lower_bound,
-    int upper_bound) {
+std::vector<int> Sdobnov_V_sum_of_vector_elements::generate_random_vector(int size, int lower_bound, int upper_bound) {
   std::vector<int> res(size);
   for (int i = 0; i < size; i++) {
     res[i] = lower_bound + rand() % (upper_bound - lower_bound + 1);
@@ -15,7 +11,8 @@ std::vector<int> Sdobnov_V_sum_of_vector_elements::generate_random_vector(int si
   return res;
 }
 
-std::vector<std::vector<int>> Sdobnov_V_sum_of_vector_elements::generate_random_matrix(int rows, int columns, int lower_bound,
+std::vector<std::vector<int>> Sdobnov_V_sum_of_vector_elements::generate_random_matrix(int rows, int columns, 
+                                                                                       int lower_bound, 
                                                                                        int upper_bound) {
   std::vector<std::vector<int>> res(rows);
   for (int i = 0; i < rows; i++) {
@@ -27,7 +24,7 @@ std::vector<std::vector<int>> Sdobnov_V_sum_of_vector_elements::generate_random_
 
 int Sdobnov_V_sum_of_vector_elements::vec_elem_sum(std::vector<int> vec) {
   int res = 0;
-  for (int elem: vec) {
+  for (int elem : vec) {
     res += elem;
   }
   return res;

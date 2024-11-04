@@ -1,11 +1,12 @@
 // Copyright 2024 Sdobnov Vladimir
+#include "seq/Sdobnov_V_sum_of_vector_elements/include/ops_seq.hpp"
+
 #include <random>
 #include <vector>
 
-#include "seq/Sdobnov_V_sum_of_vector_elements/include/ops_seq.hpp"
 
-std::vector<int> Sdobnov_V_sum_of_vector_elements::generate_random_vector(int size, int lower_bound,
-                                                                          int upper_bound) {
+
+std::vector<int> Sdobnov_V_sum_of_vector_elements::generate_random_vector(int size, int lower_bound, int upper_bound) {
   std::vector<int> res(size);
   for (int i = 0; i < size; i++) {
     res[i] = lower_bound + rand() % (upper_bound - lower_bound + 1);
@@ -41,7 +42,7 @@ bool Sdobnov_V_sum_of_vector_elements::SumVecElemSequential::pre_processing() {
   input_ = std::vector<int>(rows * columns);
 
   for (int i = 0; i < rows; i++) {
-    auto* p = reinterpret_cast<int *>(taskData->inputs[i]);
+    auto* p = reinterpret_cast<int*>(taskData->inputs[i]);
     for (int j = 0; j < columns; j++) {
       input_[i * columns + j] = p[j];
     }

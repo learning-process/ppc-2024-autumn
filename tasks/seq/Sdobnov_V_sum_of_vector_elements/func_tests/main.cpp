@@ -6,10 +6,7 @@
 
 #include "seq/Sdobnov_V_sum_of_vector_elements/include/ops_seq.hpp"
 
-
-
 TEST(Sdobnov_V_sum_of_vector_elements_seq, EmptyInput) {
- 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   Sdobnov_V_sum_of_vector_elements::SumVecElemSequential test(taskDataPar);
   ASSERT_FALSE(test.validation());
@@ -146,7 +143,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_seq, Matrix100x10) {
 }
 
 TEST(Sdobnov_V_sum_of_vector_elements_seq, Matrix10x100) {
-  int rows =10;
+  int rows = 10;
   int columns = 100;
   int res;
   std::vector<std::vector<int>> input = Sdobnov_V_sum_of_vector_elements::generate_random_matrix(rows, columns);

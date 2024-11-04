@@ -22,7 +22,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_par, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(1);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&res));
   }
-  auto test = std::make_shared < Sdobnov_V_sum_of_vector_elements::SumVecElemParallel>(taskDataPar);
+  auto test = std::make_shared<Sdobnov_V_sum_of_vector_elements::SumVecElemParallel>(taskDataPar);
  
 
   ASSERT_TRUE(test->validation());

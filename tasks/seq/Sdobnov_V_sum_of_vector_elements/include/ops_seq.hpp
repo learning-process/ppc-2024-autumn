@@ -2,10 +2,6 @@
 #pragma once
 #include <gtest/gtest.h>
 
-#include <memory>
-#include <numeric>
-#include <string>
-#include <utility>
 #include <vector>
 
 #include "core/task/include/task.hpp"

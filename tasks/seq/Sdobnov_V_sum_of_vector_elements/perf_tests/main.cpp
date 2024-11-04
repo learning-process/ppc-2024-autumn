@@ -47,6 +47,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_seq, test_pipeline_run) {
   ppc::core::Perf::print_perf_statistic(perfResults);
   ASSERT_EQ(res, sum);
 }
+
 TEST(Sdobnov_V_sum_of_vector_elements_seq, test_task_run) {
   int rows = 10000;
   int columns = 10000;
