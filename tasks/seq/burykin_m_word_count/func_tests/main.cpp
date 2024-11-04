@@ -2,6 +2,24 @@
 
 #include "seq/burykin_m_word_count/include/ops_seq.hpp"
 
+TEST(WordCountSequential, TestIsWordCharacter) {
+  EXPECT_TRUE(burykin_m_word_count::TestTaskSequential::is_word_character('a'));
+  EXPECT_TRUE(burykin_m_word_count::TestTaskSequential::is_word_character('Z'));
+
+  EXPECT_TRUE(burykin_m_word_count::TestTaskSequential::is_word_character('\''));
+
+  EXPECT_FALSE(burykin_m_word_count::TestTaskSequential::is_word_character('@'));
+  EXPECT_FALSE(burykin_m_word_count::TestTaskSequential::is_word_character('#'));
+  EXPECT_FALSE(burykin_m_word_count::TestTaskSequential::is_word_character('!'));
+  EXPECT_FALSE(burykin_m_word_count::TestTaskSequential::is_word_character('$'));
+
+  EXPECT_FALSE(burykin_m_word_count::TestTaskSequential::is_word_character(' '));
+  EXPECT_FALSE(burykin_m_word_count::TestTaskSequential::is_word_character('\n'));
+  EXPECT_FALSE(burykin_m_word_count::TestTaskSequential::is_word_character('\t'));
+
+  EXPECT_FALSE(burykin_m_word_count::TestTaskSequential::is_word_character('\0'));
+}
+
 TEST(WordCountSequential, EmptyString) {
   std::string input;
   std::vector<uint8_t> in(input.begin(), input.end());
