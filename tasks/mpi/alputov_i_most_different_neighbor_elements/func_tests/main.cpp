@@ -24,7 +24,7 @@ std::vector<int> generator(int sz) {
 }
 }  // namespace alputov_i_most_different_neighbor_elements_mpi
 
-TEST(alputov_i_most_different_neighbor_elements_mpi, Test_0) {
+TEST(alputov_i_most_different_neighbor_elements_mpi, EmptyInput_ReturnsFalse) {
   boost::mpi::communicator world;
   std::vector<int> global_vec(1);
   // Create TaskData
@@ -47,7 +47,7 @@ TEST(alputov_i_most_different_neighbor_elements_mpi, Test_0) {
   }
 }
 
-TEST(alputov_i_most_different_neighbor_elements_mpi, Test_1) {
+TEST(alputov_i_most_different_neighbor_elements_mpi, InputSizeTwo_CorrectResult) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int> global_diff(1, 0);
@@ -91,7 +91,7 @@ TEST(alputov_i_most_different_neighbor_elements_mpi, Test_1) {
     ASSERT_EQ(reference_diff[0], global_diff[0]);
   }
 }
-TEST(alputov_i_most_different_neighbor_elements_mpi, Test_3) {
+TEST(alputov_i_most_different_neighbor_elements_mpi, LargeRandomInput_CorrectResult) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int> global_max(1);
@@ -99,7 +99,7 @@ TEST(alputov_i_most_different_neighbor_elements_mpi, Test_3) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int sz = 123;
+    const int sz = 1234;
     global_vec = alputov_i_most_different_neighbor_elements_mpi::generator(sz);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -136,7 +136,7 @@ TEST(alputov_i_most_different_neighbor_elements_mpi, Test_3) {
   }
 }
 
-TEST(alputov_i_most_different_neighbor_elements_mpi, Test_4) {
+TEST(alputov_i_most_different_neighbor_elements_mpi, MediumRandomInput_CorrectResult) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int> global_max(1);
