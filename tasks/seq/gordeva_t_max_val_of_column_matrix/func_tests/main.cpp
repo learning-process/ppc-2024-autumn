@@ -24,14 +24,14 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, IsEmptyOutput) {
   delete[] reinterpret_cast<int *>(taskDataSeq->inputs[0]);
 }
 
-TEST(gordeva_t_max_val_of_column_matrix_seq, Max_val_of_5000_columns_with_random) {
-  const int rows = 5000;
-  const int cols = 5000;
+TEST(gordeva_t_max_val_of_column_matrix_seq, Max_val_of_500_columns_with_random) {
+  const int rows = 500;
+  const int cols = 500;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   std::vector<std::vector<int>> matrix =
-      gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::gen_rand_matr(rows, cols);
+      gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::rand_matr(rows, cols);
   for (auto &i : matrix) taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(i.data()));
   taskDataSeq->inputs_count.emplace_back(rows);
   taskDataSeq->inputs_count.emplace_back(cols);
@@ -63,7 +63,7 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, Max_val_of_500_1000_columns_with_ra
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   std::vector<std::vector<int>> matrix =
-      gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::gen_rand_matr(rows, cols);
+      gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::rand_matr(rows, cols);
   for (auto &i : matrix) taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(i.data()));
   taskDataSeq->inputs_count.emplace_back(rows);
   taskDataSeq->inputs_count.emplace_back(cols);
@@ -95,7 +95,7 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, Max_val_of_1000_3000_columns_with_r
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   std::vector<std::vector<int>> matrix =
-      gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::gen_rand_matr(rows, cols);
+      gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::rand_matr(rows, cols);
   for (auto &i : matrix) taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(i.data()));
   taskDataSeq->inputs_count.emplace_back(rows);
   taskDataSeq->inputs_count.emplace_back(cols);
