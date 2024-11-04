@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include "mpi/koshkin_n_sum_values_by_columns_matrix/include/ops_mpi.hpp"
 
 #include <algorithm>
@@ -6,8 +5,6 @@
 #include <string>
 #include <thread>
 #include <vector>
-
-using namespace std::chrono_literals;
 
 bool koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
@@ -19,10 +16,9 @@ bool koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskSequential::pre_proc
   // TaskData
   input_.resize(rows, std::vector<int>(columns));
 
-  uint8_t* inputMatrix = taskData->inputs[0];
   for (int i = 0; i < rows; ++i) {
     for (int j = 0; j < columns; ++j) {
-      input_[i][j] = reinterpret_cast<int*>(inputMatrix)[i * columns + j];
+      input_[i][j] = reinterpret_cast<int*>(taskData->inputs[0])[i * columns + j];
     }
   }
 
@@ -52,9 +48,8 @@ bool koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskSequential::run() {
 
 bool koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
-  uint8_t* outputSums = taskData->outputs[0];
   for (int j = 0; j < columns; ++j) {
-    reinterpret_cast<int*>(outputSums)[j] = res[j];
+    reinterpret_cast<int*>(taskData->outputs[0])[j] = res[j];
   }
   return true;
 }
@@ -66,10 +61,9 @@ bool koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskParallel::pre_proces
     rows = taskData->inputs_count[0];
     columns = taskData->inputs_count[1];
     input_.resize(rows * columns);
-    uint8_t* inputMatrix = taskData->inputs[0];
     for (int i = 0; i < rows; ++i) {
       for (int j = 0; j < columns; ++j) {
-        input_[i * columns + j] = reinterpret_cast<int*>(inputMatrix)[i * columns + j];
+        input_[i * columns + j] = reinterpret_cast<int*>(taskData->inputs[0])[i * columns + j];
       }
     }
   }
@@ -134,9 +128,8 @@ bool koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskParallel::run() {
 bool koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    uint8_t* outputSums = taskData->outputs[0];
     for (int j = 0; j < columns; ++j) {
-      reinterpret_cast<int*>(outputSums)[j] = res[j];
+      reinterpret_cast<int*>(taskData->outputs[0])[j] = res[j];
     }
   }
   return true;

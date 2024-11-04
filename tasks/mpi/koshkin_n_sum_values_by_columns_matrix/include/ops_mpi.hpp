@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #pragma once
 
 #include <gtest/gtest.h>
@@ -7,7 +6,6 @@
 #include <boost/mpi/communicator.hpp>
 #include <memory>
 #include <numeric>
-#include <random>
 #include <string>
 #include <utility>
 #include <vector>
@@ -15,8 +13,6 @@
 #include "core/task/include/task.hpp"
 
 namespace koshkin_n_sum_values_by_columns_matrix_mpi {
-
-std::vector<int> getRandomVector(int sz);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
@@ -47,5 +43,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   int columns;
   boost::mpi::communicator world;
 };
-
 }  // namespace koshkin_n_sum_values_by_columns_matrix_mpi

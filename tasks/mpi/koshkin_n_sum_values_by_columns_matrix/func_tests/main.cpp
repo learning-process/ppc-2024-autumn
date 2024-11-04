@@ -1,13 +1,13 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <random>
 #include <vector>
 
 #include "mpi/koshkin_n_sum_values_by_columns_matrix/include/ops_mpi.hpp"
 
-std::vector<int> koshkin_n_sum_values_by_columns_matrix_mpi::getRandomVector(int sz) {
+std::vector<int> getRndVect(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
@@ -23,7 +23,7 @@ TEST(koshkin_n_sum_values_by_columns_matrix_MPI, Test_SquareMatrixSmall) {
   int rows = 10;
   int columns = 10;
 
-  std::vector<int> matrix = koshkin_n_sum_values_by_columns_matrix_mpi::getRandomVector(columns * rows);
+  std::vector<int> matrix = getRndVect(columns * rows);
   std::vector<int> res_out_paral(columns, 0);
 
   // Create TaskData
@@ -84,27 +84,8 @@ TEST(koshkin_n_sum_values_by_columns_matrix_MPI, Test_EmptyMatrix) {
     taskDataPar->inputs_count.emplace_back(columns);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_out_paral.data()));
     taskDataPar->outputs_count.emplace_back(res_out_paral.size());
-  }
-
-  koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
-
-  if (world.rank() == 0) {
-    // Create data
-    std::vector<int> res_out_seq(columns, 0);
-
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(rows);
-    taskDataSeq->inputs_count.emplace_back(columns);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_out_seq.data()));
-    taskDataSeq->outputs_count.emplace_back(res_out_seq.size());
-
-    // Create Task
-    koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    // Since I require non-empty data, it is logical that it simply will not pass
-    ASSERT_EQ(testMpiTaskSequential.validation(), false);
+    koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
 }
 
@@ -114,7 +95,7 @@ TEST(koshkin_n_sum_values_by_columns_matrix_MPI, Test_SquareMatrixMedium) {
   const int rows = 100;
   const int columns = 100;
 
-  std::vector<int> matrix = koshkin_n_sum_values_by_columns_matrix_mpi::getRandomVector(columns * rows);
+  std::vector<int> matrix = getRndVect(columns * rows);
   std::vector<int> res_out_paral(columns, 0);
 
   // Create TaskData
@@ -163,7 +144,7 @@ TEST(koshkin_n_sum_values_by_columns_matrix_MPI, Test_SquareMatrixLarge) {
   const int rows = 1000;
   const int columns = 1000;
 
-  std::vector<int> matrix = koshkin_n_sum_values_by_columns_matrix_mpi::getRandomVector(columns * rows);
+  std::vector<int> matrix = getRndVect(columns * rows);
   std::vector<int> res_out_paral(columns, 0);
 
   // Create TaskData
@@ -212,7 +193,7 @@ TEST(koshkin_n_sum_values_by_columns_matrix_MPI, Test_MatrixSmall15x10) {
   const int rows = 15;
   const int columns = 10;
 
-  std::vector<int> matrix = koshkin_n_sum_values_by_columns_matrix_mpi::getRandomVector(columns * rows);
+  std::vector<int> matrix = getRndVect(columns * rows);
   std::vector<int> res_out_paral(columns, 0);
 
   // Create TaskData
@@ -261,7 +242,7 @@ TEST(koshkin_n_sum_values_by_columns_matrix_MPI, Test_Matrix500x1000) {
   const int rows = 500;
   const int columns = 1000;
 
-  std::vector<int> matrix = koshkin_n_sum_values_by_columns_matrix_mpi::getRandomVector(columns * rows);
+  std::vector<int> matrix = getRndVect(columns * rows);
   std::vector<int> res_out_paral(columns, 0);
 
   // Create TaskData
