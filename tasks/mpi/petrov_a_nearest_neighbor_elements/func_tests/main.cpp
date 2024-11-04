@@ -2,9 +2,22 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <random>
 #include <vector>
 
 #include "mpi/petrov_a_nearest_neighbor_elements/include/ops_mpi.hpp"
+
+namespace petrov_a_nearest_neighbor_elements_mpi {
+std::vector<int> getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = gen() % 100;
+  }
+  return vec;
+}
+}  // namespace petrov_a_nearest_neighbor_elements_mpi
 
 TEST(petrov_a_nearest_neighbor_elements_mpi, Test_NearestNeighbor1) {
   boost::mpi::communicator world;

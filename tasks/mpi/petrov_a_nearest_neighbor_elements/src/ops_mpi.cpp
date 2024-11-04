@@ -10,16 +10,6 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> petrov_a_nearest_neighbor_elements_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
-}
-
 bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   input_ = std::vector<int>(taskData->inputs_count[0]);
@@ -34,6 +24,9 @@ bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskSequential::pre_processi
 
 bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
+  if (taskData->inputs_count[0] < 2) {
+    return false;
+  }
   return taskData->outputs_count[0] == 2;
 }
 
@@ -74,6 +67,9 @@ bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskParallel::pre_processing
 bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
+    if (taskData->inputs_count[0] < 2) {
+      return false;
+    }
     return taskData->outputs_count[0] == 2;
   }
   return true;
