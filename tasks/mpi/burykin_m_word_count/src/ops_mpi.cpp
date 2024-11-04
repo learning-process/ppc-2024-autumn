@@ -109,12 +109,12 @@ bool TestTaskParallel::run() {
     }
     world.send(world_size - 1, 0, input_.data() + (world_size - 2) * partSize, endPartSize);
 
-    int counter;
+    int counter = 0;
     for (int i = 0; i < world_size - 1; i++) {
       world.recv(i + 1, 1, &counter, 1);
       word_count_ += counter;
     }
-    counter++;
+    word_count_++;
   } else {
     int localPart = partSize;
     if (world_size - 1 == world.rank()) localPart = endPartSize;
