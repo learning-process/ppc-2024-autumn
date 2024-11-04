@@ -1,7 +1,5 @@
 #include "seq/burykin_m_word_count/include/ops_seq.hpp"
 
-using namespace std::chrono_literals;
-
 namespace burykin_m_word_count {
 
 bool TestTaskSequential::pre_processing() {

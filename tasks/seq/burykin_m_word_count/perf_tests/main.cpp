@@ -1,8 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <memory>
-#include <string>
-
 #include "core/perf/include/perf.hpp"
 #include "seq/burykin_m_word_count/include/ops_seq.hpp"
 
