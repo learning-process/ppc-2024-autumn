@@ -35,7 +35,7 @@ class TestTaskSequential : public ppc::core::Task {
 class TestTaskParallel : public ppc::core::Task {
  public:
   explicit TestTaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)), world(boost::mpi::communicator()) {}
+      : Task(std::move(taskData_)) {}
 
   bool pre_processing() override;
   bool validation() override;
