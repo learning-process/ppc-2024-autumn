@@ -371,3 +371,51 @@ TEST(sedova_o_max_of_vector_elements_mpi, Test_500_10) {
     ASSERT_EQ(reference_max[0], global_max[0]);
   }
 }
+
+TEST(sedova_o_max_of_vector_elements_mpi, Test_50_1) {
+  size_t rows = 1;
+  size_t cols = 50;
+  size_t value = 30;
+  boost::mpi::communicator world;
+  std::vector<std::vector<int>> global_matrix;
+  std::vector<int32_t> global_max(1, -((int)(value)));
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    global_matrix = generate_random_matrix(rows, cols, value);
+    for (unsigned int i = 0; i < global_matrix.size(); i++)
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix[i].data()));
+    taskDataPar->inputs_count.emplace_back(rows);
+    taskDataPar->inputs_count.emplace_back(cols);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
+    taskDataPar->outputs_count.emplace_back(global_max.size());
+  }
+  sedova_o_max_of_vector_elements_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    // Create data
+    std::vector<int32_t> reference_max(1, global_matrix[0][0]);
+
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    for (unsigned int i = 0; i < global_matrix.size(); i++)
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix[i].data()));
+    taskDataSeq->inputs_count.emplace_back(rows);
+    taskDataSeq->inputs_count.emplace_back(cols);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_max.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_max.size());
+    // Create Task
+    sedova_o_max_of_vector_elements_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+    ASSERT_EQ(reference_max[0], global_max[0]);
+  }
+}
