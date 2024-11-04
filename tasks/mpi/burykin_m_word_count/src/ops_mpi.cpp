@@ -31,7 +31,7 @@ bool TestTaskSequential::post_processing() {
   reinterpret_cast<int *>(taskData->outputs[0])[0] = word_count_;
   return true;
 }
-bool TestTaskSequential::is_word_character(char c) { return std::isalpha(static_cast<unsigned char>(c)); }
+bool TestTaskSequential::is_word_character(char c) { return std::isalpha(static_cast<unsigned char>(c)) != 0; }
 
 int TestTaskSequential::count_words(const std::string &text) {
   int count = 0;
