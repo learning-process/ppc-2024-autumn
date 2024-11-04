@@ -89,7 +89,7 @@ bool koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskParallel::validation
 bool koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-if (world.rank() == 0) {
+  if (world.rank() == 0) {
     rows = taskData->inputs_count[0];
     columns = taskData->inputs_count[1];
   }
@@ -97,7 +97,8 @@ if (world.rank() == 0) {
   broadcast(world, rows, 0);
   broadcast(world, columns, 0);
 
-  int rows_per_process, extra_rows;
+  int rows_per_process;
+  int extra_rows;
 
   if (world.rank() == 0) {
     rows_per_process = rows / world.size();
