@@ -7,7 +7,7 @@
 
 #include "mpi/tyshkevich_a_num_of_orderly_violations/include/ops_mpi.hpp"
 
-std::string VecToStrTY(std::vector<int>& v) {
+std::string VecToStrTY(std::vector<int> &v) {
   std::ostringstream oss;
 
   if (!v.empty()) {
