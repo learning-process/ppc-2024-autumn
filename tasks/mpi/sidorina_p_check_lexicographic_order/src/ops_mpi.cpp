@@ -25,6 +25,7 @@ bool sidorina_p_check_lexicographic_order_mpi::TestMPITaskSequential::validation
   internal_order_test();
   return taskData->inputs_count[0] == 2 && taskData->outputs_count[0] == 1;
 }
+
 bool sidorina_p_check_lexicographic_order_mpi::TestMPITaskSequential::run() {
   internal_order_test();
   for (size_t i = 0; i < std::min(input_[0].size(), input_[1].size()); ++i) {
@@ -61,13 +62,12 @@ bool sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel::pre_processi
       world.send(proc, 1, input_[1].data() + delta * proc, delta);
     }
   }
-  local_input1_ = std::vector<char>(delta);
-  local_input2_ = std::vector<char>(delta);
-
   if (world.rank() == 0) {
     local_input1_ = std::vector<char>(input_[0].begin(), input_[0].begin() + delta);
     local_input2_ = std::vector<char>(input_[1].begin(), input_[1].begin() + delta);
   } else {
+    local_input1_.resize(delta);
+    local_input2_.resize(delta);
     world.recv(0, 0, local_input1_.data(), delta);
     world.recv(0, 1, local_input2_.data(), delta);
   }
