@@ -2,8 +2,6 @@
 
 #include <random>
 
-using namespace std::chrono_literals;
-
 bool vavilov_v_min_elements_in_columns_of_matrix_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
 
