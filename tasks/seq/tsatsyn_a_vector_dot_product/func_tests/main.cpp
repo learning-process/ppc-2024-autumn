@@ -61,7 +61,6 @@ TEST(tsatsyn_a_vector_dot_product_seq, Test_Negative_Validation) {
 }
 
 TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_32) {
-  const int scale = 32;
 
   // Create data
   std::vector<int> v1 = {1, 2, 3};
@@ -87,7 +86,6 @@ TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_32) {
 }
 
 TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_28) {
-  const int scale = 28;
 
   // Create data
   std::vector<int> v1 = {6, 4, 5};
@@ -113,7 +111,6 @@ TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_28) {
 }
 
 TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_95) {
-  const int scale = 95;
 
   // Create data
   std::vector<int> v1 = {7, 4, 6};
@@ -139,7 +136,6 @@ TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_95) {
 }
 
 TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_2330) {
-  const int scale = 2330;
 
   // Create data
   std::vector<int> v1 = {20, 54, 23};
@@ -165,7 +161,6 @@ TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_2330) {
 }
 
 TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_1956) {
-  const int count = 1956;
 
   // Create data
   std::vector<int> v1 = {12, 100, 50};
