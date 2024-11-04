@@ -1,7 +1,11 @@
 ﻿#pragma once
 
+#include <gtest/gtest.h>
+
+#include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
-#include <memory>
+#include <random>
+#include <vector>
 
 #include "core/task/include/task.hpp"
 
@@ -9,37 +13,38 @@ namespace malyshev_v_monte_carlo_integration {
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
-  TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData) : ppc::core::Task(taskData) {}
-  bool validation() override;
+  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
+  bool validation() override;
   bool run() override;
   bool post_processing() override;
-  void internal_order_test();
+  double a = 0.0;
+  double b = 0.0;
+  double epsilon = 0.0;
+  int num_samples = 0;
+  static double function_square(double x) { return x * x; }
 
  private:
-  double a, b, epsilon, res;
-  int num_samples;
+  double res{};
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData)
-      : ppc::core::Task(taskData), world(boost::mpi::communicator()) {}
-  bool validation() override;
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
+  bool validation() override;
   bool run() override;
   bool post_processing() override;
-  void internal_order_test();
+  double a = 0.0;
+  double b = 0.0;
+  double epsilon = 0.0;
+  int num_samples = 0;
+  int local_num_samples = 0;
+  static double function_square(double x) { return x * x; }
 
  private:
+  double res;
   boost::mpi::communicator world;
-  double a, b, epsilon, res;
-  int num_samples, local_num_samples;
 };
-
-double function_square(double x);
-double function_constant(double x);
-double function_linear(double x);
-double function_cubic(double x);
 
 }  // namespace malyshev_v_monte_carlo_integration
