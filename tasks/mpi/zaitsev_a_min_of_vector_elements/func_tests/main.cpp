@@ -57,7 +57,6 @@ TEST(zaitsev_a_min_of_vector_elements_mpi, test_case_even_length_vector) {
   }
 }
 
-
 TEST(zaitsev_a_min_of_vector_elements_mpi, test_case_odd_length_vector) {
   const int extrema = -1;
   const int minRangeValue = 0;
