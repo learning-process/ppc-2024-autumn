@@ -11,6 +11,7 @@ TEST(mpi_zolotareva_a_count_of_words_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
   std::string global_string;
   size_t global_count = 0;
+  size_t answer = 21;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     global_string =
@@ -40,7 +41,7 @@ TEST(mpi_zolotareva_a_count_of_words_perf_test, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(21, global_count);
+    ASSERT_EQ(answer, global_count);
   }
 }
 
@@ -48,6 +49,7 @@ TEST(mpi_zolotareva_a_count_of_words_perf_test, test_task_run) {
   boost::mpi::communicator world;
   std::string global_string;
   size_t global_count = 0;
+  size_t answer = 21;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -78,6 +80,6 @@ TEST(mpi_zolotareva_a_count_of_words_perf_test, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(21, global_count);
+    ASSERT_EQ(answer, global_count);
   }
 }
