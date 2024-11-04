@@ -13,7 +13,7 @@
 #include "core/task/include/task.hpp"
 
 namespace dormidontov_e_min_value_by_columns_mpi {
-  
+
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

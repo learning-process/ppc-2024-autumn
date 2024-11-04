@@ -4,7 +4,6 @@
 
 #include <thread>
 
-
 bool dormidontov_e_min_value_by_columns_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
 

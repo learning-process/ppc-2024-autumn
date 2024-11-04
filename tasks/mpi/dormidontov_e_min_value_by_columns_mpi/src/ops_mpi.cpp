@@ -7,7 +7,6 @@
 #include <thread>
 #include <vector>
 
-
 bool dormidontov_e_min_value_by_columns_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
 

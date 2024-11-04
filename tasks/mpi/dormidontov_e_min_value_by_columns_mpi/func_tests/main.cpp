@@ -12,7 +12,7 @@ TEST(dormidontov_e_min_value_by_columns_mpi, Test_just_test_if_it_finally_works)
   int rs = 7;
   int cs = 7;
 
-  std::vector<int> matrix(cs*rs);
+  std::vector<int> matrix(cs * rs);
   for (int i = 0; i < cs; i++) {
     for (int j = 0; j < rs; j++) {
       matrix[i * cs + j] = rand() % 1000;
@@ -30,14 +30,13 @@ TEST(dormidontov_e_min_value_by_columns_mpi, Test_just_test_if_it_finally_works)
     taskDataPar->outputs_count.emplace_back(res_out_paral.size());
   }
   dormidontov_e_min_value_by_columns_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  
+
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  
+
   testMpiTaskParallel.pre_processing();
-  
+
   testMpiTaskParallel.run();
-  
-           
+
   testMpiTaskParallel.post_processing();
   if (world.rank() == 0) {
     std::vector<int> res_out_seq(cs, 0);
@@ -66,14 +65,12 @@ TEST(dormidontov_e_min_value_by_columns_mpi, Test_just_test_if_it_finally_works2
   std::vector<int> matrix(cs * rs);
   for (int i = 0; i < cs; i++) {
     for (int j = 0; j < rs; j++) {
-      matrix[i * cs + j] = i*cs+j;
+      matrix[i * cs + j] = i * cs + j;
     };
   };
   std::vector<int> res_out_paral(cs);
   res_out_paral[0] = 1;
   res_out_paral[1] = 2;
-
-
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -86,10 +83,10 @@ TEST(dormidontov_e_min_value_by_columns_mpi, Test_just_test_if_it_finally_works2
   }
   dormidontov_e_min_value_by_columns_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
-      
+
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
-   
+
   testMpiTaskParallel.post_processing();
   if (world.rank() == 0) {
     std::vector<int> res_out_seq(cs, 0);
@@ -108,4 +105,3 @@ TEST(dormidontov_e_min_value_by_columns_mpi, Test_just_test_if_it_finally_works2
     ASSERT_EQ(res_out_paral, res_out_seq);
   }
 }
-
