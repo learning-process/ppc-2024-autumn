@@ -58,10 +58,10 @@ int TestTaskSequential::count_words(const std::string& text) {
       }
     }
 
-    std::cout << "Символ: " << c << ", in_word: " << in_word << ", count: " << count << std::endl;
+    // std::cout << "Символ: " << c << ", in_word: " << in_word << ", count: " << count << std::endl;
   }
 
-  std::cout << "Итоговый счет слов: " << count << std::endl;
+  // std::cout << "Итоговый счет слов: " << count << std::endl;
   return count;
 }
 

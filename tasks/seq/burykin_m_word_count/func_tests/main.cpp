@@ -23,7 +23,7 @@ TEST(WordCountSequential, EmptyString) {
 }
 
 TEST(WordCountSequential, SingleWord) {
-  std::string input = "Hello";
+  std::string input = "Hello.";
   std::vector<uint8_t> in(input.begin(), input.end());
   std::vector<int> out(1, 0);
 

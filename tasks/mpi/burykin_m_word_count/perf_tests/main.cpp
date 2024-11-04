@@ -1,76 +1,114 @@
 #include <gtest/gtest.h>
 
-#include <memory>
-#include <string>
+#include <boost/mpi/timer.hpp>
+#include <random>
+#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/burykin_m_word_count/include/ops_mpi.hpp"
 
-using namespace ppc::core;
-using namespace burykin_m_word_count;
+std::vector<char> burykin_m_word_count::RandomSentence(int size) {
+  std::vector<char> vec(size);
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  if (size > 0) {
+    vec[size - 1] = 0x61 + gen() % 26;
+    vec[0] = 0x41 + gen() % 26;
+  }
+  for (int i = 1; i < size - 1; i++) {
+    if (vec[i - 1] != ' ' && gen() % 4 == 0) {
+      vec[i] = ' ';
+    } else {
+      vec[i] = 0x61 + gen() % 26;
+    }
+  }
+  return vec;
+}
 
-TEST(WordCountMPI, PipelineRunPerformance) {
+TEST(burykin_m_word_count_MPI_perf, test_pipeline_run) {
+  int length = 10000;
+
+  // Create data
+  std::vector<char> input(length, 'a');
+  std::vector<int> wordCount(1, 0);
+
   boost::mpi::communicator world;
-  std::string input = "This is a sample text to test the word counting functionality.";
-  std::vector<char> input_data(input.begin(), input.end());
-  std::vector<int> output_data(1, 0);
 
-  auto taskData = std::make_shared<TaskData>();
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  taskDataPar->inputs_count.emplace_back(input.size());
   if (world.rank() == 0) {
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_data.data()));
-    taskData->inputs_count.emplace_back(input_data.size());
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_data.data()));
-    taskData->outputs_count.emplace_back(output_data.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(wordCount.data()));
+    taskDataPar->outputs_count.emplace_back(wordCount.size());
   }
 
-  auto task = std::make_shared<TestTaskParallel>(taskData);
-  Perf perfAnalyzer(task);
+  // Create Task
+  auto testMpiTaskParallel = std::make_shared<burykin_m_word_count::TestTaskParallel>(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  testMpiTaskParallel->pre_processing();
+  testMpiTaskParallel->run();
+  testMpiTaskParallel->post_processing();
 
-  auto perfAttr = std::make_shared<PerfAttr>();
-  perfAttr->num_running = 1000;
-  perfAttr->current_timer = []() -> double {
-    return static_cast<double>(std::chrono::steady_clock::now().time_since_epoch().count()) * 1e-9;
-  };
+  // Create Perf attributes
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 10;
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  auto perfResults = std::make_shared<PerfResults>();
+  // Create and init perf results
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  perfAnalyzer.pipeline_run(perfAttr, perfResults);
-  Perf::print_perf_statistic(perfResults);
-
+  // Create Perf analyzer
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
+  perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
-    ASSERT_EQ(output_data[0], 11);
+    ppc::core::Perf::print_perf_statistic(perfResults);
+    ASSERT_EQ(1, wordCount[0]);
   }
 }
 
-TEST(WordCountMPI, TaskRunPerformance) {
-  boost::mpi::communicator world;
-  std::string input = "Another example sentence to evaluate the performance of the word counting task.";
-  std::vector<char> input_data(input.begin(), input.end());
-  std::vector<int> output_data(1, 0);
+TEST(burykin_m_word_count_MPI_perf, test_task_run) {
+  int length = 10000;
 
-  auto taskData = std::make_shared<TaskData>();
+  // Create data
+  std::vector<char> input(length, 'a');
+  std::vector<int> wordCount(1, 0);
+
+  boost::mpi::communicator world;
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  taskDataPar->inputs_count.emplace_back(input.size());
   if (world.rank() == 0) {
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_data.data()));
-    taskData->inputs_count.emplace_back(input_data.size());
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_data.data()));
-    taskData->outputs_count.emplace_back(output_data.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(wordCount.data()));
+    taskDataPar->outputs_count.emplace_back(wordCount.size());
   }
 
-  auto task = std::make_shared<TestTaskParallel>(taskData);
-  Perf perfAnalyzer(task);
+  // Create Task
+  auto testMpiTaskParallel = std::make_shared<burykin_m_word_count::TestTaskParallel>(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  testMpiTaskParallel->pre_processing();
+  testMpiTaskParallel->run();
+  testMpiTaskParallel->post_processing();
 
-  auto perfAttr = std::make_shared<PerfAttr>();
-  perfAttr->num_running = 1000;
-  perfAttr->current_timer = []() -> double {
-    return static_cast<double>(std::chrono::steady_clock::now().time_since_epoch().count()) * 1e-9;
-  };
+  // Create Perf attributes
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 10;
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  auto perfResults = std::make_shared<PerfResults>();
+  // Create and init perf results
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  perfAnalyzer.task_run(perfAttr, perfResults);
-  Perf::print_perf_statistic(perfResults);
-
+  // Create Perf analyzer
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
+  perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
-    ASSERT_EQ(output_data[0], 12);
+    ppc::core::Perf::print_perf_statistic(perfResults);
+    ASSERT_EQ(1, wordCount[0]);
   }
 }

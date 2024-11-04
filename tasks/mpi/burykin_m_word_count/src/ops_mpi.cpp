@@ -1,11 +1,13 @@
 #include "mpi/burykin_m_word_count/include/ops_mpi.hpp"
 
+using namespace std::chrono_literals;
+
 namespace burykin_m_word_count {
 
 bool TestTaskSequential::pre_processing() {
   internal_order_test();
   if (taskData->inputs[0] != nullptr && taskData->inputs_count[0] > 0) {
-    input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
+    input_ = std::string(reinterpret_cast<char *>(taskData->inputs[0]), taskData->inputs_count[0]);
   } else {
     input_ = "";
   }
@@ -15,7 +17,7 @@ bool TestTaskSequential::pre_processing() {
 
 bool TestTaskSequential::validation() {
   internal_order_test();
-  return (taskData->inputs_count[0] == 0 || taskData->inputs_count[0] > 0) && taskData->outputs_count[0] == 1;
+  return taskData->inputs_count[0] >= 0 && taskData->outputs_count[0] == 1;
 }
 
 bool TestTaskSequential::run() {
@@ -26,13 +28,12 @@ bool TestTaskSequential::run() {
 
 bool TestTaskSequential::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = word_count_;
+  reinterpret_cast<int *>(taskData->outputs[0])[0] = word_count_;
   return true;
 }
+bool TestTaskSequential::is_word_character(char c) { return std::isalpha(static_cast<unsigned char>(c)); }
 
-bool TestTaskSequential::is_word_character(char c) { return std::isalpha(static_cast<unsigned char>(c)) != 0; }
-
-int TestTaskSequential::count_words(const std::string& text) {
+int TestTaskSequential::count_words(const std::string &text) {
   int count = 0;
   bool in_word = false;
 
@@ -52,79 +53,90 @@ int TestTaskSequential::count_words(const std::string& text) {
 
 bool TestTaskParallel::pre_processing() {
   internal_order_test();
-  unsigned int chunkSize = 0;
-  if (world.rank() == 0) {
-    input_ = std::vector<char>(taskData->inputs_count[0]);
-    auto* tempPtr = reinterpret_cast<char*>(taskData->inputs[0]);
-    std::copy(tempPtr, tempPtr + taskData->inputs_count[0], input_.begin());
 
-    chunkSize = taskData->inputs_count[0] / world.size();
-  }
-  boost::mpi::broadcast(world, chunkSize, 0);
+  // Init vectors
+  length = taskData->inputs_count[0];
 
-  local_input_.resize(chunkSize);
   if (world.rank() == 0) {
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + proc * chunkSize, chunkSize);
+    input_ = std::vector<char>(length);
+    char *tmp_ptr = reinterpret_cast<char *>(taskData->inputs[0]);
+    for (int i = 0; i < length; i++) {
+      input_[i] = tmp_ptr[i];
     }
-    std::copy(input_.begin(), input_.begin() + chunkSize, local_input_.begin());
-  } else {
-    world.recv(0, 0, local_input_.data(), chunkSize);
+    // Init values for output
+    word_count_ = 0;
   }
+
   return true;
 }
 
 bool TestTaskParallel::validation() {
   internal_order_test();
-  return (world.rank() == 0) ? (taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1) : true;
+  if (world.rank() == 0) {
+    return taskData->inputs_count[0] >= 0 && taskData->outputs_count[0] == 1;
+  }
+  return true;
 }
 
 bool TestTaskParallel::run() {
   internal_order_test();
-  bool in_word = false;
-  local_word_count_ = 0;
 
-  for (char c : local_input_) {
-    if (is_word_character(c)) {
-      if (!in_word) {
-        local_word_count_++;
-        in_word = true;
-      }
-    } else {
-      in_word = false;
-    }
+  if (length == 0) {
+    return true;
   }
 
-  boost::mpi::reduce(world, local_word_count_, word_count_, std::plus<>(), 0);
+  if (world.size() == 1) {
+    for (int i = 0; i < length; i++) {
+      if (!is_word_character(input_[i])) word_count_++;
+    }
+    word_count_++;
+    return true;
+  }
+
+  int world_size = world.size();
+
+  if (world.rank() > length) {
+    return true;
+  }
+  if (world_size > length + 1) world_size = length + 1;
+
+  int partSize = length / (world_size - 1);
+  int endPartSize = length - partSize * (world_size - 2);
+
+  if (world.rank() == 0) {
+    for (int i = 0; i < world_size - 2; i++) {
+      world.send(i + 1, 0, input_.data() + i * partSize, partSize);
+    }
+    world.send(world_size - 1, 0, input_.data() + (world_size - 2) * partSize, endPartSize);
+
+    int counter;
+    for (int i = 0; i < world_size - 1; i++) {
+      world.recv(i + 1, 1, &counter, 1);
+      word_count_ += counter;
+    }
+    counter++;
+  } else {
+    int localPart = partSize;
+    if (world_size - 1 == world.rank()) localPart = endPartSize;
+    std::vector<char> chunk(localPart);
+    int counter = 0;
+    world.recv(0, 0, chunk.data(), localPart);
+
+    for (char ch : chunk)
+      if (!is_word_character(ch)) counter++;
+    world.send(0, 1, &counter, 1);
+  }
   return true;
 }
 
 bool TestTaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = word_count_;
+    reinterpret_cast<int *>(taskData->outputs[0])[0] = word_count_;
   }
   return true;
 }
 
-bool TestTaskParallel::is_word_character(char c) { return std::isalpha(static_cast<unsigned char>(c)) != 0; }
-
-int TestTaskParallel::count_words(const std::vector<char>& text) {
-  int count = 0;
-  bool in_word = false;
-
-  for (char c : text) {
-    if (is_word_character(c)) {
-      if (!in_word) {
-        count++;
-        in_word = true;
-      }
-    } else {
-      in_word = false;
-    }
-  }
-
-  return count;
-}
+bool TestTaskParallel::is_word_character(char c) { return std::isalpha(static_cast<unsigned char>(c)); }
 
 }  // namespace burykin_m_word_count

@@ -11,6 +11,8 @@
 
 namespace burykin_m_word_count {
 
+std::vector<char> RandomSentence(int size);
+
 // Последовательная версия
 class TestTaskSequential : public ppc::core::Task {
  public:
@@ -46,6 +48,7 @@ class TestTaskParallel : public ppc::core::Task {
   std::vector<char> local_input_;
   int word_count_{};
   int local_word_count_{};
+  int length{};
 
   static bool is_word_character(char c);
   int count_words(const std::vector<char>& text);
