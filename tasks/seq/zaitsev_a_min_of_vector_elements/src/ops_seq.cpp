@@ -21,8 +21,8 @@ bool zaitsev_a_min_of_vector_elements_seq::MinOfVectorElementsSequential::pre_pr
 bool zaitsev_a_min_of_vector_elements_seq::MinOfVectorElementsSequential::validation() {
   internal_order_test();
   // Check count elements of output
-  return taskData->inputs_count[0] != 0 && taskData->outputs_count[0] == 1 ||
-         taskData->inputs_count[0] == 0 && taskData->outputs_count[0] == 0;
+  return (taskData->inputs_count[0] != 0 && taskData->outputs_count[0] == 1) ||
+         (taskData->inputs_count[0] == 0 && taskData->outputs_count[0] == 0);
 }
 
 bool zaitsev_a_min_of_vector_elements_seq::MinOfVectorElementsSequential::run() {

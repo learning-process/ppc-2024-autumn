@@ -120,7 +120,7 @@ TEST(zaitsev_a_min_of_vector_elements_mpi, test_case_singleton_vector) {
   if (world.rank() == 0) {
     const int count_size_vector = 1;
     global_vec = zaitsev_a_min_of_vector_elements_mpi::getRandomVector(count_size_vector, minRangeValue, maxRangeValue);
-    global_vec[global_vec.size() / 2] = extrema;
+    global_vec[0] = extrema;
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_min.data()));
@@ -135,7 +135,7 @@ TEST(zaitsev_a_min_of_vector_elements_mpi, test_case_singleton_vector) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int32_t> reference(1, 0);
+    std::vector<int32_t> reference(1, maxRangeValue + 1);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
