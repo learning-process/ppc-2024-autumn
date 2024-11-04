@@ -1,11 +1,12 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
-#include <boost/mpi/timer.hpp>
-#include <vector>
 #include <algorithm>
+#include <boost/mpi/timer.hpp>
 #include <functional>
 #include <random>
+#include <vector>
+
 #include "core/perf/include/perf.hpp"
 #include "mpi/tsatsyn_a_vector_dot_product/include/ops_mpi.hpp"
 std::vector<int> toGetRandomVector(int size) {

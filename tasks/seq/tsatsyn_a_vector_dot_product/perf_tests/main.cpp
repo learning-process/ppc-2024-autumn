@@ -1,10 +1,11 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
-#include <vector>
 #include <algorithm>
 #include <functional>
 #include <random>
+#include <vector>
+
 #include "core/perf/include/perf.hpp"
 #include "seq/tsatsyn_a_vector_dot_product/include/ops_seq.hpp"
 

@@ -59,7 +59,6 @@ TEST(tsatsyn_a_vector_dot_product_mpi, Test_Negative_Validation) {
     tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
     ASSERT_FALSE(testMpiTaskParallel.validation());
   }
-  
 }
 TEST(tsatsyn_a_vector_dot_product_mpi, Test_Scalar_Positive_Value) {
   boost::mpi::communicator world;
