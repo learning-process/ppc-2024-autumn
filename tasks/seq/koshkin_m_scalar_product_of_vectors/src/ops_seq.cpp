@@ -1,10 +1,6 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/koshkin_m_scalar_product_of_vectors/include/ops_seq.hpp"
 
-#include <random>
-
-static int offset = 0;
-
 bool koshkin_m_scalar_product_of_vectors::VectorDotProduct::pre_processing() {
   internal_order_test();
   input_ = std::vector<std::vector<int>>(taskData->inputs.size());
@@ -38,26 +34,4 @@ bool koshkin_m_scalar_product_of_vectors::VectorDotProduct::post_processing() {
   internal_order_test();
   reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
   return true;
-}
-
-int koshkin_m_scalar_product_of_vectors::calculateDotProduct(const std::vector<int>& vec_1,
-                                                             const std::vector<int>& vec_2) {
-  long result = 0;
-  for (size_t i = 0; i < vec_1.size(); i++) result += vec_1[i] * vec_2[i];
-  return result;
-}
-
-int koshkin_m_scalar_product_of_vectors::generateRandomNumber(int min, int max) {
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<> distrib(min, max);
-  return distrib(gen);
-}
-
-std::vector<int> koshkin_m_scalar_product_of_vectors::generateRandomVector(int v_size) {
-  std::vector<int> vec(v_size);
-  std::mt19937 gen;
-  gen.seed((unsigned)time(nullptr) + ++offset);
-  for (int i = 0; i < v_size; i++) vec[i] = gen() % 100;
-  return vec;
 }

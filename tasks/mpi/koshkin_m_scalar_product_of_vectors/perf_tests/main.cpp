@@ -2,10 +2,28 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
+#include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/koshkin_m_scalar_product_of_vectors/include/ops_mpi.hpp"
+
+static int offset = 0;
+
+int koshkin_m_scalar_product_of_vectors::calculateDotProduct(const std::vector<int>& vec_1,
+                                                             const std::vector<int>& vec_2) {
+  long result = 0;
+  for (size_t i = 0; i < vec_1.size(); i++) result += vec_1[i] * vec_2[i];
+  return result;
+}
+
+std::vector<int> koshkin_m_scalar_product_of_vectors::generateRandomVector(int v_size) {
+  std::vector<int> vec(v_size);
+  std::mt19937 gen;
+  gen.seed((unsigned)time(nullptr) + ++offset);
+  for (int i = 0; i < v_size; i++) vec[i] = gen() % 100;
+  return vec;
+}
 
 TEST(koshkin_m_scalar_product_of_vectors, test_pipeline_run) {
   int count_size = 10000000;
