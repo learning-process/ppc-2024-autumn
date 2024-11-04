@@ -3,13 +3,14 @@
 #include "seq/golovkin_integration_rectangular_method/include/ops_seq.hpp"
 
 #include <cmath>
-#include <iostream> 
 #include <stdexcept>
+#include <iostream> 
 #include <vector>
 
 using namespace golovkin_integration_rectangular_method;
 
 IntegralCalculator::IntegralCalculator(std::shared_ptr<ppc::core::TaskData> taskData)
+    
     : ppc::core::Task(taskData), 
 
       taskData(taskData),
@@ -68,13 +69,11 @@ bool IntegralCalculator::run() {
 
   // Вычисление интеграла методом прямоугольников
   for (int i = 0; i < cnt_of_splits; ++i) {
-
-    double x = a + (i + 0.5) * h;  
-    result += function_square(x);  
+    double x = a + (i + 0.5) * h;
+    result += function_square(x);
   }
-
-  result *= h;  
-  res = result; 
+  result *= h;
+  res = result;
   return true;
 }
 

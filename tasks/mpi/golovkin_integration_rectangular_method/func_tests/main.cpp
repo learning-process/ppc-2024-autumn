@@ -71,6 +71,7 @@ TEST(golovkin_integration_rectangular_method, test_square_function) {
 
   double a = 0.0;
   double b = 2.5;
+
   double epsilon = 0.1;
 
   if (world.rank() == 0) {
@@ -121,8 +122,7 @@ TEST(golovkin_integration_rectangular_method, test_sine_function) {
 
   double a = 0.0;
 
-
-  double b = M_PI;  
+  double b = M_PI;
   double epsilon = 0.1;
 
   if (world.rank() == 0) {
