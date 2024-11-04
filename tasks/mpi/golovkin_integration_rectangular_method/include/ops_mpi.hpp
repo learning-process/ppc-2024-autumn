@@ -13,21 +13,23 @@ class MPIIntegralCalculator : public ppc::core::Task {
  public:
   explicit MPIIntegralCalculator(std::shared_ptr<ppc::core::TaskData> taskData);
 
-  bool validation() override;      // Проверка входных данных
-  bool pre_processing() override;  // Предварительная обработка данных
-  bool run() override;             // Выполнение интеграции с использованием MPI
-  bool post_processing() override;  // Пост-обработка результатов и сборка итогового значения
+  bool validation() override;      // РџСЂРѕРІРµСЂРєР° РІС…РѕРґРЅС‹С… РґР°РЅРЅС‹С…
+  bool pre_processing() override;  // РџСЂРµРґРІР°СЂРёС‚РµР»СЊРЅР°СЏ РѕР±СЂР°Р±РѕС‚РєР° РґР°РЅРЅС‹С…
+  bool run() override;             // Р’С‹РїРѕР»РЅРµРЅРёРµ РёРЅС‚РµРіСЂР°С†РёРё СЃ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµРј MPI
+  bool post_processing() override;  // РџРѕСЃС‚-РѕР±СЂР°Р±РѕС‚РєР° СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ Рё СЃР±РѕСЂРєР° РёС‚РѕРіРѕРІРѕРіРѕ Р·РЅР°С‡РµРЅРёСЏ
 
  private:
   boost::mpi::communicator world;  
   std::shared_ptr<ppc::core::TaskData> taskData;
-  double a, b, epsilon;  
+  double a;
+  double b;
+  double epsilon;  
   int cnt_of_splits;
   double h;
-  double local_res;   // Локальный результат для каждого процесса
-  double global_res;  // Глобальный результат, собираемый на процессе 0
+  double local_res;   // Р›РѕРєР°Р»СЊРЅС‹Р№ СЂРµР·СѓР»СЊС‚Р°С‚ РґР»СЏ РєР°Р¶РґРѕРіРѕ РїСЂРѕС†РµСЃСЃР°
+  double global_res;  // Р“Р»РѕР±Р°Р»СЊРЅС‹Р№ СЂРµР·СѓР»СЊС‚Р°С‚, СЃРѕР±РёСЂР°РµРјС‹Р№ РЅР° РїСЂРѕС†РµСЃСЃРµ 0
 
-  double function_square(double x);  // Функция для интегрирования
+  double function_square(double x);  // Р¤СѓРЅРєС†РёСЏ РґР»СЏ РёРЅС‚РµРіСЂРёСЂРѕРІР°РЅРёСЏ
 };
 
 }  // namespace golovkin_integration_rectangular_method

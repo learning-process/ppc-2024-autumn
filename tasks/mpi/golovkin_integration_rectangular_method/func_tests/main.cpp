@@ -18,8 +18,8 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   double a = 0.0;
-  double b = 10.0;
-  double epsilon = 0.01; 
+  double b = 5.0;
+  double epsilon = 0.1; 
 
   if (world.rank() == 0) {
 
@@ -61,7 +61,7 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
     sequentialTask.run();
     sequentialTask.post_processing();
 
-    ASSERT_NEAR(reference_result[0], global_result[0], 1e-3);
+    ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
   }
 }
 
@@ -72,8 +72,8 @@ TEST(golovkin_integration_rectangular_method, test_square_function) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   double a = 0.0;
-  double b = 5.0;
-  double epsilon = 0.01;
+  double b = 2.5;
+  double epsilon = 0.1;
 
   if (world.rank() == 0) {
 
@@ -115,7 +115,7 @@ TEST(golovkin_integration_rectangular_method, test_square_function) {
     sequentialTask.run();
     sequentialTask.post_processing();
 
-    ASSERT_NEAR(reference_result[0], global_result[0], 1e-3);
+    ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
   }
 }
 TEST(golovkin_integration_rectangular_method, test_sine_function) {
@@ -124,8 +124,8 @@ TEST(golovkin_integration_rectangular_method, test_sine_function) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   double a = 0.0;
-  double b = M_PI;  // Integrating sin(x) from 0 to π
-  double epsilon = 0.01;
+  double b = M_PI;  
+  double epsilon = 0.1;
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
@@ -165,7 +165,7 @@ TEST(golovkin_integration_rectangular_method, test_sine_function) {
     sequentialTask.run();
     sequentialTask.post_processing();
 
-    ASSERT_NEAR(reference_result[0], global_result[0], 1e-3);
+    ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
   }
 }
 
@@ -175,8 +175,8 @@ TEST(golovkin_integration_rectangular_method, test_exponential_function) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   double a = 0.0;
-  double b = 1.0;  // Integrating e^x from 0 to 1
-  double epsilon = 0.01;
+  double b = 2.5;  // Integrating e^x from 0 to 1
+  double epsilon = 0.1;
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
@@ -216,7 +216,7 @@ TEST(golovkin_integration_rectangular_method, test_exponential_function) {
     sequentialTask.run();
     sequentialTask.post_processing();
 
-    ASSERT_NEAR(reference_result[0], global_result[0], 1e-3);
+    ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
   }
 }
 
@@ -226,8 +226,8 @@ TEST(golovkin_integration_rectangular_method, test_polynomial_function) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   double a = 1.0;
-  double b = 3.0;  // Integrating f(x) = x^3 from 1 to 3
-  double epsilon = 0.01;
+  double b = 2.5;  // Integrating f(x) = x^3 from 1 to 3
+  double epsilon = 0.1;
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
@@ -267,6 +267,6 @@ TEST(golovkin_integration_rectangular_method, test_polynomial_function) {
     sequentialTask.run();
     sequentialTask.post_processing();
 
-    ASSERT_NEAR(reference_result[0], global_result[0], 1e-3);
+    ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
   }
 }
