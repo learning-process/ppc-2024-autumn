@@ -5,10 +5,6 @@
 
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
-#include <memory>
-#include <numeric>
-#include <string>
-#include <utility>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -45,7 +41,6 @@ class TestMPITaskParallel : public ppc::core::Task {
   int n_, m_;
   int col_on_pr;
   int remainder;
-  std::string ops;
   boost::mpi::communicator world;
   boost::mpi::request req;
 };

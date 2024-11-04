@@ -3,12 +3,7 @@
 
 #include <algorithm>
 #include <functional>
-#include <random>
-#include <string>
-#include <thread>
 #include <vector>
-
-using namespace std::chrono_literals;
 
 bool beresnev_a_min_values_by_matrix_columns_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();

@@ -1,11 +1,6 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/beresnev_a_min_values_by_matrix_columns/include/ops_seq.hpp"
 
-#include <limits>
-#include <thread>
-
-using namespace std::chrono_literals;
-
 bool beresnev_a_min_values_by_matrix_columns_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   // Init value for input and output
