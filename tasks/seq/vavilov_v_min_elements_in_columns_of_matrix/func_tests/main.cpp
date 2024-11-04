@@ -156,8 +156,7 @@ TEST(vavilov_v_min_elements_in_columns_of_matrix_seq, validation_fails_on_invali
 
   vavilov_v_min_elements_in_columns_of_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
 
-  std::vector<std::vector<int>> matr =
-      vavilov_v_min_elements_in_columns_of_matrix_seq::TestTaskSequential::generate_rand_matr(rows, cols);
+  std::vector<std::vector<int>> matr = generate_rand_matr(rows, cols);
 
   for (auto& row : matr) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
