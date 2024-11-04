@@ -48,4 +48,3 @@ bool dormidontov_e_min_value_by_columns_seq::TestTaskSequential::post_processing
   }
   return true;
 }
-
