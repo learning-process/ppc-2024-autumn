@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <vector>
 
-
 using namespace std::chrono_literals;
 bool morozov_e_min_val_in_rows_matrix::TestTaskSequential::pre_processing() {
   internal_order_test();
