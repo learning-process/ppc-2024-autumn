@@ -74,7 +74,7 @@ bool zolotareva_a_count_of_words_mpi::TestMPITaskParallel::pre_processing() {
     }
   } else {
     local_input_ = std::string(delta + 1, '\0');
-    world.recv(0, 0, &local_input_[0], delta + 1);
+    world.recv(0, 0, local_input_.data(), delta + 1);
   }
   res = 0;
   return true;
@@ -101,7 +101,7 @@ bool zolotareva_a_count_of_words_mpi::TestMPITaskParallel::run() {
     --local_res;
   }
   std::this_thread::sleep_for(20ms);
-  boost::mpi::reduce(world, local_res, res, std::plus<int>(), 0);
+  boost::mpi::reduce(world, local_res, res, std::plus(), 0);
   return true;
 }
 
