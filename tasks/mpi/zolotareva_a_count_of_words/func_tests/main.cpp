@@ -7,7 +7,7 @@
 
 #include "mpi/zolotareva_a_count_of_words/include/ops_mpi.hpp"
 
-void form(std::string str) {
+void form(std::string &&str) {
   boost::mpi::communicator world;
   std::string global_string;
   size_t global_count = 0;
