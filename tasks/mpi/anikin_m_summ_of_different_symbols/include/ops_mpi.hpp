@@ -41,7 +41,7 @@ class SumDifSymMPIParallel : public ppc::core::Task {
  private:
   std::vector<std::string> local_input;
   std::vector<char*> input;
-  int res;
+  int res{};
   boost::mpi::communicator com;
 };
 

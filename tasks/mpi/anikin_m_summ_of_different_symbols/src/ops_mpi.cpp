@@ -69,7 +69,6 @@ bool anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel::pre_processin
     }
     if (strlen(input[0]) != (strlen(input[1]))) {
       res = strlen(input[0]) - strlen(input[1]);
-      input[0][strlen(input[1])] = '\0';
     } else {
       res = 0;
     }
@@ -88,11 +87,9 @@ bool anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel::validation() 
 
 bool anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel::run() {
   internal_order_test();
-  // Пересылка
   size_t loc_size = 0;
   if (com.rank() == 0) {
-    loc_size = (strlen(input[0]) + com.size() - 1) /
-               com.size();
+    loc_size = (strlen(input[0]) + com.size() - 1) / com.size(); 
   }
   broadcast(com, loc_size, 0);
   if (com.rank() == 0) {
@@ -117,7 +114,6 @@ bool anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel::run() {
     local_input.push_back(str2);
   }
   size_t size_1 = local_input[0].size();
-  //  Реализация
   int loc_res = 0;
   for (size_t i = 0; i < size_1; i++) {
     if (local_input[0][i] != local_input[1][i]) {
@@ -127,7 +123,6 @@ bool anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel::run() {
   reduce(com, loc_res, res, std::plus(), 0);
   return true;
 }
-
 
 bool anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel::post_processing() {
   internal_order_test();
