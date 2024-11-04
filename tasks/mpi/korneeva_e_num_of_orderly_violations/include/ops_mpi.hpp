@@ -119,7 +119,8 @@ bool num_of_orderly_violations<iotype, cntype>::run() {
   }
 
   if (local_vector_size_ > 0) {
-    iotype left_boundary, right_boundary;
+    iotype left_boundary;
+    iotype right_boundary;
     bool is_last_active_process = (rank == size - 1 || send_sizes[rank + 1] == 0);
 
     if (!is_last_active_process) {
