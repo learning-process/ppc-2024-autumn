@@ -15,8 +15,6 @@
 
 namespace stroganov_m_count_symbols_in_string_mpi {
 
-int getRandomNum(int min, int max);
-std::string getRandomString();
 int countOfSymbols(std::string& str);
 
 class TestMPITaskSequential : public ppc::core::Task {

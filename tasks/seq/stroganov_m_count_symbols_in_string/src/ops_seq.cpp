@@ -5,8 +5,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
 int stroganov_m_count_symbols_in_string_seq::countSymbols(std::string& str) {
   int result = 0;
   size_t n = str.size();
