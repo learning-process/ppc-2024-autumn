@@ -18,7 +18,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_par, test_pipeline_run) {
   if (world.rank() == 0) {
     taskDataPar->inputs_count.emplace_back(rows);
     taskDataPar->inputs_count.emplace_back(columns);
-    for (int i = 0; i < input.size(); i++) {
+    for (long unsigned int i = 0; i < input.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input[i].data()));
     }
     taskDataPar->outputs_count.emplace_back(1);
@@ -61,7 +61,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_par, test_task_run) {
   if (world.rank() == 0) {
     taskDataPar->inputs_count.emplace_back(rows);
     taskDataPar->inputs_count.emplace_back(columns);
-    for (int i = 0; i < input.size(); i++) {
+    for (long unsigned int i = 0; i < input.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input[i].data()));
     }
     taskDataPar->outputs_count.emplace_back(1);
