@@ -24,27 +24,27 @@ std::vector<int> generateRandomVector(int size) {
 TEST(nasedkin_e_matrix_column_max_value_mpi, Test_Zero_Columns) {
   boost::mpi::communicator world;
 
-  int cols = 0;
-  int rows = 0;
+  int numCols = 0;
+  int numRows = 0;
 
   std::vector<int> matrix;
-  std::vector<int> res_par(cols, 0);
+  std::vector<int> resultParallel(numCols, 0);
 
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = cols * rows;
-    matrix = generateRandomVector(count_size_vector);
+    const int totalSize = numCols * numRows;
+    matrix = generateRandomVector(totalSize);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-    taskDataPar->inputs_count.emplace_back(matrix.size());
-    taskDataPar->inputs_count.emplace_back(cols);
-    taskDataPar->inputs_count.emplace_back(rows);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_par.data()));
-    taskDataPar->outputs_count.emplace_back(res_par.size());
+    taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataParallel->inputs_count.emplace_back(matrix.size());
+    taskDataParallel->inputs_count.emplace_back(numCols);
+    taskDataParallel->inputs_count.emplace_back(numRows);
+    taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t*>(resultParallel.data()));
+    taskDataParallel->outputs_count.emplace_back(resultParallel.size());
   }
 
-  nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataParallel);
 
   if (world.rank() == 0) {
     ASSERT_FALSE(testMpiTaskParallel.validation());
@@ -54,24 +54,24 @@ TEST(nasedkin_e_matrix_column_max_value_mpi, Test_Zero_Columns) {
 TEST(nasedkin_e_matrix_column_max_value_mpi, Test_Empty_Matrix) {
   boost::mpi::communicator world;
 
-  int cols = 5;
-  int rows = 5;
+  int numCols = 5;
+  int numRows = 5;
 
   std::vector<int> matrix;
-  std::vector<int> res_par(cols, 0);
+  std::vector<int> resultParallel(numCols, 0);
 
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-    taskDataPar->inputs_count.emplace_back(matrix.size());
-    taskDataPar->inputs_count.emplace_back(cols);
-    taskDataPar->inputs_count.emplace_back(rows);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_par.data()));
-    taskDataPar->outputs_count.emplace_back(res_par.size());
+    taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataParallel->inputs_count.emplace_back(matrix.size());
+    taskDataParallel->inputs_count.emplace_back(numCols);
+    taskDataParallel->inputs_count.emplace_back(numRows);
+    taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t*>(resultParallel.data()));
+    taskDataParallel->outputs_count.emplace_back(resultParallel.size());
   }
 
-  nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataParallel);
 
   if (world.rank() == 0) {
     ASSERT_FALSE(testMpiTaskParallel.validation());
@@ -81,28 +81,28 @@ TEST(nasedkin_e_matrix_column_max_value_mpi, Test_Empty_Matrix) {
 TEST(nasedkin_e_matrix_column_max_value_mpi, Test_Max1) {
   boost::mpi::communicator world;
 
-  int cols = 15;
-  int rows = 5;
+  int numCols = 15;
+  int numRows = 5;
 
   std::vector<int> matrix;
-  std::vector<int> res_par(cols, 0);
+  std::vector<int> resultParallel(numCols, 0);
 
   // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = cols * rows;
-    matrix = generateRandomVector(count_size_vector);
+    const int totalSize = numCols * numRows;
+    matrix = generateRandomVector(totalSize);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-    taskDataPar->inputs_count.emplace_back(matrix.size());
-    taskDataPar->inputs_count.emplace_back(cols);
-    taskDataPar->inputs_count.emplace_back(rows);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_par.data()));
-    taskDataPar->outputs_count.emplace_back(res_par.size());
+    taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataParallel->inputs_count.emplace_back(matrix.size());
+    taskDataParallel->inputs_count.emplace_back(numCols);
+    taskDataParallel->inputs_count.emplace_back(numRows);
+    taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t*>(resultParallel.data()));
+    taskDataParallel->outputs_count.emplace_back(resultParallel.size());
   }
 
-  nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataParallel);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -110,54 +110,54 @@ TEST(nasedkin_e_matrix_column_max_value_mpi, Test_Max1) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int> res_seq(cols, 0);
+    std::vector<int> resultSequential(numCols, 0);
 
     // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    std::shared_ptr<ppc::core::TaskData> taskDataSequential = std::make_shared<ppc::core::TaskData>();
 
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(matrix.size());
-    taskDataSeq->inputs_count.emplace_back(cols);
-    taskDataSeq->inputs_count.emplace_back(rows);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_seq.data()));
-    taskDataSeq->outputs_count.emplace_back(res_seq.size());
+    taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataSequential->inputs_count.emplace_back(matrix.size());
+    taskDataSequential->inputs_count.emplace_back(numCols);
+    taskDataSequential->inputs_count.emplace_back(numRows);
+    taskDataSequential->outputs.emplace_back(reinterpret_cast<uint8_t*>(resultSequential.data()));
+    taskDataSequential->outputs_count.emplace_back(resultSequential.size());
 
     // Create Task
-    nasedkin_e_matrix_column_max_value_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    nasedkin_e_matrix_column_max_value_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSequential);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    ASSERT_EQ(res_seq, res_par);
+    ASSERT_EQ(resultSequential, resultParallel);
   }
 }
 
 TEST(nasedkin_e_matrix_column_max_value_mpi, Test_Max2) {
   boost::mpi::communicator world;
 
-  int cols = 50;
-  int rows = 50;
+  int numCols = 50;
+  int numRows = 50;
 
   std::vector<int> matrix;
-  std::vector<int> res_par(cols, 0);
+  std::vector<int> resultParallel(numCols, 0);
 
   // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = cols * rows;
-    matrix = generateRandomVector(count_size_vector);
+    const int totalSize = numCols * numRows;
+    matrix = generateRandomVector(totalSize);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-    taskDataPar->inputs_count.emplace_back(matrix.size());
-    taskDataPar->inputs_count.emplace_back(cols);
-    taskDataPar->inputs_count.emplace_back(rows);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_par.data()));
-    taskDataPar->outputs_count.emplace_back(res_par.size());
+    taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataParallel->inputs_count.emplace_back(matrix.size());
+    taskDataParallel->inputs_count.emplace_back(numCols);
+    taskDataParallel->inputs_count.emplace_back(numRows);
+    taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t*>(resultParallel.data()));
+    taskDataParallel->outputs_count.emplace_back(resultParallel.size());
   }
 
-  nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataParallel);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -165,54 +165,54 @@ TEST(nasedkin_e_matrix_column_max_value_mpi, Test_Max2) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int> res_seq(cols, 0);
+    std::vector<int> resultSequential(numCols, 0);
 
     // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    std::shared_ptr<ppc::core::TaskData> taskDataSequential = std::make_shared<ppc::core::TaskData>();
 
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(matrix.size());
-    taskDataSeq->inputs_count.emplace_back(cols);
-    taskDataSeq->inputs_count.emplace_back(rows);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_seq.data()));
-    taskDataSeq->outputs_count.emplace_back(res_seq.size());
+    taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataSequential->inputs_count.emplace_back(matrix.size());
+    taskDataSequential->inputs_count.emplace_back(numCols);
+    taskDataSequential->inputs_count.emplace_back(numRows);
+    taskDataSequential->outputs.emplace_back(reinterpret_cast<uint8_t*>(resultSequential.data()));
+    taskDataSequential->outputs_count.emplace_back(resultSequential.size());
 
     // Create Task
-    nasedkin_e_matrix_column_max_value_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    nasedkin_e_matrix_column_max_value_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSequential);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    ASSERT_EQ(res_seq, res_par);
+    ASSERT_EQ(resultSequential, resultParallel);
   }
 }
 
 TEST(nasedkin_e_matrix_column_max_value_mpi, Test_Max3) {
   boost::mpi::communicator world;
 
-  int cols = 50;
-  int rows = 100;
+  int numCols = 50;
+  int numRows = 100;
 
   std::vector<int> matrix;
-  std::vector<int> res_par(cols, 0);
+  std::vector<int> resultParallel(numCols, 0);
 
   // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = cols * rows;
-    matrix = generateRandomVector(count_size_vector);
+    const int totalSize = numCols * numRows;
+    matrix = generateRandomVector(totalSize);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-    taskDataPar->inputs_count.emplace_back(matrix.size());
-    taskDataPar->inputs_count.emplace_back(cols);
-    taskDataPar->inputs_count.emplace_back(rows);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_par.data()));
-    taskDataPar->outputs_count.emplace_back(res_par.size());
+    taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataParallel->inputs_count.emplace_back(matrix.size());
+    taskDataParallel->inputs_count.emplace_back(numCols);
+    taskDataParallel->inputs_count.emplace_back(numRows);
+    taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t*>(resultParallel.data()));
+    taskDataParallel->outputs_count.emplace_back(resultParallel.size());
   }
 
-  nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataParallel);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -220,54 +220,54 @@ TEST(nasedkin_e_matrix_column_max_value_mpi, Test_Max3) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int> res_seq(cols, 0);
+    std::vector<int> resultSequential(numCols, 0);
 
     // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    std::shared_ptr<ppc::core::TaskData> taskDataSequential = std::make_shared<ppc::core::TaskData>();
 
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(matrix.size());
-    taskDataSeq->inputs_count.emplace_back(cols);
-    taskDataSeq->inputs_count.emplace_back(rows);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_seq.data()));
-    taskDataSeq->outputs_count.emplace_back(res_seq.size());
+    taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataSequential->inputs_count.emplace_back(matrix.size());
+    taskDataSequential->inputs_count.emplace_back(numCols);
+    taskDataSequential->inputs_count.emplace_back(numRows);
+    taskDataSequential->outputs.emplace_back(reinterpret_cast<uint8_t*>(resultSequential.data()));
+    taskDataSequential->outputs_count.emplace_back(resultSequential.size());
 
     // Create Task
-    nasedkin_e_matrix_column_max_value_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    nasedkin_e_matrix_column_max_value_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSequential);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    ASSERT_EQ(res_seq, res_par);
+    ASSERT_EQ(resultSequential, resultParallel);
   }
 }
 
 TEST(nasedkin_e_matrix_column_max_value_mpi, Test_Max4) {
   boost::mpi::communicator world;
 
-  int cols = 70;
-  int rows = 50;
+  int numCols = 70;
+  int numRows = 50;
 
   std::vector<int> matrix;
-  std::vector<int> res_par(cols, 0);
+  std::vector<int> resultParallel(numCols, 0);
 
   // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = cols * rows;
-    matrix = generateRandomVector(count_size_vector);
+    const int totalSize = numCols * numRows;
+    matrix = generateRandomVector(totalSize);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-    taskDataPar->inputs_count.emplace_back(matrix.size());
-    taskDataPar->inputs_count.emplace_back(cols);
-    taskDataPar->inputs_count.emplace_back(rows);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_par.data()));
-    taskDataPar->outputs_count.emplace_back(res_par.size());
+    taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataParallel->inputs_count.emplace_back(matrix.size());
+    taskDataParallel->inputs_count.emplace_back(numCols);
+    taskDataParallel->inputs_count.emplace_back(numRows);
+    taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t*>(resultParallel.data()));
+    taskDataParallel->outputs_count.emplace_back(resultParallel.size());
   }
 
-  nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataParallel);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -275,54 +275,54 @@ TEST(nasedkin_e_matrix_column_max_value_mpi, Test_Max4) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int> res_seq(cols, 0);
+    std::vector<int> resultSequential(numCols, 0);
 
     // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    std::shared_ptr<ppc::core::TaskData> taskDataSequential = std::make_shared<ppc::core::TaskData>();
 
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(matrix.size());
-    taskDataSeq->inputs_count.emplace_back(cols);
-    taskDataSeq->inputs_count.emplace_back(rows);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_seq.data()));
-    taskDataSeq->outputs_count.emplace_back(res_seq.size());
+    taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataSequential->inputs_count.emplace_back(matrix.size());
+    taskDataSequential->inputs_count.emplace_back(numCols);
+    taskDataSequential->inputs_count.emplace_back(numRows);
+    taskDataSequential->outputs.emplace_back(reinterpret_cast<uint8_t*>(resultSequential.data()));
+    taskDataSequential->outputs_count.emplace_back(resultSequential.size());
 
     // Create Task
-    nasedkin_e_matrix_column_max_value_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    nasedkin_e_matrix_column_max_value_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSequential);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    ASSERT_EQ(res_seq, res_par);
+    ASSERT_EQ(resultSequential, resultParallel);
   }
 }
 
 TEST(nasedkin_e_matrix_column_max_value_mpi, Test_Max5) {
   boost::mpi::communicator world;
 
-  int cols = 300;
-  int rows = 150;
+  int numCols = 300;
+  int numRows = 150;
 
   std::vector<int> matrix;
-  std::vector<int> res_par(cols, 0);
+  std::vector<int> resultParallel(numCols, 0);
 
   // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = cols * rows;
-    matrix = generateRandomVector(count_size_vector);
+    const int totalSize = numCols * numRows;
+    matrix = generateRandomVector(totalSize);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-    taskDataPar->inputs_count.emplace_back(matrix.size());
-    taskDataPar->inputs_count.emplace_back(cols);
-    taskDataPar->inputs_count.emplace_back(rows);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_par.data()));
-    taskDataPar->outputs_count.emplace_back(res_par.size());
+    taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataParallel->inputs_count.emplace_back(matrix.size());
+    taskDataParallel->inputs_count.emplace_back(numCols);
+    taskDataParallel->inputs_count.emplace_back(numRows);
+    taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t*>(resultParallel.data()));
+    taskDataParallel->outputs_count.emplace_back(resultParallel.size());
   }
 
-  nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataParallel);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -330,25 +330,25 @@ TEST(nasedkin_e_matrix_column_max_value_mpi, Test_Max5) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int> res_seq(cols, 0);
+    std::vector<int> resultSequential(numCols, 0);
 
     // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    std::shared_ptr<ppc::core::TaskData> taskDataSequential = std::make_shared<ppc::core::TaskData>();
 
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(matrix.size());
-    taskDataSeq->inputs_count.emplace_back(cols);
-    taskDataSeq->inputs_count.emplace_back(rows);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_seq.data()));
-    taskDataSeq->outputs_count.emplace_back(res_seq.size());
+    taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataSequential->inputs_count.emplace_back(matrix.size());
+    taskDataSequential->inputs_count.emplace_back(numCols);
+    taskDataSequential->inputs_count.emplace_back(numRows);
+    taskDataSequential->outputs.emplace_back(reinterpret_cast<uint8_t*>(resultSequential.data()));
+    taskDataSequential->outputs_count.emplace_back(resultSequential.size());
 
     // Create Task
-    nasedkin_e_matrix_column_max_value_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    nasedkin_e_matrix_column_max_value_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSequential);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    ASSERT_EQ(res_seq, res_par);
+    ASSERT_EQ(resultSequential, resultParallel);
   }
 }

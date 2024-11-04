@@ -7,16 +7,16 @@
 bool nasedkin_e_matrix_column_max_value_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   // Init vectors
-  cols = (int)*taskData->inputs[1];
-  rows = (int)(taskData->inputs_count[0] / cols);
-  input_ = std::vector<int>(taskData->inputs_count[0]);
-  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+  numCols = (int)*taskData->inputs[1];
+  numRows = (int)(taskData->inputs_count[0] / numCols);
+  inputMatrix_ = std::vector<int>(taskData->inputs_count[0]);
+  auto* tmpPtr = reinterpret_cast<int*>(taskData->inputs[0]);
 
   for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    input_[i] = tmp_ptr[i];
+    inputMatrix_[i] = tmpPtr[i];
   }
 
-  res_ = std::vector<int>(cols, 0);
+  result_ = std::vector<int>(numCols, 0);
 
   return true;
 }
@@ -38,14 +38,14 @@ bool nasedkin_e_matrix_column_max_value_seq::TestTaskSequential::validation() {
 bool nasedkin_e_matrix_column_max_value_seq::TestTaskSequential::run() {
   internal_order_test();
 
-  for (int j = 0; j < cols; j++) {
-    int maxElement = input_[j];
-    for (int i = 1; i < rows; i++) {
-      if (input_[i * cols + j] > maxElement) {
-        maxElement = input_[i * cols + j];
+  for (int j = 0; j < numCols; j++) {
+    int maxElement = inputMatrix_[j];
+    for (int i = 1; i < numRows; i++) {
+      if (inputMatrix_[i * numCols + j] > maxElement) {
+        maxElement = inputMatrix_[i * numCols + j];
       }
     }
-    res_[j] = maxElement;
+    result_[j] = maxElement;
   }
 
   return true;
@@ -54,8 +54,8 @@ bool nasedkin_e_matrix_column_max_value_seq::TestTaskSequential::run() {
 bool nasedkin_e_matrix_column_max_value_seq::TestTaskSequential::post_processing() {
   internal_order_test();
 
-  for (int j = 0; j < cols; j++) {
-    reinterpret_cast<int*>(taskData->outputs[0])[j] = res_[j];
+  for (int j = 0; j < numCols; j++) {
+    reinterpret_cast<int*>(taskData->outputs[0])[j] = result_[j];
   }
 
   return true;

@@ -10,17 +10,17 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskSequential::pre_processi
   internal_order_test();
   // Init vectors
 
-  cols = taskData->inputs_count[1];
-  rows = taskData->inputs_count[2];
+  numCols = taskData->inputs_count[1];
+  numRows = taskData->inputs_count[2];
 
-  input_ = std::vector<int>(taskData->inputs_count[0]);
-  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+  inputMatrix_ = std::vector<int>(taskData->inputs_count[0]);
+  auto* tmpPtr = reinterpret_cast<int*>(taskData->inputs[0]);
 
   for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    input_[i] = tmp_ptr[i];
+    inputMatrix_[i] = tmpPtr[i];
   }
 
-  res_ = std::vector<int>(cols, 0);
+  result_ = std::vector<int>(numCols, 0);
 
   return true;
 }
@@ -42,22 +42,22 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskSequential::validation()
 bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskSequential::run() {
   internal_order_test();
 
-  for (int j = 0; j < cols; j++) {
-    int maxElement = input_[j];
-    for (int i = 1; i < rows; i++) {
-      if (input_[i * cols + j] > maxElement) {
-        maxElement = input_[i * cols + j];
+  for (int j = 0; j < numCols; j++) {
+    int maxElement = inputMatrix_[j];
+    for (int i = 1; i < numRows; i++) {
+      if (inputMatrix_[i * numCols + j] > maxElement) {
+        maxElement = inputMatrix_[i * numCols + j];
       }
     }
-    res_[j] = maxElement;
+    result_[j] = maxElement;
   }
   return true;
 }
 
 bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
-  for (int i = 0; i < cols; i++) {
-    reinterpret_cast<int*>(taskData->outputs[0])[i] = res_[i];
+  for (int i = 0; i < numCols; i++) {
+    reinterpret_cast<int*>(taskData->outputs[0])[i] = result_[i];
   }
   return true;
 }
@@ -66,22 +66,22 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::pre_processing
   internal_order_test();
 
   if (world.rank() == 0) {
-    cols = taskData->inputs_count[1];
-    rows = taskData->inputs_count[2];
+    numCols = taskData->inputs_count[1];
+    numRows = taskData->inputs_count[2];
   }
 
   if (world.rank() == 0) {
     // Init vectors
-    input_ = std::vector<int>(taskData->inputs_count[0]);
-    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+    inputMatrix_ = std::vector<int>(taskData->inputs_count[0]);
+    auto* tmpPtr = reinterpret_cast<int*>(taskData->inputs[0]);
     for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
-      input_[i] = tmp_ptr[i];
+      inputMatrix_[i] = tmpPtr[i];
     }
   } else {
-    input_ = std::vector<int>(cols * rows, 0);
+    inputMatrix_ = std::vector<int>(numCols * numRows, 0);
   }
 
-  res_ = std::vector<int>(cols, 0);
+  result_ = std::vector<int>(numCols, 0);
 
   return true;
 }
@@ -105,39 +105,39 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::validation() {
 bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-  broadcast(world, cols, 0);
-  broadcast(world, rows, 0);
+  broadcast(world, numCols, 0);
+  broadcast(world, numRows, 0);
 
   if (world.rank() != 0) {
-    input_ = std::vector<int>(cols * rows, 0);
+    inputMatrix_ = std::vector<int>(numCols * numRows, 0);
   }
-  broadcast(world, input_.data(), cols * rows, 0);
+  broadcast(world, inputMatrix_.data(), numCols * numRows, 0);
 
-  int delta = cols / world.size();
-  int extra = cols % world.size();
+  int delta = numCols / world.size();
+  int extra = numCols % world.size();
   if (extra != 0) {
     delta += 1;
   }
   int startCol = delta * world.rank();
-  int lastCol = std::min(cols, delta * (world.rank() + 1));
+  int lastCol = std::min(numCols, delta * (world.rank() + 1));
   std::vector<int> localMax;
   for (int j = startCol; j < lastCol; j++) {
-    int maxElem = input_[j];
-    for (int i = 1; i < rows; i++) {
-      int coor = i * cols + j;
-      if (input_[coor] > maxElem) {
-        maxElem = input_[coor];
+    int maxElem = inputMatrix_[j];
+    for (int i = 1; i < numRows; i++) {
+      int coor = i * numCols + j;
+      if (inputMatrix_[coor] > maxElem) {
+        maxElem = inputMatrix_[coor];
       }
     }
     localMax.push_back(maxElem);
   }
   localMax.resize(delta);
   if (world.rank() == 0) {
-    std::vector<int> globalRes(cols + delta * world.size());
+    std::vector<int> globalRes(numCols + delta * world.size());
     std::vector<int> sizes(world.size(), delta);
     boost::mpi::gatherv(world, localMax.data(), localMax.size(), globalRes.data(), sizes, 0);
-    globalRes.resize(cols);
-    res_ = globalRes;
+    globalRes.resize(numCols);
+    result_ = globalRes;
   } else {
     boost::mpi::gatherv(world, localMax.data(), localMax.size(), 0);
   }
@@ -147,8 +147,8 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::run() {
 bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    for (int i = 0; i < cols; i++) {
-      reinterpret_cast<int*>(taskData->outputs[0])[i] = res_[i];
+    for (int i = 0; i < numCols; i++) {
+      reinterpret_cast<int*>(taskData->outputs[0])[i] = result_[i];
     }
   }
   return true;

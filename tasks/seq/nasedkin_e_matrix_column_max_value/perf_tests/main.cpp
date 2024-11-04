@@ -6,25 +6,25 @@
 #include "seq/nasedkin_e_matrix_column_max_value/include/ops_seq.hpp"
 
 TEST(nasedkin_e_matrix_column_max_value_seq, test_pipeline_run) {
-  int columns = 2000;
-  int rows = 5000;
+  int numCols = 2000;
+  int numRows = 5000;
 
   // Create data
-  std::vector<int> matrix(rows * columns, 1);
-  std::vector<int> result(columns, 0);
+  std::vector<int> matrix(numRows * numCols, 1);
+  std::vector<int> result(numCols, 0);
 
   // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-  taskDataSeq->inputs_count.emplace_back(matrix.size());
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&columns));
-  taskDataSeq->inputs_count.emplace_back((size_t)1);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
-  taskDataSeq->outputs_count.emplace_back(result.size());
+  std::shared_ptr<ppc::core::TaskData> taskDataSequential = std::make_shared<ppc::core::TaskData>();
+  taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSequential->inputs_count.emplace_back(matrix.size());
+  taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t *>(&numCols));
+  taskDataSequential->inputs_count.emplace_back((size_t)1);
+  taskDataSequential->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
+  taskDataSequential->outputs_count.emplace_back(result.size());
 
   // Create Task
   auto testTaskSequential =
-      std::make_shared<nasedkin_e_matrix_column_max_value_seq::TestTaskSequential>(taskDataSeq);
+      std::make_shared<nasedkin_e_matrix_column_max_value_seq::TestTaskSequential>(taskDataSequential);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -49,28 +49,28 @@ TEST(nasedkin_e_matrix_column_max_value_seq, test_pipeline_run) {
 }
 
 TEST(nasedkin_e_matrix_column_max_value_seq, test_task_run) {
-  int rows;
-  int columns;
+  int numRows;
+  int numCols;
 
   // Create data
-  rows = 5000;
-  columns = 2000;
-  std::vector<int> matrix(rows * columns, 1);
-  std::vector<int32_t> res(columns, 0);
+  numRows = 5000;
+  numCols = 2000;
+  std::vector<int> matrix(numRows * numCols, 1);
+  std::vector<int32_t> res(numCols, 0);
 
   // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataSequential = std::make_shared<ppc::core::TaskData>();
 
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-  taskDataSeq->inputs_count.emplace_back(matrix.size());
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&columns));
-  taskDataSeq->inputs_count.emplace_back((size_t)1);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
-  taskDataSeq->outputs_count.emplace_back(res.size());
+  taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSequential->inputs_count.emplace_back(matrix.size());
+  taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t *>(&numCols));
+  taskDataSequential->inputs_count.emplace_back((size_t)1);
+  taskDataSequential->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
+  taskDataSequential->outputs_count.emplace_back(res.size());
 
   // Create Task
   auto testTaskSequential =
-      std::make_shared<nasedkin_e_matrix_column_max_value_seq::TestTaskSequential>(taskDataSeq);
+      std::make_shared<nasedkin_e_matrix_column_max_value_seq::TestTaskSequential>(taskDataSequential);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();

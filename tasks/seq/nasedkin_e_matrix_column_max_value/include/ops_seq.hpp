@@ -16,10 +16,10 @@ public:
   bool post_processing() override;
 
 private:
-  int cols{};
-  int rows{};
-  std::vector<int> input_;
-  std::vector<int> res_;
+  int numCols{};
+  int numRows{};
+  std::vector<int> inputMatrix_;
+  std::vector<int> result_;
 };
 
 }  // namespace nasedkin_e_matrix_column_max_value_seq
