@@ -89,8 +89,10 @@ bool anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel::validation() 
 
 bool anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel::run() {
   internal_order_test();
-  size_t loc_size;
-  loc_size = ((com.rank() == 0) ? ((strlen(input[0]) + com.size()) / com.size()) : 0);
+  size_t loc_size = 0;
+  if (com.rank() == 0) {
+    loc_size = (strlen(input[0]) + com.size() - 1) / com.size();
+  }
   broadcast(com, loc_size, 0);
   if (com.rank() == 0) {
     for (int pr = 1; pr < com.size(); pr++) {
