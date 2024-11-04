@@ -1,13 +1,8 @@
 #include "mpi/morozov_e_min_val_in_rows_matrix/include/ops_mpi.hpp"
 
 #include <algorithm>
-#include <functional>
-#include <random>
-#include <string>
-#include <thread>
 #include <vector>
 
-#define uint unsigned int
 
 using namespace std::chrono_literals;
 
@@ -97,7 +92,6 @@ bool morozov_e_min_val_in_rows_matrix::TestMPITaskParallel::run() {
 
   int cur_n = delta + (world.rank() < mod ? 1 : 0);
   std::vector<std::vector<int>> local_matrix(cur_n, std::vector<int>(m));
-  // local_matrix_.resize(cur_n, std::vector<int>(m));
 
   if (world.rank() == 0) {
     std::copy(matrix_.begin(), matrix_.begin() + cur_n, local_matrix.begin());

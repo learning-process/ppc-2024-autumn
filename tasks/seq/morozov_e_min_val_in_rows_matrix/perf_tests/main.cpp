@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <vector>
@@ -9,10 +8,7 @@ std::vector<std::vector<int>> getRandomMatrix_(int n, int m) {
   int left = 0;
   int right = 10005;
 
-  // Создаем матрицу
   std::vector<std::vector<int>> matrix(n, std::vector<int>(m));
-
-  // Заполняем матрицу случайными значениями
   for (int i = 0; i < n; ++i) {
     for (int j = 0; j < m; ++j) {
       matrix[i][j] = left + std::rand() % (right - left + 1);
@@ -53,7 +49,6 @@ TEST(sequential_example_perf_test, test_pipeline_run_my) {
 
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSeq);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
@@ -74,10 +69,8 @@ TEST(sequential_example_perf_test, test_task_run_my) {
   taskDataSeq->inputs_count.emplace_back(m);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
   taskDataSeq->outputs_count.emplace_back(n);
-  // Create Task
   auto testTaskSequential = std::make_shared<morozov_e_min_val_in_rows_matrix::TestTaskSequential>(taskDataSeq);
 
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();
@@ -87,10 +80,8 @@ TEST(sequential_example_perf_test, test_task_run_my) {
     return static_cast<double>(duration) * 1e-9;
   };
 
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);

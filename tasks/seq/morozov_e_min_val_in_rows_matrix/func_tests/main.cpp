@@ -7,10 +7,8 @@ std::vector<std::vector<int>> getRandomMatrix_(int n, int m) {
   int left = 0;
   int right = 10005;
 
-  // Создаем матрицу
   std::vector<std::vector<int>> matrix(n, std::vector<int>(m));
 
-  // Заполняем матрицу случайными значениями
   for (int i = 0; i < n; ++i) {
     for (int j = 0; j < m; ++j) {
       matrix[i][j] = left + std::rand() % (right - left + 1);
@@ -79,7 +77,6 @@ TEST(morozov_e_min_val_in_rows_matrix_Sequential, Test_Main0) {
   testMpiTaskSequential.pre_processing();
   testMpiTaskSequential.run();
   testMpiTaskSequential.post_processing();
-  // ASSERT_EQ(v, res2);
   ASSERT_EQ(resSeq[0], 1);
   ASSERT_EQ(resSeq[1], 3);
 }
@@ -105,7 +102,6 @@ TEST(morozov_e_min_val_in_rows_matrix_Sequential, Test_Main1) {
   testMpiTaskSequential.pre_processing();
   testMpiTaskSequential.run();
   testMpiTaskSequential.post_processing();
-  // ASSERT_EQ(v, res2);
   for (int i = 0; i < n; ++i) {
     ASSERT_EQ(resSeq[i], -1);
   }
@@ -132,7 +128,6 @@ TEST(morozov_e_min_val_in_rows_matrix_Sequential, Test_Main2) {
   testMpiTaskSequential.pre_processing();
   testMpiTaskSequential.run();
   testMpiTaskSequential.post_processing();
-  // ASSERT_EQ(v, res2);
   for (int i = 0; i < n; ++i) {
     ASSERT_EQ(resSeq[i], -1);
   }
@@ -159,7 +154,6 @@ TEST(morozov_e_min_val_in_rows_matrix_Sequential, Test_Main3) {
   testMpiTaskSequential.pre_processing();
   testMpiTaskSequential.run();
   testMpiTaskSequential.post_processing();
-  // ASSERT_EQ(v, res2);
   for (int i = 0; i < n; ++i) {
     ASSERT_EQ(resSeq[i], -1);
   }

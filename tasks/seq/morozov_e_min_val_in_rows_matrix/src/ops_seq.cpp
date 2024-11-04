@@ -1,13 +1,8 @@
 #include "seq/morozov_e_min_val_in_rows_matrix/include/ops_seq.hpp"
 
 #include <algorithm>
-#include <functional>
-#include <random>
-#include <string>
-#include <thread>
 #include <vector>
 
-#define uint unsigned int
 
 using namespace std::chrono_literals;
 bool morozov_e_min_val_in_rows_matrix::TestTaskSequential::pre_processing() {
@@ -22,7 +17,6 @@ bool morozov_e_min_val_in_rows_matrix::TestTaskSequential::pre_processing() {
       matrix_[i][j] = input_matrix[j];
     }
   }
-  // std::cout << "HELLO";
   return true;
 }
 bool morozov_e_min_val_in_rows_matrix::TestTaskSequential::validation() {
