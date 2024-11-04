@@ -117,7 +117,7 @@ bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::run() {
 
   std::vector<int> local_res(delta + ((world.rank() == 0) ? extra : 0), std::numeric_limits<int>::max());
 
-  for (int i = 0; i < local_res.size(); i++) {
+  for (auto i = 0u; i < local_res.size(); i++) {
     for (int j = 0; j < rows; j++) {
       local_res[i] = std::min(local_res[i], local_vector_[j + rows * i]);
     }
