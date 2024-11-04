@@ -1,6 +1,7 @@
 #pragma once
 
 #include <gtest/gtest.h>
+
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <memory>
@@ -8,6 +9,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+
 #include "core/task/include/task.hpp"
 
 namespace nasedkin_e_matrix_column_max_value_mpi {

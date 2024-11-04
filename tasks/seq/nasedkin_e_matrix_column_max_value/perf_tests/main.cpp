@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
+
 #include <vector>
+
 #include "core/perf/include/perf.hpp"
 #include "seq/nasedkin_e_matrix_column_max_value/include/ops_seq.hpp"
 
@@ -7,9 +9,11 @@ TEST(nasedkin_e_matrix_column_max_value_seq, test_pipeline_run) {
   int columns = 2000;
   int rows = 5000;
 
+  // Create data
   std::vector<int> matrix(rows * columns, 1);
   std::vector<int> result(columns, 0);
 
+  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
   taskDataSeq->inputs_count.emplace_back(matrix.size());
@@ -18,9 +22,11 @@ TEST(nasedkin_e_matrix_column_max_value_seq, test_pipeline_run) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
   taskDataSeq->outputs_count.emplace_back(result.size());
 
+  // Create Task
   auto testTaskSequential =
       std::make_shared<nasedkin_e_matrix_column_max_value_seq::TestTaskSequential>(taskDataSeq);
 
+  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();
@@ -30,8 +36,10 @@ TEST(nasedkin_e_matrix_column_max_value_seq, test_pipeline_run) {
     return static_cast<double>(duration) * 1e-9;
   };
 
+  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
+  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
@@ -44,11 +52,13 @@ TEST(nasedkin_e_matrix_column_max_value_seq, test_task_run) {
   int rows;
   int columns;
 
+  // Create data
   rows = 5000;
   columns = 2000;
   std::vector<int> matrix(rows * columns, 1);
   std::vector<int32_t> res(columns, 0);
 
+  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
@@ -58,9 +68,11 @@ TEST(nasedkin_e_matrix_column_max_value_seq, test_task_run) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
   taskDataSeq->outputs_count.emplace_back(res.size());
 
+  // Create Task
   auto testTaskSequential =
       std::make_shared<nasedkin_e_matrix_column_max_value_seq::TestTaskSequential>(taskDataSeq);
 
+  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();
@@ -70,8 +82,10 @@ TEST(nasedkin_e_matrix_column_max_value_seq, test_task_run) {
     return static_cast<double>(duration) * 1e-9;
   };
 
+  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
+  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);

@@ -1,14 +1,15 @@
 #include "mpi/nasedkin_e_matrix_column_max_value/include/ops_mpi.hpp"
+
 #include <algorithm>
 #include <functional>
 #include <random>
 #include <string>
 #include <vector>
 
-namespace nasedkin_e_matrix_column_max_value_mpi {
-
-bool TestMPITaskSequential::pre_processing() {
+bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
+  // Init vectors
+
   cols = taskData->inputs_count[1];
   rows = taskData->inputs_count[2];
 
@@ -24,7 +25,7 @@ bool TestMPITaskSequential::pre_processing() {
   return true;
 }
 
-bool TestMPITaskSequential::validation() {
+bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
   if (taskData->inputs_count[1] == 0 || taskData->inputs_count[2] == 0) {
     return false;
@@ -38,7 +39,7 @@ bool TestMPITaskSequential::validation() {
   return true;
 }
 
-bool TestMPITaskSequential::run() {
+bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskSequential::run() {
   internal_order_test();
 
   for (int j = 0; j < cols; j++) {
@@ -53,7 +54,7 @@ bool TestMPITaskSequential::run() {
   return true;
 }
 
-bool TestMPITaskSequential::post_processing() {
+bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
   for (int i = 0; i < cols; i++) {
     reinterpret_cast<int*>(taskData->outputs[0])[i] = res_[i];
@@ -61,7 +62,7 @@ bool TestMPITaskSequential::post_processing() {
   return true;
 }
 
-bool TestMPITaskParallel::pre_processing() {
+bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
   if (world.rank() == 0) {
@@ -70,6 +71,7 @@ bool TestMPITaskParallel::pre_processing() {
   }
 
   if (world.rank() == 0) {
+    // Init vectors
     input_ = std::vector<int>(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
@@ -84,7 +86,7 @@ bool TestMPITaskParallel::pre_processing() {
   return true;
 }
 
-bool TestMPITaskParallel::validation() {
+bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     if (taskData->inputs_count[1] == 0 || taskData->inputs_count[2] == 0) {
@@ -100,7 +102,7 @@ bool TestMPITaskParallel::validation() {
   return true;
 }
 
-bool TestMPITaskParallel::run() {
+bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
   broadcast(world, cols, 0);
@@ -142,7 +144,7 @@ bool TestMPITaskParallel::run() {
   return true;
 }
 
-bool TestMPITaskParallel::post_processing() {
+bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     for (int i = 0; i < cols; i++) {
@@ -151,5 +153,3 @@ bool TestMPITaskParallel::post_processing() {
   }
   return true;
 }
-
-}  // namespace nasedkin_e_matrix_column_max_value_mpi

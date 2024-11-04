@@ -1,10 +1,12 @@
 #include "seq/nasedkin_e_matrix_column_max_value/include/ops_seq.hpp"
+
 #include <algorithm>
 #include <functional>
 #include <random>
 
 bool nasedkin_e_matrix_column_max_value_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
+  // Init vectors
   cols = (int)*taskData->inputs[1];
   rows = (int)(taskData->inputs_count[0] / cols);
   input_ = std::vector<int>(taskData->inputs_count[0]);
