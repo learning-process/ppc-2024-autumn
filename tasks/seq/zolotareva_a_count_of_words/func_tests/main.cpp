@@ -5,21 +5,19 @@
 
 #include "seq/zolotareva_a_count_of_words/include/ops_seq.hpp"
 
-TEST(zolotareva_a_count_of_words_seq, Test_Sum_10) {
-  const int count = 10;
+TEST(zolotareva_a_count_of_words_seq, Test_Empty) {
+  const std::string input = "   ";
+  const int count = 0;
 
-  // Create data
-  std::vector<int> in(1, count);
+  std::vector<char> in(input.begin(), input.end());
   std::vector<int> out(1, 0);
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
   taskDataSeq->inputs_count.emplace_back(in.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
-  // Create Task
   zolotareva_a_count_of_words_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
@@ -28,21 +26,19 @@ TEST(zolotareva_a_count_of_words_seq, Test_Sum_10) {
   ASSERT_EQ(count, out[0]);
 }
 
-TEST(zolotareva_a_count_of_words_seq, Test_Sum_20) {
-  const int count = 20;
+TEST(zolotareva_a_count_of_words_seq, Test_Count_Words_1) {
+  const int count = 1;
+  const std::string input = "Hello";
 
-  // Create data
-  std::vector<int> in(1, count);
+  std::vector<char> in(input.begin(), input.end());
   std::vector<int> out(1, 0);
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
   taskDataSeq->inputs_count.emplace_back(in.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
-  // Create Task
   zolotareva_a_count_of_words_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
@@ -51,21 +47,19 @@ TEST(zolotareva_a_count_of_words_seq, Test_Sum_20) {
   ASSERT_EQ(count, out[0]);
 }
 
-TEST(zolotareva_a_count_of_words_seq, Test_Sum_50) {
-  const int count = 50;
+TEST(zolotareva_a_count_of_words_seq, Test_Count_Words_5) {
+  const int count = 5;
+  const std::string input = "1 2 3 4 5";
 
-  // Create data
-  std::vector<int> in(1, count);
+  std::vector<char> in(input.begin(), input.end());
   std::vector<int> out(1, 0);
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
   taskDataSeq->inputs_count.emplace_back(in.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
-  // Create Task
   zolotareva_a_count_of_words_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
@@ -74,21 +68,19 @@ TEST(zolotareva_a_count_of_words_seq, Test_Sum_50) {
   ASSERT_EQ(count, out[0]);
 }
 
-TEST(zolotareva_a_count_of_words_seq, Test_Sum_70) {
-  const int count = 70;
+TEST(zolotareva_a_count_of_words_seq, Test_Count_Words_2_With_Spaces) {
+  const int count = 2;
+  const std::string input = " Hello there  ";
 
-  // Create data
-  std::vector<int> in(1, count);
+  std::vector<char> in(input.begin(), input.end());
   std::vector<int> out(1, 0);
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
   taskDataSeq->inputs_count.emplace_back(in.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
-  // Create Task
   zolotareva_a_count_of_words_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
@@ -97,21 +89,19 @@ TEST(zolotareva_a_count_of_words_seq, Test_Sum_70) {
   ASSERT_EQ(count, out[0]);
 }
 
-TEST(zolotareva_a_count_of_words_seq, Test_Sum_100) {
-  const int count = 100;
+TEST(zolotareva_a_count_of_words_seq, Test_Count_Words_With_Special_Char) {
+  const int count = 2;
+  const std::string input = "Hello, word! ";
 
-  // Create data
-  std::vector<int> in(1, count);
+  std::vector<char> in(input.begin(), input.end());
   std::vector<int> out(1, 0);
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
   taskDataSeq->inputs_count.emplace_back(in.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
-  // Create Task
   zolotareva_a_count_of_words_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();

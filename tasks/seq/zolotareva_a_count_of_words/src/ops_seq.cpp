@@ -1,28 +1,33 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/zolotareva_a_count_of_words/include/ops_seq.hpp"
 
+#include <string>
 #include <thread>
-
 using namespace std::chrono_literals;
+
+bool zolotareva_a_count_of_words_seq::TestTaskSequential::validation() {
+  internal_order_test();
+  return taskData->outputs_count[0] == 1;
+}
 
 bool zolotareva_a_count_of_words_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
-  // Init value for input and output
-  input_ = reinterpret_cast<int*>(taskData->inputs[0])[0];
+  input_.assign(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
   res = 0;
   return true;
 }
 
-bool zolotareva_a_count_of_words_seq::TestTaskSequential::validation() {
-  internal_order_test();
-  // Check count elements of output
-  return taskData->inputs_count[0] == 1 && taskData->outputs_count[0] == 1;
-}
-
 bool zolotareva_a_count_of_words_seq::TestTaskSequential::run() {
   internal_order_test();
-  for (int i = 0; i < input_; i++) {
-    res++;
+
+  bool in_word = false;
+  for (char c : input_) {
+    if (c == ' ')
+      in_word = false;
+    else if (!in_word) {
+      ++res;
+      in_word = true;
+    }
   }
   std::this_thread::sleep_for(20ms);
   return true;
