@@ -27,7 +27,9 @@ TEST(Sdobnov_V_sum_of_vector_elements_par, EmptyOutput) {
   }
 
   Sdobnov_V_sum_of_vector_elements::SumVecElemParallel test(taskDataPar);
-  ASSERT_FALSE(test.validation());
+  if (world.rank() == 0) {
+    ASSERT_FALSE(test.validation());
+  }
 }
 
 TEST(Sdobnov_V_sum_of_vector_elements_par, EmptyMatrix) {
