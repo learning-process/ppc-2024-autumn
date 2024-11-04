@@ -1,6 +1,7 @@
 // Golovkin Maksim
 
 #include "seq/golovkin_integration_rectangular_method/include/ops_seq.hpp"
+
 #include <cmath>
 #include <iostream>
 #include <stdexcept>
