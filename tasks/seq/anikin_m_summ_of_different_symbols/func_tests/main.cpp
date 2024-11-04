@@ -12,7 +12,7 @@ TEST(anikin_m_SumDifSymSequential_count, ans_0) {
   char str2[] = "abcd";
 
   std::vector<char*> in{str1, str2};
-  std::vector<int> out(1,0);
+  std::vector<int> out(1, 0);
 
   // Create Task Data
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -37,7 +37,7 @@ TEST(anikin_m_SumDifSymSequential_count, ans_1) {
   char str2[] = "abcd";
 
   std::vector<char*> in{str1, str2};
-  std::vector<int> out(1,0);
+  std::vector<int> out(1, 0);
 
   // Create Task Data
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();

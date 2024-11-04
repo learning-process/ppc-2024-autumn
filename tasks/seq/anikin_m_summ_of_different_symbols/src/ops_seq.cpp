@@ -1,9 +1,9 @@
 // Copyright 2024 Anikin Maksim
 #include "seq/anikin_m_summ_of_different_symbols/include/ops_seq.hpp"
 
-#include <vector>
 #include <string>
 #include <thread>
+#include <vector>
 
 using namespace std::chrono_literals;
 
@@ -27,6 +27,7 @@ bool anikin_m_sum_of_differnt_symbols_seq::SumDifSymSequential::run() {
   internal_order_test();
 
   int dif = 0;
+
   std::string str1 = input[0];  
   std::string str2 = input[1];
   if (str1.size() >= str2.size()) {
@@ -38,7 +39,8 @@ bool anikin_m_sum_of_differnt_symbols_seq::SumDifSymSequential::run() {
   auto i2 = str2.begin();
 
   while (i1 != str1.end() && i2 != str2.end()) {
-    if(*i1 != *i2) res++;
+
+    if (*i1 != *i2) res++;
     i1++;
     i2++;
   }

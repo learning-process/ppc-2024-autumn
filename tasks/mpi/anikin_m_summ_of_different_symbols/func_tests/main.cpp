@@ -3,12 +3,12 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <vector>
 #include <random>
+#include <vector>
 
 #include "mpi/anikin_m_summ_of_different_symbols/include/ops_mpi.hpp"
 
-std::string getRandomString(int size) {
+std::string getRandomString(size_t size) {
   const std::string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   std::random_device rd;
   std::mt19937 generator(rd());
