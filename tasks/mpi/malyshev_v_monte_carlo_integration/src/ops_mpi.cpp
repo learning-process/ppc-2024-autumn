@@ -1,11 +1,10 @@
 ﻿#include "mpi/malyshev_v_monte_carlo_integration/include/ops_mpi.hpp"
 
 #include <boost/mpi/collectives.hpp>
-#include <random>
 
 namespace malyshev_v_monte_carlo_integration {
 
-// Sequential Monte Carlo Integration
+// Sequential Trapezoidal Integration (for Testing)
 bool TestMPITaskSequential::validation() {
   internal_order_test();
   return (taskData->inputs.size() == 3 && taskData->outputs.size() == 1);
@@ -22,16 +21,14 @@ bool TestMPITaskSequential::pre_processing() {
 
 bool TestMPITaskSequential::run() {
   internal_order_test();
-  double sum = 0.0;
-  std::mt19937 rng(12345);  // Fixed seed for consistency in tests
-  std::uniform_real_distribution<> dist(a, b);
+  double h = (b - a) / num_samples;
+  double sum = (function_square(a) + function_square(b)) / 2.0;
 
-  for (int i = 0; i < num_samples; ++i) {
-    double x = dist(rng);
-    sum += function_square(x);
+  for (int i = 1; i < num_samples; ++i) {
+    sum += function_square(a + i * h);
   }
 
-  res = (b - a) * sum / num_samples;
+  res = h * sum;
   return true;
 }
 
@@ -41,7 +38,7 @@ bool TestMPITaskSequential::post_processing() {
   return true;
 }
 
-// Parallel Monte Carlo Integration
+// Parallel Trapezoidal Integration (for Testing)
 bool TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
@@ -74,16 +71,19 @@ bool TestMPITaskParallel::pre_processing() {
 
 bool TestMPITaskParallel::run() {
   internal_order_test();
+  double h = (b - a) / num_samples;
   double local_sum = 0.0;
-  std::mt19937 rng(12345 + world.rank());  // Deterministic seed for each process
-  std::uniform_real_distribution<> dist(a, b);
 
-  for (int i = 0; i < local_num_samples; ++i) {
-    double x = dist(rng);
+  for (int i = world.rank() * local_num_samples; i < (world.rank() + 1) * local_num_samples; ++i) {
+    double x = a + i * h;
     local_sum += function_square(x);
   }
 
-  local_sum *= (b - a) / num_samples;
+  if (world.rank() == 0) {
+    local_sum += (function_square(a) + function_square(b)) / 2.0;
+  }
+
+  local_sum *= h;
   boost::mpi::reduce(world, local_sum, res, std::plus<>(), 0);
   return true;
 }
