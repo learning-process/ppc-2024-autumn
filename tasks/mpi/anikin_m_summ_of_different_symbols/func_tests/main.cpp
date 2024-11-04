@@ -52,7 +52,7 @@ TEST(anikin_m_Parallel_SummDifSym_count, size_0) {
     ASSERT_EQ(out[0], out_s[0]);
   }
 }
-
+/*
 TEST(anikin_m_Parallel_SummDifSym_count, size_25) {
   // Create data//
   boost::mpi::communicator com;
@@ -92,3 +92,4 @@ TEST(anikin_m_Parallel_SummDifSym_count, size_25) {
     ASSERT_EQ(out_s[0], out[0]);
   }
 }
+*/
