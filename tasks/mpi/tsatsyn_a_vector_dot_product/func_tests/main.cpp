@@ -41,25 +41,18 @@ TEST(tsatsyn_a_vector_dot_product_mpi, Test_Scalar_Negative_Value) {
   testMpiTaskParallel.post_processing();
   ASSERT_EQ(tsatsyn_a_vector_dot_product_mpi::resulting(v1, v2), res[0]);
 }
-//TEST(tsatsyn_a_vector_dot_product_mpi, Test_Negative_Validation) {
-//  boost::mpi::communicator world;
-//  std::vector<int> v1 = {};
-//  std::vector<int> v2 = {-99, -88, -77, -66, -55, -44, -33, -22, -11, -10, -11, -22};
-//  std::vector<int> res(1, 0);
-//  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-//  if (world.rank() == 0) {
-//    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(v1.data()));
-//    taskDataPar->inputs_count.emplace_back(v1.size());
-//
-//    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(v2.data()));
-//    taskDataPar->inputs_count.emplace_back(v2.size());
-//
-//    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res.data()));
-//    taskDataPar->outputs_count.emplace_back(res.size());
-//    tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-//    ASSERT_FALSE(testMpiTaskParallel.validation());
-//  }
-//}
+// TEST(tsatsyn_a_vector_dot_product_mpi, Test_Negative_Validation) {
+//   boost::mpi::communicator world;
+//   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>()
+//   std::vector<int> v1 = {};
+//   std::vector<int> v2 = {-99, -88, -77, -66, -55, -44, -33, -22, -11, -10, -11, -22};
+//   if (world.rank() == 0) {
+//     tsatsyn_a_vector_dot_product_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+//     tsatsyn_a_vector_dot_product_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+//     ASSERT_FALSE(testMpiTaskParallel.validation());
+//     ASSERT_FALSE(testMpiTaskSequential.validation());
+//   }
+// }
 TEST(tsatsyn_a_vector_dot_product_mpi, Test_Scalar_Positive_Value) {
   boost::mpi::communicator world;
   std::vector<int> v1 = {1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
