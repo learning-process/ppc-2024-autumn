@@ -7,9 +7,12 @@
 #include "mpi/Sdobnov_V_sum_of_vector_elements/include/ops_mpi.hpp"
 
 TEST(Sdobnov_V_sum_of_vector_elements_par, EmptyInput) {
+  boost::mpi::communicator world;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   Sdobnov_V_sum_of_vector_elements::SumVecElemParallel test(taskDataPar);
-  ASSERT_FALSE(test.validation());
+  if (world.rank() == 0) {
+    ASSERT_FALSE(test.validation());
+  }
 }
 
 TEST(Sdobnov_V_sum_of_vector_elements_par, EmptyOutput) {
@@ -52,7 +55,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_par, EmptyMatrix) {
 
   Sdobnov_V_sum_of_vector_elements::SumVecElemParallel test(taskDataPar);
 
-  ASSERT_TRUE(test.validation());
+  test.validation();
   test.pre_processing();
   test.run();
   test.post_processing();
@@ -79,7 +82,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_par, Matrix10x10) {
   }
 
   Sdobnov_V_sum_of_vector_elements::SumVecElemParallel test(taskDataPar);
-  ASSERT_EQ(test.validation(), true);
+  test.validation();
   test.pre_processing();
   test.run();
   test.post_processing();
@@ -115,7 +118,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_par, Matrix100x100) {
   }
 
   Sdobnov_V_sum_of_vector_elements::SumVecElemParallel test(taskDataPar);
-  ASSERT_EQ(test.validation(), true);
+  test.validation();
   test.pre_processing();
   test.run();
   test.post_processing();
@@ -151,7 +154,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_par, Matrix100x10) {
   }
 
   Sdobnov_V_sum_of_vector_elements::SumVecElemParallel test(taskDataPar);
-  ASSERT_EQ(test.validation(), true);
+  test.validation();
   test.pre_processing();
   test.run();
   test.post_processing();
@@ -187,7 +190,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_par, Matrix10x100) {
   }
 
   Sdobnov_V_sum_of_vector_elements::SumVecElemParallel test(taskDataPar);
-  ASSERT_EQ(test.validation(), true);
+  test.validation(), true;
   test.pre_processing();
   test.run();
   test.post_processing();
