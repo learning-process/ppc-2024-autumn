@@ -9,7 +9,7 @@ template <class InOutType>
 bool leontev_n_vector_sum_seq::VecSumSequential<InOutType>::pre_processing() {
   internal_order_test();
   input_ = std::vector<InOutType>(taskData->inputs_count[0]);
-  InOutType* vec_ptr = reinterpret_cast<InOutType*>(taskData->inputs[0]);
+  auto* vec_ptr = reinterpret_cast<InOutType*>(taskData->inputs[0]);
   for (size_t i = 0; i < taskData->inputs_count[0]; i++) {
     input_[i] = vec_ptr[i];
   }
