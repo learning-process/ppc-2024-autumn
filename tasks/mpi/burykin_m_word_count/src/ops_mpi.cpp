@@ -137,6 +137,6 @@ bool TestTaskParallel::post_processing() {
   return true;
 }
 
-bool TestTaskParallel::is_word_character(char c) { return std::isalpha(static_cast<unsigned char>(c)); }
+bool TestTaskParallel::is_word_character(char c) { return std::isalpha(static_cast<unsigned char>(c)) != 0; }
 
 }  // namespace burykin_m_word_count
