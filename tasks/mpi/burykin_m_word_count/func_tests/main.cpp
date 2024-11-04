@@ -73,6 +73,51 @@ TEST(burykin_m_word_count_MPI_func, TestEmptyString) {
   }
 }
 
+TEST(burykin_m_word_count_MPI_func, TestStringABC) {
+  std::string input_str = "abc";
+  std::vector<char> input(input_str.begin(), input_str.end());
+  std::vector<int> wordCount(1, 0);
+
+  boost::mpi::communicator world;
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  taskDataPar->inputs_count.emplace_back(input.size());
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(wordCount.data()));
+    taskDataPar->outputs_count.emplace_back(wordCount.size());
+  }
+
+  // Create Task
+  burykin_m_word_count::TestTaskParallel testTaskParallel(taskDataPar);
+  ASSERT_EQ(testTaskParallel.validation(), true);
+  testTaskParallel.pre_processing();
+  testTaskParallel.run();
+  testTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int> local_count(1, 0);
+
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataSeq->inputs_count.emplace_back(input.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(local_count.data()));
+    taskDataSeq->outputs_count.emplace_back(local_count.size());
+
+    // Create Task
+    burykin_m_word_count::TestTaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(wordCount[0], local_count[0]);
+  }
+}
+
 TEST(burykin_m_word_count_MPI_func, TestLength30) {
   int length = 30;
 
