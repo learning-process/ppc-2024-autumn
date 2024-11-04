@@ -16,6 +16,29 @@ TEST(lopatin_i_count_words_seq, test_empty_string) {
   ASSERT_EQ(testTask.validation(), false);
 }
 
+TEST(lopatin_i_count_words_seq, test_1_word) {
+  std::vector<char> input;
+  std::string testString = "sym";
+  for (unsigned long int j = 0; j < testString.length(); j++) {
+    input.push_back(testString[j]);
+  }
+  std::vector<int> out(1, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskData->inputs_count.emplace_back(input.size());
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskData->outputs_count.emplace_back(out.size());
+
+  lopatin_i_count_words_seq::TestTaskSequential testTask(taskData);
+  ASSERT_EQ(testTask.validation(), true);
+  testTask.pre_processing();
+  testTask.run();
+  testTask.post_processing();
+
+  ASSERT_EQ(out[0], 1);
+}
+
 TEST(lopatin_i_count_words_seq, test_3_words) {
   std::vector<char> input;
   std::string testString = "three funny words";
