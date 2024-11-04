@@ -73,9 +73,7 @@ bool zaytsev_d_num_of_alternations_signs_mpi::TestMPITaskParallel::pre_processin
   if (world.rank() == 0) {
     input_ = std::vector<int>(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-      input_[i] = tmp_ptr[i];
-    }
+    std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
 
     for (int proc = 1; proc < world.size(); proc++) {
       int send_count = delta + (proc == world.size() - 1 ? remainder : 0);
