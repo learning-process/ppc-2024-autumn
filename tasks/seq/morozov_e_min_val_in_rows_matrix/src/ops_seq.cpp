@@ -27,10 +27,9 @@ bool morozov_e_min_val_in_rows_matrix::TestTaskSequential::pre_processing() {
 }
 bool morozov_e_min_val_in_rows_matrix::TestTaskSequential::validation() {
   internal_order_test();
-  if (taskData->inputs.empty() || taskData->outputs.empty()) return false;
-  if (taskData->inputs_count.size() < 2 || taskData->inputs_count[0] <= 0 || taskData->inputs_count[1] <= 0)
+  if (taskData->inputs_count.size() != 2 || taskData->inputs_count[0] <= 0 || taskData->inputs_count[0] <= 0)
     return false;
-  if (taskData->outputs_count.size() != 1 || taskData->outputs_count[0] != taskData->inputs_count[1]) return false;
+  if (taskData->outputs_count.size() != 1 || taskData->outputs_count[0] != taskData->inputs_count[0]) return false;
   return true;
 }
 bool morozov_e_min_val_in_rows_matrix::TestTaskSequential::run() {
