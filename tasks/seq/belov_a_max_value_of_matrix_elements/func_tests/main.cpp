@@ -7,14 +7,13 @@
 
 using namespace belov_a_max_value_of_matrix_elements_seq;
 
-template <typename T>
-std::vector<T> generate_random_matrix(int rows, int cols) {
+template <typename T = int>
+std::vector<T> generate_random_matrix(int rows, int cols, const T& left = T{-1000}, const T& right = T{1000}) {
   std::vector<T> res(rows * cols);
-
   std::random_device dev;
   std::mt19937 gen(dev());
   for (size_t i = 0; i < res.size(); i++) {
-    res[i] = static_cast<T>(gen() % 1000);
+    res[i] = left + static_cast<T>(gen() % int(right - left + 1));
   }
   return res;
 }
@@ -366,7 +365,7 @@ TEST(belov_a_max_value_of_matrix_elements_seq, Test_Random_Matrix_Integers) {
   bool flag = true;
 
   for (const auto& item : matrix) {
-    if (item < 0 || item > 1000) {
+    if (item < -1000 || item > 1000) {
       flag = false;
       break;
     }
