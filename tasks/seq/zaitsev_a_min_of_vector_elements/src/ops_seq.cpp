@@ -1,8 +1,8 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/zaitsev_a_min_of_vector_elements/include/ops_seq.hpp"
 
-#include <thread>
 #include <algorithm>
+#include <thread>
 
 using namespace std::chrono_literals;
 
@@ -15,14 +15,14 @@ bool zaitsev_a_min_of_vector_elements_seq::MinOfVectorElementsSequential::pre_pr
   for (size_t i = 0; i < taskData->inputs_count[0]; i++) {
     input[i] = interpreted_input[i];
   }
-  return true; 
+  return true;
 }
 
 bool zaitsev_a_min_of_vector_elements_seq::MinOfVectorElementsSequential::validation() {
   internal_order_test();
   // Check count elements of output
   return taskData->inputs_count[0] != 0 && taskData->outputs_count[0] == 1 ||
-      taskData->inputs_count[0] == 0 && taskData->outputs_count[0] == 0; 
+         taskData->inputs_count[0] == 0 && taskData->outputs_count[0] == 0;
 }
 
 bool zaitsev_a_min_of_vector_elements_seq::MinOfVectorElementsSequential::run() {

@@ -74,7 +74,8 @@ TEST(zaitsev_a_min_of_vector_elements_mpi, test_task_run) {
     taskDataPar->outputs_count.emplace_back(global_min.size());
   }
 
-  auto minOfVectorElementsParallel = std::make_shared<zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsParallel>(taskDataPar);
+  auto minOfVectorElementsParallel =
+      std::make_shared<zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsParallel>(taskDataPar);
   ASSERT_EQ(minOfVectorElementsParallel->validation(), true);
   minOfVectorElementsParallel->pre_processing();
   minOfVectorElementsParallel->run();

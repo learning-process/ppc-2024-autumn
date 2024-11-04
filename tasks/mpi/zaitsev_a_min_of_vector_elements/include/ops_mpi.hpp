@@ -32,8 +32,7 @@ class MinOfVectorElementsSequential : public ppc::core::Task {
 
 class MinOfVectorElementsParallel : public ppc::core::Task {
  public:
-  explicit MinOfVectorElementsParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit MinOfVectorElementsParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -45,4 +44,4 @@ class MinOfVectorElementsParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  // namespace nesterov_a_test_task_mpi
+}  // namespace zaitsev_a_min_of_vector_elements_mpi

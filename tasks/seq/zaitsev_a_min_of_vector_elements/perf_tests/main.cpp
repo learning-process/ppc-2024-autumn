@@ -1,8 +1,8 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
-#include <vector>
 #include <random>
+#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/zaitsev_a_min_of_vector_elements/include/ops_seq.hpp"
@@ -55,7 +55,6 @@ TEST(zaitsev_a_min_of_vector_elements_sequentional, test_pipeline_run) {
   ppc::core::Perf::print_perf_statistic(perfResults);
   ASSERT_EQ(extrema, out[0]);
 }
-
 
 TEST(zaitsev_a_min_of_vector_elements_sequentional, test_task_run) {
   const int length = 10e6;

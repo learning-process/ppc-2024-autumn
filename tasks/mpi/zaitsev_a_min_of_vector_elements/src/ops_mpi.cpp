@@ -54,9 +54,6 @@ bool zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsSequential::post_p
   return true;
 }
 
-
-
-
 bool zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsParallel::pre_processing() {
   internal_order_test();
   unsigned int delta = 0;
@@ -101,7 +98,7 @@ bool zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsParallel::run() {
   if (local_input_.empty()) return true;
   int local_res = local_input_[0];
   for (auto i : local_input_) local_res = (local_res > i) ? i : local_res;
-  
+
   reduce(world, local_res, res, boost::mpi::minimum<int>(), 0);
   return true;
 }

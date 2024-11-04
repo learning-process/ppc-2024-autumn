@@ -50,7 +50,7 @@ TEST(zaitsev_a_min_of_vector_elements_sequentional, test_length_50) {
   // Create data
   std::vector<int> in(length);
   for (size_t i = 0; i < length; i++) {
-    int j = minRangeValue + gen() % (maxRangeValue - minRangeValue + 1);\
+    int j = minRangeValue + gen() % (maxRangeValue - minRangeValue + 1);
     in[i] = j;
   }
   in[length / 2] = extrema;
