@@ -79,8 +79,12 @@ bool kovalchuk_a_max_of_vector_elements::TestMPITaskParallel::pre_processing() {
         input_[i * columns + j] = tmp_ptr[j];
       }
     }
+    if (delta * (world.size() - 1) > input_.size()) {
+      throw std::runtime_error("Delta exceeds input vector size");
+    }
     for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + delta * proc, delta);
+      std::span<int> buffer(input_.data() + delta * proc, delta);
+      world.send(proc, 0, buffer.data(), buffer.size());
     }
   }
   local_input_ = std::vector<int>(delta);
