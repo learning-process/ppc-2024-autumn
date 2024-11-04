@@ -7,10 +7,10 @@
 #include <boost/mpi/communicator.hpp>
 #include <memory>
 #include <numeric>
+#include <random>
 #include <string>
 #include <utility>
 #include <vector>
-#include <random>
 
 #include "core/task/include/task.hpp"
 
@@ -42,7 +42,6 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  // std::vector<std::vector<int>> input_;
   std::vector<int> res, input_, local_input_;
   int rows;
   int columns;
