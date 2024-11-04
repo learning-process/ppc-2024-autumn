@@ -14,9 +14,7 @@ bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskSequential::pre_processi
   internal_order_test();
   input_ = std::vector<int>(taskData->inputs_count[0]);
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    input_[i] = tmp_ptr[i];
-  }
+  std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
   min_distance_ = std::numeric_limits<int>::max();
   closest_pair_ = {0, 1};
   return true;
@@ -55,9 +53,7 @@ bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskParallel::pre_processing
   if (world.rank() == 0) {
     input_ = std::vector<int>(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-      input_[i] = tmp_ptr[i];
-    }
+    std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
   }
 
   min_distance_ = std::numeric_limits<int>::max();
