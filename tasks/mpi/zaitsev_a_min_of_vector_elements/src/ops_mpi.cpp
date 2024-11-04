@@ -69,14 +69,14 @@ bool zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsParallel::pre_proc
     for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
       input_[i] = tmp_ptr[i];
     }
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + proc * delta, delta);
+    for (int proc = 1; proc < world.size() - 1; proc++) {
+      world.send(proc, 0, input_.data() + (proc - 1) * delta, delta);
     }
   }
-  local_input_ = std::vector<int>(delta);
   if (world.rank() == 0) {
-    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
+    local_input_ = std::vector<int>(input_.begin() + (delta * (world.size() - 1)), input_.end());
   } else {
+    local_input_ = std::vector<int>(delta);
     world.recv(0, 0, local_input_.data(), delta);
   }
   return true;
