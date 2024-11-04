@@ -92,8 +92,7 @@ bool anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel::run() {
   size_t loc_size = 0;
   if (com.rank() == 0) {
     size_t temp = (strlen(input[0]) + com.size() - 1);
-    loc_size = (temp /
-        com.size()); 
+    loc_size = (temp / com.size()); 
   }
   broadcast(com, loc_size, 0);
   if (com.rank() == 0) {
