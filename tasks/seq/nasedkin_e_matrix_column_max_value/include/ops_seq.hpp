@@ -1,4 +1,3 @@
-// Copyright 2023 Nasedkin Egor
 #pragma once
 
 #include <gtest/gtest.h>

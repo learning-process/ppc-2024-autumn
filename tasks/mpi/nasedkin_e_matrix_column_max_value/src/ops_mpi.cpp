@@ -1,4 +1,3 @@
-// Copyright 2023 Nasedkin Egor
 #include "mpi/nasedkin_e_matrix_column_max_value/include/ops_mpi.hpp"
 
 #include <algorithm>

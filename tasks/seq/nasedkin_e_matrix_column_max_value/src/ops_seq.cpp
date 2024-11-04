@@ -1,4 +1,3 @@
-// Copyright 2023 Nasedkin Egor
 #include "seq/nasedkin_e_matrix_column_max_value/include/ops_seq.hpp"
 
 #include <algorithm>

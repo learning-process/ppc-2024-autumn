@@ -1,4 +1,3 @@
-// Copyright 2023 Nasedkin Egor
 #include <gtest/gtest.h>
 #include <boost/mpi/environment.hpp>
 #include <boost/mpi/communicator.hpp>

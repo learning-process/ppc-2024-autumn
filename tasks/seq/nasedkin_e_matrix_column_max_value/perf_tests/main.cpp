@@ -1,4 +1,3 @@
-// Copyright 2023 Nasedkin Egor
 #include <gtest/gtest.h>
 #include <vector>
 #include <boost/mpi/timer.hpp>
