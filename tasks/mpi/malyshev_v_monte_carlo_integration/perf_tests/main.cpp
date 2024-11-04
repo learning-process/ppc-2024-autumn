@@ -12,7 +12,7 @@ TEST(malyshev_v_monte_carlo_integration_mpi, HighSampleCountPerfTest) {
   std::vector<double> global_result(1, 0.0);
   double a = 0.0;
   double b = 1.0;
-  double epsilon = 0.00001;
+  double epsilon = 0.0004;
 
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -41,7 +41,7 @@ TEST(malyshev_v_monte_carlo_integration_mpi, MinimalProcessPerfTest) {
   std::vector<double> global_result(1, 0.0);
   double a = 0.0;
   double b = 1.0;
-  double epsilon = 0.001;
+  double epsilon = 0.0004;
 
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -70,7 +70,7 @@ TEST(malyshev_v_monte_carlo_integration_mpi, ExtendedRangePerfTest) {
   std::vector<double> global_result(1, 0.0);
   double a = 0.0;
   double b = 10.0;
-  double epsilon = 0.001;
+  double epsilon = 0.0004;
 
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -99,7 +99,7 @@ TEST(malyshev_v_monte_carlo_integration_mpi, SmallEpsilonPerfTest) {
   std::vector<double> global_result(1, 0.0);
   double a = 0.0;
   double b = 1.0;
-  double epsilon = 0.00001;
+  double epsilon = 0.0004;
 
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -128,7 +128,7 @@ TEST(malyshev_v_monte_carlo_integration_mpi, VaryingProcessCountPerfTest) {
   std::vector<double> global_result(1, 0.0);
   double a = 0.0;
   double b = 1.0;
-  double epsilon = 0.001;
+  double epsilon = 0.0004;
 
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {

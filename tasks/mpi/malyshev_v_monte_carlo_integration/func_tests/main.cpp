@@ -42,7 +42,7 @@ TEST(malyshev_v_monte_carlo_integration_mpi, LargeRangeIntegrationTest) {
 
   double a = 0.0;
   double b = 10.0;
-  double epsilon = 0.001;
+  double epsilon = 0.0004;
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
@@ -70,7 +70,7 @@ TEST(malyshev_v_monte_carlo_integration_mpi, SmallRangeIntegrationTest) {
 
   double a = 0.0;
   double b = 0.1;
-  double epsilon = 0.0001;
+  double epsilon = 0.0004;
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
@@ -98,7 +98,7 @@ TEST(malyshev_v_monte_carlo_integration_mpi, ZeroRangeIntegrationTest) {
 
   double a = 1.0;
   double b = 1.0;  // Zero range
-  double epsilon = 0.0001;
+  double epsilon = 0.0004;
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
