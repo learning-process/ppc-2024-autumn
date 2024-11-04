@@ -7,7 +7,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/zaitsev_a_min_of_vector_elements/include/ops_seq.hpp"
 
-TEST(zaitsev_a_min_of_vector_elements, test_pipeline_run) {
+TEST(zaitsev_a_min_of_vector_elements_sequentional, test_pipeline_run) {
   const int length = 10e6;
   const int extrema = -1;
   const int minRangeValue = 100;
@@ -34,7 +34,7 @@ TEST(zaitsev_a_min_of_vector_elements, test_pipeline_run) {
 
   // Create Task
   auto testTaskSequential =
-      std::make_shared<zaitsev_a_min_of_vector_elements::MinOfVectorElementsSequential>(taskDataSeq);
+      std::make_shared<zaitsev_a_min_of_vector_elements_seq::MinOfVectorElementsSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -57,7 +57,7 @@ TEST(zaitsev_a_min_of_vector_elements, test_pipeline_run) {
 }
 
 
-TEST(zaitsev_a_min_of_vector_elements, test_task_run) {
+TEST(zaitsev_a_min_of_vector_elements_sequentional, test_task_run) {
   const int length = 10e6;
   const int extrema = -1;
   const int minRangeValue = 100;
@@ -84,7 +84,7 @@ TEST(zaitsev_a_min_of_vector_elements, test_task_run) {
 
   // Create Task
   auto testTaskSequential =
-      std::make_shared<zaitsev_a_min_of_vector_elements::MinOfVectorElementsSequential>(taskDataSeq);
+      std::make_shared<zaitsev_a_min_of_vector_elements_seq::MinOfVectorElementsSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();

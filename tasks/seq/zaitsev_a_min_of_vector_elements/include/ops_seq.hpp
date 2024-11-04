@@ -6,7 +6,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace zaitsev_a_min_of_vector_elements {
+namespace zaitsev_a_min_of_vector_elements_seq {
 
 class MinOfVectorElementsSequential : public ppc::core::Task {
  public:
@@ -21,4 +21,4 @@ class MinOfVectorElementsSequential : public ppc::core::Task {
   public: int res{};
 };
 
-}  // namespace zaitsev_a_min_of_vector_elements
+}  // namespace zaitsev_a_min_of_vector_elements_seq

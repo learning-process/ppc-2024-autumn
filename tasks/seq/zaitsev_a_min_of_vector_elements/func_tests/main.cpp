@@ -6,7 +6,7 @@
 
 #include "seq/zaitsev_a_min_of_vector_elements/include/ops_seq.hpp"
 
-TEST(zaitsev_a_min_of_vector_elements, test_length_10) {
+TEST(zaitsev_a_min_of_vector_elements_sequentional, test_length_10) {
   const int length = 10;
   const int extrema = -1;
   const int minRangeValue = 100;
@@ -32,14 +32,14 @@ TEST(zaitsev_a_min_of_vector_elements, test_length_10) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  zaitsev_a_min_of_vector_elements::MinOfVectorElementsSequential task(taskDataSeq);
+  zaitsev_a_min_of_vector_elements_seq::MinOfVectorElementsSequential task(taskDataSeq);
   ASSERT_EQ(task.validation(), true);
   task.pre_processing();
   task.run();
   task.post_processing();
   ASSERT_EQ(extrema, out[0]);
 }
-TEST(zaitsev_a_min_of_vector_elements, test_length_50) {
+TEST(zaitsev_a_min_of_vector_elements_sequentional, test_length_50) {
   const int length = 50;
   const int extrema = -1;
   const int minRangeValue = 100;
@@ -64,14 +64,14 @@ TEST(zaitsev_a_min_of_vector_elements, test_length_50) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  zaitsev_a_min_of_vector_elements::MinOfVectorElementsSequential task(taskDataSeq);
+  zaitsev_a_min_of_vector_elements_seq::MinOfVectorElementsSequential task(taskDataSeq);
   ASSERT_EQ(task.validation(), true);
   task.pre_processing();
   task.run();
   task.post_processing();
   ASSERT_EQ(extrema, out[0]);
 }
-TEST(zaitsev_a_min_of_vector_elements, test_length_1) {
+TEST(zaitsev_a_min_of_vector_elements_sequentional, test_length_1) {
   const int length = 10;
   const int extrema = -1;
   const int minRangeValue = 100;
@@ -96,7 +96,7 @@ TEST(zaitsev_a_min_of_vector_elements, test_length_1) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  zaitsev_a_min_of_vector_elements::MinOfVectorElementsSequential task(taskDataSeq);
+  zaitsev_a_min_of_vector_elements_seq::MinOfVectorElementsSequential task(taskDataSeq);
   ASSERT_EQ(task.validation(), true);
   task.pre_processing();
   task.run();

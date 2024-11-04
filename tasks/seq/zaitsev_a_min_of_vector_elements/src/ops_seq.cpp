@@ -6,7 +6,7 @@
 
 using namespace std::chrono_literals;
 
-bool zaitsev_a_min_of_vector_elements::MinOfVectorElementsSequential::pre_processing() {
+bool zaitsev_a_min_of_vector_elements_seq::MinOfVectorElementsSequential::pre_processing() {
   internal_order_test();
 
   // Init value for input and output
@@ -18,14 +18,14 @@ bool zaitsev_a_min_of_vector_elements::MinOfVectorElementsSequential::pre_proces
   return true; 
 }
 
-bool zaitsev_a_min_of_vector_elements::MinOfVectorElementsSequential::validation() {
+bool zaitsev_a_min_of_vector_elements_seq::MinOfVectorElementsSequential::validation() {
   internal_order_test();
   // Check count elements of output
   return taskData->inputs_count[0] != 0 && taskData->outputs_count[0] == 1 ||
       taskData->inputs_count[0] == 0 && taskData->outputs_count[0] == 0; 
 }
 
-bool zaitsev_a_min_of_vector_elements::MinOfVectorElementsSequential::run() {
+bool zaitsev_a_min_of_vector_elements_seq::MinOfVectorElementsSequential::run() {
   internal_order_test();
 
   int currentMin = input[0];
@@ -34,7 +34,7 @@ bool zaitsev_a_min_of_vector_elements::MinOfVectorElementsSequential::run() {
   return true;
 }
 
-bool zaitsev_a_min_of_vector_elements::MinOfVectorElementsSequential::post_processing() {
+bool zaitsev_a_min_of_vector_elements_seq::MinOfVectorElementsSequential::post_processing() {
   internal_order_test();
   reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
   return true;
