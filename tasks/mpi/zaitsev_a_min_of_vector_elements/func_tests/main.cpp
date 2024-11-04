@@ -113,7 +113,7 @@ TEST(zaitsev_a_min_of_vector_elements_mpi, test_case_singleton_vector) {
 
   boost::mpi::communicator world;
   std::vector<int> global_vec;
-  std::vector<int32_t> global_min(1, maxRangeValue + 1);
+  std::vector<int32_t> global_min(1, extrema);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
