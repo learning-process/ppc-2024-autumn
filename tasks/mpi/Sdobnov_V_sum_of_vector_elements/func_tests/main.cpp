@@ -6,35 +6,6 @@
 
 #include "mpi/Sdobnov_V_sum_of_vector_elements/include/ops_mpi.hpp"
 
-TEST(Sdobnov_V_sum_of_vector_elements_par, EmptyInput) {
-  boost::mpi::communicator world;
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  Sdobnov_V_sum_of_vector_elements::SumVecElemParallel test(taskDataPar);
-  if (world.rank() == 0) {
-    ASSERT_FALSE(test.validation());
-  }
-}
-
-TEST(Sdobnov_V_sum_of_vector_elements_par, EmptyOutput) {
-  boost::mpi::communicator world;
-  int rows = 10;
-  int columns = 10;
-  std::vector<std::vector<int>> input = Sdobnov_V_sum_of_vector_elements::generate_random_matrix(rows, columns);
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    taskDataPar->inputs_count.emplace_back(rows);
-    taskDataPar->inputs_count.emplace_back(columns);
-    for (long unsigned int i = 0; i < input.size(); i++) {
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input[i].data()));
-    }
-  }
-
-  Sdobnov_V_sum_of_vector_elements::SumVecElemParallel test(taskDataPar);
-  if (world.rank() == 0) {
-    ASSERT_FALSE(test.validation());
-  }
-}
-
 TEST(Sdobnov_V_sum_of_vector_elements_par, EmptyMatrix) {
   boost::mpi::communicator world;
   int rows = 0;

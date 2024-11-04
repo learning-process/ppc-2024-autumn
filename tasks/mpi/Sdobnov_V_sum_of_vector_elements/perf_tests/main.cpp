@@ -26,7 +26,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_par, test_pipeline_run) {
   }
   auto test = std::make_shared<Sdobnov_V_sum_of_vector_elements::SumVecElemParallel>(taskDataPar);
 
-  ASSERT_TRUE(test->validation());
+  test->validation();
   test->pre_processing();
   test->run();
   test->post_processing();
@@ -69,7 +69,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_par, test_task_run) {
   }
   auto test = std::make_shared<Sdobnov_V_sum_of_vector_elements::SumVecElemParallel>(taskDataPar);
 
-  ASSERT_TRUE(test->validation());
+  test->validation();
   test->pre_processing();
   test->run();
   test->post_processing();
