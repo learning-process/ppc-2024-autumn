@@ -1,5 +1,7 @@
 #include "seq/oturin_a_max_values_by_rows_matrix/include/ops_seq.hpp"
 
+#include <algorithm>
+
 bool oturin_a_max_values_by_rows_matrix_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   // Init vectors
