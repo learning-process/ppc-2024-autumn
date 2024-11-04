@@ -60,38 +60,47 @@ bool zaytsev_d_num_of_alternations_signs_mpi::TestMPITaskParallel::pre_processin
   internal_order_test();
 
   unsigned int delta = 0;
+  unsigned int remainder = 0;
+
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
+    remainder = taskData->inputs_count[0] % world.size();
   }
+
   broadcast(world, delta, 0);
+  broadcast(world, remainder, 0);
+
   if (world.rank() == 0) {
     input_ = std::vector<int>(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
       input_[i] = tmp_ptr[i];
     }
+
     for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + proc * delta, delta);
+      int send_count = delta + (proc == world.size() - 1 ? remainder : 0);
+      world.send(proc, 0, input_.data() + proc * (int)delta, send_count);
     }
   }
-  local_input_ = std::vector<int>(delta);
-  if (world.rank() == 0) {
-    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
-  } else {
-    world.recv(0, 0, local_input_.data(), delta);
-  }
-  res = 0;
 
+  int local_size = (int)delta + (world.rank() == world.size() - 1 ? remainder : 0);
+  local_input_ = std::vector<int>(local_size);
+
+  if (world.rank() == 0) {
+    local_input_ = std::vector<int>(input_.begin(), input_.begin() + local_size);
+  } else {
+    world.recv(0, 0, local_input_.data(), local_size);
+  }
+
+  res = 0;
   return true;
 }
 
 bool zaytsev_d_num_of_alternations_signs_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
-
   if (world.rank() == 0) {
     return taskData->outputs_count[0] == 1;
   }
-
   return true;
 }
 
@@ -115,8 +124,8 @@ bool zaytsev_d_num_of_alternations_signs_mpi::TestMPITaskParallel::run() {
   if (world.rank() < world.size() - 1) {
     world.send(world.rank() + 1, 0, &last_value, 1);
   }
-  boost::mpi::reduce(world, local_count, res, std::plus<int>(), 0);
 
+  boost::mpi::reduce(world, local_count, res, std::plus<int>(), 0);
   return true;
 }
 

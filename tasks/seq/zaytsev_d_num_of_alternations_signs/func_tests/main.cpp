@@ -5,7 +5,7 @@
 
 #include "seq/zaytsev_d_num_of_alternations_signs/include/ops_seq.hpp"
 
-TEST(zaytsev_d_num_of_alternations_signs_seq, Test_One_Positive) {
+TEST(zaytsev_d_num_of_alternations_signs_seq, OnePositive) {
   const int count = 1;
 
   std::vector<int> in = {5};
@@ -27,7 +27,7 @@ TEST(zaytsev_d_num_of_alternations_signs_seq, Test_One_Positive) {
   ASSERT_EQ(out[0], 0);
 }
 
-TEST(zaytsev_d_num_of_alternations_signs_seq, Test_Two_Opposite_Signs) {
+TEST(zaytsev_d_num_of_alternations_signs_seq, TwoOppositeSigns) {
   const int count = 2;
 
   std::vector<int> in = {5, -3};
@@ -49,7 +49,7 @@ TEST(zaytsev_d_num_of_alternations_signs_seq, Test_Two_Opposite_Signs) {
   ASSERT_EQ(out[0], 1);
 }
 
-TEST(zaytsev_d_num_of_alternations_signs_seq, Test_Alternating_Signs) {
+TEST(zaytsev_d_num_of_alternations_signs_seq, AlternatingSigns) {
   const int count = 5;
   const int expected_result = 4;
 
@@ -72,7 +72,7 @@ TEST(zaytsev_d_num_of_alternations_signs_seq, Test_Alternating_Signs) {
   ASSERT_EQ(out[0], expected_result);
 }
 
-TEST(zaytsev_d_num_of_alternations_signs_seq, Test_All_Positive) {
+TEST(zaytsev_d_num_of_alternations_signs_seq, AllPositive) {
   const int count = 5;
   const int expected_result = 0;
 
@@ -95,7 +95,7 @@ TEST(zaytsev_d_num_of_alternations_signs_seq, Test_All_Positive) {
   ASSERT_EQ(out[0], expected_result);
 }
 
-TEST(zaytsev_d_num_of_alternations_signs_seq, Test_Two_Same_Values) {
+TEST(zaytsev_d_num_of_alternations_signs_seq, TwoSameValues) {
   const int count = 2;
   const int expected_result = 0;
 
@@ -118,7 +118,7 @@ TEST(zaytsev_d_num_of_alternations_signs_seq, Test_Two_Same_Values) {
   ASSERT_EQ(out[0], expected_result);
 }
 
-TEST(zaytsev_d_num_of_alternations_signs_seq, Test_With_Zero) {
+TEST(zaytsev_d_num_of_alternations_signs_seq, WithZero) {
   const int count = 5;
   const int expected_result = 3;
 
@@ -141,7 +141,7 @@ TEST(zaytsev_d_num_of_alternations_signs_seq, Test_With_Zero) {
   ASSERT_EQ(out[0], expected_result);
 }
 
-TEST(zaytsev_d_num_of_alternations_signs_seq, Test_Long_Alternating_Signs) {
+TEST(zaytsev_d_num_of_alternations_signs_seq, LongAlternatingSigns) {
   const int count = 10;
   const int expected_result = 9;
 
@@ -164,7 +164,7 @@ TEST(zaytsev_d_num_of_alternations_signs_seq, Test_Long_Alternating_Signs) {
   ASSERT_EQ(out[0], expected_result);
 }
 
-TEST(zaytsev_d_num_of_alternations_signs_seq, Test_Many_Zeros) {
+TEST(zaytsev_d_num_of_alternations_signs_seq, ManyZeros) {
   const int count = 6;
   const int expected_result = 0;
 
@@ -187,7 +187,7 @@ TEST(zaytsev_d_num_of_alternations_signs_seq, Test_Many_Zeros) {
   ASSERT_EQ(out[0], expected_result);
 }
 
-TEST(zaytsev_d_num_of_alternations_signs_seq, Test_All_Negative) {
+TEST(zaytsev_d_num_of_alternations_signs_seq, AllNegative) {
   const int count = 4;
   const int expected_result = 0;
 
@@ -210,7 +210,7 @@ TEST(zaytsev_d_num_of_alternations_signs_seq, Test_All_Negative) {
   ASSERT_EQ(out[0], expected_result);
 }
 
-TEST(zaytsev_d_num_of_alternations_signs_seq, Test_Random_Order_With_Alternations) {
+TEST(zaytsev_d_num_of_alternations_signs_seq, RandomOrderWithAlternations) {
   const int count = 8;
   const int expected_result = 5;
 
