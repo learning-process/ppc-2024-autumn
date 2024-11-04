@@ -64,10 +64,6 @@ bool beresnev_a_min_values_by_matrix_columns_mpi::TestMPITaskParallel::pre_proce
     for (int i = 0; i < total_elements; i++) {
       input_[i] = tmp_ptr[i];
     }
-
-    for (int proc = 1; proc < world.size(); proc++) {
-      req = world.isend(proc, 0, input_.data() + (col_on_pr * proc + remainder) * n_, n_ * col_on_pr);
-    }
   }
 
   return true;
@@ -88,6 +84,12 @@ bool beresnev_a_min_values_by_matrix_columns_mpi::TestMPITaskParallel::validatio
 bool beresnev_a_min_values_by_matrix_columns_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
+  if (world.rank() == 0) {
+    for (int proc = 1; proc < world.size(); proc++) {
+      req = world.isend(proc, 0, input_.data() + (col_on_pr * proc + remainder) * n_, n_ * col_on_pr);
+    }
+  }
+
   broadcast(world, col_on_pr, 0);
   broadcast(world, remainder, 0);
   broadcast(world, n_, 0);
@@ -96,6 +98,7 @@ bool beresnev_a_min_values_by_matrix_columns_mpi::TestMPITaskParallel::run() {
   local_input_ = std::vector<int>(n_ * col_on_pr);
   local_mins_ = std::vector<int>(col_on_pr);
   global_mins_ = std::vector<int>(m_, 0);
+
   if (world.rank() == 0) {
     req.wait();
     local_input_ = std::vector<int>(input_.begin(), input_.begin() + (col_on_pr + remainder) * n_);
