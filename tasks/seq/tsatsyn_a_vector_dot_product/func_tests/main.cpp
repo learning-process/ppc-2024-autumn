@@ -1,6 +1,5 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
-
 #include <algorithm>
 #include <functional>
 #include <random>
@@ -8,12 +7,22 @@
 
 #include "seq/tsatsyn_a_vector_dot_product/include/ops_seq.hpp"
 
+std::vector<int> toGetRandomVector(int size) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> v(size);
+  for (int i = 0; i < size; i++) {
+    v[i] = gen() % 200 + gen() % 10;
+  }
+  return v;
+}
+
 TEST(tsatsyn_a_vector_dot_product_seq, Test_Random_Scalar) {
   const int size = 5;
 
   // Create data
-  std::vector<int> v1 = tsatsyn_a_vector_dot_product_seq::toGetRandomVector(size);
-  std::vector<int> v2 = tsatsyn_a_vector_dot_product_seq::toGetRandomVector(size);
+  std::vector<int> v1 = toGetRandomVector(size);
+  std::vector<int> v2 = toGetRandomVector(size);
   std::vector<int> ans(1);
 
   // Create TaskData

@@ -1,20 +1,27 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
-#include <algorithm>
 #include <boost/mpi/timer.hpp>
+#include <vector>
+#include <algorithm>
 #include <functional>
 #include <random>
-#include <vector>
-
 #include "core/perf/include/perf.hpp"
 #include "mpi/tsatsyn_a_vector_dot_product/include/ops_mpi.hpp"
-
+std::vector<int> toGetRandomVector(int size) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> v(size);
+  for (int i = 0; i < size; i++) {
+    v[i] = gen() % 200 + gen() % 10;
+  }
+  return v;
+}
 TEST(mpi_tsatsyn_a_vector_dot_product_perf_test, test_pipeline_run) {
   int size = 12000000;
   boost::mpi::communicator world;
-  std::vector<int> v1 = tsatsyn_a_vector_dot_product_mpi::toGetRandomVector(size);
-  std::vector<int> v2 = tsatsyn_a_vector_dot_product_mpi::toGetRandomVector(size);
+  std::vector<int> v1 = toGetRandomVector(size);
+  std::vector<int> v2 = toGetRandomVector(size);
   std::vector<int> ans(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -54,8 +61,8 @@ TEST(mpi_tsatsyn_a_vector_dot_product_perf_test, test_pipeline_run) {
 TEST(mpi_tsatsyn_a_vector_dot_product_perf_test, test_task_run) {
   int size = 12000000;
   boost::mpi::communicator world;
-  std::vector<int> v1 = tsatsyn_a_vector_dot_product_mpi::toGetRandomVector(size);
-  std::vector<int> v2 = tsatsyn_a_vector_dot_product_mpi::toGetRandomVector(size);
+  std::vector<int> v1 = toGetRandomVector(size);
+  std::vector<int> v2 = toGetRandomVector(size);
   std::vector<int> ans(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
