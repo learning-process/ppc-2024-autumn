@@ -1,9 +1,7 @@
-// Copyright 2024 Nesterov Alexander
 #include "seq/kapustin_i_max_cols/include/avg_seq.hpp"
+
 #include <algorithm>
 #include <functional>
-
-using namespace std::chrono_literals;
 
 bool kapustin_i_max_column_task_seq::MaxColumnTaskSequential::pre_processing() {
   internal_order_test();
