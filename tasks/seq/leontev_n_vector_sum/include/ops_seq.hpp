@@ -24,4 +24,4 @@ class VecSumSequential : public ppc::core::Task {
   InOutType res;
 };
 
-} // namespace leontev_n_vector_sum_seq
+}  // namespace leontev_n_vector_sum_seq

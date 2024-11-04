@@ -46,4 +46,4 @@ class MPIVecSumParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-} // namespace leontev_n_vec_sum_mpi
+}  // namespace leontev_n_vec_sum_mpi
