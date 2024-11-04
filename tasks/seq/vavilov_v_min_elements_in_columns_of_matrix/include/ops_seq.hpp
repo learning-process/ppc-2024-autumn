@@ -14,9 +14,6 @@ class TestTaskSequential : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  static std::vector<int> generate_rand_vec(int size, int lower_bound = 0, int upper_bound = 50);
-  static std::vector<std::vector<int>> generate_rand_matr(int rows, int cols);
-
  private:
   std::vector<std::vector<int>> input_;
   std::vector<int> res_;
