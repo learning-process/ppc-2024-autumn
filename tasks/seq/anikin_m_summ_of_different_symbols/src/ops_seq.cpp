@@ -30,7 +30,8 @@ bool anikin_m_sum_of_differnt_symbols_seq::SumDifSymSequential::run() {
 
   std::string str2 = input[1];
 
-  int dif = 0;  
+  int dif;
+  dif = 0;
 
   if (str1.size() >= str2.size()) {
     dif = str1.size() - str2.size();
