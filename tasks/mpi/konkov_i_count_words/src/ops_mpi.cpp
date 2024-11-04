@@ -1,4 +1,4 @@
-// Copyright 2023 Konkov Ivan
+// ops_mpi.cpp
 #include "mpi/konkov_i_count_words/include/ops_mpi.hpp"
 
 #include <boost/mpi/collectives.hpp>
@@ -30,7 +30,8 @@ bool konkov_i_count_words_mpi::CountWordsTaskParallel::run() {
   while (stream >> word) {
     local_word_count++;
   }
-  boost::mpi::reduce(world, local_word_count, word_count_, std::plus<int>(), 0);
+  // Используем all_reduce, чтобы каждый процесс получил общий результат
+  boost::mpi::all_reduce(world, local_word_count, word_count_, std::plus<int>());
   return true;
 }
 
