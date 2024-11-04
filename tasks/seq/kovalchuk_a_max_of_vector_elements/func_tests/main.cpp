@@ -6,6 +6,25 @@
 
 #include "seq/kovalchuk_a_max_of_vector_elements/include/ops_seq.hpp"
 
+std::vector<int> kovalchuk_a_max_of_vector_elements_seq::getRandomVector(int sz, int min, int max) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = min + gen() % (max - min + 1);
+  }
+  return vec;
+}
+
+std::vector<std::vector<int>> kovalchuk_a_max_of_vector_elements_seq::getRandomMatrix(int rows, int columns, int min,
+                                                                                      int max) {
+  std::vector<std::vector<int>> vec(rows);
+  for (int i = 0; i < rows; i++) {
+    vec[i] = kovalchuk_a_max_of_vector_elements_seq::getRandomVector(columns, min, max);
+  }
+  return vec;
+}
+
 TEST(kovalchuk_a_max_of_vector_elements_seq, Test_Max_10_10) {
   const int count_rows = 10;
   const int count_columns = 10;

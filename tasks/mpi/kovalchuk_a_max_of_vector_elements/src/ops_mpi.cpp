@@ -7,25 +7,6 @@
 #include <string>
 #include <vector>
 
-std::vector<int> kovalchuk_a_max_of_vector_elements::getRandomVector(int sz, int min, int max) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = min + gen() % (max - min + 1);
-  }
-  return vec;
-}
-
-std::vector<std::vector<int>> kovalchuk_a_max_of_vector_elements::getRandomMatrix(int rows, int columns, int min,
-                                                                                  int max) {
-  std::vector<std::vector<int>> vec(rows);
-  for (int i = 0; i < rows; i++) {
-    vec[i] = kovalchuk_a_max_of_vector_elements::getRandomVector(columns, min, max);
-  }
-  return vec;
-}
-
 bool kovalchuk_a_max_of_vector_elements::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init vectors

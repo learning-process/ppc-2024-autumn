@@ -8,6 +8,25 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/kovalchuk_a_max_of_vector_elements/include/ops_mpi.hpp"
 
+std::vector<int> kovalchuk_a_max_of_vector_elements::getRandomVector(int sz, int min, int max) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = min + gen() % (max - min + 1);
+  }
+  return vec;
+}
+
+std::vector<std::vector<int>> kovalchuk_a_max_of_vector_elements::getRandomMatrix(int rows, int columns, int min,
+                                                                                  int max) {
+  std::vector<std::vector<int>> vec(rows);
+  for (int i = 0; i < rows; i++) {
+    vec[i] = kovalchuk_a_max_of_vector_elements::getRandomVector(columns, min, max);
+  }
+  return vec;
+}
+
 TEST(kovalchuk_a_max_of_vector_elements, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
