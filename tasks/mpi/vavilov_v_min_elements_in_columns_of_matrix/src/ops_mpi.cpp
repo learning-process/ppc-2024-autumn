@@ -161,25 +161,3 @@ bool vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskParallel::post_
 
   return true;
 }
-
-std::vector<int> vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskSequential::generate_rand_vec(
-    int size, int lower_bound, int upper_bound) {
-  std::vector<int> vec(size);
-  for (auto& n : vec) {
-    n = lower_bound + std::rand() % (upper_bound - lower_bound + 1);
-  }
-  return vec;
-}
-
-std::vector<std::vector<int>>
-vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskSequential::generate_rand_matr(int rows, int cols) {
-  std::vector<std::vector<int>> matr(rows, std::vector<int>(cols));
-  for (int i = 0; i < rows; i++) {
-    matr[i] = generate_rand_vec(cols, -1000, 1000);
-  }
-  for (int j = 0; j < cols; j++) {
-    int r_row = std::rand() % rows;
-    matr[r_row][j] = INT_MIN;
-  }
-  return matr;
-}
