@@ -56,28 +56,12 @@ bool zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsSequential::post_p
 
 bool zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsParallel::pre_processing() {
   internal_order_test();
-  unsigned int delta = 0;
-  if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] / world.size();
-  }
-  broadcast(world, delta, 0);
 
   if (world.rank() == 0) {
-    // Init vectors
     input_ = std::vector<int>(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + (proc - 1) * delta, delta);
-    }
   }
-  if (world.rank() == 0) {
-    local_input_ = std::vector<int>(input_.begin() + (delta * (world.size() - 1)), input_.end());
-  } else {
-    local_input_ = std::vector<int>(delta);
-    world.recv(0, 0, local_input_.data(), delta);
-  }
-
   return true;
 }
 
@@ -92,6 +76,24 @@ bool zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsParallel::validati
 
 bool zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsParallel::run() {
   internal_order_test();
+
+  unsigned int delta = 0;
+  if (world.rank() == 0) {
+    delta = taskData->inputs_count[0] / world.size();
+  }
+  broadcast(world, delta, 0);
+
+  if (world.rank() == 0) {
+    for (int proc = 1; proc < world.size(); proc++) {
+      world.send(proc, 0, input_.data() + (proc - 1) * delta, delta);
+    }
+  }
+  if (world.rank() == 0) {
+    local_input_ = std::vector<int>(input_.begin() + (delta * (world.size() - 1)), input_.end());
+  } else {
+    local_input_ = std::vector<int>(delta);
+    world.recv(0, 0, local_input_.data(), delta);
+  }
 
   int local_res = INT_MAX;
   if (!local_input_.empty()) {
