@@ -10,7 +10,7 @@ namespace Sdobnov_V_sum_of_vector_elements {
 
 std::vector<int> generate_random_vector(int size, int lower_bound = 0, int upper_bound = 50);
 std::vector<std::vector<int>> generate_random_matrix(int rows, int columns, int lower_bound = 0, int upper_bound = 50);
-int vec_elem_sum(std::vector<int> vec);
+int vec_elem_sum(const std::vector<int>& vec);
 
 class SumVecElemSequential : public ppc::core::Task {
  public:

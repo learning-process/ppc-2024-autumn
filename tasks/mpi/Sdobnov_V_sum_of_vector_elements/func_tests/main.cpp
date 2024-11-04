@@ -38,7 +38,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_par, EmptyMatrix) {
     testseq.pre_processing();
     testseq.run();
     testseq.post_processing();
-    ASSERT_EQ(res, respar);
+    ASSERT_EQ(respar, res);
   }
 }
 
@@ -74,7 +74,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_par, Matrix10x10) {
     testseq.pre_processing();
     testseq.run();
     testseq.post_processing();
-    ASSERT_EQ(res, respar);
+    ASSERT_EQ(respar, res);
   }
 }
 
@@ -110,7 +110,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_par, Matrix100x100) {
     testseq.pre_processing();
     testseq.run();
     testseq.post_processing();
-    ASSERT_EQ(res, respar);
+    ASSERT_EQ(respar, res);
   }
 }
 
@@ -146,7 +146,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_par, Matrix100x10) {
     testseq.pre_processing();
     testseq.run();
     testseq.post_processing();
-    ASSERT_EQ(res, respar);
+    ASSERT_EQ(respar, res);
   }
 }
 
@@ -182,6 +182,6 @@ TEST(Sdobnov_V_sum_of_vector_elements_par, Matrix10x100) {
     testseq.pre_processing();
     testseq.run();
     testseq.post_processing();
-    ASSERT_EQ(res, respar);
+    ASSERT_EQ(respar, res);
   }
 }

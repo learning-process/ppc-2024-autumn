@@ -23,7 +23,7 @@ std::vector<std::vector<int>> Sdobnov_V_sum_of_vector_elements::generate_random_
   return std::vector<std::vector<int>>();
 }
 
-int Sdobnov_V_sum_of_vector_elements::vec_elem_sum(std::vector<int> vec) {
+int Sdobnov_V_sum_of_vector_elements::vec_elem_sum(const std::vector<int>& vec) {
   int res = 0;
   for (int elem : vec) {
     res += elem;
@@ -120,7 +120,7 @@ bool Sdobnov_V_sum_of_vector_elements::SumVecElemParallel::run() {
   boost::mpi::scatterv(world, input_.data(), counts, displacment, local_input_.data(), process_count, 0);
 
   int process_sum = vec_elem_sum(local_input_);
-  boost::mpi::reduce(world, process_sum, res_, std::plus<int>(), 0);
+  boost::mpi::reduce(world, process_sum, res_, std::plus(), 0);
 
   return true;
 }
