@@ -15,11 +15,11 @@ class TestTaskSequential : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
+  static bool is_word_character(char c);
+
  private:
   std::string input_;
   int word_count_{};
-
-  static bool is_word_character(char c);
   static int count_words(const std::string& text);
 };
 
