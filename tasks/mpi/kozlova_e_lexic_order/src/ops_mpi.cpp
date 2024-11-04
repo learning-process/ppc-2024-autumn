@@ -79,8 +79,6 @@ bool kozlova_e_lexic_order_mpi::StringComparatorMPI::pre_processing() {
   } else {
     input_strings.resize(2);
   }
-
-  for (int i = 0; i < 2; i++) boost::mpi::broadcast(world, input_strings[i], 0);
   res.resize(2, 0);
   return true;
 }
@@ -96,7 +94,7 @@ bool kozlova_e_lexic_order_mpi::StringComparatorMPI::validation() {
 
 bool kozlova_e_lexic_order_mpi::StringComparatorMPI::run() {
   internal_order_test();
-
+  for (int i = 0; i < 2; i++) boost::mpi::broadcast(world, input_strings[i], 0);
   std::vector<int> local_res(2, 1);
   int len1 = input_strings[0].size();
   int len2 = input_strings[1].size();
