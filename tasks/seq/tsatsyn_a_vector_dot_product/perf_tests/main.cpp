@@ -2,25 +2,20 @@
 #include <gtest/gtest.h>
 
 #include <vector>
-
+#include <algorithm>
+#include <functional>
+#include <random>
 #include "core/perf/include/perf.hpp"
 #include "seq/tsatsyn_a_vector_dot_product/include/ops_seq.hpp"
 
-std::vector<int> toGetRandomVector(int size) {
-  std::vector<int> vector(size);
-  std::srand((time(nullptr)));
-  for (int i = 0; i < size; ++i) {
-    vector[i] = std::rand() % 200 + std::rand() % 10;
-  }
-  return vector;
-}
+
 
 TEST(sequential_tsatsyn_a_vector_dot_product_perf_test, test_pipeline_run) {
   const int size = 10000000;
 
   // Create data
-  std::vector<int> v1 = toGetRandomVector(size);
-  std::vector<int> v2 = toGetRandomVector(size);
+  std::vector<int> v1 = tsatsyn_a_vector_dot_product_seq::toGetRandomVector(size);
+  std::vector<int> v2 = tsatsyn_a_vector_dot_product_seq::toGetRandomVector(size);
   std::vector<int> ans(1, 0);
 
   // Create TaskData
@@ -61,8 +56,8 @@ TEST(sequential_tsatsyn_a_vector_dot_product_perf_test, test_task_run) {
   const int size = 10000000;
 
   // Create data
-  std::vector<int> v1 = toGetRandomVector(size);
-  std::vector<int> v2 = toGetRandomVector(size);
+  std::vector<int> v1 = tsatsyn_a_vector_dot_product_seq::toGetRandomVector(size);
+  std::vector<int> v2 = tsatsyn_a_vector_dot_product_seq::toGetRandomVector(size);
   std::vector<int> ans(1, 0);
 
   // Create TaskData

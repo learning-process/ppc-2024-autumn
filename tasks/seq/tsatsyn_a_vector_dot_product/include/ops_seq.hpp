@@ -8,6 +8,7 @@
 
 namespace tsatsyn_a_vector_dot_product_seq {
 int resulting(const std::vector<int>& v1, const std::vector<int>& v2);
+std::vector<int> toGetRandomVector(int size);
 class TestTaskSequential : public ppc::core::Task {
  public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

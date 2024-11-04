@@ -12,7 +12,16 @@ int tsatsyn_a_vector_dot_product_seq::resulting(const std::vector<int>& v1, cons
   }
   return res;
 }
-
+std::vector<int> tsatsyn_a_vector_dot_product_seq::toGetRandomVector(int size) 
+{
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> v(size);
+  for (int i = 0; i < size; i++) {
+    v[i] = gen() % 200 + gen() % 10;
+  }
+  return v;
+}
 bool tsatsyn_a_vector_dot_product_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   v1.resize(taskData->inputs_count[0]);
