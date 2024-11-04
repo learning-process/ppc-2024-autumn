@@ -18,7 +18,6 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
   double a = 0.0;
   double b = 5.0;
   double epsilon = 0.1; 
-
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataPar->inputs_count.emplace_back(1);

@@ -23,7 +23,6 @@ bool MPIIntegralCalculator::pre_processing() {
     a = *reinterpret_cast<double*>(taskData->inputs[0]);
     b = *reinterpret_cast<double*>(taskData->inputs[1]);
     cnt_of_splits = *reinterpret_cast<int*>(taskData->inputs[2]);
-
   }
 
   // Распространение значений на все процессы
@@ -55,9 +54,7 @@ bool MPIIntegralCalculator::run() {
   // Проверка правильности диапазона
   if (start >= end) {
     // std::cerr << "Process " << rank << " has no work to do." << std::endl;
-
      return false; 
-
   }
 
   // Вычисление локального результата
