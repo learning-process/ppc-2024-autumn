@@ -61,7 +61,6 @@ TEST(tsatsyn_a_vector_dot_product_seq, Test_Negative_Validation) {
 }
 
 TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_32) {
-
   // Create data
   std::vector<int> v1 = {1, 2, 3};
   std::vector<int> v2 = {4, 5, 6};
@@ -86,7 +85,6 @@ TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_32) {
 }
 
 TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_28) {
-
   // Create data
   std::vector<int> v1 = {6, 4, 5};
   std::vector<int> v2 = {1, 3, 2};
@@ -111,7 +109,6 @@ TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_28) {
 }
 
 TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_95) {
-
   // Create data
   std::vector<int> v1 = {7, 4, 6};
   std::vector<int> v2 = {3, 5, 9};
@@ -136,7 +133,6 @@ TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_95) {
 }
 
 TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_2330) {
-
   // Create data
   std::vector<int> v1 = {20, 54, 23};
   std::vector<int> v2 = {32, 10, 50};
@@ -161,7 +157,6 @@ TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_2330) {
 }
 
 TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_1956) {
-
   // Create data
   std::vector<int> v1 = {12, 100, 50};
   std::vector<int> v2 = {13, 3, 30};
