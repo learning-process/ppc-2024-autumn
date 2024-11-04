@@ -1,7 +1,6 @@
 ﻿// Copyright 2024 Sedova Olga
 #include <gtest/gtest.h>
 
-#include <chrono>
 #include <random>
 #include <vector>
 

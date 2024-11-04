@@ -1,11 +1,6 @@
 // Copyright 2024 Sedova Olga
 #include "seq/sedova_o_max_of_vector_elements/include/ops_seq.hpp"
 
-#include <random>
-#include <thread>
-
-using namespace std::chrono_literals;
-
 int sedova_o_max_of_vector_elements_seq::find_max_of_matrix(std::vector<int> matrix) {
   if (matrix.empty()) return 1;
   int max = matrix[0];
