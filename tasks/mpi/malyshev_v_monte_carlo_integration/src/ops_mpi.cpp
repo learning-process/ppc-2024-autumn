@@ -5,6 +5,14 @@
 
 namespace malyshev_v_monte_carlo_integration {
 
+double function_square(double x) { return x * x; }
+
+double function_constant(double x) { return 1.0; }
+
+double function_linear(double x) { return x; }
+
+double function_cubic(double x) { return x * x * x; }
+
 bool TestMPITaskSequential::validation() {
   internal_order_test();
   return (taskData->inputs.size() == 3 && taskData->outputs.size() == 1);
