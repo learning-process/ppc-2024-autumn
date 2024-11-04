@@ -22,25 +22,28 @@ bool konkov_i_count_words_mpi::CountWordsTaskParallel::validation() {
   return true;
 }
 
+
 bool konkov_i_count_words_mpi::CountWordsTaskParallel::run() {
   internal_order_test();
   int num_processes = world.size();
   int rank = world.rank();
 
-  int input_size = input_.size();
-  int chunk_size = input_size / num_processes;
-  int start_pos = rank * chunk_size;
-  int end_pos = (rank == num_processes - 1) ? input_size : (rank + 1) * chunk_size;
-
-  std::string local_input = input_.substr(start_pos, end_pos - start_pos);
-  std::istringstream stream(local_input);
+  std::vector<std::string> words;
+  std::istringstream stream(input_);
   std::string word;
-  int local_word_count = 0;
   while (stream >> word) {
-    local_word_count++;
+    words.push_back(word);
   }
 
+  int total_words = words.size();
+  int chunk_size = total_words / num_processes;
+  int start_pos = rank * chunk_size;
+  int end_pos = (rank == num_processes - 1) ? total_words : (rank + 1) * chunk_size;
+
+  int local_word_count = end_pos - start_pos;
+
   boost::mpi::reduce(world, local_word_count, word_count_, std::plus<int>(), 0);
+
   return true;
 }
 
