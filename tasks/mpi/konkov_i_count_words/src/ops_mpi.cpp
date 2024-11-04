@@ -41,7 +41,7 @@ bool konkov_i_count_words_mpi::CountWordsTaskParallel::run() {
 
   int local_word_count = end_pos - start_pos;
 
-  boost::mpi::reduce(world, local_word_count, word_count_, std::plus<int>(), 0);
+  boost::mpi::reduce(world, local_word_count, word_count_, std::plus<>(), 0);
 
   return true;
 }
