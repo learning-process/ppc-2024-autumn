@@ -10,7 +10,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_par, EmptyMatrix) {
   boost::mpi::communicator world;
   int rows = 0;
   int columns = 0;
-  int res;
+  int res = 0;
   std::vector<std::vector<int>> input = Sdobnov_V_sum_of_vector_elements::generate_random_matrix(rows, columns);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -30,7 +30,16 @@ TEST(Sdobnov_V_sum_of_vector_elements_par, EmptyMatrix) {
   test.pre_processing();
   test.run();
   test.post_processing();
-  ASSERT_EQ(res, 0);
+
+  if (world.rank() == 0) {
+    int respar = res;
+    Sdobnov_V_sum_of_vector_elements::SumVecElemSequential testseq(taskDataPar);
+    testseq.validation();
+    testseq.pre_processing();
+    testseq.run();
+    testseq.post_processing();
+    ASSERT_EQ(res, respar);
+  }
 }
 
 TEST(Sdobnov_V_sum_of_vector_elements_par, Matrix10x10) {
