@@ -33,8 +33,10 @@ TEST(golovkin_integration_rectangular_method, test_pipeline_run) {
   taskDataSeq->inputs_count.emplace_back(in.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
+
   auto integralCalculatorTask = std::make_shared<IntegralCalculator>(taskDataSeq);
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+
   perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();
   perfAttr->current_timer = [&] {
@@ -47,6 +49,7 @@ TEST(golovkin_integration_rectangular_method, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(integralCalculatorTask);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
+
   ASSERT_NEAR(out[0], expected_result, 1e-3);
 }
 TEST(golovkin_integration_rectangular_method, test_task_run) {
@@ -66,8 +69,8 @@ TEST(golovkin_integration_rectangular_method, test_task_run) {
   }
 
   taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data())); 
-  taskDataSeq->outputs_count.emplace_back(out.size());  
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
 
   auto integralCalculatorTask = std::make_shared<IntegralCalculator>(taskDataSeq);
 
@@ -88,5 +91,5 @@ TEST(golovkin_integration_rectangular_method, test_task_run) {
 
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  ASSERT_NEAR(out[0], expected_result, 1e-3); 
+  ASSERT_NEAR(out[0], expected_result, 1e-3);
 }

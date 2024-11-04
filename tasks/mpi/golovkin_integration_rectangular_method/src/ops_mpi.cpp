@@ -54,7 +54,7 @@ bool MPIIntegralCalculator::run() {
   // Проверка правильности диапазона
   if (start >= end) {
     // std::cerr << "Process " << rank << " has no work to do." << std::endl;
-     return false; 
+    return false; 
   }
 
   // Вычисление локального результата
