@@ -1,6 +1,7 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
+#include <numeric>
 #include <random>
 #include <vector>
 
