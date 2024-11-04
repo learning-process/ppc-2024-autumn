@@ -18,7 +18,6 @@ class TestTaskSequential : public ppc::core::Task {
   static std::vector<std::vector<int>> rand_matr(int rows, int cols);
 
  private:
-
   std::vector<std::vector<int>> input_;
   std::vector<int> res_;
 };

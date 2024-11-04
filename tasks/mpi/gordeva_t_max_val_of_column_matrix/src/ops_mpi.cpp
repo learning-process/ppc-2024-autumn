@@ -71,7 +71,7 @@ std::vector<int> gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::
 }
 
 std::vector<std::vector<int>> gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::rand_matr(int rows,
-                                                                                                           int cols) {
+                                                                                                       int cols) {
   std::vector<std::vector<int>> matr(rows, std::vector<int>(cols));
 
   for (int i = 0; i < rows; ++i) {

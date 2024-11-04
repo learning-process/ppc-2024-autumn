@@ -59,15 +59,14 @@ bool gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::post_processing
   return true;
 }
 
-std::vector<int> gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::rand_vec(int size, int down,
-                                                                                          int upp) {
+std::vector<int> gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::rand_vec(int size, int down, int upp) {
   std::vector<int> v(size);
   for (auto& number : v) number = down + (std::rand() % (upp - down + 1));
   return v;
 }
 
-std::vector<std::vector<int>> gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::rand_matr(int rows,
-                                                                                                        int cols) {
+std::vector<std::vector<int>> gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::rand_matr(int rows, 
+                                                                                                    int cols) {
   std::vector<std::vector<int>> matr(rows, std::vector<int>(cols));
 
   for (int i = 0; i < rows; ++i) {
