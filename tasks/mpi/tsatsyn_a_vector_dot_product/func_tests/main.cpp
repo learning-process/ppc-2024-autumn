@@ -1,12 +1,12 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <vector>
-#include <algorithm>
 #include <functional>
 #include <random>
+#include <vector>
 
 #include "mpi/tsatsyn_a_vector_dot_product/include/ops_mpi.hpp"
 

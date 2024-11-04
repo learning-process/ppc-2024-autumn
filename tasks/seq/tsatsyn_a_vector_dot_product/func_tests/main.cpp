@@ -1,13 +1,12 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
+
 #include <algorithm>
 #include <functional>
 #include <random>
 #include <vector>
 
 #include "seq/tsatsyn_a_vector_dot_product/include/ops_seq.hpp"
-
-
 
 TEST(tsatsyn_a_vector_dot_product_seq, Test_Random_Scalar) {
   const int size = 5;

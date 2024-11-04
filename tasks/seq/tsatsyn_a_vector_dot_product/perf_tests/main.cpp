@@ -1,14 +1,13 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
-#include <vector>
 #include <algorithm>
 #include <functional>
 #include <random>
+#include <vector>
+
 #include "core/perf/include/perf.hpp"
 #include "seq/tsatsyn_a_vector_dot_product/include/ops_seq.hpp"
-
-
 
 TEST(sequential_tsatsyn_a_vector_dot_product_perf_test, test_pipeline_run) {
   const int size = 10000000;
