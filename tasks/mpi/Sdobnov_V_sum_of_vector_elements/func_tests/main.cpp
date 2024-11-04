@@ -34,7 +34,6 @@ TEST(Sdobnov_V_sum_of_vector_elements_par, EmptyOutput) {
   }
 }
 
-
 TEST(Sdobnov_V_sum_of_vector_elements_par, EmptyMatrix) {
   boost::mpi::communicator world;
   int rows = 0;
