@@ -3,22 +3,11 @@
 
 #include <algorithm>
 #include <functional>
-#include <random>
 #include <string>
 #include <thread>
 #include <vector>
 
 using namespace std::chrono_literals;
-
-std::vector<int> koshkin_n_sum_values_by_columns_matrix_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
-}
 
 bool koshkin_n_sum_values_by_columns_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
