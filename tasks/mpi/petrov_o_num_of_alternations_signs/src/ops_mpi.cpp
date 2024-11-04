@@ -3,8 +3,6 @@
 #include <boost/mpi/datatype.hpp>
 #include <vector>
 
-using namespace std::chrono_literals;
-
 bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::pre_processing() {
   internal_order_test();
   this->res = 0;
@@ -13,19 +11,6 @@ bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::pre_processing() {
 
 bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::validation() {
   internal_order_test();
-
-  int input_size = 0;
-
-  if (world.rank() == 0) {
-    input_size = taskData->inputs_count[0];
-  }
-
-  boost::mpi::broadcast(world, input_size,
-                        0);  // Process count check can not work without broadcast
-
-  if (input_size < world.size()) {
-    return false;
-  }
 
   if (world.rank() != 0) return true;
   return taskData->outputs_count[0] == 1;
@@ -40,20 +25,32 @@ bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::run() {
     input_size = taskData->inputs_count[0];
   }
 
+  int active_processes = std::min((int)world.size(), input_size);  // Number of active processes
+
   boost::mpi::broadcast(world, input_size, 0);
+  boost::mpi::broadcast(world, active_processes, 0);
+
+  if (input_size < 2) {
+    this->res = 0;
+    return true;
+  }
+
+  if (world.rank() >= active_processes) {  // end work for all unused processes
+    return true;
+  }
 
   if (world.rank() == 0) {
     const int* input = reinterpret_cast<int*>(taskData->inputs[0]);
     this->input_.resize(input_size);
     std::copy(input, input + input_size, std::begin(this->input_));
 
-    std::vector<int> distribution(world.size());
-    std::vector<int> displacement(world.size());
+    std::vector<int> distribution(active_processes);
+    std::vector<int> displacement(active_processes);
 
-    int chunk_size = input_size / world.size();
-    int remainder = input_size % world.size();
+    int chunk_size = input_size / active_processes;
+    int remainder = input_size % active_processes;
 
-    for (int i = 0; i < world.size(); ++i) {
+    for (int i = 0; i < active_processes; ++i) {
       distribution[i] = chunk_size + static_cast<int>(i < remainder);  // Distribute remainder
       displacement[i] = (i == 0) ? 0 : displacement[i - 1] + distribution[i - 1];
     }
@@ -63,8 +60,8 @@ bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::run() {
     boost::mpi::scatterv(world, input, distribution, displacement, chunk.data(), distribution[world.rank()], 0);
 
   } else {
-    int chunk_size = input_size / world.size();
-    int remainder = input_size % world.size();
+    int chunk_size = input_size / active_processes;
+    int remainder = input_size % active_processes;
 
     int distribution = chunk_size + static_cast<int>(world.rank() < remainder);
 
@@ -85,7 +82,7 @@ bool petrov_o_num_of_alternations_signs_mpi::ParallelTask::run() {
   int last_element = chunk.back();
   int next_element = 0;
 
-  if (world.rank() < world.size() - 1) {
+  if (world.rank() < active_processes - 1) {
     world.send(world.rank() + 1, 0, last_element);
   }
 
