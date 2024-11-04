@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdlib>
-#include <cstring>
+#include <cmath>
 
 #include "core/task/include/task.hpp"
 

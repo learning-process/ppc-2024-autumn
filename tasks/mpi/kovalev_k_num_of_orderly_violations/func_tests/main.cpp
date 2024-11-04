@@ -21,7 +21,8 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, zero_length) {
 
 TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_viol_0_int_) {
   const size_t length = 100;
-  const int alpha = 1;
+  std::srand(std::time(nullptr));
+  const int alpha = rand();
   std::vector<int> in(length, alpha);
   std::vector<size_t> out(1, 0);
   boost::mpi::communicator world;
@@ -45,7 +46,8 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_viol_0_int_) {
 
 TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_100_opposite_sort_int_) {
   const size_t length = 100;
-  const int alpha = 1;
+  std::srand(std::time(nullptr));
+  const int alpha = rand();
   std::vector<int> in(length, alpha);
   std::vector<size_t> out(1, 0);
   for (size_t i = 0; i < length; i++) {
@@ -154,7 +156,7 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_viol_0_double_) {
 TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_100_opposite_sort_double_) {
   const size_t length = 100;
   std::srand(std::time(nullptr));
-  const double alpha = static_cast<double>(rand()) / (RAND_MAX + 1);
+  const double alpha = (static_cast<double>(rand()) - 1) / (RAND_MAX);
   std::vector<double> in(length);
   std::vector<size_t> out(1, 0);
   in[0] = static_cast<double>(length);

@@ -16,7 +16,8 @@ TEST(kovalev_k_num_of_orderly_violations_seq, zero_length) {
 
 TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_viol_0_int_) {
   const size_t length = 10;
-  const int alpha = 1;
+  std::srand(std::time(nullptr));
+  const int alpha = rand();
   std::vector<int> in(length, alpha);
   std::vector<size_t> out(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
