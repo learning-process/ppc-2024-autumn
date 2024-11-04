@@ -190,7 +190,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_par, Matrix10x100) {
   }
 
   Sdobnov_V_sum_of_vector_elements::SumVecElemParallel test(taskDataPar);
-  test.validation(), true;
+  test.validation();
   test.pre_processing();
   test.run();
   test.post_processing();
