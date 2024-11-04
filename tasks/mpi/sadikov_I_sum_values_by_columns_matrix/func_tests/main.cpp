@@ -8,7 +8,7 @@
 
 #include "mpi/sadikov_I_sum_values_by_columns_matrix/include/ops_mpi.h"
 
-std::vector<int> sadikov_I_Sum_values_by_columns_matrix_mpi::GetRandomData(size_t size) {
+std::vector<int> GetRandomData(size_t size) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(size);
@@ -140,7 +140,7 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_square_matrix2) {
   std::vector<int> out_par(columns, 0);
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    in = sadikov_I_Sum_values_by_columns_matrix_mpi::GetRandomData(columns * rows);
+    in = GetRandomData(columns * rows);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskData->inputs_count.emplace_back(in_index[0]);
     taskData->inputs_count.emplace_back(in_index[1]);
@@ -178,7 +178,7 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_square_matrix3) {
   std::vector<int> out_par(columns, 0);
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    in = sadikov_I_Sum_values_by_columns_matrix_mpi::GetRandomData(columns * rows);
+    in = GetRandomData(columns * rows);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskData->inputs_count.emplace_back(in_index[0]);
     taskData->inputs_count.emplace_back(in_index[1]);
@@ -216,7 +216,7 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_rect_matrix2) {
   std::vector<int> out_par(columns, 0);
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    in = sadikov_I_Sum_values_by_columns_matrix_mpi::GetRandomData(columns * rows);
+    in = GetRandomData(columns * rows);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskData->inputs_count.emplace_back(in_index[0]);
     taskData->inputs_count.emplace_back(in_index[1]);
@@ -254,7 +254,7 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_rect_matrix3) {
   std::vector<int> out_par(columns, 0);
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    in = sadikov_I_Sum_values_by_columns_matrix_mpi::GetRandomData(columns * rows);
+    in = GetRandomData(columns * rows);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskData->inputs_count.emplace_back(in_index[0]);
     taskData->inputs_count.emplace_back(in_index[1]);
@@ -292,7 +292,7 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_one_row) {
   std::vector<int> out_par(columns, 0);
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    in = sadikov_I_Sum_values_by_columns_matrix_mpi::GetRandomData(columns * rows);
+    in = GetRandomData(columns * rows);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskData->inputs_count.emplace_back(in_index[0]);
     taskData->inputs_count.emplace_back(in_index[1]);
@@ -330,7 +330,7 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_one_column) {
   std::vector<int> out_par(columns, 0);
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    in = sadikov_I_Sum_values_by_columns_matrix_mpi::GetRandomData(columns * rows);
+    in = GetRandomData(columns * rows);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskData->inputs_count.emplace_back(in_index[0]);
     taskData->inputs_count.emplace_back(in_index[1]);
@@ -368,7 +368,7 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_one_element) {
   std::vector<int> out_par(columns, 0);
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    in = sadikov_I_Sum_values_by_columns_matrix_mpi::GetRandomData(columns * rows);
+    in = GetRandomData(columns * rows);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskData->inputs_count.emplace_back(in_index[0]);
     taskData->inputs_count.emplace_back(in_index[1]);
@@ -406,7 +406,7 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_empty_matrix) {
   std::vector<int> out_par(columns, 0);
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    in = sadikov_I_Sum_values_by_columns_matrix_mpi::GetRandomData(columns * rows);
+    in = GetRandomData(columns * rows);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskData->inputs_count.emplace_back(in_index[0]);
     taskData->inputs_count.emplace_back(in_index[1]);
