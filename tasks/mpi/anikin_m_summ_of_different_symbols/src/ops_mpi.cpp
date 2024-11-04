@@ -29,9 +29,7 @@ bool anikin_m_summ_of_different_symbols_mpi::SumDifSymMPISequential::validation(
 
 bool anikin_m_summ_of_different_symbols_mpi::SumDifSymMPISequential::run() {
   internal_order_test();
-  
   std::string str1 = input[0];
-
   std::string str2 = input[1];
 
   int dif = 0;
@@ -95,6 +93,7 @@ bool anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel::run() {
   size_t loc_size = 0;
   if (com.rank() == 0) {
     size_t temp = (strlen(input[0]) + com.size() - 1);
+
     loc_size = (temp / com.size()); 
   }
   broadcast(com, loc_size, 0);
