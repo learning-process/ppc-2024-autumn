@@ -33,12 +33,12 @@ TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_viol_0_int_) {
   ASSERT_EQ(result, out[0]);
 }
 
-TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_len_10_int_) {
+TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_len_10_rand_int_) {
   const size_t length = 10;
-  const int alpha = 1;
-  std::vector<int> in(length, alpha);
-  in[2] = in[8] = -1;
+  std::vector<int> in(length);
   std::vector<size_t> out(1, 0);
+  std::srand(std::time(nullptr));
+  for (size_t i = 0; i < length; i++) in[i] = rand() * std::pow(-1, rand());
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
   taskSeq->inputs_count.emplace_back(in.size());
   taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
@@ -49,26 +49,18 @@ TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_len_10_int_) {
   tmpTaskSeq.pre_processing();
   tmpTaskSeq.run();
   tmpTaskSeq.post_processing();
-  size_t result = 2;
+  size_t result = 0;
+  for (size_t i = 1; i < length; i++)
+    if (in[i - 1] > in[i]) result++;
   ASSERT_EQ(result, out[0]);
 }
 
-TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_len_10000_int_) {
+TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_len_10000_rand_int_) {
   const size_t length = 10000;
   std::vector<int> in(length);
-  for (size_t i = 0; i < length; i++) in[i] = i * 2;
-  in[0] = 500;
-  in[2] *= 100;
-  in[8] *= 3;
-  in[21] *= 15;
-  in[48] -= 10;
-  in[654] += 7;
-  in[885] /= 5;
-  in[7888] += 48;
-  in[71] *= 965;
-  in[666] = 532;
-  in[228] = 666;
   std::vector<size_t> out(1, 0);
+  std::srand(std::time(nullptr));
+  for (size_t i = 0; i < length; i++) in[i] = rand() * std::pow(-1, rand());
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
   taskSeq->inputs_count.emplace_back(in.size());
   taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
@@ -79,13 +71,18 @@ TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_len_10000_int_) {
   tmpTaskSeq.pre_processing();
   tmpTaskSeq.run();
   tmpTaskSeq.post_processing();
-  size_t result = 11;
+  size_t result = 0;
+  for (size_t i = 1; i < length; i++)
+    if (in[i - 1] > in[i]) result++;
   ASSERT_EQ(result, out[0]);
 }
 
 TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_viol_0_double_) {
   const size_t length = 10;
-  const double alpha = 5.7960;
+  auto max = static_cast<double>(1000000);
+  auto min = static_cast<double>(-1000000);
+  std::srand(std::time(nullptr));
+  const double alpha = min + static_cast<double>(rand()) / RAND_MAX * (max - min);
   std::vector<double> in(length, alpha);
   std::vector<size_t> out(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
@@ -102,11 +99,13 @@ TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_viol_0_double_) {
   ASSERT_EQ(result, out[0]);
 }
 
-TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_len_10_double_) {
+TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_len_10_rand_double_) {
   const size_t length = 10;
-  const double alpha = 1.256;
-  std::vector<double> in(length, alpha);
-  in[2] = in[8] = -1.487;
+  std::vector<double> in(length);
+  auto max = static_cast<double>(1000000);
+  auto min = static_cast<double>(-1000000);
+  std::srand(std::time(nullptr));
+  for (size_t i = 0; i < length; i++) in[i] = min + static_cast<double>(rand()) / RAND_MAX * (max - min);
   std::vector<size_t> out(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
   taskSeq->inputs_count.emplace_back(in.size());
@@ -118,26 +117,19 @@ TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_len_10_double_) {
   tmpTaskSeq.pre_processing();
   tmpTaskSeq.run();
   tmpTaskSeq.post_processing();
-  size_t result = 2;
+  size_t result = 0;
+  for (size_t i = 1; i < length; i++)
+    if (in[i - 1] > in[i]) result++;
   ASSERT_EQ(result, out[0]);
 }
 
-TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_len_10000_double) {
+TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_len_10000_rand_double) {
   const size_t length = 10000;
-  const double alpha = 70.782;
   std::vector<double> in(length);
-  for (size_t i = 0; i < length; i++) in[i] = i * 2;
-  in[0] = 500.5 - alpha;
-  in[2] *= -10.756;
-  in[8] *= 37.07898;
-  in[21] *= 15.0245;
-  in[48] -= 10.48 * alpha;
-  in[654] += 7.00;
-  in[885] /= 50044.25;
-  in[7888] += 48.4;
-  in[71] *= 965.7634;
-  in[666] = 532.8976;
-  in[228] = 666.00001;
+  auto max = static_cast<double>(1000000);
+  auto min = static_cast<double>(-1000000);
+  std::srand(std::time(nullptr));
+  for (size_t i = 0; i < length; i++) in[i] = min + static_cast<double>(rand()) / RAND_MAX * (max - min);
   std::vector<size_t> out(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
   taskSeq->inputs_count.emplace_back(in.size());
@@ -149,6 +141,32 @@ TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_len_10000_double) {
   tmpTaskSeq.pre_processing();
   tmpTaskSeq.run();
   tmpTaskSeq.post_processing();
-  size_t result = 11;
+  size_t result = 0;
+  for (size_t i = 1; i < length; i++)
+    if (in[i - 1] > in[i]) result++;
+  ASSERT_EQ(result, out[0]);
+}
+
+TEST(kovalev_k_num_of_orderly_violations_seq, Test_NoOV_len_1000000_rand_double) {
+  const size_t length = 1000000;
+  std::vector<double> in(length);
+  auto max = static_cast<double>(1000000);
+  auto min = static_cast<double>(-1000000);
+  std::srand(std::time(nullptr));
+  for (size_t i = 0; i < length; i++) in[i] = min + static_cast<double>(rand()) / RAND_MAX * (max - min);
+  std::vector<size_t> out(1, 0);
+  std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
+  taskSeq->inputs_count.emplace_back(in.size());
+  taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskSeq->outputs_count.emplace_back(out.size());
+  kovalev_k_num_of_orderly_violations_seq::NumOfOrderlyViolations<double> tmpTaskSeq(taskSeq);
+  ASSERT_EQ(tmpTaskSeq.validation(), true);
+  tmpTaskSeq.pre_processing();
+  tmpTaskSeq.run();
+  tmpTaskSeq.post_processing();
+  size_t result = 0;
+  for (size_t i = 1; i < length; i++)
+    if (in[i - 1] > in[i]) result++;
   ASSERT_EQ(result, out[0]);
 }

@@ -23,13 +23,6 @@ bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::pre_
     void* ptr_input = taskData->inputs[0];
     memcpy(ptr_vec, ptr_input, sizeof(T) * n);
   }
-  boost::mpi::broadcast(world, n, 0);
-  int scratter_length = n / size;
-  loc_v.resize(scratter_length);
-  std::vector<int> sendcounts(size, scratter_length);
-  std::vector<int> displs(size, 0);
-  for (int i = 1; i < size; i++) displs[i] = displs[i] + scratter_length;
-  boost::mpi::scatter(world, glob_v.data(), loc_v.data(), scratter_length, 0);
   return true;
 }
 
@@ -48,6 +41,13 @@ bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::vali
 template <class T>
 bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::run() {
   internal_order_test();
+  boost::mpi::broadcast(world, n, 0);
+  int scratter_length = n / size;
+  loc_v.resize(scratter_length);
+  std::vector<int> sendcounts(size, scratter_length);
+  std::vector<int> displs(size, 0);
+  for (int i = 1; i < size; i++) displs[i] = displs[i] + scratter_length;
+  boost::mpi::scatter(world, glob_v.data(), loc_v.data(), scratter_length, 0);
   count_num_of_orderly_violations_mpi();
   boost::mpi::reduce(world, l_res, g_res, std::plus<unsigned long>(), 0);
   if (rank == 0) {
