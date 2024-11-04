@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "mpi/solovyev_d_vector_max/include/header.hpp"
-
+namespace solovyev_d_vector_max_mpi {
 std::vector<int> getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -17,7 +17,7 @@ std::vector<int> getRandomVector(int sz) {
   }
   return vec;
 }
-
+}  // namespace solovyev_d_vector_max_mpi
 TEST(solovyev_d_vector_max_mpi, Test_Max) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
@@ -27,7 +27,7 @@ TEST(solovyev_d_vector_max_mpi, Test_Max) {
   std::cerr << "1 " << world.rank() << std::endl;
   if (world.rank() == 0) {
     const int count_size_vector = 240;
-    global_vec = getRandomVector(count_size_vector);
+    global_vec = solovyev_d_vector_max_mpi::getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
@@ -71,7 +71,7 @@ TEST(solovyev_d_vector_max_mpi, Test_Max_2) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 120;
-    global_vec = getRandomVector(count_size_vector);
+    global_vec = solovyev_d_vector_max_mpi::getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
