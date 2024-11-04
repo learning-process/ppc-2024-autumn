@@ -27,7 +27,21 @@ TEST(zaytsev_d_num_of_alternations_signs_mpi, AllPositive) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    ASSERT_EQ(global_count[0], 0);
+    std::vector<int32_t> reference_count(1, 0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(test_vector.data()));
+    taskDataSeq->inputs_count.emplace_back(test_vector.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_count.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_count.size());
+
+    zaytsev_d_num_of_alternations_signs_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(global_count[0], reference_count[0]);
   }
 }
 
@@ -51,7 +65,21 @@ TEST(zaytsev_d_num_of_alternations_signs_mpi, AllNegative) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    ASSERT_EQ(global_count[0], 0);
+    std::vector<int32_t> reference_count(1, 0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(test_vector.data()));
+    taskDataSeq->inputs_count.emplace_back(test_vector.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_count.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_count.size());
+
+    zaytsev_d_num_of_alternations_signs_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(global_count[0], reference_count[0]);
   }
 }
 
@@ -75,7 +103,21 @@ TEST(zaytsev_d_num_of_alternations_signs_mpi, AlternatingPositiveNegative) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    ASSERT_EQ(global_count[0], 9);
+    std::vector<int32_t> reference_count(1, 0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(test_vector.data()));
+    taskDataSeq->inputs_count.emplace_back(test_vector.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_count.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_count.size());
+
+    zaytsev_d_num_of_alternations_signs_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(global_count[0], reference_count[0]);
   }
 }
 
@@ -99,7 +141,21 @@ TEST(zaytsev_d_num_of_alternations_signs_mpi, WithZeros) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    ASSERT_EQ(global_count[0], 4);
+    std::vector<int32_t> reference_count(1, 0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(test_vector.data()));
+    taskDataSeq->inputs_count.emplace_back(test_vector.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_count.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_count.size());
+
+    zaytsev_d_num_of_alternations_signs_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(global_count[0], reference_count[0]);
   }
 }
 
@@ -123,7 +179,21 @@ TEST(zaytsev_d_num_of_alternations_signs_mpi, BigVector) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    ASSERT_EQ(global_count[0], 3);
+    std::vector<int32_t> reference_count(1, 0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(test_vector.data()));
+    taskDataSeq->inputs_count.emplace_back(test_vector.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_count.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_count.size());
+
+    zaytsev_d_num_of_alternations_signs_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(global_count[0], reference_count[0]);
   }
 }
 
@@ -147,7 +217,21 @@ TEST(zaytsev_d_num_of_alternations_signs_mpi, SmallVector) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    ASSERT_EQ(global_count[0], 1);
+    std::vector<int32_t> reference_count(1, 0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(test_vector.data()));
+    taskDataSeq->inputs_count.emplace_back(test_vector.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_count.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_count.size());
+
+    zaytsev_d_num_of_alternations_signs_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(global_count[0], reference_count[0]);
   }
 }
 
@@ -171,7 +255,21 @@ TEST(zaytsev_d_num_of_alternations_signs_mpi, EmptyVector) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    ASSERT_EQ(global_count[0], 0);
+    std::vector<int32_t> reference_count(1, 0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(test_vector.data()));
+    taskDataSeq->inputs_count.emplace_back(test_vector.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_count.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_count.size());
+
+    zaytsev_d_num_of_alternations_signs_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(global_count[0], reference_count[0]);
   }
 }
 
@@ -196,12 +294,20 @@ TEST(zaytsev_d_num_of_alternations_signs_mpi, WithRandomVector) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    int expected_count = 0;
-    for (size_t i = 1; i < random_vector.size(); i++) {
-      if ((random_vector[i - 1] >= 0 && random_vector[i] < 0) || (random_vector[i - 1] < 0 && random_vector[i] >= 0)) {
-        expected_count++;
-      }
-    }
-    ASSERT_EQ(global_count[0], expected_count);
+    std::vector<int32_t> reference_count(1, 0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(random_vector.data()));
+    taskDataSeq->inputs_count.emplace_back(random_vector.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_count.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_count.size());
+
+    zaytsev_d_num_of_alternations_signs_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(global_count[0], reference_count[0]);
   }
 }
