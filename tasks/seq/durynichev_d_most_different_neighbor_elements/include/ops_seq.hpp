@@ -15,8 +15,7 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> input;
-  std::vector<int> result;
+  std::vector<int> input, result;
 };
 
 }  // namespace durynichev_d_most_different_neighbor_elements_seq

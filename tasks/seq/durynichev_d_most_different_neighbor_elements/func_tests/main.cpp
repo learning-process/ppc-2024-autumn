@@ -4,7 +4,7 @@
 
 #include "seq/durynichev_d_most_different_neighbor_elements/include/ops_seq.hpp"
 
-TEST(durynichev_d_most_different_neighbor_elements_seq, sample) {
+TEST(durynichev_d_most_different_neighbor_elements_seq, functionality_check) {
   // Create data
   std::vector<int> in{1, 5, 2, 10, 3};
   std::vector<int> out{0, 0};
@@ -26,7 +26,7 @@ TEST(durynichev_d_most_different_neighbor_elements_seq, sample) {
   ASSERT_EQ(want, out);
 }
 
-TEST(durynichev_d_most_different_neighbor_elements_seq, sample2) {
+TEST(durynichev_d_most_different_neighbor_elements_seq, all_elements_are_equal) {
   // Create data
   std::vector<int> in{1, 1, 1, 1, 1, 1};
   std::vector<int> out{0, 0};
@@ -48,7 +48,7 @@ TEST(durynichev_d_most_different_neighbor_elements_seq, sample2) {
   ASSERT_EQ(want, out);
 }
 
-TEST(durynichev_d_most_different_neighbor_elements_seq, sample3) {
+TEST(durynichev_d_most_different_neighbor_elements_seq, check_double_number) {
   // Create data
   std::vector<int> in{-10, 10};
   std::vector<int> out{0, 0};
@@ -70,7 +70,7 @@ TEST(durynichev_d_most_different_neighbor_elements_seq, sample3) {
   ASSERT_EQ(want, out);
 }
 
-TEST(durynichev_d_most_different_neighbor_elements_seq, sample4) {
+TEST(durynichev_d_most_different_neighbor_elements_seq, check_one_number) {
   // Create data
   std::vector<int> in{1};
   std::vector<int> out{0, 0};
@@ -87,7 +87,7 @@ TEST(durynichev_d_most_different_neighbor_elements_seq, sample4) {
   ASSERT_FALSE(testTaskSequential.validation());
 }
 
-TEST(durynichev_d_most_different_neighbor_elements_seq, sample5) {
+TEST(durynichev_d_most_different_neighbor_elements_seq, check_validate_func) {
   // Create data
   std::vector<int> in{1, 5, 2, 10, 3};
   std::vector<int> out{0};

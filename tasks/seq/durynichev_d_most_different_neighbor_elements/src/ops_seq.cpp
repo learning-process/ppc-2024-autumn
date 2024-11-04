@@ -9,7 +9,6 @@ bool durynichev_d_most_different_neighbor_elements_seq::TestTaskSequential::vali
 
 bool durynichev_d_most_different_neighbor_elements_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
-
   auto *input_ptr = reinterpret_cast<int *>(taskData->inputs[0]);
   auto input_size = taskData->inputs_count[0];
   input.assign(input_ptr, input_ptr + input_size);
