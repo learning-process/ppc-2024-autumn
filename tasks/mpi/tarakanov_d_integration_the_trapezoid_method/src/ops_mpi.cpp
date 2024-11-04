@@ -3,8 +3,6 @@
 
 #include <thread>
 
-using namespace std::chrono_literals;
-
 bool tarakanov_d_integration_the_trapezoid_method_mpi::integration_the_trapezoid_method_seq::pre_processing() {
   internal_order_test();
 
