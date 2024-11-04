@@ -1,61 +1,60 @@
-// Copyright 2023 Nasedkin Egor
 #include "seq/nasedkin_e_matrix_column_max_value/include/ops_seq.hpp"
-
 #include <algorithm>
+#include <functional>
 #include <random>
-#include <vector>
 
-namespace nasedkin_e_matrix_column_max_value_seq {
-
-std::vector<int> getRandomMatrix(int rows, int cols) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(rows * cols);
-  for (int i = 0; i < rows * cols; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
-}
-
-bool MatrixColumnMaxSeq::pre_processing() {
+bool nasedkin_e_matrix_column_max_value_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
-  int cols = taskData->inputs_count[1];
+  cols = (int)*taskData->inputs[1];
+  rows = (int)(taskData->inputs_count[0] / cols);
   input_ = std::vector<int>(taskData->inputs_count[0]);
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+
   for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
     input_[i] = tmp_ptr[i];
   }
 
   res_ = std::vector<int>(cols, 0);
+
   return true;
 }
 
-bool MatrixColumnMaxSeq::validation() {
+bool nasedkin_e_matrix_column_max_value_seq::TestTaskSequential::validation() {
   internal_order_test();
-  return taskData->outputs_count[0] == taskData->inputs_count[1];
+  if ((int)*taskData->inputs[1] == 0) {
+    return false;
+  }
+  if (taskData->inputs.empty() || taskData->inputs_count[0] <= 0) {
+    return false;
+  }
+  if (*taskData->inputs[1] != taskData->outputs_count[0]) {
+    return false;
+  }
+  return true;
 }
 
-bool MatrixColumnMaxSeq::run() {
+bool nasedkin_e_matrix_column_max_value_seq::TestTaskSequential::run() {
   internal_order_test();
-  int rows = input_.size() / res_.size();
-  for (size_t col = 0; col < res_.size(); col++) {
-    res_[col] = input_[col];
-    for (int row = 1; row < rows; row++) {
-      if (input_[row * res_.size() + col] > res_[col]) {
-        res_[col] = input_[row * res_.size() + col];
+
+  for (int j = 0; j < cols; j++) {
+    int maxElement = input_[j];
+    for (int i = 1; i < rows; i++) {
+      if (input_[i * cols + j] > maxElement) {
+        maxElement = input_[i * cols + j];
       }
     }
+    res_[j] = maxElement;
   }
+
   return true;
 }
 
-bool MatrixColumnMaxSeq::post_processing() {
+bool nasedkin_e_matrix_column_max_value_seq::TestTaskSequential::post_processing() {
   internal_order_test();
-  auto* tmp_ptr = reinterpret_cast<int*>(taskData->outputs[0]);
-  for (unsigned i = 0; i < res_.size(); i++) {
-    tmp_ptr[i] = res_[i];
+
+  for (int j = 0; j < cols; j++) {
+    reinterpret_cast<int*>(taskData->outputs[0])[j] = res_[j];
   }
+
   return true;
 }
-
-}  // namespace nasedkin_e_matrix_column_max_value_seq
