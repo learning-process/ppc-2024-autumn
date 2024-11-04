@@ -2,8 +2,8 @@
 
 #include <random>
 #include <vector>
-#include "core/perf/include/perf.hpp"
 
+#include "core/perf/include/perf.hpp"
 #include "seq/Sdobnov_V_sum_of_vector_elements/include/ops_seq.hpp"
 
 TEST(Sdobnov_V_sum_of_vector_elements_seq, test_pipeline_run) {
