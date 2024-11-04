@@ -13,6 +13,7 @@ bool leontev_n_vector_sum_seq::VecSumSequential<InOutType>::pre_processing() {
   for (size_t i = 0; i < taskData->inputs_count[0]; i++) {
     input_[i] = vec_ptr[i];
   }
+  res = 0;
   return true;
 }
 

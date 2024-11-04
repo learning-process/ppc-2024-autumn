@@ -7,8 +7,8 @@
 
 #include "mpi/leontev_n_vector_sum/include/ops_mpi.hpp"
 
-void taskEmplacement(std::shared_ptr<ppc::core::TaskData>& taskDataPar, std::vector<int>& global_vec,
-                     std::vector<int32_t>& global_sum) {
+inline void taskEmplacement(std::shared_ptr<ppc::core::TaskData>& taskDataPar, std::vector<int>& global_vec,
+                            std::vector<int32_t>& global_sum) {
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
   taskDataPar->inputs_count.emplace_back(global_vec.size());
   taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
@@ -22,8 +22,8 @@ TEST(leontev_n_vec_sum_mpi, sum_mpi_50elem) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    const int count_size_vector = 50;
-    global_vec = leontev_n_vec_sum_mpi::getRandomVector(count_size_vector);
+    const int vector_size = 50;
+    global_vec = leontev_n_vec_sum_mpi::getRandomVector(vector_size);
     taskEmplacement(taskDataPar, global_vec, global_sum);
   }
   leontev_n_vec_sum_mpi::MPIVecSumParallel MPIVecSumParallel(taskDataPar);
@@ -36,7 +36,7 @@ TEST(leontev_n_vec_sum_mpi, sum_mpi_50elem) {
     std::vector<int32_t> reference_sum(1, 0);
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskEmplacement(taskDataPar, global_vec, reference_sum);
+    taskEmplacement(taskDataSeq, global_vec, reference_sum);
     // Create Task
     leontev_n_vec_sum_mpi::MPIVecSumSequential MPIVecSumSequential(taskDataSeq);
     ASSERT_TRUE(MPIVecSumSequential.validation());
@@ -71,8 +71,8 @@ TEST(leontev_n_vec_sum_mpi, sum_mpi_1000elem) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    const int count_size_vector = 1000;
-    global_vec = leontev_n_vec_sum_mpi::getRandomVector(count_size_vector);
+    const int vector_size = 1000;
+    global_vec = leontev_n_vec_sum_mpi::getRandomVector(vector_size);
     taskEmplacement(taskDataPar, global_vec, global_sum);
   }
   leontev_n_vec_sum_mpi::MPIVecSumParallel MPIVecSumParallel(taskDataPar);
@@ -85,7 +85,7 @@ TEST(leontev_n_vec_sum_mpi, sum_mpi_1000elem) {
     std::vector<int32_t> reference_sum(1, 0);
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskEmplacement(taskDataPar, global_vec, reference_sum);
+    taskEmplacement(taskDataSeq, global_vec, reference_sum);
     // Create Task
     leontev_n_vec_sum_mpi::MPIVecSumSequential MPIVecSumSequential(taskDataSeq);
     ASSERT_TRUE(MPIVecSumSequential.validation());
@@ -102,8 +102,8 @@ TEST(leontev_n_vec_sum_mpi, sum_mpi_20000elem) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    const int count_size_vector = 20000;
-    global_vec = leontev_n_vec_sum_mpi::getRandomVector(count_size_vector);
+    const int vector_size = 20000;
+    global_vec = leontev_n_vec_sum_mpi::getRandomVector(vector_size);
     taskEmplacement(taskDataPar, global_vec, global_sum);
   }
   leontev_n_vec_sum_mpi::MPIVecSumParallel MPIVecSumParallel(taskDataPar);
@@ -116,7 +116,7 @@ TEST(leontev_n_vec_sum_mpi, sum_mpi_20000elem) {
     std::vector<int32_t> reference_sum(1, 0);
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskEmplacement(taskDataPar, global_vec, reference_sum);
+    taskEmplacement(taskDataSeq, global_vec, reference_sum);
     // Create Task
     leontev_n_vec_sum_mpi::MPIVecSumSequential MPIVecSumSequential(taskDataSeq);
     ASSERT_TRUE(MPIVecSumSequential.validation());
@@ -132,8 +132,8 @@ TEST(leontev_n_vec_sum_mpi, sum_mpi_1elem) {
   std::vector<int32_t> global_sum(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    const int count_size_vector = 1;
-    global_vec = leontev_n_vec_sum_mpi::getRandomVector(count_size_vector);
+    const int vector_size = 1;
+    global_vec = leontev_n_vec_sum_mpi::getRandomVector(vector_size);
     taskEmplacement(taskDataPar, global_vec, global_sum);
   }
   leontev_n_vec_sum_mpi::MPIVecSumParallel MPIVecSumParallel(taskDataPar);
@@ -144,7 +144,7 @@ TEST(leontev_n_vec_sum_mpi, sum_mpi_1elem) {
   if (world.rank() == 0) {
     std::vector<int32_t> reference_sum(1, 0);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskEmplacement(taskDataPar, global_vec, reference_sum);
+    taskEmplacement(taskDataSeq, global_vec, reference_sum);
     leontev_n_vec_sum_mpi::MPIVecSumSequential MPIVecSumSequential(taskDataSeq);
     ASSERT_TRUE(MPIVecSumSequential.validation());
     MPIVecSumSequential.pre_processing();
@@ -169,7 +169,7 @@ TEST(leontev_n_vec_sum_mpi, sum_mpi_0elem_seq_test) {
   if (world.rank() == 0) {
     std::vector<int32_t> reference_sum(1, 0);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskEmplacement(taskDataPar, global_vec, reference_sum);
+    taskEmplacement(taskDataSeq, global_vec, reference_sum);
     leontev_n_vec_sum_mpi::MPIVecSumSequential MPIVecSumSequential(taskDataSeq);
     ASSERT_TRUE(MPIVecSumSequential.validation());
     MPIVecSumSequential.pre_processing();
