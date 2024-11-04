@@ -7,8 +7,6 @@
 
 namespace petrov_o_num_of_alternations_signs_seq {
 
-using namespace std::chrono_literals;
-
 class TestTaskSequential : public ppc::core::Task {
  public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

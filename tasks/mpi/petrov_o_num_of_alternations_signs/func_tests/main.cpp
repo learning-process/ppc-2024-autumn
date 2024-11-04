@@ -227,7 +227,38 @@ TEST(petrov_o_num_of_alternations_signs_par, TestAlternations_Empty) {
 
   petrov_o_num_of_alternations_signs_mpi::ParallelTask task(taskData);
 
-  ASSERT_FALSE(task.validation());
+  ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
+  if (world.rank() == 0) {
+    ASSERT_EQ(output[0], 0);
+  }
+}
+
+TEST(petrov_o_num_of_alternations_signs_par, TestAlternations_OneElement) {
+  boost::mpi::communicator world;
+
+  std::vector<int> input = {1};
+  std::vector<int> output(1);
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
+    taskData->inputs_count.push_back(input.size());
+    taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output.data()));
+    taskData->outputs_count.push_back(output.size());
+  }
+
+  petrov_o_num_of_alternations_signs_mpi::ParallelTask task(taskData);
+
+  ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
+  if (world.rank() == 0) {
+    ASSERT_EQ(output[0], 0);
+  }
 }
 
 TEST(petrov_o_num_of_alternations_signs_par, TestAlternations_LargeInput) {
