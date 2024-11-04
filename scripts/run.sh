@@ -16,11 +16,11 @@ fi
 
 if [[ -z "$ASAN_RUN" ]]; then
   if [[ $OSTYPE == "linux-gnu" ]]; then
-    mpirun --oversubscribe -np 4 ./build/bin/sample_mpi
-    mpirun --oversubscribe -np 4 ./build/bin/sample_mpi_boost
+    mpirun --oversubscribe -np $PROC_COUNT ./build/bin/sample_mpi
+    mpirun --oversubscribe -np $PROC_COUNT ./build/bin/sample_mpi_boost
   elif [[ $OSTYPE == "darwin"* ]]; then
-    mpirun -np 2 ./build/bin/sample_mpi
-    mpirun -np 2 ./build/bin/sample_mpi_boost
+    mpirun -np $PROC_COUNT ./build/bin/sample_mpi
+    mpirun -np $PROC_COUNT ./build/bin/sample_mpi_boost
   fi
 fi
 ./build/bin/sample_omp
