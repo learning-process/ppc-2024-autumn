@@ -12,7 +12,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_seq, test_pipeline_run) {
   int res;
   std::vector<std::vector<int>> input = Sdobnov_V_sum_of_vector_elements::generate_random_matrix(rows, columns);
   int sum = 0;
-  for (const std::vector<int>& vec : input) {
+  for (const std::vector<int> &vec : input) {
     for (int elem : vec) {
       sum += elem;
     }
@@ -47,7 +47,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_seq, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(test);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(res, sum);
+  ASSERT_EQ(sum, res);
 }
 
 TEST(Sdobnov_V_sum_of_vector_elements_seq, test_task_run) {
@@ -56,7 +56,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_seq, test_task_run) {
   int res;
   std::vector<std::vector<int>> input = Sdobnov_V_sum_of_vector_elements::generate_random_matrix(rows, columns);
   int sum = 0;
-  for (const std::vector<int>& vec : input) {
+  for (const std::vector<int> &vec : input) {
     for (int elem : vec) {
       sum += elem;
     }

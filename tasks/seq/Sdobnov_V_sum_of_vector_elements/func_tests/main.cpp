@@ -58,7 +58,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_seq, Matrix10x10) {
   int res;
   std::vector<std::vector<int>> input = Sdobnov_V_sum_of_vector_elements::generate_random_matrix(rows, columns);
   int sum = 0;
-  for (const std::vector<int>& vec : input) {
+  for (const std::vector<int> &vec : input) {
     for (int elem : vec) {
       sum += elem;
     }
@@ -88,7 +88,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_seq, Matrix100x100) {
   int res;
   std::vector<std::vector<int>> input = Sdobnov_V_sum_of_vector_elements::generate_random_matrix(rows, columns);
   int sum = 0;
-  for (const std::vector<int>& vec : input) {
+  for (const std::vector<int> &vec : input) {
     for (int elem : vec) {
       sum += elem;
     }
@@ -118,7 +118,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_seq, Matrix100x10) {
   int res;
   std::vector<std::vector<int>> input = Sdobnov_V_sum_of_vector_elements::generate_random_matrix(rows, columns);
   int sum = 0;
-  for (const std::vector<int>& vec : input) {
+  for (const std::vector<int> &vec : input) {
     for (int elem : vec) {
       sum += elem;
     }
@@ -148,7 +148,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_seq, Matrix10x100) {
   int res;
   std::vector<std::vector<int>> input = Sdobnov_V_sum_of_vector_elements::generate_random_matrix(rows, columns);
   int sum = 0;
-  for (const std::vector<int>& vec : input) {
+  for (const std::vector<int> &vec : input) {
     for (int elem : vec) {
       sum += elem;
     }
