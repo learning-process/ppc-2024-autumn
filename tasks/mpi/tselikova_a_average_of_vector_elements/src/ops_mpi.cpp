@@ -57,7 +57,6 @@ bool tselikova_a_average_of_vector_elements_mpi::TestMPITaskParallel::pre_proces
   return true;
 }
 
-
 bool tselikova_a_average_of_vector_elements_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
@@ -78,9 +77,9 @@ bool tselikova_a_average_of_vector_elements_mpi::TestMPITaskParallel::run() {
   broadcast(world, total_elements, 0);
   if (world.rank() == 0) {
     for (int proc = 1; proc < world.size(); proc++) {
-       unsigned int start_index = proc * delta;
-       unsigned int count = (proc == world.size() - 1) ? (total_elements - start_index) : delta;
-       world.send(proc, 0, input_.data() + start_index, count);
+      unsigned int start_index = proc * delta;
+      unsigned int count = (proc == world.size() - 1) ? (total_elements - start_index) : delta;
+      world.send(proc, 0, input_.data() + start_index, count);
     }
   }
   local_input_ = std::vector<int>(delta);
