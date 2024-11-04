@@ -16,7 +16,7 @@
 namespace naumov_b_min_colum_matrix_mpi {
 
 std::vector<int> getRandomVector(int sz);
-std::vector<std::vector<int>> generate_rnd_matrix(int rows, int columns);
+std::vector<std::vector<int>> getRandomMatrix(int rows, int columns);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:

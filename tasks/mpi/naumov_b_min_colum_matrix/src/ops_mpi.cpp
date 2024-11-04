@@ -11,6 +11,14 @@
 
 using namespace std::chrono_literals;
 
+std::vector<std::vector<int>> naumov_b_min_colum_matrix_mpi::getRandomMatrix(int rows, int columns) {
+  std::vector<std::vector<int>> matrix(rows, std::vector<int>(columns));
+  for (int i = 0; i < rows; ++i) {
+    matrix[i] = naumov_b_min_colum_matrix_mpi::getRandomVector(columns);
+  }
+  return matrix;
+}
+
 std::vector<int> naumov_b_min_colum_matrix_mpi::getRandomVector(int size) {
   std::vector<int> vec(size);
   for (int& element : vec) {
@@ -79,62 +87,62 @@ bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::pre_processing() {
 
 bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
-
   if (world.rank() == 0) {
-    return (!taskData->inputs.empty() && !taskData->outputs.empty()) && (taskData->inputs_count.size() >= 2) &&
-           (taskData->inputs_count[0] != 0 && taskData->inputs_count[1] != 0) &&
-           (taskData->outputs_count[0] == taskData->inputs_count[1]);
+    bool isValid = (!taskData->inputs.empty() && !taskData->outputs.empty()) && (taskData->inputs_count.size() >= 2) &&
+                   (taskData->inputs_count[0] != 0 && taskData->inputs_count[1] != 0) &&
+                   (taskData->outputs_count[0] == taskData->inputs_count[1]);
+    return isValid;
   }
 
-  return true;
+  return true;  // Для других процессов, которые не выполняют валидацию
 }
+  bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::run() {
+    internal_order_test();
+    int rows = 0;
+    int cols = 0;
 
-bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::run() {
-  internal_order_test();
-  int rows = 0;
-  int cols = 0;
-
-  if (world.rank() == 0) {
-    rows = taskData->inputs_count[0];
-    cols = taskData->inputs_count[1];
-  }
-
-  broadcast(world, rows, 0);
-  broadcast(world, cols, 0);
-
-  int delta = cols / world.size();
-  int extra = cols % world.size();
-
-  if (world.rank() == 0) {
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + (proc * delta + extra) * rows, delta * rows);
+    if (world.rank() == 0) {
+      rows = taskData->inputs_count[0];
+      cols = taskData->inputs_count[1];
     }
-    local_vector_ = std::vector<int>(input_.begin(), input_.begin() + (delta + extra) * rows);
-  } else {
-    local_vector_ = std::vector<int>(delta * cols);
-    world.recv(0, 0, local_vector_.data(), delta * rows);
-  }
 
-  std::vector<int> local_res(delta + ((world.rank() == 0) ? extra : 0), std::numeric_limits<int>::max());
+    broadcast(world, rows, 0);
+    broadcast(world, cols, 0);
 
-  for (int i = 0; i < local_res.size(); i++) {
-    for (int j = 0; j < rows; j++) {
-      local_res[i] = std::min(local_res[i], local_vector_[j + rows * i]);
+    int delta = cols / world.size();
+    int extra = cols % world.size();
+
+    if (world.rank() == 0) {
+      for (int proc = 1; proc < world.size(); proc++) {
+        world.send(proc, 0, input_.data() + (proc * delta + extra) * rows, delta * rows);
+      }
+
+      local_vector_ = std::vector<int>(input_.begin(), input_.begin() + (delta + extra) * rows);
+    } else {
+      local_vector_ = std::vector<int>(delta * rows);
+      world.recv(0, 0, local_vector_.data(), delta * rows);
     }
-  }
 
-  if (world.rank() == 0) {
-    std::vector<int> temp(delta, 0);
-    res.insert(res.end(), local_res.begin(), local_res.end());
-    for (int i = 1; i < world.size(); i++) {
-      world.recv(i, 0, temp.data(), delta);
-      res.insert(res.end(), temp.begin(), temp.end());
+    std::vector<int> local_res(delta + ((world.rank() == 0) ? extra : 0), std::numeric_limits<int>::max());
+
+    for (int i = 0; i < local_res.size(); i++) {
+      for (int j = 0; j < rows; j++) {
+        local_res[i] = std::min(local_res[i], local_vector_[j + rows * i]);
+      }
     }
-  } else {
-    world.send(0, 0, local_res.data(), delta);
-  }
 
-  return true;
+    if (world.rank() == 0) {
+      std::vector<int> temp(delta, 0);
+      res.insert(res.end(), local_res.begin(), local_res.end());
+      for (int i = 1; i < world.size(); i++) {
+        world.recv(i, 0, temp.data(), delta);
+        res.insert(res.end(), temp.begin(), temp.end());
+      }
+    } else {
+      world.send(0, 0, local_res.data(), delta);
+    }
+
+    return true;
 }
 
 bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::post_processing() {

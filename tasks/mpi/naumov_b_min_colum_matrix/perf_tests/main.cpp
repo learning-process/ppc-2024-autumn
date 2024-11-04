@@ -1,7 +1,8 @@
-// Copyright 2023 Nesterov Alexander
+// Copyright 2024 Your Name
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
+#include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
@@ -9,85 +10,92 @@
 
 TEST(naumov_b_min_colum_matrix_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  const int rows = 40;
-  const int cols = 60;
-  std::vector<int> global_matrix;
-  std::vector<int> global_minima(cols, std::numeric_limits<int>::max());
+  std::vector<int> global_vector;
+  std::vector<int32_t> global_min(1, INT_MAX);
+  int ref = INT_MIN;
 
+  // Создание TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = naumov_b_min_colum_matrix_mpi::getRandomVector(cols * rows);
+    int count_elements = 1000;
+    global_vector = naumov_b_min_colum_matrix_mpi::getRandomVector(count_elements);
+    int index = rand() % count_elements;
+    global_vector[index] = ref;
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-    taskDataPar->inputs_count.emplace_back(rows);
-    taskDataPar->inputs_count.emplace_back(cols);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_minima.data()));
-    taskDataPar->outputs_count.emplace_back(global_minima.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector.data()));
+    taskDataPar->inputs_count.emplace_back(count_elements);
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_min.data()));
+    taskDataPar->outputs_count.emplace_back(global_min.size());
   }
 
-  auto minColumnParallel = std::make_shared<naumov_b_min_colum_matrix_mpi::TestMPITaskParallel>(taskDataPar);
-  ASSERT_TRUE(minColumnParallel->validation());
-  minColumnParallel->pre_processing();
-  minColumnParallel->run();
-  minColumnParallel->post_processing();
+  auto testMpiTaskParallel = std::make_shared<naumov_b_min_colum_matrix_mpi::TestMPITaskParallel>(taskDataPar);
+  ASSERT_TRUE(testMpiTaskParallel->validation());  // Убедитесь, что validation возвращает true
+  testMpiTaskParallel->pre_processing();
+  testMpiTaskParallel->run();
+  testMpiTaskParallel->post_processing();
 
+  // Создание атрибутов производительности
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
+  // Создание и инициализация результатов производительности
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(minColumnParallel);
+  // Создание анализатора производительности
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
-
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(global_minima.size(), cols);
+    ASSERT_EQ(ref, global_min[0]);
   }
 }
 
 TEST(naumov_b_min_colum_matrix_mpi, test_task_run) {
   boost::mpi::communicator world;
-  const int rows = 40;
-  const int cols = 60;
-  std::vector<int> global_matrix;
-  std::vector<int> global_minima(cols, std::numeric_limits<int>::max());
+  std::vector<int> global_vector;
+  std::vector<int32_t> global_min(1, INT_MAX);
+  int ref = INT_MIN;
 
+  // Создание TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = naumov_b_min_colum_matrix_mpi::getRandomVector(cols * rows);
+    int count_elements = 1000;
+    global_vector = naumov_b_min_colum_matrix_mpi::getRandomVector(count_elements);
+    int index = rand() % count_elements;
+    global_vector[index] = ref;
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-    taskDataPar->inputs_count.emplace_back(rows);
-    taskDataPar->inputs_count.emplace_back(cols);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_minima.data()));
-    taskDataPar->outputs_count.emplace_back(global_minima.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector.data()));
+    taskDataPar->inputs_count.emplace_back(count_elements);
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_min.data()));
+    taskDataPar->outputs_count.emplace_back(global_min.size());
   }
 
-  auto minColumnParallel = std::make_shared<naumov_b_min_colum_matrix_mpi::TestMPITaskParallel>(taskDataPar);
-  ASSERT_TRUE(minColumnParallel->validation());
-  minColumnParallel->pre_processing();
-  minColumnParallel->run();
-  minColumnParallel->post_processing();
+  auto testMpiTaskParallel = std::make_shared<naumov_b_min_colum_matrix_mpi::TestMPITaskParallel>(taskDataPar);
+  ASSERT_TRUE(testMpiTaskParallel->validation());  // Убедитесь, что validation возвращает true
+  testMpiTaskParallel->pre_processing();
+  testMpiTaskParallel->run();
+  testMpiTaskParallel->post_processing();
 
+  // Создание атрибутов производительности
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
+  // Создание и инициализация результатов производительности
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(minColumnParallel);
+  // Создание анализатора производительности
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
-
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-
-    for (int col = 0; col < cols; ++col) {
-      ASSERT_NE(global_minima[col], std::numeric_limits<int>::max());
-    }
+    ASSERT_EQ(ref, global_min[0]);
   }
 }
