@@ -2,7 +2,6 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-
 #include <random>
 #include <vector>
 
@@ -42,34 +41,34 @@ TEST(kapustin_i_max_column_task_mpi, M_5x5_test) {
     taskDataPar->inputs_count.emplace_back(cols);
     taskDataPar->inputs_count.emplace_back(rows);
   }
-    kapustin_i_max_column_task_mpi::MaxColumnTaskParallelMPI testMpiTaskParallel(taskDataPar);
-    ASSERT_EQ(testMpiTaskParallel.validation(), true);
-    testMpiTaskParallel.pre_processing();
-    testMpiTaskParallel.run();
-    testMpiTaskParallel.post_processing();
+  kapustin_i_max_column_task_mpi::MaxColumnTaskParallelMPI testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-      std::vector<int> res_sequential(cols, 0);
+    std::vector<int> res_sequential(cols, 0);
 
-      std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-      taskDataSeq->inputs_count.emplace_back(matrix.size());
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cols));
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&rows));
-      taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_sequential.data()));
-      taskDataSeq->outputs_count.emplace_back(res_sequential.size());
-      taskDataSeq->inputs_count.emplace_back(cols);
-      taskDataSeq->inputs_count.emplace_back(rows);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(matrix.size());
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cols));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&rows));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_sequential.data()));
+    taskDataSeq->outputs_count.emplace_back(res_sequential.size());
+    taskDataSeq->inputs_count.emplace_back(cols);
+    taskDataSeq->inputs_count.emplace_back(rows);
 
-      // Create Task
-      kapustin_i_max_column_task_mpi::MaxColumnTaskSequentialMPI testMpiTaskSequential(taskDataSeq);
-      ASSERT_EQ(testMpiTaskSequential.validation(), true);
-      testMpiTaskSequential.pre_processing();
-      testMpiTaskSequential.run();
-      testMpiTaskSequential.post_processing();
-      ASSERT_EQ(res_sequential, result_parallel);
-    }
+    // Create Task
+    kapustin_i_max_column_task_mpi::MaxColumnTaskSequentialMPI testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+    ASSERT_EQ(res_sequential, result_parallel);
+  }
 }
 TEST(kapustin_i_max_column_task_mpi, M_1x10_test) {
   boost::mpi::communicator world;
@@ -81,46 +80,46 @@ TEST(kapustin_i_max_column_task_mpi, M_1x10_test) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-      const int size_vector = cols * rows;
-      matrix = getRandomVector(size_vector);
+    const int size_vector = cols * rows;
+    matrix = getRandomVector(size_vector);
 
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-      taskDataPar->inputs_count.emplace_back(matrix.size());
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cols));
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&rows));
-      taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_parallel.data()));
-      taskDataPar->outputs_count.emplace_back(result_parallel.size());
-      taskDataPar->inputs_count.emplace_back(cols);
-      taskDataPar->inputs_count.emplace_back(rows);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataPar->inputs_count.emplace_back(matrix.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cols));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&rows));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_parallel.data()));
+    taskDataPar->outputs_count.emplace_back(result_parallel.size());
+    taskDataPar->inputs_count.emplace_back(cols);
+    taskDataPar->inputs_count.emplace_back(rows);
   }
-    kapustin_i_max_column_task_mpi::MaxColumnTaskParallelMPI testMpiTaskParallel(taskDataPar);
-    ASSERT_EQ(testMpiTaskParallel.validation(), true);
-    testMpiTaskParallel.pre_processing();
-    testMpiTaskParallel.run();
-    testMpiTaskParallel.post_processing();
+  kapustin_i_max_column_task_mpi::MaxColumnTaskParallelMPI testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-      std::vector<int> res_sequential(cols, 0);
+    std::vector<int> res_sequential(cols, 0);
 
-      std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-      taskDataSeq->inputs_count.emplace_back(matrix.size());
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cols));
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&rows));
-      taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_sequential.data()));
-      taskDataSeq->outputs_count.emplace_back(res_sequential.size());
-      taskDataSeq->inputs_count.emplace_back(cols);
-      taskDataSeq->inputs_count.emplace_back(rows);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(matrix.size());
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cols));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&rows));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_sequential.data()));
+    taskDataSeq->outputs_count.emplace_back(res_sequential.size());
+    taskDataSeq->inputs_count.emplace_back(cols);
+    taskDataSeq->inputs_count.emplace_back(rows);
 
-      kapustin_i_max_column_task_mpi::MaxColumnTaskSequentialMPI testMpiTaskSequential(taskDataSeq);
-      ASSERT_EQ(testMpiTaskSequential.validation(), true);
-      testMpiTaskSequential.pre_processing();
-      testMpiTaskSequential.run();
-      testMpiTaskSequential.post_processing();
-      ASSERT_EQ(res_sequential, result_parallel);
-    }
+    kapustin_i_max_column_task_mpi::MaxColumnTaskSequentialMPI testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+    ASSERT_EQ(res_sequential, result_parallel);
   }
+}
 TEST(kapustin_i_max_column_task_mpi, M_10x1_test) {
   boost::mpi::communicator world;
   int cols = 10;
@@ -131,93 +130,93 @@ TEST(kapustin_i_max_column_task_mpi, M_10x1_test) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-      const int size_vector = cols * rows;
-      matrix = getRandomVector(size_vector);
+    const int size_vector = cols * rows;
+    matrix = getRandomVector(size_vector);
 
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-      taskDataPar->inputs_count.emplace_back(matrix.size());
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cols));
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&rows));
-      taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_parallel.data()));
-      taskDataPar->outputs_count.emplace_back(result_parallel.size());
-      taskDataPar->inputs_count.emplace_back(cols);
-      taskDataPar->inputs_count.emplace_back(rows);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataPar->inputs_count.emplace_back(matrix.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cols));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&rows));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_parallel.data()));
+    taskDataPar->outputs_count.emplace_back(result_parallel.size());
+    taskDataPar->inputs_count.emplace_back(cols);
+    taskDataPar->inputs_count.emplace_back(rows);
   }
-    kapustin_i_max_column_task_mpi::MaxColumnTaskParallelMPI testMpiTaskParallel(taskDataPar);
-    ASSERT_EQ(testMpiTaskParallel.validation(), true);
-    testMpiTaskParallel.pre_processing();
-    testMpiTaskParallel.run();
-    testMpiTaskParallel.post_processing();
+  kapustin_i_max_column_task_mpi::MaxColumnTaskParallelMPI testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-      std::vector<int> res_sequential(cols, 0);
+    std::vector<int> res_sequential(cols, 0);
 
-      std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-      taskDataSeq->inputs_count.emplace_back(matrix.size());
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cols));
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&rows));
-      taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_sequential.data()));
-      taskDataSeq->outputs_count.emplace_back(res_sequential.size());
-      taskDataSeq->inputs_count.emplace_back(cols);
-      taskDataSeq->inputs_count.emplace_back(rows);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(matrix.size());
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cols));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&rows));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_sequential.data()));
+    taskDataSeq->outputs_count.emplace_back(res_sequential.size());
+    taskDataSeq->inputs_count.emplace_back(cols);
+    taskDataSeq->inputs_count.emplace_back(rows);
 
-      kapustin_i_max_column_task_mpi::MaxColumnTaskSequentialMPI testMpiTaskSequential(taskDataSeq);
-      ASSERT_EQ(testMpiTaskSequential.validation(), true);
-      testMpiTaskSequential.pre_processing();
-      testMpiTaskSequential.run();
-      testMpiTaskSequential.post_processing();
-      ASSERT_EQ(res_sequential, result_parallel);
-    }
+    kapustin_i_max_column_task_mpi::MaxColumnTaskSequentialMPI testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+    ASSERT_EQ(res_sequential, result_parallel);
   }
+}
 TEST(kapustin_i_max_column_task_mpi, M_100x100_test) {
-    boost::mpi::communicator world;
-    int cols = 100;
-    int rows = 100;
-    std::vector<int> matrix;
-    std::vector<int> result_parallel(cols, 0);
+  boost::mpi::communicator world;
+  int cols = 100;
+  int rows = 100;
+  std::vector<int> matrix;
+  std::vector<int> result_parallel(cols, 0);
 
-    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-      const int size_vector = cols * rows;
-      matrix = getRandomVector(size_vector);
-
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-      taskDataPar->inputs_count.emplace_back(matrix.size());
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cols));
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&rows));
-      taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_parallel.data()));
-      taskDataPar->outputs_count.emplace_back(result_parallel.size());
-      taskDataPar->inputs_count.emplace_back(cols);
-      taskDataPar->inputs_count.emplace_back(rows);
-    }
-    kapustin_i_max_column_task_mpi::MaxColumnTaskParallelMPI testMpiTaskParallel(taskDataPar);
-    ASSERT_EQ(testMpiTaskParallel.validation(), true);
-    testMpiTaskParallel.pre_processing();
-    testMpiTaskParallel.run();
-    testMpiTaskParallel.post_processing();
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-      std::vector<int> res_sequential(cols, 0);
+    const int size_vector = cols * rows;
+    matrix = getRandomVector(size_vector);
 
-      std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-      taskDataSeq->inputs_count.emplace_back(matrix.size());
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cols));
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&rows));
-      taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_sequential.data()));
-      taskDataSeq->outputs_count.emplace_back(res_sequential.size());
-      taskDataSeq->inputs_count.emplace_back(cols);
-      taskDataSeq->inputs_count.emplace_back(rows);
-
-      kapustin_i_max_column_task_mpi::MaxColumnTaskSequentialMPI testMpiTaskSequential(taskDataSeq);
-      ASSERT_EQ(testMpiTaskSequential.validation(), true);
-      testMpiTaskSequential.pre_processing();
-      testMpiTaskSequential.run();
-      testMpiTaskSequential.post_processing();
-      ASSERT_EQ(res_sequential, result_parallel);
-    }
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataPar->inputs_count.emplace_back(matrix.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cols));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&rows));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_parallel.data()));
+    taskDataPar->outputs_count.emplace_back(result_parallel.size());
+    taskDataPar->inputs_count.emplace_back(cols);
+    taskDataPar->inputs_count.emplace_back(rows);
   }
+  kapustin_i_max_column_task_mpi::MaxColumnTaskParallelMPI testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int> res_sequential(cols, 0);
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(matrix.size());
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cols));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&rows));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_sequential.data()));
+    taskDataSeq->outputs_count.emplace_back(res_sequential.size());
+    taskDataSeq->inputs_count.emplace_back(cols);
+    taskDataSeq->inputs_count.emplace_back(rows);
+
+    kapustin_i_max_column_task_mpi::MaxColumnTaskSequentialMPI testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+    ASSERT_EQ(res_sequential, result_parallel);
+  }
+}
