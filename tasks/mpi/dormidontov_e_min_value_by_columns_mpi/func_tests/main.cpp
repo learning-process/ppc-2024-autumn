@@ -30,17 +30,14 @@ TEST(dormidontov_e_min_value_by_columns_mpi, Test_just_test_if_it_finally_works)
     taskDataPar->outputs_count.emplace_back(res_out_paral.size());
   }
   dormidontov_e_min_value_by_columns_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  std::cout << "Go in validation"
-            << " " << world.rank() << std::endl;
+  
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  std::cout << "Go in pre_processing"
-            << " " << world.rank() << std::endl;
+  
   testMpiTaskParallel.pre_processing();
-  std::cout << "Go in run"
-            << " " << world.rank() << std::endl;
+  
   testMpiTaskParallel.run();
-  std::cout << "Go in post_processing"
-            << " " << world.rank() << std::endl;
+  
+           
   testMpiTaskParallel.post_processing();
   if (world.rank() == 0) {
     std::vector<int> res_out_seq(cs, 0);
@@ -88,16 +85,11 @@ TEST(dormidontov_e_min_value_by_columns_mpi, Test_just_test_if_it_finally_works2
     taskDataPar->outputs_count.emplace_back(res_out_paral.size());
   }
   dormidontov_e_min_value_by_columns_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  std::cout << "Go in validation" << " " << world.rank() << std::endl;
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  std::cout << "Go in pre_processing"
-            << " " << world.rank() << std::endl;
+      
   testMpiTaskParallel.pre_processing();
-  std::cout << "Go in run"
-            << " " << world.rank() << std::endl;
   testMpiTaskParallel.run();
-  std::cout << "Go in post_processing"
-            << " " << world.rank() << std::endl;
+   
   testMpiTaskParallel.post_processing();
   if (world.rank() == 0) {
     std::vector<int> res_out_seq(cs, 0);
