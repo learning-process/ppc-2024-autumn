@@ -19,10 +19,10 @@ TEST(Sdobnov_V_sum_of_vector_elements_par, test_pipeline_run) {
     taskDataPar->inputs_count.emplace_back(rows);
     taskDataPar->inputs_count.emplace_back(columns);
     for (long unsigned int i = 0; i < input.size(); i++) {
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input[i].data()));
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input[i].data()));
     }
     taskDataPar->outputs_count.emplace_back(1);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&res));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(&res));
   }
   auto test = std::make_shared<Sdobnov_V_sum_of_vector_elements::SumVecElemParallel>(taskDataPar);
 
@@ -62,10 +62,10 @@ TEST(Sdobnov_V_sum_of_vector_elements_par, test_task_run) {
     taskDataPar->inputs_count.emplace_back(rows);
     taskDataPar->inputs_count.emplace_back(columns);
     for (long unsigned int i = 0; i < input.size(); i++) {
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input[i].data()));
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input[i].data()));
     }
     taskDataPar->outputs_count.emplace_back(1);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&res));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(&res));
   }
   auto test = std::make_shared<Sdobnov_V_sum_of_vector_elements::SumVecElemParallel>(taskDataPar);
 

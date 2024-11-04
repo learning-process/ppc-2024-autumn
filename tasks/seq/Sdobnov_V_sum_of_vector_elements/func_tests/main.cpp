@@ -21,7 +21,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_seq, EmptyOutput) {
   taskDataPar->inputs_count.emplace_back(rows);
   taskDataPar->inputs_count.emplace_back(columns);
   for (long unsigned int i = 0; i < input.size(); i++) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input[i].data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input[i].data()));
   }
 
   Sdobnov_V_sum_of_vector_elements::SumVecElemSequential test(taskDataPar);
@@ -38,10 +38,10 @@ TEST(Sdobnov_V_sum_of_vector_elements_seq, EmptyMatrix) {
   taskDataPar->inputs_count.emplace_back(rows);
   taskDataPar->inputs_count.emplace_back(columns);
   for (long unsigned int i = 0; i < input.size(); i++) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input[i].data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input[i].data()));
   }
   taskDataPar->outputs_count.emplace_back(1);
-  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&res));
+  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(&res));
 
   Sdobnov_V_sum_of_vector_elements::SumVecElemSequential test(taskDataPar);
 
@@ -68,10 +68,10 @@ TEST(Sdobnov_V_sum_of_vector_elements_seq, Matrix10x10) {
   taskDataPar->inputs_count.emplace_back(rows);
   taskDataPar->inputs_count.emplace_back(columns);
   for (long unsigned int i = 0; i < input.size(); i++) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input[i].data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input[i].data()));
   }
   taskDataPar->outputs_count.emplace_back(1);
-  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&res));
+  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(&res));
 
   Sdobnov_V_sum_of_vector_elements::SumVecElemSequential test(taskDataPar);
 
@@ -98,10 +98,10 @@ TEST(Sdobnov_V_sum_of_vector_elements_seq, Matrix100x100) {
   taskDataPar->inputs_count.emplace_back(rows);
   taskDataPar->inputs_count.emplace_back(columns);
   for (long unsigned int i = 0; i < input.size(); i++) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input[i].data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input[i].data()));
   }
   taskDataPar->outputs_count.emplace_back(1);
-  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&res));
+  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(&res));
 
   Sdobnov_V_sum_of_vector_elements::SumVecElemSequential test(taskDataPar);
 
@@ -128,10 +128,10 @@ TEST(Sdobnov_V_sum_of_vector_elements_seq, Matrix100x10) {
   taskDataPar->inputs_count.emplace_back(rows);
   taskDataPar->inputs_count.emplace_back(columns);
   for (long unsigned int i = 0; i < input.size(); i++) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input[i].data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input[i].data()));
   }
   taskDataPar->outputs_count.emplace_back(1);
-  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&res));
+  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(&res));
 
   Sdobnov_V_sum_of_vector_elements::SumVecElemSequential test(taskDataPar);
 
@@ -158,10 +158,10 @@ TEST(Sdobnov_V_sum_of_vector_elements_seq, Matrix10x100) {
   taskDataPar->inputs_count.emplace_back(rows);
   taskDataPar->inputs_count.emplace_back(columns);
   for (long unsigned int i = 0; i < input.size(); i++) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input[i].data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input[i].data()));
   }
   taskDataPar->outputs_count.emplace_back(1);
-  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&res));
+  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(&res));
 
   Sdobnov_V_sum_of_vector_elements::SumVecElemSequential test(taskDataPar);
 
