@@ -22,8 +22,8 @@ bool MPIIntegralCalculator::pre_processing() {
   if (rank == 0) {
     a = *reinterpret_cast<double*>(taskData->inputs[0]);
     b = *reinterpret_cast<double*>(taskData->inputs[1]);
+    cnt_of_splits = *reinterpret_cast<int*>(taskData->inputs[2]);
 
-    cnt_of_splits = *reinterpret_cast<int*>(taskData->inputs[2]); 
   }
 
   // Распространение значений на все процессы
@@ -56,7 +56,8 @@ bool MPIIntegralCalculator::run() {
   if (start >= end) {
     // std::cerr << "Process " << rank << " has no work to do." << std::endl;
 
-     return false;  
+     return false; 
+
   }
 
   // Вычисление локального результата
@@ -85,7 +86,6 @@ bool MPIIntegralCalculator::post_processing() {
 
   if (rank == 0) {
     if (taskData->outputs.empty()) return false;
-    
     *reinterpret_cast<double*>(taskData->outputs[0]) = global_res;
     // Если есть дополнительные выходные данные
     // taskData->outputs[1] = <some other value>;

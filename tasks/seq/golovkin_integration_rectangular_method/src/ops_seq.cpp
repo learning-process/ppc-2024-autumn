@@ -3,14 +3,13 @@
 #include "seq/golovkin_integration_rectangular_method/include/ops_seq.hpp"
 
 #include <cmath>
-#include <stdexcept>
 #include <iostream> 
+#include <stdexcept>
 #include <vector>
 
 using namespace golovkin_integration_rectangular_method;
 
 IntegralCalculator::IntegralCalculator(std::shared_ptr<ppc::core::TaskData> taskData)
-    
     : ppc::core::Task(taskData), 
 
       taskData(taskData),
