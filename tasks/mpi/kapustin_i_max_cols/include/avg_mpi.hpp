@@ -27,8 +27,7 @@ class MaxColumnTaskSequentialMPI : public ppc::core::Task {
   int row_count{}, column_count{};
 };
 
-class MaxColumnTaskParallelMPI : public ppc::core::Task 
-{
+class MaxColumnTaskParallelMPI : public ppc::core::Task {
  public:
   explicit MaxColumnTaskParallelMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;

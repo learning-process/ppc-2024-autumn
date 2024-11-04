@@ -1,11 +1,12 @@
 #include <gtest/gtest.h>
-#include "seq/kapustin_i_max_cols/include/avg_seq.hpp"
+
 #include <vector>
 
-TEST(kapustin_i_max_column_task_seq, test_square_M_3_3) 
-{
-  std::vector<int> in = {1,2,3,4,5,6,7,8,9};
-  std::vector<int> expected_out = {7, 8,9};  
+#include "seq/kapustin_i_max_cols/include/avg_seq.hpp"
+
+TEST(kapustin_i_max_column_task_seq, test_square_M_3_3) {
+  std::vector<int> in = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+  std::vector<int> expected_out = {7, 8, 9};
   std::vector<int> out(3);                    
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -27,11 +28,9 @@ TEST(kapustin_i_max_column_task_seq, test_square_M_3_3)
   ASSERT_EQ(out, expected_out);  
 }
 
-TEST(kapustin_i_max_column_task_seq, test_rect_M_2_4)
-{
-  
+TEST(kapustin_i_max_column_task_seq, test_rect_M_2_4) {
   std::vector<int> in = {1, 2, 3, 4, 5, 6, 7, 8};
-  std::vector<int> expected_out = {5, 6, 7,8};  
+  std::vector<int> expected_out = {5, 6, 7, 8};
   std::vector<int> out(4);                    
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -51,11 +50,9 @@ TEST(kapustin_i_max_column_task_seq, test_rect_M_2_4)
   testTask.post_processing();              
   ASSERT_EQ(out, expected_out);  
 }
-TEST(kapustin_i_max_column_task_seq, test_big_square_M_6_6) 
-{
-  std::vector<int> in = {
-      1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-      20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36};  
+TEST(kapustin_i_max_column_task_seq, test_big_square_M_6_6) {
+  std::vector<int> in = {1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16, 17, 18,
+                         19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36};
   std::vector<int> expected_out = {31, 32, 33, 34, 35, 36};
   std::vector<int> out(6);
 
@@ -76,8 +73,7 @@ TEST(kapustin_i_max_column_task_seq, test_big_square_M_6_6)
   testTask.post_processing();
   ASSERT_EQ(out, expected_out);
 }
-TEST(kapustin_i_max_column_task_seq, empty_M) 
-{
+TEST(kapustin_i_max_column_task_seq, empty_M) {
   std::vector<int> in = {};
   std::vector<int> expected_out = {};
   std::vector<int> out;
@@ -95,8 +91,7 @@ TEST(kapustin_i_max_column_task_seq, empty_M)
   kapustin_i_max_column_task_seq::MaxColumnTaskSequential testTask(taskDataSeq);
   ASSERT_EQ(testTask.validation(), false);  
 }
-TEST(kapustin_i_max_column_task_seq, identity_M) 
-{
+TEST(kapustin_i_max_column_task_seq, identity_M) {
   std::vector<int> in = {1};
   std::vector<int> expected_out = {1};
   std::vector<int> out(1);

@@ -1,27 +1,26 @@
 #include <gtest/gtest.h>
+
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <vector>
+
 #include <random>
+#include <vector>
+
 #include "mpi/kapustin_i_max_cols/include/avg_mpi.hpp"
 
-std::vector<int> getRandomVector(int sz) 
-{
+std::vector<int> getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) 
-  {
+  for (int i = 0; i < sz; i++) {
     int val = gen() % 100;
-    if (val >= 0) 
-    {
+    if (val >= 0) {
       vec[i] = val;
     }
   }
   return vec;
 }
-TEST(kapustin_i_max_column_task_mpi, M_5x5_test)
-{
+TEST(kapustin_i_max_column_task_mpi, M_5x5_test) {
   boost::mpi::communicator world;
   int cols = 5;
   int rows = 5;
@@ -30,8 +29,7 @@ TEST(kapustin_i_max_column_task_mpi, M_5x5_test)
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  if (world.rank() == 0)
-  {
+  if (world.rank() == 0) {
     const int size_vector = cols * rows;
     matrix = getRandomVector(size_vector);
 
@@ -50,8 +48,7 @@ TEST(kapustin_i_max_column_task_mpi, M_5x5_test)
     testMpiTaskParallel.run();
     testMpiTaskParallel.post_processing();
 
-    if (world.rank() == 0)
-    {
+  if (world.rank() == 0) {
       std::vector<int> res_sequential(cols, 0);
 
       std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -74,8 +71,7 @@ TEST(kapustin_i_max_column_task_mpi, M_5x5_test)
       ASSERT_EQ(res_sequential, result_parallel);
     }
 }
-  TEST(kapustin_i_max_column_task_mpi, M_1x10_test) 
-  {
+TEST(kapustin_i_max_column_task_mpi, M_1x10_test) {
   boost::mpi::communicator world;
   int cols = 1;
   int rows = 10;
@@ -84,8 +80,7 @@ TEST(kapustin_i_max_column_task_mpi, M_5x5_test)
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  if (world.rank() == 0) 
-  {
+  if (world.rank() == 0) {
       const int size_vector = cols * rows;
       matrix = getRandomVector(size_vector);
 
@@ -104,8 +99,7 @@ TEST(kapustin_i_max_column_task_mpi, M_5x5_test)
     testMpiTaskParallel.run();
     testMpiTaskParallel.post_processing();
 
-    if (world.rank() == 0)
-    {
+  if (world.rank() == 0) {
       std::vector<int> res_sequential(cols, 0);
 
       std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -127,8 +121,7 @@ TEST(kapustin_i_max_column_task_mpi, M_5x5_test)
       ASSERT_EQ(res_sequential, result_parallel);
     }
   }
-  TEST(kapustin_i_max_column_task_mpi, M_10x1_test)
-  {
+TEST(kapustin_i_max_column_task_mpi, M_10x1_test) {
   boost::mpi::communicator world;
   int cols = 10;
   int rows = 1;
@@ -137,8 +130,7 @@ TEST(kapustin_i_max_column_task_mpi, M_5x5_test)
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  if (world.rank() == 0) 
-  {
+  if (world.rank() == 0) {
       const int size_vector = cols * rows;
       matrix = getRandomVector(size_vector);
 
@@ -157,8 +149,7 @@ TEST(kapustin_i_max_column_task_mpi, M_5x5_test)
     testMpiTaskParallel.run();
     testMpiTaskParallel.post_processing();
 
-    if (world.rank() == 0) 
-    {
+  if (world.rank() == 0) {
       std::vector<int> res_sequential(cols, 0);
 
       std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -180,8 +171,7 @@ TEST(kapustin_i_max_column_task_mpi, M_5x5_test)
       ASSERT_EQ(res_sequential, result_parallel);
     }
   }
-  TEST(kapustin_i_max_column_task_mpi, M_100x100_test) 
-  {
+TEST(kapustin_i_max_column_task_mpi, M_100x100_test) {
     boost::mpi::communicator world;
     int cols = 100;
     int rows = 100;
@@ -190,8 +180,7 @@ TEST(kapustin_i_max_column_task_mpi, M_5x5_test)
 
     std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-    if (world.rank() == 0) 
-    {
+  if (world.rank() == 0) {
       const int size_vector = cols * rows;
       matrix = getRandomVector(size_vector);
 
@@ -210,8 +199,7 @@ TEST(kapustin_i_max_column_task_mpi, M_5x5_test)
     testMpiTaskParallel.run();
     testMpiTaskParallel.post_processing();
 
-    if (world.rank() == 0)
-    {
+  if (world.rank() == 0) {
       std::vector<int> res_sequential(cols, 0);
 
       std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();

@@ -1,10 +1,7 @@
 // Copyright 2024 Nesterov Alexander
-#include <thread>
+#include "seq/kapustin_i_max_cols/include/avg_seq.hpp"
 #include <algorithm>
 #include <functional>
-#include <random>
-#include <iostream>
-#include "seq/kapustin_i_max_cols/include/avg_seq.hpp"
 
 using namespace std::chrono_literals;
 
@@ -34,14 +31,11 @@ bool kapustin_i_max_column_task_seq::MaxColumnTaskSequential::validation() {
 
 bool kapustin_i_max_column_task_seq::MaxColumnTaskSequential::run() {
   internal_order_test();
-  for (int j = 0; j < column_count; ++j)
-  {
+  for (int j = 0; j < column_count; ++j) {
     int max_value = std::numeric_limits<int>::min();
-    for (int i = 0; i < row_count; ++i) 
-    {
+    for (int i = 0; i < row_count; ++i) {
       int current_value = input_[i * column_count + j];
-      if (current_value > max_value) 
-      {
+      if (current_value > max_value) {
         max_value = current_value;
       }
     }
