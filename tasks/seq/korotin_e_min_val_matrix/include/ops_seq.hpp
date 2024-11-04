@@ -1,12 +1,12 @@
 // Copyright 2023 Nesterov Alexander
 #pragma once
 
-#include <cstring>
+#include <random>
 #include <vector>
 
 #include "core/task/include/task.hpp"
 
-namespace chizhov_m_max_values_by_columns_matrix_seq {
+namespace korotin_e_min_val_matrix_seq {
 
 class TestTaskSequential : public ppc::core::Task {
  public:
@@ -17,10 +17,8 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  int cols{};
-  int rows{};
-  std::vector<int> input_;
-  std::vector<int> res_;
+  std::vector<double> input_;
+  double res{};
 };
 
-}  // namespace chizhov_m_max_values_by_columns_matrix_seq
+}  // namespace korotin_e_min_val_matrix_seq

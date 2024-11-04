@@ -7,13 +7,12 @@
 #include <boost/mpi/communicator.hpp>
 #include <memory>
 #include <numeric>
-#include <string>
 #include <utility>
 #include <vector>
 
 #include "core/task/include/task.hpp"
 
-namespace chizhov_m_max_values_by_columns_matrix_mpi {
+namespace korotin_e_min_val_matrix_mpi {
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
@@ -24,10 +23,8 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> input_;
-  std::vector<int> res_{};
-  int cols{};
-  int rows{};
+  std::vector<double> input_;
+  double res = 0.0;
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -39,11 +36,9 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> input_, local_input_;
-  std::vector<int> res_{};
-  int cols{};
-  int rows{};
+  std::vector<double> input_, local_input_;
+  double res = 0.0;
   boost::mpi::communicator world;
 };
 
-}  // namespace chizhov_m_max_values_by_columns_matrix_mpi
+}  // namespace korotin_e_min_val_matrix_mpi
