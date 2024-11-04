@@ -1,7 +1,6 @@
 #pragma once
 
 #include <gtest/gtest.h>
-
 #include <mpi.h>
 
 #include <boost/mpi.hpp>
@@ -37,7 +36,7 @@ struct ChunkResult {
     return (a.diff > b.diff || (a.diff == b.diff && (a.left_index < b.left_index))) ? a : b;
   }
 
-  std::vector<int> toVector(const std::vector<int>& input) const {
+  std::vector<int> toVector(const std::vector<int> &input) const {
     return std::vector<int>{
         std::min(input[left_index], input[right_index]),
         std::max(input[left_index], input[right_index]),
