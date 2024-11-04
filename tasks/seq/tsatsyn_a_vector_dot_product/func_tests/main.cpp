@@ -83,7 +83,7 @@ TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_32) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(scale, ans[0]);
+  ASSERT_EQ(tsatsyn_a_vector_dot_product_seq::resulting(v1, v2), ans[0]);
 }
 
 TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_28) {
@@ -109,7 +109,7 @@ TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_28) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(scale, ans[0]);
+  ASSERT_EQ(tsatsyn_a_vector_dot_product_seq::resulting(v1, v2), ans[0]);
 }
 
 TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_95) {
@@ -135,7 +135,7 @@ TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_95) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(scale, ans[0]);
+  ASSERT_EQ(tsatsyn_a_vector_dot_product_seq::resulting(v1, v2), ans[0]);
 }
 
 TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_2330) {
@@ -161,7 +161,7 @@ TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_2330) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(scale, ans[0]);
+  ASSERT_EQ(tsatsyn_a_vector_dot_product_seq::resulting(v1, v2), ans[0]);
 }
 
 TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_1956) {
@@ -187,5 +187,5 @@ TEST(tsatsyn_a_vector_dot_product_seq, Test_Scalar_1956) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(count, ans[0]);
+  ASSERT_EQ(tsatsyn_a_vector_dot_product_seq::resulting(v1, v2), ans[0]);
 }
