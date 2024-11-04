@@ -85,6 +85,7 @@ bool TestTaskParallel::run() {
     return true;
   }
 
+#if defined(_MSC_VER) && !defined(__clang__)
   if (world.size() == 1) {
     for (int i = 0; i < length; i++) {
       if (!is_word_character(input_[i])) word_count_++;
@@ -92,6 +93,7 @@ bool TestTaskParallel::run() {
     word_count_++;
     return true;
   }
+#endif
 
   int world_size = world.size();
 
