@@ -112,6 +112,11 @@ bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel::run() {
     reduce(world, local_res, res, boost::mpi::maximum<int>(), 0);
   } else if (ops == "min") {
     reduce(world, local_res, res, boost::mpi::minimum<int>(), 0);
+    if (world.rank() == 0) {
+      if (input_.back() < res) {
+        res = input_.back();
+      }
+    }
   }
   std::this_thread::sleep_for(20ms);
   return true;

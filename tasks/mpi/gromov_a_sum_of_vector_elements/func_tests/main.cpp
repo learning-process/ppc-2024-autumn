@@ -8,7 +8,7 @@
 
 TEST(gromov_a_sum_of_vector_elements_mpi, Test_Min1) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec = {-10, -20, 0, 15, 30};
+  std::vector<int> global_vec = {-10, -20, 0, 15, -30};
   std::vector<int32_t> global_min(1, std::numeric_limits<int32_t>::max());
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
