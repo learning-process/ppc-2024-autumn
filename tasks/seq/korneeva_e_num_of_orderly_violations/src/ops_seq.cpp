@@ -19,7 +19,7 @@ bool OrderlyViolationsCounter<iotype, cntype>::pre_processing() {
 template <typename iotype, typename cntype>
 bool OrderlyViolationsCounter<iotype, cntype>::validation() {
   internal_order_test();
-  return (taskData && taskData->inputs_count[0] > 0 && taskData->inputs.size() > 0 && taskData->outputs_count[0] == 1);
+  return (taskData && taskData->inputs_count[0] > 0 && !taskData->inputs.empty() && taskData->outputs_count[0] == 1);
 }
 
 template <typename iotype, typename cntype>

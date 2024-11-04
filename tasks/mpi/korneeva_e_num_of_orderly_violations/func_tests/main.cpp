@@ -28,7 +28,7 @@ TEST(korneeva_e_num_of_orderly_violations_mpi, NoViolations_SingleElement) {
   // Check the result only on the root process
   if (rank == 0) {
     int expected_count = 0;
-    ASSERT_EQ(out[0], expected_count) << "[Rank 0] Test failed: expected " << expected_count << ", got " << out[0];
+    ASSERT_EQ(out[0], expected_count);
   }
 }
 
