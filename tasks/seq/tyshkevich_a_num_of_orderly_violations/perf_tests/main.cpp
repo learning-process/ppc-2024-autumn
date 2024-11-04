@@ -6,7 +6,7 @@
 #include "seq/tyshkevich_a_num_of_orderly_violations/include/ops_seq.hpp"
 
 TEST(tyshkevich_a_num_of_orderly_violations_seq_perftest, test_pipeline_run) {
-  int size = 999;
+  int size = 9999;
 
   // Create data
   std::vector<int> in(size, 0);
@@ -44,7 +44,7 @@ TEST(tyshkevich_a_num_of_orderly_violations_seq_perftest, test_pipeline_run) {
 }
 
 TEST(tyshkevich_a_num_of_orderly_violations_seq_perftest, test_task_run) {
-  int size = 999;
+  int size = 9999;
 
   // Create data
   std::vector<int> in(size, 0);
