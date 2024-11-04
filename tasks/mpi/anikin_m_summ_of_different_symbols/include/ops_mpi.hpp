@@ -1,48 +1,40 @@
 // Copyright 2024 Anikin Maksim
 #pragma once
 
-#include <gtest/gtest.h>
-
-#include <boost/mpi/collectives.hpp>
-#include <boost/mpi/communicator.hpp>
-#include <memory>
-#include <numeric>
+#include <boost/mpi.hpp>
 #include <string>
-#include <utility>
-#include <vector>
 
 #include "core/task/include/task.hpp"
 
 namespace anikin_m_summ_of_different_symbols_mpi {
 
-std::string getRandomString(int sz);
-
 class SumDifSymMPISequential : public ppc::core::Task {
  public:
-  explicit SumDifSymMPISequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-  bool pre_processing() override;
+  explicit SumDifSymMPISequential(std::shared_ptr<ppc::core::TaskData> task_data) : Task(std::move(task_data)) {}
   bool validation() override;
+  bool pre_processing() override;
   bool run() override;
   bool post_processing() override;
 
  private:
-  std::vector<char*> input;
-  int res;
+  std::string input_a, input_b;
+  int result_{};
 };
 
 class SumDifSymMPIParallel : public ppc::core::Task {
  public:
-  explicit SumDifSymMPIParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-  bool pre_processing() override;
+  explicit SumDifSymMPIParallel(std::shared_ptr<ppc::core::TaskData> task_data) : Task(std::move(task_data)) {}
   bool validation() override;
+  bool pre_processing() override;
   bool run() override;
   bool post_processing() override;
 
  private:
-  std::vector<std::string> local_input;
-  std::vector<char*> input;
-  int res{};
-  boost::mpi::communicator com;
+  std::string input_a, input_b;
+  std::string local_input_a, local_input_b;
+  int result_{};
+
+  boost::mpi::communicator world;
 };
 
 }  // namespace anikin_m_summ_of_different_symbols_mpi

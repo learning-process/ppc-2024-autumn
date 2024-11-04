@@ -1,89 +1,92 @@
 // Copyright 2024 Anikin Maksim
 #include <gtest/gtest.h>
 
-#include <boost/mpi/timer.hpp>
+#include <boost/mpi.hpp>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/anikin_m_summ_of_different_symbols/include/ops_mpi.hpp"
 
-TEST(anikin_m_SummDifSymMPI_parallel_perf_test, test_pipeline_run) {
-  boost::mpi::communicator com;
-  char str1[] = "kdfoew";
-  char str2[] = "hfgeew";
-  std::vector<char*> in{str1, str2};
-  std::vector<int> out(1, 1);
+TEST(anikin_m_summ_of_different_symbols_mpi, test_pipeline_run) {
+  boost::mpi::communicator world;
+  std::string input_a;
+  std::string input_b;
 
-  // Create Task Data Parallel
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  if (com.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[0]));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[1]));
-    taskDataPar->inputs_count.emplace_back(in.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-    taskDataPar->outputs_count.emplace_back(out.size());
+  auto output = std::vector<int>(1);
+  auto expected = 0;
+
+  auto task_data = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    input_a = std::string(5000000, 'a');
+    input_b = std::string(5000000, 'a');
+    task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_a.data()));
+    task_data->inputs_count.emplace_back(input_a.size());
+    task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_b.data()));
+    task_data->inputs_count.emplace_back(input_b.size());
+    task_data->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+    task_data->outputs_count.emplace_back(output.size());
   }
-  // Create Task
-  auto testClassPar = std::make_shared<anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel>(taskDataPar);
-  ASSERT_EQ(testClassPar->validation(), true);
-  testClassPar->pre_processing();
-  testClassPar->run();
-  testClassPar->post_processing();
 
-  // Create Perf attributes
-  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;
+  auto task = std::make_shared<anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel>(task_data);
+  ASSERT_TRUE(task->validation());
+  task->pre_processing();
+  task->run();
+  task->post_processing();
+
+  auto perf_attr = std::make_shared<ppc::core::PerfAttr>();
+  perf_attr->num_running = 10;
   const boost::mpi::timer current_timer;
-  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+  perf_attr->current_timer = [&] { return current_timer.elapsed(); };
 
-  // Create and init perf results
-  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+  auto perf_results = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testClassPar);
-  perfAnalyzer->pipeline_run(perfAttr, perfResults);
-  if (com.rank() == 0) {
-    ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(4, out[0]);
+  auto perf_analyzer = std::make_shared<ppc::core::Perf>(task);
+  perf_analyzer->pipeline_run(perf_attr, perf_results);
+
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perf_results);
+    ASSERT_EQ(expected, output[0]);
   }
 }
-TEST(anikin_m_SummDifSymMPI_parallel_perf_test, test_task_run) {
-  boost::mpi::communicator com;
-  char str1[] = "herwrwer";
-  char str2[] = "httrrewr";
-  std::vector<char*> in{str1, str2};
-  std::vector<int> out(1, 1);
 
-  // Create Task Data Parallel//
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  if (com.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[0]));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[1]));
-    taskDataPar->inputs_count.emplace_back(in.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-    taskDataPar->outputs_count.emplace_back(out.size());
+TEST(anikin_m_summ_of_different_symbols_mpi, test_task_run) {
+  boost::mpi::communicator world;
+  std::string input_a;
+  std::string input_b;
+
+  auto output = std::vector<int>(1);
+  auto expected = 0;
+
+  auto task_data = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    input_a = std::string(5000000, 'a');
+    input_b = std::string(5000000, 'a');
+    task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_a.data()));
+    task_data->inputs_count.emplace_back(input_a.size());
+    task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_b.data()));
+    task_data->inputs_count.emplace_back(input_b.size());
+    task_data->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+    task_data->outputs_count.emplace_back(output.size());
   }
-  // Create Task
-  auto testClassPar = std::make_shared<anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel>(taskDataPar);
-  ASSERT_EQ(testClassPar->validation(), true);
-  testClassPar->pre_processing();
-  testClassPar->run();
-  testClassPar->post_processing();
 
-  // Create Perf attributes
-  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;
+  auto task = std::make_shared<anikin_m_summ_of_different_symbols_mpi::SumDifSymMPIParallel>(task_data);
+  ASSERT_TRUE(task->validation());
+  task->pre_processing();
+  task->run();
+  task->post_processing();
+
+  auto perf_attr = std::make_shared<ppc::core::PerfAttr>();
+  perf_attr->num_running = 10;
   const boost::mpi::timer current_timer;
-  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+  perf_attr->current_timer = [&] { return current_timer.elapsed(); };
 
-  // Create and init perf results
-  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+  auto perf_results = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testClassPar);
-  perfAnalyzer->task_run(perfAttr, perfResults);
-  if (com.rank() == 0) {
-    ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(5, out[0]);
+  auto perf_analyzer = std::make_shared<ppc::core::Perf>(task);
+  perf_analyzer->task_run(perf_attr, perf_results);
+
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perf_results);
+    ASSERT_EQ(expected, output[0]);
   }
 }

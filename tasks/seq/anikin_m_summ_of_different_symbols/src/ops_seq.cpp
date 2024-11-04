@@ -28,14 +28,6 @@ bool anikin_m_sum_of_differnt_symbols_seq::SumDifSymSequential::run() {
   std::string str1 = input[0];
   std::string str2 = input[1];
 
-  int dif;
-  dif = 0;
-
-  if (str1.size() >= str2.size()) {
-    dif = str1.size() - str2.size();
-  } else {
-    dif = str2.size() - str1.size();
-  }
   auto i1 = str1.begin();
   auto i2 = str2.begin();
 
@@ -43,6 +35,14 @@ bool anikin_m_sum_of_differnt_symbols_seq::SumDifSymSequential::run() {
     if (*i1 != *i2) res++;
     i1++;
     i2++;
+  }
+
+  int dif = 0;
+
+  if (str1.size() >= str2.size()) {
+    dif = str1.size() - str2.size();
+  } else {
+    dif = str2.size() - str1.size();
   }
 
   res += dif;
