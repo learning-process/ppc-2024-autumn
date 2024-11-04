@@ -11,6 +11,7 @@
 #include "core/task/include/task.hpp"
 
 namespace sadikov_I_Sum_values_by_columns_matrix_mpi {
+std::vector<int> GetRandomData(size_t size);
 class MPITask : public ppc::core::Task {
  private:
   std::vector<int> sum;
