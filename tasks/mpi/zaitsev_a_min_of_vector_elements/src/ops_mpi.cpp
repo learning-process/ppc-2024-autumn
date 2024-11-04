@@ -79,8 +79,6 @@ bool zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsParallel::pre_proc
   } else {
     world.recv(0, 0, local_input_.data(), delta);
   }
-  // Init value for output
-  res = 0;
   return true;
 }
 
