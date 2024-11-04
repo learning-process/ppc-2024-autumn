@@ -27,13 +27,13 @@ TEST(golovkin_integration_rectangular_method, test_pipeline_run) {
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   for (const auto& value : in) {
-    double* value_ptr = new double(value); 
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(value_ptr)); 
+    auto value_ptr = std::make_shared<double>(value);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(value_ptr.get()));
   }
 
-  taskDataSeq->inputs_count.emplace_back(in.size());  
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));  
-  taskDataSeq->outputs_count.emplace_back(out.size());  
+  taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
 
   auto integralCalculatorTask = std::make_shared<IntegralCalculator>(taskDataSeq);
 
@@ -47,17 +47,12 @@ TEST(golovkin_integration_rectangular_method, test_pipeline_run) {
   };
 
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-
-
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(integralCalculatorTask);
-
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
-
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  ASSERT_NEAR(out[0], expected_result, 1e-3);  
+  ASSERT_NEAR(out[0], expected_result, 1e-3);
 }
-
 TEST(golovkin_integration_rectangular_method, test_task_run) {
   const double a = 0.0;
   const double b = 1.0;

@@ -30,7 +30,6 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
     taskDataPar->outputs_count.emplace_back(global_result.size());
-    
   }
 
   golovkin_integration_rectangular_method::MPIIntegralCalculator parallelTask(taskDataPar);
@@ -66,7 +65,6 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
 }
 
 TEST(golovkin_integration_rectangular_method, test_square_function) {
-
   boost::mpi::communicator world;
   std::vector<double> global_result(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -76,7 +74,6 @@ TEST(golovkin_integration_rectangular_method, test_square_function) {
   double epsilon = 0.1;
 
   if (world.rank() == 0) {
-
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
@@ -123,6 +120,7 @@ TEST(golovkin_integration_rectangular_method, test_sine_function) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   double a = 0.0;
+
 
   double b = M_PI;  
   double epsilon = 0.1;

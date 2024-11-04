@@ -3,7 +3,6 @@
 #include "seq/golovkin_integration_rectangular_method/include/ops_seq.hpp"
 
 #include <cmath>
-
 #include <iostream> 
 #include <stdexcept>
 #include <vector>
@@ -11,8 +10,8 @@
 using namespace golovkin_integration_rectangular_method;
 
 IntegralCalculator::IntegralCalculator(std::shared_ptr<ppc::core::TaskData> taskData)
-    
-    : ppc::core::Task(taskData),  
+    : ppc::core::Task(taskData), 
+
       taskData(taskData),
       a(0.0),
       b(0.0),
@@ -24,12 +23,12 @@ IntegralCalculator::IntegralCalculator(std::shared_ptr<ppc::core::TaskData> task
 bool IntegralCalculator::validation() {
   // Проверяем количество входных данных и выходных данных
   if (taskData->inputs.size() != 3) {
-      std::cerr << "Error: 3 inputs were expected, but received " << taskData->inputs.size() << std::endl;
-      return false;
+    std::cerr << "Error: 3 inputs were expected, but received " << taskData->inputs.size() << std::endl;
+    return false;
   }
   if (taskData->outputs.size() != 1) {
-      std::cerr << "Error: 1 output was expected, but received " << taskData->outputs.size() << std::endl;
-      return false;
+    std::cerr << "Error: 1 output was expected, but received " << taskData->outputs.size() << std::endl;
+    return false;
   }
   return true;
 }
@@ -37,8 +36,8 @@ bool IntegralCalculator::validation() {
 bool IntegralCalculator::pre_processing() {
   // Проверка на наличие входных данных
   if (taskData->inputs.size() < 3 || taskData->outputs.empty()) {
-      std::cerr << "Error: There is not enough data to process." << std::endl;
-      return false;
+    std::cerr << "Error: There is not enough data to process." << std::endl;
+    return false;
   }
 
   try {
@@ -69,9 +68,11 @@ bool IntegralCalculator::run() {
 
   // Вычисление интеграла методом прямоугольников
   for (int i = 0; i < cnt_of_splits; ++i) {
+
     double x = a + (i + 0.5) * h;  
     result += function_square(x);  
   }
+
   result *= h;  
   res = result; 
   return true;
@@ -82,14 +83,12 @@ bool IntegralCalculator::post_processing() {
     std::cerr << "Error: There is no output to process." << std::endl;
     return false;
   }
-    
   try {
     *reinterpret_cast<double*>(taskData->outputs[0]) = res;
   } catch (const std::exception& e) {
     std::cerr << "Error writing output data: " << e.what() << std::endl;
     return false;
   }
-    
   return true;
 }
 
