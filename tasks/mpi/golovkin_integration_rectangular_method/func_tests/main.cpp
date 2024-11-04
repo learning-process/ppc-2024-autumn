@@ -79,7 +79,6 @@ TEST(golovkin_integration_rectangular_method, test_square_function) {
 
   double a = 0.0;
   double b = 2.5;
-
   double epsilon = 0.1;
 
   if (world.rank() == 0) {
@@ -93,12 +92,18 @@ TEST(golovkin_integration_rectangular_method, test_square_function) {
     taskDataPar->outputs_count.emplace_back(global_result.size());
   }
 
+  // Синхронизация перед запуском параллельной задачи
+  world.barrier();
+
   golovkin_integration_rectangular_method::MPIIntegralCalculator parallelTask(taskDataPar);
 
   ASSERT_EQ(parallelTask.validation(), true);
   parallelTask.pre_processing();
   parallelTask.run();
   parallelTask.post_processing();
+
+  // Синхронизация после завершения параллельных задач
+  world.barrier();
 
   if (world.rank() == 0) {
     std::vector<double> reference_result(1, 0);
@@ -122,14 +127,15 @@ TEST(golovkin_integration_rectangular_method, test_square_function) {
 
     ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
   }
+  world.barrier();
 }
+
 TEST(golovkin_integration_rectangular_method, test_sine_function) {
   boost::mpi::communicator world;
   std::vector<double> global_result(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   double a = 0.0;
-
   double b = M_PI;
   double epsilon = 0.1;
 
@@ -144,12 +150,16 @@ TEST(golovkin_integration_rectangular_method, test_sine_function) {
     taskDataPar->outputs_count.emplace_back(global_result.size());
   }
 
+  world.barrier();
+
   golovkin_integration_rectangular_method::MPIIntegralCalculator parallelTask(taskDataPar);
 
   ASSERT_EQ(parallelTask.validation(), true);
   parallelTask.pre_processing();
   parallelTask.run();
   parallelTask.post_processing();
+
+  world.barrier();
 
   if (world.rank() == 0) {
     std::vector<double> reference_result(1, 0);
@@ -173,6 +183,7 @@ TEST(golovkin_integration_rectangular_method, test_sine_function) {
 
     ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
   }
+  world.barrier();
 }
 
 TEST(golovkin_integration_rectangular_method, test_exponential_function) {
@@ -181,7 +192,7 @@ TEST(golovkin_integration_rectangular_method, test_exponential_function) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   double a = 0.0;
-  double b = 2.5;  // Integrating e^x from 0 to 1
+  double b = 2.5;
   double epsilon = 0.1;
 
   if (world.rank() == 0) {
@@ -195,12 +206,16 @@ TEST(golovkin_integration_rectangular_method, test_exponential_function) {
     taskDataPar->outputs_count.emplace_back(global_result.size());
   }
 
+  world.barrier();
+
   golovkin_integration_rectangular_method::MPIIntegralCalculator parallelTask(taskDataPar);
 
   ASSERT_EQ(parallelTask.validation(), true);
   parallelTask.pre_processing();
   parallelTask.run();
   parallelTask.post_processing();
+
+  world.barrier();
 
   if (world.rank() == 0) {
     std::vector<double> reference_result(1, 0);
@@ -224,6 +239,7 @@ TEST(golovkin_integration_rectangular_method, test_exponential_function) {
 
     ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
   }
+  world.barrier();
 }
 
 TEST(golovkin_integration_rectangular_method, test_polynomial_function) {
@@ -232,7 +248,7 @@ TEST(golovkin_integration_rectangular_method, test_polynomial_function) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   double a = 1.0;
-  double b = 2.5;  // Integrating f(x) = x^3 from 1 to 3
+  double b = 2.5;
   double epsilon = 0.1;
 
   if (world.rank() == 0) {
@@ -246,12 +262,16 @@ TEST(golovkin_integration_rectangular_method, test_polynomial_function) {
     taskDataPar->outputs_count.emplace_back(global_result.size());
   }
 
+  world.barrier();
+
   golovkin_integration_rectangular_method::MPIIntegralCalculator parallelTask(taskDataPar);
 
   ASSERT_EQ(parallelTask.validation(), true);
   parallelTask.pre_processing();
   parallelTask.run();
   parallelTask.post_processing();
+
+  world.barrier();
 
   if (world.rank() == 0) {
     std::vector<double> reference_result(1, 0);
@@ -275,4 +295,5 @@ TEST(golovkin_integration_rectangular_method, test_polynomial_function) {
 
     ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
   }
+  world.barrier();
 }
