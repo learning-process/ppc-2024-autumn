@@ -19,14 +19,6 @@ std::vector<int> naumov_b_min_colum_matrix_mpi::getRandomVector(int size) {
   return vec;
 }
 
-std::vector<std::vector<int>> naumov_b_min_colum_matrix_mpi::generate_rnd_matrix(int rows, int columns) {
-  std::vector<std::vector<int>> matrix(rows);
-  for (int i = 0; i < rows; ++i) {
-    matrix[i] = getRandomVector(columns);
-  }
-  return matrix;
-}
-
 bool naumov_b_min_colum_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
 
@@ -115,19 +107,17 @@ bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::run() {
 
   if (world.rank() == 0) {
     for (int proc = 1; proc < world.size(); proc++) {
-      int send_size = delta * rows;
-      world.send(proc, 0, input_.data() + (proc * delta + extra) * rows, send_size);
+      world.send(proc, 0, input_.data() + (proc * delta + extra) * rows, delta * rows);
     }
-
     local_vector_ = std::vector<int>(input_.begin(), input_.begin() + (delta + extra) * rows);
   } else {
-    local_vector_ = std::vector<int>(delta * rows);
+    local_vector_ = std::vector<int>(delta * cols);
     world.recv(0, 0, local_vector_.data(), delta * rows);
   }
 
   std::vector<int> local_res(delta + ((world.rank() == 0) ? extra : 0), std::numeric_limits<int>::max());
 
-  for (auto i = 0u; i < local_res.size(); i++) {
+  for (int i = 0; i < local_res.size(); i++) {
     for (int j = 0; j < rows; j++) {
       local_res[i] = std::min(local_res[i], local_vector_[j + rows * i]);
     }
