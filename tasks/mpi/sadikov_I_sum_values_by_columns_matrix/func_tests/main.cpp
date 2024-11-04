@@ -19,7 +19,6 @@ std::vector<int> sadikov_I_Sum_values_by_columns_matrix_mpi::GetRandomData(size_
 }
 
 TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, checkvalidation) {
-  boost::mpi::communicator world;
   const int columns = 15;
   const int rows = 15;
   std::vector<int> in;
