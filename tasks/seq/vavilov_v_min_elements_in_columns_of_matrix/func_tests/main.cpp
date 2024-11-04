@@ -4,6 +4,26 @@
 
 #include "seq/vavilov_v_min_elements_in_columns_of_matrix/include/ops_seq.hpp"
 
+std::vector<int> generate_rand_vec(int size, int lower_bound, int upper_bound) {
+  std::vector<int> vec(size);
+  for (auto& n : vec) {
+    n = lower_bound + std::rand() % (upper_bound - lower_bound + 1);
+  }
+  return vec;
+}
+
+std::vector<std::vector<int>> generate_rand_matr(int rows, int cols) {
+  std::vector<std::vector<int>> matr(rows, std::vector<int>(cols));
+  for (int i = 0; i < rows; i++) {
+    matr[i] = generate_rand_vec(cols, -1000, 1000);
+  }
+  for (int j = 0; j < cols; j++) {
+    int r_row = std::rand() % rows;
+    matr[r_row][j] = INT_MIN;
+  }
+  return matr;
+}
+
 TEST(vavilov_v_min_elements_in_columns_of_matrix_seq, find_min_elem_in_col_400x500_matr) {
   const int rows = 400;
   const int cols = 500;
@@ -11,8 +31,7 @@ TEST(vavilov_v_min_elements_in_columns_of_matrix_seq, find_min_elem_in_col_400x5
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   vavilov_v_min_elements_in_columns_of_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  std::vector<std::vector<int>> matr =
-      vavilov_v_min_elements_in_columns_of_matrix_seq::TestTaskSequential::generate_rand_matr(rows, cols);
+  std::vector<std::vector<int>> matr = generate_rand_matr(rows, cols);
 
   for (auto& row : matr) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
@@ -42,8 +61,7 @@ TEST(vavilov_v_min_elements_in_columns_of_matrix_seq, find_min_elem_in_col_3000x
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   vavilov_v_min_elements_in_columns_of_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  std::vector<std::vector<int>> matr =
-      vavilov_v_min_elements_in_columns_of_matrix_seq::TestTaskSequential::generate_rand_matr(rows, cols);
+  std::vector<std::vector<int>> matr = generate_rand_matr(rows, cols);
 
   for (auto& row : matr) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
@@ -73,8 +91,7 @@ TEST(vavilov_v_min_elements_in_columns_of_matrix_seq, validation_input_empty_10x
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   vavilov_v_min_elements_in_columns_of_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  std::vector<std::vector<int>> matr =
-      vavilov_v_min_elements_in_columns_of_matrix_seq::TestTaskSequential::generate_rand_matr(rows, cols);
+  std::vector<std::vector<int>> matr = generate_rand_matr(rows, cols);
 
   taskDataSeq->inputs_count.emplace_back(rows);
   taskDataSeq->inputs_count.emplace_back(cols);
@@ -93,8 +110,7 @@ TEST(vavilov_v_min_elements_in_columns_of_matrix_seq, validation_output_empty_10
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   vavilov_v_min_elements_in_columns_of_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  std::vector<std::vector<int>> matr =
-      vavilov_v_min_elements_in_columns_of_matrix_seq::TestTaskSequential::generate_rand_matr(rows, cols);
+  std::vector<std::vector<int>> matr = generate_rand_matr(rows, cols);
 
   for (auto& row : matr) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
@@ -116,8 +132,7 @@ TEST(vavilov_v_min_elements_in_columns_of_matrix_seq, validation_find_min_elem_i
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   vavilov_v_min_elements_in_columns_of_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  std::vector<std::vector<int>> matr =
-      vavilov_v_min_elements_in_columns_of_matrix_seq::TestTaskSequential::generate_rand_matr(rows, cols);
+  std::vector<std::vector<int>> matr = generate_rand_matr(rows, cols);
 
   for (auto& row : matr) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
