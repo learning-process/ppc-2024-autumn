@@ -16,7 +16,7 @@ namespace deryabin_m_symbol_frequency_seq {
 		bool post_processing() override;
 
 	private:
-		std::string input_str_{}; double frequency_{}; char input_symbol_{};
+		std::string input_str_{}; float frequency_{}; char input_symbol_{};
 	};
 
 }  // namespace deryabin_m_symbol_frequency_seq
