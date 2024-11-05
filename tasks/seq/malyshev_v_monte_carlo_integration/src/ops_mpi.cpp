@@ -15,7 +15,13 @@ bool TestMPITaskSequential::pre_processing() {
   b = *reinterpret_cast<double*>(taskData->inputs[1]);
   double input_epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
   epsilon = input_epsilon;
-  num_samples = static_cast<int>(100 / epsilon);
+
+  num_samples = static_cast<int>((b - a) * 100 / epsilon);
+
+  if (num_samples < 10) {
+    num_samples = 10;
+  }
+
   return true;
 }
 
