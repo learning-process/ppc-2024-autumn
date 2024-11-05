@@ -46,8 +46,8 @@ std::vector<std::vector<int>> varfolomeev_g_matrix_max_rows_vals_mpi::generateMa
 bool varfolomeev_g_matrix_max_rows_vals_mpi::MaxInRowsSequential::pre_processing() {
   internal_order_test();
   // Init value for input and output
-  size_m = static_cast<size_t>(taskData->inputs_count[0]);  // rows count
-  size_n = static_cast<size_t>(taskData->inputs_count[1]);  // columns count
+  size_m = taskData->inputs_count[0];  // rows count
+  size_n = taskData->inputs_count[1];  // columns count
   mtr = std::vector<int>(size_m * size_n, 0);
   int *inpt_prt = reinterpret_cast<int *>(taskData->inputs[0]);
   mtr = std::vector<int>(inpt_prt, inpt_prt + size_n * size_m);
@@ -61,8 +61,6 @@ bool varfolomeev_g_matrix_max_rows_vals_mpi::MaxInRowsSequential::validation() {
   // Check count elements of output
   return taskData->outputs_count[0] ==
          taskData->inputs_count[0];  // Checking that the number of output data is equal to the number of rows
-  // return taskData->inputs_count[0] >=2 && taskData->inputs_count[1] >= 0 &&
-  // static_cast<size_t>(taskData->outputs_count[0]) == size_m;
 }
 
 bool varfolomeev_g_matrix_max_rows_vals_mpi::MaxInRowsSequential::run() {
@@ -85,8 +83,8 @@ bool varfolomeev_g_matrix_max_rows_vals_mpi::MaxInRowsSequential::post_processin
 bool varfolomeev_g_matrix_max_rows_vals_mpi::MaxInRowsParallel::pre_processing() {
   internal_order_test();
   // Init vectors
-  size_m = (size_t)(taskData->inputs_count[0]);
-  size_n = (size_t)(taskData->inputs_count[1]);
+  size_m = taskData->inputs_count[0];
+  size_n = taskData->inputs_count[1];
 
   if (world.rank() == 0) {
     mtr = std::vector<int>(size_n * size_m);
@@ -140,12 +138,12 @@ bool varfolomeev_g_matrix_max_rows_vals_mpi::MaxInRowsParallel::run() {
 
     int row = 0;
     while (row < size_m) {
-      for (size_t i = 0; i < std::min((size_t)world.size() - 1, (size_t)size_m - row); i++) {
+      for (int i = 0; i < std::min(world.size() - 1, size_m - row); i++) {
         world.send(i + 1, TERMINATE, &continue_flag, 1);
         world.send(i + 1, SEND_DATA, distr_vec.data() + (row + i) * size_n, size_n);
       }
 
-      for (size_t i = 0; i < std::min((size_t)world.size() - 1, (size_t)size_m - row); i++) {
+      for (int i = 0; i < std::min(world.size() - 1, size_m - row); i++) {
         world.recv(i + 1, SEND_RESULT, max_vec.data() + row + i, 1);
       }
       row += world.size() - 1;
@@ -174,7 +172,7 @@ bool varfolomeev_g_matrix_max_rows_vals_mpi::MaxInRowsParallel::run() {
 bool varfolomeev_g_matrix_max_rows_vals_mpi::MaxInRowsParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    for (size_t i = 0; i < size_m; i++) {
+    for (int i = 0; i < size_m; i++) {
       reinterpret_cast<int *>(taskData->outputs[0])[i] = res_vec[i];
     }
   }

@@ -50,7 +50,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_5x5_Matrix) {
     maxInRowsSequential.run();
     maxInRowsSequential.post_processing();
 
-    for (size_t i = 0; i < size_m; i++) {
+    for (int i = 0; i < size_m; i++) {
       ASSERT_EQ(reference_max[i], global_max[i]);
     }
   }
@@ -99,7 +99,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_1x5_Matrix) {
     maxInRowsSequential.run();
     maxInRowsSequential.post_processing();
 
-    for (size_t i = 0; i < size_m; i++) {
+    for (int i = 0; i < size_m; i++) {
       ASSERT_EQ(reference_max[i], global_max[i]);
     }
   }
@@ -148,7 +148,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_1x5000_Matrix) {
     maxInRowsSequential.run();
     maxInRowsSequential.post_processing();
 
-    for (size_t i = 0; i < size_m; i++) {
+    for (int i = 0; i < size_m; i++) {
       ASSERT_EQ(reference_max[i], global_max[i]);
     }
   }
@@ -197,7 +197,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_5000x1_Matrix) {
     maxInRowsSequential.run();
     maxInRowsSequential.post_processing();
 
-    for (size_t i = 0; i < size_m; i++) {
+    for (int i = 0; i < size_m; i++) {
       ASSERT_EQ(reference_max[i], global_max[i]);
     }
   }
@@ -246,7 +246,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_50x50_Matrix) {
     maxInRowsSequential.run();
     maxInRowsSequential.post_processing();
 
-    for (size_t i = 0; i < size_m; i++) {
+    for (int i = 0; i < size_m; i++) {
       ASSERT_EQ(reference_max[i], global_max[i]);
     }
   }
@@ -295,7 +295,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_50x100_Matrix) {
     maxInRowsSequential.run();
     maxInRowsSequential.post_processing();
 
-    for (size_t i = 0; i < size_m; i++) {
+    for (int i = 0; i < size_m; i++) {
       ASSERT_EQ(reference_max[i], global_max[i]);
     }
   }
@@ -344,7 +344,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_100x200_Matrix) {
     maxInRowsSequential.run();
     maxInRowsSequential.post_processing();
 
-    for (size_t i = 0; i < size_m; i++) {
+    for (int i = 0; i < size_m; i++) {
       ASSERT_EQ(reference_max[i], global_max[i]);
     }
   }
@@ -393,7 +393,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_1000x1000_Matrix) {
     maxInRowsSequential.run();
     maxInRowsSequential.post_processing();
 
-    for (size_t i = 0; i < size_m; i++) {
+    for (int i = 0; i < size_m; i++) {
       ASSERT_EQ(reference_max[i], global_max[i]);
     }
   }
@@ -441,7 +441,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_manual_3x3_negative_Matrix) {
     maxInRowsSequential.run();
     maxInRowsSequential.post_processing();
 
-    for (size_t i = 0; i < size_m; i++) {
+    for (int i = 0; i < size_m; i++) {
       ASSERT_EQ(reference_max[i], global_max[i]);
     }
   }
@@ -489,7 +489,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_manual_3x3_zero_Matrix) {
     maxInRowsSequential.run();
     maxInRowsSequential.post_processing();
 
-    for (size_t i = 0; i < size_m; i++) {
+    for (int i = 0; i < size_m; i++) {
       ASSERT_EQ(reference_max[i], global_max[i]);
     }
   }
@@ -537,7 +537,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_manual_1x1_single_Matrix) {
     maxInRowsSequential.run();
     maxInRowsSequential.post_processing();
 
-    for (size_t i = 0; i < size_m; i++) {
+    for (int i = 0; i < size_m; i++) {
       ASSERT_EQ(reference_max[i], global_max[i]);
     }
   }
@@ -585,7 +585,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_manual_5x3_maxes_in_the_end_Matrix)
     maxInRowsSequential.run();
     maxInRowsSequential.post_processing();
 
-    for (size_t i = 0; i < size_m; i++) {
+    for (int i = 0; i < size_m; i++) {
       ASSERT_EQ(reference_max[i], global_max[i]);
     }
   }
