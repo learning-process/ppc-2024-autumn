@@ -63,6 +63,23 @@ bool vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskSequential::pos
 bool vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
+  return true;
+}
+
+bool vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskParallel::validation() {
+  internal_order_test();
+
+  if (world.rank() == 0) {
+    return ((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
+            (taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0) &&
+            (taskData->outputs_count[0] == taskData->inputs_count[1]));
+  }
+  return true;
+}
+
+bool vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskParallel::run() {
+  internal_order_test();
+
   int rows = 0;
   int cols = 0;
   int delta_1;
@@ -108,23 +125,7 @@ bool vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskParallel::pre_p
   }
 
   res_.resize(cols);
-  return true;
-}
-
-bool vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskParallel::validation() {
-  internal_order_test();
-
-  if (world.rank() == 0) {
-    return ((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
-            (taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0) &&
-            (taskData->outputs_count[0] == taskData->inputs_count[1]));
-  }
-  return true;
-}
-
-bool vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskParallel::run() {
-  internal_order_test();
-
+  
   std::vector<int> tmp_min(local_input_[0].size(), INT_MAX);
   for (size_t i = 0; i < local_input_[0].size(); i++) {
     for (size_t j = 0; j < local_input_.size(); j++) {
