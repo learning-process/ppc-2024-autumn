@@ -20,7 +20,6 @@ TEST(tyshkevich_a_num_of_orderly_violations_mpi_ptest, test_pipeline_run) {
 
   taskDataPar->inputs_count.emplace_back(size);
   if (world.rank() == 0) {
-    global_vec = tyshkevich_a_num_of_orderly_violations_mpi::getRandomVector(size);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
     taskDataPar->outputs_count.emplace_back(result.size());
@@ -66,7 +65,6 @@ TEST(tyshkevich_a_num_of_orderly_violations_mpi_ptest, test_task_run) {
 
   taskDataPar->inputs_count.emplace_back(size);
   if (world.rank() == 0) {
-    global_vec = tyshkevich_a_num_of_orderly_violations_mpi::getRandomVector(size);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
     taskDataPar->outputs_count.emplace_back(result.size());
