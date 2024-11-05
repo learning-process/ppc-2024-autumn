@@ -18,7 +18,7 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
   double a = 0.0;
   double b = 5.0;
   double epsilon = 0.1;
-  int cnt_of_splits = static_cast<int>((b - a) / epsilon)*10000;  // Вычисляем количество разбиений
+  int cnt_of_splits = static_cast<int>((b - a) / epsilon) * 10000;  // Вычисляем количество разбиений
 
   // Инициализация данных только для процесса 0
   if (world.rank() == 0) {

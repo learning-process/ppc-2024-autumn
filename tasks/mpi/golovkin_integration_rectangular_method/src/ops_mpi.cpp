@@ -56,7 +56,8 @@ bool MPIIntegralCalculator::run() {
 
   // Проверка, что cnt_of_splits, a, h инициализированы и имеют корректные значения
   if (cnt_of_splits <= 0 || h <= 0.0 || a >= b) {
-    std::cerr << "Process " << rank << ": Invalid configuration (cnt_of_splits, h, or range a-b)" << std::endl;
+    std::cerr << "Process " << rank << ": Invalid configuration (cnt_of_splits = " << cnt_of_splits << ", h = " << h
+              << ", a = " << a << ", b = " << b << ")" << std::endl;
     return false;
   }
 
@@ -66,13 +67,10 @@ bool MPIIntegralCalculator::run() {
   int start = rank * splits_per_proc + std::min(rank, remaining_splits);
   int end = start + splits_per_proc + (rank < remaining_splits ? 1 : 0);
 
-  std::cout << "Process " << rank << ": cnt_of_splits = " << cnt_of_splits << ", h = " << h << ", a = " << a
-            << ", b = " << b << ", splits_per_proc = " << splits_per_proc << ", start = " << start << ", end = " << end
-            << std::endl;
-
   // Проверка диапазона
   if (start >= end) {
-    std::cerr << "Process " << rank << " has no work to do (start >= end)." << std::endl;
+    std::cerr << "Process " << rank << " has no work to do (start = " << start << ", end = " << end << ")."
+              << std::endl;
     local_res = 0.0;  // Устанавливаем local_res для процесса без работы
   } else {
     // Вычисление локального результата
@@ -82,22 +80,23 @@ bool MPIIntegralCalculator::run() {
       local_result += function_square(x);  // Функция, которую мы интегрируем
     }
     local_res = local_result * h;  // Умножаем на ширину подынтервала
+
+    std::cout << "Process " << rank << " calculated local_res = " << local_res << " from " << start << " to " << end
+              << std::endl;
   }
 
   // Сбор результатов
   double local_global_res = 0.0;
-  int mpi_err = MPI_Reduce(&local_res, &local_global_res, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-  if (mpi_err != MPI_SUCCESS) {
-    std::cerr << "MPI_Reduce failed with error code " << mpi_err << " on process " << rank << std::endl;
-    return false;
-  }
+  MPI_Reduce(&local_res, &local_global_res, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
   if (rank == 0) {
     global_res = local_global_res;
     std::cout << "Root process has global result after reduction: " << global_res << std::endl;
   }
 
-  MPI_Barrier(MPI_COMM_WORLD);  // Ждем, пока все процессы дойдут до этой точки
+  // Синхронизация процессов
+  MPI_Barrier(MPI_COMM_WORLD);
+
   return true;
 }
 
