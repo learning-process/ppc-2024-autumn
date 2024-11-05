@@ -116,3 +116,16 @@ TEST(kapustin_i_max_column_task_seq, identity_M) {
   testTask.post_processing();
   ASSERT_EQ(out, expected_out);
 }
+
+TEST(kapustin_i_max_column_task_seq, InvalidInputCountSize) {
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count = {1};
+  kapustin_i_max_column_task_seq::MaxColumnTaskSequential task(taskData);
+  ASSERT_FALSE(task.validation());
+}
+TEST(kapustin_i_max_column_task_seq, ZeroColumnOrRowCount) {
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count = {0, 0};
+  kapustin_i_max_column_task_seq::MaxColumnTaskSequential task(taskData);
+  ASSERT_FALSE(task.validation());
+}
