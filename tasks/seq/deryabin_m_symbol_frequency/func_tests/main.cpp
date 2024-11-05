@@ -6,14 +6,14 @@
 
 #include <string>
 
-TEST(deryabin_m_symbol_frequency_seq, test_standard_string) {
-	const double TEST_frequency = 0.1;
-	char ch = 'к';
+TEST(deryabin_m_symbol_frequency_seq, test_part_of_alphabet) {
+	const float TEST_frequency = 0.1;
+	char symbol = 'A';
 
 	// Create data
-	std::vector<std::string> in(1, " С одной сорокой одна морока, а сорок сорок — сорок морок...");
-	std::vector<char>in_ch(1, ch);
-	std::vector<double> out(1, 0);
+	std::vector<std::string> in(1, "ABCDEFGHIJ");
+	std::vector<char>in_ch(1, symbol);
+	std::vector<float> out(1, 0);
 
 	// Create TaskData
 	std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -34,13 +34,13 @@ TEST(deryabin_m_symbol_frequency_seq, test_standard_string) {
 }
 
 TEST(deryabin_m_symbol_frequency_seq, test_string_without_symbol) {
-	const double TEST_frequency = 0;
-	char ch = '@';
+	const float TEST_frequency = 0;
+	char symbol = '@';
 
 	// Create data
 	std::vector<std::string> in(1, " С одной сорокой одна морока, а сорок сорок — сорок морок...");
-	std::vector<char>in_ch(1, ch);
-	std::vector<double> out(1, 0);
+	std::vector<char>in_ch(1, symbol);
+	std::vector<float> out(1, 0);
 
 	// Create TaskData
 	std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -61,13 +61,13 @@ TEST(deryabin_m_symbol_frequency_seq, test_string_without_symbol) {
 }
 
 TEST(deryabin_m_symbol_frequency_seq, test_large_string) {
-	const double TEST_frequency = 0.0001;
-	char ch = '$';
+	const float TEST_frequency = 0.0001;
+	char symbol = '$';
 
 	// Create data
 	std::vector<std::string> in(1, std::string(5000 - 1, '@') + '$' + std::string(5000, '@'));
-	std::vector<char>in_ch(1, ch);
-	std::vector<double> out(1, 0);
+	std::vector<char>in_ch(1, symbol);
+	std::vector<float> out(1, 0);
 
 	// Create TaskData
 	std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -88,13 +88,13 @@ TEST(deryabin_m_symbol_frequency_seq, test_large_string) {
 }
 
 TEST(deryabin_m_symbol_frequency_seq, test_empty_string) {
-	const double TEST_frequency = 0;
-	char ch = '@';
+	const float TEST_frequency = 0;
+	char symbol = '@';
 
 	// Create data
 	std::vector<std::string> in(1, std::string());
-	std::vector<char>in_ch(1, ch);
-	std::vector<double> out(1, 0);
+	std::vector<char>in_ch(1, symbol);
+	std::vector<float> out(1, 0);
 
 	// Create TaskData
 	std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -115,13 +115,13 @@ TEST(deryabin_m_symbol_frequency_seq, test_empty_string) {
 }
 
 TEST(deryabin_m_symbol_frequency_seq, test_arithmetic_string) {
-	const double TEST_frequency = 0.1;
-	char ch = 'a';
+	const float TEST_frequency = 0.1;
+	char symbol = 'a';
 
 	// Create data
 	std::vector<std::string> in(1, "0.49*exp(a-b*b)+ln(cos(a*a))*3");
-	std::vector<char>in_ch(1, ch);
-	std::vector<double> out(1, 0);
+	std::vector<char>in_ch(1, symbol);
+	std::vector<float> out(1, 0);
 
 	// Create TaskData
 	std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
