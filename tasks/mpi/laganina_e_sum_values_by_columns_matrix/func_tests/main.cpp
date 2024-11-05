@@ -22,31 +22,31 @@ TEST(laganina_e_sum_values_by_columns_matrix_mpi, Test_2_2_matrix) {
     taskDataPar->inputs_count.emplace_back(n);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(empty_par.data()));
     taskDataPar->outputs_count.emplace_back(empty_par.size());
-    }
-    laganina_e_sum_values_by_columns_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-    ASSERT_EQ(testMpiTaskParallel.validation(), true);
-    testMpiTaskParallel.pre_processing();
-    testMpiTaskParallel.run();
-    testMpiTaskParallel.post_processing();
-    if (world.rank() == 0) {
-      // Create data
-      std::vector<int> empty_seq(n, 0);
-      // Create TaskData
-      std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
-      taskDataSeq->inputs_count.emplace_back(in.size());
-      taskDataSeq->inputs_count.emplace_back(m);
-      taskDataSeq->inputs_count.emplace_back(n);
-      taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(empty_seq.data()));
-      taskDataSeq->outputs_count.emplace_back(empty_seq.size());
-      // Create Task
-      laganina_e_sum_values_by_columns_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-      ASSERT_EQ(testMpiTaskSequential.validation(), true);
-      testMpiTaskSequential.pre_processing();
-      testMpiTaskSequential.run();
-      testMpiTaskSequential.post_processing();
-       ASSERT_EQ(empty_par, empty_seq);
-    }
+   }
+   laganina_e_sum_values_by_columns_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+   ASSERT_EQ(testMpiTaskParallel.validation(), true);
+   testMpiTaskParallel.pre_processing();
+   testMpiTaskParallel.run();
+   testMpiTaskParallel.post_processing();
+   if (world.rank() == 0) {
+    // Create data
+    std::vector<int> empty_seq(n, 0);
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
+    taskDataSeq->inputs_count.emplace_back(in.size());
+    taskDataSeq->inputs_count.emplace_back(m);
+    taskDataSeq->inputs_count.emplace_back(n);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(empty_seq.data()));
+    taskDataSeq->outputs_count.emplace_back(empty_seq.size());
+    // Create Task
+    laganina_e_sum_values_by_columns_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+    ASSERT_EQ(empty_par, empty_seq);
+   }
 }
 
 TEST(laganina_e_sum_values_by_columns_matrix_mpi, Test_500_300_matrix) {
@@ -72,23 +72,23 @@ TEST(laganina_e_sum_values_by_columns_matrix_mpi, Test_500_300_matrix) {
    testMpiTaskParallel.run();
    testMpiTaskParallel.post_processing();
    if (world.rank() == 0) {
-     // Create data
-     std::vector<int> empty_seq(n, 0);
-     // Create TaskData
-     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
-     taskDataSeq->inputs_count.emplace_back(in.size());
-     taskDataSeq->inputs_count.emplace_back(m);
-     taskDataSeq->inputs_count.emplace_back(n);
-     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(empty_seq.data()));
-     taskDataSeq->outputs_count.emplace_back(empty_seq.size());
-        // Create Task
-     laganina_e_sum_values_by_columns_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-     ASSERT_EQ(testMpiTaskSequential.validation(), true);
-     testMpiTaskSequential.pre_processing();
-     testMpiTaskSequential.run();
-     testMpiTaskSequential.post_processing();
-        ASSERT_EQ(empty_par, empty_seq);
+    // Create data
+    std::vector<int> empty_seq(n, 0);
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
+    taskDataSeq->inputs_count.emplace_back(in.size());
+    taskDataSeq->inputs_count.emplace_back(m);
+    taskDataSeq->inputs_count.emplace_back(n);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(empty_seq.data()));
+    taskDataSeq->outputs_count.emplace_back(empty_seq.size());
+    // Create Task
+    laganina_e_sum_values_by_columns_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+    ASSERT_EQ(empty_par, empty_seq);
    }
 }
 
@@ -103,36 +103,36 @@ TEST(laganina_e_sum_values_by_columns_matrix_mpi, partest1) {
  // Create TaskData
  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
-    taskDataPar->inputs_count.emplace_back(in.size());
-    taskDataPar->inputs_count.emplace_back(m);
-    taskDataPar->inputs_count.emplace_back(n);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(empty_par.data()));
-    taskDataPar->outputs_count.emplace_back(empty_par.size());
-   }
+   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
+   taskDataPar->inputs_count.emplace_back(in.size());
+   taskDataPar->inputs_count.emplace_back(m);
+   taskDataPar->inputs_count.emplace_back(n);
+   taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(empty_par.data()));
+   taskDataPar->outputs_count.emplace_back(empty_par.size());
+  }
    laganina_e_sum_values_by_columns_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
    ASSERT_EQ(testMpiTaskParallel.validation(), true);
    testMpiTaskParallel.pre_processing();
    testMpiTaskParallel.run();
    testMpiTaskParallel.post_processing();
    if (world.rank() == 0) {
-     // Create data
-      std::vector<int> empty_seq(n, 0);
-     // Create TaskData
-      std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
-      taskDataSeq->inputs_count.emplace_back(in.size());
-      taskDataSeq->inputs_count.emplace_back(m);
-      taskDataSeq->inputs_count.emplace_back(n);
-      taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(empty_seq.data()));
-      taskDataSeq->outputs_count.emplace_back(empty_seq.size());
-      // Create Task
-      laganina_e_sum_values_by_columns_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-      ASSERT_EQ(testMpiTaskSequential.validation(), true);
-      testMpiTaskSequential.pre_processing();
-      testMpiTaskSequential.run();
-      testMpiTaskSequential.post_processing();
-      ASSERT_EQ(empty_par, empty_seq);
+    // Create data
+    std::vector<int> empty_seq(n, 0);
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
+    taskDataSeq->inputs_count.emplace_back(in.size());
+    taskDataSeq->inputs_count.emplace_back(m);
+    taskDataSeq->inputs_count.emplace_back(n);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(empty_seq.data()));
+    taskDataSeq->outputs_count.emplace_back(empty_seq.size());
+    // Create Task
+    laganina_e_sum_values_by_columns_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+    ASSERT_EQ(empty_par, empty_seq);
    }
 }
 TEST(laganina_e_sum_values_by_columns_matrix_mpi, partest2) {
@@ -146,12 +146,12 @@ TEST(laganina_e_sum_values_by_columns_matrix_mpi, partest2) {
  // Create TaskData
  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
  if (world.rank() == 0) {
-   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
-   taskDataPar->inputs_count.emplace_back(in.size());
-   taskDataPar->inputs_count.emplace_back(m);
-   taskDataPar->inputs_count.emplace_back(n);
-   taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(empty_par.data()));
-   taskDataPar->outputs_count.emplace_back(empty_par.size());
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
+  taskDataPar->inputs_count.emplace_back(in.size());
+  taskDataPar->inputs_count.emplace_back(m);
+  taskDataPar->inputs_count.emplace_back(n);
+  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(empty_par.data()));
+  taskDataPar->outputs_count.emplace_back(empty_par.size());
  }
  laganina_e_sum_values_by_columns_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
  ASSERT_EQ(testMpiTaskParallel.validation(), true);
@@ -160,22 +160,22 @@ TEST(laganina_e_sum_values_by_columns_matrix_mpi, partest2) {
  testMpiTaskParallel.post_processing();
 if (world.rank() == 0) {
  // Create data
-  std::vector<int> empty_seq(n, 0);
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->inputs_count.emplace_back(m);
-  taskDataSeq->inputs_count.emplace_back(n);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(empty_seq.data()));
-  taskDataSeq->outputs_count.emplace_back(empty_seq.size());
-  // Create Task
-  laganina_e_sum_values_by_columns_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-  ASSERT_EQ(testMpiTaskSequential.validation(), true);
-  testMpiTaskSequential.pre_processing();
-  testMpiTaskSequential.run();
-  testMpiTaskSequential.post_processing();
-   ASSERT_EQ(empty_par, empty_seq);
+ std::vector<int> empty_seq(n, 0);
+ // Create TaskData
+ std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+ taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
+ taskDataSeq->inputs_count.emplace_back(in.size());
+ taskDataSeq->inputs_count.emplace_back(m);
+ taskDataSeq->inputs_count.emplace_back(n);
+ taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(empty_seq.data()));
+ taskDataSeq->outputs_count.emplace_back(empty_seq.size());
+ // Create Task
+ laganina_e_sum_values_by_columns_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+ ASSERT_EQ(testMpiTaskSequential.validation(), true);
+ testMpiTaskSequential.pre_processing();
+ testMpiTaskSequential.run();
+ testMpiTaskSequential.post_processing();
+ ASSERT_EQ(empty_par, empty_seq);
  }
 }
 TEST(laganina_e_sum_values_by_columns_matrix_mpi, partest3) {
@@ -203,21 +203,21 @@ TEST(laganina_e_sum_values_by_columns_matrix_mpi, partest3) {
  testMpiTaskParallel.post_processing();
  if (world.rank() == 0) {
  // Create data
-   std::vector<int> empty_seq(n, 0);
+  std::vector<int> empty_seq(n, 0);
   // Create TaskData
-   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
-   taskDataSeq->inputs_count.emplace_back(in.size());
-   taskDataSeq->inputs_count.emplace_back(m);
-   taskDataSeq->inputs_count.emplace_back(n);
-   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(empty_seq.data()));
-   taskDataSeq->outputs_count.emplace_back(empty_seq.size());
-   // Create Task
-    laganina_e_sum_values_by_columns_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
-     ASSERT_EQ(empty_par, empty_seq);
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
+  taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->inputs_count.emplace_back(m);
+  taskDataSeq->inputs_count.emplace_back(n);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(empty_seq.data()));
+  taskDataSeq->outputs_count.emplace_back(empty_seq.size());
+  // Create Task
+  laganina_e_sum_values_by_columns_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+  ASSERT_EQ(testMpiTaskSequential.validation(), true);
+  testMpiTaskSequential.pre_processing();
+  testMpiTaskSequential.run();
+  testMpiTaskSequential.post_processing();
+  ASSERT_EQ(empty_par, empty_seq);
  }
 }

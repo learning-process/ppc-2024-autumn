@@ -19,8 +19,7 @@ std::vector<int> laganina_e_sum_values_by_columns_matrix_mpi::getRandomVector(in
   return vec;
 }
 
-std::vector<int> laganina_e_sum_values_by_columns_matrix_mpi::SumSeq(const std::vector<int>& matrix, int n, int m,
-                                                                     int x0, int x1) {
+std::vector<int> laganina_e_sum_values_by_columns_matrix_mpi::SumSeq(const std::vector<int>& matrix, int n, int m, int x0, int x1) {
   std::vector<int> result;
   for (int j = x0; j < x1; j++) {
     int sum = 0;
@@ -139,11 +138,9 @@ bool laganina_e_sum_values_by_columns_matrix_mpi::TestMPITaskParallel::run() {
       delta = size / world.size() + 1;
     }
   }
-
   broadcast(world, m, 0);
   broadcast(world, n, 0);
   broadcast(world, delta, 0);
-
   local_input_ = std::vector<int>(delta);
   boost::mpi::scatter(world, input_.data(), local_input_.data(), delta, 0);
   res_.resize(m);
