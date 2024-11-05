@@ -8,10 +8,11 @@
 
 TEST(deryabin_m_symbol_frequency_seq, test_standard_string) {
 	const double TEST_frequency = 0.1;
+	char ch = 'к';
 
 	// Create data
 	std::vector<std::string> in(1, " С одной сорокой одна морока, а сорок сорок — сорок морок...");
-	std::vector<char>in_ch(1, 'к');
+	std::vector<char>in_ch(1, ch);
 	std::vector<double> out(1, 0);
 
 	// Create TaskData
@@ -34,10 +35,11 @@ TEST(deryabin_m_symbol_frequency_seq, test_standard_string) {
 
 TEST(deryabin_m_symbol_frequency_seq, test_string_without_symbol) {
 	const double TEST_frequency = 0;
+	char ch = '@';
 
 	// Create data
 	std::vector<std::string> in(1, " С одной сорокой одна морока, а сорок сорок — сорок морок...");
-	std::vector<char>in_ch(1, '@');
+	std::vector<char>in_ch(1, ch);
 	std::vector<double> out(1, 0);
 
 	// Create TaskData
@@ -59,11 +61,12 @@ TEST(deryabin_m_symbol_frequency_seq, test_string_without_symbol) {
 }
 
 TEST(deryabin_m_symbol_frequency_seq, test_large_string) {
-	const double TEST_frequency = pow(10, -4);
+	const double TEST_frequency = 0.0001;
+	char ch = '$';
 
 	// Create data
 	std::vector<std::string> in(1, std::string(5000 - 1, '@') + '$' + std::string(5000, '@'));
-	std::vector<char>in_ch(1, '$');
+	std::vector<char>in_ch(1, ch);
 	std::vector<double> out(1, 0);
 
 	// Create TaskData
@@ -86,10 +89,11 @@ TEST(deryabin_m_symbol_frequency_seq, test_large_string) {
 
 TEST(deryabin_m_symbol_frequency_seq, test_empty_string) {
 	const double TEST_frequency = 0;
+	char ch = '@';
 
 	// Create data
 	std::vector<std::string> in(1, std::string());
-	std::vector<char>in_ch(1, '@');
+	std::vector<char>in_ch(1, ch);
 	std::vector<double> out(1, 0);
 
 	// Create TaskData
@@ -112,10 +116,11 @@ TEST(deryabin_m_symbol_frequency_seq, test_empty_string) {
 
 TEST(deryabin_m_symbol_frequency_seq, test_arithmetic_string) {
 	const double TEST_frequency = 0.1;
+	char ch = 'a';
 
 	// Create data
 	std::vector<std::string> in(1, "0.49*exp(a-b*b)+ln(cos(a*a))*3");
-	std::vector<char>in_ch(1, 'a');
+	std::vector<char>in_ch(1, ch);
 	std::vector<double> out(1, 0);
 
 	// Create TaskData
