@@ -1,10 +1,6 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/makhov_m_num_of_diff_elements_in_two_str/include/ops_seq.hpp"
 
-#include <thread>
-
-using namespace std::chrono_literals;
-
 int makhov_m_num_of_diff_elements_in_two_str_seq::countDiffElem(std::string str1_, std::string str2_) {
   int count = 0;
   int sizeDiff = std::abs(((int)str1_.size() - (int)str2_.size()));

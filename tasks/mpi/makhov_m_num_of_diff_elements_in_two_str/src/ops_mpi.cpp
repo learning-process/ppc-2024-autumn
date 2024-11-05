@@ -5,10 +5,6 @@
 #include <functional>
 #include <random>
 #include <string>
-#include <thread>
-#include <vector>
-
-using namespace std::chrono_literals;
 
 int makhov_m_num_of_diff_elements_in_two_str_mpi::countDiffElem(std::string str1_, std::string str2_) {
   int count = 0;

@@ -26,6 +26,7 @@ TEST(mpi_makhov_m_num_of_diff_elements_in_two_str_perf_test, test_pipeline_run) 
   std::vector<int32_t> global_sum(1, 0);
   str1 = getRandStr(10000000);
   str2 = getRandStr(10000000);
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
