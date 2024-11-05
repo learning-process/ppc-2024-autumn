@@ -1,4 +1,4 @@
-// Copyright 2023 Konkov Ivan
+// ops_mpi.hpp
 #pragma once
 
 #include <boost/mpi/communicator.hpp>

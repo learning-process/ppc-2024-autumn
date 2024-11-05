@@ -1,4 +1,4 @@
-// Copyright 2023 Konkov Ivan
+// ops_mpi.cpp
 #include "mpi/konkov_i_count_words/include/ops_mpi.hpp"
 
 #include <boost/mpi/collectives.hpp>
@@ -26,19 +26,42 @@ bool konkov_i_count_words_mpi::CountWordsTaskParallel::run() {
 
   if (rank == 0) {
     input_ = *reinterpret_cast<std::string*>(taskData->inputs[0]);
+
+    std::vector<std::string> words;
+    std::istringstream stream(input_);
+    std::string word;
+    while (stream >> word) {
+      words.push_back(word);
+    }
+
+    int total_words = words.size();
+    int chunk_size = total_words / num_processes;
+
+    for (int i = 1; i < num_processes; ++i) {
+      int start_pos = i * chunk_size;
+      int end_pos = (i == num_processes - 1) ? total_words : (i + 1) * chunk_size;
+      std::vector<std::string> chunk(words.begin() + start_pos, words.begin() + end_pos);
+      std::ostringstream oss;
+      for (const auto& w : chunk) {
+        oss << w << " ";
+      }
+      world.send(i, 0, oss.str());
+    }
+
+    words.assign(words.begin(), words.begin() + chunk_size);
+    std::ostringstream oss;
+    for (const auto& w : words) {
+      oss << w << " ";
+    }
+    input_ = oss.str();
+  } else {
+    world.recv(0, 0, input_);
   }
 
-  int total_length = input_.size();
-  int chunk_size = total_length / num_processes;
-  int start_pos = rank * chunk_size;
-  int end_pos = (rank == num_processes - 1) ? total_length : (rank + 1) * chunk_size;
-
-  std::string local_input = input_.substr(start_pos, end_pos - start_pos);
-
   int local_word_count = 0;
-  std::istringstream stream(local_input);
-  std::string word;
-  while (stream >> word) {
+  std::istringstream local_stream(input_);
+  std::string local_word;
+  while (local_stream >> local_word) {
     local_word_count++;
   }
 
