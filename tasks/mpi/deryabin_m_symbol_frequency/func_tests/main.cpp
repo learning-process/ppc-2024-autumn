@@ -101,8 +101,12 @@ TEST(deryabin_m_symbol_frequency_mpi, test_repeating) {
         std::mt19937 generator(rd());
         std::shuffle(global_str.begin(), global_str.end(), generator);
         for (int i = 0; i < global_str.size(); i++)
+        {
             if (i % 2 == 0)
-                global_str[i] = input_char[0];
+            {
+               global_str[i] = input_char[0]; 
+            }
+        }  
         taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_str.data()));
         taskDataPar->inputs_count.emplace_back(global_str.size());
         taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_char.data()));
