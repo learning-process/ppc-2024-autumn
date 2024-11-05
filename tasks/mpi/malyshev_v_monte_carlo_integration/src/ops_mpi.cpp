@@ -60,13 +60,18 @@ bool TestMPITaskParallel::pre_processing() {
     b = *reinterpret_cast<double*>(taskData->inputs[1]);
     double input_epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
     epsilon = input_epsilon;
-    num_samples = static_cast<int>(100 / epsilon);
+
+    num_samples = static_cast<int>((b - a) * 100 / epsilon);
+    if (num_samples < 10) {
+      num_samples = 10;
+    }
   }
 
   boost::mpi::broadcast(world, a, 0);
   boost::mpi::broadcast(world, b, 0);
   boost::mpi::broadcast(world, num_samples, 0);
   local_num_samples = num_samples / world.size();
+
   return true;
 }
 

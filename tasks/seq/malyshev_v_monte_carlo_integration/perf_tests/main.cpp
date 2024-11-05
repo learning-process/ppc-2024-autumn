@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "seq/malyshev_v_monte_carlo_integration/include/ops_mpi.hpp"
+#include "seq/malyshev_v_monte_carlo_integration/include/ops_seq.hpp"
 
 using namespace std::chrono;
 

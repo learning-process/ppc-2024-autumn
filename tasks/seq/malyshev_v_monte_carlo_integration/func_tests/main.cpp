@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "core/task/include/task.hpp"
-#include "seq/malyshev_v_monte_carlo_integration/include/ops_mpi.hpp"
+#include "seq/malyshev_v_monte_carlo_integration/include/ops_seq.hpp"
 
 TEST(malyshev_v_monte_carlo_integration, BasicIntegrationTest) {
   std::vector<double> global_result(1, 0.0);
