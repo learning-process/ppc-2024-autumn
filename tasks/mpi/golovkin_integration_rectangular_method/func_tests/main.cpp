@@ -40,11 +40,20 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
   std::cout << "Process " << world.rank() << ": Starting pre_processing" << std::endl;
   parallelTask.pre_processing();
 
+  // Barrier before running the main calculation
+  MPI_Barrier(MPI_COMM_WORLD);
+
   std::cout << "Process " << world.rank() << ": Running main calculation" << std::endl;
   parallelTask.run();
 
+  // Barrier after running the main calculation
+  MPI_Barrier(MPI_COMM_WORLD);
+
   std::cout << "Process " << world.rank() << ": Starting post_processing" << std::endl;
   parallelTask.post_processing();
+
+  // Barrier before starting sequential calculation
+  MPI_Barrier(MPI_COMM_WORLD);
 
   if (world.rank() == 0) {
     std::cout << "Process 0: Starting sequential calculation for verification" << std::endl;
@@ -66,6 +75,9 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
     sequentialTask.pre_processing();
     sequentialTask.run();
     sequentialTask.post_processing();
+
+    // Barrier before comparison
+    MPI_Barrier(MPI_COMM_WORLD);
 
     std::cout << "Process 0: Comparing parallel and sequential results" << std::endl;
     ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);

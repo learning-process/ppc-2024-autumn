@@ -76,10 +76,11 @@ bool MPIIntegralCalculator::run() {
   }
 
   // Сбор результатов, проверка глобальной синхронизации
-  double global_res = 0.0;
-  MPI_Reduce(&local_res, &global_res, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+  double local_global_res = 0.0;
+  MPI_Reduce(&local_res, &local_global_res, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
   if (rank == 0) {
+    global_res = local_global_res;
     std::cout << "Root process has global result after reduction: " << global_res << std::endl;
   }
 
