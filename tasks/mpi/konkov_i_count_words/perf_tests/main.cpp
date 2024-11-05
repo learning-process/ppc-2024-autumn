@@ -11,7 +11,7 @@
 std::string generate_large_string(int size) {
   std::string base = "Hello world this is a test ";
   std::string result;
-  while (result.size() < size) {
+  while (result.size() < static_cast<std::string::size_type>(size)) {
     result += base;
   }
   return result;
