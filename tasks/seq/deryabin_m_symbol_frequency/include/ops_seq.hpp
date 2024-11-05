@@ -19,4 +19,4 @@ namespace deryabin_m_symbol_frequency_seq {
 		std::string input_str_{}; double frequency_{}; char input_symbol_{};
 	};
 
-}  // namespace deryabin_m_symbol_frequency_sec
+}  // namespace deryabin_m_symbol_frequency_seq
