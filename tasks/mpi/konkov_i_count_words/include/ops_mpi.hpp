@@ -19,7 +19,6 @@ class CountWordsTaskParallel : public ppc::core::Task {
 
   static std::string generate_random_string(int num_words, int word_length);
 
-
  private:
   std::string input_;
   int word_count_{};
