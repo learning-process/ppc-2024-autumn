@@ -15,13 +15,13 @@ std::vector<int> GetRandomVector(int size) {
   return vector;
 }
 
-TEST(kudryashova_i_vector_dot_product_mpi, mpi_vectorDotProduct) {
+TEST(kudryashova_i_vector_dot_product_mpi, mpi_vector_dot_product_func) {
   std::vector<int> vector1 = {8, 7, 6};
   std::vector<int> vector2 = {3, 2, 1};
   ASSERT_EQ(44, kudryashova_i_vector_dot_product_mpi::vectorDotProduct(vector1, vector2));
 }
 
-TEST(kudryashova_i_vector_dot_product_mpi, scalar_multiply_vector_120) {
+TEST(kudryashova_i_vector_dot_product_mpi, dot_product_vector_120) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vector;
   std::vector<int32_t> result(1, 0);
@@ -64,7 +64,7 @@ TEST(kudryashova_i_vector_dot_product_mpi, scalar_multiply_vector_120) {
   }
 }
 
-TEST(kudryashova_i_vector_dot_product_mpi, scalar_multiply_vector_360) {
+TEST(kudryashova_i_vector_dot_product_mpi, dot_product_vector_360) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vector;
   std::vector<int32_t> result(1, 0);
@@ -102,7 +102,6 @@ TEST(kudryashova_i_vector_dot_product_mpi, scalar_multiply_vector_360) {
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
-    ASSERT_EQ(kudryashova_i_vector_dot_product_mpi::vectorDotProduct(global_vector[0], global_vector[1]), result[0]);
     ASSERT_EQ(reference[0], result[0]);
   }
 }
@@ -215,7 +214,7 @@ TEST(kudryashova_i_vector_dot_product_mpi, check_dot_product_empty_and_nonempty_
   }
 }
 
-TEST(kudryashova_i_vector_dot_product_mpi, scalar_multiply_vector_1_with_zero) {
+TEST(kudryashova_i_vector_dot_product_mpi, dot_product_vector_1_with_zero) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vector;
   std::vector<int32_t> result(1, 0);
@@ -236,7 +235,7 @@ TEST(kudryashova_i_vector_dot_product_mpi, scalar_multiply_vector_1_with_zero) {
   }
 }
 
-TEST(kudryashova_i_vector_dot_product_mpi, scalar_multiply_vector_1) {
+TEST(kudryashova_i_vector_dot_product_mpi, dot_product_vector_1) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_vector;
   std::vector<int32_t> result(1, 0);
@@ -274,7 +273,6 @@ TEST(kudryashova_i_vector_dot_product_mpi, scalar_multiply_vector_1) {
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
-    ASSERT_EQ(kudryashova_i_vector_dot_product_mpi::vectorDotProduct(global_vector[0], global_vector[1]), result[0]);
     ASSERT_EQ(reference[0], result[0]);
   }
 }

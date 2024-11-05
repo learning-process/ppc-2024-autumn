@@ -1,7 +1,6 @@
 #include "mpi/kudryashova_i_vector_dot_product/include/vectorDotProductMPI.hpp"
 
 #include <boost/mpi.hpp>
-#include <random>
 
 int kudryashova_i_vector_dot_product_mpi::vectorDotProduct(const std::vector<int>& vector1,
                                                            const std::vector<int>& vector2) {

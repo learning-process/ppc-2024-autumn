@@ -2,6 +2,7 @@
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <vector>
+#include <random>
 
 #include "core/task/include/task.hpp"
 namespace kudryashova_i_vector_dot_product_mpi {

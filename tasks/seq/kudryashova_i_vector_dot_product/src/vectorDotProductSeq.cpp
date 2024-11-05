@@ -1,7 +1,5 @@
 #include "seq/kudryashova_i_vector_dot_product/include/vectorDotProductSeq.hpp"
 
-#include <random>
-
 int kudryashova_i_vector_dot_product::vectorDotProduct(const std::vector<int>& vector1,
                                                        const std::vector<int>& vector2) {
   long long result = 0;
