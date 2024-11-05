@@ -129,7 +129,7 @@ bool varfolomeev_g_matrix_max_rows_vals_mpi::MaxInRowsParallel::run() {
     int exit_flag = 0;
     int continue_flag = 1;
     if (size_m == 0 || size_n == 0) {
-      for (size_t i = 0; i < world.size() - 1; i++) {
+      for (int i = 0; i < world.size() - 1; i++) {
         world.send(i + 1, TERMINATE, &exit_flag, 1);
       }
       return true;
@@ -150,7 +150,7 @@ bool varfolomeev_g_matrix_max_rows_vals_mpi::MaxInRowsParallel::run() {
       }
       row += world.size() - 1;
     }
-    for (size_t i = 0; i < world.size() - 1; i++) {  // terminating all other processes
+    for (int i = 0; i < world.size() - 1; i++) {  // terminating all other processes
       world.send(i + 1, TERMINATE, &exit_flag, 1);
     }
     res_vec = max_vec;
@@ -160,7 +160,7 @@ bool varfolomeev_g_matrix_max_rows_vals_mpi::MaxInRowsParallel::run() {
     while (true) {
       int out = INT_MIN;
       world.recv(0, TERMINATE, &exit_flag, 1);
-      
+
       if (exit_flag == 0) break;
 
       world.recv(0, SEND_DATA, distr_vec.data(), size_n);

@@ -550,8 +550,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_manual_5x3_maxes_in_the_end_Matrix)
   boost::mpi::communicator world;
 
   std::vector<int> global_mat = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
-   std::vector<int32_t> global_max(
-      size_m, 0);
+  std::vector<int32_t> global_max(size_m, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 

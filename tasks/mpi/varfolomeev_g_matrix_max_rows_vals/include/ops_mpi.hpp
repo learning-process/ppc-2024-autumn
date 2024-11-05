@@ -28,7 +28,7 @@ class MaxInRowsSequential : public ppc::core::Task {
   bool post_processing() override;  // vec to taskdata
 
  private:
-  size_t size_n, size_m;
+  int size_n, size_m;
   std::vector<int> mtr;  // vector one-row matrix
   std::vector<int> res_vec;
 };
@@ -42,8 +42,8 @@ class MaxInRowsParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  size_t size_n, size_m;
-  std::vector<int> mtr;  // vector one-row matrix
+  int size_n, size_m;
+  std::vector<int> mtr;      // vector one-row matrix
   std::vector<int> res_vec;  // result vector of maxes
   boost::mpi::communicator world;
 };
