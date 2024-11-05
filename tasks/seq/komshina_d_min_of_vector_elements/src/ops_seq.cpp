@@ -1,35 +1,43 @@
+
 #include "seq/komshina_d_min_of_vector_elements/include/ops_seq.hpp"
 
 #include <thread>
 
 using namespace std::chrono_literals;
 
-bool komshina_d_min_of_vector_elements_seq::MinOfVectorElementsSeq::pre_processing() {
+bool komshina_d_min_of_vector_elements_seq::MinOfVectorElementTaskSequential::pre_processing() {
   internal_order_test();
-  input_vector_ = std::vector<int>(taskData->inputs_count[0]);
-  int* it = reinterpret_cast<int*>(taskData->inputs[0]);
-  std::copy(it, it + taskData->inputs_count[0], input_vector_.begin());
-  res = input_vector_[0];  
+  input_ = std::vector<int>(taskData->inputs_count[0]);
+  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+
+  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+    input_[i] = tmp_ptr[i];
+  }
+
+  min_res = 0;
   return true;
 }
 
-bool komshina_d_min_of_vector_elements_seq::MinOfVectorElementsSeq::validation() {
+bool komshina_d_min_of_vector_elements_seq::MinOfVectorElementTaskSequential::validation() {
   internal_order_test();
-  return (taskData->inputs_count[0] > 0) && (taskData->outputs_count[0] == 1);
+  return taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1;
 }
 
-bool komshina_d_min_of_vector_elements_seq::MinOfVectorElementsSeq::run() {
+bool komshina_d_min_of_vector_elements_seq::MinOfVectorElementTaskSequential::run() {
   internal_order_test();
-  for (size_t it = 1; it < input_vector_.size(); ++it) {
-    if (res > input_vector_[it]) {
-      res = input_vector_[it];  
+  int elementMin = input_[0];
+  for (size_t i = 1; i < input_.size(); ++i) {
+    if (input_[i] < elementMin) {
+      elementMin = input_[i];
     }
   }
+  min_res = elementMin;
+  std::cout << "Min result: " << min_res << std::endl;  
   return true;
 }
 
-bool komshina_d_min_of_vector_elements_seq::MinOfVectorElementsSeq::post_processing() {
+bool komshina_d_min_of_vector_elements_seq::MinOfVectorElementTaskSequential::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;  
+  reinterpret_cast<int*>(taskData->outputs[0])[0] = min_res;
   return true;
 }

@@ -2,22 +2,14 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <climits>
 #include <random>
 #include <vector>
 
 #include "mpi/komshina_d_min_of_vector_elements/include/ops_mpi.hpp"
 
 namespace komshina_d_min_of_vector_elements_mpi {
-std::vector<int> get_random_vector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 20000 - 10000;  
-  }
-  return vec;
-}
-}  
+
 
 TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_1) {
   boost::mpi::communicator world;
@@ -30,7 +22,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_1) {
     const int count = 10000;
     global_vec.resize(count);
     for (int i = 0; i < count; ++i) {
-      global_vec[i] = (i % 2 == 0) ? i : -i;  
+      global_vec[i] = i;
     }
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
@@ -39,7 +31,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_1) {
     taskDataPar->outputs_count.emplace_back(global_min.size());
   }
 
-  komshina_d_min_of_vector_elements_mpi::MinOfVectorElementsTaskParallel testMpiTaskParallel(taskDataPar);
+  komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -54,7 +46,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_1) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
     taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
-    komshina_d_min_of_vector_elements_mpi::MinOfVectorElementsTaskSequential testMpiTaskSequential(taskDataSeq);
+    komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -63,6 +55,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_1) {
     ASSERT_EQ(reference_min[0], global_min[0]);
   }
 }
+
 TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_2) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
@@ -72,7 +65,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_2) {
 
   if (world.rank() == 0) {
     const int count = 1;
-    global_vec.resize(count, -100); 
+    global_vec.resize(count, 100000000);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -80,7 +73,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_2) {
     taskDataPar->outputs_count.emplace_back(global_min.size());
   }
 
-  komshina_d_min_of_vector_elements_mpi::MinOfVectorElementsTaskParallel testMpiTaskParallel(taskDataPar);
+  komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -95,7 +88,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_2) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
     taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
-    komshina_d_min_of_vector_elements_mpi::MinOfVectorElementsTaskSequential testMpiTaskSequential(taskDataSeq);
+    komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -114,9 +107,10 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_3) {
 
   if (world.rank() == 0) {
     const int count = 1000000;
+    const int start = 7890000;
     global_vec.resize(count);
-    for (int i = 0; i < count; ++i) {
-      global_vec[i] = (i % 100 == 0) ? -i : i;  
+    for (int i = 0, j = start; i < count; ++i, j -= 9) {
+      global_vec[i] = j;
     }
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
@@ -125,7 +119,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_3) {
     taskDataPar->outputs_count.emplace_back(global_min.size());
   }
 
-  komshina_d_min_of_vector_elements_mpi::MinOfVectorElementsTaskParallel testMpiTaskParallel(taskDataPar);
+  komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -140,7 +134,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_3) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
     taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
-    komshina_d_min_of_vector_elements_mpi::MinOfVectorElementsTaskSequential testMpiTaskSequential(taskDataSeq);
+    komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -158,11 +152,22 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_4) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count = 1000000;
-    global_vec.resize(count);
-    for (int i = 0; i < count; ++i) {
-      global_vec[i] = -i * 2; 
+    const int count = 5000000;
+    const int start = 500;
+    const int min = -10;
+
+    std::vector<int> in(count, start);
+
+    std::random_device dev;
+    std::mt19937 gen(dev());
+
+    for (int i = 0; i < count - 1; i++) {
+      in[i] = gen() % 1000;  
     }
+
+    in[count - 10] = min;
+
+    global_vec = in;  
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -170,7 +175,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_4) {
     taskDataPar->outputs_count.emplace_back(global_min.size());
   }
 
-  komshina_d_min_of_vector_elements_mpi::MinOfVectorElementsTaskParallel testMpiTaskParallel(taskDataPar);
+  komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -185,7 +190,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_4) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
     taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
-    komshina_d_min_of_vector_elements_mpi::MinOfVectorElementsTaskSequential testMpiTaskSequential(taskDataSeq);
+    komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -195,6 +200,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_4) {
   }
 }
 
+
 TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_5) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
@@ -203,11 +209,21 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_5) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count = 100;
-    global_vec.resize(count);
-    for (int i = 0; i < count; i++) {
-      global_vec[i] = (i % 3 == 0) ? INT_MIN : 0; 
+    const int count = 5000000;
+    const int start = 100;
+    const int min = 0;
+
+    std::vector<int> in(count, start);
+
+    std::random_device dev;
+    std::mt19937 gen(dev());
+    for (int i = 0; i < count - 1; ++i) {
+      in[i] = 100 + gen() % 1000;  
     }
+
+    in[count - 1] = min;
+
+    global_vec = in; 
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -215,7 +231,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_5) {
     taskDataPar->outputs_count.emplace_back(global_min.size());
   }
 
-  komshina_d_min_of_vector_elements_mpi::MinOfVectorElementsTaskParallel testMpiTaskParallel(taskDataPar);
+  komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -230,7 +246,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_5) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
     taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
-    komshina_d_min_of_vector_elements_mpi::MinOfVectorElementsTaskSequential testMpiTaskSequential(taskDataSeq);
+    komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -243,13 +259,26 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_5) {
 TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_6) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
-  std::vector<int32_t> global_min(1, INT_MAX);
+  std::vector<int32_t> global_min(1, 30000);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count = 100;
-    global_vec = komshina_d_min_of_vector_elements_mpi::get_random_vector(count); 
+    const int count = 5000000; 
+    const int start = 100;
+    const int min = 0;
+
+    std::vector<int> in(count, start);
+
+    std::random_device dev;
+    std::mt19937 gen(dev());
+    for (int i = 0; i < count - 1; ++i) {
+      in[i] = 100 + gen() % 1000;  
+    }
+
+    in[count - 1] = min;
+
+    global_vec = in; 
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -257,7 +286,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_6) {
     taskDataPar->outputs_count.emplace_back(global_min.size());
   }
 
-  komshina_d_min_of_vector_elements_mpi::MinOfVectorElementsTaskParallel testMpiTaskParallel(taskDataPar);
+  komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -272,7 +301,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_6) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
     taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
-    komshina_d_min_of_vector_elements_mpi::MinOfVectorElementsTaskSequential testMpiTaskSequential(taskDataSeq);
+    komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -282,3 +311,20 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_6) {
   }
 }
 
+
+TEST(komshina_d_min_of_vector_elements_mpi, Wrong_Input) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;
+  std::vector<int> global_min(1);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_min.data()));
+    taskDataPar->outputs_count.emplace_back(global_min.size());
+    komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  }
+}

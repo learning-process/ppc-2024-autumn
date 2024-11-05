@@ -17,9 +17,9 @@ namespace komshina_d_min_of_vector_elements_mpi {
 
 std::vector<int> getRandomVector(int sz);
 
-class MinOfVectorElementsTaskSequential : public ppc::core::Task {
+class MinOfVectorElementTaskSequential : public ppc::core::Task {
  public:
-  explicit MinOfVectorElementsTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
+  explicit MinOfVectorElementTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
       : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
@@ -29,11 +29,12 @@ class MinOfVectorElementsTaskSequential : public ppc::core::Task {
  private:
   std::vector<int> input_;
   int min_res{};
+  std::string ops;
 };
 
-class MinOfVectorElementsTaskParallel : public ppc::core::Task {
+class MinOfVectorElementTaskParallel : public ppc::core::Task {
  public:
-  explicit MinOfVectorElementsTaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
+  explicit MinOfVectorElementTaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
       : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
@@ -46,4 +47,4 @@ class MinOfVectorElementsTaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  // namespace komshina_d_min_of_vector_elements_mpi
+}  // namespace komshina_d_min_of_vector_elements
