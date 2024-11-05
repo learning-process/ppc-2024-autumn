@@ -18,6 +18,9 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
   double a = 0.0;
   double b = 5.0;
   double epsilon = 0.1;
+  int argc = 0;
+  char **argv = nullptr;
+  MPI_Init(&argc, &argv);
 
   if (world.rank() == 0) {
     // Инициализация данных на нулевом процессе
@@ -63,7 +66,7 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
     // Сравнение результатов параллельной и последовательной интеграции
     ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
   }
-  exit(0);
+  MPI_Finalize();
 }
 
 TEST(golovkin_integration_rectangular_method, test_square_function) {
@@ -73,8 +76,10 @@ TEST(golovkin_integration_rectangular_method, test_square_function) {
 
   double a = 0.0;
   double b = 2.5;
-
   double epsilon = 0.1;
+  int argc = 0;
+  char **argv = nullptr;
+  MPI_Init(&argc, &argv);
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
@@ -116,7 +121,7 @@ TEST(golovkin_integration_rectangular_method, test_square_function) {
 
     ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
   }
-  exit(0);
+  MPI_Finalize();
 }
 TEST(golovkin_integration_rectangular_method, test_sine_function) {
   boost::mpi::communicator world;
@@ -127,6 +132,9 @@ TEST(golovkin_integration_rectangular_method, test_sine_function) {
 
   double b = M_PI;
   double epsilon = 0.1;
+  int argc = 0;
+  char **argv = nullptr;
+  MPI_Init(&argc, &argv);
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
@@ -168,7 +176,7 @@ TEST(golovkin_integration_rectangular_method, test_sine_function) {
 
     ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
   }
-  exit(0);
+  MPI_Finalize();
 }
 
 TEST(golovkin_integration_rectangular_method, test_exponential_function) {
@@ -179,6 +187,9 @@ TEST(golovkin_integration_rectangular_method, test_exponential_function) {
   double a = 0.0;
   double b = 2.5;  // Integrating e^x from 0 to 1
   double epsilon = 0.1;
+  int argc = 0;
+  char **argv = nullptr;
+  MPI_Init(&argc, &argv);
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
@@ -220,7 +231,7 @@ TEST(golovkin_integration_rectangular_method, test_exponential_function) {
 
     ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
   }
-  exit(0);
+  MPI_Finalize();
 }
 
 TEST(golovkin_integration_rectangular_method, test_polynomial_function) {
@@ -231,6 +242,9 @@ TEST(golovkin_integration_rectangular_method, test_polynomial_function) {
   double a = 1.0;
   double b = 2.5;  // Integrating f(x) = x^3 from 1 to 3
   double epsilon = 0.1;
+  int argc = 0;
+  char **argv = nullptr;
+  MPI_Init(&argc, &argv);
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
@@ -272,5 +286,5 @@ TEST(golovkin_integration_rectangular_method, test_polynomial_function) {
 
     ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
   }
-  exit(0);
+  MPI_Finalize();
 }
