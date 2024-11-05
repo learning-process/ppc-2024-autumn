@@ -15,7 +15,7 @@ MPIIntegralCalculator::MPIIntegralCalculator(std::shared_ptr<ppc::core::TaskData
 
 bool MPIIntegralCalculator::validation() {
   // std::cout << "Validation - Inputs: " << taskData->inputs.size() << ", Outputs: " << taskData->outputs.size()
-            // << std::endl;
+  // << std::endl;
   return (taskData->inputs.size() == 3 && taskData->outputs.size() >= 1);
 }
 
@@ -39,7 +39,7 @@ bool MPIIntegralCalculator::pre_processing() {
 
   h = (b - a) / cnt_of_splits;  // Вычисление ширины подынтервала
   // std::cout << "Process " << rank << " - a: " << a << ", b: " << b << ", cnt_of_splits: " << cnt_of_splits
-            // << ", h: " << h << std::endl;
+  // << ", h: " << h << std::endl;
 
   return true;
 }
