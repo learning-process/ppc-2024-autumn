@@ -31,10 +31,10 @@ TEST(deryabin_m_symbol_frequency_mpi, test_random) {
     }
 
     deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskParallel testMpiTaskParallel(taskDataPar);
-    ASSERT_EQ(testMpiTaskParallel->validation(), true);
-    testMpiTaskParallel->pre_processing();
-    testMpiTaskParallel->run();
-    testMpiTaskParallel->post_processing();
+    ASSERT_EQ(testMpiTaskParallel.validation(), true);
+    testMpiTaskParallel.pre_processing();
+    testMpiTaskParallel.run();
+    testMpiTaskParallel.post_processing();
 
     if (world.rank() == 0) {
         // Create data
@@ -51,10 +51,10 @@ TEST(deryabin_m_symbol_frequency_mpi, test_random) {
 
         // Create Task
         deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskParallel testMpiTaskParallel(taskDataPar);
-        ASSERT_EQ(testMpiTaskParallel->validation(), true);
-        testMpiTaskParallel->pre_processing();
-        testMpiTaskParallel->run();
-        testMpiTaskParallel->post_processing();
+        ASSERT_EQ(testMpiTaskParallel.validation(), true);
+        testMpiTaskParallel.pre_processing();
+        testMpiTaskParallel.run();
+        testMpiTaskParallel.post_processing();
 
         ASSERT_EQ(reference_frequency[0], global_frequency[0]);
     }
@@ -79,10 +79,10 @@ TEST(deryabin_m_symbol_frequency_mpi, test_empty) {
     }
 
     deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskParallel testMpiTaskParallel(taskDataPar);
-    ASSERT_EQ(testMpiTaskParallel->validation(), true);
-    testMpiTaskParallel->pre_processing();
-    testMpiTaskParallel->run();
-    testMpiTaskParallel->post_processing();
+    ASSERT_EQ(testMpiTaskParallel.validation(), true);
+    testMpiTaskParallel.pre_processing();
+    testMpiTaskParallel.run();
+    testMpiTaskParallel.post_processing();
     ASSERT_EQ(TEST_frequency, global_frequency[0]);
 }
 
@@ -112,10 +112,10 @@ TEST(deryabin_m_symbol_frequency_mpi, test_repeating) {
     }
 
     deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskParallel testMpiTaskParallel(taskDataPar);
-    ASSERT_EQ(testMpiTaskParallel->validation(), true);
-    testMpiTaskParallel->pre_processing();
-    testMpiTaskParallel->run();
-    testMpiTaskParallel->post_processing();
+    ASSERT_EQ(testMpiTaskParallel.validation(), true);
+    testMpiTaskParallel.pre_processing();
+    testMpiTaskParallel.run();
+    testMpiTaskParallel.post_processing();
     ASSERT_EQ(TEST_frequency, global_frequency[0]);
 }
 
@@ -140,10 +140,10 @@ TEST(deryabin_m_symbol_frequency_mpi, test_const) {
     }
 
     deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskParallel testMpiTaskParallel(taskDataPar);
-    ASSERT_EQ(testMpiTaskParallel->validation(), true);
-    testMpiTaskParallel->pre_processing();
-    testMpiTaskParallel->run();
-    testMpiTaskParallel->post_processing();
+    ASSERT_EQ(testMpiTaskParallel.validation(), true);
+    testMpiTaskParallel.pre_processing();
+    testMpiTaskParallel.run();
+    testMpiTaskParallel.post_processing();
     ASSERT_EQ(TEST_frequency, global_frequency[0]);
 }
 
@@ -171,10 +171,10 @@ TEST(deryabin_m_symbol_frequency_mpi, test_random2) {
     }
 
     deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskParallel testMpiTaskParallel(taskDataPar);
-    ASSERT_EQ(testMpiTaskParallel->validation(), true);
-    testMpiTaskParallel->pre_processing();
-    testMpiTaskParallel->run();
-    testMpiTaskParallel->post_processing();
+    ASSERT_EQ(testMpiTaskParallel.validation(), true);
+    testMpiTaskParallel.pre_processing();
+    testMpiTaskParallel.run();
+    testMpiTaskParallel.post_processing();
 
     if (world.rank() == 0) {
         // Create data
@@ -191,10 +191,10 @@ TEST(deryabin_m_symbol_frequency_mpi, test_random2) {
 
         // Create Task
         deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskParallel testMpiTaskParallel(taskDataPar);
-        ASSERT_EQ(testMpiTaskParallel->validation(), true);
-        testMpiTaskParallel->pre_processing();
-        testMpiTaskParallel->run();
-        testMpiTaskParallel->post_processing();
+        ASSERT_EQ(testMpiTaskParallel.validation(), true);
+        testMpiTaskParallel.pre_processing();
+        testMpiTaskParallel.run();
+        testMpiTaskParallel.post_processing();
 
         ASSERT_EQ(reference_frequency[0], global_frequency[0]);
     }
