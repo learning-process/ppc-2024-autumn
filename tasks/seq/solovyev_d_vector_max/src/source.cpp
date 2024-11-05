@@ -20,8 +20,6 @@ bool solovyev_d_vector_max_mpi::VectorMaxSequential::pre_processing() {
   // Init data vector
   int* input_ = reinterpret_cast<int*>(taskData->inputs[0]);
   data = std::vector<int>(input_, input_ + taskData->inputs_count[0]);
-  // Init result value
-  result = 0;
   return true;
 }
 

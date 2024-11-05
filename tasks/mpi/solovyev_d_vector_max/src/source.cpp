@@ -51,8 +51,6 @@ bool solovyev_d_vector_max_mpi::VectorMaxMPIParallel::pre_processing() {
     world.recv(0, 0, localData.data(), delta);
   }
 
-  // Init result value
-  result = 0;
   return true;
 }
 
@@ -92,8 +90,6 @@ bool solovyev_d_vector_max_mpi::VectorMaxSequential::pre_processing() {
   int* input_ = reinterpret_cast<int*>(taskData->inputs[0]);
   data = std::vector<int>(input_, input_ + taskData->inputs_count[0]);
 
-  // Init result value
-  result = 0;
   return true;
 }
 
