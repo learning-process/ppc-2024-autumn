@@ -8,7 +8,7 @@
 
 #include "mpi/suvorov_d_sum_of_vector_elements/include/ops_mpi.hpp"
 
-std::vector<int> getRandomVector(int sz) {
+std::vector<int> get_random_vector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::uniform_int_distribution<int> dist(-1000, 1000);
@@ -33,7 +33,7 @@ TEST(suvorov_d_sum_of_vector_elements_mpi, Test_Sum_With_Normal_Vector) {
     if (world.size() >= count_size_vector) {
       count_size_vector = 2 * world.size();
     }
-    global_vec = getRandomVector(count_size_vector);
+    global_vec = get_random_vector(count_size_vector);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -120,7 +120,7 @@ TEST(suvorov_d_sum_of_vector_elements_mpi, Test_Sum_With_Single_Elementr) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     const int count_size_vector = 1;
-    global_vec = getRandomVector(count_size_vector);
+    global_vec = get_random_vector(count_size_vector);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -166,7 +166,7 @@ TEST(suvorov_d_sum_of_vector_elements_mpi, Test_Sum_When_Process_Count_More_Than
   if (world.rank() == 0) {
     // The number of processes must be greater than the number of elements
     const int count_size_vector = world.size() / 2;
-    global_vec = getRandomVector(count_size_vector);
+    global_vec = get_random_vector(count_size_vector);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -212,7 +212,7 @@ TEST(suvorov_d_sum_of_vector_elements_mpi, Test_Sum_When_Process_Count_Equal_To_
   if (world.rank() == 0) {
     // The number of processes must be equal to the number of elements
     const int count_size_vector = world.size();
-    global_vec = getRandomVector(count_size_vector);
+    global_vec = get_random_vector(count_size_vector);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -304,7 +304,7 @@ TEST(suvorov_d_sum_of_vector_elements_mpi, Test_Sum_With_Multiple_Of_Num_Proc_An
   if (world.rank() == 0) {
     // The number of elements must be a multiple of the number of processes
     const int count_size_vector = 3 * world.size();
-    global_vec = getRandomVector(count_size_vector);
+    global_vec = get_random_vector(count_size_vector);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -352,7 +352,7 @@ TEST(suvorov_d_sum_of_vector_elements_mpi, Test_Sum_With_Not_Multiple_Of_Num_Pro
     // Set prime number
     int count_size_vector = 101;
 
-    global_vec = getRandomVector(count_size_vector);
+    global_vec = get_random_vector(count_size_vector);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
