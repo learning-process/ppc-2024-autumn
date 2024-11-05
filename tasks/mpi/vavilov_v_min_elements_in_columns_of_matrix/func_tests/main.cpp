@@ -229,3 +229,58 @@ TEST(vavilov_v_min_elements_in_columns_of_matrix_mpi, validation_fails_on_invali
     ASSERT_EQ(testMpiTaskSequential.validation(), false);
   }
 }
+
+TEST(vavilov_v_min_elements_in_columns_of_matrix_mpi, validation_empty_matrix) {
+  boost::mpi::communicator world;
+  if (world.rank() == 0) {
+    const int rows = 0;
+    const int cols = 0;
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+
+    taskDataSeq->inputs_count = {rows, cols};
+    std::vector<int> vec_res(cols, 0);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(vec_res.data()));
+    taskDataSeq->outputs_count.emplace_back(vec_res.size());
+
+    ASSERT_EQ(testMpiTaskSequential.validation(), false);
+  }
+}
+
+TEST(vavilov_v_min_elements_in_columns_of_matrix_mpi, find_min_elem_in_fixed_matrix) {
+  boost::mpi::communicator world;
+  if (world.rank() == 0) {
+    const int rows = 4;
+    const int cols = 3;
+
+    std::vector<std::vector<int>> fixed_matr = {
+      {5, 3, 7},
+      {8, 1, 6},
+      {4, 9, 2},
+      {3, 0, 8}
+    };
+
+    std::vector<int> expected_min = {3, 0, 2};
+    std::vector<int> result(cols, INT_MAX);
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+    for (auto& row : fixed_matr) {
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
+    }
+
+    taskDataSeq->inputs_count = {rows, cols};
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
+    taskDataSeq->outputs_count.emplace_back(result.size());
+
+    vavilov_v_min_elements_in_columns_of_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    for (int i = 0; i < cols; i++) {
+      ASSERT_EQ(result[i], expected_min[i]) << "Mismatch in column " << i;
+    }
+  }
