@@ -25,7 +25,7 @@ TEST(deryabin_m_symbol_frequency_seq, test_pipeline_run) {
     taskDataSeq->outputs_count.emplace_back(out.size());
 
     // Create Task
-    auto symbol_frequency_TaskSequential = std::make_shared<deryabin_m_symbol_frequency_seq::Symbol_frequency_TaskSequential>(taskDataSeq);
+    auto symbol_frequency_TaskSequential = std::make_shared<deryabin_m_symbol_frequency_seq::SymbolFrequencyTaskSequential>(taskDataSeq);
 
     // Create Perf attributes
     auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -65,7 +65,7 @@ TEST(deryabin_m_symbol_frequency_seq, test_task_run) {
     taskDataSeq->outputs_count.emplace_back(out.size());
 
     // Create Task
-    auto symbol_frequency_TaskSequential = std::make_shared<deryabin_m_symbol_frequency_seq::Symbol_frequency_TaskSequential>(taskDataSeq);
+    auto symbol_frequency_TaskSequential = std::make_shared<deryabin_m_symbol_frequency_seq::SymbolFrequencyTaskSequential>(taskDataSeq);
 
     // Create Perf attributes
     auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
