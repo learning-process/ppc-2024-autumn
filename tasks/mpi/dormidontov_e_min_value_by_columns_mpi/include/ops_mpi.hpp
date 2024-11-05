@@ -18,7 +18,6 @@ inline std::vector<int> generate_random_vector(int cs_temp, int rs_temp) {
     for (int j = 0; j < cs_temp; j++) {
       if (i == 0) {
         temp[i * rs_temp + j] = 0;
-        continue;
       } else {
         temp[i * rs_temp + j] = rand() % 1000;
       }
