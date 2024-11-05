@@ -1,4 +1,4 @@
-#include "seq/deryabin_m_symbol_frequency/include/ops_sec.hpp"
+#include "sec/deryabin_m_symbol_frequency/include/ops_sec.hpp"
 
 #include <thread>
 
