@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
-#include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
@@ -11,13 +10,10 @@ TEST(kapustin_i_max_column_task_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
   int rows = 10000;
   int cols = 10000;
-  std::vector<int> matrix;
+  std::vector<int> matrix(rows * cols, 5);
   std::vector<int> result(cols);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    const int size_vector = cols * rows;
-    matrix = kapustin_i_max_column_task_mpi::getRandomVector(size_vector);
-
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cols));

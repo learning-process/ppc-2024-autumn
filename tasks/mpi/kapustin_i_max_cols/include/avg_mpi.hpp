@@ -14,18 +14,7 @@
 #include "core/task/include/task.hpp"
 
 namespace kapustin_i_max_column_task_mpi {
-std::vector<int> getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    int val = gen() % 100000;
-    if (val >= 0) {
-      vec[i] = val;
-    }
-  }
-  return vec;
-}
+std::vector<int> getRandomVector(int sz);
 
 class MaxColumnTaskSequentialMPI : public ppc::core::Task {
  public:
