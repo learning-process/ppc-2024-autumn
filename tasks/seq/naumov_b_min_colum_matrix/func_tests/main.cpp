@@ -14,7 +14,7 @@ TEST(naumov_b_min_colum_matrix_seq, Test_Min_Column_Values) {
   taskDataSeq->inputs_count = {3, 3};
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_data.data()));
 
-  auto output_data = new int[3];
+  int *output_data = new int[3];
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_data));
   taskDataSeq->outputs_count.emplace_back(3);
 
@@ -38,7 +38,7 @@ TEST(naumov_b_min_colum_matrix_seq, Test_Equal_Elements) {
   taskDataSeq->inputs_count = {3, 3};
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_data.data()));
 
-  auto output_data = new int[3];
+  int *output_data = new int[3];
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_data));
   taskDataSeq->outputs_count.emplace_back(3);
 
@@ -66,7 +66,7 @@ TEST(naumov_b_min_colum_matrix_seq, Test_Random_Matrix_5_5) {
   taskDataSeq->inputs_count = {rows, cols};
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_data.data()));
 
-  auto output_data = new int[cols];
+  int *output_data = new int[cols];
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_data));
   taskDataSeq->outputs_count.emplace_back(cols);
 
@@ -98,7 +98,7 @@ TEST(naumov_b_min_colum_matrix_seq, Test_Random_Matrix_5_10) {
   taskDataSeq->inputs_count = {rows, cols};
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_data.data()));
 
-  auto output_data = new int[cols];
+  int *output_data = new int[cols];
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_data));
   taskDataSeq->outputs_count.emplace_back(cols);
 
@@ -130,7 +130,7 @@ TEST(naumov_b_min_colum_matrix_seq, Test_Random_Matrix_15_10) {
   taskDataSeq->inputs_count = {rows, cols};
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_data.data()));
 
-  auto output_data = new int[cols];
+  int *output_data = new int[cols];
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_data));
   taskDataSeq->outputs_count.emplace_back(cols);
 
