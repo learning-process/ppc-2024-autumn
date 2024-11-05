@@ -61,6 +61,7 @@ bool kovalchuk_a_max_of_vector_elements::TestMPITaskParallel::pre_processing() {
     delta = taskData->inputs_count[0] * taskData->inputs_count[1] / world.size();
   }
   broadcast(world, delta, 0);
+
   if (world.rank() == 0) {
     // Init vectors
     unsigned int rows = taskData->inputs_count[0];
@@ -80,8 +81,13 @@ bool kovalchuk_a_max_of_vector_elements::TestMPITaskParallel::pre_processing() {
         std::span<int> buffer(input_.data() + delta * proc, delta);
         world.send(proc, 0, buffer.data(), buffer.size());
       }
+    } else {
+      for (int proc = 1; proc < world.size(); proc++) {
+        world.send<int>(proc, 0, nullptr, 0);
+      }
     }
   }
+
   local_input_ = std::vector<int>(delta);
   if (world.rank() == 0) {
     if (!input_.empty()) {
@@ -90,6 +96,7 @@ bool kovalchuk_a_max_of_vector_elements::TestMPITaskParallel::pre_processing() {
   } else {
     world.recv(0, 0, local_input_.data(), delta);
   }
+
   // Init value for output
   res_ = INT_MIN;
   return true;
