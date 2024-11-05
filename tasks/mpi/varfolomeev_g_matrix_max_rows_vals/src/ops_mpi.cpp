@@ -1,4 +1,4 @@
-// Copyright 2023 Nesterov Alexander
+9// Copyright 2023 Nesterov Alexander
 #include "mpi/varfolomeev_g_matrix_max_rows_vals/include/ops_mpi.hpp"
 
 #include <algorithm>
@@ -174,7 +174,7 @@ bool varfolomeev_g_matrix_max_rows_vals_mpi::MaxInRowsParallel::run() {
 bool varfolomeev_g_matrix_max_rows_vals_mpi::MaxInRowsParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    for (size_t i = 0; i < size_m; i++) {
+    for (int i = 0; i < size_m; i++) {
       reinterpret_cast<int *>(taskData->outputs[0])[i] = res_vec[i];
     }
   }
