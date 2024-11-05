@@ -2,14 +2,9 @@
 #include "mpi/naumov_b_min_colum_matrix/include/ops_mpi.hpp"
 
 #include <algorithm>
-#include <functional>
+#include <boost/mpi.hpp>
 #include <limits>
-#include <random>
-#include <string>
-#include <thread>
 #include <vector>
-
-using namespace std::chrono_literals;
 
 std::vector<std::vector<int>> naumov_b_min_colum_matrix_mpi::getRandomMatrix(int rows, int columns) {
   std::vector<std::vector<int>> matrix(rows, std::vector<int>(columns));
@@ -106,8 +101,8 @@ bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::run() {
     cols = taskData->inputs_count[1];
   }
 
-  broadcast(world, rows, 0);
-  broadcast(world, cols, 0);
+  boost::mpi::broadcast(world, rows, 0);
+  boost::mpi::broadcast(world, cols, 0);
 
   int delta = cols / world.size();
   int extra = cols % world.size();
