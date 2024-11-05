@@ -29,15 +29,15 @@ bool MPIIntegralCalculator::pre_processing() {
     cnt_of_splits = *reinterpret_cast<int*>(taskData->inputs[2]);
   }
 
-  // Распространение значений на все процессы
+  // Р Р°СЃРїСЂРѕСЃС‚СЂР°РЅРµРЅРёРµ Р·РЅР°С‡РµРЅРёР№ РЅР° РІСЃРµ РїСЂРѕС†РµСЃСЃС‹
   MPI_Bcast(&a, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
   MPI_Bcast(&b, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
   MPI_Bcast(&cnt_of_splits, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
-  // Проверка корректности количества разбиений
+  // РџСЂРѕРІРµСЂРєР° РєРѕСЂСЂРµРєС‚РЅРѕСЃС‚Рё РєРѕР»РёС‡РµСЃС‚РІР° СЂР°Р·Р±РёРµРЅРёР№
   if (cnt_of_splits <= 0) return false;
 
-  h = (b - a) / cnt_of_splits;  // Вычисление ширины подынтервала
+  h = (b - a) / cnt_of_splits;  // Р’С‹С‡РёСЃР»РµРЅРёРµ С€РёСЂРёРЅС‹ РїРѕРґС‹РЅС‚РµСЂРІР°Р»Р°
   // std::cout << "Process " << rank << " - a: " << a << ", b: " << b << ", cnt_of_splits: " << cnt_of_splits
             // << ", h: " << h << std::endl;
 
@@ -49,29 +49,29 @@ bool MPIIntegralCalculator::run() {
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-  // Делим работу между процессами
+  // Р”РµР»РёРј СЂР°Р±РѕС‚Сѓ РјРµР¶РґСѓ РїСЂРѕС†РµСЃСЃР°РјРё
   int splits_per_proc = cnt_of_splits / size;
   int remaining_splits = cnt_of_splits % size;
   int start = rank * splits_per_proc + std::min(rank, remaining_splits);
   int end = start + splits_per_proc + (rank < remaining_splits ? 1 : 0);
 
-  // Проверка диапазона
+  // РџСЂРѕРІРµСЂРєР° РґРёР°РїР°Р·РѕРЅР°
   if (start >= end) {
     std::cerr << "Process " << rank << " has no work to do." << std::endl;
     return false;
   }
 
-  // Вычисление локального результата
+  // Р’С‹С‡РёСЃР»РµРЅРёРµ Р»РѕРєР°Р»СЊРЅРѕРіРѕ СЂРµР·СѓР»СЊС‚Р°С‚Р°
   double local_result = 0.0;
   for (int i = start; i < end; ++i) {
     double x = a + i * h;
-    local_result += function_square(x);  // Функция, которую мы интегрируем
+    local_result += function_square(x);  // Р¤СѓРЅРєС†РёСЏ, РєРѕС‚РѕСЂСѓСЋ РјС‹ РёРЅС‚РµРіСЂРёСЂСѓРµРј
   }
-  local_res = local_result * h;  // Умножаем на ширину подынтервала
+  local_res = local_result * h;  // РЈРјРЅРѕР¶Р°РµРј РЅР° С€РёСЂРёРЅСѓ РїРѕРґС‹РЅС‚РµСЂРІР°Р»Р°
 
   // std::cout << "Process " << rank << " calculated local_res: " << local_res << std::endl;
 
-  // Сбор результатов
+  // РЎР±РѕСЂ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ
   MPI_Reduce(&local_res, &global_res, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
   if (rank == 0) {
@@ -90,7 +90,7 @@ bool MPIIntegralCalculator::post_processing() {
     *reinterpret_cast<double*>(taskData->outputs[0]) = global_res;
   }
 
-  // Рассылка результата всем процессам
+  // Р Р°СЃСЃС‹Р»РєР° СЂРµР·СѓР»СЊС‚Р°С‚Р° РІСЃРµРј РїСЂРѕС†РµСЃСЃР°Рј
   MPI_Bcast(&global_res, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
   if (rank != 0) {
     *reinterpret_cast<double*>(taskData->outputs[0]) = global_res;
@@ -100,5 +100,5 @@ bool MPIIntegralCalculator::post_processing() {
 }
 
 double MPIIntegralCalculator::function_square(double x) {
-  return x * x;  // Пример функции, которую мы интегрируем
+  return x * x;  // РџСЂРёРјРµСЂ С„СѓРЅРєС†РёРё, РєРѕС‚РѕСЂСѓСЋ РјС‹ РёРЅС‚РµРіСЂРёСЂСѓРµРј
 }
