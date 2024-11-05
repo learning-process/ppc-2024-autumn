@@ -21,12 +21,12 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
   int cnt_of_splits = static_cast<int>((b - a) / epsilon);  // Вычисляем количество разбиений
 
   if (world.rank() == 0) {
-    // Инициализация данных на нулевом процессе
+    std::cout << "Process 0: Initializing task data for parallel calculation" << std::endl;
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
     taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));  // Используем cnt_of_splits
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
     taskDataPar->outputs_count.emplace_back(global_result.size());
@@ -34,14 +34,20 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
 
   golovkin_integration_rectangular_method::MPIIntegralCalculator parallelTask(taskDataPar);
 
-  // Выполнение параллельных задач на всех процессах
+  std::cout << "Process " << world.rank() << ": Running validation" << std::endl;
   ASSERT_EQ(parallelTask.validation(), true);
+
+  std::cout << "Process " << world.rank() << ": Starting pre_processing" << std::endl;
   parallelTask.pre_processing();
+
+  std::cout << "Process " << world.rank() << ": Running main calculation" << std::endl;
   parallelTask.run();
+
+  std::cout << "Process " << world.rank() << ": Starting post_processing" << std::endl;
   parallelTask.post_processing();
 
   if (world.rank() == 0) {
-    // Создание и инициализация данных для последовательной задачи на нулевом процессе
+    std::cout << "Process 0: Starting sequential calculation for verification" << std::endl;
     std::vector<double> reference_result(1, 0);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
@@ -49,26 +55,19 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));  // Используем cnt_of_splits
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
     taskDataSeq->outputs_count.emplace_back(reference_result.size());
 
-    // Вывод информации для отладки
-    /* std::cout << "Inputs count: " << taskDataSeq->inputs.size() << std::endl;
-    for (size_t i = 0; i < taskDataSeq->inputs.size(); ++i) {
-      std::cout << "Input " << i << ": " << *reinterpret_cast<double*>(taskDataSeq->inputs[i]) << std::endl;
-    }
-    std::cout << "Outputs count: " << taskDataSeq->outputs.size() << std::endl; */
-
-    // Выполнение последовательной задачи
     golovkin_integration_rectangular_method::MPIIntegralCalculator sequentialTask(taskDataSeq);
     ASSERT_EQ(sequentialTask.validation(), true);
+
     sequentialTask.pre_processing();
     sequentialTask.run();
     sequentialTask.post_processing();
 
-    // Сравнение результатов параллельной и последовательной интеграции
+    std::cout << "Process 0: Comparing parallel and sequential results" << std::endl;
     ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
   }
 }
