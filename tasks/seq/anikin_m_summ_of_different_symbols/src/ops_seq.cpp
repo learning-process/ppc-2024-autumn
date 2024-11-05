@@ -5,8 +5,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
 bool anikin_m_sum_of_differnt_symbols_seq::SumDifSymSequential::pre_processing() {
   internal_order_test();
   // Input
