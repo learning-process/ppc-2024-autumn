@@ -1,4 +1,3 @@
-9// Copyright 2023 Nesterov Alexander
 #include "mpi/varfolomeev_g_matrix_max_rows_vals/include/ops_mpi.hpp"
 
 #include <algorithm>
