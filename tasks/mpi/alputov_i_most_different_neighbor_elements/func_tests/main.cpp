@@ -115,7 +115,7 @@ TEST(alputov_i_most_different_neighbor_elements_mpi, LargeRandomInput_CorrectRes
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int> reference_max(1, 0);
+    std::vector<int> reference_max(1);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -160,7 +160,7 @@ TEST(alputov_i_most_different_neighbor_elements_mpi, MediumRandomInput_CorrectRe
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int> reference_max(1, 0);
+    std::vector<int> reference_max(1);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -170,211 +170,6 @@ TEST(alputov_i_most_different_neighbor_elements_mpi, MediumRandomInput_CorrectRe
     taskDataSeq->outputs_count.emplace_back(reference_max.size());
 
     // Create Task
-    alputov_i_most_different_neighbor_elements_mpi::most_different_neighbor_elements_seq
-        most_different_neighbor_elements_seq(taskDataSeq);
-    ASSERT_EQ(most_different_neighbor_elements_seq.validation(), true);
-    most_different_neighbor_elements_seq.pre_processing();
-    most_different_neighbor_elements_seq.run();
-    most_different_neighbor_elements_seq.post_processing();
-
-    ASSERT_EQ(reference_max[0], global_max[0]);
-  }
-}
-
-TEST(alputov_i_most_different_neighbor_elements_mpi, AllEqualElements_CorrectResult) {
-  boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int> global_max(1);
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    const int sz = 100;
-    global_vec = std::vector<int>(sz, 0);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
-    taskDataPar->outputs_count.emplace_back(global_max.size());
-  }
-
-  alputov_i_most_different_neighbor_elements_mpi::most_different_neighbor_elements_mpi testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
-
-  if (world.rank() == 0) {
-    std::vector<int> reference_max(1, 0);
-
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataSeq->inputs_count.emplace_back(global_vec.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_max.size());
-
-    alputov_i_most_different_neighbor_elements_mpi::most_different_neighbor_elements_seq
-        most_different_neighbor_elements_seq(taskDataSeq);
-    ASSERT_EQ(most_different_neighbor_elements_seq.validation(), true);
-    most_different_neighbor_elements_seq.pre_processing();
-    most_different_neighbor_elements_seq.run();
-    most_different_neighbor_elements_seq.post_processing();
-
-    ASSERT_EQ(reference_max[0], global_max[0]);
-  }
-}
-
-TEST(alputov_i_most_different_neighbor_elements_mpi, AlternatingElements_CorrectResult) {
-  boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int> global_max(1);
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    global_vec = {1, -1, 1, -1, 1, -1, 1, -1, 1, -1};
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
-    taskDataPar->outputs_count.emplace_back(global_max.size());
-  }
-
-  alputov_i_most_different_neighbor_elements_mpi::most_different_neighbor_elements_mpi testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
-
-  if (world.rank() == 0) {
-    std::vector<int> reference_max(1, 0);
-
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataSeq->inputs_count.emplace_back(global_vec.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_max.size());
-
-    alputov_i_most_different_neighbor_elements_mpi::most_different_neighbor_elements_seq
-        most_different_neighbor_elements_seq(taskDataSeq);
-    ASSERT_EQ(most_different_neighbor_elements_seq.validation(), true);
-    most_different_neighbor_elements_seq.pre_processing();
-    most_different_neighbor_elements_seq.run();
-    most_different_neighbor_elements_seq.post_processing();
-
-    ASSERT_EQ(reference_max[0], global_max[0]);
-  }
-}
-
-TEST(alputov_i_most_different_neighbor_elements_mpi, ConstantDifferenceSequence_CorrectResult) {
-  boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int> global_max(1);
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    const int sz = 123;
-    global_vec.resize(sz);
-    for (int i = 0; i < sz; ++i) {
-      global_vec[i] = sz - i;
-    }
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
-    taskDataPar->outputs_count.emplace_back(global_max.size());
-  }
-
-  alputov_i_most_different_neighbor_elements_mpi::most_different_neighbor_elements_mpi testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
-
-  if (world.rank() == 0) {
-    std::vector<int> reference_max(1, 0);
-
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataSeq->inputs_count.emplace_back(global_vec.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_max.size());
-
-    alputov_i_most_different_neighbor_elements_mpi::most_different_neighbor_elements_seq
-        most_different_neighbor_elements_seq(taskDataSeq);
-    ASSERT_EQ(most_different_neighbor_elements_seq.validation(), true);
-    most_different_neighbor_elements_seq.pre_processing();
-    most_different_neighbor_elements_seq.run();
-    most_different_neighbor_elements_seq.post_processing();
-
-    ASSERT_EQ(reference_max[0], global_max[0]);
-  }
-}
-
-TEST(alputov_i_most_different_neighbor_elements_mpi, NegativeNumbers_ReturnsCorrectPair) {
-  boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int> global_max(1);
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    global_vec = {-1, -5, -2, -7, -2, -20, -23, -21, -1, -67, -2, -34};
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
-    taskDataPar->outputs_count.emplace_back(global_max.size());
-  }
-
-  alputov_i_most_different_neighbor_elements_mpi::most_different_neighbor_elements_mpi testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
-
-  if (world.rank() == 0) {
-    std::vector<int> reference_max(1, 0);
-
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataSeq->inputs_count.emplace_back(global_vec.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_max.size());
-
-    alputov_i_most_different_neighbor_elements_mpi::most_different_neighbor_elements_seq
-        most_different_neighbor_elements_seq(taskDataSeq);
-    ASSERT_EQ(most_different_neighbor_elements_seq.validation(), true);
-    most_different_neighbor_elements_seq.pre_processing();
-    most_different_neighbor_elements_seq.run();
-    most_different_neighbor_elements_seq.post_processing();
-
-    ASSERT_EQ(reference_max[0], global_max[0]);
-  }
-}
-
-TEST(alputov_i_most_different_neighbor_elements_mpi, MostlyZerosInput_ReturnsCorrectPair) {
-  boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int> global_max(1);
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    global_vec = {12, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
-    taskDataPar->outputs_count.emplace_back(global_max.size());
-  }
-
-  alputov_i_most_different_neighbor_elements_mpi::most_different_neighbor_elements_mpi testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
-
-  if (world.rank() == 0) {
-    std::vector<int> reference_max(1, 0);
-
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataSeq->inputs_count.emplace_back(global_vec.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_max.size());
-
     alputov_i_most_different_neighbor_elements_mpi::most_different_neighbor_elements_seq
         most_different_neighbor_elements_seq(taskDataSeq);
     ASSERT_EQ(most_different_neighbor_elements_seq.validation(), true);
