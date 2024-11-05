@@ -52,11 +52,13 @@ bool sarafanov_m_num_of_mismatch_characters_of_two_strings_mpi::ParallelTask::pr
 
 bool sarafanov_m_num_of_mismatch_characters_of_two_strings_mpi::ParallelTask::run() {
   internal_order_test();
+  std::string local_input_a;
+  std::string local_input_b;
   if (world.rank() == 0) {
     auto base_size = input_a_.size() / world.size();
     auto remainder = input_a_.size() % world.size();
-    local_input_a_ = input_a_.substr(0, base_size);
-    local_input_b_ = input_b_.substr(0, base_size);
+    local_input_a = input_a_.substr(0, base_size);
+    local_input_b = input_b_.substr(0, base_size);
 
     auto start = base_size;
     for (int p = 1; p < world.size(); ++p) {
@@ -68,13 +70,13 @@ bool sarafanov_m_num_of_mismatch_characters_of_two_strings_mpi::ParallelTask::ru
       start += size;
     }
   } else {
-    world.recv(0, 0, local_input_a_);
-    world.recv(0, 0, local_input_b_);
+    world.recv(0, 0, local_input_a);
+    world.recv(0, 0, local_input_b);
   }
 
   auto local_result = 0;
-  for (size_t i = 0; i < local_input_a_.size(); ++i) {
-    if (local_input_a_[i] != local_input_b_[i]) {
+  for (size_t i = 0; i < local_input_a.size(); ++i) {
+    if (local_input_a[i] != local_input_b[i]) {
       local_result++;
     }
   }

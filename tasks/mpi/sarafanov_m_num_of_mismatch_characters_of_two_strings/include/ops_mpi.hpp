@@ -30,7 +30,6 @@ class ParallelTask : public ppc::core::Task {
 
  private:
   std::string input_a_, input_b_;
-  std::string local_input_a_, local_input_b_;
   int result_{};
 
   boost::mpi::communicator world;
