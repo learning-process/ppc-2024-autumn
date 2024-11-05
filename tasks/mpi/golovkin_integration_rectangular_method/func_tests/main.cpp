@@ -31,9 +31,6 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
     taskDataPar->outputs_count.emplace_back(global_result.size());
   }
 
-  // Синхронизация перед запуском параллельной задачи
-  world.barrier();
-
   golovkin_integration_rectangular_method::MPIIntegralCalculator parallelTask(taskDataPar);
 
   // Выполнение параллельных задач на всех процессах
@@ -41,9 +38,6 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
   parallelTask.pre_processing();
   parallelTask.run();
   parallelTask.post_processing();
-
-  // Синхронизация после завершения параллельных задач
-  world.barrier();
 
   if (world.rank() == 0) {
     // Создание и инициализация данных для последовательной задачи на нулевом процессе
@@ -69,7 +63,6 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
     // Сравнение результатов параллельной и последовательной интеграции
     ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
   }
-  world.barrier();
 }
 
 TEST(golovkin_integration_rectangular_method, test_square_function) {
