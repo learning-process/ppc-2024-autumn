@@ -1,10 +1,6 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/zaytsev_d_num_of_alternations_signs/include/ops_seq.hpp"
 
-#include <thread>
-
-using namespace std::chrono_literals;
-
 bool zaytsev_d_num_of_alternations_signs_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   int* input_data = reinterpret_cast<int*>(taskData->inputs[0]);
