@@ -47,6 +47,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   int n{};
 
   boost::mpi::communicator world;
-};
-
 }  // namespace laganina_e_sum_values_by_columns_matrix_mpi
