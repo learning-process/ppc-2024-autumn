@@ -31,7 +31,7 @@ bool deryabin_m_symbol_frequency_seq::SymbolFrequencyTaskSequential::run() {
 	return true;
 }
 
-bool deryabin_m_symbol_frequency_sec::SymbolFrequencyTaskSequential::post_processing() {
+bool deryabin_m_symbol_frequency_seq::SymbolFrequencyTaskSequential::post_processing() {
 	internal_order_test();
 	reinterpret_cast<double*>(taskData->outputs[0])[0] = frequency_;
 	return true;
