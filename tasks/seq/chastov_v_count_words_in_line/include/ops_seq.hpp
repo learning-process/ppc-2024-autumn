@@ -8,7 +8,6 @@
 #include "core/task/include/task.hpp"
 
 namespace chastov_v_count_words_in_line_seq {
-std::vector<char> createString(int n);
 
 class TestTaskSequential : public ppc::core::Task {
  public:

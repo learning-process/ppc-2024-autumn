@@ -2,8 +2,9 @@
 
 #include "core/perf/include/perf.hpp"
 #include "seq/chastov_v_count_words_in_line/include/ops_seq.hpp"
+#include "seq/chastov_v_count_words_in_line/src/ops_seq.cpp"
 
-std::vector<char> wordCountInput = chastov_v_count_words_in_line_seq::createString(1000);
+std::vector<char> wordCountInput = createTestInput(1000);
 
 TEST(word_count_seq, test_pipeline_run) {
   // Create data

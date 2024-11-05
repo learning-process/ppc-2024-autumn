@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "seq/chastov_v_count_words_in_line/include/ops_seq.hpp"
+#include "seq/chastov_v_count_words_in_line/src/ops_seq.cpp"
 
 // Test case to check the behavior of the word counting function when given an empty string
 TEST(chastov_v_count_words_in_line_seq, empty_string) {
@@ -88,7 +89,7 @@ TEST(chastov_v_count_words_in_line_seq, words_4) {
 // Test case to verify the function's ability to handle larger input sizes
 // The generated string should contain enough words to yield a count of 450
 TEST(chastov_v_count_words_in_line_seq, words_450) {
-  std::vector<char> input = chastov_v_count_words_in_line_seq::createString(30);
+  std::vector<char> input = createTestInput(30);
   std::vector<int> out(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
@@ -109,7 +110,7 @@ TEST(chastov_v_count_words_in_line_seq, words_450) {
 // Test case to check the performance and correctness for an even larger input size
 // The created string should contain enough words to yield a count of 1500
 TEST(chastov_v_count_words_in_line_seq, words_1500) {
-  std::vector<char> input = chastov_v_count_words_in_line_seq::createString(100);
+  std::vector<char> input = createTestInput(100);
   std::vector<int> out(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
@@ -130,7 +131,7 @@ TEST(chastov_v_count_words_in_line_seq, words_1500) {
 // Test case to evaluate the handling of a very large number of words
 // The generated string should be such that the word count is expected to be 7500
 TEST(chastov_v_count_words_in_line_seq, words_7500) {
-  std::vector<char> input = chastov_v_count_words_in_line_seq::createString(500);
+  std::vector<char> input = createTestInput(500);
   std::vector<int> out(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
