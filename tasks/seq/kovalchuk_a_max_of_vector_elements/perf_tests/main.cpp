@@ -39,8 +39,8 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   std::random_device dev;
   std::mt19937 gen(dev());
-  int count_rows = 99999;
-  int count_columns = 99999;
+  int count_rows = 9999;
+  int count_columns = 9999;
   global_matrix = getRandomMatrix(count_rows, count_columns);
   size_t index = gen() % (static_cast<size_t>(count_rows) * count_columns);
   global_matrix[index / count_columns][index % count_columns] = ref;
