@@ -40,8 +40,6 @@ TEST(alputov_i_most_different_neighbor_elements_seq, InputSizeTwo_ReturnsCorrect
   std::vector<std::pair<int, int>> out(1);
   std::pair<int, int> ans = {std::min(in[0], in[1]), std::max(in[0], in[1])};
 
-  std::cout << in[0] << " " << in[1] << std::endl;
-
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
   taskDataSeq->inputs_count.emplace_back(in.size());

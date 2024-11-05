@@ -3,12 +3,9 @@
 #include <algorithm>
 #include <functional>
 #include <random>
-#include <thread>
 #include <vector>
 
 #include "seq/alputov_i_most_different_neighbor_elements/include/ops_seq.hpp"
-
-using namespace std::chrono_literals;
 
 bool alputov_i_most_different_neighbor_elements_mpi::most_different_neighbor_elements_seq::pre_processing() {
   internal_order_test();
