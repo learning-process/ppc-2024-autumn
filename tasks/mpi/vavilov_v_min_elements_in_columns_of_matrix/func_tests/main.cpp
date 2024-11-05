@@ -279,3 +279,4 @@ TEST(vavilov_v_min_elements_in_columns_of_matrix_mpi, find_min_elem_in_fixed_mat
       ASSERT_EQ(result[i], expected_min[i]) << "Mismatch in column " << i;
     }
   }
+}
