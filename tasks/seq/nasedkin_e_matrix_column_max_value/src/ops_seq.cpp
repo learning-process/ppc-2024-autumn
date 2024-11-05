@@ -52,7 +52,6 @@ bool nasedkin_e_matrix_column_max_value_seq::TestTaskSequential::run() {
   return true;
 }
 
-
 bool nasedkin_e_matrix_column_max_value_seq::TestTaskSequential::post_processing() {
   internal_order_test();
 
