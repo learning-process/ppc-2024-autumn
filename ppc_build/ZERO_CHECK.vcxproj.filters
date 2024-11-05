@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Elena\Documents\GitHub\ppc-2024-autumn\ppc_build\CMakeFiles\b6be2710dee7689fcf7c03ac63ac1054\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{16144CB9-79B7-3EA3-899E-527030984AAA}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,10 @@
+^C:\USERS\ELENA\DOCUMENTS\GITHUB\PPC-2024-AUTUMN\MODULES\REF\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Elena/Documents/GitHub/ppc-2024-autumn -BC:/Users/Elena/Documents/GitHub/ppc-2024-autumn/ppc_build --check-stamp-file C:/Users/Elena/Documents/GitHub/ppc-2024-autumn/ppc_build/modules/ref/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

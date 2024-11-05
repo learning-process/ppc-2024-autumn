@@ -1,0 +1,144 @@
+^C:\USERS\ELENA\DOCUMENTS\GITHUB\PPC-2024-AUTUMN\PPC_BUILD\CMAKEFILES\E3E636BDB4B14B041C91A5E2196E60BA\PPC_BOOST-MKDIR.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -Dcfgdir=/Release -P C:/Users/Elena/Documents/GitHub/ppc-2024-autumn/ppc_build/ppc_boost/tmp/ppc_boost-mkdirs.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Elena/Documents/GitHub/ppc-2024-autumn/ppc_build/ppc_boost/src/ppc_boost-stamp/Release/ppc_boost-mkdir
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\ELENA\DOCUMENTS\GITHUB\PPC-2024-AUTUMN\PPC_BUILD\CMAKEFILES\E3E636BDB4B14B041C91A5E2196E60BA\PPC_BOOST-DOWNLOAD.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Elena/Documents/GitHub/ppc-2024-autumn/ppc_build/ppc_boost/src/ppc_boost-stamp/Release/ppc_boost-download
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\ELENA\DOCUMENTS\GITHUB\PPC-2024-AUTUMN\PPC_BUILD\CMAKEFILES\E3E636BDB4B14B041C91A5E2196E60BA\PPC_BOOST-UPDATE.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Elena/Documents/GitHub/ppc-2024-autumn/ppc_build/ppc_boost/src/ppc_boost-stamp/Release/ppc_boost-update
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\ELENA\DOCUMENTS\GITHUB\PPC-2024-AUTUMN\PPC_BUILD\CMAKEFILES\E3E636BDB4B14B041C91A5E2196E60BA\PPC_BOOST-PATCH.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Elena/Documents/GitHub/ppc-2024-autumn/ppc_build/ppc_boost/src/ppc_boost-stamp/Release/ppc_boost-patch
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\ELENA\DOCUMENTS\GITHUB\PPC-2024-AUTUMN\PPC_BUILD\CMAKEFILES\E3E636BDB4B14B041C91A5E2196E60BA\PPC_BOOST-CONFIGURE.RULE
+setlocal
+cd C:\Users\Elena\Documents\GitHub\ppc-2024-autumn\ppc_build\ppc_boost\build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -S C:/Users/Elena/Documents/GitHub/ppc-2024-autumn/3rdparty/boost/ -B C:/Users/Elena/Documents/GitHub/ppc-2024-autumn/ppc_build/ppc_boost/build/ "-DCMAKE_CXX_COMPILER=C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.41.34120/bin/Hostx64/x64/cl.exe" "-DCMAKE_C_COMPILER=C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.41.34120/bin/Hostx64/x64/cl.exe" "-GVisual Studio 17 2022" -DCMAKE_BUILD_TYPE=Release -DBOOST_INCLUDE_LIBRARIES=mpi -DBOOST_ENABLE_MPI=ON -D "MPI_INCLUDE_PATH=C:/Program Files (x86)/Microsoft SDKs/MPI/Include" -D "MPI_LIBRARIES=C:/Program Files (x86)/Microsoft SDKs/MPI/Lib/x64/msmpi.lib" -D MPI_COMPILE_FLAGS= -D MPI_LINK_FLAGS= -DCMAKE_INSTALL_LIBDIR=lib
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Elena/Documents/GitHub/ppc-2024-autumn/ppc_build/ppc_boost/src/ppc_boost-stamp/Release/ppc_boost-configure
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\ELENA\DOCUMENTS\GITHUB\PPC-2024-AUTUMN\PPC_BUILD\CMAKEFILES\E3E636BDB4B14B041C91A5E2196E60BA\PPC_BOOST-BUILD.RULE
+setlocal
+cd C:\Users\Elena\Documents\GitHub\ppc-2024-autumn\ppc_build\ppc_boost\build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" --build C:/Users/Elena/Documents/GitHub/ppc-2024-autumn/ppc_build/ppc_boost/build --config Release
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Elena/Documents/GitHub/ppc-2024-autumn/ppc_build/ppc_boost/src/ppc_boost-stamp/Release/ppc_boost-build
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\ELENA\DOCUMENTS\GITHUB\PPC-2024-AUTUMN\PPC_BUILD\CMAKEFILES\E3E636BDB4B14B041C91A5E2196E60BA\PPC_BOOST-INSTALL.RULE
+setlocal
+cd C:\Users\Elena\Documents\GitHub\ppc-2024-autumn\ppc_build\ppc_boost\build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" --install C:/Users/Elena/Documents/GitHub/ppc-2024-autumn/ppc_build/ppc_boost/build --prefix C:/Users/Elena/Documents/GitHub/ppc-2024-autumn/ppc_build/ppc_boost/install
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Elena/Documents/GitHub/ppc-2024-autumn/ppc_build/ppc_boost/src/ppc_boost-stamp/Release/ppc_boost-install
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\ELENA\DOCUMENTS\GITHUB\PPC-2024-AUTUMN\PPC_BUILD\CMAKEFILES\E3E636BDB4B14B041C91A5E2196E60BA\PPC_BOOST-TEST.RULE
+setlocal
+cd C:\Users\Elena\Documents\GitHub\ppc-2024-autumn\ppc_build\ppc_boost\build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Elena/Documents/GitHub/ppc-2024-autumn/ppc_build/ppc_boost/src/ppc_boost-stamp/Release/ppc_boost-test
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\ELENA\DOCUMENTS\GITHUB\PPC-2024-AUTUMN\PPC_BUILD\CMAKEFILES\87D9E5BBD361BB9090B8C3521172B67B\PPC_BOOST-COMPLETE.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E make_directory C:/Users/Elena/Documents/GitHub/ppc-2024-autumn/ppc_build/CMakeFiles/Release
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Elena/Documents/GitHub/ppc-2024-autumn/ppc_build/CMakeFiles/Release/ppc_boost-complete
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Elena/Documents/GitHub/ppc-2024-autumn/ppc_build/ppc_boost/src/ppc_boost-stamp/Release/ppc_boost-done
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\ELENA\DOCUMENTS\GITHUB\PPC-2024-AUTUMN\PPC_BUILD\CMAKEFILES\B6BE2710DEE7689FCF7C03AC63AC1054\PPC_BOOST.RULE
+setlocal
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\ELENA\DOCUMENTS\GITHUB\PPC-2024-AUTUMN\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Elena/Documents/GitHub/ppc-2024-autumn -BC:/Users/Elena/Documents/GitHub/ppc-2024-autumn/ppc_build --check-stamp-file C:/Users/Elena/Documents/GitHub/ppc-2024-autumn/ppc_build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Elena\Documents\GitHub\ppc-2024-autumn\ppc_build\CMakeFiles\22c03568c28a3f60abc1b17ff3f657c4\ppc_googletest-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Elena\Documents\GitHub\ppc-2024-autumn\ppc_build\CMakeFiles\22c03568c28a3f60abc1b17ff3f657c4\ppc_googletest-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Elena\Documents\GitHub\ppc-2024-autumn\ppc_build\CMakeFiles\22c03568c28a3f60abc1b17ff3f657c4\ppc_googletest-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Elena\Documents\GitHub\ppc-2024-autumn\ppc_build\CMakeFiles\22c03568c28a3f60abc1b17ff3f657c4\ppc_googletest-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Elena\Documents\GitHub\ppc-2024-autumn\ppc_build\CMakeFiles\22c03568c28a3f60abc1b17ff3f657c4\ppc_googletest-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Elena\Documents\GitHub\ppc-2024-autumn\ppc_build\CMakeFiles\22c03568c28a3f60abc1b17ff3f657c4\ppc_googletest-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Elena\Documents\GitHub\ppc-2024-autumn\ppc_build\CMakeFiles\22c03568c28a3f60abc1b17ff3f657c4\ppc_googletest-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Elena\Documents\GitHub\ppc-2024-autumn\ppc_build\CMakeFiles\87d9e5bbd361bb9090b8c3521172b67b\ppc_googletest-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Elena\Documents\GitHub\ppc-2024-autumn\ppc_build\CMakeFiles\b6be2710dee7689fcf7c03ac63ac1054\ppc_googletest.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Elena\Documents\GitHub\ppc-2024-autumn\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\Elena\Documents\GitHub\ppc-2024-autumn\ppc_build\CMakeFiles\ppc_googletest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{16144CB9-79B7-3EA3-899E-527030984AAA}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
