@@ -10,7 +10,7 @@ TEST(tyshkevich_a_num_of_orderly_violations_mpi_ptest, test_pipeline_run) {
   int size = 9999;
 
   // Create data
-  std::vector<int> global_vec(size);
+  std::vector<int> global_vec(size, 1);
   std::vector<int> result(1, 0);
 
   boost::mpi::communicator world;
@@ -56,7 +56,7 @@ TEST(tyshkevich_a_num_of_orderly_violations_mpi_ptest, test_task_run) {
   int size = 9999;
 
   // Create data
-  std::vector<int> global_vec(size);
+  std::vector<int> global_vec(size, 1);
   std::vector<int> result(1, 0);
 
   boost::mpi::communicator world;

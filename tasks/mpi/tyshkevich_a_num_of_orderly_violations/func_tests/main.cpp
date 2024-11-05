@@ -7,6 +7,16 @@
 
 #include "mpi/tyshkevich_a_num_of_orderly_violations/include/ops_mpi.hpp"
 
+std::vector<int> tyshkevich_a_num_of_orderly_violations_mpi::getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = gen() % 100;
+  }
+  return vec;
+}
+
 std::string VecToStrTY(std::vector<int> &v) {
   std::ostringstream oss;
 
