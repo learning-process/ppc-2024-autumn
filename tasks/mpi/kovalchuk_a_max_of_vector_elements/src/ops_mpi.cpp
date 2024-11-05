@@ -63,8 +63,11 @@ bool kovalchuk_a_max_of_vector_elements::TestMPITaskParallel::pre_processing() {
     } else {
       delta = std::max(1u, taskData->inputs_count[0] * taskData->inputs_count[1] / world.size());
     }
-
+    if (taskData->inputs_count[0] == 1 && taskData->inputs_count[1] == 1) {
+      delta = 1;
+    }
   }
+
   broadcast(world, delta, 0);
 
   if (world.rank() == 0) {
