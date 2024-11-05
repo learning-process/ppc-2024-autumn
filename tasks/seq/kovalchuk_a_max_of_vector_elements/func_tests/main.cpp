@@ -210,7 +210,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, Test_Max_Negative_Values) {
   std::vector<int32_t> global_max(1, INT_MIN);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  global_matrix = getRandomMatrix(count_rows, count_columns, -1, -99);
+  global_matrix = getRandomMatrix(count_rows, count_columns, -1, -999);
   std::random_device dev;
   std::mt19937 gen(dev());
   int index = gen() % (count_rows * count_columns);

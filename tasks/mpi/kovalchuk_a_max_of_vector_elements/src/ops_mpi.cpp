@@ -58,12 +58,17 @@ bool kovalchuk_a_max_of_vector_elements::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   unsigned int delta = 0;
   if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] * taskData->inputs_count[1] / world.size();
+    unsigned int rows = taskData->inputs_count[0];
+    unsigned int columns = taskData->inputs_count[1];
+    if (rows == 1 && columns == 1) {
+      delta = 1;
+    } else {
+      delta = rows * columns / world.size();
+    }
   }
   broadcast(world, delta, 0);
 
   if (world.rank() == 0) {
-    // Init vectors
     unsigned int rows = taskData->inputs_count[0];
     unsigned int columns = taskData->inputs_count[1];
     if (rows > 0 && columns > 0) {
