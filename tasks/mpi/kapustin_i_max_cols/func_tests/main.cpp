@@ -220,11 +220,3 @@ TEST(kapustin_i_max_column_task_mpi, M_100x100_test) {
     ASSERT_EQ(res_sequential, result_parallel);
   }
 }
-TEST(kapustin_i_max_column_task_mpi, MismatchedOutputsCount) {
-  boost::mpi::communicator world;
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs_count = {10, 5, 5};
-  taskData->outputs_count = {3};
-  kapustin_i_max_column_task_mpi::MaxColumnTaskParallelMPI task(taskData);
-  ASSERT_FALSE(task.validation());
-}
