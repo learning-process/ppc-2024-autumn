@@ -8,8 +8,6 @@
 #include <thread>
 #include <vector>
 
-//using namespace std::chrono_literals;
-
 bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
 
