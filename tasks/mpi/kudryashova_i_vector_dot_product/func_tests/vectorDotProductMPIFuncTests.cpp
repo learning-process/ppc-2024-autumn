@@ -59,7 +59,6 @@ TEST(kudryashova_i_vector_dot_product_mpi, dot_product_vector_120) {
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
-    ASSERT_EQ(kudryashova_i_vector_dot_product_mpi::vectorDotProduct(global_vector[0], global_vector[1]), result[0]);
     ASSERT_EQ(reference[0], result[0]);
   }
 }

@@ -1,6 +1,6 @@
 #pragma once
-#include <vector>
 #include <random>
+#include <vector>
 
 #include "core/task/include/task.hpp"
 namespace kudryashova_i_vector_dot_product {
