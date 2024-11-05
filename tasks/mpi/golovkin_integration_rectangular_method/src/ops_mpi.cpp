@@ -49,6 +49,12 @@ bool MPIIntegralCalculator::run() {
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
+  // Проверка, что cnt_of_splits, a, и h инициализированы и имеют корректные значения
+  if (cnt_of_splits <= 0 || h <= 0.0 || a >= b) {
+    std::cerr << "Process " << rank << ": Invalid configuration (cnt_of_splits, h, or range a-b)" << std::endl;
+    return false;
+  }
+
   // Делим работу между процессами
   int splits_per_proc = cnt_of_splits / size;
   int remaining_splits = cnt_of_splits % size;
@@ -57,25 +63,24 @@ bool MPIIntegralCalculator::run() {
 
   // Проверка диапазона
   if (start >= end) {
-    std::cerr << "Process " << rank << " has no work to do." << std::endl;
-    return false;
+    std::cerr << "Process " << rank << " has no work to do (start >= end)." << std::endl;
+    local_res = 0.0;  // Устанавливаем local_res для процесса без работы
+  } else {
+    // Вычисление локального результата
+    double local_result = 0.0;
+    for (int i = start; i < end; ++i) {
+      double x = a + i * h;
+      local_result += function_square(x);  // Функция, которую мы интегрируем
+    }
+    local_res = local_result * h;  // Умножаем на ширину подынтервала
   }
 
-  // Вычисление локального результата
-  double local_result = 0.0;
-  for (int i = start; i < end; ++i) {
-    double x = a + i * h;
-    local_result += function_square(x);  // Функция, которую мы интегрируем
-  }
-  local_res = local_result * h;  // Умножаем на ширину подынтервала
-
-  // std::cout << "Process " << rank << " calculated local_res: " << local_res << std::endl;
-
-  // Сбор результатов
+  // Сбор результатов, проверка глобальной синхронизации
+  double global_res = 0.0;
   MPI_Reduce(&local_res, &global_res, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
   if (rank == 0) {
-    // std::cout << "Root process has global result after reduction: " << global_res << std::endl;
+    std::cout << "Root process has global result after reduction: " << global_res << std::endl;
   }
 
   return true;
