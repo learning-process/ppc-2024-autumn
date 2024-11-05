@@ -39,7 +39,7 @@ double shulpin_monte_carlo_integration::parallel_integral(double a, double b, in
   }
   local_sum *= h_chunk;
 
-  boost::mpi::reduce(world, local_sum, global_sum, std::plus<double>(), 0);
+  boost::mpi::reduce(world, local_sum, global_sum, std::plus<>(), 0);
 
   return global_sum;
 }
