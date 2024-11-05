@@ -25,7 +25,7 @@ bool deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskSequential::validati
     return taskData->outputs_count[0] == 1 && taskData->inputs_count[1] == 1;
 }
 
-bool deryabin_m_symbol_frequency_seq::SymbolFrequencyMPITaskSequential::run() {
+bool deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskSequential::run() {
     internal_order_test();
     float found = 0;
     for (char i : input_str_)
@@ -35,7 +35,7 @@ bool deryabin_m_symbol_frequency_seq::SymbolFrequencyMPITaskSequential::run() {
     return true;
 }
 
-bool deryabin_m_symbol_frequency_seq::SymbolFrequencyMPITaskSequential::post_processing() {
+bool deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskSequential::post_processing() {
     internal_order_test();
     reinterpret_cast<float*>(taskData->outputs[0])[0] = frequency_;
     return true;
@@ -91,7 +91,7 @@ bool deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskParallel::validation
     return true;
 }
 
-bool deryabin_m_symbol_frequency_seq::SymbolFrequencyMPITaskParallel::run() {
+bool deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskParallel::run() {
     internal_order_test();
     for (char i : local_input_str_)
         if (i == input_symbol_) local_found_++;
@@ -101,7 +101,7 @@ bool deryabin_m_symbol_frequency_seq::SymbolFrequencyMPITaskParallel::run() {
     return true;
 }
 
-bool deryabin_m_symbol_frequency_seq::SymbolFrequencyMPITaskParallel::post_processing() {
+bool deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskParallel::post_processing() {
     internal_order_test();
     if (world.rank() == 0) {
         reinterpret_cast<float*>(taskData->outputs[0])[0] = frequency_;
