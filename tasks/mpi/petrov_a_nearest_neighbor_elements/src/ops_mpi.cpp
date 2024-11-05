@@ -22,11 +22,9 @@ bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskSequential::pre_processi
 
 bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  if (taskData->inputs_count[0] < 2) {
-    return false;
-  }
-  return taskData->outputs_count[0] == 2;
+  return taskData->inputs_count[0] >= 2 && taskData->outputs_count[0] == 2;
 }
+
 
 bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskSequential::run() {
   internal_order_test();
