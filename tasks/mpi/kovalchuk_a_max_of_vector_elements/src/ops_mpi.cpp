@@ -35,9 +35,15 @@ bool kovalchuk_a_max_of_vector_elements::TestMPITaskSequential::run() {
   if (!input_.empty()) {
     std::vector<int> local_res(input_.size());
     for (unsigned int i = 0; i < input_.size(); i++) {
-      local_res[i] = *std::max_element(input_[i].begin(), input_[i].end());
+      if (!input_[i].empty()) {
+        local_res[i] = *std::max_element(input_[i].begin(), input_[i].end());
+      } else {
+        local_res[i] = INT_MIN;
+      }
     }
     res_ = *std::max_element(local_res.begin(), local_res.end());
+  } else {
+    res_ = INT_MIN;
   }
   return true;
 }
