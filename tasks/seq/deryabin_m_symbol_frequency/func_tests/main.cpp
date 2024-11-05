@@ -24,7 +24,7 @@ TEST(deryabin_m_symbol_frequency_seq, test_standard_string) {
 	taskDataSeq->outputs_count.emplace_back(out.size());
 
 	// Create Task
-	deryabin_m_symbol_frequency_seq::Symbol_frequency_TaskSequential symbol_frequency_TaskSequential(taskDataSeq);
+	deryabin_m_symbol_frequency_seq::SymbolFrequencyTaskSequential symbol_frequency_TaskSequential(taskDataSeq);
 	ASSERT_EQ(symbol_frequency_TaskSequential.validation(), true);
 	symbol_frequency_TaskSequential.pre_processing();
 	symbol_frequency_TaskSequential.run();
@@ -50,7 +50,7 @@ TEST(deryabin_m_symbol_frequency_seq, test_string_without_symbol) {
 	taskDataSeq->outputs_count.emplace_back(out.size());
 
 	// Create Task
-	deryabin_m_symbol_frequency_seq::Symbol_frequency_TaskSequential symbol_frequency_TaskSequential(taskDataSeq);
+	deryabin_m_symbol_frequency_seq::SymbolFrequencyTaskSequential symbol_frequency_TaskSequential(taskDataSeq);
 	ASSERT_EQ(symbol_frequency_TaskSequential.validation(), true);
 	symbol_frequency_TaskSequential.pre_processing();
 	symbol_frequency_TaskSequential.run();
@@ -76,7 +76,7 @@ TEST(deryabin_m_symbol_frequency_seq, test_large_string) {
 	taskDataSeq->outputs_count.emplace_back(out.size());
 
 	// Create Task
-	deryabin_m_symbol_frequency_seq::Symbol_frequency_TaskSequential symbol_frequency_TaskSequential(taskDataSeq);
+	deryabin_m_symbol_frequency_seq::SymbolFrequencyTaskSequential symbol_frequency_TaskSequential(taskDataSeq);
 	ASSERT_EQ(symbol_frequency_TaskSequential.validation(), true);
 	symbol_frequency_TaskSequential.pre_processing();
 	symbol_frequency_TaskSequential.run();
@@ -102,7 +102,7 @@ TEST(deryabin_m_symbol_frequency_seq, test_empty_string) {
 	taskDataSeq->outputs_count.emplace_back(out.size());
 
 	// Create Task
-	deryabin_m_symbol_frequency_seq::Symbol_frequency_TaskSequential symbol_frequency_TaskSequential(taskDataSeq);
+	deryabin_m_symbol_frequency_seq::SymbolFrequencyTaskSequential symbol_frequency_TaskSequential(taskDataSeq);
 	ASSERT_EQ(symbol_frequency_TaskSequential.validation(), true);
 	symbol_frequency_TaskSequential.pre_processing();
 	symbol_frequency_TaskSequential.run();
@@ -128,7 +128,7 @@ TEST(deryabin_m_symbol_frequency_seq, test_arithmetic_string) {
 	taskDataSeq->outputs_count.emplace_back(out.size());
 
 	// Create Task
-	deryabin_m_symbol_frequency_seq::Symbol_frequency_TaskSequential symbol_frequency_TaskSequential(taskDataSeq);
+	deryabin_m_symbol_frequency_seq::SymbolFrequencyTaskSequential symbol_frequency_TaskSequential(taskDataSeq);
 	ASSERT_EQ(symbol_frequency_TaskSequential.validation(), true);
 	symbol_frequency_TaskSequential.pre_processing();
 	symbol_frequency_TaskSequential.run();
