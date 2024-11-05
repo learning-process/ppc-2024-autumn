@@ -24,7 +24,7 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  void set_seq(const func &f);
+  void set_seq(const func& f);
 
  private:
   double a_seq{};
