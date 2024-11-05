@@ -14,9 +14,14 @@ MPIIntegralCalculator::MPIIntegralCalculator(std::shared_ptr<ppc::core::TaskData
     : ppc::core::Task(taskData), taskData(std::move(taskData)), local_res(0.0), global_res(0.0) {}
 
 bool MPIIntegralCalculator::validation() {
-  // std::cout << "Validation - Inputs: " << taskData->inputs.size() << ", Outputs: " << taskData->outputs.size()
-  // << std::endl;
-  return (taskData->inputs.size() == 3 && taskData->outputs.size() >= 1);
+  if (taskData->inputs.empty() || taskData->outputs.empty()) {
+    return false;
+  }
+  // Убедимся, что только процесс 0 может инициировать данные
+  if (taskData->inputs.size() < 3 || (taskData->outputs.size() < 1 && world.rank() == 0)) {
+    return false;
+  }
+  return true;
 }
 
 bool MPIIntegralCalculator::pre_processing() {

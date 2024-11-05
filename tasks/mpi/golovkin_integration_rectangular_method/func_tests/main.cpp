@@ -20,6 +20,7 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
   double epsilon = 0.1;
   int cnt_of_splits = static_cast<int>((b - a) / epsilon);  // Вычисляем количество разбиений
 
+  // Только процесс 0 инициализирует данные
   if (world.rank() == 0) {
     std::cout << "Process 0: Initializing task data for parallel calculation" << std::endl;
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
@@ -34,27 +35,18 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
 
   golovkin_integration_rectangular_method::MPIIntegralCalculator parallelTask(taskDataPar);
 
+  // Каждый процесс выполняет валидацию, но процесс 0 инициализирует
   std::cout << "Process " << world.rank() << ": Running validation" << std::endl;
   ASSERT_EQ(parallelTask.validation(), true);
 
-  std::cout << "Process " << world.rank() << ": Starting pre_processing" << std::endl;
+  // Начало параллельных операций
   parallelTask.pre_processing();
-
-  // Barrier before running the main calculation
   MPI_Barrier(MPI_COMM_WORLD);
-
-  std::cout << "Process " << world.rank() << ": Running main calculation" << std::endl;
   parallelTask.run();
-
-  // Barrier after running the main calculation
   MPI_Barrier(MPI_COMM_WORLD);
-
-  std::cout << "Process " << world.rank() << ": Starting post_processing" << std::endl;
   parallelTask.post_processing();
 
-  // Barrier before starting sequential calculation
-  MPI_Barrier(MPI_COMM_WORLD);
-
+  // Процесс 0 выполняет последовательный расчет
   if (world.rank() == 0) {
     std::cout << "Process 0: Starting sequential calculation for verification" << std::endl;
     std::vector<double> reference_result(1, 0);
@@ -75,9 +67,6 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
     sequentialTask.pre_processing();
     sequentialTask.run();
     sequentialTask.post_processing();
-
-    // Barrier before comparison
-    MPI_Barrier(MPI_COMM_WORLD);
 
     std::cout << "Process 0: Comparing parallel and sequential results" << std::endl;
     ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
