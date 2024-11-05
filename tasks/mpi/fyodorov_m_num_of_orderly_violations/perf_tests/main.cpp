@@ -96,8 +96,7 @@ std::make_shared<fyodorov_m_num_of_orderly_violations_mpi::TestMPITaskParallel>(
     ASSERT_EQ(count_size_vector, global_violations[0]);
   }
 }
-
-
+*/
 
 /*
 TEST(mpi_perf_test, test_pipeline_run) {
@@ -293,14 +292,12 @@ std::make_shared<fyodorov_m_num_of_orderly_violations_mpi::TestMPITaskParallel>(
 */
 
 TEST(Parallel_Operations_MPI, test_pipelinea_run) {
-  // Инициализация MPI
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
   std::vector<int> global_vec;
   std::vector<int32_t> global_violations(1, 0);
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   int count_size_vector;
@@ -321,7 +318,6 @@ TEST(Parallel_Operations_MPI, test_pipelinea_run) {
   testMpiTaskParallel->post_processing();
 
   if (world.rank() == 0) {
-    // Проверка результата
     int expected_violations = 0;
     for (size_t i = 1; i < global_vec.size(); ++i) {
       if (global_vec[i] < global_vec[i - 1]) {
@@ -375,7 +371,6 @@ TEST(mpi_perf_test, test_task_run) {
     }
     ASSERT_EQ(global_violations[0], expected_violations);
 
-    // Вывод времени выполнения
     std::cout << "Execution time: " << duration << " ms" << std::endl;
   }
 }
