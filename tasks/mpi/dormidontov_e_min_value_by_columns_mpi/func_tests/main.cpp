@@ -105,3 +105,99 @@ TEST(dormidontov_e_min_value_by_columns_mpi, Test_just_test_if_it_finally_works2
     ASSERT_EQ(res_out_paral, res_out_seq);
   }
 }
+
+TEST(dormidontov_e_min_value_by_columns_mpi, Test_not_squared_one) {
+  boost::mpi::communicator world;
+
+  int rs = 1;
+  int cs = 4;
+
+  std::vector<int> matrix(cs * rs);
+  for (int i = 0; i < cs; i++) {
+    for (int j = 0; j < rs; j++) {
+      matrix[i * cs + j] = i * cs + j;
+    };
+  };
+  std::vector<int> res_out_paral(cs,0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+    taskDataPar->inputs_count.emplace_back(rs);
+    taskDataPar->inputs_count.emplace_back(cs);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_out_paral.data()));
+    taskDataPar->outputs_count.emplace_back(res_out_paral.size());
+  }
+  dormidontov_e_min_value_by_columns_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+
+  testMpiTaskParallel.post_processing();
+  if (world.rank() == 0) {
+    std::vector<int> res_out_seq(cs, 0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(rs);
+    taskDataSeq->inputs_count.emplace_back(cs);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_out_seq.data()));
+    taskDataSeq->outputs_count.emplace_back(res_out_seq.size());
+    dormidontov_e_min_value_by_columns_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(res_out_paral, res_out_seq);
+  }
+}
+
+TEST(dormidontov_e_min_value_by_columns_mpi, Test_not_squared_one2) {
+  boost::mpi::communicator world;
+
+  int rs = 4;
+  int cs = 1;
+
+  std::vector<int> matrix(cs * rs);
+  for (int i = 0; i < cs; i++) {
+    for (int j = 0; j < rs; j++) {
+      matrix[i * cs + j] = i * cs + j;
+    };
+  };
+  std::vector<int> res_out_paral(cs, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+    taskDataPar->inputs_count.emplace_back(rs);
+    taskDataPar->inputs_count.emplace_back(cs);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_out_paral.data()));
+    taskDataPar->outputs_count.emplace_back(res_out_paral.size());
+  }
+  dormidontov_e_min_value_by_columns_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+
+  testMpiTaskParallel.post_processing();
+  if (world.rank() == 0) {
+    std::vector<int> res_out_seq(cs, 0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(rs);
+    taskDataSeq->inputs_count.emplace_back(cs);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_out_seq.data()));
+    taskDataSeq->outputs_count.emplace_back(res_out_seq.size());
+    dormidontov_e_min_value_by_columns_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(res_out_paral, res_out_seq);
+  }
+}
