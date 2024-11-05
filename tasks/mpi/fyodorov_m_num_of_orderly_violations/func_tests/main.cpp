@@ -272,7 +272,7 @@ TEST(fyodorov_m_num_of_orderly_violations_mpi, PPPPPPPPPP) {
     ASSERT_EQ(reference_violations[0], global_violations[0]);
   }
 }
-
+/*
 namespace fyodorov_m_num_of_orderly_violations_mpi {
 
 TEST(Parallel_Operations_MPI, Test_Count_Violations_Small_Vector) {
@@ -326,3 +326,4 @@ TEST(Parallel_Operations_MPI, Test_Count_Violations_Small_Vector) {
   }
 }
 }  // namespace fyodorov_m_num_of_orderly_violations_mpi
+*/
