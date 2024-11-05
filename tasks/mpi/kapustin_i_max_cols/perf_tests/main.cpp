@@ -6,18 +6,6 @@
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/kapustin_i_max_cols/include/avg_mpi.hpp"
-std::vector<int> getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    int val = gen() % 100000;
-    if (val >= 0) {
-      vec[i] = val;
-    }
-  }
-  return vec;
-}
 
 TEST(kapustin_i_max_column_task_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
@@ -28,7 +16,7 @@ TEST(kapustin_i_max_column_task_perf_test, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     const int size_vector = cols * rows;
-    matrix = getRandomVector(size_vector);
+    matrix = kapustin_i_max_column_task_mpi::getRandomVector(size_vector);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());

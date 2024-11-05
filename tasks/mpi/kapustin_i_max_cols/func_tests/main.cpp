@@ -7,18 +7,6 @@
 
 #include "mpi/kapustin_i_max_cols/include/avg_mpi.hpp"
 
-std::vector<int> getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    int val = gen() % 100;
-    if (val >= 0) {
-      vec[i] = val;
-    }
-  }
-  return vec;
-}
 TEST(kapustin_i_max_column_task_mpi, M_5x5_test) {
   boost::mpi::communicator world;
   int cols = 5;
@@ -30,7 +18,7 @@ TEST(kapustin_i_max_column_task_mpi, M_5x5_test) {
 
   if (world.rank() == 0) {
     const int size_vector = cols * rows;
-    matrix = getRandomVector(size_vector);
+    matrix = kapustin_i_max_column_task_mpi::getRandomVector(size_vector);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
@@ -81,7 +69,7 @@ TEST(kapustin_i_max_column_task_mpi, M_1x10_test) {
 
   if (world.rank() == 0) {
     const int size_vector = cols * rows;
-    matrix = getRandomVector(size_vector);
+    matrix = kapustin_i_max_column_task_mpi::getRandomVector(size_vector);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
@@ -131,7 +119,7 @@ TEST(kapustin_i_max_column_task_mpi, M_10x1_test) {
 
   if (world.rank() == 0) {
     const int size_vector = cols * rows;
-    matrix = getRandomVector(size_vector);
+    matrix = kapustin_i_max_column_task_mpi::getRandomVector(size_vector);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
@@ -181,7 +169,7 @@ TEST(kapustin_i_max_column_task_mpi, M_100x100_test) {
 
   if (world.rank() == 0) {
     const int size_vector = cols * rows;
-    matrix = getRandomVector(size_vector);
+    matrix = kapustin_i_max_column_task_mpi::getRandomVector(size_vector);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());

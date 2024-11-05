@@ -21,9 +21,7 @@ bool kapustin_i_max_column_task_mpi::MaxColumnTaskSequentialMPI::pre_processing(
 }
 bool kapustin_i_max_column_task_mpi::MaxColumnTaskSequentialMPI::validation() {
   internal_order_test();
-  if (taskData->inputs_count.size() < 2 || taskData->inputs_count[0] == 0 || taskData->inputs_count[1] == 0)
-    return false;
-  return true;
+  return (taskData->inputs_count.size() >= 2 && taskData->inputs_count[0] != 0 && taskData->inputs_count[1] != 0);
 }
 bool kapustin_i_max_column_task_mpi::MaxColumnTaskSequentialMPI::run() {
   {
