@@ -148,3 +148,20 @@ TEST(sarafanov_m_num_of_mismatch_characters_of_two_strings_seq, error_when_outpu
   auto task = sarafanov_m_num_of_mismatch_characters_of_two_strings_seq::SequentialTask(task_data);
   ASSERT_FALSE(task.validation());
 }
+
+TEST(sarafanov_m_num_of_mismatch_characters_of_two_strings_seq, error_when_one_string_is_empty) {
+  auto input_a = std::string("abcdefg");
+  auto input_b = std::string("");
+  auto output = std::vector<int>(1);
+
+  auto task_data = std::make_shared<ppc::core::TaskData>();
+  task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_a.data()));
+  task_data->inputs_count.emplace_back(input_a.size());
+  task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_b.data()));
+  task_data->inputs_count.emplace_back(input_b.size());
+  task_data->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+  task_data->outputs_count.emplace_back(output.size());
+
+  auto task = sarafanov_m_num_of_mismatch_characters_of_two_strings_seq::SequentialTask(task_data);
+  ASSERT_FALSE(task.validation());
+}

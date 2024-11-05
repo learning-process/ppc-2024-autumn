@@ -211,3 +211,29 @@ TEST(sarafanov_m_num_of_mismatch_characters_of_two_strings_mpi, error_when_outpu
     ASSERT_TRUE(par_task.validation());
   }
 }
+
+TEST(sarafanov_m_num_of_mismatch_characters_of_two_strings_mpi, error_when_one_string_is_empty) {
+  boost::mpi::communicator world;
+  std::string input_a;
+  std::string input_b;
+
+  auto par_task_output = std::vector<int>(1);
+  auto par_task_data = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    input_a = "";
+    input_b = randomString(100000);
+    par_task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_a.data()));
+    par_task_data->inputs_count.emplace_back(input_a.size());
+    par_task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_b.data()));
+    par_task_data->inputs_count.emplace_back(input_b.size());
+    par_task_data->outputs.emplace_back(reinterpret_cast<uint8_t *>(par_task_output.data()));
+    par_task_data->outputs_count.emplace_back(par_task_output.size());
+  }
+
+  auto par_task = sarafanov_m_num_of_mismatch_characters_of_two_strings_mpi::ParallelTask(par_task_data);
+  if (world.rank() == 0) {
+    ASSERT_FALSE(par_task.validation());
+  } else {
+    ASSERT_TRUE(par_task.validation());
+  }
+}

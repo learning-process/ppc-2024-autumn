@@ -45,6 +45,14 @@ bool sarafanov_m_num_of_mismatch_characters_of_two_strings_mpi::ParallelTask::pr
   if (world.rank() == 0) {
     input_a_.assign(reinterpret_cast<char *>(taskData->inputs[0]), taskData->inputs_count[0]);
     input_b_.assign(reinterpret_cast<char *>(taskData->inputs[1]), taskData->inputs_count[1]);
+    result_ = 0;
+  }
+  return true;
+}
+
+bool sarafanov_m_num_of_mismatch_characters_of_two_strings_mpi::ParallelTask::run() {
+  internal_order_test();
+  if (world.rank() == 0) {
     auto base_size = input_a_.size() / world.size();
     auto remainder = input_a_.size() % world.size();
     local_input_a_ = input_a_.substr(0, base_size);
@@ -64,12 +72,6 @@ bool sarafanov_m_num_of_mismatch_characters_of_two_strings_mpi::ParallelTask::pr
     world.recv(0, 0, local_input_b_);
   }
 
-  result_ = 0;
-  return true;
-}
-
-bool sarafanov_m_num_of_mismatch_characters_of_two_strings_mpi::ParallelTask::run() {
-  internal_order_test();
   auto local_result = 0;
   for (size_t i = 0; i < local_input_a_.size(); ++i) {
     if (local_input_a_[i] != local_input_b_[i]) {
