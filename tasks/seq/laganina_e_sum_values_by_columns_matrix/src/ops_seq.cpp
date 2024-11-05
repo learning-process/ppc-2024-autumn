@@ -48,4 +48,4 @@ bool laganina_e_sum_values_by_columns_matrix_seq::sum_values_by_columns_matrix_S
     reinterpret_cast<int*>(taskData->outputs[0])[i] = res_[i];
   }
   return true;
-}
+}//1
