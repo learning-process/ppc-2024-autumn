@@ -1,5 +1,5 @@
 #include "mpi/dormidontov_e_min_value_by_columns_mpi/include/ops_mpi.hpp"
-
+#include<climits>
 #include <algorithm>
 #include <functional>
 #include <random>
@@ -32,9 +32,10 @@ bool dormidontov_e_min_value_by_columns_mpi::TestMPITaskSequential::validation()
 }
 
 bool dormidontov_e_min_value_by_columns_mpi::TestMPITaskSequential::run() {
-  internal_order_test();
+  
+internal_order_test();
   for (int j = 0; j < cs; ++j) {
-    res_[j] = 10000000;
+    res_[j] = INT_MAX;
     for (int i = 0; i < rs; ++i) {
       if (res_[j] > input_[i][j]) {
         res_[j] = input_[i][j];
@@ -96,14 +97,18 @@ bool dormidontov_e_min_value_by_columns_mpi::TestMPITaskParallel::run() {
   } else {
     locrs = rsperpro;
   }
-  std::vector<int> locmin(cs, 10000);
+  std::vector<int> locmin(cs, INT_MAX);
 
   minput_.resize(cs * locrs);
 
   if (world.rank() == 0) {
     a = locrs * cs;
     for (int i = 1; i < world.size(); i++) {
-      prs = rsperpro + (i < unfitrs ? 1 : 0);
+      if (i < unfitrs) {
+        prs = rsperpro + 1;
+      } else {
+        prs = rsperpro;
+      }
       world.send(i, 2, input_.data() + a, prs * cs);
       a += cs * prs;
     }

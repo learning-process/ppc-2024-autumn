@@ -5,19 +5,14 @@
 #include <vector>
 
 #include "mpi/dormidontov_e_min_value_by_columns_mpi/include/ops_mpi.hpp"
-
+boost::mpi::communicator world;
 TEST(dormidontov_e_min_value_by_columns_mpi, Test_just_test_if_it_finally_works) {
-  boost::mpi::communicator world;
 
   int rs = 7;
   int cs = 7;
 
   std::vector<int> matrix(cs * rs);
-  for (int i = 0; i < cs; i++) {
-    for (int j = 0; j < rs; j++) {
-      matrix[i * cs + j] = rand() % 1000;
-    };
-  };
+  matrix = generate_random_vector(cs, rs);
   std::vector<int> res_out_paral(cs, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -57,17 +52,12 @@ TEST(dormidontov_e_min_value_by_columns_mpi, Test_just_test_if_it_finally_works)
 }
 
 TEST(dormidontov_e_min_value_by_columns_mpi, Test_just_test_if_it_finally_works2) {
-  boost::mpi::communicator world;
 
   int rs = 2;
   int cs = 2;
 
   std::vector<int> matrix(cs * rs);
-  for (int i = 0; i < cs; i++) {
-    for (int j = 0; j < rs; j++) {
-      matrix[i * cs + j] = i * cs + j;
-    };
-  };
+  matrix = generate_random_vector(cs, rs);
   std::vector<int> res_out_paral(cs);
   res_out_paral[0] = 1;
   res_out_paral[1] = 2;
