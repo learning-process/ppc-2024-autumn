@@ -4,6 +4,7 @@
 #include <boost/mpi/environment.hpp>
 #include <string>
 #include <vector>
+#include <random>
 
 #include "mpi/tyshkevich_a_num_of_orderly_violations/include/ops_mpi.hpp"
 
