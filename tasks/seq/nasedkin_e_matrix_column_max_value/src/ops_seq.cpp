@@ -39,7 +39,7 @@ bool nasedkin_e_matrix_column_max_value_seq::TestTaskSequential::run() {
   internal_order_test();
 
   for (int j = 0; j < numCols; j++) {
-    auto maxElement = *std::max_element(inputMatrix_.begin() + j, inputMatrix_.end(), [this, j](int a, int b) {
+    auto maxElement = *std::max_element(inputMatrix_.begin() + j, inputMatrix_.end(), [](int a, int b) {
       return a < b;
     });
     result_[j] = maxElement;
