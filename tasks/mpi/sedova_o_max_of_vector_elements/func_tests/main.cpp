@@ -44,7 +44,7 @@ TEST(sedova_o_max_of_vector_elements_mpi, Test3) {
   }
 }
 
-TEST(sedova_o_max_of_vector_elements_mpi, Test4) {
+TEST(sedova_o_max_of_vector_elements_mpi, Test_1_5) {
   size_t rows = 1;
   size_t cols = 5;
   size_t value = 20;
