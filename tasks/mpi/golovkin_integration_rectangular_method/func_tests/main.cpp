@@ -20,7 +20,7 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
   double epsilon = 0.1;
   int cnt_of_splits = static_cast<int>((b - a) / epsilon);  // Вычисляем количество разбиений
 
-  // Только процесс 0 инициализирует данные
+  // Инициализация данных только для процесса 0
   if (world.rank() == 0) {
     std::cout << "Process 0: Initializing task data for parallel calculation" << std::endl;
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
@@ -33,18 +33,28 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
     taskDataPar->outputs_count.emplace_back(global_result.size());
   }
 
+  // Создаем экземпляр задачи, но выполняем действия только на нулевом процессе
   golovkin_integration_rectangular_method::MPIIntegralCalculator parallelTask(taskDataPar);
 
-  // Каждый процесс выполняет валидацию, но процесс 0 инициализирует
-  std::cout << "Process " << world.rank() << ": Running validation" << std::endl;
-  ASSERT_EQ(parallelTask.validation(), true);
+  // Процесс 0 выполняет валидацию, остальные просто завершают выполнение
+  if (world.rank() == 0) {
+    std::cout << "Process " << world.rank() << ": Running validation" << std::endl;
+    ASSERT_EQ(parallelTask.validation(), true);
 
-  // Начало параллельных операций
-  parallelTask.pre_processing();
-  MPI_Barrier(MPI_COMM_WORLD);
-  parallelTask.run();
-  MPI_Barrier(MPI_COMM_WORLD);
-  parallelTask.post_processing();
+    std::cout << "Process " << world.rank() << ": Starting pre_processing" << std::endl;
+    parallelTask.pre_processing();
+
+    std::cout << "Process " << world.rank() << ": Running main calculation" << std::endl;
+    parallelTask.run();
+
+    std::cout << "Process " << world.rank() << ": Starting post_processing" << std::endl;
+    parallelTask.post_processing();
+  } else {
+    // Остановка других процессов
+    std::cout << "Process " << world.rank() << ": Not executing any tasks." << std::endl;
+    MPI_Finalize();  // Завершение MPI для ненужных процессов
+    return;          // Выход из функции
+  }
 
   // Процесс 0 выполняет последовательный расчет
   if (world.rank() == 0) {
