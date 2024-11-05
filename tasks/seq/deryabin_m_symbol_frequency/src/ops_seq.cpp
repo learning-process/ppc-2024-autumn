@@ -23,7 +23,7 @@ bool deryabin_m_symbol_frequency_seq::SymbolFrequencyTaskSequential::validation(
 
 bool deryabin_m_symbol_frequency_seq::SymbolFrequencyTaskSequential::run() {
 	internal_order_test();
-	double found = 0;
+	float found = 0;
 	for (char i : input_str_)
 		if (i == input_symbol_) found++;
 	if (input_str_.size() != 0)
