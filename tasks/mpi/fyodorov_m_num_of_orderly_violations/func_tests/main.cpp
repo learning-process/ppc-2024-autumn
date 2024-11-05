@@ -5,8 +5,8 @@
 #include <vector>
 
 #include "mpi/fyodorov_m_num_of_orderly_violations/include/ops_mpi.hpp"
-
-TEST(Parallel_Operations_MPI, Test_Count_Violations) {
+/*
+TEST(fyodorov_m_num_of_orderly_violations_mpi, Test_Count_Violations) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_violations(1, 0);
@@ -46,7 +46,7 @@ TEST(Parallel_Operations_MPI, Test_Count_Violations) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_Count_Violations_2) {
+TEST(fyodorov_m_num_of_orderly_violations_mpi, Test_Count_Violations_2) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_violations(1, 0);
@@ -87,7 +87,7 @@ TEST(Parallel_Operations_MPI, Test_Count_Violations_2) {
     ASSERT_EQ(reference_violations[0], global_violations[0]);
   }
 }
-
+*/
 /*
 TEST(fyodorov_m_num_of_orderly_violations_mpi, Test_Violations_1) {
   boost::mpi::communicator world;
@@ -223,3 +223,106 @@ TEST(fyodorov_m_num_of_orderly_violations_mpi, Test_Violations_3) {
 
 }
 */
+
+TEST(fyodorov_m_num_of_orderly_violations_mpi, PPPPPPPPPP) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;
+  std::vector<int32_t> global_violations(1, 0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    const int count_size_vector = 120;
+    global_vec = fyodorov_m_num_of_orderly_violations_mpi::getRandomVector(count_size_vector);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_violations.data()));
+    taskDataPar->outputs_count.emplace_back(global_violations.size());
+  }
+
+  fyodorov_m_num_of_orderly_violations_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "+");
+
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    // Reference test for sequential execution (for comparison)
+    std::vector<int32_t> reference_violations(1, 0);
+
+    // Create TaskData for sequential task
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_violations.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_violations.size());
+
+    // Create and run sequential task
+    fyodorov_m_num_of_orderly_violations_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "+");
+
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+    ASSERT_EQ(reference_violations[0], global_violations[0]);
+
+    // Check if results from parallel task match the sequential reference
+    ASSERT_EQ(reference_violations[0], global_violations[0]);
+  }
+}
+
+namespace fyodorov_m_num_of_orderly_violations_mpi {
+
+TEST(Parallel_Operations_MPI, Test_Count_Violations_Small_Vector) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;
+  std::vector<int32_t> global_violations(1, 0);
+
+  // Размер вектора для этого теста
+  const int count_size_vector = 10;
+
+  // Создаем TaskData для параллельной обработки
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    global_vec = getRandomVector(count_size_vector);  // Генерация случайного вектора
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_violations.data()));
+    taskDataPar->outputs_count.emplace_back(global_violations.size());
+  }
+
+  // Тест параллельной задачи
+  TestMPITaskParallel testMpiTaskParallel(taskDataPar, "+");
+
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    // Проверка результатов параллельного выполнения
+    std::vector<int32_t> reference_violations(1, 0);
+
+    // Создание TaskData для последовательной задачи
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_violations.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_violations.size());
+
+    // Выполнение последовательной задачи
+    TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "+");
+
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    // Сравнение результатов параллельного и последовательного подсчета нарушений
+    ASSERT_EQ(reference_violations[0], global_violations[0]);
+  }
+}
+}  // namespace fyodorov_m_num_of_orderly_violations_mpi
