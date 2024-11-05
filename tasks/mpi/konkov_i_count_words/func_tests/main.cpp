@@ -101,9 +101,8 @@ TEST(konkov_i_count_words_mpi, Test_Multiple_Words) {
 
 TEST(konkov_i_count_words_mpi, Test_Random_String) {
   boost::mpi::communicator world;
-  std::string input = generate_random_string(100);  // √енераци€ случайной строки
+  std::string input = generate_random_string(100);
 
-  // ¬ычисление ожидаемого количества слов в строке
   std::istringstream stream(input);
   std::string word;
   int expected_count = 0;

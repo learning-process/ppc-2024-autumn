@@ -28,7 +28,6 @@ bool konkov_i_count_words_mpi::CountWordsTaskParallel::run() {
     input_ = *reinterpret_cast<std::string*>(taskData->inputs[0]);
   }
 
-  // Разделение строки на части для каждого процесса
   int total_length = input_.size();
   int chunk_size = total_length / num_processes;
   int start_pos = rank * chunk_size;
