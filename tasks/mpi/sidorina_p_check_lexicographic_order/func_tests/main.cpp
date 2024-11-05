@@ -341,4 +341,3 @@ TEST(sidorina_p_check_lexicographic_order_mpi, Test_6_and_5_elements) {
     ASSERT_EQ(1, res[0]);
   }
 }
-
