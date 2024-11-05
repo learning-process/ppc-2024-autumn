@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <vector>
@@ -38,7 +37,7 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_non_generated_4x4) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  for (size_t i = 0; i < rows; i++) {
+  for (int i = 0; i < rows; i++) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[i].data()));
   }
 
@@ -67,21 +66,17 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_non_generated_negative_values)
   const int cols = 3;
 
   // Create data
-  std::vector<std::vector<int>> in = {
-    {-10, -20, -30},
-    {-40, -50, -60},
-    {-70, -80, -90}
-  };
+  std::vector<std::vector<int>> in = {{-10, -20, -30}, {-40, -50, -60}, {-70, -80, -90}};
   std::vector<int> out(rows, 0);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   for (int i = 0; i < rows; ++i) {
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[i].data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[i].data()));
   }
   taskDataSeq->inputs_count.emplace_back(rows);
   taskDataSeq->inputs_count.emplace_back(cols);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
@@ -104,21 +99,17 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_same_values) {
   const int cols = 3;
 
   // Create data
-  std::vector<std::vector<int>> in = {
-    {5, 5, 5},
-    {5, 5, 5},
-    {5, 5, 5}
-  };
+  std::vector<std::vector<int>> in = {{5, 5, 5}, {5, 5, 5}, {5, 5, 5}};
   std::vector<int> out(rows, 0);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   for (int i = 0; i < rows; ++i) {
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in[i].data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[i].data()));
   }
   taskDataSeq->inputs_count.emplace_back(rows);
   taskDataSeq->inputs_count.emplace_back(cols);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
@@ -144,7 +135,7 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_10x10) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  for (size_t i = 0; i < rows; i++) {
+  for (int i = 0; i < rows; i++) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[i].data()));
   }
   taskDataSeq->inputs_count.emplace_back(rows);
@@ -175,7 +166,7 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_20x10) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  for (size_t i = 0; i < rows; i++) {
+  for (int i = 0; i < rows; i++) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[i].data()));
   }
   taskDataSeq->inputs_count.emplace_back(rows);
@@ -206,7 +197,7 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_10x20) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  for (size_t i = 0; i < rows; i++) {
+  for (int i = 0; i < rows; i++) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[i].data()));
   }
   taskDataSeq->inputs_count.emplace_back(rows);
@@ -220,7 +211,7 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_10x20) {
   maxInRows.pre_processing();
   maxInRows.run();
   maxInRows.post_processing();
-  
+
   // Check results
   for (int i = 0; i < rows; ++i) {
     int expected_max = *std::max_element(in[i].begin(), in[i].end());
@@ -237,7 +228,7 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_20x20) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  for (size_t i = 0; i < rows; i++) {
+  for (int i = 0; i < rows; i++) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[i].data()));
   }
   taskDataSeq->inputs_count.emplace_back(rows);
@@ -251,7 +242,7 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_20x20) {
   maxInRows.pre_processing();
   maxInRows.run();
   maxInRows.post_processing();
-  
+
   // Check results
   for (int i = 0; i < rows; ++i) {
     int expected_max = *std::max_element(in[i].begin(), in[i].end());
@@ -268,7 +259,7 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_50x50) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  for (size_t i = 0; i < rows; i++) {
+  for (int i = 0; i < rows; i++) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in[i].data()));
   }
   taskDataSeq->inputs_count.emplace_back(rows);
@@ -282,7 +273,7 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_50x50) {
   maxInRows.pre_processing();
   maxInRows.run();
   maxInRows.post_processing();
-  
+
   // Check results
   for (int i = 0; i < rows; ++i) {
     int expected_max = *std::max_element(in[i].begin(), in[i].end());

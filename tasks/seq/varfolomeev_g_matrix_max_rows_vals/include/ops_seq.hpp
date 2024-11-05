@@ -1,9 +1,9 @@
-// Copyright 2023 Nesterov Alexander
 #pragma once
 
+#include <algorithm>
 #include <string>
 #include <vector>
-#include <algorithm>
+
 #include "core/task/include/task.hpp"
 
 namespace varfolomeev_g_matrix_max_rows_vals_seq {
@@ -20,7 +20,7 @@ class MaxInRows : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  size_t size_n, size_m;
+  int size_n, size_m;
   std::vector<std::vector<int>> mtr;
   std::vector<int> res_vec;
 };
