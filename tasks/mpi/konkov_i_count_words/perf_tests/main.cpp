@@ -1,4 +1,3 @@
-// Copyright 2023 Konkov Ivan
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
@@ -10,8 +9,8 @@
 
 TEST(konkov_i_count_words_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  std::string input = "Hello world this is a test";
-  int expected_count = 6;
+  std::string input = konkov_i_count_words_mpi::generate_large_string(1000000, 5);
+  int expected_count = 1000000;
 
   std::vector<int> out(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -45,8 +44,8 @@ TEST(konkov_i_count_words_mpi, test_pipeline_run) {
 
 TEST(konkov_i_count_words_mpi, test_task_run) {
   boost::mpi::communicator world;
-  std::string input = "Hello world this is a test";
-  int expected_count = 6;
+  std::string input = konkov_i_count_words_mpi::generate_large_string(1000000, 5);
+  int expected_count = 1000000;
 
   std::vector<int> out(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
