@@ -7,12 +7,29 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/Sdobnov_V_sum_of_vector_elements/include/ops_mpi.hpp"
 
+std::vector<int> generate_random_vector(int size, int lower_bound = 0, int upper_bound = 50) {
+  std::vector<int> res(size);
+  for (int i = 0; i < size; i++) {
+    res[i] = lower_bound + rand() % (upper_bound - lower_bound + 1);
+  }
+  return res;
+}
+
+std::vector<std::vector<int>> generate_random_matrix(int rows, int columns, int lower_bound = 0, int upper_bound = 50) {
+  std::vector<std::vector<int>> res(rows);
+  for (int i = 0; i < rows; i++) {
+    res[i] = generate_random_vector(columns, lower_bound, upper_bound);
+  }
+  return res;
+  return std::vector<std::vector<int>>();
+}
+
 TEST(Sdobnov_V_sum_of_vector_elements_par, test_pipeline_run) {
   boost::mpi::communicator world;
   int rows = 10000;
   int columns = 10000;
   int res;
-  std::vector<std::vector<int>> input = Sdobnov_V_sum_of_vector_elements::generate_random_matrix(rows, columns, 1, 1);
+  std::vector<std::vector<int>> input = generate_random_matrix(rows, columns, 1, 1);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -55,7 +72,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_par, test_task_run) {
   int rows = 10000;
   int columns = 10000;
   int res;
-  std::vector<std::vector<int>> input = Sdobnov_V_sum_of_vector_elements::generate_random_matrix(rows, columns, 1, 1);
+  std::vector<std::vector<int>> input = generate_random_matrix(rows, columns, 1, 1);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {

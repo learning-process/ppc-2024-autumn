@@ -6,11 +6,28 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/Sdobnov_V_sum_of_vector_elements/include/ops_seq.hpp"
 
+std::vector<int> generate_random_vector(int size, int lower_bound = 0, int upper_bound = 50) {
+  std::vector<int> res(size);
+  for (int i = 0; i < size; i++) {
+    res[i] = lower_bound + rand() % (upper_bound - lower_bound + 1);
+  }
+  return res;
+}
+
+std::vector<std::vector<int>> generate_random_matrix(int rows, int columns, int lower_bound = 0, int upper_bound = 50) {
+  std::vector<std::vector<int>> res(rows);
+  for (int i = 0; i < rows; i++) {
+    res[i] = generate_random_vector(columns, lower_bound, upper_bound);
+  }
+  return res;
+  return std::vector<std::vector<int>>();
+}
+
 TEST(Sdobnov_V_sum_of_vector_elements_seq, test_pipeline_run) {
   int rows = 10000;
   int columns = 10000;
   int res;
-  std::vector<std::vector<int>> input = Sdobnov_V_sum_of_vector_elements::generate_random_matrix(rows, columns);
+  std::vector<std::vector<int>> input = generate_random_matrix(rows, columns);
   int sum = 0;
   for (const std::vector<int> &vec : input) {
     for (int elem : vec) {
@@ -54,7 +71,7 @@ TEST(Sdobnov_V_sum_of_vector_elements_seq, test_task_run) {
   int rows = 10000;
   int columns = 10000;
   int res;
-  std::vector<std::vector<int>> input = Sdobnov_V_sum_of_vector_elements::generate_random_matrix(rows, columns);
+  std::vector<std::vector<int>> input = generate_random_matrix(rows, columns);
   int sum = 0;
   for (const std::vector<int> &vec : input) {
     for (int elem : vec) {
