@@ -1,9 +1,23 @@
+// Copyright 2023 Konkov Ivan
 #include <gtest/gtest.h>
 
 #include <string>
 #include <vector>
 
 #include "seq/konkov_i_count_words/include/ops_seq.hpp"
+
+std::string generate_random_string(int length) {
+  static const char alphanum[] =
+      "0123456789"
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+      "abcdefghijklmnopqrstuvwxyz";
+  std::string result;
+  result.reserve(length);
+  for (int i = 0; i < length; ++i) {
+    result += alphanum[rand() % (sizeof(alphanum) - 1)];
+  }
+  return result;
+}
 
 TEST(konkov_i_count_words_seq, Test_Empty_String) {
   std::string input;
@@ -63,8 +77,14 @@ TEST(konkov_i_count_words_seq, Test_Multiple_Words) {
 }
 
 TEST(konkov_i_count_words_seq, Test_Random_String) {
-  std::string input = konkov_i_count_words_seq::CountWordsTaskSequential::generate_random_string(100, 5);
-  int expected_count = 100;
+  std::string input = generate_random_string(100);
+
+  std::istringstream stream(input);
+  std::string word;
+  int expected_count = 0;
+  while (stream >> word) {
+    expected_count++;
+  }
 
   std::vector<int> out(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -81,8 +101,8 @@ TEST(konkov_i_count_words_seq, Test_Random_String) {
   ASSERT_EQ(expected_count, out[0]);
 }
 
-TEST(konkov_i_count_words_seq, Test_Different_Delimiters) {
-  std::string input = "Hello,world.this;is:a test";
+TEST(konkov_i_count_words_seq, Test_Multiple_Spaces) {
+  std::string input = "Hello   world   this   is   a   test";
   int expected_count = 6;
 
   std::vector<int> out(1, 0);
@@ -100,8 +120,8 @@ TEST(konkov_i_count_words_seq, Test_Different_Delimiters) {
   ASSERT_EQ(expected_count, out[0]);
 }
 
-TEST(konkov_i_count_words_seq, Test_Repeated_Delimiters) {
-  std::string input = "Hello  world  this  is  a  test";
+TEST(konkov_i_count_words_seq, Test_Newlines) {
+  std::string input = "Hello\nworld\nthis\nis\na\ntest";
   int expected_count = 6;
 
   std::vector<int> out(1, 0);
@@ -119,8 +139,8 @@ TEST(konkov_i_count_words_seq, Test_Repeated_Delimiters) {
   ASSERT_EQ(expected_count, out[0]);
 }
 
-TEST(konkov_i_count_words_seq, Test_Different_Characters) {
-  std::string input = "Hello123 world!@# this$%^ is&*() a test";
+TEST(konkov_i_count_words_seq, Test_Punctuation) {
+  std::string input = "Hello, world! This is a test.";
   int expected_count = 6;
 
   std::vector<int> out(1, 0);

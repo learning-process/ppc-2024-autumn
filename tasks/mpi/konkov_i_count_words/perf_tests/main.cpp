@@ -1,3 +1,4 @@
+// Copyright 2023 Konkov Ivan
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
@@ -7,10 +8,25 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/konkov_i_count_words/include/ops_mpi.hpp"
 
+std::string generate_large_string(int size) {
+  std::string base = "Hello world this is a test ";
+  std::string result;
+  while (result.size() < size) {
+    result += base;
+  }
+  return result;
+}
+
 TEST(konkov_i_count_words_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  std::string input = konkov_i_count_words_mpi::generate_large_string(100000, 5);
-  int expected_count = 100000;
+  std::string input = generate_large_string(1000000);
+
+  std::istringstream stream(input);
+  std::string word;
+  int expected_count = 0;
+  while (stream >> word) {
+    expected_count++;
+  }
 
   std::vector<int> out(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -44,8 +60,14 @@ TEST(konkov_i_count_words_mpi, test_pipeline_run) {
 
 TEST(konkov_i_count_words_mpi, test_task_run) {
   boost::mpi::communicator world;
-  std::string input = konkov_i_count_words_mpi::generate_large_string(100000, 5);
-  int expected_count = 100000;
+  std::string input = generate_large_string(1000000);
+
+  std::istringstream stream(input);
+  std::string word;
+  int expected_count = 0;
+  while (stream >> word) {
+    expected_count++;
+  }
 
   std::vector<int> out(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();

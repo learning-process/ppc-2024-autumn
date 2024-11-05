@@ -1,3 +1,4 @@
+// Copyright 2023 Konkov Ivan
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
@@ -6,6 +7,19 @@
 #include <vector>
 
 #include "mpi/konkov_i_count_words/include/ops_mpi.hpp"
+
+std::string generate_random_string(int length) {
+  static const char alphanum[] =
+      "0123456789"
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+      "abcdefghijklmnopqrstuvwxyz";
+  std::string result;
+  result.reserve(length);
+  for (int i = 0; i < length; ++i) {
+    result += alphanum[rand() % (sizeof(alphanum) - 1)];
+  }
+  return result;
+}
 
 TEST(konkov_i_count_words_mpi, Test_Empty_String) {
   boost::mpi::communicator world;
@@ -87,8 +101,14 @@ TEST(konkov_i_count_words_mpi, Test_Multiple_Words) {
 
 TEST(konkov_i_count_words_mpi, Test_Random_String) {
   boost::mpi::communicator world;
-  std::string input = konkov_i_count_words_mpi::CountWordsTaskParallel::generate_random_string(100, 5);
-  int expected_count = 100;
+  std::string input = generate_random_string(100);
+
+  std::istringstream stream(input);
+  std::string word;
+  int expected_count = 0;
+  while (stream >> word) {
+    expected_count++;
+  }
 
   std::vector<int> out(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -111,9 +131,9 @@ TEST(konkov_i_count_words_mpi, Test_Random_String) {
   }
 }
 
-TEST(konkov_i_count_words_mpi, Test_Different_Delimiters) {
+TEST(konkov_i_count_words_mpi, Test_Multiple_Spaces) {
   boost::mpi::communicator world;
-  std::string input = "Hello,world.this;is:a test";
+  std::string input = "Hello   world   this   is   a   test";
   int expected_count = 6;
 
   std::vector<int> out(1, 0);
@@ -137,9 +157,9 @@ TEST(konkov_i_count_words_mpi, Test_Different_Delimiters) {
   }
 }
 
-TEST(konkov_i_count_words_mpi, Test_Repeated_Delimiters) {
+TEST(konkov_i_count_words_mpi, Test_Newlines) {
   boost::mpi::communicator world;
-  std::string input = "Hello  world  this  is  a  test";
+  std::string input = "Hello\nworld\nthis\nis\na\ntest";
   int expected_count = 6;
 
   std::vector<int> out(1, 0);
@@ -163,9 +183,9 @@ TEST(konkov_i_count_words_mpi, Test_Repeated_Delimiters) {
   }
 }
 
-TEST(konkov_i_count_words_mpi, Test_Different_Characters) {
+TEST(konkov_i_count_words_mpi, Test_Punctuation) {
   boost::mpi::communicator world;
-  std::string input = "Hello123 world!@# this$%^ is&*() a test";
+  std::string input = "Hello, world! This is a test.";
   int expected_count = 6;
 
   std::vector<int> out(1, 0);

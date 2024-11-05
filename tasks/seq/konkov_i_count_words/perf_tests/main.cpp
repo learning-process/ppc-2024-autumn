@@ -1,16 +1,30 @@
-// perf_tests/main.cpp
+// Copyright 2023 Konkov Ivan
 #include <gtest/gtest.h>
 
-#include <chrono>
 #include <string>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/konkov_i_count_words/include/ops_seq.hpp"
 
+std::string generate_large_string(int size) {
+  std::string base = "Hello world this is a test ";
+  std::string result;
+  while (result.size() < size) {
+    result += base;
+  }
+  return result;
+}
+
 TEST(konkov_i_count_words_seq, test_pipeline_run) {
-  std::string input = konkov_i_count_words_seq::CountWordsTaskSequential::generate_random_string(100000, 5);
-  int expected_count = 100000;
+  std::string input = generate_large_string(100000);
+
+  std::istringstream stream(input);
+  std::string word;
+  int expected_count = 0;
+  while (stream >> word) {
+    expected_count++;
+  }
 
   std::vector<int> out(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -38,8 +52,14 @@ TEST(konkov_i_count_words_seq, test_pipeline_run) {
 }
 
 TEST(konkov_i_count_words_seq, test_task_run) {
-  std::string input = konkov_i_count_words_seq::CountWordsTaskSequential::generate_random_string(100000, 5);
-  int expected_count = 100000;
+  std::string input = generate_large_string(100000);
+
+  std::istringstream stream(input);
+  std::string word;
+  int expected_count = 0;
+  while (stream >> word) {
+    expected_count++;
+  }
 
   std::vector<int> out(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
