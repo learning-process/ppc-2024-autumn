@@ -1,10 +1,6 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/suvorov_d_sum_of_vector_elements/include/vec.hpp"
 
-#include <thread>
-
-using namespace std::chrono_literals;
-
 bool suvorov_d_sum_of_vector_elements_seq::Sum_of_vector_elements_seq::pre_processing() {
   internal_order_test();
   // Init value for input and output
