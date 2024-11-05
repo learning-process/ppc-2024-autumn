@@ -64,10 +64,14 @@ bool deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskParallel::pre_proces
         }
         for (int proc = 1; proc < world.size(); proc++) {
             if (proc == world.size() - 1)
+            {
                 local_input_str_.resize(delta + ostatock);
                 world.send(proc, 0, input_str_.data() + proc * delta, delta + ostatock);
+            }
             else
+            {
                 world.send(proc, 0, input_str_.data() + proc * delta, delta);
+            }
         }
     }
     if (world.rank() == world.size() - 1) {
