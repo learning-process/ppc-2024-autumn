@@ -38,16 +38,11 @@ bool nasedkin_e_matrix_column_max_value_seq::TestTaskSequential::validation() {
 bool nasedkin_e_matrix_column_max_value_seq::TestTaskSequential::run() {
   internal_order_test();
 
-  for (int j = 0; j < numCols; j++) {
-    auto column_start = inputMatrix_.begin() + j * numRows;
-    auto column_end = column_start + numRows;
-
-    int maxElement = *std::max_element(column_start, column_end);
-
-    result_[j] = maxElement;
-  }
-
-  return true;
+    for (int j = 0; j < numCols; j++) {
+        auto maxElement = *std::max_element(inputMatrix_.begin() + j * numRows, inputMatrix_.begin() + (j + 1) * numRows);
+        result_[j] = maxElement;
+    }
+    return true;
 }
 
 bool nasedkin_e_matrix_column_max_value_seq::TestTaskSequential::post_processing() {
