@@ -6,10 +6,6 @@
 
 bool konkov_i_count_words_mpi::CountWordsTaskParallel::pre_processing() {
   internal_order_test();
-  if (world.rank() == 0) {
-    input_ = *reinterpret_cast<std::string*>(taskData->inputs[0]);
-  }
-  boost::mpi::broadcast(world, input_, 0);
   word_count_ = 0;
   return true;
 }
@@ -26,6 +22,12 @@ bool konkov_i_count_words_mpi::CountWordsTaskParallel::run() {
   internal_order_test();
   int num_processes = world.size();
   int rank = world.rank();
+
+  if (rank == 0) {
+    input_ = *reinterpret_cast<std::string*>(taskData->inputs[0]);
+  }
+
+  boost::mpi::broadcast(world, input_, 0);
 
   std::vector<std::string> words;
   std::istringstream stream(input_);
@@ -45,7 +47,6 @@ bool konkov_i_count_words_mpi::CountWordsTaskParallel::run() {
 
   return true;
 }
-
 bool konkov_i_count_words_mpi::CountWordsTaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
