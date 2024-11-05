@@ -1,4 +1,3 @@
-// Copyright 2023 Konkov Ivan
 #pragma once
 
 #include <string>
@@ -15,6 +14,8 @@ class CountWordsTaskSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
+
+  static std::string generate_random_string(int num_words, int word_length);
 
  private:
   std::string input_;

@@ -1,6 +1,7 @@
-// Copyright 2023 Konkov Ivan
+// perf_tests/main.cpp
 #include <gtest/gtest.h>
 
+#include <chrono>
 #include <string>
 #include <vector>
 
@@ -8,8 +9,8 @@
 #include "seq/konkov_i_count_words/include/ops_seq.hpp"
 
 TEST(konkov_i_count_words_seq, test_pipeline_run) {
-  std::string input = "Hello world this is a test";
-  int expected_count = 6;
+  std::string input = konkov_i_count_words_seq::CountWordsTaskSequential::generate_random_string(100000, 5);
+  int expected_count = 100000;
 
   std::vector<int> out(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -37,8 +38,8 @@ TEST(konkov_i_count_words_seq, test_pipeline_run) {
 }
 
 TEST(konkov_i_count_words_seq, test_task_run) {
-  std::string input = "Hello world this is a test";
-  int expected_count = 6;
+  std::string input = konkov_i_count_words_seq::CountWordsTaskSequential::generate_random_string(100000, 5);
+  int expected_count = 100000;
 
   std::vector<int> out(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();

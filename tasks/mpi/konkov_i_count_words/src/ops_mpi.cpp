@@ -1,9 +1,9 @@
-// Copyright 2023 Konkov Ivan
 #include "mpi/konkov_i_count_words/include/ops_mpi.hpp"
 
 #include <boost/mpi/collectives.hpp>
-#include <sstream>
 #include <random>
+#include <regex>
+#include <sstream>
 
 bool konkov_i_count_words_mpi::CountWordsTaskParallel::pre_processing() {
   internal_order_test();
@@ -32,28 +32,26 @@ bool konkov_i_count_words_mpi::CountWordsTaskParallel::run() {
 
   int total_words = 0;
   if (rank == 0) {
-    std::istringstream stream(input_);
-    std::string word;
-    while (stream >> word) {
-      total_words++;
-    }
+    std::regex word_regex("\\b\\w+\\b");
+    auto words_begin = std::sregex_iterator(input_.begin(), input_.end(), word_regex);
+    auto words_end = std::sregex_iterator();
+    total_words = std::distance(words_begin, words_end);
   }
 
   boost::mpi::broadcast(world, total_words, 0);
 
   int chunk_size = total_words / num_processes;
-  int start_pos = rank * chunk_size;
-  int end_pos = (rank == num_processes - 1) ? total_words : (rank + 1) * chunk_size;
 
   if (rank == 0) {
-    std::istringstream stream(input_);
-    std::string word;
+    std::regex word_regex("\\b\\w+\\b");
+    auto words_begin = std::sregex_iterator(input_.begin(), input_.end(), word_regex);
+    auto words_end = std::sregex_iterator();
     int current_pos = 0;
     for (int i = 0; i < num_processes; ++i) {
       std::string chunk;
-      while (stream >> word && current_pos < (i + 1) * chunk_size) {
+      for (auto it = words_begin; it != words_end && current_pos < (i + 1) * chunk_size; ++it) {
         if (current_pos >= i * chunk_size) {
-          chunk += word + " ";
+          chunk += it->str() + " ";
         }
         current_pos++;
       }
@@ -65,7 +63,7 @@ bool konkov_i_count_words_mpi::CountWordsTaskParallel::run() {
     }
   } else {
     world.recv(0, 0, local_input);
-  } 
+  }
 
   int local_word_count = 0;
   std::istringstream local_stream(local_input);
@@ -78,21 +76,13 @@ bool konkov_i_count_words_mpi::CountWordsTaskParallel::run() {
 
   return true;
 }
+
 bool konkov_i_count_words_mpi::CountWordsTaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     reinterpret_cast<int*>(taskData->outputs[0])[0] = word_count_;
   }
   return true;
-}
-
-std::string konkov_i_count_words_mpi::generate_large_string(int num_words, int word_length) {
-  std::string word(word_length, 'a');
-  std::ostringstream oss;
-  for (int i = 0; i < num_words; ++i) {
-    oss << word << " ";
-  }
-  return oss.str();
 }
 
 std::string konkov_i_count_words_mpi::CountWordsTaskParallel::generate_random_string(int num_words, int word_length) {
@@ -106,6 +96,15 @@ std::string konkov_i_count_words_mpi::CountWordsTaskParallel::generate_random_st
     for (int j = 0; j < word_length; ++j) {
       word[j] = 'a' + dis(gen);
     }
+    oss << word << " ";
+  }
+  return oss.str();
+}
+
+std::string konkov_i_count_words_mpi::generate_large_string(int num_words, int word_length) {
+  std::string word(word_length, 'a');
+  std::ostringstream oss;
+  for (int i = 0; i < num_words; ++i) {
     oss << word << " ";
   }
   return oss.str();

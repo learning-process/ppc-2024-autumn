@@ -1,4 +1,3 @@
-// Copyright 2023 Konkov Ivan
 #pragma once
 
 #include <boost/mpi/communicator.hpp>
@@ -19,6 +18,7 @@ class CountWordsTaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
   static std::string generate_random_string(int num_words, int word_length);
+
 
  private:
   std::string input_;
