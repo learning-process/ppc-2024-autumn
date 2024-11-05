@@ -86,15 +86,12 @@ bool malyshev_a_sum_rows_matrix_mpi::TestTaskParallel::run() {
   uint32_t ext = rows_ % world.size();
 
   std::vector<int32_t> sizes(world.size(), delta);
-  sizes[world.size() - 1] += ext;
-
-  if (world.rank() == world.size() - 1) {
-    local_input_.resize(delta + ext, std::vector<int32_t>(cols_));
-    local_res_.resize(delta + ext);
-  } else {
-    local_input_.resize(delta, std::vector<int32_t>(cols_));
-    local_res_.resize(delta);
+  for (uint32_t i = 0; i < ext; i++) {
+    sizes[world.size() - i - 1]++;
   }
+
+  local_input_.resize(sizes[world.rank()], std::vector<int32_t>(cols_));
+  local_res_.resize(sizes[world.rank()]);
 
   scatterv(world, input_, sizes, local_input_.data(), 0);
 
