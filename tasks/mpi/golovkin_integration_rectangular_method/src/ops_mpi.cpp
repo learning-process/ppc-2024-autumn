@@ -51,8 +51,8 @@ bool MPIIntegralCalculator::pre_processing() {
 
 bool MPIIntegralCalculator::run() {
     int rank, size;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &size);
+    // MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    // MPI_Comm_size(MPI_COMM_WORLD, &size);
 
     // Проверка, что cnt_of_splits, a, h инициализированы и имеют корректные значения
     if (cnt_of_splits <= 0 || h <= 0.0 || a >= b) {
@@ -87,18 +87,18 @@ bool MPIIntegralCalculator::run() {
 
     // Сбор результатов
     double local_global_res = 0.0;
-    int mpi_err = MPI_Reduce(&local_res, &local_global_res, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-    if (mpi_err != MPI_SUCCESS) {
-        std::cerr << "MPI_Reduce failed with error code " << mpi_err << " on process " << rank << std::endl;
-        return false;
-    }
+    // int mpi_err = MPI_Reduce(&local_res, &local_global_res, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+    // if (mpi_err != MPI_SUCCESS) {
+        // std::cerr << "MPI_Reduce failed with error code " << mpi_err << " on process " << rank << std::endl;
+        // return false;
+    // }
 
     if (rank == 0) {
         global_res = local_global_res;
         std::cout << "Root process has global result after reduction: " << global_res << std::endl;
     }
 
-    MPI_Barrier(MPI_COMM_WORLD);  // Ждем, пока все процессы дойдут до этой точки
+    // MPI_Barrier(MPI_COMM_WORLD);  // Ждем, пока все процессы дойдут до этой точки
     return true;
 }
 
