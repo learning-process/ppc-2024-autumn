@@ -38,52 +38,13 @@ class num_of_orderly_violations : public ppc::core::Task {
 template <class iotype, class cntype>
 bool num_of_orderly_violations<iotype, cntype>::pre_processing() {
   internal_order_test();
-  int process_rank = mpi_comm.rank();
-  input_size = 0;
 
-  if (process_rank == 0) {
+  if (mpi_comm.rank() == 0) {
     input_size = taskData->inputs_count[0];
-
-    if (input_size <= 1) {
-      local_vector_size_ = 0;
-      received_data_.clear();
-      violation_count_ = 0;
-      boost::mpi::broadcast(mpi_comm, local_vector_size_, 0);
-      return true;
-    }
-
     input_data_.resize(input_size);
     const auto* source_ptr = reinterpret_cast<const iotype*>(taskData->inputs[0]);
     std::copy(source_ptr, source_ptr + input_size, input_data_.begin());
-
-    violation_count_ = 0;
   }
-
-  boost::mpi::broadcast(mpi_comm, input_size, 0);
-
-  int total_processes = mpi_comm.size();
-  int chunk_size = input_size / total_processes;
-  int remainder = input_size % total_processes;
-
-  send_sizes.resize(total_processes, 0);
-  for (int i = 0; i < total_processes; ++i) {
-    send_sizes[i] = chunk_size + (i < remainder ? 1 : 0);
-  }
-
-  local_vector_size_ = send_sizes[process_rank];
-
-  if (local_vector_size_ == 0) {
-    return true;
-  }
-
-  received_data_.resize(local_vector_size_);
-
-  std::vector<int> offsets(total_processes, 0);
-  for (int i = 1; i < total_processes; ++i) {
-    offsets[i] = offsets[i - 1] + send_sizes[i - 1];
-  }
-
-  boost::mpi::scatterv(mpi_comm, input_data_, send_sizes, offsets, received_data_.data(), local_vector_size_, 0);
   return true;
 }
 
@@ -104,15 +65,36 @@ bool num_of_orderly_violations<iotype, cntype>::validation() {
 template <class iotype, class cntype>
 bool num_of_orderly_violations<iotype, cntype>::run() {
   internal_order_test();
+  int process_rank = mpi_comm.rank();
+  int total_processes = mpi_comm.size();
 
-  int rank = mpi_comm.rank();
-  int size = mpi_comm.size();
+  boost::mpi::broadcast(mpi_comm, input_size, 0);
+
+  if (input_size <= 1) {
+    violation_count_ = 0;
+    return true;
+  }
+
+  int chunk_size = input_size / total_processes;
+  int remainder = input_size % total_processes;
+  send_sizes.resize(total_processes);
+  for (int i = 0; i < total_processes; ++i) {
+    send_sizes[i] = chunk_size + (i < remainder ? 1 : 0);
+  }
+  local_vector_size_ = send_sizes[process_rank];
+
+  received_data_.resize(local_vector_size_);
+  std::vector<int> offsets(total_processes, 0);
+  for (int i = 1; i < total_processes; ++i) {
+    offsets[i] = offsets[i - 1] + send_sizes[i - 1];
+  }
+
+  boost::mpi::scatterv(mpi_comm, input_data_, send_sizes, offsets, received_data_.data(), local_vector_size_, 0);
 
   cntype local_violations = 0;
-
   if (local_vector_size_ > 1) {
-    for (size_t index = 0; index < local_vector_size_ - 1; ++index) {
-      if (received_data_[index + 1] < received_data_[index]) {
+    for (size_t i = 0; i < local_vector_size_ - 1; ++i) {
+      if (received_data_[i + 1] < received_data_[i]) {
         local_violations++;
       }
     }
@@ -121,20 +103,21 @@ bool num_of_orderly_violations<iotype, cntype>::run() {
   if (local_vector_size_ > 0) {
     iotype left_boundary;
     iotype right_boundary;
-    bool is_last_active_process = (rank == size - 1 || send_sizes[rank + 1] == 0);
+    bool is_last_active_process = (process_rank == total_processes - 1 || send_sizes[process_rank + 1] == 0);
 
     if (!is_last_active_process) {
-      mpi_comm.recv(rank + 1, 0, right_boundary);
+      mpi_comm.recv(process_rank + 1, 0, right_boundary);
       if (received_data_[local_vector_size_ - 1] > right_boundary) {
         local_violations++;
       }
     }
 
-    if (rank > 0) {
+    if (process_rank > 0) {
       left_boundary = received_data_[0];
-      mpi_comm.send(rank - 1, 0, left_boundary);
+      mpi_comm.send(process_rank - 1, 0, left_boundary);
     }
   }
+
   boost::mpi::reduce(mpi_comm, local_violations, violation_count_, std::plus<cntype>(), 0);
   return true;
 }
