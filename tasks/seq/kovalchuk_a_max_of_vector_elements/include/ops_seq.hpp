@@ -15,9 +15,6 @@ namespace kovalchuk_a_max_of_vector_elements_seq {
 const int MINIMALGEN = -99;
 const int MAXIMUMGEN = 99;
 
-std::vector<int> getRandomVector(int sz, int min = MINIMALGEN, int max = MAXIMUMGEN);
-std::vector<std::vector<int>> getRandomMatrix(int rows, int columns, int min = MINIMALGEN, int max = MAXIMUMGEN);
-
 class TestSequentialTask : public ppc::core::Task {
  public:
   explicit TestSequentialTask(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

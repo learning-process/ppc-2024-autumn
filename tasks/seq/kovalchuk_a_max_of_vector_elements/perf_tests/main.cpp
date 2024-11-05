@@ -8,6 +8,11 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/kovalchuk_a_max_of_vector_elements/include/ops_seq.hpp"
 
+namespace kovalchuk_a_max_of_vector_elements_seq {
+
+std::vector<int> getRandomVector(int sz, int min = MINIMALGEN, int max = MAXIMUMGEN);
+std::vector<std::vector<int>> getRandomMatrix(int rows, int columns, int min = MINIMALGEN, int max = MAXIMUMGEN);
+
 std::vector<int> kovalchuk_a_max_of_vector_elements_seq::getRandomVector(int sz, int min, int max) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -35,8 +40,8 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   std::random_device dev;
   std::mt19937 gen(dev());
-  int count_rows = 999;
-  int count_columns = 999;
+  int count_rows = 99999;
+  int count_columns = 99999;
   global_matrix = kovalchuk_a_max_of_vector_elements_seq::getRandomMatrix(count_rows, count_columns);
   int index = gen() % (count_rows * count_columns);
   global_matrix[index / count_columns][index / count_rows] = ref;
@@ -111,4 +116,5 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
   ASSERT_EQ(ref, global_max[0]);
+}
 }
