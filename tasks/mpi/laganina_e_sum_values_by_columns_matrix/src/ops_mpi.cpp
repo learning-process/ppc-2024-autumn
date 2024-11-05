@@ -139,9 +139,11 @@ bool laganina_e_sum_values_by_columns_matrix_mpi::TestMPITaskParallel::run() {
       delta = size / world.size() + 1;
     }
   }
+
   broadcast(world, m, 0);
   broadcast(world, n, 0);
   broadcast(world, delta, 0);
+
   local_input_ = std::vector<int>(delta);
   boost::mpi::scatter(world, input_.data(), local_input_.data(), delta, 0);
   res_.resize(m);
