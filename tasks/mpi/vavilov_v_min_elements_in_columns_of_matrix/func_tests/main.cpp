@@ -254,12 +254,7 @@ TEST(vavilov_v_min_elements_in_columns_of_matrix_mpi, find_min_elem_in_fixed_mat
     const int rows = 4;
     const int cols = 3;
 
-    std::vector<std::vector<int>> fixed_matr = {
-      {5, 3, 7},
-      {8, 1, 6},
-      {4, 9, 2},
-      {3, 0, 8}
-    };
+    std::vector<std::vector<int>> fixed_matr = {{5, 3, 7}, {8, 1, 6}, {4, 9, 2}, {3, 0, 8}};
 
     std::vector<int> expected_min = {3, 0, 2};
     std::vector<int> result(cols, INT_MAX);
