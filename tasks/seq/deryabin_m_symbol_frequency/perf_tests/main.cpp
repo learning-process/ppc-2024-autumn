@@ -8,12 +8,12 @@
 #include <string>
 
 TEST(deryabin_m_symbol_frequency_seq, test_pipeline_run) {
-    const double TEST_frequency = 1;
+    const float TEST_frequency = 1;
 
     // Create data
     std::vector<std::string> in(1, std::string(10000, '@'));
     std::vector<char> in_ch(1, '@');
-    std::vector<double> out(1, 0);
+    std::vector<float> out(1, 0);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -48,12 +48,12 @@ TEST(deryabin_m_symbol_frequency_seq, test_pipeline_run) {
 }
 
 TEST(deryabin_m_symbol_frequency_seq, test_task_run) {
-    const double TEST_frequency = 1;
+    const float TEST_frequency = 1;
 
     // Create data
     std::vector<std::string> in(1, std::string(10000, '@'));
     std::vector<char> in_ch(1, '@');
-    std::vector<double> out(1, 0);
+    std::vector<float> out(1, 0);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
