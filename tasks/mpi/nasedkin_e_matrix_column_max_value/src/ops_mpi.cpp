@@ -43,9 +43,7 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskSequential::run() {
   internal_order_test();
 
   for (int j = 0; j < numCols; j++) {
-    auto maxElement = *std::max_element(inputMatrix_.begin() + j, inputMatrix_.end(), [](int a, int b) {
-      return a < b;
-    });
+    auto maxElement = *std::max_element(inputMatrix_.begin() + j * numRows, inputMatrix_.begin() + (j + 1) * numRows);
     result_[j] = maxElement;
   }
   return true;
@@ -119,9 +117,7 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::run() {
   int lastCol = std::min(numCols, delta * (world.rank() + 1));
   std::vector<int> localMax;
   for (int j = startCol; j < lastCol; j++) {
-    auto maxElem = *std::max_element(inputMatrix_.begin() + j, inputMatrix_.end(), [](int a, int b) {
-      return a < b;
-    });
+    auto maxElem = *std::max_element(inputMatrix_.begin() + j * numRows, inputMatrix_.begin() + (j + 1) * numRows);
     localMax.push_back(maxElem);
   }
   localMax.resize(delta);
