@@ -1,10 +1,10 @@
-// Copyright 2023 Nesterov Alexander
 #pragma once
 
 #include <gtest/gtest.h>
 
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <boost/serialization/vector.hpp>
 #include <memory>
 #include <numeric>
 #include <string>
@@ -17,34 +17,34 @@ namespace varfolomeev_g_matrix_max_rows_vals_mpi {
 
 std::vector<int> getRandomVector(int sz);
 
-class TestMPITaskSequential : public ppc::core::Task {
+std::vector<std::vector<int>> generateMatrix(const int rows, const int cols, int a, int b);
+
+class MaxInRowsSequential : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_ /*ver link of chars*/, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
-  bool pre_processing() override; // task data to vec of vecs or general vec
-  bool validation() override; // input data check (n > 0, mem of enter and exit)
-  bool run() override; // 
-  bool post_processing() override; // vec to taskdata
+  explicit MaxInRowsSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  bool pre_processing() override;   // task data to vec of vecs or general vec
+  bool validation() override;       // input data check (n > 0, mem of enter and exit)
+  bool run() override;              //
+  bool post_processing() override;  // vec to taskdata
 
  private:
-  std::vector<int> input_;
-  int res{};
-  std::string ops;
+  size_t size_n, size_m;
+  std::vector<int> mtr;  // vector one-row matrix
+  std::vector<int> res_vec;
 };
 
-class TestMPITaskParallel : public ppc::core::Task {
+class MaxInRowsParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+  explicit MaxInRowsParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
  private:
-  std::vector<int> input_, local_input_;
-  int res{};
-  std::string ops;
+  size_t size_n, size_m;
+  std::vector<int> mtr;  // vector one-row matrix
+  std::vector<int> res_vec;  // result vector of maxes
   boost::mpi::communicator world;
 };
 
