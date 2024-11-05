@@ -3,11 +3,11 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "sec/deryabin_m_symbol_frequency/include/ops_sec.hpp"
+#include "seq/deryabin_m_symbol_frequency/include/ops_seq.hpp"
 
 #include <string>
 
-TEST(deryabin_m_symbol_frequency_sec, test_pipeline_run) {
+TEST(deryabin_m_symbol_frequency_seq, test_pipeline_run) {
     const double TEST_frequency = 1;
 
     // Create data
@@ -25,7 +25,7 @@ TEST(deryabin_m_symbol_frequency_sec, test_pipeline_run) {
     taskDataSeq->outputs_count.emplace_back(out.size());
 
     // Create Task
-    auto symbol_frequency_TaskSequential = std::make_shared<deryabin_m_symbol_frequency_sec::Symbol_frequency_TaskSequential>(taskDataSeq);
+    auto symbol_frequency_TaskSequential = std::make_shared<deryabin_m_symbol_frequency_seq::Symbol_frequency_TaskSequential>(taskDataSeq);
 
     // Create Perf attributes
     auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -47,7 +47,7 @@ TEST(deryabin_m_symbol_frequency_sec, test_pipeline_run) {
     ASSERT_EQ(TEST_frequency, out[0]);
 }
 
-TEST(deryabin_m_symbol_frequency_sec, test_task_run) {
+TEST(deryabin_m_symbol_frequency_seq, test_task_run) {
     const double TEST_frequency = 1;
 
     // Create data
@@ -65,7 +65,7 @@ TEST(deryabin_m_symbol_frequency_sec, test_task_run) {
     taskDataSeq->outputs_count.emplace_back(out.size());
 
     // Create Task
-    auto symbol_frequency_TaskSequential = std::make_shared<deryabin_m_symbol_frequency_sec::Symbol_frequency_TaskSequential>(taskDataSeq);
+    auto symbol_frequency_TaskSequential = std::make_shared<deryabin_m_symbol_frequency_seq::Symbol_frequency_TaskSequential>(taskDataSeq);
 
     // Create Perf attributes
     auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
