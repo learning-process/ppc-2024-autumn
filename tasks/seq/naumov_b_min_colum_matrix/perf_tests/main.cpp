@@ -42,7 +42,7 @@ TEST(sequential_naumov_b_min_colum_matrix_perf_test, test_pipeline_run) {
 
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  ASSERT_EQ(out.size(), cols);
+  ASSERT_EQ(out.size(), static_cast<size_t>(cols));
 }
 
 TEST(sequential_naumov_b_min_colum_matrix_perf_test, test_task_run) {
