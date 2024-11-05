@@ -305,3 +305,43 @@ TEST(alputov_i_most_different_neighbor_elements_mpi, ConstantDifferenceSequence_
     ASSERT_EQ(reference_max[0], global_max[0]);
   }
 }
+
+TEST(alputov_i_most_different_neighbor_elements_mpi, MostlyZerosInput_ReturnsCorrectPair) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;
+  std::vector<int> global_max(1);
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    global_vec = {12, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
+    taskDataPar->outputs_count.emplace_back(global_max.size());
+  }
+
+  alputov_i_most_different_neighbor_elements_mpi::most_different_neighbor_elements_mpi testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int> reference_max(1);
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_max.size());
+
+    alputov_i_most_different_neighbor_elements_mpi::most_different_neighbor_elements_seq
+        most_different_neighbor_elements_seq(taskDataSeq);
+    ASSERT_EQ(most_different_neighbor_elements_seq.validation(), true);
+    most_different_neighbor_elements_seq.pre_processing();
+    most_different_neighbor_elements_seq.run();
+    most_different_neighbor_elements_seq.post_processing();
+
+    ASSERT_EQ(reference_max[0], global_max[0]);
+  }
+}
