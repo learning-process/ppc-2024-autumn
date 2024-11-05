@@ -126,7 +126,7 @@ TEST(suvorov_d_sum_of_vector_elements_seq, Test_Sum_With_Zero_Vector) {
   ASSERT_EQ(right_result, test_output[0]);
 }
 
-TEST(suvorov_d_sum_of_vector_elements_seq, Test_Sum_With_Empte_Vector) {
+TEST(suvorov_d_sum_of_vector_elements_seq, Test_Sum_With_Empty_Vector) {
   // Create data
   std::vector<int> input_test_vector;
   std::vector<int> test_output(1, 0);

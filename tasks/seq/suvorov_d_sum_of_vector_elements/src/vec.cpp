@@ -6,7 +6,6 @@ bool suvorov_d_sum_of_vector_elements_seq::Sum_of_vector_elements_seq::pre_proce
   // Init value for input and output
   int* input_pointer = reinterpret_cast<int*>(taskData->inputs[0]);
   input_.assign(input_pointer, input_pointer + taskData->inputs_count[0]);
-  res_ = 0;
   return true;
 }
 

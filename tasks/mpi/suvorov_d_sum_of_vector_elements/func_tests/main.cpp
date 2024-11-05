@@ -8,6 +8,8 @@
 
 #include "mpi/suvorov_d_sum_of_vector_elements/include/ops_mpi.hpp"
 
+// To avoid name conflicts with other projects. This function is only available in this file
+namespace {
 std::vector<int> get_random_vector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -20,6 +22,7 @@ std::vector<int> get_random_vector(int sz) {
 
   return vec;
 }
+}  // namespace
 
 TEST(suvorov_d_sum_of_vector_elements_mpi, Test_Sum_With_Normal_Vector) {
   boost::mpi::communicator world;

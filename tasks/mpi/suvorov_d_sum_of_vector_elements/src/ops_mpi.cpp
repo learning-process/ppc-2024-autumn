@@ -16,7 +16,6 @@ bool suvorov_d_sum_of_vector_elements_mpi::Sum_of_vector_elements_seq::pre_proce
     input_[i] = tmp_ptr[i];
   }
   // Init value for output
-  res_ = 0;
   return true;
 }
 
