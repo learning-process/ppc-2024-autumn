@@ -8,7 +8,7 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
+//using namespace std::chrono_literals;
 
 bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
@@ -106,73 +106,80 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::validation() {
 bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-  int rows = 0;
-  int cols = 0;
-
-  int delta = 0;
-  int delta_1 = 0;
+  size_t delta = 0;
+  size_t delta_1 = 0;
+  size_t local_cols = 0;
 
   if (world.rank() == 0) {
-    rows = taskData->inputs_count[0];
-    cols = taskData->inputs_count[1];
-  }
+    size_t rows = taskData->inputs_count[0];
+    size_t cols = taskData->inputs_count[1];
 
-  broadcast(world, rows, 0);
-  broadcast(world, cols, 0);
+    delta = rows / world.size();
+    delta_1 = rows % world.size();
 
-  delta = rows / world.size();
-  delta_1 = rows % world.size();
+    boost::mpi::broadcast(world, delta, 0);
+    boost::mpi::broadcast(world, delta_1, 0);
 
-  if (world.rank() == 0) {
     input_.resize(rows, std::vector<int>(cols));
-    for (int i = 0; i < rows; i++) {
+    for (size_t i = 0; i < rows; i++) {
       int* input_matr = reinterpret_cast<int*>(taskData->inputs[i]);
       input_[i].assign(input_matr, input_matr + cols);
     }
 
-    for (int proc = 1; proc < world.size(); proc++) {
-      int row_1 = proc * delta + std::min(proc, delta_1);
-      int kol_vo = delta + (proc < delta_1 ? 1 : 0);
+    for (int proc = 1; proc < world.size(); ++proc) {
+      size_t start_row = (proc * delta) + std::min(static_cast<size_t>(proc), delta_1);
+      size_t rows_to_send = delta + ((static_cast<size_t>(proc) < delta_1) ? 1 : 0);
 
-      for (int i = row_1; i < row_1 + kol_vo; i++) world.send(proc, 0, input_[i].data(), cols);
+      world.send(proc, 0, cols);
+
+      for (size_t i = 0; i < rows_to_send; ++i) {
+        world.send(proc, 0, input_[start_row + i]);
+      }
+    }
+
+    size_t local_input_rows = delta + ((static_cast<size_t>(world.rank()) < delta_1) ? 1 : 0);
+    local_cols = cols;
+    local_input_.assign(input_.begin(), std::next(input_.begin(), static_cast<std::ptrdiff_t>(local_input_rows)));
+  } else {
+    boost::mpi::broadcast(world, delta, 0);
+    boost::mpi::broadcast(world, delta_1, 0);
+
+    size_t local_input_rows = delta + (static_cast<size_t>(world.rank()) < delta_1 ? 1 : 0);
+
+    world.recv(0, 0, local_cols);
+
+    local_input_.resize(local_input_rows, std::vector<int>(local_cols));
+    for (size_t i = 0; i < local_input_rows; ++i) {
+      world.recv(0, 0, local_input_[i]);
     }
   }
 
-  int local_input_rows = delta + (world.rank() < delta_1 ? 1 : 0);
-  local_input_.resize(local_input_rows, std::vector<int>(cols));
+  res.resize(local_cols);
+  std::vector<int> tmp_max(local_cols, INT_MIN);
 
-  if (world.rank() == 0) {
-    std::copy(input_.begin(), input_.begin() + local_input_rows, local_input_.begin());
-  } else {
-    for (int i = 0; i < local_input_rows; i++) world.recv(0, 0, local_input_[i].data(), cols);
-  }
-
-  res.resize(cols);
-
-  std::vector<int> tmp_max(local_input_[0].size(), INT_MIN);
-
-  for (size_t i = 0; i < local_input_[0].size(); i++) {
-    for (size_t j = 0; j < local_input_.size(); j++) {
+  for (size_t i = 0; i < local_cols; ++i) {
+    for (size_t j = 0; j < local_input_.size(); ++j) {
       tmp_max[i] = std::max(tmp_max[i], local_input_[j][i]);
     }
   }
 
   if (world.rank() == 0) {
-    std::vector<int> max_s(res.size(), INT_MIN);
+    std::vector<int> max_s(local_cols, INT_MIN);
     std::copy(tmp_max.begin(), tmp_max.end(), max_s.begin());
 
-    for (int proc = 1; proc < world.size(); proc++) {
-      std::vector<int> proc_max(res.size());
-      world.recv(proc, 0, proc_max.data(), res.size());
+    for (int proc = 1; proc < world.size(); ++proc) {
+      std::vector<int> proc_max(local_cols);
+      world.recv(proc, 0, proc_max);
 
-      for (size_t i = 0; i < res.size(); i++) {
+      for (size_t i = 0; i < local_cols; ++i) {
         max_s[i] = std::max(max_s[i], proc_max[i]);
       }
     }
-    std::copy(max_s.begin(), max_s.end(), res.begin());
+    res = max_s;
   } else {
-    world.send(0, 0, tmp_max.data(), tmp_max.size());
+    world.send(0, 0, tmp_max);
   }
+
   return true;
 }
 
