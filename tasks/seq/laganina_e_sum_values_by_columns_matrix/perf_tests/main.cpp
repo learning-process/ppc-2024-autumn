@@ -76,4 +76,4 @@ TEST(laganina_e_sum_values_by_columns_matrix_seq, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
   ASSERT_EQ(empty, out);
-}
+}//hello
