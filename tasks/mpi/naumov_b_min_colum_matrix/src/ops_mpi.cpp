@@ -73,7 +73,7 @@ bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
   if (world.rank() == 0) {
-    input_ = std::vector(taskData->inputs_count[1] * taskData->inputs_count[0], 0);
+    input_ = std::vector<int>(taskData->inputs_count[1] * taskData->inputs_count[0], 0);
     auto* temp = reinterpret_cast<int*>(taskData->inputs[0]);
     for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
       for (unsigned j = 0; j < taskData->inputs_count[1]; j++) {
@@ -94,7 +94,7 @@ bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::validation() {
     return isValid;
   }
 
-  return true;  // Для других процессов, которые не выполняют валидацию
+  return true;
 }
 bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
