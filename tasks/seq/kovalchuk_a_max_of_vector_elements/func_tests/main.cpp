@@ -6,7 +6,7 @@
 
 #include "seq/kovalchuk_a_max_of_vector_elements/include/ops_seq.hpp"
 
-namespace kovalchuk_a_max_of_vector_elements_seq {
+using namespace kovalchuk_a_max_of_vector_elements_seq;
 
 std::vector<int> getRandomVector(int sz, int min = MINIMALGEN, int max = MAXIMUMGEN);
 std::vector<std::vector<int>> getRandomMatrix(int rows, int columns, int min = MINIMALGEN, int max = MAXIMUMGEN);
@@ -36,7 +36,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, Test_Max_10_10) {
   std::vector<int32_t> global_max(1, INT_MIN);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  global_matrix = kovalchuk_a_max_of_vector_elements_seq::getRandomMatrix(count_rows, count_columns);
+  global_matrix = getRandomMatrix(count_rows, count_columns);
   std::random_device dev;
   std::mt19937 gen(dev());
   int index = gen() % (count_rows * count_columns);
@@ -49,7 +49,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, Test_Max_10_10) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
   taskDataSeq->outputs_count.emplace_back(global_max.size());
   // Create Task
-  kovalchuk_a_max_of_vector_elements_seq::TestSequentialTask testSequentialTask(taskDataSeq);
+  TestSequentialTask testSequentialTask(taskDataSeq);
   ASSERT_EQ(testSequentialTask.validation(), true);
   testSequentialTask.pre_processing();
   testSequentialTask.run();
@@ -65,7 +65,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, Test_Max_50_20) {
   std::vector<int32_t> global_max(1, INT_MIN);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  global_matrix = kovalchuk_a_max_of_vector_elements_seq::getRandomMatrix(count_rows, count_columns);
+  global_matrix = getRandomMatrix(count_rows, count_columns);
   std::random_device dev;
   std::mt19937 gen(dev());
   int index = gen() % (count_rows * count_columns);
@@ -78,7 +78,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, Test_Max_50_20) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
   taskDataSeq->outputs_count.emplace_back(global_max.size());
   // Create Task
-  kovalchuk_a_max_of_vector_elements_seq::TestSequentialTask testSequentialTask(taskDataSeq);
+  TestSequentialTask testSequentialTask(taskDataSeq);
   ASSERT_EQ(testSequentialTask.validation(), true);
   testSequentialTask.pre_processing();
   testSequentialTask.run();
@@ -94,7 +94,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, Test_Max_100_100) {
   std::vector<int32_t> global_max(1, INT_MIN);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  global_matrix = kovalchuk_a_max_of_vector_elements_seq::getRandomMatrix(count_rows, count_columns);
+  global_matrix = getRandomMatrix(count_rows, count_columns);
   std::random_device dev;
   std::mt19937 gen(dev());
   int index = gen() % (count_rows * count_columns);
@@ -107,7 +107,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, Test_Max_100_100) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
   taskDataSeq->outputs_count.emplace_back(global_max.size());
   // Create Task
-  kovalchuk_a_max_of_vector_elements_seq::TestSequentialTask testSequentialTask(taskDataSeq);
+  TestSequentialTask testSequentialTask(taskDataSeq);
   ASSERT_EQ(testSequentialTask.validation(), true);
   testSequentialTask.pre_processing();
   testSequentialTask.run();
@@ -123,7 +123,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, Test_Max_1_100) {
   std::vector<int32_t> global_max(1, INT_MIN);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  global_matrix = kovalchuk_a_max_of_vector_elements_seq::getRandomMatrix(count_rows, count_columns);
+  global_matrix = getRandomMatrix(count_rows, count_columns);
   std::random_device dev;
   std::mt19937 gen(dev());
   int index = gen() % (count_rows * count_columns);
@@ -136,7 +136,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, Test_Max_1_100) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
   taskDataSeq->outputs_count.emplace_back(global_max.size());
   // Create Task
-  kovalchuk_a_max_of_vector_elements_seq::TestSequentialTask testSequentialTask(taskDataSeq);
+  TestSequentialTask testSequentialTask(taskDataSeq);
   ASSERT_EQ(testSequentialTask.validation(), true);
   testSequentialTask.pre_processing();
   testSequentialTask.run();
@@ -152,7 +152,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, Test_Max_Empty_Matrix) {
   std::vector<int32_t> global_max(1, INT_MIN);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  global_matrix = kovalchuk_a_max_of_vector_elements_seq::getRandomMatrix(count_rows, count_columns);
+  global_matrix = getRandomMatrix(count_rows, count_columns);
   std::random_device dev;
   std::mt19937 gen(dev());
   int index = gen() % (count_rows * count_columns);
@@ -165,7 +165,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, Test_Max_Empty_Matrix) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
   taskDataSeq->outputs_count.emplace_back(global_max.size());
   // Create Task
-  kovalchuk_a_max_of_vector_elements_seq::TestSequentialTask testSequentialTask(taskDataSeq);
+  TestSequentialTask testSequentialTask(taskDataSeq);
   ASSERT_EQ(testSequentialTask.validation(), true);
   testSequentialTask.pre_processing();
   testSequentialTask.run();
@@ -181,7 +181,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, Test_Max_Single_Element) {
   std::vector<int32_t> global_max(1, INT_MIN);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  global_matrix = kovalchuk_a_max_of_vector_elements_seq::getRandomMatrix(count_rows, count_columns);
+  global_matrix = getRandomMatrix(count_rows, count_columns);
   std::random_device dev;
   std::mt19937 gen(dev());
   int index = gen() % (count_rows * count_columns);
@@ -194,7 +194,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, Test_Max_Single_Element) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
   taskDataSeq->outputs_count.emplace_back(global_max.size());
   // Create Task
-  kovalchuk_a_max_of_vector_elements_seq::TestSequentialTask testSequentialTask(taskDataSeq);
+  TestSequentialTask testSequentialTask(taskDataSeq);
   ASSERT_EQ(testSequentialTask.validation(), true);
   testSequentialTask.pre_processing();
   testSequentialTask.run();
@@ -210,7 +210,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, Test_Max_Negative_Values) {
   std::vector<int32_t> global_max(1, INT_MIN);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  global_matrix = kovalchuk_a_max_of_vector_elements_seq::getRandomMatrix(count_rows, count_columns, -1, -99);
+  global_matrix = getRandomMatrix(count_rows, count_columns, -1, -99);
   std::random_device dev;
   std::mt19937 gen(dev());
   int index = gen() % (count_rows * count_columns);
@@ -223,7 +223,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, Test_Max_Negative_Values) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
   taskDataSeq->outputs_count.emplace_back(global_max.size());
   // Create Task
-  kovalchuk_a_max_of_vector_elements_seq::TestSequentialTask testSequentialTask(taskDataSeq);
+  TestSequentialTask testSequentialTask(taskDataSeq);
   ASSERT_EQ(testSequentialTask.validation(), true);
   testSequentialTask.pre_processing();
   testSequentialTask.run();
@@ -239,7 +239,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, Test_Max_Same_Values) {
   std::vector<int32_t> global_max(1, INT_MIN);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  global_matrix = kovalchuk_a_max_of_vector_elements_seq::getRandomMatrix(count_rows, count_columns, 20, 20);
+  global_matrix = getRandomMatrix(count_rows, count_columns, 20, 20);
   std::random_device dev;
   std::mt19937 gen(dev());
   int index = gen() % (count_rows * count_columns);
@@ -252,7 +252,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, Test_Max_Same_Values) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
   taskDataSeq->outputs_count.emplace_back(global_max.size());
   // Create Task
-  kovalchuk_a_max_of_vector_elements_seq::TestSequentialTask testSequentialTask(taskDataSeq);
+  TestSequentialTask testSequentialTask(taskDataSeq);
   ASSERT_EQ(testSequentialTask.validation(), true);
   testSequentialTask.pre_processing();
   testSequentialTask.run();
@@ -260,5 +260,3 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, Test_Max_Same_Values) {
 
   ASSERT_EQ(global_max[0], INT_MAX);
 }
-
-}  // namespace kovalchuk_a_max_of_vector_elements_seq

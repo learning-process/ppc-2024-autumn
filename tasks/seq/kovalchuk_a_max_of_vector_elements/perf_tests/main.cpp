@@ -8,7 +8,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/kovalchuk_a_max_of_vector_elements/include/ops_seq.hpp"
 
-namespace kovalchuk_a_max_of_vector_elements_seq {
+using namespace kovalchuk_a_max_of_vector_elements_seq;
 
 std::vector<int> getRandomVector(int sz, int min = MINIMALGEN, int max = MAXIMUMGEN);
 std::vector<std::vector<int>> getRandomMatrix(int rows, int columns, int min = MINIMALGEN, int max = MAXIMUMGEN);
@@ -41,7 +41,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, test_pipeline_run) {
   std::mt19937 gen(dev());
   int count_rows = 99999;
   int count_columns = 99999;
-  global_matrix = kovalchuk_a_max_of_vector_elements_seq::getRandomMatrix(count_rows, count_columns);
+  global_matrix = getRandomMatrix(count_rows, count_columns);
   int index = gen() % (count_rows * count_columns);
   global_matrix[index / count_columns][index / count_rows] = ref;
   for (unsigned int i = 0; i < global_matrix.size(); i++)
@@ -84,7 +84,7 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, test_task_run) {
   std::mt19937 gen(dev());
   int count_rows = 3;
   int count_columns = 3;
-  global_matrix = kovalchuk_a_max_of_vector_elements_seq::getRandomMatrix(count_rows, count_columns);
+  global_matrix = getRandomMatrix(count_rows, count_columns);
   int index = gen() % (count_rows * count_columns);
   global_matrix[index / count_columns][index / count_rows] = ref;
   for (unsigned int i = 0; i < global_matrix.size(); i++)
@@ -116,5 +116,3 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, test_task_run) {
   ppc::core::Perf::print_perf_statistic(perfResults);
   ASSERT_EQ(ref, global_max[0]);
 }
-
-}  // namespace kovalchuk_a_max_of_vector_elements_seq
