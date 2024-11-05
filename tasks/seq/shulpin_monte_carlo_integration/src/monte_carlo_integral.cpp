@@ -12,7 +12,7 @@ double shulpin_monte_carlo_integration::fsin(double x) { return std::sin(x); }
 double shulpin_monte_carlo_integration::fcos(double x) { return std::cos(x); }
 double shulpin_monte_carlo_integration::f_two_sin_cos(double x) { return 2 * std::sin(x) * std::cos(x); }
 
-double shulpin_monte_carlo_integration::integral(double a, double b, int N, func func_seq) {
+double shulpin_monte_carlo_integration::integral(double a, double b, int N, const func& func_seq) {
   double h = (b - a) / (N * 1.0);
   double sum = 0.0;
 

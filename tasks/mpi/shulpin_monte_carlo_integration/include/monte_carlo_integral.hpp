@@ -18,9 +18,9 @@ double fsin(double x);
 double fcos(double x);
 double f_two_sin_cos(double x);
 
-double integral(double a, double b, int N, func f);
+double integral(double a, double b, int N, const func &f);
 
-double parallel_integral(double a, double b, int N, func f);
+double parallel_integral(double a, double b, int N, const func &f);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
