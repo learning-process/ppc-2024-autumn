@@ -1,6 +1,7 @@
 #ifndef _CIRCLE_TOPOLOGY_HPP_
 #define _CIRCLE_TOPOLOGY_HPP_
 
+#include <concepts>
 #include <random>
 #include <vector>
 
@@ -8,7 +9,7 @@
 
 namespace khasanyanov_k_circle_topology_mpi {
 
-// not included 'right' with integers, not included left always
+// not included 'right' border with integers, not included 'left' border always
 template <typename T = int>
 std::vector<T> generate_random_vector(size_t size = 100, const T& left = T{-1000}, const T& right = T{1000}) {
   std::vector<T> res(size);
@@ -21,6 +22,12 @@ std::vector<T> generate_random_vector(size_t size = 100, const T& left = T{-1000
   return res;
 }
 
+template <typename T>
+concept Copyable = requires(const T& a) {
+  T{a};
+};
+
+template <Copyable DataType>
 class CircleTopology : ppc::core::Task {
  public:
   explicit CircleTopology(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -29,7 +36,7 @@ class CircleTopology : ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-}
+};
 
 }  // namespace khasanyanov_k_circle_topology_mpi
 
