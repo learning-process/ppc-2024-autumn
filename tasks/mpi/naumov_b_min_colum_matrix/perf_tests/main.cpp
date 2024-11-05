@@ -67,8 +67,10 @@ TEST(naumov_b_min_colum_matrix_mpi, test_column_minimum_task_run) {
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(flatMatrix.data()));
     taskDataPar->inputs_count = {rows, cols};
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(new int[cols]));
-    taskDataPar->outputs_count = {cols};
+
+    std::vector<int> output_results(cols);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_results.data()));
+    taskDataPar->outputs_count = {static_cast<uint32_t>(output_results.size())};
   }
 
   auto testMpiTaskParallel = std::make_shared<naumov_b_min_colum_matrix_mpi::TestMPITaskParallel>(taskDataPar);
