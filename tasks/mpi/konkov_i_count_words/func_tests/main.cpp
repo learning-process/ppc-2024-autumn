@@ -1,58 +1,211 @@
 // Copyright 2023 Konkov Ivan
-#include <boost/mpi/collectives.hpp>
-#include <sstream>
+#include <gtest/gtest.h>
+
+#include <boost/mpi/communicator.hpp>
+#include <boost/mpi/environment.hpp>
+#include <string>
+#include <vector>
 
 #include "mpi/konkov_i_count_words/include/ops_mpi.hpp"
 
-bool konkov_i_count_words_mpi::CountWordsTaskParallel::pre_processing() {
-  internal_order_test();
-  word_count_ = 0;
-  return true;
+std::string generate_random_string(int length) {
+  static const char alphanum[] =
+      "0123456789"
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+      "abcdefghijklmnopqrstuvwxyz";
+  std::string result;
+  result.reserve(length);
+  for (int i = 0; i < length; ++i) {
+    result += alphanum[rand() % (sizeof(alphanum) - 1)];
+  }
+  return result;
 }
 
-bool konkov_i_count_words_mpi::CountWordsTaskParallel::validation() {
-  internal_order_test();
+TEST(konkov_i_count_words_mpi, Test_Empty_String) {
+  boost::mpi::communicator world;
+  std::string input;
+  int expected_count = 0;
+
+  std::vector<int> out(1, 0);
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
   if (world.rank() == 0) {
-    return taskData->inputs_count[0] == 1 && taskData->outputs_count[0] == 1 && taskData->inputs[0] != nullptr &&
-           taskData->outputs[0] != nullptr;
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&input));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
   }
-  return true;
+
+  konkov_i_count_words_mpi::CountWordsTaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(expected_count, out[0]);
+  }
 }
 
-bool konkov_i_count_words_mpi::CountWordsTaskParallel::run() {
-  internal_order_test();
-  int num_processes = world.size();
-  int rank = world.rank();
+TEST(konkov_i_count_words_mpi, Test_Single_Word) {
+  boost::mpi::communicator world;
+  std::string input = "Hello";
+  int expected_count = 1;
 
-  if (rank == 0) {
-    input_ = *reinterpret_cast<std::string*>(taskData->inputs[0]);
+  std::vector<int> out(1, 0);
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&input));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
   }
 
-  boost::mpi::broadcast(world, input_, 0);
+  konkov_i_count_words_mpi::CountWordsTaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
 
-  std::vector<std::string> words;
-  std::istringstream stream(input_);
+  if (world.rank() == 0) {
+    ASSERT_EQ(expected_count, out[0]);
+  }
+}
+
+TEST(konkov_i_count_words_mpi, Test_Multiple_Words) {
+  boost::mpi::communicator world;
+  std::string input = "Hello world this is a test";
+  int expected_count = 6;
+
+  std::vector<int> out(1, 0);
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&input));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
+  }
+
+  konkov_i_count_words_mpi::CountWordsTaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(expected_count, out[0]);
+  }
+}
+
+TEST(konkov_i_count_words_mpi, Test_Random_String) {
+  boost::mpi::communicator world;
+  std::string input = generate_random_string(100);  // √енераци€ случайной строки
+
+  // ¬ычисление ожидаемого количества слов в строке
+  std::istringstream stream(input);
   std::string word;
+  int expected_count = 0;
   while (stream >> word) {
-    words.push_back(word);
+    expected_count++;
   }
 
-  int total_words = words.size();
-  int chunk_size = total_words / num_processes;
-  int start_pos = rank * chunk_size;
-  int end_pos = (rank == num_processes - 1) ? total_words : (rank + 1) * chunk_size;
+  std::vector<int> out(1, 0);
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  int local_word_count = end_pos - start_pos;
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&input));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
+  }
 
-  boost::mpi::reduce(world, local_word_count, word_count_, std::plus<>(), 0);
+  konkov_i_count_words_mpi::CountWordsTaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
 
-  return true;
+  if (world.rank() == 0) {
+    ASSERT_EQ(expected_count, out[0]);
+  }
 }
 
-bool konkov_i_count_words_mpi::CountWordsTaskParallel::post_processing() {
-  internal_order_test();
+TEST(konkov_i_count_words_mpi, Test_Multiple_Spaces) {
+  boost::mpi::communicator world;
+  std::string input = "Hello   world   this   is   a   test";
+  int expected_count = 6;
+
+  std::vector<int> out(1, 0);
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
   if (world.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = word_count_;
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&input));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
   }
-  return true;
+
+  konkov_i_count_words_mpi::CountWordsTaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(expected_count, out[0]);
+  }
+}
+
+TEST(konkov_i_count_words_mpi, Test_Newlines) {
+  boost::mpi::communicator world;
+  std::string input = "Hello\nworld\nthis\nis\na\ntest";
+  int expected_count = 6;
+
+  std::vector<int> out(1, 0);
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&input));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
+  }
+
+  konkov_i_count_words_mpi::CountWordsTaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(expected_count, out[0]);
+  }
+}
+
+TEST(konkov_i_count_words_mpi, Test_Punctuation) {
+  boost::mpi::communicator world;
+  std::string input = "Hello, world! This is a test.";
+  int expected_count = 6;
+
+  std::vector<int> out(1, 0);
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&input));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
+  }
+
+  konkov_i_count_words_mpi::CountWordsTaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(expected_count, out[0]);
+  }
 }
