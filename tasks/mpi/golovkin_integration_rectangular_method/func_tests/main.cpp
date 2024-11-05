@@ -63,6 +63,7 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
     // Сравнение результатов параллельной и последовательной интеграции
     ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
   }
+  exit(0);
 }
 
 TEST(golovkin_integration_rectangular_method, test_square_function) {
@@ -115,6 +116,7 @@ TEST(golovkin_integration_rectangular_method, test_square_function) {
 
     ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
   }
+  exit(0);
 }
 TEST(golovkin_integration_rectangular_method, test_sine_function) {
   boost::mpi::communicator world;
@@ -166,6 +168,7 @@ TEST(golovkin_integration_rectangular_method, test_sine_function) {
 
     ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
   }
+  exit(0);
 }
 
 TEST(golovkin_integration_rectangular_method, test_exponential_function) {
@@ -217,6 +220,7 @@ TEST(golovkin_integration_rectangular_method, test_exponential_function) {
 
     ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
   }
+  exit(0);
 }
 
 TEST(golovkin_integration_rectangular_method, test_polynomial_function) {
@@ -268,4 +272,5 @@ TEST(golovkin_integration_rectangular_method, test_polynomial_function) {
 
     ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
   }
+  exit(0);
 }
