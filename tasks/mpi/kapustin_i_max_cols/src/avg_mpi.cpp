@@ -13,7 +13,7 @@ bool kapustin_i_max_column_task_mpi::MaxColumnTaskSequentialMPI::pre_processing(
   row_count = total_elements / column_count;
   input_.resize(total_elements);
   auto* matrix_data = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (size_t i = 0; i < total_elements; ++i) {
+  for (int  i = 0; i < total_elements; ++i) {
     input_[i] = matrix_data[i];
   }
   res.resize(column_count, std::numeric_limits<int>::min());
@@ -100,7 +100,7 @@ bool kapustin_i_max_column_task_mpi::MaxColumnTaskParallelMPI::run() {
       int founded_max_element = input_[j];
       for (int i = 1; i < row_count; i++) {
         int idx = i * column_count + j;
-        if (idx < input_.size()) {
+        if (idx < static_cast<int>(input_.size())) {
           if (input_[idx] > founded_max_element) {
             founded_max_element = input_[idx];
           }
