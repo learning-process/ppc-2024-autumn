@@ -6,6 +6,7 @@
 #include <boost/mpi/communicator.hpp>
 #include <memory>
 #include <numeric>
+#include <random>
 #include <string>
 #include <utility>
 #include <vector>
