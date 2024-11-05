@@ -1,9 +1,5 @@
 #include "seq/gromov_a_sum_of_vector_elements/include/ops_seq.hpp"
 
-#include <thread>
-
-using namespace std::chrono_literals;
-
 bool gromov_a_sum_of_vector_elements_seq::SumOfVector::pre_processing() {
   internal_order_test();
   // Init value for input and output

@@ -12,6 +12,7 @@ using namespace std::chrono_literals;
 std::vector<int> gromov_a_sum_of_vector_elements_mpi::getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
+  std::uniform_int_distribution<int> dist(-100, 100);
   std::vector<int> vec(sz);
   for (int i = 0; i < sz; i++) {
     vec[i] = gen() % 100;
@@ -59,27 +60,30 @@ bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorSequential::post_process
 bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel::pre_processing() {
   internal_order_test();
   unsigned int delta = 0;
+  unsigned int alpha = 0;
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
+    alpha = taskData->inputs_count[0] % world.size();
   }
   broadcast(world, delta, 0);
+  broadcast(world, alpha, 0);
 
   if (world.rank() == 0) {
-    // Init vectors
-    input_ = std::vector<int>(taskData->inputs_count[0]);
-    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-      input_[i] = tmp_ptr[i];
-    }
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + proc * delta, delta);
+    input_.assign(reinterpret_cast<int*>(taskData->inputs[0]),
+                  reinterpret_cast<int*>(taskData->inputs[0]) + taskData->inputs_count[0]);
+    for (int proc = 1; proc < world.size(); ++proc) {
+      unsigned int send_size = (proc == world.size() - 1) ? delta + alpha : delta;
+      world.send(proc, 0, input_.data() + proc * delta, send_size);
     }
   }
-  local_input_ = std::vector<int>(delta);
-  if (world.rank() == 0) {
-    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
+
+  unsigned int local_size = (world.rank() == world.size() - 1) ? delta + alpha : delta;
+  local_input_.resize(local_size);
+
+  if (world.rank() != 0) {
+    world.recv(0, 0, local_input_.data(), local_size);
   } else {
-    world.recv(0, 0, local_input_.data(), delta);
+    std::copy(input_.begin(), input_.begin() + delta, local_input_.begin());
   }
   // Init value for output
   res = 0;
