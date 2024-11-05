@@ -5,7 +5,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace deryabin_m_symbol_frequency_seq {
+namespace deryabin_m_symbol_frequency_sec {
 
 	class Symbol_frequency_TaskSequential : public ppc::core::Task {
 	public:
@@ -19,4 +19,4 @@ namespace deryabin_m_symbol_frequency_seq {
 		std::string input_str_{}; double frequency_{}; char input_symbol_{};
 	};
 
-}  // namespace deryabin_m_symbol_frequency_seq
+}  // namespace deryabin_m_symbol_frequency_sec
