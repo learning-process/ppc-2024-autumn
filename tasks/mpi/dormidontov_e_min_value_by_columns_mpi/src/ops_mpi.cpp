@@ -1,6 +1,7 @@
 #include "mpi/dormidontov_e_min_value_by_columns_mpi/include/ops_mpi.hpp"
-#include<climits>
+
 #include <algorithm>
+#include <climits>
 #include <functional>
 #include <random>
 #include <string>
@@ -32,8 +33,7 @@ bool dormidontov_e_min_value_by_columns_mpi::TestMPITaskSequential::validation()
 }
 
 bool dormidontov_e_min_value_by_columns_mpi::TestMPITaskSequential::run() {
-  
-internal_order_test();
+  internal_order_test();
   for (int j = 0; j < cs; ++j) {
     res_[j] = INT_MAX;
     for (int i = 0; i < rs; ++i) {

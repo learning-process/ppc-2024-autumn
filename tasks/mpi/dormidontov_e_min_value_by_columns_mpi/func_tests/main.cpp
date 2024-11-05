@@ -7,7 +7,6 @@
 #include "mpi/dormidontov_e_min_value_by_columns_mpi/include/ops_mpi.hpp"
 boost::mpi::communicator world;
 TEST(dormidontov_e_min_value_by_columns_mpi, Test_just_test_if_it_finally_works) {
-
   int rs = 7;
   int cs = 7;
 
@@ -52,7 +51,6 @@ TEST(dormidontov_e_min_value_by_columns_mpi, Test_just_test_if_it_finally_works)
 }
 
 TEST(dormidontov_e_min_value_by_columns_mpi, Test_just_test_if_it_finally_works2) {
-
   int rs = 2;
   int cs = 2;
 
