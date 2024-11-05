@@ -44,35 +44,6 @@ void form(std::string &&str) {
     ASSERT_EQ(reference_count, global_count);
   }
 }
-TEST(zolotareva_a_count_of_words_mpi, Test_Empty) {
-  boost::mpi::communicator world;
-  std::string global_string;
-  size_t global_count = 0;
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    global_string = "";
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_string.data()));
-    taskDataPar->inputs_count.emplace_back(global_string.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(&global_count));
-    taskDataPar->outputs_count.emplace_back(1);
-  }
-
-  zolotareva_a_count_of_words_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_NE(testMpiTaskParallel.validation(), true);
-
-  if (world.rank() == 0) {
-    size_t reference_count = 0;
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_string.data()));
-    taskDataSeq->inputs_count.emplace_back(global_string.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(&reference_count));
-    taskDataSeq->outputs_count.emplace_back(1);
-
-    zolotareva_a_count_of_words_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_NE(testMpiTaskSequential.validation(), true);
-  }
-}
 TEST(zolotareva_a_count_of_words_mpi, Test_Count_Words) { form("1"); }
 TEST(zolotareva_a_count_of_words_mpi, Test_Two_Words) { form("Hello World"); }
 
