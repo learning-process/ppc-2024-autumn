@@ -174,9 +174,9 @@ TEST(kovalchuk_a_max_of_vector_elements_seq, Test_Max_Empty_Matrix) {
   ASSERT_EQ(global_max[0], INT_MAX);
 }
 
-TEST(kovalchuk_a_max_of_vector_elements_seq, Test_Max_Single_Element) {
-  const int count_rows = 1;
-  const int count_columns = 1;
+TEST(kovalchuk_a_max_of_vector_elements_seq, Test_Max_4_4) {
+  const int count_rows = 4;
+  const int count_columns = 4;
   std::vector<std::vector<int>> global_matrix;
   std::vector<int32_t> global_max(1, INT_MIN);
   // Create TaskData
