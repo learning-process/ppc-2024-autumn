@@ -116,4 +116,3 @@ TEST(kovalchuk_a_max_of_vector_elements, test_task_run) {
     ASSERT_EQ(ref, global_max[0]);
   }
 }
-
