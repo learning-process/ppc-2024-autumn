@@ -25,7 +25,6 @@ bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskSequential::validation()
   return taskData->inputs_count[0] >= 2 && taskData->outputs_count[0] == 2;
 }
 
-
 bool petrov_a_nearest_neighbor_elements_mpi::TestMPITaskSequential::run() {
   internal_order_test();
   for (size_t i = 0; i < input_.size() - 1; i++) {
