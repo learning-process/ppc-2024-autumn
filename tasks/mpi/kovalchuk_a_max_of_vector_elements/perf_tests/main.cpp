@@ -44,8 +44,8 @@ TEST(kovalchuk_a_max_of_vector_elements, test_pipeline_run) {
     int count_rows = 99999;
     int count_columns = 99999;
     global_matrix = getRandomMatrix(count_rows, count_columns);
-    int index = gen() % (count_rows * count_columns);
-    global_matrix[index / count_columns][index / count_rows] = ref;
+    size_t index = gen() % (static_cast<size_t>(count_rows) * count_columns);
+    global_matrix[index / count_columns][index % count_columns] = INT_MAX;
     for (unsigned int i = 0; i < global_matrix.size(); i++)
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     taskDataPar->inputs_count.emplace_back(count_rows);
