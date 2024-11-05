@@ -10,7 +10,7 @@ bool kapustin_i_max_column_task_seq::MaxColumnTaskSequential::pre_processing() {
   row_count = total_elements / column_count;
   input_.resize(total_elements);
   auto* matrix_data = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (size_t i = 0; i < total_elements; ++i) {
+  for (int i = 0; i < total_elements; ++i) {
     input_[i] = matrix_data[i];
   }
   res.resize(column_count, std::numeric_limits<int>::min());
