@@ -79,11 +79,15 @@ bool MaxValueOfMatrixElementsParallel<T>::run() {
   int rank = world.rank();
   int size = world.size();
 
-  boost::mpi::broadcast(world, rows_, 0);
-  boost::mpi::broadcast(world, cols_, 0);
+  int delta;
+  int remainder;
+  if (rank == 0) {
+    delta = rows_ * cols_ / size;
+    remainder = rows_ * cols_ % size;
+  }
 
-  int delta = rows_ * cols_ / size;
-  int remainder = rows_ * cols_ % size;
+  boost::mpi::broadcast(world, delta, 0);
+  boost::mpi::broadcast(world, remainder, 0);
 
   std::vector<int> distr(size, delta);
   std::vector<int> displ(size, 0);
