@@ -33,6 +33,8 @@ class num_of_orderly_violations : public ppc::core::Task {
   std::vector<iotype> received_data_;  // Buffer for data received from other processes
 
   std::vector<int> send_sizes;
+  int chunk_size_;
+  int remainder_;
 };
 
 template <class iotype, class cntype>
@@ -75,11 +77,17 @@ bool num_of_orderly_violations<iotype, cntype>::run() {
     return true;
   }
 
-  int chunk_size = input_size / total_processes;
-  int remainder = input_size % total_processes;
+  if (process_rank == 0) {
+    chunk_size_ = input_size / total_processes;
+    remainder_ = input_size % total_processes;
+  }
+
+  boost::mpi::broadcast(mpi_comm, chunk_size_, 0);
+  boost::mpi::broadcast(mpi_comm, remainder_, 0);
+
   send_sizes.resize(total_processes);
   for (int i = 0; i < total_processes; ++i) {
-    send_sizes[i] = chunk_size + (i < remainder ? 1 : 0);
+    send_sizes[i] = chunk_size_ + (i < remainder_ ? 1 : 0);
   }
   local_vector_size_ = send_sizes[process_rank];
 
