@@ -2,9 +2,11 @@
 #define _CIRCLE_TOPOLOGY_HPP_
 
 #include <concepts>
+#include <cstddef>
 #include <random>
 #include <vector>
 
+#include "boost/mpi/communicator.hpp"
 #include "core/task/include/task.hpp"
 
 namespace khasanyanov_k_circle_topology_mpi {
@@ -27,16 +29,44 @@ concept Copyable = requires(const T& a) {
   T{a};
 };
 
-template <Copyable DataType>
+template <typename T>
+concept Unsigned = std::is_unsigned<T>();
+
+template <Copyable DataType, Unsigned SizeType = std::uint32_t>
 class CircleTopology : ppc::core::Task {
+  static_assert(sizeof(SizeType) > sizeof(std::uint32_t),
+                "Size of 'SizeType' greater than std::uint32_t, possible loss of data");
+
+ private:
+  boost::mpi::communicator world;
+  std::vector<DataType> data_;
+
  public:
   explicit CircleTopology(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
 
-  bool pre_processing() override;
   bool validation() override;
+  bool pre_processing() override;
   bool run() override;
   bool post_processing() override;
 };
+
+template <Copyable DataType, Unsigned SizeType>
+bool CircleTopology<DataType, SizeType>::validation() {
+  if (world.rank() == 0) {
+    return !taskData->inputs.empty() && !taskData->inputs_count.empty() && taskData->inputs_count[0] > 0;
+  }
+  return true;
+}
+
+template <Copyable DataType, Unsigned SizeType>
+bool CircleTopology<DataType, SizeType>::pre_processing() {
+  if (world.rank() == 0) {
+    auto* tmp_data = reinterpret_cast<DataType*>(taskData->inputs[0]);
+    auto* tmp_size = reinterpret_cast<SizeType*>(taskData->inputs_count[0]);
+    data_.assign(tmp_data, tmp_data + *tmp_size);
+  }
+  return true;
+}
 
 }  // namespace khasanyanov_k_circle_topology_mpi
 
