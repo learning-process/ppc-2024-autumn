@@ -25,7 +25,7 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_in_empty) {
   maxInRows.pre_processing();
   maxInRows.run();
   maxInRows.post_processing();
-  ASSERT_EQ(out.size(), 0);
+  ASSERT_EQ((int)out.size(), 0);
 }
 
 TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_non_generated_4x4) {
