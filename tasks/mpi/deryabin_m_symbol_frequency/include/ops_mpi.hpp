@@ -22,7 +22,7 @@ namespace deryabin_m_symbol_frequency_mpi {
 		bool run() override;
 		bool post_processing() override;
 	private:
-		std::string input_str_{}; float frequency_{}; char input_symbol_{};
+		std::vector<char> input_str_{}; float frequency_{}; char input_symbol_{};
 	};
 	class SymbolFrequencyMPITaskParallel : public ppc::core::Task {
 	public:
@@ -32,7 +32,7 @@ namespace deryabin_m_symbol_frequency_mpi {
 		bool run() override;
 		bool post_processing() override;
 	private:
-		std::string input_str_{}, local_input_str_{}; float frequency_{}; char input_symbol_{}; unsigned int local_found_{}, found_{};
+		std::vector<char> input_str_{}, local_input_str_{}; float frequency_{}; char input_symbol_{}; unsigned int local_found_{}, found_{};
 		boost::mpi::communicator world;
 	};
 }  // namespace deryabin_m_symbol_frequency_mpi
