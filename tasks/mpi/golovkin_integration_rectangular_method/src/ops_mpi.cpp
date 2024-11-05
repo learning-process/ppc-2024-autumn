@@ -54,7 +54,7 @@ bool MPIIntegralCalculator::run() {
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-  // Проверка, что cnt_of_splits, a, и h инициализированы и имеют корректные значения
+  // Проверка, что cnt_of_splits, a, h инициализированы и имеют корректные значения
   if (cnt_of_splits <= 0 || h <= 0.0 || a >= b) {
     std::cerr << "Process " << rank << ": Invalid configuration (cnt_of_splits, h, or range a-b)" << std::endl;
     return false;
@@ -65,6 +65,10 @@ bool MPIIntegralCalculator::run() {
   int remaining_splits = cnt_of_splits % size;
   int start = rank * splits_per_proc + std::min(rank, remaining_splits);
   int end = start + splits_per_proc + (rank < remaining_splits ? 1 : 0);
+
+  std::cout << "Process " << rank << ": cnt_of_splits = " << cnt_of_splits << ", h = " << h << ", a = " << a
+            << ", b = " << b << ", splits_per_proc = " << splits_per_proc << ", start = " << start << ", end = " << end
+            << std::endl;
 
   // Проверка диапазона
   if (start >= end) {
@@ -80,15 +84,20 @@ bool MPIIntegralCalculator::run() {
     local_res = local_result * h;  // Умножаем на ширину подынтервала
   }
 
-  // Сбор результатов, проверка глобальной синхронизации
+  // Сбор результатов
   double local_global_res = 0.0;
-  MPI_Reduce(&local_res, &local_global_res, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+  int mpi_err = MPI_Reduce(&local_res, &local_global_res, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+  if (mpi_err != MPI_SUCCESS) {
+    std::cerr << "MPI_Reduce failed with error code " << mpi_err << " on process " << rank << std::endl;
+    return false;
+  }
 
   if (rank == 0) {
     global_res = local_global_res;
     std::cout << "Root process has global result after reduction: " << global_res << std::endl;
   }
 
+  MPI_Barrier(MPI_COMM_WORLD);  // Ждем, пока все процессы дойдут до этой точки
   return true;
 }
 
