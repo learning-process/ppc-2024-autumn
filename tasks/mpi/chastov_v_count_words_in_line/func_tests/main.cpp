@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 
 #include "mpi/chastov_v_count_words_in_line/include/ops_mpi.hpp"
+#include "mpi/chastov_v_count_words_in_line/src/ops_mpi.cpp"
 
 // Test to check the behavior of the MPI word counting function with an empty string
 TEST(chastov_v_count_words_in_line_mpi, empty_string) {
@@ -119,7 +120,7 @@ TEST(chastov_v_count_words_in_line_mpi, words_4) {
 // Test to verify the MPI word counting function with an input string that generates 450 words
 TEST(chastov_v_count_words_in_line_mpi, words_300) {
   boost::mpi::communicator world;
-  std::vector<char> input = chastov_v_count_words_in_line_mpi::createString(20);
+  std::vector<char> input = createTestInput(20);
   std::vector<int> wordsFound(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -162,7 +163,7 @@ TEST(chastov_v_count_words_in_line_mpi, words_300) {
 // Test to verify the MPI word counting function with an input string that generates 1500 words
 TEST(chastov_v_count_words_in_line_mpi, words_1500) {
   boost::mpi::communicator world;
-  std::vector<char> input = chastov_v_count_words_in_line_mpi::createString(100);
+  std::vector<char> input = createTestInput(100);
   std::vector<int> wordsFound(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -205,7 +206,7 @@ TEST(chastov_v_count_words_in_line_mpi, words_1500) {
 // Test to verify the MPI word counting function with an input string that generates 7500 words
 TEST(chastov_v_count_words_in_line_mpi, words_7500) {
   boost::mpi::communicator world;
-  std::vector<char> input = chastov_v_count_words_in_line_mpi::createString(500);
+  std::vector<char> input = createTestInput(500);
   std::vector<int> wordsFound(1, 0);
 
   // Create TaskData

@@ -14,8 +14,6 @@
 
 namespace chastov_v_count_words_in_line_mpi {
 
-std::vector<char> createString(int n);
-
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

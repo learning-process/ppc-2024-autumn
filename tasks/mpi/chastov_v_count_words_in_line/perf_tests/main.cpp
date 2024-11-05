@@ -5,8 +5,9 @@
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/chastov_v_count_words_in_line/include/ops_mpi.hpp"
+#include "mpi/chastov_v_count_words_in_line/src/ops_mpi.cpp"
 
-std::vector<char> wordCountInput = chastov_v_count_words_in_line_mpi::createString(2000);
+std::vector<char> wordCountInput = createTestInput(2000);
 
 TEST(chastov_v_count_words_in_line_mpi, test_pipeline_run) {
   boost::mpi::communicator world;

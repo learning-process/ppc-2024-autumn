@@ -1,11 +1,9 @@
 // Copyright 2024 Chastov Vyacheslav
 #include "mpi/chastov_v_count_words_in_line/include/ops_mpi.hpp"
 
-namespace chastov_v_count_words_in_line_mpi {
-
-std::vector<char> createString(int n) {
+std::vector<char> createTestInput(int n) {
   std::vector<char> wordCountInput;
-  std::string testString = "This is a proposal to evaluate the \n performance of a word counting algorithm via MPI. ";
+  std::string testString = "This is a proposal to evaluate the performance of a word counting algorithm via MPI. ";
   for (int i = 0; i < n; i++) {
     for (unsigned long int j = 0; j < testString.length(); j++) {
       wordCountInput.push_back(testString[j]);
@@ -14,7 +12,7 @@ std::vector<char> createString(int n) {
   return wordCountInput;
 }
 
-bool TestMPITaskSequential::pre_processing() {
+bool chastov_v_count_words_in_line_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   input_ = std::vector<char>(taskData->inputs_count[0]);
   auto* temp = reinterpret_cast<char*>(taskData->inputs[0]);
@@ -24,12 +22,12 @@ bool TestMPITaskSequential::pre_processing() {
   return true;
 }
 
-bool TestMPITaskSequential::validation() {
+bool chastov_v_count_words_in_line_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
   return taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1;
 }
 
-bool TestMPITaskSequential::run() {
+bool chastov_v_count_words_in_line_mpi::TestMPITaskSequential::run() {
   internal_order_test();
   for (char c : input_) {
     if (c == ' ') {
@@ -40,23 +38,23 @@ bool TestMPITaskSequential::run() {
   return true;
 }
 
-bool TestMPITaskSequential::post_processing() {
+bool chastov_v_count_words_in_line_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
   reinterpret_cast<int*>(taskData->outputs[0])[0] = wordsFound;
   return true;
 }
 
-bool TestMPITaskParallel::pre_processing() {
+bool chastov_v_count_words_in_line_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   return true;
 }
 
-bool TestMPITaskParallel::validation() {
+bool chastov_v_count_words_in_line_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   return (world.rank() == 0) ? (taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1) : true;
 }
 
-bool TestMPITaskParallel::run() {
+bool chastov_v_count_words_in_line_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   unsigned int blockSize = 0;
   if (world.rank() == 0) {
@@ -90,12 +88,10 @@ bool TestMPITaskParallel::run() {
   return true;
 }
 
-bool TestMPITaskParallel::post_processing() {
+bool chastov_v_count_words_in_line_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     reinterpret_cast<int*>(taskData->outputs[0])[0] = wordsFound;
   }
   return true;
 }
-
-}  // namespace chastov_v_count_words_in_line_mpi
