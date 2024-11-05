@@ -39,11 +39,10 @@ class most_different_neighbor_elements_mpi : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> input_;
-  std::vector<int> local_input_;
+  std::vector<int> input_, local_input_;
   std::pair<int, int> res;
-  size_t st;
   size_t size;
+  size_t st;
   boost::mpi::communicator world;
 };
 
