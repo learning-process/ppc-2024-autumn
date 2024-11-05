@@ -18,6 +18,7 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
   double a = 0.0;
   double b = 5.0;
   double epsilon = 0.1;
+  int cnt_of_splits = static_cast<int>((b - a) / epsilon);  // Вычисляем количество разбиений
 
   if (world.rank() == 0) {
     // Инициализация данных на нулевом процессе
@@ -25,7 +26,7 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
     taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));  // Используем cnt_of_splits
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
     taskDataPar->outputs_count.emplace_back(global_result.size());
@@ -48,10 +49,17 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));  // Используем cnt_of_splits
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
     taskDataSeq->outputs_count.emplace_back(reference_result.size());
+
+    // Вывод информации для отладки
+    /* std::cout << "Inputs count: " << taskDataSeq->inputs.size() << std::endl;
+    for (size_t i = 0; i < taskDataSeq->inputs.size(); ++i) {
+      std::cout << "Input " << i << ": " << *reinterpret_cast<double*>(taskDataSeq->inputs[i]) << std::endl;
+    }
+    std::cout << "Outputs count: " << taskDataSeq->outputs.size() << std::endl; */
 
     // Выполнение последовательной задачи
     golovkin_integration_rectangular_method::MPIIntegralCalculator sequentialTask(taskDataSeq);
@@ -74,13 +82,14 @@ TEST(golovkin_integration_rectangular_method, test_square_function) {
   double b = 2.5;
 
   double epsilon = 0.1;
+  int cnt_of_splits = static_cast<int>((b - a) / epsilon);
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
     taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
     taskDataPar->outputs_count.emplace_back(global_result.size());
@@ -101,7 +110,7 @@ TEST(golovkin_integration_rectangular_method, test_square_function) {
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
     taskDataSeq->outputs_count.emplace_back(reference_result.size());
@@ -125,13 +134,14 @@ TEST(golovkin_integration_rectangular_method, test_sine_function) {
 
   double b = M_PI;
   double epsilon = 0.1;
+  int cnt_of_splits = static_cast<int>((b - a) / epsilon);
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
     taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
     taskDataPar->outputs_count.emplace_back(global_result.size());
@@ -152,7 +162,7 @@ TEST(golovkin_integration_rectangular_method, test_sine_function) {
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
     taskDataSeq->outputs_count.emplace_back(reference_result.size());
@@ -176,13 +186,14 @@ TEST(golovkin_integration_rectangular_method, test_exponential_function) {
   double a = 0.0;
   double b = 2.5;  // Integrating e^x from 0 to 1
   double epsilon = 0.1;
+  int cnt_of_splits = static_cast<int>((b - a) / epsilon);
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
     taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
     taskDataPar->outputs_count.emplace_back(global_result.size());
@@ -203,7 +214,7 @@ TEST(golovkin_integration_rectangular_method, test_exponential_function) {
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
     taskDataSeq->outputs_count.emplace_back(reference_result.size());
@@ -227,13 +238,14 @@ TEST(golovkin_integration_rectangular_method, test_polynomial_function) {
   double a = 1.0;
   double b = 2.5;  // Integrating f(x) = x^3 from 1 to 3
   double epsilon = 0.1;
+  int cnt_of_splits = static_cast<int>((b - a) / epsilon);
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
     taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
     taskDataPar->outputs_count.emplace_back(global_result.size());
@@ -254,7 +266,7 @@ TEST(golovkin_integration_rectangular_method, test_polynomial_function) {
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
     taskDataSeq->outputs_count.emplace_back(reference_result.size());
