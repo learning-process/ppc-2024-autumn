@@ -18,7 +18,7 @@ class CountWordsTaskParallel : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  std::string generate_random_string(int num_words, int word_length);
+  static std::string generate_random_string(int num_words, int word_length);
 
  private:
   std::string input_;

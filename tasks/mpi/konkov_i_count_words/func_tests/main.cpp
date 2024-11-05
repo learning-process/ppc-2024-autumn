@@ -87,8 +87,7 @@ TEST(konkov_i_count_words_mpi, Test_Multiple_Words) {
 
 TEST(konkov_i_count_words_mpi, Test_Random_String) {
   boost::mpi::communicator world;
-  std::string input = konkov_i_count_words_mpi::CountWordsTaskParallel::generate_random_string(
-      100, 5);  // Генерируем случайную строку из 100 слов, каждое длиной 5 символов
+  std::string input = konkov_i_count_words_mpi::CountWordsTaskParallel::generate_random_string(100, 5);
   int expected_count = 100;
 
   std::vector<int> out(1, 0);
