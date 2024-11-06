@@ -1,8 +1,7 @@
-
 #include "seq/dormidontov_e_min_value_by_columns_seq/include/ops_seq.hpp"
-#include<climits>
-#include <thread>
 
+#include <climits>
+#include <thread>
 bool dormidontov_e_min_value_by_columns_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
 
