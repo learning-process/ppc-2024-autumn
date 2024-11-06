@@ -9,6 +9,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+
 #include "core/task/include/task.hpp"
 
 namespace dormidontov_e_min_value_by_columns_mpi {
