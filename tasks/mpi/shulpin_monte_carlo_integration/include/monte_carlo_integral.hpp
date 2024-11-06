@@ -53,7 +53,7 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   double a_MPI{};
   double b_MPI{};
-  double N_MPI{};
+  int N_MPI{};
   func func_MPI;
   double res{};
   boost::mpi::communicator world;

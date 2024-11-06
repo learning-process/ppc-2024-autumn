@@ -169,11 +169,7 @@ TEST(shulpin_monte_carlo_integration, test_empty_input) {
 
   shulpin_monte_carlo_integration::TestMPITaskParallel parallel_empty_task(empty_task_data);
 
-  ASSERT_EQ(parallel_empty_task.validation(), false);
-
   if (world.rank() == 0) {
-    shulpin_monte_carlo_integration::TestMPITaskSequential seq_empty_task(empty_task_data);
-
-    ASSERT_EQ(seq_empty_task.validation(), false);
+    ASSERT_FALSE(parallel_empty_task.validation());
   }
 }

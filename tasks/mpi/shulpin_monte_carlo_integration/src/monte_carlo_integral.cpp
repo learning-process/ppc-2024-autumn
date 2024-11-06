@@ -57,10 +57,6 @@ bool shulpin_monte_carlo_integration::TestMPITaskSequential::pre_processing() {
 bool shulpin_monte_carlo_integration::TestMPITaskSequential::validation() {
   internal_order_test();
 
-  if (taskData->outputs_count.empty()) {
-    return false;
-  }
-
   return taskData->outputs_count[0] == 1;
 }
 
@@ -102,11 +98,7 @@ bool shulpin_monte_carlo_integration::TestMPITaskParallel::validation() {
   internal_order_test();
 
   if (world.rank() == 0) {
-    if (taskData->outputs_count.empty()) {
-      return false;
-    }
-
-    return taskData->outputs_count[0] == 1;
+    return (taskData->inputs_count.size() == 3 && taskData->outputs_count[0] == 1);
   }
 
   return true;
