@@ -9,20 +9,17 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/fyodorov_m_num_of_orderly_violations/include/ops_mpi.hpp"
 
-
-
-
 TEST(fyodorov_m_num_of_orderly_violations_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   int count_size_vector = 2000000;
-  std::vector<int> global_vec(count_size_vector,0);
+  std::vector<int> global_vec(count_size_vector, 0);
   std::vector<int32_t> global_violations(1, 0);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    for (int i = 0; i < count_size_vector; i++){
+    for (int i = 0; i < count_size_vector; i++) {
       global_vec[i] = i;
     }
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
@@ -32,7 +29,7 @@ TEST(fyodorov_m_num_of_orderly_violations_mpi, test_pipeline_run) {
   }
 
   auto testMpiTaskParallel =
-std::make_shared<fyodorov_m_num_of_orderly_violations_mpi::TestMPITaskParallel>(taskDataPar);
+      std::make_shared<fyodorov_m_num_of_orderly_violations_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -59,14 +56,14 @@ std::make_shared<fyodorov_m_num_of_orderly_violations_mpi::TestMPITaskParallel>(
 TEST(fyodorov_m_num_of_orderly_violations_mpi, test_task_run) {
   boost::mpi::communicator world;
   int count_size_vector = 2000000;
-  std::vector<int> global_vec(count_size_vector,0);
+  std::vector<int> global_vec(count_size_vector, 0);
   std::vector<int32_t> global_violations(1, 0);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    for (int i = 0; i < count_size_vector; i++){
+    for (int i = 0; i < count_size_vector; i++) {
       global_vec[i] = i;
     }
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
@@ -76,7 +73,7 @@ TEST(fyodorov_m_num_of_orderly_violations_mpi, test_task_run) {
   }
 
   auto testMpiTaskParallel =
-std::make_shared<fyodorov_m_num_of_orderly_violations_mpi::TestMPITaskParallel>(taskDataPar);
+      std::make_shared<fyodorov_m_num_of_orderly_violations_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -99,4 +96,3 @@ std::make_shared<fyodorov_m_num_of_orderly_violations_mpi::TestMPITaskParallel>(
     ASSERT_EQ(0, global_violations[0]);
   }
 }
-
