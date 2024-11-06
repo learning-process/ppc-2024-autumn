@@ -8,13 +8,13 @@
 boost::mpi::communicator world;
 
 TEST(dormidontov_e_min_value_by_columns_mpi, test_pipeline_run) {
-  int rs = 777;
-  int cs = 777;
+  int rs = 1984;
+  int cs = 1984;
 
   std::vector<int> matrix(cs * rs);
   for (int i = 0; i < rs; ++i) {
     for (int j = 0; j < cs; ++j) {
-      matrix[i * cs + j] = i * 777 + j;
+      matrix[i * cs + j] = i * cs + j;
     }
   }
   std::vector<int> res_out_paral(cs, 0);
@@ -51,13 +51,13 @@ TEST(dormidontov_e_min_value_by_columns_mpi, test_pipeline_run) {
 }
 
 TEST(dormidontov_e_min_value_by_columns_mpi, test_task_run) {
-  int rs = 777;
-  int cs = 777;
+  int rs = 1984;
+  int cs = 1984;
 
   std::vector<int> matrix(cs * rs);
   for (int i = 0; i < rs; ++i) {
     for (int j = 0; j < cs; ++j) {
-      matrix[i * cs + j] = i * 777 + j;
+      matrix[i * cs + j] = i * cs + j;
     }
   }
   std::vector<int> res_out_paral(cs, 0);
