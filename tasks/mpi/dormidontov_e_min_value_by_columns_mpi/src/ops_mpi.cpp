@@ -59,11 +59,7 @@ bool dormidontov_e_min_value_by_columns_mpi::TestMPITaskParallel::pre_processing
     rs = taskData->inputs_count[0];
     cs = taskData->inputs_count[1];
     input_.resize(rs * cs);
-    for (int i = 0; i < rs; ++i) {
-      for (int j = 0; j < cs; ++j) {
-        input_[j + cs * i] = reinterpret_cast<int*>(taskData->inputs[0])[i * (cs) + j];
-      }
-    }
+    std::copy(reinterpret_cast<int*>(taskData->inputs[0]), reinterpret_cast<int*>(taskData->inputs[0]) + rs * cs,input_.begin());
   }
   return true;
 }
