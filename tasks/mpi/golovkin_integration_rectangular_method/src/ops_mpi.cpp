@@ -41,7 +41,7 @@ bool MPIIntegralCalculator::pre_processing() {
 }
 
 bool MPIIntegralCalculator::run() {
-
+  std::cout << "Process ";
   // Проверка, что cnt_of_splits, a, и h инициализированы и имеют корректные значения
   if (cnt_of_splits <= 0 || h <= 0.0 || a >= b) {
     std::cerr << "Process " << world.rank() << ": Invalid configuration (cnt_of_splits, h, or range a-b)" << std::endl;
