@@ -34,7 +34,6 @@ TEST(fyodorov_m_num_of_orderly_violations_mpi, Test_Count_Violations) {
   }
 }
 
-
 TEST(fyodorov_m_num_of_orderly_violations_mpi, Test_Count_Violations_Random_450) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
