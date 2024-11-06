@@ -52,7 +52,6 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
   } else {
     // Остановка других процессов
     std::cout << "Process " << world.rank() << ": Not executing any tasks." << std::endl;
-    MPI_Finalize();  // Завершение MPI для ненужных процессов
     return;          // Выход из функции
   }
 
