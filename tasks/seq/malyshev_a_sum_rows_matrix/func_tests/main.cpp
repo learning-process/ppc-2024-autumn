@@ -25,7 +25,7 @@ std::vector<std::vector<int32_t>> getRandomData(uint32_t rows, uint32_t cols) {
 
 }  // namespace malyshev_a_sum_rows_matrix_test_function
 
-TEST(malyshev_a_sum_rows_matrix_seq, rectangular_matrix_stretched_horizontally_7х17) {
+TEST(malyshev_a_sum_rows_matrix_seq, rectangular_matrix_stretched_horizontally_7x17) {
   uint32_t rows = 7;
   uint32_t cols = 17;
 
