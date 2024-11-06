@@ -25,10 +25,8 @@ bool MPIIntegralCalculator::validation() {
 }
 
 bool MPIIntegralCalculator::pre_processing() {
-  int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-  if (rank == 0) {
+  if (world.rank() == 0) {
     a = *reinterpret_cast<double*>(taskData->inputs[0]);
     b = *reinterpret_cast<double*>(taskData->inputs[1]);
     cnt_of_splits = *reinterpret_cast<int*>(taskData->inputs[2]);
@@ -43,16 +41,13 @@ bool MPIIntegralCalculator::pre_processing() {
   if (cnt_of_splits <= 0) return false;
 
   h = (b - a) / cnt_of_splits;  // Вычисление ширины подынтервала
-  // std::cout << "Process " << rank << " - a: " << a << ", b: " << b << ", cnt_of_splits: " << cnt_of_splits
+  // std::cout << "Process " << world.rank() << " - a: " << a << ", b: " << b << ", cnt_of_splits: " << cnt_of_splits
   // << ", h: " << h << std::endl;
 
   return true;
 }
 
 bool MPIIntegralCalculator::run() {
-  int size;
-
-  MPI_Comm_size(MPI_COMM_WORLD, &size);
 
   // Проверка, что cnt_of_splits, a, и h инициализированы и имеют корректные значения
   if (cnt_of_splits <= 0 || h <= 0.0 || a >= b) {
@@ -61,8 +56,8 @@ bool MPIIntegralCalculator::run() {
   }
 
   // Делим работу между процессами
-  int splits_per_proc = cnt_of_splits / size;
-  int remaining_splits = cnt_of_splits % size;
+  int splits_per_proc = cnt_of_splits / world.size();
+  int remaining_splits = cnt_of_splits % world.size();
   int start = world.rank() * splits_per_proc + std::min(world.rank(), remaining_splits);
   int end = start + splits_per_proc + (world.rank() < remaining_splits ? 1 : 0);
 
@@ -93,17 +88,13 @@ bool MPIIntegralCalculator::run() {
 }
 
 bool MPIIntegralCalculator::post_processing() {
-  int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-  if (rank == 0) {
+  if (world.rank() == 0) {
     if (taskData->outputs.empty()) return false;
     *reinterpret_cast<double*>(taskData->outputs[0]) = global_res;
   }
 
-  // Рассылка результата всем процессам
-  MPI_Bcast(&global_res, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-  if (rank != 0) {
+  if (world.rank() != 0) {
     *reinterpret_cast<double*>(taskData->outputs[0]) = global_res;
   }
 
