@@ -7,6 +7,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
+#include <boost/mpi/collectives.hpp>
 
 using namespace golovkin_integration_rectangular_method;
 
@@ -14,6 +15,7 @@ MPIIntegralCalculator::MPIIntegralCalculator(std::shared_ptr<ppc::core::TaskData
     : ppc::core::Task(taskData), taskData(std::move(taskData)), local_res(0.0), global_res(0.0) {}
 
 bool MPIIntegralCalculator::validation() {
+  internal_order_test();
   if (taskData->inputs.empty() || taskData->outputs.empty()) {
     return false;
   }
@@ -21,15 +23,28 @@ bool MPIIntegralCalculator::validation() {
   if (taskData->inputs.size() < 3 || (taskData->outputs.size() < 1 && world.rank() == 0)) {
     return false;
   }
+  if (world.rank() == 0) {
+    return taskData->outputs_count[0] == 1;
+  }
   return true;
 }
 
 bool MPIIntegralCalculator::pre_processing() {
+  internal_order_test();
+
   if (world.rank() == 0) {
-    a = *reinterpret_cast<double*>(taskData->inputs[0]);
-    b = *reinterpret_cast<double*>(taskData->inputs[1]);
-    cnt_of_splits = *reinterpret_cast<int*>(taskData->inputs[2]);
+    auto* tmp_a = reinterpret_cast<double*>(taskData->inputs[0]);
+    auto* tmp_b = reinterpret_cast<double*>(taskData->inputs[1]);
+    auto* tmp_cnt_of_splits = reinterpret_cast<int*>(taskData->inputs[2]);
+
+    a = *tmp_a;
+    b = *tmp_b;
+    cnt_of_splits = *tmp_cnt_of_splits;
   }
+
+  broadcast(world, a, 0);
+  broadcast(world, b, 0);
+  broadcast(world, cnt_of_splits, 0);
 
   // Проверка корректности количества разбиений
   if (cnt_of_splits <= 0) return false;
@@ -41,19 +56,17 @@ bool MPIIntegralCalculator::pre_processing() {
 }
 
 bool MPIIntegralCalculator::run() {
-  std::cout << "Process ";
+  internal_order_test();
   // Проверка, что cnt_of_splits, a, и h инициализированы и имеют корректные значения
   if (cnt_of_splits <= 0 || h <= 0.0 || a >= b) {
     std::cerr << "Process " << world.rank() << ": Invalid configuration (cnt_of_splits, h, or range a-b)" << std::endl;
     return false;
   }
-  std::cerr << "Process ";
   // Делим работу между процессами
   int splits_per_proc = cnt_of_splits / world.size();
   int remaining_splits = cnt_of_splits % world.size();
   int start = world.rank() * splits_per_proc + std::min(world.rank(), remaining_splits);
   int end = start + splits_per_proc + (world.rank() < remaining_splits ? 1 : 0);
-  std::cerr << "Process1 ";
   // Проверка диапазона
   if (start >= end) {
     std::cerr << "Process " << world.rank() << " has no work to do (start >= end)." << std::endl;
@@ -67,29 +80,19 @@ bool MPIIntegralCalculator::run() {
     }
     local_res = local_result * h;  // Умножаем на ширину подынтервала
   }
-  std::cerr << "Process2 ";
   // Сбор результатов, проверка глобальной синхронизации
-  double local_global_res = 0.0;
-  MPI_Reduce(&local_res, &local_global_res, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-  std::cerr << "Process3 ";
-  if (world.rank() == 0) {
-    global_res = local_global_res;
-    std::cout << "Root process has global result after reduction: " << global_res << std::endl;
-  }
-  std::cerr << "Process4 ";
+
+  reduce(world, local_res, global_res, std::plus<>(), 0);
+  std::cout << "Root process has global result after reduction: " << global_res << std::endl;
   return true;
 }
 
 bool MPIIntegralCalculator::post_processing() {
+  internal_order_test();
   if (world.rank() == 0) {
     if (taskData->outputs.empty()) return false;
     *reinterpret_cast<double*>(taskData->outputs[0]) = global_res;
   }
-
-  if (world.rank() != 0) {
-    *reinterpret_cast<double*>(taskData->outputs[0]) = global_res;
-  }
-
   return true;
 }
 

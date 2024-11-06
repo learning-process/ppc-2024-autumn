@@ -21,12 +21,12 @@ class MPIIntegralCalculator : public ppc::core::Task {
  private:
   boost::mpi::communicator world;
   std::shared_ptr<ppc::core::TaskData> taskData;
-  double a;
-  double b;
-  int cnt_of_splits;
+  double a{};
+  double b{};
+  int cnt_of_splits{};
   double h;
-  double local_res;   // Локальный результат для каждого процесса
-  double global_res;  // Глобальный результат, собираемый на процессе 0
+  double local_res{};  // Локальный результат для каждого процесса
+  double global_res{};  // Глобальный результат, собираемый на процессе 0
 
   double function_square(double x);  // Функция для интегрирования
 };

@@ -35,7 +35,6 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
 
   // Создаем экземпляр задачи, но выполняем действия только на нулевом процессе
   golovkin_integration_rectangular_method::MPIIntegralCalculator parallelTask(taskDataPar);
-
   // Процесс 0 выполняет валидацию, остальные просто завершают выполнение
   if (world.rank() == 0) {
     std::cout << "Process " << world.rank() << ": Running validation" << std::endl;
