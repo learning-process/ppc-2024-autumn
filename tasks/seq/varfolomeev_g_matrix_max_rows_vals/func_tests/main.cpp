@@ -224,7 +224,8 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_10x20) {
 }
 
 TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_20x20) {
-  int rows = 20 int cols = 20;
+  int rows = 20;
+  int cols = 20;
 
   // Create data
   std::vector<std::vector<int>> in = varfolomeev_g_matrix_max_rows_vals_seq::generateMatrix(rows, cols, -100, 100);
