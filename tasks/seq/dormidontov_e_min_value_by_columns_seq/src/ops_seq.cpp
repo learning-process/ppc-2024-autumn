@@ -1,7 +1,6 @@
-// Copyright 2024 Nesterov Alexander
 
 #include "seq/dormidontov_e_min_value_by_columns_seq/include/ops_seq.hpp"
-
+#include<climits>
 #include <thread>
 
 bool dormidontov_e_min_value_by_columns_seq::TestTaskSequential::pre_processing() {
@@ -31,7 +30,7 @@ bool dormidontov_e_min_value_by_columns_seq::TestTaskSequential::validation() {
 bool dormidontov_e_min_value_by_columns_seq::TestTaskSequential::run() {
   internal_order_test();
   for (int j = 0; j < cs; ++j) {
-    res[j] = 10000000;
+    res[j] = INT_MAX;
     for (int i = 0; i < rs; ++i) {
       if (res[j] > input_[i][j]) {
         res[j] = input_[i][j];

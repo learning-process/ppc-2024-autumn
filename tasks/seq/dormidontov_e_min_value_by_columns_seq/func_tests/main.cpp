@@ -156,3 +156,34 @@ TEST(dormidontov_e_min_value_by_columns_seq, test_min_values_by_columns_matrix_3
   ASSERT_TRUE(testTaskSequential.post_processing());
   ASSERT_EQ(res_out, exp_res);
 }
+TEST(dormidontov_e_min_value_by_columns_seq, test_min_values_by_columns_matrix_1500x3000) {
+  int rs = 1500;
+  int cs = 3000;
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  dormidontov_e_min_value_by_columns_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  std::vector<int> matrix(rs * cs);
+  for (int i = 0; i < rs; ++i) {
+    for (int j = 0; j < cs; ++j) {
+      matrix[i * cs + j] = i * 1000 + j;
+    }
+  }
+  std::vector<int> res_out(cs, 0);
+  std::vector<int> exp_res(cs);
+  for (int j = 0; j < cs; ++j) {
+    exp_res[j] = j;
+  }
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+
+  taskDataSeq->inputs_count.emplace_back(rs);
+  taskDataSeq->inputs_count.emplace_back(cs);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_out.data()));
+
+  taskDataSeq->outputs_count.emplace_back(res_out.size());
+
+  ASSERT_EQ(testTaskSequential.validation(), true);
+  ASSERT_TRUE(testTaskSequential.pre_processing());
+  ASSERT_TRUE(testTaskSequential.run());
+  ASSERT_TRUE(testTaskSequential.post_processing());
+  ASSERT_EQ(res_out, exp_res);
+}
