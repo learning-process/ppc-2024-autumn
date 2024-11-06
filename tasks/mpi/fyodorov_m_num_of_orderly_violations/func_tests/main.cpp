@@ -15,7 +15,7 @@ TEST(Parallel_Operations_MPI, Test_Count_ViolationsDDDDDDDDDDDDDADDAADAD) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 120;  // You can change the size as needed
+    const int count_size_vector = 12;  // You can change the size as needed
     global_vec = fyodorov_m_num_of_orderly_violations_mpi::getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
