@@ -5,6 +5,26 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/varfolomeev_g_matrix_max_rows_vals/include/ops_seq.hpp"
 
+std::vector<std::vector<int>> generateMatrix(int rows, int cols, int a, int b) {
+  std::vector<std::vector<int>> matrix(rows, std::vector<int>(cols));
+  // set generator
+  std::srand(static_cast<unsigned int>(std::time(nullptr)));
+  for (int i = 0; i < rows; i++) {
+    for (int j = 0; j < cols; j++) {
+      matrix[i][j] = std::rand() % (b - a + 1) + a;
+    }
+  }
+  return matrix;
+}
+
+int searchMaxInVec(std::vector<int> vec) {
+  int max = vec[0];
+  for (size_t i = 1; i < vec.size(); i++) {
+    if (max < vec[i]) max = vec[i];
+  }
+  return max;
+}
+
 TEST(sequential_varfolomeev_g_matrix_max_rows_perf_test, test_pipeline_run_10x10) {
   int rows = 10;
   int cols = 10;
@@ -12,7 +32,7 @@ TEST(sequential_varfolomeev_g_matrix_max_rows_perf_test, test_pipeline_run_10x10
   int b = 100;
 
   // Create data
-  std::vector<std::vector<int>> in = varfolomeev_g_matrix_max_rows_vals_seq::generateMatrix(rows, cols, a, b);
+  std::vector<std::vector<int>> in = generateMatrix(rows, cols, a, b);
   std::vector<int> out(rows, 0);
 
   // Create TaskData
@@ -48,7 +68,7 @@ TEST(sequential_varfolomeev_g_matrix_max_rows_perf_test, test_pipeline_run_10x10
 
   // Check results
   for (int i = 0; i < rows; ++i) {
-    int expected_max = varfolomeev_g_matrix_max_rows_vals_seq::searchMaxInVec(in[i]);
+    int expected_max = searchMaxInVec(in[i]);
     ASSERT_EQ(out[i], expected_max);
   }
 }
@@ -60,7 +80,7 @@ TEST(sequential_varfolomeev_g_matrix_max_rows_perf_test, test_task_run_10x10) {
   const int b = 100;
 
   // Create data
-  std::vector<std::vector<int>> in = varfolomeev_g_matrix_max_rows_vals_seq::generateMatrix(rows, cols, a, b);
+  std::vector<std::vector<int>> in = generateMatrix(rows, cols, a, b);
   std::vector<int> out(rows, 0);
 
   // Create TaskData
@@ -96,7 +116,7 @@ TEST(sequential_varfolomeev_g_matrix_max_rows_perf_test, test_task_run_10x10) {
 
   // Check results
   for (int i = 0; i < rows; ++i) {
-    int expected_max = varfolomeev_g_matrix_max_rows_vals_seq::searchMaxInVec(in[i]);
+    int expected_max = searchMaxInVec(in[i]);
     ASSERT_EQ(out[i], expected_max);
   }
 }

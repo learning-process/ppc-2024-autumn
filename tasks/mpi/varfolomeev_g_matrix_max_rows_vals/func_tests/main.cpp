@@ -3,9 +3,25 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <random>
 #include <vector>
 
 #include "mpi/varfolomeev_g_matrix_max_rows_vals/include/ops_mpi.hpp"
+
+std::vector<std::vector<int>> generateMatrix(int rows, int cols, int a, int b) {
+  std::vector<std::vector<int>> matrix(rows, std::vector<int>(cols));
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> dis(a, b);
+
+  for (int i = 0; i < rows; ++i) {
+    for (int j = 0; j < cols; ++j) {
+      matrix[i][j] = dis(gen);
+    }
+  }
+
+  return matrix;
+}
 
 TEST(varfolomeev_g_matrix_max_rows_mpi, Test_Empty_Matrix) {
   int size_m = 0;
@@ -74,7 +90,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_generateMatrix) {
   int a = -50;
   int b = 50;
 
-  std::vector<std::vector<int>> matrix = varfolomeev_g_matrix_max_rows_vals_mpi::generateMatrix(rows, cols, a, b);
+  std::vector<std::vector<int>> matrix = generateMatrix(rows, cols, a, b);
 
   // Проверка размера матрицы
   ASSERT_EQ((int)matrix.size(), rows);

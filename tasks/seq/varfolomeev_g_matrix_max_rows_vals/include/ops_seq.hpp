@@ -8,9 +8,6 @@
 
 namespace varfolomeev_g_matrix_max_rows_vals_seq {
 
-int searchMaxInVec(std::vector<int> vec);
-std::vector<std::vector<int>> generateMatrix(int rows, int cols, int a, int b);
-
 class MaxInRows : public ppc::core::Task {
  public:
   explicit MaxInRows(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

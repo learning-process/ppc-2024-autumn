@@ -25,22 +25,6 @@ std::vector<int> varfolomeev_g_matrix_max_rows_vals_mpi::getRandomVector(int sz)
   return vec;
 }
 
-std::vector<std::vector<int>> varfolomeev_g_matrix_max_rows_vals_mpi::generateMatrix(const int rows, const int cols,
-                                                                                     int a, int b) {
-  std::vector<std::vector<int>> matrix(rows, std::vector<int>(cols));
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<> dis(a, b);
-
-  for (int i = 0; i < rows; ++i) {
-    for (int j = 0; j < cols; ++j) {
-      matrix[i][j] = dis(gen);
-    }
-  }
-
-  return matrix;
-}
-
 // Sequential
 bool varfolomeev_g_matrix_max_rows_vals_mpi::MaxInRowsSequential::pre_processing() {
   internal_order_test();
