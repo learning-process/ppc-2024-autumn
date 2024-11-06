@@ -65,17 +65,23 @@ bool kapustin_i_max_column_task_mpi::MaxColumnTaskParallelMPI::validation() {
   internal_order_test();
 
   if (world.rank() == 0) {
-    if (taskData->inputs.empty()) return false;
-    if (taskData->inputs_count.size() < 3 || taskData->inputs_count[0] <= 0 || taskData->inputs_count[1] <= 0 ||
-        taskData->inputs_count[2] <= 0) {
-      return false;
-    }
-    if (taskData->outputs_count.empty() || taskData->outputs_count[0] != taskData->inputs_count[1]) {
-      return false;
-    }
+    return ((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
+            (taskData->inputs_count.size() > 0 && taskData->inputs_count[1] > 0) &&
+            (taskData->outputs_count[0] == taskData->inputs_count[1]));
   }
   return true;
 }
+/*if (taskData->inputs.empty()) return false;
+if (taskData->inputs_count.size() < 3 || taskData->inputs_count[0] <= 0 || taskData->inputs_count[1] <= 0 ||
+    taskData->inputs_count[2] <= 0) {
+  return false;
+}
+if (taskData->outputs_count.empty() || taskData->outputs_count[0] != taskData->inputs_count[1]) {
+  return false;
+}
+}
+return true;
+}*/
 bool kapustin_i_max_column_task_mpi::MaxColumnTaskParallelMPI::run() {
   internal_order_test();
 
