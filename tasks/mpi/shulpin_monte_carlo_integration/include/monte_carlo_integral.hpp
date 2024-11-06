@@ -24,7 +24,7 @@ double parallel_integral(double a, double b, int N, const func &f);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
+  explicit TestMPITaskSequential(const std::shared_ptr<ppc::core::TaskData>& taskData_)
       : Task(taskData_ ? taskData_ : std::make_shared<ppc::core::TaskData>()) {}
   bool pre_processing() override;
   bool validation() override;
@@ -42,7 +42,7 @@ class TestMPITaskSequential : public ppc::core::Task {
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
+  explicit TestMPITaskParallel(const std::shared_ptr<ppc::core::TaskData>& taskData_)
       : Task(taskData_ ? taskData_ : std::make_shared<ppc::core::TaskData>()) {}
   bool pre_processing() override;
   bool validation() override;
