@@ -12,9 +12,16 @@ TEST(dormidontov_e_min_value_by_columns_mpi, test_pipeline_run) {
   int cs = 777;
 
   std::vector<int> matrix(cs * rs);
+  for (int i = 0; i < rs; ++i) {
+    for (int j = 0; j < cs; ++j) {
+      matrix[i * cs + j] = i * 777 + j;
+    }
+  }
   std::vector<int> res_out_paral(cs, 0);
   std::vector<int> exp_res_paral(cs, 0);
-  matrix = generate_random_vector(cs, rs);
+  for (int j = 0; j < cs; ++j) {
+    exp_res_paral[j] = j;
+  }
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -48,9 +55,16 @@ TEST(dormidontov_e_min_value_by_columns_mpi, test_task_run) {
   int cs = 777;
 
   std::vector<int> matrix(cs * rs);
+  for (int i = 0; i < rs; ++i) {
+    for (int j = 0; j < cs; ++j) {
+      matrix[i * cs + j] = i * 777 + j;
+    }
+  }
   std::vector<int> res_out_paral(cs, 0);
   std::vector<int> exp_res_paral(cs, 0);
-  matrix = generate_random_vector(cs, rs);
+  for (int j = 0; j < cs; ++j) {
+    exp_res_paral[j] = j;
+  }
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));

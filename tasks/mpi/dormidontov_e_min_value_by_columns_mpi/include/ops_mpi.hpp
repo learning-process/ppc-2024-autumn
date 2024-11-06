@@ -12,20 +12,6 @@
 
 #include "core/task/include/task.hpp"
 
-inline std::vector<int> generate_random_vector(int cs_temp, int rs_temp) {
-  std::vector<int> temp(cs_temp * rs_temp);
-  for (int i = 0; i < rs_temp; i++) {
-    for (int j = 0; j < cs_temp; j++) {
-      if (i == 0) {
-        temp[i * rs_temp + j] = 0;
-      } else {
-        temp[i * rs_temp + j] = rand() % 1000;
-      }
-    }
-  }
-  return temp;
-}
-
 namespace dormidontov_e_min_value_by_columns_mpi {
 class TestMPITaskSequential : public ppc::core::Task {
  public:
