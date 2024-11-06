@@ -27,17 +27,17 @@ double shulpin_monte_carlo_integration::parallel_integral(double a, double b, in
   double b_chunk = a_chunk + chunk;
   double h_chunk = (b_chunk - a_chunk) / (N * 1.0);
 
-  double local_s = 0.0;
-  double global_s = 0.0;
+  double local_sum = 0.0;
+  double global_sum = 0.0;
 
   for (int i = 0; i < N; ++i) {
-    local_s += func_MPI(a_chunk + h_chunk * i);
+    local_sum += func_MPI(a_chunk + h_chunk * i);
   }
-  local_s *= h_chunk;
+  local_sum *= h_chunk;
 
-  boost::mpi::reduce(world, local_s, global_s, std::plus<>(), 0);
+  boost::mpi::reduce(world, local_sum, global_sum, std::plus<>(), 0);
 
-  return global_s;
+  return global_sum;
 }
 
 bool shulpin_monte_carlo_integration::TestMPITaskSequential::pre_processing() {
