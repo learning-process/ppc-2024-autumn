@@ -9,25 +9,12 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> gromov_a_sum_of_vector_elements_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::uniform_int_distribution<int> dist(-100, 100);
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
-}
-
 bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorSequential::pre_processing() {
   internal_order_test();
   // Init vectors
   input_ = std::vector<int>(taskData->inputs_count[0]);
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    input_[i] = tmp_ptr[i];
-  }
+  std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
   // Init value for output
   res = 0;
   return true;

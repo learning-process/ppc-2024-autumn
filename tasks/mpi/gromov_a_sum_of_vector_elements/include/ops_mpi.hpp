@@ -13,8 +13,6 @@
 
 namespace gromov_a_sum_of_vector_elements_mpi {
 
-std::vector<int> getRandomVector(int sz);
-
 class MPISumOfVectorSequential : public ppc::core::Task {
  public:
   explicit MPISumOfVectorSequential(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
