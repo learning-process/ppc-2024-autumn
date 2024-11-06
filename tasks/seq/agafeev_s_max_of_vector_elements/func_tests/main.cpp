@@ -25,7 +25,7 @@ TEST(agafeev_s_max_of_vector_elements_sequental, find_max_in_10x10_matrix) {
   taskData->outputs_count.emplace_back(out.size());
 
   // Create Task
-  agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential<int> testTask(taskData);
+  agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential testTask(taskData);
   bool isValid = testTask.validation();
   ASSERT_EQ(isValid, true);
   testTask.pre_processing();

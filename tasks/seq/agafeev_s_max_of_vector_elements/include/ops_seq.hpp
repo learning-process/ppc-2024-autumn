@@ -9,13 +9,10 @@
 
 namespace agafeev_s_max_of_vector_elements_sequental {
 
-template <typename Type>
-std::vector<Type> create_RandomMatrix(Type row_size, Type column_size);
+std::vector<int> create_RandomMatrix(int row_size, int column_size);
 
-template <typename Type>
-Type get_MaxValue(std::vector<Type> matrix);
+int get_MaxValue(std::vector<int> matrix);
 
-template <typename Type>
 class MaxMatrixSequential : public ppc::core::Task {
  public:
   explicit MaxMatrixSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -25,8 +22,8 @@ class MaxMatrixSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<Type> input_;
-  Type maxres_{};
+  std::vector<int> input_;
+  int maxres_{};
 };
 
 }  // namespace agafeev_s_max_of_vector_elements_sequental
