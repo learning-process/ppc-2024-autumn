@@ -7,7 +7,7 @@
 
 namespace chernova_n_word_count_seq {
 
-  std::vector<char> clean_string(const std::vector<char>& input);
+std::vector<char> clean_string(const std::vector<char>& input);
 
 class TestTaskSequential : public ppc::core::Task {
  public:

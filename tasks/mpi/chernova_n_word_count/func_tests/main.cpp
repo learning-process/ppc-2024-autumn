@@ -18,10 +18,9 @@ TEST(chernova_n_word_count_mpi, Test_empty_string) {
     taskDataParallel->inputs_count.emplace_back(in.size());
     taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     taskDataParallel->outputs_count.emplace_back(out.size());
+    chernova_n_word_count_mpi::TestMPITaskParallel testTaskParallel(taskDataParallel);
+    ASSERT_FALSE(testTaskParallel.validation());
   }
-
-  chernova_n_word_count_mpi::TestMPITaskParallel testTaskParallel(taskDataParallel);
-  ASSERT_FALSE(testTaskParallel.validation());
 }
 
 TEST(chernova_n_word_count_mpi, Test_five_words) {
