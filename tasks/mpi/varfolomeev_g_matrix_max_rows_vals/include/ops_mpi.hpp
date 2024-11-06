@@ -17,7 +17,7 @@ namespace varfolomeev_g_matrix_max_rows_vals_mpi {
 
 std::vector<int> getRandomVector(int sz);
 
-std::vector<std::vector<int>> generateMatrix(const int rows, const int cols, int a, int b);
+std::vector<std::vector<int>> generateMatrix(int rows, int cols, int a, int b);
 
 class MaxInRowsSequential : public ppc::core::Task {
  public:
