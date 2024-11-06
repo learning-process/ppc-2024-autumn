@@ -7,7 +7,7 @@
 #include "core/task/include/task.hpp"
 #include "seq/sedova_o_max_of_vector_elements/include/ops_seq.hpp"
 
-namespace sedova_o_max_of_vector_elements_seq {
+namespace sedova_o_max_of_vector_elements_seq_test {
 
 std::vector<int> generate_random_vector(size_t size, size_t value) {
   std::random_device dev;

@@ -7,7 +7,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/sedova_o_max_of_vector_elements/include/ops_mpi.hpp"
 
-namespace sedova_o_max_of_vector_elements_mpi {
+namespace sedova_o_max_of_vector_elements_mpi_test {
 
 std::vector<int> generate_random_vector(size_t size, size_t value) {
   std::random_device dev;
