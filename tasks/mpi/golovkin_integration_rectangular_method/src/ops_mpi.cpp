@@ -31,11 +31,6 @@ bool MPIIntegralCalculator::pre_processing() {
     cnt_of_splits = *reinterpret_cast<int*>(taskData->inputs[2]);
   }
 
-  // Распространение значений на все процессы
-  MPI_Bcast(&a, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-  MPI_Bcast(&b, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-  MPI_Bcast(&cnt_of_splits, 1, MPI_INT, 0, MPI_COMM_WORLD);
-
   // Проверка корректности количества разбиений
   if (cnt_of_splits <= 0) return false;
 
