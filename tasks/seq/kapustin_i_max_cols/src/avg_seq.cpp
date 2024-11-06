@@ -19,10 +19,9 @@ bool kapustin_i_max_column_task_seq::MaxColumnTaskSequential::pre_processing() {
 
 bool kapustin_i_max_column_task_seq::MaxColumnTaskSequential::validation() {
   internal_order_test();
-  if (taskData->inputs_count.size() < 2 || taskData->inputs_count[0] == 0 || taskData->inputs_count[1] == 0)
-    return false;
+  if (taskData->inputs_count[1] != taskData->outputs_count[0]) return false;
   column_count = *reinterpret_cast<int*>(taskData->inputs[1]);
-  if (column_count <= 0) return false;
+  /*if (column_count <= 0) return false;*/
   if (taskData->inputs_count[0] % column_count != 0) return false;
   return true;
 }
