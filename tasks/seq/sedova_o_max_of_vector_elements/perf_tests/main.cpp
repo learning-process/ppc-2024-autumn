@@ -27,7 +27,7 @@ std::vector<std::vector<int>> generate_random_matrix(size_t rows, size_t cols, s
   }
   return matrix;
 }
-}
+} // namespace sedova_o_max_of_vector_elements_seq_test
 
 TEST(sedova_o_max_of_vector_elements_seq, test_pipeline_run_small_matrix) {
   std::random_device dev;

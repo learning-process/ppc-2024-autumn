@@ -26,7 +26,7 @@ std::vector<std::vector<int>> generate_random_matrix(size_t rows, size_t cols, s
   }
   return matrix;
 }
-}
+} // namespace sedova_o_max_of_vector_elements_mpi_test
 
 TEST(sedova_o_max_of_vector_elements_mpi, Test1) {
   ASSERT_NO_THROW(sedova_o_max_of_vector_elements_mpi_test::generate_random_vector(10, 10));
