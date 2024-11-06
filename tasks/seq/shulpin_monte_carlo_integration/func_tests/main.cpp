@@ -44,7 +44,7 @@ TEST(shulpin_monte_carlo_integration, sin_test) {
   testTaskSequential->run();
   testTaskSequential->post_processing();
 
-  ASSERT_LT(std::abs(output - expected_sin_integral_result), ESTIMATE);
+  ASSERT_NEAR(output, expected_sin_integral_result, ESTIMATE);
 }
 
 TEST(shulpin_monte_carlo_integration, test_cos) {
@@ -78,7 +78,7 @@ TEST(shulpin_monte_carlo_integration, test_cos) {
   testTaskSequential->run();
   testTaskSequential->post_processing();
 
-  ASSERT_LT(std::abs(output - expected_cos_integral_result), ESTIMATE);
+  ASSERT_NEAR(output, expected_cos_integral_result, ESTIMATE);
 }
 
 TEST(shulpin_monte_carlo_integration, test_two_sin_cos) {
@@ -110,5 +110,5 @@ TEST(shulpin_monte_carlo_integration, test_two_sin_cos) {
   testTaskSequential->run();
   testTaskSequential->post_processing();
 
-  ASSERT_LT(std::abs(output - expected_integral_result), ESTIMATE);
+  ASSERT_NEAR(output, expected_integral_result, ESTIMATE);
 }

@@ -58,7 +58,7 @@ TEST(shulpin_monte_carlo_integration, sin_test) {
     seq_MC_integral.run();
     seq_MC_integral.post_processing();
 
-    ASSERT_LT(std::abs(ref_integral - global_integral), ESTIMATE);
+    ASSERT_NEAR(ref_integral, global_integral, ESTIMATE);
   }
 }
 
@@ -108,7 +108,7 @@ TEST(shulpin_monte_carlo_integration, test_cos) {
     seq_MC_integral.run();
     seq_MC_integral.post_processing();
 
-    ASSERT_LT(std::abs(ref_integral - global_integral), ESTIMATE);
+    ASSERT_NEAR(ref_integral, global_integral, ESTIMATE);
   }
 }
 
@@ -158,7 +158,7 @@ TEST(shulpin_monte_carlo_integration, test_two_sin_cos) {
     seq_two_sin_cos.run();
     seq_two_sin_cos.post_processing();
 
-    ASSERT_LT(std::abs(ref_integral - global_integral), ESTIMATE);
+    ASSERT_NEAR(ref_integral, global_integral, ESTIMATE);
   }
 }
 
