@@ -5,7 +5,8 @@
 #include "seq/varfolomeev_g_matrix_max_rows_vals/include/ops_seq.hpp"
 
 TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_in_empty) {
-  const int rows = 0, cols = 0;
+  int rows = 0;
+  int cols = 0;
 
   // Create data
   std::vector<int> in;
@@ -62,8 +63,8 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_non_generated_4x4) {
 
 // Тест на матрицу с отрицательными значениями
 TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_non_generated_negative_values) {
-  const int rows = 3;
-  const int cols = 3;
+  int rows = 3;
+  int cols = 3;
 
   // Create data
   std::vector<std::vector<int>> in = {{-10, -20, -30}, {-40, -50, -60}, {-70, -80, -90}};

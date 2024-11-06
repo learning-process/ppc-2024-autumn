@@ -9,7 +9,7 @@
 namespace varfolomeev_g_matrix_max_rows_vals_seq {
 
 int searchMaxInVec(std::vector<int> vec);
-std::vector<std::vector<int>> generateMatrix(const int rows, const int cols, int a, int b);
+std::vector<std::vector<int>> generateMatrix(int rows, int cols, int a, int b);
 
 class MaxInRows : public ppc::core::Task {
  public:

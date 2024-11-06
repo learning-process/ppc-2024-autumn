@@ -6,10 +6,10 @@
 #include "seq/varfolomeev_g_matrix_max_rows_vals/include/ops_seq.hpp"
 
 TEST(sequential_varfolomeev_g_matrix_max_rows_perf_test, test_pipeline_run_10x10) {
-  const int rows = 10;
-  const int cols = 10;
-  const int a = -100;
-  const int b = 100;
+  int rows = 10;
+  int cols = 10;
+  int a = -100;
+  int b = 100;
 
   // Create data
   std::vector<std::vector<int>> in = varfolomeev_g_matrix_max_rows_vals_seq::generateMatrix(rows, cols, a, b);
