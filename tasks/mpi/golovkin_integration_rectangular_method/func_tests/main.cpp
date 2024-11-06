@@ -49,11 +49,7 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
 
     std::cout << "Process " << world.rank() << ": Starting post_processing" << std::endl;
     parallelTask.post_processing();
-  } else {
-    // Остановка других процессов
-    std::cout << "Process " << world.rank() << ": Not executing any tasks." << std::endl;
-    return;          // Выход из функции
-  }
+  } 
 
   // Процесс 0 выполняет последовательный расчет
   if (world.rank() == 0) {
