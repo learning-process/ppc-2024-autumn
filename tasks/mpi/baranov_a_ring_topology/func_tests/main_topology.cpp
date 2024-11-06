@@ -134,7 +134,8 @@ TEST(baranov_a_ring_topology, Test_ring_100_double) {
   test1.post_processing();
   if (world.rank() == 0) {
     ASSERT_EQ(true, std::equal(arr.begin(), arr.end(), out.begin(), out.end()));
-  }}
+  }
+}
 
 TEST(baranov_a_ring_topology, Test_ring_1000_double) {
   const int N = 1000;
@@ -203,10 +204,8 @@ TEST(baranov_a_ring_topology, Test_ring_100_uint) {
   test1.pre_processing();
   test1.run();
   test1.post_processing();
-  {
-    if (world.rank() == 0) {
-      ASSERT_EQ(true, std::equal(arr.begin(), arr.end(), out.begin(), out.end());
-    }
+  if (world.rank() == 0) {
+    ASSERT_EQ(true, std::equal(arr.begin(), arr.end(), out.begin(), out.end()));
   }
 }
 
