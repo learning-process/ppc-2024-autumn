@@ -32,10 +32,11 @@ bool sidorina_p_check_lexicographic_order_mpi::TestMPITaskSequential::run() {
   for (size_t i = 0; i < std::min(input_[0].size(), input_[1].size()); ++i) {
     if (input_[0][i] == input_[1][i])
       res = 2;
-    else if (input_[0][i] > input_[1][i]) {
+    if (input_[0][i] > input_[1][i]) {
       res = 1;
       break;
-    } else if (input_[0][i] < input_[1][i]) {
+    }
+    if (input_[0][i] < input_[1][i]) {
       res = 0;
       break;
     }
@@ -103,7 +104,8 @@ bool sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel::run() {
     if (local_input1_[i] > local_input2_[i]) {
       local_res = 1;
       break;
-    } else if (local_input1_[i] < local_input2_[i]) {
+    }
+    if (local_input1_[i] < local_input2_[i]) {
       local_res = 0;
       break;
     }
