@@ -41,7 +41,7 @@ bool strakhov_a_str_char_freq_mpi::StringCharactersFrequencyParallel::pre_proces
   internal_order_test();
   int world_size = world.size();
   unsigned int n = 0;
-  if (world.rank()) {
+  if (world.rank()==0) {
     n = taskData->inputs_count[0];
     input_ = std::vector<char>(taskData->inputs[0], taskData->inputs[0] + n);
     target_ = *reinterpret_cast<char*>(taskData->inputs[1]);
