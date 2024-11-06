@@ -66,10 +66,8 @@ bool strakhov_a_str_char_freq_mpi::StringCharactersFrequencyParallel::pre_proces
 
 bool strakhov_a_str_char_freq_mpi::StringCharactersFrequencyParallel::run() {
   internal_order_test();
-
   local_res = std::count(local_input_.begin(), local_input_.end(), target_);
-  boost::mpi::reduce(world, local_res, res, std::plus<>(), 0);
-
+  boost::mpi::reduce(world, local_res, sum, std::plus<>(), 0);
   return true;
 }
 
@@ -85,8 +83,8 @@ bool strakhov_a_str_char_freq_mpi::StringCharactersFrequencyParallel::post_proce
   internal_order_test();
 
   if (world.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
-    res = res / input_.size();
+    reinterpret_cast<int*>(taskData->outputs[0])[0] = sum;
+    res = sum / input_.size();
   }
 
   return true;

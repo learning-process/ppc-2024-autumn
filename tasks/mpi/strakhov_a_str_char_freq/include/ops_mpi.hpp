@@ -4,6 +4,7 @@
 
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <boost/mpi/environment.hpp>
 #include <memory>
 #include <numeric>
 #include <string>
@@ -43,6 +44,7 @@ class StringCharactersFrequencyParallel : public ppc::core::Task {
   std::vector<char> local_input_;
   char target_;
   float res{};
+  int sum{};
   int local_res{};
   boost::mpi::communicator world;
 };
