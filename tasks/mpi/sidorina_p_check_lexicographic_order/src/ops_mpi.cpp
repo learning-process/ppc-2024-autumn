@@ -99,7 +99,7 @@ bool sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel::validation()
 bool sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   int local_res = 2;
-  for (size_t i = 0; i < std::max(local_input1_.size(),local_input2_.size()); i++) {
+  for (size_t i = 0; i < local_input1_.size(); i++) {
     if (local_input1_[i] > local_input2_[i]) {
       local_res = 1;
       break;
