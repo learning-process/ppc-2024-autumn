@@ -36,9 +36,8 @@ bool varfolomeev_g_matrix_max_rows_vals_seq::MaxInRows::validation() {
 
 bool varfolomeev_g_matrix_max_rows_vals_seq::MaxInRows::run() {
   internal_order_test();
-  int maxInRow = mtr[0][0];
   for (int i = 0; i < size_m; i++) {
-    maxInRow = mtr[i][0];
+    int maxInRow = mtr[i][0];
     for (int j = 0; j < size_n; j++) {
       if (maxInRow < mtr[i][j]) maxInRow = mtr[i][j];
     }
