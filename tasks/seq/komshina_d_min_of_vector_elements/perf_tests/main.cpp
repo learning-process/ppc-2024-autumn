@@ -10,8 +10,7 @@
 
 
 
-TEST(sequential_example_perf_test, test_pipeline_run)
-{
+TEST(komshina_d_min_of_vector_elements_seq, test_pipeline_run) {
   const int count = 5'000'000; 
   const int start = 500; 
   const int min = -10;
@@ -59,7 +58,7 @@ TEST(sequential_example_perf_test, test_pipeline_run)
   ASSERT_EQ(min, out[0]);
 }
 
-TEST(sequential_example_perf_test, test_task_run) {
+TEST(komshina_d_min_of_vector_elements_seq, test_task_run) {
 
  const int count = 5'000'000;
   const int start = 500;

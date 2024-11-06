@@ -2,16 +2,16 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <climits>
+
 #include <random>
 #include <vector>
 
 #include "mpi/komshina_d_min_of_vector_elements/include/ops_mpi.hpp"
 
 namespace komshina_d_min_of_vector_elements_mpi {
-
-
-TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_1) {
+    
+    
+    TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_1) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_min(1, INT_MAX);
@@ -162,12 +162,12 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_4) {
     std::mt19937 gen(dev());
 
     for (int i = 0; i < count - 1; i++) {
-      in[i] = gen() % 1000;  
+      in[i] = gen() % 1000;
     }
 
     in[count - 10] = min;
 
-    global_vec = in;  
+    global_vec = in;
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -200,7 +200,6 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_4) {
   }
 }
 
-
 TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_5) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
@@ -218,12 +217,12 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_5) {
     std::random_device dev;
     std::mt19937 gen(dev());
     for (int i = 0; i < count - 1; ++i) {
-      in[i] = 100 + gen() % 1000;  
+      in[i] = 100 + gen() % 1000;
     }
 
     in[count - 1] = min;
 
-    global_vec = in; 
+    global_vec = in;
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -264,7 +263,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_6) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count = 5000000; 
+    const int count = 5000000;
     const int start = 100;
     const int min = 0;
 
@@ -273,12 +272,12 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_6) {
     std::random_device dev;
     std::mt19937 gen(dev());
     for (int i = 0; i < count - 1; ++i) {
-      in[i] = 100 + gen() % 1000;  
+      in[i] = 100 + gen() % 1000;
     }
 
     in[count - 1] = min;
 
-    global_vec = in; 
+    global_vec = in;
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -328,3 +327,4 @@ TEST(komshina_d_min_of_vector_elements_mpi, Wrong_Input) {
     ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
 }
+}  // namespace komshina_d_min_of_vector_
