@@ -24,10 +24,10 @@ std::vector<char> generateWords(int k) {
 }
 
 int k = 100000;
-std::vector<char> testData = generateWords(k);
+std::vector<char> testDataSeq = generateWords(k);
 
 TEST(chernova_n_word_count_seq, test_pipeline_run) {
-  std::vector<char> in = testData;
+  std::vector<char> in = testDataSeq;
   std::vector<int> out(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -56,7 +56,7 @@ TEST(chernova_n_word_count_seq, test_pipeline_run) {
 }
 
 TEST(chernova_n_word_count_seq, test_task_run) {
-  std::vector<char> in = testData;
+  std::vector<char> in = testDataSeq;
   std::vector<int> out(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();

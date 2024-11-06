@@ -23,11 +23,11 @@ std::vector<char> generateWords(int k) {
 }
 
 const int k = 100000;
-std::vector<char> testData = generateWords(k);
+std::vector<char> testDataParallel = generateWords(k);
 
 TEST(chernova_n_word_count_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  std::vector<char> in = testData;
+  std::vector<char> in = testDataParallel;
   std::vector<int> out(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -62,7 +62,7 @@ TEST(chernova_n_word_count_mpi, test_pipeline_run) {
 
 TEST(chernova_n_word_count_mpi, test_task_run) {
   boost::mpi::communicator world;
-  std::vector<char> in = testData;
+  std::vector<char> in = testDataParallel;
   std::vector<int> out(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();

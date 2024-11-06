@@ -7,6 +7,8 @@
 
 namespace chernova_n_word_count_seq {
 
+  std::vector<char> clean_string(const std::vector<char>& input);
+
 class TestTaskSequential : public ppc::core::Task {
  public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -18,7 +20,6 @@ class TestTaskSequential : public ppc::core::Task {
  private:
   std::vector<char> input_;
   int spaceCount;
-  std::vector<char> clean_string(const std::vector<char>& input);
 };
 
 }  // namespace chernova_n_word_count_seq

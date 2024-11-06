@@ -2,6 +2,20 @@
 
 #include "seq/chernova_n_word_count/include/ops_seq.hpp"
 
+TEST(Sequential_chernova_n_word_count, Test_empty_string) {
+  std::vector<char> in = {};
+  std::vector<int> out(1, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
+
+  chernova_n_word_count_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_FALSE(testTaskSequential.validation());
+}
+
 TEST(Sequential_chernova_n_word_count, Test_five_words) {
   std::vector<char> in;
   std::string testString = "   This is a test phrase";
@@ -17,7 +31,7 @@ TEST(Sequential_chernova_n_word_count, Test_five_words) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   chernova_n_word_count_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_EQ(testTaskSequential.validation(), true);
+  ASSERT_TRUE(testTaskSequential.validation());
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
@@ -39,7 +53,7 @@ TEST(Sequential_chernova_n_word_count, Test_five_words_with_space_and_hyphen) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   chernova_n_word_count_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_EQ(testTaskSequential.validation(), true);
+  ASSERT_TRUE(testTaskSequential.validation());
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
@@ -61,7 +75,7 @@ TEST(Sequential_chernova_n_word_count, Test_ten_words) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   chernova_n_word_count_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_EQ(testTaskSequential.validation(), true);
+  ASSERT_TRUE(testTaskSequential.validation());
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
@@ -83,7 +97,7 @@ TEST(Sequential_chernova_n_word_count, Test_five_words_with_a_lot_of_space) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   chernova_n_word_count_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_EQ(testTaskSequential.validation(), true);
+  ASSERT_TRUE(testTaskSequential.validation());
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
@@ -106,7 +120,7 @@ TEST(Sequential_chernova_n_word_count, Test_twenty_words) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   chernova_n_word_count_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_EQ(testTaskSequential.validation(), true);
+  ASSERT_TRUE(testTaskSequential.validation());
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
@@ -128,7 +142,7 @@ TEST(Sequential_chernova_n_word_count, Test_five_words_with_space_in_the_end) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   chernova_n_word_count_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_EQ(testTaskSequential.validation(), true);
+  ASSERT_TRUE(testTaskSequential.validation());
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();

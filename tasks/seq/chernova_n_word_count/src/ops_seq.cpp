@@ -5,9 +5,7 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
-std::vector<char> chernova_n_word_count_seq::TestTaskSequential::clean_string(const std::vector<char>& input) {
+std::vector<char> chernova_n_word_count_seq::clean_string(const std::vector<char>& input) {
   std::string result;
   std::string str(input.begin(), input.end());
 
@@ -49,7 +47,7 @@ bool chernova_n_word_count_seq::TestTaskSequential::pre_processing() {
 
 bool chernova_n_word_count_seq::TestTaskSequential::validation() {
   internal_order_test();
-  return taskData->inputs_count[0] >= 0 && taskData->outputs_count[0] == 1;
+  return taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1;
 }
 
 bool chernova_n_word_count_seq::TestTaskSequential::run() {

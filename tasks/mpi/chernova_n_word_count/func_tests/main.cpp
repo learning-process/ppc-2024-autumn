@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
@@ -6,6 +5,24 @@
 #include <vector>
 
 #include "mpi/chernova_n_word_count/include/ops_mpi.hpp"
+
+TEST(chernova_n_word_count_mpi, Test_empty_string) {
+  boost::mpi::communicator world;
+  std::vector<char> in = {};
+  std::vector<int> out(1, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t *>(const_cast<char *>(in.data())));
+    taskDataParallel->inputs_count.emplace_back(in.size());
+    taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+    taskDataParallel->outputs_count.emplace_back(out.size());
+  }
+
+  chernova_n_word_count_mpi::TestMPITaskParallel testTaskParallel(taskDataParallel);
+  ASSERT_FALSE(testTaskParallel.validation());
+}
 
 TEST(chernova_n_word_count_mpi, Test_five_words) {
   boost::mpi::communicator world;

@@ -7,8 +7,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
 std::vector<char> chernova_n_word_count_mpi::clean_string(const std::vector<char>& input) {
   std::string result;
   std::string str(input.begin(), input.end());
@@ -51,7 +49,7 @@ bool chernova_n_word_count_mpi::TestMPITaskSequential::pre_processing() {
 
 bool chernova_n_word_count_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  return taskData->inputs_count[0] >= 0 && taskData->outputs_count[0] == 1;
+  return taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1;
 }
 
 bool chernova_n_word_count_mpi::TestMPITaskSequential::run() {
@@ -96,7 +94,6 @@ bool chernova_n_word_count_mpi::TestMPITaskParallel::validation() {
 
 bool chernova_n_word_count_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  std::cout << world.size() << std::endl;
   unsigned long totalSize = 0;
   if (world.rank() == 0) {
     totalSize = input_.size();
