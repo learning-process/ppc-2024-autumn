@@ -8,7 +8,9 @@
 
 #include "mpi/tyshkevich_a_num_of_orderly_violations/include/ops_mpi.hpp"
 
-std::vector<int> tyshkevich_a_num_of_orderly_violations_mpi::getRandomVector(int sz) {
+namespace tyshkevich_a_num_of_orderly_violations_mpi {
+
+std::vector<int> getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
@@ -17,6 +19,8 @@ std::vector<int> tyshkevich_a_num_of_orderly_violations_mpi::getRandomVector(int
   }
   return vec;
 }
+
+}  // namespace tyshkevich_a_num_of_orderly_violations_mpi
 
 std::string VecToStrTY(std::vector<int> &v) {
   std::ostringstream oss;
