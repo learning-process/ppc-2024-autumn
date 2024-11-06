@@ -3,10 +3,6 @@
 #include <algorithm>
 #include <cmath>
 #include <functional>
-#include <numeric>
-#include <random>
-
-using namespace std::chrono_literals;
 
 double shulpin_monte_carlo_integration::fsin(double x) { return std::sin(x); }
 double shulpin_monte_carlo_integration::fcos(double x) { return std::cos(x); }

@@ -3,10 +3,6 @@
 #include <algorithm>
 #include <cmath>
 #include <functional>
-#include <numeric>
-#include <random>
-
-using namespace std::chrono_literals;
 
 double shulpin_monte_carlo_integration::fsin(double x) { return std::sin(x); }
 double shulpin_monte_carlo_integration::fcos(double x) { return std::cos(x); }
@@ -61,6 +57,10 @@ bool shulpin_monte_carlo_integration::TestMPITaskSequential::pre_processing() {
 bool shulpin_monte_carlo_integration::TestMPITaskSequential::validation() {
   internal_order_test();
 
+  if (!taskData || taskData->outputs_count.empty()) {
+    return false;
+  }
+
   return taskData->outputs_count[0] == 1;
 }
 
@@ -101,7 +101,13 @@ bool shulpin_monte_carlo_integration::TestMPITaskParallel::pre_processing() {
 bool shulpin_monte_carlo_integration::TestMPITaskParallel::validation() {
   internal_order_test();
 
-  return world.rank() == 0 ? taskData->outputs_count[0] == 1 : true;
+  if (world.rank() == 0) {
+    if (!taskData || taskData->outputs_count.empty()) {
+      return false;
+    }
+    return taskData->outputs_count[0] == 1;
+  }
+  return true;
 }
 
 bool shulpin_monte_carlo_integration::TestMPITaskParallel::run() {

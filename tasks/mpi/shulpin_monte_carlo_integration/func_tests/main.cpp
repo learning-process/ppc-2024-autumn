@@ -161,3 +161,23 @@ TEST(shulpin_monte_carlo_integration, test_two_sin_cos) {
     ASSERT_LT(std::abs(ref_integral - global_integral), ESTIMATE);
   }
 }
+
+TEST(shulpin_monte_carlo_integration, test_empty_input) {
+  boost::mpi::communicator world;
+
+  std::shared_ptr<ppc::core::TaskData> task_data_sin = std::make_shared<ppc::core::TaskData>();
+
+  shulpin_monte_carlo_integration::TestMPITaskParallel parallel_MC_integral(task_data_sin);
+  parallel_MC_integral.set_MPI(shulpin_monte_carlo_integration::fsin);
+
+  ASSERT_EQ(parallel_MC_integral.validation(), false);
+
+  if (world.rank() == 0) {
+    std::shared_ptr<ppc::core::TaskData> seq_sin_task_data = std::make_shared<ppc::core::TaskData>();
+
+    shulpin_monte_carlo_integration::TestMPITaskSequential seq_MC_integral(seq_sin_task_data);
+    seq_MC_integral.set_seq(shulpin_monte_carlo_integration::fsin);
+
+    ASSERT_EQ(seq_MC_integral.validation(), false);
+  }
+}
