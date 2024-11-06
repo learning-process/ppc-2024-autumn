@@ -27,7 +27,7 @@ bool fyodorov_m_num_of_orderly_violations_mpi::TestMPITaskSequential::pre_proces
   for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
     input_[i] = tmp_ptr[i];
   }
-  // Init value for output
+
   violations_count = 0;
   return true;
 }
@@ -63,7 +63,7 @@ bool fyodorov_m_num_of_orderly_violations_mpi::TestMPITaskParallel::pre_processi
       input_[i] = tmp_ptr[i];
     }
   }
-  // Init value for output
+
   violations_count = 0;
   return true;
 }
@@ -71,7 +71,6 @@ bool fyodorov_m_num_of_orderly_violations_mpi::TestMPITaskParallel::pre_processi
 bool fyodorov_m_num_of_orderly_violations_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    // Check count elements of output
     return taskData->outputs_count[0] == 1;
   }
   return true;

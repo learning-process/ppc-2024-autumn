@@ -15,7 +15,6 @@ TEST(fyodorov_m_num_of_orderly_violations_mpi, test_pipeline_run) {
   std::vector<int> global_vec(count_size_vector, 0);
   std::vector<int32_t> global_violations(1, 0);
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -35,16 +34,13 @@ TEST(fyodorov_m_num_of_orderly_violations_mpi, test_pipeline_run) {
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
@@ -59,7 +55,6 @@ TEST(fyodorov_m_num_of_orderly_violations_mpi, test_task_run) {
   std::vector<int> global_vec(count_size_vector, 0);
   std::vector<int32_t> global_violations(1, 0);
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -79,16 +74,13 @@ TEST(fyodorov_m_num_of_orderly_violations_mpi, test_task_run) {
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
