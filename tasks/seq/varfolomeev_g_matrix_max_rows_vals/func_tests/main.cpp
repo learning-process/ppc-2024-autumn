@@ -136,9 +136,9 @@ TEST(varfolomeev_g_matrix_max_rows_seq, Test_generateMatrix_generator) {
   std::vector<std::vector<int>> matrix = varfolomeev_g_matrix_max_rows_vals_seq::generateMatrix(rows, cols, a, b);
 
   // Check size
-  ASSERT_EQ(matrix.size(), rows);
+  ASSERT_EQ((int)matrix.size(), rows);
   for (int i = 0; i < rows; ++i) {
-    ASSERT_EQ(matrix[i].size(), cols);
+    ASSERT_EQ((int)matrix[i].size(), cols);
   }
 
   // Check diap
