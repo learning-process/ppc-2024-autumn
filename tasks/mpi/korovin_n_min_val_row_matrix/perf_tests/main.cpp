@@ -39,7 +39,25 @@ TEST(korovin_n_min_val_row_matrix_mpi, test_pipeline_run_min) {
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
+  // Create Perf attributes
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 10;
+  const auto t0 = std::chrono::high_resolution_clock::now();
+  perfAttr->current_timer = [&] {
+    auto current_time_point = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
+    return static_cast<double>(duration) * 1e-9;
+  };
+
+  // Create and init perf results
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+
+  // Create Perf analyzer
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
+  perfAnalyzer->task_run(perfAttr, perfResults);
+
   if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
     for (size_t i = 0; i < global_min.size(); ++i) {
       ASSERT_EQ(global_min[i], INT_MIN);
     }
@@ -78,7 +96,25 @@ TEST(korovin_n_min_val_row_matrix_mpi_perf_test, test_task_run_min) {
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
+  // Create Perf attributes
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 10;
+  const auto t0 = std::chrono::high_resolution_clock::now();
+  perfAttr->current_timer = [&] {
+    auto current_time_point = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
+    return static_cast<double>(duration) * 1e-9;
+  };
+
+  // Create and init perf results
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+
+  // Create Perf analyzer
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
+  perfAnalyzer->task_run(perfAttr, perfResults);
+
   if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
     for (size_t i = 0; i < global_min.size(); ++i) {
       ASSERT_EQ(global_min[i], INT_MIN);
     }

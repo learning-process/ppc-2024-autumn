@@ -8,8 +8,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
 bool korovin_n_min_val_row_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
 
@@ -63,6 +61,36 @@ bool korovin_n_min_val_row_matrix_mpi::TestMPITaskSequential::post_processing() 
 bool korovin_n_min_val_row_matrix_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
+  if (world.rank() == 0) {
+    int rows = taskData->inputs_count[0];
+    int cols = taskData->inputs_count[1];
+
+    input_.resize(rows, std::vector<int>(cols));
+    for (int i = 0; i < rows; i++) {
+      int* input_matrix = reinterpret_cast<int*>(taskData->inputs[i]);
+      input_[i].assign(input_matrix, input_matrix + cols);
+    }
+
+    res_.resize(rows);
+  }
+
+  return true;
+}
+
+bool korovin_n_min_val_row_matrix_mpi::TestMPITaskParallel::validation() {
+  internal_order_test();
+
+  if (world.rank() == 0) {
+    return ((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
+            (taskData->inputs_count.size() >= 2 && taskData->inputs_count[0] != 0 && taskData->inputs_count[1] != 0) &&
+            (taskData->outputs_count[0] == taskData->inputs_count[0]));
+  }
+  return true;
+}
+
+bool korovin_n_min_val_row_matrix_mpi::TestMPITaskParallel::run() {
+  internal_order_test();
+
   int rows = 0;
   int cols = 0;
 
@@ -78,12 +106,6 @@ bool korovin_n_min_val_row_matrix_mpi::TestMPITaskParallel::pre_processing() {
   int extra = rows % world.size();
 
   if (world.rank() == 0) {
-    input_.resize(rows, std::vector<int>(cols));
-    for (int i = 0; i < rows; i++) {
-      int* input_matrix = reinterpret_cast<int*>(taskData->inputs[i]);
-      input_[i].assign(input_matrix, input_matrix + cols);
-    }
-
     for (int proc = 1; proc < world.size(); proc++) {
       int start_row = proc * delta + std::min(proc, extra);
       int num_rows = delta + (proc < extra ? 1 : 0);
@@ -104,24 +126,6 @@ bool korovin_n_min_val_row_matrix_mpi::TestMPITaskParallel::pre_processing() {
       world.recv(0, 0, local_input_[r].data(), cols);
     }
   }
-
-  res_.resize(rows);
-  return true;
-}
-
-bool korovin_n_min_val_row_matrix_mpi::TestMPITaskParallel::validation() {
-  internal_order_test();
-
-  if (world.rank() == 0) {
-    return ((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
-            (taskData->inputs_count.size() >= 2 && taskData->inputs_count[0] != 0 && taskData->inputs_count[1] != 0) &&
-            (taskData->outputs_count[0] == taskData->inputs_count[0]));
-  }
-  return true;
-}
-
-bool korovin_n_min_val_row_matrix_mpi::TestMPITaskParallel::run() {
-  internal_order_test();
 
   std::vector<int> local_mins(local_input_.size(), INT_MAX);
   for (size_t i = 0; i < local_input_.size(); i++) {
