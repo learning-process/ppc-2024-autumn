@@ -26,7 +26,7 @@ std::vector<std::vector<int>> generate_random_matrix(size_t rows, size_t cols, s
   }
   return matrix;
 }
-} // namespace sedova_o_max_of_vector_elements_seq_test
+}  // namespace sedova_o_max_of_vector_elements_seq_test
 
 TEST(sedova_o_max_of_vector_elements_seq1, Test_Sum_Empty1) {
   // Create data
