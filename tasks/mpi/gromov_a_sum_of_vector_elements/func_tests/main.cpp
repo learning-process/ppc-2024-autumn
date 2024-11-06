@@ -2,13 +2,13 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <vector>
 #include <random>
+#include <vector>
 
 #include "mpi/gromov_a_sum_of_vector_elements/include/ops_mpi.hpp"
 
 namespace gromov_a_sum_of_vector_elements_mpi {
-  std::vector<int> getRandomVector(int sz) {
+std::vector<int> getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::uniform_int_distribution<int> dist(-100, 100);
