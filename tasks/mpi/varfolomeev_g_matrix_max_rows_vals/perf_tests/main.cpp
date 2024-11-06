@@ -10,14 +10,18 @@
 TEST(mpi_varfolomeev_g_matrix_max_rows_perf_test, test_pipeline_run) {
   int size_m = 1000;
   int size_n = 1000;
+
   boost::mpi::communicator world;
+
   std::vector<int> matrix(size_n * size_m, 1);
   std::vector<int32_t> max_vec(size_m, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   // Setting rows(size_m) and cols(size_n)
+
   taskDataPar->inputs_count.emplace_back(size_m);
   taskDataPar->inputs_count.emplace_back(size_n);
+
   // If curr. proc. is root (r.0), setting the input and output data
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
@@ -39,6 +43,17 @@ TEST(mpi_varfolomeev_g_matrix_max_rows_perf_test, test_pipeline_run) {
   // If curr. proc. is root (r.0), display performance and check the result
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
+
+  // for (int iteration = 1; iteration <= perfAttr->num_running; ++iteration) {
+  //   std::cout << "Iteration " << iteration << " started" << std::endl;
+  //   testMpiTaskParallel->pre_processing();
+  //   testMpiTaskParallel->validation();
+  //   testMpiTaskParallel->run();
+  //   testMpiTaskParallel->post_processing();
+  //   perfAnalyzer->pipeline_run(perfAttr, perfResults);
+  //   std::cout << "Iteration " << iteration << " completed" << std::endl;
+  // }
+
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
     ASSERT_EQ(1, max_vec[0]);
