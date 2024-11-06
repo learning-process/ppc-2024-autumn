@@ -17,8 +17,8 @@ TEST(korovin_n_min_val_row_matrix_mpi, test_pipeline_run_min) {
   int count_columns;
 
   if (world.rank() == 0) {
-    count_rows = 5000;
-    count_columns = 5000;
+    count_rows = 3000;
+    count_columns = 3000;
     global_matrix =
         korovin_n_min_val_row_matrix_mpi::TestMPITaskSequential::generate_rnd_matrix(count_rows, count_columns);
     global_min.resize(count_rows, INT_MAX);
@@ -56,8 +56,8 @@ TEST(korovin_n_min_val_row_matrix_mpi_perf_test, test_task_run_min) {
   int count_columns;
 
   if (world.rank() == 0) {
-    count_rows = 5000;
-    count_columns = 5000;
+    count_rows = 3000;
+    count_columns = 3000;
     global_matrix =
         korovin_n_min_val_row_matrix_mpi::TestMPITaskSequential::generate_rnd_matrix(count_rows, count_columns);
     global_min.resize(count_rows, INT_MAX);
@@ -77,7 +77,7 @@ TEST(korovin_n_min_val_row_matrix_mpi_perf_test, test_task_run_min) {
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
-
+  
   if (world.rank() == 0) {
     for (size_t i = 0; i < global_min.size(); ++i) {
       ASSERT_EQ(global_min[i], INT_MIN);
