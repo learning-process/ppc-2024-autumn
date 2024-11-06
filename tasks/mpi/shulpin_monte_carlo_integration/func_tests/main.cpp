@@ -168,6 +168,8 @@ TEST(shulpin_monte_carlo_integration, test_empty_input) {
   std::shared_ptr<ppc::core::TaskData> task_data_sin = std::make_shared<ppc::core::TaskData>();
 
   shulpin_monte_carlo_integration::TestMPITaskParallel parallel_MC_integral(task_data_sin);
+  task_data_sin->inputs.clear();
+  task_data_sin->outputs_count.clear();
   ASSERT_EQ(parallel_MC_integral.validation(), false);
 
   if (world.rank() == 0) {
