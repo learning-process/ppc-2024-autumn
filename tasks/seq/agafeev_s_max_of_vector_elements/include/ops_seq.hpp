@@ -10,10 +10,10 @@
 namespace agafeev_s_max_of_vector_elements_sequental {
 
 template <typename Type>
-std::vector<Type> genRandMatr(Type row_size, Type column_size);
+std::vector<Type> create_RandomMatrix(Type row_size, Type column_size);
 
 template <typename Type>
-Type getMaxValue(std::vector<Type> matrix);
+Type get_MaxValue(std::vector<Type> matrix);
 
 template <typename Type>
 class MaxMatrixSequential : public ppc::core::Task {

@@ -1,20 +1,17 @@
 #include <gtest/gtest.h>
 
-#include <limits>
-#include <random>
-#include <vector>
-
 //#include "core/task/func_tests/test_task.hpp"
 //#include "core/task/include/task.hpp"
-#include "seq/agafeev_s_max_of_vector_elements/include/header.hpp"
+#include "seq/agafeev_s_max_of_vector_elements/include/ops_seq.hpp"
 
-TEST(agafeev_s_max_of_vector_elements, find_max_in_10x10_matrix) {
-  const int rows = 10;
-  const int columns = 10;
+TEST(agafeev_s_max_of_vector_elements_sequental, find_max_in_10x10_matrix) {
+  const int rows = 3;
+  const int columns = 3;
   auto rand_gen = std::mt19937(1337);
 
   // Create data
-  std::vector<int> in_matrix = agafeev_s_max_of_vector_elements_sequental::genRandMatr<int>(rows, columns);
+
+  std::vector<int> in_matrix = agafeev_s_max_of_vector_elements_sequental::create_RandomMatrix(rows, columns);
   std::vector<int> out(1, 0);
   const int right_answer = std::numeric_limits<int>::max();
   int index = rand_gen() % (rows * columns);

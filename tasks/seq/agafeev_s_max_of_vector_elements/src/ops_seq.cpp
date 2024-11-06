@@ -1,10 +1,7 @@
-#include <limits>
+#include "seq/agafeev_s_max_of_vector_elements/include/ops_seq.hpp"
 
-#include "seq/agafeev_s_max_of_vector_elements/include/header.hpp"
-
-// using namespace std::chrono_literals;
 template <typename Type>
-std::vector<Type> agafeev_s_max_of_vector_elements_sequental::genRandMatr(Type row_size, Type column_size) {
+std::vector<Type> agafeev_s_max_of_vector_elements_sequental::create_RandomMatrix(Type row_size, Type column_size) {
   auto rand_gen = std::mt19937(1337);
   std::vector<Type> matrix(row_size * column_size);
   for (int i = 0; i < matrix.size(); i++) matrix[i] = rand_gen() % 100;
@@ -13,7 +10,7 @@ std::vector<Type> agafeev_s_max_of_vector_elements_sequental::genRandMatr(Type r
 }
 
 template <typename Type>
-Type agafeev_s_max_of_vector_elements_sequental::getMaxValue(std::vector<Type> matrix) {
+Type agafeev_s_max_of_vector_elements_sequental::get_MaxValue(std::vector<Type> matrix) {
   Type max_result = std::numeric_limits<Type>::min();
   for (uint i = 0; i < matrix.size(); i++)
     if (max_result < matrix[i]) max_result = matrix[i];
@@ -43,7 +40,7 @@ template <typename Type>
 bool agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential<Type>::run() {
   internal_order_test();
 
-  maxres_ = getMaxValue(input_);
+  maxres_ = get_MaxValue(input_);
 
   return true;
 }
@@ -52,7 +49,7 @@ template <typename Type>
 bool agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential<Type>::post_processing() {
   internal_order_test();
 
-  maxres_ = reinterpret_cast<int*>(taskData->outputs[0])[0];
+  reinterpret_cast<Type*>(taskData->outputs[0])[0] = maxres_;
 
   return true;
 }
