@@ -14,11 +14,6 @@ bool TestTaskSequential::pre_processing() {
 
 bool TestTaskSequential::validation() { return taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1; }
 
-/*
-bool TestTaskSequential::validation() {
-  return !input_.empty() && taskData->inputs_count[0]>0;
-}
-*/
 bool TestTaskSequential::run() {
   for (size_t i = 1; i < input_.size(); ++i) {
     if (input_[i] < input_[i - 1]) {

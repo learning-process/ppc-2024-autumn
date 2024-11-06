@@ -108,8 +108,3 @@ TEST(fyodorov_m_num_of_orderly_violations_seq, Test_VectorWithRepeatingElements)
   testTaskSequential.post_processing();
   ASSERT_EQ(0, out[0]);
 }
-
-// int main(int argc, char **argv) {
-//   testing::InitGoogleTest(&argc, argv);
-//   return RUN_ALL_TESTS();
-// }
