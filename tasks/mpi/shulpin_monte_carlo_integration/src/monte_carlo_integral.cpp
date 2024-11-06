@@ -58,7 +58,7 @@ bool shulpin_monte_carlo_integration::TestMPITaskSequential::validation() {
   if (!taskData || taskData->outputs_count.empty()) {
     return false;
   }
-  
+
   internal_order_test();
 
   return taskData->outputs_count[0] == 1;
