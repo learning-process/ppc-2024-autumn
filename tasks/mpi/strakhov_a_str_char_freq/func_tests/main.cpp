@@ -118,7 +118,6 @@ TEST(strakhov_a_str_char_freq_mpi, test_empty) {
   ASSERT_EQ(global_count[0], 0);
 }
 
-
 TEST(strakhov_a_str_char_freq_mpi, test_null) {
   boost::mpi::communicator world;
   std::vector<char> global_str;

@@ -14,8 +14,7 @@ bool strakhov_a_str_char_freq_mpi::StringCharactersFrequencySequentional::pre_pr
   internal_order_test();
   input_ = std::vector<char>(taskData->inputs_count[0]);
   input_.assign(reinterpret_cast<char*>(taskData->inputs[0]),
-                reinterpret_cast<char*>(taskData->inputs[0]) 
-                + taskData->inputs_count[0]);
+                reinterpret_cast<char*>(taskData->inputs[0]) + taskData->inputs_count[0]);
   target_ = *reinterpret_cast<char*>(taskData->inputs[1]);
   res = 0;
   return true;
@@ -33,7 +32,6 @@ bool strakhov_a_str_char_freq_mpi::StringCharactersFrequencySequentional::run() 
 }
 
 bool strakhov_a_str_char_freq_mpi::StringCharactersFrequencySequentional::post_processing() {
-
   reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
   return true;
 }
@@ -51,7 +49,6 @@ bool strakhov_a_str_char_freq_mpi::StringCharactersFrequencyParallel::pre_proces
   boost::mpi::broadcast(world, target_, 0);
   unsigned int substring_size = n / world_size;
 
-
   unsigned int overflow_size = n % world_size;
   std::vector<int> send_counts(world_size, substring_size + (overflow_size > 0 ? 1 : 0));
   std::vector<int> displacements(world_size, 0);
@@ -60,9 +57,7 @@ bool strakhov_a_str_char_freq_mpi::StringCharactersFrequencyParallel::pre_proces
     displacements[i] = displacements[i - 1] + send_counts[i - 1];
   }
   local_input_.resize(send_counts[world.rank()]);
-  boost::mpi::scatterv(world, input_.data(),
-      send_counts, displacements, local_input_.data(),
-      send_counts[world.rank()],
+  boost::mpi::scatterv(world, input_.data(), send_counts, displacements, local_input_.data(), send_counts[world.rank()],
                        0);
 
   return true;

@@ -20,7 +20,6 @@ class StringCharactersFrequencySequentional : public ppc::core::Task {
   bool pre_processing() override;
   bool validation() override;
 
-
   bool run() override;
   bool post_processing() override;
 
