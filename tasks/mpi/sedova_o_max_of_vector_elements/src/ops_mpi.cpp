@@ -15,10 +15,12 @@ int find_max_of_matrix(std::vector<int> &matrix) {
 
 bool sedova_o_max_of_vector_elements_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
-  input_ = std::vector<std::vector<int>>(taskData->inputs_count[0], std::vector<int>(taskData->inputs_count[1]));
-  for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
+  unsigned int rows = taskData->inputs_count[0];
+  unsigned int cols = taskData->inputs_count[1];
+  input_ = std::vector<std::vector<int>>(rows, std::vector<int>(cols));
+  for (unsigned int i = 0; i < rows; i++) {
     auto *tmp_ptr = reinterpret_cast<int *>(taskData->inputs[i]);
-    std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[1], input_[i].begin());
+    std::copy(tmp_ptr, tmp_ptr + cols, input_[i].begin());
   }
   res_ = INT_MIN;
   return true;

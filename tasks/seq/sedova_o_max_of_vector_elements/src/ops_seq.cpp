@@ -14,11 +14,13 @@ int sedova_o_max_of_vector_elements_seq::find_max_of_matrix(std::vector<int> mat
 
 bool sedova_o_max_of_vector_elements_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
-  input_ = std::vector<int>(taskData->inputs_count[0] * taskData->inputs_count[1]);
-  for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
+  unsigned int rows = taskData->inputs_count[0];
+  unsigned int cols = taskData->inputs_count[1];
+  input_ = std::vector<int>(rows * cols);
+  for (unsigned int i = 0; i < rows; i++) {
     auto* input_data = reinterpret_cast<int*>(taskData->inputs[i]);
     for (unsigned int j = 0; j < taskData->inputs_count[1]; j++) {
-      input_[i * taskData->inputs_count[1] + j] = input_data[j];
+      input_[i * cols + j] = input_data[j];
     }
   }
   return true;
