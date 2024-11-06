@@ -55,11 +55,11 @@ bool shulpin_monte_carlo_integration::TestMPITaskSequential::pre_processing() {
 }
 
 bool shulpin_monte_carlo_integration::TestMPITaskSequential::validation() {
-  internal_order_test();
-
   if (!taskData || taskData->outputs_count.empty()) {
     return false;
   }
+  
+  internal_order_test();
 
   return taskData->outputs_count[0] == 1;
 }
@@ -99,14 +99,16 @@ bool shulpin_monte_carlo_integration::TestMPITaskParallel::pre_processing() {
 }
 
 bool shulpin_monte_carlo_integration::TestMPITaskParallel::validation() {
-  internal_order_test();
-
   if (world.rank() == 0) {
     if (!taskData || taskData->outputs_count.empty()) {
       return false;
     }
+
+    internal_order_test();
+
     return taskData->outputs_count[0] == 1;
   }
+
   return true;
 }
 
