@@ -44,16 +44,6 @@ TEST(mpi_varfolomeev_g_matrix_max_rows_perf_test, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
 
-  // for (int iteration = 1; iteration <= perfAttr->num_running; ++iteration) {
-  //   std::cout << "Iteration " << iteration << " started" << std::endl;
-  //   testMpiTaskParallel->pre_processing();
-  //   testMpiTaskParallel->validation();
-  //   testMpiTaskParallel->run();
-  //   testMpiTaskParallel->post_processing();
-  //   perfAnalyzer->pipeline_run(perfAttr, perfResults);
-  //   std::cout << "Iteration " << iteration << " completed" << std::endl;
-  // }
-
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
     ASSERT_EQ(1, max_vec[0]);
