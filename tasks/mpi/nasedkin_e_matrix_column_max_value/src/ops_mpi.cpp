@@ -63,6 +63,12 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::pre_processing
   if (world.rank() == 0) {
     numCols = taskData->inputs_count[1];
     numRows = taskData->inputs_count[2];
+
+    delta = numCols / world.size();
+    extra = numCols % world.size();
+    if (extra != 0) {
+      delta += 1;
+    }
   }
 
   if (world.rank() == 0) {
@@ -77,6 +83,10 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::pre_processing
   }
 
   result_ = std::vector<int>(numCols, 0);
+
+  // Broadcast delta and extra
+  broadcast(world, delta, 0);
+  broadcast(world, extra, 0);
 
   return true;
 }
@@ -100,19 +110,11 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::validation() {
 bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-  broadcast(world, numCols, 0);
-  broadcast(world, numRows, 0);
-
   if (world.rank() != 0) {
     inputMatrix_ = std::vector<int>(numCols * numRows, 0);
   }
   broadcast(world, inputMatrix_.data(), numCols * numRows, 0);
 
-  int delta = numCols / world.size();
-  int extra = numCols % world.size();
-  if (extra != 0) {
-    delta += 1;
-  }
   int startCol = delta * world.rank();
   int lastCol = std::min(numCols, delta * (world.rank() + 1));
   std::vector<int> localMax;
