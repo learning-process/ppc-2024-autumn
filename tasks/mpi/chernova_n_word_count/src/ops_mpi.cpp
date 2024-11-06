@@ -81,6 +81,7 @@ bool chernova_n_word_count_mpi::TestMPITaskParallel::pre_processing() {
       input_[i] = tmp_ptr[i];
     }
     input_ = clean_string(input_);
+    taskData->inputs_count[0] = input_.size();
   }
   return true;
 }
@@ -95,6 +96,7 @@ bool chernova_n_word_count_mpi::TestMPITaskParallel::validation() {
 
 bool chernova_n_word_count_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+  std::cout << world.size() << std::endl;
   unsigned long totalSize = 0;
   if (world.rank() == 0) {
     totalSize = input_.size();
@@ -122,7 +124,6 @@ bool chernova_n_word_count_mpi::TestMPITaskParallel::run() {
       world.recv(0, 0, local_input_.data(), actualPartSize);
     }
   }
-  local_input_ = clean_string(local_input_);
   localSpaceCount = 0;
   for (std::size_t i = 0; i < local_input_.size(); ++i) {
     if (local_input_[i] == ' ') {
