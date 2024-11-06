@@ -77,7 +77,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_generateMatrix) {
   std::vector<std::vector<int>> matrix = varfolomeev_g_matrix_max_rows_vals_mpi::generateMatrix(rows, cols, a, b);
 
   // Проверка размера матрицы
-  ASSERT_EQ(matrix.size(), rows);
+  ASSERT_EQ((int)matrix.size(), rows);
   for (int i = 0; i < rows; ++i) {
     ASSERT_EQ((int)matrix[i].size(), cols);
   }
