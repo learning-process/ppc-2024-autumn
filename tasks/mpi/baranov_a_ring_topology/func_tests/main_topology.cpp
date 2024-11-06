@@ -7,11 +7,11 @@ typename std::enable_if<std::is_arithmetic<tp>::value>::type get_rnd_vec(std::ve
   std::default_random_engine reng(rd());
 
   if constexpr (std::is_integral<tp>::value) {
-    // Для целых чисел
+    // Р”Р»СЏ С†РµР»С‹С… С‡РёСЃРµР»
     std::uniform_int_distribution<tp> dist(0, vec.size());
     std::generate(vec.begin(), vec.end(), [&dist, &reng] { return dist(reng); });
   } else if constexpr (std::is_floating_point<tp>::value) {
-    // Для вещественных чисел
+    // Р”Р»СЏ РІРµС‰РµСЃС‚РІРµРЅРЅС‹С… С‡РёСЃРµР»
     std::uniform_real_distribution<tp> dist(0.0, vec.size());
     std::generate(vec.begin(), vec.end(), [&dist, &reng] { return dist(reng); });
   }

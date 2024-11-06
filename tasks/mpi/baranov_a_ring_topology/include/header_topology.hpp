@@ -23,7 +23,7 @@ class ring_topology : public ppc::core::Task {
   std::vector<iotype> input_;
 
   std ::vector<iotype> output_;
-  size_t vec_size_;
+  int vec_size_;
   boost::mpi::communicator world;
 };
 }  // namespace baranov_a_ring_topology_mpi
