@@ -59,7 +59,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_getRandomVector_generator) {
   std::vector<int> vec = varfolomeev_g_matrix_max_rows_vals_mpi::getRandomVector(sz);
 
   // Проверка размера вектора
-  ASSERT_EQ(vec.size(), sz);
+  ASSERT_EQ((int)vec.size(), sz);
 
   // Проверка, что все элементы находятся в диапазоне от -100 до 99
   for (int i = 0; i < sz; ++i) {
@@ -79,7 +79,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_generateMatrix) {
   // Проверка размера матрицы
   ASSERT_EQ(matrix.size(), rows);
   for (int i = 0; i < rows; ++i) {
-    ASSERT_EQ(matrix[i].size(), cols);
+    ASSERT_EQ((int)matrix[i].size(), cols);
   }
 
   // Проверка, что все элементы находятся в диапазоне от a до b
