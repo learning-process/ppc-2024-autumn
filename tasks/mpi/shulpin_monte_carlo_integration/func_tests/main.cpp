@@ -165,17 +165,15 @@ TEST(shulpin_monte_carlo_integration, test_two_sin_cos) {
 TEST(shulpin_monte_carlo_integration, test_empty_input) {
   boost::mpi::communicator world;
 
-  std::shared_ptr<ppc::core::TaskData> task_data_sin = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> empty_task_data = std::make_shared<ppc::core::TaskData>();
 
-  shulpin_monte_carlo_integration::TestMPITaskParallel parallel_MC_integral(task_data_sin);
-  task_data_sin->inputs.clear();
-  task_data_sin->outputs_count.clear();
-  ASSERT_EQ(parallel_MC_integral.validation(), false);
+  shulpin_monte_carlo_integration::TestMPITaskParallel parallel_empty_task(empty_task_data);
+
+  ASSERT_EQ(parallel_empty_task.validation(), false);
 
   if (world.rank() == 0) {
-    std::shared_ptr<ppc::core::TaskData> seq_sin_task_data = std::make_shared<ppc::core::TaskData>();
+    shulpin_monte_carlo_integration::TestMPITaskSequential seq_empty_task(empty_task_data);
 
-    shulpin_monte_carlo_integration::TestMPITaskSequential seq_MC_integral(seq_sin_task_data);
-    ASSERT_EQ(seq_MC_integral.validation(), false);
+    ASSERT_EQ(seq_empty_task.validation(), false);
   }
 }
