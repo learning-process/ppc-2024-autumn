@@ -37,22 +37,13 @@ bool varfolomeev_g_matrix_max_rows_vals_seq::MaxInRows::validation() {
 bool varfolomeev_g_matrix_max_rows_vals_seq::MaxInRows::run() {
   internal_order_test();
   int maxInRow = mtr[0][0];
-  for (int i = 0; i < size_m; i++){
+  for (int i = 0; i < size_m; i++) {
     maxInRow = mtr[i][0];
-    for (int j = 0; j < size_n; j++){
+    for (int j = 0; j < size_n; j++) {
       if (maxInRow < mtr[i][j]) maxInRow = mtr[i][j];
     }
     res_vec[i] = maxInRow;
   }
-
-  // for (int i = 0; i < size_m; i++) {
-  //   int max = mtr[0];
-  //   for (size_t i = 1; i < vec.size(); i++) {
-  //     if (max < vec[i]) max = vec[i];
-  //   }
-  //   return max;
-  //   res_vec[i] = searchMaxInVec(mtr[i]);
-  // }
   return true;
 }
 
