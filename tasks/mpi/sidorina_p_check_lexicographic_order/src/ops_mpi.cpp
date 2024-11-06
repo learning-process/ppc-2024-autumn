@@ -30,8 +30,7 @@ bool sidorina_p_check_lexicographic_order_mpi::TestMPITaskSequential::validation
 bool sidorina_p_check_lexicographic_order_mpi::TestMPITaskSequential::run() {
   internal_order_test();
   for (size_t i = 0; i < std::min(input_[0].size(), input_[1].size()); ++i) {
-    if (input_[0][i] == input_[1][i])
-      res = 2;
+    if (input_[0][i] == input_[1][i]) res = 2;
     if (input_[0][i] > input_[1][i]) {
       res = 1;
       break;
