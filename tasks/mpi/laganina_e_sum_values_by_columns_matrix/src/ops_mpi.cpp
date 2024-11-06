@@ -155,25 +155,25 @@ bool laganina_e_sum_values_by_columns_matrix_mpi::TestMPITaskParallel::run() {
   unsigned int id = world.rank() * local_input_.size() / n;
 
   for (unsigned int i = 0; i < id; i++) {
-    reduce(world, 0, res_[i], std::plus<int>(), 0);
+    reduce(world, 0, res_[i], std::plus(), 0);
   }
 
   delta = std::min(local_input_.size(), n - world.rank() * local_input_.size() % n);
   int l_res = std::accumulate(local_input_.begin(), local_input_.begin() + delta, 0);
-  reduce(world, l_res, res_[id], std::plus<int>(), 0);
+  reduce(world, l_res, res_[id], std::plus(), 0);
   id++;
   unsigned int k = 0;
 
   while (local_input_.begin() + delta + k * n < local_input_.end() - last) {
     l_res = std::accumulate(local_input_.begin() + delta + k * n,
                             std::min(local_input_.end(), local_input_.begin() + delta + (k + 1) * n), 0);
-    reduce(world, l_res, res_[id], std::plus<int>(), 0);
+    reduce(world, l_res, res_[id], std::plus(), 0);
     k++;
     id++;
   }
 
   for (unsigned int i = id; i < res_.size(); i++) {
-    reduce(world, 0, res_[i], std::plus<int>(), 0);
+    reduce(world, 0, res_[i], std::plus(), 0);
   }
 
   return true;
