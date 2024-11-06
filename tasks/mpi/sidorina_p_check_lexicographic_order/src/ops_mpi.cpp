@@ -12,7 +12,8 @@ using namespace std::chrono_literals;
 
 bool sidorina_p_check_lexicographic_order_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
-  input_.resize(taskData->inputs_count[0], std::vector<char>(taskData->inputs_count[1]));
+  input_.resize(taskData->inputs_count[0]);
+  for (unsigned int i = 0; i < 2; i++) input_[i].resize(taskData->inputs_count[i + 1]);
   for (size_t i = 0; i < taskData->inputs_count[0]; ++i) {
     const char* tmp_ptr = reinterpret_cast<const char*>(taskData->inputs[i]);
     std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[1], input_[i].begin());
@@ -29,11 +30,21 @@ bool sidorina_p_check_lexicographic_order_mpi::TestMPITaskSequential::validation
 bool sidorina_p_check_lexicographic_order_mpi::TestMPITaskSequential::run() {
   internal_order_test();
   for (size_t i = 0; i < std::min(input_[0].size(), input_[1].size()); ++i) {
-    if (input_[0][i] > input_[1][i]) {
+    if (input_[0][i] == input_[1][i]) res = 2;
+    else if (input_[0][i] > input_[1][i]) {
       res = 1;
       break;
+    } else if (input_[0][i] < input_[1][i]) {
+      res = 0;
+      break;
     }
-    if (input_[0][i] < input_[1][i]) break;
+  }
+  if (res == 2 && input_[0].size() != input_[1].size()) {
+    if (input_[0].size() > input_[1].size()) {
+      res = 1;
+    } else {
+      res = 0;
+    }
   }
   return true;
 }
@@ -48,11 +59,12 @@ bool sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel::pre_processi
   internal_order_test();
   unsigned int delta = 0;
   if (world.rank() == 0) {
-    delta = taskData->inputs_count[1] / world.size();
+    delta = std::min(taskData->inputs_count[1], taskData->inputs_count[2]) / world.size();
   }
   broadcast(world, delta, 0);
   if (world.rank() == 0) {
-    input_.resize(taskData->inputs_count[0], std::vector<char>(taskData->inputs_count[1]));
+    input_.resize(taskData->inputs_count[0]);
+    for (unsigned int i = 0; i < 2; i++) input_[i].resize(taskData->inputs_count[i+1]);
     for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
       auto* tmp_ptr = reinterpret_cast<char*>(taskData->inputs[i]);
       std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[1], input_[i].begin());
@@ -82,15 +94,15 @@ bool sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel::validation()
   }
   return true;
 }
+
 bool sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   int local_res = 2;
-  for (size_t i = 0; i < local_input1_.size(); ++i) {
+  for (size_t i = 0; i < local_input1_.size(); i++) {
     if (local_input1_[i] > local_input2_[i]) {
       local_res = 1;
       break;
-    }
-    if (local_input1_[i] < local_input2_[i]) {
+    } else if (local_input1_[i] < local_input2_[i]) {
       local_res = 0;
       break;
     }
@@ -102,6 +114,13 @@ bool sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel::run() {
       if (result != 2) {
         res = result;
         break;
+      }
+    }
+    if (res == 2 && input_[0].size() != input_[1].size()) {
+      if (input_[0].size() > input_[1].size()) {
+        res = 1;
+      } else {
+        res = 0;
       }
     }
   }

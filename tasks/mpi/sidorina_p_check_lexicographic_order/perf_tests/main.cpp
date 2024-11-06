@@ -9,8 +9,8 @@
 
 TEST(sidorina_p_check_lexicographic_order_mpi, Test_0) {
   boost::mpi::communicator world;
-  std::vector<char> str1(40000000, 'e');
-  std::vector<char> str2(39999999, 'e');
+  std::vector<char> str1(400000, 'e');
+  std::vector<char> str2(399999, 'e');
   str2.push_back('f');
   std::vector<std::vector<char>> str_ = {str1, str2};
   std::vector<int32_t> res(1, 0);
@@ -20,11 +20,13 @@ TEST(sidorina_p_check_lexicographic_order_mpi, Test_0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(str_[1].data()));
     taskDataPar->inputs_count.emplace_back(str_.size());
     taskDataPar->inputs_count.emplace_back(str_[0].size());
+    taskDataPar->inputs_count.emplace_back(str_[1].size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size());
   }
   auto testMpiTaskParallel =
       std::make_shared<sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel>(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
@@ -45,8 +47,8 @@ TEST(sidorina_p_check_lexicographic_order_mpi, Test_0) {
 }
 TEST(sidorina_p_check_lexicographic_order_mpi, Test_1) {
   boost::mpi::communicator world;
-  std::vector<char> str1(40000000, 'f');
-  std::vector<char> str2(39999999, 'f');
+  std::vector<char> str1(400000, 'f');
+  std::vector<char> str2(399999, 'f');
   str2.push_back('a');
   std::vector<std::vector<char>> str_ = {str1, str2};
   std::vector<int32_t> res(1, 0);
@@ -57,12 +59,14 @@ TEST(sidorina_p_check_lexicographic_order_mpi, Test_1) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(str_[1].data()));
     taskDataPar->inputs_count.emplace_back(str_.size());
     taskDataPar->inputs_count.emplace_back(str_[0].size());
+    taskDataPar->inputs_count.emplace_back(str_[1].size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size());
   }
 
   auto testMpiTaskParallel =
       std::make_shared<sidorina_p_check_lexicographic_order_mpi::TestMPITaskParallel>(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
