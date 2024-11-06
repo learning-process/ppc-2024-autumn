@@ -46,13 +46,13 @@ bool MPIIntegralCalculator::run() {
     std::cerr << "Process " << world.rank() << ": Invalid configuration (cnt_of_splits, h, or range a-b)" << std::endl;
     return false;
   }
-  std::cout << "Process ";
+  std::cerr << "Process ";
   // Делим работу между процессами
   int splits_per_proc = cnt_of_splits / world.size();
   int remaining_splits = cnt_of_splits % world.size();
   int start = world.rank() * splits_per_proc + std::min(world.rank(), remaining_splits);
   int end = start + splits_per_proc + (world.rank() < remaining_splits ? 1 : 0);
-  std::cout << "Process1 ";
+  std::cerr << "Process1 ";
   // Проверка диапазона
   if (start >= end) {
     std::cerr << "Process " << world.rank() << " has no work to do (start >= end)." << std::endl;
@@ -66,7 +66,7 @@ bool MPIIntegralCalculator::run() {
     }
     local_res = local_result * h;  // Умножаем на ширину подынтервала
   }
-  std::cout << "Process2 ";
+  std::cerr << "Process2 ";
   // Сбор результатов, проверка глобальной синхронизации
   double local_global_res = 0.0;
   MPI_Reduce(&local_res, &local_global_res, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
@@ -75,7 +75,7 @@ bool MPIIntegralCalculator::run() {
     global_res = local_global_res;
     std::cout << "Root process has global result after reduction: " << global_res << std::endl;
   }
-  std::cout << "Process4 ";
+  std::cerr << "Process4 ";
   return true;
 }
 
