@@ -127,6 +127,29 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_same_values) {
   }
 }
 
+TEST(varfolomeev_g_matrix_max_rows_seq, Test_generateMatrix_generator) {
+  int rows = 5;
+  int cols = 10;
+  int a = -50;
+  int b = 50;
+
+  std::vector<std::vector<int>> matrix = varfolomeev_g_matrix_max_rows_vals_seq::generateMatrix(rows, cols, a, b);
+
+  // Check size
+  ASSERT_EQ(matrix.size(), rows);
+  for (int i = 0; i < rows; ++i) {
+    ASSERT_EQ(matrix[i].size(), cols);
+  }
+
+  // Check diap
+  for (int i = 0; i < rows; ++i) {
+    for (int j = 0; j < cols; ++j) {
+      ASSERT_GE(matrix[i][j], a);
+      ASSERT_LE(matrix[i][j], b);
+    }
+  }
+}
+
 TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_10x10) {
   int rows = 10;
   int cols = 10;
