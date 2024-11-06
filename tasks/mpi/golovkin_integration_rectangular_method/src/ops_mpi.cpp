@@ -24,7 +24,6 @@ bool MPIIntegralCalculator::validation() {
   return true;
 }
 
-
 bool MPIIntegralCalculator::pre_processing() {
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -51,25 +50,25 @@ bool MPIIntegralCalculator::pre_processing() {
 }
 
 bool MPIIntegralCalculator::run() {
-  int rank, size;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  int size;
+
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
   // Проверка, что cnt_of_splits, a, и h инициализированы и имеют корректные значения
   if (cnt_of_splits <= 0 || h <= 0.0 || a >= b) {
-    std::cerr << "Process " << rank << ": Invalid configuration (cnt_of_splits, h, or range a-b)" << std::endl;
+    std::cerr << "Process " << world.rank() << ": Invalid configuration (cnt_of_splits, h, or range a-b)" << std::endl;
     return false;
   }
 
   // Делим работу между процессами
   int splits_per_proc = cnt_of_splits / size;
   int remaining_splits = cnt_of_splits % size;
-  int start = rank * splits_per_proc + std::min(rank, remaining_splits);
-  int end = start + splits_per_proc + (rank < remaining_splits ? 1 : 0);
+  int start = world.rank() * splits_per_proc + std::min(world.rank(), remaining_splits);
+  int end = start + splits_per_proc + (world.rank() < remaining_splits ? 1 : 0);
 
   // Проверка диапазона
   if (start >= end) {
-    std::cerr << "Process " << rank << " has no work to do (start >= end)." << std::endl;
+    std::cerr << "Process " << world.rank() << " has no work to do (start >= end)." << std::endl;
     local_res = 0.0;  // Устанавливаем local_res для процесса без работы
   } else {
     // Вычисление локального результата
@@ -85,7 +84,7 @@ bool MPIIntegralCalculator::run() {
   double local_global_res = 0.0;
   MPI_Reduce(&local_res, &local_global_res, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
-  if (rank == 0) {
+  if (world.rank() == 0) {
     global_res = local_global_res;
     std::cout << "Root process has global result after reduction: " << global_res << std::endl;
   }
