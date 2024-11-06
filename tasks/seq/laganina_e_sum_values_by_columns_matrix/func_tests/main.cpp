@@ -9,7 +9,7 @@ TEST(laganina_e_sum_values_by_columns_matrix_seq, Test_2_2_matrix) {
   int n = 2;
   int m = 2;
 
-  // Create data
+  // Create data 555
   std::vector<int> in = {1, 2, 1, 2};
   std::vector<int> emp(m, 0);
   std::vector<int> out = {2, 4};
