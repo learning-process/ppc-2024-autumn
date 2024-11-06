@@ -1,20 +1,5 @@
 #include "seq/chastov_v_count_words_in_line/include/ops_seq.hpp"
 
-std::vector<char> createTestInput(int n) {
-  std::vector<char> wordCountInput;
-  std::string firstSentence = "Hello my name is Slava. Now I am a third year student at Lobachevsky University. ";
-  for (int i = 0; i < n - 1; i++) {
-    for (unsigned long int j = 0; j < firstSentence.length(); j++) {
-      wordCountInput.push_back(firstSentence[j]);
-    }
-  }
-  std::string lastSentence = "This is a proposal to evaluate the performance of a word counting algorithm via MPI.";
-  for (unsigned long int j = 0; j < lastSentence.length(); j++) {
-    wordCountInput.push_back(lastSentence[j]);
-  }
-  return wordCountInput;
-}
-
 bool chastov_v_count_words_in_line_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   inputString = std::vector<char>(taskData->inputs_count[0]);

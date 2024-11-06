@@ -2,7 +2,17 @@
 #include <gtest/gtest.h>
 
 #include "mpi/chastov_v_count_words_in_line/include/ops_mpi.hpp"
-#include "mpi/chastov_v_count_words_in_line/src/ops_mpi.cpp"
+
+std::vector<char> createTestInput(int n) {
+  std::vector<char> wordCountInput;
+  std::string testString = "This is a proposal to evaluate the performance of a word counting algorithm via MPI. ";
+  for (int i = 0; i < n; i++) {
+    for (unsigned long int j = 0; j < testString.length(); j++) {
+      wordCountInput.push_back(testString[j]);
+    }
+  }
+  return wordCountInput;
+}
 
 // Test to check the behavior of the MPI word counting function with an empty string
 TEST(chastov_v_count_words_in_line_mpi, empty_string) {

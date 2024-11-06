@@ -5,7 +5,17 @@
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/chastov_v_count_words_in_line/include/ops_mpi.hpp"
-#include "mpi/chastov_v_count_words_in_line/src/ops_mpi.cpp"
+
+std::vector<char> createTestInput(int n) {
+  std::vector<char> wordCountInput;
+  std::string testString = "This is a proposal to evaluate the performance of a word counting algorithm via MPI. ";
+  for (int i = 0; i < n; i++) {
+    for (unsigned long int j = 0; j < testString.length(); j++) {
+      wordCountInput.push_back(testString[j]);
+    }
+  }
+  return wordCountInput;
+}
 
 std::vector<char> wordCountInput = createTestInput(2000);
 
