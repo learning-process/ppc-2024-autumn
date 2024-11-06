@@ -57,7 +57,7 @@ bool shulpin_monte_carlo_integration::TestMPITaskSequential::pre_processing() {
 bool shulpin_monte_carlo_integration::TestMPITaskSequential::validation() {
   internal_order_test();
 
-  if (!taskData || taskData->outputs_count.empty()) {
+  if (taskData->outputs_count.empty()) {
     return false;
   }
 
@@ -102,7 +102,7 @@ bool shulpin_monte_carlo_integration::TestMPITaskParallel::validation() {
   internal_order_test();
 
   if (world.rank() == 0) {
-    if (!taskData || taskData->outputs_count.empty()) {
+    if (taskData->outputs_count.empty()) {
       return false;
     }
 
