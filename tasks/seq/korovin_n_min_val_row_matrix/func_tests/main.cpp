@@ -100,7 +100,7 @@ TEST(korovin_n_min_val_row_matrix_seq, find_min_val_in_row_100x500_matrix) {
 
 TEST(korovin_n_min_val_row_matrix_seq, find_min_val_in_row_3000x3000_matrix) {
   const int rows = 3000;
-  const int cols = 3000; 
+  const int cols = 3000;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
