@@ -33,6 +33,7 @@ bool strakhov_a_str_char_freq_mpi::StringCharactersFrequencySequentional::run() 
 
 bool strakhov_a_str_char_freq_mpi::StringCharactersFrequencySequentional::post_processing() {
   reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+  res = res / input_.size();
   return true;
 }
 
@@ -85,6 +86,7 @@ bool strakhov_a_str_char_freq_mpi::StringCharactersFrequencyParallel::post_proce
 
   if (world.rank() == 0) {
     reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+    res = res / input_.size();
   }
 
   return true;

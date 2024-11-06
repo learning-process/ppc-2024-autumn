@@ -26,7 +26,7 @@ class StringCharactersFrequencySequentional : public ppc::core::Task {
  private:
   std::vector<char> input_;
   char target_;
-  int res{};
+  float res{};
 };
 
 class StringCharactersFrequencyParallel : public ppc::core::Task {
@@ -42,7 +42,7 @@ class StringCharactersFrequencyParallel : public ppc::core::Task {
   std::vector<char> input_;
   std::vector<char> local_input_;
   char target_;
-  int res{};
+  float res{};
   int local_res{};
   boost::mpi::communicator world;
 };
