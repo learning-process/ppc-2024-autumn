@@ -27,6 +27,7 @@ std::vector<std::vector<int>> generate_random_matrix(size_t rows, size_t cols, s
   }
   return matrix;
 }
+}
 
 TEST(sedova_o_max_of_vector_elements_seq, test_pipeline_run_small_matrix) {
   std::random_device dev;
@@ -37,7 +38,7 @@ TEST(sedova_o_max_of_vector_elements_seq, test_pipeline_run_small_matrix) {
   int value = 5000;
 
   std::vector<std::vector<int>> in;
-  in = generate_random_matrix(size, size, value);
+  in = sedova_o_max_of_vector_elements_seq_test::generate_random_matrix(size, size, value);
   std::vector<int32_t> out(1, in[0][0]);
 
   size_t rows = random() % size;
@@ -79,7 +80,7 @@ TEST(sedova_o_max_of_vector_elements_seq, test_pipeline_run_large_matrix) {
   int value = 50000;
 
   std::vector<std::vector<int>> in;
-  in = generate_random_matrix(size, size, value);
+  in = sedova_o_max_of_vector_elements_seq_test::generate_random_matrix(size, size, value);
   std::vector<int32_t> out(1, in[0][0]);
 
   size_t rows = random() % size;
@@ -121,7 +122,7 @@ TEST(sedova_o_max_of_vector_elements_seq, test_pipeline_run_different_values) {
   int value = 15000;
 
   std::vector<std::vector<int>> in;
-  in = generate_random_matrix(size, size, value);
+  in = sedova_o_max_of_vector_elements_seq_test::generate_random_matrix(size, size, value);
   std::vector<int32_t> out(1, in[0][0]);
 
   size_t rows = random() % size;
@@ -153,4 +154,3 @@ TEST(sedova_o_max_of_vector_elements_seq, test_pipeline_run_different_values) {
   ppc::core::Perf::print_perf_statistic(perfResults);
   ASSERT_EQ(value + 1, out[0]);
 }
-}  // namespace sedova_o_max_of_vector_elements_seq

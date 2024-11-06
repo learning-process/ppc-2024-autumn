@@ -25,6 +25,7 @@ std::vector<std::vector<int>> generate_random_matrix(size_t rows, size_t cols, s
   }
   return matrix;
 }
+}
 
 TEST(sedova_o_max_of_vector_elements_mpi1, test_pipeline_run) {
   size_t rows = 7000;
@@ -41,7 +42,7 @@ TEST(sedova_o_max_of_vector_elements_mpi1, test_pipeline_run) {
     std::random_device dev;
     std::mt19937 random(dev());
 
-    global_matrix = generate_random_matrix(rows, cols, value);
+    global_matrix = sedova_o_max_of_vector_elements_mpi_test::generate_random_matrix(rows, cols, value);
     rows = random() % rows;
     cols = random() % cols;
     global_matrix[rows][cols] = value;
@@ -94,7 +95,7 @@ TEST(sedova_o_max_of_vector_elements_mpi1, test_task_run) {
     std::random_device dev;
     std::mt19937 random(dev());
 
-    global_matrix = generate_random_matrix(rows, cols, value);
+    global_matrix = sedova_o_max_of_vector_elements_mpi_test::generate_random_matrix(rows, cols, value);
     rows = random() % rows;
     cols = random() % cols;
     global_matrix[rows][cols] = value;
@@ -131,4 +132,3 @@ TEST(sedova_o_max_of_vector_elements_mpi1, test_task_run) {
     ASSERT_EQ(value, global_max[0]);
   }
 }
-}  // namespace sedova_o_max_of_vector_elements_mpi
