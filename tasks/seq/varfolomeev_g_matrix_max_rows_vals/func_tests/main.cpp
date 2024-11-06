@@ -30,8 +30,8 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_in_empty) {
 }
 
 TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_non_generated_4x4) {
-  const int rows = 4, cols = 4;
-
+  int rows = 4; 
+  int cols = 4;
   // Create data;
   std::vector<std::vector<int>> in = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 16}};
   std::vector<int> out(rows, 0);
@@ -128,7 +128,8 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_same_values) {
 }
 
 TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_10x10) {
-  const int rows = 10, cols = 10;
+  int rows = 10;
+  int cols = 10;
 
   // Create data; generation matrix integers from -100 to 100
   std::vector<std::vector<int>> in = varfolomeev_g_matrix_max_rows_vals_seq::generateMatrix(rows, cols, -100, 100);
@@ -159,7 +160,8 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_10x10) {
 }
 
 TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_20x10) {
-  const int rows = 20, cols = 10;
+  int rows = 20;
+  int cols = 10;
 
   // Create data
   std::vector<std::vector<int>> in = varfolomeev_g_matrix_max_rows_vals_seq::generateMatrix(rows, cols, -100, 100);
@@ -190,7 +192,8 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_20x10) {
 }
 
 TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_10x20) {
-  const int rows = 10, cols = 20;
+  int rows = 10;
+  int cols = 20;
 
   // Create data
   std::vector<std::vector<int>> in = varfolomeev_g_matrix_max_rows_vals_seq::generateMatrix(rows, cols, -100, 100);
@@ -221,7 +224,8 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_10x20) {
 }
 
 TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_20x20) {
-  const int rows = 20, cols = 20;
+  int rows = 20
+  int cols = 20;
 
   // Create data
   std::vector<std::vector<int>> in = varfolomeev_g_matrix_max_rows_vals_seq::generateMatrix(rows, cols, -100, 100);
@@ -252,7 +256,8 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_20x20) {
 }
 
 TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_50x50) {
-  const int rows = 50, cols = 50;
+  int rows = 50;
+  int cols = 50;
 
   // Create data
   std::vector<std::vector<int>> in = varfolomeev_g_matrix_max_rows_vals_seq::generateMatrix(rows, cols, -100, 100);
