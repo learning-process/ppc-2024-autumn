@@ -25,7 +25,7 @@ std::vector<std::vector<int32_t>> getRandomData(uint32_t rows, uint32_t cols) {
 
 }  // namespace malyshev_a_sum_rows_matrix_test_function
 
-TEST(malyshev_a_sum_rows_matrix_seq, test_run_1) {
+TEST(malyshev_a_sum_rows_matrix_seq, rectangular_matrix_stretched_horizontally_7х17) {
   uint32_t rows = 7;
   uint32_t cols = 17;
 
@@ -54,7 +54,7 @@ TEST(malyshev_a_sum_rows_matrix_seq, test_run_1) {
   }
 }
 
-TEST(malyshev_a_sum_rows_matrix_seq, test_run_2) {
+TEST(malyshev_a_sum_rows_matrix_seq, rectangular_matrix_stretched_verticaly_100x75) {
   uint32_t rows = 100;
   uint32_t cols = 75;
 
@@ -82,9 +82,37 @@ TEST(malyshev_a_sum_rows_matrix_seq, test_run_2) {
   }
 }
 
-TEST(malyshev_a_sum_rows_matrix_seq, test_run_3) {
+TEST(malyshev_a_sum_rows_matrix_seq, squere_matrix_100x100) {
   uint32_t rows = 100;
   uint32_t cols = 100;
+
+  std::vector<int32_t> seqSum(rows);
+  std::vector<std::vector<int32_t>> randomData = malyshev_a_sum_rows_matrix_test_function::getRandomData(rows, cols);
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  malyshev_a_sum_rows_matrix_seq::TestTaskSequential taskSeq(taskDataSeq);
+
+  for (auto &row : randomData) {
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(row.data()));
+  }
+
+  taskDataSeq->inputs_count.push_back(rows);
+  taskDataSeq->inputs_count.push_back(cols);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seqSum.data()));
+  taskDataSeq->outputs_count.push_back(seqSum.size());
+
+  ASSERT_TRUE(taskSeq.validation());
+  ASSERT_TRUE(taskSeq.pre_processing());
+  ASSERT_TRUE(taskSeq.run());
+  ASSERT_TRUE(taskSeq.post_processing());
+
+  for (uint32_t i = 0; i < seqSum.size(); i++) {
+    ASSERT_EQ(seqSum[i], std::accumulate(randomData[i].begin(), randomData[i].end(), 0));
+  }
+}
+
+TEST(malyshev_a_sum_rows_matrix_seq, matrix_1x1) {
+  uint32_t rows = 1;
+  uint32_t cols = 1;
 
   std::vector<int32_t> seqSum(rows);
   std::vector<std::vector<int32_t>> randomData = malyshev_a_sum_rows_matrix_test_function::getRandomData(rows, cols);
