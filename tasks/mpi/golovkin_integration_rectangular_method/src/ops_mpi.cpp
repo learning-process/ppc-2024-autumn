@@ -41,6 +41,7 @@ bool MPIIntegralCalculator::pre_processing() {
 }
 
 bool MPIIntegralCalculator::run() {
+
   // Проверка, что cnt_of_splits, a, и h инициализированы и имеют корректные значения
   if (cnt_of_splits <= 0 || h <= 0.0 || a >= b) {
     std::cerr << "Process " << world.rank() << ": Invalid configuration (cnt_of_splits, h, or range a-b)" << std::endl;
@@ -70,7 +71,7 @@ bool MPIIntegralCalculator::run() {
   // Сбор результатов, проверка глобальной синхронизации
   double local_global_res = 0.0;
   MPI_Reduce(&local_res, &local_global_res, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-  std::cout << "Process3 ";
+  std::cerr << "Process3 ";
   if (world.rank() == 0) {
     global_res = local_global_res;
     std::cout << "Root process has global result after reduction: " << global_res << std::endl;
