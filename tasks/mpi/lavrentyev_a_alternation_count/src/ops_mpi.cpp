@@ -4,10 +4,7 @@
 #include <functional>
 #include <random>
 #include <string>
-#include <thread>
 #include <vector>
-
-using namespace std::chrono_literals;
 
 bool lavrentyev_a_alternation_count_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();

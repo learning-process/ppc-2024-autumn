@@ -1,10 +1,6 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/lavrentyev_a_alternation_count/include/ops_seq.hpp"
 
-#include <thread>
-
-using namespace std::chrono_literals;
-
 bool lavrentyev_a_alternation_count_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   auto* input_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
