@@ -31,12 +31,17 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
   }
   golovkin_integration_rectangular_method::MPIIntegralCalculator parallel_task(taskDataPar);
   parallel_task.set_function([](double x) { return 5.0; });
-  std::cout << "Rank " << comm_world.rank() << " started pre_processing.\n";
+
   ASSERT_EQ(parallel_task.validation(), true);
+  std::cout << "Rank " << comm_world.rank() << " started pre_processing.\n";
   parallel_task.pre_processing();
-  parallel_task.run();
-  parallel_task.post_processing();
   std::cout << "Rank " << comm_world.rank() << " finished pre_processing.\n";
+  std::cout << "Rank " << comm_world.rank() << " started run.\n";
+  parallel_task.run();
+  std::cout << "Rank " << comm_world.rank() << " finished run.\n";
+  std::cout << "Rank " << comm_world.rank() << " started post_processing.\n";
+  parallel_task.post_processing();
+  std::cout << "Rank " << comm_world.rank() << " finished post_processing.\n";
   if (comm_world.rank() == 0) {
     std::vector<double> expected_result(1, 0);
 
@@ -54,10 +59,15 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
     sequential_task.set_function([](double x) { return 5.0; });
     std::cout << "Rank " << comm_world.rank() << " started pre_processing.\n";
     ASSERT_EQ(sequential_task.validation(), true);
-    sequential_task.pre_processing();
-    sequential_task.run();
-    sequential_task.post_processing();
     std::cout << "Rank " << comm_world.rank() << " finished pre_processing.\n";
+    sequential_task.pre_processing();
+    std::cout << "Rank " << comm_world.rank() << " finished pre_processing.\n";
+    std::cout << "Rank " << comm_world.rank() << " started run.\n";
+    sequential_task.run();
+    std::cout << "Rank " << comm_world.rank() << " finished run.\n";
+    std::cout << "Rank " << comm_world.rank() << " started post_processing.\n";
+    sequential_task.post_processing();
+    std::cout << "Rank " << comm_world.rank() << " finished post_processing.\n";
     ASSERT_NEAR(expected_result[0], computed_result[0], 1e-3);
   }
 }
