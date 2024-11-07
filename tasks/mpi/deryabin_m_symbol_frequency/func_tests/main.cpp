@@ -143,8 +143,9 @@ TEST(deryabin_m_symbol_frequency_mpi, test_every_secondary) {
 
     ASSERT_EQ(reference_frequency[0], global_frequency[0]);
   }
+}
 
-  TEST(deryabin_m_symbol_frequency_mpi, test_const) {
+TEST(deryabin_m_symbol_frequency_mpi, test_const) {
     boost::mpi::communicator world;
     std::vector<char> global_str;
     std::vector<char> input_symbol(1, 'A');
