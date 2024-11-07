@@ -14,8 +14,8 @@ TEST(komshina_d_min_of_vector_elements_mpi, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int expected_min;
   if (world.rank() == 0) {
-    const int count = 5'000'000;
-    const int start_value = 1'000'000;
+    const int count = 5000000;
+    const int start_value = 1000000;
     const int decrement = 100;
     expected_min = start_value - decrement * (count - 1);
     global_vec.resize(count);
@@ -58,8 +58,8 @@ TEST(komshina_d_min_of_vector_elements_mpi, test_task_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int expected_min;
   if (world.rank() == 0) {
-    const int count = 5'000'000;
-    const int start_value = 1'000'000;
+    const int count = 5000000;
+    const int start_value = 1000000;
     const int decrement = 100;
     expected_min = start_value - decrement * (count - 1);
     global_vec.resize(count);

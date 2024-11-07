@@ -5,7 +5,7 @@
 #include "seq/komshina_d_min_of_vector_elements/include/ops_seq.hpp"
 
 TEST(komshina_d_min_of_vector_elements_seq, Test_Min_1) {
-  const int count = 500000;
+  const int count = 5000000;
   const int start_value = 1000000;
   const int decrement = 10;
   const int expected_min = start_value - decrement * (count - 1);
@@ -32,7 +32,7 @@ TEST(komshina_d_min_of_vector_elements_seq, Test_Min_1) {
 }
 
 TEST(komshina_d_min_of_vector_elements_seq, Test_Min_2) {
-  const int count = 500000;
+  const int count = 5000000;
   const int start_value = -1;
   const int decrement = 100;
   const int expected_min = start_value - decrement * (count - 1);

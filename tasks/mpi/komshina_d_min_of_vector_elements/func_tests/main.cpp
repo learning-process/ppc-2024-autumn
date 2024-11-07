@@ -23,12 +23,12 @@ std::vector<int> get_random_vector(int sz) {
 TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_1) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
-  std::vector<int32_t> global_min(1, INT_MAX);
+  std::vector<int32_t> global_min(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count = 500000;
+    const int count = 5000000;
     const int start_value = 1000000;
     const int decrement = 10;
     global_vec.resize(count);
@@ -49,7 +49,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_1) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    std::vector<int32_t> reference_min(1, INT_MAX);
+    std::vector<int32_t> reference_min(1, 0);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
@@ -70,12 +70,12 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_1) {
 TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_2) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
-  std::vector<int32_t> global_min(1, INT_MAX);
+  std::vector<int32_t> global_min(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count = 500000;
+    const int count = 5000000;
     const int start_value = -1;
     const int decrement = 100;
     global_vec.resize(count);
@@ -96,7 +96,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_2) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    std::vector<int32_t> reference_min(1, INT_MAX);
+    std::vector<int32_t> reference_min(1, 0);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
@@ -117,7 +117,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_2) {
 TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_3) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
-  std::vector<int32_t> global_min(1, INT_MAX);
+  std::vector<int32_t> global_min(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -138,7 +138,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_3) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    std::vector<int32_t> reference_min(1, INT_MAX);
+    std::vector<int32_t> reference_min(1, 0);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
@@ -159,7 +159,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_3) {
 TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_4) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
-  std::vector<int32_t> global_min(1, INT_MAX);
+  std::vector<int32_t> global_min(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -180,7 +180,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_4) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    std::vector<int32_t> reference_min(1, INT_MAX);
+    std::vector<int32_t> reference_min(1, 0);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
@@ -206,8 +206,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Empty_Vector) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
- 
-taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_min.data()));
     taskDataPar->outputs_count.emplace_back(global_min.size());

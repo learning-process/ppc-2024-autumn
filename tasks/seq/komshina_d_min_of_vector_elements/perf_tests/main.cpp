@@ -44,8 +44,8 @@ TEST(komshina_d_min_of_vector_elements_seq, test_pipeline_run) {
 }
 
 TEST(komshina_d_min_of_vector_elements_seq, test_task_run) {
-  const int count = 5'000'000;
-  const int start_value = 1'000'000;
+  const int count = 5000000;
+  const int start_value = 1000000;
   const int decrement = 100;
   const int expected_min = start_value - decrement * (count - 1);
 
