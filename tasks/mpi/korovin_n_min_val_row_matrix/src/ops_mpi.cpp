@@ -93,17 +93,19 @@ bool korovin_n_min_val_row_matrix_mpi::TestMPITaskParallel::run() {
 
   int rows = 0;
   int cols = 0;
+  int delta = 0;
+  int extra = 0;
 
   if (world.rank() == 0) {
     rows = taskData->inputs_count[0];
     cols = taskData->inputs_count[1];
+    delta = rows / world.size();
+    extra = rows % world.size();
   }
 
-  broadcast(world, rows, 0);
+  broadcast(world, delta, 0);
+  broadcast(world, extra, 0);
   broadcast(world, cols, 0);
-
-  int delta = rows / world.size();
-  int extra = rows % world.size();
 
   if (world.rank() == 0) {
     for (int proc = 1; proc < world.size(); proc++) {
