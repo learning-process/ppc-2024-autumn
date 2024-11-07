@@ -15,7 +15,6 @@
 namespace laganina_e_sum_values_by_columns_matrix_mpi {
 
 std::vector<int> getRandomVector(int sz);
-std::vector<int> SumSeq(const std::vector<int>& matrix, int n, int m, int x0, int x1);
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

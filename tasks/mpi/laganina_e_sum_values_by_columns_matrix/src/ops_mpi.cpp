@@ -17,19 +17,6 @@ std::vector<int> laganina_e_sum_values_by_columns_matrix_mpi::getRandomVector(in
   return vec;
 }
 
-std::vector<int> laganina_e_sum_values_by_columns_matrix_mpi::SumSeq(const std::vector<int>& matrix, int n, int m,
-                                                                     int x0, int x1) {
-  std::vector<int> result;
-  for (int j = x0; j < x1; j++) {
-    int sum = 0;
-    for (int i = 0; i < m; i++) {
-      sum += matrix[i * n + j];
-    }
-    result[j] = sum;
-  }
-  return result;
-}
-
 bool laganina_e_sum_values_by_columns_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   input_ = std::vector<int>(taskData->inputs_count[0]);
