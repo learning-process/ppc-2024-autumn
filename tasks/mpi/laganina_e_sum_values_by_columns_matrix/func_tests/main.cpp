@@ -2,9 +2,20 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <random>
 #include <vector>
 
 #include "mpi/laganina_e_sum_values_by_columns_matrix/include/ops_mpi.hpp"
+
+std::vector<int> laganina_e_sum_values_by_columns_matrix_mpi::getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = (gen() % 100) - 49;
+  }
+  return vec;
+}
 
 TEST(laganina_e_sum_values_by_columns_matrix_mpi, Test_2_2_matrix) {
   boost::mpi::communicator world;

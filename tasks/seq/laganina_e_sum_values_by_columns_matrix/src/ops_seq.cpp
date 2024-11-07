@@ -1,18 +1,7 @@
 #include "seq/laganina_e_sum_values_by_columns_matrix/include/ops_seq.hpp"
 
-#include <random>
 #include <thread>
 #include <vector>
-
-std::vector<int> laganina_e_sum_values_by_columns_matrix_seq::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = (gen() % 100) - 49;
-  }
-  return vec;
-}
 
 bool laganina_e_sum_values_by_columns_matrix_seq::sum_values_by_columns_matrix_Seq::pre_processing() {
   internal_order_test();
