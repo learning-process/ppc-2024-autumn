@@ -108,7 +108,8 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::run() {
 
   broadcast(world, inputMatrix_.data(), numCols * numRows, 0);
 
-  int startCol, lastCol;
+  int startCol;
+  int lastCol;
   if (world.rank() < extra) {
     startCol = (delta + 1) * world.rank();
     lastCol = std::min(numCols, startCol + delta + 1);
