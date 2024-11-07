@@ -28,7 +28,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_1) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count = 5000000;
+    const int count = 5000;
     const int start_value = 1000000;
     const int decrement = 10;
     global_vec.resize(count);

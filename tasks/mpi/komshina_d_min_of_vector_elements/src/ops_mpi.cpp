@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <functional>
-#include <iostream>
 #include <random>
 #include <string>
 #include <thread>
@@ -63,14 +62,16 @@ bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential::po
 bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    delta = (taskData->inputs_count[0] + world.size() - 1) / world.size();
-    input_ = std::vector<int>(taskData->inputs_count[0]);
-    int* ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (size_t i = 0; i < taskData->inputs_count[0]; ++i) {
-      input_[i] = ptr[i];
-    }
-    input_.resize(delta * world.size(), INT_MAX);
-    res = input_[0];
+      delta = (taskData->inputs_count[0] + world.size() - 1) / world.size();
+      input_ = std::vector<int>(taskData->inputs_count[0]);
+      int* ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+      for (size_t i = 0; i < taskData->inputs_count[0]; ++i) {
+        input_[i] = ptr[i];
+        
+      }
+      input_.resize(delta * world.size(), INT_MAX);
+      
+      res = input_[0];
   }
   return true;
 }
@@ -92,12 +93,7 @@ bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel::run(
   broadcast(world, delta, 0);
 
   if (world.rank() == 0) {
-    std::cout << "Rank 0: Sending data to all other processes" << std::endl;
     for (int proc = 1; proc < world.size(); proc++) {
-      if (proc >= world.size()) {
-        std::cerr << "Process " << proc << " exceeds the total number of processes!" << std::endl;
-        MPI_Abort(MPI_COMM_WORLD, 1);
-      }
       world.send(proc, 0, input_.data() + proc * delta, delta);
     }
   }
@@ -106,7 +102,6 @@ bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel::run(
   if (world.rank() == 0) {
     local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
   } else {
-    std::cout << "Rank " << world.rank() << ": Receiving data" << std::endl;
     world.recv(0, 0, local_input_.data(), delta);
   }
 
