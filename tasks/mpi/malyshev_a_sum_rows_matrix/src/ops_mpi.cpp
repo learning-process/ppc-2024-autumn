@@ -50,16 +50,19 @@ bool malyshev_a_sum_rows_matrix_mpi::TestTaskParallel::pre_processing() {
   internal_order_test();
 
   if (world.rank() == 0) {
-    rows_ = taskData->inputs_count[0];
-    cols_ = taskData->inputs_count[1];
+    uint32_t rows = taskData->inputs_count[0];
+    uint32_t cols = taskData->inputs_count[1];
 
-    input_.resize(rows_, std::vector<int32_t>(cols_));
-    res_.resize(rows_);
+    delta_ = rows / world.size();
+    ext_ = rows % world.size();
+
+    input_.resize(rows, std::vector<int32_t>(cols));
+    res_.resize(rows);
 
     int32_t* data;
     for (uint32_t i = 0; i < input_.size(); i++) {
       data = reinterpret_cast<int32_t*>(taskData->inputs[i]);
-      std::copy(data, data + cols_, input_[i].data());
+      std::copy(data, data + cols, input_[i].data());
     }
   }
 
@@ -79,18 +82,15 @@ bool malyshev_a_sum_rows_matrix_mpi::TestTaskParallel::validation() {
 bool malyshev_a_sum_rows_matrix_mpi::TestTaskParallel::run() {
   internal_order_test();
 
-  broadcast(world, rows_, 0);
-  broadcast(world, cols_, 0);
+  broadcast(world, delta_, 0);
+  broadcast(world, ext_, 0);
 
-  uint32_t delta = rows_ / world.size();
-  uint32_t ext = rows_ % world.size();
-
-  std::vector<int32_t> sizes(world.size(), delta);
-  for (uint32_t i = 0; i < ext; i++) {
+  std::vector<int32_t> sizes(world.size(), delta_);
+  for (uint32_t i = 0; i < ext_; i++) {
     sizes[world.size() - i - 1]++;
   }
 
-  local_input_.resize(sizes[world.rank()], std::vector<int32_t>(cols_));
+  local_input_.resize(sizes[world.rank()]);
   local_res_.resize(sizes[world.rank()]);
 
   scatterv(world, input_, sizes, local_input_.data(), 0);
