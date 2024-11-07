@@ -84,10 +84,6 @@ bool shulpin_monte_carlo_integration::TestMPITaskParallel::pre_processing() {
     N_MPI = N_value;
   }
 
-  boost::mpi::broadcast(world, a_MPI, 0);
-  boost::mpi::broadcast(world, b_MPI, 0);
-  boost::mpi::broadcast(world, N_MPI, 0);
-
   return true;
 }
 
@@ -105,6 +101,10 @@ bool shulpin_monte_carlo_integration::TestMPITaskParallel::run() {
   internal_order_test();
 
   double local_res{};
+
+  boost::mpi::broadcast(world, a_MPI, 0);
+  boost::mpi::broadcast(world, b_MPI, 0);
+  boost::mpi::broadcast(world, N_MPI, 0);
 
   local_res = parallel_integral(a_MPI, b_MPI, N_MPI, func_MPI);
   boost::mpi::reduce(world, local_res, res, std::plus<>(), 0);
