@@ -65,17 +65,14 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::pre_processing
     numRows = taskData->inputs_count[2];
   }
 
-  // Broadcast numCols and numRows to all processes
   broadcast(world, numCols, 0);
   broadcast(world, numRows, 0);
 
-  // Calculate delta and extra on rank 0
   if (world.rank() == 0) {
     delta = numCols / world.size();
     extra = numCols % world.size();
   }
 
-  // Broadcast delta and extra to all processes
   broadcast(world, delta, 0);
   broadcast(world, extra, 0);
 
@@ -114,7 +111,6 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::validation() {
 bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-  // Broadcast inputMatrix to all processes
   broadcast(world, inputMatrix_.data(), numCols * numRows, 0);
 
   int startCol = delta * world.rank();
