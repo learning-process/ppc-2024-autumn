@@ -1,12 +1,11 @@
+#include "seq/vershinina_a_integration_the_monte_carlo_method/include/ops_seq.hpp"
+
 #include <algorithm>
 #include <functional>
 #include <random>
 #include <string>
 #include <thread>
 #include <vector>
-#include "seq/vershinina_a_integration_the_monte_carlo_method/include/ops_seq.hpp"
-
-#include <thread>
 
 using namespace std::chrono_literals;
 

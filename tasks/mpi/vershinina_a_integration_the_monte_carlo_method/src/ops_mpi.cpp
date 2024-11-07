@@ -69,19 +69,12 @@ bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskSequential::pos
 
 bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  auto* pr = reinterpret_cast<float*>(taskData->inputs[0]);  // в переменную p складываем указатель на массив с исходными данными
+  auto* pr = reinterpret_cast<float*>(
+      taskData->inputs[0]);  // в переменную p складываем указатель на массив с исходными данными
   if (world.rank() == 0) {
     input_.resize(taskData->inputs_count[0]);  // задает размер вектора input_ чтобы он был размера inputs_count
-    std::copy(pr, pr + input_.size(), input_.begin());//копируем из р первые inputs_count элементов в input_
+    std::copy(pr, pr + input_.size(), input_.begin());  // копируем из р первые inputs_count элементов в input_
   }
-  size_t input_size = input_.size();
-  broadcast(world, input_.data(), input_size, 0);
-  broadcast(world, input_size, 0);
-  if (world.rank() != 0) {
-    input_.resize(input_size);
-    std::copy(pr, pr + input_.size(), input_.begin());
-  }
-  
   return true;
 }
 
@@ -95,6 +88,11 @@ bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskParallel::valid
 
 bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskParallel::run() {
   internal_order_test();
+  size_t input_size = input_.size();
+  broadcast(world, input_size, 0);
+  input_.resize(input_size);
+  broadcast(world, input_.data(), input_size, 0);
+
   xmin = input_[0];
   xmax = input_[1];
   ymin = input_[2];

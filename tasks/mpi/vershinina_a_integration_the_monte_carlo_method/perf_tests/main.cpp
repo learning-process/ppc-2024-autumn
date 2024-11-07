@@ -56,7 +56,7 @@ TEST(vershinina_a_integration_the_monte_carlo_method, test_task_run) {
 
   if (world.rank() == 0) {
     count_size_vector = 4;
-    in= std::vector<float>(count_size_vector, 1);
+    in = std::vector<float>(count_size_vector, 1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
     taskDataPar->inputs_count.emplace_back(in.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));

@@ -1,7 +1,8 @@
 #pragma once
+#include <functional>
 #include <string>
 #include <vector>
-#include <functional>
+
 #include "core/task/include/task.hpp"
 
 namespace vershinina_a_integration_the_monte_carlo_method {
@@ -25,4 +26,4 @@ class TestTaskSequential : public ppc::core::Task {
   float *input_{};
   float reference_res{};
 };
-}
+}  // namespace vershinina_a_integration_the_monte_carlo_method

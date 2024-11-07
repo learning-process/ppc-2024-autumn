@@ -22,7 +22,7 @@ TEST(vershinina_a_integration_the_monte_carlo_method, Test_1) {
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
 
- vershinina_a_integration_the_monte_carlo_method::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  vershinina_a_integration_the_monte_carlo_method::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   testMpiTaskParallel.p = [](float x) { return exp(sin(4 * x) + 2 * pow(x, 2)); };
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
@@ -30,8 +30,7 @@ TEST(vershinina_a_integration_the_monte_carlo_method, Test_1) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-
-    std::vector<float> reference_res(1,0);
+    std::vector<float> reference_res(1, 0);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
@@ -46,7 +45,7 @@ TEST(vershinina_a_integration_the_monte_carlo_method, Test_1) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    EXPECT_NEAR(reference_res[0],global_res[0], 1e-1);
+    EXPECT_NEAR(reference_res[0], global_res[0], 1e-1);
   }
 }
 TEST(vershinina_a_integration_the_monte_carlo_method, Test_2) {
