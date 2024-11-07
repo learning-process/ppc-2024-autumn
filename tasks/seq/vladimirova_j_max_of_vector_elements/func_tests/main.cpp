@@ -43,9 +43,6 @@ TEST(vladimirova_j_max_of_vector_elements_seq, Test_ValMatrix_0) {
   // Create Task
   vladimirova_j_max_of_vector_elements_seq::TestTaskSequential TestTaskSequential(taskDataSeq);
   ASSERT_EQ(TestTaskSequential.validation(), false);
-  TestTaskSequential.pre_processing();
-  TestTaskSequential.run();
-  TestTaskSequential.post_processing();
 }
 
 TEST(vladimirova_j_max_of_vector_elements_seq, Test_CanCreate_10) {
