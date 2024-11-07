@@ -69,10 +69,7 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::pre_processing
     if (extra != 0) {
       delta += 1;
     }
-  }
 
-  if (world.rank() == 0) {
-    // Init vectors
     inputMatrix_ = std::vector<int>(taskData->inputs_count[0]);
     auto* tmpPtr = reinterpret_cast<int*>(taskData->inputs[0]);
     for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
@@ -84,7 +81,6 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::pre_processing
 
   result_ = std::vector<int>(numCols, 0);
 
-  // Broadcast delta and extra
   broadcast(world, delta, 0);
   broadcast(world, extra, 0);
 
@@ -110,24 +106,31 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::validation() {
 bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-  if (world.rank() != 0) {
-    inputMatrix_ = std::vector<int>(numCols * numRows, 0);
-  }
   broadcast(world, inputMatrix_.data(), numCols * numRows, 0);
 
-  int startCol = delta * world.rank();
-  int lastCol = std::min(numCols, delta * (world.rank() + 1));
+  int startCol, lastCol;
+  if (world.rank() < extra) {
+    startCol = (delta + 1) * world.rank();
+    lastCol = std::min(numCols, startCol + delta + 1);
+  } else {
+    startCol = (delta + 1) * extra + delta * (world.rank() - extra);
+    lastCol = std::min(numCols, startCol + delta);
+  }
+
   std::vector<int> localMax;
   for (int j = startCol; j < lastCol; j++) {
     auto maxElem = *std::max_element(inputMatrix_.begin() + j * numRows, inputMatrix_.begin() + (j + 1) * numRows);
     localMax.push_back(maxElem);
   }
-  localMax.resize(delta);
+  localMax.resize(delta + (world.rank() < extra ? 1 : 0));
+
   if (world.rank() == 0) {
-    std::vector<int> globalRes(numCols + delta * world.size());
+    std::vector<int> globalRes(numCols);
     std::vector<int> sizes(world.size(), delta);
+    for (int i = 0; i < extra; i++) {
+      sizes[i] = delta + 1;
+    }
     boost::mpi::gatherv(world, localMax.data(), localMax.size(), globalRes.data(), sizes, 0);
-    globalRes.resize(numCols);
     result_ = globalRes;
   } else {
     boost::mpi::gatherv(world, localMax.data(), localMax.size(), 0);
