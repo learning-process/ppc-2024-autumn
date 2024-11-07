@@ -69,8 +69,8 @@ bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskSequential::pos
 
 bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  auto* pr = reinterpret_cast<double*>(taskData->inputs[0]);
   if (world.rank() == 0) {
+    auto* pr = reinterpret_cast<double*>(taskData->inputs[0]);
     input_.resize(taskData->inputs_count[0]);
     std::copy(pr, pr + input_.size(), input_.begin());
   }
