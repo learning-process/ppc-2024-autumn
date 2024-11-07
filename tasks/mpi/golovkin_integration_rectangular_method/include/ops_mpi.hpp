@@ -32,7 +32,7 @@ class MPIIntegralCalculator : public ppc::core::Task {
   int num_partitions{};
   double global_result{};  // Итоговый результат, собираемый на главном процессе
 
-  static double integrate(const std::function<double(double)>& f, double a, double b, int splits);
+  double integrate(const std::function<double(double)>& f, double a, double b, int splits);
 };
 
 }  // namespace golovkin_integration_rectangular_method
