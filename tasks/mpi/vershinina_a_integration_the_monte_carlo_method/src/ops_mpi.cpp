@@ -59,6 +59,7 @@ bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskSequential::run
   double density = inBox / total;
 
   reference_res = (xmax - xmin) * (ymax - ymin) * density;
+  std::cerr << "ref " << reference_res << std::endl;
   return true;
 }
 bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskSequential::post_processing() {
@@ -122,8 +123,8 @@ bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskParallel::run()
   reduce(world, local_inBox, inBox, std::plus(), 0);
 
   double density = inBox / total;
-
   global_res = (xmax - xmin) * (ymax - ymin) * density;
+  std::cerr << "global " << global_res << std::endl;
 
   return true;
 }
