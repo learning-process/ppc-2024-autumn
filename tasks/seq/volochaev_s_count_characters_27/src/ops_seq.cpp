@@ -4,8 +4,6 @@
 #include <random>
 #include <thread>
 
-using namespace std::chrono_literals;
-
 bool volochaev_s_count_characters_27_seq::Lab1_27::pre_processing() {
   internal_order_test();
   // Init value for input and output
