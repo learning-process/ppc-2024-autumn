@@ -1,9 +1,6 @@
 #include "mpi/laganina_e_sum_values_by_columns_matrix/include/ops_mpi.hpp"
 
-#include <algorithm>
-#include <functional>
 #include <random>
-#include <string>
 #include <thread>
 #include <vector>
 
