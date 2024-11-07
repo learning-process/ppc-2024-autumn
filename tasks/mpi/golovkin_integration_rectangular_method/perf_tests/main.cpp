@@ -68,8 +68,8 @@ TEST(golovkin_integration_rectangular_method, test_task_run) {
 
   // Создание TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  double a = 1.0;
-  double b = 10.0;
+  double a = 0.0;
+  double b = 5.0;
   int cnt_of_splits = 1000000;
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
@@ -84,7 +84,7 @@ TEST(golovkin_integration_rectangular_method, test_task_run) {
 
   auto testMpiTaskParallel =
       std::make_shared<golovkin_integration_rectangular_method::MPIIntegralCalculator>(taskDataPar);
-  testMpiTaskParallel->set_function([](double x) { return std::log(x); });
+  testMpiTaskParallel->set_function([](double x) { return x + 2.0; });
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -101,11 +101,11 @@ TEST(golovkin_integration_rectangular_method, test_task_run) {
 
   // Создание анализатора производительности
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
-  perfAnalyzer->task_run(perfAttr, perfResults);
+  perfAnalyzer->pipeline_run(perfAttr, perfResults);
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    double expected_value = b * std::log(b) - b - (a * std::log(a) - a);  // Аналитическое значение интеграла ln(x)
+    double expected_value = (b * (b + 4.0) / 2.0) - (a * (a + 4.0) / 2.0);  // Аналитическое значение интеграла
     ASSERT_NEAR(global_result[0], expected_value, 1e-3);
   }
 }
