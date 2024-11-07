@@ -22,13 +22,13 @@ TEST(vershinina_a_integration_the_monte_carlo_method, test1) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  EXPECT_NEAR(reference_res[0], 1000,1);
+  EXPECT_NEAR(reference_res[0], 1000, 1);
 }
 
 TEST(vershinina_a_integration_the_monte_carlo_method, test2) {
   std::vector<double> in{6, 13, 0, 14};
   std::vector<double> reference_res(1, 0);
- 
+
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
   taskDataSeq->inputs_count.emplace_back(in.size());
@@ -42,7 +42,7 @@ TEST(vershinina_a_integration_the_monte_carlo_method, test2) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  EXPECT_NEAR(reference_res[0], 98,1);
+  EXPECT_NEAR(reference_res[0], 98, 1);
 }
 
 TEST(vershinina_a_integration_the_monte_carlo_method, test3) {

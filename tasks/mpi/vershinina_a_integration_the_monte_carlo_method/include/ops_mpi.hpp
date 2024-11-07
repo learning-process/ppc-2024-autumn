@@ -1,8 +1,9 @@
 #pragma once
 #include <gtest/gtest.h>
-#include <functional>
+
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <functional>
 #include <memory>
 #include <numeric>
 #include <string>
