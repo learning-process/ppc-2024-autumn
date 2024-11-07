@@ -108,34 +108,26 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::run() {
 
   broadcast(world, inputMatrix_.data(), numCols * numRows, 0);
 
-  int startCol;
-  int lastCol;
-  if (world.rank() < extra) {
-    startCol = (delta + 1) * world.rank();
-    lastCol = std::min(numCols, startCol + delta + 1);
-  } else {
-    startCol = (delta + 1) * extra + delta * (world.rank() - extra);
-    lastCol = std::min(numCols, startCol + delta);
-  }
-
+  int startCol = delta * world.rank();
+  int lastCol = std::min(numCols, delta * (world.rank() + 1));
   std::vector<int> localMax;
+
   for (int j = startCol; j < lastCol; j++) {
     auto maxElem = *std::max_element(inputMatrix_.begin() + j * numRows, inputMatrix_.begin() + (j + 1) * numRows);
     localMax.push_back(maxElem);
   }
-  localMax.resize(delta + (world.rank() < extra ? 1 : 0));
+  localMax.resize(delta);
 
   if (world.rank() == 0) {
-    std::vector<int> globalRes(numCols);
+    std::vector<int> globalRes(numCols + delta * world.size());
     std::vector<int> sizes(world.size(), delta);
-    for (int i = 0; i < extra; i++) {
-      sizes[i] = delta + 1;
-    }
     boost::mpi::gatherv(world, localMax.data(), localMax.size(), globalRes.data(), sizes, 0);
+    globalRes.resize(numCols);
     result_ = globalRes;
   } else {
     boost::mpi::gatherv(world, localMax.data(), localMax.size(), 0);
   }
+
   return true;
 }
 
