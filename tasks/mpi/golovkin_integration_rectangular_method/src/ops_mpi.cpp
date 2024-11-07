@@ -13,14 +13,38 @@
 
 using namespace golovkin_integration_rectangular_method;
 using namespace std::chrono_literals;
+
 bool MPIIntegralCalculator::validation() {
   internal_order_test();
-  if (world.rank() == 0) {
-    return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] == 1;
-  }
-  return true;
-}
 
+  // Начало отсчета времени выполнения
+  auto start = std::chrono::high_resolution_clock::now();
+  int timeout_ms = 3000;  // Устанавливаем тайм-аут для валидации (например, 3000 миллисекунд)
+
+  bool is_valid = true;
+
+  if (world.rank() == 0) {
+    is_valid = taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] == 1;
+
+    // Лог для отладки
+    if (!is_valid) {
+      std::cerr << "Validation failed on rank 0 with inputs_count or outputs_count invalid\n";
+    }
+  }
+
+  // Синхронизация и широковещательная передача результата валидации другим процессам
+  broadcast(world, is_valid, 0);
+
+  // Проверка на тайм-аут
+  auto end = std::chrono::high_resolution_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+  if (duration.count() > timeout_ms) {
+    std::cerr << "Timeout in validation on rank " << world.rank() << "\n";
+    MPI_Abort(MPI_COMM_WORLD, 1);  // Завершение программы при превышении времени
+  }
+
+  return is_valid;
+}
 bool MPIIntegralCalculator::pre_processing() {
   internal_order_test();
 
