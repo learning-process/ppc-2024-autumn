@@ -60,10 +60,8 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskSequential::post_process
 bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
-  if (world.rank() == 0) {
-    numCols = taskData->inputs_count[1];
-    numRows = taskData->inputs_count[2];
-  }
+  numCols = taskData->inputs_count[1];
+  numRows = taskData->inputs_count[2];
 
   if (world.rank() == 0) {
     // Init vectors
