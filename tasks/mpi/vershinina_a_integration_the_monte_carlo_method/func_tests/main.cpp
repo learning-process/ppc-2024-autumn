@@ -9,8 +9,8 @@
 
 TEST(vershinina_a_integration_the_monte_carlo_method, Test_1) {
   boost::mpi::communicator world;
-  std::vector<float> in;
-  std::vector<float> global_res(1, 0);
+  std::vector<double> in;
+  std::vector<double> global_res(1, 0);
   const int count_size_vector = 4;
   in = vershinina_a_integration_the_monte_carlo_method::getRandomVector(count_size_vector);
 
@@ -24,14 +24,14 @@ TEST(vershinina_a_integration_the_monte_carlo_method, Test_1) {
   }
 
   vershinina_a_integration_the_monte_carlo_method::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  testMpiTaskParallel.p = [](float x) { return exp(sin(4 * x) + 2 * pow(x, 2)); };
+  testMpiTaskParallel.p = [](double x) { return exp(sin(4 * x) + 2 * pow(x, 2)); };
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    std::vector<float> reference_res(1, 0);
+    std::vector<double> reference_res(1, 0);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
@@ -40,7 +40,7 @@ TEST(vershinina_a_integration_the_monte_carlo_method, Test_1) {
     taskDataSeq->outputs_count.emplace_back(reference_res.size());
 
     vershinina_a_integration_the_monte_carlo_method::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    testMpiTaskSequential.p = [](float x) { return exp(sin(4 * x) + 2 * pow(x, 2)); };
+    testMpiTaskSequential.p = [](double x) { return exp(sin(4 * x) + 2 * pow(x, 2)); };
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -51,8 +51,8 @@ TEST(vershinina_a_integration_the_monte_carlo_method, Test_1) {
 }
 TEST(vershinina_a_integration_the_monte_carlo_method, Test_2) {
   boost::mpi::communicator world;
-  std::vector<float> in;
-  std::vector<float> global_res(1, 0);
+  std::vector<double> in;
+  std::vector<double> global_res(1, 0);
   const int count_size_vector = 4;
   in = vershinina_a_integration_the_monte_carlo_method::getRandomVector(count_size_vector);
 
@@ -66,14 +66,14 @@ TEST(vershinina_a_integration_the_monte_carlo_method, Test_2) {
   }
 
   vershinina_a_integration_the_monte_carlo_method::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  testMpiTaskParallel.p = [](float x) { return exp(sin(4 * x) + 2 * pow(x, 2)); };
+  testMpiTaskParallel.p = [](double x) { return exp(sin(4 * x) + 2 * pow(x, 2)); };
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    std::vector<float> reference_res(1, 0);
+    std::vector<double> reference_res(1, 0);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
@@ -82,7 +82,7 @@ TEST(vershinina_a_integration_the_monte_carlo_method, Test_2) {
     taskDataSeq->outputs_count.emplace_back(reference_res.size());
 
     vershinina_a_integration_the_monte_carlo_method::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    testMpiTaskSequential.p = [](float x) { return exp(sqrt(pow(x, 2) * 2 + x + 1)); };
+    testMpiTaskSequential.p = [](double x) { return exp(sqrt(pow(x, 2) * 2 + x + 1)); };
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -93,8 +93,8 @@ TEST(vershinina_a_integration_the_monte_carlo_method, Test_2) {
 }
 TEST(vershinina_a_integration_the_monte_carlo_method, Test_3) {
   boost::mpi::communicator world;
-  std::vector<float> in;
-  std::vector<float> global_res(1, 0);
+  std::vector<double> in;
+  std::vector<double> global_res(1, 0);
   const int count_size_vector = 4;
   in = vershinina_a_integration_the_monte_carlo_method::getRandomVector(count_size_vector);
 
@@ -108,14 +108,14 @@ TEST(vershinina_a_integration_the_monte_carlo_method, Test_3) {
   }
 
   vershinina_a_integration_the_monte_carlo_method::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  testMpiTaskParallel.p = [](float x) { return exp(sin(4 * x) + 2 * pow(x, 2)); };
+  testMpiTaskParallel.p = [](double x) { return exp(sin(4 * x) + 2 * pow(x, 2)); };
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    std::vector<float> reference_res(1, 0);
+    std::vector<double> reference_res(1, 0);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
@@ -124,7 +124,7 @@ TEST(vershinina_a_integration_the_monte_carlo_method, Test_3) {
     taskDataSeq->outputs_count.emplace_back(reference_res.size());
 
     vershinina_a_integration_the_monte_carlo_method::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    testMpiTaskSequential.p = [](float x) { return exp(pow(x, 15) * sqrt(1 + 3 * pow(x, 8))); };
+    testMpiTaskSequential.p = [](double x) { return exp(pow(x, 15) * sqrt(1 + 3 * pow(x, 8))); };
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();

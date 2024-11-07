@@ -13,7 +13,7 @@
 
 namespace vershinina_a_integration_the_monte_carlo_method {
 
-std::vector<float> getRandomVector(float sz);
+std::vector<double> getRandomVector(double sz);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
@@ -22,15 +22,15 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  std::function<float(float)> p;
+  std::function<double(double)> p;
 
  private:
-  float xmin{};
-  float xmax{};
-  float ymin{};
-  float ymax{};
-  float *input_{};
-  float reference_res{};
+  double xmin{};
+  double xmax{};
+  double ymin{};
+  double ymax{};
+  double *input_{};
+  double reference_res{};
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -40,17 +40,17 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  std::function<float(float)> p;
-  float xmin{};
-  float xmax{};
-  float ymin{};
-  float ymax{};
-  float local_total;
-  float local_inBox;
+  std::function<double(double)> p;
+  double xmin{};
+  double xmax{};
+  double ymin{};
+  double ymax{};
+  double local_total;
+  double local_inBox;
 
  private:
-  std::vector<float> input_;
-  float global_res{};
+  std::vector<double> input_;
+  double global_res{};
   boost::mpi::communicator world;
 };
 }  // namespace vershinina_a_integration_the_monte_carlo_method

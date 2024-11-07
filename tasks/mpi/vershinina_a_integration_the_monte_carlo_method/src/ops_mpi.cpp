@@ -9,11 +9,11 @@
 
 using namespace std::chrono_literals;
 
-std::vector<float> vershinina_a_integration_the_monte_carlo_method::getRandomVector(float sz) {
+std::vector<double> vershinina_a_integration_the_monte_carlo_method::getRandomVector(double sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::uniform_int_distribution<> distr(0, 100);
-  std::vector<float> vec(sz);
+  std::vector<double> vec(sz);
   vec[0] = distr(gen);
   vec[1] = vec[0] + distr(gen);
   vec[2] = distr(gen);
@@ -23,7 +23,7 @@ std::vector<float> vershinina_a_integration_the_monte_carlo_method::getRandomVec
 
 bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskSequential::pre_processing() {
   internal_order_test();
-  input_ = reinterpret_cast<float*>(taskData->inputs[0]);
+  input_ = reinterpret_cast<double*>(taskData->inputs[0]);
   xmin = input_[0];
   xmax = input_[1];
   ymin = input_[2];
@@ -39,16 +39,16 @@ bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskSequential::val
 bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskSequential::run() {
   internal_order_test();
   int count;
-  float total = 0;
-  float inBox = 0;
+  double total = 0;
+  double inBox = 0;
   reference_res = 0;
   for (count = 0; count < 100000; count++) {
-    float u1 = (float)rand() / (float)RAND_MAX;
-    float u2 = (float)rand() / (float)RAND_MAX;
+    double u1 = (double)rand() / (double)RAND_MAX;
+    double u2 = (double)rand() / (double)RAND_MAX;
 
-    float xcoord = ((xmax - xmin) * u1) + xmin;
-    float ycoord = ((ymax - ymin) * u2) + ymin;
-    float val = p(xcoord);
+    double xcoord = ((xmax - xmin) * u1) + xmin;
+    double ycoord = ((ymax - ymin) * u2) + ymin;
+    double val = p(xcoord);
 
     ++total;
 
@@ -56,20 +56,20 @@ bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskSequential::run
       ++inBox;
     }
   }
-  float density = inBox / total;
+  double density = inBox / total;
 
   reference_res = (xmax - xmin) * (ymax - ymin) * density;
   return true;
 }
 bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskSequential::post_processing() {
   internal_order_test();
-  reinterpret_cast<float*>(taskData->outputs[0])[0] = reference_res;
+  reinterpret_cast<double*>(taskData->outputs[0])[0] = reference_res;
   return true;
 }
 
 bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  auto* pr = reinterpret_cast<float*>(taskData->inputs[0]);
+  auto* pr = reinterpret_cast<double*>(taskData->inputs[0]);
   if (world.rank() == 0) {
     input_.resize(taskData->inputs_count[0]);
     std::copy(pr, pr + input_.size(), input_.begin());
@@ -100,17 +100,17 @@ bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskParallel::run()
   int count;
   local_total = 0;
   local_inBox = 0;
-  float total;
-  float inBox;
+  double total;
+  double inBox;
   auto tgt = (100000 / world.size()) * (world.rank() + 1);
   for (count = (100000 / world.size()) * world.rank(); count < tgt; count++) {
-    float u1 = (float)rand() / (float)RAND_MAX;
-    float u2 = (float)rand() / (float)RAND_MAX;
+    double u1 = (double)rand() / (double)RAND_MAX;
+    double u2 = (double)rand() / (double)RAND_MAX;
 
-    float xcoord = ((xmax - xmin) * u1) + xmin;
-    float ycoord = ((ymax - ymin) * u2) + ymin;
+    double xcoord = ((xmax - xmin) * u1) + xmin;
+    double ycoord = ((ymax - ymin) * u2) + ymin;
 
-    float val = p(xcoord);
+    double val = p(xcoord);
 
     ++local_total;
 
@@ -121,7 +121,7 @@ bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskParallel::run()
   reduce(world, local_total, total, std::plus(), 0);
   reduce(world, local_inBox, inBox, std::plus(), 0);
 
-  float density = inBox / total;
+  double density = inBox / total;
 
   global_res = (xmax - xmin) * (ymax - ymin) * density;
 
@@ -131,7 +131,7 @@ bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskParallel::run()
 bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    reinterpret_cast<float*>(taskData->outputs[0])[0] = global_res;
+    reinterpret_cast<double*>(taskData->outputs[0])[0] = global_res;
   }
   return true;
 }

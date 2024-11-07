@@ -7,10 +7,8 @@
 #include "seq/vershinina_a_integration_the_monte_carlo_method/include/ops_seq.hpp"
 
 TEST(vershinina_a_integration_the_monte_carlo_method, test_pipeline_run) {
-  std::vector<float> in;
-  std::vector<float> reference_res(1, 0);
-  const float count_size_vector = 4;
-  in = vershinina_a_integration_the_monte_carlo_method::getRandomVector(count_size_vector);
+  std::vector<double> in{6, 13, 6, 13};
+  std::vector<double> reference_res(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
@@ -35,14 +33,12 @@ TEST(vershinina_a_integration_the_monte_carlo_method, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(count_size_vector, reference_res[0]);
+  ASSERT_EQ(reference_res[0], 97);
 }
 
 TEST(vershinina_a_integration_the_monte_carlo_method, test_task_run) {
-  std::vector<float> in;
-  std::vector<float> reference_res(1, 0);
-  const float count_size_vector = 4;
-  in = vershinina_a_integration_the_monte_carlo_method::getRandomVector(count_size_vector);
+  std::vector<double> in{5, 15, 5, 15};
+  std::vector<double> reference_res(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
@@ -67,5 +63,5 @@ TEST(vershinina_a_integration_the_monte_carlo_method, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(count_size_vector, reference_res[0]);
+  ASSERT_EQ(reference_res[0], 2168);
 }
