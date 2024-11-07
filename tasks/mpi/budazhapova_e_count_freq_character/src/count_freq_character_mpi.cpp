@@ -12,6 +12,7 @@ using namespace std::chrono_literals;
 
 int budazhapova_e_count_freq_character_mpi::counting_freq(std::string str) {
   char symb = str[0];
+  int res = 0;
   for (unsigned long i = 0; i < str.length(); i++) {
     if (str[i] == symb) {
       res++;
