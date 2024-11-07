@@ -118,7 +118,7 @@ TEST(laganina_e_sum_values_by_columns_matrix_mpi, Test_0_0_matrix) {
 
   // Create data
   std::vector<int> in = laganina_e_sum_values_by_columns_matrix_mpi::getRandomVector(n * m);
-  std::vector<int> empty_par(n, 0);
+  std::vector<int32_t> empty_par(n, 0);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -130,11 +130,11 @@ TEST(laganina_e_sum_values_by_columns_matrix_mpi, Test_0_0_matrix) {
     taskDataPar->inputs_count.emplace_back(n);
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(empty_par.data()));
-    taskDataPar->outputs_count.emplace_back(empty_par.size());
+    taskDataPar->outputs_count.emplace_back(n);
   }
 
   laganina_e_sum_values_by_columns_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  ASSERT_FALSE(testMpiTaskParallel.validation());
 }
 
 TEST(laganina_e_sum_values_by_columns_matrix_mpi, partest1) {
@@ -241,6 +241,7 @@ TEST(laganina_e_sum_values_by_columns_matrix_mpi, partest2) {
     ASSERT_EQ(empty_par, empty_seq);
   }
 }
+
 TEST(laganina_e_sum_values_by_columns_matrix_mpi, partest3) {
   boost::mpi::communicator world;
 

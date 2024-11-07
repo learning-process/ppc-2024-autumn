@@ -7,6 +7,7 @@
 
 namespace laganina_e_sum_values_by_columns_matrix_seq {
 
+std::vector<int> getRandomVector(int sz);
 class sum_values_by_columns_matrix_Seq : public ppc::core::Task {
  public:
   explicit sum_values_by_columns_matrix_Seq(std::shared_ptr<ppc::core::TaskData> taskData_)

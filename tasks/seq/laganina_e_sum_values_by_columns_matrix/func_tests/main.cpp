@@ -58,6 +58,30 @@ TEST(laganina_e_sum_values_by_columns_matrix_seq, Test_500_500_matrix) {
   testTaskSequential.post_processing();
   ASSERT_EQ(out, empty);
 }
+TEST(laganina_e_sum_values_by_columns_matrix_seq, Test_Rand_500_500_matrix) {
+  // Create data
+
+  int n = 500;
+  int m = 500;
+  std::vector<int> in = laganina_e_sum_values_by_columns_matrix_seq::getRandomVector(m * n);
+  std::vector<int> empty(n, 0);
+  std::vector<int> out(n, 0);
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
+  taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->inputs_count.emplace_back(m);
+  taskDataSeq->inputs_count.emplace_back(n);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(empty.data()));
+  taskDataSeq->outputs_count.emplace_back(empty.size());
+
+  // Create Task
+  laganina_e_sum_values_by_columns_matrix_seq::sum_values_by_columns_matrix_Seq testTaskSequential(taskDataSeq);
+  ASSERT_EQ(testTaskSequential.validation(), true);
+  ASSERT_TRUE(testTaskSequential.pre_processing());
+  ASSERT_TRUE(testTaskSequential.run());
+  ASSERT_TRUE(testTaskSequential.post_processing());
+}
 TEST(laganina_e_sum_values_by_columns_matrix_seq, Test_1000_1000_matrix) {
   // Create data
 
