@@ -1,0 +1,1512 @@
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/CMakeDetermineSystem.cmake:205 (message)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      The system is: Windows - 10.0.22631 - AMD64
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/CMakeDetermineCCompiler.cmake:123 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+      Compiler:  
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      Версия MSBuild 17.8.5+b5265ef37 для .NET Framework
+      Сборка начата 30.10.2024 3:51:22.
+      
+      Проект "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\3.31.0-rc2\\CompilerIdC\\CompilerIdC.vcxproj" в узле 1 (целевые объекты по умолчанию).
+      PrepareForBuild:
+        Создание каталога "Debug\\".
+        Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+        Создание каталога "Debug\\CompilerIdC.tlog\\".
+      InitializeBuildStatus:
+        Создание "Debug\\CompilerIdC.tlog\\unsuccessfulbuild", так как было задано "AlwaysCreate".
+        Обращение к "Debug\\CompilerIdC.tlog\\unsuccessfulbuild".
+      ClCompile:
+        C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\\\" /Fd"Debug\\vc143.pdb" /external:W0 /Gd /TC /FC /errorReport:queue CMakeCCompilerId.c
+        CMakeCCompilerId.c
+      Link:
+        C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdC.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdC.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdC.lib" /MACHINE:X64 Debug\\CMakeCCompilerId.obj
+        CompilerIdC.vcxproj -> D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\3.31.0-rc2\\CompilerIdC\\CompilerIdC.exe
+      PostBuildEvent:
+        for %%i in (cl.exe) do @echo CMAKE_C_COMPILER=%%~$PATH:i
+        :VCEnd
+        CMAKE_C_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe
+      FinalizeBuildStatus:
+        Файл "Debug\\CompilerIdC.tlog\\unsuccessfulbuild" удаляется.
+        Обращение к "Debug\\CompilerIdC.tlog\\CompilerIdC.lastbuildstate".
+      Сборка проекта "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\3.31.0-rc2\\CompilerIdC\\CompilerIdC.vcxproj" завершена (целевые объекты по умолчанию).
+      
+      Сборка успешно завершена.
+          Предупреждений: 0
+          Ошибок: 0
+      
+      Прошло времени 00:00:00.63
+      
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.exe"
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.vcxproj"
+      
+      The C compiler identification is MSVC, found in:
+        D:/LabaPPC/ppc-2024-autumn/CMakeFiles/3.31.0-rc2/CompilerIdC/CompilerIdC.exe
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler:  
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      Версия MSBuild 17.8.5+b5265ef37 для .NET Framework
+      Сборка начата 30.10.2024 3:51:23.
+      
+      Проект "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\3.31.0-rc2\\CompilerIdCXX\\CompilerIdCXX.vcxproj" в узле 1 (целевые объекты по умолчанию).
+      PrepareForBuild:
+        Создание каталога "Debug\\".
+        Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+        Создание каталога "Debug\\CompilerIdCXX.tlog\\".
+      InitializeBuildStatus:
+        Создание "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild", так как было задано "AlwaysCreate".
+        Обращение к "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild".
+      ClCompile:
+        C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\\\" /Fd"Debug\\vc143.pdb" /external:W0 /Gd /TP /FC /errorReport:queue CMakeCXXCompilerId.cpp
+        CMakeCXXCompilerId.cpp
+      Link:
+        C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdCXX.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdCXX.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdCXX.lib" /MACHINE:X64 Debug\\CMakeCXXCompilerId.obj
+        CompilerIdCXX.vcxproj -> D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\3.31.0-rc2\\CompilerIdCXX\\CompilerIdCXX.exe
+      PostBuildEvent:
+        for %%i in (cl.exe) do @echo CMAKE_CXX_COMPILER=%%~$PATH:i
+        :VCEnd
+        CMAKE_CXX_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\Hostx64\\x64\\cl.exe
+      FinalizeBuildStatus:
+        Файл "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild" удаляется.
+        Обращение к "Debug\\CompilerIdCXX.tlog\\CompilerIdCXX.lastbuildstate".
+      Сборка проекта "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\3.31.0-rc2\\CompilerIdCXX\\CompilerIdCXX.vcxproj" завершена (целевые объекты по умолчанию).
+      
+      Сборка успешно завершена.
+          Предупреждений: 0
+          Ошибок: 0
+      
+      Прошло времени 00:00:00.42
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.vcxproj"
+      
+      The CXX compiler identification is MSVC, found in:
+        D:/LabaPPC/ppc-2024-autumn/CMakeFiles/3.31.0-rc2/CompilerIdCXX/CompilerIdCXX.exe
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerABI.cmake:74 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:3 (project)"
+    checks:
+      - "Detecting C compiler ABI info"
+    directories:
+      source: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-w5hsqd"
+      binary: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-w5hsqd"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS"
+      CMAKE_C_FLAGS_DEBUG: "/Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "CMAKE_C_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-w5hsqd'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_91f06.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Версия MSBuild 17.8.5+b5265ef37 для .NET Framework
+        Сборка начата 30.10.2024 3:51:24.
+        
+        Проект "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-w5hsqd\\cmTC_91f06.vcxproj" в узле 1 (целевые объекты по умолчанию).
+        PrepareForBuild:
+          Создание каталога "cmTC_91f06.dir\\Debug\\".
+          Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+          Создание каталога "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-w5hsqd\\Debug\\".
+          Создание каталога "cmTC_91f06.dir\\Debug\\cmTC_91f06.tlog\\".
+        InitializeBuildStatus:
+          Создание "cmTC_91f06.dir\\Debug\\cmTC_91f06.tlog\\unsuccessfulbuild", так как было задано "AlwaysCreate".
+          Обращение к "cmTC_91f06.dir\\Debug\\cmTC_91f06.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_91f06.dir\\Debug\\\\" /Fd"cmTC_91f06.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TC /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-3.31\\Modules\\CMakeCCompilerABI.c"
+          Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.38.33134 для x64
+          (C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_91f06.dir\\Debug\\\\" /Fd"cmTC_91f06.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TC /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-3.31\\Modules\\CMakeCCompilerABI.c"
+          CMakeCCompilerABI.c
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-w5hsqd\\Debug\\cmTC_91f06.exe" /INCREMENTAL /ILK:"cmTC_91f06.dir\\Debug\\cmTC_91f06.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-w5hsqd/Debug/cmTC_91f06.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-w5hsqd/Debug/cmTC_91f06.lib" /MACHINE:X64  /machine:x64 cmTC_91f06.dir\\Debug\\CMakeCCompilerABI.obj
+          cmTC_91f06.vcxproj -> D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-w5hsqd\\Debug\\cmTC_91f06.exe
+        FinalizeBuildStatus:
+          Файл "cmTC_91f06.dir\\Debug\\cmTC_91f06.tlog\\unsuccessfulbuild" удаляется.
+          Обращение к "cmTC_91f06.dir\\Debug\\cmTC_91f06.tlog\\cmTC_91f06.lastbuildstate".
+        Сборка проекта "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-w5hsqd\\cmTC_91f06.vcxproj" завершена (целевые объекты по умолчанию).
+        
+        Сборка успешно завершена.
+            Предупреждений: 0
+            Ошибок: 0
+        
+        Прошло времени 00:00:00.37
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerABI.cmake:218 (message)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Parsed C implicit link information:
+        link line regex: [^( *|.*[/\\])(ld[0-9]*(\\.[a-z]+)?|link\\.exe|lld-link(\\.exe)?|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        linker tool regex: [^[ 	]*(->|")?[ 	]*(([^"]*[/\\])?(ld[0-9]*(\\.[a-z]+)?|link\\.exe|lld-link(\\.exe)?))("|,| |$)]
+        linker tool for 'C': C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.38.33130/bin/HostX64/x64/link.exe
+        implicit libs: []
+        implicit objs: []
+        implicit dirs: []
+        implicit fwks: []
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/Internal/CMakeDetermineLinkerId.cmake:40 (message)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerABI.cmake:255 (cmake_determine_linker_id)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Running the C compiler's linker: "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.38.33130/bin/HostX64/x64/link.exe" "-v"
+      Microsoft (R) Incremental Linker Version 14.38.33134.0
+      Copyright (C) Microsoft Corporation.  All rights reserved.
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerABI.cmake:74 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:3 (project)"
+    checks:
+      - "Detecting CXX compiler ABI info"
+    directories:
+      source: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-3gclzx"
+      binary: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-3gclzx"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /EHsc"
+      CMAKE_CXX_FLAGS_DEBUG: "/Ob0 /Od /RTC1"
+      CMAKE_CXX_SCAN_FOR_MODULES: "OFF"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "CMAKE_CXX_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-3gclzx'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_d8134.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Версия MSBuild 17.8.5+b5265ef37 для .NET Framework
+        Сборка начата 30.10.2024 3:51:25.
+        
+        Проект "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-3gclzx\\cmTC_d8134.vcxproj" в узле 1 (целевые объекты по умолчанию).
+        PrepareForBuild:
+          Создание каталога "cmTC_d8134.dir\\Debug\\".
+          Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+          Создание каталога "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-3gclzx\\Debug\\".
+          Создание каталога "cmTC_d8134.dir\\Debug\\cmTC_d8134.tlog\\".
+        InitializeBuildStatus:
+          Создание "cmTC_d8134.dir\\Debug\\cmTC_d8134.tlog\\unsuccessfulbuild", так как было задано "AlwaysCreate".
+          Обращение к "cmTC_d8134.dir\\Debug\\cmTC_d8134.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_d8134.dir\\Debug\\\\" /Fd"cmTC_d8134.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-3.31\\Modules\\CMakeCXXCompilerABI.cpp"
+          Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.38.33134 для x64
+          (C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_d8134.dir\\Debug\\\\" /Fd"cmTC_d8134.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-3.31\\Modules\\CMakeCXXCompilerABI.cpp"
+          CMakeCXXCompilerABI.cpp
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-3gclzx\\Debug\\cmTC_d8134.exe" /INCREMENTAL /ILK:"cmTC_d8134.dir\\Debug\\cmTC_d8134.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-3gclzx/Debug/cmTC_d8134.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-3gclzx/Debug/cmTC_d8134.lib" /MACHINE:X64  /machine:x64 cmTC_d8134.dir\\Debug\\CMakeCXXCompilerABI.obj
+          cmTC_d8134.vcxproj -> D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-3gclzx\\Debug\\cmTC_d8134.exe
+        FinalizeBuildStatus:
+          Файл "cmTC_d8134.dir\\Debug\\cmTC_d8134.tlog\\unsuccessfulbuild" удаляется.
+          Обращение к "cmTC_d8134.dir\\Debug\\cmTC_d8134.tlog\\cmTC_d8134.lastbuildstate".
+        Сборка проекта "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-3gclzx\\cmTC_d8134.vcxproj" завершена (целевые объекты по умолчанию).
+        
+        Сборка успешно завершена.
+            Предупреждений: 0
+            Ошибок: 0
+        
+        Прошло времени 00:00:00.40
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerABI.cmake:218 (message)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Parsed CXX implicit link information:
+        link line regex: [^( *|.*[/\\])(ld[0-9]*(\\.[a-z]+)?|link\\.exe|lld-link(\\.exe)?|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        linker tool regex: [^[ 	]*(->|")?[ 	]*(([^"]*[/\\])?(ld[0-9]*(\\.[a-z]+)?|link\\.exe|lld-link(\\.exe)?))("|,| |$)]
+        linker tool for 'CXX': C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.38.33130/bin/HostX64/x64/link.exe
+        implicit libs: []
+        implicit objs: []
+        implicit dirs: []
+        implicit fwks: []
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/Internal/CMakeDetermineLinkerId.cmake:40 (message)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/CMakeDetermineCompilerABI.cmake:255 (cmake_determine_linker_id)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:3 (project)"
+    message: |
+      Running the CXX compiler's linker: "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.38.33130/bin/HostX64/x64/link.exe" "-v"
+      Microsoft (R) Incremental Linker Version 14.38.33134.0
+      Copyright (C) Microsoft Corporation.  All rights reserved.
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindOpenMP.cmake:252 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindOpenMP.cmake:522 (_OPENMP_GET_FLAGS)"
+      - "CMakeLists.txt:27 (find_package)"
+    description: "Detecting C OpenMP compiler info"
+    directories:
+      source: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-5wk5yw"
+      binary: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-5wk5yw"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_C_FLAGS_DEBUG: "/Ob0 /Od /RTC1 /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "OpenMP_COMPILE_RESULT_C_openmp"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-5wk5yw'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_8fd50.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Версия MSBuild 17.8.5+b5265ef37 для .NET Framework
+        Сборка начата 30.10.2024 3:51:26.
+        
+        Проект "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-5wk5yw\\cmTC_8fd50.vcxproj" в узле 1 (целевые объекты по умолчанию).
+        PrepareForBuild:
+          Создание каталога "cmTC_8fd50.dir\\Debug\\".
+          Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+          Создание каталога "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-5wk5yw\\Debug\\".
+          Создание каталога "cmTC_8fd50.dir\\Debug\\cmTC_8fd50.tlog\\".
+        InitializeBuildStatus:
+          Создание "cmTC_8fd50.dir\\Debug\\cmTC_8fd50.tlog\\unsuccessfulbuild", так как было задано "AlwaysCreate".
+          Обращение к "cmTC_8fd50.dir\\Debug\\cmTC_8fd50.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /openmp /Fo"cmTC_8fd50.dir\\Debug\\\\" /Fd"cmTC_8fd50.dir\\Debug\\vc143.pdb" /external:W4 /Gd /TC /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-5wk5yw\\OpenMPTryFlag.c"
+          Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.38.33134 для x64
+          (C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+          cl /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /openmp /Fo"cmTC_8fd50.dir\\Debug\\\\" /Fd"cmTC_8fd50.dir\\Debug\\vc143.pdb" /external:W4 /Gd /TC /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-5wk5yw\\OpenMPTryFlag.c"
+          OpenMPTryFlag.c
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-5wk5yw\\Debug\\cmTC_8fd50.exe" /INCREMENTAL /ILK:"cmTC_8fd50.dir\\Debug\\cmTC_8fd50.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-5wk5yw/Debug/cmTC_8fd50.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-5wk5yw/Debug/cmTC_8fd50.lib" /MACHINE:X64  /machine:x64 cmTC_8fd50.dir\\Debug\\OpenMPTryFlag.obj
+          cmTC_8fd50.vcxproj -> D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-5wk5yw\\Debug\\cmTC_8fd50.exe
+        FinalizeBuildStatus:
+          Файл "cmTC_8fd50.dir\\Debug\\cmTC_8fd50.tlog\\unsuccessfulbuild" удаляется.
+          Обращение к "cmTC_8fd50.dir\\Debug\\cmTC_8fd50.tlog\\cmTC_8fd50.lastbuildstate".
+        Сборка проекта "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-5wk5yw\\cmTC_8fd50.vcxproj" завершена (целевые объекты по умолчанию).
+        
+        Сборка успешно завершена.
+            Предупреждений: 0
+            Ошибок: 0
+        
+        Прошло времени 00:00:00.38
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindOpenMP.cmake:252 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindOpenMP.cmake:522 (_OPENMP_GET_FLAGS)"
+      - "CMakeLists.txt:27 (find_package)"
+    description: "Detecting CXX OpenMP compiler info"
+    directories:
+      source: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-t4jwi8"
+      binary: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-t4jwi8"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /EHsc /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_CXX_FLAGS_DEBUG: "/Ob0 /Od /RTC1 /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "OpenMP_COMPILE_RESULT_CXX_openmp"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-t4jwi8'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_8ed5e.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Версия MSBuild 17.8.5+b5265ef37 для .NET Framework
+        Сборка начата 30.10.2024 3:51:27.
+        
+        Проект "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-t4jwi8\\cmTC_8ed5e.vcxproj" в узле 1 (целевые объекты по умолчанию).
+        PrepareForBuild:
+          Создание каталога "cmTC_8ed5e.dir\\Debug\\".
+          Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+          Создание каталога "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-t4jwi8\\Debug\\".
+          Создание каталога "cmTC_8ed5e.dir\\Debug\\cmTC_8ed5e.tlog\\".
+        InitializeBuildStatus:
+          Создание "cmTC_8ed5e.dir\\Debug\\cmTC_8ed5e.tlog\\unsuccessfulbuild", так как было задано "AlwaysCreate".
+          Обращение к "cmTC_8ed5e.dir\\Debug\\cmTC_8ed5e.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /openmp /std:c++20 /Fo"cmTC_8ed5e.dir\\Debug\\\\" /Fd"cmTC_8ed5e.dir\\Debug\\vc143.pdb" /external:W4 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-t4jwi8\\OpenMPTryFlag.cpp"
+          Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.38.33134 для x64
+          (C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+          cl /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /openmp /std:c++20 /Fo"cmTC_8ed5e.dir\\Debug\\\\" /Fd"cmTC_8ed5e.dir\\Debug\\vc143.pdb" /external:W4 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-t4jwi8\\OpenMPTryFlag.cpp"
+          OpenMPTryFlag.cpp
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-t4jwi8\\Debug\\cmTC_8ed5e.exe" /INCREMENTAL /ILK:"cmTC_8ed5e.dir\\Debug\\cmTC_8ed5e.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-t4jwi8/Debug/cmTC_8ed5e.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-t4jwi8/Debug/cmTC_8ed5e.lib" /MACHINE:X64  /machine:x64 cmTC_8ed5e.dir\\Debug\\OpenMPTryFlag.obj
+          cmTC_8ed5e.vcxproj -> D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-t4jwi8\\Debug\\cmTC_8ed5e.exe
+        FinalizeBuildStatus:
+          Файл "cmTC_8ed5e.dir\\Debug\\cmTC_8ed5e.tlog\\unsuccessfulbuild" удаляется.
+          Обращение к "cmTC_8ed5e.dir\\Debug\\cmTC_8ed5e.tlog\\cmTC_8ed5e.lastbuildstate".
+        Сборка проекта "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-t4jwi8\\cmTC_8ed5e.vcxproj" завершена (целевые объекты по умолчанию).
+        
+        Сборка успешно завершена.
+            Предупреждений: 0
+            Ошибок: 0
+        
+        Прошло времени 00:00:00.38
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindOpenMP.cmake:456 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindOpenMP.cmake:596 (_OPENMP_GET_SPEC_DATE)"
+      - "CMakeLists.txt:27 (find_package)"
+    description: "Detecting C OpenMP version"
+    directories:
+      source: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-0beedq"
+      binary: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-0beedq"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_C_FLAGS_DEBUG: "/Ob0 /Od /RTC1 /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "OpenMP_SPECTEST_C_"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-0beedq'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_3ecc8.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Версия MSBuild 17.8.5+b5265ef37 для .NET Framework
+        Сборка начата 30.10.2024 3:51:27.
+        
+        Проект "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-0beedq\\cmTC_3ecc8.vcxproj" в узле 1 (целевые объекты по умолчанию).
+        PrepareForBuild:
+          Создание каталога "cmTC_3ecc8.dir\\Debug\\".
+          Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+          Создание каталога "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-0beedq\\Debug\\".
+          Создание каталога "cmTC_3ecc8.dir\\Debug\\cmTC_3ecc8.tlog\\".
+        InitializeBuildStatus:
+          Создание "cmTC_3ecc8.dir\\Debug\\cmTC_3ecc8.tlog\\unsuccessfulbuild", так как было задано "AlwaysCreate".
+          Обращение к "cmTC_3ecc8.dir\\Debug\\cmTC_3ecc8.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /openmp /Fo"cmTC_3ecc8.dir\\Debug\\\\" /Fd"cmTC_3ecc8.dir\\Debug\\vc143.pdb" /external:W4 /Gd /TC /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-0beedq\\OpenMPCheckVersion.c"
+          Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.38.33134 для x64
+          (C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+          cl /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /openmp /Fo"cmTC_3ecc8.dir\\Debug\\\\" /Fd"cmTC_3ecc8.dir\\Debug\\vc143.pdb" /external:W4 /Gd /TC /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-0beedq\\OpenMPCheckVersion.c"
+          OpenMPCheckVersion.c
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-0beedq\\Debug\\cmTC_3ecc8.exe" /INCREMENTAL /ILK:"cmTC_3ecc8.dir\\Debug\\cmTC_3ecc8.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-0beedq/Debug/cmTC_3ecc8.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-0beedq/Debug/cmTC_3ecc8.lib" /MACHINE:X64  /machine:x64 cmTC_3ecc8.dir\\Debug\\OpenMPCheckVersion.obj
+          cmTC_3ecc8.vcxproj -> D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-0beedq\\Debug\\cmTC_3ecc8.exe
+        FinalizeBuildStatus:
+          Файл "cmTC_3ecc8.dir\\Debug\\cmTC_3ecc8.tlog\\unsuccessfulbuild" удаляется.
+          Обращение к "cmTC_3ecc8.dir\\Debug\\cmTC_3ecc8.tlog\\cmTC_3ecc8.lastbuildstate".
+        Сборка проекта "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-0beedq\\cmTC_3ecc8.vcxproj" завершена (целевые объекты по умолчанию).
+        
+        Сборка успешно завершена.
+            Предупреждений: 0
+            Ошибок: 0
+        
+        Прошло времени 00:00:00.39
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindOpenMP.cmake:456 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindOpenMP.cmake:596 (_OPENMP_GET_SPEC_DATE)"
+      - "CMakeLists.txt:27 (find_package)"
+    description: "Detecting CXX OpenMP version"
+    directories:
+      source: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-f193q9"
+      binary: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-f193q9"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /EHsc /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_CXX_FLAGS_DEBUG: "/Ob0 /Od /RTC1 /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "OpenMP_SPECTEST_CXX_"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-f193q9'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_732c9.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Версия MSBuild 17.8.5+b5265ef37 для .NET Framework
+        Сборка начата 30.10.2024 3:51:28.
+        
+        Проект "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-f193q9\\cmTC_732c9.vcxproj" в узле 1 (целевые объекты по умолчанию).
+        PrepareForBuild:
+          Создание каталога "cmTC_732c9.dir\\Debug\\".
+          Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+          Создание каталога "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-f193q9\\Debug\\".
+          Создание каталога "cmTC_732c9.dir\\Debug\\cmTC_732c9.tlog\\".
+        InitializeBuildStatus:
+          Создание "cmTC_732c9.dir\\Debug\\cmTC_732c9.tlog\\unsuccessfulbuild", так как было задано "AlwaysCreate".
+          Обращение к "cmTC_732c9.dir\\Debug\\cmTC_732c9.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /openmp /std:c++20 /Fo"cmTC_732c9.dir\\Debug\\\\" /Fd"cmTC_732c9.dir\\Debug\\vc143.pdb" /external:W4 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-f193q9\\OpenMPCheckVersion.cpp"
+          Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.38.33134 для x64
+          (C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+          cl /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /openmp /std:c++20 /Fo"cmTC_732c9.dir\\Debug\\\\" /Fd"cmTC_732c9.dir\\Debug\\vc143.pdb" /external:W4 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-f193q9\\OpenMPCheckVersion.cpp"
+          OpenMPCheckVersion.cpp
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-f193q9\\Debug\\cmTC_732c9.exe" /INCREMENTAL /ILK:"cmTC_732c9.dir\\Debug\\cmTC_732c9.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-f193q9/Debug/cmTC_732c9.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-f193q9/Debug/cmTC_732c9.lib" /MACHINE:X64  /machine:x64 cmTC_732c9.dir\\Debug\\OpenMPCheckVersion.obj
+          cmTC_732c9.vcxproj -> D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-f193q9\\Debug\\cmTC_732c9.exe
+        FinalizeBuildStatus:
+          Файл "cmTC_732c9.dir\\Debug\\cmTC_732c9.tlog\\unsuccessfulbuild" удаляется.
+          Обращение к "cmTC_732c9.dir\\Debug\\cmTC_732c9.tlog\\cmTC_732c9.lastbuildstate".
+        Сборка проекта "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-f193q9\\cmTC_732c9.vcxproj" завершена (целевые объекты по умолчанию).
+        
+        Сборка успешно завершена.
+            Предупреждений: 0
+            Ошибок: 0
+        
+        Прошло времени 00:00:00.39
+        
+      exitCode: 0
+...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1283 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1327 (_MPI_try_staged_settings)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1650 (_MPI_check_lang_works)"
+      - "CMakeLists.txt:15 (find_package)"
+    description: "The MPI test test_mpi for C in mode normal"
+    directories:
+      source: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-t1pwui"
+      binary: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-t1pwui"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_C_FLAGS_DEBUG: "/Ob0 /Od /RTC1 /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "MPI_RESULT_C_test_mpi_normal"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-t1pwui'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_a392c.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Версия MSBuild 17.8.5+b5265ef37 для .NET Framework
+        Сборка начата 30.10.2024 3:51:54.
+        
+        Проект "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-t1pwui\\cmTC_a392c.vcxproj" в узле 1 (целевые объекты по умолчанию).
+        PrepareForBuild:
+          Создание каталога "cmTC_a392c.dir\\Debug\\".
+          Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+          Создание каталога "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-t1pwui\\Debug\\".
+          Создание каталога "cmTC_a392c.dir\\Debug\\cmTC_a392c.tlog\\".
+        InitializeBuildStatus:
+          Создание "cmTC_a392c.dir\\Debug\\cmTC_a392c.tlog\\unsuccessfulbuild", так как было задано "AlwaysCreate".
+          Обращение к "cmTC_a392c.dir\\Debug\\cmTC_a392c.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_a392c.dir\\Debug\\\\" /Fd"cmTC_a392c.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TC /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-t1pwui\\test_mpi.c"
+          Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.38.33134 для x64
+          (C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+          cl /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_a392c.dir\\Debug\\\\" /Fd"cmTC_a392c.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TC /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-t1pwui\\test_mpi.c"
+          test_mpi.c
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-t1pwui\\Debug\\cmTC_a392c.exe" /INCREMENTAL /ILK:"cmTC_a392c.dir\\Debug\\cmTC_a392c.ilk" /NOLOGO "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\Lib\\x64\\msmpi.lib" kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-t1pwui/Debug/cmTC_a392c.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-t1pwui/Debug/cmTC_a392c.lib" /MACHINE:X64  /machine:x64 cmTC_a392c.dir\\Debug\\test_mpi.obj
+          cmTC_a392c.vcxproj -> D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-t1pwui\\Debug\\cmTC_a392c.exe
+        FinalizeBuildStatus:
+          Файл "cmTC_a392c.dir\\Debug\\cmTC_a392c.tlog\\unsuccessfulbuild" удаляется.
+          Обращение к "cmTC_a392c.dir\\Debug\\cmTC_a392c.tlog\\cmTC_a392c.lastbuildstate".
+        Сборка проекта "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-t1pwui\\cmTC_a392c.vcxproj" завершена (целевые объекты по умолчанию).
+        
+        Сборка успешно завершена.
+            Предупреждений: 0
+            Ошибок: 0
+        
+        Прошло времени 00:00:00.39
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1283 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1327 (_MPI_try_staged_settings)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1650 (_MPI_check_lang_works)"
+      - "CMakeLists.txt:15 (find_package)"
+    description: "The MPI test test_mpi for CXX in mode normal"
+    directories:
+      source: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-upw59w"
+      binary: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-upw59w"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /EHsc /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_CXX_FLAGS_DEBUG: "/Ob0 /Od /RTC1 /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "MPI_RESULT_CXX_test_mpi_normal"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-upw59w'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_fb5c4.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Версия MSBuild 17.8.5+b5265ef37 для .NET Framework
+        Сборка начата 30.10.2024 3:51:55.
+        
+        Проект "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-upw59w\\cmTC_fb5c4.vcxproj" в узле 1 (целевые объекты по умолчанию).
+        PrepareForBuild:
+          Создание каталога "cmTC_fb5c4.dir\\Debug\\".
+          Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+          Создание каталога "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-upw59w\\Debug\\".
+          Создание каталога "cmTC_fb5c4.dir\\Debug\\cmTC_fb5c4.tlog\\".
+        InitializeBuildStatus:
+          Создание "cmTC_fb5c4.dir\\Debug\\cmTC_fb5c4.tlog\\unsuccessfulbuild", так как было задано "AlwaysCreate".
+          Обращение к "cmTC_fb5c4.dir\\Debug\\cmTC_fb5c4.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++20 /Fo"cmTC_fb5c4.dir\\Debug\\\\" /Fd"cmTC_fb5c4.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-upw59w\\test_mpi.cpp"
+          Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.38.33134 для x64
+          (C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+          cl /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++20 /Fo"cmTC_fb5c4.dir\\Debug\\\\" /Fd"cmTC_fb5c4.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-upw59w\\test_mpi.cpp"
+          test_mpi.cpp
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-upw59w\\Debug\\cmTC_fb5c4.exe" /INCREMENTAL /ILK:"cmTC_fb5c4.dir\\Debug\\cmTC_fb5c4.ilk" /NOLOGO "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\Lib\\x64\\msmpi.lib" kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-upw59w/Debug/cmTC_fb5c4.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-upw59w/Debug/cmTC_fb5c4.lib" /MACHINE:X64  /machine:x64 cmTC_fb5c4.dir\\Debug\\test_mpi.obj
+          cmTC_fb5c4.vcxproj -> D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-upw59w\\Debug\\cmTC_fb5c4.exe
+        FinalizeBuildStatus:
+          Файл "cmTC_fb5c4.dir\\Debug\\cmTC_fb5c4.tlog\\unsuccessfulbuild" удаляется.
+          Обращение к "cmTC_fb5c4.dir\\Debug\\cmTC_fb5c4.tlog\\cmTC_fb5c4.lastbuildstate".
+        Сборка проекта "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-upw59w\\cmTC_fb5c4.vcxproj" завершена (целевые объекты по умолчанию).
+        
+        Сборка успешно завершена.
+            Предупреждений: 0
+            Ошибок: 0
+        
+        Прошло времени 00:00:00.42
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1283 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1677 (_MPI_try_staged_settings)"
+      - "CMakeLists.txt:15 (find_package)"
+    description: "The MPI test test_mpi for CXX in mode MPICXX"
+    directories:
+      source: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-7dz528"
+      binary: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-7dz528"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /EHsc /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_CXX_FLAGS_DEBUG: "/Ob0 /Od /RTC1 /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "MPI_RESULT_CXX_test_mpi_MPICXX"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-7dz528'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_d1c7a.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Версия MSBuild 17.8.5+b5265ef37 для .NET Framework
+        Сборка начата 30.10.2024 3:51:56.
+        
+        Проект "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-7dz528\\cmTC_d1c7a.vcxproj" в узле 1 (целевые объекты по умолчанию).
+        PrepareForBuild:
+          Создание каталога "cmTC_d1c7a.dir\\Debug\\".
+          Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+          Создание каталога "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-7dz528\\Debug\\".
+          Создание каталога "cmTC_d1c7a.dir\\Debug\\cmTC_d1c7a.tlog\\".
+        InitializeBuildStatus:
+          Создание "cmTC_d1c7a.dir\\Debug\\cmTC_d1c7a.tlog\\unsuccessfulbuild", так как было задано "AlwaysCreate".
+          Обращение к "cmTC_d1c7a.dir\\Debug\\cmTC_d1c7a.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++20 /Fo"cmTC_d1c7a.dir\\Debug\\\\" /Fd"cmTC_d1c7a.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-7dz528\\test_mpi.cpp"
+          Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.38.33134 для x64
+          (C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+          cl /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++20 /Fo"cmTC_d1c7a.dir\\Debug\\\\" /Fd"cmTC_d1c7a.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-7dz528\\test_mpi.cpp"
+          test_mpi.cpp
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-7dz528\\Debug\\cmTC_d1c7a.exe" /INCREMENTAL /ILK:"cmTC_d1c7a.dir\\Debug\\cmTC_d1c7a.ilk" /NOLOGO "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\Lib\\x64\\msmpi.lib" kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-7dz528/Debug/cmTC_d1c7a.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-7dz528/Debug/cmTC_d1c7a.lib" /MACHINE:X64  /machine:x64 cmTC_d1c7a.dir\\Debug\\test_mpi.obj
+          cmTC_d1c7a.vcxproj -> D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-7dz528\\Debug\\cmTC_d1c7a.exe
+        FinalizeBuildStatus:
+          Файл "cmTC_d1c7a.dir\\Debug\\cmTC_d1c7a.tlog\\unsuccessfulbuild" удаляется.
+          Обращение к "cmTC_d1c7a.dir\\Debug\\cmTC_d1c7a.tlog\\cmTC_d1c7a.lastbuildstate".
+        Сборка проекта "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-7dz528\\cmTC_d1c7a.vcxproj" завершена (целевые объекты по умолчанию).
+        
+        Сборка успешно завершена.
+            Предупреждений: 0
+            Ошибок: 0
+        
+        Прошло времени 00:00:00.41
+        
+      exitCode: 0
+...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1283 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1327 (_MPI_try_staged_settings)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1650 (_MPI_check_lang_works)"
+      - "CMakeLists.txt:15 (find_package)"
+    description: "The MPI test test_mpi for C in mode normal"
+    directories:
+      source: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-mtlyr5"
+      binary: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-mtlyr5"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_C_FLAGS_DEBUG: "/Ob0 /Od /RTC1 /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "MPI_RESULT_C_test_mpi_normal"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-mtlyr5'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_d416d.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Версия MSBuild 17.8.5+b5265ef37 для .NET Framework
+        Сборка начата 30.10.2024 3:52:45.
+        
+        Проект "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-mtlyr5\\cmTC_d416d.vcxproj" в узле 1 (целевые объекты по умолчанию).
+        PrepareForBuild:
+          Создание каталога "cmTC_d416d.dir\\Debug\\".
+          Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+          Создание каталога "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-mtlyr5\\Debug\\".
+          Создание каталога "cmTC_d416d.dir\\Debug\\cmTC_d416d.tlog\\".
+        InitializeBuildStatus:
+          Создание "cmTC_d416d.dir\\Debug\\cmTC_d416d.tlog\\unsuccessfulbuild", так как было задано "AlwaysCreate".
+          Обращение к "cmTC_d416d.dir\\Debug\\cmTC_d416d.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_d416d.dir\\Debug\\\\" /Fd"cmTC_d416d.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TC /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-mtlyr5\\test_mpi.c"
+          Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.38.33134 для x64
+          (C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+          cl /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_d416d.dir\\Debug\\\\" /Fd"cmTC_d416d.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TC /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-mtlyr5\\test_mpi.c"
+          test_mpi.c
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-mtlyr5\\Debug\\cmTC_d416d.exe" /INCREMENTAL /ILK:"cmTC_d416d.dir\\Debug\\cmTC_d416d.ilk" /NOLOGO "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\Lib\\x64\\msmpi.lib" kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-mtlyr5/Debug/cmTC_d416d.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-mtlyr5/Debug/cmTC_d416d.lib" /MACHINE:X64  /machine:x64 cmTC_d416d.dir\\Debug\\test_mpi.obj
+          cmTC_d416d.vcxproj -> D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-mtlyr5\\Debug\\cmTC_d416d.exe
+        FinalizeBuildStatus:
+          Файл "cmTC_d416d.dir\\Debug\\cmTC_d416d.tlog\\unsuccessfulbuild" удаляется.
+          Обращение к "cmTC_d416d.dir\\Debug\\cmTC_d416d.tlog\\cmTC_d416d.lastbuildstate".
+        Сборка проекта "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-mtlyr5\\cmTC_d416d.vcxproj" завершена (целевые объекты по умолчанию).
+        
+        Сборка успешно завершена.
+            Предупреждений: 0
+            Ошибок: 0
+        
+        Прошло времени 00:00:00.42
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1283 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1327 (_MPI_try_staged_settings)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1650 (_MPI_check_lang_works)"
+      - "CMakeLists.txt:15 (find_package)"
+    description: "The MPI test test_mpi for CXX in mode normal"
+    directories:
+      source: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-ba6eqr"
+      binary: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-ba6eqr"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /EHsc /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_CXX_FLAGS_DEBUG: "/Ob0 /Od /RTC1 /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "MPI_RESULT_CXX_test_mpi_normal"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-ba6eqr'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_fe36d.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Версия MSBuild 17.8.5+b5265ef37 для .NET Framework
+        Сборка начата 30.10.2024 3:52:47.
+        
+        Проект "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-ba6eqr\\cmTC_fe36d.vcxproj" в узле 1 (целевые объекты по умолчанию).
+        PrepareForBuild:
+          Создание каталога "cmTC_fe36d.dir\\Debug\\".
+          Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+          Создание каталога "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-ba6eqr\\Debug\\".
+          Создание каталога "cmTC_fe36d.dir\\Debug\\cmTC_fe36d.tlog\\".
+        InitializeBuildStatus:
+          Создание "cmTC_fe36d.dir\\Debug\\cmTC_fe36d.tlog\\unsuccessfulbuild", так как было задано "AlwaysCreate".
+          Обращение к "cmTC_fe36d.dir\\Debug\\cmTC_fe36d.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++20 /Fo"cmTC_fe36d.dir\\Debug\\\\" /Fd"cmTC_fe36d.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-ba6eqr\\test_mpi.cpp"
+          Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.38.33134 для x64
+          (C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+          cl /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++20 /Fo"cmTC_fe36d.dir\\Debug\\\\" /Fd"cmTC_fe36d.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-ba6eqr\\test_mpi.cpp"
+          test_mpi.cpp
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-ba6eqr\\Debug\\cmTC_fe36d.exe" /INCREMENTAL /ILK:"cmTC_fe36d.dir\\Debug\\cmTC_fe36d.ilk" /NOLOGO "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\Lib\\x64\\msmpi.lib" kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-ba6eqr/Debug/cmTC_fe36d.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-ba6eqr/Debug/cmTC_fe36d.lib" /MACHINE:X64  /machine:x64 cmTC_fe36d.dir\\Debug\\test_mpi.obj
+          cmTC_fe36d.vcxproj -> D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-ba6eqr\\Debug\\cmTC_fe36d.exe
+        FinalizeBuildStatus:
+          Файл "cmTC_fe36d.dir\\Debug\\cmTC_fe36d.tlog\\unsuccessfulbuild" удаляется.
+          Обращение к "cmTC_fe36d.dir\\Debug\\cmTC_fe36d.tlog\\cmTC_fe36d.lastbuildstate".
+        Сборка проекта "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-ba6eqr\\cmTC_fe36d.vcxproj" завершена (целевые объекты по умолчанию).
+        
+        Сборка успешно завершена.
+            Предупреждений: 0
+            Ошибок: 0
+        
+        Прошло времени 00:00:00.36
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1283 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1677 (_MPI_try_staged_settings)"
+      - "CMakeLists.txt:15 (find_package)"
+    description: "The MPI test test_mpi for CXX in mode MPICXX"
+    directories:
+      source: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-rjmot4"
+      binary: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-rjmot4"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /EHsc /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_CXX_FLAGS_DEBUG: "/Ob0 /Od /RTC1 /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "MPI_RESULT_CXX_test_mpi_MPICXX"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-rjmot4'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_82637.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Версия MSBuild 17.8.5+b5265ef37 для .NET Framework
+        Сборка начата 30.10.2024 3:52:47.
+        
+        Проект "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-rjmot4\\cmTC_82637.vcxproj" в узле 1 (целевые объекты по умолчанию).
+        PrepareForBuild:
+          Создание каталога "cmTC_82637.dir\\Debug\\".
+          Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+          Создание каталога "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-rjmot4\\Debug\\".
+          Создание каталога "cmTC_82637.dir\\Debug\\cmTC_82637.tlog\\".
+        InitializeBuildStatus:
+          Создание "cmTC_82637.dir\\Debug\\cmTC_82637.tlog\\unsuccessfulbuild", так как было задано "AlwaysCreate".
+          Обращение к "cmTC_82637.dir\\Debug\\cmTC_82637.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++20 /Fo"cmTC_82637.dir\\Debug\\\\" /Fd"cmTC_82637.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-rjmot4\\test_mpi.cpp"
+          Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.38.33134 для x64
+          (C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+          cl /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++20 /Fo"cmTC_82637.dir\\Debug\\\\" /Fd"cmTC_82637.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-rjmot4\\test_mpi.cpp"
+          test_mpi.cpp
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-rjmot4\\Debug\\cmTC_82637.exe" /INCREMENTAL /ILK:"cmTC_82637.dir\\Debug\\cmTC_82637.ilk" /NOLOGO "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\Lib\\x64\\msmpi.lib" kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-rjmot4/Debug/cmTC_82637.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-rjmot4/Debug/cmTC_82637.lib" /MACHINE:X64  /machine:x64 cmTC_82637.dir\\Debug\\test_mpi.obj
+          cmTC_82637.vcxproj -> D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-rjmot4\\Debug\\cmTC_82637.exe
+        FinalizeBuildStatus:
+          Файл "cmTC_82637.dir\\Debug\\cmTC_82637.tlog\\unsuccessfulbuild" удаляется.
+          Обращение к "cmTC_82637.dir\\Debug\\cmTC_82637.tlog\\cmTC_82637.lastbuildstate".
+        Сборка проекта "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-rjmot4\\cmTC_82637.vcxproj" завершена (целевые объекты по умолчанию).
+        
+        Сборка успешно завершена.
+            Предупреждений: 0
+            Ошибок: 0
+        
+        Прошло времени 00:00:00.38
+        
+      exitCode: 0
+...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1283 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1327 (_MPI_try_staged_settings)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1650 (_MPI_check_lang_works)"
+      - "CMakeLists.txt:15 (find_package)"
+    description: "The MPI test test_mpi for C in mode normal"
+    directories:
+      source: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-r5hmy4"
+      binary: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-r5hmy4"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_C_FLAGS_DEBUG: "/Ob0 /Od /RTC1 /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "MPI_RESULT_C_test_mpi_normal"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-r5hmy4'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_0e7aa.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Версия MSBuild 17.8.5+b5265ef37 для .NET Framework
+        Сборка начата 30.10.2024 3:52:54.
+        
+        Проект "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-r5hmy4\\cmTC_0e7aa.vcxproj" в узле 1 (целевые объекты по умолчанию).
+        PrepareForBuild:
+          Создание каталога "cmTC_0e7aa.dir\\Debug\\".
+          Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+          Создание каталога "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-r5hmy4\\Debug\\".
+          Создание каталога "cmTC_0e7aa.dir\\Debug\\cmTC_0e7aa.tlog\\".
+        InitializeBuildStatus:
+          Создание "cmTC_0e7aa.dir\\Debug\\cmTC_0e7aa.tlog\\unsuccessfulbuild", так как было задано "AlwaysCreate".
+          Обращение к "cmTC_0e7aa.dir\\Debug\\cmTC_0e7aa.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_0e7aa.dir\\Debug\\\\" /Fd"cmTC_0e7aa.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TC /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-r5hmy4\\test_mpi.c"
+          Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.38.33134 для x64
+          (C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+          cl /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_0e7aa.dir\\Debug\\\\" /Fd"cmTC_0e7aa.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TC /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-r5hmy4\\test_mpi.c"
+          test_mpi.c
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-r5hmy4\\Debug\\cmTC_0e7aa.exe" /INCREMENTAL /ILK:"cmTC_0e7aa.dir\\Debug\\cmTC_0e7aa.ilk" /NOLOGO "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\Lib\\x64\\msmpi.lib" kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-r5hmy4/Debug/cmTC_0e7aa.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-r5hmy4/Debug/cmTC_0e7aa.lib" /MACHINE:X64  /machine:x64 cmTC_0e7aa.dir\\Debug\\test_mpi.obj
+          cmTC_0e7aa.vcxproj -> D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-r5hmy4\\Debug\\cmTC_0e7aa.exe
+        FinalizeBuildStatus:
+          Файл "cmTC_0e7aa.dir\\Debug\\cmTC_0e7aa.tlog\\unsuccessfulbuild" удаляется.
+          Обращение к "cmTC_0e7aa.dir\\Debug\\cmTC_0e7aa.tlog\\cmTC_0e7aa.lastbuildstate".
+        Сборка проекта "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-r5hmy4\\cmTC_0e7aa.vcxproj" завершена (целевые объекты по умолчанию).
+        
+        Сборка успешно завершена.
+            Предупреждений: 0
+            Ошибок: 0
+        
+        Прошло времени 00:00:00.42
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1283 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1327 (_MPI_try_staged_settings)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1650 (_MPI_check_lang_works)"
+      - "CMakeLists.txt:15 (find_package)"
+    description: "The MPI test test_mpi for CXX in mode normal"
+    directories:
+      source: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-vres2a"
+      binary: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-vres2a"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /EHsc /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_CXX_FLAGS_DEBUG: "/Ob0 /Od /RTC1 /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "MPI_RESULT_CXX_test_mpi_normal"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-vres2a'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_b1de8.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Версия MSBuild 17.8.5+b5265ef37 для .NET Framework
+        Сборка начата 30.10.2024 3:52:55.
+        
+        Проект "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-vres2a\\cmTC_b1de8.vcxproj" в узле 1 (целевые объекты по умолчанию).
+        PrepareForBuild:
+          Создание каталога "cmTC_b1de8.dir\\Debug\\".
+          Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+          Создание каталога "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-vres2a\\Debug\\".
+          Создание каталога "cmTC_b1de8.dir\\Debug\\cmTC_b1de8.tlog\\".
+        InitializeBuildStatus:
+          Создание "cmTC_b1de8.dir\\Debug\\cmTC_b1de8.tlog\\unsuccessfulbuild", так как было задано "AlwaysCreate".
+          Обращение к "cmTC_b1de8.dir\\Debug\\cmTC_b1de8.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++20 /Fo"cmTC_b1de8.dir\\Debug\\\\" /Fd"cmTC_b1de8.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-vres2a\\test_mpi.cpp"
+          Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.38.33134 для x64
+          (C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+          cl /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++20 /Fo"cmTC_b1de8.dir\\Debug\\\\" /Fd"cmTC_b1de8.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-vres2a\\test_mpi.cpp"
+          test_mpi.cpp
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-vres2a\\Debug\\cmTC_b1de8.exe" /INCREMENTAL /ILK:"cmTC_b1de8.dir\\Debug\\cmTC_b1de8.ilk" /NOLOGO "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\Lib\\x64\\msmpi.lib" kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-vres2a/Debug/cmTC_b1de8.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-vres2a/Debug/cmTC_b1de8.lib" /MACHINE:X64  /machine:x64 cmTC_b1de8.dir\\Debug\\test_mpi.obj
+          cmTC_b1de8.vcxproj -> D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-vres2a\\Debug\\cmTC_b1de8.exe
+        FinalizeBuildStatus:
+          Файл "cmTC_b1de8.dir\\Debug\\cmTC_b1de8.tlog\\unsuccessfulbuild" удаляется.
+          Обращение к "cmTC_b1de8.dir\\Debug\\cmTC_b1de8.tlog\\cmTC_b1de8.lastbuildstate".
+        Сборка проекта "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-vres2a\\cmTC_b1de8.vcxproj" завершена (целевые объекты по умолчанию).
+        
+        Сборка успешно завершена.
+            Предупреждений: 0
+            Ошибок: 0
+        
+        Прошло времени 00:00:00.42
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1283 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1677 (_MPI_try_staged_settings)"
+      - "CMakeLists.txt:15 (find_package)"
+    description: "The MPI test test_mpi for CXX in mode MPICXX"
+    directories:
+      source: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-um0el3"
+      binary: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-um0el3"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /EHsc /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_CXX_FLAGS_DEBUG: "/Ob0 /Od /RTC1 /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "MPI_RESULT_CXX_test_mpi_MPICXX"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-um0el3'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_34e49.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Версия MSBuild 17.8.5+b5265ef37 для .NET Framework
+        Сборка начата 30.10.2024 3:52:56.
+        
+        Проект "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-um0el3\\cmTC_34e49.vcxproj" в узле 1 (целевые объекты по умолчанию).
+        PrepareForBuild:
+          Создание каталога "cmTC_34e49.dir\\Debug\\".
+          Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+          Создание каталога "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-um0el3\\Debug\\".
+          Создание каталога "cmTC_34e49.dir\\Debug\\cmTC_34e49.tlog\\".
+        InitializeBuildStatus:
+          Создание "cmTC_34e49.dir\\Debug\\cmTC_34e49.tlog\\unsuccessfulbuild", так как было задано "AlwaysCreate".
+          Обращение к "cmTC_34e49.dir\\Debug\\cmTC_34e49.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++20 /Fo"cmTC_34e49.dir\\Debug\\\\" /Fd"cmTC_34e49.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-um0el3\\test_mpi.cpp"
+          Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.38.33134 для x64
+          (C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+          cl /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++20 /Fo"cmTC_34e49.dir\\Debug\\\\" /Fd"cmTC_34e49.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-um0el3\\test_mpi.cpp"
+          test_mpi.cpp
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-um0el3\\Debug\\cmTC_34e49.exe" /INCREMENTAL /ILK:"cmTC_34e49.dir\\Debug\\cmTC_34e49.ilk" /NOLOGO "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\Lib\\x64\\msmpi.lib" kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-um0el3/Debug/cmTC_34e49.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-um0el3/Debug/cmTC_34e49.lib" /MACHINE:X64  /machine:x64 cmTC_34e49.dir\\Debug\\test_mpi.obj
+          cmTC_34e49.vcxproj -> D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-um0el3\\Debug\\cmTC_34e49.exe
+        FinalizeBuildStatus:
+          Файл "cmTC_34e49.dir\\Debug\\cmTC_34e49.tlog\\unsuccessfulbuild" удаляется.
+          Обращение к "cmTC_34e49.dir\\Debug\\cmTC_34e49.tlog\\cmTC_34e49.lastbuildstate".
+        Сборка проекта "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-um0el3\\cmTC_34e49.vcxproj" завершена (целевые объекты по умолчанию).
+        
+        Сборка успешно завершена.
+            Предупреждений: 0
+            Ошибок: 0
+        
+        Прошло времени 00:00:00.41
+        
+      exitCode: 0
+...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1283 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1327 (_MPI_try_staged_settings)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1650 (_MPI_check_lang_works)"
+      - "CMakeLists.txt:15 (find_package)"
+    description: "The MPI test test_mpi for C in mode normal"
+    directories:
+      source: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-ct07pt"
+      binary: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-ct07pt"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_C_FLAGS_DEBUG: "/Ob0 /Od /RTC1 /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "MPI_RESULT_C_test_mpi_normal"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-ct07pt'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_7645c.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Версия MSBuild 17.8.5+b5265ef37 для .NET Framework
+        Сборка начата 30.10.2024 3:53:28.
+        
+        Проект "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-ct07pt\\cmTC_7645c.vcxproj" в узле 1 (целевые объекты по умолчанию).
+        PrepareForBuild:
+          Создание каталога "cmTC_7645c.dir\\Debug\\".
+          Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+          Создание каталога "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-ct07pt\\Debug\\".
+          Создание каталога "cmTC_7645c.dir\\Debug\\cmTC_7645c.tlog\\".
+        InitializeBuildStatus:
+          Создание "cmTC_7645c.dir\\Debug\\cmTC_7645c.tlog\\unsuccessfulbuild", так как было задано "AlwaysCreate".
+          Обращение к "cmTC_7645c.dir\\Debug\\cmTC_7645c.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_7645c.dir\\Debug\\\\" /Fd"cmTC_7645c.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TC /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-ct07pt\\test_mpi.c"
+          Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.38.33134 для x64
+          (C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+          cl /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_7645c.dir\\Debug\\\\" /Fd"cmTC_7645c.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TC /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-ct07pt\\test_mpi.c"
+          test_mpi.c
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-ct07pt\\Debug\\cmTC_7645c.exe" /INCREMENTAL /ILK:"cmTC_7645c.dir\\Debug\\cmTC_7645c.ilk" /NOLOGO "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\Lib\\x64\\msmpi.lib" kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-ct07pt/Debug/cmTC_7645c.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-ct07pt/Debug/cmTC_7645c.lib" /MACHINE:X64  /machine:x64 cmTC_7645c.dir\\Debug\\test_mpi.obj
+          cmTC_7645c.vcxproj -> D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-ct07pt\\Debug\\cmTC_7645c.exe
+        FinalizeBuildStatus:
+          Файл "cmTC_7645c.dir\\Debug\\cmTC_7645c.tlog\\unsuccessfulbuild" удаляется.
+          Обращение к "cmTC_7645c.dir\\Debug\\cmTC_7645c.tlog\\cmTC_7645c.lastbuildstate".
+        Сборка проекта "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-ct07pt\\cmTC_7645c.vcxproj" завершена (целевые объекты по умолчанию).
+        
+        Сборка успешно завершена.
+            Предупреждений: 0
+            Ошибок: 0
+        
+        Прошло времени 00:00:00.39
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1283 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1327 (_MPI_try_staged_settings)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1650 (_MPI_check_lang_works)"
+      - "CMakeLists.txt:15 (find_package)"
+    description: "The MPI test test_mpi for CXX in mode normal"
+    directories:
+      source: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-ck3o9v"
+      binary: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-ck3o9v"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /EHsc /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_CXX_FLAGS_DEBUG: "/Ob0 /Od /RTC1 /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "MPI_RESULT_CXX_test_mpi_normal"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-ck3o9v'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_7835a.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Версия MSBuild 17.8.5+b5265ef37 для .NET Framework
+        Сборка начата 30.10.2024 3:53:29.
+        
+        Проект "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-ck3o9v\\cmTC_7835a.vcxproj" в узле 1 (целевые объекты по умолчанию).
+        PrepareForBuild:
+          Создание каталога "cmTC_7835a.dir\\Debug\\".
+          Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+          Создание каталога "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-ck3o9v\\Debug\\".
+          Создание каталога "cmTC_7835a.dir\\Debug\\cmTC_7835a.tlog\\".
+        InitializeBuildStatus:
+          Создание "cmTC_7835a.dir\\Debug\\cmTC_7835a.tlog\\unsuccessfulbuild", так как было задано "AlwaysCreate".
+          Обращение к "cmTC_7835a.dir\\Debug\\cmTC_7835a.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++20 /Fo"cmTC_7835a.dir\\Debug\\\\" /Fd"cmTC_7835a.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-ck3o9v\\test_mpi.cpp"
+          Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.38.33134 для x64
+          (C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+          cl /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++20 /Fo"cmTC_7835a.dir\\Debug\\\\" /Fd"cmTC_7835a.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-ck3o9v\\test_mpi.cpp"
+          test_mpi.cpp
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-ck3o9v\\Debug\\cmTC_7835a.exe" /INCREMENTAL /ILK:"cmTC_7835a.dir\\Debug\\cmTC_7835a.ilk" /NOLOGO "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\Lib\\x64\\msmpi.lib" kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-ck3o9v/Debug/cmTC_7835a.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-ck3o9v/Debug/cmTC_7835a.lib" /MACHINE:X64  /machine:x64 cmTC_7835a.dir\\Debug\\test_mpi.obj
+          cmTC_7835a.vcxproj -> D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-ck3o9v\\Debug\\cmTC_7835a.exe
+        FinalizeBuildStatus:
+          Файл "cmTC_7835a.dir\\Debug\\cmTC_7835a.tlog\\unsuccessfulbuild" удаляется.
+          Обращение к "cmTC_7835a.dir\\Debug\\cmTC_7835a.tlog\\cmTC_7835a.lastbuildstate".
+        Сборка проекта "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-ck3o9v\\cmTC_7835a.vcxproj" завершена (целевые объекты по умолчанию).
+        
+        Сборка успешно завершена.
+            Предупреждений: 0
+            Ошибок: 0
+        
+        Прошло времени 00:00:00.41
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1283 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1677 (_MPI_try_staged_settings)"
+      - "CMakeLists.txt:15 (find_package)"
+    description: "The MPI test test_mpi for CXX in mode MPICXX"
+    directories:
+      source: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-konhyc"
+      binary: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-konhyc"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /EHsc /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_CXX_FLAGS_DEBUG: "/Ob0 /Od /RTC1 /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "MPI_RESULT_CXX_test_mpi_MPICXX"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-konhyc'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_bb027.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Версия MSBuild 17.8.5+b5265ef37 для .NET Framework
+        Сборка начата 30.10.2024 3:53:30.
+        
+        Проект "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-konhyc\\cmTC_bb027.vcxproj" в узле 1 (целевые объекты по умолчанию).
+        PrepareForBuild:
+          Создание каталога "cmTC_bb027.dir\\Debug\\".
+          Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+          Создание каталога "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-konhyc\\Debug\\".
+          Создание каталога "cmTC_bb027.dir\\Debug\\cmTC_bb027.tlog\\".
+        InitializeBuildStatus:
+          Создание "cmTC_bb027.dir\\Debug\\cmTC_bb027.tlog\\unsuccessfulbuild", так как было задано "AlwaysCreate".
+          Обращение к "cmTC_bb027.dir\\Debug\\cmTC_bb027.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++20 /Fo"cmTC_bb027.dir\\Debug\\\\" /Fd"cmTC_bb027.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-konhyc\\test_mpi.cpp"
+          Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.38.33134 для x64
+          (C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+          cl /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++20 /Fo"cmTC_bb027.dir\\Debug\\\\" /Fd"cmTC_bb027.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-konhyc\\test_mpi.cpp"
+          test_mpi.cpp
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-konhyc\\Debug\\cmTC_bb027.exe" /INCREMENTAL /ILK:"cmTC_bb027.dir\\Debug\\cmTC_bb027.ilk" /NOLOGO "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\Lib\\x64\\msmpi.lib" kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-konhyc/Debug/cmTC_bb027.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-konhyc/Debug/cmTC_bb027.lib" /MACHINE:X64  /machine:x64 cmTC_bb027.dir\\Debug\\test_mpi.obj
+          cmTC_bb027.vcxproj -> D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-konhyc\\Debug\\cmTC_bb027.exe
+        FinalizeBuildStatus:
+          Файл "cmTC_bb027.dir\\Debug\\cmTC_bb027.tlog\\unsuccessfulbuild" удаляется.
+          Обращение к "cmTC_bb027.dir\\Debug\\cmTC_bb027.tlog\\cmTC_bb027.lastbuildstate".
+        Сборка проекта "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-konhyc\\cmTC_bb027.vcxproj" завершена (целевые объекты по умолчанию).
+        
+        Сборка успешно завершена.
+            Предупреждений: 0
+            Ошибок: 0
+        
+        Прошло времени 00:00:00.42
+        
+      exitCode: 0
+...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1283 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1327 (_MPI_try_staged_settings)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1650 (_MPI_check_lang_works)"
+      - "CMakeLists.txt:15 (find_package)"
+    description: "The MPI test test_mpi for C in mode normal"
+    directories:
+      source: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-4httmt"
+      binary: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-4httmt"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_C_FLAGS_DEBUG: "/Ob0 /Od /RTC1 /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "MPI_RESULT_C_test_mpi_normal"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-4httmt'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_4317c.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Версия MSBuild 17.8.5+b5265ef37 для .NET Framework
+        Сборка начата 30.10.2024 3:53:41.
+        
+        Проект "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-4httmt\\cmTC_4317c.vcxproj" в узле 1 (целевые объекты по умолчанию).
+        PrepareForBuild:
+          Создание каталога "cmTC_4317c.dir\\Debug\\".
+          Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+          Создание каталога "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-4httmt\\Debug\\".
+          Создание каталога "cmTC_4317c.dir\\Debug\\cmTC_4317c.tlog\\".
+        InitializeBuildStatus:
+          Создание "cmTC_4317c.dir\\Debug\\cmTC_4317c.tlog\\unsuccessfulbuild", так как было задано "AlwaysCreate".
+          Обращение к "cmTC_4317c.dir\\Debug\\cmTC_4317c.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_4317c.dir\\Debug\\\\" /Fd"cmTC_4317c.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TC /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-4httmt\\test_mpi.c"
+          Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.38.33134 для x64
+          (C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+          cl /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_4317c.dir\\Debug\\\\" /Fd"cmTC_4317c.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TC /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-4httmt\\test_mpi.c"
+          test_mpi.c
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-4httmt\\Debug\\cmTC_4317c.exe" /INCREMENTAL /ILK:"cmTC_4317c.dir\\Debug\\cmTC_4317c.ilk" /NOLOGO "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\Lib\\x64\\msmpi.lib" kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-4httmt/Debug/cmTC_4317c.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-4httmt/Debug/cmTC_4317c.lib" /MACHINE:X64  /machine:x64 cmTC_4317c.dir\\Debug\\test_mpi.obj
+          cmTC_4317c.vcxproj -> D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-4httmt\\Debug\\cmTC_4317c.exe
+        FinalizeBuildStatus:
+          Файл "cmTC_4317c.dir\\Debug\\cmTC_4317c.tlog\\unsuccessfulbuild" удаляется.
+          Обращение к "cmTC_4317c.dir\\Debug\\cmTC_4317c.tlog\\cmTC_4317c.lastbuildstate".
+        Сборка проекта "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-4httmt\\cmTC_4317c.vcxproj" завершена (целевые объекты по умолчанию).
+        
+        Сборка успешно завершена.
+            Предупреждений: 0
+            Ошибок: 0
+        
+        Прошло времени 00:00:00.41
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1283 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1327 (_MPI_try_staged_settings)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1650 (_MPI_check_lang_works)"
+      - "CMakeLists.txt:15 (find_package)"
+    description: "The MPI test test_mpi for CXX in mode normal"
+    directories:
+      source: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-vsfbbm"
+      binary: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-vsfbbm"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /EHsc /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_CXX_FLAGS_DEBUG: "/Ob0 /Od /RTC1 /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "MPI_RESULT_CXX_test_mpi_normal"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-vsfbbm'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_5ce06.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Версия MSBuild 17.8.5+b5265ef37 для .NET Framework
+        Сборка начата 30.10.2024 3:53:42.
+        
+        Проект "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-vsfbbm\\cmTC_5ce06.vcxproj" в узле 1 (целевые объекты по умолчанию).
+        PrepareForBuild:
+          Создание каталога "cmTC_5ce06.dir\\Debug\\".
+          Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+          Создание каталога "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-vsfbbm\\Debug\\".
+          Создание каталога "cmTC_5ce06.dir\\Debug\\cmTC_5ce06.tlog\\".
+        InitializeBuildStatus:
+          Создание "cmTC_5ce06.dir\\Debug\\cmTC_5ce06.tlog\\unsuccessfulbuild", так как было задано "AlwaysCreate".
+          Обращение к "cmTC_5ce06.dir\\Debug\\cmTC_5ce06.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++20 /Fo"cmTC_5ce06.dir\\Debug\\\\" /Fd"cmTC_5ce06.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-vsfbbm\\test_mpi.cpp"
+          Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.38.33134 для x64
+          (C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+          cl /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++20 /Fo"cmTC_5ce06.dir\\Debug\\\\" /Fd"cmTC_5ce06.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-vsfbbm\\test_mpi.cpp"
+          test_mpi.cpp
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-vsfbbm\\Debug\\cmTC_5ce06.exe" /INCREMENTAL /ILK:"cmTC_5ce06.dir\\Debug\\cmTC_5ce06.ilk" /NOLOGO "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\Lib\\x64\\msmpi.lib" kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-vsfbbm/Debug/cmTC_5ce06.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-vsfbbm/Debug/cmTC_5ce06.lib" /MACHINE:X64  /machine:x64 cmTC_5ce06.dir\\Debug\\test_mpi.obj
+          cmTC_5ce06.vcxproj -> D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-vsfbbm\\Debug\\cmTC_5ce06.exe
+        FinalizeBuildStatus:
+          Файл "cmTC_5ce06.dir\\Debug\\cmTC_5ce06.tlog\\unsuccessfulbuild" удаляется.
+          Обращение к "cmTC_5ce06.dir\\Debug\\cmTC_5ce06.tlog\\cmTC_5ce06.lastbuildstate".
+        Сборка проекта "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-vsfbbm\\cmTC_5ce06.vcxproj" завершена (целевые объекты по умолчанию).
+        
+        Сборка успешно завершена.
+            Предупреждений: 0
+            Ошибок: 0
+        
+        Прошло времени 00:00:00.44
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1283 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1677 (_MPI_try_staged_settings)"
+      - "CMakeLists.txt:15 (find_package)"
+    description: "The MPI test test_mpi for CXX in mode MPICXX"
+    directories:
+      source: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-872d2m"
+      binary: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-872d2m"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /EHsc /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_CXX_FLAGS_DEBUG: "/Ob0 /Od /RTC1 /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "MPI_RESULT_CXX_test_mpi_MPICXX"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-872d2m'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_38424.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Версия MSBuild 17.8.5+b5265ef37 для .NET Framework
+        Сборка начата 30.10.2024 3:53:43.
+        
+        Проект "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-872d2m\\cmTC_38424.vcxproj" в узле 1 (целевые объекты по умолчанию).
+        PrepareForBuild:
+          Создание каталога "cmTC_38424.dir\\Debug\\".
+          Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+          Создание каталога "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-872d2m\\Debug\\".
+          Создание каталога "cmTC_38424.dir\\Debug\\cmTC_38424.tlog\\".
+        InitializeBuildStatus:
+          Создание "cmTC_38424.dir\\Debug\\cmTC_38424.tlog\\unsuccessfulbuild", так как было задано "AlwaysCreate".
+          Обращение к "cmTC_38424.dir\\Debug\\cmTC_38424.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++20 /Fo"cmTC_38424.dir\\Debug\\\\" /Fd"cmTC_38424.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-872d2m\\test_mpi.cpp"
+          Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.38.33134 для x64
+          (C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+          cl /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++20 /Fo"cmTC_38424.dir\\Debug\\\\" /Fd"cmTC_38424.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-872d2m\\test_mpi.cpp"
+          test_mpi.cpp
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-872d2m\\Debug\\cmTC_38424.exe" /INCREMENTAL /ILK:"cmTC_38424.dir\\Debug\\cmTC_38424.ilk" /NOLOGO "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\Lib\\x64\\msmpi.lib" kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-872d2m/Debug/cmTC_38424.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-872d2m/Debug/cmTC_38424.lib" /MACHINE:X64  /machine:x64 cmTC_38424.dir\\Debug\\test_mpi.obj
+          cmTC_38424.vcxproj -> D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-872d2m\\Debug\\cmTC_38424.exe
+        FinalizeBuildStatus:
+          Файл "cmTC_38424.dir\\Debug\\cmTC_38424.tlog\\unsuccessfulbuild" удаляется.
+          Обращение к "cmTC_38424.dir\\Debug\\cmTC_38424.tlog\\cmTC_38424.lastbuildstate".
+        Сборка проекта "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-872d2m\\cmTC_38424.vcxproj" завершена (целевые объекты по умолчанию).
+        
+        Сборка успешно завершена.
+            Предупреждений: 0
+            Ошибок: 0
+        
+        Прошло времени 00:00:00.37
+        
+      exitCode: 0
+...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1283 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1327 (_MPI_try_staged_settings)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1650 (_MPI_check_lang_works)"
+      - "CMakeLists.txt:15 (find_package)"
+    description: "The MPI test test_mpi for C in mode normal"
+    directories:
+      source: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-iu6q7s"
+      binary: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-iu6q7s"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_C_FLAGS_DEBUG: "/Ob0 /Od /RTC1 /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "MPI_RESULT_C_test_mpi_normal"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-iu6q7s'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_4784a.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Версия MSBuild 17.8.5+b5265ef37 для .NET Framework
+        Сборка начата 30.10.2024 3:53:50.
+        
+        Проект "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-iu6q7s\\cmTC_4784a.vcxproj" в узле 1 (целевые объекты по умолчанию).
+        PrepareForBuild:
+          Создание каталога "cmTC_4784a.dir\\Debug\\".
+          Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+          Создание каталога "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-iu6q7s\\Debug\\".
+          Создание каталога "cmTC_4784a.dir\\Debug\\cmTC_4784a.tlog\\".
+        InitializeBuildStatus:
+          Создание "cmTC_4784a.dir\\Debug\\cmTC_4784a.tlog\\unsuccessfulbuild", так как было задано "AlwaysCreate".
+          Обращение к "cmTC_4784a.dir\\Debug\\cmTC_4784a.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_4784a.dir\\Debug\\\\" /Fd"cmTC_4784a.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TC /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-iu6q7s\\test_mpi.c"
+          Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.38.33134 для x64
+          (C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+          cl /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"cmTC_4784a.dir\\Debug\\\\" /Fd"cmTC_4784a.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TC /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-iu6q7s\\test_mpi.c"
+          test_mpi.c
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-iu6q7s\\Debug\\cmTC_4784a.exe" /INCREMENTAL /ILK:"cmTC_4784a.dir\\Debug\\cmTC_4784a.ilk" /NOLOGO "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\Lib\\x64\\msmpi.lib" kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-iu6q7s/Debug/cmTC_4784a.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-iu6q7s/Debug/cmTC_4784a.lib" /MACHINE:X64  /machine:x64 cmTC_4784a.dir\\Debug\\test_mpi.obj
+          cmTC_4784a.vcxproj -> D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-iu6q7s\\Debug\\cmTC_4784a.exe
+        FinalizeBuildStatus:
+          Файл "cmTC_4784a.dir\\Debug\\cmTC_4784a.tlog\\unsuccessfulbuild" удаляется.
+          Обращение к "cmTC_4784a.dir\\Debug\\cmTC_4784a.tlog\\cmTC_4784a.lastbuildstate".
+        Сборка проекта "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-iu6q7s\\cmTC_4784a.vcxproj" завершена (целевые объекты по умолчанию).
+        
+        Сборка успешно завершена.
+            Предупреждений: 0
+            Ошибок: 0
+        
+        Прошло времени 00:00:00.38
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1283 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1327 (_MPI_try_staged_settings)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1650 (_MPI_check_lang_works)"
+      - "CMakeLists.txt:15 (find_package)"
+    description: "The MPI test test_mpi for CXX in mode normal"
+    directories:
+      source: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-i9mewl"
+      binary: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-i9mewl"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /EHsc /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_CXX_FLAGS_DEBUG: "/Ob0 /Od /RTC1 /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "MPI_RESULT_CXX_test_mpi_normal"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-i9mewl'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_0a4c3.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Версия MSBuild 17.8.5+b5265ef37 для .NET Framework
+        Сборка начата 30.10.2024 3:53:51.
+        
+        Проект "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-i9mewl\\cmTC_0a4c3.vcxproj" в узле 1 (целевые объекты по умолчанию).
+        PrepareForBuild:
+          Создание каталога "cmTC_0a4c3.dir\\Debug\\".
+          Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+          Создание каталога "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-i9mewl\\Debug\\".
+          Создание каталога "cmTC_0a4c3.dir\\Debug\\cmTC_0a4c3.tlog\\".
+        InitializeBuildStatus:
+          Создание "cmTC_0a4c3.dir\\Debug\\cmTC_0a4c3.tlog\\unsuccessfulbuild", так как было задано "AlwaysCreate".
+          Обращение к "cmTC_0a4c3.dir\\Debug\\cmTC_0a4c3.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++20 /Fo"cmTC_0a4c3.dir\\Debug\\\\" /Fd"cmTC_0a4c3.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-i9mewl\\test_mpi.cpp"
+          Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.38.33134 для x64
+          (C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+          cl /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++20 /Fo"cmTC_0a4c3.dir\\Debug\\\\" /Fd"cmTC_0a4c3.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-i9mewl\\test_mpi.cpp"
+          test_mpi.cpp
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-i9mewl\\Debug\\cmTC_0a4c3.exe" /INCREMENTAL /ILK:"cmTC_0a4c3.dir\\Debug\\cmTC_0a4c3.ilk" /NOLOGO "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\Lib\\x64\\msmpi.lib" kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-i9mewl/Debug/cmTC_0a4c3.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-i9mewl/Debug/cmTC_0a4c3.lib" /MACHINE:X64  /machine:x64 cmTC_0a4c3.dir\\Debug\\test_mpi.obj
+          cmTC_0a4c3.vcxproj -> D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-i9mewl\\Debug\\cmTC_0a4c3.exe
+        FinalizeBuildStatus:
+          Файл "cmTC_0a4c3.dir\\Debug\\cmTC_0a4c3.tlog\\unsuccessfulbuild" удаляется.
+          Обращение к "cmTC_0a4c3.dir\\Debug\\cmTC_0a4c3.tlog\\cmTC_0a4c3.lastbuildstate".
+        Сборка проекта "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-i9mewl\\cmTC_0a4c3.vcxproj" завершена (целевые объекты по умолчанию).
+        
+        Сборка успешно завершена.
+            Предупреждений: 0
+            Ошибок: 0
+        
+        Прошло времени 00:00:00.42
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1283 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.31/Modules/FindMPI.cmake:1677 (_MPI_try_staged_settings)"
+      - "CMakeLists.txt:15 (find_package)"
+    description: "The MPI test test_mpi for CXX in mode MPICXX"
+    directories:
+      source: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-goe5wq"
+      binary: "D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-goe5wq"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /EHsc /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_CXX_FLAGS_DEBUG: "/Ob0 /Od /RTC1 /W4 /wd4267 /wd4244 /wd4100 /WX"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "MPI_RESULT_CXX_test_mpi_MPICXX"
+      cached: true
+      stdout: |
+        Change Dir: 'D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-goe5wq'
+        
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_e0ddd.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Версия MSBuild 17.8.5+b5265ef37 для .NET Framework
+        Сборка начата 30.10.2024 3:53:52.
+        
+        Проект "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-goe5wq\\cmTC_e0ddd.vcxproj" в узле 1 (целевые объекты по умолчанию).
+        PrepareForBuild:
+          Создание каталога "cmTC_e0ddd.dir\\Debug\\".
+          Структурированный вывод включен. Форматирование диагностики компилятора будет отражать иерархию ошибок. Подробнее см. https://aka.ms/cpp/structured-output.
+          Создание каталога "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-goe5wq\\Debug\\".
+          Создание каталога "cmTC_e0ddd.dir\\Debug\\cmTC_e0ddd.tlog\\".
+        InitializeBuildStatus:
+          Создание "cmTC_e0ddd.dir\\Debug\\cmTC_e0ddd.tlog\\unsuccessfulbuild", так как было задано "AlwaysCreate".
+          Обращение к "cmTC_e0ddd.dir\\Debug\\cmTC_e0ddd.tlog\\unsuccessfulbuild".
+        ClCompile:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\CL.exe /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++20 /Fo"cmTC_e0ddd.dir\\Debug\\\\" /Fd"cmTC_e0ddd.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-goe5wq\\test_mpi.cpp"
+          Оптимизирующий компилятор Microsoft (R) C/C++ версии 19.38.33134 для x64
+          (C) Корпорация Майкрософт (Microsoft Corporation).  Все права защищены.
+          cl /c /Zi /W4 /WX /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /std:c++20 /Fo"cmTC_e0ddd.dir\\Debug\\\\" /Fd"cmTC_e0ddd.dir\\Debug\\vc143.pdb" /external:W0 /Gd /TP /wd4267 /wd4244 /wd4100 /wd4267 /wd4244 /wd4100 /errorReport:queue  /external:I "C:/Program Files (x86)/Microsoft SDKs/MPI/Include" "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-goe5wq\\test_mpi.cpp"
+          test_mpi.cpp
+        Link:
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-goe5wq\\Debug\\cmTC_e0ddd.exe" /INCREMENTAL /ILK:"cmTC_e0ddd.dir\\Debug\\cmTC_e0ddd.ilk" /NOLOGO "C:\\Program Files (x86)\\Microsoft SDKs\\MPI\\Lib\\x64\\msmpi.lib" kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-goe5wq/Debug/cmTC_e0ddd.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/LabaPPC/ppc-2024-autumn/CMakeFiles/CMakeScratch/TryCompile-goe5wq/Debug/cmTC_e0ddd.lib" /MACHINE:X64  /machine:x64 cmTC_e0ddd.dir\\Debug\\test_mpi.obj
+          cmTC_e0ddd.vcxproj -> D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-goe5wq\\Debug\\cmTC_e0ddd.exe
+        FinalizeBuildStatus:
+          Файл "cmTC_e0ddd.dir\\Debug\\cmTC_e0ddd.tlog\\unsuccessfulbuild" удаляется.
+          Обращение к "cmTC_e0ddd.dir\\Debug\\cmTC_e0ddd.tlog\\cmTC_e0ddd.lastbuildstate".
+        Сборка проекта "D:\\LabaPPC\\ppc-2024-autumn\\CMakeFiles\\CMakeScratch\\TryCompile-goe5wq\\cmTC_e0ddd.vcxproj" завершена (целевые объекты по умолчанию).
+        
+        Сборка успешно завершена.
+            Предупреждений: 0
+            Ошибок: 0
+        
+        Прошло времени 00:00:00.41
+        
+      exitCode: 0
+...
