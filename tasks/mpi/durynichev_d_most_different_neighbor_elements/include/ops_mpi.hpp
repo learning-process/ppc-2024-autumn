@@ -32,9 +32,7 @@ struct ChunkResult {
     archive & diff;
   }
 
-  ChunkResult operator()(const ChunkResult &a, const ChunkResult &b) {
-    return (a.diff > b.diff) ? a : b;
-  }
+  ChunkResult operator()(const ChunkResult &a, const ChunkResult &b) { return (a.diff > b.diff) ? a : b; }
 
   std::vector<int> toVector(const std::vector<int> &input) const {
     return std::vector<int>{
