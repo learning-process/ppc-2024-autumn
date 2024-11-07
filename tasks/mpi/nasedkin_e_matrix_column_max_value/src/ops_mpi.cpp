@@ -108,21 +108,23 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::run() {
 
   broadcast(world, inputMatrix_.data(), numCols * numRows, 0);
 
-  int startCol = delta * world.rank();
+int startCol = delta * world.rank();
   int lastCol = std::min(numCols, delta * (world.rank() + 1));
-  std::vector<int> localMax;
 
+  // Рассчитываем максимум для каждого столбца в локальном диапазоне
+  std::vector<int> localMax(lastCol - startCol);
   for (int j = startCol; j < lastCol; j++) {
     auto maxElem = *std::max_element(inputMatrix_.begin() + j * numRows, inputMatrix_.begin() + (j + 1) * numRows);
-    localMax.push_back(maxElem);
+    localMax[j - startCol] = maxElem;
   }
-  localMax.resize(delta);
 
+  // Собираем локальные максимумы на процессе 0
   if (world.rank() == 0) {
-    std::vector<int> globalRes(numCols + delta * world.size());
+    std::vector<int> globalRes(numCols, 0);
     std::vector<int> sizes(world.size(), delta);
+    sizes[0] += extra;  // Учитываем `extra` для процесса 0, если есть
+
     boost::mpi::gatherv(world, localMax.data(), localMax.size(), globalRes.data(), sizes, 0);
-    globalRes.resize(numCols);
     result_ = globalRes;
   } else {
     boost::mpi::gatherv(world, localMax.data(), localMax.size(), 0);
