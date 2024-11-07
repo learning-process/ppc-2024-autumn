@@ -52,7 +52,7 @@ bool chernova_n_word_count_seq::TestTaskSequential::validation() {
 
 bool chernova_n_word_count_seq::TestTaskSequential::run() {
   internal_order_test();
-  if (input_.size() == 0) {
+  if (input_.empty()) {
     spaceCount = -1;
   }
   for (size_t i = 0; i < input_.size(); i++) {

@@ -54,7 +54,7 @@ bool chernova_n_word_count_mpi::TestMPITaskSequential::validation() {
 
 bool chernova_n_word_count_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-  if (input_.size() == 0) {
+  if (input_.empty()) {
     spaceCount = -1;
   }
   for (std::size_t i = 0; i < input_.size(); i++) {
