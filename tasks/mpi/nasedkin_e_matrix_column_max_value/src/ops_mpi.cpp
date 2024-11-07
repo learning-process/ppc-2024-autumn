@@ -118,7 +118,7 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::run() {
   if (world.rank() == world.size() - 1) {
     lastCol += extra;
   }
-//1
+
   std::vector<int> localMax;
   for (int j = startCol; j < lastCol; j++) {
     auto maxElem = *std::max_element(inputMatrix_.begin() + j * numRows, inputMatrix_.begin() + (j + 1) * numRows);
