@@ -11,7 +11,7 @@
 #include "mpi/golovkin_integration_rectangular_method/include/ops_mpi.hpp"
 
 TEST(golovkin_integration_rectangular_method, test_constant_function) {
-  boost::mpi::communicator comm_world;
+  boost::mpi::communicator world;
   std::vector<double> computed_result(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -19,7 +19,7 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
   double upper_limit = 10.0;
   int partition_count = 1000000;
 
-  if (comm_world.rank() == 0) {
+  if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
@@ -31,19 +31,19 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
   }
   golovkin_integration_rectangular_method::MPIIntegralCalculator parallel_task(taskDataPar);
   parallel_task.set_function([](double x) { return 5.0; });
-  std::cout << "Rank " << comm_world.rank() << " started validarion.\n";
+  std::cout << "Rank " << world.rank() << " started validarion.\n";
   ASSERT_EQ(parallel_task.validation(), true);
-  std::cout << "Rank " << comm_world.rank() << " finished validarion.\n";
-  std::cout << "Rank " << comm_world.rank() << " started pre_processing.\n";
+  std::cout << "Rank " << world.rank() << " finished validarion.\n";
+  std::cout << "Rank " << world.rank() << " started pre_processing.\n";
   parallel_task.pre_processing();
-  std::cout << "Rank " << comm_world.rank() << " finished pre_processing.\n";
-  std::cout << "Rank " << comm_world.rank() << " started run.\n";
+  std::cout << "Rank " << world.rank() << " finished pre_processing.\n";
+  std::cout << "Rank " << world.rank() << " started run.\n";
   parallel_task.run();
-  std::cout << "Rank " << comm_world.rank() << " finished run.\n";
-  std::cout << "Rank " << comm_world.rank() << " started post_processing.\n";
+  std::cout << "Rank " << world.rank() << " finished run.\n";
+  std::cout << "Rank " << world.rank() << " started post_processing.\n";
   parallel_task.post_processing();
-  std::cout << "Rank " << comm_world.rank() << " finished post_processing.\n";
-  if (comm_world.rank() == 0) {
+  std::cout << "Rank " << world.rank() << " finished post_processing.\n";
+  if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
     std::vector<double> expected_result(1, 0);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -58,18 +58,18 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
 
     golovkin_integration_rectangular_method::MPIIntegralCalculator sequential_task(taskDataSeq);
     sequential_task.set_function([](double x) { return 5.0; });
-    std::cout << "Rank " << comm_world.rank() << " started validarion.\n";
+    std::cout << "Rank " << world.rank() << " started validarion.\n";
     ASSERT_EQ(sequential_task.validation(), true);
-    std::cout << "Rank " << comm_world.rank() << " finished validarion.\n";
-    std::cout << "Rank " << comm_world.rank() << " started pre_processing.\n";
+    std::cout << "Rank " << world.rank() << " finished validarion.\n";
+    std::cout << "Rank " << world.rank() << " started pre_processing.\n";
     sequential_task.pre_processing();
-    std::cout << "Rank " << comm_world.rank() << " finished pre_processing.\n";
-    std::cout << "Rank " << comm_world.rank() << " started run.\n";
+    std::cout << "Rank " << world.rank() << " finished pre_processing.\n";
+    std::cout << "Rank " << world.rank() << " started run.\n";
     sequential_task.run();
-    std::cout << "Rank " << comm_world.rank() << " finished run.\n";
-    std::cout << "Rank " << comm_world.rank() << " started post_processing.\n";
+    std::cout << "Rank " << world.rank() << " finished run.\n";
+    std::cout << "Rank " << world.rank() << " started post_processing.\n";
     sequential_task.post_processing();
-    std::cout << "Rank " << comm_world.rank() << " finished post_processing.\n";
+    std::cout << "Rank " << world.rank() << " finished post_processing.\n";
     ASSERT_NEAR(expected_result[0], computed_result[0], 1e-3);
   }
 }
