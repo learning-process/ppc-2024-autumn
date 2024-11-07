@@ -115,22 +115,24 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::run() {
   broadcast(world, inputMatrix_.data(), numCols * numRows, 0);
 
   int startCol = delta * world.rank();
-  int lastCol = std::min(numCols, delta * (world.rank() + 1));
+  int lastCol = std::min(numCols, startCol + delta);
   std::vector<int> localMax;
+
   for (int j = startCol; j < lastCol; j++) {
     auto maxElem = *std::max_element(inputMatrix_.begin() + j * numRows, inputMatrix_.begin() + (j + 1) * numRows);
     localMax.push_back(maxElem);
   }
-  localMax.resize(delta);
+
   if (world.rank() == 0) {
-    std::vector<int> globalRes(numCols + delta * world.size());
+    std::vector<int> globalRes(numCols);
     std::vector<int> sizes(world.size(), delta);
+    sizes[world.size() - 1] = numCols - startCol;
     boost::mpi::gatherv(world, localMax.data(), localMax.size(), globalRes.data(), sizes, 0);
-    globalRes.resize(numCols);
     result_ = globalRes;
   } else {
     boost::mpi::gatherv(world, localMax.data(), localMax.size(), 0);
   }
+
   return true;
 }
 
