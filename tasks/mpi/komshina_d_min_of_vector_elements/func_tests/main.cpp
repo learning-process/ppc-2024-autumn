@@ -18,7 +18,7 @@ std::vector<int> get_random_vector(int sz) {
   }
   return vec;
 }
-}
+} // namespace komshina_d_min_of_vector_elements_mpi
 
 TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_1) {
   boost::mpi::communicator world;
@@ -125,7 +125,6 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_3) {
 
   if (world.rank() == 0) {
     const int count = 1;
-    const int expected_min = 42;
     global_vec.resize(count, 42);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
@@ -214,8 +213,10 @@ TEST(komshina_d_min_of_vector_elements_mpi, Empty_Vector) {
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_min.data()));
     taskDataPar->outputs_count.emplace_back(global_min.size());
+    
   }
   komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel testMpiTaskParallel(taskDataPar);
-
-    ASSERT_EQ(testMpiTaskParallel.validation(), false);
-  }
+  
+  ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  
+}

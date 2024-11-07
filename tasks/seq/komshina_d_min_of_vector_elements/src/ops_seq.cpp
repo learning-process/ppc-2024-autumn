@@ -29,7 +29,6 @@ bool komshina_d_min_of_vector_elements_seq::MinOfVectorElementTaskSequential::va
   return true;
 }
 
-
 bool komshina_d_min_of_vector_elements_seq::MinOfVectorElementTaskSequential::run() {
   internal_order_test();
   res = input_[0];

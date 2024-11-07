@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
+
 #include <vector>
+
 #include "seq/komshina_d_min_of_vector_elements/include/ops_seq.hpp"
-
-
 
 TEST(komshina_d_min_of_vector_elements_seq, Test_Min_1) {
   const int count = 500000;
@@ -61,7 +61,7 @@ TEST(komshina_d_min_of_vector_elements_seq, Test_Min_2) {
 TEST(komshina_d_min_of_vector_elements_seq, Test_Min_3) {
   const int count = 1;
   const int expected_min = 42;
-  std::vector<int> in(count,42);
+  std::vector<int> in(count, 42);
   std::vector<int> out(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
