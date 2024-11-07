@@ -5,7 +5,7 @@
 #include <cmath>
 #include <vector>
 
-#include "mpi/vershinina_a_integration_the_monte_carlo_method/include/ops_mpi.hpp"
+#include "mpi/vershinina_a_integration_the_monte_carlo_method/include/ops_mpi.hpp"mpiexec -n 4 .\out\build\x64-Release\bin\mpi_func_tests
 
 TEST(vershinina_a_integration_the_monte_carlo_method, Test_1) {
   boost::mpi::communicator world;

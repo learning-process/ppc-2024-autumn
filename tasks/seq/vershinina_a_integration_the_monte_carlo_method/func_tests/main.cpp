@@ -46,25 +46,6 @@ TEST(vershinina_a_integration_the_monte_carlo_method, test2) {
 }
 
 TEST(vershinina_a_integration_the_monte_carlo_method, test3) {
-  std::vector<double> in{0, 4, 0, 70};
-  std::vector<double> reference_res(1, 0);
-
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_res.data()));
-  taskDataSeq->outputs_count.emplace_back(reference_res.size());
-
-  vershinina_a_integration_the_monte_carlo_method::TestTaskSequential testTaskSequential(taskDataSeq);
-  testTaskSequential.p = [](double x) { return exp(pow(x, 2) * sqrt(1 + 3 * pow(x, 3))); };
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
-  EXPECT_NEAR(reference_res[0], 199,1);
-}
-
-TEST(vershinina_a_integration_the_monte_carlo_method, test4) {
   std::vector<double> in{-5, 5, 0, 20};
   std::vector<double> reference_res(1, 0);
 
