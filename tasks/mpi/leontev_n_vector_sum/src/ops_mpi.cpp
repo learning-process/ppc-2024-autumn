@@ -9,8 +9,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
 std::vector<int> leontev_n_vec_sum_mpi::getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());

@@ -3,8 +3,6 @@
 
 #include <thread>
 
-using namespace std::chrono_literals;
-
 template <class InOutType>
 bool leontev_n_vector_sum_seq::VecSumSequential<InOutType>::pre_processing() {
   internal_order_test();
