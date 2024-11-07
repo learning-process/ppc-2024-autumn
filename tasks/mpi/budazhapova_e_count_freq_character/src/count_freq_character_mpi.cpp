@@ -43,7 +43,7 @@ bool budazhapova_e_count_freq_character_mpi::TestMPITaskSequential::validation()
 
 bool budazhapova_e_count_freq_character_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-
+  symb = input_[0];
   for (unsigned long i = 0; i < input_.length(); i++) {
     if (input_[i] == symb) {
       res++;
