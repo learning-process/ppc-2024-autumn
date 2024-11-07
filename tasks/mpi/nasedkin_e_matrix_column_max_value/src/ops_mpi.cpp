@@ -137,13 +137,3 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::run() {
   }
   return true;
 }
-
-bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::post_processing() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    for (int i = 0; i < numCols; i++) {
-      reinterpret_cast<int*>(taskData->outputs[0])[i] = result_[i];
-    }
-  }
-  return true;
-}
