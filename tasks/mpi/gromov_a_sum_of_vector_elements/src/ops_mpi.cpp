@@ -7,7 +7,6 @@
 #include <thread>
 #include <vector>
 
-
 bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorSequential::pre_processing() {
   internal_order_test();
   // Init vectors
@@ -45,8 +44,6 @@ bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorSequential::post_process
 
 bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel::pre_processing() {
   internal_order_test();
-  
-  // Init value for output
   res = 0;
   return true;
 }
