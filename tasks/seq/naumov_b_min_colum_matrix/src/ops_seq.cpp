@@ -1,10 +1,6 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/naumov_b_min_colum_matrix/include/ops_seq.hpp"
 
-
-
-
-
 bool naumov_b_min_colum_matrix_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
 

@@ -112,7 +112,7 @@ bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::run() {
     }
 
     local_vector_ = std::vector<int>(input_.begin(), input_.begin() + num_columns * rows);
-    
+
   } else {
     local_vector_ = std::vector<int>(num_columns * rows);
     world.recv(0, 0, local_vector_.data(), num_columns * rows);
