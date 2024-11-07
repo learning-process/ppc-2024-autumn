@@ -42,18 +42,12 @@ bool budazhapova_e_count_freq_character_mpi::TestMPITaskSequential::pre_processi
 
 bool budazhapova_e_count_freq_character_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  res = counting_freq(input_);
   return taskData->outputs_count[0] == 1;
 }
 
 bool budazhapova_e_count_freq_character_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-  symb = input_[0];
-  for (unsigned long i = 0; i < input_.length(); i++) {
-    if (input_[i] == symb) {
-      res++;
-    }
-  }
+  res = counting_freq(input_);
   return true;
 }
 
