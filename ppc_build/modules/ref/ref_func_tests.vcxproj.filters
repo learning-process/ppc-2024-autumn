@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\Laba_ppc\ppc-2024-autumn\modules\ref\average_of_vector_elements\func_tests\ref_tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Laba_ppc\ppc-2024-autumn\modules\ref\max_of_vector_elements\func_tests\ref_tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Laba_ppc\ppc-2024-autumn\modules\ref\min_of_vector_elements\func_tests\ref_tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Laba_ppc\ppc-2024-autumn\modules\ref\most_different_neighbor_elements\func_tests\ref_tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Laba_ppc\ppc-2024-autumn\modules\ref\nearest_neighbor_elements\func_tests\ref_tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Laba_ppc\ppc-2024-autumn\modules\ref\num_of_alternations_signs\func_tests\ref_tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Laba_ppc\ppc-2024-autumn\modules\ref\num_of_orderly_violations\func_tests\ref_tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Laba_ppc\ppc-2024-autumn\modules\ref\sum_of_vector_elements\func_tests\ref_tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Laba_ppc\ppc-2024-autumn\modules\ref\sum_values_by_rows_matrix\func_tests\ref_tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Laba_ppc\ppc-2024-autumn\modules\ref\vector_dot_product\func_tests\ref_tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Laba_ppc\ppc-2024-autumn\modules\ref\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{B575F85B-1DE5-31C8-B640-81F232104C8F}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

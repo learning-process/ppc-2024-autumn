@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "D:/Laba_ppc/ppc_build/CMakeFiles/ppc_boost"
+		},
+		{
+			"file" : "D:/Laba_ppc/ppc_build/CMakeFiles/e5c55a50535025e89e768ec1ff849473/ppc_boost.rule"
+		},
+		{
+			"file" : "D:/Laba_ppc/ppc_build/CMakeFiles/f12c83c44169c3e9df69b54b57119835/ppc_boost-complete.rule"
+		},
+		{
+			"file" : "D:/Laba_ppc/ppc_build/CMakeFiles/b7aa48f6e2390cde4a06d6ae3e137318/ppc_boost-build.rule"
+		},
+		{
+			"file" : "D:/Laba_ppc/ppc_build/CMakeFiles/b7aa48f6e2390cde4a06d6ae3e137318/ppc_boost-configure.rule"
+		},
+		{
+			"file" : "D:/Laba_ppc/ppc_build/CMakeFiles/b7aa48f6e2390cde4a06d6ae3e137318/ppc_boost-download.rule"
+		},
+		{
+			"file" : "D:/Laba_ppc/ppc_build/CMakeFiles/b7aa48f6e2390cde4a06d6ae3e137318/ppc_boost-install.rule"
+		},
+		{
+			"file" : "D:/Laba_ppc/ppc_build/CMakeFiles/b7aa48f6e2390cde4a06d6ae3e137318/ppc_boost-mkdir.rule"
+		},
+		{
+			"file" : "D:/Laba_ppc/ppc_build/CMakeFiles/b7aa48f6e2390cde4a06d6ae3e137318/ppc_boost-patch.rule"
+		},
+		{
+			"file" : "D:/Laba_ppc/ppc_build/CMakeFiles/b7aa48f6e2390cde4a06d6ae3e137318/ppc_boost-test.rule"
+		},
+		{
+			"file" : "D:/Laba_ppc/ppc_build/CMakeFiles/b7aa48f6e2390cde4a06d6ae3e137318/ppc_boost-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"ppc_boost"
+		],
+		"name" : "ppc_boost"
+	}
+}

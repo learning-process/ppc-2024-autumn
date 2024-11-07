@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "D:/Laba_ppc/ppc_build/CMakeFiles/ppc_onetbb"
+		},
+		{
+			"file" : "D:/Laba_ppc/ppc_build/CMakeFiles/e5c55a50535025e89e768ec1ff849473/ppc_onetbb.rule"
+		},
+		{
+			"file" : "D:/Laba_ppc/ppc_build/CMakeFiles/f12c83c44169c3e9df69b54b57119835/ppc_onetbb-complete.rule"
+		},
+		{
+			"file" : "D:/Laba_ppc/ppc_build/CMakeFiles/a2d812244380825ece2399c8871db572/ppc_onetbb-build.rule"
+		},
+		{
+			"file" : "D:/Laba_ppc/ppc_build/CMakeFiles/a2d812244380825ece2399c8871db572/ppc_onetbb-configure.rule"
+		},
+		{
+			"file" : "D:/Laba_ppc/ppc_build/CMakeFiles/a2d812244380825ece2399c8871db572/ppc_onetbb-download.rule"
+		},
+		{
+			"file" : "D:/Laba_ppc/ppc_build/CMakeFiles/a2d812244380825ece2399c8871db572/ppc_onetbb-install.rule"
+		},
+		{
+			"file" : "D:/Laba_ppc/ppc_build/CMakeFiles/a2d812244380825ece2399c8871db572/ppc_onetbb-mkdir.rule"
+		},
+		{
+			"file" : "D:/Laba_ppc/ppc_build/CMakeFiles/a2d812244380825ece2399c8871db572/ppc_onetbb-patch.rule"
+		},
+		{
+			"file" : "D:/Laba_ppc/ppc_build/CMakeFiles/a2d812244380825ece2399c8871db572/ppc_onetbb-test.rule"
+		},
+		{
+			"file" : "D:/Laba_ppc/ppc_build/CMakeFiles/a2d812244380825ece2399c8871db572/ppc_onetbb-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"ppc_onetbb"
+		],
+		"name" : "ppc_onetbb"
+	}
+}

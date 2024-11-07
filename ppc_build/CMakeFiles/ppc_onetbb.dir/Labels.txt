@@ -1,0 +1,14 @@
+# Target labels
+ ppc_onetbb
+# Source files and their labels
+D:/Laba_ppc/ppc_build/CMakeFiles/ppc_onetbb
+D:/Laba_ppc/ppc_build/CMakeFiles/e5c55a50535025e89e768ec1ff849473/ppc_onetbb.rule
+D:/Laba_ppc/ppc_build/CMakeFiles/f12c83c44169c3e9df69b54b57119835/ppc_onetbb-complete.rule
+D:/Laba_ppc/ppc_build/CMakeFiles/a2d812244380825ece2399c8871db572/ppc_onetbb-build.rule
+D:/Laba_ppc/ppc_build/CMakeFiles/a2d812244380825ece2399c8871db572/ppc_onetbb-configure.rule
+D:/Laba_ppc/ppc_build/CMakeFiles/a2d812244380825ece2399c8871db572/ppc_onetbb-download.rule
+D:/Laba_ppc/ppc_build/CMakeFiles/a2d812244380825ece2399c8871db572/ppc_onetbb-install.rule
+D:/Laba_ppc/ppc_build/CMakeFiles/a2d812244380825ece2399c8871db572/ppc_onetbb-mkdir.rule
+D:/Laba_ppc/ppc_build/CMakeFiles/a2d812244380825ece2399c8871db572/ppc_onetbb-patch.rule
+D:/Laba_ppc/ppc_build/CMakeFiles/a2d812244380825ece2399c8871db572/ppc_onetbb-test.rule
+D:/Laba_ppc/ppc_build/CMakeFiles/a2d812244380825ece2399c8871db572/ppc_onetbb-update.rule

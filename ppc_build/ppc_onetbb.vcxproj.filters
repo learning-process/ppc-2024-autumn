@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\Laba_ppc\ppc_build\CMakeFiles\a2d812244380825ece2399c8871db572\ppc_onetbb-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Laba_ppc\ppc_build\CMakeFiles\a2d812244380825ece2399c8871db572\ppc_onetbb-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Laba_ppc\ppc_build\CMakeFiles\a2d812244380825ece2399c8871db572\ppc_onetbb-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Laba_ppc\ppc_build\CMakeFiles\a2d812244380825ece2399c8871db572\ppc_onetbb-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Laba_ppc\ppc_build\CMakeFiles\a2d812244380825ece2399c8871db572\ppc_onetbb-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Laba_ppc\ppc_build\CMakeFiles\a2d812244380825ece2399c8871db572\ppc_onetbb-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Laba_ppc\ppc_build\CMakeFiles\a2d812244380825ece2399c8871db572\ppc_onetbb-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Laba_ppc\ppc_build\CMakeFiles\a2d812244380825ece2399c8871db572\ppc_onetbb-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Laba_ppc\ppc_build\CMakeFiles\f12c83c44169c3e9df69b54b57119835\ppc_onetbb-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Laba_ppc\ppc_build\CMakeFiles\e5c55a50535025e89e768ec1ff849473\ppc_onetbb.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="D:\Laba_ppc\ppc-2024-autumn\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\Laba_ppc\ppc_build\CMakeFiles\ppc_onetbb" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{469F09F9-BE6B-37CA-BE11-6989FF5F67A9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
