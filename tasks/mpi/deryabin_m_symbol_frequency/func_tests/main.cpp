@@ -172,7 +172,8 @@ TEST(deryabin_m_symbol_frequency_mpi, test_every_secondary) {
 
   TEST(deryabin_m_symbol_frequency_mpi, test_random2) {
     boost::mpi::communicator world;
-    std::vector<char> global_str;+    std::vector<char> input_symbol(1, 'A');
+    std::vector<char> global_str;
+    std::vector<char> input_symbol(1, 'A');
     std::vector<int32_t> global_frequency(1, 0);
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
