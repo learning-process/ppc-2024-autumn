@@ -6,6 +6,8 @@
 
 #include "seq/zaitsev_a_min_of_vector_elements/include/ops_seq.hpp"
 
+using namespace std::chrono_literals;
+
 TEST(zaitsev_a_min_of_vector_elements_sequentional, test_length_10) {
   const int length = 10;
   const int extrema = -1;

@@ -5,12 +5,11 @@
 #include <functional>
 #include <random>
 #include <string>
-#include <thread>
-#include <vector>
 
 using namespace std::chrono_literals;
 
-std::vector<int> zaitsev_a_min_of_vector_elements_mpi::getRandomVector(int sz, int minRangeValue, int maxRangeValue) {
+namespace zaitsev_a_min_of_vector_elements_mpi {
+std::vector<int> getRandomVector(int sz, int minRangeValue, int maxRangeValue) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
@@ -20,6 +19,7 @@ std::vector<int> zaitsev_a_min_of_vector_elements_mpi::getRandomVector(int sz, i
   return vec;
 }
 
+}  // namespace zaitsev_a_min_of_vector_elements_mpi
 bool zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsSequential::pre_processing() {
   internal_order_test();
 
