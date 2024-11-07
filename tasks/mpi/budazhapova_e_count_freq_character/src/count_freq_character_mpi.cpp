@@ -86,7 +86,6 @@ bool budazhapova_e_count_freq_character_mpi::TestMPITaskParallel::pre_processing
     world.recv(0, 0, local_input_.data(), delta);
   }
   local_res = 0;
-  res = 0;
   return true;
 }
 
