@@ -7,7 +7,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
 
 bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorSequential::pre_processing() {
   internal_order_test();
@@ -46,6 +45,23 @@ bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorSequential::post_process
 
 bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel::pre_processing() {
   internal_order_test();
+  
+  // Init value for output
+  res = 0;
+  return true;
+}
+
+bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel::validation() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    // Check count elements of output
+    return taskData->outputs_count[0] == 1;
+  }
+  return true;
+}
+
+bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel::run() {
+  internal_order_test();
   unsigned int delta = 0;
   unsigned int alpha = 0;
   if (world.rank() == 0) {
@@ -72,22 +88,7 @@ bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel::pre_processing
   } else {
     std::copy(input_.begin(), input_.begin() + delta, local_input_.begin());
   }
-  // Init value for output
-  res = 0;
-  return true;
-}
 
-bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel::validation() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    // Check count elements of output
-    return taskData->outputs_count[0] == 1;
-  }
-  return true;
-}
-
-bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel::run() {
-  internal_order_test();
   int local_res = 0;
   if (ops == "add") {
     local_res = std::accumulate(local_input_.begin(), local_input_.end(), 0);
@@ -109,7 +110,6 @@ bool gromov_a_sum_of_vector_elements_mpi::MPISumOfVectorParallel::run() {
       }
     }
   }
-  std::this_thread::sleep_for(20ms);
   return true;
 }
 
