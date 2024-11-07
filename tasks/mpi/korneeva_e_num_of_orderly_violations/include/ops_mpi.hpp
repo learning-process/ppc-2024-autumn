@@ -136,8 +136,7 @@ bool num_of_orderly_violations<iotype, cntype>::post_processing() {
 
   // Process 0 writes the total violation count to output
   if (mpi_comm.rank() == 0) {
-    auto output_ptr = reinterpret_cast<cntype*>(taskData->outputs[0]);
-    output_ptr[0] = violation_count_;
+    reinterpret_cast<cntype*>(taskData->outputs[0])[0] = violation_count_;
   }
   return true;
 }
