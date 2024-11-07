@@ -11,277 +11,223 @@
 #include "mpi/golovkin_integration_rectangular_method/include/ops_mpi.hpp"
 
 TEST(golovkin_integration_rectangular_method, test_constant_function) {
-  boost::mpi::communicator world;
-  std::vector<double> global_result(1, 0);
+  boost::mpi::communicator comm_world;
+  std::vector<double> computed_result(1, 0);
+
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  double lower_limit = 0.0;
+  double upper_limit = 10.0;
+  int partition_count = 1000000;
 
-  double a = 0.0;
-  double b = 5.0;
-  double epsilon = 0.1;
-  int cnt_of_splits = static_cast<int>((b - a) / epsilon);  // Вычисляем количество разбиений
-
-  // Инициализация данных только для процесса 0
-  if (world.rank() == 0) {
-    std::cout << "Process 0: Initializing task data for parallel calculation" << std::endl;
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
+  if (comm_world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
     taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
     taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&partition_count));
     taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
-    taskDataPar->outputs_count.emplace_back(global_result.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(computed_result.data()));
+    taskDataPar->outputs_count.emplace_back(computed_result.size());
   }
 
-  // Создаем экземпляр задачи, но выполняем действия только на нулевом процессе
-  golovkin_integration_rectangular_method::MPIIntegralCalculator parallelTask(taskDataPar);
-  // Процесс 0 выполняет валидацию, остальные просто завершают выполнение
-  if (world.rank() == 0) {
-    std::cout << "Process " << world.rank() << ": Running validation" << std::endl;
-    ASSERT_EQ(parallelTask.validation(), true);
+  golovkin_integration_rectangular_method::MPIIntegralCalculator parallel_task(taskDataPar);
+  parallel_task.set_function([](double x) { return 5.0; });
 
-    std::cout << "Process " << world.rank() << ": Starting pre_processing" << std::endl;
-    parallelTask.pre_processing();
+  ASSERT_EQ(parallel_task.validation(), true);
+  parallel_task.pre_processing();
+  parallel_task.run();
+  parallel_task.post_processing();
 
-    std::cout << "Process " << world.rank() << ": Running main calculation" << std::endl;
-    parallelTask.run();
+  if (comm_world.rank() == 0) {
+    std::vector<double> expected_result(1, 0);
 
-    std::cout << "Process " << world.rank() << ": Starting post_processing" << std::endl;
-    parallelTask.post_processing();
-  }      
-
-  // Процесс 0 выполняет последовательный расчет
-  if (world.rank() == 0) {
-    std::cout << "Process 0: Starting sequential calculation for verification" << std::endl;
-    std::vector<double> reference_result(1, 0);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&partition_count));
     taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_result.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(expected_result.data()));
+    taskDataSeq->outputs_count.emplace_back(expected_result.size());
 
-    golovkin_integration_rectangular_method::MPIIntegralCalculator sequentialTask(taskDataSeq);
-    ASSERT_EQ(sequentialTask.validation(), true);
+    golovkin_integration_rectangular_method::MPIIntegralCalculator sequential_task(taskDataSeq);
+    sequential_task.set_function([](double x) { return 5.0; });
 
-    sequentialTask.pre_processing();
-    sequentialTask.run();
-    sequentialTask.post_processing();
+    ASSERT_EQ(sequential_task.validation(), true);
+    sequential_task.pre_processing();
+    sequential_task.run();
+    sequential_task.post_processing();
 
-    std::cout << "Process 0: Comparing parallel and sequential results" << std::endl;
-    ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
+    ASSERT_NEAR(expected_result[0], computed_result[0], 1e-3);
+  }
+}
+TEST(golovkin_integration_rectangular_method, test_linear_function) {
+  boost::mpi::communicator comm_world;
+  std::vector<double> computed_result(1, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  double lower_limit = 0.0;
+  double upper_limit = 5.0;
+  int partition_count = 1000000;
+
+  if (comm_world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&partition_count));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(computed_result.data()));
+    taskDataPar->outputs_count.emplace_back(computed_result.size());
+  }
+
+  golovkin_integration_rectangular_method::MPIIntegralCalculator parallel_task(taskDataPar);
+  parallel_task.set_function([](double x) { return 2.0 * x + 3.0; });
+
+  ASSERT_EQ(parallel_task.validation(), true);
+  parallel_task.pre_processing();
+  parallel_task.run();
+  parallel_task.post_processing();
+
+  if (comm_world.rank() == 0) {
+    double expected_result = 2.0 * (upper_limit * upper_limit / 2) + 3.0 * upper_limit;  // Analytical result
+    ASSERT_NEAR(computed_result[0], expected_result, 1e-3);
   }
 }
 
-TEST(golovkin_integration_rectangular_method, test_square_function) {
-  boost::mpi::communicator world;
-  std::vector<double> global_result(1, 0);
+TEST(golovkin_integration_rectangular_method, test_quadratic_function) {
+  boost::mpi::communicator comm_world;
+  std::vector<double> computed_result(1, 0);
+
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  double lower_limit = -3.0;
+  double upper_limit = 3.0;
+  int partition_count = 1000000;
 
-  double a = 0.0;
-  double b = 2.5;
-
-  double epsilon = 0.1;
-  int cnt_of_splits = static_cast<int>((b - a) / epsilon);
-
-  if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
+  if (comm_world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
     taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
     taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&partition_count));
     taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
-    taskDataPar->outputs_count.emplace_back(global_result.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(computed_result.data()));
+    taskDataPar->outputs_count.emplace_back(computed_result.size());
   }
 
-  golovkin_integration_rectangular_method::MPIIntegralCalculator parallelTask(taskDataPar);
+  golovkin_integration_rectangular_method::MPIIntegralCalculator parallel_task(taskDataPar);
+  parallel_task.set_function([](double x) { return x * x; });
 
-  ASSERT_EQ(parallelTask.validation(), true);
-  parallelTask.pre_processing();
-  parallelTask.run();
-  parallelTask.post_processing();
+  ASSERT_EQ(parallel_task.validation(), true);
+  parallel_task.pre_processing();
+  parallel_task.run();
+  parallel_task.post_processing();
 
-  if (world.rank() == 0) {
-    std::vector<double> reference_result(1, 0);
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
-    taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
-    taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_result.size());
-
-    golovkin_integration_rectangular_method::MPIIntegralCalculator sequentialTask(taskDataSeq);
-
-    ASSERT_EQ(sequentialTask.validation(), true);
-    sequentialTask.pre_processing();
-    sequentialTask.run();
-    sequentialTask.post_processing();
-
-    ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
+  if (comm_world.rank() == 0) {
+    double expected_result = (std::pow(upper_limit, 3) - std::pow(lower_limit, 3)) / 3.0;  // Analytical result
+    ASSERT_NEAR(computed_result[0], expected_result, 1e-3);
   }
 }
+
 TEST(golovkin_integration_rectangular_method, test_sine_function) {
-  boost::mpi::communicator world;
-  std::vector<double> global_result(1, 0);
+  boost::mpi::communicator comm_world;
+  std::vector<double> computed_result(1, 0);
+
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  double lower_limit = 0.0;
+  double upper_limit = M_PI;
+  int partition_count = 1000000;
 
-  double a = 0.0;
-
-  double b = M_PI;
-  double epsilon = 0.1;
-  int cnt_of_splits = static_cast<int>((b - a) / epsilon);
-
-  if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
+  if (comm_world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
     taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
     taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&partition_count));
     taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
-    taskDataPar->outputs_count.emplace_back(global_result.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(computed_result.data()));
+    taskDataPar->outputs_count.emplace_back(computed_result.size());
   }
 
-  golovkin_integration_rectangular_method::MPIIntegralCalculator parallelTask(taskDataPar);
+  golovkin_integration_rectangular_method::MPIIntegralCalculator parallel_task(taskDataPar);
+  parallel_task.set_function([](double x) { return std::sin(x); });
 
-  ASSERT_EQ(parallelTask.validation(), true);
-  parallelTask.pre_processing();
-  parallelTask.run();
-  parallelTask.post_processing();
+  ASSERT_EQ(parallel_task.validation(), true);
+  parallel_task.pre_processing();
+  parallel_task.run();
+  parallel_task.post_processing();
 
-  if (world.rank() == 0) {
-    std::vector<double> reference_result(1, 0);
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  if (comm_world.rank() == 0) {
+    double expected_result = 2.0;  // Analytical result
+    ASSERT_NEAR(computed_result[0], expected_result, 1e-3);
+  }
+}
 
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
-    taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
-    taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_result.size());
+TEST(golovkin_integration_rectangular_method, test_cosine_function) {
+  boost::mpi::communicator comm_world;
+  std::vector<double> computed_result(1, 0);
 
-    golovkin_integration_rectangular_method::MPIIntegralCalculator sequentialTask(taskDataSeq);
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  double lower_limit = 0.0;
+  double upper_limit = M_PI / 2;
+  int partition_count = 1000000;
 
-    ASSERT_EQ(sequentialTask.validation(), true);
-    sequentialTask.pre_processing();
-    sequentialTask.run();
-    sequentialTask.post_processing();
+  if (comm_world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&partition_count));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(computed_result.data()));
+    taskDataPar->outputs_count.emplace_back(computed_result.size());
+  }
 
-    ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
+  golovkin_integration_rectangular_method::MPIIntegralCalculator parallel_task(taskDataPar);
+  parallel_task.set_function([](double x) { return std::cos(x); });
+
+  ASSERT_EQ(parallel_task.validation(), true);
+  parallel_task.pre_processing();
+  parallel_task.run();
+  parallel_task.post_processing();
+
+  if (comm_world.rank() == 0) {
+    double expected_result = 1.0;  // Analytical result
+    ASSERT_NEAR(computed_result[0], expected_result, 1e-3);
   }
 }
 
 TEST(golovkin_integration_rectangular_method, test_exponential_function) {
-  boost::mpi::communicator world;
-  std::vector<double> global_result(1, 0);
+  boost::mpi::communicator comm_world;
+  std::vector<double> computed_result(1, 0);
+
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  double lower_limit = 0.0;
+  double upper_limit = 1.0;
+  int partition_count = 1000000;
 
-  double a = 0.0;
-  double b = 2.5;  // Integrating e^x from 0 to 1
-  double epsilon = 0.1;
-  int cnt_of_splits = static_cast<int>((b - a) / epsilon);
-
-  if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
+  if (comm_world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
     taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
     taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&partition_count));
     taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
-    taskDataPar->outputs_count.emplace_back(global_result.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(computed_result.data()));
+    taskDataPar->outputs_count.emplace_back(computed_result.size());
   }
 
-  golovkin_integration_rectangular_method::MPIIntegralCalculator parallelTask(taskDataPar);
+  golovkin_integration_rectangular_method::MPIIntegralCalculator parallel_task(taskDataPar);
+  parallel_task.set_function([](double x) { return std::exp(x); });
 
-  ASSERT_EQ(parallelTask.validation(), true);
-  parallelTask.pre_processing();
-  parallelTask.run();
-  parallelTask.post_processing();
+  ASSERT_EQ(parallel_task.validation(), true);
+  parallel_task.pre_processing();
+  parallel_task.run();
+  parallel_task.post_processing();
 
-  if (world.rank() == 0) {
-    std::vector<double> reference_result(1, 0);
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
-    taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
-    taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_result.size());
-
-    golovkin_integration_rectangular_method::MPIIntegralCalculator sequentialTask(taskDataSeq);
-
-    ASSERT_EQ(sequentialTask.validation(), true);
-    sequentialTask.pre_processing();
-    sequentialTask.run();
-    sequentialTask.post_processing();
-
-    ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
-  }
-}
-
-TEST(golovkin_integration_rectangular_method, test_polynomial_function) {
-  boost::mpi::communicator world;
-  std::vector<double> global_result(1, 0);
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  double a = 1.0;
-  double b = 2.5;  // Integrating f(x) = x^3 from 1 to 3
-  double epsilon = 0.1;
-  int cnt_of_splits = static_cast<int>((b - a) / epsilon);
-
-  if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
-    taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
-    taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
-    taskDataPar->outputs_count.emplace_back(global_result.size());
-  }
-
-  golovkin_integration_rectangular_method::MPIIntegralCalculator parallelTask(taskDataPar);
-
-  ASSERT_EQ(parallelTask.validation(), true);
-  parallelTask.pre_processing();
-  parallelTask.run();
-  parallelTask.post_processing();
-
-  if (world.rank() == 0) {
-    std::vector<double> reference_result(1, 0);
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
-    taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cnt_of_splits));
-    taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_result.size());
-
-    golovkin_integration_rectangular_method::MPIIntegralCalculator sequentialTask(taskDataSeq);
-
-    ASSERT_EQ(sequentialTask.validation(), true);
-    sequentialTask.pre_processing();
-    sequentialTask.run();
-    sequentialTask.post_processing();
-
-    ASSERT_NEAR(reference_result[0], global_result[0], 1e-2);
+  if (comm_world.rank() == 0) {
+    double expected_result = std::exp(upper_limit) - 1;  // Analytical result
+    ASSERT_NEAR(computed_result[0], expected_result, 1e-3);
   }
 }

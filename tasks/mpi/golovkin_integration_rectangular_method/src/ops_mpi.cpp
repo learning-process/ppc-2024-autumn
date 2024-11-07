@@ -1,28 +1,20 @@
 // Golovkin Maksim
 #include "mpi/golovkin_integration_rectangular_method/include/ops_mpi.hpp"
 
-#include <mpi.h>
-
-#include <cmath>
-#include <iostream>
-#include <stdexcept>
+#include <algorithm>
+#include <chrono>
+#include <functional>
+#include <numeric>
+#include <random>
+#include <string>
+#include <thread>
 #include <vector>
-#include <boost/mpi/collectives.hpp>
+#include <boost/mpi.hpp>
 
 using namespace golovkin_integration_rectangular_method;
-
-MPIIntegralCalculator::MPIIntegralCalculator(std::shared_ptr<ppc::core::TaskData> taskData)
-    : ppc::core::Task(taskData), taskData(std::move(taskData)), local_res(0.0), global_res(0.0) {}
-
+using namespace std::chrono_literals;
 bool MPIIntegralCalculator::validation() {
   internal_order_test();
-  if (taskData->inputs.empty() || taskData->outputs.empty()) {
-    return false;
-  }
-  // Убедимся, что только процесс 0 может инициировать данные
-  if (taskData->inputs.size() < 3 || (taskData->outputs.size() < 1 && world.rank() == 0)) {
-    return false;
-  }
   if (world.rank() == 0) {
     return taskData->outputs_count[0] == 1;
   }
@@ -31,71 +23,48 @@ bool MPIIntegralCalculator::validation() {
 
 bool MPIIntegralCalculator::pre_processing() {
   internal_order_test();
-
   if (world.rank() == 0) {
-    auto* tmp_a = reinterpret_cast<double*>(taskData->inputs[0]);
-    auto* tmp_b = reinterpret_cast<double*>(taskData->inputs[1]);
-    auto* tmp_cnt_of_splits = reinterpret_cast<int*>(taskData->inputs[2]);
+    auto* start_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
+    auto* end_ptr = reinterpret_cast<double*>(taskData->inputs[1]);
+    auto* split_ptr = reinterpret_cast<int*>(taskData->inputs[2]);
 
-    a = *tmp_a;
-    b = *tmp_b;
-    cnt_of_splits = *tmp_cnt_of_splits;
+    lower_bound = *start_ptr;
+    upper_bound = *end_ptr;
+    num_partitions = *split_ptr;
   }
-
-  broadcast(world, a, 0);
-  broadcast(world, b, 0);
-  broadcast(world, cnt_of_splits, 0);
-
-  // Проверка корректности количества разбиений
-  if (cnt_of_splits <= 0) return false;
-
-  h = (b - a) / cnt_of_splits;  // Вычисление ширины подынтервала
-    std::cout << "Process " << world.rank() << " - a: " << a << ", b: " << b << ", cnt_of_splits: " << cnt_of_splits<< ", h: " << h << std::endl;
-
+  broadcast(world, lower_bound, 0);
+  broadcast(world, upper_bound, 0);
+  broadcast(world, num_partitions, 0);
   return true;
 }
-
+double MPIIntegralCalculator::integrate(const std::function<double(double)>& f, double a, double b, int splits) {
+  int current_process = world.rank();
+  int total_processes = world.size();
+  double step_size;
+  double local_sum = 0.0;
+  step_size = (b - a) / splits;  // Вычисление ширины подынтервала
+  for (int i = current_process; i < splits; i += total_processes) {
+    double x = a + i * step_size;
+    local_sum += f(x) * step_size;
+  }
+  return local_sum;
+}
 bool MPIIntegralCalculator::run() {
   internal_order_test();
-  // Проверка, что cnt_of_splits, a, и h инициализированы и имеют корректные значения
-  if (cnt_of_splits <= 0 || h <= 0.0 || a >= b) {
-    std::cerr << "Process " << world.rank() << ": Invalid configuration (cnt_of_splits, h, or range a-b)" << std::endl;
-    return false;
-  }
-  // Делим работу между процессами
-  int splits_per_proc = cnt_of_splits / world.size();
-  int remaining_splits = cnt_of_splits % world.size();
-  int start = world.rank() * splits_per_proc + std::min(world.rank(), remaining_splits);
-  int end = start + splits_per_proc + (world.rank() < remaining_splits ? 1 : 0);
-  // Проверка диапазона
-  if (start >= end) {
-    std::cerr << "Process " << world.rank() << " has no work to do (start >= end)." << std::endl;
-    local_res = 0.0;  // Устанавливаем local_res для процесса без работы
-  } else {
-    // Вычисление локального результата
-    double local_result = 0.0;
-    for (int i = start; i < end; ++i) {
-      double x = a + i * h;
-      local_result += function_square(x);  // Функция, которую мы интегрируем
-    }
-    local_res = local_result * h;  // Умножаем на ширину подынтервала
-  }
-  // Сбор результатов, проверка глобальной синхронизации
-
-  reduce(world, local_res, global_res, std::plus<>(), 0);
-  std::cout << "Root process has global result after reduction: " << global_res << std::endl;
+  double local_result{};
+  local_result = integrate(function_, lower_bound, upper_bound, num_partitions);
+  reduce(world, local_result, global_result, std::plus<>(), 0);
   return true;
 }
 
 bool MPIIntegralCalculator::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    if (taskData->outputs.empty()) return false;
-    *reinterpret_cast<double*>(taskData->outputs[0]) = global_res;
+    *reinterpret_cast<double*>(taskData->outputs[0]) = global_result;
   }
   return true;
 }
 
-double MPIIntegralCalculator::function_square(double x) {
-  return x * x;  // Пример функции, которую мы интегрируем
+void MPIIntegralCalculator::set_function(const std::function<double(double)>& target_func) {
+  function_ = target_func;
 }
