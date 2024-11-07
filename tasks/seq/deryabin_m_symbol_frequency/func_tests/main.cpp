@@ -31,8 +31,8 @@ TEST(deryabin_m_symbol_frequency_seq, test_part_of_alphabet) {
 
 TEST(deryabin_m_symbol_frequency_seq, test_string_without_symbol) {
   // Create data
-  std::vector<std::string> in(1, " С одной сорокой одна морока, а сорок сорок — сорок морок...");
-  std::vector<char> in_ch(1, '@');
+  std::vector<std::string> in(1, "A B C D E F G H I J K L M N O P Q R S T U V W X Y Z");
+  std::vector<char> in_ch(1, 'a');
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -55,8 +55,8 @@ TEST(deryabin_m_symbol_frequency_seq, test_string_without_symbol) {
 
 TEST(deryabin_m_symbol_frequency_seq, test_large_string) {
   // Create data
-  std::vector<std::string> in(1, std::string(5000 - 1, '@') + '$' + std::string(5000, '@'));
-  std::vector<char> in_ch(1, '$');
+  std::vector<std::string> in(1, std::string(5000 - 1, 'A') + 'B' + std::string(5000, 'C'));
+  std::vector<char> in_ch(1, 'B');
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -80,7 +80,7 @@ TEST(deryabin_m_symbol_frequency_seq, test_large_string) {
 TEST(deryabin_m_symbol_frequency_seq, test_empty_string) {
   // Create data
   std::vector<std::string> in(1, std::string());
-  std::vector<char> in_ch(1, '@');
+  std::vector<char> in_ch(1, 'A');
   std::vector<int> out(1, 0);
 
   // Create TaskData
