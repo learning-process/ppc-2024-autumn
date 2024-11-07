@@ -219,4 +219,3 @@ TEST(komshina_d_min_of_vector_elements_mpi, Empty_Vector) {
 
     ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
-

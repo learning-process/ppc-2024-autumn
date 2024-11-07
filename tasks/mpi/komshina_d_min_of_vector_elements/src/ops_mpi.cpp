@@ -90,9 +90,15 @@ bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel::run(
   internal_order_test();
   unsigned int delta = 0;
   if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] / world.size() + (taskData->inputs_count[0] % world.size() != 0);
+    delta = taskData->inputs_count[0] / world.size();
+    int remainder = taskData->inputs_count[0] % world.size();
+    if (world.rank() < remainder) {
+      delta += 1;
+    }
   }
-  broadcast(world, delta, 0);
+
+  boost::mpi::broadcast(world, delta, 0);
+
 
    if (world.rank() == 0) {
     for (int proc = 1; proc < world.size(); proc++) {
