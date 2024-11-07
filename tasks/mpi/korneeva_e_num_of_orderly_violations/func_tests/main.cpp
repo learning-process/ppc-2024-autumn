@@ -4,10 +4,10 @@
 
 // Test for a single-element vector, expecting no violations
 TEST(korneeva_e_num_of_orderly_violations_mpi, NoViolations_SingleElement) {
-  const int N = 1;  // Size of the vector
+  const int N = 1; // Size of the vector
   boost::mpi::communicator world;
   int rank = world.rank();
-  std::vector<int> arr(N, 42);  // Initialize vector with a single value
+  std::vector<int> arr(N, 42); // Initialize vector with a single value
   std::vector<int> out(1);
   std::shared_ptr<ppc::core::TaskData> data_seq = std::make_shared<ppc::core::TaskData>();
 
@@ -95,7 +95,7 @@ TEST(korneeva_e_num_of_orderly_violations_mpi, FullViolations_DecreasingOrder) {
 
 // Test for a vector with all equal elements, expecting no violations
 TEST(korneeva_e_num_of_orderly_violations_mpi, NoViolations_AllElementsEqual) {
-  const int N = 100;
+  const int N = 100; // Size of the vector
   boost::mpi::communicator world;
   std::vector<int> arr(N, 5);  // All elements equal to 5
   std::vector<int> out(1);
