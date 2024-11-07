@@ -3,7 +3,6 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <vector>
 
 #include "mpi/zolotareva_a_count_of_words/include/ops_mpi.hpp"
 

@@ -7,8 +7,17 @@
 #include "seq/zolotareva_a_count_of_words/include/ops_seq.hpp"
 
 TEST(sequential_zolotareva_a_count_of_words_perf_test, test_pipeline_run) {
-  const int count = 10;
-  const std::string input = "1 2 3 4 5 6 7 8 9 10";
+  const int count = 162;
+  const std::string input =
+      "I was too young to be other than awed and puzzled by Doc Marlowe when I knew him. I was only sixteen when he "
+      "died. He was sixty-seven. There was that vast difference in our ages and there was a vaster difference in our "
+      "backgrounds. Doc Marlowe was a medicine-show man. He had been a lot of other things, too: a circus man, the "
+      "proprietor of a concession at Coney Island, a saloon-keeper; but in his fifties he had travelled around with a "
+      "tent-show troupe made up of a Mexican named Chickalilli, who threw knives, and a man called Professor Jones, "
+      "who played the banjo. Doc Marlowe would come out after the entertainment and harangue the crowd and sell "
+      "bottles of medicine for all kinds of ailments. I found out all this about him gradually, toward the last, and "
+      "after he died. When I first knew him, he represented the Wild West to me, and there was nobody I admired so "
+      "much.";
 
   std::vector<char> in(input.begin(), input.end());
   std::vector<int> out(1, 0);
@@ -39,8 +48,17 @@ TEST(sequential_zolotareva_a_count_of_words_perf_test, test_pipeline_run) {
 }
 
 TEST(sequential_zolotareva_a_count_of_words_perf_test, test_task_run) {
-  const int count = 10;
-  const std::string input = "1 2 3 4 5 6 7 8 9 10";
+  const int count = 162;
+  const std::string input =
+      "I was too young to be other than awed and puzzled by Doc Marlowe when I knew him. I was only sixteen when he "
+      "died. He was sixty-seven. There was that vast difference in our ages and there was a vaster difference in our "
+      "backgrounds. Doc Marlowe was a medicine-show man. He had been a lot of other things, too: a circus man, the "
+      "proprietor of a concession at Coney Island, a saloon-keeper; but in his fifties he had travelled around with a "
+      "tent-show troupe made up of a Mexican named Chickalilli, who threw knives, and a man called Professor Jones, "
+      "who played the banjo. Doc Marlowe would come out after the entertainment and harangue the crowd and sell "
+      "bottles of medicine for all kinds of ailments. I found out all this about him gradually, toward the last, and "
+      "after he died. When I first knew him, he represented the Wild West to me, and there was nobody I admired so "
+      "much.";
 
   std::vector<char> in(input.begin(), input.end());
   std::vector<int> out(1, 0);

@@ -1,9 +1,6 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/zolotareva_a_count_of_words/include/ops_seq.hpp"
-
 #include <string>
-#include <thread>
-using namespace std::chrono_literals;
 
 bool zolotareva_a_count_of_words_seq::TestTaskSequential::validation() {
   internal_order_test();
@@ -29,7 +26,6 @@ bool zolotareva_a_count_of_words_seq::TestTaskSequential::run() {
       in_word = true;
     }
   }
-  std::this_thread::sleep_for(20ms);
   return true;
 }
 

@@ -2,14 +2,7 @@
 // здесь писать саму задачу
 #include "mpi/zolotareva_a_count_of_words/include/ops_mpi.hpp"
 
-#include <algorithm>
-#include <functional>
-#include <random>
 #include <string>
-#include <thread>
-#include <vector>
-
-using namespace std::chrono_literals;
 
 bool zolotareva_a_count_of_words_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
@@ -35,7 +28,6 @@ bool zolotareva_a_count_of_words_mpi::TestMPITaskSequential::run() {
     }
   }
   if (in_word) ++res;
-  std::this_thread::sleep_for(20ms);
   return true;
 }
 
@@ -100,7 +92,6 @@ bool zolotareva_a_count_of_words_mpi::TestMPITaskParallel::run() {
   if (world.rank() == (world.size() - 1) && local_input_[0] != ' ' && !in_word) {
     --local_res;
   }
-  std::this_thread::sleep_for(20ms);
   boost::mpi::reduce(world, local_res, res, std::plus(), 0);
   return true;
 }
