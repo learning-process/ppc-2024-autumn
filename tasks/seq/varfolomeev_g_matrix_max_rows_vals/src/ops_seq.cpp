@@ -1,10 +1,5 @@
 #include "seq/varfolomeev_g_matrix_max_rows_vals/include/ops_seq.hpp"
 
-#include <cstddef>
-#include <thread>
-
-using namespace std::chrono_literals;
-
 bool varfolomeev_g_matrix_max_rows_vals_seq::MaxInRows::pre_processing() {
   internal_order_test();
   // Init value for input and output

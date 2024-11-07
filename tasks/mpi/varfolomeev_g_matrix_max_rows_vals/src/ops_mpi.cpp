@@ -9,10 +9,6 @@
 #include <random>
 #include <string>
 #include <thread>
-#include <type_traits>
-#include <vector>
-
-using namespace std::chrono_literals;
 
 std::vector<int> varfolomeev_g_matrix_max_rows_vals_mpi::getRandomVector(int sz) {
   std::random_device dev;
