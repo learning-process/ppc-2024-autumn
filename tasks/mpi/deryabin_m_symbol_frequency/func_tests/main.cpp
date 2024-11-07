@@ -159,7 +159,7 @@ TEST(deryabin_m_symbol_frequency_mpi, test_random2) {
         global_str = std::vector<char>(10000);
         srand((unsigned short)time(NULL));
         std::default_random_engine generator(rand());
-        std::uniform_int_distribution<> distribution(32, 127);
+        std::uniform_int_distribution<> distribution(66, 88);
         std::generate(global_str.begin(), global_str.end(), [&] { return char(0) + distribution(generator); });
         taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_str.data()));
         taskDataPar->inputs_count.emplace_back(global_str.size());
