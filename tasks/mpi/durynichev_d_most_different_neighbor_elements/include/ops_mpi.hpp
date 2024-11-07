@@ -33,7 +33,8 @@ struct ChunkResult {
   }
 
   ChunkResult operator()(const ChunkResult &a, const ChunkResult &b) {
-    return (a.diff > b.diff || (a.diff == b.diff && (a.left_index < b.left_index))) ? a : b;
+    //return (a.diff > b.diff || (a.diff == b.diff && (a.left_index < b.left_index))) ? a : b;
+    return (a.diff > b.diff) ? a : b;
   }
 
   std::vector<int> toVector(const std::vector<int> &input) const {
@@ -67,6 +68,7 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   boost::mpi::communicator world;
   std::vector<int> input, chunk;
+  int chunkStart = 0;
   ChunkResult result{};
 };
 
