@@ -62,16 +62,18 @@ bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential::po
 bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-      delta = (taskData->inputs_count[0] + world.size() - 1) / world.size();
-      input_ = std::vector<int>(taskData->inputs_count[0]);
-      int* ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-      for (size_t i = 0; i < taskData->inputs_count[0]; ++i) {
-        input_[i] = ptr[i];
-        
-      }
-      input_.resize(delta * world.size(), INT_MAX);
-      
-      res = input_[0];
+    delta = taskData->inputs_count[0] / world.size();
+    if (taskData->inputs_count[0] % world.size() != 0) {
+      delta++;
+    }
+
+    // Init vector
+    int* it = reinterpret_cast<int*>(taskData->inputs[0]);
+    input_ = std::vector<int>(static_cast<int>(delta) * world.size(), INT_MAX);
+    std::copy(it, it + taskData->inputs_count[0], input_.begin());
+
+    // Init value for output
+    res = input_[0];
   }
   return true;
 }
