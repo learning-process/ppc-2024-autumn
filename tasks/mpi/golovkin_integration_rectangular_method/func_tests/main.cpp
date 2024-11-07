@@ -28,15 +28,14 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(computed_result.data()));
     taskDataPar->outputs_count.emplace_back(computed_result.size());
+    golovkin_integration_rectangular_method::MPIIntegralCalculator parallel_task(taskDataPar);
+    parallel_task.set_function([](double x) { return 5.0; });
+
+    ASSERT_EQ(parallel_task.validation(), true);
+    parallel_task.pre_processing();
+    parallel_task.run();
+    parallel_task.post_processing();
   }
-
-  golovkin_integration_rectangular_method::MPIIntegralCalculator parallel_task(taskDataPar);
-  parallel_task.set_function([](double x) { return 5.0; });
-
-  ASSERT_EQ(parallel_task.validation(), true);
-  parallel_task.pre_processing();
-  parallel_task.run();
-  parallel_task.post_processing();
 
   if (comm_world.rank() == 0) {
     std::vector<double> expected_result(1, 0);
@@ -53,12 +52,12 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
 
     golovkin_integration_rectangular_method::MPIIntegralCalculator sequential_task(taskDataSeq);
     sequential_task.set_function([](double x) { return 5.0; });
-
+    std::cout << "Pro2";
     ASSERT_EQ(sequential_task.validation(), true);
     sequential_task.pre_processing();
     sequential_task.run();
     sequential_task.post_processing();
-
+    std::cout << "Pro3";
     ASSERT_NEAR(expected_result[0], computed_result[0], 1e-3);
   }
 }
