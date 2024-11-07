@@ -69,11 +69,10 @@ bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskSequential::pos
 
 bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  auto* pr = reinterpret_cast<float*>(
-      taskData->inputs[0]);  // в переменную p складываем указатель на массив с исходными данными
+  auto* pr = reinterpret_cast<float*>(taskData->inputs[0]);
   if (world.rank() == 0) {
-    input_.resize(taskData->inputs_count[0]);  // задает размер вектора input_ чтобы он был размера inputs_count
-    std::copy(pr, pr + input_.size(), input_.begin());  // копируем из р первые inputs_count элементов в input_
+    input_.resize(taskData->inputs_count[0]);
+    std::copy(pr, pr + input_.size(), input_.begin());
   }
   return true;
 }

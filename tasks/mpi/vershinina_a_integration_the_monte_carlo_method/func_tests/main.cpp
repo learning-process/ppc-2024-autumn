@@ -2,6 +2,7 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <cmath>
 #include <vector>
 
 #include "mpi/vershinina_a_integration_the_monte_carlo_method/include/ops_mpi.hpp"

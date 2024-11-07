@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
+#include <cmath>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
