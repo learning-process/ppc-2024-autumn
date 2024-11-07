@@ -29,6 +29,6 @@ bool budazhapova_e_count_freq_character_seq::TestTaskSequential::run() {
 
 bool budazhapova_e_count_freq_character_seq::TestTaskSequential::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0]) = res;
+  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
   return true;
 }
