@@ -76,8 +76,8 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::pre_processing
     inputMatrix_ = std::vector<int>(numCols * numRows, 0);
   }
 
-  int delta = numCols / world.size();
-  int extra = numCols % world.size();
+  delta = numCols / world.size();
+  extra = numCols % world.size();
   if (extra != 0) {
     delta += 1;
   }
