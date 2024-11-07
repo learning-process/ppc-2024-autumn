@@ -7,6 +7,8 @@
 
 #include "mpi/sarafanov_m_num_of_mismatch_characters_of_two_strings/include/ops_mpi.hpp"
 
+namespace sarafanov_m_num_of_mismatch_characters_of_two_strings_mpi {
+
 std::string randomString(size_t size) {
   const std::string characters =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -28,6 +30,8 @@ std::string randomString(size_t size) {
   return result;
 }
 
+}  // namespace sarafanov_m_num_of_mismatch_characters_of_two_strings_mpi
+
 TEST(sarafanov_m_num_of_mismatch_characters_of_two_strings_mpi, with_special_characters_and_different_cases) {
   boost::mpi::communicator world;
   std::string input_a;
@@ -36,8 +40,8 @@ TEST(sarafanov_m_num_of_mismatch_characters_of_two_strings_mpi, with_special_cha
   auto par_task_output = std::vector<int>(1);
   auto par_task_data = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    input_a = randomString(100000);
-    input_b = randomString(100000);
+    input_a = sarafanov_m_num_of_mismatch_characters_of_two_strings_mpi::randomString(100000);
+    input_b = sarafanov_m_num_of_mismatch_characters_of_two_strings_mpi::randomString(100000);
     par_task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_a.data()));
     par_task_data->inputs_count.emplace_back(input_a.size());
     par_task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_b.data()));
@@ -168,8 +172,8 @@ TEST(sarafanov_m_num_of_mismatch_characters_of_two_strings_mpi, error_when_input
   auto par_task_output = std::vector<int>(1);
   auto par_task_data = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    input_a = randomString(100000);
-    input_b = randomString(100001);
+    input_a = sarafanov_m_num_of_mismatch_characters_of_two_strings_mpi::randomString(100000);
+    input_b = sarafanov_m_num_of_mismatch_characters_of_two_strings_mpi::randomString(100001);
     par_task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_a.data()));
     par_task_data->inputs_count.emplace_back(input_a.size());
     par_task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_b.data()));
@@ -194,8 +198,8 @@ TEST(sarafanov_m_num_of_mismatch_characters_of_two_strings_mpi, error_when_outpu
   auto par_task_output = std::vector<int>(0);
   auto par_task_data = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    input_a = randomString(100000);
-    input_b = randomString(100000);
+    input_a = sarafanov_m_num_of_mismatch_characters_of_two_strings_mpi::randomString(100000);
+    input_b = sarafanov_m_num_of_mismatch_characters_of_two_strings_mpi::randomString(100000);
     par_task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_a.data()));
     par_task_data->inputs_count.emplace_back(input_a.size());
     par_task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_b.data()));
@@ -221,7 +225,7 @@ TEST(sarafanov_m_num_of_mismatch_characters_of_two_strings_mpi, error_when_one_s
   auto par_task_data = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     input_a = "";
-    input_b = randomString(100000);
+    input_b = sarafanov_m_num_of_mismatch_characters_of_two_strings_mpi::randomString(100000);
     par_task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_a.data()));
     par_task_data->inputs_count.emplace_back(input_a.size());
     par_task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_b.data()));
