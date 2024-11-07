@@ -1,124 +1,135 @@
 // Copyright 2023 Nesterov Alexander
 #include "mpi/prokhorov_n_integral_rectangle_method/include/ops_mpi.hpp"
 
-#include <algorithm>
+#include <boost/mpi/collectives.hpp>
+#include <boost/mpi/communicator.hpp>
 #include <functional>
+#include <numeric>
 #include <random>
-#include <string>
-#include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
 
-std::vector<int> prokhorov_n_integral_rectangle_method_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
+namespace prokhorov_n_integral_rectangle_method_mpi {
+
+// Определение функции интегрирования для последовательного варианта
+double TestMPITaskSequential::integrate(const std::function<double(double)>& f, double left_, double right_, int n) {
+  double step = (right_ - left_) / n;
+  double area = 0.0;
+
+  for (int i = 0; i < n; ++i) {
+    double x = left_ + (i + 0.5) * step;
+    area += f(x) * step;
   }
-  return vec;
+
+  return area;
 }
 
-bool prokhorov_n_integral_rectangle_method_mpi::TestMPITaskSequential::pre_processing() {
+// Определение функции set_function
+void TestMPITaskSequential::set_function(const std::function<double(double)>& func) { func_ = func; }
+
+bool TestMPITaskSequential::pre_processing() {
   internal_order_test();
-  // Init vectors
-  input_ = std::vector<int>(taskData->inputs_count[0]);
-  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    input_[i] = tmp_ptr[i];
-  }
-  // Init value for output
-  res = 0;
+  uint8_t* inputs_raw = taskData->inputs[0];
+  std::vector<double> inputs(reinterpret_cast<double*>(inputs_raw), reinterpret_cast<double*>(inputs_raw) + 3);
+  left_ = inputs[0];
+  right_ = inputs[1];
+  n = static_cast<int>(inputs[2]);
+  res = 0.0;
   return true;
 }
 
-bool prokhorov_n_integral_rectangle_method_mpi::TestMPITaskSequential::validation() {
+bool TestMPITaskSequential::validation() {
   internal_order_test();
-  // Check count elements of output
-  return taskData->outputs_count[0] == 1;
+  return taskData->inputs_count[0] == 3 && taskData->outputs_count[0] == 1;
 }
 
-bool prokhorov_n_integral_rectangle_method_mpi::TestMPITaskSequential::run() {
+bool TestMPITaskSequential::run() {
   internal_order_test();
-  if (ops == "+") {
-    res = std::accumulate(input_.begin(), input_.end(), 0);
-  } else if (ops == "-") {
-    res = -std::accumulate(input_.begin(), input_.end(), 0);
-  } else if (ops == "max") {
-    res = *std::max_element(input_.begin(), input_.end());
-  }
+  res = integrate(func_, left_, right_, n);
   return true;
 }
 
-bool prokhorov_n_integral_rectangle_method_mpi::TestMPITaskSequential::post_processing() {
+bool TestMPITaskSequential::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+  reinterpret_cast<double*>(taskData->outputs[0])[0] = res;
   return true;
 }
 
-bool prokhorov_n_integral_rectangle_method_mpi::TestMPITaskParallel::pre_processing() {
-  internal_order_test();
-  unsigned int delta = 0;
-  if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] / world.size();
-  }
-  broadcast(world, delta, 0);
+// Определение функции параллельного интегрирования с использованием MPI
+double TestMPITaskParallel::parallel_integrate(const std::function<double(double)>& f, double left_, double right_,
+                                               int n, const boost::mpi::communicator& world) {
+  double range = right_ - left_;
+  double step = range / n;
 
-  if (world.rank() == 0) {
-    // Init vectors
-    input_ = std::vector<int>(taskData->inputs_count[0]);
-    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-      input_[i] = tmp_ptr[i];
-    }
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + proc * delta, delta);
-    }
+  int local_n = n / world.size();
+  int start = world.rank() * local_n;
+  int end = start + local_n;
+
+  // Учитываем остаток для последнего процесса
+  if (world.rank() == world.size() - 1) {
+    end = n;
   }
-  local_input_ = std::vector<int>(delta);
-  if (world.rank() == 0) {
-    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
-  } else {
-    world.recv(0, 0, local_input_.data(), delta);
+
+  double local_result = 0.0;
+  for (int i = start; i < end; ++i) {
+    double x = left_ + (i + 0.5) * step;  // Центр каждого подотрезка
+    local_result += f(x) * step;
   }
-  // Init value for output
-  res = 0;
+
+  double global_result;
+  boost::mpi::reduce(world, local_result, global_result, std::plus<double>(), 0);
+
+  // Раздаём результат всем процессам
+  boost::mpi::broadcast(world, global_result, 0);
+
+  return global_result;
+}
+
+
+// Определение функции set_function для параллельной задачи
+void TestMPITaskParallel::set_function(const std::function<double(double)>& func) { func_ = func; }
+
+bool TestMPITaskParallel::pre_processing() {
+  internal_order_test();
+  auto* inputs = reinterpret_cast<double*>(taskData->inputs[0]);
+  left_ = inputs[0];
+  right_ = inputs[1];
+  n = static_cast<int>(inputs[2]);
+  
+
+  // Broadcasting variables to all processes
+  boost::mpi::broadcast(world, left_, 0);
+  boost::mpi::broadcast(world, right_, 0);
+  boost::mpi::broadcast(world, n, 0);
+
+  global_res = 0.0;
   return true;
 }
 
-bool prokhorov_n_integral_rectangle_method_mpi::TestMPITaskParallel::validation() {
+bool TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    // Check count elements of output
     return taskData->outputs_count[0] == 1;
   }
   return true;
 }
 
-bool prokhorov_n_integral_rectangle_method_mpi::TestMPITaskParallel::run() {
+bool TestMPITaskParallel::run() {
   internal_order_test();
-  int local_res;
-  if (ops == "+") {
-    local_res = std::accumulate(local_input_.begin(), local_input_.end(), 0);
-  } else if (ops == "-") {
-    local_res = -std::accumulate(local_input_.begin(), local_input_.end(), 0);
-  } else if (ops == "max") {
-    local_res = *std::max_element(local_input_.begin(), local_input_.end());
-  }
+  local_res = parallel_integrate(func_, left_, right_, n, world);
 
-  if (ops == "+" || ops == "-") {
-    reduce(world, local_res, res, std::plus(), 0);
-  } else if (ops == "max") {
-    reduce(world, local_res, res, boost::mpi::maximum<int>(), 0);
+  if (world.rank() == 0) {
+    global_res = local_res;
   }
   return true;
 }
 
-bool prokhorov_n_integral_rectangle_method_mpi::TestMPITaskParallel::post_processing() {
+bool TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+    reinterpret_cast<double*>(taskData->outputs[0])[0] = global_res;
   }
   return true;
 }
+
+}  // namespace prokhorov_n_integral_rectangle_method_mpi

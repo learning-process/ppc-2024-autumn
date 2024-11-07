@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <functional>
 
 #include "core/task/include/task.hpp"
 
@@ -16,8 +17,15 @@ class TestTaskSequential : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
+  void set_function(const std::function<double(double)>& func);
  private:
-  int input_{}, res{};
+  static double integrate(const std::function<double(double)>& f, double left_, double right_, int n);
+
+  double left_{};
+  double right_{};
+  int n{};
+  double res{};
+  std::function<double(double)> func_;
 };
 
 }  // namespace prokhorov_n_integral_rectangle_method
