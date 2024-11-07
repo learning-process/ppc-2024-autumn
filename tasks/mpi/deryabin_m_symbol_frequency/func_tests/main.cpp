@@ -98,7 +98,7 @@ TEST(deryabin_m_symbol_frequency_mpi, test_repeating) {
         std::random_device rd;
         std::mt19937 generator(rd());
         std::shuffle(global_str.begin(), global_str.end(), generator);
-        for (size_type i = 0; i < global_str.size(); i++)
+        for (size_t i = 0; i < global_str.size(); i++)
         {
             if (i % 2 == 0)
             {
