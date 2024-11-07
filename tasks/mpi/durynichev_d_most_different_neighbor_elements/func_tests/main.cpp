@@ -5,16 +5,6 @@
 
 #include "mpi/durynichev_d_most_different_neighbor_elements/include/ops_mpi.hpp"
 
-std::string VecToStrTY(std::vector<int> &v) {
-  std::ostringstream oss;
-
-  if (!v.empty()) {
-    std::copy(v.begin(), v.end() - 1, std::ostream_iterator<int>(oss, ","));
-    oss << v.back();
-  }
-  return oss.str();
-}
-
 TEST(durynichev_d_most_different_neighbor_elements_mpi, default_vector) {
   boost::mpi::communicator world;
   std::vector<int> input;
@@ -22,7 +12,7 @@ TEST(durynichev_d_most_different_neighbor_elements_mpi, default_vector) {
   std::vector<int> outputPar{0, 0};
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    input = durynichev_d_most_different_neighbor_elements_mpi::getRandomVector(10);
+    input = durynichev_d_most_different_neighbor_elements_mpi::getRandomVector(10'000);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
     taskDataPar->inputs_count.emplace_back(input.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(outputPar.data()));
@@ -49,7 +39,7 @@ TEST(durynichev_d_most_different_neighbor_elements_mpi, default_vector) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    ASSERT_EQ(outputSeq, outputPar) << VecToStrTY(input) << std::endl;
+    ASSERT_EQ(outputSeq, outputPar);
   }
 }
 
@@ -87,7 +77,7 @@ TEST(durynichev_d_most_different_neighbor_elements_mpi, huge_vector) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    ASSERT_EQ(outputSeq[0], outputPar[0]);
+    ASSERT_EQ(outputSeq, outputPar);
   }
 }
 TEST(durynichev_d_most_different_neighbor_elements_mpi, small_vector) {
@@ -124,7 +114,7 @@ TEST(durynichev_d_most_different_neighbor_elements_mpi, small_vector) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    ASSERT_EQ(outputSeq[0], outputPar[0]);
+    ASSERT_EQ(outputSeq, outputPar);
   }
 }
 
@@ -161,6 +151,6 @@ TEST(durynichev_d_most_different_neighbor_elements_mpi, zero_elements) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    ASSERT_EQ(outputSeq[0], outputPar[0]);
+    ASSERT_EQ(outputSeq, outputPar);
   }
 }

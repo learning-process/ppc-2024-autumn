@@ -79,7 +79,6 @@ bool durynichev_d_most_different_neighbor_elements_mpi::TestMPITaskParallel::pre
       world.send(proc, 1, start);
     }
 
-
   } else {
     world.recv(0, 0, chunk);
     world.recv(0, 1, chunkStart);
