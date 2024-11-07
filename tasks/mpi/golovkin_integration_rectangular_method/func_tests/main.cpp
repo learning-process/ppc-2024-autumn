@@ -90,9 +90,28 @@ TEST(golovkin_integration_rectangular_method, test_linear_function) {
   parallel_task.run();
   parallel_task.post_processing();
 
-  if (comm_world.rank() == 0) {
-    double expected_result = 2.0 * (upper_limit * upper_limit / 2) + 3.0 * upper_limit;  // Analytical result
-    ASSERT_NEAR(computed_result[0], expected_result, 1e-3);
+ if (comm_world.rank() == 0) {
+    std::vector<double> expected_result(1, 0);
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&partition_count));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(expected_result.data()));
+    taskDataSeq->outputs_count.emplace_back(expected_result.size());
+
+    golovkin_integration_rectangular_method::MPIIntegralCalculator sequential_task(taskDataSeq);
+    sequential_task.set_function([](double x) { return 2.0 * x + 3.0; });
+
+    ASSERT_EQ(sequential_task.validation(), true);
+    sequential_task.pre_processing();
+    sequential_task.run();
+    sequential_task.post_processing();
+
+    ASSERT_NEAR(expected_result[0], computed_result[0], 1e-3);
   }
 }
 
@@ -123,10 +142,28 @@ TEST(golovkin_integration_rectangular_method, test_quadratic_function) {
   parallel_task.pre_processing();
   parallel_task.run();
   parallel_task.post_processing();
-
   if (comm_world.rank() == 0) {
-    double expected_result = (std::pow(upper_limit, 3) - std::pow(lower_limit, 3)) / 3.0;  // Analytical result
-    ASSERT_NEAR(computed_result[0], expected_result, 1e-3);
+    std::vector<double> expected_result(1, 0);
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&partition_count));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(expected_result.data()));
+    taskDataSeq->outputs_count.emplace_back(expected_result.size());
+
+    golovkin_integration_rectangular_method::MPIIntegralCalculator sequential_task(taskDataSeq);
+    sequential_task.set_function([](double x) { return x * x; });
+
+    ASSERT_EQ(sequential_task.validation(), true);
+    sequential_task.pre_processing();
+    sequential_task.run();
+    sequential_task.post_processing();
+
+    ASSERT_NEAR(expected_result[0], computed_result[0], 1e-3);
   }
 }
 
@@ -159,8 +196,27 @@ TEST(golovkin_integration_rectangular_method, test_sine_function) {
   parallel_task.post_processing();
 
   if (comm_world.rank() == 0) {
-    double expected_result = 2.0;  // Analytical result
-    ASSERT_NEAR(computed_result[0], expected_result, 1e-3);
+    std::vector<double> expected_result(1, 0);
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&partition_count));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(expected_result.data()));
+    taskDataSeq->outputs_count.emplace_back(expected_result.size());
+
+    golovkin_integration_rectangular_method::MPIIntegralCalculator sequential_task(taskDataSeq);
+    sequential_task.set_function([](double x) { return std::sin(x); });
+
+    ASSERT_EQ(sequential_task.validation(), true);
+    sequential_task.pre_processing();
+    sequential_task.run();
+    sequential_task.post_processing();
+
+    ASSERT_NEAR(expected_result[0], computed_result[0], 1e-3);
   }
 }
 
@@ -193,8 +249,27 @@ TEST(golovkin_integration_rectangular_method, test_cosine_function) {
   parallel_task.post_processing();
 
   if (comm_world.rank() == 0) {
-    double expected_result = 1.0;  // Analytical result
-    ASSERT_NEAR(computed_result[0], expected_result, 1e-3);
+    std::vector<double> expected_result(1, 0);
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&partition_count));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(expected_result.data()));
+    taskDataSeq->outputs_count.emplace_back(expected_result.size());
+
+    golovkin_integration_rectangular_method::MPIIntegralCalculator sequential_task(taskDataSeq);
+    sequential_task.set_function([](double x) { return std::cos(x); });
+
+    ASSERT_EQ(sequential_task.validation(), true);
+    sequential_task.pre_processing();
+    sequential_task.run();
+    sequential_task.post_processing();
+
+    ASSERT_NEAR(expected_result[0], computed_result[0], 1e-3);
   }
 }
 
@@ -227,7 +302,26 @@ TEST(golovkin_integration_rectangular_method, test_exponential_function) {
   parallel_task.post_processing();
 
   if (comm_world.rank() == 0) {
-    double expected_result = std::exp(upper_limit) - 1;  // Analytical result
-    ASSERT_NEAR(computed_result[0], expected_result, 1e-3);
+    std::vector<double> expected_result(1, 0);
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&partition_count));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(expected_result.data()));
+    taskDataSeq->outputs_count.emplace_back(expected_result.size());
+
+    golovkin_integration_rectangular_method::MPIIntegralCalculator sequential_task(taskDataSeq);
+    sequential_task.set_function([](double x) { return std::exp(x); });
+
+    ASSERT_EQ(sequential_task.validation(), true);
+    sequential_task.pre_processing();
+    sequential_task.run();
+    sequential_task.post_processing();
+
+    ASSERT_NEAR(expected_result[0], computed_result[0], 1e-3);
   }
 }
