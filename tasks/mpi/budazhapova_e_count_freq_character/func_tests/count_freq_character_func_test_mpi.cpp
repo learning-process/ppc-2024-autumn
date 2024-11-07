@@ -61,8 +61,6 @@ TEST(budazhapova_e_count_freq_character_mpi, test_with_one_symb) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    // const int size_string = 20;
-    // global_str = budazhapova_e_count_freq_character_mpi::getRandomString(size_string);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_str.data()));
     taskDataPar->inputs_count.emplace_back(global_str.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_out.data()));

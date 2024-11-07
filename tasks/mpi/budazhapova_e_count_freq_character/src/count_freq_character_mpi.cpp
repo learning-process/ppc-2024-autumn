@@ -66,7 +66,7 @@ bool budazhapova_e_count_freq_character_mpi::TestMPITaskParallel::pre_processing
   if (world_rank == 0) {
     delta = taskData->inputs_count[0] / world.size();
   }
-  broadcast(world, delta, 0);
+  boost::mpi::broadcast(world, delta, 0);
 
   if (world_rank == 0) {
     input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]));
@@ -100,12 +100,13 @@ bool budazhapova_e_count_freq_character_mpi::TestMPITaskParallel::validation() {
 
 bool budazhapova_e_count_freq_character_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+  symb = local_input_[0];
   for (unsigned long i = 0; i < local_input_.length(); i++) {
     if (local_input_[i] == symb) {
       local_res++;
     }
   }
-  reduce(world, local_res, res, std::plus<>(), 0);
+  boost::mpi::reduce(world, local_res, res, std::plus<>(), 0);
   return true;
 }
 
