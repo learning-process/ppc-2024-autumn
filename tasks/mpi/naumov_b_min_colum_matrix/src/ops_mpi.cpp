@@ -6,22 +6,6 @@
 #include <limits>
 #include <vector>
 
-std::vector<std::vector<int>> naumov_b_min_colum_matrix_mpi::getRandomMatrix(int rows, int columns) {
-  std::vector<std::vector<int>> matrix(rows, std::vector<int>(columns));
-  for (int i = 0; i < rows; ++i) {
-    matrix[i] = naumov_b_min_colum_matrix_mpi::getRandomVector(columns);
-  }
-  return matrix;
-}
-
-std::vector<int> naumov_b_min_colum_matrix_mpi::getRandomVector(int size) {
-  std::vector<int> vec(size);
-  for (int& element : vec) {
-    element = rand() % 201 - 100;
-  }
-  return vec;
-}
-
 bool naumov_b_min_colum_matrix_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
 
@@ -83,12 +67,20 @@ bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::pre_processing() {
 bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    bool isValid = (!taskData->inputs.empty() && !taskData->outputs.empty()) && (taskData->inputs_count.size() >= 2) &&
-                   (taskData->inputs_count[0] != 0 && taskData->inputs_count[1] != 0) &&
-                   (taskData->outputs_count[0] == taskData->inputs_count[1]);
-    return isValid;
+    if (taskData->inputs.empty() || taskData->outputs.empty()) {
+      return false;
+    }
+    if (taskData->inputs_count.size() < 2) {
+      return false;
+    }
+    if (taskData->inputs_count[0] == 0 || taskData->inputs_count[1] == 0) {
+      return false;
+    }
+    if (taskData->outputs_count[0] != taskData->inputs_count[1]) {
+      return false;
+    }
+    return true;
   }
-
   return true;
 }
 bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::run() {

@@ -7,6 +7,22 @@
 
 #include "mpi/naumov_b_min_colum_matrix/include/ops_mpi.hpp"
 
+std::vector<std::vector<int>> naumov_b_min_colum_matrix_mpi::getRandomMatrix(int rows, int columns) {
+  std::vector<std::vector<int>> matrix(rows, std::vector<int>(columns));
+  for (int i = 0; i < rows; ++i) {
+    matrix[i] = naumov_b_min_colum_matrix_mpi::getRandomVector(columns);
+  }
+  return matrix;
+}
+
+std::vector<int> naumov_b_min_colum_matrix_mpi::getRandomVector(int size) {
+  std::vector<int> vec(size);
+  for (int& element : vec) {
+    element = rand() % 201 - 100;
+  }
+  return vec;
+}
+
 TEST(naumov_b_min_colum_matrix_mpi, Test_Min_Column) {
   boost::mpi::communicator world;
   const int rows = 40;
