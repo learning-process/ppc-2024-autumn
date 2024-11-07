@@ -23,6 +23,11 @@ bool MPIIntegralCalculator::validation() {
 
 bool MPIIntegralCalculator::pre_processing() {
   internal_order_test();
+
+  // Начало отсчета времени выполнения
+  auto start = std::chrono::high_resolution_clock::now();
+  int timeout_ms = 5000;  // Максимальное время выполнения в миллисекундах
+
   if (world.rank() == 0) {
     auto* start_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
     auto* end_ptr = reinterpret_cast<double*>(taskData->inputs[1]);
@@ -32,37 +37,89 @@ bool MPIIntegralCalculator::pre_processing() {
     upper_bound = *end_ptr;
     num_partitions = *split_ptr;
   }
+
   broadcast(world, lower_bound, 0);
   broadcast(world, upper_bound, 0);
   broadcast(world, num_partitions, 0);
+
+  // Проверка на тайм-аут
+  auto end = std::chrono::high_resolution_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+  if (duration.count() > timeout_ms) {
+    std::cerr << "Timeout in pre_processing on rank " << world.rank() << "\n";
+    MPI_Abort(MPI_COMM_WORLD, 1);  // Завершение программы при превышении времени
+  }
+
   return true;
 }
+
+bool MPIIntegralCalculator::run() {
+  internal_order_test();
+
+  auto start = std::chrono::high_resolution_clock::now();
+  int timeout_ms = 10000;  // Задаем тайм-аут для стадии run
+
+  double local_result{};
+  local_result = integrate(function_, lower_bound, upper_bound, num_partitions);
+
+  reduce(world, local_result, global_result, std::plus<>(), 0);
+
+  // Проверка на тайм-аут
+  auto end = std::chrono::high_resolution_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+  if (duration.count() > timeout_ms) {
+    std::cerr << "Timeout in run on rank " << world.rank() << "\n";
+    MPI_Abort(MPI_COMM_WORLD, 1);
+  }
+
+  return true;
+}
+
+bool MPIIntegralCalculator::post_processing() {
+  internal_order_test();
+
+  auto start = std::chrono::high_resolution_clock::now();
+  int timeout_ms = 5000;  // Тайм-аут для post_processing
+
+  if (world.rank() == 0) {
+    *reinterpret_cast<double*>(taskData->outputs[0]) = global_result;
+  }
+
+  // Проверка на тайм-аут
+  auto end = std::chrono::high_resolution_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+  if (duration.count() > timeout_ms) {
+    std::cerr << "Timeout in post_processing on rank " << world.rank() << "\n";
+    MPI_Abort(MPI_COMM_WORLD, 1);
+  }
+
+  return true;
+}
+
 double MPIIntegralCalculator::integrate(const std::function<double(double)>& f, double a, double b, int splits) {
   int current_process = world.rank();
   int total_processes = world.size();
   double step_size;
   double local_sum = 0.0;
   step_size = (b - a) / splits;  // Вычисление ширины подынтервала
+
+  // Начало отсчета времени для интеграции
+  auto start = std::chrono::high_resolution_clock::now();
+  int timeout_ms = 5000;
+
   for (int i = current_process; i < splits; i += total_processes) {
     double x = a + i * step_size;
     local_sum += f(x) * step_size;
+
+    // Проверка на тайм-аут на каждой итерации
+    auto now = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - start);
+    if (duration.count() > timeout_ms) {
+      std::cerr << "Timeout in integrate on rank " << current_process << "\n";
+      MPI_Abort(MPI_COMM_WORLD, 1);
+    }
   }
   return local_sum;
-}
-bool MPIIntegralCalculator::run() {
-  internal_order_test();
-  double local_result{};
-  local_result = integrate(function_, lower_bound, upper_bound, num_partitions);
-  reduce(world, local_result, global_result, std::plus<>(), 0);
-  return true;
-}
-
-bool MPIIntegralCalculator::post_processing() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    *reinterpret_cast<double*>(taskData->outputs[0]) = global_result;
-  }
-  return true;
 }
 
 void MPIIntegralCalculator::set_function(const std::function<double(double)>& target_func) {
