@@ -40,6 +40,7 @@ class MinOfVectorElementTaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
+  unsigned int delta = 0;
   std::vector<int> input_, local_input_;
   int res{};
   boost::mpi::communicator world;
