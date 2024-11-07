@@ -8,7 +8,7 @@
 std::vector<int> durynichev_d_most_different_neighbor_elements_mpi::getRandomVector(size_t size) {
   auto device = std::random_device();
   auto generator = std::mt19937(device());
-  auto distribution = std::uniform_int_distribution<int>(-10'000, 10'000);
+  auto distribution = std::uniform_int_distribution<int>(0, 10'000);
   auto vector = std::vector<int>(size);
   for (auto &val : vector) {
     val = distribution(generator);
