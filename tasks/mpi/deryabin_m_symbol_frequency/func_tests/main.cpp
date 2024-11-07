@@ -99,9 +99,9 @@ TEST(deryabin_m_symbol_frequency_mpi, test_povtor) {
     global_str = {'1', '2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
                   'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
                   'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
-    //std::random_device rd;
-    //std::mt19937 generator(rd());
-    //std::shuffle(global_str.begin(), global_str.end(), generator);
+    // std::random_device rd;
+    // std::mt19937 generator(rd());
+    // std::shuffle(global_str.begin(), global_str.end(), generator);
     for (size_t i = 0; i < global_str.size(); i++) {
       if (i % 2 == 0) {
         global_str[i] = input_symbol[0];
