@@ -18,8 +18,28 @@ TEST(chernova_n_word_count_mpi, Test_empty_string) {
     taskDataParallel->inputs_count.emplace_back(in.size());
     taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     taskDataParallel->outputs_count.emplace_back(out.size());
-    chernova_n_word_count_mpi::TestMPITaskParallel testTaskParallel(taskDataParallel);
-    ASSERT_FALSE(testTaskParallel.validation());
+  }
+  chernova_n_word_count_mpi::TestMPITaskParallel testTaskParallel(taskDataParallel);
+  ASSERT_TRUE(testTaskParallel.validation());
+  testTaskParallel.pre_processing();
+  testTaskParallel.run();
+  testTaskParallel.post_processing();
+  if (world.rank() == 0) {
+    std::vector<int> referenceWordCount(1, 0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSequential = std::make_shared<ppc::core::TaskData>();
+
+    taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t *>(const_cast<char *>(in.data())));
+    taskDataSequential->inputs_count.emplace_back(in.size());
+    taskDataSequential->outputs.emplace_back(reinterpret_cast<uint8_t *>(referenceWordCount.data()));
+    taskDataSequential->outputs_count.emplace_back(referenceWordCount.size());
+
+    chernova_n_word_count_mpi::TestMPITaskSequential testTaskSequential(taskDataSequential);
+    ASSERT_TRUE(testTaskSequential.validation());
+    testTaskSequential.pre_processing();
+    testTaskSequential.run();
+    testTaskSequential.post_processing();
+
+    ASSERT_EQ(out[0], referenceWordCount[0]);
   }
 }
 

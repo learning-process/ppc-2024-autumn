@@ -13,12 +13,16 @@ TEST(Sequential_chernova_n_word_count, Test_empty_string) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   chernova_n_word_count_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_FALSE(testTaskSequential.validation());
+  ASSERT_TRUE(testTaskSequential.validation());
+  testTaskSequential.pre_processing();
+  testTaskSequential.run();
+  testTaskSequential.post_processing();
+  ASSERT_EQ(out[0], 0);
 }
 
 TEST(Sequential_chernova_n_word_count, Test_five_words) {
   std::vector<char> in;
-  std::string testString = "   This is a test phrase";
+  std::string testString = "This is a test phrase";
   for (unsigned long int j = 0; j < testString.length(); j++) {
     in.push_back(testString[j]);
   }

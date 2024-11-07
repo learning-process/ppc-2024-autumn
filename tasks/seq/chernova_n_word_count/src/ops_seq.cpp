@@ -47,11 +47,14 @@ bool chernova_n_word_count_seq::TestTaskSequential::pre_processing() {
 
 bool chernova_n_word_count_seq::TestTaskSequential::validation() {
   internal_order_test();
-  return taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1;
+  return taskData->inputs_count[0] >= 0 && taskData->outputs_count[0] == 1;
 }
 
 bool chernova_n_word_count_seq::TestTaskSequential::run() {
   internal_order_test();
+  if (input_.size() == 0) {
+    spaceCount = -1;
+  }
   for (size_t i = 0; i < input_.size(); i++) {
     char c = input_[i];
     if (c == ' ') {
