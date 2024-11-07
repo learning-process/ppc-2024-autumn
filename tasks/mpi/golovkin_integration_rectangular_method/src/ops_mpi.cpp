@@ -17,6 +17,7 @@ bool MPIIntegralCalculator::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     return taskData->outputs_count[0] == 1;
+    std::cerr << "Proc1";
   }
   return true;
 }
@@ -31,10 +32,12 @@ bool MPIIntegralCalculator::pre_processing() {
     lower_bound = *start_ptr;
     upper_bound = *end_ptr;
     num_partitions = *split_ptr;
+    std::cerr << "Proc1";
   }
   broadcast(world, lower_bound, 0);
   broadcast(world, upper_bound, 0);
   broadcast(world, num_partitions, 0);
+  std::cerr << "Proc1";
   return true;
 }
 double MPIIntegralCalculator::integrate(const std::function<double(double)>& f, double a, double b, int splits) {
@@ -47,6 +50,7 @@ double MPIIntegralCalculator::integrate(const std::function<double(double)>& f, 
     double x = a + i * step_size;
     local_sum += f(x) * step_size;
   }
+  std::cerr << "Proc1";
   return local_sum;
 }
 bool MPIIntegralCalculator::run() {
@@ -54,6 +58,7 @@ bool MPIIntegralCalculator::run() {
   double local_result{};
   local_result = integrate(function_, lower_bound, upper_bound, num_partitions);
   reduce(world, local_result, global_result, std::plus<>(), 0);
+  std::cerr << "Proc1";
   return true;
 }
 
@@ -61,6 +66,7 @@ bool MPIIntegralCalculator::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     *reinterpret_cast<double*>(taskData->outputs[0]) = global_result;
+    std::cerr << "Proc1";
   }
   return true;
 }
