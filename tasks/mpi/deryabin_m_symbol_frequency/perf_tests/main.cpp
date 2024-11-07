@@ -10,7 +10,7 @@
 TEST(deryabin_m_symbol_frequency_mpi, test_pipeline_run) {
     boost::mpi::communicator world;
     std::vector<char> global_str;
-    std::vector<char> input_symbol(1, '@');
+    std::vector<char> input_symbol(1, 'a');
     std::vector<int32_t> global_frequency(1, 0);
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -51,7 +51,7 @@ TEST(deryabin_m_symbol_frequency_mpi, test_pipeline_run) {
 TEST(deryabin_m_symbol_frequency_mpi, test_task_run) {
     boost::mpi::communicator world;
     std::vector<char> global_str;
-    std::vector<char> input_symbol(1, '@');
+    std::vector<char> input_symbol(1, 'a');
     std::vector<int32_t> global_frequency(1, 0);
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
