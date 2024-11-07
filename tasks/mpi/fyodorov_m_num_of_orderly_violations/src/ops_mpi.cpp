@@ -5,17 +5,6 @@
 #include <functional>
 #include <string>
 
-std::vector<int> fyodorov_m_num_of_orderly_violations_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::uniform_int_distribution<> dist(-100, 100);
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
-}
-
 bool fyodorov_m_num_of_orderly_violations_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   input_ = std::vector<int>(taskData->inputs_count[0]);
