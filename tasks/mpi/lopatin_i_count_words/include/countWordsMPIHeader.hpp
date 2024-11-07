@@ -41,6 +41,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   int wordCount{};
   int spaceCount{};
   int localSpaceCount{};
+  int chunkSize{};
   boost::mpi::communicator world;
 };
 
