@@ -20,7 +20,7 @@ bool laganina_e_sum_values_by_columns_matrix_mpi::TestMPITaskSequential::validat
   internal_order_test();
   if (taskData->inputs_count[2] != taskData->outputs_count[0]) {
     return false;
-  };
+  }
   if (taskData->inputs_count[1] < 1 || taskData->inputs_count[2] < 1) {
     return false;
   }
