@@ -9,8 +9,8 @@
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/fyodorov_m_num_of_orderly_violations/include/ops_mpi.hpp"
-
-std::vector<int> fyodorov_m_num_of_orderly_violations_mpi::getRandomVector(int sz) {
+namespace fyodorov_m_num_of_orderly_violations_mpi {
+std::vector<int> getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::uniform_int_distribution<> dist(-100, 100);
@@ -100,3 +100,4 @@ TEST(fyodorov_m_num_of_orderly_violations_mpi, test_task_run) {
     ASSERT_EQ(0, global_violations[0]);
   }
 }
+}  // namespace fyodorov_m_num_of_orderly_violations_mpi
