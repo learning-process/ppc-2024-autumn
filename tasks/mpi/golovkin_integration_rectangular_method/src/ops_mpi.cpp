@@ -40,7 +40,7 @@ bool MPIIntegralCalculator::validation() {
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
   if (duration.count() > timeout_ms) {
     std::cerr << "Timeout in validation on rank " << world.rank() << "\n";
-    MPI_Abort(MPI_COMM_WORLD, 1); 
+    MPI_Abort(MPI_COMM_WORLD, 1);
   }
 
   return is_valid;
@@ -70,7 +70,7 @@ bool MPIIntegralCalculator::pre_processing() {
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
   if (duration.count() > timeout_ms) {
     std::cerr << "Timeout in pre_processing on rank " << world.rank() << "\n";
-    MPI_Abort(MPI_COMM_WORLD, 1); 
+    MPI_Abort(MPI_COMM_WORLD, 1);
   }
 
   return true;
