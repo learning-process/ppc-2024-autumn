@@ -8,8 +8,8 @@
 
 TEST(deryabin_m_symbol_frequency_seq, test_pipeline_run) {
   // Create data
-  std::vector<std::string> in(1, std::string(10000, '@'));
-  std::vector<char> in_ch(1, '@');
+  std::vector<std::string> in(1, std::string(10000, 'A'));
+  std::vector<char> in_ch(1, 'A');
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -47,8 +47,8 @@ TEST(deryabin_m_symbol_frequency_seq, test_pipeline_run) {
 
 TEST(deryabin_m_symbol_frequency_seq, test_task_run) {
   // Create data
-  std::vector<std::string> in(1, std::string(10000, '@'));
-  std::vector<char> in_ch(1, '@');
+  std::vector<std::string> in(1, std::string(10000, 'A'));
+  std::vector<char> in_ch(1, 'A');
   std::vector<int> out(1, 0);
 
   // Create TaskData
