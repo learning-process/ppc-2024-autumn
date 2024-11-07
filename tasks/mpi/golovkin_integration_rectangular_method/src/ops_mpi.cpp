@@ -23,7 +23,7 @@ bool MPIIntegralCalculator::validation() {
 
   bool is_valid = true;
 
-  if (world.rank() == 0) {
+  if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
     is_valid = taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] == 1;
 
     // Лог для отладки
@@ -52,7 +52,7 @@ bool MPIIntegralCalculator::pre_processing() {
   auto start = std::chrono::high_resolution_clock::now();
   int timeout_ms = 5000;  // Максимальное время выполнения в миллисекундах
 
-  if (world.rank() == 0) {
+  if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
     auto* start_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
     auto* end_ptr = reinterpret_cast<double*>(taskData->inputs[1]);
     auto* split_ptr = reinterpret_cast<int*>(taskData->inputs[2]);
@@ -105,7 +105,7 @@ bool MPIIntegralCalculator::post_processing() {
   auto start = std::chrono::high_resolution_clock::now();
   int timeout_ms = 5000;  // Тайм-аут для post_processing
 
-  if (world.rank() == 0) {
+  if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
     *reinterpret_cast<double*>(taskData->outputs[0]) = global_result;
   }
 
