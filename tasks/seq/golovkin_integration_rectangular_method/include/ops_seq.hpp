@@ -12,12 +12,12 @@ namespace golovkin_integration_rectangular_method {
 
 class IntegralCalculator : public ppc::core::Task {
  public:
-  explicit IntegralCalculator(std::shared_ptr<ppc::core::TaskData> taskData);
+  explicit IntegralCalculator(const std::shared_ptr<ppc::core::TaskData>& taskData);
 
-  bool validation();
-  bool pre_processing();
-  bool post_processing();
-  bool run();
+  bool validation() override;
+  bool pre_processing() override;
+  bool post_processing() override;
+  bool run() override;
 
  private:
   std::shared_ptr<ppc::core::TaskData> taskData;

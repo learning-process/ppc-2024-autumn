@@ -9,7 +9,7 @@
 
 using namespace golovkin_integration_rectangular_method;
 
-IntegralCalculator::IntegralCalculator(std::shared_ptr<ppc::core::TaskData> taskData)
+IntegralCalculator::IntegralCalculator(const std::shared_ptr<ppc::core::TaskData>& taskData)
     : ppc::core::Task(taskData),
       taskData(taskData),
       a(0.0),
