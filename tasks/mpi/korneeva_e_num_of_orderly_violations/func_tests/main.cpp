@@ -148,6 +148,37 @@ TEST(korneeva_e_num_of_orderly_violations_mpi, NoViolations_EmptyVector_Int) {
   }
 }
 
+// Test for a vector of 10 random integers
+TEST(korneeva_e_num_of_orderly_violations_mpi, CountViolations_Int_10) {
+  const int N = 10;
+  boost::mpi::communicator world;
+  std::vector<int> arr(N);
+  std::vector<int> out(1);
+  std::shared_ptr<ppc::core::TaskData> data_seq = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    std::random_device rd;
+    std::default_random_engine reng(rd());
+    std::uniform_int_distribution<int> dist(-N, N);
+    std::generate(arr.begin(), arr.end(), [&dist, &reng] { return dist(reng); });
+    data_seq->inputs.emplace_back(reinterpret_cast<uint8_t*>(arr.data()));
+    data_seq->inputs_count.emplace_back(arr.size());
+    data_seq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    data_seq->outputs_count.emplace_back(1);
+  }
+
+  korneeva_e_num_of_orderly_violations_mpi::num_of_orderly_violations<int, int> task(data_seq);
+  ASSERT_TRUE(task.validation());
+  task.pre_processing();
+  task.run();
+  task.post_processing();
+
+  if (world.rank() == 0) {
+    int expected_count = task.count_orderly_violations(arr);
+    ASSERT_EQ(out[0], expected_count);
+  }
+}
+
 // Test for a vector of 100 random integers
 TEST(korneeva_e_num_of_orderly_violations_mpi, CountViolations_Int_100) {
   const int N = 100;
@@ -159,7 +190,7 @@ TEST(korneeva_e_num_of_orderly_violations_mpi, CountViolations_Int_100) {
   if (world.rank() == 0) {
     std::random_device rd;
     std::default_random_engine reng(rd());
-    std::uniform_int_distribution<int> dist(0, arr.size());
+    std::uniform_int_distribution<int> dist(-N, N);
     std::generate(arr.begin(), arr.end(), [&dist, &reng] { return dist(reng); });
     data_seq->inputs.emplace_back(reinterpret_cast<uint8_t*>(arr.data()));
     data_seq->inputs_count.emplace_back(arr.size());
@@ -174,12 +205,43 @@ TEST(korneeva_e_num_of_orderly_violations_mpi, CountViolations_Int_100) {
   task.post_processing();
 
   if (world.rank() == 0) {
-    int expected_count = task.count_orderly_violations(arr);  // Calculate expected count
-    ASSERT_EQ(out[0], expected_count);                        // Compare with output
+    int expected_count = task.count_orderly_violations(arr);
+    ASSERT_EQ(out[0], expected_count);
   }
 }
 
-// Test for a vector of 10,000 random integers
+// Test for a vector of 1000 random integers
+TEST(korneeva_e_num_of_orderly_violations_mpi, CountViolations_Int_1000) {
+  const int N = 1000;
+  boost::mpi::communicator world;
+  std::vector<int> arr(N);
+  std::vector<int> out(1);
+  std::shared_ptr<ppc::core::TaskData> data_seq = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    std::random_device rd;
+    std::default_random_engine reng(rd());
+    std::uniform_int_distribution<int> dist(-N, N);
+    std::generate(arr.begin(), arr.end(), [&dist, &reng] { return dist(reng); });
+    data_seq->inputs.emplace_back(reinterpret_cast<uint8_t*>(arr.data()));
+    data_seq->inputs_count.emplace_back(arr.size());
+    data_seq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    data_seq->outputs_count.emplace_back(1);
+  }
+
+  korneeva_e_num_of_orderly_violations_mpi::num_of_orderly_violations<int, int> task(data_seq);
+  ASSERT_TRUE(task.validation());
+  task.pre_processing();
+  task.run();
+  task.post_processing();
+
+  if (world.rank() == 0) {
+    int expected_count = task.count_orderly_violations(arr);
+    ASSERT_EQ(out[0], expected_count);
+  }
+}
+
+// Test for a vector of 10000 random integers
 TEST(korneeva_e_num_of_orderly_violations_mpi, CountViolations_Int_10000) {
   const int N = 10000;
   boost::mpi::communicator world;
@@ -190,7 +252,7 @@ TEST(korneeva_e_num_of_orderly_violations_mpi, CountViolations_Int_10000) {
   if (world.rank() == 0) {
     std::random_device rd;
     std::default_random_engine reng(rd());
-    std::uniform_int_distribution<int> dist(0, arr.size());
+    std::uniform_int_distribution<int> dist(-N, N);
     std::generate(arr.begin(), arr.end(), [&dist, &reng] { return dist(reng); });
     data_seq->inputs.emplace_back(reinterpret_cast<uint8_t*>(arr.data()));
     data_seq->inputs_count.emplace_back(arr.size());
@@ -205,8 +267,132 @@ TEST(korneeva_e_num_of_orderly_violations_mpi, CountViolations_Int_10000) {
   task.post_processing();
 
   if (world.rank() == 0) {
-    int expected_count = task.count_orderly_violations(arr);  // Calculate expected count
-    ASSERT_EQ(out[0], expected_count);                        // Compare with output
+    int expected_count = task.count_orderly_violations(arr);
+    ASSERT_EQ(out[0], expected_count);
+  }
+}
+
+// Test for a vector of 10 random doubles
+TEST(korneeva_e_num_of_orderly_violations_mpi, CountViolations_Double_10) {
+  const int N = 10;
+  boost::mpi::communicator world;
+  std::vector<double> arr(N);
+  std::vector<int> out(1);
+  std::shared_ptr<ppc::core::TaskData> data_seq = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    std::random_device rd;
+    std::default_random_engine reng(rd());
+    std::uniform_real_distribution<double> dist(-10.0, 10.0);
+    std::generate(arr.begin(), arr.end(), [&dist, &reng] { return dist(reng); });
+    data_seq->inputs.emplace_back(reinterpret_cast<uint8_t*>(arr.data()));
+    data_seq->inputs_count.emplace_back(arr.size());
+    data_seq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    data_seq->outputs_count.emplace_back(1);
+  }
+
+  korneeva_e_num_of_orderly_violations_mpi::num_of_orderly_violations<double, int> task(data_seq);
+  ASSERT_TRUE(task.validation());
+  task.pre_processing();
+  task.run();
+  task.post_processing();
+
+  if (world.rank() == 0) {
+    int expected_count = task.count_orderly_violations(arr);
+    ASSERT_EQ(out[0], expected_count);
+  }
+}
+
+// Test for a vector of 100 random doubles
+TEST(korneeva_e_num_of_orderly_violations_mpi, CountViolations_Double_100) {
+  const int N = 100;
+  boost::mpi::communicator world;
+  std::vector<double> arr(N);
+  std::vector<int> out(1);
+  std::shared_ptr<ppc::core::TaskData> data_seq = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    std::random_device rd;
+    std::default_random_engine reng(rd());
+    std::uniform_real_distribution<double> dist(-100.0, 100.0);
+    std::generate(arr.begin(), arr.end(), [&dist, &reng] { return dist(reng); });
+    data_seq->inputs.emplace_back(reinterpret_cast<uint8_t*>(arr.data()));
+    data_seq->inputs_count.emplace_back(arr.size());
+    data_seq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    data_seq->outputs_count.emplace_back(1);
+  }
+
+  korneeva_e_num_of_orderly_violations_mpi::num_of_orderly_violations<double, int> task(data_seq);
+  ASSERT_TRUE(task.validation());
+  task.pre_processing();
+  task.run();
+  task.post_processing();
+
+  if (world.rank() == 0) {
+    int expected_count = task.count_orderly_violations(arr);
+    ASSERT_EQ(out[0], expected_count);
+  }
+}
+
+// Test for a vector of 1000 random doubles
+TEST(korneeva_e_num_of_orderly_violations_mpi, CountViolations_Double_1000) {
+  const int N = 1000;
+  boost::mpi::communicator world;
+  std::vector<double> arr(N);
+  std::vector<int> out(1);
+  std::shared_ptr<ppc::core::TaskData> data_seq = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    std::random_device rd;
+    std::default_random_engine reng(rd());
+    std::uniform_real_distribution<double> dist(-1000.0, 1000.0);
+    std::generate(arr.begin(), arr.end(), [&dist, &reng] { return dist(reng); });
+    data_seq->inputs.emplace_back(reinterpret_cast<uint8_t*>(arr.data()));
+    data_seq->inputs_count.emplace_back(arr.size());
+    data_seq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    data_seq->outputs_count.emplace_back(1);
+  }
+
+  korneeva_e_num_of_orderly_violations_mpi::num_of_orderly_violations<double, int> task(data_seq);
+  ASSERT_TRUE(task.validation());
+  task.pre_processing();
+  task.run();
+  task.post_processing();
+
+  if (world.rank() == 0) {
+    int expected_count = task.count_orderly_violations(arr);
+    ASSERT_EQ(out[0], expected_count);
+  }
+}
+
+// Test for a vector of 10000 random doubles
+TEST(korneeva_e_num_of_orderly_violations_mpi, CountViolations_Double_10000) {
+  const int N = 10000;
+  boost::mpi::communicator world;
+  std::vector<double> arr(N);
+  std::vector<int> out(1);
+  std::shared_ptr<ppc::core::TaskData> data_seq = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    std::random_device rd;
+    std::default_random_engine reng(rd());
+    std::uniform_real_distribution<double> dist(-10000.0, 10000.0);
+    std::generate(arr.begin(), arr.end(), [&dist, &reng] { return dist(reng); });
+    data_seq->inputs.emplace_back(reinterpret_cast<uint8_t*>(arr.data()));
+    data_seq->inputs_count.emplace_back(arr.size());
+    data_seq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    data_seq->outputs_count.emplace_back(1);
+  }
+
+  korneeva_e_num_of_orderly_violations_mpi::num_of_orderly_violations<double, int> task(data_seq);
+  ASSERT_TRUE(task.validation());
+  task.pre_processing();
+  task.run();
+  task.post_processing();
+
+  if (world.rank() == 0) {
+    int expected_count = task.count_orderly_violations(arr);
+    ASSERT_EQ(out[0], expected_count);
   }
 }
 
