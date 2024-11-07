@@ -17,7 +17,7 @@ std::vector<int> getRandomVector(int sz) {
   }
   return vec;
 }
-
+}  // namespace fyodorov_m_num_of_orderly_violations_mpi
 TEST(fyodorov_m_num_of_orderly_violations_mpi, Test_Count_Violations) {
   boost::mpi::communicator world;
   std::vector<int> global_vec = {1, 2, 3, 7, 4, 3, 9};
@@ -242,4 +242,3 @@ TEST(fyodorov_m_num_of_orderly_violations_mpi, Test_Count_Violations_Random_2) {
     ASSERT_EQ(reference_violations[0], global_violations[0]);
   }
 }
-}  // namespace fyodorov_m_num_of_orderly_violations_mpi
