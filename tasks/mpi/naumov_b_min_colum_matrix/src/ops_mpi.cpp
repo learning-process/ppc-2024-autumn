@@ -99,22 +99,30 @@ bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::run() {
   int delta = cols / world.size();
   int extra = cols % world.size();
 
+  boost::mpi::broadcast(world, delta, 0);
+  boost::mpi::broadcast(world, extra, 0);
+
+  int num_columns = delta + (world.rank() < extra ? 1 : 0);
+
   if (world.rank() == 0) {
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + (proc * delta + extra) * rows, delta * rows);
+    for (int proc = 1; proc < world.size(); ++proc) {
+      int proc_start_col = proc * delta + std::min(proc, extra);
+      int proc_num_columns = delta + (proc < extra ? 1 : 0);
+      world.send(proc, 0, input_.data() + proc_start_col * rows, proc_num_columns * rows);
     }
 
-    local_vector_ = std::vector<int>(input_.begin(), input_.begin() + (delta + extra) * rows);
+    local_vector_ = std::vector<int>(input_.begin(), input_.begin() + num_columns * rows);
+    
   } else {
-    local_vector_ = std::vector<int>(delta * rows);
-    world.recv(0, 0, local_vector_.data(), delta * rows);
+    local_vector_ = std::vector<int>(num_columns * rows);
+    world.recv(0, 0, local_vector_.data(), num_columns * rows);
   }
 
-  std::vector<int> local_res(delta + ((world.rank() == 0) ? extra : 0), std::numeric_limits<int>::max());
+  std::vector<int> local_res(num_columns, std::numeric_limits<int>::max());
 
-  for (unsigned long i = 0; i < local_res.size(); i++) {
-    for (int j = 0; j < rows; j++) {
-      local_res[i] = std::min(local_res[i], local_vector_[j + rows * i]);
+  for (int i = 0; i < num_columns; ++i) {
+    for (int j = 0; j < rows; ++j) {
+      local_res[i] = std::min(local_res[i], local_vector_[j + i * rows]);
     }
   }
 
@@ -122,11 +130,13 @@ bool naumov_b_min_colum_matrix_mpi::TestMPITaskParallel::run() {
     std::vector<int> temp(delta, 0);
     res.insert(res.end(), local_res.begin(), local_res.end());
     for (int i = 1; i < world.size(); i++) {
-      world.recv(i, 0, temp.data(), delta);
+      int recv_num_columns = delta + (i < extra ? 1 : 0);
+      temp.resize(recv_num_columns);
+      world.recv(i, 0, temp.data(), recv_num_columns);
       res.insert(res.end(), temp.begin(), temp.end());
     }
   } else {
-    world.send(0, 0, local_res.data(), delta);
+    world.send(0, 0, local_res.data(), num_columns);
   }
 
   return true;
