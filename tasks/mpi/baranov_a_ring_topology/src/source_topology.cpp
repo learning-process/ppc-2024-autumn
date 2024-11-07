@@ -44,7 +44,6 @@ bool ring_topology<iotype>::run() {
     memcpy(ptr_r, ptr_d, sizeof(iotype) * vec_size_);
   }
 
-  world.barrier();
   return true;
 }
 template <class iotype>
