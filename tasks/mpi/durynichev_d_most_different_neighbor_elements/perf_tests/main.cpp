@@ -1,9 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <boost/mpi/timer.hpp>
-#include <boost/serialization/map.hpp>
-#include <vector>
-
 #include "core/perf/include/perf.hpp"
 #include "mpi/durynichev_d_most_different_neighbor_elements/include/ops_mpi.hpp"
 

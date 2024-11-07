@@ -1,8 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <boost/mpi/communicator.hpp>
-#include <vector>
-
 #include "mpi/durynichev_d_most_different_neighbor_elements/include/ops_mpi.hpp"
 
 TEST(durynichev_d_most_different_neighbor_elements_mpi, default_vector) {

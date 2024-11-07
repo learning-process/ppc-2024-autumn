@@ -1,10 +1,5 @@
 #include "mpi/durynichev_d_most_different_neighbor_elements/include/ops_mpi.hpp"
 
-#include <algorithm>
-#include <boost/mpi/collectives.hpp>
-#include <random>
-#include <vector>
-
 std::vector<int> durynichev_d_most_different_neighbor_elements_mpi::getRandomVector(size_t size) {
   auto device = std::random_device();
   auto generator = std::mt19937(device());

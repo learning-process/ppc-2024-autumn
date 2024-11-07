@@ -3,13 +3,16 @@
 #include <gtest/gtest.h>
 #include <mpi.h>
 
+#include <algorithm>
 #include <boost/mpi.hpp>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <boost/mpi/timer.hpp>
 #include <boost/serialization/serialization.hpp>
 #include <memory>
 #include <numeric>
+#include <random>
 #include <string>
 #include <utility>
 #include <vector>

@@ -1,7 +1,5 @@
 #include "seq/durynichev_d_most_different_neighbor_elements/include/ops_seq.hpp"
 
-#include <algorithm>
-
 bool durynichev_d_most_different_neighbor_elements_seq::TestTaskSequential::validation() {
   internal_order_test();
   return taskData->inputs_count[0] >= 2 && taskData->outputs_count[0] == 2;

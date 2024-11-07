@@ -1,7 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <vector>
-
 #include "seq/durynichev_d_most_different_neighbor_elements/include/ops_seq.hpp"
 
 TEST(durynichev_d_most_different_neighbor_elements_seq, functionality_check) {
