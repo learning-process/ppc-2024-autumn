@@ -3,16 +3,12 @@
 
 #include <algorithm>
 #include <functional>
-#include <random>
 #include <string>
-#include <thread>
-#include <vector>
-
-using namespace std::chrono_literals;
 
 std::vector<int> fyodorov_m_num_of_orderly_violations_mpi::getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
+  std::uniform_int_distribution<> dist(-100, 100);
   std::vector<int> vec(sz);
   for (int i = 0; i < sz; i++) {
     vec[i] = gen() % 100;
