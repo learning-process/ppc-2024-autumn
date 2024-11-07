@@ -1,7 +1,6 @@
 // Golovkin Maksim
 #pragma once
 
-
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <functional>
@@ -17,7 +16,7 @@ namespace golovkin_integration_rectangular_method {
 
 class MPIIntegralCalculator : public ppc::core::Task {
  public:
-  explicit MPIIntegralCalculator(std::shared_ptr<ppc::core::TaskData> inputData) : Task(std::move(inputData)){};
+  explicit MPIIntegralCalculator(std::shared_ptr<ppc::core::TaskData> inputData) : Task(std::move(inputData)) {};
 
   bool validation() override;       // Проверка корректности входных данных
   bool pre_processing() override;   // Предобработка данных

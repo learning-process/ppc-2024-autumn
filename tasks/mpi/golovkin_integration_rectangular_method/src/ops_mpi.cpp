@@ -2,6 +2,7 @@
 #include "mpi/golovkin_integration_rectangular_method/include/ops_mpi.hpp"
 
 #include <algorithm>
+#include <boost/mpi.hpp>
 #include <chrono>
 #include <functional>
 #include <numeric>
@@ -9,7 +10,6 @@
 #include <string>
 #include <thread>
 #include <vector>
-#include <boost/mpi.hpp>
 
 using namespace golovkin_integration_rectangular_method;
 using namespace std::chrono_literals;
@@ -40,7 +40,7 @@ bool MPIIntegralCalculator::validation() {
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
   if (duration.count() > timeout_ms) {
     std::cerr << "Timeout in validation on rank " << world.rank() << "\n";
-    MPI_Abort(MPI_COMM_WORLD, 1);  // Завершение программы при превышении времени
+    MPI_Abort(MPI_COMM_WORLD, 1); 
   }
 
   return is_valid;
@@ -66,12 +66,11 @@ bool MPIIntegralCalculator::pre_processing() {
   broadcast(world, upper_bound, 0);
   broadcast(world, num_partitions, 0);
 
-  // Проверка на тайм-аут
   auto end = std::chrono::high_resolution_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
   if (duration.count() > timeout_ms) {
     std::cerr << "Timeout in pre_processing on rank " << world.rank() << "\n";
-    MPI_Abort(MPI_COMM_WORLD, 1);  // Завершение программы при превышении времени
+    MPI_Abort(MPI_COMM_WORLD, 1); 
   }
 
   return true;
@@ -81,14 +80,13 @@ bool MPIIntegralCalculator::run() {
   internal_order_test();
 
   auto start = std::chrono::high_resolution_clock::now();
-  int timeout_ms = 10000;  // Задаем тайм-аут для стадии run
+  int timeout_ms = 10000;
 
   double local_result{};
   local_result = integrate(function_, lower_bound, upper_bound, num_partitions);
 
   reduce(world, local_result, global_result, std::plus<>(), 0);
 
-  // Проверка на тайм-аут
   auto end = std::chrono::high_resolution_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
   if (duration.count() > timeout_ms) {
@@ -103,13 +101,12 @@ bool MPIIntegralCalculator::post_processing() {
   internal_order_test();
 
   auto start = std::chrono::high_resolution_clock::now();
-  int timeout_ms = 5000;  // Тайм-аут для post_processing
+  int timeout_ms = 5000;
 
   if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
     *reinterpret_cast<double*>(taskData->outputs[0]) = global_result;
   }
 
-  // Проверка на тайм-аут
   auto end = std::chrono::high_resolution_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
   if (duration.count() > timeout_ms) {
@@ -125,9 +122,8 @@ double MPIIntegralCalculator::integrate(const std::function<double(double)>& f, 
   int total_processes = world.size();
   double step_size;
   double local_sum = 0.0;
-  step_size = (b - a) / splits;  // Вычисление ширины подынтервала
+  step_size = (b - a) / splits;
 
-  // Начало отсчета времени для интеграции
   auto start = std::chrono::high_resolution_clock::now();
   int timeout_ms = 5000;
 
@@ -135,7 +131,6 @@ double MPIIntegralCalculator::integrate(const std::function<double(double)>& f, 
     double x = a + i * step_size;
     local_sum += f(x) * step_size;
 
-    // Проверка на тайм-аут на каждой итерации
     auto now = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - start);
     if (duration.count() > timeout_ms) {
@@ -146,6 +141,4 @@ double MPIIntegralCalculator::integrate(const std::function<double(double)>& f, 
   return local_sum;
 }
 
-void MPIIntegralCalculator::set_function(const std::function<double(double)>& target_func) {
-  function_ = target_func;
-}
+void MPIIntegralCalculator::set_function(const std::function<double(double)>& target_func) { function_ = target_func; }
