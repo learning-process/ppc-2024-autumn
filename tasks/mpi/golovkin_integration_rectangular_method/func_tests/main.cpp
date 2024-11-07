@@ -17,7 +17,7 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   double lower_limit = 0.0;
   double upper_limit = 10.0;
-  int partition_count = -1000;  // Устанавливаем некорректное значение, чтобы вызвать ошибку
+  int partition_count = 1000000;
 
   if (comm_world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
@@ -29,45 +29,48 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(computed_result.data()));
     taskDataPar->outputs_count.emplace_back(computed_result.size());
   }
-
   golovkin_integration_rectangular_method::MPIIntegralCalculator parallel_task(taskDataPar);
   parallel_task.set_function([](double x) { return 5.0; });
-
-  // Пробуем запустить и ожидаем, что validation() вызовет MPI_Abort
+  std::cout << "Rank " << comm_world.rank() << " started validarion.\n";
+  ASSERT_EQ(parallel_task.validation(), true);
+  std::cout << "Rank " << comm_world.rank() << " finished validarion.\n";
+  std::cout << "Rank " << comm_world.rank() << " started pre_processing.\n";
+  parallel_task.pre_processing();
+  std::cout << "Rank " << comm_world.rank() << " finished pre_processing.\n";
+  std::cout << "Rank " << comm_world.rank() << " started run.\n";
+  parallel_task.run();
+  std::cout << "Rank " << comm_world.rank() << " finished run.\n";
+  std::cout << "Rank " << comm_world.rank() << " started post_processing.\n";
+  parallel_task.post_processing();
+  std::cout << "Rank " << comm_world.rank() << " finished post_processing.\n";
   if (comm_world.rank() == 0) {
-    ASSERT_EQ(parallel_task.validation(), false);  // Валидация должна провалиться
-  } else {
-    parallel_task.validation();  // Ожидается синхронизация с rank 0, результат broadcast
-  }
+    std::vector<double> expected_result(1, 0);
 
-  // Если валидация прошла (что не должно быть в этом тесте), продолжаем выполнение
-  if (parallel_task.validation()) {
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&partition_count));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(expected_result.data()));
+    taskDataSeq->outputs_count.emplace_back(expected_result.size());
+
+    golovkin_integration_rectangular_method::MPIIntegralCalculator sequential_task(taskDataSeq);
+    sequential_task.set_function([](double x) { return 5.0; });
+    std::cout << "Rank " << comm_world.rank() << " started validarion.\n";
+    ASSERT_EQ(sequential_task.validation(), true);
+    std::cout << "Rank " << comm_world.rank() << " finished validarion.\n";
     std::cout << "Rank " << comm_world.rank() << " started pre_processing.\n";
-    parallel_task.pre_processing();
+    sequential_task.pre_processing();
     std::cout << "Rank " << comm_world.rank() << " finished pre_processing.\n";
     std::cout << "Rank " << comm_world.rank() << " started run.\n";
-    parallel_task.run();
+    sequential_task.run();
     std::cout << "Rank " << comm_world.rank() << " finished run.\n";
     std::cout << "Rank " << comm_world.rank() << " started post_processing.\n";
-    parallel_task.post_processing();
+    sequential_task.post_processing();
     std::cout << "Rank " << comm_world.rank() << " finished post_processing.\n";
-
-    if (comm_world.rank() == 0) {
-      std::vector<double> expected_result(1, 0);
-      std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
-      taskDataSeq->inputs_count.emplace_back(1);
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
-      taskDataSeq->inputs_count.emplace_back(1);
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&partition_count));
-      taskDataSeq->inputs_count.emplace_back(1);
-      taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(expected_result.data()));
-      taskDataSeq->outputs_count.emplace_back(expected_result.size());
-
-      golovkin_integration_rectangular_method::MPIIntegralCalculator sequential_task(taskDataSeq);
-      sequential_task.set_function([](double x) { return 5.0; });
-      ASSERT_EQ(sequential_task.validation(), false);  // Валидация должна также провалиться
-    }
+    ASSERT_NEAR(expected_result[0], computed_result[0], 1e-3);
   }
 }
 /* TEST(golovkin_integration_rectangular_method, test_linear_function) {
