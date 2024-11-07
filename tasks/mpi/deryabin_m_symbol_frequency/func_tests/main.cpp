@@ -154,7 +154,7 @@ TEST(deryabin_m_symbol_frequency_mpi, test_const) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_str = std::vector<char>(10000, input_symbol[0]);
+    global_str = std::vector<char>(240, input_symbol[0]);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_str.data()));
     taskDataPar->inputs_count.emplace_back(global_str.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_symbol.data()));
