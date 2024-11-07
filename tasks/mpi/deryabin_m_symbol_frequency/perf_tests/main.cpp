@@ -90,4 +90,3 @@ TEST(deryabin_m_symbol_frequency_mpi, test_task_run) {
     ASSERT_EQ(120, global_frequency[0]);
   }
 }
-
