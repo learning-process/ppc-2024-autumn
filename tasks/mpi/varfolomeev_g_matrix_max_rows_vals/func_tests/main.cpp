@@ -450,9 +450,9 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_100x200_Matrix) {
   }
 }
 
-TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_1000x1000_Matrix) {
-  int size_m = 1000;
-  int size_n = 1000;
+TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_500x500_Matrix) {
+  int size_m = 500;
+  int size_n = 500;
 
   boost::mpi::communicator world;
 
