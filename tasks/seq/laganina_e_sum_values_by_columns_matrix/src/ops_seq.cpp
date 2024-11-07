@@ -1,8 +1,8 @@
 #include "seq/laganina_e_sum_values_by_columns_matrix/include/ops_seq.hpp"
 
+#include <random>
 #include <thread>
 #include <vector>
-#include <random>
 
 std::vector<int> laganina_e_sum_values_by_columns_matrix_seq::getRandomVector(int sz) {
   std::random_device dev;
