@@ -26,7 +26,7 @@ struct ChunkResult {
   int diff;
 
   template <class Archive>
-  void serialize(Archive &archive) {
+  void serialize(Archive &archive, const unsigned int version) {
     archive & left_index;
     archive & right_index;
     archive & diff;
