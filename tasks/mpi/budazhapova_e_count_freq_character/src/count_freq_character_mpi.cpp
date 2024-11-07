@@ -24,12 +24,7 @@ std::string budazhapova_e_count_freq_character_mpi::getRandomString(int length) 
 bool budazhapova_e_count_freq_character_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
 
-  input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]));
-  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    input_[i] = tmp_ptr[i];
-  }
+  input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
   symb = input_[0];
   res = 0;
   return true;

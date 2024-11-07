@@ -15,8 +15,8 @@ TEST(budazhapova_e_count_freq_character_mpi, ordinary_test) {
   std::vector<int> global_out(1, 0);
   const int size_string = 10;
   global_str = budazhapova_e_count_freq_character_mpi::getRandomString(size_string);
-  // Create TaskData
 
+  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
