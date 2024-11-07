@@ -69,7 +69,13 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::pre_processing
     if (extra != 0) {
       delta += 1;
     }
+  }
 
+  broadcast(world, delta, 0);
+  broadcast(world, extra, 0);
+
+  if (world.rank() == 0) {
+    // Init vectors
     inputMatrix_ = std::vector<int>(taskData->inputs_count[0]);
     auto* tmpPtr = reinterpret_cast<int*>(taskData->inputs[0]);
     for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
@@ -80,9 +86,6 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::pre_processing
   }
 
   result_ = std::vector<int>(numCols, 0);
-
-  broadcast(world, delta, 0);
-  broadcast(world, extra, 0);
 
   return true;
 }
@@ -118,7 +121,6 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::run() {
     auto maxElem = *std::max_element(inputMatrix_.begin() + j * numRows, inputMatrix_.begin() + (j + 1) * numRows);
     localMax.push_back(maxElem);
   }
-
   localMax.resize(delta);
   if (world.rank() == 0) {
     std::vector<int> globalRes(numCols + delta * world.size());
