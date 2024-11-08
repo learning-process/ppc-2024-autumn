@@ -3,18 +3,7 @@
 
 #include <algorithm>
 #include <functional>
-#include <random>
 #include <vector>
-
-std::vector<int> zaytsev_d_num_of_alternations_signs_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100 - 50;
-  }
-  return vec;
-}
 
 bool zaytsev_d_num_of_alternations_signs_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();

@@ -3,9 +3,20 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <random>
 #include <vector>
 
 #include "mpi/zaytsev_d_num_of_alternations_signs/include/ops_mpi.hpp"
+
+static std::vector<int> getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = gen() % 100 - 50;
+  }
+  return vec;
+}
 
 TEST(zaytsev_d_num_of_alternations_signs_mpi, AllPositive) {
   boost::mpi::communicator world;
@@ -276,7 +287,7 @@ TEST(zaytsev_d_num_of_alternations_signs_mpi, EmptyVector) {
 TEST(zaytsev_d_num_of_alternations_signs_mpi, WithRandomVector) {
   boost::mpi::communicator world;
   int vector_size = 100;
-  std::vector<int> random_vector = zaytsev_d_num_of_alternations_signs_mpi::getRandomVector(vector_size);
+  std::vector<int> random_vector = getRandomVector(vector_size);
   std::vector<int32_t> global_count(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
