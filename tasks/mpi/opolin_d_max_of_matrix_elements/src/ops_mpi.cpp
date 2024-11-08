@@ -104,23 +104,16 @@ bool opolin_d_max_of_matrix_elements_mpi::TestMPITaskParallel::validation() {
 bool opolin_d_max_of_matrix_elements_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   unsigned int total_elements = taskData->inputs_count[0] * taskData->inputs_count[1];
-  unsigned int delta = total_elements / world.size();
-  unsigned int remaining = total_elements % world.size();
-  if (delta == 0) {
-    delta = (static_cast<unsigned int>(world.rank()) < total_elements) ? 1 : 0;
-  } else if (static_cast<unsigned int>(world.rank()) < remaining) {
-    delta++;
-  }
+  int delta = (total_elements + world.size() - 1) / world.size();
   unsigned int start_index = world.rank() * delta;
-  unsigned int end_index = std::min((world.rank() + 1) * delta, total_elements);
+  unsigned int end_index = std::min(start_index + delta, total_elements);
   if (start_index < total_elements) {
-        local_input_.resize(end_index - start_index);
-        std::copy(input_.begin() + start_index, input_.begin() + end_index, local_input_.begin());
-    } else {
-        local_input_.clear();
-    }
-  int local_max =
-    (local_input_.empty()) ? std::numeric_limits<int32_t>::min() : *std::max_element(local_input_.begin(), local_input_.end());
+    local_input_.assign(input_.begin() + start_index, input_.begin() + end_index);
+  } else if (world.rank() < remaining) {
+    local_input_.clear();
+  }
+  int local_max = (local_input_.empty()) ? std::numeric_limits<int32_t>::min()
+                                         : *std::max_element(local_input_.begin(), local_input_.end());
   boost::mpi::reduce(world, local_max, res, boost::mpi::maximum<int>(), 0);
   return true;
 }
