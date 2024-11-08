@@ -3,23 +3,8 @@
 
 #include <algorithm>
 #include <functional>
-#include <random>
 #include <string>
 
-using namespace std::chrono_literals;
-
-namespace zaitsev_a_min_of_vector_elements_mpi {
-std::vector<int> getRandomVector(int sz, int minRangeValue, int maxRangeValue) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = minRangeValue + gen() % (maxRangeValue - minRangeValue + 1);
-  }
-  return vec;
-}
-
-}  // namespace zaitsev_a_min_of_vector_elements_mpi
 bool zaitsev_a_min_of_vector_elements_mpi::MinOfVectorElementsSequential::pre_processing() {
   internal_order_test();
 

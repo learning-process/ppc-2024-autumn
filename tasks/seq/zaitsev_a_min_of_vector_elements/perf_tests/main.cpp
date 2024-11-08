@@ -9,8 +9,8 @@
 
 TEST(zaitsev_a_min_of_vector_elements_sequentional, test_pipeline_run) {
   const int length = 10e6;
-  const int extrema = -1;
-  const int minRangeValue = 100;
+  const int extrema = -105;
+  const int minRangeValue = -100;
   const int maxRangeValue = 1000;
 
   std::mt19937 gen(31415);
@@ -58,8 +58,8 @@ TEST(zaitsev_a_min_of_vector_elements_sequentional, test_pipeline_run) {
 
 TEST(zaitsev_a_min_of_vector_elements_sequentional, test_task_run) {
   const int length = 10e6;
-  const int extrema = -1;
-  const int minRangeValue = 100;
+  const int extrema = -105;
+  const int minRangeValue = -100;
   const int maxRangeValue = 1000;
 
   std::mt19937 gen(31415);

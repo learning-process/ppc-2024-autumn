@@ -2,15 +2,28 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
+#include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/zaitsev_a_min_of_vector_elements/include/ops_mpi.hpp"
 
+namespace zaitsev_a_min_of_vector_elements_mpi {
+std::vector<int> getRandomVector(int sz, int minRangeValue, int maxRangeValue) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = minRangeValue + gen() % (maxRangeValue - minRangeValue + 1);
+  }
+  return vec;
+}
+}  // namespace zaitsev_a_min_of_vector_elements_mpi
+
 TEST(zaitsev_a_min_of_vector_elements_mpi, test_pipeline_run) {
-  const int extrema = -1;
-  const int minRangeValue = 0;
-  const int maxRangeValue = 1000;
+  const int extrema = -1000;
+  const int minRangeValue = -500;
+  const int maxRangeValue = 500;
 
   boost::mpi::communicator world;
   std::vector<int> global_vec;
@@ -54,9 +67,9 @@ TEST(zaitsev_a_min_of_vector_elements_mpi, test_pipeline_run) {
 }
 
 TEST(zaitsev_a_min_of_vector_elements_mpi, test_task_run) {
-  const int extrema = -1;
-  const int minRangeValue = 100;
-  const int maxRangeValue = 31415;
+  const int extrema = -1000;
+  const int minRangeValue = -500;
+  const int maxRangeValue = 500;
 
   boost::mpi::communicator world;
   std::vector<int> global_vec;

@@ -3,13 +3,26 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <random>
 #include <vector>
 
 #include "mpi/zaitsev_a_min_of_vector_elements/include/ops_mpi.hpp"
 
+namespace zaitsev_a_min_of_vector_elements_mpi {
+std::vector<int> getRandomVector(int sz, int minRangeValue, int maxRangeValue) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = minRangeValue + gen() % (maxRangeValue - minRangeValue + 1);
+  }
+  return vec;
+}
+}  // namespace zaitsev_a_min_of_vector_elements_mpi
+
 TEST(zaitsev_a_min_of_vector_elements_mpi, test_case_even_length_vector) {
-  const int extrema = -1;
-  const int minRangeValue = 0;
+  const int extrema = -105;
+  const int minRangeValue = -100;
   const int maxRangeValue = 1000;
 
   boost::mpi::communicator world;
@@ -58,8 +71,8 @@ TEST(zaitsev_a_min_of_vector_elements_mpi, test_case_even_length_vector) {
 }
 
 TEST(zaitsev_a_min_of_vector_elements_mpi, test_case_odd_length_vector) {
-  const int extrema = -1;
-  const int minRangeValue = 0;
+  const int extrema = -105;
+  const int minRangeValue = -100;
   const int maxRangeValue = 1000;
 
   boost::mpi::communicator world;
@@ -107,7 +120,7 @@ TEST(zaitsev_a_min_of_vector_elements_mpi, test_case_odd_length_vector) {
 }
 
 TEST(zaitsev_a_min_of_vector_elements_mpi, test_case_empty_vector) {
-  const int minRangeValue = 0;
+  const int minRangeValue = -100;
   const int maxRangeValue = 1000;
 
   boost::mpi::communicator world;
