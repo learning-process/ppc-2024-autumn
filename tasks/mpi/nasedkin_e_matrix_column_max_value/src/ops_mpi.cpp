@@ -65,6 +65,9 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::pre_processing
     numRows = taskData->inputs_count[2];
   }
 
+  broadcast(world, numCols, 0);
+  broadcast(world, numRows, 0);
+
   if (world.rank() == 0) {
     // Init vectors
     inputMatrix_ = std::vector<int>(taskData->inputs_count[0]);
@@ -99,9 +102,6 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::validation() {
 
 bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-
-  broadcast(world, numCols, 0);
-  broadcast(world, numRows, 0);
 
   if (world.rank() == 0) {
     delta = numCols / world.size();
