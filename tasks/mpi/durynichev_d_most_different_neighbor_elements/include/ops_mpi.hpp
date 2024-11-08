@@ -14,7 +14,7 @@
 #include <utility>
 #include <vector>
 
-std::vector<int> getRandomVector(size_t size);
+#include "core/task/include/task.hpp"
 
 struct ChunkResult {
   size_t left_index;
