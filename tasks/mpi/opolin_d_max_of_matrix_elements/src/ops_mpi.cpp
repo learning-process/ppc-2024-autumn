@@ -109,7 +109,7 @@ bool opolin_d_max_of_matrix_elements_mpi::TestMPITaskParallel::run() {
   unsigned int end_index = std::min(start_index + delta, total_elements);
   if (start_index < total_elements) {
     local_input_.assign(input_.begin() + start_index, input_.begin() + end_index);
-  } else if (world.rank() < remaining) {
+  } else {
     local_input_.clear();
   }
   int local_max = (local_input_.empty()) ? std::numeric_limits<int32_t>::min()
