@@ -1,10 +1,5 @@
-#include <iomanip>
-#include <iostream>
-#include <memory>
-
 #include "../include/tests.hpp"
 #include "boost/mpi/communicator.hpp"
-#include "gtest/gtest.h"
 
 TEST(khasanyanov_k_ring_topology_tests, test) {
   boost::mpi::communicator world;
@@ -25,6 +20,6 @@ TEST(khasanyanov_k_ring_topology_tests, test) {
     ASSERT_EQ(pattern_order, order);
     ASSERT_EQ(in_data, out_data);
   }
-
-  SUCCEED();
 }
+
+RUN_FUNC_TESTS()
