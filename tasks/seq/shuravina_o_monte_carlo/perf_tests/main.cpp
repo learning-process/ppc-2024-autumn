@@ -8,7 +8,6 @@
 TEST(MonteCarloIntegrationTaskSequential, test_pipeline_run) {
   std::vector<double> out(1, 0.0);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-
   taskDataSeq->inputs.emplace_back(nullptr);  
   taskDataSeq->inputs_count.emplace_back(0);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
@@ -34,7 +33,6 @@ TEST(MonteCarloIntegrationTaskSequential, test_pipeline_run) {
 TEST(MonteCarloIntegrationTaskSequential, test_task_run) {
   std::vector<double> out(1, 0.0);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-
   taskDataSeq->inputs.emplace_back(nullptr);  
   taskDataSeq->inputs_count.emplace_back(0);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
@@ -56,4 +54,3 @@ TEST(MonteCarloIntegrationTaskSequential, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 }
-
