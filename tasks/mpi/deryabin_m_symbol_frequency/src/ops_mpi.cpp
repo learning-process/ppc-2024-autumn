@@ -3,6 +3,7 @@
 #include <functional>
 #include <thread>
 #include <vector>
+#include <string>
 
 bool deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskSequential::pre_processing() {
   internal_order_test();
