@@ -21,7 +21,9 @@ IntegralCalculator::IntegralCalculator(const std::shared_ptr<ppc::core::TaskData
 
 bool IntegralCalculator::validation() {
   internal_order_test();
-  return taskData->inputs_count[0] == 1 && taskData->outputs_count[0] == 1;
+  bool is_valid = true;
+  is_valid = taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] == 1;
+  return is_valid;
 }
 
 bool IntegralCalculator::pre_processing() {

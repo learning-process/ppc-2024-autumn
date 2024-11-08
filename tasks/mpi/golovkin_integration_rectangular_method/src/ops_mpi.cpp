@@ -43,7 +43,6 @@ bool MPIIntegralCalculator::pre_processing() {
   broadcast(world, upper_bound, 0);
   broadcast(world, num_partitions, 0);
 
-
   return true;
 }
 
