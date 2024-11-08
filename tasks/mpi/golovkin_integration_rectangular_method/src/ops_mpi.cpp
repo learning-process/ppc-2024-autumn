@@ -17,41 +17,60 @@ using namespace std::chrono_literals;
 
 bool MPIIntegralCalculator::validation() {
   internal_order_test();
-  bool is_valid = true;
-  is_valid = taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] == 1;
-  broadcast(world, is_valid, 0);
 
+  auto start = std::chrono::high_resolution_clock::now();
+  int timeout_ms = 3000;
+
+  bool is_valid = true;
+
+  if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
+    is_valid = taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] == 1;
+  }
+  broadcast(world, is_valid, 0);
   return is_valid;
 }
 bool MPIIntegralCalculator::pre_processing() {
   internal_order_test();
-  auto* start_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
-  auto* end_ptr = reinterpret_cast<double*>(taskData->inputs[1]);
-  auto* split_ptr = reinterpret_cast<int*>(taskData->inputs[2]);
 
-  lower_bound = *start_ptr;
-  upper_bound = *end_ptr;
-  num_partitions = *split_ptr;
+  auto start = std::chrono::high_resolution_clock::now();
+  int timeout_ms = 5000;
+
+  if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
+    auto* start_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
+    auto* end_ptr = reinterpret_cast<double*>(taskData->inputs[1]);
+    auto* split_ptr = reinterpret_cast<int*>(taskData->inputs[2]);
+
+    lower_bound = *start_ptr;
+    upper_bound = *end_ptr;
+    num_partitions = *split_ptr;
+  }
 
   broadcast(world, lower_bound, 0);
   broadcast(world, upper_bound, 0);
   broadcast(world, num_partitions, 0);
+
 
   return true;
 }
 
 bool MPIIntegralCalculator::run() {
   internal_order_test();
+
   double local_result{};
   local_result = integrate(function_, lower_bound, upper_bound, num_partitions);
 
   reduce(world, local_result, global_result, std::plus<>(), 0);
+
   return true;
 }
 
 bool MPIIntegralCalculator::post_processing() {
   internal_order_test();
-  *reinterpret_cast<double*>(taskData->outputs[0]) = global_result;
+
+  if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
+    *reinterpret_cast<double*>(taskData->outputs[0]) = global_result;
+  }
+
   return true;
 }
 
