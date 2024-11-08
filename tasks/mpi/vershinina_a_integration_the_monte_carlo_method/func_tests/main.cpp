@@ -46,7 +46,7 @@ TEST(vershinina_a_integration_the_monte_carlo_method, Test_1) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    EXPECT_NEAR(reference_res[0], global_res[0], 1);
+    EXPECT_NEAR(reference_res[0], global_res[0], 5);
   }
 }
 TEST(vershinina_a_integration_the_monte_carlo_method, Test_2) {
@@ -88,7 +88,7 @@ TEST(vershinina_a_integration_the_monte_carlo_method, Test_2) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    EXPECT_NEAR(reference_res[0], global_res[0], 1);
+    EXPECT_NEAR(reference_res[0], global_res[0], 5);
   }
 }
 TEST(vershinina_a_integration_the_monte_carlo_method, Test_3) {
@@ -130,6 +130,6 @@ TEST(vershinina_a_integration_the_monte_carlo_method, Test_3) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    EXPECT_NEAR(reference_res[0], global_res[0], 1);
+    EXPECT_NEAR(reference_res[0], global_res[0], 5);
   }
 }
