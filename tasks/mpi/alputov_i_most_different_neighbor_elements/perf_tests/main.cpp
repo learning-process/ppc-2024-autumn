@@ -17,7 +17,7 @@ TEST(alputov_i_most_different_neighbor_elements_mpi, test_pipeline_run) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
     taskDataPar->inputs_count.emplace_back(in.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());
+    taskDataPar->outputs_count.emplace_back(out.size());
   }
 
   auto testMpiTaskParallel =
