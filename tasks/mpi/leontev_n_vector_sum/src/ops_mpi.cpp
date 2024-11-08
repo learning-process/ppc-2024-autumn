@@ -4,20 +4,9 @@
 #include <algorithm>
 #include <cstdlib>
 #include <functional>
-#include <random>
 #include <string>
 #include <thread>
 #include <vector>
-
-std::vector<int> leontev_n_vec_sum_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
-}
 
 bool leontev_n_vec_sum_mpi::MPIVecSumSequential::pre_processing() {
   internal_order_test();
@@ -49,6 +38,20 @@ bool leontev_n_vec_sum_mpi::MPIVecSumSequential::post_processing() {
 
 bool leontev_n_vec_sum_mpi::MPIVecSumParallel::pre_processing() {
   internal_order_test();
+  return true;
+}
+
+bool leontev_n_vec_sum_mpi::MPIVecSumParallel::validation() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    // Check count elements of output
+    return taskData->outputs_count[0] == 1;
+  }
+  return true;
+}
+
+bool leontev_n_vec_sum_mpi::MPIVecSumParallel::run() {
+  internal_order_test();
   std::div_t divres;
 
   if (world.rank() == 0) {
@@ -78,21 +81,6 @@ bool leontev_n_vec_sum_mpi::MPIVecSumParallel::pre_processing() {
     int recv_size = (world.rank() == world.size() - 1) ? divres.quot + divres.rem : divres.quot;
     world.recv(0, 0, local_input_.data(), recv_size);
   }
-
-  return true;
-}
-
-bool leontev_n_vec_sum_mpi::MPIVecSumParallel::validation() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    // Check count elements of output
-    return taskData->outputs_count[0] == 1;
-  }
-  return true;
-}
-
-bool leontev_n_vec_sum_mpi::MPIVecSumParallel::run() {
-  internal_order_test();
   int local_res;
   local_res = std::accumulate(local_input_.begin(), local_input_.end(), 0);
   reduce(world, local_res, res, std::plus(), 0);

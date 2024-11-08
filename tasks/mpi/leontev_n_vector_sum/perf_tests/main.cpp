@@ -7,8 +7,8 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/leontev_n_vector_sum/include/ops_mpi.hpp"
 
-void taskEmplacement(std::shared_ptr<ppc::core::TaskData>& taskDataPar, std::vector<int>& global_vec,
-                     std::vector<int32_t>& global_sum) {
+inline void taskEmplacement(std::shared_ptr<ppc::core::TaskData>& taskDataPar, std::vector<int>& global_vec,
+                            std::vector<int32_t>& global_sum) {
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
   taskDataPar->inputs_count.emplace_back(global_vec.size());
   taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
@@ -23,7 +23,7 @@ TEST(leontev_n_vec_sum_mpi, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int count_size_vector;
   if (world.rank() == 0) {
-    count_size_vector = 100000000;
+    count_size_vector = 0x1FFFFFF;
     global_vec = std::vector<int>(count_size_vector, 1);
     taskEmplacement(taskDataPar, global_vec, global_sum);
   }
@@ -56,7 +56,7 @@ TEST(leontev_n_vec_sum_mpi, test_task_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int count_size_vector;
   if (world.rank() == 0) {
-    count_size_vector = 100000000;
+    count_size_vector = 0x1FFFFFF;
     global_vec = std::vector<int>(count_size_vector, 1);
     taskEmplacement(taskDataPar, global_vec, global_sum);
   }

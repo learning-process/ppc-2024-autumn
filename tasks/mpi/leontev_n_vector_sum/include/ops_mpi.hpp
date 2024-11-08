@@ -15,8 +15,6 @@
 
 namespace leontev_n_vec_sum_mpi {
 
-std::vector<int> getRandomVector(int sz);
-
 class MPIVecSumSequential : public ppc::core::Task {
  public:
   explicit MPIVecSumSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
