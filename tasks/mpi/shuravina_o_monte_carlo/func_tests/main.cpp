@@ -3,7 +3,6 @@
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-
 #include <vector>
 
 #include "mpi/shuravina_o_monte_carlo/include/ops_mpi.hpp"
