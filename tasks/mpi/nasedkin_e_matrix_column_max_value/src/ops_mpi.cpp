@@ -104,7 +104,7 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::validation() {
 
 bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  
+
   broadcast(world, delta, 0);
   broadcast(world, extra, 0);
 
