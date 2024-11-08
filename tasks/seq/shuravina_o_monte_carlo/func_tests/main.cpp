@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include <vector>
 #include <functional>
+#include <vector>
 
 #include "seq/shuravina_o_monte_carlo/include/ops_seq.hpp"
 
