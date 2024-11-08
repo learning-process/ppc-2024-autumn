@@ -8,7 +8,7 @@
 
 #include "mpi/deryabin_m_symbol_frequency/include/ops_mpi.hpp"
 
-TEST(deryabin_m_symbol_frequency_mpi, test_random) {
+TEST(deryabin_m_symbol_frequency_mpi, test_shuffle) {
   boost::mpi::communicator world;
   std::vector<char> global_str;
   std::vector<char> input_symbol(1, 'A');
