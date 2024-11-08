@@ -27,10 +27,14 @@ std::vector<T> generate_random_vector(size_t size = 100, const T& left = T{-1000
 }
 
 template <Copyable DataType, Unsigned SizeType>
-std::shared_ptr<ppc::core::TaskData> create_task_data(std::vector<DataType>& in) {
+std::shared_ptr<ppc::core::TaskData> create_task_data(std::vector<DataType>& in, std::vector<DataType>& out) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
   taskData->inputs_count.emplace_back(static_cast<uint32_t>(in.size()));
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
+  taskData->outputs_count.emplace_back(static_cast<uint32_t>(in.size()));
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+  taskData->outputs_count.emplace_back(static_cast<uint32_t>(out.size()));
   return taskData;
 }
 
