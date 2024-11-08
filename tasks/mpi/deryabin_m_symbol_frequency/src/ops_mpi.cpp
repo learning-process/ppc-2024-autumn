@@ -22,7 +22,9 @@ bool deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskSequential::validati
   if (taskData->outputs_count[0] != 1 || taskData->inputs_count[1] != 1) {
     return false;
   }
-  return true;
+  else {
+    return true;
+  }
 }
 
 bool deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskSequential::run() {
@@ -52,7 +54,9 @@ bool deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskParallel::validation
     if (taskData->outputs_count[0] != 1 || taskData->inputs_count[1] != 1) {
       return false;
     }
-    return true;
+    else {
+      return true;
+    }
   }
   return true;
 }
