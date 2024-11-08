@@ -102,6 +102,9 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::run() {
 
   broadcast(world, inputMatrix_.data(), numCols * numRows, 0);
 
+  broadcast(world, numCols, 0);
+  broadcast(world, numRows, 0);
+
   if (world.rank() == 0) {
     delta = numCols / world.size();
     extra = numCols % world.size();
