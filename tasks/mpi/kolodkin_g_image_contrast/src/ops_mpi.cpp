@@ -14,7 +14,7 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskSequential::pre_processing() {
   auto* input_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
   auto input_size = taskData->inputs_count[0];
   input_ = std::vector<int>(input_ptr, input_ptr + input_size);
-  output_ = std::vector<int>(taskData->inputs_count[0]);
+  output_ = input_;
   palette_.resize(256);
   return true;
 }
@@ -68,7 +68,7 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::pre_processing() {
     auto input_size = taskData->inputs_count[0];
     auto* input_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     input_ = std::vector<int>(input_ptr, input_ptr + input_size);
-    output_ = std::vector<int>(taskData->inputs_count[0]);
+    output_ = input_;
     local_output_.resize(input_.size());
     auto total_brightness = 0;
     for (size_t i = 0; i < input_size; i += 3) {
@@ -79,6 +79,9 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::pre_processing() {
     for (int proc = 1; proc < world.size(); proc++) {
       auto start = proc * delta;
       auto size = (proc == world.size() - 1) ? input_size - start : delta;
+      if (size <= 0) {
+        continue;
+      }
       world.send(proc, 0, std::vector<int>(input_ptr + start, input_ptr + start + size));
     }
     local_input_ = std::vector<int>(input_ptr, input_ptr + delta);
@@ -94,7 +97,7 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::pre_processing() {
 
 bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
-  if (taskData->inputs_count[0] % 3 != 0) {
+  if (taskData->inputs_count[0] <=0 || taskData->inputs_count[0] % 3 != 0) {
     return false;
   }
   auto* input_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
@@ -116,7 +119,7 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::run() {
     int temp = static_cast<int>(av_br + k * delta_color);
     palette[i] = std::clamp(temp, 0, 255);
   }
-  output_.resize(local_input_.size());
+  local_output_.resize(local_input_.size());
   for (size_t i = 0; i < local_input_.size(); i++) {
     local_output_[i] = palette[local_input_[i]];
   }
@@ -127,7 +130,7 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     for (size_t i = 0; i < local_output_.size(); i++) {
-        output_[i] = local_output_[i];
+      output_[i] = local_output_[i];
     }
     *reinterpret_cast<std::vector<int>*>(taskData->outputs[0]) = output_;
   }

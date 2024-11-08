@@ -13,11 +13,14 @@ TEST(kolodkin_g_image_contrast_MPI, Test_image_one_pixel) {
 
   // Create data
   std::vector<int> global_out(3, 0);
+  std::vector<int> result_out;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    image = {50, 14, 5};
+    image.push_back(50);
+    image.push_back(14);
+    image.push_back(5);
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
     taskDataMpi->inputs_count.emplace_back(image.size());
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));
@@ -29,10 +32,12 @@ TEST(kolodkin_g_image_contrast_MPI, Test_image_one_pixel) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
+  result_out = *reinterpret_cast<std::vector<int> *>(taskDataMpi->outputs[0]);
 
   if (world.rank() == 0) {
     // Create data
     std::vector<int> reference_out(3, 0);
+    std::vector<int> result2_out;
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -46,10 +51,9 @@ TEST(kolodkin_g_image_contrast_MPI, Test_image_one_pixel) {
     testTaskSequential.pre_processing();
     testTaskSequential.run();
     testTaskSequential.post_processing();
-    global_out = *reinterpret_cast<std::vector<int> *>(taskDataMpi->outputs[0]);
-    reference_out = *reinterpret_cast<std::vector<int> *>(taskDataSeq->outputs[0]);
+    result2_out = *reinterpret_cast<std::vector<int> *>(taskDataSeq->outputs[0]);
     for (unsigned long i = 0; i < global_out.size(); i++) {
-      ASSERT_EQ(global_out[i], reference_out[i]);
+      ASSERT_EQ(result_out[i], result2_out[i]);
     }
   }
 }
@@ -99,7 +103,12 @@ TEST(kolodkin_g_image_contrast_MPI, Test_image_two_pixels) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    image = {50, 14, 5, 10, 200, 105};
+    image.push_back(50);
+    image.push_back(14);
+    image.push_back(5);
+    image.push_back(10);
+    image.push_back(200);
+    image.push_back(105);
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
     taskDataMpi->inputs_count.emplace_back(image.size());
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));
