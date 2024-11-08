@@ -90,7 +90,7 @@ TEST(deryabin_m_symbol_frequency_mpi, test_empty) {
   ASSERT_EQ(0, global_frequency[0]);
 }
 
-TEST(deryabin_m_symbol_frequency_mpi, test_every_secondary) {
+TEST(deryabin_m_symbol_frequency_mpi, test_first_last) {
   boost::mpi::communicator world;
   std::vector<char> global_str;
   std::vector<char> input_symbol(1, 'A');
@@ -99,17 +99,8 @@ TEST(deryabin_m_symbol_frequency_mpi, test_every_secondary) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_str = {'1', '2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
-                  'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
-                  'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
-    std::random_device rd;
-    std::mt19937 generator(rd());
-    std::shuffle(global_str.begin(), global_str.end(), generator);
-    for (size_t i = 0; i < global_str.size(); i++) {
-      if (i % 2 == 0) {
-        global_str[i] = input_symbol[0];
-      }
-    }
+    global_str = std::vector<char>(1000, 'B');
+    global_str[0] = global_str[999] = 'A';
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_str.data()));
     taskDataPar->inputs_count.emplace_back(global_str.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_symbol.data()));
