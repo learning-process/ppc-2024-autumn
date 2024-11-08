@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "mpi/fyodorov_m_num_of_orderly_violations/include/ops_mpi.hpp"
-namespace fyodorov_m_num_of_orderly_violations_mpi {
+
 std::vector<int> getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -17,7 +17,7 @@ std::vector<int> getRandomVector(int sz) {
   }
   return vec;
 }
-}  // namespace fyodorov_m_num_of_orderly_violations_mpi
+
 TEST(fyodorov_m_num_of_orderly_violations_mpi, Test_Count_Violations) {
   boost::mpi::communicator world;
   std::vector<int> global_vec = {1, 2, 3, 7, 4, 3, 9};
@@ -52,7 +52,7 @@ TEST(fyodorov_m_num_of_orderly_violations_mpi, Test_Count_Violations_Random_450)
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_vec = fyodorov_m_num_of_orderly_violations_mpi::getRandomVector(count);
+    global_vec = getRandomVector(count);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_violations.data()));
@@ -92,7 +92,7 @@ TEST(fyodorov_m_num_of_orderly_violations_mpi, Test_Count_Violations_Random_1000
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_vec = fyodorov_m_num_of_orderly_violations_mpi::getRandomVector(count);
+    global_vec = getRandomVector(count);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_violations.data()));
@@ -132,7 +132,7 @@ TEST(fyodorov_m_num_of_orderly_violations_mpi, Test_Count_Violations_Random_3000
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_vec = fyodorov_m_num_of_orderly_violations_mpi::getRandomVector(count);
+    global_vec = getRandomVector(count);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_violations.data()));
@@ -172,7 +172,7 @@ TEST(fyodorov_m_num_of_orderly_violations_mpi, Test_Count_Violations_Random_10) 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_vec = fyodorov_m_num_of_orderly_violations_mpi::getRandomVector(count);
+    global_vec = getRandomVector(count);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_violations.data()));
@@ -212,7 +212,7 @@ TEST(fyodorov_m_num_of_orderly_violations_mpi, Test_Count_Violations_Random_2) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_vec = fyodorov_m_num_of_orderly_violations_mpi::getRandomVector(count);
+    global_vec = getRandomVector(count);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_violations.data()));

@@ -9,7 +9,7 @@
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/fyodorov_m_num_of_orderly_violations/include/ops_mpi.hpp"
-namespace fyodorov_m_num_of_orderly_violations_mpi {
+
 std::vector<int> getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -20,7 +20,7 @@ std::vector<int> getRandomVector(int sz) {
   }
   return vec;
 }
-}  // namespace fyodorov_m_num_of_orderly_violations_mpi
+
 TEST(fyodorov_m_num_of_orderly_violations_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   int count_size_vector = 2000000;
