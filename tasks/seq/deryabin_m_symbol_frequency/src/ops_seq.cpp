@@ -2,8 +2,6 @@
 
 #include <thread>
 
-using namespace std::chrono_literals;
-
 #include <string>
 
 bool deryabin_m_symbol_frequency_seq::SymbolFrequencyTaskSequential::pre_processing() {
