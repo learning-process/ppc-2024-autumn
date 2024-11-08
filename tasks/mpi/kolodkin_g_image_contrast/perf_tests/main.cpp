@@ -15,7 +15,7 @@ TEST(mpi_kolodkin_g_image_contrast_test, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     for (unsigned long int i = 0; i < 9999; i++) {
-      global_image.push_back(0+ rand() % 255);
+      global_image.push_back(0 + rand() % 255);
     }
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_image.data()));
     taskDataPar->inputs_count.emplace_back(global_image.size());
@@ -53,7 +53,7 @@ TEST(mpi_kolodkin_g_image_contrast_test, test_task_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     for (unsigned long int i = 0; i < 99999; i++) {
-      global_vec.push_back(0+rand()%255);
+      global_vec.push_back(0 + rand() % 255);
     }
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());

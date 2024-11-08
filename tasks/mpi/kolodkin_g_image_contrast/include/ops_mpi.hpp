@@ -41,7 +41,7 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   std::vector<int> input_, local_input_;
   std::vector<int> palette_;
-  std::vector<int> output_;
+  std::vector<int> output_, local_output_;
   int av_br = 0;
   boost::mpi::communicator world;
 };
