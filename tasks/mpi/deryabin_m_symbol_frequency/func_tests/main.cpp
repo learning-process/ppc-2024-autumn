@@ -203,7 +203,7 @@ TEST(deryabin_m_symbol_frequency_mpi, test_random2) {
 
   if (world.rank() == 0) {
     global_str = std::vector<char>(10000);
-    srand((unsigned short)time(NULL));
+    srand((unsigned short)time(0));
     std::default_random_engine generator(rand());
     std::uniform_int_distribution<> distribution(65, 90);
     std::generate(global_str.begin(), global_str.end(), [&] { return char(0) + distribution(generator); });
