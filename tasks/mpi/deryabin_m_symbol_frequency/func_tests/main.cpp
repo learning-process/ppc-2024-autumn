@@ -24,8 +24,8 @@ TEST(deryabin_m_symbol_frequency_mpi, test_shuffle) {
     std::mt19937 gen(rd());
     std::shuffle(global_str.begin(), global_str.end(), gen);
     std::uniform_int_distribution<> distrib(1, 62);
-    std::vector<char>::const_iterator first = global_str.begin() + distrib(gen);
-    std::vector<char>::const_iterator last = global_str.end();
+    auto first = global_str.begin() + distrib(gen);
+    auto last = global_str.end();
     global_str.erase(first, last);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_str.data()));
     taskDataPar->inputs_count.emplace_back(global_str.size());
