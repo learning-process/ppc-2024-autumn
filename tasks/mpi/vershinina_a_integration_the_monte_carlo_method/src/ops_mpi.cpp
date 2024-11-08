@@ -42,7 +42,7 @@ bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskSequential::run
   double total = 0;
   double inBox = 0;
   reference_res = 0;
-  for (count = 0; count < 100000; count++) {
+  for (count = 0; count < 1000000; count++) {
     double u1 = (double)rand() / (double)RAND_MAX;
     double u2 = (double)rand() / (double)RAND_MAX;
 
@@ -59,7 +59,6 @@ bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskSequential::run
   double density = inBox / total;
 
   reference_res = (xmax - xmin) * (ymax - ymin) * density;
-  std::cerr << "ref " << reference_res << std::endl;
   return true;
 }
 bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskSequential::post_processing() {
@@ -103,8 +102,8 @@ bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskParallel::run()
   local_inBox = 0;
   double total;
   double inBox;
-  auto tgt = (100000 / world.size()) * (world.rank() + 1);
-  for (count = (100000 / world.size()) * world.rank(); count < tgt; count++) {
+  auto tgt = (1000000 / world.size()) * (world.rank() + 1);
+  for (count = (1000000 / world.size()) * world.rank(); count < tgt; count++) {
     double u1 = (double)rand() / (double)RAND_MAX;
     double u2 = (double)rand() / (double)RAND_MAX;
 
@@ -124,7 +123,6 @@ bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskParallel::run()
 
   double density = inBox / total;
   global_res = (xmax - xmin) * (ymax - ymin) * density;
-  std::cerr << "global " << global_res << std::endl;
 
   return true;
 }
