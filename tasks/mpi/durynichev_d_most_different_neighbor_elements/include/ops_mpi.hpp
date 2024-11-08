@@ -17,7 +17,6 @@
 #include "core/task/include/task.hpp"
 namespace durynichev_d_most_different_neighbor_elements_mpi {
 
-std::vector<int> getRandomVector(size_t size);
 struct ChunkResult {
   size_t left_index;
   size_t right_index;
