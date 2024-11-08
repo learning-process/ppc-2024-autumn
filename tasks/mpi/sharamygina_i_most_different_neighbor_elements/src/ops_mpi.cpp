@@ -1,8 +1,6 @@
 #include "mpi/sharamygina_i_most_different_neighbor_elements/include/ops_mpi.hpp"
 
-#include <algorithm>
 #include <functional>
-#include <random>
 #include <thread>
 #include <vector>
 
