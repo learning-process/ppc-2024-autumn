@@ -60,44 +60,40 @@ bool sharamygina_i_most_different_neighbor_elements_mpi::most_different_neighbor
 
 bool sharamygina_i_most_different_neighbor_elements_mpi::most_different_neighbor_elements_mpi::run() {
   internal_order_test();
-
-  unsigned int delta = 0;
+  int delta = 0;
   if (world.rank() == 0) {
     delta = (taskData->inputs_count[0]) / world.size();
     size = taskData->inputs_count[0];
     if (taskData->inputs_count[0] % world.size() > 0u) delta++;
   }
+
   broadcast(world, delta, 0);
-  broadcast(world, size, 0);
 
   if (world.rank() == 0) {
-    // Init vectors
-    input_ = std::vector<int>(world.size() * delta, 0);
+    input_.resize(world.size() * delta + 2, 0);
     auto* tmp = reinterpret_cast<int*>(taskData->inputs[0]);
     std::copy(tmp, tmp + taskData->inputs_count[0], input_.begin());
 
-    res = abs(tmp[0] - tmp[1]);
+    for (size_t i = taskData->inputs_count[0]; i < input_.size(); i++) {
+      input_[i] = input_[i - 1];
+    }
 
     for (int proc = 1; proc < world.size(); proc++) {
       world.send(proc, 0, input_.data() + proc * delta, delta + 1);
     }
-
-    if (taskData->inputs_count[0] == 2) {
-      return true;
-    }
   }
 
-  local_input_ = std::vector<int>(delta + 1);
+  local_input_.resize(delta + 1);
+
   st = world.rank() * delta;
   if (world.rank() == 0) {
-    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
+    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta + 1);
   } else {
     world.recv(0, 0, local_input_.data(), delta + 1);
   }
-
-  int lans = -1;
-  for (size_t i = 1; i < local_input_.size() && (i + st) < size; ++i) {
-    lans = std::max(lans, abs(local_input_[i] - local_input_[i - 1]));
+  int lans = INT_MIN;
+  for (size_t i = 0; i < local_input_.size() - 1; ++i) {
+    lans = std::max(abs(local_input_[i + 1] - local_input_[i]), lans);
   }
   reduce(world, lans, res, boost::mpi::maximum<int>(), 0);
   return true;
