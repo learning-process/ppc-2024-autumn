@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <memory>
 #include <string>
 #include <vector>
@@ -17,8 +18,18 @@ class MonteCarloIntegrationTaskSequential : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
+  void set_interval(double a, double b) {
+    a_ = a;
+    b_ = b;
+  }
+
+  void set_function(std::function<double(double)> func) { f_ = func; }
+
  private:
   double integral_value_{};
+  double a_ = 0.0;
+  double b_ = 1.0;
+  std::function<double(double)> f_ = [](double x) { return x * x; };
 };
 
 }  // namespace shuravina_o_monte_carlo

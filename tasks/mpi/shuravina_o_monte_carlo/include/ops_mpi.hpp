@@ -18,9 +18,10 @@ class MonteCarloIntegrationTaskParallel : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
+  double get_integral_value() const { return integral_value_; }
+
  private:
   double integral_value_{};
   boost::mpi::communicator world;
 };
-
 }  // namespace shuravina_o_monte_carlo
