@@ -21,8 +21,7 @@ bool deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskSequential::validati
   // Check count elements
   if (taskData->outputs_count[0] != 1 || taskData->inputs_count[1] != 1) {
     return false;
-  }
-  else {
+  } else {
     return true;
   }
 }
@@ -53,8 +52,7 @@ bool deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskParallel::validation
   if (world.rank() == 0) {
     if (taskData->outputs_count[0] != 1 || taskData->inputs_count[1] != 1) {
       return false;
-    }
-    else {
+    } else {
       return true;
     }
   }
