@@ -72,9 +72,7 @@ bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskParallel::pre_p
   if (world.rank() == 0) {
     auto* pr = reinterpret_cast<double*>(taskData->inputs[0]);
     input_.resize(taskData->inputs_count[0]);
-    for (size_t i = 0; i < input_.size(); i++) {
-      input_[i] = pr[i];
-    }
+    std::copy(pr, pr + input_.size(), input_.begin()); 
   }
   return true;
 }
