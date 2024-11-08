@@ -44,27 +44,12 @@ bool kolodkin_g_sentence_count_mpi::TestMPITaskSequential::post_processing() {
 
 bool kolodkin_g_sentence_count_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  unsigned int delta = 0;
-  if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] / world.size();
-  }
-  broadcast(world, delta, 0);
-
   if (world.rank() == 0) {
     input_ = std::vector<char>(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<char*>(taskData->inputs[0]);
     for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
       input_[i] = tmp_ptr[i];
     }
-  }
-  local_input_.resize(delta);
-  if (world.rank() == 0) {
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + proc * delta, delta);
-    }
-    local_input_ = std::vector<char>(input_.begin(), input_.begin() + delta);
-  } else {
-    world.recv(0, 0, local_input_.data(), delta);
   }
   localSentenceCount = 0;
   res = 0;
@@ -81,6 +66,20 @@ bool kolodkin_g_sentence_count_mpi::TestMPITaskParallel::validation() {
 
 bool kolodkin_g_sentence_count_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+  unsigned int delta = 0;
+  if (world.rank() == 0) {
+    delta = taskData->inputs_count[0] / world.size();
+  }
+  broadcast(world, delta, 0);
+  local_input_.resize(delta);
+  if (world.rank() == 0) {
+    for (int proc = 1; proc < world.size(); proc++) {
+      world.send(proc, 0, input_.data() + proc * delta, delta);
+    }
+    local_input_ = std::vector<char>(input_.begin(), input_.begin() + delta);
+  } else {
+    world.recv(0, 0, local_input_.data(), delta);
+  }
   for (unsigned long i = 0; i < local_input_.size(); i++) {
     if ((local_input_[i] == '.' || local_input_[i] == '!' || local_input_[i] == '?') &&
         ((local_input_[i + 1] != '.' && local_input_[i + 1] != '!' && local_input_[i + 1] != '?') ||
