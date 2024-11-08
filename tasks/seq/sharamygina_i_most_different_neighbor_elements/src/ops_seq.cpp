@@ -2,7 +2,6 @@
 
 #include <functional>
 #include <random>
-#include <thread>
 
 using namespace std::chrono_literals;
 
