@@ -197,9 +197,10 @@ TEST(deryabin_m_symbol_frequency_mpi, test_random) {
 
   if (world.rank() == 0) {
     global_str = std::vector<char>(10000);
-    std::default_random_engine generator(rand());
-    std::uniform_int_distribution<> distribution(65, 90);
-    std::generate(global_str.begin(), global_str.end(), [&] { return char(0) + distribution(generator); });
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distrib(65, 90);
+    std::generate(global_str.begin(), global_str.end(), [&] { return char(0) + distrib(gen); });
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_str.data()));
     taskDataPar->inputs_count.emplace_back(global_str.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_symbol.data()));
