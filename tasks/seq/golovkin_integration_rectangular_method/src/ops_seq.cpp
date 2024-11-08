@@ -76,6 +76,4 @@ bool IntegralCalculator::post_processing() {
   return true;
 }
 
-double IntegralCalculator::function_square(double x) {
-  return x * x;
-}
+double IntegralCalculator::function_square(double x) { return x * x; }

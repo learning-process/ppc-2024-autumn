@@ -85,9 +85,8 @@ TEST(golovkin_integration_rectangular_method, test_linear_function) {
   parallel_task.run();
   parallel_task.post_processing();
 
- if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
+  if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
     std::vector<double> expected_result(1, 0);
-
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
     taskDataSeq->inputs_count.emplace_back(1);
