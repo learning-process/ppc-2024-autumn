@@ -18,7 +18,7 @@ TEST(MonteCarloIntegrationTaskSequential, Test_Integration) {
   testTaskSequential->run();
   testTaskSequential->post_processing();
 
+
   double expected_integral = 1.0 / 3.0;  
   ASSERT_NEAR(expected_integral, out[0], 0.01);  
 }
-

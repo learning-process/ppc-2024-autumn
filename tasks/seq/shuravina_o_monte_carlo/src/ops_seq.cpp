@@ -10,7 +10,7 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskSequential::pre_processin
 
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskSequential::validation() {
   internal_order_test();
- 
+
   if (taskData->inputs_count.size() != 1 || taskData->outputs_count.size() != 1) {
     return false;
   }
@@ -27,7 +27,7 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskSequential::run() {
   internal_order_test();
   
   auto f = [](double x) { return x * x; };
- 
+
   double a = 0.0;
   double b = 1.0;
 

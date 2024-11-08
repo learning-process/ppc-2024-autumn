@@ -67,4 +67,3 @@ TEST(MonteCarloIntegrationTaskParallel, test_task_run) {
     ppc::core::Perf::print_perf_statistic(perfResults);
   }
 }
-
