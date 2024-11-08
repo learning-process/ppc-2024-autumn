@@ -60,9 +60,6 @@ bool MPIIntegralCalculator::post_processing() {
   if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
     *reinterpret_cast<double*>(taskData->outputs[0]) = global_result;
   }
-
-  auto end = std::chrono::high_resolution_clock::now();
-  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
   return true;
 }
 
