@@ -6,18 +6,12 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/naumov_b_min_colum_matrix/include/ops_mpi.hpp"
 
-static std::vector<int> getRandomVector(int size) {
-  std::vector<int> vec(size);
-  for (int& element : vec) {
-    element = rand() % 201 - 100;
-  }
-  return vec;
-}
-
 static std::vector<std::vector<int>> getRandomMatrix(int rows, int columns) {
   std::vector<std::vector<int>> matrix(rows, std::vector<int>(columns));
-  for (int i = 0; i < rows; ++i) {
-    matrix[i] = getRandomVector(columns);
+  for (auto& row : matrix) {
+    for (int& element : row) {
+      element = rand() % 201 - 100;
+    }
   }
   return matrix;
 }
