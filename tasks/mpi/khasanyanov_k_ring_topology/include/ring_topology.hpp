@@ -31,7 +31,7 @@ class RingTopology : ppc::core::Task {
  private:
   struct Data {
     std::vector<DataType> input_;
-    std::vector<DataType> order_;
+    std::vector<int> order_;
 
     template <class Archive>
     void serialize(Archive& ar, const unsigned int version) {
@@ -125,8 +125,7 @@ bool RingTopology<DataType, SizeType>::post_processing() {
     auto* tmp_data = reinterpret_cast<uint8_t*>(data_.input_.data());
     std::copy(tmp_data, tmp_data + static_cast<SizeType>(data_.input_.size()) * sizeof(DataType), taskData->outputs[0]);
     auto* tmp_order = reinterpret_cast<uint8_t*>(data_.order_.data());
-    std::copy(tmp_order, tmp_order + static_cast<SizeType>(data_.order_.size()) * sizeof(DataType),
-              taskData->outputs[1]);
+    std::copy(tmp_order, tmp_order + static_cast<SizeType>(data_.order_.size()) * sizeof(int), taskData->outputs[1]);
   }
   return true;
 }

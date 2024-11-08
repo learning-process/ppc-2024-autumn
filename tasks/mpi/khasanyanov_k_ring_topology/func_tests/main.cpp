@@ -9,15 +9,15 @@
 TEST(khasanyanov_k_ring_topology_tests, test) {
   boost::mpi::communicator world;
 
-  const std::vector<int> in_data = khasanyanov_k_ring_topology_mpi::generate_random_vector(100);
-  std::vector<int> out_data(in_data);
+  const std::vector<double> in_data = khasanyanov_k_ring_topology_mpi::generate_random_vector<double>(100);
+  std::vector<double> out_data(in_data);
   std::vector<int> order(world.size());
 
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskData = khasanyanov_k_ring_topology_mpi::create_task_data<int, size_t>(out_data, order);
+    taskData = khasanyanov_k_ring_topology_mpi::create_task_data<double>(out_data, order);
   }
-  khasanyanov_k_ring_topology_mpi::RingTopology<int> testTask(taskData);
+  khasanyanov_k_ring_topology_mpi::RingTopology<double> testTask(taskData);
   RUN_TASK(testTask);
 
   if (world.rank() == 0) {
