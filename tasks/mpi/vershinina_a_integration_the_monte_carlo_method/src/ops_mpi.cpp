@@ -12,7 +12,7 @@ using namespace std::chrono_literals;
 std::vector<double> vershinina_a_integration_the_monte_carlo_method::getRandomVector(double sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  std::uniform_int_distribution<> distr(0, 100);
+  std::uniform_int_distribution<> distr(0, 50);
   std::vector<double> vec(sz);
   vec[0] = distr(gen);
   vec[1] = vec[0] + distr(gen);
