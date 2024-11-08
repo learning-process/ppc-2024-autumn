@@ -8,7 +8,7 @@
 
 std::string getRandomString(int size, size_t *count_words) {
   const std::string ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  std::string res = "";
+  std::string res;
   *count_words = 1;
   for (int i = 0; i < size; i++) {
     int x = rand() % (ABC.size() + 1);
