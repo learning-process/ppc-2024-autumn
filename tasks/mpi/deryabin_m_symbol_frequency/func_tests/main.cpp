@@ -193,7 +193,7 @@ TEST(deryabin_m_symbol_frequency_mpi, test_same_letters) {
   }
 }
 
-TEST(deryabin_m_symbol_frequency_mpi, test_random2) {
+TEST(deryabin_m_symbol_frequency_mpi, test_random) {
   boost::mpi::communicator world;
   std::vector<char> global_str;
   std::vector<char> input_symbol(1, 'A');
