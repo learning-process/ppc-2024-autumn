@@ -24,7 +24,7 @@ std::string makhov_m_num_of_diff_elements_in_two_str_mpi::getShorterStr(std::str
 bool makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
   // Check count elements of output and strings size
-  return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] == 1;
+  return taskData->inputs_count[0] >= 0 && taskData->inputs_count[1] >= 0 && taskData->outputs_count[0] == 1;
 }
 
 bool makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskSequential::pre_processing() {
@@ -68,7 +68,7 @@ bool makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskParallel::validati
   internal_order_test();
   if (world.rank() == 0) {
     // Check count elements of output and strings size
-    return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] == 1;
+    return taskData->inputs_count[0] >= 0 && taskData->inputs_count[1] >= 0 && taskData->outputs_count[0] == 1;
   }
   return true;
 }

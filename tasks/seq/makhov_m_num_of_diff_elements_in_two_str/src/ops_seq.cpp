@@ -14,7 +14,7 @@ int makhov_m_num_of_diff_elements_in_two_str_seq::countDiffElem(std::string str1
 bool makhov_m_num_of_diff_elements_in_two_str_seq::TestTaskSequential::validation() {
   internal_order_test();
   // Check count elements of output and strings size
-  return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] == 1;
+  return taskData->inputs_count[0] >= 0 && taskData->inputs_count[1] >= 0 && taskData->outputs_count[0] == 1;
 }
 
 bool makhov_m_num_of_diff_elements_in_two_str_seq::TestTaskSequential::pre_processing() {

@@ -377,5 +377,28 @@ TEST(makhov_m_num_of_diff_elements_in_two_str_mpi, EmptyString) {
 
   // Create Task
   makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_FALSE(testMpiTaskParallel.validation());
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(str1.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(str2.data()));
+    taskDataSeq->inputs_count.emplace_back(str1.size());
+    taskDataSeq->inputs_count.emplace_back(str2.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_sum.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_sum.size());
+
+    // Create Task
+    makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_TRUE(testMpiTaskSequential.validation());
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(10, global_sum[0]);
+  }
 }
