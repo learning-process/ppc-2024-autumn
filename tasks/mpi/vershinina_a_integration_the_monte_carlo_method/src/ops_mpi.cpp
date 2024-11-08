@@ -100,8 +100,8 @@ bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskParallel::run()
   int count;
   local_total = 0;
   local_inBox = 0;
-  double total;
-  double inBox;
+  double total = 0;
+  double inBox = 0;
   auto tgt = (1000000 / world.size()) * (world.rank() + 1);
   for (count = (1000000 / world.size()) * world.rank(); count < tgt; count++) {
     double u1 = (double)rand() / (double)RAND_MAX;
