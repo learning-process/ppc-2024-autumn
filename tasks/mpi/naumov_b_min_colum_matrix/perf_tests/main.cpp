@@ -6,20 +6,20 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/naumov_b_min_colum_matrix/include/ops_mpi.hpp"
 
-std::vector<std::vector<int>> naumov_b_min_colum_matrix_mpi::getRandomMatrix(int rows, int columns) {
-  std::vector<std::vector<int>> matrix(rows, std::vector<int>(columns));
-  for (int i = 0; i < rows; ++i) {
-    matrix[i] = naumov_b_min_colum_matrix_mpi::getRandomVector(columns);
-  }
-  return matrix;
-}
-
-std::vector<int> naumov_b_min_colum_matrix_mpi::getRandomVector(int size) {
+static std::vector<int> getRandomVector(int size) {
   std::vector<int> vec(size);
   for (int& element : vec) {
     element = rand() % 201 - 100;
   }
   return vec;
+}
+
+static std::vector<std::vector<int>> getRandomMatrix(int rows, int columns) {
+  std::vector<std::vector<int>> matrix(rows, std::vector<int>(columns));
+  for (int i = 0; i < rows; ++i) {
+    matrix[i] = getRandomVector(columns);
+  }
+  return matrix;
 }
 
 TEST(naumov_b_min_colum_matrix_mpi_perf, test_pipeline_run) {
@@ -31,7 +31,7 @@ TEST(naumov_b_min_colum_matrix_mpi_perf, test_pipeline_run) {
   int rows = 1000;
   int cols = 1000;
   if (world.rank() == 0) {
-    auto matrix = naumov_b_min_colum_matrix_mpi::getRandomMatrix(rows, cols);
+    auto matrix = getRandomMatrix(rows, cols);
     global_matrix.resize(rows * cols);
     global_results.resize(cols);
 
@@ -73,7 +73,7 @@ TEST(naumov_b_min_colum_matrix_mpi, test_column_minimum_task_run) {
   const int rows = 100;
   const int cols = 100;
 
-  std::vector<std::vector<int>> matrix = naumov_b_min_colum_matrix_mpi::getRandomMatrix(rows, cols);
+  std::vector<std::vector<int>> matrix = getRandomMatrix(rows, cols);
 
   if (world.rank() == 0) {
     std::vector<int> flatMatrix(rows * cols);

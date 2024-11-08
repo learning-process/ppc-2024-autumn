@@ -7,15 +7,7 @@
 
 #include "mpi/naumov_b_min_colum_matrix/include/ops_mpi.hpp"
 
-std::vector<std::vector<int>> naumov_b_min_colum_matrix_mpi::getRandomMatrix(int rows, int columns) {
-  std::vector<std::vector<int>> matrix(rows, std::vector<int>(columns));
-  for (int i = 0; i < rows; ++i) {
-    matrix[i] = naumov_b_min_colum_matrix_mpi::getRandomVector(columns);
-  }
-  return matrix;
-}
-
-std::vector<int> naumov_b_min_colum_matrix_mpi::getRandomVector(int size) {
+static std::vector<int> getRandomVector(int size) {
   std::vector<int> vec(size);
   for (int& element : vec) {
     element = rand() % 201 - 100;
@@ -33,7 +25,7 @@ TEST(naumov_b_min_colum_matrix_mpi, Test_Min_Column) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = naumov_b_min_colum_matrix_mpi::getRandomVector(cols * rows);
+    global_matrix = getRandomVector(cols * rows);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(rows);
@@ -77,7 +69,7 @@ TEST(naumov_b_min_colum_matrix_mpi, Test_Min_Column_10_40) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = naumov_b_min_colum_matrix_mpi::getRandomVector(cols * rows);
+    global_matrix = getRandomVector(cols * rows);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(rows);
@@ -121,7 +113,7 @@ TEST(naumov_b_min_colum_matrix_mpi, Test_Min_Column_40_10) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = naumov_b_min_colum_matrix_mpi::getRandomVector(cols * rows);
+    global_matrix = getRandomVector(cols * rows);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(rows);
@@ -165,7 +157,7 @@ TEST(naumov_b_min_colum_matrix_mpi, Test_Min_Column_Large_Matrix) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = naumov_b_min_colum_matrix_mpi::getRandomVector(cols * rows);
+    global_matrix = getRandomVector(cols * rows);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(rows);
