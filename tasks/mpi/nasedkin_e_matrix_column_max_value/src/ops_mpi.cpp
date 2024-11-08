@@ -100,8 +100,6 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::validation() {
 bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-  broadcast(world, inputMatrix_.data(), numCols * numRows, 0);
-
   broadcast(world, numCols, 0);
   broadcast(world, numRows, 0);
 
@@ -112,6 +110,8 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::run() {
 
   broadcast(world, delta, 0);
   broadcast(world, extra, 0);
+
+  broadcast(world, inputMatrix_.data(), numCols * numRows, 0);
 
   int startCol = delta * world.rank();
   int lastCol = startCol + delta;
