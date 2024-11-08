@@ -97,10 +97,29 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::validation() {
 bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
+  if (world.rank() == 0) {
+    numCols = taskData->inputs_count[1];
+    numRows = taskData->inputs_count[2];
+    delta = numCols / world.size();
+    extra = numCols % world.size();
+  }
+
   broadcast(world, numCols, 0);
   broadcast(world, numRows, 0);
   broadcast(world, delta, 0);
   broadcast(world, extra, 0);
+
+  if (world.rank() == 0) {
+    inputMatrix_ = std::vector<int>(taskData->inputs_count[0]);
+    auto* tmpPtr = reinterpret_cast<int*>(taskData->inputs[0]);
+    for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
+      inputMatrix_[i] = tmpPtr[i];
+    }
+  } else {
+    inputMatrix_.resize(numCols * numRows, 0);
+  }
+  result_ = std::vector<int>(numCols, 0);
+
   broadcast(world, inputMatrix_.data(), numCols * numRows, 0);
 
   int startCol = delta * world.rank();
@@ -109,12 +128,12 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::run() {
     lastCol += extra;
   }
 
-  std::vector<int> localMax;
+  std::vector<int> localMax(lastCol - startCol);
   for (int j = startCol; j < lastCol; j++) {
-    auto maxElem = *std::max_element(inputMatrix_.begin() + j * numRows, inputMatrix_.begin() + (j + 1) * numRows);
-    localMax.push_back(maxElem);
+    auto maxElem = *std::max_element(inputMatrix_.begin() + j * numRows,
+                                     inputMatrix_.begin() + (j + 1) * numRows);
+    localMax[j - startCol] = maxElem;
   }
-  localMax.resize(delta + (world.rank() == world.size() - 1 ? extra : 0));
 
   if (world.rank() == 0) {
     std::vector<int> globalRes(numCols);
@@ -127,9 +146,9 @@ bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::run() {
   } else {
     boost::mpi::gatherv(world, localMax.data(), localMax.size(), 0);
   }
+
   return true;
 }
-
 bool nasedkin_e_matrix_column_max_value_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
