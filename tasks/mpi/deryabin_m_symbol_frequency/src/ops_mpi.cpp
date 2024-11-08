@@ -1,7 +1,6 @@
 #include "mpi/deryabin_m_symbol_frequency/include/ops_mpi.hpp"
 
 #include <functional>
-#include <string>
 #include <thread>
 #include <vector>
 
