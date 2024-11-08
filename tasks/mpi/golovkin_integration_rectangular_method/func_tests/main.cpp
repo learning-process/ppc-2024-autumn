@@ -4,11 +4,12 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <chrono>
 #include <cmath>
 #include <stdexcept>
-#include <vector>
 #include <thread>
-#include <chrono>
+#include <vector>
+
 #include "mpi/golovkin_integration_rectangular_method/include/ops_mpi.hpp"
 
 using namespace std::chrono_literals;
@@ -342,18 +343,19 @@ TEST(golovkin_integration_rectangular_method, test_post_processing_timeout_abort
     taskData->outputs_count.emplace_back(computed_result.size());
   }
 
-  golovkin_integration_rectangular_method::MPIIntegralCalculator calculator(taskData);
-  calculator.set_function([](double x) { return x * x; });
+  golovkin_integration_rectangular_method::MPIIntegralCalculator parallel_task(taskData);
+  parallel_task.set_function([](double x) { return x * x; });
 
-  ASSERT_TRUE(calculator.validation());
-  ASSERT_TRUE(calculator.pre_processing());
-  ASSERT_TRUE(calculator.run());
+  ASSERT_EQ(parallel_task.validation(), true);
+  parallel_task.pre_processing();
+  parallel_task.run();
+  parallel_task.post_processing();
 
   bool abort_called = false;
   auto delayed_post_processing = [&]() -> bool {
     std::this_thread::sleep_for(6s);
     try {
-      return calculator.post_processing();
+      return parallel_task.post_processing();
     } catch (const std::runtime_error&) {
       abort_called = true;
       throw;
@@ -385,18 +387,20 @@ TEST(golovkin_integration_rectangular_method, test_run_timeout_abort) {
     taskData->outputs_count.emplace_back(computed_result.size());
   }
 
-  golovkin_integration_rectangular_method::MPIIntegralCalculator calculator(taskData);
-  calculator.set_function([](double x) { return x * x; });
+  golovkin_integration_rectangular_method::MPIIntegralCalculator parallel_task(taskData);
+  parallel_task.set_function([](double x) { return x * x; });
 
-  ASSERT_TRUE(calculator.validation());
-  ASSERT_TRUE(calculator.pre_processing());
+  
+  ASSERT_EQ(parallel_task.validation(), true);
+  parallel_task.pre_processing();
+  parallel_task.run();
+  parallel_task.post_processing();
 
-  // Лямбда для задержки `run`
   bool abort_called = false;
   auto delayed_run = [&]() -> bool {
     std::this_thread::sleep_for(6s);
     try {
-      return calculator.run();
+      return parallel_task.run();
     } catch (const std::runtime_error&) {
       abort_called = true;
       throw;
@@ -428,16 +432,20 @@ TEST(golovkin_integration_rectangular_method, test_pre_processing_timeout_abort)
     taskData->outputs_count.emplace_back(computed_result.size());
   }
 
-  golovkin_integration_rectangular_method::MPIIntegralCalculator calculator(taskData);
-  calculator.set_function([](double x) { return x * x; });
+  golovkin_integration_rectangular_method::MPIIntegralCalculator parallel_task(taskData);
+  parallel_task.set_function([](double x) { return x * x; });
 
-  ASSERT_TRUE(calculator.validation());
+  
+  ASSERT_EQ(parallel_task.validation(), true);
+  parallel_task.pre_processing();
+  parallel_task.run();
+  parallel_task.post_processing();
 
   bool abort_called = false;
   auto delayed_pre_processing = [&]() -> bool {
     std::this_thread::sleep_for(6s);
     try {
-      return calculator.pre_processing();
+      return parallel_task.pre_processing();
     } catch (const std::runtime_error&) {
       abort_called = true;
       throw;
@@ -469,14 +477,19 @@ TEST(golovkin_integration_rectangular_method, test_validation_timeout_abort) {
     taskData->outputs_count.emplace_back(computed_result.size());
   }
 
-  golovkin_integration_rectangular_method::MPIIntegralCalculator calculator(taskData);
-  calculator.set_function([](double x) { return x * x; });
+  golovkin_integration_rectangular_method::MPIIntegralCalculator parallel_task(taskData);
+  parallel_task.set_function([](double x) { return x * x; });
+
+  ASSERT_EQ(parallel_task.validation(), true);
+  parallel_task.pre_processing();
+  parallel_task.run();
+  parallel_task.post_processing();
 
   bool abort_called = false;
   auto delayed_validation = [&]() -> bool {
     std::this_thread::sleep_for(6s);
     try {
-      return calculator.validation();
+      return parallel_task.validation();
     } catch (const std::runtime_error&) {
       abort_called = true;
       throw;
