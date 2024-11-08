@@ -48,7 +48,8 @@ bool deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskParallel::pre_proces
   internal_order_test();
   unsigned int delta = 0;
   unsigned int ostatock = 0;
-  if (world.rank() == 0) {
+  int rank_ = world.rank();
+  if (rank_ == 0) {
     delta = taskData->inputs_count[0] / world.size();
     ostatock = taskData->inputs_count[0] % world.size();
     // Init value for input
@@ -65,7 +66,7 @@ bool deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskParallel::pre_proces
   boost::mpi::broadcast(world, delta, 0);
   boost::mpi::broadcast(world, input_symbol_, 0);
   local_input_str_ = std::vector<char>(delta);
-  if (world.rank() == 0) {
+  if (rank_ == 0) {
     local_input_str_ = std::vector<char>(input_str_.end() - delta - ostatock, input_str_.end());
   } else {
     world.recv(0, 0, local_input_str_.data(), delta);
