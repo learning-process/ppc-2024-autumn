@@ -5,9 +5,9 @@
 
 #include "seq/deryabin_m_symbol_frequency/include/ops_seq.hpp"
 
-TEST(deryabin_m_symbol_frequency_seq, test_part_of_alphabet) {
+TEST(deryabin_m_symbol_frequency_seq, test_alphabet) {
   // Create data
-  std::vector<std::string> in(1, "ABCDEFGHIJ");
+  std::vector<std::string> in(1, "A B C D E F G H I J K L M N O P Q R S T U V W X Y Z");
   std::vector<char> in_ch(1, 'A');
   std::vector<int> out(1, 0);
 
