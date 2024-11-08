@@ -10,7 +10,7 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskSequential::pre_processin
 
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskSequential::validation() {
   internal_order_test();
-  // Дополнительные проверки для уверенности, что данные корректно инициализированы
+ 
   if (taskData->inputs_count.size() != 1 || taskData->outputs_count.size() != 1) {
     return false;
   }
@@ -25,18 +25,14 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskSequential::validation() 
 
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskSequential::run() {
   internal_order_test();
-
-  // Функция для интегрирования: f(x) = x^2
+  
   auto f = [](double x) { return x * x; };
-
-  // Интервал интегрирования [0, 1]
+ 
   double a = 0.0;
   double b = 1.0;
 
-  // Количество точек
   int num_points = 1000000;
 
-  // Генерация случайных точек
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_real_distribution<> dis(a, b);
@@ -47,7 +43,6 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskSequential::run() {
     sum += f(x);
   }
 
-  // Вычисление интеграла
   integral_value_ = (sum / num_points) * (b - a);
 
   return true;

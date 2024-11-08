@@ -25,8 +25,7 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Integration) {
   testMpiTaskParallel->post_processing();
 
   if (world.rank() == 0) {
-    double expected_integral = 1.0 / 3.0;  
-    ASSERT_NEAR(expected_integral, out[0], 0.01); 
+    double expected_integral = 1.0 / 3.0;
+    ASSERT_NEAR(expected_integral, out[0], 0.01);
   }
 }
-
