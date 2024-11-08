@@ -12,7 +12,6 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::pre_processing(
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
- 
     if (taskData->inputs_count.size() != 1 || taskData->outputs_count.size() != 1) {
       return false;
     }
