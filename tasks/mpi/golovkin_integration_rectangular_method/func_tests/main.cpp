@@ -7,9 +7,11 @@
 #include <cmath>
 #include <stdexcept>
 #include <vector>
-
+#include <thread>
+#include <chrono>
 #include "mpi/golovkin_integration_rectangular_method/include/ops_mpi.hpp"
 
+using namespace std::chrono_literals;
 TEST(golovkin_integration_rectangular_method, test_constant_function) {
   boost::mpi::communicator world;
   std::vector<double> computed_result(1, 0);
@@ -318,4 +320,170 @@ TEST(golovkin_integration_rectangular_method, test_exponential_function) {
 
     ASSERT_NEAR(expected_result[0], computed_result[0], 1e-3);
   }
+}
+
+TEST(golovkin_integration_rectangular_method, test_post_processing_timeout_abort) {
+  boost::mpi::communicator world;
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+
+  double lower_limit = 0.0;
+  double upper_limit = 10.0;
+  int partition_count = 1000;
+  std::vector<double> computed_result(1, 0.0);
+
+  if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
+    taskData->inputs_count.emplace_back(1);
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
+    taskData->inputs_count.emplace_back(1);
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&partition_count));
+    taskData->inputs_count.emplace_back(1);
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(computed_result.data()));
+    taskData->outputs_count.emplace_back(computed_result.size());
+  }
+
+  golovkin_integration_rectangular_method::MPIIntegralCalculator calculator(taskData);
+  calculator.set_function([](double x) { return x * x; });
+
+  ASSERT_TRUE(calculator.validation());
+  ASSERT_TRUE(calculator.pre_processing());
+  ASSERT_TRUE(calculator.run());
+
+  bool abort_called = false;
+  auto delayed_post_processing = [&]() -> bool {
+    std::this_thread::sleep_for(6s);
+    try {
+      return calculator.post_processing();
+    } catch (const std::runtime_error&) {
+      abort_called = true;
+      throw;
+    }
+  };
+
+  ASSERT_THROW({ delayed_post_processing(); }, std::runtime_error);
+
+  ASSERT_TRUE(abort_called);
+}
+
+TEST(golovkin_integration_rectangular_method, test_run_timeout_abort) {
+  boost::mpi::communicator world;
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+
+  double lower_limit = 0.0;
+  double upper_limit = 10.0;
+  int partition_count = 1000;
+  std::vector<double> computed_result(1, 0.0);
+
+  if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
+    taskData->inputs_count.emplace_back(1);
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
+    taskData->inputs_count.emplace_back(1);
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&partition_count));
+    taskData->inputs_count.emplace_back(1);
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(computed_result.data()));
+    taskData->outputs_count.emplace_back(computed_result.size());
+  }
+
+  golovkin_integration_rectangular_method::MPIIntegralCalculator calculator(taskData);
+  calculator.set_function([](double x) { return x * x; });
+
+  ASSERT_TRUE(calculator.validation());
+  ASSERT_TRUE(calculator.pre_processing());
+
+  // Лямбда для задержки `run`
+  bool abort_called = false;
+  auto delayed_run = [&]() -> bool {
+    std::this_thread::sleep_for(6s);
+    try {
+      return calculator.run();
+    } catch (const std::runtime_error&) {
+      abort_called = true;
+      throw;
+    }
+  };
+
+  ASSERT_THROW({ delayed_run(); }, std::runtime_error);
+
+  ASSERT_TRUE(abort_called);
+}
+
+TEST(golovkin_integration_rectangular_method, test_pre_processing_timeout_abort) {
+  boost::mpi::communicator world;
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+
+  double lower_limit = 0.0;
+  double upper_limit = 10.0;
+  int partition_count = 1000;
+  std::vector<double> computed_result(1, 0.0);
+
+  if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
+    taskData->inputs_count.emplace_back(1);
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
+    taskData->inputs_count.emplace_back(1);
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&partition_count));
+    taskData->inputs_count.emplace_back(1);
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(computed_result.data()));
+    taskData->outputs_count.emplace_back(computed_result.size());
+  }
+
+  golovkin_integration_rectangular_method::MPIIntegralCalculator calculator(taskData);
+  calculator.set_function([](double x) { return x * x; });
+
+  ASSERT_TRUE(calculator.validation());
+
+  bool abort_called = false;
+  auto delayed_pre_processing = [&]() -> bool {
+    std::this_thread::sleep_for(6s);
+    try {
+      return calculator.pre_processing();
+    } catch (const std::runtime_error&) {
+      abort_called = true;
+      throw;
+    }
+  };
+
+  ASSERT_THROW({ delayed_pre_processing(); }, std::runtime_error);
+
+  ASSERT_TRUE(abort_called);
+}
+
+TEST(golovkin_integration_rectangular_method, test_validation_timeout_abort) {
+  boost::mpi::communicator world;
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+
+  double lower_limit = 0.0;
+  double upper_limit = 10.0;
+  int partition_count = 1000;
+  std::vector<double> computed_result(1, 0.0);
+
+  if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
+    taskData->inputs_count.emplace_back(1);
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
+    taskData->inputs_count.emplace_back(1);
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&partition_count));
+    taskData->inputs_count.emplace_back(1);
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(computed_result.data()));
+    taskData->outputs_count.emplace_back(computed_result.size());
+  }
+
+  golovkin_integration_rectangular_method::MPIIntegralCalculator calculator(taskData);
+  calculator.set_function([](double x) { return x * x; });
+
+  bool abort_called = false;
+  auto delayed_validation = [&]() -> bool {
+    std::this_thread::sleep_for(6s);
+    try {
+      return calculator.validation();
+    } catch (const std::runtime_error&) {
+      abort_called = true;
+      throw;
+    }
+  };
+
+  ASSERT_THROW({ delayed_validation(); }, std::runtime_error);
+
+  ASSERT_TRUE(abort_called);
 }

@@ -110,18 +110,9 @@ double MPIIntegralCalculator::integrate(const std::function<double(double)>& f, 
   double local_sum = 0.0;
   step_size = (b - a) / splits;
 
-  auto start = std::chrono::high_resolution_clock::now();
-  int timeout_ms = 5000;
-
   for (int i = current_process; i < splits; i += total_processes) {
     double x = a + i * step_size;
     local_sum += f(x) * step_size;
-
-    auto now = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - start);
-    if (duration.count() > timeout_ms) {
-      abort();
-    }
   }
   return local_sum;
 }
