@@ -88,6 +88,8 @@ bool opolin_d_max_of_matrix_elements_mpi::TestMPITaskParallel::pre_processing() 
     }
   }
   // Init value for output
+  boost::mpi::broadcast(world, taskData->inputs_count, 0);
+  boost::mpi::broadcast(world, taskData->outputs_count, 0);
   res = std::numeric_limits<int32_t>::min();
   return true;
 }
@@ -114,9 +116,9 @@ bool opolin_d_max_of_matrix_elements_mpi::TestMPITaskParallel::run() {
   }
   int local_max = (local_input_.empty()) ? std::numeric_limits<int32_t>::min()
                                          : *std::max_element(local_input_.begin(), local_input_.end());
-  if(world.rank() == 0){
+  if (world.rank() == 0){
     res = local_max;
-    for(int i = 1; i < world.size(); ++i){
+    for (int i = 1; i < world.size(); ++i){
       int received_max;
       world.recv(i, 0, received_max);
       res = std::max(res, received_max);
