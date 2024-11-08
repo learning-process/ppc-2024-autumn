@@ -1,4 +1,5 @@
-// Golovkin Maksims
+// Golovkin Maksim
+
 #include "mpi/golovkin_integration_rectangular_method/include/ops_mpi.hpp"
 
 #include <algorithm>
@@ -17,30 +18,19 @@ using namespace std::chrono_literals;
 bool MPIIntegralCalculator::validation() {
   internal_order_test();
 
-  // Начало отсчета времени выполнения
   auto start = std::chrono::high_resolution_clock::now();
-  int timeout_ms = 3000;  // Устанавливаем тайм-аут для валидации (например, 3000 миллисекунд)
+  int timeout_ms = 3000;
 
   bool is_valid = true;
 
   if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
     is_valid = taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] == 1;
-
-    // Лог для отладки
-    if (!is_valid) {
-      std::cerr << "Validation failed on rank 0 with inputs_count or outputs_count invalid\n";
-    }
   }
-
-  // Синхронизация и широковещательная передача результата валидации другим процессам
   broadcast(world, is_valid, 0);
-
-  // Проверка на тайм-аут
   auto end = std::chrono::high_resolution_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
   if (duration.count() > timeout_ms) {
-    std::cerr << "Timeout in validation on rank " << world.rank() << "\n";
-    MPI_Abort(MPI_COMM_WORLD, 1);
+    abort();
   }
 
   return is_valid;
@@ -48,9 +38,8 @@ bool MPIIntegralCalculator::validation() {
 bool MPIIntegralCalculator::pre_processing() {
   internal_order_test();
 
-  // Начало отсчета времени выполнения
   auto start = std::chrono::high_resolution_clock::now();
-  int timeout_ms = 5000;  // Максимальное время выполнения в миллисекундах
+  int timeout_ms = 5000;
 
   if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
     auto* start_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
@@ -69,8 +58,7 @@ bool MPIIntegralCalculator::pre_processing() {
   auto end = std::chrono::high_resolution_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
   if (duration.count() > timeout_ms) {
-    std::cerr << "Timeout in pre_processing on rank " << world.rank() << "\n";
-    MPI_Abort(MPI_COMM_WORLD, 1);
+    abort();
   }
 
   return true;
@@ -90,8 +78,7 @@ bool MPIIntegralCalculator::run() {
   auto end = std::chrono::high_resolution_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
   if (duration.count() > timeout_ms) {
-    std::cerr << "Timeout in run on rank " << world.rank() << "\n";
-    MPI_Abort(MPI_COMM_WORLD, 1);
+    abort();
   }
 
   return true;
@@ -110,8 +97,7 @@ bool MPIIntegralCalculator::post_processing() {
   auto end = std::chrono::high_resolution_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
   if (duration.count() > timeout_ms) {
-    std::cerr << "Timeout in post_processing on rank " << world.rank() << "\n";
-    MPI_Abort(MPI_COMM_WORLD, 1);
+    abort();
   }
 
   return true;
@@ -134,8 +120,7 @@ double MPIIntegralCalculator::integrate(const std::function<double(double)>& f, 
     auto now = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - start);
     if (duration.count() > timeout_ms) {
-      std::cerr << "Timeout in integrate on rank " << current_process << "\n";
-      MPI_Abort(MPI_COMM_WORLD, 1);
+      abort();
     }
   }
   return local_sum;
