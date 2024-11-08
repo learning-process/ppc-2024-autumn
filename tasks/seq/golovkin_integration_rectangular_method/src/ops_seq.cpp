@@ -20,16 +20,12 @@ IntegralCalculator::IntegralCalculator(const std::shared_ptr<ppc::core::TaskData
       res(0.0) {}
 
 bool IntegralCalculator::validation() {
-  if (taskData->inputs.size() != 3) {
-    std::cerr << "Error: 3 inputs were expected, but received " << taskData->inputs.size() << std::endl;
-  }
-  if (taskData->outputs.size() != 1) {
-    std::cerr << "Error: 1 output was expected, but received " << taskData->outputs.size() << std::endl;
-  }
-  return true;
+  internal_order_test();
+  return taskData->inputs_count[0] == 1 && taskData->outputs_count[0] == 1;
 }
 
 bool IntegralCalculator::pre_processing() {
+  internal_order_test();
   try {
     a = *reinterpret_cast<double*>(taskData->inputs[0]);
     b = *reinterpret_cast<double*>(taskData->inputs[1]);
@@ -46,6 +42,7 @@ bool IntegralCalculator::pre_processing() {
 }
 
 bool IntegralCalculator::run() {
+  internal_order_test();
   double result = 0.0;
 
   for (int i = 0; i < cnt_of_splits; ++i) {
@@ -58,6 +55,7 @@ bool IntegralCalculator::run() {
 }
 
 bool IntegralCalculator::post_processing() {
+  internal_order_test();
   try {
     *reinterpret_cast<double*>(taskData->outputs[0]) = res;
   } catch (const std::exception& e) {
