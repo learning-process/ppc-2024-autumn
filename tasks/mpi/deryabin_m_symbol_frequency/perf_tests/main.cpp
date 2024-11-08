@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
-#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/deryabin_m_symbol_frequency/include/ops_mpi.hpp"
