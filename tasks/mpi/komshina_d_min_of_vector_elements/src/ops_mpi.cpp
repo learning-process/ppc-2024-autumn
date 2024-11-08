@@ -32,9 +32,14 @@ bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential::pr
 
 bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential::validation() {
   internal_order_test();
-  // Check count elements of output
-  return (taskData->inputs_count[0] != 0 && taskData->outputs_count[0] == 1) ||
-         (taskData->inputs_count[0] == 0 && taskData->outputs_count[0] == 0);
+  if (taskData->inputs_count[0] == 0) {
+    return false;
+  }
+
+  if (taskData->outputs_count[0] != 1) {
+    return false;
+  }
+  return true;
 }
 
 bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential::run() {
@@ -57,29 +62,37 @@ bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential::po
 bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-      delta = (taskData->inputs_count[0] + world.size() - 1) / world.size();
-      input_ = std::vector<int>(taskData->inputs_count[0]);
-      int* ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-      for (size_t i = 0; i < taskData->inputs_count[0]; ++i) {
-        input_[i] = ptr[i];
-        
-      }
-      input_.resize(delta * world.size(), INT_MAX);
-      
-      res = input_[0];
+    input_ = std::vector<int>(taskData->inputs_count[0]);
+    int* ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+    for (size_t i = 0; i < taskData->inputs_count[0]; ++i) {
+      input_[i] = ptr[i];
+    }
   }
   return true;
 }
 
 bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel::validation() {
   internal_order_test();
-  // Check count elements of output
-  return (taskData->inputs_count[0] != 0 && taskData->outputs_count[0] == 1) ||
-         (taskData->inputs_count[0] == 0 && taskData->outputs_count[0] == 0);
+  if (taskData->inputs_count[0] == 0) {
+    return false;
+  }
+
+  if (taskData->outputs_count[0] != 1) {
+    return false;
+  }
+  return true;
 }
 
 bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel::run() {
   internal_order_test();
+
+  if (world.rank() == 0) {
+    delta = taskData->inputs_count[0] / world.size();
+    int remainder = taskData->inputs_count[0] % world.size();
+    if (remainder > 0) {
+      delta++;
+    }
+  }
   broadcast(world, delta, 0);
 
   if (world.rank() == 0) {
@@ -88,17 +101,20 @@ bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel::run(
     }
   }
 
-  local_input_ = std::vector<int>(delta, INT_MAX);
   if (world.rank() == 0) {
     local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
   } else {
+    local_input_ = std::vector<int>(delta, INT_MAX);
     world.recv(0, 0, local_input_.data(), delta);
   }
 
   int local_res = INT_MAX;
-  for (size_t ptr = 1; ptr < local_input_.size(); ++ptr) {
-    if (local_res > local_input_[ptr]) {
-      local_res = local_input_[ptr];
+  if (!local_input_.empty()) {
+    local_res = local_input_[0];
+    for (const auto& i : local_input_) {
+      if (local_res > i) {
+        local_res = i;
+      }
     }
   }
 
