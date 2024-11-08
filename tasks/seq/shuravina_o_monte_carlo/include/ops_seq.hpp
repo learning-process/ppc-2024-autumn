@@ -23,7 +23,7 @@ class MonteCarloIntegrationTaskSequential : public ppc::core::Task {
     b_ = b;
   }
 
-  void set_function(std::function<double(double)> func) { f_ = std::move (func); }
+  void set_function(std::function<double(double)> func) { f_ = std::move(func); }
 
  private:
   double integral_value_{};
