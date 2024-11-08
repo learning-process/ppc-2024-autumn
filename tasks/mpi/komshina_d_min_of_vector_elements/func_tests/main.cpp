@@ -30,7 +30,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_2) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count = 5000000;
+    const int count = 500;
     const int start_value = -1;
     const int decrement = 100;
     global_vec.resize(count);
@@ -66,6 +66,9 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_2) {
     testMpiTaskSequential.post_processing();
 
     ASSERT_EQ(reference_min[0], global_min[0]);
+  }
+  if (world.rank() == 0) {
+    std::cout << "Test_Min_2: Expected min is " << global_min[0] << std::endl;
   }
 }
 

@@ -17,16 +17,9 @@ bool komshina_d_min_of_vector_elements_seq::MinOfVectorElementTaskSequential::pr
 
 bool komshina_d_min_of_vector_elements_seq::MinOfVectorElementTaskSequential::validation() {
   internal_order_test();
-
-  if (taskData->inputs_count[0] == 0) {
-    return false;
-  }
-
-  if (taskData->outputs_count[0] != 1) {
-    return false;
-  }
-
-  return true;
+  // Check count elements of output
+  return (taskData->inputs_count[0] != 0 && taskData->outputs_count[0] == 1) ||
+         (taskData->inputs_count[0] == 0 && taskData->outputs_count[0] == 0);
 }
 
 bool komshina_d_min_of_vector_elements_seq::MinOfVectorElementTaskSequential::run() {
