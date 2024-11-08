@@ -78,7 +78,7 @@ bool sharamygina_i_most_different_neighbor_elements_mpi::most_different_neighbor
 
     res = abs(tmp[0] - tmp[1]);
 
-    for (size_t proc = 1; proc < world.size(); proc++) {
+    for (int proc = 1; proc < world.size(); proc++) {
       world.send(proc, 0, input_.data() + proc * delta, delta + 1);
     }
 
