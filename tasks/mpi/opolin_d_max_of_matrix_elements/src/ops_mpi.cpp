@@ -103,25 +103,21 @@ bool opolin_d_max_of_matrix_elements_mpi::TestMPITaskParallel::validation() {
 
 bool opolin_d_max_of_matrix_elements_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  unsigned int total_elements = taskData->inputs_count[0] * taskData->inputs_count[1];
-  int delta = 0;
+  unsigned int delta = 0;
   if (world.rank() == 0) {
-    int delta = (total_elements - 1) / world.size();
+    delta = taskData->inputs_count[0] * taskData->inputs_count[1] / world.size();
   }
   broadcast(world, delta, 0);
+  local_input_.resize(delta);
   if (world.rank() == 0) {
     for (int proc = 1; proc < world.size(); proc++) {
       world.send(proc, 0, input_.data() + delta * proc, delta);
     }
-  }
-  local_input_ = std::vector<int>(delta);
-  if (world.rank() == 0) {
-    local_input_.assign(input_.begin(), input_.begin() + delta);
+    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
   } else {
     world.recv(0, 0, local_input_.data(), delta);
   }
-  int local_max = (local_input_.empty()) ? std::numeric_limits<int32_t>::min()
-                                         : *std::max_element(local_input_.begin(), local_input_.end());
+  int local_max = *std::max_element(local_input_.begin(), local_input_.end());
   reduce(world, local_max, res, boost::mpi::maximum<int>(), 0);
   return true;
 }
