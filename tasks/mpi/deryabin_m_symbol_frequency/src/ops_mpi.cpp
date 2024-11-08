@@ -44,6 +44,19 @@ bool deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskSequential::post_pro
 
 bool deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskParallel::pre_processing() {
   internal_order_test();
+  return true;
+}
+
+bool deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskParallel::validation() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    return taskData->outputs_count[0] == 1 && taskData->inputs_count[1] == 1;
+  }
+  return true;
+}
+
+bool deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskParallel::run() {
+  internal_order_test();
   unsigned int delta = 0;
   unsigned int ostatock = 0;
   int rank_ = world.rank();
@@ -71,19 +84,6 @@ bool deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskParallel::pre_proces
   }
   // Init value for output
   frequency_ = 0;
-  return true;
-}
-
-bool deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskParallel::validation() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    return taskData->outputs_count[0] == 1 && taskData->inputs_count[1] == 1;
-  }
-  return true;
-}
-
-bool deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskParallel::run() {
-  internal_order_test();
   // Init local value
   local_found_ = 0;
   for (char i : local_input_str_) {
