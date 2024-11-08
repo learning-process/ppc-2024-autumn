@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <string>
 #include <vector>
 
 #include "seq/deryabin_m_symbol_frequency/include/ops_seq.hpp"
