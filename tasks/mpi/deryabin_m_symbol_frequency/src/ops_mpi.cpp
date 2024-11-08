@@ -49,7 +49,10 @@ bool deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskParallel::pre_proces
 bool deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    return taskData->outputs_count[0] == 1 && taskData->inputs_count[1] == 1;
+    if (!(taskData->outputs_count[0] == 1 && taskData->inputs_count[1] == 1)) {
+      return false;
+    }
+    return true;
   }
   return true;
 }
