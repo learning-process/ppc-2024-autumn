@@ -354,3 +354,28 @@ TEST(makhov_m_num_of_diff_elements_in_two_str_mpi, SameStrings) {
     ASSERT_EQ(reference_sum[0], global_sum[0]);
   }
 }
+
+TEST(makhov_m_num_of_diff_elements_in_two_str_mpi, EmptyString) {
+  boost::mpi::communicator world;
+  std::string str1;
+  std::string str2;
+  std::vector<int32_t> global_sum(1, 0);
+  std::vector<int32_t> reference_sum(1, 0);
+  str1 = "";
+  str2 = getRandStr(10);
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(str1.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(str2.data()));
+    taskDataPar->inputs_count.emplace_back(str1.size());
+    taskDataPar->inputs_count.emplace_back(str2.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_sum.data()));
+    taskDataPar->outputs_count.emplace_back(global_sum.size());
+  }
+
+  // Create Task
+  makhov_m_num_of_diff_elements_in_two_str_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_FALSE(testMpiTaskParallel.validation());
+}
