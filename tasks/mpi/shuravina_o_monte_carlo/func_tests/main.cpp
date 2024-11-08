@@ -78,7 +78,6 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Work_Distribution) {
   }
 
   int num_processes = world.size();
-  int rank = world.rank();
   int num_points = 1000000;
   int local_num_points = num_points / num_processes;
 
