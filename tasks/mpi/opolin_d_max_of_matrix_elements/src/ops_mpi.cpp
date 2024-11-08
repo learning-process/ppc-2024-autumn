@@ -118,7 +118,18 @@ bool opolin_d_max_of_matrix_elements_mpi::TestMPITaskParallel::run() {
     world.recv(0, 0, local_input_.data(), delta);
   }
   int local_max = *std::max_element(local_input_.begin(), local_input_.end());
-  reduce(world, local_max, res, boost::mpi::maximum<int>(), 0);
+  if (world.rank() == 0) {
+    res = local_max;
+    for (int proc = 1; proc < world.size(); proc++) {
+      int received_max;
+      world.recv(proc, 0, received_max);
+      if (received_max > res) {
+        res = received_max;
+      }
+    }
+  } else {
+    world.send(0, 0, local_max);
+  }
   return true;
 }
 
