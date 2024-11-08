@@ -60,7 +60,7 @@ TEST(durynichev_d_most_different_neighbor_elements_mpi, huge_vector) {
   std::vector<int> outputPar{0, 0};
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    input = durynichev_d_most_different_neighbor_elements_mpi::getRandomVector(100'000);
+    input = durynichev_d_most_different_neighbor_elements_mpi::getRandomVector(200'000);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
     taskDataPar->inputs_count.emplace_back(input.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(outputPar.data()));
