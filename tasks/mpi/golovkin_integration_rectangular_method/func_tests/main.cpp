@@ -390,7 +390,6 @@ TEST(golovkin_integration_rectangular_method, test_run_timeout_abort) {
   golovkin_integration_rectangular_method::MPIIntegralCalculator parallel_task(taskData);
   parallel_task.set_function([](double x) { return x * x; });
 
-  
   ASSERT_EQ(parallel_task.validation(), true);
   parallel_task.pre_processing();
   parallel_task.run();
@@ -435,7 +434,6 @@ TEST(golovkin_integration_rectangular_method, test_pre_processing_timeout_abort)
   golovkin_integration_rectangular_method::MPIIntegralCalculator parallel_task(taskData);
   parallel_task.set_function([](double x) { return x * x; });
 
-  
   ASSERT_EQ(parallel_task.validation(), true);
   parallel_task.pre_processing();
   parallel_task.run();

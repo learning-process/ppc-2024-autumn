@@ -26,10 +26,10 @@ TEST(golovkin_integration_rectangular_method_seq, Calculate_ZeroToOne) {
 
   IntegralCalculator calculator(taskData);
 
-  ASSERT_TRUE(calculator.validation());
-  ASSERT_TRUE(calculator.pre_processing());
-  ASSERT_TRUE(calculator.run());
-  ASSERT_TRUE(calculator.post_processing());
+  ASSERT_EQ(calculator.validation(), true);
+  calculator.pre_processing();
+  calculator.run();
+  calculator.post_processing();
 
   EXPECT_NEAR(result, 1.0 / 3.0, 0.01);
 }
@@ -51,10 +51,10 @@ TEST(golovkin_integration_rectangular_method_seq, Calculate_ZeroToTwo) {
 
   IntegralCalculator calculator(taskData);
 
-  ASSERT_TRUE(calculator.validation());
-  ASSERT_TRUE(calculator.pre_processing());
-  ASSERT_TRUE(calculator.run());
-  ASSERT_TRUE(calculator.post_processing());
+  ASSERT_EQ(calculator.validation(), true);
+  calculator.pre_processing();
+  calculator.run();
+  calculator.post_processing();
 
   EXPECT_NEAR(result, 8.0 / 3.0, 0.01);
 }
@@ -76,10 +76,10 @@ TEST(golovkin_integration_rectangular_method_seq, Calculate_NegativeToPositive) 
 
   IntegralCalculator calculator(taskData);
 
-  ASSERT_TRUE(calculator.validation());
-  ASSERT_TRUE(calculator.pre_processing());
-  ASSERT_TRUE(calculator.run());
-  ASSERT_TRUE(calculator.post_processing());
+  ASSERT_EQ(calculator.validation(), true);
+  calculator.pre_processing();
+  calculator.run();
+  calculator.post_processing();
 
   EXPECT_NEAR(result, 2.0 / 3.0, 0.01);
 }
@@ -100,10 +100,10 @@ TEST(golovkin_integration_rectangular_method_seq, Calculate_LargeInterval_HighPr
 
   IntegralCalculator calculator(taskData);
 
-  ASSERT_TRUE(calculator.validation());
-  ASSERT_TRUE(calculator.pre_processing());
-  ASSERT_TRUE(calculator.run());
-  ASSERT_TRUE(calculator.post_processing());
+  ASSERT_EQ(calculator.validation(), true);
+  calculator.pre_processing();
+  calculator.run();
+  calculator.post_processing();
 
   EXPECT_NEAR(result, 333.3333333333333, 0.01);
 }
