@@ -145,6 +145,33 @@ TEST(deryabin_m_symbol_frequency_mpi, test_every_secondary) {
   }
 }
 
+TEST(deryabin_m_symbol_frequency_mpi, test_const) {
+  boost::mpi::communicator world;
+  std::vector<char> global_str;
+  std::vector<char> input_symbol(1, 'A');
+  std::vector<int32_t> global_frequency(1, 0);
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    const int input_size = 240;
+    global_str = std::vector<char>(input_size, input_symbol[0]);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_str.data()));
+    taskDataPar->inputs_count.emplace_back(global_str.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_symbol.data()));
+    taskDataPar->inputs_count.emplace_back(input_symbol.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_frequency.data()));
+    taskDataPar->outputs_count.emplace_back(global_frequency.size());
+  }
+
+  deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+  ASSERT_EQ(input_size, global_frequency[0]);
+}
+
 TEST(deryabin_m_symbol_frequency_mpi, test_random2) {
   boost::mpi::communicator world;
   std::vector<char> global_str;
