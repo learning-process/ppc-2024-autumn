@@ -7,8 +7,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
 bool deryabin_m_symbol_frequency_mpi::SymbolFrequencyMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init value for input and output
