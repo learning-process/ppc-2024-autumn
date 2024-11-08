@@ -21,10 +21,10 @@ TEST(deryabin_m_symbol_frequency_mpi, test_shuffle) {
                   'A', 'X', 'A', 'Z', 'A', 'b', 'A', 'd', 'A', 'f', 'A', 'h', 'A', 'j', 'A', 'l',
                   'A', 'n', 'A', 'p', 'A', 'r', 'A', 't', 'A', 'v', 'A', 'x', 'A', 'z'};
     std::random_device rd;
-    std::mt19937 generator(rd());
-    std::shuffle(global_str.begin(), global_str.end(), generator);
-    uniform_int_distribution<> distribution(1, 62);
-    global_str.erase(global.str.begin() + distribution(generator), global_str.end());
+    std::mt19937 gen(rd());
+    std::shuffle(global_str.begin(), global_str.end(), gen);
+    uniform_int_distribution<> distrib(1, 62);
+    global_str.erase(global.str.begin() + distrib(generator), global_str.end());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_str.data()));
     taskDataPar->inputs_count.emplace_back(global_str.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_symbol.data()));
