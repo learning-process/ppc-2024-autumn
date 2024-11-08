@@ -3,7 +3,6 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <random>
-#include <vector>
 
 #include "mpi/deryabin_m_symbol_frequency/include/ops_mpi.hpp"
 
