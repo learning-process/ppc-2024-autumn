@@ -1,8 +1,7 @@
 #include "seq/deryabin_m_symbol_frequency/include/ops_seq.hpp"
 
-#include <thread>
-
 #include <string>
+#include <thread>
 
 bool deryabin_m_symbol_frequency_seq::SymbolFrequencyTaskSequential::pre_processing() {
   internal_order_test();
