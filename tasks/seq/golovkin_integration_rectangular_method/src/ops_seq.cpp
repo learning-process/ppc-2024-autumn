@@ -55,7 +55,7 @@ bool IntegralCalculator::run() {
 }
 
 bool IntegralCalculator::post_processing() {
-  internal_order_test();
+    internal_order_test();
   try {
     *reinterpret_cast<double*>(taskData->outputs[0]) = res;
   } catch (const std::exception& e) {

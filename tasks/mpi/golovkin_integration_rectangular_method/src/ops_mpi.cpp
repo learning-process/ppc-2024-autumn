@@ -18,9 +18,6 @@ using namespace std::chrono_literals;
 bool MPIIntegralCalculator::validation() {
   internal_order_test();
 
-  auto start = std::chrono::high_resolution_clock::now();
-  int timeout_ms = 3000;
-
   bool is_valid = true;
 
   if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
@@ -31,9 +28,6 @@ bool MPIIntegralCalculator::validation() {
 }
 bool MPIIntegralCalculator::pre_processing() {
   internal_order_test();
-
-  auto start = std::chrono::high_resolution_clock::now();
-  int timeout_ms = 5000;
 
   if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
     auto* start_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
