@@ -14,16 +14,7 @@
 
 namespace khasanyanov_k_ring_topology_mpi {
 
-template <typename T>
-concept Copyable = requires(const T& a) {
-  T{a};
-  a == a;
-};
-
-template <typename T>
-concept Unsigned = static_cast<bool>(std::is_unsigned<T>());
-
-template <Copyable DataType, Unsigned SizeType = std::uint32_t>
+template <std::copyable DataType, std::unsigned_integral SizeType = std::uint32_t>
 class RingTopology : ppc::core::Task {
   static_assert(sizeof(SizeType) <= sizeof(std::uint32_t),
                 "Size of 'SizeType' greater than std::uint32_t, possible loss of data");
@@ -34,7 +25,7 @@ class RingTopology : ppc::core::Task {
     std::vector<int> order_;
 
     template <class Archive>
-    void serialize(Archive& ar, const unsigned int version) {
+    void serialize(Archive& ar, unsigned int version) {
       ar& input_;
       ar& order_;
     }
@@ -54,17 +45,17 @@ class RingTopology : ppc::core::Task {
   [[nodiscard]] static std::vector<int> true_order(int);
 };
 
-template <Copyable DataType, Unsigned SizeType>
+template <std::copyable DataType, std::unsigned_integral SizeType>
 bool RingTopology<DataType, SizeType>::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     return taskData->inputs.size() == 1 && !taskData->inputs_count.empty() && taskData->inputs_count[0] > 0 &&
-           taskData->outputs.size() == 2;
+           taskData->outputs.size() == 2 /*&& world.size() > 1*/;
   }
   return true;
 }
 
-template <Copyable DataType, Unsigned SizeType>
+template <std::copyable DataType, std::unsigned_integral SizeType>
 bool RingTopology<DataType, SizeType>::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
@@ -75,9 +66,15 @@ bool RingTopology<DataType, SizeType>::pre_processing() {
   return true;
 }
 
-template <Copyable DataType, Unsigned SizeType>
+template <std::copyable DataType, std::unsigned_integral SizeType>
 bool RingTopology<DataType, SizeType>::run() {
   internal_order_test();
+  // count of processes should be more than 1
+  if (world.size() == 1) {
+    data_.order_.emplace_back(0);
+    return true;
+  }
+
   auto rank = world.rank();
   int next = (rank == world.size() - 1) ? 0 : rank + 1;
   int prev = (rank == 0) ? world.size() - 1 : rank - 1;
@@ -118,7 +115,7 @@ bool RingTopology<DataType, SizeType>::run() {
   return true;
 }
 
-template <Copyable DataType, Unsigned SizeType>
+template <std::copyable DataType, std::unsigned_integral SizeType>
 bool RingTopology<DataType, SizeType>::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
@@ -132,13 +129,13 @@ bool RingTopology<DataType, SizeType>::post_processing() {
   return true;
 }
 
-template <Copyable DataType, Unsigned SizeType>
+template <std::copyable DataType, std::unsigned_integral SizeType>
 std::vector<int> RingTopology<DataType, SizeType>::true_order(int num_processes) {
   std::vector<int> true_order(num_processes);
   for (int i = 0; i < num_processes - 1; ++i) {
     true_order[i] = i + 1;
   }
-  true_order[num_processes] = 0;
+  true_order[num_processes - 1] = 0;
   return true_order;
 }
 

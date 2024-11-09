@@ -29,7 +29,7 @@ std::vector<T> generate_random_vector(size_t size = 100, const T& left = static_
   return res;
 }
 
-template <Copyable DataType>
+template <std::copyable DataType>
 std::shared_ptr<ppc::core::TaskData> create_task_data(std::vector<DataType>& in, std::vector<int>& out) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
@@ -85,12 +85,12 @@ std::shared_ptr<ppc::core::TaskData> create_task_data(std::vector<DataType>& in,
 #endif
 
 #ifndef RUN_FUNC_TESTS
-#define RUN_FUNC_TESTS()     \
-  RUN_FUNC_TESTS_BY_SIZE(1)  \
-  RUN_FUNC_TESTS_BY_SIZE(50) \
-  RUN_FUNC_TESTS_BY_SIZE(75) \
-  RUN_FUNC_TESTS_BY_SIZE(100)
-
+#define RUN_FUNC_TESTS()       \
+  RUN_FUNC_TESTS_BY_SIZE(1)    \
+  RUN_FUNC_TESTS_BY_SIZE(250)  \
+  RUN_FUNC_TESTS_BY_SIZE(500)  \
+  RUN_FUNC_TESTS_BY_SIZE(1000) \
+  RUN_FUNC_TESTS_BY_SIZE(10000)
 #endif
 
 }  // namespace khasanyanov_k_ring_topology_mpi
