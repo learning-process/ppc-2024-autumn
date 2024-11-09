@@ -11,9 +11,8 @@ using namespace std::chrono_literals;
 
 int Min(const std::vector<int>& res) {
   if (res.empty()) {
-    return 0;  // Можно заменить на std::numeric_limits<int>::max(), если нужно указать значение для пустого вектора
+    return 0;
   }
-
   int local_res = res[0];
   for (size_t i = 1; i < res.size(); i++) {
     if (res[i] < local_res) {
@@ -40,7 +39,6 @@ bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential::va
 bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential::run() {
   internal_order_test();
   if (input_.empty()) {
-    // Handle the case when the input vector is empty
     return true;
   }
   res = Min(input_);
