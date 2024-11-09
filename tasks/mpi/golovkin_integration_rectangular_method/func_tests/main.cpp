@@ -11,7 +11,6 @@
 #include <vector>
 
 #include "mpi/golovkin_integration_rectangular_method/include/ops_mpi.hpp"
-#include "main.h"
 
 using namespace std::chrono_literals;
 
@@ -24,7 +23,7 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
   double upper_limit = 10.0;
   int partition_count = 1000000;
 
-  if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
+  if (world.rank() >= 4) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
@@ -40,7 +39,7 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
   parallel_task.pre_processing();
   parallel_task.run();
   parallel_task.post_processing();
-  if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
+  if (world.rank() >= 4) {
     std::vector<double> expected_result(1, 0);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -72,7 +71,7 @@ TEST(golovkin_integration_rectangular_method, test_linear_function) {
   double upper_limit = 5.0;
   int partition_count = 1000000;
 
-  if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
+  if (world.rank() >= 4) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
@@ -91,7 +90,7 @@ TEST(golovkin_integration_rectangular_method, test_linear_function) {
   parallel_task.run();
   parallel_task.post_processing();
 
-  if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
+  if (world.rank() >= 4) {
     std::vector<double> expected_result(1, 0);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
@@ -124,7 +123,7 @@ TEST(golovkin_integration_rectangular_method, test_quadratic_function) {
   double upper_limit = 3.0;
   int partition_count = 1000000;
 
-  if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
+  if (world.rank() >= 4) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
@@ -142,7 +141,7 @@ TEST(golovkin_integration_rectangular_method, test_quadratic_function) {
   parallel_task.pre_processing();
   parallel_task.run();
   parallel_task.post_processing();
-  if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
+  if (world.rank() >= 4) {
     std::vector<double> expected_result(1, 0);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -176,7 +175,7 @@ TEST(golovkin_integration_rectangular_method, test_sine_function) {
   double upper_limit = M_PI;
   int partition_count = 1000000;
 
-  if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
+  if (world.rank() >= 4) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
@@ -195,7 +194,7 @@ TEST(golovkin_integration_rectangular_method, test_sine_function) {
   parallel_task.run();
   parallel_task.post_processing();
 
-  if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
+  if (world.rank() >= 4) {
     std::vector<double> expected_result(1, 0);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -229,7 +228,7 @@ TEST(golovkin_integration_rectangular_method, test_cosine_function) {
   double upper_limit = M_PI / 2;
   int partition_count = 1000000;
 
-  if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
+  if (world.rank() >= 4) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
@@ -248,7 +247,7 @@ TEST(golovkin_integration_rectangular_method, test_cosine_function) {
   parallel_task.run();
   parallel_task.post_processing();
 
-  if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
+  if (world.rank() >= 4) {
     std::vector<double> expected_result(1, 0);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -282,7 +281,7 @@ TEST(golovkin_integration_rectangular_method, test_exponential_function) {
   double upper_limit = 1.0;
   int partition_count = 1000000;
 
-  if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
+  if (world.rank() >= 4) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
@@ -301,7 +300,7 @@ TEST(golovkin_integration_rectangular_method, test_exponential_function) {
   parallel_task.run();
   parallel_task.post_processing();
 
-  if (world.rank() == 0 || world.rank() == 1 || world.rank() == 2 || world.rank() == 3) {
+  if (world.rank() >= 4) {
     std::vector<double> expected_result(1, 0);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
