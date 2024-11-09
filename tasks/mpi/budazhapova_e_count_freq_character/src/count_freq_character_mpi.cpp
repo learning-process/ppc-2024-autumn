@@ -8,8 +8,6 @@
 
 #include "mpi/budazhapova_e_count_freq_character/include/count_freq_character_mpi_header.hpp"
 
-using namespace std::chrono_literals;
-
 int budazhapova_e_count_freq_character_mpi::counting_freq(std::string str, char symb) {
   int res = 0;
   for (unsigned long i = 0; i < str.length(); i++) {
@@ -18,17 +16,6 @@ int budazhapova_e_count_freq_character_mpi::counting_freq(std::string str, char 
     }
   }
   return res;
-}
-
-std::string budazhapova_e_count_freq_character_mpi::getRandomString(int length) {
-  static std::string charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-  std::string result;
-  result.resize(length);
-
-  srand(time(nullptr));
-  for (int i = 0; i < length; i++) result[i] = charset[rand() % charset.length()];
-
-  return result;
 }
 
 bool budazhapova_e_count_freq_character_mpi::TestMPITaskSequential::pre_processing() {
