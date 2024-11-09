@@ -5,6 +5,10 @@
 
 TEST(khasanyanov_k_average_vector_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
+  if (world.size() < 2) {
+    SUCCEED();
+    return;
+  }
   const int size = 1000;
   const std::vector<int> in_data = khasanyanov_k_ring_topology_mpi::generate_random_vector<int>(size);
   std::vector<int> out_data(in_data);
@@ -37,6 +41,10 @@ TEST(khasanyanov_k_average_vector_mpi, test_pipeline_run) {
 
 TEST(khasanyanov_k_average_vector_mpi, test_task_run) {
   boost::mpi::communicator world;
+  if (world.size() < 2) {
+    SUCCEED();
+    return;
+  }
   const int size = 1000;
   const std::vector<int> in_data = khasanyanov_k_ring_topology_mpi::generate_random_vector<int>(size);
   std::vector<int> out_data(in_data);

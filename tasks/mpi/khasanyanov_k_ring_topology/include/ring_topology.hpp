@@ -22,11 +22,10 @@ class RingTopology : public ppc::core::Task {
   struct Data {
     std::vector<DataType> input_;
     std::vector<int> order_;
-
     template <class Archive>
     void serialize(Archive& ar, unsigned int version) {
-      ar& input_;
-      ar& order_;
+      ar & input_;
+      ar & order_;
     }
   } data_;
 
