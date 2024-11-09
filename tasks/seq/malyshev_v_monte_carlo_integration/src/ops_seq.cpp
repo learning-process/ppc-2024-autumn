@@ -1,6 +1,6 @@
-﻿#include <random>
+﻿#include "seq/malyshev_v_monte_carlo_integration/include/ops_seq.hpp"
 
-#include "seq/malyshev_v_monte_carlo_integration/include/ops_seq.hpp"
+#include <random>
 
 namespace malyshev_v_monte_carlo_integration {
 
