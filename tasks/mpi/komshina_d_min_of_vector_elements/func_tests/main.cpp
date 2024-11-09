@@ -157,7 +157,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_4) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_min(1, 10);
-  
+
   const int start_value = -1;
   const int count = 1;
 
