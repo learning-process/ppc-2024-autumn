@@ -33,11 +33,7 @@ std::string budazhapova_e_count_freq_character_mpi::getRandomString(int length) 
 
 bool budazhapova_e_count_freq_character_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
-  input_ = std::string(taskData->inputs_count[0]);
-  auto* tmp_ptr = reinterpret_cast<char*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    input_[i] = tmp_ptr[i];
-  }
+  input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
   symb = *reinterpret_cast<char*>(taskData->inputs[1]);
   res = 0;
   return true;
@@ -76,10 +72,6 @@ bool budazhapova_e_count_freq_character_mpi::TestMPITaskParallel::pre_processing
 
   if (world_rank == 0) {
     input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
-    auto* tmp_ptr = reinterpret_cast<char*>(taskData->inputs[0]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-      input_[i] = tmp_ptr[i];
-    }
     for (int proc = 1; proc < world.size(); proc++) {
       world.send(proc, 0, input_.data() + proc * delta, delta);
     }
