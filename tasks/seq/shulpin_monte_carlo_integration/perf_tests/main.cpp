@@ -9,12 +9,12 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/shulpin_monte_carlo_integration/include/monte_carlo_integral.hpp"
 
-#define ESTIMATE 1e-3
+constexpr double ESTIMATE = 1e-3;
 
 TEST(shulpin_monte_carlo_integration, test_pipeline_run) {
   double a = 0.0;
   double b = M_PI;
-  int N = 10000;
+  int N = 1000000;
 
   const double expected_result = 2.0;
 
@@ -54,7 +54,7 @@ TEST(shulpin_monte_carlo_integration, test_pipeline_run) {
 TEST(shulpin_monte_carlo_integration, test_task_run) {
   double a = 0.0;
   double b = M_PI;
-  int N = 10000;
+  int N = 1000000;
   const double expected_result = 2.0;
 
   double output = 0.0;

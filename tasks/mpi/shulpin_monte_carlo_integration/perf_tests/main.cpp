@@ -10,7 +10,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/shulpin_monte_carlo_integration/include/monte_carlo_integral.hpp"
 
-#define ESTIMATE 1e-3
+constexpr double ESTIMATE = 1e-3;
 
 TEST(shulpin_monte_carlo_integration, test_pipeline_run) {
   boost::mpi::communicator world;

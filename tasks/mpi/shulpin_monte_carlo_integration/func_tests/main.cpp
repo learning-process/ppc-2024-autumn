@@ -8,7 +8,7 @@
 
 #include "mpi/shulpin_monte_carlo_integration/include/monte_carlo_integral.hpp"
 
-#define ESTIMATE 1e-3
+constexpr double ESTIMATE = 1e-3;
 
 TEST(shulpin_monte_carlo_integration, sin_test) {
   boost::mpi::communicator world;
