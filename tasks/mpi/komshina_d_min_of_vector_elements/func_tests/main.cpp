@@ -61,11 +61,12 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_1) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
     taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
-    komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential minOfVectorElementTaskParallel(taskDataSeq);
-    ASSERT_EQ(minOfVectorElementTaskParallel.validation(), true);
-    minOfVectorElementTaskParallel.pre_processing();
-    minOfVectorElementTaskParallel.run();
-    minOfVectorElementTaskParallel.post_processing();
+    komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential minOfVectorElementTaskSequential(
+        taskDataSeq);
+    ASSERT_EQ(minOfVectorElementTaskSequential.validation(), true);
+    minOfVectorElementTaskSequential.pre_processing();
+    minOfVectorElementTaskSequential.run();
+    minOfVectorElementTaskSequential.post_processing();
 
     ASSERT_EQ(reference_min[0], global_min[0]);
   }
@@ -108,11 +109,12 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_2) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
     taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
-    komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel minOfVectorElementTaskParallel(taskDataSeq);
-    ASSERT_EQ(minOfVectorElementTaskParallel.validation(), true);
-    minOfVectorElementTaskParallel.pre_processing();
-    minOfVectorElementTaskParallel.run();
-    minOfVectorElementTaskParallel.post_processing();
+    komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential minOfVectorElementTaskSequential(
+        taskDataSeq);
+    ASSERT_EQ(minOfVectorElementTaskSequential.validation(), true);
+    minOfVectorElementTaskSequential.pre_processing();
+    minOfVectorElementTaskSequential.run();
+    minOfVectorElementTaskSequential.post_processing();
 
     ASSERT_EQ(reference_min[0], global_min[0]);
   }
@@ -150,11 +152,12 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_3) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
     taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
-    komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel minOfVectorElementTaskParallel(taskDataSeq);
-    ASSERT_EQ(minOfVectorElementTaskParallel.validation(), true);
-    minOfVectorElementTaskParallel.pre_processing();
-    minOfVectorElementTaskParallel.run();
-    minOfVectorElementTaskParallel.post_processing();
+    komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential minOfVectorElementTaskSequential(
+        taskDataSeq);
+    ASSERT_EQ(minOfVectorElementTaskSequential.validation(), true);
+    minOfVectorElementTaskSequential.pre_processing();
+    minOfVectorElementTaskSequential.run();
+    minOfVectorElementTaskSequential.post_processing();
 
     ASSERT_EQ(reference_min[0], global_min[0]);
   }
@@ -192,11 +195,12 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_4) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
     taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
-    komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel minOfVectorElementTaskParallel(taskDataSeq);
-    ASSERT_EQ(minOfVectorElementTaskParallel.validation(), true);
-    minOfVectorElementTaskParallel.pre_processing();
-    minOfVectorElementTaskParallel.run();
-    minOfVectorElementTaskParallel.post_processing();
+    komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential minOfVectorElementTaskSequential(
+        taskDataSeq);
+    ASSERT_EQ(minOfVectorElementTaskSequential.validation(), true);
+    minOfVectorElementTaskSequential.pre_processing();
+    minOfVectorElementTaskSequential.run();
+    minOfVectorElementTaskSequential.post_processing();
 
     ASSERT_EQ(reference_min[0], global_min[0]);
   }
