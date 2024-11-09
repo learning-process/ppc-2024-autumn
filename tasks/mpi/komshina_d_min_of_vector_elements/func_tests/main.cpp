@@ -213,7 +213,6 @@ TEST(komshina_d_min_of_vector_elements_mpi, Empty_Vector) {
   boost::mpi::communicator world;
   std::vector<int> global_vec = {};
   std::vector<int32_t> global_min(1, 0);
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -230,17 +229,14 @@ TEST(komshina_d_min_of_vector_elements_mpi, Empty_Vector) {
   minOfVectorElementTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Create data
     std::vector<int32_t> reference_min(1, 0);
 
-    // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataSeq->inputs_count.emplace_back(global_vec.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
     taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
-    // Create Task
     komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential minOfVectorElementTaskSequential(
         taskDataSeq);
     ASSERT_EQ(minOfVectorElementTaskSequential.validation(), true);

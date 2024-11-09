@@ -9,14 +9,19 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> komshina_d_min_of_vector_elements_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
+int Min(const std::vector<int>& res) {
+  if (res.empty()) {
+    return 0;  // Можно заменить на std::numeric_limits<int>::max(), если нужно указать значение для пустого вектора
   }
-  return vec;
+
+  int local_res = res[0];
+  for (size_t i = 1; i < res.size(); i++) {
+    if (res[i] < local_res) {
+      local_res = res[i];
+    }
+  }
+
+  return local_res;
 }
 
 bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential::pre_processing() {
@@ -33,17 +38,12 @@ bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential::va
 }
 
 bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential::run() {
+  internal_order_test();
   if (input_.empty()) {
+    // Handle the case when the input vector is empty
     return true;
   }
-
-  internal_order_test();
-  res = input_[0];
-  for (size_t tmp_ptr = 1; tmp_ptr < input_.size(); ++tmp_ptr) {
-    if (res > input_[tmp_ptr]) {
-      res = input_[tmp_ptr];
-    }
-  }
+  res = Min(input_);
   return true;
 }
 
@@ -100,14 +100,7 @@ bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel::run(
   if (local_input_.empty()) {
     return true;
   }
-
-  int local_res = local_input_[0];
-
-  for (size_t i = 1; i < local_input_.size(); i++) {
-    if (local_input_[i] < local_res) {
-      local_res = local_input_[i];
-    }
-  }
+  int local_res = Min(local_input_);
 
   reduce(world, local_res, res, boost::mpi::minimum<int>(), 0);
 
