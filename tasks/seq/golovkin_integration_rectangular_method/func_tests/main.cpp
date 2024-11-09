@@ -107,3 +107,29 @@ TEST(golovkin_integration_rectangular_method_seq, Calculate_LargeInterval_HighPr
 
   EXPECT_NEAR(result, 333.3333333333333, 0.01);
 }
+TEST(golovkin_integration_rectangular_method_seq, Validation_AllConditionsMet) {
+  auto taskData = std::make_shared<TaskData>();
+  taskData->inputs_count = {2, 3};
+  taskData->outputs_count = {2};
+  IntegralCalculator calculator(taskData);
+
+  ASSERT_TRUE(calculator.validation());
+}
+
+TEST(golovkin_integration_rectangular_method_seq, Validation_InvalidInputsCountSize) {
+  auto taskData = std::make_shared<TaskData>();
+  taskData->inputs_count = {2};
+  taskData->outputs_count = {2};
+  IntegralCalculator calculator(taskData);
+
+  ASSERT_FALSE(calculator.validation());
+}
+
+TEST(golovkin_integration_rectangular_method_seq, Validation_OutputInputCountMismatch) {
+  auto taskData = std::make_shared<TaskData>();
+  taskData->inputs_count = {2, 3};
+  taskData->outputs_count = {1};
+  IntegralCalculator calculator(taskData);
+
+  ASSERT_FALSE(calculator.validation());
+}

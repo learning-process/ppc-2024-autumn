@@ -22,7 +22,7 @@ IntegralCalculator::IntegralCalculator(const std::shared_ptr<ppc::core::TaskData
 bool IntegralCalculator::validation() {
   internal_order_test();
   return (taskData->inputs_count.size() == 2 && taskData->inputs_count[0] >= 0 && taskData->inputs_count[1] >= 0 &&
-         taskData->outputs_count[0] == taskData->inputs_count[0]);
+          taskData->outputs_count[0] == taskData->inputs_count[0]);
 }
 
 bool IntegralCalculator::pre_processing() {
@@ -56,7 +56,7 @@ bool IntegralCalculator::run() {
 }
 
 bool IntegralCalculator::post_processing() {
-    internal_order_test();
+  internal_order_test();
   try {
     *reinterpret_cast<double*>(taskData->outputs[0]) = res;
   } catch (const std::exception& e) {
