@@ -1,11 +1,11 @@
 ﻿#pragma once
 
 #include <gtest/gtest.h>
-
-#include <functional>
-#include <memory>
+#include <boost/mpi.hpp>
 #include <random>
 #include <vector>
+#include <memory>
+#include <functional>
 
 #include "core/task/include/task.hpp"
 
