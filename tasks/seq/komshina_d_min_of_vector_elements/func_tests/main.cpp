@@ -58,10 +58,14 @@ TEST(komshina_d_min_of_vector_elements_seq, Test_Min_2) {
 }
 
 TEST(komshina_d_min_of_vector_elements_seq, Test_Min_3) {
-  const int count = 1;
-  const int expected_min = 42;
-  std::vector<int> in(count, 42);
-  std::vector<int> out(1, 0);
+  const int count = 10;
+  const int expected_min = INT_MIN;
+
+  std::vector<int> in(count, 0);
+  std::vector<int> out(1);
+  for (int i = 1; i < count; i += 1) {
+    in[i] = INT_MIN;
+  }
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));

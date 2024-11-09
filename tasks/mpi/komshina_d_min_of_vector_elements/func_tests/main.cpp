@@ -123,13 +123,16 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_2) {
 TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_3) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
-  std::vector<int32_t> global_min(1, 0);
+  std::vector<int32_t> global_min(1);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count = 1;
-    global_vec.resize(count, 42);
+    const int count = 10;
+    global_vec.resize(count, 0);
+    for (int i = 1; i < count; i += 1) {
+      global_vec[i] = INT_MIN;
+    }
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
