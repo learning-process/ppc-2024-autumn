@@ -68,7 +68,6 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_1) {
     minOfVectorElementTaskParallel.post_processing();
 
     ASSERT_EQ(reference_min[0], global_min[0]);
-
   }
 }
 
@@ -217,6 +216,6 @@ TEST(komshina_d_min_of_vector_elements_mpi, Empty_Vector) {
     taskDataPar->outputs_count.emplace_back(global_min.size());
   }
   komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel minOfVectorElementTaskParallel(taskDataPar);
-  
+
   ASSERT_EQ(minOfVectorElementTaskParallel.validation(), false);
 }

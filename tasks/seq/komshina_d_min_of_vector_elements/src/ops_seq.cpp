@@ -15,6 +15,9 @@ bool komshina_d_min_of_vector_elements_seq::MinOfVectorElementTaskSequential::pr
 
 bool komshina_d_min_of_vector_elements_seq::MinOfVectorElementTaskSequential::validation() {
   internal_order_test();
+  if (taskData->inputs_count[0] == 0) {
+    return false;
+  }
   if (taskData->outputs_count[0] != 1) {
     return false;
   }
@@ -23,6 +26,10 @@ bool komshina_d_min_of_vector_elements_seq::MinOfVectorElementTaskSequential::va
 
 bool komshina_d_min_of_vector_elements_seq::MinOfVectorElementTaskSequential::run() {
   internal_order_test();
+  if (input_.empty()) {
+    res = INT_MAX;
+    return true;
+  }
   res = input_[0];
   for (size_t tmp_ptr = 1; tmp_ptr < input_.size(); ++tmp_ptr) {
     if (res > input_[tmp_ptr]) {

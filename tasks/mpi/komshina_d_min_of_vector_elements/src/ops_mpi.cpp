@@ -29,9 +29,7 @@ bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential::pr
 
 bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential::validation() {
   internal_order_test();
-  if (taskData->outputs_count[0] != 1) {
-    return false;
-  }
+  if (taskData->outputs_count[0] == 1) 
   return true;
 }
 
@@ -92,8 +90,7 @@ bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel::run(
   local_input_ = std::vector<int>(delta);
   if (world.rank() == 0) {
     local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
-  } 
-  else {
+  } else {
     world.recv(0, 0, local_input_.data(), delta);
   }
 
