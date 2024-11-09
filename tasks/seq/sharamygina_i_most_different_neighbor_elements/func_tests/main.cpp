@@ -10,7 +10,7 @@ void generator(std::vector<int> &v) {
   std::random_device dev;
   std::mt19937 gen(dev());
 
-  for (int i = 0; i < v.size(); ++i) {
+  for (size_t i = 0; i < v.size(); ++i) {
     v[i] = -1000 + gen() % 1000;
   }
 }
