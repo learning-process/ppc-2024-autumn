@@ -215,7 +215,6 @@ TEST(komshina_d_min_of_vector_elements_mpi, Empty_Vector) {
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_min.data()));
     taskDataPar->outputs_count.emplace_back(global_min.size());
-    
   }
   komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel minOfVectorElementTaskParallel(taskDataPar);
   

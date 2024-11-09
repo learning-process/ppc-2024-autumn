@@ -29,10 +29,6 @@ bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential::pr
 
 bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential::validation() {
   internal_order_test();
-  if (taskData->inputs_count[0] == 0) {
-    return false;
-  }
-
   if (taskData->outputs_count[0] != 1) {
     return false;
   }
@@ -63,12 +59,8 @@ bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel::pre_
 
 bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel::validation() {
   internal_order_test();
-  if (taskData->inputs_count[0] == 0) {
-    return false;
-  }
-
-  if (taskData->outputs_count[0] != 1) {
-    return false;
+  if (world.rank() == 0) {
+    return taskData->outputs_count[0] == 1;
   }
   return true;
 }
@@ -92,15 +84,16 @@ bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel::run(
       input_[i] = tmp_ptr[i];
     }
     for (int proc = 1; proc < world.size(); proc++) {
-      int count = std::min(delta, static_cast<int>(input_.size()) - proc * delta); 
-      world.send(proc, 0, input_.data() + proc * delta, delta);
+      int count = std::min(delta, static_cast<int>(input_.size()) - proc * delta);
+      world.send(proc, 0, input_.data() + proc * delta, count);
     }
   }
 
   local_input_ = std::vector<int>(delta);
   if (world.rank() == 0) {
     local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
-  } else {
+  } 
+  else {
     world.recv(0, 0, local_input_.data(), delta);
   }
 
