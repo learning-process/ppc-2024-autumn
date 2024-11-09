@@ -7,11 +7,9 @@ using namespace std::chrono_literals;
 bool komshina_d_min_of_vector_elements_seq::MinOfVectorElementTaskSequential::pre_processing() {
   internal_order_test();
   input_ = std::vector<int>(taskData->inputs_count[0]);
-  int* ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (size_t i = 0; i < taskData->inputs_count[0]; ++i) {
-    input_[i] = ptr[i];
-  }
-  res = input_[0];
+  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+  std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
+
   return true;
 }
 
@@ -32,9 +30,9 @@ bool komshina_d_min_of_vector_elements_seq::MinOfVectorElementTaskSequential::va
 bool komshina_d_min_of_vector_elements_seq::MinOfVectorElementTaskSequential::run() {
   internal_order_test();
   res = input_[0];
-  for (size_t ptr = 1; ptr < input_.size(); ++ptr) {
-    if (res > input_[ptr]) {
-      res = input_[ptr];
+  for (size_t tmp_ptr = 1; tmp_ptr < input_.size(); ++tmp_ptr) {
+    if (res > input_[tmp_ptr]) {
+      res = input_[tmp_ptr];
     }
   }
   return true;

@@ -5,7 +5,7 @@
 #include "seq/komshina_d_min_of_vector_elements/include/ops_seq.hpp"
 
 TEST(komshina_d_min_of_vector_elements_seq, Test_Min_1) {
-  const int count = 5000000;
+  const int count = 50000;
   const int start_value = 1000000;
   const int decrement = 10;
   const int expected_min = start_value - decrement * (count - 1);
@@ -14,7 +14,6 @@ TEST(komshina_d_min_of_vector_elements_seq, Test_Min_1) {
   for (int i = 0; i < count; ++i) {
     in[i] = start_value - i * decrement;
   }
-  std::cout << expected_min;
   std::vector<int> out(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -34,7 +33,7 @@ TEST(komshina_d_min_of_vector_elements_seq, Test_Min_1) {
 TEST(komshina_d_min_of_vector_elements_seq, Test_Min_2) {
   const int count = 5000000;
   const int start_value = -1;
-  const int decrement = 100;
+  const int decrement = 10;
   const int expected_min = start_value - decrement * (count - 1);
 
   std::vector<int> in(count);

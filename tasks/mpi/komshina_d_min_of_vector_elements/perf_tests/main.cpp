@@ -9,7 +9,7 @@
 TEST(komshina_d_min_of_vector_elements_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
-  std::vector<int> global_min(1, INT_MAX);
+  std::vector<int32_t> global_min(1, INT_MAX);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int expected_min;
@@ -28,12 +28,12 @@ TEST(komshina_d_min_of_vector_elements_mpi, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(global_min.size());
   }
 
-  auto testMpiTaskParallel =
+  auto MinOfVectorElementTaskParallel =
       std::make_shared<komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel>(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel->validation(), true);
-  testMpiTaskParallel->pre_processing();
-  testMpiTaskParallel->run();
-  testMpiTaskParallel->post_processing();
+  ASSERT_EQ(MinOfVectorElementTaskParallel->validation(), true);
+  MinOfVectorElementTaskParallel->pre_processing();
+  MinOfVectorElementTaskParallel->run();
+  MinOfVectorElementTaskParallel->post_processing();
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -42,7 +42,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, test_pipeline_run) {
 
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(MinOfVectorElementTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
@@ -53,7 +53,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, test_pipeline_run) {
 TEST(komshina_d_min_of_vector_elements_mpi, test_task_run) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
-  std::vector<int> global_min(1, INT_MAX);
+  std::vector<int32_t> global_min(1, INT_MAX);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int expected_min;
@@ -73,12 +73,12 @@ TEST(komshina_d_min_of_vector_elements_mpi, test_task_run) {
     taskDataPar->outputs_count.emplace_back(global_min.size());
   }
 
-  auto testMpiTaskParallel =
+  auto MinOfVectorElementTaskParallel =
       std::make_shared<komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel>(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel->validation(), true);
-  testMpiTaskParallel->pre_processing();
-  testMpiTaskParallel->run();
-  testMpiTaskParallel->post_processing();
+  ASSERT_EQ(MinOfVectorElementTaskParallel->validation(), true);
+  MinOfVectorElementTaskParallel->pre_processing();
+  MinOfVectorElementTaskParallel->run();
+  MinOfVectorElementTaskParallel->post_processing();
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -87,7 +87,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, test_task_run) {
 
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(MinOfVectorElementTaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
