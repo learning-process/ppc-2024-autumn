@@ -56,9 +56,6 @@ bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel::pre_
 
 bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel::validation() {
   internal_order_test();
-  if (taskData->inputs_count[0] == 0) {
-    return false;
-  }
   if (world.rank() == 0) {
     return taskData->outputs_count[0] == 1;
   }
