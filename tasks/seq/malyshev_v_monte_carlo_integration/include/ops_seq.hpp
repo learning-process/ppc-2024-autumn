@@ -2,6 +2,7 @@
 
 #include <gtest/gtest.h>
 
+#include <functional>
 #include <memory>
 #include <random>
 #include <vector>
@@ -12,7 +13,10 @@ namespace malyshev_v_monte_carlo_integration {
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_,
+                                 std::function<double(double)> func = function_square)
+      : Task(std::move(taskData_)), function(func) {}
+
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -22,10 +26,12 @@ class TestMPITaskSequential : public ppc::core::Task {
   double b = 0.0;
   double epsilon = 0.0;
   int num_samples = 0;
+
   static double function_square(double x) { return x * x; }
 
  private:
   double res{};
+  std::function<double(double)> function;
 };
 
 }  // namespace malyshev_v_monte_carlo_integration

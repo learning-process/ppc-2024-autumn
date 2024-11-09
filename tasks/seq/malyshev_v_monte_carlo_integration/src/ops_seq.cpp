@@ -1,6 +1,6 @@
-﻿#include "seq/malyshev_v_monte_carlo_integration/include/ops_seq.hpp"
+﻿#include <random>
 
-#include <random>
+#include "seq/malyshev_v_monte_carlo_integration/include/ops_seq.hpp"
 
 namespace malyshev_v_monte_carlo_integration {
 
@@ -17,7 +17,6 @@ bool TestMPITaskSequential::pre_processing() {
   epsilon = input_epsilon;
 
   num_samples = static_cast<int>((b - a) * 100 / epsilon);
-
   if (num_samples < 10) {
     num_samples = 10;
   }
@@ -28,10 +27,10 @@ bool TestMPITaskSequential::pre_processing() {
 bool TestMPITaskSequential::run() {
   internal_order_test();
   double h = (b - a) / num_samples;
-  double sum = (function_square(a) + function_square(b)) / 2.0;
+  double sum = (function(a) + function(b)) / 2.0;
 
   for (int i = 1; i < num_samples; ++i) {
-    sum += function_square(a + i * h);
+    sum += function(a + i * h);
   }
 
   res = h * sum;

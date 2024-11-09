@@ -16,17 +16,20 @@ bool TestMPITaskSequential::pre_processing() {
   b = *reinterpret_cast<double*>(taskData->inputs[1]);
   double input_epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
   epsilon = input_epsilon;
-  num_samples = static_cast<int>(100 / epsilon);
+  num_samples = static_cast<int>((b - a) * 100 / epsilon);
+  if (num_samples < 10) {
+    num_samples = 10;
+  }
   return true;
 }
 
 bool TestMPITaskSequential::run() {
   internal_order_test();
   double h = (b - a) / num_samples;
-  double sum = (function_square(a) + function_square(b)) / 2.0;
+  double sum = (function(a) + function(b)) / 2.0;
 
   for (int i = 1; i < num_samples; ++i) {
-    sum += function_square(a + i * h);
+    sum += function(a + i * h);
   }
 
   res = h * sum;
@@ -60,7 +63,6 @@ bool TestMPITaskParallel::pre_processing() {
     b = *reinterpret_cast<double*>(taskData->inputs[1]);
     double input_epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
     epsilon = input_epsilon;
-
     num_samples = static_cast<int>((b - a) * 100 / epsilon);
     if (num_samples < 10) {
       num_samples = 10;
@@ -71,7 +73,6 @@ bool TestMPITaskParallel::pre_processing() {
   boost::mpi::broadcast(world, b, 0);
   boost::mpi::broadcast(world, num_samples, 0);
   local_num_samples = num_samples / world.size();
-
   return true;
 }
 
@@ -82,11 +83,11 @@ bool TestMPITaskParallel::run() {
 
   for (int i = world.rank() * local_num_samples; i < (world.rank() + 1) * local_num_samples; ++i) {
     double x = a + i * h;
-    local_sum += function_square(x);
+    local_sum += function(x);
   }
 
   if (world.rank() == 0) {
-    local_sum += (function_square(a) + function_square(b)) / 2.0;
+    local_sum += (function(a) + function(b)) / 2.0;
   }
 
   local_sum *= h;
