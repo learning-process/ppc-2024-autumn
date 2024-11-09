@@ -123,7 +123,7 @@ bool RingTopology<DataType, SizeType>::post_processing() {
     std::copy(tmp_data, tmp_data + static_cast<SizeType>(data_.input_.size() * (sizeof(DataType) / sizeof(uint8_t))),
               taskData->outputs[0]);
     auto* tmp_order = reinterpret_cast<uint8_t*>(data_.order_.data());
-    std::copy(tmp_order, tmp_order + static_cast<SizeType>(data_.order_.size() * (sizeof(SizeType) / sizeof(uint8_t))),
+    std::copy(tmp_order, tmp_order + static_cast<SizeType>(data_.order_.size() * (sizeof(int) / sizeof(uint8_t))),
               taskData->outputs[1]);
   }
   return true;

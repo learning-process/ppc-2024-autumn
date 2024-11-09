@@ -42,24 +42,25 @@ std::shared_ptr<ppc::core::TaskData> create_task_data(std::vector<DataType>& in,
 }
 
 #ifndef FUNC_TEST
-#define FUNC_TEST(DataType, SizeType, Size)                                                                   \
-  TEST(khasanyanov_k_ring_topology_tests, ring_topology_test_##DataType##_##SizeType##_##Size) {              \
-    boost::mpi::communicator world;                                                                           \
-    const std::vector<DataType> in_data =                                                                     \
-        khasanyanov_k_ring_topology_mpi::generate_random_vector<DataType>(static_cast<SizeType>(Size));       \
-    std::vector<DataType> out_data(in_data);                                                                  \
-    std::vector<int> order(world.size());                                                                     \
-    auto taskData = std::make_shared<ppc::core::TaskData>();                                                  \
-    if (world.rank() == 0) {                                                                                  \
-      taskData = khasanyanov_k_ring_topology_mpi::create_task_data<DataType>(out_data, order);                \
-    }                                                                                                         \
-    khasanyanov_k_ring_topology_mpi::RingTopology<DataType> testTask(taskData);                               \
-    RUN_TASK(testTask);                                                                                       \
-    if (world.rank() == 0) {                                                                                  \
-      auto pattern_order = khasanyanov_k_ring_topology_mpi::RingTopology<DataType>::true_order(world.size()); \
-      ASSERT_EQ(pattern_order, order);                                                                        \
-      ASSERT_EQ(in_data, out_data);                                                                           \
-    }                                                                                                         \
+#define FUNC_TEST(DataType, SizeType, Size)                                                             \
+  TEST(khasanyanov_k_ring_topology_tests, ring_topology_test_##DataType##_##SizeType##_##Size) {        \
+    boost::mpi::communicator world;                                                                     \
+    const std::vector<DataType> in_data =                                                               \
+        khasanyanov_k_ring_topology_mpi::generate_random_vector<DataType>(static_cast<SizeType>(Size)); \
+    std::vector<DataType> out_data(in_data);                                                            \
+    std::vector<int> order(world.size());                                                               \
+    auto taskData = std::make_shared<ppc::core::TaskData>();                                            \
+    if (world.rank() == 0) {                                                                            \
+      taskData = khasanyanov_k_ring_topology_mpi::create_task_data<DataType>(out_data, order);          \
+    }                                                                                                   \
+    khasanyanov_k_ring_topology_mpi::RingTopology<DataType, SizeType> testTask(taskData);               \
+    RUN_TASK(testTask);                                                                                 \
+    if (world.rank() == 0) {                                                                            \
+      auto pattern_order =                                                                              \
+          khasanyanov_k_ring_topology_mpi::RingTopology<DataType, SizeType>::true_order(world.size());  \
+      ASSERT_EQ(pattern_order, order);                                                                  \
+      ASSERT_EQ(in_data, out_data);                                                                     \
+    }                                                                                                   \
   }
 #endif
 
