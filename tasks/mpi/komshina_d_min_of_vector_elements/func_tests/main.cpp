@@ -158,13 +158,12 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_4) {
   std::vector<int> global_vec;
   std::vector<int32_t> global_min(1, 0);
 
-  const int start_value = -1;
-  const int count = 1;
-
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_vec = std::vector<int>(count, start_value);
+    const int count = 1000;
+    const int value = 42;
+    global_vec.resize(count, value);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -179,7 +178,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_4) {
   minOfVectorElementTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    std::vector<int32_t> reference_min(1, start_value);
+    std::vector<int32_t> reference_min(1, 42);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
@@ -197,6 +196,49 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_4) {
     ASSERT_EQ(reference_min[0], global_min[0]);
   }
 }
+
+TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_5) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;
+  std::vector<int32_t> global_min(1, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    global_vec = {5, 10, 3, 1, 3, 10, 5};
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_min.data()));
+    taskDataPar->outputs_count.emplace_back(global_min.size());
+  }
+
+  komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel minOfVectorElementTaskParallel(taskDataPar);
+  ASSERT_EQ(minOfVectorElementTaskParallel.validation(), true);
+  minOfVectorElementTaskParallel.pre_processing();
+  minOfVectorElementTaskParallel.run();
+  minOfVectorElementTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int32_t> reference_min(1, 1);
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_min.size());
+
+    komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential minOfVectorElementTaskSequential(
+        taskDataSeq);
+    ASSERT_EQ(minOfVectorElementTaskSequential.validation(), true);
+    minOfVectorElementTaskSequential.pre_processing();
+    minOfVectorElementTaskSequential.run();
+    minOfVectorElementTaskSequential.post_processing();
+
+    ASSERT_EQ(reference_min[0], global_min[0]);
+  }
+}
+
 
 TEST(komshina_d_min_of_vector_elements_mpi, Empty_Vector) {
   boost::mpi::communicator world;
