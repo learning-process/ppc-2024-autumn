@@ -22,6 +22,8 @@ class ring_topology : public ppc::core::Task {
  private:
   std::vector<iotype> input_;
 
+  std::vector<int> poll_;
+
   std ::vector<iotype> output_;
   int vec_size_;
   boost::mpi::communicator world;
