@@ -33,6 +33,10 @@ bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential::va
 }
 
 bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential::run() {
+  if (input_.empty()) {
+    return true;
+  }
+
   internal_order_test();
   res = input_[0];
   for (size_t tmp_ptr = 1; tmp_ptr < input_.size(); ++tmp_ptr) {
@@ -96,10 +100,12 @@ bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel::run(
   if (local_input_.empty()) {
     return true;
   }
+
   int local_res = local_input_[0];
-  for (const auto& i : local_input_) {
-    if (local_res > i) {
-      local_res = i;
+
+  for (size_t i = 1; i < local_input_.size(); i++) {
+    if (local_input_[i] < local_res) {
+      local_res = local_input_[i];
     }
   }
 
