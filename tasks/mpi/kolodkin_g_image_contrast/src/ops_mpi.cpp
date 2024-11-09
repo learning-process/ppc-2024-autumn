@@ -21,7 +21,7 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskSequential::pre_processing() {
 
 bool kolodkin_g_image_contrast_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  if (taskData->inputs_count[0] % 3 != 0) {
+  if (taskData->inputs_count[0] <= 0 || taskData->inputs_count[0] % 3 != 0) {
     return false;
   }
   auto* input_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
@@ -79,9 +79,6 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::pre_processing() {
     for (int proc = 1; proc < world.size(); proc++) {
       auto start = proc * delta;
       auto size = (proc == world.size() - 1) ? input_size - start : delta;
-      if (size <= 0) {
-        continue;
-      }
       world.send(proc, 0, std::vector<int>(input_ptr + start, input_ptr + start + size));
     }
     local_input_ = std::vector<int>(input_ptr, input_ptr + delta);
@@ -91,13 +88,12 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::pre_processing() {
     local_input_.resize(input_data_size);
     world.recv(0, 1, local_input_);
   }
-  local_output_.resize(local_input_.size());
   return true;
 }
 
 bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
-  if (taskData->inputs_count[0] <=0 || taskData->inputs_count[0] % 3 != 0) {
+  if (taskData->inputs_count[0] <= 0 || taskData->inputs_count[0] % 3 != 0) {
     return false;
   }
   auto* input_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
