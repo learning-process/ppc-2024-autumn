@@ -40,7 +40,7 @@ class TestMPITaskParallel : public ppc::core::Task {
  public:
   explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_,
                                std::function<double(double)> func = function_square)
-      : Task(std::move(taskData_)), function(std::move(func)), world() {}
+      : Task(std::move(taskData_)), world(), function(std::move(func)) {}
 
   bool pre_processing() override;
   bool validation() override;
