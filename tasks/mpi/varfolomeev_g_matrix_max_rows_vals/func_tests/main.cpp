@@ -34,17 +34,6 @@ std::vector<int> getRandomVectorBetween(int sz, int a, int b) {
   return vec;
 }
 
-std::vector<int> getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  std::uniform_int_distribution<int> range(-100, 100);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
-}
-
 TEST(varfolomeev_g_matrix_max_rows_mpi, Test_Empty_Matrix) {
   int size_m = 0;
   int size_n = 0;
@@ -59,7 +48,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_Empty_Matrix) {
   taskDataPar->inputs_count.emplace_back(size_m);
   taskDataPar->inputs_count.emplace_back(size_n);
   if (world.rank() == 0) {
-    global_mat = getRandomVector(size_n * size_m);
+    global_mat = getRandomVectorBetween(size_n * size_m, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
@@ -94,7 +83,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_Empty_Matrix) {
 
 TEST(varfolomeev_g_matrix_max_rows_mpi, Test_getRandomVector_generator) {
   int sz = 100;
-  std::vector<int> vec = getRandomVector(sz);
+  std::vector<int> vec = getRandomVectorBetween(sz, -100, 100);
 
   // Проверка размера вектора
   ASSERT_EQ((int)vec.size(), sz);
@@ -135,7 +124,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_5x5_Matrix) {
 
   boost::mpi::communicator world;
 
-  std::vector<int> global_mat = getRandomVector(size_m * size_n);
+  std::vector<int> global_mat;
   std::vector<int32_t> global_max(size_m, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -143,7 +132,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_5x5_Matrix) {
   taskDataPar->inputs_count.emplace_back(size_m);
   taskDataPar->inputs_count.emplace_back(size_n);
   if (world.rank() == 0) {
-    global_mat = getRandomVector(size_n * size_m);
+    global_mat = getRandomVectorBetween(size_n * size_m, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
@@ -184,7 +173,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_1x5_Matrix) {
 
   boost::mpi::communicator world;
 
-  std::vector<int> global_mat = getRandomVector(size_m * size_n);
+  std::vector<int> global_mat;
   std::vector<int32_t> global_max(size_m, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -192,7 +181,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_1x5_Matrix) {
   taskDataPar->inputs_count.emplace_back(size_m);
   taskDataPar->inputs_count.emplace_back(size_n);
   if (world.rank() == 0) {
-    global_mat = getRandomVector(size_n * size_m);
+    global_mat = getRandomVectorBetween(size_n * size_m, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
@@ -233,7 +222,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_1x5000_Matrix) {
 
   boost::mpi::communicator world;
 
-  std::vector<int> global_mat = getRandomVector(size_m * size_n);
+  std::vector<int> global_mat;
   std::vector<int32_t> global_max(size_m, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -241,7 +230,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_1x5000_Matrix) {
   taskDataPar->inputs_count.emplace_back(size_m);
   taskDataPar->inputs_count.emplace_back(size_n);
   if (world.rank() == 0) {
-    global_mat = getRandomVector(size_n * size_m);
+    global_mat = getRandomVectorBetween(size_n * size_m, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
@@ -282,7 +271,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_5000x1_Matrix) {
 
   boost::mpi::communicator world;
 
-  std::vector<int> global_mat = getRandomVector(size_m * size_n);
+  std::vector<int> global_mat;
   std::vector<int32_t> global_max(size_m, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -290,7 +279,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_5000x1_Matrix) {
   taskDataPar->inputs_count.emplace_back(size_m);
   taskDataPar->inputs_count.emplace_back(size_n);
   if (world.rank() == 0) {
-    global_mat = getRandomVector(size_n * size_m);
+    global_mat = getRandomVectorBetween(size_n * size_m, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
@@ -331,7 +320,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_50x50_Matrix) {
 
   boost::mpi::communicator world;
 
-  std::vector<int> global_mat = getRandomVector(size_m * size_n);
+  std::vector<int> global_mat;
   std::vector<int32_t> global_max(size_m, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -339,7 +328,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_50x50_Matrix) {
   taskDataPar->inputs_count.emplace_back(size_m);
   taskDataPar->inputs_count.emplace_back(size_n);
   if (world.rank() == 0) {
-    global_mat = getRandomVector(size_n * size_m);
+    global_mat = getRandomVectorBetween(size_n * size_m, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
@@ -380,7 +369,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_50x100_Matrix) {
 
   boost::mpi::communicator world;
 
-  std::vector<int> global_mat = getRandomVector(size_m * size_n);
+  std::vector<int> global_mat;
   std::vector<int32_t> global_max(size_m, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -388,7 +377,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_50x100_Matrix) {
   taskDataPar->inputs_count.emplace_back(size_m);
   taskDataPar->inputs_count.emplace_back(size_n);
   if (world.rank() == 0) {
-    global_mat = getRandomVector(size_n * size_m);
+    global_mat = getRandomVectorBetween(size_n * size_m, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
@@ -429,7 +418,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_100x200_Matrix) {
 
   boost::mpi::communicator world;
 
-  std::vector<int> global_mat = getRandomVector(size_m * size_n);
+  std::vector<int> global_mat;
   std::vector<int32_t> global_max(size_m, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -437,7 +426,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_100x200_Matrix) {
   taskDataPar->inputs_count.emplace_back(size_m);
   taskDataPar->inputs_count.emplace_back(size_n);
   if (world.rank() == 0) {
-    global_mat = getRandomVector(size_n * size_m);
+    global_mat = getRandomVectorBetween(size_n * size_m, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
@@ -478,7 +467,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_5000x5000_Matrix) {
 
   boost::mpi::communicator world;
 
-  std::vector<int> global_mat = getRandomVector(size_m * size_n);
+  std::vector<int> global_mat;
   std::vector<int32_t> global_max(size_m, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -486,7 +475,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_5000x5000_Matrix) {
   taskDataPar->inputs_count.emplace_back(size_m);
   taskDataPar->inputs_count.emplace_back(size_n);
   if (world.rank() == 0) {
-    global_mat = getRandomVector(size_n * size_m);
+    global_mat = getRandomVectorBetween(size_n * size_m, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
@@ -527,7 +516,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_10000x10000_Matrix) {
 
   boost::mpi::communicator world;
 
-  std::vector<int> global_mat = getRandomVector(size_m * size_n);
+  std::vector<int> global_mat;
   std::vector<int32_t> global_max(size_m, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -535,7 +524,7 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_10000x10000_Matrix) {
   taskDataPar->inputs_count.emplace_back(size_m);
   taskDataPar->inputs_count.emplace_back(size_n);
   if (world.rank() == 0) {
-    global_mat = getRandomVector(size_n * size_m);
+    global_mat = getRandomVectorBetween(size_n * size_m, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
