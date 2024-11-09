@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include <gtest/gtest.h>
+
 #include <boost/mpi.hpp>
 #include <functional>
 #include <memory>
