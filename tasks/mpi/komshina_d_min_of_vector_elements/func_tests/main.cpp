@@ -157,12 +157,13 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_4) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_min(1, 10);
+  
+  const int start_value = -1;
+  const int count = 1;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int start_value = -1;
-    const int count = 1;
     global_vec = std::vector<int>(count, start_value);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
@@ -178,7 +179,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_4) {
   minOfVectorElementTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    std::vector<int32_t> reference_min(1, 0);
+    std::vector<int32_t> reference_min(1, start_value);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
