@@ -6,6 +6,7 @@
 #include <functional>
 #include <memory>
 #include <random>
+#include <utility>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -16,7 +17,7 @@ class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_,
                                  std::function<double(double)> func = function_square)
-      : Task(std::move(taskData_)), function(func) {}
+      : Task(std::move(taskData_)), function(std::move(func)) {}
 
   bool pre_processing() override;
   bool validation() override;
@@ -39,7 +40,7 @@ class TestMPITaskParallel : public ppc::core::Task {
  public:
   explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_,
                                std::function<double(double)> func = function_square)
-      : Task(std::move(taskData_)), function(func) {}
+      : Task(std::move(taskData_)), function(std::move(func)), world() {}
 
   bool pre_processing() override;
   bool validation() override;
