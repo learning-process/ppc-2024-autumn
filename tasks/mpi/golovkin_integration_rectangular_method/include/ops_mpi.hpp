@@ -23,6 +23,7 @@ class MPIIntegralCalculator : public ppc::core::Task {
   bool post_processing() override;
   bool run() override;
   void set_function(const std::function<double(double)>& target_func);
+  double integrate(const std::function<double(double)>& f, double a, double b, int splits);
 
  private:
   boost::mpi::communicator world;
@@ -32,7 +33,6 @@ class MPIIntegralCalculator : public ppc::core::Task {
   int num_partitions{};
   double global_result{};
 
-  double integrate(const std::function<double(double)>& f, double a, double b, int splits);
 };
 
 }  // namespace golovkin_integration_rectangular_method

@@ -13,6 +13,7 @@
 #include "mpi/golovkin_integration_rectangular_method/include/ops_mpi.hpp"
 
 using namespace std::chrono_literals;
+using namespace golovkin_integration_rectangular_method;
 
 TEST(golovkin_integration_rectangular_method, test_constant_function) {
   boost::mpi::communicator world;
@@ -365,7 +366,7 @@ TEST(golovkin_integration_rectangular_method, test_zero_partitions) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   double lower_limit = 0.0;
   double upper_limit = 10.0;
-  int partition_count = 0;  // Zero partitions
+  int partition_count = 0;
 
   if (world.rank() >= 4) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
@@ -387,7 +388,7 @@ TEST(golovkin_integration_rectangular_method, test_zero_partitions) {
   parallel_task.post_processing();
 
   if (world.rank() >= 4) {
-    ASSERT_EQ(computed_result[0], 0);  // Expect 0 as result with zero partitions
+    ASSERT_EQ(computed_result[0], 0);
   }
 }
 
@@ -412,7 +413,7 @@ TEST(golovkin_integration_rectangular_method, test_large_range) {
   }
 
   golovkin_integration_rectangular_method::MPIIntegralCalculator parallel_task(taskDataPar);
-  parallel_task.set_function([](double x) { return x; });  // Simple linear function
+  parallel_task.set_function([](double x) { return x; });
 
   ASSERT_EQ(parallel_task.validation(), true);
   parallel_task.pre_processing();
@@ -420,7 +421,7 @@ TEST(golovkin_integration_rectangular_method, test_large_range) {
   parallel_task.post_processing();
 
   if (world.rank() >= 4) {
-    ASSERT_NEAR(computed_result[0], 0, 1e-3);  // Expect 0 due to symmetry around 0
+    ASSERT_NEAR(computed_result[0], 0, 1e-3);
   }
 }
 
@@ -445,7 +446,7 @@ TEST(golovkin_integration_rectangular_method, test_small_interval_near_zero) {
   }
 
   golovkin_integration_rectangular_method::MPIIntegralCalculator parallel_task(taskDataPar);
-  parallel_task.set_function([](double x) { return x * x; });  // Quadratic function
+  parallel_task.set_function([](double x) { return x * x; });
 
   ASSERT_EQ(parallel_task.validation(), true);
   parallel_task.pre_processing();
@@ -455,5 +456,56 @@ TEST(golovkin_integration_rectangular_method, test_small_interval_near_zero) {
   if (world.rank() >= 4) {
     double expected_result = (std::pow(upper_limit, 3) - std::pow(lower_limit, 3)) / 3;
     ASSERT_NEAR(computed_result[0], expected_result, 1e-10);
+  }
+}
+TEST(golovkin_integration_rectangular_method, test_validation) {
+  boost::mpi::communicator world;
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  int dummy_inputs_count[2] = {1, 1};
+  int dummy_outputs_count[1] = {1};
+
+  if (world.rank() >= 4) {
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&dummy_inputs_count[0]));
+    taskData->inputs_count.emplace_back(1);
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&dummy_inputs_count[1]));
+    taskData->inputs_count.emplace_back(1);
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(&dummy_outputs_count[0]));
+    taskData->outputs_count.emplace_back(1);
+  }
+
+  golovkin_integration_rectangular_method::MPIIntegralCalculator calculator(taskData);
+  ASSERT_TRUE(calculator.validation());
+}
+
+TEST(golovkin_integration_rectangular_method, test_post_processing) {
+  boost::mpi::communicator world;
+  double lower_limit = 0.0;
+  double upper_limit = 10.0;
+  int partitions = 1000;
+
+  std::vector<double> computed_result(1, 0.0);
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() >= 4) {
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
+    taskData->inputs_count.emplace_back(1);
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
+    taskData->inputs_count.emplace_back(1);
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&partitions));
+    taskData->inputs_count.emplace_back(1);
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(computed_result.data()));
+    taskData->outputs_count.emplace_back(computed_result.size());
+  }
+
+  golovkin_integration_rectangular_method::MPIIntegralCalculator calculator(taskData);
+  calculator.set_function([](double x) { return 5.0; });
+
+  calculator.validation();
+  calculator.pre_processing();
+  calculator.run();
+  calculator.post_processing();
+
+  if (world.rank() >= 4) {
+    ASSERT_NEAR(computed_result[0], 50.0, 1e-3);
   }
 }
