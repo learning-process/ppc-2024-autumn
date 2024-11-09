@@ -7,8 +7,6 @@
 
 #include "mpi/komshina_d_min_of_vector_elements/include/ops_mpi.hpp"
 
-namespace komshina_d_min_of_vector_elements_mpi {
-
 TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_1) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
