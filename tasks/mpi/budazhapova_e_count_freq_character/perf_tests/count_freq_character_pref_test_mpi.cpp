@@ -10,7 +10,7 @@
 
 TEST(budazhapova_e_count_freq_character_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  std::string global_str = (100, 'a');
+  std::string global_str(100, 'a');
   std::vector<int> global_out(1, 0);
   char symb = 'a';
   // Create TaskData
@@ -51,7 +51,7 @@ TEST(budazhapova_e_count_freq_character_mpi, test_pipeline_run) {
 
 TEST(budazhapova_e_count_freq_character_mpi, test_task_run) {
   boost::mpi::communicator world;
-  std::string global_str = (100, 'a');
+  std::string global_str(100, 'a');
   std::vector<int> global_out(1, 0);
   char symb = 'a';
 
