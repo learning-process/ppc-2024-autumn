@@ -11,8 +11,10 @@
 #include <vector>
 
 #include "mpi/golovkin_integration_rectangular_method/include/ops_mpi.hpp"
+#include "main.h"
 
 using namespace std::chrono_literals;
+
 TEST(golovkin_integration_rectangular_method, test_constant_function) {
   boost::mpi::communicator world;
   std::vector<double> computed_result(1, 0);
@@ -60,6 +62,7 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
     ASSERT_NEAR(expected_result[0], computed_result[0], 1e-3);
   }
 }
+
 TEST(golovkin_integration_rectangular_method, test_linear_function) {
   boost::mpi::communicator world;
   std::vector<double> computed_result(1, 0);
@@ -320,5 +323,38 @@ TEST(golovkin_integration_rectangular_method, test_exponential_function) {
     sequential_task.post_processing();
 
     ASSERT_NEAR(expected_result[0], computed_result[0], 1e-3);
+  }
+}
+
+TEST(golovkin_integration_rectangular_method, test_negative_range) {
+  boost::mpi::communicator world;
+  std::vector<double> computed_result(1, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  double lower_limit = 5.0;
+  double upper_limit = -5.0;
+  int partition_count = 1000000;
+
+  if (world.rank() >= 4) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&partition_count));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(computed_result.data()));
+    taskDataPar->outputs_count.emplace_back(computed_result.size());
+  }
+
+  golovkin_integration_rectangular_method::MPIIntegralCalculator parallel_task(taskDataPar);
+  parallel_task.set_function([](double x) { return x; });
+
+  ASSERT_EQ(parallel_task.validation(), true);
+  parallel_task.pre_processing();
+  parallel_task.run();
+  parallel_task.post_processing();
+
+  if (world.rank() >= 4) {
+    ASSERT_LT(computed_result[0], 0);
   }
 }
