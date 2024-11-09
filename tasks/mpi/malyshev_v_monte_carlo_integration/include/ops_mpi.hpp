@@ -2,8 +2,8 @@
 
 #include <gtest/gtest.h>
 #include <boost/mpi.hpp>
-#include <memory>
 #include <functional>
+#include <memory>
 #include <random>
 #include <vector>
 
