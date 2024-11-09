@@ -2,10 +2,10 @@
 
 #include <gtest/gtest.h>
 #include <boost/mpi.hpp>
-#include <random>
-#include <vector>
 #include <memory>
 #include <functional>
+#include <random>
+#include <vector>
 
 #include "core/task/include/task.hpp"
 
