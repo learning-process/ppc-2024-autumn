@@ -25,9 +25,9 @@ int searchMaxInVec(std::vector<int> vec) {
   return max;
 }
 
-TEST(sequential_varfolomeev_g_matrix_max_rows_perf_test, test_pipeline_run_10x10) {
-  int rows = 10;
-  int cols = 10;
+TEST(sequential_varfolomeev_g_matrix_max_rows_perf_test, test_pipeline_run_10000x10000) {
+  int rows = 10000;
+  int cols = 10000;
   int a = -100;
   int b = 100;
 
@@ -73,9 +73,9 @@ TEST(sequential_varfolomeev_g_matrix_max_rows_perf_test, test_pipeline_run_10x10
   }
 }
 
-TEST(sequential_varfolomeev_g_matrix_max_rows_perf_test, test_task_run_10x10) {
-  const int rows = 10;
-  const int cols = 10;
+TEST(sequential_varfolomeev_g_matrix_max_rows_perf_test, test_task_run_10000x10000) {
+  const int rows = 10000;
+  const int cols = 10000;
   const int a = -100;
   const int b = 100;
 
