@@ -3,9 +3,23 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <cmath>
+#include <functional>
+#include <random>
 #include <vector>
 
 #include "mpi/vershinina_a_integration_the_monte_carlo_method/include/ops_mpi.hpp"
+
+std::vector<double> vershinina_a_integration_the_monte_carlo_method::getRandomVector(double sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::uniform_int_distribution<> distr(10, 60);
+  std::vector<double> vec(sz);
+  vec[0] = distr(gen);
+  vec[1] = vec[0] + distr(gen);
+  vec[2] = distr(gen);
+  vec[3] = vec[2] + distr(gen);
+  return vec;
+}
 
 TEST(vershinina_a_integration_the_monte_carlo_method, Test_1) {
   boost::mpi::communicator world;

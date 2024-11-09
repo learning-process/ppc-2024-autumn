@@ -9,18 +9,6 @@
 
 using namespace std::chrono_literals;
 
-std::vector<double> vershinina_a_integration_the_monte_carlo_method::getRandomVector(double sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::uniform_int_distribution<> distr(10, 60);
-  std::vector<double> vec(sz);
-  vec[0] = distr(gen);
-  vec[1] = vec[0] + distr(gen);
-  vec[2] = distr(gen);
-  vec[3] = vec[2] + distr(gen);
-  return vec;
-}
-
 bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   input_ = reinterpret_cast<double*>(taskData->inputs[0]);
