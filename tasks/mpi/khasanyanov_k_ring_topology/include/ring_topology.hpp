@@ -1,11 +1,10 @@
-#ifndef _Ring_TOPOLOGY_HPP_
-#define _Ring_TOPOLOGY_HPP_
+#ifndef _RING_TOPOLOGY_HPP_
+#define _RING_TOPOLOGY_HPP_
 
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/vector.hpp>
 #include <concepts>
 #include <cstddef>
-#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -15,7 +14,7 @@
 namespace khasanyanov_k_ring_topology_mpi {
 
 template <std::copyable DataType, std::unsigned_integral SizeType = std::uint32_t>
-class RingTopology : ppc::core::Task {
+class RingTopology : public ppc::core::Task {
   static_assert(sizeof(SizeType) <= sizeof(std::uint32_t),
                 "Size of 'SizeType' greater than std::uint32_t, possible loss of data");
 
@@ -69,47 +68,26 @@ bool RingTopology<DataType, SizeType>::pre_processing() {
 template <std::copyable DataType, std::unsigned_integral SizeType>
 bool RingTopology<DataType, SizeType>::run() {
   internal_order_test();
-  // count of processes should be more than 1
+
+  // count of processes should be more than 1, but temporary check
   if (world.size() == 1) {
     data_.order_.emplace_back(0);
     return true;
   }
-
   auto rank = world.rank();
   int next = (rank == world.size() - 1) ? 0 : rank + 1;
   int prev = (rank == 0) ? world.size() - 1 : rank - 1;
 
   if (rank == 0) {
+    // clear for correct multiply run
+    data_.order_.clear();
     world.send(next, Data, data_);
     world.recv(prev, Data, data_);
 
-    std::cout << "Process " << rank << std::endl;
-    for (const auto& it : data_.input_) {
-      std::cout << it << ' ';
-    }
-    std::cout << std::endl;
-
     data_.order_.emplace_back(rank);
-
-    std::cout << "Process " << rank << std::endl;
-    for (const auto& it : data_.order_) {
-      std::cout << it << ' ';
-    }
   } else {
     world.recv(prev, Data, data_);
-    std::cout << "Process " << rank << std::endl;
-    for (const auto& it : data_.input_) {
-      std::cout << it << ' ';
-    }
-    std::cout << std::endl;
-
     data_.order_.emplace_back(rank);
-
-    std::cout << "Process " << rank << std::endl;
-    for (const auto& it : data_.order_) {
-      std::cout << it << ' ';
-    }
-    std::cout << std::endl;
     world.send(next, Data, data_);
   }
   return true;
@@ -119,12 +97,8 @@ template <std::copyable DataType, std::unsigned_integral SizeType>
 bool RingTopology<DataType, SizeType>::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    auto* tmp_data = reinterpret_cast<uint8_t*>(data_.input_.data());
-    std::copy(tmp_data, tmp_data + static_cast<SizeType>(data_.input_.size() * (sizeof(DataType) / sizeof(uint8_t))),
-              taskData->outputs[0]);
-    auto* tmp_order = reinterpret_cast<uint8_t*>(data_.order_.data());
-    std::copy(tmp_order, tmp_order + static_cast<SizeType>(data_.order_.size() * (sizeof(int) / sizeof(uint8_t))),
-              taskData->outputs[1]);
+    std::copy(data_.input_.begin(), data_.input_.end(), reinterpret_cast<DataType*>(taskData->outputs[0]));
+    std::copy(data_.order_.begin(), data_.order_.end(), reinterpret_cast<int*>(taskData->outputs[1]));
   }
   return true;
 }
