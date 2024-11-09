@@ -21,16 +21,8 @@ IntegralCalculator::IntegralCalculator(const std::shared_ptr<ppc::core::TaskData
 
 bool IntegralCalculator::validation() {
   internal_order_test();
-  // Проверяем количество входных данных и выходных данных
-  if (taskData->inputs.size() != 3) {
-    std::cerr << "Error: 3 inputs were expected, but received " << taskData->inputs.size() << std::endl;
-    return false;
-  }
-  if (taskData->outputs.size() != 1) {
-    std::cerr << "Error: 1 output was expected, but received " << taskData->outputs.size() << std::endl;
-    return false;
-  }
-  return true;
+  return (taskData->inputs_count.size() == 2 && taskData->inputs_count[0] >= 0 && taskData->inputs_count[1] >= 0 &&
+         taskData->outputs_count[0] == taskData->inputs_count[0]);
 }
 
 bool IntegralCalculator::pre_processing() {
