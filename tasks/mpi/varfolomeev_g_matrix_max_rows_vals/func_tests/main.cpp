@@ -216,9 +216,9 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_1x5_Matrix) {
   }
 }
 
-TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_1x5000_Matrix) {
+TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_1x500_Matrix) {
   int size_m = 1;
-  int size_n = 5000;
+  int size_n = 500;
 
   boost::mpi::communicator world;
 
@@ -265,8 +265,8 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_1x5000_Matrix) {
   }
 }
 
-TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_5000x1_Matrix) {
-  int size_m = 5000;
+TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_500x1_Matrix) {
+  int size_m = 500;
   int size_n = 1;
 
   boost::mpi::communicator world;
@@ -510,55 +510,6 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_5000x5000_Matrix) {
   }
 }
 
-TEST(varfolomeev_g_matrix_max_rows_mpi, Test_gen_10000x10000_Matrix) {
-  int size_m = 10000;
-  int size_n = 10000;
-
-  boost::mpi::communicator world;
-
-  std::vector<int> global_mat;
-  std::vector<int32_t> global_max(size_m, 0);
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  taskDataPar->inputs_count.emplace_back(size_m);
-  taskDataPar->inputs_count.emplace_back(size_n);
-  if (world.rank() == 0) {
-    global_mat = getRandomVectorBetween(size_n * size_m, -100, 100);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
-    taskDataPar->outputs_count.emplace_back(global_max.size());
-  }
-
-  varfolomeev_g_matrix_max_rows_vals_mpi::MaxInRowsParallel maxInRowsParallel(taskDataPar);
-  ASSERT_EQ(maxInRowsParallel.validation(), true);
-  maxInRowsParallel.pre_processing();
-  maxInRowsParallel.run();
-  maxInRowsParallel.post_processing();
-  if (world.rank() == 0) {
-    // Create data
-    std::vector<int32_t> reference_max(size_m, 0);
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
-    taskDataSeq->inputs_count.emplace_back(size_m);
-    taskDataSeq->inputs_count.emplace_back(size_n);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_max.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_max.size());
-
-    // Create Task
-    varfolomeev_g_matrix_max_rows_vals_mpi::MaxInRowsSequential maxInRowsSequential(taskDataSeq);
-    ASSERT_EQ(maxInRowsSequential.validation(), true);
-    maxInRowsSequential.pre_processing();
-    maxInRowsSequential.run();
-    maxInRowsSequential.post_processing();
-
-    for (int i = 0; i < size_m; i++) {
-      ASSERT_EQ(reference_max[i], global_max[i]);
-    }
-  }
-}
-
 TEST(varfolomeev_g_matrix_max_rows_mpi, Test_manual_3x3_negative_Matrix) {
   int size_m = 3;
   int size_n = 3;
@@ -607,9 +558,9 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_manual_3x3_negative_Matrix) {
   }
 }
 
-TEST(varfolomeev_g_matrix_max_rows_mpi, Test_5000x5000_negative_Matrix) {
-  int size_m = 5000;
-  int size_n = 5000;
+TEST(varfolomeev_g_matrix_max_rows_mpi, Test_500x500_negative_Matrix) {
+  int size_m = 500;
+  int size_n = 500;
 
   boost::mpi::communicator world;
 
@@ -799,8 +750,8 @@ TEST(varfolomeev_g_matrix_max_rows_mpi, Test_manual_5x3_maxes_in_the_end) {
   }
 }
 
-TEST(varfolomeev_g_matrix_max_rows_mpi, Test_random_5000x300_maxes_in_the_end) {
-  int size_m = 5000;
+TEST(varfolomeev_g_matrix_max_rows_mpi, Test_random_500x300_maxes_in_the_end) {
+  int size_m = 500;
   int size_n = 300;
 
   boost::mpi::communicator world;

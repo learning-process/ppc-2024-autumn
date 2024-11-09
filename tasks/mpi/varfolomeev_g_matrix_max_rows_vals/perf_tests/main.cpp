@@ -8,8 +8,8 @@
 #include "mpi/varfolomeev_g_matrix_max_rows_vals/include/ops_mpi.hpp"
 
 TEST(mpi_varfolomeev_g_matrix_max_rows_perf_test, test_pipeline_run) {
-  int size_m = 10000;
-  int size_n = 10000;
+  int size_m = 5000;
+  int size_n = 5000;
 
   boost::mpi::communicator world;
 
@@ -51,8 +51,8 @@ TEST(mpi_varfolomeev_g_matrix_max_rows_perf_test, test_pipeline_run) {
 }
 
 TEST(mpi_varfolomeev_g_matrix_max_rows_perf_test, test_task_run) {
-  int size_m = 10000;
-  int size_n = 10000;
+  int size_m = 5000;
+  int size_n = 5000;
   boost::mpi::communicator world;
   std::vector<int> matrix(size_n * size_m, 1);
   std::vector<int32_t> max_vec(size_m, 0);

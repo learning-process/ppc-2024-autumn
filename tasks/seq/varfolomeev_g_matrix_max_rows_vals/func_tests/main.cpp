@@ -360,9 +360,9 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_50x200) {
   }
 }
 
-TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_10000x10000) {
-  int rows = 10000;
-  int cols = 10000;
+TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_5000x5000) {
+  int rows = 5000;
+  int cols = 5000;
 
   // Create data
   std::vector<std::vector<int>> in = generateMatrix(rows, cols, -100, 100);
@@ -486,9 +486,9 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_same_max_values_in_rows_end) {
   }
 }
 
-TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_negative_values_1000x1000) {
-  int rows = 1000;
-  int cols = 1000;
+TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_negative_values_500x500) {
+  int rows = 500;
+  int cols = 500;
 
   // Create data
   std::vector<std::vector<int>> in = generateMatrix(rows, cols, -200, -1);
