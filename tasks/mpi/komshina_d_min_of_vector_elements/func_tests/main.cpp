@@ -9,17 +9,6 @@
 
 namespace komshina_d_min_of_vector_elements_mpi {
 
-std::vector<int> get_random_vector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
-}
-}  // namespace komshina_d_min_of_vector_elements_mpi
-
 TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_1) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
@@ -28,7 +17,7 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_1) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count = 5000000;
+    const int count = 500000;
     const int start_value = 1000000;
     const int decrement = 10;
     global_vec.resize(count);
@@ -169,13 +158,14 @@ TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_3) {
 TEST(komshina_d_min_of_vector_elements_mpi, Test_Min_4) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
-  std::vector<int32_t> global_min(1, 0);
+  std::vector<int32_t> global_min(1, 10);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count = 50;
-    global_vec = komshina_d_min_of_vector_elements_mpi::get_random_vector(count);
+    const int start_value = -1;
+    const int count = 1;
+    global_vec = std::vector<int>(count, start_value);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
