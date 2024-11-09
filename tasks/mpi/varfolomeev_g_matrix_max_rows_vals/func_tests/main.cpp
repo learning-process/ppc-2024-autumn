@@ -26,7 +26,7 @@ std::vector<std::vector<int>> generateMatrix(int rows, int cols, int a, int b) {
 std::vector<int> getRandomVectorBetween(int sz, int a, int b) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  std::uniform_int_distribution<int> range(a, b);
+  std::uniform_int_distribution<int> range(a, b - 1);  // [a, b)
   std::vector<int> vec(sz);
   for (int i = 0; i < sz; i++) {
     vec[i] = range(gen);
