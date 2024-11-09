@@ -10,17 +10,6 @@
 #include <string>
 #include <thread>
 
-std::vector<int> varfolomeev_g_matrix_max_rows_vals_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  std::uniform_int_distribution<int> range(-100, 100);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
-}
-
 // Sequential
 bool varfolomeev_g_matrix_max_rows_vals_mpi::MaxInRowsSequential::pre_processing() {
   internal_order_test();

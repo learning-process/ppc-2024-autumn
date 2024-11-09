@@ -15,8 +15,6 @@
 
 namespace varfolomeev_g_matrix_max_rows_vals_mpi {
 
-std::vector<int> getRandomVector(int sz);
-
 class MaxInRowsSequential : public ppc::core::Task {
  public:
   explicit MaxInRowsSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
