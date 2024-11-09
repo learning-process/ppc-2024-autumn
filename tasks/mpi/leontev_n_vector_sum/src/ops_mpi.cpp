@@ -1,7 +1,6 @@
 // Copyright 2023 Nesterov Alexander
 #include "mpi/leontev_n_vector_sum/include/ops_mpi.hpp"
 
-#include <algorithm>
 #include <cstdlib>
 #include <functional>
 #include <string>

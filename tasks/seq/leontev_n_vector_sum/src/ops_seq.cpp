@@ -38,7 +38,5 @@ bool leontev_n_vector_sum_seq::VecSumSequential<InOutType>::post_processing() {
 
 template class leontev_n_vector_sum_seq::VecSumSequential<int32_t>;
 template class leontev_n_vector_sum_seq::VecSumSequential<uint32_t>;
-template class leontev_n_vector_sum_seq::VecSumSequential<uint64_t>;
-template class leontev_n_vector_sum_seq::VecSumSequential<int64_t>;
 template class leontev_n_vector_sum_seq::VecSumSequential<float>;
 template class leontev_n_vector_sum_seq::VecSumSequential<double>;

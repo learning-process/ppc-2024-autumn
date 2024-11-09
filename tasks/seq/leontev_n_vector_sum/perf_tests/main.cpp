@@ -7,7 +7,7 @@
 #include "seq/leontev_n_vector_sum/include/ops_seq.hpp"
 
 TEST(leontev_n_vector_sum_seq, test_pipeline_run) {
-  const int count = 0x1FFFFFF;
+  const int count = 30000000;
   // Create data
   std::vector<int> in(count, 0);
   std::vector<int> out(1, 0);
@@ -38,7 +38,7 @@ TEST(leontev_n_vector_sum_seq, test_pipeline_run) {
 }
 
 TEST(leontev_n_vector_sum_seq, test_task_run) {
-  const int count = 0x1FFFFFF;
+  const int count = 30000000;
   // Create data
   std::vector<int> in(count, 0);
   std::vector<int> out(1, 0);

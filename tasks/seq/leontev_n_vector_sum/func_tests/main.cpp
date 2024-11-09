@@ -71,18 +71,18 @@ TEST(leontev_n_vector_sum_seq, float_vector_sum) {
   EXPECT_NEAR(out[0], expected_sum, 1e-3f);
 }
 
-TEST(leontev_n_vector_sum_seq, int64_vector_sum) {
+TEST(leontev_n_vector_sum_seq, int32_vector_sum) {
   // Create data
-  std::vector<int64_t> in(2000, 5);
-  std::vector<int64_t> out(1, 0);
-  const int64_t expected_sum = 10000;
+  std::vector<int32_t> in(2000, 5);
+  std::vector<int32_t> out(1, 0);
+  const int32_t expected_sum = 10000;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskEmplacement<int64_t>(taskDataSeq, in, out);
+  taskEmplacement<int32_t>(taskDataSeq, in, out);
 
   // Create Task
-  leontev_n_vector_sum_seq::VecSumSequential<int64_t> vecSumSequential(taskDataSeq);
+  leontev_n_vector_sum_seq::VecSumSequential<int32_t> vecSumSequential(taskDataSeq);
   ASSERT_TRUE(vecSumSequential.validation());
   vecSumSequential.pre_processing();
   vecSumSequential.run();
@@ -90,18 +90,18 @@ TEST(leontev_n_vector_sum_seq, int64_vector_sum) {
   ASSERT_EQ(out[0], expected_sum);
 }
 
-TEST(leontev_n_vector_sum_seq, uint64_vector_sum) {
+TEST(leontev_n_vector_sum_seq, uint32_vector_sum) {
   // Create data
-  std::vector<uint64_t> in(255, 2);
-  std::vector<uint64_t> out(1, 0);
-  const uint64_t expected_sum = 510;
+  std::vector<uint32_t> in(255, 2);
+  std::vector<uint32_t> out(1, 0);
+  const uint32_t expected_sum = 510;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskEmplacement<uint64_t>(taskDataSeq, in, out);
+  taskEmplacement<uint32_t>(taskDataSeq, in, out);
 
   // Create Task
-  leontev_n_vector_sum_seq::VecSumSequential<uint64_t> vecSumSequential(taskDataSeq);
+  leontev_n_vector_sum_seq::VecSumSequential<uint32_t> vecSumSequential(taskDataSeq);
   ASSERT_TRUE(vecSumSequential.validation());
   vecSumSequential.pre_processing();
   vecSumSequential.run();
