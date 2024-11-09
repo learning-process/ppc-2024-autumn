@@ -19,8 +19,11 @@ TEST(fyodorov_m_num_of_orderly_violations_mpi, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dist(-100, 100);
     for (int i = 0; i < count_size_vector; i++) {
-      global_vec[i] = i;
+      global_vec[i] = dist(gen);
     }
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -59,9 +62,13 @@ TEST(fyodorov_m_num_of_orderly_violations_mpi, test_task_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dist(-100, 100);
     for (int i = 0; i < count_size_vector; i++) {
-      global_vec[i] = i;
+      global_vec[i] = dist(gen);
     }
+
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_violations.data()));
