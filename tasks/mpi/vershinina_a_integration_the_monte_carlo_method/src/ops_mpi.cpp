@@ -4,10 +4,7 @@
 #include <functional>
 #include <random>
 #include <string>
-#include <thread>
 #include <vector>
-
-using namespace std::chrono_literals;
 
 bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskSequential::pre_processing() {
   internal_order_test();
@@ -16,12 +13,13 @@ bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskSequential::pre
   xmax = input_[1];
   ymin = input_[2];
   ymax = input_[3];
+  iter_count = static_cast<int>(input_[4]);
   return true;
 }
 
 bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskSequential::validation() {
   internal_order_test();
-  return taskData->inputs_count[0] == 4 && taskData->outputs_count[0] == 1;
+  return taskData->inputs_count[0] == 5 && taskData->outputs_count[0] == 1;
 }
 
 bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskSequential::run() {
@@ -30,7 +28,7 @@ bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskSequential::run
   double total = 0;
   double inBox = 0;
   reference_res = 0;
-  for (count = 0; count < 1000000; count++) {
+  for (count = 0; count < iter_count; count++) {
     double u1 = (double)rand() / (double)RAND_MAX;
     double u2 = (double)rand() / (double)RAND_MAX;
 
@@ -68,7 +66,7 @@ bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskParallel::pre_p
 bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    return taskData->inputs_count[0] == 4 && taskData->outputs_count[0] == 1;
+    return taskData->inputs_count[0] == 5 && taskData->outputs_count[0] == 1;
   }
   return true;
 }
@@ -84,15 +82,15 @@ bool vershinina_a_integration_the_monte_carlo_method::TestMPITaskParallel::run()
   xmax = input_[1];
   ymin = input_[2];
   ymax = input_[3];
+  iter_count = static_cast<int>(input_[4]);
   global_res = 0;
   int count;
   local_total = 0;
   local_inBox = 0;
   double total = 0;
   double inBox = 0;
-  const int iterations = 1000000;
-  auto tgt = (iterations / world.size()) * (world.rank() + 1);
-  for (count = (iterations / world.size()) * world.rank(); count < tgt; count++) {
+  auto tgt = (iter_count / world.size()) * (world.rank() + 1);
+  for (count = (iter_count / world.size()) * world.rank(); count < tgt; count++) {
     double u1 = (double)rand() / (double)RAND_MAX;
     double u2 = (double)rand() / (double)RAND_MAX;
 

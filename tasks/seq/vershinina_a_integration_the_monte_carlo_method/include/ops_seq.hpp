@@ -6,7 +6,7 @@
 #include "core/task/include/task.hpp"
 
 namespace vershinina_a_integration_the_monte_carlo_method {
-
+std::vector<double> getRandomVector();
 class TestTaskSequential : public ppc::core::Task {
  public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -22,6 +22,8 @@ class TestTaskSequential : public ppc::core::Task {
   double ymin{};
   double ymax{};
   double *input_{};
+  double iter_count{};
   double reference_res{};
+  double another_res{};
 };
 }  // namespace vershinina_a_integration_the_monte_carlo_method

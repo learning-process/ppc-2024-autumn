@@ -7,7 +7,7 @@
 #include "seq/vershinina_a_integration_the_monte_carlo_method/include/ops_seq.hpp"
 
 TEST(vershinina_a_integration_the_monte_carlo_method, test_pipeline_run) {
-  std::vector<double> in{6, 13, 0, 14};
+  std::vector<double> in{6, 13, 0, 14, 100000};
   std::vector<double> reference_res(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -37,7 +37,7 @@ TEST(vershinina_a_integration_the_monte_carlo_method, test_pipeline_run) {
 }
 
 TEST(vershinina_a_integration_the_monte_carlo_method, test_task_run) {
-  std::vector<double> in{5, 15, 0, 100};
+  std::vector<double> in{5, 15, 0, 100, 100000};
   std::vector<double> reference_res(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();

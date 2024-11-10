@@ -4,10 +4,7 @@
 #include <functional>
 #include <random>
 #include <string>
-#include <thread>
 #include <vector>
-
-using namespace std::chrono_literals;
 
 bool vershinina_a_integration_the_monte_carlo_method::TestTaskSequential::pre_processing() {
   internal_order_test();
@@ -16,12 +13,13 @@ bool vershinina_a_integration_the_monte_carlo_method::TestTaskSequential::pre_pr
   xmax = input_[1];
   ymin = input_[2];
   ymax = input_[3];
+  iter_count = static_cast<int>(input_[4]);
   return true;
 }
 
 bool vershinina_a_integration_the_monte_carlo_method::TestTaskSequential::validation() {
   internal_order_test();
-  return taskData->inputs_count[0] == 4 && taskData->outputs_count[0] == 1;
+  return taskData->inputs_count[0] == 5 && taskData->outputs_count[0] == 1;
 }
 
 bool vershinina_a_integration_the_monte_carlo_method::TestTaskSequential::run() {
@@ -30,7 +28,7 @@ bool vershinina_a_integration_the_monte_carlo_method::TestTaskSequential::run() 
   double total = 0;
   double inBox = 0;
   reference_res = 0;
-  for (count = 0; count < 100000; count++) {
+  for (count = 0; count < iter_count; count++) {
     double u1 = (double)rand() / (double)RAND_MAX;
     double u2 = (double)rand() / (double)RAND_MAX;
 

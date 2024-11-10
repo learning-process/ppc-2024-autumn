@@ -14,7 +14,7 @@
 
 namespace vershinina_a_integration_the_monte_carlo_method {
 
-std::vector<double> getRandomVector(double sz);
+std::vector<double> getRandomVector();
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
@@ -31,6 +31,7 @@ class TestMPITaskSequential : public ppc::core::Task {
   double ymin{};
   double ymax{};
   double *input_{};
+  double iter_count{};
   double reference_res{};
 };
 
@@ -46,6 +47,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   double xmax{};
   double ymin{};
   double ymax{};
+  double iter_count{};
   double local_total;
   double local_inBox;
 
