@@ -43,6 +43,31 @@ TEST(fyodorov_m_num_of_orderly_violations_mpi, Test_Count_Violations) {
   }
 }
 
+TEST(fyodorov_m_num_of_orderly_violations_mpi, Test_Count_Violations_2) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec = {1, 2, 3, 4, 5, 6, 7};
+  std::vector<int32_t> global_violations(1, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_violations.data()));
+    taskDataPar->outputs_count.emplace_back(global_violations.size());
+  }
+
+  fyodorov_m_num_of_orderly_violations_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(0, global_violations[0]);
+  }
+}
+
 TEST(fyodorov_m_num_of_orderly_violations_mpi, Test_Count_Violations_Random_450) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
