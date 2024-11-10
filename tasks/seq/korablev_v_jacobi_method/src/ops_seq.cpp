@@ -23,27 +23,17 @@ bool korablev_v_jacobi_method_seq::JacobiMethodSequential::pre_processing() {
 bool korablev_v_jacobi_method_seq::JacobiMethodSequential::validation() {
   internal_order_test();
 
-  // Проверка количества входных и выходных данных
   if (taskData->inputs_count.size() != 3 || taskData->outputs_count.size() != 1) {
     std::cerr << "Error: Invalid number of inputs or outputs." << std::endl;
     return false;
   }
 
-  // Проверка соответствия размерностей
   size_t n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
   if (n <= 0) {
     std::cerr << "Error: Matrix size must be positive." << std::endl;
     return false;
   }
 
-  if (reinterpret_cast<double*>(taskData->inputs[1]) == nullptr ||
-      reinterpret_cast<double*>(taskData->inputs[2]) == nullptr ||
-      reinterpret_cast<double*>(taskData->outputs[0]) == nullptr) {
-    std::cerr << "Error: Null pointer in input or output data." << std::endl;
-    return false;
-  }
-
-  // Проверка на диагональное преобладание
   for (size_t i = 0; i < n; ++i) {
     double diag = std::fabs(reinterpret_cast<double*>(taskData->inputs[1])[i * n + i]);
     double sum = 0.0;
@@ -59,7 +49,6 @@ bool korablev_v_jacobi_method_seq::JacobiMethodSequential::validation() {
       return false;
     }
 
-    // Проверка на нулевые элементы на диагонали
     if (diag == 0.0) {
       std::cerr << "Error: Zero element on the diagonal." << std::endl;
       return false;
