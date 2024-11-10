@@ -24,6 +24,5 @@ class TestTaskSequential : public ppc::core::Task {
   double *input_{};
   double iter_count{};
   double reference_res{};
-  double another_res{};
 };
 }  // namespace vershinina_a_integration_the_monte_carlo_method
