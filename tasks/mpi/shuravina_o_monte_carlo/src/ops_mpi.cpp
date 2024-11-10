@@ -30,6 +30,8 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::run() {
   int num_processes = world.size();
   int rank = world.rank();
 
+  std::cout << "Rank " << rank << " is running." << std::endl;
+
   int local_num_points = num_points_ / num_processes;
   int remainder = num_points_ % num_processes;
 
@@ -37,16 +39,22 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::run() {
     local_num_points++;
   }
 
+  std::cout << "Rank " << rank << " has " << local_num_points << " points." << std::endl;
+
   double local_sum = 0.0;
   for (int i = 0; i < local_num_points; ++i) {
     double x = dis_(gen);
     local_sum += f_(x);
   }
 
+  std::cout << "Rank " << rank << " local sum: " << local_sum << std::endl;
+
   double global_sum = 0.0;
   boost::mpi::all_reduce(world, local_sum, global_sum, std::plus<>());
 
   integral_value_ = (global_sum / num_points_) * (b_ - a_);
+
+  std::cout << "Rank " << rank << " global sum: " << global_sum << std::endl;
 
   return true;
 }
