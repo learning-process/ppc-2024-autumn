@@ -8,6 +8,19 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/budazhapova_e_count_freq_character/include/count_freq_character_mpi_header.hpp"
 
+namespace budazhapova_e_count_freq_character_mpi {
+std::string getRandomString(int length) {
+  static std::string charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+  std::string result;
+  result.resize(length);
+
+  srand(time(nullptr));
+  for (int i = 0; i < length; i++) result[i] = charset[rand() % charset.length()];
+
+  return result;
+}
+}  // namespace budazhapova_e_count_freq_character_mpi
+
 TEST(budazhapova_e_count_freq_character_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   std::string global_str;
