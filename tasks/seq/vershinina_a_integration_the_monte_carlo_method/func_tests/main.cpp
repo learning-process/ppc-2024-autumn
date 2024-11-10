@@ -11,7 +11,7 @@ std::vector<double> vershinina_a_integration_the_monte_carlo_method::getRandomVe
   std::random_device dev;
   std::mt19937 gen(dev());
   std::uniform_int_distribution<> distr(10, 60);
-  std::uniform_int_distribution<> distr_iter(100000, 1000000);
+  std::uniform_int_distribution<> distr_iter(10000, 100000);
   std::vector<double> vec(5);
   vec[0] = distr(gen);
   vec[1] = vec[0] + distr(gen);
