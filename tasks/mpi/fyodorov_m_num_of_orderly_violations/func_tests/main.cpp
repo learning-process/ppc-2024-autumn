@@ -242,3 +242,53 @@ TEST(fyodorov_m_num_of_orderly_violations_mpi, Test_Count_Violations_Random_2) {
     ASSERT_EQ(reference_violations[0], global_violations[0]);
   }
 }
+
+TEST(fyodorov_m_num_of_orderly_violations_mpi, Test_Violations_Reverse) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+  std::vector<int32_t> global_violations(1, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_violations.data()));
+    taskDataPar->outputs_count.emplace_back(global_violations.size());
+  }
+
+  fyodorov_m_num_of_orderly_violations_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(9, global_violations[0]);
+  }
+}
+
+TEST(fyodorov_m_num_of_orderly_violations_mpi, Test_Count_Violations_Same_Elements) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec = {5, 5, 5, 5, 5};
+  std::vector<int32_t> global_violations(1, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_violations.data()));
+    taskDataPar->outputs_count.emplace_back(global_violations.size());
+  }
+
+  fyodorov_m_num_of_orderly_violations_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(0, global_violations[0]);
+  }
+}
