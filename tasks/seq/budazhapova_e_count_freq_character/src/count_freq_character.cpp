@@ -2,8 +2,6 @@
 
 #include "seq/budazhapova_e_count_freq_character/include/count_freq_character_header.hpp"
 
-using namespace std::chrono_literals;
-
 bool budazhapova_e_count_freq_character_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   input_ = *reinterpret_cast<std::string*>(taskData->inputs[0]);

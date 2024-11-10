@@ -9,24 +9,13 @@
 #include "core/task/include/task.hpp"
 #include "mpi/budazhapova_e_count_freq_character/include/count_freq_character_mpi_header.hpp"
 
-std::string budazhapova_e_count_freq_character_mpi::getRandomString(int length) {
-  static std::string charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-  std::string result;
-  result.resize(length);
-
-  srand(time(nullptr));
-  for (int i = 0; i < length; i++) result[i] = charset[rand() % charset.length()];
-
-  return result;
-}
-
 TEST(budazhapova_e_count_freq_character_mpi, test_with_random_string) {
   boost::mpi::communicator world;
   std::string global_str;
   std::vector<int> global_out(1, 0);
   char symb = '1';
   const int size_string = 10;
-  global_str = budazhapova_e_count_freq_character_mpi::getRandomString(size_string);
+  global_str = budazhapova_e_count_freq_character_mpi::TestMPITaskParallel::getRandomString(size_string);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();

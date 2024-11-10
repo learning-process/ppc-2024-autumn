@@ -43,6 +43,17 @@ bool budazhapova_e_count_freq_character_mpi::TestMPITaskSequential::post_process
   return true;
 }
 
+std::string budazhapova_e_count_freq_character_mpi::TestMPITaskParallel::getRandomString(int length) {
+  static std::string charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+  std::string result;
+  result.resize(length);
+
+  srand(time(nullptr));
+  for (int i = 0; i < length; i++) result[i] = charset[rand() % charset.length()];
+
+  return result;
+}
+
 bool budazhapova_e_count_freq_character_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   int world_rank = world.rank();

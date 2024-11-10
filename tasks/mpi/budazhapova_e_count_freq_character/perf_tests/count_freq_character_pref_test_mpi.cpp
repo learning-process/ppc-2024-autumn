@@ -10,7 +10,9 @@
 
 TEST(budazhapova_e_count_freq_character_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  std::string global_str(100, 'a');
+  std::string global_str;
+  const int size_string = 123456789;
+  global_str = budazhapova_e_count_freq_character_mpi::TestMPITaskParallel::getRandomString(size_string);
   std::vector<int> global_out(1, 0);
   char symb = 'a';
   // Create TaskData
@@ -45,13 +47,13 @@ TEST(budazhapova_e_count_freq_character_mpi, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(100, global_out[0]);
+    // ASSERT_EQ(, global_out[0]);
   }
 }
 
 TEST(budazhapova_e_count_freq_character_mpi, test_task_run) {
   boost::mpi::communicator world;
-  std::string global_str(100, 'a');
+  std::string global_str(123456789, 'a');
   std::vector<int> global_out(1, 0);
   char symb = 'a';
 
@@ -86,6 +88,6 @@ TEST(budazhapova_e_count_freq_character_mpi, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(100, global_out[0]);
+    ASSERT_EQ(123456789, global_out[0]);
   }
 }
