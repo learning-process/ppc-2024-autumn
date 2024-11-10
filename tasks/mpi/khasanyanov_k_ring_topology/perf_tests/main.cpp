@@ -10,7 +10,7 @@ TEST(khasanyanov_k_ring_topology_mpi, test_pipeline_run) {
     return;
   }
   const int size = 1000;
-  const std::vector<int> in_data = khasanyanov_k_ring_topology_mpi::generate_random_vector<int>(size);
+  const std::vector<int> in_data = khasanyanov_k_ring_topology_mpi::generate_random_vector<int>(size, -500, 500);
   std::vector<int> out_data(in_data);
   std::vector<int> order(world.size());
 
@@ -46,7 +46,7 @@ TEST(khasanyanov_k_ring_topology_mpi, test_task_run) {
     return;
   }
   const int size = 1000;
-  const std::vector<int> in_data = khasanyanov_k_ring_topology_mpi::generate_random_vector<int>(size);
+  const std::vector<int> in_data = khasanyanov_k_ring_topology_mpi::generate_random_vector<int>(size, -500, 500);
   std::vector<int> out_data(in_data);
   std::vector<int> order(world.size());
 

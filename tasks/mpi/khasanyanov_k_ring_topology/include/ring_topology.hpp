@@ -1,10 +1,10 @@
 #ifndef _RING_TOPOLOGY_HPP_
 #define _RING_TOPOLOGY_HPP_
 
+#include <algorithm>
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/vector.hpp>
 #include <concepts>
-#include <cstddef>
 #include <memory>
 #include <vector>
 
@@ -48,7 +48,7 @@ bool RingTopology<DataType, SizeType>::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     return taskData->inputs.size() == 1 && !taskData->inputs_count.empty() && taskData->inputs_count[0] > 0 &&
-           taskData->outputs.size() == 2 /*&& world.size() > 1*/;
+           taskData->outputs.size() == 2 && world.size() > 1;
   }
   return true;
 }
@@ -69,10 +69,10 @@ bool RingTopology<DataType, SizeType>::run() {
   internal_order_test();
 
   // count of processes should be more than 1, but temporary check
-  if (world.size() == 1) {
-    data_.order_.emplace_back(0);
-    return true;
-  }
+  // if (world.size() == 1) {
+  //   data_.order_.emplace_back(0);
+  //   return true;
+  // }
   auto rank = world.rank();
   int next = (rank == world.size() - 1) ? 0 : rank + 1;
   int prev = (rank == 0) ? world.size() - 1 : rank - 1;
@@ -105,9 +105,7 @@ bool RingTopology<DataType, SizeType>::post_processing() {
 template <std::copyable DataType, std::unsigned_integral SizeType>
 std::vector<int> RingTopology<DataType, SizeType>::true_order(int num_processes) {
   std::vector<int> true_order(num_processes);
-  for (int i = 0; i < num_processes - 1; ++i) {
-    true_order[i] = i + 1;
-  }
+  std::generate(true_order.begin(), --true_order.end(), [&, i = 0]() mutable { return ++i; });
   true_order[num_processes - 1] = 0;
   return true_order;
 }
