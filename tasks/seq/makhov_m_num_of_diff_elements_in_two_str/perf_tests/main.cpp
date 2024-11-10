@@ -7,25 +7,20 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/makhov_m_num_of_diff_elements_in_two_str/include/ops_seq.hpp"
 
-// Generates random string with given size filled with digits 0-9
-std::string getRandStr(size_t size_, char min = '0', char max = '9') {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::string str;
-  for (size_t i = 0; i < size_; i++) {
-    str += (char)(min + gen() % (max - min + 1));
-  }
-  return str;
-}
-
 TEST(sequential_makhov_m_num_of_diff_elements_in_two_str_perf_test, test_pipeline_run) {
-  const size_t size = 10000000;
   std::string str1;
   std::string str2;
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  const size_t size = 10000000;
+  char min = '0';
+  char max = '9';
 
   // Create data
-  str1 = getRandStr(size);
-  str2 = getRandStr(size);
+  for (size_t i = 0; i < size; i++) {
+    str1 += (char)(min + gen() % (max - min + 1));
+    str2 += (char)(min + gen() % (max - min + 1));
+  }
   std::vector<int> out(1, 0);
 
   // Create TaskData
@@ -61,13 +56,19 @@ TEST(sequential_makhov_m_num_of_diff_elements_in_two_str_perf_test, test_pipelin
 }
 
 TEST(sequential_makhov_m_num_of_diff_elements_in_two_str_perf_test, test_task_run) {
-  const size_t size = 10000000;
   std::string str1;
   std::string str2;
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  const size_t size = 10000000;
+  char min = '0';
+  char max = '9';
 
   // Create data
-  str1 = getRandStr(size);
-  str2 = getRandStr(size);
+  for (size_t i = 0; i < size; i++) {
+    str1 += (char)(min + gen() % (max - min + 1));
+    str2 += (char)(min + gen() % (max - min + 1));
+  }
   std::vector<int> out(1, 0);
 
   // Create TaskData

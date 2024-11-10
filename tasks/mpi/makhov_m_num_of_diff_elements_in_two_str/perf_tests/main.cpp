@@ -8,24 +8,22 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/makhov_m_num_of_diff_elements_in_two_str/include/ops_mpi.hpp"
 
-// Generates random string with given size filled with digits 0-9
-std::string getRandStr(size_t size_, char min = '0', char max = '9') {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::string str;
-  for (size_t i = 0; i < size_; i++) {
-    str += (char)(min + gen() % (max - min + 1));
-  }
-  return str;
-}
-
 TEST(mpi_makhov_m_num_of_diff_elements_in_two_str_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
   std::string str1;
   std::string str2;
   std::vector<int32_t> global_sum(1, 0);
-  str1 = getRandStr(10000000);
-  str2 = getRandStr(10000000);
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  const size_t size = 10000000;
+  char min = '0';
+  char max = '9';
+
+  // Create data
+  for (size_t i = 0; i < size; i++) {
+    str1 += (char)(min + gen() % (max - min + 1));
+    str2 += (char)(min + gen() % (max - min + 1));
+  }
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -67,8 +65,18 @@ TEST(mpi_makhov_m_num_of_diff_elements_in_two_str_perf_test, test_task_run) {
   std::string str1;
   std::string str2;
   std::vector<int32_t> global_sum(1, 0);
-  str1 = getRandStr(10000000);
-  str2 = getRandStr(10000000);
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  const size_t size = 10000000;
+  char min = '0';
+  char max = '9';
+
+  // Create data
+  for (size_t i = 0; i < size; i++) {
+    str1 += (char)(min + gen() % (max - min + 1));
+    str2 += (char)(min + gen() % (max - min + 1));
+  }
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {

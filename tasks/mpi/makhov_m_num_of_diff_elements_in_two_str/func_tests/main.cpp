@@ -8,25 +8,21 @@
 
 #include "mpi/makhov_m_num_of_diff_elements_in_two_str/include/ops_mpi.hpp"
 
-// Generates random string with given size filled with digits 0-9
-std::string getRandStr(size_t size_, char min = '0', char max = '9') {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::string str;
-  for (size_t i = 0; i < size_; i++) {
-    str += (char)(min + gen() % (max - min + 1));
-  }
-  return str;
-}
-
 TEST(makhov_m_num_of_diff_elements_in_two_str_mpi, SameSizeRandomStrings) {
   boost::mpi::communicator world;
   std::string str1;
   std::string str2;
   std::vector<int32_t> global_sum(1, 0);
   std::vector<int32_t> reference_sum(1, 0);
-  str1 = getRandStr(10);
-  str2 = getRandStr(10);
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  size_t size = 10;
+  char min = '0';
+  char max = '9';
+  for (size_t i = 0; i < size; i++) {
+    str1 += (char)(min + gen() % (max - min + 1));
+    str2 += (char)(min + gen() % (max - min + 1));
+  }
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -73,8 +69,18 @@ TEST(makhov_m_num_of_diff_elements_in_two_str_mpi, DiffSizeRandomStrings) {
   std::string str2;
   std::vector<int32_t> global_sum(1, 0);
   std::vector<int32_t> reference_sum(1, 0);
-  str1 = getRandStr(10);
-  str2 = getRandStr(15);
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  size_t size1 = 10;
+  size_t size2 = 15;
+  char min = '0';
+  char max = '9';
+  for (size_t i = 0; i < size1; i++) {
+    str1 += (char)(min + gen() % (max - min + 1));
+  }
+  for (size_t i = 0; i < size2; i++) {
+    str2 += (char)(min + gen() % (max - min + 1));
+  }
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -361,8 +367,15 @@ TEST(makhov_m_num_of_diff_elements_in_two_str_mpi, EmptyString) {
   std::string str2;
   std::vector<int32_t> global_sum(1, 0);
   std::vector<int32_t> reference_sum(1, 0);
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  size_t size = 10;
+  char min = '0';
+  char max = '9';
   str1 = "";
-  str2 = getRandStr(10);
+  for (size_t i = 0; i < size; i++) {
+    str2 += (char)(min + gen() % (max - min + 1));
+  }
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
