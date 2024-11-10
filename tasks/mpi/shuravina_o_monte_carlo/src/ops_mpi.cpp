@@ -23,31 +23,6 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::validation() {
   return true;
 }
 
-#include <boost/mpi/collectives.hpp>
-#include <random>
-
-#include "mpi/shuravina_o_monte_carlo/include/ops_mpi.hpp"
-
-bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::pre_processing() {
-  internal_order_test();
-  integral_value_ = 0.0;
-  return true;
-}
-
-bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::validation() {
-  internal_order_test();
-  if (taskData->inputs_count.size() != 1 || taskData->outputs_count.size() != 1) {
-    return false;
-  }
-  if (taskData->inputs_count[0] != 0 || taskData->outputs_count[0] != 1) {
-    return false;
-  }
-  if (taskData->inputs[0] != nullptr || taskData->outputs[0] == nullptr) {
-    return false;
-  }
-  return true;
-}
-
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::run() {
   internal_order_test();
   int num_processes = world.size();
@@ -68,13 +43,6 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::run() {
   return true;
 }
 
-bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::post_processing() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    reinterpret_cast<double*>(taskData->outputs[0])[0] = integral_value_;
-  }
-  return true;
-}
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
