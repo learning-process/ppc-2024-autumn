@@ -1,8 +1,6 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/leontev_n_vector_sum/include/ops_seq.hpp"
 
-#include <thread>
-
 template <class InOutType>
 bool leontev_n_vector_sum_seq::VecSumSequential<InOutType>::pre_processing() {
   internal_order_test();

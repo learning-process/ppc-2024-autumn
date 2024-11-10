@@ -2,10 +2,7 @@
 #include "mpi/leontev_n_vector_sum/include/ops_mpi.hpp"
 
 #include <cstdlib>
-#include <functional>
 #include <string>
-#include <thread>
-#include <vector>
 
 bool leontev_n_vec_sum_mpi::MPIVecSumSequential::pre_processing() {
   internal_order_test();
