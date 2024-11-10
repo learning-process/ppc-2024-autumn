@@ -10,12 +10,8 @@
 #include <random>
 #include <string>
 #include <thread>
-#include <vector>
 
-using namespace golovkin_integration_rectangular_method;
-using namespace std::chrono_literals;
-
-bool MPIIntegralCalculator::validation() {
+bool golovkin_integration_rectangular_method::MPIIntegralCalculator::validation() {
   internal_order_test();
 
   bool is_valid = true;
@@ -26,7 +22,7 @@ bool MPIIntegralCalculator::validation() {
   broadcast(world, is_valid, 0);
   return is_valid;
 }
-bool MPIIntegralCalculator::pre_processing() {
+bool golovkin_integration_rectangular_method::MPIIntegralCalculator::pre_processing() {
   internal_order_test();
 
   if (world.rank() >= 4) {
@@ -46,7 +42,7 @@ bool MPIIntegralCalculator::pre_processing() {
   return true;
 }
 
-bool MPIIntegralCalculator::run() {
+bool golovkin_integration_rectangular_method::MPIIntegralCalculator::run() {
   internal_order_test();
 
   double local_result{};
@@ -57,7 +53,7 @@ bool MPIIntegralCalculator::run() {
   return true;
 }
 
-bool MPIIntegralCalculator::post_processing() {
+bool golovkin_integration_rectangular_method::MPIIntegralCalculator::post_processing() {
   internal_order_test();
 
   if (world.rank() >= 4) {
@@ -67,7 +63,8 @@ bool MPIIntegralCalculator::post_processing() {
   return true;
 }
 
-double MPIIntegralCalculator::integrate(const std::function<double(double)>& f, double a, double b, int splits) {
+double golovkin_integration_rectangular_method::MPIIntegralCalculator::integrate(const std::function<double(double)>& f,
+                                                                                 double a, double b, int splits) {
   int current_process = world.rank();
   int total_processes = world.size();
   double step_size;
@@ -81,4 +78,7 @@ double MPIIntegralCalculator::integrate(const std::function<double(double)>& f, 
   return local_sum;
 }
 
-void MPIIntegralCalculator::set_function(const std::function<double(double)>& target_func) { function_ = target_func; }
+void golovkin_integration_rectangular_method::MPIIntegralCalculator::set_function(
+    const std::function<double(double)>& target_func) {
+  function_ = target_func;
+}
