@@ -4,8 +4,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
 bool sharamygina_i_most_different_neighbor_elements_mpi::most_different_neighbor_elements_seq::pre_processing() {
   internal_order_test();
 
