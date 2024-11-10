@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <numeric>
 #include <string>
 
 #include "core/task/include/task.hpp"
