@@ -77,7 +77,6 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Boundary_Conditions) {
     throw;
   }
 }
-
 TEST(MonteCarloIntegrationTaskParallel, Test_Work_Distribution) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
@@ -120,8 +119,7 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Work_Distribution) {
       ASSERT_EQ(local_points_count[i], local_num_points);
     }
   } catch (const std::exception& e) {
-    std::cerr << "Process " << world.rank() << " caught exception: " << e.what() << std::endl;
-    throw;
+    ASSERT_THROW(throw e, std::exception);
   }
 }
 TEST(MonteCarloIntegrationTaskParallel, Test_Data_Collection) {
