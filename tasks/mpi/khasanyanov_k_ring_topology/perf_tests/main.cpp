@@ -3,7 +3,7 @@
 #include "../include/tests.hpp"
 #include "core/perf/include/perf.hpp"
 
-TEST(khasanyanov_k_average_vector_mpi, test_pipeline_run) {
+TEST(khasanyanov_k_ring_topology_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   if (world.size() < 2) {
     SUCCEED();
@@ -39,7 +39,7 @@ TEST(khasanyanov_k_average_vector_mpi, test_pipeline_run) {
   }
 }
 
-TEST(khasanyanov_k_average_vector_mpi, test_task_run) {
+TEST(khasanyanov_k_ring_topology_mpi, test_task_run) {
   boost::mpi::communicator world;
   if (world.size() < 2) {
     SUCCEED();
