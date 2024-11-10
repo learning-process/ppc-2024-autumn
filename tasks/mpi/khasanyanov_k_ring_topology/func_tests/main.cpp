@@ -23,3 +23,18 @@ TEST(khasanyanov_k_ring_topology_tests, test_validation) {
     ASSERT_FALSE(testTask.validation());
   }
 }
+
+TEST(khasanyanov_k_ring_topology_tests, test_creating_task_data) {
+  boost::mpi::communicator world;
+  const std::vector<int> in_data = khasanyanov_k_ring_topology_mpi::generate_random_vector<int>(10);
+  std::vector<int> out_data(in_data);
+  std::vector<int> order(world.size());
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskData = khasanyanov_k_ring_topology_mpi::create_task_data<int>(out_data, order);
+    ASSERT_FALSE(taskData->inputs.empty());
+    ASSERT_FALSE(taskData->inputs_count.empty());
+    EXPECT_TRUE(taskData->outputs.size() == 2);
+    EXPECT_TRUE(taskData->outputs_count.size() == 2);
+  }
+}
