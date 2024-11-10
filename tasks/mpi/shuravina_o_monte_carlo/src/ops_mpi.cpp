@@ -30,15 +30,11 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::run() {
   int num_processes = world.size();
   int rank = world.rank();
 
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_real_distribution<> dis(a_, b_);
-
   int local_num_points = num_points_ / num_processes;
 
   double local_sum = 0.0;
   for (int i = 0; i < local_num_points; ++i) {
-    double x = dis(gen);
+    double x = dis_(gen);
     local_sum += f_(x);
   }
 
