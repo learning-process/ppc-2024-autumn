@@ -167,7 +167,9 @@ TEST(budazhapova_e_count_freq_character_mpi, big_string) {
 
 TEST(budazhapova_e_count_freq_character_mpi, test_with_no_symbol_in_string) {
   boost::mpi::communicator world;
-  std::string global_str = "dfbsdjkffdbfsdkjfb" std::vector<int> global_out(1, 0);
+  std::string global_str = "dfbsdjkffdbfsdkjfb";
+
+  std::vector<int> global_out(1, 0);
   char symb = '1';
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
