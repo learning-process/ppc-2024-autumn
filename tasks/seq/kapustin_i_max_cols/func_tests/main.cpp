@@ -3,6 +3,18 @@
 #include <vector>
 
 #include "seq/kapustin_i_max_cols/include/avg_seq.hpp"
+namespace kapustin_i_max_column_task_seq {
+std::vector<int> getRandomVectorForSeq(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    int val = gen() % 200000 - 100000;
+    vec[i] = val;
+  }
+  return vec;
+}
+}  // namespace kapustin_i_max_column_task_seq
 
 TEST(kapustin_i_max_column_task_seq, test_square_M_3_3) {
   std::vector<int> in = {1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -128,4 +140,34 @@ TEST(kapustin_i_max_column_task_seq, ZeroColumnOrRowCount) {
   taskData->inputs_count = {0, 0};
   kapustin_i_max_column_task_seq::MaxColumnTaskSequential task(taskData);
   ASSERT_FALSE(task.validation());
+}
+TEST(kapustin_i_max_column_task_seq, test_square_M_random) {
+  int rows = 3;
+  int columns = 3;
+  std::vector<int> in = kapustin_i_max_column_task_seq::getRandomVectorForSeq(rows * columns);
+  std::vector<int> expected_out(columns);
+  for (int col = 0; col < columns; ++col) {
+    int max_val = in[col];
+    for (int row = 1; row < rows; ++row) {
+      int idx = row * columns + col;
+      if (in[idx] > max_val) {
+        max_val = in[idx];
+      }
+    }
+    expected_out[col] = max_val;
+  }
+  std::vector<int> out(columns);
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
+  taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&columns));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
+  taskDataSeq->inputs_count.emplace_back(columns);
+  kapustin_i_max_column_task_seq::MaxColumnTaskSequential testTask(taskDataSeq);
+  ASSERT_EQ(testTask.validation(), true);
+  testTask.pre_processing();
+  testTask.run();
+  testTask.post_processing();
+  ASSERT_EQ(out, expected_out);
 }

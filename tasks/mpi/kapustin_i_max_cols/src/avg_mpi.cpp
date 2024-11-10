@@ -73,46 +73,59 @@ bool kapustin_i_max_column_task_mpi::MaxColumnTaskParallelMPI::run() {
   broadcast(world, column_count, 0);
   broadcast(world, row_count, 0);
 
-  if (world.rank() != 0) {
-    input_.assign(column_count * row_count, 0);
-  }
+  column_per_proc = column_count / world.size();
+  int remaining_columns = column_count % world.size();
 
-  broadcast(world, input_.data(), column_count * row_count, 0);
+  start_current_column = column_per_proc * world.rank() + std::min(world.rank(), remaining_columns);
+  end_current_column = start_current_column + column_per_proc + (world.rank() < remaining_columns ? 1 : 0);
+  int local_columns = end_current_column - start_current_column;
 
-  column_per_proc = column_count / world.size() + (column_count % world.size() != 0 ? 1 : 0);
-  start_current_column = column_per_proc * world.rank();
-  end_current_column = std::min(column_count, column_per_proc * (world.rank() + 1));
-  std::vector<int> Max_on_proc;
-  Max_on_proc.reserve(column_per_proc);
-  for (int j = start_current_column; j < end_current_column; j++) {
-    if (j < column_count) {
-      int founded_max_element = input_[j];
-      for (int i = 1; i < row_count; i++) {
-        int idx = i * column_count + j;
-        if (idx < static_cast<int>(input_.size())) {
-          if (input_[idx] > founded_max_element) {
-            founded_max_element = input_[idx];
-          }
-        }
-      }
-      Max_on_proc.push_back(founded_max_element);
-    }
-  }
-
-  Max_on_proc.resize(column_per_proc = column_count / world.size() + (column_count % world.size() != 0 ? 1 : 0));
+  input_.resize(row_count * local_columns);
 
   if (world.rank() == 0) {
-    gathered_max_columns.resize(column_count + column_per_proc * world.size());
-    columns_per_process_count = std::vector<int>(world.size(), column_per_proc);
-    boost::mpi::gatherv(world, Max_on_proc.data(), Max_on_proc.size(), gathered_max_columns.data(),
-                        columns_per_process_count, 0);
+    for (int proc = 1; proc < world.size(); ++proc) {
+      int proc_start_col = column_per_proc * proc + std::min(proc, remaining_columns);
+      int proc_end_col = proc_start_col + column_per_proc + (proc < remaining_columns ? 1 : 0);
+      int proc_columns = proc_end_col - proc_start_col;
+      std::vector<int> columns_data(row_count * proc_columns);
+      for (int i = 0; i < row_count; ++i) {
+        for (int j = 0; j < proc_columns; ++j) {
+          columns_data[i * proc_columns + j] = input_[i * column_count + proc_start_col + j];
+        }
+      }
+      world.send(proc, 0, columns_data.data(), row_count * proc_columns);
+    }
+    for (int i = 0; i < row_count; ++i) {
+      for (int j = 0; j < local_columns; ++j) {
+        input_[i * local_columns + j] = input_[i * column_count + start_current_column + j];
+      }
+    }
+  } else {
+    world.recv(0, 0, input_.data(), row_count * local_columns);
+  }
+  std::vector<int> Max_on_proc(local_columns, std::numeric_limits<int>::min());
+  for (int j = 0; j < local_columns; ++j) {
+    for (int i = 0; i < row_count; ++i) {
+      Max_on_proc[j] = std::max(Max_on_proc[j], input_[i * local_columns + j]);
+    }
+  }
+  if (world.rank() == 0) {
     gathered_max_columns.resize(column_count);
+    columns_per_process_count.resize(world.size());
+    std::vector<int> displs(world.size());
+    for (int i = 0; i < world.size(); ++i) {
+      columns_per_process_count[i] = column_per_proc + (i < remaining_columns ? 1 : 0);
+      displs[i] = (i == 0) ? 0 : displs[i - 1] + columns_per_process_count[i - 1];
+    }
+    boost::mpi::gatherv(world, Max_on_proc.data(), local_columns, gathered_max_columns.data(),
+                        columns_per_process_count, displs, 0);
     res = gathered_max_columns;
   } else {
-    boost::mpi::gatherv(world, Max_on_proc.data(), Max_on_proc.size(), 0);
+    boost::mpi::gatherv(world, Max_on_proc.data(), local_columns, 0);
   }
   return true;
 }
+
 bool kapustin_i_max_column_task_mpi::MaxColumnTaskParallelMPI::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {

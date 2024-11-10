@@ -11,10 +11,8 @@ std::vector<int> getRandomVector(int sz) {
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
   for (int i = 0; i < sz; i++) {
-    int val = gen() % 100000;
-    if (val >= 0) {
-      vec[i] = val;
-    }
+    int val = gen() % 200000 - 100000;
+    vec[i] = val;
   }
   return vec;
 }
