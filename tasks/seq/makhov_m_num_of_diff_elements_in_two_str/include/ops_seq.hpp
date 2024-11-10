@@ -8,7 +8,7 @@
 
 namespace makhov_m_num_of_diff_elements_in_two_str_seq {
 
-int countDiffElem(std::string str1_, std::string str2_);
+int countDiffElem(const std::string& str1_, const std::string& str2_);
 
 class TestTaskSequential : public ppc::core::Task {
  public:

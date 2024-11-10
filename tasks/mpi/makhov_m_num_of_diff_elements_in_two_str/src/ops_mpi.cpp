@@ -6,7 +6,7 @@
 #include <random>
 #include <string>
 
-int makhov_m_num_of_diff_elements_in_two_str_mpi::countDiffElem(std::string str1_, std::string str2_) {
+int makhov_m_num_of_diff_elements_in_two_str_mpi::countDiffElem(const std::string &str1_, const std::string &str2_) {
   int count = 0;
   int sizeDiff = std::abs(((int)str1_.size() - (int)str2_.size()));
   size_t minSize = std::min(str1_.size(), str2_.size());

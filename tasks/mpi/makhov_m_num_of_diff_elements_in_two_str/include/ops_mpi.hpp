@@ -15,7 +15,7 @@
 
 namespace makhov_m_num_of_diff_elements_in_two_str_mpi {
 
-int countDiffElem(std::string str1_, std::string str2_);
+int countDiffElem(const std::string& str1_, const std::string& str2_);
 std::string getShorterStr(std::string str1_, std::string str2_);
 
 class TestMPITaskSequential : public ppc::core::Task {
