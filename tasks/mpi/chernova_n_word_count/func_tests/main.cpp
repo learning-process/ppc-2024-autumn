@@ -227,6 +227,7 @@ TEST(chernova_n_word_count_mpi, Test_five_words_with_a_lot_of_space) {
     ASSERT_EQ(out[0], referenceWordCount[0]);
   }
 }
+
 TEST(chernova_n_word_count_mpi, Test_twenty_words) {
   boost::mpi::communicator world;
   std::vector<char> in;

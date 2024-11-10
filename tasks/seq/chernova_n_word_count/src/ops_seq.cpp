@@ -4,7 +4,7 @@
 #include <string>
 #include <thread>
 #include <vector>
-
+/*
 std::vector<char> chernova_n_word_count_seq::clean_string(const std::vector<char>& input) {
   std::string result;
   std::string str(input.begin(), input.end());
@@ -32,16 +32,17 @@ std::vector<char> chernova_n_word_count_seq::clean_string(const std::vector<char
   result.assign(str.begin(), str.end());
   return std::vector<char>(result.begin(), result.end());
 }
-
+*/
 bool chernova_n_word_count_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   input_ = std::vector<char>(taskData->inputs_count[0]);
-  spaceCount = 0;
+  letter = 0;
+  wordCount = 0;
   auto* tmp = reinterpret_cast<char*>(taskData->inputs[0]);
   for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
     input_[i] = tmp[i];
   }
-  input_ = clean_string(input_);
+  //input_ = clean_string(input_);
   return true;
 }
 
@@ -52,6 +53,7 @@ bool chernova_n_word_count_seq::TestTaskSequential::validation() {
 
 bool chernova_n_word_count_seq::TestTaskSequential::run() {
   internal_order_test();
+  /*
   if (input_.empty()) {
     spaceCount = -1;
   }
@@ -61,11 +63,29 @@ bool chernova_n_word_count_seq::TestTaskSequential::run() {
       spaceCount++;
     }
   }
+  */
+  for (size_t i = 0; i < input_.size(); i++) {
+    char c = input_[i];
+    if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
+      letter++;
+    } else {
+      if (c == ' ') {
+        if (letter > 0) {
+          wordCount++;
+          letter = 0;
+        }
+      }
+    }
+  }
+  if (letter > 0) {
+    wordCount++;
+    letter = 0;
+  }
   return true;
 }
 
 bool chernova_n_word_count_seq::TestTaskSequential::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = spaceCount + 1;
+  reinterpret_cast<int*>(taskData->outputs[0])[0] = wordCount;
   return true;
 }
