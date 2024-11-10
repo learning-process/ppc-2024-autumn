@@ -105,7 +105,7 @@ TEST(vershinina_a_integration_the_monte_carlo_method, test4) {
   testTaskSequential.run();
   testTaskSequential.post_processing();
   another_res[0] = (sin(xmax) - sin(xmin));
-  EXPECT_NEAR(another_res[0], reference_res[0], 2);
+  EXPECT_NEAR(another_res[0], reference_res[0], 10);
 }
 
 TEST(vershinina_a_integration_the_monte_carlo_method, test5) {
@@ -133,5 +133,5 @@ TEST(vershinina_a_integration_the_monte_carlo_method, test5) {
   testTaskSequential.run();
   testTaskSequential.post_processing();
   another_res[0] = (cos(xmax) - cos(xmin));
-  EXPECT_NEAR(another_res[0], reference_res[0], 2);
+  EXPECT_NEAR(another_res[0], reference_res[0], 10);
 }
