@@ -15,7 +15,7 @@ TEST(budazhapova_e_count_freq_character_mpi, test_with_random_string) {
   std::vector<int> global_out(1, 0);
   char symb = '1';
   const int size_string = 10;
-  global_str = budazhapova_e_count_freq_character_mpi::TestMPITaskParallel::getRandomString(size_string);
+  global_str = budazhapova_e_count_freq_character_mpi::getRandomString(size_string);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();

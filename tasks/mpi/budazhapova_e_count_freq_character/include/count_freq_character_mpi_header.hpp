@@ -14,6 +14,7 @@
 namespace budazhapova_e_count_freq_character_mpi {
 
 int counting_freq(std::string str, char symb);
+std::string getRandomString(int length);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
@@ -36,7 +37,6 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  std::string getRandomString(int length);
 
  private:
   std::string input_, local_input_;
