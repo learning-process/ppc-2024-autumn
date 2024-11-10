@@ -4,7 +4,6 @@
 #include <functional>
 #include <random>
 #include <string>
-#include <vector>
 
 int Min(const std::vector<int>& res) {
   if (res.empty()) {

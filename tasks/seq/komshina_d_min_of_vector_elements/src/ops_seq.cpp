@@ -1,9 +1,5 @@
 #include "seq/komshina_d_min_of_vector_elements/include/ops_seq.hpp"
 
-#include <thread>
-
-using namespace std::chrono_literals;
-
 bool komshina_d_min_of_vector_elements_seq::MinOfVectorElementTaskSequential::pre_processing() {
   internal_order_test();
   input_ = std::vector<int>(taskData->inputs_count[0]);
