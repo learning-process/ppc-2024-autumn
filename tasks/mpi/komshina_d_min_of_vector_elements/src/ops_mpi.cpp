@@ -109,3 +109,4 @@ bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel::post
   }
   return true;
 }
+cd
