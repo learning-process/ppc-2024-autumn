@@ -205,7 +205,7 @@ TEST(baranov_a_ring_topology, Test_ring_1000_double) {
         EXPECT_EQ(i, out_poll[i]);
       }
     }
-    ASSERT_EQ(arr,out);
+    ASSERT_EQ(arr, out);
   }
 }
 TEST(baranov_a_ring_topology, Test_ring_100000_double) {
@@ -236,7 +236,7 @@ TEST(baranov_a_ring_topology, Test_ring_100000_double) {
         EXPECT_EQ(i, out_poll[i]);
       }
     }
-    ASSERT_EQ(arr,out);
+    ASSERT_EQ(arr, out);
   }
 }
 TEST(baranov_a_ring_topology, Test_ring_100_uint) {
@@ -267,7 +267,7 @@ TEST(baranov_a_ring_topology, Test_ring_100_uint) {
         EXPECT_EQ(i, out_poll[i]);
       }
     }
-    ASSERT_EQ(arr,out);
+    ASSERT_EQ(arr, out);
   }
 }
 TEST(baranov_a_ring_topology, Test_ring_10000_uint) {
@@ -298,6 +298,6 @@ TEST(baranov_a_ring_topology, Test_ring_10000_uint) {
         EXPECT_EQ(i, out_poll[i]);
       }
     }
-    ASSERT_EQ(arr,out);
+    ASSERT_EQ(arr, out);
   }
 }
