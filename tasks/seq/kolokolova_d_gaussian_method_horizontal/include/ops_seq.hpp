@@ -8,6 +8,8 @@
 
 namespace kolokolova_d_gaussian_method_horizontal_seq {
 
+int find_rank(std::vector<double>& matrix, int rows, int cols);
+
 class TestTaskSequential : public ppc::core::Task {
  public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -17,8 +19,10 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<std::vector<int>> input_;
-  std::vector<int> res;
+  std::vector<int> input_coeff;
+  std::vector<int> input_y;
+  std::vector<double> res;
+  int count_equations = 0;
 };
 
 }  // namespace kolokolova_d_gaussian_method_horizontal_seq
