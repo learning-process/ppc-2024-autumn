@@ -1,14 +1,9 @@
-// Copyright 2023 Nesterov Alexander
 #include "mpi/example/include/ops_mpi.hpp"
 
 #include <algorithm>
 #include <functional>
 #include <random>
 #include <string>
-#include <thread>
-#include <vector>
-
-using namespace std::chrono_literals;
 
 std::vector<int> nesterov_a_test_task_mpi::getRandomVector(int sz) {
   std::random_device dev;

@@ -4,10 +4,7 @@
 #include <functional>
 #include <random>
 #include <string>
-#include <thread>
 #include <vector>
-
-using namespace std::chrono_literals;
 
 int Min(const std::vector<int>& res) {
   if (res.empty()) {
