@@ -1,6 +1,9 @@
 #include <gtest/gtest.h>
 
+#include <cmath>
+#include <iostream>
 #include <memory>
+#include <random>
 #include <vector>
 
 #include "seq/korablev_v_jacobi_method/include/ops_seq.hpp"
@@ -126,11 +129,14 @@ TEST(korablev_v_jacobi_method, test_matrix_5x5) {
 TEST(korablev_v_jacobi_method, test_matrix_6x6) {
   const size_t matrix_size = 6;
   std::vector<size_t> in_size(1, matrix_size);
-  std::vector<double> matrix_data = {10.0, -1.0, 2.0,  0.0,  3.0, -2.0, -1.0, 11.0, -1.0, 3.0, 0.0,  2.0,
-                                     2.0,  -1.0, 10.0, -1.0, 2.0, -1.0, 0.0,  3.0,  -1.0, 8.0, -1.0, 1.0,
-                                     3.0,  0.0,  2.0,  -1.0, 9.0, -2.0, -2.0, 2.0,  -1.0, 1.0, -2.0, 8.0};
+
+  std::vector<double> matrix_data = {15.0, -1.0, 2.0,  0.0,  3.0,  -2.0, -1.0, 18.0, -1.0, 3.0,  0.0,  2.0,
+                                     2.0,  -1.0, 15.0, -1.0, 2.0,  -1.0, 0.0,  3.0,  -1.0, 13.0, -1.0, 1.0,
+                                     3.0,  0.0,  2.0,  -1.0, 14.0, -2.0, -2.0, 2.0,  -1.0, 1.0,  -2.0, 17.0};
+
   std::vector<double> vector_data = {5.0, 12.0, 7.0, -3.0, 10.0, -8.0};
-  std::vector<double> expected_solution = {0.1484754, 1.52313539, 0.52391788, -0.67132761, 0.6408108, -1.03405661};
+  std::vector<double> expected_solution = {0.16989913316691407, 0.7976844699507312, 0.3752216234950149,
+                                           -0.3106171008637048, 0.5391352751989575, -0.44067419993005874};
   std::vector<double> out(matrix_size, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -166,7 +172,6 @@ TEST(korablev_v_jacobi_method, invalid_input_count) {
   taskDataSeq->inputs_count.emplace_back(in_size.size());
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix_data.data()));
   taskDataSeq->inputs_count.emplace_back(matrix_data.size());
-  // Пропускаем добавление третьего входного элемента
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
@@ -187,6 +192,69 @@ TEST(korablev_v_jacobi_method, invalid_output_count) {
   taskDataSeq->inputs_count.emplace_back(matrix_data.size());
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(vector_data.data()));
   taskDataSeq->inputs_count.emplace_back(vector_data.size());
+
+  korablev_v_jacobi_method_seq::JacobiMethodSequential jacobiTaskSequential(taskDataSeq);
+  ASSERT_FALSE(jacobiTaskSequential.validation());
+}
+
+TEST(korablev_v_jacobi_method, non_diagonally_dominant_matrix) {
+  const size_t matrix_size = 2;
+  std::vector<size_t> in_size(1, matrix_size);
+  std::vector<double> matrix_data = {1.0, 2.0, 2.0, 1.0};
+  std::vector<double> vector_data = {1.0, 2.0};
+  std::vector<double> out(matrix_size, 0.0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in_size.data()));
+  taskDataSeq->inputs_count.emplace_back(in_size.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix_data.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix_data.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(vector_data.data()));
+  taskDataSeq->inputs_count.emplace_back(vector_data.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
+
+  korablev_v_jacobi_method_seq::JacobiMethodSequential jacobiTaskSequential(taskDataSeq);
+  ASSERT_FALSE(jacobiTaskSequential.validation());
+}
+
+TEST(korablev_v_jacobi_method, zero_on_diagonal) {
+  const size_t matrix_size = 2;
+  std::vector<size_t> in_size(1, matrix_size);
+  std::vector<double> matrix_data = {0.0, 1.0, 1.0, 3.0};
+  std::vector<double> vector_data = {1.0, 2.0};
+  std::vector<double> out(matrix_size, 0.0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in_size.data()));
+  taskDataSeq->inputs_count.emplace_back(in_size.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix_data.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix_data.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(vector_data.data()));
+  taskDataSeq->inputs_count.emplace_back(vector_data.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
+
+  korablev_v_jacobi_method_seq::JacobiMethodSequential jacobiTaskSequential(taskDataSeq);
+  ASSERT_FALSE(jacobiTaskSequential.validation());
+}
+
+TEST(korablev_v_jacobi_method, invalid_matrix_size) {
+  const size_t matrix_size = 3;
+  std::vector<size_t> in_size(1, matrix_size);
+  std::vector<double> matrix_data = {4.0, 1.0, 2.0, 3.0};
+  std::vector<double> vector_data = {1.0, 2.0};
+  std::vector<double> out(2, 0.0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in_size.data()));
+  taskDataSeq->inputs_count.emplace_back(in_size.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix_data.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix_data.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(vector_data.data()));
+  taskDataSeq->inputs_count.emplace_back(vector_data.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
 
   korablev_v_jacobi_method_seq::JacobiMethodSequential jacobiTaskSequential(taskDataSeq);
   ASSERT_FALSE(jacobiTaskSequential.validation());

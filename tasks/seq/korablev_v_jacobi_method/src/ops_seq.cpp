@@ -23,9 +23,47 @@ bool korablev_v_jacobi_method_seq::JacobiMethodSequential::pre_processing() {
 bool korablev_v_jacobi_method_seq::JacobiMethodSequential::validation() {
   internal_order_test();
 
+  // Проверка количества входных и выходных данных
   if (taskData->inputs_count.size() != 3 || taskData->outputs_count.size() != 1) {
-    std::cerr << "Incorrect number of input or output data" << std::endl;
+    std::cerr << "Error: Invalid number of inputs or outputs." << std::endl;
     return false;
+  }
+
+  // Проверка соответствия размерностей
+  size_t n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
+  if (n <= 0) {
+    std::cerr << "Error: Matrix size must be positive." << std::endl;
+    return false;
+  }
+
+  if (reinterpret_cast<double*>(taskData->inputs[1]) == nullptr ||
+      reinterpret_cast<double*>(taskData->inputs[2]) == nullptr ||
+      reinterpret_cast<double*>(taskData->outputs[0]) == nullptr) {
+    std::cerr << "Error: Null pointer in input or output data." << std::endl;
+    return false;
+  }
+
+  // Проверка на диагональное преобладание
+  for (size_t i = 0; i < n; ++i) {
+    double diag = std::fabs(reinterpret_cast<double*>(taskData->inputs[1])[i * n + i]);
+    double sum = 0.0;
+
+    for (size_t j = 0; j < n; ++j) {
+      if (i != j) {
+        sum += std::fabs(reinterpret_cast<double*>(taskData->inputs[1])[i * n + j]);
+      }
+    }
+
+    if (diag <= sum) {
+      std::cerr << "Error: Matrix is not diagonally dominant." << std::endl;
+      return false;
+    }
+
+    // Проверка на нулевые элементы на диагонали
+    if (diag == 0.0) {
+      std::cerr << "Error: Zero element on the diagonal." << std::endl;
+      return false;
+    }
   }
 
   return true;
@@ -34,30 +72,28 @@ bool korablev_v_jacobi_method_seq::JacobiMethodSequential::validation() {
 bool korablev_v_jacobi_method_seq::JacobiMethodSequential::run() {
   internal_order_test();
   int n = b_.size();
-  std::vector<double> x_new(n, 0.0);
+  std::vector<double> dx(n, 0.0);
+  std::vector<double> y(n, 0.0);
+  double sum;
 
   for (int iter = 0; iter < maxIterations_; ++iter) {
-    for (int i = 0; i < n; ++i) {
-      x_new[i] = b_[i];
+    sum = 0.0;
 
+    for (int i = 0; i < n; ++i) {
+      dx[i] = b_[i];
       for (int j = 0; j < n; ++j) {
-        if (j != i) {
-          x_new[i] -= A_[i][j] * x_[j];
+        if (i != j) {
+          dx[i] -= A_[i][j] * x_[j];
         }
       }
-
-      x_new[i] /= A_[i][i];
+      dx[i] /= A_[i][i];
+      y[i] = dx[i];
+      sum += std::fabs(dx[i]);
     }
 
-    double maxDiff = 0.0;
-    for (int i = 0; i < n; ++i) {
-      maxDiff = std::max(maxDiff, std::fabs(x_new[i] - x_[i]));
-    }
+    x_ = y;
 
-    x_ = x_new;
-
-    if (maxDiff < epsilon_) {
-      std::cout << "Сходимость достигнута после " << iter << " итераций." << std::endl;
+    if (sum <= epsilon_) {
       break;
     }
   }
