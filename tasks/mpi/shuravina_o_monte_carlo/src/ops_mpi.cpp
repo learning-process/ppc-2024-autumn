@@ -1,6 +1,7 @@
 #include "mpi/shuravina_o_monte_carlo/include/ops_mpi.hpp"
 
 #include <boost/mpi/collectives.hpp>
+#include <iostream>
 #include <random>
 
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::pre_processing() {
@@ -58,6 +59,7 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::run() {
 
   return true;
 }
+
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
