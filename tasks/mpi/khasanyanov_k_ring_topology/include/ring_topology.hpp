@@ -48,7 +48,7 @@ bool RingTopology<DataType, SizeType>::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     return taskData->inputs.size() == 1 && !taskData->inputs_count.empty() && taskData->inputs_count[0] > 0 &&
-           taskData->outputs.size() == 2 && world.size() > 1;
+           taskData->outputs.size() == 2;
   }
   return true;
 }
@@ -69,10 +69,10 @@ bool RingTopology<DataType, SizeType>::run() {
   internal_order_test();
 
   // count of processes should be more than 1, but temporary check
-  // if (world.size() == 1) {
-  //   data_.order_.emplace_back(0);
-  //   return true;
-  // }
+  if (world.size() == 1) {
+    data_.order_.push_back(0);
+    return true;
+  }
   auto rank = world.rank();
   int next = (rank == world.size() - 1) ? 0 : rank + 1;
   int prev = (rank == 0) ? world.size() - 1 : rank - 1;
