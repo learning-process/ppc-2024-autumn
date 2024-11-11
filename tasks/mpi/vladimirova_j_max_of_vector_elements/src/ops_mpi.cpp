@@ -7,8 +7,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
 int vladimirova_j_max_of_vector_elements_mpi::FindMaxElem(std::vector<int> m) {
   if (m.empty()) return INT_MIN;
   int max_elem = m[0];
