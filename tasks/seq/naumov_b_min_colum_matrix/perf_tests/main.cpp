@@ -1,4 +1,3 @@
-// Copyright 2024 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <algorithm>
@@ -8,7 +7,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/naumov_b_min_colum_matrix/include/ops_seq.hpp"
 
-TEST(sequential_naumov_b_min_colum_matrix_perf_test, test_pipeline_run) {
+TEST(naumov_b_min_colum_matrix_seq, test_pipeline_run) {
   const int rows = 1000;
   const int cols = 1000;
 
@@ -45,7 +44,7 @@ TEST(sequential_naumov_b_min_colum_matrix_perf_test, test_pipeline_run) {
   ASSERT_EQ(out.size(), static_cast<size_t>(cols));
 }
 
-TEST(sequential_naumov_b_min_colum_matrix_perf_test, test_task_run) {
+TEST(snaumov_b_min_colum_matrix_seq, test_task_run) {
   const int rows = 1000;
   const int cols = 1000;
 

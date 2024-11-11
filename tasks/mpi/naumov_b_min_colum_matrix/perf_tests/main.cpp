@@ -1,4 +1,3 @@
-// Copyright 2024 Your Name
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
@@ -16,7 +15,7 @@ static std::vector<std::vector<int>> getRandomMatrix(int rows, int columns) {
   return matrix;
 }
 
-TEST(naumov_b_min_colum_matrix_mpi_perf, test_pipeline_run) {
+TEST(naumov_b_min_colum_matrix_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int> global_results;
@@ -60,7 +59,7 @@ TEST(naumov_b_min_colum_matrix_mpi_perf, test_pipeline_run) {
   }
 }
 
-TEST(naumov_b_min_colum_matrix_mpi, test_column_minimum_task_run) {
+TEST(naumov_b_min_colum_matrix_mpi, test_task_run) {
   boost::mpi::communicator world;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 

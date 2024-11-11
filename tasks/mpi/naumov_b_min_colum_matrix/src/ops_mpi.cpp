@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include "mpi/naumov_b_min_colum_matrix/include/ops_mpi.hpp"
 
 #include <algorithm>
