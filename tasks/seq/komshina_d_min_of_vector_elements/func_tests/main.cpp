@@ -81,6 +81,21 @@ TEST(komshina_d_min_of_vector_elements_seq, Test_Min_3) {
   ASSERT_EQ(expected_min, out[0]);
 }
 
+TEST(komshina_d_min_of_vector_elements_seq, Validation_InvalidOutputCount) {
+  std::vector<int> in = {1, 2, 3, 4, 5};
+  std::vector<int> out(0, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
+
+  komshina_d_min_of_vector_elements_seq::MinOfVectorElementTaskSequential MinOfVectorElementTaskSequential(taskDataSeq);
+
+  ASSERT_EQ(MinOfVectorElementTaskSequential.validation(), false);
+}
+
 TEST(komshina_d_min_of_vector_elements_seq, Empty_Vector) {
   std::vector<int> in;
   std::vector<int> out(1);

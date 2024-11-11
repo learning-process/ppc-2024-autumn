@@ -5,20 +5,6 @@
 #include <random>
 #include <string>
 
-int Min(const std::vector<int>& res) {
-  if (res.empty()) {
-    return 0;
-  }
-  int local_res = res[0];
-  for (size_t i = 1; i < res.size(); i++) {
-    if (res[i] < local_res) {
-      local_res = res[i];
-    }
-  }
-
-  return local_res;
-}
-
 bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential::pre_processing() {
   internal_order_test();
   input_ = std::vector<int>(taskData->inputs_count[0]);
@@ -37,7 +23,8 @@ bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskSequential::ru
   if (input_.empty()) {
     return true;
   }
-  res = Min(input_);
+  auto min_it = std::min_element(input_.begin(), input_.end());
+  res = *min_it;
   return true;
 }
 
@@ -94,7 +81,8 @@ bool komshina_d_min_of_vector_elements_mpi::MinOfVectorElementTaskParallel::run(
   if (local_input_.empty()) {
     return true;
   }
-  int local_res = Min(local_input_);
+  auto min_it = std::min_element(local_input_.begin(), local_input_.end());
+  int local_res = *min_it;
 
   reduce(world, local_res, res, boost::mpi::minimum<int>(), 0);
 

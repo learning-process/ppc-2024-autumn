@@ -12,8 +12,6 @@
 
 namespace komshina_d_min_of_vector_elements_mpi {
 
-std::vector<int> getRandomVector(int sz);
-
 class MinOfVectorElementTaskSequential : public ppc::core::Task {
  public:
   explicit MinOfVectorElementTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
