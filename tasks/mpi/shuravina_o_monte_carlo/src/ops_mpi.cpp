@@ -43,10 +43,8 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::run() {
   return true;
 }
 
-bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::post_processing() {
+bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::pre_processing() {
   internal_order_test();
-  if (world.rank() == 0) {
-    reinterpret_cast<double*>(taskData->outputs[0])[0] = integral_value_;
-  }
+  integral_value_ = 0.0;
   return true;
 }
