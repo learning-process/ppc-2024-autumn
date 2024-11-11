@@ -46,7 +46,11 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::run() {
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    reinterpret_cast<double*>(taskData->outputs[0])[0] = integral_value_;
+    if (taskData->outputs[0] != nullptr) {
+      reinterpret_cast<double*>(taskData->outputs[0])[0] = integral_value_;
+    } else {
+      return false;
+    }
   }
   return true;
 }

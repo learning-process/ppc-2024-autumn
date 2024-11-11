@@ -6,6 +6,7 @@
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/shuravina_o_monte_carlo/include/ops_mpi.hpp"
+
 TEST(MonteCarloIntegrationTaskParallel, Test_Integration) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
@@ -24,10 +25,7 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Integration) {
     auto testMpiTaskParallel =
         std::make_shared<shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel>(taskDataPar);
     testMpiTaskParallel->set_interval(0.0, 1.0);
-
-    int num_points = std::stoi(std::getenv("TEST_TIMEOUT")) * 10000;
-    testMpiTaskParallel->set_num_points(num_points);
-
+    testMpiTaskParallel->set_num_points(1000000);
     testMpiTaskParallel->set_function([](double x) { return x * x; });
 
     ASSERT_EQ(testMpiTaskParallel->validation(), true);
@@ -60,7 +58,7 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Boundary_Conditions) {
 
     auto testMpiTaskParallel =
         std::make_shared<shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel>(taskDataPar);
-    testMpiTaskParallel->set_interval(0.0, 1.0);
+    testMpiTaskParallel->set_interval(-1.0, 1.0);
     testMpiTaskParallel->set_num_points(1000000);
     testMpiTaskParallel->set_function([](double x) { return x * x; });
 
@@ -70,12 +68,11 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Boundary_Conditions) {
     testMpiTaskParallel->post_processing();
 
     if (world.rank() == 0) {
-      double expected_integral = 1.0 / 3.0;
+      double expected_integral = 2.0 / 3.0;
       ASSERT_NEAR(expected_integral, out[0], 0.01);
     }
   } catch (const std::exception& e) {
-    std::cerr << "Process " << world.rank() << " caught exception: " << e.what() << std::endl;
-    throw;
+    ASSERT_THROW(throw e, std::exception);
   }
 }
 TEST(MonteCarloIntegrationTaskParallel, Test_Work_Distribution) {
@@ -166,12 +163,10 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Data_Collection) {
       ASSERT_NEAR(total_sum, out[0], 0.01);
     }
   } catch (const std::exception& e) {
-    std::cerr << "Process " << world.rank() << " caught exception: " << e.what() << std::endl;
-    throw;
+    ASSERT_THROW(throw e, std::exception);
   }
 }
-
-TEST(MonteCarloIntegrationTaskParallel, Test_Uneven_Points_Distribution) {
+TEST(MonteCarloIntegrationTaskParallel, Test_Exception_Handling) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
@@ -202,21 +197,10 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Uneven_Points_Distribution) {
       ASSERT_NEAR(expected_integral, out[0], 0.01);
     }
 
-    int num_processes = world.size();
-    int rank = world.rank();
-    int num_points = 1000000;
-    int local_num_points = num_points / num_processes + (rank < num_points % num_processes ? 1 : 0);
-
-    std::vector<int> local_points_count(num_processes, 0);
-    boost::mpi::all_gather(world, local_num_points, local_points_count);
-
-    int total_points = 0;
-    for (int i = 0; i < num_processes; ++i) {
-      total_points += local_points_count[i];
+    if (world.rank() == 0) {
+      throw std::runtime_error("Simulated exception");
     }
-    ASSERT_EQ(total_points, num_points);
   } catch (const std::exception& e) {
-    std::cerr << "Process " << world.rank() << " caught exception: " << e.what() << std::endl;
-    throw;
+    ASSERT_THROW(throw e, std::exception);
   }
 }

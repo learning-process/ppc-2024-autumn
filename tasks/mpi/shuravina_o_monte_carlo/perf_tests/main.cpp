@@ -201,7 +201,6 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Exception_Handling) {
       ASSERT_NEAR(expected_integral, out[0], 0.01);
     }
 
-    // Simulate an exception
     if (world.rank() == 0) {
       throw std::runtime_error("Simulated exception");
     }
