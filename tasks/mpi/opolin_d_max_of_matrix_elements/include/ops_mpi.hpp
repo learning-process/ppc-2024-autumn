@@ -13,9 +13,6 @@
 
 #include "core/task/include/task.hpp"
 
-std::vector<int> getRandomVectorForGetMaxInMatrix(int sz, int min, int max);
-std::vector<std::vector<int>> getRandomMatrixForGetMaxInMatrix(int rows, int cols, int min, int max);
-
 namespace opolin_d_max_of_matrix_elements_mpi {
 
 class TestMPITaskSequential : public ppc::core::Task {

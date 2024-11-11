@@ -7,6 +7,24 @@
 
 #include "mpi/opolin_d_max_of_matrix_elements/include/ops_mpi.hpp"
 
+std::vector<int> getRandomVectorForGetMaxInMatrix(int sz, int min, int max) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = min + gen() % (max - min + 1);
+  }
+  return vec;
+}
+
+std::vector<std::vector<int>> getRandomMatrixForGetMaxInMatrix(int rows, int cols, int min, int max) {
+  std::vector<std::vector<int>> matr(rows);
+  for (int i = 0; i < rows; i++) {
+    matr[i] = getRandomVectorForGetMaxInMatrix(cols, min, max);
+  }
+  return matr;
+}
+
 TEST(opolin_d_max_of_matrix_elements_mpi, Test_Max_Matrix_1000x1000) {
   const int rows = 1000;
   const int cols = 1000;
@@ -53,8 +71,8 @@ TEST(opolin_d_max_of_matrix_elements_mpi, Test_Max_Matrix_1000x1000) {
 }
 
 TEST(opolin_d_max_of_matrix_elements_mpi, Test_Max_Matrix_1x100) {
-  const int rows = 100;
-  const int cols = 1;
+  const int rows = 1;
+  const int cols = 100;
   const int max = 1000;
   const int min = 0;
   boost::mpi::communicator world;
