@@ -25,13 +25,12 @@ class TestMPITaskSequential : public ppc::core::Task {
   double b = 0.0;
   double h = 0.0;
   int cnt_of_splits = 0;
-  double local_a;
-  int local_cnt_of_splits;
+  double epsilon;
   double static function_square(double x) { return x * x; }
 
  private:
   std::vector<int> input_;
-  int res{};
+  double res{};
   std::string ops;
 };
 

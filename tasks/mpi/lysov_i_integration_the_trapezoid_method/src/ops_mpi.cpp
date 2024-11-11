@@ -15,7 +15,8 @@ bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskSequential::pre_pr
   internal_order_test();
   a = *reinterpret_cast<double*>(taskData->inputs[0]);
   b = *reinterpret_cast<double*>(taskData->inputs[1]);
-  cnt_of_splits = *reinterpret_cast<int*>(taskData->inputs[2]);
+  epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
+  cnt_of_splits = static_cast<int>(std::abs((b - a)) / epsilon);
   h = (b - a) / cnt_of_splits;
   input_.resize(cnt_of_splits + 1);
   for (int i = 0; i <= cnt_of_splits; ++i) {
@@ -48,8 +49,8 @@ bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskParallel::validati
     if ((taskData->inputs.size() != 3) || (taskData->outputs.size() != 1)) {
       return false;
     }
-    cnt_of_splits = *reinterpret_cast<int*>(taskData->inputs[2]);
-    if (cnt_of_splits <= 0) {
+    double epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
+    if (epsilon <= 0) {
       return false;
     }
   }
@@ -60,7 +61,8 @@ bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskParallel::pre_proc
   if (world.rank() == 0) {
     a = *reinterpret_cast<double*>(taskData->inputs[0]);
     b = *reinterpret_cast<double*>(taskData->inputs[1]);
-    cnt_of_splits = *reinterpret_cast<int*>(taskData->inputs[2]);
+    double epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
+    cnt_of_splits = static_cast<int>(std::abs((b - a)) / epsilon);
   }
 
   boost::mpi::broadcast(world, a, 0);
@@ -90,8 +92,6 @@ bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskParallel::run() {
 }
 bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
-  // double global_result = 0.0;
-  // boost::mpi::reduce(world, res, global_result, std::plus<double>(), 0);// ?
   if (world.rank() == 0) {
     *reinterpret_cast<double*>(taskData->outputs[0]) = res;
   }
