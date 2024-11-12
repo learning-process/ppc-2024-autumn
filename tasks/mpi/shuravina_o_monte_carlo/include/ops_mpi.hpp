@@ -2,6 +2,7 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <functional>
+#include <iostream>
 #include <memory>
 #include <random>
 #include <string>

@@ -2,6 +2,7 @@
 
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/timer.hpp>
+#include <iostream>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
@@ -38,9 +39,11 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Integration) {
       ASSERT_NEAR(expected_integral, out[0], 0.01);
     }
   } catch (const std::exception& e) {
+    std::cerr << "Exception caught: " << e.what() << std::endl;
     ASSERT_THROW(throw e, std::exception);
   }
 }
+
 TEST(MonteCarloIntegrationTaskParallel, Test_Boundary_Conditions) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
@@ -72,9 +75,11 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Boundary_Conditions) {
       ASSERT_NEAR(expected_integral, out[0], 0.01);
     }
   } catch (const std::exception& e) {
+    std::cerr << "Exception caught: " << e.what() << std::endl;
     ASSERT_THROW(throw e, std::exception);
   }
 }
+
 TEST(MonteCarloIntegrationTaskParallel, Test_Work_Distribution) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
@@ -117,9 +122,11 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Work_Distribution) {
       ASSERT_EQ(local_points_count[i], local_num_points);
     }
   } catch (const std::exception& e) {
+    std::cerr << "Exception caught: " << e.what() << std::endl;
     ASSERT_THROW(throw e, std::exception);
   }
 }
+
 TEST(MonteCarloIntegrationTaskParallel, Test_Data_Collection) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
@@ -163,9 +170,11 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Data_Collection) {
       ASSERT_NEAR(total_sum, out[0], 0.01);
     }
   } catch (const std::exception& e) {
+    std::cerr << "Exception caught: " << e.what() << std::endl;
     ASSERT_THROW(throw e, std::exception);
   }
 }
+
 TEST(MonteCarloIntegrationTaskParallel, Test_Exception_Handling) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
@@ -201,6 +210,7 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Exception_Handling) {
       throw std::runtime_error("Simulated exception");
     }
   } catch (const std::exception& e) {
+    std::cerr << "Exception caught: " << e.what() << std::endl;
     ASSERT_THROW(throw e, std::exception);
   }
 }
