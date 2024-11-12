@@ -68,7 +68,6 @@ TEST(MonteCarloIntegrationTaskSequential, Test_Execution_Time) {
   std::cout << "Execution time: " << elapsed_time.count() << " seconds" << std::endl;
   ASSERT_LT(elapsed_time.count(), 10.0);
 }
-
 TEST(MonteCarloIntegrationTaskSequential, Test_Large_Number_Of_Points) {
   std::vector<double> out(1, 0.0);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();

@@ -4,13 +4,11 @@
 #include <random>
 
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskSequential::pre_processing() {
-  internal_order_test();
   integral_value_ = 0.0;
   return true;
 }
 
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskSequential::validation() {
-  internal_order_test();
   if (taskData->inputs_count.size() != 1 || taskData->outputs_count.size() != 1) {
     std::cerr << "Validation failed: inputs_count or outputs_count size mismatch" << std::endl;
     return false;
@@ -27,7 +25,6 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskSequential::validation() 
 }
 
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskSequential::run() {
-  internal_order_test();
   auto f = [](double x) { return x * x; };
   double a = a_;
   double b = b_;
@@ -47,8 +44,8 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskSequential::run() {
 
   return true;
 }
+
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskSequential::post_processing() {
-  internal_order_test();
   reinterpret_cast<double*>(taskData->outputs[0])[0] = integral_value_;
   return true;
 }
