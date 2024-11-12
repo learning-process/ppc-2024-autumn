@@ -6,6 +6,7 @@
 #include <boost/serialization/vector.hpp>
 #include <concepts>
 #include <memory>
+#include <numeric>
 #include <vector>
 
 #include "boost/mpi/communicator.hpp"
@@ -46,11 +47,9 @@ class RingTopology : public ppc::core::Task {
 template <std::copyable DataType, std::unsigned_integral SizeType>
 bool RingTopology<DataType, SizeType>::validation() {
   internal_order_test();
-  if (world.rank() == 0) {
-    return taskData->inputs.size() == 1 && !taskData->inputs_count.empty() && taskData->inputs_count[0] > 0 &&
-           taskData->outputs.size() == 2;
-  }
-  return true;
+
+  return world.rank() != 0 || (taskData->inputs.size() == 1 && !taskData->inputs_count.empty() &&
+                               taskData->inputs_count[0] > 0 && taskData->outputs.size() == 2);
 }
 
 template <std::copyable DataType, std::unsigned_integral SizeType>
@@ -105,7 +104,7 @@ bool RingTopology<DataType, SizeType>::post_processing() {
 template <std::copyable DataType, std::unsigned_integral SizeType>
 std::vector<int> RingTopology<DataType, SizeType>::true_order(int num_processes) {
   std::vector<int> true_order(num_processes);
-  std::generate(true_order.begin(), --true_order.end(), [&, i = 0]() mutable { return ++i; });
+  std::iota(true_order.begin(), --true_order.end(), 1);
   true_order[num_processes - 1] = 0;
   return true_order;
 }
