@@ -8,12 +8,16 @@
 #include "seq/korablev_v_jacobi_method/include/ops_seq.hpp"
 
 TEST(korablev_v_jacobi_method, test_pipeline_run) {
-  const size_t matrix_size = 100;
+  const size_t matrix_size = 4000;
 
   std::vector<size_t> in_size(1, matrix_size);
   std::vector<double> matrix_data(matrix_size * matrix_size, 1.0);
   std::vector<double> vector_data(matrix_size, 1.0);
   std::vector<double> out(matrix_size, 0.0);
+
+  for (size_t i = 0; i < matrix_size; ++i) {
+    matrix_data[i * matrix_size + i] = static_cast<double>(matrix_size);
+  }
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in_size.data()));
@@ -46,12 +50,16 @@ TEST(korablev_v_jacobi_method, test_pipeline_run) {
 }
 
 TEST(korablev_v_jacobi_method, test_task_run) {
-  const size_t matrix_size = 100;
+  const size_t matrix_size = 4000;
 
   std::vector<size_t> in_size(1, matrix_size);
   std::vector<double> matrix_data(matrix_size * matrix_size, 1.0);
   std::vector<double> vector_data(matrix_size, 1.0);
   std::vector<double> out(matrix_size, 0.0);
+
+  for (size_t i = 0; i < matrix_size; ++i) {
+    matrix_data[i * matrix_size + i] = static_cast<double>(matrix_size);
+  }
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in_size.data()));

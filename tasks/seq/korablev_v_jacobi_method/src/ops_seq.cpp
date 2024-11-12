@@ -3,16 +3,27 @@
 #include <cmath>
 #include <iostream>
 
+bool korablev_v_jacobi_method_seq::JacobiMethodSequential::isNeedToComplete(const std::vector<double>& x_old,
+                                                                            const std::vector<double>& x_new) const {
+  double sum_up = 0;
+  double sum_low = 0;
+  for (size_t k = 0; k < x_old.size(); k++) {
+    sum_up += (x_new[k] - x_old[k]) * (x_new[k] - x_old[k]);
+    sum_low += x_new[k] * x_new[k];
+  }
+  return (sqrt(sum_up / sum_low) < epsilon_);
+}
+
 bool korablev_v_jacobi_method_seq::JacobiMethodSequential::pre_processing() {
   internal_order_test();
   size_t n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
-  A_.resize(n, std::vector<double>(n));
+  A_.resize(n * n);
   b_.resize(n);
-  x_.resize(n, 0.0);
+  x_.resize(n, 1.0);
 
   for (size_t i = 0; i < n; ++i) {
     for (size_t j = 0; j < n; ++j) {
-      A_[i][j] = reinterpret_cast<double*>(taskData->inputs[1])[i * n + j];
+      A_[i * n + j] = reinterpret_cast<double*>(taskData->inputs[1])[i * n + j];
     }
     b_[i] = reinterpret_cast<double*>(taskData->inputs[2])[i];
   }
@@ -45,12 +56,12 @@ bool korablev_v_jacobi_method_seq::JacobiMethodSequential::validation() {
     }
 
     if (diag <= sum) {
-      std::cerr << "Error: Matrix is not diagonally dominant." << std::endl;
+      std::cerr << "Error: Matrix is not diagonally dominant at row " << i << "." << std::endl;
       return false;
     }
 
     if (diag == 0.0) {
-      std::cerr << "Error: Zero element on the diagonal." << std::endl;
+      std::cerr << "Error: Zero element on the diagonal at row " << i << "." << std::endl;
       return false;
     }
   }
@@ -60,31 +71,30 @@ bool korablev_v_jacobi_method_seq::JacobiMethodSequential::validation() {
 
 bool korablev_v_jacobi_method_seq::JacobiMethodSequential::run() {
   internal_order_test();
-  int n = b_.size();
-  std::vector<double> dx(n, 0.0);
-  std::vector<double> y(n, 0.0);
-  double sum;
+  size_t n = b_.size();
+  std::vector<double> x_prev(n);
 
-  for (int iter = 0; iter < maxIterations_; ++iter) {
-    sum = 0.0;
+  size_t numberOfIter = 0;
 
-    for (int i = 0; i < n; ++i) {
-      dx[i] = b_[i];
-      for (int j = 0; j < n; ++j) {
-        if (i != j) {
-          dx[i] -= A_[i][j] * x_[j];
+  while (numberOfIter < maxIterations_) {
+    std::copy(x_.begin(), x_.end(), x_prev.begin());
+
+    for (size_t k = 0; k < n; k++) {
+      double S = 0;
+      for (size_t j = 0; j < n; j++) {
+        if (j != k) {
+          S += A_[k * n + j] * x_[j];
         }
       }
-      dx[i] /= A_[i][i];
-      y[i] = dx[i];
-      sum += std::fabs(dx[i]);
+      x_[k] = (b_[k] - S) / A_[k * n + k];
     }
 
-    x_ = y;
+    if (isNeedToComplete(x_prev, x_)) break;
+    numberOfIter++;
+  }
 
-    if (sum <= epsilon_) {
-      break;
-    }
+  if (numberOfIter == maxIterations_) {
+    std::cerr << "Warning: Maximum iterations reached without convergence." << std::endl;
   }
 
   return true;

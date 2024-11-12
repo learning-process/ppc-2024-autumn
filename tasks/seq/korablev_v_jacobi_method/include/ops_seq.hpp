@@ -18,11 +18,13 @@ class JacobiMethodSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<std::vector<double>> A_;
+  std::vector<double> A_;
   std::vector<double> b_;
   std::vector<double> x_;
-  int maxIterations_ = 2000;
+  size_t maxIterations_ = 2000;
   double epsilon_ = 1e-8;
+
+  bool isNeedToComplete(const std::vector<double>& x_old, const std::vector<double>& x_new) const;
 };
 
 }  // namespace korablev_v_jacobi_method_seq
