@@ -60,5 +60,4 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::post_processing
   return true;
 }
 
-void shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::internal_order_test() {
-}
+void shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::internal_order_test() {}
