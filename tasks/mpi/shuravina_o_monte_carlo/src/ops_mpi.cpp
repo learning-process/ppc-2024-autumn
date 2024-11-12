@@ -59,3 +59,7 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::post_processing
   }
   return true;
 }
+
+void shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::internal_order_test() {
+  // Этот метод может быть использован для проверки внутреннего порядка или инициализации
+}

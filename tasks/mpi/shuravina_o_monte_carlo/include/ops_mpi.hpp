@@ -44,6 +44,8 @@ class MonteCarloIntegrationTaskParallel : public ppc::core::Task {
   std::random_device rd;
   std::mt19937 gen;
   std::uniform_real_distribution<> dis_;
+
+  void internal_order_test();
 };
 
 }  // namespace shuravina_o_monte_carlo
