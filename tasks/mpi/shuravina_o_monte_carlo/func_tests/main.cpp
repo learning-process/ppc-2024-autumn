@@ -6,6 +6,7 @@
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/shuravina_o_monte_carlo/include/ops_mpi.hpp"
+
 TEST(MonteCarloIntegrationTaskParallel, Test_Integration) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
@@ -40,6 +41,7 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Integration) {
     ASSERT_THROW(throw e, std::exception);
   }
 }
+
 TEST(MonteCarloIntegrationTaskParallel, Test_Boundary_Conditions) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
@@ -74,6 +76,7 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Boundary_Conditions) {
     ASSERT_THROW(throw e, std::exception);
   }
 }
+
 TEST(MonteCarloIntegrationTaskParallel, Test_Work_Distribution) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
@@ -119,6 +122,7 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Work_Distribution) {
     ASSERT_THROW(throw e, std::exception);
   }
 }
+
 TEST(MonteCarloIntegrationTaskParallel, Test_Data_Collection) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
@@ -165,6 +169,7 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Data_Collection) {
     ASSERT_THROW(throw e, std::exception);
   }
 }
+
 TEST(MonteCarloIntegrationTaskParallel, Test_Exception_Handling) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
