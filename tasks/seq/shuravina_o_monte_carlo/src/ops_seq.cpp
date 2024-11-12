@@ -47,7 +47,6 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskSequential::run() {
 
   return true;
 }
-
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskSequential::post_processing() {
   internal_order_test();
   reinterpret_cast<double*>(taskData->outputs[0])[0] = integral_value_;

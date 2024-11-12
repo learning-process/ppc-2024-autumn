@@ -88,7 +88,6 @@ TEST(MonteCarloIntegrationTaskSequential, Test_Large_Number_Of_Points) {
   double expected_integral = 1.0 / 3.0;
   ASSERT_NEAR(expected_integral, out[0], 0.0001);
 }
-
 TEST(MonteCarloIntegrationTaskSequential, Test_Validation_Failure) {
   std::vector<double> out(1, 0.0);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
