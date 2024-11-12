@@ -25,10 +25,13 @@ class MonteCarloIntegrationTaskSequential : public ppc::core::Task {
 
   void set_function(std::function<double(double)> func) { f_ = std::move(func); }
 
+  void set_num_points(int num_points) { num_points_ = num_points; }
+
  private:
   double integral_value_{};
   double a_ = 0.0;
   double b_ = 1.0;
+  int num_points_ = 1000000;
   std::function<double(double)> f_ = [](double x) { return x * x; };
 };
 

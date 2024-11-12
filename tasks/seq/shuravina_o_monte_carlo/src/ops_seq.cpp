@@ -12,12 +12,15 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskSequential::pre_processin
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskSequential::validation() {
   internal_order_test();
   if (taskData->inputs_count.size() != 1 || taskData->outputs_count.size() != 1) {
+    std::cerr << "Validation failed: inputs_count or outputs_count size mismatch" << std::endl;
     return false;
   }
   if (taskData->inputs_count[0] != 0 || taskData->outputs_count[0] != 1) {
+    std::cerr << "Validation failed: inputs_count or outputs_count value mismatch" << std::endl;
     return false;
   }
   if (taskData->inputs[0] != nullptr || taskData->outputs[0] == nullptr) {
+    std::cerr << "Validation failed: inputs or outputs pointer mismatch" << std::endl;
     return false;
   }
   return true;
@@ -26,9 +29,9 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskSequential::validation() 
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskSequential::run() {
   internal_order_test();
   auto f = [](double x) { return x * x; };
-  double a = 0.0;
-  double b = 1.0;
-  int num_points = 1000000;
+  double a = a_;
+  double b = b_;
+  int num_points = num_points_;
 
   std::random_device rd;
   std::mt19937 gen(rd());
