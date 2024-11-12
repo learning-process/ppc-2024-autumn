@@ -86,7 +86,7 @@ TEST(MonteCarloIntegrationTaskSequential, Test_Large_Number_Of_Points) {
   testTaskSequential->post_processing();
 
   double expected_integral = 1.0 / 3.0;
-  ASSERT_NEAR(expected_integral, out[0], 0.001);
+  ASSERT_NEAR(expected_integral, out[0], 0.0001);
 }
 
 TEST(MonteCarloIntegrationTaskSequential, Test_Validation_Failure) {
