@@ -36,6 +36,11 @@ bool IntegralCalculator::pre_processing() {
     return false;
   }
 
+  if (a == b) {
+    res = 0.0;
+    return true;
+  }
+
   cnt_of_splits = static_cast<int>(std::abs(b - a) / epsilon);
 
   h = (b - a) / cnt_of_splits;
@@ -45,6 +50,10 @@ bool IntegralCalculator::pre_processing() {
 bool IntegralCalculator::run() {
   internal_order_test();
   double result = 0.0;
+
+  if (a == b) {
+    return true;
+  }
 
   for (int i = 0; i < cnt_of_splits; ++i) {
     double x = a + (i + 0.5) * h;

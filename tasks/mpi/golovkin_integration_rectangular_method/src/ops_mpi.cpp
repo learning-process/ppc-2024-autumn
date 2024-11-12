@@ -50,6 +50,10 @@ bool golovkin_integration_rectangular_method::MPIIntegralCalculator::run() {
 
   reduce(world, local_result, global_result, std::plus<>(), 0);
 
+  broadcast(world, lower_bound, 0);
+  broadcast(world, upper_bound, 0);
+  broadcast(world, num_partitions, 0);
+
   return true;
 }
 
