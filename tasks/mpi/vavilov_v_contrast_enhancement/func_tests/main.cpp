@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
+
 #include <boost/mpi.hpp>
+
 #include "mpi/vavilov_v_contrast_enhancement/include/ops_mpi.hpp"
 
 namespace mpi = boost::mpi;
