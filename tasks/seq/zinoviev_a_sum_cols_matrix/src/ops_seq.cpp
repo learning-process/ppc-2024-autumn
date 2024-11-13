@@ -3,8 +3,6 @@
 
 #include <thread>
 
-using namespace std::chrono_literals;
-
 int createLinearCoordinates(int col, int row, int totalWidth) { return row * totalWidth + col; }
 
 std::vector<int> computeMatrixSumSequential(const std::vector<int>& matrixData, int width, int height, int startCol,

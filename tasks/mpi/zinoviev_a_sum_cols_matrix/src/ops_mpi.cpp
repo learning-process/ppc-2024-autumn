@@ -8,8 +8,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
 std::vector<int> zinoviev_a_sum_cols_matrix_mpi::generateRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());

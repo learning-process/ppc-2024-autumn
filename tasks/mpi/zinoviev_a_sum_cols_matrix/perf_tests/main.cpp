@@ -18,6 +18,11 @@ TEST(zinoviev_a_sum_cols_matrix, test_task_run_small_matrix) {
   std::vector<int> ans(cols, 0);
   ans[3] = 1;
 
+  std::vector<int> generateRandomVector(int size);
+  int computeLinearCoordinates(int xCoord, int yCoord, int width);
+  std::vector<int> calculateMatrixSumSequential(const std::vector<int>& matrix, int width, int height, int startX,
+                                                int endX);
+
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
