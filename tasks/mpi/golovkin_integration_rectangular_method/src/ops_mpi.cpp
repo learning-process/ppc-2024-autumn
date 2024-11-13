@@ -11,12 +11,13 @@
 #include <string>
 #include <thread>
 
+
 bool golovkin_integration_rectangular_method::MPIIntegralCalculator::validation() {
   internal_order_test();
 
   bool is_valid = true;
 
-  if (world.rank() >= 4) {
+  if (world.size() < 5 || world.rank() >= 4) {
     is_valid = taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] == 1;
   }
   broadcast(world, is_valid, 0);
@@ -25,7 +26,7 @@ bool golovkin_integration_rectangular_method::MPIIntegralCalculator::validation(
 bool golovkin_integration_rectangular_method::MPIIntegralCalculator::pre_processing() {
   internal_order_test();
 
-  if (world.rank() >= 4) {
+  if (world.size() < 5 || world.rank() >= 4) {
     auto* start_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
     auto* end_ptr = reinterpret_cast<double*>(taskData->inputs[1]);
     auto* split_ptr = reinterpret_cast<int*>(taskData->inputs[2]);
@@ -50,17 +51,13 @@ bool golovkin_integration_rectangular_method::MPIIntegralCalculator::run() {
 
   reduce(world, local_result, global_result, std::plus<>(), 0);
 
-  broadcast(world, lower_bound, 0);
-  broadcast(world, upper_bound, 0);
-  broadcast(world, num_partitions, 0);
-
   return true;
 }
 
 bool golovkin_integration_rectangular_method::MPIIntegralCalculator::post_processing() {
   internal_order_test();
 
-  if (world.rank() >= 4) {
+  if (world.size() < 5 || world.rank() >= 4) {
     *reinterpret_cast<double*>(taskData->outputs[0]) = global_result;
   }
 
