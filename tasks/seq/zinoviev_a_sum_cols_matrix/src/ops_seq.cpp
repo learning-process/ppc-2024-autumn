@@ -3,16 +3,16 @@
 
 #include <thread>
 
-int createLinearCoordinates(int col, int row, int totalWidth) { return row * totalWidth + col; }
+int createLinearCoordinates(int x, int y, int width) { return x * width + y; }
 
-std::vector<int> computeMatrixSumSequential(const std::vector<int>& matrixData, int width, int height, int startCol,
-                                            int endCol) {
+std::vector<int> computeMatrixSumSequential(const std::vector<int>& matrix, int width, int height, int startX,
+                                            int endX) {
   std::vector<int> sums;
-  for (int col = startCol; col < endCol; ++col) {
+  for (int col = startX; col < endX; ++col) {
     int totalColumnSum = 0;
     for (int row = 0; row < height; ++row) {
       int index = createLinearCoordinates(col, row, width);
-      totalColumnSum += matrixData[index];
+      totalColumnSum += matrix[index];
     }
     sums.push_back(totalColumnSum);
   }

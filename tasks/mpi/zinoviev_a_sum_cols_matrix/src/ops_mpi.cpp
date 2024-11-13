@@ -8,11 +8,11 @@
 #include <thread>
 #include <vector>
 
-std::vector<int> zinoviev_a_sum_cols_matrix_mpi::generateRandomVector(int sz) {
+std::vector<int> zinoviev_a_sum_cols_matrix_mpi::generateRandomVector(int size) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
+  std::vector<int> vec(size);
+  for (int i = 0; i < size; i++) {
     vec[i] = gen() % 100;
   }
   return vec;
