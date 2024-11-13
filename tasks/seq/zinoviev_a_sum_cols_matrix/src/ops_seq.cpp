@@ -3,7 +3,7 @@
 
 #include <thread>
 
-int createLinearCoordinates(int x, int y, int width) { return x * width + y; }
+int createLinearCoordinates(int x, int y, int width) { return y * width + x; }
 
 std::vector<int> computeMatrixSumSequential(const std::vector<int>& matrix, int width, int height, int startX,
                                             int endX) {
