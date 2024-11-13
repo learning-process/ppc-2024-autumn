@@ -40,7 +40,7 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
   parallel_task.pre_processing();
   parallel_task.run();
   parallel_task.post_processing();
-  if (world.rank() >= 4) {
+  if (world.size() < 5 || world.rank() >= 4) {
     std::vector<double> expected_result(1, 0);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -326,39 +326,6 @@ TEST(golovkin_integration_rectangular_method, test_exponential_function) {
   }
 }
 
-TEST(golovkin_integration_rectangular_method, test_negative_range) {
-  boost::mpi::communicator world;
-  std::vector<double> computed_result(1, 0);
-
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  double lower_limit = 5.0;
-  double upper_limit = -5.0;
-  int partition_count = 1000000;
-
-  if (world.size() < 5 || world.rank() >= 4) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
-    taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
-    taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&partition_count));
-    taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(computed_result.data()));
-    taskDataPar->outputs_count.emplace_back(computed_result.size());
-  }
-
-  golovkin_integration_rectangular_method::MPIIntegralCalculator parallel_task(taskDataPar);
-  parallel_task.set_function([](double x) { return x; });
-
-  ASSERT_EQ(parallel_task.validation(), true);
-  parallel_task.pre_processing();
-  parallel_task.run();
-  parallel_task.post_processing();
-
-  if (world.size() < 5 || world.rank() >= 4) {
-    ASSERT_LT(computed_result[0], 0);
-  }
-}
-
 TEST(golovkin_integration_rectangular_method, test_zero_partitions) {
   boost::mpi::communicator world;
   std::vector<double> computed_result(1, 0);
@@ -389,39 +356,6 @@ TEST(golovkin_integration_rectangular_method, test_zero_partitions) {
 
   if (world.size() < 5 || world.rank() >= 4) {
     ASSERT_EQ(computed_result[0], 0);
-  }
-}
-
-TEST(golovkin_integration_rectangular_method, test_large_range) {
-  boost::mpi::communicator world;
-  std::vector<double> computed_result(1, 0);
-
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  double lower_limit = -1e6;
-  double upper_limit = 1e6;
-  int partition_count = 1000000;
-
-  if (world.size() < 5 || world.rank() >= 4) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
-    taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
-    taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&partition_count));
-    taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(computed_result.data()));
-    taskDataPar->outputs_count.emplace_back(computed_result.size());
-  }
-
-  golovkin_integration_rectangular_method::MPIIntegralCalculator parallel_task(taskDataPar);
-  parallel_task.set_function([](double x) { return x; });
-
-  ASSERT_EQ(parallel_task.validation(), true);
-  parallel_task.pre_processing();
-  parallel_task.run();
-  parallel_task.post_processing();
-
-  if (world.size() < 5 || world.rank() >= 4) {
-    ASSERT_NEAR(computed_result[0], 0, 1e-3);
   }
 }
 

@@ -11,7 +11,6 @@
 #include <string>
 #include <thread>
 
-
 bool golovkin_integration_rectangular_method::MPIIntegralCalculator::validation() {
   internal_order_test();
 
@@ -70,6 +69,7 @@ double golovkin_integration_rectangular_method::MPIIntegralCalculator::integrate
   int total_processes = world.size();
   double step_size;
   double local_sum = 0.0;
+
   step_size = (b - a) / splits;
 
   for (int i = current_process; i < splits; i += total_processes) {
