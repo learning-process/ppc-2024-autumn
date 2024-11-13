@@ -392,6 +392,7 @@ TEST(golovkin_integration_rectangular_method, test_small_interval_near_zero) {
     ASSERT_NEAR(computed_result[0], expected_result, 1e-10);
   }
 }
+
 TEST(golovkin_integration_rectangular_method, test_validation) {
   boost::mpi::communicator world;
 
@@ -420,7 +421,7 @@ TEST(golovkin_integration_rectangular_method, test_post_processing) {
 
   std::vector<double> computed_result(1, 0.0);
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  if (world.size() < 5 || world.rank() >= 4) {
+  if (world.rank() == 0) {
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
     taskData->inputs_count.emplace_back(1);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
@@ -439,7 +440,7 @@ TEST(golovkin_integration_rectangular_method, test_post_processing) {
   calculator.run();
   calculator.post_processing();
 
-  if (world.size() < 5 || world.rank() >= 4) {
+  if (world.rank() == 0) {
     ASSERT_NEAR(computed_result[0], 50.0, 1e-3);
   }
 }

@@ -56,6 +56,8 @@ bool golovkin_integration_rectangular_method::MPIIntegralCalculator::run() {
 bool golovkin_integration_rectangular_method::MPIIntegralCalculator::post_processing() {
   internal_order_test();
 
+  broadcast(world, global_result, 0);
+
   if (world.size() < 5 || world.rank() >= 4) {
     *reinterpret_cast<double*>(taskData->outputs[0]) = global_result;
   }
