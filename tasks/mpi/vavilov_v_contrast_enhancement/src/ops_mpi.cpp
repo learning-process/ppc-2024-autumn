@@ -56,8 +56,8 @@ bool vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel::run() {
 
   if (p_max_global_ == p_min_global_) {
     std::fill(local_input_.begin(), local_input_.end(), 0);
-  } else {
-
+  } 
+  else {
     for (auto& pixel : local_input_) {
       pixel = static_cast<int>(static_cast<double>(pixel - p_min_global_) * 255 / (p_max_global_ - p_min_global_));
     }
