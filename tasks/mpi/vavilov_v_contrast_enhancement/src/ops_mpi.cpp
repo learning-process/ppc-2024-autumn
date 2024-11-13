@@ -2,10 +2,10 @@
 
 bool vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel::pre_processing() {
   internal_order_test();
-  size_t total_size = taskData->inputs_count[0];
+  int total_size = taskData->inputs_count[0];
 
-  size_t chunk_size = total_size / world.size();
-  size_t remainder = total_size % world.size();
+  int chunk_size = total_size / world.size();
+  int remainder = total_size % world.size();
 
   if (world.rank() == 0) {
     input_.resize(total_size);
@@ -13,15 +13,15 @@ bool vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel::pre_proces
     std::copy(tmp_ptr, tmp_ptr + total_size, input_.begin());
   }
 
-  size_t local_size = chunk_size + (world.rank() < remainder ? 1 : 0);
+  int local_size = chunk_size + (world.rank() < remainder ? 1 : 0);
   local_input_.resize(local_size);
 
-  std::vector<size_t> counts(world.size(), chunk_size);
-  for (size_t i = 0; i < remainder; ++i) {
+  std::vector<int> counts(world.size(), chunk_size);
+  for (int i = 0; i < remainder; ++i) {
     counts[i]++;
   }
-  std::vector<size_t> displs(world.size(), 0);
-  for (size_t i = 1; i < world.size(); ++i) {
+  std::vector<int> displs(world.size(), 0);
+  for (int i = 1; i < world.size(); ++i) {
     displs[i] = displs[i - 1] + counts[i - 1];
   }
 
