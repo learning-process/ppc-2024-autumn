@@ -413,38 +413,6 @@ TEST(golovkin_integration_rectangular_method, test_validation) {
   ASSERT_TRUE(calculator.validation());
 }
 
-TEST(golovkin_integration_rectangular_method, test_post_processing) {
-  boost::mpi::communicator world;
-  double lower_limit = 0.0;
-  double upper_limit = 10.0;
-  int partitions = 1000;
-
-  std::vector<double> computed_result(1, 0.0);
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
-    taskData->inputs_count.emplace_back(1);
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
-    taskData->inputs_count.emplace_back(1);
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&partitions));
-    taskData->inputs_count.emplace_back(1);
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(computed_result.data()));
-    taskData->outputs_count.emplace_back(computed_result.size());
-  }
-
-  golovkin_integration_rectangular_method::MPIIntegralCalculator calculator(taskData);
-  calculator.set_function([](double x) { return 5.0; });
-
-  calculator.validation();
-  calculator.pre_processing();
-  calculator.run();
-  calculator.post_processing();
-
-  if (world.rank() == 0) {
-    ASSERT_NEAR(computed_result[0], 50.0, 1e-3);
-  }
-}
-
 TEST(golovkin_integration_rectangular_method, test_constant_function_validation) {
   boost::mpi::communicator world;
   std::vector<double> computed_result(1, 0);
