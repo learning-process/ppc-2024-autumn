@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
-
-#include <vector>
 #include <chrono>
+#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/vavilov_v_contrast_enhancement/include/ops_seq.hpp"
