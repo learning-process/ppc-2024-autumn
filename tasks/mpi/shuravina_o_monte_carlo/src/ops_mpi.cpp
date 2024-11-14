@@ -1,7 +1,6 @@
 #include "mpi/shuravina_o_monte_carlo/include/ops_mpi.hpp"
 
 #include <boost/mpi/collectives.hpp>
-#include <iostream>
 #include <random>
 
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::pre_processing() {
@@ -13,15 +12,12 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::pre_processing(
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::validation() {
   internal_order_test();
   if (taskData->inputs_count.size() != 1 || taskData->outputs_count.size() != 1) {
-    std::cerr << "Validation failed: inputs_count or outputs_count size mismatch" << std::endl;
     return false;
   }
   if (taskData->inputs_count[0] != 0 || taskData->outputs_count[0] != 1) {
-    std::cerr << "Validation failed: inputs_count or outputs_count value mismatch" << std::endl;
     return false;
   }
   if (taskData->inputs[0] != nullptr || taskData->outputs[0] == nullptr) {
-    std::cerr << "Validation failed: inputs or outputs pointer mismatch" << std::endl;
     return false;
   }
   return true;
@@ -30,6 +26,7 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::validation() {
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::run() {
   internal_order_test();
   int num_processes = world.size();
+  int rank = world.rank();
 
   int local_num_points = num_points_ / num_processes;
 
@@ -50,14 +47,7 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::run() {
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    if (taskData->outputs[0] != nullptr) {
-      reinterpret_cast<double*>(taskData->outputs[0])[0] = integral_value_;
-    } else {
-      std::cerr << "Post-processing failed: outputs[0] is nullptr" << std::endl;
-      return false;
-    }
+    reinterpret_cast<double*>(taskData->outputs[0])[0] = integral_value_;
   }
   return true;
 }
-
-void shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::internal_order_test() {}

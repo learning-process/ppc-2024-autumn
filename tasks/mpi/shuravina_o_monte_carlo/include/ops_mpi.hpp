@@ -2,7 +2,6 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <functional>
-#include <iostream>
 #include <memory>
 #include <random>
 #include <string>
@@ -15,7 +14,7 @@ namespace shuravina_o_monte_carlo {
 class MonteCarloIntegrationTaskParallel : public ppc::core::Task {
  public:
   explicit MonteCarloIntegrationTaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)), gen(rd()), dis_(a_, b_) {}
+      : Task(std::move(taskData_)) {}
 
   void set_interval(double a, double b) {
     a_ = a;
@@ -44,8 +43,6 @@ class MonteCarloIntegrationTaskParallel : public ppc::core::Task {
   std::random_device rd;
   std::mt19937 gen;
   std::uniform_real_distribution<> dis_;
-
-  void internal_order_test();
 };
 
 }  // namespace shuravina_o_monte_carlo
