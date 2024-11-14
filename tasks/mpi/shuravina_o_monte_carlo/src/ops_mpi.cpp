@@ -27,7 +27,6 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::validation() {
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::run() {
   internal_order_test();
   int num_processes = world.size();
-  int rank = world.rank();
 
   int local_num_points = num_points_ / num_processes;
 
