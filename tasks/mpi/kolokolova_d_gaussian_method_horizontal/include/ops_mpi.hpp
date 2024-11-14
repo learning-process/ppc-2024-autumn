@@ -15,6 +15,7 @@
 namespace kolokolova_d_gaussian_method_horizontal_mpi {
 
 std::vector<int> getRandomVector(int sz);
+int find_rank(std::vector<double>& matrix, int rows, int cols);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
@@ -25,8 +26,10 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<std::vector<int>> input_;
-  std::vector<int> res;
+  std::vector<int> input_coeff;
+  std::vector<int> input_y;
+  std::vector<double> res;
+  int count_equations = 0;
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -38,10 +41,17 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> input_, local_input_;
-  std::vector<int> res;
+  //std::vector<int> input_, local_input_;
+  //std::vector<int> res;
+  std::vector<int> input_coeff;
+  std::vector<int> input_y;
+  std::vector<double> res;
+  std::vector<double> local_matrix;
+  std::vector<double> matrix_argum;
+  int count_equations = 0;
+  int size_row = 0;
   boost::mpi::communicator world;
-  unsigned int delta = 0;
+  int count_row_proc = 0;
 };
 
 }  // namespace kolokolova_d_gaussian_method_horizontal_mpi
