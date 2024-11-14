@@ -1,6 +1,7 @@
 #include "mpi/shuravina_o_monte_carlo/include/ops_mpi.hpp"
 
 #include <boost/mpi/collectives.hpp>
+#include <boost/mpi/communicator.hpp>
 #include <random>
 
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::pre_processing() {

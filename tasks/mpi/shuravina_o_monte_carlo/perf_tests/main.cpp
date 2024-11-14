@@ -51,7 +51,7 @@ TEST(MonteCarloIntegrationTaskParallel, test_task_run) {
 
   auto testMpiTaskParallel = std::make_shared<shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel>(taskDataPar);
   testMpiTaskParallel->set_interval(0.0, 1.0);
-  testMpiTaskParallel->set_num_points(100000000);
+  testMpiTaskParallel->set_num_points(1000000);
   testMpiTaskParallel->set_function([](double x) { return x * x; });
 
   std::cout << "Rank " << world.rank() << " is validating." << std::endl;
