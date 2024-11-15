@@ -2,6 +2,22 @@
 
 bool vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel::pre_processing() {
   internal_order_test();
+  
+  return true;
+}
+
+bool vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel::validation() {
+  internal_order_test();
+
+  if (world.rank() == 0) {
+    return taskData->outputs_count[0] == taskData->inputs_count[0];
+  }
+  return true;
+}
+
+bool vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel::run() {
+  internal_order_test();
+
   int total_size = taskData->inputs_count[0];
 
   int chunk_size = total_size / world.size();
@@ -27,23 +43,6 @@ bool vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel::pre_proces
 
   boost::mpi::scatterv(world, input_, counts, displs, local_input_.data(), local_size, 0);
 
-  if (world.rank() == 0) {
-    output_.resize(total_size, 0);
-  }
-  return true;
-}
-
-bool vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel::validation() {
-  internal_order_test();
-
-  if (world.rank() == 0) {
-    return taskData->outputs_count[0] == taskData->inputs_count[0];
-  }
-  return true;
-}
-
-bool vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel::run() {
-  internal_order_test();
   if (local_input_.empty()) {
     return false;
   }
@@ -60,6 +59,10 @@ bool vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel::run() {
     for (auto& pixel : local_input_) {
       pixel = static_cast<int>(static_cast<double>(pixel - p_min_global_) * 255 / (p_max_global_ - p_min_global_));
     }
+  }
+
+  if (world.rank() == 0) {
+    output_.resize(total_size, 0);
   }
 
   boost::mpi::gatherv(world, local_input_, local_input_.size(), output_, counts, displs, 0);
