@@ -8,7 +8,7 @@ TEST(vavilov_v_contrast_enhancement_seq, ValidInput) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   std::vector<int> input = {10, 20, 30, 40, 50};
   taskData->inputs_count[0] = input.size();
-  taskData->inputs[0] = reinterpret_cast<void*>(input.data());
+  taskData->inputs[0] = input.data();
 
   vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential task(taskData);
   ASSERT_TRUE(task.pre_processing());
@@ -50,8 +50,8 @@ TEST(vavilov_v_contrast_enhancement_seq, NormalContrastEnhancement) {
   taskData->inputs_count[0] = input.size();
   taskData->outputs_count[0] = input.size();
   std::vector<int> output(input.size());
-  taskData->inputs[0] = reinterpret_cast<void*>(input.data());
-  taskData->outputs[0] = reinterpret_cast<void*>(output.data());
+  taskData->inputs[0] = input.data();
+  taskData->outputs[0] = output.data();
 
   vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential task(taskData);
   ASSERT_TRUE(task.pre_processing());
@@ -68,8 +68,8 @@ TEST(vavilov_v_contrast_enhancement_seq, SingleValueInput) {
   taskData->inputs_count[0] = input.size();
   taskData->outputs_count[0] = input.size();
   std::vector<int> output(input.size());
-  taskData->inputs[0] = reinterpret_cast<void*>(input.data());
-  taskData->outputs[0] = reinterpret_cast<void*>(output.data());
+  taskData->inputs[0] = input.data();
+  taskData->outputs[0] = output.data();
 
   vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential task(taskData);
   ASSERT_TRUE(task.pre_processing());
@@ -86,8 +86,8 @@ TEST(vavilov_v_contrast_enhancement_seq, ValidOutputCopy) {
   taskData->inputs_count[0] = input.size();
   taskData->outputs_count[0] = input.size();
   std::vector<int> output(input.size());
-  taskData->inputs[0] = reinterpret_cast<void*>(input.data());
-  taskData->outputs[0] = reinterpret_cast<void*>(output.data());
+  taskData->inputs[0] = input.data();
+  taskData->outputs[0] = output.data();
 
   vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential task(taskData);
   ASSERT_TRUE(task.pre_processing());
