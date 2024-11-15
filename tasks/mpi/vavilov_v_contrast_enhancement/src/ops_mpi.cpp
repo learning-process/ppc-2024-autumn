@@ -2,7 +2,7 @@
 
 bool vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel::pre_processing() {
   internal_order_test();
-  
+
   return true;
 }
 
