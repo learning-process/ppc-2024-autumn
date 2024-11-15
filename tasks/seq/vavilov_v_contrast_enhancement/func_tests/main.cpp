@@ -4,7 +4,7 @@
 
 #include "seq/vavilov_v_contrast_enhancement/include/ops_seq.hpp"
 
-TEST(PreProcessingTest, ValidInput) {
+TEST(vavilov_v_contrast_enhancement_seq, ValidInput) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   std::vector<int> input = {10, 20, 30, 40, 50};
   taskData->inputs_count[0] = input.size();
@@ -14,7 +14,7 @@ TEST(PreProcessingTest, ValidInput) {
   ASSERT_TRUE(task.pre_processing());
 }
 
-TEST(PreProcessingTest, EmptyInput) {
+TEST(vavilov_v_contrast_enhancement_seq, EmptyInput) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs_count[0] = 0;
 
@@ -22,7 +22,7 @@ TEST(PreProcessingTest, EmptyInput) {
   ASSERT_TRUE(task.pre_processing());
 }
 
-TEST(ValidationTest, ValidOutputSize) {
+TEST(vavilov_v_contrast_enhancement_seq, ValidOutputSize) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   std::vector<int> input = {10, 20, 30, 40, 50};
   taskData->inputs_count[0] = input.size();
@@ -33,7 +33,7 @@ TEST(ValidationTest, ValidOutputSize) {
   ASSERT_TRUE(task.validation());
 }
 
-TEST(ValidationTest, MismatchedOutputSize) {
+TEST(vavilov_v_contrast_enhancement_seq, MismatchedOutputSize) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   std::vector<int> input = {10, 20, 30, 40, 50};
   taskData->inputs_count[0] = input.size();
@@ -44,7 +44,7 @@ TEST(ValidationTest, MismatchedOutputSize) {
   ASSERT_FALSE(task.validation());
 }
 
-TEST(RunTest, NormalContrastEnhancement) {
+TEST(vavilov_v_contrast_enhancement_seq, NormalContrastEnhancement) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   std::vector<int> input = {10, 20, 30, 40, 50};
   taskData->inputs_count[0] = input.size();
@@ -62,7 +62,7 @@ TEST(RunTest, NormalContrastEnhancement) {
   EXPECT_EQ(output, expected_output);
 }
 
-TEST(RunTest, SingleValueInput) {
+TEST(vavilov_v_contrast_enhancement_seq, SingleValueInput) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   std::vector<int> input = {100, 100, 100};
   taskData->inputs_count[0] = input.size();
@@ -80,7 +80,7 @@ TEST(RunTest, SingleValueInput) {
   EXPECT_EQ(output, expected_output);
 }
 
-TEST(PostProcessingTest, ValidOutputCopy) {
+TEST(vavilov_v_contrast_enhancement_seq, ValidOutputCopy) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   std::vector<int> input = {10, 20, 30, 40, 50};
   taskData->inputs_count[0] = input.size();
