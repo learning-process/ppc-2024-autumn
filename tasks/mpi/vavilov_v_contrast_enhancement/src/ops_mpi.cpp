@@ -25,7 +25,7 @@ bool vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel::pre_proces
     displs[i] = displs[i - 1] + counts[i - 1];
   }
 
-  boost::mpi::scatterv(world, input_.data(), counts, displs, local_input_.data(), 0);
+  boost::mpi::scatterv(world, input_, counts, displs, local_input_.data(), 0);
 
   if (world.rank() == 0) {
     output_.resize(total_size, 0);
@@ -62,7 +62,7 @@ bool vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel::run() {
     }
   }
 
-  boost::mpi::gatherv(world, local_input_.data(), output_.data(), 0);
+  boost::mpi::gatherv(world, local_input_, output_, counts, displs, 0);
   return true;
 }
 
