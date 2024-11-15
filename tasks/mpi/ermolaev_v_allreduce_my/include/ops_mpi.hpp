@@ -10,8 +10,8 @@
 #include <vector>
 
 #include "core/task/include/task.hpp"
-#include "mpi/ermolaev_v_allreduce/include/allreduce.hpp"
-#include "mpi/ermolaev_v_allreduce/include/shared_ptr_array.hpp"
+#include "mpi/ermolaev_v_allreduce_my/include/allreduce.hpp"
+#include "mpi/ermolaev_v_allreduce_my/include/shared_ptr_array.hpp"
 
 namespace ermolaev_v_allreduce_mpi {
 

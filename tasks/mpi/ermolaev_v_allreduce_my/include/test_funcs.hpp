@@ -8,7 +8,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/ermolaev_v_allreduce/include/shared_ptr_array.hpp"
+#include "mpi/ermolaev_v_allreduce_my/include/shared_ptr_array.hpp"
 
 namespace ermolaev_v_allreduce_mpi {
 template <typename _T>
