@@ -50,7 +50,7 @@ class Gather : public ppc::core::Task {
 };
 
 template <typename T>
-bool gather(boost::mpi::communicator world, std::vector<T>& local_vector, int count, std::vector<T>& gathered_data,
+bool gather(const boost::mpi::communicator world, std::vector<T>& local_vector, int count, std::vector<T>& gathered_data,
             int root) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
