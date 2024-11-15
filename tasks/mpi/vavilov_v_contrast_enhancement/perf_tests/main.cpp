@@ -6,7 +6,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/vavilov_v_contrast_enhancement/include/ops_mpi.hpp"
 
-TEST(PerformanceTest, RunLargeInput) {
+TEST(vavilov_v_contrast_enhancement_mpi, RunLargeInput) {
   mpi::environment env;
   mpi::communicator world;
 
@@ -36,7 +36,7 @@ TEST(PerformanceTest, RunLargeInput) {
   }
 }
 
-TEST(PerformanceTest, RunPipelineWithMultipleTasks) {
+TEST(vavilov_v_contrast_enhancement_mpi, RunPipelineWithMultipleTasks) {
   mpi::environment env;
   mpi::communicator world;
 
