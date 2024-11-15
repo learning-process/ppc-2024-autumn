@@ -25,7 +25,7 @@ TEST(vavilov_v_contrast_enhancement_seq, EmptyInput) {
 TEST(vavilov_v_contrast_enhancement_seq, ValidOutputSize) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   std::vector<int> input = {10, 20, 30, 40, 50};
-  
+
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
   taskData->inputs_count.emplace_back(input.size());
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
