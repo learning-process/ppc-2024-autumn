@@ -26,7 +26,7 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::validation() {
 
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::run() {
   internal_order_test();
-  boost::mpi::communicator world;
+  boost::mpi::communicator comm;
   int num_processes = world.size();
   int rank = world.rank();
 
