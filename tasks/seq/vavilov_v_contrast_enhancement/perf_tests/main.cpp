@@ -6,7 +6,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/vavilov_v_contrast_enhancement/include/ops_seq.hpp"
 
-TEST(PerformanceTest, RunTaskWithLargeInput) {
+TEST(vavilov_v_contrast_enhancement_seq, RunTaskWithLargeInput) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   size_t data_size = 1000000;
   std::vector<int> input(data_size, 128);
@@ -30,7 +30,7 @@ TEST(PerformanceTest, RunTaskWithLargeInput) {
   std::cout << "Large input task run time: " << elapsed.count() << " seconds" << std::endl;
 }
 
-TEST(PerformanceTest, RunPipelineWithMultipleTasks) {
+TEST(vavilov_v_contrast_enhancement_seq, RunPipelineWithMultipleTasks) {
   size_t num_tasks = 10;
   size_t data_size = 100000;
 
