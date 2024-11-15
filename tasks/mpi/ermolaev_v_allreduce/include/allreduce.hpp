@@ -1,7 +1,8 @@
 #pragma once
 
 #include <boost/mpi/communicator.hpp>
-#include <memory>
+
+#include "mpi/ermolaev_v_allreduce/include/shared_ptr_array.hpp"
 
 namespace ermolaev_v_allreduce_mpi {
 
@@ -35,7 +36,7 @@ void allreduce(const boost::mpi::communicator& world, const _T* src, int n, _T* 
   if (rank == 0) {
     std::copy(src, src + n, out);
 
-    auto incoming_buffer = std::make_shared<_T[]>(n);
+    auto incoming_buffer = ermolaev_v_allreduce_mpi::shared_ptr_array<_T>(n);
 
     for (int i = 0; i < k; i++) {
       if (children[i] != -1) {

@@ -6,12 +6,12 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/serialization/vector.hpp>
 #include <limits>
-#include <memory>
 #include <numeric>
 #include <vector>
 
 #include "core/task/include/task.hpp"
 #include "mpi/ermolaev_v_allreduce/include/allreduce.hpp"
+#include "mpi/ermolaev_v_allreduce/include/shared_ptr_array.hpp"
 
 namespace ermolaev_v_allreduce_mpi {
 
@@ -80,7 +80,7 @@ bool ermolaev_v_allreduce_mpi::TestMPITaskSequential<_T, _S>::pre_processing() {
 
   input_.resize(taskData->inputs_count[0], std::vector<_T>(taskData->inputs_count[1]));
 
-  auto* ptr = reinterpret_cast<std::shared_ptr<_T[]>*>(taskData->inputs[0]);
+  auto* ptr = reinterpret_cast<ermolaev_v_allreduce_mpi::shared_ptr_array<_T>*>(taskData->inputs[0]);
   for (_S i = 0; i < input_.size(); i++) {
     for (_S j = 0; j < input_[i].size(); j++) {
       input_[i][j] = ptr[i][j];
@@ -120,7 +120,7 @@ template <typename _T, typename _S>
 bool ermolaev_v_allreduce_mpi::TestMPITaskSequential<_T, _S>::post_processing() {
   internal_order_test();
 
-  auto* ptr = reinterpret_cast<std::shared_ptr<_T[]>*>(taskData->outputs[0]);
+  auto* ptr = reinterpret_cast<ermolaev_v_allreduce_mpi::shared_ptr_array<_T>*>(taskData->outputs[0]);
   for (_S i = 0; i < res_.size(); i++) {
     std::copy(res_[i].begin(), res_[i].end(), ptr[i].get());
   }
@@ -145,7 +145,7 @@ bool ermolaev_v_allreduce_mpi::TemplateTestTaskParallel<_T, _S>::pre_processing(
   if (world.rank() == 0) {
     input_.resize(taskData->inputs_count[1], std::vector<_T>(taskData->inputs_count[0]));
 
-    auto* ptr = reinterpret_cast<std::shared_ptr<_T[]>*>(taskData->inputs[0]);
+    auto* ptr = reinterpret_cast<ermolaev_v_allreduce_mpi::shared_ptr_array<_T>*>(taskData->inputs[0]);
     for (_S j = 0; j < taskData->inputs_count[1]; j++) {
       for (_S i = 0; i < taskData->inputs_count[0]; i++) {
         input_[j][i] = ptr[i][j];
@@ -221,7 +221,7 @@ bool ermolaev_v_allreduce_mpi::TemplateTestTaskParallel<_T, _S>::post_processing
   internal_order_test();
 
   if (world.rank() == 0) {
-    auto* ptr = reinterpret_cast<std::shared_ptr<_T[]>*>(taskData->outputs[0]);
+    auto* ptr = reinterpret_cast<ermolaev_v_allreduce_mpi::shared_ptr_array<_T>*>(taskData->outputs[0]);
     for (_S j = 0; j < res_.size(); j++) {
       for (_S i = 0; i < res_[j].size(); i++) {
         ptr[i][j] = res_[j][i];

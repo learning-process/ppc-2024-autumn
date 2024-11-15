@@ -3,11 +3,11 @@
 
 #include <algorithm>
 #include <limits>
-#include <memory>
 #include <numeric>
 #include <vector>
 
 #include "core/task/include/task.hpp"
+#include "seq/ermolaev_v_allreduce/include/shared_ptr_array.hpp"
 
 namespace ermolaev_v_allreduce_seq {
 
@@ -33,7 +33,7 @@ bool ermolaev_v_allreduce_seq::TestTaskSequential<_T, _S>::pre_processing() {
 
   input_.resize(taskData->inputs_count[0], std::vector<_T>(taskData->inputs_count[1]));
 
-  auto* ptr = reinterpret_cast<std::shared_ptr<_T[]>*>(taskData->inputs[0]);
+  auto* ptr = reinterpret_cast<ermolaev_v_allreduce_seq::shared_ptr_array<_T>*>(taskData->inputs[0]);
   for (_S i = 0; i < input_.size(); i++) {
     for (_S j = 0; j < input_[i].size(); j++) {
       input_[i][j] = ptr[i][j];
@@ -73,7 +73,7 @@ template <typename _T, typename _S>
 bool ermolaev_v_allreduce_seq::TestTaskSequential<_T, _S>::post_processing() {
   internal_order_test();
 
-  auto* ptr = reinterpret_cast<std::shared_ptr<_T[]>*>(taskData->outputs[0]);
+  auto* ptr = reinterpret_cast<ermolaev_v_allreduce_seq::shared_ptr_array<_T>*>(taskData->outputs[0]);
   for (_S i = 0; i < res_.size(); i++) {
     std::copy(res_[i].begin(), res_[i].end(), ptr[i].get());
   }

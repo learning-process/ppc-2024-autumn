@@ -4,15 +4,15 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/timer.hpp>
-#include <memory>
 #include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
+#include "mpi/ermolaev_v_allreduce/include/shared_ptr_array.hpp"
 
 namespace ermolaev_v_allreduce_mpi {
 template <typename _T>
-using Matrix = std::vector<std::shared_ptr<_T[]>>;
+using Matrix = std::vector<ermolaev_v_allreduce_mpi::shared_ptr_array<_T>>;
 
 template <typename _T, typename _S>
 Matrix<_T> getRandomMatrix(_S rows, _S cols, _T min, _T max) {
@@ -20,7 +20,7 @@ Matrix<_T> getRandomMatrix(_S rows, _S cols, _T min, _T max) {
   std::mt19937 gen(dev());
 
   Matrix<_T> matrix(rows);
-  for (_S i = 0; i < rows; i++) matrix[i] = std::make_shared<_T[]>(cols);
+  for (_S i = 0; i < rows; i++) matrix[i] = ermolaev_v_allreduce_mpi::shared_ptr_array<_T>(cols);
 
   const auto gen_max = (double)std::numeric_limits<uint32_t>::max();
   const _T range = max - min + 1;
@@ -42,7 +42,7 @@ void fillData(std::shared_ptr<ppc::core::TaskData>& taskData, Matrix<value_type>
   taskData->inputs_count.emplace_back(cols);
 
   res.resize(rows);
-  for (uint32_t i = 0; i < rows; i++) res[i] = std::make_shared<value_type[]>(cols);
+  for (uint32_t i = 0; i < rows; i++) res[i] = ermolaev_v_allreduce_mpi::shared_ptr_array<value_type>(cols);
 
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(res.data()));
   taskData->outputs_count.emplace_back(rows);
@@ -93,14 +93,15 @@ void funcTestBody(uint32_t rows, uint32_t cols, value_type gen_min, value_type g
 template <typename parallel_task_class, typename value_type>
 void perfTestBody(uint32_t rows, uint32_t cols, ppc::core::PerfResults::TypeOfRunning type) {
   boost::mpi::communicator world;
-  Matrix<value_type> matrix, res;
+  Matrix<value_type> matrix;
+  Matrix<value_type> res;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
     matrix.resize(rows);
     for (uint32_t i = 0; i < rows; i++) {
-      matrix[i] = std::make_shared<value_type[]>(cols);
+      matrix[i] = ermolaev_v_allreduce_mpi::shared_ptr_array<value_type>(cols);
       std::fill_n(matrix[i].get(), cols, (value_type)1);
     }
 
