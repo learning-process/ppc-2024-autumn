@@ -6,7 +6,7 @@
 
 namespace mpi = boost::mpi;
 
-TEST(PreProcessingTest, ValidInput) {
+TEST(vavilov_v_contrast_enhancement_mpi, ValidInput) {
   mpi::environment env;
   mpi::communicator world;
 
@@ -21,7 +21,7 @@ TEST(PreProcessingTest, ValidInput) {
   }
 }
 
-TEST(ValidationTest, CorrectOutputSize) {
+TEST(vavilov_v_contrast_enhancement_mpi, CorrectOutputSize) {
   mpi::environment env;
   mpi::communicator world;
 
@@ -36,7 +36,7 @@ TEST(ValidationTest, CorrectOutputSize) {
   }
 }
 
-TEST(ValidationTest, IncorrectOutputSize) {
+TEST(vavilov_v_contrast_enhancement_mpi, IncorrectOutputSize) {
   mpi::environment env;
   mpi::communicator world;
 
@@ -51,7 +51,7 @@ TEST(ValidationTest, IncorrectOutputSize) {
   }
 }
 
-TEST(RunTest, NormalContrastEnhancement) {
+TEST(vavilov_v_contrast_enhancement_mpi, NormalContrastEnhancement) {
   mpi::environment env;
   mpi::communicator world;
 
@@ -74,7 +74,7 @@ TEST(RunTest, NormalContrastEnhancement) {
   }
 }
 
-TEST(PostProcessingTest, ValidOutputCopy) {
+TEST(vavilov_v_contrast_enhancement_mpi, ValidOutputCopy) {
   mpi::environment env;
   mpi::communicator world;
 
