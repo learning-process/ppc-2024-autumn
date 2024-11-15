@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "seq/vavilov_v_contrast_enhancement/ops_seq.hpp"
+#include "seq/vavilov_v_contrast_enhancement/include/ops_seq.hpp"
 
 TEST(PreProcessingTest, ValidInput) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
