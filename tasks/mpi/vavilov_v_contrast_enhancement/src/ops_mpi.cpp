@@ -62,7 +62,7 @@ bool vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel::run() {
     }
   }
 
-  boost::mpi::gatherv(world, local_input_, local_input_.size(),output_, counts, displs, 0);
+  boost::mpi::gatherv(world, local_input_, local_input_.size(), output_, counts, displs, 0);
   return true;
 }
 
