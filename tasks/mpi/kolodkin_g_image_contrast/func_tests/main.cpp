@@ -223,7 +223,6 @@ TEST(kolodkin_g_image_contrast_MPI, Test_image_one_pixel) {
 
   // Create data
   std::vector<int> global_out(3, 0);
-  std::vector<int> result_out;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
@@ -242,12 +241,10 @@ TEST(kolodkin_g_image_contrast_MPI, Test_image_one_pixel) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  result_out = *reinterpret_cast<std::vector<int> *>(taskDataMpi->outputs[0]);
 
   if (world.rank() == 0) {
     // Create data
     std::vector<int> reference_out(3, 0);
-    std::vector<int> result2_out;
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -261,9 +258,10 @@ TEST(kolodkin_g_image_contrast_MPI, Test_image_one_pixel) {
     testTaskSequential.pre_processing();
     testTaskSequential.run();
     testTaskSequential.post_processing();
-    result2_out = *reinterpret_cast<std::vector<int> *>(taskDataSeq->outputs[0]);
-    for (unsigned long i = 0; i < result_out.size(); i++) {
-      ASSERT_EQ(result_out[i], result2_out[i]);
+    global_out = *reinterpret_cast<std::vector<int> *>(taskDataMpi->outputs[0]);
+    reference_out = *reinterpret_cast<std::vector<int> *>(taskDataSeq->outputs[0]);
+    for (unsigned long i = 0; i < global_out.size(); i++) {
+      ASSERT_EQ(global_out[i], reference_out[i]);
     }
   }
 }

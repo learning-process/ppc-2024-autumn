@@ -24,13 +24,13 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskSequential::validation() {
   if (taskData->inputs_count[0] <= 0 || taskData->inputs_count[0] % 3 != 0) {
     return false;
   }
-  /*auto* input_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+  auto* input_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
   for (unsigned long i = 0; i < taskData->inputs_count[0]; i++) {
     if (*input_ptr > 255 || *input_ptr < 0) {
       return false;
     }
     input_ptr++;
-  }*/
+  }
   return true;
 }
 
@@ -81,11 +81,12 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::pre_processing() {
       auto size = (proc == world.size() - 1) ? input_size - start : delta;
       world.send(proc, 0, std::vector<int>(input_ptr + start, input_ptr + start + size));
     }
-    local_input_ = std::vector<int>(input_ptr, input_ptr + delta);
   } else {
-    int input_data_size;
-    world.recv(0, 0, input_data_size);
-    local_input_.resize(input_data_size);
+    int input_data_size = taskData->inputs_count[0] / world.size();
+    int size = (world.rank() == world.size() - 1) ? (taskData->inputs_count[0] - (world.size() - 1) * input_data_size)
+                                                  : input_data_size;
+    world.recv(0, 0, size);
+    local_input_.resize(size);
     world.recv(0, 1, local_input_);
   }
   return true;
@@ -93,16 +94,18 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::pre_processing() {
 
 bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
-  if (taskData->inputs_count[0] <= 0 || taskData->inputs_count[0] % 3 != 0) {
-    return false;
-  }
-  /*auto* input_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (unsigned long i = 0; i < taskData->inputs_count[0]; i++) {
-    if (*input_ptr > 255 || *input_ptr < 0) {
+  if (world.rank() == 0) {
+    if (taskData->inputs_count[0] <= 0 || taskData->inputs_count[0] % 3 != 0) {
       return false;
     }
-    input_ptr++;
-  }*/
+    auto* input_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+    for (unsigned long i = 0; i < taskData->inputs_count[0]; i++) {
+      if (*input_ptr > 255 || *input_ptr < 0) {
+        return false;
+      }
+      input_ptr++;
+    }
+  }
   return true;
 }
 
