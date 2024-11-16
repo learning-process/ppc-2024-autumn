@@ -55,8 +55,8 @@ bool vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
 
   if (world.rank() == 0) {
-      return ((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
-              (taskData->outputs_count[0] == taskData->inputs_count[0]));
+    return ((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
+            (taskData->outputs_count[0] == taskData->inputs_count[0]));
   }
   return true;
 }
