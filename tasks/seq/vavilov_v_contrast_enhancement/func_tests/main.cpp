@@ -5,62 +5,60 @@
 #include "seq/vavilov_v_contrast_enhancement/include/ops_seq.hpp"
 
 TEST(vavilov_v_contrast_enhancement_seq, ValidInput) {
-  auto taskData = std::make_shared<ppc::core::TaskData>();
+  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
   std::vector<int> input = {10, 20, 30, 40, 50};
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
-  taskData->inputs_count.emplace_back(input.size());
+  f->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskDataSeq->inputs_count.emplace_back(input.size());
 
-  vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential task(taskData);
+  vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential task(taskDataSeq);
   ASSERT_TRUE(task.pre_processing());
 }
 
 TEST(vavilov_v_contrast_enhancement_seq, EmptyInput) {
-  auto taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs_count[0] = 0;
+  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs_count[0] = 0;
 
-  vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential task(taskData);
+  vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential task(taskDataSeq);
   ASSERT_TRUE(task.pre_processing());
 }
 
 TEST(vavilov_v_contrast_enhancement_seq, ValidOutputSize) {
-  auto taskData = std::make_shared<ppc::core::TaskData>();
+  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
   std::vector<int> input = {10, 20, 30, 40, 50};
 
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
-  taskData->inputs_count.emplace_back(input.size());
-  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
-  taskData->outputs_count.emplace_back(input.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskDataSeq->inputs_count.emplace_back(input.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskDataSeq->outputs_count.emplace_back(input.size());
 
-  vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential task(taskData);
+  vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential task(taskDataSeq);
   ASSERT_TRUE(task.pre_processing());
   ASSERT_TRUE(task.validation());
 }
 
 TEST(vavilov_v_contrast_enhancement_seq, MismatchedOutputSize) {
-  auto taskData = std::make_shared<ppc::core::TaskData>();
+  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
   std::vector<int> input = {10, 20, 30, 40, 50};
-  taskData->inputs_count[0] = input.size();
-  taskData->outputs_count[0] = input.size() - 1;
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
-  taskData->inputs_count.emplace_back(input.size());
-  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
-  taskData->outputs_count.emplace_back(input.size() - 1);
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskDataSeq->inputs_count.emplace_back(input.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskDataSeq->outputs_count.emplace_back(input.size() - 1);
 
-  vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential task(taskData);
+  vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential task(taskDataSeq);
   ASSERT_TRUE(task.pre_processing());
   ASSERT_FALSE(task.validation());
 }
 
 TEST(vavilov_v_contrast_enhancement_seq, NormalContrastEnhancement) {
-  auto taskData = std::make_shared<ppc::core::TaskData>();
+  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
   std::vector<int> input = {10, 20, 30, 40, 50};
-  taskData->inputs_count.emplace_back(input.size());
-  taskData->outputs_count.emplace_back(input.size());
+  taskDataSeq->inputs_count.emplace_back(input.size());
+  taskDataSeq->outputs_count.emplace_back(input.size());
   std::vector<int> output(input.size());
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
-  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
 
-  vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential task(taskData);
+  vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential task(taskDataSeq);
   ASSERT_TRUE(task.pre_processing());
   ASSERT_TRUE(task.validation());
   ASSERT_TRUE(task.run());
@@ -70,15 +68,15 @@ TEST(vavilov_v_contrast_enhancement_seq, NormalContrastEnhancement) {
 }
 
 TEST(vavilov_v_contrast_enhancement_seq, SingleValueInput) {
-  auto taskData = std::make_shared<ppc::core::TaskData>();
+  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
   std::vector<int> input = {100, 100, 100};
-  taskData->inputs_count.emplace_back(input.size());
-  taskData->outputs_count.emplace_back(input.size());
+  taskDataSeq->inputs_count.emplace_back(input.size());
+  taskDataSeq->outputs_count.emplace_back(input.size());
   std::vector<int> output(input.size());
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
-  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
 
-  vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential task(taskData);
+  vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential task(taskDataSeq);
   ASSERT_TRUE(task.pre_processing());
   ASSERT_TRUE(task.validation());
   ASSERT_TRUE(task.run());
@@ -88,15 +86,15 @@ TEST(vavilov_v_contrast_enhancement_seq, SingleValueInput) {
 }
 
 TEST(vavilov_v_contrast_enhancement_seq, ValidOutputCopy) {
-  auto taskData = std::make_shared<ppc::core::TaskData>();
+  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
   std::vector<int> input = {10, 20, 30, 40, 50};
-  taskData->inputs_count.emplace_back(input.size());
-  taskData->outputs_count.emplace_back(input.size());
+  taskDataSeq->inputs_count.emplace_back(input.size());
+  taskDataSeq->outputs_count.emplace_back(input.size());
   std::vector<int> output(input.size());
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
-  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
 
-  vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential task(taskData);
+  vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential task(taskDataSeq);
   ASSERT_TRUE(task.pre_processing());
   ASSERT_TRUE(task.validation());
   ASSERT_TRUE(task.run());
