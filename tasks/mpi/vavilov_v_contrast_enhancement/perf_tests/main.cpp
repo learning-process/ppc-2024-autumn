@@ -22,13 +22,13 @@ TEST(vavilov_v_contrast_enhancement_mpi, RunLargeInput) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
 
-    vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel task(taskDataPar);
+    vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
     auto start = std::chrono::high_resolution_clock::now();
-    ASSERT_TRUE(task.pre_processing());
-    ASSERT_TRUE(task.validation());
-    ASSERT_TRUE(task.run());
-    ASSERT_TRUE(task.post_processing());
+    ASSERT_TRUE(testMpiTaskParallel.validation());
+    ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+    ASSERT_TRUE(testMpiTaskParallel.run());
+    ASSERT_TRUE(testMpiTaskParallel.post_processing());
     auto end = std::chrono::high_resolution_clock::now();
 
     std::chrono::duration<double> elapsed = end - start;
@@ -55,11 +55,11 @@ TEST(vavilov_v_contrast_enhancement_mpi, RunPipelineWithMultipleTasks) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
       taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
 
-      vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel task(taskDataPar);
-      ASSERT_TRUE(task.pre_processing());
-      ASSERT_TRUE(task.validation());
-      ASSERT_TRUE(task.run());
-      ASSERT_TRUE(task.post_processing());
+      vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+      ASSERT_TRUE(testMpiTaskParallel.validation());
+      ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+      ASSERT_TRUE(testMpiTaskParallel.run());
+      ASSERT_TRUE(testMpiTaskParallel.post_processing());
     }
   }
 }
