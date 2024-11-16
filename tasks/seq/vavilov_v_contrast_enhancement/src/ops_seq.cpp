@@ -7,8 +7,8 @@ bool vavilov_v_contrast_enhancement_seq::TestTaskSequential::pre_processing() {
   input_.resize(data_size);
   int* data = reinterpret_cast<int*>(taskData->inputs[0]);
   for (size_t i = 0; i < data_size; i++) {
-      input_[i] = data[i];
-    }
+    input_[i] = data[i];
+  }
 
   output_.resize(data_size, 0);
   return true;
