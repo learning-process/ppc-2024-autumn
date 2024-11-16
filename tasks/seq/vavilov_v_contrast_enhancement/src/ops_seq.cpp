@@ -26,9 +26,6 @@ bool vavilov_v_contrast_enhancement_seq::TestTaskSequential::validation() {
 
 bool vavilov_v_contrast_enhancement_seq::TestTaskSequential::run() {
   internal_order_test();
-  if (input_.empty()) {
-    return false;
-  }
 
   p_min_ = *std::min_element(input_.begin(), input_.end());
   p_max_ = *std::max_element(input_.begin(), input_.end());
