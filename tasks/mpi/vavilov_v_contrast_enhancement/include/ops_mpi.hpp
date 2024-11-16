@@ -12,9 +12,23 @@
 
 namespace vavilov_v_contrast_enhancement_mpi {
 
-class ContrastEnhancementParallel : public ppc::core::Task {
+class TestTaskSequential : public ppc::core::Task {
  public:
-  explicit ContrastEnhancementParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
+  explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+
+  bool pre_processing() override;
+  bool validation() override;
+  bool run() override;
+  bool post_processing() override;
+
+ private:
+  std::vector<int> input_;
+  std::vector<int> output_;
+  int p_min_{0}, p_max_{255};
+
+class TestMPITaskParallel : public ppc::core::Task {
+ public:
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
       : Task(std::move(taskData_)), world(boost::mpi::communicator()) {}
 
   bool pre_processing() override;
