@@ -38,12 +38,12 @@ TEST(vavilov_v_contrast_enhancement_seq, RunPipelineWithMultipleTasks) {
     auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
     std::vector<int> input(data_size, i);
     std::vector<int> output(data_size);
-  
-  taskDataSeq->inputs_count.emplace_back(input.size());
-  taskDataSeq->outputs_count.emplace_back(input.size());
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
-  
+
+    taskDataSeq->inputs_count.emplace_back(input.size());
+    taskDataSeq->outputs_count.emplace_back(input.size());
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+
     vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential task(taskDataSeq);
     ASSERT_TRUE(task.pre_processing());
     ASSERT_TRUE(task.validation());
