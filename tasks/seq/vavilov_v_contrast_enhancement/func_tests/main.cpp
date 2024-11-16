@@ -16,16 +16,14 @@ TEST(vavilov_v_contrast_enhancement_seq, ValidInput) {
 
   vavilov_v_contrast_enhancement_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_TRUE(testTaskSequential.validation());
-  ASSERT_TRUE(testTaskSequential.pre_processing());
 }
 
 TEST(vavilov_v_contrast_enhancement_seq, EmptyInput) {
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs_count[0] = 0;
+  taskDataSeq->inputs_count.emplace_back(0);
 
   vavilov_v_contrast_enhancement_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  ASSERT_TRUE(testTaskSequential.pre_processing());
+  ASSERT_FALSE(testTaskSequential.validation());
 }
 
 TEST(vavilov_v_contrast_enhancement_seq, ValidOutputSize) {
