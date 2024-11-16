@@ -22,7 +22,7 @@ TEST(vavilov_v_contrast_enhancement_mpi, RunLargeInput) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
 
-    vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel task(taskDataPar);
+    vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel task(taskDataPar);
 
     auto start = std::chrono::high_resolution_clock::now();
     ASSERT_TRUE(task.pre_processing());
@@ -55,7 +55,7 @@ TEST(vavilov_v_contrast_enhancement_mpi, RunPipelineWithMultipleTasks) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
       taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
 
-      vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel task(taskDataPar);
+      vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel task(taskDataPar);
       ASSERT_TRUE(task.pre_processing());
       ASSERT_TRUE(task.validation());
       ASSERT_TRUE(task.run());
