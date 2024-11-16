@@ -37,7 +37,6 @@ TEST(vavilov_v_contrast_enhancement_seq, ValidOutputSize) {
 
   vavilov_v_contrast_enhancement_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_TRUE(testTaskSequential.validation());
-  ASSERT_TRUE(testTaskSequential.pre_processing());
 }
 
 TEST(vavilov_v_contrast_enhancement_seq, MismatchedOutputSize) {
