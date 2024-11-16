@@ -80,7 +80,7 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::pre_processing() {
     local_output_.resize(delta);
     if (world.rank() == 0) {
       for (int proc = 1; proc < world.size(); proc++) {
-        world.send(proc, 0, input_.data() + proc * delta,delta);
+        world.send(proc, 0, input_.data() + proc * delta, delta);
       }
       local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
     }
@@ -120,15 +120,24 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::run() {
   for (size_t i = 0; i < local_input_.size(); i++) {
     local_output_[i] = palette[local_input_[i]];
   }
+  if (world.rank() == 0) {
+    output_.resize(taskData->inputs_count[0]);
+    std::copy(local_output_.begin(), local_output_.end(), output_.begin());
+    for (int proc = 1; proc < world.size(); proc++) {
+      int local_size = local_output_.size();
+      std::vector<int> recv_buffer(local_size);
+      world.recv(proc, 0, recv_buffer.data(), local_size);
+      std::copy(recv_buffer.begin(), recv_buffer.end(), output_.begin() + proc * local_size);
+    }
+  } else {
+    world.send(0, 0, local_output_.data(), local_output_.size());
+  }
   return true;
 }
 
 bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    for (size_t i = 0; i < local_output_.size(); i++) {
-      output_[i] = local_output_[i];
-    }
     *reinterpret_cast<std::vector<int>*>(taskData->outputs[0]) = output_;
   }
   return true;
