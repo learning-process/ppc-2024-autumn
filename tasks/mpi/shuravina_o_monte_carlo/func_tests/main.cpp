@@ -1,11 +1,12 @@
 #include <gtest/gtest.h>
 
-#include <boost/mpi/collectives.hpp>
 #include <boost/mpi/timer.hpp>
+#include <boost/mpi.hpp>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/shuravina_o_monte_carlo/include/ops_mpi.hpp"
+
 TEST(MonteCarloIntegrationTaskParallel, Test_Integration) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
@@ -124,6 +125,7 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Work_Distribution) {
     throw;
   }
 }
+
 TEST(MonteCarloIntegrationTaskParallel, Test_Data_Collection) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
