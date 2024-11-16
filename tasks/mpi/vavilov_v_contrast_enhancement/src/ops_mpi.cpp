@@ -17,11 +17,8 @@ bool vavilov_v_contrast_enhancement_mpi::TestMPITaskSequential::pre_processing()
 bool vavilov_v_contrast_enhancement_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
 
-  if (!taskData || taskData->outputs_count[0] != input_.size()) {
-    std::cerr << "Validation failed: output size mismatch." << std::endl;
-    return false;
-  }
-  return true;
+  return ((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
+          (taskData->outputs_count[0] == taskData->inputs_count[0]));
 }
 
 bool vavilov_v_contrast_enhancement_mpi::TestMPITaskSequential::run() {
@@ -58,7 +55,8 @@ bool vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
 
   if (world.rank() == 0) {
-    return taskData->outputs_count[0] == taskData->inputs_count[0];
+      return ((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
+              (taskData->outputs_count[0] == taskData->inputs_count[0]));
   }
   return true;
 }
