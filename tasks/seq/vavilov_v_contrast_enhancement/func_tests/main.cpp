@@ -53,7 +53,7 @@ TEST(vavilov_v_contrast_enhancement_seq, MismatchedOutputSize) {
 }
 
 TEST(vavilov_v_contrast_enhancement_seq, NormalContrastEnhancement) {
-  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   std::vector<int> input = {10, 20, 30, 40, 50};
   taskDataSeq->inputs_count.emplace_back(input.size());
   taskDataSeq->outputs_count.emplace_back(input.size());
