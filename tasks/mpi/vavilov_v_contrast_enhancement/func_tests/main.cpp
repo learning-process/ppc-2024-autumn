@@ -11,12 +11,12 @@ TEST(vavilov_v_contrast_enhancement_mpi, ValidInput) {
   mpi::communicator world;
 
   if (world.rank() == 0) {
-    auto taskData = std::make_shared<ppc::core::TaskData>();
+    auto taskDataPar = std::make_shared<ppc::core::TaskData>();
     std::vector<int> input = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
-    taskData->inputs_count[0] = input.size();
-    taskData->inputs[0] = reinterpret_cast<void*>(input.data());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataPar->inputs_count.emplace_back(input.size());
 
-    vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel task(taskData);
+    vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel task(taskDataPar);
     ASSERT_TRUE(task.pre_processing());
   }
 }
@@ -26,11 +26,15 @@ TEST(vavilov_v_contrast_enhancement_mpi, CorrectOutputSize) {
   mpi::communicator world;
 
   if (world.rank() == 0) {
-    auto taskData = std::make_shared<ppc::core::TaskData>();
-    taskData->inputs_count[0] = 10;
-    taskData->outputs_count[0] = 10;
+    auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+    std::vector<int> input = {10, 20, 30, 40, 50};
 
-    vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel task(taskData);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataPar->inputs_count.emplace_back(input.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataPar->outputs_count.emplace_back(input.size());
+
+    vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel task(taskDataPar);
     ASSERT_TRUE(task.pre_processing());
     ASSERT_TRUE(task.validation());
   }
@@ -41,11 +45,15 @@ TEST(vavilov_v_contrast_enhancement_mpi, IncorrectOutputSize) {
   mpi::communicator world;
 
   if (world.rank() == 0) {
-    auto taskData = std::make_shared<ppc::core::TaskData>();
-    taskData->inputs_count[0] = 10;
-    taskData->outputs_count[0] = 8;
+    auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+    std::vector<int> input = {10, 20, 30, 40, 50};
 
-    vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel task(taskData);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataPar->inputs_count.emplace_back(input.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataPar->outputs_count.emplace_back(input.size() - 1);
+
+    vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel task(taskDataPar);
     ASSERT_TRUE(task.pre_processing());
     ASSERT_FALSE(task.validation());
   }
@@ -55,15 +63,15 @@ TEST(vavilov_v_contrast_enhancement_mpi, NormalContrastEnhancement) {
   mpi::environment env;
   mpi::communicator world;
 
-  auto taskData = std::make_shared<ppc::core::TaskData>();
+  auto taskDataPar = std::make_shared<ppc::core::TaskData>();
   std::vector<int> input = {10, 20, 30, 40, 50};
-  taskData->inputs_count[0] = input.size();
-  taskData->outputs_count[0] = input.size();
+  taskDataPar->inputs_count.emplace_back(input.size());
+  taskDataPar->outputs_count.emplace_back(input.size());
   std::vector<int> output(input.size());
-  taskData->inputs[0] = reinterpret_cast<void*>(input.data());
-  taskData->outputs[0] = reinterpret_cast<void*>(output.data());
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
 
-  vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel task(taskData);
+  vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel task(taskDataPar);
   ASSERT_TRUE(task.pre_processing());
   ASSERT_TRUE(task.validation());
   ASSERT_TRUE(task.run());
@@ -79,15 +87,15 @@ TEST(vavilov_v_contrast_enhancement_mpi, ValidOutputCopy) {
   mpi::communicator world;
 
   if (world.rank() == 0) {
-    auto taskData = std::make_shared<ppc::core::TaskData>();
+    auto taskDataPar = std::make_shared<ppc::core::TaskData>();
     std::vector<int> input = {10, 20, 30, 40, 50};
-    taskData->inputs_count[0] = input.size();
-    taskData->outputs_count[0] = input.size();
+    taskDataPar->inputs_count.emplace_back(input.size());
+    taskDataPar->outputs_count.emplace_back(input.size());
     std::vector<int> output(input.size());
-    taskData->inputs[0] = reinterpret_cast<void*>(input.data());
-    taskData->outputs[0] = reinterpret_cast<void*>(output.data());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
 
-    vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel task(taskData);
+    vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel task(taskDataPar);
     ASSERT_TRUE(task.pre_processing());
     ASSERT_TRUE(task.validation());
     ASSERT_TRUE(task.run());
