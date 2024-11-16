@@ -17,7 +17,7 @@ TEST(vavilov_v_contrast_enhancement_seq, RunTaskWithLargeInput) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
 
-  vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential task(taskDataSeq);
+  vavilov_v_contrast_enhancement_seq::TestTaskSequential task(taskDataSeq);
 
   auto start = std::chrono::high_resolution_clock::now();
   ASSERT_TRUE(task.pre_processing());
@@ -44,7 +44,7 @@ TEST(vavilov_v_contrast_enhancement_seq, RunPipelineWithMultipleTasks) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
 
-    vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential task(taskDataSeq);
+    vavilov_v_contrast_enhancement_seq::TestTaskSequential task(taskDataSeq);
     ASSERT_TRUE(task.pre_processing());
     ASSERT_TRUE(task.validation());
     ASSERT_TRUE(task.run());
