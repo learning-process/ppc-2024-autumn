@@ -25,6 +25,7 @@ class TestTaskSequential : public ppc::core::Task {
   std::vector<int> input_;
   std::vector<int> output_;
   int p_min_{0}, p_max_{255};
+};
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
