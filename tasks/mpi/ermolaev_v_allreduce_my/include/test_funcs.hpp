@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
+#include "mpi/ermolaev_v_allreduce_my/include/ops_mpi.hpp"
 #include "mpi/ermolaev_v_allreduce_my/include/shared_ptr_array.hpp"
 
 namespace ermolaev_v_allreduce_mpi {
@@ -80,7 +81,7 @@ void funcTestBody(uint32_t rows, uint32_t cols, value_type gen_min, value_type g
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     fillData(taskDataSeq, matrix, seq_res, rows, cols);
 
-    ermolaev_v_allreduce_mpi::TestMPITaskSequential<value_type, uint32_t> testMpiTaskSequential(taskDataSeq);
+    typename ermolaev_v_allreduce_mpi::TestMPITaskSequential<value_type, uint32_t> testMpiTaskSequential(taskDataSeq);
     run(testMpiTaskSequential);
 
     for (uint32_t i = 0; i < rows; i++)

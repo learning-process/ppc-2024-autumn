@@ -7,7 +7,7 @@ namespace ermolaev_v_allreduce_mpi {
 template <typename _T, typename _S = uint32_t>
 class shared_ptr_array {
  public:
-  shared_ptr_array() {}
+  shared_ptr_array() = default;
   shared_ptr_array(_S size) {
     ptr_ = std::shared_ptr<_T>(new _T[size], [](_T* ptr) { delete[] ptr; });
   }
