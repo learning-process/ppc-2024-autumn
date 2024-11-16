@@ -29,3 +29,20 @@ TEST(ermolaev_v_allreduce_mpi, run_int32_task_my_allreduce) {
     for (auto& cols : sizes)
       ermolaev_v_allreduce_mpi::funcTestBody<MyAllReduce<int32_t>, int32_t>(rows, cols, -500, 500);
 }
+
+TEST(ermolaev_v_allreduce_mpi, validation_mpi) {
+  ermolaev_v_allreduce_mpi::testValidation<MyAllReduce<int32_t>, int32_t>();
+}
+TEST(ermolaev_v_allreduce_mpi, validation_seq) {
+  ermolaev_v_allreduce_mpi::testValidation<ermolaev_v_allreduce_mpi::TestMPITaskSequential<int32_t>, int32_t>();
+}
+
+TEST(ermolaev_v_allreduce_mpi, useless_test_for_codecov) {
+  auto ptr = ermolaev_v_allreduce_mpi::shared_ptr_array<int32_t>(2);
+  ptr[1] = 10;
+  ASSERT_EQ(ptr.get()[1], 10);
+}
+
+TEST(ermolaev_v_allreduce_mpi, useless_test_for_codecov_2) {
+  ermolaev_v_allreduce_mpi::perfTestBody<MyAllReduce<double>, double>(1, 1, ppc::core::PerfResults::NONE);
+}

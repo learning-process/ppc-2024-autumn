@@ -222,11 +222,8 @@ bool ermolaev_v_allreduce_mpi::TemplateTestTaskParallel<_T, _S>::post_processing
 
   if (world.rank() == 0) {
     auto* ptr = reinterpret_cast<ermolaev_v_allreduce_mpi::shared_ptr_array<_T>*>(taskData->outputs[0]);
-    for (_S j = 0; j < res_.size(); j++) {
-      for (_S i = 0; i < res_[j].size(); i++) {
-        ptr[i][j] = res_[j][i];
-      }
-    }
+    for (_S j = 0; j < res_.size(); j++)
+      for (_S i = 0; i < res_[j].size(); i++) ptr[i][j] = res_[j][i];
   }
 
   return true;

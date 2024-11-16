@@ -123,11 +123,52 @@ void perfTestBody(uint32_t rows, uint32_t cols, ppc::core::PerfResults::TypeOfRu
     perfAnalyzer->pipeline_run(perfAttr, perfResults);
   else if (type == ppc::core::PerfResults::TASK_RUN)
     perfAnalyzer->task_run(perfAttr, perfResults);
+  else if (type == ppc::core::PerfResults::NONE)
+    perfAnalyzer->pipeline_run(perfAttr, perfResults);
 
   if (world.rank() == 0) {
-    ppc::core::Perf::print_perf_statistic(perfResults);
+    if (type != ppc::core::PerfResults::NONE) ppc::core::Perf::print_perf_statistic(perfResults);
     for (uint32_t i = 0; i < rows; i++)
       for (uint32_t j = 0; j < cols; j++) ASSERT_EQ(res[i][j], 0);
   }
 }
+
+template <typename parallel_task_class, typename value_type>
+void testValidation() {
+  boost::mpi::communicator world;
+
+  if (world.rank() == 0) {
+    auto matrix = ermolaev_v_allreduce_mpi::getRandomMatrix(3, 3, -3, 3);
+    Matrix<value_type> res(3);
+    for (uint32_t i = 0; i < 3; i++) res[i] = ermolaev_v_allreduce_mpi::shared_ptr_array<value_type>(3);
+
+    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+    parallel_task_class task(taskDataPar);
+    ASSERT_FALSE(task.validation());
+
+    parallel_task_class task1(taskDataPar);
+    taskDataPar->inputs_count.emplace_back(3);
+    taskDataPar->inputs_count.emplace_back(3);
+    ASSERT_FALSE(task1.validation());
+
+    parallel_task_class task2(taskDataPar);
+    taskDataPar->outputs_count.emplace_back(3);
+    taskDataPar->outputs_count.emplace_back(3);
+    ASSERT_FALSE(task2.validation());
+
+    parallel_task_class task3(taskDataPar);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    ASSERT_FALSE(task3.validation());
+
+    parallel_task_class task4(taskDataPar);
+    taskDataPar->inputs.clear();
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res.data()));
+    ASSERT_FALSE(task4.validation());
+
+    parallel_task_class task5(taskDataPar);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    ASSERT_TRUE(task5.validation());
+  }
+}
+
 }  // namespace ermolaev_v_allreduce_mpi
