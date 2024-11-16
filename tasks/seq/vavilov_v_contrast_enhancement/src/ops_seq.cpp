@@ -1,6 +1,6 @@
 #include "seq/vavilov_v_contrast_enhancement/include/ops_seq.hpp"
 
-bool vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential::pre_processing() {
+bool vavilov_v_contrast_enhancement_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
 
   if (!taskData) {
@@ -17,7 +17,7 @@ bool vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential::pre_proc
   return true;
 }
 
-bool vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential::validation() {
+bool vavilov_v_contrast_enhancement_seq::TestTaskSequential::validation() {
   internal_order_test();
 
   if (!taskData || taskData->outputs_count[0] != input_.size()) {
@@ -27,7 +27,7 @@ bool vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential::validati
   return true;
 }
 
-bool vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential::run() {
+bool vavilov_v_contrast_enhancement_seq::TestTaskSequential::run() {
   internal_order_test();
   if (input_.empty()) {
     return false;
@@ -47,7 +47,7 @@ bool vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential::run() {
   return true;
 }
 
-bool vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential::post_processing() {
+bool vavilov_v_contrast_enhancement_seq::TestTaskSequential::post_processing() {
   internal_order_test();
 
   std::copy(output_.begin(), output_.end(), reinterpret_cast<int*>(taskData->outputs[0]));
