@@ -47,8 +47,7 @@ TEST(vavilov_v_contrast_enhancement_seq, MismatchedOutputSize) {
   taskDataSeq->outputs_count.emplace_back(input.size() - 1);
 
   vavilov_v_contrast_enhancement_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  ASSERT_TRUE(testTaskSequential.pre_processing());
+  ASSERT_FALSE(testTaskSequential.validation());
 }
 
 TEST(vavilov_v_contrast_enhancement_seq, NormalContrastEnhancement) {
