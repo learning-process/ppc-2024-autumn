@@ -16,7 +16,7 @@ TEST(vavilov_v_contrast_enhancement_mpi, ValidInput) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
     taskDataPar->inputs_count.emplace_back(input.size());
 
-    vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel task(taskDataPar);
+    vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel task(taskDataPar);
     ASSERT_TRUE(task.pre_processing());
   }
 }
@@ -34,7 +34,7 @@ TEST(vavilov_v_contrast_enhancement_mpi, CorrectOutputSize) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
     taskDataPar->outputs_count.emplace_back(input.size());
 
-    vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel task(taskDataPar);
+    vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel task(taskDataPar);
     ASSERT_TRUE(task.pre_processing());
     ASSERT_TRUE(task.validation());
   }
@@ -53,7 +53,7 @@ TEST(vavilov_v_contrast_enhancement_mpi, IncorrectOutputSize) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
     taskDataPar->outputs_count.emplace_back(input.size() - 1);
 
-    vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel task(taskDataPar);
+    vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel task(taskDataPar);
     ASSERT_TRUE(task.pre_processing());
     ASSERT_FALSE(task.validation());
   }
@@ -71,7 +71,7 @@ TEST(vavilov_v_contrast_enhancement_mpi, NormalContrastEnhancement) {
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
   taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
 
-  vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel task(taskDataPar);
+  vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel task(taskDataPar);
   ASSERT_TRUE(task.pre_processing());
   ASSERT_TRUE(task.validation());
   ASSERT_TRUE(task.run());
@@ -95,7 +95,7 @@ TEST(vavilov_v_contrast_enhancement_mpi, ValidOutputCopy) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
 
-    vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel task(taskDataPar);
+    vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel task(taskDataPar);
     ASSERT_TRUE(task.pre_processing());
     ASSERT_TRUE(task.validation());
     ASSERT_TRUE(task.run());
