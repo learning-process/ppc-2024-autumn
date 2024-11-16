@@ -10,8 +10,12 @@ TEST(vavilov_v_contrast_enhancement_seq, ValidInput) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
   taskDataSeq->inputs_count.emplace_back(input.size());
 
+  std::vector<int> output(input.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+  taskDataSeq->outputs_count.emplace_back(output.size());
+
   vavilov_v_contrast_enhancement_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_EQ(testTaskSequential.validation(), true);
+  ASSERT_TRUE(testTaskSequential.validation());
   ASSERT_TRUE(testTaskSequential.pre_processing());
 }
 
