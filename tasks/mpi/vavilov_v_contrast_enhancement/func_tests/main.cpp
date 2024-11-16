@@ -17,8 +17,8 @@ TEST(vavilov_v_contrast_enhancement_mpi, ValidInput) {
     taskDataPar->inputs_count.emplace_back(input.size());
 
     std::vector<int> output(input.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
-    taskDataSeq->outputs_count.emplace_back(output.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+    taskDataPar->outputs_count.emplace_back(output.size());
 
     vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
     ASSERT_TRUE(testMpiTaskParallel.validation());
@@ -37,8 +37,8 @@ TEST(vavilov_v_contrast_enhancement_mpi, CorrectOutputSize) {
     taskDataPar->inputs_count.emplace_back(input.size());
 
     std::vector<int> output(input.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
-    taskDataSeq->outputs_count.emplace_back(output.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+    taskDataPar->outputs_count.emplace_back(output.size());
 
     vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
     ASSERT_TRUE(testMpiTaskParallel.validation());
