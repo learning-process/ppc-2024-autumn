@@ -64,30 +64,28 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskSequential::post_processing() {
 
 bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
+  unsigned int delta=0;
   if (world.rank() == 0) {
     auto input_size = taskData->inputs_count[0];
     auto* input_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     input_ = std::vector<int>(input_ptr, input_ptr + input_size);
     output_ = input_;
-    local_output_.resize(input_.size());
     auto total_brightness = 0;
     for (size_t i = 0; i < input_size; i += 3) {
       total_brightness += static_cast<int>(input_[i] * 0.299 + input_[i + 1] * 0.587 + input_[i + 2] * 0.114);
     }
     av_br = total_brightness / (input_size / 3);
-    auto delta = input_size / world.size();
-    for (int proc = 1; proc < world.size(); proc++) {
-      auto start = proc * delta;
-      auto size = (proc == world.size() - 1) ? input_size - start : delta;
-      world.send(proc, 0, std::vector<int>(input_ptr + start, input_ptr + start + size));
+    delta = input_size / world.size();
+    broadcast(world, delta, 0);
+    local_output_.resize(delta);
+    if (world.rank() == 0) {
+      for (int proc = 1; proc < world.size(); proc++) {
+        world.send(proc, 0, input_.data() + proc * delta,delta);
+      }
+      local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
     }
   } else {
-    int input_data_size = taskData->inputs_count[0] / world.size();
-    int size = (world.rank() == world.size() - 1) ? (taskData->inputs_count[0] - (world.size() - 1) * input_data_size)
-                                                  : input_data_size;
-    world.recv(0, 0, size);
-    local_input_.resize(size);
-    world.recv(0, 1, local_input_);
+    world.recv(0, 0, local_input_.data(), delta);
   }
   return true;
 }
