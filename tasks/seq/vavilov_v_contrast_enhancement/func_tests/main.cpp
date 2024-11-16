@@ -7,7 +7,7 @@
 TEST(vavilov_v_contrast_enhancement_seq, ValidInput) {
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
   std::vector<int> input = {10, 20, 30, 40, 50};
-  f->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
   taskDataSeq->inputs_count.emplace_back(input.size());
 
   vavilov_v_contrast_enhancement_seq::ContrastEnhancementSequential task(taskDataSeq);
