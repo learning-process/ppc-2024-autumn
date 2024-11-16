@@ -13,16 +13,16 @@ TEST(vavilov_v_contrast_enhancement_mpi, RunLargeInput) {
   size_t data_size = 1000000;
 
   if (world.rank() == 0) {
-    auto taskData = std::make_shared<ppc::core::TaskData>();
+    auto taskDataPar = std::make_shared<ppc::core::TaskData>();
     std::vector<int> input(data_size, 128);
-    taskData->inputs_count[0] = data_size;
-    taskData->outputs_count[0] = data_size;
+    taskDataPar->inputs_count.emplace_back(input.size());
+    taskDataPar->outputs_count.emplace_back(input.size());
 
-    std::vector<int> output(data_size);
-    taskData->inputs[0] = reinterpret_cast<void*>(input.data());
-    taskData->outputs[0] = reinterpret_cast<void*>(output.data());
+    std::vector<int> output(input.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
 
-    vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel task(taskData);
+    vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel task(taskDataPar);
 
     auto start = std::chrono::high_resolution_clock::now();
     ASSERT_TRUE(task.pre_processing());
@@ -45,16 +45,17 @@ TEST(vavilov_v_contrast_enhancement_mpi, RunPipelineWithMultipleTasks) {
 
   for (size_t i = 0; i < num_tasks; ++i) {
     if (world.rank() == 0) {
-      auto taskData = std::make_shared<ppc::core::TaskData>();
+      auto taskDataPar = std::make_shared<ppc::core::TaskData>();
       std::vector<int> input(data_size, i + 1);
-      std::vector<int> output(data_size);
+      std::vector<int> output(input.size());
 
-      taskData->inputs_count[0] = data_size;
-      taskData->outputs_count[0] = data_size;
-      taskData->inputs[0] = reinterpret_cast<void*>(input.data());
-      taskData->outputs[0] = reinterpret_cast<void*>(output.data());
+      taskDataPar->inputs_count.emplace_back(input.size());
+      taskDataPar->outputs_count.emplace_back(input.size());
 
-      vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel task(taskData);
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+      taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+
+      vavilov_v_contrast_enhancement_mpi::ContrastEnhancementParallel task(taskDataPar);
       ASSERT_TRUE(task.pre_processing());
       ASSERT_TRUE(task.validation());
       ASSERT_TRUE(task.run());
