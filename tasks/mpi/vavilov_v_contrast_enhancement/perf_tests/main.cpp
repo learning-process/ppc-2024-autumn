@@ -7,8 +7,8 @@
 #include "mpi/vavilov_v_contrast_enhancement/include/ops_mpi.hpp"
 
 TEST(vavilov_v_contrast_enhancement_mpi, RunLargeInput) {
-  mpi::environment env;
-  mpi::communicator world;
+  boost::mpi::environment env;
+  boost::mpi::communicator world;
 
   size_t data_size = 1000000;
 
@@ -37,8 +37,8 @@ TEST(vavilov_v_contrast_enhancement_mpi, RunLargeInput) {
 }
 
 TEST(vavilov_v_contrast_enhancement_mpi, RunPipelineWithMultipleTasks) {
-  mpi::environment env;
-  mpi::communicator world;
+  boost::mpi::environment env;
+  boost::mpi::communicator world;
 
   size_t num_tasks = 5;
   size_t data_size = 100000;
