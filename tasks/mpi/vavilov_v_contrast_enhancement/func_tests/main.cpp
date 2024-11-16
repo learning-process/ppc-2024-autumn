@@ -16,6 +16,10 @@ TEST(vavilov_v_contrast_enhancement_mpi, ValidInput) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
     taskDataPar->inputs_count.emplace_back(input.size());
 
+    std::vector<int> output(input.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+    taskDataSeq->outputs_count.emplace_back(output.size());
+
     vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
     ASSERT_TRUE(testMpiTaskParallel.validation());
   }
@@ -27,12 +31,14 @@ TEST(vavilov_v_contrast_enhancement_mpi, CorrectOutputSize) {
 
   if (world.rank() == 0) {
     auto taskDataPar = std::make_shared<ppc::core::TaskData>();
-    std::vector<int> input = {10, 20, 30, 40, 50};
 
+    std::vector<int> input = {10, 20, 30, 40, 50};
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
     taskDataPar->inputs_count.emplace_back(input.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
-    taskDataPar->outputs_count.emplace_back(input.size());
+
+    std::vector<int> output(input.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+    taskDataSeq->outputs_count.emplace_back(output.size());
 
     vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
     ASSERT_TRUE(testMpiTaskParallel.validation());
@@ -45,12 +51,14 @@ TEST(vavilov_v_contrast_enhancement_mpi, IncorrectOutputSize) {
 
   if (world.rank() == 0) {
     auto taskDataPar = std::make_shared<ppc::core::TaskData>();
-    std::vector<int> input = {10, 20, 30, 40, 50};
 
+    std::vector<int> input = {10, 20, 30, 40, 50};
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
     taskDataPar->inputs_count.emplace_back(input.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
-    taskDataPar->outputs_count.emplace_back(input.size() - 1);
+
+    std::vector<int> output(input.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+    taskDataPar->outputs_count.emplace_back(output.size() - 1);
 
     vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
     ASSERT_FALSE(testMpiTaskParallel.validation());
