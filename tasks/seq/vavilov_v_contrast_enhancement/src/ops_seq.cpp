@@ -3,15 +3,12 @@
 bool vavilov_v_contrast_enhancement_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
 
-  if (!taskData) {
-    std::cerr << "Task data is not initialized." << std::endl;
-    return false;
-  }
-
   size_t data_size = taskData->inputs_count[0];
   input_.resize(data_size);
-  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  std::copy(tmp_ptr, tmp_ptr + data_size, input_.begin());
+  int* data = reinterpret_cast<int*>(taskData->inputs[0]);
+  for (size_t i = 0; i < data_size; i++) {
+      input_[i] = data[i];
+    }
 
   output_.resize(data_size, 0);
   return true;
