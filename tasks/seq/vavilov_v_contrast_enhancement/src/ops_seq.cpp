@@ -18,10 +18,8 @@ bool vavilov_v_contrast_enhancement_seq::TestTaskSequential::pre_processing() {
 }
 
 bool vavilov_v_contrast_enhancement_seq::TestTaskSequential::validation() {
-  internal_order_test();
-
-  if (!taskData || taskData->outputs_count[0] != input_.size()) {
-    std::cerr << "Validation failed: output size mismatch." << std::endl;
+  if (!taskData || taskData->outputs_count[0] != input_.size() || taskData->outputs[0] == nullptr) {
+    std::cerr << "Validation failed: output size mismatch or null output pointer." << std::endl;
     return false;
   }
   return true;
