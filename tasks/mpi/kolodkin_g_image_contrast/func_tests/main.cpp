@@ -31,11 +31,11 @@ TEST(kolodkin_g_image_contrast_MPI, Test_image_one_pixel) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  global_out = *reinterpret_cast<std::vector<int> *>(taskDataMpi->outputs[0]);
 
   if (world.rank() == 0) {
     // Create data
     std::vector<int> reference_out(3, 0);
+    global_out = *reinterpret_cast<std::vector<int> *>(taskDataMpi->outputs[0]);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
