@@ -12,7 +12,7 @@
 
 namespace vavilov_v_contrast_enhancement_mpi {
 
-class TestTaskSequential : public ppc::core::Task {
+class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
 
