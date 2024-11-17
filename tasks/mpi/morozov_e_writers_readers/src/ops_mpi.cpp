@@ -24,14 +24,12 @@ bool morozov_e_writers_readers::TestMPITaskParallel::pre_processing() {
 
 bool morozov_e_writers_readers::TestMPITaskParallel::run() {
   internal_order_test();
-  // Чтобы проходили perf тесты 
+  // Чтобы проходили perf тесты
   std::this_thread::sleep_for(20ms);
   if (world.rank() == 0) {
-
     int received_value;
     for (int i = 0; i < countIteration; i++) {
       for (int j = 1; j < world.size(); j++) {
-        
         MPI_Recv(&received_value, 1, MPI_INT, j, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         curValue += received_value;
       }
