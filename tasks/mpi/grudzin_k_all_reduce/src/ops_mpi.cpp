@@ -112,17 +112,17 @@ bool grudzin_k_all_reduce_mpi::TestMPITaskBoostRealization::run() {
     world.recv(0, 0, local_input_.data(), delta);
   }
 
-  for (int i = 0; i < local_input_.size(); ++i) {
-    if (locmin[(i + start) % colums] > local_input_[i]) {
-      locmin[(i + start) % colums] = local_input_[i];
+  for (size_t i = 0; i < local_input_.size(); ++i) {
+    if (locmin[(start + i) % colums] > local_input_[i]) {
+      locmin[(start + i) % colums] = local_input_[i];
     }
   }
   res_.resize(colums, INT_MAX);
   boost::mpi::all_reduce(world, locmin.data(), colums, res_.data(), boost::mpi::minimum<int>());
   std::vector<int> local_cnt_(colums, 0);
-  for (int i = 0; i < local_input_.size(); ++i) {
-    if (res_[(i + start) % colums] == local_input_[i]) {
-      local_cnt_[(i + start) % colums]++;
+  for (size_t i = 0; i < local_input_.size(); ++i) {
+    if (res_[(start + i) % colums] == local_input_[i]) {
+      local_cnt_[(start + i) % colums]++;
     }
   }
   cnt_.resize(colums, 0);
@@ -239,17 +239,17 @@ bool grudzin_k_all_reduce_mpi::TestMPITaskMyRealization::run() {
     world.recv(0, 0, local_input_.data(), delta);
   }
 
-  for (int i = 0; i < local_input_.size(); ++i) {
-    if (locmin[(i + start) % colums] > local_input_[i]) {
-      locmin[(i + start) % colums] = local_input_[i];
+  for (size_t i = 0; i < local_input_.size(); ++i) {
+    if (locmin[(start + i) % colums] > local_input_[i]) {
+      locmin[(start + i) % colums] = local_input_[i];
     }
   }
   res_.resize(colums, INT_MAX);
   my_all_reduce(world, locmin.data(), colums, res_.data());
   std::vector<int> local_cnt_(colums, 0);
-  for (int i = 0; i < local_input_.size(); ++i) {
-    if (res_[(i + start) % colums] == local_input_[i]) {
-      local_cnt_[(i + start) % colums]++;
+  for (size_t i = 0; i < local_input_.size(); ++i) {
+    if (res_[(start + i) % colums] == local_input_[i]) {
+      local_cnt_[(start + i) % colums]++;
     }
   }
   cnt_.resize(colums, 0);
