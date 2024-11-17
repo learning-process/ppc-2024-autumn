@@ -5,7 +5,6 @@
 #include <vector>
 
 #include "mpi/grudzin_k_all_reduce/include/ops_mpi.hpp"
-boost::mpi::communicator world;
 
 inline std::vector<int> GenMatrix(int colums_temp, int rows_temp) {
   std::vector<int> temp(colums_temp * rows_temp);
@@ -21,6 +20,7 @@ TEST(grudzin_k_all_reduce_mpi, Test_Seq_and_Boost_Ver_2000x2000) {
   int rows = 2000;
   int colums = 2000;
 
+  boost::mpi::communicator world;
   std::vector<int> mas(colums * rows);
   mas = GenMatrix(colums, rows);
   std::vector<int> parallel_results(colums);
@@ -64,6 +64,7 @@ TEST(grudzin_k_all_reduce_mpi, Test_Seq_and_Boost_Ver_1337) {
   int rows = 13;
   int colums = 37;
 
+  boost::mpi::communicator world;
   std::vector<int> mas(colums * rows);
   mas = GenMatrix(colums, rows);
   std::vector<int> parallel_results(colums);
@@ -106,6 +107,7 @@ TEST(grudzin_k_all_reduce_mpi, Test_Seq_and_Boost_Ver_20x30) {
   int rows = 20;
   int colums = 30;
 
+  boost::mpi::communicator world;
   std::vector<int> mas(colums * rows);
   mas = GenMatrix(colums, rows);
   std::vector<int> parallel_results(colums);
@@ -148,6 +150,7 @@ TEST(grudzin_k_all_reduce_mpi, Test_My_and_Boost_Ver_2000x2000) {
   int rows = 2000;
   int colums = 2000;
 
+  boost::mpi::communicator world;
   std::vector<int> mas(colums * rows);
   mas = GenMatrix(colums, rows);
   std::vector<int> parallel_results(colums);
@@ -191,6 +194,7 @@ TEST(grudzin_k_all_reduce_mpi, Test_My_and_Boost_Ver_1337) {
   int rows = 13;
   int colums = 37;
 
+  boost::mpi::communicator world;
   std::vector<int> mas(colums * rows);
   mas = GenMatrix(colums, rows);
   std::vector<int> parallel_results(colums);
@@ -231,6 +235,7 @@ TEST(grudzin_k_all_reduce_mpi, Test_My_and_Boost_Ver_20x30) {
   int rows = 20;
   int colums = 30;
 
+  boost::mpi::communicator world;
   std::vector<int> mas(colums * rows);
   mas = GenMatrix(colums, rows);
   std::vector<int> parallel_results(colums);
@@ -271,6 +276,7 @@ TEST(grudzin_k_all_reduce_mpi, Empty_Val) {
   const int rows = 0;
   const int colums = 0;
 
+  boost::mpi::communicator world;
   std::vector<int> matrix = {};
   std::vector<int> res_(colums, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -294,6 +300,7 @@ TEST(grudzin_k_all_reduce_mpi, Forget_One_Size_Val) {
   const int rows = 10;
   const int colums = 10;
 
+  boost::mpi::communicator world;
   std::vector<int> matrix(rows * colums);
   std::vector<int> res_(colums, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -317,6 +324,7 @@ TEST(grudzin_k_all_reduce_mpi, Ans_NEQ_Col_Val) {
   const int rows = 10;
   const int colums = 10;
 
+  boost::mpi::communicator world;
   std::vector<int> matrix(rows * colums, 0);
   std::vector<int> res_(colums - 1, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
