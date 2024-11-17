@@ -70,7 +70,7 @@ std::vector<std::vector<int>> gordeva_t_max_val_of_column_matrix_mpi::TestMPITas
   std::vector<std::vector<int>> matr(rows, std::vector<int>(cols));
 
   for (int i = 0; i < rows; ++i) {
-    matr[i] = rand_vec(cols, -500, 500);
+    matr[i] = rand_vec(cols, -200, 200);
   }
   for (int j = 0; j < cols; ++j) {
     int row_rand = std::rand() % rows;
