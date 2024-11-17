@@ -16,9 +16,10 @@ TEST(morozov_e_writers_readers, Test_Validation_is_False1) {
     data->inputs_count.emplace_back(0);
     data->outputs.emplace_back(reinterpret_cast<uint8_t*>(ans.data()));
     data->outputs_count.emplace_back(ans.size());
+    morozov_e_writers_readers::TestMPITaskParallel obj(data);
+    ASSERT_FALSE(obj.validation());
   }
-  morozov_e_writers_readers::TestMPITaskParallel obj(data);
-  ASSERT_FALSE(obj.validation());
+  
 }
 TEST(morozov_e_writers_readers, Test_Validation_is_False2) {
   boost::mpi::communicator world;
@@ -30,9 +31,10 @@ TEST(morozov_e_writers_readers, Test_Validation_is_False2) {
     data->inputs_count.emplace_back(vec.size());
     data->outputs.emplace_back(reinterpret_cast<uint8_t*>(ans.data()));
     data->outputs_count.emplace_back(0);
+    morozov_e_writers_readers::TestMPITaskParallel obj(data);
+    ASSERT_FALSE(obj.validation());
   }
-  morozov_e_writers_readers::TestMPITaskParallel obj(data);
-  ASSERT_FALSE(obj.validation());
+  
 }
 TEST(morozov_e_writers_readers, Test_Validation_is_False3) {
   boost::mpi::communicator world;
@@ -43,9 +45,10 @@ TEST(morozov_e_writers_readers, Test_Validation_is_False3) {
     data->inputs.emplace_back(reinterpret_cast<uint8_t*>(vec.data()));
     data->outputs.emplace_back(reinterpret_cast<uint8_t*>(ans.data()));
     data->outputs_count.emplace_back(0);
+    morozov_e_writers_readers::TestMPITaskParallel obj(data);
+    ASSERT_FALSE(obj.validation());
   }
-  morozov_e_writers_readers::TestMPITaskParallel obj(data);
-  ASSERT_FALSE(obj.validation());
+  
 }
 TEST(morozov_e_writers_readers, Test_Validation_is_False4) {
   boost::mpi::communicator world;
@@ -56,9 +59,10 @@ TEST(morozov_e_writers_readers, Test_Validation_is_False4) {
     data->inputs.emplace_back(reinterpret_cast<uint8_t*>(vec.data()));
     data->inputs_count.emplace_back(vec.size());
     data->outputs.emplace_back(reinterpret_cast<uint8_t*>(ans.data()));
+    morozov_e_writers_readers::TestMPITaskParallel obj(data);
+    ASSERT_FALSE(obj.validation());
   }
-  morozov_e_writers_readers::TestMPITaskParallel obj(data);
-  ASSERT_FALSE(obj.validation());
+  
 }
 TEST(morozov_e_writers_readers, Test_Validation_isTrue) {
   boost::mpi::communicator world;
@@ -70,9 +74,10 @@ TEST(morozov_e_writers_readers, Test_Validation_isTrue) {
     data->inputs_count.emplace_back(vec.size());
     data->outputs.emplace_back(reinterpret_cast<uint8_t*>(ans.data()));
     data->outputs_count.emplace_back(ans.size());
+    morozov_e_writers_readers::TestMPITaskParallel obj(data);
+    ASSERT_TRUE(obj.validation());
   }
-  morozov_e_writers_readers::TestMPITaskParallel obj(data);
-  ASSERT_TRUE(obj.validation());
+  
 }
 TEST(morozov_e_writers_readers, Test_Main0) {
   boost::mpi::communicator world;
@@ -87,11 +92,12 @@ TEST(morozov_e_writers_readers, Test_Main0) {
     data->inputs_count.emplace_back(vec.size());
     data->outputs.emplace_back(reinterpret_cast<uint8_t*>(ans.data()));
     data->outputs_count.emplace_back(ans.size());
+    ASSERT_TRUE(obj.validation());
+    obj.pre_processing();
+    obj.run();
+    obj.post_processing();
   }
-  ASSERT_TRUE(obj.validation());
-  obj.pre_processing();
-  obj.run();
-  obj.post_processing();
+  
   if (world.rank() == 0) {
     ASSERT_EQ(ans[0], 0);
   }
@@ -108,12 +114,13 @@ TEST(morozov_e_writers_readers, Test_Main1) {
     data->inputs_count.emplace_back(vec.size());
     data->outputs.emplace_back(reinterpret_cast<uint8_t*>(ans.data()));
     data->outputs_count.emplace_back(ans.size());
+    morozov_e_writers_readers::TestMPITaskParallel obj(data);
+    ASSERT_TRUE(obj.validation());
+    obj.pre_processing();
+    obj.run();
+    obj.post_processing();
   }
-  morozov_e_writers_readers::TestMPITaskParallel obj(data);
-  ASSERT_TRUE(obj.validation());
-  obj.pre_processing();
-  obj.run();
-  obj.post_processing();
+  
   if (world.rank() == 0) {
     ASSERT_EQ(ans[0], 0);
   }
@@ -130,12 +137,13 @@ TEST(morozov_e_writers_readers, Test_Main2) {
     data->inputs_count.emplace_back(vec.size());
     data->outputs.emplace_back(reinterpret_cast<uint8_t*>(ans.data()));
     data->outputs_count.emplace_back(ans.size());
+    morozov_e_writers_readers::TestMPITaskParallel obj(data);
+    ASSERT_TRUE(obj.validation());
+    obj.pre_processing();
+    obj.run();
+    obj.post_processing();
   }
-  morozov_e_writers_readers::TestMPITaskParallel obj(data);
-  ASSERT_TRUE(obj.validation());
-  obj.pre_processing();
-  obj.run();
-  obj.post_processing();
+  
   if (world.rank() == 0) {
     ASSERT_EQ(ans[0], 0);
   }
