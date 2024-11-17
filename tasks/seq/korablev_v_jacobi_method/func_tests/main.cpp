@@ -248,14 +248,15 @@ TEST(korablev_v_jacobi_method, invalid_matrix_size) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in_size.data()));
-  taskDataSeq->inputs_count.emplace_back(in_size.size());
+  taskDataSeq->inputs_count.emplace_back(sizeof(size_t));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix_data.data()));
-  taskDataSeq->inputs_count.emplace_back(matrix_data.size());
+  taskDataSeq->inputs_count.emplace_back(matrix_data.size() * sizeof(double));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(vector_data.data()));
-  taskDataSeq->inputs_count.emplace_back(vector_data.size());
+  taskDataSeq->inputs_count.emplace_back(vector_data.size() * sizeof(double));
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  taskDataSeq->outputs_count.emplace_back(out.size() * sizeof(double));
 
   korablev_v_jacobi_method_seq::JacobiMethodSequential jacobiTaskSequential(taskDataSeq);
+
   ASSERT_FALSE(jacobiTaskSequential.validation());
 }

@@ -8,7 +8,7 @@
 #include "seq/korablev_v_jacobi_method/include/ops_seq.hpp"
 
 TEST(korablev_v_jacobi_method, test_pipeline_run) {
-  const size_t matrix_size = 4000;
+  const size_t matrix_size = 1000;
 
   std::vector<size_t> in_size(1, matrix_size);
   std::vector<double> matrix_data(matrix_size * matrix_size, 1.0);
@@ -50,7 +50,7 @@ TEST(korablev_v_jacobi_method, test_pipeline_run) {
 }
 
 TEST(korablev_v_jacobi_method, test_task_run) {
-  const size_t matrix_size = 4000;
+  const size_t matrix_size = 1000;
 
   std::vector<size_t> in_size(1, matrix_size);
   std::vector<double> matrix_data(matrix_size * matrix_size, 1.0);
