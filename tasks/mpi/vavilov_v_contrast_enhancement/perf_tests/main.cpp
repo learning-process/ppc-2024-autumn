@@ -23,7 +23,7 @@ TEST(vavilov_v_contrast_enhancement_mpi, test_task_run) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
   }
 
-  auto testMpiTaskParallel = std::make_shared<avilov_v_contrast_enhancement_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -63,7 +63,7 @@ TEST(vavilov_v_contrast_enhancement_mpi, test_pipeline_run) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
   }
 
-  auto testMpiTaskParallel = std::make_shared<avilov_v_contrast_enhancement_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
