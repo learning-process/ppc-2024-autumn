@@ -90,7 +90,7 @@ TEST(vavilov_v_contrast_enhancement_mpi, NormalContrastEnhancement) {
     auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs_count.emplace_back(input.size());
     taskDataPar->outputs_count.emplace_back(input.size());
-    std::vector<int> output_2(input_2.size());
+    std::vector<int> output_2(input.size());
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_2.data()));
     vavilov_v_contrast_enhancement_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
