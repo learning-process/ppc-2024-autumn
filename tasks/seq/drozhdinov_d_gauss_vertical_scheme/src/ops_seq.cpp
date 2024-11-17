@@ -60,7 +60,7 @@ bool drozhdinov_d_gauss_vertical_scheme_seq::TestTaskSequential::run() {
     for (int row = 0; row < rows; row++) {
       for (int column = 0; column < columns; column++) {
         if (!major[row]) {
-          coefs[makeLinCoords(column, row, columns)] -= coefs[makeLinCoords(column, index, columns)] * current[row]; 
+          coefs[makeLinCoords(column, row, columns)] -= coefs[makeLinCoords(column, index, columns)] * current[row];
         }
       }
       if (!major[row]) {

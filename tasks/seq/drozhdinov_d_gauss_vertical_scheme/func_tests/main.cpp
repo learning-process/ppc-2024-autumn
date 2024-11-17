@@ -1,12 +1,11 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
-//not example
+// not example
 #include <vector>
 
 #include "seq/drozhdinov_d_gauss_vertical_scheme/include/ops_seq.hpp"
 
 TEST(Sequential, EquationTest) {
-
   // Create data
   int rows = 2;
   int columns = 2;

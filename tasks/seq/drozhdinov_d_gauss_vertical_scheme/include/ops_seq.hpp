@@ -1,6 +1,7 @@
 // Copyright 2023 Nesterov Alexander
 #pragma once
 // not example
+#include <cmath>
 #include <string>
 #include <vector>
 
@@ -28,4 +29,4 @@ class TestTaskSequential : public ppc::core::Task {
   std::vector<bool> major;
 };
 
-}  // namespace nesterov_a_test_task_seq
+}  // namespace drozhdinov_d_gauss_vertical_scheme_seq

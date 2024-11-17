@@ -6,7 +6,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/example/include/ops_seq.hpp"
 
-TEST(sequential_example_perf_test, test_pipeline_run) {
+TEST(drozhdinov_d_gauss_vertical_scheme_seq_test, test_pipeline_run) {
   const int count = 100;
 
   // Create data
@@ -43,7 +43,7 @@ TEST(sequential_example_perf_test, test_pipeline_run) {
   ASSERT_EQ(count, out[0]);
 }
 
-TEST(sequential_example_perf_test, test_task_run) {
+TEST(drozhdinov_d_gauss_vertical_scheme_seq_test, test_task_run) {
   const int count = 100;
 
   // Create data
