@@ -67,7 +67,7 @@ bool mironov_a_broadcast_mpi::ComponentSumPowerBoostImpl::run() {
   }
 
   // solve problem
-  for (int it = 0; it < input_.size(); ++it) {
+  for (int it = 0; it < static_cast<int>(input_.size()); ++it) {
     int number = input_[it];
 
     int res = 0;
@@ -226,7 +226,7 @@ bool mironov_a_broadcast_mpi::ComponentSumPowerCustomImpl::run() {
   }
 
   // solve problem
-  for (int it = 0; it < input_.size(); ++it) {
+  for (int it = 0; it < static_cast<int>(input_.size()); ++it) {
     int number = input_[it];
 
     int res = 0;

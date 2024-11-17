@@ -15,7 +15,7 @@ TEST(mironov_a_broadcast_mpi, boost_test_pipeline_run) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  
+
   if (world.rank() == 0) {
     int size1 = 1000000;
     int size2 = 100;
