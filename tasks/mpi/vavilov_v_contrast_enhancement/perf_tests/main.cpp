@@ -43,7 +43,7 @@ TEST(vavilov_v_contrast_enhancement_mpi, test_task_run) {
     for (size_t i = 0; i < data_size; ++i) {
       ASSERT_EQ(output[i], 0);
     }
-  } 
+  }
 }
 
 TEST(vavilov_v_contrast_enhancement_mpi, test_pipeline_run) {
@@ -83,5 +83,5 @@ TEST(vavilov_v_contrast_enhancement_mpi, test_pipeline_run) {
     for (size_t i = 0; i < data_size; ++i) {
       ASSERT_EQ(output[i], 0);
     }
-  }    
+  }
 }
