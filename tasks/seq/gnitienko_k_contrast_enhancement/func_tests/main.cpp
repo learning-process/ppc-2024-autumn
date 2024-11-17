@@ -22,9 +22,9 @@ void run_test(std::vector<int> &img, double contrast_factor) {
   contrastEnhanceSeq.post_processing();
 
   std::vector<int> expected_out(img.size(), 0);
-  for (size_t i = 0; i < img.size(); i++)
-	expected_out[i] = std::clamp(static_cast<int>((img[i] - 128) * contrast_factor + 128), 0, 255);
-
+  for (size_t i = 0; i < img.size(); i++) {
+    expected_out[i] = std::clamp(static_cast<int>((img[i] - 128) * contrast_factor + 128), 0, 255);
+  }
   ASSERT_EQ(out, expected_out);
 }
 
