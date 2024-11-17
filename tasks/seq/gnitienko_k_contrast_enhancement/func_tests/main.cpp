@@ -5,7 +5,6 @@
 #include "seq/gnitienko_k_contrast_enhancement/include/ops_seq.hpp"
 
 void run_test(std::vector<int> &img, double contrast_factor) {
-  
   std::vector<int> out(img.size(), 0);
 
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -24,7 +23,7 @@ void run_test(std::vector<int> &img, double contrast_factor) {
 
   std::vector<int> expected_out(img.size(), 0);
   for (size_t i = 0; i < img.size(); i++)
-	  expected_out[i] = std::clamp(static_cast<int>((img[i] - 128) * contrast_factor + 128), 0, 255);
+	expected_out[i] = std::clamp(static_cast<int>((img[i] - 128) * contrast_factor + 128), 0, 255);
 
   ASSERT_EQ(out, expected_out);
 }
