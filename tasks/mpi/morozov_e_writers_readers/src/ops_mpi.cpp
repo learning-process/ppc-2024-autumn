@@ -24,7 +24,7 @@ bool morozov_e_writers_readers::TestMPITaskParallel::pre_processing() {
 
 bool morozov_e_writers_readers::TestMPITaskParallel::run() {
   internal_order_test();
-  // Чтобы проходили perf тесты
+  // Р§С‚РѕР±С‹ РїСЂРѕС…РѕРґРёР»Рё perf С‚РµСЃС‚С‹
   std::this_thread::sleep_for(20ms);
   if (world.rank() == 0) {
     int received_value;
@@ -41,11 +41,11 @@ bool morozov_e_writers_readers::TestMPITaskParallel::run() {
         if (world.rank() % 2 == 1) {
           value = -1;
           std::cout << world.rank() << " "
-                    << "-1 " << i << std::endl;  // Нечетные потоки уменьшают значение
+                    << "-1 " << i << std::endl;  // РќРµС‡РµС‚РЅС‹Рµ РїРѕС‚РѕРєРё СѓРјРµРЅСЊС€Р°СЋС‚ Р·РЅР°С‡РµРЅРёРµ
         } else {
           std::cout << world.rank() << " "
                     << "+1 " << i << std::endl;
-          value = 1;  // Четные потоки увеличивают значение
+          value = 1;  // Р§РµС‚РЅС‹Рµ РїРѕС‚РѕРєРё СѓРІРµР»РёС‡РёРІР°СЋС‚ Р·РЅР°С‡РµРЅРёРµ
         }
         MPI_Send(&value, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
       } else {
