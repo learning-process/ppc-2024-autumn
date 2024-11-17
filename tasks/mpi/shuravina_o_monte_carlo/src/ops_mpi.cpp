@@ -26,9 +26,8 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::validation() {
 
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::run() {
   internal_order_test();
-  boost::mpi::communicator comm;
-  int num_processes = comm.size();
-  int rank = comm.rank();
+  int num_processes = world.size();
+  int rank = world.rank();
 
   int local_num_points = num_points_ / num_processes;
 
@@ -39,7 +38,7 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::run() {
   }
 
   double global_sum = 0.0;
-  boost::mpi::all_reduce(comm, local_sum, global_sum, std::plus<>());
+  boost::mpi::all_reduce(world, local_sum, global_sum, std::plus<>());
 
   integral_value_ = (global_sum / num_points_) * (b_ - a_);
 
