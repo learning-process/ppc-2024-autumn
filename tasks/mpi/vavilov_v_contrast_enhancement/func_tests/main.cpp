@@ -72,19 +72,18 @@ TEST(vavilov_v_contrast_enhancement_mpi, NormalContrastEnhancement) {
   std::vector<int> output(input.size());
   std::vector<int> expected_output = {0, 63, 127, 191, 255};
 
-  auto taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
+    auto taskDataPar = std::make_shared<ppc::core::TaskData>();
     taskDataPar->inputs_count.emplace_back(input.size());
     taskDataPar->outputs_count.emplace_back(input.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+    vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), true);
+    testMpiTaskParallel.pre_processing();
+    testMpiTaskParallel.run();
+    testMpiTaskParallel.post_processing();
+
+    ASSERT_EQ(output, expected_output);
   }
-
-  vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
-
-  ASSERT_EQ(output, expected_output);
 }
