@@ -13,10 +13,10 @@ TEST(vavilov_v_contrast_enhancement_mpi, test_task_run) {
   size_t data_size = 100000;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    std::vector<int> input(data_size, 128);
-    std::vector<int> output(input.size());
+  std::vector<int> input(data_size, 128);
+  std::vector<int> output(input.size());
 
+  if (world.rank() == 0) {
     taskDataPar->inputs_count.emplace_back(input.size());
     taskDataPar->outputs_count.emplace_back(input.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
@@ -53,10 +53,10 @@ TEST(vavilov_v_contrast_enhancement_mpi, test_pipeline_run) {
   size_t data_size = 100000;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    std::vector<int> input(data_size, 128);
-    std::vector<int> output(input.size());
+  std::vector<int> input(data_size, 128);
+  std::vector<int> output(input.size());
 
+  if (world.rank() == 0) {
     taskDataPar->inputs_count.emplace_back(input.size());
     taskDataPar->outputs_count.emplace_back(input.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
