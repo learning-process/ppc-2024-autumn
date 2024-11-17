@@ -6,6 +6,16 @@
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/shuravina_o_monte_carlo/include/ops_mpi.hpp"
+TEST(MonteCarloIntegrationTaskParallel, Test_Simple_MPI) {
+  boost::mpi::environment env;
+  boost::mpi::communicator world;
+
+  if (world.rank() == 0) {
+    std::cout << "MPI environment initialized successfully." << std::endl;
+  }
+
+  ASSERT_EQ(world.size(), 4);
+}
 TEST(MonteCarloIntegrationTaskParallel, Test_Integration) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
