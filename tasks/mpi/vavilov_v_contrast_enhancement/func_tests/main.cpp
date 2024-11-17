@@ -69,7 +69,6 @@ TEST(vavilov_v_contrast_enhancement_mpi, NormalContrastEnhancement) {
   mpi::environment env;
   mpi::communicator world;
   if (world.rank() == 0) {
-
     auto taskDataPar = std::make_shared<ppc::core::TaskData>();
     std::vector<int> input = {10, 20, 30, 40, 50};
     std::vector<int> output(input.size());
