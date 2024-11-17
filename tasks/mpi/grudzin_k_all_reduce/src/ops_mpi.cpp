@@ -155,7 +155,7 @@ bool grudzin_k_all_reduce_mpi::TestMPITaskMyRealization::validation() {
   return true;
 }
 
-template<typename T>
+template <typename T>
 void grudzin_k_all_reduce_mpi::TestMPITaskMyRealization::my_all_reduce(const boost::mpi::communicator& world,
                                                                        const T* in_values, int n, T* out_values) {
   int root = world.rank();
@@ -168,27 +168,24 @@ void grudzin_k_all_reduce_mpi::TestMPITaskMyRealization::my_all_reduce(const boo
     cv1 = new int[n];
     world.recv(2 * root + 1, 0, cv1, n);
   }
-  if (2 * root + 2 < world.size())
-  {
+  if (2 * root + 2 < world.size()) {
     cv2 = new int[n];
     world.recv(2 * root + 2, 0, cv2, n);
   }
   // if we get before calculate we will lose some memory, but we do two cycles in one and win some time
 
-  //calculation
+  // calculation
   if (cv1 != nullptr && cv2 != nullptr) {
     for (int i = 0; i < n; ++i) out_values[i] = std::min({out_values[i], cv1[i], cv2[i]});
-  }
-  else if (cv1 != nullptr)
-  {
+  } else if (cv1 != nullptr) {
     for (int i = 0; i < n; ++i) out_values[i] = std::min(out_values[i], cv1[i]);
   }
-  
+
   // send data to our parent (if it exist) and get out_values from him
   if (root > 0) {
     root--;
     world.send(root >> 1, 0, out_values, n);
-    //wait for broadcast
+    // wait for broadcast
     world.recv(root >> 1, 0, out_values, n);
     root++;
   }

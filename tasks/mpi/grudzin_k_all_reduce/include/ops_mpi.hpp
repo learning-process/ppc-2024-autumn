@@ -56,7 +56,7 @@ class TestMPITaskMyRealization : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  template<typename T>
+  template <typename T>
   static void my_all_reduce(const boost::mpi::communicator& comm, const T* in_values, int n, T* out_values);
 
  private:

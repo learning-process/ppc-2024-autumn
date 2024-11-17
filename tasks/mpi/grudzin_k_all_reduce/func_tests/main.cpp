@@ -11,7 +11,7 @@ inline std::vector<int> GenMatrix(int colums_temp, int rows_temp) {
   std::vector<int> temp(colums_temp * rows_temp);
   for (int i = 0; i < rows_temp; i++) {
     for (int j = 0; j < colums_temp; j++) {
-        temp[i * rows_temp + j] = (rand() % 2001) - 1000;
+      temp[i * rows_temp + j] = (rand() % 2001) - 1000;
     }
   }
   return temp;
@@ -169,7 +169,7 @@ TEST(grudzin_k_all_reduce_mpi, Test_My_and_Boost_Ver_2000x2000) {
 
   TestMPITaskBoostRealization.post_processing();
 
-    std::vector<int> My_results(colums, 0);
+  std::vector<int> My_results(colums, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(mas.data()));
@@ -178,13 +178,13 @@ TEST(grudzin_k_all_reduce_mpi, Test_My_and_Boost_Ver_2000x2000) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(My_results.data()));
     taskDataSeq->outputs_count.emplace_back(My_results.size());
   }
-    grudzin_k_all_reduce_mpi::TestMPITaskMyRealization TestMPITaskMyRealization(taskDataSeq);
-    ASSERT_EQ(TestMPITaskMyRealization.validation(), true);
-    TestMPITaskMyRealization.pre_processing();
-    TestMPITaskMyRealization.run();
-    TestMPITaskMyRealization.post_processing();
+  grudzin_k_all_reduce_mpi::TestMPITaskMyRealization TestMPITaskMyRealization(taskDataSeq);
+  ASSERT_EQ(TestMPITaskMyRealization.validation(), true);
+  TestMPITaskMyRealization.pre_processing();
+  TestMPITaskMyRealization.run();
+  TestMPITaskMyRealization.post_processing();
 
-    ASSERT_EQ(parallel_results, My_results);
+  ASSERT_EQ(parallel_results, My_results);
 }
 
 TEST(grudzin_k_all_reduce_mpi, Test_My_and_Boost_Ver_1337) {
@@ -294,14 +294,14 @@ TEST(grudzin_k_all_reduce_mpi, Forget_One_Size_Val) {
   const int rows = 10;
   const int colums = 10;
 
-  std::vector<int> matrix(rows*colums);
+  std::vector<int> matrix(rows * colums);
   std::vector<int> res_(colums, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(rows);
-    //atata forget about colums
+    // atata forget about colums
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_.data()));
     taskDataPar->outputs_count.emplace_back(res_.size());
     grudzin_k_all_reduce_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataPar);
@@ -317,8 +317,8 @@ TEST(grudzin_k_all_reduce_mpi, Ans_NEQ_Col_Val) {
   const int rows = 10;
   const int colums = 10;
 
-  std::vector<int> matrix(rows*colums,0);
-  std::vector<int> res_(colums-1, 0);
+  std::vector<int> matrix(rows * colums, 0);
+  std::vector<int> res_(colums - 1, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {

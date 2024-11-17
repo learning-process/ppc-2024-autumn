@@ -12,9 +12,9 @@ TEST(grudzin_k_all_reduce_mpi, test_pipeline_run) {
   int colums = 5000;
 
   boost::mpi::communicator world;
-  std::vector<int> mas(colums * rows,-1);
+  std::vector<int> mas(colums * rows, -1);
   std::vector<int> parallel_results(colums);
-  std::vector<int> global_ans(colums,5000);
+  std::vector<int> global_ans(colums, 5000);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -45,7 +45,7 @@ TEST(grudzin_k_all_reduce_mpi, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(parallel_results,global_ans);
+    ASSERT_EQ(parallel_results, global_ans);
   }
 }
 
@@ -92,7 +92,7 @@ TEST(grudzin_k_all_reduce_mpi, test_task_run) {
 }
 
 // I use it in local nachine to analize speed,idk shoud  delete it or not so i keep it
-//TEST(grudzin_k_all_reduce_mpi, test_pipeline_run_boost) {
+// TEST(grudzin_k_all_reduce_mpi, test_pipeline_run_boost) {
 //  int rows = 5000;
 //  int colums = 5000;
 //
@@ -110,7 +110,8 @@ TEST(grudzin_k_all_reduce_mpi, test_task_run) {
 //    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(parallel_results.data()));
 //    taskDataPar->outputs_count.emplace_back(parallel_results.size());
 //  }
-//  auto testMpiTaskMyRealization = std::make_shared<grudzin_k_all_reduce_mpi::TestMPITaskBoostRealization>(taskDataPar);
+//  auto testMpiTaskMyRealization =
+//  std::make_shared<grudzin_k_all_reduce_mpi::TestMPITaskBoostRealization>(taskDataPar);
 //  ASSERT_EQ(testMpiTaskMyRealization->validation(), true);
 //  testMpiTaskMyRealization->pre_processing();
 //  testMpiTaskMyRealization->run();
@@ -134,7 +135,7 @@ TEST(grudzin_k_all_reduce_mpi, test_task_run) {
 //  }
 //}
 //
-//TEST(grudzin_k_all_reduce_mpi, test_task_run_boost) {
+// TEST(grudzin_k_all_reduce_mpi, test_task_run_boost) {
 //  int rows = 5000;
 //  int colums = 5000;
 //
@@ -152,7 +153,8 @@ TEST(grudzin_k_all_reduce_mpi, test_task_run) {
 //    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(parallel_results.data()));
 //    taskDataPar->outputs_count.emplace_back(parallel_results.size());
 //  }
-//  auto testMpiTaskMyRealization = std::make_shared<grudzin_k_all_reduce_mpi::TestMPITaskBoostRealization>(taskDataPar);
+//  auto testMpiTaskMyRealization =
+//  std::make_shared<grudzin_k_all_reduce_mpi::TestMPITaskBoostRealization>(taskDataPar);
 //  ASSERT_EQ(testMpiTaskMyRealization->validation(), true);
 //  testMpiTaskMyRealization->pre_processing();
 //  testMpiTaskMyRealization->run();
