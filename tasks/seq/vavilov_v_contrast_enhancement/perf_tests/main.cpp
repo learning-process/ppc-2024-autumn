@@ -7,7 +7,6 @@
 #include "seq/vavilov_v_contrast_enhancement/include/ops_seq.hpp"
 
 TEST(vavilov_v_contrast_enhancement_seq, test_task_run) {
-
   size_t data_size = 1000000;
   std::vector<int> input(data_size, 128);
   std::vector<int> output(input.size());
