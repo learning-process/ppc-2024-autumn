@@ -80,10 +80,10 @@ TEST(vavilov_v_contrast_enhancement_mpi, NormalContrastEnhancement) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
 
     vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-    ASSERT_EQ(testMpiTaskParallel.validation(), true);
-    testMpiTaskParallel.pre_processing();
-    testMpiTaskParallel.run();
-    testMpiTaskParallel.post_processing();
+    ASSERT_TRUE(testMpiTaskParallel.validation());
+    ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+    ASSERT_TRUE(testMpiTaskParallel.run());
+    ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
     ASSERT_EQ(output, expected_output);
   }
