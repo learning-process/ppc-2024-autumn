@@ -31,9 +31,7 @@ bool gnitienko_k_contrast_enhancement_seq::ContrastEnhanceSeq::validation() {
   return taskData->inputs_count[0] == taskData->outputs_count[0] && taskData->inputs_count[0] >= 0;
 }
 
-bool gnitienko_k_contrast_enhancement_seq::ContrastEnhanceSeq::is_grayscale() const {
-  return image.size() % 3 != 0;
-}
+bool gnitienko_k_contrast_enhancement_seq::ContrastEnhanceSeq::is_grayscale() const { return image.size() % 3 != 0; }
 
 bool gnitienko_k_contrast_enhancement_seq::ContrastEnhanceSeq::run() {
   internal_order_test();
