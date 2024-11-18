@@ -126,7 +126,7 @@ bool grudzin_k_all_reduce_mpi::TestMPITaskBoostRealization::run() {
     }
   }
   cnt_.resize(colums, 0);
-  boost::mpi::reduce(world, local_cnt_.data(), colums, cnt_.data(), std::plus<int>(), 0);
+  boost::mpi::reduce(world, local_cnt_.data(), colums, cnt_.data(), std::plus<>(), 0);
   return true;
 }
 
