@@ -12,15 +12,19 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::pre_processing(
 
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::validation() {
   internal_order_test();
-  if (taskData->inputs_count.size() != 1 || taskData->outputs_count.size() != 1) {
-    return false;
+
+  if (world.rank() == 0) {
+    if (taskData->inputs_count.size() != 1 || taskData->outputs_count.size() != 1) {
+      return false;
+    }
+    if (taskData->inputs_count[0] != 0 || taskData->outputs_count[0] != 1) {
+      return false;
+    }
+    if (taskData->inputs[0] != nullptr || taskData->outputs[0] == nullptr) {
+      return false;
+    }
   }
-  if (taskData->inputs_count[0] != 0 || taskData->outputs_count[0] != 1) {
-    return false;
-  }
-  if (taskData->inputs[0] != nullptr || taskData->outputs[0] == nullptr) {
-    return false;
-  }
+
   return true;
 }
 
@@ -29,6 +33,7 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::run() {
   int num_processes = world.size();
   int rank = world.rank();
 
+  std::cout << "Run proc " << world.rank() << "\n";
   int local_num_points = num_points_ / num_processes;
 
   double local_sum = 0.0;
