@@ -30,7 +30,7 @@ bool morozov_e_writers_readers::TestMPITaskParallel::run() {
     int received_value;
     for (int i = 0; i < countIteration; i++) {
       for (int j = 1; j < world.size(); j++) {
-        MPI_Recv(&received_value, 1, MPI_INT, j, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        world.recv(j, 0, &received_value, 1);
         curValue += received_value;
       }
     }
@@ -40,21 +40,21 @@ bool morozov_e_writers_readers::TestMPITaskParallel::run() {
       if (!(world.size() % 2 == 0 && world.rank() == world.size() - 1)) {
         if (world.rank() % 2 == 1) {
           value = -1;
-          std::cout << world.rank() << " "
-                    << "-1 " << i << std::endl;  // Нечетные потоки уменьшают значение
+          /*std::cout << world.rank() << " "
+                    << "-1 " << i << std::endl;*/  // Нечетные потоки уменьшают значение
         } else {
-          std::cout << world.rank() << " "
-                    << "+1 " << i << std::endl;
+          /*std::cout << world.rank() << " "
+                    << "+1 " << i << std::endl;*/
           value = 1;  // Четные потоки увеличивают значение
         }
-        MPI_Send(&value, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+        world.send(0, 0, &value, 1);
       } else {
         value = 0;
-        std::cout << world.rank() << " "
-                  << "0" << std::endl;
-        MPI_Send(&value, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+        /*std::cout << world.rank() << " "
+                  << "0" << std::endl;*/
+        world.send(0, 0, &value, 1);
       }
-      std::this_thread::sleep_for(2000ms);
+      std::this_thread::sleep_for(200ms);
     }
   }
   return true;
