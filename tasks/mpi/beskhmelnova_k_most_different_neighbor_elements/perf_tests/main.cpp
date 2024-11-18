@@ -93,6 +93,7 @@ TEST(mpi_beskhmelnova_k_most_different_neighbor_elements_perf_test, test_task_ru
     ASSERT_EQ(global_vec[index + 1], global_out[1]);
   }
 }
+<<<<<<< HEAD
 
 int main(int argc, char** argv) {
   boost::mpi::environment env(argc, argv);
@@ -104,3 +105,5 @@ int main(int argc, char** argv) {
   }
   return RUN_ALL_TESTS();
 }
+=======
+>>>>>>> upstream/master
