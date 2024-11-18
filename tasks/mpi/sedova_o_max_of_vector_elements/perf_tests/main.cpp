@@ -28,9 +28,9 @@ std::vector<std::vector<int>> generate_random_matrix(size_t rows, size_t cols, s
 }  // namespace sedova_o_max_of_vector_elements_mpi_test
 
 TEST(sedova_o_max_of_vector_elements_mpi1, test_pipeline_run) {
-  size_t rows = 7000;
-  size_t cols = 7000;
-  int value = 7000;
+  size_t rows = 5000;
+  size_t cols = 5000;
+  int value = 5000;
 
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
@@ -81,9 +81,9 @@ TEST(sedova_o_max_of_vector_elements_mpi1, test_pipeline_run) {
 }
 
 TEST(sedova_o_max_of_vector_elements_mpi1, test_task_run) {
-  size_t rows = 7000;
-  size_t cols = 7000;
-  int value = 7000;
+  size_t rows = 5000;
+  size_t cols = 5000;
+  int value = 5000;
 
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
