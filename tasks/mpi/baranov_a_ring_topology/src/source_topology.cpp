@@ -5,8 +5,7 @@ template <class iotype>
 bool ring_topology<iotype>::pre_processing() {
   internal_order_test();
   int myid = world.rank();
-  int wrld_sz = world.size();
-  poll_ = std::vector<int>(wrld_sz);
+
   int n;
   if (myid == 0) {
     n = taskData->inputs_count[0];
@@ -27,26 +26,29 @@ bool ring_topology<iotype>::run() {
   int sz = world.size();
   if (world.size() != 1) {
     if (my_rank == 0) {
-      poll_[0] = 0;
-      world.send(my_rank + 1, 0, input_.data(), vec_size_);
-      world.send(my_rank + 1, 0, poll_.data(), sz);
+      poll_.push_back(0);
+      world.send(my_rank + 1, 0, input_);
+      world.send(my_rank + 1, 0, poll_);
     } else {
       std::vector<iotype> buff(vec_size_);
       int tmp_recv = my_rank - 1;
-
-      world.recv(tmp_recv, 0, buff.data(), vec_size_);
       int tmp_send = (my_rank + 1) % sz;
-      world.recv(tmp_recv, 0, poll_.data(), sz);
-      poll_[my_rank] = my_rank;
-      world.send(tmp_send, 0, buff.data(), vec_size_);
-      world.send(tmp_send, 0, poll_.data(), sz);
+
+      world.recv(tmp_recv, 0, buff);
+      world.recv(tmp_recv, 0, poll_);
+
+      poll_.push_back(my_rank);
+
+      world.send(tmp_send, 0, buff);
+      world.send(tmp_send, 0, poll_);
     }
     if (my_rank == 0) {
-      world.recv(world.size() - 1, 0, output_.data(), vec_size_);
-
-      world.recv(world.size() - 1, 0, poll_.data(), sz);
+      world.recv(world.size() - 1, 0, output_);
+      poll_.resize(sz);
+      world.recv(world.size() - 1, 0, poll_);
     }
   } else {
+    poll_.push_back(0);
     void* ptr_r = output_.data();
     void* ptr_d = input_.data();
     memcpy(ptr_r, ptr_d, sizeof(iotype) * vec_size_);
