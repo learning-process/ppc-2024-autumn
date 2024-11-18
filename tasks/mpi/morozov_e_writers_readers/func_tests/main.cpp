@@ -19,5 +19,4 @@ TEST(morozov_e_writers_readers, Test_Validation_is_False1) {
     morozov_e_writers_readers::TestMPITaskParallel obj(data);
     ASSERT_FALSE(obj.validation());
   }
-  
 }
