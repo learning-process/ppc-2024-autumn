@@ -9,7 +9,7 @@
 
 #include "mpi/chizhov_m_max_values_by_columns_matrix/include/ops_mpi.hpp"
 
-std::vector<int> getRandomVector(int sz) {
+std::vector<int> chizhov_m_max_values_by_columns_matrix_mpi::getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
@@ -35,7 +35,7 @@ TEST(chizhov_m_max_values_by_columns_matrix_mpi, Test_Zero_Columns) {
 
   if (world.rank() == 0) {
     const int count_size_vector = cols * rows;
-    matrix = getRandomVector(count_size_vector);
+    matrix = chizhov_m_max_values_by_columns_matrix_mpi::getRandomVector(count_size_vector);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
@@ -93,7 +93,7 @@ TEST(chizhov_m_max_values_by_columns_matrix_mpi, Test_Max1) {
 
   if (world.rank() == 0) {
     const int count_size_vector = cols * rows;
-    matrix = getRandomVector(count_size_vector);
+    matrix = chizhov_m_max_values_by_columns_matrix_mpi::getRandomVector(count_size_vector);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
@@ -148,7 +148,7 @@ TEST(chizhov_m_max_values_by_columns_matrix_mpi, Test_Max2) {
 
   if (world.rank() == 0) {
     const int count_size_vector = cols * rows;
-    matrix = getRandomVector(count_size_vector);
+    matrix = chizhov_m_max_values_by_columns_matrix_mpi::getRandomVector(count_size_vector);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
@@ -203,7 +203,7 @@ TEST(chizhov_m_max_values_by_columns_matrix_mpi, Test_Max3) {
 
   if (world.rank() == 0) {
     const int count_size_vector = cols * rows;
-    matrix = getRandomVector(count_size_vector);
+    matrix = chizhov_m_max_values_by_columns_matrix_mpi::getRandomVector(count_size_vector);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
@@ -258,7 +258,7 @@ TEST(chizhov_m_max_values_by_columns_matrix_mpi, Test_Max4) {
 
   if (world.rank() == 0) {
     const int count_size_vector = cols * rows;
-    matrix = getRandomVector(count_size_vector);
+    matrix = chizhov_m_max_values_by_columns_matrix_mpi::getRandomVector(count_size_vector);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
@@ -313,7 +313,7 @@ TEST(chizhov_m_max_values_by_columns_matrix_mpi, Test_Max5) {
 
   if (world.rank() == 0) {
     const int count_size_vector = cols * rows;
-    matrix = getRandomVector(count_size_vector);
+    matrix = chizhov_m_max_values_by_columns_matrix_mpi::getRandomVector(count_size_vector);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
