@@ -22,6 +22,8 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Boundary_Conditions) {
       taskDataPar->outputs_count.emplace_back(out.size());
     }
 
+    boost::mpi::broadcast(world, taskDataPar, 0);
+
     auto testMpiTaskParallel =
         std::make_shared<shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel>(taskDataPar);
     testMpiTaskParallel->set_interval(0.0, 1.0);
@@ -33,6 +35,8 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Boundary_Conditions) {
     testMpiTaskParallel->run();
     testMpiTaskParallel->post_processing();
 
+    boost::mpi::broadcast(world, out, 0);
+
     if (world.rank() == 0) {
       double expected_integral = 1.0 / 3.0;
       ASSERT_NEAR(expected_integral, out[0], 0.01);
@@ -42,7 +46,6 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Boundary_Conditions) {
     throw;
   }
 }
-
 TEST(MonteCarloIntegrationTaskParallel, Test_Work_Distribution) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
