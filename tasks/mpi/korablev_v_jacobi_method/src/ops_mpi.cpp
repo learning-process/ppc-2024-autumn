@@ -131,6 +131,7 @@ bool korablev_v_jacobi_method_mpi::JacobiMethodParallel::pre_processing() {
     A_.resize(n * n);
     b_.resize(n);
     x_.resize(n, 0.0);
+    x_prev.resize(n, 0.0);
 
     for (size_t i = 0; i < n; ++i) {
       for (size_t j = 0; j < n; ++j) {
@@ -183,9 +184,6 @@ bool korablev_v_jacobi_method_mpi::JacobiMethodParallel::validation() {
 bool korablev_v_jacobi_method_mpi::JacobiMethodParallel::run() {
   internal_order_test();
   size_t n = b_.size();
-  std::vector<double> local_A;
-  std::vector<double> local_B;
-  std::vector<double> x_prev(n, 0.0);
 
   size_t numberOfIter = 0;
 
@@ -216,7 +214,6 @@ bool korablev_v_jacobi_method_mpi::JacobiMethodParallel::run() {
 
   local_A.resize(loc_mat_size);
   local_b.resize(loc_vec_size);
-  x_prev.resize(n, 0.0);
 
   if (world.rank() == 0) {
     boost::mpi::scatterv(world, A_.data(), sizes_a, displs_a, local_A.data(), loc_mat_size, 0);
