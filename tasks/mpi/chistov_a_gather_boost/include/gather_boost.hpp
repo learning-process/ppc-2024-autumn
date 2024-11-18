@@ -21,10 +21,12 @@ std::vector<T> getRandomVector(int size_) {
     return std::vector<T>();
   }
 
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<int> dist(-100, 100);
+
   std::vector<T> randomVector(size_);
-  for (int i = 0; i < size_; ++i) {
-    randomVector[i] = static_cast<T>((std::rand() % 201) - 100);
-  }
+  std::generate(randomVector.begin(), randomVector.end(), [&]() { return static_cast<T>(dist(gen)); });
 
   return randomVector;
 }

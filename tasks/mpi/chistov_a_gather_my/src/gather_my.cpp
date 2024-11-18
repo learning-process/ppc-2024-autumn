@@ -42,12 +42,6 @@ template <typename T>
 bool Gather<T>::run() {
   internal_order_test();
 
-  if (world.size() == 1) {
-    T *tmp_ptr = reinterpret_cast<T *>(taskData->inputs[0]);
-    sendbuf.assign(tmp_ptr, tmp_ptr + taskData->inputs_count[0]);
-    return true;
-  }
-
   std::vector<T> localbuf(taskData->inputs_count[0]);
   memcpy(localbuf.data(), reinterpret_cast<T *>(taskData->inputs[0]), taskData->inputs_count[0] * sizeof(T));
 
