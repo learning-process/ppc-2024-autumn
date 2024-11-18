@@ -18,7 +18,7 @@ std::vector<int> solovyev_d_topology_hypercube_mpi::intToBin(int number, int pad
     result.push_back(number % 2);
     number = number / 2;
   }
-  while (result.size() < padding) {
+  while (result.size() < (size_t)padding) {
     result.push_back(0);
   }
   std::reverse(result.begin(), result.end());
@@ -28,7 +28,7 @@ std::vector<int> solovyev_d_topology_hypercube_mpi::intToBin(int number, int pad
 int solovyev_d_topology_hypercube_mpi::binToInt(std::vector<int> binary) {
   int result{};
   std::reverse(binary.begin(), binary.end());
-  for (int i = 0; i < binary.size(); i++) {
+  for (size_t i = 0; i < binary.size(); i++) {
     result += (binary[i] * std::pow(2, i));
   }
   return result;
@@ -37,7 +37,7 @@ int solovyev_d_topology_hypercube_mpi::binToInt(std::vector<int> binary) {
 int solovyev_d_topology_hypercube_mpi::calcAddress(int src, int dest, int maxAddressLength) {
   std::vector<int> srcBin = intToBin(src, maxAddressLength);
   std::vector<int> destBin = intToBin(dest, maxAddressLength);
-  for (int i = 0; i < destBin.size(); i++) {
+  for (size_t i = 0; i < destBin.size(); i++) {
     if (srcBin[i] != destBin[i]) {
       srcBin[i] = destBin[i];
       break;
@@ -108,7 +108,7 @@ bool solovyev_d_topology_hypercube_mpi::TopologyHypercubeMPI::post_processing() 
   world.barrier();
   if (world.rank() == 0) {
     reinterpret_cast<int *>(taskData->outputs[0])[0] = data_.value;
-    for (int i = 0; i < data_.path.size(); i++) {
+    for (size_t i = 0; i < data_.path.size(); i++) {
       reinterpret_cast<int *>(taskData->outputs[1])[i] = data_.path[i];
     }
   }

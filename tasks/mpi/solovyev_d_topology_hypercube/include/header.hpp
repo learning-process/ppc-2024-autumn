@@ -34,16 +34,14 @@ class TopologyHypercubeMPI : public ppc::core::Task {
     std::vector<int> path;
     template <class Archive>
     void serialize(Archive& ar, unsigned int version) {
-      ar & value;
-      ar & finish;
-      ar & destination;
-      ar & path;
+      ar& value;
+      ar& finish;
+      ar& destination;
+      ar& path;
     }
   } data_;
 
   int maxAddressLength{};
-  int value{};
-  int destination{};
 
   std::vector<int> input_;
   boost::mpi::communicator world;
