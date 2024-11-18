@@ -90,7 +90,7 @@ bool solovyev_d_topology_hypercube_mpi::TopologyHypercubeMPI::run() {
     }
   } else {
     world.recv(boost::mpi::any_source, 0, data_);
-    if (data_.finish == false) {
+    if (!data_.finish) {
       data_.path.push_back(world.rank());
       if (world.rank() == data_.destination) {
         data_.finish = true;
