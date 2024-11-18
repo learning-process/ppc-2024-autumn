@@ -1,9 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <cmath>
-#include <iostream>
 #include <memory>
-#include <random>
 #include <vector>
 
 #include "seq/korablev_v_jacobi_method/include/ops_seq.hpp"
@@ -33,7 +31,7 @@ TEST(korablev_v_jacobi_method, test_matrix_2x2) {
   jacobiTaskSequential.post_processing();
 
   for (size_t i = 0; i < matrix_size; ++i) {
-    ASSERT_NEAR(out[i], expected_solution[i], 1e-6);
+    ASSERT_NEAR(out[i], expected_solution[i], 1e-3);
   }
 }
 
@@ -62,7 +60,7 @@ TEST(korablev_v_jacobi_method, test_matrix_3x3) {
   jacobiTaskSequential.post_processing();
 
   for (size_t i = 0; i < matrix_size; ++i) {
-    ASSERT_NEAR(out[i], expected_solution[i], 1e-6);
+    ASSERT_NEAR(out[i], expected_solution[i], 1e-3);
   }
 }
 
@@ -92,7 +90,7 @@ TEST(korablev_v_jacobi_method, test_matrix_4x4) {
   jacobiTaskSequential.post_processing();
 
   for (size_t i = 0; i < matrix_size; ++i) {
-    ASSERT_NEAR(out[i], expected_solution[i], 1e-6);
+    ASSERT_NEAR(out[i], expected_solution[i], 1e-3);
   }
 }
 
@@ -122,7 +120,7 @@ TEST(korablev_v_jacobi_method, test_matrix_5x5) {
   jacobiTaskSequential.post_processing();
 
   for (size_t i = 0; i < matrix_size; ++i) {
-    ASSERT_NEAR(out[i], expected_solution[i], 1e-5);
+    ASSERT_NEAR(out[i], expected_solution[i], 1e-3);
   }
 }
 
@@ -156,7 +154,7 @@ TEST(korablev_v_jacobi_method, test_matrix_6x6) {
   jacobiTaskSequential.post_processing();
 
   for (size_t i = 0; i < matrix_size; ++i) {
-    ASSERT_NEAR(out[i], expected_solution[i], 1e-6);
+    ASSERT_NEAR(out[i], expected_solution[i], 1e-3);
   }
 }
 

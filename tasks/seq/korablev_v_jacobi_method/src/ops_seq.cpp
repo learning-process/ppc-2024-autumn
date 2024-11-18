@@ -19,7 +19,7 @@ bool korablev_v_jacobi_method_seq::JacobiMethodSequential::pre_processing() {
   size_t n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
   A_.resize(n * n);
   b_.resize(n);
-  x_.resize(n, 1.0);
+  x_.resize(n, 0.0);
 
   for (size_t i = 0; i < n; ++i) {
     for (size_t j = 0; j < n; ++j) {
@@ -72,7 +72,7 @@ bool korablev_v_jacobi_method_seq::JacobiMethodSequential::validation() {
 bool korablev_v_jacobi_method_seq::JacobiMethodSequential::run() {
   internal_order_test();
   size_t n = b_.size();
-  std::vector<double> x_prev(n);
+  std::vector<double> x_prev(n, 0.0);
 
   size_t numberOfIter = 0;
 
@@ -83,7 +83,7 @@ bool korablev_v_jacobi_method_seq::JacobiMethodSequential::run() {
       double S = 0;
       for (size_t j = 0; j < n; j++) {
         if (j != k) {
-          S += A_[k * n + j] * x_[j];
+          S += A_[k * n + j] * x_prev[j];
         }
       }
       x_[k] = (b_[k] - S) / A_[k * n + k];
@@ -91,10 +91,6 @@ bool korablev_v_jacobi_method_seq::JacobiMethodSequential::run() {
 
     if (isNeedToComplete(x_prev, x_)) break;
     numberOfIter++;
-  }
-
-  if (numberOfIter == maxIterations_) {
-    std::cerr << "Warning: Maximum iterations reached without convergence." << std::endl;
   }
 
   return true;

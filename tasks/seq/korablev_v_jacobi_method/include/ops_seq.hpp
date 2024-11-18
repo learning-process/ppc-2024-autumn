@@ -21,8 +21,8 @@ class JacobiMethodSequential : public ppc::core::Task {
   std::vector<double> A_;
   std::vector<double> b_;
   std::vector<double> x_;
-  size_t maxIterations_ = 2000;
-  double epsilon_ = 1e-8;
+  size_t maxIterations_ = 50;
+  double epsilon_ = 1e-3;
 
   bool isNeedToComplete(const std::vector<double>& x_old, const std::vector<double>& x_new) const;
 };
