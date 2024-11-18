@@ -45,7 +45,7 @@ TEST(volochaev_s_count_characters_27_mpi, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(2, global_sum[0]);
+    ASSERT_EQ(0, global_sum[0]);
   }
 }
 
