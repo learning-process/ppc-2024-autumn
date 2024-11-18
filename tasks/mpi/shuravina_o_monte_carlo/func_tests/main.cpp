@@ -41,6 +41,7 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Integration) {
     throw;
   }
 }
+
 TEST(MonteCarloIntegrationTaskParallel, Test_Boundary_Conditions) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
@@ -56,19 +57,31 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Boundary_Conditions) {
       taskDataPar->outputs_count.emplace_back(out.size());
     }
 
+    boost::mpi::broadcast(world, taskDataPar, 0);
+
+    std::cout << "Process " << world.rank() << " taskDataPar: " << taskDataPar << std::endl;
+
     auto testMpiTaskParallel =
         std::make_shared<shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel>(taskDataPar);
     testMpiTaskParallel->set_interval(0.0, 1.0);
     testMpiTaskParallel->set_num_points(1000000);
     testMpiTaskParallel->set_function([](double x) { return x * x; });
 
-    ASSERT_EQ(testMpiTaskParallel->validation(), true);
+    bool validation_result = testMpiTaskParallel->validation();
+    std::cout << "Process " << world.rank() << " validation result: " << validation_result << std::endl;
+    ASSERT_EQ(validation_result, true);
+
     testMpiTaskParallel->pre_processing();
     testMpiTaskParallel->run();
     testMpiTaskParallel->post_processing();
 
+    std::cout << "Process " << world.rank() << " output: " << out[0] << std::endl;
+
+    boost::mpi::broadcast(world, out, 0);
+
     if (world.rank() == 0) {
       double expected_integral = 1.0 / 3.0;
+      std::cout << "Process " << world.rank() << " expected integral: " << expected_integral << std::endl;
       ASSERT_NEAR(expected_integral, out[0], 0.01);
     }
   } catch (const std::exception& e) {
