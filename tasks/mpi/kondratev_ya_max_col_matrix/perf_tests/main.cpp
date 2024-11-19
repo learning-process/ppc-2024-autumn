@@ -86,7 +86,10 @@ TEST(kondratev_ya_max_col_matrix_mpi, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
 
-  for (uint32_t i = 0; i < res.size(); i++) ASSERT_EQ(res[i], ref[i]);
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
+    for (uint32_t i = 0; i < res.size(); i++) ASSERT_EQ(res[i], ref[i]);
+  }
 }
 
 TEST(kondratev_ya_max_col_matrix_mpi_perf_test, test_task_run) {
@@ -123,5 +126,8 @@ TEST(kondratev_ya_max_col_matrix_mpi_perf_test, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
 
-  for (uint32_t i = 0; i < res.size(); i++) ASSERT_EQ(res[i], ref[i]);
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
+    for (uint32_t i = 0; i < res.size(); i++) ASSERT_EQ(res[i], ref[i]);
+  }
 }
