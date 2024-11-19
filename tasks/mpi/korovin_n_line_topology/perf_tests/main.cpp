@@ -62,7 +62,7 @@ TEST(korovin_n_line_topology_mpi, test_task_run) {
     for (int i = 0; i < n; i++) {
       ASSERT_EQ(received_data[i], data[i]);
     }
-    for (int i = 0; i < received_trajectory.size(); i++) {
+    for (int i = 0; i < (int)received_trajectory.size(); i++) {
       ASSERT_EQ(received_trajectory[i], root + i);
     }
   }
@@ -123,7 +123,7 @@ TEST(korovin_n_line_topology_mpi, test_pipeline_run) {
     for (int i = 0; i < n; i++) {
       ASSERT_EQ(received_data[i], data[i]);
     }
-    for (int i = 0; i < received_trajectory.size(); i++) {
+    for (int i = 0; i < (int)received_trajectory.size(); i++) {
       ASSERT_EQ(received_trajectory[i], root + i);
     }
   }
