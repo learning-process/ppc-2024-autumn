@@ -9,6 +9,12 @@
 
 TEST(korovin_n_line_topology_mpi, transfer_data) {
   boost::mpi::communicator world;
+
+  if (world.size() < 2) {
+    GTEST_SKIP() << "There are not enough processes to run this test";
+    return;
+  }
+
   int n = 10000;
   auto root = 0;
   auto dst = world.size() - 1;
@@ -59,11 +65,18 @@ TEST(korovin_n_line_topology_mpi, transfer_data) {
 
 TEST(korovin_n_line_topology_mpi, transfer_data_random) {
   boost::mpi::communicator world;
+
+  if (world.size() < 2) {
+    GTEST_SKIP() << "There are not enough processes to run this test";
+    return;
+  }
+
   int n = 10000;
 
   std::srand(static_cast<unsigned int>(std::time(nullptr)) / 1000);
   int root = std::rand() % (world.size() - 1);
-  int dst = (root + 1) + std::rand() % (world.size() - (root + 1));
+
+  int dst = (root + 1) + (world.size() > root + 1 ? std::rand() % (world.size() - (root + 1)) : 0);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs_count.emplace_back(root);
