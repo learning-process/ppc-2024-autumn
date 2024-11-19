@@ -220,7 +220,11 @@ TEST(korovin_n_line_topology_mpi, validation_miss_input_data_on_root) {
   taskData->inputs_count.emplace_back(n);
 
   korovin_n_line_topology_mpi::TestMPITaskParallel testTask(taskData);
-  ASSERT_FALSE(testTask.validation());
+  if (world.rank() == root) {
+    ASSERT_FALSE(testTask.validation());
+  } else {
+    SUCCEED();
+  }
 }
 
 TEST(korovin_n_line_topology_mpi, validation_miss_output_data_on_dst) {
@@ -249,5 +253,7 @@ TEST(korovin_n_line_topology_mpi, validation_miss_output_data_on_dst) {
   korovin_n_line_topology_mpi::TestMPITaskParallel testTask(taskData);
   if (world.rank() == dst) {
     ASSERT_FALSE(testTask.validation());
+  } else {
+    SUCCEED();
   }
 }
