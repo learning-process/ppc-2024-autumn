@@ -4,6 +4,7 @@
 
 #include "seq/gnitienko_k_contrast_enhancement/include/ops_seq.hpp"
 
+namespace gnitienko_k_functions {
 void run_test(std::vector<int> &img, double contrast_factor) {
   std::vector<int> out(img.size(), 0);
 
@@ -27,29 +28,30 @@ void run_test(std::vector<int> &img, double contrast_factor) {
   }
   ASSERT_EQ(out, expected_out);
 }
+}  // namespace gnitienko_k_functions
 
 TEST(gnitienko_k_contrast_enhancement_seq, Test_Contrast_Enhancement_Grayscale) {
   std::vector<int> img = {0, 51, 102, 153, 204, 255, 124};
   double contrast_factor = 2.0;
-  run_test(img, contrast_factor);
+  gnitienko_k_functions::run_test(img, contrast_factor);
 }
 
 TEST(gnitienko_k_contrast_enhancement_seq, Test_Contrast_Enhancement_Color) {
   std::vector<int> img = {100, 150, 200, 50, 100, 150, 0, 0, 0, 255, 255, 255};
   double contrast_factor = 1.5;
-  run_test(img, contrast_factor);
+  gnitienko_k_functions::run_test(img, contrast_factor);
 }
 
 TEST(gnitienko_k_contrast_enhancement_seq, Test_Random_Grayscale_Image) {
   std::vector<int> img = gnitienko_k_contrast_enhancement_seq::getRandomVector(46);
   double contrast_factor = 3;
-  run_test(img, contrast_factor);
+  gnitienko_k_functions::run_test(img, contrast_factor);
 }
 
 TEST(gnitienko_k_contrast_enhancement_seq, Test_Random_Color_Image) {
   std::vector<int> img = gnitienko_k_contrast_enhancement_seq::getRandomVector(51);
   double contrast_factor = 3;
-  run_test(img, contrast_factor);
+  gnitienko_k_functions::run_test(img, contrast_factor);
 }
 
 TEST(gnitienko_k_contrast_enhancement_seq, Test_Color_Image_Pixel) {
@@ -78,25 +80,25 @@ TEST(gnitienko_k_contrast_enhancement_seq, Test_Color_Image_Pixel) {
 TEST(gnitienko_k_contrast_enhancement_seq, Test_Empty_Image) {
   std::vector<int> img;
   double contrast_factor = 3;
-  run_test(img, contrast_factor);
+  gnitienko_k_functions::run_test(img, contrast_factor);
 }
 
 TEST(gnitienko_k_contrast_enhancement_seq, Test_One_Pixel_GrayScale_Image) {
   std::vector<int> img = {145};
   double contrast_factor = 1.5;
-  run_test(img, contrast_factor);
+  gnitienko_k_functions::run_test(img, contrast_factor);
 }
 
 TEST(gnitienko_k_contrast_enhancement_seq, Test_One_Pixel_Color_Image) {
   std::vector<int> img = {145, 134, 89};
   double contrast_factor = 1.5;
-  run_test(img, contrast_factor);
+  gnitienko_k_functions::run_test(img, contrast_factor);
 }
 
 TEST(gnitienko_k_contrast_enhancement_seq, Test_negative_values) {
   std::vector<int> img = {-145, -20, 15, -100, 234, -255, 45};
   double contrast_factor = 1.5;
-  run_test(img, contrast_factor);
+  gnitienko_k_functions::run_test(img, contrast_factor);
 }
 
 TEST(gnitienko_k_contrast_enhancement_seq, Test_incorrect_pixel) {
