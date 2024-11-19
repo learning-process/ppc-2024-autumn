@@ -43,7 +43,6 @@ class TopologyHypercubeMPI : public ppc::core::Task {
 
   int maxAddressLength{};
 
-  std::vector<int> input_;
   boost::mpi::communicator world;
 };
 

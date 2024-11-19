@@ -1,9 +1,7 @@
 #include <algorithm>
-#include <boost/optional/optional_io.hpp>
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/vector.hpp>
 #include <functional>
-#include <iostream>
 #include <limits>
 #include <random>
 #include <string>
@@ -60,11 +58,8 @@ bool solovyev_d_topology_hypercube_mpi::TopologyHypercubeMPI::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     data_.path.clear();
-    int *tmp_ptr = reinterpret_cast<int *>(taskData->inputs[0]);
-    int size = (size_t)taskData->inputs_count[0];
-    input_ = std::vector<int>(tmp_ptr, tmp_ptr + size);
-    data_.value = input_[0];
-    data_.destination = input_[1];
+    data_.value = reinterpret_cast<int *>(taskData->inputs[0])[0];
+    data_.destination = reinterpret_cast<int *>(taskData->inputs[0])[1];
     data_.finish = false;
     maxAddressLength = intToBin(world.size() - 1).size();
   }
