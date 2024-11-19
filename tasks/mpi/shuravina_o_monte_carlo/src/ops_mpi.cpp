@@ -15,19 +15,21 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::validation() {
 
   if (world.rank() == 0) {
     if (taskData->inputs_count.size() != 1 || taskData->outputs_count.size() != 1) {
+      std::cerr << "Validation failed: inputs_count or outputs_count size mismatch" << std::endl;
       return false;
     }
     if (taskData->inputs_count[0] != 0 || taskData->outputs_count[0] != 1) {
+      std::cerr << "Validation failed: inputs_count or outputs_count value mismatch" << std::endl;
       return false;
     }
     if (taskData->inputs[0] != nullptr || taskData->outputs[0] == nullptr) {
+      std::cerr << "Validation failed: inputs or outputs pointer mismatch" << std::endl;
       return false;
     }
   }
 
   return true;
 }
-
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::run() {
   internal_order_test();
   int num_processes = world.size();
@@ -51,7 +53,6 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::run() {
 
   return true;
 }
-
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
