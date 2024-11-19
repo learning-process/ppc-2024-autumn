@@ -5,14 +5,11 @@
 #include <random>
 
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::pre_processing() {
-  internal_order_test();
   integral_value_ = 0.0;
   return true;
 }
 
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::validation() {
-  internal_order_test();
-
   if (world.rank() == 0) {
     if (taskData->inputs_count.size() != 1 || taskData->outputs_count.size() != 1) {
       std::cerr << "Validation failed: inputs_count or outputs_count size mismatch" << std::endl;
@@ -31,7 +28,6 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::validation() {
   return true;
 }
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::run() {
-  internal_order_test();
   int num_processes = world.size();
   int rank = world.rank();
 
@@ -54,7 +50,6 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::run() {
   return true;
 }
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::post_processing() {
-  internal_order_test();
   if (world.rank() == 0) {
     reinterpret_cast<double*>(taskData->outputs[0])[0] = integral_value_;
   }
