@@ -181,12 +181,8 @@ void grudzin_k_all_reduce_mpi::TestMPITaskMyRealization::my_all_reduce(const boo
     for (int i = 0; i < n; ++i) out_values[i] = std::min(out_values[i], cv1[i]);
   }
   // delete cv1 and cv2
-  if (cv1 != nullptr) {
-    delete[] cv1;
-  }
-  if (cv2 != nullptr) {
-    delete[] cv2;
-  }
+  delete[] cv1;
+  delete[] cv2;
   // send data to our parent (if it exist) and get out_values from him
   if (root > 0) {
     root--;
