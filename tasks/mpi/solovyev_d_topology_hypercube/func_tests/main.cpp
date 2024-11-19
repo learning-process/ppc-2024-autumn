@@ -2,6 +2,7 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <cmath>
 #include <vector>
 
 #include "mpi/solovyev_d_topology_hypercube/include/header.hpp"

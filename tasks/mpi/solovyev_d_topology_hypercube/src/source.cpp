@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/vector.hpp>
+#include <cmath>
 #include <functional>
 #include <limits>
 #include <random>
