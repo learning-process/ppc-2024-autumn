@@ -124,7 +124,7 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Work_Distribution) {
   }
 }
 
-TEST(MonteCarloIntegrationTaskParallel, Test_Data_Collection) {
+TEST(MonteCarloIntegrationTaskParallel, Test_Sum_Aggregation) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
@@ -166,18 +166,14 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Data_Collection) {
       ASSERT_NEAR(expected_integral, out[0], 0.01);
     }
 
-    std::vector<double> local_sums(world.size(), 0.0);
     double local_sum = testMpiTaskParallel->get_integral_value();
-    std::cout << "Rank " << world.rank() << " is starting all_gather." << std::endl;
-    boost::mpi::all_gather(world, local_sum, local_sums);
-    std::cout << "Rank " << world.rank() << " finished all_gather." << std::endl;
+    double global_sum = 0.0;
+    std::cout << "Rank " << world.rank() << " is starting all_reduce." << std::endl;
+    boost::mpi::all_reduce(world, local_sum, global_sum, std::plus<>());
+    std::cout << "Rank " << world.rank() << " finished all_reduce." << std::endl;
 
     if (world.rank() == 0) {
-      double total_sum = 0.0;
-      for (double sum : local_sums) {
-        total_sum += sum;
-      }
-      ASSERT_NEAR(total_sum, out[0], 0.01);
+      ASSERT_NEAR(global_sum, out[0], 0.01);
     }
   } catch (const std::exception& e) {
     std::cerr << "Process " << world.rank() << " caught exception: " << e.what() << std::endl;
