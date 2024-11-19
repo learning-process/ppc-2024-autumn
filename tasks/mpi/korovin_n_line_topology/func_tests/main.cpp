@@ -121,3 +121,133 @@ TEST(korovin_n_line_topology_mpi, transfer_data_random) {
     }
   }
 }
+
+TEST(korovin_n_line_topology_mpi, validation_inputs_count_less_3) {
+  boost::mpi::communicator world;
+
+  if (world.size() < 2) {
+    GTEST_SKIP() << "There are not enough processes to run this test";
+    return;
+  }
+
+  int n = 10000;
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.emplace_back(n);
+
+  korovin_n_line_topology_mpi::TestMPITaskParallel testTask(taskData);
+  ASSERT_FALSE(testTask.validation());
+}
+
+TEST(korovin_n_line_topology_mpi, validation_invalid_root) {
+  boost::mpi::communicator world;
+
+  if (world.size() < 2) {
+    GTEST_SKIP() << "There are not enough processes to run this test";
+    return;
+  }
+
+  int n = 10000;
+  int root = -1;
+  int dst = world.size() - 1;
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.emplace_back(root);
+  taskData->inputs_count.emplace_back(dst);
+  taskData->inputs_count.emplace_back(n);
+
+  korovin_n_line_topology_mpi::TestMPITaskParallel testTask(taskData);
+  ASSERT_FALSE(testTask.validation());
+}
+
+TEST(korovin_n_line_topology_mpi, validation_invalid_dst) {
+  boost::mpi::communicator world;
+
+  if (world.size() < 2) {
+    GTEST_SKIP() << "There are not enough processes to run this test";
+    return;
+  }
+
+  int n = 10000;
+  int root = 0;
+  int dst = -1;
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.emplace_back(root);
+  taskData->inputs_count.emplace_back(dst);
+  taskData->inputs_count.emplace_back(n);
+
+  korovin_n_line_topology_mpi::TestMPITaskParallel testTask(taskData);
+  ASSERT_FALSE(testTask.validation());
+}
+
+TEST(korovin_n_line_topology_mpi, validation_invalid_num_of_elements) {
+  boost::mpi::communicator world;
+
+  if (world.size() < 2) {
+    GTEST_SKIP() << "There are not enough processes to run this test";
+    return;
+  }
+
+  int n = -25;
+  int root = 0;
+  int dst = world.size() - 1;
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.emplace_back(root);
+  taskData->inputs_count.emplace_back(dst);
+  taskData->inputs_count.emplace_back(n);
+
+  korovin_n_line_topology_mpi::TestMPITaskParallel testTask(taskData);
+  ASSERT_FALSE(testTask.validation());
+}
+
+TEST(korovin_n_line_topology_mpi, validation_miss_input_data_on_root) {
+  boost::mpi::communicator world;
+
+  if (world.size() < 2) {
+    GTEST_SKIP() << "There are not enough processes to run this test";
+    return;
+  }
+
+  int n = 10000;
+  int root = 0;
+  int dst = world.size() - 1;
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.emplace_back(root);
+  taskData->inputs_count.emplace_back(dst);
+  taskData->inputs_count.emplace_back(n);
+
+  korovin_n_line_topology_mpi::TestMPITaskParallel testTask(taskData);
+  ASSERT_FALSE(testTask.validation());
+}
+
+TEST(korovin_n_line_topology_mpi, validation_miss_output_data_on_dst) {
+  boost::mpi::communicator world;
+
+  if (world.size() < 2) {
+    GTEST_SKIP() << "There are not enough processes to run this test";
+    return;
+  }
+
+  int n = 10000;
+  auto root = 0;
+  auto dst = world.size() - 1;
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.emplace_back(root);
+  taskData->inputs_count.emplace_back(dst);
+  taskData->inputs_count.emplace_back(n);
+
+  std::vector<int> data;
+  if (world.rank() == root) {
+    data = korovin_n_line_topology_mpi::TestMPITaskParallel::generate_rnd_vector(n);
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
+  }
+
+  korovin_n_line_topology_mpi::TestMPITaskParallel testTask(taskData);
+  if (world.rank() == dst) {
+    ASSERT_FALSE(testTask.validation());
+  }
+}
