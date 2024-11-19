@@ -98,3 +98,129 @@ TEST(korablev_v_jacobi_method_mpi, test_matrix_16x16) { run_jacobi_test_for_matr
 TEST(korablev_v_jacobi_method_mpi, test_matrix_32x32) { run_jacobi_test_for_matrix_size(32); }
 TEST(korablev_v_jacobi_method_mpi, test_matrix_100x100) { run_jacobi_test_for_matrix_size(100); }
 TEST(korablev_v_jacobi_method_mpi, test_matrix_1000x1000) { run_jacobi_test_for_matrix_size(1000); }
+
+TEST(korablev_v_jacobi_method_mpi, invalid_input_count) {
+  boost::mpi::communicator world;
+  const size_t matrix_size = 2;
+  std::vector<size_t> in_size(1, matrix_size);
+  std::vector<double> matrix_data = {4.0, 1.0, 2.0, 3.0};
+  std::vector<double> vector_data = {1.0, 2.0};
+  std::vector<double> out(matrix_size, 0.0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in_size.data()));
+    taskDataPar->inputs_count.emplace_back(in_size.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix_data.data()));
+    taskDataPar->inputs_count.emplace_back(matrix_data.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
+  }
+  if (world.rank() == 0) {
+    korablev_v_jacobi_method_mpi::JacobiMethodParallel jacobiTaskParallel(taskDataPar);
+    ASSERT_FALSE(jacobiTaskParallel.validation());
+  } else {
+    ASSERT_TRUE(true) << "Process " << world.rank() << " completed successfully.";
+  }
+}
+
+TEST(korablev_v_jacobi_method_mpi, invalid_output_count) {
+  boost::mpi::communicator world;
+  const size_t matrix_size = 2;
+  std::vector<size_t> in_size(1, matrix_size);
+  std::vector<double> matrix_data = {4.0, 1.0, 2.0, 3.0};
+  std::vector<double> vector_data = {1.0, 2.0};
+  std::vector<double> out(matrix_size, 0.0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in_size.data()));
+    taskDataPar->inputs_count.emplace_back(in_size.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix_data.data()));
+    taskDataPar->inputs_count.emplace_back(matrix_data.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
+  }
+  if (world.rank() == 0) {
+    korablev_v_jacobi_method_mpi::JacobiMethodParallel jacobiTaskParallel(taskDataPar);
+    ASSERT_FALSE(jacobiTaskParallel.validation());
+  } else {
+    ASSERT_TRUE(true) << "Process " << world.rank() << " completed successfully.";
+  }
+}
+
+TEST(korablev_v_jacobi_method_mpi, non_diagonally_dominant_matrix) {
+  boost::mpi::communicator world;
+  const size_t matrix_size = 2;
+  std::vector<size_t> in_size(1, matrix_size);
+  std::vector<double> matrix_data = {1.0, 2.0, 2.0, 1.0};
+  std::vector<double> vector_data = {1.0, 2.0};
+  std::vector<double> out(matrix_size, 0.0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in_size.data()));
+    taskDataPar->inputs_count.emplace_back(in_size.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix_data.data()));
+    taskDataPar->inputs_count.emplace_back(matrix_data.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
+  }
+  if (world.rank() == 0) {
+    korablev_v_jacobi_method_mpi::JacobiMethodParallel jacobiTaskParallel(taskDataPar);
+    ASSERT_FALSE(jacobiTaskParallel.validation());
+  } else {
+    ASSERT_TRUE(true) << "Process " << world.rank() << " completed successfully.";
+  }
+}
+
+TEST(korablev_v_jacobi_method_mpi, zero_on_diagonal) {
+  boost::mpi::communicator world;
+  const size_t matrix_size = 2;
+  std::vector<size_t> in_size(1, matrix_size);
+  std::vector<double> matrix_data = {0.0, -1.0, -2.0, 0.0};
+  std::vector<double> vector_data = {3.0, 4.0};
+  std::vector<double> out(matrix_size, 0.0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in_size.data()));
+    taskDataPar->inputs_count.emplace_back(in_size.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix_data.data()));
+    taskDataPar->inputs_count.emplace_back(matrix_data.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
+  }
+
+  if (world.rank() == 0) {
+    korablev_v_jacobi_method_mpi::JacobiMethodParallel jacobiTaskParallel(taskDataPar);
+    ASSERT_FALSE(jacobiTaskParallel.validation());
+  } else {
+    ASSERT_TRUE(true) << "Process " << world.rank() << " completed successfully.";
+  }
+}
+
+TEST(korablev_v_jacobi_method_mpi, invalid_matrix_size) {
+  boost::mpi::communicator world;
+  const size_t matrix_size = 0;
+  std::vector<size_t> in_size(1, matrix_size);
+  std::vector<double> matrix_data = {0.0, -1.0, -2.0, 0.0};
+  std::vector<double> vector_data = {3.0, 4.0};
+  std::vector<double> out(matrix_size, 0.0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in_size.data()));
+    taskDataPar->inputs_count.emplace_back(in_size.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix_data.data()));
+    taskDataPar->inputs_count.emplace_back(matrix_data.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
+  }
+  if (world.rank() == 0) {
+    korablev_v_jacobi_method_mpi::JacobiMethodParallel jacobiTaskParallel(taskDataPar);
+    ASSERT_FALSE(jacobiTaskParallel.validation());
+  } else {
+    ASSERT_TRUE(true) << "Process " << world.rank() << " completed successfully.";
+  }
+}

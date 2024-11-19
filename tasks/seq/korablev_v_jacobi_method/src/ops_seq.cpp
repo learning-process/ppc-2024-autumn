@@ -54,14 +54,8 @@ bool korablev_v_jacobi_method_seq::JacobiMethodSequential::validation() {
         sum += std::fabs(reinterpret_cast<double*>(taskData->inputs[1])[i * n + j]);
       }
     }
-
     if (diag <= sum) {
       std::cerr << "Error: Matrix is not diagonally dominant at row " << i << "." << std::endl;
-      return false;
-    }
-
-    if (diag == 0.0) {
-      std::cerr << "Error: Zero element on the diagonal at row " << i << "." << std::endl;
       return false;
     }
   }

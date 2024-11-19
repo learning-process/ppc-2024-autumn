@@ -6,7 +6,6 @@
 #include <boost/mpi.hpp>
 #include <boost/serialization/vector.hpp>
 #include <cmath>
-#include <iostream>
 #include <vector>
 
 #include "boost/mpi/collectives/broadcast.hpp"
@@ -24,7 +23,7 @@ bool korablev_v_jacobi_method_mpi::JacobiMethodSequential::isNeedToComplete(cons
 
 bool korablev_v_jacobi_method_mpi::JacobiMethodSequential::pre_processing() {
   internal_order_test();
-  size_t n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
+  n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
   A_.resize(n * n);
   b_.resize(n);
   x_.resize(n, 1.0);
@@ -43,13 +42,11 @@ bool korablev_v_jacobi_method_mpi::JacobiMethodSequential::validation() {
   internal_order_test();
 
   if (taskData->inputs_count.size() != 3 || taskData->outputs_count.size() != 1) {
-    std::cerr << "Error: Invalid number of inputs or outputs." << std::endl;
     return false;
   }
 
-  size_t n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
+  n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
   if (n <= 0) {
-    std::cerr << "Error: Matrix size must be positive." << std::endl;
     return false;
   }
 
@@ -64,12 +61,10 @@ bool korablev_v_jacobi_method_mpi::JacobiMethodSequential::validation() {
     }
 
     if (diag <= sum) {
-      std::cerr << "Error: Matrix is not diagonally dominant at row " << i << "." << std::endl;
       return false;
     }
 
     if (diag == 0.0) {
-      std::cerr << "Error: Zero element on the diagonal at row " << i << "." << std::endl;
       return false;
     }
   }
@@ -79,7 +74,6 @@ bool korablev_v_jacobi_method_mpi::JacobiMethodSequential::validation() {
 
 bool korablev_v_jacobi_method_mpi::JacobiMethodSequential::run() {
   internal_order_test();
-  size_t n = b_.size();
   std::vector<double> x_prev(n, 1.0);
 
   size_t numberOfIter = 0;
@@ -125,9 +119,14 @@ bool korablev_v_jacobi_method_mpi::JacobiMethodParallel::isNeedToComplete(const 
 
 bool korablev_v_jacobi_method_mpi::JacobiMethodParallel::pre_processing() {
   internal_order_test();
+  sizes_a.resize(world.size());
+  displs_a.resize(world.size());
+
+  sizes_b.resize(world.size());
+  displs_b.resize(world.size());
 
   if (world.rank() == 0) {
-    size_t n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
+    n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
     A_.resize(n * n);
     b_.resize(n);
     x_.resize(n, 0.0);
@@ -139,6 +138,8 @@ bool korablev_v_jacobi_method_mpi::JacobiMethodParallel::pre_processing() {
       }
       b_[i] = reinterpret_cast<double*>(taskData->inputs[2])[i];
     }
+    calculate_distribution_a(n, world.size(), sizes_a, displs_a);
+    calculate_distribution_b(n, world.size(), sizes_b, displs_b);
   }
   return true;
 }
@@ -148,13 +149,11 @@ bool korablev_v_jacobi_method_mpi::JacobiMethodParallel::validation() {
 
   if (world.rank() == 0) {
     if (taskData->inputs_count.size() != 3 || taskData->outputs_count.size() != 1) {
-      std::cerr << "Error: Invalid number of inputs or outputs." << std::endl;
       return false;
     }
 
-    size_t n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
+    n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
     if (n <= 0) {
-      std::cerr << "Error: Matrix size must be positive." << std::endl;
       return false;
     }
 
@@ -168,12 +167,6 @@ bool korablev_v_jacobi_method_mpi::JacobiMethodParallel::validation() {
         }
       }
       if (diag <= sum) {
-        std::cerr << "Error: Matrix is not diagonally dominant at row " << i << "." << std::endl;
-        return false;
-      }
-
-      if (diag == 0.0) {
-        std::cerr << "Error: Zero element on the diagonal at row " << i << "." << std::endl;
         return false;
       }
     }
@@ -183,30 +176,14 @@ bool korablev_v_jacobi_method_mpi::JacobiMethodParallel::validation() {
 
 bool korablev_v_jacobi_method_mpi::JacobiMethodParallel::run() {
   internal_order_test();
-  size_t n = b_.size();
 
   size_t numberOfIter = 0;
-
-  std::vector<int> sizes_a(world.size());
-  std::vector<int> displs_a(world.size());
-
-  std::vector<int> sizes_b(world.size());
-  std::vector<int> displs_b(world.size());
-
-  if (world.rank() == 0) {
-    calculate_distribution_a(n, world.size(), sizes_a, displs_a);
-    calculate_distribution_b(n, world.size(), sizes_b, displs_b);
-  }
-
-  std::vector<double> local_x(sizes_b[world.rank()]);
+  std::vector<double> local_x;
 
   boost::mpi::broadcast(world, sizes_a, 0);
   boost::mpi::broadcast(world, sizes_b, 0);
-  boost::mpi::broadcast(world, displs_a, 0);
   boost::mpi::broadcast(world, displs_b, 0);
-
   boost::mpi::broadcast(world, n, 0);
-  boost::mpi::broadcast(world, x_, 0);
   boost::mpi::broadcast(world, x_prev, 0);
 
   int loc_mat_size = sizes_a[world.rank()];
@@ -214,6 +191,7 @@ bool korablev_v_jacobi_method_mpi::JacobiMethodParallel::run() {
 
   local_A.resize(loc_mat_size);
   local_b.resize(loc_vec_size);
+  local_x.resize(sizes_b[world.rank()]);
 
   if (world.rank() == 0) {
     boost::mpi::scatterv(world, A_.data(), sizes_a, displs_a, local_A.data(), loc_mat_size, 0);
@@ -222,10 +200,6 @@ bool korablev_v_jacobi_method_mpi::JacobiMethodParallel::run() {
     boost::mpi::scatterv(world, local_A.data(), loc_mat_size, 0);
     boost::mpi::scatterv(world, local_b.data(), loc_vec_size, 0);
   }
-
-  local_x.resize(sizes_b[world.rank()]);
-
-  world.barrier();
 
   while (numberOfIter < maxIterations_) {
     if (world.rank() == 0) {
@@ -257,7 +231,6 @@ bool korablev_v_jacobi_method_mpi::JacobiMethodParallel::run() {
     if (need) break;
 
     numberOfIter++;
-    world.barrier();
   }
 
   return true;

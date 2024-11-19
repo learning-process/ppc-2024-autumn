@@ -25,6 +25,7 @@ class JacobiMethodSequential : public ppc::core::Task {
   std::vector<double> A_;
   std::vector<double> b_;
   std::vector<double> x_;
+  size_t n;
 
   size_t maxIterations_ = 2000;
   double epsilon_ = 1e-5;
@@ -44,9 +45,15 @@ class JacobiMethodParallel : public ppc::core::Task {
   std::vector<double> b_;
   std::vector<double> x_;
   std::vector<double> x_prev;
+  size_t n;
 
   std::vector<double> local_A;
   std::vector<double> local_b;
+
+  std::vector<int> sizes_a;
+  std::vector<int> displs_a;
+  std::vector<int> sizes_b;
+  std::vector<int> displs_b;
 
   size_t maxIterations_ = 2000;
   double epsilon_ = 1e-5;
@@ -55,8 +62,6 @@ class JacobiMethodParallel : public ppc::core::Task {
   boost::mpi::communicator world;
   static void calculate_distribution_a(int rows, int num_proc, std::vector<int>& sizes, std::vector<int>& displs);
   static void calculate_distribution_b(int len, int num_proc, std::vector<int>& sizes, std::vector<int>& displs);
-  static void calculate_distribution_ab(int rows, int cols, int num_proc, std::vector<int>& sizes,
-                                        std::vector<int>& displs);
 };
 
 }  // namespace korablev_v_jacobi_method_mpi
