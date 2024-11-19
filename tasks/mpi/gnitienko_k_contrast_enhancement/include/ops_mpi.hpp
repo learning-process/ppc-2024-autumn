@@ -41,7 +41,7 @@ class ContrastEnhanceMPI : public ppc::core::Task {
 
  private:
   std::vector<int> image;
-  size_t img_size{};
+  int img_size{};
   std::vector<int> res;
   double contrast_factor{};
   bool is_grayscale() const;

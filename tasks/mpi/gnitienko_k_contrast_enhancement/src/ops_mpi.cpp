@@ -4,10 +4,7 @@
 #include <functional>
 #include <random>
 #include <string>
-#include <thread>
 #include <vector>
-
-using namespace std::chrono_literals;
 
 std::vector<int> gnitienko_k_contrast_enhancement_mpi::getRandomVector(int sz) {
   std::random_device dev;
@@ -92,8 +89,8 @@ bool gnitienko_k_contrast_enhancement_mpi::ContrastEnhanceMPI::run() {
   boost::mpi::broadcast(world, img_size, 0);
   image.resize(img_size);
   boost::mpi::broadcast(world, image.data(), img_size, 0);
-  size_t count_of_proc = world.size();
-  size_t rank = world.rank();
+  int count_of_proc = world.size();
+  int rank = world.rank();
   int pixels_per_process = 0;
   std::vector<int> local_res;
   if (is_grayscale()) {
@@ -101,8 +98,8 @@ bool gnitienko_k_contrast_enhancement_mpi::ContrastEnhanceMPI::run() {
     if (img_size % count_of_proc != 0) pixels_per_process += 1;
 
     local_res.resize(pixels_per_process);
-    for (size_t i = rank * pixels_per_process; i < std::min(img_size, (rank + 1) * pixels_per_process); ++i) {
-      size_t local_index = i - rank * pixels_per_process;
+    for (int i = rank * pixels_per_process; i < std::min(img_size, (rank + 1) * pixels_per_process); ++i) {
+      int local_index = i - rank * pixels_per_process;
       local_res[local_index] = std::clamp(static_cast<int>((image[i] - 128) * contrast_factor + 128), 0, 255);
     }
   } else {
@@ -112,9 +109,9 @@ bool gnitienko_k_contrast_enhancement_mpi::ContrastEnhanceMPI::run() {
     }
 
     local_res.resize(pixels_per_process * 3);
-    for (size_t i = rank * pixels_per_process * 3; i < std::min(img_size, (rank + 1) * pixels_per_process * 3);
+    for (int i = rank * pixels_per_process * 3; i < std::min(img_size, (rank + 1) * pixels_per_process * 3);
          i += 3) {
-      size_t local_index = i - rank * pixels_per_process * 3;
+      int local_index = i - rank * pixels_per_process * 3;
       local_res[local_index] = std::clamp(static_cast<int>((image[i] - 128) * contrast_factor + 128), 0, 255);
       local_res[local_index + 1] = std::clamp(static_cast<int>((image[i + 1] - 128) * contrast_factor + 128), 0, 255);
       local_res[local_index + 2] = std::clamp(static_cast<int>((image[i + 2] - 128) * contrast_factor + 128), 0, 255);
