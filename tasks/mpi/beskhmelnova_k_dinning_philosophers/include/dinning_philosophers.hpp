@@ -17,8 +17,7 @@ enum State { THINKING, HUNGRY, EATING };
 template <typename DataType>
 class DiningPhilosophersMPI : public ppc::core::Task {
  public:
-  explicit DiningPhilosophersMPI(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)), world() {}
+  explicit DiningPhilosophersMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
 
   bool pre_processing() override;
   bool validation() override;

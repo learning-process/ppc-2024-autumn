@@ -1,5 +1,8 @@
 #include "mpi/beskhmelnova_k_dinning_philosophers/include/dinning_philosophers.hpp"
 
+#include <chrono>
+#include <thread>
+
 template <typename DataType>
 bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::pre_processing() {
   left_neighbor = (world.rank() + world.size() - 1) % world.size();
@@ -40,7 +43,7 @@ bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::check_
   boost::mpi::gather(world, local_state, all_states, 0);
   bool deadlock = true;
   if (world.rank() == 0) {
-    for (int i = 0; i < all_states.size(); ++i) {
+    for (std::size_t i = 0; i < all_states.size(); ++i) {
       if (all_states[i] == 0) {
         deadlock = false;
         break;
@@ -68,7 +71,7 @@ bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::check_
   bool all_thinking = true;
   std::vector<State> all_states(world.size(), THINKING);
   boost::mpi::all_gather(world, state, all_states);
-  for (int i = 0; i < all_states.size(); ++i) {
+  for (std::size_t i = 0; i < all_states.size(); ++i) {
     if (all_states[i] != THINKING) {
       all_thinking = false;
       break;
@@ -96,7 +99,8 @@ void beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::reques
   state = HUNGRY;
   world.send(left_neighbor, 0, HUNGRY);
   world.send(right_neighbor, 0, HUNGRY);
-  State left_response, right_response;
+  State left_response;
+  State right_response;
   world.recv(left_neighbor, 0, left_response);
   world.recv(right_neighbor, 0, right_response);
 }
