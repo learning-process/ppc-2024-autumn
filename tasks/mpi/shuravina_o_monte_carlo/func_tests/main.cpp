@@ -145,10 +145,21 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Data_Collection) {
     testMpiTaskParallel->set_num_points(1000000);
     testMpiTaskParallel->set_function([](double x) { return x * x; });
 
+    std::cout << "Rank " << world.rank() << " is starting validation." << std::endl;
     ASSERT_EQ(testMpiTaskParallel->validation(), true);
+    std::cout << "Rank " << world.rank() << " finished validation." << std::endl;
+
+    std::cout << "Rank " << world.rank() << " is starting pre_processing." << std::endl;
     testMpiTaskParallel->pre_processing();
+    std::cout << "Rank " << world.rank() << " finished pre_processing." << std::endl;
+
+    std::cout << "Rank " << world.rank() << " is starting run." << std::endl;
     testMpiTaskParallel->run();
+    std::cout << "Rank " << world.rank() << " finished run." << std::endl;
+
+    std::cout << "Rank " << world.rank() << " is starting post_processing." << std::endl;
     testMpiTaskParallel->post_processing();
+    std::cout << "Rank " << world.rank() << " finished post_processing." << std::endl;
 
     if (world.rank() == 0) {
       double expected_integral = 1.0 / 3.0;
@@ -157,7 +168,9 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Data_Collection) {
 
     std::vector<double> local_sums(world.size(), 0.0);
     double local_sum = testMpiTaskParallel->get_integral_value();
+    std::cout << "Rank " << world.rank() << " is starting all_gather." << std::endl;
     boost::mpi::all_gather(world, local_sum, local_sums);
+    std::cout << "Rank " << world.rank() << " finished all_gather." << std::endl;
 
     if (world.rank() == 0) {
       double total_sum = 0.0;
@@ -171,7 +184,6 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Data_Collection) {
     throw;
   }
 }
-
 TEST(MonteCarloIntegrationTaskParallel, Test_Uneven_Points_Distribution) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
