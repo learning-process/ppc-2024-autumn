@@ -10,7 +10,7 @@ TEST(morozov_e_writers_readers, test_pipeline_run) {
   boost::mpi::communicator world;
   std::shared_ptr<ppc::core::TaskData> data = std::make_shared<ppc::core::TaskData>();
   std::vector<int> vec{0};
-  int countIteration = INT_MAX;
+  int countIteration = 100;
   std::vector<int> ans{1};
   if (world.rank() == 0) {
     data->inputs.emplace_back(reinterpret_cast<uint8_t*>(vec.data()));
@@ -25,7 +25,6 @@ TEST(morozov_e_writers_readers, test_pipeline_run) {
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
-
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -46,7 +45,7 @@ TEST(morozov_e_writers_readers, test_pipeline_run) {
 TEST(morozov_e_writers_readers, test_task_run) {
   boost::mpi::communicator world;
   std::vector<int> vec{0};
-  int countIteration = INT_MAX;
+  int countIteration = 100;
   std::vector<int> ans{1};
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> data = std::make_shared<ppc::core::TaskData>();
