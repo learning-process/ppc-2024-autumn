@@ -73,7 +73,7 @@ bool gnitienko_k_contrast_enhancement_mpi::ContrastEnhanceMPI::pre_processing() 
     img_size = taskData->inputs_count[0];
     image.resize(img_size);
     image.assign(input_data, input_data + img_size);
-  } 
+  }
   return true;
 }
 
@@ -105,9 +105,7 @@ bool gnitienko_k_contrast_enhancement_mpi::ContrastEnhanceMPI::run() {
       size_t local_index = i - rank * pixels_per_process;
       local_res[local_index] = std::clamp(static_cast<int>((image[i] - 128) * contrast_factor + 128), 0, 255);
     }
-  }
-  else 
-  {
+  } else {
     pixels_per_process = (img_size / 3) / count_of_proc;
     if (img_size % (3 * count_of_proc) != 0) {
       pixels_per_process += 1;
@@ -124,9 +122,10 @@ bool gnitienko_k_contrast_enhancement_mpi::ContrastEnhanceMPI::run() {
   }
 
   if (rank == 0) {
-    std::vector<int> image_res(img_size + world.size() * pixels_per_process);
+    std::vector<int> image_res(img_size + world.size() * pixels_per_process * (is_grayscale() ? 1 : 3));
     std::vector<int> sizes(world.size(), pixels_per_process * (is_grayscale() ? 1 : 3));
-    boost::mpi::gatherv(world, local_res.data(), pixels_per_process * (is_grayscale() ? 1 : 3), image_res.data(), sizes, 0);
+    boost::mpi::gatherv(world, local_res.data(), pixels_per_process * (is_grayscale() ? 1 : 3), image_res.data(), sizes,
+                        0);
     image_res.resize(img_size);
     res = image_res;
   } else {

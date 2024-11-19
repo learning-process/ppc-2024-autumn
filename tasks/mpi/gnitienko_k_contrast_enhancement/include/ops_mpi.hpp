@@ -18,8 +18,7 @@ std::vector<int> getRandomVector(int sz);
 
 class ContrastEnhanceSeq : public ppc::core::Task {
  public:
-  explicit ContrastEnhanceSeq(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit ContrastEnhanceSeq(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -34,8 +33,7 @@ class ContrastEnhanceSeq : public ppc::core::Task {
 
 class ContrastEnhanceMPI : public ppc::core::Task {
  public:
-  explicit ContrastEnhanceMPI(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit ContrastEnhanceMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;

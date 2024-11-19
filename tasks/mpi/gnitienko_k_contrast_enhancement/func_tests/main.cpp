@@ -10,12 +10,12 @@ TEST(gnitienko_k_contrast_enhancement_mpi, Test_grayscale_image) {
   boost::mpi::communicator world;
   std::vector<int> img = {12, 24, 85, 100};
   double contrast_factor = 1.5;
-  std::vector<int32_t> res_mpi(img.size(), 0);
+  std::vector<int> res_mpi(img.size(), 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(img.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(img.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&contrast_factor));
     taskDataPar->inputs_count.emplace_back(img.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_mpi.data()));
@@ -30,11 +30,11 @@ TEST(gnitienko_k_contrast_enhancement_mpi, Test_grayscale_image) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int32_t> res_seq(img.size(), 0);
+    std::vector<int> res_seq(img.size(), 0);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(img.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(img.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&contrast_factor));
     taskDataSeq->inputs_count.emplace_back(img.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_seq.data()));
@@ -55,7 +55,7 @@ TEST(gnitienko_k_contrast_enhancement_mpi, Test_random_grayscale_image) {
   boost::mpi::communicator world;
   std::vector<int> img = gnitienko_k_contrast_enhancement_mpi::getRandomVector(151);
   double contrast_factor = 1.5;
-  std::vector<int32_t> res_mpi(img.size(), 0);
+  std::vector<int> res_mpi(img.size(), 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -75,7 +75,7 @@ TEST(gnitienko_k_contrast_enhancement_mpi, Test_random_grayscale_image) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int32_t> res_seq(img.size(), 0);
+    std::vector<int> res_seq(img.size(), 0);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -100,7 +100,7 @@ TEST(gnitienko_k_contrast_enhancement_mpi, Test_incorrect_grayscale_image) {
   boost::mpi::communicator world;
   std::vector<int> img = {1000, -255, 185, -45, 255};
   double contrast_factor = 1.5;
-  std::vector<int32_t> res_mpi(img.size(), 0);
+  std::vector<int> res_mpi(img.size(), 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -120,7 +120,7 @@ TEST(gnitienko_k_contrast_enhancement_mpi, Test_incorrect_grayscale_image) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int32_t> res_seq(img.size(), 0);
+    std::vector<int> res_seq(img.size(), 0);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -145,7 +145,7 @@ TEST(gnitienko_k_contrast_enhancement_mpi, Test_color_image) {
   boost::mpi::communicator world;
   std::vector<int> img = {120, 240, 185, 100, 255, 0};
   double contrast_factor = 1.5;
-  std::vector<int32_t> res_mpi(img.size(), 0);
+  std::vector<int> res_mpi(img.size(), 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -165,7 +165,7 @@ TEST(gnitienko_k_contrast_enhancement_mpi, Test_color_image) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int32_t> res_seq(img.size(), 0);
+    std::vector<int> res_seq(img.size(), 0);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -190,7 +190,7 @@ TEST(gnitienko_k_contrast_enhancement_mpi, Test_random_color_image) {
   boost::mpi::communicator world;
   std::vector<int> img = gnitienko_k_contrast_enhancement_mpi::getRandomVector(150);
   double contrast_factor = 1.5;
-  std::vector<int32_t> res_mpi(img.size(), 0);
+  std::vector<int> res_mpi(img.size(), 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -210,7 +210,7 @@ TEST(gnitienko_k_contrast_enhancement_mpi, Test_random_color_image) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int32_t> res_seq(img.size(), 0);
+    std::vector<int> res_seq(img.size(), 0);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -235,7 +235,7 @@ TEST(gnitienko_k_contrast_enhancement_mpi, Test_incorrect_color_image) {
   boost::mpi::communicator world;
   std::vector<int> img = {1000, -255, 185, -45, 255, 0};
   double contrast_factor = 1.5;
-  std::vector<int32_t> res_mpi(img.size(), 0);
+  std::vector<int> res_mpi(img.size(), 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -255,7 +255,7 @@ TEST(gnitienko_k_contrast_enhancement_mpi, Test_incorrect_color_image) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int32_t> res_seq(img.size(), 0);
+    std::vector<int> res_seq(img.size(), 0);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -278,9 +278,9 @@ TEST(gnitienko_k_contrast_enhancement_mpi, Test_incorrect_color_image) {
 
 TEST(gnitienko_k_contrast_enhancement_mpi, Test_empty_image) {
   boost::mpi::communicator world;
-  std::vector<int> img;
+  std::vector<int> img = {};
   double contrast_factor = 1.5;
-  std::vector<int32_t> res_mpi(img.size(), 0);
+  std::vector<int> res_mpi(img.size(), 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -300,7 +300,7 @@ TEST(gnitienko_k_contrast_enhancement_mpi, Test_empty_image) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int32_t> res_seq(img.size(), 0);
+    std::vector<int> res_seq(img.size(), 0);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -325,7 +325,7 @@ TEST(gnitienko_k_contrast_enhancement_mpi, Test_grayscale_pixel_image) {
   boost::mpi::communicator world;
   std::vector<int> img = {123, 220};
   double contrast_factor = 1.5;
-  std::vector<int32_t> res_mpi(img.size(), 0);
+  std::vector<int> res_mpi(img.size(), 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 

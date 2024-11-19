@@ -26,8 +26,7 @@ TEST(gnitienko_k_contrast_enhancement_mpi, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
 
-  auto testMpiTaskParallel =
-      std::make_shared<gnitienko_k_contrast_enhancement_mpi::ContrastEnhanceMPI>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<gnitienko_k_contrast_enhancement_mpi::ContrastEnhanceMPI>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -71,8 +70,7 @@ TEST(gnitienko_k_contrast_enhancement_mpi, test_task_run) {
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
 
-  auto testMpiTaskParallel =
-      std::make_shared<gnitienko_k_contrast_enhancement_mpi::ContrastEnhanceMPI>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<gnitienko_k_contrast_enhancement_mpi::ContrastEnhanceMPI>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
