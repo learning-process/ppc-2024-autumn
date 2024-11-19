@@ -30,11 +30,13 @@ class TestMPITaskSequential : public ppc::core::Task {
 
 template <typename _T, typename _S = uint32_t>
 class TemplateTestTaskParallel : public ppc::core::Task {
+  template <typename Op>
+  using func_reference = std::function<void(const boost::mpi::communicator&, const _T*, int, _T*, Op)>;
+
  public:
-  explicit TemplateTestTaskParallel(
-      std::shared_ptr<ppc::core::TaskData> taskData_,
-      std::function<void(const boost::mpi::communicator&, const _T*, int, _T*, boost::mpi::minimum<_T>)> min_func_,
-      std::function<void(const boost::mpi::communicator&, const _T*, int, _T*, boost::mpi::maximum<_T>)> max_func_)
+  explicit TemplateTestTaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_,
+                                    func_reference<boost::mpi::minimum<_T>> min_func_,
+                                    func_reference<boost::mpi::maximum<_T>> max_func_)
       : Task(std::move(taskData_)), min_allreduce_(std::move(min_func_)), max_allreduce_(std::move(max_func_)) {}
   bool pre_processing() override;
   bool validation() override;
@@ -44,10 +46,8 @@ class TemplateTestTaskParallel : public ppc::core::Task {
  protected:
   std::vector<std::vector<_T>> input_, local_input_, res_;
 
-  const std::function<void(const boost::mpi::communicator&, const _T*, int, _T*, boost::mpi::minimum<_T>)>
-      min_allreduce_;
-  const std::function<void(const boost::mpi::communicator&, const _T*, int, _T*, boost::mpi::maximum<_T>)>
-      max_allreduce_;
+  const func_reference<boost::mpi::minimum<_T>> min_allreduce_;
+  const func_reference<boost::mpi::maximum<_T>> max_allreduce_;
   boost::mpi::communicator world;
 };
 
