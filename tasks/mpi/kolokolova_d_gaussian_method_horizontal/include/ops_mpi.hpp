@@ -41,17 +41,19 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  //std::vector<int> input_, local_input_;
-  //std::vector<int> res;
   std::vector<int> input_coeff;
   std::vector<int> input_y;
   std::vector<double> res;
+
   std::vector<double> local_matrix;
+  std::vector<double> changed_matrix;
   std::vector<double> matrix_argum;
+  std::vector<double> local_max_row;
+  std::vector<double> res_matrix;
   int count_equations = 0;
   int size_row = 0;
-  boost::mpi::communicator world;
   int count_row_proc = 0;
+  boost::mpi::communicator world;
 };
 
 }  // namespace kolokolova_d_gaussian_method_horizontal_mpi
