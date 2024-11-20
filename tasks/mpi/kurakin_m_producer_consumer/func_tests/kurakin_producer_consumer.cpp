@@ -9,6 +9,10 @@
 
 TEST(kurakin_m_producer_consumer_mpi, Test_prod_half_of_the_proc_data_counts_10) {
   boost::mpi::communicator world;
+  if (world.size() < 2) {
+    ASSERT_TRUE(true);
+    return;
+  }
   std::vector<int> data_counts;
   std::vector<int32_t> data_counts_sum(1, 0);
   // Create TaskData
@@ -40,6 +44,10 @@ TEST(kurakin_m_producer_consumer_mpi, Test_prod_half_of_the_proc_data_counts_10)
 
 TEST(kurakin_m_producer_consumer_mpi, Test_prod_half_of_the_proc_data_counts_0) {
   boost::mpi::communicator world;
+  if (world.size() < 2) {
+    ASSERT_TRUE(true);
+    return;
+  }
   std::vector<int> data_counts;
   std::vector<int32_t> data_counts_sum(1, 0);
   // Create TaskData
@@ -71,6 +79,10 @@ TEST(kurakin_m_producer_consumer_mpi, Test_prod_half_of_the_proc_data_counts_0) 
 
 TEST(kurakin_m_producer_consumer_mpi, Test_prod_half_of_the_proc_data_counts_rand) {
   boost::mpi::communicator world;
+  if (world.size() < 2) {
+    ASSERT_TRUE(true);
+    return;
+  }
   std::vector<int> data_counts;
   std::vector<int32_t> data_counts_sum(1, 0);
   // Create TaskData
@@ -102,6 +114,10 @@ TEST(kurakin_m_producer_consumer_mpi, Test_prod_half_of_the_proc_data_counts_ran
 
 TEST(kurakin_m_producer_consumer_mpi, Test_prod_less_conc_data_counts_10) {
   boost::mpi::communicator world;
+  if (world.size() < 2) {
+    ASSERT_TRUE(true);
+    return;
+  }
   std::vector<int> data_counts;
   std::vector<int32_t> data_counts_sum(1, 0);
   // Create TaskData
@@ -133,6 +149,10 @@ TEST(kurakin_m_producer_consumer_mpi, Test_prod_less_conc_data_counts_10) {
 
 TEST(kurakin_m_producer_consumer_mpi, Test_prod_less_conc_data_counts_0) {
   boost::mpi::communicator world;
+  if (world.size() < 2) {
+    ASSERT_TRUE(true);
+    return;
+  }
   std::vector<int> data_counts;
   std::vector<int32_t> data_counts_sum(1, 0);
   // Create TaskData
@@ -164,6 +184,10 @@ TEST(kurakin_m_producer_consumer_mpi, Test_prod_less_conc_data_counts_0) {
 
 TEST(kurakin_m_producer_consumer_mpi, Test_prod_less_conc_data_counts_rand) {
   boost::mpi::communicator world;
+  if (world.size() < 2) {
+    ASSERT_TRUE(true);
+    return;
+  }
   std::vector<int> data_counts;
   std::vector<int32_t> data_counts_sum(1, 0);
   // Create TaskData
@@ -195,6 +219,10 @@ TEST(kurakin_m_producer_consumer_mpi, Test_prod_less_conc_data_counts_rand) {
 
 TEST(kurakin_m_producer_consumer_mpi, Test_prod_more_conc_data_counts_10) {
   boost::mpi::communicator world;
+  if (world.size() < 2) {
+    ASSERT_TRUE(true);
+    return;
+  }
   std::vector<int> data_counts;
   std::vector<int32_t> data_counts_sum(1, 0);
   // Create TaskData
@@ -226,6 +254,10 @@ TEST(kurakin_m_producer_consumer_mpi, Test_prod_more_conc_data_counts_10) {
 
 TEST(kurakin_m_producer_consumer_mpi, Test_prod_more_conc_data_counts_0) {
   boost::mpi::communicator world;
+  if (world.size() < 2) {
+    ASSERT_TRUE(true);
+    return;
+  }
   std::vector<int> data_counts;
   std::vector<int32_t> data_counts_sum(1, 0);
   // Create TaskData
@@ -257,6 +289,10 @@ TEST(kurakin_m_producer_consumer_mpi, Test_prod_more_conc_data_counts_0) {
 
 TEST(kurakin_m_producer_consumer_mpi, Test_prod_more_conc_data_counts_rand) {
   boost::mpi::communicator world;
+  if (world.size() < 2) {
+    ASSERT_TRUE(true);
+    return;
+  }
   std::vector<int> data_counts;
   std::vector<int32_t> data_counts_sum(1, 0);
   // Create TaskData
@@ -288,6 +324,10 @@ TEST(kurakin_m_producer_consumer_mpi, Test_prod_more_conc_data_counts_rand) {
 
 TEST(kurakin_m_producer_consumer_mpi, Test_buffer_less_count_prod) {
   boost::mpi::communicator world;
+  if (world.size() < 2) {
+    ASSERT_TRUE(true);
+    return;
+  }
   std::vector<int> data_counts;
   std::vector<int32_t> data_counts_sum(1, 0);
   // Create TaskData
@@ -319,6 +359,10 @@ TEST(kurakin_m_producer_consumer_mpi, Test_buffer_less_count_prod) {
 
 TEST(kurakin_m_producer_consumer_mpi, Test_buffer_more_count_prod) {
   boost::mpi::communicator world;
+  if (world.size() < 2) {
+    ASSERT_TRUE(true);
+    return ;
+  }
   std::vector<int> data_counts;
   std::vector<int32_t> data_counts_sum(1, 0);
   // Create TaskData
