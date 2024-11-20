@@ -154,7 +154,7 @@ bool kurakin_m_producer_consumer_mpi::TestMPITaskParallel::run() {
 
     std::vector<int> message = {world.rank(), 0};
     world.send(0, 0, message.data(), 2);
-    
+
     int exit;
     world.recv(0, 0, &exit, 1);
     reduce(world, 0, res, std::plus(), 0);

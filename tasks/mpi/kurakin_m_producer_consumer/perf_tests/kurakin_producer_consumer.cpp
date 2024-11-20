@@ -46,7 +46,7 @@ TEST(kurakin_m_producer_consumer_mpi_perf_test, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(data_counts.size(), data_counts_sum[0]);
+    ASSERT_EQ(data_counts.size(), (size_t)data_counts_sum[0]);
   }
 }
 
@@ -90,6 +90,6 @@ TEST(kurakin_m_producer_consumer_mpi_perf_test, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(data_counts.size(), data_counts_sum[0]);
+    ASSERT_EQ(data_counts.size(), (size_t)data_counts_sum[0]);
   }
 }
