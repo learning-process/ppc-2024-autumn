@@ -1,4 +1,4 @@
-name: Static analysis
+name: Static analysis (PR)
 
 on: [pull_request]
 
