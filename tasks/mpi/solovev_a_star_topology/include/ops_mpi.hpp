@@ -23,7 +23,7 @@ class TestMPITaskParallel : public ppc::core::Task {
 
  private:
   boost::mpi::communicator world;
-  std::vector<int> input_; 
+  std::vector<int> input_;
   std::vector<int> res;
-};   
+};
 }  // namespace solovev_a_star_topology_mpi
