@@ -183,6 +183,7 @@ bool kolokolova_d_gaussian_method_horizontal_mpi::TestMPITaskParallel::validatio
   if (world.rank() == 0) {
     // Check count elements of output and input
     if (taskData->outputs_count[0] == 0 || taskData->inputs_count[0] == 0) return false;
+    if (taskData->inputs_count[1] == 0) return false;
 
     // Check that that the system has a solution
     std::vector<double> validation_matrix(count_equations * (count_equations + 1));
