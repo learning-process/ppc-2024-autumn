@@ -26,7 +26,6 @@ bool solovev_a_star_topology_mpi::TestMPITaskParallel::validation() {
       return true;
     }
     return false;
-   
   }
   return true;
 }
