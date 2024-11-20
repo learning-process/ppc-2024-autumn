@@ -24,16 +24,16 @@ bool korablev_v_jacobi_method_mpi::JacobiMethodSequential::isNeedToComplete(cons
 bool korablev_v_jacobi_method_mpi::JacobiMethodSequential::pre_processing() {
   internal_order_test();
   n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
-  A_.resize(n * n);
-  b_.resize(n);
-  x_.resize(n, 1.0);
 
-  for (size_t i = 0; i < n; ++i) {
-    for (size_t j = 0; j < n; ++j) {
-      A_[i * n + j] = reinterpret_cast<double*>(taskData->inputs[1])[i * n + j];
-    }
-    b_[i] = reinterpret_cast<double*>(taskData->inputs[2])[i];
-  }
+  A_.assign(n * n, 0.0);
+  b_.assign(n, 0.0);
+  x_.assign(n, 1.0);
+
+  auto* A_input = reinterpret_cast<double*>(taskData->inputs[1]);
+  auto* b_input = reinterpret_cast<double*>(taskData->inputs[2]);
+
+  std::copy(A_input, A_input + n * n, A_.begin());
+  std::copy(b_input, b_input + n, b_.begin());
 
   return true;
 }
@@ -127,17 +127,18 @@ bool korablev_v_jacobi_method_mpi::JacobiMethodParallel::pre_processing() {
 
   if (world.rank() == 0) {
     n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
-    A_.resize(n * n);
-    b_.resize(n);
-    x_.resize(n, 0.0);
-    x_prev.resize(n, 0.0);
 
-    for (size_t i = 0; i < n; ++i) {
-      for (size_t j = 0; j < n; ++j) {
-        A_[i * n + j] = reinterpret_cast<double*>(taskData->inputs[1])[i * n + j];
-      }
-      b_[i] = reinterpret_cast<double*>(taskData->inputs[2])[i];
-    }
+    A_.assign(n * n, 0.0);
+    b_.assign(n, 0.0);
+    x_.assign(n, 0.0);
+    x_prev.assign(n, 0.0);
+
+    auto* A_input = reinterpret_cast<double*>(taskData->inputs[1]);
+    auto* b_input = reinterpret_cast<double*>(taskData->inputs[2]);
+
+    std::copy(A_input, A_input + n * n, A_.begin());
+    std::copy(b_input, b_input + n, b_.begin());
+
     calculate_distribution_a(n, world.size(), sizes_a, displs_a);
     calculate_distribution_b(n, world.size(), sizes_b, displs_b);
   }
@@ -176,15 +177,12 @@ bool korablev_v_jacobi_method_mpi::JacobiMethodParallel::validation() {
 
 bool korablev_v_jacobi_method_mpi::JacobiMethodParallel::run() {
   internal_order_test();
-
-  size_t numberOfIter = 0;
   std::vector<double> local_x;
 
   boost::mpi::broadcast(world, sizes_a, 0);
   boost::mpi::broadcast(world, sizes_b, 0);
   boost::mpi::broadcast(world, displs_b, 0);
   boost::mpi::broadcast(world, n, 0);
-  boost::mpi::broadcast(world, x_prev, 0);
 
   int loc_mat_size = sizes_a[world.rank()];
   int loc_vec_size = sizes_b[world.rank()];
@@ -201,7 +199,7 @@ bool korablev_v_jacobi_method_mpi::JacobiMethodParallel::run() {
     boost::mpi::scatterv(world, local_b.data(), loc_vec_size, 0);
   }
 
-  while (numberOfIter < maxIterations_) {
+  for (size_t numberOfIter = 0; numberOfIter < maxIterations_; numberOfIter++) {
     if (world.rank() == 0) {
       std::copy(x_.begin(), x_.end(), x_prev.begin());
     }
@@ -229,8 +227,6 @@ bool korablev_v_jacobi_method_mpi::JacobiMethodParallel::run() {
     boost::mpi::broadcast(world, need, 0);
 
     if (need) break;
-
-    numberOfIter++;
   }
 
   return true;

@@ -17,16 +17,16 @@ bool korablev_v_jacobi_method_seq::JacobiMethodSequential::isNeedToComplete(cons
 bool korablev_v_jacobi_method_seq::JacobiMethodSequential::pre_processing() {
   internal_order_test();
   size_t n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
-  A_.resize(n * n);
-  b_.resize(n);
-  x_.resize(n, 0.0);
 
-  for (size_t i = 0; i < n; ++i) {
-    for (size_t j = 0; j < n; ++j) {
-      A_[i * n + j] = reinterpret_cast<double*>(taskData->inputs[1])[i * n + j];
-    }
-    b_[i] = reinterpret_cast<double*>(taskData->inputs[2])[i];
-  }
+  A_.assign(n * n, 0.0);
+  b_.assign(n, 0.0);
+  x_.assign(n, 1.0);
+
+  auto* A_input = reinterpret_cast<double*>(taskData->inputs[1]);
+  auto* b_input = reinterpret_cast<double*>(taskData->inputs[2]);
+
+  std::copy(A_input, A_input + n * n, A_.begin());
+  std::copy(b_input, b_input + n, b_.begin());
 
   return true;
 }
