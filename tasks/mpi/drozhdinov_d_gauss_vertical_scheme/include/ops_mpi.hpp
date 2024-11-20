@@ -55,7 +55,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   std::vector<double> _x;
   boost::mpi::communicator world;
   std::vector<double> GaussVeticalScheme(const std::vector<double>& matrix, int rows, int cols,
-                                    const std::vector<double>& vec);
+                                         const std::vector<double>& vec);
 };
 
 }  // namespace drozhdinov_d_gauss_vertical_scheme_mpi
