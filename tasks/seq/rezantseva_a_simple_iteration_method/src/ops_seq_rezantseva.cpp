@@ -28,7 +28,6 @@ bool rezantseva_a_simple_iteration_method_seq::SimpleIterationSequential::checkM
       }
     }
     if (Aii <= sum) {
-      /* std::cerr << "Error: The convergence condition is not met " << std::endl;*/
       return false;
     }
   }
@@ -37,26 +36,7 @@ bool rezantseva_a_simple_iteration_method_seq::SimpleIterationSequential::checkM
 
 bool rezantseva_a_simple_iteration_method_seq::SimpleIterationSequential::validation() {
   internal_order_test();
-  // на вход размер n, коэф. матрицы ј, вектора b == 3
-  // на выход вектор приближенных решений системы == 1
-  // размер матрицы больше нул€
-  // провер€ем условие сходимости
   size_t n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
-  /*
-  if ((taskData->inputs_count.size() != 3) || (taskData->outputs_count.size() != 1)) {
-     std::cerr << "wrong size" << std::endl;
-     return false;
-   }
-   if (n <= 0) {
-     std::cerr << "matrix size must be positive" << std::endl;
-     return false;
-   }
-   if (!checkMatrix()) {
-     std::cerr << "wrong matrix" << std::endl;
-     return false;
-   }
-   return true;
-   */
   return (taskData->inputs_count.size() == 3) && (taskData->outputs_count.size() == 1) && (n > 0) &&
          (checkMatrix() == true);
 }
