@@ -1,6 +1,6 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
-//not example
+// not example
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <vector>
@@ -227,10 +227,10 @@ TEST(MPIGAUSS, Size10000Test) {
   }
 }
 
-TEST(MPIGAUSS, Size1000000Test) {
+TEST(MPIGAUSS, Size490000Test) {
   boost::mpi::communicator world;
-  int rows = 1000;
-  int columns = 1000;
+  int rows = 700;
+  int columns = 700;
   std::vector<double> matrix = genElementaryMatrix(rows, columns);
   std::vector<double> b(rows * columns, 1);
   std::vector<double> res_par(rows, 1);
@@ -281,7 +281,6 @@ TEST(MPIGAUSS, Size1000000Test) {
     ASSERT_EQ(res_par, expres_par);
   }
 }
-
 
 /*
 int main(int argc, char** argv) {

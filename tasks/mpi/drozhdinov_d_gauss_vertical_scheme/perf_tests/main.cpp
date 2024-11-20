@@ -28,8 +28,7 @@ TEST(MPIGAUSSPERF, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(expres_par.size());
   }
 
-  auto testMpiTaskParallel =
-      std::make_shared<drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -74,8 +73,7 @@ TEST(MPIGAUSSPERF, test_task_run) {
     taskDataPar->outputs_count.emplace_back(expres_par.size());
   }
 
-  auto testMpiTaskParallel =
-      std::make_shared<drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();

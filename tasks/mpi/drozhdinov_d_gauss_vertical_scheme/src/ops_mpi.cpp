@@ -1,6 +1,6 @@
 // Copyright 2023 Nesterov Alexander
 #include "mpi/drozhdinov_d_gauss_vertical_scheme/include/ops_mpi.hpp"
-//not example
+// not example
 #include <algorithm>
 #include <cmath>
 #include <functional>
@@ -14,8 +14,8 @@ using namespace std::chrono_literals;
 
 int makeLinCoords(int x, int y, int xSize) { return y * xSize + x; }
 
-std::vector<double>drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel::ParallelGauss(const std::vector<double>& matrix, int rows,
-                                                                        int cols, const std::vector<double>& vec) {
+std::vector<double>drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel::ParallelGauss(
+    const std::vector<double>& matrix, int rows, int cols, const std::vector<double>& vec) {
   std::vector<double> b(rows);
   b = vec;
   const int delta = cols / world.size();
@@ -28,7 +28,7 @@ std::vector<double>drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel::
     }
   }
   scatter(world, rs, proc_r, 0);
-  //MPI_Scatter(rs, 1, MPI_INT, &proc_r, 1, MPI_INT, 0, MPI_COMM_WORLD);
+  // MPI_Scatter(rs, 1, MPI_INT, &proc_r, 1, MPI_INT, 0, MPI_COMM_WORLD);
   std::vector<double> local_coefs((delta + proc_r) * rows);
   std::vector<double> current(rows);
   int* row_number = new int[rows];
@@ -46,8 +46,7 @@ std::vector<double>drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel::
     }
     for (int row = 0; row < rows; row++) {
       for (int col_count = 0; col_count < delta + proc_r; col_count++) {
-        local_coefs[makeLinCoords(row, col_count, cols)] =
-            matrix[makeLinCoords(col_count * world.size(), row, cols)];
+        local_coefs[makeLinCoords(row, col_count, cols)] = matrix[makeLinCoords(col_count * world.size(), row, cols)];
       }
     }
   } else {
@@ -66,7 +65,8 @@ std::vector<double>drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel::
       double max = 0.0;
       int index = 0;
       for (int lcol = 0; lcol < rows; lcol++) {
-        if ((fabs(local_coefs[makeLinCoords(lcol, (curcol / world.size()), rows)]) >= fabs(max)) && (major[lcol] == -1)) {
+        if ((fabs(local_coefs[makeLinCoords(lcol, (curcol / world.size()), rows)]) >= fabs(max)) && 
+            (major[lcol] == -1)) {
           max = local_coefs[makeLinCoords(lcol, (curcol / world.size()), rows)];
           index = lcol;
         }
@@ -76,12 +76,13 @@ std::vector<double>drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel::
       for (int k = 0; k < rows; k++) {
         current[k] = 0.0;
         if (major[k] == -1) {
-          current[k] = local_coefs[makeLinCoords(k, (curcol / world.size()), rows)] / local_coefs[makeLinCoords(index, (curcol / world.size()), rows)];  
+          current[k] = local_coefs[makeLinCoords(k, (curcol / world.size()), rows)] / 
+              local_coefs[makeLinCoords(index, (curcol / world.size()), rows)];  
         }
       }
     }
     all_reduce(world, new_root, root, boost::mpi::maximum<int>());
-    broadcast(world, major, rows, root); // ok
+    broadcast(world, major, rows, root);  // ok
     broadcast(world, current.data(), rows, root);
     broadcast(world, row_number, rows, root);
     for (int lrow = 0; lrow < delta + proc_r; lrow++) {
@@ -90,7 +91,9 @@ std::vector<double>drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel::
           local_coefs[makeLinCoords(lcol, lrow, rows)] -=
               current[lcol] * local_coefs[makeLinCoords(row_number[curcol], lrow, rows)];
           local_coefs[makeLinCoords(lcol, lrow, rows)] =
-              (fabs(local_coefs[makeLinCoords(lcol, lrow, rows)]) < GAMMA ? 0 : local_coefs[makeLinCoords(lcol, lrow, rows)]);
+              (fabs(local_coefs[makeLinCoords(lcol, lrow, rows)]) < GAMMA 
+                  ? 0 
+                  : local_coefs[makeLinCoords(lcol, lrow, rows)]);
         } 
       }
     }
@@ -185,8 +188,8 @@ bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskSequential::validation()
           taskData->inputs_count[2] == taskData->outputs_count[0]);
 }
 
-bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskSequential::run() { 
-  internal_order_test(); 
+bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskSequential::run() {
+  internal_order_test();
   std::vector<double> result(rows);
   std::vector<double> current(rows);
   for (int i = 0; i < rows; i++) {
@@ -240,7 +243,7 @@ bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskSequential::run() {
   return true;
 }
 
-bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskSequential::post_processing() { 
+bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
   for (int i = 0; i < columns; i++) {
     reinterpret_cast<double*>(taskData->outputs[0])[i] = x[i];
