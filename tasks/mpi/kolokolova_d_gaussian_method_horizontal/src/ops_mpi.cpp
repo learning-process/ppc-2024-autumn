@@ -166,7 +166,6 @@ bool kolokolova_d_gaussian_method_horizontal_mpi::TestMPITaskParallel::pre_proce
     auto* tmp_ptr_coeff = reinterpret_cast<int*>(taskData->inputs[0]);
     for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
       input_coeff[i] = tmp_ptr_coeff[i];
-      //std::cout << "input [" << i << "] = " << input_coeff[i] << "\n";
     }
 
     input_y = std::vector<int>(taskData->inputs_count[1]);
@@ -227,9 +226,6 @@ bool kolokolova_d_gaussian_method_horizontal_mpi::TestMPITaskParallel::run() {
       matrix_argum[i * (count_equations + 1) + count_equations] = static_cast<double>(input_y[i]);
       changed_matrix[i * (count_equations + 1) + count_equations] = static_cast<double>(input_y[i]);
     }
-    //for (int i = 0; i < int(matrix_argum.size()); i++) {
-    //  std::cout << "[" << i << "] = " << matrix_argum[i] << "\n";
-    //}
     size_row = int(matrix_argum.size()) / count_equations;
     count_row_proc = count_equations / proc_size;
   }
@@ -245,8 +241,6 @@ bool kolokolova_d_gaussian_method_horizontal_mpi::TestMPITaskParallel::run() {
       world.send(proc, 0, matrix_argum.data() + proc * count_row_proc * size_row, count_row_proc * size_row);
     }
   }
-  //std::cout << count_row_proc << " - count row in rang: " << proc_rank << "\n";
-  //std::cout << size_row << " - size row in rang: " << proc_rank << "\n";
   local_matrix = std::vector<double>(count_row_proc * size_row);
 
   if (proc_rank == 0) {
@@ -274,42 +268,28 @@ bool kolokolova_d_gaussian_method_horizontal_mpi::TestMPITaskParallel::run() {
       for (int j = 0; j < size_row; ++j) {
         local_max_row[j] = changed_matrix[max_row * size_row + j];
         res_matrix.push_back(local_max_row[j]); // res_matrix contain of all max_row
-        //std::cout << "Send local max row " << j << " " << local_max_row[j] << "\n";
       }
-
-      //for (int j = 0; j <= count_equations; ++j) {
-      //  std::swap(changed_matrix[max_row * (count_equations + 1) + j], changed_matrix[i * (count_equations + 1) + j]);
-      //}
 
       // Send for each proc max_row
       for (int proc = 1; proc < world.size(); proc++) {
         world.send(proc, 0, local_max_row.data(), size_row);
-        //std::cout << "Send proc: " << proc_rank << "\n";
       }
     }
 
     // Recv every proc
     if (proc_rank != 0) {
       world.recv(0, 0, local_max_row.data(), size_row);
-      //std::cout << "Recv proc: " << proc_rank << "\n";
     }
 
     for (int k = 0; k < count_row_proc; k++) {
       double factor = local_matrix[k * size_row + i] / local_max_row[i];
       for (int j = i; j < size_row; j++) {
         local_matrix[k * size_row + j] -= factor * local_max_row[j];
-        //std::cout << "Local matrix " << j << " " << local_matrix[k * size_row + j] << "\n";
       }
     }
 
     gather(world, local_matrix.data(), size_row * count_row_proc, changed_matrix, 0);
   }
-
-  //if (proc_rank == 0) {
-  //  for (int i = 0; i < int(res_matrix.size()); i++) {
-  //    std::cout << "Result matrix: " << res_matrix[i] << "\n";
-  //  }
-  //}
 
   if (proc_rank == 0) {
     // Gaussian reversal
@@ -320,10 +300,6 @@ bool kolokolova_d_gaussian_method_horizontal_mpi::TestMPITaskParallel::run() {
       }
       res[i] /= res_matrix[i * (count_equations + 1) + i];
     }
-
-    //for (int i = 0; i < int(res.size()); i++) {
-    //  std::cout << "Result " << res[i] << "\n";
-    //}
   }
   return true;
 }
