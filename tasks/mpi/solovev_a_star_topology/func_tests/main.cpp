@@ -32,9 +32,9 @@ TEST(solovev_a_star_topology_mpi, Test_Transfer_1) {
     std::vector<int> output(1, 0);
     std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
     if (world.rank() == 0) {
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
       taskDataPar->inputs_count.emplace_back(input.size());
-      taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+      taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
       taskDataPar->outputs_count.emplace_back(output.size());
     }
     solovev_a_star_topology_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
@@ -53,13 +53,13 @@ TEST(solovev_a_star_topology_mpi, Test_Transfer_1) {
 TEST(solovev_a_star_topology_mpi, Test_Transfer_3) {
   boost::mpi::communicator world;
   if (world.size() > 1) {
-    std::vector<int> input{1,1,1}; 
+    std::vector<int> input{1, 1, 1}; 
     std::vector<int> output(3, 0);
     std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
     if (world.rank() == 0) {
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
       taskDataPar->inputs_count.emplace_back(input.size());
-      taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+      taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
       taskDataPar->outputs_count.emplace_back(output.size());
     }
     solovev_a_star_topology_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
@@ -78,13 +78,13 @@ TEST(solovev_a_star_topology_mpi, Test_Transfer_3) {
 TEST(solovev_a_star_topology_mpi, Test_Transfer_10) {
   boost::mpi::communicator world;
   if (world.size() > 1) {
-    std::vector<int> input{1,2,3,4,5,6,7,8,9,10};
+    std::vector<int> input{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     std::vector<int> output(10, 0);
     std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
     if (world.rank() == 0) {
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
       taskDataPar->inputs_count.emplace_back(input.size());
-      taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+      taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
       taskDataPar->outputs_count.emplace_back(output.size());
     }
     solovev_a_star_topology_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
@@ -99,4 +99,3 @@ TEST(solovev_a_star_topology_mpi, Test_Transfer_10) {
     }
   }
 }
-
