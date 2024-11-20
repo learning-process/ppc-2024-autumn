@@ -109,8 +109,7 @@ bool gnitienko_k_contrast_enhancement_mpi::ContrastEnhanceMPI::run() {
     }
 
     local_res.resize(pixels_per_process * 3);
-    for (int i = rank * pixels_per_process * 3; i < std::min(img_size, (rank + 1) * pixels_per_process * 3);
-         i += 3) {
+    for (int i = rank * pixels_per_process * 3; i < std::min(img_size, (rank + 1) * pixels_per_process * 3); i += 3) {
       int local_index = i - rank * pixels_per_process * 3;
       local_res[local_index] = std::clamp(static_cast<int>((image[i] - 128) * contrast_factor + 128), 0, 255);
       local_res[local_index + 1] = std::clamp(static_cast<int>((image[i + 1] - 128) * contrast_factor + 128), 0, 255);
