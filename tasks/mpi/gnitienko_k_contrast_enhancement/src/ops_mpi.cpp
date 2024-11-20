@@ -4,10 +4,7 @@
 #include <functional>
 #include <random>
 #include <string>
-#include <thread>
 #include <vector>
-
-using namespace std::chrono_literals;
 
 std::vector<int> gnitienko_k_contrast_enhancement_mpi::getRandomVector(int sz) {
   std::random_device dev;

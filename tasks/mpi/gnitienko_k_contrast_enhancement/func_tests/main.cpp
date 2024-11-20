@@ -343,5 +343,7 @@ TEST(gnitienko_k_contrast_enhancement_mpi, Test_grayscale_pixel_image) {
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
 
-  ASSERT_EQ(120, res_mpi[0]);
+  if (world.rank() == 0) {
+    ASSERT_EQ(120, res_mpi[0]);
+  }
 }
