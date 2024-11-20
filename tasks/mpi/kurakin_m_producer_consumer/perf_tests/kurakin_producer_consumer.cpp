@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
@@ -13,7 +12,7 @@ TEST(kurakin_m_producer_consumer_mpi_perf_test, test_pipeline_run) {
   std::vector<int32_t> data_counts_sum(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  
+
   if (world.rank() == 0) {
     int producer_count = world.size() / 2;
     int buffer_size = producer_count;

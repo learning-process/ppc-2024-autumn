@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include "mpi/kurakin_m_producer_consumer/include/kurakin_producer_consumer_ops_mpi.hpp"
 
 #include <algorithm>
@@ -69,7 +68,7 @@ bool kurakin_m_producer_consumer_mpi::TestMPITaskParallel::run() {
     }
 
     int buffer_size = taskData->inputs_count[2];
-    //int producer_count = taskData->inputs_count[1];
+    // int producer_count = taskData->inputs_count[1];
     int consumer_count = world.size() - producer_count;
 
     // buffer and producer with rank 0
@@ -77,7 +76,7 @@ bool kurakin_m_producer_consumer_mpi::TestMPITaskParallel::run() {
     std::queue<int> producer;
     std::queue<int> producer_exit;
     std::queue<int> consumer;
-    
+
     int data_0 = 0;
     while (true) {
       if (data_count > 0) {
@@ -98,7 +97,7 @@ bool kurakin_m_producer_consumer_mpi::TestMPITaskParallel::run() {
       } else if (message_bw[1] == 2) {  // wand get comsumer
         consumer.push(message_bw[0]);
       }
-      while (buffer.size() < buffer_size && !producer.empty()) {
+      while (buffer.size() < (size_t)buffer_size && !producer.empty()) {
         int producer_rank = producer.front();
         producer.pop();
         int data = 0;
@@ -118,7 +117,7 @@ bool kurakin_m_producer_consumer_mpi::TestMPITaskParallel::run() {
         std::vector<int> message_fw = {data, 2};
         world.send(consumer_rank, 0, message_fw.data(), 2);
       }
-      if (producer_count == 0 && buffer.empty() && consumer.size() == consumer_count) {
+      if (producer_count == 0 && buffer.empty() && consumer.size() == (size_t)consumer_count) {
         while (!consumer.empty()) {
           int consumer_rank = consumer.front();
           consumer.pop();
@@ -136,8 +135,7 @@ bool kurakin_m_producer_consumer_mpi::TestMPITaskParallel::run() {
     }
 
     reduce(world, 0, res, std::plus(), 0);
-  }
-  else if (world.rank() < producer_count) {  // producer
+  } else if (world.rank() < producer_count) {  // producer
     int data_count;
     world.recv(0, 0, &data_count, 1);
 
@@ -160,8 +158,7 @@ bool kurakin_m_producer_consumer_mpi::TestMPITaskParallel::run() {
     int exit;
     world.recv(0, 0, &exit, 1);
     reduce(world, 0, res, std::plus(), 0);
-  }
-  else {  // consumer
+  } else {  // consumer
     int cnt_data = 0;
 
     while (true) {

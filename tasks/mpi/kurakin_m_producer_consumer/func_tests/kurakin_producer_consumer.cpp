@@ -1,15 +1,9 @@
-// Copyright 2023 Nesterov Alexander
-// mpiexec -n 4 bin/mpi_func_tests.exe --gtest_filter=kurakin_m_producer_consumer_mpi.*
-// cmake --build . --target mpi_func_tests --config RELEASE
-// cmake -D USE_SEQ=ON -D USE_MPI=ON -D USE_OMP=ON -D USE_TBB=ON -D USE_STL=ON -D USE_FUNC_TESTS=ON -D USE_PERF_TESTS=ON
-// -D CMAKE_BUILD_TYPE=Release ..
-
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <vector>
 #include <numeric>
+#include <vector>
 
 #include "mpi/kurakin_m_producer_consumer/include/kurakin_producer_consumer_ops_mpi.hpp"
 
@@ -24,7 +18,7 @@ TEST(kurakin_m_producer_consumer_mpi, Test_prod_half_of_the_proc_data_counts_10)
     int producer_count = world.size() / 2;
     int buffer_size = producer_count;
     data_counts = std::vector<int>(producer_count, 10);
-    
+
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(data_counts.data()));
     taskDataPar->inputs_count.emplace_back(data_counts.size());
     taskDataPar->inputs_count.emplace_back(producer_count);
