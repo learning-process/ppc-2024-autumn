@@ -109,7 +109,6 @@ bool kolokolova_d_gaussian_method_horizontal_mpi::TestMPITaskSequential::run() {
       matrix_argum[i * (count_equations + 1) + j] = static_cast<double>(input_coeff[i * count_equations + j]);
     }
     matrix_argum[i * (count_equations + 1) + count_equations] = static_cast<double>(input_y[i]);
-    
   }
 
   // Forward Gaussian move
@@ -252,7 +251,6 @@ bool kolokolova_d_gaussian_method_horizontal_mpi::TestMPITaskParallel::run() {
 
   // Forward Gaussian move
   for (int i = 0; i < count_equations; ++i) {
-
     // Find max of element
     if (proc_rank == 0) {
       double max_elem = std::abs(changed_matrix[i * (count_equations + 1) + i]);
@@ -267,7 +265,7 @@ bool kolokolova_d_gaussian_method_horizontal_mpi::TestMPITaskParallel::run() {
       // Put elemnts in max_row
       for (int j = 0; j < size_row; ++j) {
         local_max_row[j] = changed_matrix[max_row * size_row + j];
-        res_matrix.push_back(local_max_row[j]); // res_matrix contain of all max_row
+        res_matrix.push_back(local_max_row[j]);  // res_matrix contain of all max_row
       }
 
       // Send for each proc max_row

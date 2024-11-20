@@ -22,11 +22,10 @@ TEST(kolokolova_d_gaussian_method_horizontal_seq, test_pipeline_run) {
   std::uniform_int_distribution<int> dist(-500, 500);
   for (int i = 0; i < count_equations; ++i) {
     input_y[i] = gen() % 100;
-    for (int j = 0; j < count_equations; ++j) {
-      input_coeff[j] = gen() % 100;
-    }
   }
-
+  for (int j = 0; j < count_equations; ++j) {
+    input_coeff[j] = gen() % 100;
+  }
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_coeff.data()));
   taskDataSeq->inputs_count.emplace_back(input_coeff.size());
@@ -69,9 +68,9 @@ TEST(kolokolova_d_gaussian_method_horizontal_seq, test_task_run) {
   std::uniform_int_distribution<int> dist(-500, 500);
   for (int i = 0; i < count_equations; ++i) {
     input_y[i] = gen() % 100;
-    for (int j = 0; j < count_equations; ++j) {
-      input_coeff[j] = gen() % 100;
-    }
+  }
+  for (int j = 0; j < count_equations; ++j) {
+    input_coeff[j] = gen() % 100;
   }
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
