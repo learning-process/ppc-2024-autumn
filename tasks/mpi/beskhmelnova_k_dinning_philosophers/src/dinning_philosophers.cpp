@@ -33,6 +33,11 @@ bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::run() 
 
 template <typename DataType>
 bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::post_processing() {
+  world.barrier();
+  while (world.iprobe(MPI_ANY_SOURCE, MPI_ANY_TAG)) {
+    State leftover_message;
+    world.recv(MPI_ANY_SOURCE, MPI_ANY_TAG, leftover_message);
+  }
   return true;
 }
 
@@ -50,6 +55,7 @@ bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::check_
       }
     }
   }
+  boost::mpi::broadcast(world, deadlock, 0);
   return deadlock;
 }
 
@@ -59,10 +65,17 @@ void beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::resolv
     int philosopher_to_release = std::rand() % world.size();
     world.send(philosopher_to_release, 1, THINKING);
   }
-  if (world.iprobe(0, 1)) {
-    State release_signal;
-    world.recv(0, 1, release_signal);
-    if (release_signal == THINKING) state = THINKING;
+  bool resolved = false;
+  while (!resolved) {
+    if (world.iprobe(0, 1)) {
+      State release_signal;
+      world.recv(0, 1, release_signal);
+      if (release_signal == THINKING) {
+        state = THINKING;
+        resolved = true;
+      }
+    }
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
 }
 
@@ -110,4 +123,12 @@ void beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::releas
   state = THINKING;
   world.send(left_neighbor, 0, THINKING);
   world.send(right_neighbor, 0, THINKING);
+  while (world.iprobe(left_neighbor, 0)) {
+    State ack;
+    world.recv(left_neighbor, 0, ack);
+  }
+  while (world.iprobe(right_neighbor, 0)) {
+    State ack;
+    world.recv(right_neighbor, 0, ack);
+  }
 }
