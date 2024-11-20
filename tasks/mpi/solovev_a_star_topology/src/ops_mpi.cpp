@@ -12,18 +12,19 @@ bool solovev_a_star_topology_mpi::TestMPITaskParallel::pre_processing() {
   if (world.rank() == 0) {
     int* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     input_.resize(taskData->inputs_count[0]);
-    std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());  
+    std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
   }
-  res = std::vector<int>(input_.size(), 0);  
+  res = std::vector<int>(input_.size(), 0);
   return true;
 }
 
 bool solovev_a_star_topology_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    if ((taskData->inputs_count[0] == taskData->outputs_count[0]) && (taskData->inputs_count[0]>0) && (taskData->outputs_count[0] > 0)) {
+    if ((taskData->inputs_count[0] == taskData->outputs_count[0]) && (taskData->inputs_count[0]>0) &&
+        (taskData->outputs_count[0] > 0)) {
       return true;
-    } 
+    }
     return false;
    
   }
@@ -37,8 +38,8 @@ bool solovev_a_star_topology_mpi::TestMPITaskParallel::run() {
       world.send(i, 0, input_);
     }
   } else {
-      world.recv(0, 0, input_);
-      world.send(0, 0, input_);
+    world.recv(0, 0, input_);
+    world.send(0, 0, input_);
   }
   if (world.rank() == 0) {
     for (int i = 1; i < world.size(); ++i) {
