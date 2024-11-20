@@ -9,6 +9,8 @@
 
 int makeLinCoords(int x, int y, int xSize);
 
+std::vector<double> genElementaryMatrix(int rows, int columns);
+
 namespace drozhdinov_d_gauss_vertical_scheme_seq {
 
 class TestTaskSequential : public ppc::core::Task {

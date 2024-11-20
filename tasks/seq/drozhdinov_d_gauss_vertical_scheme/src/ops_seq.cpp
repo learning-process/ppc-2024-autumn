@@ -1,11 +1,25 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/drozhdinov_d_gauss_vertical_scheme/include/ops_seq.hpp"
-//not example
+// not example
 #include <thread>
 
 using namespace std::chrono_literals;
 
 int makeLinCoords(int x, int y, int xSize) { return y * xSize + x; }
+
+std::vector<double> genElementaryMatrix(int rows, int columns) {
+  std::vector<double> res;
+  for (int i = 0; i < rows; i++) {
+    for (int j = 0; j < columns; j++) {
+      if (i == j) {
+        res.push_back(1);
+      } else {
+        res.push_back(0);
+      }
+    }
+  }
+  return res;
+}
 
 bool drozhdinov_d_gauss_vertical_scheme_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
