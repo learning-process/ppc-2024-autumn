@@ -53,7 +53,7 @@ TEST(solovev_a_star_topology_mpi, Test_Transfer_1) {
 TEST(solovev_a_star_topology_mpi, Test_Transfer_3) {
   boost::mpi::communicator world;
   if (world.size() > 1) {
-    std::vector<int> input{1, 1, 1}; 
+    std::vector<int> input{1, 1, 1};
     std::vector<int> output(3, 0);
     std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
     if (world.rank() == 0) {
