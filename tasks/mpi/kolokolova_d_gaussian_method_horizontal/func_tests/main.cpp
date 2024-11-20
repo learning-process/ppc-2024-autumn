@@ -2,9 +2,6 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <algorithm>
-#include <functional>
-#include <random>
 #include <vector>
 
 #include "mpi/kolokolova_d_gaussian_method_horizontal/include/ops_mpi.hpp"
@@ -21,24 +18,8 @@ TEST(kolokolova_d_gaussian_method_horizontal_mpi, Test_Parallel_Gauss1) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    /*std::random_device dev;
-    std::mt19937 gen(dev());
-    std::uniform_int_distribution<int> dist(1, 100);
-    for (int i = 0; i < count_equations; ++i) {
-      input_y[i] = gen() % 100;
-      std::cout << "y is " << input_y[i] << "\n";
-    }
-    for (int i = 0; i < size_coef_mat; i++) {
-      input_coeff[i] = gen() % 100;
-      std::cout << "coef is " << input_coeff[i] << "\n";
-    }*/
-
     input_y = kolokolova_d_gaussian_method_horizontal_mpi::getRandomVector(count_equations);
     input_coeff = kolokolova_d_gaussian_method_horizontal_mpi::getRandomVector(size_coef_mat);
-
-    //input_y = {1};
-    //input_coeff = {1};
-
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_coeff.data()));
     taskDataPar->inputs_count.emplace_back(input_coeff.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_y.data()));
