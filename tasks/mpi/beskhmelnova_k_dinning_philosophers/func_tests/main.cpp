@@ -27,3 +27,52 @@ TEST(DiningPhilosophersMPI, Test_with_world_size_philosophers) {
   } else
     ASSERT_FALSE(dining_task.validation());
 }
+
+TEST(DiningPhilosophersMPI, Test_with_0_philosophers) {
+  boost::mpi::communicator world;
+
+  int num_philosophers = 0;
+
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.push_back(num_philosophers);
+
+  beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<int> dining_task(taskData);
+
+  ASSERT_FALSE(dining_task.validation());
+}
+
+TEST(DiningPhilosophersMPI, Test_with_1_philosopher) {
+  boost::mpi::communicator world;
+
+  int num_philosophers = 1;
+
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.push_back(num_philosophers);
+
+  beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<int> dining_task(taskData);
+
+  ASSERT_FALSE(dining_task.validation());
+}
+
+TEST(DiningPhilosophersMPI, Test_with_2_philosophers) {
+  boost::mpi::communicator world;
+  if (world.size() >= 2) {
+    int num_philosophers = 2;
+
+    auto taskData = std::make_shared<ppc::core::TaskData>();
+    taskData->inputs_count.push_back(num_philosophers);
+
+    beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<int> dining_task(taskData);
+
+    ASSERT_TRUE(dining_task.validation());
+    ASSERT_TRUE(dining_task.pre_processing());
+    ASSERT_TRUE(dining_task.run());
+    ASSERT_TRUE(dining_task.post_processing());
+    bool deadlock_detected = dining_task.check_deadlock();
+    if (world.rank() == 0) {
+      ASSERT_FALSE(deadlock_detected);
+    }
+  } else {
+    GTEST_SKIP();
+  }
+}
