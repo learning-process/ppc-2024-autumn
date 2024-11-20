@@ -72,11 +72,9 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::pre_processing() {
   if (world.rank() == 0) {
     // Init vectors
     input_ = std::vector<int>(taskData->inputs_count[0]);
-    output_ = std::vector<int>(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
       input_[i] = tmp_ptr[i];
-      output_[i] = 0;
     }
     for (unsigned long i = 0; i < input_.size(); i = i + 3) {
       int ValueR = input_[i];
@@ -86,20 +84,18 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::pre_processing() {
     }
     av_br /= input_.size() / 3;
     for (int proc = 1; proc < world.size(); proc++) {
-      int send_size = (proc == world.size() - 1) ? taskData->inputs_count[0] - (proc * delta) : delta;
-      world.send(proc, 0, input_.data() + proc * delta, send_size);
+      world.send(proc, 0, input_.data() + proc * delta, delta);
     }
   }
   local_input_ = std::vector<int>(delta);
   if (world.rank() == 0) {
     local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
   } else {
-    if (world.rank() == world.size() - 1) {
-      int remaining_size = taskData->inputs_count[0] - (world.size() - 1) * delta;
-      world.recv(0, 0, local_input_.data(), remaining_size);
-    } else {
-      world.recv(0, 0, local_input_.data(), delta);
-    }
+    world.recv(0, 0, local_input_.data(), delta);
+  }
+  output_ = std::vector<int>(taskData->inputs_count[0]);
+  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+    output_[i] = 0;
   }
   return true;
 }
@@ -134,10 +130,7 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::run() {
   for (size_t i = 0; i < local_output_.size(); i++) {
     local_output_[i] = palette[local_input_[i]];
   }
-  if (world.rank() == 0) {
-    output_.resize(taskData->inputs_count[0]);
-  }
-  boost::mpi::gather(world, local_output_.data(), local_output_.size(), output_.data(), 0);
+  reduce(world, local_output_, output_, std::plus(), 0);
   return true;
 }
 
