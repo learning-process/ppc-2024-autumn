@@ -9,7 +9,7 @@
 
 using namespace shurigin_s_vertikal_shema;
 
-TEST(shurigin_s_vertikal_shema, calculate_distribution_num_proc_greater_than_cols) {
+TEST(shurigin_s_vertikal_shema, proc_more_than_cols) {
   int rows = 4;
   int cols = 3;
   int num_proc = 5;
@@ -32,7 +32,7 @@ TEST(shurigin_s_vertikal_shema, calculate_distribution_num_proc_greater_than_col
   }
 }
 
-TEST(shurigin_s_vertikal_shema, calculate_distribution_num_proc_less_than_cols_with_remainder) {
+TEST(shurigin_s_vertikal_shema, proc_less_cols_with_remainder) {
   int rows = 3;
   int cols = 10;
   int num_proc = 4;
@@ -53,7 +53,7 @@ TEST(shurigin_s_vertikal_shema, calculate_distribution_num_proc_less_than_cols_w
   }
 }
 
-TEST(shurigin_s_vertikal_shema, calculate_distribution_num_proc_less_than_cols_no_remainder) {
+TEST(shurigin_s_vertikal_shema, proc_less_cols_no_remainder) {
   int rows = 2;
   int cols = 8;
   int num_proc = 4;
@@ -142,7 +142,7 @@ TEST(shurigin_s_vertikal_shema, empty_vector_test) {
   }
 }
 
-TEST(shurigin_s_vertikal_shema, invalid_matrix_vector_size_test) {
+TEST(shurigin_s_vertikal_shema, invalid_matrix_vector_size) {
   boost::mpi::communicator world;
 
   std::vector<int> global_matrix;
@@ -177,7 +177,7 @@ TEST(shurigin_s_vertikal_shema, invalid_matrix_vector_size_test) {
   }
 }
 
-TEST(shurigin_s_vertikal_shema, invalid_result_size_test) {
+TEST(shurigin_s_vertikal_shema, invalid_result_size) {
   boost::mpi::communicator world;
 
   std::vector<int> global_matrix;
@@ -210,7 +210,7 @@ TEST(shurigin_s_vertikal_shema, invalid_result_size_test) {
   }
 }
 
-TEST(shurigin_s_vertikal_shema, small_matrix_vector_parallel_test) {
+TEST(shurigin_s_vertikal_shema, small_matrix_parallel) {
   boost::mpi::communicator world;
 
   std::vector<int> global_matrix;
@@ -253,7 +253,7 @@ TEST(shurigin_s_vertikal_shema, small_matrix_vector_parallel_test) {
   }
 }
 
-TEST(shurigin_s_vertikal_shema, small_matrix_vector_sequential_test) {
+TEST(shurigin_s_vertikal_shema, small_matrix_sequential) {
   boost::mpi::communicator world;
 
   if (world.rank() == 0) {
@@ -286,7 +286,7 @@ TEST(shurigin_s_vertikal_shema, small_matrix_vector_sequential_test) {
   }
 }
 
-TEST(shurigin_s_vertikal_shema, prime_size_matrix_test) {
+TEST(shurigin_s_vertikal_shema, prime_size_matrix) {
   boost::mpi::communicator world;
 
   std::vector<int> global_matrix;
