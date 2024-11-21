@@ -39,19 +39,19 @@ class TestTaskMPI : public ppc::core::Task {
 class TestTaskSequential : public ppc::core::Task {
  public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)), matrix_data_(nullptr), num_rows_(0), num_cols_(0) {}
+      : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
  private:
-  int* matrix_data_;
+  int* matrix_data_{nullptr};
   std::vector<std::vector<int>> input_matrix_;
   std::vector<int> input_vector_;
   std::vector<int> result_vector_;
-  int num_rows_;
-  int num_cols_;
+  int num_rows_{0};
+  int num_cols_{0};
 };
 
 }  // namespace shurigin_s_vertikal_shema

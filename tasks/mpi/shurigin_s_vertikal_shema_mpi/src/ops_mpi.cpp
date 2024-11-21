@@ -88,7 +88,7 @@ bool TestTaskMPI::validation() {
 
 bool TestTaskMPI::pre_processing() {
   if (world.rank() == 0) {
-    if (!taskData || !taskData->inputs[0] || !taskData->inputs[1] || !taskData->outputs[0]) {
+    if (!taskData || taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr || taskData->outputs[0] == nullptr) {
       return false;
     }
 
@@ -142,7 +142,7 @@ bool TestTaskMPI::run() {
     result_vector_.assign(num_rows_, 0);
   }
 
-  boost::mpi::reduce(world, local_result.data(), num_rows_, result_vector_.data(), std::plus<int>(), 0);
+  boost::mpi::reduce(world, local_result.data(), num_rows_, result_vector_.data(), std::plus<>(), 0);
 
   return true;
 }
