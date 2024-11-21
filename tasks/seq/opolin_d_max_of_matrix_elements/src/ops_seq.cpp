@@ -24,7 +24,15 @@ bool opolin_d_max_of_matrix_elements_seq::TestTaskSequential::pre_processing() {
 bool opolin_d_max_of_matrix_elements_seq::TestTaskSequential::validation() {
   internal_order_test();
   // Check non empty input
-  return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] == 1;
+  if (static_cast<int>(taskData->inputs_count[0]) <= 0 || 
+      static_cast<int>(taskData->inputs_count[1]) <= 0) {
+    return false;
+  }
+  // Check output
+  if (taskData->outputs_count[0] != 1) {
+    return false;
+  }
+  return true;
 }
 
 bool opolin_d_max_of_matrix_elements_seq::TestTaskSequential::run() {

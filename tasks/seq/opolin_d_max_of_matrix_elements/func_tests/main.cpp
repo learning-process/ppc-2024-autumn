@@ -152,3 +152,17 @@ TEST(opolin_d_max_of_matrix_elements_seq, Test_Max_Matrix_Negative) {
   testTaskSequential.post_processing();
   ASSERT_EQ(expected, out[0]);
 }
+
+TEST(opolin_d_max_of_matrix_elements_seq, Test_Matrix_Negative_Size) {
+  const int rows = -10;
+  const int cols = -10;
+  std::vector<int> out(1, std::numeric_limits<int32_t>::min());
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs_count.emplace_back(rows);
+  taskDataSeq->inputs_count.emplace_back(cols);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
+  opolin_d_max_of_matrix_elements_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_EQ(testTaskSequential.validation(), false);
+  ASSERT_EQ(std::numeric_limits<int32_t>::min(), out[0]);
+}
