@@ -49,7 +49,6 @@ class TestMPITaskParallel : public ppc::core::Task {
 
  private:
   int _rows{}, _columns{};
-  double _elem{};
   std::vector<double> _coefs;
   std::vector<double> _b;
   std::vector<double> _x;
