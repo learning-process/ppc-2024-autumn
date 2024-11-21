@@ -65,7 +65,6 @@ bool Sorting<T>::run() {
   return true;
 }
 
-
 template <typename T>
 bool Sorting<T>::post_processing() {
   internal_order_test();

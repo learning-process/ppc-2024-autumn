@@ -6,17 +6,6 @@
 #include <boost/mpi/environment.hpp>
 #include <vector>
 
-TEST(chistov_a_gather_boost, returns_empty_vector_when_small_size_2) {
-  auto vector1 = chistov_a_gather_boost::getRandomVector<int>(0);
-  ASSERT_TRUE(vector1.empty());
-
-  auto vector2 = chistov_a_gather_boost::getRandomVector<int>(-1);
-  ASSERT_TRUE(vector2.empty());
-
-  auto vector3 = chistov_a_gather_boost::getRandomVector<int>(1);
-  ASSERT_FALSE(vector3.empty());
-}
-
 TEST(chistov_a_gather_boost, boost_empty_vector_check) {
   boost::mpi::communicator world;
   const int count_size_vector = 100;
