@@ -148,3 +148,68 @@ TEST(chistov_a_gather_boost, boost_task_check_float) {
     ASSERT_EQ(gathered_vector, vector);
   }
 }
+
+TEST(chistov_a_gather_boost, test_sort_fixed_values) {
+  boost::mpi::communicator world;
+  const int count_size_vector = 2;
+  std::vector<int> local_vector;
+  std::vector<int> vector;
+  std::vector<int> gathered_vector(count_size_vector * world.size());
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    local_vector = {1, 2};
+  } else {
+    local_vector = {3, 4};
+  }
+
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(local_vector.data()));
+  taskDataPar->inputs_count.emplace_back(count_size_vector);
+
+  if (world.rank() == 0) {
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(gathered_vector.data()));
+    taskDataPar->outputs_count.emplace_back(gathered_vector.size());
+  }
+
+  chistov_a_gather_boost::Reference<int> testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  boost::mpi::gather(world, local_vector.data(), count_size_vector, vector, 0);
+  if (world.rank() == 0) {
+    std::sort(vector.begin(), vector.end());
+    ASSERT_EQ(gathered_vector, vector);
+  }
+}
+
+TEST(chistov_a_gather_boost, test_sort_different_values) {
+  boost::mpi::communicator world;
+  const int count_size_vector = 2;
+  std::vector<int> local_vector = {world.rank(), world.rank() + 1, world.rank() + 2};
+  std::vector<int> vector;
+  std::vector<int> gathered_vector(count_size_vector * world.size());
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(local_vector.data()));
+  taskDataPar->inputs_count.emplace_back(count_size_vector);
+
+  if (world.rank() == 0) {
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(gathered_vector.data()));
+    taskDataPar->outputs_count.emplace_back(gathered_vector.size());
+  }
+
+  chistov_a_gather_boost::Reference<int> testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  boost::mpi::gather(world, local_vector.data(), count_size_vector, vector, 0);
+  if (world.rank() == 0) {
+    std::sort(vector.begin(), vector.end());
+    ASSERT_EQ(gathered_vector, vector);
+  }
+}

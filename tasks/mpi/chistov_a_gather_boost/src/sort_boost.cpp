@@ -41,7 +41,6 @@ bool Reference<T>::pre_processing() {
   count = taskData->inputs_count[0];
   input_data = std::vector<T>(count);
   memcpy(input_data.data(), reinterpret_cast<T*>(taskData->inputs[0]), count * sizeof(T));
-  std::sort(input_data.begin(), input_data.end());
 
   return true;
 }
@@ -60,10 +59,12 @@ template <typename T>
 bool Reference<T>::run() {
   internal_order_test();
 
+  std::sort(input_data.begin(), input_data.end());
   boost::mpi::gather(world, input_data.data(), count, gathered_data, 0);
 
   return true;
 }
+
 
 template <typename T>
 bool Reference<T>::post_processing() {

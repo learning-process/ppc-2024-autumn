@@ -41,7 +41,6 @@ bool Sorting<T>::pre_processing() {
   count = taskData->inputs_count[0];
   input_data = std::vector<T>(count);
   std::memcpy(input_data.data(), reinterpret_cast<T*>(taskData->inputs[0]), count * sizeof(T));
-  std::sort(input_data.begin(), input_data.end());
 
   return true;
 }
@@ -60,10 +59,12 @@ template <typename T>
 bool Sorting<T>::run() {
   internal_order_test();
 
+  std::sort(input_data.begin(), input_data.end());
   chistov_a_gather_my::gather<T>(world, input_data, count, gathered_data, 0);
 
   return true;
 }
+
 
 template <typename T>
 bool Sorting<T>::post_processing() {
