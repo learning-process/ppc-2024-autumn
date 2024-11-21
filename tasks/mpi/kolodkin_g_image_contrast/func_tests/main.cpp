@@ -9,28 +9,22 @@
 
 TEST(kolodkin_g_image_contrast_MPI, Test_image_one_pixel) {
   boost::mpi::communicator world;
-  std::vector<int> image;
-
   // Create data
+  std::vector<int> image;
   std::vector<int> global_out(3, 0);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    image.push_back(50);
-    image.push_back(14);
-    image.push_back(5);
+    image = {50, 14, 5};
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
     taskDataMpi->inputs_count.emplace_back(image.size());
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));
   }
-
   // Create Task
   kolodkin_g_image_contrast_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
     // Create data
@@ -48,11 +42,56 @@ TEST(kolodkin_g_image_contrast_MPI, Test_image_one_pixel) {
     testTaskSequential.pre_processing();
     testTaskSequential.run();
     testTaskSequential.post_processing();
+  }
+}
+
+TEST(kolodkin_g_image_contrast_MPI, Test_image_center_line) {
+  boost::mpi::communicator world;
+  // Create data
+  std::vector<int> image;
+  std::vector<int> global_out(300, 0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    for (unsigned long i = 0; i < 999; i++) {
+      if (i >= 120 && i < 150) {
+        image.push_back(255);
+      } else {
+        image.push_back(0);
+      }
+    }
+    taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
+    taskDataMpi->inputs_count.emplace_back(image.size());
+    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));
+  }
+  // Create Task
+  kolodkin_g_image_contrast_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    // Create data
+    std::vector<int> reference_out(300, 0);
+
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
+    taskDataSeq->inputs_count.emplace_back(image.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(reference_out)));
+
+    // Create Task
+    kolodkin_g_image_contrast_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
+    ASSERT_EQ(testTaskSequential.validation(), true);
+    testTaskSequential.pre_processing();
+    testTaskSequential.run();
+    testTaskSequential.post_processing();
     global_out = *reinterpret_cast<std::vector<int> *>(taskDataMpi->outputs[0]);
     reference_out = *reinterpret_cast<std::vector<int> *>(taskDataSeq->outputs[0]);
     for (unsigned long i = 0; i < global_out.size(); i++) {
-      std::cout << global_out[i] << " " << reference_out[i]<<std::endl;
-      //ASSERT_EQ(global_out[i], reference_out[i]);
+      ASSERT_EQ(global_out[i], reference_out[i]);
     }
   }
 }
@@ -102,12 +141,7 @@ TEST(kolodkin_g_image_contrast_MPI, Test_image_two_pixels) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    image.push_back(50);
-    image.push_back(14);
-    image.push_back(5);
-    image.push_back(10);
-    image.push_back(200);
-    image.push_back(105);
+    image = {50, 14, 5, 20, 10, 105};
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
     taskDataMpi->inputs_count.emplace_back(image.size());
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));

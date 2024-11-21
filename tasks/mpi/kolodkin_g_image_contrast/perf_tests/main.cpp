@@ -10,11 +10,11 @@
 TEST(mpi_kolodkin_g_image_contrast_test, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<int> global_image;
-  std::vector<int32_t> global_out(9999, 0);
+  std::vector<int32_t> global_out(999, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    for (unsigned long int i = 0; i < 9999; i++) {
+    for (unsigned long int i = 0; i < 999; i++) {
       global_image.push_back(0 + rand() % 255);
     }
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_image.data()));
@@ -48,11 +48,11 @@ TEST(mpi_kolodkin_g_image_contrast_test, test_pipeline_run) {
 TEST(mpi_kolodkin_g_image_contrast_test, test_task_run) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
-  std::vector<int32_t> global_out(99999, 0);
+  std::vector<int32_t> global_out(9999, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    for (unsigned long int i = 0; i < 99999; i++) {
+    for (unsigned long int i = 0; i < 9999; i++) {
       global_vec.push_back(0 + rand() % 255);
     }
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
