@@ -1,4 +1,3 @@
-// Copyright 2024 Nesterov Alexander
 #include "seq/rysev_m_count_of_sent/include/ops_seq.hpp"
 
 bool rysev_m_count_of_sent_seq::SentCountSequential::pre_processing() {
