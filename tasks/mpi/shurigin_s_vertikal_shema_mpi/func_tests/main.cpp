@@ -295,8 +295,8 @@ TEST(shurigin_s_vertikal_shema, prime_size_matrix_test) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  int num_rows = 7;   
-  int num_cols = 11;   
+  int num_rows = 7;
+  int num_cols = 11;
 
   if (world.rank() == 0) {
     global_matrix.resize(num_rows * num_cols);
@@ -306,7 +306,7 @@ TEST(shurigin_s_vertikal_shema, prime_size_matrix_test) {
 
     global_vector.resize(num_cols);
     for (int i = 0; i < num_cols; ++i) {
-      global_vector[i] = i - num_cols/2;  
+      global_vector[i] = i - num_cols / 2;
     }
 
     global_result.resize(num_rows, 0);
