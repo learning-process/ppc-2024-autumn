@@ -287,62 +287,60 @@ TEST(shurigin_s_vertikal_shema, small_matrix_vector_sequential_test) {
 }
 
 TEST(shurigin_s_vertikal_shema, prime_size_matrix_test) {
-    boost::mpi::communicator world;
+  boost::mpi::communicator world;
 
-    std::vector<int> global_matrix;
-    std::vector<int> global_vector;
-    std::vector<int> global_result;
+  std::vector<int> global_matrix;
+  std::vector<int> global_vector;
+  std::vector<int> global_result;
 
-    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-    int num_rows = 7;   
-    int num_cols = 11;   
+  int num_rows = 7;   
+  int num_cols = 11;   
 
-    if (world.rank() == 0) {
-        // Инициализация матрицы размером 7x11
-        global_matrix.resize(num_rows * num_cols);
-        for (int i = 0; i < num_rows * num_cols; ++i) {
-            global_matrix[i] = i + 1;
-        }
-
-        // Вектор размером 11 
-        global_vector.resize(num_cols);
-        for (int i = 0; i < num_cols; ++i) {
-            global_vector[i] = i - num_cols/2;  // числа от -5 до 5
-        }
-
-        global_result.resize(num_rows, 0);
-
-        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-        taskDataPar->inputs_count.emplace_back(global_matrix.size());
-
-        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector.data()));
-        taskDataPar->inputs_count.emplace_back(global_vector.size());
-
-        taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
-        taskDataPar->outputs_count.emplace_back(global_result.size());
+  if (world.rank() == 0) {
+    global_matrix.resize(num_rows * num_cols);
+    for (int i = 0; i < num_rows * num_cols; ++i) {
+      global_matrix[i] = i + 1;
     }
 
-    auto taskParallel = std::make_shared<TestTaskMPI>(taskDataPar);
-
-    ASSERT_TRUE(taskParallel->validation());
-    ASSERT_TRUE(taskParallel->pre_processing());
-    ASSERT_TRUE(taskParallel->run());
-    ASSERT_TRUE(taskParallel->post_processing());
-
-    if (world.rank() == 0) {
-        std::vector<int> expected_result(num_rows);
-        for (int i = 0; i < num_rows; ++i) {
-            int sum = 0;
-            for (int j = 0; j < num_cols; ++j) {
-                sum += global_matrix[i * num_cols + j] * global_vector[j];
-            }
-            expected_result[i] = sum;
-        }
-
-        ASSERT_EQ(global_result.size(), expected_result.size());
-        for (size_t i = 0; i < global_result.size(); ++i) {
-            ASSERT_EQ(global_result[i], expected_result[i]);
-        }
+    global_vector.resize(num_cols);
+    for (int i = 0; i < num_cols; ++i) {
+      global_vector[i] = i - num_cols/2;  
     }
+
+    global_result.resize(num_rows, 0);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(global_matrix.size());
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector.data()));
+    taskDataPar->inputs_count.emplace_back(global_vector.size());
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
+    taskDataPar->outputs_count.emplace_back(global_result.size());
+  }
+
+  auto taskParallel = std::make_shared<TestTaskMPI>(taskDataPar);
+
+  ASSERT_TRUE(taskParallel->validation());
+  ASSERT_TRUE(taskParallel->pre_processing());
+  ASSERT_TRUE(taskParallel->run());
+  ASSERT_TRUE(taskParallel->post_processing());
+
+  if (world.rank() == 0) {
+    std::vector<int> expected_result(num_rows);
+    for (int i = 0; i < num_rows; ++i) {
+      int sum = 0;
+      for (int j = 0; j < num_cols; ++j) {
+        sum += global_matrix[i * num_cols + j] * global_vector[j];
+      }
+      expected_result[i] = sum;
+    }
+
+    ASSERT_EQ(global_result.size(), expected_result.size());
+    for (size_t i = 0; i < global_result.size(); ++i) {
+      ASSERT_EQ(global_result[i], expected_result[i]);
+    }
+  }
 }
