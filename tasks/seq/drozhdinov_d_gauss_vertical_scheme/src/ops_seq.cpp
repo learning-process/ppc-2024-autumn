@@ -58,7 +58,7 @@ bool drozhdinov_d_gauss_vertical_scheme_seq::TestTaskSequential::run() {
     double max = 0;
     int index = 0;
     for (int j = 0; j < rows; j++) {
-      if ((fabs(coefs[makeLinCoords(j, i, columns)] >= fabs(max)) && (!major[j]))) {
+      if ((fabs(coefs[makeLinCoords(j, i, columns)]) >= fabs(max)) && (!major[j])) {
         max = coefs[makeLinCoords(j, i, columns)];
         index = j;
       }
