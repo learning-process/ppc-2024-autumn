@@ -97,10 +97,9 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
   broadcast(world, size_rows, 0);
   broadcast(world, delta_input, 0);
   broadcast(world, delta_rows, 0);
-  
 
   local_input_ = std::vector<int>(delta_input);
-  
+
   if (world.rank() == 0) {
     local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta_input);
     for (int i = 1; i < world.size(); i++) {
