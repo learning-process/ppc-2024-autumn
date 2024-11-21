@@ -79,10 +79,7 @@ bool kolokolova_d_gaussian_method_horizontal_seq::TestTaskSequential::validation
   int rank_Ab = find_rank(matrix_argum, count_equations, count_equations + 1);
 
   // Checking for inconsistency
-  if (rank_A != rank_Ab) {
-    return false;
-  }
-  return true;
+  return (rank_A == rank_Ab);
 }
 
 bool kolokolova_d_gaussian_method_horizontal_seq::TestTaskSequential::run() {
