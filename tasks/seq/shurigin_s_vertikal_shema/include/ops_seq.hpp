@@ -14,7 +14,7 @@ namespace shurigin_s_vertikal_shema {
 class TestTaskSequential : public ppc::core::Task {
  public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)), matrix_data_(nullptr), num_rows_(0), num_cols_(0) {}
+      : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
