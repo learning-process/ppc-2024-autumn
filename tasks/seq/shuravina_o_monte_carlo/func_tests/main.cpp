@@ -80,6 +80,7 @@ TEST(MonteCarloIntegrationTaskSequential, Test_Large_Number_Of_Points) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   auto testTaskSequential = std::make_shared<shuravina_o_monte_carlo::MonteCarloIntegrationTaskSequential>(taskDataSeq);
+  testTaskSequential->set_num_points(10000000);
   ASSERT_EQ(testTaskSequential->validation(), true);
   testTaskSequential->pre_processing();
   testTaskSequential->run();
