@@ -161,6 +161,8 @@ bool poroshin_v_count_min_val_row_matrix_all_reduce_mpi::MyTestMPITaskParallel::
       input_[i] = reinterpret_cast<int*>(taskData->inputs[0])[i];
     }
     res.resize(m, 0);
+  } else {
+    ;
   }
 
   broadcast(world, m, 0);
@@ -172,7 +174,7 @@ bool poroshin_v_count_min_val_row_matrix_all_reduce_mpi::MyTestMPITaskParallel::
   boost::mpi::scatter(world, input_.data(), local_input_.data(), delta, 0);
 
   int l_res = *std::min_element(local_input_.begin(), local_input_.begin() + delta);
-  my_all_reduce(world, l_res, res_);
+  MyTestMPITaskParallel::my_all_reduce(world, l_res, res_);
 
   /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -191,7 +193,7 @@ bool poroshin_v_count_min_val_row_matrix_all_reduce_mpi::MyTestMPITaskParallel::
     }
   }
 
-  if (count) {
+  if (count > 0) {
     if (world.rank() == world.size() - 1) {
       ress[m - 1] += count;
     } else {
@@ -201,7 +203,7 @@ bool poroshin_v_count_min_val_row_matrix_all_reduce_mpi::MyTestMPITaskParallel::
         ress[((delta * (world.rank() + 1)) / n) - 1] += count;
       }
     }
-    count = 0;
+    // count = 0;
   }
 
   boost::mpi::reduce(world, ress.data(), m, res.data(), std::plus(), 0);
@@ -296,7 +298,7 @@ bool poroshin_v_count_min_val_row_matrix_all_reduce_mpi::TestMPITaskParallel::ru
     }
   }
 
-  if (count) {
+  if (count > 0) {
     if (world.rank() == world.size() - 1) {
       ress[m - 1] += count;
     } else {
@@ -306,7 +308,7 @@ bool poroshin_v_count_min_val_row_matrix_all_reduce_mpi::TestMPITaskParallel::ru
         ress[((delta * (world.rank() + 1)) / n) - 1] += count;
       }
     }
-    count = 0;
+    // count = 0;
   }
 
   boost::mpi::reduce(world, ress.data(), m, res.data(), std::plus(), 0);
