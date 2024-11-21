@@ -36,6 +36,8 @@ struct TMatrix {
     os << ']';
     return os;
   }
+
+  static TMatrix create(size_t rows, size_t cols) { return {rows, cols, std::vector<T>(rows * cols)}; }
 };
 
 template <class T>

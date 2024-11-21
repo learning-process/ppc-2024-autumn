@@ -11,9 +11,9 @@
 class krylov_m_matmul_strip_ha_vb_mpi_test : public ::testing::Test {
   using TestElementType = int64_t;
 
-  static constexpr size_t lrows = 32;
-  static constexpr size_t lcols = 32;
-  static constexpr size_t rcols = 32;
+  static constexpr size_t lrows = 256;
+  static constexpr size_t lcols = 256;
+  static constexpr size_t rcols = 256;
   //
   static constexpr TestElementType emin = -64;
   static constexpr TestElementType emax = 64;
@@ -55,10 +55,8 @@ class krylov_m_matmul_strip_ha_vb_mpi_test : public ::testing::Test {
       return static_cast<double>(duration) * 1e-9;
     };
 
-    // Create and init perf results
+    //
     auto perfResults = std::make_shared<ppc::core::PerfResults>();
-
-    // Create Perf analyzer
     ppc::core::Perf perfAnalyzer(task);
     runner(perfAnalyzer, perfAttr, perfResults);
     if (world.rank() == 0) {
