@@ -40,7 +40,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> input_;
+  std::vector<int> input_,local_input_;
   std::vector<int> palette_;
   std::vector<int> output_;
   int av_br;
