@@ -76,3 +76,72 @@ TEST(DiningPhilosophersMPI, Test_with_2_philosophers) {
     GTEST_SKIP();
   }
 }
+
+TEST(DiningPhilosophersMPI, Test_with_3_philosophers) {
+  boost::mpi::communicator world;
+  if (world.size() >= 3) {
+    int num_philosophers = 3;
+
+    auto taskData = std::make_shared<ppc::core::TaskData>();
+    taskData->inputs_count.push_back(num_philosophers);
+
+    beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<int> dining_task(taskData);
+
+    ASSERT_TRUE(dining_task.validation());
+    ASSERT_TRUE(dining_task.pre_processing());
+    ASSERT_TRUE(dining_task.run());
+    ASSERT_TRUE(dining_task.post_processing());
+    bool deadlock_detected = dining_task.check_deadlock();
+    if (world.rank() == 0) {
+      ASSERT_FALSE(deadlock_detected);
+    }
+  } else {
+    GTEST_SKIP();
+  }
+}
+
+TEST(DiningPhilosophersMPI, Test_with_4_philosophers) {
+  boost::mpi::communicator world;
+  if (world.size() >= 4) {
+    int num_philosophers = 4;
+
+    auto taskData = std::make_shared<ppc::core::TaskData>();
+    taskData->inputs_count.push_back(num_philosophers);
+
+    beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<int> dining_task(taskData);
+
+    ASSERT_TRUE(dining_task.validation());
+    ASSERT_TRUE(dining_task.pre_processing());
+    ASSERT_TRUE(dining_task.run());
+    ASSERT_TRUE(dining_task.post_processing());
+    bool deadlock_detected = dining_task.check_deadlock();
+    if (world.rank() == 0) {
+      ASSERT_FALSE(deadlock_detected);
+    }
+  } else {
+    GTEST_SKIP();
+  }
+}
+
+TEST(DiningPhilosophersMPI, Test_with_8_philosophers) {
+  boost::mpi::communicator world;
+  if (world.size() >= 8) {
+    int num_philosophers = 8;
+
+    auto taskData = std::make_shared<ppc::core::TaskData>();
+    taskData->inputs_count.push_back(num_philosophers);
+
+    beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<int> dining_task(taskData);
+
+    ASSERT_TRUE(dining_task.validation());
+    ASSERT_TRUE(dining_task.pre_processing());
+    ASSERT_TRUE(dining_task.run());
+    ASSERT_TRUE(dining_task.post_processing());
+    bool deadlock_detected = dining_task.check_deadlock();
+    if (world.rank() == 0) {
+      ASSERT_FALSE(deadlock_detected);
+    }
+  } else {
+    GTEST_SKIP();
+  }
+}
