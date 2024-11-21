@@ -138,6 +138,37 @@ TEST(chistov_a_gather_my, my_task_check_float) {
   }
 }
 
+TEST(chistov_a_gather_my, boost_task_check_char) {
+  boost::mpi::communicator world;
+  const int count_size_vector = 10;
+  std::vector<char> local_vector;
+  std::vector<char> vector;
+  std::vector<char> gathered_vector(count_size_vector * world.size());
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  local_vector = chistov_a_gather_my::getRandomVector<char>(count_size_vector);
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(local_vector.data()));
+  taskDataPar->inputs_count.emplace_back(count_size_vector);
+
+  if (world.rank() == 0) {
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(gathered_vector.data()));
+    taskDataPar->outputs_count.emplace_back(gathered_vector.size());
+  }
+
+  chistov_a_gather_my::Sorting<char> testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  boost::mpi::gather(world, local_vector.data(), count_size_vector, vector, 0);
+  if (world.rank() == 0) {
+    std::sort(vector.begin(), vector.end());
+    ASSERT_EQ(gathered_vector, vector);
+  }
+}
+
 TEST(chistov_a_gather_my, test_sort_fixed_values) {
   boost::mpi::communicator world;
   const int count_size_vector = 2;
@@ -182,6 +213,68 @@ TEST(chistov_a_gather_my, test_sort_different_values) {
   std::vector<int> gathered_vector(count_size_vector * world.size());
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(local_vector.data()));
+  taskDataPar->inputs_count.emplace_back(count_size_vector);
+
+  if (world.rank() == 0) {
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(gathered_vector.data()));
+    taskDataPar->outputs_count.emplace_back(gathered_vector.size());
+  }
+
+  chistov_a_gather_my::Sorting<int> testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  boost::mpi::gather(world, local_vector.data(), count_size_vector, vector, 0);
+  if (world.rank() == 0) {
+    std::sort(vector.begin(), vector.end());
+    ASSERT_EQ(gathered_vector, vector);
+  }
+}
+
+TEST(chistov_a_gather_my, test_count_is_a_powers_of_two_sort) {
+  boost::mpi::communicator world;
+  const int count_size_vector = 32;
+  std::vector<int> local_vector;
+  std::vector<int> vector;
+  std::vector<int> gathered_vector(count_size_vector * world.size());
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  local_vector = chistov_a_gather_my::getRandomVector<int>(count_size_vector);
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(local_vector.data()));
+  taskDataPar->inputs_count.emplace_back(count_size_vector);
+
+  if (world.rank() == 0) {
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(gathered_vector.data()));
+    taskDataPar->outputs_count.emplace_back(gathered_vector.size());
+  }
+
+  chistov_a_gather_my::Sorting<int> testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  boost::mpi::gather(world, local_vector.data(), count_size_vector, vector, 0);
+  if (world.rank() == 0) {
+    std::sort(vector.begin(), vector.end());
+    ASSERT_EQ(gathered_vector, vector);
+  }
+}
+
+TEST(chistov_a_gather_my, test_count_is_a_prime_number_sort) {
+  boost::mpi::communicator world;
+  const int count_size_vector = 3;
+  std::vector<int> local_vector;
+  std::vector<int> vector;
+  std::vector<int> gathered_vector(count_size_vector * world.size());
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  local_vector = chistov_a_gather_my::getRandomVector<int>(count_size_vector);
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(local_vector.data()));
   taskDataPar->inputs_count.emplace_back(count_size_vector);
 

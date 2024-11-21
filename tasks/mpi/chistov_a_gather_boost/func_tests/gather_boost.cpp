@@ -82,6 +82,20 @@ TEST(chistov_a_gather_boost, test_float_gather) {
   }
 }
 
+TEST(chistov_a_gather_boost, test_char_gather) {
+  boost::mpi::communicator world;
+  int count = 2;
+  std::vector<char> local_vector = chistov_a_gather_boost::getRandomVector<char>(count);
+  std::vector<char> my_gathered_vector;
+  std::vector<char> mpi_gathered_data;
+  boost::mpi::gather(world, local_vector.data(), count, mpi_gathered_data, 0);
+  chistov_a_gather_boost::gather<char>(world, local_vector, count, my_gathered_vector, 0);
+
+  if (world.rank() == 0) {
+    ASSERT_TRUE(std::is_permutation(my_gathered_vector.begin(), my_gathered_vector.end(), mpi_gathered_data.begin()));
+  }
+}
+
 TEST(chistov_a_gather_boost, test_large_size) {
   boost::mpi::communicator world;
   int count = 100000;
@@ -147,6 +161,35 @@ TEST(chistov_a_gather_boost, test_gather_different_values) {
 
   if (world.rank() == 0) {
     ASSERT_EQ(my_gathered_vector.size(), mpi_gathered_data.size());
+    ASSERT_TRUE(std::is_permutation(my_gathered_vector.begin(), my_gathered_vector.end(), mpi_gathered_data.begin()));
+  }
+}
+
+TEST(chistov_a_gather_boost, test_count_is_a_powers_of_two) {
+  boost::mpi::communicator world;
+  int count = 32;
+  std::vector<int> local_vector = chistov_a_gather_boost::getRandomVector<int>(count);
+  std::vector<int> my_gathered_vector;
+  std::vector<int> mpi_gathered_data;
+  boost::mpi::gather(world, local_vector.data(), count, mpi_gathered_data, 0);
+  chistov_a_gather_boost::gather<int>(world, local_vector, count, my_gathered_vector, 0);
+
+  if (world.rank() == 0) {
+    ASSERT_TRUE(std::is_permutation(my_gathered_vector.begin(), my_gathered_vector.end(), mpi_gathered_data.begin()));
+  }
+}
+
+TEST(chistov_a_gather_boost, test_count_is_a_prime_number_gather) {
+  boost::mpi::communicator world;
+  int count = 3;
+  std::vector<int> local_vector = chistov_a_gather_boost::getRandomVector<int>(count);
+  std::vector<int> my_gathered_vector;
+  std::vector<int> mpi_gathered_data;
+
+  boost::mpi::gather(world, local_vector.data(), count, mpi_gathered_data, 0);
+  chistov_a_gather_boost::gather<int>(world, local_vector, count, my_gathered_vector, 0);
+
+  if (world.rank() == 0) {
     ASSERT_TRUE(std::is_permutation(my_gathered_vector.begin(), my_gathered_vector.end(), mpi_gathered_data.begin()));
   }
 }

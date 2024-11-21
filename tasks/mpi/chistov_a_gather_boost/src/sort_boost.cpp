@@ -79,5 +79,6 @@ bool Reference<T>::post_processing() {
 template class Reference<int>;
 template class Reference<double>;
 template class Reference<float>;
+template class Reference<char>;
 
 }  // namespace chistov_a_gather_boost

@@ -90,5 +90,6 @@ bool Gather<T>::post_processing() {
 template class Gather<int>;
 template class Gather<double>;
 template class Gather<float>;
+template class Gather<char>;
 
 }  // namespace chistov_a_gather_boost

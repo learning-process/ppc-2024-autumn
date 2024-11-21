@@ -79,5 +79,6 @@ bool Sorting<T>::post_processing() {
 template class Sorting<int>;
 template class Sorting<double>;
 template class Sorting<float>;
+template class Sorting<char>;
 
 }  // namespace chistov_a_gather_my
