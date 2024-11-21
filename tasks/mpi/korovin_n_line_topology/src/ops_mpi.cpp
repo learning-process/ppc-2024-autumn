@@ -77,12 +77,3 @@ bool korovin_n_line_topology_mpi::TestMPITaskParallel::post_processing() {
 
   return true;
 }
-
-std::vector<int> korovin_n_line_topology_mpi::TestMPITaskParallel::generate_rnd_vector(int size, int lower_bound,
-                                                                                       int upper_bound) {
-  std::vector<int> v1(size);
-  for (auto& num : v1) {
-    num = lower_bound + std::rand() % (upper_bound - lower_bound + 1);
-  }
-  return v1;
-}

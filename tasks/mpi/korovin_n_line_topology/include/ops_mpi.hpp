@@ -22,7 +22,6 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  static std::vector<int> generate_rnd_vector(int size, int lower_bound = -500, int upper_bound = 500);
 
  private:
   std::vector<int> data_;

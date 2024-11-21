@@ -7,9 +7,19 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/korovin_n_line_topology/include/ops_mpi.hpp"
 
+namespace korovin_n_line_topology_mpi {
+std::vector<int> generate_rnd_vector(int size, int lower_bound = -500, int upper_bound = 500) {
+  std::vector<int> v1(size);
+  for (auto& num : v1) {
+    num = lower_bound + std::rand() % (upper_bound - lower_bound + 1);
+  }
+  return v1;
+}
+}  // namespace korovin_n_line_topology_mpi
+
 TEST(korovin_n_line_topology_mpi, test_task_run) {
   boost::mpi::communicator world;
-  int n = 10000;
+  int n = 10000000;
   auto root = 0;
   auto dst = world.size() - 1;
 
@@ -23,7 +33,7 @@ TEST(korovin_n_line_topology_mpi, test_task_run) {
   std::vector<int> received_trajectory;
 
   if (world.rank() == root) {
-    data = korovin_n_line_topology_mpi::TestMPITaskParallel::generate_rnd_vector(n);
+    data = korovin_n_line_topology_mpi::generate_rnd_vector(n);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
     world.send(dst, 0, data);
   }
@@ -70,7 +80,7 @@ TEST(korovin_n_line_topology_mpi, test_task_run) {
 
 TEST(korovin_n_line_topology_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  int n = 10000;
+  int n = 10000000;
   auto root = 0;
   auto dst = world.size() - 1;
 
@@ -84,7 +94,7 @@ TEST(korovin_n_line_topology_mpi, test_pipeline_run) {
   std::vector<int> received_trajectory;
 
   if (world.rank() == root) {
-    data = korovin_n_line_topology_mpi::TestMPITaskParallel::generate_rnd_vector(n);
+    data = korovin_n_line_topology_mpi::generate_rnd_vector(n);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
     world.send(dst, 0, data);
   }
