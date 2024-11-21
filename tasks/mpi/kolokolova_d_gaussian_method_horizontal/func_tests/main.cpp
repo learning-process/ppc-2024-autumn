@@ -172,7 +172,7 @@ TEST(kolokolova_d_gaussian_method_horizontal_mpi, Test_Parallel_Gauss3) {
 }
 
 TEST(kolokolova_d_gaussian_method_horizontal_mpi, Test_Parallel_Gauss_Empyty_y) {
-  // When input_y is empty 
+  // When input_y is empty
   boost::mpi::communicator world;
   int count_equations = world.size();
   int size_coef_mat = count_equations * count_equations;
