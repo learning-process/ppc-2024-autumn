@@ -26,12 +26,14 @@ struct Pixel {
     return *this;
   }
 
+  // clang-format off
   template <typename Archive>
   void serialize(Archive& ar, const unsigned int version) {
-    ar& red;
-    ar& green;
-    ar& blue;
+    ar & red;
+    ar & green;
+    ar & blue;
   }
+  // clang-format on
 };
 
 int clamp(int value, int min, int max);
