@@ -88,7 +88,8 @@ bool TestTaskMPI::validation() {
 
 bool TestTaskMPI::pre_processing() {
   if (world.rank() == 0) {
-    if (!taskData || taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr || taskData->outputs[0] == nullptr) {
+    if (!taskData || taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr ||
+        taskData->outputs[0] == nullptr) {
       return false;
     }
 

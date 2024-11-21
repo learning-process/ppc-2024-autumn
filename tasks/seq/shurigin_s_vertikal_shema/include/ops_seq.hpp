@@ -21,12 +21,12 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  int* matrix_data_;                            // Указатель на исходную матрицу
+  int* matrix_data_{nullptr};                   // Указатель на исходную матрицу
   std::vector<std::vector<int>> input_matrix_;  // Матрица как вектор столбцов
   std::vector<int> input_vector_;               // Вектор-строка
   std::vector<int> result_vector_;              // Результирующий вектор-строка
-  int num_rows_;
-  int num_cols_;
+  int num_rows_{0};
+  int num_cols_{0};
 };
 
 }  // namespace shurigin_s_vertikal_shema
