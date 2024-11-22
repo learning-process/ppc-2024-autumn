@@ -7,11 +7,11 @@
 namespace mpi = boost::mpi;
 
 std::vector<uint8_t> generate_random_vector(size_t size, uint8_t min_value, uint8_t max_value) {
-    std::vector<uint8_t> vec(size);
-    for (auto& val : vec) {
-        val = static_cast<uint8_t>(min_value + std::rand() % (max_value - min_value + 1));
-    }
-    return vec;
+  std::vector<uint8_t> vec(size);
+  for (auto& val : vec) {
+    val = static_cast<uint8_t>(min_value + std::rand() % (max_value - min_value + 1));
+  }
+  return vec;
 }
 
 TEST(vavilov_v_contrast_enhancement_mpi, ValidInput) {
