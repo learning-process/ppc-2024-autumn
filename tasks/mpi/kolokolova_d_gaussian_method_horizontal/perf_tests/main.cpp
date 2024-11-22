@@ -1,8 +1,8 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
-#include <boost/mpi/timer.hpp>
 #include <algorithm>
+#include <boost/mpi/timer.hpp>
 #include <functional>
 #include <random>
 #include <vector>
