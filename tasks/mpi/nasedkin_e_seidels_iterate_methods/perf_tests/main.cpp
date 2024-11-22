@@ -6,17 +6,18 @@
 
 TEST(nasedkin_e_seidels_iterate_methods_mpi, test_pipeline_run) {
     auto taskData = std::make_shared<ppc::core::TaskData>();
-    taskData->inputs_count.push_back(3);
+    taskData->inputs_count.push_back(3);  // Задаем корректное число уравнений
 
     auto seidelTask = std::make_shared<nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI>(taskData);
 
-    ASSERT_TRUE(seidelTask->validation());
+    ASSERT_TRUE(seidelTask->validation()) << "Validation failed for valid input";
+
     seidelTask->pre_processing();
     seidelTask->run();
     seidelTask->post_processing();
 
     auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-    perfAttr->num_running = 10;
+    perfAttr->num_running = 10;  // Количество запусков для теста
     const boost::mpi::timer current_timer;
     perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
@@ -30,18 +31,18 @@ TEST(nasedkin_e_seidels_iterate_methods_mpi, test_pipeline_run) {
 
 TEST(nasedkin_e_seidels_iterate_methods_mpi, test_task_run) {
     auto taskData = std::make_shared<ppc::core::TaskData>();
-    taskData->inputs_count.push_back(3);
+    taskData->inputs_count.push_back(3);  // Задаем корректное число уравнений
 
     auto seidelTask = std::make_shared<nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI>(taskData);
 
-    ASSERT_TRUE(seidelTask->validation());
+    ASSERT_TRUE(seidelTask->validation()) << "Validation failed for valid input";
 
     seidelTask->pre_processing();
     seidelTask->run();
     seidelTask->post_processing();
 
     auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-    perfAttr->num_running = 10;
+    perfAttr->num_running = 10;  // Количество запусков для теста
     const boost::mpi::timer current_timer;
     perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 

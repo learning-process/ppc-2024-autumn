@@ -8,11 +8,12 @@ TEST(nasedkin_e_seidels_iterate_methods_mpi, test_with_valid_input) {
 
     nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI seidel_task(taskData);
 
-    ASSERT_TRUE(seidel_task.validation());
-    ASSERT_TRUE(seidel_task.pre_processing());
-    ASSERT_TRUE(seidel_task.run());
-    ASSERT_TRUE(seidel_task.post_processing());
+    ASSERT_TRUE(seidel_task.validation()) << "Validation failed for valid input";
+    ASSERT_TRUE(seidel_task.pre_processing()) << "Pre-processing failed";
+    ASSERT_TRUE(seidel_task.run()) << "Run failed";
+    ASSERT_TRUE(seidel_task.post_processing()) << "Post-processing failed";
 }
+
 
 TEST(nasedkin_e_seidels_iterate_methods_mpi, test_with_invalid_input) {
     auto taskData = std::make_shared<ppc::core::TaskData>();

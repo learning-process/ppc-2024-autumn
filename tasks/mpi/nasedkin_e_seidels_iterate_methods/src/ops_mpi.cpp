@@ -5,7 +5,10 @@
 namespace nasedkin_e_seidels_iterate_methods_mpi {
 
     bool SeidelIterateMethodsMPI::pre_processing() {
-        n = taskData->inputs_count[0];
+        if (!validation()) {
+            return false;
+        }
+
         epsilon = 1e-6;
         max_iterations = 1000;
 
@@ -13,7 +16,6 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
         b.resize(n, 0.0);
         x.resize(n, 0.0);
 
-        // Initialize A and b with some values for testing
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < n; ++j) {
                 A[i][j] = (i == j) ? 2.0 : 1.0;
@@ -24,17 +26,21 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
         return true;
     }
 
+
     bool SeidelIterateMethodsMPI::validation() {
-        if (n <= 0) {
-            std::cerr << "Invalid input: n must be greater than 0" << std::endl;
-            return false;
-        }
         if (taskData->inputs_count.empty()) {
             std::cerr << "Invalid input: inputs_count is empty" << std::endl;
             return false;
         }
+
+        n = taskData->inputs_count[0];
+        if (n <= 0) {
+            std::cerr << "Invalid input: n must be greater than 0" << std::endl;
+            return false;
+        }
         return true;
     }
+
 
 
     bool SeidelIterateMethodsMPI::run() {
