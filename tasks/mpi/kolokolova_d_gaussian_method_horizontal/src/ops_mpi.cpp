@@ -7,19 +7,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
-std::vector<int> kolokolova_d_gaussian_method_horizontal_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  std::uniform_int_distribution<int> dist(1, 100);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
-}
-
 int kolokolova_d_gaussian_method_horizontal_mpi::find_rank(std::vector<double>& matrix, int rows, int cols) {
   int rank = 0;
 

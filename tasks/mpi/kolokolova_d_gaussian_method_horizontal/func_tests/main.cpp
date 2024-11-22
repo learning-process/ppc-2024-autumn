@@ -2,9 +2,25 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <algorithm>
+#include <functional>
+#include <random>
 #include <vector>
 
 #include "mpi/kolokolova_d_gaussian_method_horizontal/include/ops_mpi.hpp"
+
+using namespace kolokolova_d_gaussian_method_horizontal_mpi;
+
+std::vector<int> kolokolova_d_gaussian_method_horizontal_mpi::getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  std::uniform_int_distribution<int> dist(1, 100);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = gen() % 100;
+  }
+  return vec;
+}
 
 TEST(kolokolova_d_gaussian_method_horizontal_mpi, Test_Parallel_Gauss1) {
   // For each proc 1 equations
