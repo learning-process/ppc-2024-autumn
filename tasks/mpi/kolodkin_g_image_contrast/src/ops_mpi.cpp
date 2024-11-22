@@ -72,68 +72,88 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::pre_processing() {
       input_[i] = tmp_ptr[i];
     }
     output_ = std::vector<int>(taskData->inputs_count[0]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-      output_[i] = 0;
-    }
   }
   return true;
 }
 
 bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
-  if (world.rank() == 0) {
-    if (taskData->inputs_count[0] <= 0 || taskData->inputs_count[0] % 3 != 0) {
+  if (taskData->inputs_count[0] <= 0 || taskData->inputs_count[0] % 3 != 0) {
+    return false;
+  }
+  auto* input_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+  for (unsigned long i = 0; i < taskData->inputs_count[0]; i++) {
+    if (*input_ptr > 255 || *input_ptr < 0) {
       return false;
     }
-    auto* input_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (unsigned long i = 0; i < taskData->inputs_count[0]; i++) {
-      if (*input_ptr > 255 || *input_ptr < 0) {
-        return false;
-      }
-      input_ptr++;
-    }
+    input_ptr++;
   }
   return true;
 }
 
 bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  unsigned int delta = 0;
+  unsigned int num_processes = world.size();
+  unsigned int av_br = 0;
+  double k = 1.5;
+  std::vector<int> send_counts(num_processes, 0);
+  std::vector<int> displacements(num_processes, 0);
+  std::vector<int> output_displacements(num_processes,0);
+  std::vector<int> output_counts(num_processes,0);
+  std::cout << world.rank() << " " << "OK!" << std::endl;
   if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] / world.size();
-  }
-  broadcast(world, delta, 0);
-  if (world.rank() == 0) {
-    // Init vectors
-    for (unsigned long i = 0; i < input_.size(); i = i + 3) {
+    for (size_t i = 0; i < num_processes; i++) {
+      send_counts[i] = input_.size() / world.size();
+      if (i == (size_t)num_processes - 1) {
+        send_counts[i] = input_.size() - i * (input_.size() / world.size());
+      }
+      output_counts[i] = send_counts[i];
+    }
+
+    for (size_t i = 1; i < num_processes; i++) {
+      displacements[i] = displacements[i - 1] + send_counts[i - 1];
+      output_displacements[i] = displacements[i];
+    }
+    for (size_t i = 0; i < num_processes; i++) {
+      std::cout << "Process: " << i << ", send_counts: " << send_counts[i] << ", displacement: " << displacements[i]
+                << std::endl;
+    }
+    for (unsigned long i = 0; i < input_.size(); i += 3) {
       int ValueR = input_[i];
       int ValueG = input_[i + 1];
       int ValueB = input_[i + 2];
-      av_br += (int)(ValueR * 0.299 + ValueG * 0.587 + ValueB * 0.114);
+      av_br += static_cast<int>(ValueR * 0.299 + ValueG * 0.587 + ValueB * 0.114);
     }
     av_br /= input_.size() / 3;
-    palette_.resize(256);
-    double k = 1.5;
-    for (int i = 0; i < 256; i++) {
-      int delta_color = i - av_br;
-      int temp = static_cast<int>(av_br + k * delta_color);
-      palette_[i] = std::clamp(temp, 0, 255);
-    }
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + proc * delta, delta);
-    }
   }
-  local_input_ = std::vector<int>(delta);
+  for (size_t i = 0; i < num_processes; i++) {
+    broadcast(world, send_counts[i], 0);
+    broadcast(world, displacements[i], 0);
+    broadcast(world, output_counts[i], 0);
+    broadcast(world, output_displacements[i], 0);
+  }
+  broadcast(world, av_br, 0);
+  broadcast(world, k, 0);
+  std::cout << world.rank() << " "<< "OK!" << std::endl;
+  world.barrier();
+  std::vector<int> local_input_(send_counts[world.rank()]);
+  std::cout << "Process " << world.rank() << ": scattering " << local_input_.size() << " elements." << std::endl;
+  boost::mpi::scatterv(world, input_.data(), send_counts, displacements, local_input_.data(), local_input_.size(), 0);
+  std::vector<int> local_output_(local_input_.size());
+  for (size_t i = 0; i < local_input_.size(); i++) {
+    int delta_color = local_input_[i] - av_br;
+    int temp = static_cast<int>(av_br + k * delta_color);
+    local_output_[i] = std::clamp(temp, 0, 255);
+  }
+  std::cout << world.rank() << " " << "OK!" << std::endl;
+  boost::mpi::gatherv(world, local_output_.data(), local_output_.size(), output_.data(), output_counts,
+                      output_displacements, 0);
+  std::cout << "Process " << world.rank() << ": gathered " << local_output_.size() << " elements." << std::endl;
+
   if (world.rank() == 0) {
-    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
-  } else {
-    world.recv(0, 0, local_input_.data(), delta);
+    std::cout << "Process 0: Output data collected. Size: " << output_.size() << std::endl;
   }
-  std::vector<int> local_output_;
-  for (size_t i = 0; i < local_output_.size(); i++) {
-    local_output_[i] = palette_[local_input_[i]];
-  }
-  reduce(world, local_output_, output_, std::plus(), 0);
+
   return true;
 }
 
