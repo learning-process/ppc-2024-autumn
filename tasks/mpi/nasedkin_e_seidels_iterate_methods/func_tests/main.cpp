@@ -26,7 +26,7 @@ TEST(nasedkin_e_seidels_iterate_methods_mpi, test_with_invalid_input) {
 
 TEST(nasedkin_e_seidels_iterate_methods_mpi, test_with_negative_input) {
     auto taskData = std::make_shared<ppc::core::TaskData>();
-    taskData->inputs_count.push_back(-3);
+    taskData->inputs_count.push_back(static_cast<int>(-3));
 
     nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI seidel_task(taskData);
 
