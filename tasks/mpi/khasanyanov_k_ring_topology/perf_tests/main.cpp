@@ -9,7 +9,8 @@ TEST(khasanyanov_k_ring_topology_mpi, test_pipeline_run) {
     SUCCEED();
     return;
   }
-  const int size = 1000;
+  // prime size
+  const int size = 2039;
   const std::vector<int> in_data = khasanyanov_k_ring_topology_mpi::generate_random_vector<int>(size, -500, 500);
   std::vector<int> out_data(in_data);
   std::vector<int> order(world.size());
@@ -45,7 +46,8 @@ TEST(khasanyanov_k_ring_topology_mpi, test_task_run) {
     SUCCEED();
     return;
   }
-  const int size = 1000;
+  // size 2^n
+  const int size = 2048;
   const std::vector<int> in_data = khasanyanov_k_ring_topology_mpi::generate_random_vector<int>(size, -500, 500);
   std::vector<int> out_data(in_data);
   std::vector<int> order(world.size());
