@@ -7,7 +7,7 @@
 
 #include "core/task/include/task.hpp"
 
-int makeLinCoords(int x, int y, int xSize);
+int mkLinCoordddm(int x, int y, int xSize);
 
 std::vector<double> genElementaryMatrix(int rows, int columns);
 

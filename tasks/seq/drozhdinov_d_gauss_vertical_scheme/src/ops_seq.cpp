@@ -5,7 +5,7 @@
 
 using namespace std::chrono_literals;
 
-int makeLinCoords(int x, int y, int xSize) { return y * xSize + x; }
+int mkLinCoordddm(int x, int y, int xSize) { return y * xSize + x; }
 
 std::vector<double> genElementaryMatrix(int rows, int columns) {
   std::vector<double> res;
@@ -58,8 +58,8 @@ bool drozhdinov_d_gauss_vertical_scheme_seq::TestTaskSequential::run() {
     double max = 0;
     int index = 0;
     for (int j = 0; j < rows; j++) {
-      if ((fabs(coefs[makeLinCoords(j, i, columns)]) >= fabs(max)) && (!major[j])) {
-        max = coefs[makeLinCoords(j, i, columns)];
+      if ((fabs(coefs[mkLinCoordddm(j, i, columns)]) >= fabs(max)) && (!major[j])) {
+        max = coefs[mkLinCoordddm(j, i, columns)];
         index = j;
       }
     }
@@ -68,13 +68,13 @@ bool drozhdinov_d_gauss_vertical_scheme_seq::TestTaskSequential::run() {
     for (int ii = 0; ii < rows; ii++) {
       current[ii] = 0;
       if (!major[ii]) {
-        current[ii] = coefs[makeLinCoords(i, ii, columns)] / coefs[makeLinCoords(i, index, columns)];
+        current[ii] = coefs[mkLinCoordddm(i, ii, columns)] / coefs[mkLinCoordddm(i, index, columns)];
       }
     }
     for (int row = 0; row < rows; row++) {
       for (int column = 0; column < columns; column++) {
         if (!major[row]) {
-          coefs[makeLinCoords(column, row, columns)] -= coefs[makeLinCoords(column, index, columns)] * current[row];
+          coefs[mkLinCoordddm(column, row, columns)] -= coefs[mkLinCoordddm(column, index, columns)] * current[row];
         }
       }
       if (!major[row]) {
@@ -91,9 +91,9 @@ bool drozhdinov_d_gauss_vertical_scheme_seq::TestTaskSequential::run() {
   for (int m = rows - 1; m >= 0; m--) {
     elem = 0;
     for (int n = m + 1; n < rows; n++) {
-      elem += result[n] * coefs[makeLinCoords(n, row_number[m], columns)];
+      elem += result[n] * coefs[mkLinCoordddm(n, row_number[m], columns)];
     }
-    result[m] = (b[row_number[m]] - elem) / coefs[makeLinCoords(m, row_number[m], columns)];
+    result[m] = (b[row_number[m]] - elem) / coefs[mkLinCoordddm(m, row_number[m], columns)];
   }
   for (auto v : result) {
     x.push_back(v);

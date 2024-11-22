@@ -12,9 +12,9 @@
 
 using namespace std::chrono_literals;
 
-int makeLinCoords(int x, int y, int xSize) { return y * xSize + x; }
+int mkLinCoordddm(int x, int y, int xSize) { return y * xSize + x; }
 
-std::vector<double> drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel::GaussVeticalScheme(
+std::vector<double> drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel::GaussVerticalScheme(
     const std::vector<double>& matrix, int rows, int cols, const std::vector<double>& vec) {
   std::vector<double> b(rows);
   b = vec;
@@ -45,7 +45,7 @@ std::vector<double> drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel:
     }
     for (int row = 0; row < rows; row++) {
       for (int col_count = 0; col_count < delta + proc_r; col_count++) {
-        local_coefs[makeLinCoords(row, col_count, cols)] = matrix[makeLinCoords(col_count * world.size(), row, cols)];
+        local_coefs[mkLinCoordddm(row, col_count, cols)] = matrix[mkLinCoordddm(col_count * world.size(), row, cols)];
       }
     }
   } else {
@@ -64,9 +64,9 @@ std::vector<double> drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel:
       double max = 0.0;
       int index = 0;
       for (int lcol = 0; lcol < rows; lcol++) {
-        if ((fabs(local_coefs[makeLinCoords(lcol, (curcol / world.size()), rows)]) >= fabs(max)) &&
+        if ((fabs(local_coefs[mkLinCoordddm(lcol, (curcol / world.size()), rows)]) >= fabs(max)) &&
             (major[lcol] == -1)) {
-          max = local_coefs[makeLinCoords(lcol, (curcol / world.size()), rows)];
+          max = local_coefs[mkLinCoordddm(lcol, (curcol / world.size()), rows)];
           index = lcol;
         }
       }
@@ -75,8 +75,8 @@ std::vector<double> drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel:
       for (int k = 0; k < rows; k++) {
         current[k] = 0.0;
         if (major[k] == -1) {
-          current[k] = local_coefs[makeLinCoords(k, (curcol / world.size()), rows)] /
-                       local_coefs[makeLinCoords(index, (curcol / world.size()), rows)];
+          current[k] = local_coefs[mkLinCoordddm(k, (curcol / world.size()), rows)] /
+                       local_coefs[mkLinCoordddm(index, (curcol / world.size()), rows)];
         }
       }
     }
@@ -86,12 +86,12 @@ std::vector<double> drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel:
     broadcast(world, row_number, rows, root);
     for (int lrow = 0; lrow < delta + proc_r; lrow++) {
       for (int lcol = 0; lcol < rows; lcol++) {
-        if ((major[lcol] == -1) || (fabs(local_coefs[makeLinCoords(lcol, lrow, rows)]) < GAMMA)) {
-          local_coefs[makeLinCoords(lcol, lrow, rows)] -=
-              current[lcol] * local_coefs[makeLinCoords(row_number[curcol], lrow, rows)];
-          local_coefs[makeLinCoords(lcol, lrow, rows)] = (fabs(local_coefs[makeLinCoords(lcol, lrow, rows)]) < GAMMA
+        if ((major[lcol] == -1) || (fabs(local_coefs[mkLinCoordddm(lcol, lrow, rows)]) < GAMMA)) {
+          local_coefs[mkLinCoordddm(lcol, lrow, rows)] -=
+              current[lcol] * local_coefs[mkLinCoordddm(row_number[curcol], lrow, rows)];
+          local_coefs[mkLinCoordddm(lcol, lrow, rows)] = (fabs(local_coefs[mkLinCoordddm(lcol, lrow, rows)]) < GAMMA
                                                               ? 0
-                                                              : local_coefs[makeLinCoords(lcol, lrow, rows)]);
+                                                              : local_coefs[mkLinCoordddm(lcol, lrow, rows)]);
         }
       }
     }
@@ -198,8 +198,8 @@ bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskSequential::run() {
     double max = 0;
     int index = 0;
     for (int j = 0; j < rows; j++) {
-      if ((fabs(coefs[makeLinCoords(j, i, columns)]) >= fabs(max)) && (!major[j])) {
-        max = coefs[makeLinCoords(j, i, columns)];
+      if ((fabs(coefs[mkLinCoordddm(j, i, columns)]) >= fabs(max)) && (!major[j])) {
+        max = coefs[mkLinCoordddm(j, i, columns)];
         index = j;
       }
     }
@@ -208,13 +208,13 @@ bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskSequential::run() {
     for (int ii = 0; ii < rows; ii++) {
       current[ii] = 0;
       if (!major[ii]) {
-        current[ii] = coefs[makeLinCoords(i, ii, columns)] / coefs[makeLinCoords(i, index, columns)];
+        current[ii] = coefs[mkLinCoordddm(i, ii, columns)] / coefs[mkLinCoordddm(i, index, columns)];
       }
     }
     for (int row = 0; row < rows; row++) {
       for (int column = 0; column < columns; column++) {
         if (!major[row]) {
-          coefs[makeLinCoords(column, row, columns)] -= coefs[makeLinCoords(column, index, columns)] * current[row];
+          coefs[mkLinCoordddm(column, row, columns)] -= coefs[mkLinCoordddm(column, index, columns)] * current[row];
         }
       }
       if (!major[row]) {
@@ -231,9 +231,9 @@ bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskSequential::run() {
   for (int m = rows - 1; m >= 0; m--) {
     elem = 0;
     for (int n = m + 1; n < rows; n++) {
-      elem += result[n] * coefs[makeLinCoords(n, row_number[m], columns)];
+      elem += result[n] * coefs[mkLinCoordddm(n, row_number[m], columns)];
     }
-    result[m] = (b[row_number[m]] - elem) / coefs[makeLinCoords(m, row_number[m], columns)];
+    result[m] = (b[row_number[m]] - elem) / coefs[mkLinCoordddm(m, row_number[m], columns)];
   }
   for (auto v : result) {
     x.push_back(v);
@@ -289,7 +289,7 @@ bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel::validation() {
 
 bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  _x = GaussVeticalScheme(_coefs, _rows, _columns, _b);
+  _x = GaussVerticalScheme(_coefs, _rows, _columns, _b);
   return true;
 }
 
