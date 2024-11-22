@@ -54,6 +54,19 @@ TEST(DiningPhilosophersMPI, Test_with_1_philosopher) {
   ASSERT_FALSE(dining_task.validation());
 }
 
+TEST(DiningPhilosophersMPI, Test_with_negative_size_philosophers) {
+  boost::mpi::communicator world;
+
+  int num_philosophers = -3;
+
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.push_back(num_philosophers);
+
+  beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<int> dining_task(taskData);
+
+  ASSERT_FALSE(dining_task.validation());
+}
+
 TEST(DiningPhilosophersMPI, Test_with_2_philosophers) {
   boost::mpi::communicator world;
   if (world.size() >= 2) {
