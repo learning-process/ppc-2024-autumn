@@ -21,7 +21,7 @@ bool SeidelIterateMethodsMPI::pre_processing() {
     for (int j = 0; j < n; ++j) {
       A[i][j] = (i == j) ? 2.0 : 1.0;
     }
-  b[i] = n + 1;
+    b[i] = n + 1;
   }
 
   return true;
@@ -50,18 +50,18 @@ bool SeidelIterateMethodsMPI::run() {
       x_new[i] = b[i];
       for (int j = 0; j < n; ++j) {
         if (i != j) {
-          x_new[i] -= A[i][j] * x[j];
-        }
+            x_new[i] -= A[i][j] * x[j];
+          }
       }
     x_new[i] /= A[i][i];
   }
 
-  if (converge(x_new)) {
-    break;
-  }
+    if (converge(x_new)) {
+      break;
+    }
 
-  x = x_new;
-  ++iteration;
+    x = x_new;
+    ++iteration;
   }
 
   return true;
