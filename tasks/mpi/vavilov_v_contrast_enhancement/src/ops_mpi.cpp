@@ -5,7 +5,7 @@ bool vavilov_v_contrast_enhancement_mpi::TestMPITaskSequential::pre_processing()
 
   size_t data_size = taskData->inputs_count[0];
   input_.resize(data_size);
-  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+  auto* tmp_ptr = reinterpret_cast<uint8_t*>(taskData->inputs[0]);
   std::copy(tmp_ptr, tmp_ptr + data_size, input_.begin());
 
   output_.resize(data_size, 0);
@@ -31,7 +31,7 @@ bool vavilov_v_contrast_enhancement_mpi::TestMPITaskSequential::run() {
   }
 
   for (size_t i = 0; i < input_.size(); ++i) {
-    output_[i] = static_cast<int>(static_cast<double>(input_[i] - p_min_) * 255 / (p_max_ - p_min_));
+    output_[i] = static_cast<uint8_t>(static_cast<double>(input_[i] - p_min_) * 255 / (p_max_ - p_min_));
   }
   return true;
 }
@@ -39,7 +39,7 @@ bool vavilov_v_contrast_enhancement_mpi::TestMPITaskSequential::run() {
 bool vavilov_v_contrast_enhancement_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
 
-  std::copy(output_.begin(), output_.end(), reinterpret_cast<int*>(taskData->outputs[0]));
+  std::copy(output_.begin(), output_.end(), reinterpret_cast<uint8_t*>(taskData->outputs[0]));
   return true;
 }
 
@@ -69,7 +69,7 @@ bool vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel::run() {
 
   if (world.rank() == 0) {
     input_.resize(total_size);
-    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+    auto* tmp_ptr = reinterpret_cast<uint8_t*>(taskData->inputs[0]);
     std::copy(tmp_ptr, tmp_ptr + total_size, input_.begin());
   }
 
@@ -101,7 +101,7 @@ bool vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel::run() {
     std::fill(local_input_.begin(), local_input_.end(), 0);
   } else {
     for (auto& pixel : local_input_) {
-      pixel = static_cast<int>(static_cast<double>(pixel - p_min_global_) * 255 / (p_max_global_ - p_min_global_));
+      pixel = static_cast<uint8_t>(static_cast<double>(pixel - p_min_global_) * 255 / (p_max_global_ - p_min_global_));
     }
   }
 
@@ -117,7 +117,7 @@ bool vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel::post_processing() 
   internal_order_test();
 
   if (world.rank() == 0) {
-    std::copy(output_.begin(), output_.end(), reinterpret_cast<int*>(taskData->outputs[0]));
+    std::copy(output_.begin(), output_.end(), reinterpret_cast<uint8_t*>(taskData->outputs[0]));
   }
   return true;
 }
