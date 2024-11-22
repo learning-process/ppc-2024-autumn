@@ -205,7 +205,7 @@ TEST(kolodkin_g_image_contrast_MPI, Test_image_two_pixels) {
     }
   }
 }
-/* TEST(kolodkin_g_image_contrast_MPI, Test_incorrect_color_image) {
+TEST(kolodkin_g_image_contrast_MPI, Test_incorrect_color_image) {
   boost::mpi::communicator world;
   std::vector<int> image;
 
@@ -244,7 +244,7 @@ TEST(kolodkin_g_image_contrast_MPI, Test_image_two_pixels) {
     kolodkin_g_image_contrast_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
     ASSERT_EQ(testTaskSequential.validation(), false);
   }
-}*/
+}
 TEST(kolodkin_g_image_contrast_MPI, Test_big_image) {
   boost::mpi::communicator world;
   std::vector<int> image;
