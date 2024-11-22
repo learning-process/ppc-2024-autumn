@@ -18,6 +18,8 @@ bool beresnev_a_increase_contrast_seq::TestTaskSequential::validation() {
   internal_order_test();
   auto* buffer = taskData->inputs[0];
   auto buffer_size = taskData->inputs_count[0];
+  if (buffer == nullptr || buffer_size == 0) return false;
+
   std::stringstream format;
   size_t pos = 0;
   while (buffer[pos] == ' ' || buffer[pos] == '\n') ++pos;
