@@ -13,8 +13,8 @@ TEST(vavilov_v_contrast_enhancement_mpi, test_task_run) {
   size_t data_size = 100000;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  std::vector<int> input(data_size, 128);
-  std::vector<int> output(input.size());
+  std::vector<uint8_t> input(data_size, 128);
+  std::vector<uint8_t> output(input.size());
 
   if (world.rank() == 0) {
     taskDataPar->inputs_count.emplace_back(input.size());
@@ -53,8 +53,8 @@ TEST(vavilov_v_contrast_enhancement_mpi, test_pipeline_run) {
   size_t data_size = 100000;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  std::vector<int> input(data_size, 128);
-  std::vector<int> output(input.size());
+  std::vector<uint8_t> input(data_size, 128);
+  std::vector<uint8_t> output(input.size());
 
   if (world.rank() == 0) {
     taskDataPar->inputs_count.emplace_back(input.size());
