@@ -50,11 +50,11 @@ bool SeidelIterateMethodsMPI::run() {
       x_new[i] = b[i];
       for (int j = 0; j < n; ++j) {
         if (i != j) {
-            x_new[i] -= A[i][j] * x[j];
-          }
+          x_new[i] -= A[i][j] * x[j];
+        }
       }
-    x_new[i] /= A[i][i];
-  }
+      x_new[i] /= A[i][i];
+    }
 
     if (converge(x_new)) {
       break;
