@@ -54,7 +54,7 @@ bool drozhdinov_d_gauss_vertical_scheme_seq::TestTaskSequential::run() {
     major.push_back(0);
     row_number.push_back(0);
   }
-  for (int i = 0; i < columns; i++) {  //????
+  for (int i = 0; i < columns; i++) {
     double max = 0;
     int index = 0;
     for (int j = 0; j < rows; j++) {

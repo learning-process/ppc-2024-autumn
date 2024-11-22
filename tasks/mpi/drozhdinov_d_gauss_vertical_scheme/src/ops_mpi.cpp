@@ -28,7 +28,6 @@ std::vector<double> drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel:
     }
   }
   scatter(world, rs, proc_r, 0);
-  // MPI_Scatter(rs, 1, MPI_INT, &proc_r, 1, MPI_INT, 0, MPI_COMM_WORLD);
   std::vector<double> local_coefs((delta + proc_r) * rows);
   std::vector<double> current(rows);
   int* row_number = new int[rows];
@@ -195,7 +194,7 @@ bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskSequential::run() {
     major.push_back(0);
     row_number.push_back(0);
   }
-  for (int i = 0; i < columns; i++) {  //????
+  for (int i = 0; i < columns; i++) {
     double max = 0;
     int index = 0;
     for (int j = 0; j < rows; j++) {

@@ -170,10 +170,3 @@ TEST(Sequential, WrongValidationTest2) {
   drozhdinov_d_gauss_vertical_scheme_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), false);
 }
-
-/*
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}
-*/
