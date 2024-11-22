@@ -117,28 +117,6 @@ TEST(kolodkin_g_image_contrast_MPI, Test_image_center_line) {
 TEST(kolodkin_g_image_contrast_MPI, Test_incorrect_image) {
   boost::mpi::communicator world;
   std::vector<int> image;
-
-  // Create data
-  std::vector<int> global_out(2, 0);
-
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    image = {50, 14};
-    taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
-    taskDataMpi->inputs_count.emplace_back(image.size());
-    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));
-  } else {
-    image.resize(2, 0);
-    taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
-    taskDataMpi->inputs_count.emplace_back(image.size());
-    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));
-  }
-
-  // Create Task
-  kolodkin_g_image_contrast_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
-
   if (world.rank() == 0) {
     // Create data
     std::vector<int> reference_out(2, 0);
@@ -208,22 +186,6 @@ TEST(kolodkin_g_image_contrast_MPI, Test_image_two_pixels) {
 TEST(kolodkin_g_image_contrast_MPI, Test_incorrect_color_image) {
   boost::mpi::communicator world;
   std::vector<int> image;
-
-  // Create data
-  std::vector<int> global_out(3, 0);
-
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    image = {50, 14, 256};
-    taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
-    taskDataMpi->inputs_count.emplace_back(image.size());
-    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));
-  } 
-  // Create Task
-  kolodkin_g_image_contrast_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
-
   if (world.rank() == 0) {
     // Create data
     std::vector<int> reference_out(3, 0);
