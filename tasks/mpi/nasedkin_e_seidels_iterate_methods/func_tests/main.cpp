@@ -15,7 +15,6 @@ TEST(nasedkin_e_seidels_iterate_methods_mpi, test_with_valid_input) {
   ASSERT_TRUE(seidel_task.post_processing()) << "Post-processing failed";
 }
 
-
 TEST(nasedkin_e_seidels_iterate_methods_mpi, test_with_invalid_input) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs_count.push_back(0);
