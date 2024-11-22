@@ -17,7 +17,7 @@ namespace kolodkin_g_image_contrast_mpi {
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) av_br(0) {}
+  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) av_br(0) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
