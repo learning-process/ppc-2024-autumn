@@ -212,6 +212,8 @@ bool kolokolova_d_gaussian_method_horizontal_mpi::TestMPITaskParallel::run() {
     }
     size_row = int(matrix_argum.size()) / count_equations;
     count_row_proc = count_equations / proc_size;
+    remainder = count_equations % proc_size;
+    count_row_proc += remainder;
   }
 
   // Send data to all proc

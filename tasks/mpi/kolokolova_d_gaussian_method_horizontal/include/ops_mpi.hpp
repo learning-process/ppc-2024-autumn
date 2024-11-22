@@ -50,6 +50,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   std::vector<double> matrix_argum;
   std::vector<double> local_max_row;
   std::vector<double> res_matrix;
+  int remainder = 0;
   int count_equations = 0;
   int size_row = 0;
   int count_row_proc = 0;
