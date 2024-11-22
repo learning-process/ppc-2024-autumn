@@ -25,7 +25,11 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
     }
 
     bool SeidelIterateMethodsMPI::validation() {
-        return n > 0;
+        if (n <= 0) {
+            std::cerr << "Invalid input: n must be greater than 0" << std::endl;
+            return false;
+        }
+        return true;
     }
 
     bool SeidelIterateMethodsMPI::run() {
