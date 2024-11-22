@@ -94,6 +94,7 @@ bool sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel::run() {
       if (proc == world.size() - 1 && delta != 0) {
         world.send(proc, 0, matrix.data() + proc * rows_count * (delta), rows_count * (delta + last_column));
       }
+      std::cout << "Send " << proc<< std::endl;
     }
   }
   if (delta != 0) {
@@ -106,11 +107,13 @@ bool sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel::run() {
     local_input = std::vector<int>(matrix.begin(), matrix.begin() + rows_count * delta);
 
   } else if (world.rank() > 0 && delta != 0) {
-    world.recv(0, 0, local_input.data(),
-               (world.rank() != world.size() - 1) ? rows_count * delta : rows_count * (delta + last_column));
+    //world.recv(0, 0, local_input.data(),
+              // (world.rank() != world.size() - 1) ? rows_count * delta : rows_count * (delta + last_column));
+    std::cout<<"Recive " << world.rank() << std::endl;
   }
   size_t size = delta != 0 ? local_input.size() / rows_count : local_input.size();
   std::vector<int> intermediate_res;
+  std::cout << "Work" << world.rank() << std::endl;
   if (delta != 0) {
     intermediate_res = calculate(size);
   }
