@@ -11,10 +11,12 @@ TEST(morozov_e_writers_readers, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> data = std::make_shared<ppc::core::TaskData>();
   std::vector<int> vec{0};
   int countIteration = 100;
+  int cur_value = 20;
   std::vector<int> ans{1};
   if (world.rank() == 0) {
     data->inputs.emplace_back(reinterpret_cast<uint8_t*>(vec.data()));
     data->inputs.emplace_back(reinterpret_cast<uint8_t*>(new int{countIteration}));
+    data->inputs.emplace_back(reinterpret_cast<uint8_t*>(new int{cur_value}));
     data->inputs_count.emplace_back(vec.size());
     data->outputs.emplace_back(reinterpret_cast<uint8_t*>(ans.data()));
     data->outputs_count.emplace_back(ans.size());
@@ -46,12 +48,14 @@ TEST(morozov_e_writers_readers, test_task_run) {
   boost::mpi::communicator world;
   std::vector<int> vec{0};
   int countIteration = 100;
+  int cur_value = 100;
   std::vector<int> ans{1};
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> data = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     data->inputs.emplace_back(reinterpret_cast<uint8_t*>(vec.data()));
     data->inputs.emplace_back(reinterpret_cast<uint8_t*>(new int{countIteration}));
+    data->inputs.emplace_back(reinterpret_cast<uint8_t*>(new int{cur_value}));
     data->inputs_count.emplace_back(vec.size());
     data->outputs.emplace_back(reinterpret_cast<uint8_t*>(ans.data()));
     data->outputs_count.emplace_back(ans.size());

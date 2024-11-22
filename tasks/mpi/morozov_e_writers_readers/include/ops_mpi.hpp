@@ -22,6 +22,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
   int countIteration{};
+  int value{};
 
  private:
   int curValue{};

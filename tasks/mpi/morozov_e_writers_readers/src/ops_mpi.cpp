@@ -17,8 +17,10 @@ bool morozov_e_writers_readers::TestMPITaskParallel::pre_processing() {
   if (world.rank() == 0) {
     curValue = reinterpret_cast<int*>(taskData->inputs[0])[0];
     countIteration = reinterpret_cast<int*>(taskData->inputs[1])[0];
+    value = reinterpret_cast<int*>(taskData->inputs[2])[0];
   }
   broadcast(world, countIteration, 0);
+  broadcast(world, value, 0);
   return true;
 }
 
@@ -35,18 +37,18 @@ bool morozov_e_writers_readers::TestMPITaskParallel::run() {
       }
     }
   } else {
-    int value;
+    int cur_value;
     for (int i = 0; i < countIteration; i++) {
       if (world.size() % 2 != 0 || world.rank() != world.size() - 1) {
         if (world.rank() % 2 == 1) {
-          value = -1;  // Нечетные потоки уменьшают значение
+          cur_value = -value;  // Нечетные потоки уменьшают значение
         } else {
-          value = 1;  // Четные потоки увеличивают значение
+          cur_value = value;  // Четные потоки увеличивают значение
         }
-        world.send(0, 0, &value, 1);
+        world.send(0, 0, &cur_value, 1);
       } else {
-        value = 0;
-        world.send(0, 0, &value, 1);
+        cur_value = 0;
+        world.send(0, 0, &cur_value, 1);
       }
     }
   }
