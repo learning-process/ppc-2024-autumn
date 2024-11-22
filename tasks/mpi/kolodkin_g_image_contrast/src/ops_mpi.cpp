@@ -98,8 +98,8 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::run() {
   double k = 1.5;
   std::vector<int> send_counts(num_processes, 0);
   std::vector<int> displacements(num_processes, 0);
-  std::vector<int> output_displacements(num_processes,0);
-  std::vector<int> output_counts(num_processes,0);
+  std::vector<int> output_displacements(num_processes, 0);
+  std::vector<int> output_counts(num_processes, 0);
   if (world.rank() == 0) {
     for (size_t i = 0; i < num_processes; i++) {
       send_counts[i] = input_.size() / world.size();
