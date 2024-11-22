@@ -89,6 +89,7 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::validation() {
       }
       input_ptr++;
     }
+    return true;
   }
   return true;
 }
