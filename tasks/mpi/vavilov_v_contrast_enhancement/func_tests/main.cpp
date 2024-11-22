@@ -8,7 +8,7 @@ namespace mpi = boost::mpi;
 
 std::vector<uint8_t> generate_random_vector(size_t size, uint8_t min_value, uint8_t max_value) {
   std::vector<uint8_t> vec(size);
-  for (auto& val : vec) {
+  for (auto &val : vec) {
     val = static_cast<uint8_t>(min_value + std::rand() % (max_value - min_value + 1));
   }
   return vec;
@@ -112,16 +112,16 @@ TEST(vavilov_v_contrast_enhancement_mpi, RandomContrastEnhancement) {
   std::vector<uint8_t> output(input.size());
   std::vector<uint8_t> expected_output(input.size());
 
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
   taskDataPar->inputs_count.emplace_back(input.size());
 
-  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
   taskDataPar->outputs_count.emplace_back(output.size());
 
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
   taskDataSeq->inputs_count.emplace_back(input.size());
 
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(expected_output.data()));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(expected_output.data()));
   taskDataSeq->outputs_count.emplace_back(expected_output.size());
 
   vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
