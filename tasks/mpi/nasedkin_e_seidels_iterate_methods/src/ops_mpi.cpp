@@ -29,8 +29,13 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
             std::cerr << "Invalid input: n must be greater than 0" << std::endl;
             return false;
         }
+        if (taskData->inputs_count.empty()) {
+            std::cerr << "Invalid input: inputs_count is empty" << std::endl;
+            return false;
+        }
         return true;
     }
+
 
     bool SeidelIterateMethodsMPI::run() {
         std::vector<double> x_new(n, 0.0);
