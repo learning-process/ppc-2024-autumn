@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "seq/solovyev_d_vector_max/include/header.hpp"
-
+namespace solovyev_d_vector_max_mpi {
 std::vector<int> getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -14,7 +14,7 @@ std::vector<int> getRandomVector(int sz) {
   }
   return vec;
 }
-
+}  // namespace solovyev_d_vector_max_mpi
 TEST(solovyev_d_vector_max_mpi, Test_Empty) {
   // Create data
   std::vector<int> in(0, 0);
@@ -36,7 +36,7 @@ TEST(solovyev_d_vector_max_mpi, Test_Max_10) {
   const int count = 10;
 
   // Create data
-  std::vector<int> in = getRandomVector(count);
+  std::vector<int> in = solovyev_d_vector_max_mpi::getRandomVector(count);
   in[count / 2] = 1024;
   std::vector<int> out(1, 0);
 
@@ -60,7 +60,7 @@ TEST(solovyev_d_vector_max_mpi, Test_Max_100) {
   const int count = 20;
 
   // Create data
-  std::vector<int> in = getRandomVector(count);
+  std::vector<int> in = solovyev_d_vector_max_mpi::getRandomVector(count);
   in[count / 2] = 1024;
   std::vector<int> out(1, 0);
 
@@ -84,7 +84,7 @@ TEST(solovyev_d_vector_max_mpi, Test_Max_1000) {
   const int count = 50;
 
   // Create data
-  std::vector<int> in = getRandomVector(count);
+  std::vector<int> in = solovyev_d_vector_max_mpi::getRandomVector(count);
   in[count / 2] = 1024;
   std::vector<int> out(1, 0);
 
@@ -108,7 +108,7 @@ TEST(solovyev_d_vector_max_mpi, Test_Max_10000) {
   const int count = 70;
 
   // Create data
-  std::vector<int> in = getRandomVector(count);
+  std::vector<int> in = solovyev_d_vector_max_mpi::getRandomVector(count);
   in[count / 2] = 1024;
   std::vector<int> out(1, 0);
 
@@ -132,7 +132,7 @@ TEST(solovyev_d_vector_max_mpi, Test_Max_100000) {
   const int count = 100;
 
   // Create data
-  std::vector<int> in = getRandomVector(count);
+  std::vector<int> in = solovyev_d_vector_max_mpi::getRandomVector(count);
   in[count / 2] = 1024;
   std::vector<int> out(1, 0);
 

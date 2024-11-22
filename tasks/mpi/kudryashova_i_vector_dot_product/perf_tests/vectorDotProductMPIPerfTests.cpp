@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
-#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/kudryashova_i_vector_dot_product/include/vectorDotProductMPI.hpp"
