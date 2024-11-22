@@ -1,5 +1,7 @@
 #include "seq/chernykh_a_adjust_image_contrast/include/ops_seq.hpp"
 
+#include <algorithm>
+
 namespace chernykh_a_adjust_image_contrast_seq {
 
 bool SequentialTask::validation() {
@@ -21,9 +23,8 @@ bool SequentialTask::pre_processing() {
 
 bool SequentialTask::run() {
   internal_order_test();
-  for (size_t i = 0; i < input.size(); i++) {
-    result[i] = input[i].with_contrast(contrast_factor);
-  }
+  std::transform(input.begin(), input.end(), result.begin(),
+                 [this](const Pixel& p) { return p.with_contrast(contrast_factor); });
   return true;
 }
 

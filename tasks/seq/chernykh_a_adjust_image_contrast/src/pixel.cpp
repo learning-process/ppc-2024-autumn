@@ -2,8 +2,9 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
 #include <iomanip>
-#include <iostream>
+#include <ostream>
 #include <sstream>
 #include <vector>
 
@@ -36,8 +37,8 @@ std::ostream& operator<<(std::ostream& os, const Pixel& pixel) {
 }
 
 std::vector<Pixel> hex_colors_to_pixels(const std::vector<uint32_t>& hex_colors) {
-  auto pixels = std::vector<Pixel>();
-  std::transform(hex_colors.begin(), hex_colors.end(), std::back_inserter(pixels), Pixel::from_hex_color);
+  auto pixels = std::vector<Pixel>(hex_colors.size());
+  std::transform(hex_colors.begin(), hex_colors.end(), pixels.begin(), Pixel::from_hex_color);
   return pixels;
 }
 

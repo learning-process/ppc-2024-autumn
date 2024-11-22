@@ -1,5 +1,8 @@
 #include <gtest/gtest.h>
 
+#include <cstddef>
+#include <cstdint>
+#include <memory>
 #include <vector>
 
 #include "seq/chernykh_a_adjust_image_contrast/include/ops_seq.hpp"

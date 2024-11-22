@@ -1,6 +1,7 @@
 #pragma once
 
-#include <iostream>
+#include <cstdint>
+#include <ostream>
 #include <vector>
 
 namespace chernykh_a_adjust_image_contrast_seq {
