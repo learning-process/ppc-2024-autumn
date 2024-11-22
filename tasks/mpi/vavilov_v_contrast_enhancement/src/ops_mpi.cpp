@@ -87,10 +87,6 @@ bool vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel::run() {
 
   boost::mpi::scatterv(world, input_.data(), counts, displs, local_input_.data(), local_size, 0);
 
-  if (local_input_.empty()) {
-    return false;
-  }
-
   p_min_local_ = *std::min_element(local_input_.begin(), local_input_.end());
   p_max_local_ = *std::max_element(local_input_.begin(), local_input_.end());
 
