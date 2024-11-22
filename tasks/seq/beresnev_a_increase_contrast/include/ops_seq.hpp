@@ -22,4 +22,4 @@ class TestTaskSequential : public ppc::core::Task {
   std::vector<uint8_t> inp_, res_, out_;
 };
 
-}  // namespace beresnev_a_min_values_by_matrix_columns_seq
+}  // namespace beresnev_a_increase_contrast_seq
