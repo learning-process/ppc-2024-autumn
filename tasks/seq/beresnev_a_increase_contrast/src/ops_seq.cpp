@@ -22,8 +22,8 @@ bool beresnev_a_increase_contrast_seq::TestTaskSequential::validation() {
   size_t pos = 0;
   while (buffer[pos] == ' ' || buffer[pos] == '\n') ++pos;
 
-  while (buffer[pos] != '\n' && ((buffer[pos] >= '0' && buffer[pos] <= '9') ||
-         (buffer[pos] >= 'A' && buffer[pos] <= 'Z'))) {
+  while (buffer[pos] != '\n' &&
+         ((buffer[pos] >= '0' && buffer[pos] <= '9') || (buffer[pos] >= 'A' && buffer[pos] <= 'Z'))) {
     format << std::string(1, buffer[pos]);
     pos++;
   }
