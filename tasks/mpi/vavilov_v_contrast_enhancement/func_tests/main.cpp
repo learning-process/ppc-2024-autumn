@@ -141,7 +141,7 @@ TEST(vavilov_v_contrast_enhancement_mpi, RandomContrastEnhancement) {
   }
 }
 
-TEST(vavilov_v_contrast_enhancement_mpi, NormalContrastEnhancement) {
+TEST(vavilov_v_contrast_enhancement_mpi, SingleValueInput) {
   mpi::environment env;
   mpi::communicator world;
 
