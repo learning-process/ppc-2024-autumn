@@ -51,7 +51,7 @@ bool drozhdinov_d_gauss_vertical_scheme_seq::TestTaskSequential::run() {
   std::vector<double> result(rows);
   std::vector<double> current(rows);
   for (int i = 0; i < rows; i++) {
-    major.push_back(0);
+    major.push_back(false);
     row_number.push_back(0);
   }
   for (int i = 0; i < columns; i++) {
@@ -63,7 +63,7 @@ bool drozhdinov_d_gauss_vertical_scheme_seq::TestTaskSequential::run() {
         index = j;
       }
     }
-    major[index] = 1;
+    major[index] = true;
     row_number[i] = index;
     for (int ii = 0; ii < rows; ii++) {
       current[ii] = 0;

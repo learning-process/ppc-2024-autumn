@@ -16,8 +16,7 @@ int mkLinCoordddm(int x, int y, int xSize) { return y * xSize + x; }
 
 std::vector<double> drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel::GaussVerticalScheme(
     const std::vector<double>& matrix, int rows, int cols, const std::vector<double>& vec) {
-  std::vector<double> b(rows);
-  b = vec;
+  std::vector<double> b = vec;
   const int delta = cols / world.size();
   const int r = cols % world.size();
   int proc_r = 0;
@@ -30,8 +29,8 @@ std::vector<double> drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel:
   scatter(world, rs, proc_r, 0);
   std::vector<double> local_coefs((delta + proc_r) * rows);
   std::vector<double> current(rows);
-  int* row_number = new int[rows];
-  char* major = new char[rows];
+  std::vector<int> row_number(rows);
+  std::vector<char> major(rows);
   std::vector<double> result(rows);
   for (int row = 0; row < rows; row++) {
     row_number[row] = -1;
@@ -55,7 +54,8 @@ std::vector<double> drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel:
   }
   world.barrier();
 
-  int root, new_root;
+  int root;
+  int new_root;
   for (int curcol = 0; curcol < cols - 1; curcol++) {
     new_root = -1;
     root = -1;
@@ -81,9 +81,9 @@ std::vector<double> drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel:
       }
     }
     all_reduce(world, new_root, root, boost::mpi::maximum<int>());
-    broadcast(world, major, rows, root);  // ok
+    broadcast(world, major.data(), rows, root);  // ok
     broadcast(world, current.data(), rows, root);
-    broadcast(world, row_number, rows, root);
+    broadcast(world, row_number.data(), rows, root);
     for (int lrow = 0; lrow < delta + proc_r; lrow++) {
       for (int lcol = 0; lcol < rows; lcol++) {
         if ((major[lcol] == -1) || (fabs(local_coefs[mkLinCoordddm(lcol, lrow, rows)]) < GAMMA)) {
@@ -191,7 +191,7 @@ bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskSequential::run() {
   std::vector<double> result(rows);
   std::vector<double> current(rows);
   for (int i = 0; i < rows; i++) {
-    major.push_back(0);
+    major.push_back(false);
     row_number.push_back(0);
   }
   for (int i = 0; i < columns; i++) {
@@ -203,7 +203,7 @@ bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskSequential::run() {
         index = j;
       }
     }
-    major[index] = 1;
+    major[index] = true;
     row_number[i] = index;
     for (int ii = 0; ii < rows; ii++) {
       current[ii] = 0;
