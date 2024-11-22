@@ -2,13 +2,7 @@
 #include "mpi/poroshin_v_count_min_val_row_matrix_all_reduce/include/ops_mpi.hpp"
 
 #include <algorithm>
-#include <functional>
-#include <random>
-#include <string>
-#include <thread>
 #include <vector>
-
-using namespace std::chrono_literals;
 
 template <typename T>
 void poroshin_v_count_min_val_row_matrix_all_reduce_mpi::MyTestMPITaskParallel::my_all_reduce(
@@ -161,8 +155,6 @@ bool poroshin_v_count_min_val_row_matrix_all_reduce_mpi::MyTestMPITaskParallel::
       input_[i] = reinterpret_cast<int*>(taskData->inputs[0])[i];
     }
     res.resize(m, 0);
-  } else {
-    ;
   }
 
   broadcast(world, m, 0);
@@ -203,7 +195,6 @@ bool poroshin_v_count_min_val_row_matrix_all_reduce_mpi::MyTestMPITaskParallel::
         ress[((delta * (world.rank() + 1)) / n) - 1] += count;
       }
     }
-    // count = 0;
   }
 
   boost::mpi::reduce(world, ress.data(), m, res.data(), std::plus(), 0);
@@ -308,7 +299,6 @@ bool poroshin_v_count_min_val_row_matrix_all_reduce_mpi::TestMPITaskParallel::ru
         ress[((delta * (world.rank() + 1)) / n) - 1] += count;
       }
     }
-    // count = 0;
   }
 
   boost::mpi::reduce(world, ress.data(), m, res.data(), std::plus(), 0);
