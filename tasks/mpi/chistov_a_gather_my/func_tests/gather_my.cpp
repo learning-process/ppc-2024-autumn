@@ -167,7 +167,7 @@ TEST(chistov_a_gather_my, test_gather_different_values) {
 
 TEST(chistov_a_gather_my, test_count_is_a_powers_of_two) {
   boost::mpi::communicator world;
-  int count = 32;
+  int count = 1024;
   std::vector<int> local_vector = chistov_a_gather_my::getRandomVector<int>(count);
   std::vector<int> my_gathered_vector;
   std::vector<int> mpi_gathered_data;
@@ -181,7 +181,7 @@ TEST(chistov_a_gather_my, test_count_is_a_powers_of_two) {
 
 TEST(chistov_a_gather_my, test_count_is_a_prime_number_gather) {
   boost::mpi::communicator world;
-  int count = 3;
+  int count = 563;
   std::vector<int> local_vector = chistov_a_gather_my::getRandomVector<int>(count);
   std::vector<int> my_gathered_vector;
   std::vector<int> mpi_gathered_data;

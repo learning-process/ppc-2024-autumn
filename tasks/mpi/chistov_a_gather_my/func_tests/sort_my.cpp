@@ -236,7 +236,7 @@ TEST(chistov_a_gather_my, test_sort_different_values) {
 
 TEST(chistov_a_gather_my, test_count_is_a_powers_of_two_sort) {
   boost::mpi::communicator world;
-  const int count_size_vector = 32;
+  const int count_size_vector = 1024;
   std::vector<int> local_vector;
   std::vector<int> vector;
   std::vector<int> gathered_vector(count_size_vector * world.size());
@@ -267,7 +267,7 @@ TEST(chistov_a_gather_my, test_count_is_a_powers_of_two_sort) {
 
 TEST(chistov_a_gather_my, test_count_is_a_prime_number_sort) {
   boost::mpi::communicator world;
-  const int count_size_vector = 3;
+  const int count_size_vector = 563;
   std::vector<int> local_vector;
   std::vector<int> vector;
   std::vector<int> gathered_vector(count_size_vector * world.size());
