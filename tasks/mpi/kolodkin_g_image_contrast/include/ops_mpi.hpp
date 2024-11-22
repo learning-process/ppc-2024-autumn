@@ -28,7 +28,7 @@ class TestMPITaskSequential : public ppc::core::Task {
   std::vector<int> input_;
   std::vector<int> palette_;
   std::vector<int> output_;
-  int av_br;
+  int av_br=0;
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
