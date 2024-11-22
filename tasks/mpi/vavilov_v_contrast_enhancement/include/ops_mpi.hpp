@@ -22,9 +22,9 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> input_;
-  std::vector<int> output_;
-  int p_min_{0}, p_max_{255};
+  std::vector<uint8_t> input_;
+  std::vector<uint8_t> output_;
+  uint8_t p_min_{0}, p_max_{255};
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -38,11 +38,11 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> input_;
-  std::vector<int> local_input_;
-  std::vector<int> output_;
-  int p_min_global_{0}, p_max_global_{255};
-  int p_min_local_{0}, p_max_local_{255};
+  std::vector<uint8_t> input_;
+  std::vector<uint8_t> local_input_;
+  std::vector<uint8_t> output_;
+  uint8_t p_min_global_{0}, p_max_global_{255};
+  uint8_t p_min_local_{0}, p_max_local_{255};
   boost::mpi::communicator world;
 };
 
