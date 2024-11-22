@@ -10,14 +10,18 @@
 #include <limits>
 #include <string>
 #include <vector>
+#include <filesystem>
 
 #include "seq/beresnev_a_increase_contrast/include/ops_seq.hpp"
 
 TEST(beresnev_a_increase_contrast_seq, Test_File) {
   double factor = 2.5;
 
-  const std::string input_file = "../tasks/seq/beresnev_a_increase_contrast/input.ppm";
-  const std::string ans_file = "../tasks/seq/beresnev_a_increase_contrast/o.ppm";
+  std::filesystem::path currentPath = std::filesystem::current_path();
+  std::cerr << currentPath << std::endl;
+
+  const std::string input_file = "tasks/seq/beresnev_a_increase_contrast/input.ppm";
+  const std::string ans_file = "tasks/seq/beresnev_a_increase_contrast/o.ppm";
 
   std::ifstream infile(input_file, std::ios::binary);
   ASSERT_EQ(!infile, false) << "Error: file not found in!" << std::endl;
