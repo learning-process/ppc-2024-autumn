@@ -128,11 +128,6 @@ TEST(kolodkin_g_image_contrast_MPI, Test_incorrect_image) {
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
     taskDataMpi->inputs_count.emplace_back(image.size());
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));
-  } else {
-    image.resize(2, 0);
-    taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
-    taskDataMpi->inputs_count.emplace_back(image.size());
-    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));
   }
 
   // Create Task
@@ -219,13 +214,7 @@ TEST(kolodkin_g_image_contrast_MPI, Test_incorrect_color_image) {
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
     taskDataMpi->inputs_count.emplace_back(image.size());
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));
-  } else {
-    image.resize(3, 0);
-    taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
-    taskDataMpi->inputs_count.emplace_back(image.size());
-    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));
-  }
-
+  } 
   // Create Task
   kolodkin_g_image_contrast_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
   ASSERT_EQ(testMpiTaskParallel.validation(), false);
