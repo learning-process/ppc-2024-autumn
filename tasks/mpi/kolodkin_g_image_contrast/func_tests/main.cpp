@@ -7,60 +7,6 @@
 
 #include "mpi/kolodkin_g_image_contrast/include/ops_mpi.hpp"
 
-TEST(kolodkin_g_image_contrast_MPI, Test_debug) {
-  boost::mpi::communicator world;
-
-  // Create data
-  std::vector<int> image;
-  std::vector<int> global_out(999, 0);
-
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    for (unsigned long i = 0; i < 999; i++) {
-      image.push_back(0 + rand() % 255);
-    }
-    taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
-    taskDataMpi->inputs_count.emplace_back(image.size());
-    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));
-  } else {
-    image.resize(999, 0);
-    taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
-    taskDataMpi->inputs_count.emplace_back(image.size());
-    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));
-  }
-
-  kolodkin_g_image_contrast_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
-
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-
-  std::cout << "Process " << world.rank() << ": Starting run." << std::endl;
-
-  testMpiTaskParallel.run();
-
-  std::cout << "Process " << world.rank() << ": Finished run." << std::endl;
-
-  testMpiTaskParallel.post_processing();
-
-  if (world.rank() == 0) {
-    std::vector<int> reference_out(999, 0);
-
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
-    taskDataSeq->inputs_count.emplace_back(image.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(reference_out)));
-
-    kolodkin_g_image_contrast_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
-
-    ASSERT_EQ(testTaskSequential.validation(), true);
-    testTaskSequential.pre_processing();
-    testTaskSequential.run();
-    testTaskSequential.post_processing();
-  }
-}
-
 TEST(kolodkin_g_image_contrast_MPI, Test_image_one_pixel) {
   boost::mpi::communicator world;
 
@@ -87,13 +33,7 @@ TEST(kolodkin_g_image_contrast_MPI, Test_image_one_pixel) {
 
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
-
-  std::cout << "Process " << world.rank() << ": Starting run." << std::endl;
-
   testMpiTaskParallel.run();
-
-  std::cout << "Process " << world.rank() << ": Finished run." << std::endl;
-
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
@@ -174,7 +114,7 @@ TEST(kolodkin_g_image_contrast_MPI, Test_image_center_line) {
   }
 }
 
-/* TEST(kolodkin_g_image_contrast_MPI, Test_incorrect_image) {
+TEST(kolodkin_g_image_contrast_MPI, Test_incorrect_image) {
   boost::mpi::communicator world;
   std::vector<int> image;
 
@@ -185,6 +125,11 @@ TEST(kolodkin_g_image_contrast_MPI, Test_image_center_line) {
   std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     image = {50, 14};
+    taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
+    taskDataMpi->inputs_count.emplace_back(image.size());
+    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));
+  } else {
+    image.resize(2, 0);
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
     taskDataMpi->inputs_count.emplace_back(image.size());
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));
@@ -208,7 +153,7 @@ TEST(kolodkin_g_image_contrast_MPI, Test_image_center_line) {
     kolodkin_g_image_contrast_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
     ASSERT_EQ(testTaskSequential.validation(), false);
   }
-}*/
+}
 TEST(kolodkin_g_image_contrast_MPI, Test_image_two_pixels) {
   boost::mpi::communicator world;
   std::vector<int> image;
@@ -271,6 +216,11 @@ TEST(kolodkin_g_image_contrast_MPI, Test_incorrect_color_image) {
   std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     image = {50, 14, 256};
+    taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
+    taskDataMpi->inputs_count.emplace_back(image.size());
+    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));
+  } else {
+    image.resize(3, 0);
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
     taskDataMpi->inputs_count.emplace_back(image.size());
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));

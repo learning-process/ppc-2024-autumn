@@ -100,7 +100,6 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::run() {
   std::vector<int> displacements(num_processes, 0);
   std::vector<int> output_displacements(num_processes,0);
   std::vector<int> output_counts(num_processes,0);
-  std::cout << world.rank() << " " << "OK!" << std::endl;
   if (world.rank() == 0) {
     for (size_t i = 0; i < num_processes; i++) {
       send_counts[i] = input_.size() / world.size();
@@ -113,10 +112,6 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::run() {
     for (size_t i = 1; i < num_processes; i++) {
       displacements[i] = displacements[i - 1] + send_counts[i - 1];
       output_displacements[i] = displacements[i];
-    }
-    for (size_t i = 0; i < num_processes; i++) {
-      std::cout << "Process: " << i << ", send_counts: " << send_counts[i] << ", displacement: " << displacements[i]
-                << std::endl;
     }
     for (unsigned long i = 0; i < input_.size(); i += 3) {
       int ValueR = input_[i];
@@ -134,10 +129,8 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::run() {
   }
   broadcast(world, av_br, 0);
   broadcast(world, k, 0);
-  std::cout << world.rank() << " "<< "OK!" << std::endl;
   world.barrier();
   std::vector<int> local_input_(send_counts[world.rank()]);
-  std::cout << "Process " << world.rank() << ": scattering " << local_input_.size() << " elements." << std::endl;
   boost::mpi::scatterv(world, input_.data(), send_counts, displacements, local_input_.data(), local_input_.size(), 0);
   std::vector<int> local_output_(local_input_.size());
   for (size_t i = 0; i < local_input_.size(); i++) {
@@ -145,15 +138,8 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::run() {
     int temp = static_cast<int>(av_br + k * delta_color);
     local_output_[i] = std::clamp(temp, 0, 255);
   }
-  std::cout << world.rank() << " " << "OK!" << std::endl;
   boost::mpi::gatherv(world, local_output_.data(), local_output_.size(), output_.data(), output_counts,
                       output_displacements, 0);
-  std::cout << "Process " << world.rank() << ": gathered " << local_output_.size() << " elements." << std::endl;
-
-  if (world.rank() == 0) {
-    std::cout << "Process 0: Output data collected. Size: " << output_.size() << std::endl;
-  }
-
   return true;
 }
 
