@@ -14,10 +14,10 @@
 
 #include "core/task/include/task.hpp"
 
-namespace gusev_n_cybercube_topology_mpi {
-class CybercubeTopologyParallel : public ppc::core::Task {
+namespace gusev_n_hypercube_topology_mpi {
+class HypercubeTopologyParallel : public ppc::core::Task {
  public:
-  explicit CybercubeTopologyParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit HypercubeTopologyParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -27,4 +27,4 @@ class CybercubeTopologyParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  // namespace gusev_n_cybercube_topology_mpi
+}  // namespace gusev_n_hypercube_topology_mpi

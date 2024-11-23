@@ -4,11 +4,11 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/gusev_n_cybercube_topology/include/ops_mpi.hpp"
+#include "mpi/gusev_n_hypercube_topology/include/ops_mpi.hpp"
 
-namespace gusev_n_cybercube_topology_mpi {
+namespace gusev_n_hypercube_topology_mpi {
 
-TEST(gusev_n_cybercube_topology_mpi, test_pipeline_run) {
+TEST(gusev_n_hypercube_topology_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
 
   if ((std::ceil(std::log2(world.size())) == std::log2(world.size())) && (world.size() >= 2)) {
@@ -21,14 +21,14 @@ TEST(gusev_n_cybercube_topology_mpi, test_pipeline_run) {
     task_data->outputs.push_back(output_data.data());
     task_data->outputs_count.push_back(output_data.size());
 
-    CybercubeTopologyParallel task(task_data);
+    HypercubeTopologyParallel task(task_data);
     ASSERT_TRUE(task.validation());
 
     auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
     auto perfResults = std::make_shared<ppc::core::PerfResults>();
     perfAttr->num_running = 10;
 
-    ppc::core::Perf perfAnalyzer(std::make_shared<CybercubeTopologyParallel>(task_data));
+    ppc::core::Perf perfAnalyzer(std::make_shared<HypercubeTopologyParallel>(task_data));
 
     for (int i = 0; i < perfAttr->num_running; ++i) {
       perfAnalyzer.pipeline_run(perfAttr, perfResults);
@@ -38,7 +38,7 @@ TEST(gusev_n_cybercube_topology_mpi, test_pipeline_run) {
   }
 }
 
-TEST(gusev_n_cybercube_topology_mpi, test_task_run) {
+TEST(gusev_n_hypercube_topology_mpi, test_task_run) {
   boost::mpi::communicator world;
 
   if ((std::ceil(std::log2(world.size())) == std::log2(world.size())) && (world.size() >= 2)) {
@@ -51,14 +51,14 @@ TEST(gusev_n_cybercube_topology_mpi, test_task_run) {
     task_data->outputs.push_back(output_data.data());
     task_data->outputs_count.push_back(output_data.size());
 
-    CybercubeTopologyParallel task(task_data);
+    HypercubeTopologyParallel task(task_data);
     ASSERT_TRUE(task.validation());
 
     auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
     auto perfResults = std::make_shared<ppc::core::PerfResults>();
     perfAttr->num_running = 10;
 
-    ppc::core::Perf perfAnalyzer(std::make_shared<CybercubeTopologyParallel>(task_data));
+    ppc::core::Perf perfAnalyzer(std::make_shared<HypercubeTopologyParallel>(task_data));
 
     for (int i = 0; i < perfAttr->num_running; ++i) {
       perfAnalyzer.task_run(perfAttr, perfResults);
@@ -68,4 +68,4 @@ TEST(gusev_n_cybercube_topology_mpi, test_task_run) {
   }
 }
 
-}  // namespace gusev_n_cybercube_topology_mpi
+}  // namespace gusev_n_hypercube_topology_mpi

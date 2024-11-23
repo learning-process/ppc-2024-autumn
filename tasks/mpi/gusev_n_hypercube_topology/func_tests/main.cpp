@@ -5,11 +5,11 @@
 #include <iostream>
 #include <vector>
 
-#include "mpi/gusev_n_cybercube_topology/include/ops_mpi.hpp"
+#include "mpi/gusev_n_hypercube_topology/include/ops_mpi.hpp"
 
-namespace gusev_n_cybercube_topology_mpi {
+namespace gusev_n_hypercube_topology_mpi {
 
-TEST(gusev_n_cybercube_topology_mpi, TestInsufficientNodes) {
+TEST(gusev_n_hypercube_topology_mpi, TestInsufficientNodes) {
   boost::mpi::communicator world;
   if (world.size() < 2) {
     std::vector<uint8_t> input_data = {1, 2, 3, 4};
@@ -21,13 +21,13 @@ TEST(gusev_n_cybercube_topology_mpi, TestInsufficientNodes) {
     task_data->outputs.push_back(output_data.data());
     task_data->outputs_count.push_back(output_data.size());
 
-    CybercubeTopologyParallel task(task_data);
+    HypercubeTopologyParallel task(task_data);
 
     ASSERT_FALSE(task.validation());
   }
 }
 
-TEST(gusev_n_cybercube_topology_mpi, TestDataTransmission) {
+TEST(gusev_n_hypercube_topology_mpi, TestDataTransmission) {
   boost::mpi::communicator world;
   if (world.size() < 2) return;
 
@@ -40,7 +40,7 @@ TEST(gusev_n_cybercube_topology_mpi, TestDataTransmission) {
   task_data->outputs.push_back(output_data.data());
   task_data->outputs_count.push_back(output_data.size());
 
-  CybercubeTopologyParallel task(task_data);
+  HypercubeTopologyParallel task(task_data);
   ASSERT_TRUE(task.validation());
   ASSERT_TRUE(task.pre_processing());
 
@@ -59,7 +59,7 @@ TEST(gusev_n_cybercube_topology_mpi, TestDataTransmission) {
   }
 }
 
-TEST(gusev_n_cybercube_topology_mpi, TestPreProcessing) {
+TEST(gusev_n_hypercube_topology_mpi, TestPreProcessing) {
   boost::mpi::communicator world;
   if (world.size() < 2) return;
 
@@ -72,12 +72,12 @@ TEST(gusev_n_cybercube_topology_mpi, TestPreProcessing) {
   task_data->outputs.push_back(output_data.data());
   task_data->outputs_count.push_back(output_data.size());
 
-  CybercubeTopologyParallel task(task_data);
+  HypercubeTopologyParallel task(task_data);
   ASSERT_TRUE(task.validation());
   ASSERT_TRUE(task.pre_processing());
 }
 
-TEST(gusev_n_cybercube_topology_mpi, TestPostProcessing) {
+TEST(gusev_n_hypercube_topology_mpi, TestPostProcessing) {
   boost::mpi::communicator world;
   if (world.size() < 2) return;
 
@@ -90,7 +90,7 @@ TEST(gusev_n_cybercube_topology_mpi, TestPostProcessing) {
   task_data->outputs.push_back(output_data.data());
   task_data->outputs_count.push_back(output_data.size());
 
-  CybercubeTopologyParallel task(task_data);
+  HypercubeTopologyParallel task(task_data);
   ASSERT_TRUE(task.validation());
   ASSERT_TRUE(task.pre_processing());
 
@@ -109,4 +109,4 @@ TEST(gusev_n_cybercube_topology_mpi, TestPostProcessing) {
   }
 }
 
-}  // namespace gusev_n_cybercube_topology_mpi
+}  // namespace gusev_n_hypercube_topology_mpi
