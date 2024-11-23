@@ -34,7 +34,7 @@ TEST(sequential_distance_matrix_perf_test, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  ASSERT_EQ(out.size(), num_points * num_points);
+  ASSERT_EQ(out.size(), static_cast<size_t>(num_points * num_points));
 }
 
 TEST(sequential_distance_matrix_perf_test, test_task_run) {
@@ -66,5 +66,5 @@ TEST(sequential_distance_matrix_perf_test, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  ASSERT_EQ(out.size(), num_points * num_points);
+  ASSERT_EQ(out.size(), static_cast<size_t>(num_points * num_points));
 }
