@@ -197,7 +197,6 @@ bool DistanceMatrixTaskParallel::post_processing() {
       output_ptr[i] = distance_matrix_[i];
     }
   }
-
   return true;
 }
 

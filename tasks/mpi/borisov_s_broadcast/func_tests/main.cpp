@@ -114,57 +114,49 @@ TEST(DistanceMatrixTask, LargeInput) {
 
 TEST(Parallel_Operations_MPI, Test_DistanceMatrix) {
   boost::mpi::communicator world;
-  try {
-    std::vector<double> global_points;
-    std::vector<double> global_distance_matrix;
+  std::vector<double> global_points;
+  std::vector<double> global_distance_matrix;
 
-    auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+  auto taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-    size_t num_points = 0;
+  size_t num_points = 0;
 
-    if (world.rank() == 0) {
-      num_points = 3;
-      global_points = {0.0, 0.0, 3.0, 4.0, 6.0, 8.0};
+  if (world.rank() == 0) {
+    num_points = 3;
+    global_points = {0.0, 0.0, 3.0, 4.0, 6.0, 8.0};
 
-      global_distance_matrix.resize(num_points * num_points, 0.0);
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_points.data()));
-      taskDataPar->inputs_count.emplace_back(num_points);
-      taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_distance_matrix.data()));
-      taskDataPar->outputs_count.emplace_back(global_distance_matrix.size());
+    global_distance_matrix.resize(num_points * num_points, 0.0);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_points.data()));
+    taskDataPar->inputs_count.emplace_back(num_points);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_distance_matrix.data()));
+    taskDataPar->outputs_count.emplace_back(global_distance_matrix.size());
+  }
+
+  boost::mpi::broadcast(world, num_points, 0);
+
+  if (world.rank() != 0) {
+    global_points.resize(num_points * 2);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_points.data()));
+    taskDataPar->inputs_count.emplace_back(num_points);
+
+    global_distance_matrix.resize(num_points * num_points, 0.0);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_distance_matrix.data()));
+    taskDataPar->outputs_count.emplace_back(global_distance_matrix.size());
+  }
+
+  borisov_s_broadcast::DistanceMatrixTaskParallel parallelTask(taskDataPar);
+  ASSERT_TRUE(parallelTask.validation());
+  parallelTask.pre_processing();
+  parallelTask.run();
+  parallelTask.post_processing();
+
+  if (world.rank() == 0) {
+    const std::vector<double> reference_distance_matrix = {0.0, 5.0, 10.0, 5.0, 0.0, 5.0, 10.0, 5.0, 0.0};
+
+    ASSERT_EQ(global_distance_matrix.size(), reference_distance_matrix.size());
+    for (size_t i = 0; i < global_distance_matrix.size(); i++) {
+      ASSERT_NEAR(global_distance_matrix[i], reference_distance_matrix[i], 1e-2);
     }
-
-    boost::mpi::broadcast(world, num_points, 0);
-
-    if (world.rank() != 0) {
-      global_points.resize(num_points * 2);
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_points.data()));
-      taskDataPar->inputs_count.emplace_back(num_points);
-
-      global_distance_matrix.resize(num_points * num_points, 0.0);
-      taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_distance_matrix.data()));
-      taskDataPar->outputs_count.emplace_back(global_distance_matrix.size());
-    }
-
-    borisov_s_broadcast::DistanceMatrixTaskParallel parallelTask(taskDataPar);
-    ASSERT_TRUE(parallelTask.validation());
-    parallelTask.pre_processing();
-    parallelTask.run();
-    parallelTask.post_processing();
-
-    if (world.rank() == 0) {
-      const std::vector<double> reference_distance_matrix = {0.0, 5.0, 10.0, 5.0, 0.0, 5.0, 10.0, 5.0, 0.0};
-
-      ASSERT_EQ(global_distance_matrix.size(), reference_distance_matrix.size());
-      for (size_t i = 0; i < global_distance_matrix.size(); i++) {
-        ASSERT_NEAR(global_distance_matrix[i], reference_distance_matrix[i], 1e-2);
-      }
-    }
-  } catch (const std::exception &e) {
-    std::cerr << "Процесс " << world.rank() << " поймал исключение: " << e.what() << std::endl;
-    FAIL() << "Исключение в процессе " << world.rank();
-  } catch (...) {
-    std::cerr << "Процесс " << world.rank() << " поймал неизвестное исключение." << std::endl;
-    FAIL() << "Неизвестное исключение в процессе " << world.rank();
   }
 }
 
@@ -178,7 +170,10 @@ TEST(Parallel_Operations_MPI, Test_EmptyInput) {
   taskDataPar->outputs_count.emplace_back(0);
 
   borisov_s_broadcast::DistanceMatrixTaskParallel parallelTask(taskDataPar);
-  ASSERT_FALSE(parallelTask.validation());
+
+  if (world.rank() == 0) {
+    ASSERT_FALSE(parallelTask.validation());
+  }
 }
 
 TEST(Parallel_Operations_MPI, Test_SinglePoint) {
