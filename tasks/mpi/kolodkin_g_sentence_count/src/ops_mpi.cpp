@@ -7,8 +7,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
 bool kolodkin_g_sentence_count_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   input_ = std::vector<char>(taskData->inputs_count[0]);
