@@ -16,7 +16,6 @@
 
 namespace titov_s_simple_iteration_mpi {
 
-// Последовательная реализация
 class MPISimpleIterationSequential : public ppc::core::Task {
  public:
   explicit MPISimpleIterationSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -36,7 +35,6 @@ class MPISimpleIterationSequential : public ppc::core::Task {
   void transformMatrix();
 };
 
-// Параллельная реализация
 class MPISimpleIterationParallel : public ppc::core::Task {
  public:
   explicit MPISimpleIterationParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
