@@ -37,6 +37,9 @@ bool sorokin_a_producer_consumer_mpi::TestMPITaskParallel::pre_processing() {
 
 bool sorokin_a_producer_consumer_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
+  if (world.rank() == 0) {
+    return world.size() > 2;
+  }
   return true;
 }
 
@@ -108,8 +111,12 @@ bool sorokin_a_producer_consumer_mpi::TestMPITaskParallel::run() {
       if (response[1] == 0) {
         break;
       }
-
-      std::this_thread::sleep_for(std::chrono::milliseconds(2));
+      const double lower_bound = 2;
+      const double upper_bound = 6;
+      std::uniform_real_distribution<double> unif(lower_bound, upper_bound);
+      std::random_device rand_dev;
+      std::mt19937 rand_engine(rand_dev());
+      std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(unif(rand_engine))));
     }
 
     world.send(0, producer_tag, &val_s, 1);
@@ -129,7 +136,12 @@ bool sorokin_a_producer_consumer_mpi::TestMPITaskParallel::run() {
         val_b = response[0];
         break;
       }
-      std::this_thread::sleep_for(std::chrono::milliseconds(2));
+      const double lower_bound = 2;
+      const double upper_bound = 6;
+      std::uniform_real_distribution<double> unif(lower_bound, upper_bound);
+      std::random_device rand_dev;
+      std::mt19937 rand_engine(rand_dev());
+      std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(unif(rand_engine))));
     }
     int exit_message[2] = {world.rank(), exit_tag};
     world.send(0, 3, exit_message, 2);
@@ -144,7 +156,7 @@ bool sorokin_a_producer_consumer_mpi::TestMPITaskParallel::run() {
 bool sorokin_a_producer_consumer_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    for (unsigned int i = 0; i < count_p_; i++) reinterpret_cast<int*>(taskData->outputs[0])[i] = res_[i];
+    std::copy(res_.begin(), res_.end(), reinterpret_cast<int*>(taskData->outputs[0]));
   }
   return true;
 }
