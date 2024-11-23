@@ -7,6 +7,17 @@
 
 #include "mpi/solovev_a_star_topology/include/ops_mpi.hpp"
 
+std::vector<int> generate_random_vector(size_t size) {
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> dis(-1000, 1000);
+  std::vector<int> random_vector(size);
+  for (size_t i = 0; i < size; ++i) {
+    random_vector[i] = dis(gen);
+  }
+  return random_vector;
+}
+
 TEST(solovev_a_star_topology_mpi, test_empty_input) {
   boost::mpi::communicator world;
   if (world.size() > 1) {
@@ -28,7 +39,7 @@ TEST(solovev_a_star_topology_mpi, test_empty_input) {
 TEST(solovev_a_star_topology_mpi, Test_Transfer_1) {
   boost::mpi::communicator world;
   if (world.size() > 1) {
-    std::vector<int> input = {1};
+    std::vector<int> input = generate_random_vector(1);
     std::vector<int> output(1, 0);
     std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
     if (world.rank() == 0) {
@@ -53,7 +64,7 @@ TEST(solovev_a_star_topology_mpi, Test_Transfer_1) {
 TEST(solovev_a_star_topology_mpi, Test_Transfer_3) {
   boost::mpi::communicator world;
   if (world.size() > 1) {
-    std::vector<int> input{1, 1, 1};
+    std::vector<int> input = generate_random_vector(3);
     std::vector<int> output(3, 0);
     std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
     if (world.rank() == 0) {
@@ -78,7 +89,7 @@ TEST(solovev_a_star_topology_mpi, Test_Transfer_3) {
 TEST(solovev_a_star_topology_mpi, Test_Transfer_10) {
   boost::mpi::communicator world;
   if (world.size() > 1) {
-    std::vector<int> input{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    std::vector<int> input = generate_random_vector(10);
     std::vector<int> output(10, 0);
     std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
     if (world.rank() == 0) {
