@@ -28,10 +28,10 @@ TEST(smirnov_i_tape_splitting_A_seq, cant_mult_matrix_wrong_sizes) {
   taskDataSeq->inputs_count.emplace_back(m_b);
   taskDataSeq->inputs_count.emplace_back(n_b);
 
-  double* res = new double[n_a * m_b];
+  double* res = new double[m_a * n_b];
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res));
-  taskDataSeq->outputs_count.emplace_back(n_a);
   taskDataSeq->outputs_count.emplace_back(m_a);
+  taskDataSeq->outputs_count.emplace_back(n_b);
 
   auto TestTaskSequential = std::make_shared<smirnov_i_tape_splitting_A::TestMPITaskSequential>(taskDataSeq);
 
@@ -63,10 +63,10 @@ TEST(smirnov_i_tape_splitting_A_seq, mult_matrix_and_vector) {
   taskDataSeq->inputs_count.emplace_back(m_b);
   taskDataSeq->inputs_count.emplace_back(n_b);
 
-  double* res = new double[n_a * m_b];
+  double* res = new double[m_a * n_b];
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res));
-  taskDataSeq->outputs_count.emplace_back(n_a);
   taskDataSeq->outputs_count.emplace_back(m_a);
+  taskDataSeq->outputs_count.emplace_back(n_b);
 
   auto TestTaskSequential = std::make_shared<smirnov_i_tape_splitting_A::TestMPITaskSequential>(taskDataSeq);
 
@@ -74,7 +74,7 @@ TEST(smirnov_i_tape_splitting_A_seq, mult_matrix_and_vector) {
   TestTaskSequential->pre_processing();
   TestTaskSequential->run();
   TestTaskSequential->post_processing();
-  for (int i = 0; i < m_a*n_b; i++) {
+  for (int i = 0; i < m_a * n_b; i++) {
     ASSERT_NEAR(expected_res[i], res[i], 1e-6);
   }
   delete[] A;
@@ -104,10 +104,10 @@ TEST(smirnov_i_tape_splitting_A_seq, mult_squered_matrix) {
   taskDataSeq->inputs_count.emplace_back(m_b);
   taskDataSeq->inputs_count.emplace_back(n_b);
 
-  double* res = new double[n_a * m_b];
+  double* res = new double[m_a * n_b];
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res));
-  taskDataSeq->outputs_count.emplace_back(n_a);
   taskDataSeq->outputs_count.emplace_back(m_a);
+  taskDataSeq->outputs_count.emplace_back(n_b);
 
   auto TestTaskSequential = std::make_shared<smirnov_i_tape_splitting_A::TestMPITaskSequential>(taskDataSeq);
 
@@ -116,7 +116,7 @@ TEST(smirnov_i_tape_splitting_A_seq, mult_squered_matrix) {
   TestTaskSequential->run();
   TestTaskSequential->post_processing();
 
-  for (int i = 0; i < m_a*n_b; i++) {
+  for (int i = 0; i < m_a * n_b; i++) {
     ASSERT_NEAR(expected_res[i], res[i], 1e-6);
   }
   delete[] A;
@@ -146,10 +146,10 @@ TEST(smirnov_i_tape_splitting_A_seq, mult_matrix_and_matrix) {
   taskDataSeq->inputs_count.emplace_back(m_b);
   taskDataSeq->inputs_count.emplace_back(n_b);
 
-  double* res = new double[n_a * m_b];
+  double* res = new double[m_a * n_b];
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res));
-  taskDataSeq->outputs_count.emplace_back(n_a);
   taskDataSeq->outputs_count.emplace_back(m_a);
+  taskDataSeq->outputs_count.emplace_back(n_b);
 
   auto TestTaskSequential = std::make_shared<smirnov_i_tape_splitting_A::TestMPITaskSequential>(taskDataSeq);
 
@@ -158,7 +158,7 @@ TEST(smirnov_i_tape_splitting_A_seq, mult_matrix_and_matrix) {
   TestTaskSequential->run();
   TestTaskSequential->post_processing();
 
-  for (int i = 0; i < m_a*n_b; i++) {
+  for (int i = 0; i < m_a * n_b; i++) {
     ASSERT_NEAR(expected_res[i], res[i], 1e-6);
   }
   delete[] A;
