@@ -123,6 +123,6 @@ TEST(titov_s_simple_iteration_seq, test_task_run) {
 
     // Проверка результата
     for (unsigned int i = 0; i < rows; ++i) {
-        EXPECT_NEAR(output[i], expected_output[i], epsilon) << "Неверное значение в элементе " << i;
+        EXPECT_NEAR(output[i], expected_output[i], epsilon);
     }
 }
