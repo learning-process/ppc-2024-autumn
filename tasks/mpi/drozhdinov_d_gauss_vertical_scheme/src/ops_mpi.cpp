@@ -16,8 +16,8 @@ int mkLinCoordddm(int x, int y, int xSize) { return y * xSize + x; }
 
 std::vector<double> genDenseMatrix(int n, int a) {
   std::vector<double> dense;
-  std::vector<double> ed;
-  std::vector<double> res;
+  std::vector<double> ed(n * n);
+  std::vector<double> res(n * n);
   for (int i = 0; i < n; i++) {
     for (int j = i; j < n + i; j++) {
       dense.push_back(a + j);
@@ -26,17 +26,16 @@ std::vector<double> genDenseMatrix(int n, int a) {
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < n; j++) {
       if (i < 2) {
-        ed.push_back(0);
-        continue;
-      } else if (i == j) {
-        ed.push_back(1);
+        ed[j * n + i] = 0;
+      } else if (i == j && i >= 2) {
+        ed[j * n + i] = 1;
       } else {
-        ed.push_back(0);
+        ed[j * n + i] = 0;
       }
     }
   }
   for (int i = 0; i < n * n; i++) {
-    res.push_back(dense[i] + ed[i]);
+    res[i] = (dense[i] + ed[i]);
   }
   return res;
 }
