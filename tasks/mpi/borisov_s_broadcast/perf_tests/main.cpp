@@ -107,4 +107,3 @@ TEST(parallel_distance_matrix_perf_test, test_task_run) {
     ASSERT_EQ(global_distance_matrix.size(), static_cast<size_t>(num_points * num_points));
   }
 }
-
