@@ -52,8 +52,8 @@ bool sorokin_a_producer_consumer_mpi::TestMPITaskParallel::run() {
     int buffer = -1;
     int rank_data = -1;
     bool has_data = false;
-    int remaining_producers = count_p_;
-    int remaining_consumers = count_p_;
+    int remaining_producers = static_cast<int>(count_p_);
+    int remaining_consumers = static_cast<int>(count_p_);
 
     while (true) {
       int message[2];
