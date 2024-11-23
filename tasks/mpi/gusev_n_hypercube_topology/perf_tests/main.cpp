@@ -2,13 +2,14 @@
 
 #include <boost/mpi/timer.hpp>
 #include <vector>
+#include <cmath>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/gusev_n_hypercube_topology/include/ops_mpi.hpp"
 
 namespace gusev_n_hypercube_topology_mpi {
 
-TEST(gusev_n_hypercube_topology_mpi, test_pipeline_run) {
+TEST(gusev_n_hypercube_topology_mpi, run_pipeline) {
   boost::mpi::communicator world;
 
   if ((std::ceil(std::log2(world.size())) == std::log2(world.size())) && (world.size() >= 2)) {
@@ -30,7 +31,7 @@ TEST(gusev_n_hypercube_topology_mpi, test_pipeline_run) {
 
     ppc::core::Perf perfAnalyzer(std::make_shared<HypercubeTopologyParallel>(task_data));
 
-    for (int i = 0; i < perfAttr->num_running; ++i) {
+    for (uint64_t i = 0; i < perfAttr->num_running; ++i) {
       perfAnalyzer.pipeline_run(perfAttr, perfResults);
     }
 
@@ -38,7 +39,7 @@ TEST(gusev_n_hypercube_topology_mpi, test_pipeline_run) {
   }
 }
 
-TEST(gusev_n_hypercube_topology_mpi, test_task_run) {
+TEST(gusev_n_hypercube_topology_mpi, run_task) {
   boost::mpi::communicator world;
 
   if ((std::ceil(std::log2(world.size())) == std::log2(world.size())) && (world.size() >= 2)) {
@@ -60,7 +61,7 @@ TEST(gusev_n_hypercube_topology_mpi, test_task_run) {
 
     ppc::core::Perf perfAnalyzer(std::make_shared<HypercubeTopologyParallel>(task_data));
 
-    for (int i = 0; i < perfAttr->num_running; ++i) {
+    for (uint64_t i = 0; i < perfAttr->num_running; ++i) {
       perfAnalyzer.task_run(perfAttr, perfResults);
     }
 
