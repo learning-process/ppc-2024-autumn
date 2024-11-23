@@ -1,4 +1,4 @@
-#include "mpi/borisov_s_broadcast/include/ops_mpi.hpp"
+#include "mpi/borisov_s_my_broadcast/include/ops_mpi.hpp"
 
 #include <algorithm>
 #include <functional>
@@ -9,7 +9,7 @@
 
 using namespace std::chrono_literals;
 
-namespace borisov_s_broadcast {
+namespace borisov_s_my_broadcast {
 
 std::vector<double> getRandomPoints(int count) {
   std::random_device dev;
@@ -88,7 +88,7 @@ bool DistanceMatrixTaskParallel::run() {
     points_count = static_cast<int>(taskData->inputs_count[0]);
   }
 
-  boost::mpi::broadcast(world, points_count, 0);
+  my_broadcast(world, points_count, 0);
 
   size_t points_size = static_cast<size_t>(points_count) * 2;
 
@@ -104,10 +104,12 @@ bool DistanceMatrixTaskParallel::run() {
 
   int broadcast_size = static_cast<int>(points_size);
 
-  boost::mpi::broadcast(world, points_.data(), broadcast_size, 0);
+  my_broadcast(world, points_.data(), broadcast_size, 0);
 
   size_t base_size = points_count / world.size();
   size_t remainder = points_count % world.size();
+
+  // std::cout << world.rank() << " a " << base_size << " " << remainder << std::endl;
 
   size_t local_start;
   size_t local_end;
@@ -121,12 +123,17 @@ bool DistanceMatrixTaskParallel::run() {
 
   size_t local_count = local_end - local_start;
 
+  // std::cout << world.rank() << " " << local_start << " " << local_end << std::endl;
+
   std::vector<double> local_distances(points_count * local_count);
-  for (size_t i = local_start; i < local_end; i++) {
-    for (size_t j = 0; j < static_cast<size_t>(points_count); j++) {
-      double dx = points_[2 * i] - points_[2 * j];
-      double dy = points_[(2 * i) + 1] - points_[(2 * j) + 1];
-      local_distances[((i - local_start) * points_count) + j] = std::sqrt((dx * dx) + (dy * dy));
+  if (local_count > 0) {
+    local_distances.resize(points_count * local_count);
+    for (size_t i = local_start; i < local_end; i++) {
+      for (size_t j = 0; j < static_cast<size_t>(points_count); j++) {
+        double dx = points_[2 * i] - points_[2 * j];
+        double dy = points_[(2 * i) + 1] - points_[(2 * j) + 1];
+        local_distances[((i - local_start) * points_count) + j] = std::sqrt((dx * dx) + (dy * dy));
+      }
     }
   }
 
@@ -176,12 +183,14 @@ bool DistanceMatrixTaskParallel::run() {
         count = base_size;
       }
 
-      for (size_t j = 0; j < count; j++) {
-        for (size_t k = 0; k < static_cast<size_t>(points_count); k++) {
-          distance_matrix_[((start + j) * points_count) + k] = all_distances[offset + (j * points_count) + k];
+      if (count > 0) {
+        for (size_t j = 0; j < count; j++) {
+          for (size_t k = 0; k < static_cast<size_t>(points_count); k++) {
+            distance_matrix_[((start + j) * points_count) + k] = all_distances[offset + (j * points_count) + k];
+          }
         }
+        offset += static_cast<size_t>(recv_counts_int[i]);
       }
-      offset += static_cast<size_t>(recv_counts_int[i]);
     }
   }
 
