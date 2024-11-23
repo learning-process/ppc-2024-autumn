@@ -12,15 +12,20 @@
 
 #include "core/task/include/task.hpp"
 
-namespace mironov_a_broadcast_mpi {
+namespace mironov_a_broadcast_custom_mpi {
 
-class ComponentSumPowerBoostImpl : public ppc::core::Task {
+class ComponentSumPowerCustomImpl : public ppc::core::Task {
  public:
-  explicit ComponentSumPowerBoostImpl(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit ComponentSumPowerCustomImpl(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
+
+  template <typename T>
+  static void broadcastImpl(const boost::mpi::communicator& comm, T& value, int root);
+  template <typename T>
+  static void broadcastImpl(const boost::mpi::communicator& comm, T* values, int n, int root);
 
  private:
   std::vector<int> input_;
@@ -30,4 +35,4 @@ class ComponentSumPowerBoostImpl : public ppc::core::Task {
   int size_ = 0;
   boost::mpi::communicator world;
 };
-}  // namespace mironov_a_broadcast_mpi
+}  // namespace mironov_a_broadcast_custom_mpi

@@ -4,9 +4,9 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/mironov_a_broadcast/include/ops_mpi.hpp"
+#include "mpi/mironov_a_broadcast_custom/include/ops_mpi.hpp"
 
-TEST(mironov_a_broadcast_mpi, test_pipeline_run) {
+TEST(mironov_a_broadcast_custom_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<int> golds;
   std::vector<int> global_input;
@@ -37,7 +37,7 @@ TEST(mironov_a_broadcast_mpi, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<mironov_a_broadcast_mpi::ComponentSumPowerBoostImpl>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<mironov_a_broadcast_custom_mpi::ComponentSumPowerCustomImpl>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -61,7 +61,7 @@ TEST(mironov_a_broadcast_mpi, test_pipeline_run) {
   }
 }
 
-TEST(mironov_a_broadcast_mpi, test_task_run) {
+TEST(mironov_a_broadcast_custom_mpi, test_task_run) {
   boost::mpi::communicator world;
   std::vector<int> golds;
   std::vector<int> global_input;
@@ -91,7 +91,7 @@ TEST(mironov_a_broadcast_mpi, test_task_run) {
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<mironov_a_broadcast_mpi::ComponentSumPowerBoostImpl>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<mironov_a_broadcast_custom_mpi::ComponentSumPowerCustomImpl>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
