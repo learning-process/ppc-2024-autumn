@@ -33,67 +33,74 @@ bool SeidelIterateMethodsMPI::pre_processing() {
         }
     }
 
+    for (int i = 0; i < n; ++i) {
+        if (A[i][i] == 0.0) {
+            std::cerr << "Matrix has zero on the diagonal at row " << i
+                      << ". Adjusting to 1.0." << std::endl;
+            A[i][i] = 1.0;
+        }
+    }
+
     return true;
 }
 
-
 bool SeidelIterateMethodsMPI::validation() {
-  if (taskData->inputs_count.empty()) {
-    std::cerr << "Invalid input: inputs_count is empty" << std::endl;
-    return false;
-  }
+    if (taskData->inputs_count.empty()) {
+        std::cerr << "Invalid input: inputs_count is empty" << std::endl;
+        return false;
+    }
 
-  n = taskData->inputs_count[0];
-  if (n <= 0) {
-    std::cerr << "Invalid input: n must be greater than 0" << std::endl;
-    return false;
-  }
-  return true;
+    n = taskData->inputs_count[0];
+    if (n <= 0) {
+        std::cerr << "Invalid input: n must be greater than 0" << std::endl;
+        return false;
+    }
+    return true;
 }
 
 bool SeidelIterateMethodsMPI::run() {
-  std::vector<double> x_new(n, 0.0);
-  int iteration = 0;
+    std::vector<double> x_new(n, 0.0);
+    int iteration = 0;
 
-  while (iteration < max_iterations) {
-    for (int i = 0; i < n; ++i) {
-      x_new[i] = b[i];
-      for (int j = 0; j < n; ++j) {
-        if (i != j) {
-          x_new[i] -= A[i][j] * x[j];
+    while (iteration < max_iterations) {
+        for (int i = 0; i < n; ++i) {
+            x_new[i] = b[i];
+            for (int j = 0; j < n; ++j) {
+                if (i != j) {
+                    x_new[i] -= A[i][j] * x[j];
+                }
+            }
+            x_new[i] /= A[i][i];
         }
-      }
-      x_new[i] /= A[i][i];
+
+        if (converge(x_new)) {
+            break;
+        }
+
+        x = x_new;
+        ++iteration;
     }
 
-    if (converge(x_new)) {
-      break;
-    }
-
-    x = x_new;
-    ++iteration;
-  }
-
-  return true;
+    return true;
 }
 
 bool SeidelIterateMethodsMPI::post_processing() {
-  if (world.rank() == 0) {
-    std::cout << "Solution: ";
-    for (const auto& val : x) {
-      std::cout << val << " ";
+    if (world.rank() == 0) {
+        std::cout << "Solution: ";
+        for (const auto& val : x) {
+            std::cout << val << " ";
+        }
+        std::cout << std::endl;
     }
-    std::cout << std::endl;
-  }
-  return true;
+    return true;
 }
 
 bool SeidelIterateMethodsMPI::converge(const std::vector<double>& x_new) {
-  double norm = 0.0;
-  for (int i = 0; i < n; ++i) {
-    norm += (x_new[i] - x[i]) * (x_new[i] - x[i]);
-  }
-  return std::sqrt(norm) < epsilon;
+    double norm = 0.0;
+    for (int i = 0; i < n; ++i) {
+        norm += (x_new[i] - x[i]) * (x_new[i] - x[i]);
+    }
+    return std::sqrt(norm) < epsilon;
 }
 
 }  // namespace nasedkin_e_seidels_iterate_methods_mpi
