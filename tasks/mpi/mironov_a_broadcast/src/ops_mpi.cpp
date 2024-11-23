@@ -80,7 +80,7 @@ bool mironov_a_broadcast_mpi::ComponentSumPowerBoostImpl::run() {
   }
 
   // share res back to root
-  reduce(world, input_.data(), input_.size(), result_.data(), std::plus<int>(), 0);
+  reduce(world, input_.data(), input_.size(), result_.data(), std::plus<>(), 0);
 
   return true;
 }
