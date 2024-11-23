@@ -1,5 +1,5 @@
 // Copyright 2024 Nesterov Alexander
-#include "seq/kurakin_m_min_values_by_rows_matrix/include/kurakin_min_rows_matrix_ops_mpi.hpp"
+#include "seq/kurakin_m_min_values_by_rows_matrix/include/kurakin_min_rows_matrix_ops_seq.hpp"
 
 #include <algorithm>
 #include <functional>
