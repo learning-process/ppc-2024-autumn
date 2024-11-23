@@ -3,7 +3,7 @@
 #include <random>
 #include <vector>
 
-#include "mpi/smirnov_i_tape_splitting_A/include/ops_mpi.hpp"
+#include "seq/smirnov_i_tape_splitting_A/include/ops_seq.hpp"
 
 TEST(smirnov_i_tape_splitting_A_seq, mult_matrix_and_vector) {
   int m_a = 3;

@@ -182,7 +182,7 @@ bool smirnov_i_tape_splitting_A::TestMPITaskParallel::run() {
     }
     recvdispls[i] = offset;
     offset += recvcounts[i];
-  };  
+  };
   MPI_Gatherv(local_res, local_rows * n_b, MPI_DOUBLE, res, recvcounts, recvdispls, MPI_DOUBLE, 0, MPI_COMM_WORLD);
   delete[] sendcounts;
   delete[] displs;

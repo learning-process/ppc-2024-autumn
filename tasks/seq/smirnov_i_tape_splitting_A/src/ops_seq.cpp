@@ -1,11 +1,11 @@
+#include "seq/smirnov_i_tape_splitting_A/include/ops_seq.hpp"
+
 #include <algorithm>
 #include <functional>
 #include <random>
 #include <string>
 #include <thread>
 #include <vector>
-
-#include "seq/smirnov_i_tape_splitting_A/include/ops_seq.hpp"
 
 using namespace std::chrono_literals;
 
