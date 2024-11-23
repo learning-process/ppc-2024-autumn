@@ -98,11 +98,9 @@ TEST(smirnov_i_tape_splitting_A_mpi, mult_matrix_and_vector) {
     delete[] res_seq;
   }
   if (world.rank() == 0) {
-
     delete[] A;
     delete[] B;
     delete[] res;
-
   }
 }
 

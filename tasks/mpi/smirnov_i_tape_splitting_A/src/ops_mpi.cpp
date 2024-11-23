@@ -1,12 +1,12 @@
 // Copyright 2023 Nesterov Alexander
+#include "mpi/smirnov_i_tape_splitting_A/include/ops_mpi.hpp"
+
 #include <algorithm>
 #include <functional>
 #include <random>
 #include <string>
 #include <thread>
 #include <vector>
-
-#include "mpi/smirnov_i_tape_splitting_A/include/ops_mpi.hpp"
 
 using namespace std::chrono_literals;
 
@@ -150,7 +150,6 @@ bool smirnov_i_tape_splitting_A::TestMPITaskParallel::run() {
     }
     displs[i] = offset;
     offset += sendcounts[i];
-    
   }
   
   double* local_A = new double[sendcounts[rank]];
@@ -170,8 +169,7 @@ bool smirnov_i_tape_splitting_A::TestMPITaskParallel::run() {
 
   if (rank == 0) {
     res = new double[m_a * n_b];
-  }
-  else{
+  } else{
     res = nullptr;
   }
   int* recvcounts = new int[size];
@@ -186,7 +184,6 @@ bool smirnov_i_tape_splitting_A::TestMPITaskParallel::run() {
     }
     recvdispls[i] = offset;
     offset += recvcounts[i];
-    
   }
 ;
   

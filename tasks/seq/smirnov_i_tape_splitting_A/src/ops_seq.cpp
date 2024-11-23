@@ -17,7 +17,6 @@ bool smirnov_i_tape_splitting_A::TestMPITaskSequential::pre_processing() {
   m_b = taskData->inputs_count[2];
   n_b = taskData->inputs_count[3];
 
-
   A = new double[m_a * n_a];
   B = new double[m_b * n_b];
   auto* tmp_ptr_a = reinterpret_cast<double*>(taskData->inputs[0]);
@@ -37,6 +36,7 @@ bool smirnov_i_tape_splitting_A::TestMPITaskSequential::pre_processing() {
 
 bool smirnov_i_tape_splitting_A::TestMPITaskSequential::validation() {
   internal_order_test();
+  if (taskData->inputs_count.size() != 4) return false;
   m_a = taskData->inputs_count[0];
   n_a = taskData->inputs_count[1];
   m_b = taskData->inputs_count[2];
