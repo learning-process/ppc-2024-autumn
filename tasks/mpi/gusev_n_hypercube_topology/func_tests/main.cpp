@@ -7,8 +7,6 @@
 
 #include "mpi/gusev_n_hypercube_topology/include/ops_mpi.hpp"
 
-namespace gusev_n_hypercube_topology_mpi {
-
 TEST(gusev_n_hypercube_topology_mpi, TestInsufficientNodes) {
   boost::mpi::communicator world;
   if (world.size() < 2) {
@@ -21,7 +19,7 @@ TEST(gusev_n_hypercube_topology_mpi, TestInsufficientNodes) {
     task_data->outputs.push_back(output_data.data());
     task_data->outputs_count.push_back(output_data.size());
 
-    HypercubeTopologyParallel task(task_data);
+    gusev_n_hypercube_topology_mpi::HypercubeTopologyParallel task(task_data);
 
     ASSERT_FALSE(task.validation());
   }
@@ -40,7 +38,7 @@ TEST(gusev_n_hypercube_topology_mpi, TestDataTransmission) {
   task_data->outputs.push_back(output_data.data());
   task_data->outputs_count.push_back(output_data.size());
 
-  HypercubeTopologyParallel task(task_data);
+  gusev_n_hypercube_topology_mpi::HypercubeTopologyParallel task(task_data);
   ASSERT_TRUE(task.validation());
   ASSERT_TRUE(task.pre_processing());
 
@@ -72,7 +70,7 @@ TEST(gusev_n_hypercube_topology_mpi, TestPreProcessing) {
   task_data->outputs.push_back(output_data.data());
   task_data->outputs_count.push_back(output_data.size());
 
-  HypercubeTopologyParallel task(task_data);
+  gusev_n_hypercube_topology_mpi::HypercubeTopologyParallel task(task_data);
   ASSERT_TRUE(task.validation());
   ASSERT_TRUE(task.pre_processing());
 }
@@ -90,7 +88,7 @@ TEST(gusev_n_hypercube_topology_mpi, TestPostProcessing) {
   task_data->outputs.push_back(output_data.data());
   task_data->outputs_count.push_back(output_data.size());
 
-  HypercubeTopologyParallel task(task_data);
+  gusev_n_hypercube_topology_mpi::HypercubeTopologyParallel task(task_data);
   ASSERT_TRUE(task.validation());
   ASSERT_TRUE(task.pre_processing());
 
@@ -108,5 +106,3 @@ TEST(gusev_n_hypercube_topology_mpi, TestPostProcessing) {
     EXPECT_EQ(output_data[i], expected_output[i]);
   }
 }
-
-}  // namespace gusev_n_hypercube_topology_mpi
