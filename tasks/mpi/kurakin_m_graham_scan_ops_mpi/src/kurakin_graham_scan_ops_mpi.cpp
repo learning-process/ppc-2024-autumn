@@ -77,9 +77,8 @@ int kurakin_m_graham_scan_mpi::getCountPoint(int count_point, int size, int rank
   }
   if (count_point % size <= rank) {
     return count_point / size;
-  } else {
-    return count_point / size + 1;
   }
+  return count_point / size + 1;
 }
 
 bool kurakin_m_graham_scan_mpi::TestMPITaskSequential::pre_processing() {
