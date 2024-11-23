@@ -27,7 +27,6 @@ class TestMPITaskSequential : public ppc::core::Task {
   int rows{};
   std::vector<int> input_{};
   std::vector<int> res_{};
-  std::vector<int> ans{};
   std::vector<int> cnt_{};
 };
 
