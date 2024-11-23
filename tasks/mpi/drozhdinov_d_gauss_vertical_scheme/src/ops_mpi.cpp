@@ -14,6 +14,35 @@ using namespace std::chrono_literals;
 
 int mkLinCoordddm(int x, int y, int xSize) { return y * xSize + x; }
 
+std::vector<double> genDenseMatrix(int n, int a) {
+  std::vector<double> dense;
+  std::vector<double> ed;
+  std::vector<double> res;
+  for (int i = 0; i < n; i++) {
+    for (int j = i; j < n + i; j++) {
+      dense.push_back(a + j);
+    }
+  }
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      if (i < 2) {
+        ed.push_back(0);
+        continue;
+      } else if (i == j) {
+        ed.push_back(1);
+      } else {
+        ed.push_back(0);
+      }
+    }
+  }
+  for (int i = 0; i < n * n; i++) {
+    res.push_back(dense[i] + ed[i]);
+  }
+  return res;
+}
+
+double myrnd(double value) { return (fabs(value - std::round(value)) < GAMMA ? std::round(value) : value); }
+
 std::vector<double> drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel::GaussVerticalScheme(
     const std::vector<double>& matrix, int rows, int cols, const std::vector<double>& vec) {
   std::vector<double> b = vec;
@@ -126,9 +155,7 @@ std::vector<double> drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel:
       for (int k = n + 1; k < rows; k++) {
         d += result[k] * verh[k * cols + row_number[n]];
       }
-      result[n] = (fabs((b[row_number[n]] - d) / verh[n * cols + row_number[n]])) > GAMMA
-                      ? (b[row_number[n]] - d) / verh[n * cols + row_number[n]]
-                      : 0;
+      result[n] = myrnd(((b[row_number[n]] - d) / verh[n * cols + row_number[n]]));
     }
   } else {
     for (int col_count = 0; col_count < delta + proc_r; col_count++) {
@@ -233,7 +260,7 @@ bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskSequential::run() {
     for (int n = m + 1; n < rows; n++) {
       elem += result[n] * coefs[mkLinCoordddm(n, row_number[m], columns)];
     }
-    result[m] = (b[row_number[m]] - elem) / coefs[mkLinCoordddm(m, row_number[m], columns)];
+    result[m] = myrnd((b[row_number[m]] - elem) / coefs[mkLinCoordddm(m, row_number[m], columns)]);
   }
   for (auto v : result) {
     x.push_back(v);

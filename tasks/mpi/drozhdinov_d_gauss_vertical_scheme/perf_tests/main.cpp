@@ -11,10 +11,13 @@ TEST(MPIGAUSSPERF, test_pipeline_run) {
   boost::mpi::communicator world;
   int rows = 1000;
   int columns = 1000;
-  std::vector<double> matrix = genElementaryMatrix(rows, columns);
-  std::vector<double> b(rows * columns, 1);
+  std::vector<int> a = drozhdinov_d_gauss_vertical_scheme_mpi::getRandomVector(1);
+  std::vector<double> matrix = genDenseMatrix(rows, *a.begin());
+  std::vector<double> b(rows, 1);
+  std::vector<double> res(rows, 0);
+  res[0] = -1;
+  res[1] = 1;
   std::vector<double> expres_par(rows);
-  std::vector<double> res(rows, 1);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -56,10 +59,13 @@ TEST(MPIGAUSSPERF, test_task_run) {
   boost::mpi::communicator world;
   int rows = 1000;
   int columns = 1000;
-  std::vector<double> matrix = genElementaryMatrix(rows, columns);
-  std::vector<double> b(rows * columns, 1);
+  std::vector<int> a = drozhdinov_d_gauss_vertical_scheme_mpi::getRandomVector(1);
+  std::vector<double> matrix = genDenseMatrix(rows, *a.begin());
+  std::vector<double> b(rows, 1);
+  std::vector<double> res(rows, 0);
+  res[0] = -1;
+  res[1] = 1;
   std::vector<double> expres_par(rows);
-  std::vector<double> res(rows, 1);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {

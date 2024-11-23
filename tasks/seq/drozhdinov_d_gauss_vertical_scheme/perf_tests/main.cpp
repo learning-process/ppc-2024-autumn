@@ -9,10 +9,13 @@
 TEST(drozhdinov_d_perf_test, test_pipeline_run) {
   int rows = 1000;
   int columns = 1000;
-  std::vector<double> matrix = genElementaryMatrix(rows, columns);
-  std::vector<double> b(rows * columns, 1);
-  std::vector<double> expres(rows);
-  std::vector<double> res(rows, 1);
+  std::vector<int> a = drozhdinov_d_gauss_vertical_scheme_seq::getRandomVector(1);
+  std::vector<double> matrix = genDenseMatrix(rows, *a.begin());
+  std::vector<double> b(rows, 1);
+  std::vector<double> expres(rows, 0);
+  std::vector<double> res(rows, 0);
+  res[0] = -1;
+  res[1] = 1;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -51,10 +54,13 @@ TEST(drozhdinov_d_perf_test, test_pipeline_run) {
 TEST(drozhdinov_d_perf_test, test_task_run) {
   int rows = 1000;
   int columns = 1000;
-  std::vector<double> matrix = genElementaryMatrix(rows, columns);
-  std::vector<double> b(rows * columns, 1);
-  std::vector<double> expres(rows);
-  std::vector<double> res(rows, 1);
+  std::vector<int> a = drozhdinov_d_gauss_vertical_scheme_seq::getRandomVector(1);
+  std::vector<double> matrix = genDenseMatrix(rows, *a.begin());
+  std::vector<double> b(rows, 1);
+  std::vector<double> expres(rows, 0);
+  std::vector<double> res(rows, 0);
+  res[0] = -1;
+  res[1] = 1;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();

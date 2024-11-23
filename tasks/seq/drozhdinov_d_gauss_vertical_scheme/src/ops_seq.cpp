@@ -1,6 +1,7 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/drozhdinov_d_gauss_vertical_scheme/include/ops_seq.hpp"
 // not example
+#include <random>
 #include <thread>
 
 using namespace std::chrono_literals;
@@ -20,6 +21,45 @@ std::vector<double> genElementaryMatrix(int rows, int columns) {
   }
   return res;
 }
+
+std::vector<double> genDenseMatrix(int n, int a) {
+  std::vector<double> dense;
+  std::vector<double> ed;
+  std::vector<double> res;
+  for (int i = 0; i < n; i++) {
+    for (int j = i; j < n + i; j++) {
+      dense.push_back(a + j);
+    }
+  }
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      if (i < 2) {
+        ed.push_back(0);
+        continue;
+      } else if (i == j) {
+        ed.push_back(1);
+      } else {
+        ed.push_back(0);
+      }
+    }
+  }
+  for (int i = 0; i < n * n; i++) {
+    res.push_back(dense[i] + ed[i]);
+  }
+  return res;
+}
+
+std::vector<int> drozhdinov_d_gauss_vertical_scheme_seq::getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = gen() % 100;
+  }
+  return vec;
+}
+
+double myrnd(double value) { return (fabs(value - std::round(value)) < GAMMA ? std::round(value) : value); }
 
 bool drozhdinov_d_gauss_vertical_scheme_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
@@ -93,7 +133,7 @@ bool drozhdinov_d_gauss_vertical_scheme_seq::TestTaskSequential::run() {
     for (int n = m + 1; n < rows; n++) {
       elem += result[n] * coefs[mkLinCoordddm(n, row_number[m], columns)];
     }
-    result[m] = (b[row_number[m]] - elem) / coefs[mkLinCoordddm(m, row_number[m], columns)];
+    result[m] = myrnd((b[row_number[m]] - elem) / coefs[mkLinCoordddm(m, row_number[m], columns)]);
   }
   for (auto v : result) {
     x.push_back(v);
