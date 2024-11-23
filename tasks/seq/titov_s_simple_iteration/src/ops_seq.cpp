@@ -6,7 +6,6 @@
 using namespace std::chrono_literals;
 
 void titov_s_simple_iteration_seq::SimpleIterationSequential::transformMatrix() {
-
   for (unsigned int i = 0; i < rows_; ++i) {
     float diagonal = input_[i * cols_ + i];
     if (diagonal == 0.0f) {

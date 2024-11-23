@@ -28,4 +28,4 @@ class SimpleIterationSequential : public ppc::core::Task {
   void transformMatrix();
 };
 
-}  // namespace titov_s_vector_sum_seq
+}  // namespace titov_s_simple_iteration_seq

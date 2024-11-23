@@ -148,8 +148,8 @@ bool titov_s_simple_iteration_mpi::MPISimpleIterationSequential::post_processing
 bool titov_s_simple_iteration_mpi::MPISimpleIterationParallel::pre_processing() {
   internal_order_test();
 
-  number_matrix.resize(world.size()), offset_matrix.resize(world.size()),
-  number_values.resize(world.size()), offset_values.resize(world.size());
+  number_matrix.resize(world.size()), offset_matrix.resize(world.size()), number_values.resize(world.size()),
+      offset_values.resize(world.size());
 
 
   if (world.rank() == 0) {
@@ -186,7 +186,7 @@ bool titov_s_simple_iteration_mpi::MPISimpleIterationParallel::pre_processing() 
   return true;
 }
 
-  bool titov_s_simple_iteration_mpi::MPISimpleIterationParallel::validation() {
+bool titov_s_simple_iteration_mpi::MPISimpleIterationParallel::validation() {
   internal_order_test();
 
   if (world.rank() == 0) {
@@ -210,7 +210,7 @@ bool titov_s_simple_iteration_mpi::MPISimpleIterationParallel::pre_processing() 
 bool titov_s_simple_iteration_mpi::MPISimpleIterationParallel::run() {
   internal_order_test();
   std::vector<double> current_l;
-  
+
   boost::mpi::broadcast(world, number_matrix, 0);
   boost::mpi::broadcast(world, number_values, 0);
   boost::mpi::broadcast(world, offset_values, 0);
@@ -248,10 +248,8 @@ bool titov_s_simple_iteration_mpi::MPISimpleIterationParallel::run() {
 
       double iter_sum = Values_l[iter_place] - iter;
 
-
       double diagonal_element = Matrix_l[iter_place * Rows + global_row];
       current_l[iter_place] = iter_sum / diagonal_element;
-
     }
 
     if (world.rank() == 0) {
@@ -267,7 +265,7 @@ bool titov_s_simple_iteration_mpi::MPISimpleIterationParallel::run() {
       for (size_t k = 0; k < prev.size(); k++) {
         double diff = std::abs(current[k] - prev[k]);
         if (diff > max_diff) {
-            max_diff = diff;
+          max_diff = diff;
         }
       }
       end = (max_diff < epsilon_);

@@ -30,7 +30,8 @@ TEST(titov_s_simple_iteration_mpi, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(global_result.size());
   }
 
-  auto MPISimpleIterationParallel = std::make_shared<titov_s_simple_iteration_mpi::MPISimpleIterationParallel>(taskDataPar);
+  auto MPISimpleIterationParallel =
+      std::make_shared<titov_s_simple_iteration_mpi::MPISimpleIterationParallel>(taskDataPar);
   ASSERT_EQ(MPISimpleIterationParallel->validation(), true);
   MPISimpleIterationParallel->pre_processing();
   MPISimpleIterationParallel->run();
@@ -79,7 +80,8 @@ TEST(titov_s_simple_iteration_mpi, test_task_run) {
     taskDataPar->outputs_count.emplace_back(global_result.size());
   }
 
-  auto MPISimpleIterationParallel = std::make_shared<titov_s_simple_iteration_mpi::MPISimpleIterationParallel>(taskDataPar);
+  auto MPISimpleIterationParallel =
+      std::make_shared<titov_s_simple_iteration_mpi::MPISimpleIterationParallel>(taskDataPar);
   ASSERT_EQ(MPISimpleIterationParallel->validation(), true);
   MPISimpleIterationParallel->pre_processing();
   MPISimpleIterationParallel->run();
