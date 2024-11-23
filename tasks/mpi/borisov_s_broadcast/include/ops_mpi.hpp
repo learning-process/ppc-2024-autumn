@@ -18,7 +18,7 @@ namespace borisov_s_broadcast {
 std::vector<double> getRandomPoints(int count);
 
 class DistanceMatrixTaskSequential : public ppc::core::Task {
-public:
+ public:
   explicit DistanceMatrixTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
 
   bool pre_processing() override;
@@ -32,7 +32,7 @@ public:
 };
 
 class DistanceMatrixTaskParallel : public ppc::core::Task {
-public:
+ public:
   explicit DistanceMatrixTaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
 
   bool pre_processing() override;
