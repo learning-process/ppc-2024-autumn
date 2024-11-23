@@ -125,7 +125,8 @@ foreach(TASK_TYPE ${LIST_OF_TASKS})
 
     set(LIST_OF_EXEC_TESTS "")
     set(LIB_SOURCE_FILES ""
-            seq/borisov_s_broadcast/func_tests/main.cpp)
+            seq/borisov_s_broadcast/func_tests/main.cpp
+            mpi/borisov_s_broadcast/func_tests/main.cpp)
     set(SRC_RES "")
     set(FUNC_TESTS_SOURCE_FILES "")
     set(PERF_TESTS_SOURCE_FILES "")
