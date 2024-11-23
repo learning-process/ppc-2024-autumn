@@ -49,8 +49,7 @@ TEST(kurakin_m_graham_scan_mpi_perf_test, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(scan_y_par.size());
   }
 
-  auto testMpiTaskParallel =
-      std::make_shared<kurakin_m_graham_scan_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<kurakin_m_graham_scan_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();

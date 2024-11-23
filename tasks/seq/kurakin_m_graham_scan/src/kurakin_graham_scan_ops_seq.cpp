@@ -1,11 +1,11 @@
 #include "seq/kurakin_m_graham_scan/include/kurakin_graham_scan_ops_seq.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <functional>
 #include <random>
 #include <thread>
 #include <vector>
-#include <cmath>
 
 using namespace std::chrono_literals;
 
@@ -38,8 +38,7 @@ bool kurakin_m_graham_scan_seq::TestTaskSequential::run() {
     input_[i][2] = y_tmp_ptr[i];
   }
 
-  int ind_min_y =
-      std::min_element(input_.begin(), input_.end(),
+  int ind_min_y = std::min_element(input_.begin(), input_.end(),
                                    [&](std::vector<double> a, std::vector<double> b) {
                                      return a[2] < b[2] || (a[2] == b[2] && a[1] > b[1]);
                                    }) -
@@ -49,11 +48,10 @@ bool kurakin_m_graham_scan_seq::TestTaskSequential::run() {
     input_[i][0] =
         (input_[i][1] - input_[0][1]) / sqrt(pow(input_[i][1] - input_[0][1], 2) + pow(input_[i][2] - input_[0][2], 2));
   }
-  std::sort(input_.begin() + 1, input_.end(), [&](std::vector<double> a, std::vector<double> b) {
-    return a[0] > b[0];                          
-  });
+  std::sort(input_.begin() + 1, input_.end(),
+            [&](std::vector<double> a, std::vector<double> b) { return a[0] > b[0]; });
 
-  int k = 1;  
+  int k = 1;
   for (int i = 2; i < count_point; i++) {
     while (k > 0 && isLeftAngle(input_[k - 1], input_[k], input_[i])) {
       k--;

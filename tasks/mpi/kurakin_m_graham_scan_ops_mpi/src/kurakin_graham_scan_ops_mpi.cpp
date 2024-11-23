@@ -1,11 +1,11 @@
 #include "mpi/kurakin_m_graham_scan_ops_mpi/include/kurakin_graham_scan_ops_mpi.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <functional>
 #include <random>
 #include <thread>
 #include <vector>
-#include <cmath>
 
 using namespace std::chrono_literals;
 
@@ -137,7 +137,7 @@ bool kurakin_m_graham_scan_mpi::TestMPITaskSequential::run() {
 
 bool kurakin_m_graham_scan_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
-  
+
   reinterpret_cast<int*>(taskData->outputs[0])[0] = count_point;
   for (int i = 0; i < count_point; i++) {
     reinterpret_cast<double*>(taskData->outputs[1])[i] = input_[i][1];
@@ -179,8 +179,7 @@ bool kurakin_m_graham_scan_mpi::TestMPITaskParallel::run() {
       input_x_[i] = x_tmp_ptr[i];
       input_y_[i] = y_tmp_ptr[i];
     }
-
-  } 
+  }
   broadcast(world, count_point, 0);
 
   if (world.rank() == 0) {
@@ -198,7 +197,7 @@ bool kurakin_m_graham_scan_mpi::TestMPITaskParallel::run() {
       sum_next_count_point += next_count_point;
     }
   } else {
-    local_count_point = getCountPoint(count_point, world.size(), world.rank()); 
+    local_count_point = getCountPoint(count_point, world.size(), world.rank());
     if (local_count_point != 0) {
       local_input_x_ = std::vector<double>(local_count_point);
       local_input_y_ = std::vector<double>(local_count_point);

@@ -12,11 +12,11 @@ TEST(kurakin_m_graham_scan_mpi, Test_shell_rhomb) {
   int count_point;
   std::vector<double> point_x;
   std::vector<double> point_y;
-
+  
   int scan_size_par;
   std::vector<double> scan_x_par;
   std::vector<double> scan_y_par;
-  
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -433,7 +433,7 @@ TEST(kurakin_m_graham_scan_mpi, Test_shell_random) {
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
-    
+
     ASSERT_EQ(scan_size_seq, scan_size_par);
     for (int i = 0; i < scan_size_seq; i++) {
       ASSERT_EQ(scan_x_seq[i], scan_x_par[i]);
