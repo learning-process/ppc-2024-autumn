@@ -80,3 +80,138 @@ TEST(malyshev_a_simple_iteration_method_seq, random_test) {
     ASSERT_TRUE(std::abs(sum_eq - B[i]) <= eps);
   }
 }
+
+TEST(malyshev_a_simple_iteration_method_seq, validate_input_data) {
+  std::vector<double> A;
+  std::vector<double> B;
+  std::vector<double> X;
+  std::vector<double> X0;
+  double eps = 1e-4;
+
+  const auto try_validate = [](auto &taskData) {
+    malyshev_a_simple_iteration_method_seq::TestTaskSequential testTaskSequential(taskData);
+    return testTaskSequential.validation();
+  };
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
+  ASSERT_FALSE(try_validate(taskDataSeq));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
+  ASSERT_FALSE(try_validate(taskDataSeq));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(X0.data()));
+  ASSERT_FALSE(try_validate(taskDataSeq));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&eps));
+  ASSERT_FALSE(try_validate(taskDataSeq));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(X.data()));
+  ASSERT_FALSE(try_validate(taskDataSeq));
+  taskDataSeq->inputs_count.emplace_back(X.size());
+  ASSERT_FALSE(try_validate(taskDataSeq));
+}
+
+TEST(malyshev_a_simple_iteration_method_seq, validate_input_determinant) {
+  std::vector<double> A{3, 0, -1, 1, 0, 1, 2, 0, -5};
+  std::vector<double> X(3, 0);
+  std::vector<double> B{8, -2, 1};
+  std::vector<double> X0(3, 0);
+  double eps = 1e-4;
+
+  const auto try_validate = [](auto &taskData) {
+    malyshev_a_simple_iteration_method_seq::TestTaskSequential testTaskSequential(taskData);
+    return testTaskSequential.validation();
+  };
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(X0.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&eps));
+  taskDataSeq->inputs_count.emplace_back(X.size());
+
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(X.data()));
+  taskDataSeq->outputs_count.emplace_back(X.size());
+
+  ASSERT_FALSE(try_validate(taskDataSeq));
+}
+
+TEST(malyshev_a_simple_iteration_method_seq, validate_input_rank) {
+  std::vector<double> A{1, 1, 3, 3};
+  std::vector<double> X(2, 0);
+  std::vector<double> B{1, 2};
+  std::vector<double> X0(2, 0);
+  double eps = 1e-4;
+
+  const auto try_validate = [](auto &taskData) {
+    malyshev_a_simple_iteration_method_seq::TestTaskSequential testTaskSequential(taskData);
+    return testTaskSequential.validation();
+  };
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(X0.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&eps));
+  taskDataSeq->inputs_count.emplace_back(X.size());
+
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(X.data()));
+  taskDataSeq->outputs_count.emplace_back(X.size());
+
+  ASSERT_FALSE(try_validate(taskDataSeq));
+}
+
+TEST(malyshev_a_simple_iteration_method_seq, validate_input_slowly_converging) {
+  std::vector<double> A{5, -7, 3, 2};
+  std::vector<double> X(2, 0);
+  std::vector<double> B{1, 2};
+  std::vector<double> X0(2, 0);
+  double eps = 1e-4;
+
+  const auto try_validate = [](auto &taskData) {
+    malyshev_a_simple_iteration_method_seq::TestTaskSequential testTaskSequential(taskData);
+    return testTaskSequential.validation();
+  };
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(X0.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&eps));
+  taskDataSeq->inputs_count.emplace_back(X.size());
+
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(X.data()));
+  taskDataSeq->outputs_count.emplace_back(X.size());
+
+  ASSERT_FALSE(try_validate(taskDataSeq));
+}
+
+TEST(malyshev_a_simple_iteration_method_seq, validate_input_zero_on_the_main_diagonal) {
+  std::vector<double> A{4, 2, -3, 0};
+  std::vector<double> X(2, 0);
+  std::vector<double> B{1, 2};
+  std::vector<double> X0(2, 0);
+  double eps = 1e-4;
+
+  const auto try_validate = [](auto &taskData) {
+    malyshev_a_simple_iteration_method_seq::TestTaskSequential testTaskSequential(taskData);
+    return testTaskSequential.validation();
+  };
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(X0.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&eps));
+  taskDataSeq->inputs_count.emplace_back(X.size());
+
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(X.data()));
+  taskDataSeq->outputs_count.emplace_back(X.size());
+
+  ASSERT_TRUE(try_validate(taskDataSeq));
+}

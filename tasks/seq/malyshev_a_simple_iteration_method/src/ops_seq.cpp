@@ -20,7 +20,8 @@ bool malyshev_a_simple_iteration_method_seq::TestTaskSequential::validation() {
   internal_order_test();
 
   // correctness of the input data
-  if (taskData->inputs_count[0] != taskData->outputs_count[0] || taskData->inputs.size() != 4 ||
+  if (taskData->inputs_count.empty() || taskData->outputs_count.empty() ||
+      taskData->inputs_count[0] != taskData->outputs_count[0] || taskData->inputs.size() != 4 ||
       taskData->outputs.empty())
     return false;
 
