@@ -32,3 +32,17 @@ TEST(nasedkin_e_seidels_iterate_methods_mpi, test_with_negative_input) {
 
   ASSERT_FALSE(seidel_task.validation()) << "Validation passed for negative input, expected failure";
 }
+
+TEST(nasedkin_e_seidels_iterate_methods_mpi, test_with_zero_diagonal) {
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.push_back(3);
+
+  nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI seidel_task(taskData);
+
+  ASSERT_TRUE(seidel_task.validation());
+
+  seidel_task.A = {{0, 1, 1}, {1, 0, 1}, {1, 1, 0}};
+  seidel_task.b = {1, 1, 1};
+
+  ASSERT_FALSE(seidel_task.run()) << "Run succeeded for matrix with zero diagonal, expected failure";
+}
