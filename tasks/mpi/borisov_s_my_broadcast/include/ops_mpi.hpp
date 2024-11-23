@@ -53,7 +53,8 @@ private:
   boost::mpi::communicator world;
 };
 
-template<typename T>
+
+template <typename T>
 void my_broadcast(const boost::mpi::communicator &comm, T &value, int root) {
   int size = comm.size();
   int rank = comm.rank();
@@ -80,7 +81,8 @@ void my_broadcast(const boost::mpi::communicator &comm, T &value, int root) {
   }
 }
 
-template<typename T>
+
+template <typename T>
 void my_broadcast(const boost::mpi::communicator &comm, T *values, int n, int root) {
   int size = comm.size();
   int rank = comm.rank();
@@ -106,6 +108,5 @@ void my_broadcast(const boost::mpi::communicator &comm, T *values, int n, int ro
     }
   }
 }
-
 
 }  // namespace borisov_s_my_broadcast

@@ -209,4 +209,4 @@ bool DistanceMatrixTaskParallel::post_processing() {
   return true;
 }
 
-}  // namespace borisov_s_broadcast
+}  // namespace borisov_s_my_broadcast
