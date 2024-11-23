@@ -9,7 +9,6 @@
 boost::mpi::environment env;
 
 TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Parallel_3_3) {
-  
   boost::mpi::communicator world;
 
   size_t matrix_size = 3;
@@ -74,7 +73,7 @@ TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Parallel_4_4) {
   boost::mpi::communicator world;
 
   size_t matrix_size = 4;
-  std::vector<double> global_result (matrix_size, 0.0);
+  std::vector<double> global_result(matrix_size, 0.0);
   std::vector<double> Matrix = {20.9, 1.2, 2.1, 0.9, 1.2, 21.2, 1.5, 2.5, 2.1, 1.5, 19.8, 1.3, 0.9, 2.5, 1.3, 32.1};
   std::vector<double> Values = {21.7, 27.46, 28.76, 49.72};
   double epsilon = 0.001;
@@ -171,13 +170,12 @@ TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Parallel_5_5) {
                    {0.5f, 0.8f, 2.5f, 22.0f, 1.3f, 18.0f},
                    {1.5f, 1.1f, 0.9f, 1.3f, 26.0f, 25.0f}};
   float eps = 0.001f;
-
   std::vector<float> expected_result(matrix_size, 0.0f);
   if (world.rank() == 0) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
     for (const auto& row : global_matrix) {
-        taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<float*>(row.data())));
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<float*>(row.data())));
     }
 
     taskDataSeq->inputs_count.push_back(global_matrix.size());
@@ -193,12 +191,13 @@ TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Parallel_5_5) {
     seqTask.run();
     seqTask.post_processing();
   }
-    if (world.rank() == 0) {
-      for (unsigned int i = 0; i < global_result.size(); ++i) {
-        ASSERT_NEAR(global_result[i], expected_result[i], epsilon);
-      }
+  if (world.rank() == 0) {
+    for (unsigned int i = 0; i < global_result.size(); ++i) {
+      ASSERT_NEAR(global_result[i], expected_result[i], epsilon);
     }
   }
+}
+
 TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Parallel_10_10) {
   boost::mpi::communicator world;
 
@@ -274,7 +273,7 @@ TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Parallel_10_10) {
       ASSERT_NEAR(global_result[i], expected_result[i], epsilon);
     }
   }
-    }
+}
 
 TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Parallel_15_15) {
   boost::mpi::communicator world;
@@ -364,4 +363,3 @@ TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Parallel_15_15) {
     }
   }
 }
-

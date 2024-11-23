@@ -151,7 +151,6 @@ bool titov_s_simple_iteration_mpi::MPISimpleIterationParallel::pre_processing() 
   number_matrix.resize(world.size()), offset_matrix.resize(world.size()), number_values.resize(world.size()),
       offset_values.resize(world.size());
 
-
   if (world.rank() == 0) {
     Rows = *reinterpret_cast<size_t*>(taskData->inputs[2]);
     epsilon_ = *reinterpret_cast<double*>(taskData->inputs[3]);
