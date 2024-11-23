@@ -64,7 +64,7 @@ bool SeidelIterateMethodsMPI::run() {
   while (iteration < max_iterations) {
     for (int i = 0; i < n; ++i) {
       x_new[i] = b[i];
-	  for (int j = 0; j < n; ++j) {
+      for (int j = 0; j < n; ++j) {
         if (i != j) {
           x_new[i] -= A[i][j] * x[j];
         }
@@ -89,7 +89,7 @@ bool SeidelIterateMethodsMPI::post_processing() {
     for (const auto& val : x) {
       std::cout << val << " ";
     }
-        std::cout << std::endl;
+    std::cout << std::endl;
   }
   return true;
 }
