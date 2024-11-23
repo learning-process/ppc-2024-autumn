@@ -1,10 +1,7 @@
 #include "mpi/borisov_s_my_broadcast/include/ops_mpi.hpp"
 
 #include <algorithm>
-#include <functional>
 #include <random>
-#include <string>
-#include <thread>
 #include <vector>
 
 using namespace std::chrono_literals;
@@ -102,14 +99,15 @@ bool DistanceMatrixTaskParallel::run() {
     points_.resize(points_size);
   }
 
+  if (points_size > static_cast<size_t>(std::numeric_limits<int>::max())) {
+    throw std::overflow_error("points_size is too large");
+  }
   int broadcast_size = static_cast<int>(points_size);
 
   my_broadcast(world, points_.data(), broadcast_size, 0);
 
   size_t base_size = points_count / world.size();
   size_t remainder = points_count % world.size();
-
-  // std::cout << world.rank() << " a " << base_size << " " << remainder << std::endl;
 
   size_t local_start;
   size_t local_end;
@@ -122,8 +120,6 @@ bool DistanceMatrixTaskParallel::run() {
   }
 
   size_t local_count = local_end - local_start;
-
-  // std::cout << world.rank() << " " << local_start << " " << local_end << std::endl;
 
   std::vector<double> local_distances(points_count * local_count);
   if (local_count > 0) {
@@ -144,6 +140,9 @@ bool DistanceMatrixTaskParallel::run() {
   }
   boost::mpi::gather(world, local_size, recv_counts, 0);
 
+  if (local_size > static_cast<size_t>(std::numeric_limits<int>::max())) {
+    throw std::overflow_error("local_size is too large");
+  }
   int local_size_int = static_cast<int>(local_size);
   std::vector<int> recv_counts_int;
   if (world.rank() == 0) {

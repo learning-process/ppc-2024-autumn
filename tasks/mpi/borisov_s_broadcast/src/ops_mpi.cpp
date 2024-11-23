@@ -1,10 +1,7 @@
 #include "mpi/borisov_s_broadcast/include/ops_mpi.hpp"
 
 #include <algorithm>
-#include <functional>
 #include <random>
-#include <string>
-#include <thread>
 #include <vector>
 
 using namespace std::chrono_literals;
@@ -28,7 +25,7 @@ bool DistanceMatrixTaskSequential::pre_processing() {
 
   size_t points_count = taskData->inputs_count[0];
   points_.resize(points_count * 2);
-  auto* tmp_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
+  auto *tmp_ptr = reinterpret_cast<double *>(taskData->inputs[0]);
   for (size_t i = 0; i < points_count * 2; i++) {
     points_[i] = tmp_ptr[i];
   }
@@ -60,7 +57,7 @@ bool DistanceMatrixTaskSequential::run() {
 
 bool DistanceMatrixTaskSequential::post_processing() {
   internal_order_test();
-  auto* output_ptr = reinterpret_cast<double*>(taskData->outputs[0]);
+  auto *output_ptr = reinterpret_cast<double *>(taskData->outputs[0]);
   for (size_t i = 0; i < distance_matrix_.size(); i++) {
     output_ptr[i] = distance_matrix_[i];
   }
@@ -94,12 +91,16 @@ bool DistanceMatrixTaskParallel::run() {
 
   if (world.rank() == 0) {
     points_.resize(points_size);
-    auto* tmp_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
+    auto *tmp_ptr = reinterpret_cast<double *>(taskData->inputs[0]);
     for (size_t i = 0; i < points_size; i++) {
       points_[i] = tmp_ptr[i];
     }
   } else {
     points_.resize(points_size);
+  }
+
+  if (points_size > static_cast<size_t>(std::numeric_limits<int>::max())) {
+    throw std::overflow_error("points_size is too large");
   }
 
   int broadcast_size = static_cast<int>(points_size);
@@ -123,6 +124,9 @@ bool DistanceMatrixTaskParallel::run() {
 
   std::vector<double> local_distances(points_count * local_count);
   for (size_t i = local_start; i < local_end; i++) {
+    if (points_count < 0) {
+      throw std::invalid_argument("points_count must be non-negative");
+    }
     for (size_t j = 0; j < static_cast<size_t>(points_count); j++) {
       double dx = points_[2 * i] - points_[2 * j];
       double dy = points_[(2 * i) + 1] - points_[(2 * j) + 1];
@@ -136,6 +140,10 @@ bool DistanceMatrixTaskParallel::run() {
     recv_counts.resize(world.size());
   }
   boost::mpi::gather(world, local_size, recv_counts, 0);
+
+  if (local_size > static_cast<size_t>(std::numeric_limits<int>::max())) {
+    throw std::overflow_error("local_size is too large");
+  }
 
   int local_size_int = static_cast<int>(local_size);
   std::vector<int> recv_counts_int;
@@ -192,7 +200,7 @@ bool DistanceMatrixTaskParallel::post_processing() {
   internal_order_test();
 
   if (world.rank() == 0) {
-    auto* output_ptr = reinterpret_cast<double*>(taskData->outputs[0]);
+    auto *output_ptr = reinterpret_cast<double *>(taskData->outputs[0]);
     for (size_t i = 0; i < distance_matrix_.size(); i++) {
       output_ptr[i] = distance_matrix_[i];
     }
