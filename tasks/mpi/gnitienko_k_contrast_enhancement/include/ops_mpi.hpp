@@ -28,7 +28,6 @@ class ContrastEnhanceSeq : public ppc::core::Task {
   std::vector<int> image;
   std::vector<int> res;
   double contrast_factor{};
-  bool is_grayscale() const;
 };
 
 class ContrastEnhanceMPI : public ppc::core::Task {
