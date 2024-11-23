@@ -86,7 +86,7 @@ bool sorokin_a_producer_consumer_mpi::TestMPITaskParallel::run() {
         int response[2] = {buffer, 111};
         world.send(rank, producer_tag, response, 2);
       }
-      if (remaining_consumers == 0) {
+      if (remaining_consumers == 0 && remaining_producers == 0) {
         break;
       }
     }
