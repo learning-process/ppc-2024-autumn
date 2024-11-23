@@ -25,7 +25,6 @@ bool gusev_n_cybercube_topology_mpi::CybercubeTopologyParallel::validation() {
 }
 
 bool gusev_n_cybercube_topology_mpi::CybercubeTopologyParallel::pre_processing() {
-
   for (size_t i = 0; i < taskData->inputs.size(); ++i) {
     if (taskData->inputs_count[i] <= 0) {
       std::cerr << "Pre-processing failed: Input size is not valid for input index " << i << std::endl;
@@ -42,28 +41,27 @@ bool gusev_n_cybercube_topology_mpi::CybercubeTopologyParallel::pre_processing()
   return true;
 }
 
-
 bool gusev_n_cybercube_topology_mpi::CybercubeTopologyParallel::run() {
   int rank = world.rank();
   int size = world.size();
 
-  //if (taskData->inputs.empty() || taskData->inputs_count.empty()) {
-  //  std::cerr << "No input data available for rank " << rank << std::endl;
-  //  return false;
-  //}
+  // if (taskData->inputs.empty() || taskData->inputs_count.empty()) {
+  //   std::cerr << "No input data available for rank " << rank << std::endl;
+  //   return false;
+  // }
 
-  //if (taskData->outputs.empty() || taskData->outputs_count.empty()) {
-  //  std::cerr << "No output data available for rank " << rank << std::endl;
-  //  return false;
-  //}
+  // if (taskData->outputs.empty() || taskData->outputs_count.empty()) {
+  //   std::cerr << "No output data available for rank " << rank << std::endl;
+  //   return false;
+  // }
 
-  //for (size_t i = 0; i < taskData->outputs_count.size(); ++i) {
-  //  /*std::cout << "Output count for rank " << rank << ": " << taskData->outputs_count[i] << std::endl;*/
-  //  if (taskData->outputs_count[i] <= 0) {
-  //    std::cerr << "Output size is not valid for rank " << rank << std::endl;
-  //    return false;
-  //  }
-  //}
+  // for (size_t i = 0; i < taskData->outputs_count.size(); ++i) {
+  //   /*std::cout << "Output count for rank " << rank << ": " << taskData->outputs_count[i] << std::endl;*/
+  //   if (taskData->outputs_count[i] <= 0) {
+  //     std::cerr << "Output size is not valid for rank " << rank << std::endl;
+  //     return false;
+  //   }
+  // }
 
   world.barrier();
 
