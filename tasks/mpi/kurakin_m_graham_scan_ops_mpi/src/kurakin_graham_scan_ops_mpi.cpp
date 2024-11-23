@@ -186,7 +186,7 @@ bool kurakin_m_graham_scan_mpi::TestMPITaskParallel::run() {
     local_count_point = getCountPoint(count_point, world.size(), world.rank());
     local_input_x_ = std::vector<double>(input_x_.begin(), input_x_.begin() + local_count_point);
     local_input_y_ = std::vector<double>(input_y_.begin(), input_y_.begin() + local_count_point);
-    
+
     int sum_next_count_point = local_count_point;
     for (int i = 1; i < world.size(); i++) {
       int next_count_point = getCountPoint(count_point, world.size(), i);

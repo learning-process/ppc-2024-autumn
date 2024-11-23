@@ -20,7 +20,6 @@ class TestTaskSequential : public ppc::core::Task {
  private:
   int count_point{};
   std::vector<std::vector<double>> input_;
-  int count_res_point{};
   std::vector<double> x_res;
   std::vector<double> y_res;
 };
