@@ -292,3 +292,29 @@ TEST(Sequential, WrongValidationTest2) {
   drozhdinov_d_gauss_vertical_scheme_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), false);
 }
+
+TEST(Sequential, WrongPPTest) {
+  // Create data
+  int rows = 3;
+  int columns = 3;
+  std::vector<double> matrix = {1, 0, 0, 0, 1, 0, 0, 0, 0};  // det=0
+  std::vector<double> b = {1, 1, 1};
+  std::vector<double> expres(rows);
+  std::vector<double> res(rows, 1);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
+  taskDataSeq->inputs_count.emplace_back(b.size());
+  taskDataSeq->inputs_count.emplace_back(columns);
+  taskDataSeq->inputs_count.emplace_back(rows);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres.data()));
+  taskDataSeq->outputs_count.emplace_back(expres.size());
+
+  // Create Task
+  drozhdinov_d_gauss_vertical_scheme_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_EQ(testTaskSequential.validation(), true);
+  ASSERT_EQ(testTaskSequential.pre_processing(), false);
+}
