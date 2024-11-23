@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
-#include <vector>
 #include <cmath>
+#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/gusev_n_hypercube_topology/include/ops_mpi.hpp"
