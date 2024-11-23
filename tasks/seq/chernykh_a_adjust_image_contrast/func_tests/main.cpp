@@ -70,16 +70,13 @@ TEST(chernykh_a_adjust_image_contrast_seq, gray_color_remains_unchanged_with_fac
   chernykh_a_adjust_image_contrast_seq::run_valid_task(0.5, 1, {0x808080}, {0x808080});
 }
 
-TEST(chernykh_a_adjust_image_contrast_seq, large_input_image_handling) {
-  chernykh_a_adjust_image_contrast_seq::run_valid_task(  //
-      1.5, 100'000,                                      //
-      std::vector<uint32_t>(100'000, 0x906030),          //
-      std::vector<uint32_t>(100'000, 0x985008)           //
-  );
-}
-
 TEST(chernykh_a_adjust_image_contrast_seq, contrast_factor_equals_one_does_not_change_color) {
   chernykh_a_adjust_image_contrast_seq::run_valid_task(1.0, 1, {0x2A8A5F}, {0x2A8A5F});
+}
+
+TEST(chernykh_a_adjust_image_contrast_seq, large_input_image) {
+  chernykh_a_adjust_image_contrast_seq::run_valid_task(1.5, 100'000, std::vector<uint32_t>(100'000, 0x906030),
+                                                       std::vector<uint32_t>(100'000, 0x985008));
 }
 
 TEST(chernykh_a_adjust_image_contrast_seq, negative_contrast_factor_fails_validation) {
