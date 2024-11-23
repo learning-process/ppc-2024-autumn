@@ -35,9 +35,8 @@ bool SeidelIterateMethodsMPI::pre_processing() {
 
     for (int i = 0; i < n; ++i) {
         if (A[i][i] == 0.0) {
-            std::cerr << "Matrix has zero on the diagonal at row " << i
-                      << ". Adjusting to 1.0." << std::endl;
-            A[i][i] = 1.0;
+            std::cerr << "Matrix validation failed: zero on the diagonal at row " << i << std::endl;
+            return false;
         }
     }
 
