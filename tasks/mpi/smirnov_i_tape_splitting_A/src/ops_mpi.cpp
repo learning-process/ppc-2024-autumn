@@ -151,9 +151,7 @@ bool smirnov_i_tape_splitting_A::TestMPITaskParallel::run() {
     displs[i] = offset;
     offset += sendcounts[i];
   }
-  
   double* local_A = new double[sendcounts[rank]];
-  
   MPI_Scatterv(A, sendcounts, displs, MPI_DOUBLE, local_A, sendcounts[rank], MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
   int local_rows = sendcounts[rank] / n_a;
@@ -169,7 +167,7 @@ bool smirnov_i_tape_splitting_A::TestMPITaskParallel::run() {
 
   if (rank == 0) {
     res = new double[m_a * n_b];
-  } else{
+  } else {
     res = nullptr;
   }
   int* recvcounts = new int[size];
@@ -184,9 +182,7 @@ bool smirnov_i_tape_splitting_A::TestMPITaskParallel::run() {
     }
     recvdispls[i] = offset;
     offset += recvcounts[i];
-  }
-;
-  
+  };  
   MPI_Gatherv(local_res, local_rows * n_b, MPI_DOUBLE, res, recvcounts, recvdispls, MPI_DOUBLE, 0, MPI_COMM_WORLD);
   delete[] sendcounts;
   delete[] displs;

@@ -5,7 +5,7 @@
 #include <thread>
 #include <vector>
 
-#include "mpi/smirnov_i_tape_splitting_A/include/ops_mpi.hpp"
+#include "seq/smirnov_i_tape_splitting_A/include/ops_seq.hpp"
 
 using namespace std::chrono_literals;
 
