@@ -96,6 +96,7 @@ foreach(TASK_TYPE ${LIST_OF_TASKS})
           target_link_libraries(${EXEC_FUNC} PUBLIC ${MPI_LIBRARIES})
 
           add_dependencies(${EXEC_FUNC} ppc_boost)
+          target_include_directories(${EXEC_FUNC} PUBLIC "${CMAKE_SOURCE_DIR}/3rdparty/boost/libs/numeric/ublas/include")
           target_link_directories(${EXEC_FUNC} PUBLIC ${CMAKE_BINARY_DIR}/ppc_boost/install/lib)
           if (NOT MSVC)
               target_link_libraries(${EXEC_FUNC} PUBLIC boost_mpi boost_serialization)
