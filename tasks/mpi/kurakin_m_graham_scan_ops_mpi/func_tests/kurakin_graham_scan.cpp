@@ -8,11 +8,11 @@
 
 TEST(kurakin_m_graham_scan_mpi, Test_shell_rhomb) {
   boost::mpi::communicator world;
-  
+
   int count_point;
   std::vector<double> point_x;
   std::vector<double> point_y;
-  
+
   int scan_size_par;
   std::vector<double> scan_x_par;
   std::vector<double> scan_y_par;

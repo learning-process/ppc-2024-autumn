@@ -247,7 +247,7 @@ bool kurakin_m_graham_scan_mpi::TestMPITaskParallel::run() {
       local_input_[i][1] = input_x_[i];
       local_input_[i][2] = input_y_[i];
     }
-    count_res_point = grahamScan(local_input_);
+    count_point = grahamScan(local_input_);
   }
 
   return true;
@@ -257,8 +257,8 @@ bool kurakin_m_graham_scan_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
 
   if (world.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = count_res_point;
-    for (int i = 0; i < count_res_point; i++) {
+    reinterpret_cast<int*>(taskData->outputs[0])[0] = count_point;
+    for (int i = 0; i < count_point; i++) {
       reinterpret_cast<double*>(taskData->outputs[1])[i] = local_input_[i][1];
       reinterpret_cast<double*>(taskData->outputs[2])[i] = local_input_[i][2];
     }
