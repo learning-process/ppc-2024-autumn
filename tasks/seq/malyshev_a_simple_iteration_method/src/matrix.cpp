@@ -63,9 +63,8 @@ int malyshev_a_simple_iteration_method_seq::rank(const std::vector<std::vector<d
 }
 
 void malyshev_a_simple_iteration_method_seq::getRandomData(uint32_t n, std::vector<double>& A, std::vector<double>& B) {
-  const long max_rand = 1000000L;
   const auto random_double = [&](double lower_bound, double upper_bound) {
-    return lower_bound + (upper_bound - lower_bound) * (random() % max_rand) / max_rand;
+    return lower_bound + (upper_bound - lower_bound) * (std::rand() % RAND_MAX) / RAND_MAX;
   };
 
   std::srand(std::time(nullptr));
@@ -73,7 +72,7 @@ void malyshev_a_simple_iteration_method_seq::getRandomData(uint32_t n, std::vect
   std::vector<double> X(n);
   for (uint32_t i = 0; i < n; i++) {
     X[i] = random_double(50, 100);
-    if (random() % 2 == 0) X[i] *= -1;
+    if (std::rand() % 2 == 0) X[i] *= -1;
   }
 
   A.resize(n * n);
@@ -83,7 +82,7 @@ void malyshev_a_simple_iteration_method_seq::getRandomData(uint32_t n, std::vect
   double sum_by_row_for_B;
   for (uint32_t i = 0; i < n; i++) {
     A[i * n + i] = random_double(50, 100);
-    if (random() % 2 == 0) A[i * n + i] *= -1;
+    if (std::rand() % 2 == 0) A[i * n + i] *= -1;
 
     sum_by_row_for_C = 0.01;
     sum_by_row_for_B = A[i * n + i] * X[i];

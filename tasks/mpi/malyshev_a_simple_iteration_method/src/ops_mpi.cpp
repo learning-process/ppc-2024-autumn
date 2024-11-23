@@ -222,7 +222,7 @@ bool malyshev_a_simple_iteration_method_mpi::TestMPITaskParallel::validation() {
 
 bool malyshev_a_simple_iteration_method_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  // TODO рассылка данных (A_, B_)
+
   uint32_t n;
   if (world.rank() == 0) n = taskData->inputs_count[0];
   broadcast(world, n, 0);
