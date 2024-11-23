@@ -55,7 +55,6 @@ bool sorokin_a_producer_consumer_mpi::TestMPITaskParallel::run() {
     int buffer = -1;
     int rank_data = -1;
     bool has_data = false;
-    int remaining_producers = static_cast<int>(count_p_);
     int remaining_consumers = static_cast<int>(count_p_);
 
     while (true) {
@@ -65,9 +64,7 @@ bool sorokin_a_producer_consumer_mpi::TestMPITaskParallel::run() {
       int type = message[1];
 
       if (type == exit_tag) {
-        if (rank <= static_cast<int>(count_p_)) {
-          remaining_producers--;
-        } else {
+        if (rank > static_cast<int>(count_p_)) {
           remaining_consumers--;
         }
       } else if (type == producer_tag && !has_data) {
@@ -89,7 +86,7 @@ bool sorokin_a_producer_consumer_mpi::TestMPITaskParallel::run() {
         int response[2] = {buffer, 111};
         world.send(rank, producer_tag, response, 2);
       }
-      if (remaining_consumers == 0 && remaining_producers == 0) {
+      if (remaining_consumers == 0) {
         break;
       }
     }

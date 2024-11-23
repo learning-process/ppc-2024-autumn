@@ -7,7 +7,7 @@
 
 #include "mpi/sorokin_a_producer_consumer/include/ops_mpi.hpp"
 
-TEST(sorokin_a_producer_consumer_mpi, Test_Basic) {
+TEST(sorokin_a_producer_consumer_mpi, Test_vector_sequence_numbers_processes) {
   boost::mpi::communicator world;
   if (world.size() < 3) {
     ASSERT_EQ(1, 1);
@@ -35,7 +35,7 @@ TEST(sorokin_a_producer_consumer_mpi, Test_Basic) {
     for (int i = 0; i < (world.size() - 1) / 2; i++) ASSERT_EQ(global_vec[i], global_sum[i]);
   }
 }
-TEST(sorokin_a_producer_consumer_mpi, Test_Basic_x2) {
+TEST(sorokin_a_producer_consumer_mpi, Test_vector_doubled_numbers_processes) {
   boost::mpi::communicator world;
   if (world.size() < 3) {
     ASSERT_EQ(1, 1);
