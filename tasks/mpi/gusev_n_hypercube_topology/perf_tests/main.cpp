@@ -7,8 +7,6 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/gusev_n_hypercube_topology/include/ops_mpi.hpp"
 
-namespace gusev_n_hypercube_topology_mpi {
-
 TEST(gusev_n_hypercube_topology_mpi, run_pipeline) {
   boost::mpi::communicator world;
 
@@ -22,14 +20,15 @@ TEST(gusev_n_hypercube_topology_mpi, run_pipeline) {
     task_data->outputs.push_back(output_data.data());
     task_data->outputs_count.push_back(output_data.size());
 
-    HypercubeTopologyParallel task(task_data);
+    gusev_n_hypercube_topology_mpi::HypercubeTopologyParallel task(task_data);
     ASSERT_TRUE(task.validation());
 
     auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
     auto perfResults = std::make_shared<ppc::core::PerfResults>();
     perfAttr->num_running = 10;
 
-    ppc::core::Perf perfAnalyzer(std::make_shared<HypercubeTopologyParallel>(task_data));
+    ppc::core::Perf perfAnalyzer(
+        std::make_shared<gusev_n_hypercube_topology_mpi::HypercubeTopologyParallel>(task_data));
 
     for (uint64_t i = 0; i < perfAttr->num_running; ++i) {
       perfAnalyzer.pipeline_run(perfAttr, perfResults);
@@ -52,14 +51,15 @@ TEST(gusev_n_hypercube_topology_mpi, run_task) {
     task_data->outputs.push_back(output_data.data());
     task_data->outputs_count.push_back(output_data.size());
 
-    HypercubeTopologyParallel task(task_data);
+    gusev_n_hypercube_topology_mpi::HypercubeTopologyParallel task(task_data);
     ASSERT_TRUE(task.validation());
 
     auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
     auto perfResults = std::make_shared<ppc::core::PerfResults>();
     perfAttr->num_running = 10;
 
-    ppc::core::Perf perfAnalyzer(std::make_shared<HypercubeTopologyParallel>(task_data));
+    ppc::core::Perf perfAnalyzer(
+        std::make_shared<gusev_n_hypercube_topology_mpi::HypercubeTopologyParallel>(task_data));
 
     for (uint64_t i = 0; i < perfAttr->num_running; ++i) {
       perfAnalyzer.task_run(perfAttr, perfResults);
@@ -68,5 +68,3 @@ TEST(gusev_n_hypercube_topology_mpi, run_task) {
     ppc::core::Perf::print_perf_statistic(perfResults);
   }
 }
-
-}  // namespace gusev_n_hypercube_topology_mpi
