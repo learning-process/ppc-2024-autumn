@@ -160,7 +160,6 @@ TEST(Parallel_Operations_MPI, Test_DistanceMatrix) {
   }
 }
 
-
 TEST(Parallel_Operations_MPI, Test_EmptyInput) {
   boost::mpi::communicator world;
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -173,7 +172,6 @@ TEST(Parallel_Operations_MPI, Test_EmptyInput) {
   borisov_s_broadcast::DistanceMatrixTaskParallel parallelTask(taskDataPar);
   ASSERT_FALSE(parallelTask.validation());
 }
-
 
 TEST(Parallel_Operations_MPI, Test_SinglePoint) {
   boost::mpi::communicator world;
