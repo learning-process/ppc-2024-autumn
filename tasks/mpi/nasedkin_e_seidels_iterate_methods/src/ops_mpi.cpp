@@ -6,26 +6,36 @@
 namespace nasedkin_e_seidels_iterate_methods_mpi {
 
 bool SeidelIterateMethodsMPI::pre_processing() {
-  if (!validation()) {
-    return false;
-  }
-
-  epsilon = 1e-6;
-  max_iterations = 1000;
-
-  A.resize(n, std::vector<double>(n, 0.0));
-  b.resize(n, 0.0);
-  x.resize(n, 0.0);
-
-  for (int i = 0; i < n; ++i) {
-    for (int j = 0; j < n; ++j) {
-      A[i][j] = (i == j) ? 2.0 : 1.0;
+    if (!validation()) {
+        return false;
     }
-    b[i] = n + 1;
-  }
 
-  return true;
+    epsilon = 1e-6;
+    max_iterations = 1000;
+
+    A.resize(n, std::vector<double>(n, 0.0));
+    b.resize(n, 0.0);
+    x.resize(n, 0.0);
+
+    if (taskData->inputs_count.size() > 1 && taskData->inputs_count[1] == 0) {
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                A[i][j] = (i != j) ? 1.0 : 0.0;
+            }
+            b[i] = 1.0;
+        }
+    } else {
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                A[i][j] = (i == j) ? 2.0 : 1.0;
+            }
+            b[i] = n + 1;
+        }
+    }
+
+    return true;
 }
+
 
 bool SeidelIterateMethodsMPI::validation() {
   if (taskData->inputs_count.empty()) {
