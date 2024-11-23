@@ -12,7 +12,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace grudzin_k_all_reduce_mpi {
+namespace grudzin_k_all_reduce_boost_mpi {
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
@@ -48,24 +48,4 @@ class TestMPITaskBoostRealization : public ppc::core::Task {
   std::vector<int> cnt_{};
   boost::mpi::communicator world;
 };
-
-class TestMPITaskMyRealization : public ppc::core::Task {
- public:
-  explicit TestMPITaskMyRealization(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-  bool pre_processing() override;
-  bool validation() override;
-  bool run() override;
-  bool post_processing() override;
-  template <typename T>
-  static void my_all_reduce(const boost::mpi::communicator& world, const T* in_values, int n, T* out_values);
-
- private:
-  int colums{};
-  int rows{};
-  std::vector<int> input_{};
-  std::vector<int> local_input_{};
-  std::vector<int> res_{};
-  std::vector<int> cnt_{};
-  boost::mpi::communicator world;
-};
-}  // namespace grudzin_k_all_reduce_mpi
+}  // namespace grudzin_k_all_reduce_boost_mpi
