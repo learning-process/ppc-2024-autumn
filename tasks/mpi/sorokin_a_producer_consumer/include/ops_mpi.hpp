@@ -10,9 +10,6 @@
 #include <string>
 #include <utility>
 #include <vector>
-#include <queue>
-#include <mutex>
-#include <condition_variable>
 
 #include "core/task/include/task.hpp"
 
@@ -20,8 +17,7 @@ namespace sorokin_a_producer_consumer_mpi {
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
