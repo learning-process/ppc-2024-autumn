@@ -10,7 +10,7 @@
 
 namespace chernykh_a_adjust_image_contrast_seq {
 
-Pixel Pixel::from_hex_color(std::uint32_t hex_color) {
+Pixel Pixel::from_hex_color(uint32_t hex_color) {
   return Pixel((hex_color >> 16) & 0xFF, (hex_color >> 8) & 0xFF, hex_color & 0xFF);
 }
 
@@ -36,7 +36,7 @@ std::ostream& operator<<(std::ostream& os, const Pixel& pixel) {
   return os;
 }
 
-std::vector<Pixel> hex_colors_to_pixels(const std::vector<std::uint32_t>& hex_colors) {
+std::vector<Pixel> hex_colors_to_pixels(const std::vector<uint32_t>& hex_colors) {
   auto pixels = std::vector<Pixel>(hex_colors.size());
   std::transform(hex_colors.begin(), hex_colors.end(), pixels.begin(), Pixel::from_hex_color);
   return pixels;

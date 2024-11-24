@@ -21,7 +21,7 @@ bool all_pixels_match(const std::vector<Pixel> &pixels, Pixel expected_pixel) {
 }
 
 void run_task(RunType run_type, float contrast_factor, size_t output_size,
-              const std::vector<std::uint32_t> &input_hex_colors, std::uint32_t want_hex_color) {
+              const std::vector<uint32_t> &input_hex_colors, uint32_t want_hex_color) {
   auto world = boost::mpi::communicator();
   auto input = std::vector<Pixel>();
 
@@ -62,11 +62,11 @@ void run_task(RunType run_type, float contrast_factor, size_t output_size,
 }  // namespace chernykh_a_adjust_image_contrast_mpi
 
 TEST(chernykh_a_adjust_image_contrast_mpi, test_pipeline_run) {
-  chernykh_a_adjust_image_contrast_mpi::run_task(chernykh_a_adjust_image_contrast_mpi::RunType::PIPELINE, 1.5,
-                                                 1'000'000, std::vector<std::uint32_t>(1'000'000, 0x906030), 0x985008);
+  chernykh_a_adjust_image_contrast_mpi::run_task(chernykh_a_adjust_image_contrast_mpi::RunType::PIPELINE, 1.5f,
+                                                 1'000'000, std::vector<uint32_t>(1'000'000, 0x906030), 0x985008);
 }
 
 TEST(chernykh_a_adjust_image_contrast_mpi, test_task_run) {
-  chernykh_a_adjust_image_contrast_mpi::run_task(chernykh_a_adjust_image_contrast_mpi::RunType::TASK, 1.5, 1'000'000,
-                                                 std::vector<std::uint32_t>(1'000'000, 0x906030), 0x985008);
+  chernykh_a_adjust_image_contrast_mpi::run_task(chernykh_a_adjust_image_contrast_mpi::RunType::TASK, 1.5f, 1'000'000,
+                                                 std::vector<uint32_t>(1'000'000, 0x906030), 0x985008);
 }
