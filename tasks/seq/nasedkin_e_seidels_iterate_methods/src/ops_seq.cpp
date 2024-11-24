@@ -62,9 +62,7 @@ bool SeidelIterateMethodsSeq::run() {
   return true;
 }
 
-bool SeidelIterateMethodsSeq::post_processing() {
-  return true;
-}
+bool SeidelIterateMethodsSeq::post_processing() { return true; }
 
 bool SeidelIterateMethodsSeq::converge(const std::vector<double>& x_new) {
   double norm = 0.0;
