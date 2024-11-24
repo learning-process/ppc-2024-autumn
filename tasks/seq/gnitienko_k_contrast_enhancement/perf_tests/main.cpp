@@ -1,15 +1,29 @@
 #include <gtest/gtest.h>
 
+#include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/gnitienko_k_contrast_enhancement/include/ops_seq.hpp"
 
+namespace gnitienko_k_functions {
+
+std::vector<int> getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = gen() % 255;
+  }
+  return vec;
+}
+}  // namespace gnitienko_k_functions
+
 TEST(gnitienko_k_contrast_enhancement_seq, test_pipeline_run) {
   const int size = 5000000;
 
   // Create data
-  std::vector<int> in = gnitienko_k_contrast_enhancement_seq::getRandomVector(size);
+  std::vector<int> in = gnitienko_k_functions::getRandomVector(size);
   std::vector<int> out(size, 0);
   double contrast_factor = 3.0;
 
@@ -52,7 +66,7 @@ TEST(gnitienko_k_contrast_enhancement_seq, test_task_run) {
   const int size = 5000000;
 
   // Create data
-  std::vector<int> in = gnitienko_k_contrast_enhancement_seq::getRandomVector(size);
+  std::vector<int> in = gnitienko_k_functions::getRandomVector(size);
   std::vector<int> out(size, 0);
   double contrast_factor = 3.0;
 

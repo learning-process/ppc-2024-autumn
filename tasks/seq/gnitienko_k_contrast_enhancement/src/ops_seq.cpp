@@ -1,17 +1,5 @@
 #include "seq/gnitienko_k_contrast_enhancement/include/ops_seq.hpp"
 
-#include <random>
-
-std::vector<int> gnitienko_k_contrast_enhancement_seq::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 255;
-  }
-  return vec;
-}
-
 bool gnitienko_k_contrast_enhancement_seq::ContrastEnhanceSeq::pre_processing() {
   internal_order_test();
 

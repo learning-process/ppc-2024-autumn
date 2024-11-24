@@ -22,6 +22,4 @@ class ContrastEnhanceSeq : public ppc::core::Task {
   double contrast_factor{};
 };
 
-std::vector<int> getRandomVector(int sz);
-
 }  // namespace gnitienko_k_contrast_enhancement_seq

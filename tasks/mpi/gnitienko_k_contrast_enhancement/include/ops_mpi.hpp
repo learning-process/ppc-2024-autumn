@@ -14,8 +14,6 @@
 
 namespace gnitienko_k_contrast_enhancement_mpi {
 
-std::vector<int> getRandomVector(int sz);
-
 class ContrastEnhanceSeq : public ppc::core::Task {
  public:
   explicit ContrastEnhanceSeq(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -25,8 +23,8 @@ class ContrastEnhanceSeq : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> image;
-  std::vector<int> res;
+  std::vector<uint8_t> image;
+  std::vector<uint8_t> res;
   double contrast_factor{};
 };
 
@@ -39,9 +37,9 @@ class ContrastEnhanceMPI : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> image;
-  int img_size{};
-  std::vector<int> res;
+  std::vector<uint8_t> image;
+  size_t img_size{};
+  std::vector<uint8_t> res;
   double contrast_factor{};
   bool is_grayscale() const;
   boost::mpi::communicator world;

@@ -1,10 +1,22 @@
 #include <gtest/gtest.h>
 
+#include <random>
 #include <vector>
 
 #include "seq/gnitienko_k_contrast_enhancement/include/ops_seq.hpp"
 
 namespace gnitienko_k_functions {
+
+std::vector<int> getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = gen() % 255;
+  }
+  return vec;
+}
+
 void run_test(std::vector<int> &img, double contrast_factor) {
   std::vector<int> out(img.size(), 0);
 
@@ -43,13 +55,13 @@ TEST(gnitienko_k_contrast_enhancement_seq, Test_Contrast_Enhancement_Color) {
 }
 
 TEST(gnitienko_k_contrast_enhancement_seq, Test_Random_Grayscale_Image) {
-  std::vector<int> img = gnitienko_k_contrast_enhancement_seq::getRandomVector(46);
+  std::vector<int> img = gnitienko_k_functions::getRandomVector(46);
   double contrast_factor = 3;
   gnitienko_k_functions::run_test(img, contrast_factor);
 }
 
 TEST(gnitienko_k_contrast_enhancement_seq, Test_Random_Color_Image) {
-  std::vector<int> img = gnitienko_k_contrast_enhancement_seq::getRandomVector(51);
+  std::vector<int> img = gnitienko_k_functions::getRandomVector(51);
   double contrast_factor = 3;
   gnitienko_k_functions::run_test(img, contrast_factor);
 }
