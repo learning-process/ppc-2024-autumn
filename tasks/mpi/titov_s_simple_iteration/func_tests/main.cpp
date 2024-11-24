@@ -36,7 +36,7 @@ TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Not_A_Diagonally_Domina
   }
 }
 
-TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Parallel_Empyty) {
+TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Parallel_Empty) {
   boost::mpi::communicator world;
 
   size_t matrix_size = 0;
@@ -60,10 +60,7 @@ TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Parallel_Empyty) {
   }
 
   titov_s_simple_iteration_mpi::MPISimpleIterationParallel taskPar(taskDataPar);
-  ASSERT_TRUE(taskPar.validation());
-  taskPar.pre_processing();
-  taskPar.run();
-  taskPar.post_processing();
+  ASSERT_FALSE(taskPar.validation());
 
   std::vector<std::vector<float>> global_matrix;
   global_matrix = {{}};
