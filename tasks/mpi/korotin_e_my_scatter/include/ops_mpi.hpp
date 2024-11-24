@@ -36,7 +36,7 @@ class TestMPITaskMyParallel : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  int MPI_My_Scatter(void* send_buf, int sendcount, MPI_Datatype sendtype, void* recv_buf, int recvcount,
+  static int MPI_My_Scatter(void* send_buf, int sendcount, MPI_Datatype sendtype, void* recv_buf, int recvcount,
                      MPI_Datatype recvtype, int src, MPI_Comm comm);
 
  private:
