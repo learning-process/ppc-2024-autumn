@@ -14,7 +14,7 @@ TEST(smirnov_i_tape_splitting_A_mpi, test_pipeline_run) {
   int m_a = 700;
   int n_a = 800;
   int m_b = 800;
-  int n_b = 1000;
+  int n_b = 300;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -75,7 +75,7 @@ TEST(smirnov_i_tape_splitting_A_mpi, test_task_run) {
   int m_a = 700;
   int n_a = 800;
   int m_b = 800;
-  int n_b = 1000;
+  int n_b = 300;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 

@@ -10,8 +10,8 @@ TEST(smirnov_i_tape_splitting_A_seq, test_pipeline_run) {
   int n_a = 3;
   int m_b = 3;
   int n_b = 4;
-  auto A = new double[m_a * n_a];
-  auto B = new double[m_b * n_b];
+  auto* A = new double[m_a * n_a];
+  auto* B = new double[m_b * n_b];
   for (int i = 0; i < n_a * m_a; i++) {
     A[i] = i;
   }
@@ -28,7 +28,7 @@ TEST(smirnov_i_tape_splitting_A_seq, test_pipeline_run) {
   taskDataSeq->inputs_count.emplace_back(m_b);
   taskDataSeq->inputs_count.emplace_back(n_b);
 
-  auto res = new double[n_a * m_b];
+  auto* res = new double[n_a * m_b];
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res));
   taskDataSeq->outputs_count.emplace_back(n_a);
   taskDataSeq->outputs_count.emplace_back(m_a);
@@ -65,8 +65,8 @@ TEST(smirnov_i_tape_splitting_A_seq, test_task_run) {
   int n_a = 3;
   int m_b = 3;
   int n_b = 4;
-  auto A = new double[m_a * n_a];
-  auto B = new double[m_b * n_b];
+  auto* A = new double[m_a * n_a];
+  auto* B = new double[m_b * n_b];
   for (int i = 0; i < n_a * m_a; i++) {
     A[i] = i;
   }
@@ -83,7 +83,7 @@ TEST(smirnov_i_tape_splitting_A_seq, test_task_run) {
   taskDataSeq->inputs_count.emplace_back(m_b);
   taskDataSeq->inputs_count.emplace_back(n_b);
 
-  auto res = new double[n_a * m_b];
+  auto* res = new double[n_a * m_b];
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res));
   taskDataSeq->outputs_count.emplace_back(n_a);
   taskDataSeq->outputs_count.emplace_back(m_a);
