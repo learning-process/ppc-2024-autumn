@@ -4,7 +4,6 @@
 
 #include <memory>
 #include <numeric>
-#include <string>
 #include <utility>
 #include <vector>
 
@@ -22,9 +21,9 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
   ~TestMPITaskSequential() override {
-    if (A) delete[] A;
-    if (B) delete[] B;
-    if (res) delete[] res;
+    delete[] A;
+    delete[] B;
+    delete[] res;
   }
 
  private:

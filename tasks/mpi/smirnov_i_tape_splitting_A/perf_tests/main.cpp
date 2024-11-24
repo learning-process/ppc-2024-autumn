@@ -56,7 +56,7 @@ TEST(smirnov_i_tape_splitting_A_mpi, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    auto expected_res = new double[m_a * n_b]();
+    auto* expected_res = new double[m_a * n_b]();
     for (int i = 0; i < m_a * n_b; i++) {
       ASSERT_NEAR(expected_res[i], res[i], 1e-6);
     }
@@ -117,7 +117,7 @@ TEST(smirnov_i_tape_splitting_A_mpi, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    auto expected_res = new double[m_a * n_b]();
+    auto* expected_res = new double[m_a * n_b]();
     for (int i = 0; i < m_a * n_b; i++) {
       ASSERT_NEAR(expected_res[i], res[i], 1e-6);
     }

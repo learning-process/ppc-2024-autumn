@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <functional>
 #include <random>
-#include <string>
 #include <thread>
 #include <vector>
 
@@ -40,12 +39,12 @@ bool smirnov_i_tape_splitting_A::TestMPITaskSequential::validation() {
   m_b = taskData->inputs_count[2];
   n_b = taskData->inputs_count[3];
   return (n_a == m_b && m_a > 0 && n_a > 0 && m_b > 0 && n_b > 0);
-
 }
 
 bool smirnov_i_tape_splitting_A::TestMPITaskSequential::run() {
   internal_order_test();
   res = new double[m_a * n_b]();
+  assert(res[0] == 0.0);
   for (int i = 0; i < m_a; i++) {
     for (int j = 0; j < n_b; j++) {
       for (int k = 0; k < n_a; k++) {
@@ -146,12 +145,12 @@ bool smirnov_i_tape_splitting_A::TestMPITaskParallel::run() {
     displs[i] = offset;
     offset += sendcounts[i];
   }
-  auto local_A = new double[sendcounts[rank]]();
+  auto* local_A = new double[sendcounts[rank]]();
   MPI_Scatterv(A, sendcounts, displs, MPI_DOUBLE, local_A, sendcounts[rank], MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
   int local_rows = sendcounts[rank] / n_a;
-  auto local_res = new double[local_rows * n_b]();
-
+  auto* local_res = new double[local_rows * n_b]();
+  assert(local_res[0] == 0.0);
   for (int i = 0; i < local_rows; i++) {
     for (int j = 0; j < n_b; j++) {
       for (int k = 0; k < n_a; k++) {
