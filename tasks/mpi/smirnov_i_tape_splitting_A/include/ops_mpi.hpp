@@ -23,10 +23,10 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  ~TestMPITaskSequential() {
-    if (A) delete[] A;
-    if (B) delete[] B;
-    if (res) delete[] res;
+  ~TestMPITaskSequential() override {
+    delete[] A;
+    delete[] B;
+    delete[] res;
   }
 
  private:
@@ -46,10 +46,10 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  ~TestMPITaskParallel() {
-    if (A) delete[] A;
-    if (B) delete[] B;
-    if (res) delete[] res;
+  ~TestMPITaskParallel() override {
+    delete[] A;
+    delete[] B;
+    delete[] res;
   }
 
  private:

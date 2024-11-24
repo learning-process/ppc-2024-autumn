@@ -27,9 +27,10 @@ TEST(smirnov_i_tape_splitting_A_mpi, invalid_matrix_size) {
   if (world.rank() == 0) {
     int m_a = 0;
     int n_a = 10;
-    double* A = new double[m_a * n_a];
-    ASSERT_ANY_THROW(smirnov_i_tape_splitting_A::get_random_matrix(A, m_a * n_a));
-    delete[] A;
+    std::unique_ptr<double[]> A(new double[m_a * n_a]);
+    ASSERT_ANY_THROW(smirnov_i_tape_splitting_A::get_random_matrix(A.get(), m_a * n_a));
+    // auto* A = new double[m_a * n_a];
+    // ASSERT_ANY_THROW(smirnov_i_tape_splitting_A::get_random_matrix(A, m_a * n_a));
   }
 }
 TEST(smirnov_i_tape_splitting_A_mpi, mult_matrix_and_vector) {
@@ -80,7 +81,7 @@ TEST(smirnov_i_tape_splitting_A_mpi, mult_matrix_and_vector) {
     taskDataSeq->inputs_count.emplace_back(m_b);
     taskDataSeq->inputs_count.emplace_back(n_b);
 
-    double* res_seq = new double[m_a * n_b];
+    auto res_seq = new double[m_a * n_b];
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_seq));
     taskDataSeq->outputs_count.emplace_back(m_a);
     taskDataSeq->outputs_count.emplace_back(n_b);
@@ -153,7 +154,7 @@ TEST(smirnov_i_tape_splitting_A_mpi, mult_matrix_and_matrix_small) {
     taskDataSeq->inputs_count.emplace_back(m_b);
     taskDataSeq->inputs_count.emplace_back(n_b);
 
-    double* res_seq = new double[m_a * n_b];
+    auto res_seq = new double[m_a * n_b];
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_seq));
     taskDataSeq->outputs_count.emplace_back(m_a);
     taskDataSeq->outputs_count.emplace_back(n_b);
@@ -300,7 +301,7 @@ TEST(smirnov_i_tape_splitting_A_mpi, mult_matrix_and_matrix_large) {
     taskDataSeq->inputs_count.emplace_back(m_b);
     taskDataSeq->inputs_count.emplace_back(n_b);
 
-    double* res_seq = new double[m_a * n_b];
+    auto res_seq = new double[m_a * n_b];
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_seq));
     taskDataSeq->outputs_count.emplace_back(m_a);
     taskDataSeq->outputs_count.emplace_back(n_b);

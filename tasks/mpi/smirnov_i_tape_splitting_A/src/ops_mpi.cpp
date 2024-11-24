@@ -39,18 +39,13 @@ bool smirnov_i_tape_splitting_A::TestMPITaskSequential::validation() {
   n_a = taskData->inputs_count[1];
   m_b = taskData->inputs_count[2];
   n_b = taskData->inputs_count[3];
-  if (n_a != m_b || m_a <= 0 || n_a <= 0 || m_b <= 0 || n_b <= 0) {
-    return false;
-  }
-  return true;
+  return (n_a == m_b && m_a > 0 && n_a > 0 && m_b > 0 && n_b > 0);
+
 }
 
 bool smirnov_i_tape_splitting_A::TestMPITaskSequential::run() {
   internal_order_test();
-  res = new double[m_a * n_b];
-  for (int i = 0; i < m_a * n_b; i++) {
-    res[i] = 0;
-  }
+  res = new double[m_a * n_b]();
   for (int i = 0; i < m_a; i++) {
     for (int j = 0; j < n_b; j++) {
       for (int k = 0; k < n_a; k++) {
@@ -137,8 +132,8 @@ bool smirnov_i_tape_splitting_A::TestMPITaskParallel::run() {
   MPI_Bcast(A, m_a * n_a, MPI_DOUBLE, 0, MPI_COMM_WORLD);
   MPI_Bcast(B, m_b * n_b, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-  int* sendcounts = new int[size];
-  int* displs = new int[size];
+  int* sendcounts = new int[size]();
+  int* displs = new int[size]();
   int rows_per_proc = m_a / size;
   int extra_rows = m_a % size;
   int offset = 0;
@@ -151,11 +146,11 @@ bool smirnov_i_tape_splitting_A::TestMPITaskParallel::run() {
     displs[i] = offset;
     offset += sendcounts[i];
   }
-  double* local_A = new double[sendcounts[rank]];
+  auto local_A = new double[sendcounts[rank]]();
   MPI_Scatterv(A, sendcounts, displs, MPI_DOUBLE, local_A, sendcounts[rank], MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
   int local_rows = sendcounts[rank] / n_a;
-  double* local_res = new double[local_rows * n_b]();
+  auto local_res = new double[local_rows * n_b]();
 
   for (int i = 0; i < local_rows; i++) {
     for (int j = 0; j < n_b; j++) {
@@ -170,8 +165,8 @@ bool smirnov_i_tape_splitting_A::TestMPITaskParallel::run() {
   } else {
     res = nullptr;
   }
-  int* recvcounts = new int[size];
-  int* recvdispls = new int[size];
+  int* recvcounts = new int[size]();
+  int* recvdispls = new int[size]();
   offset = 0;
 
   for (int i = 0; i < size; ++i) {

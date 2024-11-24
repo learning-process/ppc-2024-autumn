@@ -41,18 +41,13 @@ bool smirnov_i_tape_splitting_A::TestMPITaskSequential::validation() {
   n_a = taskData->inputs_count[1];
   m_b = taskData->inputs_count[2];
   n_b = taskData->inputs_count[3];
-  if (n_a != m_b || m_a <= 0 || n_a <= 0 || m_b <= 0 || n_b <= 0) {
-    return false;
-  }
-  return true;
+  return (n_a == m_b && m_a > 0 && n_a > 0 && m_b > 0 && n_b > 0);
+
 }
 
 bool smirnov_i_tape_splitting_A::TestMPITaskSequential::run() {
   internal_order_test();
-  res = new double[m_a * n_b];
-  for (int i = 0; i < m_a * n_b; i++) {
-    res[i] = 0;
-  }
+  res = new double[m_a * n_b]();
   for (int i = 0; i < m_a; i++) {
     for (int j = 0; j < n_b; j++) {
       for (int k = 0; k < n_a; k++) {

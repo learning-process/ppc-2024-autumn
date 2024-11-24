@@ -21,7 +21,7 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  ~TestMPITaskSequential() {
+  ~TestMPITaskSequential() override {
     if (A) delete[] A;
     if (B) delete[] B;
     if (res) delete[] res;

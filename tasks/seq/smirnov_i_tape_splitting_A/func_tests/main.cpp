@@ -10,8 +10,8 @@ TEST(smirnov_i_tape_splitting_A_seq, mult_matrix_and_vector) {
   int n_a = 3;
   int m_b = 3;
   int n_b = 1;
-  double* A = new double[m_a * n_a];
-  double* B = new double[m_b * n_b];
+  auto A = new double[m_a * n_a];
+  auto B = new double[m_b * n_b];
   for (int i = 0; i < n_a * m_a; i++) {
     A[i] = i;
   }
@@ -28,7 +28,7 @@ TEST(smirnov_i_tape_splitting_A_seq, mult_matrix_and_vector) {
   taskDataSeq->inputs_count.emplace_back(m_b);
   taskDataSeq->inputs_count.emplace_back(n_b);
 
-  double* res = new double[m_a * n_b];
+  auto res = new double[m_a * n_b];
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res));
   taskDataSeq->outputs_count.emplace_back(m_a);
   taskDataSeq->outputs_count.emplace_back(n_b);
@@ -51,8 +51,8 @@ TEST(smirnov_i_tape_splitting_A_seq, mult_squered_matrix) {
   int n_a = 3;
   int m_b = 3;
   int n_b = 3;
-  double* A = new double[m_a * n_a];
-  double* B = new double[m_b * n_b];
+  auto A = new double[m_a * n_a];
+  auto B = new double[m_b * n_b];
   for (int i = 0; i < n_a * m_a; i++) {
     A[i] = i;
   }
@@ -69,7 +69,7 @@ TEST(smirnov_i_tape_splitting_A_seq, mult_squered_matrix) {
   taskDataSeq->inputs_count.emplace_back(m_b);
   taskDataSeq->inputs_count.emplace_back(n_b);
 
-  double* res = new double[m_a * n_b];
+  auto res = new double[m_a * n_b];
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res));
   taskDataSeq->outputs_count.emplace_back(m_a);
   taskDataSeq->outputs_count.emplace_back(n_b);
@@ -93,8 +93,8 @@ TEST(smirnov_i_tape_splitting_A_seq, mult_matrix_and_matrix) {
   int n_a = 3;
   int m_b = 3;
   int n_b = 4;
-  double* A = new double[m_a * n_a];
-  double* B = new double[m_b * n_b];
+  auto A = new double[m_a * n_a];
+  auto B = new double[m_b * n_b];
   for (int i = 0; i < n_a * m_a; i++) {
     A[i] = i;
   }
@@ -111,7 +111,7 @@ TEST(smirnov_i_tape_splitting_A_seq, mult_matrix_and_matrix) {
   taskDataSeq->inputs_count.emplace_back(m_b);
   taskDataSeq->inputs_count.emplace_back(n_b);
 
-  double* res = new double[m_a * n_b];
+  auto res = new double[m_a * n_b];
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res));
   taskDataSeq->outputs_count.emplace_back(m_a);
   taskDataSeq->outputs_count.emplace_back(n_b);
