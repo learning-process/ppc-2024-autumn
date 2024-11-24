@@ -9,21 +9,21 @@
 
 namespace gnitienko_k_functions {
 std::vector<uint8_t> getRandomVector(int sz) {
-    std::random_device dev;
-    std::mt19937 gen(dev());
-    std::vector<uint8_t> vec(sz);
-    for (int i = 0; i < sz; i++) {
-      vec[i] = gen() % 255;
-    }
-    return vec;
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<uint8_t> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = gen() % 255;
   }
+  return vec;
 }
+}  // namespace gnitienko_k_functions
 
 TEST(gnitienko_k_contrast_enhancement_mpi, Test_grayscale_image) {
   boost::mpi::communicator world;
-    std::vector<uint8_t> img = {12, 24, 85, 100};
+  std::vector<uint8_t> img = {12, 24, 85, 100};
   double contrast_factor = 1.5;
-    std::vector<uint8_t> res_mpi(img.size(), 0);
+  std::vector<uint8_t> res_mpi(img.size(), 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
