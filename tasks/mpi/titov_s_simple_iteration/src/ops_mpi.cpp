@@ -309,7 +309,8 @@ bool titov_s_simple_iteration_mpi::MPISimpleIterationParallel::post_processing()
 }
 
 bool titov_s_simple_iteration_mpi::MPISimpleIterationParallel::isDiagonallyDominant() {
-  double X, S;
+  double X;
+  double S;
 
   for (int i = 0; i < Rows; ++i) {
     X = std::abs(Matrix[i * Rows + i]);
