@@ -40,9 +40,8 @@ bool smirnov_i_tape_splitting_A::TestMPITaskSequential::validation() {
 bool smirnov_i_tape_splitting_A::TestMPITaskSequential::run() {
   internal_order_test();
   res = new double[m_a * n_b]();
-  for(int i = 0; i < m_a * n_b; i++){
-    res[i] = 0.0;
-  }
+  res = new double[m_a * n_b];
+  std::fill(res, res + m_a * n_b, 0.0);
   for (int i = 0; i < m_a; i++) {
     for (int j = 0; j < n_b; j++) {
       for (int k = 0; k < n_a; k++) {
@@ -125,10 +124,9 @@ bool smirnov_i_tape_splitting_A::TestMPITaskParallel::run() {
   MPI_Bcast(A, m_a * n_a, MPI_DOUBLE, 0, MPI_COMM_WORLD);
   MPI_Bcast(B, m_b * n_b, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-  int* sendcounts = new int[size]();
-  for(int i = 0; i < size; i++){
-    sendcounts[i] = 0;
-  }
+  
+  int* sendcounts = new int[size];
+  std::fill(sendcounts, sendcounts + size, 0); 
   int* displs = new int[size]();
   int rows_per_proc = m_a / size;
   int extra_rows = m_a % size;
@@ -146,10 +144,8 @@ bool smirnov_i_tape_splitting_A::TestMPITaskParallel::run() {
   MPI_Scatterv(A, sendcounts, displs, MPI_DOUBLE, local_A, sendcounts[rank], MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
   int local_rows = sendcounts[rank] / n_a;
-  auto* local_res = new double[local_rows * n_b]();
-  for(int i = 0; i < local_rows * n_b; i++){
-    local_res[i] = 0.0;
-  }
+  auto* local_res = new double[local_rows * n_b];
+  std::fill(local_res, local_res + local_rows * n_b, 0.0);
   for (int i = 0; i < local_rows; i++) {
     for (int j = 0; j < n_b; j++) {
       for (int k = 0; k < n_a; k++) {
