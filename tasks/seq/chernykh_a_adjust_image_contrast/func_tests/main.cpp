@@ -10,8 +10,8 @@
 
 namespace chernykh_a_adjust_image_contrast_seq {
 
-void run_valid_task(float contrast_factor, size_t output_size, const std::vector<uint32_t>& input_hex_colors,
-                    const std::vector<uint32_t>& want_hex_colors) {
+void run_valid_task(float contrast_factor, size_t output_size, const std::vector<std::uint32_t>& input_hex_colors,
+                    const std::vector<std::uint32_t>& want_hex_colors) {
   auto input = hex_colors_to_pixels(input_hex_colors);
   auto want = hex_colors_to_pixels(want_hex_colors);
   auto output = std::vector<Pixel>(output_size);
@@ -30,7 +30,7 @@ void run_valid_task(float contrast_factor, size_t output_size, const std::vector
   ASSERT_EQ(want, output);
 }
 
-void run_invalid_task(float contrast_factor, size_t output_size, const std::vector<uint32_t>& input_hex_colors) {
+void run_invalid_task(float contrast_factor, size_t output_size, const std::vector<std::uint32_t>& input_hex_colors) {
   auto input = hex_colors_to_pixels(input_hex_colors);
   auto output = std::vector<Pixel>(output_size);
 
@@ -75,8 +75,8 @@ TEST(chernykh_a_adjust_image_contrast_seq, contrast_factor_equals_one_does_not_c
 }
 
 TEST(chernykh_a_adjust_image_contrast_seq, large_input_image) {
-  chernykh_a_adjust_image_contrast_seq::run_valid_task(1.5, 100'000, std::vector<uint32_t>(100'000, 0x906030),
-                                                       std::vector<uint32_t>(100'000, 0x985008));
+  chernykh_a_adjust_image_contrast_seq::run_valid_task(1.5, 100'000, std::vector<std::uint32_t>(100'000, 0x906030),
+                                                       std::vector<std::uint32_t>(100'000, 0x985008));
 }
 
 TEST(chernykh_a_adjust_image_contrast_seq, negative_contrast_factor_fails_validation) {

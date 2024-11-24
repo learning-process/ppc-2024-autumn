@@ -21,7 +21,7 @@ bool all_pixels_match(const std::vector<Pixel> &pixels, Pixel expected_pixel) {
 }
 
 void run_task(RunType run_type, float contrast_factor, size_t output_size,
-              const std::vector<uint32_t> &input_hex_colors, uint32_t want_hex_color) {
+              const std::vector<std::uint32_t> &input_hex_colors, std::uint32_t want_hex_color) {
   auto input = hex_colors_to_pixels(input_hex_colors);
   auto output = std::vector<Pixel>(output_size);
 
@@ -61,10 +61,11 @@ void run_task(RunType run_type, float contrast_factor, size_t output_size,
 
 TEST(chernykh_a_adjust_image_contrast_seq, test_pipeline_run) {
   chernykh_a_adjust_image_contrast_seq::run_task(chernykh_a_adjust_image_contrast_seq::RunType::PIPELINE, 1.5,
-                                                 10'000'000, std::vector<uint32_t>(10'000'000, 0x906030), 0x985008);
+                                                 10'000'000, std::vector<std::uint32_t>(10'000'000, 0x906030),
+                                                 0x985008);
 }
 
 TEST(chernykh_a_adjust_image_contrast_seq, test_task_run) {
   chernykh_a_adjust_image_contrast_seq::run_task(chernykh_a_adjust_image_contrast_seq::RunType::TASK, 1.5, 10'000'000,
-                                                 std::vector<uint32_t>(10'000'000, 0x906030), 0x985008);
+                                                 std::vector<std::uint32_t>(10'000'000, 0x906030), 0x985008);
 }

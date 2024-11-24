@@ -13,16 +13,16 @@
 
 namespace chernykh_a_adjust_image_contrast_mpi {
 
-std::vector<uint32_t> random_hex_colors(size_t count) {
+std::vector<std::uint32_t> random_hex_colors(size_t count) {
   auto dev = std::random_device();
   auto gen = std::mt19937(dev());
-  auto dist = std::uniform_int_distribution<uint32_t>(0x000000, 0xFFFFFF);
-  auto result = std::vector<uint32_t>(count);
-  std::transform(result.begin(), result.end(), result.begin(), [&dist, &gen](uint32_t) { return dist(gen); });
+  auto dist = std::uniform_int_distribution<std::uint32_t>(0x000000, 0xFFFFFF);
+  auto result = std::vector<std::uint32_t>(count);
+  std::transform(result.begin(), result.end(), result.begin(), [&dist, &gen](std::uint32_t) { return dist(gen); });
   return result;
 }
 
-void run_valid_task(float contrast_factor, size_t output_size, const std::vector<uint32_t> &input_hex_colors) {
+void run_valid_task(float contrast_factor, size_t output_size, const std::vector<std::uint32_t> &input_hex_colors) {
   auto world = boost::mpi::communicator();
   auto input = std::vector<Pixel>();
 
@@ -59,7 +59,7 @@ void run_valid_task(float contrast_factor, size_t output_size, const std::vector
   }
 }
 
-void run_invalid_task(float contrast_factor, size_t output_size, const std::vector<uint32_t> &input_hex_colors) {
+void run_invalid_task(float contrast_factor, size_t output_size, const std::vector<std::uint32_t> &input_hex_colors) {
   auto world = boost::mpi::communicator();
   if (world.rank() == 0) {
     auto input = std::vector<Pixel>();
