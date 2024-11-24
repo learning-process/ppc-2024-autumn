@@ -37,7 +37,7 @@ bool muhina_m_horizontal_cheme_seq::HorizontalSchemeSequential::pre_processing()
 
 bool muhina_m_horizontal_cheme_seq::HorizontalSchemeSequential::validation() {
   internal_order_test();
-  return (!(taskData->inputs_count[0] == 0 || taskData->inputs_count[1] == 0));
+  return (taskData->inputs_count[0] != 0 && taskData->inputs_count[1] != 0);
 }
 
 bool muhina_m_horizontal_cheme_seq::HorizontalSchemeSequential::run() {

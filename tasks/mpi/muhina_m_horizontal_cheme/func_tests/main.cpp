@@ -8,6 +8,8 @@
 
 #include "mpi/muhina_m_horizontal_cheme/include/ops_mpi.hpp"
 
+using namespace muhina_m_horizontal_cheme_mpi;
+
 TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication_Validation) {
   boost::mpi::communicator world;
 
@@ -62,11 +64,12 @@ TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication) {
     taskDataPar->outputs_count.emplace_back(result.size());
   }
 
-  muhina_m_horizontal_cheme_mpi::HorizontalSchemeMPIParallel matrixVecMultParalle(taskDataPar);
-  ASSERT_EQ(matrixVecMultParalle.validation(), true);
-  matrixVecMultParalle.pre_processing();
-  matrixVecMultParalle.run();
-  matrixVecMultParalle.post_processing();
+  auto matrixVecMultParalle = std::make_shared<HorizontalSchemeMPIParallel>(taskDataPar);
+
+  ASSERT_TRUE(matrixVecMultParalle->validation());
+  ASSERT_TRUE(matrixVecMultParalle->pre_processing());
+  ASSERT_TRUE(matrixVecMultParalle->run());
+  ASSERT_TRUE(matrixVecMultParalle->post_processing());
 
   if (world.rank() == 0) {
     std::vector<int> expected_result = {6, 15, 24, 33};
@@ -100,11 +103,12 @@ TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication_RepeatingValues)
     taskDataPar->outputs_count.emplace_back(result.size());
   }
 
-  muhina_m_horizontal_cheme_mpi::HorizontalSchemeMPIParallel matrixVecMultParalle(taskDataPar);
-  ASSERT_EQ(matrixVecMultParalle.validation(), true);
-  matrixVecMultParalle.pre_processing();
-  matrixVecMultParalle.run();
-  matrixVecMultParalle.post_processing();
+  auto matrixVecMultParalle = std::make_shared<HorizontalSchemeMPIParallel>(taskDataPar);
+
+  ASSERT_TRUE(matrixVecMultParalle->validation());
+  ASSERT_TRUE(matrixVecMultParalle->pre_processing());
+  ASSERT_TRUE(matrixVecMultParalle->run());
+  ASSERT_TRUE(matrixVecMultParalle->post_processing());
 
   if (world.rank() == 0) {
     std::vector<int> expected_result(333, 3);
@@ -134,11 +138,12 @@ TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication_NegativeValues) 
     taskDataPar->outputs_count.emplace_back(result.size());
   }
 
-  muhina_m_horizontal_cheme_mpi::HorizontalSchemeMPIParallel matrixVecMultParalle(taskDataPar);
-  ASSERT_EQ(matrixVecMultParalle.validation(), true);
-  matrixVecMultParalle.pre_processing();
-  matrixVecMultParalle.run();
-  matrixVecMultParalle.post_processing();
+  auto matrixVecMultParalle = std::make_shared<HorizontalSchemeMPIParallel>(taskDataPar);
+
+  ASSERT_TRUE(matrixVecMultParalle->validation());
+  ASSERT_TRUE(matrixVecMultParalle->pre_processing());
+  ASSERT_TRUE(matrixVecMultParalle->run());
+  ASSERT_TRUE(matrixVecMultParalle->post_processing());
 
   if (world.rank() == 0) {
     std::vector<int> expected_result = {6, 15, 24, 33};
