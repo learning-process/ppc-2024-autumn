@@ -100,8 +100,4 @@ void malyshev_a_simple_iteration_method_mpi::getRandomData(uint32_t n, std::vect
 
     B[i] = sum_by_row_for_B;
   }
-
-  if (std::abs(determinant(A, n)) < std::numeric_limits<double>::epsilon()) {
-    getRandomData(n, A, B);
-  }
 }
