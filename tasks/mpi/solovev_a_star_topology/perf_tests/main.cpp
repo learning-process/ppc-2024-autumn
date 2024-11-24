@@ -1,4 +1,3 @@
-
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
@@ -8,27 +7,19 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/solovev_a_star_topology/include/ops_mpi.hpp"
 
-std::vector<int> generate_random_vector(size_t size) {
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<> dis(-1000, 1000);
-  std::vector<int> random_vector(size);
-  for (size_t i = 0; i < size; ++i) {
-    random_vector[i] = dis(gen);
-  }
-  return random_vector;
-}
-
 TEST(solovev_a_star_topology_mpi_perf_test, test_pipeline_run) {
-  std::vector<int> input = generate_random_vector(10000);
+  std::vector<int> input = solovev_a_star_topology_mpi::generate_random_vector(10000);
   std::vector<int> output(10000, 0);
   boost::mpi::communicator world;
+  std::vector<int> order(world.size() + 1, -1);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
     taskDataPar->inputs_count.emplace_back(input.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
     taskDataPar->outputs_count.emplace_back(output.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(order.data()));
+    taskDataPar->outputs_count.emplace_back(order.size());
   }
   auto testMpiTaskParallel = std::make_shared<solovev_a_star_topology_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
@@ -46,22 +37,23 @@ TEST(solovev_a_star_topology_mpi_perf_test, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    for (size_t i = 0; i < input.size(); ++i) {
-      ASSERT_EQ(output[i], input[i]);
-    }
+    ASSERT_EQ(output, input);
   }
 }
 
 TEST(solovev_a_star_topology_mpi_perf_test, test_task_run) {
-  std::vector<int> input = generate_random_vector(10000);
+  std::vector<int> input = solovev_a_star_topology_mpi::generate_random_vector(10000);
   std::vector<int> output(10000, 0);
   boost::mpi::communicator world;
+  std::vector<int> order(world.size() + 1, -1);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
     taskDataPar->inputs_count.emplace_back(input.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
     taskDataPar->outputs_count.emplace_back(output.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(order.data()));
+    taskDataPar->outputs_count.emplace_back(order.size());
   }
   auto testMpiTaskParallel = std::make_shared<solovev_a_star_topology_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
@@ -79,8 +71,6 @@ TEST(solovev_a_star_topology_mpi_perf_test, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    for (size_t i = 0; i < input.size(); ++i) {
-      ASSERT_EQ(output[i], input[i]);
-    }
+    ASSERT_EQ(output, input);
   }
 }
