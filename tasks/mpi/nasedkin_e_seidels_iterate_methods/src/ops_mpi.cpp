@@ -35,7 +35,6 @@ bool SeidelIterateMethodsMPI::pre_processing() {
 
   for (int i = 0; i < n; ++i) {
     if (A[i][i] == 0.0) {
-      std::cerr << "Matrix validation failed: zero on the diagonal at row " << i << std::endl;
       return false;
     }
   }
@@ -45,13 +44,11 @@ bool SeidelIterateMethodsMPI::pre_processing() {
 
 bool SeidelIterateMethodsMPI::validation() {
   if (taskData->inputs_count.empty()) {
-    std::cerr << "Invalid input: inputs_count is empty" << std::endl;
     return false;
   }
 
   n = taskData->inputs_count[0];
   if (n <= 0) {
-    std::cerr << "Invalid input: n must be greater than 0" << std::endl;
     return false;
   }
   return true;
@@ -84,13 +81,6 @@ bool SeidelIterateMethodsMPI::run() {
 }
 
 bool SeidelIterateMethodsMPI::post_processing() {
-  if (world.rank() == 0) {
-    std::cout << "Solution: ";
-    for (const auto& val : x) {
-      std::cout << val << " ";
-    }
-    std::cout << std::endl;
-  }
   return true;
 }
 
