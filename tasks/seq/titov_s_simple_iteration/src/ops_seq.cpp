@@ -111,7 +111,7 @@ bool titov_s_simple_iteration_seq::SimpleIterationSequential::pre_processing() {
   epsilon_ = *epsilon_ptr;
 
   if (!isDiagonallyDominant()) {
-  std::cerr << "Matrix is not diagonally dominant. The method may not converge.\n";
+    std::cerr << "Matrix is not diagonally dominant. The method may not converge.\n";
     return false;
   }
 
