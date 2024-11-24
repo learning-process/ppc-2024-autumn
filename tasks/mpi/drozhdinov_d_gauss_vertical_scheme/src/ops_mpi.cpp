@@ -49,12 +49,12 @@ int drozhdinov_d_gauss_vertical_scheme_mpi::Myrank(std::vector<double> matrix, i
   while (row < m && col < n) {
     int max_row = row;
     for (int i = row + 1; i < m; i++) {
-      if (abs(matrix[i * n + col]) > abs(matrix[max_row * n + col])) {
+      if (fabs(matrix[i * n + col]) > fabs(matrix[max_row * n + col])) {
         max_row = i;
       }
     }
 
-    if (abs(matrix[max_row * n + col]) < 1e-9) {
+    if (fabs(matrix[max_row * n + col]) < 1e-9) {
       col++;
     } else {
       if (max_row != row) {
@@ -78,7 +78,7 @@ int drozhdinov_d_gauss_vertical_scheme_mpi::Myrank(std::vector<double> matrix, i
   for (int i = 0; i < m; i++) {
     bool is_nonzero = false;
     for (int j = 0; j < n; j++) {
-      if (abs(matrix[i * n + j]) > 1e-9) {
+      if (fabs(matrix[i * n + j]) > 1e-9) {
         is_nonzero = true;
         break;
       }
@@ -91,8 +91,8 @@ int drozhdinov_d_gauss_vertical_scheme_mpi::Myrank(std::vector<double> matrix, i
   return rank;
 }
 
-std::vector<double> drozhdinov_d_gauss_vertical_scheme_mpi::extendedMatrix(const std::vector<double> A, int n,
-                                                                           const std::vector<double> b) {
+std::vector<double> drozhdinov_d_gauss_vertical_scheme_mpi::extendedMatrix(const std::vector<double>& A, int n,
+                                                                           const std::vector<double>& b) {
   std::vector<double> extendedMatrix(n * (n + 1));
 
   for (int i = 0; i < n; ++i) {
@@ -296,11 +296,9 @@ bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskSequential::pre_processi
   }
   columns = taskData->inputs_count[2];
   rows = taskData->inputs_count[3];
-  if ((Myrank(coefs, columns, rows) == Myrank(extendedMatrix(coefs, rows, b), rows + 1, rows)) ||
-      myrnd(Determinant(coefs, rows)) == 0) {
-    return false;
-  }
-  return true;
+
+  return !((Myrank(coefs, columns, rows) == Myrank(extendedMatrix(coefs, rows, b), rows + 1, rows)) ||
+           Determinant(coefs, rows) == 0);
 }
 
 bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskSequential::validation() {
@@ -400,14 +398,9 @@ bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel::pre_processing
     _b = std::vector<double>(_rows);
   }
   _x = std::vector<double>(_rows, 0);
-  if (world.rank() == 0) {
-    if ((Myrank(_coefs, _columns, _rows) != Myrank(extendedMatrix(_coefs, _rows, _b), _rows + 1, _rows) ||
-         Determinant(_coefs, _rows) == 0)) {
-      return false;
-    }
-  }
 
-  return true;
+  return !((Myrank(_coefs, _columns, _rows) != Myrank(extendedMatrix(_coefs, _rows, _b), _rows + 1, _rows) ||
+            Determinant(_coefs, _rows) == 0));
 }
 
 bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel::validation() {

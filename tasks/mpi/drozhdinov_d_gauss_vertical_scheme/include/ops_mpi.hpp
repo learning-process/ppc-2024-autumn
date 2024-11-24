@@ -22,7 +22,7 @@ namespace drozhdinov_d_gauss_vertical_scheme_mpi {
 
 std::vector<int> getRandomVector(int sz);
 int Myrank(std::vector<double> matrix, int m, int n);
-std::vector<double> extendedMatrix(const std::vector<double> A, int n, const std::vector<double> b);
+std::vector<double> extendedMatrix(const std::vector<double>& A, int n, const std::vector<double>& b);
 double Determinant(const std::vector<double>& matrix, int n);
 
 class TestMPITaskSequential : public ppc::core::Task {
