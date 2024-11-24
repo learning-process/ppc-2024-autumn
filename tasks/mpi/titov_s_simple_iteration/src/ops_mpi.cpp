@@ -27,6 +27,22 @@ void titov_s_simple_iteration_mpi::MPISimpleIterationSequential::transformMatrix
   }
 }
 
+bool titov_s_simple_iteration_mpi::MPISimpleIterationSequential::isDiagonallyDominant() {
+  for (unsigned int i = 0; i < rows_; ++i) {
+    float diagonal = std::abs(input_[i * cols_ + i]);
+    float sum = 0.0f;
+    for (unsigned int j = 0; j < cols_ - 1; ++j) {
+      if (i != j) {
+        sum += std::abs(input_[i * cols_ + j]);
+      }
+    }
+    if (diagonal <= sum) {
+      return false;
+    }
+  }
+  return true;
+}
+
 bool titov_s_simple_iteration_mpi::MPISimpleIterationSequential::pre_processing() {
   internal_order_test();
 
@@ -45,6 +61,10 @@ bool titov_s_simple_iteration_mpi::MPISimpleIterationSequential::pre_processing(
 
   auto* epsilon_ptr = reinterpret_cast<float*>(taskData->inputs[rows_]);
   epsilon_ = *epsilon_ptr;
+  if (!isDiagonallyDominant()) {
+    std::cerr << "Matrix is not diagonally dominant. The method may not converge.\n";
+    return false;
+  }
 
   transformMatrix();
 
@@ -193,6 +213,9 @@ bool titov_s_simple_iteration_mpi::MPISimpleIterationParallel::validation() {
     epsilon_ = *reinterpret_cast<double*>(taskData->inputs[3]);
     auto* Matrixinput = reinterpret_cast<double*>(taskData->inputs[0]);
     Matrix.assign(Matrixinput, Matrixinput + Rows * Rows);
+    if (!isDiagonallyDominant()) {
+      return false;
+    }
     if (taskData->inputs_count.size() != 4 || taskData->outputs_count.size() != 1) {
       return false;
     }
@@ -280,6 +303,25 @@ bool titov_s_simple_iteration_mpi::MPISimpleIterationParallel::post_processing()
   if (world.rank() == 0) {
     for (size_t i = 0; i < current.size(); ++i) {
       reinterpret_cast<double*>(taskData->outputs[0])[i] = current[i];
+    }
+  }
+  return true;
+}
+
+bool titov_s_simple_iteration_mpi::MPISimpleIterationParallel::isDiagonallyDominant() {
+  double X, S;
+
+  for (int i = 0; i < Rows; ++i) {
+    X = std::abs(Matrix[i * Rows + i]);
+    S = 0.0;
+
+    for (int j = 0; j < Rows; ++j) {
+      if (i != j) {
+        S += std::abs(Matrix[i * Rows + j]);
+      }
+    }
+    if (X <= S) {
+      return false;
     }
   }
   return true;

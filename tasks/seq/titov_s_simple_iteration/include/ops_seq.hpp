@@ -26,6 +26,7 @@ class SimpleIterationSequential : public ppc::core::Task {
   unsigned int cols_;
 
   void transformMatrix();
+  bool isDiagonallyDominant();
 };
 
 }  // namespace titov_s_simple_iteration_seq

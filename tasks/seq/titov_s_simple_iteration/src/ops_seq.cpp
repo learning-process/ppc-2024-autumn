@@ -24,6 +24,25 @@ void titov_s_simple_iteration_seq::SimpleIterationSequential::transformMatrix() 
   }
 }
 
+bool titov_s_simple_iteration_seq::SimpleIterationSequential::isDiagonallyDominant() {
+  for (unsigned int i = 0; i < rows_; ++i) {
+    float diagonal = std::abs(input_[i * cols_ + i]);
+    float sum = 0.0f;
+
+    for (unsigned int j = 0; j < cols_ - 1; ++j) {
+      if (i != j) {
+        sum += std::abs(input_[i * cols_ + j]);
+      }
+    }
+
+    if (diagonal <= sum) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 bool titov_s_simple_iteration_seq::SimpleIterationSequential::validation() {
   internal_order_test();
 
@@ -90,6 +109,11 @@ bool titov_s_simple_iteration_seq::SimpleIterationSequential::pre_processing() {
 
   auto* epsilon_ptr = reinterpret_cast<float*>(taskData->inputs[rows_]);
   epsilon_ = *epsilon_ptr;
+
+  if (!isDiagonallyDominant()) {
+  std::cerr << "Matrix is not diagonally dominant. The method may not converge.\n";
+    return false;
+  }
 
   transformMatrix();
 
