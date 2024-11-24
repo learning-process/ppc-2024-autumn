@@ -62,30 +62,26 @@ bool ParallelTask::pre_processing() {
 
 bool ParallelTask::run() {
   internal_order_test();
+  auto sizes = std::vector<int>(world.size(), 0);
   auto local_input = std::vector<Pixel>();
   auto local_result = std::vector<Pixel>();
-  auto sizes = std::vector<int>();
 
   if (world.rank() == 0) {
     auto input_size = int(input.size());
-    auto num_process = std::min(world.size(), input_size);
-    auto size = input_size / num_process;
-    auto remainder = input_size % num_process;
-
-    sizes.resize(num_process, size);
-    std::fill(sizes.begin() + 1, sizes.begin() + 1 + remainder, size + 1);
+    auto active_processes = std::min(world.size(), input_size);
+    auto size = input_size / active_processes;
+    auto remainder = input_size % active_processes;
+    std::fill_n(sizes.begin(), active_processes - remainder, size);
+    std::fill_n(sizes.begin() + active_processes - remainder, remainder, size + 1);
   }
-
   boost::mpi::broadcast(world, sizes, 0);
+
   local_input.resize(sizes[world.rank()]);
+  local_result.resize(sizes[world.rank()]);
+
   boost::mpi::scatterv(world, input, sizes, local_input.data(), 0);
-
-  if (!local_input.empty()) {
-    local_result.resize(local_input.size());
-    std::transform(local_input.begin(), local_input.end(), local_result.begin(),
-                   [this](const Pixel& p) { return p.with_contrast(contrast_factor); });
-  }
-
+  std::transform(local_input.begin(), local_input.end(), local_result.begin(),
+                 [this](const Pixel& p) { return p.with_contrast(contrast_factor); });
   boost::mpi::gatherv(world, local_result, result.data(), sizes, 0);
   return true;
 }
