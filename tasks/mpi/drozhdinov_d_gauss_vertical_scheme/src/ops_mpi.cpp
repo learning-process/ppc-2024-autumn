@@ -133,6 +133,7 @@ double drozhdinov_d_gauss_vertical_scheme_mpi::Determinant(const std::vector<dou
       }
     }
   }
+
   return det;
 }
 
@@ -296,9 +297,10 @@ bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskSequential::pre_processi
   }
   columns = taskData->inputs_count[2];
   rows = taskData->inputs_count[3];
-
-  return !((Myrank(coefs, columns, rows) == Myrank(extendedMatrix(coefs, rows, b), rows + 1, rows)) ||
-           Determinant(coefs, rows) == 0);
+  double dtrm = Determinant(coefs, rows);
+  int rk1 = Myrank(coefs, columns, rows);
+  int rk2 = Myrank(extendedMatrix(coefs, rows, b), columns + 1, rows);
+  return (myrnd(dtrm) != 0 && rk1 == rk2);
 }
 
 bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskSequential::validation() {
@@ -399,16 +401,32 @@ bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel::pre_processing
   }
   _x = std::vector<double>(_rows, 0);
 
-  return !((Myrank(_coefs, _columns, _rows) != Myrank(extendedMatrix(_coefs, _rows, _b), _rows + 1, _rows) ||
-            Determinant(_coefs, _rows) == 0));
+  return true;
 }
 
 bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
+    std::vector<double> tmp_coefs = std::vector<double>(taskData->inputs_count[0]);
+    auto* tmp_ptr2 = reinterpret_cast<double*>(taskData->inputs[0]);
+    for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
+      tmp_coefs[i] = tmp_ptr2[i];
+      // std::cout << tmp_coefs[i] << std::endl;
+    }
+    std::vector<double> tmp_b = std::vector<double>(taskData->inputs_count[1], 1);
+    if (taskData->inputs[1] != 0) {
+      auto* ptr3 = reinterpret_cast<double*>(taskData->inputs[1]);
+      for (unsigned int i = 0; i < taskData->inputs_count[1]; i++) {
+        tmp_b[i] = ptr3[i];
+        // std::cout << tmp_b[i] << std::endl;
+      }
+    }
+    int r = taskData->inputs_count[3];
+
+    double dtrm = Determinant(tmp_coefs, r);
     return (taskData->inputs_count[3] == taskData->inputs_count[2] &&
             taskData->inputs_count[2] == taskData->outputs_count[0]) &&
-           taskData->inputs.size() == 2 && taskData->outputs.size() == 1;
+           taskData->inputs.size() == 2 && myrnd(dtrm) != 0 && taskData->outputs.size() == 1;
   }
   return true;
 }

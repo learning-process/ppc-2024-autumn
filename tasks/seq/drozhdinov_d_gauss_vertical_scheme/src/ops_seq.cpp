@@ -169,9 +169,10 @@ bool drozhdinov_d_gauss_vertical_scheme_seq::TestTaskSequential::pre_processing(
   }
   columns = taskData->inputs_count[2];
   rows = taskData->inputs_count[3];
-
-  return !((Myrank(coefs, columns, rows) == Myrank(extendedMatrix(coefs, rows, b), rows + 1, rows)) ||
-          Determinant(coefs, rows) == 0);
+  double dtrm = Determinant(coefs, rows);
+  int rk1 = Myrank(coefs, columns, rows);
+  int rk2 = Myrank(extendedMatrix(coefs, rows, b), columns + 1, rows);
+  return (myrnd(dtrm) != 0 && rk1 == rk2);
 }
 
 bool drozhdinov_d_gauss_vertical_scheme_seq::TestTaskSequential::validation() {
