@@ -21,16 +21,6 @@ double malyshev_a_simple_iteration_method_seq::determinant(const std::vector<std
   return det;
 }
 
-double malyshev_a_simple_iteration_method_seq::determinant(const std::vector<double>& matrix, uint32_t n) {
-  std::vector<std::vector<double>> tmp(n, std::vector<double>(n));
-  for (uint32_t i = 0; i < n; i++) {
-    for (uint32_t j = 0; j < n; j++) {
-      tmp[i][j] = matrix[i * n + j];
-    }
-  }
-  return determinant(tmp);
-}
-
 int malyshev_a_simple_iteration_method_seq::rank(const std::vector<std::vector<double>>& matrix) {
   auto local_matrix(matrix);
   uint32_t n = local_matrix.size();

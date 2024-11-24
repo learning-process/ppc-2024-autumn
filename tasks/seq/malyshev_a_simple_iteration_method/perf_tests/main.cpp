@@ -6,7 +6,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/malyshev_a_simple_iteration_method/include/ops_seq.hpp"
 
-TEST(malyshev_a_simple_iteration_method, test_pipeline_run) {
+TEST(malyshev_a_simple_iteration_method_seq, test_pipeline_run) {
   const int size = 300;
   std::vector<double> A;
   std::vector<double> B;
@@ -49,7 +49,7 @@ TEST(malyshev_a_simple_iteration_method, test_pipeline_run) {
   ppc::core::Perf::print_perf_statistic(perfResults);
 }
 
-TEST(malyshev_a_simple_iteration_method, test_task_run) {
+TEST(malyshev_a_simple_iteration_method_seq, test_task_run) {
   const int size = 300;
   std::vector<double> A;
   std::vector<double> B;
