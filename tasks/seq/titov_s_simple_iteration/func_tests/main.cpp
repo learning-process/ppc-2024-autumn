@@ -129,9 +129,6 @@ TEST(titov_s_simple_iteration_seq, Test_Simple_Iteration_2_simple) {
   ASSERT_TRUE(SimpleIterationSequential.pre_processing());
   ASSERT_TRUE(SimpleIterationSequential.run());
   ASSERT_TRUE(SimpleIterationSequential.post_processing());
-  for (size_t i = 0; i < output.size(); ++i) {
-    std::cout << "Output[" << i << "]: " << output[i] << ", Expected: " << expected_result[i] << std::endl;
-  }
   for (size_t i = 0; i < expected_result.size(); ++i) {
     ASSERT_NEAR(expected_result[i], output[i], epsilon);
   }
@@ -164,9 +161,6 @@ TEST(titov_s_simple_iteration_seq, Test_Simple_Iteration_2_0) {
   ASSERT_TRUE(SimpleIterationSequential.pre_processing());
   ASSERT_TRUE(SimpleIterationSequential.run());
   ASSERT_TRUE(SimpleIterationSequential.post_processing());
-  for (size_t i = 0; i < output.size(); ++i) {
-    std::cout << "Output[" << i << "]: " << output[i] << ", Expected: " << expected_result[i] << std::endl;
-  }
   for (size_t i = 0; i < expected_result.size(); ++i) {
     ASSERT_NEAR(expected_result[i], output[i], epsilon);
   }
