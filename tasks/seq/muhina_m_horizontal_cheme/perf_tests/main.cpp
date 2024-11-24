@@ -6,11 +6,10 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/muhina_m_horizontal_cheme/include/ops_seq.hpp"
 
-
 TEST(muhina_m_horizontal_cheme, test_pipeline_run) {
   int size = 1000;
-  std::vector<int> matrix(size * size, 1);  
-  std::vector<int> vec(size, 1);            
+  std::vector<int> matrix(size * size, 1);
+  std::vector<int> vec(size, 1);
   std::vector<int> out(size, 0);
 
   // Create TaskData
@@ -45,7 +44,7 @@ TEST(muhina_m_horizontal_cheme, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(HorizontalSchemeSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  int expected_result = size;  
+  int expected_result = size;
   for (int i = 0; i < size; ++i) {
     ASSERT_EQ(out[i], expected_result);
   }
@@ -89,8 +88,7 @@ TEST(muhina_m_horizontal_cheme, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(HorizontalSchemeSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-
-  int expected_result = size;  
+  int expected_result = size;
   for (int i = 0; i < size; ++i) {
     ASSERT_EQ(out[i], expected_result);
   }

@@ -77,13 +77,14 @@ bool muhina_m_horizontal_cheme_mpi::HorizontalSchemeMPISequential::validation() 
   internal_order_test();
   if (taskData->inputs_count[0] == 0 || taskData->inputs_count[1] == 0) {
     return false;
-  } else if (taskData->inputs_count[0] % taskData->inputs_count[1] != 0) {
+  }
+  if (taskData->inputs_count[0] % taskData->inputs_count[1] != 0) {
     return false;
-  } else if (taskData->inputs_count[0] / taskData->inputs_count[1] != taskData->outputs_count[0]) {
+  }
+  if (taskData->inputs_count[0] / taskData->inputs_count[1] != taskData->outputs_count[0]) {
     return false;
   }
   return true;
- 
 }
 
 bool muhina_m_horizontal_cheme_mpi::HorizontalSchemeMPISequential::run() {
@@ -133,16 +134,18 @@ bool muhina_m_horizontal_cheme_mpi::HorizontalSchemeMPIParallel::pre_processing(
   }
 
   return true;
-  }
+}
 
 bool muhina_m_horizontal_cheme_mpi::HorizontalSchemeMPIParallel::validation() {
   internal_order_test();
   if (world_.rank() == 0) {
     if (taskData->inputs_count[0] == 0 || taskData->inputs_count[1] == 0) {
       return false;
-    } else if (taskData->inputs_count[0] % taskData->inputs_count[1] != 0) {
+    }
+    if (taskData->inputs_count[0] % taskData->inputs_count[1] != 0) {
       return false;
-    } else if (taskData->inputs_count[0] / taskData->inputs_count[1] != taskData->outputs_count[0]) {
+    }
+    if (taskData->inputs_count[0] / taskData->inputs_count[1] != taskData->outputs_count[0]) {
       return false;
     }
   }

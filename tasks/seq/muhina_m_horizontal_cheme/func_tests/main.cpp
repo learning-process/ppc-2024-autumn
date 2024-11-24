@@ -5,9 +5,8 @@
 
 #include "seq/muhina_m_horizontal_cheme/include/ops_seq.hpp"
 
-
 TEST(muhina_m_horizontal_cheme_seq, Test_Validation_1) {
-  std::vector<int> matrix = {1, 2, 3, 4, 5, 6};  
+  std::vector<int> matrix = {1, 2, 3, 4, 5, 6};
   std::vector<int> vec = {};
   std::vector<int> result(0);
 
@@ -17,7 +16,7 @@ TEST(muhina_m_horizontal_cheme_seq, Test_Validation_1) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vec.data()));
   taskDataSeq->inputs_count.emplace_back(vec.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
-  taskDataSeq->outputs_count.emplace_back(result.size());  
+  taskDataSeq->outputs_count.emplace_back(result.size());
 
   muhina_m_horizontal_cheme_seq::HorizontalSchemeSequential task(taskDataSeq);
 
@@ -42,10 +41,10 @@ TEST(muhina_m_horizontal_cheme_seq, Test_Validation_2) {
 }
 
 TEST(muhina_m_horizontal_cheme_seq, Test_Matrix_Vector_Multiplication_1) {
-  std::vector<int> matrix = {1, 2, 3, 4, 5, 6};  
-  std::vector<int> vec = {1, 2, 3};              
+  std::vector<int> matrix = {1, 2, 3, 4, 5, 6};
+  std::vector<int> vec = {1, 2, 3};
   std::vector<int> output_result(2);
-  std::vector<int> expected_result = {14, 32}; 
+  std::vector<int> expected_result = {14, 32};
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));

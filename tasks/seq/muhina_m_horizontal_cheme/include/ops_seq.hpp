@@ -1,8 +1,8 @@
 // Copyright 2023 Nesterov Alexander
 #pragma once
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 #include "core/task/include/task.hpp"
 
@@ -19,8 +19,8 @@ class HorizontalSchemeSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> matrix_;  
-  std::vector<int> vec_;     
-  std::vector<int> result_;             
+  std::vector<int> matrix_;
+  std::vector<int> vec_;
+  std::vector<int> result_;
 };
 }  // namespace muhina_m_horizontal_cheme_seq

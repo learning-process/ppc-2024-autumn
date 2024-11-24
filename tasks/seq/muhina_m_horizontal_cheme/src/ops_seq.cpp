@@ -6,18 +6,18 @@
 using namespace std::chrono_literals;
 
 std::vector<int> muhina_m_horizontal_cheme_seq::matrixVectorMultiplication(const std::vector<int>& matrix,
-                                            const std::vector<int>& vec, int rows,int cols) {
-  std::vector<int> result(rows, 0);  
+                                                                           const std::vector<int>& vec, int rows,
+                                                                           int cols) {
+  std::vector<int> result(rows, 0);
 
   for (int i = 0; i < rows; ++i) {
-    int row_result = 0;  
+    int row_result = 0;
     for (int j = 0; j < cols; ++j) {
-      row_result += matrix[i * cols + j] * vec[j];  
+      row_result += matrix[i * cols + j] * vec[j];
     }
-    result[i] = row_result; 
+    result[i] = row_result;
   }
-
-  return result; 
+  return result;
 }
 
 bool muhina_m_horizontal_cheme_seq::HorizontalSchemeSequential::pre_processing() {
@@ -37,17 +37,13 @@ bool muhina_m_horizontal_cheme_seq::HorizontalSchemeSequential::pre_processing()
 
 bool muhina_m_horizontal_cheme_seq::HorizontalSchemeSequential::validation() {
   internal_order_test();
-  if (taskData->inputs_count[0] == 0 || taskData->inputs_count[1] == 0) {
-    return false;
-  } 
-  return true;
+  return (!(taskData->inputs_count[0] == 0 || taskData->inputs_count[1] == 0));
 }
 
 bool muhina_m_horizontal_cheme_seq::HorizontalSchemeSequential::run() {
   internal_order_test();
   int cols = taskData->inputs_count[1];
   int rows = taskData->inputs_count[0] / taskData->inputs_count[1];
-  
   result_ = matrixVectorMultiplication(matrix_, vec_, rows, cols);
   return true;
 }
