@@ -80,9 +80,7 @@ bool SeidelIterateMethodsMPI::run() {
   return true;
 }
 
-bool SeidelIterateMethodsMPI::post_processing() {
-  return true;
-}
+bool SeidelIterateMethodsMPI::post_processing() { return true; }
 
 bool SeidelIterateMethodsMPI::converge(const std::vector<double>& x_new) {
   double norm = 0.0;
