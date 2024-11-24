@@ -257,3 +257,113 @@ TEST(kondratev_ya_contrast_adjustment_mpi, random_test_decrease) {
     }
   }
 }
+
+TEST(kondratev_ya_contrast_adjustment_mpi, different_sizes) {
+  boost::mpi::communicator world;
+  std::vector<kondratev_ya_contrast_adjustment_mpi::Pixel> input;
+  std::vector<kondratev_ya_contrast_adjustment_mpi::Pixel> res;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<double> contrast;
+
+  if (world.rank() == 0) {
+    int side = 24 * 24;
+    input = kondratev_ya_contrast_adjustment_mpi::genRandomData(side);
+    contrast = std::make_shared<double>(0.25);
+
+    res.resize(input.size() + 1);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(contrast.get()));
+    taskDataPar->inputs_count.emplace_back(input.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
+    taskDataPar->outputs_count.emplace_back(res.size());
+  }
+
+  kondratev_ya_contrast_adjustment_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  bool ret = testMpiTaskParallel.validation();
+  if (world.rank() == 0)
+    ASSERT_EQ(ret, false);
+  else
+    ASSERT_EQ(ret, true);
+}
+
+TEST(kondratev_ya_contrast_adjustment_mpi, no_out) {
+  boost::mpi::communicator world;
+  std::vector<kondratev_ya_contrast_adjustment_mpi::Pixel> input;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<double> contrast;
+
+  if (world.rank() == 0) {
+    int side = 24 * 24;
+    input = kondratev_ya_contrast_adjustment_mpi::genRandomData(side);
+    contrast = std::make_shared<double>(0.25);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(contrast.get()));
+    taskDataPar->inputs_count.emplace_back(input.size());
+    taskDataPar->outputs_count.emplace_back(input.size());
+  }
+
+  kondratev_ya_contrast_adjustment_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  bool ret = testMpiTaskParallel.validation();
+  if (world.rank() == 0)
+    ASSERT_EQ(ret, false);
+  else
+    ASSERT_EQ(ret, true);
+}
+
+TEST(kondratev_ya_contrast_adjustment_mpi, no_in) {
+  boost::mpi::communicator world;
+  std::vector<kondratev_ya_contrast_adjustment_mpi::Pixel> input;
+  std::vector<kondratev_ya_contrast_adjustment_mpi::Pixel> res;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<double> contrast;
+
+  if (world.rank() == 0) {
+    int side = 24 * 24;
+    input = kondratev_ya_contrast_adjustment_mpi::genRandomData(side);
+    contrast = std::make_shared<double>(0.25);
+    res.resize(input.size());
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(contrast.get()));
+    taskDataPar->inputs_count.emplace_back(input.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
+    taskDataPar->outputs_count.emplace_back(res.size());
+  }
+
+  kondratev_ya_contrast_adjustment_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  bool ret = testMpiTaskParallel.validation();
+  if (world.rank() == 0)
+    ASSERT_EQ(ret, false);
+  else
+    ASSERT_EQ(ret, true);
+}
+
+TEST(kondratev_ya_contrast_adjustment_mpi, no_constast) {
+  boost::mpi::communicator world;
+  std::vector<kondratev_ya_contrast_adjustment_mpi::Pixel> input;
+  std::vector<kondratev_ya_contrast_adjustment_mpi::Pixel> res;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    int side = 24 * 24;
+    input = kondratev_ya_contrast_adjustment_mpi::genRandomData(side);
+    res.resize(input.size());
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataPar->inputs_count.emplace_back(input.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
+    taskDataPar->outputs_count.emplace_back(res.size());
+  }
+
+  kondratev_ya_contrast_adjustment_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  bool ret = testMpiTaskParallel.validation();
+  if (world.rank() == 0)
+    ASSERT_EQ(ret, false);
+  else
+    ASSERT_EQ(ret, true);
+}

@@ -79,3 +79,89 @@ TEST(kondratev_ya_contrast_adjustment_seq, gradient_test_decrease) {
 
   ASSERT_LE(resContrast, inputContrast);
 }
+
+TEST(kondratev_ya_contrast_adjustment_seq, different_sizes) {
+  std::vector<kondratev_ya_contrast_adjustment_seq::Pixel> input;
+  std::vector<kondratev_ya_contrast_adjustment_seq::Pixel> res;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<double> contrast;
+
+  int side = 24 * 24;
+  input = kondratev_ya_contrast_adjustment_seq::genGradient(side);
+  contrast = std::make_shared<double>(0.25);
+
+  res.resize(input.size() + 1);
+
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(contrast.get()));
+  taskDataPar->inputs_count.emplace_back(input.size());
+  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
+  taskDataPar->outputs_count.emplace_back(res.size());
+
+  kondratev_ya_contrast_adjustment_seq::TestTaskSequential TestTaskSequential(taskDataPar);
+  bool ret = TestTaskSequential.validation();
+  ASSERT_EQ(ret, false);
+}
+
+TEST(kondratev_ya_contrast_adjustment_seq, no_out) {
+  std::vector<kondratev_ya_contrast_adjustment_seq::Pixel> input;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<double> contrast;
+
+  int side = 24 * 24;
+  input = kondratev_ya_contrast_adjustment_seq::genGradient(side);
+  contrast = std::make_shared<double>(0.25);
+
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(contrast.get()));
+  taskDataPar->inputs_count.emplace_back(input.size());
+  taskDataPar->outputs_count.emplace_back(input.size());
+
+  kondratev_ya_contrast_adjustment_seq::TestTaskSequential TestTaskSequential(taskDataPar);
+  bool ret = TestTaskSequential.validation();
+  ASSERT_EQ(ret, false);
+}
+
+TEST(kondratev_ya_contrast_adjustment_seq, no_in) {
+  std::vector<kondratev_ya_contrast_adjustment_seq::Pixel> input;
+  std::vector<kondratev_ya_contrast_adjustment_seq::Pixel> res;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<double> contrast;
+
+  int side = 24 * 24;
+  input = kondratev_ya_contrast_adjustment_seq::genGradient(side);
+  contrast = std::make_shared<double>(0.25);
+  res.resize(input.size());
+
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(contrast.get()));
+  taskDataPar->inputs_count.emplace_back(input.size());
+  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
+  taskDataPar->outputs_count.emplace_back(res.size());
+
+  kondratev_ya_contrast_adjustment_seq::TestTaskSequential TestTaskSequential(taskDataPar);
+  bool ret = TestTaskSequential.validation();
+  ASSERT_EQ(ret, false);
+}
+
+TEST(kondratev_ya_contrast_adjustment_seq, no_constast) {
+  std::vector<kondratev_ya_contrast_adjustment_seq::Pixel> input;
+  std::vector<kondratev_ya_contrast_adjustment_seq::Pixel> res;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  int side = 24 * 24;
+  input = kondratev_ya_contrast_adjustment_seq::genGradient(side);
+  res.resize(input.size());
+
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskDataPar->inputs_count.emplace_back(input.size());
+  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
+  taskDataPar->outputs_count.emplace_back(res.size());
+
+  kondratev_ya_contrast_adjustment_seq::TestTaskSequential TestTaskSequential(taskDataPar);
+  bool ret = TestTaskSequential.validation();
+  ASSERT_EQ(ret, false);
+}
