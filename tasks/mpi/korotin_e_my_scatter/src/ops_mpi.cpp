@@ -1,7 +1,5 @@
 #include "mpi/korotin_e_my_scatter/include/ops_mpi.hpp"
 
-#include <mpi.h>
-
 #include <algorithm>
 #include <cmath>
 #include <functional>
