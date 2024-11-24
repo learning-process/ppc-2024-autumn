@@ -123,10 +123,8 @@ bool smirnov_i_tape_splitting_A::TestMPITaskParallel::run() {
   }
   MPI_Bcast(A, m_a * n_a, MPI_DOUBLE, 0, MPI_COMM_WORLD);
   MPI_Bcast(B, m_b * n_b, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-
-  
   int* sendcounts = new int[size];
-  std::fill(sendcounts, sendcounts + size, 0); 
+  std::fill(sendcounts, sendcounts + size, 0);
   int* displs = new int[size]();
   int rows_per_proc = m_a / size;
   int extra_rows = m_a % size;
