@@ -8,16 +8,6 @@ double kondratev_ya_contrast_adjustment_mpi::getContrast(
   return (double)(max->red - min->red) / (max->red + min->red);
 }
 
-int kondratev_ya_contrast_adjustment_mpi::clamp(int value, int min, int max) {
-  if (value < min) {
-    return min;
-  }
-  if (value > max) {
-    return max;
-  }
-  return value;
-}
-
 bool kondratev_ya_contrast_adjustment_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
 
@@ -39,7 +29,7 @@ bool kondratev_ya_contrast_adjustment_mpi::TestMPITaskSequential::validation() {
 
 bool kondratev_ya_contrast_adjustment_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-  auto my_clamp = kondratev_ya_contrast_adjustment_mpi::clamp;
+
   double average[3]{0, 0, 0};  // RGB
 
   for (auto& pixel : input_) {
@@ -51,9 +41,9 @@ bool kondratev_ya_contrast_adjustment_mpi::TestMPITaskSequential::run() {
   for (uint32_t i = 0; i < 3; i++) average[i] /= input_.size();
 
   for (uint32_t i = 0; i < input_.size(); i++) {
-    res_[i].red = (uint8_t)my_clamp((int)(contrast_ * (input_[i].red - average[0])) + average[0], 0, 255);
-    res_[i].green = (uint8_t)my_clamp((int)(contrast_ * (input_[i].green - average[1])) + average[1], 0, 255);
-    res_[i].blue = (uint8_t)my_clamp((int)(contrast_ * (input_[i].blue - average[2])) + average[2], 0, 255);
+    res_[i].red = std::clamp((int32_t)(contrast_ * (input_[i].red - average[0]) + average[0]), 0, 255);
+    res_[i].green = std::clamp((int32_t)(contrast_ * (input_[i].green - average[1]) + average[1]), 0, 255);
+    res_[i].blue = std::clamp((int32_t)(contrast_ * (input_[i].blue - average[2]) + average[2]), 0, 255);
   }
 
   return true;
@@ -94,7 +84,6 @@ bool kondratev_ya_contrast_adjustment_mpi::TestMPITaskParallel::validation() {
 
 bool kondratev_ya_contrast_adjustment_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  auto my_clamp = kondratev_ya_contrast_adjustment_mpi::clamp;
 
   uint32_t inputSize;
 
@@ -136,9 +125,9 @@ bool kondratev_ya_contrast_adjustment_mpi::TestMPITaskParallel::run() {
   for (uint32_t i = 0; i < 3; i++) average[i] = sum[i] / size;
 
   for (uint32_t i = 0; i < local_input.size(); i++) {
-    local_res[i].red = my_clamp((int)(contrast_ * (local_input[i].red - average[0])) + average[0], 0, 255);
-    local_res[i].green = my_clamp((int)(contrast_ * (local_input[i].green - average[1])) + average[1], 0, 255);
-    local_res[i].blue = my_clamp((int)(contrast_ * (local_input[i].blue - average[2])) + average[2], 0, 255);
+    local_res[i].red = std::clamp((int32_t)(contrast_ * (local_input[i].red - average[0]) + average[0]), 0, 255);
+    local_res[i].green = std::clamp((int32_t)(contrast_ * (local_input[i].green - average[1]) + average[1]), 0, 255);
+    local_res[i].blue = std::clamp((int32_t)(contrast_ * (local_input[i].blue - average[2]) + average[2]), 0, 255);
   }
 
   gatherv(world, local_res.data(), local_res.size(), res_.data(), sizes, 0);

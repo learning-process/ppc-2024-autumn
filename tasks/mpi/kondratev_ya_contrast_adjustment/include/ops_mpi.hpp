@@ -36,7 +36,6 @@ struct Pixel {
   // clang-format on
 };
 
-int clamp(int value, int min, int max);
 double getContrast(std::vector<kondratev_ya_contrast_adjustment_mpi::Pixel>& array);
 
 class TestMPITaskSequential : public ppc::core::Task {

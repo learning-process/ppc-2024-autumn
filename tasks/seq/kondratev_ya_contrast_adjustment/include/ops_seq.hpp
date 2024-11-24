@@ -23,7 +23,6 @@ struct Pixel {
   }
 };
 
-int clamp(int value, int min, int max);
 double getContrast(std::vector<kondratev_ya_contrast_adjustment_seq::Pixel>& array);
 
 class TestTaskSequential : public ppc::core::Task {
