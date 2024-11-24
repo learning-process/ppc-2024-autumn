@@ -267,10 +267,10 @@ TEST(malyshev_a_simple_iteration_method_mpi, validate_input_slowly_converging) {
 TEST(malyshev_a_simple_iteration_method_mpi, validate_input_zero_on_the_main_diagonal) {
   boost::mpi::communicator world;
 
-  std::vector<double> A{4, 2, -3, 0};
-  std::vector<double> X(2, 0);
-  std::vector<double> B{1, 2};
-  std::vector<double> X0(2, 0);
+  std::vector<double> A{0, 4, 2, -3, 0, 4, 6, 1, 0};
+  std::vector<double> X(3, 0);
+  std::vector<double> B{1, 2, 1};
+  std::vector<double> X0(3, 0);
   double eps = 1e-4;
 
   const auto try_validate = [](auto &taskData) {
@@ -291,6 +291,7 @@ TEST(malyshev_a_simple_iteration_method_mpi, validate_input_zero_on_the_main_dia
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(X.data()));
     taskDataPar->outputs_count.emplace_back(X.size());
 
-    ASSERT_TRUE(try_validate(taskDataPar));
+    // We expect false because the system is slowly converging
+    ASSERT_FALSE(try_validate(taskDataPar));
   }
 }
