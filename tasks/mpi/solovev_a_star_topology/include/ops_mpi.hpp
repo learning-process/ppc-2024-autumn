@@ -13,6 +13,8 @@
 
 namespace solovev_a_star_topology_mpi {
 
+std::vector<int> generate_random_vector(size_t size);
+
 class TestMPITaskParallel : public ppc::core::Task {
  public:
   explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -25,5 +27,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
   std::vector<int> input_;
   std::vector<int> res;
+  std::vector<int> order;
+  int l_rank;
 };
 }  // namespace solovev_a_star_topology_mpi
