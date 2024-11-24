@@ -27,7 +27,7 @@ void run_valid_task(float contrast_factor, size_t output_size, const std::vector
   ASSERT_TRUE(task.pre_processing());
   ASSERT_TRUE(task.run());
   ASSERT_TRUE(task.post_processing());
-  ASSERT_EQ(want, output);
+  EXPECT_EQ(want, output);
 }
 
 void run_invalid_task(float contrast_factor, size_t output_size, const std::vector<uint32_t>& input_hex_colors) {

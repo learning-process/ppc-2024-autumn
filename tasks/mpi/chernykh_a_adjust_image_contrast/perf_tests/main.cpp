@@ -55,7 +55,7 @@ void run_task(RunType run_type, float contrast_factor, size_t output_size,
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perf_results);
-    ASSERT_TRUE(all_pixels_match(par_output, Pixel::from_hex_color(want_hex_color)));
+    EXPECT_TRUE(all_pixels_match(par_output, Pixel::from_hex_color(want_hex_color)));
   }
 }
 

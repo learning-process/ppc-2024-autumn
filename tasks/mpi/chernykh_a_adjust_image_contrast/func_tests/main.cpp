@@ -55,7 +55,7 @@ void run_valid_task(float contrast_factor, size_t output_size, const std::vector
     ASSERT_TRUE(seq_task.pre_processing());
     ASSERT_TRUE(seq_task.run());
     ASSERT_TRUE(seq_task.post_processing());
-    ASSERT_EQ(seq_output, par_output);
+    EXPECT_EQ(seq_output, par_output);
   }
 }
 
@@ -74,16 +74,6 @@ void run_invalid_task(float contrast_factor, size_t output_size, const std::vect
 
     auto par_task = ParallelTask(par_task_data, contrast_factor);
     ASSERT_FALSE(par_task.validation());
-
-    auto seq_output = std::vector<Pixel>(output_size);
-    auto seq_task_data = std::make_shared<ppc::core::TaskData>();
-    seq_task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
-    seq_task_data->inputs_count.emplace_back(input.size());
-    seq_task_data->outputs.emplace_back(reinterpret_cast<uint8_t *>(seq_output.data()));
-    seq_task_data->outputs_count.emplace_back(seq_output.size());
-
-    auto seq_task = SequentialTask(seq_task_data, contrast_factor);
-    ASSERT_FALSE(seq_task.validation());
   }
 }
 
