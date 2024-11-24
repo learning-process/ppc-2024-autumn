@@ -48,10 +48,7 @@ bool SeidelIterateMethodsMPI::validation() {
   }
 
   n = taskData->inputs_count[0];
-  if (n <= 0) {
-    return false;
-  }
-  return true;
+  return n > 0;
 }
 
 bool SeidelIterateMethodsMPI::run() {
