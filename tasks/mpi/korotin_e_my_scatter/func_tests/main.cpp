@@ -79,6 +79,49 @@ TEST(korotin_e_my_scatter, maxval_is_correct) {
   }
 }
 
+TEST(korotin_e_my_scatter, maxval_with_non_zero_root) {
+  boost::mpi::communicator world;
+  std::vector<double> matrix;
+  std::vector<double> max_val(1, 0);
+  int root = world.size() - 1;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == root) {
+    const unsigned M = 30;
+    const unsigned N = 30;
+    matrix = korotin_e_my_scatter_mpi::getRandomMatrix(M, N, 100);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataPar->inputs_count.emplace_back(matrix.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(max_val.data()));
+    taskDataPar->outputs_count.emplace_back(max_val.size());
+  }
+
+  korotin_e_my_scatter_mpi::TestMPITaskMyParallel testMpiTaskParallel(taskDataPar, root);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == root) {
+    std::vector<double> reference(1, 0);
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(matrix.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference.data()));
+    taskDataSeq->outputs_count.emplace_back(reference.size());
+
+    korotin_e_my_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_DOUBLE_EQ(reference[0], max_val[0]);
+  }
+}
+
 TEST(korotin_e_my_scatter, matrix_maxval_with_prime_rows_and_columns) {
   boost::mpi::communicator world;
   std::vector<double> matrix;
