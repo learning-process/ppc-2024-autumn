@@ -2,8 +2,10 @@
 #pragma once
 #include <gtest/gtest.h>
 
+#include <boost/mpi.hpp>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <boost/serialization/vector.hpp>
 #include <cmath>
 #include <memory>
 #include <numeric>
@@ -55,7 +57,7 @@ class SimpleIterationMPI : public ppc::core::Task {
   bool isTimeToStop(const std::vector<double>& x0,
                     const std::vector<double>& x1) const;  // stop if |xn^(i+1) - xn^i| < epsilon
 
-  std::vector<unsigned int> counts_{};
+  std::vector<size_t> counts_{};
   size_t num_processes_ = 0;
 };
 

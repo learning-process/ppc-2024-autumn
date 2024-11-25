@@ -195,15 +195,21 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::run() {
 
   if (world.rank() == 0) {
     size_t offset_remainder = counts_[0];
-    for (unsigned int proc = 1; proc < num_processes_; proc++) {
+    for (size_t proc = 1; proc < num_processes_; proc++) {
       size_t current_count = counts_[proc];
 
-      // send rows A
+      // send part of A as vec
+      std::vector<double> temp_A;
       for (size_t i = 0; i < current_count; i++) {
-        world.send(proc, 0, &A_[(offset_remainder + i) * n], n);
+        temp_A.insert(temp_A.end(), A_.begin() + (offset_remainder + i) * n,
+                      A_.begin() + (offset_remainder + i + 1) * n);
       }
+      world.send(proc, 0, temp_A);
+
       // send part of vec b
-      world.send(proc, 1, &b_[offset_remainder], current_count);
+      std::vector<double> temp_b(b_.begin() + offset_remainder, b_.begin() + offset_remainder + current_count);
+      world.send(proc, 1, temp_b);
+
       offset_remainder += current_count;
     }
   }
@@ -213,26 +219,25 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::run() {
   std::vector<double> local_x(counts_[world.rank()], 0.0);
 
   if (world.rank() > 0) {
-    for (size_t i = 0; i < counts_[world.rank()]; i++) {
-      world.recv(0, 0, &local_A[i * n], n);
-    }
-    world.recv(0, 1, local_b.data(), counts_[world.rank()]);
+    world.recv(0, 0, local_A);
+    world.recv(0, 1, local_b);
   } else {
+    // copy local data for proc 0
     for (size_t i = 0; i < counts_[0]; i++) {
-      std::copy(&A_[i * n], &A_[(i + 1) * n], &local_A[i * n]);
+      std::copy(A_.begin() + i * n, A_.begin() + (i + 1) * n, local_A.begin() + i * n);
     }
     std::copy(b_.begin(), b_.begin() + counts_[0], local_b.begin());
   }
 
   // Simple Iteration Method
   while (iteration < maxIteration_) {
-    // send current approach
     boost::mpi::broadcast(world, x_.data(), n, 0);
-    // calculate new approach
+
     size_t row_offset = 0;
-    for (int i = 0; i < world.rank(); i++) {
+    for (size_t i = 0; i < static_cast<size_t>(world.rank()); i++) {
       row_offset += counts_[i];
     }
+
     for (size_t i = 0; i < counts_[world.rank()]; i++) {
       double sum = 0.0;
       for (size_t j = 0; j < n; j++) {
@@ -242,27 +247,24 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::run() {
       }
       local_x[i] = (local_b[i] - sum) / local_A[i * n + (row_offset + i)];
     }
+
     if (world.rank() == 0) {
       prev_x_ = x_;
-      // copy current approach
       std::copy(local_x.begin(), local_x.end(), x_.begin());
-      // get approach from other proc
+
       size_t offset = counts_[0];
-      for (unsigned int proc = 1; proc < num_processes_; proc++) {
-        world.recv(proc, 2, &x_[offset], counts_[proc]);
+      for (size_t proc = 1; proc < num_processes_; proc++) {
+        std::vector<double> temp_x;
+        world.recv(proc, 2, temp_x);
+        std::copy(temp_x.begin(), temp_x.end(), x_.begin() + offset);
         offset += counts_[proc];
       }
-      // check
-      if (isTimeToStop(prev_x_, x_)) {
-        bool converged = true;
-        boost::mpi::broadcast(world, converged, 0);
-        break;
-      } else {
-        bool converged = false;
-        boost::mpi::broadcast(world, converged, 0);
-      }
+
+      bool converged = isTimeToStop(prev_x_, x_);
+      boost::mpi::broadcast(world, converged, 0);
+      if (converged) break;
     } else {
-      world.send(0, 2, local_x.data(), counts_[world.rank()]);
+      world.send(0, 2, local_x);
       bool converged;
       boost::mpi::broadcast(world, converged, 0);
       if (converged) break;
