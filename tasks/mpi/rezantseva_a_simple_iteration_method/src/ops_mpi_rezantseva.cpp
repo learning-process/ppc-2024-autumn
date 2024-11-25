@@ -220,7 +220,7 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::run() {
   while (iteration < maxIteration_) {
     // local offset
     size_t offset = 0;
-    for (size_t i = 0; i < world.rank(); i++) {
+    for (size_t i = 0; i < static_cast<size_t>(world.rank()); i++) {
       offset += counts_[i];
     }
 
