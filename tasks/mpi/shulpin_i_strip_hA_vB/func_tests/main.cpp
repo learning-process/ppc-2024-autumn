@@ -409,6 +409,7 @@ TEST(shulpin_strip_scheme_A_B, matrix_100x100) {
   taskParallel->pre_processing();
   taskParallel->run();
   taskParallel->post_processing();
+  
   if (world.rank() == 0) {
     auto taskSequential = std::make_shared<shulpin_strip_scheme_A_B::Matrix_hA_vB_seq>(taskDataSeq);
     ASSERT_TRUE(taskSequential->validation());
@@ -418,7 +419,7 @@ TEST(shulpin_strip_scheme_A_B, matrix_100x100) {
     ASSERT_EQ(global_res_mpi, global_res_seq);
   }
 }
-/*
+
 TEST(shulpin_strip_scheme_A_B, matrix_500x500) {
   boost::mpi::communicator world;
 
@@ -963,4 +964,3 @@ TEST(shulpin_strip_scheme_A_B, invalid_matrix) {
     ASSERT_FALSE(taskSequential->validation());
   }
 }
-*/
