@@ -45,7 +45,7 @@ double myrnd(double value) { return (fabs(value - std::round(value)) < GAMMA ? s
 int drozhdinov_d_gauss_vertical_scheme_mpi::Myrank(std::vector<double> tmp_matrix, int m, int n) {
   int row = 0;
   int col = 0;
-  std::vector<double> matrix = tmp_matrix;
+  std::vector<double> matrix = std::move(tmp_matrix);
   while (row < m && col < n) {
     int max_row = row;
     for (int i = row + 1; i < m; i++) {
@@ -437,7 +437,7 @@ bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel::validation() {
       }
       int rk2 = Myrank(A_extended, r, r + 1);
       double dtrm = Determinant(tmp_coefs, r);
-      std::cout << rk1 << " " << rk2 << " " << dtrm;
+      // std::cout << rk1 << " " << rk2 << " " << dtrm;
       return (taskData->inputs_count[3] == taskData->inputs_count[2] &&
               taskData->inputs_count[2] == taskData->outputs_count[0]) &&
              taskData->inputs.size() == 2 && myrnd(dtrm) != 0 && taskData->outputs.size() == 1 && rk1 == rk2;
