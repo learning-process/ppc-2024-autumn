@@ -1,7 +1,5 @@
 #include "seq/korablev_v_jacobi_method/include/ops_seq.hpp"
 
-#include <boost/numeric/ublas/lu.hpp>
-#include <boost/numeric/ublas/matrix.hpp>
 #include <cmath>
 #include <iostream>
 
