@@ -206,11 +206,11 @@ bool titov_s_simple_iteration_mpi::MPISimpleIterationParallel::validation() {
   internal_order_test();
 
   if (world.rank() == 0) {
-    if (taskData->inputs_count.size() != 4 || taskData->outputs_count.size() != 1) {
+    Rows = *reinterpret_cast<size_t*>(taskData->inputs[2]);
+    if (Rows == 0) {
       return false;
     }
-    Rows = *reinterpret_cast<size_t*>(taskData->inputs[2]);
-    if (Rows <= 0) {
+    if (taskData->inputs_count.size() != 4 || taskData->outputs_count.size() != 1) {
       return false;
     }
     epsilon_ = *reinterpret_cast<double*>(taskData->inputs[3]);
