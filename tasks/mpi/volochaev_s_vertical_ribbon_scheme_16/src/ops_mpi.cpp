@@ -122,10 +122,10 @@ bool volochaev_s_vertical_ribbon_scheme_16_mpi::Lab2_16_mpi::run() {
 
   boost::mpi::broadcast(world, m, 0);
   boost::mpi::broadcast(world, n, 0);
-  boost::mpi::broadcast(world, &distribution[0], world.size(), 0);
-  boost::mpi::broadcast(world, &displacement[0], world.size(), 0);
-  boost::mpi::broadcast(world, &input_A1[0], n * m, 0);
-  boost::mpi::broadcast(world, &input_B1[0], m, 0);
+  boost::mpi::broadcast(world, distribution, 0);
+  boost::mpi::broadcast(world, displacement, 0);
+  boost::mpi::broadcast(world, input_A1, 0);
+  boost::mpi::broadcast(world, input_B1, 0);
 
   int local_start_col = displacement[world.rank()] / n;
   int local_m = distribution[world.rank()] / n;
