@@ -296,3 +296,28 @@ TEST(kolokolova_d_gaussian_method_horizontal_mpi, Test_Parallel_Gauss_Empyty_coe
     ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
 }
+
+TEST(kolokolova_d_gaussian_method_horizontal_mpi, Test_Parallel_rank) {
+  // When main rank not equal full rank
+  boost::mpi::communicator world;
+  std::vector<int> input_coeff = {7, -2, -1, 6, -4, -5, 1, 2, 4};
+  std::vector<int> input_y = {2, 3, 5};
+  std::vector<double> func_res(3, 0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_coeff.data()));
+    taskDataPar->inputs_count.emplace_back(input_coeff.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_y.data()));
+    taskDataPar->inputs_count.emplace_back(input_y.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(func_res.data()));
+    taskDataPar->outputs_count.emplace_back(func_res.size());
+  }
+
+  if (world.rank() == 0) {
+    kolokolova_d_gaussian_method_horizontal_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  }
+}

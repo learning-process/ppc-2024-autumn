@@ -8,38 +8,34 @@
 #include <vector>
 
 int kolokolova_d_gaussian_method_horizontal_mpi::find_rank(std::vector<double>& matrix, int rows, int cols) {
-  int rank = 0;
+  std::vector<std::vector<double>> mat(rows, std::vector<double>(cols));
 
   for (int i = 0; i < rows; ++i) {
-    // Find max element
-    double max_elem = 0.0;
-    int max_row = i;
-    for (int k = i; k < rows; ++k) {
-      if (std::abs(matrix[k * cols + i]) > max_elem) {
-        max_elem = std::abs(matrix[k * cols + i]);
-        max_row = k;
+    for (int j = 0; j < cols; ++j) {
+      mat[i][j] = matrix[i * cols + j];
+    }
+  }
+
+  int rank = 0;
+
+  for (int col = 0; col < cols; ++col) {
+    if (rank >= rows) break;
+    int pivotRow = rank;
+    while (pivotRow < rows && mat[pivotRow][col] == 0) {
+      ++pivotRow;
+    }
+    if (pivotRow < rows) {
+      if (pivotRow != rank) {
+        swap(mat[pivotRow], mat[rank]);
       }
-    }
-
-    // If all matrice is 0, than rank = 0
-    if (max_elem == 0) {
-      continue;
-    }
-
-    // Rearranging rows to move the max element to the current position
-    for (int k = 0; k < cols; ++k) {
-      std::swap(matrix[max_row * cols + k], matrix[i * cols + k]);
-    }
-
-    // Make all elements below the current to zero
-    for (int k = i + 1; k < rows; ++k) {
-      double factor = matrix[k * cols + i] / matrix[i * cols + i];
-      for (int j = i; j < cols; ++j) {
-        matrix[k * cols + j] -= factor * matrix[i * cols + j];
+      for (int r = rank + 1; r < rows; ++r) {
+        double factor = mat[r][col] / mat[rank][col];
+        for (int j = col; j < cols; ++j) {
+          mat[r][j] -= factor * mat[rank][j];
+        }
       }
+      ++rank;
     }
-
-    rank++;
   }
   return rank;
 }
@@ -169,21 +165,35 @@ bool kolokolova_d_gaussian_method_horizontal_mpi::TestMPITaskParallel::validatio
     if (taskData->outputs_count[0] == 0 || taskData->inputs_count[0] == 0) return false;
     if (taskData->inputs_count[1] == 0) return false;
 
+    int count_equations_valid = taskData->inputs_count[1];
+
     // Check that that the system has a solution
-    std::vector<double> validation_matrix(count_equations * (count_equations + 1));
+    std::vector<double> validation_matrix(count_equations_valid * (count_equations_valid + 1));
+
+    std::vector<double> input_coeff_valid(taskData->inputs_count[0]);
+    auto* tmp_ptr_coeff = reinterpret_cast<int*>(taskData->inputs[0]);
+    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+      input_coeff_valid[i] = static_cast<double>(tmp_ptr_coeff[i]);
+    }
+
+    std::vector<int> input_y_valid(taskData->inputs_count[1]);
+    auto* tmp_ptr_y = reinterpret_cast<int*>(taskData->inputs[1]);
+    for (unsigned i = 0; i < taskData->inputs_count[1]; i++) {
+      input_y_valid[i] = tmp_ptr_y[i];
+    }
 
     // Filling the matrix
-    for (int i = 0; i < count_equations; ++i) {
-      for (int j = 0; j < count_equations; ++j) {
-        validation_matrix[i * (count_equations + 1) + j] = static_cast<double>(input_coeff[i * count_equations + j]);
+    for (int i = 0; i < count_equations_valid; ++i) {
+      for (int j = 0; j < count_equations_valid; ++j) {
+        validation_matrix[i * (count_equations_valid + 1) + j] = (input_coeff_valid[i * count_equations_valid + j]);
       }
-      validation_matrix[i * (count_equations + 1) + count_equations] = static_cast<double>(input_y[i]);
+      validation_matrix[i * (count_equations_valid + 1) + count_equations_valid] =
+          static_cast<double>(input_y_valid[i]);
     }
 
     // Get rangs of matrices
-    int rank_A = find_rank(validation_matrix, count_equations, count_equations);
-    int rank_Ab = find_rank(validation_matrix, count_equations, count_equations + 1);
-
+    int rank_A = find_rank(input_coeff_valid, count_equations_valid, count_equations_valid);
+    int rank_Ab = find_rank(validation_matrix, count_equations_valid, count_equations_valid + 1);
     // Checking for inconsistency
     if (rank_A != rank_Ab) {
       return false;
