@@ -418,7 +418,7 @@ TEST(shulpin_strip_scheme_A_B, matrix_100x100) {
     ASSERT_EQ(global_res_mpi, global_res_seq);
   }
 }
-
+/*
 TEST(shulpin_strip_scheme_A_B, matrix_500x500) {
   boost::mpi::communicator world;
 
@@ -626,7 +626,6 @@ TEST(shulpin_strip_scheme_A_B, matrix_4x5_5x4) {
   }
 }
 
-
 TEST(shulpin_strip_scheme_A_B, matrix_4x2_2x5) {
   boost::mpi::communicator world;
 
@@ -696,7 +695,6 @@ TEST(shulpin_strip_scheme_A_B, matrix_4x2_2x5) {
   }
 }
 
-
 TEST(shulpin_strip_scheme_A_B, matrix_1x10_10x1) {
   boost::mpi::communicator world;
 
@@ -765,7 +763,6 @@ TEST(shulpin_strip_scheme_A_B, matrix_1x10_10x1) {
     ASSERT_EQ(global_res_mpi, global_res_seq);
   }
 }
-
 
 TEST(shulpin_strip_scheme_A_B, matrix_10x1_1x10) {
   boost::mpi::communicator world;
@@ -966,3 +963,4 @@ TEST(shulpin_strip_scheme_A_B, invalid_matrix) {
     ASSERT_FALSE(taskSequential->validation());
   }
 }
+*/

@@ -48,7 +48,7 @@ TEST(shulpin_strip_scheme_A_B, matrix_1x1) {
   ASSERT_TRUE(matrixTask.run());
   ASSERT_TRUE(matrixTask.post_processing());
 
-  for (int i = 0; i < C.size(); ++i) {
+  for (size_t i = 0; i < C.size(); ++i) {
     ASSERT_EQ(C[i], exp_res[i]);
   }
 }
@@ -94,7 +94,7 @@ TEST(shulpin_strip_scheme_A_B, matrix_3x3) {
   ASSERT_TRUE(matrixTask.run());
   ASSERT_TRUE(matrixTask.post_processing());
 
-  for (int i = 0; i < C.size(); ++i) {
+  for (size_t i = 0; i < C.size(); ++i) {
     ASSERT_EQ(C[i], exp_res[i]);
   }
 }
@@ -140,7 +140,7 @@ TEST(shulpin_strip_scheme_A_B, matrix_2x2) {
   ASSERT_TRUE(matrixTask.run());
   ASSERT_TRUE(matrixTask.post_processing());
 
-  for (int i = 0; i < C.size(); ++i) {
+  for (size_t i = 0; i < C.size(); ++i) {
     ASSERT_EQ(C[i], exp_res[i]);
   }
 }
@@ -187,7 +187,7 @@ TEST(shulpin_strip_scheme_A_B, matrix_5x5) {
   ASSERT_TRUE(matrixTask.run());
   ASSERT_TRUE(matrixTask.post_processing());
 
-  for (int i = 0; i < C.size(); ++i) {
+  for (size_t i = 0; i < C.size(); ++i) {
     ASSERT_EQ(C[i], exp_res[i]);
   }
 }
@@ -233,7 +233,7 @@ TEST(shulpin_strip_scheme_A_B, matrix_3x2_2x4) {
   ASSERT_TRUE(matrixTask.run());
   ASSERT_TRUE(matrixTask.post_processing());
 
-  for (int i = 0; i < C.size(); ++i) {
+  for (size_t i = 0; i < C.size(); ++i) {
     ASSERT_EQ(C[i], exp_res[i]);
   }
 }
@@ -279,7 +279,7 @@ TEST(shulpin_strip_scheme_A_B, matrix_4x3_3x2) {
   ASSERT_TRUE(matrixTask.run());
   ASSERT_TRUE(matrixTask.post_processing());
 
-  for (int i = 0; i < C.size(); ++i) {
+  for (size_t i = 0; i < C.size(); ++i) {
     ASSERT_EQ(C[i], exp_res[i]);
   }
 }
@@ -325,7 +325,7 @@ TEST(shulpin_strip_scheme_A_B, matrix_1x5_5x1) {
   ASSERT_TRUE(matrixTask.run());
   ASSERT_TRUE(matrixTask.post_processing());
 
-  for (int i = 0; i < C.size(); ++i) {
+  for (size_t i = 0; i < C.size(); ++i) {
     ASSERT_EQ(C[i], exp_res[i]);
   }
 }
@@ -371,7 +371,7 @@ TEST(shulpin_strip_scheme_A_B, matrix_5x1_1x5) {
   ASSERT_TRUE(matrixTask.run());
   ASSERT_TRUE(matrixTask.post_processing());
 
-  for (int i = 0; i < C.size(); ++i) {
+  for (size_t i = 0; i < C.size(); ++i) {
     ASSERT_EQ(C[i], exp_res[i]);
   }
 }
@@ -417,7 +417,7 @@ TEST(shulpin_strip_scheme_A_B, matrix_2x4_4x3) {
   ASSERT_TRUE(matrixTask.run());
   ASSERT_TRUE(matrixTask.post_processing());
 
-  for (int i = 0; i < C.size(); ++i) {
+  for (size_t i = 0; i < C.size(); ++i) {
     ASSERT_EQ(C[i], exp_res[i]);
   }
 }
@@ -463,7 +463,7 @@ TEST(shulpin_strip_scheme_A_B, matrix_4x2_2x3) {
   ASSERT_TRUE(matrixTask.run());
   ASSERT_TRUE(matrixTask.post_processing());
 
-  for (int i = 0; i < C.size(); ++i) {
+  for (size_t i = 0; i < C.size(); ++i) {
     ASSERT_EQ(C[i], exp_res[i]);
   }
 }
