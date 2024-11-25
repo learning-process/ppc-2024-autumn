@@ -24,8 +24,7 @@ class SimpleIterationSequential : public ppc::core::Task {
   std::vector<double> x_;      // current approach
   double epsilon_ = 1e-3;      // precision
   size_t maxIteration_ = 100;  // to avoid endless cycle
-  std::vector<std::vector<int>> input_;
-  bool checkMatrix();  // we check convergence condition (|A11| > |A12| + |A13| + .. + |A1n|) etc
+  bool checkMatrix();          // we check convergence condition (|A11| > |A12| + |A13| + .. + |A1n|) etc
   bool isTimeToStop(const std::vector<double>& x0,
                     const std::vector<double>& x1) const;  // stop if |xn^(i+1) - xn^i| < epsilon
 };

@@ -44,9 +44,9 @@ bool rezantseva_a_simple_iteration_method_seq::SimpleIterationSequential::valida
 bool rezantseva_a_simple_iteration_method_seq::SimpleIterationSequential::pre_processing() {
   internal_order_test();
   size_t n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
-  A_.resize(n * n);
-  b_.resize(n);
-  x_.resize(n, 0.0);
+  A_.assign(n * n, 0.0);
+  b_.assign(n, 0.0);
+  x_.assign(n, 0.0);
   // fill matrix A and vector b
   for (size_t i = 0; i < n; ++i) {    // row
     for (size_t j = 0; j < n; ++j) {  // column
@@ -54,8 +54,6 @@ bool rezantseva_a_simple_iteration_method_seq::SimpleIterationSequential::pre_pr
     }
     b_[i] = reinterpret_cast<double*>(taskData->inputs[2])[i];
   }
-
-  return true;
   return true;
 }
 
