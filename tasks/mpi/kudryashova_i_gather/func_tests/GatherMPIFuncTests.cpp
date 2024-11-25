@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/environment.hpp>
+
 #include "mpi/kudryashova_i_gather/include/GatherMPI.hpp"
 
 static int seedOffset = 0;
@@ -27,7 +28,6 @@ TEST(kudryashova_i_gather_mpi, dot_product_vector_120) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   std::vector<int> vector1 = GetRandomVectorGather(count_size_vector);
   std::vector<int> vector2 = GetRandomVectorGather(count_size_vector);
-
   if (world.rank() == 0) {
     global_vector.reserve(vector1.size() + vector2.size());
     global_vector.insert(global_vector.end(), vector1.begin(), vector1.end());
@@ -38,7 +38,6 @@ TEST(kudryashova_i_gather_mpi, dot_product_vector_120) {
     taskDataPar->outputs_count.emplace_back(result.size());
   }
   auto testMpiTaskParallel = kudryashova_i_gather::TestMPITaskParallel(taskDataPar);
-
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -57,7 +56,6 @@ TEST(kudryashova_i_gather_mpi, dot_product_vector_120) {
     testMpiTaskSequential.post_processing();
     ASSERT_EQ(reference[0], result[0]);
     ASSERT_EQ(kudryashova_i_gather::vectorDotProductGather(vector1, vector2), result[0]);
-
   }
 }
 
@@ -143,7 +141,7 @@ TEST(kudryashova_i_gather_mpi, check_not_equal_vectors) {
 
 TEST(kudryashova_i_gather_mpi, check_dot_product_empty_vectors) {
   boost::mpi::communicator world;
-  std::vector<std::vector<int>> global_vector;
+  std::vector<int> global_vector;
   std::vector<int32_t> result(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -217,7 +215,6 @@ TEST(kudryashova_i_gather_mpi, check_dot_product_empty_and_nonempty_vectors) {
     taskDataPar->inputs_count.emplace_back(global_vector.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
     taskDataPar->outputs_count.emplace_back(result.size());
-
     kudryashova_i_gather::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
     ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
@@ -238,7 +235,6 @@ TEST(kudryashova_i_gather_mpi, dot_product_vector_1_with_zero) {
     taskDataPar->inputs_count.emplace_back(global_vector.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
     taskDataPar->outputs_count.emplace_back(result.size());
-
     kudryashova_i_gather::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
     ASSERT_EQ(testMpiTaskParallel.validation(), true);
   }

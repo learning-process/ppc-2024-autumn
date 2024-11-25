@@ -17,7 +17,7 @@ std::vector<int> GetRandomVectorForGatherMy(int size) {
 
 TEST(kudryashova_i_gather_my, test_pipeline_run) {
   boost::mpi::communicator world;
-  const int count = 15000000;    
+  const int count = 15000000;
   std::vector<uint8_t> global_vector;
   std::vector<int> vector1 = GetRandomVectorForGatherMy(count);
   std::vector<int> vector2 = GetRandomVectorForGatherMy(count);
@@ -50,7 +50,7 @@ TEST(kudryashova_i_gather_my, test_pipeline_run) {
   }
 }
 
-TEST(kudryashova_i_gather_my, test_task_run) {  
+TEST(kudryashova_i_gather_my, test_task_run) {
   boost::mpi::communicator world;
   const int count_size_vector = 15000000;
   std::vector<uint8_t> global_vector;

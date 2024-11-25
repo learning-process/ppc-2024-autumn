@@ -117,7 +117,7 @@ void kudryashova_i_gather_my::TestMPITaskParallel::gather_my(const boost::mpi::c
     wrld.recv(rightNode, 0, &rightNodeSize, 1);
     std::vector<T> rightChild(rightNodeSize);
     wrld.recv(rightNode, 0, rightChild.data(), rightNodeSize);
-    local_container.insert(local_container.end(), rightChild.begin(),rightChild.end());
+    local_container.insert(local_container.end(), rightChild.begin(), rightChild.end());
   }
   if (rank != root) {
     int localContainerSize = local_container.size();

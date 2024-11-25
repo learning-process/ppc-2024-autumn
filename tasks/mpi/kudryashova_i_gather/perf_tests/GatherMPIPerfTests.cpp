@@ -5,7 +5,6 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/kudryashova_i_gather/include/GatherMPI.hpp"
 
-
 static int seedOffset = 0;
 std::vector<int> GetRandomVector_gather(int size) {
   std::vector<int> vector(size);
@@ -18,7 +17,7 @@ std::vector<int> GetRandomVector_gather(int size) {
 
 TEST(kudryashova_i_gather, test_pipeline_run) {
   boost::mpi::communicator world;
-  const int count = 15000000;    
+  const int count = 15000000;
   std::vector<uint8_t> global_vector;
   std::vector<int> vector1 = GetRandomVector_gather(count);
   std::vector<int> vector2 = GetRandomVector_gather(count);

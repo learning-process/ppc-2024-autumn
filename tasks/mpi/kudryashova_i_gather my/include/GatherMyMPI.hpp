@@ -1,11 +1,11 @@
 #pragma once
+#include <algorithm> 
 #include <boost/mpi.hpp>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <iterator>
 #include <random>
 #include <vector>
-#include <iterator>
-#include <algorithm> 
 
 #include "core/task/include/task.hpp"
 namespace kudryashova_i_gather_my {
@@ -17,6 +17,7 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
+
  private:
   std::vector<int> input_data;
   std::vector<int> firstHalf, secondHalf;
@@ -24,14 +25,13 @@ class TestMPITaskSequential : public ppc::core::Task {
 };
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_): Task(std::move(taskData_)) {}
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
   template <typename T>
-  void gather_my(const boost::mpi::communicator& wrld, const T& local_data, std::vector<T>& full_result,
-                        int root);
+  void gather_my(const boost::mpi::communicator& wrld, const T& local_data, std::vector<T>& full_result, int root);
  private:
   boost::mpi::communicator world;
   std::vector<int> input_data;
