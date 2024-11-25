@@ -1,8 +1,8 @@
 ﻿#include "mpi/sedova_o_vertical_ribbon_scheme/include/ops_mpi.hpp"
 
+#include <algorithm>
 #include <boost/serialization/array.hpp>
 #include <boost/serialization/vector.hpp>
-#include <algorithm>
 #include <functional>
 #include <iostream>
 #include <limits>
@@ -114,7 +114,7 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::run() {
 
   if (world.rank() == 0) {
     boost::mpi::gatherv(world, local_result.data(), local_result.size(), result_vector_.data(), gather_counts,
-                 gather_displacements, 0);
+                        gather_displacements, 0);
   } else {
     boost::mpi::gatherv(world, local_result.data(), local_result.size(), 0);
   }
