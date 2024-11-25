@@ -60,7 +60,39 @@ TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Parallel_1_1) {
 
   titov_s_simple_iteration_mpi::MPISimpleIterationParallel taskPar(taskDataPar);
   ASSERT_TRUE(taskPar.validation());
-  ASSERT_TRUE(taskPar.pre_processing());
-  ASSERT_TRUE(taskPar.run());
-  ASSERT_TRUE(taskPar.post_processing());
+  taskPar.pre_processing();
+  taskPar.run();
+  taskPar.post_processing();
+
+  std::vector<std::vector<float>> global_matrix;
+  global_matrix = {{10.0f, 1.0f}};
+  float eps = 0.001f;
+  size_t matrix_size_seq = 1;
+
+  std::vector<float> expected_result(matrix_size_seq, 0.0f);
+  if (world.rank() == 0) {
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+    for (const auto& row : global_matrix) {
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<float*>(row.data())));
+    }
+
+    taskDataSeq->inputs_count.push_back(global_matrix.size());
+    taskDataSeq->inputs_count.push_back(global_matrix[0].size());
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&eps));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(expected_result.data()));
+    taskDataSeq->outputs_count.push_back(expected_result.size());
+
+    titov_s_simple_iteration_mpi::MPISimpleIterationSequential seqTask(taskDataSeq);
+
+    ASSERT_TRUE(seqTask.validation());
+    seqTask.pre_processing();
+    seqTask.run();
+    seqTask.post_processing();
+  }
+  if (world.rank() == 0) {
+    for (unsigned int i = 0; i < global_result.size(); ++i) {
+      ASSERT_NEAR(global_result[i], expected_result[i], epsilon);
+    }
+  }
 }
