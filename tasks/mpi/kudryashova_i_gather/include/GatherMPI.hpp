@@ -1,5 +1,5 @@
 #pragma once
-#include <algorithm> 
+#include <algorithm>
 #include <boost/mpi.hpp>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>

@@ -1,5 +1,5 @@
 #pragma once
-#include <algorithm> 
+#include <algorithm>
 #include <boost/mpi.hpp>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
@@ -32,6 +32,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
   template <typename T>
   void gather_my(const boost::mpi::communicator& wrld, const T& local_data, std::vector<T>& full_result, int root);
+
  private:
   boost::mpi::communicator world;
   std::vector<int> input_data;
