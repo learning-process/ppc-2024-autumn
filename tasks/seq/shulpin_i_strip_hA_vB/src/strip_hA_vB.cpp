@@ -1,10 +1,9 @@
+#include "seq/shulpin_i_strip_hA_vB/include/strip_hA_vB.hpp"
+
+#include <algorithm>
+#include <cmath>
 #include <random>
 #include <vector>
-#include <algorithm>
-
-#include <cmath>
-
-#include "seq/shulpin_i_strip_hA_vB/include/strip_hA_vB.hpp"
 
 std::vector<int> shulpin_strip_scheme_A_B::get_RND_matrix(int col, int row) {
   std::random_device dev;
@@ -75,15 +74,15 @@ bool shulpin_strip_scheme_A_B::Matrix_hA_vB_seq::validation() {
   int b_rows = *reinterpret_cast<int*>(taskData->inputs[5]);
 
   return(taskData->inputs_count.size() > 4 && !taskData->outputs_count.empty() &&
-       (a_cols > 0 && a_rows > 0 && b_cols > 0 && b_rows > 0) && (a_cols == b_rows));
+         (a_cols > 0 && a_rows > 0 && b_cols > 0 && b_rows > 0) && (a_cols == b_rows));
 }
 
 bool shulpin_strip_scheme_A_B::Matrix_hA_vB_seq::run() {
-    internal_order_test();
+  internal_order_test();
 
-    calculate_seq(seq_rows_A, seq_cols_A, seq_cols_B, seq_A, seq_B, seq_result);
+  calculate_seq(seq_rows_A, seq_cols_A, seq_cols_B, seq_A, seq_B, seq_result);
 
-    return true;
+  return true;
 }
 
 bool shulpin_strip_scheme_A_B::Matrix_hA_vB_seq::post_processing() {
