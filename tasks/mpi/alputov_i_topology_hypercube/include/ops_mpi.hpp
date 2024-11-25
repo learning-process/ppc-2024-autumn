@@ -41,7 +41,7 @@ class HypercubeRouterMPI : public ppc::core::Task {
   };
 
  private:
- RoutingData routingData;
+  RoutingData routingData;
   int maxAddressBits{};
   boost::mpi::communicator world;
 };
