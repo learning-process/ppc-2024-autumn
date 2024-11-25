@@ -24,8 +24,7 @@ TEST(sedova_o_vertical_ribbon_scheme, Test_Small_Matrix) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(result[0], expected_result[0]);
-  ASSERT_EQ(result[1], expected_result[1]);
+  ASSERT_EQ(result, expected_result);
 }
 
 TEST(sedova_o_vertical_ribbon_scheme, Test_Larger_Matrix) {
