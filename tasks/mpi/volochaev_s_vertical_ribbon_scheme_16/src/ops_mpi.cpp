@@ -54,8 +54,6 @@ bool volochaev_s_vertical_ribbon_scheme_16_mpi::Lab2_16_seq::post_processing() {
 bool volochaev_s_vertical_ribbon_scheme_16_mpi::Lab2_16_mpi::pre_processing() {
   internal_order_test();
 
-  std::cout << "pre_processing\n";
-
   if (world.rank() == 0) {
     if (!taskData || taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr ||
         taskData->outputs[0] == nullptr) {
@@ -86,7 +84,7 @@ bool volochaev_s_vertical_ribbon_scheme_16_mpi::Lab2_16_mpi::pre_processing() {
       int ost = m % world.size();
 
       int offset = 0;
-      for (size_t i = 0; i < world.size(); ++i) {
+      for (int i = 0; i < world.size(); ++i) {
         if (ost > 0) {
           distribution[i] = (m_per_proc + 1) * n;
           --ost;
@@ -149,8 +147,6 @@ bool volochaev_s_vertical_ribbon_scheme_16_mpi::Lab2_16_mpi::run() {
 
 bool volochaev_s_vertical_ribbon_scheme_16_mpi::Lab2_16_mpi::post_processing() {
   internal_order_test();
-
-  std::cout << "post_processing\n";
 
   if (world.rank() == 0) {
     int* ans = reinterpret_cast<int*>(taskData->outputs[0]);
