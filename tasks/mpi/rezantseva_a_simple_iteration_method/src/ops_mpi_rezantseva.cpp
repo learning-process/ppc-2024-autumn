@@ -140,15 +140,15 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::validation() 
 bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::pre_processing() {
   internal_order_test();
 
-  size_t total_elements = 0;  // count of elements = n
+  size_t n = 0;  // count of elements = n
   size_t delta = 0;
   size_t remainder = 0;
 
   if (world.rank() == 0) {
-    total_elements = *reinterpret_cast<size_t*>(taskData->inputs[0]);
+    n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
     num_processes_ = world.size();
-    delta = total_elements / num_processes_;      // Calculate base size for each process
-    remainder = total_elements % num_processes_;  // Calculate remaining elements
+    delta = n / num_processes_;      // Calculate base size for each process
+    remainder = n % num_processes_;  // Calculate remaining elements
   }
   boost::mpi::broadcast(world, num_processes_, 0);
 
@@ -163,8 +163,6 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::pre_processin
   boost::mpi::broadcast(world, counts_.data(), num_processes_, 0);
 
   if (world.rank() == 0) {
-    size_t n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
-
     A_.assign(n * n, 0.0);
     b_.assign(n, 0.0);
     x_.assign(n, 0.0);
@@ -190,7 +188,7 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::run() {
   }
   boost::mpi::broadcast(world, n, 0);
 
-  x_.resize(n, 0.0);
+  x_.assign(n, 0.0);
   prev_x_.resize(n, 0.0);
 
   if (world.rank() == 0) {
@@ -231,13 +229,19 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::run() {
 
   // Simple Iteration Method
   while (iteration < maxIteration_) {
+    // Store previous x values
+    std::copy(x_.begin(), x_.end(), prev_x_.begin());
+
+    // Broadcast x_ once at the start of iteration
     boost::mpi::broadcast(world, x_.data(), n, 0);
 
+    // Calculate local results
     size_t row_offset = 0;
     for (size_t i = 0; i < static_cast<size_t>(world.rank()); i++) {
       row_offset += counts_[i];
     }
 
+    // Compute local solutions
     for (size_t i = 0; i < counts_[world.rank()]; i++) {
       double sum = 0.0;
       for (size_t j = 0; j < n; j++) {
@@ -248,27 +252,34 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::run() {
       local_x[i] = (local_b[i] - sum) / local_A[i * n + (row_offset + i)];
     }
 
-    if (world.rank() == 0) {
-      prev_x_ = x_;
-      std::copy(local_x.begin(), local_x.end(), x_.begin());
+    // Gather all results at once instead of individual sends
+    std::vector<int> recvcounts(num_processes_);
+    std::vector<int> displs(num_processes_, 0);
 
-      size_t offset = counts_[0];
-      for (size_t proc = 1; proc < num_processes_; proc++) {
-        std::vector<double> temp_x;
-        world.recv(proc, 2, temp_x);
-        std::copy(temp_x.begin(), temp_x.end(), x_.begin() + offset);
-        offset += counts_[proc];
-      }
-
-      bool converged = isTimeToStop(prev_x_, x_);
-      boost::mpi::broadcast(world, converged, 0);
-      if (converged) break;
-    } else {
-      world.send(0, 2, local_x);
-      bool converged;
-      boost::mpi::broadcast(world, converged, 0);
-      if (converged) break;
+    for (size_t i = 0; i < num_processes_; ++i) {
+      recvcounts[i] = static_cast<int>(counts_[i]);
+      if (i > 0) displs[i] = displs[i - 1] + recvcounts[i - 1];
     }
+
+    // Use MPI_Gatherv to collect all results at once
+    boost::mpi::gatherv(world, local_x.data(), local_x.size(), x_.data(), recvcounts, displs, 0);
+
+    // Check convergence locally first
+    double local_max_diff = 0.0;
+    for (size_t i = 0; i < counts_[world.rank()]; i++) {
+      double diff = std::fabs(local_x[i] - prev_x_[row_offset + i]);
+      local_max_diff = std::max(local_max_diff, diff);
+    }
+
+    // Reduce to find global maximum difference
+    double global_max_diff = 0.0;
+    boost::mpi::reduce(world, local_max_diff, global_max_diff, boost::mpi::maximum<double>(), 0);
+
+    // Broadcast convergence result
+    bool converged = (global_max_diff < epsilon_);
+    boost::mpi::broadcast(world, converged, 0);
+
+    if (converged) break;
     iteration++;
   }
   return true;
