@@ -16,14 +16,15 @@
 namespace shulpin_strip_scheme_A_B {
 
 std::vector<int> get_RND_matrix(int row, int col);
-void calculate_seq(int rows_a, int cols_a, int cols_b, std::vector<int> A_seq, std::vector<int> B_seq, std::vector<int>& C_seq);
-void calculate_mpi(int rows_a, int cols_a, int cols_b, std::vector<int> A_mpi, std::vector<int> B_mpi, std::vector<int>& C_mpi);
-//void make_size_and_displace(int rows, int cols, int num_proc, std::vector<int>& size, std::vector<int>& displace);
+void calculate_seq(int rows_a, int cols_a, int cols_b, std::vector<int> A_seq, std::vector<int> B_seq,
+    std::vector<int>& C_seq);
+void calculate_mpi(int rows_a, int cols_a, int cols_b, std::vector<int> A_mpi, std::vector<int> B_mpi,
+    std::vector<int>& C_mpi);
+// void make_size_and_displace(int rows, int cols, int num_proc, std::vector<int>& size, std::vector<int>& displace);
 
-  class Matrix_hA_vB_seq : public ppc::core::Task {
+class Matrix_hA_vB_seq : public ppc::core::Task {
  public:
-  explicit Matrix_hA_vB_seq(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit Matrix_hA_vB_seq(std::shared_ptr<ppc::core::TaskData> taskData_): Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -42,8 +43,7 @@ void calculate_mpi(int rows_a, int cols_a, int cols_b, std::vector<int> A_mpi, s
 
 class Matrix_hA_vB_par : public ppc::core::Task {
  public:
-  explicit Matrix_hA_vB_par(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit Matrix_hA_vB_par(std::shared_ptr<ppc::core::TaskData> taskData_): Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
