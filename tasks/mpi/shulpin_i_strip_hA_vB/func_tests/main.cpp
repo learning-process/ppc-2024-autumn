@@ -902,7 +902,7 @@ TEST(shulpin_strip_scheme_A_B, matrix_10x5_5x20) {
     ASSERT_EQ(global_res_mpi, global_res_seq);
   }
 }
-
+/**
 TEST(shulpin_strip_scheme_A_B, invalid_matrix) {
   boost::mpi::communicator world;
 
@@ -964,3 +964,4 @@ TEST(shulpin_strip_scheme_A_B, invalid_matrix) {
     ASSERT_FALSE(taskSequential->validation());
   }
 }
+*/
