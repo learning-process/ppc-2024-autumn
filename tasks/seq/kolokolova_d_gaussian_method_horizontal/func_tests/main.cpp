@@ -76,3 +76,21 @@ TEST(kolokolova_d_gaussian_method_horizontal_seq, Test_Guassian_Method3) {
 
   ASSERT_EQ(ans, func_res);
 }
+
+TEST(kolokolova_d_gaussian_method_horizontal_seq, Test_Guassian_Method4) {
+  std::vector<int> input_coeff = {7, -2, -1, 6, -4, -5, 1, 2, 4};
+  std::vector<int> input_y = {2, 3, 5};
+  std::vector<double> func_res(3, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_coeff.data()));
+  taskDataSeq->inputs_count.emplace_back(input_coeff.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_y.data()));
+  taskDataSeq->inputs_count.emplace_back(input_y.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(func_res.data()));
+  taskDataSeq->outputs_count.emplace_back(func_res.size());
+
+  kolokolova_d_gaussian_method_horizontal_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+
+  ASSERT_EQ(testTaskSequential.validation(), false);
+}

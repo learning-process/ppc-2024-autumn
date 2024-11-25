@@ -62,19 +62,34 @@ bool kolokolova_d_gaussian_method_horizontal_mpi::TestMPITaskSequential::pre_pro
 
 bool kolokolova_d_gaussian_method_horizontal_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  std::vector<double> matrix_argum(count_equations * (count_equations + 1));
+  int count_equations_valid = taskData->inputs_count[1];
+
+  // Check that that the system has a solution
+  std::vector<double> validation_matrix(count_equations_valid * (count_equations_valid + 1));
+
+  std::vector<double> input_coeff_valid(taskData->inputs_count[0]);
+  auto* tmp_ptr_coeff = reinterpret_cast<int*>(taskData->inputs[0]);
+  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+    input_coeff_valid[i] = static_cast<double>(tmp_ptr_coeff[i]);
+  }
+
+  std::vector<int> input_y_valid(taskData->inputs_count[1]);
+  auto* tmp_ptr_y = reinterpret_cast<int*>(taskData->inputs[1]);
+  for (unsigned i = 0; i < taskData->inputs_count[1]; i++) {
+    input_y_valid[i] = tmp_ptr_y[i];
+  }
 
   // Filling the matrix
-  for (int i = 0; i < count_equations; ++i) {
-    for (int j = 0; j < count_equations; ++j) {
-      matrix_argum[i * (count_equations + 1) + j] = static_cast<double>(input_coeff[i * count_equations + j]);
+  for (int i = 0; i < count_equations_valid; ++i) {
+    for (int j = 0; j < count_equations_valid; ++j) {
+      validation_matrix[i * (count_equations_valid + 1) + j] = (input_coeff_valid[i * count_equations_valid + j]);
     }
-    matrix_argum[i * (count_equations + 1) + count_equations] = static_cast<double>(input_y[i]);
+    validation_matrix[i * (count_equations_valid + 1) + count_equations_valid] = static_cast<double>(input_y_valid[i]);
   }
 
   // Get rangs of matrices
-  int rank_A = find_rank(matrix_argum, count_equations, count_equations);
-  int rank_Ab = find_rank(matrix_argum, count_equations, count_equations + 1);
+  int rank_A = find_rank(input_coeff_valid, count_equations_valid, count_equations_valid);
+  int rank_Ab = find_rank(validation_matrix, count_equations_valid, count_equations_valid + 1);
 
   // Checking for inconsistency
   return (rank_A == rank_Ab);
