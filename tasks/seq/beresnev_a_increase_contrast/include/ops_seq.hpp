@@ -19,7 +19,7 @@ class TestTaskSequential : public ppc::core::Task {
   size_t pixel_data_size{}, pixel_data_start{};
   size_t width{}, height{}, max_color{};
   double factor{};
-  std::vector<uint8_t> inp_, res_, out_;
+  std::vector<uint8_t> inp_, res_;
 };
 
 }  // namespace beresnev_a_increase_contrast_seq

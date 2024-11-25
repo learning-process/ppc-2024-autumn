@@ -85,6 +85,7 @@ bool beresnev_a_increase_contrast_seq::TestTaskSequential::run() {
 
 bool beresnev_a_increase_contrast_seq::TestTaskSequential::post_processing() {
   internal_order_test();
+  std::vector<uint8_t> out_;
   out_.reserve(pixel_data_size + pixel_data_start);
   std::string head =
       "P6\n" + std::to_string(width) + " " + std::to_string(height) + '\n' + std::to_string(max_color) + '\n';

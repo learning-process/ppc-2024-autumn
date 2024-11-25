@@ -2,12 +2,12 @@
 #include <gtest/gtest.h>
 
 #include <cstdint>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <random>
 #include <string>
 #include <vector>
-#include <filesystem>
-#include <random>
 
 #include "seq/beresnev_a_increase_contrast/include/ops_seq.hpp"
 
@@ -22,7 +22,7 @@ static std::vector<uint8_t> getRandomVector(int sz) {
   return vec;
 }
 
-static std::vector<uint8_t> getAns(std::vector<uint8_t>& in, double f) {
+static std::vector<uint8_t> getAns(std::vector<uint8_t> &in, double f) {
   std::vector<uint8_t> out(in.size());
   for (size_t i = 0; i < in.size(); ++i) {
     double normalized = in[i] / 255.0;
@@ -78,7 +78,7 @@ TEST(beresnev_a_increase_contrast_seq, Incorrect_title) {
   std::vector<uint8_t> inp = getRandomVector(width * height * 3);
 
   std::string head =
-      "P6\n" + std::to_string(width) + " " + std::to_string(height+1) + '\n' + std::to_string(max_color) + '\n';
+      "P6\n" + std::to_string(width) + " " + std::to_string(height + 1) + '\n' + std::to_string(max_color) + '\n';
 
   file_size = head.size() + inp.size();
 
@@ -173,14 +173,14 @@ TEST(beresnev_a_increase_contrast_seq, Invalid_output_buffer) {
   ans_buffer.insert(ans_buffer.end(), head.begin(), head.end());
   ans_buffer.insert(ans_buffer.end(), ans.data(), ans.data() + ans.size());
 
-  std::vector<uint8_t> out_buffer(file_size+1);
+  std::vector<uint8_t> out_buffer(file_size + 1);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_buffer.data()));
   taskDataSeq->inputs_count.emplace_back(file_size);
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&factor));
   taskDataSeq->inputs_count.emplace_back(1);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(&out_buffer));
-  taskDataSeq->outputs_count.emplace_back(file_size+1);
+  taskDataSeq->outputs_count.emplace_back(file_size + 1);
 
   beresnev_a_increase_contrast_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), false);
@@ -281,7 +281,7 @@ TEST(beresnev_a_increase_contrast_seq, Test_Random) {
 
   std::string head =
       "P6\n" + std::to_string(width) + " " + std::to_string(height) + '\n' + std::to_string(max_color) + '\n';
-  
+
   file_size = head.size() + inp.size();
 
   input_buffer.reserve(file_size);
