@@ -9,7 +9,6 @@
 #include <thread>
 #include <vector>
 
-#include <boost/mpi.hpp>
 #include "boost/mpi/collectives/broadcast.hpp"
 
 using namespace std::chrono_literals;
