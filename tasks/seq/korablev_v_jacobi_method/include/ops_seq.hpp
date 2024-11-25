@@ -25,6 +25,7 @@ class JacobiMethodSequential : public ppc::core::Task {
   double epsilon_ = 1e-3;
 
   bool isNeedToComplete(const std::vector<double>& x_old, const std::vector<double>& x_new) const;
+  static bool isNonSingular(const std::vector<double>& A, size_t n);
 };
 
 }  // namespace korablev_v_jacobi_method_seq

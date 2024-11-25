@@ -10,6 +10,66 @@
 
 #include "boost/mpi/collectives/broadcast.hpp"
 
+bool korablev_v_jacobi_method_mpi::JacobiMethodSequential::isNonSingular(const std::vector<double>& A, size_t n) {
+  std::vector<double> matrix = A;
+
+  for (size_t k = 0; k < n; ++k) {
+    if (std::fabs(matrix[k * n + k]) < 1e-10 * std::max(1.0, std::fabs(matrix[k * n + k]))) {
+      bool found = false;
+      for (size_t i = k + 1; i < n; ++i) {
+        if (std::fabs(matrix[i * n + k]) > 1e-10) {
+          for (size_t j = 0; j < n; ++j) {
+            std::swap(matrix[k * n + j], matrix[i * n + j]);
+          }
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        return false;
+      }
+    }
+    for (size_t i = k + 1; i < n; ++i) {
+      double factor = matrix[i * n + k] / matrix[k * n + k];
+      for (size_t j = k; j < n; ++j) {
+        matrix[i * n + j] -= factor * matrix[k * n + j];
+      }
+    }
+  }
+
+  return true;
+}
+
+bool korablev_v_jacobi_method_mpi::JacobiMethodParallel::isNonSingular(const std::vector<double>& A, size_t n) {
+  std::vector<double> matrix = A;
+
+  for (size_t k = 0; k < n; ++k) {
+    if (std::fabs(matrix[k * n + k]) < 1e-10 * std::max(1.0, std::fabs(matrix[k * n + k]))) {
+      bool found = false;
+      for (size_t i = k + 1; i < n; ++i) {
+        if (std::fabs(matrix[i * n + k]) > 1e-10) {
+          for (size_t j = 0; j < n; ++j) {
+            std::swap(matrix[k * n + j], matrix[i * n + j]);
+          }
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        return false;
+      }
+    }
+    for (size_t i = k + 1; i < n; ++i) {
+      double factor = matrix[i * n + k] / matrix[k * n + k];
+      for (size_t j = k; j < n; ++j) {
+        matrix[i * n + j] -= factor * matrix[k * n + j];
+      }
+    }
+  }
+
+  return true;
+}
+
 bool korablev_v_jacobi_method_mpi::JacobiMethodSequential::isNeedToComplete(const std::vector<double>& x_old,
                                                                             const std::vector<double>& x_new) const {
   double sum_up = 0;
@@ -50,13 +110,20 @@ bool korablev_v_jacobi_method_mpi::JacobiMethodSequential::validation() {
     return false;
   }
 
+  auto* A_input = reinterpret_cast<double*>(taskData->inputs[1]);
+  std::vector<double> A_vec(A_input, A_input + n * n);
+  if (!isNonSingular(A_vec, n)) {
+    std::cerr << "Error: Matrix determinant is zero." << std::endl;
+    return false;
+  }
+
   for (size_t i = 0; i < n; ++i) {
-    double diag = std::fabs(reinterpret_cast<double*>(taskData->inputs[1])[i * n + i]);
+    double diag = std::fabs(A_vec[i * n + i]);
     double sum = 0.0;
 
     for (size_t j = 0; j < n; ++j) {
       if (i != j) {
-        sum += std::fabs(reinterpret_cast<double*>(taskData->inputs[1])[i * n + j]);
+        sum += std::fabs(A_vec[i * n + j]);
       }
     }
 
@@ -158,16 +225,28 @@ bool korablev_v_jacobi_method_mpi::JacobiMethodParallel::validation() {
       return false;
     }
 
+    auto* A_input = reinterpret_cast<double*>(taskData->inputs[1]);
+    std::vector<double> A_vec(A_input, A_input + n * n);
+    if (!isNonSingular(A_vec, n)) {
+      std::cerr << "Error: Matrix determinant is zero." << std::endl;
+      return false;
+    }
+
     for (size_t i = 0; i < n; ++i) {
-      double diag = std::fabs(reinterpret_cast<double*>(taskData->inputs[1])[i * n + i]);
+      double diag = std::fabs(A_vec[i * n + i]);
       double sum = 0.0;
 
       for (size_t j = 0; j < n; ++j) {
         if (i != j) {
-          sum += std::fabs(reinterpret_cast<double*>(taskData->inputs[1])[i * n + j]);
+          sum += std::fabs(A_vec[i * n + j]);
         }
       }
+
       if (diag <= sum) {
+        return false;
+      }
+
+      if (diag == 0.0) {
         return false;
       }
     }

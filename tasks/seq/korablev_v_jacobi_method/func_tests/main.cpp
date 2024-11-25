@@ -216,6 +216,28 @@ TEST(korablev_v_jacobi_method, non_diagonally_dominant_matrix) {
   ASSERT_FALSE(jacobiTaskSequential.validation());
 }
 
+TEST(korablev_v_jacobi_method, singular_matrix) {
+  const size_t matrix_size = 2;
+  std::vector<size_t> in_size(1, matrix_size);
+  std::vector<double> matrix_data = {1.0, 2.0, 2.0, 4.0};
+  std::vector<double> vector_data = {1.0, 2.0};
+  std::vector<double> out(matrix_size, 0.0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in_size.data()));
+  taskDataSeq->inputs_count.emplace_back(in_size.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix_data.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix_data.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(vector_data.data()));
+  taskDataSeq->inputs_count.emplace_back(vector_data.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
+
+  korablev_v_jacobi_method_seq::JacobiMethodSequential jacobiTaskSequential(taskDataSeq);
+
+  ASSERT_FALSE(jacobiTaskSequential.validation());
+}
+
 TEST(korablev_v_jacobi_method, zero_on_diagonal) {
   const size_t matrix_size = 2;
   std::vector<size_t> in_size(1, matrix_size);

@@ -30,6 +30,7 @@ class JacobiMethodSequential : public ppc::core::Task {
   size_t maxIterations_ = 2000;
   double epsilon_ = 1e-5;
   bool isNeedToComplete(const std::vector<double>& x_old, const std::vector<double>& x_new) const;
+  static bool isNonSingular(const std::vector<double>& A, size_t n);
 };
 
 class JacobiMethodParallel : public ppc::core::Task {
@@ -62,6 +63,7 @@ class JacobiMethodParallel : public ppc::core::Task {
   boost::mpi::communicator world;
   static void calculate_distribution_a(int rows, int num_proc, std::vector<int>& sizes, std::vector<int>& displs);
   static void calculate_distribution_b(int len, int num_proc, std::vector<int>& sizes, std::vector<int>& displs);
+  static bool isNonSingular(const std::vector<double>& A, size_t n);
 };
 
 }  // namespace korablev_v_jacobi_method_mpi
