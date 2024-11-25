@@ -101,7 +101,139 @@ TEST(vavilov_v_contrast_enhancement_mpi, RandomContrastEnhancement) {
   mpi::environment env;
   mpi::communicator world;
 
-  const size_t size = 1000;
+  const size_t size = 640 * 480;
+  const uint8_t min_value = 0;
+  const uint8_t max_value = 255;
+
+  auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  std::vector<uint8_t> input = generate_random_vector(size, min_value, max_value);
+  std::vector<uint8_t> output(input.size());
+  std::vector<uint8_t> expected_output(input.size());
+
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskDataPar->inputs_count.emplace_back(input.size());
+
+  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+  taskDataPar->outputs_count.emplace_back(output.size());
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskDataSeq->inputs_count.emplace_back(input.size());
+
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(expected_output.data()));
+  taskDataSeq->outputs_count.emplace_back(expected_output.size());
+
+  vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+  ASSERT_TRUE(testMpiTaskParallel.run());
+  ASSERT_TRUE(testMpiTaskParallel.post_processing());
+
+  if (world.rank() == 0) {
+    vavilov_v_contrast_enhancement_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_TRUE(testMpiTaskSequential.validation());
+    ASSERT_TRUE(testMpiTaskSequential.pre_processing());
+    ASSERT_TRUE(testMpiTaskSequential.run());
+    ASSERT_TRUE(testMpiTaskSequential.post_processing());
+
+    EXPECT_EQ(output, expected_output);
+  }
+}
+
+TEST(vavilov_v_contrast_enhancement_mpi, RandomContrastEnhancement) {
+  mpi::environment env;
+  mpi::communicator world;
+
+  const size_t size = 1024 * 768;
+  const uint8_t min_value = 0;
+  const uint8_t max_value = 255;
+
+  auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  std::vector<uint8_t> input = generate_random_vector(size, min_value, max_value);
+  std::vector<uint8_t> output(input.size());
+  std::vector<uint8_t> expected_output(input.size());
+
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskDataPar->inputs_count.emplace_back(input.size());
+
+  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+  taskDataPar->outputs_count.emplace_back(output.size());
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskDataSeq->inputs_count.emplace_back(input.size());
+
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(expected_output.data()));
+  taskDataSeq->outputs_count.emplace_back(expected_output.size());
+
+  vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+  ASSERT_TRUE(testMpiTaskParallel.run());
+  ASSERT_TRUE(testMpiTaskParallel.post_processing());
+
+  if (world.rank() == 0) {
+    vavilov_v_contrast_enhancement_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_TRUE(testMpiTaskSequential.validation());
+    ASSERT_TRUE(testMpiTaskSequential.pre_processing());
+    ASSERT_TRUE(testMpiTaskSequential.run());
+    ASSERT_TRUE(testMpiTaskSequential.post_processing());
+
+    EXPECT_EQ(output, expected_output);
+  }
+}
+
+TEST(vavilov_v_contrast_enhancement_mpi, RandomContrastEnhancement) {
+  mpi::environment env;
+  mpi::communicator world;
+
+  const size_t size = 1920 * 1080;
+  const uint8_t min_value = 0;
+  const uint8_t max_value = 255;
+
+  auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  std::vector<uint8_t> input = generate_random_vector(size, min_value, max_value);
+  std::vector<uint8_t> output(input.size());
+  std::vector<uint8_t> expected_output(input.size());
+
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskDataPar->inputs_count.emplace_back(input.size());
+
+  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+  taskDataPar->outputs_count.emplace_back(output.size());
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskDataSeq->inputs_count.emplace_back(input.size());
+
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(expected_output.data()));
+  taskDataSeq->outputs_count.emplace_back(expected_output.size());
+
+  vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+  ASSERT_TRUE(testMpiTaskParallel.run());
+  ASSERT_TRUE(testMpiTaskParallel.post_processing());
+
+  if (world.rank() == 0) {
+    vavilov_v_contrast_enhancement_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_TRUE(testMpiTaskSequential.validation());
+    ASSERT_TRUE(testMpiTaskSequential.pre_processing());
+    ASSERT_TRUE(testMpiTaskSequential.run());
+    ASSERT_TRUE(testMpiTaskSequential.post_processing());
+
+    EXPECT_EQ(output, expected_output);
+  }
+}
+
+TEST(vavilov_v_contrast_enhancement_mpi, RandomContrastEnhancement) {
+  mpi::environment env;
+  mpi::communicator world;
+
+  const size_t size = 3840 * 2160;
   const uint8_t min_value = 0;
   const uint8_t max_value = 255;
 
