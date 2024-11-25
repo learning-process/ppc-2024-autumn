@@ -71,18 +71,19 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::pre_processing() {
 bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::run() {
   internal_order_test();
 
-  mpi::broadcast(world, num_rows_, 0);
-  mpi::broadcast(world, input_vector_, 0);
-  mpi::broadcast(world, distribution, 0);
+  boost::mpi::broadcast(world, num_rows_, 0);
+  boost::mpi::broadcast(world, input_vector_, 0);
+  boost::mpi::broadcast(world, distribution, 0);
 
   int local_num_elements = distribution[world.rank()];
   int local_num_cols = local_num_elements / num_rows_;
 
   std::vector<int> local_matrix(local_num_elements);
   if (world.rank() == 0) {
-    mpi::scatterv(world, input_matrix_.data(), distribution, displacement, local_matrix.data(), local_num_elements, 0);
+    boost::mpi::scatterv(world, input_matrix_.data(), distribution, displacement, local_matrix.data(),
+                         local_num_elements, 0);
   } else {
-    mpi::scatterv(world, local_matrix.data(), local_num_elements, 0);
+    boost::mpi::scatterv(world, local_matrix.data(), local_num_elements, 0);
   }
 
   std::vector<int> local_result(local_num_cols, 0);
@@ -112,10 +113,10 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::run() {
   }
 
   if (world.rank() == 0) {
-    mpi::gatherv(world, local_result.data(), local_result.size(), result_vector_.data(), gather_counts,
+    boost::mpi::gatherv(world, local_result.data(), local_result.size(), result_vector_.data(), gather_counts,
                  gather_displacements, 0);
   } else {
-    mpi::gatherv(world, local_result.data(), local_result.size(), 0);
+    boost::mpi::gatherv(world, local_result.data(), local_result.size(), 0);
   }
 
   return true;

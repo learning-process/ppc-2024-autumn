@@ -12,7 +12,6 @@
 #include "core/task/include/task.hpp"
 
 namespace sedova_o_vertical_ribbon_scheme_mpi {
-namespace mpi = boost::mpi;
 
 void calculate_distribution(int rows, int cols, int num_proc, std::vector<int>& sizes, std::vector<int>& displs);
 
