@@ -1,5 +1,5 @@
-#include <random>
-#include <vector>
+#include "mpi/shulpin_i_strip_hA_vB/include/strip_hA_vB.hpp"
+
 #include <mpi.h>
 #include <algorithm>
 #include <boost/mpi.hpp>
@@ -7,7 +7,8 @@
 #include <boost/serialization/vector.hpp>
 #include <cmath>
 
-#include "mpi/shulpin_i_strip_hA_vB/include/strip_hA_vB.hpp"
+#include <random>
+#include <vector>
 
 std::vector<int> shulpin_strip_scheme_A_B::get_RND_matrix(int col, int row) {
   std::random_device dev;
@@ -29,12 +30,12 @@ void shulpin_strip_scheme_A_B::calculate_mpi(int rows_a, int cols_a, int cols_b,
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   MPI_Comm_size(MPI_COMM_WORLD, &ProcNum);
 
-  int ProcPartRows = rows_a / ProcNum;   
-  int RemainingRows = rows_a % ProcNum;  
+  int ProcPartRows = rows_a / ProcNum;
+  int RemainingRows = rows_a % ProcNum;
   int LocalRows = (ProcRank < RemainingRows) ? ProcPartRows + 1 : ProcPartRows;
 
   std::vector<int> bufA(LocalRows * cols_a, 0);
-  std::vector<int> bufB(cols_a * cols_b, 0);  
+  std::vector<int> bufB(cols_a * cols_b, 0);
   std::vector<int> bufC(LocalRows * cols_b, 0);
 
   std::vector<int> sendcounts(ProcNum), displs(ProcNum);
@@ -89,58 +90,44 @@ void shulpin_strip_scheme_A_B::calculate_seq(int rows_a, int cols_a, int cols_b,
 }
 
 bool shulpin_strip_scheme_A_B::Matrix_hA_vB_par::pre_processing() {
-    internal_order_test();
-
-    if (world.rank() == 0) {
-      int cols_A_tmp = *reinterpret_cast<int*>(taskData->inputs[2]);
-      int rows_A_tmp = *reinterpret_cast<int*>(taskData->inputs[3]);
-
-      mpi_cols_A = cols_A_tmp;
-      mpi_rows_A = rows_A_tmp;
-
-      int cols_B_tmp = *reinterpret_cast<int*>(taskData->inputs[4]);
-      int rows_B_tmp = *reinterpret_cast<int*>(taskData->inputs[5]);
-
-      mpi_cols_B = cols_B_tmp;
-      mpi_rows_B = rows_B_tmp;
-
-      std::vector<int> A_tmp{};
-      std::vector<int> B_tmp{};
-
-      int* A_tmp_data = reinterpret_cast<int*>(taskData->inputs[0]);
-      int A_tmp_size = taskData->inputs_count[0];
-      A_tmp.assign(A_tmp_data, A_tmp_data + A_tmp_size);
-
-      int* B_tmp_data = reinterpret_cast<int*>(taskData->inputs[1]);
-      int B_tmp_size = taskData->inputs_count[1];
-      B_tmp.assign(B_tmp_data, B_tmp_data + B_tmp_size);
-
-      mpi_A = A_tmp;
-      mpi_B = B_tmp;
-
-      int res_size = taskData->outputs_count[0];
-      mpi_result.resize(res_size, 0);
-      
-      //make_size_and_displace(mpi_rows_A * mpi_cols_B, 1, world.size(), size, displ);
-    }
-
-    return true;
+  internal_order_test();
+  if (world.rank() == 0) {
+    int cols_A_tmp = *reinterpret_cast<int*>(taskData->inputs[2]);
+    int rows_A_tmp = *reinterpret_cast<int*>(taskData->inputs[3]);
+    mpi_cols_A = cols_A_tmp;
+    mpi_rows_A = rows_A_tmp;
+    int cols_B_tmp = *reinterpret_cast<int*>(taskData->inputs[4]);
+    int rows_B_tmp = *reinterpret_cast<int*>(taskData->inputs[5]);
+    mpi_cols_B = cols_B_tmp;
+    mpi_rows_B = rows_B_tmp;
+    std::vector<int> A_tmp{};
+    std::vector<int> B_tmp{};
+    int* A_tmp_data = reinterpret_cast<int*>(taskData->inputs[0]);
+    int A_tmp_size = taskData->inputs_count[0];
+    A_tmp.assign(A_tmp_data, A_tmp_data + A_tmp_size);
+    int* B_tmp_data = reinterpret_cast<int*>(taskData->inputs[1]);
+    int B_tmp_size = taskData->inputs_count[1];
+    B_tmp.assign(B_tmp_data, B_tmp_data + B_tmp_size);
+    mpi_A = A_tmp;
+    mpi_B = B_tmp;
+    int res_size = taskData->outputs_count[0];
+    mpi_result.resize(res_size, 0);
+    // make_size_and_displace(mpi_rows_A * mpi_cols_B, 1, world.size(), size, displ);
+  }
+  return true;
 }
 
 bool shulpin_strip_scheme_A_B::Matrix_hA_vB_par::validation() {
-    internal_order_test();
-
-    if (world.rank() == 0) {
-
-      int a_cols = *reinterpret_cast<int*>(taskData->inputs[2]);
-      int a_rows = *reinterpret_cast<int*>(taskData->inputs[3]);
-      int b_cols = *reinterpret_cast<int*>(taskData->inputs[4]);
-      int b_rows = *reinterpret_cast<int*>(taskData->inputs[5]);
-      return (taskData->inputs_count.size() > 4 && !taskData->outputs_count.empty() &&
-              (a_cols > 0 && a_rows > 0 && b_cols > 0 && b_rows >0) && (a_cols == b_rows));
-    }
-
-    return true;
+  internal_order_test();
+  if (world.rank() == 0) {
+    int a_cols = *reinterpret_cast<int*>(taskData->inputs[2]);
+    int a_rows = *reinterpret_cast<int*>(taskData->inputs[3]);
+    int b_cols = *reinterpret_cast<int*>(taskData->inputs[4]);
+    int b_rows = *reinterpret_cast<int*>(taskData->inputs[5]);
+    return (taskData->inputs_count.size() > 4 && !taskData->outputs_count.empty() &&
+             (a_cols > 0 && a_rows > 0 && b_cols > 0 && b_rows > 0) && (a_cols == b_rows));
+  }
+  return true;
 }
 
 bool shulpin_strip_scheme_A_B::Matrix_hA_vB_par::run() {
