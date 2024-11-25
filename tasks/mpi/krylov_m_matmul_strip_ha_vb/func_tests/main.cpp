@@ -36,22 +36,13 @@ class krylov_m_matmul_strip_ha_vb_mpi_test : public ::testing::TestWithParam<Mat
   }
 
   template <typename T>
-  void peform_random_test(size_t lrows, size_t lcols, size_t rcols, TestElementType emin, TestElementType emax) {
-    krylov_m_matmul_strip_ha_vb_mpi::TMatrix<T> lhs;
-    krylov_m_matmul_strip_ha_vb_mpi::TMatrix<T> rhs;
-    //
+  void peform_test(const krylov_m_matmul_strip_ha_vb_mpi::TMatrix<T>& lhs,
+                   const krylov_m_matmul_strip_ha_vb_mpi::TMatrix<T>& rhs) {
     krylov_m_matmul_strip_ha_vb_mpi::TMatrix<T> out;
 
     auto taskData = std::make_shared<ppc::core::TaskData>();
 
     if (world.rank() == 0) {
-      lhs = generate_random_matrix<T>(lrows, lcols, emin, emax);
-      ASSERT_TRUE(lhs.check_integrity());
-      //
-      rhs = generate_random_matrix<T>(lcols, rcols, emin, emax);
-      ASSERT_TRUE(rhs.check_integrity());
-
-      //
       krylov_m_matmul_strip_ha_vb_mpi::fill_task_data(*taskData, lhs, rhs, out);
     }
 
@@ -81,6 +72,22 @@ class krylov_m_matmul_strip_ha_vb_mpi_test : public ::testing::TestWithParam<Mat
   }
 
   template <typename T>
+  void peform_random_test(size_t lrows, size_t lcols, size_t rcols, TestElementType emin, TestElementType emax) {
+    krylov_m_matmul_strip_ha_vb_mpi::TMatrix<T> lhs;
+    krylov_m_matmul_strip_ha_vb_mpi::TMatrix<T> rhs;
+    //
+    if (world.rank() == 0) {
+      lhs = generate_random_matrix<T>(lrows, lcols, emin, emax);
+      ASSERT_TRUE(lhs.check_integrity());
+      //
+      rhs = generate_random_matrix<T>(lcols, rcols, emin, emax);
+      ASSERT_TRUE(rhs.check_integrity());
+    }
+
+    peform_test(lhs, rhs);
+  }
+
+  template <typename T>
   void peform_dimen_randomized_test(size_t dmin, size_t dmax, T emin, T emax) {
     std::random_device dev;
     std::mt19937 gen(dev());
@@ -91,7 +98,7 @@ class krylov_m_matmul_strip_ha_vb_mpi_test : public ::testing::TestWithParam<Mat
 };
 
 TEST_P(krylov_m_matmul_strip_ha_vb_mpi_test, yields_correct_result) {
-  const auto &[lrows, lcols, rcols, emin, emax] = GetParam();
+  const auto& [lrows, lcols, rcols, emin, emax] = GetParam();
   peform_random_test<TestElementType>(lrows, lcols, rcols, emin, emax);
 }
 
@@ -106,6 +113,23 @@ TEST_F(krylov_m_matmul_strip_ha_vb_mpi_test, yields_correct_result_random_dimen_
 }
 TEST_F(krylov_m_matmul_strip_ha_vb_mpi_test, yields_correct_result_random_dimen_128) {
   peform_dimen_randomized_test<TestElementType>(1, 64, -512, 512);
+}
+
+TEST_F(krylov_m_matmul_strip_ha_vb_mpi_test, mul_by_inverse_yields_identity) {
+  // clang-format off
+  krylov_m_matmul_strip_ha_vb_mpi::TMatrix<TestElementType> lhs = { 3, 3, { 
+    1,  0, 0,
+    1, -1, 0,
+    1,  0, 1
+  }};
+  krylov_m_matmul_strip_ha_vb_mpi::TMatrix<TestElementType> rhs = { 3, 3, { 
+     1,  0, 0,
+     1, -1, 0,
+    -1,  0, 1
+  }};
+  // clang-format on
+
+  peform_test(lhs, rhs);
 }
 
 TEST_F(krylov_m_matmul_strip_ha_vb_mpi_test, bad_task_fail_validation) {

@@ -155,6 +155,30 @@ INSTANTIATE_TEST_SUITE_P(krylov_m_matmul_strip_ha_vb_seq_test, krylov_m_matmul_s
             3, 5, -10
           }
         }
+      ),
+      //
+      MatTestParam(
+        { 3, 3,
+          {
+            1,  0, 0,
+            1, -1, 0,
+            1,  0, 1
+          }
+        },
+        { 3, 3,
+          {
+             1,  0, 0,
+             1, -1, 0,
+            -1,  0, 1
+          }
+        },
+        { 3, 3,
+          {
+            1, 0, 0,
+            0, 1, 0,
+            0, 0, 1
+          }
+        }
       )
     )
 );
