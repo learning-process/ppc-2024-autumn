@@ -30,7 +30,6 @@ class JacobiMethodSequential : public ppc::core::Task {
   size_t maxIterations_ = 2000;
   double epsilon_ = 1e-5;
   bool isNeedToComplete(const std::vector<double>& x_old, const std::vector<double>& x_new) const;
-  static bool isNonSingular(const std::vector<double>& A, size_t n);
 };
 
 class JacobiMethodParallel : public ppc::core::Task {
