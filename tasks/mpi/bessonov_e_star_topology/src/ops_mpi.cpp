@@ -31,8 +31,7 @@ bool bessonov_e_star_topology_mpi::TestMPITaskParallel::run() {
   traversal_order_.push_back(0);
 
   if (world.rank() == 0) {
-
-    for (size_t dest = 1; dest < world.size(); ++dest) {
+    for (int dest = 1; dest < world.size(); ++dest) {
       world.send(dest, 0, input_);
 
       traversal_order_.push_back(dest);
