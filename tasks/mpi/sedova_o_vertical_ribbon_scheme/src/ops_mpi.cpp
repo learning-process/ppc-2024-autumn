@@ -121,6 +121,7 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::run() {
 
   return true;
 }
+
 bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
