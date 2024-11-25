@@ -62,4 +62,5 @@ TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Parallel_1_1) {
   ASSERT_TRUE(taskPar.validation());
   ASSERT_TRUE(taskPar.pre_processing());
   ASSERT_TRUE(taskPar.run());
+  ASSERT_TRUE(taskPar.post_processing());
 }
