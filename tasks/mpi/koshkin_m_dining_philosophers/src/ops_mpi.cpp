@@ -2,13 +2,13 @@
 #include "mpi/koshkin_m_dining_philosophers/include/ops_mpi.hpp"
 
 #include <algorithm>
-#include <functional>
-#include <thread>
-#include <vector>
-#include <iostream>
 #include <chrono>
 #include <condition_variable>
+#include <functional>
+#include <iostream>
 #include <mutex>
+#include <thread>
+#include <vector>
 
 using namespace std::chrono_literals;
 
@@ -25,7 +25,7 @@ bool koshkin_m_dining_philosophers::TestMPITaskParallel::validation() {
       num_philosophers = world.size();
     }
   }
-  
+
   broadcast(world, num_philosophers, 0);
 
   return num_philosophers > 1;

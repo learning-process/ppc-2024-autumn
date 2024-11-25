@@ -5,10 +5,10 @@
 
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
-#include <memory>
-#include <vector>
-#include <mutex>
 #include <condition_variable>
+#include <memory>
+#include <mutex>
+#include <vector>
 
 #include "core/task/include/task.hpp"
 
@@ -18,8 +18,7 @@ std::vector<int> getRandomVector(int sz);
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)){}
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;

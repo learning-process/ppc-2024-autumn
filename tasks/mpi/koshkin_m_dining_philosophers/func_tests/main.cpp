@@ -76,7 +76,7 @@ TEST(koshkin_m_dining_philosophers, Test_Validation_Invalid_Fork_Data) {
   boost::mpi::communicator world;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  
+
   if (world.rank() == 0) {
     std::vector<int> invalid_forks(world.size() + 1, 2);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(invalid_forks.data()));
