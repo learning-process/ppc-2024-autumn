@@ -22,9 +22,9 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-   boost::mpi::communicator world;
-   std::vector<int> input_;
-   std::vector<int> traversal_order_;
+  boost::mpi::communicator world;
+  std::vector<int> input_;
+  std::vector<int> traversal_order_;
 };
 
 }  // namespace bessonov_e_star_topology_mpi
