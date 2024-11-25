@@ -53,9 +53,10 @@ bool kudryashova_i_gather::TestMPITaskSequential::post_processing() {
 bool kudryashova_i_gather::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    delta = ((taskData->inputs_count[0]) / 2) / (world.size() - 1);
-    if ((int)(taskData->inputs_count[0]) < world.size()) {
-      delta = taskData->inputs_count[0] / 2;
+    if (world.size() == 1 || (int)(taskData->inputs_count[0]) < world.size()) {
+      delta = (taskData->inputs_count[0]) / 2;
+    }else {
+      delta = ((taskData->inputs_count[0]) / 2) / (world.size() - 1);
     }
   }
   if (world.rank() == 0) {
@@ -105,7 +106,7 @@ bool kudryashova_i_gather::TestMPITaskParallel::run() {
   full_results.resize(delta);
   gather(world, local_result, full_results, 0);
   if (world.rank() == 0) {
-    if ((int)(taskData->inputs_count[0]) < world.size()) {
+    if ((int)(taskData->inputs_count[0]) < world.size() || (world.size() == 1)) {
       result = std::inner_product(input_data.begin(), input_data.begin() + taskData->inputs_count[0] / 2,
                                   input_data.begin() + taskData->inputs_count[0] / 2, 0);
       return true;

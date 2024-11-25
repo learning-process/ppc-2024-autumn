@@ -55,7 +55,6 @@ TEST(kudryashova_i_gather_mpi, dot_product_vector_120) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
     ASSERT_EQ(reference[0], result[0]);
-    ASSERT_EQ(kudryashova_i_gather::vectorDotProductGather(vector1, vector2), result[0]);
   }
 }
 

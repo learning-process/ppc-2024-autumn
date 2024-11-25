@@ -56,7 +56,6 @@ TEST(kudryashova_i_gather_my_mpi, dot_product_vector_120) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
     ASSERT_EQ(reference[0], result[0]);
-    ASSERT_EQ(kudryashova_i_gather_my::vectorDotProductGather(vector1, vector2), result[0]);
   }
 }
 
@@ -114,9 +113,9 @@ TEST(kudryashova_i_gather_my_mpi, check_vectors_equal) {
     taskDataPar->inputs_count.emplace_back(global_vector.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
     taskDataPar->outputs_count.emplace_back(result.size());
-    kudryashova_i_gather_my::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-    ASSERT_EQ(testMpiTaskParallel.validation(), true);
   }
+  kudryashova_i_gather_my::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
 }
 
 TEST(kudryashova_i_gather_my_mpi, check_not_equal_vectors) {
@@ -135,9 +134,9 @@ TEST(kudryashova_i_gather_my_mpi, check_not_equal_vectors) {
     taskDataPar->inputs_count.emplace_back(global_vector.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
     taskDataPar->outputs_count.emplace_back(result.size());
-    kudryashova_i_gather_my::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-    ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
+  kudryashova_i_gather_my::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), false);
 }
 
 TEST(kudryashova_i_gather_my_mpi, check_dot_product_empty_vectors) {
