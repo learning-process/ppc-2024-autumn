@@ -1,5 +1,7 @@
 ﻿#include "mpi/sedova_o_vertical_ribbon_scheme/include/ops_mpi.hpp"
 
+#include <boost/serialization/array.hpp>
+#include <boost/serialization/vector.hpp>
 #include <algorithm>
 #include <functional>
 #include <iostream>
@@ -21,15 +23,15 @@ void sedova_o_vertical_ribbon_scheme_mpi::calculate_distribution(int rows, int c
     int a = cols / num_proc;
     int b = cols % num_proc;
 
-    int offset = 0;
+    int t = 0;
     for (int i = 0; i < num_proc; ++i) {
       if (b-- > 0) {
         sizes[i] = (a + 1) * rows;
       } else {
         sizes[i] = a * rows;
       }
-      displs[i] = offset;
-      offset += sizes[i];
+      displs[i] = t;
+      t += sizes[i];
     }
   }
 }
