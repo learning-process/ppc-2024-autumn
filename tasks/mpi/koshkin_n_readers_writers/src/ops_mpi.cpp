@@ -7,8 +7,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
 std::vector<int> koshkin_n_readers_writers_mpi::getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -23,7 +21,6 @@ bool koshkin_n_readers_writers_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
   if (world.rank() == 0) {
-
     shared_resource = std::vector<int>(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
@@ -31,30 +28,34 @@ bool koshkin_n_readers_writers_mpi::TestMPITaskParallel::pre_processing() {
     }
     res = {};
   }
-
   return true;
 }
 
 bool koshkin_n_readers_writers_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
+  if (world.rank() == 0) {
+    return ((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
+            (taskData->inputs_count.size() >= 1 && taskData->inputs_count[0] != 0) &&
+            (taskData->outputs_count.size() >= 1 && taskData->outputs_count[0] != 0));
+  }
   return true;
 }
 
 bool koshkin_n_readers_writers_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
- /* if (world.size() == 1) {
-    throw std::runtime_error("This task requires at least two processes to run");
-  }*/
+  /* if (world.size() == 1) {
+     throw std::runtime_error("This task requires at least two processes to run");
+   }*/
 
-  static int resource = 1;    // Semaphore for resource locking
-  static int rmutex = 1;      // Semaphore for protection readcount
-  static int readcount = 0;   // Global Reader Counter
+  static int resource = 1;   // Semaphore for resource locking
+  static int rmutex = 1;     // Semaphore for protection readcount
+  static int readcount = 0;  // Global Reader Counter
 
-  if (world.rank() == 0) {  
+  if (world.rank() == 0) {
     // The master process controls access
     bool terminate = false;
-    int active_processes = world.size() - 1;  
+    int active_processes = world.size() - 1;
 
     while (!terminate) {
       boost::mpi::status status;
@@ -115,44 +116,42 @@ bool koshkin_n_readers_writers_mpi::TestMPITaskParallel::run() {
         active_processes--;
         if (active_processes == 0) terminate = true;
       }
-    } 
-  } 
-  else {
+    }
+    res = shared_resource;
+  } else {
     std::string role = (world.rank() % 2 == 0) ? "reader" : "writer";
-    if (role == "writer") {    
-        std::string response;
-        do {
+    if (role == "writer") {
+      std::string response;
+      do {
         world.send(0, 0, std::string("write_entry"));
         world.recv(0, 1, response);
-        } while (response == "wait");
+      } while (response == "wait");
 
-        if (response == "proceed") {
-          world.recv(0, 3, shared_resource);
- 
-          // Simulate recording
-          for (auto& val : shared_resource) val += 100;
+      if (response == "proceed") {
+        world.recv(0, 3, shared_resource);
 
-          world.send(0, 2, shared_resource);
-          world.send(0, 0, std::string("write_exit"));
-          world.recv(0, 1, response);
+        // Simulate recording
+        for (auto& val : shared_resource) val += 100;
 
-        }
-    } else if (role == "reader") {
-        world.send(0, 0, std::string("read_entry"));
-        std::string response;
+        world.send(0, 2, shared_resource);
+        world.send(0, 0, std::string("write_exit"));
         world.recv(0, 1, response);
-        if (response == "proceed") {
-          world.recv(0, 3, shared_resource);
+      }
+    } else if (role == "reader") {
+      world.send(0, 0, std::string("read_entry"));
+      std::string response;
+      world.recv(0, 1, response);
+      if (response == "proceed") {
+        // Simulate reading
+        world.recv(0, 3, shared_resource);
+        /*std::cout << "Reader " << world.rank() << " is reading resource: ";
+        for (auto val : shared_resource) std::cout << val << " ";
+        std::cout << std::endl;*/
+        std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
-          // Simulate reading
-          /*std::cout << "Reader " << world.rank() << " is reading resource: "; 
-          for (auto val : shared_resource) std::cout << val << " "; 
-          std::cout << std::endl;*/ 
-
-          std::this_thread::sleep_for(std::chrono::milliseconds(5));
-          world.send(0, 0, std::string("read_exit"));
-          world.recv(0, 1, response);
-        }
+        world.send(0, 0, std::string("read_exit"));
+        world.recv(0, 1, response);
+      }
     }
     world.send(0, 0, std::string("terminate"));
   }
@@ -162,5 +161,11 @@ bool koshkin_n_readers_writers_mpi::TestMPITaskParallel::run() {
 
 bool koshkin_n_readers_writers_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
+  if (world.rank() == 0) {
+    auto* output = reinterpret_cast<int*>(taskData->outputs[0]);
+    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+      output[i] = res[i];
+    }
+  }
   return true;
 }
