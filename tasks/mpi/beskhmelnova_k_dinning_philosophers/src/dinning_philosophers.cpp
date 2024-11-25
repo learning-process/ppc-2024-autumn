@@ -16,7 +16,7 @@ bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::pre_pr
 template <typename DataType>
 bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::validation() {
   int num_philosophers = taskData->inputs_count[0];
-  return num_philosophers >= 2 && num_philosophers > 0;
+  return world.size() >= 2 && num_philosophers >= 2 && num_philosophers > 0;
 }
 
 template <typename DataType>

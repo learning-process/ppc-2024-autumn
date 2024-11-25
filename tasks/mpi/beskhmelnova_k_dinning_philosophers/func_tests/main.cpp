@@ -69,15 +69,15 @@ TEST(DiningPhilosophersMPI, Test_with_negative_size_philosophers) {
 
 TEST(DiningPhilosophersMPI, Test_with_2_philosophers) {
   boost::mpi::communicator world;
-  if (world.size() >= 2) {
-    int num_philosophers = 2;
 
-    auto taskData = std::make_shared<ppc::core::TaskData>();
-    taskData->inputs_count.push_back(num_philosophers);
+  int num_philosophers = 2;
 
-    beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<int> dining_task(taskData);
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.push_back(num_philosophers);
 
-    ASSERT_TRUE(dining_task.validation());
+  beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<int> dining_task(taskData);
+
+  if (dining_task.validation()) {
     ASSERT_TRUE(dining_task.pre_processing());
     ASSERT_TRUE(dining_task.run());
     ASSERT_TRUE(dining_task.post_processing());
@@ -92,15 +92,15 @@ TEST(DiningPhilosophersMPI, Test_with_2_philosophers) {
 
 TEST(DiningPhilosophersMPI, Test_with_3_philosophers) {
   boost::mpi::communicator world;
-  if (world.size() >= 3) {
-    int num_philosophers = 3;
 
-    auto taskData = std::make_shared<ppc::core::TaskData>();
-    taskData->inputs_count.push_back(num_philosophers);
+  int num_philosophers = 3;
 
-    beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<int> dining_task(taskData);
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.push_back(num_philosophers);
 
-    ASSERT_TRUE(dining_task.validation());
+  beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<int> dining_task(taskData);
+
+  if (dining_task.validation()) {
     ASSERT_TRUE(dining_task.pre_processing());
     ASSERT_TRUE(dining_task.run());
     ASSERT_TRUE(dining_task.post_processing());
@@ -115,15 +115,15 @@ TEST(DiningPhilosophersMPI, Test_with_3_philosophers) {
 
 TEST(DiningPhilosophersMPI, Test_with_4_philosophers) {
   boost::mpi::communicator world;
-  if (world.size() >= 4) {
-    int num_philosophers = 4;
 
-    auto taskData = std::make_shared<ppc::core::TaskData>();
-    taskData->inputs_count.push_back(num_philosophers);
+  int num_philosophers = 4;
 
-    beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<int> dining_task(taskData);
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.push_back(num_philosophers);
 
-    ASSERT_TRUE(dining_task.validation());
+  beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<int> dining_task(taskData);
+
+  if (dining_task.validation()) {
     ASSERT_TRUE(dining_task.pre_processing());
     ASSERT_TRUE(dining_task.run());
     ASSERT_TRUE(dining_task.post_processing());
@@ -138,15 +138,15 @@ TEST(DiningPhilosophersMPI, Test_with_4_philosophers) {
 
 TEST(DiningPhilosophersMPI, Test_with_8_philosophers) {
   boost::mpi::communicator world;
-  if (world.size() >= 8) {
-    int num_philosophers = 8;
 
-    auto taskData = std::make_shared<ppc::core::TaskData>();
-    taskData->inputs_count.push_back(num_philosophers);
+  int num_philosophers = 8;
 
-    beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<int> dining_task(taskData);
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.push_back(num_philosophers);
 
-    ASSERT_TRUE(dining_task.validation());
+  beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<int> dining_task(taskData);
+
+  if (dining_task.validation()) {
     ASSERT_TRUE(dining_task.pre_processing());
     ASSERT_TRUE(dining_task.run());
     ASSERT_TRUE(dining_task.post_processing());
