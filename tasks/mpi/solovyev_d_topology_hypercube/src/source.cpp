@@ -48,6 +48,11 @@ int solovyev_d_topology_hypercube_mpi::calcAddress(int src, int dest, int maxAdd
 bool solovyev_d_topology_hypercube_mpi::TopologyHypercubeMPI::validation() {
   internal_order_test();
   if (world.rank() == 0) {
+    // check if current number of processes represent hypercube (if number of processes are power of two)
+    if ((world.size() & (world.size() - 1)) != 0) {
+      return false;
+    }
+    // check if destination process is within hypercube
     if (reinterpret_cast<int *>(taskData->inputs[0])[1] >= world.size()) {
       return false;
     }
