@@ -11,7 +11,7 @@ TEST(MPIGAUSSPERF, test_pipeline_run) {
   boost::mpi::communicator world;
   int rows = 900;
   int columns = 900;
-  std::vector<int> a = drozhdinov_d_gauss_vertical_scheme_mpi::getRandomVector(1);
+  std::vector<int> a = drozhdinov_d_gauss_vertical_scheme_mpi::getRandomVector<int>(1);
   std::vector<double> matrix = genDenseMatrix(rows, *a.begin());
   std::vector<double> b(rows, 1);
   std::vector<double> res(rows, 0);
@@ -59,7 +59,7 @@ TEST(MPIGAUSSPERF, test_task_run) {
   boost::mpi::communicator world;
   int rows = 900;
   int columns = 900;
-  std::vector<int> a = drozhdinov_d_gauss_vertical_scheme_mpi::getRandomVector(1);
+  std::vector<int> a = drozhdinov_d_gauss_vertical_scheme_mpi::getRandomVector<int>(1);
   std::vector<double> matrix = genDenseMatrix(rows, *a.begin());
   std::vector<double> b(rows, 1);
   std::vector<double> res(rows, 0);
