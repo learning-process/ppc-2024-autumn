@@ -97,7 +97,7 @@ TEST(vavilov_v_contrast_enhancement_mpi, NormalContrastEnhancement) {
   }
 }
 
-TEST(vavilov_v_contrast_enhancement_mpi, RandomContrastEnhancement) {
+TEST(vavilov_v_contrast_enhancement_mpi, RandomContrastEnhancement_1) {
   mpi::environment env;
   mpi::communicator world;
 
@@ -141,7 +141,7 @@ TEST(vavilov_v_contrast_enhancement_mpi, RandomContrastEnhancement) {
   }
 }
 
-TEST(vavilov_v_contrast_enhancement_mpi, RandomContrastEnhancement) {
+TEST(vavilov_v_contrast_enhancement_mpi, RandomContrastEnhancement_2) {
   mpi::environment env;
   mpi::communicator world;
 
@@ -185,7 +185,7 @@ TEST(vavilov_v_contrast_enhancement_mpi, RandomContrastEnhancement) {
   }
 }
 
-TEST(vavilov_v_contrast_enhancement_mpi, RandomContrastEnhancement) {
+TEST(vavilov_v_contrast_enhancement_mpi, RandomContrastEnhancement_3) {
   mpi::environment env;
   mpi::communicator world;
 
@@ -229,7 +229,7 @@ TEST(vavilov_v_contrast_enhancement_mpi, RandomContrastEnhancement) {
   }
 }
 
-TEST(vavilov_v_contrast_enhancement_mpi, RandomContrastEnhancement) {
+TEST(vavilov_v_contrast_enhancement_mpi, RandomContrastEnhancement_4) {
   mpi::environment env;
   mpi::communicator world;
 
