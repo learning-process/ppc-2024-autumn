@@ -272,16 +272,20 @@ std::vector<double> genElementaryMatrix(int rows, int columns) {
   }
   return res;
 }
-
-std::vector<int> drozhdinov_d_gauss_vertical_scheme_mpi::getRandomVector(int sz) {
+template <typename T>
+std::vector<T> drozhdinov_d_gauss_vertical_scheme_mpi::getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
+  std::vector<T> vec(sz);
+  vec[0] = gen() % 100;
+  for (int i = 1; i < sz; i++) {
+    vec[i] = (gen() % 100) - 49;
   }
   return vec;
 }
+
+template std::vector<int> drozhdinov_d_gauss_vertical_scheme_mpi::getRandomVector(int sz);
+template std::vector<double> drozhdinov_d_gauss_vertical_scheme_mpi::getRandomVector(int sz);
 
 bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
@@ -384,8 +388,7 @@ bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel::pre_processing
     _rows = taskData->inputs_count[3];
     _columns = taskData->inputs_count[2];
   }
-  broadcast(world, _columns, 0);
-  broadcast(world, _rows, 0);
+
   // fbd nt ncssr dlt
   if (world.rank() == 0) {
     // Init vectors
@@ -449,6 +452,8 @@ bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel::validation() {
 
 bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+  broadcast(world, _columns, 0);
+  broadcast(world, _rows, 0);
   _x = GaussVerticalScheme(_coefs, _rows, _columns, _b);
   return true;
 }
