@@ -35,8 +35,8 @@ bool koshkin_n_readers_writers_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     return ((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
-            (taskData->inputs_count.size() >= 1 && taskData->inputs_count[0] != 0) &&
-            (taskData->outputs_count.size() >= 1 && taskData->outputs_count[0] != 0));
+            (!taskData->inputs_count.empty() && taskData->inputs_count[0] != 0) &&
+            (!taskData->outputs_count.empty() && taskData->outputs_count[0] != 0));
   }
   return true;
 }
