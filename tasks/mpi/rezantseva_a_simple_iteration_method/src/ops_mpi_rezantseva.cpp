@@ -140,7 +140,7 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::validation() 
 bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::pre_processing() {
   internal_order_test();
 
-  size_t n = 0;  // count of elements = n
+  size_t n = 0;
   size_t delta = 0;
   size_t remainder = 0;
 
@@ -151,7 +151,7 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::pre_processin
     remainder = n % num_processes_;  // Calculate remaining elements
   }
   boost::mpi::broadcast(world, num_processes_, 0);
-
+  boost::mpi::broadcast(world, n, 0);
   counts_.resize(num_processes_);  // Vector to store counts for each process
 
   if (world.rank() == 0) {
@@ -175,113 +175,109 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::pre_processin
       }
       b_[i] = reinterpret_cast<double*>(taskData->inputs[2])[i];
     }
+  } else {
+    x_.resize(n);
+    prev_x_.resize(n);
   }
   return true;
 }
 
 bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::run() {
   internal_order_test();
-  size_t n = 0;
+  size_t n = x_.size();
   size_t iteration = 0;
-  if (world.rank() == 0) {
-    n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
-  }
-  boost::mpi::broadcast(world, n, 0);
-
-  x_.assign(n, 0.0);
-  prev_x_.resize(n, 0.0);
-
-  if (world.rank() == 0) {
-    size_t offset_remainder = counts_[0];
-    for (size_t proc = 1; proc < num_processes_; proc++) {
-      size_t current_count = counts_[proc];
-
-      // send part of A as vec
-      std::vector<double> temp_A;
-      for (size_t i = 0; i < current_count; i++) {
-        temp_A.insert(temp_A.end(), A_.begin() + (offset_remainder + i) * n,
-                      A_.begin() + (offset_remainder + i + 1) * n);
-      }
-      world.send(proc, 0, temp_A);
-
-      // send part of vec b
-      std::vector<double> temp_b(b_.begin() + offset_remainder, b_.begin() + offset_remainder + current_count);
-      world.send(proc, 1, temp_b);
-
-      offset_remainder += current_count;
-    }
-  }
 
   std::vector<double> local_A(counts_[world.rank()] * n);
   std::vector<double> local_b(counts_[world.rank()]);
   std::vector<double> local_x(counts_[world.rank()], 0.0);
 
-  if (world.rank() > 0) {
-    world.recv(0, 0, local_A);
-    world.recv(0, 1, local_b);
-  } else {
-    // copy local data for proc 0
+  if (world.rank() == 0) {
     for (size_t i = 0; i < counts_[0]; i++) {
       std::copy(A_.begin() + i * n, A_.begin() + (i + 1) * n, local_A.begin() + i * n);
     }
     std::copy(b_.begin(), b_.begin() + counts_[0], local_b.begin());
+
+    // send parts to other proc
+    size_t offset = counts_[0];
+    for (size_t proc = 1; proc < num_processes_; proc++) {
+      std::vector<double> proc_A(counts_[proc] * n);
+      for (size_t i = 0; i < counts_[proc]; i++) {
+        std::copy(A_.begin() + (offset + i) * n, A_.begin() + (offset + i + 1) * n, proc_A.begin() + i * n);
+      }
+      world.send(proc, 0, proc_A);
+
+      std::vector<double> proc_b(counts_[proc]);
+      std::copy(b_.begin() + offset, b_.begin() + offset + counts_[proc], proc_b.begin());
+      world.send(proc, 1, proc_b);
+
+      offset += counts_[proc];
+    }
+  } else {
+    world.recv(0, 0, local_A);
+    world.recv(0, 1, local_b);
   }
 
-  // Simple Iteration Method
   while (iteration < maxIteration_) {
-    // Store previous x values
-    std::copy(x_.begin(), x_.end(), prev_x_.begin());
-
-    // Broadcast x_ once at the start of iteration
-    boost::mpi::broadcast(world, x_.data(), n, 0);
-
-    // Calculate local results
-    size_t row_offset = 0;
-    for (size_t i = 0; i < static_cast<size_t>(world.rank()); i++) {
-      row_offset += counts_[i];
+    // local offset
+    size_t offset = 0;
+    for (size_t i = 0; i < world.rank(); i++) {
+      offset += counts_[i];
     }
 
-    // Compute local solutions
+    // calculate
     for (size_t i = 0; i < counts_[world.rank()]; i++) {
       double sum = 0.0;
       for (size_t j = 0; j < n; j++) {
-        if (j != (row_offset + i)) {
+        if (j != (offset + i)) {
           sum += local_A[i * n + j] * x_[j];
         }
       }
-      local_x[i] = (local_b[i] - sum) / local_A[i * n + (row_offset + i)];
+      local_x[i] = (local_b[i] - sum) / local_A[i * n + (offset + i)];
     }
 
-    // Gather all results at once instead of individual sends
-    std::vector<int> recvcounts(num_processes_);
-    std::vector<int> displs(num_processes_, 0);
+    if (world.rank() == 0) {
+      // save results which one was calculated on proc 1
+      prev_x_ = x_;
+      std::copy(local_x.begin(), local_x.end(), x_.begin());
 
-    for (size_t i = 0; i < num_processes_; ++i) {
-      recvcounts[i] = static_cast<int>(counts_[i]);
-      if (i > 0) displs[i] = displs[i - 1] + recvcounts[i - 1];
+      // get results from another proc
+      size_t gather_offset = counts_[0];
+      for (size_t proc = 1; proc < num_processes_; proc++) {
+        std::vector<double> proc_x(counts_[proc]);
+        world.recv(proc, 2, proc_x);
+        std::copy(proc_x.begin(), proc_x.end(), x_.begin() + gather_offset);
+        gather_offset += counts_[proc];
+      }
+
+      bool converged = isTimeToStop(prev_x_, x_);
+      if (converged) {
+        // send check result
+        for (size_t proc = 1; proc < num_processes_; proc++) {
+          world.send(proc, 3, x_);
+          world.send(proc, 4, &converged, 1);
+        }
+        break;
+      } else {
+        // send new approach
+        for (size_t proc = 1; proc < num_processes_; proc++) {
+          world.send(proc, 3, x_);
+          world.send(proc, 4, &converged, 1);
+        }
+      }
+    } else {
+      // non zero proc sends their results
+      world.send(0, 2, local_x);
+
+      // get new approach
+      world.recv(0, 3, x_);
+      bool converged;
+      world.recv(0, 4, &converged, 1);
+      if (converged) break;
     }
 
-    // Use MPI_Gatherv to collect all results at once
-    boost::mpi::gatherv(world, local_x.data(), local_x.size(), x_.data(), recvcounts, displs, 0);
-
-    // Check convergence locally first
-    double local_max_diff = 0.0;
-    for (size_t i = 0; i < counts_[world.rank()]; i++) {
-      double diff = std::fabs(local_x[i] - prev_x_[row_offset + i]);
-      local_max_diff = std::max(local_max_diff, diff);
-    }
-
-    // Reduce to find global maximum difference
-    double global_max_diff = 0.0;
-    boost::mpi::reduce(world, local_max_diff, global_max_diff, boost::mpi::maximum<double>(), 0);
-
-    // Broadcast convergence result
-    bool converged = (global_max_diff < epsilon_);
-    boost::mpi::broadcast(world, converged, 0);
-
-    if (converged) break;
     iteration++;
   }
+
   return true;
 }
 

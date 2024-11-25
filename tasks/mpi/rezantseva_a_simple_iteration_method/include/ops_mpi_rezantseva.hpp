@@ -37,9 +37,6 @@ class SimpleIterationSequential : public ppc::core::Task {
 class SimpleIterationMPI : public ppc::core::Task {
  public:
   explicit SimpleIterationMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-  ~SimpleIterationMPI() {
-    clearMemory();
-  }
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -52,27 +49,14 @@ class SimpleIterationMPI : public ppc::core::Task {
   std::vector<double> x_;       // current approach
   std::vector<double> prev_x_;  // previous approach
 
-  double epsilon_ = 1e-3;       // precision
-  size_t maxIteration_ = 1000;  // увеличено с 100 до 1000
-  bool checkMatrix();           // we check convergence condition
+  double epsilon_ = 1e-3;      // precision
+  size_t maxIteration_ = 100;  // to avoid endless cycle
+  bool checkMatrix();          // we check convergence condition (|A11| > |A12| + |A13| + .. + |A1n|) etc
   bool isTimeToStop(const std::vector<double>& x0,
-                    const std::vector<double>& x1) const;
+                    const std::vector<double>& x1) const;  // stop if |xn^(i+1) - xn^i| < epsilon
 
   std::vector<unsigned int> counts_{};
   size_t num_processes_ = 0;
-
-  void clearMemory() {
-    A_.clear();
-    A_.shrink_to_fit();
-    b_.clear();
-    b_.shrink_to_fit();
-    x_.clear();
-    x_.shrink_to_fit();
-    prev_x_.clear();
-    prev_x_.shrink_to_fit();
-    counts_.clear();
-    counts_.shrink_to_fit();
-  }
 };
 
 // class TestMPITaskParallel : public ppc::core::Task {

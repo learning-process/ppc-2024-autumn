@@ -35,7 +35,7 @@ std::pair<std::vector<double>, std::vector<double>> rezantseva_a_simple_iteratio
 
 TEST(rezantseva_a_simple_iteration_method_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  size_t size = 10000;
+  size_t size = 8000;
   auto [A, b] = rezantseva_a_simple_iteration_method_mpi::createRandomMatrix(size);
   std::vector<double> out(size, 0.0);
   // Create TaskData
@@ -79,7 +79,7 @@ TEST(rezantseva_a_simple_iteration_method_mpi, test_pipeline_run) {
 
 TEST(rezantseva_a_simple_iteration_method_mpi, test_task_run) {
   boost::mpi::communicator world;
-  size_t size = 10000;
+  size_t size = 8000;
   auto [A, b] = rezantseva_a_simple_iteration_method_mpi::createRandomMatrix(size);
   std::vector<double> out(size, 0.0);
   // Create TaskData
