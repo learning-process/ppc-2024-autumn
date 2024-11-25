@@ -48,12 +48,10 @@ bool koshkin_m_dining_philosophers::TestMPITaskParallel::run() {
   internal_order_test();
 
   int philosopher_id = world.rank();
-  int cycles_completed = 0;
   for (int i = 0; i < 3; ++i) {
     think(philosopher_id);
     if (request_forks(philosopher_id)) {
       eat(philosopher_id);
-      cycles_completed++;
       release_forks(philosopher_id);
     }
   }
@@ -86,12 +84,9 @@ bool koshkin_m_dining_philosophers::TestMPITaskParallel::request_forks(int philo
     return false;
   }
 
-  int right_fork = (philosopher_id + 1) % num_philosophers;
-
-  condition.wait(lock, [this, philosopher_id, right_fork] { return can_eat(philosopher_id); });
+  condition.wait(lock, [this, philosopher_id] { return can_eat(philosopher_id); });
 
   forks[philosopher_id] = true;
-  forks[right_fork] = true;
   eating_philosophers++;
   return true;
 }

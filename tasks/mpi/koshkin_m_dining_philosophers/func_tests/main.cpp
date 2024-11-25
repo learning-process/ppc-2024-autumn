@@ -288,9 +288,8 @@ TEST(koshkin_m_dining_philosophers, Test_No_Hungry_Philosopher) {
   boost::mpi::communicator world;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
+  int num_philosophers = world.size();
   if (world.rank() == 0) {
-    int num_philosophers = world.size();
     std::vector<int> forks(num_philosophers, 2);
     int iterations = 5;
 
