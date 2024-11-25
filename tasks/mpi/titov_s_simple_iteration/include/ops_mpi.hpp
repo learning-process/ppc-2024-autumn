@@ -50,7 +50,7 @@ class MPISimpleIterationParallel : public ppc::core::Task {
   std::vector<double> Values;
   std::vector<double> current;
   std::vector<double> prev;
-  int Rows;
+  size_t Rows;
 
   double epsilon_;
 

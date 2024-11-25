@@ -2,11 +2,15 @@
 #include "mpi/titov_s_simple_iteration/include/ops_mpi.hpp"
 
 #include <algorithm>
+#include <boost/mpi.hpp>
 #include <functional>
 #include <random>
 #include <string>
 #include <thread>
 #include <vector>
+
+#include <boost/mpi.hpp>
+#include "boost/mpi/collectives/broadcast.hpp"
 
 using namespace std::chrono_literals;
 
@@ -83,36 +87,30 @@ bool titov_s_simple_iteration_mpi::MPISimpleIterationSequential::validation() {
   unsigned int cols = taskData->inputs_count[1];
 
   if (taskData->inputs.size() < rows + 1) {
-    std::cerr << "Validation failed: inputs size is less than expected (rows + 1).\n";
     return false;
   }
 
   if (rows == 0 || cols == 0) {
-    std::cerr << "Validation failed: rows or cols is 0.\n";
     return false;
   }
 
   for (unsigned int i = 0; i < rows; ++i) {
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
     if (tmp_ptr == nullptr) {
-      std::cerr << "Validation failed: inputs[" << i << "] is nullptr.\n";
       return false;
     }
   }
 
   auto* epsilon_ptr = reinterpret_cast<float*>(taskData->inputs[rows]);
   if (epsilon_ptr == nullptr) {
-    std::cerr << "Validation failed: epsilon_ptr is nullptr.\n";
     return false;
   }
   float epsilon = *epsilon_ptr;
   if (epsilon <= 0.0f || epsilon > 1.0f) {
-    std::cerr << "Validation failed: epsilon (" << epsilon << ") is out of range.\n";
     return false;
   }
 
   if (taskData->outputs_count.empty() || taskData->outputs_count[0] < 1) {
-    std::cerr << "Validation failed: outputs_count is invalid.\n";
     return false;
   }
 
@@ -213,16 +211,16 @@ bool titov_s_simple_iteration_mpi::MPISimpleIterationParallel::validation() {
     epsilon_ = *reinterpret_cast<double*>(taskData->inputs[3]);
     auto* Matrixinput = reinterpret_cast<double*>(taskData->inputs[0]);
     Matrix.assign(Matrixinput, Matrixinput + Rows * Rows);
-    if (!isDiagonallyDominant()) {
-      return false;
-    }
     if (taskData->inputs_count.size() != 4 || taskData->outputs_count.size() != 1) {
       return false;
     }
-    if (epsilon_ >= 1) {
+    if (Rows <= 0) {
       return false;
     }
-    if (Rows <= 0) {
+    if (!isDiagonallyDominant()) {
+      return false;
+    }
+    if (epsilon_ >= 1) {
       return false;
     }
   }

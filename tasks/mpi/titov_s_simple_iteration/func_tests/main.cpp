@@ -9,7 +9,6 @@
 
 TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Not_A_Diagonally_Dominate) {
   boost::mpi::communicator world;
-
   size_t matrix_size = 3;
   std::vector<double> global_result(matrix_size, 0.0);
   std::vector<double> Matrix = {1.0, 2.0, 3.0, 14.0, 2.8, 35.0, 1.0, 6.0, 0.1};
@@ -95,8 +94,9 @@ TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Parallel_1_1) {
   std::vector<std::vector<float>> global_matrix;
   global_matrix = {{10.0f, 1.0f}};
   float eps = 0.001f;
+  size_t matrix_size_seq = 1;
 
-  std::vector<float> expected_result(matrix_size, 0.0f);
+  std::vector<float> expected_result(matrix_size_seq, 0.0f);
   if (world.rank() == 0) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
@@ -156,8 +156,8 @@ TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Parallel_2_2) {
   std::vector<std::vector<float>> global_matrix;
   global_matrix = {{10.0f, 2.0f, 3.0f}, {3.0f, 20.0f, 5.0f}};
   float eps = 0.001f;
-
-  std::vector<float> expected_result(matrix_size, 0.0f);
+  size_t matrix_size_seq = 2;
+  std::vector<float> expected_result(matrix_size_seq, 0.0f);
   if (world.rank() == 0) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
@@ -217,8 +217,8 @@ TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Parallel_3_3) {
   std::vector<std::vector<float>> global_matrix;
   global_matrix = {{10.0f, 2.0f, 3.0f, 3.0f}, {4.0f, 20.0f, 5.0f, 5.0f}, {1.0f, 6.0f, 15.0f, 4.0f}};
   float eps = 0.001f;
-
-  std::vector<float> expected_result(matrix_size, 0.0f);
+  size_t matrix_size_seq = 3;
+  std::vector<float> expected_result(matrix_size_seq, 0.0f);
   if (world.rank() == 0) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
@@ -281,8 +281,8 @@ TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Parallel_4_4) {
                    {2.1f, 1.5f, 19.8f, 1.3f, 28.76f},
                    {0.9f, 2.5f, 1.3f, 32.1f, 49.72f}};
   float eps = 0.001f;
-
-  std::vector<float> expected_result(matrix_size, 0.0f);
+  size_t matrix_size_seq = 4;
+  std::vector<float> expected_result(matrix_size_seq, 0.0f);
   if (world.rank() == 0) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
@@ -347,7 +347,8 @@ TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Parallel_5_5) {
                    {0.5f, 0.8f, 2.5f, 22.0f, 1.3f, 18.0f},
                    {1.5f, 1.1f, 0.9f, 1.3f, 26.0f, 25.0f}};
   float eps = 0.001f;
-  std::vector<float> expected_result(matrix_size, 0.0f);
+  size_t matrix_size_seq = 5;
+  std::vector<float> expected_result(matrix_size_seq, 0.0f);
   if (world.rank() == 0) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
@@ -423,8 +424,8 @@ TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Parallel_10_10) {
       {0.5f, 0.6f, 0.8f, 1.1f, 1.2f, 0.8f, 1.3f, 1.1f, 2.5f, 34.0f, 55.0f}};
 
   float eps = 0.001f;
-
-  std::vector<float> expected_result(matrix_size, 0.0f);
+  size_t matrix_size_seq = 10;
+  std::vector<float> expected_result(matrix_size_seq, 0.0f);
   if (world.rank() == 0) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
@@ -512,8 +513,8 @@ TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Parallel_15_15) {
       {1.5f, 1.3f, 0.9f, 1.1f, 0.8f, 1.3f, 1.2f, 1.9f, 1.4f, 1.5f, 1.6f, 1.1f, 1.8f, 1.9f, 68.0f, 19.0f}};
 
   float eps = 0.001f;
-
-  std::vector<float> expected_result(matrix_size, 0.0f);
+  size_t matrix_size_seq = 15;
+  std::vector<float> expected_result(matrix_size_seq, 0.0f);
   if (world.rank() == 0) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
