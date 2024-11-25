@@ -57,7 +57,7 @@ TEST(shulpin_strip_scheme_A_B, pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  int ref_res = static_cast<int>(rows_a) * static_cast<int>(cols_b);
+  size_t ref_res = static_cast<size_t>(rows_a) * static_cast<size_t>(cols_b);
 
   ASSERT_EQ(ref_res, C.size());
 }
@@ -112,7 +112,7 @@ TEST(shulpin_strip_scheme_A_B, task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  int ref_res = static_cast<int>(rows_a) * static_cast<int>(cols_b);
+  size_t ref_res = static_cast<size_t>(rows_a) * static_cast<size_t>(cols_b);
 
   ASSERT_EQ(ref_res, C.size());
 }
