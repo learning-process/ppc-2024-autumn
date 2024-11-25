@@ -178,9 +178,13 @@ bool drozhdinov_d_gauss_vertical_scheme_seq::TestTaskSequential::pre_processing(
 bool drozhdinov_d_gauss_vertical_scheme_seq::TestTaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
-  return taskData->inputs_count[3] == taskData->inputs_count[2] &&
-         taskData->inputs_count[2] == taskData->outputs_count[0] && taskData->inputs.size() == 2 &&
-         taskData->outputs.size() == 1;
+  if (taskData->inputs.size() == 2 && taskData->outputs.size() == 1 && taskData->inputs_count.size() == 4 &&
+      taskData->outputs_count.size() == 1) {
+    return (taskData->inputs_count[3] == taskData->inputs_count[2] &&
+            taskData->inputs_count[2] == taskData->outputs_count[0]) &&
+           taskData->inputs.size() == 2 && taskData->outputs.size() == 1;
+  }
+  return false;
 }
 
 bool drozhdinov_d_gauss_vertical_scheme_seq::TestTaskSequential::run() {

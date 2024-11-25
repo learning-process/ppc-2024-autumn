@@ -42,10 +42,10 @@ std::vector<double> genDenseMatrix(int n, int a) {
 
 double myrnd(double value) { return (fabs(value - std::round(value)) < GAMMA ? std::round(value) : value); }
 
-int drozhdinov_d_gauss_vertical_scheme_mpi::Myrank(std::vector<double> matrix, int m, int n) {
+int drozhdinov_d_gauss_vertical_scheme_mpi::Myrank(std::vector<double> tmp_matrix, int m, int n) {
   int row = 0;
   int col = 0;
-
+  std::vector<double> matrix = tmp_matrix;
   while (row < m && col < n) {
     int max_row = row;
     for (int i = row + 1; i < m; i++) {
@@ -78,7 +78,7 @@ int drozhdinov_d_gauss_vertical_scheme_mpi::Myrank(std::vector<double> matrix, i
   for (int i = 0; i < m; i++) {
     bool is_nonzero = false;
     for (int j = 0; j < n; j++) {
-      if (fabs(matrix[i * n + j]) > 1e-9) {
+      if (fabs(matrix[i * n + j]) > GAMMA) {
         is_nonzero = true;
         break;
       }
@@ -91,8 +91,8 @@ int drozhdinov_d_gauss_vertical_scheme_mpi::Myrank(std::vector<double> matrix, i
   return rank;
 }
 
-std::vector<double> drozhdinov_d_gauss_vertical_scheme_mpi::extendedMatrix(const std::vector<double>& A, int n,
-                                                                           const std::vector<double>& b) {
+std::vector<double> drozhdinov_d_gauss_vertical_scheme_mpi::extendedMatrix(std::vector<double> A, int n,
+                                                                           std::vector<double> b) {
   std::vector<double> extendedMatrix(n * (n + 1));
 
   for (int i = 0; i < n; ++i) {
@@ -306,9 +306,13 @@ bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskSequential::pre_processi
 bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
-  return (taskData->inputs_count[3] == taskData->inputs_count[2] &&
-          taskData->inputs_count[2] == taskData->outputs_count[0]) &&
-         taskData->inputs.size() == 2 && taskData->outputs.size() == 1;
+  if (taskData->inputs.size() == 2 && taskData->outputs.size() == 1 && taskData->inputs_count.size() == 4 &&
+      taskData->outputs_count.size() == 1) {
+    return (taskData->inputs_count[3] == taskData->inputs_count[2] &&
+            taskData->inputs_count[2] == taskData->outputs_count[0]) &&
+           taskData->inputs.size() == 2 && taskData->outputs.size() == 1;
+  }
+  return false;
 }
 
 bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskSequential::run() {
@@ -407,26 +411,38 @@ bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel::pre_processing
 bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    std::vector<double> tmp_coefs = std::vector<double>(taskData->inputs_count[0]);
-    auto* tmp_ptr2 = reinterpret_cast<double*>(taskData->inputs[0]);
-    for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
-      tmp_coefs[i] = tmp_ptr2[i];
-      // std::cout << tmp_coefs[i] << std::endl;
-    }
-    std::vector<double> tmp_b = std::vector<double>(taskData->inputs_count[1], 1);
-    if (taskData->inputs[1] != 0) {
+    if (taskData->inputs.size() == 2 && taskData->outputs.size() == 1 && taskData->inputs_count.size() == 4 &&
+        taskData->outputs_count.size() == 1) {
+      std::vector<double> tmp_coefs = std::vector<double>(taskData->inputs_count[0]);
+      auto* tmp_ptr2 = reinterpret_cast<double*>(taskData->inputs[0]);
+      for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
+        tmp_coefs[i] = tmp_ptr2[i];
+        // std::cout << tmp_coefs[i] << std::endl;
+      }
+      std::vector<double> tmp_b = std::vector<double>(taskData->inputs_count[1], 1);
       auto* ptr3 = reinterpret_cast<double*>(taskData->inputs[1]);
       for (unsigned int i = 0; i < taskData->inputs_count[1]; i++) {
         tmp_b[i] = ptr3[i];
         // std::cout << tmp_b[i] << std::endl;
       }
+      int r = taskData->inputs_count[3];
+      std::vector<double> tmp2 = tmp_coefs;
+      int rk1 = Myrank(tmp_coefs, r, r);
+      std::vector<double> A_extended(r * (r + 1));
+      for (int i = 0; i < r; ++i) {
+        for (int j = 0; j < r; ++j) {
+          A_extended[i * (r + 1) + j] = tmp2[i * r + j];
+        }
+        A_extended[i * (r + 1) + r] = tmp_b[i];
+      }
+      int rk2 = Myrank(A_extended, r, r + 1);
+      double dtrm = Determinant(tmp_coefs, r);
+      std::cout << rk1 << " " << rk2 << " " << dtrm;
+      return (taskData->inputs_count[3] == taskData->inputs_count[2] &&
+              taskData->inputs_count[2] == taskData->outputs_count[0]) &&
+             taskData->inputs.size() == 2 && myrnd(dtrm) != 0 && taskData->outputs.size() == 1 && rk1 == rk2;
     }
-    int r = taskData->inputs_count[3];
-
-    double dtrm = Determinant(tmp_coefs, r);
-    return (taskData->inputs_count[3] == taskData->inputs_count[2] &&
-            taskData->inputs_count[2] == taskData->outputs_count[0]) &&
-           taskData->inputs.size() == 2 && myrnd(dtrm) != 0 && taskData->outputs.size() == 1;
+    return false;
   }
   return true;
 }

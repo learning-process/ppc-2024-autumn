@@ -34,6 +34,32 @@ TEST(MPIGAUSS, WrongValidationTest) {
   // std::cout << world.rank();
 }
 
+TEST(MPIGAUSS, WrongValidationTest2) {
+  boost::mpi::communicator world;
+  int rows = 3;
+  int columns = 3;
+  std::vector<double> matrix = {1, 0, 0, 0, 1, 0, 0, 0, 0};
+  std::vector<double> b = {1, 1, 1};
+  std::vector<double> expres_par(rows);
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+    // taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
+    taskDataPar->inputs_count.emplace_back(matrix.size());
+    taskDataPar->inputs_count.emplace_back(b.size());
+    taskDataPar->inputs_count.emplace_back(columns);
+    taskDataPar->inputs_count.emplace_back(rows);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres_par.data()));
+    taskDataPar->outputs_count.emplace_back(expres_par.size());
+  }
+  if (world.rank() == 0) {
+    drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  }
+}
+
 TEST(MPIGAUSS, EquationTest) {
   boost::mpi::communicator world;
   int rows = 2;
