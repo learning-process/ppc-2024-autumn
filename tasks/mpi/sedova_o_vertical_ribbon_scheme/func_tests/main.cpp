@@ -1,16 +1,15 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
+#include <algorithm>
+#include <boost/mpi.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <iostream>
+#include <random>
 #include <vector>
 
 #include "mpi/sedova_o_vertical_ribbon_scheme/include/ops_mpi.hpp"
-
-#include <iostream>
-#include <algorithm>
-#include <random>
-#include <boost/mpi.hpp>
 
 std::vector<int> getRandomVector(int sz) {
   std::random_device dev;

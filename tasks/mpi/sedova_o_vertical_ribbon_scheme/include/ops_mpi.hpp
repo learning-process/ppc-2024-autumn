@@ -18,8 +18,8 @@ void calculate_distribution(int rows, int cols, int num_proc, std::vector<int>& 
 
 class ParallelMPI : public ppc::core::Task {
  public:
-  explicit ParallelMPI(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit ParallelMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : 
+Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -36,10 +36,10 @@ class ParallelMPI : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-class SequentialMPI  : public ppc::core::Task {
+class SequentialMPI : public ppc::core::Task {
  public:
-  explicit SequentialMPI(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit SequentialMPI(std::shared_ptr<ppc::core::TaskData> taskData_) :
+Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;

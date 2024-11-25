@@ -1,15 +1,16 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
+#include <algorithm>
+#include <chrono>
+#include <iostream>
+#include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/sedova_o_vertical_ribbon_scheme/include/ops_seq.hpp"
 
-#include <iostream>
-#include <algorithm>
-#include <chrono>
-#include <random>
+
 
 TEST(sedova_o_vertical_ribbon_scheme, test_small_matrix) {
   const int rows = 100;
