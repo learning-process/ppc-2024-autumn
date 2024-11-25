@@ -201,7 +201,7 @@ TEST(shulpin_strip_scheme_A_B, matrix_3x3) {
   ASSERT_TRUE(taskParallel->validation());
   taskParallel->pre_processing();
   taskParallel->run();
-  taskParallel->post_processing();
+  taskParallel->post_processing
 
   if (world.rank() == 0) {
     auto taskSequential = std::make_shared<shulpin_strip_scheme_A_B::Matrix_hA_vB_seq>(taskDataSeq);
