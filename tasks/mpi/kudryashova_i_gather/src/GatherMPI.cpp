@@ -55,7 +55,7 @@ bool kudryashova_i_gather::TestMPITaskParallel::pre_processing() {
   if (world.rank() == 0) {
     if (world.size() == 1 || (int)(taskData->inputs_count[0]) < world.size()) {
       delta = (taskData->inputs_count[0]) / 2;
-    }else {
+    } else {
       delta = ((taskData->inputs_count[0]) / 2) / (world.size() - 1);
     }
   }
