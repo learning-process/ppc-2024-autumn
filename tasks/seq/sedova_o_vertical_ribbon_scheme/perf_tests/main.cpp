@@ -10,8 +10,6 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/sedova_o_vertical_ribbon_scheme/include/ops_seq.hpp"
 
-
-
 TEST(sedova_o_vertical_ribbon_scheme, test_small_matrix) {
   const int rows = 100;
   const int cols = 50;

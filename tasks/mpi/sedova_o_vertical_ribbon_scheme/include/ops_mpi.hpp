@@ -18,8 +18,7 @@ void calculate_distribution(int rows, int cols, int num_proc, std::vector<int>& 
 
 class ParallelMPI : public ppc::core::Task {
  public:
-  explicit ParallelMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : 
-Task(std::move(taskData_)) {}
+  explicit ParallelMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -38,8 +37,7 @@ Task(std::move(taskData_)) {}
 
 class SequentialMPI : public ppc::core::Task {
  public:
-  explicit SequentialMPI(std::shared_ptr<ppc::core::TaskData> taskData_) :
-Task(std::move(taskData_)) {}
+  explicit SequentialMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;

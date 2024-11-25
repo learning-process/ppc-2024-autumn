@@ -66,7 +66,7 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::pre_processing() {
     calculate_distribution(num_cols_, num_rows_, world.size(), distribution, displacement);
   }
   return true;
-  }
+}
 
 bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::run() {
   internal_order_test();
@@ -80,8 +80,7 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::run() {
 
   std::vector<int> local_matrix(local_num_elements);
   if (world.rank() == 0) {
-    mpi::scatterv(world, input_matrix_.data(), distribution, displacement, local_matrix.data(),
-                           local_num_elements, 0);
+    mpi::scatterv(world, input_matrix_.data(), distribution, displacement, local_matrix.data(), local_num_elements, 0);
   } else {
     mpi::scatterv(world, local_matrix.data(), local_num_elements, 0);
   }
@@ -89,7 +88,7 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::run() {
   std::vector<int> local_result(local_num_cols, 0);
 
   for (int j = 0; j < local_num_cols; ++j) {  // j iterates over local columns
-    for (int i = 0; i < num_rows_; ++i) {    // i iterates over local rows
+    for (int i = 0; i < num_rows_; ++i) {     // i iterates over local rows
       local_result[i] += local_matrix[i * local_num_cols + j] * input_vector_[j];
     }
   }
@@ -113,8 +112,7 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::run() {
   }
 
   if (world.rank() == 0) {
-    mpi::gatherv(world, local_result.data(), local_result.size(), result_vector_.data(), gather_counts,
-                          gather_displacements, 0);
+    mpi::gatherv(world, local_result.data(), local_result.size(), result_vector_.data(), gather_counts, gather_displacements, 0);
   } else {
     mpi::gatherv(world, local_result.data(), local_result.size(), 0);
   }
@@ -165,7 +163,7 @@ bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::pre_processing() {
 bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::run() {
   internal_order_test();
 
- for (int j = 0; j < num_cols_; j++) {
+  for (int j = 0; j < num_cols_; j++) {
     for (int i = 0; i < num_rows_; i++) {
       result_vector_[i] += input_matrix_[i * num_cols_ + j] * input_vector_[j];
     }

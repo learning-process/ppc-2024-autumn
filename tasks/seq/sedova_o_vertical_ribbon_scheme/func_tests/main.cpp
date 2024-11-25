@@ -32,7 +32,7 @@ TEST(sedova_o_vertical_ribbon_scheme, Test_Larger_Matrix) {
   std::vector<int> matrix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
   std::vector<int> vector = {1, 2, 3};
   std::vector<int> expected_result = {14, 32, 50};
-  std::vector<int> result(3,0);
+  std::vector<int> result(3, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.push_back(reinterpret_cast<std::uint8_t*>(matrix.data()));
   taskDataSeq->inputs_count.push_back(matrix.size());
