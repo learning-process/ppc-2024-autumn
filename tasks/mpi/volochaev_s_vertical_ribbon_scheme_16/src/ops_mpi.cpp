@@ -1,7 +1,8 @@
 #include "mpi/volochaev_s_vertical_ribbon_scheme_16/include/ops_mpi.hpp"
 
 #include <algorithm>
-#include <boost/serialization/map.hpp>
+#include <boost/serialization/array.hpp>
+#include <boost/serialization/vector.hpp>
 #include <functional>
 #include <random>
 #include <string>

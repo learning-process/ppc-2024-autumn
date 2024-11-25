@@ -55,7 +55,7 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_0) {
 
 TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_1) {
   boost::mpi::communicator world;
-  std::vector<int> global_A(100, 0);
+  std::vector<int> global_A;
   std::vector<int> global_B;
   std::vector<int> global_res;
 
@@ -64,8 +64,7 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_1) {
   int m = 0;
 
   if (world.rank() == 0) {
-    global_B = {0, 0, 0};
-
+    global_A.resize(100, 0);
     global_res.resize(m, 0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_A.data()));
@@ -88,8 +87,8 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_1) {
 
 TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_2) {
   boost::mpi::communicator world;
-  std::vector<int> global_A(100, 0);
-  std::vector<int> global_B(3, 0);
+  std::vector<int> global_A;
+  std::vector<int> global_B;
   std::vector<int> global_res;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -98,7 +97,8 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_2) {
 
   if (world.rank() == 0) {
     global_res.resize(m, 0);
-
+    global_A.resize(100, 0);
+    global_B.resize(3, 0);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_A.data()));
     taskDataPar->inputs_count.emplace_back(global_A.size());
 
@@ -120,14 +120,16 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_2) {
 TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_3) {
   boost::mpi::communicator world;
 
-  std::vector<int> global_A(10);
-  std::vector<int> global_B(2);
+  std::vector<int> global_A;
+  std::vector<int> global_B;
 
   std::vector<int> global_res;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
+    global_A.resize(10);
+    global_B.resize(2);
     volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_A);
     volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_B);
 
@@ -176,13 +178,15 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_3) {
 TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_4) {
   boost::mpi::communicator world;
 
-  std::vector<int> global_A(20);
-  std::vector<int> global_B(2);
+  std::vector<int> global_A;
+  std::vector<int> global_B;
   std::vector<int> global_res;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
+    global_A.resize(20);
+    global_B.resize(2);
     volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_A);
     volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_B);
 
@@ -231,14 +235,16 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_4) {
 TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_5) {
   boost::mpi::communicator world;
 
-  std::vector<int> global_A(100);
-  std::vector<int> global_B(25);
+  std::vector<int> global_A;
+  std::vector<int> global_B;
   ;
   std::vector<int> global_res;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
+    global_A.resize(100);
+    global_B.resize(25);
     volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_A);
     volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_B);
 
@@ -287,13 +293,15 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_5) {
 TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_6) {
   boost::mpi::communicator world;
 
-  std::vector<int> global_A(100);
-  std::vector<int> global_B(1);
+  std::vector<int> global_A;
+  std::vector<int> global_B;
   std::vector<int> global_res;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
+    global_A.resize(100);
+    global_B.resize(1);
     volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_A);
     volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_B);
 
@@ -342,14 +350,16 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_6) {
 TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_7) {
   boost::mpi::communicator world;
 
-  std::vector<int> global_A(289);
-  std::vector<int> global_B(17);
+  std::vector<int> global_A;
+  std::vector<int> global_B;
   ;
   std::vector<int> global_res;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
+    global_A.resize(289);
+    global_B.resize(17);
     volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_A);
     volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_B);
 
@@ -398,14 +408,16 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_7) {
 TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_8) {
   boost::mpi::communicator world;
 
-  std::vector<int> global_A(100);
-  std::vector<int> global_B(100);
+  std::vector<int> global_A;
+  std::vector<int> global_B;
   ;
   std::vector<int> global_res;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
+    global_A.resize(100);
+    global_B.resize(100);
     volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_A);
     volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_B);
 
