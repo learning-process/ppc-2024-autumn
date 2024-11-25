@@ -7,8 +7,10 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/example/include/ops_mpi.hpp"
 
+namespace mpi = boost::mpi;
+
 TEST(sedova_o_vertical_ribbon_scheme_mpi, test_pipeline_run) {
-  boost::mpi::communicator world;
+  mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_sum(1, 0);
   // Create TaskData
@@ -32,7 +34,7 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, test_pipeline_run) {
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
-  const boost::mpi::timer current_timer;
+  const mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
   // Create and init perf results
@@ -48,7 +50,7 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, test_pipeline_run) {
 }
 
 TEST(sedova_o_vertical_ribbon_scheme_mpi, test_task_run) {
-  boost::mpi::communicator world;
+  mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_sum(1, 0);
   // Create TaskData
@@ -72,7 +74,7 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, test_task_run) {
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
-  const boost::mpi::timer current_timer;
+  const mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
   // Create and init perf results
