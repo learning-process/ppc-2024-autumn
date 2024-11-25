@@ -29,8 +29,8 @@ bool volochaev_s_vertical_ribbon_scheme_16_seq::Lab2_16::validation() {
 bool volochaev_s_vertical_ribbon_scheme_16_seq::Lab2_16::run() {
   internal_order_test();
 
-  for (size_t i = 0; i < m; ++i) {
-    for (size_t j = 0; j < n; ++j) {
+  for (int i = 0; i < m; ++i) {
+    for (int j = 0; j < n; ++j) {
       res[j] += input_A[i * n + j] * input_B[i];
     }
   }

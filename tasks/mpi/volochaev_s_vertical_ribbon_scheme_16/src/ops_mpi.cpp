@@ -33,8 +33,8 @@ bool volochaev_s_vertical_ribbon_scheme_16_mpi::Lab2_16_seq::validation() {
 bool volochaev_s_vertical_ribbon_scheme_16_mpi::Lab2_16_seq::run() {
   internal_order_test();
 
-  for (size_t i = 0; i < m; ++i) {
-    for (size_t j = 0; j < n; ++j) {
+  for (int i = 0; i < m; ++i) {
+    for (int j = 0; j < n; ++j) {
       res[j] += input_A[i * n + j] * input_B[i];
     }
   }
@@ -133,8 +133,8 @@ bool volochaev_s_vertical_ribbon_scheme_16_mpi::Lab2_16_mpi::run() {
   int local_m = distribution[world.rank()] / n;
   std::vector<int> local_res(n, 0);
 
-  for (size_t i = 0; i < local_m; ++i) {
-    for (size_t j = 0; j < n; ++j) {
+  for (int i = 0; i < local_m; ++i) {
+    for (int j = 0; j < n; ++j) {
       int global_col = local_start_col + i;
       int matrix_val = input_A1[global_col * n + j];
       int vector_val = input_B1[global_col];

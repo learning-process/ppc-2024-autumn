@@ -71,7 +71,6 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_seq, Test_2) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_B.data()));
   taskDataSeq->inputs_count.emplace_back(in_B.size());
 
-
   // Create Task
   volochaev_s_vertical_ribbon_scheme_16_seq::Lab2_16 testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), false);
@@ -94,7 +93,6 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_seq, Test_3) {
   taskDataSeq->inputs_count.emplace_back(in_B.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
-
 
   // Create Task
   volochaev_s_vertical_ribbon_scheme_16_seq::Lab2_16 testTaskSequential(taskDataSeq);

@@ -41,15 +41,6 @@ class Lab2_16_mpi : public ppc::core::Task {
   int m{};
   int n{};
 
-  struct Data {
-    int m;
-    int n;
-    std::vector<int> distribution;
-    std::vector<int> displacement;
-    std::vector<int> input_A1;
-    std::vector<int> input_B1;
-  };
-
   std::vector<int> res;
   std::vector<int> distribution;
   std::vector<int> displacement;
