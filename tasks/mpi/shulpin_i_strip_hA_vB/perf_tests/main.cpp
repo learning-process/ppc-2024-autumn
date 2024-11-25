@@ -19,7 +19,7 @@ TEST(shulpin_strip_scheme_A_B, pipeline_run) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  
+
   int cols_a = 500;
   int rows_a = 500;
   int cols_b = 500;

@@ -1,6 +1,7 @@
 #include "mpi/shulpin_i_strip_hA_vB/include/strip_hA_vB.hpp"
 
 #include <mpi.h>
+
 #include <algorithm>
 #include <boost/mpi.hpp>
 #include <boost/serialization/array.hpp>
@@ -75,7 +76,6 @@ void shulpin_strip_scheme_A_B::calculate_mpi(int rows_a, int cols_a, int cols_b,
   }
   MPI_Gatherv(bufC.data(), LocalRows * cols_b, MPI_INT, C_mpi.data(), sendcounts.data(), displs.data(), MPI_INT, 0,
               MPI_COMM_WORLD);
-
 }
 
 void shulpin_strip_scheme_A_B::calculate_seq(int rows_a, int cols_a, int cols_b, std::vector<int> A_seq,

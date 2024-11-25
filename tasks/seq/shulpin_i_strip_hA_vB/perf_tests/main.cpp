@@ -7,7 +7,6 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/shulpin_i_strip_hA_vB/include/strip_hA_vB.hpp"
 
-
 TEST(shulpin_strip_scheme_A_B, pipeline_run) {
   const int rows_a = 500;
   const int cols_a = 500;
