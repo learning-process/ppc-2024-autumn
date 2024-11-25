@@ -61,5 +61,4 @@ TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Parallel_1_1) {
   titov_s_simple_iteration_mpi::MPISimpleIterationParallel taskPar(taskDataPar);
   ASSERT_TRUE(taskPar.validation());
   ASSERT_TRUE(taskPar.pre_processing());
-
 }
