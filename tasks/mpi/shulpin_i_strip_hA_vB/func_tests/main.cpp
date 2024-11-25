@@ -143,7 +143,7 @@ TEST(shulpin_strip_scheme_A_B, matrix_2x2) {
     ASSERT_EQ(global_res_mpi, global_res_seq);
   }
 }
-/*
+
 TEST(shulpin_strip_scheme_A_B, matrix_3x3) {
   boost::mpi::communicator world;
 
@@ -212,7 +212,7 @@ TEST(shulpin_strip_scheme_A_B, matrix_3x3) {
     ASSERT_EQ(global_res_mpi, global_res_seq);
   }
 }
-
+/*
 TEST(shulpin_strip_scheme_A_B, matrix_4x4) {
   boost::mpi::communicator world;
 
