@@ -10,12 +10,13 @@
 #include <random>
 #include <vector>
 
-std::vector<int> shulpin_strip_scheme_A_B::get_RND_matrix(int col, int row) {
+std::vector<int> shulpin_strip_scheme_A_B::get_RND_matrix(int row, int col) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::uniform_int_distribution<int> dist(-1000, 1000);
   std::vector<int> rnd_matrix(col * row);
-  int i, j;
+  int i;
+  int j;
   for (i = 0; i < row; ++i) {
     for (j = 0; j < col; ++j) {
       rnd_matrix[i * col + j] = dist(gen);
@@ -26,7 +27,8 @@ std::vector<int> shulpin_strip_scheme_A_B::get_RND_matrix(int col, int row) {
 
 void shulpin_strip_scheme_A_B::calculate_mpi(int rows_a, int cols_a, int cols_b, std::vector<int> A_mpi,
                                              std::vector<int> B_mpi, std::vector<int>& C_mpi) {
-  int ProcRank, ProcNum;
+  int ProcRank;
+  int ProcNum;
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   MPI_Comm_size(MPI_COMM_WORLD, &ProcNum);
 
@@ -38,7 +40,8 @@ void shulpin_strip_scheme_A_B::calculate_mpi(int rows_a, int cols_a, int cols_b,
   std::vector<int> bufB(cols_a * cols_b, 0);
   std::vector<int> bufC(LocalRows * cols_b, 0);
 
-  std::vector<int> sendcounts(ProcNum), displs(ProcNum);
+  std::vector<int> sendcounts(ProcNum);
+  std::vector<int> displs(ProcNum);
   for (int i = 0; i < ProcNum; ++i) {
     sendcounts[i] = ((i < RemainingRows) ? (ProcPartRows + 1) : ProcPartRows) * cols_a;
     displs[i] = (i == 0) ? 0 : displs[i - 1] + sendcounts[i - 1];
@@ -141,7 +144,7 @@ bool shulpin_strip_scheme_A_B::Matrix_hA_vB_par::run() {
   boost::mpi::broadcast(world, displ, 0);
   std::vector<int> local_res(mpi_cols_B * mpi_rows_A, 0);
   calculate_mpi(mpi_rows_A, mpi_cols_A, mpi_cols_B, mpi_A, mpi_B, local_res);
-  boost::mpi::reduce(world, local_res, mpi_result, std::plus<int>(), 0);
+  boost::mpi::reduce(world, local_res, mpi_result, std::plus<>(), 0);
   return true;
 }
 
