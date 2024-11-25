@@ -75,7 +75,7 @@ bool shulpin_strip_scheme_A_B::Matrix_hA_vB_seq::validation() {
   int b_rows = *reinterpret_cast<int*>(taskData->inputs[5]);
 
   return(taskData->inputs_count.size() > 4 && !taskData->outputs_count.empty() &&
-        (a_cols > 0 && a_rows > 0 && b_cols > 0 && b_rows > 0) && (a_cols == b_rows));
+       (a_cols > 0 && a_rows > 0 && b_cols > 0 && b_rows > 0) && (a_cols == b_rows));
 }
 
 bool shulpin_strip_scheme_A_B::Matrix_hA_vB_seq::run() {
