@@ -131,24 +131,19 @@ bool shulpin_strip_scheme_A_B::Matrix_hA_vB_par::validation() {
 }
 
 bool shulpin_strip_scheme_A_B::Matrix_hA_vB_par::run() {
-    internal_order_test();
-
-    boost::mpi::broadcast(world, mpi_cols_A, 0);
-    boost::mpi::broadcast(world, mpi_rows_A, 0);
-    boost::mpi::broadcast(world, mpi_cols_B, 0);
-    boost::mpi::broadcast(world, mpi_rows_B, 0);
-    boost::mpi::broadcast(world, mpi_A, 0);
-    boost::mpi::broadcast(world, mpi_B, 0);
-    boost::mpi::broadcast(world, size, 0);
-    boost::mpi::broadcast(world, displ, 0);
-
-    std::vector<int> local_res(mpi_cols_B * mpi_rows_A, 0);
-
-    calculate_mpi(mpi_rows_A, mpi_cols_A, mpi_cols_B, mpi_A, mpi_B, local_res);
-
-    boost::mpi::reduce(world, local_res, mpi_result, std::plus<int>(), 0);
-
-    return true;
+  internal_order_test();
+  boost::mpi::broadcast(world, mpi_cols_A, 0);
+  boost::mpi::broadcast(world, mpi_rows_A, 0);
+  boost::mpi::broadcast(world, mpi_cols_B, 0);
+  boost::mpi::broadcast(world, mpi_rows_B, 0);
+  boost::mpi::broadcast(world, mpi_A, 0);
+  boost::mpi::broadcast(world, mpi_B, 0);
+  boost::mpi::broadcast(world, size, 0);
+  boost::mpi::broadcast(world, displ, 0);
+  std::vector<int> local_res(mpi_cols_B * mpi_rows_A, 0);
+  calculate_mpi(mpi_rows_A, mpi_cols_A, mpi_cols_B, mpi_A, mpi_B, local_res);
+  boost::mpi::reduce(world, local_res, mpi_result, std::plus<int>(), 0);
+  return true;
 }
 
 bool shulpin_strip_scheme_A_B::Matrix_hA_vB_par::post_processing() {
@@ -204,16 +199,14 @@ bool shulpin_strip_scheme_A_B::Matrix_hA_vB_seq::validation() {
   int b_cols = *reinterpret_cast<int*>(taskData->inputs[4]);
   int b_rows = *reinterpret_cast<int*>(taskData->inputs[5]);
 
-  return(taskData->inputs_count.size() > 4 && !taskData->outputs_count.empty() &&
-        (a_cols > 0 && a_rows > 0 && b_cols > 0 && b_rows > 0) && (a_cols == b_rows));
+  return (taskData->inputs_count.size() > 4 && !taskData->outputs_count.empty() &&
+           (a_cols > 0 && a_rows > 0 && b_cols > 0 && b_rows > 0) && (a_cols == b_rows));
 }
 
 bool shulpin_strip_scheme_A_B::Matrix_hA_vB_seq::run() {
-    internal_order_test();
-
-    calculate_seq(seq_rows_A, seq_cols_A, seq_cols_B, seq_A, seq_B, seq_result);
-
-    return true;
+  internal_order_test();
+  calculate_seq(seq_rows_A, seq_cols_A, seq_cols_B, seq_A, seq_B, seq_result);
+  return true;
 }
 
 bool shulpin_strip_scheme_A_B::Matrix_hA_vB_seq::post_processing() {
