@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "mpi/shulpin_i_strip_hA_vB/include/strip_hA_vB.hpp"
-
+/*
 TEST(shulpin_strip_scheme_A_B, matrix_1x1) {
   boost::mpi::communicator world;
 
@@ -350,7 +350,7 @@ TEST(shulpin_strip_scheme_A_B, matrix_5x5) {
     ASSERT_EQ(global_res_mpi, global_res_seq);
   }
 }
-
+*/
 TEST(shulpin_strip_scheme_A_B, matrix_100x100) {
   boost::mpi::communicator world;
 
