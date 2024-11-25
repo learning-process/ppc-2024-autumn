@@ -902,7 +902,7 @@ TEST(shulpin_strip_scheme_A_B, matrix_10x5_5x20) {
     ASSERT_EQ(global_res_mpi, global_res_seq);
   }
 }
-/**
+
 TEST(shulpin_strip_scheme_A_B, invalid_matrix) {
   boost::mpi::communicator world;
 
@@ -911,19 +911,14 @@ TEST(shulpin_strip_scheme_A_B, invalid_matrix) {
   int cols_b = 3;
   int rows_b = 4;
 
-  std::vector<int> global_A;
-  std::vector<int> global_B;
+  std::vector<int> global_A(2, 1);
+  std::vector<int> global_B(12, 1);
   std::vector<int> global_res_mpi;
-  std::vector<int> global_res_seq;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(cols_a, rows_a);
-    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(cols_b, rows_b);
     global_res_mpi.resize(cols_b * rows_a, 0);
-    global_res_seq.resize(cols_b * rows_a, 0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_A.data()));
     taskDataPar->inputs_count.emplace_back(global_A.size());
@@ -939,29 +934,10 @@ TEST(shulpin_strip_scheme_A_B, invalid_matrix) {
     taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res_mpi.data()));
     taskDataPar->outputs_count.emplace_back(global_res_mpi.size());
-
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_A.data()));
-    taskDataSeq->inputs_count.emplace_back(global_A.size());
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_B.data()));
-    taskDataSeq->inputs_count.emplace_back(global_B.size());
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cols_a));
-    taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&rows_a));
-    taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cols_b));
-    taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&rows_b));
-    taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res_seq.data()));
-    taskDataSeq->outputs_count.emplace_back(global_res_seq.size());
   }
 
   auto taskParallel = std::make_shared<shulpin_strip_scheme_A_B::Matrix_hA_vB_par>(taskDataPar);
-  ASSERT_FALSE(taskParallel->validation());
-
   if (world.rank() == 0) {
-    auto taskSequential = std::make_shared<shulpin_strip_scheme_A_B::Matrix_hA_vB_seq>(taskDataSeq);
-    ASSERT_FALSE(taskSequential->validation());
+    ASSERT_FALSE(taskParallel->validation());
   }
 }
-*/
