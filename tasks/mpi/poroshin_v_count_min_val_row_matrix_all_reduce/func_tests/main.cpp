@@ -7,6 +7,22 @@
 
 #include "mpi/poroshin_v_count_min_val_row_matrix_all_reduce/include/ops_mpi.hpp"
 
+std::vector<int> poroshin_v_count_min_val_row_matrix_all_reduce_mpi::TestMPITaskSequential::gen(int m, int n) {
+  std::vector<int> tmp(m * n);
+  int n1 = std::max(n, m);
+  int m1 = std::min(n, m);
+
+  for (auto& t : tmp) {
+    t = n1 + (std::rand() % (m1 - n1 + 7));
+  }
+
+  for (int i = 0; i < m; i++) {
+    tmp[(std::rand() % n) + i * n] = INT_MIN;  // in 1 of n columns the value must be INT_MIN (needed to check answer)
+  }
+
+  return tmp;
+}
+
 TEST(poroshin_v_count_min_val_row_matrix_all_reduce_mpi, Test_rand_100_100) {
   int n = 100;
   int m = 100;
@@ -55,9 +71,57 @@ TEST(poroshin_v_count_min_val_row_matrix_all_reduce_mpi, Test_rand_100_100) {
   }
 }
 
-TEST(poroshin_v_count_min_val_row_matrix_all_reduce_mpi, My_Test_rand_100_100) {
-  int n = 100;
-  int m = 100;
+TEST(poroshin_v_count_min_val_row_matrix_all_reduce_mpi, Test_rand_128_128) {
+  int n = 128;
+  int m = 128;
+  boost::mpi::communicator world;
+  std::vector<int> global_matrix;
+  std::vector<int32_t> m_vec(m);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    global_matrix = poroshin_v_count_min_val_row_matrix_all_reduce_mpi::TestMPITaskSequential::gen(m, n);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(m);
+    taskDataPar->inputs_count.emplace_back(n);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(m_vec.data()));
+    taskDataPar->outputs_count.emplace_back(m);
+  }
+
+  poroshin_v_count_min_val_row_matrix_all_reduce_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    // Create data
+    std::vector<int32_t> rm_vec(m);
+
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(m);
+    taskDataSeq->inputs_count.emplace_back(n);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(rm_vec.data()));
+    taskDataSeq->outputs_count.emplace_back(m);
+
+    // Create Task
+    poroshin_v_count_min_val_row_matrix_all_reduce_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(m_vec, rm_vec);
+  }
+}
+
+TEST(poroshin_v_count_min_val_row_matrix_all_reduce_mpi, My_Test_rand_17_23) {
+  int n = 17;
+  int m = 23;
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int32_t> m_vec(m);
@@ -75,6 +139,102 @@ TEST(poroshin_v_count_min_val_row_matrix_all_reduce_mpi, My_Test_rand_100_100) {
   }
 
   poroshin_v_count_min_val_row_matrix_all_reduce_mpi::MyTestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    // Create data
+    std::vector<int32_t> rm_vec(m);
+
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(m);
+    taskDataSeq->inputs_count.emplace_back(n);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(rm_vec.data()));
+    taskDataSeq->outputs_count.emplace_back(m);
+
+    // Create Task
+    poroshin_v_count_min_val_row_matrix_all_reduce_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(m_vec, rm_vec);
+  }
+}
+
+TEST(poroshin_v_count_min_val_row_matrix_all_reduce_mpi, My_Test_rand_23_17) {
+  int n = 23;
+  int m = 17;
+  boost::mpi::communicator world;
+  std::vector<int> global_matrix;
+  std::vector<int32_t> m_vec(m);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    global_matrix = poroshin_v_count_min_val_row_matrix_all_reduce_mpi::TestMPITaskSequential::gen(m, n);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(m);
+    taskDataPar->inputs_count.emplace_back(n);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(m_vec.data()));
+    taskDataPar->outputs_count.emplace_back(m);
+  }
+
+  poroshin_v_count_min_val_row_matrix_all_reduce_mpi::MyTestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    // Create data
+    std::vector<int32_t> rm_vec(m);
+
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(m);
+    taskDataSeq->inputs_count.emplace_back(n);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(rm_vec.data()));
+    taskDataSeq->outputs_count.emplace_back(m);
+
+    // Create Task
+    poroshin_v_count_min_val_row_matrix_all_reduce_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(m_vec, rm_vec);
+  }
+}
+
+TEST(poroshin_v_count_min_val_row_matrix_all_reduce_mpi, Test_rand_17_23) {
+  int n = 17;
+  int m = 23;
+  boost::mpi::communicator world;
+  std::vector<int> global_matrix;
+  std::vector<int32_t> m_vec(m);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    global_matrix = poroshin_v_count_min_val_row_matrix_all_reduce_mpi::TestMPITaskSequential::gen(m, n);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(m);
+    taskDataPar->inputs_count.emplace_back(n);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(m_vec.data()));
+    taskDataPar->outputs_count.emplace_back(m);
+  }
+
+  poroshin_v_count_min_val_row_matrix_all_reduce_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();

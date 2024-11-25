@@ -46,22 +46,6 @@ void poroshin_v_count_min_val_row_matrix_all_reduce_mpi::MyTestMPITaskParallel::
   }
 }
 
-std::vector<int> poroshin_v_count_min_val_row_matrix_all_reduce_mpi::TestMPITaskSequential::gen(int m, int n) {
-  std::vector<int> tmp(m * n);
-  int n1 = std::max(n, m);
-  int m1 = std::min(n, m);
-
-  for (auto& t : tmp) {
-    t = n1 + (std::rand() % (m1 - n1 + 7));
-  }
-
-  for (int i = 0; i < m; i++) {
-    tmp[(std::rand() % n) + i * n] = INT_MIN;  // in 1 of n columns the value must be INT_MIN (needed to check answer)
-  }
-
-  return tmp;
-}
-
 bool poroshin_v_count_min_val_row_matrix_all_reduce_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
 
