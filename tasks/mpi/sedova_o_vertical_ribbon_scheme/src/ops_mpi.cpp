@@ -71,7 +71,7 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::pre_processing() {
 bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::run() {
   internal_order_test();
 
-  mpi::broadcast(world, num_rows_, 0);    
+  mpi::broadcast(world, num_rows_, 0);
   mpi::broadcast(world, input_vector_, 0);
   mpi::broadcast(world, distribution, 0);
 
@@ -112,7 +112,7 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::run() {
   }
 
   if (world.rank() == 0) {
-    mpi::gatherv(world, local_result.data(), local_result.size(), result_vector_.data(), gather_counts, 
+    mpi::gatherv(world, local_result.data(), local_result.size(), result_vector_.data(), gather_counts,
                  gather_displacements, 0);
   } else {
     mpi::gatherv(world, local_result.data(), local_result.size(), 0);
