@@ -25,8 +25,8 @@ TEST(shulpin_strip_scheme_A_B, matrix_1x1) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(cols_a, rows_a);
-    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(cols_b, rows_b);
+    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(rows_a, cols_a);
+    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(rows_b, cols_b);
     global_res_mpi.resize(cols_b * rows_a, 0);
     global_res_seq.resize(cols_b * rows_a, 0);
 
@@ -93,8 +93,8 @@ TEST(shulpin_strip_scheme_A_B, matrix_2x2) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(cols_a, rows_a);
-    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(cols_b, rows_b);
+    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(rows_a, cols_a);
+    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(rows_b, cols_b);
     global_res_mpi.resize(cols_b * rows_a, 0);
     global_res_seq.resize(cols_b * rows_a, 0);
 
@@ -161,8 +161,8 @@ TEST(shulpin_strip_scheme_A_B, matrix_3x3) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(cols_a, rows_a);
-    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(cols_b, rows_b);
+    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(rows_a, cols_a);
+    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(rows_b, cols_b);
     global_res_mpi.resize(cols_b * rows_a, 0);
     global_res_seq.resize(cols_b * rows_a, 0);
 
@@ -230,8 +230,8 @@ TEST(shulpin_strip_scheme_A_B, matrix_4x4) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(cols_a, rows_a);
-    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(cols_b, rows_b);
+    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(rows_a, cols_a);
+    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(rows_b, cols_b);
     global_res_mpi.resize(cols_b * rows_a, 0);
     global_res_seq.resize(cols_b * rows_a, 0);
 
@@ -299,8 +299,8 @@ TEST(shulpin_strip_scheme_A_B, matrix_5x5) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(cols_a, rows_a);
-    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(cols_b, rows_b);
+    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(rows_a, cols_a);
+    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(rows_b, cols_b);
     global_res_mpi.resize(cols_b * rows_a, 0);
     global_res_seq.resize(cols_b * rows_a, 0);
 
@@ -368,8 +368,8 @@ TEST(shulpin_strip_scheme_A_B, matrix_100x100) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(cols_a, rows_a);
-    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(cols_b, rows_b);
+    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(rows_a, cols_a);
+    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(rows_b, cols_b);
     global_res_mpi.resize(cols_b * rows_a, 0);
     global_res_seq.resize(cols_b * rows_a, 0);
 
@@ -437,8 +437,8 @@ TEST(shulpin_strip_scheme_A_B, matrix_500x500) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(cols_a, rows_a);
-    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(cols_b, rows_b);
+    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(rows_a, cols_a);
+    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(rows_b, cols_b);
     global_res_mpi.resize(cols_b * rows_a, 0);
     global_res_seq.resize(cols_b * rows_a, 0);
 
@@ -506,8 +506,8 @@ TEST(shulpin_strip_scheme_A_B, matrix_5x4_n_4x5) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(cols_a, rows_a);
-    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(cols_b, rows_b);
+    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(rows_a, cols_a);
+    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(rows_b, cols_b);
     global_res_mpi.resize(cols_b * rows_a, 0);
     global_res_seq.resize(cols_b * rows_a, 0);
 
@@ -575,8 +575,8 @@ TEST(shulpin_strip_scheme_A_B, matrix_4x5_5x4) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(cols_a, rows_a);
-    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(cols_b, rows_b);
+    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(rows_a, cols_a);
+    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(rows_b, cols_b);
     global_res_mpi.resize(cols_b * rows_a, 0);
     global_res_seq.resize(cols_b * rows_a, 0);
 
@@ -644,8 +644,8 @@ TEST(shulpin_strip_scheme_A_B, matrix_4x2_2x5) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(cols_a, rows_a);
-    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(cols_b, rows_b);
+    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(rows_a, cols_a);
+    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(rows_b, cols_b);
     global_res_mpi.resize(cols_b * rows_a, 0);
     global_res_seq.resize(cols_b * rows_a, 0);
 
@@ -713,8 +713,8 @@ TEST(shulpin_strip_scheme_A_B, matrix_1x10_10x1) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(cols_a, rows_a);
-    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(cols_b, rows_b);
+    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(rows_a, cols_a);
+    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(rows_b, cols_b);
     global_res_mpi.resize(cols_b * rows_a, 0);
     global_res_seq.resize(cols_b * rows_a, 0);
 
@@ -782,8 +782,8 @@ TEST(shulpin_strip_scheme_A_B, matrix_10x1_1x10) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(cols_a, rows_a);
-    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(cols_b, rows_b);
+    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(rows_a, cols_a);
+    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(rows_b, cols_b);
     global_res_mpi.resize(cols_b * rows_a, 0);
     global_res_seq.resize(cols_b * rows_a, 0);
 
@@ -851,8 +851,8 @@ TEST(shulpin_strip_scheme_A_B, matrix_10x5_5x20) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(cols_a, rows_a);
-    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(cols_b, rows_b);
+    global_A = shulpin_strip_scheme_A_B::get_RND_matrix(rows_a, cols_a);
+    global_B = shulpin_strip_scheme_A_B::get_RND_matrix(rows_b, cols_b);
     global_res_mpi.resize(cols_b * rows_a, 0);
     global_res_seq.resize(cols_b * rows_a, 0);
 

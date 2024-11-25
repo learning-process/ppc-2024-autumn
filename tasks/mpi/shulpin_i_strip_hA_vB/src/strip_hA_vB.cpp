@@ -13,7 +13,7 @@
 std::vector<int> shulpin_strip_scheme_A_B::get_RND_matrix(int col, int row) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  std::uniform_int_distribution<int> dist(0, 99);
+  std::uniform_int_distribution<int> dist(-1000, 1000);
   std::vector<int> rnd_matrix(col * row);
   int i, j;
   for (i = 0; i < row; ++i) {
