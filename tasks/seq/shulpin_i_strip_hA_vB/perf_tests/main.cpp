@@ -73,7 +73,7 @@ TEST(shulpin_strip_scheme_A_B, task_run) {
   std::vector<int> C(rows_a * cols_b, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  
+
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<int*>(A.data())));
   taskDataSeq->inputs_count.emplace_back(A.size());
 

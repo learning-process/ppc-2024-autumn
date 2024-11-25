@@ -7,7 +7,6 @@
 #include <boost/serialization/array.hpp>
 #include <boost/serialization/vector.hpp>
 #include <cmath>
-
 #include <random>
 #include <vector>
 
