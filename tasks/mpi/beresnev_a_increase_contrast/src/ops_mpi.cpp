@@ -182,7 +182,7 @@ bool beresnev_a_increase_contrast_mpi::TestMPITaskParallel::run() {
   std::vector<uint8_t> inp_l(sizes[world.rank()]);
   std::vector<uint8_t> res_l(sizes[world.rank()]);
   boost::mpi::scatterv(world, inp_, sizes, inp_l.data(), 0);
-  for (size_t i = 0; i < sizes[world.rank()]; ++i) {
+  for (int i = 0; i < sizes[world.rank()]; ++i) {
     double normalized = inp_l[i] / 255.0;
     normalized = (normalized - 0.5) * factor + 0.5;
     normalized = std::min(std::max(normalized, 0.0), 1.0);
