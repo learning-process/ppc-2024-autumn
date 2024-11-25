@@ -60,7 +60,9 @@ TEST(beresnev_a_increase_contrast_mpi, Incorrect_format) {
     taskDataPar->outputs_count.emplace_back(file_size);
   }
   beresnev_a_increase_contrast_mpi::TestMPITaskParallel testMPITaskParallel(taskDataPar);
-  if (world.rank() == 0) ASSERT_EQ(testMPITaskParallel.validation(), false);
+  if (world.rank() == 0) {
+    ASSERT_EQ(testMPITaskParallel.validation(), false);
+  }
 }
 
 TEST(beresnev_a_increase_contrast_mpi, Incorrect_title) {
@@ -99,7 +101,9 @@ TEST(beresnev_a_increase_contrast_mpi, Incorrect_title) {
     taskDataPar->outputs_count.emplace_back(file_size);
   }
   beresnev_a_increase_contrast_mpi::TestMPITaskParallel testMPITaskParallel(taskDataPar);
-  if (world.rank() == 0) ASSERT_EQ(testMPITaskParallel.validation(), false);
+  if (world.rank() == 0) {
+    ASSERT_EQ(testMPITaskParallel.validation(), false);
+  }
 }
 
 TEST(beresnev_a_increase_contrast_mpi, Incorrect_title_1) {
@@ -138,7 +142,9 @@ TEST(beresnev_a_increase_contrast_mpi, Incorrect_title_1) {
     taskDataPar->outputs_count.emplace_back(file_size);
   }
   beresnev_a_increase_contrast_mpi::TestMPITaskParallel testMPITaskParallel(taskDataPar);
-  if (world.rank() == 0) ASSERT_EQ(testMPITaskParallel.validation(), false);
+  if (world.rank() == 0) {
+    ASSERT_EQ(testMPITaskParallel.validation(), false);
+  }
 }
 
 TEST(beresnev_a_increase_contrast_mpi, Invalid_output_buffer) {
@@ -177,7 +183,9 @@ TEST(beresnev_a_increase_contrast_mpi, Invalid_output_buffer) {
     taskDataPar->outputs_count.emplace_back(file_size - 1);
   }
   beresnev_a_increase_contrast_mpi::TestMPITaskParallel testMPITaskParallel(taskDataPar);
-  if (world.rank() == 0) ASSERT_EQ(testMPITaskParallel.validation(), false);
+  if (world.rank() == 0) {
+    ASSERT_EQ(testMPITaskParallel.validation(), false);
+  }
 }
 
 TEST(beresnev_a_increase_contrast_mpi, Empty_image) {
@@ -278,7 +286,9 @@ TEST(beresnev_a_increase_contrast_mpi, Empty_file) {
     taskDataPar->outputs_count.emplace_back(file_size);
   }
   beresnev_a_increase_contrast_mpi::TestMPITaskParallel testMPITaskParallel(taskDataPar);
-  if (world.rank() == 0) ASSERT_EQ(testMPITaskParallel.validation(), false);
+  if (world.rank() == 0) {
+    ASSERT_EQ(testMPITaskParallel.validation(), false);
+  }
 }
 
 TEST(beresnev_a_increase_contrast_mpi, Test_Random) {
