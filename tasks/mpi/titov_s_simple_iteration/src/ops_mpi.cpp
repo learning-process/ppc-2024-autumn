@@ -16,9 +16,6 @@ using namespace std::chrono_literals;
 void titov_s_simple_iteration_mpi::MPISimpleIterationSequential::transformMatrix() {
   for (unsigned int i = 0; i < rows_; ++i) {
     float diagonal = input_[i * cols_ + i];
-    if (diagonal == 0.0f) {
-      throw std::runtime_error("Diagonal element is zero, cannot transform matrix.");
-    }
     for (unsigned int j = 0; j < cols_ - 1; ++j) {
       if (i != j) {
         input_[i * cols_ + j] = -input_[i * cols_ + j] / diagonal;
@@ -65,7 +62,6 @@ bool titov_s_simple_iteration_mpi::MPISimpleIterationSequential::pre_processing(
   auto* epsilon_ptr = reinterpret_cast<float*>(taskData->inputs[rows_]);
   epsilon_ = *epsilon_ptr;
   if (!isDiagonallyDominant()) {
-    std::cerr << "Matrix is not diagonally dominant. The method may not converge.\n";
     return false;
   }
 
@@ -78,7 +74,6 @@ bool titov_s_simple_iteration_mpi::MPISimpleIterationSequential::validation() {
   internal_order_test();
 
   if (taskData->inputs_count.empty() || taskData->inputs.empty()) {
-    std::cerr << "Validation failed: inputs_count or inputs is empty.\n";
     return false;
   }
 

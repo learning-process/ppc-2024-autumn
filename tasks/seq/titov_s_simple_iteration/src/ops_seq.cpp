@@ -8,9 +8,6 @@ using namespace std::chrono_literals;
 void titov_s_simple_iteration_seq::SimpleIterationSequential::transformMatrix() {
   for (unsigned int i = 0; i < rows_; ++i) {
     float diagonal = input_[i * cols_ + i];
-    if (diagonal == 0.0f) {
-      throw std::runtime_error("Diagonal element is zero, cannot transform matrix.");
-    }
 
     for (unsigned int j = 0; j < cols_ - 1; ++j) {
       if (i != j) {
@@ -47,7 +44,6 @@ bool titov_s_simple_iteration_seq::SimpleIterationSequential::validation() {
   internal_order_test();
 
   if (taskData->inputs_count.empty() || taskData->inputs.empty()) {
-    std::cerr << "Validation failed: inputs_count or inputs is empty.\n";
     return false;
   }
 
@@ -55,36 +51,30 @@ bool titov_s_simple_iteration_seq::SimpleIterationSequential::validation() {
   unsigned int cols = taskData->inputs_count[1];
 
   if (taskData->inputs.size() < rows + 1) {
-    std::cerr << "Validation failed: inputs size is less than expected (rows + 1).\n";
     return false;
   }
 
   if (rows == 0 || cols == 0) {
-    std::cerr << "Validation failed: rows or cols is 0.\n";
     return false;
   }
 
   for (unsigned int i = 0; i < rows; ++i) {
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
     if (tmp_ptr == nullptr) {
-      std::cerr << "Validation failed: inputs[" << i << "] is nullptr.\n";
       return false;
     }
   }
 
   auto* epsilon_ptr = reinterpret_cast<float*>(taskData->inputs[rows]);
   if (epsilon_ptr == nullptr) {
-    std::cerr << "Validation failed: epsilon_ptr is nullptr.\n";
     return false;
   }
   float epsilon = *epsilon_ptr;
   if (epsilon <= 0.0f || epsilon > 1.0f) {
-    std::cerr << "Validation failed: epsilon (" << epsilon << ") is out of range.\n";
     return false;
   }
 
   if (taskData->outputs_count.empty() || taskData->outputs_count[0] < 1) {
-    std::cerr << "Validation failed: outputs_count is invalid.\n";
     return false;
   }
 
