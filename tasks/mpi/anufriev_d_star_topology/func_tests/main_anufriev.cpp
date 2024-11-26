@@ -16,12 +16,12 @@ std::vector<int> createInputVector(size_t size, int initialValue = 0, int step =
   return vec;
 }
 
-std::vector<int> calculateExpectedOutput(const std::vector<int>& input, int worldSize) {
+std::vector<int> calculateExpectedOutput(const std::vector<int>& input, size_t worldSize) {
   std::vector<int> output = input;
   size_t chunk_size = output.size() / worldSize;
   for (int i = 0; i < worldSize; ++i) {
     size_t start_pos = i * chunk_size;
-    for (int j = 0; j < chunk_size; j++) {
+    for (size_t j = 0; j < chunk_size; j++) {
       if (start_pos + j < output.size()) output[start_pos + j] += i;
     }
   }
@@ -85,7 +85,7 @@ TEST(anufriev_d_star_topology, SingleElementVectorTest) {
   ASSERT_TRUE(task.post_processing());
 
   if (world.rank() == 0) {
-    auto expected_output = calculateExpectedOutput(input_data, world.size());
+    auto expected_output = calculateExpectedOutput(input_data, static_cast<size_t>(world.size()));
     ASSERT_EQ(output_data, expected_output);
   }
 }
