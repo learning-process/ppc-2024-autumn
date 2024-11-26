@@ -11,7 +11,6 @@
 
 #include "core/task/include/task.hpp"
 #include "mpi/ermolaev_v_allreduce_my/include/allreduce.hpp"
-#include "mpi/ermolaev_v_allreduce_my/include/shared_ptr_array.hpp"
 
 namespace ermolaev_v_allreduce_mpi {
 
@@ -25,7 +24,8 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<std::vector<_T>> input_, res_;
+  std::vector<_T> input_, res_;
+  _S rows_, cols_;
 };
 
 template <typename _T, typename _S = uint32_t>
@@ -44,7 +44,8 @@ class TemplateTestTaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  protected:
-  std::vector<std::vector<_T>> input_, local_input_, res_;
+  std::vector<_T> input_, local_input_, res_;
+  _S rows_, cols_;
 
   const func_reference<boost::mpi::minimum<_T>> min_allreduce_;
   const func_reference<boost::mpi::maximum<_T>> max_allreduce_;
@@ -78,16 +79,14 @@ template <typename _T, typename _S>
 bool ermolaev_v_allreduce_mpi::TestMPITaskSequential<_T, _S>::pre_processing() {
   internal_order_test();
 
-  input_.resize(taskData->inputs_count[0], std::vector<_T>(taskData->inputs_count[1]));
+  rows_ = taskData->inputs_count[0];
+  cols_ = taskData->inputs_count[1];
+  input_.resize(rows_ * cols_);
 
-  auto* ptr = reinterpret_cast<ermolaev_v_allreduce_mpi::shared_ptr_array<_T>*>(taskData->inputs[0]);
-  for (_S i = 0; i < input_.size(); i++) {
-    for (_S j = 0; j < input_[i].size(); j++) {
-      input_[i][j] = ptr[i][j];
-    }
-  }
+  auto* ptr = reinterpret_cast<_T*>(taskData->inputs[0]);
+  std::copy(ptr, ptr + input_.size(), input_.data());
 
-  res_.resize(taskData->inputs_count[0], std::vector<_T>(taskData->inputs_count[1]));
+  res_.resize(input_.size());
 
   return true;
 }
@@ -103,13 +102,13 @@ template <typename _T, typename _S>
 bool ermolaev_v_allreduce_mpi::TestMPITaskSequential<_T, _S>::run() {
   internal_order_test();
 
-  for (_S i = 0; i < input_.size(); i++) {
-    const auto [min, max] = std::minmax_element(input_[i].begin(), input_[i].end());
-    for (_S j = 0; j < input_[i].size(); j++) {
+  for (_S i = 0; i < rows_; i++) {
+    const auto [min, max] = std::minmax_element(input_.data() + i * cols_, input_.data() + (i + 1) * cols_);
+    for (_S j = 0; j < cols_; j++) {
       if ((*max - *min) <= std::numeric_limits<_T>::epsilon())
-        res_[i][j] = 0;
+        res_[i * cols_ + j] = 0;
       else
-        res_[i][j] = (input_[i][j] - *min) / (*max - *min);
+        res_[i * cols_ + j] = (input_[i * cols_ + j] - *min) / (*max - *min);
     }
   }
 
@@ -120,10 +119,8 @@ template <typename _T, typename _S>
 bool ermolaev_v_allreduce_mpi::TestMPITaskSequential<_T, _S>::post_processing() {
   internal_order_test();
 
-  auto* ptr = reinterpret_cast<ermolaev_v_allreduce_mpi::shared_ptr_array<_T>*>(taskData->outputs[0]);
-  for (_S i = 0; i < res_.size(); i++) {
-    std::copy(res_[i].begin(), res_[i].end(), ptr[i].get());
-  }
+  auto* ptr = reinterpret_cast<_T*>(taskData->outputs[0]);
+  std::copy(res_.begin(), res_.end(), ptr);
 
   return true;
 }
@@ -143,16 +140,18 @@ bool ermolaev_v_allreduce_mpi::TemplateTestTaskParallel<_T, _S>::pre_processing(
   internal_order_test();
 
   if (world.rank() == 0) {
-    input_.resize(taskData->inputs_count[1], std::vector<_T>(taskData->inputs_count[0]));
+    rows_ = taskData->inputs_count[0];
+    cols_ = taskData->inputs_count[1];
+    input_.resize(rows_ * cols_);
 
-    auto* ptr = reinterpret_cast<ermolaev_v_allreduce_mpi::shared_ptr_array<_T>*>(taskData->inputs[0]);
-    for (_S j = 0; j < taskData->inputs_count[1]; j++) {
-      for (_S i = 0; i < taskData->inputs_count[0]; i++) {
-        input_[j][i] = ptr[i][j];
+    auto* ptr = reinterpret_cast<_T*>(taskData->inputs[0]);
+    for (_S i = 0; i < rows_; i++) {
+      for (_S j = 0; j < cols_; j++) {
+        input_[j * rows_ + i] = ptr[i * cols_ + j];
       }
     }
 
-    res_.resize(taskData->inputs_count[1], std::vector<_T>(taskData->inputs_count[0]));
+    res_.resize(input_.size());
   }
 
   return true;
@@ -162,35 +161,30 @@ template <typename _T, typename _S>
 bool ermolaev_v_allreduce_mpi::TemplateTestTaskParallel<_T, _S>::run() {
   internal_order_test();
 
-  _S segment = 0;
-  _S over = 0;
-  _S rows = 0;
-  if (world.rank() == 0) {
-    segment = taskData->inputs_count[1] / world.size();
-    over = taskData->inputs_count[1] % world.size();
-    rows = taskData->inputs_count[0];
-  }
+  broadcast(world, rows_, 0);
+  broadcast(world, cols_, 0);
 
-  broadcast(world, segment, 0);
-  broadcast(world, over, 0);
-  broadcast(world, rows, 0);
+  _S segment = cols_ / world.size();
+  _S over = cols_ % world.size();
 
-  std::vector<int> size(world.size(), (int)segment);
-  for (_S i = 0; i < over; i++) size[world.size() - i - 1]++;
+  std::vector<int> size(world.size(), (int)(segment * rows_));
+  for (_S i = 0; i < over; i++) size[world.size() - i - 1] += rows_;
 
   local_input_.resize(size[world.rank()]);
   scatterv(world, input_, size, local_input_.data(), 0);
 
-  std::vector<_T> min_by_rows(rows, std::numeric_limits<_T>::max());
-  std::vector<_T> local_min_by_rows(rows, std::numeric_limits<_T>::max());
+  std::vector<_T> min_by_rows(rows_, std::numeric_limits<_T>::max());
+  std::vector<_T> local_min_by_rows(rows_, std::numeric_limits<_T>::max());
 
-  std::vector<_T> max_by_rows(rows, -std::numeric_limits<_T>::max());
-  std::vector<_T> local_max_by_rows(rows, -std::numeric_limits<_T>::max());
+  std::vector<_T> max_by_rows(rows_, -std::numeric_limits<_T>::max());
+  std::vector<_T> local_max_by_rows(rows_, -std::numeric_limits<_T>::max());
 
-  for (_S j = 0; j < local_input_.size(); j++) {
-    for (_S i = 0; i < local_input_[j].size(); i++) {
-      if (local_input_[j][i] < local_min_by_rows[i]) local_min_by_rows[i] = local_input_[j][i];
-      if (local_input_[j][i] > local_max_by_rows[i]) local_max_by_rows[i] = local_input_[j][i];
+  if (!local_input_.empty()) {
+    for (_S j = 0; j < local_input_.size() / rows_; j++) {
+      for (_S i = 0; i < rows_; i++) {
+        if (local_input_[j * rows_ + i] < local_min_by_rows[i]) local_min_by_rows[i] = local_input_[j * rows_ + i];
+        if (local_input_[j * rows_ + i] > local_max_by_rows[i]) local_max_by_rows[i] = local_input_[j * rows_ + i];
+      }
     }
   }
 
@@ -202,12 +196,14 @@ bool ermolaev_v_allreduce_mpi::TemplateTestTaskParallel<_T, _S>::run() {
   //
 
   auto local_res(local_input_);
-  for (_S j = 0; j < local_res.size(); j++) {
-    for (_S i = 0; i < local_res[j].size(); i++) {
-      if ((max_by_rows[i] - min_by_rows[i]) <= std::numeric_limits<_T>::epsilon())
-        local_res[j][i] = 0;
-      else
-        local_res[j][i] = (local_res[j][i] - min_by_rows[i]) / (max_by_rows[i] - min_by_rows[i]);
+  if (!local_res.empty()) {
+    for (_S j = 0; j < local_res.size() / rows_; j++) {
+      for (_S i = 0; i < rows_; i++) {
+        if ((max_by_rows[i] - min_by_rows[i]) <= std::numeric_limits<_T>::epsilon())
+          local_res[j * rows_ + i] = 0;
+        else
+          local_res[j * rows_ + i] = (local_res[j * rows_ + i] - min_by_rows[i]) / (max_by_rows[i] - min_by_rows[i]);
+      }
     }
   }
 
@@ -221,9 +217,9 @@ bool ermolaev_v_allreduce_mpi::TemplateTestTaskParallel<_T, _S>::post_processing
   internal_order_test();
 
   if (world.rank() == 0) {
-    auto* ptr = reinterpret_cast<ermolaev_v_allreduce_mpi::shared_ptr_array<_T>*>(taskData->outputs[0]);
-    for (_S j = 0; j < res_.size(); j++)
-      for (_S i = 0; i < res_[j].size(); i++) ptr[i][j] = res_[j][i];
+    auto* ptr = reinterpret_cast<_T*>(taskData->outputs[0]);
+    for (_S i = 0; i < rows_; i++)
+      for (_S j = 0; j < cols_; j++) ptr[i * cols_ + j] = res_[j * rows_ + i];
   }
 
   return true;
