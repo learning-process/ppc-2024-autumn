@@ -46,6 +46,8 @@ bool SeidelIterateMethodsMPI::validation() {
     return false;
   }
 
+  A.resize(n, std::vector<double>(n, 0.0));
+
   if (taskData->inputs_count.size() > 1 && taskData->inputs_count[1] == 0) {
     for (int i = 0; i < n; ++i) {
       if (A[i][i] == 0.0) {
