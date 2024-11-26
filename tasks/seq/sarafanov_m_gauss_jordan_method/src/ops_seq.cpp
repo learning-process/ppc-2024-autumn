@@ -53,8 +53,9 @@ void sarafanov_m_gauss_jordan_method_seq::updateMatrix(int n, int k, std::vector
 
 bool sarafanov_m_gauss_jordan_method_seq::GaussJordanMethodSequential::validation() {
   internal_order_test();
-
-  return true;
+  int n_val = *reinterpret_cast<int*>(taskData->inputs[1]);
+  int matrix_size = taskData->inputs_count[0];
+  return n_val * (n_val + 1) == matrix_size;
 }
 
 bool sarafanov_m_gauss_jordan_method_seq::GaussJordanMethodSequential::pre_processing() {
