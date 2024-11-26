@@ -49,20 +49,17 @@ bool SimpleIntMPI::run() {
 
 void SimpleIntMPI::gatherData() {
   if (world.rank() == 0) {
-    processed_data_.resize(input_data_.size());
-    for (size_t i = 0; i < input_data_.size(); ++i) {
-      processed_data_[i] = input_data_[i];
-    }
-
-    std::vector<int> received_data(input_data_.size());
-    for (int i = 1; i < world.size(); ++i) {
-      world.recv(i, 0, received_data);
-      for (size_t j = 0; j < input_data_.size(); ++j) {
-        processed_data_[j] += received_data[j];
-      }
+    processed_data_.resize(taskData->outputs_count[0]);
+    int chunk_size = taskData->outputs_count[0] / world.size();
+    std::copy(input_data_.begin(), input_data_.end(), processed_data_.begin());
+    std::vector<int> received_data(chunk_size);
+    for (int i = 1; i < world.size(); i++) {
+      world.recv(i, 0, received_data.data(), received_data.size());
+      size_t start_pos = i * chunk_size;
+      std::copy(received_data.begin(), received_data.end(), processed_data_.begin() + start_pos);
     }
   } else {
-    world.send(0, 0, input_data_);
+    world.send(0, 0, input_data_.data(), input_data_.size());
   }
 }
 

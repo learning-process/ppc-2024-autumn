@@ -18,9 +18,12 @@ std::vector<int> createInputVector(size_t size, int initialValue = 0, int step =
 
 std::vector<int> calculateExpectedOutput(const std::vector<int>& input, int worldSize) {
   std::vector<int> output = input;
-  for (int& val : output) {
-    for (int i = 0; i < worldSize; ++i) {
-      val += i;
+  size_t chunk_size = output.size() / worldSize;
+  for (int i = 0; i < worldSize; ++i) {
+    size_t start_pos = i * chunk_size;
+    for (int j = 0; j < chunk_size; j++) {
+      if (start_pos + j < output.size())
+          output[start_pos + j] += i;
     }
   }
   return output;
