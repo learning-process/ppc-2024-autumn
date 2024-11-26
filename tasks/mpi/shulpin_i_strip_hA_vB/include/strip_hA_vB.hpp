@@ -20,7 +20,6 @@ void calculate_seq(int rows_a, int cols_a, int cols_b, std::vector<int> A_seq, s
                    std::vector<int>& C_seq);
 void calculate_mpi(int rows_a, int cols_a, int cols_b, std::vector<int> A_mpi, std::vector<int> B_mpi,
                    std::vector<int>& C_mpi);
-// void make_size_and_displace(int rows, int cols, int num_proc, std::vector<int>& size, std::vector<int>& displace);
 
 class Matrix_hA_vB_seq : public ppc::core::Task {
  public:
@@ -58,9 +57,6 @@ class Matrix_hA_vB_par : public ppc::core::Task {
   std::vector<int> mpi_A;
   std::vector<int> mpi_B;
   std::vector<int> mpi_result;
-
-  std::vector<int> size;
-  std::vector<int> displ;
 
   boost::mpi::communicator world;
 };

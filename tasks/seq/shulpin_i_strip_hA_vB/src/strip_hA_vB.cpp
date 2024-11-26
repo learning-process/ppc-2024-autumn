@@ -2,23 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
-#include <random>
 #include <vector>
-
-std::vector<int> shulpin_strip_scheme_A_B::get_RND_matrix(int row, int col) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::uniform_int_distribution<int> dist(0, 99);
-  std::vector<int> rnd_matrix(col * row);
-  int i;
-  int j;
-  for (i = 0; i < row; ++i) {
-    for (j = 0; j < col; ++j) {
-      rnd_matrix[i * col + j] = dist(gen);
-    }
-  }
-  return rnd_matrix;
-}
 
 void shulpin_strip_scheme_A_B::calculate_seq(int rows_a, int cols_a, int cols_b, std::vector<int> A_seq,
                                              std::vector<int> B_seq, std::vector<int>& C_seq) {

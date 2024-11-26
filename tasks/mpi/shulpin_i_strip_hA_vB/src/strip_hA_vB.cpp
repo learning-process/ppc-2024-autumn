@@ -114,7 +114,6 @@ bool shulpin_strip_scheme_A_B::Matrix_hA_vB_par::pre_processing() {
     mpi_B = B_tmp;
     int res_size = taskData->outputs_count[0];
     mpi_result.resize(res_size, 0);
-    // make_size_and_displace(mpi_rows_A * mpi_cols_B, 1, world.size(), size, displ);
   }
   return true;
 }
@@ -140,8 +139,7 @@ bool shulpin_strip_scheme_A_B::Matrix_hA_vB_par::run() {
   boost::mpi::broadcast(world, mpi_rows_B, 0);
   boost::mpi::broadcast(world, mpi_A, 0);
   boost::mpi::broadcast(world, mpi_B, 0);
-  boost::mpi::broadcast(world, size, 0);
-  boost::mpi::broadcast(world, displ, 0);
+
   std::vector<int> local_res(mpi_cols_B * mpi_rows_A, 0);
   calculate_mpi(mpi_rows_A, mpi_cols_A, mpi_cols_B, mpi_A, mpi_B, local_res);
   boost::mpi::reduce(world, local_res, mpi_result, std::plus<>(), 0);
