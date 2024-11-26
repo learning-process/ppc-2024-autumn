@@ -1,9 +1,10 @@
 // Copyright 2023 Nesterov Alexander
 #pragma once
 
+#include <cmath>
 #include <string>
 #include <vector>
-#include <cmath>
+
 #include "core/task/include/task.hpp"
 
 namespace kozlova_e_jacobi_method {
@@ -15,14 +16,14 @@ class MethodJacobi : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  
+
  private:
   int N{};
   double eps{};
   std::vector<double> A;
-  std::vector<double> B; 
+  std::vector<double> B;
   std::vector<double> X;
   void jacobi_iteration();
 };
 
-}
+}  // namespace kozlova_e_jacobi_method

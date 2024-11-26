@@ -1,6 +1,8 @@
 // Copyright 2023 Nesterov Alexander
 #include "mpi/kozlova_e_jacobi_method/include/ops_mpi.hpp"
 
+#include <cmath>
+#include <sstream>
 #include <string>
 #include <vector>
 
