@@ -2,7 +2,6 @@
 
 #include <cmath>
 #include <iostream>
-
 #include <vector>
 
 namespace nasedkin_e_seidels_iterate_methods_mpi {
