@@ -9,11 +9,6 @@
 
 TEST(bessonov_e_star_topology_mpi, DataTransmissionTest) {
   boost::mpi::communicator world;
-
-  if (world.size() < 2) {
-    GTEST_SKIP();
-  }
-
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   const int data_size = 5;
@@ -70,11 +65,6 @@ TEST(bessonov_e_star_topology_mpi, DataTransmissionTest) {
 
 TEST(bessonov_e_star_topology_mpi, LargeDataTest) {
   boost::mpi::communicator world;
-
-  if (world.size() < 2) {
-    GTEST_SKIP();
-  }
-
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   const int data_size = 100000;
