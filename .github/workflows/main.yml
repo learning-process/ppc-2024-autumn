@@ -8,7 +8,11 @@ on:
   workflow_dispatch:
 
 concurrency:
+<<<<<<< HEAD
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+=======
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+>>>>>>> b456b246614305b4d1535f6e32b105d589542824
   cancel-in-progress: true
 
 jobs:

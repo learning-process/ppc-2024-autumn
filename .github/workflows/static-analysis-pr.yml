@@ -1,9 +1,13 @@
-name: Static analysis
+name: Static analysis (PR)
 
 on: [pull_request]
 
 concurrency:
+<<<<<<< HEAD
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+=======
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+>>>>>>> b456b246614305b4d1535f6e32b105d589542824
   cancel-in-progress: true
 
 jobs:
@@ -17,7 +21,7 @@ jobs:
       uses: hendrikmuhs/ccache-action@v1.2
       with:
           key: ${{ github.job }}
-    - uses: ZedThree/clang-tidy-review@v0.14.0
+    - uses: ZedThree/clang-tidy-review@v0.20.1
       id: review
       with:
         build_dir: build
@@ -42,7 +46,7 @@ jobs:
       uses: hendrikmuhs/ccache-action@v1.2
       with:
           key: ${{ github.job }}
-    - uses: ZedThree/clang-tidy-review@v0.14.0
+    - uses: ZedThree/clang-tidy-review@v0.20.1
       id: review
       with:
         build_dir: build
