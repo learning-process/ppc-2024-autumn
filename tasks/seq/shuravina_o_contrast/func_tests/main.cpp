@@ -26,7 +26,7 @@ TEST(shuravina_o_contrast, Test_Contrast_10) {
   }
 }
 
-TEST(Sequential_Contrast, Test_Contrast_20) {
+TEST(shuravina_o_contrast, Test_Contrast_20) {
   std::vector<uint8_t> input_vec(20, 64);
   std::vector<uint8_t> output_vec(20, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -47,7 +47,7 @@ TEST(Sequential_Contrast, Test_Contrast_20) {
   }
 }
 
-TEST(Sequential_Contrast, Test_Contrast_30) {
+TEST(shuravina_o_contrast, Test_Contrast_30) {
   std::vector<uint8_t> input_vec(30, 32);
   std::vector<uint8_t> output_vec(30, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -67,8 +67,7 @@ TEST(Sequential_Contrast, Test_Contrast_30) {
     ASSERT_EQ(output_vec[i], 255);
   }
 }
-
-TEST(Sequential_Contrast, Test_Contrast_40) {
+TEST(shuravina_o_contrast, Test_Contrast_40) {
   std::vector<uint8_t> input_vec(40, 16);
   std::vector<uint8_t> output_vec(40, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
