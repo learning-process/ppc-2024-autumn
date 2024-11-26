@@ -53,5 +53,4 @@ class TestMPITaskMyOwnParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-
 }  // namespace chizhov_m_all_reduce_my_mpi

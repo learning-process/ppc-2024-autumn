@@ -139,7 +139,6 @@ bool chizhov_m_all_reduce_boost_mpi::TestMPITaskBoostParallel::run() {
     }
     localMax[j] = maxElem;
   }
- 
   res_.resize(cols, 0);
   boost::mpi::all_reduce(world, localMax.data(), cols, res_.data(), boost::mpi::maximum<int>());
 
@@ -154,7 +153,6 @@ bool chizhov_m_all_reduce_boost_mpi::TestMPITaskBoostParallel::run() {
   }
   sum.resize(cols, 0);
   boost::mpi::reduce(world, local_cnt_.data(), cols, sum.data(), std::plus<>(), 0);
-  
   return true;
 }
 

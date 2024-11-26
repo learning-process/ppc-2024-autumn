@@ -112,9 +112,8 @@ bool chizhov_m_all_reduce_my_mpi::TestMPITaskMyOwnParallel::validation() {
 
 template <typename T>
 void chizhov_m_all_reduce_my_mpi::TestMPITaskMyOwnParallel::my_all_reduce(const boost::mpi::communicator& comm,
-                                                                          const T* in_values, T* out_values, int n, 
+                                                                          const T* in_values, T* out_values, int n,
                                                                           int root) {
-
   std::vector<T> left_values(n);
   std::vector<T> right_values(n);
 
