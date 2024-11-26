@@ -17,7 +17,13 @@ bool SeidelIterateMethodsMPI::pre_processing() {
   b.resize(n, 0.0);
   x.resize(n, 0.0);
 
-  if (taskData->inputs_count.size() > 1 && taskData->inputs_count[1] == 0) {
+  return true;
+
+
+}
+
+bool SeidelIterateMethodsMPI::validation() {
+    if (taskData->inputs_count.size() > 1 && taskData->inputs_count[1] == 0) {
     for (int i = 0; i < n; ++i) {
       for (int j = 0; j < n; ++j) {
         A[i][j] = (i != j) ? 1.0 : 0.0;
@@ -33,27 +39,18 @@ bool SeidelIterateMethodsMPI::pre_processing() {
     }
   }
 
-  return true;
-}
-
-bool SeidelIterateMethodsMPI::validation() {
-  if (taskData->inputs_count.empty()) {
-    return false;
-  }
-
-  n = taskData->inputs_count[0];
-  if (n <= 0) {
-    return false;
-  }
-
-  A.resize(n, std::vector<double>(n, 0.0));
   for (int i = 0; i < n; ++i) {
     if (A[i][i] == 0.0) {
       return false;
     }
   }
 
-  return true;
+  if (taskData->inputs_count.empty()) {
+    return false;
+  }
+
+  n = taskData->inputs_count[0];
+  return n > 0;
 }
 
 bool SeidelIterateMethodsMPI::run() {
