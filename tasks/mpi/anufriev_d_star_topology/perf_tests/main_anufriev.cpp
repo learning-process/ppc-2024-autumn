@@ -27,7 +27,7 @@ std::vector<int> generate_random_vector(size_t size) {
 }
 
 #define PERF_TEST(test_name, data_size, num_runs, perf_method)                               \
-    TEST(anufriev_d_star_topology_perf, test_name) {                                         \
+  TEST(anufriev_d_star_topology_perf, test_name) {                                           \
     boost::mpi::communicator world;                                                          \
     std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>(); \
     std::vector<int> input_data;                                                             \

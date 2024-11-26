@@ -123,13 +123,13 @@ TEST(anufriev_d_star_topology, SimpleIntTest) {
   std::vector<int> output_data;
 
   if (world.rank() == 0) {
-     input_data = {1, 2, 3, 4, 5};
-     taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
-     taskData->inputs_count.push_back(input_data.size());
+    input_data = {1, 2, 3, 4, 5};
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
+    taskData->inputs_count.push_back(input_data.size());
 
-     output_data.resize(input_data.size());
-     taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output_data.data()));
-     taskData->outputs_count.push_back(output_data.size());
+    output_data.resize(input_data.size());
+    taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output_data.data()));
+    taskData->outputs_count.push_back(output_data.size());
   }
 
 
@@ -139,21 +139,19 @@ TEST(anufriev_d_star_topology, SimpleIntTest) {
   ASSERT_TRUE(task.run());
   ASSERT_TRUE(task.post_processing());
 
-
   if (world.rank() == 0) {
-
-     if (world.size() == 1)
-     {
-         ASSERT_EQ(output_data, std::vector<int>({1, 2, 3, 4, 5}));
-     }
-     if (world.size() == 2)
-     {
-         ASSERT_EQ(output_data, std::vector<int>({2, 4, 6, 8, 10}));
-     }
-     if (world.size() == 3)
-     {
-         ASSERT_EQ(output_data, std::vector<int>({3, 6, 9, 12, 15}));
-     }
+    if (world.size() == 1)
+    {
+      ASSERT_EQ(output_data, std::vector<int>({1, 2, 3, 4, 5}));
+    }
+    if (world.size() == 2)
+    {
+      ASSERT_EQ(output_data, std::vector<int>({2, 4, 6, 8, 10}));
+    }
+    if (world.size() == 3)
+    {
+      ASSERT_EQ(output_data, std::vector<int>({3, 6, 9, 12, 15}));
+    }
   }
 }
 
