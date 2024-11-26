@@ -1,7 +1,6 @@
 #include "seq/volochaev_s_vertical_ribbon_scheme_16/include/ops_seq.hpp"
 
 #include <functional>
-#include <random>
 #include <thread>
 
 using namespace std::chrono_literals;
