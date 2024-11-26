@@ -9,7 +9,7 @@
 
 #include "mpi/shurigin_s_vertikal_shema_mpi/include/ops_mpi.hpp"
 
-using namespace shurigin_s_vertikal_shema;
+namespace shurigin_s_vertikal_shema {
 
 std::vector<int> getRandomMatrix(int rows, int cols) {
   std::vector<int> matrix(rows * cols);
@@ -26,6 +26,8 @@ std::vector<int> getRandomVector(int size) {
   }
   return vector;
 }
+
+}  // namespace shurigin_s_vertikal_shema
 
 TEST(shurigin_s_vertikal_shema, proc_more_than_cols) {
   int rows = 4;
