@@ -23,8 +23,8 @@ TEST(koshkin_m_dining_philosophers, Test_Validation_Any_Process_Count) {
 TEST(koshkin_m_dining_philosophers, Test_Validation_Not_Enough_Forks) {
   boost::mpi::communicator world;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::vector<int> forks(world.size() - 1, 2);
   if (world.rank() == 0) {
-    std::vector<int> forks(world.size() - 1, 2);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(forks.data()));
     taskDataPar->inputs_count.emplace_back(forks.size());
   }
@@ -76,9 +76,8 @@ TEST(koshkin_m_dining_philosophers, Test_Validation_Invalid_Fork_Data) {
   boost::mpi::communicator world;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
+  std::vector<int> invalid_forks(world.size() + 1, 2);
   if (world.rank() == 0) {
-    std::vector<int> invalid_forks(world.size() + 1, 2);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(invalid_forks.data()));
     taskDataPar->inputs_count.emplace_back(invalid_forks.size());
   }
@@ -96,10 +95,9 @@ TEST(koshkin_m_dining_philosophers, Test_Validation_Valid_Data) {
   boost::mpi::communicator world;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
+  int num_philosophers = world.size();
+  std::vector<int> forks(num_philosophers, world.size());
   if (world.rank() == 0) {
-    int local_num_philosophers = world.size();
-    std::vector<int> forks(local_num_philosophers, world.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(forks.data()));
     taskDataPar->inputs_count.emplace_back(forks.size());
   }
@@ -289,10 +287,9 @@ TEST(koshkin_m_dining_philosophers, Test_No_Hungry_Philosopher) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int num_philosophers = world.size();
+  std::vector<int> forks(num_philosophers, 2);
   if (world.rank() == 0) {
-    std::vector<int> forks(num_philosophers, 2);
     int iterations = 5;
-
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(forks.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&iterations));
     taskDataPar->inputs_count.emplace_back(forks.size());
