@@ -8,7 +8,7 @@
 #include "mpi/malyshev_a_simple_iteration_method/include/ops_mpi.hpp"
 
 namespace malyshev_a_simple_iteration_method_mpi {
-void getRandomData(uint32_t n, std::vector<double>& A, std::vector<double>& B) {
+void getRandomData(uint32_t n, std::vector<double> &A, std::vector<double> &B) {
   std::srand(std::time(nullptr));
 
   const auto random_double = [&](double lower_bound, double upper_bound) {
@@ -47,7 +47,7 @@ void getRandomData(uint32_t n, std::vector<double>& A, std::vector<double>& B) {
     B[i] = sum_by_row_for_B;
   }
 }
-}
+}  // namespace malyshev_a_simple_iteration_method_mpi
 
 TEST(malyshev_a_simple_iteration_method_mpi, basic_test) {
   boost::mpi::communicator world;
