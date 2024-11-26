@@ -2,7 +2,6 @@
 
 #include <cmath>
 #include <iostream>
-#include <vector>
 
 namespace nasedkin_e_seidels_iterate_methods_mpi {
 
@@ -17,23 +16,6 @@ bool SeidelIterateMethodsMPI::pre_processing() {
   A.resize(n, std::vector<double>(n, 0.0));
   b.resize(n, 0.0);
   x.resize(n, 0.0);
-
-  return true;
-}
-
-bool SeidelIterateMethodsMPI::validation() {
-  if (taskData->inputs_count.empty()) {
-    return false;
-  }
-
-  n = taskData->inputs_count[0];
-  if (n <= 0) {
-    return false;
-  }
-
-  // Проверка типа данных задачи
-  A.resize(n, std::vector<double>(n, 0.0));
-  b.resize(n, 0.0);
 
   if (taskData->inputs_count.size() > 1 && taskData->inputs_count[1] == 0) {
     for (int i = 0; i < n; ++i) {
@@ -51,9 +33,24 @@ bool SeidelIterateMethodsMPI::validation() {
     }
   }
 
-  for (int i = 0; i < n; ++i) {
-    if (A[i][i] == 0.0) {
-      return false;
+  return true;
+}
+
+bool SeidelIterateMethodsMPI::validation() {
+  if (taskData->inputs_count.empty()) {
+    return false;
+  }
+
+  n = taskData->inputs_count[0];
+  if (n <= 0) {
+    return false;
+  }
+
+  if (taskData->inputs_count.size() > 1 && taskData->inputs_count[1] == 0) {
+    for (int i = 0; i < n; ++i) {
+      if (A[i][i] == 0.0) {
+        return false;
+      }
     }
   }
 
@@ -76,15 +73,14 @@ bool SeidelIterateMethodsMPI::run() {
     }
 
     if (converge(x_new)) {
-      x = x_new;
-      return true;
+      break;
     }
 
     x = x_new;
     ++iteration;
   }
 
-  return false;
+  return true;
 }
 
 bool SeidelIterateMethodsMPI::post_processing() { return true; }
