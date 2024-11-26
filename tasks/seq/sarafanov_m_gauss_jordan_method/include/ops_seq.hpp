@@ -25,8 +25,6 @@ class GaussJordanMethodSequential : public ppc::core::Task {
  private:
   std::vector<double> matrix;
   int n;
-  std::vector<double> iter_matrix;
-  std::vector<double> iter_result;
 };
 
 }  // namespace sarafanov_m_gauss_jordan_method_seq
