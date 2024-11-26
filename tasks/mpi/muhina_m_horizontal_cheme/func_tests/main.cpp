@@ -18,11 +18,11 @@ TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication_Validation) {
   std::vector<int> result;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  int num_cols = 0;
+  int num_res = 0;
 
   if (world.rank() == 0) {
     vec = {1, 1, 1};
-    result.resize(num_cols, 0);
+    result.resize(num_res, 0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
@@ -49,19 +49,17 @@ TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  int num_res = 4;
+  int num_res = 5;
 
   if (world.rank() == 0) {
-    matrix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
-    vec = {1, 1, 1};
-    result.resize(num_res, 0);
+    matrix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
+    vec = {1, 2, 4};
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(vec.data()));
-    taskDataPar->inputs_count.emplace_back(vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
-    taskDataPar->outputs_count.emplace_back(result.size());
+    taskDataPar->inputs_count.emplace_back(num_res);
+    taskDataPar->outputs_count.emplace_back(vec.size());
   }
 
   auto matrixVecMultParalle = std::make_shared<HorizontalSchemeMPIParallel>(taskDataPar);
@@ -72,7 +70,10 @@ TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication) {
   ASSERT_TRUE(matrixVecMultParalle->post_processing());
 
   if (world.rank() == 0) {
-    std::vector<int> expected_result = {6, 15, 24, 33};
+    std::vector<int> expected_result{17, 38, 59, 80, 101};
+    auto* temp = reinterpret_cast<int*>(taskDataPar->outputs[0]);
+    result.insert(result.end(), temp, temp + num_res);
+
     ASSERT_EQ(result.size(), expected_result.size());
     for (size_t i = 0; i < result.size(); ++i) {
       ASSERT_EQ(result[i], expected_result[i]);
@@ -88,19 +89,20 @@ TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication_RepeatingValues)
   std::vector<int> result;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
   int num_matr = 999;
   int num_vec = 3;
   int num_res = 333;
+
   if (world.rank() == 0) {
     matrix.resize(num_matr, 1);
     vec.resize(num_vec, 1);
-    result.resize(num_res, 0);
+
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(vec.data()));
-    taskDataPar->inputs_count.emplace_back(vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
-    taskDataPar->outputs_count.emplace_back(result.size());
+    taskDataPar->inputs_count.emplace_back(num_res);
+    taskDataPar->outputs_count.emplace_back(vec.size());
   }
 
   auto matrixVecMultParalle = std::make_shared<HorizontalSchemeMPIParallel>(taskDataPar);
@@ -112,7 +114,13 @@ TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication_RepeatingValues)
 
   if (world.rank() == 0) {
     std::vector<int> expected_result(333, 3);
-    ASSERT_EQ(result, expected_result);
+    auto* temp = reinterpret_cast<int*>(taskDataPar->outputs[0]);
+    result.insert(result.end(), temp, temp + num_res);
+
+    ASSERT_EQ(result.size(), expected_result.size());
+    for (size_t i = 0; i < result.size(); ++i) {
+      ASSERT_EQ(result[i], expected_result[i]);
+    }
   }
 }
 
@@ -124,18 +132,18 @@ TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication_NegativeValues) 
   std::vector<int> result;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int num_res = 4;
+
+  int num_res = 5;
 
   if (world.rank() == 0) {
-    matrix = {-1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12};
-    vec = {-1, -1, -1};
-    result.resize(num_res, 0);
+    matrix = {-1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15};
+    vec = {-1, -2, -4};
+
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(vec.data()));
-    taskDataPar->inputs_count.emplace_back(vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
-    taskDataPar->outputs_count.emplace_back(result.size());
+    taskDataPar->inputs_count.emplace_back(num_res);
+    taskDataPar->outputs_count.emplace_back(vec.size());
   }
 
   auto matrixVecMultParalle = std::make_shared<HorizontalSchemeMPIParallel>(taskDataPar);
@@ -146,7 +154,10 @@ TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication_NegativeValues) 
   ASSERT_TRUE(matrixVecMultParalle->post_processing());
 
   if (world.rank() == 0) {
-    std::vector<int> expected_result = {6, 15, 24, 33};
+    std::vector<int> expected_result{17, 38, 59, 80, 101};
+    auto* temp = reinterpret_cast<int*>(taskDataPar->outputs[0]);
+    result.insert(result.end(), temp, temp + num_res);
+
     ASSERT_EQ(result.size(), expected_result.size());
     for (size_t i = 0; i < result.size(); ++i) {
       ASSERT_EQ(result[i], expected_result[i]);

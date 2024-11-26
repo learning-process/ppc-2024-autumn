@@ -5,6 +5,7 @@
 #include <boost/mpi/environment.hpp>
 #include <boost/mpi/timer.hpp>
 #include <memory>
+#include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
@@ -20,35 +21,27 @@ TEST(muhina_m_horizontal_cheme_mpi, run_pipeline) {
   std::vector<int> result;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int num_rows;
-  int num_cols;
+  int num_rows = 1024;
+  int num_cols = 1024;
+  int num_res = 1024;
 
   if (world.rank() == 0) {
-    num_rows = 1024;
-    num_cols = 1024;
-
     matrix.resize(num_rows * num_cols);
     for (int j = 0; j < num_rows; ++j) {
       for (int i = 0; i < num_cols; ++i) {
         matrix[j * num_cols + i] = rand() % 100;
       }
     }
-
     vector.resize(num_rows);
     for (int i = 0; i < num_rows; ++i) {
       vector[i] = rand() % 100;
     }
 
-    result.resize(num_cols, 0);
-
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
-
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(vector.data()));
-    taskDataPar->inputs_count.emplace_back(vector.size());
-
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
-    taskDataPar->outputs_count.emplace_back(result.size());
+    taskDataPar->inputs_count.emplace_back(num_res);
+    taskDataPar->outputs_count.emplace_back(vector.size());
   }
 
   auto taskParallel = std::make_shared<HorizontalSchemeMPIParallel>(taskDataPar);
@@ -69,10 +62,13 @@ TEST(muhina_m_horizontal_cheme_mpi, run_pipeline) {
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
+    auto* temp = reinterpret_cast<int*>(taskDataPar->outputs[0]);
+    result.insert(result.end(), temp, temp + num_res);
 
     std::vector<int> seq_result(result.size(), 0);
 
     auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataSeq->inputs_count.emplace_back(matrix.size());
 
@@ -103,35 +99,27 @@ TEST(muhina_m_horizontal_cheme_mpi, run_task) {
   std::vector<int> result;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int num_rows;
-  int num_cols;
+  int num_rows = 1024;
+  int num_cols = 1024;
+  int num_res = 1024;
 
   if (world.rank() == 0) {
-    num_rows = 1000;
-    num_cols = 1000;
-
     matrix.resize(num_rows * num_cols);
     for (int j = 0; j < num_rows; ++j) {
       for (int i = 0; i < num_cols; ++i) {
         matrix[j * num_cols + i] = rand() % 100;
       }
     }
-
     vector.resize(num_rows);
     for (int i = 0; i < num_rows; ++i) {
       vector[i] = rand() % 100;
     }
 
-    result.resize(num_cols, 0);
-
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
-
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(vector.data()));
-    taskDataPar->inputs_count.emplace_back(vector.size());
-
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
-    taskDataPar->outputs_count.emplace_back(result.size());
+    taskDataPar->inputs_count.emplace_back(num_res);
+    taskDataPar->outputs_count.emplace_back(vector.size());
   }
 
   auto taskParallel = std::make_shared<HorizontalSchemeMPIParallel>(taskDataPar);
@@ -152,10 +140,13 @@ TEST(muhina_m_horizontal_cheme_mpi, run_task) {
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
+    auto* temp = reinterpret_cast<int*>(taskDataPar->outputs[0]);
+    result.insert(result.end(), temp, temp + num_res);
 
     std::vector<int> seq_result(result.size(), 0);
 
     auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataSeq->inputs_count.emplace_back(matrix.size());
 

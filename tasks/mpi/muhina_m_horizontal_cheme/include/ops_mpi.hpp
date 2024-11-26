@@ -45,8 +45,6 @@ class HorizontalSchemeMPIParallel : public ppc::core::Task {
   std::vector<int> result_;
   int rows_;
   int cols_;
-  std::vector<int> distribution;
-  std::vector<int> displacement;
   boost::mpi::communicator world_;
 };
 

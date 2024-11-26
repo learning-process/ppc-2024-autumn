@@ -36,9 +36,9 @@ void muhina_m_horizontal_cheme_mpi::calculate_distribution(int rows, int cols, i
   displs.resize(num_proc, -1);
 
   if (num_proc > rows) {
-    for (int i = 0; i < rows; ++i) {
-      sizes[i] = cols;
-      displs[i] = i * cols;
+    for (int i = 0; i < num_proc; ++i) {
+      sizes[i] = (i < rows) ? cols : 0;
+      displs[i] = (i < rows) ? i * cols : -1;
     }
   } else {
     int rows_per_proc = rows / num_proc;
@@ -106,6 +106,9 @@ bool muhina_m_horizontal_cheme_mpi::HorizontalSchemeMPISequential::post_processi
 bool muhina_m_horizontal_cheme_mpi::HorizontalSchemeMPIParallel::pre_processing() {
   internal_order_test();
 
+  matrix_.clear();
+  vec_.clear();
+
   if (world_.rank() == 0) {
     int* m_data = reinterpret_cast<int*>(taskData->inputs[0]);
     int m_size = taskData->inputs_count[0];
@@ -115,23 +118,10 @@ bool muhina_m_horizontal_cheme_mpi::HorizontalSchemeMPIParallel::pre_processing(
     rows_ = v_size;
     cols_ = m_size / rows_;
 
-    matrix_.assign(m_data, m_data + m_size);
-    vec_.assign(v_data, v_data + v_size);
-    result_.resize(cols_, 0);
-
-    calculate_distribution(cols_, rows_, world_.size(), distribution, displacement);
+    matrix_.insert(matrix_.end(), m_data, m_data + m_size);
+    vec_.insert(vec_.end(), v_data, v_data + v_size);
   }
-
-  boost::mpi::broadcast(world_, cols_, 0);
-  boost::mpi::broadcast(world_, rows_, 0);
-  boost::mpi::broadcast(world_, distribution, 0);
-  boost::mpi::broadcast(world_, displacement, 0);
-
-  if (world_.rank() != 0) {
-    matrix_.resize(cols_ * rows_);
-    vec_.resize(rows_);
-    result_.resize(cols_);
-  }
+  result_.clear();
 
   return true;
 }
@@ -154,25 +144,50 @@ bool muhina_m_horizontal_cheme_mpi::HorizontalSchemeMPIParallel::validation() {
 
 bool muhina_m_horizontal_cheme_mpi::HorizontalSchemeMPIParallel::run() {
   internal_order_test();
-  boost::mpi::broadcast(world_, matrix_, 0);
-  boost::mpi::broadcast(world_, vec_, 0);
 
-  int local_start_row = displacement[world_.rank()] / cols_;
-  int local_rows = distribution[world_.rank()] / cols_;
-  std::vector<int> local_result(cols_, 0);
+  boost::mpi::broadcast(world_, cols_, 0);
+  boost::mpi::broadcast(world_, rows_, 0);
 
-  for (int i = 0; i < cols_; ++i) {
-    for (int j = 0; j < local_rows; ++j) {
-      int row = local_start_row + j;
-      local_result[i] += matrix_[i * rows_ + row] * vec_[row];
+  int delta = (world_.size() == 1) ? 0 : rows_ / (world_.size() - 1);
+  int ost = (world_.size() == 1) ? rows_ : rows_ % (world_.size() - 1);
+
+  std::vector<int> localMatrix;
+
+  if (world_.rank() != 0) {
+    localMatrix.resize(delta * cols_, 0);
+    vec_.resize(rows_);
+  }
+
+  boost::mpi::broadcast(world_, vec_.data(), vec_.size(), 0);
+
+  if (world_.rank() == 0) {
+    for (int proc = 0; proc < world_.size() - 1; proc++) {
+      world_.send(proc + 1, 0, matrix_.data() + proc * delta * cols_ + ost * cols_, delta * cols_);
+    }
+    localMatrix.insert(localMatrix.end(), matrix_.data(), matrix_.data() + cols_ * ost);
+  } else {
+    world_.recv(0, 0, localMatrix.data(), delta * cols_);
+  }
+
+  std::vector<int> local_result(localMatrix.size() / cols_, 0);
+
+  for (int i = 0; i < localMatrix.size() / cols_; i++) {
+    for (int j = 0; j < cols_; j++) {
+      local_result[i] += localMatrix[i * cols_ + j] * vec_[j];
     }
   }
 
   if (world_.rank() == 0) {
-    result_.assign(cols_, 0);
+    result_.clear();
+    result_.insert(result_.end(), local_result.data(), local_result.data() + ost);
+    for (int proc = 1; proc < world_.size(); proc++) {
+      std::vector<int> temp(delta);
+      world_.recv(proc, 0, temp.data(), delta);
+      result_.insert(result_.end(), temp.data(), temp.data() + delta);
+    }
+  } else {
+    world_.send(0, 0, local_result.data(), delta);
   }
-
-  boost::mpi::reduce(world_, local_result.data(), cols_, result_.data(), std::plus<>(), 0);
 
   return true;
 }
@@ -181,8 +196,7 @@ bool muhina_m_horizontal_cheme_mpi::HorizontalSchemeMPIParallel::post_processing
   internal_order_test();
 
   if (world_.rank() == 0) {
-    int* output_data = reinterpret_cast<int*>(taskData->outputs[0]);
-    std::copy(result_.begin(), result_.end(), output_data);
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_.data()));
   }
 
   return true;
