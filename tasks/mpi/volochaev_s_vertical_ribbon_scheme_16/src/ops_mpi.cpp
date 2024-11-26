@@ -152,7 +152,7 @@ bool volochaev_s_vertical_ribbon_scheme_16_mpi::Lab2_16_mpi::post_processing() {
 
   if (world.rank() == 0) {
     int* ans = reinterpret_cast<int*>(taskData->outputs[0]);
-    for (int i = 0; i < res.size(); ++i) {
+    for (size_t i = 0; i < res.size(); ++i) {
       ans[i] = res[i];
     }
   }
