@@ -182,7 +182,7 @@ bool muhina_m_horizontal_cheme_mpi::HorizontalSchemeMPIParallel::run() {
 
   std::vector<int> local_result(localMatrix.size() / cols_, 0);
 
-  for (int i = 0; i < (size_t)(localMatrix.size() / cols_); i++) {
+  for (int i = 0; i < (int)(localMatrix.size() / cols_); i++) {
     for (int j = 0; j < cols_; j++) {
       local_result[i] += localMatrix[i * cols_ + j] * vec_[j];
     }
