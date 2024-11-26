@@ -132,7 +132,6 @@ TEST(anufriev_d_star_topology, SimpleIntTest) {
     taskData->outputs_count.push_back(output_data.size());
   }
 
-
   anufriev_d_star_topology::SimpleIntMPI task(taskData);
   ASSERT_TRUE(task.validation());
   ASSERT_TRUE(task.pre_processing());
@@ -141,7 +140,7 @@ TEST(anufriev_d_star_topology, SimpleIntTest) {
 
   if (world.rank() == 0) {
     if (world.size() == 1) {
-        ASSERT_EQ(output_data, std::vector<int>({1, 2, 3, 4, 5}));
+      ASSERT_EQ(output_data, std::vector<int>({1, 2, 3, 4, 5}));
     }
     if (world.size() == 2) {
       ASSERT_EQ(output_data, std::vector<int>({2, 4, 6, 8, 10}));
