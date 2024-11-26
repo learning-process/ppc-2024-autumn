@@ -11,7 +11,7 @@
 #include <vector>
 
 void kalinin_d_matrix_mult_hor_a_vert_b_mpi::compute_indexes(int _rows_a, int num_rows_b, std::vector<int>& indexesA,
-                                                               std::vector<int>& indexesB) {
+                                                             std::vector<int>& indexesB) {
   indexesA.resize(_rows_a * num_rows_b);
   indexesB.resize(_rows_a * num_rows_b);
 
@@ -25,7 +25,7 @@ void kalinin_d_matrix_mult_hor_a_vert_b_mpi::compute_indexes(int _rows_a, int nu
 }
 
 void kalinin_d_matrix_mult_hor_a_vert_b_mpi::calculate(int rows, int columns, int num_proc, std::vector<int>& _sizes,
-                                                         std::vector<int>& _displs) {
+                                                       std::vector<int>& _displs) {
   _sizes.resize(num_proc, 0);
   _displs.resize(num_proc, 0);
 
