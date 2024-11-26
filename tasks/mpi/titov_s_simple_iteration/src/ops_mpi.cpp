@@ -257,7 +257,7 @@ bool titov_s_simple_iteration_mpi::MPISimpleIterationParallel::run() {
     double iter;
     for (int iter_place = 0; iter_place < number_values[world.rank()]; iter_place++) {
       iter = 0;
-      for (int j = 0; j < static_cast<int>(Rows); j++) {
+      for (int j = 0; j < Rows; j++) {
         if (j != (offset_values[world.rank()] + iter_place)) {
           iter += Matrix_l[iter_place * Rows + j] * prev[j];
         }
