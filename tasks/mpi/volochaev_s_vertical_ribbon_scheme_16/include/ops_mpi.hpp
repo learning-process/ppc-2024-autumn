@@ -24,6 +24,7 @@ class Lab2_16_seq : public ppc::core::Task {
  private:
   int* input_A;
   int* input_B;
+
   int m{};
   int n{};
   std::vector<int> res;
