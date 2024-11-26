@@ -22,8 +22,7 @@ std::vector<int> calculateExpectedOutput(const std::vector<int>& input, int worl
   for (int i = 0; i < worldSize; ++i) {
     size_t start_pos = i * chunk_size;
     for (int j = 0; j < chunk_size; j++) {
-      if (start_pos + j < output.size())
-          output[start_pos + j] += i;
+      if (start_pos + j < output.size()) output[start_pos + j] += i;
     }
   }
   return output;
