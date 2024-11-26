@@ -1,12 +1,52 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
-#include <vector>
 #include <random>
+#include <vector>
+
 #include "core/perf/include/perf.hpp"
 #include "seq/drozhdinov_d_gauss_vertical_scheme/include/ops_seq.hpp"
 
 namespace drozhdinov_d_gauss_vertical_scheme_seq {
+std::vector<double> genElementaryMatrix(int rows, int columns) {
+  std::vector<double> res;
+  for (int i = 0; i < rows; i++) {
+    for (int j = 0; j < columns; j++) {
+      if (i == j) {
+        res.push_back(1);
+      } else {
+        res.push_back(0);
+      }
+    }
+  }
+  return res;
+}
+
+std::vector<double> genDenseMatrix(int n, int a) {
+  std::vector<double> dense;
+  std::vector<double> ed(n * n);
+  std::vector<double> res(n * n);
+  for (int i = 0; i < n; i++) {
+    for (int j = i; j < n + i; j++) {
+      dense.push_back(a + j);
+    }
+  }
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      if (i < 2) {
+        ed[j * n + i] = 0;
+      } else if (i == j && i >= 2) {
+        ed[j * n + i] = 1;
+      } else {
+        ed[j * n + i] = 0;
+      }
+    }
+  }
+  for (int i = 0; i < n * n; i++) {
+    res[i] = (dense[i] + ed[i]);
+  }
+  return res;
+}
 template <typename T>
 std::vector<T> getRandomVector(int sz) {
   std::random_device dev;
@@ -27,7 +67,7 @@ TEST(drozhdinov_d_perf_test, test_pipeline_run) {
   int rows = 1000;
   int columns = 1000;
   std::vector<int> a = drozhdinov_d_gauss_vertical_scheme_seq::getRandomVector<int>(1);
-  std::vector<double> matrix = genDenseMatrix(rows, *a.begin());
+  std::vector<double> matrix = drozhdinov_d_gauss_vertical_scheme_seq::genDenseMatrix(rows, *a.begin());
   std::vector<double> b(rows, 1);
   std::vector<double> expres(rows, 0);
   std::vector<double> res(rows, 0);
@@ -72,7 +112,7 @@ TEST(drozhdinov_d_perf_test, test_task_run) {
   int rows = 1000;
   int columns = 1000;
   std::vector<int> a = drozhdinov_d_gauss_vertical_scheme_seq::getRandomVector<int>(1);
-  std::vector<double> matrix = genDenseMatrix(rows, *a.begin());
+  std::vector<double> matrix = drozhdinov_d_gauss_vertical_scheme_seq::genDenseMatrix(rows, *a.begin());
   std::vector<double> b(rows, 1);
   std::vector<double> expres(rows, 0);
   std::vector<double> res(rows, 0);

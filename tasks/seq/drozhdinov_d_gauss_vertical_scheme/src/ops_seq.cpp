@@ -8,46 +8,6 @@ using namespace std::chrono_literals;
 
 int mkLinCoordddm(int x, int y, int xSize) { return y * xSize + x; }
 
-std::vector<double> genElementaryMatrix(int rows, int columns) {
-  std::vector<double> res;
-  for (int i = 0; i < rows; i++) {
-    for (int j = 0; j < columns; j++) {
-      if (i == j) {
-        res.push_back(1);
-      } else {
-        res.push_back(0);
-      }
-    }
-  }
-  return res;
-}
-
-std::vector<double> genDenseMatrix(int n, int a) {
-  std::vector<double> dense;
-  std::vector<double> ed(n * n);
-  std::vector<double> res(n * n);
-  for (int i = 0; i < n; i++) {
-    for (int j = i; j < n + i; j++) {
-      dense.push_back(a + j);
-    }
-  }
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < n; j++) {
-      if (i < 2) {
-        ed[j * n + i] = 0;
-      } else if (i == j && i >= 2) {
-        ed[j * n + i] = 1;
-      } else {
-        ed[j * n + i] = 0;
-      }
-    }
-  }
-  for (int i = 0; i < n * n; i++) {
-    res[i] = (dense[i] + ed[i]);
-  }
-  return res;
-}
-
 double myrnd(double value) { return (fabs(value - std::round(value)) < GAMMA ? std::round(value) : value); }
 
 int drozhdinov_d_gauss_vertical_scheme_seq::Myrank(std::vector<double> matrix, int m, int n) {

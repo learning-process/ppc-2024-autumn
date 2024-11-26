@@ -2,12 +2,52 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
-#include <vector>
 #include <random>
+#include <vector>
+
 #include "core/perf/include/perf.hpp"
 #include "mpi/drozhdinov_d_gauss_vertical_scheme/include/ops_mpi.hpp"
 
 namespace drozhdinov_d_gauss_vertical_scheme_mpi {
+std::vector<double> genDenseMatrix(int n, int a) {
+  std::vector<double> dense;
+  std::vector<double> ed(n * n);
+  std::vector<double> res(n * n);
+  for (int i = 0; i < n; i++) {
+    for (int j = i; j < n + i; j++) {
+      dense.push_back(a + j);
+    }
+  }
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      if (i < 2) {
+        ed[j * n + i] = 0;
+      } else if (i == j && i >= 2) {
+        ed[j * n + i] = 1;
+      } else {
+        ed[j * n + i] = 0;
+      }
+    }
+  }
+  for (int i = 0; i < n * n; i++) {
+    res[i] = (dense[i] + ed[i]);
+  }
+  return res;
+}
+
+std::vector<double> genElementaryMatrix(int rows, int columns) {
+  std::vector<double> res;
+  for (int i = 0; i < rows; i++) {
+    for (int j = 0; j < columns; j++) {
+      if (i == j) {
+        res.push_back(1);
+      } else {
+        res.push_back(0);
+      }
+    }
+  }
+  return res;
+}
 template <typename T>
 std::vector<T> getRandomVector(int sz) {
   std::random_device dev;
@@ -29,7 +69,7 @@ TEST(MPIGAUSSPERF, test_pipeline_run) {
   int rows = 900;
   int columns = 900;
   std::vector<int> a = drozhdinov_d_gauss_vertical_scheme_mpi::getRandomVector<int>(1);
-  std::vector<double> matrix = genDenseMatrix(rows, *a.begin());
+  std::vector<double> matrix = drozhdinov_d_gauss_vertical_scheme_mpi::genDenseMatrix(rows, *a.begin());
   std::vector<double> b(rows, 1);
   std::vector<double> res(rows, 0);
   res[0] = -1;
@@ -77,7 +117,7 @@ TEST(MPIGAUSSPERF, test_task_run) {
   int rows = 900;
   int columns = 900;
   std::vector<int> a = drozhdinov_d_gauss_vertical_scheme_mpi::getRandomVector<int>(1);
-  std::vector<double> matrix = genDenseMatrix(rows, *a.begin());
+  std::vector<double> matrix = drozhdinov_d_gauss_vertical_scheme_mpi::genDenseMatrix(rows, *a.begin());
   std::vector<double> b(rows, 1);
   std::vector<double> res(rows, 0);
   res[0] = -1;

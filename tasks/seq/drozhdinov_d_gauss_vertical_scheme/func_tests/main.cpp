@@ -1,11 +1,52 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
-#include <vector>
 #include <random>
+#include <vector>
+
 #include "seq/drozhdinov_d_gauss_vertical_scheme/include/ops_seq.hpp"
 
 namespace drozhdinov_d_gauss_vertical_scheme_seq {
+std::vector<double> genElementaryMatrix(int rows, int columns) {
+  std::vector<double> res;
+  for (int i = 0; i < rows; i++) {
+    for (int j = 0; j < columns; j++) {
+      if (i == j) {
+        res.push_back(1);
+      } else {
+        res.push_back(0);
+      }
+    }
+  }
+  return res;
+}
+
+std::vector<double> genDenseMatrix(int n, int a) {
+  std::vector<double> dense;
+  std::vector<double> ed(n * n);
+  std::vector<double> res(n * n);
+  for (int i = 0; i < n; i++) {
+    for (int j = i; j < n + i; j++) {
+      dense.push_back(a + j);
+    }
+  }
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      if (i < 2) {
+        ed[j * n + i] = 0;
+      } else if (i == j && i >= 2) {
+        ed[j * n + i] = 1;
+      } else {
+        ed[j * n + i] = 0;
+      }
+    }
+  }
+  for (int i = 0; i < n * n; i++) {
+    res[i] = (dense[i] + ed[i]);
+  }
+  return res;
+}
+
 template <typename T>
 std::vector<T> getRandomVector(int sz) {
   std::random_device dev;
@@ -84,7 +125,7 @@ TEST(Sequential, Equation3Test) {
   // Create data
   int rows = 3;
   int columns = 3;
-  std::vector<double> matrix = genDenseMatrix(rows, 1);
+  std::vector<double> matrix = drozhdinov_d_gauss_vertical_scheme_seq::genDenseMatrix(rows, 1);
   std::vector<double> b = {1, 1, 1};
   std::vector<double> expres(rows, 0);
   std::vector<double> res = {-1, 1, 0};
@@ -142,7 +183,7 @@ TEST(Sequential, Size100TestIdentity) {
   // Create data
   int rows = 10;
   int columns = 10;
-  std::vector<double> matrix = genElementaryMatrix(rows, columns);
+  std::vector<double> matrix = drozhdinov_d_gauss_vertical_scheme_seq::genElementaryMatrix(rows, columns);
   std::vector<double> b(rows * columns, 1);
   std::vector<double> expres(rows);
   std::vector<double> res(rows, 1);
@@ -171,7 +212,7 @@ TEST(Sequential, Size10000TestIdentity) {
   // Create data
   int rows = 100;
   int columns = 100;
-  std::vector<double> matrix = genElementaryMatrix(rows, columns);
+  std::vector<double> matrix = drozhdinov_d_gauss_vertical_scheme_seq::genElementaryMatrix(rows, columns);
   std::vector<double> b(rows * columns, 1);
   std::vector<double> expres(rows);
   std::vector<double> res(rows, 1);
@@ -201,7 +242,7 @@ TEST(Sequential, Size100TestDense) {
   int rows = 10;
   int columns = 10;
   std::vector<int> a = drozhdinov_d_gauss_vertical_scheme_seq::getRandomVector<int>(1);
-  std::vector<double> matrix = genDenseMatrix(rows, *a.begin());
+  std::vector<double> matrix = drozhdinov_d_gauss_vertical_scheme_seq::genDenseMatrix(rows, *a.begin());
   std::vector<double> b(rows, 1);
   std::vector<double> expres(rows, 0);
   std::vector<double> res(rows, 0);
@@ -233,7 +274,7 @@ TEST(Sequential, Size10000TestDense) {
   int rows = 100;
   int columns = 100;
   std::vector<int> a = drozhdinov_d_gauss_vertical_scheme_seq::getRandomVector<int>(1);
-  std::vector<double> matrix = genDenseMatrix(rows, *a.begin());
+  std::vector<double> matrix = drozhdinov_d_gauss_vertical_scheme_seq::genDenseMatrix(rows, *a.begin());
   std::vector<double> b(rows, 1);
   std::vector<double> expres(rows, 0);
   std::vector<double> res(rows, 0);
@@ -264,7 +305,7 @@ TEST(Sequential, WrongValidationTest1) {
   // Create data
   int rows = 20;
   int columns = 10;
-  std::vector<double> matrix = genElementaryMatrix(rows, columns);
+  std::vector<double> matrix = drozhdinov_d_gauss_vertical_scheme_seq::genElementaryMatrix(rows, columns);
   std::vector<double> b(rows * columns, 1);
   std::vector<double> expres(rows);
   std::vector<double> res(rows, 1);
@@ -289,7 +330,7 @@ TEST(Sequential, WrongValidationTest2) {
   // Create data
   int rows = 20;
   int columns = 20;
-  std::vector<double> matrix = genElementaryMatrix(rows, columns);
+  std::vector<double> matrix = drozhdinov_d_gauss_vertical_scheme_seq::genElementaryMatrix(rows, columns);
   std::vector<double> b(rows * columns, 1);
   std::vector<double> expres(rows + 5);
   std::vector<double> res(rows, 1);

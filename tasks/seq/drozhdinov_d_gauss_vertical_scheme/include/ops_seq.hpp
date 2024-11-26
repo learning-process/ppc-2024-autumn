@@ -10,8 +10,6 @@
 #define GAMMA 1e-9
 
 int mkLinCoordddm(int x, int y, int xSize);
-std::vector<double> genDenseMatrix(int n, int a);
-std::vector<double> genElementaryMatrix(int rows, int columns);
 double myrnd(double value);
 
 namespace drozhdinov_d_gauss_vertical_scheme_seq {
