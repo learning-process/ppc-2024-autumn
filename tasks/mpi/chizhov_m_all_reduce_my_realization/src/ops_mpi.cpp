@@ -191,19 +191,8 @@ bool chizhov_m_all_reduce_my_mpi::TestMPITaskMyOwnParallel::run() {
     localMax[j] = maxElem;
   }
 
-  /*std::cout << std::endl;
-  for (int k = 0; k < localMax.size(); k++) {
-    std::cout << localMax[k] << " ";
-  }
-  std::cout << std::endl;*/
   res_.resize(cols, 0);
   my_all_reduce(world, localMax.data(), res_.data(), cols, world.rank());
-
-  /*std::cout << std::endl;
-  for (int k = 0; k < cols; k++) {
-    std::cout << res_[k] << " ";
-  }
-  std::cout << std::endl;*/
 
   std::vector<int> local_cnt_(cols, 0);
   for (int j = startCol; j < lastCol; j++) {
