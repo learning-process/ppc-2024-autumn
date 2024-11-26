@@ -11,24 +11,23 @@
 
 namespace sedova_o_vertical_ribbon_scheme_mpi {
 
-void calculate_distribution(int rows, int cols, int num_proc, std::vector<int>& sizes, std::vector<int>& displs);
-
 class ParallelMPI : public ppc::core::Task {
  public:
   explicit ParallelMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
-  bool run() override;
+  bool run();
   bool post_processing() override;
 
  private:
-  std::vector<int> input_matrix_;
-  std::vector<int> input_vector_;
+  int rows_;
+  int cols_;
+
   std::vector<int> result_vector_;
-  int num_rows_;
-  int num_cols_;
   std::vector<int> distribution;
   std::vector<int> displacement;
+  std::vector<int> input_matrix_1;
+  std::vector<int> input_vector_1;
   boost::mpi::communicator world;
 };
 

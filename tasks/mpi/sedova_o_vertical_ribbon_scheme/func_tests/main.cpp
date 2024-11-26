@@ -11,27 +11,6 @@
 
 #include "mpi/sedova_o_vertical_ribbon_scheme/include/ops_mpi.hpp"
 
-std::vector<int> getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::uniform_int_distribution<> dist(0, 1000);
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = dist(gen);
-  }
-  return vec;
-}
-
-std::vector<int> getRandomMatrix(int rows, int cols) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::uniform_int_distribution<> dist(0, 1000);
-  std::vector<int> matrix(rows * cols);
-  for (int i = 0; i < rows * cols; i++) {
-    matrix[i] = dist(gen);
-  }
-  return matrix;
-}
 TEST(sedova_o_vertical_ribbon_scheme, FailValid) {
   std::vector<int> input_data = {46};
 
