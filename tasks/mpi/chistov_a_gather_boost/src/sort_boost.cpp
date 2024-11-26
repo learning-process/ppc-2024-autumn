@@ -60,7 +60,7 @@ bool Reference<T>::run() {
   internal_order_test();
 
   std::sort(input_data.begin(), input_data.end());
-  chistov_a_gather_my::gather<T>(world, input_data, count, gathered_data, 0);
+  chistov_a_gather_boost::gather<T>(world, input_data, count, gathered_data, 0);
 
   if (world.rank() == 0) {
     merge_sorted_vectors(gathered_data, count, world.size());
