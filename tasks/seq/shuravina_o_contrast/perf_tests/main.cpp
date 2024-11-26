@@ -3,6 +3,7 @@
 #include <chrono>
 #include <iostream>
 #include <vector>
+
 #include "seq/shuravina_o_contrast/include/ops_seq.hpp"
 
 TEST(shuravina_o_contrast, Test_Contrast_Perf_1000) {
