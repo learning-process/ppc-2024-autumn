@@ -43,7 +43,8 @@ TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi, test_pipel
   }
 
   auto taskParallel =
-      std::make_shared<sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskParalle>(taskDataPar);
+      std::make_shared<sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskParalle>(
+          taskDataPar);
   ASSERT_TRUE(taskParallel->validation());
   taskParallel->pre_processing();
   taskParallel->run();
@@ -77,7 +78,8 @@ TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi, test_pipel
     taskDataSeq->outputs_count.emplace_back(seq_result.size());
 
     auto taskSequential =
-        std::make_shared<sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskSequential>(taskDataSeq);
+        std::make_shared<sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskSequential>(
+            taskDataSeq);
     ASSERT_TRUE(taskSequential->validation());
     taskSequential->pre_processing();
     taskSequential->run();
@@ -123,7 +125,8 @@ TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi, test_task_
   }
 
   auto taskParallel =
-      std::make_shared<sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskParalle>(taskDataPar);
+      std::make_shared<sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskParalle>(
+          taskDataPar);
   ASSERT_TRUE(taskParallel->validation());
   taskParallel->pre_processing();
   taskParallel->run();
@@ -157,7 +160,8 @@ TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi, test_task_
     taskDataSeq->outputs_count.emplace_back(seq_result.size());
 
     auto taskSequential =
-        std::make_shared<sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskSequential>(taskDataSeq);
+        std::make_shared<sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskSequential>(
+            taskDataSeq);
     ASSERT_TRUE(taskSequential->validation());
     taskSequential->pre_processing();
     taskSequential->run();

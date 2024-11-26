@@ -29,7 +29,6 @@ TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi, Initializa
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_A.data()));
     taskDataPar->inputs_count.emplace_back(0);
     taskDataPar->inputs_count.emplace_back(0);
@@ -67,7 +66,8 @@ TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi, InvalidTas
   }
 
   auto taskParallel =
-      std::make_shared<sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskParalle>(taskDataPar);
+      std::make_shared<sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskParalle>(
+          taskDataPar);
   if (world.rank() == 0) {
     EXPECT_FALSE(taskParallel->validation());
   } else {
@@ -102,7 +102,8 @@ TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi, InvalidTas
   }
 
   auto taskParallel =
-      std::make_shared<sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskParalle>(taskDataPar);
+      std::make_shared<sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskParalle>(
+          taskDataPar);
   if (world.rank() == 0) {
     EXPECT_FALSE(taskParallel->validation());
   } else {
@@ -162,7 +163,8 @@ TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi, Validation
     taskDataSeq->outputs_count.emplace_back(expected_res.size());
 
     // Create Task
-    sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskSequential testMpiTaskSequential(
+        taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -224,7 +226,8 @@ TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi, Validation
     taskDataSeq->outputs_count.emplace_back(expected_res.size());
 
     // Create Task
-    sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskSequential testMpiTaskSequential(
+        taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();

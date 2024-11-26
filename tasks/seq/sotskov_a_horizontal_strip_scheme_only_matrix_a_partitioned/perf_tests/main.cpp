@@ -24,7 +24,8 @@ TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_seq, test_pipel
 
   // Create Task
   auto testTaskSequential =
-      std::make_shared<sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_seq::TestTaskSequential>(taskDataSeq);
+      std::make_shared<sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_seq::TestTaskSequential>(
+          taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -65,7 +66,8 @@ TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_seq, test_task_
 
   // Create Task
   auto testTaskSequential =
-      std::make_shared<sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_seq::TestTaskSequential>(taskDataSeq);
+      std::make_shared<sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_seq::TestTaskSequential>(
+          taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
