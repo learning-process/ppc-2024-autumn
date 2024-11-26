@@ -7,10 +7,8 @@
 #include <iostream>
 #include <limits>
 #include <numeric>
-#include <vector>
 #include <random>
-#include <mpi.h>
-#include <cassert>
+#include <vector>
 
 bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::validation() {
   internal_order_test();
@@ -74,7 +72,7 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::pre_processing() {
   return true;
 }
 
- bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::run() {
+bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::run() {
   internal_order_test();
 
   boost::mpi::broadcast(world, cols_, 0);
