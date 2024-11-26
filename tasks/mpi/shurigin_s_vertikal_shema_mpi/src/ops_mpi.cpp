@@ -69,7 +69,7 @@ bool TestTaskMPI::validation() {
   const size_t num_procs = world.size();
 
   if (num_procs > vector_size) {
-    if (world.rank() >= vector_size) {
+    if (static_cast<size_t>(world.rank()) >= vector_size) {
       return true;
     }
   }
