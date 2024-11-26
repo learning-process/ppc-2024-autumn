@@ -4,8 +4,20 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <vector>
+#include <random>
 
 #include "mpi/zinoviev_a_sum_cols_matrix/include/ops_mpi.hpp"
+
+std::vector<int> zinoviev_a_sum_cols_matrix_mpi::generateRandomVector(int size) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(size);
+  std::uniform_int_distribution<int> dist(-100, 100);
+  for (int i = 0; i < size; i++) {
+    vec[i] = gen() % 100;
+  }
+  return vec;
+}
 
 TEST(zinoviev_a_sum_cols_matrix_mpi, EmptyMatrixTest) {
   boost::mpi::communicator world;
