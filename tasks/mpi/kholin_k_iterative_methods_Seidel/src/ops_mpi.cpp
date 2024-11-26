@@ -8,7 +8,7 @@
 #include <vector>
 
 using namespace std::chrono_literals;
-
+//
 namespace kholin_k_iterative_methods_Seidel_mpi {
 float* A_;
 }

@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "mpi/kholin_k_iterative_methods_Seidel/include/ops_mpi.hpp"
-
+//
 TEST(kholin_k_iterative_methods_Seidel_mpi, validation_true_when_matrix_with_diag_pred) {
   int ProcRank = 0;
   const size_t count_rows = 25;
@@ -230,7 +230,7 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, validation_false_when_matrix_no_quad
     ASSERT_EQ(testMpiTaskSequential.validation(), false);
   }
 }
-
+//
 TEST(kholin_k_iterative_methods_Seidel_mpi, validation_false_when_matrix_no_diag) {
   int ProcRank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);

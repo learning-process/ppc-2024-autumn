@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "seq/kholin_k_iterative_methods_Seidel/include/ops_seq.hpp"
+//
 
 TEST(kholin_k_iterative_methods_Seidel_seq, validation_true_when_matrix_with_diag_pred) {
   const size_t count_rows = 3;
@@ -76,7 +77,7 @@ TEST(kholin_k_iterative_methods_Seidel_seq, test_post_processing) {
   const size_t count_colls = 3;
   float epsilon = 0.001f;
   kholin_k_iterative_methods_Seidel_seq::gen_matrix_with_diag_pred(count_rows, count_colls);
-
+  //
   float *in = new float[count_rows * count_colls];
   kholin_k_iterative_methods_Seidel_seq::copyA_(in, count_rows, count_colls);
   float *out = new float[count_rows];

@@ -19,7 +19,7 @@
 namespace list_ops {
 enum ops_ { METHOD_SEIDEL };
 }
-
+//
 namespace kholin_k_iterative_methods_Seidel_mpi {
 
 bool IsDiagPred(float row_coeffs[], const size_t num_colls, const size_t& start_index, const size_t& index);

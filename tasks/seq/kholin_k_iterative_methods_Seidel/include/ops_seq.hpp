@@ -48,5 +48,5 @@ class TestTaskSequential : public ppc::core::Task {
 };
 
 }  // namespace kholin_k_iterative_methods_Seidel_seq
-
+//
 #endif

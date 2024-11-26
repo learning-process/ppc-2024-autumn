@@ -5,7 +5,7 @@
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/kholin_k_iterative_methods_Seidel/include/ops_mpi.hpp"
-
+//
 TEST(kholin_k_iterative_methods_Seidel_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   int ProcRank = 0;
