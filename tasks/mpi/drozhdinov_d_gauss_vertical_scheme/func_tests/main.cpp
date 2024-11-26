@@ -1,11 +1,29 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
-// not example
+
+#include <random>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <vector>
 
 #include "mpi/drozhdinov_d_gauss_vertical_scheme/include/ops_mpi.hpp"
+
+namespace drozhdinov_d_gauss_vertical_scheme_mpi {
+template <typename T>
+std::vector<T> getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<T> vec(sz);
+  vec[0] = gen() % 100;
+  for (int i = 1; i < sz; i++) {
+    vec[i] = (gen() % 100) - 49;
+  }
+  return vec;
+}
+
+template std::vector<int> drozhdinov_d_gauss_vertical_scheme_mpi::getRandomVector(int sz);
+template std::vector<double> drozhdinov_d_gauss_vertical_scheme_mpi::getRandomVector(int sz);
+}  // namespace drozhdinov_d_gauss_vertical_scheme_mpi
 
 TEST(MPIGAUSS, WrongValidationTest) {
   boost::mpi::communicator world;

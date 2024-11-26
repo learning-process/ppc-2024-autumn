@@ -1,15 +1,32 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
-// not example
-#include <vector>
 
+#include <vector>
+#include <random>
 #include "core/perf/include/perf.hpp"
 #include "seq/drozhdinov_d_gauss_vertical_scheme/include/ops_seq.hpp"
+
+namespace drozhdinov_d_gauss_vertical_scheme_seq {
+template <typename T>
+std::vector<T> getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<T> vec(sz);
+  vec[0] = gen() % 100;
+  for (int i = 1; i < sz; i++) {
+    vec[i] = (gen() % 100) - 49;
+  }
+  return vec;
+}
+
+template std::vector<int> drozhdinov_d_gauss_vertical_scheme_seq::getRandomVector(int sz);
+template std::vector<double> drozhdinov_d_gauss_vertical_scheme_seq::getRandomVector(int sz);
+}  // namespace drozhdinov_d_gauss_vertical_scheme_seq
 
 TEST(drozhdinov_d_perf_test, test_pipeline_run) {
   int rows = 1000;
   int columns = 1000;
-  std::vector<int> a = drozhdinov_d_gauss_vertical_scheme_seq::getRandomVector(1);
+  std::vector<int> a = drozhdinov_d_gauss_vertical_scheme_seq::getRandomVector<int>(1);
   std::vector<double> matrix = genDenseMatrix(rows, *a.begin());
   std::vector<double> b(rows, 1);
   std::vector<double> expres(rows, 0);
@@ -54,7 +71,7 @@ TEST(drozhdinov_d_perf_test, test_pipeline_run) {
 TEST(drozhdinov_d_perf_test, test_task_run) {
   int rows = 1000;
   int columns = 1000;
-  std::vector<int> a = drozhdinov_d_gauss_vertical_scheme_seq::getRandomVector(1);
+  std::vector<int> a = drozhdinov_d_gauss_vertical_scheme_seq::getRandomVector<int>(1);
   std::vector<double> matrix = genDenseMatrix(rows, *a.begin());
   std::vector<double> b(rows, 1);
   std::vector<double> expres(rows, 0);

@@ -1,6 +1,6 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/drozhdinov_d_gauss_vertical_scheme/include/ops_seq.hpp"
-// not example
+
 #include <random>
 #include <thread>
 
@@ -46,16 +46,6 @@ std::vector<double> genDenseMatrix(int n, int a) {
     res[i] = (dense[i] + ed[i]);
   }
   return res;
-}
-
-std::vector<int> drozhdinov_d_gauss_vertical_scheme_seq::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
 }
 
 double myrnd(double value) { return (fabs(value - std::round(value)) < GAMMA ? std::round(value) : value); }

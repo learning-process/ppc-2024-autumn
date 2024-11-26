@@ -1,6 +1,6 @@
 // Copyright 2023 Nesterov Alexander
 #include "mpi/drozhdinov_d_gauss_vertical_scheme/include/ops_mpi.hpp"
-// not example
+
 #include <algorithm>
 #include <cmath>
 #include <functional>
@@ -272,20 +272,6 @@ std::vector<double> genElementaryMatrix(int rows, int columns) {
   }
   return res;
 }
-template <typename T>
-std::vector<T> drozhdinov_d_gauss_vertical_scheme_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<T> vec(sz);
-  vec[0] = gen() % 100;
-  for (int i = 1; i < sz; i++) {
-    vec[i] = (gen() % 100) - 49;
-  }
-  return vec;
-}
-
-template std::vector<int> drozhdinov_d_gauss_vertical_scheme_mpi::getRandomVector(int sz);
-template std::vector<double> drozhdinov_d_gauss_vertical_scheme_mpi::getRandomVector(int sz);
 
 bool drozhdinov_d_gauss_vertical_scheme_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();

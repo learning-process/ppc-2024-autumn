@@ -1,6 +1,6 @@
 // Copyright 2023 Nesterov Alexander
 #pragma once
-// not example
+
 #include <gtest/gtest.h>
 
 #include <boost/mpi/collectives.hpp>
@@ -20,8 +20,6 @@ double myrnd(double value);
 
 namespace drozhdinov_d_gauss_vertical_scheme_mpi {
 
-template <typename T>
-std::vector<T> getRandomVector(int sz);
 int Myrank(std::vector<double> matrix, int m, int n);
 std::vector<double> extendedMatrix(std::vector<double> A, int n, std::vector<double> b);
 double Determinant(const std::vector<double>& matrix, int n);

@@ -1,6 +1,6 @@
 // Copyright 2023 Nesterov Alexander
 #pragma once
-// not example
+
 #include <cmath>
 #include <string>
 #include <vector>
@@ -15,7 +15,6 @@ std::vector<double> genElementaryMatrix(int rows, int columns);
 double myrnd(double value);
 
 namespace drozhdinov_d_gauss_vertical_scheme_seq {
-std::vector<int> getRandomVector(int sz);
 int Myrank(std::vector<double> matrix, int m, int n);
 std::vector<double> extendedMatrix(const std::vector<double>& A, int n, const std::vector<double>& b);
 double Determinant(const std::vector<double>& matrix, int n);
