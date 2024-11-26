@@ -12,7 +12,7 @@
 using namespace shurigin_s_vertikal_shema;
 
 namespace shurigin_s_vertikal_shema {
-namespace test {
+namespace test_helpers {
 
 std::vector<int> generateRandomMatrix(int rows, int cols) {
   std::vector<int> matrix(rows * cols);
@@ -30,7 +30,7 @@ std::vector<int> generateRandomVector(int size) {
   return vector;
 }
 
-}  // namespace test
+}  // namespace test_helpers
 }  // namespace shurigin_s_vertikal_shema
 
 TEST(shurigin_s_vertikal_shema, proc_more_than_cols) {
