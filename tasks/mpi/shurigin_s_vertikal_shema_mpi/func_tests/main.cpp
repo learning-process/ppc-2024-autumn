@@ -2,12 +2,30 @@
 
 #include <boost/mpi/environment.hpp>
 #include <boost/mpi/timer.hpp>
+#include <cstdlib>
+#include <ctime>
 #include <memory>
 #include <vector>
 
 #include "mpi/shurigin_s_vertikal_shema_mpi/include/ops_mpi.hpp"
 
 using namespace shurigin_s_vertikal_shema;
+
+std::vector<int> getRandomMatrix(int rows, int cols) {
+  std::vector<int> matrix(rows * cols);
+  for (int i = 0; i < rows * cols; ++i) {
+    matrix[i] = (rand() % 21) - 10;  // Generate numbers from -10 to 10
+  }
+  return matrix;
+}
+
+std::vector<int> getRandomVector(int size) {
+  std::vector<int> vector(size);
+  for (int i = 0; i < size; ++i) {
+    vector[i] = (rand() % 21) - 10;  // Generate numbers from -10 to 10
+  }
+  return vector;
+}
 
 TEST(shurigin_s_vertikal_shema, proc_more_than_cols) {
   int rows = 4;
@@ -343,4 +361,176 @@ TEST(shurigin_s_vertikal_shema, prime_size_matrix) {
       ASSERT_EQ(global_result[i], expected_result[i]);
     }
   }
+}
+
+TEST(shurigin_s_vertikal_shema, matrix_16x32) {
+  boost::mpi::communicator world;
+
+  std::vector<int> global_matrix;
+  std::vector<int> global_vector;
+  std::vector<int> global_result;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  int num_rows = 16;
+  int num_cols = 32;
+
+  if (world.rank() == 0) {
+    global_matrix.resize(num_rows * num_cols);
+    for (int i = 0; i < num_rows * num_cols; ++i) {
+      global_matrix[i] = i + 1;
+    }
+
+    global_vector.resize(num_cols);
+    for (int i = 0; i < num_cols; ++i) {
+      global_vector[i] = i - num_cols / 2;
+    }
+
+    global_result.resize(num_rows, 0);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(global_matrix.size());
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector.data()));
+    taskDataPar->inputs_count.emplace_back(global_vector.size());
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
+    taskDataPar->outputs_count.emplace_back(global_result.size());
+  }
+
+  auto taskParallel = std::make_shared<TestTaskMPI>(taskDataPar);
+
+  ASSERT_TRUE(taskParallel->validation());
+  ASSERT_TRUE(taskParallel->pre_processing());
+  ASSERT_TRUE(taskParallel->run());
+  ASSERT_TRUE(taskParallel->post_processing());
+}
+
+TEST(shurigin_s_vertikal_shema, matrix_1x11) {
+  boost::mpi::communicator world;
+
+  std::vector<int> global_matrix;
+  std::vector<int> global_vector;
+  std::vector<int> global_result;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  int num_rows = 1;
+  int num_cols = 11;
+
+  if (world.rank() == 0) {
+    global_matrix.resize(num_rows * num_cols);
+    for (int i = 0; i < num_rows * num_cols; ++i) {
+      global_matrix[i] = i + 1;
+    }
+
+    global_vector.resize(num_cols);
+    for (int i = 0; i < num_cols; ++i) {
+      global_vector[i] = i - num_cols / 2;
+    }
+
+    global_result.resize(num_rows, 0);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(global_matrix.size());
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector.data()));
+    taskDataPar->inputs_count.emplace_back(global_vector.size());
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
+    taskDataPar->outputs_count.emplace_back(global_result.size());
+  }
+
+  auto taskParallel = std::make_shared<TestTaskMPI>(taskDataPar);
+
+  ASSERT_TRUE(taskParallel->validation());
+  ASSERT_TRUE(taskParallel->pre_processing());
+  ASSERT_TRUE(taskParallel->run());
+  ASSERT_TRUE(taskParallel->post_processing());
+}
+
+TEST(shurigin_s_vertikal_shema, matrix_7x7) {
+  boost::mpi::communicator world;
+
+  std::vector<int> global_matrix;
+  std::vector<int> global_vector;
+  std::vector<int> global_result;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  int num_rows = 7;
+  int num_cols = 7;
+
+  if (world.rank() == 0) {
+    global_matrix.resize(num_rows * num_cols);
+    for (int i = 0; i < num_rows * num_cols; ++i) {
+      global_matrix[i] = i + 1;
+    }
+
+    global_vector.resize(num_cols);
+    for (int i = 0; i < num_cols; ++i) {
+      global_vector[i] = i - num_cols / 2;
+    }
+
+    global_result.resize(num_rows, 0);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(global_matrix.size());
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector.data()));
+    taskDataPar->inputs_count.emplace_back(global_vector.size());
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
+    taskDataPar->outputs_count.emplace_back(global_result.size());
+  }
+
+  auto taskParallel = std::make_shared<TestTaskMPI>(taskDataPar);
+
+  ASSERT_TRUE(taskParallel->validation());
+  ASSERT_TRUE(taskParallel->pre_processing());
+  ASSERT_TRUE(taskParallel->run());
+  ASSERT_TRUE(taskParallel->post_processing());
+}
+
+TEST(shurigin_s_vertikal_shema, matrix_13x8) {
+  boost::mpi::communicator world;
+
+  std::vector<int> global_matrix;
+  std::vector<int> global_vector;
+  std::vector<int> global_result;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  int num_rows = 13;
+  int num_cols = 8;
+
+  if (world.rank() == 0) {
+    global_matrix.resize(num_rows * num_cols);
+    for (int i = 0; i < num_rows * num_cols; ++i) {
+      global_matrix[i] = i + 1;
+    }
+
+    global_vector.resize(num_cols);
+    for (int i = 0; i < num_cols; ++i) {
+      global_vector[i] = i - num_cols / 2;
+    }
+
+    global_result.resize(num_rows, 0);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(global_matrix.size());
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector.data()));
+    taskDataPar->inputs_count.emplace_back(global_vector.size());
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
+    taskDataPar->outputs_count.emplace_back(global_result.size());
+  }
+
+  auto taskParallel = std::make_shared<TestTaskMPI>(taskDataPar);
+
+  ASSERT_TRUE(taskParallel->validation());
+  ASSERT_TRUE(taskParallel->pre_processing());
+  ASSERT_TRUE(taskParallel->run());
+  ASSERT_TRUE(taskParallel->post_processing());
 }

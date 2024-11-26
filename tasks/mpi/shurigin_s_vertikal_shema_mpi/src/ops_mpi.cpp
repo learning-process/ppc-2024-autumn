@@ -13,22 +13,6 @@
 
 namespace shurigin_s_vertikal_shema {
 
-std::vector<int> getRandomMatrix(int rows, int cols) {
-  std::vector<int> matrix(rows * cols);
-  for (int i = 0; i < rows * cols; ++i) {
-    matrix[i] = (rand() % 21) - 10;  // Generate numbers from -10 to 10
-  }
-  return matrix;
-}
-
-std::vector<int> getRandomVector(int size) {
-  std::vector<int> vector(size);
-  for (int i = 0; i < size; ++i) {
-    vector[i] = (rand() % 21) - 10;  // Generate numbers from -10 to 10
-  }
-  return vector;
-}
-
 void calculate_distribution(int rows, int cols, int num_proc, std::vector<int>& sizes, std::vector<int>& displs) {
   sizes.resize(num_proc, 0);
   displs.resize(num_proc, -1);
@@ -82,6 +66,13 @@ bool TestTaskMPI::validation() {
   }
 
   const size_t num_rows = matrix_size / vector_size;
+  const size_t num_procs = world.size();
+
+  if (num_procs > vector_size) {
+    if (world.rank() >= vector_size) {
+      return true;
+    }
+  }
 
   return taskData->outputs_count[0] == num_rows;
 }

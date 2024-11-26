@@ -13,8 +13,6 @@
 
 namespace shurigin_s_vertikal_shema {
 
-std::vector<int> getRandomMatrix(int rows, int cols);
-std::vector<int> getRandomVector(int size);
 void calculate_distribution(int rows, int cols, int num_proc, std::vector<int>& sizes, std::vector<int>& displs);
 
 class TestTaskMPI : public ppc::core::Task {
