@@ -31,14 +31,14 @@ class Matrix_hA_vB_seq : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  int seq_cols_A{};
-  int seq_rows_A{};
-  int seq_cols_B{};
-  int seq_rows_B{};
+  int seq_cols_A;
+  int seq_rows_A;
+  int seq_cols_B;
+  int seq_rows_B;
 
-  std::vector<int> seq_A{};
-  std::vector<int> seq_B{};
-  std::vector<int> seq_result{};
+  std::vector<int> seq_A;
+  std::vector<int> seq_B;
+  std::vector<int> seq_result;
 };
 
 class Matrix_hA_vB_par : public ppc::core::Task {
@@ -50,17 +50,17 @@ class Matrix_hA_vB_par : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  int mpi_cols_A{};
-  int mpi_rows_A{};
-  int mpi_cols_B{};
-  int mpi_rows_B{};
+  int mpi_cols_A;
+  int mpi_rows_A;
+  int mpi_cols_B;
+  int mpi_rows_B;
 
-  std::vector<int> mpi_A{};
-  std::vector<int> mpi_B{};
-  std::vector<int> mpi_result{};
+  std::vector<int> mpi_A;
+  std::vector<int> mpi_B;
+  std::vector<int> mpi_result;
 
-  std::vector<int> size{};
-  std::vector<int> displ{};
+  std::vector<int> size;
+  std::vector<int> displ;
 
   boost::mpi::communicator world;
 };

@@ -30,9 +30,9 @@ class Matrix_hA_vB_seq : public ppc::core::Task {
   int seq_cols_B{};
   int seq_rows_B{};
 
-  std::vector<int> seq_A{};
-  std::vector<int> seq_B{};
-  std::vector<int> seq_result{};
+  std::vector<int> seq_A;
+  std::vector<int> seq_B;
+  std::vector<int> seq_result;
 };
 
 }  // namespace shulpin_strip_scheme_A_B

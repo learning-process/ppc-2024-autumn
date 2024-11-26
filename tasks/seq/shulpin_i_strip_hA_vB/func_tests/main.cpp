@@ -8,10 +8,10 @@
 #include "seq/shulpin_i_strip_hA_vB/include/strip_hA_vB.hpp"
 
 TEST(shulpin_strip_scheme_A_B, matrix_1x1) {
-  int rows_a = 1;
-  int cols_a = 1;
-  int rows_b = 1;
-  int cols_b = 1;
+  const int rows_a = 1;
+  const int cols_a = 1;
+  const int rows_b = 1;
+  const int cols_b = 1;
 
   std::vector<int> A = {2};
   std::vector<int> B = {3};
@@ -54,10 +54,10 @@ TEST(shulpin_strip_scheme_A_B, matrix_1x1) {
 }
 
 TEST(shulpin_strip_scheme_A_B, matrix_3x3) {
-  int rows_a = 3;
-  int cols_a = 3;
-  int rows_b = 3;
-  int cols_b = 3;
+  const int rows_a = 3;
+  const int cols_a = 3;
+  const int rows_b = 3;
+  const int cols_b = 3;
 
   std::vector<int> A = {1, 0, 2, 0, 3, 0, 4, 0, 5};
   std::vector<int> B = {1, 2, 3, 0, 4, 0, 5, 6, 7};
@@ -100,10 +100,10 @@ TEST(shulpin_strip_scheme_A_B, matrix_3x3) {
 }
 
 TEST(shulpin_strip_scheme_A_B, matrix_2x2) {
-  int rows_a = 2;
-  int cols_a = 2;
-  int rows_b = 2;
-  int cols_b = 2;
+  const int rows_a = 2;
+  const int cols_a = 2;
+  const int rows_b = 2;
+  const int cols_b = 2;
 
   std::vector<int> A = {1, 2, 3, 4};
   std::vector<int> B = {5, 6, 7, 8};
@@ -146,10 +146,10 @@ TEST(shulpin_strip_scheme_A_B, matrix_2x2) {
 }
 
 TEST(shulpin_strip_scheme_A_B, matrix_5x5) {
-  int rows_a = 5;
-  int cols_a = 5;
-  int rows_b = 5;
-  int cols_b = 5;
+  const int rows_a = 5;
+  const int cols_a = 5;
+  const int rows_b = 5;
+  const int cols_b = 5;
 
   std::vector<int> A = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25};
   std::vector<int> B = {25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
@@ -193,10 +193,10 @@ TEST(shulpin_strip_scheme_A_B, matrix_5x5) {
 }
 
 TEST(shulpin_strip_scheme_A_B, matrix_3x2_2x4) {
-  int rows_a = 3;
-  int cols_a = 2;
-  int rows_b = 2;
-  int cols_b = 4;
+  const int rows_a = 3;
+  const int cols_a = 2;
+  const int rows_b = 2;
+  const int cols_b = 4;
 
   std::vector<int> A = {1, 2, 3, 4, 5, 6};
   std::vector<int> B = {7, 8, 9, 10, 11, 12, 13, 14};
@@ -239,10 +239,10 @@ TEST(shulpin_strip_scheme_A_B, matrix_3x2_2x4) {
 }
 
 TEST(shulpin_strip_scheme_A_B, matrix_4x3_3x2) {
-  int rows_a = 4;
-  int cols_a = 3;
-  int rows_b = 3;
-  int cols_b = 2;
+  const int rows_a = 4;
+  const int cols_a = 3;
+  const int rows_b = 3;
+  const int cols_b = 2;
 
   std::vector<int> A = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
   std::vector<int> B = {1, 4, 2, 5, 3, 6};
@@ -285,10 +285,10 @@ TEST(shulpin_strip_scheme_A_B, matrix_4x3_3x2) {
 }
 
 TEST(shulpin_strip_scheme_A_B, matrix_1x5_5x1) {
-  int rows_a = 1;
-  int cols_a = 5;
-  int rows_b = 5;
-  int cols_b = 1;
+  const int rows_a = 1;
+  const int cols_a = 5;
+  const int rows_b = 5;
+  const int cols_b = 1;
 
   std::vector<int> A = {1, 2, 3, 4, 5};
   std::vector<int> B = {5, 4, 3, 2, 1};
@@ -331,10 +331,10 @@ TEST(shulpin_strip_scheme_A_B, matrix_1x5_5x1) {
 }
 
 TEST(shulpin_strip_scheme_A_B, matrix_5x1_1x5) {
-  int rows_a = 5;
-  int cols_a = 1;
-  int rows_b = 1;
-  int cols_b = 5;
+  const int rows_a = 5;
+  const int cols_a = 1;
+  const int rows_b = 1;
+  const int cols_b = 5;
 
   std::vector<int> A = {1, 2, 3, 4, 5};
   std::vector<int> B = {1, 2, 3, 4, 5};
@@ -377,10 +377,10 @@ TEST(shulpin_strip_scheme_A_B, matrix_5x1_1x5) {
 }
 
 TEST(shulpin_strip_scheme_A_B, matrix_2x4_4x3) {
-  int rows_a = 2;
-  int cols_a = 4;
-  int rows_b = 4;
-  int cols_b = 2;
+  const int rows_a = 2;
+  const int cols_a = 4;
+  const int rows_b = 4;
+  const int cols_b = 2;
 
   std::vector<int> A = {1, 2, 3, 4, 5, 6, 7, 8};
   std::vector<int> B = {1, 2, 3, 4, 5, 6, 7, 8};
@@ -423,10 +423,10 @@ TEST(shulpin_strip_scheme_A_B, matrix_2x4_4x3) {
 }
 
 TEST(shulpin_strip_scheme_A_B, matrix_4x2_2x3) {
-  int rows_a = 4;
-  int cols_a = 2;
-  int rows_b = 2;
-  int cols_b = 3;
+  const int rows_a = 4;
+  const int cols_a = 2;
+  const int rows_b = 2;
+  const int cols_b = 3;
 
   std::vector<int> A = {1, 2, 3, 4, 5, 6, 7, 8};
   std::vector<int> B = {1, 2, 3, 4, 5, 6};
