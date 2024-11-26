@@ -101,7 +101,9 @@ bool sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodParallelMPI::validati
   if (world.rank() != 0) {
     return true;
   }
-  return true;
+  int n_val = *reinterpret_cast<int*>(taskData->inputs[1]);
+  int matrix_size = taskData->inputs_count[0];
+  return n_val * (n_val + 1) == matrix_size;
 }
 
 bool sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodParallelMPI::pre_processing() {
@@ -204,8 +206,9 @@ bool sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodParallelMPI::post_pro
 
 bool sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodSequentialMPI::validation() {
   internal_order_test();
-
-  return true;
+  int n_val = *reinterpret_cast<int*>(taskData->inputs[1]);
+  int matrix_size = taskData->inputs_count[0];
+  return n_val * (n_val + 1) == matrix_size;
 }
 
 bool sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodSequentialMPI::pre_processing() {
@@ -256,9 +259,6 @@ bool sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodSequentialMPI::run() 
     }
 
     sarafanov_m_gauss_jordan_method_mpi::updateMatrix(n, k, matrix, iter_result);
-
-    // std::cout << "iter " << k << "\n";
-    // printMatrix(matrix, n, (n + 1));
   }
 
   return true;
