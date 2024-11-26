@@ -35,13 +35,17 @@ TEST(korovin_n_line_topology_mpi, test_task_run) {
   if (world.rank() == root) {
     data = korovin_n_line_topology_mpi::generate_rnd_vector(n);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
-    world.send(dst, 0, data);
+    if (root != dst) {
+      world.send(dst, 0, data);
+    }
   }
 
   if (world.rank() == dst) {
     int trajectory_size = dst - root + 1;
 
-    world.recv(root, 0, data);
+    if (root != dst) {
+      world.recv(root, 0, data);
+    }
 
     received_data.resize(n);
     received_trajectory.resize(trajectory_size);
@@ -96,13 +100,17 @@ TEST(korovin_n_line_topology_mpi, test_pipeline_run) {
   if (world.rank() == root) {
     data = korovin_n_line_topology_mpi::generate_rnd_vector(n);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
-    world.send(dst, 0, data);
+    if (root != dst) {
+      world.send(dst, 0, data);
+    }
   }
 
   if (world.rank() == dst) {
     int trajectory_size = dst - root + 1;
 
-    world.recv(root, 0, data);
+    if (root != dst) {
+      world.recv(root, 0, data);
+    }
 
     received_data.resize(n);
     received_trajectory.resize(trajectory_size);

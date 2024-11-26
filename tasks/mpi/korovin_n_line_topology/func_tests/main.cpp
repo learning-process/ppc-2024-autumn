@@ -20,11 +20,6 @@ std::vector<int> generate_rnd_vector(int size, int lower_bound = -500, int upper
 TEST(korovin_n_line_topology_mpi, transfer_data) {
   boost::mpi::communicator world;
 
-  if (world.size() < 2) {
-    GTEST_SKIP() << "There are not enough processes to run this test";
-    return;
-  }
-
   int n = 10000;
   auto root = 0;
   auto dst = world.size() - 1;
@@ -41,12 +36,16 @@ TEST(korovin_n_line_topology_mpi, transfer_data) {
   if (world.rank() == root) {
     data = korovin_n_line_topology_mpi::generate_rnd_vector(n);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
-    world.send(dst, 0, data);
+    if (root != dst) {
+      world.send(dst, 0, data);
+    }
   }
   if (world.rank() == dst) {
     int trajectory_size = dst - root + 1;
 
-    world.recv(root, 0, data);
+    if (root != dst) {
+      world.recv(root, 0, data);
+    }
 
     received_data.resize(n);
     received_trajectory.resize(trajectory_size);
@@ -76,17 +75,12 @@ TEST(korovin_n_line_topology_mpi, transfer_data) {
 TEST(korovin_n_line_topology_mpi, transfer_data_random) {
   boost::mpi::communicator world;
 
-  if (world.size() < 2) {
-    GTEST_SKIP() << "There are not enough processes to run this test";
-    return;
-  }
-
   int n = 10000;
 
   std::srand(static_cast<unsigned int>(std::time(nullptr)) / 1000);
-  int root = std::rand() % (world.size() - 1);
+  int root = std::rand() % (world.size());
 
-  int dst = (root + 1) + (world.size() > root + 1 ? std::rand() % (world.size() - (root + 1)) : 0);
+  int dst = root + std::rand() % (world.size() - root);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs_count.emplace_back(root);
@@ -100,12 +94,16 @@ TEST(korovin_n_line_topology_mpi, transfer_data_random) {
   if (world.rank() == root) {
     data = korovin_n_line_topology_mpi::generate_rnd_vector(n);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
-    world.send(dst, 0, data);
+    if (root != dst) {
+      world.send(dst, 0, data);
+    }
   }
   if (world.rank() == dst) {
     int trajectory_size = dst - root + 1;
 
-    world.recv(root, 0, data);
+    if (root != dst) {
+      world.recv(root, 0, data);
+    }
 
     received_data.resize(n);
     received_trajectory.resize(trajectory_size);
@@ -135,11 +133,6 @@ TEST(korovin_n_line_topology_mpi, transfer_data_random) {
 TEST(korovin_n_line_topology_mpi, validation_inputs_count_less_3) {
   boost::mpi::communicator world;
 
-  if (world.size() < 2) {
-    GTEST_SKIP() << "There are not enough processes to run this test";
-    return;
-  }
-
   int n = 10000;
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
@@ -151,11 +144,6 @@ TEST(korovin_n_line_topology_mpi, validation_inputs_count_less_3) {
 
 TEST(korovin_n_line_topology_mpi, validation_invalid_root) {
   boost::mpi::communicator world;
-
-  if (world.size() < 2) {
-    GTEST_SKIP() << "There are not enough processes to run this test";
-    return;
-  }
 
   int n = 10000;
   int root = -1;
@@ -173,11 +161,6 @@ TEST(korovin_n_line_topology_mpi, validation_invalid_root) {
 TEST(korovin_n_line_topology_mpi, validation_invalid_dst) {
   boost::mpi::communicator world;
 
-  if (world.size() < 2) {
-    GTEST_SKIP() << "There are not enough processes to run this test";
-    return;
-  }
-
   int n = 10000;
   int root = 0;
   int dst = -1;
@@ -194,11 +177,6 @@ TEST(korovin_n_line_topology_mpi, validation_invalid_dst) {
 TEST(korovin_n_line_topology_mpi, validation_invalid_num_of_elements) {
   boost::mpi::communicator world;
 
-  if (world.size() < 2) {
-    GTEST_SKIP() << "There are not enough processes to run this test";
-    return;
-  }
-
   int n = -25;
   int root = 0;
   int dst = world.size() - 1;
@@ -214,11 +192,6 @@ TEST(korovin_n_line_topology_mpi, validation_invalid_num_of_elements) {
 
 TEST(korovin_n_line_topology_mpi, validation_miss_input_data_on_root) {
   boost::mpi::communicator world;
-
-  if (world.size() < 2) {
-    GTEST_SKIP() << "There are not enough processes to run this test";
-    return;
-  }
 
   int n = 10000;
   int root = 0;
@@ -239,11 +212,6 @@ TEST(korovin_n_line_topology_mpi, validation_miss_input_data_on_root) {
 
 TEST(korovin_n_line_topology_mpi, validation_miss_output_data_on_dst) {
   boost::mpi::communicator world;
-
-  if (world.size() < 2) {
-    GTEST_SKIP() << "There are not enough processes to run this test";
-    return;
-  }
 
   int n = 10000;
   auto root = 0;
@@ -271,11 +239,6 @@ TEST(korovin_n_line_topology_mpi, validation_miss_output_data_on_dst) {
 TEST(korovin_n_line_topology_mpi, validation_invalid_num_of_elements_zero) {
   boost::mpi::communicator world;
 
-  if (world.size() < 2) {
-    GTEST_SKIP() << "There are not enough processes to run this test";
-    return;
-  }
-
   int n = 0;
   int root = 0;
   int dst = world.size() - 1;
@@ -291,11 +254,6 @@ TEST(korovin_n_line_topology_mpi, validation_invalid_num_of_elements_zero) {
 
 TEST(korovin_n_line_topology_mpi, transfer_data_num_of_elements_1024) {
   boost::mpi::communicator world;
-
-  if (world.size() < 2) {
-    GTEST_SKIP() << "There are not enough processes to run this test";
-    return;
-  }
 
   int n = 1024;
   auto root = 0;
@@ -313,12 +271,16 @@ TEST(korovin_n_line_topology_mpi, transfer_data_num_of_elements_1024) {
   if (world.rank() == root) {
     data = korovin_n_line_topology_mpi::generate_rnd_vector(n);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
-    world.send(dst, 0, data);
+    if (root != dst) {
+      world.send(dst, 0, data);
+    }
   }
   if (world.rank() == dst) {
     int trajectory_size = dst - root + 1;
 
-    world.recv(root, 0, data);
+    if (root != dst) {
+      world.recv(root, 0, data);
+    }
 
     received_data.resize(n);
     received_trajectory.resize(trajectory_size);
@@ -348,11 +310,6 @@ TEST(korovin_n_line_topology_mpi, transfer_data_num_of_elements_1024) {
 TEST(korovin_n_line_topology_mpi, transfer_data_num_of_elements_2048) {
   boost::mpi::communicator world;
 
-  if (world.size() < 2) {
-    GTEST_SKIP() << "There are not enough processes to run this test";
-    return;
-  }
-
   int n = 2048;
   auto root = 0;
   auto dst = world.size() - 1;
@@ -369,12 +326,16 @@ TEST(korovin_n_line_topology_mpi, transfer_data_num_of_elements_2048) {
   if (world.rank() == root) {
     data = korovin_n_line_topology_mpi::generate_rnd_vector(n);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
-    world.send(dst, 0, data);
+    if (root != dst) {
+      world.send(dst, 0, data);
+    }
   }
   if (world.rank() == dst) {
     int trajectory_size = dst - root + 1;
 
-    world.recv(root, 0, data);
+    if (root != dst) {
+      world.recv(root, 0, data);
+    }
 
     received_data.resize(n);
     received_trajectory.resize(trajectory_size);
@@ -404,11 +365,6 @@ TEST(korovin_n_line_topology_mpi, transfer_data_num_of_elements_2048) {
 TEST(korovin_n_line_topology_mpi, transfer_data_num_of_elements_4096) {
   boost::mpi::communicator world;
 
-  if (world.size() < 2) {
-    GTEST_SKIP() << "There are not enough processes to run this test";
-    return;
-  }
-
   int n = 4096;
   auto root = 0;
   auto dst = world.size() - 1;
@@ -425,12 +381,16 @@ TEST(korovin_n_line_topology_mpi, transfer_data_num_of_elements_4096) {
   if (world.rank() == root) {
     data = korovin_n_line_topology_mpi::generate_rnd_vector(n);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
-    world.send(dst, 0, data);
+    if (root != dst) {
+      world.send(dst, 0, data);
+    }
   }
   if (world.rank() == dst) {
     int trajectory_size = dst - root + 1;
 
-    world.recv(root, 0, data);
+    if (root != dst) {
+      world.recv(root, 0, data);
+    }
 
     received_data.resize(n);
     received_trajectory.resize(trajectory_size);
@@ -460,11 +420,6 @@ TEST(korovin_n_line_topology_mpi, transfer_data_num_of_elements_4096) {
 TEST(korovin_n_line_topology_mpi, transfer_data_num_of_elements_8192) {
   boost::mpi::communicator world;
 
-  if (world.size() < 2) {
-    GTEST_SKIP() << "There are not enough processes to run this test";
-    return;
-  }
-
   int n = 8192;
   auto root = 0;
   auto dst = world.size() - 1;
@@ -481,12 +436,16 @@ TEST(korovin_n_line_topology_mpi, transfer_data_num_of_elements_8192) {
   if (world.rank() == root) {
     data = korovin_n_line_topology_mpi::generate_rnd_vector(n);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
-    world.send(dst, 0, data);
+    if (root != dst) {
+      world.send(dst, 0, data);
+    }
   }
   if (world.rank() == dst) {
     int trajectory_size = dst - root + 1;
 
-    world.recv(root, 0, data);
+    if (root != dst) {
+      world.recv(root, 0, data);
+    }
 
     received_data.resize(n);
     received_trajectory.resize(trajectory_size);
@@ -516,11 +475,6 @@ TEST(korovin_n_line_topology_mpi, transfer_data_num_of_elements_8192) {
 TEST(korovin_n_line_topology_mpi, transfer_data_num_of_elements_1499) {
   boost::mpi::communicator world;
 
-  if (world.size() < 2) {
-    GTEST_SKIP() << "There are not enough processes to run this test";
-    return;
-  }
-
   int n = 1499;
   auto root = 0;
   auto dst = world.size() - 1;
@@ -537,12 +491,16 @@ TEST(korovin_n_line_topology_mpi, transfer_data_num_of_elements_1499) {
   if (world.rank() == root) {
     data = korovin_n_line_topology_mpi::generate_rnd_vector(n);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
-    world.send(dst, 0, data);
+    if (root != dst) {
+      world.send(dst, 0, data);
+    }
   }
   if (world.rank() == dst) {
     int trajectory_size = dst - root + 1;
 
-    world.recv(root, 0, data);
+    if (root != dst) {
+      world.recv(root, 0, data);
+    }
 
     received_data.resize(n);
     received_trajectory.resize(trajectory_size);
@@ -572,11 +530,6 @@ TEST(korovin_n_line_topology_mpi, transfer_data_num_of_elements_1499) {
 TEST(korovin_n_line_topology_mpi, transfer_data_num_of_elements_2039) {
   boost::mpi::communicator world;
 
-  if (world.size() < 2) {
-    GTEST_SKIP() << "There are not enough processes to run this test";
-    return;
-  }
-
   int n = 2039;
   auto root = 0;
   auto dst = world.size() - 1;
@@ -593,12 +546,16 @@ TEST(korovin_n_line_topology_mpi, transfer_data_num_of_elements_2039) {
   if (world.rank() == root) {
     data = korovin_n_line_topology_mpi::generate_rnd_vector(n);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
-    world.send(dst, 0, data);
+    if (root != dst) {
+      world.send(dst, 0, data);
+    }
   }
   if (world.rank() == dst) {
     int trajectory_size = dst - root + 1;
 
-    world.recv(root, 0, data);
+    if (root != dst) {
+      world.recv(root, 0, data);
+    }
 
     received_data.resize(n);
     received_trajectory.resize(trajectory_size);
@@ -628,11 +585,6 @@ TEST(korovin_n_line_topology_mpi, transfer_data_num_of_elements_2039) {
 TEST(korovin_n_line_topology_mpi, transfer_data_usual_vector) {
   boost::mpi::communicator world;
 
-  if (world.size() < 2) {
-    GTEST_SKIP() << "There are not enough processes to run this test";
-    return;
-  }
-
   int n = 15;
   auto root = 0;
   auto dst = world.size() - 1;
@@ -648,12 +600,16 @@ TEST(korovin_n_line_topology_mpi, transfer_data_usual_vector) {
 
   if (world.rank() == root) {
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
-    world.send(dst, 0, data);
+    if (root != dst) {
+      world.send(dst, 0, data);
+    }
   }
   if (world.rank() == dst) {
     int trajectory_size = dst - root + 1;
 
-    world.recv(root, 0, data);
+    if (root != dst) {
+      world.recv(root, 0, data);
+    }
 
     received_data.resize(n);
     received_trajectory.resize(trajectory_size);

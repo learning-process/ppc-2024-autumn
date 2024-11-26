@@ -44,6 +44,10 @@ bool korovin_n_line_topology_mpi::TestMPITaskParallel::run() {
   int root = taskData->inputs_count[0];
   int dst = taskData->inputs_count[1];
 
+  if (root == dst) {
+    return true;
+  }
+
   if (world.rank() < root || world.rank() > dst) {
     return true;
   }
