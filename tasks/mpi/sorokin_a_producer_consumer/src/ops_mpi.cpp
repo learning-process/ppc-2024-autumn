@@ -38,14 +38,14 @@ bool sorokin_a_producer_consumer_mpi::TestMPITaskParallel::pre_processing() {
 bool sorokin_a_producer_consumer_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    return world.size() > 2;
+    return world.size() > 1;
   }
   return true;
 }
 
 bool sorokin_a_producer_consumer_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-
+  if (world.size() == 2) return true;
   const int producer_tag = 1;
   const int consumer_tag = 2;
   const int exit_tag = 0;

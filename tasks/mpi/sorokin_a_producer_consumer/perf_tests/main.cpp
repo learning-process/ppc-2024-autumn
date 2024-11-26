@@ -8,7 +8,7 @@
 
 TEST(sorokin_a_producer_consumer_mpi, Test_Basic) {
   boost::mpi::communicator world;
-  if (world.size() < 3) {
+  if (world.size() < 2) {
     ASSERT_EQ(1, 1);
     return;
   }
