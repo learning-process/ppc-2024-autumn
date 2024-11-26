@@ -2,6 +2,10 @@ name: Static analysis
 
 on: [pull_request]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   clang-tidy:
     runs-on: ubuntu-latest
@@ -9,8 +13,6 @@ jobs:
     - uses: actions/checkout@v4
       with:
         submodules: recursive
-    - name: Update submodules
-      run: git submodule update --init --recursive
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
@@ -36,8 +38,6 @@ jobs:
     - uses: actions/checkout@v4
       with:
         submodules: recursive
-    - name: Update submodules
-      run: git submodule update --init --recursive
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
@@ -53,4 +53,6 @@ jobs:
         split_workflow: true
         lgtm_comment_body: ""
     - if: steps.review.outputs.total_comments > 0
-      run: exit 1
+      run: |
+        echo "clang-tidy run has failed. See previous 'Run clang-tidy' stage logs"
+        exit 1
