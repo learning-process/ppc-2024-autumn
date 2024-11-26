@@ -1,5 +1,7 @@
 #ifndef OPS_SEQ_HPP
 #define OPS_SEQ_HPP
+#include <memory.h>
+
 #include <algorithm>
 #include <cmath>
 #include <iostream>
