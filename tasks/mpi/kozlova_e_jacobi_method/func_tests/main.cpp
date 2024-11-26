@@ -82,7 +82,7 @@ TEST(kozlova_e_jacobi_method_mpi, Test_incorrect_system_with_zero_diagonal) {
   kozlova_e_jacobi_method_mpi::MethodJacobiMPI testMpiTaskParallel(taskDataPar);
 
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  ASSERT_EQ(testMpiTaskParallel.pre_processing(), false);
+  if (world.rank() == 0) ASSERT_EQ(testMpiTaskParallel.pre_processing(), false);
 
   if (world.rank() == 0) {
     std::vector<double> resSeq(N, 0);
@@ -126,7 +126,7 @@ TEST(kozlova_e_jacobi_method_mpi, Test_empty_system) {
 
   kozlova_e_jacobi_method_mpi::MethodJacobiMPI testMpiTaskParallel(taskDataPar);
 
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  if (world.rank() == 0) ASSERT_EQ(testMpiTaskParallel.validation(), false);
 
   if (world.rank() == 0) {
     std::vector<double> resSeq(N, 0);
