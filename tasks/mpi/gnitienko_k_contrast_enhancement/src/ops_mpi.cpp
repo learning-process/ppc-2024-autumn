@@ -54,7 +54,8 @@ bool gnitienko_k_contrast_enhancement_mpi::ContrastEnhanceMPI::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     // Check count elements of output
-    return taskData->inputs_count[0] == taskData->outputs_count[0] && taskData->inputs_count[0] >= 0;
+    return taskData->inputs_count[0] == taskData->outputs_count[0] && taskData->inputs_count[0] >= 0 &&
+           *reinterpret_cast<double*>(taskData->inputs[1]) >= 0;
   }
   return true;
 }

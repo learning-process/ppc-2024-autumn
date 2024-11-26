@@ -13,7 +13,7 @@ std::vector<uint8_t> getRandomVector(int sz) {
   std::mt19937 gen(dev());
   std::vector<uint8_t> vec(sz);
   for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 255;
+    vec[i] = gen() % 256;
   }
   return vec;
 }
