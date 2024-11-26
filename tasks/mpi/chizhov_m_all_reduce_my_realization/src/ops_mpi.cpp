@@ -56,7 +56,7 @@ bool chizhov_m_all_reduce_my_mpi::TestMPITaskSequential::run() {
 
   for (int j = 0; j < cols; j++) {
     for (int i = 0; i < rows; i++) {
-      if (input_[i * cols + j] < res_[j]){
+      if (input_[i * cols + j] < res_[j]) {
         sum[j]++;
       }
     }
@@ -110,9 +110,10 @@ bool chizhov_m_all_reduce_my_mpi::TestMPITaskMyOwnParallel::validation() {
   return true;
 }
 
-template<typename T>
+template <typename T>
 void chizhov_m_all_reduce_my_mpi::TestMPITaskMyOwnParallel::my_all_reduce(const boost::mpi::communicator& comm,
-                                                                       const T* in_values, T* out_values, int n, int root) {
+                                                                          const T* in_values, T* out_values, int n, 
+                                                                          int root) {
 
   std::vector<T> left_values(n);
   std::vector<T> right_values(n);
@@ -159,7 +160,7 @@ void chizhov_m_all_reduce_my_mpi::TestMPITaskMyOwnParallel::my_all_reduce(const 
   if (right_child < world.size()) {
     comm.send(right_child, 0, out_values, n);
   }
- }
+}
 
 bool chizhov_m_all_reduce_my_mpi::TestMPITaskMyOwnParallel::run() {
   internal_order_test();

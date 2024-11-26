@@ -4,11 +4,10 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <iomanip>
-#include <vector>
 #include <random>
+#include <vector>
 
 #include "mpi/chizhov_m_all_reduce_my_realization/include/ops_mpi.hpp"
-
 
 std::vector<int> chizhov_m_all_reduce_my_mpi::getRandomVector(int sz) {
   std::random_device dev;
@@ -97,12 +96,12 @@ TEST(chizhov_m_all_reduce_my_realization_func_test, My_Realization_Test_1) {
     const int count_size_vector = cols * rows;
     matrix = chizhov_m_all_reduce_my_mpi::getRandomVector(count_size_vector);
 
-     std::cout << "Matrix" << std::endl;
+    std::cout << "Matrix" << std::endl;
     for (int i = 0; i < rows; ++i) {
       for (int j = 0; j < cols; ++j) {
-        std::cout << std::setw(2) << matrix[i * cols + j] << " ";  
+        std::cout << std::setw(2) << matrix[i * cols + j] << " ";
       }
-      std::cout << std::endl;  
+      std::cout << std::endl;
     }
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));

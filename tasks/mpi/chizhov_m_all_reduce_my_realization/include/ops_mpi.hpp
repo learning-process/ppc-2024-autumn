@@ -40,7 +40,7 @@ class TestMPITaskMyOwnParallel : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  template<typename T>
+  template <typename T>
   void my_all_reduce(const boost::mpi::communicator& world, const T* in_values, T* out_values, int n, int root);
 
  private:
@@ -54,4 +54,4 @@ class TestMPITaskMyOwnParallel : public ppc::core::Task {
 };
 
 
-}  // namespace chizhov_m_all_reduce_mpi
+}  // namespace chizhov_m_all_reduce_my_mpi
