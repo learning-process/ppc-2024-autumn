@@ -593,7 +593,7 @@ void kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::to_lower_diag_m
   }
   MPI_Bcast(lower_displs, n_rows * size, MPI_INT, 0, MPI_COMM_WORLD);
 }
-
+//
 kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::~TestMPITaskParallel() {
   int ProcRank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
