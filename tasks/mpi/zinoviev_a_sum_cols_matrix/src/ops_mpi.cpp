@@ -66,6 +66,22 @@ bool zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel::pre_processing() {
   if (mpiWorld.rank() == 0) {
     numRows = taskData->inputs_count[2];
     numCols = taskData->inputs_count[1];
+
+    broadcast(mpiWorld, numCols, 0);
+    broadcast(mpiWorld, numRows, 0);
+
+    if (mpiWorld.rank() == 0) {
+      // Initialize the input vector
+      inputData_ = std::vector<int>(taskData->inputs_count[0]);
+      auto* temp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+      for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
+        inputData_[i] = temp_ptr[i];
+      }
+    } else {
+      inputData_ = std::vector<int>(numCols * numRows);
+    }
+
+    broadcast(mpiWorld, inputData_.data(), numCols * numRows, 0);
   }
 
   resultData_ = std::vector<int>(numCols, 0);
@@ -83,20 +99,6 @@ bool zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel::validation() {
 
 bool zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-
-  broadcast(mpiWorld, numCols, 0);
-  broadcast(mpiWorld, numRows, 0);
-
-  if (mpiWorld.rank() == 0) {
-    // Initialize the input vector
-    inputData_ = std::vector<int>(taskData->inputs_count[0]);
-    auto* temp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
-      inputData_[i] = temp_ptr[i];
-    }
-  } else {
-    inputData_ = std::vector<int>(numCols * numRows);
-  }
 
   int sizePerTask = numCols / mpiWorld.size();
   sizePerTask += (numCols % mpiWorld.size() == 0) ? 0 : 1;
