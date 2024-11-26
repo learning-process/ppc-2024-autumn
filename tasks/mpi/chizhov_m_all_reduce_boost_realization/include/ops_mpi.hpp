@@ -27,10 +27,10 @@ class TestMPITaskSequential : public ppc::core::Task {
 
  private:
   std::vector<int> input_;
-  std::vector<int> res_{};
+  std::vector<int> res_;
   int cols{};
   int rows{};
-  std::vector<int> sum{};
+  std::vector<int> sum;
 };
 
 class TestMPITaskBoostParallel : public ppc::core::Task {
@@ -42,12 +42,12 @@ class TestMPITaskBoostParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> input_{};
-  std::vector<int> local_input_{};
-  std::vector<int> res_{};
+  std::vector<int> input_;
+  std::vector<int> local_input_;
+  std::vector<int> res_;
   int cols{};
   int rows{};
-  std::vector<int> sum{};
+  std::vector<int> sum;
   boost::mpi::communicator world;
 };
 

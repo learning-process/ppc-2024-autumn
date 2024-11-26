@@ -27,10 +27,10 @@ class TestMPITaskSequential : public ppc::core::Task {
 
  private:
   std::vector<int> input_;
-  std::vector<int> res_{};
+  std::vector<int> res_;
   int cols{};
   int rows{};
-  std::vector<int> sum{};
+  std::vector<int> sum;
 };
 
 class TestMPITaskMyOwnParallel : public ppc::core::Task {
@@ -44,10 +44,10 @@ class TestMPITaskMyOwnParallel : public ppc::core::Task {
   void my_all_reduce(const boost::mpi::communicator& world, const T* in_values, T* out_values, int n);
 
  private:
-  std::vector<int> input_{};
-  std::vector<int> local_input_{};
-  std::vector<int> res_{};
-  std::vector<int> sum{};
+  std::vector<int> input_;
+  std::vector<int> local_input_;
+  std::vector<int> res_;
+  std::vector<int> sum;
   int cols{};
   int rows{};
   boost::mpi::communicator world;
