@@ -1,8 +1,10 @@
 #include <gtest/gtest.h>
+
 #include <boost/mpi.hpp>
-#include <vector>
 #include <numeric>
 #include <random>
+#include <vector>
+
 #include "mpi/anufriev_d_star_topology/include/ops_mpi_anufriev.hpp"
 
 std::vector<int> createInputVector(size_t size, int initialValue = 0, int step = 1) {
@@ -115,44 +117,44 @@ TEST(anufriev_d_star_topology, LargeVectorTest) {
 }
 
 TEST(anufriev_d_star_topology, SimpleIntTest) {
-    boost::mpi::communicator world;
-    std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-    std::vector<int> input_data;
-    std::vector<int> output_data;
+  boost::mpi::communicator world;
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  std::vector<int> input_data;
+  std::vector<int> output_data;
 
-    if (world.rank() == 0) {
-        input_data = {1, 2, 3, 4, 5};
-        taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
-        taskData->inputs_count.push_back(input_data.size());
+  if (world.rank() == 0) {
+     input_data = {1, 2, 3, 4, 5};
+     taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
+     taskData->inputs_count.push_back(input_data.size());
 
-        output_data.resize(input_data.size());
-        taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output_data.data()));
-        taskData->outputs_count.push_back(output_data.size());
-    }
-
-
-    anufriev_d_star_topology::SimpleIntMPI task(taskData);
-    ASSERT_TRUE(task.validation());
-    ASSERT_TRUE(task.pre_processing());
-    ASSERT_TRUE(task.run());
-    ASSERT_TRUE(task.post_processing());
+     output_data.resize(input_data.size());
+     taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output_data.data()));
+     taskData->outputs_count.push_back(output_data.size());
+  }
 
 
-    if (world.rank() == 0) {
+  anufriev_d_star_topology::SimpleIntMPI task(taskData);
+  ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
 
-        if (world.size() == 1)
-        {
-           ASSERT_EQ(output_data, std::vector<int>({1, 2, 3, 4, 5}));
-        }
-        if (world.size() == 2)
-        {
-            ASSERT_EQ(output_data, std::vector<int>({2, 4, 6, 8, 10}));
-        }
-        if (world.size() == 3)
-        {
-            ASSERT_EQ(output_data, std::vector<int>({3, 6, 9, 12, 15}));
-        }
-    }
+
+  if (world.rank() == 0) {
+
+     if (world.size() == 1)
+     {
+         ASSERT_EQ(output_data, std::vector<int>({1, 2, 3, 4, 5}));
+     }
+     if (world.size() == 2)
+     {
+         ASSERT_EQ(output_data, std::vector<int>({2, 4, 6, 8, 10}));
+     }
+     if (world.size() == 3)
+     {
+         ASSERT_EQ(output_data, std::vector<int>({3, 6, 9, 12, 15}));
+     }
+  }
 }
 
 TEST(anufriev_d_star_topology, SimpleIntTest_1) {
