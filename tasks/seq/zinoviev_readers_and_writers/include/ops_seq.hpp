@@ -18,5 +18,4 @@ class ReadersWritersTaskSequential : public ppc::core::Task {
  private:
   int input_{}, res{};
 };
-
-}
+}  // namespace zinoviev_a_readers_and_writers_seq

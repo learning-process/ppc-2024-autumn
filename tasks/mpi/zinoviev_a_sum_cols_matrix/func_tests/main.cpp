@@ -3,8 +3,8 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <vector>
 #include <random>
+#include <vector>
 
 #include "mpi/zinoviev_a_sum_cols_matrix/include/ops_mpi.hpp"
 
@@ -154,6 +154,9 @@ TEST(zinoviev_a_sum_cols_matrix_mpi, SmallMatrixTest) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
+    // Check if expected_result is correctly filled
+    ASSERT_EQ(expected_result, ans);
+
     // Create data
     std::vector<int> expected_seq(cols, 0);
 
@@ -207,6 +210,9 @@ TEST(zinoviev_a_sum_cols_matrix_mpi, LargeMatrixTest) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
+    // Check if expected_result is correctly filled
+    ASSERT_EQ(expected_result, ans);
+
     // Create data
     std::vector<int> expected_seq(cols, 0);
 
