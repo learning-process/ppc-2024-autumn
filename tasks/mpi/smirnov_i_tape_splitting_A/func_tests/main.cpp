@@ -81,7 +81,7 @@ TEST(smirnov_i_tape_splitting_A_mpi, cant_mult_matrix_wrong_sizes) {
   }
   smirnov_i_tape_splitting_A::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), false);
-  if(world.rank() == 0) {
+  if (world.rank() == 0) {
     delete[] A;
     delete[] B;
     delete[] res;
