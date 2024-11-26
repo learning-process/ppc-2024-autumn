@@ -1,5 +1,7 @@
 #include "seq/kholin_k_iterative_methods_Seidel/include/ops_seq.hpp"
 
+#include <memory.h>
+
 #include <thread>
 //
 

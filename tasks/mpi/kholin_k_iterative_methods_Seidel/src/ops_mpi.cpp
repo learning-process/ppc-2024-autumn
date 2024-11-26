@@ -1,12 +1,13 @@
 #include "mpi/kholin_k_iterative_methods_Seidel/include/ops_mpi.hpp"
 
+#include <memory.h>
+
 #include <algorithm>
 #include <functional>
 #include <random>
 #include <string>
 #include <thread>
 #include <vector>
-
 using namespace std::chrono_literals;
 //
 namespace kholin_k_iterative_methods_Seidel_mpi {
@@ -622,3 +623,4 @@ MPI_Datatype kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::get_mpi
   MPI_Type_commit(&sz_t);
   return sz_t;
 }
+

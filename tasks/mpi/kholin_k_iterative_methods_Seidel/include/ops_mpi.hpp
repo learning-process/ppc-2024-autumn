@@ -6,6 +6,7 @@
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <cmath>
+#include <cstring>
 #include <functional>
 #include <memory>
 #include <numeric>
@@ -88,7 +89,6 @@ class TestMPITaskParallel : public ppc::core::Task {
   int* lower_send_counts;
   int* local_upper_counts;
   int* local_lower_counts;
-  int upper_proc_size;
   int* upper_displs;
   int* lower_displs;
   size_t n_rows;
