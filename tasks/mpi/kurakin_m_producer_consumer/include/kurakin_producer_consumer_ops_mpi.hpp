@@ -15,8 +15,6 @@
 
 namespace kurakin_m_producer_consumer_mpi {
 
-std::vector<int> getRandomVector(int sz, int start, int end);
-
 int getRandomInt(int start, int end);
 
 class TestMPITaskParallel : public ppc::core::Task {

@@ -3,9 +3,24 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <numeric>
+#include <random>
 #include <vector>
 
 #include "mpi/kurakin_m_producer_consumer/include/kurakin_producer_consumer_ops_mpi.hpp"
+
+namespace kurakin_m_producer_consumer_mpi {
+
+std::vector<int> getRandomVector(int sz, int start = 0, int end = 100) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = gen() % (end - start) + start;
+  }
+  return vec;
+}
+
+}  // namespace kurakin_m_producer_consumer_mpi
 
 TEST(kurakin_m_producer_consumer_mpi, Test_prod_half_of_the_proc_data_counts_10) {
   boost::mpi::communicator world;

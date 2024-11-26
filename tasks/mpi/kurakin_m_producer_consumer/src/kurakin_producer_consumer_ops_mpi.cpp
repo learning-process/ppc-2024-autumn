@@ -8,18 +8,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
-std::vector<int> kurakin_m_producer_consumer_mpi::getRandomVector(int sz, int start = 0, int end = 100) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % (end - start) + start;
-  }
-  return vec;
-}
-
 int kurakin_m_producer_consumer_mpi::getRandomInt(int start = 0, int end = 100) {
   std::random_device dev;
   std::mt19937 gen(dev());
