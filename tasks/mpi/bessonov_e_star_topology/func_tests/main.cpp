@@ -48,7 +48,7 @@ TEST(bessonov_e_star_topology_mpi, DataTransmissionTest) {
   if (world.rank() == 0) {
     // Checking that the data has not changed
     for (int i = 0; i < data_size; ++i) {
-      ASSERT_EQ(output_data[i], input_data[i]) << "The data has changed on the index " << i;
+      ASSERT_EQ(output_data[i], input_data[i]);
     }
 
     // Checking the traversal order
@@ -60,7 +60,7 @@ TEST(bessonov_e_star_topology_mpi, DataTransmissionTest) {
     }
 
     for (int i = 0; i < traversal_size; ++i) {
-      ASSERT_EQ(traversal_order[i], expected_traversal[i]) << "Incorrect traversal order on the index " << i;
+      ASSERT_EQ(traversal_order[i], expected_traversal[i]);
     }
 
     delete[] output_data;
@@ -107,7 +107,7 @@ TEST(bessonov_e_star_topology_mpi, LargeDataTest) {
 
   if (world.rank() == 0) {
     for (int i = 0; i < data_size; ++i) {
-      ASSERT_EQ(output_data[i], 1) << "The data has changed on the index " << i;
+      ASSERT_EQ(output_data[i], 1);
     }
 
     std::vector<int> expected_traversal;
@@ -118,7 +118,7 @@ TEST(bessonov_e_star_topology_mpi, LargeDataTest) {
     }
 
     for (int i = 0; i < traversal_size; ++i) {
-      ASSERT_EQ(traversal_order[i], expected_traversal[i]) << "Incorrect traversal order on the index " << i;
+      ASSERT_EQ(traversal_order[i], expected_traversal[i]);
     }
 
     delete[] output_data;
