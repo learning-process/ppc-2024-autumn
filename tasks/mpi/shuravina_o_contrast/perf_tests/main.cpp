@@ -7,7 +7,6 @@
 #include <vector>
 
 #include "mpi/shuravina_o_contrast/include/ops_mpi.hpp"
-
 TEST(shuravina_o_contrast, Test_Contrast_Perf_1000) {
   boost::mpi::communicator world;
   std::vector<uint8_t> global_vec;
