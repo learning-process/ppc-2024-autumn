@@ -23,6 +23,25 @@ void get_random_matrix(double* matr, int size) {
 
 }  // namespace smirnov_i_tape_splitting_A
 
+TEST(smirnov_i_tape_splitting_A_mpi, matrix_negative_sizes) {
+  boost::mpi::communicator world;
+  int m_a = -3;
+  int n_a = 3;
+  int m_b = 3;
+  int n_b = 3;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs_count.emplace_back(m_a);
+    taskDataPar->inputs_count.emplace_back(n_a);
+    taskDataPar->inputs_count.emplace_back(m_b);
+    taskDataPar->inputs_count.emplace_back(n_b);
+  }
+
+  smirnov_i_tape_splitting_A::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), false);
+}
+
 TEST(smirnov_i_tape_splitting_A_mpi, invalid_matrix_size) {
   boost::mpi::communicator world;
   if (world.rank() == 0) {
@@ -62,30 +81,11 @@ TEST(smirnov_i_tape_splitting_A_mpi, cant_mult_matrix_wrong_sizes) {
   }
   smirnov_i_tape_splitting_A::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), false);
-  if(world.rank() == 0){
+  if(world.rank() == 0) {
     delete[] A;
     delete[] B;
     delete[] res;
   }
-}
-TEST(smirnov_i_tape_splitting_A_mpi, matrix_negative_sizes) {
-  boost::mpi::communicator world;
-  int m_a = -3;
-  int n_a = 3;
-  int m_b = 3;
-  int n_b = 3;
-
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-
-    taskDataPar->inputs_count.emplace_back(m_a);
-    taskDataPar->inputs_count.emplace_back(n_a);
-    taskDataPar->inputs_count.emplace_back(m_b);
-    taskDataPar->inputs_count.emplace_back(n_b);
-  }
-
-  smirnov_i_tape_splitting_A::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
 }
 
 TEST(smirnov_i_tape_splitting_A_mpi, mult_matrix_and_vector) {
