@@ -8,16 +8,6 @@
 #include <thread>
 #include <vector>
 
-std::vector<int> zinoviev_a_sum_cols_matrix_mpi::generateRandomVector(int size) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(size);
-  for (int i = 0; i < size; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
-}
-
 int zinoviev_a_sum_cols_matrix_mpi::computeLinearCoordinates(int x, int y, int width) { return y * width + x; }
 
 std::vector<int> zinoviev_a_sum_cols_matrix_mpi::calculateMatrixSumSequential(const std::vector<int>& matrix, int width,
@@ -78,22 +68,6 @@ bool zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel::pre_processing() {
     numCols = taskData->inputs_count[1];
   }
 
-  broadcast(mpiWorld, numCols, 0);
-  broadcast(mpiWorld, numRows, 0);
-
-  if (mpiWorld.rank() == 0) {
-    // Initialize the input vector
-    inputData_ = std::vector<int>(taskData->inputs_count[0]);
-    auto* temp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
-      inputData_[i] = temp_ptr[i];
-    }
-  } else {
-    inputData_ = std::vector<int>(numCols * numRows);
-  }
-
-  broadcast(mpiWorld, inputData_.data(), numCols * numRows, 0);
-  // Prepare the output vector
   resultData_ = std::vector<int>(numCols, 0);
   return true;
 }
@@ -109,6 +83,21 @@ bool zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel::validation() {
 
 bool zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+
+  broadcast(mpiWorld, numCols, 0);
+  broadcast(mpiWorld, numRows, 0);
+
+  if (mpiWorld.rank() == 0) {
+    // Initialize the input vector
+    inputData_ = std::vector<int>(taskData->inputs_count[0]);
+    auto* temp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+    for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
+      inputData_[i] = temp_ptr[i];
+    }
+  } else {
+    inputData_ = std::vector<int>(numCols * numRows);
+  }
+
   int sizePerTask = numCols / mpiWorld.size();
   sizePerTask += (numCols % mpiWorld.size() == 0) ? 0 : 1;
   int lastColumn = std::min(numCols, sizePerTask * (mpiWorld.rank() + 1));
