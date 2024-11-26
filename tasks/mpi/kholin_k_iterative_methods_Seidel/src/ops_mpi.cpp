@@ -489,14 +489,14 @@ void kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::to_upper_diag_m
     for (size_t i = 0; i < n_rows; i++) {
       size_portion = (n_colls - 1 - i) / size;
       if (size_portion == 0) {
-        for (size_t p = 0; p < size; p++) {
+        for (int p = 0; p < size; p++) {
           if (p == 0) {
             upper_send_counts[p + i * size] = n_colls - 1 - i;
             upper_displs[p + i * size] = i * n_colls + i + 1;
 
             start_row = upper_displs[p + i * size];
             end_row = upper_send_counts[p + i * size];
-            for (size_t k = start_row; k < start_row + end_row; k++) {
+            for (int k = start_row; k < start_row + end_row; k++) {
               coeff = C[k];
               upper_C[counter] = coeff;
               counter++;
@@ -508,7 +508,7 @@ void kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::to_upper_diag_m
         }
       } else {
         residue = (n_colls - 1 - i) % size;
-        for (size_t p = 0; p < size; p++) {
+        for (int p = 0; p < size; p++) {
           upper_send_counts[p + i * size] = size_portion + (p < residue ? 1 : 0);
           upper_displs[p + i * size] =
               (p == 0 ? (i * n_colls + i + 1)
@@ -516,7 +516,7 @@ void kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::to_upper_diag_m
 
           start_row = upper_displs[p + i * size];
           end_row = upper_send_counts[p + i * size];
-          for (size_t k = start_row; k < start_row + end_row; k++) {
+          for (int k = start_row; k < start_row + end_row; k++) {
             coeff = C[k];
             upper_C[counter] = coeff;
             counter++;
@@ -549,7 +549,7 @@ void kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::to_lower_diag_m
     for (size_t i = 0; i < n_rows; i++) {
       size_portion = (i) / size;
       if (size_portion == 0) {
-        for (size_t p = 0; p < size; p++) {
+        for (int p = 0; p < size; p++) {
           if (p == 0) {
             lower_send_counts[p + i * size] = i;
             lower_displs[p + i * size] = i * n_colls;
@@ -568,7 +568,7 @@ void kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::to_lower_diag_m
         }
       } else {
         residue = (i) % size;
-        for (size_t p = 0; p < size; p++) {
+        for (int p = 0; p < size; p++) {
           lower_send_counts[p + i * size] = size_portion + (p < residue ? 1 : 0);
           lower_displs[p + i * size] =
               (p == 0 ? (i * n_colls) : lower_displs[(p + i * size) - 1] + lower_send_counts[(p + i * size) - 1]);
