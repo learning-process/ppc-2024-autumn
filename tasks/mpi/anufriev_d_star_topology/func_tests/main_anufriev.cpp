@@ -56,7 +56,7 @@ TEST(anufriev_d_star_topology, EmptyVectorTest) {
   ASSERT_TRUE(task.post_processing());
 
   if (world.rank() == 0) {
-    ASSERT_EQ(output_data.size(), 0);
+    ASSERT_EQ(output_data.size(), static_cast<size_t>(0));
   }
 }
 
