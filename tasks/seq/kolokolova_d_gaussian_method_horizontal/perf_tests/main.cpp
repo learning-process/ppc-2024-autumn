@@ -9,23 +9,30 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/kolokolova_d_gaussian_method_horizontal/include/ops_seq.hpp"
 
+using namespace kolokolova_d_gaussian_method_horizontal_seq;
+
+std::vector<int> kolokolova_d_gaussian_method_horizontal_seq::getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  std::uniform_int_distribution<int> dist(-100, 100);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = gen() % 100;
+  }
+  return vec;
+}
+
 TEST(kolokolova_d_gaussian_method_horizontal_seq, test_pipeline_run) {
-  int count_equations = 300;
+  int count_equations = 250;
 
   int size_coef_mat = count_equations * count_equations;
   std::vector<int> input_coeff(size_coef_mat, 0);
   std::vector<int> input_y(count_equations, 0);
   std::vector<double> func_res(count_equations, 0);
 
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::uniform_int_distribution<int> dist(-500, 500);
-  for (int i = 0; i < count_equations; ++i) {
-    input_y[i] = gen() % 100;
-  }
-  for (int j = 0; j < count_equations; ++j) {
-    input_coeff[j] = gen() % 100;
-  }
+  input_y = kolokolova_d_gaussian_method_horizontal_seq::getRandomVector(count_equations);
+  input_coeff = kolokolova_d_gaussian_method_horizontal_seq::getRandomVector(size_coef_mat);
+
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_coeff.data()));
   taskDataSeq->inputs_count.emplace_back(input_coeff.size());
@@ -56,22 +63,15 @@ TEST(kolokolova_d_gaussian_method_horizontal_seq, test_pipeline_run) {
 }
 
 TEST(kolokolova_d_gaussian_method_horizontal_seq, test_task_run) {
-  int count_equations = 350;
+  int count_equations = 300;
 
   int size_coef_mat = count_equations * count_equations;
   std::vector<int> input_coeff(size_coef_mat, 0);
   std::vector<int> input_y(count_equations, 0);
   std::vector<double> func_res(count_equations, 0);
 
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::uniform_int_distribution<int> dist(-500, 500);
-  for (int i = 0; i < count_equations; ++i) {
-    input_y[i] = gen() % 100;
-  }
-  for (int j = 0; j < count_equations; ++j) {
-    input_coeff[j] = gen() % 100;
-  }
+  input_y = kolokolova_d_gaussian_method_horizontal_seq::getRandomVector(count_equations);
+  input_coeff = kolokolova_d_gaussian_method_horizontal_seq::getRandomVector(size_coef_mat);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_coeff.data()));

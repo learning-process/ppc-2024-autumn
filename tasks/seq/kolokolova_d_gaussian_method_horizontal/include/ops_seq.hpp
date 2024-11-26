@@ -8,6 +8,7 @@
 
 namespace kolokolova_d_gaussian_method_horizontal_seq {
 
+std::vector<int> getRandomVector(int sz);
 int find_rank(std::vector<double>& matrix, int rows, int cols);
 
 class TestTaskSequential : public ppc::core::Task {
