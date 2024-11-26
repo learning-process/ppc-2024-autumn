@@ -10,9 +10,10 @@
 std::vector<int> koshkin_n_readers_writers_mpi::getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
+  std::uniform_int_distribution<int> dist(-100, 100);
   std::vector<int> vec(sz);
   for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
+    vec[i] = dist(gen);
   }
   return vec;
 }
@@ -21,11 +22,10 @@ bool koshkin_n_readers_writers_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
   if (world.rank() == 0) {
-    shared_resource = std::vector<int>(taskData->inputs_count[0]);
+    int size = taskData->inputs_count[0];
+    shared_resource = std::vector<int>(size);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-      shared_resource[i] = tmp_ptr[i];
-    }
+    std::copy(tmp_ptr, tmp_ptr + size, shared_resource.begin());
     res = {};
   }
   return true;
@@ -43,10 +43,6 @@ bool koshkin_n_readers_writers_mpi::TestMPITaskParallel::validation() {
 
 bool koshkin_n_readers_writers_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-
-  /* if (world.size() == 1) {
-     throw std::runtime_error("This task requires at least two processes to run");
-   }*/
 
   static int resource = 1;   // Semaphore for resource locking
   static int rmutex = 1;     // Semaphore for protection readcount
@@ -144,9 +140,6 @@ bool koshkin_n_readers_writers_mpi::TestMPITaskParallel::run() {
       if (response == "proceed") {
         // Simulate reading
         world.recv(0, 3, shared_resource);
-        /*std::cout << "Reader " << world.rank() << " is reading resource: ";
-        for (auto val : shared_resource) std::cout << val << " ";
-        std::cout << std::endl;*/
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
         world.send(0, 0, std::string("read_exit"));
@@ -163,9 +156,7 @@ bool koshkin_n_readers_writers_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     auto* output = reinterpret_cast<int*>(taskData->outputs[0]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-      output[i] = res[i];
-    }
+    std::copy(res.begin(), res.end(), output);
   }
   return true;
 }
