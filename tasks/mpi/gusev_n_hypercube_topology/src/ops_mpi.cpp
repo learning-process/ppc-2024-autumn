@@ -4,42 +4,37 @@
 #include <boost/mpi.hpp>
 #include <functional>
 #include <numeric>
-#include <random>
-#include <string>
 #include <vector>
 namespace gusev_n_hypercube_topology_mpi {
 
 bool gusev_n_hypercube_topology_mpi::HypercubeTopologyParallel::validation() {
   if (taskData->inputs.empty() || taskData->inputs_count.empty()) {
-    std::cerr << "Validation failed: No input data provided." << std::endl;
+    /*std::cerr << "Validation failed: No input data provided." << std::endl;*/
     return false;
   }
 
   int size = world.size();
   if (size < 2) {
-    std::cerr << "Validation failed: Insufficient nodes. At least 2 nodes are required." << std::endl;
+    /*std::cerr << "Validation failed: Insufficient nodes. At least 2 nodes are required." << std::endl;*/
     return false;
   }
 
-  return true;
-}
-
-bool gusev_n_hypercube_topology_mpi::HypercubeTopologyParallel::pre_processing() {
   for (size_t i = 0; i < taskData->inputs.size(); ++i) {
     if (taskData->inputs_count[i] <= 0) {
-      std::cerr << "Pre-processing failed: Input size is not valid for input index " << i << std::endl;
+      /*std::cerr << "Pre-processing failed: Input size is not valid for input index " << i << std::endl;*/
       return false;
     }
 
     if (taskData->inputs[i] == nullptr) {
-      std::cerr << "Pre-processing failed: Input pointer is null for input index " << i << std::endl;
+      /*std::cerr << "Pre-processing failed: Input pointer is null for input index " << i << std::endl;*/
       return false;
     }
   }
 
-  world.barrier();
   return true;
 }
+
+bool gusev_n_hypercube_topology_mpi::HypercubeTopologyParallel::pre_processing() { return true; }
 
 bool gusev_n_hypercube_topology_mpi::HypercubeTopologyParallel::run() {
   int rank = world.rank();
@@ -59,9 +54,9 @@ bool gusev_n_hypercube_topology_mpi::HypercubeTopologyParallel::run() {
 
       if (taskData->outputs_count[0] >= send_data.size()) {
         std::copy(send_data.begin(), send_data.end(), taskData->outputs[0]);
-      } else {
+      } /*else {
         std::cerr << "Output size is not sufficient for rank " << rank << std::endl;
-      }
+      }*/
     }
     world.barrier();
   }
