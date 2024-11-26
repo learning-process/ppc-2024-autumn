@@ -5,7 +5,6 @@
 
 #include "seq/kozlova_e_jacobi_method/include/ops_seq.hpp"
 
-
 TEST(kozlova_e_jacobi_method, Test_2x2_System) {
   const int N = 2;
 
@@ -13,8 +12,8 @@ TEST(kozlova_e_jacobi_method, Test_2x2_System) {
   // x + 3y = 2
 
   std::vector<double> A = {4, 1, 1, 3};
-  std::vector<double> B = {1, 2};  
-  std::vector<double> X(N, 0.0);   
+  std::vector<double> B = {1, 2};
+  std::vector<double> X(N, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
@@ -26,7 +25,6 @@ TEST(kozlova_e_jacobi_method, Test_2x2_System) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(X.data()));
   taskData->outputs_count.emplace_back(X.size());
 
-  
   kozlova_e_jacobi_method::MethodJacobi jacobiSolver(taskData);
   ASSERT_EQ(jacobiSolver.validation(), true);
   jacobiSolver.pre_processing();
@@ -221,4 +219,3 @@ TEST(kozlova_e_jacobi_method, Test_Diagonal_Dominance_Large_Error) {
   ASSERT_NEAR(X[1], 0.0025, 1e-4);
   ASSERT_NEAR(X[2], 0.0025, 1e-4);
 }
-

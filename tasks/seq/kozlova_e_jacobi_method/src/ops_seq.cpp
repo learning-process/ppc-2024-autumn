@@ -7,12 +7,12 @@ bool kozlova_e_jacobi_method::MethodJacobi::pre_processing() {
   auto* matrix = reinterpret_cast<double*>(taskData->inputs[0]);
   auto* rhs = reinterpret_cast<double*>(taskData->inputs[1]);
   auto* initial_guess = reinterpret_cast<double*>(taskData->inputs[2]);
-  N = static_cast<int>(taskData->inputs_count[0]); 
+  N = static_cast<int>(taskData->inputs_count[0]);
   A.resize(N * N);
   B.resize(N);
   X.resize(N);
   eps = 1e-9;
-  
+
   for (int i = 0; i < N; i++) {
     for (int j = 0; j < N; j++) {
       A[i * N + j] = matrix[i * N + j];
@@ -41,14 +41,14 @@ void kozlova_e_jacobi_method::MethodJacobi::jacobi_iteration() {
   std::vector<double> TempX(N);
 
   for (int i = 0; i < N; i++) {
-    TempX[i] = B[i];  
+    TempX[i] = B[i];
     for (int j = 0; j < N; j++) {
-      if (i != j) TempX[i] -= A[i * N + j] * X[j];  
+      if (i != j) TempX[i] -= A[i * N + j] * X[j];
     }
-    TempX[i] /= A[i * N + i]; 
+    TempX[i] /= A[i * N + i];
   }
 
-  for (int h = 0; h < N; h++) { 
+  for (int h = 0; h < N; h++) {
     X[h] = TempX[h];
   }
 }
@@ -64,13 +64,12 @@ bool kozlova_e_jacobi_method::MethodJacobi::run() {
 
     jacobi_iteration();
 
-    norm = std::fabs(X[0] - prev_X[0]);
+    norm = fabs(X[0] - prev_X[0]);
     for (int i = 0; i < N; i++) {
-      if (std::fabs(X[i] - prev_X[i]) > norm)
-        norm = std::fabs(X[i] - prev_X[i]);
+      if (fabs(X[i] - prev_X[i]) > norm) norm = fabs(X[i] - prev_X[i]);
     }
     iteration_count++;
-  } while (norm > eps && iteration_count < max_iterations); 
+  } while (norm > eps && iteration_count < max_iterations);
   return true;
 }
 

@@ -64,9 +64,9 @@ bool kozlova_e_jacobi_method_mpi::MethodJacobiSeq::run() {
 
     jacobi_iteration();
 
-    norm = std::fabs(X[0] - prev_X[0]);
+    norm = fabs(X[0] - prev_X[0]);
     for (int i = 0; i < N; i++) {
-      if (std::fabs(X[i] - prev_X[i]) > norm) norm = std::fabs(X[i] - prev_X[i]);
+      if (fabs(X[i] - prev_X[i]) > norm) norm = fabs(X[i] - prev_X[i]);
     }
   } while (norm > eps);
   return true;
@@ -132,7 +132,7 @@ void kozlova_e_jacobi_method_mpi::MethodJacobiMPI::jacobi_iteration() {
 
   std::vector<int> sendcounts(size, rows_per_process);
   if (size > N) {
-    for (int i = N; i < sendcounts.size(); i++) sendcounts[i] = 0;
+    for (size_t i = N; i < sendcounts.size(); i++) sendcounts[i] = 0;
   }
   std::vector<int> displacements(size, 0);
 
@@ -143,7 +143,7 @@ void kozlova_e_jacobi_method_mpi::MethodJacobiMPI::jacobi_iteration() {
   std::vector<double> all_X(N * 2, 0.0);
 
   boost::mpi::gatherv(world, TempX.data() + start_row, sendcounts[rank], all_X.data(), sendcounts, displacements, 0);
-  
+
   if (rank == 0) {
     all_X.resize(N);
     X = all_X;
@@ -179,7 +179,7 @@ bool kozlova_e_jacobi_method_mpi::MethodJacobiMPI::run() {
 
     norm = 0;
     for (int i = 0; i < N; i++) {
-      norm = std::max(norm, std::fabs(X[i] - prev_X[i]));
+      norm = std::max(norm, fabs(X[i] - prev_X[i]));
     }
   } while (norm > eps);
 
