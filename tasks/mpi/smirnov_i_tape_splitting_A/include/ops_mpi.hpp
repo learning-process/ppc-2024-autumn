@@ -13,8 +13,6 @@
 
 namespace smirnov_i_tape_splitting_A {
 
-void get_random_matrix(double* matr, int size);
-
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -33,9 +31,9 @@ class TestMPITaskSequential : public ppc::core::Task {
   int n_a;
   int m_b;
   int n_b;
-  double* A;
-  double* B;
-  double* res;
+  double* A = nullptr;
+  double* B = nullptr;
+  double* res = nullptr;
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -56,9 +54,9 @@ class TestMPITaskParallel : public ppc::core::Task {
   int n_a;
   int m_b;
   int n_b;
-  double* A;
-  double* B;
-  double* res;
+  double* A = nullptr;
+  double* B = nullptr;
+  double* res = nullptr;
   boost::mpi::communicator world;
 };
 

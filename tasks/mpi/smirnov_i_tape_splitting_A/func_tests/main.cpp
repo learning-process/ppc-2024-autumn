@@ -22,6 +22,7 @@ void get_random_matrix(double* matr, int size) {
 }
 
 }  // namespace smirnov_i_tape_splitting_A
+
 TEST(smirnov_i_tape_splitting_A_mpi, invalid_matrix_size) {
   boost::mpi::communicator world;
   if (world.rank() == 0) {
@@ -31,6 +32,62 @@ TEST(smirnov_i_tape_splitting_A_mpi, invalid_matrix_size) {
     ASSERT_ANY_THROW(smirnov_i_tape_splitting_A::get_random_matrix(A.get(), m_a * n_a));
   }
 }
+TEST(smirnov_i_tape_splitting_A_mpi, cant_mult_matrix_wrong_sizes) {
+  boost::mpi::communicator world;
+  double* A = nullptr;
+  double* B = nullptr;
+  double* res = nullptr;
+  int m_a = 2;
+  int n_a = 3;
+  int m_b = 7;
+  int n_b = 4;
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    A = new double[m_a * n_a];
+    B = new double[m_b * n_b];
+    smirnov_i_tape_splitting_A::get_random_matrix(A, m_a * n_a);
+    smirnov_i_tape_splitting_A::get_random_matrix(B, m_b * n_b);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B));
+
+    taskDataPar->inputs_count.emplace_back(m_a);
+    taskDataPar->inputs_count.emplace_back(n_a);
+    taskDataPar->inputs_count.emplace_back(m_b);
+    taskDataPar->inputs_count.emplace_back(n_b);
+    res = new double[m_a * n_b];
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res));
+    taskDataPar->outputs_count.emplace_back(m_a);
+    taskDataPar->outputs_count.emplace_back(n_b);
+  }
+  smirnov_i_tape_splitting_A::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  if(world.rank() == 0){
+    delete[] A;
+    delete[] B;
+    delete[] res;
+  }
+}
+TEST(smirnov_i_tape_splitting_A_mpi, matrix_negative_sizes) {
+  boost::mpi::communicator world;
+  int m_a = -3;
+  int n_a = 3;
+  int m_b = 3;
+  int n_b = 3;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+
+    taskDataPar->inputs_count.emplace_back(m_a);
+    taskDataPar->inputs_count.emplace_back(n_a);
+    taskDataPar->inputs_count.emplace_back(m_b);
+    taskDataPar->inputs_count.emplace_back(n_b);
+  }
+
+  smirnov_i_tape_splitting_A::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), false);
+}
+
 TEST(smirnov_i_tape_splitting_A_mpi, mult_matrix_and_vector) {
   boost::mpi::communicator world;
 

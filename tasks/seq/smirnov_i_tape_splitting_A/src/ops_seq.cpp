@@ -55,8 +55,6 @@ bool smirnov_i_tape_splitting_A::TestMPITaskSequential::run() {
 bool smirnov_i_tape_splitting_A::TestMPITaskSequential::post_processing() {
   internal_order_test();
   auto* tmp_ptr = reinterpret_cast<double*>(taskData->outputs[0]);
-  for (int i = 0; i < m_a * n_b; i++) {
-    tmp_ptr[i] = res[i];
-  }
+  std::copy(res, res + m_a * n_b, tmp_ptr);
   return true;
 }

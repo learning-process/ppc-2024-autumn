@@ -16,12 +16,8 @@ bool smirnov_i_tape_splitting_A::TestMPITaskSequential::pre_processing() {
   B = new double[m_b * n_b];
   auto* tmp_ptr_a = reinterpret_cast<double*>(taskData->inputs[0]);
   auto* tmp_ptr_b = reinterpret_cast<double*>(taskData->inputs[1]);
-  for (int i = 0; i < m_a * n_a; i++) {
-    A[i] = tmp_ptr_a[i];
-  }
-  for (int i = 0; i < m_b * n_b; i++) {
-    B[i] = tmp_ptr_b[i];
-  }
+  std::copy(tmp_ptr_a, tmp_ptr_a + m_a * n_a, A);
+  std::copy(tmp_ptr_b, tmp_ptr_b + m_b * n_b, B);
 
   // Init value for output
   res = nullptr;
@@ -84,16 +80,18 @@ bool smirnov_i_tape_splitting_A::TestMPITaskParallel::pre_processing() {
 
 bool smirnov_i_tape_splitting_A::TestMPITaskParallel::validation() {
   internal_order_test();
+  bool is_valid = true;
   if (world.rank() == 0) {
     m_a = taskData->inputs_count[0];
     n_a = taskData->inputs_count[1];
     m_b = taskData->inputs_count[2];
     n_b = taskData->inputs_count[3];
     if (n_a != m_b || m_a <= 0 || n_a <= 0 || m_b <= 0 || n_b <= 0) {
-      return false;
+      is_valid = false;
     }
   }
-  return true;
+  MPI_Bcast(&is_valid, 1, MPI_C_BOOL, 0, MPI_COMM_WORLD);
+  return is_valid;
 }
 
 bool smirnov_i_tape_splitting_A::TestMPITaskParallel::run() {
