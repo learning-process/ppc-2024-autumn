@@ -1,0 +1,21 @@
+{
+  "OutputFoldersPerTargetSystem": {
+    "Local Machine": [
+      "out\\build\\x64-Debug",
+      "out\\install\\x64-Debug"
+    ]
+  },
+  "ExpandedNodes": [
+    "",
+    "\\tasks",
+    "\\tasks\\mpi",
+    "\\tasks\\mpi\\shuravina_o_monte_carlo",
+    "\\tasks\\mpi\\shuravina_o_monte_carlo\\func_tests",
+    "\\tasks\\mpi\\shuravina_o_monte_carlo\\include",
+    "\\tasks\\mpi\\shuravina_o_monte_carlo\\perf_tests",
+    "\\tasks\\mpi\\shuravina_o_monte_carlo\\src",
+    "\\tasks\\mpi\\shvedova_v_char_freq"
+  ],
+  "SelectedNode": "\\CMakeLists.txt",
+  "PreviewInSolutionExplorer": false
+}
