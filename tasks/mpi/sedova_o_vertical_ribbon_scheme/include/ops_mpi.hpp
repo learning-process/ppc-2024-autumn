@@ -16,7 +16,7 @@ class ParallelMPI : public ppc::core::Task {
   explicit ParallelMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
-  bool run();
+  bool run() override;
   bool post_processing() override;
 
  private:
