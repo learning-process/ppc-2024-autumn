@@ -50,25 +50,12 @@ bool titov_s_simple_iteration_seq::SimpleIterationSequential::validation() {
   unsigned int rows = taskData->inputs_count[0];
   unsigned int cols = taskData->inputs_count[1];
 
-  if (taskData->inputs.size() < rows + 1) {
+  if (rows < cols - 1) {
     return false;
-  }
-
-  if (rows == 0 || cols == 0) {
-    return false;
-  }
-
-  for (unsigned int i = 0; i < rows; ++i) {
-    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
-    if (tmp_ptr == nullptr) {
-      return false;
-    }
   }
 
   auto* epsilon_ptr = reinterpret_cast<float*>(taskData->inputs[rows]);
-  if (epsilon_ptr == nullptr) {
-    return false;
-  }
+
   float epsilon = *epsilon_ptr;
   if (epsilon <= 0.0f || epsilon > 1.0f) {
     return false;
