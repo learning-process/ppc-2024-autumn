@@ -68,6 +68,7 @@ foreach(TASK_TYPE ${LIST_OF_TASKS})
       add_library(${exec_func_lib} STATIC ${LIB_SOURCE_FILES})
     endif()
     set_target_properties(${exec_func_lib} PROPERTIES LINKER_LANGUAGE CXX)
+    target_include_directories(${exec_func_lib} PUBLIC "${CMAKE_SOURCE_DIR}/3rdparty/boost/libs/numeric/ublas/include")
 
     if (USE_FUNC_TESTS)
       add_executable(${exec_func_tests} ${FUNC_TESTS_SOURCE_FILES})
