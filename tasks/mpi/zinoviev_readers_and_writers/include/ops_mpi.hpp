@@ -43,4 +43,4 @@ class ReadersWritersMPITaskParallel : public ppc::core::Task {
   int res{};
   boost::mpi::communicator world;
 };
-}
+}  // namespace zinoviev_a_readers_and_writers_mpi
