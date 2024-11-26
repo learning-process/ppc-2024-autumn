@@ -41,7 +41,7 @@ class TestMPITaskMyOwnParallel : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
   template <typename T>
-  void my_all_reduce(const boost::mpi::communicator& world, const T* in_values, T* out_values, int n, int root);
+  void my_all_reduce(const boost::mpi::communicator& world, const T* in_values, T* out_values, int n);
 
  private:
   std::vector<int> input_{};

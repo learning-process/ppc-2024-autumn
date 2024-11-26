@@ -111,9 +111,10 @@ bool chizhov_m_all_reduce_my_mpi::TestMPITaskMyOwnParallel::validation() {
 }
 
 template <typename T>
-void chizhov_m_all_reduce_my_mpi::TestMPITaskMyOwnParallel::my_all_reduce(const boost::mpi::communicator& comm,
-                                                                          const T* in_values, T* out_values, int n,
-                                                                          int root) {
+void chizhov_m_all_reduce_my_mpi::TestMPITaskMyOwnParallel::my_all_reduce(const boost::mpi::communicator& world,
+                                                                          const T* in_values, T* out_values,
+                                                                          int n) {
+  int root = world.rank();
   std::vector<T> left_values(n);
   std::vector<T> right_values(n);
 
@@ -124,14 +125,14 @@ void chizhov_m_all_reduce_my_mpi::TestMPITaskMyOwnParallel::my_all_reduce(const 
     out_values[i] = in_values[i];
   }
 
-  if (left_child < comm.size()) {
+  if (left_child < world.size()) {
     left_values.resize(n);
-    comm.recv(left_child, 0, left_values.data(), n);
+    world.recv(left_child, 0, left_values.data(), n);
   }
 
-  if (right_child < comm.size()) {
+  if (right_child < world.size()) {
     right_values.resize(n);
-    comm.recv(right_child, 0, right_values.data(), n);
+    world.recv(right_child, 0, right_values.data(), n);
   }
 
   if (!left_values.empty()) {
@@ -148,16 +149,16 @@ void chizhov_m_all_reduce_my_mpi::TestMPITaskMyOwnParallel::my_all_reduce(const 
 
   if (root != 0) {
     int parent = (root - 1) / 2;
-    comm.send(parent, 0, out_values, n);
-    comm.recv(parent, 0, out_values, n);
+    world.send(parent, 0, out_values, n);
+    world.recv(parent, 0, out_values, n);
   }
 
   if (left_child < world.size()) {
-    comm.send(left_child, 0, out_values, n);
+    world.send(left_child, 0, out_values, n);
   }
 
   if (right_child < world.size()) {
-    comm.send(right_child, 0, out_values, n);
+    world.send(right_child, 0, out_values, n);
   }
 }
 
@@ -190,9 +191,8 @@ bool chizhov_m_all_reduce_my_mpi::TestMPITaskMyOwnParallel::run() {
     }
     localMax[j] = maxElem;
   }
-
   res_.resize(cols, 0);
-  my_all_reduce(world, localMax.data(), res_.data(), cols, world.rank());
+  my_all_reduce(world, localMax.data(), res_.data(), cols);
 
   std::vector<int> local_cnt_(cols, 0);
   for (int j = startCol; j < lastCol; j++) {
