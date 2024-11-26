@@ -37,8 +37,13 @@ void muhina_m_horizontal_cheme_mpi::calculate_distribution(int rows, int cols, i
 
   if (num_proc > rows) {
     for (int i = 0; i < num_proc; ++i) {
-      sizes[i] = (i < rows) ? cols : 0;
-      displs[i] = (i < rows) ? i * cols : -1;
+      if (i < rows) {
+        sizes[i] = cols;
+        displs[i] = i * cols;
+      } else {
+        sizes[i] = 0;
+        displs[i] = -1;
+      }
     }
   } else {
     int rows_per_proc = rows / num_proc;
@@ -148,9 +153,15 @@ bool muhina_m_horizontal_cheme_mpi::HorizontalSchemeMPIParallel::run() {
   boost::mpi::broadcast(world_, cols_, 0);
   boost::mpi::broadcast(world_, rows_, 0);
 
-  int delta = (world_.size() == 1) ? 0 : rows_ / (world_.size() - 1);
-  int ost = (world_.size() == 1) ? rows_ : rows_ % (world_.size() - 1);
-
+  int delta;
+  int ost;
+  if (world_.size() == 1) {
+    delta = 0;
+    ost = rows_;
+  } else {
+    delta = rows_ / (world_.size() - 1);
+    ost = rows_ % (world_.size() - 1);
+  }
   std::vector<int> localMatrix;
 
   if (world_.rank() != 0) {
@@ -171,7 +182,7 @@ bool muhina_m_horizontal_cheme_mpi::HorizontalSchemeMPIParallel::run() {
 
   std::vector<int> local_result(localMatrix.size() / cols_, 0);
 
-  for (int i = 0; i < localMatrix.size() / cols_; i++) {
+  for (int i = 0; i < (size_t)(localMatrix.size() / cols_); i++) {
     for (int j = 0; j < cols_; j++) {
       local_result[i] += localMatrix[i * cols_ + j] * vec_[j];
     }
