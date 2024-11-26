@@ -14,7 +14,6 @@ std::vector<int> createInputVector(size_t size, int initialValue = 0, int step =
   return vec;
 }
 
-// Функция для рассчета ожидаемого результата
 std::vector<int> calculateExpectedOutput(const std::vector<int>& input, int worldSize) {
   std::vector<int> output = input;
   for (int& val : output) {
@@ -41,11 +40,10 @@ TEST(anufriev_d_star_topology, EmptyVectorTest) {
   std::vector<int> output_data;
 
   if (world.rank() == 0) {
-    // Пустой вектор
     taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
     taskData->inputs_count.push_back(input_data.size());
 
-    output_data.resize(0);  // Ожидаемый пустой результат
+    output_data.resize(0);
     taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output_data.data()));
     taskData->outputs_count.push_back(output_data.size());
   }
@@ -56,7 +54,7 @@ TEST(anufriev_d_star_topology, EmptyVectorTest) {
   ASSERT_TRUE(task.post_processing());
 
   if (world.rank() == 0) {
-    ASSERT_EQ(output_data.size(), 0);  // Проверяем, что результат пустой
+    ASSERT_EQ(output_data.size(), 0);
   }
 }
 
@@ -154,8 +152,6 @@ TEST(anufriev_d_star_topology, SimpleIntTest) {
         {
             ASSERT_EQ(output_data, std::vector<int>({3, 6, 9, 12, 15}));
         }
-        // Добавьте проверки для других размеров world.size(), если необходимо.
-
     }
 }
 
@@ -191,8 +187,5 @@ TEST(anufriev_d_star_topology, SimpleIntTest_1) {
     if (world.size() == 3) {
       ASSERT_EQ(output_data, std::vector<int>({3, 6, 9, 12, 15}));
     }
-    // Добавьте проверки для других размеров world.size(), если необходимо.
   }
 }
-
-// ... другие тесты

@@ -8,7 +8,6 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/anufriev_d_star_topology/include/ops_mpi_anufriev.hpp"
 
-// Вспомогательные функции
 std::vector<int> createInputVector(size_t size, int initialValue = 0, int step = 1) {
   std::vector<int> vec(size);
   std::iota(vec.begin(), vec.end(), initialValue);
@@ -27,7 +26,6 @@ std::vector<int> generate_random_vector(size_t size) {
   return result;
 }
 
-// Макрос для упрощения написания тестов производительности (с вызовом validation)
 #define PERF_TEST(test_name, data_size, num_runs, perf_method)                                                         \
   TEST(anufriev_d_star_topology_perf, test_name) {                                                                     \
     boost::mpi::communicator world;                                                                                    \
@@ -55,7 +53,6 @@ std::vector<int> generate_random_vector(size_t size) {
     }                                                                                                                  \
   }
 
-// Тесты производительности для pipeline_run и task_run с разными размерами данных
 PERF_TEST(Pipeline_Small, 1000, 10, pipeline_run);
 PERF_TEST(Pipeline_Medium, 100000, 5, pipeline_run);
 PERF_TEST(Pipeline_Large, 10000000, 1, pipeline_run);

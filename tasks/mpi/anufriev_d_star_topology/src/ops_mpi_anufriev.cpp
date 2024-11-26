@@ -8,13 +8,11 @@ bool SimpleIntMPI::pre_processing() {
   internal_order_test();
   size_t input_size = 0;
   if (world.rank() == 0) {
-    input_size = taskData->inputs_count[0];  // Получаем размер на rank 0
+    input_size = taskData->inputs_count[0];
   }
   boost::mpi::broadcast(world, input_size, 0);
   input_data_.resize(input_size);
   if (world.rank() == 0) {
-    // Предполагаем, что входные данные - это один вектор int
-    //input_data_.resize(taskData->inputs_count[0]);
     std::copy(reinterpret_cast<int*>(taskData->inputs[0]),
               reinterpret_cast<int*>(taskData->inputs[0]) + taskData->inputs_count[0], input_data_.begin());
   }
