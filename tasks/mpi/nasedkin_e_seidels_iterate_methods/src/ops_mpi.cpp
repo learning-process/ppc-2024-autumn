@@ -5,17 +5,18 @@
 
 namespace nasedkin_e_seidels_iterate_methods_mpi {
 
-bool SeidelIterateMethodsMPI::pre_processing() {
-  if (!validation()) {
+bool SeidelIterateMethodsMPI::validation() {
+  if (taskData->inputs_count.empty()) {
     return false;
   }
 
-  epsilon = 1e-6;
-  max_iterations = 1000;
+  n = taskData->inputs_count[0];
+  if (n <= 0) {
+    return false;
+  }
 
   A.resize(n, std::vector<double>(n, 0.0));
   b.resize(n, 0.0);
-  x.resize(n, 0.0);
 
   if (taskData->inputs_count.size() > 1 && taskData->inputs_count[1] == 0) {
     for (int i = 0; i < n; ++i) {
@@ -42,13 +43,17 @@ bool SeidelIterateMethodsMPI::pre_processing() {
   return true;
 }
 
-bool SeidelIterateMethodsMPI::validation() {
-  if (taskData->inputs_count.empty()) {
+bool SeidelIterateMethodsMPI::pre_processing() {
+  if (!validation()) {
     return false;
   }
 
-  n = taskData->inputs_count[0];
-  return n > 0;
+  epsilon = 1e-6;
+  max_iterations = 1000;
+
+  x.resize(n, 0.0);
+
+  return true;
 }
 
 bool SeidelIterateMethodsMPI::run() {
