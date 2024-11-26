@@ -10,7 +10,6 @@ TEST(konkov_i_Parallel_Operations_MPI, Test_Dining_Philosophers) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_result(1, 0);
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
