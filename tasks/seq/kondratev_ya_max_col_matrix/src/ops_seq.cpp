@@ -4,8 +4,6 @@
 #include <algorithm>
 #include <thread>
 
-using namespace std::chrono_literals;
-
 bool kondratev_ya_max_col_matrix_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
 
