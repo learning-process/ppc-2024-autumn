@@ -18,7 +18,7 @@ bool koshkin_m_dining_philosophers::TestMPITaskParallel::validation() {
   num_philosophers = world.size();
 
   if (world.rank() == 0) {
-    if (!taskData->inputs.empty() && taskData->inputs_count.size() > 0 &&
+    if (!taskData->inputs.empty() && !taskData->inputs_count.empty() &&
         taskData->inputs_count[0] >= static_cast<int>(sizeof(int))) {
       num_philosophers = *reinterpret_cast<int*>(taskData->inputs[0]);
     } else {
