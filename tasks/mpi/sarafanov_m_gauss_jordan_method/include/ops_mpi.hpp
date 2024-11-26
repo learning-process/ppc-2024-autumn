@@ -51,8 +51,6 @@ class GaussJordanMethodSequentialMPI : public ppc::core::Task {
   std::vector<double> matrix;
   bool solve = true;
   int n;
-  std::vector<double> iter_matrix;
-  std::vector<double> iter_result;
 };
 
 }  // namespace sarafanov_m_gauss_jordan_method_mpi
