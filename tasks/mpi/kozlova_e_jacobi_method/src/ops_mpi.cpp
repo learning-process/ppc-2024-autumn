@@ -2,7 +2,6 @@
 #include "mpi/kozlova_e_jacobi_method/include/ops_mpi.hpp"
 
 #include <cmath>
-#include <sstream>
 #include <string>
 #include <vector>
 
@@ -27,9 +26,8 @@ bool kozlova_e_jacobi_method_mpi::MethodJacobiSeq::pre_processing() {
 
   for (int i = 0; i < N; i++) {
     if (A[i * N + i] == 0) {
-      std::stringstream error_message;
-      error_message << "Incorrect matrix: diagonal element A[" << i + 1 << "][" << i + 1 << "] is zero.";
-      throw std::runtime_error(error_message.str());
+      std::cerr << "Incorrect matrix: diagonal element A[" << i + 1 << "][" << i + 1 << "] is zero." << std::endl;
+      return false;
     }
   }
 
@@ -104,9 +102,8 @@ bool kozlova_e_jacobi_method_mpi::MethodJacobiMPI::pre_processing() {
 
     for (int i = 0; i < N; i++) {
       if (A[i * N + i] == 0) {
-        std::stringstream error_message;
-        error_message << "Incorrect matrix: diagonal element A[" << i + 1 << "][" << i + 1 << "] is zero.";
-        throw std::runtime_error(error_message.str());
+        std::cerr << "Incorrect matrix: diagonal element A[" << i + 1 << "][" << i + 1 << "] is zero." << std::endl;
+        return false;
       }
     }
   }

@@ -54,7 +54,7 @@ TEST(kozlova_e_jacobi_method_mpi, Test_4x4_system) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    for (int i = 0; i < resMPI.size(); i++) ASSERT_NEAR(resMPI[i], expected_result[i], 1e-2);
+    for (size_t i = 0; i < resMPI.size(); i++) ASSERT_NEAR(resMPI[i], expected_result[i], 1e-2);
   }
 }
 
@@ -82,7 +82,7 @@ TEST(kozlova_e_jacobi_method_mpi, Test_incorrect_system_with_zero_diagonal) {
   kozlova_e_jacobi_method_mpi::MethodJacobiMPI testMpiTaskParallel(taskDataPar);
 
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  ASSERT_THROW(testMpiTaskParallel.pre_processing(), std::runtime_error);
+  ASSERT_EQ(testMpiTaskParallel.pre_processing(), false);
 
   if (world.rank() == 0) {
     std::vector<double> resSeq(N, 0);
@@ -98,7 +98,7 @@ TEST(kozlova_e_jacobi_method_mpi, Test_incorrect_system_with_zero_diagonal) {
     kozlova_e_jacobi_method_mpi::MethodJacobiSeq testMpiTaskSequential(taskDataSeq);
 
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    ASSERT_THROW(testMpiTaskSequential.pre_processing(), std::runtime_error);
+    ASSERT_EQ(testMpiTaskSequential.pre_processing(), false);
   }
 }
 
@@ -196,7 +196,7 @@ TEST(kozlova_e_jacobi_method_mpi, Test_10x10_system) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    for (int i = 0; i < resMPI.size(); i++) ASSERT_NEAR(resMPI[i], resSeq[i], 1e-4);
+    for (size_t i = 0; i < resMPI.size(); i++) ASSERT_NEAR(resMPI[i], resSeq[i], 1e-4);
   }
 }
 
@@ -247,7 +247,7 @@ TEST(kozlova_e_jacobi_method_mpi, Test_negative_B) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    for (int i = 0; i < resMPI.size(); i++) ASSERT_NEAR(resMPI[i], expected_result[i], 1e-6);
+    for (size_t i = 0; i < resMPI.size(); i++) ASSERT_NEAR(resMPI[i], expected_result[i], 1e-6);
   }
 }
 

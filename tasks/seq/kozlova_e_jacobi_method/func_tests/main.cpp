@@ -135,7 +135,7 @@ TEST(kozlova_e_jacobi_method, Test_zero_diagonal_element) {
 
   kozlova_e_jacobi_method::MethodJacobi jacobiSolver(taskData);
   ASSERT_EQ(jacobiSolver.validation(), true);
-  ASSERT_ANY_THROW(jacobiSolver.pre_processing());
+  ASSERT_EQ(jacobiSolver.pre_processing(), false);
 }
 
 TEST(kozlova_e_jacobi_method, Test_1x1_System) {

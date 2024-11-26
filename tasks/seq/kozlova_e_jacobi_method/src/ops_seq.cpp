@@ -23,9 +23,8 @@ bool kozlova_e_jacobi_method::MethodJacobi::pre_processing() {
 
   for (int i = 0; i < N; i++) {
     if (A[i * N + i] == 0) {
-      std::stringstream error_message;
-      error_message << "Incorrect matrix: diagonal element A[" << i + 1 << "][" << i + 1 << "] is zero.";
-      throw std::runtime_error(error_message.str());
+      std::cerr << "Incorrect matrix: diagonal element A[" << i + 1 << "][" << i + 1 << "] is zero.";
+      return false;
     }
   }
 
