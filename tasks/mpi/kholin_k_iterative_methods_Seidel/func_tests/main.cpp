@@ -191,49 +191,49 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, test_post_processing) {
   kholin_k_iterative_methods_Seidel_mpi::freeA_();
 }
 
- TEST(kholin_k_iterative_methods_Seidel_mpi, validation_false_when_matrix_no_quadro) {
-   int ProcRank = 0;
-   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
-   const size_t count_rows = 24;
-   const size_t count_colls = 25;
-   float epsilon = 0.001f;
-   list_ops::ops_ op = list_ops::METHOD_SEIDEL;
-   std::unique_ptr<float[]> in(new float[count_rows * count_colls]);
-   std::unique_ptr<float[]> out(new float[count_rows]);
-   // Create TaskData
-   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+TEST(kholin_k_iterative_methods_Seidel_mpi, validation_false_when_matrix_no_quadro) {
+  int ProcRank = 0;
+  MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
+  const size_t count_rows = 24;
+  const size_t count_colls = 25;
+  float epsilon = 0.001f;
+  list_ops::ops_ op = list_ops::METHOD_SEIDEL;
+  std::unique_ptr<float[]> in(new float[count_rows * count_colls]);
+  std::unique_ptr<float[]> out(new float[count_rows]);
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-   if (ProcRank == 0) {
-     kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls);
-     kholin_k_iterative_methods_Seidel_mpi::copyA_(in.get(), count_rows, count_colls);
-     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.get()));
-     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
-     taskDataPar->inputs_count.emplace_back(count_rows);
-     taskDataPar->inputs_count.emplace_back(count_colls);
-     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.get()));
-     taskDataPar->outputs_count.emplace_back(count_rows);
-   }
+  if (ProcRank == 0) {
+    kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls);
+    kholin_k_iterative_methods_Seidel_mpi::copyA_(in.get(), count_rows, count_colls);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.get()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
+    taskDataPar->inputs_count.emplace_back(count_rows);
+    taskDataPar->inputs_count.emplace_back(count_colls);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.get()));
+    taskDataPar->outputs_count.emplace_back(count_rows);
+  }
 
-   kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, op);
-   ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, op);
+  ASSERT_EQ(testMpiTaskParallel.validation(), false);
 
-   if (ProcRank == 0) {
-     std::unique_ptr<float[]> out_ref(new float[count_rows]);
-     // Create TaskData
-     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.get()));
-     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
-     taskDataSeq->inputs_count.emplace_back(count_rows);
-     taskDataSeq->inputs_count.emplace_back(count_colls);
-     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_ref.get()));
-     taskDataSeq->outputs_count.emplace_back(count_rows);
+  if (ProcRank == 0) {
+    std::unique_ptr<float[]> out_ref(new float[count_rows]);
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.get()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
+    taskDataSeq->inputs_count.emplace_back(count_rows);
+    taskDataSeq->inputs_count.emplace_back(count_colls);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_ref.get()));
+    taskDataSeq->outputs_count.emplace_back(count_rows);
 
-     // Create Task
-     kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, op);
-     ASSERT_EQ(testMpiTaskSequential.validation(), false);
-   }
-   kholin_k_iterative_methods_Seidel_mpi::freeA_();
- }
+    // Create Task
+    kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, op);
+    ASSERT_EQ(testMpiTaskSequential.validation(), false);
+  }
+  kholin_k_iterative_methods_Seidel_mpi::freeA_();
+}
 //
 // TEST(kholin_k_iterative_methods_Seidel_mpi, validation_false_when_matrix_no_diag) {
 //   int ProcRank = 0;
