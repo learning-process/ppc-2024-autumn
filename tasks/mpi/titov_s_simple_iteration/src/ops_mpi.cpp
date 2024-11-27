@@ -78,11 +78,6 @@ bool titov_s_simple_iteration_mpi::MPISimpleIterationSequential::validation() {
   }
 
   unsigned int rows = taskData->inputs_count[0];
-  unsigned int cols = taskData->inputs_count[1];
-
-  if (rows < cols - 1) {
-    return false;
-  }
 
   auto* epsilon_ptr = reinterpret_cast<float*>(taskData->inputs[rows]);
 
@@ -188,10 +183,10 @@ bool titov_s_simple_iteration_mpi::MPISimpleIterationParallel::validation() {
   internal_order_test();
 
   if (world.rank() == 0) {
-    Rows = *reinterpret_cast<size_t*>(taskData->inputs[2]);
-    if (Rows == 0) {
+    if (taskData->inputs_count.empty() || taskData->inputs.empty()) {
       return false;
     }
+    Rows = *reinterpret_cast<size_t*>(taskData->inputs[2]);
     if (taskData->inputs_count.size() != 4 || taskData->outputs_count.size() != 1) {
       return false;
     }
