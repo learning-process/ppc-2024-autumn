@@ -8,100 +8,108 @@
 #include "mpi/alputov_i_topology_hypercube/include/ops_mpi.hpp"
 
 namespace alputov_i_topology_hypercube_mpi {
-std::vector<int> removeTrailing(std::vector<int> vec) {
-  vec.erase(std::remove(vec.begin(), vec.end(), -1), vec.end());
-  return vec;
+
+std::vector<int> removeNegativeOnesFromEnd(std::vector<int> vector) {
+  auto it = std::find_if_not(vector.rbegin(), vector.rend(), [](int value) { return value == -1; });
+  vector.erase(it.base(), vector.end());
+  return vector;
 }
+
 }  // namespace alputov_i_topology_hypercube_mpi
 
-TEST(alputov_i_topology_hypercube_mpi, run_pipeline) {
+TEST(alputov_i_topology_hypercube_mpi, PipelineExecutionTest) {
   boost::mpi::communicator world;
-  // checking that number of processes is power of 2 and minimum number of processes required for current test
-  if ((std::ceil(std::log2(world.size())) == std::log2(world.size())) and (std::log2(world.size()) >= 0)) {
-    // input{<data>,<number of destination process>}
-    std::vector<int> input{1024, 0};
-    // expectedPath{<expected path of data transfer between processes>}
-    std::vector<int> expectedPath{0};
-    std::vector<int> output(1, 0);
-    std::vector<int> outputPath(std::log2(world.size()) + 1, -1);
-    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-    if (world.rank() == 0) {
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
-      taskDataPar->inputs_count.emplace_back(input.size());
-      taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
-      taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(outputPath.data()));
-      taskDataPar->outputs_count.emplace_back(output.size());
-      taskDataPar->outputs_count.emplace_back(outputPath.size());
+  size_t communicatorSize = world.size();
+  if (!(communicatorSize & (communicatorSize - 1)) && communicatorSize > 0) {
+    std::vector<int> inputData{1337, 0};
+    std::vector<int> expectedRoute{0};
+    std::vector<int> outputData(1, 0);
+
+    std::vector<int> actualRoute;
+    size_t routeSize = std::log2(communicatorSize) + 1;
+    actualRoute.reserve(routeSize);
+    for (size_t i = 0; i < routeSize; ++i) {
+      actualRoute.push_back(-1);
     }
-    auto TopologyHypercubeMPI = std::make_shared<alputov_i_topology_hypercube_mpi::HypercubeRouterMPI>(taskDataPar);
-    ASSERT_EQ(TopologyHypercubeMPI->validation(), true);
-    TopologyHypercubeMPI->pre_processing();
-    TopologyHypercubeMPI->run();
-    TopologyHypercubeMPI->post_processing();
 
-    // Create Perf attributes
-    auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-    perfAttr->num_running = 10;
-    const boost::mpi::timer current_timer;
-    perfAttr->current_timer = [&] { return current_timer.elapsed(); };
-
-    // Create and init perf results
-    auto perfResults = std::make_shared<ppc::core::PerfResults>();
-
-    // Create Perf analyzer
-    auto perfAnalyzer = std::make_shared<ppc::core::Perf>(TopologyHypercubeMPI);
-    perfAnalyzer->pipeline_run(perfAttr, perfResults);
+    std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
     if (world.rank() == 0) {
-      ppc::core::Perf::print_perf_statistic(perfResults);
-      outputPath = alputov_i_topology_hypercube_mpi::removeTrailing(outputPath);
-      ASSERT_EQ(output[0], input[0]);
-      ASSERT_EQ(outputPath, expectedPath);
+      taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(inputData.data()));
+      taskData->inputs_count.emplace_back(inputData.size());
+      taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(outputData.data()));
+      taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(actualRoute.data()));
+      taskData->outputs_count.emplace_back(outputData.size());
+      taskData->outputs_count.emplace_back(actualRoute.size());
+    }
+    auto hypercubeRouter = std::make_shared<alputov_i_topology_hypercube_mpi::HypercubeRouterMPI>(taskData);
+    ASSERT_EQ(hypercubeRouter->validation(), true);
+    hypercubeRouter->pre_processing();
+    hypercubeRouter->run();
+    hypercubeRouter->post_processing();
+
+    auto performanceAttributes = std::make_shared<ppc::core::PerfAttr>();
+    performanceAttributes->num_running = 10;
+    const boost::mpi::timer timer;
+    performanceAttributes->current_timer = [&] { return timer.elapsed(); };
+
+    auto performanceResults = std::make_shared<ppc::core::PerfResults>();
+
+    auto perfAnalyzer = std::make_shared<ppc::core::Perf>(hypercubeRouter);
+    perfAnalyzer->pipeline_run(performanceAttributes, performanceResults);
+    if (world.rank() == 0) {
+      ppc::core::Perf::print_perf_statistic(performanceResults);
+      actualRoute = alputov_i_topology_hypercube_mpi::removeNegativeOnesFromEnd(actualRoute);
+      ASSERT_EQ(outputData[0], inputData[0]);
+      ASSERT_EQ(actualRoute, expectedRoute);
     }
   }
 }
 
-TEST(alputov_i_topology_hypercube_mpi, run_task) {
+TEST(alputov_i_topology_hypercube_mpi, TaskExecutionTest) {
   boost::mpi::communicator world;
-  // checking that number of processes is power of 2 and minimum number of processes required for current test
-  if ((std::ceil(std::log2(world.size())) == std::log2(world.size())) and (std::log2(world.size()) >= 0)) {
-    // input{<data>,<number of destination process>}
-    std::vector<int> input{1024, 0};
-    // expectedPath{<expected path of data transfer between processes>}
-    std::vector<int> expectedPath{0};
-    std::vector<int> output(1, 0);
-    std::vector<int> outputPath(std::log2(world.size()) + 1, -1);
-    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-    if (world.rank() == 0) {
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
-      taskDataPar->inputs_count.emplace_back(input.size());
-      taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
-      taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(outputPath.data()));
-      taskDataPar->outputs_count.emplace_back(output.size());
-      taskDataPar->outputs_count.emplace_back(outputPath.size());
+  size_t communicatorSize = world.size();
+  if (!(communicatorSize & (communicatorSize - 1)) && communicatorSize > 0) {
+    std::vector<int> inputData{1337, 0};
+    std::vector<int> expectedRoute{0};
+    std::vector<int> outputData(1, 0);
+
+    std::vector<int> actualRoute;
+    size_t routeSize = std::log2(communicatorSize) + 1;
+    actualRoute.reserve(routeSize);
+    for (size_t i = 0; i < routeSize; ++i) {
+      actualRoute.push_back(-1);
     }
-    auto TopologyHypercubeMPI = std::make_shared<alputov_i_topology_hypercube_mpi::HypercubeRouterMPI>(taskDataPar);
-    ASSERT_EQ(TopologyHypercubeMPI->validation(), true);
-    TopologyHypercubeMPI->pre_processing();
-    TopologyHypercubeMPI->run();
-    TopologyHypercubeMPI->post_processing();
 
-    // Create Perf attributes
-    auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-    perfAttr->num_running = 10;
-    const boost::mpi::timer current_timer;
-    perfAttr->current_timer = [&] { return current_timer.elapsed(); };
-
-    // Create and init perf results
-    auto perfResults = std::make_shared<ppc::core::PerfResults>();
-
-    // Create Perf analyzer
-    auto perfAnalyzer = std::make_shared<ppc::core::Perf>(TopologyHypercubeMPI);
-    perfAnalyzer->pipeline_run(perfAttr, perfResults);
+    std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
     if (world.rank() == 0) {
-      ppc::core::Perf::print_perf_statistic(perfResults);
-      outputPath = alputov_i_topology_hypercube_mpi::removeTrailing(outputPath);
-      ASSERT_EQ(output[0], input[0]);
-      ASSERT_EQ(outputPath, expectedPath);
+      taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(inputData.data()));
+      taskData->inputs_count.emplace_back(inputData.size());
+      taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(outputData.data()));
+      taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(actualRoute.data()));
+      taskData->outputs_count.emplace_back(outputData.size());
+      taskData->outputs_count.emplace_back(actualRoute.size());
+    }
+    auto hypercubeRouter = std::make_shared<alputov_i_topology_hypercube_mpi::HypercubeRouterMPI>(taskData);
+    ASSERT_EQ(hypercubeRouter->validation(), true);
+    hypercubeRouter->pre_processing();
+    hypercubeRouter->run();
+    hypercubeRouter->post_processing();
+
+    auto performanceAttributes = std::make_shared<ppc::core::PerfAttr>();
+    performanceAttributes->num_running = 10;
+    const boost::mpi::timer timer;
+    performanceAttributes->current_timer = [&] { return timer.elapsed(); };
+
+    auto performanceResults = std::make_shared<ppc::core::PerfResults>();
+
+    auto perfAnalyzer = std::make_shared<ppc::core::Perf>(hypercubeRouter);
+    perfAnalyzer->pipeline_run(performanceAttributes, performanceResults);
+
+    if (world.rank() == 0) {
+      ppc::core::Perf::print_perf_statistic(performanceResults);
+      actualRoute = alputov_i_topology_hypercube_mpi::removeNegativeOnesFromEnd(actualRoute);
+      ASSERT_EQ(outputData[0], inputData[0]);
+      ASSERT_EQ(actualRoute, expectedRoute);
     }
   }
 }
