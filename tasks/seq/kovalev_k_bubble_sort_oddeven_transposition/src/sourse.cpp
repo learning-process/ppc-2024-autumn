@@ -3,8 +3,8 @@
 template <class T>
 bool kovalev_k_bubble_sort_oddeven_transposition_seq::BubbleSortOddEvenTransposition<T>::bubble_sort(T* arr,
                                                                                                      size_t length) {
-  for (int i = 0; i < length - 1; i++)
-    for (int j = 0; j < length - i - 1; j++)
+  for (size_t i = 0; i < length - 1; i++)
+    for (size_t j = 0; j < length - i - 1; j++)
       if (arr[j] > arr[j + 1]) std::swap(arr[j], arr[j + 1]);
   return true;
 }
