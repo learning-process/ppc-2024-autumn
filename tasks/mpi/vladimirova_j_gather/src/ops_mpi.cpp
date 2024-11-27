@@ -21,7 +21,7 @@ std::vector<int> vladimirova_j_gather_mpi::getRandomVector(int sz) {
 }
 
 std::vector<int> noDeadEnds(std::vector<int> way) {
-  /*
+  
   int i = 0;
    int j = 1;
   int del = 0;
@@ -46,11 +46,8 @@ std::vector<int> noDeadEnds(std::vector<int> way) {
       j++;
       i++;
   }
-  return way;
-  */
-  for (int i = 0; i < way.size(); i++) {
-    way[i] = way[i] * (-1);
-  }
+
+  way.erase(std::remove(way.begin(), way.end(), 0), way.end());
   return way;
 }
 
@@ -104,7 +101,7 @@ bool vladimirova_j_gather_mpi::TestMPITaskParallel::validation() {
 }
 
 template <typename T>
-bool myGather(std::vector<T> send_data, int send_count, boost::mpi::communicator world) {
+bool myGather(std::vector<T>& send_data, int send_count, boost::mpi::communicator world) {
   int r = world.rank();
   int parent = (r - 1) / 2;
   int child0 = (2 * r) + 1;
@@ -114,8 +111,6 @@ bool myGather(std::vector<T> send_data, int send_count, boost::mpi::communicator
   std::vector<T> recv_data;
   std::vector<T> child0_data;
   std::vector<T> child1_data;
-
-  // std::cout << child0 << child1 << std::endl;
 
   if (child0 > 0) {
     int size;
@@ -131,21 +126,33 @@ bool myGather(std::vector<T> send_data, int send_count, boost::mpi::communicator
   }
   recv_data = std::vector<T>(send_count + child0_data.size() + child1_data.size());
 
-  std::copy(send_data.begin(), send_data.end(), recv_data.begin());
-  std::copy(child0_data.begin(), child0_data.end(), recv_data.begin() + send_count);
-  std::copy(child1_data.begin(), child1_data.end(), recv_data.begin() + child0_data.size() + send_count);
 
   if (r != 0) {
-    int size = recv_data.size();
-    world.send(parent, 0, size);
-    world.send(parent, 0, recv_data.data(), recv_data.size());
+      std::copy(send_data.begin(), send_data.end(), recv_data.begin());
+      std::copy(child0_data.begin(), child0_data.end(), recv_data.begin() + send_count);
+      std::copy(child1_data.begin(), child1_data.end(), recv_data.begin() + child0_data.size() + send_count);
+      int size = recv_data.size();
+      world.send(parent, 0, size);
+      world.send(parent, 0, recv_data.data(), recv_data.size());
   }
 
+  std::cout << "\nTHERE proc " << r <<"\n";
+  for (int value : recv_data) {
+      std::cout << value << " ";
+  }
+
+  std::cout << std::endl;
+
   if (r == 0) {
-    std::cout << "\nTHERE end 1" << r << std::endl;
-    for (int value : recv_data) {
+
+    send_data.insert(send_data.end(), child0_data.begin(), child0_data.end());
+    send_data.insert(send_data.end(), child1_data.begin(), child1_data.end());
+
+    std::cout << "\nTHERE end 1 " << r << std::endl;
+    for (int value : send_data) {
       std::cout << value << " ";
     }
+
     std::cout << std::endl;
   }
   return true;
@@ -153,8 +160,11 @@ bool myGather(std::vector<T> send_data, int send_count, boost::mpi::communicator
 
 std::vector<int> convertToBinaryTreeOrder(const std::vector<int>& arr) {
   std::vector<int> result;
+  result.reserve(arr.size());
   std::vector<int> stack;
+  result.reserve(stack.size());
   stack.push_back(0);
+
 
   while (!stack.empty()) {
     int r = stack.back();
@@ -231,12 +241,21 @@ bool vladimirova_j_gather_mpi::TestMPITaskParallel::run() {
   std::for_each(local_input_.begin(), local_input_.end(), [](int number) { std::cout << number << " "; });
   std::cout << std::endl;
 
-  for (int& num : local_input_) {
-    num *= -1;
+  local_input_ = noDeadEnds(local_input_);
+
+  myGather(local_input_, local_input_.size(), world);
+
+  if (r == 0) {
+      local_input_.insert(local_input_.end(), input_.end() - input_.size()%world.size(), input_.end());
+      std::cout << "ANS  1" << r << "   \n";
+      std::for_each(local_input_.begin(), local_input_.end(), [](int number) { std::cout << number << " "; });
+      std::cout << std::endl;
+      local_input_ = noDeadEnds(local_input_);
+
+      std::cout << "ANS  2" << r << "   \n";
+      std::for_each(local_input_.begin(), local_input_.end(), [](int number) { std::cout << number << " "; });
+      std::cout << std::endl;
   }
-
-  myGather(local_input_, size, world);
-
   /*
   local
 
