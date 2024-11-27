@@ -29,7 +29,7 @@ class ParallelMPI : public ppc::core::Task {
 
   std::vector<int> input_matrix_1;
   std::vector<int> input_vector_1;
-  std::vector<int> result_vector;
+  std::vector<int> result_vector_;
   std::vector<int> distribution;
   std::vector<int> displacement;
   boost::mpi::communicator world;
@@ -49,6 +49,6 @@ class SequentialMPI : public ppc::core::Task {
 
   std::vector<int> input_matrix_;
   std::vector<int> input_vector_;
-  std::vector<int> result_vector;
+  std::vector<int> result_vector_;
 };
 }  // namespace sedova_o_vertical_ribbon_scheme_mpi
