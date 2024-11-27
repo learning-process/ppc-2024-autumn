@@ -14,12 +14,12 @@
 
 namespace kholin_k_iterative_methods_Seidel_seq {
 
-bool IsDiagPred(float row_coeffs[], const size_t num_colls, const size_t& start_index, const size_t& index);
-void copyA_(float val[], const size_t num_rows, const size_t num_colls);
+bool IsDiagPred(float row_coeffs[], size_t num_colls, size_t start_index, size_t index);
+void copyA_(float val[], size_t num_rows, size_t num_colls);
 float*& getA_();
 void freeA_();
-void setA_(float val[], const size_t num_rows, const size_t num_colls);
-bool gen_matrix_with_diag_pred(const size_t num_rows, const size_t num_colls);
+void setA_(float val[], size_t num_rows, size_t num_colls);
+bool gen_matrix_with_diag_pred(size_t num_rows, size_t num_colls);
 float gen_float_value();
 
 class TestTaskSequential : public ppc::core::Task {
@@ -29,7 +29,7 @@ class TestTaskSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  ~TestTaskSequential();
+  ~TestTaskSequential() override;
 
  private:
   float* A;
@@ -43,8 +43,8 @@ class TestTaskSequential : public ppc::core::Task {
   size_t n_rows;
   size_t n_colls;
   void SetDefault();
-  bool CheckDiagPred(float matrix[], const size_t num_rows, const size_t num_colls) const;
-  bool IsQuadro(const size_t num_rows, const size_t num_colls) const;
+  bool CheckDiagPred(float matrix[], size_t num_rows, size_t num_colls) const;
+  bool IsQuadro(size_t num_rows, size_t num_colls) const;
   float* gen_vector(size_t sz);
   void iteration_perfomance();
   float d();

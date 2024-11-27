@@ -178,7 +178,7 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::CheckDiagPred
 float* kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::gen_vector(size_t sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  float* row = new float[sz];
+  auto* row = new float[sz];
   std::uniform_real_distribution<float> coeff(-100, 100);
   for (size_t i = 0; i < sz; i++) {
     row[i] = coeff(gen);
@@ -296,7 +296,7 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::validation() {
     }
     bool valid2 = CheckDiagPred(getA_(), taskData->inputs_count[0], taskData->inputs_count[1]);
     if (!valid2) {
-      return false;
+      return valid2;
     }
     return true;
   }
@@ -312,19 +312,18 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::run() {
   MPI_Bcast(&n_rows, 1, sz_t, 0, MPI_COMM_WORLD);
   MPI_Bcast(&n_colls, 1, sz_t, 0, MPI_COMM_WORLD);
   MPI_Bcast(&count, 1, MPI_INT, 0, MPI_COMM_WORLD);
-  if (ProcRank >= 0) {
-    upper_send_counts = new int[n_rows * size];
-    lower_send_counts = new int[n_rows * size];
-    upper_C = new float[count];
-    lower_C = new float[count];
-    local_upper_counts = new int[n_rows];
-    local_lower_counts = new int[n_rows];
-    X0 = new float[n_rows];
-    X_next = new float[n_rows];
-    X_prev = new float[n_rows];
-    upper_displs = new int[n_rows * size];
-    lower_displs = new int[n_rows * size];
-  }
+  upper_send_counts = new int[n_rows * size];
+  lower_send_counts = new int[n_rows * size];
+  upper_C = new float[count];
+  lower_C = new float[count];
+  local_upper_counts = new int[n_rows];
+  local_lower_counts = new int[n_rows];
+  X0 = new float[n_rows];
+  X_next = new float[n_rows];
+  X_prev = new float[n_rows];
+  upper_displs = new int[n_rows * size];
+  lower_displs = new int[n_rows * size];
+
   if (ProcRank > 0) {
     B = new float[n_rows];
   }
@@ -399,6 +398,7 @@ void kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::iteration_perfo
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   if (ProcRank == 0) {
     C = new float[n_rows * n_colls];
+    std::fill(C, C + n_rows * n_colls, 0.0f);
     for (size_t i = 0; i < n_rows; i++) {
       for (size_t j = 0; j < n_colls; j++) {
         if (i == j) {
@@ -423,7 +423,7 @@ float kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::d() {
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   int start_row = upper_displs[ProcRank] - 1;
   for (int i = upper_displs[ProcRank] - 1, j = ProcRank; i < start_row + upper_send_counts[j] + 1; i++) {
-    d = fabs(X_next[i] - X_prev[i]);
+    d = std::fabs(X_next[i] - X_prev[i]);
     if (d > maxd) {
       maxd = d;
     }

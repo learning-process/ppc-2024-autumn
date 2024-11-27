@@ -16,19 +16,19 @@ void kholin_k_iterative_methods_Seidel_seq::freeA_() {
   A_ = nullptr;
 }
 
-void kholin_k_iterative_methods_Seidel_seq::copyA_(float val[], const size_t num_rows, const size_t num_colls) {
+void kholin_k_iterative_methods_Seidel_seq::copyA_(float val[], size_t num_rows, size_t num_colls) {
   std::memcpy(val, A_, sizeof(float) * num_rows * num_colls);
 }
-void kholin_k_iterative_methods_Seidel_seq::setA_(float val[], const size_t num_rows, const size_t num_colls) {
+void kholin_k_iterative_methods_Seidel_seq::setA_(float val[], size_t num_rows, size_t num_colls) {
   A_ = new float[num_rows * num_colls];
   std::memcpy(A_, val, sizeof(float) * num_rows * num_colls);
 }
 
 float*& kholin_k_iterative_methods_Seidel_seq::getA_() { return A_; }
 
-bool kholin_k_iterative_methods_Seidel_seq::IsDiagPred(float row_coeffs[], const size_t num_colls,
-                                                       const size_t& start_index, const size_t& index) {
-  float diag_element = fabs(row_coeffs[index]);
+bool kholin_k_iterative_methods_Seidel_seq::IsDiagPred(float row_coeffs[], size_t num_colls, size_t start_index,
+                                                       size_t index) {
+  float diag_element = std::fabs(row_coeffs[index]);
   float abs_sum = 0;
   float abs_el = 0;
   size_t size = num_colls;
@@ -50,10 +50,11 @@ float kholin_k_iterative_methods_Seidel_seq::gen_float_value() {
   return coeff(gen);
 }
 
-bool kholin_k_iterative_methods_Seidel_seq::gen_matrix_with_diag_pred(const size_t num_rows, const size_t num_colls) {
+bool kholin_k_iterative_methods_Seidel_seq::gen_matrix_with_diag_pred(size_t num_rows, size_t num_colls) {
   std::random_device dev;
   std::mt19937 gen(dev());
   A_ = new float[num_rows * num_colls];
+  std::fill(A_, A_ + num_rows * num_colls, 0.0f);
   float p1 = -(1000.0f * 1000.0f * 1000.0f);
   float p2 = -p1;
   float mult = 100 * 100;
@@ -136,13 +137,12 @@ kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::~TestTaskSequential()
   delete[] A_;
 }
 
-bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::IsQuadro(const size_t num_rows,
-                                                                         const size_t num_colls) const {
+bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::IsQuadro(size_t num_rows, size_t num_colls) const {
   return num_rows == num_colls;
 }
 
-bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::CheckDiagPred(float matrix[], const size_t num_rows,
-                                                                              const size_t num_colls) const {
+bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::CheckDiagPred(float matrix[], size_t num_rows,
+                                                                              size_t num_colls) const {
   size_t rows = num_rows;
   size_t colls = num_colls;
   float abs_diag_element = 0.0f;
