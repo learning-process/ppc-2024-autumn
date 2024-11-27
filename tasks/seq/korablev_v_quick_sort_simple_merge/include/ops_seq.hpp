@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <memory>
+#include <span>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -22,8 +23,8 @@ class QuickSortSimpleMergeSequential : public ppc::core::Task {
   std::vector<int> input_;
   std::vector<int> output_;
 
-  static std::vector<int> merge(std::vector<int>& left, std::vector<int>& right);
-  std::vector<int> quick_sort_with_merge(std::vector<int>& arr);
+  static std::vector<int> merge(const std::vector<int>& left, const std::vector<int>& right);
+  std::vector<int> quick_sort_with_merge(const std::span<int>& arr);
 };
 
 }  // namespace korablev_v_qucik_sort_simple_merge_seq

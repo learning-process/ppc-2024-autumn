@@ -3,7 +3,7 @@
 #include <cmath>
 
 std::vector<int> korablev_v_qucik_sort_simple_merge_seq::QuickSortSimpleMergeSequential::merge(
-    std::vector<int>& left, std::vector<int>& right) {
+    const std::vector<int>& left, const std::vector<int>& right) {
   std::vector<int> result;
   size_t i = 0;
   size_t j = 0;
@@ -27,11 +27,11 @@ std::vector<int> korablev_v_qucik_sort_simple_merge_seq::QuickSortSimpleMergeSeq
 }
 
 std::vector<int> korablev_v_qucik_sort_simple_merge_seq::QuickSortSimpleMergeSequential::quick_sort_with_merge(
-    std::vector<int>& arr) {
+    const std::span<int>& arr) {
   if (arr.size() <= 1) {
-    std::vector<int> answ(arr.size());
-    std::copy(arr.begin(), arr.end(), answ.begin());
-    return answ;
+    std::vector<int> res;
+    res.assign(arr.begin(), arr.end());
+    return res;
   }
 
   int pivot = arr[arr.size() / 2];
