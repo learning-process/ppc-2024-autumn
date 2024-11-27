@@ -16,7 +16,6 @@ class SeidelIterateMethodsMPI : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  void set_matrix_and_vector(const std::vector<std::vector<double>>& matrix, const std::vector<double>& vector);
 
  private:
   boost::mpi::communicator world;
@@ -26,7 +25,6 @@ class SeidelIterateMethodsMPI : public ppc::core::Task {
   int n;
   double epsilon;
   int max_iterations;
-  bool validate_result();
 
   bool converge(const std::vector<double>& x_new);
 };

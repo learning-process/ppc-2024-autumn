@@ -3,8 +3,6 @@
 #include <cmath>
 #include <iostream>
 
-#include <numeric>
-
 namespace nasedkin_e_seidels_iterate_methods_mpi {
 
 bool SeidelIterateMethodsMPI::pre_processing() {
@@ -55,6 +53,16 @@ bool SeidelIterateMethodsMPI::validation() {
 }
 
 bool SeidelIterateMethodsMPI::run() {
+  if (taskData->inputs_count.size() > 2 && taskData->inputs_count[2] == 1) {
+    std::srand(static_cast<unsigned>(std::time(nullptr)));
+    for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < n; ++j) {
+        A[i][j] = (i == j) ? (2.0 + std::rand() % 5) : (std::rand() % 5);
+      }
+      b[i] = std::rand() % 10;
+    }
+  }
+
   std::vector<double> x_new(n, 0.0);
   int iteration = 0;
 
@@ -77,12 +85,25 @@ bool SeidelIterateMethodsMPI::run() {
     ++iteration;
   }
 
+  double residual = 0.0;
+  for (int i = 0; i < n; ++i) {
+    double row_sum = 0.0;
+    for (int j = 0; j < n; ++j) {
+      row_sum += A[i][j] * x[j];
+    }
+    residual += (row_sum - b[i]) * (row_sum - b[i]);
+  }
+  residual = std::sqrt(residual);
+
+  if (residual >= epsilon) {
+    std::cerr << "Solution does not satisfy the tolerance: ||Ax - b|| = " << residual << " >= epsilon\n";
+    return false;
+  }
+
   return true;
 }
 
-bool SeidelIterateMethodsMPI::post_processing() {
-  return validate_result();
-}
+bool SeidelIterateMethodsMPI::post_processing() { return true; }
 
 bool SeidelIterateMethodsMPI::converge(const std::vector<double>& x_new) {
   double norm = 0.0;
@@ -90,24 +111,6 @@ bool SeidelIterateMethodsMPI::converge(const std::vector<double>& x_new) {
     norm += (x_new[i] - x[i]) * (x_new[i] - x[i]);
   }
   return std::sqrt(norm) < epsilon;
-}
-
-bool SeidelIterateMethodsMPI::validate_result() {
-  std::vector<double> residual(n, 0.0);
-  for (int i = 0; i < n; ++i) {
-    residual[i] = b[i];
-    for (int j = 0; j < n; ++j) {
-      residual[i] -= A[i][j] * x[j];
-    }
-  }
-
-  double norm = std::sqrt(std::inner_product(residual.begin(), residual.end(), residual.begin(), 0.0));
-  return norm < epsilon;
-}
-
-void SeidelIterateMethodsMPI::set_matrix_and_vector(const std::vector<std::vector<double>>& matrix, const std::vector<double>& vector) {
-  A = matrix;
-  b = vector;
 }
 
 }  // namespace nasedkin_e_seidels_iterate_methods_mpi
