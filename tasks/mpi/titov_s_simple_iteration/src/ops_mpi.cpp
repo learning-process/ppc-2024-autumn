@@ -72,24 +72,6 @@ bool titov_s_simple_iteration_mpi::MPISimpleIterationSequential::pre_processing(
 
 bool titov_s_simple_iteration_mpi::MPISimpleIterationSequential::validation() {
   internal_order_test();
-
-  if (taskData->inputs_count.empty() || taskData->inputs.empty()) {
-    return false;
-  }
-
-  unsigned int rows = taskData->inputs_count[0];
-
-  auto* epsilon_ptr = reinterpret_cast<float*>(taskData->inputs[rows]);
-
-  float epsilon = *epsilon_ptr;
-  if (epsilon <= 0.0f || epsilon > 1.0f) {
-    return false;
-  }
-
-  if (taskData->outputs_count.empty() || taskData->outputs_count[0] < 1) {
-    return false;
-  }
-
   return true;
 }
 
