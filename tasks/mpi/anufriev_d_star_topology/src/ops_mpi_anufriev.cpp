@@ -68,8 +68,7 @@ void SimpleIntMPI::gatherData() {
 
     size_t root_chunk_size = chunk_size + (0 < remainder ? 1 : 0);
 
-    std::copy(input_data_.begin(), input_data_.begin() + root_chunk_size,
-              processed_data_.begin());
+    std::copy(input_data_.begin(), input_data_.begin() + root_chunk_size, processed_data_.begin());
 
     std::vector<int> received_data(chunk_size + 1);
 
