@@ -52,31 +52,33 @@ bool SimpleIntMPI::validation() {
 
 bool SimpleIntMPI::run() {
   internal_order_test();
-  for (int& value : input_data_) {
-    value += world.rank();
+  if (!input_data_.empty()) {
+    for (int& value : input_data_) {
+      value += world.rank();
+    }
   }
   return true;
 }
 
 void SimpleIntMPI::gatherData() {
   size_t total_size = taskData->outputs_count[0];
+  size_t chunk_size = total_size / world.size();
+  size_t remainder = total_size % world.size();
+
+  std::vector<int> received_data(chunk_size + (remainder > 0));
 
   if (world.rank() == 0) {
     processed_data_.resize(total_size);
-    size_t chunk_size = total_size / world.size();
-    size_t remainder = total_size % world.size();
+    if (!input_data_.empty()) {
+      std::copy(input_data_.begin(), input_data_.end(), processed_data_.begin());
+    }
 
-    size_t root_chunk_size = chunk_size + (0 < remainder ? 1 : 0);
+    for (int i = 1; i < world.size(); ++i) {
+      size_t receive_count = chunk_size + (i < remainder);
 
-    std::copy(input_data_.begin(), input_data_.begin() + root_chunk_size, processed_data_.begin());
-
-    std::vector<int> received_data(chunk_size + 1);
-
-    for (int i = 1; i < world.size(); i++) {
-      size_t received_count = chunk_size + (static_cast<size_t>(i) < remainder ? 1 : 0);
-      world.recv(i, 0, received_data.data(), received_count);
-      size_t start_pos = i * chunk_size + std::min(remainder, (size_t)i);
-      std::copy(received_data.begin(), received_data.begin() + received_count, processed_data_.begin() + start_pos);
+      world.recv(i, 0, received_data.data(), receive_count);
+      size_t start_pos = i * chunk_size + std::min((size_t)i, remainder);
+      std::copy(received_data.begin(), received_data.begin() + receive_count, processed_data_.begin() + start_pos);
     }
 
   } else {
