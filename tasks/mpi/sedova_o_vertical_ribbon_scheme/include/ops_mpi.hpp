@@ -1,10 +1,10 @@
-// Copyright 2023 Nesterov Alexander
+﻿// Copyright 2024 Sedova Olga
 #pragma once
 
 #include <gtest/gtest.h>
 
-#include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <boost/mpi/collectives.hpp>
 #include <memory>
 #include <numeric>
 #include <string>
@@ -26,7 +26,6 @@ class ParallelMPI : public ppc::core::Task {
  private:
   int rows_{};
   int cols_{};
-
   std::vector<int> input_matrix_1;
   std::vector<int> input_vector_1;
   std::vector<int> result_vector_;
@@ -46,7 +45,6 @@ class SequentialMPI : public ppc::core::Task {
  private:
   int num_rows_{};
   int num_cols_{};
-
   std::vector<int> input_matrix_;
   std::vector<int> input_vector_;
   std::vector<int> result_vector_;
