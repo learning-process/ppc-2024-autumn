@@ -32,6 +32,7 @@ bool oturin_a_image_smoothing_mpi::TestMPITaskSequential::run() {
 
 bool oturin_a_image_smoothing_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
+  delete[] kernel;
   uint8_t* result_ptr = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
   std::copy(result.begin(), result.end(), result_ptr);
   return true;
@@ -111,7 +112,6 @@ bool oturin_a_image_smoothing_mpi::TestMPITaskParallel::run() {
   constexpr int TAG_INFO = 2;
   constexpr int TAG_DATA = 3;
   constexpr int TAG_RESULT = 5;
-  CreateKernel();
 
 #if defined(_MSC_VER) && !defined(__clang__)
   if (world.size() == 1) {
@@ -176,6 +176,7 @@ bool oturin_a_image_smoothing_mpi::TestMPITaskParallel::run() {
 
 bool oturin_a_image_smoothing_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
+  delete[] kernel;
   if (world.rank() == 0) {
     uint8_t* result_ptr = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
     std::copy(result.begin(), result.end(), result_ptr);

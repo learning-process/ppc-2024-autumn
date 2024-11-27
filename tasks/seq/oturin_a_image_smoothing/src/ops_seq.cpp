@@ -36,6 +36,7 @@ bool oturin_a_image_smoothing_seq::TestTaskSequential::run() {
 
 bool oturin_a_image_smoothing_seq::TestTaskSequential::post_processing() {
   internal_order_test();
+  delete[] kernel;
   uint8_t* result_ptr = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
   std::copy(result.begin(), result.end(), result_ptr);
   return true;

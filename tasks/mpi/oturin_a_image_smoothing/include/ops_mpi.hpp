@@ -19,8 +19,11 @@ std::vector<uint8_t> getRandomVector(int sz);
 
 typedef int errno_t;
 
+#if defined(_WIN32) || defined(WIN32)
+#else
 // https://stackoverflow.com/a/1513215
 errno_t fopen_s(FILE** f, const char* name, const char* mode);
+#endif
 
 const int BYTES_PER_PIXEL = 3;  /// red, green, & blue
 const int FILE_HEADER_SIZE = 14;
