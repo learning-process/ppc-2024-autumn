@@ -19,10 +19,10 @@ class TestMPITaskParallel : public ppc::core::Task {
  public:
   explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
 
-  bool pre_processing();
-  bool validation();
-  bool run();
-  bool post_processing();
+  bool pre_processing() override;
+  bool validation() override;
+  bool run() override;
+  bool post_processing() override;
 
  private:
   int max_waiting_chairs;
@@ -33,7 +33,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 
   void serve_next_client();
-  void sleep();
+  static void sleep();
   bool add_client_to_queue(int client_id);
 };
 }  // namespace gordeeva_t_sleeping_barber_mpi
