@@ -41,7 +41,7 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, test_pipeline_run) {
   if (rank == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
     int count_viol = 0;
-    for (int i = 0; i < length; i++) {
+    for (size_t i = 0; i < length; i++) {
       if (g_vec[i] != g_out[i]) count_viol++;
     }
     ASSERT_EQ(count_viol, 0);
@@ -85,7 +85,7 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, test_task_run) {
     ppc::core::Perf::print_perf_statistic(perfResults);
     std::sort(g_vec.begin(), g_vec.end(), [](double a, double b) { return a < b; });
     int count_viol = 0;
-    for (int i = 0; i < length; i++) {
+    for (size_t i = 0; i < length; i++) {
       if (g_vec[i] != g_out[i]) count_viol++;
     }
     ASSERT_EQ(count_viol, 0);
