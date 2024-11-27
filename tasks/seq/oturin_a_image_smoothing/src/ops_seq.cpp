@@ -51,13 +51,13 @@ void oturin_a_image_smoothing_seq::TestTaskSequential::CreateKernel() {
 
   for (int i = -radius; i <= radius; i++) {
     for (int j = -radius; j <= radius; j++) {
-      kernel[(i + radius) * size + j + radius] = (float)(std::exp(-(i * i + j * j) / (2 * sigma * sigma)));
+      kernel[(i + radius) * size + j + radius] = std::exp(-(i * i + j * j) / (2 * sigma * sigma));
       norm += kernel[(i + radius) * size + j + radius];
     }
   }
 
   for (int i = 0; i < size * size; i++) {
-    kernel[i] /= norm;
+    kernel[i] /= norm;  // NOLINT: supressed false-positive uninitialized memory warning
   }
 }
 
@@ -120,8 +120,8 @@ std::vector<uint8_t> oturin_a_image_smoothing_seq::ReadBMP(const char* filename,
   std::vector<uint8_t> data(size);
 
   unsigned char padding[3] = {0, 0, 0};
-  int widthInBytes = width * BYTES_PER_PIXEL;
-  int paddingSize = (4 - (widthInBytes) % 4) % 4;
+  size_t widthInBytes = (size_t)(width * BYTES_PER_PIXEL);
+  size_t paddingSize = (4 - (widthInBytes) % 4) % 4;
 
   for (i = 0; i < height; i++) {
     rc = fread(data.data() + (i * widthInBytes), BYTES_PER_PIXEL, width, f);
