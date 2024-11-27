@@ -55,31 +55,32 @@ void SeidelIterateMethodsMPI::generate_valid_matrix() {
 }
 
 bool SeidelIterateMethodsMPI::run() {
-  std::vector<double> x_new(n, 0.0);
+  std::vector<double> x_new = x;
   int iteration = 0;
 
   while (iteration < max_iterations) {
     for (int i = 0; i < n; ++i) {
-      x_new[i] = b[i];
+      double sigma = 0.0;
       for (int j = 0; j < n; ++j) {
         if (i != j) {
-          x_new[i] -= A[i][j] * x[j];
+          sigma += A[i][j] * x[j];
         }
       }
-      x_new[i] /= A[i][i];
+      x_new[i] = (b[i] - sigma) / A[i][i];
     }
 
     if (converge(x_new)) {
       x = x_new;
-      break;
+      return true;
     }
 
-    x = x_new;
+    x.swap(x_new);
     ++iteration;
   }
 
   return compute_residual_norm() < epsilon;
 }
+
 
 double SeidelIterateMethodsMPI::compute_residual_norm() {
   std::vector<double> residual(n, 0.0);
