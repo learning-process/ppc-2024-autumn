@@ -35,6 +35,9 @@ void SimpleIntMPI::distributeData() {
     }
     input_data_.resize(chunk_size + (static_cast<size_t>(0) < remainder ? 1 : 0));
   } else {
+    if (input_data_.empty()) {
+      return;
+    }
     count = chunk_size + (static_cast<size_t>(world.rank()) < remainder ? 1 : 0);
     input_data_.resize(count);
     world.recv(0, 0, input_data_.data(), input_data_.size());
@@ -82,7 +85,9 @@ void SimpleIntMPI::gatherData() {
     }
 
   } else {
-    world.send(0, 0, input_data_.data(), input_data_.size());
+    if (!input_data_.empty()) {
+      world.send(0, 0, input_data_.data(), input_data_.size());
+    }
   }
 }
 
