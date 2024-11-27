@@ -253,38 +253,3 @@ TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication_2) {
     }
   }
 }
-TEST(muhina_m_horizontal_cheme, TestDistributionWithEqualProcessesAndRows) {
-  int rows = 4;
-  int cols = 4;
-  int num_proc = 4;
-  std::vector<int> sizes;
-  std::vector<int> displs;
-
-  calculate_distribution(rows, cols, num_proc, sizes, displs);
-
-  EXPECT_EQ(sizes[0], cols);
-  EXPECT_EQ(sizes[1], cols);
-  EXPECT_EQ(sizes[2], cols);
-  EXPECT_EQ(sizes[3], cols);
-
-  EXPECT_EQ(displs[0], 0);
-  EXPECT_EQ(displs[1], cols);
-  EXPECT_EQ(displs[2], 2 * cols);
-  EXPECT_EQ(displs[3], 3 * cols);
-}
-
-TEST(muhina_m_horizontal_cheme, TestDistributionWithFewerProcessesThanRows) {
-  int rows = 5;
-  int cols = 4;
-  int num_proc = 2;
-  std::vector<int> sizes;
-  std::vector<int> displs;
-
-  calculate_distribution(rows, cols, num_proc, sizes, displs);
-
-  EXPECT_EQ(sizes[0], (rows / num_proc + 1) * cols);
-  EXPECT_EQ(sizes[1], (rows / num_proc) * cols);
-
-  EXPECT_EQ(displs[0], 0);
-  EXPECT_EQ(displs[1], sizes[0]);
-}

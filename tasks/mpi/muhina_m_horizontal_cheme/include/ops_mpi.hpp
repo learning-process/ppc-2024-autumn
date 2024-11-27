@@ -15,7 +15,6 @@
 namespace muhina_m_horizontal_cheme_mpi {
 std::vector<int> matrixVectorMultiplication(const std::vector<int>& matrix, const std::vector<int>& vec, int rows,
                                             int cols);
-void calculate_distribution(int rows, int cols, int num_proc, std::vector<int>& sizes, std::vector<int>& displs);
 
 class HorizontalSchemeMPISequential : public ppc::core::Task {
  public:

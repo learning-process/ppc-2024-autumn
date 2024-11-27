@@ -28,39 +28,6 @@ std::vector<int> muhina_m_horizontal_cheme_mpi::matrixVectorMultiplication(const
   return result;
 }
 
-void muhina_m_horizontal_cheme_mpi::calculate_distribution(int rows, int cols, int num_proc, std::vector<int>& sizes,
-                                                           std::vector<int>& displs) {
-  sizes.resize(num_proc, 0);
-  displs.resize(num_proc, -1);
-
-  if (num_proc > rows) {
-    for (int i = 0; i < num_proc; ++i) {
-      if (i < rows) {
-        sizes[i] = cols;
-        displs[i] = i * cols;
-      } else {
-        sizes[i] = 0;
-        displs[i] = -1;
-      }
-    }
-  } else {
-    int rows_per_proc = rows / num_proc;
-    int extra_rows = rows % num_proc;
-
-    int offset = 0;
-    for (int i = 0; i < num_proc; ++i) {
-      if (extra_rows > 0) {
-        sizes[i] = (rows_per_proc + 1) * cols;
-        --extra_rows;
-      } else {
-        sizes[i] = rows_per_proc * cols;
-      }
-      displs[i] = offset;
-      offset += sizes[i];
-    }
-  }
-}
-
 bool muhina_m_horizontal_cheme_mpi::HorizontalSchemeMPISequential::pre_processing() {
   internal_order_test();
 
