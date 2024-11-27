@@ -35,13 +35,13 @@ bool bessonov_e_star_topology_mpi::TestMPITaskParallel::run() {
   traversal_order_.push_back(0);
 
   if (world.rank() == 0) {
-    for (int dest = 1; dest < world.size(); ++dest) {
-      world.send(dest, 0, input_);
+    for (int i = 1; i < world.size(); ++i) {
+      world.send(i, 0, input_);
 
-      traversal_order_.push_back(dest);
+      traversal_order_.push_back(i);
 
       std::vector<int> received_data;
-      world.recv(dest, 0, received_data);
+      world.recv(i, 0, received_data);
 
       traversal_order_.push_back(0);
     }
