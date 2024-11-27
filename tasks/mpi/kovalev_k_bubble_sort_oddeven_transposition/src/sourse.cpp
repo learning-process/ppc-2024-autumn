@@ -85,7 +85,7 @@ bool kovalev_k_bubble_sort_oddeven_transposition_mpi::BubbleSortOddEvenTransposi
     loc_v.resize(sendcounts[0]);
   else
     loc_v.resize(scratter_length);
-  std::vector<size_t> displs(world.size(), 0);
+  std::vector<int> displs(world.size(), 0);
   for (int i = 1; i < world.size(); i++) {
     displs[i] = displs[i - 1] + sendcounts_bytes[i - 1];
   }
