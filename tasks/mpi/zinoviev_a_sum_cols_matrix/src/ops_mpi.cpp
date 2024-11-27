@@ -66,7 +66,7 @@ bool zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel::pre_processing() {
   if (mpiWorld.rank() == 0) {
     numRows = taskData->inputs_count[2];
     numCols = taskData->inputs_count[1];
-
+  }
     broadcast(mpiWorld, numCols, 0);
     broadcast(mpiWorld, numRows, 0);
 
@@ -82,8 +82,7 @@ bool zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel::pre_processing() {
     }
 
     broadcast(mpiWorld, inputData_.data(), numCols * numRows, 0);
-  }
-
+  
   resultData_ = std::vector<int>(numCols, 0);
   return true;
 }
