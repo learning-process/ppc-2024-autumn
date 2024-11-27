@@ -11,6 +11,11 @@ namespace kholin_k_iterative_methods_Seidel_seq {
 float* A_;
 }
 
+void kholin_k_iterative_methods_Seidel_seq::freeA_() {
+  delete[] A_;
+  A_ = nullptr;
+}
+
 void kholin_k_iterative_methods_Seidel_seq::copyA_(float val[], const size_t num_rows, const size_t num_colls) {
   std::memcpy(val, A_, sizeof(float) * num_rows * num_colls);
 }

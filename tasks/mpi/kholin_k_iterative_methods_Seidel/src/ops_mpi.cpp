@@ -14,6 +14,11 @@ namespace kholin_k_iterative_methods_Seidel_mpi {
 float* A_;
 }
 
+void kholin_k_iterative_methods_Seidel_mpi::freeA_() {
+  delete[] A_;
+  A_ = nullptr;
+}
+
 void kholin_k_iterative_methods_Seidel_mpi::copyA_(float val[], const size_t num_rows, const size_t num_colls) {
   std::memcpy(val, A_, sizeof(float) * num_rows * num_colls);
 }
@@ -606,7 +611,6 @@ kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::~TestMPITaskParallel
     delete[] X0;
     delete[] B;
     delete[] C;
-    delete[] A_;
     delete[] upper_displs;
     delete[] lower_displs;
     delete[] local_lower_counts;

@@ -39,6 +39,9 @@ TEST(kholin_k_iterative_methods_Seidel_seq, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
+  delete[] in;
+  delete[] out;
+  kholin_k_iterative_methods_Seidel_seq::freeA_();
 }
 
 TEST(kholin_k_iterative_methods_Seidel_seq, test_task_run) {
@@ -79,6 +82,9 @@ TEST(kholin_k_iterative_methods_Seidel_seq, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
+  delete[] in;
+  delete[] out;
+  kholin_k_iterative_methods_Seidel_seq::freeA_();
 }
 
 // int main(int argc, char **argv) {

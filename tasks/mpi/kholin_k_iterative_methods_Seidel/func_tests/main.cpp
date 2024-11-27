@@ -44,6 +44,7 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, validation_true_when_matrix_with_dia
     kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, op);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
   }
+  kholin_k_iterative_methods_Seidel_mpi::freeA_();
 }
 
 TEST(kholin_k_iterative_methods_Seidel_mpi, test_pre_processing) {
@@ -89,6 +90,7 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, test_pre_processing) {
     testMpiTaskSequential.validation();
     ASSERT_EQ(testMpiTaskSequential.pre_processing(), true);
   }
+  kholin_k_iterative_methods_Seidel_mpi::freeA_();
 }
 
 TEST(kholin_k_iterative_methods_Seidel_mpi, test_run) {
@@ -136,6 +138,7 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, test_run) {
     testMpiTaskSequential.pre_processing();
     ASSERT_EQ(testMpiTaskSequential.run(), true);
   }
+  kholin_k_iterative_methods_Seidel_mpi::freeA_();
 }
 
 TEST(kholin_k_iterative_methods_Seidel_mpi, test_post_processing) {
@@ -185,6 +188,7 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, test_post_processing) {
     testMpiTaskSequential.run();
     ASSERT_EQ(testMpiTaskSequential.post_processing(), true);
   }
+  kholin_k_iterative_methods_Seidel_mpi::freeA_();
 }
 
 TEST(kholin_k_iterative_methods_Seidel_mpi, validation_false_when_matrix_no_quadro) {
@@ -228,6 +232,7 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, validation_false_when_matrix_no_quad
     kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, op);
     ASSERT_EQ(testMpiTaskSequential.validation(), false);
   }
+  kholin_k_iterative_methods_Seidel_mpi::freeA_();
 }
 //
 TEST(kholin_k_iterative_methods_Seidel_mpi, validation_false_when_matrix_no_diag) {
@@ -248,7 +253,8 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, validation_false_when_matrix_no_diag
         for (size_t j = 0; j < count_colls; j++) {
           in[count_colls * i + j] = kholin_k_iterative_methods_Seidel_mpi::gen_float_value();
         }
-        if (kholin_k_iterative_methods_Seidel_mpi::IsDiagPred(in.get(), count_colls, count_colls * i, count_colls * i + i)) {
+        if (kholin_k_iterative_methods_Seidel_mpi::IsDiagPred(in.get(), count_colls, count_colls * i,
+                                                              count_colls * i + i)) {
           count++;
         }
       }
@@ -285,6 +291,7 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, validation_false_when_matrix_no_diag
     kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, op);
     ASSERT_EQ(testMpiTaskSequential.validation(), IsValid);
   }
+  kholin_k_iterative_methods_Seidel_mpi::freeA_();
 }
 
 // int main(int argc, char **argv) {

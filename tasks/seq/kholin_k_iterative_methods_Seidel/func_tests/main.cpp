@@ -27,6 +27,7 @@ TEST(kholin_k_iterative_methods_Seidel_seq, validation_true_when_matrix_with_dia
   ASSERT_EQ(testTaskSequential.validation(), true);
   delete[] in;
   delete[] out;
+  kholin_k_iterative_methods_Seidel_seq::freeA_();
 }
 TEST(kholin_k_iterative_methods_Seidel_seq, test_pre_processing) {
   const size_t count_rows = 3;
@@ -51,6 +52,7 @@ TEST(kholin_k_iterative_methods_Seidel_seq, test_pre_processing) {
   ASSERT_EQ(testTaskSequential.pre_processing(), true);
   delete[] in;
   delete[] out;
+  kholin_k_iterative_methods_Seidel_seq::freeA_();
 }
 TEST(kholin_k_iterative_methods_Seidel_seq, test_run) {
   const size_t count_rows = 3;
@@ -76,6 +78,7 @@ TEST(kholin_k_iterative_methods_Seidel_seq, test_run) {
   ASSERT_EQ(testTaskSequential.run(), true);
   delete[] in;
   delete[] out;
+  kholin_k_iterative_methods_Seidel_seq::freeA_();
 }
 
 TEST(kholin_k_iterative_methods_Seidel_seq, test_post_processing) {
@@ -103,6 +106,7 @@ TEST(kholin_k_iterative_methods_Seidel_seq, test_post_processing) {
   ASSERT_EQ(testTaskSequential.post_processing(), true);
   delete[] in;
   delete[] out;
+  kholin_k_iterative_methods_Seidel_seq::freeA_();
 }
 
 TEST(kholin_k_iterative_methods_Seidel_seq, validation_false_when_matrix_no_quadro) {
@@ -127,6 +131,7 @@ TEST(kholin_k_iterative_methods_Seidel_seq, validation_false_when_matrix_no_quad
   ASSERT_EQ(testTaskSequential.validation(), false);
   delete[] in;
   delete[] out;
+  kholin_k_iterative_methods_Seidel_seq::freeA_();
 }
 
 TEST(kholin_k_iterative_methods_Seidel_seq, validation_false_when_matrix_without_diag_pred_ver1) {
@@ -165,6 +170,7 @@ TEST(kholin_k_iterative_methods_Seidel_seq, validation_false_when_matrix_without
   ASSERT_EQ(testTaskSequential.validation(), IsValid);
   delete[] in;
   delete[] out;
+  kholin_k_iterative_methods_Seidel_seq::freeA_();
 }
 
 // int main(int argc, char **argv) {
