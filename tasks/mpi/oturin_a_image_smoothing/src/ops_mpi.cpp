@@ -113,6 +113,17 @@ bool oturin_a_image_smoothing_mpi::TestMPITaskParallel::run() {
   constexpr int TAG_RESULT = 5;
   CreateKernel();
 
+#if defined(_MSC_VER) && !defined(__clang__)
+  if (world.size() == 1) {
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        SmoothPixel(&result.data()[x * 3], x, y);
+      }
+    }
+    return true;
+  }
+#endif
+
   if (world.rank() == 0) {
     int satellites = world.size() - 1;
     int escape = 0;
@@ -214,6 +225,8 @@ void oturin_a_image_smoothing_mpi::TestMPITaskParallel::SmoothPixel(uint8_t* out
   out[2] = outB;
 }
 
+#if defined(_WIN32) || defined(WIN32)
+#else
 oturin_a_image_smoothing_mpi::errno_t oturin_a_image_smoothing_mpi::fopen_s(FILE** f, const char* name,
                                                                             const char* mode) {
   errno_t ret = 0;
@@ -222,6 +235,7 @@ oturin_a_image_smoothing_mpi::errno_t oturin_a_image_smoothing_mpi::fopen_s(FILE
   if (!*f) ret = errno;
   return ret;
 }
+#endif
 
 std::vector<uint8_t> oturin_a_image_smoothing_mpi::ReadBMP(const char* filename, int& w, int& h) {
   int i;
@@ -232,7 +246,12 @@ std::vector<uint8_t> oturin_a_image_smoothing_mpi::ReadBMP(const char* filename,
   if (f == nullptr) throw "Argument Exception";
 
   unsigned char info[54];
-  fread(info, sizeof(unsigned char), 54, f);  // read the 54-byte header
+  size_t rc;
+  rc = fread(info, sizeof(unsigned char), 54, f);  // read the 54-byte header
+  if (rc == 0) {
+    fclose(f);
+    return std::vector<uint8_t>(0);
+  }
 
   // extract image height and width from header
   int width = *(int*)&info[18];
@@ -248,8 +267,8 @@ std::vector<uint8_t> oturin_a_image_smoothing_mpi::ReadBMP(const char* filename,
   // int stride = (widthInBytes) + paddingSize;
 
   for (i = 0; i < height; i++) {
-    fread(data.data() + (i * widthInBytes), BYTES_PER_PIXEL, width, f);
-    fread(padding, 1, paddingSize, f);
+    rc = fread(data.data() + (i * widthInBytes), BYTES_PER_PIXEL, width, f);
+    rc = fread(padding, 1, paddingSize, f);
   }
   fclose(f);
   w = width;

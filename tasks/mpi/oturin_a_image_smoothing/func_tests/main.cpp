@@ -197,7 +197,7 @@ TEST(oturin_a_image_smoothing_mpi_functest, Test_IMAGE_LINE) {
     std::string file_path = __FILE__;
     std::string dir_path = file_path.substr(0, file_path.rfind("/"));
 
-    std::string filenameOriginal = dir_path + "/line.bmp";
+    std::string filenameOriginal = dir_path + "/../line.bmp";
 
     // Create data
     startImage = oturin_a_image_smoothing_mpi::ReadBMP(filenameOriginal.c_str(), width, height);
@@ -257,7 +257,7 @@ TEST(oturin_a_image_smoothing_mpi_functest, Test_IMAGE_CIRCLE) {
     std::string file_path = __FILE__;
     std::string dir_path = file_path.substr(0, file_path.rfind("/"));
 
-    std::string filenameOriginal = dir_path + "/circle.bmp";
+    std::string filenameOriginal = dir_path + "/../circle.bmp";
 
     // Create data
     startImage = oturin_a_image_smoothing_mpi::ReadBMP(filenameOriginal.c_str(), width, height);
@@ -317,7 +317,7 @@ TEST(oturin_a_image_smoothing_mpi_functest, Test_IMAGE_COLOR) {
     std::string file_path = __FILE__;
     std::string dir_path = file_path.substr(0, file_path.rfind("/"));
 
-    std::string filenameOriginal = dir_path + "/line.bmp";
+    std::string filenameOriginal = dir_path + "/../line.bmp";
 
     // Create data
     startImage = oturin_a_image_smoothing_mpi::ReadBMP(filenameOriginal.c_str(), width, height);

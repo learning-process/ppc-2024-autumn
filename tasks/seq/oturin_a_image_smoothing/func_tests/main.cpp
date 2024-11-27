@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <filesystem>
 #include <numeric>
 #include <vector>
 
@@ -9,8 +10,8 @@ TEST(oturin_a_image_smoothing_seq_functest, Test_IMAGE_LINE) {
   std::string file_path = __FILE__;
   std::string dir_path = file_path.substr(0, file_path.rfind("/"));
 
-  std::string filenameOriginal = dir_path + "/line.bmp";
-  std::string filenameCompare = dir_path + "/lineREF.bmp";
+  std::string filenameOriginal = dir_path + "/../line.bmp";
+  std::string filenameCompare = dir_path + "/../lineREF.bmp";
 
   int width{};
   int height{};
@@ -42,8 +43,12 @@ TEST(oturin_a_image_smoothing_seq_functest, Test_IMAGE_CIRCLE) {
   std::string file_path = __FILE__;
   std::string dir_path = file_path.substr(0, file_path.rfind("/"));
 
-  std::string filenameOriginal = dir_path + "/circle.bmp";
-  std::string filenameCompare = dir_path + "/circleREF.bmp";
+  std::string filenameOriginal = dir_path + "/../circle.bmp";
+  std::string filenameCompare = dir_path + "/../circleREF.bmp";
+
+  if (!std::filesystem::exists(filenameOriginal)) {
+    ASSERT_EQ(true, false) << "file not found" << std::endl;
+  }
 
   int width{};
   int height{};
@@ -64,7 +69,7 @@ TEST(oturin_a_image_smoothing_seq_functest, Test_IMAGE_CIRCLE) {
 
   // Create Task
   oturin_a_image_smoothing_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_EQ(testTaskSequential.validation(), true) << filenameOriginal;
+  ASSERT_EQ(testTaskSequential.validation(), true) << filenameOriginal << ' ' << filenameCompare;
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
@@ -75,8 +80,8 @@ TEST(oturin_a_image_smoothing_seq_functest, Test_IMAGE_COLOR) {
   std::string file_path = __FILE__;
   std::string dir_path = file_path.substr(0, file_path.rfind("/"));
 
-  std::string filenameOriginal = dir_path + "/color.bmp";
-  std::string filenameCompare = dir_path + "/colorREF.bmp";
+  std::string filenameOriginal = dir_path + "/../color.bmp";
+  std::string filenameCompare = dir_path + "/../colorREF.bmp";
 
   int width{};
   int height{};

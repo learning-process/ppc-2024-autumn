@@ -84,6 +84,8 @@ void oturin_a_image_smoothing_seq::TestTaskSequential::SmoothPixel(int x, int y)
   result[pos + 2] = (uint8_t)outB;
 }
 
+#if defined(_WIN32) || defined(WIN32)
+#else
 oturin_a_image_smoothing_seq::errno_t oturin_a_image_smoothing_seq::fopen_s(FILE** f, const char* name,
                                                                             const char* mode) {
   errno_t ret = 0;
@@ -92,6 +94,7 @@ oturin_a_image_smoothing_seq::errno_t oturin_a_image_smoothing_seq::fopen_s(FILE
   if (!*f) ret = errno;
   return ret;
 }
+#endif
 
 std::vector<uint8_t> oturin_a_image_smoothing_seq::ReadBMP(const char* filename, int& w, int& h) {
   int i;
@@ -102,7 +105,9 @@ std::vector<uint8_t> oturin_a_image_smoothing_seq::ReadBMP(const char* filename,
   if (f == NULL) throw "Argument Exception";
 
   unsigned char info[54];
-  fread(info, sizeof(unsigned char), 54, f);  // read the 54-byte header
+  size_t rc;
+  rc = fread(info, sizeof(unsigned char), 54, f);  // read the 54-byte header
+  if (rc == 0) return std::vector<uint8_t>(0);
 
   // extract image height and width from header
   int width = *(int*)&info[18];
@@ -118,9 +123,10 @@ std::vector<uint8_t> oturin_a_image_smoothing_seq::ReadBMP(const char* filename,
   // int stride = (widthInBytes) + paddingSize;
 
   for (i = 0; i < height; i++) {
-    fread(data.data() + (i * widthInBytes), BYTES_PER_PIXEL, width, f);
-    fread(padding, 1, paddingSize, f);
+    rc = fread(data.data() + (i * widthInBytes), BYTES_PER_PIXEL, width, f);
+    rc = fread(padding, 1, paddingSize, f);
   }
+  // if (rc == 0) return std::vector<uint8_t>(0);
   fclose(f);
   w = width;
   h = height;
