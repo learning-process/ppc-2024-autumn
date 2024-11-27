@@ -111,7 +111,7 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, Test_300_double) {
   std::vector<double> in(length);
   auto max = static_cast<double>(1000000);
   auto min = static_cast<double>(-1000000);
-  for (int i = 0; i <= length; i++) in[i] = min + static_cast<double>(rand()) / RAND_MAX * (max - min);
+  for (size_t i = 0; i <= length; i++) in[i] = min + static_cast<double>(rand()) / RAND_MAX * (max - min);
   std::vector<double> out(length);
   boost::mpi::communicator world;
   std::shared_ptr<ppc::core::TaskData> tmpPar = std::make_shared<ppc::core::TaskData>();
@@ -142,7 +142,7 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, Test_30000_double) {
   std::vector<double> in(length);
   auto max = static_cast<double>(1000000);
   auto min = static_cast<double>(-1000000);
-  for (int i = 0; i <= length; i++) in[i] = min + static_cast<double>(rand()) / RAND_MAX * (max - min);
+  for (size_t i = 0; i <= length; i++) in[i] = min + static_cast<double>(rand()) / RAND_MAX * (max - min);
   std::vector<double> out(length);
   boost::mpi::communicator world;
   std::shared_ptr<ppc::core::TaskData> tmpPar = std::make_shared<ppc::core::TaskData>();
