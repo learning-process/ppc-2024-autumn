@@ -2,7 +2,6 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <random>
 #include <vector>
 
 #include "mpi/solovev_a_star_topology/include/ops_mpi.hpp"
@@ -44,6 +43,24 @@ TEST(solovev_a_star_topology_mpi, Test_empty_input) {
   boost::mpi::communicator world;
   std::vector<int> input = {};
   std::vector<int> output(1, 0);
+  std::vector<int> order(world.size() + 1, -1);
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataPar->inputs_count.emplace_back(input.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+    taskDataPar->outputs_count.emplace_back(output.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(order.data()));
+    taskDataPar->outputs_count.emplace_back(order.size());
+    solovev_a_star_topology_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  }
+}
+
+TEST(solovev_a_star_topology_mpi, Test_dif_size_input_output) {
+  boost::mpi::communicator world;
+  std::vector<int> input = solovev_a_star_topology_mpi::generate_random_vector(3);
+  std::vector<int> output(5, 0);
   std::vector<int> order(world.size() + 1, -1);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
