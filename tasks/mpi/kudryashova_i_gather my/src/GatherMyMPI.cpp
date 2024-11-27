@@ -4,7 +4,7 @@
 #include <boost/serialization/vector.hpp>
 namespace kudryashova_i_gather_my {
 
-int vectorDotProductGather(const std::vector<int>& vector1, const std::vector<int>& vector2) {
+int8_t vectorDotProductGather(const std::vector<int8_t>& vector1, const std::vector<int8_t>& vector2) {
   int result = 0;
   for (unsigned long i = 0; i < vector1.size(); i++) {
     result += vector1[i] * vector2[i];

@@ -6,11 +6,11 @@
 #include "mpi/kudryashova_i_gather/include/GatherMPI.hpp"
 
 static int seedOffset = 0;
-std::vector<int> GetRandomVector_gather(int size) {
-  std::vector<int> vector(size);
+std::vector<int8_t> GetRandomVector_gather(int size) {
+  std::vector<int8_t> vector(size);
   std::srand(static_cast<unsigned>(time(nullptr)) + ++seedOffset);
   for (int i = 0; i < size; ++i) {
-    vector[i] = std::rand() % 100 + 1;
+    vector[i] = std::rand() % 201 - 100;
   }
   return vector;
 }
@@ -18,10 +18,10 @@ std::vector<int> GetRandomVector_gather(int size) {
 TEST(kudryashova_i_gather, test_pipeline_run) {
   boost::mpi::communicator world;
   const int count = 15000000;
-  std::vector<uint8_t> global_vector;
-  std::vector<int> vector1 = GetRandomVector_gather(count);
-  std::vector<int> vector2 = GetRandomVector_gather(count);
-  std::vector<int32_t> result(1, 0);
+  std::vector<int8_t> global_vector;
+  std::vector<int8_t> vector1 = GetRandomVector_gather(count);
+  std::vector<int8_t> vector2 = GetRandomVector_gather(count);
+  std::vector<int8_t> result(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     global_vector.resize(vector1.size() + vector2.size());
@@ -54,9 +54,9 @@ TEST(kudryashova_i_gather, test_task_run) {
   boost::mpi::communicator world;
   const int count_size_vector = 15000000;
   std::vector<uint8_t> global_vector;
-  std::vector<int> vector1 = GetRandomVector_gather(count_size_vector);
-  std::vector<int> vector2 = GetRandomVector_gather(count_size_vector);
-  std::vector<int32_t> result(1, 0);
+  std::vector<int8_t> vector1 = GetRandomVector_gather(count_size_vector);
+  std::vector<int8_t> vector2 = GetRandomVector_gather(count_size_vector);
+  std::vector<int8_t> result(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     global_vector.resize(vector1.size() + vector2.size());

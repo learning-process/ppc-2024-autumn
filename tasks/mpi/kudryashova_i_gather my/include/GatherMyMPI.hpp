@@ -9,7 +9,7 @@
 
 #include "core/task/include/task.hpp"
 namespace kudryashova_i_gather_my {
-int vectorDotProductGather(const std::vector<int>& vector1, const std::vector<int>& vector2);
+int8_t vectorDotProductGather(const std::vector<int8_t>& vector1, const std::vector<int8_t>& vector2);
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
