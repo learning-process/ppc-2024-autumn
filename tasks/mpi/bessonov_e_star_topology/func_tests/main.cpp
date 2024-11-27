@@ -56,9 +56,10 @@ TEST(bessonov_e_star_topology_mpi, DataTransmissionTest) {
       expected_traversal.push_back(i);
       expected_traversal.push_back(0);
     }
-
-    for (int i = 0; i < traversal_size; ++i) {
-      ASSERT_EQ(traversal_order[i], expected_traversal[i]);
+    if (world.rank() == 0) {
+      for (int i = 0; i < traversal_size; ++i) {
+        ASSERT_EQ(traversal_order[i], expected_traversal[i]);
+      }
     }
 
     delete[] output_data;
@@ -113,9 +114,10 @@ TEST(bessonov_e_star_topology_mpi, LargeDataTest) {
       expected_traversal.push_back(i);
       expected_traversal.push_back(0);
     }
-
-    for (int i = 0; i < traversal_size; ++i) {
-      ASSERT_EQ(traversal_order[i], expected_traversal[i]);
+    if (world.rank() == 0) {
+      for (int i = 0; i < traversal_size; ++i) {
+        ASSERT_EQ(traversal_order[i], expected_traversal[i]);
+      }
     }
 
     delete[] output_data;
@@ -130,6 +132,7 @@ TEST(bessonov_e_star_topology_mpi, ValidationTest) {
   // not provide input data to cause an error in validation()
 
   bessonov_e_star_topology_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-
-  ASSERT_FALSE(testMpiTaskParallel.validation());
+  if (world.rank() == 0) {
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  }
 }
