@@ -28,7 +28,7 @@ void SimpleIntMPI::distributeData() {
   size_t count;
 
   if (world.rank() == 0) {
-    for (int i = 1; i < world.size(); ++i) {
+    for (size_t i = 1; i < world.size(); ++i) {
       size_t start = i * chunk_size + std::min((size_t)i, remainder);
       count = chunk_size + (i < remainder ? 1 : 0);
       world.send(i, 0, input_data_.data() + start, count);
@@ -72,7 +72,7 @@ void SimpleIntMPI::gatherData() {
 
     std::vector<int> received_data(chunk_size + 1);
 
-    for (int i = 1; i < world.size(); i++) {
+    for (size_t i = 1; i < world.size(); i++) {
       size_t received_count = chunk_size + (i < remainder ? 1 : 0);
       world.recv(i, 0, received_data.data(), received_count);
       size_t start_pos = i * chunk_size + std::min(remainder, (size_t)i);
