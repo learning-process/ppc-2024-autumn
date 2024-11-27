@@ -58,8 +58,8 @@ bool shulpin_strip_scheme_A_B::Matrix_hA_vB_seq::validation() {
   int b_cols = *reinterpret_cast<int*>(taskData->inputs[4]);
   int b_rows = *reinterpret_cast<int*>(taskData->inputs[5]);
 
-  int matrix_check_1 = a_cols * a_rows;
-  int matrix_check_2 = b_cols * b_rows;
+  size_t matrix_check_1 = static_cast<size_t>(a_cols) * static_cast<size_t>(a_rows);
+  size_t matrix_check_2 = static_cast<size_t>(b_cols) * static_cast<size_t>(b_rows);
 
   std::vector<int> A_tmp;
   std::vector<int> B_tmp;
