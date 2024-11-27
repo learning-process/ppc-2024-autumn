@@ -1,10 +1,6 @@
 #include "mpi/borisov_s_broadcast/include/ops_mpi.hpp"
 
 #include <algorithm>
-#include <functional>
-#include <random>
-#include <string>
-#include <thread>
 #include <vector>
 
 using namespace std::chrono_literals;
@@ -55,11 +51,7 @@ bool MPITaskMatrixClustering::run() {
 
   if (world.rank() == 0) {
     auto *data_ptr = reinterpret_cast<double *>(taskData->inputs[0]);
-    for (size_t i = 0; i < rows; i++) {
-      for (size_t j = 0; j < cols; j++) {
-        matrix_[(i * cols) + j] = data_ptr[(i * cols) + j];
-      }
-    }
+    std::copy(data_ptr, data_ptr + (rows * cols), matrix_.begin());
 
     for (size_t i = 0; i < rows; i++) {
       double norm = 0.0;
@@ -72,13 +64,6 @@ bool MPITaskMatrixClustering::run() {
       }
     }
   }
-
-  /*
-  for (size_t i = 0; i < rows * cols; i++) {
-    std::cout << matrix_[i] << " ";
-  }
-  std::cout << std::endl;
-  */
 
   boost::mpi::broadcast(world, matrix_.data(), static_cast<int>(matrix_.size()), 0);
 
@@ -94,13 +79,6 @@ bool MPITaskMatrixClustering::run() {
       val /= static_cast<double>(rows);
     }
   }
-
-  /*
-  for (size_t i = 0; i < cols; i++) {
-    std::cout << global_center[i] << " ";
-  }
-  std::cout << std::endl;
-   */
 
   boost::mpi::broadcast(world, global_center.data(), static_cast<int>(cols), 0);
 
