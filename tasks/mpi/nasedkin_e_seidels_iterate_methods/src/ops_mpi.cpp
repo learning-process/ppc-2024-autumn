@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <random>
 
 namespace nasedkin_e_seidels_iterate_methods_mpi {
 
@@ -15,7 +16,7 @@ bool SeidelIterateMethodsMPI::pre_processing() {
 
   x.resize(n, 0.0);
 
-  return taskData->inputs_count.size() <= 1 || taskData->inputs_count[1] != 0;
+  return true;
 }
 
 bool SeidelIterateMethodsMPI::validation() {
@@ -28,34 +29,29 @@ bool SeidelIterateMethodsMPI::validation() {
     return false;
   }
 
+  generate_valid_matrix();
+  return true;
+}
+
+void SeidelIterateMethodsMPI::generate_valid_matrix() {
   A.resize(n, std::vector<double>(n, 0.0));
   b.resize(n, 0.0);
 
-  bool zero_diagonal_test = false;
-  if (taskData->inputs_count.size() > 1 && taskData->inputs_count[1] == 0) {
-    zero_diagonal_test = true;
-    for (int i = 0; i < n; ++i) {
-      for (int j = 0; j < n; ++j) {
-        A[i][j] = (i != j) ? 1.0 : 0.0;
-      }
-      b[i] = 1.0;
-    }
-  } else {
-    for (int i = 0; i < n; ++i) {
-      for (int j = 0; j < n; ++j) {
-        A[i][j] = (i == j) ? 2.0 : 1.0;
-      }
-      b[i] = n + 1;
-    }
-  }
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<> dist(-10.0, 10.0);
 
   for (int i = 0; i < n; ++i) {
-    if (A[i][i] == 0.0 && !zero_diagonal_test) {
-      return false;
+    double sum = 0.0;
+    for (int j = 0; j < n; ++j) {
+      if (i != j) {
+        A[i][j] = dist(gen);
+        sum += std::abs(A[i][j]);
+      }
     }
+    A[i][i] = sum + dist(gen) + 1.0;
+    b[i] = dist(gen);
   }
-
-  return true;
 }
 
 bool SeidelIterateMethodsMPI::run() {
@@ -74,6 +70,7 @@ bool SeidelIterateMethodsMPI::run() {
     }
 
     if (converge(x_new)) {
+      x = x_new;
       break;
     }
 
@@ -81,25 +78,26 @@ bool SeidelIterateMethodsMPI::run() {
     ++iteration;
   }
 
-  return true;
+  return compute_residual_norm() < epsilon;
 }
 
-bool SeidelIterateMethodsMPI::post_processing() {
-    std::vector<double> Ax(n, 0.0);
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
-            Ax[i] += A[i][j] * x[j];
-        }
-    }
+double SeidelIterateMethodsMPI::compute_residual_norm() {
+  std::vector<double> residual(n, 0.0);
+  double norm = 0.0;
 
-    double norm = 0.0;
-    for (int i = 0; i < n; ++i) {
-        norm += (Ax[i] - b[i]) * (Ax[i] - b[i]);
+  for (int i = 0; i < n; ++i) {
+    double sum = 0.0;
+    for (int j = 0; j < n; ++j) {
+      sum += A[i][j] * x[j];
     }
-    norm = std::sqrt(norm);
+    residual[i] = sum - b[i];
+    norm += residual[i] * residual[i];
+  }
 
-    return norm < epsilon;
+  return std::sqrt(norm);
 }
+
+bool SeidelIterateMethodsMPI::post_processing() { return true; }
 
 bool SeidelIterateMethodsMPI::converge(const std::vector<double>& x_new) {
   double norm = 0.0;
