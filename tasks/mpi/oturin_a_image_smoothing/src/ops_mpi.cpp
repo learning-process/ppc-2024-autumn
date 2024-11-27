@@ -192,7 +192,7 @@ void oturin_a_image_smoothing_mpi::TestMPITaskParallel::SmoothPixel(uint8_t* out
 float* oturin_a_image_smoothing_mpi::CreateKernel() {
   int radius = 1;
   int size = 2 * radius + 1;
-  auto *kernel = new float[size * size]{0};
+  auto* kernel = new float[size * size]{0};
   float sigma = 1.5;
   float norm = 0;
 
