@@ -1,8 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <algorithm>
-#include <cmath>
-
 #include "core/perf/include/perf.hpp"
 #include "seq/kovalev_k_bubble_sort_oddeven_transposition/include/header.hpp"
 

@@ -1,7 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <algorithm>
-
 #include "seq/kovalev_k_bubble_sort_oddeven_transposition/include/header.hpp"
 
 TEST(kovalev_k_bubble_sort_oddeven_transposition_seq, zero_length) {
