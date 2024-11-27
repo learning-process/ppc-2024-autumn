@@ -427,3 +427,97 @@ TEST(mironov_a_broadcast_custom_mpi, Test_wrong_input_2) {
     ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
 }
+
+TEST(mironov_a_broadcast_custom_mpi, Test_broadcast_with_diff_root_1) {
+  boost::mpi::communicator world;
+  if (world.size() < 3) {
+    return;
+  }
+  // Create data
+  std::vector<int> vector_for_broadcast(10);
+  std::vector<int> golds = std::vector<int>({1, 2, 3, 4, 5, 6, 7, 10, 9, 8});
+  std::shared_ptr<ppc::core::TaskData> taskDataGlob = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataRef = std::make_shared<ppc::core::TaskData>();
+
+  // the third process is root
+  if (world.rank() == 2) {
+    vector_for_broadcast = std::vector<int>({1, 2, 3, 4, 5, 6, 7, 10, 9, 8});
+  }
+
+  // broadcast vector
+  mironov_a_broadcast_custom_mpi::ComponentSumPowerCustomImpl testMpiTaskParallel(taskDataGlob);
+  testMpiTaskParallel.broadcastImpl(world, vector_for_broadcast.data(), 10, 2);
+
+  // check data in every process
+  ASSERT_EQ(vector_for_broadcast, golds);
+}
+
+TEST(mironov_a_broadcast_custom_mpi, Test_broadcast_with_diff_root_2) {
+  boost::mpi::communicator world;
+  if (world.size() < 3) {
+    return;
+  }
+  // Create data
+  std::vector<int> vector_for_broadcast(10);
+  std::vector<int> golds = std::vector<int>({1, 2, 3, 4, 5, 6, 7, 10, 9, 8});
+  std::shared_ptr<ppc::core::TaskData> taskDataGlob = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataRef = std::make_shared<ppc::core::TaskData>();
+
+  // the second process is root
+  if (world.rank() == 1) {
+    vector_for_broadcast = std::vector<int>({1, 2, 3, 4, 5, 6, 7, 10, 9, 8});
+  }
+
+  // broadcast vector
+  mironov_a_broadcast_custom_mpi::ComponentSumPowerCustomImpl testMpiTaskParallel(taskDataGlob);
+  testMpiTaskParallel.broadcastImpl(world, vector_for_broadcast.data(), 10, 1);
+
+  // check data in every process
+  ASSERT_EQ(vector_for_broadcast, golds);
+}
+
+#include <gtest/gtest.h>
+
+#include <boost/mpi.hpp>
+#include <memory>
+#include <vector>
+
+TEST(mironov_a_broadcast_custom_mpi, Test_broadcast_with_even_and_odd_processes) {
+  boost::mpi::environment env;
+  boost::mpi::communicator world;
+
+  // here using 2 roots: 3 and 4 processes
+  if (world.size() < 4) {
+    return;
+  }
+
+  // initialize data and golds
+  std::vector<int> vector_for_broadcast(10);
+  std::vector<int> golds_even = {1, 2, 3, 4, 5, 6, 7, 10, 9, 8};
+  std::vector<int> golds_odd = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100};
+  std::shared_ptr<ppc::core::TaskData> taskDataGlob = std::make_shared<ppc::core::TaskData>();
+
+  int rank = world.rank();
+
+  // create another communicator
+  boost::mpi::communicator local_comm = world.split(rank % 2);
+  if (rank == 2 || rank == 3) {
+    vector_for_broadcast = golds_even;
+  }
+
+  // share data
+  mironov_a_broadcast_custom_mpi::ComponentSumPowerCustomImpl testMpiTaskParallel(taskDataGlob);
+  testMpiTaskParallel.broadcastImpl(local_comm, vector_for_broadcast.data(), vector_for_broadcast.size(), 1);
+
+  // reduce result (need to not to do ASSERT_EQ many times)
+  int res = 1;
+  if (rank % 2 == 1 && vector_for_broadcast != golds_odd) {
+    rank = 0;
+  } else if (rank % 2 == 0 && vector_for_broadcast != golds_even) {
+    rank = 0;
+  }
+  boost::mpi::reduce(world, res, boost::mpi::minimum<int>(), 2);
+  if (rank == 2) {
+    ASSERT_EQ(res, 1);
+  }
+}
