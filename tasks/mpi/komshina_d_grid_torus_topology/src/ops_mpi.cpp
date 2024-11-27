@@ -1,8 +1,8 @@
 #include "mpi/komshina_d_grid_torus_topology/include/ops_mpi.hpp"
 
 #include <algorithm>
-#include <cmath>
 #include <boost/mpi.hpp>
+#include <cmath>
 #include <functional>
 #include <random>
 #include <string>

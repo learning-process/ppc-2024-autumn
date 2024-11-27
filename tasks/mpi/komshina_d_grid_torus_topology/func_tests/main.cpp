@@ -4,6 +4,7 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <vector>
+#include <cmath>
 
 #include "mpi/komshina_d_grid_torus_topology/include/ops_mpi.hpp"
 
