@@ -225,7 +225,7 @@ TEST(gordeeva_t_sleeping_barber_mpi, Test_Barber_Sleeping) {
     testMpiTaskParallel.run();
     testMpiTaskParallel.post_processing();
 
-    ASSERT_EQ(global_res[0], 1); //barber is sleeping
+    ASSERT_EQ(global_res[0], 1);   //barber is sleeping
   }
 }
 
@@ -250,6 +250,6 @@ TEST(gordeeva_t_sleeping_barber_mpi, Test_Client_Queue_Full) {
     testMpiTaskParallel.run();
     testMpiTaskParallel.post_processing();
 
-    ASSERT_EQ(global_res[0], 1); //queue is full
+    ASSERT_EQ(global_res[0], 1);   //queue is full
   }
 }
