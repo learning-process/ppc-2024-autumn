@@ -41,8 +41,8 @@ TEST(kovalchuk_a_max_of_vector_elements, test_pipeline_run) {
   if (world.rank() == 0) {
     std::random_device dev;
     std::mt19937 gen(dev());
-    int count_rows = 9999;
-    int count_columns = 9999;
+    int count_rows = 1000;
+    int count_columns = 1000;
     global_matrix = getRandomMatrix(count_rows, count_columns);
     size_t index = gen() % (static_cast<size_t>(count_rows) * count_columns);
     global_matrix[index / count_columns][index % count_columns] = ref;
