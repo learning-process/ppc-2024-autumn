@@ -46,7 +46,8 @@ bool alputov_i_topology_hypercube_mpi::HypercubeRouterMPI::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     bool isPowerOfTwo = ((world.size() - 1) & world.size()) == 0;
-    bool isValidDestination = reinterpret_cast<int *>(taskData->inputs[0])[1] >= 0 && reinterpret_cast<int *>(taskData->inputs[0])[1] < world.size();
+    bool isValidDestination = reinterpret_cast<int *>(taskData->inputs[0])[1] >= 0 &&
+                              reinterpret_cast<int *>(taskData->inputs[0])[1] < world.size();
 
     if (!isPowerOfTwo || !isValidDestination) {
       return false;

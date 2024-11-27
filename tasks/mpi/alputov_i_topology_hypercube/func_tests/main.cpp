@@ -191,7 +191,7 @@ TEST(alputov_i_topology_hypercube_mpi, TargetRankOutOfBounds) {
   }
 }
 
- TEST(alputov_i_topology_hypercube_mpi, NegativeTargetRank) {
+TEST(alputov_i_topology_hypercube_mpi, NegativeTargetRank) {
   boost::mpi::communicator world;
   size_t communicatorSize = world.size();
   if (!(communicatorSize & (communicatorSize - 1)) && communicatorSize > 1) {
@@ -221,7 +221,7 @@ TEST(alputov_i_topology_hypercube_mpi, TargetRankOutOfBounds) {
   }
 }
 
- TEST(alputov_i_topology_hypercube_mpi, SelfTransfer_Rank0) {
+TEST(alputov_i_topology_hypercube_mpi, SelfTransfer_Rank0) {
   boost::mpi::communicator world;
   size_t communicatorSize = world.size();
   if (!(communicatorSize & (communicatorSize - 1)) && communicatorSize >= 1) {
