@@ -10,7 +10,7 @@ bool kovalev_k_bubble_sort_oddeven_transposition_mpi::BubbleSortOddEvenTransposi
 
 template <class T>
 bool kovalev_k_bubble_sort_oddeven_transposition_mpi::BubbleSortOddEvenTranspositionPar<T>::divide_and_merge(
-    int partner, std::vector<size_t>& sendcounts) {
+    int partner, std::vector<int>& sendcounts) {
   if (partner >= 0 && partner < world.size()) {
     std::vector<T> tmp, res;
     int working_num = std::max(world.rank(), partner);
@@ -25,12 +25,13 @@ bool kovalev_k_bubble_sort_oddeven_transposition_mpi::BubbleSortOddEvenTransposi
       for (size_t i = 0; i < loc_v.size(); i++) tmp.push_back(loc_v[i]);
       size_t iter1 = 0, iter2 = sendcounts[partner];
       while (iter2 < tmp.size() || iter1 < sendcounts[partner]) {
-        if ((iter1 < sendcounts[partner] && iter2 < tmp.size() && tmp[iter1] <= tmp[iter2]) ||
-            (iter1 < sendcounts[partner] && iter2 == tmp.size())) {
+        if ((iter1 < static_cast<size_t> sendcounts[partner] && iter2 < tmp.size() && tmp[iter1] <= tmp[iter2]) ||
+            (iter1 < static_cast<size_t> sendcounts[partner] && iter2 == tmp.size())) {
           res.push_back(tmp[iter1]);
           iter1++;
-        } else if ((iter1 < sendcounts[partner] && iter2 < tmp.size() && tmp[iter1] >= tmp[iter2]) ||
-                   (iter1 == (sendcounts[partner]) && iter2 < tmp.size())) {
+        } else if ((iter1 < static_cast<size_t> sendcounts[partner] && iter2 < tmp.size() &&
+                    tmp[iter1] >= tmp[iter2]) ||
+                   (iter1 == static_cast<size_t> sendcounts[partner] && iter2 < tmp.size())) {
           res.push_back(tmp[iter2]);
           iter2++;
         }
@@ -75,8 +76,8 @@ bool kovalev_k_bubble_sort_oddeven_transposition_mpi::BubbleSortOddEvenTransposi
   internal_order_test();
   boost::mpi::broadcast(world, n, 0);
   int scratter_length = n / world.size();
-  std::vector<size_t> sendcounts(world.size(), scratter_length);
-  std::vector<size_t> sendcounts_bytes(world.size(), scratter_length * sizeof(T));
+  std::vector<int> sendcounts(world.size(), scratter_length);
+  std::vector<int> sendcounts_bytes(world.size(), scratter_length * sizeof(T));
   sendcounts[0] = (scratter_length + n % world.size());
   sendcounts_bytes[0] = (scratter_length + n % world.size()) * sizeof(T);
 
@@ -85,14 +86,14 @@ bool kovalev_k_bubble_sort_oddeven_transposition_mpi::BubbleSortOddEvenTransposi
   else
     loc_v.resize(scratter_length);
   std::vector<size_t> displs(world.size(), 0);
-  for (size_t i = 1; i < world.size(); i++) {
+  for (int i = 1; i < world.size(); i++) {
     displs[i] = displs[i - 1] + sendcounts_bytes[i - 1];
   }
   MPI_Scatterv(glob_v.data(), sendcounts_bytes.data(), displs.data(), MPI_BYTE, loc_v.data(),
                sendcounts_bytes[world.rank()], MPI_BYTE, 0, MPI_COMM_WORLD);
   bubble_sort_mpi();
   int partner;
-  for (size_t phase = 1; phase <= world.size(); phase++) {
+  for (int phase = 1; phase <= world.size(); phase++) {
     if (phase % 2 == 1) {
       partner = world.rank() % 2 == 1 ? world.rank() - 1 : world.rank() + 1;
       divide_and_merge(partner, sendcounts);
