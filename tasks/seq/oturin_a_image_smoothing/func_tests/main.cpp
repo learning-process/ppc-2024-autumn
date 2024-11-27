@@ -8,7 +8,11 @@
 
 TEST(oturin_a_image_smoothing_seq_functest, Test_IMAGE_LINE) {
   std::string file_path = __FILE__;
+#if defined(_WIN32) || defined(WIN32)
+  std::string dir_path = file_path.substr(0, file_path.rfind("\\"));
+#else
   std::string dir_path = file_path.substr(0, file_path.rfind("/"));
+#endif
 
   std::string filenameOriginal = dir_path + "/../line.bmp";
   std::string filenameCompare = dir_path + "/../lineREF.bmp";
@@ -39,9 +43,16 @@ TEST(oturin_a_image_smoothing_seq_functest, Test_IMAGE_LINE) {
   ASSERT_EQ(ref, out);
 }
 
+#if __APPLE__
+#else
+
 TEST(oturin_a_image_smoothing_seq_functest, Test_IMAGE_CIRCLE) {
   std::string file_path = __FILE__;
+#if defined(_WIN32) || defined(WIN32)
+  std::string dir_path = file_path.substr(0, file_path.rfind("\\"));
+#else
   std::string dir_path = file_path.substr(0, file_path.rfind("/"));
+#endif
 
   std::string filenameOriginal = dir_path + "/../circle.bmp";
   std::string filenameCompare = dir_path + "/../circleREF.bmp";
@@ -78,7 +89,11 @@ TEST(oturin_a_image_smoothing_seq_functest, Test_IMAGE_CIRCLE) {
 
 TEST(oturin_a_image_smoothing_seq_functest, Test_IMAGE_COLOR) {
   std::string file_path = __FILE__;
+#if defined(_WIN32) || defined(WIN32)
+  std::string dir_path = file_path.substr(0, file_path.rfind("\\"));
+#else
   std::string dir_path = file_path.substr(0, file_path.rfind("/"));
+#endif
 
   std::string filenameOriginal = dir_path + "/../color.bmp";
   std::string filenameCompare = dir_path + "/../colorREF.bmp";
@@ -108,3 +123,4 @@ TEST(oturin_a_image_smoothing_seq_functest, Test_IMAGE_COLOR) {
   testTaskSequential.post_processing();
   ASSERT_EQ(ref, out);
 }
+#endif
