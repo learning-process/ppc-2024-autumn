@@ -8,10 +8,11 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <cmath>
 using namespace std::chrono_literals;
 //
 namespace kholin_k_iterative_methods_Seidel_mpi {
-float* A_;
+float* A_ = nullptr;
 }
 
 void kholin_k_iterative_methods_Seidel_mpi::freeA_() {
@@ -19,19 +20,19 @@ void kholin_k_iterative_methods_Seidel_mpi::freeA_() {
   A_ = nullptr;
 }
 
-void kholin_k_iterative_methods_Seidel_mpi::copyA_(float val[], const size_t num_rows, const size_t num_colls) {
+void kholin_k_iterative_methods_Seidel_mpi::copyA_(float val[], size_t num_rows, size_t num_colls) {
   std::memcpy(val, A_, sizeof(float) * num_rows * num_colls);
 }
-void kholin_k_iterative_methods_Seidel_mpi::setA_(float val[], const size_t num_rows, const size_t num_colls) {
+void kholin_k_iterative_methods_Seidel_mpi::setA_(float val[], size_t num_rows, size_t num_colls) {
   A_ = new float[num_rows * num_colls];
   std::memcpy(A_, val, sizeof(float) * num_rows * num_colls);
 }
 
 float*& kholin_k_iterative_methods_Seidel_mpi::getA_() { return A_; }
 
-bool kholin_k_iterative_methods_Seidel_mpi::IsDiagPred(float row_coeffs[], const size_t num_colls,
-                                                       const size_t& start_index, const size_t& index) {
-  float diag_element = fabs(row_coeffs[index]);
+bool kholin_k_iterative_methods_Seidel_mpi::IsDiagPred(float row_coeffs[], size_t num_colls, size_t start_index,
+                                                       size_t index) {
+  float diag_element = std::fabs(row_coeffs[index]);
   float abs_sum = 0;
   float abs_el = 0;
   size_t size = num_colls;
@@ -39,7 +40,7 @@ bool kholin_k_iterative_methods_Seidel_mpi::IsDiagPred(float row_coeffs[], const
     if (j == index) {
       continue;
     }
-    abs_el = fabs(row_coeffs[j]);
+    abs_el = std::fabs(row_coeffs[j]);
     abs_sum += abs_el;
   }
   return diag_element > abs_sum;
@@ -53,10 +54,15 @@ float kholin_k_iterative_methods_Seidel_mpi::gen_float_value() {
   return coeff(gen);
 }
 
-bool kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(const size_t num_rows, const size_t num_colls) {
+bool kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(size_t num_rows, size_t num_colls) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  A_ = new float[num_rows * num_colls];
+  if (num_rows == 0 || num_colls == 0) {
+    return false;
+  }
+  size_t sz = num_rows * num_colls;
+  A_ = new float[sz];
+  std::fill_n(A_, num_rows * num_colls, 0.0f);
   float p1 = -(1000.0f * 1000.0f * 1000.0f);
   float p2 = -p1;
   // float mult = 100 * 100;
