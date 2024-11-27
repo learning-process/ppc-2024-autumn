@@ -36,7 +36,9 @@ std::vector<double> korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMerge
 std::vector<double> korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::quick_sort_with_merge(
     std::vector<double>& arr) {
   if (arr.size() <= 1) {
-    return std::vector<double>(arr);
+    std::vector<double> answ(arr.size());
+    std::copy(arr.begin(), arr.end(), answ.begin());
+    return answ;
   }
 
   double pivot = arr[arr.size() / 2];
@@ -126,7 +128,9 @@ std::vector<double> korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMerge
 std::vector<double> korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeParallel::quick_sort_with_merge(
     std::vector<double>& arr) {
   if (arr.size() <= 1) {
-    return std::vector<double>(arr);
+    std::vector<double> answ(arr.size());
+    std::copy(arr.begin(), arr.end(), answ.begin());
+    return answ;
   }
 
   double pivot = arr[arr.size() / 2];
