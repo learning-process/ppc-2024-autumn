@@ -10,8 +10,8 @@
 #include "mpi/korablev_v_quick_sort_simple_merge/include/ops_mpi.hpp"
 
 namespace korablev_v_qucik_sort_simple_merge_mpi {
-std::vector<double> generate_random_vector(size_t n, double min_val = -100.0, double max_val = 100.0) {
-  std::vector<double> vec(n);
+std::vector<int> generate_random_vector(size_t n, int min_val = -1000, int max_val = 1000) {
+  std::vector<int> vec(n);
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_real_distribution<> dist(min_val, max_val);
@@ -29,8 +29,8 @@ void run_quick_sort_test_for_vector_size(size_t vector_size) {
 
   auto random_vector = korablev_v_qucik_sort_simple_merge_mpi::generate_random_vector(vector_size);
 
-  std::vector<double> parallel_result(vector_size, 0.0);
-  std::vector<double> sequential_result(vector_size, 0.0);
+  std::vector<int> parallel_result(vector_size, 0.0);
+  std::vector<int> sequential_result(vector_size, 0.0);
 
   size_t vector_size_copy = vector_size;
 
@@ -85,9 +85,9 @@ TEST(korablev_v_quick_sort_mpi, debug_test) {
   boost::mpi::communicator world;
   const size_t array_size = 6;
   std::vector<size_t> in_size(1, array_size);
-  std::vector<double> input_data = {5.0, 3.0, 8.0, 6.0, 2.0, 7.0};
-  std::vector<double> expected_output = {2.0, 3.0, 5.0, 6.0, 7.0, 8.0};
-  std::vector<double> out(array_size, 0.0);
+  std::vector<int> input_data = {5, 3, 8, 6, 2, 7};
+  std::vector<int> expected_output = {2, 3, 5, 6, 7, 8};
+  std::vector<int> out(array_size, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in_size.data()));

@@ -9,8 +9,8 @@
 #include "seq/korablev_v_quick_sort_simple_merge/include/ops_seq.hpp"
 
 namespace korablev_v_qucik_sort_simple_merge_seq {
-std::vector<double> generate_random_vector(size_t size, double min_val = -1000.0, double max_val = 1000.0) {
-  std::vector<double> data(size);
+std::vector<int> generate_random_vector(size_t size, int min_val = -1000, int max_val = 1000) {
+  std::vector<int> data(size);
 
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -27,8 +27,8 @@ std::vector<double> generate_random_vector(size_t size, double min_val = -1000.0
 TEST(korablev_v_quick_sort_simple_merge_seq, test_pipeline_run) {
   const size_t vector_size = 10000;
   std::vector<size_t> in_size(1, vector_size);
-  std::vector<double> input_data = korablev_v_qucik_sort_simple_merge_seq::generate_random_vector(vector_size);
-  std::vector<double> output_data(vector_size, 0.0);
+  std::vector<int> input_data = korablev_v_qucik_sort_simple_merge_seq::generate_random_vector(vector_size);
+  std::vector<int> output_data(vector_size, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in_size.data()));
@@ -66,8 +66,8 @@ TEST(korablev_v_quick_sort_simple_merge_seq, test_pipeline_run) {
 TEST(korablev_v_quick_sort_simple_merge_seq, test_task_run) {
   const size_t vector_size = 10000;
   std::vector<size_t> in_size(1, vector_size);
-  std::vector<double> input_data = korablev_v_qucik_sort_simple_merge_seq::generate_random_vector(vector_size);
-  std::vector<double> output_data(vector_size, 0.0);
+  std::vector<int> input_data = korablev_v_qucik_sort_simple_merge_seq::generate_random_vector(vector_size);
+  std::vector<int> output_data(vector_size, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in_size.data()));

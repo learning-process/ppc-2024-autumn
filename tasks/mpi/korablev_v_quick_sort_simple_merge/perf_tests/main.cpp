@@ -10,8 +10,8 @@
 #include "mpi/korablev_v_quick_sort_simple_merge/include/ops_mpi.hpp"
 
 namespace korablev_v_qucik_sort_simple_merge_mpi {
-std::vector<double> generate_random_vector(size_t n, double min_val = -100.0, double max_val = 100.0) {
-  std::vector<double> vec(n);
+std::vector<int> generate_random_vector(size_t n, int min_val = -1000, int max_val = 1000) {
+  std::vector<int> vec(n);
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_real_distribution<> dist(min_val, max_val);
@@ -31,7 +31,7 @@ TEST(korablev_v_quick_sort_mpi, test_pipeline_run) {
   auto random_vector = korablev_v_qucik_sort_simple_merge_mpi::generate_random_vector(vector_size);
 
   std::vector<size_t> in_size(1, vector_size);
-  std::vector<double> out(vector_size, 0.0);
+  std::vector<int> out(vector_size, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -72,7 +72,7 @@ TEST(korablev_v_quick_sort_mpi, test_task_run) {
   auto random_vector = korablev_v_qucik_sort_simple_merge_mpi::generate_random_vector(vector_size);
 
   std::vector<size_t> in_size(1, vector_size);
-  std::vector<double> out(vector_size, 0.0);
+  std::vector<int> out(vector_size, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {

@@ -19,11 +19,11 @@ class QuickSortSimpleMergeSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<double> input_;
-  std::vector<double> output_;
+  std::vector<int> input_;
+  std::vector<int> output_;
 
-  static std::vector<double> merge(std::vector<double>& left, std::vector<double>& right);
-  std::vector<double> quick_sort_with_merge(std::vector<double>& arr);
+  static std::vector<int> merge(std::vector<int>& left, std::vector<int>& right);
+  std::vector<int> quick_sort_with_merge(std::vector<int>& arr);
 };
 
 }  // namespace korablev_v_qucik_sort_simple_merge_seq
