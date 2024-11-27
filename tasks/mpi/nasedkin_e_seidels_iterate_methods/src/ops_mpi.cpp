@@ -85,26 +85,20 @@ bool SeidelIterateMethodsMPI::run() {
 }
 
 bool SeidelIterateMethodsMPI::post_processing() {
-    std::vector<double> residual(n, 0.0);
+    std::vector<double> Ax(n, 0.0);
     for (int i = 0; i < n; ++i) {
-        residual[i] = b[i];
         for (int j = 0; j < n; ++j) {
-            residual[i] -= A[i][j] * x[j];
+            Ax[i] += A[i][j] * x[j];
         }
     }
 
     double norm = 0.0;
     for (int i = 0; i < n; ++i) {
-        norm += residual[i] * residual[i];
+        norm += (Ax[i] - b[i]) * (Ax[i] - b[i]);
     }
-
     norm = std::sqrt(norm);
 
-    if (norm < epsilon) {
-        return true;
-    } else {
-        return false;
-    }
+    return norm < epsilon;
 }
 
 bool SeidelIterateMethodsMPI::converge(const std::vector<double>& x_new) {
