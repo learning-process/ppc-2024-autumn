@@ -115,8 +115,8 @@ TEST(zaitsev_a_scatter, test_pipeline_run__func_builtin) {
     taskDataPar->outputs_count.emplace_back(inp_vector.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<zaitsev_a_scatter::TestMPITaskParallel<int, MPI_Scatter>>(
-      taskDataPar, root, MPI_INT);
+  auto testMpiTaskParallel =
+      std::make_shared<zaitsev_a_scatter::TestMPITaskParallel<int, MPI_Scatter>>(taskDataPar, root, MPI_INT);
   if (!testMpiTaskParallel->validation()) {
     GTEST_SKIP();
     return;
@@ -162,8 +162,8 @@ TEST(zaitsev_a_scatter, test_task_run__func_builtin) {
     taskDataPar->outputs_count.emplace_back(inp_vector.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<zaitsev_a_scatter::TestMPITaskParallel<int, MPI_Scatter>>(
-      taskDataPar, root, MPI_INT);
+  auto testMpiTaskParallel =
+      std::make_shared<zaitsev_a_scatter::TestMPITaskParallel<int, MPI_Scatter>>(taskDataPar, root, MPI_INT);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();

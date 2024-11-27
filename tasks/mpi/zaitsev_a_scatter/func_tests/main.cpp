@@ -28,7 +28,8 @@ std::vector<double> get_random_double_vector(int sz, double min, double max, dou
 }  // namespace zaitsev_a_scatter
 
 template <auto func>
-  requires std::same_as<decltype(+func), int (*)(const void*, int, MPI_Datatype, void*, int, MPI_Datatype, int, MPI_Comm)>
+  requires std::same_as<decltype(+func),
+                        int (*)(const void*, int, MPI_Datatype, void*, int, MPI_Datatype, int, MPI_Comm)>
 void test_int(int sz, int min = -1000, int max = 1000, int extrema = -5000) {
   std::vector<int> inp;
   std::vector<int> ref(1, 15);
@@ -60,7 +61,8 @@ void test_int(int sz, int min = -1000, int max = 1000, int extrema = -5000) {
 }
 
 template <auto func>
-  requires std::same_as<decltype(+func), int (*)(const void*, int, MPI_Datatype, void*, int, MPI_Datatype, int, MPI_Comm)>
+  requires std::same_as<decltype(+func),
+                        int (*)(const void*, int, MPI_Datatype, void*, int, MPI_Datatype, int, MPI_Comm)>
 void test_double(int sz, double min = -10e3, double max = 10e3, double extrema = -10e4) {
   std::vector<double> inp;
   std::vector<double> ref(1, 0);

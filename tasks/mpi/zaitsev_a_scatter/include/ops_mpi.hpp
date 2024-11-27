@@ -11,11 +11,12 @@
 
 namespace zaitsev_a_scatter {
 
-int scatter(const void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype,
-            int root, MPI_Comm comm);
+int scatter(const void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount,
+            MPI_Datatype recvtype, int root, MPI_Comm comm);
 
 template <typename T, auto func>
-  requires std::same_as<decltype(+func), int (*)(const void*, int, MPI_Datatype, void*, int, MPI_Datatype, int, MPI_Comm)>
+  requires std::same_as<decltype(+func),
+                        int (*)(const void*, int, MPI_Datatype, void*, int, MPI_Datatype, int, MPI_Comm)>
 class TestMPITaskParallel : public ppc::core::Task {
  public:
   explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, int root_, MPI_Datatype dtype_)
