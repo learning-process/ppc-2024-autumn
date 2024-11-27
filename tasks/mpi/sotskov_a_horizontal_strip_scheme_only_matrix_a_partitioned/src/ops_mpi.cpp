@@ -6,7 +6,6 @@
 #include <boost/serialization/vector.hpp>
 #include <functional>
 #include <random>
-#include <string>
 #include <thread>
 #include <vector>
 
@@ -164,8 +163,8 @@ bool sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITas
     C = nullptr;
   }
 
-  int* recvcounts = new int[size]();
-  int* recvdispls = new int[size]();
+  int* recvcounts = new int[size];
+  int* recvdispls = new int[size];
   offset = 0;
 
   for (int i = 0; i < size; ++i) {
