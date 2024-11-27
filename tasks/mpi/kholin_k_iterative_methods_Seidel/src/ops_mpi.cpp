@@ -298,8 +298,15 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::validation() {
   sz_t = get_mpi_type();
   if (ProcRank == 0) {
     SetDefault();
-    return CheckDiagPred(getA_(), taskData->inputs_count[0], taskData->inputs_count[1]) &&
-           IsQuadro(taskData->inputs_count[0], taskData->inputs_count[1]);
+    bool valid1 = IsQuadro(taskData->inputs_count[0], taskData->inputs_count[1]);
+    if (valid1 == false) {
+      return false;
+    }
+    bool valid2 = CheckDiagPred(getA_(), taskData->inputs_count[0], taskData->inputs_count[1]);
+    if (valid2 == false) {
+      return false;
+    }
+    return true;
   }
   return true;
 }
