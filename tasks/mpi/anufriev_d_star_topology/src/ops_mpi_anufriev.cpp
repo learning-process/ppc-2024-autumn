@@ -60,8 +60,10 @@ void SimpleIntMPI::distributeData() {
 bool SimpleIntMPI::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    return taskData->inputs_count.empty() && taskData->outputs_count.empty() &&
-           taskData->inputs_count[0] == taskData->outputs_count[0];
+    if (!taskData || taskData->inputs_count.empty() || taskData->outputs_count.empty()) {
+      return false;
+    }
+    return taskData->inputs_count[0] == taskData->outputs_count[0];
   }
   return true;
 }
