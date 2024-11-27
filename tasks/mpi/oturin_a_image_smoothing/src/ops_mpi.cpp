@@ -117,7 +117,7 @@ bool oturin_a_image_smoothing_mpi::TestMPITaskParallel::run() {
   if (world.size() == 1) {
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
-        SmoothPixel(&result.data()[x * 3], x, y);
+        SmoothPixel(&result.data()[y * width * 3 + x * 3], x, y);
       }
     }
     return true;
