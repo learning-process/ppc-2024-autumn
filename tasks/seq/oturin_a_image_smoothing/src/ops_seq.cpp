@@ -120,7 +120,7 @@ std::vector<uint8_t> oturin_a_image_smoothing_seq::ReadBMP(const char* filename,
   std::vector<uint8_t> data(size);
 
   unsigned char padding[3] = {0, 0, 0};
-  size_t widthInBytes = (size_t)(width * BYTES_PER_PIXEL);
+  size_t widthInBytes = width * BYTES_PER_PIXEL;
   size_t paddingSize = (4 - (widthInBytes) % 4) % 4;
 
   for (i = 0; i < height; i++) {
