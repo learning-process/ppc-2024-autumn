@@ -3,12 +3,12 @@
 #include <memory.h>
 
 #include <algorithm>
+#include <cmath>
 #include <functional>
 #include <random>
 #include <string>
 #include <thread>
 #include <vector>
-#include <cmath>
 using namespace std::chrono_literals;
 //
 namespace kholin_k_iterative_methods_Seidel_mpi {
@@ -98,14 +98,14 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::pre_processin
   n_rows = taskData->inputs_count[0];
   n_colls = taskData->inputs_count[1];
   A = new float[n_rows * n_colls];
-  auto ptr_vector = reinterpret_cast<float*>(taskData->inputs[0]);
+  float* ptr_vector = reinterpret_cast<float*>(taskData->inputs[0]);
   std::memcpy(A, ptr_vector, sizeof(float) * (n_rows * n_colls));
   X_next = new float[n_rows];
   std::fill(X_next, X_next + n_rows, 0.0f);
   X_prev = new float[n_rows];
   std::fill(X_prev, X_prev + n_rows, 0.0f);
   B = gen_vector(n_rows);
-  auto ptr = reinterpret_cast<float*>(taskData->inputs[1]);
+  float* ptr = reinterpret_cast<float*>(taskData->inputs[1]);
   epsilon = *ptr;
   X = new float[n_rows];
   std::fill(X, X + n_rows, 1.0f);
@@ -131,49 +131,35 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::run() {
 
 bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
-  float* ptr = reinterpret_cast<float*>(taskData->outputs[0]);
+  auto ptr = reinterpret_cast<float*>(taskData->outputs[0]);
   std::memcpy(ptr, X, sizeof(float) * n_rows);
   return true;
 }
 
 kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::~TestMPITaskSequential() {
-  if (A != nullptr) {
-    delete[] A;
-  }
-  if (X != nullptr) {
-    delete[] X;
-  }
-  if (X_next != nullptr) {
-    delete[] X_next;
-  }
-  if (X_prev != nullptr) {
-    delete[] X_prev;
-  }
-  if (X0 != nullptr) {
-    delete[] X0;
-  }
-  if (B != nullptr) {
-    delete[] B;
-  }
-  if (C != nullptr) {
-    delete[] C;
-  }
+  delete[] A;
+  delete[] X;
+  delete[] X_next;
+  delete[] X_prev;
+  delete[] X0;
+  delete[] B;
+  delete[] C;
 }
 
 bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::IsQuadro(const size_t num_rows,
-                                                                            const size_t num_colls) const {
+                                                                            const size_t num_colls){
   return num_rows == num_colls;
 }
 
 bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::CheckDiagPred(float matrix[], const size_t num_rows,
-                                                                                 const size_t num_colls) const {
+                                                                                 const size_t num_colls){
   size_t rows = num_rows;
   size_t colls = num_colls;
   float abs_diag_element = 0.0f;
   float abs_el = 0.0f;
   float abs_sum = 0.0f;
   for (size_t i = 0; i < rows; i++) {
-    abs_diag_element = fabs(matrix[colls * i + i]);
+    abs_diag_element = std::fabsf(matrix[colls * i + i]);
     for (size_t j = 0; j < colls; j++) {
       if (j == i) {
         continue;
@@ -220,7 +206,7 @@ float kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::d() {
   float d = 0;
   float maxd = 0;
   for (size_t i = 0; i < n_rows; i++) {
-    d = fabs(X_next[i] - X_prev[i]);
+    d = std::fabsf(X_next[i] - X_prev[i]);
     if (d > maxd) {
       maxd = d;
     }

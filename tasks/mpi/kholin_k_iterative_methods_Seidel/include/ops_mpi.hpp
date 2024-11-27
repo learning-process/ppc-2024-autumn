@@ -29,7 +29,7 @@ bool IsDiagPred(float row_coeffs[], size_t num_colls, size_t start_index, size_t
 void copyA_(float val[], size_t num_rows, size_t num_colls);
 float*& getA_();
 void freeA_();
-void setA_(float val[], size_t num_rows, const size_t num_colls);
+void setA_(float val[], size_t num_rows, size_t num_colls);
 bool gen_matrix_with_diag_pred(size_t num_rows, size_t num_colls);
 float gen_float_value();
 
@@ -55,9 +55,9 @@ class TestMPITaskSequential : public ppc::core::Task {
   size_t n_rows;
   size_t n_colls;
   void SetDefault();
-  bool CheckDiagPred(float matrix[], size_t num_rows, size_t num_colls) const;
-  bool IsQuadro(size_t num_rows, size_t num_colls) const;
-  float* gen_vector(size_t sz);
+  static bool CheckDiagPred(float matrix[], size_t num_rows, size_t num_colls);
+  static bool IsQuadro(size_t num_rows, size_t num_colls);
+  static float* gen_vector(size_t sz);
   void iteration_perfomance();
   float d();
   void method_Seidel();
@@ -99,7 +99,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   float max_delta;
   float global_x;
   void SetDefault();
-  bool CheckDiagPred(float matrix[], size_t num_rows, size_t num_colls)const;
+  bool CheckDiagPred(float matrix[], size_t num_rows, size_t num_colls) const;
   bool IsQuadro(size_t num_rows, size_t num_colls) const;
   float* gen_vector(size_t sz);
   void to_upper_diag_matrix();
