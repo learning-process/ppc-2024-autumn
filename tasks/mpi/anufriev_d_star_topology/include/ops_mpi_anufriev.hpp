@@ -23,6 +23,7 @@ class SimpleIntMPI : public ppc::core::Task {
   boost::mpi::communicator world;
   std::vector<int> input_data_;
   std::vector<int> processed_data_;
+  size_t total_size_;
 };
 
 }  // namespace anufriev_d_star_topology

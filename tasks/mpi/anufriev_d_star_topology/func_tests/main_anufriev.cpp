@@ -16,14 +16,14 @@ std::vector<int> createInputVector(size_t size, int initialValue = 0, int step =
   return vec;
 }
 
-std::vector<int> calculateExpectedOutput(const std::vector<int>& input, size_t worldSize) {
+std::vector<int> calculateExpectedOutput(const std::vector<int>& input, int worldSize) {
   std::vector<int> output = input;
   size_t chunk_size = output.size() / worldSize;
   size_t remainder = output.size() % worldSize;
 
-  for (size_t i = 0; i < worldSize; ++i) {
-    size_t start_pos = i * chunk_size + std::min(i, remainder);
-    size_t count = chunk_size + (i < remainder);
+  for (int i = 0; i < worldSize; ++i) {
+    size_t start_pos = i * chunk_size + std::min((size_t)i, remainder);
+    size_t count = chunk_size + (i < remainder ? 1 : 0);
     for (size_t j = 0; j < count; ++j) {
       output[start_pos + j] += i;
     }
@@ -55,11 +55,11 @@ TEST(anufriev_d_star_topology, EmptyVectorTest) {
     taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output_data.data()));
     taskData->outputs_count.push_back(output_data.size());
   }
-  anufriev_d_star_topology::SimpleIntMPI task(taskData);
-  ASSERT_TRUE(task.validation());
-  ASSERT_TRUE(task.pre_processing());
-  ASSERT_TRUE(task.run());
-  ASSERT_TRUE(task.post_processing());
+  auto task = std::make_shared<anufriev_d_star_topology::SimpleIntMPI>(taskData);
+  ASSERT_TRUE(task->validation());
+  ASSERT_TRUE(task->pre_processing());
+  ASSERT_TRUE(task->run());
+  ASSERT_TRUE(task->post_processing());
 
   if (world.rank() == 0) {
     ASSERT_EQ(output_data.size(), static_cast<size_t>(0));
@@ -82,14 +82,14 @@ TEST(anufriev_d_star_topology, SingleElementVectorTest) {
     taskData->outputs_count.push_back(output_data.size());
   }
 
-  anufriev_d_star_topology::SimpleIntMPI task(taskData);
-  ASSERT_TRUE(task.validation());
-  ASSERT_TRUE(task.pre_processing());
-  ASSERT_TRUE(task.run());
-  ASSERT_TRUE(task.post_processing());
+  auto task = std::make_shared<anufriev_d_star_topology::SimpleIntMPI>(taskData);
+  ASSERT_TRUE(task->validation());
+  ASSERT_TRUE(task->pre_processing());
+  ASSERT_TRUE(task->run());
+  ASSERT_TRUE(task->post_processing());
 
   if (world.rank() == 0) {
-    auto expected_output = calculateExpectedOutput(input_data, static_cast<size_t>(world.size()));
+    auto expected_output = calculateExpectedOutput(input_data, world.size());
     ASSERT_EQ(output_data, expected_output);
   }
 }
@@ -110,11 +110,11 @@ TEST(anufriev_d_star_topology, LargeVectorTest) {
     taskData->outputs_count.push_back(output_data.size());
   }
 
-  anufriev_d_star_topology::SimpleIntMPI task(taskData);
-  ASSERT_TRUE(task.validation());
-  ASSERT_TRUE(task.pre_processing());
-  ASSERT_TRUE(task.run());
-  ASSERT_TRUE(task.post_processing());
+  auto task = std::make_shared<anufriev_d_star_topology::SimpleIntMPI>(taskData);
+  ASSERT_TRUE(task->validation());
+  ASSERT_TRUE(task->pre_processing());
+  ASSERT_TRUE(task->run());
+  ASSERT_TRUE(task->post_processing());
 
   if (world.rank() == 0) {
     auto expected_output = calculateExpectedOutput(input_data, world.size());
@@ -122,14 +122,14 @@ TEST(anufriev_d_star_topology, LargeVectorTest) {
   }
 }
 
-TEST(anufriev_d_star_topology, SimpleIntTest_1) {
+TEST(anufriev_d_star_topology, SmallDataFewerProcessesTest) {
   boost::mpi::communicator world;
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   std::vector<int> input_data;
   std::vector<int> output_data;
 
   if (world.rank() == 0) {
-    input_data = {1, 2, 3, 4, 5};
+    input_data = createInputVector(world.size() - 1);
     taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
     taskData->inputs_count.push_back(input_data.size());
 
@@ -138,21 +138,159 @@ TEST(anufriev_d_star_topology, SimpleIntTest_1) {
     taskData->outputs_count.push_back(output_data.size());
   }
 
-  anufriev_d_star_topology::SimpleIntMPI task(taskData);
-  ASSERT_TRUE(task.validation());
-  ASSERT_TRUE(task.pre_processing());
-  ASSERT_TRUE(task.run());
-  ASSERT_TRUE(task.post_processing());
+  auto task = std::make_shared<anufriev_d_star_topology::SimpleIntMPI>(taskData);
+  ASSERT_TRUE(task->validation());
+  ASSERT_TRUE(task->pre_processing());
+  ASSERT_TRUE(task->run());
+  ASSERT_TRUE(task->post_processing());
 
   if (world.rank() == 0) {
-    if (world.size() == 1) {
-      ASSERT_EQ(output_data, std::vector<int>({1, 2, 3, 4, 5}));
+    auto expected_output = calculateExpectedOutput(input_data, world.size());
+    ASSERT_EQ(output_data, expected_output);
+  }
+}
+
+TEST(anufriev_d_star_topology, LargeDataMoreProcessesTest) {
+  boost::mpi::communicator world;
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  std::vector<int> input_data;
+  std::vector<int> output_data;
+
+  if (world.rank() == 0) {
+    input_data = createInputVector(world.size() * 1000);
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
+    taskData->inputs_count.push_back(input_data.size());
+
+    output_data.resize(input_data.size());
+    taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output_data.data()));
+    taskData->outputs_count.push_back(output_data.size());
+  }
+
+  auto task = std::make_shared<anufriev_d_star_topology::SimpleIntMPI>(taskData);
+  ASSERT_TRUE(task->validation());
+  ASSERT_TRUE(task->pre_processing());
+  ASSERT_TRUE(task->run());
+  ASSERT_TRUE(task->post_processing());
+
+  if (world.rank() == 0) {
+    auto expected_output = calculateExpectedOutput(input_data, world.size());
+    ASSERT_EQ(output_data, expected_output);
+  }
+}
+
+TEST(anufriev_d_star_topology, NegativeAndPositiveNumbersTest) {
+  boost::mpi::communicator world;
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  std::vector<int> input_data;
+  std::vector<int> output_data;
+
+  if (world.rank() == 0) {
+    input_data = generate_random_vector(1000);
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
+    taskData->inputs_count.push_back(input_data.size());
+
+    output_data.resize(input_data.size());
+    taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output_data.data()));
+    taskData->outputs_count.push_back(output_data.size());
+  }
+
+  auto task = std::make_shared<anufriev_d_star_topology::SimpleIntMPI>(taskData);
+  ASSERT_TRUE(task->validation());
+  ASSERT_TRUE(task->pre_processing());
+  ASSERT_TRUE(task->run());
+  ASSERT_TRUE(task->post_processing());
+
+  if (world.rank() == 0) {
+    auto expected_output = calculateExpectedOutput(input_data, world.size());
+    ASSERT_EQ(output_data, expected_output);
+  }
+}
+
+TEST(anufriev_d_star_topology, IntMaxMinValuesTest) {
+  boost::mpi::communicator world;
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  std::vector<int> input_data;
+  std::vector<int> output_data;
+
+  if (world.rank() == 0) {
+    input_data = {INT_MAX, INT_MIN, -1, 0, 1};
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
+    taskData->inputs_count.push_back(input_data.size());
+
+    output_data.resize(input_data.size());
+    taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output_data.data()));
+    taskData->outputs_count.push_back(output_data.size());
+  }
+
+  auto task = std::make_shared<anufriev_d_star_topology::SimpleIntMPI>(taskData);
+  ASSERT_TRUE(task->validation());
+  ASSERT_TRUE(task->pre_processing());
+  ASSERT_TRUE(task->run());
+  ASSERT_TRUE(task->post_processing());
+
+  if (world.rank() == 0) {
+    auto expected_output = calculateExpectedOutput(input_data, world.size());
+    ASSERT_EQ(output_data, expected_output);
+  }
+}
+
+TEST(anufriev_d_star_topology, UnevenDataDistributionTest) {
+  boost::mpi::communicator world;
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  std::vector<int> input_data;
+  std::vector<int> output_data;
+
+  if (world.rank() == 0) {
+    size_t total_size = world.size() * 1000;
+    input_data.resize(total_size);
+    std::fill(input_data.begin(), input_data.begin() + 10, 1);
+    std::fill(input_data.begin() + 10, input_data.end(), 0);
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
+    taskData->inputs_count.push_back(input_data.size());
+
+    output_data.resize(input_data.size());
+    taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output_data.data()));
+    taskData->outputs_count.push_back(output_data.size());
+  }
+
+  auto task = std::make_shared<anufriev_d_star_topology::SimpleIntMPI>(taskData);
+  ASSERT_TRUE(task->validation());
+  ASSERT_TRUE(task->pre_processing());
+  ASSERT_TRUE(task->run());
+  ASSERT_TRUE(task->post_processing());
+
+  if (world.rank() == 0) {
+    auto expected_output = calculateExpectedOutput(input_data, world.size());
+    ASSERT_EQ(output_data, expected_output);
+  }
+}
+
+TEST(anufriev_d_star_topology, MultipleRunsTest) {
+  boost::mpi::communicator world;
+  for (int run = 0; run < 3; ++run) {
+    std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+    std::vector<int> input_data;
+    std::vector<int> output_data;
+
+    if (world.rank() == 0) {
+      input_data = createInputVector(1000, run * 1000);
+      taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
+      taskData->inputs_count.push_back(input_data.size());
+
+      output_data.resize(input_data.size());
+      taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output_data.data()));
+      taskData->outputs_count.push_back(output_data.size());
     }
-    if (world.size() == 2) {
-      ASSERT_EQ(output_data, std::vector<int>({2, 4, 6, 8, 10}));
-    }
-    if (world.size() == 3) {
-      ASSERT_EQ(output_data, std::vector<int>({3, 6, 9, 12, 15}));
+
+    auto task = std::make_shared<anufriev_d_star_topology::SimpleIntMPI>(taskData);
+    ASSERT_TRUE(task->validation());
+    ASSERT_TRUE(task->pre_processing());
+    ASSERT_TRUE(task->run());
+    ASSERT_TRUE(task->post_processing());
+
+    if (world.rank() == 0) {
+      auto expected_output = calculateExpectedOutput(input_data, world.size());
+      ASSERT_EQ(output_data, expected_output);
     }
   }
 }
