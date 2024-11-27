@@ -43,9 +43,9 @@ class TestTaskSequential : public ppc::core::Task {
   size_t n_rows;
   size_t n_colls;
   void SetDefault();
-  bool CheckDiagPred(float matrix[], size_t num_rows, size_t num_colls) const;
-  bool IsQuadro(size_t num_rows, size_t num_colls) const;
-  float* gen_vector(size_t sz);
+  static bool CheckDiagPred(float matrix[], size_t num_rows, size_t num_colls);
+  static bool IsQuadro(size_t num_rows, size_t num_colls);
+  static float* gen_vector(size_t sz);
   void iteration_perfomance();
   float d();
   void method_Seidel();

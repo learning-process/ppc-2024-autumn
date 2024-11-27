@@ -36,7 +36,7 @@ bool kholin_k_iterative_methods_Seidel_seq::IsDiagPred(float row_coeffs[], size_
     if (j == index) {
       continue;
     }
-    abs_el = fabs(row_coeffs[j]);
+    abs_el = std::fabs(row_coeffs[j]);
     abs_sum += abs_el;
   }
   return diag_element > abs_sum;
@@ -80,14 +80,14 @@ bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::pre_processing()
   n_rows = taskData->inputs_count[0];
   n_colls = taskData->inputs_count[1];
   A = new float[n_rows * n_colls];
-  auto ptr_vector = reinterpret_cast<float*>(taskData->inputs[0]);
+  auto* ptr_vector = reinterpret_cast<float*>(taskData->inputs[0]);
   std::memcpy(A, ptr_vector, sizeof(float) * (n_rows * n_colls));
   X_next = new float[n_rows];
   std::fill(X_next, X_next + n_rows, 0.0f);
   X_prev = new float[n_rows];
   std::fill(X_prev, X_prev + n_rows, 0.0f);
   B = gen_vector(n_rows);
-  auto ptr = reinterpret_cast<float*>(taskData->inputs[1]);
+  auto* ptr = reinterpret_cast<float*>(taskData->inputs[1]);
   epsilon = *ptr;
   X = new float[n_rows];
   std::fill(X, X + n_rows, 1.0f);
@@ -121,7 +121,7 @@ bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::run() {
 
 bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::post_processing() {
   internal_order_test();
-  float* ptr = reinterpret_cast<float*>(taskData->outputs[0]);
+  auto* ptr = reinterpret_cast<float*>(taskData->outputs[0]);
   std::memcpy(ptr, X, sizeof(float) * n_rows);
   return true;
 }
@@ -137,24 +137,24 @@ kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::~TestTaskSequential()
   delete[] A_;
 }
 
-bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::IsQuadro(size_t num_rows, size_t num_colls) const {
+bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::IsQuadro(size_t num_rows, size_t num_colls) {
   return num_rows == num_colls;
 }
 
 bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::CheckDiagPred(float matrix[], size_t num_rows,
-                                                                              size_t num_colls) const {
+                                                                              size_t num_colls) {
   size_t rows = num_rows;
   size_t colls = num_colls;
   float abs_diag_element = 0.0f;
   float abs_el = 0.0f;
   float abs_sum = 0.0f;
   for (size_t i = 0; i < rows; i++) {
-    abs_diag_element = fabs(matrix[colls * i + i]);
+    abs_diag_element = std::fabs(matrix[colls * i + i]);
     for (size_t j = 0; j < colls; j++) {
       if (j == i) {
         continue;
       }
-      abs_el = fabs(matrix[colls * i + j]);
+      abs_el = std::fabs(matrix[colls * i + j]);
       abs_sum += abs_el;
     }
     if (abs_diag_element <= abs_sum) {
@@ -168,7 +168,7 @@ bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::CheckDiagPred(fl
 float* kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::gen_vector(size_t sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  float* row = new float[sz];
+  auto* row = new float[sz];
   std::uniform_real_distribution<float> coeff(-100, 100);
   for (size_t i = 0; i < sz; i++) {
     row[i] = coeff(gen);
@@ -197,7 +197,7 @@ float kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::d() {
   float d = 0;
   float maxd = 0;
   for (size_t i = 0; i < n_rows; i++) {
-    d = fabs(X_next[i] - X_prev[i]);
+    d = std::fabs(X_next[i] - X_prev[i]);
     if (d > maxd) {
       maxd = d;
     }

@@ -589,9 +589,7 @@ void kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::to_lower_diag_m
   MPI_Bcast(lower_C, count, MPI_FLOAT, 0, MPI_COMM_WORLD);
   MPI_Bcast(lower_send_counts, n_rows * size, MPI_INT, 0, MPI_COMM_WORLD);
   for (size_t i = 0; i < n_rows; i++) {
-    if (true) {
-      local_lower_counts[i] = lower_send_counts[ProcRank + size * i];
-    }
+    local_lower_counts[i] = lower_send_counts[ProcRank + size * i];
   }
   MPI_Bcast(lower_displs, n_rows * size, MPI_INT, 0, MPI_COMM_WORLD);
 }

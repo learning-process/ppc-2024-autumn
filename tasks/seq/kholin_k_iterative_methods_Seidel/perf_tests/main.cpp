@@ -9,9 +9,9 @@ TEST(kholin_k_iterative_methods_Seidel_seq, test_pipeline_run) {
   float epsilon = 0.001f;
   kholin_k_iterative_methods_Seidel_seq::gen_matrix_with_diag_pred(count_rows, count_colls);
 
-  float *in = new float[count_rows * count_colls];
+  auto *in = new float[count_rows * count_colls];
   kholin_k_iterative_methods_Seidel_seq::copyA_(in, count_rows, count_colls);
-  float *out = new float[count_rows];
+  auto *out = new float[count_rows];
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in));
@@ -50,9 +50,9 @@ TEST(kholin_k_iterative_methods_Seidel_seq, test_task_run) {
   float epsilon = 0.001f;
   kholin_k_iterative_methods_Seidel_seq::gen_matrix_with_diag_pred(count_rows, count_colls);
 
-  float *in = new float[count_rows * count_colls];
+  auto *in = new float[count_rows * count_colls];
   kholin_k_iterative_methods_Seidel_seq::copyA_(in, count_rows, count_colls);
-  float *out = new float[count_rows];
+  auto *out = new float[count_rows];
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in));
