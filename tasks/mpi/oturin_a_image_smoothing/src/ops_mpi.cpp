@@ -47,13 +47,13 @@ void oturin_a_image_smoothing_mpi::TestMPITaskSequential::CreateKernel() {
 
   for (int i = -radius; i <= radius; i++) {
     for (int j = -radius; j <= radius; j++) {
-      kernel[(i + radius) * size + j + radius] = (float)(std::exp(-(i * i + j * j) / (2 * sigma * sigma)));
+      kernel[(i + radius) * size + j + radius] = std::exp(-(i * i + j * j) / (2 * sigma * sigma));
       norm += kernel[(i + radius) * size + j + radius];
     }
   }
 
   for (int i = 0; i < size * size; i++) {
-    kernel[i] /= norm;
+    kernel[i] /= norm;  // NOLINT: supressed false-positive uninitialized memory warning
   }
 }
 
@@ -199,7 +199,7 @@ void oturin_a_image_smoothing_mpi::TestMPITaskParallel::CreateKernel() {
   }
 
   for (int i = 0; i < size * size; i++) {
-    kernel[i] /= norm;
+    kernel[i] /= norm;  // NOLINT: supressed false-positive uninitialized memory warning
   }
 }
 
@@ -266,7 +266,7 @@ std::vector<uint8_t> oturin_a_image_smoothing_mpi::ReadBMP(const char* filename,
 
   for (i = 0; i < height; i++) {
     rc = fread(data.data() + (i * widthInBytes), BYTES_PER_PIXEL, width, f);
-    if (rc != width) break;
+    if (rc != (size_t)width) break;
     rc = fread(padding, 1, paddingSize, f);
     if (rc != paddingSize) break;
   }

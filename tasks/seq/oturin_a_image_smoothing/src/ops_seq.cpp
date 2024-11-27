@@ -125,7 +125,7 @@ std::vector<uint8_t> oturin_a_image_smoothing_seq::ReadBMP(const char* filename,
 
   for (i = 0; i < height; i++) {
     rc = fread(data.data() + (i * widthInBytes), BYTES_PER_PIXEL, width, f);
-    if (rc != width) break;
+    if (rc != (size_t)width) break;
     rc = fread(padding, 1, paddingSize, f);
     if (rc != paddingSize) break;
   }
