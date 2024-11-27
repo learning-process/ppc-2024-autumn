@@ -12,8 +12,6 @@
 #include <numeric>
 #include <vector>
 
-using namespace std::chrono_literals;
-
 std::vector<int> muhina_m_horizontal_cheme_mpi::matrixVectorMultiplication(const std::vector<int>& matrix,
                                                                            const std::vector<int>& vec, int rows,
                                                                            int cols) {

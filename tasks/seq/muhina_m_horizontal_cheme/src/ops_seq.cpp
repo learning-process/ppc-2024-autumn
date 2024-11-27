@@ -37,7 +37,16 @@ bool muhina_m_horizontal_cheme_seq::HorizontalSchemeSequential::pre_processing()
 
 bool muhina_m_horizontal_cheme_seq::HorizontalSchemeSequential::validation() {
   internal_order_test();
-  return (taskData->inputs_count[0] != 0 && taskData->inputs_count[1] != 0);
+  if (taskData->inputs_count[0] == 0 || taskData->inputs_count[1] == 0) {
+    return false;
+  }
+  if (taskData->inputs_count[0] % taskData->inputs_count[1] != 0) {
+    return false;
+  }
+  if (taskData->inputs_count[0] / taskData->inputs_count[1] != taskData->outputs_count[0]) {
+    return false;
+  }
+  return true;
 }
 
 bool muhina_m_horizontal_cheme_seq::HorizontalSchemeSequential::run() {
