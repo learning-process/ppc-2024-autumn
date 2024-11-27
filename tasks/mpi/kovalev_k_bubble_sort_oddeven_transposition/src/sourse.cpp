@@ -12,7 +12,8 @@ template <class T>
 bool kovalev_k_bubble_sort_oddeven_transposition_mpi::BubbleSortOddEvenTranspositionPar<T>::divide_and_merge(
     int partner, std::vector<int>& sendcounts) {
   if (partner >= 0 && partner < world.size()) {
-    std::vector<T> tmp, res;
+    std::vector<T> tmp;
+    std::vector<T> res;
     int working_num = std::max(world.rank(), partner);
     if (world.rank() == working_num) {
       tmp.resize(sendcounts[partner]);
@@ -23,7 +24,8 @@ bool kovalev_k_bubble_sort_oddeven_transposition_mpi::BubbleSortOddEvenTransposi
     if (world.rank() == working_num) {
       res.clear();
       for (size_t i = 0; i < loc_v.size(); i++) tmp.push_back(loc_v[i]);
-      size_t iter1 = 0, iter2 = sendcounts[partner];
+      size_t iter1 = 0;
+      size_t iter2 = sendcounts[partner];
       while (iter2 < tmp.size() || iter1 < static_cast<size_t>(sendcounts[partner])) {
         if ((iter1 < static_cast<size_t>(sendcounts[partner]) && iter2 < tmp.size() && tmp[iter1] <= tmp[iter2]) ||
             (iter1 < static_cast<size_t>(sendcounts[partner]) && iter2 == tmp.size())) {

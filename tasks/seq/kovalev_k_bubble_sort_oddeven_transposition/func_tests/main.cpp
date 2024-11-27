@@ -3,7 +3,8 @@
 #include "seq/kovalev_k_bubble_sort_oddeven_transposition/include/header.hpp"
 
 TEST(kovalev_k_bubble_sort_oddeven_transposition_seq, zero_length) {
-  std::vector<int> in, out;
+  std::vector<int> in;
+  std::vector<int> out;
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
   taskSeq->inputs_count.emplace_back(in.size());
   taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));

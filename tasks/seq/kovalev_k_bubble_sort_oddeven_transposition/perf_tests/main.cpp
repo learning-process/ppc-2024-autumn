@@ -66,7 +66,7 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_seq, test_task_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
   std::sort(etalon.begin(), etalon.end(), [](double a, double b) { return a < b; });
-  double *tmp = reinterpret_cast<double *>(out.data());
+  auto *tmp = reinterpret_cast<double *>(out.data());
   int count_viol = 0;
   for (size_t i = 0; i < length; i++) {
     if (tmp[i] != etalon[i]) count_viol++;
