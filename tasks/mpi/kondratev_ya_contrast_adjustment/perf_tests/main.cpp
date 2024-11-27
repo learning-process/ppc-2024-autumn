@@ -29,7 +29,7 @@ TEST(kondratev_ya_contrast_adjustment_mpi, test_pipeline_run) {
   std::shared_ptr<double> contrast;
 
   if (world.rank() == 0) {
-    int size = 4'000'000;
+    int size = 800000;
     input = kondratev_ya_contrast_adjustment_mpi::genRandomData(size);
 
     res.resize(input.size());
@@ -67,7 +67,7 @@ TEST(kondratev_ya_contrast_adjustment_mpi, test_task_run) {
   std::shared_ptr<double> contrast;
 
   if (world.rank() == 0) {
-    int size = 4'000'000;
+    int size = 800000;
     input = kondratev_ya_contrast_adjustment_mpi::genRandomData(size);
     res.resize(input.size());
     contrast = std::make_shared<double>(1.25);

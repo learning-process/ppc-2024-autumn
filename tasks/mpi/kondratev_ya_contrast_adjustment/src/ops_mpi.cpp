@@ -24,7 +24,7 @@ bool kondratev_ya_contrast_adjustment_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
 
   return taskData->outputs_count[0] == taskData->inputs_count[0] && !taskData->outputs.empty() &&
-         taskData->inputs.size() == 2;
+         taskData->inputs.size() == 2 && *reinterpret_cast<double*>(taskData->inputs[1]) >= 0;
 }
 
 bool kondratev_ya_contrast_adjustment_mpi::TestMPITaskSequential::run() {
@@ -77,7 +77,7 @@ bool kondratev_ya_contrast_adjustment_mpi::TestMPITaskParallel::validation() {
 
   if (world.rank() == 0)
     return taskData->outputs_count[0] == taskData->inputs_count[0] && !taskData->outputs.empty() &&
-           taskData->inputs.size() == 2;
+           taskData->inputs.size() == 2 && *reinterpret_cast<double*>(taskData->inputs[1]) >= 0;
 
   return true;
 }
