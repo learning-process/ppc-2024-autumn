@@ -20,8 +20,8 @@ std::vector<uint8_t> oturin_a_image_smoothing_mpi::getRandomVector(int sz) {
 TEST(oturin_a_image_smoothing_mpi_functest, Test_IMAGE_RANDOM_square) {
   boost::mpi::communicator world;
 
-  int width = 100;
-  int height = 100;
+  int width = 10;
+  int height = 10;
 
   std::vector<uint8_t> startImage;
   std::vector<uint8_t> parallelResult;
@@ -75,8 +75,8 @@ TEST(oturin_a_image_smoothing_mpi_functest, Test_IMAGE_RANDOM_square) {
 TEST(oturin_a_image_smoothing_mpi_functest, Test_IMAGE_RANDOM_landscape) {
   boost::mpi::communicator world;
 
-  int width = 150;
-  int height = 100;
+  int width = 15;
+  int height = 5;
 
   std::vector<uint8_t> startImage;
   std::vector<uint8_t> parallelResult;
@@ -130,8 +130,8 @@ TEST(oturin_a_image_smoothing_mpi_functest, Test_IMAGE_RANDOM_landscape) {
 TEST(oturin_a_image_smoothing_mpi_functest, Test_IMAGE_RANDOM_portrait) {
   boost::mpi::communicator world;
 
-  int width = 100;
-  int height = 140;
+  int width = 5;
+  int height = 15;
 
   std::vector<uint8_t> startImage;
   std::vector<uint8_t> parallelResult;
@@ -329,7 +329,7 @@ TEST(oturin_a_image_smoothing_mpi_functest, Test_IMAGE_COLOR) {
     std::string dir_path = file_path.substr(0, file_path.rfind("/"));
 #endif
 
-    std::string filenameOriginal = dir_path + "/../line.bmp";
+    std::string filenameOriginal = dir_path + "/../color.bmp";
 
     // Create data
     startImage = oturin_a_image_smoothing_mpi::ReadBMP(filenameOriginal.c_str(), width, height);

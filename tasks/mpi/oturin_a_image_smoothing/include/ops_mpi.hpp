@@ -63,7 +63,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
   void CreateKernel();
-  void SmoothPixel(unsigned char* out, int x, int y);
+  void SmoothPixel(uint8_t* out, int x, int y);
 
  private:
   int width = 0;

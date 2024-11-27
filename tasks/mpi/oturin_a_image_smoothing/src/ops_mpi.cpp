@@ -221,9 +221,9 @@ void oturin_a_image_smoothing_mpi::TestMPITaskParallel::SmoothPixel(uint8_t* out
       outB += input[pos + 2] * kernel[kernelPos];
     }
   }
-  out[0] = outR;
-  out[1] = outG;
-  out[2] = outB;
+  out[0] = (uint8_t)outR;
+  out[1] = (uint8_t)outG;
+  out[2] = (uint8_t)outB;
 }
 
 #if defined(_WIN32) || defined(WIN32)
