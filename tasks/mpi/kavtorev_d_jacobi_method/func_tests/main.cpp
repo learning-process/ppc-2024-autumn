@@ -104,8 +104,7 @@ void run_jacobi_method(size_t matrix_size) {
     jacobi_sequential.post_processing();
   }
   if (world.rank() == 0) {
-    double residual_parallel =
-        kavtorev_d_jacobi_method_mpi::calculate_residual(matrix_A, x_parallel, rsh, matrix_size);
+    double residual_parallel = kavtorev_d_jacobi_method_mpi::calculate_residual(matrix_A, x_parallel, rsh, matrix_size);
     double residual_sequential =
         kavtorev_d_jacobi_method_mpi::calculate_residual(matrix_A, x_sequential, rsh, matrix_size);
 
