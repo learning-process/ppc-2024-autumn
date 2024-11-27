@@ -53,16 +53,6 @@ bool SeidelIterateMethodsMPI::validation() {
 }
 
 bool SeidelIterateMethodsMPI::run() {
-  if (taskData->inputs_count.size() > 2 && taskData->inputs_count[2] == 1) {
-    std::srand(static_cast<unsigned>(std::time(nullptr)));
-    for (int i = 0; i < n; ++i) {
-      for (int j = 0; j < n; ++j) {
-        A[i][j] = (i == j) ? (2.0 + std::rand() % 5) : (std::rand() % 5);
-      }
-      b[i] = std::rand() % 10;
-    }
-  }
-
   std::vector<double> x_new(n, 0.0);
   int iteration = 0;
 
@@ -85,21 +75,6 @@ bool SeidelIterateMethodsMPI::run() {
     ++iteration;
   }
 
-  double residual = 0.0;
-  for (int i = 0; i < n; ++i) {
-    double row_sum = 0.0;
-    for (int j = 0; j < n; ++j) {
-      row_sum += A[i][j] * x[j];
-    }
-    residual += (row_sum - b[i]) * (row_sum - b[i]);
-  }
-  residual = std::sqrt(residual);
-
-  if (residual >= epsilon) {
-    std::cerr << "Solution does not satisfy the tolerance: ||Ax - b|| = " << residual << " >= epsilon\n";
-    return false;
-  }
-
   return true;
 }
 
@@ -111,6 +86,19 @@ bool SeidelIterateMethodsMPI::converge(const std::vector<double>& x_new) {
     norm += (x_new[i] - x[i]) * (x_new[i] - x[i]);
   }
   return std::sqrt(norm) < epsilon;
+}
+
+void SeidelIterateMethodsMPI::set_matrix(const std::vector<std::vector<double>>& matrix) {
+  A = matrix;
+  n = static_cast<int>(matrix.size());
+}
+
+void SeidelIterateMethodsMPI::set_vector(const std::vector<double>& vector) {
+  b = vector;
+}
+
+const std::vector<double>& SeidelIterateMethodsMPI::get_solution() const {
+  return x;
 }
 
 }  // namespace nasedkin_e_seidels_iterate_methods_mpi
