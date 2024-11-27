@@ -5,15 +5,19 @@
 
 TEST(nasedkin_e_seidels_iterate_methods_mpi, test_with_valid_input) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs_count.push_back(3);
+  taskData->inputs_count.push_back(5);
 
   nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI seidel_task(taskData);
 
   ASSERT_TRUE(seidel_task.validation()) << "Validation failed for valid input";
   ASSERT_TRUE(seidel_task.pre_processing()) << "Pre-processing failed";
   ASSERT_TRUE(seidel_task.run()) << "Run failed";
+
+  double residual_norm = seidel_task.compute_residual_norm();
+  ASSERT_LE(residual_norm, 1e-6) << "Residual norm exceeds epsilon: " << residual_norm;
   ASSERT_TRUE(seidel_task.post_processing()) << "Post-processing failed";
 }
+
 
 TEST(nasedkin_e_seidels_iterate_methods_mpi, test_with_invalid_input) {
   auto taskData = std::make_shared<ppc::core::TaskData>();

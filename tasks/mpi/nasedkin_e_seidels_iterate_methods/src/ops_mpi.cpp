@@ -49,7 +49,7 @@ void SeidelIterateMethodsMPI::generate_valid_matrix() {
         sum += std::abs(A[i][j]);
       }
     }
-    A[i][i] = sum + dist(gen) + 1.0;
+    A[i][i] = sum + std::abs(dist(gen)) + 1.0;
     b[i] = dist(gen);
   }
 }
@@ -71,6 +71,7 @@ bool SeidelIterateMethodsMPI::run() {
 
     if (converge(x_new)) {
       x = x_new;
+      std::cout << "Converged in " << iteration << " iterations.\n";
       return true;
     }
 
@@ -78,8 +79,10 @@ bool SeidelIterateMethodsMPI::run() {
     ++iteration;
   }
 
+  std::cout << "Failed to converge after " << max_iterations << " iterations.\n";
   return compute_residual_norm() < epsilon;
 }
+
 
 
 double SeidelIterateMethodsMPI::compute_residual_norm() {
@@ -103,7 +106,7 @@ bool SeidelIterateMethodsMPI::post_processing() { return true; }
 bool SeidelIterateMethodsMPI::converge(const std::vector<double>& x_new) {
   double norm = 0.0;
   for (int i = 0; i < n; ++i) {
-    norm += (x_new[i] - x[i]) * (x_new[i] - x[i]);
+    norm += std::pow(x_new[i] - x[i], 2);
   }
   return std::sqrt(norm) < epsilon;
 }
