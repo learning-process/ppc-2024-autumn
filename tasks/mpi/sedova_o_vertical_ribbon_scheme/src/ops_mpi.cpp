@@ -24,8 +24,8 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::pre_processing() {
   internal_order_test();
 
   if (world.rank() == 0) {
-    if (!taskData || taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr ||
-        taskData->outputs[0] == nullptr) {
+    if (!taskData || taskData->inputs[0] == 0 || taskData->inputs[1] == 0 ||
+        taskData->outputs[0] == 0) {
       return false;
     }
 
