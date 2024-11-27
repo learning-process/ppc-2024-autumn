@@ -13,7 +13,7 @@ using namespace std::chrono_literals;
 bool gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
-  barber_busy = false;
+  barber_busy = 0;
   int k = 2;
   res.resize(k, INT_MIN);
 
