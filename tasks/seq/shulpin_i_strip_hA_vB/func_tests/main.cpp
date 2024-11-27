@@ -467,3 +467,42 @@ TEST(shulpin_strip_scheme_A_B, matrix_4x2_2x3) {
     ASSERT_EQ(C[i], exp_res[i]);
   }
 }
+
+TEST(shulpin_strip_scheme_A_B, different_rows_cols_and_matrix_size) {
+  const int rows_a = 1;
+  const int cols_a = 1;
+  const int rows_b = 1;
+  const int cols_b = 1;
+
+  std::vector<int> A = {1, 2, 3, 4};
+  std::vector<int> B = {5, 6, 7, 8};
+  std::vector<int> exp_res = {19, 22, 43, 50};
+  std::vector<int> C(rows_a * cols_b, 0);
+
+  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<int*>(A.data())));
+  taskDataSeq->inputs_count.emplace_back(A.size());
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<int*>(B.data())));
+  taskDataSeq->inputs_count.emplace_back(B.size());
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<int*>(&cols_a)));
+  taskDataSeq->inputs_count.emplace_back(1);
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<int*>(&rows_a)));
+  taskDataSeq->inputs_count.emplace_back(1);
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<int*>(&cols_b)));
+  taskDataSeq->inputs_count.emplace_back(1);
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<int*>(&rows_b)));
+  taskDataSeq->inputs_count.emplace_back(1);
+
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(C.data()));
+  taskDataSeq->outputs_count.emplace_back(C.size());
+
+  shulpin_strip_scheme_A_B::Matrix_hA_vB_seq matrixTask(taskDataSeq);
+
+  ASSERT_FALSE(matrixTask.validation());
+}

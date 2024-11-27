@@ -30,8 +30,8 @@ bool shulpin_strip_scheme_A_B::Matrix_hA_vB_seq::pre_processing() {
   seq_cols_B = cols_B_tmp;
   seq_rows_B = rows_B_tmp;
 
-  std::vector<int> A_tmp{};
-  std::vector<int> B_tmp{};
+  std::vector<int> A_tmp;
+  std::vector<int> B_tmp;
 
   int* A_tmp_data = reinterpret_cast<int*>(taskData->inputs[0]);
   int A_tmp_size = taskData->inputs_count[0];
@@ -58,8 +58,23 @@ bool shulpin_strip_scheme_A_B::Matrix_hA_vB_seq::validation() {
   int b_cols = *reinterpret_cast<int*>(taskData->inputs[4]);
   int b_rows = *reinterpret_cast<int*>(taskData->inputs[5]);
 
+  int matrix_check_1 = a_cols * a_rows;
+  int matrix_check_2 = b_cols * b_rows;
+
+  std::vector<int> A_tmp;
+  std::vector<int> B_tmp;
+
+  int* A_tmp_data = reinterpret_cast<int*>(taskData->inputs[0]);
+  int A_tmp_size = taskData->inputs_count[0];
+  A_tmp.assign(A_tmp_data, A_tmp_data + A_tmp_size);
+
+  int* B_tmp_data = reinterpret_cast<int*>(taskData->inputs[1]);
+  int B_tmp_size = taskData->inputs_count[1];
+  B_tmp.assign(B_tmp_data, B_tmp_data + B_tmp_size);
+
   return (taskData->inputs_count.size() > 4 && !taskData->outputs_count.empty() &&
-          (a_cols > 0 && a_rows > 0 && b_cols > 0 && b_rows > 0) && (a_cols == b_rows));
+          (a_cols > 0 && a_rows > 0 && b_cols > 0 && b_rows > 0) && (a_cols == b_rows) &&
+          (matrix_check_1 == A_tmp.size() && matrix_check_2 == B_tmp.size()));
 }
 
 bool shulpin_strip_scheme_A_B::Matrix_hA_vB_seq::run() {
