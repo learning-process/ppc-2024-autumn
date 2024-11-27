@@ -193,16 +193,14 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, test_post_processing) {
 
 TEST(kholin_k_iterative_methods_Seidel_mpi, validation_false_when_matrix_no_quadro) {
   int ProcRank = 0;
-  MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
-  const size_t count_rows = 24;
-  const size_t count_colls = 25;
+  const size_t count_rows = 25;
+  const size_t count_colls = 24;
   float epsilon = 0.001f;
   list_ops::ops_ op = list_ops::METHOD_SEIDEL;
   std::unique_ptr<float[]> in(new float[count_rows * count_colls]);
   std::unique_ptr<float[]> out(new float[count_rows]);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
   if (ProcRank == 0) {
     kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls);
     kholin_k_iterative_methods_Seidel_mpi::copyA_(in.get(), count_rows, count_colls);
@@ -213,7 +211,6 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, validation_false_when_matrix_no_quad
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.get()));
     taskDataPar->outputs_count.emplace_back(count_rows);
   }
-
   kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, op);
   ASSERT_EQ(testMpiTaskParallel.validation(), false);
 
