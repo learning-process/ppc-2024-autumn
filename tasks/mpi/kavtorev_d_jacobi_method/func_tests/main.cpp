@@ -116,44 +116,30 @@ void run_jacobi_method(size_t matrix_size) {
 }
 
 TEST(kavtorev_d_jacobi_method_mpi, known_solution) {
-  const size_t matrix_size = 3;
-  size_t matrix_size_copy = matrix_size;
-  std::vector<double> matrix(matrix_size * matrix_size);
-  std::vector<double> rhs(matrix_size);
-
-  for (size_t row = 0; row < matrix_size; ++row) {
-    for (size_t col = 0; col < matrix_size; ++col) {
-      if (row != col) {
-        matrix[row * matrix_size + col] = 0.0;
-      }
-    }
-
-    matrix[row * matrix_size + row] = 5.0;
-
-    rhs[row] = 5.0;
-  }
-
   boost::mpi::communicator world;
-
+  const size_t matrix_size = 3;
+  std::vector<double> matrix_data = {5.0, 0.0, 0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 5.0};
+  std::vector<double> vector_data = {5.0, 5.0, 5.0};
   std::vector<double> out(matrix_size, 0.0);
+  size_t matrix_size_copy = matrix_size;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&matrix_size_copy));
     taskDataPar->inputs_count.emplace_back(1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-    taskDataPar->inputs_count.emplace_back(matrix.size());
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(rhs.data()));
-    taskDataPar->inputs_count.emplace_back(rhs.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix_data.data()));
+    taskDataPar->inputs_count.emplace_back(matrix_data.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(vector_data.data()));
+    taskDataPar->inputs_count.emplace_back(vector_data.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
     taskDataPar->outputs_count.emplace_back(out.size());
-
-    kavtorev_d_jacobi_method_mpi::JacobiMethodParallelTask jacobiTaskParallel(taskDataPar);
-    ASSERT_TRUE(jacobiTaskParallel.validation());
-    jacobiTaskParallel.pre_processing();
-    jacobiTaskParallel.run();
-    jacobiTaskParallel.post_processing();
   }
+
+  kavtorev_d_jacobi_method_mpi::JacobiMethodParallelTask jacobiTaskParallel(taskDataPar);
+  ASSERT_TRUE(jacobiTaskParallel.validation());
+  jacobiTaskParallel.pre_processing();
+  jacobiTaskParallel.run();
+  jacobiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
     ASSERT_EQ(out[0], 1.0);
