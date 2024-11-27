@@ -16,7 +16,6 @@ class SeidelIterateMethodsMPI : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  double compute_residual_norm();
 
  private:
   boost::mpi::communicator world;
@@ -28,7 +27,6 @@ class SeidelIterateMethodsMPI : public ppc::core::Task {
   int max_iterations;
 
   bool converge(const std::vector<double>& x_new);
-  void generate_valid_matrix();
 };
 
 }  // namespace nasedkin_e_seidels_iterate_methods_mpi
