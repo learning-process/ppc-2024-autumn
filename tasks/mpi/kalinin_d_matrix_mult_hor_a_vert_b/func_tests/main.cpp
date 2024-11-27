@@ -24,7 +24,7 @@ std::vector<int> getRandomMatrix(int rows, int cols) {
 
 }  // namespace kalinin_d_matrix_mult_hor_a_vert_b_mpi
 
-void RunMatrixMultiplicationTest(int rowsA, int columnsA, int columnsB) {
+void runMatrixMultiplication(int rowsA, int columnsA, int columnsB) {
   boost::mpi::communicator _world;
 
   std::vector<int> global_matrix_a;
@@ -132,24 +132,24 @@ TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, matrix_zero) {
   }
 }
 
-TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, matrix_1x1) { RunMatrixMultiplicationTest(1, 1, 1); }
+TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, matrix_1x1) { runMatrixMultiplication(1, 1, 1); }
 
-TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, matrix_2x2) { RunMatrixMultiplicationTest(2, 2, 2); }
+TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, matrix_2x2) { runMatrixMultiplication(2, 2, 2); }
 
-TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, matrix_3x3) { RunMatrixMultiplicationTest(3, 3, 3); }
+TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, matrix_3x3) { runMatrixMultiplication(3, 3, 3); }
 
-TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, matrix_10x10) { RunMatrixMultiplicationTest(10, 10, 10); }
+TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, matrix_10x10) { runMatrixMultiplication(10, 10, 10); }
 
-TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, matrix_100x100) { RunMatrixMultiplicationTest(100, 100, 100); }
+TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, matrix_100x100) { runMatrixMultiplication(100, 100, 100); }
 
-TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, matrix_3x2_2x3) { RunMatrixMultiplicationTest(3, 2, 3); }
+TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, matrix_3x2_2x3) { runMatrixMultiplication(3, 2, 3); }
 
-TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, matrix_5x4_4x5) { RunMatrixMultiplicationTest(5, 4, 5); }
+TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, matrix_5x4_4x5) { runMatrixMultiplication(5, 4, 5); }
 
-TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, matrix_1x10_10x16) { RunMatrixMultiplicationTest(1, 10, 16); }
+TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, matrix_1x10_10x16) { runMatrixMultiplication(1, 10, 16); }
 
-TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, matrix_100x3_3x100) { RunMatrixMultiplicationTest(100, 3, 100); }
+TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, matrix_100x3_3x100) { runMatrixMultiplication(100, 3, 100); }
 
-TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, matrix_10x15_15x18) { RunMatrixMultiplicationTest(10, 15, 18); }
+TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, matrix_10x15_15x18) { runMatrixMultiplication(10, 15, 18); }
 
-TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, matrix_40x80_80x100) { RunMatrixMultiplicationTest(40, 80, 100); }
+TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, matrix_40x80_80x100) { runMatrixMultiplication(40, 80, 100); }
