@@ -20,7 +20,6 @@ TEST(gordeeva_t_sleeping_barber_mpi, Test_Barber_0_Seats_Client) {
 
   if (world.rank() == 0) {
     taskDataPar->inputs_count = {max_waiting_chairs_, barber_busy_};
-    taskDataPar->inputs.emplace_back(1);
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
     taskDataPar->outputs_count.emplace_back(global_res.size());
@@ -48,7 +47,6 @@ TEST(gordeeva_t_sleeping_barber_mpi, Test_Barber_3_Seats_Client) {
 
   if (world.rank() == 0) {
     taskDataPar->inputs_count = {max_waiting_chairs_, barber_busy_};
-    taskDataPar->inputs.emplace_back(1);
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
     taskDataPar->outputs_count.emplace_back(global_res.size());
@@ -76,7 +74,6 @@ TEST(gordeeva_t_sleeping_barber_mpi, Test_Barber_15_Seats_Client) {
 
   if (world.rank() == 0) {
     taskDataPar->inputs_count = {max_waiting_chairs_, barber_busy_};
-    taskDataPar->inputs.emplace_back(1);
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
     taskDataPar->outputs_count.emplace_back(global_res.size());
@@ -104,7 +101,6 @@ TEST(gordeeva_t_sleeping_barber_mpi, Test_Barber_50_Seats_Client) {
 
   if (world.rank() == 0) {
     taskDataPar->inputs_count = {max_waiting_chairs_, barber_busy_};
-    taskDataPar->inputs.emplace_back(1);
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
     taskDataPar->outputs_count.emplace_back(global_res.size());
@@ -132,7 +128,6 @@ TEST(gordeeva_t_sleeping_barber_mpi, Test_Barber_100_Seats_Client) {
 
   if (world.rank() == 0) {
     taskDataPar->inputs_count = {max_waiting_chairs_, barber_busy_};
-    taskDataPar->inputs.emplace_back(1);
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
     taskDataPar->outputs_count.emplace_back(global_res.size());
@@ -160,7 +155,6 @@ TEST(gordeeva_t_sleeping_barber_mpi, Test_Barber_500_Seats_Client) {
 
   if (world.rank() == 0) {
     taskDataPar->inputs_count = {max_waiting_chairs_, barber_busy_};
-    taskDataPar->inputs.emplace_back(1);
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
     taskDataPar->outputs_count.emplace_back(global_res.size());
@@ -188,7 +182,6 @@ TEST(gordeeva_t_sleeping_barber_mpi, Test_Barber_Without_Seats_Client) {
 
   if (world.rank() == 0) {
     taskDataPar->inputs_count = {barber_busy_};
-    taskDataPar->inputs.emplace_back(1);
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
     taskDataPar->outputs_count.emplace_back(global_res.size());
@@ -211,7 +204,6 @@ TEST(gordeeva_t_sleeping_barber_mpi, Test_Barber_Without_Barber_Busy) {
 
   if (world.rank() == 0) {
     taskDataPar->inputs_count = {max_waiting_chairs_};
-    taskDataPar->inputs.emplace_back(1);
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
     taskDataPar->outputs_count.emplace_back(global_res.size());

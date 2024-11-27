@@ -18,7 +18,6 @@ TEST(gordeeva_t_sleeping_barber_mpi, test_pipeline_run) {
 
   if (world.rank() == 0) {
     taskDataPar->inputs_count = {max_waiting_chairs, barber_busy_};
-    taskDataPar->inputs.emplace_back(1);
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
     taskDataPar->outputs_count.emplace_back(global_res.size());
@@ -58,7 +57,6 @@ TEST(gordeeva_t_sleeping_barber_mpi, test_task_run) {
   int num_clients = 10;
   if (world.rank() == 0) {
     taskDataPar->inputs_count = {max_waiting_chairs, barber_busy_};
-    taskDataPar->inputs.emplace_back(1);
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
     taskDataPar->outputs_count.emplace_back(global_res.size());
