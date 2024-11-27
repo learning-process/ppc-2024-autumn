@@ -97,6 +97,7 @@ oturin_a_image_smoothing_seq::errno_t oturin_a_image_smoothing_seq::fopen_s(FILE
 }
 #endif
 
+// based on https://stackoverflow.com/questions/9296059
 std::vector<uint8_t> oturin_a_image_smoothing_seq::ReadBMP(const char* filename, int& w, int& h) {
   int i;
   FILE* f;

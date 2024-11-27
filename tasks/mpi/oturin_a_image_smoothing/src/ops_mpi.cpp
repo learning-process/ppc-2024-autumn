@@ -16,7 +16,7 @@ bool oturin_a_image_smoothing_mpi::TestMPITaskSequential::pre_processing() {
   input = std::vector<uint8_t>(tmp_ptr, tmp_ptr + width * height * 3);
   // Init values for output
   result = std::vector<uint8_t>(width * height * 3);
-  CreateKernel();
+  kernel = CreateKernel();
   return true;
 }
 
@@ -36,25 +36,6 @@ bool oturin_a_image_smoothing_mpi::TestMPITaskSequential::post_processing() {
   auto* result_ptr = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
   std::copy(result.begin(), result.end(), result_ptr);
   return true;
-}
-
-// must be used before image processing
-void oturin_a_image_smoothing_mpi::TestMPITaskSequential::CreateKernel() {
-  int size = 2 * radius + 1;
-  kernel = new float[size * size]{0};
-  float sigma = 1.5;
-  float norm = 0;
-
-  for (int i = -radius; i <= radius; i++) {
-    for (int j = -radius; j <= radius; j++) {
-      kernel[(i + radius) * size + j + radius] = std::exp(-(i * i + j * j) / (2 * sigma * sigma));
-      norm += kernel[(i + radius) * size + j + radius];
-    }
-  }
-
-  for (int i = 0; i < size * size; i++) {
-    kernel[i] /= norm;  // NOLINT: supressed false-positive uninitialized memory warning
-  }
 }
 
 void oturin_a_image_smoothing_mpi::TestMPITaskSequential::SmoothPixel(int x, int y) {
@@ -102,7 +83,7 @@ bool oturin_a_image_smoothing_mpi::TestMPITaskParallel::pre_processing() {
     // Init values for output
     result = std::vector<uint8_t>(width * height * 3);
   }
-  CreateKernel();
+  kernel = CreateKernel();
   return true;
 }
 
@@ -184,25 +165,6 @@ bool oturin_a_image_smoothing_mpi::TestMPITaskParallel::post_processing() {
   return true;
 }
 
-// must be used before image processing
-void oturin_a_image_smoothing_mpi::TestMPITaskParallel::CreateKernel() {
-  int size = 2 * radius + 1;
-  kernel = new float[size * size]{0};
-  float sigma = 1.5;
-  float norm = 0;
-
-  for (int i = -radius; i <= radius; i++) {
-    for (int j = -radius; j <= radius; j++) {
-      kernel[(i + radius) * size + j + radius] = std::exp(-(i * i + j * j) / (2 * sigma * sigma));
-      norm += kernel[(i + radius) * size + j + radius];
-    }
-  }
-
-  for (int i = 0; i < size * size; i++) {
-    kernel[i] /= norm;  // NOLINT: supressed false-positive uninitialized memory warning
-  }
-}
-
 void oturin_a_image_smoothing_mpi::TestMPITaskParallel::SmoothPixel(uint8_t* out, int x, int y) {
   int stride = width * 3;
   size_t sizek = 2 * radius + 1;
@@ -226,6 +188,28 @@ void oturin_a_image_smoothing_mpi::TestMPITaskParallel::SmoothPixel(uint8_t* out
   out[2] = (uint8_t)outB;
 }
 
+// must be used before image processing
+float* oturin_a_image_smoothing_mpi::CreateKernel() {
+  int radius = 1;
+  int size = 2 * radius + 1;
+  auto kernel = new float[size * size]{0};
+  float sigma = 1.5;
+  float norm = 0;
+
+  for (int i = -radius; i <= radius; i++) {
+    for (int j = -radius; j <= radius; j++) {
+      kernel[(i + radius) * size + j + radius] = std::exp(-(i * i + j * j) / (2 * sigma * sigma));
+      norm += kernel[(i + radius) * size + j + radius];
+    }
+  }
+
+  for (int i = 0; i < size * size; i++) {
+    kernel[i] /= norm;  // NOLINT: supressed false-positive uninitialized memory warning
+  }
+
+  return kernel;
+}
+
 #if defined(_WIN32) || defined(WIN32)
 #else
 oturin_a_image_smoothing_mpi::errno_t oturin_a_image_smoothing_mpi::fopen_s(FILE** f, const char* name,
@@ -238,6 +222,7 @@ oturin_a_image_smoothing_mpi::errno_t oturin_a_image_smoothing_mpi::fopen_s(FILE
 }
 #endif
 
+// based on https://stackoverflow.com/questions/9296059
 std::vector<uint8_t> oturin_a_image_smoothing_mpi::ReadBMP(const char* filename, int& w, int& h) {
   int i;
   FILE* f;

@@ -23,12 +23,6 @@ const int BYTES_PER_PIXEL = 3;  /// red, green, & blue
 const int FILE_HEADER_SIZE = 14;
 const int INFO_HEADER_SIZE = 40;
 
-struct pix {
-  unsigned char R;
-  unsigned char G;
-  unsigned char B;
-};
-
 // https://stackoverflow.com/questions/9296059
 std::vector<uint8_t> ReadBMP(const char* filename, int& w, int& h);
 

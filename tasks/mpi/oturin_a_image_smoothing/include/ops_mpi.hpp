@@ -33,6 +33,8 @@ std::vector<uint8_t> ReadBMP(const char* filename, int& w, int& h);
 
 int clamp(int n, int lo, int hi);
 
+float* CreateKernel();
+
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -41,7 +43,6 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  void CreateKernel();
   void SmoothPixel(int x, int y);
 
  private:
@@ -61,7 +62,6 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  void CreateKernel();
   void SmoothPixel(uint8_t* out, int x, int y);
 
  private:
