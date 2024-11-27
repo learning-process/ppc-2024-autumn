@@ -68,7 +68,8 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, test_task_run) {
     taskDataPar->outputs_count.emplace_back(g_out.size());
   }
   auto testMpiParallel =
-      std::make_shared<kovalev_k_bubble_sort_oddeven_transposition_mpi::BubbleSortOddEvenTranspositionPar<double>>(taskDataPar);
+      std::make_shared<kovalev_k_bubble_sort_oddeven_transposition_mpi::BubbleSortOddEvenTranspositionPar<double>>(
+          taskDataPar);
   ASSERT_TRUE(testMpiParallel->validation());
   testMpiParallel->pre_processing();
   testMpiParallel->run();

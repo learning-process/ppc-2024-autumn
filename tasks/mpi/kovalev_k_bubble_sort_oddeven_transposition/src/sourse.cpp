@@ -89,8 +89,7 @@ bool kovalev_k_bubble_sort_oddeven_transposition_mpi::BubbleSortOddEvenTransposi
     displs[i] = displs[i - 1] + sendcounts_bytes[i - 1];
   }
   MPI_Scatterv(glob_v.data(), sendcounts_bytes.data(), displs.data(), MPI_BYTE, loc_v.data(),
-               sendcounts_bytes[world.rank()],
-               MPI_BYTE, 0, MPI_COMM_WORLD);
+               sendcounts_bytes[world.rank()], MPI_BYTE, 0, MPI_COMM_WORLD);
   bubble_sort_mpi();
   int partner;
   for (int phase = 1; phase <= world.size(); phase++) {

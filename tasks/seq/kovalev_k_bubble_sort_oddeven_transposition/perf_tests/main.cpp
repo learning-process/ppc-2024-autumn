@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include <cmath>
 #include <algorithm>
+#include <cmath>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/kovalev_k_bubble_sort_oddeven_transposition/include/header.hpp"
@@ -54,7 +54,8 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_seq, test_task_run) {
   taskSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskSeq->outputs_count.emplace_back(out.size());
   auto testTaskSequential =
-      std::make_shared<kovalev_k_bubble_sort_oddeven_transposition_seq::BubbleSortOddEvenTransposition<double>>(taskSeq);
+      std::make_shared<kovalev_k_bubble_sort_oddeven_transposition_seq::BubbleSortOddEvenTransposition<double>>(
+          taskSeq);
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();

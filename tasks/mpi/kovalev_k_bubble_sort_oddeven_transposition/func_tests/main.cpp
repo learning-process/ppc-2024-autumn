@@ -51,7 +51,7 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, Test_300_int) {
   const size_t length = 300;
   std::srand(std::time(nullptr));
   std::vector<int> in(length);
-  for (int i = 0; i <= length; i++) in[i] = rand() * pow(-1, rand());
+  for (int i = 0; i < length; i++) in[i] = rand() * pow(-1, rand());
   std::vector<int> out(length);
   boost::mpi::communicator world;
   std::shared_ptr<ppc::core::TaskData> tmpPar = std::make_shared<ppc::core::TaskData>();
@@ -80,7 +80,7 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, Test_30000_int) {
   const size_t length = 30000;
   std::srand(std::time(nullptr));
   std::vector<int> in(length);
-  for (int i = 0; i <= length; i++) in[i] = rand()*pow(-1,rand());
+  for (int i = 0; i < length; i++) in[i] = rand() * pow(-1, rand());
   std::vector<int> out(length);
   boost::mpi::communicator world;
   std::shared_ptr<ppc::core::TaskData> tmpPar = std::make_shared<ppc::core::TaskData>();
@@ -105,7 +105,7 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, Test_30000_int) {
   }
 }
 
- TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, Test_300_double) {
+TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, Test_300_double) {
   const size_t length = 300;
   std::srand(std::time(nullptr));
   std::vector<double> in(length);
@@ -161,7 +161,7 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, Test_30000_double) {
     std::sort(in.begin(), in.end(), [](double a, double b) { return a < b; });
     int count_viol = 0;
     for (int i = 0; i < length; i++) {
-      if(out[i] != in[i]) count_viol++;
+      if (out[i] != in[i]) count_viol++;
     }
     ASSERT_EQ(count_viol, 0);
   }
