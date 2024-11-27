@@ -66,7 +66,12 @@ void SimpleIntMPI::gatherData() {
     size_t chunk_size = total_size / world.size();
     size_t remainder = total_size % world.size();
 
-    std::copy(input_data_.begin(), input_data_.end(), processed_data_.begin());
+    // Размер данных на процессе 0
+    size_t root_chunk_size = chunk_size + (0 < remainder ? 1 : 0);
+
+    // Копируем данные с процесса 0, учитывая root_chunk_size
+    std::copy(input_data_.begin(), input_data_.begin() + root_chunk_size,
+              processed_data_.begin());  // Используем root_chunk_size
 
     std::vector<int> received_data(chunk_size + 1);
 
@@ -76,6 +81,7 @@ void SimpleIntMPI::gatherData() {
       size_t start_pos = i * chunk_size + std::min(remainder, (size_t)i);
       std::copy(received_data.begin(), received_data.begin() + received_count, processed_data_.begin() + start_pos);
     }
+
   } else {
     world.send(0, 0, input_data_.data(), input_data_.size());
   }
