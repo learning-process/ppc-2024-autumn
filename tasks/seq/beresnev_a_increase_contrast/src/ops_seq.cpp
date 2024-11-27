@@ -1,6 +1,7 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/beresnev_a_increase_contrast/include/ops_seq.hpp"
 
+#include <algorithm>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -77,7 +78,7 @@ bool beresnev_a_increase_contrast_seq::TestTaskSequential::run() {
   for (size_t i = 0; i < pixel_data_size; ++i) {
     double normalized = inp_[i] / 255.0;
     normalized = (normalized - 0.5) * factor + 0.5;
-    normalized = std::min(std::max(normalized, 0.0), 1.0);
+    normalized = std::clamp(normalized, 0.0, 1.0);
     res_[i] = static_cast<uint8_t>(normalized * 255);
   }
   return true;

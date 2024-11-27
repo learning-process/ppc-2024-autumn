@@ -1,6 +1,7 @@
 // Copyright 2023 Nesterov Alexander
 #include "mpi/beresnev_a_increase_contrast/include/ops_mpi.hpp"
 
+#include <algorithm>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -185,7 +186,7 @@ bool beresnev_a_increase_contrast_mpi::TestMPITaskParallel::run() {
   for (int i = 0; i < sizes[world.rank()]; ++i) {
     double normalized = inp_l[i] / 255.0;
     normalized = (normalized - 0.5) * factor + 0.5;
-    normalized = std::min(std::max(normalized, 0.0), 1.0);
+    normalized = std::clamp(normalized, 0.0, 1.0);
     res_l[i] = static_cast<uint8_t>(normalized * 255);
   }
   boost::mpi::gatherv(world, res_l, res_.data(), sizes, 0);

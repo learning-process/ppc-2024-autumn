@@ -1,6 +1,7 @@
 ﻿// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <cstdint>
 #include <filesystem>
 #include <fstream>
@@ -27,7 +28,7 @@ static std::vector<uint8_t> getAns(std::vector<uint8_t> &in, double f) {
   for (size_t i = 0; i < in.size(); ++i) {
     double normalized = in[i] / 255.0;
     normalized = (normalized - 0.5) * f + 0.5;
-    normalized = std::min(std::max(normalized, 0.0), 1.0);
+    normalized = std::clamp(normalized, 0.0, 1.0);
     out[i] = static_cast<uint8_t>(normalized * 255);
   }
   return out;
