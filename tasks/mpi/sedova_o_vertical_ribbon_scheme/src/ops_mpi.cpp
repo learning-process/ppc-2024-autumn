@@ -5,13 +5,13 @@
 #include <algorithm>
 #include <boost/serialization/array.hpp>
 #include <boost/serialization/vector.hpp>
+#include <cassert>
 #include <functional>
 #include <iostream>
 #include <limits>
 #include <numeric>
-#include <vector>
 #include <random>
-#include <cassert>
+#include <vector>
 
 bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::validation() {
   internal_order_test();
