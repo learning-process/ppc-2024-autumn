@@ -34,7 +34,7 @@ bool gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
   int cl = world.size() - 1;
-  long int max_waiting_chairs = taskData->inputs_count[0];
+  max_waiting_chairs = taskData->inputs_count[0];
 
   if (world.rank() == 0) {
     while (true) {
@@ -44,7 +44,7 @@ bool gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::run() {
         world.recv(boost::mpi::any_source, 0, client_id);
         std::lock_guard<std::mutex> lock(queue_mutex);
 
-        if (waiting_clients.size() < max_waiting_chairs) {
+        if (static_cast<int> (waiting_clients.size()) < max_waiting_chairs) {
           waiting_clients.push(client_id);
           world.send(client_id, 1, true);
         } else {
@@ -116,7 +116,7 @@ bool gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::add_client_to_queue(in
   std::lock_guard<std::mutex> lock(queue_mutex);
   int max_waiting_chairs = taskData->inputs_count[0];
 
-  if (waiting_clients.size() < max_waiting_chairs) {
+  if (static_cast<int> (waiting_clients.size()) < max_waiting_chairs) {
     waiting_clients.push(client_id);
     return true;
   }

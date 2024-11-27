@@ -25,7 +25,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing();
 
  private:
-  int max_waiting_chairs_;
+  int max_waiting_chairs;
   bool barber_busy;
   std::queue<int> waiting_clients;
   std::vector<int> res;
