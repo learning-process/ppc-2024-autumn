@@ -11,10 +11,11 @@
 
 namespace zaitsev_a_scatter {
 
-int scatter(void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype,
+int scatter(const void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount, MPI_Datatype recvtype,
             int root, MPI_Comm comm);
 
-template <typename T>
+template <typename T, auto func>
+  requires std::same_as<decltype(+func), int (*)(const void*, int, MPI_Datatype, void*, int, MPI_Datatype, int, MPI_Comm)>
 class TestMPITaskParallel : public ppc::core::Task {
  public:
   explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, int root_, MPI_Datatype dtype_)
@@ -60,7 +61,7 @@ class TestMPITaskParallel : public ppc::core::Task {
 
     if (world.rank() != root) local_input = std::vector<T>(shift);
 
-    zaitsev_a_scatter::scatter(input.data(), shift, dtype, local_input.data(), shift, dtype, root, world);
+    func(input.data(), shift, dtype, local_input.data(), shift, dtype, root, world);  // scatter
 
     if (world.rank() == root) {
       std::copy(input.begin() + shift * world.size(), input.end(), local_input.begin() + shift);
