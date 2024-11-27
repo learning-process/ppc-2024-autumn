@@ -39,14 +39,14 @@ bool ParallelTask::pre_processing() {
     b.resize(n);
     x.resize(n);
 
-    auto matrix_input = reinterpret_cast<double*>(taskData->inputs[0]);
+    auto* matrix_input = reinterpret_cast<double*>(taskData->inputs[0]);
     for (size_t i = 0; i < n; ++i) {
       for (size_t j = 0; j < n; ++j) {
         matrix[i][j] = matrix_input[i * n + j];
       }
     }
 
-    auto b_input = reinterpret_cast<double*>(taskData->inputs[1]);
+    auto* b_input = reinterpret_cast<double*>(taskData->inputs[1]);
     for (size_t i = 0; i < n; ++i) {
       b[i] = b_input[i];
     }
@@ -96,7 +96,7 @@ bool ParallelTask::run() {
 bool ParallelTask::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    auto output = reinterpret_cast<double*>(taskData->outputs[0]);
+    auto* output = reinterpret_cast<double*>(taskData->outputs[0]);
     for (size_t i = 0; i < x.size(); ++i) {
       output[i] = x[i];
     }
@@ -133,14 +133,14 @@ bool SequentialTask::pre_processing() {
   b.resize(n);
   x.resize(n);
 
-  auto matrix_input = reinterpret_cast<double*>(taskData->inputs[0]);
+  auto* matrix_input = reinterpret_cast<double*>(taskData->inputs[0]);
   for (size_t i = 0; i < n; ++i) {
     for (size_t j = 0; j < n; ++j) {
       matrix[i][j] = matrix_input[i * n + j];
     }
   }
 
-  auto b_input = reinterpret_cast<double*>(taskData->inputs[1]);
+  auto* b_input = reinterpret_cast<double*>(taskData->inputs[1]);
   for (size_t i = 0; i < n; ++i) {
     b[i] = b_input[i];
   }
@@ -178,7 +178,7 @@ bool SequentialTask::run() {
 bool SequentialTask::post_processing() {
   internal_order_test();
 
-  auto output = reinterpret_cast<double*>(taskData->outputs[0]);
+  auto* output = reinterpret_cast<double*>(taskData->outputs[0]);
   for (size_t i = 0; i < x.size(); ++i) {
     output[i] = x[i];
   }
