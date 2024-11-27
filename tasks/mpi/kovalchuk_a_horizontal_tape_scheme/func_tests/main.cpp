@@ -38,7 +38,6 @@ TEST(kovalchuk_a_horizontal_tape_scheme_mpi, Test_Matrix_10_10) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    
     global_matrix = getRandomMatrixa(count_rows, count_columns);
     global_vector = getRandomVectora(count_columns);
 

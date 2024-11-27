@@ -11,7 +11,6 @@
 
 bool kovalchuk_a_horizontal_tape_scheme_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
-  // Init matrix and vector
   if (taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0) {
     matrix_ = std::vector<std::vector<int>>(taskData->inputs_count[0], std::vector<int>(taskData->inputs_count[1]));
     for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
@@ -21,9 +20,6 @@ bool kovalchuk_a_horizontal_tape_scheme_mpi::TestMPITaskSequential::pre_processi
     vector_ = std::vector<int>(taskData->inputs_count[1]);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[taskData->inputs_count[0]]);
     std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[1], vector_.begin());
-  } else {
-    matrix_ = std::vector<std::vector<int>>();
-    vector_ = std::vector<int>();
   }
   result_ = std::vector<int>(taskData->inputs_count[0], 0);
   return true;
