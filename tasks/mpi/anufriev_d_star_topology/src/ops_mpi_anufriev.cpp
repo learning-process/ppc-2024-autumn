@@ -1,8 +1,9 @@
 #include "mpi/anufriev_d_star_topology/include/ops_mpi_anufriev.hpp"
+#include <utility>
 
 namespace anufriev_d_star_topology {
 
-SimpleIntMPI::SimpleIntMPI(std::shared_ptr<ppc::core::TaskData> taskData) : Task(taskData) {}
+SimpleIntMPI::SimpleIntMPI(const std::shared_ptr<ppc::core::TaskData> taskData) : Task(std::move(taskData)) {}
 
 bool SimpleIntMPI::pre_processing() {
   internal_order_test();
@@ -58,7 +59,7 @@ void SimpleIntMPI::distributeData() {
 bool SimpleIntMPI::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    return taskData->inputs_count.size() > 0 && taskData->outputs_count.size() > 0 &&
+    return taskData->inputs_count.empty() && taskData->outputs_count.empty() &&
            taskData->inputs_count[0] == taskData->outputs_count[0];
   }
   return true;
