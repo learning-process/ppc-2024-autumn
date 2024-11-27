@@ -31,11 +31,10 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_seq, Test_No_viol_10_int) {
   tmpTaskSeq.pre_processing();
   tmpTaskSeq.run();
   tmpTaskSeq.post_processing();
-  int* tmp = reinterpret_cast<int *>(out.data());
   int count_viol = 0;
   for (int i = 0; i < length; i++)
   {
-    if (tmp[i] != in[i]) count_viol++;
+    if (out[i] != in[i]) count_viol++;
   }
   ASSERT_EQ(count_viol, 0);
 }
@@ -59,10 +58,9 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_seq, Test_1000_int) {
   std::sort(in.begin(), in.end(), [](int a, int b) {
     return a < b;
   });
-  int *tmp = reinterpret_cast<int *>(out.data());
   int count_viol = 0;
   for (int i = 0; i < length; i++) {
-    if (tmp[i] != in[i]) count_viol++;
+    if (out[i] != in[i]) count_viol++;
   }
   ASSERT_EQ(count_viol, 0);
 }
@@ -84,10 +82,9 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_seq, Test_10000_int) {
   tmpTaskSeq.run();
   tmpTaskSeq.post_processing();
   std::sort(in.begin(), in.end(), [](int a, int b) { return a < b; });
-  int *tmp = reinterpret_cast<int *>(out.data());
   int count_viol = 0;
   for (int i = 0; i < length; i++) {
-    if (tmp[i] != in[i]) count_viol++;
+    if (out[i] != in[i]) count_viol++;
   }
   ASSERT_EQ(count_viol, 0);
 }
@@ -108,10 +105,9 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_seq, Test_No_viol_10_double) {
   tmpTaskSeq.pre_processing();
   tmpTaskSeq.run();
   tmpTaskSeq.post_processing();
-  double *tmp = reinterpret_cast<double *>(out.data());
   int count_viol = 0;
   for (int i = 0; i < length; i++) {
-    if (tmp[i] != in[i]) count_viol++;
+    if (out[i] != in[i]) count_viol++;
   }
   ASSERT_EQ(count_viol, 0);
 }
@@ -135,10 +131,9 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_seq, Test_1000_double) {
   tmpTaskSeq.run();
   tmpTaskSeq.post_processing();
   std::sort(in.begin(), in.end(), [](double a, double b) { return a < b; });
-  double *tmp = reinterpret_cast<double *>(out.data());
   int count_viol = 0;
   for (int i = 0; i < length; i++) {
-    if (tmp[i] != in[i]) count_viol++;
+    if (out[i] != in[i]) count_viol++;
   }
   ASSERT_EQ(count_viol, 0);
 }
@@ -162,10 +157,9 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_seq, Test_10000_double) {
   tmpTaskSeq.run();
   tmpTaskSeq.post_processing();
   std::sort(in.begin(), in.end(), [](double a, double b) { return a < b; });
-  double *tmp = reinterpret_cast<double *>(out.data());
   int count_viol = 0;
   for (int i = 0; i < length; i++) {
-    if (tmp[i] != in[i]) count_viol++;
+    if (out[i] != in[i]) count_viol++;
   }
   ASSERT_EQ(count_viol, 0);
 }
