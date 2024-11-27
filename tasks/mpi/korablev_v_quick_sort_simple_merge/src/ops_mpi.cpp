@@ -10,7 +10,7 @@
 #include "boost/mpi/collectives/broadcast.hpp"
 
 std::vector<double> korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::merge(
-    const std::vector<double>& left, const std::vector<double>& right) {
+    std::vector<double>& left, std::vector<double>& right) {
   std::vector<double> result;
   size_t i = 0;
   size_t j = 0;
@@ -34,7 +34,7 @@ std::vector<double> korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMerge
 }
 
 std::vector<double> korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::quick_sort_with_merge(
-    const std::vector<double>& arr) {
+    std::vector<double>& arr) {
   if (arr.size() <= 1) {
     return std::vector<double>(arr);
   }
@@ -79,19 +79,6 @@ bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::pre
 bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::validation() {
   internal_order_test();
 
-  if (taskData->inputs_count.size() != 2 || taskData->outputs_count.size() != 1) {
-    return false;
-  }
-
-  size_t n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
-  if (n < 0 || taskData->inputs_count[1] != n) {
-    return false;
-  }
-
-  if (taskData->outputs_count[0] != n) {
-    return false;
-  }
-
   return true;
 }
 
@@ -113,7 +100,7 @@ bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::pos
 }
 
 std::vector<double> korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeParallel::merge(
-    const std::vector<double>& left, const std::vector<double>& right) {
+    std::vector<double>& left, std::vector<double>& right) {
   std::vector<double> result;
   size_t i = 0;
   size_t j = 0;
@@ -137,7 +124,7 @@ std::vector<double> korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMerge
 }
 
 std::vector<double> korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeParallel::quick_sort_with_merge(
-    const std::vector<double>& arr) {
+    std::vector<double>& arr) {
   if (arr.size() <= 1) {
     return std::vector<double>(arr);
   }

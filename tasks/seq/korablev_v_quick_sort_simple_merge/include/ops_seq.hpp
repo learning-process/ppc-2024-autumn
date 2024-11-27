@@ -22,8 +22,8 @@ class QuickSortSimpleMergeSequential : public ppc::core::Task {
   std::vector<double> input_;
   std::vector<double> output_;
 
-  static std::vector<double> merge(const std::vector<double>& left, const std::vector<double>& right);
-  std::vector<double> quick_sort_with_merge(const std::vector<double>& arr);
+  static std::vector<double> merge(std::vector<double>& left, std::vector<double>& right);
+  std::vector<double> quick_sort_with_merge(std::vector<double>& arr);
 };
 
 }  // namespace korablev_v_qucik_sort_simple_merge_seq

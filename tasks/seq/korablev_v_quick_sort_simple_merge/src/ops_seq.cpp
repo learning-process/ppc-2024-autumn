@@ -3,7 +3,7 @@
 #include <cmath>
 
 std::vector<double> korablev_v_qucik_sort_simple_merge_seq::QuickSortSimpleMergeSequential::merge(
-    const std::vector<double>& left, const std::vector<double>& right) {
+    std::vector<double>& left, std::vector<double>& right) {
   std::vector<double> result;
   size_t i = 0;
   size_t j = 0;
@@ -27,7 +27,7 @@ std::vector<double> korablev_v_qucik_sort_simple_merge_seq::QuickSortSimpleMerge
 }
 
 std::vector<double> korablev_v_qucik_sort_simple_merge_seq::QuickSortSimpleMergeSequential::quick_sort_with_merge(
-    const std::vector<double>& arr) {
+    std::vector<double>& arr) {
   if (arr.size() <= 1) {
     return std::vector<double>(arr);
   }
