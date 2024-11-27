@@ -14,7 +14,7 @@ bool oturin_a_image_smoothing_seq::TestTaskSequential::pre_processing() {
   width = (size_t)(taskData->inputs_count[0]);
   height = (size_t)(taskData->inputs_count[1]);
   input = std::vector<uint8_t>(width * height * 3);
-  uint8_t* tmp_ptr = reinterpret_cast<uint8_t*>(taskData->inputs[0]);
+  auto* tmp_ptr = reinterpret_cast<uint8_t*>(taskData->inputs[0]);
   input = std::vector<uint8_t>(tmp_ptr, tmp_ptr + width * height * 3);
   // Init values for output
   result = std::vector<uint8_t>(width * height * 3);
@@ -37,7 +37,7 @@ bool oturin_a_image_smoothing_seq::TestTaskSequential::run() {
 bool oturin_a_image_smoothing_seq::TestTaskSequential::post_processing() {
   internal_order_test();
   delete[] kernel;
-  uint8_t* result_ptr = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
+  auto* result_ptr = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
   std::copy(result.begin(), result.end(), result_ptr);
   return true;
 }
@@ -45,13 +45,13 @@ bool oturin_a_image_smoothing_seq::TestTaskSequential::post_processing() {
 // must be used before image processing
 void oturin_a_image_smoothing_seq::TestTaskSequential::CreateKernel() {
   int size = 2 * radius + 1;
-  kernel = new float[size * size];
+  kernel = new float[size * size]{0};
   float sigma = 1.5;
   float norm = 0;
 
   for (int i = -radius; i <= radius; i++) {
     for (int j = -radius; j <= radius; j++) {
-      kernel[(i + radius) * size + j + radius] = (float)(exp(-(i * i + j * j) / (2 * sigma * sigma)));
+      kernel[(i + radius) * size + j + radius] = (float)(std::exp(-(i * i + j * j) / (2 * sigma * sigma)));
       norm += kernel[(i + radius) * size + j + radius];
     }
   }
@@ -92,7 +92,7 @@ oturin_a_image_smoothing_seq::errno_t oturin_a_image_smoothing_seq::fopen_s(FILE
   errno_t ret = 0;
   assert(f);
   *f = fopen(name, mode);
-  if (!*f) ret = errno;
+  if (f == nullptr) ret = errno;
   return ret;
 }
 #endif
@@ -101,14 +101,15 @@ std::vector<uint8_t> oturin_a_image_smoothing_seq::ReadBMP(const char* filename,
   int i;
   FILE* f;
   fopen_s(&f, filename, "rb");
-  if (f == 0) return std::vector<uint8_t>(0);
-
-  if (f == NULL) throw "Argument Exception";
+  if (f == nullptr) throw "Argument Exception";
 
   unsigned char info[54];
   size_t rc;
   rc = fread(info, sizeof(unsigned char), 54, f);  // read the 54-byte header
-  if (rc == 0) return std::vector<uint8_t>(0);
+  if (rc == 0) {
+    fclose(f);
+    return std::vector<uint8_t>(0);
+  }
 
   // extract image height and width from header
   int width = *(int*)&info[18];
@@ -121,13 +122,13 @@ std::vector<uint8_t> oturin_a_image_smoothing_seq::ReadBMP(const char* filename,
   unsigned char padding[3] = {0, 0, 0};
   int widthInBytes = width * BYTES_PER_PIXEL;
   int paddingSize = (4 - (widthInBytes) % 4) % 4;
-  // int stride = (widthInBytes) + paddingSize;
 
   for (i = 0; i < height; i++) {
     rc = fread(data.data() + (i * widthInBytes), BYTES_PER_PIXEL, width, f);
+    if (rc != width) break;
     rc = fread(padding, 1, paddingSize, f);
+    if (rc != paddingSize) break;
   }
-  // if (rc == 0) return std::vector<uint8_t>(0);
   fclose(f);
   w = width;
   h = height;
@@ -135,11 +136,4 @@ std::vector<uint8_t> oturin_a_image_smoothing_seq::ReadBMP(const char* filename,
   return data;
 }
 
-int oturin_a_image_smoothing_seq::clamp(int n, int lo, int hi) {
-  if (n < lo)
-    return lo;
-  else if (n > hi)
-    return hi;
-  else
-    return n;
-}
+int oturin_a_image_smoothing_seq::clamp(int n, int lo, int hi) { return std::min(std::max(n, lo), hi); }

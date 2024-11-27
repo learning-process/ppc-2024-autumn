@@ -196,9 +196,9 @@ TEST(oturin_a_image_smoothing_mpi_functest, Test_IMAGE_LINE) {
   if (world.rank() == 0) {
     std::string file_path = __FILE__;
 #if defined(_WIN32) || defined(WIN32)
-    std::string dir_path = file_path.substr(0, file_path.rfind("\\"));
+    std::string dir_path = file_path.substr(0, file_path.rfind('\\'));
 #else
-    std::string dir_path = file_path.substr(0, file_path.rfind("/"));
+    std::string dir_path = file_path.substr(0, file_path.rfind('/'));
 #endif
 
     std::string filenameOriginal = dir_path + "/../line.bmp";
@@ -260,9 +260,9 @@ TEST(oturin_a_image_smoothing_mpi_functest, Test_IMAGE_CIRCLE) {
   if (world.rank() == 0) {
     std::string file_path = __FILE__;
 #if defined(_WIN32) || defined(WIN32)
-    std::string dir_path = file_path.substr(0, file_path.rfind("\\"));
+    std::string dir_path = file_path.substr(0, file_path.rfind('\\'));
 #else
-    std::string dir_path = file_path.substr(0, file_path.rfind("/"));
+    std::string dir_path = file_path.substr(0, file_path.rfind('/'));
 #endif
 
     std::string filenameOriginal = dir_path + "/../circle.bmp";
@@ -324,9 +324,9 @@ TEST(oturin_a_image_smoothing_mpi_functest, Test_IMAGE_COLOR) {
   if (world.rank() == 0) {
     std::string file_path = __FILE__;
 #if defined(_WIN32) || defined(WIN32)
-    std::string dir_path = file_path.substr(0, file_path.rfind("\\"));
+    std::string dir_path = file_path.substr(0, file_path.rfind('\\'));
 #else
-    std::string dir_path = file_path.substr(0, file_path.rfind("/"));
+    std::string dir_path = file_path.substr(0, file_path.rfind('/'));
 #endif
 
     std::string filenameOriginal = dir_path + "/../color.bmp";

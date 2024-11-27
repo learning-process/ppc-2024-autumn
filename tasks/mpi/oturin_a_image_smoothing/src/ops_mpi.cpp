@@ -12,7 +12,7 @@ bool oturin_a_image_smoothing_mpi::TestMPITaskSequential::pre_processing() {
   width = (size_t)(taskData->inputs_count[0]);
   height = (size_t)(taskData->inputs_count[1]);
   input = std::vector<uint8_t>(width * height * 3);
-  uint8_t* tmp_ptr = reinterpret_cast<uint8_t*>(taskData->inputs[0]);
+  auto* tmp_ptr = reinterpret_cast<uint8_t*>(taskData->inputs[0]);
   input = std::vector<uint8_t>(tmp_ptr, tmp_ptr + width * height * 3);
   // Init values for output
   result = std::vector<uint8_t>(width * height * 3);
@@ -33,7 +33,7 @@ bool oturin_a_image_smoothing_mpi::TestMPITaskSequential::run() {
 bool oturin_a_image_smoothing_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
   delete[] kernel;
-  uint8_t* result_ptr = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
+  auto* result_ptr = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
   std::copy(result.begin(), result.end(), result_ptr);
   return true;
 }
@@ -41,13 +41,13 @@ bool oturin_a_image_smoothing_mpi::TestMPITaskSequential::post_processing() {
 // must be used before image processing
 void oturin_a_image_smoothing_mpi::TestMPITaskSequential::CreateKernel() {
   int size = 2 * radius + 1;
-  kernel = new float[size * size];
+  kernel = new float[size * size]{0};
   float sigma = 1.5;
   float norm = 0;
 
   for (int i = -radius; i <= radius; i++) {
     for (int j = -radius; j <= radius; j++) {
-      kernel[(i + radius) * size + j + radius] = (float)(exp(-(i * i + j * j) / (2 * sigma * sigma)));
+      kernel[(i + radius) * size + j + radius] = (float)(std::exp(-(i * i + j * j) / (2 * sigma * sigma)));
       norm += kernel[(i + radius) * size + j + radius];
     }
   }
@@ -97,7 +97,7 @@ bool oturin_a_image_smoothing_mpi::TestMPITaskParallel::pre_processing() {
     width = taskData->inputs_count[0];
     height = taskData->inputs_count[1];
     // input = std::vector<uint8_t>(width * height * 3);
-    uint8_t* tmp_ptr = reinterpret_cast<uint8_t*>(taskData->inputs[0]);
+    auto* tmp_ptr = reinterpret_cast<uint8_t*>(taskData->inputs[0]);
     input = std::vector<uint8_t>(tmp_ptr, tmp_ptr + width * height * 3);
     // Init values for output
     result = std::vector<uint8_t>(width * height * 3);
@@ -134,11 +134,11 @@ bool oturin_a_image_smoothing_mpi::TestMPITaskParallel::run() {
 
     int row = 0;
     while (row < height - 2) {
-      for (int i = 0; i < std::min(satellites, (int)height - 2 - row); i++) {
+      for (int i = 0; i < std::min(satellites, height - 2 - row); i++) {
         world.send(i + 1, TAG_EXIT, &noescape, 1);
-        world.send(i + 1, TAG_DATA, &input.data()[(row + i) * width * 3], width * 3 * 3);
+        world.send(i + 1, TAG_DATA, &input[(row + i) * width * 3], width * 3 * 3);
       }
-      for (int i = 0; i < std::min(satellites, (int)height - 2 - row); i++) {
+      for (int i = 0; i < std::min(satellites, height - 2 - row); i++) {
         world.recv(i + 1, TAG_RESULT, &result[(row + i + 1) * width * 3], width * 3);
       }
       row += satellites;
@@ -147,10 +147,10 @@ bool oturin_a_image_smoothing_mpi::TestMPITaskParallel::run() {
       world.send(i, TAG_EXIT, &escape, 1);
 
     for (int x = 0; x < width; x++) {  // calculate bottom row
-      SmoothPixel(&result.data()[x * 3], x, 0);
+      SmoothPixel(&result[x * 3], x, 0);
     }
     for (int x = 0; x < width; x++) {  // calculate top row
-      SmoothPixel(&result.data()[(height - 1) * width * 3 + x * 3], x, height - 1);
+      SmoothPixel(&result[(height - 1) * width * 3 + x * 3], x, height - 1);
     }
   } else {
     world.recv(0, TAG_INFO, &width, 1);
@@ -164,7 +164,7 @@ bool oturin_a_image_smoothing_mpi::TestMPITaskParallel::run() {
       world.recv(0, TAG_DATA, input.data(), width * 3 * 3);
 
       for (int x = 0; x < width; x++) {
-        SmoothPixel(&result.data()[x * 3], x, 1);
+        SmoothPixel(&result[x * 3], x, 1);
       }
 
       world.send(0, TAG_RESULT, result.data(), width * 3);
@@ -178,7 +178,7 @@ bool oturin_a_image_smoothing_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   delete[] kernel;
   if (world.rank() == 0) {
-    uint8_t* result_ptr = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
+    auto* result_ptr = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
     std::copy(result.begin(), result.end(), result_ptr);
   }
   return true;
@@ -187,13 +187,13 @@ bool oturin_a_image_smoothing_mpi::TestMPITaskParallel::post_processing() {
 // must be used before image processing
 void oturin_a_image_smoothing_mpi::TestMPITaskParallel::CreateKernel() {
   int size = 2 * radius + 1;
-  kernel = new float[size * size];
+  kernel = new float[size * size]{0};
   float sigma = 1.5;
   float norm = 0;
 
   for (int i = -radius; i <= radius; i++) {
     for (int j = -radius; j <= radius; j++) {
-      kernel[(i + radius) * size + j + radius] = (float)(exp(-(i * i + j * j) / (2 * sigma * sigma)));
+      kernel[(i + radius) * size + j + radius] = (float)(std::exp(-(i * i + j * j) / (2 * sigma * sigma)));
       norm += kernel[(i + radius) * size + j + radius];
     }
   }
@@ -233,7 +233,7 @@ oturin_a_image_smoothing_mpi::errno_t oturin_a_image_smoothing_mpi::fopen_s(FILE
   errno_t ret = 0;
   assert(f);
   *f = fopen(name, mode);
-  if (!*f) ret = errno;
+  if (f == nullptr) ret = errno;
   return ret;
 }
 #endif
@@ -242,8 +242,6 @@ std::vector<uint8_t> oturin_a_image_smoothing_mpi::ReadBMP(const char* filename,
   int i;
   FILE* f;
   fopen_s(&f, filename, "rb");
-  if (f == 0) return std::vector<uint8_t>(0);
-
   if (f == nullptr) throw "Argument Exception";
 
   unsigned char info[54];
@@ -265,11 +263,12 @@ std::vector<uint8_t> oturin_a_image_smoothing_mpi::ReadBMP(const char* filename,
   unsigned char padding[3] = {0, 0, 0};
   int widthInBytes = width * BYTES_PER_PIXEL;
   int paddingSize = (4 - (widthInBytes) % 4) % 4;
-  // int stride = (widthInBytes) + paddingSize;
 
   for (i = 0; i < height; i++) {
     rc = fread(data.data() + (i * widthInBytes), BYTES_PER_PIXEL, width, f);
+    if (rc != width) break;
     rc = fread(padding, 1, paddingSize, f);
+    if (rc != paddingSize) break;
   }
   fclose(f);
   w = width;
@@ -278,11 +277,4 @@ std::vector<uint8_t> oturin_a_image_smoothing_mpi::ReadBMP(const char* filename,
   return data;
 }
 
-int oturin_a_image_smoothing_mpi::clamp(int n, int lo, int hi) {
-  if (n < lo)
-    return lo;
-  else if (n > hi)
-    return hi;
-  else
-    return n;
-}
+int oturin_a_image_smoothing_mpi::clamp(int n, int lo, int hi) { return std::min(std::max(n, lo), hi); }

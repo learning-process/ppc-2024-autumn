@@ -1,9 +1,8 @@
 #pragma once
 
-#include <stdio.h>
-
 #include <cassert>
 #include <cmath>
+#include <cstdio>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -12,7 +11,7 @@
 
 namespace oturin_a_image_smoothing_seq {
 
-typedef int errno_t;
+using errno_t = int;
 
 #if defined(_WIN32) || defined(WIN32)
 #else

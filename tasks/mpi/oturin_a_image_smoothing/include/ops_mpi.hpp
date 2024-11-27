@@ -1,12 +1,12 @@
 #pragma once
 
 #include <gtest/gtest.h>
-#include <stdio.h>
 
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <cassert>
 #include <cmath>
+#include <cstdio>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -17,8 +17,7 @@ namespace oturin_a_image_smoothing_mpi {
 
 std::vector<uint8_t> getRandomVector(int sz);
 
-typedef int errno_t;
-
+using errno_t = int;
 #if defined(_WIN32) || defined(WIN32)
 #else
 // https://stackoverflow.com/a/1513215
