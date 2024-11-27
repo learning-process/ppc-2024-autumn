@@ -35,25 +35,21 @@ TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Not_A_Diagonally_Domina
   }
 }
 
-TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Parallel_Wrong_Epsilon) {
+TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Empty_Count) {
   boost::mpi::communicator world;
 
-  size_t matrix_size = 2;
+  size_t matrix_size = 1;
   std::vector<double> global_result(matrix_size, 0.0);
-  std::vector<double> Matrix = {10.0, 2.0, 3.0, 20.0};
-  std::vector<double> Values = {3.0, 5.0};
-  double epsilon = 1.05;
+  std::vector<double> Matrix = {10.0};
+  std::vector<double> Values = {1.0};
+  double epsilon = 0.001;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(Matrix.data()));
-    taskDataPar->inputs_count.emplace_back(Matrix.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(Values.data()));
-    taskDataPar->inputs_count.emplace_back(Values.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&matrix_size));
-    taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
-    taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
     taskDataPar->outputs_count.emplace_back(global_result.size());
   }
@@ -62,20 +58,19 @@ TEST(titov_s_simple_iteration_mpi, Test_Simple_Iteration_Parallel_Wrong_Epsilon)
   ASSERT_FALSE(taskPar.validation());
 
   std::vector<std::vector<float>> global_matrix;
-  global_matrix = {{10.0f, 2.0f, 3.0f}, {3.0f, 20.0f, 5.0f}};
-  float eps = 1.05f;
-  size_t matrix_size_seq = 2;
+  global_matrix = {{10.0f, 1.0f}};
+  float eps = 0.001f;
+  size_t matrix_size_seq = 1;
+
   std::vector<float> expected_result(matrix_size_seq, 0.0f);
   if (world.rank() == 0) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
     for (const auto& row : global_matrix) {
       taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<float*>(row.data())));
     }
-    taskDataSeq->inputs_count.push_back(global_matrix.size());
-    taskDataSeq->inputs_count.push_back(global_matrix[0].size());
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&eps));
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(expected_result.data()));
-    taskDataSeq->outputs_count.push_back(expected_result.size());
 
     titov_s_simple_iteration_mpi::MPISimpleIterationSequential seqTask(taskDataSeq);
 
