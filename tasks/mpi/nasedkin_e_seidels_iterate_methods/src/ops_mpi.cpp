@@ -3,6 +3,8 @@
 #include <cmath>
 #include <iostream>
 
+#include <numeric>
+
 namespace nasedkin_e_seidels_iterate_methods_mpi {
 
 bool SeidelIterateMethodsMPI::pre_processing() {
@@ -78,7 +80,9 @@ bool SeidelIterateMethodsMPI::run() {
   return true;
 }
 
-bool SeidelIterateMethodsMPI::post_processing() { return true; }
+bool SeidelIterateMethodsMPI::post_processing() {
+  return validate_result();
+}
 
 bool SeidelIterateMethodsMPI::converge(const std::vector<double>& x_new) {
   double norm = 0.0;
@@ -88,30 +92,22 @@ bool SeidelIterateMethodsMPI::converge(const std::vector<double>& x_new) {
   return std::sqrt(norm) < epsilon;
 }
 
-double SeidelIterateMethodsMPI::calculate_residual_norm() const {
+bool SeidelIterateMethodsMPI::validate_result() {
   std::vector<double> residual(n, 0.0);
   for (int i = 0; i < n; ++i) {
-    double sum = 0.0;
+    residual[i] = b[i];
     for (int j = 0; j < n; ++j) {
-      sum += A[i][j] * x[j];
+      residual[i] -= A[i][j] * x[j];
     }
-    residual[i] = sum - b[i];
   }
 
-  double norm = 0.0;
-  for (const auto& val : residual) {
-    norm += val * val;
-  }
-  return std::sqrt(norm);
+  double norm = std::sqrt(std::inner_product(residual.begin(), residual.end(), residual.begin(), 0.0));
+  return norm < epsilon;
 }
 
-void nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI::set_matrix(
-    const std::vector<std::vector<double>>& input_A,
-    const std::vector<double>& input_b) {
-    A = input_A;
-    b = input_b;
-    n = static_cast<int>(b.size());
+void SeidelIterateMethodsMPI::set_matrix_and_vector(const std::vector<std::vector<double>>& matrix, const std::vector<double>& vector) {
+  A = matrix;
+  b = vector;
 }
-
 
 }  // namespace nasedkin_e_seidels_iterate_methods_mpi
