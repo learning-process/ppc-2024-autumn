@@ -25,7 +25,7 @@ bool gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::validation() {
   if (world.rank() == 0) {
     if (taskData->inputs_count.size() < 2) return false;
     if (taskData->inputs_count[0] < 0.0) return false;
-    if (taskData->outputs_count.size() < 2) return false;
+    if (taskData->outputs_count.size() != 1) return false;
   }
   return true;
 }
