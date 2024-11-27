@@ -32,14 +32,14 @@ bool petrov_o_horizontal_gauss_method_seq::GaussHorizontalSequential::pre_proces
   b.resize(n);
   x.resize(n);
 
-  double* matrix_input = reinterpret_cast<double*>(taskData->inputs[0]);
+  auto matrix_input = reinterpret_cast<double*>(taskData->inputs[0]);
   for (size_t i = 0; i < n; ++i) {
     for (size_t j = 0; j < n; ++j) {
       matrix[i][j] = matrix_input[i * n + j];
     }
   }
 
-  double* b_input = reinterpret_cast<double*>(taskData->inputs[1]);
+  auto b_input = reinterpret_cast<double*>(taskData->inputs[1]);
   for (size_t i = 0; i < n; ++i) {
     b[i] = b_input[i];
   }
@@ -77,7 +77,7 @@ bool petrov_o_horizontal_gauss_method_seq::GaussHorizontalSequential::run() {
 bool petrov_o_horizontal_gauss_method_seq::GaussHorizontalSequential::post_processing() {
   internal_order_test();
 
-  double* output = reinterpret_cast<double*>(taskData->outputs[0]);
+  auto output = reinterpret_cast<double*>(taskData->outputs[0]);
   for (size_t i = 0; i < x.size(); ++i) {
     output[i] = x[i];
   }
