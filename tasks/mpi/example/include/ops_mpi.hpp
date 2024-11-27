@@ -13,39 +13,42 @@
 
 #include "core/task/include/task.hpp"
 
-namespace nesterov_a_test_task_mpi {
+namespace sedova_o_vertical_ribbon_scheme_mpi {
 
-std::vector<int> getRandomVector(int sz);
-
-class TestMPITaskSequential : public ppc::core::Task {
+class ParallelMPI : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+  explicit ParallelMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
  private:
-  std::vector<int> input_;
-  int res{};
-  std::string ops;
-};
+  int rows_{};
+  int cols_{};
 
-class TestMPITaskParallel : public ppc::core::Task {
- public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
-  bool pre_processing() override;
-  bool validation() override;
-  bool run() override;
-  bool post_processing() override;
-
- private:
-  std::vector<int> input_, local_input_;
-  int res{};
-  std::string ops;
+  std::vector<int> input_matrix_1;
+  std::vector<int> input_vector_1;
+  std::vector<int> result_vector;
+  std::vector<int> distribution;
+  std::vector<int> displacement;
   boost::mpi::communicator world;
 };
 
-}  // namespace nesterov_a_test_task_mpi
+class SequentialMPI : public ppc::core::Task {
+ public:
+  explicit SequentialMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  bool pre_processing() override;
+  bool validation() override;
+  bool run() override;
+  bool post_processing() override;
+
+ private:
+  int num_rows_{};
+  int num_cols_{};
+
+  std::vector<int> input_matrix_;
+  std::vector<int> input_vector_;
+  std::vector<int> result_vector;
+};
+}  // namespace sedova_o_vertical_ribbon_scheme_mpi
