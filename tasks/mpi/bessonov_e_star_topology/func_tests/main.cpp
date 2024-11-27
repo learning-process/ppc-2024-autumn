@@ -12,7 +12,7 @@ TEST(bessonov_e_star_topology_mpi, DataTransmissionTest) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   const int data_size = 5;
-  int input_data[data_size] = {1, 2, 3, 4, 5};
+  int input_data[data_size] = {1, 2, 3, 4, 6};
 
   // Calculating the traversal_order size_
   int traversal_size = 2 * (world.size() - 1) + 1;
