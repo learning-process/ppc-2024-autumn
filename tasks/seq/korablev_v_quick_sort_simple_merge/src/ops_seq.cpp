@@ -29,7 +29,7 @@ std::vector<double> korablev_v_qucik_sort_simple_merge_seq::QuickSortSimpleMerge
 std::vector<double> korablev_v_qucik_sort_simple_merge_seq::QuickSortSimpleMergeSequential::quick_sort_with_merge(
     const std::vector<double>& arr) {
   if (arr.size() <= 1) {
-    return arr;
+    return std::vector<double>(arr);
   }
 
   double pivot = arr[arr.size() / 2];
