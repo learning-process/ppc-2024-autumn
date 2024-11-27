@@ -1,6 +1,7 @@
 #include "mpi/komshina_d_grid_torus_topology/include/ops_mpi.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <boost/mpi.hpp>
 #include <functional>
 #include <random>
@@ -83,7 +84,7 @@ bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::run() {
   if (taskData->outputs_count[0] >= send_data.size()) {
     std::copy(recv_left.begin(), recv_left.end(), taskData->outputs[0]);
   } else {
-    std::cerr << "–азмер выходных данных недостаточен дл€ узла " << rank << std::endl;
+    std::cerr << "Output data size is insufficient for node " << rank << std::endl;
   }
 
   world.barrier();
