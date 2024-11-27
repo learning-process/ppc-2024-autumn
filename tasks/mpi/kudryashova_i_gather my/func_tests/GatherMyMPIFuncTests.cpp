@@ -7,7 +7,7 @@ std::vector<int8_t> GetRandomVectorGatherMy(int size) {
   std::vector<int8_t> vector(size);
   std::srand(static_cast<unsigned>(time(nullptr)) + ++seedOffset);
   for (int i = 0; i < size; ++i) {
-    vector[i] = static_cast<int>(std::rand() % 201 - 100);
+    vector[i] = std::rand() % 201 - 100;
   }
   return vector;
 }
