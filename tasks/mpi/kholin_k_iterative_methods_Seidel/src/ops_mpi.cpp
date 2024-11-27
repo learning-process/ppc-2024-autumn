@@ -623,4 +623,3 @@ MPI_Datatype kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::get_mpi
   MPI_Type_commit(&sz_t);
   return sz_t;
 }
-

@@ -25,6 +25,8 @@ TEST(kholin_k_iterative_methods_Seidel_seq, validation_true_when_matrix_with_dia
 
   kholin_k_iterative_methods_Seidel_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
+  delete[] in;
+  delete[] out;
 }
 TEST(kholin_k_iterative_methods_Seidel_seq, test_pre_processing) {
   const size_t count_rows = 3;
@@ -47,6 +49,8 @@ TEST(kholin_k_iterative_methods_Seidel_seq, test_pre_processing) {
   kholin_k_iterative_methods_Seidel_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   testTaskSequential.validation();
   ASSERT_EQ(testTaskSequential.pre_processing(), true);
+  delete[] in;
+  delete[] out;
 }
 TEST(kholin_k_iterative_methods_Seidel_seq, test_run) {
   const size_t count_rows = 3;
@@ -70,6 +74,8 @@ TEST(kholin_k_iterative_methods_Seidel_seq, test_run) {
   testTaskSequential.validation();
   testTaskSequential.pre_processing();
   ASSERT_EQ(testTaskSequential.run(), true);
+  delete[] in;
+  delete[] out;
 }
 
 TEST(kholin_k_iterative_methods_Seidel_seq, test_post_processing) {
@@ -95,6 +101,8 @@ TEST(kholin_k_iterative_methods_Seidel_seq, test_post_processing) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   ASSERT_EQ(testTaskSequential.post_processing(), true);
+  delete[] in;
+  delete[] out;
 }
 
 TEST(kholin_k_iterative_methods_Seidel_seq, validation_false_when_matrix_no_quadro) {
@@ -117,6 +125,8 @@ TEST(kholin_k_iterative_methods_Seidel_seq, validation_false_when_matrix_no_quad
 
   kholin_k_iterative_methods_Seidel_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), false);
+  delete[] in;
+  delete[] out;
 }
 
 TEST(kholin_k_iterative_methods_Seidel_seq, validation_false_when_matrix_without_diag_pred_ver1) {
@@ -153,9 +163,11 @@ TEST(kholin_k_iterative_methods_Seidel_seq, validation_false_when_matrix_without
 
   kholin_k_iterative_methods_Seidel_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), IsValid);
+  delete[] in;
+  delete[] out;
 }
 
-// int main(int argc, char **argv) {
-//   testing::InitGoogleTest(&argc, argv);
-//   return RUN_ALL_TESTS();
-// }
+ int main(int argc, char **argv) {
+   testing::InitGoogleTest(&argc, argv);
+   return RUN_ALL_TESTS();
+ }
