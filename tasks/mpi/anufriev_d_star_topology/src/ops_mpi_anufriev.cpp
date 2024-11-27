@@ -21,21 +21,22 @@ bool SimpleIntMPI::pre_processing() {
 }
 
 void SimpleIntMPI::distributeData() {
-  size_t chunk_size;
-  if (world.rank() == 0) {
-    chunk_size = input_data_.size() / world.size();
-  }
-  boost::mpi::broadcast(world, chunk_size, 0);
+  size_t total_size = input_data_.size();
+  size_t chunk_size = total_size / world.size();
+  size_t remainder = total_size % world.size();
+
+  size_t count;
 
   if (world.rank() == 0) {
     for (int i = 1; i < world.size(); ++i) {
-      size_t start = chunk_size * i;
-      size_t count = (i + 1) * chunk_size > input_data_.size() ? input_data_.size() - i * chunk_size : chunk_size;
+      size_t start = i * chunk_size + std::min((size_t)i, remainder);
+      count = chunk_size + (i < remainder ? 1 : 0);
       world.send(i, 0, input_data_.data() + start, count);
     }
-    input_data_.resize(chunk_size);
+    input_data_.resize(chunk_size + (0 < remainder ? 1 : 0));
   } else {
-    input_data_.resize(chunk_size);
+    count = chunk_size + (world.rank() < remainder ? 1 : 0);
+    input_data_.resize(count);
     world.recv(0, 0, input_data_.data(), input_data_.size());
   }
 }
@@ -43,7 +44,7 @@ void SimpleIntMPI::distributeData() {
 bool SimpleIntMPI::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    return taskData->inputs_count.size() == 1 && taskData->outputs_count.size() == 1 &&
+    return taskData->inputs_count.size() > 0 && taskData->outputs_count.size() > 0 &&
            taskData->inputs_count[0] == taskData->outputs_count[0];
   }
   return true;
@@ -58,15 +59,22 @@ bool SimpleIntMPI::run() {
 }
 
 void SimpleIntMPI::gatherData() {
+  size_t total_size = taskData->outputs_count[0];
+
   if (world.rank() == 0) {
-    processed_data_.resize(taskData->outputs_count[0]);
-    int chunk_size = taskData->outputs_count[0] / world.size();
+    processed_data_.resize(total_size);
+    size_t chunk_size = total_size / world.size();
+    size_t remainder = total_size % world.size();
+
     std::copy(input_data_.begin(), input_data_.end(), processed_data_.begin());
-    std::vector<int> received_data(chunk_size);
+
+    std::vector<int> received_data(chunk_size + 1);
+
     for (int i = 1; i < world.size(); i++) {
-      world.recv(i, 0, received_data.data(), received_data.size());
-      size_t start_pos = i * chunk_size;
-      std::copy(received_data.begin(), received_data.end(), processed_data_.begin() + start_pos);
+      size_t received_count = chunk_size + (i < remainder ? 1 : 0);
+      world.recv(i, 0, received_data.data(), received_count);
+      size_t start_pos = i * chunk_size + std::min(remainder, (size_t)i);
+      std::copy(received_data.begin(), received_data.begin() + received_count, processed_data_.begin() + start_pos);
     }
   } else {
     world.send(0, 0, input_data_.data(), input_data_.size());
