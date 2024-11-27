@@ -445,8 +445,7 @@ TEST(mironov_a_broadcast_custom_mpi, Test_broadcast_with_diff_root_1) {
   }
 
   // broadcast vector
-  mironov_a_broadcast_custom_mpi::ComponentSumPowerCustomImpl testMpiTaskParallel(taskDataGlob);
-  testMpiTaskParallel.broadcastImpl(world, vector_for_broadcast.data(), 10, 2);
+  mironov_a_broadcast_custom_mpi::ComponentSumPowerCustomImpl::broadcastImpl(world, vector_for_broadcast.data(), 10, 2);
 
   // check data in every process
   ASSERT_EQ(vector_for_broadcast, golds);
@@ -469,18 +468,11 @@ TEST(mironov_a_broadcast_custom_mpi, Test_broadcast_with_diff_root_2) {
   }
 
   // broadcast vector
-  mironov_a_broadcast_custom_mpi::ComponentSumPowerCustomImpl testMpiTaskParallel(taskDataGlob);
-  testMpiTaskParallel.broadcastImpl(world, vector_for_broadcast.data(), 10, 1);
+  mironov_a_broadcast_custom_mpi::ComponentSumPowerCustomImpl::broadcastImpl(world, vector_for_broadcast.data(), 10, 1);
 
   // check data in every process
   ASSERT_EQ(vector_for_broadcast, golds);
 }
-
-#include <gtest/gtest.h>
-
-#include <boost/mpi.hpp>
-#include <memory>
-#include <vector>
 
 TEST(mironov_a_broadcast_custom_mpi, Test_broadcast_with_even_and_odd_processes) {
   boost::mpi::environment env;
@@ -506,8 +498,8 @@ TEST(mironov_a_broadcast_custom_mpi, Test_broadcast_with_even_and_odd_processes)
   }
 
   // share data
-  mironov_a_broadcast_custom_mpi::ComponentSumPowerCustomImpl testMpiTaskParallel(taskDataGlob);
-  testMpiTaskParallel.broadcastImpl(local_comm, vector_for_broadcast.data(), vector_for_broadcast.size(), 1);
+  mironov_a_broadcast_custom_mpi::ComponentSumPowerCustomImpl::broadcastImpl(local_comm, vector_for_broadcast.data(),
+                                                                             vector_for_broadcast.size(), 1);
 
   // reduce result (need to not to do ASSERT_EQ many times)
   int res = 1;
