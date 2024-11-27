@@ -47,6 +47,8 @@ TEST(anufriev_d_star_topology, EmptyVectorTest) {
   std::vector<int> input_data;
   std::vector<int> output_data;
 
+  taskData->inputs_count.push_back(0);
+  taskData->outputs_count.push_back(0);
   if (world.rank() == 0) {
     taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
     taskData->inputs_count.push_back(input_data.size());
