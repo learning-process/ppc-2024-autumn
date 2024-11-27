@@ -15,6 +15,10 @@ bool SeidelIterateMethodsMPI::pre_processing() {
 
   x.resize(n, 0.0);
 
+  if (taskData->inputs_count.size() > 1 && taskData->inputs_count[1] == 0) {
+    return false;
+  }
+
   return true;
 }
 
