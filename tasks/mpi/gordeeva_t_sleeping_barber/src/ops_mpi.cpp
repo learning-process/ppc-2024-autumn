@@ -34,7 +34,7 @@ bool gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
   int cl = world.size() - 1;
-  int max_waiting_chairs = taskData->inputs_count[0];
+  long int max_waiting_chairs = taskData->inputs_count[0];
 
   if (world.rank() == 0) {
     while (true) {
