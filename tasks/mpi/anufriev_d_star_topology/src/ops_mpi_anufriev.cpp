@@ -1,4 +1,5 @@
 #include "mpi/anufriev_d_star_topology/include/ops_mpi_anufriev.hpp"
+
 #include <utility>
 
 namespace anufriev_d_star_topology {
