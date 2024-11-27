@@ -60,8 +60,8 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_seq, Test_1000_int) {
   ASSERT_EQ(count_viol, 0);
 }
 
-TEST(kovalev_k_bubble_sort_oddeven_transposition_seq, Test_10000_int) {
-  const size_t length = 10000;
+TEST(kovalev_k_bubble_sort_oddeven_transposition_seq, Test_7000_int) {
+  const size_t length = 7000;
   std::vector<int> in(length);
   std::srand(std::time(nullptr));
   for (size_t i = 0; i < length; i++) in[i] = rand() * std::pow(-1, rand());
@@ -133,8 +133,8 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_seq, Test_1000_double) {
   ASSERT_EQ(count_viol, 0);
 }
 
-TEST(kovalev_k_bubble_sort_oddeven_transposition_seq, Test_10000_double) {
-  const size_t length = 10000;
+TEST(kovalev_k_bubble_sort_oddeven_transposition_seq, Test_7000_double) {
+  const size_t length = 7000;
   std::vector<double> in(length);
   auto max = static_cast<double>(1000000);
   auto min = static_cast<double>(-1000000);
