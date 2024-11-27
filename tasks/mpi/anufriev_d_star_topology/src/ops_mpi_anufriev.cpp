@@ -28,14 +28,14 @@ void SimpleIntMPI::distributeData() {
   size_t count;
 
   if (world.rank() == 0) {
-    for (size_t i = 1; i < world.size(); ++i) {
+    for (int i = 1; i < world.size(); ++i) {
       size_t start = i * chunk_size + std::min((size_t)i, remainder);
-      count = chunk_size + (i < remainder ? 1 : 0);
+      count = chunk_size + (static_cast<size_t>(i) < remainder ? 1 : 0);
       world.send(i, 0, input_data_.data() + start, count);
     }
-    input_data_.resize(chunk_size + (0 < remainder ? 1 : 0));
+    input_data_.resize(chunk_size + (static_cast < size_t >(0) < remainder ? 1 : 0));
   } else {
-    count = chunk_size + (world.rank() < remainder ? 1 : 0);
+    count = chunk_size + (static_cast<size_t>(world.rank()) < remainder ? 1 : 0);
     input_data_.resize(count);
     world.recv(0, 0, input_data_.data(), input_data_.size());
   }
@@ -72,8 +72,8 @@ void SimpleIntMPI::gatherData() {
 
     std::vector<int> received_data(chunk_size + 1);
 
-    for (size_t i = 1; i < world.size(); i++) {
-      size_t received_count = chunk_size + (i < remainder ? 1 : 0);
+    for (int i = 1; i < world.size(); i++) {
+      size_t received_count = chunk_size + (i < remainder ? 1 : 0);///
       world.recv(i, 0, received_data.data(), received_count);
       size_t start_pos = i * chunk_size + std::min(remainder, (size_t)i);
       std::copy(received_data.begin(), received_data.begin() + received_count, processed_data_.begin() + start_pos);
