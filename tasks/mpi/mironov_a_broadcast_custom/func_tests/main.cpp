@@ -447,8 +447,18 @@ TEST(mironov_a_broadcast_custom_mpi, Test_broadcast_with_diff_root_1) {
   // broadcast vector
   mironov_a_broadcast_custom_mpi::ComponentSumPowerCustomImpl::broadcastImpl(world, vector_for_broadcast.data(), 10, 2);
 
-  // check data in every process
-  ASSERT_EQ(vector_for_broadcast, golds);
+  // reduce result (need to not to do ASSERT_EQ many times)
+  int res = 1;
+  int rank = world.rank();
+  if (vector_for_broadcast != golds) {
+    res = 0;
+  }
+
+  boost::mpi::reduce(world, res, boost::mpi::minimum<int>(), 2);
+  if (rank == 2) {
+    ASSERT_EQ(res, 1);
+  }
+
 }
 
 TEST(mironov_a_broadcast_custom_mpi, Test_broadcast_with_diff_root_2) {
@@ -470,8 +480,17 @@ TEST(mironov_a_broadcast_custom_mpi, Test_broadcast_with_diff_root_2) {
   // broadcast vector
   mironov_a_broadcast_custom_mpi::ComponentSumPowerCustomImpl::broadcastImpl(world, vector_for_broadcast.data(), 10, 1);
 
-  // check data in every process
-  ASSERT_EQ(vector_for_broadcast, golds);
+  // reduce result (need to not to do ASSERT_EQ many times)
+  int res = 1;
+  int rank = world.rank();
+  if (vector_for_broadcast != golds) {
+    res = 0;
+  }
+
+  boost::mpi::reduce(world, res, boost::mpi::minimum<int>(), 2);
+  if (rank == 2) {
+    ASSERT_EQ(res, 1);
+  }
 }
 
 TEST(mironov_a_broadcast_custom_mpi, Test_broadcast_with_even_and_odd_processes) {
