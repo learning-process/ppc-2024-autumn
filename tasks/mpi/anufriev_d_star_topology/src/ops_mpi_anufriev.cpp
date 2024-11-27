@@ -74,7 +74,7 @@ void SimpleIntMPI::gatherData() {
     }
 
     for (int i = 1; i < world.size(); ++i) {
-      size_t receive_count = chunk_size + (i < remainder);
+      size_t receive_count = chunk_size + (static_cast<size_t>(i) < remainder);
 
       world.recv(i, 0, received_data.data(), receive_count);
       size_t start_pos = i * chunk_size + std::min((size_t)i, remainder);
