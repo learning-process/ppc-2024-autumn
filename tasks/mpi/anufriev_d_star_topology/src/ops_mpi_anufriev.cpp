@@ -66,12 +66,10 @@ void SimpleIntMPI::gatherData() {
     size_t chunk_size = total_size / world.size();
     size_t remainder = total_size % world.size();
 
-    // Размер данных на процессе 0
     size_t root_chunk_size = chunk_size + (0 < remainder ? 1 : 0);
 
-    // Копируем данные с процесса 0, учитывая root_chunk_size
     std::copy(input_data_.begin(), input_data_.begin() + root_chunk_size,
-              processed_data_.begin());  // Используем root_chunk_size
+              processed_data_.begin());
 
     std::vector<int> received_data(chunk_size + 1);
 
