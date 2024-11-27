@@ -16,7 +16,9 @@ class SeidelIterateMethodsMPI : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-
+  double calculate_residual_norm() const;
+  void set_matrix(const std::vector<std::vector<double>>& input_A,
+                    const std::vector<double>& input_b);
  private:
   boost::mpi::communicator world;
   std::vector<std::vector<double>> A;

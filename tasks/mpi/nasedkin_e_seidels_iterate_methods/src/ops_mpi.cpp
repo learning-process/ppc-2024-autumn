@@ -88,4 +88,30 @@ bool SeidelIterateMethodsMPI::converge(const std::vector<double>& x_new) {
   return std::sqrt(norm) < epsilon;
 }
 
+double SeidelIterateMethodsMPI::calculate_residual_norm() const {
+  std::vector<double> residual(n, 0.0);
+  for (int i = 0; i < n; ++i) {
+    double sum = 0.0;
+    for (int j = 0; j < n; ++j) {
+      sum += A[i][j] * x[j];
+    }
+    residual[i] = sum - b[i];
+  }
+
+  double norm = 0.0;
+  for (const auto& val : residual) {
+    norm += val * val;
+  }
+  return std::sqrt(norm);
+}
+
+void nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI::set_matrix(
+    const std::vector<std::vector<double>>& input_A,
+    const std::vector<double>& input_b) {
+    A = input_A;
+    b = input_b;
+    n = static_cast<int>(b.size());
+}
+
+
 }  // namespace nasedkin_e_seidels_iterate_methods_mpi
