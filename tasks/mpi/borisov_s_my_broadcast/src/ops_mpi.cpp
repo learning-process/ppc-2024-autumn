@@ -1,6 +1,7 @@
 #include "mpi/borisov_s_my_broadcast/include/ops_mpi.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <vector>
 
 using namespace std::chrono_literals;
