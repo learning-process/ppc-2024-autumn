@@ -36,9 +36,9 @@ std::vector<int> korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeSeq
 std::vector<int> korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::quick_sort_with_merge(
     const std::span<int>& arr) {
   if (arr.size() <= 1) {
-    std::vector<int> answ(arr.size());
-    std::copy(arr.begin(), arr.end(), answ.begin());
-    return answ;
+    std::vector<int> res;
+    res.assign(arr.begin(), arr.end());
+    return res;
   }
 
   int pivot = arr[arr.size() / 2];
@@ -128,9 +128,9 @@ std::vector<int> korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergePar
 std::vector<int> korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeParallel::quick_sort_with_merge(
     const std::span<int>& arr) {
   if (arr.size() <= 1) {
-    std::vector<int> answ(arr.size());
-    std::copy(arr.begin(), arr.end(), answ.begin());
-    return answ;
+    std::vector<int> res;
+    res.assign(arr.begin(), arr.end());
+    return res;
   }
 
   int pivot = arr[arr.size() / 2];
