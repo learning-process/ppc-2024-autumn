@@ -16,7 +16,6 @@ std::vector<int> createInputVector(size_t size, int initialValue = 0, int step =
   return vec;
 }
 
-
 std::vector<int> calculateExpectedOutput(const std::vector<int>& input, size_t worldSize) {
   std::vector<int> output = input;
   size_t chunk_size = output.size() / worldSize;
