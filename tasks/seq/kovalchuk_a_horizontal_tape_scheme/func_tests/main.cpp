@@ -7,10 +7,10 @@
 
 using namespace kovalchuk_a_horizontal_tape_scheme_seq;
 
-std::vector<int> getRandomVector(int sz, int min = MINIMALGEN, int max = MAXIMUMGEN);
-std::vector<std::vector<int>> getRandomMatrix(int rows, int columns, int min = MINIMALGEN, int max = MAXIMUMGEN);
+std::vector<int> getRandomVectora(int sz, int min = MINIMALGEN, int max = MAXIMUMGEN);
+std::vector<std::vector<int>> getRandomMatrixa(int rows, int columns, int min = MINIMALGEN, int max = MAXIMUMGEN);
 
-std::vector<int> getRandomVector(int sz, int min, int max) {
+std::vector<int> getRandomVectora(int sz, int min, int max) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
@@ -20,10 +20,10 @@ std::vector<int> getRandomVector(int sz, int min, int max) {
   return vec;
 }
 
-std::vector<std::vector<int>> getRandomMatrix(int rows, int columns, int min, int max) {
+std::vector<std::vector<int>> getRandomMatrixa(int rows, int columns, int min, int max) {
   std::vector<std::vector<int>> vec(rows);
   for (int i = 0; i < rows; i++) {
-    vec[i] = getRandomVector(columns, min, max);
+    vec[i] = getRandomVectora(columns, min, max);
   }
   return vec;
 }
@@ -36,8 +36,8 @@ TEST(kovalchuk_a_horizontal_tape_scheme_seq, Test_Matrix_10_10) {
   std::vector<int> global_result(count_rows, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  global_matrix = getRandomMatrix(count_rows, count_columns);
-  global_vector = getRandomVector(count_columns);
+  global_matrix = getRandomMatrixa(count_rows, count_columns);
+  global_vector = getRandomVectora(count_columns);
   for (unsigned int i = 0; i < global_matrix.size(); i++)
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector.data()));
