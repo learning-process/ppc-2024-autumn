@@ -21,12 +21,22 @@ bool SimpleIntMPI::pre_processing() {
 }
 
 void SimpleIntMPI::distributeData() {
+  size_t chunk_size;
+  if (world.rank() == 0) {
+    chunk_size = input_data_.size() / world.size();
+  }
+  boost::mpi::broadcast(world, chunk_size, 0);
+
   if (world.rank() == 0) {
     for (int i = 1; i < world.size(); ++i) {
-      world.send(i, 0, input_data_);
+      size_t start = chunk_size * i;
+      size_t count = (i + 1) * chunk_size > input_data_.size() ? input_data_.size() - i * chunk_size : chunk_size;
+      world.send(i, 0, input_data_.data() + start, count);
     }
+    input_data_.resize(chunk_size);
   } else {
-    world.recv(0, 0, input_data_);
+    input_data_.resize(chunk_size);
+    world.recv(0, 0, input_data_.data(), input_data_.size());
   }
 }
 
