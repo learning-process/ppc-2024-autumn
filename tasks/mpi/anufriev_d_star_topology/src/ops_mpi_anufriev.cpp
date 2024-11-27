@@ -4,7 +4,7 @@
 
 namespace anufriev_d_star_topology {
 
-SimpleIntMPI::SimpleIntMPI(const std::shared_ptr<ppc::core::TaskData> taskData) : Task(std::move(taskData)) {}
+SimpleIntMPI::SimpleIntMPI(const std::shared_ptr<ppc::core::TaskData>& taskData) : Task(taskData) {}
 
 bool SimpleIntMPI::pre_processing() {
   internal_order_test();

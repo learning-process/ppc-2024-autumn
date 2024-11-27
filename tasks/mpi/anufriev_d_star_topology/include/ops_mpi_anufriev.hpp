@@ -9,7 +9,7 @@ namespace anufriev_d_star_topology {
 
 class SimpleIntMPI : public ppc::core::Task {
  public:
-  explicit SimpleIntMPI(std::shared_ptr<ppc::core::TaskData> taskData);
+  explicit SimpleIntMPI(const std::shared_ptr<ppc::core::TaskData>& taskData);
 
   bool pre_processing() override;
   bool validation() override;
