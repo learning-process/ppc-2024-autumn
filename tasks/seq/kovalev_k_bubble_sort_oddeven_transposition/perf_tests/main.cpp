@@ -33,7 +33,7 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_seq, test_pipeline_run) {
   ppc::core::Perf::print_perf_statistic(perfResults);
   int *tmp = reinterpret_cast<int *>(out.data());
   int count_viol = 0;
-  for (int i = 0; i < length; i++) {
+  for (size_t i = 0; i < length; i++) {
     if (tmp[i] != in[i]) count_viol++;
   }
   ASSERT_EQ(count_viol, 0);
@@ -71,7 +71,7 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_seq, test_task_run) {
   std::sort(etalon.begin(), etalon.end(), [](double a, double b) { return a < b; });
   double *tmp = reinterpret_cast<double *>(out.data());
   int count_viol = 0;
-  for (int i = 0; i < length; i++) {
+  for (size_t i = 0; i < length; i++) {
     if (tmp[i] != etalon[i]) count_viol++;
   }
   ASSERT_EQ(count_viol, 0);
