@@ -23,7 +23,7 @@ std::vector<int> calculateExpectedOutput(const std::vector<int>& input, int worl
 
   for (int i = 0; i < worldSize; ++i) {
     size_t start_pos = i * chunk_size + std::min((size_t)i, remainder);
-    size_t count = chunk_size + (i < remainder ? 1 : 0);
+    size_t count = chunk_size + (static_cast<size_t>(i) < remainder ? 1 : 0);
     for (size_t j = 0; j < count; ++j) {
       output[start_pos + j] += i;
     }
