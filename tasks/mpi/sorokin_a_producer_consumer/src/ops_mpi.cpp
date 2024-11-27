@@ -45,7 +45,7 @@ bool sorokin_a_producer_consumer_mpi::TestMPITaskParallel::validation() {
 
 bool sorokin_a_producer_consumer_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  if (world.size() == 2) return true;
+  if (count_p_ == 0) return true;
   const int producer_tag = 1;
   const int consumer_tag = 2;
   const int exit_tag = 0;
