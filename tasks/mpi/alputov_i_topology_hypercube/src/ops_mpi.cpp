@@ -18,7 +18,7 @@ std::vector<int> alputov_i_topology_hypercube_mpi::IntToBinary(int number, int p
     number = number / 2;
   }
 
-  size_t padding_sz = static_cast<size_t>(padding);
+  auto padding_sz = static_cast<size_t>(padding);
   if (padding_sz > result.size()) {
     result.resize(padding_sz);
     for (size_t i = count; i < padding_sz; ++i) result[i] = 0;
@@ -34,7 +34,7 @@ int alputov_i_topology_hypercube_mpi::CalculateNextHop(int sourceRank, int targe
 
   for (size_t i = 0; i < targetBinary.size(); ++i) {
     int diff = sourceBinary[i] - targetBinary[i];
-    if (diff) {
+    if (diff != 0) {
       sourceBinary[i] = targetBinary[i];
       break;
     }

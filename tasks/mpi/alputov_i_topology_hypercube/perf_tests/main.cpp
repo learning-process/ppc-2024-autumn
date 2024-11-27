@@ -20,7 +20,7 @@ std::vector<int> removeNegativeOnesFromEnd(std::vector<int> vector) {
 TEST(alputov_i_topology_hypercube_mpi, PipelineExecutionTest) {
   boost::mpi::communicator world;
   size_t communicatorSize = world.size();
-  if (!(communicatorSize & (communicatorSize - 1)) && communicatorSize > 0) {
+  if ((communicatorSize & (communicatorSize - 1)) == 0u && communicatorSize > 0) {
     std::vector<int> inputData{1337, 0};
     std::vector<int> expectedRoute{0};
     std::vector<int> outputData(1, 0);
@@ -68,7 +68,7 @@ TEST(alputov_i_topology_hypercube_mpi, PipelineExecutionTest) {
 TEST(alputov_i_topology_hypercube_mpi, TaskExecutionTest) {
   boost::mpi::communicator world;
   size_t communicatorSize = world.size();
-  if (!(communicatorSize & (communicatorSize - 1)) && communicatorSize > 0) {
+  if ((communicatorSize & (communicatorSize - 1)) == 0u && communicatorSize > 0) {
     std::vector<int> inputData{1337, 0};
     std::vector<int> expectedRoute{0};
     std::vector<int> outputData(1, 0);

@@ -16,7 +16,7 @@
 namespace alputov_i_topology_hypercube_mpi {
 
 int CalculateNextHop(int sourceRank, int targetRank, int maxAddressBits);
-int BinaryToInt(const std::vector<int> binary);
+int BinaryToInt(std::vector<int> binary);
 std::vector<int> IntToBinary(int number, int padding = 0);
 
 class HypercubeRouterMPI : public ppc::core::Task {

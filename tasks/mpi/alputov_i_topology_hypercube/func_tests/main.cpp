@@ -20,7 +20,7 @@ std::vector<int> removeNegativeOnesFromEnd(std::vector<int> vector) {
 TEST(alputov_i_topology_hypercube_mpi, DataTransfer_0_to_1) {
   boost::mpi::communicator world;
   size_t communicatorSize = world.size();
-  if (!(communicatorSize & (communicatorSize - 1)) && communicatorSize >= 2) {
+  if ((communicatorSize & (communicatorSize - 1)) == 0u && communicatorSize >= 2) {
     std::vector<int> inputData{1337, 1};
     std::vector<int> expectedRoute{0, 1};
     std::vector<int> outputData(1, 0);
@@ -56,7 +56,7 @@ TEST(alputov_i_topology_hypercube_mpi, DataTransfer_0_to_1) {
 TEST(alputov_i_topology_hypercube_mpi, DataTransfer_0_to_3) {
   boost::mpi::communicator world;
   size_t communicatorSize = world.size();
-  if (!(communicatorSize & (communicatorSize - 1)) && communicatorSize >= 4) {
+  if ((communicatorSize & (communicatorSize - 1)) == 0u && communicatorSize >= 4) {
     std::vector<int> inputData{1337, 3};
     std::vector<int> expectedRoute{0, 2, 3};
     std::vector<int> outputData(1, 0);
@@ -92,7 +92,7 @@ TEST(alputov_i_topology_hypercube_mpi, DataTransfer_0_to_3) {
 TEST(alputov_i_topology_hypercube_mpi, DataTransfer_0_to_5) {
   boost::mpi::communicator world;
   size_t communicatorSize = world.size();
-  if (!(communicatorSize & (communicatorSize - 1)) && communicatorSize >= 8) {
+  if ((communicatorSize & (communicatorSize - 1)) == 0u && communicatorSize >= 8) {
     std::vector<int> inputData{1337, 5};
     std::vector<int> expectedRoute{0, 4, 5};
     std::vector<int> outputData(1, 0);
@@ -128,7 +128,7 @@ TEST(alputov_i_topology_hypercube_mpi, DataTransfer_0_to_5) {
 TEST(alputov_i_topology_hypercube_mpi, DataTransfer_0_to_42) {
   boost::mpi::communicator world;
   size_t communicatorSize = world.size();
-  if (!(communicatorSize & (communicatorSize - 1)) && communicatorSize > 64) {
+  if ((communicatorSize & (communicatorSize - 1)) == 0u && communicatorSize > 64) {
     std::vector<int> inputData{1337, 42};
     std::vector<int> expectedRoute{0, 32, 40, 42};
     std::vector<int> outputData(1, 0);
@@ -164,7 +164,7 @@ TEST(alputov_i_topology_hypercube_mpi, DataTransfer_0_to_42) {
 TEST(alputov_i_topology_hypercube_mpi, TargetRankOutOfBounds) {
   boost::mpi::communicator world;
   size_t communicatorSize = world.size();
-  if (!(communicatorSize & (communicatorSize - 1)) && communicatorSize <= 64) {
+  if ((communicatorSize & (communicatorSize - 1)) == 0u && communicatorSize <= 64) {
     std::vector<int> inputData{1337, 99};
     std::vector<int> outputData(1, 0);
     std::vector<int> actualRoute;
@@ -194,7 +194,7 @@ TEST(alputov_i_topology_hypercube_mpi, TargetRankOutOfBounds) {
 TEST(alputov_i_topology_hypercube_mpi, NegativeTargetRank) {
   boost::mpi::communicator world;
   size_t communicatorSize = world.size();
-  if (!(communicatorSize & (communicatorSize - 1)) && communicatorSize > 1) {
+  if ((communicatorSize & (communicatorSize - 1)) == 0u && communicatorSize > 1) {
     std::vector<int> inputData{1337, -5};  // negative rank
     std::vector<int> outputData(1, 0);
     std::vector<int> actualRoute;
@@ -224,7 +224,7 @@ TEST(alputov_i_topology_hypercube_mpi, NegativeTargetRank) {
 TEST(alputov_i_topology_hypercube_mpi, SelfTransfer_Rank0) {
   boost::mpi::communicator world;
   size_t communicatorSize = world.size();
-  if (!(communicatorSize & (communicatorSize - 1)) && communicatorSize >= 1) {
+  if ((communicatorSize & (communicatorSize - 1)) == 0u && communicatorSize >= 1) {
     std::vector<int> inputData{1337, 0};
     std::vector<int> expectedRoute{0};
     std::vector<int> outputData(1, 0);
