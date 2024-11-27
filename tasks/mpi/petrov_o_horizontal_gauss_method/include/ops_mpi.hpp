@@ -4,8 +4,8 @@
 
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
-#include <boost/serialization/vector.hpp>
 #include <boost/serialization/serialization.hpp>
+#include <boost/serialization/vector.hpp>
 #include <memory>
 #include <numeric>
 #include <string>
@@ -14,7 +14,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace petrov_o_horizontal_gauss_method_mpi { // Изменено название неймспейса
+namespace petrov_o_horizontal_gauss_method_mpi {
 
 class SequentialTask : public ppc::core::Task {
  public:
@@ -39,9 +39,9 @@ class ParallelTask : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-	boost::mpi::communicator world;
-	std::vector<std::vector<double>> matrix;
-	std::vector<double> b, x;
+  boost::mpi::communicator world;
+  std::vector<std::vector<double>> matrix;
+  std::vector<double> b, x;
 };
 
 }  // namespace petrov_o_horizontal_gauss_method_mpi
