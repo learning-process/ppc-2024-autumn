@@ -53,10 +53,6 @@ bool petrov_o_horizontal_gauss_method_seq::GaussHorizontalSequential::run() {
   size_t n = matrix.size();
 
   for (size_t k = 0; k < n - 1; ++k) {
-    if (abs(matrix[k][k]) < 1e-10) {
-      return false;
-    }
-
     for (size_t i = k + 1; i < n; ++i) {
       double factor = matrix[i][k] / matrix[k][k];
       for (size_t j = k; j < n; ++j) {

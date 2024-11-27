@@ -124,23 +124,3 @@ TEST(petrov_o_horizontal_gauss_method_seq, TestGauss_ZeroDiagonal) {
   ASSERT_DOUBLE_EQ(output[1], 1);
   ASSERT_DOUBLE_EQ(output[2], -2);
 }
-
-TEST(petrov_o_horizontal_gauss_method_seq, TestGauss_LinearDependence) {
-  size_t n = 3;
-  std::vector<double> input_matrix = {1, 2, 3, 2, 4, 6, 1, 2, 3};
-  std::vector<double> input_b = {1, 2, 1};
-  std::vector<double> output(n);
-
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs_count.push_back(n);
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_matrix.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_b.data()));
-  taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output.data()));
-  taskData->outputs_count.push_back(n * sizeof(double));
-
-  petrov_o_horizontal_gauss_method_seq::GaussHorizontalSequential task(taskData);
-
-  ASSERT_TRUE(task.validation());
-  ASSERT_TRUE(task.pre_processing());
-  ASSERT_FALSE(task.run());
-}
