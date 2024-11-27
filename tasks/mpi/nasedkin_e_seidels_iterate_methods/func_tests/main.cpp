@@ -17,7 +17,6 @@ auto taskData = std::make_shared<ppc::core::TaskData>();
 }
 
 TEST(nasedkin_e_seidels_iterate_methods_mpi, test_with_invalid_input) {
-myffii marked this conversation as resolved.
   auto taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs_count.push_back(0);
 
