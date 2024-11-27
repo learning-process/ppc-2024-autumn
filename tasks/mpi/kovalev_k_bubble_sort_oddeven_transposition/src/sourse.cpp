@@ -25,13 +25,13 @@ bool kovalev_k_bubble_sort_oddeven_transposition_mpi::BubbleSortOddEvenTransposi
       for (size_t i = 0; i < loc_v.size(); i++) tmp.push_back(loc_v[i]);
       size_t iter1 = 0, iter2 = sendcounts[partner];
       while (iter2 < tmp.size() || iter1 < sendcounts[partner]) {
-        if ((iter1 < static_cast<size_t> sendcounts[partner] && iter2 < tmp.size() && tmp[iter1] <= tmp[iter2]) ||
-            (iter1 < static_cast<size_t> sendcounts[partner] && iter2 == tmp.size())) {
+        if ((iter1 < static_cast<size_t>(sendcounts[partner]) && iter2 < tmp.size() && tmp[iter1] <= tmp[iter2]) ||
+            (iter1 < static_cast<size_t>(sendcounts[partner]) && iter2 == tmp.size())) {
           res.push_back(tmp[iter1]);
           iter1++;
-        } else if ((iter1 < static_cast<size_t> sendcounts[partner] && iter2 < tmp.size() &&
+        } else if ((iter1 < static_cast<size_t>(sendcounts[partner]) && iter2 < tmp.size() &&
                     tmp[iter1] >= tmp[iter2]) ||
-                   (iter1 == static_cast<size_t> sendcounts[partner] && iter2 < tmp.size())) {
+                   (iter1 == static_cast<size_t>(sendcounts[partner]) && iter2 < tmp.size())) {
           res.push_back(tmp[iter2]);
           iter2++;
         }

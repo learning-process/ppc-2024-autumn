@@ -24,7 +24,7 @@ class BubbleSortOddEvenTranspositionPar : public ppc::core::Task {
     if (world.rank() == 0) n = taskData->inputs_count[0];
   }
   bool bubble_sort_mpi();
-  bool divide_and_merge(int partner, std::vector<size_t>& sendcounts);
+  bool divide_and_merge(int partner, std::vector<int>& sendcounts);
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
