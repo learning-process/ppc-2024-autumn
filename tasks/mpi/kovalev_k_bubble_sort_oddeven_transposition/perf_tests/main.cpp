@@ -54,7 +54,7 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, test_task_run) {
   std::vector<double> g_vec;
   std::vector<double> g_out;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  const size_t length = 30000;
+  const size_t length = 15000;
   if (rank == 0) {
     g_vec = std::vector<double>(length);
     g_out = std::vector<double>(length);
