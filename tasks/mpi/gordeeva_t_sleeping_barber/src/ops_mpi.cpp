@@ -103,10 +103,10 @@ void gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::serve_next_client() {
     int client_id = waiting_clients.front();
     waiting_clients.pop();
 
-    barber_busy = true;
+    barber_busy = 1;
     std::this_thread::sleep_for(2ms);
     world.send(client_id, 0, client_id);
-    barber_busy = false;
+    barber_busy = 0;
   }
 }
 
