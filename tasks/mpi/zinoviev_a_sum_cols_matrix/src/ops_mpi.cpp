@@ -67,6 +67,16 @@ bool zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel::pre_processing() {
     numRows = taskData->inputs_count[2];
     numCols = taskData->inputs_count[1];
   }
+
+  if (mpiWorld.rank() == 0) {
+    // Initialize the input vector
+    inputData_ = std::vector<int>(taskData->inputs_count[0]);
+    auto* temp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+    for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
+      inputData_[i] = temp_ptr[i];
+    }
+  }
+
   return true;
 }
 
@@ -85,14 +95,7 @@ bool zinoviev_a_sum_cols_matrix_mpi::TestMPITaskParallel::run() {
   broadcast(mpiWorld, numCols, 0);
   broadcast(mpiWorld, numRows, 0);
 
-  if (mpiWorld.rank() == 0) {
-    // Initialize the input vector
-    inputData_ = std::vector<int>(taskData->inputs_count[0]);
-    auto* temp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
-      inputData_[i] = temp_ptr[i];
-    }
-  } else {
+  if (mpiWorld.rank() != 0) {
     inputData_ = std::vector<int>(numCols * numRows);
   }
 
