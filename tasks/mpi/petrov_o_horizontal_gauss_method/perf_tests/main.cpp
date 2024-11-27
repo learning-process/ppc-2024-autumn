@@ -3,64 +3,127 @@
 #include <boost/mpi.hpp>
 #include <numeric>
 #include <vector>
+#include <random>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/petrov_o_num_of_alternations_signs/include/ops_mpi.hpp"  // Обновленный include path
+#include "mpi/petrov_o_horizontal_gauss_method/include/ops_mpi.hpp"
+
+// Функция для генерации случайной матрицы и вектора b
+void generateRandomMatrixAndB(size_t n, std::vector<double>& matrix, std::vector<double>& b) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dis(-100.0, 100.0);
+
+    matrix.resize(n * n);
+    b.resize(n);
+    for (size_t i = 0; i < n * n; ++i) {
+        matrix[i] = dis(gen);
+    }
+    for (size_t i = 0; i < n; ++i) {
+        b[i] = dis(gen);
+    }
+    // Заполнение главной диагонали, чтобы избежать деления на ноль
+    for (size_t i = 0; i < n; ++i) {
+        matrix[i * n + i] += 200.0; 
+    }
+}
+
 
 template <typename TaskType>
-void runPerformanceTest(int size, int num_running) {
-  std::vector<int> in(size);
-  std::iota(in.begin(), in.end(), 1);
-  for (size_t i = 0; i < in.size(); ++i) {
-    if (i % 2 != 0) {
-      in[i] *= -1;
+void runTaskTest(int n, int num_running) {
+    std::vector<double> input_matrix;
+    std::vector<double> input_b;
+    std::vector<double> output(n);
+
+    boost::mpi::communicator world;
+    std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+
+    if(world.rank() == 0) {
+      generateRandomMatrixAndB(n, input_matrix, input_b);
+
+      taskData->inputs_count.push_back(n);
+      taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_matrix.data()));
+      taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_b.data()));
+      taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output.data()));
+      taskData->outputs_count.push_back(n * sizeof(double));
     }
-  }
-  std::vector<int> out(1);
 
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
-  taskData->inputs_count.emplace_back(in.size());
-  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-  taskData->outputs_count.emplace_back(out.size());
+    auto task = std::make_shared<TaskType>(taskData);
 
-  // Create Task
-  auto task = std::make_shared<TaskType>(taskData);
+    auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+    perfAttr->num_running = num_running;
+    const auto t0 = std::chrono::high_resolution_clock::now();
+    perfAttr->current_timer = [&] {
+        auto current_time_point = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
+        return static_cast<double>(duration) * 1e-9;
+    };
 
-  // Create Perf attributes
-  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = num_running;
-  const auto t0 = std::chrono::high_resolution_clock::now();
-  perfAttr->current_timer = [&] {
-    auto current_time_point = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
-    return static_cast<double>(duration) * 1e-9;
-  };
+    auto perfResults = std::make_shared<ppc::core::PerfResults>();
+    auto perfAnalyzer = std::make_shared<ppc::core::Perf>(task);
 
-  // Create and init perf results
-  auto perfResults = std::make_shared<ppc::core::PerfResults>();
-
-  // Create Perf analyzer
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(task);
+    perfAnalyzer->task_run(perfAttr, perfResults);
+    if(world.rank() == 0) {
+      ppc::core::Perf::print_perf_statistic(perfResults);
+    }
 }
 
-TEST(petrov_o_num_of_alternations_signs_seq, test_pipeline_run) {
-  boost::mpi::communicator world;
-  runPerformanceTest<petrov_o_num_of_alternations_signs_mpi::SequentialTask>(100000, 10);
+template <typename TaskType>
+void runPipelineTest(int n, int num_running) {
+    std::vector<double> input_matrix;
+    std::vector<double> input_b;
+    std::vector<double> output(n);
+
+    boost::mpi::communicator world;
+    std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+
+    if(world.rank() == 0) {
+      generateRandomMatrixAndB(n, input_matrix, input_b);
+
+      taskData->inputs_count.push_back(n);
+      taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_matrix.data()));
+      taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_b.data()));
+      taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output.data()));
+      taskData->outputs_count.push_back(n * sizeof(double));
+    }
+    auto task = std::make_shared<TaskType>(taskData);
+
+    auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+    perfAttr->num_running = num_running;
+    const auto t0 = std::chrono::high_resolution_clock::now();
+    perfAttr->current_timer = [&] {
+        auto current_time_point = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
+        return static_cast<double>(duration) * 1e-9;
+    };
+
+    auto perfResults = std::make_shared<ppc::core::PerfResults>();
+    auto perfAnalyzer = std::make_shared<ppc::core::Perf>(task);
+
+    perfAnalyzer->pipeline_run(perfAttr, perfResults);
+
+    if(world.rank() == 0) {
+      ppc::core::Perf::print_perf_statistic(perfResults);
+    }
 }
 
-TEST(petrov_o_num_of_alternations_signs_seq, test_task_run) {
-  boost::mpi::communicator world;
-  runPerformanceTest<petrov_o_num_of_alternations_signs_mpi::SequentialTask>(100000, 10);
+
+TEST(petrov_o_horizontal_gauss_method_seq, test_pipeline_run) {
+    boost::mpi::communicator world;
+    runPipelineTest<petrov_o_horizontal_gauss_method_mpi::SequentialTask>(500, 10);
 }
 
-TEST(petrov_o_num_of_alternations_signs_mpi, test_pipeline_run) {
-  boost::mpi::communicator world;
-  runPerformanceTest<petrov_o_num_of_alternations_signs_mpi::ParallelTask>(100000, 10);
+TEST(petrov_o_horizontal_gauss_method_seq, test_task_run) {
+    boost::mpi::communicator world;
+    runTaskTest<petrov_o_horizontal_gauss_method_mpi::SequentialTask>(500, 10);
 }
 
-TEST(petrov_o_num_of_alternations_signs_mpi, test_task_run) {
-  boost::mpi::communicator world;
-  runPerformanceTest<petrov_o_num_of_alternations_signs_mpi::ParallelTask>(100000, 10);
+TEST(petrov_o_horizontal_gauss_method_mpi, test_pipeline_run) {
+    boost::mpi::communicator world;
+    runPipelineTest<petrov_o_horizontal_gauss_method_mpi::ParallelTask>(500, 10);
+}
+
+TEST(petrov_o_horizontal_gauss_method_mpi, test_task_run) {
+    boost::mpi::communicator world;
+    runTaskTest<petrov_o_horizontal_gauss_method_mpi::ParallelTask>(500, 10);
 }
