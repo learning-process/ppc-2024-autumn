@@ -109,9 +109,8 @@ bool solovyev_d_topology_hypercube_mpi::TopologyHypercubeMPI::post_processing() 
   world.barrier();
   if (world.rank() == 0) {
     reinterpret_cast<int *>(taskData->outputs[0])[0] = data_.value;
-    for (size_t i = 0; i < data_.path.size(); i++) {
-      reinterpret_cast<int *>(taskData->outputs[1])[i] = data_.path[i];
-    }
+    auto *result_ptr = reinterpret_cast<int *>(taskData->outputs[1]);
+    std::copy(data_.path.begin(), data_.path.end(), result_ptr);
   }
   return true;
 }
