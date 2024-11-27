@@ -8,7 +8,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/afanasyev_a_jacobi_method/include/ops_mpi.hpp"
+#include "mpi/kavtorev_d_jacobi_method/include/ops_mpi.hpp"
 
 std::pair<std::vector<double>, std::vector<double>> get_random_diagonally_matrix(int matrix_size,
                                                                                  double min_val = -10.0,
@@ -38,7 +38,7 @@ std::pair<std::vector<double>, std::vector<double>> get_random_diagonally_matrix
   return {matrix, rhs};
 }
 
-TEST(afanasyev_a_jacobi_method, test_pipeline_run) {
+TEST(kavtorev_d_jacobi_method, test_pipeline_run) {
   boost::mpi::communicator world;
 
   const size_t matrix_size = 512;
@@ -59,7 +59,7 @@ TEST(afanasyev_a_jacobi_method, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(out.size());
   }
 
-  auto jacobiTaskParallel = std::make_shared<afanasyev_a_jacobi_method_mpi::JacobiMethodParallelTask>(taskDataPar);
+  auto jacobiTaskParallel = std::make_shared<kavtorev_d_jacobi_method_mpi::JacobiMethodParallelTask>(taskDataPar);
   ASSERT_EQ(jacobiTaskParallel->validation(), true);
   jacobiTaskParallel->pre_processing();
   jacobiTaskParallel->run();
@@ -80,7 +80,7 @@ TEST(afanasyev_a_jacobi_method, test_pipeline_run) {
   }
 }
 
-TEST(afanasyev_a_jacobi_method, test_task_run) {
+TEST(kavtorev_d_jacobi_method, test_task_run) {
   boost::mpi::communicator world;
 
   const size_t matrix_size = 512;
@@ -101,7 +101,7 @@ TEST(afanasyev_a_jacobi_method, test_task_run) {
     taskDataPar->outputs_count.emplace_back(out.size());
   }
 
-  auto jacobiTaskParallel = std::make_shared<afanasyev_a_jacobi_method_mpi::JacobiMethodParallelTask>(taskDataPar);
+  auto jacobiTaskParallel = std::make_shared<kavtorev_d_jacobi_method_mpi::JacobiMethodParallelTask>(taskDataPar);
   ASSERT_EQ(jacobiTaskParallel->validation(), true);
   jacobiTaskParallel->pre_processing();
   jacobiTaskParallel->run();
