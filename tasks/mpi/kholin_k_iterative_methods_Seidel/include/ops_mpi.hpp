@@ -99,9 +99,9 @@ class TestMPITaskParallel : public ppc::core::Task {
   float max_delta;
   float global_x;
   void SetDefault();
-  bool CheckDiagPred(float matrix[], size_t num_rows, size_t num_colls) const;
-  bool IsQuadro(size_t num_rows, size_t num_colls) const;
-  float* gen_vector(size_t sz);
+  static bool CheckDiagPred(float matrix[], size_t num_rows, size_t num_colls);
+  static bool IsQuadro(size_t num_rows, size_t num_colls);
+  static float* gen_vector(size_t sz);
   void to_upper_diag_matrix();
   void to_lower_diag_matrix();
   void iteration_perfomance();

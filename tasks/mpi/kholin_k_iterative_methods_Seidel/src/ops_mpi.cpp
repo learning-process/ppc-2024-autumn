@@ -98,14 +98,14 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::pre_processin
   n_rows = taskData->inputs_count[0];
   n_colls = taskData->inputs_count[1];
   A = new float[n_rows * n_colls];
-  float* ptr_vector = reinterpret_cast<float*>(taskData->inputs[0]);
+  auto* ptr_vector = reinterpret_cast<float*>(taskData->inputs[0]);
   std::memcpy(A, ptr_vector, sizeof(float) * (n_rows * n_colls));
   X_next = new float[n_rows];
   std::fill(X_next, X_next + n_rows, 0.0f);
   X_prev = new float[n_rows];
   std::fill(X_prev, X_prev + n_rows, 0.0f);
   B = gen_vector(n_rows);
-  float* ptr = reinterpret_cast<float*>(taskData->inputs[1]);
+  auto* ptr = reinterpret_cast<float*>(taskData->inputs[1]);
   epsilon = *ptr;
   X = new float[n_rows];
   std::fill(X, X + n_rows, 1.0f);
@@ -131,7 +131,7 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::run() {
 
 bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
-  auto ptr = reinterpret_cast<float*>(taskData->outputs[0]);
+  auto* ptr = reinterpret_cast<float*>(taskData->outputs[0]);
   std::memcpy(ptr, X, sizeof(float) * n_rows);
   return true;
 }
@@ -147,24 +147,24 @@ kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::~TestMPITaskSequen
 }
 
 bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::IsQuadro(const size_t num_rows,
-                                                                            const size_t num_colls){
+                                                                            const size_t num_colls) {
   return num_rows == num_colls;
 }
 
 bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::CheckDiagPred(float matrix[], const size_t num_rows,
-                                                                                 const size_t num_colls){
+                                                                                 const size_t num_colls) {
   size_t rows = num_rows;
   size_t colls = num_colls;
   float abs_diag_element = 0.0f;
   float abs_el = 0.0f;
   float abs_sum = 0.0f;
   for (size_t i = 0; i < rows; i++) {
-    abs_diag_element = std::fabsf(matrix[colls * i + i]);
+    abs_diag_element = std::fabs(matrix[colls * i + i]);
     for (size_t j = 0; j < colls; j++) {
       if (j == i) {
         continue;
       }
-      abs_el = fabs(matrix[colls * i + j]);
+      abs_el = fabsf(matrix[colls * i + j]);
       abs_sum += abs_el;
     }
     if (abs_diag_element <= abs_sum) {
@@ -206,7 +206,7 @@ float kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::d() {
   float d = 0;
   float maxd = 0;
   for (size_t i = 0; i < n_rows; i++) {
-    d = std::fabsf(X_next[i] - X_prev[i]);
+    d = std::fabs(X_next[i] - X_prev[i]);
     if (d > maxd) {
       maxd = d;
     }
@@ -271,10 +271,10 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::pre_processing(
   }
   if (ProcRank == 0) {
     A = new float[n_rows * n_colls];
-    auto ptr_vector = reinterpret_cast<float*>(taskData->inputs[0]);
+    auto* ptr_vector = reinterpret_cast<float*>(taskData->inputs[0]);
     std::memcpy(A, ptr_vector, sizeof(float) * (n_rows * n_colls));
     B = gen_vector(n_rows);
-    auto ptr = reinterpret_cast<float*>(taskData->inputs[1]);
+    auto* ptr = reinterpret_cast<float*>(taskData->inputs[1]);
     epsilon = *ptr;
     X = new float[n_rows];
     std::fill(X, X + n_rows, 1.0f);
@@ -291,11 +291,11 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::validation() {
   if (ProcRank == 0) {
     SetDefault();
     bool valid1 = IsQuadro(taskData->inputs_count[0], taskData->inputs_count[1]);
-    if (valid1 == false) {
+    if (!valid1) {
       return false;
     }
     bool valid2 = CheckDiagPred(getA_(), taskData->inputs_count[0], taskData->inputs_count[1]);
-    if (valid2 == false) {
+    if (!valid2) {
       return false;
     }
     return true;
@@ -349,31 +349,30 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::post_processing
   int ProcRank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   if (ProcRank == 0) {
-    float* ptr = reinterpret_cast<float*>(taskData->outputs[0]);
+    auto* ptr = reinterpret_cast<float*>(taskData->outputs[0]);
     std::memcpy(ptr, X, sizeof(float) * n_rows);
   }
   return true;
 }
 
-bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::IsQuadro(const size_t num_rows,
-                                                                          const size_t num_colls) const {
+bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::IsQuadro(size_t num_rows, size_t num_colls) {
   return num_rows == num_colls;
 }
 
-bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::CheckDiagPred(float matrix[], const size_t num_rows,
-                                                                               const size_t num_colls) const {
+bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::CheckDiagPred(float matrix[], size_t num_rows,
+                                                                               size_t num_colls) {
   size_t rows = num_rows;
   size_t colls = num_colls;
   float abs_diag_element = 0.0f;
   float abs_el = 0.0f;
   float abs_sum = 0.0f;
   for (size_t i = 0; i < rows; i++) {
-    abs_diag_element = fabs(matrix[colls * i + i]);
+    abs_diag_element = fabsf(matrix[colls * i + i]);
     for (size_t j = 0; j < colls; j++) {
       if (j == i) {
         continue;
       }
-      abs_el = fabs(matrix[colls * i + j]);
+      abs_el = fabsf(matrix[colls * i + j]);
       abs_sum += abs_el;
     }
     if (abs_diag_element <= abs_sum) {
@@ -387,7 +386,7 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::CheckDiagPred(f
 float* kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::gen_vector(size_t sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  float* row = new float[sz];
+  auto* row = new float[sz];
   std::uniform_real_distribution<float> coeff(10, 1000);
   for (size_t i = 0; i < sz; i++) {
     row[i] = coeff(gen);
@@ -533,9 +532,7 @@ void kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::to_upper_diag_m
   MPI_Bcast(upper_C, count, MPI_FLOAT, 0, MPI_COMM_WORLD);
   MPI_Bcast(upper_send_counts, n_rows * size, MPI_INT, 0, MPI_COMM_WORLD);
   for (size_t i = 0; i < n_rows; i++) {
-    if (true) {
-      local_upper_counts[i] = upper_send_counts[ProcRank + size * i];
-    }
+    local_upper_counts[i] = upper_send_counts[ProcRank + size * i];
   }
   MPI_Bcast(upper_displs, n_rows * size, MPI_INT, 0, MPI_COMM_WORLD);
 }
