@@ -9,11 +9,7 @@ namespace petrov_o_horizontal_gauss_method_mpi {
 bool ParallelTask::validation() {
     internal_order_test();
 
-    int rank;
-
-    rank = world.rank();
-
-    if (rank == 0) {
+    if (world.rank() == 0) {
         // Проверка количества входных/выходных данных
         if (taskData->inputs_count.size() != 1 || taskData->outputs_count.size() != 1) {
             return false;
@@ -37,9 +33,7 @@ bool ParallelTask::validation() {
 bool ParallelTask::pre_processing() {
     internal_order_test();
 
-    int rank = world.rank();
-
-    if (rank == 0) {
+    if (world.rank() == 0) {
         // Получаем n из первого входного параметра
         size_t n = taskData->inputs_count[0];
 
@@ -67,20 +61,16 @@ bool ParallelTask::run() {
     internal_order_test();
 
     size_t n = matrix.size();
-    int rank = world.rank();
-    int size = world.size();
 
-    std::cout << world.size() << " " << world.rank() << std::endl;
+    boost::mpi::broadcast(world, n, 0);
+    boost::mpi::broadcast(world, matrix, 0);
+    boost::mpi::broadcast(world, b, 0);
 
-    //boost::mpi::broadcast(world, n, 0);
-
-    std::cout << "After broadcast " << world.size() << " " << world.rank() << std::endl;
 
     // Прямой ход
     for (size_t k = 0; k < n - 1; ++k) {
-
         // Параллелизация прямого хода с помощью Boost.MPI
-        for (size_t i = k + 1 + rank; i < n; i += size) {
+        for (size_t i = k + 1 + world.rank(); i < n; i += world.size()) {
             double factor = matrix[i][k] / matrix[k][k];
             for (size_t j = k; j < n; ++j) {
                 matrix[i][j] -= factor * matrix[k][j];
@@ -89,16 +79,12 @@ bool ParallelTask::run() {
         }
 
         // Синхронизация между процессами
-        std::cout << "Rank " << world.rank() << " before barrier, k = " << k << ", n = " << n << std::endl;
         world.barrier();
-        std::cout << "Rank " << world.rank() << " after barrier, k = " << k << ", n = " << n << std::endl;
     }
-    // std::cout << "Rank " << world.rank() <<" before cycle 1" << std::endl;
     world.barrier(); 
-    // std::cout << "Rank " << world.rank() <<" after cycle 1" << std::endl;
 
     // Обратный ход
-    if (rank == 0) {
+    if (world.rank() == 0) {
         x[n - 1] = b[n - 1] / matrix[n - 1][n - 1];
         for (int i = n - 2; i >= 0; --i) {
             double sum = b[i];
@@ -110,12 +96,10 @@ bool ParallelTask::run() {
     }
 
     world.barrier(); 
-    // std::cout << "Rank " << world.rank() <<" after cycle 2" << std::endl;
     // Распространение результатов на все процессы
     boost::mpi::broadcast(world, x, 0);
     world.barrier(); 
 
-    std::cout << "Rank " << world.rank() <<" on end" << std::endl;
     return true;
 }
 

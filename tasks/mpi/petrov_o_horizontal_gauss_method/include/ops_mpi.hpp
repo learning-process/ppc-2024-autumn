@@ -39,21 +39,9 @@ class ParallelTask : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-	//size_t n;
-	// std::vector<std::vector<double>> matrix;
-	// std::vector<double> b;
-	// std::vector<double> x;
-	// std::vector<double> augmented_matrix;
-	// double current_b;
 	boost::mpi::communicator world;
 	std::vector<std::vector<double>> matrix;
 	std::vector<double> b, x;
-
-  // size_t n;
-  // int rank;
-  // int size;
-
-
 };
 
 }  // namespace petrov_o_horizontal_gauss_method_mpi

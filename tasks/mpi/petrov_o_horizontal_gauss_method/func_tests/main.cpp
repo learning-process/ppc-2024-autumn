@@ -74,38 +74,38 @@ TEST(petrov_o_horizontal_gauss_method_par, TestGauss_Simple) {
 
 
 // Тест для параллельной версии с рандомной матрицей
-// TEST(petrov_o_horizontal_gauss_method_par, TestGauss_RandomMatrix) {
-//     boost::mpi::communicator world;
+TEST(petrov_o_horizontal_gauss_method_par, TestGauss_RandomMatrix) {
+    boost::mpi::communicator world;
     
-//     size_t n = 10; // Размер матрицы (можно менять для тестирования)
+    size_t n = 10; // Размер матрицы (можно менять для тестирования)
 
-//     std::vector<std::vector<double>> random_matrix;
-//     std::vector<double> random_b;
-//     std::vector<double> par_output(n);
+    std::vector<std::vector<double>> random_matrix;
+    std::vector<double> random_b;
+    std::vector<double> par_output(n);
 
-//      if (world.rank() == 0) {
-//                 random_matrix = generateRandomMatrix(n,-100,100);
-//                 random_b = generateRandomVector(n, -100, 100);
-//      }
+     if (world.rank() == 0) {
+                random_matrix = generateRandomMatrix(n,-100,100);
+                random_b = generateRandomVector(n, -100, 100);
+     }
 
 
 
-//     std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-//      if (world.rank() == 0) {
-//                 taskData->inputs_count.push_back(n);
-//                 taskData->inputs.push_back(reinterpret_cast<uint8_t*>(random_matrix.data()));
-//                 taskData->inputs.push_back(reinterpret_cast<uint8_t*>(random_b.data()));
-//                 taskData->outputs.push_back(reinterpret_cast<uint8_t*>(par_output.data()));
-//                 taskData->outputs_count.push_back(n * sizeof(double));
-//     }
+    std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+     if (world.rank() == 0) {
+                taskData->inputs_count.push_back(n);
+                taskData->inputs.push_back(reinterpret_cast<uint8_t*>(random_matrix.data()));
+                taskData->inputs.push_back(reinterpret_cast<uint8_t*>(random_b.data()));
+                taskData->outputs.push_back(reinterpret_cast<uint8_t*>(par_output.data()));
+                taskData->outputs_count.push_back(n * sizeof(double));
+    }
 
-//     petrov_o_horizontal_gauss_method_mpi::ParallelTask task(taskData);
+    petrov_o_horizontal_gauss_method_mpi::ParallelTask task(taskData);
 
-//     ASSERT_TRUE(task.validation());
-//     ASSERT_TRUE(task.pre_processing());
-//     ASSERT_TRUE(task.run());
-//     ASSERT_TRUE(task.post_processing());
-// }
+    ASSERT_TRUE(task.validation());
+    ASSERT_TRUE(task.pre_processing());
+    ASSERT_TRUE(task.run());
+    ASSERT_TRUE(task.post_processing());
+}
 
 
 // ... (Другие тесты, адаптированные из последовательной версии)
