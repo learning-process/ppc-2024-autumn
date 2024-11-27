@@ -14,13 +14,18 @@ std::vector<int> get_random_vector(int sz, bool is_powers = false) {
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
 
-  int mod = 100;
   if (is_powers) {
-    mod = 5;
+    const int mod = 5;
+    for (int i = 0; i < sz; i++) {
+      vec[i] = gen() % mod;
+    }
+  } else {
+    const int mod = 100;
+    for (int i = 0; i < sz; i++) {
+      vec[i] = gen() % mod - 50;
+    }
   }
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % mod;
-  }
+
   return vec;
 }
 
@@ -33,13 +38,10 @@ TEST(mironov_a_broadcast_mpi, Test_broadcast_1) {
   std::vector<int> global_input;
   std::vector<int> global_powers;
   std::vector<int> global_res;
-  std::vector<int> reference_res;
 
-  // Global -> custom broadcast, referenced -> boost::mpi
   std::shared_ptr<ppc::core::TaskData> taskDataGlob = std::make_shared<ppc::core::TaskData>();
   std::shared_ptr<ppc::core::TaskData> taskDataRef = std::make_shared<ppc::core::TaskData>();
 
-  // custum broadcust version
   if (world.rank() == 0) {
     // Create TaskData
     global_input = std::vector<int>({1, 2, 3});
@@ -73,13 +75,10 @@ TEST(mironov_a_broadcast_mpi, Test_broadcast_2) {
   std::vector<int> global_input;
   std::vector<int> global_powers;
   std::vector<int> global_res;
-  std::vector<int> reference_res;
 
-  // Global -> custom broadcast, referenced -> boost::mpi
   std::shared_ptr<ppc::core::TaskData> taskDataGlob = std::make_shared<ppc::core::TaskData>();
   std::shared_ptr<ppc::core::TaskData> taskDataRef = std::make_shared<ppc::core::TaskData>();
 
-  // custum broadcust version
   if (world.rank() == 0) {
     // Create TaskData
     global_input = std::vector<int>({1, 2, 3, 1, 2, 3});
@@ -113,13 +112,10 @@ TEST(mironov_a_broadcast_mpi, Test_broadcast_3) {
   std::vector<int> global_input;
   std::vector<int> global_powers;
   std::vector<int> global_res;
-  std::vector<int> reference_res;
 
-  // Global -> custom broadcast, referenced -> boost::mpi
   std::shared_ptr<ppc::core::TaskData> taskDataGlob = std::make_shared<ppc::core::TaskData>();
   std::shared_ptr<ppc::core::TaskData> taskDataRef = std::make_shared<ppc::core::TaskData>();
 
-  // custum broadcust version
   if (world.rank() == 0) {
     // Create TaskData
     global_input = std::vector<int>({2});
@@ -153,13 +149,10 @@ TEST(mironov_a_broadcast_mpi, Test_broadcast_4) {
   std::vector<int> global_input;
   std::vector<int> global_powers;
   std::vector<int> global_res;
-  std::vector<int> reference_res;
 
-  // Global -> custom broadcast, referenced -> boost::mpi
   std::shared_ptr<ppc::core::TaskData> taskDataGlob = std::make_shared<ppc::core::TaskData>();
   std::shared_ptr<ppc::core::TaskData> taskDataRef = std::make_shared<ppc::core::TaskData>();
 
-  // custum broadcust version
   if (world.rank() == 0) {
     // Create TaskData
     global_input = std::vector<int>(50);
@@ -206,11 +199,9 @@ TEST(mironov_a_broadcast_mpi, Test_broadcast_random_1) {
   std::vector<int> global_powers;
   std::vector<int> global_res;
 
-  // Global -> custom broadcast, referenced -> boost::mpi
   std::shared_ptr<ppc::core::TaskData> taskDataGlob = std::make_shared<ppc::core::TaskData>();
   std::shared_ptr<ppc::core::TaskData> taskDataRef = std::make_shared<ppc::core::TaskData>();
 
-  // custum broadcust version
   if (world.rank() == 0) {
     // Create TaskData
     global_input = mironov_a_broadcast_mpi::get_random_vector(50);
@@ -252,11 +243,9 @@ TEST(mironov_a_broadcast_mpi, Test_broadcast_random_2) {
   std::vector<int> global_powers;
   std::vector<int> global_res;
 
-  // Global -> custom broadcast, referenced -> boost::mpi
   std::shared_ptr<ppc::core::TaskData> taskDataGlob = std::make_shared<ppc::core::TaskData>();
   std::shared_ptr<ppc::core::TaskData> taskDataRef = std::make_shared<ppc::core::TaskData>();
 
-  // custum broadcust version
   if (world.rank() == 0) {
     // Create TaskData
     global_input = mironov_a_broadcast_mpi::get_random_vector(33);
@@ -290,6 +279,94 @@ TEST(mironov_a_broadcast_mpi, Test_broadcast_random_2) {
   }
 }
 
+TEST(mironov_a_broadcast_mpi, Test_broadcast_random_64) {
+  boost::mpi::communicator world;
+  // Create data
+  std::vector<int> golds;
+  std::vector<int> global_input;
+  std::vector<int> global_powers;
+  std::vector<int> global_res;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataGlob = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataRef = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    // Create TaskData
+    global_input = mironov_a_broadcast_mpi::get_random_vector(64);
+    global_powers = mironov_a_broadcast_mpi::get_random_vector(8, true);
+    golds = std::vector<int>(64);
+
+    for (int i = 0; i < 64; ++i) {
+      for (auto power : global_powers) {
+        golds[i] += static_cast<int>(pow(global_input[i], power));
+      }
+    }
+
+    global_res.resize(global_input.size(), 0);
+
+    taskDataGlob->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_input.data()));
+    taskDataGlob->inputs_count.emplace_back(global_input.size());
+    taskDataGlob->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_powers.data()));
+    taskDataGlob->inputs_count.emplace_back(global_powers.size());
+    taskDataGlob->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
+    taskDataGlob->outputs_count.emplace_back(global_res.size());
+  }
+
+  mironov_a_broadcast_mpi::ComponentSumPowerBoostImpl testMpiTaskParallel(taskDataGlob);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(global_res, golds);
+  }
+}
+
+TEST(mironov_a_broadcast_mpi, Test_broadcast_random_128) {
+  boost::mpi::communicator world;
+  // Create data
+  std::vector<int> golds;
+  std::vector<int> global_input;
+  std::vector<int> global_powers;
+  std::vector<int> global_res;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataGlob = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataRef = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    // Create TaskData
+    global_input = mironov_a_broadcast_mpi::get_random_vector(128);
+    global_powers = mironov_a_broadcast_mpi::get_random_vector(16, true);
+    golds = std::vector<int>(128);
+
+    for (int i = 0; i < 128; ++i) {
+      for (auto power : global_powers) {
+        golds[i] += static_cast<int>(pow(global_input[i], power));
+      }
+    }
+
+    global_res.resize(global_input.size(), 0);
+
+    taskDataGlob->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_input.data()));
+    taskDataGlob->inputs_count.emplace_back(global_input.size());
+    taskDataGlob->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_powers.data()));
+    taskDataGlob->inputs_count.emplace_back(global_powers.size());
+    taskDataGlob->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
+    taskDataGlob->outputs_count.emplace_back(global_res.size());
+  }
+
+  mironov_a_broadcast_mpi::ComponentSumPowerBoostImpl testMpiTaskParallel(taskDataGlob);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(global_res, golds);
+  }
+}
+
 TEST(mironov_a_broadcast_mpi, Test_wrong_input_1) {
   boost::mpi::communicator world;
   // Create data
@@ -297,13 +374,10 @@ TEST(mironov_a_broadcast_mpi, Test_wrong_input_1) {
   std::vector<int> global_input;
   std::vector<int> global_powers;
   std::vector<int> global_res;
-  std::vector<int> reference_res;
 
-  // Global -> custom broadcast, referenced -> boost::mpi
   std::shared_ptr<ppc::core::TaskData> taskDataGlob = std::make_shared<ppc::core::TaskData>();
   std::shared_ptr<ppc::core::TaskData> taskDataRef = std::make_shared<ppc::core::TaskData>();
 
-  // custum broadcust version
   if (world.rank() == 0) {
     // Create TaskData
     global_input = std::vector<int>();
@@ -331,13 +405,10 @@ TEST(mironov_a_broadcast_mpi, Test_wrong_input_2) {
   std::vector<int> global_input;
   std::vector<int> global_powers;
   std::vector<int> global_res;
-  std::vector<int> reference_res;
 
-  // Global -> custom broadcast, referenced -> boost::mpi
   std::shared_ptr<ppc::core::TaskData> taskDataGlob = std::make_shared<ppc::core::TaskData>();
   std::shared_ptr<ppc::core::TaskData> taskDataRef = std::make_shared<ppc::core::TaskData>();
 
-  // custum broadcust version
   if (world.rank() == 0) {
     // Create TaskData
     global_input = std::vector<int>(10, 1);
