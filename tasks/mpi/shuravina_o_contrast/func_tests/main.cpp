@@ -126,3 +126,8 @@ TEST(shuravina_o_contrast, Test_Contrast_40) {
     }
   }
 }
+
+int main(int argc, char **argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}
