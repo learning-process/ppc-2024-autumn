@@ -60,8 +60,19 @@ TEST(nasedkin_e_seidels_iterate_methods_mpi, test_random_diagonal_dominant_matri
         sum += std::abs(A[i][j]);
       }
     }
-    A[i][i] = sum + static_cast<double>(std::rand() % 10 + 1);
+    A[i][i] = sum + static_cast<double>(std::rand() % 10 + 1);  // Гарантируем диагональное доминирование
     b[i] = static_cast<double>(std::rand() % 20 + 1);
+  }
+
+  // Проверка на диагональное доминирование (только для этого теста)
+  for (int i = 0; i < n; ++i) {
+    double row_sum = 0.0;
+    for (int j = 0; j < n; ++j) {
+      if (i != j) {
+        row_sum += std::abs(A[i][j]);
+      }
+    }
+    ASSERT_GT(std::abs(A[i][i]), row_sum) << "Matrix is not diagonally dominant";
   }
 
   auto taskData = std::make_shared<ppc::core::TaskData>();
