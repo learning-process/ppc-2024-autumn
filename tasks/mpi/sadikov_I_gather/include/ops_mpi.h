@@ -12,7 +12,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace sadikov_I_gather_mpi {
+namespace sadikov_I_gather_mpi {//test
 int DataLocation(int rank, int delta, int maxDelta);
 void Gather(const boost::mpi::communicator& world, std::map<int, int> id, std::vector<int>& inValues,
             const std::vector<int>& sizes, std::vector<int>& outValues, int size, int root);
