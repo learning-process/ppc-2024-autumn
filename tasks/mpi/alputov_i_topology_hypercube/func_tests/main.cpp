@@ -195,7 +195,7 @@ TEST(alputov_i_topology_hypercube_mpi, NegativeTargetRank) {
   boost::mpi::communicator world;
   size_t communicatorSize = world.size();
   if ((communicatorSize & (communicatorSize - 1)) == 0u && communicatorSize > 1) {
-    std::vector<int> inputData{1337, -5};  // negative rank
+    std::vector<int> inputData{1337, -5};
     std::vector<int> outputData(1, 0);
     std::vector<int> actualRoute;
 
