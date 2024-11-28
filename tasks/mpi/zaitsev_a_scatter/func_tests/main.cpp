@@ -1,4 +1,3 @@
-// Copyright 2023 Liolya Seledkina
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>

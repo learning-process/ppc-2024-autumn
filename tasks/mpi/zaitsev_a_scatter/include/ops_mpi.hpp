@@ -1,4 +1,3 @@
-// Copyright 2023 Liolya Seledkina
 #pragma once
 
 #include <boost/mpi/collectives.hpp>

@@ -1,4 +1,3 @@
-// Copyright 2023 Liolya Seledkina
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
@@ -12,7 +11,7 @@ TEST(zaitsev_a_scatter, test_pipeline_run__func_handwritten) {
   std::vector<int> inp_vector;
   int extrema = -1;
   int root = 0;
-  // Create TaskData
+
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int sz;
   if (world.rank() == root) {
@@ -36,16 +35,13 @@ TEST(zaitsev_a_scatter, test_pipeline_run__func_handwritten) {
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
@@ -60,7 +56,7 @@ TEST(zaitsev_a_scatter, test_task_run__func_handwritten) {
   int sz;
   int extrema = -1;
   int root = 0;
-  // Create TaskData
+
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == root) {
     sz = 120;
@@ -79,16 +75,13 @@ TEST(zaitsev_a_scatter, test_task_run__func_handwritten) {
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == root) {
@@ -102,7 +95,7 @@ TEST(zaitsev_a_scatter, test_pipeline_run__func_builtin) {
   std::vector<int> inp_vector;
   int extrema = -1;
   int root = 0;
-  // Create TaskData
+
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int sz;
   if (world.rank() == root) {
@@ -126,16 +119,13 @@ TEST(zaitsev_a_scatter, test_pipeline_run__func_builtin) {
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
@@ -150,7 +140,7 @@ TEST(zaitsev_a_scatter, test_task_run__func_builtin) {
   int sz;
   int extrema = -1;
   int root = 0;
-  // Create TaskData
+
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == root) {
     sz = 120;
@@ -169,16 +159,13 @@ TEST(zaitsev_a_scatter, test_task_run__func_builtin) {
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == root) {
