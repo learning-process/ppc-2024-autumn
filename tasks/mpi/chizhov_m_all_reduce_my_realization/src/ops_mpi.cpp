@@ -14,12 +14,8 @@ bool chizhov_m_all_reduce_my_mpi::TestMPITaskSequential::pre_processing() {
   cols = taskData->inputs_count[1];
   rows = taskData->inputs_count[2];
 
-  input_ = std::vector<int>(taskData->inputs_count[0]);
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    input_[i] = tmp_ptr[i];
-  }
+  input_.assign(tmp_ptr, tmp_ptr + taskData->inputs_count[0]);
 
   res_ = std::vector<int>(cols, 0);
   sum = std::vector<int>(cols, 0);
@@ -29,16 +25,8 @@ bool chizhov_m_all_reduce_my_mpi::TestMPITaskSequential::pre_processing() {
 
 bool chizhov_m_all_reduce_my_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  if (taskData->inputs_count[1] == 0 || taskData->inputs_count[2] == 0) {
-    return false;
-  }
-  if (taskData->inputs.empty() || taskData->inputs_count[0] <= 0) {
-    return false;
-  }
-  if (taskData->inputs_count[1] != taskData->outputs_count[0]) {
-    return false;
-  }
-  return true;
+  return (taskData->inputs_count[1] != 0 && taskData->inputs_count[2] != 0 && !taskData->inputs.empty() &&
+          taskData->inputs_count[0] > 0 && taskData->inputs_count[1] && taskData->outputs_count[0]);
 }
 
 bool chizhov_m_all_reduce_my_mpi::TestMPITaskSequential::run() {
@@ -82,11 +70,8 @@ bool chizhov_m_all_reduce_my_mpi::TestMPITaskMyOwnParallel::pre_processing() {
 
   if (world.rank() == 0) {
     // init vectors
-    input_ = std::vector<int>(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
-      input_[i] = tmp_ptr[i];
-    }
+    input_.assign(tmp_ptr, tmp_ptr + taskData->inputs_count[0]);
   } else {
     input_ = std::vector<int>(cols * rows, 0);
   }
@@ -97,15 +82,8 @@ bool chizhov_m_all_reduce_my_mpi::TestMPITaskMyOwnParallel::pre_processing() {
 bool chizhov_m_all_reduce_my_mpi::TestMPITaskMyOwnParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    if (taskData->inputs_count[1] == 0 || taskData->inputs_count[2] == 0) {
-      return false;
-    }
-    if (taskData->inputs.empty() || taskData->inputs_count[0] <= 0) {
-      return false;
-    }
-    if (taskData->inputs_count[1] != taskData->outputs_count[0]) {
-      return false;
-    }
+    return (taskData->inputs_count[1] != 0 && taskData->inputs_count[2] != 0 && !taskData->inputs.empty() &&
+            taskData->inputs_count[0] > 0 && taskData->inputs_count[1] && taskData->outputs_count[0]);
   }
   return true;
 }

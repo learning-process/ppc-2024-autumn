@@ -96,14 +96,6 @@ TEST(chizhov_m_all_reduce_boost_realization_func_test, Boost_Realization_Test_1)
     const int count_size_vector = cols * rows;
     matrix = chizhov_m_all_reduce_boost_mpi::getRandomVector(count_size_vector);
 
-    std::cout << "Matrix" << std::endl;
-    for (int i = 0; i < rows; ++i) {
-      for (int j = 0; j < cols; ++j) {
-        std::cout << std::setw(2) << matrix[i * cols + j] << " ";
-      }
-      std::cout << std::endl;
-    }
-
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
     taskDataPar->inputs_count.emplace_back(cols);

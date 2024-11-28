@@ -5,10 +5,6 @@
 
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
-#include <memory>
-#include <numeric>
-#include <string>
-#include <utility>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -45,7 +41,7 @@ class TestMPITaskMyOwnParallel : public ppc::core::Task {
 
  private:
   std::vector<int> input_;
-  std::vector<int> local_input_;
+  //std::vector<int> local_input_;
   std::vector<int> res_;
   std::vector<int> sum;
   int cols{};
