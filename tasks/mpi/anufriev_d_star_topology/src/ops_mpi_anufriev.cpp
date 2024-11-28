@@ -8,24 +8,6 @@ SimpleIntMPI::SimpleIntMPI(const std::shared_ptr<ppc::core::TaskData>& taskData)
 
 bool SimpleIntMPI::pre_processing() {
   internal_order_test();
-  size_t input_size = 0;
-  if (world.rank() == 0) {
-    input_size = taskData->inputs_count[0];
-    for (int i = 1; i < world.size(); ++i) {
-      world.send(i, 0, input_size);
-    }
-    total_size_ = input_size;
-  } else {
-    world.recv(0, 0, input_size);
-    total_size_ = input_size;
-  }
-
-  if (world.rank() == 0) {
-    input_data_.resize(input_size);
-    std::copy(reinterpret_cast<int*>(taskData->inputs[0]),
-              reinterpret_cast<int*>(taskData->inputs[0]) + taskData->inputs_count[0], input_data_.begin());
-  }
-  distributeData();
   return true;
 }
 
@@ -60,7 +42,8 @@ void SimpleIntMPI::distributeData() {
 bool SimpleIntMPI::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    if (!taskData || taskData->inputs_count.empty() || taskData->outputs_count.empty()) {
+    if (!taskData || taskData->inputs.empty() || taskData->outputs.empty() || taskData->inputs_count.empty() ||
+        taskData->outputs_count.empty()) {
       return false;
     }
     return taskData->inputs_count[0] == taskData->outputs_count[0];
@@ -70,6 +53,24 @@ bool SimpleIntMPI::validation() {
 
 bool SimpleIntMPI::run() {
   internal_order_test();
+  size_t input_size = 0;
+  if (world.rank() == 0) {
+    input_size = taskData->inputs_count[0];
+    for (int i = 1; i < world.size(); ++i) {
+      world.send(i, 0, input_size);
+    }
+    total_size_ = input_size;
+  } else {
+    world.recv(0, 0, input_size);
+    total_size_ = input_size;
+  }
+
+  if (world.rank() == 0) {
+    input_data_.resize(input_size);
+    std::copy(reinterpret_cast<int*>(taskData->inputs[0]),
+              reinterpret_cast<int*>(taskData->inputs[0]) + taskData->inputs_count[0], input_data_.begin());
+  }
+  distributeData();
   if (!input_data_.empty()) {
     for (int& value : input_data_) {
       value += world.rank();
