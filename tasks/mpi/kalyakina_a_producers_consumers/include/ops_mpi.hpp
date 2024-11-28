@@ -32,6 +32,7 @@ class ProducersConsumersTaskParallel : public ppc::core::Task {
   unsigned int buffer_size{};
   int producers_count{};
   int sources{};
+  int result{};
   boost::mpi::communicator world;
 };
 

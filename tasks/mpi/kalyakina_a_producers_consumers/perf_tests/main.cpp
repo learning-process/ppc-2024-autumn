@@ -17,7 +17,7 @@ TEST(kalyakina_a_producers_consumers_mpi, ProducersConcumers_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    in = std::vector<int>{std::max(world.size() / 2, 1), std::max(world.size() / 2, 1), world.size()};
+    in = std::vector<int>{std::max(world.size() / 2, 1), std::max(world.size() / 2, 1), world.size() * 2};
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
     taskDataPar->inputs_count.emplace_back(in.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
@@ -58,7 +58,7 @@ TEST(kalyakina_a_producers_consumers_mpi, ProducersConcumers_task_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    in = std::vector<int>{std::max(world.size() / 2, 1), std::max(world.size() / 2, 1), world.size()};
+    in = std::vector<int>{std::max(world.size() / 2, 1), std::max(world.size() / 2, 1), world.size() * 2};
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
     taskDataPar->inputs_count.emplace_back(in.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));

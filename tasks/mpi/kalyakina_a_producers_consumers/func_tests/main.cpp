@@ -148,7 +148,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_20_percent_of_producers_sma
   }
 
   kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel TaskParallel(taskDataPar);
-  if (world.size() < 3) {
+  if (world.size() < 2) {
     if (world.rank() == 0) {
       ASSERT_EQ(TaskParallel.validation(), false);
     }
@@ -183,7 +183,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_20_percent_of_producers_sma
   }
 
   kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel TaskParallel(taskDataPar);
-  if (world.size() < 3) {
+  if (world.size() < 2) {
     if (world.rank() == 0) {
       ASSERT_EQ(TaskParallel.validation(), false);
     }
@@ -217,7 +217,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_20_percent_of_producers_sma
   }
 
   kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel TaskParallel(taskDataPar);
-  if (world.size() < 3) {
+  if (world.size() < 2) {
     if (world.rank() == 0) {
       ASSERT_EQ(TaskParallel.validation(), false);
     }
@@ -252,7 +252,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_20_percent_of_producers_ave
   }
 
   kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel TaskParallel(taskDataPar);
-  if (world.size() < 3) {
+  if (world.size() < 2) {
     if (world.rank() == 0) {
       ASSERT_EQ(TaskParallel.validation(), false);
     }
@@ -286,7 +286,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_20_percent_of_producers_ave
   }
 
   kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel TaskParallel(taskDataPar);
-  if (world.size() < 3) {
+  if (world.size() < 2) {
     if (world.rank() == 0) {
       ASSERT_EQ(TaskParallel.validation(), false);
     }
@@ -320,7 +320,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_20_percent_of_producers_ave
   }
 
   kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel TaskParallel(taskDataPar);
-  if (world.size() < 3) {
+  if (world.size() < 2) {
     if (world.rank() == 0) {
       ASSERT_EQ(TaskParallel.validation(), false);
     }
@@ -355,7 +355,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_20_percent_of_producers_big
   }
 
   kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel TaskParallel(taskDataPar);
-  if (world.size() < 3) {
+  if (world.size() < 2) {
     if (world.rank() == 0) {
       ASSERT_EQ(TaskParallel.validation(), false);
     }
@@ -389,7 +389,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_20_percent_of_producers_big
   }
 
   kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel TaskParallel(taskDataPar);
-  if (world.size() < 3) {
+  if (world.size() < 2) {
     if (world.rank() == 0) {
       ASSERT_EQ(TaskParallel.validation(), false);
     }
@@ -424,7 +424,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_50_percent_of_producers_sma
   }
 
   kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel TaskParallel(taskDataPar);
-  if (world.size() < 3) {
+  if (world.size() < 2) {
     if (world.rank() == 0) {
       ASSERT_EQ(TaskParallel.validation(), false);
     }
@@ -459,7 +459,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_50_percent_of_producers_sma
   }
 
   kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel TaskParallel(taskDataPar);
-  if (world.size() < 3) {
+  if (world.size() < 2) {
     if (world.rank() == 0) {
       ASSERT_EQ(TaskParallel.validation(), false);
     }
@@ -493,7 +493,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_50_percent_of_producers_sma
   }
 
   kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel TaskParallel(taskDataPar);
-  if (world.size() < 3) {
+  if (world.size() < 2) {
     if (world.rank() == 0) {
       ASSERT_EQ(TaskParallel.validation(), false);
     }
@@ -528,7 +528,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_50_percent_of_producers_ave
   }
 
   kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel TaskParallel(taskDataPar);
-  if (world.size() < 3) {
+  if (world.size() < 2) {
     if (world.rank() == 0) {
       ASSERT_EQ(TaskParallel.validation(), false);
     }
@@ -562,7 +562,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_50_percent_of_producers_ave
   }
 
   kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel TaskParallel(taskDataPar);
-  if (world.size() < 3) {
+  if (world.size() < 2) {
     if (world.rank() == 0) {
       ASSERT_EQ(TaskParallel.validation(), false);
     }
@@ -596,7 +596,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_50_percent_of_producers_ave
   }
 
   kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel TaskParallel(taskDataPar);
-  if (world.size() < 3) {
+  if (world.size() < 2) {
     if (world.rank() == 0) {
       ASSERT_EQ(TaskParallel.validation(), false);
     }
@@ -631,7 +631,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_50_percent_of_producers_big
   }
 
   kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel TaskParallel(taskDataPar);
-  if (world.size() < 3) {
+  if (world.size() < 2) {
     if (world.rank() == 0) {
       ASSERT_EQ(TaskParallel.validation(), false);
     }
@@ -665,7 +665,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_50_percent_of_producers_big
   }
 
   kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel TaskParallel(taskDataPar);
-  if (world.size() < 3) {
+  if (world.size() < 2) {
     if (world.rank() == 0) {
       ASSERT_EQ(TaskParallel.validation(), false);
     }
@@ -692,7 +692,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_80_percent_of_producers_sma
 
   if (world.rank() == 0) {
     in = std::vector<int>{std::max(world.size() * 4 / 5 / 2 / 2, 1),
-                          std::min(std::max(world.size() * 4 / 5, 1), world.size() - 2),
+                          std::min(std::max(world.size() * 4 / 5, 1), world.size() - 1),
                           std::max(world.size() * 4 / 5 / 2, 1)};
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
     taskDataPar->inputs_count.emplace_back(in.size());
@@ -701,7 +701,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_80_percent_of_producers_sma
   }
 
   kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel TaskParallel(taskDataPar);
-  if (world.size() < 3) {
+  if (world.size() < 2) {
     if (world.rank() == 0) {
       ASSERT_EQ(TaskParallel.validation(), false);
     }
@@ -728,8 +728,8 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_80_percent_of_producers_sma
 
   if (world.rank() == 0) {
     in = std::vector<int>{std::max(world.size() * 4 / 5 / 4, 1),
-                          std::min(std::max(world.size() * 4 / 5, 1), world.size() - 2),
-                          std::min(std::max(world.size() * 4 / 5, 1), world.size() - 2)};
+                          std::min(std::max(world.size() * 4 / 5, 1), world.size() - 1),
+                          std::min(std::max(world.size() * 4 / 5, 1), world.size() - 1)};
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
     taskDataPar->inputs_count.emplace_back(in.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
@@ -737,7 +737,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_80_percent_of_producers_sma
   }
 
   kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel TaskParallel(taskDataPar);
-  if (world.size() < 3) {
+  if (world.size() < 2) {
     if (world.rank() == 0) {
       ASSERT_EQ(TaskParallel.validation(), false);
     }
@@ -764,7 +764,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_80_percent_of_producers_sma
 
   if (world.rank() == 0) {
     in = std::vector<int>{std::max(world.size() * 4 / 5 / 4, 1),
-                          std::min(std::max(world.size() * 4 / 5, 1), world.size() - 2), world.size()};
+                          std::min(std::max(world.size() * 4 / 5, 1), world.size() - 1), world.size()};
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
     taskDataPar->inputs_count.emplace_back(in.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
@@ -772,7 +772,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_80_percent_of_producers_sma
   }
 
   kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel TaskParallel(taskDataPar);
-  if (world.size() < 3) {
+  if (world.size() < 2) {
     if (world.rank() == 0) {
       ASSERT_EQ(TaskParallel.validation(), false);
     }
@@ -798,8 +798,8 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_80_percent_of_producers_ave
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    in = std::vector<int>{std::min(std::max(world.size() * 4 / 5, 1), world.size() - 2),
-                          std::min(std::max(world.size() * 4 / 5, 1), world.size() - 2),
+    in = std::vector<int>{std::min(std::max(world.size() * 4 / 5, 1), world.size() - 1),
+                          std::min(std::max(world.size() * 4 / 5, 1), world.size() - 1),
                           std::max(world.size() * 4 / 5 / 2, 1)};
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
     taskDataPar->inputs_count.emplace_back(in.size());
@@ -808,7 +808,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_80_percent_of_producers_ave
   }
 
   kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel TaskParallel(taskDataPar);
-  if (world.size() < 3) {
+  if (world.size() < 2) {
     if (world.rank() == 0) {
       ASSERT_EQ(TaskParallel.validation(), false);
     }
@@ -834,9 +834,9 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_80_percent_of_producers_ave
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    in = std::vector<int>{std::min(std::max(world.size() * 4 / 5, 1), world.size() - 2),
-                          std::min(std::max(world.size() * 4 / 5, 1), world.size() - 2),
-                          std::min(std::max(world.size() * 4 / 5, 1), world.size() - 2)};
+    in = std::vector<int>{std::min(std::max(world.size() * 4 / 5, 1), world.size() - 1),
+                          std::min(std::max(world.size() * 4 / 5, 1), world.size() - 1),
+                          std::min(std::max(world.size() * 4 / 5, 1), world.size() - 1)};
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
     taskDataPar->inputs_count.emplace_back(in.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
@@ -844,7 +844,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_80_percent_of_producers_ave
   }
 
   kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel TaskParallel(taskDataPar);
-  if (world.size() < 3) {
+  if (world.size() < 2) {
     if (world.rank() == 0) {
       ASSERT_EQ(TaskParallel.validation(), false);
     }
@@ -870,8 +870,8 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_80_percent_of_producers_ave
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    in = std::vector<int>{std::min(std::max(world.size() * 4 / 5, 1), world.size() - 2),
-                          std::min(std::max(world.size() * 4 / 5, 1), world.size() - 2), world.size()};
+    in = std::vector<int>{std::min(std::max(world.size() * 4 / 5, 1), world.size() - 1),
+                          std::min(std::max(world.size() * 4 / 5, 1), world.size() - 1), world.size()};
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
     taskDataPar->inputs_count.emplace_back(in.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
@@ -879,7 +879,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_80_percent_of_producers_ave
   }
 
   kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel TaskParallel(taskDataPar);
-  if (world.size() < 3) {
+  if (world.size() < 2) {
     if (world.rank() == 0) {
       ASSERT_EQ(TaskParallel.validation(), false);
     }
@@ -906,7 +906,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_80_percent_of_producers_big
 
   if (world.rank() == 0) {
     in = std::vector<int>{std::max(world.size() * 4 / 5 / 2, 1),
-                          std::min(std::max(world.size() * 4 / 5, 1), world.size() - 2),
+                          std::min(std::max(world.size() * 4 / 5, 1), world.size() - 1),
                           std::max(world.size() * 4 / 5 / 2, 1)};
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
     taskDataPar->inputs_count.emplace_back(in.size());
@@ -915,7 +915,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_80_percent_of_producers_big
   }
 
   kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel TaskParallel(taskDataPar);
-  if (world.size() < 3) {
+  if (world.size() < 2) {
     if (world.rank() == 0) {
       ASSERT_EQ(TaskParallel.validation(), false);
     }
@@ -941,7 +941,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_80_percent_of_producers_big
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    in = std::vector<int>{world.size(), std::min(std::max(world.size() * 4 / 5, 1), world.size() - 2), world.size()};
+    in = std::vector<int>{world.size(), std::min(std::max(world.size() * 4 / 5, 1), world.size() - 1), world.size()};
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
     taskDataPar->inputs_count.emplace_back(in.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
@@ -949,7 +949,7 @@ TEST(kalyakina_a_producers_consumers_mpi, Test_about_80_percent_of_producers_big
   }
 
   kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel TaskParallel(taskDataPar);
-  if (world.size() < 3) {
+  if (world.size() < 2) {
     if (world.rank() == 0) {
       ASSERT_EQ(TaskParallel.validation(), false);
     }

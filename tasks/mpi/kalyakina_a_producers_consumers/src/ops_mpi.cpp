@@ -35,7 +35,7 @@ bool kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel::valida
   internal_order_test();
   if (world.rank() == 0) {
     // Check count elements of input and output
-    if (world.size() < 3) {
+    if (world.size() < 2) {
       return false;
     }
     if ((taskData->inputs_count[0] != 3) || (taskData->outputs_count[0] != 1)) {
@@ -45,7 +45,7 @@ bool kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel::valida
       return false;
     }
     if ((reinterpret_cast<int*>(taskData->inputs[0])[1] < 1) ||
-        (reinterpret_cast<int*>(taskData->inputs[0])[1] > world.size() - 2)) {
+        (reinterpret_cast<int*>(taskData->inputs[0])[1] > world.size() - 1)) {
       return false;
     }
     return true;
@@ -63,21 +63,22 @@ bool kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel::run() 
     int consum_sources = sources;
     boost::mpi::status stat;
     // Freeing up unnecessary processes
-    for (int i = sources + 1; i <= producers_count; i++) {
+    for (int i = std::max(sources, 1); i < producers_count; i++) {
       world.send(i, 0, false);
     }
-
-    for (int i = producers_count + sources + 1; i < world.size(); i++) {
+    for (int i = producers_count + sources; i < world.size(); i++) {
       world.send(i, 1, 0);
     }
 
-    for (int i = 1; i <= std::min(sources, producers_count); i++) {
+    for (int i = 1; i < std::min(sources, producers_count); i++) {
       world.send(i, 0, true);
       produce_sources--;
     }
-    for (int i = producers_count + 1; i < std::min(producers_count + sources + 1, world.size()); i++) {
+
+    for (int i = producers_count; i < std::min(producers_count + sources, world.size()); i++) {
       free_consumers.push(i);
     }
+
     while (sources > 0) {
       // Receiving data from producers
       if (world.iprobe(MPI_ANY_SOURCE, 0)) {
@@ -93,6 +94,10 @@ bool kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel::run() 
             world.send(stat.source(), stat.tag(), false);
           }
         }
+      }
+      if ((buffer.size() < buffer_size) && (produce_sources > 0)) {
+        buffer.push(ProducersFunction());
+        produce_sources--;
       }
       // Receiving consumer release message
       if (world.iprobe(MPI_ANY_SOURCE, 1)) {
@@ -115,8 +120,8 @@ bool kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel::run() 
       world.send(free_consumers.front(), 1, 0);
       free_consumers.pop();
     }
-    sources += produce_sources + consum_sources + buffer.size();
-  } else if (world.rank() <= producers_count) {  // Producers
+    result = sources + produce_sources + consum_sources + buffer.size();
+  } else if (world.rank() < producers_count) {  // Producers
     bool answer;
     int tmp;
     while (true) {
@@ -148,7 +153,7 @@ bool kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel::run() 
 bool kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    *reinterpret_cast<int*>(taskData->outputs[0]) = sources;
+    *reinterpret_cast<int*>(taskData->outputs[0]) = result;
   }
   return true;
 }
