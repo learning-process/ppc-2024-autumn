@@ -357,3 +357,61 @@ TEST(sidorina_p_broadcast_m_mpi, Test_random) {
     ASSERT_EQ(m_result, result);
   }
 }
+
+TEST(sidorina_p_broadcast_m_mpi, Test_validation_array_1) {
+  boost::mpi::communicator world;
+
+  std::vector<int> array;
+  std::vector<int> terms;
+  std::vector<int> m_result;
+  std::vector<int> result;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataGlob = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataRef = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    array = std::vector<int>();
+    terms = std::vector<int>({1, 2, 3});
+
+    m_result.resize(array.size(), 0);
+
+    taskDataGlob->inputs.emplace_back(reinterpret_cast<uint8_t*>(array.data()));
+    taskDataGlob->inputs_count.emplace_back(array.size());
+    taskDataGlob->inputs.emplace_back(reinterpret_cast<uint8_t*>(terms.data()));
+    taskDataGlob->inputs_count.emplace_back(terms.size());
+    taskDataGlob->outputs.emplace_back(reinterpret_cast<uint8_t*>(m_result.data()));
+    taskDataGlob->outputs_count.emplace_back(m_result.size());
+  }
+
+  sidorina_p_broadcast_m_mpi::Broadcast testMpiTaskParallel(taskDataGlob);
+  ASSERT_EQ(testMpiTaskParallel.validation(), false);
+}
+
+TEST(sidorina_p_broadcast_m_mpi, Test_validation_terms_1) {
+  boost::mpi::communicator world;
+
+  std::vector<int> array;
+  std::vector<int> terms;
+  std::vector<int> m_result;
+  std::vector<int> result;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataGlob = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataRef = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    array = std::vector<int>({1, 2, 3});
+    terms = std::vector<int>();
+
+    m_result.resize(array.size(), 0);
+
+    taskDataGlob->inputs.emplace_back(reinterpret_cast<uint8_t*>(array.data()));
+    taskDataGlob->inputs_count.emplace_back(array.size());
+    taskDataGlob->inputs.emplace_back(reinterpret_cast<uint8_t*>(terms.data()));
+    taskDataGlob->inputs_count.emplace_back(terms.size());
+    taskDataGlob->outputs.emplace_back(reinterpret_cast<uint8_t*>(m_result.data()));
+    taskDataGlob->outputs_count.emplace_back(m_result.size());
+  }
+
+  sidorina_p_broadcast_m_mpi::Broadcast testMpiTaskParallel(taskDataGlob);
+  ASSERT_EQ(testMpiTaskParallel.validation(), false);
+}
