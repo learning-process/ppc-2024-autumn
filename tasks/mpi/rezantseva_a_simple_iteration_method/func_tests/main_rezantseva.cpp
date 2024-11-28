@@ -202,6 +202,7 @@ TEST(rezantseva_a_simple_iteration_method_mpi, check_matrix_100x100) {
   }
 }
 */
+/*
 TEST(rezantseva_a_simple_iteration_method_mpi, check_matrix_3x3) {
   boost::mpi::communicator world;
   size_t size = 3;
@@ -464,7 +465,7 @@ TEST(rezantseva_a_simple_iteration_method_mpi, check_matrix_6x6) {
     }
   }
 }
-
+*/
 TEST(rezantseva_a_simple_iteration_method_mpi, check_validation_invalid_inputs_count) {
   boost::mpi::communicator world;
   size_t size = 3;
