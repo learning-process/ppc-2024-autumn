@@ -13,7 +13,7 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::pre_processing() {
     temp = reinterpret_cast<double*>(taskData->inputs[1]);
     this->b_vector.insert(b_vector.end(), temp, temp + size);
 
-    resh.resize(size,0);
+    resh.resize(size, 0);
   }
   return true;
 }
@@ -54,7 +54,7 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::run() {
     if (world.rank() == 0) {
       if (delta != 0) {
         for (int proc = 0; proc < world.size() - 1; proc++) {
-          world.send(proc + 1, 0, U.data() + proc * size * delta + (ost + i) * size,  delta * size);
+          world.send(proc + 1, 0, U.data() + proc * size * delta + (ost + i) * size, delta * size);
         }
       }
       lL.resize(ost, 0.0);
@@ -77,11 +77,11 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::run() {
         lU[j * size + k] -= lL[j] * t_strock[k];
       }
     }
-  
+
     if (world.rank() == 0) {
       if (lU.size() != 0) {
         std::copy(lU.begin(), lU.end(), U.begin() + i * size);
-        for (long unsigned int j = 0;j < lL.size(); j++) {
+        for (long unsigned int j = 0; j < lL.size(); j++) {
           L[(i + j) * size + i - 1] = lL[j];
         }
       }
@@ -90,8 +90,8 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::run() {
       std::vector<double> temp2(delta);
       if (delta != 0) {
         for (int proc = 0; proc < 2 * (world.size() - 1); proc++) {
-          status = world.probe( boost::mpi::any_source,  boost::mpi::any_tag);
-          if (status.tag() == 0){
+          status = world.probe(boost::mpi::any_source, boost::mpi::any_tag);
+          if (status.tag() == 0) {
             world.recv(status.source(), status.tag(), temp1.data(), delta * size);
             std::copy(temp1.begin(), temp1.end(), U.begin() + (status.source() - 1) * size * delta + (ost + i) * size);
           } else if (status.tag() == 1) {

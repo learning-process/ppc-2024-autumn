@@ -8,7 +8,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/filateva_e_metod_gausa/include/ops_mpi.hpp"
 
-std::vector<double> gereratorSLU(std::vector<double>& matrix, std::vector<double>& vecB) {
+std::vector<double> gereratorSLU(std::vector<double> &matrix, std::vector<double> &vecB) {
   int min_z = -5;
   int max_z = 5;
   int size = vecB.size();
@@ -32,7 +32,7 @@ std::vector<double> gereratorSLU(std::vector<double>& matrix, std::vector<double
   return resh;
 }
 
-bool check(std::vector<double>& resh, std::vector<double>& tResh, double alfa) {
+bool check(std::vector<double> &resh, std::vector<double> &tResh, double alfa) {
   for (int i = 0; i < tResh.size(); i++) {
     if (abs(resh[i] - tResh[i]) > alfa) {
       return false;
@@ -84,7 +84,7 @@ TEST(filateva_e_metod_gausa_mpi, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    auto* temp = reinterpret_cast<double *>(taskData->outputs[0]);
+    auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
     answer.insert(answer.end(), temp, temp + size);
 
     ASSERT_EQ(check(answer, tResh, alfa), true);

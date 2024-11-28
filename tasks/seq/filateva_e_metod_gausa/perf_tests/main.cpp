@@ -31,7 +31,7 @@ std::vector<double> gereratorSLU(std::vector<double>& matrix, std::vector<double
 }
 
 bool check(std::vector<double>& resh, std::vector<double>& tResh, double alfa) {
-  for (int i = 0; i < tResh.size(); i++) {
+  for (long unsigned int i = 0; i < tResh.size(); i++) {
     if (abs(resh[i] - tResh[i]) > alfa) {
       return false;
     }

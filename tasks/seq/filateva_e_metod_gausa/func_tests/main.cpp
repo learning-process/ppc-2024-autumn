@@ -5,7 +5,7 @@
 
 #include "seq/filateva_e_metod_gausa/include/ops_seq.hpp"
 
-std::vector<double> gereratorSLU(std::vector<double>& matrix, std::vector<double>& vecB) {
+std::vector<double> gereratorSLU(std::vector<double> &matrix, std::vector<double> &vecB) {
   int min_z = -5;
   int max_z = 5;
   int size = vecB.size();
@@ -29,8 +29,8 @@ std::vector<double> gereratorSLU(std::vector<double>& matrix, std::vector<double
   return resh;
 }
 
-bool check(std::vector<double>& resh, std::vector<double>& tResh, double alfa) {
-  for (int i = 0; i < tResh.size(); i++) {
+bool check(std::vector<double> &resh, std::vector<double> &tResh, double alfa) {
+  for (long unsigned int i = 0; i < tResh.size(); i++) {
     if (abs(resh[i] - tResh[i]) > alfa) {
       return false;
     }
@@ -61,7 +61,7 @@ TEST(filateva_e_metod_gausa_seq, test_1) {
   metodGausa.run();
   metodGausa.post_processing();
 
-  auto *temp = reinterpret_cast<double*>(taskData->outputs[0]);
+  auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
   answer.insert(answer.end(), temp, temp + size);
 
   ASSERT_EQ(check(answer, tResh, alfa), true);
@@ -90,7 +90,7 @@ TEST(filateva_e_metod_gausa_seq, test_2) {
   metodGausa.run();
   metodGausa.post_processing();
 
-  auto *temp = reinterpret_cast<double*>(taskData->outputs[0]);
+  auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
   answer.insert(answer.end(), temp, temp + size);
 
   ASSERT_EQ(check(answer, tResh, alfa), true);
@@ -119,7 +119,7 @@ TEST(filateva_e_metod_gausa_seq, test_3) {
   metodGausa.run();
   metodGausa.post_processing();
 
-  auto *temp = reinterpret_cast<double*>(taskData->outputs[0]);
+  auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
   answer.insert(answer.end(), temp, temp + size);
 
   ASSERT_EQ(check(answer, tResh, alfa), true);
@@ -148,7 +148,7 @@ TEST(filateva_e_metod_gausa_seq, test_4) {
   metodGausa.run();
   metodGausa.post_processing();
 
-  auto *temp = reinterpret_cast<double*>(taskData->outputs[0]);
+  auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
   answer.insert(answer.end(), temp, temp + size);
 
   ASSERT_EQ(check(answer, tResh, alfa), true);
@@ -177,7 +177,7 @@ TEST(filateva_e_metod_gausa_seq, test_5) {
   metodGausa.run();
   metodGausa.post_processing();
 
-  auto *temp = reinterpret_cast<double*>(taskData->outputs[0]);
+  auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
   answer.insert(answer.end(), temp, temp + size);
 
   ASSERT_EQ(check(answer, tResh, alfa), true);

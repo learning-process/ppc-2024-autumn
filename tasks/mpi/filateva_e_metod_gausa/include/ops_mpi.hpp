@@ -11,7 +11,6 @@
 
 namespace filateva_e_metod_gausa_mpi {
 
-
 class MetodGausa : public ppc::core::Task {
  public:
   explicit MetodGausa(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

@@ -22,4 +22,4 @@ class MetodGausa : public ppc::core::Task {
   std::vector<double> resh;
 };
 
-}  // namespace filateva_e_metod_gausa_line_seq
+} // namespace filateva_e_metod_gausa_line_seq
