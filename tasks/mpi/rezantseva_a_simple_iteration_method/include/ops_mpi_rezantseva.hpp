@@ -49,13 +49,13 @@ class SimpleIterationMPI : public ppc::core::Task {
   std::vector<double> x_;       // current approach
   std::vector<double> prev_x_;  // previous approach
 
-  double epsilon_ = 1e-3;      // precision
-  size_t maxIteration_ = 100;  // to avoid endless cycle
-  bool checkMatrix();          // we check convergence condition (|A11| > |A12| + |A13| + .. + |A1n|) etc
+  double epsilon_ = 1e-3;       // precision
+  size_t maxIteration_ = 1000;  // to avoid endless cycle
+  bool checkMatrix();           // we check convergence condition (|A11| > |A12| + |A13| + .. + |A1n|) etc
   bool isTimeToStop(const std::vector<double>& x0,
                     const std::vector<double>& x1) const;  // stop if |xn^(i+1) - xn^i| < epsilon
-
-  std::vector<unsigned int> counts_{};
+  size_t n_ = 0;
+  std::vector<int> counts_{};
   size_t num_processes_ = 0;
 };
 
