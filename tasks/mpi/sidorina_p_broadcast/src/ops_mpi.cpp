@@ -13,15 +13,13 @@ bool sidorina_p_broadcast_mpi::Broadcast::pre_processing() {
   internal_order_test();
 
   if (world.rank() == 0) {
-    int sz1 = taskData->inputs_count[0];
-    int sz2 = taskData->inputs_count[1];
-    del = sz2 / world.size() + (sz2 % world.size());
-    sz = sz1;
+    del = taskData->inputs_count[1] / world.size() + (taskData->inputs_count[1] % world.size());
+    sz = taskData->inputs_count[0];
 
     arr.assign(reinterpret_cast<const int*>(taskData->inputs[0]),
-               reinterpret_cast<const int*>(taskData->inputs[0]) + sz1);
+               reinterpret_cast<const int*>(taskData->inputs[0]) + taskData->inputs_count[0]);
     term.assign(reinterpret_cast<const int*>(taskData->inputs[1]),
-                reinterpret_cast<const int*>(taskData->inputs[1]) + sz2);
+                reinterpret_cast<const int*>(taskData->inputs[1]) + taskData->inputs_count[1]);
   }
 
   return true;
@@ -55,12 +53,12 @@ bool sidorina_p_broadcast_mpi::Broadcast::run() {
       world.send(p, 0, term.data() + p * del, del);
     }
   }
-  std::vector<int> local_powers(del);
+  std::vector<int> l_term(del);
 
   if (world.rank() == 0) {
-    std::copy(term.data(), term.data() + del, local_powers.begin());
+    std::copy(term.data(), term.data() + del, l_term.begin());
   } else {
-    world.recv(0, 0, local_powers.data(), del);
+    world.recv(0, 0, l_term.data(), del);
   }
 
   for (int i = 0; i < static_cast<int>(arr.size()); i++) {
