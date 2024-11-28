@@ -248,11 +248,6 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::run() {
     if (world.rank() == 0) {
       prev_x_ = x_;
     }
-    //  local offset
-    size_t offset = 0;
-    for (size_t i = 0; i < static_cast<size_t>(world.rank()); i++) {
-      offset += counts_[i] * n_;
-    }
     // calculate
     for (size_t i = 0; i < static_cast<size_t>(counts_[world.rank()]); i++) {
       double sum = 0.0;
