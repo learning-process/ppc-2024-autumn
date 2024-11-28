@@ -1,6 +1,7 @@
+// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
-#include <boost/mpi/timer.hpp>
+#include <chrono>
 #include <random>
 #include <vector>
 
@@ -71,8 +72,11 @@ TEST(malyshev_lent_horizontal, test_pipeline_run) {
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
-  const boost::mpi::timer current_timer;
-  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+  auto start_time = std::chrono::high_resolution_clock::now();
+  perfAttr->current_timer = [&start_time] {
+    auto now = std::chrono::high_resolution_clock::now();
+    return std::chrono::duration<double>(now - start_time).count();
+  };
 
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
@@ -116,8 +120,11 @@ TEST(malyshev_lent_horizontal, test_task_run) {
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
-  const boost::mpi::timer current_timer;
-  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+  auto start_time = std::chrono::high_resolution_clock::now();
+  perfAttr->current_timer = [&start_time] {
+    auto now = std::chrono::high_resolution_clock::now();
+    return std::chrono::duration<double>(now - start_time).count();
+  };
 
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
