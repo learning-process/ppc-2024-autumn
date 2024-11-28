@@ -3,8 +3,8 @@
 
 #include <gtest/gtest.h>
 
-#include <boost/mpi/communicator.hpp>
 #include <boost/mpi/collectives.hpp>
+#include <boost/mpi/communicator.hpp>
 #include <memory>
 #include <numeric>
 #include <string>
@@ -45,8 +45,8 @@ class SequentialMPI : public ppc::core::Task {
  private:
   int num_rows_{};
   int num_cols_{};
-  std::vector<int> input_matrix_;
-  std::vector<int> input_vector_;
+  int* input_matrix_;
+  int* input_vector_;
   std::vector<int> result_vector_;
 };
 }  // namespace sedova_o_vertical_ribbon_scheme_mpi
