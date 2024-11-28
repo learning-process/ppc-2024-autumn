@@ -227,7 +227,7 @@ TEST(sidorina_p_broadcast_mpi, Test_arr3_term6_m) {
   }
 }
 
-/*TEST(sidorina_p_broadcast_mpi, Test_negative_m) {
+TEST(sidorina_p_broadcast_mpi, Test_negative_m) {
   boost::mpi::communicator world;
 
   std::vector<int> array;
@@ -358,7 +358,7 @@ TEST(sidorina_p_broadcast_mpi, Test_random) {
   }
 }
 
-TEST(sidorina_p_broadcast_mpi, Test_validation_array_1) {
+/*TEST(sidorina_p_broadcast_mpi, Test_validation_array_1) {
   boost::mpi::communicator world;
 
   std::vector<int> array;
