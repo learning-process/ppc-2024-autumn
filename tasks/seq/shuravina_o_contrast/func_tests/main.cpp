@@ -4,7 +4,7 @@
 
 #include "seq/shuravina_o_contrast/include/ops_seq.hpp"
 
-TEST(SequentialContrast, TestContrastWith10Elements) {
+TEST(shuravina_o_contrast, TestContrastWith10Elements) {
   std::vector<uint8_t> input_vec(10, 128);
   std::vector<uint8_t> output_vec(10, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -25,7 +25,7 @@ TEST(SequentialContrast, TestContrastWith10Elements) {
   }
 }
 
-TEST(SequentialContrast, TestContrastWith20Elements) {
+TEST(shuravina_o_contrast, TestContrastWith20Elements) {
   std::vector<uint8_t> input_vec(20, 64);
   std::vector<uint8_t> output_vec(20, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -46,7 +46,7 @@ TEST(SequentialContrast, TestContrastWith20Elements) {
   }
 }
 
-TEST(SequentialContrast, TestContrastWith30Elements) {
+TEST(shuravina_o_contrast, TestContrastWith30Elements) {
   std::vector<uint8_t> input_vec(30, 32);
   std::vector<uint8_t> output_vec(30, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -67,7 +67,7 @@ TEST(SequentialContrast, TestContrastWith30Elements) {
   }
 }
 
-TEST(SequentialContrast, TestContrastWith40Elements) {
+TEST(shuravina_o_contrast, TestContrastWith40Elements) {
   std::vector<uint8_t> input_vec(40, 16);
   std::vector<uint8_t> output_vec(40, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
