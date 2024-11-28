@@ -107,7 +107,6 @@ TEST(sorochkin_d_ring_topology_mpi_test, test_size_0) {
   boost::mpi::communicator world;
   std::vector<int> input;
   std::vector<int> output;
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
