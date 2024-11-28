@@ -6,7 +6,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/sadikov_I_gather/include/ops_mpi.h"
 
-TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, mpi_pipline_run) {
+TEST(sadikov_I_gather_mpi, mpi_pipline_run) {
   boost::mpi::communicator world;
   const int columns = 4000;
   const int rows = 4000;
@@ -47,7 +47,7 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, mpi_pipline_run) {
   }
 }
 
-TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, mpi_pipline_reference_run) {
+TEST(sadikov_I_gather_mpi, mpi_pipline_reference_run) {
   boost::mpi::communicator world;
   const int columns = 4000;
   const int rows = 4000;
@@ -86,7 +86,7 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, mpi_pipline_reference_run) {
   }
 }
 
-TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, mpi_task_run) {
+TEST(sadikov_I_gather_mpi, mpi_task_run) {
   boost::mpi::communicator world;
   const int columns = 4000;
   const int rows = 4000;
@@ -127,7 +127,7 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, mpi_task_run) {
   }
 }
 
-TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, mpi_reference_run) {
+TEST(sadikov_I_gather_mpi, mpi_reference_run) {
   boost::mpi::communicator world;
   const int columns = 4000;
   const int rows = 4000;

@@ -18,7 +18,7 @@ std::vector<int> getRandomVector(size_t size) {
 }
 }  // namespace sadikov_I_gather_seq
 
-TEST(gather_seq, check_validation1) {
+TEST(sadikov_I_gather_seq, check_validation1) {
   std::vector<int> in(144, 1);
   std::vector<int> in_index{12, 12};
   std::vector<int> out(12, 0);
@@ -27,7 +27,7 @@ TEST(gather_seq, check_validation1) {
   ASSERT_EQ(sv.validation(), true);
 }
 
-TEST(gather_seq, check_validation2) {
+TEST(sadikov_I_gather_seq, check_validation2) {
   std::vector<int> in(144, 1);
   std::vector<int> in_index{12, 12};
   std::vector<int> out(15, 0);
@@ -36,7 +36,7 @@ TEST(gather_seq, check_validation2) {
   ASSERT_EQ(sv.validation(), false);
 }
 
-TEST(sum_values_by_columns_matrix, check_empty_matrix) {
+TEST(sadikov_I_gather_seq, check_empty_matrix) {
   std::vector<int> in(0);
   std::vector<int> in_index{0, 0};
   std::vector<int> out(0, 0);
@@ -51,7 +51,7 @@ TEST(sum_values_by_columns_matrix, check_empty_matrix) {
   }
 }
 
-TEST(sum_values_by_columns_matrix, check_square_matrix) {
+TEST(sadikov_I_gather_seq, check_square_matrix) {
   std::vector<int> in(625, 1);
   std::vector<int> in_index{25, 25};
   std::vector<int> out(25, 0);
@@ -66,7 +66,7 @@ TEST(sum_values_by_columns_matrix, check_square_matrix) {
   }
 }
 
-TEST(sum_values_by_columns_matrix, check_square_matrix2) {
+TEST(sadikov_I_gather_seq, check_square_matrix2) {
   std::vector<int> in(900, 1);
   std::vector<int> in_index{30, 30};
   std::vector<int> out(30, 0);
@@ -81,7 +81,7 @@ TEST(sum_values_by_columns_matrix, check_square_matrix2) {
   }
 }
 
-TEST(sum_values_by_columns_matrix, check_square_matrix3) {
+TEST(sadikov_I_gather_seq, check_square_matrix3) {
   std::vector<int> in(256, 1);
   std::vector<int> in_index{16, 16};
   std::vector<int> out(16, 0);
@@ -96,7 +96,7 @@ TEST(sum_values_by_columns_matrix, check_square_matrix3) {
   }
 }
 
-TEST(sum_values_by_columns_matrix, check_rect_matrix1) {
+TEST(sadikov_I_gather_seq, check_rect_matrix1) {
   std::vector<int> in(500, 1);
   std::vector<int> in_index{50, 10};
   std::vector<int> out(50, 0);
@@ -111,7 +111,7 @@ TEST(sum_values_by_columns_matrix, check_rect_matrix1) {
   }
 }
 
-TEST(sum_values_by_columns_matrix, check_rect_matrix2) {
+TEST(sadikov_I_gather_seq, check_rect_matrix2) {
   std::vector<int> in(720, 1);
   std::vector<int> in_index{80, 9};
   std::vector<int> out(80, 0);
@@ -126,7 +126,7 @@ TEST(sum_values_by_columns_matrix, check_rect_matrix2) {
   }
 }
 
-TEST(sum_values_by_columns_matrix, check_rect_matrix3) {
+TEST(sadikov_I_gather_seq, check_rect_matrix3) {
   std::vector<int> in_index{50, 200};
   std::vector<int> out(50, 0);
   std::vector<int> in = sadikov_I_gather_seq::getRandomVector(in_index[0] * in_index[1]);

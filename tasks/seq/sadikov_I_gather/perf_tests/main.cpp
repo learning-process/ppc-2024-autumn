@@ -6,7 +6,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/sadikov_I_gather/include/sq_task.h"
 
-TEST(gather_task, matrix_test_pipeline_run) {
+TEST(sadikov_I_gather_seq, matrix_test_pipeline_run) {
   int rows_count = 3000;
   int columns_count = 3000;
   std::vector<int> in(rows_count * columns_count, 1);
@@ -34,7 +34,7 @@ TEST(gather_task, matrix_test_pipeline_run) {
   ASSERT_EQ(in_index[0], out[0]);
 }
 
-TEST(gather_task, matrix_test_run) {
+TEST(sadikov_I_gather_seq, matrix_test_run) {
   int rows_count = 6000;
   int columns_count = 6000;
   std::vector<int> in(rows_count * columns_count, 1);
