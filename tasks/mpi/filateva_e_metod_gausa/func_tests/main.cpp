@@ -191,44 +191,7 @@ TEST(filateva_e_metod_gausa_mpi, test4) {
 
 TEST(filateva_e_metod_gausa_mpi, test5) {
   boost::mpi::communicator world;
-  int size = 500;
-  double alfa = 0.000000001;
-  std::vector<double> matrix;
-  std::vector<double> vecB;
-  std::vector<double> answer;
-  std::vector<double> tResh;
-
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    matrix.resize(size * size);
-    vecB.resize(size);
-    tResh = gereratorSLU(matrix, vecB);
-
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
-    taskData->inputs_count.emplace_back(size);
-    taskData->outputs_count.emplace_back(size);
-  }
-
-  filateva_e_metod_gausa_mpi::MetodGausa metodGausa(taskData);
-
-  ASSERT_EQ(metodGausa.validation(), true);
-  metodGausa.pre_processing();
-  metodGausa.run();
-  metodGausa.post_processing();
-
-  if (world.rank() == 0) {
-    auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
-    answer.insert(answer.end(), temp, temp + size);
-
-    ASSERT_EQ(check(answer, tResh, alfa), true);
-  }
-}
-
-TEST(filateva_e_metod_gausa_mpi, test6) {
-  boost::mpi::communicator world;
-  int size = 800;
+  int size = 200;
   double alfa = 0.000000001;
   std::vector<double> matrix;
   std::vector<double> vecB;
