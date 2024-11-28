@@ -9,10 +9,6 @@
 
 TEST(sorokin_a_producer_consumer_mpi, Test_vector_sequence_numbers_processes) {
   boost::mpi::communicator world;
-  if (world.size() < 2) {
-    ASSERT_EQ(1, 1);
-    return;
-  }
   std::vector<int> global_vec;
   std::vector<int> global_sum;
   // Create TaskData
@@ -27,7 +23,11 @@ TEST(sorokin_a_producer_consumer_mpi, Test_vector_sequence_numbers_processes) {
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
   sorokin_a_producer_consumer_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  if (world.size() < 2) {
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  } else {
+    ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  }
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
@@ -37,10 +37,6 @@ TEST(sorokin_a_producer_consumer_mpi, Test_vector_sequence_numbers_processes) {
 }
 TEST(sorokin_a_producer_consumer_mpi, Test_vector_doubled_numbers_processes) {
   boost::mpi::communicator world;
-  if (world.size() < 2) {
-    ASSERT_EQ(1, 1);
-    return;
-  }
   std::vector<int> global_vec;
   std::vector<int> global_sum;
   // Create TaskData
@@ -55,7 +51,11 @@ TEST(sorokin_a_producer_consumer_mpi, Test_vector_doubled_numbers_processes) {
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
   sorokin_a_producer_consumer_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  if (world.size() < 2) {
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  } else {
+    ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  }
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();

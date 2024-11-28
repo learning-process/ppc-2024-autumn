@@ -8,10 +8,6 @@
 
 TEST(sorokin_a_producer_consumer_mpi, Test_Basic) {
   boost::mpi::communicator world;
-  if (world.size() < 2) {
-    ASSERT_EQ(1, 1);
-    return;
-  }
   std::vector<int> global_vec;
   std::vector<int> global_sum;
   // Create TaskData
@@ -26,7 +22,11 @@ TEST(sorokin_a_producer_consumer_mpi, Test_Basic) {
   }
 
   auto testMpiTaskParallel = std::make_shared<sorokin_a_producer_consumer_mpi::TestMPITaskParallel>(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  if (world.size() < 2) {
+    ASSERT_EQ(testMpiTaskParallel->validation(), false);
+  } else {
+    ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  }
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
