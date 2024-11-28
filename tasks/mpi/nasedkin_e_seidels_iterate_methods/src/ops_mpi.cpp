@@ -2,7 +2,6 @@
 
 #include <cmath>
 #include <iostream>
-#include <random>
 
 namespace nasedkin_e_seidels_iterate_methods_mpi {
 
@@ -14,34 +13,9 @@ bool SeidelIterateMethodsMPI::pre_processing() {
   epsilon = 1e-6;
   max_iterations = 1000;
 
-  A.resize(n, std::vector<double>(n, 0.0));
-  b.resize(n, 0.0);
   x.resize(n, 0.0);
 
-  if (taskData->inputs_count.size() > 1 && taskData->inputs_count[1] == 0) {
-    for (int i = 0; i < n; ++i) {
-      for (int j = 0; j < n; ++j) {
-        A[i][j] = (i != j) ? 1.0 : 0.0;
-      }
-      b[i] = 1.0;
-    }
-  } else {
-    for (int i = 0; i < n; ++i) {
-      for (int j = 0; j < n; ++j) {
-        A[i][j] = (i == j) ? 2.0 : 1.0;
-      }
-      b[i] = n + 1;
-    }
-  }
-
-  for (int i = 0; i < n; ++i) {
-    if (A[i][i] == 0.0) {
-      return false;
-    }
-  }
-  return true;
-
-
+  return taskData->inputs_count.size() <= 1 || taskData->inputs_count[1] != 0;
 }
 
 bool SeidelIterateMethodsMPI::validation() {
@@ -50,7 +24,25 @@ bool SeidelIterateMethodsMPI::validation() {
   }
 
   n = taskData->inputs_count[0];
-  return n > 0;
+  if (n <= 0) {
+    return false;
+  }
+
+  A.resize(n, std::vector<double>(n, 0.0));
+  b.resize(n, 0.0);
+
+  std::srand(static_cast<unsigned>(std::time(nullptr)));
+  for (int i = 0; i < n; ++i) {
+    double row_sum = 0.0;
+    for (int j = 0; j < n; ++j) {
+      A[i][j] = (i == j) ? static_cast<double>(std::rand() % 10 + 1) : static_cast<double>(std::rand() % 5);
+      row_sum += (i != j) ? A[i][j] : 0.0;
+    }
+    A[i][i] = row_sum + 1.0;
+    b[i] = static_cast<double>(std::rand() % 10);
+  }
+
+  return true;
 }
 
 bool SeidelIterateMethodsMPI::run() {
@@ -76,6 +68,21 @@ bool SeidelIterateMethodsMPI::run() {
     ++iteration;
   }
 
+  double error_norm = 0.0;
+  for (int i = 0; i < n; ++i) {
+    double Ax_i = 0.0;
+    for (int j = 0; j < n; ++j) {
+      Ax_i += A[i][j] * x[j];
+    }
+    error_norm += (Ax_i - b[i]) * (Ax_i - b[i]);
+  }
+
+  error_norm = std::sqrt(error_norm);
+  if (error_norm >= epsilon) {
+    std::cerr << "Error norm ||Ax - b|| = " << error_norm << " is not less than epsilon" << std::endl;
+    return false;
+  }
+
   return true;
 }
 
@@ -87,46 +94,6 @@ bool SeidelIterateMethodsMPI::converge(const std::vector<double>& x_new) {
     norm += (x_new[i] - x[i]) * (x_new[i] - x[i]);
   }
   return std::sqrt(norm) < epsilon;
-}
-
-void nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI::generate_random_system(int size, double min_val, double max_val) {
-    std::mt19937 gen(std::random_device{}());
-    std::uniform_real_distribution<double> dist(min_val, max_val);
-
-    A.resize(size, std::vector<double>(size));
-    b.resize(size);
-    x.resize(size, 0.0);
-
-    for (int i = 0; i < size; ++i) {
-        double row_sum = 0.0;
-        for (int j = 0; j < size; ++j) {
-            A[i][j] = dist(gen);
-            if (i != j) row_sum += std::abs(A[i][j]);
-        }
-        A[i][i] = row_sum + dist(gen);
-        b[i] = dist(gen);
-    }
-}
-
-double nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI::compute_residual_norm(
-    const std::vector<std::vector<double>>& A,
-    const std::vector<double>& x,
-    const std::vector<double>& b) {
-    std::vector<double> Ax_b(b.size(), 0.0);
-
-    for (size_t i = 0; i < A.size(); ++i) {
-        double sum = 0.0;
-        for (size_t j = 0; j < A[i].size(); ++j) {
-            sum += A[i][j] * x[j];
-        }
-        Ax_b[i] = sum - b[i];
-    }
-
-    double norm = 0.0;
-    for (double val : Ax_b) {
-        norm += val * val;
-    }
-    return std::sqrt(norm);
 }
 
 }  // namespace nasedkin_e_seidels_iterate_methods_mpi
