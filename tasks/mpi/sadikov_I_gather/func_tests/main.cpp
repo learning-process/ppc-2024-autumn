@@ -6,7 +6,7 @@
 #include <random>
 #include <vector>
 
-#include "mpi/sadikov_I_sum_values_by_columns_matrix/include/ops_mpi.h"
+#include "mpi/sadikov_I_gather/include/ops_mpi.h"
 
 std::vector<int> GetRandomData(size_t size) {
   std::random_device dev;
@@ -18,7 +18,7 @@ std::vector<int> GetRandomData(size_t size) {
   return vec;
 }
 
-TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, checkvalidation) {
+TEST(sadikov_I_gather_mpi, checkvalidation) {
   const int columns = 15;
   const int rows = 15;
   std::vector<int> in;
@@ -31,17 +31,18 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, checkvalidation) {
   taskData->inputs_count.emplace_back(in_index[1]);
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskData->outputs_count.emplace_back(out.size());
-  sadikov_I_Sum_values_by_columns_matrix_mpi::MPITask sv(taskData);
+  sadikov_I_gather_mpi::MPITask sv(taskData);
   ASSERT_EQ(sv.validation(), true);
 }
 
-TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, checkvalidation2) {
+TEST(sadikov_I_gather_mpi, checkvalidation2) {
   boost::mpi::communicator world;
-  const int columns = 15;
-  const int rows = 15;
+  const int columns = 10;
+  const int rows = 153;
+  const int root = 1;
   std::vector<int> in;
   std::vector<int> in_index{rows, columns};
-  std::vector<int> out(columns, 0);
+  std::vector<int> out(rows, 0);
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     in = std::vector<int>(rows * columns, 1);
@@ -51,93 +52,19 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, checkvalidation2) {
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     taskData->outputs_count.emplace_back(out.size());
   }
-  sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel sv(taskData);
+  sadikov_I_gather_mpi::MPITaskParallel sv(taskData);
+  sv.SetRoot(root);
   ASSERT_EQ(sv.validation(), true);
 }
 
-TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_square_matrix) {
+TEST(sadikov_I_gather_mpi, check_square_matrix) {
   boost::mpi::communicator world;
   const int columns = 15;
   const int rows = 15;
+  const int root = 0;
   std::vector<int> in;
   std::vector<int> in_index{rows, columns};
-  std::vector<int> out_par(columns, 0);
-  auto taskData = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    in = std::vector<int>(rows * columns, 1);
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-    taskData->inputs_count.emplace_back(in_index[0]);
-    taskData->inputs_count.emplace_back(in_index[1]);
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_par.data()));
-    taskData->outputs_count.emplace_back(out_par.size());
-  }
-  sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel sv_par(taskData);
-  ASSERT_EQ(sv_par.validation(), true);
-  sv_par.pre_processing();
-  sv_par.run();
-  sv_par.post_processing();
-  if (world.rank() == 0) {
-    std::vector<int> out_seq(columns, 0);
-    auto taskData_seq = std::make_shared<ppc::core::TaskData>();
-    taskData_seq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-    taskData_seq->inputs_count.emplace_back(in_index[0]);
-    taskData_seq->inputs_count.emplace_back(in_index[1]);
-    taskData_seq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_seq.data()));
-    taskData_seq->outputs_count.emplace_back(out_seq.size());
-    sadikov_I_Sum_values_by_columns_matrix_mpi::MPITask sv_seq(taskData_seq);
-    ASSERT_EQ(sv_seq.validation(), true);
-    sv_seq.pre_processing();
-    sv_seq.run();
-    sv_seq.post_processing();
-    ASSERT_EQ(out_seq, out_par);
-  }
-}
-
-TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_rect_matrix) {
-  boost::mpi::communicator world;
-  const int columns = 150;
-  const int rows = 15;
-  std::vector<int> in;
-  std::vector<int> in_index{rows, columns};
-  std::vector<int> out_par(columns, 0);
-  auto taskData = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    in = std::vector<int>(rows * columns, 1);
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-    taskData->inputs_count.emplace_back(in_index[0]);
-    taskData->inputs_count.emplace_back(in_index[1]);
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_par.data()));
-    taskData->outputs_count.emplace_back(out_par.size());
-  }
-  sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel sv_par(taskData);
-  ASSERT_EQ(sv_par.validation(), true);
-  sv_par.pre_processing();
-  sv_par.run();
-  sv_par.post_processing();
-  if (world.rank() == 0) {
-    std::vector<int> out_seq(columns, 0);
-    auto taskData_seq = std::make_shared<ppc::core::TaskData>();
-    taskData_seq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-    taskData_seq->inputs_count.emplace_back(in_index[0]);
-    taskData_seq->inputs_count.emplace_back(in_index[1]);
-    taskData_seq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_seq.data()));
-    taskData_seq->outputs_count.emplace_back(out_seq.size());
-    sadikov_I_Sum_values_by_columns_matrix_mpi::MPITask sv_seq(taskData_seq);
-    ASSERT_EQ(sv_seq.validation(), true);
-    sv_seq.pre_processing();
-    sv_seq.run();
-    sv_seq.post_processing();
-    ASSERT_EQ(out_seq, out_par);
-  }
-}
-
-TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_square_matrix2) {
-  boost::mpi::communicator world;
-  const int columns = 105;
-  const int rows = 105;
-  std::vector<int> in;
-  std::vector<int> in_index{rows, columns};
-  std::vector<int> out_par(columns, 0);
+  std::vector<int> out_par(rows, 0);
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     in = GetRandomData(columns * rows);
@@ -147,20 +74,21 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_square_matrix2) {
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_par.data()));
     taskData->outputs_count.emplace_back(out_par.size());
   }
-  sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel sv_par(taskData);
+  sadikov_I_gather_mpi::MPITaskParallel sv_par(taskData);
+  sv_par.SetRoot(root);
   ASSERT_EQ(sv_par.validation(), true);
   sv_par.pre_processing();
   sv_par.run();
   sv_par.post_processing();
-  if (world.rank() == 0) {
-    std::vector<int> out_seq(columns, 0);
+  if (world.rank() == root) {
+    std::vector<int> out_seq(rows, 0);
     auto taskData_seq = std::make_shared<ppc::core::TaskData>();
     taskData_seq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskData_seq->inputs_count.emplace_back(in_index[0]);
     taskData_seq->inputs_count.emplace_back(in_index[1]);
     taskData_seq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_seq.data()));
     taskData_seq->outputs_count.emplace_back(out_seq.size());
-    sadikov_I_Sum_values_by_columns_matrix_mpi::MPITask sv_seq(taskData_seq);
+    sadikov_I_gather_mpi::MPITask sv_seq(taskData_seq);
     ASSERT_EQ(sv_seq.validation(), true);
     sv_seq.pre_processing();
     sv_seq.run();
@@ -169,13 +97,180 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_square_matrix2) {
   }
 }
 
-TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_square_matrix3) {
+TEST(sadikov_I_gather_mpi, check_rect_matrix) {
+  boost::mpi::communicator world;
+  const int columns = 150;
+  const int rows = 75;
+  const int root = 0;
+  std::vector<int> in;
+  std::vector<int> in_index{rows, columns};
+  std::vector<int> out_par(rows, 0);
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    in = std::vector<int>(rows * columns, 1);
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    taskData->inputs_count.emplace_back(in_index[0]);
+    taskData->inputs_count.emplace_back(in_index[1]);
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_par.data()));
+    taskData->outputs_count.emplace_back(out_par.size());
+  }
+  sadikov_I_gather_mpi::MPITaskParallel sv_par(taskData);
+  sv_par.SetRoot(root);
+  ASSERT_EQ(sv_par.validation(), true);
+  sv_par.pre_processing();
+  sv_par.run();
+  sv_par.post_processing();
+  if (world.rank() == root) {
+    std::vector<int> out_seq(rows, 0);
+    auto taskData_seq = std::make_shared<ppc::core::TaskData>();
+    taskData_seq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    taskData_seq->inputs_count.emplace_back(in_index[0]);
+    taskData_seq->inputs_count.emplace_back(in_index[1]);
+    taskData_seq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_seq.data()));
+    taskData_seq->outputs_count.emplace_back(out_seq.size());
+    sadikov_I_gather_mpi::MPITask sv_seq(taskData_seq);
+    ASSERT_EQ(sv_seq.validation(), true);
+    sv_seq.pre_processing();
+    sv_seq.run();
+    sv_seq.post_processing();
+    ASSERT_EQ(out_seq, out_par);
+  }
+}
+
+TEST(sadikov_I_gather_mpi, check_notZero_root) {
+  boost::mpi::communicator world;
+  const int columns = 50;
+  const int rows = 50;
+  int root = 0;
+  if (world.size() > 3) {
+    root = 3;
+  }
+  std::vector<int> in;
+  std::vector<int> in_index{rows, columns};
+  std::vector<int> out_par(rows, 0);
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    in = GetRandomData(columns * rows);
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    taskData->inputs_count.emplace_back(in_index[0]);
+    taskData->inputs_count.emplace_back(in_index[1]);
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_par.data()));
+    taskData->outputs_count.emplace_back(out_par.size());
+  }
+  sadikov_I_gather_mpi::MPITaskParallel sv_par(taskData);
+  sv_par.SetRoot(root);
+  ASSERT_EQ(sv_par.validation(), true);
+  sv_par.pre_processing();
+  sv_par.run();
+  sv_par.post_processing();
+  if (world.rank() == root) {
+    std::vector<int> out_seq(rows, 0);
+    auto taskData_seq = std::make_shared<ppc::core::TaskData>();
+    taskData_seq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    taskData_seq->inputs_count.emplace_back(in_index[0]);
+    taskData_seq->inputs_count.emplace_back(in_index[1]);
+    taskData_seq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_seq.data()));
+    taskData_seq->outputs_count.emplace_back(out_seq.size());
+    sadikov_I_gather_mpi::MPITask sv_seq(taskData_seq);
+    ASSERT_EQ(sv_seq.validation(), true);
+    sv_seq.pre_processing();
+    sv_seq.run();
+    sv_seq.post_processing();
+    ASSERT_EQ(out_seq, out_par);
+  }
+}
+
+TEST(sadikov_I_gather_mpi, check_notZero_root2) {
+  boost::mpi::communicator world;
+  const int columns = 100;
+  const int rows = 10;
+  int root = 0;
+  if (world.size() > 3) {
+    root = 2;
+  }
+  std::vector<int> in;
+  std::vector<int> in_index{rows, columns};
+  std::vector<int> out_par(rows, 0);
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    in = GetRandomData(columns * rows);
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    taskData->inputs_count.emplace_back(in_index[0]);
+    taskData->inputs_count.emplace_back(in_index[1]);
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_par.data()));
+    taskData->outputs_count.emplace_back(out_par.size());
+  }
+  sadikov_I_gather_mpi::MPITaskParallel sv_par(taskData);
+  sv_par.SetRoot(root);
+  ASSERT_EQ(sv_par.validation(), true);
+  sv_par.pre_processing();
+  sv_par.run();
+  sv_par.post_processing();
+  if (world.rank() == root) {
+    std::vector<int> out_seq(rows, 0);
+    auto taskData_seq = std::make_shared<ppc::core::TaskData>();
+    taskData_seq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    taskData_seq->inputs_count.emplace_back(in_index[0]);
+    taskData_seq->inputs_count.emplace_back(in_index[1]);
+    taskData_seq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_seq.data()));
+    taskData_seq->outputs_count.emplace_back(out_seq.size());
+    sadikov_I_gather_mpi::MPITask sv_seq(taskData_seq);
+    ASSERT_EQ(sv_seq.validation(), true);
+    sv_seq.pre_processing();
+    sv_seq.run();
+    sv_seq.post_processing();
+    ASSERT_EQ(out_seq, out_par);
+  }
+}
+
+TEST(sadikov_I_gather_mpi, check_square_matrix2) {
+  boost::mpi::communicator world;
+  const int columns = 250;
+  const int rows = 250;
+  const int root = 0;
+  std::vector<int> in;
+  std::vector<int> in_index{rows, columns};
+  std::vector<int> out_par(rows, 0);
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    in = GetRandomData(columns * rows);
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    taskData->inputs_count.emplace_back(in_index[0]);
+    taskData->inputs_count.emplace_back(in_index[1]);
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_par.data()));
+    taskData->outputs_count.emplace_back(out_par.size());
+  }
+  sadikov_I_gather_mpi::MPITaskParallel sv_par(taskData);
+  sv_par.SetRoot(root);
+  ASSERT_EQ(sv_par.validation(), true);
+  sv_par.pre_processing();
+  sv_par.run();
+  sv_par.post_processing();
+  if (world.rank() == root) {
+    std::vector<int> out_seq(rows, 0);
+    auto taskData_seq = std::make_shared<ppc::core::TaskData>();
+    taskData_seq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    taskData_seq->inputs_count.emplace_back(in_index[0]);
+    taskData_seq->inputs_count.emplace_back(in_index[1]);
+    taskData_seq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_seq.data()));
+    taskData_seq->outputs_count.emplace_back(out_seq.size());
+    sadikov_I_gather_mpi::MPITask sv_seq(taskData_seq);
+    ASSERT_EQ(sv_seq.validation(), true);
+    sv_seq.pre_processing();
+    sv_seq.run();
+    sv_seq.post_processing();
+    ASSERT_EQ(out_seq, out_par);
+  }
+}
+
+TEST(sadikov_I_gather_mpi, check_square_matrix3) {
   boost::mpi::communicator world;
   const int columns = 333;
   const int rows = 333;
+  const int root = 0;
   std::vector<int> in;
   std::vector<int> in_index{rows, columns};
-  std::vector<int> out_par(columns, 0);
+  std::vector<int> out_par(rows, 0);
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     in = GetRandomData(columns * rows);
@@ -185,20 +280,21 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_square_matrix3) {
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_par.data()));
     taskData->outputs_count.emplace_back(out_par.size());
   }
-  sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel sv_par(taskData);
+  sadikov_I_gather_mpi::MPITaskParallel sv_par(taskData);
+  sv_par.SetRoot(root);
   ASSERT_EQ(sv_par.validation(), true);
   sv_par.pre_processing();
   sv_par.run();
   sv_par.post_processing();
-  if (world.rank() == 0) {
-    std::vector<int> out_seq(columns, 0);
+  if (world.rank() == root) {
+    std::vector<int> out_seq(rows, 0);
     auto taskData_seq = std::make_shared<ppc::core::TaskData>();
     taskData_seq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskData_seq->inputs_count.emplace_back(in_index[0]);
     taskData_seq->inputs_count.emplace_back(in_index[1]);
     taskData_seq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_seq.data()));
     taskData_seq->outputs_count.emplace_back(out_seq.size());
-    sadikov_I_Sum_values_by_columns_matrix_mpi::MPITask sv_seq(taskData_seq);
+    sadikov_I_gather_mpi::MPITask sv_seq(taskData_seq);
     ASSERT_EQ(sv_seq.validation(), true);
     sv_seq.pre_processing();
     sv_seq.run();
@@ -207,13 +303,14 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_square_matrix3) {
   }
 }
 
-TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_rect_matrix2) {
+TEST(sadikov_I_gather_mpi, check_rect_matrix2) {
   boost::mpi::communicator world;
-  const int columns = 67;
-  const int rows = 105;
+  const int columns = 872;
+  const int rows = 51;
+  const int root = 0;
   std::vector<int> in;
   std::vector<int> in_index{rows, columns};
-  std::vector<int> out_par(columns, 0);
+  std::vector<int> out_par(rows, 0);
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     in = GetRandomData(columns * rows);
@@ -223,20 +320,21 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_rect_matrix2) {
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_par.data()));
     taskData->outputs_count.emplace_back(out_par.size());
   }
-  sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel sv_par(taskData);
+  sadikov_I_gather_mpi::MPITaskParallel sv_par(taskData);
+  sv_par.SetRoot(root);
   ASSERT_EQ(sv_par.validation(), true);
   sv_par.pre_processing();
   sv_par.run();
   sv_par.post_processing();
-  if (world.rank() == 0) {
-    std::vector<int> out_seq(columns, 0);
+  if (world.rank() == root) {
+    std::vector<int> out_seq(rows, 0);
     auto taskData_seq = std::make_shared<ppc::core::TaskData>();
     taskData_seq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskData_seq->inputs_count.emplace_back(in_index[0]);
     taskData_seq->inputs_count.emplace_back(in_index[1]);
     taskData_seq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_seq.data()));
     taskData_seq->outputs_count.emplace_back(out_seq.size());
-    sadikov_I_Sum_values_by_columns_matrix_mpi::MPITask sv_seq(taskData_seq);
+    sadikov_I_gather_mpi::MPITask sv_seq(taskData_seq);
     ASSERT_EQ(sv_seq.validation(), true);
     sv_seq.pre_processing();
     sv_seq.run();
@@ -245,36 +343,38 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_rect_matrix2) {
   }
 }
 
-TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_rect_matrix3) {
+TEST(sadikov_I_gather_mpi, check_rect_matrix3) {
   boost::mpi::communicator world;
-  const int columns = 67;
-  const int rows = 105;
+  const int columns = 400;
+  const int rows = 95;
+  const int root = 0;
   std::vector<int> in;
   std::vector<int> in_index{rows, columns};
-  std::vector<int> out_par(columns, 0);
+  std::vector<int> out_par(rows, 0);
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    in = GetRandomData(columns * rows);
+    in = GetRandomData(rows * columns);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskData->inputs_count.emplace_back(in_index[0]);
     taskData->inputs_count.emplace_back(in_index[1]);
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_par.data()));
     taskData->outputs_count.emplace_back(out_par.size());
   }
-  sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel sv_par(taskData);
+  sadikov_I_gather_mpi::MPITaskParallel sv_par(taskData);
+  sv_par.SetRoot(root);
   ASSERT_EQ(sv_par.validation(), true);
   sv_par.pre_processing();
   sv_par.run();
   sv_par.post_processing();
-  if (world.rank() == 0) {
-    std::vector<int> out_seq(columns, 0);
+  if (world.rank() == root) {
+    std::vector<int> out_seq(rows, 0);
     auto taskData_seq = std::make_shared<ppc::core::TaskData>();
     taskData_seq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskData_seq->inputs_count.emplace_back(in_index[0]);
     taskData_seq->inputs_count.emplace_back(in_index[1]);
     taskData_seq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_seq.data()));
     taskData_seq->outputs_count.emplace_back(out_seq.size());
-    sadikov_I_Sum_values_by_columns_matrix_mpi::MPITask sv_seq(taskData_seq);
+    sadikov_I_gather_mpi::MPITask sv_seq(taskData_seq);
     ASSERT_EQ(sv_seq.validation(), true);
     sv_seq.pre_processing();
     sv_seq.run();
@@ -283,13 +383,14 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_rect_matrix3) {
   }
 }
 
-TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_one_row) {
+TEST(sadikov_I_gather_mpi, check_one_row) {
   boost::mpi::communicator world;
-  const int columns = 67;
+  const int columns = 20;
   const int rows = 1;
+  const int root = 0;
   std::vector<int> in;
   std::vector<int> in_index{rows, columns};
-  std::vector<int> out_par(columns, 0);
+  std::vector<int> out_par(rows, 0);
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     in = GetRandomData(columns * rows);
@@ -299,20 +400,21 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_one_row) {
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_par.data()));
     taskData->outputs_count.emplace_back(out_par.size());
   }
-  sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel sv_par(taskData);
+  sadikov_I_gather_mpi::MPITaskParallel sv_par(taskData);
+  sv_par.SetRoot(root);
   ASSERT_EQ(sv_par.validation(), true);
   sv_par.pre_processing();
   sv_par.run();
   sv_par.post_processing();
-  if (world.rank() == 0) {
-    std::vector<int> out_seq(columns, 0);
+  if (world.rank() == root) {
+    std::vector<int> out_seq(rows, 0);
     auto taskData_seq = std::make_shared<ppc::core::TaskData>();
     taskData_seq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskData_seq->inputs_count.emplace_back(in_index[0]);
     taskData_seq->inputs_count.emplace_back(in_index[1]);
     taskData_seq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_seq.data()));
     taskData_seq->outputs_count.emplace_back(out_seq.size());
-    sadikov_I_Sum_values_by_columns_matrix_mpi::MPITask sv_seq(taskData_seq);
+    sadikov_I_gather_mpi::MPITask sv_seq(taskData_seq);
     ASSERT_EQ(sv_seq.validation(), true);
     sv_seq.pre_processing();
     sv_seq.run();
@@ -321,48 +423,11 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_one_row) {
   }
 }
 
-TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_one_column) {
-  boost::mpi::communicator world;
-  const int columns = 1;
-  const int rows = 130;
-  std::vector<int> in;
-  std::vector<int> in_index{rows, columns};
-  std::vector<int> out_par(columns, 0);
-  auto taskData = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    in = GetRandomData(columns * rows);
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-    taskData->inputs_count.emplace_back(in_index[0]);
-    taskData->inputs_count.emplace_back(in_index[1]);
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_par.data()));
-    taskData->outputs_count.emplace_back(out_par.size());
-  }
-  sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel sv_par(taskData);
-  ASSERT_EQ(sv_par.validation(), true);
-  sv_par.pre_processing();
-  sv_par.run();
-  sv_par.post_processing();
-  if (world.rank() == 0) {
-    std::vector<int> out_seq(columns, 0);
-    auto taskData_seq = std::make_shared<ppc::core::TaskData>();
-    taskData_seq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-    taskData_seq->inputs_count.emplace_back(in_index[0]);
-    taskData_seq->inputs_count.emplace_back(in_index[1]);
-    taskData_seq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_seq.data()));
-    taskData_seq->outputs_count.emplace_back(out_seq.size());
-    sadikov_I_Sum_values_by_columns_matrix_mpi::MPITask sv_seq(taskData_seq);
-    ASSERT_EQ(sv_seq.validation(), true);
-    sv_seq.pre_processing();
-    sv_seq.run();
-    sv_seq.post_processing();
-    ASSERT_EQ(out_seq, out_par);
-  }
-}
-
-TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_one_element) {
+TEST(sadikov_I_gather_mpi, check_one_element) {
   boost::mpi::communicator world;
   const int columns = 1;
   const int rows = 1;
+  const int root = 0;
   std::vector<int> in;
   std::vector<int> in_index{rows, columns};
   std::vector<int> out_par(columns, 0);
@@ -375,12 +440,13 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_one_element) {
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_par.data()));
     taskData->outputs_count.emplace_back(out_par.size());
   }
-  sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel sv_par(taskData);
+  sadikov_I_gather_mpi::MPITaskParallel sv_par(taskData);
+  sv_par.SetRoot(root);
   ASSERT_EQ(sv_par.validation(), true);
   sv_par.pre_processing();
   sv_par.run();
   sv_par.post_processing();
-  if (world.rank() == 0) {
+  if (world.rank() == root) {
     std::vector<int> out_seq(columns, 0);
     auto taskData_seq = std::make_shared<ppc::core::TaskData>();
     taskData_seq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
@@ -388,7 +454,7 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_one_element) {
     taskData_seq->inputs_count.emplace_back(in_index[1]);
     taskData_seq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_seq.data()));
     taskData_seq->outputs_count.emplace_back(out_seq.size());
-    sadikov_I_Sum_values_by_columns_matrix_mpi::MPITask sv_seq(taskData_seq);
+    sadikov_I_gather_mpi::MPITask sv_seq(taskData_seq);
     ASSERT_EQ(sv_seq.validation(), true);
     sv_seq.pre_processing();
     sv_seq.run();
@@ -397,13 +463,14 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_one_element) {
   }
 }
 
-TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_empty_matrix) {
+TEST(sadikov_I_gather_mpi, check_empty_matrix) {
   boost::mpi::communicator world;
   const int columns = 0;
   const int rows = 0;
+  const int root = 0;
   std::vector<int> in;
   std::vector<int> in_index{rows, columns};
-  std::vector<int> out_par(columns, 0);
+  std::vector<int> out_par(rows, 0);
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     in = GetRandomData(columns * rows);
@@ -413,20 +480,21 @@ TEST(sadikov_I_Sum_values_by_columns_matrix_mpi, check_empty_matrix) {
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_par.data()));
     taskData->outputs_count.emplace_back(out_par.size());
   }
-  sadikov_I_Sum_values_by_columns_matrix_mpi::MPITaskParallel sv_par(taskData);
+  sadikov_I_gather_mpi::MPITaskParallel sv_par(taskData);
+  sv_par.SetRoot(root);
   ASSERT_EQ(sv_par.validation(), true);
   sv_par.pre_processing();
   sv_par.run();
   sv_par.post_processing();
-  if (world.rank() == 0) {
-    std::vector<int> out_seq(columns, 0);
+  if (world.rank() == root) {
+    std::vector<int> out_seq(rows, 0);
     auto taskData_seq = std::make_shared<ppc::core::TaskData>();
     taskData_seq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskData_seq->inputs_count.emplace_back(in_index[0]);
     taskData_seq->inputs_count.emplace_back(in_index[1]);
     taskData_seq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_seq.data()));
     taskData_seq->outputs_count.emplace_back(out_seq.size());
-    sadikov_I_Sum_values_by_columns_matrix_mpi::MPITask sv_seq(taskData_seq);
+    sadikov_I_gather_mpi::MPITask sv_seq(taskData_seq);
     ASSERT_EQ(sv_seq.validation(), true);
     sv_seq.pre_processing();
     sv_seq.run();
