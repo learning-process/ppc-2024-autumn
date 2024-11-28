@@ -82,7 +82,8 @@ TEST(khovansky_d_ribbon_vertical_scheme_mpi, Performance_Pipeline_Run) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(seq_result.data()));
     taskDataSeq->outputs_count.emplace_back(seq_result.size());
 
-    auto taskSequential = std::make_shared<khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeSeq>(taskDataSeq);
+    auto taskSequential =
+        std::make_shared<khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeSeq>(taskDataSeq);
     ASSERT_TRUE(taskSequential->validation());
     taskSequential->pre_processing();
     taskSequential->run();
