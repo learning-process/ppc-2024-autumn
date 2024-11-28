@@ -6,9 +6,9 @@
 #include <vector>
 
 #include "mpi/rezantseva_a_simple_iteration_method/include/ops_mpi_rezantseva.hpp"
-
-static int offset = 0;
 /*
+static int offset = 0;
+
 std::pair<std::vector<double>, std::vector<double>> rezantseva_a_simple_iteration_method_mpi::createRandomMatrix(
     size_t n) {
   std::vector<double> A(n * n);
