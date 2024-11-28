@@ -1,22 +1,30 @@
 #include <gtest/gtest.h>
 
+#include <boost/mpi/communicator.hpp>
+#include <boost/mpi/environment.hpp>
 #include <chrono>
 #include <iostream>
 #include <vector>
 
-#include "seq/shuravina_o_contrast/include/ops_seq.hpp"
+#include "mpi/shuravina_o_contrast/include/ops_mpi.hpp"
 
-TEST(SequentialContrastPerf, TestContrastPerfWith1000Elements) {
-  std::vector<uint8_t> input_vec(1000, 128);
-  std::vector<uint8_t> output_vec(1000, 0);
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+TEST(ParallelContrastPerf, TestContrastPerfWith1000Elements) {
+  boost::mpi::communicator world;
+  std::vector<uint8_t> global_vec;
+  std::vector<uint8_t> global_out;
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_vec.data()));
-  taskDataSeq->inputs_count.emplace_back(input_vec.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_vec.data()));
-  taskDataSeq->outputs_count.emplace_back(output_vec.size());
+  if (world.rank() == 0) {
+    const int count_size_vector = 1000;
+    global_vec = std::vector<uint8_t>(count_size_vector, 128);
+    global_out = std::vector<uint8_t>(count_size_vector, 0);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_out.data()));
+    taskDataPar->outputs_count.emplace_back(global_out.size());
+  }
 
-  shuravina_o_contrast::ContrastSequential contrastTask(taskDataSeq);
+  shuravina_o_contrast::ContrastParallel contrastTask(taskDataPar);
 
   auto start_time = std::chrono::high_resolution_clock::now();
   contrastTask.pre_processing();
@@ -26,23 +34,31 @@ TEST(SequentialContrastPerf, TestContrastPerfWith1000Elements) {
 
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
 
-  std::cout << "Execution time for 1000 elements: " << duration << " ms" << std::endl;
-  for (std::size_t i = 0; i < output_vec.size(); ++i) {
-    ASSERT_EQ(output_vec[i], 255);
+  if (world.rank() == 0) {
+    std::cout << "Execution time for 1000 elements: " << duration << " ms" << std::endl;
+    for (size_t i = 0; i < global_out.size(); ++i) {
+      ASSERT_EQ(global_out[i], 255);
+    }
   }
 }
 
-TEST(SequentialContrastPerf, TestContrastPerfWith10000Elements) {
-  std::vector<uint8_t> input_vec(10000, 128);
-  std::vector<uint8_t> output_vec(10000, 0);
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+TEST(ParallelContrastPerf, TestContrastPerfWith10000Elements) {
+  boost::mpi::communicator world;
+  std::vector<uint8_t> global_vec;
+  std::vector<uint8_t> global_out;
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_vec.data()));
-  taskDataSeq->inputs_count.emplace_back(input_vec.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_vec.data()));
-  taskDataSeq->outputs_count.emplace_back(output_vec.size());
+  if (world.rank() == 0) {
+    const int count_size_vector = 10000;
+    global_vec = std::vector<uint8_t>(count_size_vector, 128);
+    global_out = std::vector<uint8_t>(count_size_vector, 0);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_out.data()));
+    taskDataPar->outputs_count.emplace_back(global_out.size());
+  }
 
-  shuravina_o_contrast::ContrastSequential contrastTask(taskDataSeq);
+  shuravina_o_contrast::ContrastParallel contrastTask(taskDataPar);
 
   auto start_time = std::chrono::high_resolution_clock::now();
   contrastTask.pre_processing();
@@ -52,23 +68,31 @@ TEST(SequentialContrastPerf, TestContrastPerfWith10000Elements) {
 
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
 
-  std::cout << "Execution time for 10000 elements: " << duration << " ms" << std::endl;
-  for (std::size_t i = 0; i < output_vec.size(); ++i) {
-    ASSERT_EQ(output_vec[i], 255);
+  if (world.rank() == 0) {
+    std::cout << "Execution time for 10000 elements: " << duration << " ms" << std::endl;
+    for (size_t i = 0; i < global_out.size(); ++i) {
+      ASSERT_EQ(global_out[i], 255);
+    }
   }
 }
 
-TEST(SequentialContrastPerf, TestContrastPerfWith100000Elements) {
-  std::vector<uint8_t> input_vec(100000, 128);
-  std::vector<uint8_t> output_vec(100000, 0);
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+TEST(ParallelContrastPerf, TestContrastPerfWith100000Elements) {
+  boost::mpi::communicator world;
+  std::vector<uint8_t> global_vec;
+  std::vector<uint8_t> global_out;
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_vec.data()));
-  taskDataSeq->inputs_count.emplace_back(input_vec.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_vec.data()));
-  taskDataSeq->outputs_count.emplace_back(output_vec.size());
+  if (world.rank() == 0) {
+    const int count_size_vector = 100000;
+    global_vec = std::vector<uint8_t>(count_size_vector, 128);
+    global_out = std::vector<uint8_t>(count_size_vector, 0);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_out.data()));
+    taskDataPar->outputs_count.emplace_back(global_out.size());
+  }
 
-  shuravina_o_contrast::ContrastSequential contrastTask(taskDataSeq);
+  shuravina_o_contrast::ContrastParallel contrastTask(taskDataPar);
 
   auto start_time = std::chrono::high_resolution_clock::now();
   contrastTask.pre_processing();
@@ -78,23 +102,31 @@ TEST(SequentialContrastPerf, TestContrastPerfWith100000Elements) {
 
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
 
-  std::cout << "Execution time for 100000 elements: " << duration << " ms" << std::endl;
-  for (std::size_t i = 0; i < output_vec.size(); ++i) {
-    ASSERT_EQ(output_vec[i], 255);
+  if (world.rank() == 0) {
+    std::cout << "Execution time for 100000 elements: " << duration << " ms" << std::endl;
+    for (size_t i = 0; i < global_out.size(); ++i) {
+      ASSERT_EQ(global_out[i], 255);
+    }
   }
 }
 
-TEST(SequentialContrastPerf, TestContrastPerfWith1000000Elements) {
-  std::vector<uint8_t> input_vec(1000000, 128);
-  std::vector<uint8_t> output_vec(1000000, 0);
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+TEST(ParallelContrastPerf, TestContrastPerfWith1000000Elements) {
+  boost::mpi::communicator world;
+  std::vector<uint8_t> global_vec;
+  std::vector<uint8_t> global_out;
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_vec.data()));
-  taskDataSeq->inputs_count.emplace_back(input_vec.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_vec.data()));
-  taskDataSeq->outputs_count.emplace_back(output_vec.size());
+  if (world.rank() == 0) {
+    const int count_size_vector = 1000000;
+    global_vec = std::vector<uint8_t>(count_size_vector, 128);
+    global_out = std::vector<uint8_t>(count_size_vector, 0);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_out.data()));
+    taskDataPar->outputs_count.emplace_back(global_out.size());
+  }
 
-  shuravina_o_contrast::ContrastSequential contrastTask(taskDataSeq);
+  shuravina_o_contrast::ContrastParallel contrastTask(taskDataPar);
 
   auto start_time = std::chrono::high_resolution_clock::now();
   contrastTask.pre_processing();
@@ -104,8 +136,10 @@ TEST(SequentialContrastPerf, TestContrastPerfWith1000000Elements) {
 
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
 
-  std::cout << "Execution time for 1000000 elements: " << duration << " ms" << std::endl;
-  for (std::size_t i = 0; i < output_vec.size(); ++i) {
-    ASSERT_EQ(output_vec[i], 255);
+  if (world.rank() == 0) {
+    std::cout << "Execution time for 1000000 elements: " << duration << " ms" << std::endl;
+    for (size_t i = 0; i < global_out.size(); ++i) {
+      ASSERT_EQ(global_out[i], 255);
+    }
   }
 }

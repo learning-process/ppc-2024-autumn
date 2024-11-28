@@ -20,7 +20,7 @@ TEST(SequentialContrast, TestContrastWith10Elements) {
   contrastTask.run();
   contrastTask.post_processing();
 
-  for (int i = 0; i < output_vec.size(); ++i) {
+  for (size_t i = 0; i < output_vec.size(); ++i) {
     ASSERT_EQ(output_vec[i], 255);
   }
 }
@@ -41,7 +41,7 @@ TEST(SequentialContrast, TestContrastWith20Elements) {
   contrastTask.run();
   contrastTask.post_processing();
 
-  for (int i = 0; i < output_vec.size(); ++i) {
+  for (size_t i = 0; i < output_vec.size(); ++i) {
     ASSERT_EQ(output_vec[i], 255);
   }
 }
@@ -62,7 +62,7 @@ TEST(SequentialContrast, TestContrastWith30Elements) {
   contrastTask.run();
   contrastTask.post_processing();
 
-  for (int i = 0; i < output_vec.size(); ++i) {
+  for (size_t i = 0; i < output_vec.size(); ++i) {
     ASSERT_EQ(output_vec[i], 255);
   }
 }
@@ -83,7 +83,7 @@ TEST(SequentialContrast, TestContrastWith40Elements) {
   contrastTask.run();
   contrastTask.post_processing();
 
-  for (int i = 0; i < output_vec.size(); ++i) {
+  for (size_t i = 0; i < output_vec.size(); ++i) {
     ASSERT_EQ(output_vec[i], 255);
   }
 }
