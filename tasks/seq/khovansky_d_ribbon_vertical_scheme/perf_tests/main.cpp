@@ -22,7 +22,8 @@ TEST(khovansky_d_ribbon_vertical_scheme_seq, test_pipeline_run) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
   taskDataSeq->outputs_count.emplace_back(output.size());
 
-  auto testTaskSequential = std::make_shared<khovansky_d_ribbon_vertical_scheme_seq::RibbonVerticalSchemeSeq>(taskDataSeq);
+  auto testTaskSequential =
+      std::make_shared<khovansky_d_ribbon_vertical_scheme_seq::RibbonVerticalSchemeSeq>(taskDataSeq);
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();
@@ -53,7 +54,8 @@ TEST(khovansky_d_ribbon_vertical_scheme_seq, test_task_run) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
   taskDataSeq->outputs_count.emplace_back(output.size());
 
-  auto testTaskSequential = std::make_shared<khovansky_d_ribbon_vertical_scheme_seq::RibbonVerticalSchemeSeq>(taskDataSeq);
+  auto testTaskSequential =
+      std::make_shared<khovansky_d_ribbon_vertical_scheme_seq::RibbonVerticalSchemeSeq>(taskDataSeq);
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();

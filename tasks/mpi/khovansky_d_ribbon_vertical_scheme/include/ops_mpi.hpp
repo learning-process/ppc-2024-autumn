@@ -50,4 +50,4 @@ class RibbonVerticalSchemeMPI : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  // namespace khovansky_d_ribbon_vector_scheme_mpi
+}  // namespace khovansky_d_ribbon_vertical_scheme_mpi

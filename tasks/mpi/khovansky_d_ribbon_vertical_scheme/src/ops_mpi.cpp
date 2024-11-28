@@ -2,9 +2,9 @@
 #include "mpi/khovansky_d_ribbon_vertical_scheme/include/ops_mpi.hpp"
 
 #include <algorithm>
-#include <functional>
 #include <boost/serialization/array.hpp>
 #include <boost/serialization/vector.hpp>
+#include <functional>
 #include <random>
 #include <string>
 #include <thread>
@@ -18,7 +18,7 @@ bool khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeSeq::validation
   if (!taskData) {
     return false;
   }
-  if (taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr){
+  if (taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr) {
     return false;
   }
   return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 &&
@@ -27,7 +27,7 @@ bool khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeSeq::validation
 
 bool khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeSeq::pre_processing() {
   internal_order_test();
-  
+
   hello_matrix = reinterpret_cast<int*>(taskData->inputs[0]);
   hello_vector = reinterpret_cast<int*>(taskData->inputs[1]);
 
@@ -36,7 +36,6 @@ bool khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeSeq::pre_proces
   columns_count = matrix_elements_count / rows_count;
 
   goodbye_vector.assign(columns_count, 0);
-
 
   return true;
 }
@@ -55,7 +54,7 @@ bool khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeSeq::run() {
 
 bool khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeSeq::post_processing() {
   internal_order_test();
-  
+
   int* result = reinterpret_cast<int*>(taskData->outputs[0]);
   std::copy(goodbye_vector.begin(), goodbye_vector.end(), result);
 
@@ -67,10 +66,10 @@ bool khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeMPI::validation
   if (!taskData) {
     return false;
   }
-  if (taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr){
+  if (taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr) {
     return false;
   }
-  if (taskData->outputs[0] == nullptr){
+  if (taskData->outputs[0] == nullptr) {
     return false;
   }
   if (world.rank() == 0) {
@@ -120,9 +119,9 @@ bool khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeMPI::pre_proces
     }
   }
 
-  boost::mpi::broadcast(world, rows_count, 0); //m
-  boost::mpi::broadcast(world, columns_count, 0);//n
-  boost::mpi::broadcast(world, rows_per_process, 0); 
+  boost::mpi::broadcast(world, rows_count, 0);
+  boost::mpi::broadcast(world, columns_count, 0);
+  boost::mpi::broadcast(world, rows_per_process, 0);
   boost::mpi::broadcast(world, rows_offsets, 0);
 
   if (world.rank() != 0) {
