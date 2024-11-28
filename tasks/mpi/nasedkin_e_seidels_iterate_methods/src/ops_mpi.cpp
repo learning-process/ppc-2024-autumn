@@ -94,4 +94,17 @@ bool SeidelIterateMethodsMPI::converge(const std::vector<double>& x_new) {
   return std::sqrt(norm) < epsilon;
 }
 
+void nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI::set_matrix(const std::vector<std::vector<double>>& matrix) {
+  A = matrix;
+  n = static_cast<int>(matrix.size());
+}
+
+void nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI::set_vector(const std::vector<double>& vector) {
+  b = vector;
+}
+
+const std::vector<double>& nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI::get_solution() const {
+  return x;
+}
+
 }  // namespace nasedkin_e_seidels_iterate_methods_mpi
