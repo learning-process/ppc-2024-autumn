@@ -84,7 +84,7 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::run() {
     }
 
     if (world.rank() == 0) {
-      if (lU.size() != 0) {
+      if (!lU.empty()) {
         std::copy(lU.begin(), lU.end(), U.begin() + i * size);
         for (long unsigned int j = 0; j < lL.size(); j++) {
           L[(i + j) * size + i - 1] = lL[j];
