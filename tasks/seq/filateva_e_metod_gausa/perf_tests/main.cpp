@@ -61,7 +61,7 @@ TEST(filateva_e_metod_gausa_seq, test_pipeline_run) {
   metodGausa->pre_processing();
   metodGausa->run();
   metodGausa->post_processing();
-  auto *temp = reinterpret_cast<double*>(taskData->outputs[0]);
+  auto* temp = reinterpret_cast<double*>(taskData->outputs[0]);
   answer.insert(answer.end(), temp, temp + size);
 
   // Create Perf attributes
@@ -106,7 +106,7 @@ TEST(filateva_e_metod_gausa_seq, test_task_run) {
   metodGausa->pre_processing();
   metodGausa->run();
   metodGausa->post_processing();
-  auto *temp = reinterpret_cast<double*>(taskData->outputs[0]);
+  auto* temp = reinterpret_cast<double*>(taskData->outputs[0]);
   answer.insert(answer.end(), temp, temp + size);
 
   // Create Perf attributes

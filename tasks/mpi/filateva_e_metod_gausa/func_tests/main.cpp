@@ -33,7 +33,7 @@ std::vector<double> gereratorSLU(std::vector<double> &matrix, std::vector<double
 }
 
 bool check(std::vector<double> &resh, std::vector<double> &tResh, double alfa) {
-  for (int i = 0; i < tResh.size(); i++) {
+  for (unsigned long i = 0; i < tResh.size(); i++) {
     if (abs(resh[i] - tResh[i]) > alfa) {
       return false;
     }
@@ -71,7 +71,6 @@ TEST(filateva_e_metod_gausa_mpi, test1) {
   metodGausa.post_processing();
 
   if (world.rank() == 0) {
-
     auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
     answer.insert(answer.end(), temp, temp + size);
 
@@ -109,7 +108,6 @@ TEST(filateva_e_metod_gausa_mpi, test2) {
   metodGausa.post_processing();
 
   if (world.rank() == 0) {
-
     auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
     answer.insert(answer.end(), temp, temp + size);
 
@@ -147,7 +145,6 @@ TEST(filateva_e_metod_gausa_mpi, test3) {
   metodGausa.post_processing();
 
   if (world.rank() == 0) {
-
     auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
     answer.insert(answer.end(), temp, temp + size);
 
@@ -185,7 +182,6 @@ TEST(filateva_e_metod_gausa_mpi, test4) {
   metodGausa.post_processing();
 
   if (world.rank() == 0) {
-
     auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
     answer.insert(answer.end(), temp, temp + size);
 
@@ -223,7 +219,6 @@ TEST(filateva_e_metod_gausa_mpi, test5) {
   metodGausa.post_processing();
 
   if (world.rank() == 0) {
-
     auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
     answer.insert(answer.end(), temp, temp + size);
 
@@ -261,7 +256,6 @@ TEST(filateva_e_metod_gausa_mpi, test6) {
   metodGausa.post_processing();
 
   if (world.rank() == 0) {
-
     auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
     answer.insert(answer.end(), temp, temp + size);
 

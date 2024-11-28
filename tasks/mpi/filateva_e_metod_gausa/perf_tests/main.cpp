@@ -33,14 +33,13 @@ std::vector<double> gereratorSLU(std::vector<double> &matrix, std::vector<double
 }
 
 bool check(std::vector<double> &resh, std::vector<double> &tResh, double alfa) {
-  for (int i = 0; i < tResh.size(); i++) {
+  for (unsigned long i = 0; i < tResh.size(); i++) {
     if (abs(resh[i] - tResh[i]) > alfa) {
       return false;
     }
   }
   return true;
 }
-
 
 TEST(filateva_e_metod_gausa_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
@@ -133,7 +132,7 @@ TEST(filateva_e_metod_gausa_mpi, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    auto *temp = reinterpret_cast<double*>(taskData->outputs[0]);
+    auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
     answer.insert(answer.end(), temp, temp + size);
 
     ASSERT_EQ(check(answer, tResh, alfa), true);
