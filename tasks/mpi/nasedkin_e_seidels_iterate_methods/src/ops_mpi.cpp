@@ -2,6 +2,9 @@
 
 #include <cmath>
 #include <iostream>
+#include <limits>
+#include <random>
+#include <stdexcept>
 
 namespace nasedkin_e_seidels_iterate_methods_mpi {
 
@@ -13,9 +16,16 @@ bool SeidelIterateMethodsMPI::pre_processing() {
   epsilon = 1e-6;
   max_iterations = 1000;
 
-  x.resize(n, 0.0);
+  x.assign(n, 0.0);
 
-  return taskData->inputs_count.size() <= 1 || taskData->inputs_count[1] != 0;
+  for (int i = 0; i < n; ++i) {
+    if (std::fabs(A[i][i]) < std::numeric_limits<double>::epsilon()) {
+      std::cerr << "Matrix contains zero diagonal element at index " << i << std::endl;
+      return false;
+    }
+  }
+
+  return true;
 }
 
 bool SeidelIterateMethodsMPI::validation() {
@@ -35,10 +45,12 @@ bool SeidelIterateMethodsMPI::validation() {
   for (int i = 0; i < n; ++i) {
     double row_sum = 0.0;
     for (int j = 0; j < n; ++j) {
-      A[i][j] = (i == j) ? static_cast<double>(std::rand() % 10 + 1) : static_cast<double>(std::rand() % 5);
+      A[i][j] = (i == j) ? static_cast<double>(std::rand() % 10 + 1)
+                         : static_cast<double>(std::rand() % 5);
       row_sum += (i != j) ? A[i][j] : 0.0;
     }
-    A[i][i] = row_sum + 1.0;
+
+    A[i][i] = std::max(row_sum + 1.0, 1.0);
     b[i] = static_cast<double>(std::rand() % 10);
   }
 
@@ -46,6 +58,11 @@ bool SeidelIterateMethodsMPI::validation() {
 }
 
 bool SeidelIterateMethodsMPI::run() {
+  if (n == 0) {
+    std::cerr << "Matrix size is zero, cannot proceed with computation" << std::endl;
+    return false;
+  }
+
   std::vector<double> x_new(n, 0.0);
   int iteration = 0;
 
