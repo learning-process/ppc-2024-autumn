@@ -72,7 +72,7 @@ bool sidorina_p_broadcast_m_mpi::Broadcast::run() {
     arr[i] = result;
   }
 
-  reduce(world, arr.data(), arr.size(), res.data(), std::plus<int>(), 0);
+  reduce(world, arr.data(), arr.size(), res.data(), std::plus<>(), 0);
 
   return true;
 }
