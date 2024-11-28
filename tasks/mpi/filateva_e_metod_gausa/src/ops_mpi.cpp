@@ -48,8 +48,13 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::run() {
   }
 
   for (int i = 1; i < size; ++i) {
-    delta = (size - i) / (world.size() - 1);
-    ost = (size - i) % (world.size() - 1);
+    if (world.size() > 1) {
+      delta = (size - i) / (world.size() - 1);
+      ost = (size - i) % (world.size() - 1);
+    } else {
+      delta = 0;
+      ost = size - i;
+    }
 
     if (world.rank() == 0) {
       if (delta != 0) {
