@@ -109,7 +109,8 @@ bool kovalchuk_a_horizontal_tape_scheme_mpi::TestMPITaskParallel::run() {
   }
 
   std::vector<int> global_result(taskData->inputs_count[0], 0);
-  boost::mpi::reduce(world, local_result_.data(), local_result_.size(), global_result.data(), std::plus<int>(), 0);
+  boost::mpi::reduce(
+      world, local_result_.data(), local_result_.size(), global_result.data(), [](int a, int b) { return a + b; }, 0);
 
   if (world.rank() == 0) {
     std::copy(global_result.begin(), global_result.end(), reinterpret_cast<int*>(taskData->outputs[0]));
