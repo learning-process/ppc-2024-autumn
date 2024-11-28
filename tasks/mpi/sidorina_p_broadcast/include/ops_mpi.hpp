@@ -47,9 +47,8 @@ class Broadcast : public ppc::core::Task {
     }
 
     if (comm.rank() == root) {
-      for (int j = 1; j < 3; j++) {
-        comm.send((root + j) % comm.size(), 0, value, n);
-      }
+      comm.send((root + 1) % comm.size(), 0, value, n);
+      comm.send((root + 2) % comm.size(), 0, value, n);
     } else {
       int id_el = comm.rank() - root;
       if (comm.rank() < root) {
@@ -59,10 +58,11 @@ class Broadcast : public ppc::core::Task {
 
       comm.recv(id_send, 0, value, n);
 
-      for (int i = 1; i < 3; i++) {
-        if ((2 * id_el + i) < comm.size()) {
-          comm.send((root + 2 * id_el + i) % comm.size(), 0, value, n);
-        }
+      if ((2 * id_el + 1) < comm.size()) {
+        comm.send((root + 2 * id_el + 1) % comm.size(), 0, value, n);
+      }
+      if ((2 * id_el + 2) < comm.size()) {
+        comm.send((root + 2 * id_el + 2) % comm.size(), 0, value, n);
       }
     }
   }
