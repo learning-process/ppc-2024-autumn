@@ -50,19 +50,21 @@ class Broadcast : public ppc::core::Task {
       comm.send((root + 1) % comm.size(), 0, value, n);
       comm.send((root + 2) % comm.size(), 0, value, n);
     } else {
-      int id_el = comm.rank() - root;
+      int id_elem = comm.rank() - root;
       if (comm.rank() < root) {
-        id_el = comm.size() - root + comm.rank();
+        id_elem = comm.size() - root + comm.rank();
       }
-      int id_send = (root + (id_el - 1) / 2) % comm.size();
+      int id_sender = (root + (id_elem - 1) / 2) % comm.size();
+      int id1 = 2 * id_elem + 1;
+      int id2 = 2 * id_elem + 2;
 
-      comm.recv(id_send, 0, value, n);
+      comm.recv(id_sender, 0, value, n);
 
-      if ((2 * id_el + 1) < comm.size()) {
-        comm.send((root + 2 * id_el + 1) % comm.size(), 0, value, n);
+      if (id1 < comm.size()) {
+        comm.send((root + id1) % comm.size(), 0, value, n);
       }
-      if ((2 * id_el + 2) < comm.size()) {
-        comm.send((root + 2 * id_el + 2) % comm.size(), 0, value, n);
+      if (id2 < comm.size()) {
+        comm.send((root + id2) % comm.size(), 0, value, n);
       }
     }
   }
