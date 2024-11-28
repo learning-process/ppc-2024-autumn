@@ -204,5 +204,4 @@ TEST(Parallel_Operations_STL_Threads, Test_Diff_2) {
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
-
 }
