@@ -2,8 +2,6 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <cmath>
-#include <vector>
 
 #include "mpi/alputov_i_topology_hypercube/include/ops_mpi.hpp"
 
