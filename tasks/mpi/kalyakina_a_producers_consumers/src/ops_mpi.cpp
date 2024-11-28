@@ -25,7 +25,7 @@ void kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel::Consum
 bool kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    buffer_size = reinterpret_cast<int*>(taskData->inputs[0])[0];
+    buffer_size = reinterpret_cast<unsigned int*>(taskData->inputs[0])[0];
     producers_count = reinterpret_cast<int*>(taskData->inputs[0])[1];
     sources = reinterpret_cast<int*>(taskData->inputs[0])[2];
   }

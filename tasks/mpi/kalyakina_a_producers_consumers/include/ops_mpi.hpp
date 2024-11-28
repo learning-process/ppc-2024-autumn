@@ -29,8 +29,8 @@ class ProducersConsumersTaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
+  unsigned int buffer_size{};
   int producers_count{};
-  int buffer_size{};
   int sources{};
   boost::mpi::communicator world;
 };
