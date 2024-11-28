@@ -307,3 +307,39 @@ TEST(malyshev_lent_horizontal, test_validation_failure) {
     ASSERT_FALSE(taskMPI.validation());
   }
 }
+
+TEST(malyshev_lent_horizontal, test_zero_values_mpi) {
+  uint32_t rows = 3;
+  uint32_t cols = 3;
+
+  boost::mpi::communicator world;
+  std::vector<std::vector<int32_t>> zeroMatrix(rows, std::vector<int32_t>(cols, 0));
+  std::vector<int32_t> zeroVector(cols, 0);
+  std::vector<int32_t> mpiResult(rows, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  malyshev_lent_horizontal::TestTaskParallel taskMPI(taskDataPar);
+
+  if (world.rank() == 0) {
+    for (auto &row : zeroMatrix) {
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(row.data()));
+    }
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(zeroVector.data()));
+    taskDataPar->inputs_count.push_back(rows);
+    taskDataPar->inputs_count.push_back(cols);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(mpiResult.data()));
+    taskDataPar->outputs_count.push_back(mpiResult.size());
+  }
+
+  ASSERT_TRUE(taskMPI.validation());
+  ASSERT_TRUE(taskMPI.pre_processing());
+  ASSERT_TRUE(taskMPI.run());
+  ASSERT_TRUE(taskMPI.post_processing());
+
+  if (world.rank() == 0) {
+    for (uint32_t i = 0; i < mpiResult.size(); i++) {
+      ASSERT_EQ(mpiResult[i], 0);
+    }
+  }
+}
