@@ -60,7 +60,7 @@ TEST(nasedkin_e_seidels_iterate_methods_mpi, test_random_matrix_solution_accurac
     ASSERT_TRUE(seidel_task.run()) << "Run failed";
     ASSERT_TRUE(seidel_task.post_processing()) << "Post-processing failed";
 
-    double residual_norm = seidel_task.compute_residual_norm(
+    double residual_norm = nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI::compute_residual_norm(
         seidel_task.get_matrix_A(),
         seidel_task.get_vector_x(),
         seidel_task.get_vector_b()
