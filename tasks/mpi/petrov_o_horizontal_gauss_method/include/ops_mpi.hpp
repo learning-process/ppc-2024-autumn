@@ -7,7 +7,6 @@
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/vector.hpp>
 #include <memory>
-#include <numeric>
 #include <utility>
 #include <vector>
 

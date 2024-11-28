@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi.hpp>
-#include <numeric>
 #include <random>
 
 #include "core/perf/include/perf.hpp"

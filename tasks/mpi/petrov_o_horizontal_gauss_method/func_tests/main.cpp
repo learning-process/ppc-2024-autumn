@@ -1,8 +1,6 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi.hpp>
-#include <memory>
-#include <numeric>
 #include <random>
 
 #include "mpi/petrov_o_horizontal_gauss_method/include/ops_mpi.hpp"

@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
 #include <memory>
-#include <numeric>
 
 #include "seq/petrov_o_horizontal_gauss_method/include/ops_seq.hpp"
 
