@@ -2,19 +2,20 @@
 
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <boost/serialization/map.hpp>
+#include <map>
 #include <memory>
 #include <numeric>
 #include <string>
 #include <utility>
 #include <vector>
-#include <map>
 
 #include "core/task/include/task.hpp"
 
 namespace sadikov_I_gather_mpi {
 int DataLocation(int rank, int delta, int maxDelta);
-void Gather(const boost::mpi::communicator& world, std::map<int, int> id, std::vector<int>& inValues, const std::vector<int>& sizes,
-            std::vector<int>& outValues, int size, int root);
+void Gather(const boost::mpi::communicator& world, std::map<int, int> id, std::vector<int>& inValues,
+            const std::vector<int>& sizes, std::vector<int>& outValues, int size, int root);
 class MPITask : public ppc::core::Task {
  private:
   std::vector<int> m_sum;
