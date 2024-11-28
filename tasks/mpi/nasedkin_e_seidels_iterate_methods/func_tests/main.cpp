@@ -47,9 +47,6 @@ TEST(nasedkin_e_seidels_iterate_methods_mpi, test_matrix_with_zero_diagonal) {
   ASSERT_FALSE(seidel_task.pre_processing()) << "Pre-processing passed, but expected failure";
 }
 
-#include <random>
-#include <cmath>
-
 TEST(nasedkin_e_seidels_iterate_methods_mpi, test_with_random_diagonally_dominant_matrix) {
   const int n = 5;  // Размер матрицы
   const double epsilon = 1e-6;
