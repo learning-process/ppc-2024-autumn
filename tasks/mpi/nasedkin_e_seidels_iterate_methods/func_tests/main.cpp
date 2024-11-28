@@ -74,9 +74,9 @@ TEST(nasedkin_e_seidels_iterate_methods_mpi, test_random_matrix_solution_accurac
   const auto& x = seidel_task.get_solution();
   double norm = 0.0;
 
-  for (int i = 0; i < taskData->inputs_count[0]; ++i) {
+  for (unsigned int i = 0; i < taskData->inputs_count[0]; ++i) {
     double Ax_i = 0.0;
-    for (int j = 0; j < taskData->inputs_count[0]; ++j) {
+    for (unsigned int j = 0; j < taskData->inputs_count[0]; ++j) {
       Ax_i += A[i][j] * x[j];
     }
     norm += (Ax_i - b[i]) * (Ax_i - b[i]);
