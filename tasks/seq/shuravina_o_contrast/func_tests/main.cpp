@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <iostream>
 #include <vector>
 
 #include "seq/shuravina_o_contrast/include/ops_seq.hpp"
