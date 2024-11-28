@@ -26,4 +26,4 @@ class SumByRowsTask : public ppc::core::Task {
   bool post_processing() override;
   void Calculate(size_t size);
 };
-} 
+}  // namespace sadikov_I_gather_seq

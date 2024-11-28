@@ -3,9 +3,7 @@
 
 #include "seq/sadikov_I_gather/include/sq_task.h"
 
-
-sadikov_I_gather_seq::SumByRowsTask::SumByRowsTask(std::shared_ptr<ppc::core::TaskData> td)
-    : Task(std::move(td)) {}
+sadikov_I_gather_seq::SumByRowsTask::SumByRowsTask(std::shared_ptr<ppc::core::TaskData> td) : Task(std::move(td)) {}
 
 bool sadikov_I_gather_seq::SumByRowsTask::validation() {
   internal_order_test();
@@ -45,8 +43,9 @@ void sadikov_I_gather_seq::SumByRowsTask::Calculate(size_t size) {
   }
 }
 
-std::shared_ptr<ppc::core::TaskData> sadikov_I_gather_seq::CreateTaskData(
-    std::vector<int> &InV, const std::vector<int> &CeV, std::vector<int> &OtV) {
+std::shared_ptr<ppc::core::TaskData> sadikov_I_gather_seq::CreateTaskData(std::vector<int> &InV,
+                                                                          const std::vector<int> &CeV,
+                                                                          std::vector<int> &OtV) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(InV.data()));
   taskData->inputs_count.emplace_back(CeV[0]);
