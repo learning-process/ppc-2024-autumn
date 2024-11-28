@@ -6,6 +6,7 @@
 
 #include "seq/sadikov_I_gather/include/sq_task.h"
 
+namespace sadikov_I_gather_seq {
 std::vector<int> getRandomVector(size_t size) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -15,6 +16,7 @@ std::vector<int> getRandomVector(size_t size) {
   }
   return vec;
 }
+}  // namespace sadikov_I_gather_seq
 
 TEST(gather_seq, check_validation1) {
   std::vector<int> in(144, 1);
@@ -127,7 +129,7 @@ TEST(sum_values_by_columns_matrix, check_rect_matrix2) {
 TEST(sum_values_by_columns_matrix, check_rect_matrix3) {
   std::vector<int> in_index{50, 200};
   std::vector<int> out(50, 0);
-  std::vector<int> in = getRandomVector(in_index[0] * in_index[1]);
+  std::vector<int> in = sadikov_I_gather_seq::getRandomVector(in_index[0] * in_index[1]);
   std::shared_ptr<ppc::core::TaskData> taskData = sadikov_I_gather_seq::CreateTaskData(in, in_index, out);
   sadikov_I_gather_seq::SumByRowsTask sv(taskData);
   ASSERT_EQ(sv.validation(), true);

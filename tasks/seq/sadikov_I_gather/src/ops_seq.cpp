@@ -3,7 +3,7 @@
 
 #include "seq/sadikov_I_gather/include/sq_task.h"
 
-sadikov_I_gather_seq::SumByRowsTask::SumByRowsTask(std::shared_ptr<ppc::core::TaskData> td) : Task(std::move(td)) {}
+sadikov_I_gather_seq::SumByRowsTask::SumByRowsTask(std::shared_ptr<ppc::core::TaskData> taskData) : Task(std::move(taskData)) {}
 
 bool sadikov_I_gather_seq::SumByRowsTask::validation() {
   internal_order_test();

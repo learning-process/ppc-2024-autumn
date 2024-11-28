@@ -8,6 +8,7 @@
 
 #include "mpi/sadikov_I_gather/include/ops_mpi.h"
 
+namespace sadikov_I_gather_mpi {
 std::vector<int> GetRandomData(size_t size) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -17,6 +18,7 @@ std::vector<int> GetRandomData(size_t size) {
   }
   return vec;
 }
+}  // namespace sadikov_I_gather_mpi
 
 TEST(sadikov_I_gather_mpi, checkvalidation) {
   const int columns = 15;
@@ -67,7 +69,7 @@ TEST(sadikov_I_gather_mpi, check_square_matrix) {
   std::vector<int> out_par(rows, 0);
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    in = GetRandomData(columns * rows);
+    in = sadikov_I_gather_mpi::GetRandomData(columns * rows);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskData->inputs_count.emplace_back(in_index[0]);
     taskData->inputs_count.emplace_back(in_index[1]);
@@ -147,7 +149,7 @@ TEST(sadikov_I_gather_mpi, check_square_matrix2) {
   std::vector<int> out_par(rows, 0);
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    in = GetRandomData(columns * rows);
+    in = sadikov_I_gather_mpi::GetRandomData(columns * rows);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskData->inputs_count.emplace_back(in_index[0]);
     taskData->inputs_count.emplace_back(in_index[1]);
@@ -187,7 +189,7 @@ TEST(sadikov_I_gather_mpi, check_square_matrix3) {
   std::vector<int> out_par(rows, 0);
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    in = GetRandomData(columns * rows);
+    in = sadikov_I_gather_mpi::GetRandomData(columns * rows);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskData->inputs_count.emplace_back(in_index[0]);
     taskData->inputs_count.emplace_back(in_index[1]);
@@ -227,7 +229,7 @@ TEST(sadikov_I_gather_mpi, check_rect_matrix2) {
   std::vector<int> out_par(rows, 0);
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    in = GetRandomData(columns * rows);
+    in = sadikov_I_gather_mpi::GetRandomData(columns * rows);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskData->inputs_count.emplace_back(in_index[0]);
     taskData->inputs_count.emplace_back(in_index[1]);
@@ -267,7 +269,7 @@ TEST(sadikov_I_gather_mpi, check_rect_matrix3) {
   std::vector<int> out_par(rows, 0);
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    in = GetRandomData(rows * columns);
+    in = sadikov_I_gather_mpi::GetRandomData(rows * columns);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskData->inputs_count.emplace_back(in_index[0]);
     taskData->inputs_count.emplace_back(in_index[1]);
@@ -307,7 +309,7 @@ TEST(sadikov_I_gather_mpi, check_one_row) {
   std::vector<int> out_par(rows, 0);
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    in = GetRandomData(columns * rows);
+    in = sadikov_I_gather_mpi::GetRandomData(columns * rows);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskData->inputs_count.emplace_back(in_index[0]);
     taskData->inputs_count.emplace_back(in_index[1]);
@@ -347,7 +349,7 @@ TEST(sadikov_I_gather_mpi, check_one_element) {
   std::vector<int> out_par(columns, 0);
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    in = GetRandomData(columns * rows);
+    in = sadikov_I_gather_mpi::GetRandomData(columns * rows);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskData->inputs_count.emplace_back(in_index[0]);
     taskData->inputs_count.emplace_back(in_index[1]);
@@ -387,7 +389,7 @@ TEST(sadikov_I_gather_mpi, check_empty_matrix) {
   std::vector<int> out_par(rows, 0);
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    in = GetRandomData(columns * rows);
+    in = sadikov_I_gather_mpi::GetRandomData(columns * rows);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskData->inputs_count.emplace_back(in_index[0]);
     taskData->inputs_count.emplace_back(in_index[1]);
