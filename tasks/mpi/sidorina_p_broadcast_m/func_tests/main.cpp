@@ -3,7 +3,6 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <random>
-#include <vector>
 
 #include "mpi/sidorina_p_broadcast_m/include/ops_mpi.hpp"
 
@@ -238,7 +237,6 @@ TEST(sidorina_p_broadcast_m_mpi, Test_negative_m) {
   std::shared_ptr<ppc::core::TaskData> taskDataGlob = std::make_shared<ppc::core::TaskData>();
   std::shared_ptr<ppc::core::TaskData> taskDataRef = std::make_shared<ppc::core::TaskData>();
 
-  // neg
   if (world.rank() == 0) {
     array = std::vector<int>({1, 2, 3});
     terms = std::vector<int>({-1, 2, -3});
@@ -286,7 +284,6 @@ TEST(sidorina_p_broadcast_m_mpi, Test_negative_m) {
   }
 }
 
-// random !!!
 std::vector<int> randomVector(size_t size) {
   std::vector<int> v(size);
   std::random_device r;

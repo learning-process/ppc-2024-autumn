@@ -1,12 +1,5 @@
 #include "mpi/sidorina_p_broadcast_m/include/ops_mpi.hpp"
 
-#include <algorithm>
-#include <functional>
-#include <random>
-#include <string>
-#include <thread>
-#include <vector>
-
 using namespace boost::mpi;
 
 bool sidorina_p_broadcast_m_mpi::Broadcast::pre_processing() {

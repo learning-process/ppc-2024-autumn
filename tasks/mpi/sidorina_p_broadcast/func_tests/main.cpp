@@ -2,8 +2,6 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <random>
-#include <vector>
 
 #include "mpi/sidorina_p_broadcast/include/ops_mpi.hpp"
 
