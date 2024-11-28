@@ -35,6 +35,7 @@ class TestTaskParallel : public ppc::core::Task {
  private:
   std::vector<std::vector<int32_t>> matrix_, local_matrix_;
   std::vector<int32_t> vector_, local_result_;
+  std::vector<int32_t> result_;
   uint32_t delta_, ext_;
 
   boost::mpi::communicator world;
