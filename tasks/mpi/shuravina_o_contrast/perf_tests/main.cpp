@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "mpi/shuravina_o_contrast/include/ops_mpi.hpp"
+
 TEST(shuravina_o_contrast, Test_Contrast_Perf_1000) {
   boost::mpi::communicator world;
   std::vector<uint8_t> global_vec;
@@ -35,7 +36,7 @@ TEST(shuravina_o_contrast, Test_Contrast_Perf_1000) {
 
   if (world.rank() == 0) {
     std::cout << "Execution time for 1000 elements: " << duration << " ms" << std::endl;
-    for (int i = 0; i < global_out.size(); ++i) {
+    for (std::size_t i = 0; i < global_out.size(); ++i) {
       ASSERT_EQ(global_out[i], 255);
     }
   }
@@ -69,7 +70,7 @@ TEST(shuravina_o_contrast, Test_Contrast_Perf_10000) {
 
   if (world.rank() == 0) {
     std::cout << "Execution time for 10000 elements: " << duration << " ms" << std::endl;
-    for (int i = 0; i < global_out.size(); ++i) {
+    for (std::size_t i = 0; i < global_out.size(); ++i) {
       ASSERT_EQ(global_out[i], 255);
     }
   }
@@ -103,7 +104,7 @@ TEST(shuravina_o_contrast, Test_Contrast_Perf_100000) {
 
   if (world.rank() == 0) {
     std::cout << "Execution time for 100000 elements: " << duration << " ms" << std::endl;
-    for (int i = 0; i < global_out.size(); ++i) {
+    for (std::size_t i = 0; i < global_out.size(); ++i) {
       ASSERT_EQ(global_out[i], 255);
     }
   }
@@ -137,7 +138,7 @@ TEST(shuravina_o_contrast, Test_Contrast_Perf_1000000) {
 
   if (world.rank() == 0) {
     std::cout << "Execution time for 1000000 elements: " << duration << " ms" << std::endl;
-    for (int i = 0; i < global_out.size(); ++i) {
+    for (std::size_t i = 0; i < global_out.size(); ++i) {
       ASSERT_EQ(global_out[i], 255);
     }
   }
