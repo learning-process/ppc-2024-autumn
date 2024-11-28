@@ -3,7 +3,6 @@
 #include <boost/mpi.hpp>
 #include <numeric>
 #include <random>
-#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/petrov_o_horizontal_gauss_method/include/ops_mpi.hpp"
@@ -38,11 +37,11 @@ void runTaskTest(int n, int num_running) {
   if (world.rank() == 0) {
     generateRandomMatrixAndB(n, input_matrix, input_b);
 
-    taskData->inputs_count.push_back(n);
-    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_matrix.data()));
-    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_b.data()));
-    taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output.data()));
-    taskData->outputs_count.push_back(n * sizeof(double));
+    taskData->inputs_count.emplace_back(n);
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix.data()));
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_b.data()));
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+    taskData->outputs_count.emplace_back(n * sizeof(double));
   }
 
   auto task = std::make_shared<TaskType>(taskData);
@@ -77,11 +76,11 @@ void runPipelineTest(int n, int num_running) {
   if (world.rank() == 0) {
     generateRandomMatrixAndB(n, input_matrix, input_b);
 
-    taskData->inputs_count.push_back(n);
-    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_matrix.data()));
-    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_b.data()));
-    taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output.data()));
-    taskData->outputs_count.push_back(n * sizeof(double));
+    taskData->inputs_count.emplace_back(n);
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix.data()));
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_b.data()));
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+    taskData->outputs_count.emplace_back(n * sizeof(double));
   }
   auto task = std::make_shared<TaskType>(taskData);
 

@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <boost/mpi.hpp>
-#include <vector>
 
 namespace petrov_o_horizontal_gauss_method_mpi {
 

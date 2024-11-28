@@ -1,7 +1,6 @@
 #include "seq/petrov_o_horizontal_gauss_method/include/ops_seq.hpp"
 
 #include <algorithm>
-#include <vector>
 
 bool petrov_o_horizontal_gauss_method_seq::GaussHorizontalSequential::validation() {
   internal_order_test();

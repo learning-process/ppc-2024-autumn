@@ -2,7 +2,6 @@
 
 #include <memory>
 #include <numeric>
-#include <vector>
 
 #include "seq/petrov_o_horizontal_gauss_method/include/ops_seq.hpp"
 
@@ -13,11 +12,11 @@ TEST(petrov_o_horizontal_gauss_method_seq, TestGauss_Simple) {
   std::vector<double> output(n);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs_count.push_back(n);
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_matrix.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_b.data()));
-  taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output.data()));
-  taskData->outputs_count.push_back(n * sizeof(double));
+  taskData->inputs_count.emplace_back(n);
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix.data()));
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_b.data()));
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+  taskData->outputs_count.emplace_back(n * sizeof(double));
 
   petrov_o_horizontal_gauss_method_seq::GaussHorizontalSequential task(taskData);
 
@@ -38,11 +37,11 @@ TEST(petrov_o_horizontal_gauss_method_seq, TestGauss_IdentityMatrix) {
   std::vector<double> output(n);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs_count.push_back(n);
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_matrix.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_b.data()));
-  taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output.data()));
-  taskData->outputs_count.push_back(n * sizeof(double));
+  taskData->inputs_count.emplace_back(n);
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix.data()));
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_b.data()));
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+  taskData->outputs_count.emplace_back(n * sizeof(double));
 
   petrov_o_horizontal_gauss_method_seq::GaussHorizontalSequential task(taskData);
 
@@ -63,11 +62,11 @@ TEST(petrov_o_horizontal_gauss_method_seq, TestGauss_NegativeValues) {
   std::vector<double> output(n);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs_count.push_back(n);
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_matrix.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_b.data()));
-  taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output.data()));
-  taskData->outputs_count.push_back(n * sizeof(double));
+  taskData->inputs_count.emplace_back(n);
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix.data()));
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_b.data()));
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+  taskData->outputs_count.emplace_back(n * sizeof(double));
 
   petrov_o_horizontal_gauss_method_seq::GaussHorizontalSequential task(taskData);
 
@@ -88,11 +87,11 @@ TEST(petrov_o_horizontal_gauss_method_seq, TestGauss_EmptyMatrix) {
   std::vector<double> output;
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs_count.push_back(n);
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_matrix.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_b.data()));
-  taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output.data()));
-  taskData->outputs_count.push_back(n * sizeof(double));
+  taskData->inputs_count.emplace_back(n);
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix.data()));
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_b.data()));
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+  taskData->outputs_count.emplace_back(n * sizeof(double));
 
   petrov_o_horizontal_gauss_method_seq::GaussHorizontalSequential task(taskData);
 
@@ -106,11 +105,11 @@ TEST(petrov_o_horizontal_gauss_method_seq, TestGauss_ZeroDiagonal) {
   std::vector<double> output(n);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs_count.push_back(n);
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_matrix.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_b.data()));
-  taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output.data()));
-  taskData->outputs_count.push_back(n * sizeof(double));
+  taskData->inputs_count.emplace_back(n);
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix.data()));
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_b.data()));
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+  taskData->outputs_count.emplace_back(n * sizeof(double));
 
   petrov_o_horizontal_gauss_method_seq::GaussHorizontalSequential task(taskData);
 
