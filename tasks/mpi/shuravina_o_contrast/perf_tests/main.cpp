@@ -18,9 +18,9 @@ TEST(shuravina_o_contrast, Test_Contrast_Perf_1000) {
     const int count_size_vector = 1000;
     global_vec = std::vector<uint8_t>(count_size_vector, 128);
     global_out = std::vector<uint8_t>(count_size_vector, 0);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_out.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_out.data()));
     taskDataPar->outputs_count.emplace_back(global_out.size());
   }
 
@@ -52,9 +52,9 @@ TEST(shuravina_o_contrast, Test_Contrast_Perf_10000) {
     const int count_size_vector = 10000;
     global_vec = std::vector<uint8_t>(count_size_vector, 128);
     global_out = std::vector<uint8_t>(count_size_vector, 0);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_out.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_out.data()));
     taskDataPar->outputs_count.emplace_back(global_out.size());
   }
 
@@ -86,9 +86,9 @@ TEST(shuravina_o_contrast, Test_Contrast_Perf_100000) {
     const int count_size_vector = 100000;
     global_vec = std::vector<uint8_t>(count_size_vector, 128);
     global_out = std::vector<uint8_t>(count_size_vector, 0);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_out.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_out.data()));
     taskDataPar->outputs_count.emplace_back(global_out.size());
   }
 
@@ -120,9 +120,9 @@ TEST(shuravina_o_contrast, Test_Contrast_Perf_1000000) {
     const int count_size_vector = 1000000;
     global_vec = std::vector<uint8_t>(count_size_vector, 128);
     global_out = std::vector<uint8_t>(count_size_vector, 0);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_out.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_out.data()));
     taskDataPar->outputs_count.emplace_back(global_out.size());
   }
 
