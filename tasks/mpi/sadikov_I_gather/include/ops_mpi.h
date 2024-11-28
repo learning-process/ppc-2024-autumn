@@ -54,4 +54,24 @@ class MPITaskParallel : public ppc::core::Task {
   std::vector<int> CalculateSize(int elements, int count);
   void SetRoot(int root);
 };
+
+class ReferenceTask : public ppc::core::Task {
+ private:
+  std::vector<int> m_sum;
+  std::vector<int> m_matrix;
+  std::vector<int> m_localInput;
+  size_t m_rowsCount, m_columnsCount = 0;
+  size_t m_lastColumn = 0;
+  size_t m_delta = 0;
+  boost::mpi::communicator world;
+
+ public:
+  explicit ReferenceTask(std::shared_ptr<ppc::core::TaskData> td);
+  bool validation() override;
+  bool pre_processing() override;
+  bool run() override;
+  bool post_processing() override;
+  std::vector<int> Accumulate(size_t size);
+  std::vector<int> CalculateSize(int elements, int count);
+};
 }  // namespace sadikov_I_gather_mpi

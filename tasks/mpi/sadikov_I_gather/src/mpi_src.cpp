@@ -102,10 +102,12 @@ bool sadikov_I_gather_mpi::MPITaskParallel::run() {
   if (world.rank() == 0 && m_delta == 0 && !m_matrix.empty()) {
     intermediate_res.emplace_back(std::accumulate(m_localInput.begin(), m_localInput.end(), 0));
   }
-  m_sizes = std::vector<int>(world.size(), m_delta);
-  m_sizes[m_root] += m_lastColumn;
   if (world.size() > 1) {
+    m_sizes = std::vector<int>(world.size(), m_delta);
+    m_sizes[m_root] += m_lastColumn;
     sadikov_I_gather_mpi::Gather(world, m_id, intermediate_res, m_sizes, m_sum, m_columnsCount, m_root);
+  } else {
+    m_sum = std::move(intermediate_res);
   }
   return true;
 }
@@ -170,7 +172,7 @@ void sadikov_I_gather_mpi::Gather(const boost::mpi::communicator &world, std::ma
       world.send(id[parent], 0, inValues.data(), inValues.size());
     }
   } else {
-    outValues = intermediateResult;
+    outValues = std::move(intermediateResult);
   }
 }
 
@@ -180,4 +182,93 @@ int sadikov_I_gather_mpi::DataLocation(int rank, int delta, int maxDelta) {
   } else {
     return (rank - 1) * delta + maxDelta;
   }
+}
+
+sadikov_I_gather_mpi::ReferenceTask::ReferenceTask(std::shared_ptr<ppc::core::TaskData> td) : Task(std::move(td)) {}
+
+bool sadikov_I_gather_mpi::ReferenceTask::validation() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    return taskData->inputs_count[0] == taskData->outputs_count[0];
+  }
+  return true;
+}
+
+bool sadikov_I_gather_mpi::ReferenceTask::pre_processing() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    m_rowsCount = static_cast<size_t>(taskData->inputs_count[0]);
+    m_columnsCount = static_cast<size_t>(taskData->inputs_count[1]);
+    m_delta = m_rowsCount / world.size();
+    m_lastColumn = m_rowsCount % world.size();
+    m_matrix.reserve(m_columnsCount * m_rowsCount);
+    int *tmpPtr = reinterpret_cast<int *>(taskData->inputs[0]);
+    for (size_t i = 0; i < m_columnsCount * m_rowsCount; ++i) {
+      m_matrix.emplace_back(tmpPtr[i]);
+    }
+  }
+  return true;
+}
+
+bool sadikov_I_gather_mpi::ReferenceTask::run() {
+  internal_order_test();
+  broadcast(world, m_rowsCount, 0);
+  broadcast(world, m_columnsCount, 0);
+  broadcast(world, m_delta, 0);
+  broadcast(world, m_lastColumn, 0);
+  m_localInput.resize(m_delta * m_columnsCount);
+  if (world.rank() == 0 && m_rowsCount != 1) {
+    m_localInput.resize((m_delta + m_lastColumn) * m_columnsCount);
+    boost::mpi::scatterv(world, m_matrix.data(), CalculateSize(m_delta * m_columnsCount, m_columnsCount),
+                         m_localInput.data(), 0);
+  } else if (world.rank() != 0 && m_rowsCount != 1) {
+    boost::mpi::scatterv(world, m_localInput.data(), m_delta * m_columnsCount, 0);
+  } else {
+    m_localInput = m_matrix;
+  }
+  size_t size = m_delta != 0 ? m_localInput.size() / m_columnsCount : m_localInput.size();
+  std::vector<int> intermediate_res;
+  if (m_delta != 0) {
+    intermediate_res = Accumulate(size);
+  }
+  if (world.rank() == 0 && m_delta == 0 && !m_matrix.empty()) {
+    intermediate_res.emplace_back(std::accumulate(m_localInput.begin(), m_localInput.end(), 0));
+  }
+  if (world.rank() == 0) {
+    std::vector<int> localRes(m_rowsCount);
+    boost::mpi::gatherv(world, intermediate_res, localRes.data(), CalculateSize(m_delta, 1), 0);
+    m_sum = localRes;
+  } else {
+    boost::mpi::gatherv(world, intermediate_res, 0);
+  }
+  return true;
+}
+
+bool sadikov_I_gather_mpi::ReferenceTask::post_processing() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    for (size_t i = 0; i < m_rowsCount; ++i) {
+      reinterpret_cast<int *>(taskData->outputs[0])[i] = m_sum[i];
+    }
+  }
+  return true;
+}
+
+std::vector<int> sadikov_I_gather_mpi::ReferenceTask::Accumulate(size_t size) {
+  std::vector<int> in(size);
+  for (size_t i = 0; i < size; ++i) {
+    in[i] =
+        std::accumulate(m_localInput.begin() + i * m_columnsCount, m_localInput.begin() + (i + 1) * m_columnsCount, 0);
+  }
+  return in;
+}
+
+std::vector<int> sadikov_I_gather_mpi::ReferenceTask::CalculateSize(int elements, int count) {
+  std::vector<int> sizes(world.size(), elements);
+  if (m_delta == 0 && !m_matrix.empty()) {
+    sizes.front() = 1;
+  } else if (m_delta != 0 && !m_matrix.empty()) {
+    sizes[0] = (m_delta + m_lastColumn) * count;
+  }
+  return sizes;
 }
