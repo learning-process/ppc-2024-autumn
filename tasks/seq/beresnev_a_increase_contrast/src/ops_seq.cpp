@@ -2,7 +2,6 @@
 #include "seq/beresnev_a_increase_contrast/include/ops_seq.hpp"
 
 #include <algorithm>
-#include <sstream>
 #include <string>
 #include <vector>
 
@@ -21,16 +20,10 @@ bool beresnev_a_increase_contrast_seq::TestTaskSequential::validation() {
   auto buffer_size = taskData->inputs_count[0];
   if (buffer == nullptr || buffer_size == 0) return false;
 
-  std::stringstream format;
-  size_t pos = 0;
-  while (buffer[pos] == ' ' || buffer[pos] == '\n') ++pos;
+  std::string format(buffer, buffer + 2);
+  size_t pos = 2;
 
-  while (buffer[pos] != '\n' &&
-         ((buffer[pos] >= '0' && buffer[pos] <= '9') || (buffer[pos] >= 'A' && buffer[pos] <= 'Z'))) {
-    format << std::string(1, buffer[pos]);
-    pos++;
-  }
-  if (format.str() != "P6") {
+  if (format != "P6") {
     std::cerr << "Error: Invalid file format (expected P6)." << std::endl;
     return false;
   }

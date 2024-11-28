@@ -2,7 +2,6 @@
 #include "mpi/beresnev_a_increase_contrast/include/ops_mpi.hpp"
 
 #include <algorithm>
-#include <sstream>
 #include <string>
 #include <vector>
 
@@ -21,16 +20,10 @@ bool beresnev_a_increase_contrast_mpi::TestMPITaskSequential::validation() {
   auto buffer_size = taskData->inputs_count[0];
   if (buffer == nullptr || buffer_size == 0) return false;
 
-  std::stringstream format;
-  size_t pos = 0;
-  while (buffer[pos] == ' ' || buffer[pos] == '\n') ++pos;
+  std::string format(buffer, buffer + 2);
+  size_t pos = 2;
 
-  while (buffer[pos] != '\n' &&
-         ((buffer[pos] >= '0' && buffer[pos] <= '9') || (buffer[pos] >= 'A' && buffer[pos] <= 'Z'))) {
-    format << std::string(1, buffer[pos]);
-    pos++;
-  }
-  if (format.str() != "P6") {
+  if (format != "P6") {
     std::cerr << "Error: Invalid file format (expected P6)." << std::endl;
     return false;
   }
@@ -78,7 +71,7 @@ bool beresnev_a_increase_contrast_mpi::TestMPITaskSequential::run() {
   for (size_t i = 0; i < pixel_data_size; ++i) {
     double normalized = inp_[i] / 255.0;
     normalized = (normalized - 0.5) * factor + 0.5;
-    normalized = std::min(std::max(normalized, 0.0), 1.0);
+    normalized = std::clamp(normalized, 0.0, 1.0);
     res_[i] = static_cast<uint8_t>(normalized * 255);
   }
   return true;
@@ -119,16 +112,10 @@ bool beresnev_a_increase_contrast_mpi::TestMPITaskParallel::validation() {
     auto buffer_size = taskData->inputs_count[0];
     if (buffer == nullptr || buffer_size == 0) return false;
 
-    std::stringstream format;
-    size_t pos = 0;
-    while (buffer[pos] == ' ' || buffer[pos] == '\n') ++pos;
+    std::string format(buffer, buffer + 2);
+    size_t pos = 2;
 
-    while (buffer[pos] != '\n' &&
-           ((buffer[pos] >= '0' && buffer[pos] <= '9') || (buffer[pos] >= 'A' && buffer[pos] <= 'Z'))) {
-      format << std::string(1, buffer[pos]);
-      pos++;
-    }
-    if (format.str() != "P6") {
+    if (format != "P6") {
       std::cerr << "Error: Invalid file format (expected P6)." << std::endl;
       return false;
     }
