@@ -254,7 +254,7 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::run() {
       offset += counts_[i] * n_;
     }
     // calculate
-    for (size_t i = 0; i < counts_[world.rank()]; i++) {
+    for (size_t i = 0; i < static_cast<size_t>(counts_[world.rank()]); i++) {
       double sum = 0.0;
       size_t global_i = offsets_x[world.rank()] + i;  // global id row
       for (size_t j = 0; j < n_; j++) {
