@@ -17,7 +17,7 @@ class SeidelIterateMethodsMPI : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
   void generate_random_system(int size, double min_val, double max_val);
-  double compute_residual_norm(const std::vector<std::vector<double>>& A, const std::vector<double>& x, const std::vector<double>& b);
+  static double compute_residual_norm(const std::vector<std::vector<double>>& A, const std::vector<double>& x, const std::vector<double>& b);
   const std::vector<std::vector<double>>& get_matrix_A() const { return A; }
   const std::vector<double>& get_vector_x() const { return x; }
   const std::vector<double>& get_vector_b() const { return b; }

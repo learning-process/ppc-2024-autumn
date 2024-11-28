@@ -50,7 +50,8 @@ TEST(nasedkin_e_seidels_iterate_methods_mpi, test_random_matrix_solution_accurac
     nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI seidel_task(taskData);
 
     const int size = 5;
-    const double min_val = -10.0, max_val = 10.0;
+    const double min_val = -10.0;
+    const double max_val = 10.0;
     const double epsilon = 1e-6;
 
     seidel_task.generate_random_system(size, min_val, max_val);
