@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "mpi/shuravina_o_contrast/include/ops_mpi.hpp"
+
 TEST(shuravina_o_contrast, Test_Contrast_10) {
   boost::mpi::communicator world;
   std::vector<uint8_t> global_vec;
@@ -21,6 +22,7 @@ TEST(shuravina_o_contrast, Test_Contrast_10) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_out.data()));
     taskDataPar->outputs_count.emplace_back(global_out.size());
   }
+
   shuravina_o_contrast::ContrastParallel contrastTask(taskDataPar);
   ASSERT_EQ(contrastTask.validation(), true);
   contrastTask.pre_processing();
@@ -28,7 +30,7 @@ TEST(shuravina_o_contrast, Test_Contrast_10) {
   contrastTask.post_processing();
 
   if (world.rank() == 0) {
-    for (int i = 0; i < global_out.size(); ++i) {
+    for (std::size_t i = 0; i < global_out.size(); ++i) {
       ASSERT_EQ(global_out[i], 255);
     }
   }
@@ -57,11 +59,12 @@ TEST(shuravina_o_contrast, Test_Contrast_20) {
   contrastTask.post_processing();
 
   if (world.rank() == 0) {
-    for (int i = 0; i < global_out.size(); ++i) {
+    for (std::size_t i = 0; i < global_out.size(); ++i) {
       ASSERT_EQ(global_out[i], 255);
     }
   }
 }
+
 TEST(shuravina_o_contrast, Test_Contrast_30) {
   boost::mpi::communicator world;
   std::vector<uint8_t> global_vec;
@@ -85,7 +88,7 @@ TEST(shuravina_o_contrast, Test_Contrast_30) {
   contrastTask.post_processing();
 
   if (world.rank() == 0) {
-    for (int i = 0; i < global_out.size(); ++i) {
+    for (std::size_t i = 0; i < global_out.size(); ++i) {
       ASSERT_EQ(global_out[i], 255);
     }
   }
@@ -114,7 +117,7 @@ TEST(shuravina_o_contrast, Test_Contrast_40) {
   contrastTask.post_processing();
 
   if (world.rank() == 0) {
-    for (int i = 0; i < global_out.size(); ++i) {
+    for (std::size_t i = 0; i < global_out.size(); ++i) {
       ASSERT_EQ(global_out[i], 255);
     }
   }
