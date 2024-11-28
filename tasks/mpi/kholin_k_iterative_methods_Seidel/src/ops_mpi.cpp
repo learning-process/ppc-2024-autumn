@@ -3,14 +3,10 @@
 #include <memory.h>
 
 #include <algorithm>
-#include <cmath>
 #include <functional>
 #include <random>
-#include <string>
-#include <thread>
-#include <vector>
 using namespace std::chrono_literals;
-//
+
 namespace kholin_k_iterative_methods_Seidel_mpi {
 float* A_ = nullptr;
 }
@@ -330,6 +326,7 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::run() {
   if (ProcRank == 0) {
     std::fill(X_next, X_next + n_rows, 1.0f);
     std::fill(X_prev, X_prev + n_rows, 0.0f);
+    std::fill(X0, X0 + n_rows, 0.0f);
   }
   MPI_Bcast(X_next, n_rows, MPI_FLOAT, 0, MPI_COMM_WORLD);
   MPI_Bcast(X_prev, n_rows, MPI_FLOAT, 0, MPI_COMM_WORLD);
@@ -396,23 +393,19 @@ float* kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::gen_vector(si
 void kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::iteration_perfomance() {
   int ProcRank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
-  if (ProcRank == 0) {
-    C = new float[n_rows * n_colls];
-    std::fill(C, C + n_rows * n_colls, 0.0f);
-    for (size_t i = 0; i < n_rows; i++) {
-      for (size_t j = 0; j < n_colls; j++) {
-        if (i == j) {
-          B[i] = B[i] / A[n_colls * i + i];
-          C[n_colls * i + i] = 0;
-          continue;
-        }
-        C[n_colls * i + j] = -A[n_colls * i + j] / A[n_colls * i + i];
+  C = new float[n_rows * n_colls];
+  std::fill(C, C + n_rows * n_colls, 0.0f);
+  for (size_t i = 0; i < n_rows; i++) {
+    for (size_t j = 0; j < n_colls; j++) {
+      if (i == j) {
+        B[i] = B[i] / A[n_colls * i + i];
+        C[n_colls * i + i] = 0;
+        continue;
       }
+      C[n_colls * i + j] = -A[n_colls * i + j] / A[n_colls * i + i];
     }
   }
-  if (ProcRank == 0) {
-    std::memcpy(X0, B, n_colls * sizeof(float));
-  }
+  std::memcpy(X0, B, n_colls * sizeof(float));
 }
 
 float kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::d() {
@@ -593,7 +586,7 @@ void kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::to_lower_diag_m
   }
   MPI_Bcast(lower_displs, n_rows * size, MPI_INT, 0, MPI_COMM_WORLD);
 }
-//
+
 kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::~TestMPITaskParallel() {
   int ProcRank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);

@@ -1,9 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <vector>
-
 #include "seq/kholin_k_iterative_methods_Seidel/include/ops_seq.hpp"
-//
 
 TEST(kholin_k_iterative_methods_Seidel_seq, validation_true_when_matrix_with_diag_pred) {
   const size_t count_rows = 3;
@@ -172,8 +169,3 @@ TEST(kholin_k_iterative_methods_Seidel_seq, validation_false_when_matrix_without
   delete[] out;
   kholin_k_iterative_methods_Seidel_seq::freeA_();
 }
-
-// int main(int argc, char **argv) {
-//   testing::InitGoogleTest(&argc, argv);
-//   return RUN_ALL_TESTS();
-// }

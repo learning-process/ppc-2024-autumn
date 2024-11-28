@@ -2,7 +2,7 @@
 
 #include "core/perf/include/perf.hpp"
 #include "seq/kholin_k_iterative_methods_Seidel/include/ops_seq.hpp"
-//
+
 TEST(kholin_k_iterative_methods_Seidel_seq, test_pipeline_run) {
   const size_t count_rows = 5000;
   const size_t count_colls = 5000;
@@ -86,8 +86,3 @@ TEST(kholin_k_iterative_methods_Seidel_seq, test_task_run) {
   delete[] out;
   kholin_k_iterative_methods_Seidel_seq::freeA_();
 }
-
-// int main(int argc, char **argv) {
-//   testing::InitGoogleTest(&argc, argv);
-//   return RUN_ALL_TESTS();
-// }

@@ -2,10 +2,9 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <vector>
 
 #include "mpi/kholin_k_iterative_methods_Seidel/include/ops_mpi.hpp"
-//
+
 TEST(kholin_k_iterative_methods_Seidel_mpi, validation_true_when_matrix_with_diag_pred) {
   int ProcRank = 0;
   const size_t count_rows = 25;
@@ -230,14 +229,3 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, test_post_processing) {
     kholin_k_iterative_methods_Seidel_mpi::freeA_();
   }
 }
-
-// int main(int argc, char **argv) {
-//   boost::mpi::environment env(argc, argv);
-//   boost::mpi::communicator world;
-//   ::testing::InitGoogleTest(&argc, argv);
-//   ::testing::TestEventListeners &listeners = ::testing::UnitTest::GetInstance()->listeners();
-//   if (world.rank() != 0) {
-//     delete listeners.Release(listeners.default_result_printer());
-//   }
-//   return RUN_ALL_TESTS();
-// }

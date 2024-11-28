@@ -6,7 +6,6 @@
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <cmath>
-#include <cstdint>
 #include <cstring>
 #include <functional>
 #include <memory>
@@ -15,14 +14,13 @@
 #include <string>
 #include <thread>
 #include <utility>
-#include <vector>
 
 #include "core/task/include/task.hpp"
 
 namespace list_ops {
 enum ops_ : std::uint8_t { METHOD_SEIDEL };
 }
-//
+
 namespace kholin_k_iterative_methods_Seidel_mpi {
 
 bool IsDiagPred(float row_coeffs[], size_t num_colls, size_t start_index, size_t index);

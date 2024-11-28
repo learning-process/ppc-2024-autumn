@@ -7,8 +7,6 @@
 #include <cstring>
 #include <iostream>
 #include <random>
-#include <string>
-#include <vector>
 
 #include "core/task/include/task.hpp"
 
@@ -52,5 +50,4 @@ class TestTaskSequential : public ppc::core::Task {
 };
 
 }  // namespace kholin_k_iterative_methods_Seidel_seq
-//
 #endif
