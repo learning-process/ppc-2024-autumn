@@ -18,7 +18,93 @@ inline std::vector<int> GenMatrix(int colums_temp, int rows_temp) {
 }
 }  // namespace grudzin_k_all_reduce_boost_mpi
 
-TEST(grudzin_k_all_reduce_boost_mpi, Test_Seq_and_My_Ver_2000x2000) {
+TEST(grudzin_k_all_reduce_boost_mpi, Test_Seq_and_Boost_Ver_17x23) {
+  int rows = 17;
+  int colums = 23;
+  boost::mpi::communicator world;
+  std::vector<int> mas(colums * rows);
+  mas = grudzin_k_all_reduce_boost_mpi::GenMatrix(colums, rows);
+  std::vector<int> parallel_results(colums);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(mas.data()));
+    taskDataPar->inputs_count.emplace_back(rows);
+    taskDataPar->inputs_count.emplace_back(colums);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(parallel_results.data()));
+    taskDataPar->outputs_count.emplace_back(parallel_results.size());
+  }
+  grudzin_k_all_reduce_boost_mpi::TestMPITaskBoostRealization TestMPITaskBoostRealization(taskDataPar);
+  ASSERT_EQ(TestMPITaskBoostRealization.validation(), true);
+
+  TestMPITaskBoostRealization.pre_processing();
+  TestMPITaskBoostRealization.run();
+
+  TestMPITaskBoostRealization.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int> sequntional_results(colums, 0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(mas.data()));
+    taskDataSeq->inputs_count.emplace_back(rows);
+    taskDataSeq->inputs_count.emplace_back(colums);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(sequntional_results.data()));
+    taskDataSeq->outputs_count.emplace_back(sequntional_results.size());
+    grudzin_k_all_reduce_boost_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(parallel_results, sequntional_results);
+  }
+}
+
+TEST(grudzin_k_all_reduce_boost_mpi, Test_Seq_and_Boost_Ver_16x32) {
+  int rows = 16;
+  int colums = 32;
+  boost::mpi::communicator world;
+  std::vector<int> mas(colums * rows);
+  mas = grudzin_k_all_reduce_boost_mpi::GenMatrix(colums, rows);
+  std::vector<int> parallel_results(colums);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(mas.data()));
+    taskDataPar->inputs_count.emplace_back(rows);
+    taskDataPar->inputs_count.emplace_back(colums);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(parallel_results.data()));
+    taskDataPar->outputs_count.emplace_back(parallel_results.size());
+  }
+  grudzin_k_all_reduce_boost_mpi::TestMPITaskBoostRealization TestMPITaskBoostRealization(taskDataPar);
+  ASSERT_EQ(TestMPITaskBoostRealization.validation(), true);
+
+  TestMPITaskBoostRealization.pre_processing();
+  TestMPITaskBoostRealization.run();
+
+  TestMPITaskBoostRealization.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int> sequntional_results(colums, 0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(mas.data()));
+    taskDataSeq->inputs_count.emplace_back(rows);
+    taskDataSeq->inputs_count.emplace_back(colums);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(sequntional_results.data()));
+    taskDataSeq->outputs_count.emplace_back(sequntional_results.size());
+    grudzin_k_all_reduce_boost_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(parallel_results, sequntional_results);
+  }
+}
+
+TEST(grudzin_k_all_reduce_boost_mpi, Test_Seq_and_Boost_Ver_2000x2000) {
   int rows = 2000;
   int colums = 2000;
 
@@ -62,7 +148,7 @@ TEST(grudzin_k_all_reduce_boost_mpi, Test_Seq_and_My_Ver_2000x2000) {
   }
 }
 
-TEST(grudzin_k_all_reduce_boost_mpi, Test_Seq_and_My_Ver_1337) {
+TEST(grudzin_k_all_reduce_boost_mpi, Test_Seq_and_Boost_Ver_1337) {
   int rows = 13;
   int colums = 37;
 
@@ -105,7 +191,7 @@ TEST(grudzin_k_all_reduce_boost_mpi, Test_Seq_and_My_Ver_1337) {
   }
 }
 
-TEST(grudzin_k_all_reduce_boost_mpi, Test_Seq_and_My_Ver_20x30) {
+TEST(grudzin_k_all_reduce_boost_mpi, Test_Seq_and_Boost_Ver_20x30) {
   int rows = 20;
   int colums = 30;
 

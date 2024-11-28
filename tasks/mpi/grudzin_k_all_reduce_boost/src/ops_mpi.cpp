@@ -73,16 +73,18 @@ bool grudzin_k_all_reduce_boost_mpi::TestMPITaskBoostRealization::validation() {
 
 bool grudzin_k_all_reduce_boost_mpi::TestMPITaskBoostRealization::run() {
   internal_order_test();
+  int size, rest, delta;
   if (world.rank() == 0) {
     rows = taskData->inputs_count[0];
     colums = taskData->inputs_count[1];
+    size = rows * colums;
+    rest = size % world.size();
+    delta = size / world.size();
   }
-  boost::mpi::broadcast(world, rows, 0);
+  boost::mpi::broadcast(world, size, 0);
+  boost::mpi::broadcast(world, rest, 0);
+  boost::mpi::broadcast(world, delta, 0);
   boost::mpi::broadcast(world, colums, 0);
-
-  int size = rows * colums;
-  int rest = size % world.size();
-  int delta = size / world.size();
 
   if (rest != 0) {
     delta++;

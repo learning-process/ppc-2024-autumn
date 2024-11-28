@@ -102,11 +102,11 @@ void grudzin_k_all_reduce_student_mpi::TestMPITaskMyRealization::my_all_reduce(c
   delete[] cv2;
   // send data to our parent (if it exist) and get out_values from him
   if (root > 0) {
-    root--;
-    world.send(root >> 1, 0, out_values, n);
+    int local_root = root - 1;
+    local_root >>= 1;
+    world.send(local_root, 0, out_values, n);
     // wait for broadcast
-    world.recv(root >> 1, 0, out_values, n);
-    root++;
+    world.recv(local_root, 0, out_values, n);
   }
   // send to children's
   if (2 * root + 1 < world.size()) {
@@ -119,16 +119,18 @@ void grudzin_k_all_reduce_student_mpi::TestMPITaskMyRealization::my_all_reduce(c
 
 bool grudzin_k_all_reduce_student_mpi::TestMPITaskMyRealization::run() {
   internal_order_test();
+  int size, rest, delta;
   if (world.rank() == 0) {
     rows = taskData->inputs_count[0];
     colums = taskData->inputs_count[1];
+    size = rows * colums;
+    rest = size % world.size();
+    delta = size / world.size();
   }
-  boost::mpi::broadcast(world, rows, 0);
+  boost::mpi::broadcast(world, size, 0);
+  boost::mpi::broadcast(world, rest, 0);
+  boost::mpi::broadcast(world, delta, 0);
   boost::mpi::broadcast(world, colums, 0);
-
-  int size = rows * colums;
-  int rest = size % world.size();
-  int delta = size / world.size();
 
   if (rest != 0) {
     delta++;
