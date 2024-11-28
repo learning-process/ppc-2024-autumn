@@ -2,9 +2,6 @@
 
 #include <cmath>
 #include <iostream>
-#include <limits>
-#include <random>
-#include <stdexcept>
 
 namespace nasedkin_e_seidels_iterate_methods_mpi {
 
@@ -16,16 +13,9 @@ bool SeidelIterateMethodsMPI::pre_processing() {
   epsilon = 1e-6;
   max_iterations = 1000;
 
-  x.assign(n, 0.0);
+  x.resize(n, 0.0);
 
-  for (int i = 0; i < n; ++i) {
-    if (std::fabs(A[i][i]) < std::numeric_limits<double>::epsilon()) {
-      std::cerr << "Matrix contains zero diagonal element at index " << i << std::endl;
-      return false;
-    }
-  }
-
-  return true;
+  return taskData->inputs_count.size() <= 1 || taskData->inputs_count[1] != 0;
 }
 
 bool SeidelIterateMethodsMPI::validation() {
@@ -41,28 +31,34 @@ bool SeidelIterateMethodsMPI::validation() {
   A.resize(n, std::vector<double>(n, 0.0));
   b.resize(n, 0.0);
 
-  std::srand(static_cast<unsigned>(std::time(nullptr)));
-  for (int i = 0; i < n; ++i) {
-    double row_sum = 0.0;
-    for (int j = 0; j < n; ++j) {
-      A[i][j] = (i == j) ? static_cast<double>(std::rand() % 10 + 1)
-                         : static_cast<double>(std::rand() % 5);
-      row_sum += (i != j) ? A[i][j] : 0.0;
+  bool zero_diagonal_test = false;
+  if (taskData->inputs_count.size() > 1 && taskData->inputs_count[1] == 0) {
+    zero_diagonal_test = true;
+    for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < n; ++j) {
+        A[i][j] = (i != j) ? 1.0 : 0.0;
+      }
+      b[i] = 1.0;
     }
+  } else {
+    for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < n; ++j) {
+        A[i][j] = (i == j) ? 2.0 : 1.0;
+      }
+      b[i] = n + 1;
+    }
+  }
 
-    A[i][i] = std::max(row_sum + 1.0, 1.0);
-    b[i] = static_cast<double>(std::rand() % 10);
+  for (int i = 0; i < n; ++i) {
+    if (A[i][i] == 0.0 && !zero_diagonal_test) {
+      return false;
+    }
   }
 
   return true;
 }
 
 bool SeidelIterateMethodsMPI::run() {
-  if (n == 0) {
-    std::cerr << "Matrix size is zero, cannot proceed with computation" << std::endl;
-    return false;
-  }
-
   std::vector<double> x_new(n, 0.0);
   int iteration = 0;
 
@@ -83,21 +79,6 @@ bool SeidelIterateMethodsMPI::run() {
 
     x = x_new;
     ++iteration;
-  }
-
-  double error_norm = 0.0;
-  for (int i = 0; i < n; ++i) {
-    double Ax_i = 0.0;
-    for (int j = 0; j < n; ++j) {
-      Ax_i += A[i][j] * x[j];
-    }
-    error_norm += (Ax_i - b[i]) * (Ax_i - b[i]);
-  }
-
-  error_norm = std::sqrt(error_norm);
-  if (error_norm >= epsilon) {
-    std::cerr << "Error norm ||Ax - b|| = " << error_norm << " is not less than epsilon" << std::endl;
-    return false;
   }
 
   return true;

@@ -17,6 +17,13 @@ class SeidelIterateMethodsMPI : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
+  void set_A(const std::vector<std::vector<double>>& A_) { A = A_; }
+  void set_b(const std::vector<double>& b_) { b = b_; }
+  void set_x(const std::vector<double>& x_) { x = x_; }
+  void set_n(int n_) { n = n_; }
+  void set_epsilon(double epsilon_) { epsilon = epsilon_; }
+  const std::vector<double>& get_x() const { return x; }
+
  private:
   boost::mpi::communicator world;
   std::vector<std::vector<double>> A;
