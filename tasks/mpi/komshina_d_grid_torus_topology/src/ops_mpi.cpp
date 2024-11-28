@@ -8,6 +8,9 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <iostream>
+#include <array>
+
 
 using namespace std::chrono_literals;
 
@@ -92,3 +95,4 @@ std::array<int, 4> komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel
   int up = (rank < width) ? (rank + width * (height - 1)) : (rank - width);
   int down = (rank >= width * (height - 1)) ? (rank - width * (height - 1)) : (rank + width);
   return {left, right, up, down};
+}
