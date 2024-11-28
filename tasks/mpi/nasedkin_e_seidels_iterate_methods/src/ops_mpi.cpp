@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <random>
 
 namespace nasedkin_e_seidels_iterate_methods_mpi {
 
@@ -88,17 +89,44 @@ bool SeidelIterateMethodsMPI::converge(const std::vector<double>& x_new) {
   return std::sqrt(norm) < epsilon;
 }
 
-void SeidelIterateMethodsMPI::set_matrix(const std::vector<std::vector<double>>& matrix) {
-  A = matrix;
-  n = static_cast<int>(matrix.size());
+void nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI::generate_random_system(int size, double min_val, double max_val) {
+    std::mt19937 gen(std::random_device{}());
+    std::uniform_real_distribution<double> dist(min_val, max_val);
+
+    A.resize(size, std::vector<double>(size));
+    b.resize(size);
+    x.resize(size, 0.0);
+
+    for (int i = 0; i < size; ++i) {
+        double row_sum = 0.0;
+        for (int j = 0; j < size; ++j) {
+            A[i][j] = dist(gen);
+            if (i != j) row_sum += std::abs(A[i][j]);
+        }
+        A[i][i] = row_sum + dist(gen);
+        b[i] = dist(gen);
+    }
 }
 
-void SeidelIterateMethodsMPI::set_vector(const std::vector<double>& vector) {
-  b = vector;
-}
+double nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI::compute_residual_norm(
+    const std::vector<std::vector<double>>& A,
+    const std::vector<double>& x,
+    const std::vector<double>& b) {
+    std::vector<double> Ax_b(b.size(), 0.0);
 
-const std::vector<double>& SeidelIterateMethodsMPI::get_solution() const {
-  return x;
+    for (size_t i = 0; i < A.size(); ++i) {
+        double sum = 0.0;
+        for (size_t j = 0; j < A[i].size(); ++j) {
+            sum += A[i][j] * x[j];
+        }
+        Ax_b[i] = sum - b[i];
+    }
+
+    double norm = 0.0;
+    for (double val : Ax_b) {
+        norm += val * val;
+    }
+    return std::sqrt(norm);
 }
 
 }  // namespace nasedkin_e_seidels_iterate_methods_mpi
