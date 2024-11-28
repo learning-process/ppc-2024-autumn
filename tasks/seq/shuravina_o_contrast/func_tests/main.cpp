@@ -2,7 +2,6 @@
 
 #include <vector>
 
-#include "core/perf/include/perf.hpp"
 #include "seq/shuravina_o_contrast/include/ops_seq.hpp"
 
 TEST(shuravina_o_contrast, Test_Contrast_10) {
@@ -21,7 +20,7 @@ TEST(shuravina_o_contrast, Test_Contrast_10) {
   contrastTask.run();
   contrastTask.post_processing();
 
-  for (int i = 0; i < output_vec.size(); ++i) {
+  for (std::size_t i = 0; i < output_vec.size(); ++i) {
     ASSERT_EQ(output_vec[i], 255);
   }
 }
@@ -42,7 +41,7 @@ TEST(shuravina_o_contrast, Test_Contrast_20) {
   contrastTask.run();
   contrastTask.post_processing();
 
-  for (int i = 0; i < output_vec.size(); ++i) {
+  for (std::size_t i = 0; i < output_vec.size(); ++i) {
     ASSERT_EQ(output_vec[i], 255);
   }
 }
@@ -63,10 +62,11 @@ TEST(shuravina_o_contrast, Test_Contrast_30) {
   contrastTask.run();
   contrastTask.post_processing();
 
-  for (int i = 0; i < output_vec.size(); ++i) {
+  for (std::size_t i = 0; i < output_vec.size(); ++i) {
     ASSERT_EQ(output_vec[i], 255);
   }
 }
+
 TEST(shuravina_o_contrast, Test_Contrast_40) {
   std::vector<uint8_t> input_vec(40, 16);
   std::vector<uint8_t> output_vec(40, 0);
@@ -83,7 +83,7 @@ TEST(shuravina_o_contrast, Test_Contrast_40) {
   contrastTask.run();
   contrastTask.post_processing();
 
-  for (int i = 0; i < output_vec.size(); ++i) {
+  for (std::size_t i = 0; i < output_vec.size(); ++i) {
     ASSERT_EQ(output_vec[i], 255);
   }
 }
