@@ -56,7 +56,9 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, test_pipeline_run) {
     delete[] in;
     delete[] out;
   }
-  kholin_k_iterative_methods_Seidel_mpi::freeA_();
+  if (ProcRank == 0) {
+    kholin_k_iterative_methods_Seidel_mpi::freeA_();
+  }
 }
 
 TEST(kholin_k_iterative_methods_Seidel_mpi, test_task_run) {
@@ -109,5 +111,7 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, test_task_run) {
     delete[] in;
     delete[] out;
   }
-  kholin_k_iterative_methods_Seidel_mpi::freeA_();
+  if (ProcRank == 0) {
+    kholin_k_iterative_methods_Seidel_mpi::freeA_();
+  }
 }
