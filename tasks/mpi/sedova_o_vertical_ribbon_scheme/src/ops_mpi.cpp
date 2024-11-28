@@ -7,12 +7,31 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
 bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::validation() {
   internal_order_test();
+
   if (world.rank() == 0) {
-    return taskData->inputs_count[0] >= 1 && taskData->inputs_count[0] / taskData->inputs_count[1] > 0;
+    // Check for null TaskData
+    if (!taskData) {
+      return false;
+    }
+    // Check input counts
+    if (taskData->inputs_count[0] < 1 || taskData->inputs_count[1] < 1) {
+      return false;
+    }
+    // Check if the number of columns in the matrix is equal to the size of the vector.
+    int num_rows = taskData->inputs_count[0] / taskData->inputs_count[1];
+    if (taskData->inputs_count[0] % taskData->inputs_count[1] != 0 || num_rows < 1) {
+      return false;
+    }
+    // Check for null input pointers
+    if (taskData->inputs[0] == 0 || taskData->inputs[1] == 0) {
+      return false;
+    }
+    // Check output
+    if (taskData->outputs[0] == 0) {
+      return false;
+    }
   }
   return true;
 }
@@ -20,10 +39,6 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::pre_processing() {
   internal_order_test();
 
   if (world.rank() == 0) {
-    if (!taskData || taskData->inputs[0] == 0 || taskData->inputs[1] == 0 || taskData->outputs[0] == 0) {
-      return false;
-    }
-
     int* input_matrix_ = reinterpret_cast<int*>(taskData->inputs[0]);
     int* input_vector_ = reinterpret_cast<int*>(taskData->inputs[1]);
 
@@ -59,9 +74,8 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::pre_processing() {
         offset += distribution[i];
       }
     }
-  }
-
-  if (world.rank() != 0) {
+  } 
+  else {
     input_matrix_1.resize(rows_ * cols_, 0);
     input_vector_1.resize(cols_, 0);
     result_vector_.resize(rows_, 0);
@@ -109,8 +123,9 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::post_processing() {
 
 bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::validation() {
   internal_order_test();
-  return taskData->inputs_count[0] >= 1 && taskData->inputs_count[0] / taskData->inputs_count[1] > 0;
-}
+  return taskData->inputs_count[0] >= 1 && taskData->inputs_count[1] >= 1 && !taskData &&
+           taskData->inputs_count[0] % taskData->inputs_count[1] == 0 && taskData->outputs[0] != 0;
+ }
 
 bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::pre_processing() {
   internal_order_test();

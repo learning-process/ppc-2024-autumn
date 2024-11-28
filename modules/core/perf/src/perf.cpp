@@ -1,4 +1,4 @@
-﻿// Copyright 2023 Nesterov Alexander
+// Copyright 2023 Nesterov Alexander
 #include "core/perf/include/perf.hpp"
 
 #include <gtest/gtest.h>
