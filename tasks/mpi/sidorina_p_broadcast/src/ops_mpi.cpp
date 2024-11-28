@@ -55,12 +55,12 @@ bool sidorina_p_broadcast_mpi::Broadcast::run() {
       world.send(p, 0, term.data() + p * del, del);
     }
   }
-  std::vector<int> local_term(del);
+  std::vector<int> local_powers(del);
 
   if (world.rank() == 0) {
-    std::copy(term.data(), term.data() + del, local_term.begin());
+    std::copy(term.data(), term.data() + del, local_powers.begin());
   } else {
-    world.recv(0, 0, local_term.data(), del);
+    world.recv(0, 0, local_powers.data(), del);
   }
 
   for (int i = 0; i < static_cast<int>(arr.size()); i++) {

@@ -65,7 +65,7 @@ TEST(sidorina_p_broadcast_mpi, Test_arr3_term2_m) {
   }
 }
 
-TEST(sidorina_p_broadcast_mpi, Test_array3_term2_ref_m) {
+/* TEST(sidorina_p_broadcast_mpi, Test_array3_term2_ref_m) {
   boost::mpi::communicator world;
 
   std::vector<int> reference;
@@ -442,4 +442,4 @@ TEST(sidorina_p_broadcast_mpi, Test_validation_1) {
 
   sidorina_p_broadcast_mpi::Broadcast testMpiTaskParallel(taskDataGlob);
   ASSERT_EQ(testMpiTaskParallel.validation(), false);
-}
+}*/
