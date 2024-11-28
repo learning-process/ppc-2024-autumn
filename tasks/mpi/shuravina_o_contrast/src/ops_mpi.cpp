@@ -64,10 +64,17 @@ bool shuravina_o_contrast::ContrastParallel::run() {
 }
 
 bool shuravina_o_contrast::ContrastParallel::post_processing() {
+  std::vector<uint8_t> gathered_output;
+  if (world.rank() == 0) {
+    gathered_output.resize(taskData->outputs_count[0]);
+  }
+
+  boost::mpi::gather(world, output_.data(), output_.size(), gathered_output.data(), 0);
+
   if (world.rank() == 0) {
     auto* tmp_ptr = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
-    for (unsigned i = 0; i < taskData->outputs_count[0]; i++) {
-      tmp_ptr[i] = output_[i];
+    for (size_t i = 0; i < taskData->outputs_count[0]; i++) {
+      tmp_ptr[i] = gathered_output[i];
     }
   }
   return true;
