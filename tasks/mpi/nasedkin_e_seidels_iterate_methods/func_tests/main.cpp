@@ -59,8 +59,8 @@ TEST(nasedkin_e_seidels_iterate_methods_mpi, test_random_matrix_solution_accurac
   std::mt19937 rng(42);
   std::uniform_real_distribution<double> dist(-10.0, 10.0);
 
-  for (int i = 0; i < taskData->inputs_count[0]; ++i) {
-    for (int j = 0; j < taskData->inputs_count[0]; ++j) {
+  for (unsigned int i = 0; i < taskData->inputs_count[0]; ++i) {
+    for (unsigned int j = 0; j < taskData->inputs_count[0]; ++j) {
       A[i][j] = (i == j) ? dist(rng) + 15.0 : dist(rng);
     }
     b[i] = dist(rng);
