@@ -60,7 +60,6 @@ bool sidorina_p_broadcast_mpi::Broadcast::run() {
   if (world.rank() == 0) {
     std::copy(term.data(), term.data() + del, local_term.begin());
   } else {
-    //local_term.resize(del);
     world.recv(0, 0, local_term.data(), del);
   }
 
