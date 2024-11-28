@@ -317,7 +317,11 @@ bool vladimirova_j_gather_mpi::TestMPITaskParallel::run() {
 bool vladimirova_j_gather_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+      taskData->outputs_count[0] = local_input_.size();
+      auto* output_data = reinterpret_cast<int*>(taskData->outputs[0]);
+      std::copy(local_input_.begin(), local_input_.end(), output_data);
+
+    //reinterpret_cast<int*>(taskData->outputs[0]) = res;
   }
   return true;
 }
