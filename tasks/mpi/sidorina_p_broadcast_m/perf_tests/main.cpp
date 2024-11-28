@@ -4,9 +4,9 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/sidorina_p_broadcast/include/ops_mpi.hpp"
+#include "mpi/sidorina_p_broadcast_m/include/ops_mpi.hpp"
 
-TEST(sidorina_p_broadcast_mpi, test_pipeline_run) {
+TEST(sidorina_p_broadcast_m_mpi, test_pipeline_run_m) {
   boost::mpi::communicator world;
 
   std::vector<int> reference;
@@ -39,9 +39,9 @@ TEST(sidorina_p_broadcast_mpi, test_pipeline_run) {
     taskData->outputs_count.emplace_back(result.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<sidorina_p_broadcast_mpi::Broadcast>(taskData);
+  auto testMpiTaskParallel = std::make_shared<sidorina_p_broadcast_m_mpi::Broadcast>(taskData);
   testMpiTaskParallel->broadcast_fn = [](const boost::mpi::communicator& comm, int* values, int n, int root) {
-    boost::mpi::broadcast(comm, values, n, root);
+    sidorina_p_broadcast_m_mpi::Broadcast::broadcast_m(comm, values, n, root);
   };
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
@@ -63,7 +63,7 @@ TEST(sidorina_p_broadcast_mpi, test_pipeline_run) {
   }
 }
 
-TEST(sidorina_p_broadcast_mpi, test_task_run) {
+TEST(sidorina_p_broadcast_m_mpi, test_task_run_m) {
   boost::mpi::communicator world;
 
   std::vector<int> reference;
@@ -96,9 +96,9 @@ TEST(sidorina_p_broadcast_mpi, test_task_run) {
     taskData->outputs_count.emplace_back(result.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<sidorina_p_broadcast_mpi::Broadcast>(taskData);
+  auto testMpiTaskParallel = std::make_shared<sidorina_p_broadcast_m_mpi::Broadcast>(taskData);
   testMpiTaskParallel->broadcast_fn = [](const boost::mpi::communicator& comm, int* values, int n, int root) {
-    boost::mpi::broadcast(comm, values, n, root);
+    sidorina_p_broadcast_m_mpi::Broadcast::broadcast_m(comm, values, n, root);
   };
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
