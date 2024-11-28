@@ -39,7 +39,6 @@ class TestMPITaskBoostParallel : public ppc::core::Task {
 
  private:
   std::vector<int> input_;
-  //std::vector<int> local_input_;
   std::vector<int> res_;
   int cols{};
   int rows{};

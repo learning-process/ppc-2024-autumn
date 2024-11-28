@@ -26,7 +26,7 @@ bool chizhov_m_all_reduce_my_mpi::TestMPITaskSequential::pre_processing() {
 bool chizhov_m_all_reduce_my_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
   return (taskData->inputs_count[1] != 0 && taskData->inputs_count[2] != 0 && !taskData->inputs.empty() &&
-          taskData->inputs_count[0] > 0 && taskData->inputs_count[1] && taskData->outputs_count[0]);
+          taskData->inputs_count[0] > 0 && (taskData->inputs_count[1] == taskData->outputs_count[0]));
 }
 
 bool chizhov_m_all_reduce_my_mpi::TestMPITaskSequential::run() {
@@ -83,7 +83,7 @@ bool chizhov_m_all_reduce_my_mpi::TestMPITaskMyOwnParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     return (taskData->inputs_count[1] != 0 && taskData->inputs_count[2] != 0 && !taskData->inputs.empty() &&
-            taskData->inputs_count[0] > 0 && taskData->inputs_count[1] && taskData->outputs_count[0]);
+            taskData->inputs_count[0] > 0 && (taskData->inputs_count[1] == taskData->outputs_count[0]));
   }
   return true;
 }
