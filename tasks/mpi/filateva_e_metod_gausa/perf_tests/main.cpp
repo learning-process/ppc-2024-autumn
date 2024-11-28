@@ -8,23 +8,23 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/filateva_e_metod_gausa/include/ops_mpi.hpp"
 
-std::vector<double> gereratorSLU(std::vector<double>& matrix, std::vector<double>& vecB){
+std::vector<double> gereratorSLU(std::vector<double>& matrix, std::vector<double>& vecB) {
   int min_z = -5;
   int max_z = 5;
   int size = vecB.size();
   std::vector<double> resh(size);
-  for(int i = 0; i < size; i++){
+  for (int i = 0; i < size; i++) {
     resh[i] = rand() % (max_z - min_z + 1) + min_z;
   }
-  for(int i = 0; i < size; i++){
+  for (int i = 0; i < size; i++) {
     double sum = 0;
     double sumB = 0;
-    for (int j = 0; j < size; j++){
+    for (int j = 0; j < size; j++) {
       matrix[i * size + j] = rand() % (max_z - min_z + 1) + min_z;
       sum += abs(matrix[i * size + j]);
     }
     matrix[i * size + i] = sum;
-    for (int j = 0; j < size; j++){
+    for (int j = 0; j < size; j++) {
       sumB += matrix[i * size + j] * resh[j];
     }
     vecB[i] = sumB;
@@ -32,9 +32,9 @@ std::vector<double> gereratorSLU(std::vector<double>& matrix, std::vector<double
   return resh;
 }
 
-bool check(std::vector<double>& resh, std::vector<double>& tResh, double alfa){
-  for (int i = 0; i < tResh.size(); i++){
-    if (abs(resh[i] - tResh[i]) > alfa){
+bool check(std::vector<double>& resh, std::vector<double>& tResh, double alfa) {
+  for (int i = 0; i < tResh.size(); i++) {
+    if (abs(resh[i] - tResh[i]) > alfa) {
       return false;
     }
   }
@@ -53,7 +53,7 @@ TEST(filateva_e_metod_gausa_mpi, test_pipeline_run) {
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
 
-  if (world.rank() == 0){
+  if (world.rank() == 0) {
     matrix.resize(size * size);
     vecB.resize(size);
     tResh = gereratorSLU(matrix, vecB);
@@ -84,15 +84,15 @@ TEST(filateva_e_metod_gausa_mpi, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    auto* temp = reinterpret_cast<double*>(taskData->outputs[0]);
+    auto* temp = reinterpret_cast<double *>(taskData->outputs[0]);
     answer.insert(answer.end(), temp, temp + size);
 
-    ASSERT_EQ(check(answer,tResh,alfa), true);
+    ASSERT_EQ(check(answer, tResh, alfa), true);
   }
 }
 
 TEST(filateva_e_metod_gausa_mpi, test_task_run) {
-    boost::mpi::communicator world;
+  boost::mpi::communicator world;
   int size = 800;
   double alfa = 0.000000001;
   std::vector<double> matrix;
@@ -102,7 +102,7 @@ TEST(filateva_e_metod_gausa_mpi, test_task_run) {
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
 
-  if (world.rank() == 0){
+  if (world.rank() == 0) {
     matrix.resize(size * size);
     vecB.resize(size);
     tResh = gereratorSLU(matrix, vecB);
@@ -133,9 +133,9 @@ TEST(filateva_e_metod_gausa_mpi, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-     auto* temp = reinterpret_cast<double*>(taskData->outputs[0]);
+    auto *temp = reinterpret_cast<double*>(taskData->outputs[0]);
     answer.insert(answer.end(), temp, temp + size);
 
-    ASSERT_EQ(check(answer,tResh,alfa), true);
+    ASSERT_EQ(check(answer, tResh, alfa), true);
   }
 }
