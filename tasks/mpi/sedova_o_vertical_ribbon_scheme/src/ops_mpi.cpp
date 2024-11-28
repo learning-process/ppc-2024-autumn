@@ -21,15 +21,15 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::validation() {
     }
     // Check if the number of columns in the matrix is equal to the size of the vector.
     int num_rows = taskData->inputs_count[0] / taskData->inputs_count[1];
-    if (taskData->inputs_count[0] % taskData->inputs_count[1] != 0 || num_rows < 1) {
+    if (taskData->inputs_count[0] % taskData->inputs_count[1] != nullptr || num_rows < 1) {
       return false;
     }
     // Check for null input pointers
-    if (taskData->inputs[0] == 0 || taskData->inputs[1] == 0) {
+    if (taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr) {
       return false;
     }
     // Check output
-    if (taskData->outputs[0] == 0) {
+    if (taskData->outputs[0] == nullptr) {
       return false;
     }
   }
@@ -124,7 +124,7 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::post_processing() {
 bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::validation() {
   internal_order_test();
   return taskData->inputs_count[0] >= 1 && taskData->inputs_count[1] >= 1 && !taskData &&
-           taskData->inputs_count[0] % taskData->inputs_count[1] == 0 && taskData->outputs[0] != 0;
+         taskData->inputs_count[0] % taskData->inputs_count[1] == nullptr && taskData->outputs[0] != nullptr;
  }
 
 bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::pre_processing() {
