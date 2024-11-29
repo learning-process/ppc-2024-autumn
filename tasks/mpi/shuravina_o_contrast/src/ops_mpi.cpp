@@ -82,5 +82,4 @@ bool ContrastTaskParallel::post_processing() {
   }
   return true;
 }
-
 }  // namespace shuravina_o_contrast
