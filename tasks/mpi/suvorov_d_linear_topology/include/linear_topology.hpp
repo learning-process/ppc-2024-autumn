@@ -5,6 +5,7 @@
 
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <boost/serialization/vector.hpp>
 #include <memory>
 #include <numeric>
 #include <string>
@@ -16,18 +17,19 @@
 namespace suvorov_d_linear_topology {
 
 std::vector<int> getRandomVector(int sz);
+void print_vec(std::vector<int> vec);
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
   explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_))) {}
+      : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
  private:
-  std::vector<int> local_data_, rank_order;
+  std::vector<int> local_data_, rank_order_, verific_data_;
   boost::mpi::communicator world;
 };
 
