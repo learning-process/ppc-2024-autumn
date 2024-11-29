@@ -13,7 +13,7 @@ bool SeidelIterateMethodsMPI::pre_processing() {
   epsilon = 1e-6;
   max_iterations = 1000;
 
-  x.resize(n, 0.0);
+  x.assign(n, 0.0);
 
   return taskData->inputs_count.size() <= 1 || taskData->inputs_count[1] != 0;
 }
@@ -70,18 +70,23 @@ bool SeidelIterateMethodsMPI::run() {
           x_new[i] -= A[i][j] * x[j];
         }
       }
+      if (A[i][i] == 0.0) {
+        throw std::runtime_error("Diagonal element of A is zero, cannot proceed with division.");
+      }
       x_new[i] /= A[i][i];
     }
 
     if (converge(x_new)) {
-      break;
+      x = x_new;
+      return true;
     }
 
     x = x_new;
     ++iteration;
   }
 
-  return true;
+  std::cerr << "Warning: Seidel method did not converge within max_iterations." << std::endl;
+  return false;
 }
 
 bool SeidelIterateMethodsMPI::post_processing() { return true; }
@@ -124,14 +129,25 @@ void SeidelIterateMethodsMPI::generate_random_diag_dominant_matrix(int size, std
 }
 
 double nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI::check_residual_norm() const {
+  if (A.empty() || b.empty() || x.empty()) {
+    throw std::runtime_error("Matrix, vector, or solution vector is empty.");
+  }
+
   double norm = 0.0;
+
   for (int i = 0; i < n; ++i) {
     double row_residual = b[i];
     for (int j = 0; j < n; ++j) {
       row_residual -= A[i][j] * x[j];
     }
+
+    if (std::isnan(row_residual) || std::isinf(row_residual)) {
+      throw std::runtime_error("Residual computation resulted in NaN or Inf.");
+    }
+
     norm += row_residual * row_residual;
   }
+
   return std::sqrt(norm);
 }
 

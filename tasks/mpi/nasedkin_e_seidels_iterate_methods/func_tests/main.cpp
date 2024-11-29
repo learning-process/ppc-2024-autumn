@@ -52,8 +52,18 @@ TEST(nasedkin_e_seidels_iterate_methods_mpi, test_random_diag_dominant_matrix_wi
 
   std::vector<std::vector<double>> matrix;
   std::vector<double> vector;
-  nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI::generate_random_diag_dominant_matrix(5, matrix,
-                                                                                                        vector);
+  nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI::generate_random_diag_dominant_matrix(5, matrix, vector);
+
+  for (int i = 0; i < 5; ++i) {
+    double row_sum = 0.0;
+    for (int j = 0; j < 5; ++j) {
+      if (i != j) {
+        row_sum += std::abs(matrix[i][j]);
+      }
+    }
+    ASSERT_GT(matrix[i][i], row_sum) << "Matrix is not diagonally dominant.";
+  }
+
   seidel_task.set_matrix(matrix, vector);
 
   ASSERT_TRUE(seidel_task.validation()) << "Validation failed for random diagonally dominant matrix";
@@ -64,3 +74,4 @@ TEST(nasedkin_e_seidels_iterate_methods_mpi, test_random_diag_dominant_matrix_wi
   double residual_norm = seidel_task.check_residual_norm();
   ASSERT_LT(residual_norm, 1e-6) << "Residual ||Ax - b|| = " << residual_norm << " exceeds tolerance epsilon = 1e-6";
 }
+
