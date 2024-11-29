@@ -33,7 +33,7 @@ bool shuravina_o_contrast::ContrastParallel::pre_processing() {
 }
 
 bool shuravina_o_contrast::ContrastParallel::validation() {
-  if (world.rank() == 255) {
+  if (world.rank() == 0) {
     return taskData->outputs_count[0] == taskData->inputs_count[0];
   }
   return true;
@@ -64,20 +64,13 @@ bool shuravina_o_contrast::ContrastParallel::run() {
 }
 
 bool shuravina_o_contrast::ContrastParallel::post_processing() {
-  std::vector<int> recv_counts(world.size());
-  std::vector<int> displs(world.size());
   std::vector<uint8_t> gathered_output;
 
   if (world.rank() == 0) {
     gathered_output.resize(taskData->outputs_count[0]);
-    for (int i = 0; i < world.size(); ++i) {
-      recv_counts[i] = taskData->outputs_count[0] / world.size();
-      displs[i] = i * recv_counts[i];
-    }
-    recv_counts[world.size() - 1] += taskData->outputs_count[0] % world.size();
   }
 
-  boost::mpi::gatherv(world, output_.data(), output_.size(), gathered_output.data(), recv_counts, displs, 0);
+  boost::mpi::gather(world, output_.data(), output_.size(), gathered_output.data(), 0);
 
   if (world.rank() == 0) {
     auto* tmp_ptr = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
