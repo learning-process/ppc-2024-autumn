@@ -6,7 +6,7 @@
 #include <random>
 #include <vector>
 
-#include "mpi\suvorov_d_linear_topology\include\linear_topology.hpp"
+#include "mpi/suvorov_d_linear_topology/include/linear_topology.hpp"
 
 namespace {
 std::vector<int> getRandomVector(int sz) {
