@@ -1,10 +1,7 @@
 #include "mpi/nasedkin_e_seidels_iterate_methods/include/ops_mpi.hpp"
 
 #include <cmath>
-#include <stdexcept>
-#include <cstdlib>
-#include <ctime>
-#include <algorithm>
+#include <iostream>
 
 namespace nasedkin_e_seidels_iterate_methods_mpi {
 
@@ -16,14 +13,9 @@ bool SeidelIterateMethodsMPI::pre_processing() {
   epsilon = 1e-6;
   max_iterations = 1000;
 
-  x.resize(n);
-  std::generate(x.begin(), x.end(), []() { return static_cast<double>(std::rand() % 10) / 10.0; });
+  x.resize(n, 0.0);
 
-  if (taskData->inputs_count.size() > 1 && taskData->inputs_count[1] == 0) {
-    return false;
-  }
-
-  return true;
+  return taskData->inputs_count.size() <= 1 || taskData->inputs_count[1] != 0;
 }
 
 bool SeidelIterateMethodsMPI::validation() {
@@ -39,32 +31,32 @@ bool SeidelIterateMethodsMPI::validation() {
   A.resize(n, std::vector<double>(n, 0.0));
   b.resize(n, 0.0);
 
-  bool zero_diagonal_test = false;
   if (taskData->inputs_count.size() > 1 && taskData->inputs_count[1] == 0) {
-    zero_diagonal_test = true;
     for (int i = 0; i < n; ++i) {
       for (int j = 0; j < n; ++j) {
         A[i][j] = (i != j) ? 1.0 : 0.0;
       }
       b[i] = 1.0;
     }
-  } else {
-    for (int i = 0; i < n; ++i) {
-      for (int j = 0; j < n; ++j) {
-        A[i][j] = (i == j) ? 2.0 : 1.0;
-      }
-      b[i] = n + 1;
-    }
+    return true;
   }
 
   for (int i = 0; i < n; ++i) {
-    if (A[i][i] == 0.0 && !zero_diagonal_test) {
+    for (int j = 0; j < n; ++j) {
+      A[i][j] = (i == j) ? 2.0 : 1.0;
+    }
+    b[i] = n + 1;
+  }
+
+  for (int i = 0; i < n; ++i) {
+    if (A[i][i] == 0.0) {
       return false;
     }
   }
 
-  return !zero_diagonal_test;
+  return true;
 }
+
 
 bool SeidelIterateMethodsMPI::run() {
   std::vector<double> x_new(n, 0.0);
@@ -72,9 +64,6 @@ bool SeidelIterateMethodsMPI::run() {
 
   while (iteration < max_iterations) {
     for (int i = 0; i < n; ++i) {
-      if (std::abs(A[i][i]) < epsilon) {
-        throw std::runtime_error("Matrix contains near-zero diagonal element.");
-      }
       x_new[i] = b[i];
       for (int j = 0; j < n; ++j) {
         if (i != j) {
@@ -84,29 +73,18 @@ bool SeidelIterateMethodsMPI::run() {
       x_new[i] /= A[i][i];
     }
 
-    double norm = 0.0;
-    for (int i = 0; i < n; ++i) {
-      norm += (x_new[i] - x[i]) * (x_new[i] - x[i]);
-    }
-
-    if (std::isinf(norm) || std::isnan(norm)) {
-      throw std::runtime_error("Divergence detected: norm became infinite or NaN.");
-    }
-
-    if (std::sqrt(norm) < epsilon) {
-      break;
+    if (converge(x_new)) {
+      x = x_new;
+      return true;
     }
 
     x = x_new;
     ++iteration;
   }
 
-  if (iteration == max_iterations) {
-    throw std::runtime_error("Method did not converge within the maximum number of iterations.");
-  }
-
-  return true;
+  return false;
 }
+
 
 bool SeidelIterateMethodsMPI::post_processing() { return true; }
 
@@ -118,18 +96,37 @@ bool SeidelIterateMethodsMPI::converge(const std::vector<double>& x_new) {
   return std::sqrt(norm) < epsilon;
 }
 
-void SeidelIterateMethodsMPI::set_matrix(const std::vector<std::vector<double>>& matrix,
+bool SeidelIterateMethodsMPI::set_matrix(const std::vector<std::vector<double>>& matrix,
                                          const std::vector<double>& vector) {
-  if (matrix.size() != vector.size() || matrix.empty()) {
-    throw std::invalid_argument("Matrix and vector dimensions do not match or are empty.");
+  if (matrix.empty() || matrix.size() != vector.size()) {
+    std::cerr << "Matrix and vector dimensions do not match or are empty." << std::endl;
+    return false;
   }
+
+  for (size_t i = 0; i < matrix.size(); ++i) {
+    if (matrix[i].size() != matrix.size()) {
+      std::cerr << "Matrix must be square." << std::endl;
+      return false;
+    }
+    if (matrix[i][i] == 0.0) {
+      std::cerr << "Matrix contains zero on the diagonal." << std::endl;
+      return false;
+    }
+  }
+
   A = matrix;
   b = vector;
   n = static_cast<int>(matrix.size());
+  return true;
 }
 
-void SeidelIterateMethodsMPI::generate_random_diag_dominant_matrix(int size, std::vector<std::vector<double>>& matrix,
+bool SeidelIterateMethodsMPI::generate_random_diag_dominant_matrix(int size, std::vector<std::vector<double>>& matrix,
                                                                    std::vector<double>& vector) {
+  if (size <= 0) {
+    std::cerr << "Matrix size must be positive." << std::endl;
+    return false;
+  }
+
   matrix.resize(size, std::vector<double>(size, 0.0));
   vector.resize(size, 0.0);
 
@@ -146,6 +143,7 @@ void SeidelIterateMethodsMPI::generate_random_diag_dominant_matrix(int size, std
     matrix[i][i] = row_sum + static_cast<double>(std::rand() % 5 + 1);
     vector[i] = static_cast<double>(std::rand() % 20 + 1);
   }
+  return true;
 }
 
 }  // namespace nasedkin_e_seidels_iterate_methods_mpi
