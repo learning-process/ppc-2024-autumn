@@ -15,9 +15,8 @@ int kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel::Produce
   std::this_thread::sleep_for(std::chrono::milliseconds(data));
   return data;
 }
-bool kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel::ConsumersFunction(int data) {
+void kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel::ConsumersFunction(int data) {
   std::this_thread::sleep_for(std::chrono::milliseconds(data));
-  return true;
 }
 
 bool kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel::pre_processing() {
@@ -138,7 +137,8 @@ bool kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel::run() 
       stat = world.probe(0, MPI_ANY_TAG);
       if (stat.tag() == 2) {
         world.recv(0, 2, data);
-        world.send(0, 1, ConsumersFunction(data));
+        ConsumersFunction(data);
+        world.send(0, 1, true);
       } else if (stat.tag() == 1) {
         world.recv(0, 1, data);
         break;

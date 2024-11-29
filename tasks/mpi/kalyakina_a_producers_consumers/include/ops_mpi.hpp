@@ -18,7 +18,7 @@ namespace kalyakina_a_producers_consumers_mpi {
 
 class ProducersConsumersTaskParallel : public ppc::core::Task {
   static int ProducersFunction();
-  static bool ConsumersFunction(int data);
+  static void ConsumersFunction(int data);
 
  public:
   explicit ProducersConsumersTaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
