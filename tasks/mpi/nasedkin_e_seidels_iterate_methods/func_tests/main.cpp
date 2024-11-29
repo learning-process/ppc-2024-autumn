@@ -64,21 +64,6 @@ TEST(nasedkin_e_seidels_iterate_methods_mpi, test_random_diag_dominant_matrix) {
   std::vector<double> x = seidel_task.get_solution();
   double residual = nasedkin_e_seidels_iterate_methods_mpi::calculateResidual(matrix, x, vector);
 
-ASSERT_TRUE(residual < 1e-6)
-    << "Residual ||Ax - b|| is greater than epsilon, Residual: " << residual
-    << "\nMatrix:\n";
-for (const auto& row : matrix) {
-    for (double val : row) {
-        ASSERT_TRUE(true) << val << " ";
-    }
-    ASSERT_TRUE(true) << "\n";
-}
-
-ASSERT_TRUE(residual < 1e-6)
-    << "\nVector:\n";
-for (double val : vector) {
-    ASSERT_TRUE(true) << val << " ";
-}
-
+  ASSERT_TRUE(residual < 1e-6) << "Residual ||Ax - b|| is greater than epsilon, Residual: " << residual;
 }
 

@@ -112,20 +112,24 @@ void SeidelIterateMethodsMPI::generate_random_diag_dominant_matrix(int size,
 
   std::srand(static_cast<unsigned>(std::time(nullptr)));
 
+  const double MAX_VALUE = 10.0;
+  const double MIN_DIAGONAL = 20.0;
+
   std::vector<double> x(size, 0.0);
+
   for (int i = 0; i < size; ++i) {
-    x[i] = static_cast<double>(std::rand() % 10 + 1);
+    x[i] = static_cast<double>(std::rand() % 5 + 1);
   }
 
   for (int i = 0; i < size; ++i) {
     double row_sum = 0.0;
     for (int j = 0; j < size; ++j) {
       if (i != j) {
-        matrix[i][j] = static_cast<double>(std::rand() % 10 + 1);
+        matrix[i][j] = static_cast<double>(std::rand() % static_cast<int>(MAX_VALUE) + 1);
         row_sum += std::abs(matrix[i][j]);
       }
     }
-    matrix[i][i] = row_sum + static_cast<double>(std::rand() % 5 + 1);
+    matrix[i][i] = row_sum + static_cast<double>(std::rand() % static_cast<int>(MIN_DIAGONAL) + 1);
   }
 
   for (int i = 0; i < size; ++i) {
