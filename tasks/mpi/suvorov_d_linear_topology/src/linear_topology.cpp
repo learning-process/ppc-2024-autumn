@@ -71,27 +71,30 @@ bool suvorov_d_linear_topology_mpi::MPILinearTopology::run() {
 bool suvorov_d_linear_topology_mpi::MPILinearTopology::post_processing() {
   internal_order_test();
 
+  constexpr int SUCCESS = 1;
+  constexpr int FAILURE = 0;
+
   if (world.size() == 1) {
     int* output_data_ptr = reinterpret_cast<int*>(taskData->outputs[0]);
-    output_data_ptr[0] = true;
+    output_data_ptr[0] = SUCCESS;
     return true;
   }
 
   if (world.rank() == world.size() - 1) {
     bool order_is_ok = true;
-    for (int i = 0; i < rank_order_.size(); i++) {
+    for (size_t i = 0; i < rank_order_.size(); i++) {
       if (rank_order_[i] != i) order_is_ok = false;
     }
-    order_is_ok = rank_order_.size() == world.size() ? order_is_ok : false;
+    order_is_ok = rank_order_.size() == static_cast<size_t>(world.size()) ? order_is_ok : false;
 
     if (local_data_ == verific_data_ && order_is_ok) {
-      world.send(0, 0, true);
+      world.send(0, 0, SUCCESS);
     } else {
-      world.send(0, 0, false);
+      world.send(0, 0, FAILURE);
     }
   }
   if (world.rank() == 0) {
-    bool data_correct;
+    int data_correct;
     world.recv(world.size() - 1, 0, data_correct);
     int* output_data_ptr = reinterpret_cast<int*>(taskData->outputs[0]);
     output_data_ptr[0] = data_correct;

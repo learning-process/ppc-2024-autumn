@@ -45,7 +45,7 @@ TEST(suvorov_d_linear_topology_mpi, test_with_normal_vector_size) {
   line_topo.post_processing();
 
   if (world.rank() == 0) {
-    bool result = reinterpret_cast<int*>(taskDataPar->outputs[0])[0];
+    int result = reinterpret_cast<int*>(taskDataPar->outputs[0])[0];
     EXPECT_TRUE(result);
   }
 }
@@ -75,7 +75,7 @@ TEST(suvorov_d_linear_topology_mpi, test_with_large_vector_size) {
   line_topo.post_processing();
 
   if (world.rank() == 0) {
-    bool result = reinterpret_cast<int*>(taskDataPar->outputs[0])[0];
+    int result = reinterpret_cast<int*>(taskDataPar->outputs[0])[0];
     EXPECT_TRUE(result);
   }
 }
@@ -105,7 +105,7 @@ TEST(suvorov_d_linear_topology_mpi, test_with_prime_vector_size) {
   line_topo.post_processing();
 
   if (world.rank() == 0) {
-    bool result = reinterpret_cast<int*>(taskDataPar->outputs[0])[0];
+    int result = reinterpret_cast<int*>(taskDataPar->outputs[0])[0];
     EXPECT_TRUE(result);
   }
 }
@@ -135,7 +135,7 @@ TEST(suvorov_d_linear_topology_mpi, test_with_degree_of_two_vector_size) {
   line_topo.post_processing();
 
   if (world.rank() == 0) {
-    bool result = reinterpret_cast<int*>(taskDataPar->outputs[0])[0];
+    int result = reinterpret_cast<int*>(taskDataPar->outputs[0])[0];
     EXPECT_TRUE(result);
   }
 }
