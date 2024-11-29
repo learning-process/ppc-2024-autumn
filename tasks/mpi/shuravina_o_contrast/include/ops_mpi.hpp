@@ -8,9 +8,9 @@
 
 namespace shuravina_o_contrast {
 
-class ContrastTaskParallel : public ppc::core::Task {
+class ContrastParallel : public ppc::core::Task {
  public:
-  explicit ContrastTaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit ContrastParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -18,7 +18,6 @@ class ContrastTaskParallel : public ppc::core::Task {
 
  private:
   std::vector<uint8_t> input_, local_input_, output_;
-  uint8_t min_val_, max_val_;
   boost::mpi::communicator world;
 };
 
