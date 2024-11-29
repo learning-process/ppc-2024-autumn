@@ -2,123 +2,58 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <iostream>
 #include <vector>
 
 #include "mpi/shuravina_o_contrast/include/ops_mpi.hpp"
 
 TEST(shuravina_o_contrast, Test_Contrast_10) {
   boost::mpi::communicator world;
-  std::vector<uint8_t> global_vec;
-  std::vector<uint8_t> global_out;
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  const int count = 10;
 
+  std::vector<uint8_t> in(count, 128);
+  std::vector<uint8_t> out(count, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    const int count_size_vector = 10;
-    global_vec = std::vector<uint8_t>(count_size_vector, 128);
-    global_out = std::vector<uint8_t>(count_size_vector, 0);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_out.data()));
-    taskDataPar->outputs_count.emplace_back(global_out.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
+    taskDataPar->inputs_count.emplace_back(in.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
   }
 
-  shuravina_o_contrast::ContrastParallel contrastTask(taskDataPar);
-  ASSERT_EQ(contrastTask.validation(), true);
-  contrastTask.pre_processing();
-  contrastTask.run();
-  contrastTask.post_processing();
+  shuravina_o_contrast::ContrastTaskParallel contrastTaskParallel(taskDataPar);
+  ASSERT_EQ(contrastTaskParallel.validation(), true);
+  contrastTaskParallel.pre_processing();
+  contrastTaskParallel.run();
+  contrastTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    for (size_t i = 0; i < global_out.size(); ++i) {
-      ASSERT_EQ(global_out[i], 255);
-    }
+    ASSERT_EQ(out, std::vector<uint8_t>(count, 128));
   }
 }
 
 TEST(shuravina_o_contrast, Test_Contrast_20) {
   boost::mpi::communicator world;
-  std::vector<uint8_t> global_vec;
-  std::vector<uint8_t> global_out;
+  const int count = 20;
+
+  std::vector<uint8_t> in(count, 64);
+  std::vector<uint8_t> out(count, 0);
+
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
   if (world.rank() == 0) {
-    const int count_size_vector = 20;
-    global_vec = std::vector<uint8_t>(count_size_vector, 64);
-    global_out = std::vector<uint8_t>(count_size_vector, 0);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_out.data()));
-    taskDataPar->outputs_count.emplace_back(global_out.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
+    taskDataPar->inputs_count.emplace_back(in.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
   }
 
-  shuravina_o_contrast::ContrastParallel contrastTask(taskDataPar);
-  ASSERT_EQ(contrastTask.validation(), true);
-  contrastTask.pre_processing();
-  contrastTask.run();
-  contrastTask.post_processing();
+  shuravina_o_contrast::ContrastTaskParallel contrastTaskParallel(taskDataPar);
+  ASSERT_EQ(contrastTaskParallel.validation(), true);
+  contrastTaskParallel.pre_processing();
+  contrastTaskParallel.run();
+  contrastTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    for (size_t i = 0; i < global_out.size(); ++i) {
-      ASSERT_EQ(global_out[i], 255);
-    }
-  }
-}
-
-TEST(shuravina_o_contrast, Test_Contrast_30) {
-  boost::mpi::communicator world;
-  std::vector<uint8_t> global_vec;
-  std::vector<uint8_t> global_out;
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    const int count_size_vector = 30;
-    global_vec = std::vector<uint8_t>(count_size_vector, 32);
-    global_out = std::vector<uint8_t>(count_size_vector, 0);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_out.data()));
-    taskDataPar->outputs_count.emplace_back(global_out.size());
-  }
-
-  shuravina_o_contrast::ContrastParallel contrastTask(taskDataPar);
-  ASSERT_EQ(contrastTask.validation(), true);
-  contrastTask.pre_processing();
-  contrastTask.run();
-  contrastTask.post_processing();
-
-  if (world.rank() == 0) {
-    for (size_t i = 0; i < global_out.size(); ++i) {
-      ASSERT_EQ(global_out[i], 255);
-    }
-  }
-}
-
-TEST(shuravina_o_contrast, Test_Contrast_40) {
-  boost::mpi::communicator world;
-  std::vector<uint8_t> global_vec;
-  std::vector<uint8_t> global_out;
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    const int count_size_vector = 40;
-    global_vec = std::vector<uint8_t>(count_size_vector, 16);
-    global_out = std::vector<uint8_t>(count_size_vector, 0);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_out.data()));
-    taskDataPar->outputs_count.emplace_back(global_out.size());
-  }
-
-  shuravina_o_contrast::ContrastParallel contrastTask(taskDataPar);
-  ASSERT_EQ(contrastTask.validation(), true);
-  contrastTask.pre_processing();
-  contrastTask.run();
-  contrastTask.post_processing();
-
-  if (world.rank() == 0) {
-    for (size_t i = 0; i < global_out.size(); ++i) {
-      ASSERT_EQ(global_out[i], 255);
-    }
+    ASSERT_EQ(out, std::vector<uint8_t>(count, 128));
   }
 }

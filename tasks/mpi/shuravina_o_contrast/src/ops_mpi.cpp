@@ -2,15 +2,17 @@
 
 #include <algorithm>
 #include <boost/mpi/collectives.hpp>
-#include <cmath>
-#include <iostream>
+#include <limits>
 
-bool shuravina_o_contrast::ContrastParallel::pre_processing() {
+namespace shuravina_o_contrast {
+
+bool ContrastTaskParallel::pre_processing() {
+  internal_order_test();
   unsigned int delta = 0;
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
   }
-  boost::mpi::broadcast(world, delta, 0);
+  broadcast(world, delta, 0);
 
   if (world.rank() == 0) {
     input_ = std::vector<uint8_t>(taskData->inputs_count[0]);
@@ -29,61 +31,56 @@ bool shuravina_o_contrast::ContrastParallel::pre_processing() {
     world.recv(0, 0, local_input_.data(), delta);
   }
   output_ = std::vector<uint8_t>(delta);
+  min_val_ = *std::min_element(local_input_.begin(), local_input_.end());
+  max_val_ = *std::max_element(local_input_.begin(), local_input_.end());
+  uint8_t global_min, global_max;
+  reduce(world, min_val_, global_min, boost::mpi::minimum<uint8_t>(), 0);
+  reduce(world, max_val_, global_max, boost::mpi::maximum<uint8_t>(), 0);
+  min_val_ = global_min;
+  max_val_ = global_max;
   return true;
 }
 
-bool shuravina_o_contrast::ContrastParallel::validation() {
+bool ContrastTaskParallel::validation() {
+  internal_order_test();
   if (world.rank() == 0) {
     return taskData->outputs_count[0] == taskData->inputs_count[0];
   }
   return true;
 }
 
-bool shuravina_o_contrast::ContrastParallel::run() {
-  uint8_t local_min_val = *std::min_element(local_input_.begin(), local_input_.end());
-  uint8_t local_max_val = *std::max_element(local_input_.begin(), local_input_.end());
-
-  uint8_t global_min_val, global_max_val;
-  boost::mpi::reduce(world, local_min_val, global_min_val, boost::mpi::minimum<uint8_t>(), 0);
-  boost::mpi::reduce(world, local_max_val, global_max_val, boost::mpi::maximum<uint8_t>(), 0);
-
-  if (world.rank() == 0) {
-    std::cout << "Global min: " << static_cast<int>(global_min_val)
-              << ", Global max: " << static_cast<int>(global_max_val) << std::endl;
-    if (global_min_val == global_max_val) {
-      std::fill(output_.begin(), output_.end(), 255);
-    } else {
-      for (size_t i = 0; i < local_input_.size(); ++i) {
-        output_[i] =
-            static_cast<uint8_t>((local_input_[i] - global_min_val) * 255.0 / (global_max_val - global_min_val));
-        std::cout << "Output[" << i << "]: " << static_cast<int>(output_[i]) << std::endl;
-      }
+bool ContrastTaskParallel::run() {
+  internal_order_test();
+  if (max_val_ == min_val_) {
+    std::fill(output_.begin(), output_.end(), 128);
+  } else {
+    for (size_t i = 0; i < local_input_.size(); ++i) {
+      output_[i] = static_cast<uint8_t>((local_input_[i] - min_val_) * 255.0 / (max_val_ - min_val_));
     }
   }
   return true;
 }
 
-bool shuravina_o_contrast::ContrastParallel::post_processing() {
-  std::vector<int> recv_counts(world.size());
-  std::vector<int> displs(world.size());
-  std::vector<uint8_t> gathered_output;
-
+bool ContrastTaskParallel::post_processing() {
+  internal_order_test();
+  unsigned int delta = 0;
   if (world.rank() == 0) {
-    gathered_output.resize(taskData->outputs_count[0]);
-    for (int i = 0; i < world.size(); ++i) {
-      recv_counts[i] = taskData->outputs_count[0] / world.size();
-      displs[i] = i * recv_counts[i];
-    }
-    recv_counts[world.size() - 1] += taskData->outputs_count[0] % world.size();
+    delta = taskData->inputs_count[0] / world.size();
   }
-
-  boost::mpi::gatherv(world, output_.data(), output_.size(), gathered_output.data(), recv_counts, displs, 0);
+  broadcast(world, delta, 0);
 
   if (world.rank() == 0) {
     auto* tmp_ptr = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
-    for (size_t i = 0; i < taskData->outputs_count[0]; i++) {
-      tmp_ptr[i] = gathered_output[i];
+    for (unsigned i = 0; i < delta; i++) {
+      tmp_ptr[i] = output_[i];
     }
+    for (int proc = 1; proc < world.size(); proc++) {
+      world.recv(proc, 0, tmp_ptr + proc * delta, delta);
+    }
+  } else {
+    world.send(0, 0, output_.data(), delta);
   }
   return true;
 }
+
+}  // namespace shuravina_o_contrast

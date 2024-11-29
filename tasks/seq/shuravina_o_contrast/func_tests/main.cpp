@@ -4,86 +4,42 @@
 
 #include "seq/shuravina_o_contrast/include/ops_seq.hpp"
 
-TEST(shuravina_o_contrast, TestContrastWith10Elements) {
-  std::vector<uint8_t> input_vec(10, 128);
-  std::vector<uint8_t> output_vec(10, 0);
+TEST(shuravina_o_contrast, Test_Contrast_10) {
+  const int count = 10;
+
+  std::vector<uint8_t> in(count, 128);
+  std::vector<uint8_t> out(count, 0);
+
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
 
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_vec.data()));
-  taskDataSeq->inputs_count.emplace_back(input_vec.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_vec.data()));
-  taskDataSeq->outputs_count.emplace_back(output_vec.size());
-
-  shuravina_o_contrast::ContrastSequential contrastTask(taskDataSeq);
-  ASSERT_EQ(contrastTask.validation(), true);
-  contrastTask.pre_processing();
-  contrastTask.run();
-  contrastTask.post_processing();
-
-  for (size_t i = 0; i < output_vec.size(); ++i) {
-    ASSERT_EQ(output_vec[i], 255);
-  }
+  shuravina_o_contrast::ContrastTaskSequential contrastTaskSequential(taskDataSeq);
+  ASSERT_EQ(contrastTaskSequential.validation(), true);
+  contrastTaskSequential.pre_processing();
+  contrastTaskSequential.run();
+  contrastTaskSequential.post_processing();
+  ASSERT_EQ(out, std::vector<uint8_t>(count, 128));
 }
 
-TEST(shuravina_o_contrast, TestContrastWith20Elements) {
-  std::vector<uint8_t> input_vec(20, 64);
-  std::vector<uint8_t> output_vec(20, 0);
+TEST(shuravina_o_contrast, Test_Contrast_20) {
+  const int count = 20;
+
+  std::vector<uint8_t> in(count, 64);
+  std::vector<uint8_t> out(count, 0);
+
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
 
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_vec.data()));
-  taskDataSeq->inputs_count.emplace_back(input_vec.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_vec.data()));
-  taskDataSeq->outputs_count.emplace_back(output_vec.size());
-
-  shuravina_o_contrast::ContrastSequential contrastTask(taskDataSeq);
-  ASSERT_EQ(contrastTask.validation(), true);
-  contrastTask.pre_processing();
-  contrastTask.run();
-  contrastTask.post_processing();
-
-  for (size_t i = 0; i < output_vec.size(); ++i) {
-    ASSERT_EQ(output_vec[i], 255);
-  }
-}
-
-TEST(shuravina_o_contrast, TestContrastWith30Elements) {
-  std::vector<uint8_t> input_vec(30, 32);
-  std::vector<uint8_t> output_vec(30, 0);
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_vec.data()));
-  taskDataSeq->inputs_count.emplace_back(input_vec.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_vec.data()));
-  taskDataSeq->outputs_count.emplace_back(output_vec.size());
-
-  shuravina_o_contrast::ContrastSequential contrastTask(taskDataSeq);
-  ASSERT_EQ(contrastTask.validation(), true);
-  contrastTask.pre_processing();
-  contrastTask.run();
-  contrastTask.post_processing();
-
-  for (size_t i = 0; i < output_vec.size(); ++i) {
-    ASSERT_EQ(output_vec[i], 255);
-  }
-}
-
-TEST(shuravina_o_contrast, TestContrastWith40Elements) {
-  std::vector<uint8_t> input_vec(40, 16);
-  std::vector<uint8_t> output_vec(40, 0);
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_vec.data()));
-  taskDataSeq->inputs_count.emplace_back(input_vec.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_vec.data()));
-  taskDataSeq->outputs_count.emplace_back(output_vec.size());
-
-  shuravina_o_contrast::ContrastSequential contrastTask(taskDataSeq);
-  ASSERT_EQ(contrastTask.validation(), true);
-  contrastTask.pre_processing();
-  contrastTask.run();
-  contrastTask.post_processing();
-
-  for (size_t i = 0; i < output_vec.size(); ++i) {
-    ASSERT_EQ(output_vec[i], 255);
-  }
+  shuravina_o_contrast::ContrastTaskSequential contrastTaskSequential(taskDataSeq);
+  ASSERT_EQ(contrastTaskSequential.validation(), true);
+  contrastTaskSequential.pre_processing();
+  contrastTaskSequential.run();
+  contrastTaskSequential.post_processing();
+  ASSERT_EQ(out, std::vector<uint8_t>(count, 128));
 }

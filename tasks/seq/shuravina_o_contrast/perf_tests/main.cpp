@@ -1,111 +1,69 @@
 #include <gtest/gtest.h>
 
 #include <chrono>
-#include <iostream>
 #include <vector>
 
+#include "core/perf/include/perf.hpp"
 #include "seq/shuravina_o_contrast/include/ops_seq.hpp"
 
-TEST(shuravina_o_contrast, TestContrastPerfWith1000Elements) {
-  std::vector<uint8_t> input_vec(1000, 128);
-  std::vector<uint8_t> output_vec(1000, 0);
+TEST(shuravina_o_contrast, Test_Contrast_1000000) {
+  const int count = 1000000;
+
+  std::vector<uint8_t> in(count, 128);
+  std::vector<uint8_t> out(count, 0);
+
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
 
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_vec.data()));
-  taskDataSeq->inputs_count.emplace_back(input_vec.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_vec.data()));
-  taskDataSeq->outputs_count.emplace_back(output_vec.size());
+  auto contrastTaskSequential = std::make_shared<shuravina_o_contrast::ContrastTaskSequential>(taskDataSeq);
 
-  shuravina_o_contrast::ContrastSequential contrastTask(taskDataSeq);
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 10;
+  const auto t0 = std::chrono::high_resolution_clock::now();
+  perfAttr->current_timer = [&] {
+    auto current_time_point = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
+    return static_cast<double>(duration) * 1e-9;
+  };
 
-  auto start_time = std::chrono::high_resolution_clock::now();
-  contrastTask.pre_processing();
-  contrastTask.run();
-  contrastTask.post_processing();
-  auto end_time = std::chrono::high_resolution_clock::now();
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
-
-  std::cout << "Execution time for 1000 elements: " << duration << " ms" << std::endl;
-  for (size_t i = 0; i < output_vec.size(); ++i) {
-    ASSERT_EQ(output_vec[i], 255);
-  }
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(contrastTaskSequential);
+  perfAnalyzer->pipeline_run(perfAttr, perfResults);
+  ppc::core::Perf::print_perf_statistic(perfResults);
+  ASSERT_EQ(out, std::vector<uint8_t>(count, 128));
 }
 
-TEST(shuravina_o_contrast, TestContrastPerfWith10000Elements) {
-  std::vector<uint8_t> input_vec(10000, 128);
-  std::vector<uint8_t> output_vec(10000, 0);
+TEST(shuravina_o_contrast, Test_Contrast_5000000) {
+  const int count = 5000000;
+
+  std::vector<uint8_t> in(count, 128);
+  std::vector<uint8_t> out(count, 0);
+
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
 
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_vec.data()));
-  taskDataSeq->inputs_count.emplace_back(input_vec.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_vec.data()));
-  taskDataSeq->outputs_count.emplace_back(output_vec.size());
+  auto contrastTaskSequential = std::make_shared<shuravina_o_contrast::ContrastTaskSequential>(taskDataSeq);
 
-  shuravina_o_contrast::ContrastSequential contrastTask(taskDataSeq);
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 10;
+  const auto t0 = std::chrono::high_resolution_clock::now();
+  perfAttr->current_timer = [&] {
+    auto current_time_point = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
+    return static_cast<double>(duration) * 1e-9;
+  };
 
-  auto start_time = std::chrono::high_resolution_clock::now();
-  contrastTask.pre_processing();
-  contrastTask.run();
-  contrastTask.post_processing();
-  auto end_time = std::chrono::high_resolution_clock::now();
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
-
-  std::cout << "Execution time for 10000 elements: " << duration << " ms" << std::endl;
-  for (size_t i = 0; i < output_vec.size(); ++i) {
-    ASSERT_EQ(output_vec[i], 255);
-  }
-}
-
-TEST(shuravina_o_contrast, TestContrastPerfWith100000Elements) {
-  std::vector<uint8_t> input_vec(100000, 128);
-  std::vector<uint8_t> output_vec(100000, 0);
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_vec.data()));
-  taskDataSeq->inputs_count.emplace_back(input_vec.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_vec.data()));
-  taskDataSeq->outputs_count.emplace_back(output_vec.size());
-
-  shuravina_o_contrast::ContrastSequential contrastTask(taskDataSeq);
-
-  auto start_time = std::chrono::high_resolution_clock::now();
-  contrastTask.pre_processing();
-  contrastTask.run();
-  contrastTask.post_processing();
-  auto end_time = std::chrono::high_resolution_clock::now();
-
-  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
-
-  std::cout << "Execution time for 100000 elements: " << duration << " ms" << std::endl;
-  for (size_t i = 0; i < output_vec.size(); ++i) {
-    ASSERT_EQ(output_vec[i], 255);
-  }
-}
-
-TEST(shuravina_o_contrast, TestContrastPerfWith1000000Elements) {
-  std::vector<uint8_t> input_vec(1000000, 128);
-  std::vector<uint8_t> output_vec(1000000, 0);
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_vec.data()));
-  taskDataSeq->inputs_count.emplace_back(input_vec.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_vec.data()));
-  taskDataSeq->outputs_count.emplace_back(output_vec.size());
-
-  shuravina_o_contrast::ContrastSequential contrastTask(taskDataSeq);
-
-  auto start_time = std::chrono::high_resolution_clock::now();
-  contrastTask.pre_processing();
-  contrastTask.run();
-  contrastTask.post_processing();
-  auto end_time = std::chrono::high_resolution_clock::now();
-
-  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
-
-  std::cout << "Execution time for 1000000 elements: " << duration << " ms" << std::endl;
-  for (size_t i = 0; i < output_vec.size(); ++i) {
-    ASSERT_EQ(output_vec[i], 255);
-  }
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(contrastTaskSequential);
+  perfAnalyzer->pipeline_run(perfAttr, perfResults);
+  ppc::core::Perf::print_perf_statistic(perfResults);
+  ASSERT_EQ(out, std::vector<uint8_t>(count, 128));
 }
