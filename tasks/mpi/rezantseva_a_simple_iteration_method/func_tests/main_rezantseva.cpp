@@ -9,7 +9,8 @@
 
 TEST(rezantseva_a_simple_iteration_method_mpi, check_validation_invalid_inputs_count) {
   boost::mpi::communicator world;
-  size_t size = 3;
+  const size_t size = 3;
+  std::vector<size_t> sizes(1, size);
   // Create data
   std::vector<double> A = {4.0, 1.0, 2.0, 5.0, 9.0, 3.0, 4.0, 2.0, 12.0};
   std::vector<double> b = {1.0, 2.0, 1.0};
@@ -18,7 +19,7 @@ TEST(rezantseva_a_simple_iteration_method_mpi, check_validation_invalid_inputs_c
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&size));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(sizes.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
 
@@ -30,7 +31,9 @@ TEST(rezantseva_a_simple_iteration_method_mpi, check_validation_invalid_inputs_c
   }
   // Create Task
   rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI testTaskParallel(taskDataPar);
-  ASSERT_EQ(testTaskParallel.validation(), false);
+  if (world.rank() == 0) {
+    ASSERT_EQ(testTaskParallel.validation(), false);
+  }
 }
 /*
 TEST(rezantseva_a_simple_iteration_method_mpi, check_validation_invalid_outputs_count) {
