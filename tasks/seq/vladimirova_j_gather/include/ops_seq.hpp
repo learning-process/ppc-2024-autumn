@@ -24,6 +24,5 @@ class TestTaskSequential : public ppc::core::Task {
 std::vector<int> getRandomVector(int sz);
 std::vector<int> noDeadEnds(std::vector<int> way);
 std::vector<int> noStrangeSteps(std::vector<int> way);
-std::vector<int> convertToBinaryTreeOrder(const std::vector<int>& arr);
 
 }  // namespace vladimirova_j_gather_seq

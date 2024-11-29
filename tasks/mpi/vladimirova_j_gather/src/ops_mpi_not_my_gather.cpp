@@ -68,7 +68,7 @@ bool vladimirova_j_not_my_gather_mpi::TestMPITaskParallel::run() {
   // Процесс с рангом 0 выводит собранные данные
   if (rank == 0) {
     std::cout << "Gathered data: ";
-    for (int i = 0; i < root_vec.size(); ++i) {
+    for (size_t i = 0; i < root_vec.size(); ++i) {
       std::cout << root_vec[i] << " ";
     }
     std::cout << std::endl;
@@ -131,7 +131,7 @@ bool vladimirova_j_not_my_gather_mpi::TestMPITaskParallel::run() {
       std::cout << "ANS  2 " << r << "   \n";
       std::for_each(root_vec.begin(), root_vec.end(), [](int number) { std::cout << number << " "; });
       std::cout << std::endl;
-      /*
+      
       root_vec.insert(root_vec.end(), input_.end() - input_.size()%world.size(), input_.end());
       std::cout << "ANS  1" << r << "   \n";
       std::for_each(root_vec.begin(), root_vec.end(), [](int number) { std::cout << number << " "; });

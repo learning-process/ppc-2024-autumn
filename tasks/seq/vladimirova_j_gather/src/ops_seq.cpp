@@ -19,14 +19,14 @@ std::vector<int> vladimirova_j_gather_seq::getRandomVector(int sz) {
 
 std::vector<int> vladimirova_j_gather_seq::noDeadEnds(std::vector<int> way) {
   int i = 0;
-  int j = 1;
+  size_t j = 1;
 
   while (j <= way.size()) {
     if ((way[i] * way[i] == 1) && (way[i] == way[j])) {
       do {
         i -= 1;
         j += 1;
-        if (!((i >= 0) && (j < way.size()))) break;
+        if (!(((size_t)i >= 0) && (j < way.size()))) break;
         if (((way[i] * way[i] == 1) && (way[i] == (-1) * way[j])) ||
             (way[i] * way[j] == 4)) {  // if rl lr or uu dd   1-1 -11 or 22 -2-2
           way[i] = 0;
@@ -54,14 +54,14 @@ std::vector<int> vladimirova_j_gather_seq::noStrangeSteps(std::vector<int> way) 
     std::cout << value << " ";
   }
 
-  for (int i = 1; i < way.size(); i++)
+  for (size_t i = 1; i < way.size(); i++)
     if (way[i] == -way[i - 1]) {
       way[i] = 0;
       way[i - 1] = 0;
     }
   way.erase(std::remove(way.begin(), way.end(), 0), way.end());
 
-  for (int i = 3; i < way.size(); i++) {
+  for (size_t i = 3; i < way.size(); i++) {
     if (((way[i] == -1) || (way[i] == 1)) && (way[i] == way[i - 1]) && (way[i] == way[i - 2]) &&
         (way[i] == way[i - 3])) {
       way[i] = 0;
@@ -80,36 +80,11 @@ std::vector<int> vladimirova_j_gather_seq::noStrangeSteps(std::vector<int> way) 
   return way;
 }
 
-std::vector<int> vladimirova_j_gather_seq::convertToBinaryTreeOrder(const std::vector<int>& arr) {
-  std::vector<int> result;
-  result.reserve(arr.size());
-  std::vector<int> stack;
-  result.reserve(stack.size());
-  stack.push_back(0);
-
-  while (!stack.empty()) {
-    int r = stack.back();
-    stack.pop_back();
-
-    if (r < arr.size()) {
-      result.push_back(arr[r]);
-
-      int child1 = 2 * r + 2;
-      int child0 = 2 * r + 1;
-
-      if (child1 < arr.size()) stack.push_back(child1);
-      if (child0 < arr.size()) stack.push_back(child0);
-    }
-  }
-
-  return result;
-}
-
 bool vladimirova_j_gather_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   input_ = std::vector<int>(taskData->inputs_count[0]);
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+  for (size_t i = 0; i < taskData->inputs_count[0]; i++) {
     input_[i] = tmp_ptr[i];
   }
   return true;
