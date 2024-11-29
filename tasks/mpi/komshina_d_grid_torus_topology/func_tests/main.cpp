@@ -75,7 +75,9 @@ TEST(komshina_d_grid_torus_topology_mpi, TestDataTransmission) {
 
 TEST(komshina_d_grid_torus_topology_mpi, TestLargeData) {
   boost::mpi::communicator world;
-  if (world.size() < 4) return;
+  if (world.size() < 4) {
+    GTEST_SKIP() << "Not enough processes for this test.";
+  }
 
   size_t large_size = 1000;
   std::vector<uint8_t> input_data(large_size);
@@ -90,14 +92,13 @@ TEST(komshina_d_grid_torus_topology_mpi, TestLargeData) {
 
   komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel task(task_data);
 
-  ASSERT_TRUE(task.validation());
-
-  ASSERT_TRUE(task.pre_processing());
-
-  ASSERT_TRUE(task.post_processing());
+  ASSERT_TRUE(task.validation()) << "Validation failed.";
+  ASSERT_TRUE(task.pre_processing()) << "Pre-processing failed.";
+  ASSERT_TRUE(task.run()) << "Run failed.";
+  ASSERT_TRUE(task.post_processing()) << "Post-processing failed.";
 
   for (size_t i = 0; i < output_data.size(); ++i) {
-    EXPECT_EQ(output_data[i], input_data[i]);
+    EXPECT_EQ(output_data[i], input_data[i]) << "Mismatch at index " << i;
   }
 }
 
@@ -168,5 +169,30 @@ TEST(komshina_d_grid_torus_topology_mpi, TestSmallNumberOfProcesses) {
 
   for (size_t i = 0; i < output_data.size(); ++i) {
     EXPECT_EQ(output_data[i], input_data[i]);
+  }
+}
+
+TEST(komshina_d_grid_torus_topology_mpi, TestNonSquareTopology) {
+  boost::mpi::communicator world;
+
+  int size = world.size();
+  int sqrt_size = static_cast<int>(std::sqrt(size));
+
+  if (sqrt_size * sqrt_size != size) {
+    std::vector<uint8_t> input_data(4);
+    std::iota(input_data.begin(), input_data.end(), 9);
+    std::vector<uint8_t> output_data(4);
+
+    auto task_data = std::make_shared<ppc::core::TaskData>();
+    task_data->inputs.emplace_back(input_data.data());
+    task_data->inputs_count.emplace_back(input_data.size());
+    task_data->outputs.emplace_back(output_data.data());
+    task_data->outputs_count.emplace_back(output_data.size());
+
+    komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel task(task_data);
+
+    ASSERT_FALSE(task.validation()) << "Validation should fail for non-square topology.";
+
+    ASSERT_FALSE(task.pre_processing()) << "Pre-processing should fail for non-square topology.";
   }
 }

@@ -3,24 +3,13 @@
 #include <algorithm>
 #include <boost/mpi.hpp>
 #include <cmath>
-#include <functional>
 #include <iostream>
-#include <numeric>
-#include <string>
-#include <thread>
 #include <vector>
 
 using namespace std::chrono_literals;
 
 bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::pre_processing() {
-  if (taskData->inputs.empty()) {
-    return false;
-  }
-
-  int size = world.size();
-  int grid_size = std::sqrt(size);
-
-  if (grid_size * grid_size != size) {
+  if (!validation()) {
     return false;
   }
 
@@ -33,13 +22,19 @@ bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::validation()
   }
 
   for (size_t i = 0; i < taskData->inputs.size(); ++i) {
-    if (taskData->inputs_count[i] <= 0) {
+    if (taskData->inputs_count[i] <= 0 || taskData->inputs[i] == nullptr) {
       return false;
     }
+  }
 
-    if (taskData->inputs[i] == nullptr) {
-      return false;
-    }
+  if (taskData->inputs_count[0] != taskData->outputs_count[0]) {
+    return false;
+  }
+
+  int size = boost::mpi::communicator().size();
+  int sqrt_size = static_cast<int>(std::sqrt(size));
+  if (sqrt_size * sqrt_size != size) {
+    return false;
   }
 
   return true;
@@ -53,7 +48,7 @@ bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::run() {
   world.barrier();
 
   for (int step = 0; step < grid_size; ++step) {
-    std::vector<int> neighbors = compute_neighbors(rank, grid_size);
+    auto neighbors = compute_neighbors(rank, grid_size);
 
     for (int neighbor : neighbors) {
       if (neighbor < size) {
@@ -69,7 +64,7 @@ bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::run() {
             std::copy(send_data.begin(), send_data.end(), taskData->outputs[0]);
           }
         } catch (const boost::mpi::exception& e) {
-          std::cerr << "Error when exchanging data with the process " << neighbor << ": " << e.what() << std::endl;
+          std::cerr << "Error when exchanging data with process " << neighbor << ": " << e.what() << std::endl;
         }
       }
     }
@@ -78,14 +73,7 @@ bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::run() {
   return true;
 }
 
-bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::post_processing() {
-  int rank = world.rank();
-
-  if (rank == 0) {
-  }
-
-  return true;
-}
+bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::post_processing() { return true; }
 
 std::vector<int> komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::compute_neighbors(int rank,
                                                                                                   int grid_size) {
