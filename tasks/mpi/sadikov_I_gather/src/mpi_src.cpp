@@ -146,33 +146,46 @@ void sadikov_I_gather_mpi::MPITaskParallel::SetRoot(int root) { m_root = root; }
 void sadikov_I_gather_mpi::Gather(const boost::mpi::communicator &world, std::map<int, int> id,
                                   std::vector<int> &inValues, const std::vector<int> &sizes,
                                   std::vector<int> &outValues, int size, int root) {
-  std::vector<int> intermediateResult(size);
+  std::vector<int> leftChildData(size);
+  std::vector<int> rightChildData(size);
   int leftSender = id[world.rank()] * 2 + 1;
   int rightSender = id[world.rank()] * 2 + 2;
   int dataLocation = DataLocation(world.rank(), sizes[root + 1], sizes[root]);
-  if (leftSender < world.size() && id[leftSender] < world.size() && leftSender != root) {
-    std::copy(inValues.begin(), inValues.end(), intermediateResult.begin() + dataLocation);
-    world.recv(id[leftSender], 0,
-               intermediateResult.data() + DataLocation(id[leftSender], sizes[root + 1], sizes[root]),
-               intermediateResult.size() - DataLocation(id[leftSender], sizes[root + 1], sizes[root]));
+  if (leftSender < world.size() && id[leftSender] < world.size()) {
+    std::copy(inValues.begin(), inValues.end(), leftChildData.begin() + dataLocation);
+    world.recv(id[leftSender], 0, leftChildData.data() + DataLocation(id[leftSender], sizes[root + 1], sizes[root]),
+               size - DataLocation(id[leftSender], sizes[root + 1], sizes[root]));
   }
-  if (rightSender < world.size() && id[rightSender] < world.size() && rightSender != root) {
-    world.recv(id[rightSender], 0,
-               intermediateResult.data() + DataLocation(id[rightSender], sizes[root + 1], sizes[root]),
-               intermediateResult.size() - DataLocation(id[rightSender], sizes[root + 1], sizes[root]));
+  if (rightSender < world.size() && id[rightSender] < world.size()) {
+    world.recv(id[rightSender], 0, rightChildData.data() + DataLocation(id[rightSender], sizes[root + 1], sizes[root]),
+               size - DataLocation(id[rightSender], sizes[root + 1], sizes[root]));
   }
   if (world.rank() != root) {
     int parent = world.rank() * 2 + 1;
     if (world.rank() != 0) {
-      parent = world.rank() % 2 == 0 ? world.rank() / 2 - 1 : world.rank() / 2;
+      parent = world.rank() % 2 == 0 ? (world.rank() - 1) / 2 : world.rank() / 2;
     }
-    if (leftSender < world.size() && world.rank() != 0) {
-      world.send(id[parent], 0, intermediateResult.data() + dataLocation, intermediateResult.size() - dataLocation);
+    if (rightSender < world.size()) {
+      for (int i = 0; i < leftChildData.size(); ++i) {
+        if (leftChildData[i] == 0 && rightChildData[i] != 0) {
+          leftChildData[i] = rightChildData[i];
+        }
+      }
+    }
+    if (leftSender < world.size()) {
+      world.send(id[parent], 0, leftChildData.data() + dataLocation, size - dataLocation);
     } else {
       world.send(id[parent], 0, inValues.data(), inValues.size());
     }
   } else {
-    outValues = std::move(intermediateResult);
+    outValues.resize(size);
+    for (int i = 0; i < size; ++i) {
+      if (leftChildData[i] != 0) {
+        outValues[i] = leftChildData[i];
+      } else if (leftChildData[i] == 0 && rightChildData[i] != 0) {
+        outValues[i] = rightChildData[i];
+      }
+    }
   }
 }
 

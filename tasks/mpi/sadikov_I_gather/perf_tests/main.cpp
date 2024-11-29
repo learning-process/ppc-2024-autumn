@@ -8,8 +8,8 @@
 
 TEST(sadikov_I_gather_mpi, mpi_pipline_run) {
   boost::mpi::communicator world;
-  const int columns = 4000;
-  const int rows = 4000;
+  const int columns = 6000;
+  const int rows = 6000;
   const int root = 0;
   std::vector<int> in;
   std::vector<int> in_index{rows, columns};
@@ -49,8 +49,8 @@ TEST(sadikov_I_gather_mpi, mpi_pipline_run) {
 
 TEST(sadikov_I_gather_mpi, mpi_pipline_reference_run) {
   boost::mpi::communicator world;
-  const int columns = 4000;
-  const int rows = 4000;
+  const int columns = 6000;
+  const int rows = 6000;
   std::vector<int> in;
   std::vector<int> in_index{rows, columns};
   std::vector<int> out_par(columns, 0);
@@ -88,8 +88,8 @@ TEST(sadikov_I_gather_mpi, mpi_pipline_reference_run) {
 
 TEST(sadikov_I_gather_mpi, mpi_task_run) {
   boost::mpi::communicator world;
-  const int columns = 4000;
-  const int rows = 4000;
+  const int columns = 10000;
+  const int rows = 10000;
   const int root = 0;
   std::vector<int> in(columns * rows, 1);
   std::vector<int> in_index{rows, columns};
@@ -129,8 +129,8 @@ TEST(sadikov_I_gather_mpi, mpi_task_run) {
 
 TEST(sadikov_I_gather_mpi, mpi_reference_run) {
   boost::mpi::communicator world;
-  const int columns = 4000;
-  const int rows = 4000;
+  const int columns = 10000;
+  const int rows = 10000;
   std::vector<int> in(columns * rows, 1);
   std::vector<int> in_index{rows, columns};
   std::vector<int> out_par(columns, 0);
