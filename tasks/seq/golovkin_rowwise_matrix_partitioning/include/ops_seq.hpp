@@ -21,7 +21,7 @@ class MatrixMultiplicationTask : public ppc::core::Task {
 
  private:
   bool multiplier(std::vector<std::vector<double>>& matrixA, std::vector<std::vector<double>>& matrixB,
-			      std::vector<std::vector<double>>& result);
+	              std::vector<std::vector<double>>& result);
 
   std::shared_ptr<ppc::core::TaskData> taskData_;
 
