@@ -17,8 +17,9 @@ int kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel::Produce
   std::this_thread::sleep_for(std::chrono::milliseconds(data));
   return data;
 }
-void kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel::ConsumersFunction(int data) {
+bool kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel::ConsumersFunction(int data) {
   std::this_thread::sleep_for(std::chrono::milliseconds(data));
+  return true;
 }
 
 bool kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel::pre_processing() {
