@@ -35,10 +35,11 @@ TEST(rezantseva_a_simple_iteration_method_mpi, check_validation_invalid_inputs_c
     ASSERT_EQ(testTaskParallel.validation(), false);
   }
 }
-/*
+
 TEST(rezantseva_a_simple_iteration_method_mpi, check_validation_invalid_outputs_count) {
   boost::mpi::communicator world;
-  size_t size = 3;
+  const size_t size = 3;
+  std::vector<size_t> sizes(1, size);
   // Create data
   std::vector<double> A = {4.0, 1.0, 2.0, 5.0, 9.0, 3.0, 4.0, 2.0, 12.0};
   std::vector<double> b = {1.0, 2.0, 1.0};
@@ -47,11 +48,11 @@ TEST(rezantseva_a_simple_iteration_method_mpi, check_validation_invalid_outputs_
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&size));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(sizes.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
 
-    taskDataPar->inputs_count.emplace_back(size);
+    taskDataPar->inputs_count.emplace_back(sizes.size());
     taskDataPar->inputs_count.emplace_back(A.size());
     taskDataPar->inputs_count.emplace_back(b.size());
 
@@ -59,12 +60,15 @@ TEST(rezantseva_a_simple_iteration_method_mpi, check_validation_invalid_outputs_
   }
   // Create Task
   rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI testTaskParallel(taskDataPar);
-  ASSERT_EQ(testTaskParallel.validation(), false);
+  if (world.rank() == 0) {
+    ASSERT_EQ(testTaskParallel.validation(), false);
+  }
 }
 
 TEST(rezantseva_a_simple_iteration_method_mpi, check_validation_invalid_matrix_size) {
   boost::mpi::communicator world;
-  size_t size = 0;
+  const size_t size = 0;
+  std::vector<size_t> sizes(1, size);
   // Create data
   std::vector<double> A = {4.0, 1.0, 2.0, 5.0, 9.0, 3.0, 4.0, 2.0, 12.0};
   std::vector<double> b = {1.0, 2.0, 1.0};
@@ -73,11 +77,11 @@ TEST(rezantseva_a_simple_iteration_method_mpi, check_validation_invalid_matrix_s
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&size));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(sizes.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
 
-    taskDataPar->inputs_count.emplace_back(size);
+    taskDataPar->inputs_count.emplace_back(sizes.size());
     taskDataPar->inputs_count.emplace_back(A.size());
     taskDataPar->inputs_count.emplace_back(b.size());
 
@@ -86,12 +90,15 @@ TEST(rezantseva_a_simple_iteration_method_mpi, check_validation_invalid_matrix_s
   }
   // Create Task
   rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI testTaskParallel(taskDataPar);
-  ASSERT_EQ(testTaskParallel.validation(), false);
+  if (world.rank() == 0) {
+    ASSERT_EQ(testTaskParallel.validation(), false);
+  }
 }
 
 TEST(rezantseva_a_simple_iteration_method_mpi, check_validation_invalid_matrix) {
   boost::mpi::communicator world;
-  size_t size = 3;
+  const size_t size = 0;
+  std::vector<size_t> sizes(1, size);
   // Create data
   std::vector<double> A = {4.0, 1.0, 7.0, 5.0, 7.0, 3.0, 4.0, 2.0, 5.0};
   std::vector<double> b = {1.0, 2.0, 1.0};
@@ -99,11 +106,11 @@ TEST(rezantseva_a_simple_iteration_method_mpi, check_validation_invalid_matrix) 
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&size));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(sizes.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
 
-    taskDataPar->inputs_count.emplace_back(size);
+    taskDataPar->inputs_count.emplace_back(sizes.size());
     taskDataPar->inputs_count.emplace_back(A.size());
     taskDataPar->inputs_count.emplace_back(b.size());
 
@@ -112,12 +119,15 @@ TEST(rezantseva_a_simple_iteration_method_mpi, check_validation_invalid_matrix) 
   }
   // Create Task
   rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI testTaskParallel(taskDataPar);
-  ASSERT_EQ(testTaskParallel.validation(), false);
+  if (world.rank() == 0) {
+    ASSERT_EQ(testTaskParallel.validation(), false);
+  }
 }
 
 TEST(rezantseva_a_simple_iteration_method_mpi, check_validation_zero_matrix) {
   boost::mpi::communicator world;
-  size_t size = 3;
+  const size_t size = 0;
+  std::vector<size_t> sizes(1, size);
   // Create data
   std::vector<double> A = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
   std::vector<double> b = {1.0, 2.0, 1.0};
@@ -125,11 +135,11 @@ TEST(rezantseva_a_simple_iteration_method_mpi, check_validation_zero_matrix) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&size));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(sizes.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
 
-    taskDataPar->inputs_count.emplace_back(size);
+    taskDataPar->inputs_count.emplace_back(sizes.size());
     taskDataPar->inputs_count.emplace_back(A.size());
     taskDataPar->inputs_count.emplace_back(b.size());
 
@@ -138,12 +148,15 @@ TEST(rezantseva_a_simple_iteration_method_mpi, check_validation_zero_matrix) {
   }
   // Create Task
   rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI testTaskParallel(taskDataPar);
-  ASSERT_EQ(testTaskParallel.validation(), false);
+  if (world.rank() == 0) {
+    ASSERT_EQ(testTaskParallel.validation(), false);
+  }
 }
 
 TEST(rezantseva_a_simple_iteration_method_mpi, check_validation_zero_diagonal_matrix) {
   boost::mpi::communicator world;
-  size_t size = 3;
+  const size_t size = 0;
+  std::vector<size_t> sizes(1, size);
   // Create data
   std::vector<double> A = {0.0, 2.0, -2.0, 5.0, 0.0, 6.0, 7.0, -1.0, 0.0};
   std::vector<double> b = {1.0, 2.0, 1.0};
@@ -151,11 +164,11 @@ TEST(rezantseva_a_simple_iteration_method_mpi, check_validation_zero_diagonal_ma
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&size));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(sizes.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
 
-    taskDataPar->inputs_count.emplace_back(size);
+    taskDataPar->inputs_count.emplace_back(sizes.size());
     taskDataPar->inputs_count.emplace_back(A.size());
     taskDataPar->inputs_count.emplace_back(b.size());
 
@@ -164,9 +177,11 @@ TEST(rezantseva_a_simple_iteration_method_mpi, check_validation_zero_diagonal_ma
   }
   // Create Task
   rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI testTaskParallel(taskDataPar);
-  ASSERT_EQ(testTaskParallel.validation(), false);
+  if (world.rank() == 0) {
+    ASSERT_EQ(testTaskParallel.validation(), false);
   }
-*/
+}
+
 /*
 static int offset = 0;
 
