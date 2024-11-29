@@ -6,7 +6,7 @@
 
 #include "mpi/guseynov_e_scatter/include/ops_mpi.hpp"
 
-TEST(guseynov_e_scatter, Test_non_random_aray_10){
+TEST(guseynov_e_scatter_mpi, Test_non_random_aray_10){
     boost::mpi::communicator world;
     std::vector<int> global_vec = {1, 2,  3, 4, 5, 6, 7, 8, 9, 10};
     std::vector<int32_t> global_res(1, -1);
@@ -20,7 +20,7 @@ TEST(guseynov_e_scatter, Test_non_random_aray_10){
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
 
-  guseynov_e_scatter::TestMPITaskParallel testMPITaskParallel(taskDataPar);
+  guseynov_e_scatter_mpi::TestMPITaskParallel testMPITaskParallel(taskDataPar);
   ASSERT_EQ(testMPITaskParallel.validation(), true);
   testMPITaskParallel.pre_processing();
   testMPITaskParallel.run();
@@ -38,7 +38,7 @@ TEST(guseynov_e_scatter, Test_non_random_aray_10){
     taskDataPar->outputs_count.emplace_back(global_res.size());
 
     // create Task
-    guseynov_e_scatter::TestMPITaskSequential testMPITaskSequantial(taskDataSeq);
+    guseynov_e_scatter_mpi::TestMPITaskSequential testMPITaskSequantial(taskDataSeq);
     ASSERT_EQ(testMPITaskSequantial.validation(), true);
     testMPITaskSequantial.pre_processing();
     testMPITaskSequantial.run();
