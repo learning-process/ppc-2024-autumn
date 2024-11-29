@@ -51,7 +51,7 @@ TEST(golovkin_rowwise_matrix_partitioning, test_pipeline_run) {
 
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  ASSERT_EQ(result.size(), N);
+  ASSERT_EQ(result.size(), static_cast<size_t>(N));
   ASSERT_EQ(result[0].size(), N);
 }
 
@@ -91,6 +91,6 @@ TEST(golovkin_rowwise_matrix_partitioning, test_task_run) {
 
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  ASSERT_EQ(result.size(), N);
+  ASSERT_EQ(result.size(), static_cast<size_t>(N));
   ASSERT_EQ(result[0].size(), N);
 }
