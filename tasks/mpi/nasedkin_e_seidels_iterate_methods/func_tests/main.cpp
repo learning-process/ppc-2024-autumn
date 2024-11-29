@@ -61,8 +61,7 @@ TEST(nasedkin_e_seidels_iterate_methods_mpi, test_random_diag_dominant_matrix_wi
   ASSERT_TRUE(seidel_task.post_processing()) << "Post-processing failed for random diagonally dominant matrix";
 
   double residual_norm = seidel_task.check_residual_norm();
-  ASSERT_LT(residual_norm, 1e-6)
-      << "Residual ||Ax - b|| = " << residual_norm << " exceeds tolerance epsilon = 1e-6";
+  ASSERT_LT(residual_norm, 1e-6) << "Residual ||Ax - b|| = " << residual_norm << " exceeds tolerance epsilon = 1e-6";
 }
 
 
