@@ -92,4 +92,3 @@ TEST(vladimirova_j_gather_mpi, test_task_run) {
   */
   ASSERT_EQ(0, 0);
 }
-

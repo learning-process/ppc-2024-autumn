@@ -5,8 +5,11 @@
 
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <boost/serialization/access.hpp>
+#include <boost/serialization/vector.hpp>
 #include <memory>
 #include <numeric>
+#include <random>
 #include <string>
 #include <utility>
 #include <vector>
@@ -14,8 +17,6 @@
 #include "core/task/include/task.hpp"
 
 namespace vladimirova_j_gather_mpi {
-
-std::vector<int> getRandomVector(int sz);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
@@ -27,7 +28,7 @@ class TestMPITaskSequential : public ppc::core::Task {
 
  private:
   std::vector<int> input_;
-  int res{};
+  std::vector<int> res;
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -45,4 +46,10 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
+std::vector<int> getRandomVector(int sz);
+std::vector<int> noDeadEnds(std::vector<int> way);
+std::vector<int> noStrangeSteps(std::vector<int> way);
+std::vector<int> convertToBinaryTreeOrder(const std::vector<int>& arr);
 }  // namespace vladimirova_j_gather_mpi
+
+// namespace vladimirova_j_gather_mpi
