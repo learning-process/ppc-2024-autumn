@@ -29,10 +29,11 @@ class GridTorusTopologyParallel : public ppc::core::Task {
   boost::mpi::communicator world;
   boost::mpi::status stat;
   std::vector<int> input_;
-  std::vector<int> result;
-  std::vector<int> order;
-  int rank;
   std::vector<int> neighbors;
+  int rank;
+  int num_processes;
+  int grid_size_x;
+  int grid_size_y;
   void compute_neighbors();
 };
 

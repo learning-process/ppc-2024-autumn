@@ -15,18 +15,29 @@ using namespace std::chrono_literals;
 bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::pre_processing() {
   internal_order_test();
 
-  if (world.rank() == 0) {
-    int* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    input_.resize(taskData->inputs_count[0]);
-    std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
+  if (taskData->inputs.empty() || taskData->inputs_count.empty()) {
+    return false;
   }
 
-  result = std::vector<int>(input_.size(), 0);
-  order = std::vector<int>(world.size() + 1, -1);
+  for (size_t i = 0; i < taskData->inputs.size(); ++i) {
+    if (taskData->inputs_count[i] <= 0 || taskData->inputs[i] == nullptr) {
+      return false;
+    }
+  }
 
   rank = world.rank();
+  num_processes = world.size();
 
-  compute_neighbors();
+  int grid_size = std::sqrt(num_processes);
+  if (grid_size * grid_size != num_processes) {
+    return false;
+  }
+
+  grid_size_x = grid_size_y = grid_size;
+
+  int* input_data = reinterpret_cast<int*>(taskData->inputs[0]);
+  input_ = std::vector<int>(input_data, input_data + taskData->inputs_count[0]);
+
   return true;
 }
 
@@ -34,65 +45,76 @@ bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::validation()
   internal_order_test();
 
   if (world.rank() == 0) {
-    return (taskData->inputs_count[0] == taskData->outputs_count[0]) && (taskData->inputs_count[0] > 0) &&
-           (taskData->outputs_count[0] > 0) && (world.size() > 1);
+    if (taskData->outputs_count.empty()) {
+      return false;
+    }
+  }
+
+  int size = world.size();
+  int sqrt_size = std::sqrt(size);
+  if (sqrt_size * sqrt_size != size) {
+    return false;
   }
 
   return true;
 }
 
 bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::run() {
-  internal_order_test();
+  try {
+  compute_neighbors();
 
-  std::vector<int> data_to_send = input_;
-  std::vector<int> received_data(input_.size());
+  std::vector<uint8_t> send_data(taskData->inputs_count[0]);
+  std::copy(taskData->inputs[0], taskData->inputs[0] + taskData->inputs_count[0], send_data.begin());
 
-  for (int step = 0; step < 4; ++step) {
-    int neighbor = neighbors[step];
+  std::vector<uint8_t> recv_data(taskData->inputs_count[0]);
 
-    if (neighbor != -1) {
-      world.send(neighbor, 0, data_to_send);
-      world.recv(neighbor, 0, received_data);
+  for (int neighbor : neighbors) {
+    world.isend(neighbor, 0, send_data);
 
-      for (size_t i = 0; i < result.size(); ++i) {
-        result[i] += received_data[i];
-      }
+    world.recv(neighbor, 0, recv_data);
+
+    if (taskData->outputs_count[0] >= recv_data.size()) {
+      std::copy(recv_data.begin(), recv_data.end(), taskData->outputs[0]);
     }
   }
 
+  world.barrier();
   return true;
+  } catch (const std::exception& e) {
+    std::cerr << "Error during run: " << e.what() << std::endl;
+    return false;
+  }
 }
 
 bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::post_processing() {
   internal_order_test();
-  world.barrier();
 
-  if (world.rank() == 0) {
-    std::copy(result.begin(), result.end(), reinterpret_cast<int*>(taskData->outputs[0]));
-    std::copy(order.begin(), order.end(), reinterpret_cast<int*>(taskData->outputs[1]));
+  if (taskData->outputs.empty() || taskData->outputs_count.empty()) {
+    return false;
+  }
+
+  for (size_t i = 0; i < taskData->outputs.size(); ++i) {
+    if (taskData->outputs_count[i] <= 0 || taskData->outputs[i] == nullptr) {
+      return false;
+    }
+  }
+
+  if (rank == 0) {
   }
 
   return true;
 }
 
+
+
 void komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::compute_neighbors() {
-  const int size = world.size();
-  int rows = 1;
-  int cols = size;
+  const int x = rank % grid_size_x;
+  const int y = rank / grid_size_x;
 
-  for (int i = 1; i <= std::sqrt(size); ++i) {
-    if (size % i == 0) {
-      rows = i;
-      cols = size / i;
-    }
-  }
+  const int left = ((x - 1 + grid_size_x) % grid_size_x) + y * grid_size_x;
+  const int right = ((x + 1) % grid_size_x) + y * grid_size_x;
+  const int up = x + ((y - 1 + grid_size_y) % grid_size_y) * grid_size_x;
+  const int down = x + ((y + 1) % grid_size_y) * grid_size_x;
 
-  const int row = rank / cols;
-  const int col = rank % cols;
-
-  neighbors = std::vector<int>(4, -1);
-  neighbors[0] = (row > 0) ? rank - cols : rank + cols * (rows - 1);
-  neighbors[1] = (row < rows - 1) ? rank + cols : rank - cols * (rows - 1);
-  neighbors[2] = (col > 0) ? rank - 1 : rank + cols - 1;
-  neighbors[3] = (col < cols - 1) ? rank + 1 : rank - (cols - 1);
+  neighbors = {left, right, up, down};
 }
