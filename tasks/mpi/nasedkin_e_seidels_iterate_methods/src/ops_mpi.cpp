@@ -116,9 +116,8 @@ void SeidelIterateMethodsMPI::generate_random_diag_dominant_matrix(int size,
   const double MIN_DIAGONAL = 10.0;
 
   std::vector<double> x(size, 0.0);
-
   for (int i = 0; i < size; ++i) {
-    x[i] = static_cast<double>(std::rand() % 5 + 1);
+    x[i] = static_cast<double>(std::rand() % 10 + 1);
   }
 
   for (int i = 0; i < size; ++i) {
