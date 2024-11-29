@@ -23,8 +23,7 @@ class ComponentSumPowerCustomImpl : public ppc::core::Task {
   bool post_processing() override;
 
   template <typename T>
-  static void broadcastImpl(const boost::mpi::communicator& comm, T& value, int root)
-  {
+  static void broadcastImpl(const boost::mpi::communicator& comm, T& value, int root) {
     if (comm.size() == 1) {
       return;
     }
@@ -61,8 +60,7 @@ class ComponentSumPowerCustomImpl : public ppc::core::Task {
   }
 
   template <typename T>
-  static void broadcastImpl(const boost::mpi::communicator& comm, T* values, int n, int root)
-  {
+  static void broadcastImpl(const boost::mpi::communicator& comm, T* values, int n, int root) {
     if (comm.size() == 1) {
       return;
     }
