@@ -32,7 +32,6 @@ class MPIMatrixMultiplicationTask : public ppc::core::Task {
   int cols_A;
   int rows_B;
   int cols_B;
-  int rows_per_process;
 
   void gather_result();
   void multiply_matrices();
