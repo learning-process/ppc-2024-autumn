@@ -9,10 +9,7 @@
 using namespace std::chrono_literals;
 
 bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::pre_processing() {
-  if (!validation()) {
-    return false;
-  }
-
+  return validation();
   return true;
 }
 
@@ -33,9 +30,7 @@ bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::validation()
 
   int size = boost::mpi::communicator().size();
   int sqrt_size = static_cast<int>(std::sqrt(size));
-  if (sqrt_size * sqrt_size != size) {
-    return false;
-  }
+  return sqrt_size * sqrt_size == size;
 
   return true;
 }
@@ -52,7 +47,7 @@ bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::run() {
 
     for (int neighbor : neighbors) {
       if (neighbor < size) {
-        std::vector<uint8_t> send_data(taskData->inputs_count[0]);
+        std::vector<uint8_t> send_data(taskData->inputs_count[0], 0);
         std::copy(taskData->inputs[0], taskData->inputs[0] + taskData->inputs_count[0], send_data.begin());
 
         try {

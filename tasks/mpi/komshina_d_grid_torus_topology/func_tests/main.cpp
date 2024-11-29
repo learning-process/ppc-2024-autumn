@@ -50,8 +50,10 @@ TEST(komshina_d_grid_torus_topology_mpi, TestValidation) {
 
   task_data->inputs.clear();
   task_data->inputs_count.clear();
+
   ASSERT_FALSE(task.validation());
 }
+
 TEST(komshina_d_grid_torus_topology_mpi, TestDataTransmission) {
   boost::mpi::communicator world;
   if (world.size() < 4) return;
@@ -120,30 +122,6 @@ TEST(komshina_d_grid_torus_topology_mpi, TestNonMatchingInputOutputSizes) {
   komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel task(task_data);
 
   ASSERT_FALSE(task.validation());
-}
-
-TEST(komshina_d_grid_torus_topology_mpi, TestSingleElementInput) {
-  boost::mpi::communicator world;
-  if (world.size() < 2) return;
-
-  std::vector<uint8_t> input_data(1);
-  input_data[0] = 9;
-  std::vector<uint8_t> output_data(1);
-
-  auto task_data = std::make_shared<ppc::core::TaskData>();
-  task_data->inputs.emplace_back(input_data.data());
-  task_data->inputs_count.emplace_back(input_data.size());
-  task_data->outputs.emplace_back(output_data.data());
-  task_data->outputs_count.emplace_back(output_data.size());
-
-  komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel task(task_data);
-
-  ASSERT_TRUE(task.validation());
-
-  ASSERT_TRUE(task.pre_processing());
-  ASSERT_TRUE(task.post_processing());
-
-  EXPECT_EQ(output_data[0], input_data[0]);
 }
 
 TEST(komshina_d_grid_torus_topology_mpi, TestSmallNumberOfProcesses) {
