@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <chrono>
@@ -6,7 +5,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "seq/malyshev_lent_horizontal/include/ops_seq.hpp"
+#include "seq/malyshev_v_lent_horizontal/include/ops_seq.hpp"
 
 namespace malyshev_lent_horizontal {
 

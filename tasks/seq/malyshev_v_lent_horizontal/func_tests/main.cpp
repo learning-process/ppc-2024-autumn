@@ -4,7 +4,7 @@
 #include <random>
 #include <vector>
 
-#include "seq/malyshev_lent_horizontal/include/ops_seq.hpp"
+#include "seq/malyshev_v_lent_horizontal/include/ops_seq.hpp"
 
 namespace malyshev_lent_horizontal {
 
@@ -186,4 +186,35 @@ TEST(malyshev_lent_horizontal, test_validation_failure) {
   taskDataSeq->outputs_count.push_back(0);
 
   ASSERT_FALSE(taskSeq.validation());
+}
+
+TEST(malyshev_lent_horizontal, test_zero_values_sequential) {
+  uint32_t rows = 3;
+  uint32_t cols = 3;
+
+  std::vector<std::vector<int32_t>> zeroMatrix(rows, std::vector<int32_t>(cols, 0));
+  std::vector<int32_t> zeroVector(cols, 0);
+  std::vector<int32_t> seqResult(rows, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  malyshev_lent_horizontal::TestTaskSequential taskSeq(taskDataSeq);
+
+  for (auto &row : zeroMatrix) {
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(row.data()));
+  }
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(zeroVector.data()));
+  taskDataSeq->inputs_count.push_back(rows);
+  taskDataSeq->inputs_count.push_back(cols);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seqResult.data()));
+  taskDataSeq->outputs_count.push_back(seqResult.size());
+
+  ASSERT_TRUE(taskSeq.validation());
+  ASSERT_TRUE(taskSeq.pre_processing());
+  ASSERT_TRUE(taskSeq.run());
+  ASSERT_TRUE(taskSeq.post_processing());
+
+  for (uint32_t i = 0; i < seqResult.size(); i++) {
+    ASSERT_EQ(seqResult[i], 0);
+  }
 }
