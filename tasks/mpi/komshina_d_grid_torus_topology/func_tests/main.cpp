@@ -45,6 +45,8 @@ TEST(komshina_d_grid_torus_topology_mpi, TestValidation) {
 
   komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel task(task_data);
 
+  ASSERT_TRUE(task.pre_processing());
+
   ASSERT_TRUE(task.validation());
 
   task_data->inputs.clear();

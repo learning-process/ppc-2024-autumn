@@ -54,7 +54,6 @@ bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::validation()
   if (sqrt_size * sqrt_size != size) {
     return false;
   }
-
   return true;
 }
 
@@ -67,14 +66,20 @@ bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::run() {
 
     std::vector<uint8_t> recv_data(taskData->inputs_count[0]);
 
+    std::vector<boost::mpi::request> requests;
+
     for (int neighbor : neighbors) {
-      world.isend(neighbor, 0, send_data);
+      requests.push_back(world.isend(neighbor, 0, send_data));
 
       world.recv(neighbor, 0, recv_data);
 
       if (taskData->outputs_count[0] >= recv_data.size()) {
         std::copy(recv_data.begin(), recv_data.end(), taskData->outputs[0]);
       }
+    }
+
+    for (auto& req : requests) {
+      req.wait();
     }
 
     world.barrier();
@@ -84,6 +89,8 @@ bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::run() {
     return false;
   }
 }
+
+
 
 bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::post_processing() {
   internal_order_test();
