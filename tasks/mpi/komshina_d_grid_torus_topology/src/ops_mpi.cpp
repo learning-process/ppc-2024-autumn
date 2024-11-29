@@ -74,16 +74,18 @@ bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::post_process
 }
 
 void komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::compute_neighbors() {
-  int rows = 1, cols = world.size();
-  for (int i = 1; i <= std::sqrt(world.size()); ++i) {
-    if (world.size() % i == 0) {
+  const int size = world.size();
+  int rows = 1, cols = size;
+
+  for (int i = 1; i <= std::sqrt(size); ++i) {
+    if (size % i == 0) {
       rows = i;
-      cols = world.size() / i;
+      cols = size / i;
     }
   }
 
-  int row = rank / cols;
-  int col = rank % cols;
+  const int row = rank / cols;
+  const int col = rank % cols;
 
   neighbors = std::vector<int>(4, -1);
   neighbors[0] = (row > 0) ? rank - cols : rank + cols * (rows - 1);
