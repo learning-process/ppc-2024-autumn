@@ -1,6 +1,7 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/vladimirova_j_gather/include/ops_seq.hpp"
 
+#include <algorithm>
 #include <random>
 #include <thread>
 #include <vector>
