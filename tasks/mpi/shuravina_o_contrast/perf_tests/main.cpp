@@ -23,7 +23,7 @@ TEST(shuravina_o_contrast, Test_Contrast_1000000) {
     taskDataPar->outputs_count.emplace_back(out.size());
   }
 
-  auto contrastTaskParallel = std::make_shared<shuravina_o_contrast::ContrastTaskParallel>(taskDataPar);
+  auto contrastTaskParallel = std::make_shared<shuravina_o_contrast::ContrastParallel>(taskDataPar);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -55,7 +55,7 @@ TEST(shuravina_o_contrast, Test_Contrast_5000000) {
     taskDataPar->outputs_count.emplace_back(out.size());
   }
 
-  auto contrastTaskParallel = std::make_shared<shuravina_o_contrast::ContrastTaskParallel>(taskDataPar);
+  auto contrastTaskParallel = std::make_shared<shuravina_o_contrast::ContrastParallel>(taskDataPar);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;

@@ -21,7 +21,7 @@ TEST(Parallel_Contrast, Test_Contrast_10) {
     taskDataPar->outputs_count.emplace_back(out.size());
   }
 
-  shuravina_o_contrast::ContrastTaskParallel contrastTaskParallel(taskDataPar);
+  shuravina_o_contrast::ContrastParallel contrastTaskParallel(taskDataPar);
   ASSERT_EQ(contrastTaskParallel.validation(), true);
   contrastTaskParallel.pre_processing();
   contrastTaskParallel.run();
@@ -47,7 +47,7 @@ TEST(Parallel_Contrast, Test_Contrast_20) {
     taskDataPar->outputs_count.emplace_back(out.size());
   }
 
-  shuravina_o_contrast::ContrastTaskParallel contrastTaskParallel(taskDataPar);
+  shuravina_o_contrast::ContrastParallel contrastTaskParallel(taskDataPar);
   ASSERT_EQ(contrastTaskParallel.validation(), true);
   contrastTaskParallel.pre_processing();
   contrastTaskParallel.run();
