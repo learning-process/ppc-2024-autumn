@@ -86,11 +86,10 @@ TEST(kozlova_e_jacobi_method_mpi, Test_incorrect_system_with_zero_diagonal) {
 
   kozlova_e_jacobi_method_mpi::MethodJacobiMPI testMpiTaskParallel(taskDataPar);
 
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
   if (world.rank() == 0)
-    ASSERT_EQ(testMpiTaskParallel.pre_processing(), false);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
   else
-    ASSERT_EQ(true, true);
+    ASSERT_EQ(testMpiTaskParallel.validation(), true);
 
   if (world.rank() == 0) {
     std::vector<double> resSeq(N, 0);
@@ -106,8 +105,7 @@ TEST(kozlova_e_jacobi_method_mpi, Test_incorrect_system_with_zero_diagonal) {
 
     kozlova_e_jacobi_method_mpi::MethodJacobiSeq testMpiTaskSequential(taskDataSeq);
 
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    ASSERT_EQ(testMpiTaskSequential.pre_processing(), false);
+    ASSERT_EQ(testMpiTaskSequential.validation(), false);
   }
 }
 
@@ -344,7 +342,10 @@ TEST(kozlova_e_jacobi_method_mpi, Test_negative_epsilon) {
 
   kozlova_e_jacobi_method_mpi::MethodJacobiMPI testMpiTaskParallel(taskDataPar);
 
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  if (world.rank() == 0) {
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  } else
+    ASSERT_EQ(testMpiTaskParallel.validation(), true);
 
   if (world.rank() == 0) {
     std::vector<double> resSeq(N, 0);
@@ -358,8 +359,6 @@ TEST(kozlova_e_jacobi_method_mpi, Test_negative_epsilon) {
 
     kozlova_e_jacobi_method_mpi::MethodJacobiSeq testMpiTaskSequential(taskDataSeq);
 
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    ASSERT_EQ(testMpiTaskSequential.pre_processing(), false);
-    ASSERT_EQ(testMpiTaskParallel.pre_processing(), false);
+    ASSERT_EQ(testMpiTaskSequential.validation(), false);
   }
 }

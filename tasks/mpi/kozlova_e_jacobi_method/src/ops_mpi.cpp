@@ -8,21 +8,30 @@
 bool kozlova_e_jacobi_method_mpi::MethodJacobiSeq::pre_processing() {
   internal_order_test();
 
-  auto* matrix = reinterpret_cast<double*>(taskData->inputs[0]);
   auto* rhs = reinterpret_cast<double*>(taskData->inputs[1]);
   auto* initial_guess = reinterpret_cast<double*>(taskData->inputs[2]);
-  N = static_cast<int>(taskData->inputs_count[0]);
-  A.resize(N * N);
   B.resize(N);
   X.resize(N);
-  eps = *reinterpret_cast<double*>(taskData->inputs[3]);
 
+  for (int i = 0; i < N; i++) {
+    B[i] = rhs[i];
+    X[i] = initial_guess[i];
+  }
+
+  return true;
+}
+
+bool kozlova_e_jacobi_method_mpi::MethodJacobiSeq::validation() {
+  internal_order_test();
+
+  auto* matrix = reinterpret_cast<double*>(taskData->inputs[0]);
+  N = static_cast<int>(taskData->inputs_count[0]);
+  A.resize(N * N);
+  eps = *reinterpret_cast<double*>(taskData->inputs[3]);
   for (int i = 0; i < N; i++) {
     for (int j = 0; j < N; j++) {
       A[i * N + j] = matrix[i * N + j];
     }
-    B[i] = rhs[i];
-    X[i] = initial_guess[i];
   }
 
   for (int i = 0; i < N; i++) {
@@ -35,12 +44,6 @@ bool kozlova_e_jacobi_method_mpi::MethodJacobiSeq::pre_processing() {
     std::cerr << "Epsilon less zero!" << std::endl;
     return false;
   }
-
-  return true;
-}
-
-bool kozlova_e_jacobi_method_mpi::MethodJacobiSeq::validation() {
-  internal_order_test();
   return taskData->inputs_count[0] > 0;
 }
 
@@ -88,32 +91,14 @@ bool kozlova_e_jacobi_method_mpi::MethodJacobiSeq::post_processing() {
 bool kozlova_e_jacobi_method_mpi::MethodJacobiMPI::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    auto* matrix = reinterpret_cast<double*>(taskData->inputs[0]);
     auto* rhs = reinterpret_cast<double*>(taskData->inputs[1]);
     auto* initial_guess = reinterpret_cast<double*>(taskData->inputs[2]);
-    N = static_cast<int>(taskData->inputs_count[0]);
-    A.resize(N * N);
     B.resize(N);
     X.resize(N);
-    eps = *reinterpret_cast<double*>(taskData->inputs[3]);
 
     for (int i = 0; i < N; i++) {
-      for (int j = 0; j < N; j++) {
-        A[i * N + j] = matrix[i * N + j];
-      }
       B[i] = rhs[i];
       X[i] = initial_guess[i];
-    }
-
-    for (int i = 0; i < N; i++) {
-      if (A[i * N + i] == 0) {
-        std::cerr << "Incorrect matrix: diagonal element A[" << i + 1 << "][" << i + 1 << "] is zero." << std::endl;
-        return false;
-      }
-    }
-    if (eps <= 0.0) {
-      std::cerr << "Epsilon less zero!" << std::endl;
-      return false;
     }
   }
   return true;
@@ -162,7 +147,28 @@ void kozlova_e_jacobi_method_mpi::MethodJacobiMPI::jacobi_iteration() {
 
 bool kozlova_e_jacobi_method_mpi::MethodJacobiMPI::validation() {
   internal_order_test();
-  if (world.rank() == 0) return taskData->inputs_count[0] > 0;
+  if (world.rank() == 0) {
+    auto* matrix = reinterpret_cast<double*>(taskData->inputs[0]);
+    N = static_cast<int>(taskData->inputs_count[0]);
+    eps = *reinterpret_cast<double*>(taskData->inputs[3]);
+    A.resize(N * N);
+    for (int i = 0; i < N; i++) {
+      for (int j = 0; j < N; j++) {
+        A[i * N + j] = matrix[i * N + j];
+      }
+    }
+    for (int i = 0; i < N; i++) {
+      if (A[i * N + i] == 0) {
+        std::cerr << "Incorrect matrix: diagonal element A[" << i + 1 << "][" << i + 1 << "] is zero." << std::endl;
+        return false;
+      }
+    }
+    if (eps <= 0.0) {
+      std::cerr << "Epsilon less zero!" << std::endl;
+      return false;
+    }
+    return taskData->inputs_count[0] > 0;
+  }
   return true;
 }
 
