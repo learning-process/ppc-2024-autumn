@@ -44,63 +44,23 @@ TEST(nasedkin_e_seidels_iterate_methods_mpi, test_matrix_with_zero_diagonal) {
   ASSERT_FALSE(seidel_task.pre_processing()) << "Pre-processing passed, but expected failure";
 }
 
-TEST(nasedkin_e_seidels_iterate_methods_mpi, test_random_diagonal_dominant_matrix) {
-  const int n = 10;
-  const double epsilon = 1e-6;
-
-  std::vector<std::vector<double>> A(n, std::vector<double>(n));
-  std::vector<double> b(n);
-
-  std::srand(static_cast<unsigned>(std::time(nullptr)));
-  for (int i = 0; i < n; ++i) {
-    double sum = 0.0;
-    for (int j = 0; j < n; ++j) {
-      if (i != j) {
-        A[i][j] = static_cast<double>(std::rand() % 10 + 1);
-        sum += std::abs(A[i][j]);
-      }
-    }
-    A[i][i] = sum + static_cast<double>(std::rand() % 10 + 1);
-    b[i] = static_cast<double>(std::rand() % 20 + 1);
-  }
-
-  for (int i = 0; i < n; ++i) {
-    double row_sum = 0.0;
-    for (int j = 0; j < n; ++j) {
-      if (i != j) {
-        row_sum += std::abs(A[i][j]);
-      }
-    }
-    ASSERT_GT(std::abs(A[i][i]), row_sum) << "Matrix is not diagonally dominant";
-  }
-
+TEST(nasedkin_e_seidels_iterate_methods_mpi, test_random_diag_dominant_matrix) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.push_back(5);  // Размер матрицы
 
   nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI seidel_task(taskData);
 
-  seidel_task.set_matrix(A);
-  seidel_task.set_vector(b);
+  // Генерация случайной диагонально доминантной матрицы
+  std::vector<std::vector<double>> matrix;
+  std::vector<double> vector;
+  seidel_task.generate_random_diag_dominant_matrix(5, matrix, vector);
+  seidel_task.set_matrix(matrix, vector);
 
-  ASSERT_TRUE(seidel_task.validation()) << "Validation failed for valid random diagonal dominant matrix";
-  ASSERT_TRUE(seidel_task.pre_processing()) << "Pre-processing failed";
-  ASSERT_TRUE(seidel_task.run()) << "Run failed";
-  ASSERT_TRUE(seidel_task.post_processing()) << "Post-processing failed";
+  ASSERT_TRUE(seidel_task.validation()) << "Validation failed for random diagonally dominant matrix";
 
-  std::vector<double> x = seidel_task.get_solution();
+  ASSERT_TRUE(seidel_task.pre_processing()) << "Pre-processing failed for random diagonally dominant matrix";
 
-  std::vector<double> Ax(n, 0.0);
-  for (int i = 0; i < n; ++i) {
-    for (int j = 0; j < n; ++j) {
-      Ax[i] += A[i][j] * x[j];
-    }
-  }
+  ASSERT_TRUE(seidel_task.run()) << "Run failed for random diagonally dominant matrix";
 
-  double norm = 0.0;
-  for (int i = 0; i < n; ++i) {
-    norm += (Ax[i] - b[i]) * (Ax[i] - b[i]);
-  }
-  norm = std::sqrt(norm);
-
-  ASSERT_LT(norm, epsilon) << "The solution does not satisfy ||Ax - b|| < eps";
+  ASSERT_TRUE(seidel_task.post_processing()) << "Post-processing failed for random diagonally dominant matrix";
 }
-

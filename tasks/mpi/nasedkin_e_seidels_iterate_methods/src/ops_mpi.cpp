@@ -94,17 +94,33 @@ bool SeidelIterateMethodsMPI::converge(const std::vector<double>& x_new) {
   return std::sqrt(norm) < epsilon;
 }
 
-void nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI::set_matrix(const std::vector<std::vector<double>>& matrix) {
+void SeidelIterateMethodsMPI::set_matrix(const std::vector<std::vector<double>>& matrix, const std::vector<double>& vector) {
+  if (matrix.size() != vector.size() || matrix.empty()) {
+    throw std::invalid_argument("Matrix and vector dimensions do not match or are empty.");
+  }
   A = matrix;
+  b = vector;
   n = static_cast<int>(matrix.size());
 }
 
-void nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI::set_vector(const std::vector<double>& vector) {
-  b = vector;
+void SeidelIterateMethodsMPI::generate_random_diag_dominant_matrix(int size, std::vector<std::vector<double>>& matrix, std::vector<double>& vector) {
+  matrix.resize(size, std::vector<double>(size, 0.0));
+  vector.resize(size, 0.0);
+
+  std::srand(static_cast<unsigned>(std::time(nullptr)));
+
+  for (int i = 0; i < size; ++i) {
+    double row_sum = 0.0;
+    for (int j = 0; j < size; ++j) {
+      if (i != j) {
+        matrix[i][j] = static_cast<double>(std::rand() % 10 + 1);  // Случайные числа от 1 до 10
+        row_sum += std::abs(matrix[i][j]);
+      }
+    }
+    matrix[i][i] = row_sum + static_cast<double>(std::rand() % 5 + 1);  // Диагонально доминантное условие
+    vector[i] = static_cast<double>(std::rand() % 20 + 1);             // Случайный свободный член
+  }
 }
 
-const std::vector<double>& nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI::get_solution() const {
-  return x;
-}
 
 }  // namespace nasedkin_e_seidels_iterate_methods_mpi
