@@ -45,14 +45,14 @@ TEST(komshina_d_grid_torus_topology_mpi, TestValidation) {
 
   komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel task(task_data);
 
-  ASSERT_TRUE(task.pre_processing());
-
   ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.pre_processing());
 
   task_data->inputs.clear();
   task_data->inputs_count.clear();
   ASSERT_FALSE(task.validation());
 }
+
 
 TEST(komshina_d_grid_torus_topology_mpi, TestDataTransmission) {
   boost::mpi::communicator world;
