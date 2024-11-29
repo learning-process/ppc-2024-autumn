@@ -4,7 +4,7 @@
 #include <array>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
-#include <boost/serialization/vector.hpp>
+#include <boost/mpi/environment.hpp>
 #include <cmath>
 #include <functional>
 #include <memory>
@@ -31,11 +31,8 @@ class GridTorusTopologyParallel : public ppc::core::Task {
   std::vector<int> result;
   std::vector<int> order;
   int rank;
-
-  int width_x;
-  int length_y;
-
-  void compute_neighbors(int rank, int& left, int& right, int& up, int& down);
+  std::vector<int> neighbors;  
+  void compute_neighbors();
 };
 
 }  // namespace komshina_d_grid_torus_topology_mpi

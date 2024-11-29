@@ -165,3 +165,33 @@ TEST(komshina_d_grid_torus_topology_mpi, TestSmallNumberOfProcesses) {
     EXPECT_EQ(output_data[i], input_data[i]);
   }
 }
+TEST(komshina_d_grid_torus_topology_mpi, TestNonSquareGridTopology) {
+  boost::mpi::communicator world;
+
+  int size = world.size();
+
+  int rows = 1, cols = size;
+  for (int i = 1; i <= std::sqrt(size); ++i) {
+    if (size % i == 0) {
+      rows = i;
+      cols = size / i;
+    }
+  }
+
+  std::vector<uint8_t> input_data(4);
+  std::iota(input_data.begin(), input_data.end(), 9);
+  std::vector<uint8_t> output_data(4);
+
+  auto task_data = std::make_shared<ppc::core::TaskData>();
+  task_data->inputs.emplace_back(input_data.data());
+  task_data->inputs_count.emplace_back(input_data.size());
+  task_data->outputs.emplace_back(output_data.data());
+  task_data->outputs_count.emplace_back(output_data.size());
+
+  komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel task(task_data);
+
+  ASSERT_TRUE(task.validation());
+
+  ASSERT_EQ(rows * cols, size);
+  ASSERT_TRUE(task.pre_processing());
+}

@@ -13,89 +13,81 @@
 using namespace std::chrono_literals;
 
 bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::pre_processing() { 
-internal_order_test();
+  internal_order_test();
+
   if (world.rank() == 0) {
-    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+    int* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     input_.resize(taskData->inputs_count[0]);
     std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
   }
+
   result = std::vector<int>(input_.size(), 0);
   order = std::vector<int>(world.size() + 1, -1);
   rank = -1;
-
-  int sqrt_size = static_cast<int>(std::sqrt(world.size()));
-  width_x = length_y = sqrt_size;
-
+  compute_neighbors();
   return true;
 }
 
 bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::validation() {
   internal_order_test();
+
   if (world.rank() == 0) {
     return (taskData->inputs_count[0] == taskData->outputs_count[0]) && (taskData->inputs_count[0] > 0) &&
            (taskData->outputs_count[0] > 0) && (world.size() > 1);
   }
+
   return true;
 }
 
 bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::run() {
-  try {
-    internal_order_test();
+  internal_order_test();
 
-    int rank = world.rank();
-    int left, right, up, down;
+  std::vector<int> data_to_send = input_;
+  std::vector<int> received_data(input_.size());
 
-    compute_neighbors(rank, left, right, up, down);
+  for (int step = 0; step < 4; ++step) {
+    int neighbor = neighbors[step];
 
-    if (world.rank() == 0) {
-      order.clear();
-      order.push_back(0);
+    if (neighbor != -1) {
+      world.send(neighbor, 0, data_to_send);
+      world.recv(neighbor, 0, received_data);
 
-      world.send(right, 0, input_);
-      world.send(down, 0, input_);
-      world.send(left, 0, rank);
-      world.send(up, 0, rank);
-    } else {
-      world.recv(left, 0, input_);
-      world.recv(up, 0, rank);
-      int my_rank = world.rank();
-      world.send(right, 0, input_);
-      world.send(down, 0, my_rank);
-    }
-
-    if (world.rank() == 0) {
-      for (int i = 1; i < world.size(); ++i) {
-        world.recv(i, 0, result);
-        world.recv(i, 0, rank);
-        order.push_back(rank);
+      for (size_t i = 0; i < result.size(); ++i) {
+        result[i] += received_data[i];
       }
-      order.push_back(world.size());
     }
-    return true;
-  } catch (const std::exception& e) {
-    std::cerr << "Exception caught during run: " << e.what() << std::endl;
-    return false;
   }
-}
 
+  return true;
+}
 
 bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::post_processing() {
   internal_order_test();
   world.barrier();
+
   if (world.rank() == 0) {
     std::copy(result.begin(), result.end(), reinterpret_cast<int*>(taskData->outputs[0]));
     std::copy(order.begin(), order.end(), reinterpret_cast<int*>(taskData->outputs[1]));
   }
+
   return true;
 }
 
-void komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::compute_neighbors(int rank, int& left, int& right,
-                                                                                      int& up, int& down) {
-  int x = rank % width_x;
-  int y = rank / width_x;
+void komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::compute_neighbors() {
+  int rows = 1, cols = world.size();
+  for (int i = 1; i <= std::sqrt(world.size()); ++i) {
+    if (world.size() % i == 0) {
+      rows = i;
+      cols = world.size() / i;
+    }
+  }
 
-  left = (x == 0) ? rank + width_x - 1 : rank - 1;
-  right = (x == width_x - 1) ? rank - width_x + 1 : rank + 1;
-  up = (y == 0) ? rank + (length_y - 1) * width_x : rank - width_x;
-  down = (y == width_x - 1) ? rank - (length_y - 1) * width_x : rank + width_x;
+  int row = rank / cols;
+  int col = rank % cols;
+
+  neighbors = std::vector<int>(4, -1);
+  neighbors[0] = (row > 0) ? rank - cols : rank + cols * (rows - 1);
+  neighbors[1] = (row < rows - 1) ? rank + cols : rank - cols * (rows - 1);
+  neighbors[2] = (col > 0) ? rank - 1 : rank + cols - 1;
+  neighbors[3] = (col < cols - 1) ? rank + 1 : rank - (cols - 1);
 }
