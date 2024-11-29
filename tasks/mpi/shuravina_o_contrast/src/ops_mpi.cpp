@@ -19,8 +19,29 @@ bool shuravina_o_contrast::ContrastParallel::pre_processing() {
 
 bool shuravina_o_contrast::ContrastParallel::validation() {
   if (world.rank() == 0) {
-    return taskData->outputs_count[0] == taskData->inputs_count[0] && !taskData->outputs.empty() &&
-           taskData->inputs.size() == 2 && *reinterpret_cast<double*>(taskData->inputs[1]) >= 0;
+    bool valid = true;
+
+    if (taskData->outputs_count[0] != taskData->inputs_count[0]) {
+      std::cerr << "Validation failed: outputs_count[0] != inputs_count[0]" << std::endl;
+      valid = false;
+    }
+
+    if (taskData->outputs.empty()) {
+      std::cerr << "Validation failed: outputs is empty" << std::endl;
+      valid = false;
+    }
+
+    if (taskData->inputs.size() != 2) {
+      std::cerr << "Validation failed: inputs.size() != 2" << std::endl;
+      valid = false;
+    }
+
+    if (*reinterpret_cast<double*>(taskData->inputs[1]) < 0) {
+      std::cerr << "Validation failed: contrast < 0" << std::endl;
+      valid = false;
+    }
+
+    return valid;
   }
   return true;
 }
