@@ -138,9 +138,7 @@ bool kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel::run() 
       stat = world.probe(0, MPI_ANY_TAG);
       if (stat.tag() == 2) {
         world.recv(0, 2, data);
-        if (ConsumersFunction(data)) {
-          world.send(0, 1, true);
-        }
+        world.send(0, 1, ConsumersFunction(data));
       } else if (stat.tag() == 1) {
         world.recv(0, 1, data);
         break;
