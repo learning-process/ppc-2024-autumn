@@ -87,4 +87,3 @@ bool shuravina_o_contrast::ContrastParallel::post_processing() {
   }
   return true;
 }
-}

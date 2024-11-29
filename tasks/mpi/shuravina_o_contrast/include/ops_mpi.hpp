@@ -19,7 +19,6 @@ class ContrastParallel : public ppc::core::Task {
  private:
   std::vector<uint8_t> input_, local_input_, output_;
   boost::mpi::communicator world;
-  double contrast_;
 };
 
 }  // namespace shuravina_o_contrast
