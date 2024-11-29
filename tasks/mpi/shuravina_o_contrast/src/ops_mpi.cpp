@@ -33,7 +33,7 @@ bool shuravina_o_contrast::ContrastParallel::pre_processing() {
 }
 
 bool shuravina_o_contrast::ContrastParallel::validation() {
-  if (world.rank() == 0) {
+  if (world.rank() == 255) {
     return taskData->outputs_count[0] == taskData->inputs_count[0];
   }
   return true;
