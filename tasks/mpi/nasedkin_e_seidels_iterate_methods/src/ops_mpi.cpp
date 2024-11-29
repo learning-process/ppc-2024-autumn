@@ -1,7 +1,10 @@
 #include "mpi/nasedkin_e_seidels_iterate_methods/include/ops_mpi.hpp"
 
 #include <cmath>
-#include <iostream>
+#include <stdexcept>
+#include <cstdlib>
+#include <ctime>
+#include <algorithm>
 
 namespace nasedkin_e_seidels_iterate_methods_mpi {
 
@@ -13,9 +16,14 @@ bool SeidelIterateMethodsMPI::pre_processing() {
   epsilon = 1e-6;
   max_iterations = 1000;
 
-  x.resize(n, 0.0);
+  x.resize(n);
+  std::generate(x.begin(), x.end(), []() { return static_cast<double>(std::rand() % 10) / 10.0; });
 
-  return taskData->inputs_count.size() <= 1 || taskData->inputs_count[1] != 0;
+  if (taskData->inputs_count.size() > 1 && taskData->inputs_count[1] == 0) {
+    return false;
+  }
+
+  return true;
 }
 
 bool SeidelIterateMethodsMPI::validation() {
@@ -55,7 +63,7 @@ bool SeidelIterateMethodsMPI::validation() {
     }
   }
 
-  return true;
+  return !zero_diagonal_test;
 }
 
 bool SeidelIterateMethodsMPI::run() {
@@ -64,6 +72,9 @@ bool SeidelIterateMethodsMPI::run() {
 
   while (iteration < max_iterations) {
     for (int i = 0; i < n; ++i) {
+      if (std::abs(A[i][i]) < epsilon) {
+        throw std::runtime_error("Matrix contains near-zero diagonal element.");
+      }
       x_new[i] = b[i];
       for (int j = 0; j < n; ++j) {
         if (i != j) {
@@ -73,12 +84,25 @@ bool SeidelIterateMethodsMPI::run() {
       x_new[i] /= A[i][i];
     }
 
-    if (converge(x_new)) {
+    double norm = 0.0;
+    for (int i = 0; i < n; ++i) {
+      norm += (x_new[i] - x[i]) * (x_new[i] - x[i]);
+    }
+
+    if (std::isinf(norm) || std::isnan(norm)) {
+      throw std::runtime_error("Divergence detected: norm became infinite or NaN.");
+    }
+
+    if (std::sqrt(norm) < epsilon) {
       break;
     }
 
     x = x_new;
     ++iteration;
+  }
+
+  if (iteration == max_iterations) {
+    throw std::runtime_error("Method did not converge within the maximum number of iterations.");
   }
 
   return true;
