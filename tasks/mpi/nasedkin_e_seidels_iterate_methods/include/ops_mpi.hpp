@@ -18,7 +18,10 @@ class SeidelIterateMethodsMPI : public ppc::core::Task {
   bool post_processing() override;
 
   void set_matrix(const std::vector<std::vector<double>>& matrix, const std::vector<double>& vector);
-  void generate_random_diag_dominant_matrix(int size, std::vector<std::vector<double>>& matrix, std::vector<double>& vector);
+  static void generate_random_diag_dominant_matrix(int size, std::vector<std::vector<double>>& matrix,
+                                                   std::vector<double>& vector);
+  const std::vector<double>& get_solution() const { return x; }
+  double check_residual_norm() const;
 
  private:
   boost::mpi::communicator world;
