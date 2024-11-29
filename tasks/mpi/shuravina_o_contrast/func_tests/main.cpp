@@ -6,7 +6,7 @@
 
 #include "mpi/shuravina_o_contrast/include/ops_mpi.hpp"
 
-TEST(shuravina_o_contrast, Test_Contrast_10) {
+TEST(Parallel_Contrast, Test_Contrast_10) {
   boost::mpi::communicator world;
   const int count = 10;
 
@@ -32,7 +32,7 @@ TEST(shuravina_o_contrast, Test_Contrast_10) {
   }
 }
 
-TEST(shuravina_o_contrast, Test_Contrast_20) {
+TEST(Parallel_Contrast, Test_Contrast_20) {
   boost::mpi::communicator world;
   const int count = 20;
 

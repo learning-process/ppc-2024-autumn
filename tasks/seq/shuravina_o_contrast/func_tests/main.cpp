@@ -4,7 +4,7 @@
 
 #include "seq/shuravina_o_contrast/include/ops_seq.hpp"
 
-TEST(shuravina_o_contrast, Test_Contrast_10) {
+TEST(Sequential_Contrast, Test_Contrast_10) {
   const int count = 10;
 
   std::vector<uint8_t> in(count, 128);
@@ -24,7 +24,7 @@ TEST(shuravina_o_contrast, Test_Contrast_10) {
   ASSERT_EQ(out, std::vector<uint8_t>(count, 128));
 }
 
-TEST(shuravina_o_contrast, Test_Contrast_20) {
+TEST(Sequential_Contrast, Test_Contrast_20) {
   const int count = 20;
 
   std::vector<uint8_t> in(count, 64);
