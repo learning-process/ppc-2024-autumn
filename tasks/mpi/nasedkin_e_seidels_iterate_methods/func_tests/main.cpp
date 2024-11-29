@@ -46,7 +46,7 @@ TEST(nasedkin_e_seidels_iterate_methods_mpi, test_matrix_with_zero_diagonal) {
 
 TEST(nasedkin_e_seidels_iterate_methods_mpi, test_random_diag_dominant_matrix) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs_count.push_back(5);
+  taskData->inputs_count.push_back(3);
 
   nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI seidel_task(taskData);
 

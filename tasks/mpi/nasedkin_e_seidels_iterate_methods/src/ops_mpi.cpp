@@ -11,7 +11,7 @@ bool SeidelIterateMethodsMPI::pre_processing() {
   }
 
   epsilon = 1e-6;
-  max_iterations = 1000;
+  max_iterations = 2000;
 
   x.resize(n, 0.0);
 
