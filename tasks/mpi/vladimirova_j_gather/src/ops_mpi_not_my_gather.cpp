@@ -1,5 +1,4 @@
 // Copyright 2023 Nesterov Alexander
-#pragma once
 #include "mpi/vladimirova_j_gather/include/ops_mpi_not_my_gather.hpp"
 
 #include <algorithm>
@@ -45,27 +44,26 @@ bool vladimirova_j_not_my_gather_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   int rank = world.rank();
   int size = world.size();
-  ;
-  // Локальный вектор данных
-  // Каждый процесс добавляет свой ранг
-  // Вектор для сбора результатов (инициализируется только на процессе root)
+  // Р›РѕРєР°Р»СЊРЅС‹Р№ РІРµРєС‚РѕСЂ РґР°РЅРЅС‹С…
+  // РљР°Р¶РґС‹Р№ РїСЂРѕС†РµСЃСЃ РґРѕР±Р°РІР»СЏРµС‚ СЃРІРѕР№ СЂР°РЅРі
+  // Р’РµРєС‚РѕСЂ РґР»СЏ СЃР±РѕСЂР° СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ (РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµС‚СЃСЏ С‚РѕР»СЊРєРѕ РЅР° РїСЂРѕС†РµСЃСЃРµ root)
   std::vector<int> root_vec;
-  // Процесс с рангом 0 инициализирует вектор для сбора данных
+  // РџСЂРѕС†РµСЃСЃ СЃ СЂР°РЅРіРѕРј 0 РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµС‚ РІРµРєС‚РѕСЂ РґР»СЏ СЃР±РѕСЂР° РґР°РЅРЅС‹С…
   if (rank == 0) {
-    root_vec.resize(size * 2 - 1);  // Инициализируем вектор для получения данных
+    root_vec.resize(size * 2 - 1);  // РРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РІРµРєС‚РѕСЂ РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РґР°РЅРЅС‹С…
   } else {
     local_input_.push_back(rank);
     local_input_.push_back(rank - 1);
     std::cout << std::endl << "ppp THERE " << rank << local_input_[0] << local_input_[1] << std::endl;
   }
 
-  // Собираем данные в процессе с рангом 0
+  // РЎРѕР±РёСЂР°РµРј РґР°РЅРЅС‹Рµ РІ РїСЂРѕС†РµСЃСЃРµ СЃ СЂР°РЅРіРѕРј 0
 
   boost::mpi::gather(world, root_vec, &local_input_, 0);
 
   std::cout << std::endl << "ppp end THERE " << rank << std::endl;
 
-  // Процесс с рангом 0 выводит собранные данные
+  // РџСЂРѕС†РµСЃСЃ СЃ СЂР°РЅРіРѕРј 0 РІС‹РІРѕРґРёС‚ СЃРѕР±СЂР°РЅРЅС‹Рµ РґР°РЅРЅС‹Рµ
   if (rank == 0) {
     std::cout << "Gathered data: ";
     for (size_t i = 0; i < root_vec.size(); ++i) {
@@ -131,7 +129,7 @@ bool vladimirova_j_not_my_gather_mpi::TestMPITaskParallel::run() {
       std::cout << "ANS  2 " << r << "   \n";
       std::for_each(root_vec.begin(), root_vec.end(), [](int number) { std::cout << number << " "; });
       std::cout << std::endl;
-      
+
       root_vec.insert(root_vec.end(), input_.end() - input_.size()%world.size(), input_.end());
       std::cout << "ANS  1" << r << "   \n";
       std::for_each(root_vec.begin(), root_vec.end(), [](int number) { std::cout << number << " "; });

@@ -30,4 +30,3 @@ class TestMPITaskParallel : public ppc::core::Task {
 };
 
 }  // namespace vladimirova_j_not_my_gather_mpi
-   // namespace vladimirova_j_not_my_gather_mpi
