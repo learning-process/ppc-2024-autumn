@@ -64,7 +64,6 @@ TEST(filateva_e_metod_gausa_seq, test_pipeline_run) {
   auto* temp = reinterpret_cast<double*>(taskData->outputs[0]);
   answer.insert(answer.end(), temp, temp + size);
 
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();
@@ -74,10 +73,8 @@ TEST(filateva_e_metod_gausa_seq, test_pipeline_run) {
     return static_cast<double>(duration) * 1e-9;
   };
 
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(metodGausa);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
@@ -109,7 +106,6 @@ TEST(filateva_e_metod_gausa_seq, test_task_run) {
   auto* temp = reinterpret_cast<double*>(taskData->outputs[0]);
   answer.insert(answer.end(), temp, temp + size);
 
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();
@@ -119,10 +115,8 @@ TEST(filateva_e_metod_gausa_seq, test_task_run) {
     return static_cast<double>(duration) * 1e-9;
   };
 
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(metodGausa);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
