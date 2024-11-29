@@ -19,7 +19,6 @@ bool golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::validati
   rows_B = taskData->inputs_count[2];
   cols_B = taskData->inputs_count[3];
   return (cols_A == rows_B && rows_A > 0 && cols_A > 0 && rows_B > 0 && cols_B > 0);
-
 }
 
 bool golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::pre_processing() {

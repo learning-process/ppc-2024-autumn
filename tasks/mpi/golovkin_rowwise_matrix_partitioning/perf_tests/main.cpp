@@ -8,7 +8,6 @@
 
 #include "core/perf/include/perf.hpp"
 #include "core/task/include/task.hpp"
-
 #include "mpi/golovkin_rowwise_matrix_partitioning/include/ops_mpi.hpp"
 
 using namespace golovkin_rowwise_matrix_partitioning;

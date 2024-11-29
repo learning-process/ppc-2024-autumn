@@ -32,8 +32,7 @@ TEST(golovkin_rowwise_matrix_partitioning, test_pipeline_run) {
   taskDataSeq->outputs.push_back(reinterpret_cast<uint8_t*>(&result));
   taskDataSeq->outputs_count.push_back(sizeof(std::vector<std::vector<double>>));
 
-  auto matrixMultiplicationTask =
-      std::make_shared<MatrixMultiplicationTask>(taskDataSeq);
+  auto matrixMultiplicationTask = std::make_shared<MatrixMultiplicationTask>(taskDataSeq);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -72,8 +71,7 @@ TEST(golovkin_rowwise_matrix_partitioning, test_task_run) {
   taskDataSeq->outputs.push_back(reinterpret_cast<uint8_t*>(&result));
   taskDataSeq->outputs_count.push_back(sizeof(std::vector<std::vector<double>>));
 
-  auto matrixMultiplicationTask =
-      std::make_shared<MatrixMultiplicationTask>(taskDataSeq);
+  auto matrixMultiplicationTask = std::make_shared<MatrixMultiplicationTask>(taskDataSeq);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;

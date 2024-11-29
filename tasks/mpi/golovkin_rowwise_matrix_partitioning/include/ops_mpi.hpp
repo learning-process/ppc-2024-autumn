@@ -16,7 +16,7 @@ namespace golovkin_rowwise_matrix_partitioning {
 
 class MPIMatrixMultiplicationTask : public ppc::core::Task {
  public:
-  explicit MPIMatrixMultiplicationTask(std::shared_ptr<ppc::core::TaskData> inputData) : Task(std::move(inputData)){};
+  explicit MPIMatrixMultiplicationTask(std::shared_ptr<ppc::core::TaskData> inputData) : Task(std::move(inputData)) {};
 
   bool validation() override;
   bool pre_processing() override;
