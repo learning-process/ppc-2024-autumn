@@ -55,7 +55,7 @@ bool suvorov_d_linear_topology_mpi::MPILinearTopology::run() {
     world.recv(world.rank() - 1, 0, local_data_);
     world.recv(world.rank() - 1, 1, rank_order_);
 
-    rank_order_.push_back(world.rank());
+    rank_order_.push_back(static_cast<size_t>(world.rank()));
 
     if (world.rank() != world.size() - 1) {
       world.send(world.rank() + 1, 0, local_data_);
