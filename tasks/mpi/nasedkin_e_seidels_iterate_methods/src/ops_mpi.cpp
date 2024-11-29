@@ -1,5 +1,4 @@
 #include "mpi/nasedkin_e_seidels_iterate_methods/include/ops_mpi.hpp"
-
 #include <cmath>
 #include <iostream>
 
@@ -57,7 +56,6 @@ bool SeidelIterateMethodsMPI::validation() {
   return true;
 }
 
-
 bool SeidelIterateMethodsMPI::run() {
   std::vector<double> x_new(n, 0.0);
   int iteration = 0;
@@ -85,46 +83,48 @@ bool SeidelIterateMethodsMPI::run() {
   return false;
 }
 
-
-bool SeidelIterateMethodsMPI::post_processing() { return true; }
+bool SeidelIterateMethodsMPI::post_processing() {
+  return true;
+}
 
 bool SeidelIterateMethodsMPI::converge(const std::vector<double>& x_new) {
   double norm = 0.0;
   for (int i = 0; i < n; ++i) {
     norm += (x_new[i] - x[i]) * (x_new[i] - x[i]);
   }
-  return std::sqrt(norm) < epsilon;
+  norm = std::sqrt(norm);
+
+  return norm < epsilon;
 }
 
-bool SeidelIterateMethodsMPI::set_matrix(const std::vector<std::vector<double>>& matrix,
+void SeidelIterateMethodsMPI::set_matrix(const std::vector<std::vector<double>>& matrix,
                                          const std::vector<double>& vector) {
   if (matrix.empty() || matrix.size() != vector.size()) {
     std::cerr << "Matrix and vector dimensions do not match or are empty." << std::endl;
-    return false;
+    return;
   }
 
   for (size_t i = 0; i < matrix.size(); ++i) {
     if (matrix[i].size() != matrix.size()) {
       std::cerr << "Matrix must be square." << std::endl;
-      return false;
+      return;
     }
     if (matrix[i][i] == 0.0) {
       std::cerr << "Matrix contains zero on the diagonal." << std::endl;
-      return false;
+      return;
     }
   }
 
   A = matrix;
   b = vector;
   n = static_cast<int>(matrix.size());
-  return true;
 }
 
-bool SeidelIterateMethodsMPI::generate_random_diag_dominant_matrix(int size, std::vector<std::vector<double>>& matrix,
+void SeidelIterateMethodsMPI::generate_random_diag_dominant_matrix(int size, std::vector<std::vector<double>>& matrix,
                                                                    std::vector<double>& vector) {
   if (size <= 0) {
     std::cerr << "Matrix size must be positive." << std::endl;
-    return false;
+    return;
   }
 
   matrix.resize(size, std::vector<double>(size, 0.0));
@@ -143,7 +143,6 @@ bool SeidelIterateMethodsMPI::generate_random_diag_dominant_matrix(int size, std
     matrix[i][i] = row_sum + static_cast<double>(std::rand() % 5 + 1);
     vector[i] = static_cast<double>(std::rand() % 20 + 1);
   }
-  return true;
 }
 
 }  // namespace nasedkin_e_seidels_iterate_methods_mpi
