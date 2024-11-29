@@ -59,9 +59,9 @@ TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_seq, test_4_unknowns) {
   const int count = 4;
 
   // Create data
-  std::vector<double> in = {2, 5, 4, 1, 20, 1, 3, 2, 1, 11, 2, 10, 9, 7, 40, 3, 8, 9, 2, 37};
+  std::vector<double> in = {1, 1, 2, 3, 1, 1, 2, 3, -1, -4, 3, -1, -1, -2, -4, 2, 3, -1, -1, -6};
   std::vector<double> out(count, 0);
-  std::vector<double> ans = {1, 2, 2, 0};
+  std::vector<double> ans = {-1, -1, 0, 1};
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
