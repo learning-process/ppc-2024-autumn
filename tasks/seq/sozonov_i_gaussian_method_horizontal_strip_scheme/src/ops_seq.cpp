@@ -9,7 +9,7 @@ bool sozonov_i_gaussian_method_horizontal_strip_scheme_seq::TestTaskSequential::
   // Init matrix
   matrix = std::vector<double>(taskData->inputs_count[0]);
   auto* tmp_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+  for (unsigned i = 0; i < taskData->inputs_count[0]; ++i) {
     matrix[i] = tmp_ptr[i];
   }
   n = taskData->inputs_count[1];
@@ -27,17 +27,17 @@ bool sozonov_i_gaussian_method_horizontal_strip_scheme_seq::TestTaskSequential::
 
 bool sozonov_i_gaussian_method_horizontal_strip_scheme_seq::TestTaskSequential::run() {
   internal_order_test();
-  for (size_t i = 0; i < n - 1; ++i) {
-    for (size_t k = i + 1; k < n; ++k) {
+  for (int i = 0; i < n - 1; ++i) {
+    for (int k = i + 1; k < n; ++k) {
       double m = matrix[k * (n + 1) + i] / matrix[i * (n + 1) + i];
-      for (size_t j = i; j < (n + 1); ++j) {
+      for (int j = i; j < (n + 1); ++j) {
         matrix[k * (n + 1) + j] -= matrix[i * (n + 1) + j] * m;
       }
     }
   }
   for (int i = n - 1; i >= 0; --i) {
     double b = matrix[i * (n + 1) + n];
-    for (size_t j = i + 1; j < n; ++j) {
+    for (int j = i + 1; j < n; ++j) {
       b -= matrix[i * (n + 1) + j] * x[j];
     }
     x[i] = b / matrix[i * (n + 1) + i];
@@ -47,7 +47,7 @@ bool sozonov_i_gaussian_method_horizontal_strip_scheme_seq::TestTaskSequential::
 
 bool sozonov_i_gaussian_method_horizontal_strip_scheme_seq::TestTaskSequential::post_processing() {
   internal_order_test();
-  for (size_t i = 0; i < n; ++i) {
+  for (int i = 0; i < n; ++i) {
     reinterpret_cast<double*>(taskData->outputs[0])[i] = x[i];
   }
   return true;

@@ -13,7 +13,7 @@ bool sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::TestMPITaskSequentia
   // Init matrix
   matrix = std::vector<double>(taskData->inputs_count[0]);
   auto *tmp_ptr = reinterpret_cast<double *>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+  for (unsigned i = 0; i < taskData->inputs_count[0]; ++i) {
     matrix[i] = tmp_ptr[i];
   }
   n = taskData->inputs_count[1];
@@ -31,17 +31,17 @@ bool sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::TestMPITaskSequentia
 
 bool sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-  for (size_t i = 0; i < n - 1; ++i) {
-    for (size_t k = i + 1; k < n; ++k) {
+  for (int i = 0; i < n - 1; ++i) {
+    for (int k = i + 1; k < n; ++k) {
       double m = matrix[k * (n + 1) + i] / matrix[i * (n + 1) + i];
-      for (size_t j = i; j < (n + 1); ++j) {
+      for (int j = i; j < (n + 1); ++j) {
         matrix[k * (n + 1) + j] -= matrix[i * (n + 1) + j] * m;
       }
     }
   }
   for (int i = n - 1; i >= 0; --i) {
     double b = matrix[i * (n + 1) + n];
-    for (size_t j = i + 1; j < n; ++j) {
+    for (int j = i + 1; j < n; ++j) {
       b -= matrix[i * (n + 1) + j] * x[j];
     }
     x[i] = b / matrix[i * (n + 1) + i];
@@ -51,7 +51,7 @@ bool sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::TestMPITaskSequentia
 
 bool sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
-  for (size_t i = 0; i < n; ++i) {
+  for (int i = 0; i < n; ++i) {
     reinterpret_cast<double *>(taskData->outputs[0])[i] = x[i];
   }
   return true;
@@ -63,7 +63,7 @@ bool sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::TestMPITaskParallel:
     // Init matrix
     matrix = std::vector<double>(taskData->inputs_count[0]);
     auto *tmp_ptr = reinterpret_cast<double *>(taskData->inputs[0]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+    for (unsigned i = 0; i < taskData->inputs_count[0]; ++i) {
       matrix[i] = tmp_ptr[i];
     }
     n = taskData->inputs_count[1];
@@ -103,9 +103,9 @@ bool sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::TestMPITaskParallel:
 
   if (world.rank() == 0) {
     std::vector<double> send_matrix(delta * (n + 1));
-    for (int proc = 1; proc < world.size(); proc++) {
-      for (size_t i = 0; i < row_num[proc]; ++i) {
-        for (size_t j = 0; j < n + 1; ++j) {
+    for (int proc = 1; proc < world.size(); ++proc) {
+      for (int i = 0; i < row_num[proc]; ++i) {
+        for (int j = 0; j < n + 1; ++j) {
           send_matrix[i * (n + 1) + j] = matrix[(proc + world.size() * i) * (n + 1) + j];
         }
       }
@@ -116,8 +116,8 @@ bool sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::TestMPITaskParallel:
   local_matrix = std::vector<double>(delta * (n + 1));
 
   if (world.rank() == 0) {
-    for (size_t i = 0; i < delta; ++i) {
-      for (size_t j = 0; j < n + 1; ++j) {
+    for (int i = 0; i < delta; ++i) {
+      for (int j = 0; j < n + 1; ++j) {
         local_matrix[i * (n + 1) + j] = matrix[i * (n + 1) * world.size() + j];
       }
     }
@@ -126,15 +126,15 @@ bool sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::TestMPITaskParallel:
   }
 
   std::vector<double> row(delta);
-  for (size_t i = 0; i < delta; ++i) {
+  for (int i = 0; i < delta; ++i) {
     row[i] = world.rank() + world.size() * i;
   }
 
   std::vector<double> pivot(n + 1);
   int r = 0;
-  for (size_t i = 0; i < n - 1; ++i) {
+  for (int i = 0; i < n - 1; ++i) {
     if (i == row[r]) {
-      for (size_t j = 0; j < n + 1; ++j) {
+      for (int j = 0; j < n + 1; ++j) {
         pivot[j] = local_matrix[r * (n + 1) + j];
       }
       broadcast(world, pivot.data(), n + 1, world.rank());
@@ -142,9 +142,9 @@ bool sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::TestMPITaskParallel:
     } else {
       broadcast(world, pivot.data(), n + 1, i % world.size());
     }
-    for (size_t k = r; k < delta; k++) {
+    for (int k = r; k < delta; ++k) {
       double m = local_matrix[k * (n + 1) + i] / pivot[i];
-      for (size_t j = i; j < n + 1; ++j) {
+      for (int j = i; j < n + 1; ++j) {
         local_matrix[k * (n + 1) + j] -= pivot[j] * m;
       }
     }
@@ -152,7 +152,7 @@ bool sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::TestMPITaskParallel:
 
   local_x = std::vector<double>(n, 0);
   r = 0;
-  for (size_t i = 0; i < n; ++i) {
+  for (int i = 0; i < n; ++i) {
     if (i == row[r]) {
       local_x[i] = local_matrix[r * (n + 1) + n];
       r++;
@@ -160,7 +160,7 @@ bool sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::TestMPITaskParallel:
   }
 
   r = delta - 1;
-  for (size_t i = n - 1; i > 0; --i) {
+  for (int i = n - 1; i > 0; --i) {
     if (r >= 0) {
       if (i == row[r]) {
         local_x[i] /= local_matrix[r * (n + 1) + i];
@@ -173,7 +173,7 @@ bool sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::TestMPITaskParallel:
       broadcast(world, local_x[i], i % world.size());
     }
     if (r >= 0) {
-      for (size_t j = 0; j <= r; ++j) {
+      for (int j = 0; j <= r; ++j) {
         local_x[row[j]] -= local_matrix[j * (n + 1) + i] * local_x[i];
       }
     }
@@ -190,7 +190,7 @@ bool sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::TestMPITaskParallel:
 bool sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    for (size_t i = 0; i < n; ++i) {
+    for (int i = 0; i < n; ++i) {
       reinterpret_cast<double *>(taskData->outputs[0])[i] = x[i];
     }
   }

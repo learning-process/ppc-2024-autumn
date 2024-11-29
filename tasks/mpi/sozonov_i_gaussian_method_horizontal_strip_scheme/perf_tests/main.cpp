@@ -17,7 +17,7 @@ TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_mpi, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    for (size_t i = 0; i < count; ++i) {
+    for (int i = 0; i < count; ++i) {
       global_mat[i * (count + 1) + i] = 1;
       global_mat[i * (count + 1) + count] = i + 1;
     }
@@ -64,7 +64,7 @@ TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_mpi, test_task_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    for (size_t i = 0; i < count; ++i) {
+    for (int i = 0; i < count; ++i) {
       global_mat[i * (count + 1) + i] = 1;
       global_mat[i * (count + 1) + count] = i + 1;
     }

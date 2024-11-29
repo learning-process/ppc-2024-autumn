@@ -14,7 +14,7 @@ TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_seq, test_pipeline_run) {
   std::vector<double> out(count, 0);
   std::vector<double> ans(count);
 
-  for (size_t i = 0; i < count; ++i) {
+  for (int i = 0; i < count; ++i) {
     in[i * (count + 1) + i] = 1;
     in[i * (count + 1) + count] = i + 1;
   }
@@ -60,7 +60,7 @@ TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_seq, test_task_run) {
   std::vector<double> out(count, 0);
   std::vector<double> ans(count);
 
-  for (size_t i = 0; i < count; ++i) {
+  for (int i = 0; i < count; ++i) {
     in[i * (count + 1) + i] = 1;
     in[i * (count + 1) + count] = i + 1;
   }
