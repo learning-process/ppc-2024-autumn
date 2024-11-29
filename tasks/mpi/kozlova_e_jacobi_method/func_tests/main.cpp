@@ -14,6 +14,7 @@ TEST(kozlova_e_jacobi_method_mpi, Test_4x4_system) {
 
   std::vector<double> B = {15, 10, 10, 10};
   std::vector<double> X = {0, 0, 0, 0};
+  double epsilon = 1e-6;
 
   std::vector<double> resMPI(N, 0);
   std::vector<double> expected_result = {5, 5, 5, 5};
@@ -24,6 +25,7 @@ TEST(kozlova_e_jacobi_method_mpi, Test_4x4_system) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(X.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
     taskDataPar->inputs_count.emplace_back(N);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(resMPI.data()));
     taskDataPar->outputs_count.emplace_back(resMPI.size());
@@ -43,6 +45,7 @@ TEST(kozlova_e_jacobi_method_mpi, Test_4x4_system) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(X.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
     taskDataSeq->inputs_count.emplace_back(N);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(resSeq.data()));
     taskDataSeq->outputs_count.emplace_back(resSeq.size());
@@ -65,6 +68,7 @@ TEST(kozlova_e_jacobi_method_mpi, Test_incorrect_system_with_zero_diagonal) {
   std::vector<double> A = {0, -1, 0, -1, 0, -1, 0, -1, 0};
   std::vector<double> B = {30, 20, 10};
   std::vector<double> X = {0, 0, 0};
+  double epsilon = 1e-6;
 
   std::vector<double> resMPI(N, 0);
 
@@ -74,6 +78,7 @@ TEST(kozlova_e_jacobi_method_mpi, Test_incorrect_system_with_zero_diagonal) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(X.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
     taskDataPar->inputs_count.emplace_back(N);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(resMPI.data()));
     taskDataPar->outputs_count.emplace_back(resMPI.size());
@@ -94,6 +99,7 @@ TEST(kozlova_e_jacobi_method_mpi, Test_incorrect_system_with_zero_diagonal) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(X.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
     taskDataSeq->inputs_count.emplace_back(N);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(resSeq.data()));
     taskDataSeq->outputs_count.emplace_back(resSeq.size());
@@ -110,7 +116,7 @@ TEST(kozlova_e_jacobi_method_mpi, Test_empty_system) {
 
   int N = 0;
   std::vector<double> A = {};
-
+  double epsilon = 1e-6;
   std::vector<double> B = {};
   std::vector<double> X = {};
 
@@ -122,6 +128,7 @@ TEST(kozlova_e_jacobi_method_mpi, Test_empty_system) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(X.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
     taskDataPar->inputs_count.emplace_back(N);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(resMPI.data()));
     taskDataPar->outputs_count.emplace_back(resMPI.size());
@@ -141,6 +148,7 @@ TEST(kozlova_e_jacobi_method_mpi, Test_empty_system) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(X.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
     taskDataSeq->inputs_count.emplace_back(N);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(resSeq.data()));
     taskDataSeq->outputs_count.emplace_back(resSeq.size());
@@ -156,7 +164,7 @@ TEST(kozlova_e_jacobi_method_mpi, Test_10x10_system) {
 
   int N = 10;
   std::vector<double> A(N * N, -1);
-
+  double epsilon = 1e-6;
   for (int i = 0; i < N; i++) {
     A[i * N + i] = 10;
   }
@@ -172,6 +180,7 @@ TEST(kozlova_e_jacobi_method_mpi, Test_10x10_system) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(X.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
     taskDataPar->inputs_count.emplace_back(N);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(resMPI.data()));
     taskDataPar->outputs_count.emplace_back(resMPI.size());
@@ -191,6 +200,7 @@ TEST(kozlova_e_jacobi_method_mpi, Test_10x10_system) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(X.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
     taskDataSeq->inputs_count.emplace_back(N);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(resSeq.data()));
     taskDataSeq->outputs_count.emplace_back(resSeq.size());
@@ -213,7 +223,7 @@ TEST(kozlova_e_jacobi_method_mpi, Test_negative_B) {
   std::vector<double> A = {4, -1, 0, 0, -1, 4, -1, 0, 0, -1, 4, -1, 0, 0, -1, 3};
   std::vector<double> B = {-15, -10, -10, -10};
   std::vector<double> X = {0, 0, 0, 0};
-
+  double epsilon = 1e-6;
   std::vector<double> resMPI(N, 0);
   std::vector<double> expected_result = {-5, -5, -5, -5};
 
@@ -223,6 +233,7 @@ TEST(kozlova_e_jacobi_method_mpi, Test_negative_B) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(X.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
     taskDataPar->inputs_count.emplace_back(N);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(resMPI.data()));
     taskDataPar->outputs_count.emplace_back(resMPI.size());
@@ -242,6 +253,7 @@ TEST(kozlova_e_jacobi_method_mpi, Test_negative_B) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(X.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
     taskDataSeq->inputs_count.emplace_back(N);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(resSeq.data()));
     taskDataSeq->outputs_count.emplace_back(resSeq.size());
@@ -264,7 +276,7 @@ TEST(kozlova_e_jacobi_method_mpi, Test_1x1_system) {
   std::vector<double> A = {5};
   std::vector<double> B = {100};
   std::vector<double> X = {0};
-
+  double epsilon = 1e-6;
   std::vector<double> resMPI(N, 0);
   std::vector<double> expected_result = {20};
 
@@ -274,6 +286,7 @@ TEST(kozlova_e_jacobi_method_mpi, Test_1x1_system) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(X.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
     taskDataPar->inputs_count.emplace_back(N);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(resMPI.data()));
     taskDataPar->outputs_count.emplace_back(resMPI.size());
@@ -293,6 +306,7 @@ TEST(kozlova_e_jacobi_method_mpi, Test_1x1_system) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(X.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
     taskDataSeq->inputs_count.emplace_back(N);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(resSeq.data()));
     taskDataSeq->outputs_count.emplace_back(resSeq.size());
@@ -306,5 +320,46 @@ TEST(kozlova_e_jacobi_method_mpi, Test_1x1_system) {
 
     ASSERT_EQ(resMPI[0], resSeq[0]);
     ASSERT_EQ(resSeq[0], expected_result[0]);
+  }
+}
+
+TEST(kozlova_e_jacobi_method_mpi, Test_negative_epsilon) {
+  boost::mpi::communicator world;
+
+  int N = 1;
+  std::vector<double> A = {5};
+  std::vector<double> B = {100};
+  std::vector<double> X = {0};
+  double epsilon = -1e-6;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(X.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
+    taskDataPar->inputs_count.emplace_back(N);
+  }
+
+  kozlova_e_jacobi_method_mpi::MethodJacobiMPI testMpiTaskParallel(taskDataPar);
+
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  ASSERT_EQ(testMpiTaskParallel.pre_processing(), false);
+
+  if (world.rank() == 0) {
+    std::vector<double> resSeq(N, 0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(X.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
+    taskDataSeq->inputs_count.emplace_back(N);
+
+    kozlova_e_jacobi_method_mpi::MethodJacobiSeq testMpiTaskSequential(taskDataSeq);
+
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    ASSERT_EQ(testMpiTaskSequential.pre_processing(), false);
   }
 }

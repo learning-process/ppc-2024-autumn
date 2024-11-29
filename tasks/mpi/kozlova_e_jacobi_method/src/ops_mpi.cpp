@@ -15,6 +15,7 @@ bool kozlova_e_jacobi_method_mpi::MethodJacobiSeq::pre_processing() {
   A.resize(N * N);
   B.resize(N);
   X.resize(N);
+  eps = *reinterpret_cast<double*>(taskData->inputs[3]);
 
   for (int i = 0; i < N; i++) {
     for (int j = 0; j < N; j++) {
@@ -29,6 +30,10 @@ bool kozlova_e_jacobi_method_mpi::MethodJacobiSeq::pre_processing() {
       std::cerr << "Incorrect matrix: diagonal element A[" << i + 1 << "][" << i + 1 << "] is zero." << std::endl;
       return false;
     }
+  }
+  if (eps <= 0.0) {
+    std::cerr << "Epsilon less zero!" << std::endl;
+    return false;
   }
 
   return true;
@@ -90,7 +95,7 @@ bool kozlova_e_jacobi_method_mpi::MethodJacobiMPI::pre_processing() {
     A.resize(N * N);
     B.resize(N);
     X.resize(N);
-    eps = 1e-6;
+    eps = *reinterpret_cast<double*>(taskData->inputs[3]);
 
     for (int i = 0; i < N; i++) {
       for (int j = 0; j < N; j++) {
@@ -105,6 +110,10 @@ bool kozlova_e_jacobi_method_mpi::MethodJacobiMPI::pre_processing() {
         std::cerr << "Incorrect matrix: diagonal element A[" << i + 1 << "][" << i + 1 << "] is zero." << std::endl;
         return false;
       }
+    }
+    if (eps <= 0.0) {
+      std::cerr << "Epsilon less zero!" << std::endl;
+      return false;
     }
   }
   return true;

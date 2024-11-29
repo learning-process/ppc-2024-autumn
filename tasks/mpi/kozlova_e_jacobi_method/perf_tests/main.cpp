@@ -17,12 +17,15 @@ TEST(kozlova_e_jacobi_method_mpi, test_pipeline_run) {
   std::vector<double> B(N, 5000.233445);
   std::vector<double> X(N, 0.0);
   std::vector<double> expected_X(N, 1.0);
+  double epsilon = 1e-6;
+
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(X.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
     taskDataPar->inputs_count.emplace_back(N);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(X.data()));
     taskDataPar->outputs_count.emplace_back(X.size());
@@ -63,12 +66,14 @@ TEST(kozlova_e_jacobi_method_mpi, test_task_run) {
   std::vector<double> B(N, 510.0);
   std::vector<double> X(N, 0.0);
   std::vector<double> expected_X(N, 1.0);
+  double epsilon = 1e-6;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(X.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
     taskDataPar->inputs_count.emplace_back(N);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(X.data()));
     taskDataPar->outputs_count.emplace_back(X.size());
