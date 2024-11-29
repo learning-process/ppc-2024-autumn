@@ -23,11 +23,11 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  int colums{};
-  int rows{};
-  std::vector<int> input_{};
-  std::vector<int> res_{};
-  std::vector<int> cnt_{};
+  int colums;
+  int rows;
+  std::vector<int> input_;
+  std::vector<int> res_;
+  std::vector<int> cnt_;
 };
 
 class TestMPITaskMyRealization : public ppc::core::Task {
@@ -41,12 +41,12 @@ class TestMPITaskMyRealization : public ppc::core::Task {
   static void my_all_reduce(const boost::mpi::communicator& world, const T* in_values, int n, T* out_values);
 
  private:
-  int colums{};
-  int rows{};
-  std::vector<int> input_{};
-  std::vector<int> local_input_{};
-  std::vector<int> res_{};
-  std::vector<int> cnt_{};
+  int colums;
+  int rows;
+  std::vector<int> input_;
+  std::vector<int> local_input_;
+  std::vector<int> res_;
+  std::vector<int> cnt_;
   boost::mpi::communicator world;
 };
 }  // namespace grudzin_k_all_reduce_student_mpi

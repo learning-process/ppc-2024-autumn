@@ -119,7 +119,9 @@ void grudzin_k_all_reduce_student_mpi::TestMPITaskMyRealization::my_all_reduce(c
 
 bool grudzin_k_all_reduce_student_mpi::TestMPITaskMyRealization::run() {
   internal_order_test();
-  int size, rest, delta;
+  int size;
+  int rest;
+  int delta;
   if (world.rank() == 0) {
     rows = taskData->inputs_count[0];
     colums = taskData->inputs_count[1];
