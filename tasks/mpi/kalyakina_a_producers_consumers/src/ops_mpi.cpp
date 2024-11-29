@@ -8,8 +8,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
 int kalyakina_a_producers_consumers_mpi::ProducersConsumersTaskParallel::ProducersFunction() {
   std::random_device dev;
   std::mt19937 gen(dev());
