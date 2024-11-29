@@ -57,31 +57,25 @@ TEST(nasedkin_e_seidels_iterate_methods_mpi, test_random_diag_dominant_matrix) {
   seidel_task.set_matrix(matrix, vector);
 
   ASSERT_TRUE(seidel_task.validation()) << "Validation failed for random diagonally dominant matrix";
-
   ASSERT_TRUE(seidel_task.pre_processing()) << "Pre-processing failed for random diagonally dominant matrix";
-
   ASSERT_TRUE(seidel_task.run()) << "Run failed for random diagonally dominant matrix";
 
-  ASSERT_TRUE(seidel_task.post_processing()) << "Post-processing failed for random diagonally dominant matrix";
-
-  const std::vector<double>& x = seidel_task.get_solution();
-  const std::vector<std::vector<double>>& A = seidel_task.get_matrix();
-  const std::vector<double>& b = seidel_task.get_vector();
-  double eps = 1e-6;
-
-  std::vector<double> Ax(b.size(), 0.0);
-  for (size_t i = 0; i < A.size(); ++i) {
-    for (size_t j = 0; j < A[i].size(); ++j) {
-      Ax[i] += A[i][j] * x[j];
-    }
-  }
-
+  const std::vector<double>& solution = seidel_task.get_solution();
   double residual_norm = 0.0;
-  for (size_t i = 0; i < Ax.size(); ++i) {
-    residual_norm += (Ax[i] - b[i]) * (Ax[i] - b[i]);
+
+  for (int i = 0; i < matrix.size(); ++i) {
+    double Ax_i = 0.0;
+    for (int j = 0; j < matrix[i].size(); ++j) {
+      Ax_i += matrix[i][j] * solution[j];
+    }
+    residual_norm += (Ax_i - vector[i]) * (Ax_i - vector[i]);
   }
   residual_norm = std::sqrt(residual_norm);
 
-  ASSERT_LT(residual_norm, eps) << "Residual norm ||Ax - b|| is not less than eps";
+  double epsilon = 1e-6;
+  ASSERT_LT(residual_norm, epsilon) << "Residual norm ||Ax-b|| is too large: " << residual_norm;
+
+  ASSERT_TRUE(seidel_task.post_processing()) << "Post-processing failed for random diagonally dominant matrix";
 }
+
 
