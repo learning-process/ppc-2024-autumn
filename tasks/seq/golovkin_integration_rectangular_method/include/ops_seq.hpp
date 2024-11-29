@@ -28,7 +28,7 @@ class IntegralCalculator : public ppc::core::Task {
   double h;
   double res;
   std::vector<double> input_;
-  double function_square(double x);
+  static double function_square(double x);
 };
 
 }  // namespace golovkin_integration_rectangular_method

@@ -15,13 +15,13 @@ MatrixMultiplicationTask::MatrixMultiplicationTask(const std::shared_ptr<ppc::co
 
 bool MatrixMultiplicationTask::validation() {
   internal_order_test();
-  if (!taskData_ || taskData_->inputs.size() < 2 || taskData_->outputs.size() < 1) {
+  if (!taskData_ || taskData_->inputs.size() < 2 || taskData_->outputs.empty()) {
     return false;
   }
 
   auto* matrixA = reinterpret_cast<std::vector<std::vector<double>>*>(taskData_->inputs[0]);
   auto* matrixB = reinterpret_cast<std::vector<std::vector<double>>*>(taskData_->inputs[1]);
-  if (!matrixA || !matrixB || matrixA->empty() || matrixB->empty()) {
+  if (matrixA == nullptr || matrixB == nullptr || matrixA->empty() || matrixB->empty()) {
     return false;
   }
 
@@ -38,7 +38,7 @@ bool MatrixMultiplicationTask::pre_processing() {
   auto* matrixB = reinterpret_cast<std::vector<std::vector<double>>*>(taskData_->inputs[1]);
   auto* result = reinterpret_cast<std::vector<std::vector<double>>*>(taskData_->outputs[0]);
 
-  if (!matrixA || !matrixB || !result) {
+  if (matrixA == nullptr || matrixB == nullptr || result == nullptr) {
     return false;
   }
 
@@ -49,8 +49,9 @@ bool MatrixMultiplicationTask::pre_processing() {
 }
 
 bool MatrixMultiplicationTask::multiplier(std::vector<std::vector<double>>& matrixA,
-                                          std::vector<std::vector<double>>& matrixB,
-                                          std::vector<std::vector<double>>& result) {
+                                                 std::vector<std::vector<double>>& matrixB,
+                                                 std::vector<std::vector<double>>& result) {
+
   size_t rowsA = matrixA.size();
   size_t colsA = matrixA[0].size();
   size_t colsB = matrixB[0].size();

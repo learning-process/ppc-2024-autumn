@@ -17,9 +17,14 @@ using ppc::core::TaskData;
 TEST(golovkin_rowwise_matrix_partitioning, test_pipeline_run) {
   boost::mpi::communicator world;
 
-  const int rows_A = 512, cols_A = 256, rows_B = 256, cols_B = 128;
+  const int rows_A = 512;
+  const int cols_A = 256;
+  const int rows_B = 256;
+  const int cols_B = 128;
 
-  double *A = nullptr, *B = nullptr, *result = nullptr;
+  double* A = nullptr;
+  double* B = nullptr;
+  double* result = nullptr;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -77,9 +82,14 @@ TEST(golovkin_rowwise_matrix_partitioning, test_pipeline_run) {
 TEST(golovkin_rowwise_matrix_partitioning, test_task_run) {
   boost::mpi::communicator world;
 
-  const int rows_A = 512, cols_A = 256, rows_B = 256, cols_B = 128;
+  const int rows_A = 512;
+  const int cols_A = 256;
+  const int rows_B = 256;
+  const int cols_B = 128;
 
-  double *A = nullptr, *B = nullptr, *result = nullptr;
+  double* A = nullptr;
+  double* B = nullptr;
+  double* result = nullptr;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
