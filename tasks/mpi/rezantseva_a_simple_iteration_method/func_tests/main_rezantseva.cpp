@@ -229,7 +229,7 @@ TEST(rezantseva_a_simple_iteration_method_mpi, check_matrix_3x3) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
 
-    taskDataSeq->inputs_count.emplace_back(sizes.data());
+    taskDataSeq->inputs_count.emplace_back(sizes.size());
     taskDataSeq->inputs_count.emplace_back(A.size());
     taskDataSeq->inputs_count.emplace_back(b.size());
 
