@@ -345,7 +345,6 @@ TEST(kozlova_e_jacobi_method_mpi, Test_negative_epsilon) {
   kozlova_e_jacobi_method_mpi::MethodJacobiMPI testMpiTaskParallel(taskDataPar);
 
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  ASSERT_EQ(testMpiTaskParallel.pre_processing(), false);
 
   if (world.rank() == 0) {
     std::vector<double> resSeq(N, 0);
@@ -361,5 +360,6 @@ TEST(kozlova_e_jacobi_method_mpi, Test_negative_epsilon) {
 
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     ASSERT_EQ(testMpiTaskSequential.pre_processing(), false);
+    ASSERT_EQ(testMpiTaskParallel.pre_processing(), false);
   }
 }
