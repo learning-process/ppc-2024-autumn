@@ -45,11 +45,10 @@ bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::validation()
   internal_order_test();
 
   if (world.rank() == 0) {
-    if (taskData->outputs_count.empty()) {
+    if (taskData == nullptr || taskData->outputs_count.empty()) {
       return false;
     }
   }
-
   int size = world.size();
   int sqrt_size = std::sqrt(size);
   if (sqrt_size * sqrt_size != size) {
@@ -61,25 +60,25 @@ bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::validation()
 
 bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::run() {
   try {
-  compute_neighbors();
+    compute_neighbors();
 
-  std::vector<uint8_t> send_data(taskData->inputs_count[0]);
-  std::copy(taskData->inputs[0], taskData->inputs[0] + taskData->inputs_count[0], send_data.begin());
+    std::vector<uint8_t> send_data(taskData->inputs_count[0]);
+    std::copy(taskData->inputs[0], taskData->inputs[0] + taskData->inputs_count[0], send_data.begin());
 
-  std::vector<uint8_t> recv_data(taskData->inputs_count[0]);
+    std::vector<uint8_t> recv_data(taskData->inputs_count[0]);
 
-  for (int neighbor : neighbors) {
-    world.isend(neighbor, 0, send_data);
+    for (int neighbor : neighbors) {
+      world.isend(neighbor, 0, send_data);
 
-    world.recv(neighbor, 0, recv_data);
+      world.recv(neighbor, 0, recv_data);
 
-    if (taskData->outputs_count[0] >= recv_data.size()) {
-      std::copy(recv_data.begin(), recv_data.end(), taskData->outputs[0]);
+      if (taskData->outputs_count[0] >= recv_data.size()) {
+        std::copy(recv_data.begin(), recv_data.end(), taskData->outputs[0]);
+      }
     }
-  }
 
-  world.barrier();
-  return true;
+    world.barrier();
+    return true;
   } catch (const std::exception& e) {
     std::cerr << "Error during run: " << e.what() << std::endl;
     return false;
@@ -104,8 +103,6 @@ bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::post_process
 
   return true;
 }
-
-
 
 void komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::compute_neighbors() {
   const int x = rank % grid_size_x;
