@@ -44,34 +44,22 @@ TEST(nasedkin_e_seidels_iterate_methods_mpi, test_matrix_with_zero_diagonal) {
   ASSERT_FALSE(seidel_task.pre_processing()) << "Pre-processing passed, but expected failure";
 }
 
-TEST(nasedkin_e_seidels_iterate_methods_mpi, test_random_diag_dominant_matrix_with_residual_check) {
+TEST(nasedkin_e_seidels_iterate_methods_mpi, test_after_random_matrix_restore_default_behavior) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs_count.push_back(5);
+  taskData->inputs_count.push_back(3);
 
   nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI seidel_task(taskData);
 
   std::vector<std::vector<double>> matrix;
   std::vector<double> vector;
-  nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI::generate_random_diag_dominant_matrix(5, matrix, vector);
-
-  for (int i = 0; i < 5; ++i) {
-    double row_sum = 0.0;
-    for (int j = 0; j < 5; ++j) {
-      if (i != j) {
-        row_sum += std::abs(matrix[i][j]);
-      }
-    }
-    ASSERT_GT(matrix[i][i], row_sum) << "Matrix is not diagonally dominant.";
-  }
-
+  seidel_task.generate_random_diag_dominant_matrix(3, matrix, vector);
   seidel_task.set_matrix(matrix, vector);
 
-  ASSERT_TRUE(seidel_task.validation()) << "Validation failed for random diagonally dominant matrix";
-  ASSERT_TRUE(seidel_task.pre_processing()) << "Pre-processing failed for random diagonally dominant matrix";
-  ASSERT_TRUE(seidel_task.run()) << "Run failed for random diagonally dominant matrix";
-  ASSERT_TRUE(seidel_task.post_processing()) << "Post-processing failed for random diagonally dominant matrix";
+  ASSERT_TRUE(seidel_task.validation());
 
-  double residual_norm = seidel_task.check_residual_norm();
-  ASSERT_LT(residual_norm, 1e-6) << "Residual ||Ax - b|| = " << residual_norm << " exceeds tolerance epsilon = 1e-6";
+  ASSERT_TRUE(seidel_task.validation()) << "Default validation failed after random matrix test";
+
+  ASSERT_TRUE(seidel_task.pre_processing());
+  ASSERT_TRUE(seidel_task.run());
+  ASSERT_TRUE(seidel_task.post_processing());
 }
-

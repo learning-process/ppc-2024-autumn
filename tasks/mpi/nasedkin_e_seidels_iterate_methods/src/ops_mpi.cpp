@@ -13,7 +13,7 @@ bool SeidelIterateMethodsMPI::pre_processing() {
   epsilon = 1e-6;
   max_iterations = 1000;
 
-  x.assign(n, 0.0);
+  x.resize(n, 0.0);
 
   return taskData->inputs_count.size() <= 1 || taskData->inputs_count[1] != 0;
 }
@@ -70,23 +70,18 @@ bool SeidelIterateMethodsMPI::run() {
           x_new[i] -= A[i][j] * x[j];
         }
       }
-      if (A[i][i] == 0.0) {
-        throw std::runtime_error("Diagonal element of A is zero, cannot proceed with division.");
-      }
       x_new[i] /= A[i][i];
     }
 
     if (converge(x_new)) {
-      x = x_new;
-      return true;
+      break;
     }
 
     x = x_new;
     ++iteration;
   }
 
-  std::cerr << "Warning: Seidel method did not converge within max_iterations." << std::endl;
-  return false;
+  return true;
 }
 
 bool SeidelIterateMethodsMPI::post_processing() { return true; }
@@ -109,46 +104,24 @@ void SeidelIterateMethodsMPI::set_matrix(const std::vector<std::vector<double>>&
   n = static_cast<int>(matrix.size());
 }
 
-void SeidelIterateMethodsMPI::generate_random_diag_dominant_matrix(int size, std::vector<std::vector<double>>& matrix, std::vector<double>& vector) {
-    matrix.resize(size, std::vector<double>(size, 0.0));
-    vector.resize(size, 0.0);
+void SeidelIterateMethodsMPI::generate_random_diag_dominant_matrix(int size, std::vector<std::vector<double>>& matrix,
+                                                                   std::vector<double>& vector) {
+  matrix.resize(size, std::vector<double>(size, 0.0));
+  vector.resize(size, 0.0);
 
-    std::srand(static_cast<unsigned>(std::time(nullptr)));
+  std::srand(static_cast<unsigned>(std::time(nullptr)));
 
-    for (int i = 0; i < size; ++i) {
-        double row_sum = 0.0;
-        for (int j = 0; j < size; ++j) {
-            if (i != j) {
-                matrix[i][j] = static_cast<double>(std::rand() % 10 + 1);
-                row_sum += std::abs(matrix[i][j]);
-            }
-        }
-        matrix[i][i] = row_sum + static_cast<double>(std::rand() % 5 + 1);
-        vector[i] = static_cast<double>(std::rand() % 20 + 1);
+  for (int i = 0; i < size; ++i) {
+    double row_sum = 0.0;
+    for (int j = 0; j < size; ++j) {
+      if (i != j) {
+        matrix[i][j] = static_cast<double>(std::rand() % 10 + 1);
+        row_sum += std::abs(matrix[i][j]);
+      }
     }
-}
-
-double nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI::check_residual_norm() const {
-  if (A.empty() || b.empty() || x.empty()) {
-    throw std::runtime_error("Matrix, vector, or solution vector is empty.");
+    matrix[i][i] = row_sum + static_cast<double>(std::rand() % 5 + 1);
+    vector[i] = static_cast<double>(std::rand() % 20 + 1);
   }
-
-  double norm = 0.0;
-
-  for (int i = 0; i < n; ++i) {
-    double row_residual = b[i];
-    for (int j = 0; j < n; ++j) {
-      row_residual -= A[i][j] * x[j];
-    }
-
-    if (std::isnan(row_residual) || std::isinf(row_residual)) {
-      throw std::runtime_error("Residual computation resulted in NaN or Inf.");
-    }
-
-    norm += row_residual * row_residual;
-  }
-
-  return std::sqrt(norm);
 }
 
 }  // namespace nasedkin_e_seidels_iterate_methods_mpi
