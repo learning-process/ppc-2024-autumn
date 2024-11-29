@@ -36,3 +36,4 @@ class SeidelIterateMethodsMPI : public ppc::core::Task {
 };
 
 }  // namespace nasedkin_e_seidels_iterate_methods_mpi
+
