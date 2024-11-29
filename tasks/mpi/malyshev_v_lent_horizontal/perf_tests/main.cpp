@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/malyshev_lent_horizontal/include/ops_mpi.hpp"
+#include "mpi/malyshev_v_lent_horizontal/include/ops_mpi.hpp"
 
 namespace malyshev_lent_horizontal {
 
