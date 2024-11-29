@@ -177,7 +177,6 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::pre_processin
   counts_.resize(num_processes_);
 
   boost::mpi::broadcast(world, counts_.data(), num_processes_, 0);
-
   return true;
 }
 
