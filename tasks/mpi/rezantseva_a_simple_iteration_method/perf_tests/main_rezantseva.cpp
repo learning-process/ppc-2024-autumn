@@ -14,35 +14,38 @@ std::pair<std::vector<double>, std::vector<double>> rezantseva_a_simple_iteratio
     size_t n, unsigned int seed = 42) {
   std::vector<double> A(n * n);
   std::vector<double> b(n);
-  std::mt19937 gen(seed);  // use fix seed
+  std::random_device rd;
+  std::mt19937 gen(rd());  // use fix seed
+  std::uniform_int_distribution dist(0, 25);
 
   for (size_t i = 0; i < n; i++) {
     double sum = 0.0;
     for (size_t j = 0; j < n; j++) {
       if (i != j) {
-        A[i * n + j] = static_cast<double>(gen() % 50 - 25);
+        A[i * n + j] = dist(gen);
         sum += std::abs(A[i * n + j]);
       }
     }
-    A[i * n + i] = sum + static_cast<double>(gen() % 50 + 1);
-    b[i] = static_cast<double>(gen() % 100);
+    A[i * n + i] = sum + 25;
+    b[i] = dist(gen) * n;
   }
   return {A, b};
 }
 
 TEST(rezantseva_a_simple_iteration_method_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  size_t size = 8000;
-  auto [A, b] = rezantseva_a_simple_iteration_method_mpi::createRandomMatrix(size);
-  std::vector<double> out(size, 0.0);
+  const size_t n = 8000;
+  std::vector<size_t> sizes(1, n);
+  auto [A, b] = rezantseva_a_simple_iteration_method_mpi::createRandomMatrix(n);
+  std::vector<double> out(n, 0.0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&size));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(sizes.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
 
-    taskDataPar->inputs_count.emplace_back(size);
+    taskDataPar->inputs_count.emplace_back(sizes.size());
     taskDataPar->inputs_count.emplace_back(A.size());
     taskDataPar->inputs_count.emplace_back(b.size());
 
@@ -70,23 +73,24 @@ TEST(rezantseva_a_simple_iteration_method_mpi, test_pipeline_run) {
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(size, out.size());
+    ASSERT_EQ(n, out.size());
   }
 }
 
 TEST(rezantseva_a_simple_iteration_method_mpi, test_task_run) {
   boost::mpi::communicator world;
-  size_t size = 8000;
-  auto [A, b] = rezantseva_a_simple_iteration_method_mpi::createRandomMatrix(size);
-  std::vector<double> out(size, 0.0);
+  const size_t n = 8000;
+  std::vector<size_t> sizes(1, n);
+  auto [A, b] = rezantseva_a_simple_iteration_method_mpi::createRandomMatrix(n);
+  std::vector<double> out(n, 0.0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&size));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(sizes.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
 
-    taskDataPar->inputs_count.emplace_back(size);
+    taskDataPar->inputs_count.emplace_back(sizes.size());
     taskDataPar->inputs_count.emplace_back(A.size());
     taskDataPar->inputs_count.emplace_back(b.size());
 
@@ -114,6 +118,6 @@ TEST(rezantseva_a_simple_iteration_method_mpi, test_task_run) {
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(size, out.size());
+    ASSERT_EQ(n, out.size());
   }
 }
