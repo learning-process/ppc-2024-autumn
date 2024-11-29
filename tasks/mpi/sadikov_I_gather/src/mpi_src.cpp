@@ -166,7 +166,7 @@ void sadikov_I_gather_mpi::Gather(const boost::mpi::communicator &world, std::ma
       parent = world.rank() % 2 == 0 ? (world.rank() - 1) / 2 : world.rank() / 2;
     }
     if (rightSender < world.size()) {
-      for (int i = 0; i < leftChildData.size(); ++i) {
+      for (int i = 0; i < size; ++i) {
         if (leftChildData[i] == 0 && rightChildData[i] != 0) {
           leftChildData[i] = rightChildData[i];
         }

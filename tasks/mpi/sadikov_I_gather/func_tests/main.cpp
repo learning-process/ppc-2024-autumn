@@ -535,8 +535,8 @@ TEST(sadikov_I_gather_mpi, check_reference_rect_matrix) {
 
 TEST(sadikov_I_gather_mpi, check_reference_rect_matrix2) {
   boost::mpi::communicator world;
-  const int columns = 872;
-  const int rows = 51;
+  const int columns = 321;
+  const int rows = 320;
   std::vector<int> in;
   std::vector<int> in_index{rows, columns};
   std::vector<int> out_par(rows, 0);
