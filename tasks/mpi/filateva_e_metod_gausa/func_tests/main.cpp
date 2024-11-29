@@ -246,6 +246,5 @@ TEST(filateva_e_metod_gausa_mpi, test_size_different) {
 
   filateva_e_metod_gausa_mpi::MetodGausa metodGausa(taskData);
 
-  if (world.rank() == 0)
-    ASSERT_EQ(metodGausa.validation(), false);
+  if (world.rank() == 0) ASSERT_EQ(metodGausa.validation(), false);
 }
