@@ -127,21 +127,14 @@ bool khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeMPI::pre_proces
     }
   }
 
-  boost::mpi::broadcast(world, rows_count, 0);
-  boost::mpi::broadcast(world, columns_count, 0);
-  boost::mpi::broadcast(world, rows_per_process, 0);
-  boost::mpi::broadcast(world, rows_offsets, 0);
-
-  if (world.rank() != 0) {
-    hello_matrix.resize(columns_count * rows_count, 0);
-    hello_vector.resize(rows_count, 0);
-    goodbye_vector.resize(columns_count, 0);
-  }
-
   return true;
 }
 
 bool khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeMPI::run() {
+  boost::mpi::broadcast(world, rows_count, 0);
+  boost::mpi::broadcast(world, columns_count, 0);
+  boost::mpi::broadcast(world, rows_per_process, 0);
+  boost::mpi::broadcast(world, rows_offsets, 0);
   boost::mpi::broadcast(world, hello_matrix, 0);
   boost::mpi::broadcast(world, hello_vector, 0);
 

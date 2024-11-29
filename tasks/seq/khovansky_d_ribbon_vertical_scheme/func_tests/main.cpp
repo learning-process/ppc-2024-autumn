@@ -20,7 +20,7 @@ TEST(khovansky_d_ribbon_vertical_scheme_seq, empty_matrix) {
   taskDataSeq->outputs_count.emplace_back(result.size());
 
   khovansky_d_ribbon_vertical_scheme_seq::RibbonVerticalSchemeSeq ribbonVerticalSchemeSeq(taskDataSeq);
-  ASSERT_EQ(ribbonVerticalSchemeSeq.validation(), false);
+  EXPECT_FALSE(ribbonVerticalSchemeSeq.validation());
 }
 
 TEST(khovansky_d_ribbon_vertical_scheme_seq, empty_vector) {
@@ -37,7 +37,7 @@ TEST(khovansky_d_ribbon_vertical_scheme_seq, empty_vector) {
   taskDataSeq->outputs_count.emplace_back(result.size());
 
   khovansky_d_ribbon_vertical_scheme_seq::RibbonVerticalSchemeSeq ribbonVerticalSchemeSeq(taskDataSeq);
-  ASSERT_EQ(ribbonVerticalSchemeSeq.validation(), false);
+  EXPECT_FALSE(ribbonVerticalSchemeSeq.validation());
 }
 
 TEST(khovansky_d_ribbon_vertical_scheme_seq, empty_matrix_and_vector) {
@@ -54,7 +54,7 @@ TEST(khovansky_d_ribbon_vertical_scheme_seq, empty_matrix_and_vector) {
   taskDataSeq->outputs_count.emplace_back(result.size());
 
   khovansky_d_ribbon_vertical_scheme_seq::RibbonVerticalSchemeSeq ribbonVerticalSchemeSeq(taskDataSeq);
-  ASSERT_EQ(ribbonVerticalSchemeSeq.validation(), false);
+  EXPECT_FALSE(ribbonVerticalSchemeSeq.validation());
 }
 
 TEST(khovansky_d_ribbon_vertical_scheme_seq, 2x2_matrix_seq) {
