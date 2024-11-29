@@ -61,13 +61,15 @@ bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::run() {
     std::vector<uint8_t> recv_data(taskData->inputs_count[0]);
 
     std::vector<boost::mpi::request> requests;
+    requests.reserve(neighbors.size());
 
     for (int neighbor : neighbors) {
       requests.push_back(world.isend(neighbor, 0, send_data));
     }
 
+
     for (int neighbor : neighbors) {
-      boost::mpi::status status = world.recv(neighbor, 0, recv_data);
+      world.recv(neighbor, 0, recv_data);
 
       if (taskData->outputs_count[0] >= recv_data.size()) {
         std::copy(recv_data.begin(), recv_data.end(), taskData->outputs[0]);
@@ -103,7 +105,7 @@ bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::post_process
 }
 
 void komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::compute_neighbors() {
-  int rank = world.rank();
+  int rank;
   const int x = rank % grid_size_x;
   const int y = rank / grid_size_x;
 

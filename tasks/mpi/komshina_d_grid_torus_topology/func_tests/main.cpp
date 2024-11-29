@@ -121,7 +121,6 @@ TEST(komshina_d_grid_torus_topology_mpi, TestNonMatchingInputOutputSizes) {
   ASSERT_FALSE(task.validation());
 }
 
-
 TEST(komshina_d_grid_torus_topology_mpi, TestSingleElementInput) {
   boost::mpi::communicator world;
   if (world.size() < 2) return;
