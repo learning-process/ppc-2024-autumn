@@ -25,7 +25,8 @@ class MPILinearTopology : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> local_data_, rank_order_, verific_data_;
+  std::vector<int> local_data_, verific_data_;
+  std::vector<size_t> rank_order_;
   boost::mpi::communicator world;
 };
 
