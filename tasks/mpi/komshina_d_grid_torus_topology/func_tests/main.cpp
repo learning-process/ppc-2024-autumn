@@ -52,8 +52,6 @@ TEST(komshina_d_grid_torus_topology_mpi, TestValidation) {
   task_data->inputs_count.clear();
   ASSERT_FALSE(task.validation());
 }
-
-
 TEST(komshina_d_grid_torus_topology_mpi, TestDataTransmission) {
   boost::mpi::communicator world;
   if (world.size() < 4) return;
@@ -69,7 +67,9 @@ TEST(komshina_d_grid_torus_topology_mpi, TestDataTransmission) {
   task_data->outputs_count.emplace_back(output_data.size());
 
   komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel task(task_data);
+
   ASSERT_TRUE(task.validation());
+
   ASSERT_TRUE(task.pre_processing());
 }
 
@@ -89,8 +89,11 @@ TEST(komshina_d_grid_torus_topology_mpi, TestLargeData) {
   task_data->outputs_count.emplace_back(output_data.size());
 
   komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel task(task_data);
+
   ASSERT_TRUE(task.validation());
+
   ASSERT_TRUE(task.pre_processing());
+
   ASSERT_TRUE(task.post_processing());
 
   for (size_t i = 0; i < output_data.size(); ++i) {
@@ -117,6 +120,7 @@ TEST(komshina_d_grid_torus_topology_mpi, TestNonMatchingInputOutputSizes) {
 
   ASSERT_FALSE(task.validation());
 }
+
 
 TEST(komshina_d_grid_torus_topology_mpi, TestSingleElementInput) {
   boost::mpi::communicator world;
