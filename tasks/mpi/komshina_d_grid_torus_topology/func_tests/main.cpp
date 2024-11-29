@@ -12,68 +12,112 @@ TEST(komshina_d_grid_torus_topology_mpi, TestDataTransmission) {
   boost::mpi::communicator world;
   if (world.size() < 4) return;
 
-  std::vector<uint8_t> input_data(4);
-  std::iota(input_data.begin(), input_data.end(), 9);
-  std::vector<uint8_t> output_data(4);
+  std::vector<int> input(4);
+  std::iota(input.begin(), input.end(), 9);
+  std::vector<int> output(4, 0);
+  std::vector<int> order(world.size() + 1, -1);
+  std::vector<int> real_order(world.size() + 1);
+  for (int n = 0; n < world.size() + 1; n++) {
+    real_order[n] = n;
+  }
 
-  auto task_data = std::make_shared<ppc::core::TaskData>();
-  task_data->inputs.emplace_back(input_data.data());
-  task_data->inputs_count.emplace_back(input_data.size());
-  task_data->outputs.emplace_back(output_data.data());
-  task_data->outputs_count.emplace_back(output_data.size());
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataPar->inputs_count.emplace_back(input.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+    taskDataPar->outputs_count.emplace_back(output.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(order.data()));
+    taskDataPar->outputs_count.emplace_back(order.size());
+  }
 
-  komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel task(task_data);
-  ASSERT_TRUE(task.validation());
-  ASSERT_TRUE(task.pre_processing());
+  komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel testMpiTaskParallel(taskDataPar);
+  if (world.size() == 1) {
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  } else {
+    ASSERT_EQ(testMpiTaskParallel.validation(), true);
+    testMpiTaskParallel.pre_processing();
+    testMpiTaskParallel.run();
+    testMpiTaskParallel.post_processing();
+    if (world.rank() == 0) {
+      ASSERT_EQ(output, input);
+      ASSERT_EQ(order, real_order);
+    }
+  }
 }
 
 TEST(komshina_d_grid_torus_topology_mpi, TestSingleElementInput) {
   boost::mpi::communicator world;
   if (world.size() < 2) return;
 
-  std::vector<uint8_t> input_data(1);
-  input_data[0] = 9;
-  std::vector<uint8_t> output_data(1);
+  std::vector<int> input(1, 9);
+  std::vector<int> output(1, 0);
+  std::vector<int> order(world.size() + 1, -1);
+  std::vector<int> real_order(world.size() + 1);
+  for (int n = 0; n < world.size() + 1; n++) {
+    real_order[n] = n;
+  }
 
-  auto task_data = std::make_shared<ppc::core::TaskData>();
-  task_data->inputs.emplace_back(input_data.data());
-  task_data->inputs_count.emplace_back(input_data.size());
-  task_data->outputs.emplace_back(output_data.data());
-  task_data->outputs_count.emplace_back(output_data.size());
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataPar->inputs_count.emplace_back(input.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+    taskDataPar->outputs_count.emplace_back(output.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(order.data()));
+    taskDataPar->outputs_count.emplace_back(order.size());
+  }
 
-  komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel task(task_data);
-
-  ASSERT_TRUE(task.validation());
-
-  ASSERT_TRUE(task.pre_processing());
-  ASSERT_TRUE(task.post_processing());
-
-  EXPECT_EQ(output_data[0], input_data[0]);
+  komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel testMpiTaskParallel(taskDataPar);
+  if (world.size() == 1) {
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  } else {
+    ASSERT_EQ(testMpiTaskParallel.validation(), true);
+    testMpiTaskParallel.pre_processing();
+    testMpiTaskParallel.run();
+    testMpiTaskParallel.post_processing();
+    if (world.rank() == 0) {
+      ASSERT_EQ(output, input);
+      ASSERT_EQ(order, real_order);
+    }
+  }
 }
 
 TEST(komshina_d_grid_torus_topology_mpi, TestSmallNumberOfProcesses) {
   boost::mpi::communicator world;
   if (world.size() < 2) return;
 
-  std::vector<uint8_t> input_data(4);
-  std::iota(input_data.begin(), input_data.end(), 9);
-  std::vector<uint8_t> output_data(4);
+  std::vector<int> input(4);
+  std::iota(input.begin(), input.end(), 9);
+  std::vector<int> output(4, 0);
+  std::vector<int> order(world.size() + 1, -1);
+  std::vector<int> real_order(world.size() + 1);
+  for (int n = 0; n < world.size() + 1; n++) {
+    real_order[n] = n;
+  }
 
-  auto task_data = std::make_shared<ppc::core::TaskData>();
-  task_data->inputs.emplace_back(input_data.data());
-  task_data->inputs_count.emplace_back(input_data.size());
-  task_data->outputs.emplace_back(output_data.data());
-  task_data->outputs_count.emplace_back(output_data.size());
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataPar->inputs_count.emplace_back(input.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+    taskDataPar->outputs_count.emplace_back(output.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(order.data()));
+    taskDataPar->outputs_count.emplace_back(order.size());
+  }
 
-  komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel task(task_data);
-
-  ASSERT_TRUE(task.validation());
-  ASSERT_TRUE(task.pre_processing());
-
-  ASSERT_TRUE(task.run());
-
-  for (size_t i = 0; i < output_data.size(); ++i) {
-    EXPECT_EQ(output_data[i], input_data[i]);
+  komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel testMpiTaskParallel(taskDataPar);
+  if (world.size() == 1) {
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  } else {
+    ASSERT_EQ(testMpiTaskParallel.validation(), true);
+    testMpiTaskParallel.pre_processing();
+    testMpiTaskParallel.run();
+    testMpiTaskParallel.post_processing();
+    if (world.rank() == 0) {
+      ASSERT_EQ(output, input);
+      ASSERT_EQ(order, real_order);
+    }
   }
 }
 
@@ -81,24 +125,37 @@ TEST(komshina_d_grid_torus_topology_mpi, TestLargeNumberOfProcesses) {
   boost::mpi::communicator world;
   if (world.size() < 16) return;
 
-  std::vector<uint8_t> input_data(16);
-  std::iota(input_data.begin(), input_data.end(), 9);
-  std::vector<uint8_t> output_data(16);
+  std::vector<int> input(16);
+  std::iota(input.begin(), input.end(), 9);
+  std::vector<int> output(16, 0);
+  std::vector<int> order(world.size() + 1, -1);
+  std::vector<int> real_order(world.size() + 1);
+  for (int n = 0; n < world.size() + 1; n++) {
+    real_order[n] = n;
+  }
 
-  auto task_data = std::make_shared<ppc::core::TaskData>();
-  task_data->inputs.emplace_back(input_data.data());
-  task_data->inputs_count.emplace_back(input_data.size());
-  task_data->outputs.emplace_back(output_data.data());
-  task_data->outputs_count.emplace_back(output_data.size());
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataPar->inputs_count.emplace_back(input.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+    taskDataPar->outputs_count.emplace_back(output.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(order.data()));
+    taskDataPar->outputs_count.emplace_back(order.size());
+  }
 
-  komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel task(task_data);
-
-  ASSERT_TRUE(task.validation());
-  ASSERT_TRUE(task.pre_processing());
-  ASSERT_TRUE(task.run());
-
-  for (size_t i = 0; i < output_data.size(); ++i) {
-    EXPECT_EQ(output_data[i], input_data[i]);
+  komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel testMpiTaskParallel(taskDataPar);
+  if (world.size() == 1) {
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  } else {
+    ASSERT_EQ(testMpiTaskParallel.validation(), true);
+    testMpiTaskParallel.pre_processing();
+    testMpiTaskParallel.run();
+    testMpiTaskParallel.post_processing();
+    if (world.rank() == 0) {
+      ASSERT_EQ(output, input);
+      ASSERT_EQ(order, real_order);
+    }
   }
 }
 
@@ -106,36 +163,21 @@ TEST(komshina_d_grid_torus_topology_mpi, TestInsufficientProcesses) {
   boost::mpi::communicator world;
   if (world.size() < 2) return;
 
-  std::vector<uint8_t> input_data(4);
-  std::iota(input_data.begin(), input_data.end(), 9);
-  std::vector<uint8_t> output_data(4);
+  std::vector<int> input(4);
+  std::iota(input.begin(), input.end(), 9);
+  std::vector<int> output(4, 0);
+  std::vector<int> order(world.size() + 1, -1);
 
-  auto task_data = std::make_shared<ppc::core::TaskData>();
-  task_data->inputs.emplace_back(input_data.data());
-  task_data->inputs_count.emplace_back(input_data.size());
-  task_data->outputs.emplace_back(output_data.data());
-  task_data->outputs_count.emplace_back(output_data.size());
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataPar->inputs_count.emplace_back(input.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+    taskDataPar->outputs_count.emplace_back(output.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(order.data()));
+    taskDataPar->outputs_count.emplace_back(order.size());
+  }
 
-  komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel task(task_data);
-
-  ASSERT_FALSE(task.validation());
-}
-
-TEST(komshina_d_grid_torus_topology_mpi, TestInsufficientProcesses) {
-  boost::mpi::communicator world;
-  if (world.size() < 2) return;
-
-  std::vector<uint8_t> input_data(4);
-  std::iota(input_data.begin(), input_data.end(), 9);
-  std::vector<uint8_t> output_data(4);
-
-  auto task_data = std::make_shared<ppc::core::TaskData>();
-  task_data->inputs.emplace_back(input_data.data());
-  task_data->inputs_count.emplace_back(input_data.size());
-  task_data->outputs.emplace_back(output_data.data());
-  task_data->outputs_count.emplace_back(output_data.size());
-
-  komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel task(task_data);
-
-  ASSERT_FALSE(task.validation());
+  komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), false);
 }
