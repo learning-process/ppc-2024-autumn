@@ -104,24 +104,23 @@ void SeidelIterateMethodsMPI::set_matrix(const std::vector<std::vector<double>>&
   n = static_cast<int>(matrix.size());
 }
 
-void SeidelIterateMethodsMPI::generate_random_diag_dominant_matrix(int size, std::vector<std::vector<double>>& matrix,
-                                                                   std::vector<double>& vector) {
-  matrix.resize(size, std::vector<double>(size, 0.0));
-  vector.resize(size, 0.0);
+void SeidelIterateMethodsMPI::generate_random_diag_dominant_matrix(int size, std::vector<std::vector<double>>& matrix, std::vector<double>& vector) {
+    matrix.resize(size, std::vector<double>(size, 0.0));
+    vector.resize(size, 0.0);
 
-  std::srand(static_cast<unsigned>(std::time(nullptr)));
+    std::srand(static_cast<unsigned>(std::time(nullptr)));
 
-  for (int i = 0; i < size; ++i) {
-    double row_sum = 0.0;
-    for (int j = 0; j < size; ++j) {
-      if (i != j) {
-        matrix[i][j] = static_cast<double>(std::rand() % 10 + 1);
-        row_sum += std::abs(matrix[i][j]);
-      }
+    for (int i = 0; i < size; ++i) {
+        double row_sum = 0.0;
+        for (int j = 0; j < size; ++j) {
+            if (i != j) {
+                matrix[i][j] = static_cast<double>(std::rand() % 10 + 1);
+                row_sum += std::abs(matrix[i][j]);
+            }
+        }
+        matrix[i][i] = row_sum + static_cast<double>(std::rand() % 5 + 1);
+        vector[i] = static_cast<double>(std::rand() % 20 + 1);
     }
-    matrix[i][i] = row_sum + static_cast<double>(std::rand() % 5 + 1);
-    vector[i] = static_cast<double>(std::rand() % 20 + 1);
-  }
 }
 
 double nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI::check_residual_norm() const {
