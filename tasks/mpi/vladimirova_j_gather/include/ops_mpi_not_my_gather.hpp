@@ -16,7 +16,7 @@ namespace vladimirova_j_not_my_gather_mpi {
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)){};
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {};
   bool pre_processing() override;
   bool validation() override;
   bool run() override;

@@ -226,7 +226,7 @@ bool vladimirova_j_gather_mpi::TestMPITaskParallel::run() {
 
   if (r == 0) {
     size = input_.size() / world.size();
-    for (size_t i = 1; i < world.size(); i++) {
+    for (int i = 1; i < world.size(); i++) {
       world.send(i, 0, size);
     }
 
@@ -245,7 +245,7 @@ bool vladimirova_j_gather_mpi::TestMPITaskParallel::run() {
     std::for_each(pr.begin(), pr.end(), [](int number) { std::cout << number << " "; });
     std::cout << std::endl;
 
-    for (size_t i = 1; i < world.size(); i++) {
+    for (int i = 1; i < world.size(); i++) {
       world.send(pr[i], 0, input_.data() + size * i, size);
     }
 
