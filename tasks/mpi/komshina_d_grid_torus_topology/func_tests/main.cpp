@@ -31,14 +31,14 @@ TEST(komshina_d_grid_torus_topology_mpi, TestDataTransmission) {
     taskDataPar->outputs_count.emplace_back(order.size());
   }
 
-  komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel testMpiTaskParallel(taskDataPar);
+  komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel gridTorusTask(taskDataPar);
   if (world.size() == 1) {
-    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+    ASSERT_EQ(gridTorusTask.validation(), false);
   } else {
-    ASSERT_EQ(testMpiTaskParallel.validation(), true);
-    testMpiTaskParallel.pre_processing();
-    testMpiTaskParallel.run();
-    testMpiTaskParallel.post_processing();
+    ASSERT_EQ(gridTorusTask.validation(), true);
+    gridTorusTask.pre_processing();
+    gridTorusTask.run();
+    gridTorusTask.post_processing();
     if (world.rank() == 0) {
       ASSERT_EQ(output, input);
       ASSERT_EQ(order, real_order);
@@ -68,14 +68,14 @@ TEST(komshina_d_grid_torus_topology_mpi, TestSingleElementInput) {
     taskDataPar->outputs_count.emplace_back(order.size());
   }
 
-  komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel testMpiTaskParallel(taskDataPar);
+  komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel gridTorusTask(taskDataPar);
   if (world.size() == 1) {
-    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+    ASSERT_EQ(gridTorusTask.validation(), false);
   } else {
-    ASSERT_EQ(testMpiTaskParallel.validation(), true);
-    testMpiTaskParallel.pre_processing();
-    testMpiTaskParallel.run();
-    testMpiTaskParallel.post_processing();
+    ASSERT_EQ(gridTorusTask.validation(), true);
+    gridTorusTask.pre_processing();
+    gridTorusTask.run();
+    gridTorusTask.post_processing();
     if (world.rank() == 0) {
       ASSERT_EQ(output, input);
       ASSERT_EQ(order, real_order);
@@ -106,14 +106,14 @@ TEST(komshina_d_grid_torus_topology_mpi, TestSmallNumberOfProcesses) {
     taskDataPar->outputs_count.emplace_back(order.size());
   }
 
-  komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel testMpiTaskParallel(taskDataPar);
+  komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel gridTorusTask(taskDataPar);
   if (world.size() == 1) {
-    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+    ASSERT_EQ(gridTorusTask.validation(), false);
   } else {
-    ASSERT_EQ(testMpiTaskParallel.validation(), true);
-    testMpiTaskParallel.pre_processing();
-    testMpiTaskParallel.run();
-    testMpiTaskParallel.post_processing();
+    ASSERT_EQ(gridTorusTask.validation(), true);
+    gridTorusTask.pre_processing();
+    gridTorusTask.run();
+    gridTorusTask.post_processing();
     if (world.rank() == 0) {
       ASSERT_EQ(output, input);
       ASSERT_EQ(order, real_order);
@@ -144,14 +144,14 @@ TEST(komshina_d_grid_torus_topology_mpi, TestLargeNumberOfProcesses) {
     taskDataPar->outputs_count.emplace_back(order.size());
   }
 
-  komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel testMpiTaskParallel(taskDataPar);
+  komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel gridTorusTask(taskDataPar);
   if (world.size() == 1) {
-    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+    ASSERT_EQ(gridTorusTask.validation(), false);
   } else {
-    ASSERT_EQ(testMpiTaskParallel.validation(), true);
-    testMpiTaskParallel.pre_processing();
-    testMpiTaskParallel.run();
-    testMpiTaskParallel.post_processing();
+    ASSERT_EQ(gridTorusTask.validation(), true);
+    gridTorusTask.pre_processing();
+    gridTorusTask.run();
+    gridTorusTask.post_processing();
     if (world.rank() == 0) {
       ASSERT_EQ(output, input);
       ASSERT_EQ(order, real_order);
@@ -178,6 +178,6 @@ TEST(komshina_d_grid_torus_topology_mpi, TestInsufficientProcesses) {
     taskDataPar->outputs_count.emplace_back(order.size());
   }
 
-  komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel gridTorusTask(taskDataPar);
+  ASSERT_EQ(gridTorusTask.validation(), false);
 }

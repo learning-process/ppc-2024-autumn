@@ -23,10 +23,13 @@ bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::pre_processi
 
   result = std::vector<int>(input_.size(), 0);
   order = std::vector<int>(world.size() + 1, -1);
-  rank = -1;
+
+  rank = world.rank();
+
   compute_neighbors();
   return true;
 }
+
 
 bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::validation() {
   internal_order_test();
