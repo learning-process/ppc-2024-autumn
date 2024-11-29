@@ -11,24 +11,21 @@
 static int offset = 0;
 
 std::pair<std::vector<double>, std::vector<double>> rezantseva_a_simple_iteration_method_mpi::createRandomMatrix(
-    size_t n) {
+    size_t n, unsigned int seed = 42) {
   std::vector<double> A(n * n);
   std::vector<double> b(n);
-  std::mt19937 gen;
-  gen.seed((unsigned)time(nullptr) + ++offset);
+  std::mt19937 gen(seed);  // use fix seed
 
   for (size_t i = 0; i < n; i++) {
     double sum = 0.0;
-
-    // gen non diagonal elements
     for (size_t j = 0; j < n; j++) {
       if (i != j) {
-        A[i * n + j] = static_cast<double>(gen() % 50 - 25);  // from -25 to 24
+        A[i * n + j] = static_cast<double>(gen() % 50 - 25);
         sum += std::abs(A[i * n + j]);
       }
     }
     A[i * n + i] = sum + static_cast<double>(gen() % 50 + 1);
-    b[i] = static_cast<double>(gen() % 100);  // from 0 to 99
+    b[i] = static_cast<double>(gen() % 100);
   }
   return {A, b};
 }

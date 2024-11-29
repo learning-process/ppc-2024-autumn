@@ -13,7 +13,7 @@
 #include "core/task/include/task.hpp"
 
 namespace rezantseva_a_simple_iteration_method_mpi {
-std::pair<std::vector<double>, std::vector<double>> createRandomMatrix(size_t n);
+std::pair<std::vector<double>, std::vector<double>> createRandomMatrix(size_t n, unsigned int seed);
 
 class SimpleIterationSequential : public ppc::core::Task {
  public:
