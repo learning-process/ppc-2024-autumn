@@ -4,8 +4,9 @@
 
 #include <cstdint>
 #include <memory>
-#include "core/task/include/task.hpp"
 #include <vector>
+
+#include "core/task/include/task.hpp"
 
 using namespace golovkin_rowwise_matrix_partitioning;
 
