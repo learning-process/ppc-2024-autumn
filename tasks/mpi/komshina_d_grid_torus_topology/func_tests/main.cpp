@@ -85,7 +85,7 @@ TEST(komshina_d_grid_torus_topology_mpi, TestScalability) {
   if (world.size() < 32) return;
 
   std::vector<int> input(world.size());
-  std::iota(input.begin(), input.end(), 1);  // ¬ходной массив от 1 до size
+  std::iota(input.begin(), input.end(), 1);
   std::vector<int> output(world.size(), 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
