@@ -24,7 +24,7 @@ class SeidelIterateMethodsMPI : public ppc::core::Task {
   double check_residual_norm() const;
   double calculateResidual(const std::vector<std::vector<double>>& matrix,
                          const std::vector<double>& x,
-                         const std::vector<double>& b)
+                         const std::vector<double>& b);
 
  private:
   boost::mpi::communicator world;
