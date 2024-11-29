@@ -11,20 +11,20 @@
 
 namespace sedova_o_vertical_ribbon_scheme_seq {
 
-class TestTaskSequential : public ppc::core::Task {
+class Sequential : public ppc::core::Task {
  public:
-  explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit Sequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
  private:
-  std::vector<int> input_matrix_;
-  std::vector<int> input_vector_;
+  int* input_matrix_;
+  int* input_vector_;
   std::vector<int> result_vector_;
-  int num_rows_;
-  int num_cols_;
+  int rows_;
+  int cols_;
 };
 
 }  // namespace sedova_o_vertical_ribbon_scheme_seq

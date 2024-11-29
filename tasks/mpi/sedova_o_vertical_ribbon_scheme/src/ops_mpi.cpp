@@ -21,7 +21,7 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::validation() {
     }
     // Check if the number of columns in the matrix is equal to the size of the vector.
     int num_rows = taskData->inputs_count[0] / taskData->inputs_count[1];
-    if (taskData->inputs_count[0] % taskData->inputs_count[1] != nullptr || num_rows < 1) {
+    if (taskData->inputs_count[0] % taskData->inputs_count[1] != 0 || num_rows < 1) {
       return false;
     }
     // Check for null input pointers
@@ -124,7 +124,7 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::post_processing() {
 bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::validation() {
   internal_order_test();
   return taskData->inputs_count[0] >= 1 && taskData->inputs_count[1] >= 1 && !taskData &&
-         taskData->inputs_count[0] % taskData->inputs_count[1] == nullptr && taskData->outputs[0] != nullptr;
+         taskData->inputs_count[0] % taskData->inputs_count[1] == 0 && taskData->outputs[0] != nullptr;
  }
 
 bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::pre_processing() {
@@ -133,9 +133,9 @@ bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::pre_processing() {
   input_matrix_ = reinterpret_cast<int*>(taskData->inputs[0]);
   input_vector_ = reinterpret_cast<int*>(taskData->inputs[1]);
   int count = taskData->inputs_count[0];
-  num_rows_ = taskData->inputs_count[1];
-  num_cols_ = count / num_rows_;
-  result_vector_.assign(num_cols_, 0);
+  rows_ = taskData->inputs_count[1];
+  cols_ = count / rows_;
+  result_vector_.assign(cols_, 0);
 
   return true;
 }
@@ -143,9 +143,9 @@ bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::pre_processing() {
 bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::run() {
   internal_order_test();
 
-  for (int j = 0; j < num_cols_; j++) {
-    for (int i = 0; i < num_rows_; i++) {
-      result_vector_[i] += input_matrix_[i * num_cols_ + j] * input_vector_[j];
+  for (int j = 0; j < cols_; j++) {
+    for (int i = 0; i < rows_; i++) {
+      result_vector_[i] += input_matrix_[i * cols_ + j] * input_vector_[j];
     }
   }
   return true;

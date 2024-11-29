@@ -43,8 +43,8 @@ class SequentialMPI : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  int num_rows_{};
-  int num_cols_{};
+  int rows_{};
+  int cols_{};
   int* input_matrix_;
   int* input_vector_;
   std::vector<int> result_vector_;
