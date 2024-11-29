@@ -7,8 +7,8 @@
 #include "seq/filateva_e_metod_gausa/include/ops_seq.hpp"
 
 std::vector<double> gereratorSLU(std::vector<double>& matrix, std::vector<double>& vecB) {
-  int min_z = -5;
-  int max_z = 5;
+  int min_z = -100;
+  int max_z = 100;
   int size = vecB.size();
   std::vector<double> resh(size);
   for (int i = 0; i < size; i++) {

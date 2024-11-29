@@ -19,7 +19,7 @@ bool filateva_e_metod_gausa_seq::MetodGausa::pre_processing() {
 
 bool filateva_e_metod_gausa_seq::MetodGausa::validation() {
   internal_order_test();
-  return taskData->inputs_count[0] == taskData->outputs_count[0];
+  return taskData->inputs_count[0] == taskData->outputs_count[0] && taskData->inputs_count[0] != 0;
 }
 
 bool filateva_e_metod_gausa_seq::MetodGausa::run() {

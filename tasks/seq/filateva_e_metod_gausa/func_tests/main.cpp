@@ -6,8 +6,8 @@
 #include "seq/filateva_e_metod_gausa/include/ops_seq.hpp"
 
 std::vector<double> gereratorSLU(std::vector<double> &matrix, std::vector<double> &vecB) {
-  int min_z = -5;
-  int max_z = 5;
+  int min_z = -100;
+  int max_z = 100;
   int size = vecB.size();
   std::vector<double> resh(size);
   for (int i = 0; i < size; i++) {
@@ -164,6 +164,22 @@ TEST(filateva_e_metod_gausa_seq, test_size_different) {
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
   taskData->inputs_count.emplace_back(size);
   taskData->outputs_count.emplace_back(size + 1);
+
+  filateva_e_metod_gausa_seq::MetodGausa metodGausa(taskData);
+
+  ASSERT_EQ(metodGausa.validation(), false);
+}
+
+TEST(filateva_e_metod_gausa_seq, test_size_0) {
+  int size = 0;
+  std::vector<double> matrix(size * size);
+  std::vector<double> vecB(size);
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
+  taskData->inputs_count.emplace_back(size);
+  taskData->outputs_count.emplace_back(size);
 
   filateva_e_metod_gausa_seq::MetodGausa metodGausa(taskData);
 
