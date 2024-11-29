@@ -30,7 +30,6 @@ bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::pre_processi
   return true;
 }
 
-
 bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::validation() {
   internal_order_test();
 
