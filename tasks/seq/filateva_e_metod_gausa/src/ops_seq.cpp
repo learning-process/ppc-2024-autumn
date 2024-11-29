@@ -2,8 +2,6 @@
 
 #include "seq/filateva_e_metod_gausa/include/ops_seq.hpp"
 
-#include <thread>
-
 bool filateva_e_metod_gausa_seq::MetodGausa::pre_processing() {
   internal_order_test();
 

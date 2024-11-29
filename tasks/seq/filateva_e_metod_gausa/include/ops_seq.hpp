@@ -1,6 +1,5 @@
 // Filateva Elizaveta Metod Gausa
 
-#include <string>
 #include <vector>
 
 #include "core/task/include/task.hpp"

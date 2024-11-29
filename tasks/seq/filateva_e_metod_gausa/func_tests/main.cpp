@@ -38,7 +38,7 @@ bool check(std::vector<double> &resh, std::vector<double> &tResh, double alfa) {
   return true;
 }
 
-TEST(filateva_e_metod_gausa_seq, test_1) {
+TEST(filateva_e_metod_gausa_seq, test_size_3) {
   int size = 3;
   double alfa = 0.000000001;
   std::vector<double> matrix(size * size);
@@ -67,7 +67,7 @@ TEST(filateva_e_metod_gausa_seq, test_1) {
   ASSERT_EQ(check(answer, tResh, alfa), true);
 }
 
-TEST(filateva_e_metod_gausa_seq, test_2) {
+TEST(filateva_e_metod_gausa_seq, test_size_10) {
   int size = 10;
   double alfa = 0.000000001;
   std::vector<double> matrix(size * size);
@@ -96,7 +96,7 @@ TEST(filateva_e_metod_gausa_seq, test_2) {
   ASSERT_EQ(check(answer, tResh, alfa), true);
 }
 
-TEST(filateva_e_metod_gausa_seq, test_3) {
+TEST(filateva_e_metod_gausa_seq, test_size_100) {
   int size = 100;
   double alfa = 0.000000001;
   std::vector<double> matrix(size * size);
@@ -125,7 +125,7 @@ TEST(filateva_e_metod_gausa_seq, test_3) {
   ASSERT_EQ(check(answer, tResh, alfa), true);
 }
 
-TEST(filateva_e_metod_gausa_seq, test_4) {
+TEST(filateva_e_metod_gausa_seq, test_size_200) {
   int size = 200;
   double alfa = 0.000000001;
   std::vector<double> matrix(size * size);
@@ -152,4 +152,20 @@ TEST(filateva_e_metod_gausa_seq, test_4) {
   answer.insert(answer.end(), temp, temp + size);
 
   ASSERT_EQ(check(answer, tResh, alfa), true);
+}
+
+TEST(filateva_e_metod_gausa_seq, test_size_different) {
+  int size = 10;
+  std::vector<double> matrix(size * size);
+  std::vector<double> vecB(size);
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
+  taskData->inputs_count.emplace_back(size);
+  taskData->outputs_count.emplace_back(size + 1);
+
+  filateva_e_metod_gausa_seq::MetodGausa metodGausa(taskData);
+
+  ASSERT_EQ(metodGausa.validation(), false);
 }
