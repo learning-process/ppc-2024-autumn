@@ -11,7 +11,7 @@ bool SeidelIterateMethodsMPI::pre_processing() {
   }
 
   epsilon = 1e-6;
-  max_iterations = 2000;
+  max_iterations = 10000;
 
   x.resize(n, 0.0);
 
@@ -113,7 +113,7 @@ void SeidelIterateMethodsMPI::generate_random_diag_dominant_matrix(int size,
   std::srand(static_cast<unsigned>(std::time(nullptr)));
 
   const double MAX_VALUE = 5.0;
-  const double MIN_DIAGONAL = 10.0;
+  const double MIN_DIAGONAL = 20.0;
 
   std::vector<double> x(size, 0.0);
   for (int i = 0; i < size; ++i) {
