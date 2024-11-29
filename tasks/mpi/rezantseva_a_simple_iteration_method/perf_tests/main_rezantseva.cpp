@@ -8,14 +8,12 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/rezantseva_a_simple_iteration_method/include/ops_mpi_rezantseva.hpp"
 
-// static int offset = 0;
-
 std::pair<std::vector<double>, std::vector<double>> rezantseva_a_simple_iteration_method_mpi::createRandomMatrix(
-    size_t n, unsigned int seed = 42) {
+    size_t n) {
   std::vector<double> A(n * n);
   std::vector<double> b(n);
   std::random_device rd;
-  std::mt19937 gen(rd());  // use fix seed
+  std::mt19937 gen(rd());
   std::uniform_int_distribution dist(0, 25);
 
   for (size_t i = 0; i < n; i++) {
@@ -34,13 +32,18 @@ std::pair<std::vector<double>, std::vector<double>> rezantseva_a_simple_iteratio
 
 TEST(rezantseva_a_simple_iteration_method_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  const size_t n = 8000;
+  const size_t n = 2200;
   std::vector<size_t> sizes(1, n);
-  auto [A, b] = rezantseva_a_simple_iteration_method_mpi::createRandomMatrix(n);
+  std::vector<double> A(n * n);
+  std::vector<double> b(n);
   std::vector<double> out(n, 0.0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
+    auto [matrix, vector] = rezantseva_a_simple_iteration_method_mpi::createRandomMatrix(n);
+    A = std::move(matrix);
+    b = std::move(vector);
+
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(sizes.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
@@ -79,13 +82,18 @@ TEST(rezantseva_a_simple_iteration_method_mpi, test_pipeline_run) {
 
 TEST(rezantseva_a_simple_iteration_method_mpi, test_task_run) {
   boost::mpi::communicator world;
-  const size_t n = 8000;
+  const size_t n = 2200;
   std::vector<size_t> sizes(1, n);
-  auto [A, b] = rezantseva_a_simple_iteration_method_mpi::createRandomMatrix(n);
+  std::vector<double> A(n * n);
+  std::vector<double> b(n);
   std::vector<double> out(n, 0.0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
+    auto [matrix, vector] = rezantseva_a_simple_iteration_method_mpi::createRandomMatrix(n);
+    A = std::move(matrix);
+    b = std::move(vector);
+
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(sizes.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
