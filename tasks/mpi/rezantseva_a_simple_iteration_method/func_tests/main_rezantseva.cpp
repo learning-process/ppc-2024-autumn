@@ -7,6 +7,31 @@
 
 #include "mpi/rezantseva_a_simple_iteration_method/include/ops_mpi_rezantseva.hpp"
 
+static int offset = 0;
+
+std::pair<std::vector<double>, std::vector<double>> rezantseva_a_simple_iteration_method_mpi::createRandomMatrix(
+    size_t n) {
+  std::vector<double> A(n * n);
+  std::vector<double> b(n);
+  std::mt19937 gen;
+  gen.seed((unsigned)time(nullptr) + ++offset);
+
+  for (size_t i = 0; i < n; i++) {
+    double sum = 0.0;
+
+    // gen non diagonal elements
+    for (size_t j = 0; j < n; j++) {
+      if (i != j) {
+        A[i * n + j] = static_cast<double>(gen() % 50 - 25);  // from -25 to 24
+        sum += std::abs(A[i * n + j]);
+      }
+    }
+    A[i * n + i] = sum + static_cast<double>(gen() % 50 + 1);
+    b[i] = static_cast<double>(gen() % 100);  // from 0 to 99
+  }
+  return {A, b};
+}
+
 TEST(rezantseva_a_simple_iteration_method_mpi, check_validation_invalid_inputs_count) {
   boost::mpi::communicator world;
   const size_t size = 3;
@@ -450,35 +475,10 @@ TEST(rezantseva_a_simple_iteration_method_mpi, check_matrix_6x6) {
   }
 }
 
-/*
-static int offset = 0;
-
-std::pair<std::vector<double>, std::vector<double>> rezantseva_a_simple_iteration_method_mpi::createRandomMatrix(
-    size_t n) {
-  std::vector<double> A(n * n);
-  std::vector<double> b(n);
-  std::mt19937 gen;
-  gen.seed((unsigned)time(nullptr) + ++offset);
-
-  for (size_t i = 0; i < n; i++) {
-    double sum = 0.0;
-
-    // gen non diagonal elements
-    for (size_t j = 0; j < n; j++) {
-      if (i != j) {
-        A[i * n + j] = static_cast<double>(gen() % 50 - 25);  // from -25 to 24
-        sum += std::abs(A[i * n + j]);
-      }
-    }
-    A[i * n + i] = sum + static_cast<double>(gen() % 50 + 1);
-    b[i] = static_cast<double>(gen() % 100);  // from 0 to 99
-  }
-  return {A, b};
-}
-
 TEST(rezantseva_a_simple_iteration_method_mpi, check_matrix_300x300) {
   boost::mpi::communicator world;
-  size_t size = 300;
+  const size_t size = 300;
+  std::vector<size_t> sizes(1, size);
   std::vector<double> A(size * size);
   std::vector<double> b(size);
   std::vector<double> out(size, 0.0);
@@ -490,11 +490,11 @@ TEST(rezantseva_a_simple_iteration_method_mpi, check_matrix_300x300) {
     A = std::move(matrix);
     b = std::move(vector);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&size));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(sizes.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
 
-    taskDataPar->inputs_count.emplace_back(size);
+    taskDataPar->inputs_count.emplace_back(sizes.size());
     taskDataPar->inputs_count.emplace_back(A.size());
     taskDataPar->inputs_count.emplace_back(b.size());
 
@@ -513,11 +513,11 @@ TEST(rezantseva_a_simple_iteration_method_mpi, check_matrix_300x300) {
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&size));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(sizes.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
 
-    taskDataSeq->inputs_count.emplace_back(size);
+    taskDataSeq->inputs_count.emplace_back(sizes.size());
     taskDataSeq->inputs_count.emplace_back(A.size());
     taskDataSeq->inputs_count.emplace_back(b.size());
 
@@ -538,18 +538,24 @@ TEST(rezantseva_a_simple_iteration_method_mpi, check_matrix_300x300) {
 
 TEST(rezantseva_a_simple_iteration_method_mpi, check_matrix_10x10) {
   boost::mpi::communicator world;
-  size_t size = 10;
-  auto [A, b] = rezantseva_a_simple_iteration_method_mpi::createRandomMatrix(size);
+  const size_t size = 10;
+  std::vector<size_t> sizes(1, size);
+  std::vector<double> A(size * size);
+  std::vector<double> b(size);
   std::vector<double> out(size, 0.0);
   const double eps = 1e-3;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&size));
+    auto [matrix, vector] = rezantseva_a_simple_iteration_method_mpi::createRandomMatrix(size);
+    A = std::move(matrix);
+    b = std::move(vector);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(sizes.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
 
-    taskDataPar->inputs_count.emplace_back(size);
+    taskDataPar->inputs_count.emplace_back(sizes.size());
     taskDataPar->inputs_count.emplace_back(A.size());
     taskDataPar->inputs_count.emplace_back(b.size());
 
@@ -568,11 +574,11 @@ TEST(rezantseva_a_simple_iteration_method_mpi, check_matrix_10x10) {
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&size));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(sizes.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
 
-    taskDataSeq->inputs_count.emplace_back(size);
+    taskDataSeq->inputs_count.emplace_back(sizes.size());
     taskDataSeq->inputs_count.emplace_back(A.size());
     taskDataSeq->inputs_count.emplace_back(b.size());
 
@@ -593,18 +599,24 @@ TEST(rezantseva_a_simple_iteration_method_mpi, check_matrix_10x10) {
 
 TEST(rezantseva_a_simple_iteration_method_mpi, check_matrix_100x100) {
   boost::mpi::communicator world;
-  size_t size = 100;
-  auto [A, b] = rezantseva_a_simple_iteration_method_mpi::createRandomMatrix(size);
+  const size_t size = 100;
+  std::vector<size_t> sizes(1, size);
+  std::vector<double> A(size * size);
+  std::vector<double> b(size);
   std::vector<double> out(size, 0.0);
   const double eps = 1e-3;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&size));
+    auto [matrix, vector] = rezantseva_a_simple_iteration_method_mpi::createRandomMatrix(size);
+    A = std::move(matrix);
+    b = std::move(vector);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(sizes.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
 
-    taskDataPar->inputs_count.emplace_back(size);
+    taskDataPar->inputs_count.emplace_back(sizes.size());
     taskDataPar->inputs_count.emplace_back(A.size());
     taskDataPar->inputs_count.emplace_back(b.size());
 
@@ -623,11 +635,11 @@ TEST(rezantseva_a_simple_iteration_method_mpi, check_matrix_100x100) {
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&size));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(sizes.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
 
-    taskDataSeq->inputs_count.emplace_back(size);
+    taskDataSeq->inputs_count.emplace_back(sizes.size());
     taskDataSeq->inputs_count.emplace_back(A.size());
     taskDataSeq->inputs_count.emplace_back(b.size());
 
@@ -645,4 +657,3 @@ TEST(rezantseva_a_simple_iteration_method_mpi, check_matrix_100x100) {
     }
   }
 }
-*/
