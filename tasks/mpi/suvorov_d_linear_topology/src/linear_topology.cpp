@@ -1,34 +1,13 @@
 // Copyright 2023 Nesterov Alexander
 #include "mpi\suvorov_d_linear_topology\include\linear_topology.hpp"
 
-#include <iostream>
 #include <algorithm>
 #include <functional>
-#include <random>
 #include <string>
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
-void suvorov_d_linear_topology::print_vec(std::vector<int> vec) {
-  for (int elem : vec) {
-    std::cout << elem << "  ";
-  }
-  std::cout << "\n";
-}
-
-std::vector<int> suvorov_d_linear_topology::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
-}
-
-bool suvorov_d_linear_topology::TestMPITaskParallel::pre_processing() {
+bool suvorov_d_linear_topology_mpi::MPILinearTopology::pre_processing() {
   internal_order_test();
 
   if (world.size() == 1) return true;
@@ -52,7 +31,7 @@ bool suvorov_d_linear_topology::TestMPITaskParallel::pre_processing() {
   return true;
 }
 
-bool suvorov_d_linear_topology::TestMPITaskParallel::validation() {
+bool suvorov_d_linear_topology_mpi::MPILinearTopology::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     // Check count elements of output
@@ -61,7 +40,7 @@ bool suvorov_d_linear_topology::TestMPITaskParallel::validation() {
   return true;
 }
 
-bool suvorov_d_linear_topology::TestMPITaskParallel::run() {
+bool suvorov_d_linear_topology_mpi::MPILinearTopology::run() {
   internal_order_test();
 
   if (world.size() == 1) return true;
@@ -89,7 +68,7 @@ bool suvorov_d_linear_topology::TestMPITaskParallel::run() {
   return true;
 }
 
-bool suvorov_d_linear_topology::TestMPITaskParallel::post_processing() {
+bool suvorov_d_linear_topology_mpi::MPILinearTopology::post_processing() {
   internal_order_test();
 
   if (world.size() == 1) {
