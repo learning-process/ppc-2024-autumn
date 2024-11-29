@@ -5,6 +5,7 @@
 #include <boost/serialization/array.hpp>
 #include <boost/serialization/vector.hpp>
 #include <functional>
+#include <iostream>
 #include <random>
 #include <string>
 #include <thread>
@@ -18,9 +19,7 @@ bool khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeSeq::validation
   if (!taskData) {
     return false;
   }
-  if (taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr) {
-    return false;
-  }
+
   return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 &&
          taskData->inputs_count[0] % taskData->inputs_count[1] == 0;
 }
@@ -62,27 +61,32 @@ bool khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeSeq::post_proce
 }
 
 bool khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeMPI::validation() {
-  internal_order_test();
+  if (world.rank() != 0) return true;
+
   if (!taskData) {
     return false;
   }
-  if (taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr) {
+
+  if (taskData->inputs[0] == nullptr && taskData->inputs_count[0] == 0) {
     return false;
   }
+  if (taskData->inputs[1] == nullptr && taskData->inputs_count[1] == 0) {
+    return false;
+  }
+
   if (taskData->outputs[0] == nullptr) {
     return false;
   }
-  if (world.rank() == 0) {
-    return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 &&
-           taskData->inputs_count[0] % taskData->inputs_count[1] == 0;
-  }
-  return true;
+
+  return taskData->inputs_count[0] % taskData->inputs_count[1] == 0;
 }
 
 bool khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeMPI::pre_processing() {
-  internal_order_test();
-
   if (world.rank() == 0) {
+    if (!taskData || taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr ||
+        taskData->outputs[0] == nullptr) {
+      return false;
+    }
     int* temp_matrix = reinterpret_cast<int*>(taskData->inputs[0]);
     int* temp_vector = reinterpret_cast<int*>(taskData->inputs[1]);
 
@@ -101,6 +105,10 @@ bool khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeMPI::pre_proces
       for (int i = 0; i < rows_count; ++i) {
         rows_offsets[i] = i * columns_count;
         rows_per_process[i] = columns_count;
+      }
+      for (int i = rows_count; i < world.size(); ++i) {
+        rows_offsets[i] = -1;
+        rows_per_process[i] = 0;
       }
     } else {
       int rows_count_per_proc = rows_count / world.size();
@@ -134,8 +142,6 @@ bool khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeMPI::pre_proces
 }
 
 bool khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeMPI::run() {
-  internal_order_test();
-
   boost::mpi::broadcast(world, hello_matrix, 0);
   boost::mpi::broadcast(world, hello_vector, 0);
 
@@ -143,12 +149,14 @@ bool khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeMPI::run() {
   int matrix_start_point = rows_per_process[world.rank()] / columns_count;
   std::vector<int> process_result(columns_count, 0);
 
-  for (int i = 0; i < matrix_start_point; ++i) {
-    for (int j = 0; j < columns_count; ++j) {
-      int prog_start = process_start + i;
-      int matrix = hello_matrix[prog_start * columns_count + j];
-      int vector = hello_vector[prog_start];
-      process_result[j] += matrix * vector;
+  for (int i = 0; i < columns_count; ++i) {
+    for (int j = 0; j < matrix_start_point; ++j) {
+      int prog_start = process_start + j;
+      if (prog_start < rows_count) {
+        int matrix = hello_matrix[i * rows_count + prog_start];
+        int vector = hello_vector[prog_start];
+        process_result[j] += matrix * vector;
+      }
     }
   }
 
@@ -158,8 +166,6 @@ bool khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeMPI::run() {
 }
 
 bool khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeMPI::post_processing() {
-  internal_order_test();
-
   if (world.rank() == 0) {
     int* goodbye = reinterpret_cast<int*>(taskData->outputs[0]);
     std::copy(goodbye_vector.begin(), goodbye_vector.end(), goodbye);
