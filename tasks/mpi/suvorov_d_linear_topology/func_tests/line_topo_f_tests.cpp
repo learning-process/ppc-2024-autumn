@@ -8,7 +8,6 @@
 
 #include "mpi\suvorov_d_linear_topology\include\linear_topology.hpp"
 
-
 namespace {
 std::vector<int> getRandomVector(int sz) {
   std::random_device dev;

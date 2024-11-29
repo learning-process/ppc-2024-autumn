@@ -1,11 +1,11 @@
 // Copyright 2023 Nesterov Alexander
-#include "mpi\suvorov_d_linear_topology\include\linear_topology.hpp"
-
 #include <algorithm>
 #include <functional>
 #include <string>
 #include <thread>
 #include <vector>
+
+#include "mpi\suvorov_d_linear_topology\include\linear_topology.hpp"
 
 bool suvorov_d_linear_topology_mpi::MPILinearTopology::pre_processing() {
   internal_order_test();
