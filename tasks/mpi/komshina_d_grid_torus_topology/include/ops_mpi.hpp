@@ -1,6 +1,7 @@
 #pragma once
 #include <gtest/gtest.h>
 
+#include <array>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <boost/serialization/vector.hpp>
@@ -26,7 +27,15 @@ class GridTorusTopologyParallel : public ppc::core::Task {
 
  private:
   boost::mpi::communicator world;
-  std::array<int, 4> compute_neighbors(int rank, int width, int height);
+  std::vector<int> input_;
+  std::vector<int> result;
+  std::vector<int> order;
+  int rank;
+
+  int width_x;
+  int length_y;
+
+  void compute_neighbors(int rank, int& left, int& right, int& up, int& down);
 };
 
 }  // namespace komshina_d_grid_torus_topology_mpi
