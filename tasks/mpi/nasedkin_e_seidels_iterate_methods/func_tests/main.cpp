@@ -52,7 +52,8 @@ TEST(nasedkin_e_seidels_iterate_methods_mpi, test_random_diag_dominant_matrix_wi
 
   std::vector<std::vector<double>> matrix;
   std::vector<double> vector;
-  nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI::generate_random_diag_dominant_matrix(5, matrix, vector);
+  nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI::generate_random_diag_dominant_matrix(5, matrix,
+                                                                                                        vector);
   seidel_task.set_matrix(matrix, vector);
 
   ASSERT_TRUE(seidel_task.validation()) << "Validation failed for random diagonally dominant matrix";
