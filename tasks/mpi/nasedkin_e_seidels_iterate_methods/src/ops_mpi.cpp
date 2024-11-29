@@ -138,18 +138,26 @@ void SeidelIterateMethodsMPI::generate_random_diag_dominant_matrix(int size,
   }
 }
 
-double calculateResidual(const std::vector<std::vector<double>>& matrix,
+double SeidelIterateMethodsMPI::calculateResidual(const std::vector<std::vector<double>>& matrix,
                          const std::vector<double>& x,
                          const std::vector<double>& b) {
-    double residual = 0.0;
-    for (size_t i = 0; i < matrix.size(); ++i) {
-        double Ax_i = 0.0;
-        for (size_t j = 0; j < matrix[i].size(); ++j) {
-            Ax_i += matrix[i][j] * x[j];
+        std::vector<double> Ax(n, 0.0);
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                Ax[i] += A[i][j] * x[j];
+            }
         }
-        residual += (Ax_i - b[i]) * (Ax_i - b[i]);
-    }
-    return std::sqrt(residual);
-}
 
+        std::vector<double> residual(n);
+        for (int i = 0; i < n; ++i) {
+            residual[i] = Ax[i] - b[i];
+        }
+
+        double norm = 0.0;
+        for (int i = 0; i < n; ++i) {
+            norm += residual[i] * residual[i];
+        }
+
+        return std::sqrt(norm);
+}
 }  // namespace nasedkin_e_seidels_iterate_methods_mpi
