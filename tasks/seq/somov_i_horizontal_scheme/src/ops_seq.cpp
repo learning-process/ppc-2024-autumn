@@ -5,8 +5,7 @@
 
 namespace somov_i_horizontal_scheme {
 
-MatrixVectorTask::MatrixVectorTask(std::shared_ptr<ppc::core::TaskData> taskData) : Task(std::move(taskData)) {
-}
+MatrixVectorTask::MatrixVectorTask(std::shared_ptr<ppc::core::TaskData> taskData) : Task(std::move(taskData)) {}
 
 bool MatrixVectorTask::pre_processing() {
   internal_order_test();

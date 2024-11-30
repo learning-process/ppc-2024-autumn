@@ -68,10 +68,7 @@ TEST(somov_i_horizontal_scheme, test_performance_with_different_data_sizes) {
 
     auto seq_task = std::make_shared<somov_i_horizontal_scheme::MatrixVectorTask>(task_data);
 
-    ASSERT_TRUE(seq_task->validation());
-    ASSERT_TRUE(seq_task->pre_processing());
-    ASSERT_TRUE(seq_task->run());
-    ASSERT_TRUE(seq_task->post_processing());
+    ASSERT_TRUE(seq_task->validation() && seq_task->pre_processing() && seq_task->run() && seq_task->post_processing());
 
     auto perf_attributes = std::make_shared<ppc::core::PerfAttr>();
     perf_attributes->num_running = 10;
@@ -115,10 +112,7 @@ TEST(somov_i_horizontal_scheme, test_pipeline_run) {
 
   auto seq_task = std::make_shared<somov_i_horizontal_scheme::MatrixVectorTask>(task_data);
 
-  ASSERT_TRUE(seq_task->validation());
-  ASSERT_TRUE(seq_task->pre_processing());
-  ASSERT_TRUE(seq_task->run());
-  ASSERT_TRUE(seq_task->post_processing());
+  ASSERT_TRUE(seq_task->validation() && seq_task->pre_processing() && seq_task->run() && seq_task->post_processing());
 
   auto perf_attributes = std::make_shared<ppc::core::PerfAttr>();
   perf_attributes->num_running = 10;
@@ -163,10 +157,7 @@ TEST(somov_i_horizontal_scheme, test_task_run) {
 
   auto seq_task = std::make_shared<somov_i_horizontal_scheme::MatrixVectorTask>(task_data);
 
-  ASSERT_TRUE(seq_task->validation());
-  ASSERT_TRUE(seq_task->pre_processing());
-  ASSERT_TRUE(seq_task->run());
-  ASSERT_TRUE(seq_task->post_processing());
+  ASSERT_TRUE(seq_task->validation() && seq_task->pre_processing() && seq_task->run() && seq_task->post_processing());
 
   auto perf_attributes = std::make_shared<ppc::core::PerfAttr>();
   perf_attributes->num_running = 10;
