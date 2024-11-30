@@ -17,7 +17,10 @@ void koshkin_m_dining_philosophers::testMpiTaskParallel::update_neighbors() {
 }
 
 bool koshkin_m_dining_philosophers::testMpiTaskParallel::pre_processing() {
-  status = THINKING;
+  if (world.rank() % 2 == 0) {
+    status = 1;
+  } else
+    status = 3;
   return true;
 }
 
@@ -100,7 +103,7 @@ void koshkin_m_dining_philosophers::testMpiTaskParallel::think() {
 
 void koshkin_m_dining_philosophers::testMpiTaskParallel::eat() {
   status = 3;
-  std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  std::this_thread::sleep_for(std::chrono::milliseconds(200));
 }
 
 void koshkin_m_dining_philosophers::testMpiTaskParallel::request_forks() {
