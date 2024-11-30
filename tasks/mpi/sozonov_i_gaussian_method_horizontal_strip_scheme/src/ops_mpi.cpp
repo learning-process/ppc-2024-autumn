@@ -92,7 +92,7 @@ bool sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::TestMPITaskParallel:
   std::vector<int> row_num(world.size());
 
   int delta = n / world.size();
-  if (n % world.size()) {
+  if (n % world.size() != 0) {
     delta++;
   }
   if (world.rank() >= world.size() - world.size() * delta + n) {
