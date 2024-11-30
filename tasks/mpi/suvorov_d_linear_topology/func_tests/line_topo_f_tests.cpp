@@ -49,7 +49,7 @@ TEST(suvorov_d_linear_topology_mpi, test_with_normal_vector_size) {
     EXPECT_TRUE(result);
   }
 }
-
+//
 // TEST(suvorov_d_linear_topology_mpi, test_with_large_vector_size) {
 //   boost::mpi::communicator world;
 //   std::vector<int> initial_data;
