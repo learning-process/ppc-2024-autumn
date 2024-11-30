@@ -175,4 +175,3 @@ TEST(golovkin_rowwise_matrix_partitioning, InvalidMatrixData) {
 
   ASSERT_FALSE(task.validation());
 }
-
