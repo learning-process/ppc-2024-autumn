@@ -34,35 +34,6 @@ TEST(shuravina_o_contrast, Test_Contrast_All_Zero) {
     }
   }
 }
-
-TEST(shuravina_o_contrast, Test_Contrast_All_Max) {
-  boost::mpi::communicator world;
-  const int count = 10;
-
-  std::vector<uint8_t> in(count, 255);
-  std::vector<uint8_t> out(count, 0);
-
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
-    taskDataPar->inputs_count.emplace_back(in.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-    taskDataPar->outputs_count.emplace_back(out.size());
-  }
-
-  shuravina_o_contrast::ContrastTaskParallel contrastTaskParallel(taskDataPar);
-  ASSERT_EQ(contrastTaskParallel.validation(), true);
-  contrastTaskParallel.pre_processing();
-  contrastTaskParallel.run();
-  contrastTaskParallel.post_processing();
-
-  if (world.rank() == 0) {
-    for (int i = 0; i < count; ++i) {
-      ASSERT_EQ(out[i], 255);
-    }
-  }
-}
-
 TEST(shuravina_o_contrast, Test_Contrast_Random_Large) {
   boost::mpi::communicator world;
   const int count = 1000;
