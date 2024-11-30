@@ -19,6 +19,24 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, zero_length) {
   }
 }
 
+TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, not_equal_lengths) {
+  const size_t length = 10;
+  std::vector<int> in(length);
+  std::vector<int> out(2 * length);
+  boost::mpi::communicator world;
+  std::shared_ptr<ppc::core::TaskData> tmpPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    tmpPar->inputs_count.emplace_back(in.size());
+    tmpPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    tmpPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+    tmpPar->outputs_count.emplace_back(out.size());
+  }
+  kovalev_k_bubble_sort_oddeven_transposition_mpi::BubbleSortOddEvenTranspositionPar<int> tmpTaskPar(tmpPar);
+  if (world.rank() == 0) {
+    ASSERT_FALSE(tmpTaskPar.validation());
+  }
+}
+
 TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, Test_NoViol_300_int) {
   const size_t length = 300;
   std::srand(std::time(nullptr));

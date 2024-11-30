@@ -14,6 +14,19 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_seq, zero_length) {
   ASSERT_FALSE(tmpTaskSeq.validation());
 }
 
+TEST(kovalev_k_bubble_sort_oddeven_transposition_seq, not_equal_lengths) {
+  const size_t length = 10;
+  std::vector<int> in(length);
+  std::vector<int> out(2 * length);
+  std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
+  taskSeq->inputs_count.emplace_back(in.size());
+  taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskSeq->outputs_count.emplace_back(out.size());
+  kovalev_k_bubble_sort_oddeven_transposition_seq::BubbleSortOddEvenTransposition<int> tmpTaskSeq(taskSeq);
+  ASSERT_FALSE(tmpTaskSeq.validation());
+}
+
 TEST(kovalev_k_bubble_sort_oddeven_transposition_seq, Test_No_viol_10_int) {
   const size_t length = 10;
   std::srand(std::time(nullptr));
