@@ -50,7 +50,7 @@ bool shuravina_o_contrast::ContrastTaskParallel::run() {
 
   if (global_min_val == global_max_val) {
     for (size_t i = 0; i < local_input_.size(); ++i) {
-      output_[i] = global_min_val;
+      output_[i] = local_input_[i];
     }
   } else {
     for (size_t i = 0; i < local_input_.size(); ++i) {
