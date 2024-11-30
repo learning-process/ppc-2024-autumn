@@ -113,8 +113,8 @@ TEST(tsatsyn_a_topology_torus_grid_mpi, Test_Send_100000) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   const int count_size_vector = 10001;
-  int doublesize;
-  doublesize = count_size_vector * 2;
+  // int doublesize;
+  // doublesize = count_size_vector * 2;
   if (world.rank() == 0) {
     global_vec = tsatsyn_a_topology_torus_grid_mpi::getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
