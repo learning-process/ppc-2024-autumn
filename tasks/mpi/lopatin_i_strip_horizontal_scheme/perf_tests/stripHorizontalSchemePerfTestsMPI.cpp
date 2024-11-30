@@ -5,21 +5,21 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/lopatin_i_strip_horizontal_scheme/include/stripHorizontalSchemeHeaderMPI.hpp"
 
-std::vector<int> testMatrix = lopatin_i_strip_horizontal_scheme_mpi::generateMatrix(3840, 2160);
-std::vector<int> testVector = lopatin_i_strip_horizontal_scheme_mpi::generateVector(3840);
+std::vector<int> testMatrix = lopatin_i_strip_horizontal_scheme_mpi::generateMatrix(2560, 1440);
+std::vector<int> testVector = lopatin_i_strip_horizontal_scheme_mpi::generateVector(2560);
 
 TEST(lopatin_i_strip_horizontal_scheme_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<int> inputMatrix = testMatrix;
   std::vector<int> inputVector = testVector;
-  std::vector<int> resultVector(2160, 0);
+  std::vector<int> resultVector(1440, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
     taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputMatrix.data()));
-    taskDataParallel->inputs_count.emplace_back(6);
-    taskDataParallel->inputs_count.emplace_back(4);
+    taskDataParallel->inputs_count.emplace_back(2560);
+    taskDataParallel->inputs_count.emplace_back(1440);
     taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputVector.data()));
     taskDataParallel->inputs_count.emplace_back(inputVector.size());
     taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(resultVector.data()));
@@ -53,8 +53,8 @@ TEST(lopatin_i_strip_horizontal_scheme_mpi, test_task_run) {
 
   if (world.rank() == 0) {
     taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputMatrix.data()));
-    taskDataParallel->inputs_count.emplace_back(6);
-    taskDataParallel->inputs_count.emplace_back(4);
+    taskDataParallel->inputs_count.emplace_back(2560);
+    taskDataParallel->inputs_count.emplace_back(1440);
     taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputVector.data()));
     taskDataParallel->inputs_count.emplace_back(inputVector.size());
     taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(resultVector.data()));

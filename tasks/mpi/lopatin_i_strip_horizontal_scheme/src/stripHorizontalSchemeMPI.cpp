@@ -7,7 +7,7 @@ std::vector<int> generateVector(int size) {
   std::mt19937 gen(dev());
   std::vector<int> outputVector(size);
   for (int i = 0; i < size; i++) {
-    outputVector[i] = (gen() % 200);
+    outputVector[i] = (gen() % 200) - 99;
   }
   return outputVector;
 }
@@ -18,7 +18,7 @@ std::vector<int> generateMatrix(int sizeX, int sizeY) {
   int matrixSize = sizeX * sizeY;
   std::vector<int> outputMatrix(matrixSize);
   for (int i = 0; i < matrixSize; i++) {
-    outputMatrix[i] = (gen() % 200);
+    outputMatrix[i] = (gen() % 200) - 99;
   }
   return outputMatrix;
 }
