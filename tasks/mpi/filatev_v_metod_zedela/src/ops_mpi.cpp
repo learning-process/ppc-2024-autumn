@@ -176,7 +176,7 @@ bool filatev_v_metod_zedela_mpi::MetodZedela::run() {
     return true;
   }
 
-  int color = world.rank() != 0;
+  int color = static_cast<int>(world.rank() != 0);
   boost::mpi::communicator new_comm = world.split(color);
 
   if (world.rank() != 0) {
@@ -267,7 +267,7 @@ int filatev_v_metod_zedela_mpi::MetodZedela::rankMatrix(std::vector<int>& matrix
   std::vector<double> _matrix(matrixT.size());
   std::transform(matrixT.begin(), matrixT.end(), _matrix.begin(), [](int val) { return static_cast<double>(val); });
   if (n == 0) return 0;
-  int m = _matrix.size() / n;
+  int m = size;
 
   int rank = 0;
 

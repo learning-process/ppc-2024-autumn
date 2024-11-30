@@ -98,7 +98,7 @@ int filatev_v_metod_zedela_seq::MetodZedela::rankMatrix(std::vector<int>& matrix
   std::vector<double> _matrix(matrixT.size());
   std::transform(matrixT.begin(), matrixT.end(), _matrix.begin(), [](int val) { return static_cast<double>(val); });
   if (n == 0) return 0;
-  int m = _matrix.size() / n;
+  int m = size;
 
   int rank = 0;
 
