@@ -61,13 +61,14 @@ bool filatev_v_metod_zedela_seq::MetodZedela::run() {
   std::vector<double> it2(size);  // prev
   double sum1 = 0;
   double sum2 = 0;
+  double sum;
 
   do {
     std::swap(it1, it2);
     std::swap(sum1, sum2);
     sum1 = 0;
     for (int i = 0; i < size; ++i) {
-      double sum = 0;
+      sum = 0;
       for (int j = 0; j < i; ++j) {
         sum += it1[j] * matrix[i * size + j];
       }
@@ -75,7 +76,7 @@ bool filatev_v_metod_zedela_seq::MetodZedela::run() {
       for (int j = i + 1; j < size; ++j) {
         sum += it2[j] * matrix[i * size + j];
       }
-      it1[i] = double(sum) / delit[i];
+      it1[i] = sum / delit[i];
       sum1 += it1[i];
     }
   } while (std::abs(sum1 - sum2) > alfa);
@@ -93,7 +94,7 @@ bool filatev_v_metod_zedela_seq::MetodZedela::post_processing() {
 
 void filatev_v_metod_zedela_seq::MetodZedela::setAlfa(double _alfa) { this->alfa = _alfa / 100; }
 
-int filatev_v_metod_zedela_seq::MetodZedela::rankMatrix(std::vector<int>& matrixT, int n) {
+static int filatev_v_metod_zedela_seq::MetodZedela::rankMatrix(std::vector<int>& matrixT, int n) {
   std::vector<double> _matrix(matrixT.size());
   std::transform(matrixT.begin(), matrixT.end(), _matrix.begin(), [](int val) { return static_cast<double>(val); });
   if (n == 0) return 0;
@@ -170,7 +171,7 @@ int filatev_v_metod_zedela_seq::MetodZedela::rankRMatrix() {
   return rankMatrix(rMatrix, size + 1);
 }
 
-int filatev_v_metod_zedela_seq::TestClassForMetodZedela::generatorVector(std::vector<int>& vec) {
+static int filatev_v_metod_zedela_seq::TestClassForMetodZedela::generatorVector(std::vector<int>& vec) {
   int sum = 0;
   for (long unsigned int i = 0; i < vec.size(); ++i) {
     vec[i] = rand() % 100 - 50;
@@ -202,7 +203,7 @@ void filatev_v_metod_zedela_seq::TestClassForMetodZedela::genetatirVectorB(std::
   }
 }
 
-void filatev_v_metod_zedela_seq::TestClassForMetodZedela::coutSLU(std::vector<int> matrix, std::vector<int> vecB) {
+static void filatev_v_metod_zedela_seq::TestClassForMetodZedela::coutSLU(std::vector<int> matrix, std::vector<int> vecB) {
   int size = vecB.size();
   std::cout << "Matrix:\n";
   for (int i = 0; i < size; i++) {

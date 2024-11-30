@@ -46,6 +46,7 @@ bool filatev_v_metod_zedela_mpi::MetodZedela::validation() {
   boost::mpi::broadcast(world, bVectrot.data(), size, 0);
 
   int mess;
+  bool check = true;
 
   if (world.rank() == 0) {
     int rank = 0;
@@ -57,7 +58,7 @@ bool filatev_v_metod_zedela_mpi::MetodZedela::validation() {
       status = world.probe(boost::mpi::any_source, boost::mpi::any_tag);
       if (status.tag() == 0) {
         world.recv(status.source(), status.tag(), mess);
-        if (task) {
+        if (task != 0) {
           world.send(status.source(), task, matrix);
           task--;
         } else {
@@ -83,14 +84,15 @@ bool filatev_v_metod_zedela_mpi::MetodZedela::validation() {
         }
       }
     }
-    return st && rank == rankR;
+    check = (st && rank == rankR);
   } else {
-    while (true) {
+    bool stop = true;
+    while (stop) {
       world.send(0, 0, world.rank());
       status = world.probe(0, boost::mpi::any_tag);
       if (status.tag() == 0) {
         world.recv(status.source(), status.tag(), mess);
-        break;
+        stop = false;
       } else {
         matrix.resize(size * size);
         world.recv(status.source(), status.tag(), matrix);
@@ -123,7 +125,7 @@ bool filatev_v_metod_zedela_mpi::MetodZedela::validation() {
     }
   }
 
-  return true;
+  return check;
 }
 
 bool filatev_v_metod_zedela_mpi::MetodZedela::pre_processing() {
@@ -151,12 +153,13 @@ bool filatev_v_metod_zedela_mpi::MetodZedela::run() {
     if (world.rank() == 0) {
       double sum1 = 0;
       double sum2 = 0;
+      double sum;
       do {
         std::swap(it1, it2);
         std::swap(sum1, sum2);
         sum1 = 0;
         for (int i = 0; i < size; ++i) {
-          double sum = 0;
+          sum = 0;
           for (int j = 0; j < i; ++j) {
             sum += it1[j] * tMatrix[i * size + j];
           }
@@ -164,7 +167,7 @@ bool filatev_v_metod_zedela_mpi::MetodZedela::run() {
           for (int j = i + 1; j < size; ++j) {
             sum += it2[j] * tMatrix[i * size + j];
           }
-          it1[i] = double(sum) / delit[i];
+          it1[i] = sum / delit[i];
           sum1 += it1[i];
         }
       } while (abs(sum1 - sum2) > alfa);
@@ -173,7 +176,8 @@ bool filatev_v_metod_zedela_mpi::MetodZedela::run() {
     return true;
   }
 
-  boost::mpi::communicator new_comm = world.split(world.rank() != 0);
+  int color = world.rank() != 0;
+  boost::mpi::communicator new_comm = world.split(color);
 
   if (world.rank() != 0) {
     tMatrix.resize(size * size);
@@ -259,7 +263,7 @@ bool filatev_v_metod_zedela_mpi::MetodZedela::post_processing() {
 
 void filatev_v_metod_zedela_mpi::MetodZedela::setAlfa(double _alfa) { this->alfa = _alfa / 100; }
 
-int filatev_v_metod_zedela_mpi::MetodZedela::rankMatrix(std::vector<int>& matrixT, int n) {
+static int filatev_v_metod_zedela_mpi::MetodZedela::rankMatrix(std::vector<int>& matrixT, int n) {
   std::vector<double> _matrix(matrixT.size());
   std::transform(matrixT.begin(), matrixT.end(), _matrix.begin(), [](int val) { return static_cast<double>(val); });
   if (n == 0) return 0;
@@ -336,7 +340,7 @@ int filatev_v_metod_zedela_mpi::MetodZedela::rankRMatrix() {
   return rankMatrix(rMatrix, size + 1);
 }
 
-int filatev_v_metod_zedela_mpi::TestClassForMetodZedela::generatorVector(std::vector<int>& vec) {
+static int filatev_v_metod_zedela_mpi::TestClassForMetodZedela::generatorVector(std::vector<int>& vec) {
   int sum = 0;
   for (long unsigned int i = 0; i < vec.size(); ++i) {
     vec[i] = rand() % 100 - 50;
@@ -368,7 +372,7 @@ void filatev_v_metod_zedela_mpi::TestClassForMetodZedela::genetatirVectorB(std::
   }
 }
 
-void filatev_v_metod_zedela_mpi::TestClassForMetodZedela::coutSLU(std::vector<int> matrix, std::vector<int> vecB) {
+static void filatev_v_metod_zedela_mpi::TestClassForMetodZedela::coutSLU(std::vector<int> matrix, std::vector<int> vecB) {
   int size = vecB.size();
   std::cout << "Matrix:\n";
   for (int i = 0; i < size; i++) {
