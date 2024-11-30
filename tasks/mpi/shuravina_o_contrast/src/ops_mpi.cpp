@@ -48,8 +48,14 @@ bool shuravina_o_contrast::ContrastTaskParallel::run() {
   reduce(world, local_min_val, global_min_val, boost::mpi::minimum<uint8_t>(), 0);
   reduce(world, local_max_val, global_max_val, boost::mpi::maximum<uint8_t>(), 0);
 
-  for (size_t i = 0; i < local_input_.size(); ++i) {
-    output_[i] = static_cast<uint8_t>((local_input_[i] - global_min_val) * 255.0 / (global_max_val - global_min_val));
+  if (global_min_val == global_max_val) {
+    for (size_t i = 0; i < local_input_.size(); ++i) {
+      output_[i] = local_input_[i];
+    }
+  } else {
+    for (size_t i = 0; i < local_input_.size(); ++i) {
+      output_[i] = static_cast<uint8_t>((local_input_[i] - global_min_val) * 255.0 / (global_max_val - global_min_val));
+    }
   }
 
   return true;
