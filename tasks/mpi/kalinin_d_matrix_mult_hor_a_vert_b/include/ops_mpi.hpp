@@ -1,28 +1,26 @@
-// Copyright 2023 Nesterov Alexander
 #pragma once
 
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <memory>
 #include <numeric>
+#include <random>
 #include <string>
 #include <utility>
 #include <vector>
-#include <algorithm>
-#include <random>
 
 #include "core/task/include/task.hpp"
 
-namespace kalinin_d_matrix_mult_hor_a_vert_b {
+namespace kalinin_d_matrix_mult_hor_a_vert_b_mpi {
 
 std::vector<int> getRandomVector(int sz);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -43,16 +41,15 @@ class TestMPITaskSequential : public ppc::core::Task {
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)){}
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
   int column_A;
-    int row_A;
-    int column_B;
-    int row_B;
+  int row_A;
+  int column_B;
+  int row_B;
 
  private:
   std::vector<int> input_, local_input_;
@@ -66,7 +63,6 @@ class TestMPITaskParallel : public ppc::core::Task {
   int rows_B;
 
   int* C;
-
 };
 
-}  // namespace kalinin_d_matrix_mult_hor_a_vert_b
+}  // namespace kalinin_d_matrix_mult_hor_a_vert_b_mpi
