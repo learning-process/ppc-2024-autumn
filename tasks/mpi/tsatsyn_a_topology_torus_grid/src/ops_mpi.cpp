@@ -77,7 +77,7 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
   }
   std::cout << world.rank() << " current_row_pos: " << current_row_pos << " current_col_pos: " << current_col_pos
             << std::endl;*/
-  //                           /       
+  //                           /
   if (current_col_pos != source_col_pos && current_row_pos != dest_row_pos) {
     // std::cout << world.rank() << " is out1" << std::endl;
     return;
@@ -87,31 +87,31 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
   delta_row = dest_row_pos - current_row_pos;
   delta_col = dest_col_pos - current_col_pos;
 
-  //                                                                 
+  //
   int middle_row, middle_col;
   middle_row = rows % 2 == 0 ? (rows / 2) - (1) : rows / 2;
   middle_col = cols % 2 == 0 ? (cols / 2) - (1) : cols / 2;
 
   if (delta_row != 0) {
-    if (abs(source_row_pos - dest_row_pos) <= middle_row) {  //         
-      if (source_row_pos < dest_row_pos) {                   //     
+    if (abs(source_row_pos - dest_row_pos) <= middle_row) {  //
+      if (source_row_pos < dest_row_pos) {                   //
         if ((current_row_pos < source_row_pos || current_row_pos > dest_row_pos)) {
           // std::cout << world.rank() << " is out2" << std::endl;
           return;
         }
-      } else {  //     
+      } else {  //
         if ((current_row_pos > source_row_pos || current_row_pos < dest_row_pos)) {
           // std::cout << world.rank() << " is out3" << std::endl;
           return;
         }
       }
-    } else {                                //        
-      if (source_row_pos < dest_row_pos) {  //     
+    } else {                                //
+      if (source_row_pos < dest_row_pos) {  //
         if (current_row_pos > source_row_pos && current_row_pos < dest_row_pos) {
           // std::cout << world.rank() << " is out4" << std::endl;
           return;
         }
-      } else {  //     
+      } else {  //
         if (current_row_pos < source_row_pos && current_row_pos > dest_row_pos) {
           // std::cout << world.rank() << " is out5" << std::endl;
           return;
@@ -120,25 +120,25 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
     }
   }
 
-  if (abs(source_col_pos - dest_col_pos) <= middle_col) {  //         
-    if (source_col_pos < dest_col_pos) {                   //       
+  if (abs(source_col_pos - dest_col_pos) <= middle_col) {  //
+    if (source_col_pos < dest_col_pos) {                   //
       if ((current_col_pos < source_col_pos || current_col_pos > dest_col_pos)) {
         // std::cout << world.rank() << " is out6" << std::endl;
         return;
       }
-    } else {  //      
+    } else {  //
       if ((current_col_pos > source_col_pos || current_col_pos < dest_col_pos)) {
         // std::cout << world.rank() << " is out7" << std::endl;
         return;
       }
     }
-  } else {                                //        
-    if (source_col_pos < dest_col_pos) {  //       
+  } else {                                //
+    if (source_col_pos < dest_col_pos) {  //
       if ((current_col_pos > source_col_pos && current_col_pos < dest_col_pos)) {
         // std::cout << world.rank() << " is out8" << std::endl;
         return;
       }
-    } else {  //      
+    } else {  //
       if ((current_col_pos < source_col_pos && current_col_pos > dest_col_pos)) {
         // std::cout << world.rank() << " is out9" << std::endl;
         return;
@@ -147,12 +147,11 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
   }
 
   int copy;
-  if (source_rank == dest_rank || source_rank < 0 || dest_rank > world.size() ||
-      source_rank > world.size()) {  //               
+  if (source_rank == dest_rank || source_rank < 0 || dest_rank > world.size() || source_rank > world.size()) {  //
     // std::cout << "EXIT:REFLEX" << std::endl;
     return;
-  } else if (current_rank == dest_rank) {  //                                  
-    if (source_col_pos == dest_col_pos) {  //                                                    
+  } else if (current_rank == dest_rank) {  //
+    if (source_col_pos == dest_col_pos) {  //
       if (abs(dest_row_pos - source_row_pos) == 1) {
         if (source_row_pos < dest_row_pos) {
           // std::cout << "wait from up3" << std::endl;
@@ -162,7 +161,7 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
           world.recv(neighbors["down"], 0, copy);
         }
 
-      } else if (abs(dest_row_pos - source_row_pos) > (middle_row)) {  //           
+      } else if (abs(dest_row_pos - source_row_pos) > (middle_row)) {  //
         if (source_row_pos < dest_row_pos) {
           // std::cout << "wait from down1" << std::endl;
           world.recv(neighbors["down"], 0, copy);
@@ -170,7 +169,7 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
           // std::cout << "wait from up1" << std::endl;
           world.recv(neighbors["up"], 0, copy);
         }
-      } else {  //         
+      } else {  //
         if (source_row_pos < dest_row_pos) {
           // std::cout << "wait from up2" << std::endl;
           world.recv(neighbors["up"], 0, copy);
@@ -179,7 +178,7 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
           world.recv(neighbors["down"], 0, copy);
         }
       }
-    } else {  //                                                     
+    } else {  //
       if (abs(dest_col_pos - source_col_pos) == 1) {
         if (source_col_pos < dest_col_pos) {
           // std::cout << "wait from left3" << std::endl;
@@ -190,7 +189,7 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
           world.recv(neighbors["right"], 0, copy);
         }
 
-      } else if (abs(dest_col_pos - source_col_pos) > (middle_col)) {  //           
+      } else if (abs(dest_col_pos - source_col_pos) > (middle_col)) {  //
         if (source_col_pos < dest_col_pos) {
           // std::cout << "wait from right1" << std::endl;
           world.recv(neighbors["right"], 0, copy);
@@ -198,7 +197,7 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
           // std::cout << "wait from left1" << std::endl;
           world.recv(neighbors["left"], 0, copy);
         }
-      } else {  //         
+      } else {  //
         if (source_col_pos < dest_col_pos) {
           // std::cout << "wait from left2" << std::endl;
           world.recv(neighbors["left"], 0, copy);
@@ -211,7 +210,7 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
     // inputs.insert(inputs.end(), copy.begin(), copy.end());
     inputs = copy;
     return;
-  } else if (current_rank == source_rank) {  //                               
+  } else if (current_rank == source_rank) {  //
     if (delta_row != 0) {
       if (delta_row < 0) {
         if (abs(dest_row_pos - source_row_pos) == 1) {
@@ -261,41 +260,41 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
         }
       }
     }
-  } else {                  //                                            
-    if (delta_row != 0) {   //                              
-      if (delta_row < 0) {  //                             
-        if (abs(delta_row) <= middle_row) {  //         
+  } else {                                   //
+    if (delta_row != 0) {                    //
+      if (delta_row < 0) {                   //
+        if (abs(delta_row) <= middle_row) {  //
           // std::cout << world.rank() << " is work1" << std::endl;
           world.recv(neighbors["down"], 0, copy);
           world.send(neighbors["up"], 0, copy);
-        } else {  //                   
+        } else {  //
           // std::cout << world.rank() << " is work2" << std::endl;
           world.recv(neighbors["up"], 0, copy);
           world.send(neighbors["down"], 0, copy);
         }
-      } else {                                 //                             
-        if (abs(delta_row) <= (middle_row)) {  //         
+      } else {                                 //
+        if (abs(delta_row) <= (middle_row)) {  //
                                                // std::cout << world.rank() << " is work3" << std::endl;
           world.recv(neighbors["up"], 0, copy);
           world.send(neighbors["down"], 0, copy);
-        } else {  //                   
+        } else {  //
           // std::cout << world.rank() << " is work4" << std::endl;
           world.recv(neighbors["down"], 0, copy);
           world.send(neighbors["up"], 0, copy);
         }
       }
-    } else if (delta_col != 0) {  //                              (if                                            ,     
+    } else if (delta_col != 0) {  //                              (if                                            ,
                                   //                 delta_col=0)
-      //                                   
+      //
       if (current_col_pos == source_col_pos) {
         // std::cout << "eben" << std::endl;
-        if (dest_row_pos - source_row_pos < 0) {  //                             
-          if (abs(dest_row_pos - source_row_pos) <= middle_row) {  //         
+        if (dest_row_pos - source_row_pos < 0) {                   //
+          if (abs(dest_row_pos - source_row_pos) <= middle_row) {  //
             world.recv(neighbors["down"], 0, copy);
-          } else {  //        
+          } else {  //
             world.recv(neighbors["up"], 0, copy);
           }
-        } else {  //     
+        } else {  //
           if (abs(dest_row_pos - source_row_pos) <= middle_row) {
             world.recv(neighbors["up"], 0, copy);
           } else {
@@ -303,7 +302,7 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
           }
         }
       } else {
-        if (delta_col < 0) {  //                              
+        if (delta_col < 0) {  //
           if (abs(delta_col) <= middle_col) {
             world.recv(neighbors["right"], 0, copy);
           } else {
@@ -317,8 +316,8 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
           }
         }
       }
-      //                
-      if (delta_col < 0) {  //                              
+      //
+      if (delta_col < 0) {  //
         if (abs(delta_col) <= middle_col) {
           world.send(neighbors["left"], 0, copy);
         } else {
@@ -346,7 +345,7 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
   current_col_pos = current_rank % cols;
   dest_col_pos = dest_rank % cols;
 
-  //                           /       
+  //                           /
   if (current_col_pos != source_col_pos && current_row_pos != dest_row_pos) {
     // std::cout << world.rank() << " is out1" << std::endl;
     return;
@@ -356,32 +355,32 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
   delta_row = dest_row_pos - current_row_pos;
   delta_col = dest_col_pos - current_col_pos;
 
-  //                                                                 
+  //
   int middle_row, middle_col;
   middle_row = rows % 2 == 0 ? (rows / 2) - (1) : rows / 2;
   middle_col = cols % 2 == 0 ? (cols / 2) - (1) : cols / 2;
   // std::cout << delta_row << "+" << delta_col << "+" << middle_col << std::endl;
 
   if (delta_row != 0) {
-    if (abs(source_row_pos - dest_row_pos) <= middle_row) {  //         
-      if (source_row_pos < dest_row_pos) {                   //     
+    if (abs(source_row_pos - dest_row_pos) <= middle_row) {  //
+      if (source_row_pos < dest_row_pos) {                   //
         if ((current_row_pos < source_row_pos || current_row_pos > dest_row_pos)) {
           // std::cout << world.rank() << " is out2" << std::endl;
           return;
         }
-      } else {  //     
+      } else {  //
         if ((current_row_pos > source_row_pos || current_row_pos < dest_row_pos)) {
           // std::cout << world.rank() << " is out3" << std::endl;
           return;
         }
       }
-    } else {                                //        
-      if (source_row_pos < dest_row_pos) {  //     
+    } else {                                //
+      if (source_row_pos < dest_row_pos) {  //
         if (current_row_pos > source_row_pos && current_row_pos < dest_row_pos) {
           // std::cout << world.rank() << " is out4" << std::endl;
           return;
         }
-      } else {  //     
+      } else {  //
         if (current_row_pos < source_row_pos && current_row_pos > dest_row_pos) {
           // std::cout << world.rank() << " is out5" << std::endl;
           return;
@@ -390,25 +389,25 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
     }
   }
 
-  if (abs(source_col_pos - dest_col_pos) <= middle_col) {  //         
-    if (source_col_pos < dest_col_pos) {                   //       
+  if (abs(source_col_pos - dest_col_pos) <= middle_col) {  //
+    if (source_col_pos < dest_col_pos) {                   //
       if ((current_col_pos < source_col_pos || current_col_pos > dest_col_pos)) {
         // std::cout << world.rank() << " is out6" << std::endl;
         return;
       }
-    } else {  //      
+    } else {  //
       if ((current_col_pos > source_col_pos || current_col_pos < dest_col_pos)) {
         // std::cout << world.rank() << " is out7" << std::endl;
         return;
       }
     }
-  } else {                                //        
-    if (source_col_pos < dest_col_pos) {  //       
+  } else {                                //
+    if (source_col_pos < dest_col_pos) {  //
       if ((current_col_pos > source_col_pos && current_col_pos < dest_col_pos)) {
         // std::cout << world.rank() << " is out8" << std::endl;
         return;
       }
-    } else {  //      
+    } else {  //
       if ((current_col_pos < source_col_pos && current_col_pos > dest_col_pos)) {
         // std::cout << world.rank() << " is out9" << std::endl;
         return;
@@ -418,8 +417,7 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
   int sizeinput, limit, delta;
   limit = 10000;
   std::vector<int> copy;
-  if (source_rank == dest_rank || source_rank < 0 || dest_rank > world.size() ||
-      source_rank > world.size()) {  //               
+  if (source_rank == dest_rank || source_rank < 0 || dest_rank > world.size() || source_rank > world.size()) {  //
     // std::cout << "EXIT:REFLEX" << std::endl;
     return;
   } else if (current_rank == dest_rank) {
@@ -428,8 +426,8 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
     // delta);
     for (int i = 0; i < delta; i++) {
       copy.clear();
-      //                                  
-      if (source_col_pos == dest_col_pos) {  //                                                    
+      //
+      if (source_col_pos == dest_col_pos) {  //
         if (abs(dest_row_pos - source_row_pos) == 1) {
           if (source_row_pos < dest_row_pos) {
             // std::cout << "wait from up3" << std::endl;
@@ -439,7 +437,7 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
             world.recv(neighbors["down"], 0, copy);
           }
 
-        } else if (abs(dest_row_pos - source_row_pos) > (middle_row)) {  //           
+        } else if (abs(dest_row_pos - source_row_pos) > (middle_row)) {  //
           if (source_row_pos < dest_row_pos) {
             // std::cout << "wait from down1" << std::endl;
             world.recv(neighbors["down"], 0, copy);
@@ -447,7 +445,7 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
             // std::cout << "wait from up1" << std::endl;
             world.recv(neighbors["up"], 0, copy);
           }
-        } else {  //         
+        } else {  //
           if (source_row_pos < dest_row_pos) {
             // std::cout << "wait from up2" << std::endl;
             world.recv(neighbors["up"], 0, copy);
@@ -456,7 +454,7 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
             world.recv(neighbors["down"], 0, copy);
           }
         }
-      } else {  //                                                     
+      } else {  //
         if (abs(dest_col_pos - source_col_pos) == 1) {
           if (source_col_pos < dest_col_pos) {
             // std::cout << "wait from left3" << std::endl;
@@ -467,7 +465,7 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
             world.recv(neighbors["right"], 0, copy);
           }
 
-        } else if (abs(dest_col_pos - source_col_pos) > (middle_col)) {  //           
+        } else if (abs(dest_col_pos - source_col_pos) > (middle_col)) {  //
           if (source_col_pos < dest_col_pos) {
             // std::cout << "wait from right1" << std::endl;
             world.recv(neighbors["right"], 0, copy);
@@ -475,7 +473,7 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
             // std::cout << "wait from left1" << std::endl;
             world.recv(neighbors["left"], 0, copy);
           }
-        } else {  //         
+        } else {  //
           if (source_col_pos < dest_col_pos) {
             // std::cout << "wait from left2" << std::endl;
             world.recv(neighbors["left"], 0, copy);
@@ -488,7 +486,7 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
       inputs.insert(inputs.end(), copy.begin(), copy.end());
     }
     return;
-  } else if (current_rank == source_rank) {  //                               
+  } else if (current_rank == source_rank) {  //
     sizeinput = inputs_for_send.size();
     // std::cout << world.rank() << "+" << delta << std::endl;
     delta = sizeinput < limit ? 1 : (sizeinput % limit == 0 ? (sizeinput / limit) : (std::ceil(sizeinput / limit) + 1));
@@ -558,26 +556,26 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
   } else {
     world.recv(source_rank, 0, delta);
     // myBroadcast(world, neighbors, rows, cols, (world.rank() % cols) == 0, world.rank() % cols, world.rank() /
-    // cols,delta);                                            
+    // cols,delta);
     for (int i = 0; i < delta; i++) {
       copy.clear();
-      if (delta_row != 0) {                    //                              
-        if (delta_row < 0) {                   //                             
-          if (abs(delta_row) <= middle_row) {  //         
+      if (delta_row != 0) {                    //
+        if (delta_row < 0) {                   //
+          if (abs(delta_row) <= middle_row) {  //
                                                // std::cout << world.rank() << " is work1" << std::endl;
             world.recv(neighbors["down"], 0, copy);
             world.send(neighbors["up"], 0, copy);
-          } else {  //                   
+          } else {  //
             // std::cout << world.rank() << " is work2" << std::endl;
             world.recv(neighbors["up"], 0, copy);
             world.send(neighbors["down"], 0, copy);
           }
-        } else {                                 //                             
-          if (abs(delta_row) <= (middle_row)) {  //         
+        } else {                                 //
+          if (abs(delta_row) <= (middle_row)) {  //
             // std::cout << world.rank() << " is work3" << std::endl;
             world.recv(neighbors["up"], 0, copy);
             world.send(neighbors["down"], 0, copy);
-          } else {  //                   
+          } else {  //
             // std::cout << world.rank() << " is work4" << std::endl;
             world.recv(neighbors["down"], 0, copy);
             world.send(neighbors["up"], 0, copy);
@@ -585,16 +583,16 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
         }
       } else if (delta_col != 0) {  //                              (if                                            ,
                                     //                      delta_col=0)
-        //                                   
+        //
         if (current_col_pos == source_col_pos) {
           // std::cout << "eben" << std::endl;
-          if (dest_row_pos - source_row_pos < 0) {  //                             
-            if (abs(dest_row_pos - source_row_pos) <= middle_row) {  //         
+          if (dest_row_pos - source_row_pos < 0) {                   //
+            if (abs(dest_row_pos - source_row_pos) <= middle_row) {  //
               world.recv(neighbors["down"], 0, copy);
-            } else {  //        
+            } else {  //
               world.recv(neighbors["up"], 0, copy);
             }
-          } else {  //     
+          } else {  //
             if (abs(dest_row_pos - source_row_pos) <= middle_row) {
               world.recv(neighbors["up"], 0, copy);
             } else {
@@ -602,7 +600,7 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
             }
           }
         } else {
-          if (delta_col < 0) {  //                              
+          if (delta_col < 0) {  //
             if (abs(delta_col) <= middle_col) {
               world.recv(neighbors["right"], 0, copy);
             } else {
@@ -616,8 +614,8 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
             }
           }
         }
-        //                
-        if (delta_col < 0) {  //                              
+        //
+        if (delta_col < 0) {  //
           if (abs(delta_col) <= middle_col) {
             world.send(neighbors["left"], 0, copy);
           } else {
@@ -637,7 +635,7 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
 }
 void myBroadcast(boost::mpi::communicator& world, std::map<std::string, int> neighbors, int rows, int cols,
                  bool is_main_magistralle, int col_pos, int row_pos, std::vector<int>& inputs) {
-  //                                   
+  //
   int delta;
   if (world.rank() == 0) {
     int sizeinput = inputs.size();
@@ -657,7 +655,7 @@ void myBroadcast(boost::mpi::communicator& world, std::map<std::string, int> nei
 
       for (int j = i * limit; j < endOfCycle; j++) local_input_data.push_back(inputs[j]);
       // std::cout << "local " << i << " " << local_input_data.size() << std::endl;
-      //                                                     
+      //
 
       //         2 2
       if ((rows == 2) && (cols == 2)) {
@@ -673,7 +671,7 @@ void myBroadcast(boost::mpi::communicator& world, std::map<std::string, int> nei
       }  //                    2 1
       else if ((rows == 1) && (cols == 2)) {
         world.send(neighbors["right"], 0, local_input_data);
-      }  //             
+      }  //
       else if ((cols > 2) && (rows > 2)) {
         world.send(neighbors["left"], 0, local_input_data);
         world.send(neighbors["right"], 0, local_input_data);
@@ -759,7 +757,7 @@ void myBroadcast(boost::mpi::communicator& world, std::map<std::string, int> nei
           }
         }
       }
-      //                        
+      //
       else {
         //                                   (   -          )
         if (cols % 2 == 0) {
@@ -797,7 +795,7 @@ void myBroadcast(boost::mpi::communicator& world, std::map<std::string, int> nei
 }
 void myBroadcast(boost::mpi::communicator& world, std::map<std::string, int> neighbors, int rows, int cols,
                  bool is_main_magistralle, int col_pos, int row_pos, int& inputs) {
-  //                                   
+  //
   // int delta;
   if (world.rank() == 0) {
     // int sizeinput = inputs.size();
@@ -818,7 +816,7 @@ void myBroadcast(boost::mpi::communicator& world, std::map<std::string, int> nei
 
     // for (int j = i * limit; j < endOfCycle; j++) local_input_data.push_back(inputs[j]);
     // std::cout << "local " << i << " " << local_input_data.size() << std::endl;
-    //                                                     
+    //
 
     //         2 2
     if ((rows == 2) && (cols == 2)) {
@@ -834,7 +832,7 @@ void myBroadcast(boost::mpi::communicator& world, std::map<std::string, int> nei
     }  //                    2 1
     else if ((rows == 1) && (cols == 2)) {
       world.send(neighbors["right"], 0, inputs);
-    }  //             
+    }  //
     else if ((cols > 2) && (rows > 2)) {
       world.send(neighbors["left"], 0, inputs);
       world.send(neighbors["right"], 0, inputs);
@@ -921,7 +919,7 @@ void myBroadcast(boost::mpi::communicator& world, std::map<std::string, int> nei
         }
       }
     }
-    //                        
+    //
     else {
       //                                   (   -          )
       if (cols % 2 == 0) {
@@ -973,7 +971,7 @@ int* hasDivisors(int k) {
 }
 bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  //                           
+  //
   std::map<std::string, int> neighbors;
   int rows, cols, row_pos, col_pos;
   bool is_main_magistralle;
@@ -1009,7 +1007,7 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::pre_processing() {
     std::cout << "col: " << cols << std::endl;
     std::cout << "row: " << rows << std::endl;
   }*/
- // world.barrier();
+  // world.barrier();
   row_pos = world.rank() / cols;
   col_pos = world.rank() % cols;
   is_main_magistralle = (col_pos == 0);
@@ -1018,7 +1016,7 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::pre_processing() {
     return (neighbor_rank < world.size()) ? neighbor_rank : -1;  // -1         ,               (               )
   };
 
-  //                 
+  //
   neighbors["down"] = (row_pos == rows - 1) ? toGetNeighbor(0, col_pos) : toGetNeighbor(row_pos + 1, col_pos);
   neighbors["left"] = (col_pos == 0) ? toGetNeighbor(row_pos, cols - 1) : toGetNeighbor(row_pos, col_pos - 1);
   neighbors["right"] = (col_pos == cols - 1) ? toGetNeighbor(row_pos, 0) : toGetNeighbor(row_pos, col_pos + 1);
@@ -1032,9 +1030,9 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::pre_processing() {
   // 1)); for (int j = 1; j < world.size(); j++) {
   //   mySend(world, 0, j, cols, rows, neighbors, delta);
   // }
-  mySend(world, 0, world.size() - 1, cols, rows, neighbors, input_data, input_data);
-  //std::cout << "size of " << world.rank() << " input : " << input_data.size() << std::endl;
-  //world.barrier();
+  //mySend(world, 0, world.size() - 1, cols, rows, neighbors, input_data, input_data);
+  // std::cout << "size of " << world.rank() << " input : " << input_data.size() << std::endl;
+  // world.barrier();
   /*if (world.rank() == 0) std::cout << std::endl << std::endl;
   world.barrier();
   mySend(world, world.size() - 1, 0, cols, rows, neighbors, input_data, input_data);
@@ -1058,14 +1056,18 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::pre_processing() {
   // world.barrier();
   if (world.rank() == (world.size() - 1)) {
     res = input_data.size();
+    world.send(0, 0, res);
     // std::cout << "RES= " << res << std::endl;
   }
-  mySend(world, world.size() - 1, 0, cols, rows, neighbors, res);
-  /*if (world.rank() == 0) {
-    std::cout << "RES2= " << res << std::endl;
-  }*/
- // world.barrier();
-  //std::cout << "size of " << world.rank() << " input : " << input_data.size() << std::endl;
+  //mySend(world, world.size() - 1, 0, cols, rows, neighbors, res);
+
+
+  if (world.rank() == 0) {
+    world.recv(world.size() - 1, 0, res);
+   // std::cout << "RES2= " << res << std::endl;
+  }
+  // world.barrier();
+  // std::cout << "size of " << world.rank() << " input : " << input_data.size() << std::endl;
   return true;
 }
 
