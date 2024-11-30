@@ -36,7 +36,6 @@ TEST(shuravina_o_contrast, Test_Contrast_MinMax) {
 
   if (world.rank() == 0) {
     for (int i = 0; i < count; ++i) {
-      // Ожидаем, что значения не изменятся, так как они уже находятся в диапазоне [0, 255]
       ASSERT_EQ(out[i], in[i]);
     }
   }
