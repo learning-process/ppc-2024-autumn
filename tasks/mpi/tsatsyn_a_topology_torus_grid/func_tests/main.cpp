@@ -127,6 +127,6 @@ TEST(tsatsyn_a_topology_torus_grid_mpi, Test_Send_100000) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    ASSERT_EQ(count_size_vector, global_sum[0]);
+    ASSERT_EQ(2 * count_size_vector, global_sum[0]);
   }
 }

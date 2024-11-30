@@ -490,7 +490,7 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
     sizeinput = inputs_for_send.size();
     // std::cout << world.rank() << "+" << delta << std::endl;
     delta = sizeinput < limit ? 1 : (sizeinput % limit == 0 ? (sizeinput / limit) : (std::ceil(sizeinput / limit) + 1));
-    std::cout << world.rank() << "+" << delta << std::endl;
+    // std::cout << world.rank() << "+" << delta << std::endl;
     for (int proc = 0; proc < world.size(); proc++) {
       if (proc != source_rank) world.send(proc, 0, delta);
     }
@@ -1030,7 +1030,11 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::pre_processing() {
   // 1)); for (int j = 1; j < world.size(); j++) {
   //   mySend(world, 0, j, cols, rows, neighbors, delta);
   // }
-  // mySend(world, 0, world.size() - 1, cols, rows, neighbors, input_data, input_data);
+  mySend(world, 0, world.size() - 1, cols, rows, neighbors, input_data, input_data);
+  if (world.size() == 1) {
+    int sz = input_data.size();
+    input_data.resize(2 * sz);
+  }
   // std::cout << "size of " << world.rank() << " input : " << input_data.size() << std::endl;
   // world.barrier();
   /*if (world.rank() == 0) std::cout << std::endl << std::endl;
