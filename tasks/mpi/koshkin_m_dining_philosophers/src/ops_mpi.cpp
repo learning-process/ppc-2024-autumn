@@ -110,7 +110,8 @@ void koshkin_m_dining_philosophers::testMpiTaskParallel::request_forks() {
   status = 2;
   world.send(left_philisopher, 0, 2);
   world.send(right_philisopher, 0, 2);
-  int left_response, right_response;
+  int left_response;
+  int right_response;
   world.recv(left_philisopher, 0, left_response);
   world.recv(right_philisopher, 0, right_response);
 }
