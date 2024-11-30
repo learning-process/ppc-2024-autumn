@@ -20,7 +20,7 @@ class MetodZedela : public ppc::core::Task {
   bool post_processing() override;
 
   void setAlfa(double alfa);
-  int rankMatrix(std::vector<int>& matrixT, int n);
+  int rankMatrix(std::vector<int>& matrixT, int n) const;
   int rankRMatrix();
   double determinant();
 
