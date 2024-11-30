@@ -38,6 +38,7 @@ bool shuravina_o_contrast::ContrastTaskParallel::validation() {
   }
   return true;
 }
+
 bool shuravina_o_contrast::ContrastTaskParallel::run() {
   internal_order_test();
   uint8_t local_min_val = *std::min_element(local_input_.begin(), local_input_.end());
@@ -47,12 +48,12 @@ bool shuravina_o_contrast::ContrastTaskParallel::run() {
   reduce(world, local_min_val, global_min_val, boost::mpi::minimum<uint8_t>(), 0);
   reduce(world, local_max_val, global_max_val, boost::mpi::maximum<uint8_t>(), 0);
 
-   if (world.rank() == 0) {
+  if (world.rank() == 0) {
     std::cout << "Local min: " << static_cast<int>(local_min_val) << ", Local max: " << static_cast<int>(local_max_val)
               << std::endl;
     std::cout << "Global min: " << static_cast<int>(global_min_val)
               << ", Global max: " << static_cast<int>(global_max_val) << std::endl;
-    }
+  }
 
   if (global_max_val == global_min_val) {
     std::fill(output_.begin(), output_.end(), 0);
@@ -64,6 +65,7 @@ bool shuravina_o_contrast::ContrastTaskParallel::run() {
 
   return true;
 }
+
 bool shuravina_o_contrast::ContrastTaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
