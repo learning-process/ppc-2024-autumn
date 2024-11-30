@@ -28,7 +28,8 @@ TEST(Parallel_Contrast, Test_Contrast_10) {
   contrastTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    ASSERT_EQ(out, std::vector<uint8_t>(count, 128));
+    std::vector<uint8_t> expected(count, 180);
+    ASSERT_EQ(out, expected);
   }
 }
 
@@ -54,6 +55,7 @@ TEST(Parallel_Contrast, Test_Contrast_20) {
   contrastTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    ASSERT_EQ(out, std::vector<uint8_t>(count, 128));
+    std::vector<uint8_t> expected(count, 90);
+    ASSERT_EQ(out, expected);
   }
 }

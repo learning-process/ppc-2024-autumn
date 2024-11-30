@@ -46,21 +46,12 @@ bool shuravina_o_contrast::ContrastParallel::run() {
   std::vector<uint8_t> local_output(sizes[world.rank()]);
   scatterv(world, input_, sizes, local_input.data(), 0);
 
-  uint8_t local_min_val = *std::min_element(local_input.begin(), local_input.end());
-  uint8_t local_max_val = *std::max_element(local_input.begin(), local_input.end());
+  double gamma = 0.5;
 
-  uint8_t global_min_val, global_max_val;
-  boost::mpi::reduce(world, local_min_val, global_min_val, boost::mpi::minimum<uint8_t>(), 0);
-  boost::mpi::reduce(world, local_max_val, global_max_val, boost::mpi::maximum<uint8_t>(), 0);
-
-  if (world.rank() == 0) {
-    if (global_min_val == global_max_val) {
-      std::fill(output_.begin(), output_.end(), 255);
-    } else {
-      for (size_t i = 0; i < input_.size(); ++i) {
-        output_[i] = static_cast<uint8_t>((input_[i] - global_min_val) * 255.0 / (global_max_val - global_min_val));
-      }
-    }
+  for (size_t i = 0; i < local_input.size(); ++i) {
+    double normalized_value = static_cast<double>(local_input[i]) / 255.0;
+    double corrected_value = std::pow(normalized_value, gamma);
+    local_output[i] = static_cast<uint8_t>(corrected_value * 255.0);
   }
 
   gatherv(world, local_output.data(), local_output.size(), output_.data(), sizes, 0);
