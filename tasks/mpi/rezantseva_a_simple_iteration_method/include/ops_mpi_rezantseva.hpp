@@ -61,7 +61,7 @@ class SimpleIterationMPI : public ppc::core::Task {
   bool isTimeToStop(const std::vector<double>& x0,
                     const std::vector<double>& x1) const;  // stop if |xn^(i+1) - xn^i| < epsilon
   size_t n_ = 0;
-  std::vector<int> counts_{};
+  std::vector<int> counts_;
   size_t num_processes_ = 0;
 };
 

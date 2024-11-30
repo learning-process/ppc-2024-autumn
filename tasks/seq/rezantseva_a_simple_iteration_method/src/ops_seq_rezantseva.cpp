@@ -46,8 +46,7 @@ bool rezantseva_a_simple_iteration_method_seq::SimpleIterationSequential::checkM
 bool rezantseva_a_simple_iteration_method_seq::SimpleIterationSequential::validation() {
   internal_order_test();
   n_ = *reinterpret_cast<size_t*>(taskData->inputs[0]);
-  return (taskData->inputs_count.size() == 3) && (taskData->outputs_count.size() == 1) && (n_ > 0) &&
-         (checkMatrix() == true);
+  return (taskData->inputs_count.size() == 3) && (taskData->outputs_count.size() == 1) && (n_ > 0) && checkMatrix();
 }
 
 bool rezantseva_a_simple_iteration_method_seq::SimpleIterationSequential::pre_processing() {

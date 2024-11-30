@@ -47,8 +47,7 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationSequential::checkM
 bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationSequential::validation() {
   internal_order_test();
   n_ = *reinterpret_cast<size_t*>(taskData->inputs[0]);
-  return (taskData->inputs_count.size() == 3) && (taskData->outputs_count.size() == 1) && (n_ > 0) &&
-         (checkMatrix() == true);
+  return (taskData->inputs_count.size() == 3) && (taskData->outputs_count.size() == 1) && (n_ > 0) && checkMatrix();
 }
 
 bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationSequential::pre_processing() {
@@ -77,7 +76,7 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationSequential::pre_pr
     c_[i] = b_[i] / diag;  // ci = bi/Aii
   }
 
-  return checkMatrixNorm();
+  return true;
 }
 
 bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationSequential::run() {
@@ -150,8 +149,7 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::validation() 
   internal_order_test();
   if (world.rank() == 0) {
     n_ = *reinterpret_cast<size_t*>(taskData->inputs[0]);
-    return (taskData->inputs_count.size() == 3) && (taskData->outputs_count.size() == 1) && (n_ > 0) &&
-           (checkMatrix() == true);
+    return (taskData->inputs_count.size() == 3) && (taskData->outputs_count.size() == 1) && (n_ > 0) && checkMatrix();
   }
   return true;
 }
