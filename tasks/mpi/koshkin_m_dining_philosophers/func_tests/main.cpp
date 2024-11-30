@@ -87,4 +87,5 @@ TEST_P(DiningPhilosophersTest, TestWithVariousPhilosophers) {
     GTEST_SKIP();
   }
 }
-INSTANTIATE_TEST_SUITE_P(testMpiTaskParallel, DiningPhilosophersTest, ::testing::Values(2, 3, 4, 5, 6, 7, 10, 15, 17, 20, 30, 40, 60, 99));
+INSTANTIATE_TEST_SUITE_P(testMpiTaskParallel, DiningPhilosophersTest,
+                         ::testing::Values(2, 3, 4, 5, 6, 7, 10, 15, 17, 20, 30, 40, 60, 99));

@@ -19,7 +19,7 @@ namespace koshkin_m_dining_philosophers {
 #define HUNGRY 2;
 #define EATING 3;
 
-class testMpiTaskParallel : public ppc::core::Task  {
+class testMpiTaskParallel : public ppc::core::Task {
  public:
   explicit testMpiTaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {
     update_neighbors();
