@@ -55,7 +55,7 @@ TEST(sorochkin_d_ring_topology_mpi_test, test_size_200) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 120;
+    const int count_size_vector = 200;
     input = sorochkin_d_ring_topology_mpi_test::getRandomVector(count_size_vector);
     output.resize(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
@@ -83,7 +83,7 @@ TEST(sorochkin_d_ring_topology_mpi_test, test_size_400) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 120;
+    const int count_size_vector = 400;
     input = sorochkin_d_ring_topology_mpi_test::getRandomVector(count_size_vector);
     output.resize(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
