@@ -3,11 +3,11 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <boost/mpi/timer.hpp>
+#include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/shuravina_o_contrast/include/ops_mpi.hpp"
-#include <random>
 
 TEST(shuravina_o_contrast, Test_Contrast_Small) {
   boost::mpi::communicator world;

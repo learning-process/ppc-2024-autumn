@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 
+#include <random>
 #include <vector>
 
 #include "seq/shuravina_o_contrast/include/ops_seq.hpp"
-#include <random>
 
 TEST(shuravina_o_contrast, Test_Contrast_Small) {
   const int count = 100;
