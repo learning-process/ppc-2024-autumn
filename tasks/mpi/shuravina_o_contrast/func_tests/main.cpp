@@ -74,6 +74,7 @@ TEST(shuravina_o_contrast, Test_Contrast_Linear) {
     }
   }
 }
+
 TEST(shuravina_o_contrast, Test_Contrast_Random_Small) {
   boost::mpi::communicator world;
   const int count = 5;
