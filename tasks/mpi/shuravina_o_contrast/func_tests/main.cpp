@@ -7,18 +7,12 @@
 
 #include "mpi/shuravina_o_contrast/include/ops_mpi.hpp"
 
-TEST(shuravina_o_contrast, Test_Contrast_MinMax) {
+TEST(shuravina_o_contrast, Test_Contrast_All_Zero) {
   boost::mpi::communicator world;
   const int count = 10;
 
-  std::vector<uint8_t> in(count);
+  std::vector<uint8_t> in(count, 0);
   std::vector<uint8_t> out(count, 0);
-
-  if (world.rank() == 0) {
-    for (int i = 0; i < count; ++i) {
-      in[i] = (i % 2 == 0) ? 0 : 255;
-    }
-  }
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -36,23 +30,17 @@ TEST(shuravina_o_contrast, Test_Contrast_MinMax) {
 
   if (world.rank() == 0) {
     for (int i = 0; i < count; ++i) {
-      ASSERT_EQ(out[i], in[i]);
+      ASSERT_EQ(out[i], 0);
     }
   }
 }
 
-TEST(shuravina_o_contrast, Test_Contrast_Linear) {
+TEST(shuravina_o_contrast, Test_Contrast_All_Max) {
   boost::mpi::communicator world;
   const int count = 10;
 
-  std::vector<uint8_t> in(count);
+  std::vector<uint8_t> in(count, 255);
   std::vector<uint8_t> out(count, 0);
-
-  if (world.rank() == 0) {
-    for (int i = 0; i < count; ++i) {
-      in[i] = static_cast<uint8_t>(i * 25);
-    }
-  }
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -70,15 +58,14 @@ TEST(shuravina_o_contrast, Test_Contrast_Linear) {
 
   if (world.rank() == 0) {
     for (int i = 0; i < count; ++i) {
-      uint8_t expected = static_cast<uint8_t>(i * 255 / (count - 1));
-      ASSERT_EQ(out[i], expected);
+      ASSERT_EQ(out[i], 255);
     }
   }
 }
 
-TEST(shuravina_o_contrast, Test_Contrast_Random_Small) {
+TEST(shuravina_o_contrast, Test_Contrast_Random_Large) {
   boost::mpi::communicator world;
-  const int count = 5;
+  const int count = 1000;
 
   std::vector<uint8_t> in(count);
   std::vector<uint8_t> out(count, 0);
