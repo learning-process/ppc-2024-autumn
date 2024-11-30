@@ -1,4 +1,4 @@
-// Copyright 2023 Lavrentyev Alexander
+п»ї// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
@@ -7,7 +7,6 @@
 
 #include "mpi/lavrentyev_a_line_topology/include/ops_mpi.hpp"
 
-// Генерация случайного вектора
 std::vector<int> generate_random_vector(size_t size) {
   std::srand(static_cast<unsigned>(std::time(nullptr)));
   std::vector<int> vec(size);
@@ -210,7 +209,7 @@ TEST(lavrentyev_a_line_topology_mpi, LargeDataTransfer) {
 
   const int start_proc = 0;
   const int end_proc = (world.size() > 1) ? world.size() - 1 : 0;
-  const size_t num_elems = 1000000;  // 1 миллион элементов
+  const size_t num_elems = 1000000;
 
   auto task_data = std::make_shared<ppc::core::TaskData>();
   task_data->inputs_count = {static_cast<unsigned int>(start_proc), static_cast<unsigned int>(end_proc),

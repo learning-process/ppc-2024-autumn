@@ -20,7 +20,7 @@ std::vector<int> generate_random_data(int count, int lower_bound = -1000, int up
   return data;
 }
 
-TEST(lavrentyev_a_line_topology_mpi, test_task_run) {
+TEST(lavrentyev_a_line_topology_mpi, task_run) {
   boost::mpi::communicator mpi_comm;
 
   if (mpi_comm.size() < 2) return;
