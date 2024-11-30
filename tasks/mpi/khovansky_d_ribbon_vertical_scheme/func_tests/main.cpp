@@ -11,7 +11,8 @@
 
 #include "mpi/khovansky_d_ribbon_vertical_scheme/include/ops_mpi.hpp"
 
-void khovansky_d_fragmentation(int rows_count, int columns_count, int proc_count, std::vector<int>& rows_per_process, std::vector<int>& rows_offsets){
+void khovansky_d_fragmentation(int rows_count, int columns_count, int proc_count, std::vector<int>& rows_per_process,
+                               std::vector<int>& rows_offsets) {
   if (proc_count > rows_count) {
     for (int i = 0; i < rows_count; ++i) {
       rows_offsets[i] = i * columns_count;
@@ -37,7 +38,6 @@ void khovansky_d_fragmentation(int rows_count, int columns_count, int proc_count
     }
   }
 }
-
 
 TEST(khovansky_d_ribbon_vertical_scheme_mpi, procs_more_than_rows) {
   int rows_count = 3;
