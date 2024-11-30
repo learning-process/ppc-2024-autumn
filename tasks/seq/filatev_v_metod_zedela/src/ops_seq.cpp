@@ -220,7 +220,7 @@ void filatev_v_metod_zedela_seq::TestClassForMetodZedela::coutSLU(std::vector<in
 
 bool filatev_v_metod_zedela_seq::TestClassForMetodZedela::rightAns(std::vector<double>& answ, double alfa) {
   double max_r = 0;
-  //std::string st = "\n###################\n";
+  // std::string st = "\n###################\n";
   for (long unsigned int i = 0; i < answ.size(); ++i) {
     double temp = std::abs(ans[i] - answ[i]);
     max_r = std::max(max_r, temp);
