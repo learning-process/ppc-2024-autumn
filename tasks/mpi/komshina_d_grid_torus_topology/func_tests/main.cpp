@@ -4,22 +4,10 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <cmath>
+#include <cstdint>
+#include <iostream>
 #include <vector>
 
-#include "mpi/komshina_d_grid_torus_topology/include/ops_mpi.hpp"
-
-#include <gtest/gtest.h>
-#include <boost/mpi.hpp>
-#include <vector>
-#include <algorithm>
-#include <numeric>
-#include "mpi/komshina_d_grid_torus_topology/include/ops_mpi.hpp"
-
-#include <gtest/gtest.h>
-#include <boost/mpi.hpp>
-#include <vector>
-#include <algorithm>
-#include <numeric>
 #include "mpi/komshina_d_grid_torus_topology/include/ops_mpi.hpp"
 
 TEST(komshina_d_grid_torus_topology_mpi, TestInsufficientData) {
