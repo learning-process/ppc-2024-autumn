@@ -1,14 +1,13 @@
-// Copyright 2023 Nesterov Alexander
 #pragma once
 
-#include <string>
-#include <vector>
 #include <algorithm>
 #include <random>
+#include <string>
+#include <vector>
 
 #include "core/task/include/task.hpp"
 
-namespace kalinin_d_matrix_mult_hor_a_vert_b {
+namespace kalinin_d_matrix_mult_hor_a_vert_b_seq {
 
 class MultHorAVertBTaskSequential : public ppc::core::Task {
  public:
@@ -29,4 +28,4 @@ class MultHorAVertBTaskSequential : public ppc::core::Task {
   std::vector<int> C;
 };
 
-}  // namespace kalinin_d_matrix_mult_hor_a_vert_b
+}  // namespace kalinin_d_matrix_mult_hor_a_vert_b_seq
