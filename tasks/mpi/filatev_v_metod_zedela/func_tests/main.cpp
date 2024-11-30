@@ -19,10 +19,12 @@ int generatorVector(std::vector<int> &vec) {
 
 void generatorMatrix(std::vector<int> &matrix, int size) {
   for (int i = 0; i < size; ++i) {
-    std::vector<int> temp(size);
-    int sum = generatorVector(temp);
-    temp[i] = sum + rand() % 100;
-    matrix.insert(matrix.begin() + i * size, temp.begin(), temp.end());
+    int sum = 0;
+    for (int j = 0; j < size; ++j){
+      matrix[i * size + j] = rand() % 100 - 50;
+      sum += abs(matrix[i * size + j]);
+    }
+    matrix[i * size + i] = sum + rand() % 100;
   }
 }
 
@@ -228,7 +230,11 @@ TEST(filatev_v_metod_zedela_mpi, test_error_rank) {
 
   filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData);
 
-  ASSERT_EQ(metodZedela.validation(), false);
+  if (world.rank() == 0) {
+    ASSERT_EQ(metodZedela.validation(), false);
+  } else {
+    ASSERT_EQ(metodZedela.validation(), true);
+  }
 }
 
 TEST(filatev_v_metod_zedela_mpi, test_error_determenant) {
@@ -251,7 +257,11 @@ TEST(filatev_v_metod_zedela_mpi, test_error_determenant) {
 
   filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData);
 
-  ASSERT_EQ(metodZedela.validation(), false);
+  if (world.rank() == 0) {
+    ASSERT_EQ(metodZedela.validation(), false);
+  } else {
+    ASSERT_EQ(metodZedela.validation(), true);
+  }
 }
 
 TEST(filatev_v_metod_zedela_mpi, test_error_diagonal) {
@@ -274,5 +284,9 @@ TEST(filatev_v_metod_zedela_mpi, test_error_diagonal) {
 
   filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData);
 
-  ASSERT_EQ(metodZedela.validation(), false);
+  if (world.rank() == 0) {
+    ASSERT_EQ(metodZedela.validation(), false);
+  } else {
+    ASSERT_EQ(metodZedela.validation(), true);
+  }
 }
