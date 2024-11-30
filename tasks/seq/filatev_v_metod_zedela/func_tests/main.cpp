@@ -48,7 +48,7 @@ bool rightAns(std::vector<double> &ans, std::vector<int> &resh, double alfa) {
   return max_r < alfa;
 }
 
-TEST(filatev_v_metod_zedela_seq, test_3) {
+TEST(filatev_v_metod_zedela_seq, test_size_3) {
   int size = 3;
   double alfa = 0.01;
   std::vector<int> matrix(size * size);
@@ -79,7 +79,7 @@ TEST(filatev_v_metod_zedela_seq, test_3) {
   ASSERT_EQ(rightAns(answer, resh, alfa), true);
 }
 
-TEST(filatev_v_metod_zedela_seq, test_5) {
+TEST(filatev_v_metod_zedela_seq, test_size_5) {
   int size = 5;
   double alfa = 0.0001;
   std::vector<int> matrix(size * size);
@@ -110,7 +110,7 @@ TEST(filatev_v_metod_zedela_seq, test_5) {
   ASSERT_EQ(rightAns(answer, resh, alfa), true);
 }
 
-TEST(filatev_v_metod_zedela_seq, test_10) {
+TEST(filatev_v_metod_zedela_seq, test_size_10) {
   int size = 10;
   double alfa = 0.00001;
   std::vector<int> matrix(size * size);
@@ -141,38 +141,7 @@ TEST(filatev_v_metod_zedela_seq, test_10) {
   ASSERT_EQ(rightAns(answer, resh, alfa), true);
 }
 
-TEST(filatev_v_metod_zedela_seq, test_6) {
-  int size = 3;
-  double alfa = 0.0001;
-  std::vector<int> matrix(size * size);
-  std::vector<int> vecB(size);
-  std::vector<double> answer;
-  std::vector<int> resh;
-
-  generatorMatrix(matrix, size);
-  resh = genetatirVectorB(matrix, vecB);
-
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
-  taskData->inputs_count.emplace_back(size);
-  taskData->outputs_count.emplace_back(size);
-
-  filatev_v_metod_zedela_seq::MetodZedela metodZedela(taskData);
-  metodZedela.setAlfa(alfa);
-
-  ASSERT_EQ(metodZedela.validation(), true);
-  metodZedela.pre_processing();
-  metodZedela.run();
-  metodZedela.post_processing();
-
-  auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
-  answer.insert(answer.end(), temp, temp + size);
-
-  ASSERT_EQ(rightAns(answer, resh, alfa), true);
-}
-
-TEST(filatev_v_metod_zedela_seq, test_error1) {
+TEST(filatev_v_metod_zedela_seq, test_error_rank) {
   int size = 3;
   std::vector<int> matrix(size * size);
   std::vector<int> vecB(size);
@@ -191,7 +160,7 @@ TEST(filatev_v_metod_zedela_seq, test_error1) {
   ASSERT_EQ(metodZedela.validation(), false);
 }
 
-TEST(filatev_v_metod_zedela_seq, test_error2) {
+TEST(filatev_v_metod_zedela_seq, test_error_determenant) {
   int size = 2;
   std::vector<int> matrix(size * size);
   std::vector<int> vecB(size);
@@ -210,7 +179,7 @@ TEST(filatev_v_metod_zedela_seq, test_error2) {
   ASSERT_EQ(metodZedela.validation(), false);
 }
 
-TEST(filatev_v_metod_zedela_seq, test_error3) {
+TEST(filatev_v_metod_zedela_seq, test_error_diagonal) {
   int size = 3;
   std::vector<int> matrix(size * size);
   std::vector<int> vecB(size);

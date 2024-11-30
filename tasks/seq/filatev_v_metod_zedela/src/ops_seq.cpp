@@ -22,10 +22,10 @@ bool filatev_v_metod_zedela_seq::MetodZedela::validation() {
   internal_order_test();
 
   int rank = rankMatrix(matrix, size);
-  if (rank != rankRMatrix()) {
+  if (rank == 0 || rank != rankRMatrix()) {
     return false;
   }
-  if (rank == 0 || determinant() == 0) {
+  if (determinant() == 0) {
     return false;
   }
   for (int i = 0; i < size; ++i) {

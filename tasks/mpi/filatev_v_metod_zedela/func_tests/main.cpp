@@ -208,3 +208,71 @@ TEST(filatev_v_metod_zedela_mpi, test_size_500) {
     ASSERT_EQ(rightAns(answer, resh, alfa), true);
   }
 }
+
+TEST(filatev_v_metod_zedela_mpi, test_error_rank) {
+  boost::mpi::communicator world;
+  int size = 3;
+  std::vector<int> matrix;
+  std::vector<int> vecB;
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    matrix = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    vecB = {20, 11, 16};
+
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
+    taskData->inputs_count.emplace_back(size);
+    taskData->outputs_count.emplace_back(size);
+  }
+
+  filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData);
+
+  ASSERT_EQ(metodZedela.validation(), false);
+}
+
+TEST(filatev_v_metod_zedela_mpi, test_error_determenant) {
+  boost::mpi::communicator world;
+  int size = 2;
+  std::vector<int> matrix;
+  std::vector<int> vecB;
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    matrix = {1, 2, 2, 4};
+    vecB = {3, 6};
+
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
+    taskData->inputs_count.emplace_back(size);
+    taskData->outputs_count.emplace_back(size);
+  }
+
+  filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData);
+
+  ASSERT_EQ(metodZedela.validation(), false);
+}
+
+TEST(filatev_v_metod_zedela_mpi, test_error_diagonal) {
+  boost::mpi::communicator world;
+  int size = 3;
+  std::vector<int> matrix;
+  std::vector<int> vecB;
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    matrix = {2, 16, 3, 11, 5, 10, 7, 8, 25};
+    vecB = {20, 11, 16};
+
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
+    taskData->inputs_count.emplace_back(size);
+    taskData->outputs_count.emplace_back(size);
+  }
+
+  filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData);
+
+  ASSERT_EQ(metodZedela.validation(), false);
+}
