@@ -3,9 +3,9 @@
 #include <algorithm>
 #include <boost/mpi.hpp>
 #include <cmath>
+#include <cstdint>
 #include <iostream>
 #include <vector>
-#include <cstdint>
 
 using namespace std::chrono_literals;
 
