@@ -372,7 +372,8 @@ void filatev_v_metod_zedela_mpi::TestClassForMetodZedela::genetatirVectorB(std::
   }
 }
 
-static void filatev_v_metod_zedela_mpi::TestClassForMetodZedela::coutSLU(std::vector<int> matrix, std::vector<int> vecB) {
+static void filatev_v_metod_zedela_mpi::TestClassForMetodZedela::coutSLU(std::vector<int> matrix,
+                                                                         std::vector<int> vecB) {
   int size = vecB.size();
   std::cout << "Matrix:\n";
   for (int i = 0; i < size; i++) {
