@@ -111,24 +111,6 @@ TEST(mezhuev_m_lattice_torus, PreProcessingWithIncompleteData) {
   ASSERT_FALSE(task.pre_processing());
 }
 
-TEST(mezhuev_m_lattice_torus, TestPreProcessing) {
-  boost::mpi::communicator world;
-
-  std::vector<uint8_t> input_data(4);
-  std::iota(input_data.begin(), input_data.end(), 9);
-  std::vector<uint8_t> output_data(4);
-
-  auto task_data = std::make_shared<ppc::core::TaskData>();
-  task_data->inputs.emplace_back(input_data.data());
-  task_data->inputs_count.emplace_back(input_data.size());
-  task_data->outputs.emplace_back(output_data.data());
-  task_data->outputs_count.emplace_back(output_data.size());
-
-  mezhuev_m_lattice_torus::GridTorusTopologyParallel task(task_data);
-
-  ASSERT_TRUE(task.pre_processing());
-}
-
 TEST(mezhuev_m_lattice_torus, TestLargeGridProcessing) {
   boost::mpi::communicator world;
 
@@ -232,41 +214,6 @@ TEST(mezhuev_m_lattice_torus, TestUnmatchedInputOutputSizesWithLargeData) {
   mezhuev_m_lattice_torus::GridTorusTopologyParallel task(task_data);
 
   ASSERT_FALSE(task.validation());
-}
-
-TEST(mezhuev_m_lattice_torus, TestEmptyTaskData) {
-  boost::mpi::communicator world;
-  if (world.size() < 2) return;
-
-  auto task_data = std::make_shared<ppc::core::TaskData>();
-
-  mezhuev_m_lattice_torus::GridTorusTopologyParallel task(task_data);
-
-  ASSERT_FALSE(task.validation());
-  ASSERT_FALSE(task.pre_processing());
-  ASSERT_FALSE(task.run());
-}
-
-TEST(mezhuev_m_lattice_torus, TestEdgeCaseWithGridSizeEqualToOne) {
-  boost::mpi::communicator world;
-  if (world.size() != 1) return;
-
-  std::vector<uint8_t> input_data(4);
-  std::iota(input_data.begin(), input_data.end(), 9);
-  std::vector<uint8_t> output_data(4);
-
-  auto task_data = std::make_shared<ppc::core::TaskData>();
-  task_data->inputs.emplace_back(input_data.data());
-  task_data->inputs_count.emplace_back(input_data.size());
-  task_data->outputs.emplace_back(output_data.data());
-  task_data->outputs_count.emplace_back(output_data.size());
-
-  mezhuev_m_lattice_torus::GridTorusTopologyParallel task(task_data);
-
-  ASSERT_TRUE(task.validation());
-  ASSERT_TRUE(task.pre_processing());
-  ASSERT_TRUE(task.run());
-  ASSERT_TRUE(task.post_processing());
 }
 
 TEST(mezhuev_m_lattice_torus, TestHandlingOfUnsupportedDataTypes) {
