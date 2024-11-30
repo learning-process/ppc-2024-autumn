@@ -24,7 +24,12 @@ std::vector<int> tsatsyn_a_topology_torus_grid_mpi::getRandomVector(int sz) {
 void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int cols, int rows,
             std::map<std::string, int> neighbors, int& inputs) {
   int current_rank = world.rank();
-  int source_row_pos, current_row_pos, dest_row_pos, source_col_pos, current_col_pos, dest_col_pos;
+  int source_row_pos;
+  int current_row_pos;
+  int dest_row_pos;
+  int source_col_pos;
+  int current_col_pos;
+  int dest_col_pos;
   source_row_pos = source_rank / cols;
   current_row_pos = current_rank / cols;
   dest_row_pos = dest_rank / cols;
@@ -36,11 +41,13 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
     return;
   }
 
-  int delta_row, delta_col;
+  int delta_row;
+  int delta_col;
   delta_row = dest_row_pos - current_row_pos;
   delta_col = dest_col_pos - current_col_pos;
 
-  int middle_row, middle_col;
+  int middle_row;
+  int middle_col;
   middle_row = rows % 2 == 0 ? (rows / 2) - (1) : rows / 2;
   middle_col = cols % 2 == 0 ? (cols / 2) - (1) : cols / 2;
 
@@ -93,7 +100,8 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
   int copy;
   if (source_rank == dest_rank || source_rank < 0 || dest_rank > world.size() || source_rank > world.size()) {
     return;
-  } else if (current_rank == dest_rank) {
+  }
+  if (current_rank == dest_rank) {
     if (source_col_pos == dest_col_pos) {
       if (abs(dest_row_pos - source_row_pos) == 1) {
         if (source_row_pos < dest_row_pos) {
@@ -137,7 +145,6 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
       }
     }
     inputs = copy;
-    return;
   } else if (current_rank == source_rank) {
     if (delta_row != 0) {
       if (delta_row < 0) {
@@ -225,7 +232,6 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
           }
         }
       }
-
       if (delta_col < 0) {
         if (abs(delta_col) <= middle_col) {
           world.send(neighbors["left"], 0, copy);
@@ -241,9 +247,251 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
       }
     }
   }
-  return;
 }
-
+// void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int cols, int rows,
+//             std::map<std::string, int> neighbors, std::vector<int>& inputs, std::vector<int> inputs_for_send) {
+//   int current_rank = world.rank();
+//   int source_row_pos, current_row_pos, dest_row_pos, source_col_pos, current_col_pos, dest_col_pos;
+//   source_row_pos = source_rank / cols;
+//   current_row_pos = current_rank / cols;
+//   dest_row_pos = dest_rank / cols;
+//   source_col_pos = source_rank % cols;
+//   current_col_pos = current_rank % cols;
+//   dest_col_pos = dest_rank % cols;
+//
+//   if (current_col_pos != source_col_pos && current_row_pos != dest_row_pos) {
+//     return;
+//   }
+//
+//   int delta_row, delta_col;
+//   delta_row = dest_row_pos - current_row_pos;
+//   delta_col = dest_col_pos - current_col_pos;
+//
+//   int middle_row, middle_col;
+//   middle_row = rows % 2 == 0 ? (rows / 2) - (1) : rows / 2;
+//   middle_col = cols % 2 == 0 ? (cols / 2) - (1) : cols / 2;
+//
+//   if (delta_row != 0) {
+//     if (abs(source_row_pos - dest_row_pos) <= middle_row) {
+//       if (source_row_pos < dest_row_pos) {
+//         if ((current_row_pos < source_row_pos || current_row_pos > dest_row_pos)) {
+//           return;
+//         }
+//       } else {
+//         if ((current_row_pos > source_row_pos || current_row_pos < dest_row_pos)) {
+//           return;
+//         }
+//       }
+//     } else {
+//       if (source_row_pos < dest_row_pos) {
+//         if (current_row_pos > source_row_pos && current_row_pos < dest_row_pos) {
+//           return;
+//         }
+//       } else {
+//         if (current_row_pos < source_row_pos && current_row_pos > dest_row_pos) {
+//           return;
+//         }
+//       }
+//     }
+//   }
+//
+//   if (abs(source_col_pos - dest_col_pos) <= middle_col) {
+//     if (source_col_pos < dest_col_pos) {
+//       if ((current_col_pos < source_col_pos || current_col_pos > dest_col_pos)) {
+//         return;
+//       }
+//     } else {
+//       if ((current_col_pos > source_col_pos || current_col_pos < dest_col_pos)) {
+//         return;
+//       }
+//     }
+//   } else {
+//     if (source_col_pos < dest_col_pos) {
+//       if ((current_col_pos > source_col_pos && current_col_pos < dest_col_pos)) {
+//         return;
+//       }
+//     } else {
+//       if ((current_col_pos < source_col_pos && current_col_pos > dest_col_pos)) {
+//         return;
+//       }
+//     }
+//   }
+//   int sizeinput, limit, delta;
+//   limit = 10000;
+//   std::vector<int> copy;
+//   if (source_rank == dest_rank || source_rank < 0 || dest_rank > world.size() || source_rank > world.size()) {
+//     return;
+//   } else if (current_rank == dest_rank) {
+//     world.recv(source_rank, 0, delta);
+//     for (int i = 0; i < delta; i++) {
+//       copy.clear();
+//       if (source_col_pos == dest_col_pos) {
+//         if (abs(dest_row_pos - source_row_pos) == 1) {
+//           if (source_row_pos < dest_row_pos) {
+//             world.recv(neighbors["up"], 0, copy);
+//           } else {
+//             world.recv(neighbors["down"], 0, copy);
+//           }
+//
+//         } else if (abs(dest_row_pos - source_row_pos) > (middle_row)) {
+//           if (source_row_pos < dest_row_pos) {
+//             world.recv(neighbors["down"], 0, copy);
+//           } else {
+//             world.recv(neighbors["up"], 0, copy);
+//           }
+//         } else {
+//           if (source_row_pos < dest_row_pos) {
+//             world.recv(neighbors["up"], 0, copy);
+//           } else {
+//             world.recv(neighbors["down"], 0, copy);
+//           }
+//         }
+//       } else {
+//         if (abs(dest_col_pos - source_col_pos) == 1) {
+//           if (source_col_pos < dest_col_pos) {
+//             world.recv(neighbors["left"], 0, copy);
+//
+//           } else {
+//             world.recv(neighbors["right"], 0, copy);
+//           }
+//
+//         } else if (abs(dest_col_pos - source_col_pos) > (middle_col)) {
+//           if (source_col_pos < dest_col_pos) {
+//             world.recv(neighbors["right"], 0, copy);
+//           } else {
+//             world.recv(neighbors["left"], 0, copy);
+//           }
+//         } else {
+//           if (source_col_pos < dest_col_pos) {
+//             world.recv(neighbors["left"], 0, copy);
+//           } else {
+//             world.recv(neighbors["right"], 0, copy);
+//           }
+//         }
+//       }
+//       inputs.insert(inputs.end(), copy.begin(), copy.end());
+//     }
+//     return;
+//   } else if (current_rank == source_rank) {
+//     sizeinput = inputs_for_send.size();
+//     delta = sizeinput < limit ? 1 : (sizeinput % limit == 0 ? (sizeinput / limit) : (std::ceil(sizeinput / limit) +
+//     1)); for (int proc = 0; proc < world.size(); proc++) {
+//       if (proc != source_rank) world.send(proc, 0, delta);
+//     }
+//     for (int i = 0; i < delta; i++) {
+//       copy.clear();
+//       int size = inputs_for_send.size();
+//       int endOfCycle = size - limit * (i) >= limit ? limit * (i + 1) : size;
+//       for (int j = i * limit; j < endOfCycle; j++) copy.push_back(inputs_for_send[j]);
+//       if (delta_row != 0) {
+//         if (delta_row < 0) {
+//           if (abs(dest_row_pos - source_row_pos) == 1) {
+//             world.send(neighbors["up"], 0, copy);
+//           } else if (abs(delta_row) <= middle_row) {
+//             world.send(neighbors["up"], 0, copy);
+//           } else {
+//             world.send(neighbors["down"], 0, copy);
+//           }
+//         } else {
+//           if (abs(dest_row_pos - source_row_pos) == 1) {
+//             world.send(neighbors["down"], 0, copy);
+//           } else if (abs(delta_row) <= middle_row) {
+//             world.send(neighbors["down"], 0, copy);
+//           } else {
+//             world.send(neighbors["up"], 0, copy);
+//           }
+//         }
+//       } else {
+//         if (delta_col < 0) {
+//           if (abs(dest_col_pos - source_col_pos) == 1) {
+//             world.send(neighbors["left"], 0, copy);
+//           } else if (abs(delta_col) <= middle_col) {
+//             world.send(neighbors["left"], 0, copy);
+//           } else {
+//             world.send(neighbors["right"], 0, copy);
+//           }
+//         } else {
+//           if (abs(dest_col_pos - source_col_pos) == 1) {
+//             world.send(neighbors["right"], 0, copy);
+//           } else if (abs(delta_col) <= middle_col) {
+//             world.send(neighbors["right"], 0, copy);
+//           } else {
+//             world.send(neighbors["left"], 0, copy);
+//           }
+//         }
+//       }
+//     }
+//   } else {
+//     world.recv(source_rank, 0, delta);
+//     for (int i = 0; i < delta; i++) {
+//       copy.clear();
+//       if (delta_row != 0) {
+//         if (delta_row < 0) {
+//           if (abs(delta_row) <= middle_row) {
+//             world.recv(neighbors["down"], 0, copy);
+//             world.send(neighbors["up"], 0, copy);
+//           } else {
+//             world.recv(neighbors["up"], 0, copy);
+//             world.send(neighbors["down"], 0, copy);
+//           }
+//         } else {
+//           if (abs(delta_row) <= (middle_row)) {
+//             world.recv(neighbors["up"], 0, copy);
+//             world.send(neighbors["down"], 0, copy);
+//           } else {
+//             world.recv(neighbors["down"], 0, copy);
+//             world.send(neighbors["up"], 0, copy);
+//           }
+//         }
+//       } else if (delta_col != 0) {
+//         if (current_col_pos == source_col_pos) {
+//           if (dest_row_pos - source_row_pos < 0) {
+//             if (abs(dest_row_pos - source_row_pos) <= middle_row) {
+//               world.recv(neighbors["down"], 0, copy);
+//             } else {
+//               world.recv(neighbors["up"], 0, copy);
+//             }
+//           } else {
+//             if (abs(dest_row_pos - source_row_pos) <= middle_row) {
+//               world.recv(neighbors["up"], 0, copy);
+//             } else {
+//               world.recv(neighbors["down"], 0, copy);
+//             }
+//           }
+//         } else {
+//           if (delta_col < 0) {
+//             if (abs(delta_col) <= middle_col) {
+//               world.recv(neighbors["right"], 0, copy);
+//             } else {
+//               world.recv(neighbors["left"], 0, copy);
+//             }
+//           } else {
+//             if (abs(delta_col) <= middle_col) {
+//               world.recv(neighbors["left"], 0, copy);
+//             } else {
+//               world.recv(neighbors["right"], 0, copy);
+//             }
+//           }
+//         }
+//
+//         if (delta_col < 0) {
+//           if (abs(delta_col) <= middle_col) {
+//             world.send(neighbors["left"], 0, copy);
+//           } else {
+//             world.send(neighbors["right"], 0, copy);
+//           }
+//         } else {
+//           if (abs(delta_col) <= middle_col) {
+//             world.send(neighbors["right"], 0, copy);
+//           } else {
+//             world.send(neighbors["left"], 0, copy);
+//           }
+//         }
+//       }
+//     }
+//   }
+//   return;
+// }
 void myBroadcast(boost::mpi::communicator& world, std::map<std::string, int> neighbors, int rows, int cols, int col_pos,
                  int row_pos, std::vector<int>& inputs) {
   int delta;
@@ -253,7 +501,15 @@ void myBroadcast(boost::mpi::communicator& world, std::map<std::string, int> nei
   if (world.rank() == 0) {
     int sizeinput = inputs.size();
     int limit = 10000;
-    delta = sizeinput < limit ? 1 : (sizeinput % limit == 0 ? (sizeinput / limit) : (std::ceil(sizeinput / limit) + 1));
+    if (sizeinput < limit) {
+      delta = 1;
+    } else {
+      if (sizeinput % limit == 0) {
+        delta = sizeinput / limit;
+      } else {
+        delta = std::ceil(sizeinput / limit) + 1;
+      }
+    }
     for (int proc = 1; proc < world.size(); proc++) {
       world.send(proc, 0, delta);
     }
@@ -282,7 +538,7 @@ void myBroadcast(boost::mpi::communicator& world, std::map<std::string, int> nei
         world.send(neighbors["down"], 0, local_input_data);
         world.send(neighbors["left"], 0, local_input_data);
       } else {
-        for (auto proc : neighbors) {
+        for (const std::pair<std::string, int>& proc : neighbors) {
           if (proc.second != world.rank()) {
             world.send(proc.second, 0, local_input_data);
           }
@@ -383,7 +639,129 @@ void myBroadcast(boost::mpi::communicator& world, std::map<std::string, int> nei
     }
   }
 }
-
+// void myBroadcast(boost::mpi::communicator& world, std::map<std::string, int> neighbors, int rows, int cols,
+//                  bool is_main_magistralle, int col_pos, int row_pos, int& inputs) {
+//   if (world.rank() == 0) {
+//     if ((rows == 2) && (cols == 2)) {
+//       world.send(neighbors["right"], 0, inputs);
+//       world.send(neighbors["down"], 0, inputs);
+//     } else if ((rows > 2) && (cols == 2)) {
+//       world.send(neighbors["right"], 0, inputs);
+//       world.send(neighbors["down"], 0, inputs);
+//       world.send(neighbors["up"], 0, inputs);
+//     } else if ((rows == 1) && (cols == 2)) {
+//       world.send(neighbors["right"], 0, inputs);
+//     } else if ((cols > 2) && (rows > 2)) {
+//       world.send(neighbors["left"], 0, inputs);
+//       world.send(neighbors["right"], 0, inputs);
+//       world.send(neighbors["down"], 0, inputs);
+//       world.send(neighbors["up"], 0, inputs);
+//     } else if ((cols > 2) && (rows == 2)) {
+//       world.send(neighbors["right"], 0, inputs);
+//       world.send(neighbors["down"], 0, inputs);
+//       world.send(neighbors["left"], 0, inputs);
+//     } else {
+//       for (auto proc : neighbors) {
+//         if (proc.second != world.rank()) {
+//           world.send(proc.second, 0, inputs);
+//         }
+//       }
+//     }
+//
+//   } else {
+//     int copy;
+//     copy = 0;
+//
+//     if (is_main_magistralle) {
+//       if (rows % 2 == 0) {
+//         if (rows == 2) {
+//           world.recv(neighbors["up"], 0, copy);
+//           inputs = copy;
+//           if (neighbors["right"] != neighbors["left"]) {
+//             world.send(neighbors["left"], 0, copy);
+//             world.send(neighbors["right"], 0, copy);
+//           } else {
+//             world.send(neighbors["left"], 0, copy);
+//           }
+//         } else {
+//           if (row_pos < (rows + 1) / 2) {
+//             world.recv(neighbors["up"], 0, copy);
+//             world.send(neighbors["down"], 0, copy);
+//           } else if (row_pos > ((rows + 1) / 2) + 1) {
+//             world.recv(neighbors["down"], 0, copy);
+//             world.send(neighbors["up"], 0, copy);
+//           } else if (row_pos == (rows + 1) / 2) {
+//             world.recv(neighbors["up"], 0, copy);
+//           } else if (row_pos == ((rows + 1) / 2) + 1) {
+//             world.recv(neighbors["down"], 0, copy);
+//           }
+//           inputs = copy;
+//           if (neighbors["right"] != neighbors["left"]) {
+//             world.send(neighbors["left"], 0, copy);
+//             world.send(neighbors["right"], 0, copy);
+//           } else {
+//             world.send(neighbors["left"], 0, copy);
+//           }
+//         }
+//       }
+//
+//       else {
+//         if (rows != 1) {
+//           if (row_pos < (rows - 1) / 2) {
+//             world.recv(neighbors["up"], 0, copy);
+//             world.send(neighbors["down"], 0, copy);
+//           } else if (row_pos > ((rows - 1) / 2) + 1) {
+//             world.recv(neighbors["down"], 0, copy);
+//             world.send(neighbors["up"], 0, copy);
+//           } else if (row_pos == (rows - 1) / 2) {
+//             world.recv(neighbors["up"], 0, copy);
+//           } else if (row_pos == ((rows - 1) / 2) + 1) {
+//             world.recv(neighbors["down"], 0, copy);
+//           }
+//           inputs = copy;
+//         }
+//         if (cols != 1) {
+//           if (neighbors["right"] != neighbors["left"]) {
+//             world.send(neighbors["left"], 0, copy);
+//             world.send(neighbors["right"], 0, copy);
+//           } else {
+//             world.send(neighbors["left"], 0, copy);
+//           }
+//         }
+//       }
+//     }
+//
+//     else {
+//       if (cols % 2 == 0) {
+//         if (col_pos < (cols + 1) / 2) {
+//           world.recv(neighbors["left"], 0, copy);
+//           world.send(neighbors["right"], 0, copy);
+//         } else if (col_pos > ((cols + 1) / 2) + 1) {
+//           world.recv(neighbors["right"], 0, copy);
+//           world.send(neighbors["left"], 0, copy);
+//         } else if (col_pos == (cols + 1) / 2) {
+//           world.recv(neighbors["left"], 0, copy);
+//         } else if (col_pos == (cols + 1) / 2 + 1) {
+//           world.recv(neighbors["right"], 0, copy);
+//         }
+//         inputs = copy;
+//       } else {
+//         if (col_pos < (cols - 1) / 2) {
+//           world.recv(neighbors["left"], 0, copy);
+//           world.send(neighbors["right"], 0, copy);
+//         } else if (col_pos > ((cols - 1) / 2) + 1) {
+//           world.recv(neighbors["right"], 0, copy);
+//           world.send(neighbors["left"], 0, copy);
+//         } else if (col_pos == (cols - 1) / 2) {
+//           world.recv(neighbors["left"], 0, copy);
+//         } else if (col_pos == ((cols - 1) / 2) + 1) {
+//           world.recv(neighbors["right"], 0, copy);
+//         }
+//         inputs = copy;
+//       }
+//     }
+//   }
+// }
 int* hasDivisors(int k) {
   int* mas = new int[k];
   for (int i = 0; i < k; i++) {
@@ -396,7 +774,7 @@ int* hasDivisors(int k) {
       j++;
     }
   }
-  return mas[0] == -1 ? nullptr : mas;
+  return mas;
 }
 bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
@@ -406,6 +784,10 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::pre_processing() {
     auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[0]);
     std::copy(tempPtr, tempPtr + taskData->inputs_count[0], input_data.begin());
   }
+
+  // if (world.rank() == 0) {
+  //   // std::cout << "RES2= " << res << std::endl;
+  // }
   return true;
 }
 
@@ -421,9 +803,12 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::validation() {
 bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   std::map<std::string, int> neighbors;
-  int rows, cols, row_pos, col_pos;
+  int rows;
+  int cols;
+  int row_pos;
+  int col_pos;
   if (world.rank() == 0) {
-    if (hasDivisors(world.size()) == nullptr) {
+    if (hasDivisors(world.size())[0] == -1) {
       cols = world.size();
       rows = 1;
     } else {
@@ -434,7 +819,7 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
       }
       std::random_device dev;
       std::mt19937 gen(dev());
-      int randIndex = gen() % (i - 1 + 1) + 1;
+      int randIndex = gen() % (i) + 1;
       rows = mas_copy[randIndex - 1];
       cols = world.size() / rows;
     }
@@ -445,6 +830,10 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
   } else {
     world.recv(0, 0, rows);
     world.recv(0, 1, cols);
+  }
+  if (world.rank() == 0) {
+    std::cout << "col: " << cols << std::endl;
+    std::cout << "row: " << rows << std::endl;
   }
   row_pos = world.rank() / cols;
   col_pos = world.rank() % cols;
@@ -457,11 +846,17 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
   neighbors["left"] = (col_pos == 0) ? toGetNeighbor(row_pos, cols - 1) : toGetNeighbor(row_pos, col_pos - 1);
   neighbors["right"] = (col_pos == cols - 1) ? toGetNeighbor(row_pos, 0) : toGetNeighbor(row_pos, col_pos + 1);
   neighbors["up"] = (row_pos == 0) ? toGetNeighbor(rows - 1, col_pos) : toGetNeighbor(row_pos - 1, col_pos);
-  
+  /*for (const auto& neighbor : neighbors) {
+    std::cout << "Neighbors of " << world.rank() << ": " << neighbor.first << " , " << neighbor.second << std::endl;
+    world.barrier();
+  }*/
   myBroadcast(world, neighbors, rows, cols, col_pos, row_pos, input_data);
   world.barrier();
+  // mySend(world, 0, world.size() - 1, cols, rows, neighbors, input_data, input_data);
+  // world.barrier();
   if (world.rank() == (world.size() - 1)) {
     res = input_data.size();
+    //  std::cout << "RES= " << res << std::endl;
   }
   mySend(world, world.size() - 1, 0, cols, rows, neighbors, res);
   return true;
