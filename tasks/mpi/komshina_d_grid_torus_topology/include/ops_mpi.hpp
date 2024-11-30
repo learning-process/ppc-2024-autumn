@@ -1,15 +1,11 @@
 #pragma once
 #include <gtest/gtest.h>
 
-#include <array>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <cmath>
-#include <functional>
 #include <memory>
 #include <numeric>
-#include <string>
 #include <utility>
 #include <vector>
 

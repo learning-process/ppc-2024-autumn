@@ -5,6 +5,7 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
+#include <cstdint>
 
 using namespace std::chrono_literals;
 
