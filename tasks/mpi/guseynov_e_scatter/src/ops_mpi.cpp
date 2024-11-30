@@ -93,3 +93,52 @@ bool guseynov_e_scatter_mpi::TestMPITaskParallel::post_processing(){
   }
     return true;
 }
+
+bool guseynov_e_scatter_mpi::MyScatterTestMPITaskParallel::pre_processing(){
+    internal_order_test();
+    res_ = 0;
+    return true;
+}
+
+bool guseynov_e_scatter_mpi::MyScatterTestMPITaskParallel::validation(){
+    internal_order_test();
+    if (world.rank() == 0){
+        return taskData->outputs_count[0] == 1;
+    }
+    return true;
+}
+
+bool guseynov_e_scatter_mpi::MyScatterTestMPITaskParallel::run(){
+    internal_order_test();
+    unsigned int delta = 0;
+    if (world.rank() == 0){
+        input_ = std::vector<int>(taskData->inputs_count[0]);
+        auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+        std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
+        delta = input_.size()/world.size();
+        local_input_ = std::vector<int>(delta + input_.size() % world.size());
+    }
+    broadcast(world, delta, 0);
+
+    if (world.rank() != 0){
+        local_input_ = std::vector<int>(delta);
+    }
+
+    my_scatter(world, input_, local_input_.data(), delta, 0);
+    if (world.rank() == 0){
+        std::copy(input_.begin() + delta * world.size(), input_.end(), local_input_.begin() + delta);
+    }
+    
+    int local_res = std::accumulate(local_input_.begin(), local_input_.end(), 0);
+    reduce(world, local_res, res_, std::plus(), 0);
+
+    return true;
+}
+
+bool guseynov_e_scatter_mpi::MyScatterTestMPITaskParallel::post_processing(){
+    internal_order_test();
+    if (world.rank() == 0) {
+        reinterpret_cast<int*>(taskData->outputs[0])[0] = res_;
+  }
+    return true;
+}
