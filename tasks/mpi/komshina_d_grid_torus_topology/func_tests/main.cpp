@@ -100,7 +100,7 @@ TEST(komshina_d_grid_torus_topology_mpi, TestDataTransmission) {
   boost::mpi::communicator world;
 
   if (world.size() < 4) {
-    GTEST_SKIP() << "Тест требует как минимум 4 процессов.";
+    GTEST_SKIP() << "There are not enough processes for the test";
   }
 
   std::vector<uint8_t> input_data(4);
