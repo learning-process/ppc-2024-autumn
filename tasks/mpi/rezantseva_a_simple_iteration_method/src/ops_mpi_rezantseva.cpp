@@ -15,16 +15,14 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationSequential::isTime
 }
 
 bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationSequential::checkMatrix() {
-  size_t n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
+  for (size_t i = 0; i < n_; ++i) {  // row
 
-  for (size_t i = 0; i < n; ++i) {  // row
-
-    double Aii = std::fabs(reinterpret_cast<double*>(taskData->inputs[1])[i * n + i]);
+    double Aii = std::fabs(reinterpret_cast<double*>(taskData->inputs[1])[i * n_ + i]);
     double sum = 0.0;
 
-    for (size_t j = 0; j < n; ++j) {  // column
+    for (size_t j = 0; j < n_; ++j) {  // column
       if (i != j) {
-        sum += std::fabs(reinterpret_cast<double*>(taskData->inputs[1])[i * n + j]);
+        sum += std::fabs(reinterpret_cast<double*>(taskData->inputs[1])[i * n_ + j]);
       }
     }
     if (Aii <= sum) {
@@ -34,47 +32,70 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationSequential::checkM
   return true;
 }
 
+bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationSequential::checkMatrixNorm() {
+  double max_row_sum = 0.0;
+  for (size_t i = 0; i < n_; ++i) {
+    double row_sum = 0.0;
+    for (size_t j = 0; j < n_; ++j) {
+      row_sum += std::abs(B_[i * n_ + j]);
+    }
+    max_row_sum = std::max(max_row_sum, row_sum);
+  }
+  return max_row_sum < 1.0;
+}
+
 bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationSequential::validation() {
   internal_order_test();
-  size_t n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
-  return (taskData->inputs_count.size() == 3) && (taskData->outputs_count.size() == 1) && (n > 0) &&
+  n_ = *reinterpret_cast<size_t*>(taskData->inputs[0]);
+  return (taskData->inputs_count.size() == 3) && (taskData->outputs_count.size() == 1) && (n_ > 0) &&
          (checkMatrix() == true);
 }
 
 bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationSequential::pre_processing() {
   internal_order_test();
-  size_t n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
-  A_.assign(n * n, 0.0);
-  b_.assign(n, 0.0);
-  x_.assign(n, 0.0);
+  A_.assign(n_ * n_, 0.0);
+  b_.assign(n_, 0.0);
+  x_.assign(n_, 0.0);
+
+  B_.assign(n_ * n_, 0.0);
+  c_.assign(n_, 0.0);
   // fill matrix A and vector b
-  for (size_t i = 0; i < n; ++i) {    // row
-    for (size_t j = 0; j < n; ++j) {  // column
-      A_[i * n + j] = reinterpret_cast<double*>(taskData->inputs[1])[i * n + j];
+  for (size_t i = 0; i < n_; ++i) {    // row
+    for (size_t j = 0; j < n_; ++j) {  // column
+      A_[i * n_ + j] = reinterpret_cast<double*>(taskData->inputs[1])[i * n_ + j];
     }
     b_[i] = reinterpret_cast<double*>(taskData->inputs[2])[i];
   }
-  return true;
+  // fill transition matrix B and iteration vector c
+  for (size_t i = 0; i < n_; ++i) {
+    double diag = A_[i * n_ + i];
+    for (size_t j = 0; j < n_; ++j) {
+      if (i != j) {                               // diagonal elements of B remain zero
+        B_[i * n_ + j] = -A_[i * n_ + j] / diag;  // Bij = -Aij/Aii
+      }
+    }
+    c_[i] = b_[i] / diag;  // ci = bi/Aii
+  }
+
+  return checkMatrixNorm();
 }
 
 bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationSequential::run() {
   internal_order_test();
   size_t iteration = 0;
-  size_t n = b_.size();
-  std::vector<double> x0(n, 0.0);
+  std::vector<double> prev_x(n_, 0.0);
 
   while (iteration < maxIteration_) {
-    std::copy(x_.begin(), x_.end(), x0.begin());  // move previous decisions to vec x0
-    for (size_t i = 0; i < n; i++) {
-      double sum = 0;
-      for (size_t j = 0; j < n; j++) {
-        if (j != i) {
-          sum += A_[i * n + j] * x0[j];  // example: A12*x2 + A13*x3+..+ A1n*xn
-        }
+    std::copy(x_.begin(), x_.end(), prev_x.begin());  // saved previous approach
+
+    // new approach x = Bx + c
+    for (size_t i = 0; i < n_; i++) {
+      x_[i] = c_[i];
+      for (size_t j = 0; j < n_; j++) {
+        x_[i] += B_[i * n_ + j] * prev_x[j];
       }
-      x_[i] = (b_[i] - sum) / A_[i * n + i];
     }
-    if (isTimeToStop(x0, x_)) {
+    if (isTimeToStop(prev_x, x_)) {
       break;
     }
     iteration++;
@@ -107,16 +128,14 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::isTimeToStop(
 
 bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::checkMatrix() {
   if (world.rank() == 0) {
-    size_t n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
+    for (size_t i = 0; i < n_; ++i) {  // row
 
-    for (size_t i = 0; i < n; ++i) {  // row
-
-      double Aii = std::fabs(reinterpret_cast<double*>(taskData->inputs[1])[i * n + i]);
+      double Aii = std::fabs(reinterpret_cast<double*>(taskData->inputs[1])[i * n_ + i]);
       double sum = 0.0;
 
-      for (size_t j = 0; j < n; ++j) {  // column
+      for (size_t j = 0; j < n_; ++j) {  // column
         if (i != j) {
-          sum += std::fabs(reinterpret_cast<double*>(taskData->inputs[1])[i * n + j]);
+          sum += std::fabs(reinterpret_cast<double*>(taskData->inputs[1])[i * n_ + j]);
         }
       }
       if (Aii <= sum) {
@@ -130,8 +149,8 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::checkMatrix()
 bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    size_t n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
-    return (taskData->inputs_count.size() == 3) && (taskData->outputs_count.size() == 1) && (n > 0) &&
+    n_ = *reinterpret_cast<size_t*>(taskData->inputs[0]);
+    return (taskData->inputs_count.size() == 3) && (taskData->outputs_count.size() == 1) && (n_ > 0) &&
            (checkMatrix() == true);
   }
   return true;
@@ -153,6 +172,9 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::pre_processin
     x_.assign(n_, 0.0);
     prev_x_.assign(n_, 0.0);
 
+    B_.assign(n_ * n_, 0.0);
+    c_.assign(n_, 0.0);
+
     // fill matrix A and vector b
     for (size_t i = 0; i < n_; ++i) {    // row
       for (size_t j = 0; j < n_; ++j) {  // column
@@ -160,6 +182,18 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::pre_processin
       }
       b_[i] = reinterpret_cast<double*>(taskData->inputs[2])[i];
     }
+
+    // fill transition matrix B and iteration vector c
+    for (size_t i = 0; i < n_; ++i) {
+      double diag = A_[i * n_ + i];
+      for (size_t j = 0; j < n_; ++j) {
+        if (i != j) {                               // diagonal elements of B remain zero
+          B_[i * n_ + j] = -A_[i * n_ + j] / diag;  // Bij = -Aij/Aii
+        }
+      }
+      c_[i] = b_[i] / diag;  // ci = bi/Aii
+    }
+
     // calculate offset
     counts_.resize(num_processes_);
     delta = n_ / num_processes_;
@@ -180,30 +214,28 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::pre_processin
   return true;
 }
 
-// working with small data
 bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::run() {
   internal_order_test();
   size_t iteration = 0;
   std::vector<int> offsets_x(num_processes_, 0);
 
-  std::vector<double> local_A(counts_[world.rank()] * n_);
-  std::vector<double> local_b(counts_[world.rank()]);
+  std::vector<double> local_B(counts_[world.rank()] * n_);
+  std::vector<double> local_c(counts_[world.rank()]);
   std::vector<double> local_x(n_, 0.0);
   std::vector<double> res_x(counts_[world.rank()]);
-
+  const size_t chunk_size = 100;
   // send data
   if (world.rank() == 0) {
-    size_t offset_remainder_A = counts_[0] * n_;
-    size_t offset_remainder_b = counts_[0];
-    const size_t chunk_size = 100;
+    size_t offset_remainder_B = counts_[0] * n_;
+    size_t offset_remainder_c = counts_[0];
 
     for (size_t proc = 1; proc < num_processes_; proc++) {
       size_t current_count = counts_[proc];
       offsets_x[proc] = offsets_x[proc - 1] + counts_[proc - 1];
 
-      world.send(proc, 1, b_.data() + offset_remainder_b, current_count);
+      world.send(proc, 1, c_.data() + offset_remainder_c, current_count);
       world.send(proc, 2, x_.data(), n_);
-      // send A in parts
+      // send B in parts
       size_t total_elements = current_count * n_;
       size_t num_chunks = (total_elements + chunk_size - 1) / chunk_size;
 
@@ -211,33 +243,33 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::run() {
       for (size_t chunk = 0; chunk < num_chunks; ++chunk) {
         size_t start = chunk * chunk_size;
         size_t size = std::min(chunk_size, total_elements - start);
-        world.send(proc, 4, A_.data() + offset_remainder_A + start, size);
+        world.send(proc, 4, B_.data() + offset_remainder_B + start, size);
       }
 
-      offset_remainder_b += current_count;
-      offset_remainder_A += current_count * n_;
+      offset_remainder_c += current_count;
+      offset_remainder_B += current_count * n_;
     }
   }
   boost::mpi::broadcast(world, offsets_x.data(), num_processes_, 0);
 
   // get data
   if (world.rank() > 0) {
-    world.recv(0, 1, local_b.data(), counts_[world.rank()]);
+    world.recv(0, 1, local_c.data(), counts_[world.rank()]);
     world.recv(0, 2, local_x.data(), n_);
-    // get parts of  A
+    // get parts of  B
     size_t num_chunks;
     world.recv(0, 3, &num_chunks, 1);  // get count of parts
 
     size_t received = 0;
     for (size_t chunk = 0; chunk < num_chunks; ++chunk) {
       size_t remaining = (counts_[world.rank()] * n_) - received;
-      size_t size = std::min(size_t(100), remaining);
-      world.recv(0, 4, local_A.data() + received, size);
+      size_t size = std::min(size_t(chunk_size), remaining);
+      world.recv(0, 4, local_B.data() + received, size);
       received += size;
     }
   } else {
-    local_b.assign(b_.begin(), b_.begin() + counts_[0]);
-    local_A.assign(A_.begin(), A_.begin() + counts_[0] * n_);
+    local_c.assign(c_.begin(), c_.begin() + counts_[0]);
+    local_B.assign(B_.begin(), B_.begin() + counts_[0] * n_);
     local_x = x_;
   }
 
@@ -247,17 +279,12 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::run() {
     if (world.rank() == 0) {
       prev_x_ = x_;
     }
-    // calculate
+    // calculate new approach x = Bx + c
     for (size_t i = 0; i < static_cast<size_t>(counts_[world.rank()]); i++) {
-      double sum = 0.0;
-      size_t global_i = offsets_x[world.rank()] + i;  // global id row
+      res_x[i] = local_c[i];
       for (size_t j = 0; j < n_; j++) {
-        if (j != (global_i)) {
-          sum += local_A[i * n_ + j] * local_x[j];
-        }
+        res_x[i] += local_B[i * n_ + j] * local_x[j];
       }
-      double diag = local_A[i * n_ + global_i];
-      res_x[i] = (local_b[i] - sum) / diag;
     }
     // get new local approach on rank 0
     boost::mpi::gatherv(world, res_x, x_.data(), counts_, offsets_x, 0);
@@ -274,7 +301,6 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::run() {
     }
     boost::mpi::broadcast(world, x_.data(), n_, 0);
     local_x = x_;
-
     iteration++;
   }
   return true;

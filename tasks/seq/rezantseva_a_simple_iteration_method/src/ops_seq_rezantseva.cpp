@@ -15,16 +15,14 @@ bool rezantseva_a_simple_iteration_method_seq::SimpleIterationSequential::isTime
 }
 
 bool rezantseva_a_simple_iteration_method_seq::SimpleIterationSequential::checkMatrix() {
-  size_t n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
+  for (size_t i = 0; i < n_; ++i) {  // row
 
-  for (size_t i = 0; i < n; ++i) {  // row
-
-    double Aii = std::fabs(reinterpret_cast<double*>(taskData->inputs[1])[i * n + i]);
+    double Aii = std::fabs(reinterpret_cast<double*>(taskData->inputs[1])[i * n_ + i]);
     double sum = 0.0;
 
-    for (size_t j = 0; j < n; ++j) {  // column
+    for (size_t j = 0; j < n_; ++j) {  // column
       if (i != j) {
-        sum += std::fabs(reinterpret_cast<double*>(taskData->inputs[1])[i * n + j]);
+        sum += std::fabs(reinterpret_cast<double*>(taskData->inputs[1])[i * n_ + j]);
       }
     }
     if (Aii <= sum) {
@@ -33,48 +31,70 @@ bool rezantseva_a_simple_iteration_method_seq::SimpleIterationSequential::checkM
   }
   return true;
 }
+bool rezantseva_a_simple_iteration_method_seq::SimpleIterationSequential::checkMatrixNorm() {
+  double max_row_sum = 0.0;
+  for (size_t i = 0; i < n_; ++i) {
+    double row_sum = 0.0;
+    for (size_t j = 0; j < n_; ++j) {
+      row_sum += std::abs(B_[i * n_ + j]);
+    }
+    max_row_sum = std::max(max_row_sum, row_sum);
+  }
+  return max_row_sum < 1.0;
+}
 
 bool rezantseva_a_simple_iteration_method_seq::SimpleIterationSequential::validation() {
   internal_order_test();
-  size_t n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
-  return (taskData->inputs_count.size() == 3) && (taskData->outputs_count.size() == 1) && (n > 0) &&
+  n_ = *reinterpret_cast<size_t*>(taskData->inputs[0]);
+  return (taskData->inputs_count.size() == 3) && (taskData->outputs_count.size() == 1) && (n_ > 0) &&
          (checkMatrix() == true);
 }
 
 bool rezantseva_a_simple_iteration_method_seq::SimpleIterationSequential::pre_processing() {
   internal_order_test();
-  size_t n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
-  A_.assign(n * n, 0.0);
-  b_.assign(n, 0.0);
-  x_.assign(n, 0.0);
+  A_.assign(n_ * n_, 0.0);
+  b_.assign(n_, 0.0);
+  x_.assign(n_, 0.0);
+
+  B_.assign(n_ * n_, 0.0);
+  c_.assign(n_, 0.0);
   // fill matrix A and vector b
-  for (size_t i = 0; i < n; ++i) {    // row
-    for (size_t j = 0; j < n; ++j) {  // column
-      A_[i * n + j] = reinterpret_cast<double*>(taskData->inputs[1])[i * n + j];
+  for (size_t i = 0; i < n_; ++i) {    // row
+    for (size_t j = 0; j < n_; ++j) {  // column
+      A_[i * n_ + j] = reinterpret_cast<double*>(taskData->inputs[1])[i * n_ + j];
     }
     b_[i] = reinterpret_cast<double*>(taskData->inputs[2])[i];
   }
-  return true;
+  // fill transition matrix B and iteration vector c
+  for (size_t i = 0; i < n_; ++i) {
+    double diag = A_[i * n_ + i];
+    for (size_t j = 0; j < n_; ++j) {
+      if (i != j) {                               // diagonal elements of B remain zero
+        B_[i * n_ + j] = -A_[i * n_ + j] / diag;  // Bij = -Aij/Aii
+      }
+    }
+    c_[i] = b_[i] / diag;  // ci = bi/Aii
+  }
+
+  return checkMatrixNorm();
 }
 
 bool rezantseva_a_simple_iteration_method_seq::SimpleIterationSequential::run() {
   internal_order_test();
   size_t iteration = 0;
-  size_t n = b_.size();
-  std::vector<double> x0(n, 0.0);
+  std::vector<double> prev_x(n_, 0.0);
 
   while (iteration < maxIteration_) {
-    std::copy(x_.begin(), x_.end(), x0.begin());  // move previous decisions to vec x0
-    for (size_t i = 0; i < n; i++) {
-      double sum = 0;
-      for (size_t j = 0; j < n; j++) {
-        if (j != i) {
-          sum += A_[i * n + j] * x0[j];  // example: A12*x2 + A13*x3+..+ A1n*xn
-        }
+    std::copy(x_.begin(), x_.end(), prev_x.begin());  // saved previous approach
+
+    // new approach x = Bx + c
+    for (size_t i = 0; i < n_; i++) {
+      x_[i] = c_[i];
+      for (size_t j = 0; j < n_; j++) {
+        x_[i] += B_[i * n_ + j] * prev_x[j];
       }
-      x_[i] = (b_[i] - sum) / A_[i * n + i];
     }
-    if (isTimeToStop(x0, x_)) {
+    if (isTimeToStop(prev_x, x_)) {
       break;
     }
     iteration++;
