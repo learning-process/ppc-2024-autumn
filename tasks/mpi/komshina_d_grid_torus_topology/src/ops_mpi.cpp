@@ -8,9 +8,7 @@
 
 using namespace std::chrono_literals;
 
-bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::pre_processing() {
-  return validation();
-}
+bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::pre_processing() { return validation(); }
 
 bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::validation() {
   if (taskData->inputs.empty() || taskData->inputs_count.empty()) {
