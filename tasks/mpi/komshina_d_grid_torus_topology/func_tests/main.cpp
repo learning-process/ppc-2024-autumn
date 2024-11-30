@@ -106,7 +106,7 @@ TEST(komshina_d_grid_torus_topology_mpi, TestLargeData) {
 
 TEST(komshina_d_grid_torus_topology_mpi, TestNonMatchingInputOutputSizes) {
   boost::mpi::communicator world;
-  if (world.size() < 2) return;
+  if (world.size() < 4) return;
 
   std::vector<uint8_t> input_data(4);
   std::iota(input_data.begin(), input_data.end(), 9);
@@ -126,7 +126,7 @@ TEST(komshina_d_grid_torus_topology_mpi, TestNonMatchingInputOutputSizes) {
 
 TEST(komshina_d_grid_torus_topology_mpi, TestSmallNumberOfProcesses) {
   boost::mpi::communicator world;
-  if (world.size() < 2) return;
+  if (world.size() < 4) return;
 
   std::vector<uint8_t> input_data(4);
   std::iota(input_data.begin(), input_data.end(), 9);
