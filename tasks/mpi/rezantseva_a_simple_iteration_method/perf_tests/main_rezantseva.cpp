@@ -57,7 +57,6 @@ TEST(rezantseva_a_simple_iteration_method_mpi, test_pipeline_run) {
   }
   // Create Task
   auto simpleIterationMPI = std::make_shared<rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI>(taskDataPar);
-
   ASSERT_EQ(simpleIterationMPI->validation(), true);
   simpleIterationMPI->pre_processing();
   simpleIterationMPI->run();
