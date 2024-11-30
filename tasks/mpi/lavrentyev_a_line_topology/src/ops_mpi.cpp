@@ -56,7 +56,6 @@ bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::validation() {
   return true;
 }
 
-
 bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
@@ -84,7 +83,6 @@ bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::run() {
   }
   return true;
 }
-
 
 bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();

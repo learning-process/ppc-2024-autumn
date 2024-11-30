@@ -46,7 +46,7 @@ TEST(lavrentyev_a_line_topology_mpi, task_run) {
   if (mpi_comm.rank() == end_rank) {
     processing_order.resize(end_rank - start_rank + 1);
     data->outputs = {reinterpret_cast<uint8_t*>(result_values.data()),
-                          reinterpret_cast<uint8_t*>(processing_order.data())};
+                     reinterpret_cast<uint8_t*>(processing_order.data())};
     data->outputs_count.push_back(result_values.size());
     data->outputs_count.push_back(processing_order.size());
   }
@@ -104,7 +104,7 @@ TEST(lavrentyev_a_line_topology_mpi, pipeline_run) {
   if (mpi_comm.rank() == end_rank) {
     trace_path.resize(end_rank - start_rank + 1);
     data->outputs = {reinterpret_cast<uint8_t*>(result_values.data()),
-                          reinterpret_cast<uint8_t*>(trace_path.data())};
+                     reinterpret_cast<uint8_t*>(trace_path.data())};
     data->outputs_count.push_back(result_values.size());
     data->outputs_count.push_back(trace_path.size());
   }
