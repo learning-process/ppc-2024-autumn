@@ -33,7 +33,7 @@ bool lopatin_i_strip_horizontal_scheme_seq::TestTaskSequential::validation() {
   return (sizeX > 0 && sizeY > 0 && vectorSize > 0 && sizeX == vectorSize);
 }
 
-bool lopatin_i_strip_horizontal_scheme_seq::TestTaskSequential::pre_processing() { 
+bool lopatin_i_strip_horizontal_scheme_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
 
   matrix_.resize(sizeX * sizeY);
