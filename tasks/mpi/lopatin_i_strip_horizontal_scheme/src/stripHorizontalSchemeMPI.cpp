@@ -118,7 +118,7 @@ bool TestMPITaskParallel::run() {
   if (world.rank() == 0) {
     localVector = vector_;
     for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, vector_.data(), sizeX);
+      world.send(proc, 0, localVector.data(), sizeX);
     }
   } else {
     world.recv(0, 0, localVector.data(), sizeX);

@@ -34,8 +34,8 @@ TEST(lopatin_i_strip_horizontal_scheme_seq, test_pipeline_run) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataSequential = std::make_shared<ppc::core::TaskData>();
   taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputMatrix.data()));
-  taskDataSequential->inputs_count.emplace_back(6);
-  taskDataSequential->inputs_count.emplace_back(4);
+  taskDataSequential->inputs_count.emplace_back(3840);
+  taskDataSequential->inputs_count.emplace_back(2160);
   taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputVector.data()));
   taskDataSequential->inputs_count.emplace_back(inputVector.size());
   taskDataSequential->outputs.emplace_back(reinterpret_cast<uint8_t *>(resultVector.data()));
@@ -66,8 +66,8 @@ TEST(lopatin_i_strip_horizontal_scheme_seq, test_task_run) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataSequential = std::make_shared<ppc::core::TaskData>();
   taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputMatrix.data()));
-  taskDataSequential->inputs_count.emplace_back(6);
-  taskDataSequential->inputs_count.emplace_back(4);
+  taskDataSequential->inputs_count.emplace_back(3840);
+  taskDataSequential->inputs_count.emplace_back(2160);
   taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputVector.data()));
   taskDataSequential->inputs_count.emplace_back(inputVector.size());
   taskDataSequential->outputs.emplace_back(reinterpret_cast<uint8_t *>(resultVector.data()));

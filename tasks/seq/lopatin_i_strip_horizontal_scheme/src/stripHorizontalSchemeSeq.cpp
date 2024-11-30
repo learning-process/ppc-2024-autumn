@@ -2,7 +2,7 @@
 
 namespace lopatin_i_strip_horizontal_scheme_seq {
 
-bool lopatin_i_strip_horizontal_scheme_seq::TestTaskSequential::validation() {
+bool TestTaskSequential::validation() {
   internal_order_test();
 
   sizeX = taskData->inputs_count[0];
@@ -12,7 +12,7 @@ bool lopatin_i_strip_horizontal_scheme_seq::TestTaskSequential::validation() {
   return (sizeX > 0 && sizeY > 0 && vectorSize > 0 && sizeX == vectorSize);
 }
 
-bool lopatin_i_strip_horizontal_scheme_seq::TestTaskSequential::pre_processing() {
+bool TestTaskSequential::pre_processing() {
   internal_order_test();
 
   matrix_.resize(sizeX * sizeY);
@@ -28,7 +28,7 @@ bool lopatin_i_strip_horizontal_scheme_seq::TestTaskSequential::pre_processing()
   return true;
 }
 
-bool lopatin_i_strip_horizontal_scheme_seq::TestTaskSequential::run() {
+bool TestTaskSequential::run() {
   internal_order_test();
 
   for (int i = 0; i < sizeY; i++) {
@@ -40,7 +40,7 @@ bool lopatin_i_strip_horizontal_scheme_seq::TestTaskSequential::run() {
   return true;
 }
 
-bool lopatin_i_strip_horizontal_scheme_seq::TestTaskSequential::post_processing() {
+bool TestTaskSequential::post_processing() {
   internal_order_test();
 
   int* outputData = reinterpret_cast<int*>(taskData->outputs[0]);
