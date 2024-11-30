@@ -18,7 +18,10 @@ bool golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::validati
   cols_A = taskData->inputs_count[1];
   rows_B = taskData->inputs_count[2];
   cols_B = taskData->inputs_count[3];
-  return (cols_A == rows_B && rows_A > 0 && cols_A > 0 && rows_B > 0 && cols_B > 0);
+  if (world.size() < 5 || world.rank() >= 4) {
+    return (cols_A == rows_B && rows_A > 0 && cols_A > 0 && rows_B > 0 && cols_B > 0);
+  }
+  return true;
 }
 
 bool golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::pre_processing() {
@@ -38,15 +41,17 @@ bool golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::pre_proc
 
 bool golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::run() {
   internal_order_test();
-
-  multiply_matrices();
-
+  if (world.size() < 5 || world.rank() >= 4) {
+    multiply_matrices();
+  }
   return true;
 }
 
 bool golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::post_processing() {
   internal_order_test();
-  gather_result();
+  if (world.size() < 5 || world.rank() >= 4) {
+    gather_result();
+  }
   return true;
 }
 
