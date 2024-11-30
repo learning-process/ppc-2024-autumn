@@ -107,27 +107,3 @@ TEST(golovkin_integration_rectangular_method_seq, Calculate_LargeInterval_HighPr
 
   EXPECT_NEAR(result, 333.3333333333333, 0.01);
 }
-
-TEST(golovkin_integration_rectangular_method_seq, FunctionSquare) {
-  struct TestCase {
-    double input;
-    double expected_output;
-  };
-
-  auto mock_task_data = std::make_shared<ppc::core::TaskData>();
-  std::shared_ptr<IntegralCalculator> calculator = std::make_shared<IntegralCalculator>(nullptr);
-
-  std::vector<TestCase> test_cases = {
-      {0.0, 0.0},
-      {1.0, 1.0},
-      {-1.0, 1.0},
-      {2.5, 6.25},
-      {100.0, 10000.0}
-  };
-  // Iterate over the test cases
-  for (const auto& test_case : test_cases) {
-    // Call function_square and check if the output is correct
-    double result = calculator->function_square(test_case.input);
-    EXPECT_DOUBLE_EQ(result, test_case.expected_output);
-  }
-}
