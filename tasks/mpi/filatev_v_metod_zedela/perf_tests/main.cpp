@@ -8,7 +8,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/filatev_v_metod_zedela/include/ops_mpi.hpp"
 
-int generatorVector(std::vector<int>& vec) {
+int generatorVector(std::vector<int> &vec) {
   int sum = 0;
   for (long unsigned int i = 0; i < vec.size(); ++i) {
     vec[i] = rand() % 100 - 50;
@@ -17,7 +17,7 @@ int generatorVector(std::vector<int>& vec) {
   return sum;
 }
 
-void generatorMatrix(std::vector<int>& matrix, int size) {
+void generatorMatrix(std::vector<int> &matrix, int size) {
   for (int i = 0; i < size; ++i) {
     std::vector<int> temp(size);
     int sum = generatorVector(temp);
@@ -26,7 +26,7 @@ void generatorMatrix(std::vector<int>& matrix, int size) {
   }
 }
 
-std::vector<int> genetatirVectorB(std::vector<int>& matrix, std::vector<int>& vecB) {
+std::vector<int> genetatirVectorB(std::vector<int> &matrix, std::vector<int> &vecB) {
   int size = vecB.size();
   std::vector<int> ans(size);
   generatorVector(ans);
@@ -40,7 +40,7 @@ std::vector<int> genetatirVectorB(std::vector<int>& matrix, std::vector<int>& ve
   return ans;
 }
 
-bool rightAns(std::vector<double>& ans, std::vector<int>& resh, double alfa) {
+bool rightAns(std::vector<double>& ans, std::vector<int> &resh, double alfa) {
   double max_r = 0;
   for (long unsigned int i = 0; i < ans.size(); ++i) {
     double temp = abs(ans[i] - resh[i]);
