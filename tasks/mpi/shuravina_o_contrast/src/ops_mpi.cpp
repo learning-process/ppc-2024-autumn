@@ -2,68 +2,67 @@
 
 #include <algorithm>
 #include <boost/mpi/collectives.hpp>
-#include <cmath>
-#include <iostream>
 
-bool shuravina_o_contrast::ContrastParallel::pre_processing() {
+bool shuravina_o_contrast::ContrastTaskParallel::pre_processing() {
+  internal_order_test();
+  unsigned int delta = 0;
   if (world.rank() == 0) {
-    auto* ptr = reinterpret_cast<uint8_t*>(taskData->inputs[0]);
-    input_.assign(ptr, ptr + taskData->inputs_count[0]);
-    output_.resize(taskData->inputs_count[0]);
+    delta = taskData->inputs_count[0] / world.size();
   }
+  broadcast(world, delta, 0);
 
+  if (world.rank() == 0) {
+    input_ = std::vector<uint8_t>(taskData->inputs_count[0]);
+    auto* tmp_ptr = reinterpret_cast<uint8_t*>(taskData->inputs[0]);
+    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+      input_[i] = tmp_ptr[i];
+    }
+    for (int proc = 1; proc < world.size(); proc++) {
+      world.send(proc, 0, input_.data() + proc * delta, delta);
+    }
+  }
+  local_input_ = std::vector<uint8_t>(delta);
+  if (world.rank() == 0) {
+    local_input_ = std::vector<uint8_t>(input_.begin(), input_.begin() + delta);
+  } else {
+    world.recv(0, 0, local_input_.data(), delta);
+  }
+  output_ = std::vector<uint8_t>(delta);
   return true;
 }
 
-bool shuravina_o_contrast::ContrastParallel::validation() {
+bool shuravina_o_contrast::ContrastTaskParallel::validation() {
+  internal_order_test();
   if (world.rank() == 0) {
-    return taskData->outputs_count[0] == taskData->inputs_count[0] && !taskData->outputs.empty();
+    return taskData->outputs_count[0] == taskData->inputs_count[0];
   }
   return true;
 }
 
-bool shuravina_o_contrast::ContrastParallel::run() {
-  uint32_t inputSize;
+bool shuravina_o_contrast::ContrastTaskParallel::run() {
+  internal_order_test();
+  uint8_t local_min_val = *std::min_element(local_input_.begin(), local_input_.end());
+  uint8_t local_max_val = *std::max_element(local_input_.begin(), local_input_.end());
+
+  uint8_t global_min_val, global_max_val;
+  reduce(world, local_min_val, global_min_val, boost::mpi::minimum<uint8_t>(), 0);
+  reduce(world, local_max_val, global_max_val, boost::mpi::maximum<uint8_t>(), 0);
 
   if (world.rank() == 0) {
-    inputSize = input_.size();
+    for (size_t i = 0; i < local_input_.size(); ++i) {
+      output_[i] = static_cast<uint8_t>((local_input_[i] - global_min_val) * 255.0 / (global_max_val - global_min_val));
+    }
   }
-
-  broadcast(world, inputSize, 0);
-
-  uint32_t step = inputSize / world.size();
-  uint32_t remain = inputSize % world.size();
-
-  std::vector<int> sizes;
-  uint32_t recvSize;
-  for (uint32_t i = 0; i < (uint32_t)world.size(); i++) {
-    recvSize = step;
-    if (i < remain) recvSize++;
-    sizes.push_back(recvSize);
-  }
-
-  std::vector<uint8_t> local_input(sizes[world.rank()]);
-  std::vector<uint8_t> local_output(sizes[world.rank()]);
-  scatterv(world, input_, sizes, local_input.data(), 0);
-
-  double gamma = 0.5;
-
-  for (size_t i = 0; i < local_input.size(); ++i) {
-    double normalized_value = static_cast<double>(local_input[i]) / 255.0;
-    double corrected_value = std::pow(normalized_value, gamma);
-    local_output[i] = static_cast<uint8_t>(corrected_value * 255.0);
-  }
-
-  gatherv(world, local_output.data(), local_output.size(), output_.data(), sizes, 0);
-
   return true;
 }
 
-bool shuravina_o_contrast::ContrastParallel::post_processing() {
+bool shuravina_o_contrast::ContrastTaskParallel::post_processing() {
+  internal_order_test();
   if (world.rank() == 0) {
-    auto* ptr = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
-    std::copy(output_.begin(), output_.end(), ptr);
+    auto* tmp_ptr = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
+    for (unsigned i = 0; i < taskData->outputs_count[0]; i++) {
+      tmp_ptr[i] = output_[i];
+    }
   }
-
   return true;
 }

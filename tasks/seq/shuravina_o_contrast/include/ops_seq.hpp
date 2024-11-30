@@ -18,7 +18,6 @@ class ContrastTaskSequential : public ppc::core::Task {
  private:
   std::vector<uint8_t> input_;
   std::vector<uint8_t> output_;
-  uint8_t min_val_, max_val_;
 };
 
 }  // namespace shuravina_o_contrast
