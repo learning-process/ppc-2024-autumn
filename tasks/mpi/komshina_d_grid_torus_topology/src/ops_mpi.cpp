@@ -10,7 +10,6 @@ using namespace std::chrono_literals;
 
 bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::pre_processing() {
   return validation();
-  return true;
 }
 
 bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::validation() {
