@@ -111,7 +111,8 @@ bool kalinin_d_matrix_mult_hor_a_vert_b_mpi::TestMPITaskParallel::validation() {
 bool kalinin_d_matrix_mult_hor_a_vert_b_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
