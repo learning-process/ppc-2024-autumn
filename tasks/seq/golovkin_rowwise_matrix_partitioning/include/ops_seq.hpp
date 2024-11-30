@@ -20,8 +20,8 @@ class MatrixMultiplicationTask : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  static bool multiplier(std::vector<std::vector<double>>& matrixA, std::vector<std::vector<double>>& matrixB, 
-                  std::vector<std::vector<double>>& result);
+  static bool multiplier(std::vector<std::vector<double>>& matrixA, std::vector<std::vector<double>>& matrixB,
+                         std::vector<std::vector<double>>& result);
 
   std::shared_ptr<ppc::core::TaskData> taskData_;
 

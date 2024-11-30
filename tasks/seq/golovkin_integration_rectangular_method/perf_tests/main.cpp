@@ -64,7 +64,7 @@ TEST(golovkin_integration_rectangular_method, test_task_run) {
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   for (const auto& value : in) {
-    auto value_ptr = new double(value);
+    auto* value_ptr = new double(value);
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(value_ptr));
   }
 

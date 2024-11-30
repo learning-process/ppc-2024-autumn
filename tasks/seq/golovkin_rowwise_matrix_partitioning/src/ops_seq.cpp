@@ -49,8 +49,8 @@ bool MatrixMultiplicationTask::pre_processing() {
 }
 
 bool MatrixMultiplicationTask::multiplier(std::vector<std::vector<double>>& matrixA,
-                                                 std::vector<std::vector<double>>& matrixB,
-                                                 std::vector<std::vector<double>>& result) {
+                                          std::vector<std::vector<double>>& matrixB,
+                                          std::vector<std::vector<double>>& result) {
 
   size_t rowsA = matrixA.size();
   size_t colsA = matrixA[0].size();
@@ -72,7 +72,7 @@ bool MatrixMultiplicationTask::run() {
   auto* matrixB = reinterpret_cast<std::vector<std::vector<double>>*>(taskData_->inputs[1]);
   auto* result = reinterpret_cast<std::vector<std::vector<double>>*>(taskData_->outputs[0]);
 
-  if (!matrixA || !matrixB || !result) {
+  if (matrixA == nullptr || matrixB == nullptr || result == nullptr) {
     return false;
   }
 
