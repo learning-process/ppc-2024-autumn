@@ -1,11 +1,6 @@
 // Filatev Vladislav Metod Zedela
 #include "seq/filatev_v_metod_zedela/include/ops_seq.hpp"
 
-#include <string>
-#include <thread>
-
-using namespace std::chrono_literals;
-
 filatev_v_metod_zedela_seq::MetodZedela::MetodZedela(std::shared_ptr<ppc::core::TaskData> taskData_)
     : Task(std::move(taskData_)) {
   this->size = taskData->inputs_count[0];

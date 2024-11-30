@@ -1,9 +1,6 @@
 // Filatev Vladislav Metod Zedela
 #include "mpi/filatev_v_metod_zedela/include/ops_mpi.hpp"
 
-#include <algorithm>
-#include <functional>
-#include <string>
 #include <vector>
 
 filatev_v_metod_zedela_mpi::MetodZedela::MetodZedela(std::shared_ptr<ppc::core::TaskData> taskData_)
