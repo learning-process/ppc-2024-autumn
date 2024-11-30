@@ -12,100 +12,146 @@
 #include <thread>
 
 bool golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::validation() {
-  rows_A = taskData->inputs_count[0];
-  cols_A = taskData->inputs_count[1];
-  rows_B = taskData->inputs_count[2];
-  cols_B = taskData->inputs_count[3];
+  internal_order_test();
 
-  bool local_valid = (cols_A == rows_B && rows_A > 0 && cols_A > 0 && rows_B > 0 && cols_B > 0);
-  bool global_valid = boost::mpi::all_reduce(world, local_valid, std::logical_and<bool>());
-  return global_valid;
+  bool is_valid = true;
+  if (world.size() < 5 || world.rank() >= 4) {
+    rows_A = taskData->inputs_count[0];
+    cols_A = taskData->inputs_count[1];
+    rows_B = taskData->inputs_count[2];
+    cols_B = taskData->inputs_count[3];
+    if (cols_A != rows_B || rows_A <= 0 || cols_A <= 0 || rows_B <= 0 || cols_B <= 0) {
+      is_valid = false;
+    }
+  }
+  MPI_Bcast(&is_valid, 1, MPI_C_BOOL, 0, MPI_COMM_WORLD);
+  return is_valid;
 }
 
 bool golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::pre_processing() {
-  if (world.rank() == 0) {
-    auto* tmp_ptr_a = reinterpret_cast<double*>(taskData->inputs[0]);
-    auto* tmp_ptr_b = reinterpret_cast<double*>(taskData->inputs[1]);
+  internal_order_test();
 
-    A = new double[rows_A * cols_A];
-    B = new double[rows_B * cols_B];
-
-    std::copy(tmp_ptr_a, tmp_ptr_a + rows_A * cols_A, A);
-    std::copy(tmp_ptr_b, tmp_ptr_b + rows_B * cols_B, B);
-  }
-
-  distribute_matrices();
+  initializeDataStructures();
   return true;
 }
 
 bool golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::run() {
-  perform_local_multiplication();
+  internal_order_test();
+
+  multiply_matrices();
   return true;
 }
 
 bool golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::post_processing() {
+  internal_order_test();
+
   gather_result();
   return true;
 }
 
-void golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::distribute_matrices() {
-  if (world.size() > 1) {
-    boost::mpi::broadcast(world, A, rows_A * cols_A, 0);
-    boost::mpi::broadcast(world, B, rows_B * cols_B, 0);
-  } else {
-    boost::mpi::broadcast(world, A, rows_A * cols_A, 0);
-    boost::mpi::broadcast(world, B, rows_B * cols_B, 0);
+bool golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::multiply_matrices() {
+  int rank;
+  int size;
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  MPI_Comm_size(MPI_COMM_WORLD, &size);
+
+  int dimensions[4];
+  if (rank == 0) {
+    dimensions[0] = rows_A;
+    dimensions[1] = cols_A;
+    dimensions[2] = rows_B;
+    dimensions[3] = cols_B;
   }
-}
+  MPI_Bcast(dimensions, 4, MPI_INT, 0, MPI_COMM_WORLD);
 
-void golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::perform_local_multiplication() {
-  // Определяем диапазон строк для текущего процесса
-  int rows_per_rank = rows_A / world.size();
-  int extra_rows = rows_A % world.size();
-  int start_row = world.rank() * rows_per_rank + std::min(world.rank(), extra_rows);
-  int end_row = start_row + rows_per_rank + (world.rank() < extra_rows ? 1 : 0);
+  rows_A = dimensions[0];
+  cols_A = dimensions[1];
+  rows_B = dimensions[2];
+  cols_B = dimensions[3];
 
-  int local_rows = end_row - start_row;
+  if (rank != 0) {
+    A = new double[rows_A * cols_A];
+    B = new double[rows_B * cols_B];
+  }
+  MPI_Bcast(A, rows_A * cols_A, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+  MPI_Bcast(B, rows_B * cols_B, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+  int* counter_send = new int[size];
+  std::fill(counter_send, counter_send + size, 0);
+  int* displs = new int[size]();
+  int rows_per_proc = rows_A / size;
+  int rows_size = rows_A % size;
+  int set_zero = 0;
+  for (int i = 0; i < size; ++i) {
+    if (i < rows_size) {
+      counter_send[i] = (rows_per_proc + 1) * cols_A;
+    } else {
+      counter_send[i] = rows_per_proc * cols_A;
+    }
+    displs[i] = set_zero;
+    set_zero += counter_send[i];
+  }
+  auto* local_A = new double[counter_send[rank]]();
+  MPI_Scatterv(A, counter_send, displs, MPI_DOUBLE, local_A, counter_send[rank], MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-  // Вычисляем локальную часть матрицы C
-  local_result = new double[local_rows * cols_B]();
+  int local_rows = counter_send[rank] / cols_A;
+  auto* local_res = new double[local_rows * cols_B];
+  std::fill(local_res, local_res + local_rows * cols_B, 0.0);
   for (int i = 0; i < local_rows; i++) {
     for (int j = 0; j < cols_B; j++) {
       for (int k = 0; k < cols_A; k++) {
-        local_result[i * cols_B + j] += A[(start_row + i) * cols_A + k] * B[k * cols_B + j];
+        local_res[i * cols_B + j] += local_A[i * cols_A + k] * B[k * cols_B + j];
       }
     }
   }
-  local_rows_count = local_rows;  // Сохраняем количество локальных строк для дальнейшего использования
+
+  if (rank == 0) {
+    result = new double[rows_A * cols_B];
+  } else {
+    result = nullptr;
+  }
+  int* recvcounts = new int[size]();
+  int* recvdispls = new int[size]();
+  set_zero = 0;
+
+  for (int i = 0; i < size; ++i) {
+    if (i < rows_size) {
+      recvcounts[i] = (rows_per_proc + 1) * cols_B;
+    } else {
+      recvcounts[i] = rows_per_proc * cols_B;
+    }
+    recvdispls[i] = set_zero;
+    set_zero += recvcounts[i];
+  };
+  MPI_Gatherv(local_res, local_rows * cols_B, MPI_DOUBLE, result, recvcounts, recvdispls, MPI_DOUBLE, 0,
+              MPI_COMM_WORLD);
+  delete[] counter_send;
+  delete[] displs;
+  delete[] local_A;
+  delete[] local_res;
+  delete[] recvcounts;
+  delete[] recvdispls;
+
+  return true;
 }
 
-void golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::gather_result() {
-  if (world.rank() == 0) {
-    result = new double[rows_A * cols_B]();
-  }
-
-  // Сбор результатов со всех процессов
-  std::vector<int> recvcounts(world.size());
-  std::vector<int> displs(world.size());
-
-  if (world.rank() == 0) {
-    int offset = 0;
-    for (int i = 0; i < world.size(); i++) {
-      int rows_for_rank = rows_A / world.size() + (i < rows_A % world.size() ? 1 : 0);
-      recvcounts[i] = rows_for_rank * cols_B;
-      displs[i] = offset;
-      offset += recvcounts[i];
+bool golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::gather_result() {
+  if (world.size() < 5 || world.rank() >= 4) {
+    for (int i = 0; i < rows_A * cols_B; i++) {
+      reinterpret_cast<double*>(taskData->outputs[0])[i] = result[i];
     }
   }
+  return true;
+}
 
-  boost::mpi::gatherv(world, local_result, local_rows_count * cols_B, result, recvcounts, displs, 0);
-
-  // Только процесс 0 сохраняет финальный результат
-  if (world.rank() == 0) {
-    auto* tmp_ptr = reinterpret_cast<double*>(taskData->outputs[0]);
-    std::copy(result, result + rows_A * cols_B, tmp_ptr);
+bool golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::initializeDataStructures() {
+  if (world.size() < 5 || world.rank() >= 4) {
+    A = new double[rows_A * cols_A];
+    B = new double[rows_B * cols_B];
+    auto* tmp_A = reinterpret_cast<double*>(taskData->inputs[0]);
+    auto* tmp_B = reinterpret_cast<double*>(taskData->inputs[1]);
+    std::copy(tmp_A, tmp_A + rows_A * cols_A, A);
+    std::copy(tmp_B, tmp_B + rows_B * cols_B, B);
+    result = nullptr;
   }
-
-  // Очистка памяти
-  delete[] local_result;
+  return true;
 }

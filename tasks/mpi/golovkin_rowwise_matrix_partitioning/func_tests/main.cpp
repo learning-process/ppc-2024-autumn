@@ -16,311 +16,242 @@ using namespace std::chrono_literals;
 using namespace golovkin_rowwise_matrix_partitioning;
 using ppc::core::TaskData;
 
-TEST(golovkin_rowwise_matrix_partitioning, test_small_matrices) {
+namespace golovkin_rowwise_matrix_partitioning {
+
+    void get_random_matrix(double* matr, int size) {
+        if (size <= 0) {
+            throw std::logic_error("wrong matrix size");
+        }
+        std::srand(static_cast<unsigned int>(std::time(0)));
+        for (int i = 0; i < size; i++) {
+            matr[i] = static_cast<double>(std::rand()) / RAND_MAX;
+        }
+    }
+
+}  // namespace golovkin_rowwise_matrix_partitioning
+
+TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_negative_sizes) {
   boost::mpi::communicator world;
+  int rows_A = -3;
+  int cols_A = 3;
+  int rows_B = 3;
+  int cols_B = 3;
 
-  const int rows_A = 2;
-  const int cols_A = 3;
-  const int rows_B = 3;
-  const int cols_B = 2;
-  double A[rows_A][cols_A] = {{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}};
-  double B[rows_B][cols_B] = {{7.0, 8.0}, {9.0, 10.0}, {11.0, 12.0}};
-  double computed_result[rows_A][cols_B] = {{0}};
-  double expected_result[rows_A][cols_B] = {{58.0, 64.0}, {139.0, 154.0}};
-
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.size() < 5 || world.rank() >= 4) {
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(A));
-    taskData->inputs_count.emplace_back(rows_A);
-    taskData->inputs_count.emplace_back(cols_A);
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(B));
-    taskData->inputs_count.emplace_back(rows_B);
-    taskData->inputs_count.emplace_back(cols_B);
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(computed_result));
-    taskData->outputs_count.emplace_back(rows_A);
-    taskData->outputs_count.emplace_back(cols_B);
+    taskDataPar->inputs_count.emplace_back(rows_A);
+    taskDataPar->inputs_count.emplace_back(cols_A);
+    taskDataPar->inputs_count.emplace_back(rows_B);
+    taskDataPar->inputs_count.emplace_back(cols_B);
   }
 
-  golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask parallel_task(taskData);
-  ASSERT_EQ(parallel_task.validation(), true);
-  parallel_task.pre_processing();
-  parallel_task.run();
-  parallel_task.post_processing();
+  golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), false);
+}
 
+TEST(golovkin_rowwise_matrix_partitioning_mpi, invalid_matrix_size) {
+  boost::mpi::communicator world;
   if (world.size() < 5 || world.rank() >= 4) {
-    for (int i = 0; i < rows_A; ++i) {
-      for (int j = 0; j < cols_B; ++j) {
-        ASSERT_NEAR(computed_result[i][j], expected_result[i][j], 1e-3);
-      }
-    }
+    int rows_A = 0;
+    int cols_A = 10;
+    std::unique_ptr<double[]> A(new double[rows_A * cols_A]);
+    ASSERT_ANY_THROW(golovkin_rowwise_matrix_partitioning::get_random_matrix(A.get(), rows_A * cols_A));
   }
 }
 
-TEST(golovkin_rowwise_matrix_partitioning, test_identity_matrices) {
+TEST(golovkin_rowwise_matrix_partitioning_mpi, cant_mult_matrix_wrong_sizes) {
   boost::mpi::communicator world;
-
-  const int size = 3;
-  double A[size][size] = {{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}};
-  double B[size][size] = {{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}};
-  double computed_result[size][size] = {{0}};
-  double expected_result[size][size] = {{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}};
-
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-
+  double* A = nullptr;
+  double* B = nullptr;
+  double* res = nullptr;
+  int rows_A = 2;
+  int cols_A = 3;
+  int rows_B = 7;
+  int cols_B = 4;
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.size() < 5 || world.rank() >= 4) {
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(A));
-    taskData->inputs_count.emplace_back(size);
-    taskData->inputs_count.emplace_back(size);
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(B));
-    taskData->inputs_count.emplace_back(size);
-    taskData->inputs_count.emplace_back(size);
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(computed_result));
-    taskData->outputs_count.emplace_back(size);
-    taskData->outputs_count.emplace_back(size);
+    A = new double[rows_A * cols_A];
+    B = new double[rows_B * cols_B];
+    golovkin_rowwise_matrix_partitioning::get_random_matrix(A, rows_A * cols_A);
+    golovkin_rowwise_matrix_partitioning::get_random_matrix(B, rows_B * cols_B);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B));
+
+    taskDataPar->inputs_count.emplace_back(rows_A);
+    taskDataPar->inputs_count.emplace_back(cols_A);
+    taskDataPar->inputs_count.emplace_back(rows_B);
+    taskDataPar->inputs_count.emplace_back(cols_B);
+    res = new double[rows_A * cols_B];
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res));
+    taskDataPar->outputs_count.emplace_back(rows_A);
+    taskDataPar->outputs_count.emplace_back(cols_B);
   }
-
-  golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask parallel_task(taskData);
-  ASSERT_EQ(parallel_task.validation(), true);
-  parallel_task.pre_processing();
-  parallel_task.run();
-  parallel_task.post_processing();
-
+  golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), false);
   if (world.size() < 5 || world.rank() >= 4) {
-    for (int i = 0; i < size; ++i) {
-      for (int j = 0; j < size; ++j) {
-        ASSERT_NEAR(computed_result[i][j], expected_result[i][j], 1e-3);
-      }
-    }
+    delete[] A;
+    delete[] B;
+    delete[] res;
   }
 }
 
-TEST(golovkin_rowwise_matrix_partitioning, test_random_matrices) {
+TEST(golovkin_rowwise_matrix_partitioning_mpi, mult_matrix_and_vector) {
   boost::mpi::communicator world;
 
-  const int rows_A = 4;
-  const int cols_A = 5;
-  const int rows_B = 5;
-  const int cols_B = 3;
-  double A[rows_A][cols_A];
-  double B[rows_B][cols_B];
-  double computed_result[rows_A][cols_B] = {{0}};
-  double expected_result[rows_A][cols_B] = {{0}};
+  double* A = nullptr;
+  double* B = nullptr;
+  double* res = nullptr;
+  int rows_A = 70;
+  int cols_A = 50;
+  int rows_B = 50;
+  int cols_B = 1;
 
-  srand(world.rank());
-  for (int i = 0; i < rows_A; ++i) {
-    for (int j = 0; j < cols_A; ++j) {
-      A[i][j] = rand() % 10;
-    }
-  }
-  for (int i = 0; i < rows_B; ++i) {
-    for (int j = 0; j < cols_B; ++j) {
-      B[i][j] = rand() % 10;
-    }
-  }
-
-  for (int i = 0; i < rows_A; ++i) {
-    for (int j = 0; j < cols_B; ++j) {
-      for (int k = 0; k < cols_A; ++k) {
-        expected_result[i][j] += A[i][k] * B[k][j];
-      }
-    }
-  }
-
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.size() < 5 || world.rank() >= 4) {
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(A));
-    taskData->inputs_count.emplace_back(rows_A);
-    taskData->inputs_count.emplace_back(cols_A);
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(B));
-    taskData->inputs_count.emplace_back(rows_B);
-    taskData->inputs_count.emplace_back(cols_B);
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(computed_result));
-    taskData->outputs_count.emplace_back(rows_A);
-    taskData->outputs_count.emplace_back(cols_B);
+    A = new double[rows_A * cols_A];
+    B = new double[rows_B * cols_B];
+    golovkin_rowwise_matrix_partitioning::get_random_matrix(A, rows_A * cols_A);
+    golovkin_rowwise_matrix_partitioning::get_random_matrix(B, rows_B * cols_B);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B));
+
+    taskDataPar->inputs_count.emplace_back(rows_A);
+    taskDataPar->inputs_count.emplace_back(cols_A);
+    taskDataPar->inputs_count.emplace_back(rows_B);
+    taskDataPar->inputs_count.emplace_back(cols_B);
+
+    res = new double[rows_A * cols_B];
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res));
+    taskDataPar->outputs_count.emplace_back(rows_A);
+    taskDataPar->outputs_count.emplace_back(cols_B);
   }
 
-  golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask parallel_task(taskData);
-  ASSERT_EQ(parallel_task.validation(), true);
-  parallel_task.pre_processing();
-  parallel_task.run();
-  parallel_task.post_processing();
-
+  golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
   if (world.size() < 5 || world.rank() >= 4) {
-    for (int i = 0; i < rows_A; ++i) {
-      for (int j = 0; j < cols_B; ++j) {
-        ASSERT_NEAR(computed_result[i][j], expected_result[i][j], 1e-3);
-      }
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(A));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(B));
+
+    taskDataSeq->inputs_count.emplace_back(rows_A);
+    taskDataSeq->inputs_count.emplace_back(cols_A);
+    taskDataSeq->inputs_count.emplace_back(rows_B);
+    taskDataSeq->inputs_count.emplace_back(cols_B);
+
+    auto* res_seq = new double[rows_A * cols_B];
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_seq));
+    taskDataSeq->outputs_count.emplace_back(rows_A);
+    taskDataSeq->outputs_count.emplace_back(cols_B);
+
+    auto TestTaskSequential =
+        std::make_shared<golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask>(taskDataSeq);
+    ASSERT_EQ(TestTaskSequential->validation(), true);
+    TestTaskSequential->pre_processing();
+    TestTaskSequential->run();
+    TestTaskSequential->post_processing();
+
+    for (int i = 0; i < rows_A * cols_B; i++) {
+      ASSERT_NEAR(res_seq[i], res[i], 1e-6);
     }
+
+    delete[] res_seq;
+  }
+  if (world.size() < 5 || world.rank() >= 4) {
+    delete[] A;
+    delete[] B;
+    delete[] res;
   }
 }
 
-TEST(golovkin_rowwise_matrix_partitioning, test_multiplication_with_zero_matrix) {
+TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_multiplication_invalid_size) {
   boost::mpi::communicator world;
 
-  const int rows_A = 3;
-  const int cols_A = 3;
-  const int rows_B = 3;
-  const int cols_B = 3;
-  double A[rows_A][cols_A] = {{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}, {7.0, 8.0, 9.0}};
-  double B[rows_B][cols_B] = {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};
-  double computed_result[rows_A][cols_B] = {{0}};
-  double expected_result[rows_A][cols_B] = {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};
+  double* A = nullptr;
+  double* B = nullptr;
+  double* res = nullptr;
+  int rows_A = 3;
+  int cols_A = 2;
+  int rows_B = 3;
+  int cols_B = 3;  // Ошибка, строки A != столбцы B
 
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
   if (world.size() < 5 || world.rank() >= 4) {
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(A));
-    taskData->inputs_count.emplace_back(rows_A);
-    taskData->inputs_count.emplace_back(cols_A);
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(B));
-    taskData->inputs_count.emplace_back(rows_B);
-    taskData->inputs_count.emplace_back(cols_B);
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(computed_result));
-    taskData->outputs_count.emplace_back(rows_A);
-    taskData->outputs_count.emplace_back(cols_B);
+    A = new double[rows_A * cols_A];
+    B = new double[rows_B * cols_B];
+    golovkin_rowwise_matrix_partitioning::get_random_matrix(A, rows_A * cols_A);
+    golovkin_rowwise_matrix_partitioning::get_random_matrix(B, rows_B * cols_B);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B));
+
+    taskDataPar->inputs_count.emplace_back(rows_A);
+    taskDataPar->inputs_count.emplace_back(cols_A);
+    taskDataPar->inputs_count.emplace_back(rows_B);
+    taskDataPar->inputs_count.emplace_back(cols_B);
+
+    res = new double[rows_A * cols_B];
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res));
+    taskDataPar->outputs_count.emplace_back(rows_A);
+    taskDataPar->outputs_count.emplace_back(cols_B);
   }
 
-  golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask parallel_task(taskData);
-  ASSERT_EQ(parallel_task.validation(), true);
-  parallel_task.pre_processing();
-  parallel_task.run();
-  parallel_task.post_processing();
-
+  golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), false);
   if (world.size() < 5 || world.rank() >= 4) {
-    for (int i = 0; i < rows_A; ++i) {
-      for (int j = 0; j < cols_B; ++j) {
-        ASSERT_NEAR(computed_result[i][j], expected_result[i][j], 1e-3);
-      }
-    }
+    delete[] A;
+    delete[] B;
+    delete[] res;
   }
 }
 
-TEST(golovkin_rowwise_matrix_partitioning, test_non_square_matrices) {
+TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_multiplication_with_zeros) {
   boost::mpi::communicator world;
 
-  const int rows_A = 2;
-  const int cols_A = 3;
-  const int rows_B = 3;
-  const int cols_B = 4;
-  double A[rows_A][cols_A] = {{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}};
-  double B[rows_B][cols_B] = {{7.0, 8.0, 9.0, 10.0}, {11.0, 12.0, 13.0, 14.0}, {15.0, 16.0, 17.0, 18.0}};
-  double computed_result[rows_A][cols_B] = {{0}};
-  double expected_result[rows_A][cols_B] = {{74.0, 80.0, 86.0, 92.0}, {173.0, 188.0, 203.0, 218.0}};
+  double* A = nullptr;
+  double* B = nullptr;
+  double* res = nullptr;
+  int rows_A = 3;
+  int cols_A = 3;
+  int rows_B = 3;
+  int cols_B = 3;
 
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
   if (world.size() < 5 || world.rank() >= 4) {
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(A));
-    taskData->inputs_count.emplace_back(rows_A);
-    taskData->inputs_count.emplace_back(cols_A);
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(B));
-    taskData->inputs_count.emplace_back(rows_B);
-    taskData->inputs_count.emplace_back(cols_B);
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(computed_result));
-    taskData->outputs_count.emplace_back(rows_A);
-    taskData->outputs_count.emplace_back(cols_B);
+    A = new double[rows_A * cols_A]{0};  // Инициализация матрицы нулями
+    B = new double[rows_B * cols_B];
+    golovkin_rowwise_matrix_partitioning::get_random_matrix(B, rows_B * cols_B);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B));
+
+    taskDataPar->inputs_count.emplace_back(rows_A);
+    taskDataPar->inputs_count.emplace_back(cols_A);
+    taskDataPar->inputs_count.emplace_back(rows_B);
+    taskDataPar->inputs_count.emplace_back(cols_B);
+
+    res = new double[rows_A * cols_B];
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res));
+    taskDataPar->outputs_count.emplace_back(rows_A);
+    taskDataPar->outputs_count.emplace_back(cols_B);
   }
 
-  golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask parallel_task(taskData);
-  ASSERT_EQ(parallel_task.validation(), true);
-  parallel_task.pre_processing();
-  parallel_task.run();
-  parallel_task.post_processing();
-
+  golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
   if (world.size() < 5 || world.rank() >= 4) {
-    for (int i = 0; i < rows_A; ++i) {
-      for (int j = 0; j < cols_B; ++j) {
-        ASSERT_NEAR(computed_result[i][j], expected_result[i][j], 1e-3);
-      }
-    }
+    delete[] A;
+    delete[] B;
+    delete[] res;
   }
 }
 
-TEST(golovkin_rowwise_matrix_partitioning, test_large_matrices) {
-  boost::mpi::communicator world;
-
-  const int size = 100;
-  double A[size][size];
-  double B[size][size];
-  double computed_result[size][size] = {{0}};
-  double expected_result[size][size] = {{0}};
-
-  for (int i = 0; i < size; ++i) {
-    for (int j = 0; j < size; ++j) {
-      A[i][j] = (i + 1) * (j + 1);
-      B[i][j] = (i + 1) + (j + 1);
-    }
-  }
-
-  for (int i = 0; i < size; ++i) {
-    for (int j = 0; j < size; ++j) {
-      for (int k = 0; k < size; ++k) {
-        expected_result[i][j] += A[i][k] * B[k][j];
-      }
-    }
-  }
-
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  if (world.size() < 5 || world.rank() >= 4) {
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(A));
-    taskData->inputs_count.emplace_back(size);
-    taskData->inputs_count.emplace_back(size);
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(B));
-    taskData->inputs_count.emplace_back(size);
-    taskData->inputs_count.emplace_back(size);
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(computed_result));
-    taskData->outputs_count.emplace_back(size);
-    taskData->outputs_count.emplace_back(size);
-  }
-
-  golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask parallel_task(taskData);
-  ASSERT_EQ(parallel_task.validation(), true);
-  parallel_task.pre_processing();
-  parallel_task.run();
-  parallel_task.post_processing();
-
-  if (world.size() < 5 || world.rank() >= 4) {
-    for (int i = 0; i < size; ++i) {
-      for (int j = 0; j < size; ++j) {
-        ASSERT_NEAR(computed_result[i][j], expected_result[i][j], 1e-3);
-      }
-    }
-  }
-}
-
-TEST(golovkin_rowwise_matrix_partitioning, test_negative_elements) {
-  boost::mpi::communicator world;
-
-  const int size = 2;
-  double A[size][size] = {{-1, -2}, {-3, -4}};
-  double B[size][size] = {{-5, -6}, {-7, -8}};
-  double computed_result[size][size] = {{0}};
-  double expected_result[size][size] = {{19, 22}, {43, 50}};
-
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  if (world.size() < 5 || world.rank() >= 4) {
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(A));
-    taskData->inputs_count.emplace_back(size);
-    taskData->inputs_count.emplace_back(size);
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(B));
-    taskData->inputs_count.emplace_back(size);
-    taskData->inputs_count.emplace_back(size);
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(computed_result));
-    taskData->outputs_count.emplace_back(size);
-    taskData->outputs_count.emplace_back(size);
-  }
-
-  golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask parallel_task(taskData);
-  ASSERT_EQ(parallel_task.validation(), true);
-  parallel_task.pre_processing();
-  parallel_task.run();
-  parallel_task.post_processing();
-
-  if (world.size() < 5 || world.rank() >= 4) {
-    for (int i = 0; i < size; ++i) {
-      for (int j = 0; j < size; ++j) {
-        ASSERT_NEAR(computed_result[i][j], expected_result[i][j], 1e-3);
-      }
-    }
-  }
-}
