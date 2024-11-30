@@ -39,7 +39,7 @@ std::vector<int> genetatirVectorB(std::vector<int> &matrix, std::vector<int> &ve
   return ans;
 }
 
-bool rightAns(std::vector<double>& ans, std::vector<int> &resh, double alfa) {
+bool rightAns(std::vector<double> &ans, std::vector<int> &resh, double alfa) {
   double max_r = 0;
   for (long unsigned int i = 0; i < ans.size(); ++i) {
     double temp = abs(ans[i] - resh[i]);
