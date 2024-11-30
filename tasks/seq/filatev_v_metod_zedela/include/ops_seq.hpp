@@ -33,15 +33,4 @@ class MetodZedela : public ppc::core::Task {
   std::vector<int> delit;
 };
 
-class TestClassForMetodZedela {
- public:
-  int generatorVector(std::vector<int>& vec);
-  void generatorMatrix(std::vector<int>& matrix, int size);
-  void genetatirVectorB(std::vector<int>& matrix, std::vector<int>& vecB);
-  bool rightAns(std::vector<double>& ans, double alfa);
-
- private:
-  std::vector<int> ans;
-};
-
 }  // namespace filatev_v_metod_zedela_seq
