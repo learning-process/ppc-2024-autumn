@@ -51,7 +51,6 @@ bool MatrixMultiplicationTask::pre_processing() {
 bool MatrixMultiplicationTask::multiplier(std::vector<std::vector<double>>& matrixA,
                                           std::vector<std::vector<double>>& matrixB,
                                           std::vector<std::vector<double>>& result) {
-
   size_t rowsA = matrixA.size();
   size_t colsA = matrixA[0].size();
   size_t colsB = matrixB[0].size();
