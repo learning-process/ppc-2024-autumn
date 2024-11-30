@@ -6,9 +6,6 @@
 
 namespace lopatin_i_strip_horizontal_scheme_seq {
 
-std::vector<int> generateVector(int size);
-std::vector<int> generateMatrix(int sizeX, int sizeY);
-
 class TestTaskSequential : public ppc::core::Task {
  public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

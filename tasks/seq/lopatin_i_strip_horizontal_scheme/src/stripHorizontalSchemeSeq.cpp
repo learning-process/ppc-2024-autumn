@@ -2,27 +2,6 @@
 
 namespace lopatin_i_strip_horizontal_scheme_seq {
 
-std::vector<int> generateVector(int size) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> outputVector(size);
-  for (int i = 0; i < size; i++) {
-    outputVector[i] = (gen() % 200);
-  }
-  return outputVector;
-}
-
-std::vector<int> generateMatrix(int sizeX, int sizeY) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  int matrixSize = sizeX * sizeY;
-  std::vector<int> outputMatrix(matrixSize);
-  for (int i = 0; i < matrixSize; i++) {
-    outputMatrix[i] = (gen() % 200);
-  }
-  return outputMatrix;
-}
-
 bool lopatin_i_strip_horizontal_scheme_seq::TestTaskSequential::validation() {
   internal_order_test();
 

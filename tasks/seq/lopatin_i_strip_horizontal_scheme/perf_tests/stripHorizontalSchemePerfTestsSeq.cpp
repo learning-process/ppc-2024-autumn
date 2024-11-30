@@ -3,8 +3,29 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/lopatin_i_strip_horizontal_scheme/include/stripHorizontalSchemeHeaderSeq.hpp"
 
-std::vector<int> testMatrix = lopatin_i_strip_horizontal_scheme_seq::generateMatrix(3840, 2160);
-std::vector<int> testVector = lopatin_i_strip_horizontal_scheme_seq::generateVector(3840);
+std::vector<int> generateVector(int size) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> outputVector(size);
+  for (int i = 0; i < size; i++) {
+    outputVector[i] = (gen() % 200);
+  }
+  return outputVector;
+}
+
+std::vector<int> generateMatrix(int sizeX, int sizeY) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  int matrixSize = sizeX * sizeY;
+  std::vector<int> outputMatrix(matrixSize);
+  for (int i = 0; i < matrixSize; i++) {
+    outputMatrix[i] = (gen() % 200);
+  }
+  return outputMatrix;
+}
+
+std::vector<int> testMatrix = generateMatrix(3840, 2160);
+std::vector<int> testVector = generateVector(3840);
 
 TEST(lopatin_i_strip_horizontal_scheme_seq, test_pipeline_run) {
   std::vector<int> inputMatrix = testMatrix;
