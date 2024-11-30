@@ -22,6 +22,7 @@ class MPIMatrixMultiplicationTask : public ppc::core::Task {
   bool pre_processing() override;
   bool run() override;
   bool post_processing() override;
+  void gather_result();
 
  private:
   boost::mpi::communicator world;
@@ -33,7 +34,6 @@ class MPIMatrixMultiplicationTask : public ppc::core::Task {
   int rows_B;
   int cols_B;
 
-  void gather_result();
   void multiply_matrices();
 };
 
