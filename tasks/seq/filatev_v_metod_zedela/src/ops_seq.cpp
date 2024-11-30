@@ -94,7 +94,7 @@ bool filatev_v_metod_zedela_seq::MetodZedela::post_processing() {
 
 void filatev_v_metod_zedela_seq::MetodZedela::setAlfa(double _alfa) { this->alfa = _alfa / 100; }
 
-static int filatev_v_metod_zedela_seq::MetodZedela::rankMatrix(std::vector<int>& matrixT, int n) {
+int filatev_v_metod_zedela_seq::MetodZedela::rankMatrix(std::vector<int>& matrixT, int n) {
   std::vector<double> _matrix(matrixT.size());
   std::transform(matrixT.begin(), matrixT.end(), _matrix.begin(), [](int val) { return static_cast<double>(val); });
   if (n == 0) return 0;
@@ -171,7 +171,7 @@ int filatev_v_metod_zedela_seq::MetodZedela::rankRMatrix() {
   return rankMatrix(rMatrix, size + 1);
 }
 
-static int filatev_v_metod_zedela_seq::TestClassForMetodZedela::generatorVector(std::vector<int>& vec) {
+int filatev_v_metod_zedela_seq::TestClassForMetodZedela::generatorVector(std::vector<int>& vec) {
   int sum = 0;
   for (long unsigned int i = 0; i < vec.size(); ++i) {
     vec[i] = rand() % 100 - 50;
@@ -201,23 +201,6 @@ void filatev_v_metod_zedela_seq::TestClassForMetodZedela::genetatirVectorB(std::
     }
     vecB[i] = sum;
   }
-}
-
-static void filatev_v_metod_zedela_seq::TestClassForMetodZedela::coutSLU(std::vector<int> matrix,
-                                                                         std::vector<int> vecB) {
-  int size = vecB.size();
-  std::cout << "Matrix:\n";
-  for (int i = 0; i < size; i++) {
-    for (int j = 0; j < size; j++) {
-      std::cout << matrix[i * size + j] << " ";
-    }
-    std::cout << std::endl;
-  }
-  std::cout << "VecB:\n";
-  for (int i = 0; i < size; i++) {
-    std::cout << vecB[i] << " ";
-  }
-  std::cout << std::endl;
 }
 
 bool filatev_v_metod_zedela_seq::TestClassForMetodZedela::rightAns(std::vector<double>& answ, double alfa) {

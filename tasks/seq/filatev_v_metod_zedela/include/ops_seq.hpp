@@ -38,7 +38,6 @@ class TestClassForMetodZedela {
   int generatorVector(std::vector<int>& vec);
   void generatorMatrix(std::vector<int>& matrix, int size);
   void genetatirVectorB(std::vector<int>& matrix, std::vector<int>& vecB);
-  void coutSLU(std::vector<int> matrix, std::vector<int> vecB);
   bool rightAns(std::vector<double>& ans, double alfa);
 
  private:
