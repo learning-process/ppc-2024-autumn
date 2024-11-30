@@ -38,7 +38,6 @@ bool shuravina_o_contrast::ContrastTaskParallel::validation() {
   }
   return true;
 }
-
 bool shuravina_o_contrast::ContrastTaskParallel::run() {
   internal_order_test();
   uint8_t local_min_val = *std::min_element(local_input_.begin(), local_input_.end());
