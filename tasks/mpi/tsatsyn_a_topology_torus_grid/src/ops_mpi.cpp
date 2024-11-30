@@ -765,12 +765,34 @@ int* hasDivisors(int k) {
 }
 bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  std::map<std::string, int> neighbors;
-  int rows, cols, row_pos, col_pos;
+  
   if (world.rank() == 0) {
     input_data.resize(taskData->inputs_count[0]);
     auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[0]);
     std::copy(tempPtr, tempPtr + taskData->inputs_count[0], input_data.begin());
+  }
+  
+
+  // if (world.rank() == 0) {
+  //   // std::cout << "RES2= " << res << std::endl;
+  // }
+  return true;
+}
+
+bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::validation() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    // Check count elements of output
+    return taskData->outputs_count[0] == 1;
+  }
+  return true;
+}
+
+bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
+  internal_order_test();
+  std::map<std::string, int> neighbors;
+  int rows, cols, row_pos, col_pos;
+  if (world.rank() == 0) {
     if (hasDivisors(world.size()) == nullptr) {
       cols = world.size();
       rows = 1;
@@ -820,24 +842,6 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::pre_processing() {
     //  std::cout << "RES= " << res << std::endl;
   }
   mySend(world, world.size() - 1, 0, cols, rows, neighbors, res);
-
-  // if (world.rank() == 0) {
-  //   // std::cout << "RES2= " << res << std::endl;
-  // }
-  return true;
-}
-
-bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::validation() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    // Check count elements of output
-    return taskData->outputs_count[0] == 1;
-  }
-  return true;
-}
-
-bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
-  internal_order_test();
   return true;
 }
 
