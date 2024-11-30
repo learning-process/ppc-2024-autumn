@@ -111,6 +111,24 @@ TEST(mezhuev_m_lattice_torus, PreProcessingWithIncompleteData) {
   ASSERT_FALSE(task.pre_processing());
 }
 
+TEST(mezhuev_m_lattice_torus, TestPreProcessing) {
+  boost::mpi::communicator world;
+
+  std::vector<uint8_t> input_data(4);
+  std::iota(input_data.begin(), input_data.end(), 9);
+  std::vector<uint8_t> output_data(4);
+
+  auto task_data = std::make_shared<ppc::core::TaskData>();
+  task_data->inputs.emplace_back(input_data.data());
+  task_data->inputs_count.emplace_back(input_data.size());
+  task_data->outputs.emplace_back(output_data.data());
+  task_data->outputs_count.emplace_back(output_data.size());
+
+  mezhuev_m_lattice_torus::GridTorusTopologyParallel task(task_data);
+
+  ASSERT_TRUE(task.pre_processing());
+}
+
 TEST(mezhuev_m_lattice_torus, TestLargeGridProcessing) {
   boost::mpi::communicator world;
 
