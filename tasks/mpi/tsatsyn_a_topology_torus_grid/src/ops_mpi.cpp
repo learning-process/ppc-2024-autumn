@@ -765,13 +765,12 @@ int* hasDivisors(int k) {
 }
 bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  
+
   if (world.rank() == 0) {
     input_data.resize(taskData->inputs_count[0]);
     auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[0]);
     std::copy(tempPtr, tempPtr + taskData->inputs_count[0], input_data.begin());
   }
-  
 
   // if (world.rank() == 0) {
   //   // std::cout << "RES2= " << res << std::endl;
@@ -836,6 +835,8 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
     world.barrier();
   }*/
   myBroadcast(world, neighbors, rows, cols, col_pos, row_pos, input_data);
+  world.barrier();
+  mySend(world, 0, world.size() - 1, cols, rows, neighbors, input_data, input_data);
   world.barrier();
   if (world.rank() == (world.size() - 1)) {
     res = input_data.size();
