@@ -11,18 +11,15 @@
 
 #include "mpi/khovansky_d_ribbon_vertical_scheme/include/ops_mpi.hpp"
 
-TEST(khovansky_d_ribbon_vertical_scheme_mpi, procs_more_than_rows) {
-  int rows_count = 3;
-  int columns_count = 5;
-  int proc_count = 6;
-
-  std::vector<int> rows_per_process(proc_count, 0);
-  std::vector<int> rows_offsets(proc_count, 0);
-
+void khovansky_d_fragmentation(int rows_count, int columns_count, int proc_count, std::vector<int>& rows_per_process, std::vector<int>& rows_offsets){
   if (proc_count > rows_count) {
     for (int i = 0; i < rows_count; ++i) {
       rows_offsets[i] = i * columns_count;
       rows_per_process[i] = columns_count;
+    }
+    for (int i = rows_count; i < proc_count; ++i) {
+      rows_offsets[i] = -1;
+      rows_per_process[i] = 0;
     }
   } else {
     int rows_count_per_proc = rows_count / proc_count;
@@ -39,9 +36,21 @@ TEST(khovansky_d_ribbon_vertical_scheme_mpi, procs_more_than_rows) {
       offset += rows_per_process[i];
     }
   }
+}
+
+
+TEST(khovansky_d_ribbon_vertical_scheme_mpi, procs_more_than_rows) {
+  int rows_count = 3;
+  int columns_count = 5;
+  int proc_count = 6;
+
+  std::vector<int> rows_per_process(proc_count, 0);
+  std::vector<int> rows_offsets(proc_count, 0);
+
+  khovansky_d_fragmentation(rows_count, columns_count, proc_count, rows_per_process, rows_offsets);
 
   std::vector<int> expected_rows_per_process = {5, 5, 5, 0, 0, 0};
-  std::vector<int> expected_rows_offsets = {0, 5, 10, 0, 0, 0};
+  std::vector<int> expected_rows_offsets = {0, 5, 10, -1, -1, -1};
 
   EXPECT_EQ(rows_per_process, expected_rows_per_process);
   EXPECT_EQ(rows_offsets, expected_rows_offsets);
@@ -55,26 +64,7 @@ TEST(khovansky_d_ribbon_vertical_scheme_mpi, procs_less_than_rows) {
   std::vector<int> rows_per_process(proc_count, 0);
   std::vector<int> rows_offsets(proc_count, 0);
 
-  if (proc_count > rows_count) {
-    for (int i = 0; i < rows_count; ++i) {
-      rows_offsets[i] = i * columns_count;
-      rows_per_process[i] = columns_count;
-    }
-  } else {
-    int rows_count_per_proc = rows_count / proc_count;
-    int remainder = rows_count % proc_count;
-    int offset = 0;
-    for (int i = 0; i < proc_count; ++i) {
-      if (remainder > 0) {
-        rows_per_process[i] = (rows_count_per_proc + 1) * columns_count;
-        --remainder;
-      } else {
-        rows_per_process[i] = rows_count_per_proc * columns_count;
-      }
-      rows_offsets[i] = offset;
-      offset += rows_per_process[i];
-    }
-  }
+  khovansky_d_fragmentation(rows_count, columns_count, proc_count, rows_per_process, rows_offsets);
 
   std::vector<int> expected_rows_per_process = {9, 9, 6, 6};
   std::vector<int> expected_rows_offsets = {0, 9, 18, 24};
@@ -91,26 +81,7 @@ TEST(khovansky_d_ribbon_vertical_scheme_mpi, procs_equal_rows) {
   std::vector<int> rows_per_process(proc_count, 0);
   std::vector<int> rows_offsets(proc_count, 0);
 
-  if (proc_count > rows_count) {
-    for (int i = 0; i < rows_count; ++i) {
-      rows_offsets[i] = i * columns_count;
-      rows_per_process[i] = columns_count;
-    }
-  } else {
-    int rows_count_per_proc = rows_count / proc_count;
-    int remainder = rows_count % proc_count;
-    int offset = 0;
-    for (int i = 0; i < proc_count; ++i) {
-      if (remainder > 0) {
-        rows_per_process[i] = (rows_count_per_proc + 1) * columns_count;
-        --remainder;
-      } else {
-        rows_per_process[i] = rows_count_per_proc * columns_count;
-      }
-      rows_offsets[i] = offset;
-      offset += rows_per_process[i];
-    }
-  }
+  khovansky_d_fragmentation(rows_count, columns_count, proc_count, rows_per_process, rows_offsets);
 
   std::vector<int> expected_rows_per_process = {3, 3, 3, 3, 3};
   std::vector<int> expected_rows_offsets = {0, 3, 6, 9, 12};
