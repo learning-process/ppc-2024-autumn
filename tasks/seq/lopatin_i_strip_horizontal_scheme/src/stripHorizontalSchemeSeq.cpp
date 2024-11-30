@@ -2,7 +2,7 @@
 
 namespace lopatin_i_strip_horizontal_scheme_seq {
 
-std::vector<int> lopatin_i_strip_horizontal_scheme_seq::generateVector(int size) {
+std::vector<int> generateVector(int size) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> outputVector(size);
@@ -12,7 +12,7 @@ std::vector<int> lopatin_i_strip_horizontal_scheme_seq::generateVector(int size)
   return outputVector;
 }
 
-std::vector<int> lopatin_i_strip_horizontal_scheme_seq::generateMatrix(int sizeX, int sizeY) { 
+std::vector<int> generateMatrix(int sizeX, int sizeY) {
   std::random_device dev;
   std::mt19937 gen(dev());
   int matrixSize = sizeX * sizeY;

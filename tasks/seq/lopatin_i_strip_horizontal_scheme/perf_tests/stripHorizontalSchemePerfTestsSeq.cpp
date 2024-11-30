@@ -67,5 +67,4 @@ TEST(lopatin_i_strip_horizontal_scheme_seq, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTask);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-
 }

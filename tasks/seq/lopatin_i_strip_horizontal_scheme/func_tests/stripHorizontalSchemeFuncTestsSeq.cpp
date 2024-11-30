@@ -124,7 +124,7 @@ TEST(lopatin_i_strip_horizontal_scheme_seq, test_4x6_matrix) {
 
 TEST(lopatin_i_strip_horizontal_scheme_seq, test_6x4_matrix) {
   std::vector<int> inputMatrix = {5, 12, 34, 6, 8, 2, 15, 4, 2, 0, 0, 4, 0, 6, 0, 8, 20, 17, 20, 12, 2, 0, 2, 4};
-  std::vector<int> inputVector = {1, 2, 3, 4,};
+  std::vector<int> inputVector = {1, 2, 3, 4};
   std::vector<int> resultVector(6, 0);
   std::vector<int> expectedResult = {155, 73, 18, 44, 162, 24};
 
