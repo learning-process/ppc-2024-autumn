@@ -43,7 +43,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, mult_matrix_and_matrix_large) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  if (world.rank() == 0) {
+  if (world.size() < 5 || world.rank() >= 4) {
     A = new double[rows_A * cols_A];
     B = new double[rows_B * cols_B];
     golovkin_rowwise_matrix_partitioning::get_random_matrix(A, rows_A * cols_A);
@@ -69,7 +69,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, mult_matrix_and_matrix_large) {
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
 
-  if (world.rank() == 0) {
+  if (world.size() < 5 || world.rank() >= 4) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(A));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(B));
@@ -98,7 +98,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, mult_matrix_and_matrix_large) {
 
     delete[] res_seq;
   }
-  if (world.rank() == 0) {
+  if (world.size() < 5 || world.rank() >= 4) {
     delete[] A;
     delete[] B;
     delete[] result;
@@ -115,7 +115,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, cant_mult_matrix_wrong_sizes) {
   int rows_B = 7;
   int cols_B = 4;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
+  if (world.size() < 5 || world.rank() >= 4) {
     A = new double[rows_A * cols_A];
     B = new double[rows_B * cols_B];
     golovkin_rowwise_matrix_partitioning::get_random_matrix(A, rows_A * cols_A);
@@ -135,7 +135,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, cant_mult_matrix_wrong_sizes) {
   }
   golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), false);
-  if (world.rank() == 0) {
+  if (world.size() < 5 || world.rank() >= 4) {
     delete[] A;
     delete[] B;
     delete[] res;
@@ -155,7 +155,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_multiplication_invalid_siz
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  if (world.rank() == 0) {
+  if (world.size() < 5 || world.rank() >= 4) {
     A = new double[rows_A * cols_A];
     B = new double[rows_B * cols_B];
     golovkin_rowwise_matrix_partitioning::get_random_matrix(A, rows_A * cols_A);
@@ -177,7 +177,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_multiplication_invalid_siz
 
   golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), false);
-  if (world.rank() == 0) {
+  if (world.size() < 5 || world.rank() >= 4) {
     delete[] A;
     delete[] B;
     delete[] res;
@@ -192,7 +192,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_negative_size) {
   int cols_B = 3;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
+  if (world.size() < 5 || world.rank() >= 4) {
     taskDataPar->inputs_count.emplace_back(rows_A);
     taskDataPar->inputs_count.emplace_back(cols_A);
     taskDataPar->inputs_count.emplace_back(rows_B);
@@ -211,7 +211,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_valid_sizes) {
   int cols_B = 2;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
+  if (world.size() < 5 || world.rank() >= 4) {
     taskDataPar->inputs_count.emplace_back(rows_A);
     taskDataPar->inputs_count.emplace_back(cols_A);
     taskDataPar->inputs_count.emplace_back(rows_B);
@@ -224,7 +224,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_valid_sizes) {
 
 TEST(golovkin_rowwise_matrix_partitioning_mpi, invalid_matrix_size) {
   boost::mpi::communicator world;
-  if (world.rank() == 0) {
+  if (world.size() < 5 || world.rank() >= 4) {
     int rows_A = 0;
     int n_a = 10;
     std::unique_ptr<double[]> A(new double[rows_A * n_a]);
@@ -245,7 +245,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, mult_matrix_and_matrix_small) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  if (world.rank() == 0) {
+  if (world.size() < 5 || world.rank() >= 4) {
     A = new double[rows_A * cols_A];
     B = new double[rows_B * cols_B];
     golovkin_rowwise_matrix_partitioning::get_random_matrix(A, rows_A * cols_A);
@@ -271,7 +271,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, mult_matrix_and_matrix_small) {
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
 
-  if (world.rank() == 0) {
+  if (world.size() < 5 || world.rank() >= 4) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(A));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(B));
@@ -299,7 +299,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, mult_matrix_and_matrix_small) {
     }
     delete[] res_seq;
   }
-  if (world.rank() == 0) {
+  if (world.size() < 5 || world.rank() >= 4) {
     delete[] A;
     delete[] B;
     delete[] res;
