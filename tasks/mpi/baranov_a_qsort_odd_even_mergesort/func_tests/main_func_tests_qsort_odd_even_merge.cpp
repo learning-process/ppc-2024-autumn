@@ -174,7 +174,7 @@ TEST(baranov_a_qsort_odd_even_merge, Test_sort_1000_double) {
 
 TEST(baranov_a_qsort_odd_even_merge, Test_sort_10000_double) {
   const int N = 10000;
-  // Create data 
+  // Create data
   boost::mpi::communicator world;
   std::vector<double> arr(N);
   std::vector<double> out_vec(N);
