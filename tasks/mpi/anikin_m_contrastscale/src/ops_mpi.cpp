@@ -1,124 +1,150 @@
-// Copyright 2023 Nesterov Alexander
-#include "mpi/example/include/ops_mpi.hpp"
-
+// Copyright 2024 Anikin Maksim
+#include "mpi/anikin_m_contrastscale/include/ops_mpi.hpp"
 #include <algorithm>
-#include <functional>
 #include <random>
-#include <string>
-#include <thread>
-#include <vector>
 
-using namespace std::chrono_literals;
-
-std::vector<int> nesterov_a_test_task_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
+anikin_m_contrastscale_mpi::RGB anikin_m_contrastscale_mpi::getrandomRGB() {
+  static std::random_device rd;
+  static std::mt19937 gen(rd());
+  static std::uniform_int_distribution<int> dist(0, 255);
+  RGB rgb;
+  rgb.R = dist(gen);
+  rgb.G = dist(gen);
+  rgb.B = dist(gen);
+  return rgb;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskSequential::pre_processing() {
+double anikin_m_contrastscale_mpi::getcontrast(std::vector<anikin_m_contrastscale_mpi::RGB>& in) {
+  auto [min, max] = std::minmax_element(in.begin(), in.end(), [](auto a, auto b) { return a.R < b.R; });
+  return (double)(max->R - min->R) / (max->R + min->R);
+}
+
+bool anikin_m_contrastscale_mpi::ContrastScaleSeq::validation() {
   internal_order_test();
-  // Init vectors
-  input_ = std::vector<int>(taskData->inputs_count[0]);
-  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    input_[i] = tmp_ptr[i];
-  }
-  // Init value for output
-  res = 0;
+  return (taskData->inputs_count[0] >= 1) && (taskData->inputs_count[0] == taskData->outputs_count[0]);
+}
+
+bool anikin_m_contrastscale_mpi::ContrastScaleSeq::pre_processing() {
+  internal_order_test();
+  auto input_ptr = reinterpret_cast<RGB*>(taskData->inputs[0]);
+  correction = *reinterpret_cast<float*>(taskData->inputs[1]);
+  input_.assign(input_ptr, input_ptr + taskData->inputs_count[0]);
+  output_.clear();
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskSequential::validation() {
+bool anikin_m_contrastscale_mpi::ContrastScaleSeq::run() {
   internal_order_test();
-  // Check count elements of output
-  return taskData->outputs_count[0] == 1;
-}
+  // Middle bright
+  output_.clear();
+  int iab = 0;
+  for (auto i : input_) {
+    iab += (int)(i.R * 0.299 + i.G * 0.587 + i.B * 0.114);
+  }
+  iab /= taskData->inputs_count[0];
+  // Calculate new RGB
+  uint8_t newrgb[256];
+  for (int i = 0; i < 256; i++) {
+    int delta = (int)i - iab;
+    int temp = (int)(iab + correction * delta);
 
-bool nesterov_a_test_task_mpi::TestMPITaskSequential::run() {
-  internal_order_test();
-  if (ops == "+") {
-    res = std::accumulate(input_.begin(), input_.end(), 0);
-  } else if (ops == "-") {
-    res = -std::accumulate(input_.begin(), input_.end(), 0);
-  } else if (ops == "max") {
-    res = *std::max_element(input_.begin(), input_.end());
+    if (temp < 0) temp = 0;
+    if (temp >= 255) temp = 255;
+
+    newrgb[i] = (uint8_t)temp;
+  }
+  // Create new Image
+  for (auto i : input_) {
+    output_.emplace_back(newrgb[i.R], newrgb[i.G], newrgb[i.B]);
   }
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskSequential::post_processing() {
+bool anikin_m_contrastscale_mpi::ContrastScaleSeq::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+  auto output_ptr = reinterpret_cast<RGB*>(taskData->outputs[0]);
+  std::copy(output_.begin(), output_.end(), output_ptr);
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskParallel::pre_processing() {
+bool anikin_m_contrastscale_mpi::ContrastScaleMpi::validation() {
   internal_order_test();
-  unsigned int delta = 0;
   if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] / world.size();
+    return (taskData->inputs_count[0] >= 1) && (taskData->inputs_count[0] == taskData->outputs_count[0]);
   }
-  broadcast(world, delta, 0);
+  return true;
+}
 
+bool anikin_m_contrastscale_mpi::ContrastScaleMpi::pre_processing() { 
+  internal_order_test();
   if (world.rank() == 0) {
-    // Init vectors
-    input_ = std::vector<int>(taskData->inputs_count[0]);
-    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-      input_[i] = tmp_ptr[i];
+    auto input_ptr = reinterpret_cast<RGB*>(taskData->inputs[0]);
+    correction = *reinterpret_cast<float*>(taskData->inputs[1]);
+    input_.assign(input_ptr, input_ptr + taskData->inputs_count[0]);
+    output_.resize(taskData->inputs_count[0]);
+  }
+  return true;
+}
+
+bool anikin_m_contrastscale_mpi::ContrastScaleMpi::run() {
+  internal_order_test();
+  // Init input_size
+  uint32_t input_size;
+  if (world.rank() == 0) {
+    input_size = taskData->inputs_count[0];
+    output_.clear();
+    output_.resize(taskData->inputs_count[0]);
+  }
+  // BC data
+  broadcast(world, input_size, 0);
+  broadcast(world, correction, 0);
+  // Init local sizes
+  int size_dec = input_size / world.size();
+  int size_mod = input_size % world.size();
+  std::vector<int> local_sizes;
+  for (int i = 0; i < world.size(); i++) {
+    int local_size = size_dec;
+    if (i < size_mod) {
+      local_size++;
     }
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + proc * delta, delta);
-    }
+    local_sizes.push_back(local_size);
   }
-  local_input_ = std::vector<int>(delta);
-  if (world.rank() == 0) {
-    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
-  } else {
-    world.recv(0, 0, local_input_.data(), delta);
+  // Init local input
+  std::vector<anikin_m_contrastscale_mpi::RGB> local_input(local_sizes[world.rank()]);
+  scatterv(world, input_, local_sizes, local_input.data(), 0);
+  // Calculate iab
+  int iab = 0;
+  for (auto i : local_input) {
+    iab += (int)(i.R * 0.299 + i.G * 0.587 + i.B * 0.114);
   }
-  // Init value for output
-  res = 0;
+  iab = all_reduce(world, iab, std::plus());
+  iab = iab / input_size;
+  // Calculate newRGB
+  uint8_t newrgb[256];
+  for (int i = 0; i < 256; i++) {
+    int delta = (int)i - iab;
+    int temp = (int)(iab + correction * delta);
+
+    if (temp < 0) temp = 0;
+    if (temp >= 255) temp = 255;
+
+    newrgb[i] = (uint8_t)temp;
+  }
+  // Create new local images
+  std::vector<anikin_m_contrastscale_mpi::RGB> local_output;
+  for (auto i : local_input) {
+    local_output.emplace_back(newrgb[i.R], newrgb[i.G], newrgb[i.B]);
+  }
+  // Collect all data
+  gatherv(world, local_output.data(), local_output.size(), output_.data(), local_sizes, 0);
   return true;
 }
 
-bool nesterov_a_test_task_mpi::TestMPITaskParallel::validation() {
+bool anikin_m_contrastscale_mpi::ContrastScaleMpi::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    // Check count elements of output
-    return taskData->outputs_count[0] == 1;
-  }
-  return true;
-}
-
-bool nesterov_a_test_task_mpi::TestMPITaskParallel::run() {
-  internal_order_test();
-  int local_res;
-  if (ops == "+") {
-    local_res = std::accumulate(local_input_.begin(), local_input_.end(), 0);
-  } else if (ops == "-") {
-    local_res = -std::accumulate(local_input_.begin(), local_input_.end(), 0);
-  } else if (ops == "max") {
-    local_res = *std::max_element(local_input_.begin(), local_input_.end());
-  }
-
-  if (ops == "+" || ops == "-") {
-    reduce(world, local_res, res, std::plus(), 0);
-  } else if (ops == "max") {
-    reduce(world, local_res, res, boost::mpi::maximum<int>(), 0);
-  }
-  return true;
-}
-
-bool nesterov_a_test_task_mpi::TestMPITaskParallel::post_processing() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+    auto output_ptr = reinterpret_cast<RGB*>(taskData->outputs[0]);
+    std::copy(output_.begin(), output_.end(), output_ptr);
   }
   return true;
 }

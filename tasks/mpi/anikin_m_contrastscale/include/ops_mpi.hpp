@@ -1,51 +1,59 @@
-// Copyright 2023 Nesterov Alexander
+// Copyright 2024 Anikin Maksim
 #pragma once
 
 #include <gtest/gtest.h>
-
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
-#include <memory>
-#include <numeric>
-#include <string>
-#include <utility>
+#include <boost/serialization/serialization.hpp>
+#include <boost/serialization/vector.hpp>
 #include <vector>
-
 #include "core/task/include/task.hpp"
 
-namespace nesterov_a_test_task_mpi {
+namespace anikin_m_contrastscale_mpi {
 
-std::vector<int> getRandomVector(int sz);
+struct RGB {
+  uint8_t R;
+  uint8_t G;
+  uint8_t B;
 
-class TestMPITaskSequential : public ppc::core::Task {
- public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
-  bool pre_processing() override;
-  bool validation() override;
-  bool run() override;
-  bool post_processing() override;
-
- private:
-  std::vector<int> input_;
-  int res{};
-  std::string ops;
+  // clang-format off
+  template <typename Archive>
+  void serialize(Archive& ar, const unsigned int version) {
+    ar & R;
+    ar & G;
+    ar & B;
+  }
+  // clang-format on
 };
 
-class TestMPITaskParallel : public ppc::core::Task {
+RGB getrandomRGB();
+double getcontrast(std::vector<RGB>& in);
+
+class ContrastScaleSeq : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+  explicit ContrastScaleSeq(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
  private:
-  std::vector<int> input_, local_input_;
-  int res{};
-  std::string ops;
+  float correction;
+  std::vector<RGB> input_, output_;
+};
+
+class ContrastScaleMpi : public ppc::core::Task {
+ public:
+  explicit ContrastScaleMpi(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  bool pre_processing() override;
+  bool validation() override;
+  bool run() override;
+  bool post_processing() override;
+
+ private:
+  float correction;
+  std::vector<RGB> input_, output_;
   boost::mpi::communicator world;
 };
 
-}  // namespace nesterov_a_test_task_mpi
+}  // namespace anikin_m_contrastscale_mpi

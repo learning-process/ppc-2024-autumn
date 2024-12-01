@@ -1,4 +1,4 @@
-// Copyright 2023 Anikin Maksim
+// Copyright 2024 Anikin Maksim
 #include <gtest/gtest.h>
 #include <vector>
 #include "seq/anikin_m_contrastscale/include/ops_seq.hpp"

@@ -1,4 +1,4 @@
-// Copyright 2023 Anikin Maksim
+// Copyright 2024 Anikin Maksim
 #pragma once
 
 #include <algorithm>
