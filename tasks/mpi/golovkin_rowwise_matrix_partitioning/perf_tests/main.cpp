@@ -44,7 +44,7 @@ TEST(golovkin_rowwise_matrix_partitioning, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(cols_B);
   }
 
-  auto testMpiTaskParallel = 
+  auto testMpiTaskParallel =
       std::make_shared<golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
