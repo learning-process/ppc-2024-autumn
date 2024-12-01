@@ -36,11 +36,12 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
   source_col_pos = source_rank % cols;
   current_col_pos = current_rank % cols;
   dest_col_pos = dest_rank % cols;
-
-  if (current_col_pos != source_col_pos && current_row_pos != dest_row_pos || world.size() == 1) {
+  if (world.size() == 1) {
     return;
   }
-
+  if (current_col_pos != source_col_pos && current_row_pos != dest_row_pos) {
+    return;
+  }
   int delta_row;
   int delta_col;
   delta_row = dest_row_pos - current_row_pos;
