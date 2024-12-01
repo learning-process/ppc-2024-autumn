@@ -179,7 +179,6 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
     int l = 0;
     int r = 0;
     while (c < nom) {
-      
       const double s = 2;
       const double e = 3;
       std::uniform_real_distribution<double> unif(s, e);
