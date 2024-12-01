@@ -44,6 +44,7 @@ bool plekhanov_d_allreduce_mine_mpi::TestMPITaskSequential::validation() {
 bool plekhanov_d_allreduce_mine_mpi::TestMPITaskSequential::run() {
   internal_order_test();
   for (int column = 0; column < columnCount; column++) {
+
     int columnMin = inputData_[column];  
     for (int row = 1; row < rowCount; row++) {
       if (inputData_[row * columnCount + column] < columnMin) {
