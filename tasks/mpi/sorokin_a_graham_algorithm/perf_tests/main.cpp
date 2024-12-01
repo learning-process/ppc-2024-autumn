@@ -1,11 +1,11 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
-#include <boost/mpi/timer.hpp>
-#include <vector>
 #include <algorithm>
+#include <boost/mpi/timer.hpp>
 #include <functional>
 #include <random>
+#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/sorokin_a_graham_algorithm/include/ops_mpi.hpp"

@@ -28,8 +28,8 @@ TEST(sorokin_a_graham_algorithm_seq, Base) {
 }
 TEST(sorokin_a_graham_algorithm_seq, Base1) {
   // Create data
-  std::vector<int> in = {12, 5, 2, 3, 5, 2, 7, 1, 8, 6, 3, 8, 6, 5, 9, 3, 4, 7, 10, 10,
-                         2, 9, 5, 12, 0, 0, 8, 0, 10, 7, 6, 9, 1, 5, 3, 2, 2, 8, 7,  10};
+  std::vector<int> in = {12, 5, 2, 3,  5, 2, 7, 1, 8,  6, 3, 8, 6, 5, 9, 3, 4, 7, 10, 10,
+                         2,  9, 5, 12, 0, 0, 8, 0, 10, 7, 6, 9, 1, 5, 3, 2, 2, 8, 7,  10};
   std::vector<int> out(in.size(), 0);
   std::vector<int> outres = {0, 0, 8, 0, 12, 5, 10, 10, 5, 12, 2, 9, 1, 5};
 

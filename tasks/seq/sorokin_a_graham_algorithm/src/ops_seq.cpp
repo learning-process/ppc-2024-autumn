@@ -5,7 +5,7 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> grahamAlg(const std::vector<int>& input) {
+std::vector<int> grahamAlg(const std::vector<int> &input) {
   int n = input.size() / 2;
   if (n <= 3) {
     return input;
@@ -16,11 +16,11 @@ std::vector<int> grahamAlg(const std::vector<int>& input) {
   }
   int minind = 0;
   for (int i = 0; i < n; ++i) {
-    if (input[i * 2 + 1] < input[minind * 2 + 1]){
+    if (input[i * 2 + 1] < input[minind * 2 + 1]) {
       minind = i;
     }
-    if (input[i * 2 + 1] == input[minind * 2 + 1]){
-      if (input[i * 2] < input[minind * 2]){
+    if (input[i * 2 + 1] == input[minind * 2 + 1]) {
+      if (input[i * 2] < input[minind * 2]) {
         minind = i;
       }
     }
@@ -28,9 +28,12 @@ std::vector<int> grahamAlg(const std::vector<int>& input) {
   std::sort(indices.begin(), indices.end(), [&input, minind](int p1, int p2) {
     if (p1 == minind) return true;
     if (p2 == minind) return false;
-    int x0 = input[minind * 2], y0 = input[minind * 2 + 1];
-    int x1 = input[p1 * 2], y1 = input[p1 * 2 + 1];
-    int x2 = input[p2 * 2], y2 = input[p2 * 2 + 1];
+    int x0 = input[minind * 2];
+    int y0 = input[minind * 2 + 1];
+    int x1 = input[p1 * 2];
+    int y1 = input[p1 * 2 + 1];
+    int x2 = input[p2 * 2];
+    int y2 = input[p2 * 2 + 1];
     int orient = (x1 - x0) * (y2 - y0) - (y1 - y0) * (x2 - x0);
     if (orient == 0) {
       int dx1 = input[p1 * 2] - input[minind * 2];
@@ -52,9 +55,12 @@ std::vector<int> grahamAlg(const std::vector<int>& input) {
       int top = stack.back();
       int nextToTop = stack[stack.size() - 2];
 
-      int x0 = input[nextToTop * 2], y0 = input[nextToTop * 2 + 1];
-      int x1 = input[top * 2], y1 = input[top * 2 + 1];
-      int x2 = input[indices[i] * 2], y2 = input[indices[i] * 2 + 1];
+      int x0 = input[nextToTop * 2];
+      int y0 = input[nextToTop * 2 + 1];
+      int x1 = input[top * 2];
+      int y1 = input[top * 2 + 1];
+      int x2 = input[indices[i] * 2];
+      int y2 = input[indices[i] * 2 + 1];
 
       int orient = (x1 - x0) * (y2 - y0) - (y1 - y0) * (x2 - x0);
 
@@ -96,7 +102,7 @@ bool sorokin_a_graham_algorithm_seq::TestTaskSequential::run() {
 
 bool sorokin_a_graham_algorithm_seq::TestTaskSequential::post_processing() {
   internal_order_test();
-  auto* tmp_ptr = reinterpret_cast<int *>(taskData->outputs[0]);
+  auto *tmp_ptr = reinterpret_cast<int *>(taskData->outputs[0]);
   std::copy(res_.begin(), res_.end(), tmp_ptr);
   return true;
 }
