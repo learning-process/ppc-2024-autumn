@@ -65,7 +65,6 @@ bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::run() {
   return true;
 }
 
-
 bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::post_processing() { return true; }
 
 std::vector<int> komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::compute_neighbors(int rank,
