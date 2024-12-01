@@ -32,6 +32,7 @@ bool shuravina_o_contrast::ContrastTaskParallel::pre_processing() {
   output_ = std::vector<uint8_t>(delta);
   return true;
 }
+
 bool shuravina_o_contrast::ContrastTaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
