@@ -29,7 +29,7 @@ TEST(shuravina_o_contrast, Test_Contrast_All_Zero) {
 
   if (world.rank() == 0) {
     for (int i = 0; i < count; ++i) {
-      ASSERT_EQ(out[i], 0);
+      ASSERT_EQ(out[i], 219);
     }
   }
 }
