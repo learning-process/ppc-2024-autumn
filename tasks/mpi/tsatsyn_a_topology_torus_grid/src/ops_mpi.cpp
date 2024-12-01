@@ -37,7 +37,7 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
   current_col_pos = current_rank % cols;
   dest_col_pos = dest_rank % cols;
 
-  if (current_col_pos != source_col_pos && current_row_pos != dest_row_pos) {
+  if (current_col_pos != source_col_pos && current_row_pos != dest_row_pos || world.size() == 1) {
     return;
   }
 
@@ -253,7 +253,9 @@ void myBroadcast(boost::mpi::communicator& world, std::map<std::string, int> nei
   int delta;
   bool is_main_magistralle;
   is_main_magistralle = (col_pos == 0);
-
+  if (world.size() == 1) {
+    return;
+  }
   if (world.rank() == 0) {
     int sizeinput = inputs.size();
     int limit = 10000;
@@ -469,14 +471,10 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
   neighbors["right"] = (col_pos == cols - 1) ? toGetNeighbor(row_pos, 0) : toGetNeighbor(row_pos, col_pos + 1);
   neighbors["up"] = (row_pos == 0) ? toGetNeighbor(rows - 1, col_pos) : toGetNeighbor(row_pos - 1, col_pos);
   myBroadcast(world, neighbors, rows, cols, col_pos, row_pos, input_data);
-  world.barrier();
   if (world.rank() == (world.size() - 1)) {
     res = input_data.size();
   }
-  mySend(world, world.size() - 1, 1, cols, rows, neighbors, res);
-  mySend(world, 1, world.size() / 2, cols, rows, neighbors, res);
-  mySend(world, world.size() / 2, 0, cols, rows, neighbors, res);
-
+  mySend(world, world.size() - 1, 0, cols, rows, neighbors, res);
   return true;
 }
 
