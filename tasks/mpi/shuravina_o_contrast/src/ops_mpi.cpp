@@ -20,14 +20,14 @@ bool shuravina_o_contrast::ContrastTaskParallel::pre_processing() {
       input_[i] = tmp_ptr[i];
     }
     for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + proc * delta, delta);
+      world.send(proc, 0, &input_[proc * delta], delta);
     }
   }
   local_input_ = std::vector<uint8_t>(delta);
   if (world.rank() == 0) {
     local_input_ = std::vector<uint8_t>(input_.begin(), input_.begin() + delta);
   } else {
-    world.recv(0, 0, local_input_.data(), delta);
+    world.recv(0, 0, &local_input_[0], delta);
   }
   output_ = std::vector<uint8_t>(delta);
   return true;
@@ -72,13 +72,13 @@ bool shuravina_o_contrast::ContrastTaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     std::vector<uint8_t> global_output(taskData->inputs_count[0]);
-    gather(world, output_.data(), output_.size(), global_output.data(), 0);
+    gather(world, &output_[0], output_.size(), &global_output[0], 0);
     auto* tmp_ptr = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
     for (unsigned i = 0; i < taskData->outputs_count[0]; i++) {
       tmp_ptr[i] = global_output[i];
     }
   } else {
-    gather(world, output_.data(), output_.size(), 0);
+    gather(world, &output_[0], output_.size(), 0);
   }
   return true;
 }
