@@ -9,8 +9,8 @@ bool tyshkevich_a_hypercube_mpi::HypercubeParallelMPI::validation() {
 
   int world_size = world.size();
 
-  int dimension = static_cast<int>(std::log2(world_size));
-  if ((1 << dimension) != world_size) {
+  int val_dimension = static_cast<int>(std::log2(world_size));
+  if ((1 << val_dimension) != world_size) {
     return false;
   }
 

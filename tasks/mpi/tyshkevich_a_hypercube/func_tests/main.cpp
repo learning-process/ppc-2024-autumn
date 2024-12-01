@@ -67,8 +67,8 @@ void run_test(boost::mpi::communicator& world, int sender, int target, int data_
 }
 
 bool initial_test(int world_size) {
-  int dimension = static_cast<int>(std::log2(world_size));
-  return (1 << dimension) == world_size;
+  int init_dimension = static_cast<int>(std::log2(world_size));
+  return (1 << init_dimension) == world_size;
 }
 
 }  // namespace tyshkevich_a_hypercube_mpi
