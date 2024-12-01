@@ -30,10 +30,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Sum) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-
-
-
-    ASSERT_EQ(1, 1); //?????
+    ASSERT_EQ(1, 1);
   }
 }
 
@@ -71,9 +68,8 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Sum) {
 //     taskDataSeq->outputs_count.emplace_back(reference_diff.size());
 
 //     // Create Task
-//     varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "-");
-//     ASSERT_EQ(testMpiTaskSequential.validation(), true);
-//     testMpiTaskSequential.pre_processing();
+//     varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq,
+//     "-"); ASSERT_EQ(testMpiTaskSequential.validation(), true); testMpiTaskSequential.pre_processing();
 //     testMpiTaskSequential.run();
 //     testMpiTaskSequential.post_processing();
 
@@ -115,9 +111,8 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Sum) {
 //     taskDataSeq->outputs_count.emplace_back(reference_diff.size());
 
 //     // Create Task
-//     varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "-");
-//     ASSERT_EQ(testMpiTaskSequential.validation(), true);
-//     testMpiTaskSequential.pre_processing();
+//     varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq,
+//     "-"); ASSERT_EQ(testMpiTaskSequential.validation(), true); testMpiTaskSequential.pre_processing();
 //     testMpiTaskSequential.run();
 //     testMpiTaskSequential.post_processing();
 
@@ -159,9 +154,8 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Sum) {
 //     taskDataSeq->outputs_count.emplace_back(reference_max.size());
 
 //     // Create Task
-//     varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "max");
-//     ASSERT_EQ(testMpiTaskSequential.validation(), true);
-//     testMpiTaskSequential.pre_processing();
+//     varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq,
+//     "max"); ASSERT_EQ(testMpiTaskSequential.validation(), true); testMpiTaskSequential.pre_processing();
 //     testMpiTaskSequential.run();
 //     testMpiTaskSequential.post_processing();
 
@@ -203,9 +197,8 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Sum) {
 //     taskDataSeq->outputs_count.emplace_back(reference_max.size());
 
 //     // Create Task
-//     varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "max");
-//     ASSERT_EQ(testMpiTaskSequential.validation(), true);
-//     testMpiTaskSequential.pre_processing();
+//     varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq,
+//     "max"); ASSERT_EQ(testMpiTaskSequential.validation(), true); testMpiTaskSequential.pre_processing();
 //     testMpiTaskSequential.run();
 //     testMpiTaskSequential.post_processing();
 
