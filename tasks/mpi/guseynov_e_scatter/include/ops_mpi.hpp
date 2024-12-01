@@ -2,89 +2,89 @@
 
 #include <gtest/gtest.h>
 
-#include <boost/mpi/communicator.hpp>
 #include <boost/mpi/collectives.hpp>
-#include <vector>
+#include <boost/mpi/communicator.hpp>
 #include <cmath>
+#include <vector>
 
 #include "core/task/include/task.hpp"
 
-namespace guseynov_e_scatter_mpi{
-    
-    std::vector<int> getRandomVector(int sz);
+namespace guseynov_e_scatter_mpi {
 
-    class TestMPITaskSequential : public ppc::core::Task{
-        public:
-        explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
-            : Task(std::move(taskData_)){}
-        bool pre_processing() override;
-        bool validation() override;
-        bool run() override;
-        bool post_processing() override;
+std::vector<int> getRandomVector(int sz);
 
-    private:
-        std::vector<int> input_;
-        int res_{};
-    };
+class TestMPITaskSequential : public ppc::core::Task {
+ public:
+  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  bool pre_processing() override;
+  bool validation() override;
+  bool run() override;
+  bool post_processing() override;
 
-    class TestMPITaskParallel : ppc::core::Task{
-        public:
-         explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
-            : Task(std::move(taskData_)) {}
-        bool pre_processing() override;
-        bool validation() override;
-        bool run() override;
-        bool post_processing() override;
+ private:
+  std::vector<int> input_;
+  int res_{};
+};
 
-    private:
-        std::vector<int> input_, local_input_;
-        int res_{};
-        boost::mpi::communicator world;
-    };
+class TestMPITaskParallel : public ppc::core::Task {
+ public:
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  bool pre_processing() override;
+  bool validation() override;
+  bool run() override;
+  bool post_processing() override;
 
-    class MyScatterTestMPITaskParallel : ppc::core::Task{
-        public:
-         explicit MyScatterTestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
-            : Task(std::move(taskData_)) {}
-        bool pre_processing() override;
-        bool validation() override;
-        bool run() override;
-        bool post_processing() override;
+ private:
+  std::vector<int> input_, local_input_;
+  int res_{};
+  boost::mpi::communicator world;
+};
 
-        template<typename T>
-        static void my_scatter(const boost::mpi::communicator & comm, const std::vector<T> & in_values, T * out_values, int n, int root){
-          int left_child = 2 * comm.rank() + 1;
-          int right_child = 2 * comm.rank() + 2;
-          int level = static_cast<int>(std::floor(log(comm.rank() + 1) / log(2)));  
-          int proc_on_level = static_cast<int>(pow(2, level));
-          if (comm.rank() == root){
-            std::copy(in_values.begin(), in_values.begin() + n, out_values);
-            if (left_child < comm.size()){
-                comm.send(left_child, root, in_values.data() +  n, (comm.size() - 1) * n);
-            }
-            if (right_child < comm.size()){
-                comm.send(right_child, root, in_values.data() + n, (comm.size() - 1) * n);
-            }
-          }else{
-            int min_rank_on_level = proc_on_level - 1;
-            int recv_buffer_size = (comm.size() - min_rank_on_level * 2)*n;
-            int recv_id = (comm.rank() - 1)/2;
-            std::vector<T> recv_buffer(recv_buffer_size);
+class MyScatterTestMPITaskParallel : public ppc::core::Task {
+ public:
+  explicit MyScatterTestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  bool pre_processing() override;
+  bool validation() override;
+  bool run() override;
+  bool post_processing() override;
 
-            comm.recv(recv_id, 0, recv_buffer.data(), recv_buffer_size);
-            std::copy(recv_buffer.begin() + (comm.rank() - min_rank_on_level) * n, recv_buffer.begin() + (comm.rank() - min_rank_on_level) * n + n, out_values);
-            if (left_child < comm.size()){
-                comm.send(left_child, comm.rank(), recv_buffer.data() + n * proc_on_level, (comm.size() - min_rank_on_level * 2)*n);
-            }
-            if (right_child < comm.size()){
-                comm.send(right_child, comm.rank(), recv_buffer.data() + n * proc_on_level, (comm.size() - min_rank_on_level*2)*n);
-            }
-           }
-        }
-        
-    private:
-        std::vector<int> input_, local_input_;
-        int res_{};
-        boost::mpi::communicator world;
-    };
-}
+  template <typename T>
+  static void my_scatter(const boost::mpi::communicator& comm, const std::vector<T>& in_values, T* out_values, int n,
+                         int root) {
+    int left_child = 2 * comm.rank() + 1;
+    int right_child = 2 * comm.rank() + 2;
+    int level = static_cast<int>(std::floor(log(comm.rank() + 1) / log(2)));
+    int proc_on_level = static_cast<int>(pow(2, level));
+    if (comm.rank() == root) {
+      std::copy(in_values.begin(), in_values.begin() + n, out_values);
+      if (left_child < comm.size()) {
+        comm.send(left_child, 0, in_values.data() + n, (comm.size() - 1) * n);
+      }
+      if (right_child < comm.size()) {
+        comm.send(right_child, 0, in_values.data() + n, (comm.size() - 1) * n);
+      }
+    } else {
+      int min_rank_on_level = proc_on_level - 1;
+      int recv_buffer_size = (comm.size() - min_rank_on_level) * n;
+      int recv_id = (comm.rank() - 1) / 2;
+      std::vector<T> recv_buffer(recv_buffer_size);
+
+      comm.recv(recv_id, root, recv_buffer.data(), recv_buffer_size);
+      std::copy(recv_buffer.begin() + (comm.rank() - min_rank_on_level) * n,
+                recv_buffer.begin() + (comm.rank() - min_rank_on_level) * n + n, out_values);
+      if (left_child < comm.size()) {
+        comm.send(left_child, 0, recv_buffer.data() + n * proc_on_level, (comm.size() - min_rank_on_level * 2 - 1) * n);
+      }
+      if (right_child < comm.size()) {
+        comm.send(right_child, 0, recv_buffer.data() + n * proc_on_level,
+                  (comm.size() - min_rank_on_level * 2 - 1) * n);
+      }
+    }
+  }
+
+ private:
+  std::vector<int> input_, local_input_;
+  int res_{};
+  boost::mpi::communicator world;
+};
+}  // namespace guseynov_e_scatter_mpi
