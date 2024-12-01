@@ -1,4 +1,4 @@
-// Copyright 2023 Anikin Maksim
+// Copyright 2024 Anikin Maksim
 #include <gtest/gtest.h>
 #include <vector>
 #include "core/perf/include/perf.hpp"
@@ -7,7 +7,7 @@
 using namespace anikin_m_contrastscale_seq;
 
 TEST(anikin_m_contrastscale, test_pipeline_run) {
-  const int count = 20'000'000;
+  const int count = 20000000;
   // Create data
   std::vector<RGB> in;
   float k = 1.5;
@@ -48,7 +48,7 @@ TEST(anikin_m_contrastscale, test_pipeline_run) {
 }
 
 TEST(anikin_m_contrastscale, test_task_run) {
-  const int count = 20'000'000;
+  const int count = 20000000;
   // Create data
   std::vector<RGB> in;
   float k = 1.5;
