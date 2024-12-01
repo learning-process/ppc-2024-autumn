@@ -1,5 +1,3 @@
-#include <gtest/gtest.h>
-
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/timer.hpp>
 #include <random>
@@ -21,71 +19,72 @@ std::vector<int> generate_random_data(int count, int lower_bound = -1000, int up
 }
 
 TEST(lavrentyev_a_line_topology_mpi, task_run) {
-  boost::mpi::communicator mpi_comm;
+  boost::mpi::communicator world;
 
-  if (mpi_comm.size() < 2) return;
+  int num_elems = 1000000;
+  int start_proc = 0;
+  int end_proc = world.size() - 1;
 
-  int total_elements = 1000000;
-  int start_rank = 0;
-  int end_rank = mpi_comm.size() - 1;
+  auto task_data = std::make_shared<ppc::core::TaskData>();
+  task_data->inputs_count.push_back(start_proc);
+  task_data->inputs_count.push_back(end_proc);
+  task_data->inputs_count.push_back(num_elems);
 
-  auto data = std::make_shared<ppc::core::TaskData>();
-  data->inputs_count.push_back(start_rank);
-  data->inputs_count.push_back(end_rank);
-  data->inputs_count.push_back(total_elements);
+  std::vector<int> input_data;
+  std::vector<int> output_data(num_elems);
+  std::vector<int> processing_sequence;
 
-  std::vector<int> input_values;
-  std::vector<int> result_values(total_elements);
-  std::vector<int> processing_order;
+  if (world.rank() == start_proc) {
+    input_data = lavrentyev_a_line_topology_mpi::generate_random_data(num_elems);
+    task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
 
-  if (mpi_comm.rank() == start_rank) {
-    input_values = lavrentyev_a_line_topology_mpi::generate_random_data(total_elements);
-    data->inputs.push_back(reinterpret_cast<uint8_t*>(input_values.data()));
+    if (start_proc != end_proc) {
+      world.send(end_proc, 0, input_data);
+    }
   }
 
-  if (mpi_comm.rank() == end_rank) {
-    processing_order.resize(end_rank - start_rank + 1);
-    data->outputs = {reinterpret_cast<uint8_t*>(result_values.data()),
-                     reinterpret_cast<uint8_t*>(processing_order.data())};
-    data->outputs_count.push_back(result_values.size());
-    data->outputs_count.push_back(processing_order.size());
+  if (world.rank() == end_proc) {
+    if (start_proc != end_proc) {
+      world.recv(start_proc, 0, input_data);
+    }
+
+    processing_sequence.resize(end_proc - start_proc + 1);
+    task_data->outputs.push_back(reinterpret_cast<uint8_t*>(output_data.data()));
+    task_data->outputs_count.push_back(output_data.size());
+    task_data->outputs.push_back(reinterpret_cast<uint8_t*>(processing_sequence.data()));
+    task_data->outputs_count.push_back(processing_sequence.size());
   }
 
-  auto task = std::make_shared<lavrentyev_a_line_topology_mpi::TestMPITaskParallel>(data);
+  auto mpi_task = std::make_shared<lavrentyev_a_line_topology_mpi::TestMPITaskParallel>(task_data);
 
-  auto performance_attributes = std::make_shared<ppc::core::PerfAttr>();
-  performance_attributes->num_running = 10;
-  boost::mpi::timer timer;
-  performance_attributes->current_timer = [&] { return timer.elapsed(); };
+  auto performance_attr = std::make_shared<ppc::core::PerfAttr>();
+  performance_attr->num_running = 10;
+  boost::mpi::timer performance_timer;
+  performance_attr->current_timer = [&] { return performance_timer.elapsed(); };
 
   auto performance_results = std::make_shared<ppc::core::PerfResults>();
+  auto performance_analyzer = std::make_shared<ppc::core::Perf>(mpi_task);
 
-  auto performance_analyzer = std::make_shared<ppc::core::Perf>(task);
-  performance_analyzer->task_run(performance_attributes, performance_results);
+  performance_analyzer->task_run(performance_attr, performance_results);
 
-  ASSERT_TRUE(task->pre_processing());
-  ASSERT_TRUE(task->validation());
-  ASSERT_TRUE(task->run());
-  ASSERT_TRUE(task->post_processing());
-
-  if (mpi_comm.rank() == end_rank) {
+  if (world.rank() == end_proc) {
     ppc::core::Perf::print_perf_statistic(performance_results);
 
-    ASSERT_EQ(input_values, result_values);
-    for (size_t i = 0; i < processing_order.size(); ++i) {
-      ASSERT_EQ(processing_order[i], start_rank + static_cast<int>(i));
+    for (int i = 0; i < num_elems; i++) {
+      ASSERT_EQ(output_data[i], input_data[i]);
+    }
+    for (size_t i = 0; i < processing_sequence.size(); ++i) {
+      ASSERT_EQ(processing_sequence[i], start_proc + static_cast<int>(i));
     }
   }
 }
 
 TEST(lavrentyev_a_line_topology_mpi, pipeline_run) {
-  boost::mpi::communicator mpi_comm;
-
-  if (mpi_comm.size() < 2) return;
+  boost::mpi::communicator world;
 
   int total_elements = 10'000'000;
   int start_rank = 0;
-  int end_rank = mpi_comm.size() - 1;
+  int end_rank = world.size() - 1;
 
   auto data = std::make_shared<ppc::core::TaskData>();
   data->inputs_count.push_back(start_rank);
@@ -96,15 +95,22 @@ TEST(lavrentyev_a_line_topology_mpi, pipeline_run) {
   std::vector<int> result_values(total_elements);
   std::vector<int> trace_path;
 
-  if (mpi_comm.rank() == start_rank) {
+  if (world.rank() == start_rank) {
     input_values = lavrentyev_a_line_topology_mpi::generate_random_data(total_elements);
     data->inputs.push_back(reinterpret_cast<uint8_t*>(input_values.data()));
+
+    if (start_rank != end_rank) {
+      world.send(end_rank, 0, input_values);
+    }
   }
 
-  if (mpi_comm.rank() == end_rank) {
+  if (world.rank() == end_rank) {
+    if (start_rank != end_rank) {
+      world.recv(start_rank, 0, input_values);
+    }
+
     trace_path.resize(end_rank - start_rank + 1);
-    data->outputs = {reinterpret_cast<uint8_t*>(result_values.data()),
-                     reinterpret_cast<uint8_t*>(trace_path.data())};
+    data->outputs = {reinterpret_cast<uint8_t*>(result_values.data()), reinterpret_cast<uint8_t*>(trace_path.data())};
     data->outputs_count.push_back(result_values.size());
     data->outputs_count.push_back(trace_path.size());
   }
@@ -121,7 +127,7 @@ TEST(lavrentyev_a_line_topology_mpi, pipeline_run) {
 
   perf_analyzer->pipeline_run(perf_attrs, perf_results);
 
-  if (mpi_comm.rank() == end_rank) {
+  if (world.rank() == end_rank) {
     ppc::core::Perf::print_perf_statistic(perf_results);
     ASSERT_EQ(input_values, result_values);
     for (size_t i = 0; i < trace_path.size(); ++i) {
@@ -129,5 +135,4 @@ TEST(lavrentyev_a_line_topology_mpi, pipeline_run) {
     }
   }
 }
-
 }  // namespace lavrentyev_a_line_topology_mpi

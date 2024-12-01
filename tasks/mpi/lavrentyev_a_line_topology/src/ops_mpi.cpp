@@ -58,9 +58,13 @@ bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::validation() {
 
 bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-
+    
   int start_proc = taskData->inputs_count[0];
   int end_proc = taskData->inputs_count[1];
+
+  if (start_proc == end_proc) {
+    return true;
+  }
 
   if (world.rank() < start_proc || world.rank() > end_proc) {
     return true;

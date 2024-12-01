@@ -56,11 +56,6 @@ TEST(lavrentyev_a_line_topology_mpi, SingleProcessDataTransfer) {
 TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer) {
   boost::mpi::communicator world;
 
-  if (world.size() < 2) {
-    GTEST_SKIP() << "Not enough processes for multi-process test";
-    return;
-  }
-
   const int start_proc = 0;
   const int end_proc = world.size() - 1;
   const size_t num_elems = 1000;
