@@ -40,31 +40,31 @@ bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::run() {
 
   world.barrier();
 
+  std::vector<uint8_t> send_data(taskData->inputs_count[0], 0);
+  std::copy(taskData->inputs[0], taskData->inputs[0] + taskData->inputs_count[0], send_data.begin());
+
   for (int step = 0; step < grid_size; ++step) {
     auto neighbors = compute_neighbors(rank, grid_size);
 
     for (int neighbor : neighbors) {
       if (neighbor < size) {
-        std::vector<uint8_t> send_data(taskData->inputs_count[0], 0);
-        std::copy(taskData->inputs[0], taskData->inputs[0] + taskData->inputs_count[0], send_data.begin());
+        world.send(neighbor, 0, send_data);
 
-        try {
-          world.send(neighbor, 0, send_data);
-          std::vector<uint8_t> recv_data(taskData->inputs_count[0]);
-          world.recv(neighbor, 0, recv_data);
+        std::vector<uint8_t> recv_data(taskData->inputs_count[0]);
+        world.recv(neighbor, 0, recv_data);
 
-          if (taskData->outputs_count[0] >= send_data.size()) {
-            std::copy(send_data.begin(), send_data.end(), taskData->outputs[0]);
-          }
-        } catch (const boost::mpi::exception& e) {
-          std::cerr << "Error when exchanging data with process " << neighbor << ": " << e.what() << std::endl;
+        if (taskData->outputs_count[0] >= send_data.size()) {
+          std::copy(send_data.begin(), send_data.end(), taskData->outputs[0]);
         }
       }
     }
+
     world.barrier();
   }
+
   return true;
 }
+
 
 bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::post_processing() { return true; }
 

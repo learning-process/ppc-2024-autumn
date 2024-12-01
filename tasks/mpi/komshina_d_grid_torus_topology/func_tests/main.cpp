@@ -116,10 +116,10 @@ TEST(komshina_d_grid_torus_topology_mpi, TestLargeData) {
 
   komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel task(task_data);
 
-  ASSERT_TRUE(task.validation()) << "Validation failed.";
-  ASSERT_TRUE(task.pre_processing()) << "Pre-processing failed.";
-  ASSERT_TRUE(task.run()) << "Run failed.";
-  ASSERT_TRUE(task.post_processing()) << "Post-processing failed.";
+  ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
 
   for (size_t i = 0; i < output_data.size(); ++i) {
     EXPECT_EQ(output_data[i], input_data[i]) << "Mismatch at index " << i;
@@ -204,36 +204,4 @@ TEST(komshina_d_grid_torus_topology_mpi, TestSmallNumberOfProcesses) {
   for (size_t i = 0; i < output_data.size(); ++i) {
     EXPECT_EQ(output_data[i], input_data[i]);
   }
-}
-
-TEST(komshina_d_grid_torus_topology_mpi, TestMPIExceptionHandling) {
-  boost::mpi::communicator world;
-
-  if (world.size() < 4) {
-    GTEST_SKIP() << "There are not enough processes for the test";
-  }
-
-  std::vector<uint8_t> input_data(4, 42);
-  std::vector<uint8_t> output_data(4, 0);
-
-  auto task_data = std::make_shared<ppc::core::TaskData>();
-  task_data->inputs.emplace_back(input_data.data());
-  task_data->inputs_count.emplace_back(input_data.size());
-  task_data->outputs.emplace_back(output_data.data());
-  task_data->outputs_count.emplace_back(output_data.size());
-
-  komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel task(task_data);
-
-  if (world.rank() == 1) {
-    try {
-      throw boost::mpi::exception("Mock exception", MPI_ERR_OTHER);
-    } catch (const boost::mpi::exception& e) {
-      std::cerr << "Caught mock MPI exception: " << e.what() << std::endl;
-    }
-  }
-
-  ASSERT_TRUE(task.validation());
-  ASSERT_TRUE(task.pre_processing());
-  ASSERT_TRUE(task.run());
-  ASSERT_TRUE(task.post_processing());
 }
