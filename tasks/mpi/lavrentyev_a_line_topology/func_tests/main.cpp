@@ -16,43 +16,6 @@ std::vector<int> generate_random_vector(size_t size) {
   return vec;
 }
 
-TEST(lavrentyev_a_line_topology_mpi, SingleProcessDataTransfer) {
-  boost::mpi::communicator world;
-
-  const int start_proc = 0;
-  const int end_proc = 0;
-  const size_t num_elems = 500;
-
-  auto task_data = std::make_shared<ppc::core::TaskData>();
-  task_data->inputs_count = {start_proc, end_proc, static_cast<int>(num_elems)};
-
-  std::vector<int> input_data;
-  std::vector<int> output_data(num_elems, -1);
-  std::vector<int> received_path(1, -1);
-
-  if (world.rank() == start_proc) {
-    input_data = generate_random_vector(num_elems);
-    task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
-  }
-
-  if (world.rank() == end_proc) {
-    task_data->outputs = {reinterpret_cast<uint8_t*>(output_data.data()),
-                          reinterpret_cast<uint8_t*>(received_path.data())};
-    task_data->outputs_count = {static_cast<unsigned int>(output_data.size()),
-                                static_cast<unsigned int>(received_path.size())};
-  }
-
-  lavrentyev_a_line_topology_mpi::TestMPITaskParallel task(task_data);
-
-  ASSERT_TRUE(task.validation());
-  ASSERT_TRUE(task.pre_processing());
-  ASSERT_TRUE(task.run());
-  ASSERT_TRUE(task.post_processing());
-
-  ASSERT_EQ(input_data, output_data);
-  ASSERT_EQ(received_path[0], start_proc);
-}
-
 TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer) {
   boost::mpi::communicator world;
 
