@@ -53,7 +53,7 @@ class MyScatterTestMPITaskParallel : public ppc::core::Task {
                          int root) {
     int left_child = 2 * comm.rank() + 1;
     int right_child = 2 * comm.rank() + 2;
-    int level = static_cast<int>(std::floor(log(comm.rank() + 1) / log(2)));
+    int level = static_cast<int>(std::floor(log(comm.rank() + 1) / std::numbers::ln2));
     int proc_on_level = static_cast<int>(pow(2, level));
     if (comm.rank() == root) {
       std::copy(in_values.begin(), in_values.begin() + n, out_values);
