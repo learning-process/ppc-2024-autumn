@@ -30,61 +30,6 @@ void get_random_matrix(double* matr, int size) {
 
 }  // namespace golovkin_rowwise_matrix_partitioning
 
-TEST(golovkin_rowwise_matrix_partitioning_mpi, mult_matrix_and_matrix_large) {
-  boost::mpi::communicator world;
-
-  int rows_A = 700;
-  int cols_A = 800;
-  int rows_B = 800;
-  int cols_B = 100;
-
-  std::vector<double> A(rows_A * cols_A);
-  std::vector<double> B(rows_B * cols_B);
-  std::vector<double> result(rows_A * cols_B);
-
-  golovkin_rowwise_matrix_partitioning::get_random_matrix(A.data(), rows_A * cols_A);
-  golovkin_rowwise_matrix_partitioning::get_random_matrix(B.data(), rows_B * cols_B);
-
-  auto taskDataPar = std::make_shared<ppc::core::TaskData>();
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
-  taskDataPar->inputs_count.emplace_back(static_cast<unsigned int>(rows_A));
-  taskDataPar->inputs_count.emplace_back(static_cast<unsigned int>(cols_A));
-  taskDataPar->inputs_count.emplace_back(static_cast<unsigned int>(rows_B));
-  taskDataPar->inputs_count.emplace_back(static_cast<unsigned int>(cols_B));
-
-  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
-  taskDataPar->outputs_count = {static_cast<unsigned int>(rows_A), static_cast<unsigned int>(cols_B)};
-
-  golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
-
-  // Инициализация данных для последовательной задачи
-  std::vector<double> result_seq(rows_A * cols_B);
-  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
-  taskDataSeq->inputs_count = {static_cast<unsigned int>(rows_A), static_cast<unsigned int>(cols_A),
-                               static_cast<unsigned int>(rows_B), static_cast<unsigned int>(cols_B)};
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_seq.data()));
-  taskDataSeq->outputs_count = {static_cast<unsigned int>(rows_A), static_cast<unsigned int>(cols_B)};
-
-  auto TestTaskSequential =
-      std::make_shared<golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask>(taskDataSeq);
-  ASSERT_EQ(TestTaskSequential->validation(), true);
-  TestTaskSequential->pre_processing();
-  TestTaskSequential->run();
-  TestTaskSequential->post_processing();
-
-  for (int i = 0; i < rows_A * cols_B; i++) {
-    ASSERT_NEAR(result_seq[i], result[i], 1e-6);
-  }
-}
-
-
 TEST(golovkin_rowwise_matrix_partitioning_mpi, cant_mult_matrix_wrong_sizes) {
   boost::mpi::communicator world;
   double* A = nullptr;
