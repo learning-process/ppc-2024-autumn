@@ -42,7 +42,6 @@ class MPIMatrixMultiplicationTask : public ppc::core::Task {
 
   bool gather_result();
   bool multiply_matrices();
-
 };
 
 }  // namespace golovkin_rowwise_matrix_partitioning
