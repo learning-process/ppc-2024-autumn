@@ -22,6 +22,7 @@ class MPIMatrixMultiplicationTask : public ppc::core::Task {
   bool pre_processing() override;
   bool run() override;
   bool post_processing() override;
+  bool initializeDataStructures();
 
   ~MPIMatrixMultiplicationTask() override {
     delete[] A;
@@ -41,7 +42,7 @@ class MPIMatrixMultiplicationTask : public ppc::core::Task {
 
   bool gather_result();
   bool multiply_matrices();
-  bool initializeDataStructures();
+
 };
 
 }  // namespace golovkin_rowwise_matrix_partitioning
