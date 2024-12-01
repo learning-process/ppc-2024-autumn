@@ -2,15 +2,16 @@
 
 #include "mpi/baranov_a_ring_topology/include/header_topology.hpp"
 template <typename tp>
-  requires std::is_arithmetic_v<tp>
-void get_rnd_vec(std::vector<tp> &vec) {
+typename std::enable_if<std::is_arithmetic<tp>::value>::type get_rnd_vec(std::vector<tp> &vec) {
   std::random_device rd;
   std::default_random_engine reng(rd());
 
-  if constexpr (std::is_integral_v<tp>) {
+  if constexpr (std::is_integral<tp>::value) {
+    // Для целых чисел
     std::uniform_int_distribution<tp> dist(0, vec.size());
     std::generate(vec.begin(), vec.end(), [&dist, &reng] { return dist(reng); });
-  } else if constexpr (std::is_floating_point_v<tp>) {
+  } else if constexpr (std::is_floating_point<tp>::value) {
+    // Для вещественных чисел
     std::uniform_real_distribution<tp> dist(0.0, vec.size());
     std::generate(vec.begin(), vec.end(), [&dist, &reng] { return dist(reng); });
   }
