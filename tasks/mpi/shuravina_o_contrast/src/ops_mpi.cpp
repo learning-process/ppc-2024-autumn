@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <boost/mpi/collectives.hpp>
+#include <iostream>
 
 bool shuravina_o_contrast::ContrastTaskParallel::pre_processing() {
   internal_order_test();
@@ -65,6 +66,7 @@ bool shuravina_o_contrast::ContrastTaskParallel::run() {
 
   return true;
 }
+
 bool shuravina_o_contrast::ContrastTaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
