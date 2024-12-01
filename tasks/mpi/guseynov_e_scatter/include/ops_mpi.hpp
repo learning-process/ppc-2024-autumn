@@ -69,7 +69,7 @@ class MyScatterTestMPITaskParallel : public ppc::core::Task {
       int recv_id = (comm.rank() - 1) / 2;
       std::vector<T> recv_buffer(recv_buffer_size);
 
-      comm.recv(recv_id, root, recv_buffer.data(), recv_buffer_size);
+      comm.recv(recv_id, 0, recv_buffer.data(), recv_buffer_size);
       std::copy(recv_buffer.begin() + (comm.rank() - min_rank_on_level) * n,
                 recv_buffer.begin() + (comm.rank() - min_rank_on_level) * n + n, out_values);
       if (left_child < comm.size()) {
