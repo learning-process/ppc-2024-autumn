@@ -15,7 +15,7 @@ bool golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::validati
   internal_order_test();
 
   bool is_valid = true;
-  if (world.size() < 5 || world.rank() >= 4) {
+  if (world.rank() == 0) {
     rows_A = taskData->inputs_count[0];
     cols_A = taskData->inputs_count[1];
     rows_B = taskData->inputs_count[2];
@@ -135,7 +135,7 @@ bool golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::multiply
 }
 
 bool golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::gather_result() {
-  if (world.size() < 5 || world.rank() >= 4) {
+  if (world.rank() == 0) {
     for (int i = 0; i < rows_A * cols_B; i++) {
       reinterpret_cast<double*>(taskData->outputs[0])[i] = result[i];
     }
@@ -144,7 +144,7 @@ bool golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::gather_r
 }
 
 bool golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::initializeDataStructures() {
-  if (world.size() < 5 || world.rank() >= 4) {
+  if (world.rank() == 0) {
     A = new double[rows_A * cols_A];
     B = new double[rows_B * cols_B];
     auto* tmp_A = reinterpret_cast<double*>(taskData->inputs[0]);
