@@ -15,15 +15,22 @@ bool TestMPITaskParallel::pre_processing() {
 
   // Инициализация данных на процессе 0
   if (rank == 0) {
-    auto* input_ = reinterpret_cast<int*>(taskData->inputs[0]);  // Примерные данные
-    std::cout << "Input size: " << input_.size() << std::endl;
+    auto* input_data = reinterpret_cast<int*>(taskData->inputs[0]);  // Примерные данные
+    int input_size = taskData->inputs_count[0];  // Получаем размер данных из inputs_count
+
+    std::cout << "Input size: " << input_size << std::endl;  // Печатаем размер данных
     std::cout << "Input data (first 10 elements): ";
-    for (int i = 0; i < input_.size(); ++i) {
-      std::cout << input_[i] << " ";
+    for (int i = 0; i < input_size && i < 10; ++i) {  // Печатаем только первые 10 элементов
+      std::cout << input_data[i] << " ";
     }
     std::cout << std::endl;
+
+    // Заполняем member input_ данными
+    input_.resize(input_size);
+    std::copy(input_data, input_data + input_size, input_.begin());  // Копируем данные в input_
   }
 
+  // Внешние вычисления, используя member input_
   int total_size = input_.size();
   int quotient = total_size / size;
   int remainder = total_size % size;
@@ -37,8 +44,6 @@ bool TestMPITaskParallel::pre_processing() {
   for (int i = 1; i < size; ++i) {
     displs[i] = displs[i - 1] + send_counts[i - 1];
   }
-
-  
 
   int local_size = send_counts[rank];
   local_input_.resize(local_size);
@@ -72,6 +77,9 @@ bool TestMPITaskParallel::validation() {
 }
 
 bool TestMPITaskParallel::run() {
+  // run должен вызываться после pre_processing
+  // Убедитесь, что pre_processing() уже была вызвана
+
   internal_order_test();
   int rank = world.rank();  // Текущий процесс
 
