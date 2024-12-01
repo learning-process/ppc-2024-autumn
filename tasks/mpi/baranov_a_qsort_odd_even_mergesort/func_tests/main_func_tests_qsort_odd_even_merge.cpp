@@ -1,16 +1,16 @@
 #include <gtest/gtest.h>
 
 #include "mpi/baranov_a_qsort_odd_even_mergesort/include/header_b_a_qsort_odd_even_merge.hpp"
-template <typename tp, typename = std::enable_if_t<std::is_arithmetic_v<tp>>>
+template <typename tp>
+  requires std::is_arithmetic_v<tp>
 void get_rnd_vec(std::vector<tp> &vec) {
   std::random_device rd;
   std::default_random_engine reng(rd());
+
   if constexpr (std::is_integral_v<tp>) {
-    // Для целых чисел
     std::uniform_int_distribution<tp> dist(0, vec.size());
     std::generate(vec.begin(), vec.end(), [&dist, &reng] { return dist(reng); });
   } else if constexpr (std::is_floating_point_v<tp>) {
-    // Для вещественных чисел
     std::uniform_real_distribution<tp> dist(0.0, vec.size());
     std::generate(vec.begin(), vec.end(), [&dist, &reng] { return dist(reng); });
   }
