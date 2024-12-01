@@ -7,6 +7,33 @@
 
 #include "mpi/plekhanov_d_allreduce_boost/include/ops_mpi.hpp"
 
+TEST(plekhanov_d_allreduce_boost_func_test, Test_Empty_Matrix_0x0) {
+  boost::mpi::communicator world;
+
+  int cols = 0;
+  int rows = 0;
+
+  std::vector<int> matrix;
+  std::vector<int> res_par(cols, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataPar->inputs_count.emplace_back(matrix.size());
+    taskDataPar->inputs_count.emplace_back(cols);
+    taskDataPar->inputs_count.emplace_back(rows);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_par.data()));
+    taskDataPar->outputs_count.emplace_back(res_par.size());
+  }
+
+  plekhanov_d_allreduce_boost_mpi::TestMPITaskBoostParallel testMpiTaskParallel(taskDataPar);
+
+  if (world.rank() == 0) {
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  }
+}
+
 TEST(plekhanov_d_allreduce_boost_func_test, Test_Empty_Matrix_5x5) {
   boost::mpi::communicator world;
 
