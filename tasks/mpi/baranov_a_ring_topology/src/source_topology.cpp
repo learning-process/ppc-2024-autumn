@@ -49,7 +49,9 @@ bool ring_topology<iotype>::run() {
     }
   } else {
     poll_.push_back(0);
-    output_ = input_;
+    void* ptr_r = output_.data();
+    void* ptr_d = input_.data();
+    memcpy(ptr_r, ptr_d, sizeof(iotype) * vec_size_);
   }
 
   return true;
@@ -57,6 +59,7 @@ bool ring_topology<iotype>::run() {
 template <class iotype>
 bool ring_topology<iotype>::post_processing() {
   internal_order_test();
+  world.barrier();
   if (world.rank() == 0) {
     for (int i = 0; i != vec_size_; ++i) {
       reinterpret_cast<iotype*>(taskData->outputs[0])[i] = output_[i];
@@ -65,6 +68,8 @@ bool ring_topology<iotype>::post_processing() {
     for (int i = 0; i != tmp; ++i) {
       reinterpret_cast<int*>(taskData->outputs[1])[i] = poll_[i];
     }
+
+    return true;
   }
   return true;
 }
