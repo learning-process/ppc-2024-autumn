@@ -15,9 +15,9 @@ TEST(shuravina_o_contrast, Test_Contrast_All_Zero) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
+    taskDataPar->inputs.emplace_back(&in[0]);
     taskDataPar->inputs_count.emplace_back(in.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs.emplace_back(&out[0]);
     taskDataPar->outputs_count.emplace_back(out.size());
   }
 
