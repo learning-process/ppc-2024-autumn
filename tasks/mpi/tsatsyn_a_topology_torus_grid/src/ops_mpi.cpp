@@ -762,14 +762,11 @@ void myBroadcast(boost::mpi::communicator& world, std::map<std::string, int> nei
 //     }
 //   }
 // }
-int* hasDivisors(int k) {
-  int* mas = new int[k];
-  std::fill_n(mas, k, -1);
-  int j = 0;
+std::vector<int> hasDivisors(int k) {
+  std::vector<int> mas;
   for (int i = 2; i < k; i++) {
     if (k % i == 0) {
-      mas[j] = i;
-      j++;
+      mas.emplace_back(i);
     }
   }
   return mas;
@@ -804,19 +801,14 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
   int row_pos;
   int col_pos;
   if (world.rank() == 0) {
-    int tmp = hasDivisors(world.size())[0];
-    if (tmp == -1) {
-      cols = static_cast<int>(world.size());
+    if (hasDivisors(world.size()).empty()) {
+      cols = world.size();
       rows = 1;
     } else {
-      int* mas_copy = hasDivisors(world.size());
-      int i = 0;
-      while (mas_copy[i] != -1) {
-        i++;
-      }
+      std::vector<int> mas_copy = hasDivisors(world.size());
       std::random_device dev;
       std::mt19937 gen(dev());
-      int randIndex = gen() % (i) + 1;
+      int randIndex = gen() % (mas_copy.size()) + 1;
       rows = mas_copy[randIndex - 1];
       cols = world.size() / rows;
     }
