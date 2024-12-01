@@ -2,11 +2,13 @@
 #pragma once
 
 #include <gtest/gtest.h>
+
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/vector.hpp>
 #include <vector>
+
 #include "core/task/include/task.hpp"
 
 namespace anikin_m_contrastscale_mpi {

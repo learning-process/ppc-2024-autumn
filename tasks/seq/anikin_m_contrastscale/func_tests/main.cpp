@@ -1,6 +1,8 @@
 // Copyright 2024 Anikin Maksim
 #include <gtest/gtest.h>
+
 #include <vector>
+
 #include "seq/anikin_m_contrastscale/include/ops_seq.hpp"
 
 using namespace anikin_m_contrastscale_seq;
@@ -76,7 +78,7 @@ TEST(anikin_m_contrastscale, wrong_out_count) {
   for (int i = 0; i < count; i++) {
     in.push_back(getrandomRGB());
   }
-  out.resize(count+1);
+  out.resize(count + 1);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();

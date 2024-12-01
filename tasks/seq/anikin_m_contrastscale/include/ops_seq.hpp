@@ -2,9 +2,10 @@
 #pragma once
 
 #include <algorithm>
+#include <random>
 #include <string>
 #include <vector>
-#include <random>
+
 #include "core/task/include/task.hpp"
 
 namespace anikin_m_contrastscale_seq {
@@ -17,7 +18,6 @@ struct RGB {
 
 RGB getrandomRGB();
 double getcontrast(std::vector<RGB>& in);
-
 
 class ContrastScaleSeq : public ppc::core::Task {
  public:
@@ -32,4 +32,4 @@ class ContrastScaleSeq : public ppc::core::Task {
   std::vector<RGB> input_, output_;
 };
 
-} // namespace anikin_m_contrastscale_seq
+}  // namespace anikin_m_contrastscale_seq

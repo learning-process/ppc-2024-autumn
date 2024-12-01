@@ -44,7 +44,7 @@ TEST(anikin_m_contrastscale_mpi, test_pipeline_run) {
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
     ASSERT_EQ(true, true);
-   }
+  }
 }
 
 TEST(anikin_m_contrastscale_mpi, test_task_run) {

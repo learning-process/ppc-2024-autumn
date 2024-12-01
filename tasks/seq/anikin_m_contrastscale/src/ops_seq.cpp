@@ -1,5 +1,6 @@
 // Copyright 2024 Anikin Maksim
 #include "seq/anikin_m_contrastscale/include/ops_seq.hpp"
+
 #include <thread>
 
 anikin_m_contrastscale_seq::RGB anikin_m_contrastscale_seq::getrandomRGB() {
@@ -17,7 +18,6 @@ double anikin_m_contrastscale_seq::getcontrast(std::vector<anikin_m_contrastscal
   auto [min, max] = std::minmax_element(in.begin(), in.end(), [](auto a, auto b) { return a.R < b.R; });
   return (double)(max->R - min->R) / (max->R + min->R);
 }
-
 
 bool anikin_m_contrastscale_seq::ContrastScaleSeq::validation() {
   internal_order_test();
