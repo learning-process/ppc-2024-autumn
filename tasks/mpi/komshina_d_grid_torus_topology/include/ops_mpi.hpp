@@ -20,11 +20,10 @@ class GridTorusTopologyParallel : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
+  static std::vector<int> compute_neighbors(int rank, int grid_size);
 
  private:
   boost::mpi::communicator world;
-  boost::mpi::status stat;
-  static std::vector<int> compute_neighbors(int rank, int grid_size);
-};
+  boost::mpi::status stat;};
 
 }  // namespace komshina_d_grid_torus_topology_mpi
