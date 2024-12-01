@@ -764,9 +764,7 @@ void myBroadcast(boost::mpi::communicator& world, std::map<std::string, int> nei
 // }
 int* hasDivisors(int k) {
   int* mas = new int[k];
-  for (int i = 0; i < k; i++) {
-    mas[i] = -1;
-  }
+  std::fill_n(mas, k, -1);
   int j = 0;
   for (int i = 2; i < k; i++) {
     if (k % i == 0) {
@@ -790,7 +788,6 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::pre_processing() {
   // }
   return true;
 }
-
 bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
@@ -799,7 +796,6 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::validation() {
   }
   return true;
 }
-
 bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   std::map<std::string, int> neighbors;
@@ -810,7 +806,7 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
   if (world.rank() == 0) {
     int tmp = hasDivisors(world.size())[0];
     if (tmp == -1) {
-      cols = (int)world.size();
+      cols = static_cast<int>(world.size());
       rows = 1;
     } else {
       int* mas_copy = hasDivisors(world.size());
@@ -832,10 +828,10 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
     world.recv(0, 0, rows);
     world.recv(0, 1, cols);
   }
-  /*if (world.rank() == 0) {
+  if (world.rank() == 0) {
     std::cout << "col: " << cols << std::endl;
     std::cout << "row: " << rows << std::endl;
-  }*/
+  }
   row_pos = world.rank() / cols;
   col_pos = world.rank() % cols;
   auto toGetNeighbor = [&](int r, int c) -> int {
