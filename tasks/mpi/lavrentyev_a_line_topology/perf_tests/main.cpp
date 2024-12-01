@@ -17,6 +17,7 @@ std::vector<int> generate_random_data(int count, int lower_bound = -1000, int up
   }
   return data;
 }
+}  // namespace lavrentyev_a_line_topology_mpi
 
 TEST(lavrentyev_a_line_topology_mpi, task_run) {
   boost::mpi::communicator world;
@@ -135,4 +136,3 @@ TEST(lavrentyev_a_line_topology_mpi, pipeline_run) {
     }
   }
 }
-}  // namespace lavrentyev_a_line_topology_mpi
