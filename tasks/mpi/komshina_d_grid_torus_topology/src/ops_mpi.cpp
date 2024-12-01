@@ -47,14 +47,16 @@ bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::run() {
     auto neighbors = compute_neighbors(rank, grid_size);
 
     for (int neighbor : neighbors) {
-      if (neighbor >= size) {
-        continue;
+      if (neighbor < size) {
+        world.send(neighbor, 0, send_data);
+
+        std::vector<uint8_t> recv_data(taskData->inputs_count[0]);
+        world.recv(neighbor, 0, recv_data);
+
+        if (taskData->outputs_count[0] >= send_data.size()) {
+          std::copy(send_data.begin(), send_data.end(), taskData->outputs[0]);
+        }
       }
-
-      world.send(neighbor, 0, send_data);
-
-      std::vector<uint8_t> recv_data(taskData->inputs_count[0]);
-      world.recv(neighbor, 0, recv_data);
     }
 
     world.barrier();
