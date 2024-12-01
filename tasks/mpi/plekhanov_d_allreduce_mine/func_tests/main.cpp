@@ -7,8 +7,6 @@
 
 #include "mpi/plekhanov_d_allreduce_mine/include/ops_mpi.hpp"
 
-
-
 TEST(plekhanov_d_allreduce_mine_func_test, Test_Empty_Matrix_5x5) {
   boost::mpi::communicator world;
 
@@ -66,7 +64,6 @@ TEST(plekhanov_d_allreduce_mine_func_test, Test_3x20_Matrix) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-
     std::vector<int> res_seq(cols, 0);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -118,7 +115,6 @@ TEST(plekhanov_d_allreduce_mine_func_test, Test_50x50_Matrix) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-
     std::vector<int> res_seq(cols, 0);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -332,4 +328,3 @@ TEST(plekhanov_d_allreduce_mine_func_test, Test_5000x5000_Matrix) {
     ASSERT_EQ(res_seq, res_par);
   }
 }
-
