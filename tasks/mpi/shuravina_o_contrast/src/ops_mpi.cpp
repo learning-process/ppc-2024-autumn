@@ -9,6 +9,7 @@ bool shuravina_o_contrast::ContrastTaskParallel::pre_processing() {
   unsigned int delta = 0;
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
+    std::cout << "Delta: " << delta << std::endl;
   }
   broadcast(world, delta, 0);
 
@@ -31,7 +32,6 @@ bool shuravina_o_contrast::ContrastTaskParallel::pre_processing() {
   output_ = std::vector<uint8_t>(delta);
   return true;
 }
-
 bool shuravina_o_contrast::ContrastTaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
