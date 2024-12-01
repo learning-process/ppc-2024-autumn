@@ -9,6 +9,17 @@
 
 namespace tyshkevich_a_hypercube_mpi {
 
+void getRandomIntPair(int minValue, int maxValue, int& sender, int& target) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::uniform_int_distribution<int> dist(minValue, maxValue);
+
+  sender = dist(gen);
+  do {
+    target = dist(gen);
+  } while (target == sender);
+}
+
 std::vector<int> getRandomIntVector(int size, int minValue = 0, int maxValue = 100) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -186,6 +197,63 @@ TEST(tyshkevich_a_hypercube_mpi, 3_to_2_process_send) {
     int target = 2;
     if (sender < world.size() && target < world.size()) {
       tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
+    } else {
+      std::cout << "Low count of processes\n";
+    }
+  }
+}
+
+TEST(tyshkevich_a_hypercube_mpi, random_send_between_0_and_max_small_data) {
+  boost::mpi::communicator world;
+  if (tyshkevich_a_hypercube_mpi::initial_test(world.size())) {
+    if (world.size() > 1) {
+      int sender;
+      int target;
+      if (world.rank() == 0) {
+        tyshkevich_a_hypercube_mpi::getRandomIntPair(0, world.size() - 1, sender, target);
+      }
+      boost::mpi::broadcast(world, sender, 0);
+      boost::mpi::broadcast(world, target, 0);
+
+      tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
+    } else {
+      std::cout << "Low count of processes\n";
+    }
+  }
+}
+
+TEST(tyshkevich_a_hypercube_mpi, random_send_between_0_and_max_medium_data) {
+  boost::mpi::communicator world;
+  if (tyshkevich_a_hypercube_mpi::initial_test(world.size())) {
+    if (world.size() > 1) {
+      int sender;
+      int target;
+      if (world.rank() == 0) {
+        tyshkevich_a_hypercube_mpi::getRandomIntPair(0, world.size() - 1, sender, target);
+      }
+      boost::mpi::broadcast(world, sender, 0);
+      boost::mpi::broadcast(world, target, 0);
+
+      tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 100);
+    } else {
+      std::cout << "Low count of processes\n";
+    }
+  }
+}
+
+TEST(tyshkevich_a_hypercube_mpi, random_send_between_0_and_max_large_data) {
+  boost::mpi::communicator world;
+  if (tyshkevich_a_hypercube_mpi::initial_test(world.size())) {
+    if (world.size() > 1) {
+      int sender;
+      int target;
+      if (world.rank() == 0) {
+        tyshkevich_a_hypercube_mpi::getRandomIntPair(0, world.size() - 1, sender, target);
+      }
+      boost::mpi::broadcast(world, sender, 0);
+      boost::mpi::broadcast(world, target, 0);
+
+      tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 1000);
     } else {
       std::cout << "Low count of processes\n";
     }

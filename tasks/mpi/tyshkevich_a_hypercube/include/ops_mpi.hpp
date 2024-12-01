@@ -9,24 +9,15 @@
 
 namespace tyshkevich_a_hypercube_mpi {
 
-class Hypercube {
- public:
-  Hypercube() : n(0) {}
-  Hypercube(int dimension) : n(dimension) {}
-
-  int getNextNode(int current, int target) const {
-    int diff = current ^ target;
-    for (int i = 0; i < n; ++i) {
-      if ((diff & (1 << i)) != 0) {
-        return current ^ (1 << i);
-      }
+inline int getNextNode(int current, int target, int n) {
+  int diff = current ^ target;
+  for (int i = 0; i < n; ++i) {
+    if ((diff & (1 << i)) != 0) {
+      return current ^ (1 << i);
     }
-    return current;
   }
-
- private:
-  int n;
-};
+  return current;
+}
 
 class HypercubeParallelMPI : public ppc::core::Task {
  public:
@@ -37,11 +28,11 @@ class HypercubeParallelMPI : public ppc::core::Task {
   bool post_processing() override;
 
  private:
+  int dimension;
   int sender_id;
   int target_id;
   std::vector<int> message;
   std::vector<int> result;
-  Hypercube hypercube;
   boost::mpi::communicator world;
 };
 

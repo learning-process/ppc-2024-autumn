@@ -17,6 +17,9 @@ bool tyshkevich_a_hypercube_mpi::HypercubeParallelMPI::validation() {
   int val_sender_id = *reinterpret_cast<int*>(taskData->inputs[0]);
   int val_target_id = *reinterpret_cast<int*>(taskData->inputs[1]);
 
+  if (val_target_id == val_sender_id) {
+    return false;
+  }
   if (val_target_id > val_sender_id) {
     return val_target_id < world_size && val_sender_id >= 0;
   }
@@ -29,8 +32,7 @@ bool tyshkevich_a_hypercube_mpi::HypercubeParallelMPI::pre_processing() {
   sender_id = *reinterpret_cast<int*>(taskData->inputs[0]);
   target_id = *reinterpret_cast<int*>(taskData->inputs[1]);
 
-  int dimension = static_cast<int>(std::log2(world.size()));
-  hypercube = Hypercube(dimension);
+  dimension = static_cast<int>(std::log2(world.size()));
 
   if (world.rank() == sender_id) {
     auto* data = reinterpret_cast<int*>(taskData->inputs[2]);
@@ -50,7 +52,7 @@ bool tyshkevich_a_hypercube_mpi::HypercubeParallelMPI::run() {
   int world_rank = world.rank();
 
   if (world_rank == sender_id) {
-    int next_node = hypercube.getNextNode(world_rank, target_id);
+    int next_node = tyshkevich_a_hypercube_mpi::getNextNode(world_rank, target_id, dimension);
     world.send(next_node, 0, message);
   }
 
@@ -63,7 +65,7 @@ bool tyshkevich_a_hypercube_mpi::HypercubeParallelMPI::run() {
       world.recv(boost::mpi::any_source, 0, received_data);
 
       if (world_rank != target_id) {
-        int next_node = hypercube.getNextNode(world_rank, target_id);
+        int next_node = tyshkevich_a_hypercube_mpi::getNextNode(world_rank, target_id, dimension);
         world.send(next_node, 0, received_data);
       } else {
         std::copy(received_data.begin(), received_data.end(), result.begin());
