@@ -76,7 +76,7 @@ bool anikin_m_contrastscale_mpi::ContrastScaleMpi::validation() {
   return true;
 }
 
-bool anikin_m_contrastscale_mpi::ContrastScaleMpi::pre_processing() { 
+bool anikin_m_contrastscale_mpi::ContrastScaleMpi::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     auto input_ptr = reinterpret_cast<RGB*>(taskData->inputs[0]);
