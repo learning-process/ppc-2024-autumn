@@ -26,7 +26,7 @@ bool plekhanov_d_allreduce_mine_mpi::TestMPITaskSequential::pre_processing() {
   columnCount = taskData->inputs_count[1];
   rowCount = taskData->inputs_count[2];
 
-  auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[0]);
+  auto *tempPtr = reinterpret_cast<int *>(taskData->inputs[0]);
   inputData_.assign(tempPtr, tempPtr + taskData->inputs_count[0]);
 
   resultData_ = std::vector<int>(columnCount, 0);
@@ -44,8 +44,7 @@ bool plekhanov_d_allreduce_mine_mpi::TestMPITaskSequential::validation() {
 bool plekhanov_d_allreduce_mine_mpi::TestMPITaskSequential::run() {
   internal_order_test();
   for (int column = 0; column < columnCount; column++) {
-
-    int columnMin = inputData_[column];  
+    int columnMin = inputData_[column];
     for (int row = 1; row < rowCount; row++) {
       if (inputData_[row * columnCount + column] < columnMin) {
         columnMin = inputData_[row * columnCount + column];
@@ -66,7 +65,7 @@ bool plekhanov_d_allreduce_mine_mpi::TestMPITaskSequential::run() {
 bool plekhanov_d_allreduce_mine_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
   for (int i = 0; i < columnCount; i++) {
-    reinterpret_cast<int*>(taskData->outputs[0])[i] = countAboveMin_[i];
+    reinterpret_cast<int *>(taskData->outputs[0])[i] = countAboveMin_[i];
   }
   return true;
 }
@@ -80,7 +79,7 @@ bool plekhanov_d_allreduce_mine_mpi::TestMPITaskMyOwnParallel::pre_processing() 
   }
 
   if (world.rank() == 0) {
-    auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[0]);
+    auto *tempPtr = reinterpret_cast<int *>(taskData->inputs[0]);
     inputData_.assign(tempPtr, tempPtr + taskData->inputs_count[0]);
   } else {
     inputData_ = std::vector<int>(columnCount * rowCount, 0);
@@ -99,8 +98,8 @@ bool plekhanov_d_allreduce_mine_mpi::TestMPITaskMyOwnParallel::validation() {
 }
 
 template <typename T>
-void plekhanov_d_allreduce_mine_mpi::TestMPITaskMyOwnParallel::my_all_reduce(const boost::mpi::communicator& world,
-                                                                             const T* in_values, T* out_values, int n) {
+void plekhanov_d_allreduce_mine_mpi::TestMPITaskMyOwnParallel::my_all_reduce(const boost::mpi::communicator &world,
+                                                                             const T *in_values, T *out_values, int n) {
   int root = world.rank();
   std::vector<T> left_values(n), right_values(n);
 
@@ -170,7 +169,7 @@ bool plekhanov_d_allreduce_mine_mpi::TestMPITaskMyOwnParallel::run() {
   for (int column = startColumn; column < lastColumn; column++) {
     for (int row = 0; row < rowCount; row++) {
       int coordinate = row * columnCount + column;
-      if (inputData_[coordinate] > resultData_[column]) localCount[column]++; 
+      if (inputData_[coordinate] > resultData_[column]) localCount[column]++;
     }
   }
   countAboveMin_.resize(columnCount, 0);
@@ -182,7 +181,7 @@ bool plekhanov_d_allreduce_mine_mpi::TestMPITaskMyOwnParallel::post_processing()
   internal_order_test();
   if (world.rank() == 0) {
     for (int i = 0; i < columnCount; i++) {
-      reinterpret_cast<int*>(taskData->outputs[0])[i] = countAboveMin_[i];
+      reinterpret_cast<int *>(taskData->outputs[0])[i] = countAboveMin_[i];
     }
   }
   return true;
