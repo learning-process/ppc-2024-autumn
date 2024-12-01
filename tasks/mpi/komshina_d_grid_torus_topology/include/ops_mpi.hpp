@@ -24,6 +24,7 @@ class GridTorusTopologyParallel : public ppc::core::Task {
 
  private:
   boost::mpi::communicator world;
-  boost::mpi::status stat;};
+  boost::mpi::status stat;
+};
 
 }  // namespace komshina_d_grid_torus_topology_mpi
