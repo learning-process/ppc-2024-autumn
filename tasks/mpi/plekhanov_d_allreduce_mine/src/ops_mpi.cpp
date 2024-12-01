@@ -101,7 +101,8 @@ template <typename T>
 void plekhanov_d_allreduce_mine_mpi::TestMPITaskMyOwnParallel::my_all_reduce(const boost::mpi::communicator &world,
                                                                              const T *in_values, T *out_values, int n) {
   int root = world.rank();
-  std::vector<T> left_values(n), right_values(n);
+  std::vector<T> left_values(n);
+  std::vector<T> right_values(n);
 
   int left_child = 2 * root + 1;
   int right_child = 2 * root + 2;
