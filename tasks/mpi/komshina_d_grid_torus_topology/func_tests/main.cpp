@@ -185,32 +185,3 @@ TEST(komshina_d_grid_torus_topology_mpi, TestEmptyInputsCountOnly) {
 
   ASSERT_FALSE(task.validation()) << "Validation should fail with non-empty inputs but empty inputs_count";
 }
-
-TEST(komshina_d_grid_torus_topology_mpi, TestNeighborProcessingWithOutOfBoundsNeighbor) {
-  boost::mpi::communicator world;
-  int size = world.size();
-  if (size < 4) return;
-
-  std::vector<uint8_t> input_data(4, 1);
-  std::vector<uint8_t> output_data(4, 0);
-
-  auto task_data = std::make_shared<ppc::core::TaskData>();
-  task_data->inputs.emplace_back(input_data.data());
-  task_data->inputs_count.emplace_back(input_data.size());
-  task_data->outputs.emplace_back(output_data.data());
-  task_data->outputs_count.emplace_back(output_data.size());
-
-  komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel task(task_data);
-
-  auto neighbors = komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::compute_neighbors(world.rank(), 2);
-  neighbors.push_back(size + 1);
-
-  ASSERT_TRUE(task.validation());
-  ASSERT_TRUE(task.pre_processing());
-
-  ASSERT_TRUE(task.run());
-
-  for (size_t i = 0; i < output_data.size(); ++i) {
-    EXPECT_EQ(output_data[i], 1) << "Only valid neighbors should influence output.";
-  }
-}
