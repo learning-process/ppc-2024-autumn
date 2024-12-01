@@ -453,6 +453,10 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
     world.recv(0, 0, rows);
     world.recv(0, 1, cols);
   }
+  if (world.rank() == 0) {
+    std::cout << "col: " << cols << std::endl;
+    std::cout << "row: " << rows << std::endl;
+  }
   row_pos = world.rank() / cols;
   col_pos = world.rank() % cols;
   auto toGetNeighbor = [&](int r, int c) -> int {
@@ -464,19 +468,15 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
   neighbors["left"] = (col_pos == 0) ? toGetNeighbor(row_pos, cols - 1) : toGetNeighbor(row_pos, col_pos - 1);
   neighbors["right"] = (col_pos == cols - 1) ? toGetNeighbor(row_pos, 0) : toGetNeighbor(row_pos, col_pos + 1);
   neighbors["up"] = (row_pos == 0) ? toGetNeighbor(rows - 1, col_pos) : toGetNeighbor(row_pos - 1, col_pos);
-  /*for (const auto& neighbor : neighbors) {
-    std::cout << "Neighbors of " << world.rank() << ": " << neighbor.first << " , " << neighbor.second << std::endl;
-    world.barrier();
-  }*/
   myBroadcast(world, neighbors, rows, cols, col_pos, row_pos, input_data);
   world.barrier();
-  // mySend(world, 0, world.size() - 1, cols, rows, neighbors, input_data, input_data);
-  // world.barrier();
   if (world.rank() == (world.size() - 1)) {
     res = input_data.size();
-    //  std::cout << "RES= " << res << std::endl;
   }
-  mySend(world, world.size() - 1, 0, cols, rows, neighbors, res);
+  mySend(world, world.size() - 1, 1, cols, rows, neighbors, res);
+  mySend(world, 1, world.size() / 2, cols, rows, neighbors, res);
+  mySend(world, world.size() / 2, 0, cols, rows, neighbors, res);
+
   return true;
 }
 
