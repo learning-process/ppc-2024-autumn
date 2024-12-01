@@ -45,18 +45,15 @@ bool plekhanov_d_allreduce_boost_mpi::TestMPITaskSequential::validation() {
 bool plekhanov_d_allreduce_boost_mpi::TestMPITaskSequential::run() {
   internal_order_test();
 
-  // Находим минимум в каждом столбце
   for (int column = 0; column < columnCount; column++) {
-    int columnMin = inputData_[column];  // Инициализируем минимум первым элементом столбца
+    int columnMin = inputData_[column];
     for (int row = 1; row < rowCount; row++) {
       if (inputData_[row * columnCount + column] < columnMin) {
         columnMin = inputData_[row * columnCount + column];
       }
     }
-    resultData_[column] = columnMin;  // Сохраняем минимум для столбца
+    resultData_[column] = columnMin;
   }
-
-  // Считаем количество элементов, которые больше минимума
   for (int column = 0; column < columnCount; column++) {
     for (int row = 0; row < rowCount; row++) {
       if (inputData_[row * columnCount + column] > resultData_[column]) {
@@ -84,7 +81,6 @@ bool plekhanov_d_allreduce_boost_mpi::TestMPITaskBoostParallel::pre_processing()
   }
 
   if (world.rank() == 0) {
-    // init vectors
     auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[0]);
     inputData_.assign(tempPtr, tempPtr + taskData->inputs_count[0]);
   } else {
@@ -121,9 +117,9 @@ bool plekhanov_d_allreduce_boost_mpi::TestMPITaskBoostParallel::run() {
   }
   int startColumn = delta * world.rank();
   int lastColumn = std::min(columnCount, delta * (world.rank() + 1));
-  std::vector<int> localMin(columnCount, INT_MAX);  // Используем INT_MAX для поиска минимума
+  std::vector<int> localMin(columnCount, INT_MAX);
   for (int column = startColumn; column < lastColumn; column++) {
-    int minElem = inputData_[column];  // Инициализируем минимум первым элементом столбца
+    int minElem = inputData_[column];
     for (int row = 1; row < rowCount; row++) {
       int coordinate = row * columnCount + column;
       if (inputData_[coordinate] < minElem) {

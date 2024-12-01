@@ -45,7 +45,6 @@ TEST(plekhanov_d_allreduce_mine_func_test, Test_3x20_Matrix) {
   std::vector<int> matrix;
   std::vector<int> res_par(cols, 0);
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -67,10 +66,9 @@ TEST(plekhanov_d_allreduce_mine_func_test, Test_3x20_Matrix) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Create data
+
     std::vector<int> res_seq(cols, 0);
 
-    // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
@@ -80,7 +78,6 @@ TEST(plekhanov_d_allreduce_mine_func_test, Test_3x20_Matrix) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_seq.data()));
     taskDataSeq->outputs_count.emplace_back(res_seq.size());
 
-    // Create Task
     plekhanov_d_allreduce_mine_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
@@ -100,7 +97,6 @@ TEST(plekhanov_d_allreduce_mine_func_test, Test_50x50_Matrix) {
   std::vector<int> matrix;
   std::vector<int> res_par(cols, 0);
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -122,10 +118,9 @@ TEST(plekhanov_d_allreduce_mine_func_test, Test_50x50_Matrix) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Create data
+
     std::vector<int> res_seq(cols, 0);
 
-    // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
@@ -135,7 +130,6 @@ TEST(plekhanov_d_allreduce_mine_func_test, Test_50x50_Matrix) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_seq.data()));
     taskDataSeq->outputs_count.emplace_back(res_seq.size());
 
-    // Create Task
     plekhanov_d_allreduce_mine_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
@@ -155,7 +149,6 @@ TEST(plekhanov_d_allreduce_mine_func_test, Test_30x120_Matrix) {
   std::vector<int> matrix;
   std::vector<int> res_par(cols, 0);
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -177,10 +170,7 @@ TEST(plekhanov_d_allreduce_mine_func_test, Test_30x120_Matrix) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Create data
     std::vector<int> res_seq(cols, 0);
-
-    // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
@@ -189,8 +179,6 @@ TEST(plekhanov_d_allreduce_mine_func_test, Test_30x120_Matrix) {
     taskDataSeq->inputs_count.emplace_back(rows);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_seq.data()));
     taskDataSeq->outputs_count.emplace_back(res_seq.size());
-
-    // Create Task
     plekhanov_d_allreduce_mine_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
@@ -209,8 +197,6 @@ TEST(plekhanov_d_allreduce_mine_func_test, Test_512x512_Matrix) {
 
   std::vector<int> matrix;
   std::vector<int> res_par(cols, 0);
-
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -232,10 +218,7 @@ TEST(plekhanov_d_allreduce_mine_func_test, Test_512x512_Matrix) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Create data
     std::vector<int> res_seq(cols, 0);
-
-    // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
@@ -244,8 +227,6 @@ TEST(plekhanov_d_allreduce_mine_func_test, Test_512x512_Matrix) {
     taskDataSeq->inputs_count.emplace_back(rows);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_seq.data()));
     taskDataSeq->outputs_count.emplace_back(res_seq.size());
-
-    // Create Task
     plekhanov_d_allreduce_mine_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
@@ -264,8 +245,6 @@ TEST(plekhanov_d_allreduce_mine_func_test, Test_1024x1024_Matrix) {
 
   std::vector<int> matrix;
   std::vector<int> res_par(cols, 0);
-
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -287,10 +266,7 @@ TEST(plekhanov_d_allreduce_mine_func_test, Test_1024x1024_Matrix) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Create data
     std::vector<int> res_seq(cols, 0);
-
-    // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
@@ -299,8 +275,6 @@ TEST(plekhanov_d_allreduce_mine_func_test, Test_1024x1024_Matrix) {
     taskDataSeq->inputs_count.emplace_back(rows);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_seq.data()));
     taskDataSeq->outputs_count.emplace_back(res_seq.size());
-
-    // Create Task
     plekhanov_d_allreduce_mine_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
@@ -319,8 +293,6 @@ TEST(plekhanov_d_allreduce_mine_func_test, Test_5000x5000_Matrix) {
 
   std::vector<int> matrix;
   std::vector<int> res_par(cols, 0);
-
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -342,10 +314,7 @@ TEST(plekhanov_d_allreduce_mine_func_test, Test_5000x5000_Matrix) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Create data
     std::vector<int> res_seq(cols, 0);
-
-    // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
@@ -354,8 +323,6 @@ TEST(plekhanov_d_allreduce_mine_func_test, Test_5000x5000_Matrix) {
     taskDataSeq->inputs_count.emplace_back(rows);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_seq.data()));
     taskDataSeq->outputs_count.emplace_back(res_seq.size());
-
-    // Create Task
     plekhanov_d_allreduce_mine_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
