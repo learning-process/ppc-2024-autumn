@@ -52,17 +52,16 @@ void testBody(std::vector<std::pair<double, double>> limits,
   }
 }
 
+double testFunc(std::vector<double> &args) { return args.at(0); }
 }  // namespace ermolaev_v_multidimensional_integral_rectangle_mpi
 namespace erm_integral_mpi = ermolaev_v_multidimensional_integral_rectangle_mpi;
 
 TEST(ermolaev_v_multidimensional_integral_rectangle_mpi, test_pipeline_run) {
   std::vector<std::pair<double, double>> limits(10, {-50, 50});
-  erm_integral_mpi::testBody(
-      limits, [](auto &args) { return args.at(0); }, ppc::core::PerfResults::PIPELINE);
+  erm_integral_mpi::testBody(limits, erm_integral_mpi::testFunc, ppc::core::PerfResults::PIPELINE);
 }
 
 TEST(ermolaev_v_multidimensional_integral_rectangle_mpi, test_task_run) {
   std::vector<std::pair<double, double>> limits(10, {-50, 50});
-  erm_integral_mpi::testBody(
-      limits, [](auto &args) { return args.at(0); }, ppc::core::PerfResults::TASK_RUN);
+  erm_integral_mpi::testBody(limits, erm_integral_mpi::testFunc, ppc::core::PerfResults::TASK_RUN);
 }
