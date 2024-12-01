@@ -63,6 +63,14 @@ bool shuravina_o_contrast::ContrastTaskParallel::run() {
     }
   }
 
+  if (world.rank() == 0) {
+    std::cout << "Output values: ";
+    for (const auto& val : output_) {
+      std::cout << static_cast<int>(val) << " ";
+    }
+    std::cout << std::endl;
+  }
+
   return true;
 }
 
