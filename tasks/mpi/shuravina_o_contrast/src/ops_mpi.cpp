@@ -73,7 +73,6 @@ bool shuravina_o_contrast::ContrastTaskParallel::run() {
 
   return true;
 }
-
 bool shuravina_o_contrast::ContrastTaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
