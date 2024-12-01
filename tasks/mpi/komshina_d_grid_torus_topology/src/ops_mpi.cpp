@@ -55,7 +55,6 @@ bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::run() {
 
       std::vector<uint8_t> recv_data(taskData->inputs_count[0]);
       world.recv(neighbor, 0, recv_data);
-
     }
 
     world.barrier();
