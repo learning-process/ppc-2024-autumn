@@ -8,8 +8,6 @@
 #include <thread>
 #include <vector>
 
-#include <iostream>
-
 using namespace std::chrono_literals;
 
 bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::pre_processing() {
@@ -44,7 +42,6 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::validation() {
 
 bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  
   if (world.rank() == 0) {
     std::vector<bool> fork(world.size() - 1, true);
     int exit = nom * (world.size() - 1);
@@ -58,8 +55,7 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
 
       if (wish == 3) {
         exit--;
-        if (l == nom)
-        res_+=l;
+        if (l == nom) res_ += l;
       } else if (wish == 2) {
         if (rank == world.size() - 1) {
           if (r == 1) {
@@ -85,7 +81,7 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
       } else if (wish == 1) {
         if (rank == world.size() - 1) {
           if (r == 1) {
-            if (fork[0] == false) {
+            if (!fork[0]) {
               int answer = 0;
               world.send(rank, 1, &answer, 1);
             } else {
@@ -95,7 +91,7 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
             }
           }
           if (l == 1) {
-            if (fork[rank - 1] == false) {
+            if (!fork[rank - 1]) {
               int answer = 0;
               world.send(rank, 1, &answer, 1);
             } else {
@@ -107,7 +103,7 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
 
           if (r + l == 0) {
             if (rank % 2 == 0) {
-              if (fork[rank - 1] == true) {
+              if (fork[rank - 1]) {
                 int answer = 2;
                 world.send(rank, 1, &answer, 1);
                 fork[rank - 1] = false;
@@ -116,7 +112,7 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
                 world.send(rank, 1, &answer, 1);
               }
             } else {
-              if (fork[0] == true) {
+              if (fork[0]) {
                 int answer = 1;
                 world.send(rank, 1, &answer, 1);
                 fork[0] = false;
@@ -129,18 +125,17 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
 
         } else {
           if (r == 1) {
-            if (fork[rank] == false) {
+            if (!fork[rank]) {
               int answer = 0;
               world.send(rank, 1, &answer, 1);
-            }
-            else {
+            } else {
               int answer = 1;
               world.send(rank, 1, &answer, 1);
               fork[rank] = false;
             }
           }
           if (l == 1) {
-            if (fork[rank - 1] == false) {
+            if (!fork[rank - 1]) {
               int answer = 0;
               world.send(rank, 1, &answer, 1);
             } else {
@@ -151,7 +146,7 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
           }
           if (r + l == 0) {
             if (rank % 2 == 0) {
-              if (fork[rank - 1] == true) {
+              if (fork[rank - 1]) {
                 int answer = 2;
                 world.send(rank, 1, &answer, 1);
                 fork[rank - 1] = false;
@@ -160,7 +155,7 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
                 world.send(rank, 1, &answer, 1);
               }
             } else {
-              if (fork[rank] == true) {
+              if (fork[rank]) {
                 int answer = 1;
                 world.send(rank, 1, &answer, 1);
                 fork[rank] = false;
@@ -191,7 +186,6 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
       std::random_device rand_dev;
       std::mt19937 rand_engine(rand_dev());
       std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(unif(rand_engine))));
-      
       while (true) {
         if (eat == 0) {
           int m[4] = {world.rank(), 1, l, r};
@@ -221,14 +215,12 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
           if (l + r == 0) {
             eat = 0;
             break;
-          }          
+          }
         }
       }
-
       c++;
       int exit_m[4] = {world.rank(), 3, c, c};
       world.send(0, 3, exit_m, 4);
-
     }
   }
   return true;
