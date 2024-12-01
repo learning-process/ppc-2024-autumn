@@ -1,5 +1,6 @@
 // Copyright 2024 Anikin Maksim
 #include "mpi/anikin_m_contrastscale/include/ops_mpi.hpp"
+
 #include <algorithm>
 #include <random>
 
@@ -133,7 +134,11 @@ bool anikin_m_contrastscale_mpi::ContrastScaleMpi::run() {
   // Create new local images
   std::vector<anikin_m_contrastscale_mpi::RGB> local_output;
   for (auto i : local_input) {
-    local_output.emplace_back(newrgb[i.R], newrgb[i.G], newrgb[i.B]);
+    RGB newp;
+    newp.R = newrgb[i.R];
+    newp.G = newrgb[i.G];
+    newp.B = newrgb[i.B];
+    local_output.push_back(newp);
   }
   // Collect all data
   gatherv(world, local_output.data(), local_output.size(), output_.data(), local_sizes, 0);

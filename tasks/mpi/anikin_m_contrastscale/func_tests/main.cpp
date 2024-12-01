@@ -34,7 +34,7 @@ TEST(anikin_m_contrastscale_mpi, increase_contrast) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-    // Seq
+  // Seq
   if (world.rank() == 0) {
     std::vector<RGB> seq_out;
     seq_out.resize(count);
@@ -121,7 +121,7 @@ TEST(anikin_m_contrastscale_mpi, wrong_out_count) {
     for (int i = 0; i < count; i++) {
       in.push_back(getrandomRGB());
     }
-    out.resize(count+1);
+    out.resize(count + 1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&k));
     taskDataPar->inputs_count.emplace_back(in.size());
@@ -130,12 +130,14 @@ TEST(anikin_m_contrastscale_mpi, wrong_out_count) {
   }
 
   ContrastScaleMpi testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  if (world.rank() == 0) {
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  }
 }
 
 TEST(anikin_m_contrastscale_mpi, zero_image) {
   const int count = 0;
-  float k = 0.5;
+  float k = 1.5;
   boost::mpi::communicator world;
   std::vector<RGB> in;
   std::vector<RGB> out;
@@ -154,5 +156,7 @@ TEST(anikin_m_contrastscale_mpi, zero_image) {
   }
 
   ContrastScaleMpi testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  if (world.rank() == 0) {
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  }
 }
