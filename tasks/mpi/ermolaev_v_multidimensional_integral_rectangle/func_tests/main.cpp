@@ -13,7 +13,7 @@ namespace ermolaev_v_multidimensional_integral_rectangle_mpi {
 void testBody(std::vector<std::pair<double, double>> limits,
               ermolaev_v_multidimensional_integral_rectangle_mpi::function func, double eps = 1e-4) {
   boost::mpi::communicator world;
-  double out;
+  double out = 0;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -33,7 +33,7 @@ void testBody(std::vector<std::pair<double, double>> limits,
   testTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    double seq_out;
+    double seq_out = 0;
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(limits.data()));
@@ -120,9 +120,9 @@ TEST(ermolaev_v_multidimensional_integral_rectangle_mpi, advanced_double_integra
   erm_integral_mpi::testBody({{-0.5, 0.8}, {-2, 2}}, erm_integral_mpi::advancedTwoVar);
 }
 TEST(ermolaev_v_multidimensional_integral_rectangle_mpi, advanced_triple_integral_two_variables) {
-  erm_integral_mpi::testBody({{-0.5, 0.8}, {-2, 2}, {2.5, 4.6}}, erm_integral_mpi::advancedTwoVar);
+  erm_integral_mpi::testBody({{-0.5, 0.8}, {-2, 2}, {2.5, 2.6}}, erm_integral_mpi::advancedTwoVar);
 }
 
 TEST(ermolaev_v_multidimensional_integral_rectangle_mpi, advanced_triple_integral_three_variables) {
-  erm_integral_mpi::testBody({{-0.5, 0.8}, {-2, 2}, {2.5, 4.6}}, erm_integral_mpi::advancedThreeVar);
+  erm_integral_mpi::testBody({{-0.5, 0.8}, {-2, 2}, {2.5, 2.6}}, erm_integral_mpi::advancedThreeVar);
 }

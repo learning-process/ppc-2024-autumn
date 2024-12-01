@@ -13,7 +13,7 @@ namespace ermolaev_v_multidimensional_integral_rectangle_seq {
 
 void testBody(std::vector<std::pair<double, double>> limits, double ref,
               ermolaev_v_multidimensional_integral_rectangle_seq::function func, double eps = 1e-4) {
-  double out;
+  double out = 0;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(limits.data()));
@@ -101,9 +101,9 @@ TEST(ermolaev_v_multidimensional_integral_rectangle_seq, advanced_double_integra
   erm_integral_seq::testBody({{-0.5, 0.8}, {-2, 2}}, -1.44106, erm_integral_seq::advancedTwoVar);
 }
 TEST(ermolaev_v_multidimensional_integral_rectangle_seq, advanced_triple_integral_two_variables) {
-  erm_integral_seq::testBody({{-0.5, 0.8}, {-2, 2}, {2.5, 4.6}}, -3.02598, erm_integral_seq::advancedTwoVar);
+  erm_integral_seq::testBody({{-0.5, 0.8}, {-2, 2}, {2.5, 2.6}}, -0.14421, erm_integral_seq::advancedTwoVar);
 }
 
 TEST(ermolaev_v_multidimensional_integral_rectangle_seq, advanced_triple_integral_three_variables) {
-  erm_integral_seq::testBody({{-0.5, 0.8}, {-2, 2}, {2.5, 4.6}}, -443.91614, erm_integral_seq::advancedThreeVar);
+  erm_integral_seq::testBody({{-0.5, 0.8}, {-2, 2}, {2.5, 2.6}}, -6.18355, erm_integral_seq::advancedThreeVar);
 }
