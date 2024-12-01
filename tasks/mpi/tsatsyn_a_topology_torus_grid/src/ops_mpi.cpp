@@ -476,6 +476,9 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
     res = input_data.size();
   }
   mySend(world, world.size() - 1, 0, cols, rows, neighbors, res);
+  mySend(world, 0, world.size() - 1, cols, rows, neighbors, res);
+  mySend(world, world.size() - 1, 0, cols, rows, neighbors, res);
+
   return true;
 }
 
