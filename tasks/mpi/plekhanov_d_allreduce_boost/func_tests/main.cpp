@@ -7,8 +7,6 @@
 
 #include "mpi/plekhanov_d_allreduce_boost/include/ops_mpi.hpp"
 
-
-
 TEST(plekhanov_d_allreduce_boost_func_test, Test_Empty_Matrix_5x5) {
   boost::mpi::communicator world;
 

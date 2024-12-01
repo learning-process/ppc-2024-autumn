@@ -44,6 +44,7 @@ bool plekhanov_d_allreduce_mine_mpi::TestMPITaskSequential::validation() {
 bool plekhanov_d_allreduce_mine_mpi::TestMPITaskSequential::run() {
   internal_order_test();
   for (int column = 0; column < columnCount; column++) {
+
     int columnMin = inputData_[column];  
     for (int row = 1; row < rowCount; row++) {
       if (inputData_[row * columnCount + column] < columnMin) {
@@ -98,8 +99,7 @@ bool plekhanov_d_allreduce_mine_mpi::TestMPITaskMyOwnParallel::validation() {
 }
 
 template <typename T>
-void plekhanov_d_allreduce_mine_mpi::TestMPITaskMyOwnParallel::my_all_reduce(const boost::mpi::communicator& world,
-                                                                          const T* in_values, T* out_values, int n) {
+void plekhanov_d_allreduce_mine_mpi::TestMPITaskMyOwnParallel::my_all_reduce(const boost::mpi::communicator& world, const T* in_values, T* out_values, int n) {
   int root = world.rank();
   std::vector<T> left_values(n), right_values(n);
 
@@ -162,7 +162,6 @@ bool plekhanov_d_allreduce_mine_mpi::TestMPITaskMyOwnParallel::run() {
       localMin[column] = std::min(localMin[column], inputData_[coordinate]);
     }
   }
- 
   resultData_.resize(columnCount);
   my_all_reduce(world, localMin.data(), resultData_.data(), columnCount);
 
@@ -171,15 +170,13 @@ bool plekhanov_d_allreduce_mine_mpi::TestMPITaskMyOwnParallel::run() {
     for (int row = 0; row < rowCount; row++) {
       int coordinate = row * columnCount + column;
       if (inputData_[coordinate] > resultData_[column]) {
-        localCount[column]++;
-        
+        localCount[column]++;  
       }
     }
     /*std::cout << localCount[column] << "-----------" << resultData_[column] << std::endl;*/
   }
   countAboveMin_.resize(columnCount, 0);
   boost::mpi::reduce(world, localCount.data(), columnCount, countAboveMin_.data(), std::plus<>(), 0);
-  
   return true;
 }
 
