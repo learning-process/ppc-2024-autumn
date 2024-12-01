@@ -202,7 +202,7 @@ TEST(komshina_d_grid_torus_topology_mpi, TestNeighborProcessingWithOutOfBoundsNe
 
   komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel task(task_data);
 
-  auto neighbors = task.compute_neighbors(world.rank(), 2);
+  auto neighbors = komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::compute_neighbors(world.rank(), 2);
   neighbors.push_back(size + 1);
 
   ASSERT_TRUE(task.validation());
