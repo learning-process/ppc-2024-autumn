@@ -224,30 +224,8 @@ TEST(beresnev_a_increase_contrast_mpi, Empty_image) {
     taskDataPar->outputs_count.emplace_back(file_size);
   }
   beresnev_a_increase_contrast_mpi::TestMPITaskParallel testMPITaskParallel(taskDataPar);
-  ASSERT_EQ(testMPITaskParallel.validation(), true);
-  testMPITaskParallel.pre_processing();
-  testMPITaskParallel.run();
-  testMPITaskParallel.post_processing();
-
   if (world.rank() == 0) {
-    // Create data
-    std::vector<uint8_t> reference(file_size);
-
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_buffer.data()));
-    taskDataSeq->inputs_count.emplace_back(file_size);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&factor));
-    taskDataSeq->inputs_count.emplace_back(1);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(&reference));
-    taskDataSeq->outputs_count.emplace_back(file_size);
-    // Create Task
-    beresnev_a_increase_contrast_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
-    ASSERT_EQ(reference, out_buffer);
+    ASSERT_EQ(testMPITaskParallel.validation(), false);
   }
 }
 
@@ -288,6 +266,132 @@ TEST(beresnev_a_increase_contrast_mpi, Empty_file) {
   beresnev_a_increase_contrast_mpi::TestMPITaskParallel testMPITaskParallel(taskDataPar);
   if (world.rank() == 0) {
     ASSERT_EQ(testMPITaskParallel.validation(), false);
+  }
+}
+
+TEST(beresnev_a_increase_contrast_mpi, Small_factor) {
+  boost::mpi::communicator world;
+  double factor = 1e-5;
+  int width = 13;
+  int height = 7;
+  int max_color = 255;
+
+  size_t file_size;
+
+  std::vector<uint8_t> input_buffer;
+  std::vector<uint8_t> out_buffer;
+  std::vector<uint8_t> inp;
+
+  std::string head =
+      "P6\n" + std::to_string(width) + " " + std::to_string(height) + '\n' + std::to_string(max_color) + '\n';
+
+  file_size = head.size() + width * height * 3;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    inp = getRandomVector(width * height * 3);
+
+    input_buffer.reserve(file_size);
+    input_buffer.insert(input_buffer.end(), head.begin(), head.end());
+    input_buffer.insert(input_buffer.end(), inp.data(), inp.data() + inp.size());
+
+    out_buffer = std::vector<uint8_t>(file_size);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_buffer.data()));
+    taskDataPar->inputs_count.emplace_back(file_size);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&factor));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(&out_buffer));
+    taskDataPar->outputs_count.emplace_back(file_size);
+  }
+  beresnev_a_increase_contrast_mpi::TestMPITaskParallel testMPITaskParallel(taskDataPar);
+  ASSERT_EQ(testMPITaskParallel.validation(), true);
+  testMPITaskParallel.pre_processing();
+  testMPITaskParallel.run();
+  testMPITaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    // Create data
+    std::vector<uint8_t> reference(file_size);
+
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_buffer.data()));
+    taskDataSeq->inputs_count.emplace_back(file_size);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&factor));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(&reference));
+    taskDataSeq->outputs_count.emplace_back(file_size);
+    // Create Task
+    beresnev_a_increase_contrast_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+    ASSERT_EQ(reference, out_buffer);
+  }
+}
+
+TEST(beresnev_a_increase_contrast_mpi, Negative_factor) {
+  boost::mpi::communicator world;
+  double factor = -1;
+  int width = 13;
+  int height = 7;
+  int max_color = 255;
+
+  size_t file_size;
+
+  std::vector<uint8_t> input_buffer;
+  std::vector<uint8_t> out_buffer;
+  std::vector<uint8_t> inp;
+
+  std::string head =
+      "P6\n" + std::to_string(width) + " " + std::to_string(height) + '\n' + std::to_string(max_color) + '\n';
+
+  file_size = head.size() + width * height * 3;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    inp = getRandomVector(width * height * 3);
+
+    input_buffer.reserve(file_size);
+    input_buffer.insert(input_buffer.end(), head.begin(), head.end());
+    input_buffer.insert(input_buffer.end(), inp.data(), inp.data() + inp.size());
+
+    out_buffer = std::vector<uint8_t>(file_size);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_buffer.data()));
+    taskDataPar->inputs_count.emplace_back(file_size);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&factor));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(&out_buffer));
+    taskDataPar->outputs_count.emplace_back(file_size);
+  }
+  beresnev_a_increase_contrast_mpi::TestMPITaskParallel testMPITaskParallel(taskDataPar);
+  ASSERT_EQ(testMPITaskParallel.validation(), true);
+  testMPITaskParallel.pre_processing();
+  testMPITaskParallel.run();
+  testMPITaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    // Create data
+    std::vector<uint8_t> reference(file_size);
+
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_buffer.data()));
+    taskDataSeq->inputs_count.emplace_back(file_size);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&factor));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(&reference));
+    taskDataSeq->outputs_count.emplace_back(file_size);
+    // Create Task
+    beresnev_a_increase_contrast_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+    ASSERT_EQ(reference, out_buffer);
   }
 }
 

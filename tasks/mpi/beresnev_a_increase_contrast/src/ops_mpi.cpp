@@ -63,7 +63,7 @@ bool beresnev_a_increase_contrast_mpi::TestMPITaskSequential::validation() {
               << pixel_data_start << " " << pixel_data_size << std::endl;
     return false;
   }
-  return taskData->inputs_count[1] == 1 && taskData->outputs_count[0] == buffer_size;
+  return taskData->inputs_count[1] == 1 && taskData->outputs_count[0] == buffer_size && width > 0 && height > 0;
 }
 
 bool beresnev_a_increase_contrast_mpi::TestMPITaskSequential::run() {
@@ -155,7 +155,7 @@ bool beresnev_a_increase_contrast_mpi::TestMPITaskParallel::validation() {
                 << pixel_data_start << " " << pixel_data_size << std::endl;
       return false;
     }
-    return taskData->inputs_count[1] == 1 && taskData->outputs_count[0] == buffer_size;
+    return taskData->inputs_count[1] == 1 && taskData->outputs_count[0] == buffer_size && width > 0 && height > 0;
   }
   return true;
 }
