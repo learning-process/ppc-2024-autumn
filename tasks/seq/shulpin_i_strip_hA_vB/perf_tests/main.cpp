@@ -8,10 +8,10 @@
 #include "seq/shulpin_i_strip_hA_vB/include/strip_hA_vB.hpp"
 
 TEST(shulpin_strip_scheme_A_B, pipeline_run) {
-  const int rows_a = 500;
-  const int cols_a = 500;
-  const int rows_b = 500;
-  const int cols_b = 500;
+  const int rows_a = 1000;
+  const int cols_a = 1000;
+  const int rows_b = 1000;
+  const int cols_b = 1000;
 
   std::vector<int> A(rows_a * cols_a, 1);
   std::vector<int> B(rows_b * cols_b, 1);
@@ -63,10 +63,10 @@ TEST(shulpin_strip_scheme_A_B, pipeline_run) {
 }
 
 TEST(shulpin_strip_scheme_A_B, task_run) {
-  const int rows_a = 500;
-  const int cols_a = 500;
-  const int rows_b = 500;
-  const int cols_b = 500;
+  const int rows_a = 1000;
+  const int cols_a = 1000;
+  const int rows_b = 1000;
+  const int cols_b = 1000;
 
   std::vector<int> A(rows_a * cols_a, 1);
   std::vector<int> B(rows_b * cols_b, 1);

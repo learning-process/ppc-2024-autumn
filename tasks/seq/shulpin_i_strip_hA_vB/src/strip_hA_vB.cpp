@@ -7,9 +7,10 @@
 void shulpin_strip_scheme_A_B::calculate_seq(int rows_a, int cols_a, int cols_b, std::vector<int> A_seq,
                                              std::vector<int> B_seq, std::vector<int>& C_seq) {
   for (int i = 0; i < rows_a; ++i) {
-    for (int j = 0; j < cols_b; ++j) {
-      for (int k = 0; k < cols_a; ++k) {
-        C_seq[i * cols_b + j] += A_seq[i * cols_a + k] * B_seq[k * cols_b + j];
+    for (int k = 0; k < cols_a; ++k) {
+      int a_val = A_seq[i * cols_a + k];
+      for (int j = 0; j < cols_b; ++j) {
+        C_seq[i * cols_b + j] += a_val * B_seq[k * cols_b + j];
       }
     }
   }
