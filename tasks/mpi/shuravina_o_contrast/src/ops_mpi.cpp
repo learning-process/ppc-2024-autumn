@@ -2,14 +2,12 @@
 
 #include <algorithm>
 #include <boost/mpi/collectives.hpp>
-#include <iostream>
 
 bool shuravina_o_contrast::ContrastTaskParallel::pre_processing() {
   internal_order_test();
   unsigned int delta = 0;
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
-    std::cout << "Delta: " << delta << std::endl;
   }
   broadcast(world, delta, 0);
 
@@ -20,14 +18,14 @@ bool shuravina_o_contrast::ContrastTaskParallel::pre_processing() {
       input_[i] = tmp_ptr[i];
     }
     for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, &input_[proc * delta], delta);
+      world.send(proc, 0, input_.data() + proc * delta, delta);
     }
   }
   local_input_ = std::vector<uint8_t>(delta);
   if (world.rank() == 0) {
     local_input_ = std::vector<uint8_t>(input_.begin(), input_.begin() + delta);
   } else {
-    world.recv(0, 0, &local_input_[0], delta);
+    world.recv(0, 0, local_input_.data(), delta);
   }
   output_ = std::vector<uint8_t>(delta);
   return true;
