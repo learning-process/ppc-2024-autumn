@@ -14,7 +14,7 @@ anikin_m_contrastscale_seq::RGB anikin_m_contrastscale_seq::getrandomRGB() {
   return rgb;
 }
 
-double anikin_m_contrastscale_seq::getcontrast(std::vector<anikin_m_contrastscale_seq::RGB>& in) {
+double anikin_m_contrastscale_seq::getcontrast(std::vector<anikin_m_contrastscale_seq::RGB> &in) {
   auto [min, max] = std::minmax_element(in.begin(), in.end(), [](auto a, auto b) { return a.R < b.R; });
   return (double)(max->R - min->R) / (max->R + min->R);
 }
@@ -26,8 +26,8 @@ bool anikin_m_contrastscale_seq::ContrastScaleSeq::validation() {
 
 bool anikin_m_contrastscale_seq::ContrastScaleSeq::pre_processing() {
   internal_order_test();
-  auto *input_ptr = reinterpret_cast<RGB*>(taskData->inputs[0]);
-  correction = *reinterpret_cast<float*>(taskData->inputs[1]);
+  auto *input_ptr = reinterpret_cast<RGB *>(taskData->inputs[0]);
+  correction = *reinterpret_cast<float *>(taskData->inputs[1]);
   input_.assign(input_ptr, input_ptr + taskData->inputs_count[0]);
   output_.clear();
   return true;
@@ -66,7 +66,7 @@ bool anikin_m_contrastscale_seq::ContrastScaleSeq::run() {
 
 bool anikin_m_contrastscale_seq::ContrastScaleSeq::post_processing() {
   internal_order_test();
-  auto *output_ptr = reinterpret_cast<RGB*>(taskData->outputs[0]);
+  auto *output_ptr = reinterpret_cast<RGB *>(taskData->outputs[0]);
   std::copy(output_.begin(), output_.end(), output_ptr);
   return true;
 }
