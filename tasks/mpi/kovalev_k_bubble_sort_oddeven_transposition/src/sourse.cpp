@@ -99,8 +99,8 @@ bool kovalev_k_bubble_sort_oddeven_transposition_mpi::BubbleSortOddEvenTransposi
   gather(world, loc_v.data(), loc_v.size(), glob_v.data(), 0);
 
   if (world.rank() == 0) {
-    for (int i = 0; i < remainder.size(); i++) {
-      int j = 0;
+    for (size_t i = 0; i < remainder.size(); i++) {
+      size_t j = 0;
       while (j < glob_v.size() && remainder[i] > glob_v[j]) j++;
       glob_v.insert(glob_v.begin() + j, remainder[i]);
     }
