@@ -52,11 +52,23 @@ bool kudryashova_i_gather::TestMPITaskSequential::post_processing() {
 
 bool kudryashova_i_gather::TestMPITaskParallel::pre_processing() {
   internal_order_test();
+  int remainder = 0;
+  processes = world.size();
+  int counting_proc = world.size() - 1;
   if (world.rank() == 0) {
-    if (world.size() == 1 || (int)(taskData->inputs_count[0]) < world.size()) {
+    if (processes == 1 || (int)(taskData->inputs_count[0]) < processes) {
       delta = (taskData->inputs_count[0]) / 2;
-    } else {
-      delta = ((taskData->inputs_count[0]) / 2) / (world.size() - 1);
+    }
+    else {
+      delta = (taskData->inputs_count[0] / 2) / counting_proc;
+      remainder = (taskData->inputs_count[0] / 2) % counting_proc;
+    }
+  }
+  segments.resize(processes);
+  if (world.rank() == 0) {
+    segments[0] = delta;
+    for (int i = 1; i < processes; ++i) {
+      segments[i] = delta + (i <= remainder ? 1 : 0);
     }
   }
   if (world.rank() == 0) {
@@ -82,7 +94,7 @@ bool kudryashova_i_gather::TestMPITaskParallel::validation() {
 
 bool kudryashova_i_gather::TestMPITaskParallel::run() {
   internal_order_test();
-  broadcast(world, delta, 0);
+  broadcast(world, segments.data(), processes, 0);
   if (world.rank() == 0) {
     size_t count = taskData->inputs_count[0];
     size_t halfSize = count / 2;
@@ -90,20 +102,23 @@ bool kudryashova_i_gather::TestMPITaskParallel::run() {
     secondHalf.resize(count - halfSize);
     std::copy(input_data.begin(), input_data.begin() + halfSize, firstHalf.begin());
     std::copy(input_data.begin() + halfSize, input_data.begin() + count, secondHalf.begin());
+    int pointer = 0;
     for (int proc = 1; proc < world.size(); ++proc) {
-      world.send(proc, 0, firstHalf.data() + (proc - 1) * delta, delta);
-      world.send(proc, 1, secondHalf.data() + (proc - 1) * delta, delta);
+      int proc_segment = segments[proc];
+      world.send(proc, 0, firstHalf.data() + pointer, proc_segment);
+      world.send(proc, 1, secondHalf.data() + pointer, proc_segment);
+      pointer += proc_segment;
     }
   }
   if (world.rank() != 0) {
-    local_input1_.resize(delta);
-    local_input2_.resize(delta);
-    world.recv(0, 0, local_input1_.data(), delta);
-    world.recv(0, 1, local_input2_.data(), delta);
+    local_input1_.resize(segments[world.rank()]);
+    local_input2_.resize(segments[world.rank()]);
+    world.recv(0, 0, local_input1_.data(), segments[world.rank()]);
+    world.recv(0, 1, local_input2_.data(), segments[world.rank()]);
     local_result = std::inner_product(local_input1_.begin(), local_input1_.end(), local_input2_.begin(), 0);
   }
   std::vector<int> full_results;
-  full_results.resize(delta);
+  full_results.resize(segments[world.rank()]);
   gather(world, local_result, full_results, 0);
   if (world.rank() == 0) {
     if ((int)(taskData->inputs_count[0]) < world.size() || (world.size() == 1)) {

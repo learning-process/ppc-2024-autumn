@@ -38,9 +38,10 @@ class TestMPITaskParallel : public ppc::core::Task {
   std::vector<int> input_data;
   std::vector<int> local_input1_, local_input2_;
   std::vector<int> firstHalf, secondHalf;
-
+  std::vector<int> segments{};
   int result{};
   int local_result;
-  unsigned int delta{};
+  int delta{};
+  int processes{};
 };
 }  // namespace kudryashova_i_gather_my

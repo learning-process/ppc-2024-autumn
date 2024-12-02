@@ -233,3 +233,79 @@ TEST(kudryashova_i_gather_mpi, dot_product_vector_1_with_zero) {
     ASSERT_EQ(testMpiTaskParallel.validation(), true);
   }
 }
+
+TEST(kudryashova_i_gather_mpi, dot_product_vector_prive_value_563) {
+  boost::mpi::communicator world;
+  const int count_size_vector = 563;
+  std::vector<int8_t> global_vector;
+  std::vector<int8_t> result(1, 0);
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::vector<int8_t> vector1 = GetRandomVectorGather(count_size_vector);
+  std::vector<int8_t> vector2 = GetRandomVectorGather(count_size_vector);
+  if (world.rank() == 0) {
+    global_vector.reserve(vector1.size() + vector2.size());
+    global_vector.insert(global_vector.end(), vector1.begin(), vector1.end());
+    global_vector.insert(global_vector.end(), vector2.begin(), vector2.end());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector.data()));
+    taskDataPar->inputs_count.emplace_back(global_vector.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
+    taskDataPar->outputs_count.emplace_back(result.size());
+  }
+  auto testMpiTaskParallel = kudryashova_i_gather::TestMPITaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+  if (world.rank() == 0) {
+    std::vector<int8_t> reference(1, 0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector.data()));
+    taskDataSeq->inputs_count.emplace_back(global_vector.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference.data()));
+    taskDataSeq->outputs_count.emplace_back(reference.size());
+    kudryashova_i_gather::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+    ASSERT_EQ(reference[0], result[0]);
+  }
+}
+
+TEST(kudryashova_i_gather_mpi, dot_product_vector_power_of_two_512) {
+  boost::mpi::communicator world;
+  const int count_size_vector = 512;
+  std::vector<int8_t> global_vector;
+  std::vector<int8_t> result(1, 0);
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::vector<int8_t> vector1 = GetRandomVectorGather(count_size_vector);
+  std::vector<int8_t> vector2 = GetRandomVectorGather(count_size_vector);
+  if (world.rank() == 0) {
+    global_vector.reserve(vector1.size() + vector2.size());
+    global_vector.insert(global_vector.end(), vector1.begin(), vector1.end());
+    global_vector.insert(global_vector.end(), vector2.begin(), vector2.end());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector.data()));
+    taskDataPar->inputs_count.emplace_back(global_vector.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
+    taskDataPar->outputs_count.emplace_back(result.size());
+  }
+  auto testMpiTaskParallel = kudryashova_i_gather::TestMPITaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+  if (world.rank() == 0) {
+    std::vector<int8_t> reference(1, 0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector.data()));
+    taskDataSeq->inputs_count.emplace_back(global_vector.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference.data()));
+    taskDataSeq->outputs_count.emplace_back(reference.size());
+    kudryashova_i_gather::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+    ASSERT_EQ(reference[0], result[0]);
+  }
+}
