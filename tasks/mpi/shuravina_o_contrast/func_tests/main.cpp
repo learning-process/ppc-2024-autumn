@@ -7,6 +7,7 @@
 #include "mpi/shuravina_o_contrast/include/ops_mpi.hpp"
 
 TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Correct_Output_Size) {
+  boost::mpi::environment env;
   boost::mpi::communicator world;
 
   if (world.rank() == 0) {
@@ -26,6 +27,7 @@ TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Correct_Output_Size) {
 }
 
 TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Incorrect_Output_Size) {
+  boost::mpi::environment env;
   boost::mpi::communicator world;
 
   if (world.rank() == 0) {

@@ -46,7 +46,7 @@ bool shuravina_o_contrast::ContrastTaskParallel::run() {
   uint8_t local_min_val = *std::min_element(local_input_.begin(), local_input_.end());
   uint8_t local_max_val = *std::max_element(local_input_.begin(), local_input_.end());
 
-  uint8_t global_min_val, global_max_val;
+  uint8_t global_min_val = 0, global_max_val = 0;
   reduce(world, local_min_val, global_min_val, boost::mpi::minimum<uint8_t>(), 0);
   reduce(world, local_max_val, global_max_val, boost::mpi::maximum<uint8_t>(), 0);
 
