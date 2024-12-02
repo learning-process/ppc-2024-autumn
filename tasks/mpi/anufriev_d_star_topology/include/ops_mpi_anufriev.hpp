@@ -16,7 +16,7 @@ class SimpleIntMPI : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
   const std::vector<int>& getDataPath() const;
-  
+
  private:
   void distributeData();
   void gatherData();
