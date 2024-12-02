@@ -12,7 +12,7 @@
 namespace dormidontov_e_circle_topology_mpi {
 class topology : public ppc::core::Task {
  public:
-  explicit topology(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(taskData_) {}
+  explicit topology(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
