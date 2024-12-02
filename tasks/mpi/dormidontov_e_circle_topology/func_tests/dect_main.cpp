@@ -1,4 +1,3 @@
-#pragma once
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
@@ -148,7 +147,6 @@ TEST(dormidontov_e_circle_topology_mpi, Test_1000) {
     ASSERT_EQ(marks, mans);
   }
 }
-
 
 TEST(dormidontov_e_circle_topology_mpi, Test_if_size_zero) {
   int size = 0;
