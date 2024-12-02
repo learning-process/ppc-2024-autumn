@@ -321,6 +321,8 @@ TEST(anufriev_d_star_topology, DataPathTest) {
     std::vector<int> expected_data_path;
     for (int i = 1; i < world.size(); ++i) {
       expected_data_path.push_back(i);
+    }
+    for (int i = 1; i < world.size(); ++i) {
       expected_data_path.push_back(i);
     }
     ASSERT_EQ(task->getDataPath(), expected_data_path);
