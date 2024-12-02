@@ -45,23 +45,23 @@ TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi, Initializa
   std::vector<int> global_B;
   std::vector<int> global_res;
 
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   int result_size = 0;
   if (world.rank() == 0) {
     global_res.resize(result_size, 0);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_A.data()));
-    taskDataPar->inputs_count.emplace_back(0);
-    taskDataPar->inputs_count.emplace_back(0);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_A.data()));
+    taskDataSeq->inputs_count.emplace_back(0);
+    taskDataSeq->inputs_count.emplace_back(0);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_B.data()));
-    taskDataPar->inputs_count.emplace_back(0);
-    taskDataPar->inputs_count.emplace_back(0);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_B.data()));
+    taskDataSeq->inputs_count.emplace_back(0);
+    taskDataSeq->inputs_count.emplace_back(0);
 
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_res.data()));
-    taskDataPar->outputs_count.emplace_back(global_res.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_res.data()));
+    taskDataSeq->outputs_count.emplace_back(global_res.size());
 
     sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskSequential testMpiTaskSequential(
-        taskDataPar);
+        taskDataSeq);
     EXPECT_FALSE(testMpiTaskSequential.validation());
   }
 }
@@ -72,29 +72,27 @@ TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi, InvalidTas
   std::vector<int> global_B;
   std::vector<int> global_res;
 
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   int result_size = 0;
   if (world.rank() == 0) {
-    global_res.resize(result_size, 0);
     global_A.resize(100, 0);
+    global_res.resize(result_size, 0);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_A.data()));
+    taskDataSeq->inputs_count.emplace_back(25);
+    taskDataSeq->inputs_count.emplace_back(4);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_A.data()));
-    taskDataPar->inputs_count.emplace_back(25);
-    taskDataPar->inputs_count.emplace_back(4);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_B.data()));
+    taskDataSeq->inputs_count.emplace_back(0);
+    taskDataSeq->inputs_count.emplace_back(0);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_B.data()));
-    taskDataPar->inputs_count.emplace_back(0);
-    taskDataPar->inputs_count.emplace_back(0);
-
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_res.data()));
-    taskDataPar->outputs_count.emplace_back(global_res.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_res.data()));
+    taskDataSeq->outputs_count.emplace_back(global_res.size());
   }
 
-  auto taskParallel =
-      std::make_shared<sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskSequential>(
-          taskDataPar);
-  EXPECT_FALSE(taskParallel->validation());
+  sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskSequential testMpiTaskSequential(
+      taskDataSeq);
+  EXPECT_FALSE(testMpiTaskSequential.validation());
 }
 
 TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi, InvalidTaskWithMismatchedDimensions) {
