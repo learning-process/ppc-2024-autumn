@@ -48,6 +48,10 @@ TEST(alputov_i_topology_hypercube_mpi, DataTransfer_0_to_1) {
       ASSERT_EQ(outputData[0], inputData[0]);
       ASSERT_EQ(actualRoute, expectedRoute);
     }
+  } else {
+    if (world.rank() == 0) {
+      GTEST_SKIP() << "The test requires the communicator size to be a power of 2 and not less than 2.";
+    }
   }
 }
 
@@ -85,6 +89,10 @@ TEST(alputov_i_topology_hypercube_mpi, DataTransfer_0_to_3) {
       ASSERT_EQ(outputData[0], inputData[0]);
       ASSERT_EQ(actualRoute, expectedRoute);
     }
+  } else {
+    if (world.rank() == 0) {
+      GTEST_SKIP() << "The test requires the communicator size to be a power of 2 and not less than 4.";
+    }
   }
 }
 TEST(alputov_i_topology_hypercube_mpi, DataTransfer_0_to_5) {
@@ -121,12 +129,16 @@ TEST(alputov_i_topology_hypercube_mpi, DataTransfer_0_to_5) {
       ASSERT_EQ(outputData[0], inputData[0]);
       ASSERT_EQ(actualRoute, expectedRoute);
     }
+  } else {
+    if (world.rank() == 0) {
+      GTEST_SKIP() << "The test requires the communicator size to be a power of 2 and not less than 8.";
+    }
   }
 }
 TEST(alputov_i_topology_hypercube_mpi, DataTransfer_0_to_42) {
   boost::mpi::communicator world;
   size_t communicatorSize = world.size();
-  if ((communicatorSize & (communicatorSize - 1)) == 0u && communicatorSize > 64) {
+  if ((communicatorSize & (communicatorSize - 1)) == 0u && communicatorSize >= 64) {
     std::vector<int> inputData{1337, 42};
     std::vector<int> expectedRoute{0, 32, 40, 42};
     std::vector<int> outputData(1, 0);
@@ -155,6 +167,10 @@ TEST(alputov_i_topology_hypercube_mpi, DataTransfer_0_to_42) {
       actualRoute = alputov_i_topology_hypercube_mpi::removeNegativeOnesFromEnd(actualRoute);
       ASSERT_EQ(outputData[0], inputData[0]);
       ASSERT_EQ(actualRoute, expectedRoute);
+    }
+  } else {
+    if (world.rank() == 0) {
+      GTEST_SKIP() << "The test requires the communicator size to be a power of 2 and not less than 64.";
     }
   }
 }
@@ -186,13 +202,17 @@ TEST(alputov_i_topology_hypercube_mpi, TargetRankOutOfBounds) {
     if (world.rank() == 0) {
       ASSERT_EQ(TopologyHypercubeMPI.validation(), false);
     }
+  } else {
+    if (world.rank() == 0) {
+      GTEST_SKIP() << "The test requires the communicator size to be a power of 2 and less than 64.";
+    }
   }
 }
 
 TEST(alputov_i_topology_hypercube_mpi, NegativeTargetRank) {
   boost::mpi::communicator world;
   size_t communicatorSize = world.size();
-  if ((communicatorSize & (communicatorSize - 1)) == 0u && communicatorSize > 1) {
+  if ((communicatorSize & (communicatorSize - 1)) == 0u && communicatorSize >= 1) {
     std::vector<int> inputData{1337, -5};
     std::vector<int> outputData(1, 0);
     std::vector<int> actualRoute;
@@ -215,6 +235,10 @@ TEST(alputov_i_topology_hypercube_mpi, NegativeTargetRank) {
     alputov_i_topology_hypercube_mpi::HypercubeRouterMPI TopologyHypercubeMPI(taskData);
     if (world.rank() == 0) {
       ASSERT_EQ(TopologyHypercubeMPI.validation(), false);
+    }
+  } else {
+    if (world.rank() == 0) {
+      GTEST_SKIP() << "The test requires the communicator size to be a power of 2 and not less than 1.";
     }
   }
 }
@@ -251,6 +275,10 @@ TEST(alputov_i_topology_hypercube_mpi, SelfTransfer_Rank0) {
       actualRoute = alputov_i_topology_hypercube_mpi::removeNegativeOnesFromEnd(actualRoute);
       ASSERT_EQ(outputData[0], inputData[0]);
       ASSERT_EQ(actualRoute, expectedRoute);
+    }
+  } else {
+    if (world.rank() == 0) {
+      GTEST_SKIP() << "The test requires the communicator size to be a power of 2 and not less than 1.";
     }
   }
 }

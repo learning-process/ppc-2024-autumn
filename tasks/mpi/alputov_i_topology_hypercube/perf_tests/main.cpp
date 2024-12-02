@@ -58,6 +58,10 @@ TEST(alputov_i_topology_hypercube_mpi, PipelineExecutionTest) {
       ASSERT_EQ(outputData[0], inputData[0]);
       ASSERT_EQ(actualRoute, expectedRoute);
     }
+  } else {
+    if (world.rank() == 0) {
+      GTEST_SKIP() << "Test requires communicator size to be a power of 2.";
+    }
   }
 }
 
@@ -106,6 +110,10 @@ TEST(alputov_i_topology_hypercube_mpi, TaskExecutionTest) {
       actualRoute = alputov_i_topology_hypercube_mpi::removeNegativeOnesFromEnd(actualRoute);
       ASSERT_EQ(outputData[0], inputData[0]);
       ASSERT_EQ(actualRoute, expectedRoute);
+    }
+  } else {
+    if (world.rank() == 0) {
+      GTEST_SKIP() << "Test requires communicator size to be a power of 2.";
     }
   }
 }
