@@ -7,16 +7,17 @@
 #include "seq/malyshev_a_simple_iteration_method/include/ops_seq.hpp"
 
 namespace malyshev_a_simple_iteration_method_seq {
-void getRandomData(uint32_t n, std::vector<double> &A, std::vector<double> &B) {
+void getRandomData(uint32_t n, std::vector<double> &A, std::vector<double> &B, double X_lower, double X_upper,
+                   double A_lower, double A_upper) {
+  std::srand(std::time(nullptr));
+
   const auto random_double = [&](double lower_bound, double upper_bound) {
     return lower_bound + (upper_bound - lower_bound) * (std::rand() % RAND_MAX) / RAND_MAX;
   };
 
-  std::srand(std::time(nullptr));
-
   std::vector<double> X(n);
   for (uint32_t i = 0; i < n; i++) {
-    X[i] = random_double(50, 100);
+    X[i] = random_double(X_lower, X_upper);
     if (std::rand() % 2 == 0) X[i] *= -1;
   }
 
@@ -26,10 +27,10 @@ void getRandomData(uint32_t n, std::vector<double> &A, std::vector<double> &B) {
   double sum_by_row_for_C;
   double sum_by_row_for_B;
   for (uint32_t i = 0; i < n; i++) {
-    A[i * n + i] = random_double(50, 100);
+    A[i * n + i] = random_double(A_lower, A_upper);
     if (std::rand() % 2 == 0) A[i * n + i] *= -1;
 
-    sum_by_row_for_C = 0.01;
+    sum_by_row_for_C = 0;
     sum_by_row_for_B = A[i * n + i] * X[i];
 
     for (uint32_t j = 0; j < n; j++) {
@@ -89,7 +90,7 @@ TEST(malyshev_a_simple_iteration_method_seq, random_test_1x1) {
   const int size = 1;
   std::vector<double> A;
   std::vector<double> B;
-  malyshev_a_simple_iteration_method_seq::getRandomData(size, A, B);
+  malyshev_a_simple_iteration_method_seq::getRandomData(size, A, B, 50, 100, 50, 100);
 
   std::vector<double> X(size, 0);
   std::vector<double> X0(size, 0);
@@ -128,7 +129,7 @@ TEST(malyshev_a_simple_iteration_method_seq, random_test_2x2) {
   const int size = 2;
   std::vector<double> A;
   std::vector<double> B;
-  malyshev_a_simple_iteration_method_seq::getRandomData(size, A, B);
+  malyshev_a_simple_iteration_method_seq::getRandomData(size, A, B, -20, 20, -30, 30);
 
   std::vector<double> X(size, 0);
   std::vector<double> X0(size, 0);
@@ -167,7 +168,7 @@ TEST(malyshev_a_simple_iteration_method_seq, random_test_3x3) {
   const int size = 3;
   std::vector<double> A;
   std::vector<double> B;
-  malyshev_a_simple_iteration_method_seq::getRandomData(size, A, B);
+  malyshev_a_simple_iteration_method_seq::getRandomData(size, A, B, 0, 1, 1, 10);
 
   std::vector<double> X(size, 0);
   std::vector<double> X0(size, 0);
@@ -206,7 +207,7 @@ TEST(malyshev_a_simple_iteration_method_seq, random_test_5x5) {
   const int size = 5;
   std::vector<double> A;
   std::vector<double> B;
-  malyshev_a_simple_iteration_method_seq::getRandomData(size, A, B);
+  malyshev_a_simple_iteration_method_seq::getRandomData(size, A, B, 2, 8, 13, 29);
 
   std::vector<double> X(size, 0);
   std::vector<double> X0(size, 0);
@@ -245,7 +246,7 @@ TEST(malyshev_a_simple_iteration_method_seq, random_test_7x7) {
   const int size = 7;
   std::vector<double> A;
   std::vector<double> B;
-  malyshev_a_simple_iteration_method_seq::getRandomData(size, A, B);
+  malyshev_a_simple_iteration_method_seq::getRandomData(size, A, B, 10, 100, 123, 321);
 
   std::vector<double> X(size, 0);
   std::vector<double> X0(size, 0);
@@ -284,7 +285,7 @@ TEST(malyshev_a_simple_iteration_method_seq, random_test_8x8) {
   const int size = 8;
   std::vector<double> A;
   std::vector<double> B;
-  malyshev_a_simple_iteration_method_seq::getRandomData(size, A, B);
+  malyshev_a_simple_iteration_method_seq::getRandomData(size, A, B, 100, 123, 200, 231);
 
   std::vector<double> X(size, 0);
   std::vector<double> X0(size, 0);
@@ -323,7 +324,7 @@ TEST(malyshev_a_simple_iteration_method_seq, random_test_10x10) {
   const int size = 10;
   std::vector<double> A;
   std::vector<double> B;
-  malyshev_a_simple_iteration_method_seq::getRandomData(size, A, B);
+  malyshev_a_simple_iteration_method_seq::getRandomData(size, A, B, 100, 132, 200, 453);
 
   std::vector<double> X(size, 0);
   std::vector<double> X0(size, 0);

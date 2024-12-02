@@ -8,7 +8,8 @@
 #include "mpi/malyshev_a_simple_iteration_method/include/ops_mpi.hpp"
 
 namespace malyshev_a_simple_iteration_method_mpi {
-void getRandomData(uint32_t n, std::vector<double> &A, std::vector<double> &B) {
+void getRandomData(uint32_t n, std::vector<double> &A, std::vector<double> &B, double X_lower, double X_upper,
+                   double A_lower, double A_upper) {
   std::srand(std::time(nullptr));
 
   const auto random_double = [&](double lower_bound, double upper_bound) {
@@ -17,7 +18,7 @@ void getRandomData(uint32_t n, std::vector<double> &A, std::vector<double> &B) {
 
   std::vector<double> X(n);
   for (uint32_t i = 0; i < n; i++) {
-    X[i] = random_double(50, 100);
+    X[i] = random_double(X_lower, X_upper);
     if (std::rand() % 2 == 0) X[i] *= -1;
   }
 
@@ -27,10 +28,10 @@ void getRandomData(uint32_t n, std::vector<double> &A, std::vector<double> &B) {
   double sum_by_row_for_C;
   double sum_by_row_for_B;
   for (uint32_t i = 0; i < n; i++) {
-    A[i * n + i] = random_double(50, 100);
+    A[i * n + i] = random_double(A_lower, A_upper);
     if (std::rand() % 2 == 0) A[i * n + i] *= -1;
 
-    sum_by_row_for_C = 0.01;
+    sum_by_row_for_C = 0;
     sum_by_row_for_B = A[i * n + i] * X[i];
 
     for (uint32_t j = 0; j < n; j++) {
@@ -125,7 +126,7 @@ TEST(malyshev_a_simple_iteration_method_mpi, random_test_1x1) {
   if (world.rank() == 0) {
     // Create data
     X.resize(size);
-    malyshev_a_simple_iteration_method_mpi::getRandomData(size, A, B);
+    malyshev_a_simple_iteration_method_mpi::getRandomData(size, A, B, 50, 100, 50, 100);
 
     // Create TaskData
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
@@ -193,7 +194,7 @@ TEST(malyshev_a_simple_iteration_method_mpi, random_test_2x2) {
   if (world.rank() == 0) {
     // Create data
     X.resize(size);
-    malyshev_a_simple_iteration_method_mpi::getRandomData(size, A, B);
+    malyshev_a_simple_iteration_method_mpi::getRandomData(size, A, B, -20, 20, -30, 30);
 
     // Create TaskData
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
@@ -261,7 +262,7 @@ TEST(malyshev_a_simple_iteration_method_mpi, random_test_3x3) {
   if (world.rank() == 0) {
     // Create data
     X.resize(size);
-    malyshev_a_simple_iteration_method_mpi::getRandomData(size, A, B);
+    malyshev_a_simple_iteration_method_mpi::getRandomData(size, A, B, 0, 1, 1, 10);
 
     // Create TaskData
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
@@ -329,7 +330,7 @@ TEST(malyshev_a_simple_iteration_method_mpi, random_test_5x5) {
   if (world.rank() == 0) {
     // Create data
     X.resize(size);
-    malyshev_a_simple_iteration_method_mpi::getRandomData(size, A, B);
+    malyshev_a_simple_iteration_method_mpi::getRandomData(size, A, B, 2, 8, 13, 29);
 
     // Create TaskData
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
@@ -397,7 +398,7 @@ TEST(malyshev_a_simple_iteration_method_mpi, random_test_7x7) {
   if (world.rank() == 0) {
     // Create data
     X.resize(size);
-    malyshev_a_simple_iteration_method_mpi::getRandomData(size, A, B);
+    malyshev_a_simple_iteration_method_mpi::getRandomData(size, A, B, 10, 100, 123, 321);
 
     // Create TaskData
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
@@ -465,7 +466,7 @@ TEST(malyshev_a_simple_iteration_method_mpi, random_test_8x8) {
   if (world.rank() == 0) {
     // Create data
     X.resize(size);
-    malyshev_a_simple_iteration_method_mpi::getRandomData(size, A, B);
+    malyshev_a_simple_iteration_method_mpi::getRandomData(size, A, B, 100, 123, 200, 231);
 
     // Create TaskData
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
@@ -533,7 +534,7 @@ TEST(malyshev_a_simple_iteration_method_mpi, random_test_10x10) {
   if (world.rank() == 0) {
     // Create data
     X.resize(size);
-    malyshev_a_simple_iteration_method_mpi::getRandomData(size, A, B);
+    malyshev_a_simple_iteration_method_mpi::getRandomData(size, A, B, 100, 132, 200, 453);
 
     // Create TaskData
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
