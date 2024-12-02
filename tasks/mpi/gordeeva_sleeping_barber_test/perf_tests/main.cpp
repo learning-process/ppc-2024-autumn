@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/gordeeva_t_sleeping_barber/include/ops_mpi.hpp"
+#include "mpi/gordeeva_sleeping_barber_test/include/ops_mpi.hpp"
 
 TEST(gordeeva_t_sleeping_barber_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
