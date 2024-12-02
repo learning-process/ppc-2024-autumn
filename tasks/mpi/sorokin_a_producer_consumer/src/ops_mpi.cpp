@@ -12,18 +12,23 @@ using namespace std::chrono_literals;
 
 bool sorokin_a_producer_consumer_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-
   count_p_ = (world.size() - 1) / 2;
-
+  double lower_bound = 0;
+  double upper_bound = 0;
   if (world.rank() == 0) {
     input_ = std::vector<int>(taskData->inputs_count[0]);
-
+    lower_bound = static_cast<double>(taskData->inputs_count[1]);
+    upper_bound = static_cast<double>(taskData->inputs_count[2]);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
     for (unsigned int proc = 1; proc < count_p_ + 1; proc++) {
       world.send(proc, 0, input_.data() + proc - 1, 1);
     }
   }
+  broadcast(world, lower_bound, 0);
+  broadcast(world, upper_bound, 0);
+  lower_bound_ = lower_bound;
+  upper_bound_ = upper_bound;
 
   if (world.rank() != 0 && static_cast<unsigned int>(world.rank()) <= count_p_) {
     local_input_ = std::vector<int>(1);
@@ -51,7 +56,10 @@ bool sorokin_a_producer_consumer_mpi::TestMPITaskParallel::run() {
   const int exit_tag = 0;
 
   if (world.rank() == 0) {
-    std::this_thread::sleep_for(std::chrono::milliseconds(5));
+    std::uniform_real_distribution<double> unif(lower_bound_, upper_bound_);
+    std::random_device rand_dev;
+    std::mt19937 rand_engine(rand_dev());
+    std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(unif(rand_engine))));
     int buffer = -1;
     int rank_data = -1;
     bool has_data = false;
@@ -108,9 +116,7 @@ bool sorokin_a_producer_consumer_mpi::TestMPITaskParallel::run() {
       if (response[1] == 0) {
         break;
       }
-      const double lower_bound = 2;
-      const double upper_bound = 6;
-      std::uniform_real_distribution<double> unif(lower_bound, upper_bound);
+      std::uniform_real_distribution<double> unif(lower_bound_, upper_bound_);
       std::random_device rand_dev;
       std::mt19937 rand_engine(rand_dev());
       std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(unif(rand_engine))));
@@ -133,9 +139,7 @@ bool sorokin_a_producer_consumer_mpi::TestMPITaskParallel::run() {
         val_b = response[0];
         break;
       }
-      const double lower_bound = 2;
-      const double upper_bound = 6;
-      std::uniform_real_distribution<double> unif(lower_bound, upper_bound);
+      std::uniform_real_distribution<double> unif(lower_bound_, upper_bound_);
       std::random_device rand_dev;
       std::mt19937 rand_engine(rand_dev());
       std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(unif(rand_engine))));

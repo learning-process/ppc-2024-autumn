@@ -10,6 +10,8 @@ TEST(sorokin_a_producer_consumer_mpi, Test_Basic) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int> global_sum;
+  size_t start = 2;
+  size_t end = 6;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -17,6 +19,8 @@ TEST(sorokin_a_producer_consumer_mpi, Test_Basic) {
     global_sum = global_vec;
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->inputs_count.emplace_back(start);
+    taskDataPar->inputs_count.emplace_back(end);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
