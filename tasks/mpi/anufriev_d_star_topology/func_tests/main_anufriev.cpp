@@ -294,3 +294,38 @@ TEST(anufriev_d_star_topology, MultipleRunsTest) {
     }
   }
 }
+
+TEST(anufriev_d_star_topology, DataPathTest) {
+  boost::mpi::communicator world;
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  std::vector<int> input_data;
+  std::vector<int> output_data;
+
+  if (world.rank() == 0) {
+    input_data = createInputVector(1000);
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
+    taskData->inputs_count.push_back(input_data.size());
+
+    output_data.resize(input_data.size());
+    taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output_data.data()));
+    taskData->outputs_count.push_back(output_data.size());
+  }
+
+  auto task = std::make_shared<anufriev_d_star_topology::SimpleIntMPI>(taskData);
+  ASSERT_TRUE(task->validation());
+  ASSERT_TRUE(task->pre_processing());
+  ASSERT_TRUE(task->run());
+  ASSERT_TRUE(task->post_processing());
+
+  if (world.rank() == 0) {
+    std::vector<int> expected_data_path;
+    for (int i = 1; i < world.size(); ++i) {
+      expected_data_path.push_back(i);
+      expected_data_path.push_back(i);
+    }
+    ASSERT_EQ(task->getDataPath(), expected_data_path);
+  } else {
+    std::vector<int> expected_data_path = {0, 0};
+    ASSERT_EQ(task->getDataPath(), expected_data_path);
+  }
+}
