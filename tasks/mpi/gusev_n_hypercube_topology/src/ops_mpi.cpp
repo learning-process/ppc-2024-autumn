@@ -8,9 +8,9 @@
 namespace gusev_n_hypercube_topology_mpi {
 
 bool gusev_n_hypercube_topology_mpi::HypercubeTopologyParallel::validation() {
-  if (!((std::ceil(std::log2(world.size())) == std::log2(world.size())) && (world.size() >= 2))) {
-    /*std::cerr << "Warning: world size != 2^n" << std::endl;*/
-  }
+  // if (!((std::ceil(std::log2(world.size())) == std::log2(world.size())) && (world.size() >= 2))) {
+  //   /*std::cerr << "Warning: world size != 2^n" << std::endl;*/
+  // }
 
   if (taskData->inputs.empty() || taskData->inputs_count.empty()) {
     /*std::cerr << "Validation failed: No input data provided." << std::endl;*/
