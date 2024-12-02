@@ -46,8 +46,9 @@ TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi, Initializa
   std::vector<int> global_res;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
+  int result_size = 0;
   if (world.rank() == 0) {
+    global_res.resize(result_size, 0);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_A.data()));
     taskDataPar->inputs_count.emplace_back(0);
     taskDataPar->inputs_count.emplace_back(0);
