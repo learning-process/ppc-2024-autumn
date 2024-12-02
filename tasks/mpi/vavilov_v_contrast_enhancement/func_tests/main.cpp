@@ -296,3 +296,15 @@ TEST(vavilov_v_contrast_enhancement_mpi, SingleValueInput) {
     EXPECT_EQ(output, expected_output);
   }
 }
+
+TEST(vavilov_v_contrast_enhancement_mpi, EmptyInput) {
+  mpi::environment env;
+  mpi::communicator world;
+
+  if (world.rank() == 0) {
+    auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+    taskDataPar->inputs_count.emplace_back(0);
+    vavilov_v_contrast_enhancement_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  }
+}
