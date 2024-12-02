@@ -182,7 +182,7 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, Test_19861_int) {
   }
 }
 
-TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, Test_857_double) {
+TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, Test_1024_double) {
   const size_t length = 857;
   std::srand(std::time(nullptr));
   std::vector<double> in(length);
