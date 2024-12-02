@@ -39,7 +39,7 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_0) {
   std::vector<int> global_B;
   std::vector<int> global_res;
 
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   int m = 0;
 
@@ -48,19 +48,18 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_0) {
 
     global_res.resize(m, 0);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_A.data()));
-    taskDataPar->inputs_count.emplace_back(global_A.size());
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_A.data()));
+    taskDataSeq->inputs_count.emplace_back(global_A.size());
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_B.data()));
-    taskDataPar->inputs_count.emplace_back(global_B.size());
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_B.data()));
+    taskDataSeq->inputs_count.emplace_back(global_B.size());
 
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_res.data()));
-    taskDataPar->outputs_count.emplace_back(global_res.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_res.data()));
+    taskDataSeq->outputs_count.emplace_back(global_res.size());
+
+    volochaev_s_vertical_ribbon_scheme_16_mpi::Lab2_16_seq testMpiTaskSequential(taskDataSeq);
+    EXPECT_FALSE(testMpiTaskSequential.validation());
   }
-
-  auto taskParallel = std::make_shared<volochaev_s_vertical_ribbon_scheme_16_mpi::Lab2_16_mpi>(taskDataPar);
-
-  EXPECT_FALSE(taskParallel->validation());
 }
 
 TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_1) {
@@ -69,7 +68,7 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_1) {
   std::vector<int> global_B;
   std::vector<int> global_res;
 
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   int m = 0;
 
@@ -77,18 +76,18 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_1) {
     global_A.resize(100, 0);
     global_res.resize(m, 0);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_A.data()));
-    taskDataPar->inputs_count.emplace_back(global_A.size());
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_A.data()));
+    taskDataSeq->inputs_count.emplace_back(global_A.size());
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_B.data()));
-    taskDataPar->inputs_count.emplace_back(global_B.size());
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_B.data()));
+    taskDataSeq->inputs_count.emplace_back(global_B.size());
 
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_res.data()));
-    taskDataPar->outputs_count.emplace_back(global_res.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_res.data()));
+    taskDataSeq->outputs_count.emplace_back(global_res.size());
+    
+    volochaev_s_vertical_ribbon_scheme_16_mpi::Lab2_16_seq testMpiTaskSequential(taskDataSeq);
+    EXPECT_FALSE(testMpiTaskSequential.validation());
   }
-
-  auto taskParallel = std::make_shared<volochaev_s_vertical_ribbon_scheme_16_mpi::Lab2_16_mpi>(taskDataPar);
-  EXPECT_FALSE(taskParallel->validation());
 }
 
 TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_2) {
@@ -97,7 +96,7 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_2) {
   std::vector<int> global_B;
   std::vector<int> global_res;
 
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   int m = 0;
 
@@ -105,18 +104,18 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_2) {
     global_res.resize(m, 0);
     global_A.resize(100, 0);
     global_B.resize(3, 0);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_A.data()));
-    taskDataPar->inputs_count.emplace_back(global_A.size());
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_A.data()));
+    taskDataSeq->inputs_count.emplace_back(global_A.size());
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_B.data()));
-    taskDataPar->inputs_count.emplace_back(global_B.size());
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_B.data()));
+    taskDataSeq->inputs_count.emplace_back(global_B.size());
 
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_res.data()));
-    taskDataPar->outputs_count.emplace_back(global_res.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_res.data()));
+    taskDataSeq->outputs_count.emplace_back(global_res.size());
+
+    volochaev_s_vertical_ribbon_scheme_16_mpi::Lab2_16_seq testMpiTaskSequential(taskDataSeq);
+    EXPECT_FALSE(testMpiTaskSequential.validation());
   }
-
-  auto taskParallel = std::make_shared<volochaev_s_vertical_ribbon_scheme_16_mpi::Lab2_16_mpi>(taskDataPar);
-  EXPECT_FALSE(taskParallel->validation());
 }
 
 TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_3) {
