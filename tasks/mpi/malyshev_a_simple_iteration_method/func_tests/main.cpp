@@ -722,9 +722,13 @@ TEST(malyshev_a_simple_iteration_method_mpi, validate_input_zero_on_the_main_dia
   std::vector<double> X0(3, 0);
   double eps = 1e-4;
 
-  const auto try_validate = [](auto &taskData) {
-    malyshev_a_simple_iteration_method_mpi::TestMPITaskParallel testTaskParallel(taskData);
-    return testTaskParallel.validation();
+  const auto try_validate_par = [](auto &taskData) {
+    malyshev_a_simple_iteration_method_mpi::TestMPITaskParallel testTask(taskData);
+    return testTask.validation();
+  };
+  const auto try_validate_seq = [](auto &taskData) {
+    malyshev_a_simple_iteration_method_mpi::TestMPITaskSequential testTask(taskData);
+    return testTask.validation();
   };
 
   if (world.rank() == 0) {
@@ -741,6 +745,7 @@ TEST(malyshev_a_simple_iteration_method_mpi, validate_input_zero_on_the_main_dia
     taskDataPar->outputs_count.emplace_back(X.size());
 
     // We expect false because the system is slowly converging
-    ASSERT_FALSE(try_validate(taskDataPar));
+    ASSERT_FALSE(try_validate_par(taskDataPar));
+    ASSERT_FALSE(try_validate_seq(taskDataPar));
   }
 }
