@@ -18,6 +18,7 @@ TEST(anikin_m_contrastscale_mpi, test_pipeline_run) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
+    in.reserve(count);
     for (int i = 0; i < count; i++) {
       in.push_back(getrandomRGB());
     }
@@ -56,6 +57,7 @@ TEST(anikin_m_contrastscale_mpi, test_task_run) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
+    in.reserve(count);
     for (int i = 0; i < count; i++) {
       in.push_back(getrandomRGB());
     }

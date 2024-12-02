@@ -26,7 +26,7 @@ bool anikin_m_contrastscale_seq::ContrastScaleSeq::validation() {
 
 bool anikin_m_contrastscale_seq::ContrastScaleSeq::pre_processing() {
   internal_order_test();
-  auto input_ptr = reinterpret_cast<RGB*>(taskData->inputs[0]);
+  auto *input_ptr = reinterpret_cast<RGB*>(taskData->inputs[0]);
   correction = *reinterpret_cast<float*>(taskData->inputs[1]);
   input_.assign(input_ptr, input_ptr + taskData->inputs_count[0]);
   output_.clear();
@@ -45,7 +45,7 @@ bool anikin_m_contrastscale_seq::ContrastScaleSeq::run() {
   // Calculate new RGB
   uint8_t newrgb[256];
   for (int i = 0; i < 256; i++) {
-    int delta = (int)i - iab;
+    int delta = i - iab;
     int temp = (int)(iab + correction * delta);
 
     if (temp < 0) temp = 0;
@@ -66,7 +66,7 @@ bool anikin_m_contrastscale_seq::ContrastScaleSeq::run() {
 
 bool anikin_m_contrastscale_seq::ContrastScaleSeq::post_processing() {
   internal_order_test();
-  auto output_ptr = reinterpret_cast<RGB*>(taskData->outputs[0]);
+  auto *output_ptr = reinterpret_cast<RGB*>(taskData->outputs[0]);
   std::copy(output_.begin(), output_.end(), output_ptr);
   return true;
 }

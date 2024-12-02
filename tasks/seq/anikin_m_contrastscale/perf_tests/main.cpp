@@ -12,6 +12,7 @@ TEST(anikin_m_contrastscale, test_pipeline_run) {
   const int count = 20000000;
   // Create data
   std::vector<RGB> in;
+  in.reserve(count);
   float k = 1.5;
   std::vector<RGB> out;
   for (int i = 0; i < count; i++) {
@@ -53,6 +54,7 @@ TEST(anikin_m_contrastscale, test_task_run) {
   const int count = 20000000;
   // Create data
   std::vector<RGB> in;
+  in.reserve(count);
   float k = 1.5;
   std::vector<RGB> out;
   for (int i = 0; i < count; i++) {
