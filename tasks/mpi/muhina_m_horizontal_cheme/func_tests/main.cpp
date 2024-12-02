@@ -34,11 +34,7 @@ TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication_Validation_1) {
   }
 
   HorizontalSchemeMPIParallel matrixVecMultParalle(taskDataPar);
-  if (world.rank() == 0) {
-    EXPECT_FALSE(matrixVecMultParalle.validation());
-  } else {
-    EXPECT_TRUE(matrixVecMultParalle.validation());
-  }
+  ASSERT_EQ(matrixVecMultParalle.validation(), false);
 }
 TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication_Validation_2) {
   boost::mpi::communicator world;
@@ -64,11 +60,34 @@ TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication_Validation_2) {
   }
 
   HorizontalSchemeMPIParallel matrixVecMultParalle(taskDataPar);
+  ASSERT_EQ(matrixVecMultParalle.validation(), false);
+}
+
+TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication_Validation_3) {
+  boost::mpi::communicator world;
+
+  std::vector<int> matrix;
+  std::vector<int> vec;
+  std::vector<int> result;
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  int num_res = 5;
+
   if (world.rank() == 0) {
-    EXPECT_FALSE(matrixVecMultParalle.validation());
-  } else {
-    EXPECT_TRUE(matrixVecMultParalle.validation());
+    matrix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+    vec = {1, 1, 1};
+    result.resize(num_res, 0);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataPar->inputs_count.emplace_back(matrix.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(vec.data()));
+    taskDataPar->inputs_count.emplace_back(vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
+    taskDataPar->outputs_count.emplace_back(result.size());
   }
+
+  HorizontalSchemeMPIParallel matrixVecMultParalle(taskDataPar);
+  ASSERT_EQ(matrixVecMultParalle.validation(), false);
 }
 
 TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication) {
