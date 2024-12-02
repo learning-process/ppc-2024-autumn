@@ -114,7 +114,5 @@ bool SimpleIntMPI::post_processing() {
   return true;
 }
 
-const std::vector<int>& SimpleIntMPI::getDataPath() const {
-  return data_path_;
-}
+const std::vector<int>& SimpleIntMPI::getDataPath() const { return data_path_; }
 }  // namespace anufriev_d_star_topology
