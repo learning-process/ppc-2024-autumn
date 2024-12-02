@@ -10,13 +10,13 @@ bool kovalev_k_bubble_sort_oddeven_transposition_mpi::BubbleSortOddEvenTransposi
 
 template <class T>
 bool kovalev_k_bubble_sort_oddeven_transposition_mpi::BubbleSortOddEvenTranspositionPar<T>::divide_and_merge(
-    int partner, std::vector<int>& sendcounts) {
+    int partner) {
   if (partner >= 0 && partner < world.size()) {
     std::vector<T> tmp;
     std::vector<T> res;
     int working_num = std::max(world.rank(), partner);
     if (world.rank() == working_num) {
-      tmp.resize(sendcounts[partner]);
+      tmp.resize(scratter_length);
       world.recv(partner, 0, tmp);
     } else {
       world.send(partner, 0, loc_v);
@@ -25,25 +25,24 @@ bool kovalev_k_bubble_sort_oddeven_transposition_mpi::BubbleSortOddEvenTransposi
       res.clear();
       for (size_t i = 0; i < loc_v.size(); i++) tmp.push_back(loc_v[i]);
       size_t iter1 = 0;
-      size_t iter2 = sendcounts[partner];
-      while (iter2 < tmp.size() || iter1 < static_cast<size_t>(sendcounts[partner])) {
-        if ((iter1 < static_cast<size_t>(sendcounts[partner]) && iter2 < tmp.size() && tmp[iter1] <= tmp[iter2]) ||
-            (iter1 < static_cast<size_t>(sendcounts[partner]) && iter2 == tmp.size())) {
+      size_t iter2 = scratter_length;
+      while (iter2 < tmp.size() || iter1 < scratter_length) {
+        if ((iter1 < scratter_length && iter2 < tmp.size() && tmp[iter1] <= tmp[iter2]) ||
+            (iter1 < scratter_length && iter2 == tmp.size())) {
           res.push_back(tmp[iter1]);
           iter1++;
-        } else if ((iter1 < static_cast<size_t>(sendcounts[partner]) && iter2 < tmp.size() &&
-                    tmp[iter1] >= tmp[iter2]) ||
-                   (iter1 == static_cast<size_t>(sendcounts[partner]) && iter2 < tmp.size())) {
+        } else if ((iter1 < scratter_length && iter2 < tmp.size() && tmp[iter1] >= tmp[iter2]) ||
+                   (iter1 == scratter_length && iter2 < tmp.size())) {
           res.push_back(tmp[iter2]);
           iter2++;
         }
       }
-      memcpy(loc_v.data(), res.data() + sendcounts[partner], loc_v.size() * sizeof(T));
+      memcpy(loc_v.data(), res.data() + scratter_length, loc_v.size() * sizeof(T));
     }
     if (world.rank() == working_num) {
-      world.send(partner, 0, res.data(), sendcounts[partner]);
+      world.send(partner, 0, res.data(), scratter_length);
     } else {
-      world.recv(partner, 0, loc_v.data(), loc_v.size());
+      world.recv(partner, 0, loc_v.data(), scratter_length);
     }
   }
   return true;
@@ -77,35 +76,36 @@ template <class T>
 bool kovalev_k_bubble_sort_oddeven_transposition_mpi::BubbleSortOddEvenTranspositionPar<T>::run() {
   internal_order_test();
   boost::mpi::broadcast(world, n, 0);
-  int scratter_length = n / world.size();
-  std::vector<int> sendcounts(world.size(), scratter_length);
-  std::vector<int> sendcounts_bytes(world.size(), scratter_length * sizeof(T));
-  sendcounts[0] = (scratter_length + n % world.size());
-  sendcounts_bytes[0] = (scratter_length + n % world.size()) * sizeof(T);
-
-  if (world.rank() == 0)
-    loc_v.resize(sendcounts[0]);
-  else
-    loc_v.resize(scratter_length);
-  std::vector<int> displs(world.size(), 0);
-  for (int i = 1; i < world.size(); i++) {
-    displs[i] = displs[i - 1] + sendcounts_bytes[i - 1];
+  scratter_length = n / world.size();
+  if (world.rank() == 0) {
+    remainder.resize(n - scratter_length * world.size());
+    memcpy(remainder.data(), glob_v.data() + scratter_length * world.size(), sizeof(T) * remainder.size());
   }
-  MPI_Scatterv(glob_v.data(), sendcounts_bytes.data(), displs.data(), MPI_BYTE, loc_v.data(),
-               sendcounts_bytes[world.rank()], MPI_BYTE, 0, MPI_COMM_WORLD);
+  loc_v.resize(scratter_length);
+  boost::mpi::scatter(world, glob_v.data(), loc_v.data(), scratter_length, 0);
   bubble_sort_mpi();
   int partner;
   for (int phase = 1; phase <= world.size(); phase++) {
     if (phase % 2 == 1) {
       partner = world.rank() % 2 == 1 ? world.rank() - 1 : world.rank() + 1;
-      divide_and_merge(partner, sendcounts);
+      divide_and_merge(partner);
     } else {
       partner = world.rank() % 2 == 1 ? world.rank() + 1 : world.rank() - 1;
-      divide_and_merge(partner, sendcounts);
+      divide_and_merge(partner);
     }
   }
-  MPI_Gather(loc_v.data(), loc_v.size() * sizeof(T), MPI_BYTE, glob_v.data(), scratter_length * sizeof(T), MPI_BYTE, 0,
-             MPI_COMM_WORLD);
+  world.barrier();
+
+  gather(world, loc_v.data(), loc_v.size(), glob_v.data(), 0);
+
+  if (world.rank() == 0) {
+    for (int i = 0; i < remainder.size(); i++) {
+      int j = 0;
+      while (j < glob_v.size() && remainder[i] > glob_v[j]) j++;
+      glob_v.insert(glob_v.begin() + j, remainder[i]);
+    }
+  }
+
   return true;
 }
 
