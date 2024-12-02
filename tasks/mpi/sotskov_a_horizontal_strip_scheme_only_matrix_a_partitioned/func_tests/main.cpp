@@ -74,7 +74,9 @@ TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi, InvalidTas
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
+  int result_size = 0;
   if (world.rank() == 0) {
+    global_res.resize(result_size, 0);
     global_A.resize(100, 0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_A.data()));
@@ -90,7 +92,7 @@ TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi, InvalidTas
   }
 
   auto taskParallel =
-      std::make_shared<sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskParalle>(
+      std::make_shared<sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskSequential>(
           taskDataPar);
   EXPECT_FALSE(taskParallel->validation());
 }
