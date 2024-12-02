@@ -13,6 +13,28 @@
 
 using namespace std::chrono_literals;
 
+bool titov_s_simple_iteration_mpi::MPISimpleIterationSequential::hasUniqueSolution() {
+  std::vector<std::vector<float>> coefficients(rows_, std::vector<float>(rows_));
+
+  for (unsigned int i = 0; i < rows_; ++i) {
+    for (unsigned int j = 0; j < rows_; ++j) {
+      coefficients[i][j] = input_[i * cols_ + j];
+    }
+  }
+  for (unsigned int k = 0; k < rows_; ++k) {
+    if (std::abs(coefficients[k][k]) < 1e-7) {
+      return false;
+    }
+    for (unsigned int i = k + 1; i < rows_; ++i) {
+      float factor = coefficients[i][k] / coefficients[k][k];
+      for (unsigned int j = k; j < rows_; ++j) {
+        coefficients[i][j] -= factor * coefficients[k][j];
+      }
+    }
+  }
+  return true;
+}
+
 void titov_s_simple_iteration_mpi::MPISimpleIterationSequential::transformMatrix() {
   for (unsigned int i = 0; i < rows_; ++i) {
     float diagonal = input_[i * cols_ + i];
@@ -65,19 +87,36 @@ bool titov_s_simple_iteration_mpi::MPISimpleIterationSequential::pre_processing(
     return false;
   }
 
-  transformMatrix();
-
   return true;
 }
 
 bool titov_s_simple_iteration_mpi::MPISimpleIterationSequential::validation() {
   internal_order_test();
+
+  rows_ = taskData->inputs_count[0];
+  cols_ = taskData->inputs_count[1];
+
+  input_ = std::make_unique<float[]>(rows_ * cols_);
+  res_ = std::make_unique<float[]>(rows_);
+
+  for (unsigned int i = 0; i < rows_; i++) {
+    auto* tmp_ptr = reinterpret_cast<float*>(taskData->inputs[i]);
+    for (unsigned int j = 0; j < cols_; j++) {
+      input_[i * cols_ + j] = tmp_ptr[j];
+    }
+  }
+  if (!isDiagonallyDominant()) {
+    return false;
+  }
+  if (!hasUniqueSolution()) {
+    return false;
+  }
   return true;
 }
 
 bool titov_s_simple_iteration_mpi::MPISimpleIterationSequential::run() {
   internal_order_test();
-
+  transformMatrix();
   std::unique_ptr<float[]> x_prev = std::make_unique<float[]>(rows_);
   std::unique_ptr<float[]> x_curr = std::make_unique<float[]>(rows_);
   std::fill(x_prev.get(), x_prev.get() + rows_, 0.0f);
@@ -181,6 +220,9 @@ bool titov_s_simple_iteration_mpi::MPISimpleIterationParallel::validation() {
     if (!isDiagonallyDominant()) {
       return false;
     }
+    if (!hasUniqueSolutionPar()) {
+      return false;
+    }
   }
   return true;
 }
@@ -282,4 +324,37 @@ bool titov_s_simple_iteration_mpi::MPISimpleIterationParallel::isDiagonallyDomin
     }
   }
   return true;
+}
+
+bool titov_s_simple_iteration_mpi::MPISimpleIterationParallel::hasUniqueSolutionPar() {
+  std::vector<double> matrix_copy(Matrix);
+
+  double determinant = 1.0;
+  for (int i = 0; i < Rows; ++i) {
+    int pivot_row = i;
+    for (int j = i + 1; j < Rows; ++j) {
+      if (std::abs(matrix_copy[j * Rows + i]) > std::abs(matrix_copy[pivot_row * Rows + i])) {
+        pivot_row = j;
+      }
+    }
+    if (std::abs(matrix_copy[pivot_row * Rows + i]) < std::numeric_limits<double>::epsilon()) {
+      return false;
+    }
+    if (pivot_row != i) {
+      for (int k = 0; k < Rows; ++k) {
+        std::swap(matrix_copy[i * Rows + k], matrix_copy[pivot_row * Rows + k]);
+      }
+      determinant *= -1;
+    }
+
+    for (int j = i + 1; j < Rows; ++j) {
+      double factor = matrix_copy[j * Rows + i] / matrix_copy[i * Rows + i];
+      for (int k = i; k < Rows; ++k) {
+        matrix_copy[j * Rows + k] -= factor * matrix_copy[i * Rows + k];
+      }
+    }
+
+    determinant *= matrix_copy[i * Rows + i];
+  }
+  return std::abs(determinant) > std::numeric_limits<double>::epsilon();
 }

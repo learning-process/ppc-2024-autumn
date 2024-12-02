@@ -34,6 +34,7 @@ class MPISimpleIterationSequential : public ppc::core::Task {
 
   void transformMatrix();
   bool isDiagonallyDominant();
+  bool hasUniqueSolution();
 };
 
 class MPISimpleIterationParallel : public ppc::core::Task {
@@ -62,6 +63,7 @@ class MPISimpleIterationParallel : public ppc::core::Task {
   std::vector<double> Values_l;
   boost::mpi::communicator world;
   bool isDiagonallyDominant();
+  bool hasUniqueSolutionPar();
 };
 
 }  // namespace titov_s_simple_iteration_mpi
