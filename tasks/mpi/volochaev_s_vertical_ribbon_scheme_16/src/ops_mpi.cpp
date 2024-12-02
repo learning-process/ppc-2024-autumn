@@ -112,7 +112,7 @@ bool volochaev_s_vertical_ribbon_scheme_16_mpi::Lab2_16_mpi::validation() {
     // Check count elements of output
     return taskData->inputs_count[0] > 1 && taskData->inputs_count[1] > 0 &&
            taskData->inputs_count[0] % taskData->inputs_count[1] == 0;
-  } 
+  }
 
   return true;
 }

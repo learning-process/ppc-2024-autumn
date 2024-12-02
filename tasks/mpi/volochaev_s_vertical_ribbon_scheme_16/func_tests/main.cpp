@@ -84,7 +84,7 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_1) {
 
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_res.data()));
     taskDataSeq->outputs_count.emplace_back(global_res.size());
-    
+
     volochaev_s_vertical_ribbon_scheme_16_mpi::Lab2_16_seq testMpiTaskSequential(taskDataSeq);
     EXPECT_FALSE(testMpiTaskSequential.validation());
   }
