@@ -10,8 +10,7 @@ TEST(koshkin_n_readers_writers_mpi_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
 
   if (world.size() < 2) {
-    ASSERT_TRUE(true);
-    return;
+    GTEST_SKIP();
   }
 
   const int count_size_vector = 500;
@@ -64,8 +63,7 @@ TEST(koshkin_n_readers_writers_mpi_perf_test, test_task_run) {
   boost::mpi::communicator world;
 
   if (world.size() < 2) {
-    ASSERT_TRUE(true);
-    return;
+    GTEST_SKIP();
   }
 
   const int count_size_vector = 500;

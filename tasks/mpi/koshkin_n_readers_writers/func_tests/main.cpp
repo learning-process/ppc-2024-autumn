@@ -10,8 +10,7 @@ TEST(readers_writers_MPI, test_small_vector) {
   boost::mpi::communicator world;
 
   if (world.size() < 2) {
-    ASSERT_TRUE(true);
-    return;
+    GTEST_SKIP();
   }
 
   const int count_size_vector = 15;
@@ -51,8 +50,7 @@ TEST(readers_writers_MPI, test_16_vector) {
   boost::mpi::communicator world;
 
   if (world.size() < 2) {
-    ASSERT_TRUE(true);
-    return;
+    GTEST_SKIP();
   }
 
   const int count_size_vector = 16;
@@ -92,8 +90,7 @@ TEST(readers_writers_MPI, test_32_vector) {
   boost::mpi::communicator world;
 
   if (world.size() < 2) {
-    ASSERT_TRUE(true);
-    return;
+    GTEST_SKIP();
   }
 
   const int count_size_vector = 32;
@@ -133,8 +130,7 @@ TEST(readers_writers_MPI, test_medium_vector) {
   boost::mpi::communicator world;
 
   if (world.size() < 2) {
-    ASSERT_TRUE(true);
-    return;
+    GTEST_SKIP();
   }
 
   const int count_size_vector = 300;
@@ -174,8 +170,7 @@ TEST(readers_writers_MPI, test_large_vector) {
   boost::mpi::communicator world;
 
   if (world.size() < 2) {
-    ASSERT_TRUE(true);
-    return;
+    GTEST_SKIP();
   }
 
   const int count_size_vector = 999;
@@ -215,8 +210,7 @@ TEST(readers_writers_MPI, test_empty_vector) {
   boost::mpi::communicator world;
 
   if (world.size() < 2) {
-    ASSERT_TRUE(true);
-    return;
+    GTEST_SKIP();
   }
 
   const int count_size_vector = 0;
@@ -241,8 +235,7 @@ TEST(readers_writers_MPI, test_invalid_vector) {
   boost::mpi::communicator world;
 
   if (world.size() < 2) {
-    ASSERT_TRUE(true);
-    return;
+    GTEST_SKIP();
   }
 
   const int count_size_vector = 64;
