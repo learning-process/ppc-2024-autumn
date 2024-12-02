@@ -22,9 +22,6 @@ class MPIMatrixMultiplicationTask : public ppc::core::Task {
   bool pre_processing() override;
   bool run() override;
   bool post_processing() override;
-  bool initializeDataStructures();
-  bool gather_result();
-  bool multiply_matrices();
 
   ~MPIMatrixMultiplicationTask() override {
     delete[] A;
