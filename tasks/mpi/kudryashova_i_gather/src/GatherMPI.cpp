@@ -58,8 +58,7 @@ bool kudryashova_i_gather::TestMPITaskParallel::pre_processing() {
   if (world.rank() == 0) {
     if (processes == 1 || (int)(taskData->inputs_count[0]) < processes) {
       delta = (taskData->inputs_count[0]) / 2;
-    }
-    else {
+    } else {
       delta = (taskData->inputs_count[0] / 2) / counting_proc;
       remainder = (taskData->inputs_count[0] / 2) % counting_proc;
     }
