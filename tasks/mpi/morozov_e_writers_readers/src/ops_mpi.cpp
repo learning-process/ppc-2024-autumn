@@ -27,8 +27,6 @@ bool morozov_e_writers_readers::TestMPITaskParallel::pre_processing() {
 bool morozov_e_writers_readers::TestMPITaskParallel::run() {
   internal_order_test();
   if (world.rank() == 0) {
-    // Чтобы проходили perf тесты, которые в данном задании не так важны (по описанию документации к заданию)
-    std::this_thread::sleep_for(200ms);
     int received_value;
     for (int i = 0; i < countIteration; i++) {
       for (int j = 1; j < world.size(); j++) {
