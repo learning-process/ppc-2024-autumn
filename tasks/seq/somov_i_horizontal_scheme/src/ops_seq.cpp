@@ -5,26 +5,21 @@
 
 namespace somov_i_horizontal_scheme {
 
-MatrixVectorTask::MatrixVectorTask(std::shared_ptr<ppc::core::TaskData> taskData) : Task(std::move(taskData)) {}
+MatrixVectorTask::MatrixVectorTask(std::shared_ptr<ppc::core::TaskData> taskData)
+    : Task(std::move(taskData)), rowCount_(0), colCount_(0) {}
 
 bool MatrixVectorTask::pre_processing() {
   internal_order_test();
 
-  uint32_t rowCount = taskData->inputs_count[0];
-  uint32_t colCount = taskData->inputs_count[1];
+  matrix_.resize(rowCount_ * colCount_);
+  vector_.resize(colCount_);
+  result_.resize(rowCount_);
 
-  matrix_.resize(rowCount, std::vector<int32_t>(colCount));
-  vector_.resize(colCount);
-  result_.resize(rowCount);
+  int32_t* matrixData = reinterpret_cast<int32_t*>(taskData->inputs[0]);
+  int32_t* vectorData = reinterpret_cast<int32_t*>(taskData->inputs[1]);
 
-  int32_t* data;
-  for (uint32_t i = 0; i < rowCount; ++i) {
-    data = reinterpret_cast<int32_t*>(taskData->inputs[i]);
-    std::copy(data, data + colCount, matrix_[i].begin());
-  }
-
-  data = reinterpret_cast<int32_t*>(taskData->inputs[rowCount]);
-  std::copy(data, data + colCount, vector_.begin());
+  matrix_.assign(matrixData, matrixData + rowCount_ * colCount_);
+  vector_.assign(vectorData, vectorData + colCount_);
 
   return true;
 }
@@ -32,16 +27,16 @@ bool MatrixVectorTask::pre_processing() {
 bool MatrixVectorTask::validation() {
   internal_order_test();
 
-  return taskData->outputs_count[0] == taskData->inputs_count[0];
+  return taskData->outputs_count[0] == rowCount_ && taskData->inputs_count.size() == 2;
 }
 
 bool MatrixVectorTask::run() {
   internal_order_test();
 
-  for (uint32_t i = 0; i < matrix_.size(); ++i) {
+  for (uint32_t i = 0; i < rowCount_; ++i) {
     result_[i] = 0;
-    for (uint32_t j = 0; j < vector_.size(); ++j) {
-      result_[i] += matrix_[i][j] * vector_[j];
+    for (uint32_t j = 0; j < colCount_; ++j) {
+      result_[i] += matrix_[i * colCount_ + j] * vector_[j];
     }
   }
 
