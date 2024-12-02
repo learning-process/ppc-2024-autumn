@@ -12,7 +12,7 @@ std::vector<uint8_t> oturin_a_image_smoothing_mpi::getRandomVector(int sz) {
   std::mt19937 gen(dev());
   std::vector<uint8_t> vec(sz);
   for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
+    vec[i] = gen() % 256;
   }
   return vec;
 }
