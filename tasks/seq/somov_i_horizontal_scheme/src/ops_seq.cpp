@@ -18,14 +18,14 @@ bool MatrixVectorTask::pre_processing() {
   vector_.resize(colCount_);
   result_.resize(rowCount_);
 
-  if (!taskData || taskData->inputs.size() < 2) {
+if (taskData == nullptr || taskData->inputs.size() < 2) {
     return false;
   }
 
-  int32_t* matrixData = reinterpret_cast<int32_t*>(taskData->inputs[0]);
-  int32_t* vectorData = reinterpret_cast<int32_t*>(taskData->inputs[1]);
+  auto* matrixData = reinterpret_cast<int32_t*>(taskData->inputs[0]);
+  auto* vectorData = reinterpret_cast<int32_t*>(taskData->inputs[1]);
 
-  if (!matrixData || !vectorData) {
+if (matrixData == nullptr || vectorData == nullptr) {
     return false;
   }
 
