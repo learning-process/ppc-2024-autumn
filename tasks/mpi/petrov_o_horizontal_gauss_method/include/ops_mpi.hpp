@@ -23,7 +23,7 @@ class SequentialTask : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<std::vector<double>> matrix;
+  std::vector<double> matrix;
   std::vector<double> b;
   std::vector<double> x;
 };
@@ -38,7 +38,7 @@ class ParallelTask : public ppc::core::Task {
 
  private:
   boost::mpi::communicator world;
-  std::vector<std::vector<double>> matrix;
+  std::vector<double> matrix;
   std::vector<double> b, x;
 };
 

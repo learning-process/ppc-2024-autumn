@@ -20,7 +20,7 @@ void generateRandomMatrixAndB(size_t n, std::vector<double>& matrix, std::vector
     b[i] = dis(gen);
   }
   for (size_t i = 0; i < n; ++i) {
-    matrix[i * n + i] += 200.0;
+    matrix[i * n + i] += 201.0;
   }
 }
 
@@ -60,6 +60,17 @@ void runTaskTest(int n, int num_running) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
+
+    double residual = 0.0;
+    for (size_t i = 0; i < n; ++i) {
+      double ax_i = 0.0;
+      for (size_t j = 0; j < n; ++j) {
+        ax_i += input_matrix[i * n + j] * output[j];
+      }
+      residual += std::pow(ax_i - input_b[i], 2);
+    }
+    residual = std::sqrt(residual);
+    ASSERT_NEAR(residual, 0.0, 1e-10);
   }
 }
 
@@ -99,6 +110,17 @@ void runPipelineTest(int n, int num_running) {
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
+
+    double residual = 0.0;
+    for (size_t i = 0; i < n; ++i) {
+      double ax_i = 0.0;
+      for (size_t j = 0; j < n; ++j) {
+        ax_i += input_matrix[i * n + j] * output[j];
+      }
+      residual += std::pow(ax_i - input_b[i], 2);
+    }
+    residual = std::sqrt(residual);
+    ASSERT_NEAR(residual, 0.0, 1e-10);
   }
 }
 
