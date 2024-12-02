@@ -77,7 +77,7 @@ bool ParallelTask::run() {
 
     for (size_t i = k + 1; i < n; ++i) {
       std::vector<double> row(n);
-      if (world.rank() == (i - (k + 1)) % world.size()) {
+      if (world.rank() == static_cast<size_t>(i - (k + 1)) % world.size()) {
         for (size_t j = 0; j < n; ++j) row[j] = matrix[i * n + j];
       }
       boost::mpi::broadcast(world, row, (i - (k + 1)) % world.size());
