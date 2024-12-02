@@ -56,7 +56,11 @@ bool anikin_m_contrastscale_mpi::ContrastScaleSeq::run() {
   }
   // Create new Image
   for (auto i : input_) {
-    output_.emplace_back(newrgb[i.R], newrgb[i.G], newrgb[i.B]);
+    RGB newp;
+    newp.R = newrgb[i.R];
+    newp.G = newrgb[i.G];
+    newp.B = newrgb[i.B];
+    output_.push_back(newp);
   }
   return true;
 }
