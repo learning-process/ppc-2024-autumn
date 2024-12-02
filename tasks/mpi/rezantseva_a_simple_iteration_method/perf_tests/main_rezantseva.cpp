@@ -3,7 +3,6 @@
 
 #include <boost/mpi/timer.hpp>
 #include <random>
-#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/rezantseva_a_simple_iteration_method/include/ops_mpi_rezantseva.hpp"
@@ -14,7 +13,9 @@ std::pair<std::vector<double>, std::vector<double>> rezantseva_a_simple_iteratio
   std::vector<double> b(n);
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_int_distribution dist(0, 25);
+  constexpr int Min = -25;
+  constexpr int Max = 30;
+  std::uniform_int_distribution dist(Min, Max);
 
   for (size_t i = 0; i < n; i++) {
     double sum = 0.0;

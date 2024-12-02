@@ -6,27 +6,26 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/rezantseva_a_simple_iteration_method/include/ops_seq_rezantseva.hpp"
 
-static int offset = 0;
-
 std::pair<std::vector<double>, std::vector<double>> rezantseva_a_simple_iteration_method_seq::createRandomMatrix(
     size_t n) {
   std::vector<double> A(n * n);
   std::vector<double> b(n);
-  std::mt19937 gen;
-  gen.seed((unsigned)time(nullptr) + ++offset);
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  constexpr int Min = -25;
+  constexpr int Max = 30;
+  std::uniform_int_distribution dist(Min, Max);
 
   for (size_t i = 0; i < n; i++) {
     double sum = 0.0;
-
-    // gen non diagonal elements
     for (size_t j = 0; j < n; j++) {
       if (i != j) {
-        A[i * n + j] = static_cast<double>(gen() % 50 - 25);  // from -25 to 24
+        A[i * n + j] = dist(gen);
         sum += std::abs(A[i * n + j]);
       }
     }
-    A[i * n + i] = sum + static_cast<double>(gen() % 50 + 1);
-    b[i] = static_cast<double>(gen() % 100);  // from 0 to 99
+    A[i * n + i] = sum + 25;
+    b[i] = dist(gen) * n;
   }
   return {A, b};
 }

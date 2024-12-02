@@ -1,6 +1,23 @@
 // Copyright 2024 Nesterov Alexander
 #include "mpi/rezantseva_a_simple_iteration_method/include/ops_mpi_rezantseva.hpp"
 
+bool rezantseva_a_simple_iteration_method_mpi::checkMatrixDominance(const double* matrix, size_t n) {
+  for (size_t i = 0; i < n; ++i) {
+    double Aii = std::fabs(matrix[i * n + i]);
+    double sum = 0.0;
+
+    for (size_t j = 0; j < n; ++j) {
+      if (i != j) {
+        sum += std::fabs(matrix[i * n + j]);
+      }
+    }
+    if (Aii <= sum) {
+      return false;
+    }
+  }
+  return true;
+}
+
 bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationSequential::isTimeToStop(
     const std::vector<double>& x0, const std::vector<double>& x1) const {
   double max_precision = 0.0;  // max precision between iterations
@@ -14,40 +31,11 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationSequential::isTime
   return (max_precision < epsilon_);
 }
 
-bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationSequential::checkMatrix() {
-  for (size_t i = 0; i < n_; ++i) {  // row
-
-    double Aii = std::fabs(reinterpret_cast<double*>(taskData->inputs[1])[i * n_ + i]);
-    double sum = 0.0;
-
-    for (size_t j = 0; j < n_; ++j) {  // column
-      if (i != j) {
-        sum += std::fabs(reinterpret_cast<double*>(taskData->inputs[1])[i * n_ + j]);
-      }
-    }
-    if (Aii <= sum) {
-      return false;
-    }
-  }
-  return true;
-}
-
-bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationSequential::checkMatrixNorm() {
-  double max_row_sum = 0.0;
-  for (size_t i = 0; i < n_; ++i) {
-    double row_sum = 0.0;
-    for (size_t j = 0; j < n_; ++j) {
-      row_sum += std::abs(B_[i * n_ + j]);
-    }
-    max_row_sum = std::max(max_row_sum, row_sum);
-  }
-  return max_row_sum < 1.0;
-}
-
 bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationSequential::validation() {
   internal_order_test();
   n_ = *reinterpret_cast<size_t*>(taskData->inputs[0]);
-  return (taskData->inputs_count.size() == 3) && (taskData->outputs_count.size() == 1) && (n_ > 0) && checkMatrix();
+  return (taskData->inputs_count.size() == 3) && (taskData->outputs_count.size() == 1) && (n_ > 0) &&
+         checkMatrixDominance(reinterpret_cast<double*>(taskData->inputs[1]), n_);
 }
 
 bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationSequential::pre_processing() {
@@ -125,33 +113,15 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::isTimeToStop(
   return (max_precision < epsilon_);
 }
 
-bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::checkMatrix() {
-  if (world.rank() == 0) {
-    for (size_t i = 0; i < n_; ++i) {  // row
-
-      double Aii = std::fabs(reinterpret_cast<double*>(taskData->inputs[1])[i * n_ + i]);
-      double sum = 0.0;
-
-      for (size_t j = 0; j < n_; ++j) {  // column
-        if (i != j) {
-          sum += std::fabs(reinterpret_cast<double*>(taskData->inputs[1])[i * n_ + j]);
-        }
-      }
-      if (Aii <= sum) {
-        return false;
-      }
-    }
-  }
-  return true;
-}
-
 bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::validation() {
   internal_order_test();
+  bool flag = true;
   if (world.rank() == 0) {
     n_ = *reinterpret_cast<size_t*>(taskData->inputs[0]);
-    return (taskData->inputs_count.size() == 3) && (taskData->outputs_count.size() == 1) && (n_ > 0) && checkMatrix();
+    flag = (taskData->inputs_count.size() == 3) && (taskData->outputs_count.size() == 1) && (n_ > 0) &&
+           checkMatrixDominance(reinterpret_cast<double*>(taskData->inputs[1]), n_);
   }
-  return true;
+  return flag;
 }
 
 bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::pre_processing() {

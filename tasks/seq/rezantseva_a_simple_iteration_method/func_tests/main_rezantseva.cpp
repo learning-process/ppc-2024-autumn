@@ -1,6 +1,8 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
+#include <random>
+
 #include "seq/rezantseva_a_simple_iteration_method/include/ops_seq_rezantseva.hpp"
 
 TEST(rezantseva_a_simple_iteration_method_seq, check_matrix_3x3) {

@@ -6,7 +6,6 @@
 #include <boost/mpi/communicator.hpp>
 #include <cmath>
 #include <memory>
-#include <numeric>
 #include <utility>
 #include <vector>
 
@@ -14,6 +13,8 @@
 
 namespace rezantseva_a_simple_iteration_method_mpi {
 std::pair<std::vector<double>, std::vector<double>> createRandomMatrix(size_t n);
+bool checkMatrixDominance(const double* matrix,
+                          size_t n);  // check if matrix A diagonal dominant (|A11| > |A12| + |A13| + .. + |A1n|) etc
 
 class SimpleIterationSequential : public ppc::core::Task {
  public:
@@ -32,8 +33,6 @@ class SimpleIterationSequential : public ppc::core::Task {
   size_t n_ = 0;                // size
   double epsilon_ = 1e-3;       // precision
   size_t maxIteration_ = 1000;  // to avoid endless cycle
-  bool checkMatrix();           // check if matrix A diagonal dominant
-  bool checkMatrixNorm();       // convergence condition : The norm of matrix B is less than 1
   bool isTimeToStop(const std::vector<double>& x0,
                     const std::vector<double>& x1) const;  // stop if |xn^(i+1) - xn^i| < epsilon
 };
@@ -57,7 +56,6 @@ class SimpleIterationMPI : public ppc::core::Task {
 
   double epsilon_ = 1e-3;       // precision
   size_t maxIteration_ = 1000;  // to avoid endless cycle
-  bool checkMatrix();           // we check convergence condition (|A11| > |A12| + |A13| + .. + |A1n|) etc
   bool isTimeToStop(const std::vector<double>& x0,
                     const std::vector<double>& x1) const;  // stop if |xn^(i+1) - xn^i| < epsilon
   size_t n_ = 0;
