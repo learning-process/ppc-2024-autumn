@@ -23,6 +23,7 @@ void SimpleIntMPI::distributeData() {
       size_t count_i = chunk_size + ((size_t)i < remainder ? 1 : 0);
       if (count_i > 0) {
         world.send(i, 0, input_data_.data() + start, count_i);
+        data_path_.push_back(i);
       }
     }
     size_t my_count = chunk_size + ((size_t)0 < remainder ? 1 : 0);
@@ -33,6 +34,7 @@ void SimpleIntMPI::distributeData() {
     if (count > 0) {
       input_data_.resize(count);
       world.recv(0, 0, input_data_.data(), count);
+      data_path_.push_back(0);
     } else {
       input_data_.resize(0);
     }
@@ -95,6 +97,7 @@ void SimpleIntMPI::gatherData() {
       if (receive_count > 0) {
         std::vector<int> received_data(receive_count);
         world.recv(i, 0, received_data.data(), receive_count);
+        data_path_.push_back(i);
         size_t start_pos = i * chunk_size + std::min((size_t)i, remainder);
         std::copy(received_data.begin(), received_data.end(), processed_data_.begin() + start_pos);
       }
@@ -102,6 +105,7 @@ void SimpleIntMPI::gatherData() {
   } else {
     if (count > 0) {
       world.send(0, 0, input_data_.data(), count);
+      data_path_.push_back(0);
     }
   }
 }
@@ -115,4 +119,5 @@ bool SimpleIntMPI::post_processing() {
   return true;
 }
 
+const std::vector<int>& SimpleIntMPI::getDataPath() const { return data_path_; }
 }  // namespace anufriev_d_star_topology
