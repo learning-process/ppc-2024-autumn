@@ -13,7 +13,7 @@ std::vector<int> make_random_vector(size_t sz) {
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
   for (size_t i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
+    vec[i] = gen() % 200 - 100;
   }
   return vec;
 }
