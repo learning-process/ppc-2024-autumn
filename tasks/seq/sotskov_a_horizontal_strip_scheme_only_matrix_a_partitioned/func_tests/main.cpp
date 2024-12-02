@@ -7,12 +7,15 @@
 
 namespace sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_seq {
 
-void get_random_matrix(std::vector<int> &mat) {
+void get_random_matrix(std::vector<int> &mat, int A, int B) {
+  if (A > B) {
+    throw std::invalid_argument("Invalid range: A must be less than or equal to B.");
+  }
   std::random_device dev;
   std::mt19937 gen(dev());
-
+  std::uniform_int_distribution<int> dist(A, B);
   for (size_t i = 0; i < mat.size(); ++i) {
-    mat[i] = gen() % 1000 - 500;
+    mat[i] = dist(gen);
   }
 }
 }  // namespace sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_seq
@@ -84,7 +87,7 @@ TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_seq, RandomInpu
   // Create data
 
   std::vector<int> in_A(100, 0);
-  sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_seq::get_random_matrix(in_A);
+  sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_seq::get_random_matrix(in_A, -50, 50);
   std::vector<int> in_B(4, 0);
   std::vector<int> out(25, 0);
   std::vector<int> ans(25, 0);
