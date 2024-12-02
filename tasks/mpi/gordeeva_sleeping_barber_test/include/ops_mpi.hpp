@@ -25,7 +25,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  size_t max_waiting_chairs;
+  int max_waiting_chairs;
   int result;
   boost::mpi::communicator world;
 
