@@ -18,6 +18,7 @@ struct RGB {
   uint8_t G;
   uint8_t B;
 
+  RGB() : R(0), G(0), B(0) {}
   // clang-format off
   template <typename Archive>
   void serialize(Archive& ar, const unsigned int version) {
