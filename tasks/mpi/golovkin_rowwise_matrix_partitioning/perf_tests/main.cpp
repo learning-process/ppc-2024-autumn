@@ -16,9 +16,9 @@ using ppc::core::TaskData;
 
 TEST(golovkin_rowwise_matrix_partitioning, test_pipeline_run) {
   boost::mpi::communicator world;
-  double* A = nullptr;
-  double* B = nullptr;
-  double* result = nullptr;
+  double *A = nullptr;
+  double *B = nullptr;
+  double *result = nullptr;
   int rows_A = 700;
   int cols_A = 800;
   int rows_B = 800;
@@ -30,8 +30,8 @@ TEST(golovkin_rowwise_matrix_partitioning, test_pipeline_run) {
     A = new double[rows_A * cols_A]();
     B = new double[rows_B * cols_B]();
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B));
 
     taskDataPar->inputs_count.emplace_back(rows_A);
     taskDataPar->inputs_count.emplace_back(cols_A);
@@ -39,7 +39,7 @@ TEST(golovkin_rowwise_matrix_partitioning, test_pipeline_run) {
     taskDataPar->inputs_count.emplace_back(cols_B);
 
     result = new double[rows_A * cols_B];
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(result));
     taskDataPar->outputs_count.emplace_back(rows_A);
     taskDataPar->outputs_count.emplace_back(cols_B);
   }
@@ -75,9 +75,9 @@ TEST(golovkin_rowwise_matrix_partitioning, test_pipeline_run) {
 
 TEST(golovkin_rowwise_matrix_partitioning, test_task_run) {
   boost::mpi::communicator world;
-  double* A = nullptr;
-  double* B = nullptr;
-  double* result = nullptr;
+  double *A = nullptr;
+  double *B = nullptr;
+  double *result = nullptr;
   int rows_A = 700;
   int cols_A = 800;
   int rows_B = 800;
@@ -89,8 +89,8 @@ TEST(golovkin_rowwise_matrix_partitioning, test_task_run) {
     A = new double[rows_A * cols_A]();
     B = new double[rows_B * cols_B]();
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B));
 
     taskDataPar->inputs_count.emplace_back(rows_A);
     taskDataPar->inputs_count.emplace_back(cols_A);
@@ -98,7 +98,7 @@ TEST(golovkin_rowwise_matrix_partitioning, test_task_run) {
     taskDataPar->inputs_count.emplace_back(cols_B);
 
     result = new double[rows_A * cols_B];
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(result));
     taskDataPar->outputs_count.emplace_back(rows_A);
     taskDataPar->outputs_count.emplace_back(cols_B);
   }
