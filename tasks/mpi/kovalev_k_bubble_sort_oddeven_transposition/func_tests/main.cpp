@@ -96,7 +96,7 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, Test_NoViol_251_int) {
 }
 
 TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, Test_1458_int) {
-  const size_t length = 1458;
+  const size_t length = 1409;
   std::srand(std::time(nullptr));
   std::vector<int> in(length);
   for (size_t i = 0; i < length; i++) in[i] = rand() * pow(-1, rand());
