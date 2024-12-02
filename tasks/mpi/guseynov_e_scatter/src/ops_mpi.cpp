@@ -19,9 +19,7 @@ bool guseynov_e_scatter_mpi::TestMPITaskSequential::pre_processing() {
   // Init Vectors
   input_ = std::vector<int>(taskData->inputs_count[0]);
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    input_[i] = tmp_ptr[i];
-  }
+  std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
   // Init value for output
   res_ = 0;
   return true;
