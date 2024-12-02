@@ -15,7 +15,8 @@ class SimpleIntMPI : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-
+  const std::vector<int>& getDataPath() const;
+  
  private:
   void distributeData();
   void gatherData();
@@ -24,6 +25,7 @@ class SimpleIntMPI : public ppc::core::Task {
   std::vector<int> input_data_;
   std::vector<int> processed_data_;
   size_t total_size_;
+  std::vector<int> data_path_;
 };
 
 }  // namespace anufriev_d_star_topology
