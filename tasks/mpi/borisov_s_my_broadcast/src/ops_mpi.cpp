@@ -10,6 +10,13 @@ namespace borisov_s_my_broadcast {
 
 bool MPITaskMatrixClustering::pre_processing() {
   internal_order_test();
+
+  if (world.rank() == 0) {
+    rows_ = taskData->inputs_count[0];
+    cols_ = taskData->inputs_count[1];
+    epsilon_ = *reinterpret_cast<double *>(taskData->inputs[1]);
+  }
+
   return true;
 }
 
@@ -35,8 +42,8 @@ bool MPITaskMatrixClustering::validation() {
 bool MPITaskMatrixClustering::run() {
   internal_order_test();
 
-  size_t rows = 0;
-  size_t cols = 0;
+  size_t rows = rows_;
+  size_t cols = cols_;
 
   if (world.rank() == 0) {
     rows = taskData->inputs_count[0];

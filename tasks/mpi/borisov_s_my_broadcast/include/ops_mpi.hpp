@@ -33,6 +33,8 @@ class MPITaskMatrixClustering : public ppc::core::Task {
   std::vector<double> matrix_;
   std::vector<int> classification_;
   double epsilon_ = 0.1;
+  size_t rows_ = 0;
+  size_t cols_ = 0;
   boost::mpi::communicator world;
 };
 
