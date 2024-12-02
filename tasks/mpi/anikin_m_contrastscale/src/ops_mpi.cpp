@@ -112,9 +112,8 @@ bool anikin_m_contrastscale_mpi::ContrastScaleMpi::run() {
   }
   // Init local input
   std::vector<anikin_m_contrastscale_mpi::RGB> local_input(local_sizes[world.rank()]);
-  // clang-format off
+  // NOLINTNEXTLINE
   scatterv(world, input_, local_sizes, local_input.data(), 0);
-  // clang-format on
   // Calculate iab
   int iab = 0;
   for (auto i : local_input) {

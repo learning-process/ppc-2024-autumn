@@ -11,6 +11,7 @@ TEST(anikin_m_contrastscale, increase_contrast) {
   const int count = 10;
   // Create data
   std::vector<RGB> in;
+  in.reserve(count);
   float k = 1.5;
   std::vector<RGB> out;
   for (int i = 0; i < count; i++) {
