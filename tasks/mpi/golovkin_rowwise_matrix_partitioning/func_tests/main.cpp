@@ -46,15 +46,15 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, cant_mult_matrix_wrong_sizes) {
     golovkin_rowwise_matrix_partitioning::get_random_matrix(A, rows_A * cols_A);
     golovkin_rowwise_matrix_partitioning::get_random_matrix(B, rows_B * cols_B);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B));
 
     taskDataPar->inputs_count.emplace_back(rows_A);
     taskDataPar->inputs_count.emplace_back(cols_A);
     taskDataPar->inputs_count.emplace_back(rows_B);
     taskDataPar->inputs_count.emplace_back(cols_B);
     res = new double[rows_A * cols_B];
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res));
     taskDataPar->outputs_count.emplace_back(rows_A);
     taskDataPar->outputs_count.emplace_back(cols_B);
   }

@@ -1,4 +1,4 @@
-// Golovkin Maksims
+// Golovkin Maksim
 
 #include "mpi/golovkin_rowwise_matrix_partitioning/include/ops_mpi.hpp"
 

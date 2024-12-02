@@ -62,7 +62,7 @@ TEST(golovkin_rowwise_matrix_partitioning, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.size() < 5 || world.rank() >= 4) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    auto* expected_res = new double[rows_A * cols_B]();
+    auto *expected_res = new double[rows_A * cols_B]();
     for (int i = 0; i < rows_A * cols_B; i++) {
       ASSERT_NEAR(expected_res[i], result[i], 1e-6);
     }
@@ -121,7 +121,7 @@ TEST(golovkin_rowwise_matrix_partitioning, test_task_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.size() < 5 || world.rank() >= 4) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    auto* expected_res = new double[rows_A * cols_B]();
+    auto *expected_res = new double[rows_A * cols_B]();
     for (int i = 0; i < rows_A * cols_B; i++) {
       ASSERT_NEAR(expected_res[i], result[i], 1e-6);
     }
