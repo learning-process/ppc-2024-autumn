@@ -70,7 +70,6 @@ TEST(somov_i_horizontal_scheme, validate_non_standard_values) {
   non_standard_vector.resize(colCount, 0);
   std::vector<int32_t> result(rowCount, 0);
 
-
   auto task_data = std::make_shared<ppc::core::TaskData>();
   task_data->inputs.push_back(reinterpret_cast<uint8_t *>(non_standard_matrix.data()));
   task_data->inputs.push_back(reinterpret_cast<uint8_t *>(non_standard_vector.data()));

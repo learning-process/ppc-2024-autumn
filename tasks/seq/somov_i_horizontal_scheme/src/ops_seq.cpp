@@ -42,7 +42,6 @@ bool MatrixVectorTask::validation() {
   return taskData->outputs_count[0] == rowCount_;
 }
 
-
 bool MatrixVectorTask::run() {
   internal_order_test();
 
