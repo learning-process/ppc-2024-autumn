@@ -124,7 +124,7 @@ TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi, InvalidTas
   }
 
   auto taskParallel =
-      std::make_shared<sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskParalle>(
+      std::make_shared<sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskSequential>(
           taskDataPar);
   EXPECT_FALSE(taskParallel->validation());
 }
