@@ -46,7 +46,7 @@ bool shuravina_o_contrast::ContrastTaskParallel::run() {
   uint8_t local_min_val = *std::min_element(local_input_.begin(), local_input_.end());
   uint8_t local_max_val = *std::max_element(local_input_.begin(), local_input_.end());
 
-  uint8_t global_min_val = 0, global_max_val = 0;
+  uint8_t global_min_val, global_max_val;
   reduce(world, local_min_val, global_min_val, boost::mpi::minimum<uint8_t>(), 0);
   reduce(world, local_max_val, global_max_val, boost::mpi::maximum<uint8_t>(), 0);
 
@@ -72,13 +72,13 @@ bool shuravina_o_contrast::ContrastTaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     std::vector<uint8_t> global_output(taskData->inputs_count[0]);
-    gather(world, &output_[0], output_.size(), &global_output[0], 0);
+    gather(world, output_.data(), output_.size(), global_output.data(), 0);
     auto* tmp_ptr = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
     for (unsigned i = 0; i < taskData->outputs_count[0]; i++) {
       tmp_ptr[i] = global_output[i];
     }
   } else {
-    gather(world, &output_[0], output_.size(), 0);
+    gather(world, output_.data(), output_.size(), 0);
   }
   return true;
 }
