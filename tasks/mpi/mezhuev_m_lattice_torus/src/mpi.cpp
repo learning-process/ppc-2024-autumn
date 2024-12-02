@@ -1,6 +1,7 @@
 #include "mpi/mezhuev_m_lattice_torus/include/mpi.hpp"
 
 #include <boost/mpi.hpp>
+
 #include <cmath>
 #include <iostream>
 #include <stdexcept>
