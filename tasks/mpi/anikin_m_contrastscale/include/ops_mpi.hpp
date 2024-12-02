@@ -14,11 +14,10 @@
 namespace anikin_m_contrastscale_mpi {
 
 struct RGB {
-  uint8_t R;
-  uint8_t G;
-  uint8_t B;
+  uint8_t R = 0;
+  uint8_t G = 0;
+  uint8_t B = 0;
 
-  RGB() : R(0), G(0), B(0) {}
   // clang-format off
   template <typename Archive>
   void serialize(Archive& ar, const unsigned int version) {

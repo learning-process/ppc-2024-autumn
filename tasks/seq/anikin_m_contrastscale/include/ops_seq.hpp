@@ -11,11 +11,9 @@
 namespace anikin_m_contrastscale_seq {
 
 struct RGB {
-  uint8_t R;
-  uint8_t G;
-  uint8_t B;
-
-  RGB() : R(0), G(0), B(0) {}
+  uint8_t R = 0;
+  uint8_t G = 0;
+  uint8_t B = 0;
 };
 
 RGB getrandomRGB();
