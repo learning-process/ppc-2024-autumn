@@ -7,15 +7,28 @@
 
 namespace volochaev_s_vertical_ribbon_scheme_16_seq {
 
-void get_random_matrix(std::vector<int> &mat) {
+void get_random_matrix(std::vector<int> &mat, int a, int b) {
   std::random_device dev;
   std::mt19937 gen(dev());
 
+  if (a >= b) {
+    throw std::invalid_argument("error.");
+  }
+
+  std::uniform_int_distribution<> dis(a, b);
+
   for (size_t i = 0; i < mat.size(); ++i) {
-    mat[i] = 50 - gen() % 100;
+    mat[i] = dis(gen);
   }
 }
+
 }  // namespace volochaev_s_vertical_ribbon_scheme_16_seq
+
+TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_mines_1) {
+  std::vector<int> global_A(100);
+
+  ASSERT_ANY_THROW(volochaev_s_vertical_ribbon_scheme_16_seq::get_random_matrix(global_A, 90, -100));
+}
 
 TEST(volochaev_s_vertical_ribbon_scheme_16_seq, Test_0) {
   // Create data
@@ -80,7 +93,7 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_seq, Test_3) {
   // Create data
 
   std::vector<int> in_A(10, 0);
-  volochaev_s_vertical_ribbon_scheme_16_seq::get_random_matrix(in_A);
+  volochaev_s_vertical_ribbon_scheme_16_seq::get_random_matrix(in_A, -100, 100);
   std::vector<int> in_B(2, 0);
   std::vector<int> out(5, 0);
   std::vector<int> ans(5, 0);
@@ -107,7 +120,7 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_seq, Test_4) {
   // Create data
   std::vector<int> in_A(10, 0);
   std::vector<int> in_B(2, 0);
-  volochaev_s_vertical_ribbon_scheme_16_seq::get_random_matrix(in_B);
+  volochaev_s_vertical_ribbon_scheme_16_seq::get_random_matrix(in_B, -100, 100);
   std::vector<int> out(5, 0);
   std::vector<int> ans(5, 0);
 

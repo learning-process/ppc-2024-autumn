@@ -9,16 +9,29 @@
 
 namespace volochaev_s_vertical_ribbon_scheme_16_mpi {
 
-void get_random_matrix(std::vector<int> &mat) {
+void get_random_matrix(std::vector<int> &mat, int a, int b) {
   std::random_device dev;
   std::mt19937 gen(dev());
 
+  if (a >= b) {
+    throw std::invalid_argument("error.");
+  }
+
+  std::uniform_int_distribution<> dis(a, b);
+
   for (size_t i = 0; i < mat.size(); ++i) {
-    mat[i] = 50 - gen() % 100;
+    mat[i] = dis(gen);
   }
 }
 
 }  // namespace volochaev_s_vertical_ribbon_scheme_16_mpi
+
+TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_mines_1) {
+  boost::mpi::communicator world;
+  std::vector<int> global_A(100);
+
+  ASSERT_ANY_THROW(volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_A, 90, -100));
+}
 
 TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_0) {
   boost::mpi::communicator world;
@@ -46,11 +59,8 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_0) {
   }
 
   auto taskParallel = std::make_shared<volochaev_s_vertical_ribbon_scheme_16_mpi::Lab2_16_mpi>(taskDataPar);
-  if (world.rank() == 0) {
-    EXPECT_FALSE(taskParallel->validation());
-  } else {
-    EXPECT_TRUE(taskParallel->validation());
-  }
+
+  EXPECT_FALSE(taskParallel->validation());
 }
 
 TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_1) {
@@ -78,11 +88,7 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_1) {
   }
 
   auto taskParallel = std::make_shared<volochaev_s_vertical_ribbon_scheme_16_mpi::Lab2_16_mpi>(taskDataPar);
-  if (world.rank() == 0) {
-    EXPECT_FALSE(taskParallel->validation());
-  } else {
-    EXPECT_TRUE(taskParallel->validation());
-  }
+  EXPECT_FALSE(taskParallel->validation());
 }
 
 TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_2) {
@@ -110,11 +116,7 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_2) {
   }
 
   auto taskParallel = std::make_shared<volochaev_s_vertical_ribbon_scheme_16_mpi::Lab2_16_mpi>(taskDataPar);
-  if (world.rank() == 0) {
-    EXPECT_FALSE(taskParallel->validation());
-  } else {
-    EXPECT_TRUE(taskParallel->validation());
-  }
+  EXPECT_FALSE(taskParallel->validation());
 }
 
 TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_3) {
@@ -130,8 +132,8 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_3) {
   if (world.rank() == 0) {
     global_A.resize(10);
     global_B.resize(2);
-    volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_A);
-    volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_B);
+    volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_A, -100, 100);
+    volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_B, -200, 20);
 
     global_res.resize(5, 0);
 
@@ -187,8 +189,8 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_4) {
   if (world.rank() == 0) {
     global_A.resize(20);
     global_B.resize(2);
-    volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_A);
-    volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_B);
+    volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_A, -100, 200);
+    volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_B, -10, 10);
 
     global_res.resize(10, 0);
 
@@ -245,8 +247,8 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_5) {
   if (world.rank() == 0) {
     global_A.resize(100);
     global_B.resize(25);
-    volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_A);
-    volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_B);
+    volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_A, -1000, 1000);
+    volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_B, -2, 400);
 
     global_res.resize(4, 0);
 
@@ -302,8 +304,8 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_6) {
   if (world.rank() == 0) {
     global_A.resize(100);
     global_B.resize(1);
-    volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_A);
-    volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_B);
+    volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_A, -100, 100);
+    volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_B, 12, 48);
 
     global_res.resize(100, 0);
 
@@ -360,8 +362,8 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_7) {
   if (world.rank() == 0) {
     global_A.resize(289);
     global_B.resize(17);
-    volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_A);
-    volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_B);
+    volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_A, -100, 1000);
+    volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_B, 20, 8000);
 
     global_res.resize(17, 0);
 
@@ -418,8 +420,8 @@ TEST(volochaev_s_vertical_ribbon_scheme_16_mpi, Test_8) {
   if (world.rank() == 0) {
     global_A.resize(100);
     global_B.resize(100);
-    volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_A);
-    volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_B);
+    volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_A, -100, 100);
+    volochaev_s_vertical_ribbon_scheme_16_mpi::get_random_matrix(global_B, 20, 100);
 
     global_res.resize(1, 0);
 
