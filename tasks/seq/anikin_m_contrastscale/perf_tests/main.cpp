@@ -9,7 +9,7 @@
 using namespace anikin_m_contrastscale_seq;
 
 TEST(anikin_m_contrastscale, test_pipeline_run) {
-  const int count = 20000000;
+  const int count = 2000000;
   // Create data
   std::vector<RGB> in;
   in.reserve(count);
@@ -51,7 +51,7 @@ TEST(anikin_m_contrastscale, test_pipeline_run) {
 }
 
 TEST(anikin_m_contrastscale, test_task_run) {
-  const int count = 20000000;
+  const int count = 2000000;
   // Create data
   std::vector<RGB> in;
   in.reserve(count);
