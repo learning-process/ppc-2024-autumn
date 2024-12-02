@@ -25,7 +25,7 @@ void generateRandomMatrixAndB(size_t n, std::vector<double>& matrix, std::vector
 }
 
 template <typename TaskType>
-void runTaskTest(int n, int num_running) {
+void runTaskTest(size_t n, int num_running) {
   std::vector<double> input_matrix;
   std::vector<double> input_b;
   std::vector<double> output(n);
@@ -75,7 +75,7 @@ void runTaskTest(int n, int num_running) {
 }
 
 template <typename TaskType>
-void runPipelineTest(int n, int num_running) {
+void runPipelineTest(size_t n, int num_running) {
   std::vector<double> input_matrix;
   std::vector<double> input_b;
   std::vector<double> output(n);
