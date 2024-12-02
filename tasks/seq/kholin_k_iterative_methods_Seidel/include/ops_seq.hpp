@@ -9,7 +9,7 @@
 #include <random>
 
 #include "core/task/include/task.hpp"
-
+//
 namespace kholin_k_iterative_methods_Seidel_seq {
 
 bool IsDiagPred(float row_coeffs[], size_t num_colls, size_t start_index, size_t index);
