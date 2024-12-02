@@ -65,8 +65,11 @@ TEST(somov_i_horizontal_scheme, validate_non_standard_values) {
   uint32_t colCount = 10;
 
   std::vector<int32_t> non_standard_matrix = {INT_MAX, INT_MIN, 0, INT_MIN, INT_MAX, 100, 200, -200, 0};
+  non_standard_matrix.resize(rowCount * colCount, 0);
   std::vector<int32_t> non_standard_vector = {100, 100, 100};
-  std::vector<int32_t> result(rowCount);
+  non_standard_vector.resize(colCount, 0);
+  std::vector<int32_t> result(rowCount, 0);
+
 
   auto task_data = std::make_shared<ppc::core::TaskData>();
   task_data->inputs.push_back(reinterpret_cast<uint8_t *>(non_standard_matrix.data()));

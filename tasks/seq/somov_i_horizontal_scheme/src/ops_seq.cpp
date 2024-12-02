@@ -9,14 +9,25 @@ MatrixVectorTask::MatrixVectorTask(std::shared_ptr<ppc::core::TaskData> taskData
     : Task(std::move(taskData)), rowCount_(0), colCount_(0) {}
 
 bool MatrixVectorTask::pre_processing() {
+  assert(taskData->inputs[0] != nullptr);
+  assert(taskData->inputs[1] != nullptr);
+
   internal_order_test();
 
   matrix_.resize(rowCount_ * colCount_);
   vector_.resize(colCount_);
   result_.resize(rowCount_);
 
+  if (!taskData || taskData->inputs.size() < 2) {
+    return false;
+  }
+
   int32_t* matrixData = reinterpret_cast<int32_t*>(taskData->inputs[0]);
   int32_t* vectorData = reinterpret_cast<int32_t*>(taskData->inputs[1]);
+
+  if (!matrixData || !vectorData) {
+    return false;
+  }
 
   matrix_.assign(matrixData, matrixData + rowCount_ * colCount_);
   vector_.assign(vectorData, vectorData + colCount_);
@@ -26,9 +37,11 @@ bool MatrixVectorTask::pre_processing() {
 
 bool MatrixVectorTask::validation() {
   internal_order_test();
-
-  return taskData->outputs_count[0] == rowCount_ && taskData->inputs_count.size() == 2;
+  if (taskData->inputs.size() < 2) return false;
+  if (taskData->inputs_count[0] != rowCount_ || taskData->inputs_count[1] != colCount_) return false;
+  return taskData->outputs_count[0] == rowCount_;
 }
+
 
 bool MatrixVectorTask::run() {
   internal_order_test();
