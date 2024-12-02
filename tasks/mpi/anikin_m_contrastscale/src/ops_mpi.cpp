@@ -27,7 +27,7 @@ bool anikin_m_contrastscale_mpi::ContrastScaleSeq::validation() {
 
 bool anikin_m_contrastscale_mpi::ContrastScaleSeq::pre_processing() {
   internal_order_test();
-  auto input_ptr = reinterpret_cast<RGB*>(taskData->inputs[0]);
+  auto *input_ptr = reinterpret_cast<RGB*>(taskData->inputs[0]);
   correction = *reinterpret_cast<float*>(taskData->inputs[1]);
   input_.assign(input_ptr, input_ptr + taskData->inputs_count[0]);
   output_.clear();
@@ -46,7 +46,7 @@ bool anikin_m_contrastscale_mpi::ContrastScaleSeq::run() {
   // Calculate new RGB
   uint8_t newrgb[256];
   for (int i = 0; i < 256; i++) {
-    int delta = (int)i - iab;
+    int delta = i - iab;
     int temp = (int)(iab + correction * delta);
 
     if (temp < 0) temp = 0;
@@ -63,7 +63,7 @@ bool anikin_m_contrastscale_mpi::ContrastScaleSeq::run() {
 
 bool anikin_m_contrastscale_mpi::ContrastScaleSeq::post_processing() {
   internal_order_test();
-  auto output_ptr = reinterpret_cast<RGB*>(taskData->outputs[0]);
+  auto *output_ptr = reinterpret_cast<RGB*>(taskData->outputs[0]);
   std::copy(output_.begin(), output_.end(), output_ptr);
   return true;
 }
@@ -79,7 +79,7 @@ bool anikin_m_contrastscale_mpi::ContrastScaleMpi::validation() {
 bool anikin_m_contrastscale_mpi::ContrastScaleMpi::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    auto input_ptr = reinterpret_cast<RGB*>(taskData->inputs[0]);
+    auto *input_ptr = reinterpret_cast<RGB*>(taskData->inputs[0]);
     correction = *reinterpret_cast<float*>(taskData->inputs[1]);
     input_.assign(input_ptr, input_ptr + taskData->inputs_count[0]);
     output_.resize(taskData->inputs_count[0]);
@@ -112,7 +112,9 @@ bool anikin_m_contrastscale_mpi::ContrastScaleMpi::run() {
   }
   // Init local input
   std::vector<anikin_m_contrastscale_mpi::RGB> local_input(local_sizes[world.rank()]);
+  // clang-format off
   scatterv(world, input_, local_sizes, local_input.data(), 0);
+  // clang-format on
   // Calculate iab
   int iab = 0;
   for (auto i : local_input) {
@@ -123,7 +125,7 @@ bool anikin_m_contrastscale_mpi::ContrastScaleMpi::run() {
   // Calculate newRGB
   uint8_t newrgb[256];
   for (int i = 0; i < 256; i++) {
-    int delta = (int)i - iab;
+    int delta = i - iab;
     int temp = (int)(iab + correction * delta);
 
     if (temp < 0) temp = 0;
@@ -148,7 +150,7 @@ bool anikin_m_contrastscale_mpi::ContrastScaleMpi::run() {
 bool anikin_m_contrastscale_mpi::ContrastScaleMpi::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    auto output_ptr = reinterpret_cast<RGB*>(taskData->outputs[0]);
+    auto *output_ptr = reinterpret_cast<RGB*>(taskData->outputs[0]);
     std::copy(output_.begin(), output_.end(), output_ptr);
   }
   return true;

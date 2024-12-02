@@ -18,6 +18,7 @@ TEST(anikin_m_contrastscale_mpi, increase_contrast) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
+    in.reserve(count);
     for (int i = 0; i < count; i++) {
       in.push_back(getrandomRGB());
     }
@@ -68,6 +69,7 @@ TEST(anikin_m_contrastscale_mpi, decrease_contrast) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
+    in.reserve(count);
     for (int i = 0; i < count; i++) {
       in.push_back(getrandomRGB());
     }
@@ -118,6 +120,7 @@ TEST(anikin_m_contrastscale_mpi, wrong_out_count) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
+    in.reserve(count);
     for (int i = 0; i < count; i++) {
       in.push_back(getrandomRGB());
     }
@@ -144,6 +147,7 @@ TEST(anikin_m_contrastscale_mpi, zero_image) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
+    in.reserve(count);
     for (int i = 0; i < count; i++) {
       in.push_back(getrandomRGB());
     }

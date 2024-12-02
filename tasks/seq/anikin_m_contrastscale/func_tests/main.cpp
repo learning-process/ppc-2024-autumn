@@ -42,6 +42,7 @@ TEST(anikin_m_contrastscale, decrease_contrast) {
   const int count = 10;
   // Create data
   std::vector<RGB> in;
+  in.reserve(count);
   float k = 0.5;
   std::vector<RGB> out;
   for (int i = 0; i < count; i++) {
@@ -73,6 +74,7 @@ TEST(anikin_m_contrastscale, wrong_out_count) {
   const int count = 10;
   // Create data
   std::vector<RGB> in;
+  in.reserve(count);
   float k = 0.5;
   std::vector<RGB> out;
   for (int i = 0; i < count; i++) {
@@ -97,6 +99,7 @@ TEST(anikin_m_contrastscale, zero_image) {
   const int count = 0;
   // Create data
   std::vector<RGB> in;
+  in.reserve(count);
   float k = 0.5;
   std::vector<RGB> out;
   for (int i = 0; i < count; i++) {
