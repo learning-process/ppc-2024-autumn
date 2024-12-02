@@ -8,16 +8,20 @@
 namespace gusev_n_hypercube_topology_mpi {
 
 bool gusev_n_hypercube_topology_mpi::HypercubeTopologyParallel::validation() {
+  if (!((std::ceil(std::log2(world.size())) == std::log2(world.size())) && (world.size() >= 2))) {
+    /*std::cerr << "Warning: world size != 2^n" << std::endl;*/
+  }
+
   if (taskData->inputs.empty() || taskData->inputs_count.empty()) {
     /*std::cerr << "Validation failed: No input data provided." << std::endl;*/
     return false;
   }
 
-  int size = world.size();
-  if (size < 2) {
-    /*std::cerr << "Validation failed: Insufficient nodes. At least 2 nodes are required." << std::endl;*/
-    return false;
-  }
+  // int size = world.size();
+  // if (size < 2) {
+  //   /*std::cerr << "Validation failed: Insufficient nodes. At least 2 nodes are required." << std::endl;*/
+  //   return false;
+  // }
 
   for (size_t i = 0; i < taskData->inputs.size(); ++i) {
     if (taskData->inputs_count[i] <= 0) {
@@ -41,6 +45,14 @@ bool gusev_n_hypercube_topology_mpi::HypercubeTopologyParallel::run() {
   int size = world.size();
 
   world.barrier();
+
+  // world size < 2
+  if (size < 2) {
+    if (taskData->outputs_count[0] >= taskData->inputs_count[0]) {
+      std::copy(taskData->inputs[0], taskData->inputs[0] + taskData->inputs_count[0], taskData->outputs[0]);
+    }
+    return true;
+  }
 
   for (int step = 0; step < std::log2(size); ++step) {
     int partner = rank ^ (1 << step);
