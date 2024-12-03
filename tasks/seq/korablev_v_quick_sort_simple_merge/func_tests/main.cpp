@@ -29,9 +29,7 @@ TEST(korablev_v_quick_sort_simple_merge, test_sort_array) {
   quickSortTask.run();
   quickSortTask.post_processing();
 
-  for (size_t i = 0; i < array_size; ++i) {
-    ASSERT_EQ(out[i], expected_output[i]);
-  }
+  EXPECT_EQ(out, expected_output);
 }
 
 TEST(korablev_v_quick_sort_simple_merge, test_single_element) {
@@ -57,9 +55,7 @@ TEST(korablev_v_quick_sort_simple_merge, test_single_element) {
   quickSortTask.run();
   quickSortTask.post_processing();
 
-  for (size_t i = 0; i < array_size; ++i) {
-    ASSERT_EQ(out[i], expected_output[i]);
-  }
+  EXPECT_EQ(out, expected_output);
 }
 
 TEST(korablev_v_quick_sort_simple_merge, test_all_equal_elements) {
@@ -85,9 +81,7 @@ TEST(korablev_v_quick_sort_simple_merge, test_all_equal_elements) {
   quickSortTask.run();
   quickSortTask.post_processing();
 
-  for (size_t i = 0; i < array_size; ++i) {
-    ASSERT_EQ(out[i], expected_output[i]);
-  }
+  EXPECT_EQ(out, expected_output);
 }
 
 TEST(korablev_v_quick_sort_simple_merge, test_negative_and_positive) {
@@ -113,9 +107,7 @@ TEST(korablev_v_quick_sort_simple_merge, test_negative_and_positive) {
   quickSortTask.run();
   quickSortTask.post_processing();
 
-  for (size_t i = 0; i < array_size; ++i) {
-    ASSERT_EQ(out[i], expected_output[i]);
-  }
+  EXPECT_EQ(out, expected_output);
 }
 
 TEST(korablev_v_quick_sort_simple_merge, invalid_input_count) {
@@ -130,7 +122,7 @@ TEST(korablev_v_quick_sort_simple_merge, invalid_input_count) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   korablev_v_qucik_sort_simple_merge_seq::QuickSortSimpleMergeSequential quickSortTask(taskDataSeq);
-  ASSERT_FALSE(quickSortTask.validation());
+  EXPECT_FALSE(quickSortTask.validation());
 }
 
 TEST(korablev_v_quick_sort_simple_merge, invalid_output_count) {
@@ -144,7 +136,7 @@ TEST(korablev_v_quick_sort_simple_merge, invalid_output_count) {
   taskDataSeq->inputs_count.emplace_back(input_data.size());
 
   korablev_v_qucik_sort_simple_merge_seq::QuickSortSimpleMergeSequential quickSortTask(taskDataSeq);
-  ASSERT_FALSE(quickSortTask.validation());
+  EXPECT_FALSE(quickSortTask.validation());
 }
 
 TEST(korablev_v_quick_sort_simple_merge, invalid_negative_size) {
@@ -163,7 +155,7 @@ TEST(korablev_v_quick_sort_simple_merge, invalid_negative_size) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   korablev_v_qucik_sort_simple_merge_seq::QuickSortSimpleMergeSequential quickSortTask(taskDataSeq);
-  ASSERT_FALSE(quickSortTask.validation());
+  EXPECT_FALSE(quickSortTask.validation());
 }
 
 TEST(korablev_v_quick_sort_simple_merge, invalid_size_data_mismatch) {
@@ -182,7 +174,7 @@ TEST(korablev_v_quick_sort_simple_merge, invalid_size_data_mismatch) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   korablev_v_qucik_sort_simple_merge_seq::QuickSortSimpleMergeSequential quickSortTask(taskDataSeq);
-  ASSERT_FALSE(quickSortTask.validation());
+  EXPECT_FALSE(quickSortTask.validation());
 }
 
 TEST(korablev_v_quick_sort_simple_merge, invalid_output_size) {
@@ -201,5 +193,5 @@ TEST(korablev_v_quick_sort_simple_merge, invalid_output_size) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   korablev_v_qucik_sort_simple_merge_seq::QuickSortSimpleMergeSequential quickSortTask(taskDataSeq);
-  ASSERT_FALSE(quickSortTask.validation());
+  EXPECT_FALSE(quickSortTask.validation());
 }

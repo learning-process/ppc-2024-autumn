@@ -26,9 +26,6 @@ class QuickSortSimpleMergeSequential : public ppc::core::Task {
  private:
   std::vector<int> input_;
   std::vector<int> output_;
-
-  static std::vector<int> merge(const std::vector<int>& left, const std::vector<int>& right);
-  std::vector<int> quick_sort_with_merge(const std::span<int>& arr);
 };
 
 class QuickSortSimpleMergeParallel : public ppc::core::Task {
@@ -43,10 +40,10 @@ class QuickSortSimpleMergeParallel : public ppc::core::Task {
   std::vector<int> input_;
   std::vector<int> output_;
   std::vector<int> local_data_;
-
-  static std::vector<int> merge(const std::vector<int>& left, const std::vector<int>& right);
-  std::vector<int> quick_sort_with_merge(const std::span<int>& arr);
   boost::mpi::communicator world;
 };
+
+inline std::vector<int> merge(const std::vector<int>& left, const std::vector<int>& right);
+inline std::vector<int> quick_sort_with_merge(const std::span<int>& arr);
 
 }  // namespace korablev_v_qucik_sort_simple_merge_mpi

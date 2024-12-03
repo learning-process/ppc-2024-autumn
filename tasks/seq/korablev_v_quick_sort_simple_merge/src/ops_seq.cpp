@@ -5,23 +5,21 @@
 std::vector<int> korablev_v_qucik_sort_simple_merge_seq::QuickSortSimpleMergeSequential::merge(
     const std::vector<int>& left, const std::vector<int>& right) {
   std::vector<int> result;
+  result.reserve(left.size() + right.size());
+
   size_t i = 0;
   size_t j = 0;
 
   while (i < left.size() && j < right.size()) {
     if (left[i] < right[j]) {
-      result.emplace_back(left[i++]);
+      result.push_back(left[i++]);
     } else {
-      result.emplace_back(right[j++]);
+      result.push_back(right[j++]);
     }
   }
 
-  while (i < left.size()) {
-    result.emplace_back(left[i++]);
-  }
-  while (j < right.size()) {
-    result.emplace_back(right[j++]);
-  }
+  result.insert(result.end(), left.begin() + i, left.end());
+  result.insert(result.end(), right.begin() + j, right.end());
 
   return result;
 }
@@ -37,27 +35,23 @@ std::vector<int> korablev_v_qucik_sort_simple_merge_seq::QuickSortSimpleMergeSeq
   int pivot = arr[arr.size() / 2];
   std::vector<int> left;
   std::vector<int> right;
+  std::vector<int> equal;
 
   for (const auto& elem : arr) {
     if (elem < pivot) {
       left.emplace_back(elem);
     } else if (elem > pivot) {
       right.emplace_back(elem);
+    } else {
+      equal.emplace_back(elem);
     }
   }
 
   std::vector<int> sortedLeft = quick_sort_with_merge(left);
   std::vector<int> sortedRight = quick_sort_with_merge(right);
 
-  std::vector<int> merged = sortedLeft;
-  for (const auto& elem : arr) {
-    if (elem == pivot) {
-      merged.push_back(elem);
-    }
-  }
-  std::vector<int> finalResult = merge(merged, sortedRight);
-
-  return finalResult;
+  std::vector<int> merged = merge(sortedLeft, equal);
+  return merge(merged, sortedRight);
 }
 
 bool korablev_v_qucik_sort_simple_merge_seq::QuickSortSimpleMergeSequential::pre_processing() {

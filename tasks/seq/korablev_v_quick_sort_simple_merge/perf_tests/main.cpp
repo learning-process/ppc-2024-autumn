@@ -9,18 +9,16 @@
 #include "seq/korablev_v_quick_sort_simple_merge/include/ops_seq.hpp"
 
 namespace korablev_v_qucik_sort_simple_merge_seq {
-std::vector<int> generate_random_vector(size_t size, int min_val = -1000, int max_val = 1000) {
-  std::vector<int> data(size);
-
+std::vector<int> generate_random_vector(size_t n, int min_val = -1000, int max_val = 1000) {
+  std::vector<int> vec(n);
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_real_distribution<> dist(min_val, max_val);
-
-  for (auto& val : data) {
-    val = dist(gen);
+  std::uniform_int_distribution<> dist(min_val, max_val);
+  for (size_t i = 0; i < n; ++i) {
+    vec[i] = dist(gen);
   }
-
-  return data;
+  std::sort(vec.begin(), vec.end(), std::greater<>());
+  return vec;
 }
 }  // namespace korablev_v_qucik_sort_simple_merge_seq
 
@@ -60,7 +58,7 @@ TEST(korablev_v_quick_sort_simple_merge_seq, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  ASSERT_TRUE(std::is_sorted(output_data.begin(), output_data.end()));
+  EXPECT_TRUE(std::is_sorted(output_data.begin(), output_data.end()));
 }
 
 TEST(korablev_v_quick_sort_simple_merge_seq, test_task_run) {
@@ -99,5 +97,5 @@ TEST(korablev_v_quick_sort_simple_merge_seq, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  ASSERT_TRUE(std::is_sorted(output_data.begin(), output_data.end()));
+  EXPECT_TRUE(std::is_sorted(output_data.begin(), output_data.end()));
 }

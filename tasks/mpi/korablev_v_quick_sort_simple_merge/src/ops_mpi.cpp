@@ -9,32 +9,29 @@
 
 #include "boost/mpi/collectives/broadcast.hpp"
 
-std::vector<int> korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::merge(
-    const std::vector<int>& left, const std::vector<int>& right) {
+std::vector<int> korablev_v_qucik_sort_simple_merge_mpi::merge(const std::vector<int>& left,
+                                                               const std::vector<int>& right) {
   std::vector<int> result;
+  result.reserve(left.size() + right.size());
+
   size_t i = 0;
   size_t j = 0;
 
   while (i < left.size() && j < right.size()) {
     if (left[i] < right[j]) {
-      result.emplace_back(left[i++]);
+      result.push_back(left[i++]);
     } else {
-      result.emplace_back(right[j++]);
+      result.push_back(right[j++]);
     }
   }
 
-  while (i < left.size()) {
-    result.emplace_back(left[i++]);
-  }
-  while (j < right.size()) {
-    result.emplace_back(right[j++]);
-  }
+  result.insert(result.end(), left.begin() + i, left.end());
+  result.insert(result.end(), right.begin() + j, right.end());
 
   return result;
 }
 
-std::vector<int> korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::quick_sort_with_merge(
-    const std::span<int>& arr) {
+std::vector<int> korablev_v_qucik_sort_simple_merge_mpi::quick_sort_with_merge(const std::span<int>& arr) {
   if (arr.size() <= 1) {
     std::vector<int> res;
     res.assign(arr.begin(), arr.end());
@@ -44,119 +41,23 @@ std::vector<int> korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeSeq
   int pivot = arr[arr.size() / 2];
   std::vector<int> left;
   std::vector<int> right;
+  std::vector<int> equal;
 
   for (const auto& elem : arr) {
     if (elem < pivot) {
       left.emplace_back(elem);
     } else if (elem > pivot) {
       right.emplace_back(elem);
-    }
-  }
-
-  std::vector<int> sortedLeft = quick_sort_with_merge(left);
-  std::vector<int> sortedRight = quick_sort_with_merge(right);
-
-  std::vector<int> merged = sortedLeft;
-  for (const auto& elem : arr) {
-    if (elem == pivot) {
-      merged.emplace_back(elem);
-    }
-  }
-  std::vector<int> finalResult = merge(merged, sortedRight);
-
-  return finalResult;
-}
-
-bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::pre_processing() {
-  internal_order_test();
-
-  size_t n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
-  auto* input_data = reinterpret_cast<int*>(taskData->inputs[1]);
-
-  input_.assign(input_data, input_data + n);
-
-  return true;
-}
-
-bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::validation() {
-  internal_order_test();
-
-  return true;
-}
-
-bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::run() {
-  internal_order_test();
-
-  output_ = quick_sort_with_merge(input_);
-
-  return true;
-}
-
-bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::post_processing() {
-  internal_order_test();
-  for (size_t i = 0; i < output_.size(); ++i) {
-    reinterpret_cast<int*>(taskData->outputs[0])[i] = output_[i];
-  }
-
-  return true;
-}
-
-std::vector<int> korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeParallel::merge(
-    const std::vector<int>& left, const std::vector<int>& right) {
-  std::vector<int> result;
-  size_t i = 0;
-  size_t j = 0;
-
-  while (i < left.size() && j < right.size()) {
-    if (left[i] < right[j]) {
-      result.emplace_back(left[i++]);
     } else {
-      result.emplace_back(right[j++]);
-    }
-  }
-
-  while (i < left.size()) {
-    result.emplace_back(left[i++]);
-  }
-  while (j < right.size()) {
-    result.emplace_back(right[j++]);
-  }
-
-  return result;
-}
-
-std::vector<int> korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeParallel::quick_sort_with_merge(
-    const std::span<int>& arr) {
-  if (arr.size() <= 1) {
-    std::vector<int> res;
-    res.assign(arr.begin(), arr.end());
-    return res;
-  }
-
-  int pivot = arr[arr.size() / 2];
-  std::vector<int> left;
-  std::vector<int> right;
-
-  for (const auto& elem : arr) {
-    if (elem < pivot) {
-      left.emplace_back(elem);
-    } else if (elem > pivot) {
-      right.emplace_back(elem);
+      equal.emplace_back(elem);
     }
   }
 
   std::vector<int> sortedLeft = quick_sort_with_merge(left);
   std::vector<int> sortedRight = quick_sort_with_merge(right);
 
-  std::vector<int> merged = sortedLeft;
-  for (const auto& elem : arr) {
-    if (elem == pivot) {
-      merged.emplace_back(elem);
-    }
-  }
-  std::vector<int> finalResult = merge(merged, sortedRight);
-
-  return finalResult;
+  std::vector<int> merged = merge(sortedLeft, equal);
+  return merge(merged, sortedRight);
 }
 
 bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeParallel::pre_processing() {
@@ -242,6 +143,40 @@ bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeParallel::post_
     for (size_t i = 0; i < output_.size(); ++i) {
       reinterpret_cast<int*>(taskData->outputs[0])[i] = output_[i];
     }
+  }
+
+  return true;
+}
+
+bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::pre_processing() {
+  internal_order_test();
+
+  size_t n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
+  auto* input_data = reinterpret_cast<int*>(taskData->inputs[1]);
+
+  input_.assign(input_data, input_data + n);
+
+  return true;
+}
+
+bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::validation() {
+  internal_order_test();
+
+  return true;
+}
+
+bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::run() {
+  internal_order_test();
+
+  output_ = quick_sort_with_merge(input_);
+
+  return true;
+}
+
+bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::post_processing() {
+  internal_order_test();
+  for (size_t i = 0; i < output_.size(); ++i) {
+    reinterpret_cast<int*>(taskData->outputs[0])[i] = output_[i];
   }
 
   return true;

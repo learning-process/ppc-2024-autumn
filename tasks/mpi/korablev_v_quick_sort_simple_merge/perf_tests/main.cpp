@@ -14,12 +14,11 @@ std::vector<int> generate_random_vector(size_t n, int min_val = -1000, int max_v
   std::vector<int> vec(n);
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_real_distribution<> dist(min_val, max_val);
-
+  std::uniform_int_distribution<> dist(min_val, max_val);
   for (size_t i = 0; i < n; ++i) {
     vec[i] = dist(gen);
   }
-
+  std::sort(vec.begin(), vec.end(), std::greater<>());
   return vec;
 }
 }  // namespace korablev_v_qucik_sort_simple_merge_mpi
@@ -61,7 +60,7 @@ TEST(korablev_v_quick_sort_mpi, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(vector_size, out.size());
+    EXPECT_EQ(vector_size, out.size());
   }
 }
 
@@ -102,6 +101,6 @@ TEST(korablev_v_quick_sort_mpi, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(vector_size, out.size());
+    EXPECT_EQ(vector_size, out.size());
   }
 }
