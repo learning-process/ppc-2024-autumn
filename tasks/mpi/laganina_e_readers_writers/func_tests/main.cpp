@@ -33,7 +33,7 @@ TEST(laganina_e_readers_writers_mpi, test_vector_10) {
 	std::vector<int> global_vec = laganina_e_readers_writers_mpi::getRandomVector(count_size_vector);
 	std::vector<int> out_vec(count_size_vector, 0);
 	std::vector<int> exp_parallel = global_vec;
-
+	//1
 	// Create TaskData
 	std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -264,4 +264,3 @@ TEST(laganina_e_readers_writers_mpi, test_vector_999) {
 		ASSERT_EQ(exp_parallel, out_vec);
 	}
 }
-
