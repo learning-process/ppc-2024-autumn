@@ -122,7 +122,9 @@ bool lysov_i_simple_iteration_method_mpi::SlaeIterationTask::run() {
 
 bool lysov_i_simple_iteration_method_mpi::SlaeIterationTask::post_processing() {
   internal_order_test();
-  for (int i = 0; i < x_.size(); i++) reinterpret_cast<double*>(taskData->outputs[0])[i] = x_[i];
+  for (int i = 0; i < static_cast<int>(x_.size()); i++) {
+    reinterpret_cast<double*>(taskData->outputs[0])[i] = x_[i];
+  }
   return true;
 }
 
@@ -219,10 +221,11 @@ bool lysov_i_simple_iteration_method_mpi::SlaeIterationTaskMPI::run() {
     offsets_matrix[proc] = offsets_right_side[proc] = offset;
     offset += local_matrix_elements[proc];
   }
-  for (int i = 0; i < local_matrix_elements.size(); i++) {
+  for (int i = 0; i < static_cast<int>(local_matrix_elements.size()); i++) {
     local_matrix_elements[i] *= input_size_;
     offsets_matrix[i] *= input_size_;
   }
+
 
   std::vector<double> x_new(input_size_, 0.0);
   std::vector<double> local_current(right_side_values[world.rank()], 0.0);
@@ -267,8 +270,8 @@ bool lysov_i_simple_iteration_method_mpi::SlaeIterationTaskMPI::run() {
 bool lysov_i_simple_iteration_method_mpi::SlaeIterationTaskMPI::post_processing() {
   internal_order_test();
 
-  if (world.rank() == 0) {
-    for (int i = 0; i < x_.size(); ++i) {
+if (world.rank() == 0) {
+    for (int i = 0; i < static_cast<int>(x_.size()); ++i) {
       reinterpret_cast<double*>(taskData->outputs[0])[i] = x_[i];
     }
   }
