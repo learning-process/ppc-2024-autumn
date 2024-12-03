@@ -28,6 +28,13 @@ bool malyshev_lent_horizontal::TestTaskSequential::pre_processing() {
 bool malyshev_lent_horizontal::TestTaskSequential::validation() {
   internal_order_test();
 
+  uint32_t rows = taskData->inputs_count[0];
+  uint32_t cols = taskData->inputs_count[1];
+
+  if (taskData->inputs.size() != rows + 1) {
+    return false;
+  }
+
   return taskData->outputs_count[0] == taskData->inputs_count[0];
 }
 
