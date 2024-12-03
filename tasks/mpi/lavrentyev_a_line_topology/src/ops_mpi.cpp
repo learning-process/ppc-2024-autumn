@@ -71,11 +71,8 @@ bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::run() {
   }
 
   if (world.rank() == start_proc) {
-    if (start_proc != end_proc) {
-      world.send(world.rank() + 1, 0, data);
-      world.send(world.rank() + 1, 1, path);
-    }
-    return true;
+    world.send(world.rank() + 1, 0, data);
+    world.send(world.rank() + 1, 1, path);
   } else {
     world.recv(world.rank() - 1, 0, data);
     world.recv(world.rank() - 1, 1, path);
