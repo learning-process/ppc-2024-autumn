@@ -33,7 +33,7 @@ void shulpin_strip_scheme_A_B::calculate_mpi(int rows_a, int cols_a, int cols_b,
   boost::mpi::scatterv(world, A_mpi.data(), sendcounts, displs, bufA.data(), LocalRows * cols_a, 0);
 
   if (ProcRank == 0) {
-    bufB = B_mpi;
+    bufB = std::move(B_mpi);
   }
 
   boost::mpi::broadcast(world, bufB, 0);
