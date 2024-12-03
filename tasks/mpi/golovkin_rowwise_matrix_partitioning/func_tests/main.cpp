@@ -33,7 +33,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, cant_mult_matrix_wrong_sizes) {
   boost::mpi::communicator world;
   double *A = nullptr;
   double *B = nullptr;
-  double *res = nullptr;
+  double *result = nullptr;
   int rows_A = 2;
   int cols_A = 3;
   int rows_B = 7;
@@ -52,8 +52,8 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, cant_mult_matrix_wrong_sizes) {
     taskDataPar->inputs_count.emplace_back(cols_A);
     taskDataPar->inputs_count.emplace_back(rows_B);
     taskDataPar->inputs_count.emplace_back(cols_B);
-    res = new double[rows_A * cols_B];
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res));
+    result = new double[rows_A * cols_B];
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(result));
     taskDataPar->outputs_count.emplace_back(rows_A);
     taskDataPar->outputs_count.emplace_back(cols_B);
   }
@@ -62,7 +62,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, cant_mult_matrix_wrong_sizes) {
   if (world.size() < 5 || world.rank() >= 4) {
     delete[] A;
     delete[] B;
-    delete[] res;
+    delete[] result;
   }
 }
 
@@ -71,7 +71,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_multiplication_invalid_siz
 
   double *A = nullptr;
   double *B = nullptr;
-  double *res = nullptr;
+  double *result = nullptr;
   int rows_A = 3;
   int cols_A = 2;
   int rows_B = 3;
@@ -93,8 +93,8 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_multiplication_invalid_siz
     taskDataPar->inputs_count.emplace_back(rows_B);
     taskDataPar->inputs_count.emplace_back(cols_B);
 
-    res = new double[rows_A * cols_B];
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res));
+    result = new double[rows_A * cols_B];
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(result));
     taskDataPar->outputs_count.emplace_back(rows_A);
     taskDataPar->outputs_count.emplace_back(cols_B);
   }
@@ -104,7 +104,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_multiplication_invalid_siz
   if (world.size() < 5 || world.rank() >= 4) {
     delete[] A;
     delete[] B;
-    delete[] res;
+    delete[] result;
   }
 }
 
@@ -247,7 +247,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_multiplication_correct_res
   boost::mpi::communicator world;
   double *A = nullptr;
   double *B = nullptr;
-  double *res = nullptr;
+  double *result = nullptr;
   int rows_A = 2;
   int cols_A = 3;
   int rows_B = 3;
@@ -268,8 +268,8 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_multiplication_correct_res
     taskDataPar->inputs_count.emplace_back(rows_B);
     taskDataPar->inputs_count.emplace_back(cols_B);
 
-    res = new double[rows_A * cols_B];
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res));
+    result = new double[rows_A * cols_B];
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(result));
     taskDataPar->outputs_count.emplace_back(rows_A);
     taskDataPar->outputs_count.emplace_back(cols_B);
   }
@@ -285,7 +285,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_multiplication_correct_res
   if (world.size() < 5 || world.rank() >= 4) {
     delete[] A;
     delete[] B;
-    delete[] res;
+    delete[] result;
   }
 }
 
@@ -321,7 +321,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_large_sizes) {
   boost::mpi::communicator world;
   double *A = nullptr;
   double *B = nullptr;
-  double *res = nullptr;
+  double *result = nullptr;
   int rows_A = 2;
   int cols_A = 3;
   int rows_B = 3;
@@ -342,8 +342,8 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_large_sizes) {
     taskDataPar->inputs_count.emplace_back(rows_B);
     taskDataPar->inputs_count.emplace_back(cols_B);
 
-    res = new double[rows_A * cols_B];
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res));
+    result = new double[rows_A * cols_B];
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(result));
     taskDataPar->outputs_count.emplace_back(rows_A);
     taskDataPar->outputs_count.emplace_back(cols_B);
   }
@@ -359,7 +359,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_large_sizes) {
   if (world.size() < 5 || world.rank() >= 4) {
     delete[] A;
     delete[] B;
-    delete[] res;
+    delete[] result;
   }
 }
 
@@ -385,3 +385,12 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, memory_leaks_on_failure) {
   }
 }
 
+TEST(golovkin_rowwise_matrix_partitioning_mpi, post_processing_invalid_conditions) {
+  boost::mpi::communicator world;
+  auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  taskDataPar->outputs.emplace_back(nullptr);
+
+  golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask task(taskDataPar);
+  ASSERT_THROW(task.post_processing(), std::invalid_argument);
+}
