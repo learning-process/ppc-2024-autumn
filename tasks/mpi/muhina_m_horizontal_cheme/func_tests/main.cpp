@@ -34,7 +34,11 @@ TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication_Validation_1) {
   }
 
   HorizontalSchemeMPIParallel matrixVecMultParalle(taskDataPar);
-  ASSERT_EQ(matrixVecMultParalle.validation(), false);
+  if (world.rank() == 0) {
+    EXPECT_FALSE(matrixVecMultParalle.validation());
+  } else {
+    EXPECT_TRUE(matrixVecMultParalle.validation());
+  }
 }
 TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication_Validation_2) {
   boost::mpi::communicator world;
@@ -60,7 +64,11 @@ TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication_Validation_2) {
   }
 
   HorizontalSchemeMPIParallel matrixVecMultParalle(taskDataPar);
-  ASSERT_EQ(matrixVecMultParalle.validation(), false);
+  if (world.rank() == 0) {
+    EXPECT_FALSE(matrixVecMultParalle.validation());
+  } else {
+    EXPECT_TRUE(matrixVecMultParalle.validation());
+  }
 }
 
 TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication_Validation_3) {
@@ -74,7 +82,7 @@ TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication_Validation_3) {
   int num_res = 5;
 
   if (world.rank() == 0) {
-    matrix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+    matrix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
     vec = {1, 1, 1};
     result.resize(num_res, 0);
 
@@ -87,7 +95,11 @@ TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication_Validation_3) {
   }
 
   HorizontalSchemeMPIParallel matrixVecMultParalle(taskDataPar);
-  ASSERT_EQ(matrixVecMultParalle.validation(), false);
+  if (world.rank() == 0) {
+    EXPECT_FALSE(matrixVecMultParalle.validation());
+  } else {
+    EXPECT_TRUE(matrixVecMultParalle.validation());
+  }
 }
 
 TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication) {
