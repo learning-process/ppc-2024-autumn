@@ -439,12 +439,12 @@ TEST(shulpin_strip_scheme_A_B, matrix_100x100) {
   }
 }
 
-TEST(shulpin_strip_scheme_A_B, matrix_523x512_512x1000) {
+TEST(shulpin_strip_scheme_A_B, matrix_491x512_512x1000) {
   boost::mpi::communicator world;
 
   int cols_a = 512;
-  int rows_a = 523;
-  int cols_b = 800;
+  int rows_a = 491;
+  int cols_b = 1000;
   int rows_b = 512;
 
   std::vector<int> global_A;
