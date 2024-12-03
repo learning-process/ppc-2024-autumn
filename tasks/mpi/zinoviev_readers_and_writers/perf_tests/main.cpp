@@ -45,7 +45,6 @@ TEST(zinoviev_a_readers_and_writers_mpi, test_pipeline_run) {
     ppc::core::Perf::print_perf_statistic(perfResults);
     ASSERT_EQ(count_size_vector, global_result[0]);
   }
-<<<<<<< HEAD
 }
 
 TEST(zinoviev_a_readers_and_writers_mpi, test_task_run) {
@@ -74,6 +73,4 @@ TEST(zinoviev_a_readers_and_writers_mpi, test_task_run) {
   if (world.rank() == 0) {
     ASSERT_EQ(count_size_vector, global_result[0]);
   }
-=======
->>>>>>> b4d2551098b959a2c71ee29e4016285ca32ad9bc
 }
