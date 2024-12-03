@@ -222,6 +222,7 @@ TEST(malyshev_lent_horizontal, test_size_mismatch) {
 
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomVector.data()));
   taskDataSeq->inputs_count.push_back(rows);
+  taskDataSeq->inputs_count.push_back(cols);
   taskDataSeq->inputs_count.push_back(cols + 1);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seqResult.data()));
   taskDataSeq->outputs_count.push_back(rows);

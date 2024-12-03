@@ -344,6 +344,7 @@ TEST(malyshev_lent_horizontal, test_size_mismatch) {
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomVector.data()));
     taskDataPar->inputs_count.push_back(rows);
+    taskDataPar->inputs_count.push_back(cols);
     taskDataPar->inputs_count.push_back(cols + 1);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(mpiResult.data()));
     taskDataPar->outputs_count.push_back(rows);

@@ -35,6 +35,10 @@ bool malyshev_lent_horizontal::TestTaskSequential::validation() {
     return false;
   }
 
+  if (taskData->inputs_count[1] != taskData->inputs_count[2]) {
+    return false;
+  }
+
   return taskData->outputs_count[0] == taskData->inputs_count[0];
 }
 
