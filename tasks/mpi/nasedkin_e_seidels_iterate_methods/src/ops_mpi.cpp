@@ -11,7 +11,7 @@ bool SeidelIterateMethodsMPI::pre_processing() {
   }
 
   epsilon = 1e-6;
-  max_iterations = 10000;
+  max_iterations = 1000;
 
   x.resize(n, 0.0);
 
@@ -94,70 +94,4 @@ bool SeidelIterateMethodsMPI::converge(const std::vector<double>& x_new) {
   return std::sqrt(norm) < epsilon;
 }
 
-void SeidelIterateMethodsMPI::set_matrix(const std::vector<std::vector<double>>& matrix,
-                                         const std::vector<double>& vector) {
-  if (matrix.size() != vector.size() || matrix.empty()) {
-    throw std::invalid_argument("Matrix and vector dimensions do not match or are empty.");
-  }
-  A = matrix;
-  b = vector;
-  n = static_cast<int>(matrix.size());
-}
-
-void SeidelIterateMethodsMPI::generate_random_diag_dominant_matrix(int size,
-                                                                   std::vector<std::vector<double>>& matrix,
-                                                                   std::vector<double>& vector) {
-  matrix.resize(size, std::vector<double>(size, 0.0));
-  vector.resize(size, 0.0);
-
-  std::srand(static_cast<unsigned>(std::time(nullptr)));
-
-  const double MAX_VALUE = 7.0;
-  const double MIN_DIAGONAL = 30.0;
-
-  std::vector<double> x(size, 0.0);
-  for (int i = 0; i < size; ++i) {
-    x[i] = static_cast<double>(std::rand() % 10 + 1);
-  }
-
-  for (int i = 0; i < size; ++i) {
-    double row_sum = 0.0;
-    for (int j = 0; j < size; ++j) {
-      if (i != j) {
-        matrix[i][j] = static_cast<double>(std::rand() % static_cast<int>(MAX_VALUE) + 1);
-        row_sum += std::abs(matrix[i][j]);
-      }
-    }
-    matrix[i][i] = row_sum + static_cast<double>(std::rand() % static_cast<int>(MIN_DIAGONAL) + 1);
-  }
-
-  for (int i = 0; i < size; ++i) {
-    for (int j = 0; j < size; ++j) {
-      vector[i] += matrix[i][j] * x[j];
-    }
-  }
-}
-
-double SeidelIterateMethodsMPI::calculateResidual(const std::vector<std::vector<double>>& matrix,
-                         const std::vector<double>& x,
-                         const std::vector<double>& b) {
-        std::vector<double> Ax(n, 0.0);
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < n; ++j) {
-                Ax[i] += A[i][j] * x[j];
-            }
-        }
-
-        std::vector<double> residual(n);
-        for (int i = 0; i < n; ++i) {
-            residual[i] = Ax[i] - b[i];
-        }
-
-        double norm = 0.0;
-        for (int i = 0; i < n; ++i) {
-            norm += residual[i] * residual[i];
-        }
-
-        return std::sqrt(norm);
-}
 }  // namespace nasedkin_e_seidels_iterate_methods_mpi
