@@ -17,7 +17,7 @@ namespace lysov_i_simple_iteration_method_mpi {
 
 class SlaeIterationTask : public ppc::core::Task {
  public:
-  explicit SlaeIterationTask(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)){};
+  explicit SlaeIterationTask(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {};
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -39,7 +39,7 @@ class SlaeIterationTask : public ppc::core::Task {
 
 class SlaeIterationTaskMPI : public ppc::core::Task {
  public:
-  explicit SlaeIterationTaskMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit SlaeIterationTaskMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {};
   bool pre_processing() override;
   bool validation() override;
   bool run() override;

@@ -117,6 +117,8 @@ bool lysov_i_simple_iteration_method_seq::SlaeIterationTask::run() {
 
 bool lysov_i_simple_iteration_method_seq::SlaeIterationTask::post_processing() {
   internal_order_test();
-  for (int i = 0; i < x_.size(); i++) reinterpret_cast<double*>(taskData->outputs[0])[i] = x_[i];
+  for (int i = 0; i < static_cast<int>(x_.size()); ++i) {
+    reinterpret_cast<double*>(taskData->outputs[0])[i] = x_[i];
+  }
   return true;
 }

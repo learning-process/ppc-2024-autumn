@@ -226,7 +226,6 @@ bool lysov_i_simple_iteration_method_mpi::SlaeIterationTaskMPI::run() {
     offsets_matrix[i] *= input_size_;
   }
 
-
   std::vector<double> x_new(input_size_, 0.0);
   std::vector<double> local_current(right_side_values[world.rank()], 0.0);
 
@@ -270,11 +269,10 @@ bool lysov_i_simple_iteration_method_mpi::SlaeIterationTaskMPI::run() {
 bool lysov_i_simple_iteration_method_mpi::SlaeIterationTaskMPI::post_processing() {
   internal_order_test();
 
-if (world.rank() == 0) {
+  if (world.rank() == 0) {
     for (int i = 0; i < static_cast<int>(x_.size()); ++i) {
       reinterpret_cast<double*>(taskData->outputs[0])[i] = x_[i];
     }
   }
-
   return true;
 }
