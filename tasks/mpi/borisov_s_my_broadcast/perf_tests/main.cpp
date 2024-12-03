@@ -14,7 +14,7 @@ std::vector<double> getRandomMatrix2(size_t rows, size_t cols) {
   std::uniform_real_distribution<> dis(0.0, 100.0);
 
   for (auto &val : matrix) {
-    val = dis(gen);atus
+    val = dis(gen);
   }
 
   return matrix;
