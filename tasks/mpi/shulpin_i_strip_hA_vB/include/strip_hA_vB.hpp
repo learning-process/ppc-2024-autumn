@@ -15,7 +15,6 @@
 
 namespace shulpin_strip_scheme_A_B {
 
-std::vector<int> get_RND_matrix(int row, int col);
 void calculate_seq(int rows_a, int cols_a, int cols_b, std::vector<int> A_seq, std::vector<int> B_seq,
                    std::vector<int>& C_seq);
 void calculate_mpi(int rows_a, int cols_a, int cols_b, std::vector<int> A_mpi, std::vector<int> B_mpi,

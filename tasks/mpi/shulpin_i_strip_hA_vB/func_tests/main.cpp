@@ -5,8 +5,27 @@
 #include <cmath>
 #include <memory>
 #include <vector>
+#include <random>
 
 #include "mpi/shulpin_i_strip_hA_vB/include/strip_hA_vB.hpp"
+
+namespace shulpin_strip_scheme_A_B {
+
+std::vector<int> get_RND_matrix(int row, int col) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::uniform_int_distribution<int> dist(-1000, 1000);
+  std::vector<int> rnd_matrix(col * row);
+  int i;
+  int j;
+  for (i = 0; i < row; ++i) {
+    for (j = 0; j < col; ++j) {
+      rnd_matrix[i * col + j] = dist(gen);
+    }
+  }
+  return rnd_matrix;
+}
+}  // namespace shulpin_strip_scheme_A_B
 
 TEST(shulpin_strip_scheme_A_B, matrix_1x1) {
   boost::mpi::communicator world;
