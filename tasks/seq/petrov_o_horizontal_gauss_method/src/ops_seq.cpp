@@ -19,6 +19,53 @@ bool petrov_o_horizontal_gauss_method_seq::GaussHorizontalSequential::validation
     return false;
   }
 
+  auto* matrix_input = reinterpret_cast<double*>(taskData->inputs[0]);
+
+  std::vector<double> valid_matrix(matrix_input, matrix_input + n * n);
+
+  int rank_matrix = 0;
+
+  const double eps = 1e-10;
+
+  for (size_t i = 0; i < n; ++i) {
+    double max_elem = std::abs(valid_matrix[i * n + i]);
+    size_t max_row = i;
+    for (size_t k = i + 1; k < n; ++k) {
+      if (std::abs(valid_matrix[k * n + i]) > max_elem) {
+        max_elem = std::abs(valid_matrix[k * n + i]);
+        max_row = k;
+      }
+    }
+
+    if (max_elem < eps) {
+      continue;
+    }
+
+    if (max_row != i) {
+      for (size_t j = 0; j < n; ++j) {
+        std::swap(valid_matrix[i * n + j], valid_matrix[max_row * n + j]);
+      }
+    }
+
+    double pivot = valid_matrix[i * n + i];
+    for (size_t j = i; j < n; ++j) {
+      valid_matrix[i * n + j] /= pivot;
+    }
+
+    for (size_t k = i + 1; k < n; ++k) {
+      double factor = valid_matrix[k * n + i];
+      for (size_t j = i; j < n; ++j) {
+        valid_matrix[k * n + j] -= factor * valid_matrix[i * n + j];
+      }
+    }
+
+    ++rank_matrix;
+  }
+
+  if (rank_matrix != static_cast<int>(n)) {
+    return false;
+  }
+
   return true;
 }
 

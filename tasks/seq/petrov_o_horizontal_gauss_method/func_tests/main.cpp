@@ -97,10 +97,10 @@ TEST(petrov_o_horizontal_gauss_method_seq, TestGauss_EmptyMatrix) {
   ASSERT_FALSE(task.validation());
 }
 
-TEST(petrov_o_horizontal_gauss_method_seq, TestGauss_ZeroDiagonal) {
+TEST(petrov_o_horizontal_gauss_method_seq, TestGauss_LinearDependence) {
   size_t n = 3;
-  std::vector<double> input_matrix = {1, 1, 2, 1, 0, 1, 1, 1, 1};
-  std::vector<double> input_b = {1, 2, 3};
+  std::vector<double> input_matrix = {1, 2, 1, 3, 7, 1, 2, 4, 2};
+  std::vector<double> input_b = {1, -2, 2};
   std::vector<double> output(n);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
@@ -112,12 +112,5 @@ TEST(petrov_o_horizontal_gauss_method_seq, TestGauss_ZeroDiagonal) {
 
   petrov_o_horizontal_gauss_method_seq::GaussHorizontalSequential task(taskData);
 
-  ASSERT_TRUE(task.validation());
-  ASSERT_TRUE(task.pre_processing());
-  ASSERT_TRUE(task.run());
-  ASSERT_TRUE(task.post_processing());
-
-  ASSERT_DOUBLE_EQ(output[0], 4);
-  ASSERT_DOUBLE_EQ(output[1], 1);
-  ASSERT_DOUBLE_EQ(output[2], -2);
+  ASSERT_FALSE(task.validation());
 }
