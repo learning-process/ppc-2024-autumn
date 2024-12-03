@@ -1,8 +1,8 @@
 // Filateva Elizaveta Metod Gausa
 #include <gtest/gtest.h>
 
-#include <vector>
 #include <limits>
+#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/filateva_e_metod_gausa/include/ops_seq.hpp"

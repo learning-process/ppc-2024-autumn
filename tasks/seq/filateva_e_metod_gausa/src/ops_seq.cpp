@@ -1,6 +1,7 @@
 // Filateva Elizaveta Metod Gausa
 
 #include "seq/filateva_e_metod_gausa/include/ops_seq.hpp"
+
 #include <iostream>
 #include <limits>
 
@@ -45,21 +46,27 @@ bool filateva_e_metod_gausa_seq::MetodGausa::validation() {
   double determenant = 1;
 
   double epsilon = std::numeric_limits<double>::epsilon();
-  
+
   for (int i = 0; i < size; i++) {
     bool is_null_rows = true;
     bool is_null_rows_r = true;
     for (int j = 0; j < size; j++) {
-      if (std::abs(temp_matrix[i * (size + 1) + j]) > epsilon){
+      if (std::abs(temp_matrix[i * (size + 1) + j]) > epsilon) {
         is_null_rows = false;
-        is_null_rows_r = false; 
+        is_null_rows_r = false;
         break;
       }
       determenant *= temp_matrix[i * (size + 1) + i];
     }
-    if (!is_null_rows) { rank_matrix++; }
-    if (is_null_rows_r && std::abs(temp_matrix[i * (size + 1) + size]) > epsilon ) { is_null_rows_r = false; }
-    if (!is_null_rows_r) { rank_r_matrix++; }
+    if (!is_null_rows) {
+      rank_matrix++;
+    }
+    if (is_null_rows_r && std::abs(temp_matrix[i * (size + 1) + size]) > epsilon ) {
+      is_null_rows_r = false;
+    }
+    if (!is_null_rows_r) {
+      rank_r_matrix++;
+    }
   }
 
   if (rank_matrix != rank_r_matrix) {
