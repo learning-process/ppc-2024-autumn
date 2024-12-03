@@ -23,8 +23,8 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> shared_data{};
-  std::vector<int> res_{};
+  std::vector<int> shared_data;
+  std::vector<int> res_;
   boost::mpi::communicator world;
 };
 
