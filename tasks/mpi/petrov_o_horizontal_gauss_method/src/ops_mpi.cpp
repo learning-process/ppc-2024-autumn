@@ -210,11 +210,7 @@ bool SequentialTask::validation() {
     ++rank_matrix;
   }
 
-  if (rank_matrix != static_cast<int>(n)) {
-    return false;
-  }
-
-  return true;
+  return rank_matrix == static_cast<int>(n);
 }
 
 bool SequentialTask::pre_processing() {

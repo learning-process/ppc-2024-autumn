@@ -62,11 +62,7 @@ bool petrov_o_horizontal_gauss_method_seq::GaussHorizontalSequential::validation
     ++rank_matrix;
   }
 
-  if (rank_matrix != static_cast<int>(n)) {
-    return false;
-  }
-
-  return true;
+  return rank_matrix == static_cast<int>(n);
 }
 
 bool petrov_o_horizontal_gauss_method_seq::GaussHorizontalSequential::pre_processing() {
