@@ -79,13 +79,7 @@ bool sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITas
     input_B = new int[column_B * row_B];
     auto* tmp_ptr_a = reinterpret_cast<int*>(taskData->inputs[0]);
     auto* tmp_ptr_b = reinterpret_cast<int*>(taskData->inputs[1]);
-    for (int i = 0; i < column_A * row_A; i++) {
-      input_A[i] = tmp_ptr_a[i];
-    }
-
-    for (int i = 0; i < column_B * row_B; i++) {
-      input_B[i] = tmp_ptr_b[i];
-    }
+    std::copy(tmp_ptr_a, tmp_ptr_a + column_A * row_A, input_A);
     C = nullptr;
   }
 
@@ -204,5 +198,7 @@ bool sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITas
     std::copy(C, C + column_A * row_B, ans);
   }
 
+  delete[] input_A;
+  delete[] input_B;
   return true;
 }
