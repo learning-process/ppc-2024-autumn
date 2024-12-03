@@ -153,67 +153,64 @@ bool ParallelTask::post_processing() {
 
 bool SequentialTask::validation() {
   internal_order_test();
-  if (world.rank() == 0) {
-    if (taskData->inputs_count.size() != 1 || taskData->outputs_count.size() != 1) {
-      return false;
-    }
 
-    size_t n = taskData->inputs_count[0];
-
-    if (n == 0) {
-      return false;
-    }
-
-    if (taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr || taskData->outputs[0] == nullptr) {
-      return false;
-    }
-
-    auto* matrix_input = reinterpret_cast<double*>(taskData->inputs[0]);
-    std::vector<double> valid_matrix(matrix_input, matrix_input + n * n);
-
-    int rank_matrix = 0;
-
-    const double eps = 1e-10;
-
-    for (size_t i = 0; i < n; ++i) {
-      double max_elem = std::abs(valid_matrix[i * n + i]);
-      size_t max_row = i;
-      for (size_t k = i + 1; k < n; ++k) {
-        if (std::abs(valid_matrix[k * n + i]) > max_elem) {
-          max_elem = std::abs(valid_matrix[k * n + i]);
-          max_row = k;
-        }
-      }
-
-      if (max_elem < eps) {
-        continue;
-      }
-
-      if (max_row != i) {
-        for (size_t j = 0; j < n; ++j) {
-          std::swap(valid_matrix[i * n + j], valid_matrix[max_row * n + j]);
-        }
-      }
-
-      double pivot = valid_matrix[i * n + i];
-      for (size_t j = i; j < n; ++j) {
-        valid_matrix[i * n + j] /= pivot;
-      }
-
-      for (size_t k = i + 1; k < n; ++k) {
-        double factor = valid_matrix[k * n + i];
-        for (size_t j = i; j < n; ++j) {
-          valid_matrix[k * n + j] -= factor * valid_matrix[i * n + j];
-        }
-      }
-
-      ++rank_matrix;
-    }
-    if (rank_matrix != static_cast<int>(n)) {
-      return false;
-    }
+  if (taskData->inputs_count.size() != 1 || taskData->outputs_count.size() != 1) {
+    return false;
   }
-  return true;
+
+  size_t n = taskData->inputs_count[0];
+
+  if (n == 0) {
+    return false;
+  }
+
+  if (taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr || taskData->outputs[0] == nullptr) {
+    return false;
+  }
+
+  auto* matrix_input = reinterpret_cast<double*>(taskData->inputs[0]);
+  std::vector<double> valid_matrix(matrix_input, matrix_input + n * n);
+
+  int rank_matrix = 0;
+
+  const double eps = 1e-10;
+
+  for (size_t i = 0; i < n; ++i) {
+    double max_elem = std::abs(valid_matrix[i * n + i]);
+    size_t max_row = i;
+    for (size_t k = i + 1; k < n; ++k) {
+      if (std::abs(valid_matrix[k * n + i]) > max_elem) {
+        max_elem = std::abs(valid_matrix[k * n + i]);
+        max_row = k;
+      }
+    }
+
+    if (max_elem < eps) {
+      continue;
+    }
+
+    if (max_row != i) {
+      for (size_t j = 0; j < n; ++j) {
+        std::swap(valid_matrix[i * n + j], valid_matrix[max_row * n + j]);
+      }
+    }
+
+    double pivot = valid_matrix[i * n + i];
+    for (size_t j = i; j < n; ++j) {
+      valid_matrix[i * n + j] /= pivot;
+    }
+
+    for (size_t k = i + 1; k < n; ++k) {
+      double factor = valid_matrix[k * n + i];
+      for (size_t j = i; j < n; ++j) {
+        valid_matrix[k * n + j] -= factor * valid_matrix[i * n + j];
+      }
+    }
+
+    ++rank_matrix;
+  }
+
+  return rank_matrix == static_cast<int>(n);
 }
 
 bool SequentialTask::pre_processing() {
