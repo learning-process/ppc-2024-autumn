@@ -9,7 +9,7 @@ using namespace std::chrono_literals;
 
 namespace kholin_k_iterative_methods_Seidel_mpi {
 bool IsDiagPred(std::vector<float> row_coeffs, size_t num_colls, size_t start_index, size_t index);
-void copyA_(std::vector<float>, size_t num_rows, size_t num_colls);
+void copyA_(std::vector<float> val);
 std::vector<float> getA_();
 void setA_(std::vector<float> val, size_t num_rows, size_t num_colls);
 bool gen_matrix_with_diag_pred(size_t num_rows, size_t num_colls);
@@ -18,7 +18,7 @@ std::vector<float> gen_vector(size_t sz);
 std::vector<float> A_;
 }  // namespace kholin_k_iterative_methods_Seidel_mpi
 
-void kholin_k_iterative_methods_Seidel_mpi::copyA_(std::vector<float> val, size_t num_rows, size_t num_colls) {
+void kholin_k_iterative_methods_Seidel_mpi::copyA_(std::vector<float> val) {
   std::copy(A_.begin(), A_.end(), val.begin());
 }
 void kholin_k_iterative_methods_Seidel_mpi::setA_(std::vector<float> val, size_t num_rows, size_t num_colls) {

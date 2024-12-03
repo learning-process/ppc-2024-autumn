@@ -24,7 +24,7 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, validation_true_when_matrix_with_dia
     X0 = std::vector<float>(count_rows, 0.0f);
     B = kholin_k_iterative_methods_Seidel_mpi::gen_vector(count_rows);
     kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls);
-    kholin_k_iterative_methods_Seidel_mpi::copyA_(in, count_rows, count_colls);
+    kholin_k_iterative_methods_Seidel_mpi::copyA_(in);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(X0.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
@@ -77,7 +77,7 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, test_pre_processing) {
     X0 = std::vector<float>(count_rows, 0.0f);
     B = kholin_k_iterative_methods_Seidel_mpi::gen_vector(count_rows);
     kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls);
-    kholin_k_iterative_methods_Seidel_mpi::copyA_(in, count_rows, count_colls);
+    kholin_k_iterative_methods_Seidel_mpi::copyA_(in);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(X0.data()));
@@ -132,7 +132,7 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, test_run) {
     X0 = std::vector<float>(count_rows, 0.0f);
     B = kholin_k_iterative_methods_Seidel_mpi::gen_vector(count_rows);
     kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls);
-    kholin_k_iterative_methods_Seidel_mpi::copyA_(in, count_rows, count_colls);
+    kholin_k_iterative_methods_Seidel_mpi::copyA_(in);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(X0.data()));
@@ -190,7 +190,7 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, test_post_processing) {
     X0 = std::vector<float>(count_rows, 0.0f);
     B = kholin_k_iterative_methods_Seidel_mpi::gen_vector(count_rows);
     kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls);
-    kholin_k_iterative_methods_Seidel_mpi::copyA_(in, count_rows, count_colls);
+    kholin_k_iterative_methods_Seidel_mpi::copyA_(in);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(X0.data()));

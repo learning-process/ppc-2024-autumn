@@ -11,7 +11,7 @@ TEST(kholin_k_iterative_methods_Seidel_seq, validation_true_when_matrix_with_dia
   kholin_k_iterative_methods_Seidel_seq::gen_matrix_with_diag_pred(count_rows, count_colls);
 
   std::vector<float> in(count_rows * count_colls, 0.0f);
-  kholin_k_iterative_methods_Seidel_seq::copyA_(in, count_rows, count_colls);
+  kholin_k_iterative_methods_Seidel_seq::copyA_(in);
   std::vector<float> out(count_rows, 0.0f);
   std::vector<float> X0(count_rows, 0.0f);
   std::vector<float> B = kholin_k_iterative_methods_Seidel_seq::gen_vector(count_rows);
@@ -36,7 +36,7 @@ TEST(kholin_k_iterative_methods_Seidel_seq, test_pre_processing) {
   kholin_k_iterative_methods_Seidel_seq::gen_matrix_with_diag_pred(count_rows, count_colls);
 
   std::vector<float> in(count_rows * count_colls, 0.0f);
-  kholin_k_iterative_methods_Seidel_seq::copyA_(in, count_rows, count_colls);
+  kholin_k_iterative_methods_Seidel_seq::copyA_(in);
   std::vector<float> out(count_rows, 0.0f);
   std::vector<float> X0(count_rows, 0.0f);
   std::vector<float> B = kholin_k_iterative_methods_Seidel_seq::gen_vector(count_rows);
@@ -62,7 +62,7 @@ TEST(kholin_k_iterative_methods_Seidel_seq, test_run) {
   kholin_k_iterative_methods_Seidel_seq::gen_matrix_with_diag_pred(count_rows, count_colls);
 
   std::vector<float> in(count_rows * count_colls, 0.0f);
-  kholin_k_iterative_methods_Seidel_seq::copyA_(in, count_rows, count_colls);
+  kholin_k_iterative_methods_Seidel_seq::copyA_(in);
   std::vector<float> out(count_rows, 0.0f);
   std::vector<float> X0(count_rows, 0.0f);
   std::vector<float> B = kholin_k_iterative_methods_Seidel_seq::gen_vector(count_rows);
@@ -90,7 +90,7 @@ TEST(kholin_k_iterative_methods_Seidel_seq, test_post_processing) {
   kholin_k_iterative_methods_Seidel_seq::gen_matrix_with_diag_pred(count_rows, count_colls);
   //
   std::vector<float> in(count_rows * count_colls, 0.0f);
-  kholin_k_iterative_methods_Seidel_seq::copyA_(in, count_rows, count_colls);
+  kholin_k_iterative_methods_Seidel_seq::copyA_(in);
   std::vector<float> out(count_rows, 0.0f);
   std::vector<float> X0(count_rows, 0.0f);
   std::vector<float> B = kholin_k_iterative_methods_Seidel_seq::gen_vector(count_rows);
@@ -119,7 +119,7 @@ TEST(kholin_k_iterative_methods_Seidel_seq, validation_false_when_matrix_no_quad
   kholin_k_iterative_methods_Seidel_seq::gen_matrix_with_diag_pred(count_rows, count_colls);
 
   std::vector<float> in(count_rows * count_colls, 0.0f);
-  kholin_k_iterative_methods_Seidel_seq::copyA_(in, count_rows, count_colls);
+  kholin_k_iterative_methods_Seidel_seq::copyA_(in);
   std::vector<float> out(count_rows, 0.0f);
   std::vector<float> X0(count_rows, 0.0f);
   std::vector<float> B = kholin_k_iterative_methods_Seidel_seq::gen_vector(count_rows);
