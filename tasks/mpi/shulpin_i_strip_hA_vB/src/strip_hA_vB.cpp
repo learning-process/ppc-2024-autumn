@@ -47,17 +47,6 @@ void shulpin_strip_scheme_A_B::calculate_mpi(int rows_a, int cols_a, int cols_b,
     displs[i] = (i == 0) ? 0 : displs[i - 1] + sendcounts[i - 1];
   }
 
-   if (ProcRank == 1) {
-    std::cout << "Before MPI_Scatterv (A):" << std::endl;
-    std::cout << "sendcounts: ";
-    for (int val : sendcounts) std::cout << val << " ";
-    std::cout << std::endl;
-
-    std::cout << "displs: ";
-    for (int val : displs) std::cout << val << " ";
-    std::cout << std::endl;
-  }
-
   MPI_Scatterv(A_mpi.data(), sendcounts.data(), displs.data(), MPI_INT, bufA.data(), LocalRows * cols_a, MPI_INT, 0,
                MPI_COMM_WORLD);
 
@@ -84,16 +73,6 @@ void shulpin_strip_scheme_A_B::calculate_mpi(int rows_a, int cols_a, int cols_b,
     }
   }
 
-  if (ProcRank == 1) {
-    std::cout << "after mul:" << std::endl;
-    std::cout << "sendcounts: ";
-    for (int val : sendcounts) std::cout << val << " ";
-    std::cout << std::endl;
-
-    std::cout << "displs: ";
-    for (int val : displs) std::cout << val << " ";
-    std::cout << std::endl;
- }
   if (ProcRank == 0) {
     C_mpi.resize(rows_a * cols_b, 0);
   }
