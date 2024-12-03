@@ -355,8 +355,6 @@ TEST(malyshev_lent_horizontal, test_size_mismatch) {
 TEST(malyshev_lent_horizontal, test_zero_values_mpi) {
   uint32_t rows = 3;
   uint32_t cols = 3;
-  int32_t min_value = 0;
-  int32_t max_value = 0;
 
   boost::mpi::communicator world;
   std::vector<std::vector<int32_t>> zeroMatrix(rows, std::vector<int32_t>(cols, 0));
