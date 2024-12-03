@@ -3,8 +3,8 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <boost/mpi/timer.hpp>
-#include <vector>
 #include <random>
+#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/shulpin_i_strip_hA_vB/include/strip_hA_vB.hpp"

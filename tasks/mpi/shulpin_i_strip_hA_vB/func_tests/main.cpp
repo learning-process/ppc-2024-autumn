@@ -4,8 +4,8 @@
 #include <boost/mpi/environment.hpp>
 #include <cmath>
 #include <memory>
-#include <vector>
 #include <random>
+#include <vector>
 
 #include "mpi/shulpin_i_strip_hA_vB/include/strip_hA_vB.hpp"
 

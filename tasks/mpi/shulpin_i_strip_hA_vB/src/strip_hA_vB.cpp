@@ -15,8 +15,6 @@ void shulpin_strip_scheme_A_B::calculate_mpi(int rows_a, int cols_a, int cols_b,
   boost::mpi::communicator world;  
   int ProcRank = world.rank();
   int ProcNum = world.size();
-  //MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
-  //MPI_Comm_size(MPI_COMM_WORLD, &ProcNum);
 
   int ProcPartRows = rows_a / ProcNum;
   int RemainingRows = rows_a % ProcNum;
@@ -34,13 +32,11 @@ void shulpin_strip_scheme_A_B::calculate_mpi(int rows_a, int cols_a, int cols_b,
   }
 
   boost::mpi::scatterv(world, A_mpi.data(), sendcounts, displs, bufA.data(), LocalRows * cols_a, 0);
-  //MPI_Scatterv(A_mpi.data(), sendcounts.data(), displs.data(), MPI_INT, bufA.data(), LocalRows * cols_a, MPI_INT, 0,MPI_COMM_WORLD);
 
   if (ProcRank == 0) {
-    //std::copy(B_mpi.begin(), B_mpi.end(), bufB.begin());
     bufB = B_mpi;
   }
-  //MPI_Bcast(bufB.data(), cols_a * cols_b, MPI_INT, 0, MPI_COMM_WORLD);
+
   boost::mpi::broadcast(world, bufB, 0);
   std::fill(bufC.begin(), bufC.end(), 0);
 
@@ -65,7 +61,6 @@ void shulpin_strip_scheme_A_B::calculate_mpi(int rows_a, int cols_a, int cols_b,
     C_mpi.resize(rows_a * cols_b, 0);
   }
   boost::mpi::gatherv(world, bufC.data(), LocalRows * cols_b, C_mpi.data(), sendcounts, displs, 0);
-  //MPI_Gatherv(bufC.data(), LocalRows * cols_b, MPI_INT, C_mpi.data(), sendcounts.data(), displs.data(), MPI_INT, 0, MPI_COMM_WORLD);
 }
 
 void shulpin_strip_scheme_A_B::calculate_seq(int rows_a, int cols_a, int cols_b, std::vector<int> A_seq,
