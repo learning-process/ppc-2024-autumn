@@ -11,8 +11,6 @@
 
 #include "boost/mpi/collectives/broadcast.hpp"
 
-using namespace std::chrono_literals;
-
 bool titov_s_simple_iteration_mpi::MPISimpleIterationSequential::hasUniqueSolution() {
   std::vector<std::vector<float>> coefficients(rows_, std::vector<float>(rows_));
 
@@ -83,10 +81,6 @@ bool titov_s_simple_iteration_mpi::MPISimpleIterationSequential::pre_processing(
 
   auto* epsilon_ptr = reinterpret_cast<float*>(taskData->inputs[rows_]);
   epsilon_ = *epsilon_ptr;
-  if (!isDiagonallyDominant()) {
-    return false;
-  }
-
   return true;
 }
 
@@ -105,14 +99,13 @@ bool titov_s_simple_iteration_mpi::MPISimpleIterationSequential::validation() {
       input_[i * cols_ + j] = tmp_ptr[j];
     }
   }
+
   if (!isDiagonallyDominant()) {
     return false;
   }
-  if (!hasUniqueSolution()) {
-    return false;
-  }
-  return true;
+  return hasUniqueSolution();
 }
+
 
 bool titov_s_simple_iteration_mpi::MPISimpleIterationSequential::run() {
   internal_order_test();
