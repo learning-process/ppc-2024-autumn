@@ -61,7 +61,7 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::validation() {
       if (!is_null_rows) {
         rank_matrix++;
       }
-      if (is_null_rows_r && std::abs(temp_matrix[i * (size + 1) + size]) > epsilon ) {
+      if (is_null_rows_r && std::abs(temp_matrix[i * (size + 1) + size]) > epsilon) {
         is_null_rows_r = false;
       }
       if (!is_null_rows_r) {
