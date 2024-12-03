@@ -40,7 +40,6 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, not_equal_lengths) {
 TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, test_opposite_sort_9733_int) {
   const size_t length = 9733;
   std::srand(std::time(nullptr));
-  const int alpha = rand();
   std::vector<int> in(length);
   for (size_t i = 0; i < length; i++) in[i] = length - i;
   std::vector<int> out(length);
