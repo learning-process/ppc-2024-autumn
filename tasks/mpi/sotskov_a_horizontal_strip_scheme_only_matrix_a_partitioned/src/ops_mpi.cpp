@@ -29,7 +29,12 @@ bool sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITas
 
 bool sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  // Check count elements of output
+
+  if (taskData->inputs_count[0] == 1 && taskData->inputs_count[1] == 1 && taskData->inputs_count[2] == 1 &&
+      taskData->inputs_count[3] == 1) {
+    return true;
+  }
+
   return taskData->inputs_count[0] > 1 && taskData->inputs_count[1] > 0 && taskData->inputs_count[2] > 0 &&
          taskData->inputs_count[3] > 0 && taskData->inputs_count[1] == taskData->inputs_count[2];
 }
@@ -90,6 +95,9 @@ bool sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITas
   internal_order_test();
 
   if (world.rank() == 0) {
+    if (taskData->inputs_count[0] == 1 && taskData->inputs_count[1] == 1) {
+      return true;
+    }
     return taskData->inputs_count[0] > 1 && taskData->inputs_count[1] > 0 &&
            taskData->inputs_count[0] % taskData->inputs_count[1] == 0;
   }
