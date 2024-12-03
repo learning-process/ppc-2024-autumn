@@ -30,7 +30,6 @@ bool malyshev_lent_horizontal::TestTaskSequential::validation() {
   internal_order_test();
 
   uint32_t rows = taskData->inputs_count[0];
-  uint32_t cols = taskData->inputs_count[1];
 
   // Проверка на соответствие размеров вектора и матрицы
   if (taskData->inputs.size() != rows + 1) {
@@ -93,7 +92,6 @@ bool malyshev_lent_horizontal::TestTaskParallel::validation() {
 
   if (world.rank() == 0) {
     uint32_t rows = taskData->inputs_count[0];
-    uint32_t cols = taskData->inputs_count[1];
 
     if (taskData->inputs.size() != rows + 1) {
       return false;
