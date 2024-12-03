@@ -43,3 +43,19 @@ TEST(nasedkin_e_seidels_iterate_methods_mpi, test_matrix_with_zero_diagonal) {
   ASSERT_TRUE(seidel_task.validation()) << "Validation failed for valid input";
   ASSERT_FALSE(seidel_task.pre_processing()) << "Pre-processing passed, but expected failure";
 }
+
+TEST(nasedkin_e_seidels_iterate_methods_mpi, test_residual_norm_with_random_matrix) {
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.push_back(10);
+
+  nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI seidel_task(taskData);
+
+  seidel_task.generate_diagonally_dominant_matrix(10);
+
+  ASSERT_TRUE(seidel_task.pre_processing()) << "Pre-processing failed";
+
+  ASSERT_TRUE(seidel_task.run()) << "Run failed";
+
+  double residual_norm = seidel_task.calculate_residual_norm();
+  ASSERT_LT(residual_norm, 1e-6) << "Residual norm is too large: " << residual_norm;
+}

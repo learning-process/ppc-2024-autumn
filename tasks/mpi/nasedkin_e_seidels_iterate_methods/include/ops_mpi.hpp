@@ -3,6 +3,7 @@
 #include <boost/mpi/communicator.hpp>
 #include <memory>
 #include <vector>
+#include <random>
 
 #include "core/task/include/task.hpp"
 
@@ -16,6 +17,9 @@ class SeidelIterateMethodsMPI : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
+
+  void generate_diagonally_dominant_matrix(int size);
+  double calculate_residual_norm();
 
  private:
   boost::mpi::communicator world;

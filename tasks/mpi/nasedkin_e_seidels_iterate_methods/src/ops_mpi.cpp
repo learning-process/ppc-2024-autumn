@@ -94,4 +94,46 @@ bool SeidelIterateMethodsMPI::converge(const std::vector<double>& x_new) {
   return std::sqrt(norm) < epsilon;
 }
 
+void SeidelIterateMethodsMPI::generate_diagonally_dominant_matrix(int size) {
+  n = size;
+  A.resize(n, std::vector<double>(n));
+  b.resize(n);
+  x.resize(n, 0.0);
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<double> dist(1.0, 10.0);
+
+  for (int i = 0; i < n; ++i) {
+    double row_sum = 0.0;
+    for (int j = 0; j < n; ++j) {
+      if (i != j) {
+        A[i][j] = dist(gen);
+        row_sum += std::abs(A[i][j]);
+      }
+    }
+    A[i][i] = row_sum + dist(gen);
+    b[i] = dist(gen);
+  }
+}
+
+double SeidelIterateMethodsMPI::calculate_residual_norm() {
+  std::vector<double> Ax_minus_b(n, 0.0);
+
+  for (int i = 0; i < n; ++i) {
+    double Ax_i = 0.0;
+    for (int j = 0; j < n; ++j) {
+      Ax_i += A[i][j] * x[j];
+    }
+    Ax_minus_b[i] = Ax_i - b[i];
+  }
+
+  double norm = 0.0;
+  for (double value : Ax_minus_b) {
+    norm += value * value;
+  }
+
+  return std::sqrt(norm);
+}
+
 }  // namespace nasedkin_e_seidels_iterate_methods_mpi
