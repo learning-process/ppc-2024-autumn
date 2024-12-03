@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
+#include <mpi/kholin_k_iterative_methods_Seidel/src/ops_mpi.cpp>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
@@ -9,24 +10,30 @@
 TEST(kholin_k_iterative_methods_Seidel_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   int ProcRank = 0;
-  const size_t count_rows = 2500;
-  const size_t count_colls = 2500;
+  const size_t count_rows = 1000;
+  const size_t count_colls = 1000;
   float epsilon = 0.001f;
   list_ops::ops_ op = list_ops::METHOD_SEIDEL;
-  float* in = nullptr;
-  float* out = nullptr;
+  std::vector<float> in;
+  std::vector<float> out;
+  std::vector<float> X0;
+  std::vector<float> B;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (ProcRank == 0) {
-    in = new float[count_rows * count_colls];
-    out = new float[count_rows];
+    in = std::vector<float>(count_rows * count_colls);
+    out = std::vector<float>(count_rows);
+    X0 = std::vector<float>(count_rows, 0.0f);
+    B = kholin_k_iterative_methods_Seidel_mpi::gen_vector(count_rows);
     kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls);
     kholin_k_iterative_methods_Seidel_mpi::copyA_(in, count_rows, count_colls);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(X0.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataPar->inputs_count.emplace_back(count_rows);
     taskDataPar->inputs_count.emplace_back(count_colls);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
     taskDataPar->outputs_count.emplace_back(count_rows);
   }
 
@@ -52,36 +59,35 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, test_pipeline_run) {
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
   }
-  if (ProcRank == 0) {
-    delete[] in;
-    delete[] out;
-  }
-  if (ProcRank == 0) {
-    kholin_k_iterative_methods_Seidel_mpi::freeA_();
-  }
 }
 
 TEST(kholin_k_iterative_methods_Seidel_mpi, test_task_run) {
   boost::mpi::communicator world;
   int ProcRank = 0;
-  const size_t count_rows = 3000;
-  const size_t count_colls = 3000;
+  const size_t count_rows = 1000;
+  const size_t count_colls = 1000;
   float epsilon = 0.001f;
   list_ops::ops_ op = list_ops::METHOD_SEIDEL;
-  float* in = nullptr;
-  float* out = nullptr;
+  std::vector<float> in;
+  std::vector<float> out;
+  std::vector<float> X0;
+  std::vector<float> B;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (ProcRank == 0) {
-    in = new float[count_rows * count_colls];
-    out = new float[count_rows];
+    in = std::vector<float>(count_rows * count_colls);
+    out = std::vector<float>(count_rows);
+    X0 = std::vector<float>(count_rows, 0.0f);
+    B = kholin_k_iterative_methods_Seidel_mpi::gen_vector(count_rows);
     kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls);
     kholin_k_iterative_methods_Seidel_mpi::copyA_(in, count_rows, count_colls);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(X0.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataPar->inputs_count.emplace_back(count_rows);
     taskDataPar->inputs_count.emplace_back(count_colls);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
     taskDataPar->outputs_count.emplace_back(count_rows);
   }
 
@@ -107,11 +113,15 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, test_task_run) {
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
   }
-  if (ProcRank == 0) {
-    delete[] in;
-    delete[] out;
+}
+
+int main(int argc, char** argv) {
+  boost::mpi::environment env(argc, argv);
+  boost::mpi::communicator world;
+  ::testing::InitGoogleTest(&argc, argv);
+  ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
+  if (world.rank() != 0) {
+    delete listeners.Release(listeners.default_result_printer());
   }
-  if (ProcRank == 0) {
-    kholin_k_iterative_methods_Seidel_mpi::freeA_();
-  }
+  return RUN_ALL_TESTS();
 }

@@ -5,26 +5,28 @@
 using namespace std::chrono_literals;
 
 namespace kholin_k_iterative_methods_Seidel_seq {
-float* A_;
+bool IsDiagPred(std::vector<float> row_coeffs, size_t num_colls, size_t start_index, size_t index);
+void copyA_(std::vector<float>, size_t num_rows, size_t num_colls);
+std::vector<float> getA_();
+void setA_(std::vector<float> val, size_t num_rows, size_t num_colls);
+bool gen_matrix_with_diag_pred(size_t num_rows, size_t num_colls);
+float gen_float_value();
+std::vector<float> gen_vector(size_t sz);
+std::vector<float> A_;
+}  // namespace kholin_k_iterative_methods_Seidel_seq
+
+void kholin_k_iterative_methods_Seidel_seq::copyA_(std::vector<float> val, size_t num_rows, size_t num_colls) {
+  std::copy(A_.begin(), A_.end(), val.begin());
+}
+void kholin_k_iterative_methods_Seidel_seq::setA_(std::vector<float> val, size_t num_rows, size_t num_colls) {
+  A_ = std::vector<float>(num_rows * num_colls, 0.0f);
+  std::copy(val.begin(), val.end(), A_.begin());
 }
 
-void kholin_k_iterative_methods_Seidel_seq::freeA_() {
-  delete[] A_;
-  A_ = nullptr;
-}
+std::vector<float> kholin_k_iterative_methods_Seidel_seq::getA_() { return A_; }
 
-void kholin_k_iterative_methods_Seidel_seq::copyA_(float val[], size_t num_rows, size_t num_colls) {
-  std::memcpy(val, A_, sizeof(float) * num_rows * num_colls);
-}
-void kholin_k_iterative_methods_Seidel_seq::setA_(float val[], size_t num_rows, size_t num_colls) {
-  A_ = new float[num_rows * num_colls];
-  std::memcpy(A_, val, sizeof(float) * num_rows * num_colls);
-}
-
-float*& kholin_k_iterative_methods_Seidel_seq::getA_() { return A_; }
-
-bool kholin_k_iterative_methods_Seidel_seq::IsDiagPred(float row_coeffs[], size_t num_colls, size_t start_index,
-                                                       size_t index) {
+bool kholin_k_iterative_methods_Seidel_seq::IsDiagPred(std::vector<float> row_coeffs, size_t num_colls,
+                                                       size_t start_index, size_t index) {
   float diag_element = std::fabs(row_coeffs[index]);
   float abs_sum = 0;
   float abs_el = 0;
@@ -50,8 +52,7 @@ float kholin_k_iterative_methods_Seidel_seq::gen_float_value() {
 bool kholin_k_iterative_methods_Seidel_seq::gen_matrix_with_diag_pred(size_t num_rows, size_t num_colls) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  A_ = new float[num_rows * num_colls];
-  std::fill(A_, A_ + num_rows * num_colls, 0.0f);
+  A_ = std::vector<float>(num_rows * num_colls, 0.0f);
   float p1 = -(1000.0f * 1000.0f * 1000.0f);
   float p2 = -p1;
   float mult = 100 * 100;
@@ -76,36 +77,36 @@ bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::pre_processing()
   internal_order_test();
   n_rows = taskData->inputs_count[0];
   n_colls = taskData->inputs_count[1];
-  A = new float[n_rows * n_colls];
+
+  AllocateBuffers();
+
+  A = std::vector<float>(n_rows * n_colls, 0.0f);
   auto* ptr_vector = reinterpret_cast<float*>(taskData->inputs[0]);
-  std::memcpy(A, ptr_vector, sizeof(float) * (n_rows * n_colls));
-  X_next = new float[n_rows];
-  std::fill(X_next, X_next + n_rows, 0.0f);
-  X_prev = new float[n_rows];
-  std::fill(X_prev, X_prev + n_rows, 0.0f);
-  B = gen_vector(n_rows);
+  std::memcpy(A.data(), ptr_vector, sizeof(float) * (n_rows * n_colls));
+
   auto* ptr = reinterpret_cast<float*>(taskData->inputs[1]);
   epsilon = *ptr;
-  X = new float[n_rows];
-  std::fill(X, X + n_rows, 1.0f);
-  X0 = new float[n_rows];
+
+  auto* ptr_vector_X0 = reinterpret_cast<float*>(taskData->inputs[2]);
+  std::memcpy(X0.data(), ptr_vector_X0, sizeof(float) * n_rows);
+
+  auto* ptr_vector_B = reinterpret_cast<float*>(taskData->inputs[3]);
+  std::memcpy(B.data(), ptr_vector_B, sizeof(float) * n_rows);
+
   iteration_perfomance();
   return true;
 }
 
-void kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::SetDefault() {
-  A = nullptr;
-  X = nullptr;
-  X_next = nullptr;
-  X_prev = nullptr;
-  X0 = nullptr;
-  B = nullptr;
-  C = nullptr;
+void kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::AllocateBuffers() {
+  X_next = std::vector<float>(n_rows, 0.0f);
+  X_prev = std::vector<float>(n_rows, 0.0f);
+  X = std::vector<float>(n_rows, 1.0f);
+  B = std::vector<float>(n_rows);
+  X0 = std::vector<float>(n_rows);
 }
 
 bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::validation() {
   internal_order_test();
-  SetDefault();
   return CheckDiagPred(getA_(), taskData->inputs_count[0], taskData->inputs_count[1]) &&
          IsQuadro(taskData->inputs_count[0], taskData->inputs_count[1]);
 }
@@ -118,28 +119,18 @@ bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::run() {
 
 bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::post_processing() {
   internal_order_test();
-  auto* ptr = reinterpret_cast<float*>(taskData->outputs[0]);
-  std::memcpy(ptr, X, sizeof(float) * n_rows);
-  return true;
-}
 
-kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::~TestTaskSequential() {
-  delete[] A;
-  delete[] X;
-  delete[] X_next;
-  delete[] X_prev;
-  delete[] X0;
-  delete[] B;
-  delete[] C;
-  delete[] A_;
+  auto* ptr = reinterpret_cast<float*>(taskData->outputs[0]);
+  std::copy(X.begin(), X.end(), ptr);
+  return true;
 }
 
 bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::IsQuadro(size_t num_rows, size_t num_colls) {
   return num_rows == num_colls;
 }
 
-bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::CheckDiagPred(float matrix[], size_t num_rows,
-                                                                              size_t num_colls) {
+bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::CheckDiagPred(std::vector<float> matrix,
+                                                                              size_t num_rows, size_t num_colls) {
   size_t rows = num_rows;
   size_t colls = num_colls;
   float abs_diag_element = 0.0f;
@@ -161,32 +152,33 @@ bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::CheckDiagPred(fl
   }
   return true;
 }
-
-float* kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::gen_vector(size_t sz) {
+std::vector<float> kholin_k_iterative_methods_Seidel_seq::gen_vector(size_t sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  auto* row = new float[sz];
-  std::uniform_real_distribution<float> coeff(-100, 100);
+  std::uniform_real_distribution<float> coeff(-100.0f, 100.0f);
+
+  std::vector<float> row(sz);
+
   for (size_t i = 0; i < sz; i++) {
     row[i] = coeff(gen);
   }
+
   return row;
 }
-
 void kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::iteration_perfomance() {
-  // X = CX` + B
-  C = new float[n_rows * n_colls];
+  C = std::vector<float>(n_rows * n_colls, 0.0f);
   for (size_t i = 0; i < n_rows; i++) {
+    B[i] = B[i] / A[n_colls * i + i];
     for (size_t j = 0; j < n_colls; j++) {
       if (i == j) {
-        B[i] = B[i] / A[n_colls * i + i];
-        C[n_colls * i + i] = 0;
+        C[n_colls * i + i] = 0.0f;
         continue;
       }
       C[n_colls * i + j] = -A[n_colls * i + j] / A[n_colls * i + i];
     }
   }
-  std::memcpy(X0, B, n_colls * sizeof(float));
+
+  std::copy(B.begin(), B.end(), X0.begin());
 }
 
 float kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::d() {
@@ -220,8 +212,8 @@ void kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::method_Seidel() 
       X_next[i] += B[i];
     }
     delta = d();
-    std::memcpy(X_prev, X_next, sizeof(float) * n_rows);
-    std::fill(X_next, X_next + n_rows, 0.0f);
+    std::copy(X_next.begin(), X_next.end(), X_prev.begin());
+    std::fill(X_next.begin(), X_next.end(), 0.0f);
   }
-  std::memcpy(X, X_prev, sizeof(float) * n_rows);
+  std::copy(X_prev.begin(), X_prev.end(), X.begin());
 }

@@ -7,18 +7,11 @@
 #include <cstring>
 #include <iostream>
 #include <random>
+#include <vector>
 
 #include "core/task/include/task.hpp"
 //
 namespace kholin_k_iterative_methods_Seidel_seq {
-
-bool IsDiagPred(float row_coeffs[], size_t num_colls, size_t start_index, size_t index);
-void copyA_(float val[], size_t num_rows, size_t num_colls);
-float*& getA_();
-void freeA_();
-void setA_(float val[], size_t num_rows, size_t num_colls);
-bool gen_matrix_with_diag_pred(size_t num_rows, size_t num_colls);
-float gen_float_value();
 
 class TestTaskSequential : public ppc::core::Task {
  public:
@@ -27,25 +20,23 @@ class TestTaskSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  ~TestTaskSequential() override;
 
  private:
-  float* A;
-  float* X;
-  float* X_next;
-  float* X_prev;
-  float* X0;
-  float* B;
-  float* C;
+  std::vector<float> A;
+  std::vector<float> X;
+  std::vector<float> X_next;
+  std::vector<float> X_prev;
+  std::vector<float> X0;
+  std::vector<float> B;
+  std::vector<float> C;
   float epsilon;
   size_t n_rows;
   size_t n_colls;
-  void SetDefault();
-  static bool CheckDiagPred(float matrix[], size_t num_rows, size_t num_colls);
+  static bool CheckDiagPred(std::vector<float> matrix, size_t num_rows, size_t num_colls);
   static bool IsQuadro(size_t num_rows, size_t num_colls);
-  static float* gen_vector(size_t sz);
   void iteration_perfomance();
   float d();
+  void AllocateBuffers();
   void method_Seidel();
 };
 

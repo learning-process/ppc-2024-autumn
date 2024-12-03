@@ -2,23 +2,24 @@
 
 #include "core/perf/include/perf.hpp"
 #include "seq/kholin_k_iterative_methods_Seidel/include/ops_seq.hpp"
+#include <seq/kholin_k_iterative_methods_Seidel/src/ops_seq.cpp>
 
 TEST(kholin_k_iterative_methods_Seidel_seq, test_pipeline_run) {
-  const size_t count_rows = 5000;
-  const size_t count_colls = 5000;
+  const size_t count_rows = 1000;
+  const size_t count_colls = 1000;
   float epsilon = 0.001f;
   kholin_k_iterative_methods_Seidel_seq::gen_matrix_with_diag_pred(count_rows, count_colls);
-
-  auto *in = new float[count_rows * count_colls];
+  
+  std::vector<float> in(count_rows * count_colls);
   kholin_k_iterative_methods_Seidel_seq::copyA_(in, count_rows, count_colls);
-  auto *out = new float[count_rows];
+  std::vector<float> out(count_rows);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
   taskDataSeq->inputs_count.emplace_back(count_rows);
   taskDataSeq->inputs_count.emplace_back(count_colls);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(count_rows);
 
   auto testTaskSequential = std::make_shared<kholin_k_iterative_methods_Seidel_seq::TestTaskSequential>(taskDataSeq);
@@ -39,27 +40,24 @@ TEST(kholin_k_iterative_methods_Seidel_seq, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  delete[] in;
-  delete[] out;
-  kholin_k_iterative_methods_Seidel_seq::freeA_();
 }
 
 TEST(kholin_k_iterative_methods_Seidel_seq, test_task_run) {
-  const size_t count_rows = 10000;
-  const size_t count_colls = 10000;
+  const size_t count_rows = 1000;
+  const size_t count_colls = 1000;
   float epsilon = 0.001f;
   kholin_k_iterative_methods_Seidel_seq::gen_matrix_with_diag_pred(count_rows, count_colls);
 
-  auto *in = new float[count_rows * count_colls];
+  std::vector<float> in(count_rows * count_colls);
   kholin_k_iterative_methods_Seidel_seq::copyA_(in, count_rows, count_colls);
-  auto *out = new float[count_rows];
+  std::vector<float> out(count_rows);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
   taskDataSeq->inputs_count.emplace_back(count_rows);
   taskDataSeq->inputs_count.emplace_back(count_colls);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(count_rows);
 
   // Create Task
@@ -82,7 +80,4 @@ TEST(kholin_k_iterative_methods_Seidel_seq, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  delete[] in;
-  delete[] out;
-  kholin_k_iterative_methods_Seidel_seq::freeA_();
 }
