@@ -1,8 +1,6 @@
 // Copyright 2023 Nesterov Alexander
 #include "mpi/varfolomeev_g_transfer_from_one_to_all_scatter/include/ops_mpi.hpp"
 
-#include <vcruntime_startup.h>
-
 #include <algorithm>
 #include <cstddef>
 #include <functional>
