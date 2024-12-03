@@ -129,3 +129,45 @@ TEST(khovansky_d_ribbon_vertical_scheme_mpi, standart_matrix) {
   ASSERT_TRUE(taskParallel->run());
   ASSERT_TRUE(taskParallel->post_processing());
 }
+
+TEST(khovansky_d_ribbon_vertical_scheme_mpi, different_sizes) {
+  boost::mpi::communicator world;
+
+  int rows_count = 3;
+  int columns_count = 7;
+  int rows_matrix_count = 11;
+  std::vector<int> input_matrix;
+  std::vector<int> input_vector;
+  std::vector<int> output_vector;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    input_matrix.resize(rows_matrix_count * columns_count);
+    input_vector.resize(rows_count);
+    output_vector.resize(columns_count, 0);
+
+    for (int i = 0; i < rows_matrix_count * columns_count; ++i) {
+      input_matrix[i] = (rand() % 1000) - 500;
+    }
+
+    for (int i = 0; i < rows_count; ++i) {
+      input_vector[i] = (rand() % 1000) - 500;
+    }
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(input_matrix.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_vector.data()));
+    taskDataPar->inputs_count.emplace_back(input_vector.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_vector.data()));
+    taskDataPar->outputs_count.emplace_back(output_vector.size());
+  }
+
+  auto taskParallel = std::make_shared<khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeMPI>(taskDataPar);
+
+  if (world.rank() == 0) {
+    ASSERT_FALSE(taskParallel->validation());
+  } else {
+    ASSERT_TRUE(taskParallel->validation());
+  }
+}

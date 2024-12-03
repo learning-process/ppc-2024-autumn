@@ -3,10 +3,6 @@
 
 #include <algorithm>
 #include <functional>
-#include <random>
-#include <thread>
-
-using namespace std::chrono_literals;
 
 bool khovansky_d_ribbon_vertical_scheme_seq::RibbonVerticalSchemeSeq::validation() {
   internal_order_test();

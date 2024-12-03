@@ -8,10 +8,6 @@
 #include <iostream>
 #include <random>
 #include <string>
-#include <thread>
-#include <vector>
-
-using namespace std::chrono_literals;
 
 bool khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeSeq::validation() {
   internal_order_test();
