@@ -84,14 +84,14 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel::ru
   if (world.rank() == 0) {
     for (int proc_num = 1; proc_num < world.size(); proc_num++) {
       std::vector<int> local_input_data;
-      for (int i = proc_num - 1; i < input_values.size(); i += (world.size() - 1)) {
+      for (int i = proc_num - 1; i < (int)input_values.size(); i += (world.size() - 1)) {
         local_input_data.push_back(input_values[i]);
       }
       world.send(proc_num, 0, local_input_data);
     }
   } else {
     world.recv(0, 0, local_input_values);
-    std::cout << local_input_values.size() << std::endl;
+    // std::cout << local_input_values.size() << std::endl;
   }
   return true;
 }
