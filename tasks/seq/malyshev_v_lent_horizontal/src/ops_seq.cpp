@@ -30,12 +30,13 @@ bool malyshev_lent_horizontal::TestTaskSequential::validation() {
 
   uint32_t rows = taskData->inputs_count[0];
   uint32_t cols = taskData->inputs_count[1];
+  uint32_t vector_size = taskData->inputs_count[2];
 
-  if (taskData->inputs.size() != rows + 1 || taskData->inputs_count[1] != cols) {
+  if (taskData->inputs.size() != rows + 1 || taskData->inputs_count.size() < 3) {
     return false;
   }
 
-  if (taskData->inputs_count[1] != taskData->inputs_count[2]) {
+  if (cols != vector_size) {
     return false;
   }
 

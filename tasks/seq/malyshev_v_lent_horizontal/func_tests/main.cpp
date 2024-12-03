@@ -61,6 +61,7 @@ TEST(malyshev_lent_horizontal, test_vertical_stretched_matrix_100x75) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomVector.data()));
   taskDataSeq->inputs_count.push_back(rows);
   taskDataSeq->inputs_count.push_back(cols);
+  taskDataSeq->inputs_count.push_back(cols);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seqResult.data()));
   taskDataSeq->outputs_count.push_back(seqResult.size());
 
@@ -93,6 +94,7 @@ TEST(malyshev_lent_horizontal, test_horizontal_stretched_matrix_7x17) {
 
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomVector.data()));
   taskDataSeq->inputs_count.push_back(rows);
+  taskDataSeq->inputs_count.push_back(cols);
   taskDataSeq->inputs_count.push_back(cols);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seqResult.data()));
   taskDataSeq->outputs_count.push_back(seqResult.size());
@@ -127,6 +129,7 @@ TEST(malyshev_lent_horizontal, test_square_matrix_100x100) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomVector.data()));
   taskDataSeq->inputs_count.push_back(rows);
   taskDataSeq->inputs_count.push_back(cols);
+  taskDataSeq->inputs_count.push_back(cols);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seqResult.data()));
   taskDataSeq->outputs_count.push_back(seqResult.size());
 
@@ -159,6 +162,7 @@ TEST(malyshev_lent_horizontal, test_single_element_matrix_1x1) {
 
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomVector.data()));
   taskDataSeq->inputs_count.push_back(rows);
+  taskDataSeq->inputs_count.push_back(cols);
   taskDataSeq->inputs_count.push_back(cols);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seqResult.data()));
   taskDataSeq->outputs_count.push_back(seqResult.size());
@@ -193,6 +197,7 @@ TEST(malyshev_lent_horizontal, test_validation_failure) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomVector.data()));
   taskDataSeq->inputs_count.push_back(rows);
   taskDataSeq->inputs_count.push_back(cols);
+  taskDataSeq->inputs_count.push_back(0);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seqResult.data()));
   taskDataSeq->outputs_count.push_back(0);
 
@@ -222,6 +227,7 @@ TEST(malyshev_lent_horizontal, test_size_mismatch) {
 
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomVector.data()));
   taskDataSeq->inputs_count.push_back(rows);
+  taskDataSeq->inputs_count.push_back(cols);
   taskDataSeq->inputs_count.push_back(cols + 1);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seqResult.data()));
   taskDataSeq->outputs_count.push_back(rows);
@@ -246,6 +252,7 @@ TEST(malyshev_lent_horizontal, test_zero_values_sequential) {
 
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(zeroVector.data()));
   taskDataSeq->inputs_count.push_back(rows);
+  taskDataSeq->inputs_count.push_back(cols);
   taskDataSeq->inputs_count.push_back(cols);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seqResult.data()));
   taskDataSeq->outputs_count.push_back(seqResult.size());
