@@ -88,11 +88,11 @@ TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi, InvalidTas
 
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_res.data()));
     taskDataSeq->outputs_count.emplace_back(global_res.size());
-  }
 
-  sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskSequential testMpiTaskSequential(
-      taskDataSeq);
-  EXPECT_FALSE(testMpiTaskSequential.validation());
+    sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskSequential testMpiTaskSequential(
+        taskDataSeq);
+    EXPECT_FALSE(testMpiTaskSequential.validation());
+  }
 }
 
 TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi, InvalidTaskWithMismatchedDimensions) {
@@ -119,12 +119,12 @@ TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi, InvalidTas
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_res.data()));
     taskDataPar->outputs_count.emplace_back(global_res.size());
-  }
 
-  auto taskParallel =
-      std::make_shared<sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskSequential>(
-          taskDataPar);
-  EXPECT_FALSE(taskParallel->validation());
+    auto taskParallel =
+        std::make_shared<sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITaskSequential>(
+            taskDataPar);
+    EXPECT_FALSE(taskParallel->validation());
+  }
 }
 
 TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi, ValidationAndExecutionWithSquareMatrices) {
