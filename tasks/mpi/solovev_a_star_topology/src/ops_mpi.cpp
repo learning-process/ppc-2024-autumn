@@ -8,17 +8,6 @@
 
 namespace solovev_a_star_topology_mpi {
 
-std::vector<int> generate_random_vector(size_t size) {
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<> dis(-1000, 1000);
-  std::vector<int> random_vector(size);
-  for (size_t i = 0; i < size; ++i) {
-    random_vector[i] = dis(gen);
-  }
-  return random_vector;
-}
-
 bool solovev_a_star_topology_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
@@ -43,29 +32,25 @@ bool solovev_a_star_topology_mpi::TestMPITaskParallel::validation() {
 
 bool solovev_a_star_topology_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  if (world.rank() == 0) {
-    order.clear();
-    order.push_back(0);
-    for (int i = 1; i < world.size(); ++i) {
-      world.send(i, 0, input_);
-      world.send(i, 0, l_rank);
-    }
-  } else {
-    world.recv(0, 0, input_);
-    world.recv(0, 0, l_rank);
-    l_rank = world.rank();
-    world.send(0, 0, input_);
-    world.send(0, 0, l_rank);
+if (world.rank() == 0) {
+  order.clear();
+  order.push_back(0);
+  for (int i = 1; i < world.size(); ++i) {
+    world.send(i, 0, input_);
+    world.send(i, 0, l_rank);
+    world.recv(i, 0, res);
+    world.recv(i, 0, l_rank);
+    order.push_back(l_rank);
   }
-  if (world.rank() == 0) {
-    for (int i = 1; i < world.size(); ++i) {
-      world.recv(i, 0, res);
-      world.recv(i, 0, l_rank);
-      order.push_back(l_rank);
-    }
-    order.push_back(world.size());
-  }
-  return true;
+  order.push_back(world.size());
+} else {
+  world.recv(0, 0, input_);
+  world.recv(0, 0, l_rank);
+  l_rank = world.rank();
+  world.send(0, 0, input_);
+  world.send(0, 0, l_rank);
+}
+return true;
 }
 
 bool solovev_a_star_topology_mpi::TestMPITaskParallel::post_processing() {
