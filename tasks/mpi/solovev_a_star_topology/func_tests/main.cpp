@@ -6,6 +6,20 @@
 
 #include "mpi/solovev_a_star_topology/include/ops_mpi.hpp"
 
+namespace solovev_a_star_topology_mpi {
+
+std::vector<int> generate_random_vector(size_t size) {
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> dis(-1000, 1000);
+  std::vector<int> random_vector(size);
+  for (size_t i = 0; i < size; ++i) {
+    random_vector[i] = dis(gen);
+  }
+  return random_vector;
+}
+}  // namespace solovev_a_star_topology_mpi
+
 TEST(solovev_a_star_topology_mpi, Test_order) {
   boost::mpi::communicator world;
   std::vector<int> input = solovev_a_star_topology_mpi::generate_random_vector(1);
@@ -80,6 +94,10 @@ TEST(solovev_a_star_topology_mpi, Test_Transfer_1) {
   std::vector<int> input = solovev_a_star_topology_mpi::generate_random_vector(1);
   std::vector<int> output(1, 0);
   std::vector<int> order(world.size() + 1, -1);
+  std::vector<int> real_order(world.size() + 1);
+  for (int n = 0; n < world.size() + 1; n++) {
+    real_order[n] = n;
+  }
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
@@ -99,6 +117,7 @@ TEST(solovev_a_star_topology_mpi, Test_Transfer_1) {
     testMpiTaskParallel.post_processing();
     if (world.rank() == 0) {
       ASSERT_EQ(output, input);
+      ASSERT_EQ(order, real_order);
     }
   }
 }
@@ -108,6 +127,10 @@ TEST(solovev_a_star_topology_mpi, Test_Transfer_3) {
   std::vector<int> input = solovev_a_star_topology_mpi::generate_random_vector(3);
   std::vector<int> output(3, 0);
   std::vector<int> order(world.size() + 1, -1);
+  std::vector<int> real_order(world.size() + 1);
+  for (int n = 0; n < world.size() + 1; n++) {
+    real_order[n] = n;
+  }
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
@@ -127,6 +150,7 @@ TEST(solovev_a_star_topology_mpi, Test_Transfer_3) {
     testMpiTaskParallel.post_processing();
     if (world.rank() == 0) {
       ASSERT_EQ(output, input);
+      ASSERT_EQ(order, real_order);
     }
   }
 }
@@ -136,6 +160,10 @@ TEST(solovev_a_star_topology_mpi, Test_Transfer_10) {
   std::vector<int> input = solovev_a_star_topology_mpi::generate_random_vector(10);
   std::vector<int> output(10, 0);
   std::vector<int> order(world.size() + 1, -1);
+  std::vector<int> real_order(world.size() + 1);
+  for (int n = 0; n < world.size() + 1; n++) {
+    real_order[n] = n;
+  }
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
@@ -155,6 +183,7 @@ TEST(solovev_a_star_topology_mpi, Test_Transfer_10) {
     testMpiTaskParallel.post_processing();
     if (world.rank() == 0) {
       ASSERT_EQ(output, input);
+      ASSERT_EQ(order, real_order);
     }
   }
 }
