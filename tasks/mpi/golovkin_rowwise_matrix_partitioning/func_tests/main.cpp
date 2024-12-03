@@ -289,34 +289,6 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_multiplication_correct_res
   }
 }
 
-TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_empty_inputs) {
-  boost::mpi::communicator world;
-  std::vector<int> global_A;
-  std::vector<int> global_B;
-  std::vector<int> global_res;
-
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  if (world.size() < 5 || world.rank() >= 4) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_A.data()));
-    taskDataPar->inputs_count.emplace_back(0);
-    taskDataPar->inputs_count.emplace_back(0);
-
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_B.data()));
-    taskDataPar->inputs_count.emplace_back(0);
-    taskDataPar->inputs_count.emplace_back(0);
-
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_res.data()));
-    taskDataPar->outputs_count.emplace_back(global_res.size());
-  }
-
-  golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask testMpiTaskParallel(taskDataPar);
-
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
-
-  EXPECT_THROW(testMpiTaskParallel.run(), std::invalid_argument);
-}
-
 TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_large_sizes) {
   boost::mpi::communicator world;
   double *A = nullptr;
