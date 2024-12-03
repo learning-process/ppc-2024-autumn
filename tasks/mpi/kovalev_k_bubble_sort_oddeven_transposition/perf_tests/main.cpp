@@ -51,24 +51,22 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, test_pipeline_run) {
 TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, test_task_run) {
   boost::mpi::communicator world;
   int rank = world.rank();
-  std::vector<double> g_vec;
-  std::vector<double> g_out;
+  std::vector<int> g_vec;
+  std::vector<int> g_out;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  const size_t length = 14009;
+  const size_t length = 19861;
   if (rank == 0) {
-    g_vec = std::vector<double>(length);
-    g_out = std::vector<double>(length);
-    auto max = static_cast<double>(1000000);
-    auto min = static_cast<double>(-1000000);
+    g_vec = std::vector<int>(length);
+    g_out = std::vector<int>(length);
     std::srand(std::time(nullptr));
-    for (size_t i = 0; i < length; i++) g_vec[i] = min + static_cast<double>(rand()) / RAND_MAX * (max - min);
+    for (size_t i = 0; i < length; i++) g_vec[i] = rand() * pow(-1, rand());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(g_vec.data()));
     taskDataPar->inputs_count.emplace_back(g_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(g_out.data()));
     taskDataPar->outputs_count.emplace_back(g_out.size());
   }
   auto testMpiParallel =
-      std::make_shared<kovalev_k_bubble_sort_oddeven_transposition_mpi::BubbleSortOddEvenTranspositionPar<double>>(
+      std::make_shared<kovalev_k_bubble_sort_oddeven_transposition_mpi::BubbleSortOddEvenTranspositionPar<int>>(
           taskDataPar);
   ASSERT_TRUE(testMpiParallel->validation());
   testMpiParallel->pre_processing();
@@ -83,7 +81,7 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, test_task_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (rank == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    std::sort(g_vec.begin(), g_vec.end(), [](double a, double b) { return a < b; });
+    std::sort(g_vec.begin(), g_vec.end(), [](int a, int b) { return a < b; });
     int count_viol = 0;
     for (size_t i = 0; i < length; i++) {
       if (g_vec[i] != g_out[i]) count_viol++;

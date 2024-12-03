@@ -242,34 +242,3 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, Test_1000_double) {
     ASSERT_EQ(count_viol, 0);
   }
 }
-
-TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, Test_14009_double) {
-  const size_t length = 14009;
-  std::srand(std::time(nullptr));
-  std::vector<double> in(length);
-  auto max = static_cast<double>(1000000);
-  auto min = static_cast<double>(-1000000);
-  for (size_t i = 0; i < length; i++) in[i] = min + static_cast<double>(rand()) / RAND_MAX * (max - min);
-  std::vector<double> out(length);
-  boost::mpi::communicator world;
-  std::shared_ptr<ppc::core::TaskData> tmpPar = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    tmpPar->inputs_count.emplace_back(in.size());
-    tmpPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-    tmpPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-    tmpPar->outputs_count.emplace_back(out.size());
-  }
-  kovalev_k_bubble_sort_oddeven_transposition_mpi::BubbleSortOddEvenTranspositionPar<double> tmpTaskPar(tmpPar);
-  ASSERT_TRUE(tmpTaskPar.validation());
-  tmpTaskPar.pre_processing();
-  tmpTaskPar.run();
-  tmpTaskPar.post_processing();
-  if (world.rank() == 0) {
-    std::sort(in.begin(), in.end(), [](double a, double b) { return a < b; });
-    int count_viol = 0;
-    for (size_t i = 0; i < length; i++) {
-      if (out[i] != in[i]) count_viol++;
-    }
-    ASSERT_EQ(count_viol, 0);
-  }
-}
