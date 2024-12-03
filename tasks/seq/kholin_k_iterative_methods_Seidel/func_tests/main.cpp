@@ -1,7 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "seq/kholin_k_iterative_methods_Seidel/include/ops_seq.hpp"
 #include <seq/kholin_k_iterative_methods_Seidel/src/ops_seq.cpp>
+
+#include "seq/kholin_k_iterative_methods_Seidel/include/ops_seq.hpp"
 
 TEST(kholin_k_iterative_methods_Seidel_seq, validation_true_when_matrix_with_diag_pred) {
   const size_t count_rows = 3;
@@ -176,4 +177,3 @@ TEST(kholin_k_iterative_methods_Seidel_seq, validation_false_when_matrix_without
   kholin_k_iterative_methods_Seidel_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), IsValid);
 }
-
