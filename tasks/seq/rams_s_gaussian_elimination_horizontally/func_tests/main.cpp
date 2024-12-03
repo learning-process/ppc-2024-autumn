@@ -81,8 +81,4 @@ TEST_IT(7, {
      0,  0,  4,  8,
      0,  0,  2,  4
   }, {-1, -1, -2})
-
-TEST_IT(8, {
-     7,  1,  2, 12,
-  }, {NaN, NaN, NaN})
 // clang-format on

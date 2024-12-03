@@ -20,7 +20,8 @@ bool rams_s_gaussian_elimination_horizontally_seq::TaskSequential::validation() 
   internal_order_test();
 
   return taskData->inputs_count[0] >= 0 && taskData->outputs_count[0] >= 0 &&
-         (taskData->inputs_count[0] % (taskData->outputs_count[0] + 1) == 0);
+         (taskData->inputs_count[0] % (taskData->outputs_count[0] + 1) == 0) &&
+         ((taskData->inputs_count[0] / (taskData->outputs_count[0] + 1)) >= taskData->outputs_count[0]);
 }
 
 bool rams_s_gaussian_elimination_horizontally_seq::TaskSequential::run() {

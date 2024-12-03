@@ -23,7 +23,8 @@ bool rams_s_gaussian_elimination_horizontally_mpi::TestMPITaskSequential::valida
   internal_order_test();
 
   return taskData->inputs_count[0] >= 0 && taskData->outputs_count[0] >= 0 &&
-         (taskData->inputs_count[0] % (taskData->outputs_count[0] + 1) == 0);
+         (taskData->inputs_count[0] % (taskData->outputs_count[0] + 1) == 0) &&
+         ((taskData->inputs_count[0] / (taskData->outputs_count[0] + 1)) >= taskData->outputs_count[0]);
 }
 
 bool rams_s_gaussian_elimination_horizontally_mpi::TestMPITaskSequential::run() {
@@ -112,8 +113,10 @@ bool rams_s_gaussian_elimination_horizontally_mpi::TestMPITaskParallel::pre_proc
 bool rams_s_gaussian_elimination_horizontally_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
 
-  return world.rank() != 0 || (taskData->inputs_count[0] >= 0 && taskData->outputs_count[0] >= 0 &&
-                               (taskData->inputs_count[0] % (taskData->outputs_count[0] + 1) == 0));
+  return world.rank() != 0 ||
+         (taskData->inputs_count[0] >= 0 && taskData->outputs_count[0] >= 0 &&
+          (taskData->inputs_count[0] % (taskData->outputs_count[0] + 1) == 0) &&
+          ((taskData->inputs_count[0] / (taskData->outputs_count[0] + 1)) >= taskData->outputs_count[0]));
 }
 
 bool rams_s_gaussian_elimination_horizontally_mpi::TestMPITaskParallel::run() {
