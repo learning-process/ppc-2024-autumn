@@ -4,8 +4,6 @@
 #include <boost/mpi.hpp>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
-#include <iostream>
-#include <string>
 #include <vector>
 
 #include "core/task/include/task.hpp"
