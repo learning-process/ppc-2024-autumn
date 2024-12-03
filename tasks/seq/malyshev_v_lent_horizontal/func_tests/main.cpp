@@ -200,8 +200,8 @@ TEST(malyshev_lent_horizontal, test_validation_failure) {
 }
 
 TEST(malyshev_lent_horizontal, test_size_mismatch) {
-  uint32_t rows = 7;
-  uint32_t cols = 17;
+  uint32_t rows = 3;
+  uint32_t cols = 3;
   int32_t min_value = -200;
   int32_t max_value = 300;
 
