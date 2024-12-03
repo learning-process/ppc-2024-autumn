@@ -58,7 +58,7 @@ bool laganina_e_readers_writers_mpi::TestMPITaskParallel::run() {
       // 6 - terminate
 
       message = world.recv(boost::mpi::any_source, 0, id_msg);
-      int id_proc = message.source();  // get the process id that sends the message to 0 process
+      int id_proc = message.source();  // get the process id that sends the message to "0" process
 
       if (id_msg == 0) {
         if (db_w == 1) {
