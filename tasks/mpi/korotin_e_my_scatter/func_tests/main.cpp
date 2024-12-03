@@ -206,7 +206,7 @@ TEST(korotin_e_my_scatter, matrix_maxval_2nx2n) {
   }
 }
 
-TEST(korotin_e_my_scatter, matrix_maxval_with_prime_rows_and_columns) {
+TEST(korotin_e_my_scatter, matrix_maxval_2nx10n) {
   boost::mpi::communicator world;
   std::vector<double> matrix;
   std::vector<double> max_val(1, 0);
@@ -249,7 +249,7 @@ TEST(korotin_e_my_scatter, matrix_maxval_with_prime_rows_and_columns) {
   }
 }
 
-TEST(korotin_e_my_scatter, matrix_maxval_with_prime_rows_and_columns) {
+TEST(korotin_e_my_scatter, matrix_maxval_prime_x_2n) {
   boost::mpi::communicator world;
   std::vector<double> matrix;
   std::vector<double> max_val(1, 0);
