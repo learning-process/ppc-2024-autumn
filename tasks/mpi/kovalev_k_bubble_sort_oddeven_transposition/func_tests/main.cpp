@@ -214,7 +214,7 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, Test_10000_double) {
 }
 
 TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, Test_1000_double) {
-  const size_t length = 829;
+  const size_t length = 1000;
   std::srand(std::time(nullptr));
   std::vector<double> in(length);
   auto max = static_cast<double>(1000000);
