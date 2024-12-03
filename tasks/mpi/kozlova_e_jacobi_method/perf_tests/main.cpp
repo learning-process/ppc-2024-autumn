@@ -1,22 +1,44 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
+#include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/kozlova_e_jacobi_method/include/ops_mpi.hpp"
 
+namespace kozlova_e_generate_matrix {
+void generate_diag_dominant_matrix(int N, std::vector<double> &A, std::vector<double> &B) {
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<> dis(-1.0, 1.0);
+
+  for (int i = 0; i < N; ++i) {
+    double diagonal_value = 0.0;
+    double off_diagonal_sum = 0.0;
+    for (int j = 0; j < N; ++j) {
+      if (i != j) {
+        A[i * N + j] = dis(gen);
+        off_diagonal_sum += std::abs(A[i * N + j]);
+      }
+    }
+
+    diagonal_value = off_diagonal_sum * 10.0;
+    A[i * N + i] = diagonal_value;
+
+    B[i] = diagonal_value * dis(gen);
+  }
+}
+}  // namespace kozlova_e_generate_matrix
+
 TEST(kozlova_e_jacobi_method_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
 
-  const int N = 890;
-  std::vector<double> A(N * N, 5.1231234);
-  for (int i = 0; i < N; ++i) {
-    A[i * N + i] = 5000.0;
-  }
-  std::vector<double> B(N, 5000.233445);
+  const int N = 900;
+  std::vector<double> A(N * N, 0.0);
+  std::vector<double> B(N, 0.0);
+  kozlova_e_generate_matrix::generate_diag_dominant_matrix(N, A, B);
   std::vector<double> X(N, 0.0);
-  std::vector<double> expected_X(N, 1.0);
   double epsilon = 1e-6;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -36,6 +58,17 @@ TEST(kozlova_e_jacobi_method_mpi, test_pipeline_run) {
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
+
+  std::vector<double> Ax(N, 0.0);
+  for (int i = 0; i < N; ++i) {
+    for (int j = 0; j < N; ++j) {
+      Ax[i] += A[i * N + j] * X[j];
+    }
+  }
+  std::vector<double> res(N, 0);
+  for (int i = 0; i < N; ++i) {
+    res[i] = abs(Ax[i] - B[i]);
+  }
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -50,23 +83,19 @@ TEST(kozlova_e_jacobi_method_mpi, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    for (int i = 0; i < N; ++i) {
-      ASSERT_NEAR(X[i], expected_X[i], 0.5);
-    }
+    for (int i = 0; i < N; i++) ASSERT_LT(res[i], 1e-4);
   }
 }
 
 TEST(kozlova_e_jacobi_method_mpi, test_task_run) {
   boost::mpi::communicator world;
-  const int N = 490;
-  std::vector<double> A(N * N, 1.0);
-  for (int i = 0; i < N; ++i) {
-    A[i * N + i] = 510.0;
-  }
-  std::vector<double> B(N, 510.0);
+  const int N = 1050;
+  std::vector<double> A(N * N, 0.0);
+  std::vector<double> B(N, 0.0);
+  kozlova_e_generate_matrix::generate_diag_dominant_matrix(N, A, B);
   std::vector<double> X(N, 0.0);
-  std::vector<double> expected_X(N, 1.0);
   double epsilon = 1e-6;
+
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -85,6 +114,17 @@ TEST(kozlova_e_jacobi_method_mpi, test_task_run) {
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
+  std::vector<double> Ax(N, 0.0);
+  for (int i = 0; i < N; ++i) {
+    for (int j = 0; j < N; ++j) {
+      Ax[i] += A[i * N + j] * X[j];
+    }
+  }
+  std::vector<double> res(N, 0);
+  for (int i = 0; i < N; ++i) {
+    res[i] = abs(Ax[i] - B[i]);
+  }
+
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -97,7 +137,8 @@ TEST(kozlova_e_jacobi_method_mpi, test_task_run) {
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
-  for (int i = 0; i < N; ++i) {
-    ASSERT_NEAR(X[i], expected_X[i], 0.5);
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
+    for (int i = 0; i < N; i++) ASSERT_LT(res[i], 1e-4);
   }
 }

@@ -21,17 +21,65 @@ bool kozlova_e_jacobi_method_mpi::MethodJacobiSeq::pre_processing() {
   return true;
 }
 
+int kozlova_e_jacobi_method_mpi::rankOfMatrix(std::vector<double>& matrix, int n) {
+  int rank = n;
+  std::vector<std::vector<double>> temp(n, std::vector<double>(n));
+
+  for (int i = 0; i < n; ++i)
+    for (int j = 0; j < n; ++j) temp[i][j] = matrix[i * n + j];
+
+  for (int row = 0; row < rank; ++row) {
+    if (temp[row][row] == 0) {
+      bool swapDone = false;
+      for (int i = row + 1; i < n; ++i) {
+        if (temp[i][row] != 0) {
+          swap(temp[row], temp[i]);
+          swapDone = true;
+          break;
+        }
+      }
+      if (!swapDone) {
+        rank--;
+        continue;
+      }
+    }
+
+    for (int i = row + 1; i < n; ++i) {
+      double factor = temp[i][row] / temp[row][row];
+      for (int j = row; j < n; ++j) {
+        temp[i][j] -= temp[row][j] * factor;
+      }
+    }
+  }
+
+  return rank;
+}
+
+bool kozlova_e_jacobi_method_mpi::hasUniqueSolution(std::vector<double>& A, std::vector<double>& b, int n) {
+  std::vector<double> extended_matrix = A;
+  extended_matrix.insert(extended_matrix.end(), b.begin(), b.end());
+
+  int rankA = rankOfMatrix(A, n);
+
+  int extended_rank = rankOfMatrix(extended_matrix, n);
+
+  return rankA == extended_rank && rankA == n;
+}
+
 bool kozlova_e_jacobi_method_mpi::MethodJacobiSeq::validation() {
   internal_order_test();
 
   auto* matrix = reinterpret_cast<double*>(taskData->inputs[0]);
   N = static_cast<int>(taskData->inputs_count[0]);
+  auto* rhs = reinterpret_cast<double*>(taskData->inputs[1]);
   A.resize(N * N);
+  B.resize(N);
   eps = *reinterpret_cast<double*>(taskData->inputs[3]);
   for (int i = 0; i < N; i++) {
     for (int j = 0; j < N; j++) {
       A[i * N + j] = matrix[i * N + j];
     }
+    B[i] = rhs[i];
   }
 
   for (int i = 0; i < N; i++) {
@@ -39,6 +87,10 @@ bool kozlova_e_jacobi_method_mpi::MethodJacobiSeq::validation() {
       std::cerr << "Incorrect matrix: diagonal element A[" << i + 1 << "][" << i + 1 << "] is zero." << std::endl;
       return false;
     }
+  }
+  if (!hasUniqueSolution(A, B, N)) {
+    std::cerr << "The matrix may not have a single solution" << std::endl;
+    return false;
   }
   if (eps <= 0.0) {
     std::cerr << "Epsilon less zero!" << std::endl;
@@ -133,7 +185,9 @@ void kozlova_e_jacobi_method_mpi::MethodJacobiMPI::jacobi_iteration() {
   for (int i = 1; i < size; i++) {
     displacements[i] = displacements[i - 1] + sendcounts[i - 1];
   }
-  std::vector<double> all_X(N * 2, 0.0);
+  int extra_send = 0;
+  for (size_t i = 0; i < sendcounts.size(); i++) extra_send += sendcounts[i];
+  std::vector<double> all_X(N + extra_send, 0.0);
 
   boost::mpi::gatherv(world, TempX.data() + start_row, sendcounts[rank], all_X.data(), sendcounts, displacements, 0);
 
@@ -151,17 +205,24 @@ bool kozlova_e_jacobi_method_mpi::MethodJacobiMPI::validation() {
     auto* matrix = reinterpret_cast<double*>(taskData->inputs[0]);
     N = static_cast<int>(taskData->inputs_count[0]);
     eps = *reinterpret_cast<double*>(taskData->inputs[3]);
+    auto* rhs = reinterpret_cast<double*>(taskData->inputs[1]);
     A.resize(N * N);
+    B.resize(N);
     for (int i = 0; i < N; i++) {
       for (int j = 0; j < N; j++) {
         A[i * N + j] = matrix[i * N + j];
       }
+      B[i] = rhs[i];
     }
     for (int i = 0; i < N; i++) {
       if (A[i * N + i] == 0) {
         std::cerr << "Incorrect matrix: diagonal element A[" << i + 1 << "][" << i + 1 << "] is zero." << std::endl;
         return false;
       }
+    }
+    if (!hasUniqueSolution(A, B, N)) {
+      std::cerr << "The matrix may not have a single solution" << std::endl;
+      return false;
     }
     if (eps <= 0.0) {
       std::cerr << "Epsilon less zero!" << std::endl;

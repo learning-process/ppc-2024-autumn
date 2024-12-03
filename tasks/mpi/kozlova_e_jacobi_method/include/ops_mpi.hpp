@@ -14,6 +14,9 @@
 
 namespace kozlova_e_jacobi_method_mpi {
 
+int rankOfMatrix(std::vector<double>& matrix, int n);
+bool hasUniqueSolution(std::vector<double>& A, std::vector<double>& b, int n);
+
 class MethodJacobiSeq : public ppc::core::Task {
  public:
   explicit MethodJacobiSeq(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
