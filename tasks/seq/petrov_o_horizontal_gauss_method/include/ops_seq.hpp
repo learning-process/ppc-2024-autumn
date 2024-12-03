@@ -19,7 +19,7 @@ class GaussHorizontalSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<std::vector<double>> matrix;
+  std::vector<double> matrix;
   std::vector<double> b;
   std::vector<double> x;
 };

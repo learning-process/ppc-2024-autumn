@@ -27,21 +27,15 @@ bool petrov_o_horizontal_gauss_method_seq::GaussHorizontalSequential::pre_proces
 
   size_t n = taskData->inputs_count[0];
 
-  matrix.resize(n, std::vector<double>(n));
+  matrix.resize(n * n);
   b.resize(n);
   x.resize(n);
 
   auto* matrix_input = reinterpret_cast<double*>(taskData->inputs[0]);
-  for (size_t i = 0; i < n; ++i) {
-    for (size_t j = 0; j < n; ++j) {
-      matrix[i][j] = matrix_input[i * n + j];
-    }
-  }
+  std::copy(matrix_input, matrix_input + n * n, matrix.begin());
 
   auto* b_input = reinterpret_cast<double*>(taskData->inputs[1]);
-  for (size_t i = 0; i < n; ++i) {
-    b[i] = b_input[i];
-  }
+  std::copy(b_input, b_input + n, b.begin());
 
   return true;
 }
@@ -49,25 +43,25 @@ bool petrov_o_horizontal_gauss_method_seq::GaussHorizontalSequential::pre_proces
 bool petrov_o_horizontal_gauss_method_seq::GaussHorizontalSequential::run() {
   internal_order_test();
 
-  size_t n = matrix.size();
+  size_t n = taskData->inputs_count[0];
 
   for (size_t k = 0; k < n - 1; ++k) {
     for (size_t i = k + 1; i < n; ++i) {
-      double factor = matrix[i][k] / matrix[k][k];
+      double factor = matrix[i * n + k] / matrix[k * n + k];
       for (size_t j = k; j < n; ++j) {
-        matrix[i][j] -= factor * matrix[k][j];
+        matrix[i * n + j] -= factor * matrix[k * n + j];
       }
       b[i] -= factor * b[k];
     }
   }
 
-  x[n - 1] = b[n - 1] / matrix[n - 1][n - 1];
+  x[n - 1] = b[n - 1] / matrix[(n - 1) * n + (n - 1)];
   for (int i = n - 2; i >= 0; --i) {
     double sum = b[i];
     for (size_t j = i + 1; j < n; ++j) {
-      sum -= matrix[i][j] * x[j];
+      sum -= matrix[i * n + j] * x[j];
     }
-    x[i] = sum / matrix[i][i];
+    x[i] = sum / matrix[i * n + i];
   }
 
   return true;
