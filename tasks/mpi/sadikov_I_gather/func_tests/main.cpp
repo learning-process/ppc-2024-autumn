@@ -101,8 +101,8 @@ TEST(sadikov_I_gather_mpi, check_square_matrix) {
 
 TEST(sadikov_I_gather_mpi, check_rect_matrix) {
   boost::mpi::communicator world;
-  const int columns = 150;
-  const int rows = 75;
+  const int columns = 32;
+  const int rows = 16;
   const int root = 0;
   std::vector<int> in;
   std::vector<int> in_index{rows, columns};
@@ -221,8 +221,8 @@ TEST(sadikov_I_gather_mpi, check_square_matrix3) {
 
 TEST(sadikov_I_gather_mpi, check_rect_matrix2) {
   boost::mpi::communicator world;
-  const int columns = 872;
-  const int rows = 51;
+  const int columns = 27;
+  const int rows = 101;
   const int root = 0;
   std::vector<int> in;
   std::vector<int> in_index{rows, columns};
@@ -261,8 +261,48 @@ TEST(sadikov_I_gather_mpi, check_rect_matrix2) {
 
 TEST(sadikov_I_gather_mpi, check_rect_matrix3) {
   boost::mpi::communicator world;
-  const int columns = 400;
-  const int rows = 95;
+  const int columns = 64;
+  const int rows = 17;
+  const int root = 0;
+  std::vector<int> in;
+  std::vector<int> in_index{rows, columns};
+  std::vector<int> out_par(rows, 0);
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    in = sadikov_I_gather_mpi::GetRandomData(rows * columns);
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    taskData->inputs_count.emplace_back(in_index[0]);
+    taskData->inputs_count.emplace_back(in_index[1]);
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_par.data()));
+    taskData->outputs_count.emplace_back(out_par.size());
+  }
+  sadikov_I_gather_mpi::MPITaskParallel sv_par(taskData);
+  sv_par.SetRoot(root);
+  ASSERT_EQ(sv_par.validation(), true);
+  sv_par.pre_processing();
+  sv_par.run();
+  sv_par.post_processing();
+  if (world.rank() == root) {
+    std::vector<int> out_seq(rows, 0);
+    auto taskData_seq = std::make_shared<ppc::core::TaskData>();
+    taskData_seq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    taskData_seq->inputs_count.emplace_back(in_index[0]);
+    taskData_seq->inputs_count.emplace_back(in_index[1]);
+    taskData_seq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_seq.data()));
+    taskData_seq->outputs_count.emplace_back(out_seq.size());
+    sadikov_I_gather_mpi::MPITask sv_seq(taskData_seq);
+    ASSERT_EQ(sv_seq.validation(), true);
+    sv_seq.pre_processing();
+    sv_seq.run();
+    sv_seq.post_processing();
+    ASSERT_EQ(out_seq, out_par);
+  }
+}
+
+TEST(sadikov_I_gather_mpi, check_rect_matrix4) {
+  boost::mpi::communicator world;
+  const int columns = 27;
+  const int rows = 100;
   const int root = 0;
   std::vector<int> in;
   std::vector<int> in_index{rows, columns};
@@ -419,48 +459,48 @@ TEST(sadikov_I_gather_mpi, check_empty_matrix) {
   }
 }
 
-TEST(sadikov_I_gather_mpi, check_reference_square_matrix) {
-  boost::mpi::communicator world;
-  const int columns = 100;
-  const int rows = 100;
-  std::vector<int> in;
-  std::vector<int> in_index{rows, columns};
-  std::vector<int> out_par(rows, 0);
-  auto taskData = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    in = sadikov_I_gather_mpi::GetRandomData(columns * rows);
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-    taskData->inputs_count.emplace_back(in_index[0]);
-    taskData->inputs_count.emplace_back(in_index[1]);
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_par.data()));
-    taskData->outputs_count.emplace_back(out_par.size());
-  }
-  sadikov_I_gather_mpi::ReferenceTask sv_par(taskData);
-  ASSERT_EQ(sv_par.validation(), true);
-  sv_par.pre_processing();
-  sv_par.run();
-  sv_par.post_processing();
-  if (world.rank() == 0) {
-    std::vector<int> out_seq(rows, 0);
-    auto taskData_seq = std::make_shared<ppc::core::TaskData>();
-    taskData_seq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-    taskData_seq->inputs_count.emplace_back(in_index[0]);
-    taskData_seq->inputs_count.emplace_back(in_index[1]);
-    taskData_seq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_seq.data()));
-    taskData_seq->outputs_count.emplace_back(out_seq.size());
-    sadikov_I_gather_mpi::MPITask sv_seq(taskData_seq);
-    ASSERT_EQ(sv_seq.validation(), true);
-    sv_seq.pre_processing();
-    sv_seq.run();
-    sv_seq.post_processing();
-    ASSERT_EQ(out_seq, out_par);
-  }
-}
+ TEST(sadikov_I_gather_mpi, check_reference_square_matrix) {
+   boost::mpi::communicator world;
+   const int columns = 100;
+   const int rows = 100;
+   std::vector<int> in;
+   std::vector<int> in_index{rows, columns};
+   std::vector<int> out_par(rows, 0);
+   auto taskData = std::make_shared<ppc::core::TaskData>();
+   if (world.rank() == 0) {
+     in = sadikov_I_gather_mpi::GetRandomData(columns * rows);
+     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+     taskData->inputs_count.emplace_back(in_index[0]);
+     taskData->inputs_count.emplace_back(in_index[1]);
+     taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_par.data()));
+     taskData->outputs_count.emplace_back(out_par.size());
+   }
+   sadikov_I_gather_mpi::ReferenceTask sv_par(taskData);
+   ASSERT_EQ(sv_par.validation(), true);
+   sv_par.pre_processing();
+   sv_par.run();
+   sv_par.post_processing();
+   if (world.rank() == 0) {
+     std::vector<int> out_seq(rows, 0);
+     auto taskData_seq = std::make_shared<ppc::core::TaskData>();
+     taskData_seq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+     taskData_seq->inputs_count.emplace_back(in_index[0]);
+     taskData_seq->inputs_count.emplace_back(in_index[1]);
+     taskData_seq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_seq.data()));
+     taskData_seq->outputs_count.emplace_back(out_seq.size());
+     sadikov_I_gather_mpi::MPITask sv_seq(taskData_seq);
+     ASSERT_EQ(sv_seq.validation(), true);
+     sv_seq.pre_processing();
+     sv_seq.run();
+     sv_seq.post_processing();
+     ASSERT_EQ(out_seq, out_par);
+   }
+ }
 
 TEST(sadikov_I_gather_mpi, check_reference_square_matrix2) {
   boost::mpi::communicator world;
-  const int columns = 123;
-  const int rows = 123;
+  const int columns = 27;
+  const int rows = 27;
   std::vector<int> in;
   std::vector<int> in_index{rows, columns};
   std::vector<int> out_par(rows, 0);
@@ -495,10 +535,10 @@ TEST(sadikov_I_gather_mpi, check_reference_square_matrix2) {
   }
 }
 
-TEST(sadikov_I_gather_mpi, check_reference_rect_matrix) {
+ TEST(sadikov_I_gather_mpi, check_reference_rect_matrix) {
   boost::mpi::communicator world;
-  const int columns = 123;
-  const int rows = 12;
+  const int columns = 32;
+  const int rows = 16;
   std::vector<int> in;
   std::vector<int> in_index{rows, columns};
   std::vector<int> out_par(rows, 0);
@@ -533,10 +573,10 @@ TEST(sadikov_I_gather_mpi, check_reference_rect_matrix) {
   }
 }
 
-TEST(sadikov_I_gather_mpi, check_reference_rect_matrix2) {
+ TEST(sadikov_I_gather_mpi, check_reference_rect_matrix2) {
   boost::mpi::communicator world;
-  const int columns = 321;
-  const int rows = 320;
+  const int columns = 200;
+  const int rows = 400;
   std::vector<int> in;
   std::vector<int> in_index{rows, columns};
   std::vector<int> out_par(rows, 0);

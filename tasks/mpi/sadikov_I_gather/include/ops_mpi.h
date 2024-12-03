@@ -40,7 +40,6 @@ class MPITaskParallel : public ppc::core::Task {
   size_t m_lastColumn = 0;
   size_t m_delta = 0;
   int m_root = 0;
-  std::vector<int> m_sizes;
   std::map<int, int> m_id;
   boost::mpi::communicator world;
 
