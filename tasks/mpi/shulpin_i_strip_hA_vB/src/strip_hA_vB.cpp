@@ -9,7 +9,6 @@
 #include <cmath>
 #include <vector>
 
-
 void shulpin_strip_scheme_A_B::calculate_mpi(int rows_a, int cols_a, int cols_b, std::vector<int> A_mpi,
                                              std::vector<int> B_mpi, std::vector<int>& C_mpi) {
   boost::mpi::communicator world;
