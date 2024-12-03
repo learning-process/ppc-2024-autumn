@@ -58,7 +58,7 @@ TEST(korotin_e_my_scatter, test_task_run) {
   int rows;
   int columns;
   if (world.rank() == root) {
-    rows = columns = 1000;
+    rows = columns = 1001;
     matrix = std::vector<double>(rows * columns, 1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
