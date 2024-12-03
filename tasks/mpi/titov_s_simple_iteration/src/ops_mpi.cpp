@@ -106,7 +106,6 @@ bool titov_s_simple_iteration_mpi::MPISimpleIterationSequential::validation() {
   return hasUniqueSolution();
 }
 
-
 bool titov_s_simple_iteration_mpi::MPISimpleIterationSequential::run() {
   internal_order_test();
   transformMatrix();
