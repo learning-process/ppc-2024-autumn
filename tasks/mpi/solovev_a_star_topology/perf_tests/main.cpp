@@ -6,6 +6,18 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/solovev_a_star_topology/include/ops_mpi.hpp"
 
+std::vector<int> generate_random_vector(size_t size) {
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> dis(-1000, 1000);
+  std::vector<int> random_vector(size);
+  for (size_t i = 0; i < size; ++i) {
+    random_vector[i] = dis(gen);
+  }
+  return random_vector;
+}
+}  // namespace solovev_a_star_topology_mpi
+
 TEST(solovev_a_star_topology_mpi_perf_test, test_pipeline_run) {
   std::vector<int> input = solovev_a_star_topology_mpi::generate_random_vector(10000);
   std::vector<int> output(10000, 0);
