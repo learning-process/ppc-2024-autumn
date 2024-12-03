@@ -166,3 +166,110 @@ TEST(Parallel_Operations_MPI2, Validation_InvalidMatrixSize) {
     ASSERT_FALSE(task.validation());
   }
 }
+
+TEST(Parallel_Operations_MPI2, Test_Small_Epsilon) {
+  boost::mpi::communicator world;
+
+  size_t rows = 4;
+  size_t cols = 4;
+  double epsilon = 0.01;
+
+  std::vector<double> global_matrix = {1.0, 2.0, 3.0, 4.0, 1.0, 2.0,  3.0,  4.0,
+                                       5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0};
+  std::vector<int> global_result(rows, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataPar->inputs_count.push_back(rows);
+    taskDataPar->inputs_count.push_back(cols);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_result.data()));
+    taskDataPar->outputs_count.push_back(global_result.size());
+  }
+
+  MPITaskMatrixClustering task(taskDataPar);
+
+  if (world.rank() == 0) {
+    ASSERT_TRUE(task.validation());
+  } else {
+    task.validation();
+  }
+
+  task.pre_processing();
+  task.run();
+  task.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int> expected_result = {0, 0, 0, 0};
+    ASSERT_EQ(global_result, expected_result);
+  }
+}
+
+TEST(Parallel_Operations_MPI2, Test_EmptyMatrix) {
+  boost::mpi::communicator world;
+
+  size_t rows = 0;
+  size_t cols = 0;
+  double epsilon = 1.0;
+
+  std::vector<double> global_matrix = {};
+  std::vector<int> global_result(rows, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataPar->inputs_count.push_back(rows);
+    taskDataPar->inputs_count.push_back(cols);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_result.data()));
+    taskDataPar->outputs_count.push_back(global_result.size());
+  }
+
+  MPITaskMatrixClustering task(taskDataPar);
+
+  if (world.rank() == 0) {
+    ASSERT_FALSE(task.validation());
+  }
+}
+
+TEST(Parallel_Operations_MPI2, Test_IdenticalRows2) {
+  boost::mpi::communicator world;
+
+  size_t rows = 3;
+  size_t cols = 3;
+  double epsilon = 0.5;
+
+  std::vector<double> global_matrix = {1.0, 2.0, 3.0, 1.0, 2.0, 3.0, 1.0, 2.0, 3.0};
+  std::vector<int> global_result(rows, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataPar->inputs_count.push_back(rows);
+    taskDataPar->inputs_count.push_back(cols);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_result.data()));
+    taskDataPar->outputs_count.push_back(global_result.size());
+  }
+
+  MPITaskMatrixClustering task(taskDataPar);
+
+  if (world.rank() == 0) {
+    ASSERT_TRUE(task.validation());
+  } else {
+    task.validation();
+  }
+
+  task.pre_processing();
+  task.run();
+  task.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int> expected_result = {1, 1, 1};
+    ASSERT_EQ(global_result, expected_result);
+  }
+}

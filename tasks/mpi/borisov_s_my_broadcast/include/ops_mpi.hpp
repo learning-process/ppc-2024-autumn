@@ -15,8 +15,6 @@
 
 namespace borisov_s_my_broadcast {
 
-std::vector<double> getRandomMatrix(size_t rows, size_t cols);
-
 class MPITaskMatrixClustering : public ppc::core::Task {
  public:
   explicit MPITaskMatrixClustering(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

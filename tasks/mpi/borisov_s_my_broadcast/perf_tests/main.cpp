@@ -7,14 +7,14 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/borisov_s_my_broadcast/include/ops_mpi.hpp"
 
-std::vector<double> borisov_s_my_broadcast::getRandomMatrix(size_t rows, size_t cols) {
+std::vector<double> getRandomMatrix2(size_t rows, size_t cols) {
   std::vector<double> matrix(rows * cols);
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_real_distribution<> dis(0.0, 100.0);
 
   for (auto &val : matrix) {
-    val = dis(gen);
+    val = dis(gen);atus
   }
 
   return matrix;
@@ -34,7 +34,7 @@ TEST(parallel_clustering_perf_test2, test_pipeline_run) {
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = borisov_s_my_broadcast::getRandomMatrix(rows, cols);
+    global_matrix = getRandomMatrix2(rows, cols);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(rows);
@@ -81,7 +81,7 @@ TEST(parallel_clustering_perf_test2, test_task_run) {
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = borisov_s_my_broadcast::getRandomMatrix(rows, cols);
+    global_matrix = getRandomMatrix2(rows, cols);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(rows);
