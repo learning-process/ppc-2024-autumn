@@ -1,6 +1,7 @@
 
 #include "mpi/laganina_e_readers_writers/include/ops_mpi.hpp"
 
+#include <chrono>
 #include <ctime>
 #include <thread>
 #include <vector>
@@ -42,9 +43,9 @@ bool laganina_e_readers_writers_mpi::TestMPITaskParallel::run() {
   }
 
   int work_proc = size - 1;  // flag for terminate program
-  int mutex = 1;             // semaphore for locking counter readers_count
-  int db_w = 1;              // semaphore for locking database for writers
-  int readers_count = 0;     // count of readers
+  // int mutex = 1;             // semaphore for locking counter readers_count
+  int db_w = 1;           // semaphore for locking database for writers
+  int readers_count = 0;  // count of readers
 
   if (rank == 0) {
     while (true) {
@@ -75,21 +76,21 @@ bool laganina_e_readers_writers_mpi::TestMPITaskParallel::run() {
           continue;
         }
       } else if (id_msg == 1) {
-        mutex = 0;  // block counter readers_count
+        // mutex = 0;  // block counter readers_count
         readers_count++;
         if (db_w == 1) {
           db_w = 0;  // block database for writers
         }
-        mutex = 1;  // unlock counter readerx_count
+        // mutex = 1;  // unlock counter readerx_count
         world.send(id_proc, 1, 4);
         world.send(id_proc, 2, shared_data);
       } else if (id_msg == 2) {
-        mutex = 0;  // block counter readers_count
+        // mutex = 0;  // block counter readers_count
         readers_count--;
         if (readers_count == 0) {
           db_w = 1;  // unlock database for writers
         }
-        mutex = 1;  // unlock counter readerx_count
+        // mutex = 1;  // unlock counter readerx_count
         world.send(id_proc, 1, 5);
       } else if (id_msg == 6) {
         work_proc--;
@@ -123,9 +124,8 @@ bool laganina_e_readers_writers_mpi::TestMPITaskParallel::run() {
     if (message == 4) {
       world.recv(0, 2, shared_data);
     }
-    for (auto t : shared_data) {
-      t++;  // simulate reading
-    }
+    std::chrono::milliseconds timespan(1);  // simulate reading
+    std::this_thread::sleep_for(timespan);
 
     world.send(0, 0, 2);
     world.recv(0, 1, message);
