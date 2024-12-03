@@ -27,7 +27,6 @@ void get_random_matrix(double *matr, int size) {
     matr[i] = static_cast<double>(std::rand()) / RAND_MAX;
   }
 }
-
 }  // namespace golovkin_rowwise_matrix_partitioning
 
 TEST(golovkin_rowwise_matrix_partitioning_mpi, cant_mult_matrix_wrong_sizes) {
@@ -277,13 +276,10 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_multiplication_correct_res
 
   golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask testMpiTaskParallel(taskDataPar);
 
-  // Ensure validation is called before pre_processing
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);  // Validation must be successful
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
 
-  // Call pre_processing only after validation
   ASSERT_NO_THROW(testMpiTaskParallel.pre_processing());
 
-  // Finally, run the task only after pre_processing
   ASSERT_NO_THROW(testMpiTaskParallel.run());
 
   if (world.size() < 5 || world.rank() >= 4) {
@@ -292,7 +288,6 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_multiplication_correct_res
     delete[] res;
   }
 }
-
 
 TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_empty_inputs) {
   boost::mpi::communicator world;
@@ -317,13 +312,10 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_empty_inputs) {
 
   golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask testMpiTaskParallel(taskDataPar);
 
-  // Call validation before run
   ASSERT_EQ(testMpiTaskParallel.validation(), false);
 
-  // Ensure run is not called when validation fails
-  ASSERT_THROW(testMpiTaskParallel.run(), std::invalid_argument);
+  EXPECT_THROW(testMpiTaskParallel.run(), std::invalid_argument);
 }
-
 
 TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_large_sizes) {
   boost::mpi::communicator world;
@@ -358,13 +350,10 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_large_sizes) {
 
   golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask testMpiTaskParallel(taskDataPar);
 
-  // Ensure validation is called before run
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
 
-  // Ensure pre_processing is called before run
   ASSERT_NO_THROW(testMpiTaskParallel.pre_processing());
 
-  // Now call run after validation and pre_processing
   ASSERT_NO_THROW(testMpiTaskParallel.run());
 
   if (world.size() < 5 || world.rank() >= 4) {
@@ -374,12 +363,10 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_large_sizes) {
   }
 }
 
-
 TEST(golovkin_rowwise_matrix_partitioning_mpi, memory_leaks_on_failure) {
   boost::mpi::communicator world;
 
-  // Intentionally use invalid matrix dimensions to trigger a failure
-  int rows_A = -3;  // Invalid
+  int rows_A = -3;
   int cols_A = 3;
   int rows_B = 3;
   int cols_B = 3;
@@ -394,7 +381,6 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, memory_leaks_on_failure) {
 
     golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask testMpiTaskParallel(taskDataPar);
 
-    // Ensure no memory leaks or crashes on failure
     ASSERT_FALSE(testMpiTaskParallel.validation());
   }
 }
