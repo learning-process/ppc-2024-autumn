@@ -36,11 +36,7 @@ bool malyshev_lent_horizontal::TestTaskSequential::validation() {
     return false;
   }
 
-  if (taskData->inputs_count.size() < 3) {
-    return false;
-  }
-
-  if (taskData->inputs_count[1] != taskData->inputs_count[2]) {
+  if (taskData->inputs_count[0] != taskData->inputs_count[1]) {
     return false;
   }
 
@@ -106,11 +102,7 @@ bool malyshev_lent_horizontal::TestTaskParallel::validation() {
       return false;
     }
 
-    if (taskData->inputs_count.size() < 3) {
-      return false;
-    }
-
-    if (taskData->inputs_count[1] != taskData->inputs_count[2]) {
+    if (taskData->inputs_count[0] != taskData->inputs_count[1]) {
       return false;
     }
 
