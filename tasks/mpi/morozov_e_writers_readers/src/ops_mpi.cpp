@@ -19,13 +19,14 @@ bool morozov_e_writers_readers::TestMPITaskParallel::pre_processing() {
     countIteration = reinterpret_cast<int*>(taskData->inputs[1])[0];
     value = reinterpret_cast<int*>(taskData->inputs[2])[0];
   }
-  broadcast(world, countIteration, 0);
-  broadcast(world, value, 0);
+
   return true;
 }
 
 bool morozov_e_writers_readers::TestMPITaskParallel::run() {
   internal_order_test();
+  broadcast(world, countIteration, 0);
+  broadcast(world, value, 0);
   if (world.rank() == 0) {
     int received_value;
     for (int i = 0; i < countIteration; i++) {
