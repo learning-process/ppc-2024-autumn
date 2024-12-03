@@ -117,7 +117,7 @@ void ConvexHull::labelingSecondPass(std::vector<int>& labeled_image) {
   }
 }
 
-void ConvexHull::processLabeledImage(const std::vector<int> &labeled_image) {
+void ConvexHull::processLabeledImage(const std::vector<int>& labeled_image) {
   std::vector<int> component_indices;
 
   for (int i = 0; i < height; i++) {
@@ -126,7 +126,7 @@ void ConvexHull::processLabeledImage(const std::vector<int> &labeled_image) {
 
       int component_label = labeled_image[i * width + j];
 
-      if (component_label < component_indices.size() && component_indices[component_label] != -1) {
+      if (static_cast<size_t>(component_label) < component_indices.size() && component_indices[component_label] != -1) {
         components[component_indices[component_label]].push_back(Point{j, i});
       } else {
         component_indices.resize(std::max(component_indices.size(), static_cast<size_t>(component_label + 1)), -1);
@@ -154,9 +154,9 @@ std::vector<Point> ConvexHull::graham(std::vector<Point> points) {
   }
 
   Point min = *std::min_element(points.begin(), points.end(),
-                                [](const Point &a, const Point &b) { return a.x == b.x ? a.y < b.y : a.x < b.x; });
+                                [](const Point& a, const Point& b) { return a.x == b.x ? a.y < b.y : a.x < b.x; });
 
-  std::sort(points.begin(), points.end(), [min](const Point &p1, const Point &p2) {
+  std::sort(points.begin(), points.end(), [min](const Point& p1, const Point& p2) {
     if (cross(min, p1, p2) != 0) return cross(min, p1, p2) > 0;
 
     return (p1.x - min.x) * (p1.x - min.x) + (p1.y - min.y) * (p1.y - min.y) <
@@ -165,7 +165,7 @@ std::vector<Point> ConvexHull::graham(std::vector<Point> points) {
 
   hull.push_back(min);
 
-  for (int i = 1; i < points.size(); ++i) {
+  for (size_t i = 1; i < points.size(); ++i) {
     while (hull.size() > 1 && cross(hull[hull.size() - 2], hull[hull.size() - 1], points[i]) <= 0) {
       hull.pop_back();
     }
@@ -177,26 +177,29 @@ std::vector<Point> ConvexHull::graham(std::vector<Point> points) {
 
 void ConvexHull::find_hull() {
   std::vector<Point> all_points;
-  for (const auto &component : components) {
+  for (const auto& component : components) {
     auto hull = graham(component);
     all_points.insert(all_points.end(), hull.begin(), hull.end());
   }
 
   std::sort(all_points.begin(), all_points.end(),
-            [](const Point &a, const Point &b) { return a.x < b.x || (a.x == b.x && a.y < b.y); });
+            [](const Point& a, const Point& b) { return a.x < b.x || (a.x == b.x && a.y < b.y); });
 
   convex_hull = computeConvexHull(all_points);
 }
 
-std::vector<Point> ConvexHull::computeConvexHull(const std::vector<Point> &points) {
-  if (points.empty()) return points;
+std::vector<Point> ConvexHull::computeConvexHull(const std::vector<Point>& points) {
+  if (points.empty()) {
+    return points;
+  }
+
   std::vector<Point> lower, upper;
   std::vector<Point> sorted_points = points;
 
   std::sort(sorted_points.begin(), sorted_points.end(),
-            [](const Point &a, const Point &b) { return a.x < b.x || (a.x == b.x && a.y < b.y); });
+            [](const Point& a, const Point& b) { return a.x < b.x || (a.x == b.x && a.y < b.y); });
 
-  for (const auto &p : sorted_points) {
+  for (const auto& p : sorted_points) {
     while (lower.size() >= 2 && cross(lower[lower.size() - 2], lower.back(), p) <= 0) {
       lower.pop_back();
     }
@@ -227,7 +230,7 @@ bool ConvexHull::validation() {
   }
 
   image.resize(taskData->inputs_count[0]);
-  auto *tmp_ptr = reinterpret_cast<int *>(taskData->inputs[0]);
+  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
   std::memcpy(image.data(), tmp_ptr, taskData->inputs_count[0] * sizeof(int));
   if (!std::all_of(image.begin(), image.end(), [](int pixel) { return pixel == 0 || pixel == 1; })) {
     return false;
@@ -242,6 +245,7 @@ bool ConvexHull::pre_processing() {
   size = static_cast<int>(taskData->inputs_count[0]);
   height = static_cast<int>(taskData->inputs_count[1]);
   width = static_cast<int>(taskData->inputs_count[2]);
+
   return true;
 }
 
@@ -251,13 +255,15 @@ bool ConvexHull::run() {
   labeling();
   find_hull();
   image = setPoints(convex_hull, width, height);
+
   return true;
 }
 
 bool ConvexHull::post_processing() {
   internal_order_test();
 
-  std::memcpy(reinterpret_cast<int *>(taskData->outputs[0]), image.data(), image.size() * sizeof(int));
+  std::memcpy(reinterpret_cast<int*>(taskData->outputs[0]), image.data(), image.size() * sizeof(int));
+
   return true;
 }
 

@@ -1,9 +1,10 @@
+#include "seq/chistov_a_convex_hull_image_seq/include/image.hpp"
+
 #include <gtest/gtest.h>
 
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "seq/chistov_a_convex_hull_image_seq/include/image.hpp"
 
 TEST(chistov_a_convex_hull_image_seq, test_pipeline_run) {
   const int width = 1000;
@@ -36,7 +37,7 @@ TEST(chistov_a_convex_hull_image_seq, test_pipeline_run) {
   TestTaskSequential->run();
   TestTaskSequential->post_processing();
 
-   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();
   perfAttr->current_timer = [&] {
