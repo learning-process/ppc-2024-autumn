@@ -77,10 +77,10 @@ bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::run() {
     world.recv(world.rank() - 1, 0, data);
     world.recv(world.rank() - 1, 1, path);
     path.push_back(world.rank());
-  }
-  if (world.rank() < end_proc) {
-    world.send(world.rank() + 1, 0, data);
-    world.send(world.rank() + 1, 1, path);
+    if (world.rank() < end_proc) {
+      world.send(world.rank() + 1, 0, data);
+      world.send(world.rank() + 1, 1, path);
+    }
   }
   return true;
 }
