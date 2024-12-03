@@ -22,8 +22,11 @@ TEST(shulpin_monte_carlo_integration, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> task_Data_parallel = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     task_Data_parallel->inputs.push_back(reinterpret_cast<uint8_t*>(&a));
+    task_Data_parallel->inputs_count.push_back(1);
     task_Data_parallel->inputs.push_back(reinterpret_cast<uint8_t*>(&b));
+    task_Data_parallel->inputs_count.push_back(1);
     task_Data_parallel->inputs.push_back(reinterpret_cast<uint8_t*>(&N));
+    task_Data_parallel->inputs_count.push_back(1);
     task_Data_parallel->outputs.push_back(reinterpret_cast<uint8_t*>(&output));
     task_Data_parallel->outputs_count.push_back(1);
   }
@@ -63,8 +66,11 @@ TEST(shulpin_monte_carlo_integration, test_task_run) {
   std::shared_ptr<ppc::core::TaskData> task_Data_parallel = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     task_Data_parallel->inputs.push_back(reinterpret_cast<uint8_t*>(&a));
+    task_Data_parallel->inputs_count.push_back(1);
     task_Data_parallel->inputs.push_back(reinterpret_cast<uint8_t*>(&b));
+    task_Data_parallel->inputs_count.push_back(1);
     task_Data_parallel->inputs.push_back(reinterpret_cast<uint8_t*>(&N));
+    task_Data_parallel->inputs_count.push_back(1);
     task_Data_parallel->outputs.push_back(reinterpret_cast<uint8_t*>(&output));
     task_Data_parallel->outputs_count.push_back(1);
   }
