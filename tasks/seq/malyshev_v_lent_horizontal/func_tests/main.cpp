@@ -8,7 +8,8 @@
 
 namespace malyshev_lent_horizontal {
 
-std::vector<std::vector<int32_t>> generateRandomMatrix(uint32_t rows, uint32_t cols, int32_t min_value, int32_t max_value) {
+std::vector<std::vector<int32_t>> generateRandomMatrix(uint32_t rows, uint32_t cols, int32_t min_value,
+                                                       int32_t max_value) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<std::vector<int32_t>> data(rows, std::vector<int32_t>(cols));
@@ -231,8 +232,6 @@ TEST(malyshev_lent_horizontal, test_size_mismatch) {
 TEST(malyshev_lent_horizontal, test_zero_values_sequential) {
   uint32_t rows = 3;
   uint32_t cols = 3;
-  int32_t min_value = 0;
-  int32_t max_value = 0;
 
   std::vector<std::vector<int32_t>> zeroMatrix(rows, std::vector<int32_t>(cols, 0));
   std::vector<int32_t> zeroVector(cols, 0);
