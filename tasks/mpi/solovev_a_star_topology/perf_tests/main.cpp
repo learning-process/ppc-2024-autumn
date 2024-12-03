@@ -16,7 +16,6 @@ std::vector<int> generate_random_vector(size_t size) {
     random_vector[i] = dis(gen);
   }
   return random_vector;
-}
 }  // namespace solovev_a_star_topology_mpi
 
 TEST(solovev_a_star_topology_mpi_perf_test, test_pipeline_run) {
