@@ -3,9 +3,10 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <vector>
-#include <ctime>
 #include <cstdlib>
+#include <ctime>
+#include <vector>
+
 #include "mpi/lavrentyev_a_line_topology/include/ops_mpi.hpp"
 
 std::vector<int> generate_random_vector(size_t size) {
