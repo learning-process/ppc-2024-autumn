@@ -80,6 +80,7 @@ bool sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi::TestMPITas
     auto* tmp_ptr_a = reinterpret_cast<int*>(taskData->inputs[0]);
     auto* tmp_ptr_b = reinterpret_cast<int*>(taskData->inputs[1]);
     std::copy(tmp_ptr_a, tmp_ptr_a + column_A * row_A, input_A);
+    std::copy(tmp_ptr_b, tmp_ptr_b + column_B * row_B, input_B);
     C = nullptr;
   }
 
