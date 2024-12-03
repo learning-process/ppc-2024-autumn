@@ -3,11 +3,57 @@
 #include <algorithm>
 #include <boost/serialization/array.hpp>
 #include <boost/serialization/vector.hpp>
+#include <cmath>
 #include <functional>
 #include <iostream>
 #include <limits>
 #include <numeric>
 #include <vector>
+
+#define EPSILON 1e-9
+
+namespace sarafanov_m_gauss_jordan_method_mpi {
+
+bool isNonSingularSystem(const std::vector<double>& A, int n) {
+  std::vector<double> tempMatrix(n * n);
+
+  for (int i = 0; i < n; ++i) {
+    for (int j = 0; j < n; ++j) {
+      tempMatrix[i * n + j] = A[i * (n + 1) + j];
+    }
+  }
+
+  for (int k = 0; k < n; ++k) {
+    double max = fabs(tempMatrix[k * n + k]);
+    int maxRow = k;
+    for (int i = k + 1; i < n; ++i) {
+      if (fabs(tempMatrix[i * n + k]) > max) {
+        max = fabs(tempMatrix[i * n + k]);
+        maxRow = i;
+      }
+    }
+
+    if (fabs(tempMatrix[maxRow * n + k]) < EPSILON) {
+      return false;
+    }
+
+    if (maxRow != k) {
+      for (int j = 0; j < n; ++j) {
+        std::swap(tempMatrix[k * n + j], tempMatrix[maxRow * n + j]);
+      }
+    }
+
+    for (int i = k + 1; i < n; ++i) {
+      double factor = tempMatrix[i * n + k] / tempMatrix[k * n + k];
+      for (int j = k; j < n; ++j) {
+        tempMatrix[i * n + j] -= factor * tempMatrix[k * n + j];
+      }
+    }
+  }
+  return true;
+}
+
+}  // namespace sarafanov_m_gauss_jordan_method_mpi
 
 std::vector<double> sarafanov_m_gauss_jordan_method_mpi::processMatrix(int n, int k,
                                                                        const std::vector<double>& matrix) {
@@ -103,7 +149,14 @@ bool sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodParallelMPI::validati
   }
   int n_val = *reinterpret_cast<int*>(taskData->inputs[1]);
   int matrix_size = taskData->inputs_count[0];
-  return n_val * (n_val + 1) == matrix_size;
+  auto* matrix_data = reinterpret_cast<double*>(taskData->inputs[0]);
+
+  if (n_val * (n_val + 1) == matrix_size) {
+    std::vector<double> temp_matrix(matrix_size);
+    temp_matrix.assign(matrix_data, matrix_data + matrix_size);
+    return sarafanov_m_gauss_jordan_method_mpi::isNonSingularSystem(temp_matrix, n_val);
+  }
+  return false;
 }
 
 bool sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodParallelMPI::pre_processing() {

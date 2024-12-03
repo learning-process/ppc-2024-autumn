@@ -9,10 +9,10 @@
 
 namespace sarafanov_m_gauss_jordan_method_mpi {
 
-std::vector<double> getRandomMatrix(int rows, int cols) {
+std::vector<double> getRandomMatrix(int rows, int cols, double min = -20.0, double max = 20.0) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  std::uniform_real_distribution<double> dist(-20.0, 20.0);
+  std::uniform_real_distribution<double> dist(min, max);
   std::vector<double> matrix(rows * cols);
   for (int i = 0; i < rows * cols; i++) {
     matrix[i] = dist(gen);
@@ -109,32 +109,10 @@ TEST(sarafanov_m_gauss_jordan_method_mpi, simple_three_not_solve_at_1_iter) {
   }
 
   auto taskParallel = std::make_shared<sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodParallelMPI>(taskDataPar);
-  ASSERT_TRUE(taskParallel->validation());
-  taskParallel->pre_processing();
-  bool parRunRes = taskParallel->run();
-  taskParallel->post_processing();
-
   if (world.rank() == 0) {
-    std::vector<double> seq_result(global_result.size(), 0);
-
-    auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
-
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
-    taskDataSeq->inputs_count.emplace_back(1);
-
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(seq_result.data()));
-    taskDataSeq->outputs_count.emplace_back(seq_result.size());
-
-    auto taskSequential =
-        std::make_shared<sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodSequentialMPI>(taskDataSeq);
-    ASSERT_TRUE(taskSequential->validation());
-    taskSequential->pre_processing();
-    bool seqRunRes = taskSequential->run();
-    taskSequential->post_processing();
-
-    EXPECT_EQ(seqRunRes, parRunRes);
+    EXPECT_FALSE(taskParallel->validation());
+  } else {
+    EXPECT_TRUE(true);
   }
 }
 
@@ -165,36 +143,14 @@ TEST(sarafanov_m_gauss_jordan_method_mpi, simple_five_not_solve_at_2_iter) {
   }
 
   auto taskParallel = std::make_shared<sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodParallelMPI>(taskDataPar);
-  ASSERT_TRUE(taskParallel->validation());
-  taskParallel->pre_processing();
-  bool parRunRes = taskParallel->run();
-  taskParallel->post_processing();
-
   if (world.rank() == 0) {
-    std::vector<double> seq_result(global_result.size(), 0);
-
-    auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
-
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
-    taskDataSeq->inputs_count.emplace_back(1);
-
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(seq_result.data()));
-    taskDataSeq->outputs_count.emplace_back(seq_result.size());
-
-    auto taskSequential =
-        std::make_shared<sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodSequentialMPI>(taskDataSeq);
-    ASSERT_TRUE(taskSequential->validation());
-    taskSequential->pre_processing();
-    bool seqRunRes = taskSequential->run();
-    taskSequential->post_processing();
-
-    EXPECT_EQ(seqRunRes, parRunRes);
+    EXPECT_FALSE(taskParallel->validation());
+  } else {
+    EXPECT_TRUE(true);
   }
 }
 
-TEST(sarafanov_m_gauss_jordan_method_mpi, rundom_three) {
+TEST(sarafanov_m_gauss_jordan_method_mpi, random_three) {
   boost::mpi::communicator world;
 
   std::vector<double> global_matrix;
@@ -220,41 +176,45 @@ TEST(sarafanov_m_gauss_jordan_method_mpi, rundom_three) {
   }
 
   auto taskParallel = std::make_shared<sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodParallelMPI>(taskDataPar);
-  ASSERT_TRUE(taskParallel->validation());
-  taskParallel->pre_processing();
-  bool parRunRes = taskParallel->run();
-  taskParallel->post_processing();
+  bool isNonSingular = taskParallel->validation();
+  if (isNonSingular) {
+    taskParallel->pre_processing();
+    bool parRunRes = taskParallel->run();
+    taskParallel->post_processing();
 
-  if (world.rank() == 0) {
-    std::vector<double> seq_result(global_result.size(), 0);
+    if (world.rank() == 0) {
+      std::vector<double> seq_result(global_result.size(), 0);
 
-    auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
+      auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+      taskDataSeq->inputs_count.emplace_back(global_matrix.size());
 
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
-    taskDataSeq->inputs_count.emplace_back(1);
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
+      taskDataSeq->inputs_count.emplace_back(1);
 
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(seq_result.data()));
-    taskDataSeq->outputs_count.emplace_back(seq_result.size());
+      taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(seq_result.data()));
+      taskDataSeq->outputs_count.emplace_back(seq_result.size());
 
-    auto taskSequential =
-        std::make_shared<sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodSequentialMPI>(taskDataSeq);
-    ASSERT_TRUE(taskSequential->validation());
-    taskSequential->pre_processing();
-    bool seqRunRes = taskSequential->run();
-    taskSequential->post_processing();
+      auto taskSequential =
+          std::make_shared<sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodSequentialMPI>(taskDataSeq);
+      ASSERT_TRUE(taskSequential->validation());
+      taskSequential->pre_processing();
+      bool seqRunRes = taskSequential->run();
+      taskSequential->post_processing();
 
-    if (seqRunRes && parRunRes) {
-      ASSERT_EQ(global_result.size(), seq_result.size());
-      EXPECT_EQ(global_result, seq_result);
-    } else {
-      EXPECT_EQ(seqRunRes, parRunRes);
+      if (seqRunRes && parRunRes) {
+        ASSERT_EQ(global_result.size(), seq_result.size());
+        EXPECT_EQ(global_result, seq_result);
+      } else {
+        EXPECT_EQ(seqRunRes, parRunRes);
+      }
     }
+  } else {
+    EXPECT_TRUE(true);
   }
 }
 
-TEST(sarafanov_m_gauss_jordan_method_mpi, rundom_four) {
+TEST(sarafanov_m_gauss_jordan_method_mpi, random_four) {
   boost::mpi::communicator world;
 
   std::vector<double> global_matrix;
@@ -265,7 +225,7 @@ TEST(sarafanov_m_gauss_jordan_method_mpi, rundom_four) {
 
   if (world.rank() == 0) {
     n = 4;
-    global_matrix = sarafanov_m_gauss_jordan_method_mpi::getRandomMatrix(n, n + 1);
+    global_matrix = sarafanov_m_gauss_jordan_method_mpi::getRandomMatrix(n, n + 1, -30.0);
 
     global_result.resize(n * (n + 1));
 
@@ -280,41 +240,45 @@ TEST(sarafanov_m_gauss_jordan_method_mpi, rundom_four) {
   }
 
   auto taskParallel = std::make_shared<sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodParallelMPI>(taskDataPar);
-  ASSERT_TRUE(taskParallel->validation());
-  taskParallel->pre_processing();
-  bool parRunRes = taskParallel->run();
-  taskParallel->post_processing();
+  bool isNonSingular = taskParallel->validation();
+  if (isNonSingular) {
+    taskParallel->pre_processing();
+    bool parRunRes = taskParallel->run();
+    taskParallel->post_processing();
 
-  if (world.rank() == 0) {
-    std::vector<double> seq_result(global_result.size(), 0);
+    if (world.rank() == 0) {
+      std::vector<double> seq_result(global_result.size(), 0);
 
-    auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
+      auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+      taskDataSeq->inputs_count.emplace_back(global_matrix.size());
 
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
-    taskDataSeq->inputs_count.emplace_back(1);
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
+      taskDataSeq->inputs_count.emplace_back(1);
 
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(seq_result.data()));
-    taskDataSeq->outputs_count.emplace_back(seq_result.size());
+      taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(seq_result.data()));
+      taskDataSeq->outputs_count.emplace_back(seq_result.size());
 
-    auto taskSequential =
-        std::make_shared<sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodSequentialMPI>(taskDataSeq);
-    ASSERT_TRUE(taskSequential->validation());
-    taskSequential->pre_processing();
-    bool seqRunRes = taskSequential->run();
-    taskSequential->post_processing();
+      auto taskSequential =
+          std::make_shared<sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodSequentialMPI>(taskDataSeq);
+      ASSERT_TRUE(taskSequential->validation());
+      taskSequential->pre_processing();
+      bool seqRunRes = taskSequential->run();
+      taskSequential->post_processing();
 
-    if (seqRunRes && parRunRes) {
-      ASSERT_EQ(global_result.size(), seq_result.size());
-      EXPECT_EQ(global_result, seq_result);
-    } else {
-      EXPECT_EQ(seqRunRes, parRunRes);
+      if (seqRunRes && parRunRes) {
+        ASSERT_EQ(global_result.size(), seq_result.size());
+        EXPECT_EQ(global_result, seq_result);
+      } else {
+        EXPECT_EQ(seqRunRes, parRunRes);
+      }
     }
+  } else {
+    EXPECT_TRUE(true);
   }
 }
 
-TEST(sarafanov_m_gauss_jordan_method_mpi, rundom_five) {
+TEST(sarafanov_m_gauss_jordan_method_mpi, random_five) {
   boost::mpi::communicator world;
 
   std::vector<double> global_matrix;
@@ -325,7 +289,7 @@ TEST(sarafanov_m_gauss_jordan_method_mpi, rundom_five) {
 
   if (world.rank() == 0) {
     n = 5;
-    global_matrix = sarafanov_m_gauss_jordan_method_mpi::getRandomMatrix(n, n + 1);
+    global_matrix = sarafanov_m_gauss_jordan_method_mpi::getRandomMatrix(n, n + 1, -100.0, 200.0);
 
     global_result.resize(n * (n + 1));
 
@@ -340,41 +304,45 @@ TEST(sarafanov_m_gauss_jordan_method_mpi, rundom_five) {
   }
 
   auto taskParallel = std::make_shared<sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodParallelMPI>(taskDataPar);
-  ASSERT_TRUE(taskParallel->validation());
-  taskParallel->pre_processing();
-  bool parRunRes = taskParallel->run();
-  taskParallel->post_processing();
+  bool isNonSingular = taskParallel->validation();
+  if (isNonSingular) {
+    taskParallel->pre_processing();
+    bool parRunRes = taskParallel->run();
+    taskParallel->post_processing();
 
-  if (world.rank() == 0) {
-    std::vector<double> seq_result(global_result.size(), 0);
+    if (world.rank() == 0) {
+      std::vector<double> seq_result(global_result.size(), 0);
 
-    auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
+      auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+      taskDataSeq->inputs_count.emplace_back(global_matrix.size());
 
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
-    taskDataSeq->inputs_count.emplace_back(1);
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
+      taskDataSeq->inputs_count.emplace_back(1);
 
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(seq_result.data()));
-    taskDataSeq->outputs_count.emplace_back(seq_result.size());
+      taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(seq_result.data()));
+      taskDataSeq->outputs_count.emplace_back(seq_result.size());
 
-    auto taskSequential =
-        std::make_shared<sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodSequentialMPI>(taskDataSeq);
-    ASSERT_TRUE(taskSequential->validation());
-    taskSequential->pre_processing();
-    bool seqRunRes = taskSequential->run();
-    taskSequential->post_processing();
+      auto taskSequential =
+          std::make_shared<sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodSequentialMPI>(taskDataSeq);
+      ASSERT_TRUE(taskSequential->validation());
+      taskSequential->pre_processing();
+      bool seqRunRes = taskSequential->run();
+      taskSequential->post_processing();
 
-    if (seqRunRes && parRunRes) {
-      ASSERT_EQ(global_result.size(), seq_result.size());
-      EXPECT_EQ(global_result, seq_result);
-    } else {
-      EXPECT_EQ(seqRunRes, parRunRes);
+      if (seqRunRes && parRunRes) {
+        ASSERT_EQ(global_result.size(), seq_result.size());
+        EXPECT_EQ(global_result, seq_result);
+      } else {
+        EXPECT_EQ(seqRunRes, parRunRes);
+      }
     }
+  } else {
+    EXPECT_TRUE(true);
   }
 }
 
-TEST(sarafanov_m_gauss_jordan_method_mpi, rundom_six) {
+TEST(sarafanov_m_gauss_jordan_method_mpi, random_six) {
   boost::mpi::communicator world;
 
   std::vector<double> global_matrix;
@@ -385,7 +353,7 @@ TEST(sarafanov_m_gauss_jordan_method_mpi, rundom_six) {
 
   if (world.rank() == 0) {
     n = 6;
-    global_matrix = sarafanov_m_gauss_jordan_method_mpi::getRandomMatrix(n, n + 1);
+    global_matrix = sarafanov_m_gauss_jordan_method_mpi::getRandomMatrix(n, n + 1, -10.0, 10.0);
 
     global_result.resize(n * (n + 1));
 
@@ -400,41 +368,45 @@ TEST(sarafanov_m_gauss_jordan_method_mpi, rundom_six) {
   }
 
   auto taskParallel = std::make_shared<sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodParallelMPI>(taskDataPar);
-  ASSERT_TRUE(taskParallel->validation());
-  taskParallel->pre_processing();
-  bool parRunRes = taskParallel->run();
-  taskParallel->post_processing();
+  bool isNonSingular = taskParallel->validation();
+  if (isNonSingular) {
+    taskParallel->pre_processing();
+    bool parRunRes = taskParallel->run();
+    taskParallel->post_processing();
 
-  if (world.rank() == 0) {
-    std::vector<double> seq_result(global_result.size(), 0);
+    if (world.rank() == 0) {
+      std::vector<double> seq_result(global_result.size(), 0);
 
-    auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
+      auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+      taskDataSeq->inputs_count.emplace_back(global_matrix.size());
 
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
-    taskDataSeq->inputs_count.emplace_back(1);
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
+      taskDataSeq->inputs_count.emplace_back(1);
 
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(seq_result.data()));
-    taskDataSeq->outputs_count.emplace_back(seq_result.size());
+      taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(seq_result.data()));
+      taskDataSeq->outputs_count.emplace_back(seq_result.size());
 
-    auto taskSequential =
-        std::make_shared<sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodSequentialMPI>(taskDataSeq);
-    ASSERT_TRUE(taskSequential->validation());
-    taskSequential->pre_processing();
-    bool seqRunRes = taskSequential->run();
-    taskSequential->post_processing();
+      auto taskSequential =
+          std::make_shared<sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodSequentialMPI>(taskDataSeq);
+      ASSERT_TRUE(taskSequential->validation());
+      taskSequential->pre_processing();
+      bool seqRunRes = taskSequential->run();
+      taskSequential->post_processing();
 
-    if (seqRunRes && parRunRes) {
-      ASSERT_EQ(global_result.size(), seq_result.size());
-      EXPECT_EQ(global_result, seq_result);
-    } else {
-      EXPECT_EQ(seqRunRes, parRunRes);
+      if (seqRunRes && parRunRes) {
+        ASSERT_EQ(global_result.size(), seq_result.size());
+        EXPECT_EQ(global_result, seq_result);
+      } else {
+        EXPECT_EQ(seqRunRes, parRunRes);
+      }
     }
+  } else {
+    EXPECT_TRUE(true);
   }
 }
 
-TEST(sarafanov_m_gauss_jordan_method_mpi, rundom_seven) {
+TEST(sarafanov_m_gauss_jordan_method_mpi, random_seven) {
   boost::mpi::communicator world;
 
   std::vector<double> global_matrix;
@@ -445,7 +417,7 @@ TEST(sarafanov_m_gauss_jordan_method_mpi, rundom_seven) {
 
   if (world.rank() == 0) {
     n = 7;
-    global_matrix = sarafanov_m_gauss_jordan_method_mpi::getRandomMatrix(n, n + 1);
+    global_matrix = sarafanov_m_gauss_jordan_method_mpi::getRandomMatrix(n, n + 1, -7.0, 1000.0);
 
     global_result.resize(n * (n + 1));
 
@@ -460,41 +432,45 @@ TEST(sarafanov_m_gauss_jordan_method_mpi, rundom_seven) {
   }
 
   auto taskParallel = std::make_shared<sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodParallelMPI>(taskDataPar);
-  ASSERT_TRUE(taskParallel->validation());
-  taskParallel->pre_processing();
-  bool parRunRes = taskParallel->run();
-  taskParallel->post_processing();
+  bool isNonSingular = taskParallel->validation();
+  if (isNonSingular) {
+    taskParallel->pre_processing();
+    bool parRunRes = taskParallel->run();
+    taskParallel->post_processing();
 
-  if (world.rank() == 0) {
-    std::vector<double> seq_result(global_result.size(), 0);
+    if (world.rank() == 0) {
+      std::vector<double> seq_result(global_result.size(), 0);
 
-    auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
+      auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+      taskDataSeq->inputs_count.emplace_back(global_matrix.size());
 
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
-    taskDataSeq->inputs_count.emplace_back(1);
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
+      taskDataSeq->inputs_count.emplace_back(1);
 
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(seq_result.data()));
-    taskDataSeq->outputs_count.emplace_back(seq_result.size());
+      taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(seq_result.data()));
+      taskDataSeq->outputs_count.emplace_back(seq_result.size());
 
-    auto taskSequential =
-        std::make_shared<sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodSequentialMPI>(taskDataSeq);
-    ASSERT_TRUE(taskSequential->validation());
-    taskSequential->pre_processing();
-    bool seqRunRes = taskSequential->run();
-    taskSequential->post_processing();
+      auto taskSequential =
+          std::make_shared<sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodSequentialMPI>(taskDataSeq);
+      ASSERT_TRUE(taskSequential->validation());
+      taskSequential->pre_processing();
+      bool seqRunRes = taskSequential->run();
+      taskSequential->post_processing();
 
-    if (seqRunRes && parRunRes) {
-      ASSERT_EQ(global_result.size(), seq_result.size());
-      EXPECT_EQ(global_result, seq_result);
-    } else {
-      EXPECT_EQ(seqRunRes, parRunRes);
+      if (seqRunRes && parRunRes) {
+        ASSERT_EQ(global_result.size(), seq_result.size());
+        EXPECT_EQ(global_result, seq_result);
+      } else {
+        EXPECT_EQ(seqRunRes, parRunRes);
+      }
     }
+  } else {
+    EXPECT_TRUE(true);
   }
 }
 
-TEST(sarafanov_m_gauss_jordan_method_mpi, rundom_ten) {
+TEST(sarafanov_m_gauss_jordan_method_mpi, random_ten) {
   boost::mpi::communicator world;
 
   std::vector<double> global_matrix;
@@ -520,41 +496,45 @@ TEST(sarafanov_m_gauss_jordan_method_mpi, rundom_ten) {
   }
 
   auto taskParallel = std::make_shared<sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodParallelMPI>(taskDataPar);
-  ASSERT_TRUE(taskParallel->validation());
-  taskParallel->pre_processing();
-  bool parRunRes = taskParallel->run();
-  taskParallel->post_processing();
+  bool isNonSingular = taskParallel->validation();
+  if (isNonSingular) {
+    taskParallel->pre_processing();
+    bool parRunRes = taskParallel->run();
+    taskParallel->post_processing();
 
-  if (world.rank() == 0) {
-    std::vector<double> seq_result(global_result.size(), 0);
+    if (world.rank() == 0) {
+      std::vector<double> seq_result(global_result.size(), 0);
 
-    auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
+      auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+      taskDataSeq->inputs_count.emplace_back(global_matrix.size());
 
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
-    taskDataSeq->inputs_count.emplace_back(1);
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
+      taskDataSeq->inputs_count.emplace_back(1);
 
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(seq_result.data()));
-    taskDataSeq->outputs_count.emplace_back(seq_result.size());
+      taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(seq_result.data()));
+      taskDataSeq->outputs_count.emplace_back(seq_result.size());
 
-    auto taskSequential =
-        std::make_shared<sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodSequentialMPI>(taskDataSeq);
-    ASSERT_TRUE(taskSequential->validation());
-    taskSequential->pre_processing();
-    bool seqRunRes = taskSequential->run();
-    taskSequential->post_processing();
+      auto taskSequential =
+          std::make_shared<sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodSequentialMPI>(taskDataSeq);
+      ASSERT_TRUE(taskSequential->validation());
+      taskSequential->pre_processing();
+      bool seqRunRes = taskSequential->run();
+      taskSequential->post_processing();
 
-    if (seqRunRes && parRunRes) {
-      ASSERT_EQ(global_result.size(), seq_result.size());
-      EXPECT_EQ(global_result, seq_result);
-    } else {
-      EXPECT_EQ(seqRunRes, parRunRes);
+      if (seqRunRes && parRunRes) {
+        ASSERT_EQ(global_result.size(), seq_result.size());
+        EXPECT_EQ(global_result, seq_result);
+      } else {
+        EXPECT_EQ(seqRunRes, parRunRes);
+      }
     }
+  } else {
+    EXPECT_TRUE(true);
   }
 }
 
-TEST(sarafanov_m_gauss_jordan_method_mpi, rundom_eleven) {
+TEST(sarafanov_m_gauss_jordan_method_mpi, random_eleven) {
   boost::mpi::communicator world;
 
   std::vector<double> global_matrix;
@@ -580,36 +560,40 @@ TEST(sarafanov_m_gauss_jordan_method_mpi, rundom_eleven) {
   }
 
   auto taskParallel = std::make_shared<sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodParallelMPI>(taskDataPar);
-  ASSERT_TRUE(taskParallel->validation());
-  taskParallel->pre_processing();
-  bool parRunRes = taskParallel->run();
-  taskParallel->post_processing();
+  bool isNonSingular = taskParallel->validation();
+  if (isNonSingular) {
+    taskParallel->pre_processing();
+    bool parRunRes = taskParallel->run();
+    taskParallel->post_processing();
 
-  if (world.rank() == 0) {
-    std::vector<double> seq_result(global_result.size(), 0);
+    if (world.rank() == 0) {
+      std::vector<double> seq_result(global_result.size(), 0);
 
-    auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
+      auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+      taskDataSeq->inputs_count.emplace_back(global_matrix.size());
 
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
-    taskDataSeq->inputs_count.emplace_back(1);
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
+      taskDataSeq->inputs_count.emplace_back(1);
 
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(seq_result.data()));
-    taskDataSeq->outputs_count.emplace_back(seq_result.size());
+      taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(seq_result.data()));
+      taskDataSeq->outputs_count.emplace_back(seq_result.size());
 
-    auto taskSequential =
-        std::make_shared<sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodSequentialMPI>(taskDataSeq);
-    ASSERT_TRUE(taskSequential->validation());
-    taskSequential->pre_processing();
-    bool seqRunRes = taskSequential->run();
-    taskSequential->post_processing();
+      auto taskSequential =
+          std::make_shared<sarafanov_m_gauss_jordan_method_mpi::GaussJordanMethodSequentialMPI>(taskDataSeq);
+      ASSERT_TRUE(taskSequential->validation());
+      taskSequential->pre_processing();
+      bool seqRunRes = taskSequential->run();
+      taskSequential->post_processing();
 
-    if (seqRunRes && parRunRes) {
-      ASSERT_EQ(global_result.size(), seq_result.size());
-      EXPECT_EQ(global_result, seq_result);
-    } else {
-      EXPECT_EQ(seqRunRes, parRunRes);
+      if (seqRunRes && parRunRes) {
+        ASSERT_EQ(global_result.size(), seq_result.size());
+        EXPECT_EQ(global_result, seq_result);
+      } else {
+        EXPECT_EQ(seqRunRes, parRunRes);
+      }
     }
+  } else {
+    EXPECT_TRUE(true);
   }
 }
