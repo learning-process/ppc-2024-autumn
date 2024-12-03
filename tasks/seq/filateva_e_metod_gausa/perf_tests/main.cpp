@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 
 #include <vector>
+#include <limits>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/filateva_e_metod_gausa/include/ops_seq.hpp"
@@ -40,8 +41,8 @@ bool check(std::vector<double>& resh, std::vector<double>& tResh, double alfa) {
 }
 
 TEST(filateva_e_metod_gausa_seq, test_pipeline_run) {
-  int size = 800;
-  double alfa = 0.000000001;
+  int size = 500;
+  double alfa = std::numeric_limits<double>::epsilon() * 10000;
   std::vector<double> matrix(size * size);
   std::vector<double> vecB(size);
   std::vector<double> answer;
@@ -82,8 +83,8 @@ TEST(filateva_e_metod_gausa_seq, test_pipeline_run) {
 }
 
 TEST(filateva_e_metod_gausa_seq, test_task_run) {
-  int size = 800;
-  double alfa = 0.000000001;
+  int size = 500;
+  double alfa = std::numeric_limits<double>::epsilon() * 10000;
   std::vector<double> matrix(size * size);
   std::vector<double> vecB(size);
   std::vector<double> answer;

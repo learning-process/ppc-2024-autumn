@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 
 #include <vector>
+#include <limits>
 
 #include "seq/filateva_e_metod_gausa/include/ops_seq.hpp"
 
@@ -39,8 +40,8 @@ bool check(std::vector<double> &resh, std::vector<double> &tResh, double alfa) {
 }
 
 TEST(filateva_e_metod_gausa_seq, test_size_3) {
-  int size = 3;
-  double alfa = 0.000000001;
+  int size = 2;
+  double alfa = std::numeric_limits<double>::epsilon() * 1000;
   std::vector<double> matrix(size * size);
   std::vector<double> vecB(size);
   std::vector<double> answer;
@@ -69,7 +70,7 @@ TEST(filateva_e_metod_gausa_seq, test_size_3) {
 
 TEST(filateva_e_metod_gausa_seq, test_size_10) {
   int size = 10;
-  double alfa = 0.000000001;
+  double alfa = std::numeric_limits<double>::epsilon() * 1000;
   std::vector<double> matrix(size * size);
   std::vector<double> vecB(size);
   std::vector<double> answer;
@@ -98,7 +99,7 @@ TEST(filateva_e_metod_gausa_seq, test_size_10) {
 
 TEST(filateva_e_metod_gausa_seq, test_size_100) {
   int size = 100;
-  double alfa = 0.000000001;
+  double alfa = std::numeric_limits<double>::epsilon() * 1000;
   std::vector<double> matrix(size * size);
   std::vector<double> vecB(size);
   std::vector<double> answer;
@@ -127,7 +128,7 @@ TEST(filateva_e_metod_gausa_seq, test_size_100) {
 
 TEST(filateva_e_metod_gausa_seq, test_size_200) {
   int size = 200;
-  double alfa = 0.000000001;
+  double alfa = std::numeric_limits<double>::epsilon() * 1000;
   std::vector<double> matrix(size * size);
   std::vector<double> vecB(size);
   std::vector<double> answer;

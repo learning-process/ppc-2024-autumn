@@ -5,6 +5,7 @@
 #include <boost/mpi/environment.hpp>
 #include <random>
 #include <vector>
+#include <limits>
 
 #include "mpi/filateva_e_metod_gausa/include/ops_mpi.hpp"
 
@@ -44,7 +45,7 @@ bool check(std::vector<double> &resh, std::vector<double> &tResh, double alfa) {
 TEST(filateva_e_metod_gausa_mpi, test_size_3) {
   boost::mpi::communicator world;
   int size = 3;
-  double alfa = 0.000000001;
+  double alfa = std::numeric_limits<double>::epsilon() * 1000;
   std::vector<double> matrix;
   std::vector<double> vecB;
   std::vector<double> answer;
@@ -81,7 +82,7 @@ TEST(filateva_e_metod_gausa_mpi, test_size_3) {
 TEST(filateva_e_metod_gausa_mpi, test_size_10) {
   boost::mpi::communicator world;
   int size = 10;
-  double alfa = 0.000000001;
+  double alfa = std::numeric_limits<double>::epsilon() * 1000;
   std::vector<double> matrix;
   std::vector<double> vecB;
   std::vector<double> answer;
@@ -118,7 +119,7 @@ TEST(filateva_e_metod_gausa_mpi, test_size_10) {
 TEST(filateva_e_metod_gausa_mpi, test_size_30) {
   boost::mpi::communicator world;
   int size = 30;
-  double alfa = 0.000000001;
+  double alfa = std::numeric_limits<double>::epsilon() * 1000;
   std::vector<double> matrix;
   std::vector<double> vecB;
   std::vector<double> answer;
@@ -155,7 +156,7 @@ TEST(filateva_e_metod_gausa_mpi, test_size_30) {
 TEST(filateva_e_metod_gausa_mpi, test_size_100) {
   boost::mpi::communicator world;
   int size = 100;
-  double alfa = 0.000000001;
+  double alfa = std::numeric_limits<double>::epsilon() * 1000;
   std::vector<double> matrix;
   std::vector<double> vecB;
   std::vector<double> answer;
@@ -192,7 +193,7 @@ TEST(filateva_e_metod_gausa_mpi, test_size_100) {
 TEST(filateva_e_metod_gausa_mpi, test_size_200) {
   boost::mpi::communicator world;
   int size = 200;
-  double alfa = 0.000000001;
+  double alfa = std::numeric_limits<double>::epsilon() * 1000;
   std::vector<double> matrix;
   std::vector<double> vecB;
   std::vector<double> answer;

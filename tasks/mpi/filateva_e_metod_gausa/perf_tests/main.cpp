@@ -3,6 +3,7 @@
 
 #include <boost/mpi/timer.hpp>
 #include <vector>
+#include <limits>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/filateva_e_metod_gausa/include/ops_mpi.hpp"
@@ -42,8 +43,8 @@ bool check(std::vector<double> &resh, std::vector<double> &tResh, double alfa) {
 
 TEST(filateva_e_metod_gausa_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  int size = 800;
-  double alfa = 0.000000001;
+  int size = 500;
+  double alfa = std::numeric_limits<double>::epsilon() * 10000;
   std::vector<double> matrix;
   std::vector<double> vecB;
   std::vector<double> answer;
@@ -88,8 +89,8 @@ TEST(filateva_e_metod_gausa_mpi, test_pipeline_run) {
 
 TEST(filateva_e_metod_gausa_mpi, test_task_run) {
   boost::mpi::communicator world;
-  int size = 800;
-  double alfa = 0.000000001;
+  int size = 500;
+  double alfa = std::numeric_limits<double>::epsilon() * 10000;
   std::vector<double> matrix;
   std::vector<double> vecB;
   std::vector<double> answer;
