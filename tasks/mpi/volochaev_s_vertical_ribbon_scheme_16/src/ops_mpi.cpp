@@ -25,7 +25,7 @@ bool volochaev_s_vertical_ribbon_scheme_16_mpi::Lab2_16_seq::pre_processing() {
 bool volochaev_s_vertical_ribbon_scheme_16_mpi::Lab2_16_seq::validation() {
   internal_order_test();
   // Check count elements of output
-  return taskData->inputs_count[0] > 1 && taskData->inputs_count[1] > 0 &&
+  return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 &&
          taskData->inputs_count[0] % taskData->inputs_count[1] == 0;
 }
 
@@ -110,7 +110,7 @@ bool volochaev_s_vertical_ribbon_scheme_16_mpi::Lab2_16_mpi::validation() {
 
   if (world.rank() == 0) {
     // Check count elements of output
-    return taskData->inputs_count[0] > 1 && taskData->inputs_count[1] > 0 &&
+    return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 &&
            taskData->inputs_count[0] % taskData->inputs_count[1] == 0;
   }
 
