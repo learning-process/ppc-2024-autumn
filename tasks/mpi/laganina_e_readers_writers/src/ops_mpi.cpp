@@ -2,7 +2,7 @@
 #include "mpi/laganina_e_readers_writers/include/ops_mpi.hpp"
 
 #include <chrono>
-#include <ctime>
+#include <thread>
 #include <vector>
 
 bool laganina_e_readers_writers_mpi::TestMPITaskParallel::pre_processing() {
