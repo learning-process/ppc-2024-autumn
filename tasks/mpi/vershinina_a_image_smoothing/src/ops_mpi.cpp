@@ -79,7 +79,7 @@ bool vershinina_a_image_smoothing::TestMPITaskParallel::pre_processing() {
         }
       }
     } else {
-      for (int i = 0; i < local_input_sizes.size(); i++) {
+      for (size_t i = 0; i < local_input_sizes.size(); i++) {
         local_input_sizes[i] = rows * cols;
       }
     }
