@@ -13,7 +13,7 @@ TEST(vavilov_v_bellman_ford_seq, ValidInputWithMultiplePaths_1) {
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs_count = {vertices, edges_count, 1};
   taskDataSeq->inputs = {reinterpret_cast<uint8_t*>(&source), reinterpret_cast<uint8_t*>(edges.data())};
-  taskDataSeq->outputs_count = {output.size()};
+  taskDataSeq->outputs_count.emplace_back(output.size());
   taskDataSeq->outputs = {reinterpret_cast<uint8_t*>(output.data())};
 
   vavilov_v_bellman_ford_seq::TestTaskSequential testTaskSequential(taskDataSeq);
@@ -34,7 +34,7 @@ TEST(vavilov_v_bellman_ford_seq, ValidInputWithMultiplePaths_2) {
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs_count = {vertices, edges_count, 1};
   taskDataSeq->inputs = {reinterpret_cast<uint8_t*>(&source), reinterpret_cast<uint8_t*>(edges.data())};
-  taskDataSeq->outputs_count = {output.size()};
+  taskDataSeq->outputs_count.emplace_back(output.size());
   taskDataSeq->outputs = {reinterpret_cast<uint8_t*>(output.data())};
 
   vavilov_v_bellman_ford_seq::TestTaskSequential testTaskSequential(taskDataSeq);
@@ -55,7 +55,7 @@ TEST(vavilov_v_bellman_ford_seq, NegativeCycle) {
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs_count = {vertices, edges_count, 1};
   taskDataSeq->inputs = {reinterpret_cast<uint8_t*>(&source), reinterpret_cast<uint8_t*>(edges.data())};
-  taskDataSeq->outputs_count = {output.size()};
+  taskDataSeq->outputs_count.emplace_back(output.size());
   taskDataSeq->outputs = {reinterpret_cast<uint8_t*>(output.data())};
 
   vavilov_v_bellman_ford_seq::TestTaskSequential testTaskSequential(taskDataSeq);
@@ -72,7 +72,7 @@ TEST(vavilov_v_bellman_ford_seq, DisconnectedGraph) {
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs_count = {vertices, edges_count, 1};
   taskDataSeq->inputs = {reinterpret_cast<uint8_t*>(&source), reinterpret_cast<uint8_t*>(edges.data())};
-  taskDataSeq->outputs_count = {output.size()};
+  taskDataSeq->outputs_count.emplace_back(output.size());
   taskDataSeq->outputs = {reinterpret_cast<uint8_t*>(output.data())};
 
   vavilov_v_bellman_ford_seq::TestTaskSequential testTaskSequential(taskDataSeq);
@@ -93,7 +93,7 @@ TEST(vavilov_v_bellman_ford_seq, SingleVertexGraph) {
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs_count = {vertices, edges_count, 1};
   taskDataSeq->inputs = {reinterpret_cast<uint8_t*>(&source), reinterpret_cast<uint8_t*>(edges.data())};
-  taskDataSeq->outputs_count = {output.size()};
+  taskDataSeq->outputs_count.emplace_back(output.size());
   taskDataSeq->outputs = {reinterpret_cast<uint8_t*>(output.data())};
 
   vavilov_v_bellman_ford_seq::TestTaskSequential testTaskSequential(taskDataSeq);
