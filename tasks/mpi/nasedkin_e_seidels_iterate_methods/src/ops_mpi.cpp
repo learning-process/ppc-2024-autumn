@@ -70,18 +70,25 @@ bool SeidelIterateMethodsMPI::run() {
           x_new[i] -= A[i][j] * x[j];
         }
       }
+
+      if (std::abs(A[i][i]) < epsilon) {
+        std::cerr << "Error: Division by zero detected in run()" << std::endl;
+        return false;
+      }
+
       x_new[i] /= A[i][i];
     }
 
     if (converge(x_new)) {
-      break;
+      x = x_new;
+      return true;
     }
 
     x = x_new;
     ++iteration;
   }
 
-  return true;
+  return iteration < max_iterations;
 }
 
 bool SeidelIterateMethodsMPI::post_processing() { return true; }
@@ -132,7 +139,6 @@ double SeidelIterateMethodsMPI::calculate_residual_norm() {
   for (double value : Ax_minus_b) {
     norm += value * value;
   }
-
   return std::sqrt(norm);
 }
 

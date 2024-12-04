@@ -4,12 +4,14 @@
 #include <memory>
 #include <vector>
 #include <random>
+#include <cmath>
+#include <iostream>
 
 #include "core/task/include/task.hpp"
 
 namespace nasedkin_e_seidels_iterate_methods_mpi {
 
-class SeidelIterateMethodsMPI : public ppc::core::Task {
+ class SeidelIterateMethodsMPI : public ppc::core::Task {
  public:
   explicit SeidelIterateMethodsMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
 
@@ -31,6 +33,6 @@ class SeidelIterateMethodsMPI : public ppc::core::Task {
   int max_iterations;
 
   bool converge(const std::vector<double>& x_new);
-};
+ };
 
 }  // namespace nasedkin_e_seidels_iterate_methods_mpi
