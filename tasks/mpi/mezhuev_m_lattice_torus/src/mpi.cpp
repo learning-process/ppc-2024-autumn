@@ -62,7 +62,6 @@ bool GridTorusTopologyParallel::validation() {
   return global_valid;
 }
 
-
 bool GridTorusTopologyParallel::run() {
   int rank = world.rank();
   int size = world.size();
