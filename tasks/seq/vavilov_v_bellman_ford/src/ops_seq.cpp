@@ -21,7 +21,7 @@ bool vavilov_v_bellman_ford_seq::TestTaskSequential::pre_processing() {
 bool vavilov_v_bellman_ford_seq::TestTaskSequential::validation() {
   internal_order_test();
 
-  return (!taskData->inputs.empty() && taskData->inputs_count.size() >= 4);
+  return (!taskData->inputs.empty());
 }
 
 bool vavilov_v_bellman_ford_seq::TestTaskSequential::run() {
