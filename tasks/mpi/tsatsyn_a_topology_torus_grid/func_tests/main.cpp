@@ -106,7 +106,7 @@ TEST(tsatsyn_a_topology_torus_grid_mpi, Test_Send_500000) {
     ASSERT_EQ(count_size_vector, global_sum[0]);
   }
 }
-TEST(tsatsyn_a_topology_torus_grid_mpi, Test_Send_100000) {
+TEST(tsatsyn_a_topology_torus_grid_mpi, Test_Send_10001) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_sum(1, 0);
