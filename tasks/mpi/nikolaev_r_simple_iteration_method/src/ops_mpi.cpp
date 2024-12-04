@@ -169,13 +169,13 @@ bool nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodParallel::run(
   boost::mpi::scatterv(world, A_.data(), sizes, displs, local_A.data(), local_size * n, 0);
   boost::mpi::scatterv(world, b_.data(), sizes, displs, local_b.data(), local_size, 0);
 
-  for (int i = 0; i < n; ++i) {
+  for (size_t i = 0; i < n; ++i) {
     if (A_[i * n + i] == 0) {
       std::cerr << "Error: Zero diagonal element detected in matrix A." << std::endl;
       return false;
     }
 
-    for (int j = 0; j < n; ++j) {
+    for (size_t j = 0; j < n; ++j) {
       if (i == j) {
         B[i * n + j] = 0;
       } else {
@@ -195,7 +195,7 @@ bool nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodParallel::run(
       int global_index = displs[world.rank()] + i;
       local_x_new[i] = g[global_index];
 
-      for (int j = 0; j < n; ++j) {
+      for (size_t j = 0; j < n; ++j) {
         local_x_new[i] += B[global_index * n + j] * x_prev[j];
       }
     }
@@ -205,7 +205,7 @@ bool nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodParallel::run(
     if (world.rank() == 0) {
       double max_diff = 0.0;
 
-      for (int i = 0; i < n; ++i) {
+      for (size_t i = 0; i < n; ++i) {
         max_diff = std::max(max_diff, fabs(x_[i] - x_prev[i]));
       }
 
