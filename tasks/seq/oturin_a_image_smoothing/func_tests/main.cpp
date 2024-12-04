@@ -43,9 +43,6 @@ TEST(oturin_a_image_smoothing_seq_functest, Test_IMAGE_LINE) {
   ASSERT_EQ(ref, out);
 }
 
-#if __APPLE__
-#else
-
 TEST(oturin_a_image_smoothing_seq_functest, Test_IMAGE_CIRCLE) {
   std::string file_path = __FILE__;
 #if defined(_WIN32) || defined(WIN32)
@@ -84,7 +81,7 @@ TEST(oturin_a_image_smoothing_seq_functest, Test_IMAGE_CIRCLE) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(ref, out);
+  ASSERT_EQ(ref, out) << width << ' ' << height << ' ' << filenameOriginal << ' ' << filenameCompare;
 }
 
 TEST(oturin_a_image_smoothing_seq_functest, Test_IMAGE_COLOR) {
@@ -121,6 +118,5 @@ TEST(oturin_a_image_smoothing_seq_functest, Test_IMAGE_COLOR) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(ref, out);
+  ASSERT_EQ(ref, out) << width << ' ' << height << ' ' << filenameOriginal << ' ' << filenameCompare;
 }
-#endif
