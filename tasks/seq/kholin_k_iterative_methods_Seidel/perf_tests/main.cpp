@@ -4,7 +4,7 @@
 
 #include "core/perf/include/perf.hpp"
 #include "seq/kholin_k_iterative_methods_Seidel/include/ops_seq.hpp"
-
+//
 TEST(kholin_k_iterative_methods_Seidel_seq, test_pipeline_run) {
   const size_t count_rows = 1000;
   const size_t count_colls = 1000;
