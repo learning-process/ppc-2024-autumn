@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
@@ -7,201 +6,451 @@
 
 #include "mpi/varfolomeev_g_transfer_from_one_to_all_scatter/include/ops_mpi.hpp"
 
-TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Sum) {
+TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Empty_vec) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_sum(1, 0);
-  // Create TaskData
+  std::vector<int> global_vec;            // working vector
+  std::vector<int32_t> global_res(1, 0);  // result vector
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 120;
-    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector);
+    const int count_size_vector = 0;
+    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
+    taskDataPar->outputs_count.emplace_back(global_res.size());
   }
 
-  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "+");
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    ASSERT_EQ(1, 1);
+    std::vector<int32_t> check_vec(1, 0);  // vector to check algorithm by seq. realisation
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(check_vec.data()));
+    taskDataSeq->outputs_count.emplace_back(check_vec.size());
+
+    varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "+");
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(check_vec[0], global_res[0]);
   }
 }
 
-// TEST(varfolomeev_g_transfer_from_one_to_all_scatter, Test_Diff) {
-//   boost::mpi::communicator world;
-//   std::vector<int> global_vec;
-//   std::vector<int32_t> global_diff(1, 0);
-//   // Create TaskData
-//   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Zero_vec) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;            // working vector
+  std::vector<int32_t> global_res(1, 0);  // result vector
 
-//   if (world.rank() == 0) {
-//     const int count_size_vector = 240;
-//     global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector);
-//     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-//     taskDataPar->inputs_count.emplace_back(global_vec.size());
-//     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_diff.data()));
-//     taskDataPar->outputs_count.emplace_back(global_diff.size());
-//   }
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-//   varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "-");
-//   ASSERT_EQ(testMpiTaskParallel.validation(), true);
-//   testMpiTaskParallel.pre_processing();
-//   testMpiTaskParallel.run();
-//   testMpiTaskParallel.post_processing();
+  if (world.rank() == 0) {
+    const int count_size_vector = 0;
+    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, 0, 0);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
+    taskDataPar->outputs_count.emplace_back(global_res.size());
+  }
 
-//   if (world.rank() == 0) {
-//     // Create data
-//     std::vector<int32_t> reference_diff(1, 0);
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "+");
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
 
-//     // Create TaskData
-//     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-//     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-//     taskDataSeq->inputs_count.emplace_back(global_vec.size());
-//     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_diff.data()));
-//     taskDataSeq->outputs_count.emplace_back(reference_diff.size());
+  if (world.rank() == 0) {
+    std::vector<int32_t> check_vec(1, 0);  // vector to check algorithm by seq. realisation
 
-//     // Create Task
-//     varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq,
-//     "-"); ASSERT_EQ(testMpiTaskSequential.validation(), true); testMpiTaskSequential.pre_processing();
-//     testMpiTaskSequential.run();
-//     testMpiTaskSequential.post_processing();
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(check_vec.data()));
+    taskDataSeq->outputs_count.emplace_back(check_vec.size());
 
-//     ASSERT_EQ(reference_diff[0], global_diff[0]);
-//   }
-// }
+    varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "+");
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
 
-// TEST(varfolomeev_g_transfer_from_one_to_all_scatter, Test_Diff_2) {
-//   boost::mpi::communicator world;
-//   std::vector<int> global_vec;
-//   std::vector<int32_t> global_diff(1, 0);
-//   // Create TaskData
-//   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+    ASSERT_EQ(check_vec[0], global_res[0]);
+  }
+}
 
-//   if (world.rank() == 0) {
-//     const int count_size_vector = 120;
-//     global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector);
-//     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-//     taskDataPar->inputs_count.emplace_back(global_vec.size());
-//     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_diff.data()));
-//     taskDataPar->outputs_count.emplace_back(global_diff.size());
-//   }
+TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Sum_Negative) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;            // working vector
+  std::vector<int32_t> global_res(1, 0);  // result vector
 
-//   varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "-");
-//   ASSERT_EQ(testMpiTaskParallel.validation(), true);
-//   testMpiTaskParallel.pre_processing();
-//   testMpiTaskParallel.run();
-//   testMpiTaskParallel.post_processing();
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-//   if (world.rank() == 0) {
-//     // Create data
-//     std::vector<int32_t> reference_diff(1, 0);
+  if (world.rank() == 0) {
+    const int count_size_vector = 130;
+    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -200, -1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
+    taskDataPar->outputs_count.emplace_back(global_res.size());
+  }
 
-//     // Create TaskData
-//     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-//     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-//     taskDataSeq->inputs_count.emplace_back(global_vec.size());
-//     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_diff.data()));
-//     taskDataSeq->outputs_count.emplace_back(reference_diff.size());
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "+");
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
 
-//     // Create Task
-//     varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq,
-//     "-"); ASSERT_EQ(testMpiTaskSequential.validation(), true); testMpiTaskSequential.pre_processing();
-//     testMpiTaskSequential.run();
-//     testMpiTaskSequential.post_processing();
+  if (world.rank() == 0) {
+    std::vector<int32_t> check_vec(1, 0);  // vector to check algorithm by seq. realisation
 
-//     ASSERT_EQ(reference_diff[0], global_diff[0]);
-//   }
-// }
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(check_vec.data()));
+    taskDataSeq->outputs_count.emplace_back(check_vec.size());
 
-// TEST(varfolomeev_g_transfer_from_one_to_all_scatter, Test_Max) {
-//   boost::mpi::communicator world;
-//   std::vector<int> global_vec;
-//   std::vector<int32_t> global_max(1, 0);
-//   // Create TaskData
-//   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+    varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "+");
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
 
-//   if (world.rank() == 0) {
-//     const int count_size_vector = 240;
-//     global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector);
-//     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-//     taskDataPar->inputs_count.emplace_back(global_vec.size());
-//     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
-//     taskDataPar->outputs_count.emplace_back(global_max.size());
-//   }
+    ASSERT_EQ(check_vec[0], global_res[0]);
+  }
+}
 
-//   varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "max");
-//   ASSERT_EQ(testMpiTaskParallel.validation(), true);
-//   testMpiTaskParallel.pre_processing();
-//   testMpiTaskParallel.run();
-//   testMpiTaskParallel.post_processing();
+TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Sum_Positive) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;            // working vector
+  std::vector<int32_t> global_res(1, 0);  // result vector
 
-//   if (world.rank() == 0) {
-//     // Create data
-//     std::vector<int32_t> reference_max(1, 0);
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-//     // Create TaskData
-//     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-//     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-//     taskDataSeq->inputs_count.emplace_back(global_vec.size());
-//     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
-//     taskDataSeq->outputs_count.emplace_back(reference_max.size());
+  if (world.rank() == 0) {
+    const int count_size_vector = 130;
+    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, 0, 200);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
+    taskDataPar->outputs_count.emplace_back(global_res.size());
+  }
 
-//     // Create Task
-//     varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq,
-//     "max"); ASSERT_EQ(testMpiTaskSequential.validation(), true); testMpiTaskSequential.pre_processing();
-//     testMpiTaskSequential.run();
-//     testMpiTaskSequential.post_processing();
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "+");
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
 
-//     ASSERT_EQ(reference_max[0], global_max[0]);
-//   }
-// }
+  if (world.rank() == 0) {
+    std::vector<int32_t> check_vec(1, 0);  // vector to check algorithm by seq. realisation
 
-// TEST(varfolomeev_g_transfer_from_one_to_all_scatter, Test_Max_2) {
-//   boost::mpi::communicator world;
-//   std::vector<int> global_vec;
-//   std::vector<int32_t> global_max(1, 0);
-//   // Create TaskData
-//   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(check_vec.data()));
+    taskDataSeq->outputs_count.emplace_back(check_vec.size());
 
-//   if (world.rank() == 0) {
-//     const int count_size_vector = 120;
-//     global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector);
-//     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-//     taskDataPar->inputs_count.emplace_back(global_vec.size());
-//     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
-//     taskDataPar->outputs_count.emplace_back(global_max.size());
-//   }
+    varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "+");
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
 
-//   varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "max");
-//   ASSERT_EQ(testMpiTaskParallel.validation(), true);
-//   testMpiTaskParallel.pre_processing();
-//   testMpiTaskParallel.run();
-//   testMpiTaskParallel.post_processing();
+    ASSERT_EQ(check_vec[0], global_res[0]);
+  }
+}
 
-//   if (world.rank() == 0) {
-//     // Create data
-//     std::vector<int32_t> reference_max(1, 0);
+TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Sum_Negative_Positive) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;            // working vector
+  std::vector<int32_t> global_res(1, 0);  // result vector
 
-//     // Create TaskData
-//     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-//     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-//     taskDataSeq->inputs_count.emplace_back(global_vec.size());
-//     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_max.data()));
-//     taskDataSeq->outputs_count.emplace_back(reference_max.size());
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-//     // Create Task
-//     varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq,
-//     "max"); ASSERT_EQ(testMpiTaskSequential.validation(), true); testMpiTaskSequential.pre_processing();
-//     testMpiTaskSequential.run();
-//     testMpiTaskSequential.post_processing();
+  if (world.rank() == 0) {
+    const int count_size_vector = 130;
+    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -100, 100);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
+    taskDataPar->outputs_count.emplace_back(global_res.size());
+  }
 
-//     ASSERT_EQ(reference_max[0], global_max[0]);
-//   }
-// }
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "+");
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int32_t> check_vec(1, 0);  // vector to check algorithm by seq. realisation
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(check_vec.data()));
+    taskDataSeq->outputs_count.emplace_back(check_vec.size());
+
+    varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "+");
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(check_vec[0], global_res[0]);
+  }
+}
+
+TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Diff_Negative) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;            // working vector
+  std::vector<int32_t> global_res(1, 0);  // result vector
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    const int count_size_vector = 130;
+    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -200, -1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
+    taskDataPar->outputs_count.emplace_back(global_res.size());
+  }
+
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "-");
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int32_t> check_vec(1, 0);  // vector to check algorithm by seq. realisation
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(check_vec.data()));
+    taskDataSeq->outputs_count.emplace_back(check_vec.size());
+
+    varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "-");
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(check_vec[0], global_res[0]);
+  }
+}
+
+TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Diff_Positive) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;            // working vector
+  std::vector<int32_t> global_res(1, 0);  // result vector
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    const int count_size_vector = 130;
+    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, 0, 200);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
+    taskDataPar->outputs_count.emplace_back(global_res.size());
+  }
+
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "-");
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int32_t> check_vec(1, 0);  // vector to check algorithm by seq. realisation
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(check_vec.data()));
+    taskDataSeq->outputs_count.emplace_back(check_vec.size());
+
+    varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "-");
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(check_vec[0], global_res[0]);
+  }
+}
+
+TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Diff_Negative_Positive) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;            // working vector
+  std::vector<int32_t> global_res(1, 0);  // result vector
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    const int count_size_vector = 130;
+    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -100, 100);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
+    taskDataPar->outputs_count.emplace_back(global_res.size());
+  }
+
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "-");
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int32_t> check_vec(1, 0);  // vector to check algorithm by seq. realisation
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(check_vec.data()));
+    taskDataSeq->outputs_count.emplace_back(check_vec.size());
+
+    varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "-");
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(check_vec[0], global_res[0]);
+  }
+}
+
+TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Max_Negative) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;            // working vector
+  std::vector<int32_t> global_res(1, 0);  // result vector
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    const int count_size_vector = 130;
+    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -200, -1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
+    taskDataPar->outputs_count.emplace_back(global_res.size());
+  }
+
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "max");
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int32_t> check_vec(1, 0);  // vector to check algorithm by seq. realisation
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(check_vec.data()));
+    taskDataSeq->outputs_count.emplace_back(check_vec.size());
+
+    varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "max");
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(check_vec[0], global_res[0]);
+  }
+}
+
+TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Max_Positive) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;            // working vector
+  std::vector<int32_t> global_res(1, 0);  // result vector
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    const int count_size_vector = 130;
+    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, 0, 200);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
+    taskDataPar->outputs_count.emplace_back(global_res.size());
+  }
+
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "max");
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int32_t> check_vec(1, 0);  // vector to check algorithm by seq. realisation
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(check_vec.data()));
+    taskDataSeq->outputs_count.emplace_back(check_vec.size());
+
+    varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "max");
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(check_vec[0], global_res[0]);
+  }
+}
+
+TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Max_Negative_Positive) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;            // working vector
+  std::vector<int32_t> global_res(1, 0);  // result vector
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    const int count_size_vector = 130;
+    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -100, 100);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
+    taskDataPar->outputs_count.emplace_back(global_res.size());
+  }
+
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "max");
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int32_t> check_vec(1, 0);  // vector to check algorithm by seq. realisation
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(check_vec.data()));
+    taskDataSeq->outputs_count.emplace_back(check_vec.size());
+
+    varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "max");
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(check_vec[0], global_res[0]);
+  }
+}
