@@ -20,7 +20,8 @@ bool kholin_k_iterative_methods_Seidel_seq::IsDiagPred(std::vector<float> row_co
   return diag_element > abs_sum;
 }
 
-int kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::rank(std::vector<float> local_matrix, size_t n, size_t m) {
+int kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::rank(std::vector<float> local_matrix, size_t n,
+                                                                    size_t m) {
   int rank = 0;
 
   for (size_t i = 0; i < std::min(n, m); ++i) {
