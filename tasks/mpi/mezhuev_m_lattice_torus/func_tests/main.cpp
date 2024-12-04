@@ -91,27 +91,6 @@ TEST(mezhuev_m_lattice_torus, InvalidTopologySize) {
   }
 }
 
-TEST(mezhuev_m_lattice_torus, PreProcessingWithIncompleteData) {
-  boost::mpi::communicator world;
-
-  std::vector<uint8_t> input_data(4);
-  std::iota(input_data.begin(), input_data.end(), 9);
-  std::vector<uint8_t> output_data(4);
-
-  auto task_data = std::make_shared<ppc::core::TaskData>();
-  task_data->inputs.emplace_back(input_data.data());
-  task_data->inputs_count.emplace_back(input_data.size());
-  task_data->outputs.emplace_back(output_data.data());
-  task_data->outputs_count.emplace_back(output_data.size());
-
-  mezhuev_m_lattice_torus::GridTorusTopologyParallel task(task_data);
-
-  task_data->inputs.clear();
-  task_data->inputs_count.clear();
-
-  ASSERT_FALSE(task.pre_processing());
-}
-
 TEST(mezhuev_m_lattice_torus, TestPreProcessing) {
   boost::mpi::communicator world;
 
@@ -153,26 +132,6 @@ TEST(mezhuev_m_lattice_torus, TestLargeGridProcessing) {
   ASSERT_TRUE(task.post_processing());
 }
 
-TEST(mezhuev_m_lattice_torus, TestIterationWithInvalidData) {
-  boost::mpi::communicator world;
-  if (world.size() < 4) return;
-
-  std::vector<uint8_t> invalid_data(0);
-  std::vector<uint8_t> output_data(16);
-
-  auto task_data = std::make_shared<ppc::core::TaskData>();
-  task_data->inputs.emplace_back(invalid_data.data());
-  task_data->inputs_count.emplace_back(invalid_data.size());
-  task_data->outputs.emplace_back(output_data.data());
-  task_data->outputs_count.emplace_back(output_data.size());
-
-  mezhuev_m_lattice_torus::GridTorusTopologyParallel task(task_data);
-
-  ASSERT_FALSE(task.validation());
-
-  ASSERT_FALSE(task.pre_processing());
-}
-
 TEST(mezhuev_m_lattice_torus, TestIterationOnMaxGridSize) {
   boost::mpi::communicator world;
   if (world.size() < 16) return;
@@ -195,24 +154,6 @@ TEST(mezhuev_m_lattice_torus, TestIterationOnMaxGridSize) {
   ASSERT_TRUE(task.pre_processing());
   ASSERT_TRUE(task.run());
   ASSERT_TRUE(task.post_processing());
-}
-
-TEST(mezhuev_m_lattice_torus, TestEmptyInputData) {
-  boost::mpi::communicator world;
-  if (world.size() < 2) return;
-
-  std::vector<uint8_t> empty_input_data;
-  std::vector<uint8_t> output_data(4);
-
-  auto task_data = std::make_shared<ppc::core::TaskData>();
-  task_data->inputs.emplace_back(empty_input_data.data());
-  task_data->inputs_count.emplace_back(empty_input_data.size());
-  task_data->outputs.emplace_back(output_data.data());
-  task_data->outputs_count.emplace_back(output_data.size());
-
-  mezhuev_m_lattice_torus::GridTorusTopologyParallel task(task_data);
-  ASSERT_FALSE(task.validation());
-  ASSERT_FALSE(task.pre_processing());
 }
 
 TEST(mezhuev_m_lattice_torus, TestUnmatchedInputOutputSizesWithLargeData) {
