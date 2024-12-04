@@ -124,20 +124,24 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::validation() 
   size_t num_rows = taskData->inputs_count[0];
   size_t num_colls = taskData->inputs_count[1];
 
+  float* matrix_ = new float[num_rows * num_colls];
+  std::memcpy(matrix_, matrix, sizeof(float) * (num_rows * num_colls));
+
   float* matrix_extended = new float[num_rows * num_colls + 1];
   size_t k = 0;
   for (size_t i = 0; i < num_rows; i++) {
     for (size_t j = 0; j < num_colls; j++) {
-      matrix_extended[num_colls + 1 * i + j] = matrix[num_colls * i + j];
+      matrix_extended[num_colls + 1 * i + j] = matrix_[num_colls * i + j];
       if (j + 1 == num_colls) {
         k = j + 1;
       }
     }
     matrix_extended[num_colls + 1 * i + k] = B_[i];
   }
-  int rank_A = rank(matrix, num_rows, num_colls);
+  int rank_A = rank(matrix_, num_rows, num_colls);
   int rank_A_ = rank(matrix_extended, num_rows, num_colls);
   delete[] matrix_extended;
+  delete[] matrix_;
   bool IsSingleDecision = rank_A == rank_A_;
 
   return CheckDiagPred(matrix, taskData->inputs_count[0], taskData->inputs_count[1]) &&
@@ -334,20 +338,24 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::validation() {
     size_t num_rows = taskData->inputs_count[0];
     size_t num_colls = taskData->inputs_count[1];
 
+    float* matrix_ = new float[num_rows * num_colls];
+    std::memcpy(matrix_, matrix, sizeof(float) * (num_rows * num_colls));
+
     float* matrix_extended = new float[num_rows * num_colls + 1];
     size_t k = 0;
     for (size_t i = 0; i < num_rows; i++) {
       for (size_t j = 0; j < num_colls; j++) {
-        matrix_extended[num_colls + 1 * i + j] = matrix[num_colls * i + j];
+        matrix_extended[num_colls + 1 * i + j] = matrix_[num_colls * i + j];
         if (j + 1 == num_colls) {
           k = j + 1;
         }
       }
       matrix_extended[num_colls + 1 * i + k] = B_[i];
     }
-    int rank_A = rank(matrix, num_rows, num_colls);
+    int rank_A = rank(matrix_, num_rows, num_colls);
     int rank_A_ = rank(matrix_extended, num_rows, num_colls);
     delete[] matrix_extended;
+    delete[] matrix_;
     bool IsSingleDecision = rank_A == rank_A_;
 
     return CheckDiagPred(matrix, taskData->inputs_count[0], taskData->inputs_count[1]) &&
