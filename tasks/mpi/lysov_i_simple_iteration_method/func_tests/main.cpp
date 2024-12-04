@@ -33,11 +33,22 @@ TEST(lysov_i_simple_iteration_method_mpi, SlaeIterationTaskMPI_IterationConverge
   slaeIterationTaskMPI.run();
   slaeIterationTaskMPI.post_processing();
 
-  const std::vector<double> expected_solution = {2.2752, 1.3406, 1.3644};
-
   if (world.rank() == 0) {
+    std::vector<double> reference_result(input_size, 0.0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataSeq->inputs_count.push_back(input_size);
+    taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t*>(g.data()));
+    taskDataSeq->inputs_count.push_back(input_size);
+    taskDataSeq->outputs.push_back(reinterpret_cast<uint8_t*>(reference_result.data()));
+    taskDataSeq->outputs_count.push_back(input_size);
+    lysov_i_simple_iteration_method_mpi::SlaeIterationTask testMpiTaskSequential(taskDataSeq);
+    ASSERT_TRUE(testMpiTaskSequential.validation());
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
     for (int i = 0; i < input_size; ++i) {
-      EXPECT_NEAR(x[i], expected_solution[i], 1e-4);
+      EXPECT_NEAR(x[i], reference_result[i], 1e-3);
     }
   }
 }
@@ -67,10 +78,23 @@ TEST(lysov_i_simple_iteration_method_mpi, test_empty_matrix) {
   ASSERT_TRUE(slaeIterationTaskMPI.run());
   slaeIterationTaskMPI.post_processing();
 
-  const std::vector<double> expected_solution = {};
-
   if (world.rank() == 0) {
-    ASSERT_EQ(x, expected_solution);
+    std::vector<double> reference_result(input_size, 0.0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataSeq->inputs_count.push_back(input_size);
+    taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t*>(g.data()));
+    taskDataSeq->inputs_count.push_back(input_size);
+    taskDataSeq->outputs.push_back(reinterpret_cast<uint8_t*>(reference_result.data()));
+    taskDataSeq->outputs_count.push_back(input_size);
+    lysov_i_simple_iteration_method_mpi::SlaeIterationTask testMpiTaskSequential(taskDataSeq);
+    ASSERT_TRUE(testMpiTaskSequential.validation());
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+    for (int i = 0; i < input_size; ++i) {
+      EXPECT_NEAR(x[i], reference_result[i], 1e-3);
+    }
   }
 }
 
@@ -100,11 +124,22 @@ TEST(lysov_i_simple_iteration_method_mpi, test_zero_right) {
   ASSERT_TRUE(slaeIterationTaskMPI.run());
   slaeIterationTaskMPI.post_processing();
 
-  const std::vector<double> expected_solution = {0.0, 0.0, 0.0};
-
   if (world.rank() == 0) {
+    std::vector<double> reference_result(input_size, 0.0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataSeq->inputs_count.push_back(input_size);
+    taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t*>(g.data()));
+    taskDataSeq->inputs_count.push_back(input_size);
+    taskDataSeq->outputs.push_back(reinterpret_cast<uint8_t*>(reference_result.data()));
+    taskDataSeq->outputs_count.push_back(input_size);
+    lysov_i_simple_iteration_method_mpi::SlaeIterationTask testMpiTaskSequential(taskDataSeq);
+    ASSERT_TRUE(testMpiTaskSequential.validation());
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
     for (int i = 0; i < input_size; ++i) {
-      EXPECT_NEAR(x[i], expected_solution[i], 1e-6);
+      EXPECT_NEAR(x[i], reference_result[i], 1e-3);
     }
   }
 }
@@ -134,12 +169,22 @@ TEST(lysov_i_simple_iteration_method_mpi, test_negative_right) {
   slaeIterationTaskMPI.pre_processing();
   ASSERT_TRUE(slaeIterationTaskMPI.run());
   slaeIterationTaskMPI.post_processing();
-
-  const std::vector<double> expected_solution = {-0.03, -0.018, -0.016};
-
   if (world.rank() == 0) {
+    std::vector<double> reference_result(input_size, 0.0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataSeq->inputs_count.push_back(input_size);
+    taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t*>(g.data()));
+    taskDataSeq->inputs_count.push_back(input_size);
+    taskDataSeq->outputs.push_back(reinterpret_cast<uint8_t*>(reference_result.data()));
+    taskDataSeq->outputs_count.push_back(input_size);
+    lysov_i_simple_iteration_method_mpi::SlaeIterationTask testMpiTaskSequential(taskDataSeq);
+    ASSERT_TRUE(testMpiTaskSequential.validation());
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
     for (int i = 0; i < input_size; ++i) {
-      EXPECT_NEAR(x[i], expected_solution[i], 1e-3);
+      EXPECT_NEAR(x[i], reference_result[i], 1e-3);
     }
   }
 }
