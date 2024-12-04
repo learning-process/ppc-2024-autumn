@@ -149,7 +149,7 @@ bool nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodParallel::run(
     int base_size = n / world.size();
     int remainder = n % world.size();
 
-    for (size_t i = 0; i < world.size(); ++i) {
+    for (int i = 0; i < world.size(); ++i) {
       sizes[i] = base_size + (i < remainder ? 1 : 0);
       if (i > 0) {
         displs[i] = displs[i - 1] + sizes[i - 1];
