@@ -4,27 +4,6 @@
 
 using namespace std::chrono_literals;
 
-namespace kholin_k_iterative_methods_Seidel_seq {
-bool IsDiagPred(std::vector<float> row_coeffs, size_t num_colls, size_t start_index, size_t index);
-void copyA_(std::vector<float>);
-std::vector<float> getA_();
-void setA_(std::vector<float> val, size_t num_rows, size_t num_colls);
-bool gen_matrix_with_diag_pred(size_t num_rows, size_t num_colls);
-float gen_float_value();
-std::vector<float> gen_vector(size_t sz);
-std::vector<float> A_;
-}  // namespace kholin_k_iterative_methods_Seidel_seq
-
-void kholin_k_iterative_methods_Seidel_seq::copyA_(std::vector<float> val) {
-  std::copy(A_.begin(), A_.end(), val.begin());
-}
-void kholin_k_iterative_methods_Seidel_seq::setA_(std::vector<float> val, size_t num_rows, size_t num_colls) {
-  A_ = std::vector<float>(num_rows * num_colls, 0.0f);
-  std::copy(val.begin(), val.end(), A_.begin());
-}
-
-std::vector<float> kholin_k_iterative_methods_Seidel_seq::getA_() { return A_; }
-
 bool kholin_k_iterative_methods_Seidel_seq::IsDiagPred(std::vector<float> row_coeffs, size_t num_colls,
                                                        size_t start_index, size_t index) {
   float diag_element = std::fabs(row_coeffs[index]);
@@ -41,6 +20,54 @@ bool kholin_k_iterative_methods_Seidel_seq::IsDiagPred(std::vector<float> row_co
   return diag_element > abs_sum;
 }
 
+int kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::rank(float matrix[], size_t n, size_t m) {
+  float* local_matrix = new float[n * m];
+  std::memcpy(local_matrix, matrix, sizeof(float) * n * m);
+  int rank = 0;
+
+  for (size_t i = 0; i < std::min(n, m); ++i) {
+    size_t max_row = i;
+    for (size_t k = i + 1; k < n; ++k) {
+      if (std::abs(local_matrix[k * m + i]) > std::abs(local_matrix[max_row * m + i])) {
+        max_row = k;
+      }
+    }
+
+    if (std::abs(local_matrix[max_row * m + i]) < std::numeric_limits<double>::epsilon()) {
+      continue;
+    }
+    std::swap(local_matrix[i], local_matrix[max_row]);
+
+    for (size_t j = i + 1; j < n; ++j) {
+      double factor = local_matrix[j * m + i] / local_matrix[i * m + i];
+      for (size_t k = i; k < m; ++k) {
+        local_matrix[j * m + k] -= factor * local_matrix[i * m + k];
+      }
+    }
+    rank++;
+  }
+  delete[] local_matrix;
+  return rank;
+}
+bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::IsSingleDecision(float matrix[], float B_[],
+                                                                                 size_t num_rows, size_t num_colls) {
+  float* matrix_extended = new float[num_rows * num_colls + 1];
+  size_t k = 0;
+  for (size_t i = 0; i < num_rows; i++) {
+    for (size_t j = 0; j < num_colls; j++) {
+      matrix_extended[num_colls + 1 * i + j] = matrix[num_colls * i + j];
+      if (j + 1 == num_colls) {
+        k = j + 1;
+      }
+    }
+    matrix_extended[num_colls + 1 * i + k] = B_[i];
+  }
+  int rank_A = rank(matrix, num_rows, num_colls);
+  int rank_A_ = rank(matrix_extended, num_rows, num_colls);
+  delete[] matrix_extended;
+  return rank_A == rank_A_;
+}
+
 float kholin_k_iterative_methods_Seidel_seq::gen_float_value() {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -49,10 +76,10 @@ float kholin_k_iterative_methods_Seidel_seq::gen_float_value() {
   return coeff(gen);
 }
 
-bool kholin_k_iterative_methods_Seidel_seq::gen_matrix_with_diag_pred(size_t num_rows, size_t num_colls) {
+std::vector<float> kholin_k_iterative_methods_Seidel_seq::gen_matrix_with_diag_pred(size_t num_rows, size_t num_colls) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  A_ = std::vector<float>(num_rows * num_colls, 0.0f);
+  std::vector<float> A_(num_rows * num_colls, 0.0f);
   float p1 = -(1000.0f * 1000.0f * 1000.0f);
   float p2 = -p1;
   float mult = 100 * 100;
@@ -70,7 +97,7 @@ bool kholin_k_iterative_methods_Seidel_seq::gen_matrix_with_diag_pred(size_t num
       }
     } while (!IsDiagPred(A_, num_colls, num_colls * i, num_colls * i + i));
   }
-  return true;
+  return A_;
 }
 
 bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::pre_processing() {
@@ -107,8 +134,11 @@ void kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::AllocateBuffers(
 
 bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::validation() {
   internal_order_test();
-  return CheckDiagPred(getA_(), taskData->inputs_count[0], taskData->inputs_count[1]) &&
-         IsQuadro(taskData->inputs_count[0], taskData->inputs_count[1]);
+  auto* matrix = reinterpret_cast<float*>(taskData->inputs[0]);
+  auto* B_ = reinterpret_cast<float*>(taskData->inputs[3]);
+  return CheckDiagPred(matrix, taskData->inputs_count[0], taskData->inputs_count[1]) &&
+         IsQuadro(taskData->inputs_count[0], taskData->inputs_count[1]) &&
+         IsSingleDecision(matrix, B_, taskData->inputs_count[0], taskData->inputs_count[1]);
 }
 
 bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::run() {
@@ -129,8 +159,8 @@ bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::IsQuadro(size_t 
   return num_rows == num_colls;
 }
 
-bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::CheckDiagPred(std::vector<float> matrix,
-                                                                              size_t num_rows, size_t num_colls) {
+bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::CheckDiagPred(float matrix[], size_t num_rows,
+                                                                              size_t num_colls) {
   size_t rows = num_rows;
   size_t colls = num_colls;
   float abs_diag_element = 0.0f;

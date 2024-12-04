@@ -7,27 +7,6 @@
 #include <random>
 using namespace std::chrono_literals;
 
-namespace kholin_k_iterative_methods_Seidel_mpi {
-bool IsDiagPred(std::vector<float> row_coeffs, size_t num_colls, size_t start_index, size_t index);
-void copyA_(std::vector<float> val);
-std::vector<float> getA_();
-void setA_(std::vector<float> val, size_t num_rows, size_t num_colls);
-bool gen_matrix_with_diag_pred(size_t num_rows, size_t num_colls);
-float gen_float_value();
-std::vector<float> gen_vector(size_t sz);
-std::vector<float> A_;
-}  // namespace kholin_k_iterative_methods_Seidel_mpi
-
-void kholin_k_iterative_methods_Seidel_mpi::copyA_(std::vector<float> val) {
-  std::copy(A_.begin(), A_.end(), val.begin());
-}
-void kholin_k_iterative_methods_Seidel_mpi::setA_(std::vector<float> val, size_t num_rows, size_t num_colls) {
-  A_ = std::vector<float>(num_rows * num_colls, 0.0f);
-  std::copy(val.begin(), val.end(), A_.begin());
-}
-
-std::vector<float> kholin_k_iterative_methods_Seidel_mpi::getA_() { return A_; }
-
 bool kholin_k_iterative_methods_Seidel_mpi::IsDiagPred(std::vector<float> row_coeffs, size_t num_colls,
                                                        size_t start_index, size_t index) {
   float diag_element = std::fabs(row_coeffs[index]);
@@ -52,15 +31,11 @@ float kholin_k_iterative_methods_Seidel_mpi::gen_float_value() {
   return coeff(gen);
 }
 
-bool kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(size_t num_rows, size_t num_colls) {
+std::vector<float> kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(size_t num_rows, size_t num_colls,
+                                                                                    float p1, float p2) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  if (num_rows == 0 || num_colls == 0) {
-    return false;
-  }
-  A_ = std::vector<float>(num_rows * num_colls, 0.0f);
-  float p1 = -(1000.0f * 1000.0f * 1000.0f);
-  float p2 = -p1;
+  std::vector<float> A_(num_rows * num_colls, 0.0f);
   // float mult = 100 * 100;
   std::uniform_real_distribution<float> coeff_diag(p1, p2);
   std::uniform_real_distribution<float> coeff_no_diag(-10, 100);
@@ -76,7 +51,7 @@ bool kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(size_t num
       }
     } while (!IsDiagPred(A_, num_colls, num_colls * i, num_colls * i + i));
   }
-  return true;
+  return A_;
 }
 
 void kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::SetDefault() {
@@ -85,6 +60,55 @@ void kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::SetDefault() 
   X = std::vector<float>(n_rows, 1.0f);
   B = std::vector<float>(n_rows);
   X0 = std::vector<float>(n_rows);
+}
+
+int kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::rank(float matrix[], size_t n, size_t m) {
+  float* local_matrix = new float[n * m];
+  std::memcpy(local_matrix, matrix, sizeof(float) * n * m);
+  int rank = 0;
+
+  for (size_t i = 0; i < std::min(n, m); ++i) {
+    size_t max_row = i;
+    for (size_t k = i + 1; k < n; ++k) {
+      if (std::abs(local_matrix[k * m + i]) > std::abs(local_matrix[max_row * m + i])) {
+        max_row = k;
+      }
+    }
+
+    if (std::abs(local_matrix[max_row * m + i]) < std::numeric_limits<double>::epsilon()) {
+      continue;
+    }
+    std::swap(local_matrix[i], local_matrix[max_row]);
+
+    for (size_t j = i + 1; j < n; ++j) {
+      double factor = local_matrix[j * m + i] / local_matrix[i * m + i];
+      for (size_t k = i; k < m; ++k) {
+        local_matrix[j * m + k] -= factor * local_matrix[i * m + k];
+      }
+    }
+    rank++;
+  }
+  delete[] local_matrix;
+  return rank;
+}
+
+bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::IsSingleDecision(float matrix[], float B_[],
+                                                                                    size_t num_rows, size_t num_colls) {
+  float* matrix_extended = new float[num_rows * num_colls + 1];
+  size_t k = 0;
+  for (size_t i = 0; i < num_rows; i++) {
+    for (size_t j = 0; j < num_colls; j++) {
+      matrix_extended[num_colls + 1 * i + j] = matrix[num_colls * i + j];
+      if (j + 1 == num_colls) {
+        k = j + 1;
+      }
+    }
+    matrix_extended[num_colls + 1 * i + k] = B_[i];
+  }
+  int rank_A = rank(matrix, num_rows, num_colls);
+  int rank_A_ = rank(matrix_extended, num_rows, num_colls);
+  delete[] matrix_extended;
+  return rank_A == rank_A_;
 }
 
 bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::pre_processing() {
@@ -113,8 +137,11 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::pre_processin
 
 bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  return CheckDiagPred(getA_(), taskData->inputs_count[0], taskData->inputs_count[1]) &&
-         IsQuadro(taskData->inputs_count[0], taskData->inputs_count[1]);
+  auto* matrix = reinterpret_cast<float*>(taskData->inputs[0]);
+  auto* B_ = reinterpret_cast<float*>(taskData->inputs[3]);
+  return CheckDiagPred(matrix, taskData->inputs_count[0], taskData->inputs_count[1]) &&
+         IsQuadro(taskData->inputs_count[0], taskData->inputs_count[1]) &&
+         IsSingleDecision(matrix, B_, taskData->inputs_count[0], taskData->inputs_count[1]);
 }
 
 bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::run() {
@@ -137,8 +164,7 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::IsQuadro(cons
   return num_rows == num_colls;
 }
 
-bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::CheckDiagPred(std::vector<float> matrix,
-                                                                                 const size_t num_rows,
+bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::CheckDiagPred(float matrix[], const size_t num_rows,
                                                                                  const size_t num_colls) {
   size_t rows = num_rows;
   size_t colls = num_colls;
@@ -266,21 +292,66 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::pre_processing(
   return true;
 }
 
+int kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::rank(float matrix[], size_t n, size_t m) {
+  float* local_matrix = new float[n * m];
+  std::memcpy(local_matrix, matrix, sizeof(float) * n * m);
+  int rank = 0;
+
+  for (size_t i = 0; i < std::min(n, m); ++i) {
+    size_t max_row = i;
+    for (size_t k = i + 1; k < n; ++k) {
+      if (std::abs(local_matrix[k * m + i]) > std::abs(local_matrix[max_row * m + i])) {
+        max_row = k;
+      }
+    }
+
+    if (std::abs(local_matrix[max_row * m + i]) < std::numeric_limits<double>::epsilon()) {
+      continue;
+    }
+    std::swap(local_matrix[i], local_matrix[max_row]);
+
+    for (size_t j = i + 1; j < n; ++j) {
+      double factor = local_matrix[j * m + i] / local_matrix[i * m + i];
+      for (size_t k = i; k < m; ++k) {
+        local_matrix[j * m + k] -= factor * local_matrix[i * m + k];
+      }
+    }
+    rank++;
+  }
+  delete[] local_matrix;
+  return rank;
+}
+
+bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::IsSingleDecision(float matrix[], float B_[],
+                                                                                  size_t num_rows, size_t num_colls) {
+  float* matrix_extended = new float[num_rows * num_colls + 1];
+  size_t k = 0;
+  for (size_t i = 0; i < num_rows; i++) {
+    for (size_t j = 0; j < num_colls; j++) {
+      matrix_extended[num_colls + 1 * i + j] = matrix[num_colls * i + j];
+      if (j + 1 == num_colls) {
+        k = j + 1;
+      }
+    }
+    matrix_extended[num_colls + 1 * i + k] = B_[i];
+  }
+  int rank_A = rank(matrix, num_rows, num_colls);
+  int rank_A_ = rank(matrix_extended, num_rows, num_colls);
+  delete[] matrix_extended;
+  return rank_A == rank_A_;
+}
+
 bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   int ProcRank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   sz_t = get_mpi_type();
   if (ProcRank == 0) {
-    bool valid1 = IsQuadro(taskData->inputs_count[0], taskData->inputs_count[1]);
-    if (!valid1) {
-      return false;
-    }
-    bool valid2 = CheckDiagPred(getA_(), taskData->inputs_count[0], taskData->inputs_count[1]);
-    if (!valid2) {
-      return valid2;
-    }
-    return true;
+    auto* matrix = reinterpret_cast<float*>(taskData->inputs[0]);
+    auto* B_ = reinterpret_cast<float*>(taskData->inputs[3]);
+    return CheckDiagPred(matrix, taskData->inputs_count[0], taskData->inputs_count[1]) &&
+           IsQuadro(taskData->inputs_count[0], taskData->inputs_count[1]) &&
+           IsSingleDecision(matrix, B_, taskData->inputs_count[0], taskData->inputs_count[1]);
   }
   return true;
 }
@@ -335,8 +406,8 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::IsQuadro(size_t
   return num_rows == num_colls;
 }
 
-bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::CheckDiagPred(std::vector<float> matrix,
-                                                                               size_t num_rows, size_t num_colls) {
+bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::CheckDiagPred(float matrix[], size_t num_rows,
+                                                                               size_t num_colls) {
   size_t rows = num_rows;
   size_t colls = num_colls;
   float abs_diag_element = 0.0f;

@@ -21,16 +21,16 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, test_pipeline_run) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (ProcRank == 0) {
-    in = std::vector<float>(count_rows * count_colls);
+    float p1 = -(10.0f * 10.0f * 10.0f);
+    float p2 = -p1;
+    in = kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls,p1,p2);
     out = std::vector<float>(count_rows);
     X0 = std::vector<float>(count_rows, 0.0f);
     B = kholin_k_iterative_methods_Seidel_mpi::gen_vector(count_rows);
-    kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls);
-    kholin_k_iterative_methods_Seidel_mpi::copyA_(in);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(X0.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataPar->inputs_count.emplace_back(count_rows);
     taskDataPar->inputs_count.emplace_back(count_colls);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
@@ -75,12 +75,12 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, test_task_run) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (ProcRank == 0) {
-    in = std::vector<float>(count_rows * count_colls);
+    float p1 = -(10.0f * 10.0f * 10.0f);
+    float p2 = -p1;
+    in = kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls,p1,p2);
     out = std::vector<float>(count_rows);
     X0 = std::vector<float>(count_rows, 0.0f);
     B = kholin_k_iterative_methods_Seidel_mpi::gen_vector(count_rows);
-    kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls);
-    kholin_k_iterative_methods_Seidel_mpi::copyA_(in);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(X0.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));

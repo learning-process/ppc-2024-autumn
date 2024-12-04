@@ -22,6 +22,10 @@ enum ops_ : std::uint8_t { METHOD_SEIDEL };
 }
 
 namespace kholin_k_iterative_methods_Seidel_mpi {
+std::vector<float> gen_matrix_with_diag_pred(size_t num_rows, size_t num_colls, float p1, float p2);
+float gen_float_value();
+bool IsDiagPred(std::vector<float> row_coeffs, size_t num_colls, size_t start_index, size_t index);
+std::vector<float> gen_vector(size_t sz);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
@@ -43,8 +47,10 @@ class TestMPITaskSequential : public ppc::core::Task {
   float epsilon;
   size_t n_rows;
   size_t n_colls;
-  static bool CheckDiagPred(std::vector<float> matrix, size_t num_rows, size_t num_colls);
+  static bool CheckDiagPred(float matrix[], size_t num_rows, size_t num_colls);
   static bool IsQuadro(size_t num_rows, size_t num_colls);
+  bool IsSingleDecision(float matrix[], float B[], size_t num_rows, size_t num_colls);
+  int rank(float matrix[], size_t n, size_t m);
   void iteration_perfomance();
   void SetDefault();
   float d();
@@ -86,8 +92,10 @@ class TestMPITaskParallel : public ppc::core::Task {
   int count;
   float max_delta;
   float global_x;
-  static bool CheckDiagPred(std::vector<float> matrix, size_t num_rows, size_t num_colls);
+  static bool CheckDiagPred(float matrix[], size_t num_rows, size_t num_colls);
   static bool IsQuadro(size_t num_rows, size_t num_colls);
+  bool IsSingleDecision(float matrix[], float B[], size_t num_rows, size_t num_colls);
+  int rank(float matrix[], size_t n, size_t m);
   static std::vector<float> gen_vector(size_t sz);
   void to_upper_diag_matrix();
   void to_lower_diag_matrix();
