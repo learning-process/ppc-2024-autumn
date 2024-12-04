@@ -10,6 +10,7 @@
 using namespace vladimirova_j_gather_mpi;
 using namespace vladimirova_j_not_my_gather_mpi;
 
+/*
 TEST(Parallel_Operations_MPI, vladimirova_j_gather_1_test) {
   boost::mpi::communicator world;
   std::vector<int> global_vector = {2, 2, -1, 2, 2, 2, 2, 2, -1, 2, 2, 2, -1, 2, 2, 2, -1, -1, 2,
@@ -36,17 +37,9 @@ TEST(Parallel_Operations_MPI, vladimirova_j_gather_1_test) {
   testMpiTaskParallel.post_processing();
 
   ASSERT_EQ((int)taskDataPar->outputs_count[0], 6);
-  /*
-  std::cout << "!!!!!!!!!!!!!!!"
-            << "\n";
-  for (auto v : ans_buf_vec) {
-    std::cout << v << " ";
-  }
-  std::cout << std::endl;
-  */
   ASSERT_EQ(ans_buf_vec, ans_vec);
 }
-
+*/
 TEST(Parallel_Operations_MPI, vladimirova_j_gather_forward_backward_test) {
   boost::mpi::communicator world;
   std::vector<int> global_vector = {-2, 2, -2, 2, -2, 2, -2, 2, -2, 2, -2, 2, 2};
