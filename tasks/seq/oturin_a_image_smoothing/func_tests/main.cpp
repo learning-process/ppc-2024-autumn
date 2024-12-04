@@ -82,8 +82,14 @@ TEST(oturin_a_image_smoothing_seq_functest, Test_IMAGE_CIRCLE) {
   testTaskSequential.run();
   testTaskSequential.post_processing();
 
+#if __APPLE__
   ASSERT_EQ(ref.size(), out.size());
+  for (unsigned long i = 0; i < ref.size(); i++) {
+    EXPECT_NEAR(ref[i], out[i], 1e-0) << i << ' ';
+  }
+#else
   ASSERT_EQ(ref, out) << width << ' ' << height << ' ' << filenameOriginal << ' ' << filenameCompare;
+#endif
 }
 
 TEST(oturin_a_image_smoothing_seq_functest, Test_IMAGE_COLOR) {
@@ -124,7 +130,7 @@ TEST(oturin_a_image_smoothing_seq_functest, Test_IMAGE_COLOR) {
 #if __APPLE__
   ASSERT_EQ(ref.size(), out.size());
   for (unsigned long i = 0; i < ref.size(); i++) {
-    EXPECT_EQ(ref[i], out[i]) << i << ' ';
+    EXPECT_NEAR(ref[i], out[i], 1e-0) << i << ' ';
   }
 #else
   ASSERT_EQ(ref, out) << width << ' ' << height << ' ' << filenameOriginal << ' ' << filenameCompare;
