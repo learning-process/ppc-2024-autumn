@@ -124,7 +124,7 @@ TEST(oturin_a_image_smoothing_seq_functest, Test_IMAGE_COLOR) {
 #if __APPLE__
   ASSERT_EQ(ref.size(), out.size());
   for (unsigned long i = 0; i < ref.size(); i++) {
-    EXPECT_EQ(ref, out) << i << ' ';
+    EXPECT_EQ(ref[i], out[i]) << i << ' ';
   }
 #else
   ASSERT_EQ(ref, out) << width << ' ' << height << ' ' << filenameOriginal << ' ' << filenameCompare;
