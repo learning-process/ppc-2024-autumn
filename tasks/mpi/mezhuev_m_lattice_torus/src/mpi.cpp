@@ -8,9 +8,7 @@
 
 namespace mezhuev_m_lattice_torus {
 
-bool GridTorusTopologyParallel::pre_processing() {
-  return true;
-}
+bool GridTorusTopologyParallel::pre_processing() { return true; }
 
 bool GridTorusTopologyParallel::validation() {
   if (world.rank() == 0) {
