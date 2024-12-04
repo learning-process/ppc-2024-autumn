@@ -6,7 +6,7 @@
 #include "seq/nikolaev_r_simple_iteration_method/include/ops_seq.hpp"
 
 std::pair<std::vector<double>, std::vector<double>> generate_random_diagonally_dominant_matrix_and_free_terms(
-    int size, double min_val, double max_val) {
+    size_t size, double min_val, double max_val) {
   std::random_device rd;
   std::mt19937 generator(rd());
   std::uniform_real_distribution<> distribution(min_val, max_val);
@@ -14,10 +14,10 @@ std::pair<std::vector<double>, std::vector<double>> generate_random_diagonally_d
   std::vector<double> matrix(size * size);
   std::vector<double> free_terms(size);
 
-  for (int row = 0; row < size; ++row) {
+  for (size_t row = 0; row < size; ++row) {
     double sum_non_diagonal = 0.0;
 
-    for (int col = 0; col < size; ++col) {
+    for (size_t col = 0; col < size; ++col) {
       if (row != col) {
         matrix[row * size + col] = distribution(generator);
         sum_non_diagonal += std::abs(matrix[row * size + col]);
@@ -33,10 +33,10 @@ std::pair<std::vector<double>, std::vector<double>> generate_random_diagonally_d
 }
 
 TEST(nikolaev_r_simple_iteration_method_seq, test_pipeline_run) {
-  const int m_size = 500;
+  const size_t m_size = 500;
   auto [A, b] = generate_random_diagonally_dominant_matrix_and_free_terms(m_size, -15.0, 15.0);
 
-  std::vector<int> in(1, m_size);
+  std::vector<size_t> in(1, m_size);
   std::vector<double> out(m_size, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -75,7 +75,7 @@ TEST(nikolaev_r_simple_iteration_method_seq, test_pipeline_run) {
 }
 
 TEST(nikolaev_r_simple_iteration_method_seq, test_task_run) {
-  const int m_size = 500;
+  const size_t m_size = 500;
   auto [A, b] = generate_random_diagonally_dominant_matrix_and_free_terms(m_size, -15.0, 15.0);
 
   std::vector<size_t> in(1, m_size);

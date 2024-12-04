@@ -9,9 +9,9 @@
 
 TEST(nikolaev_r_simple_iteration_method_mpi, test_2x2_matrix) {
   boost::mpi::communicator world;
-  const int m_size = 2;
-  std::vector<int> in_seq(1, m_size);
-  std::vector<int> in_par(1, m_size);
+  const size_t m_size = 2;
+  std::vector<size_t> in_seq(1, m_size);
+  std::vector<size_t> in_par(1, m_size);
   std::vector<double> matr = {5.0, 2.0, 1.0, 6.0};
   std::vector<double> vect = {-1.0, 5.0};
   std::vector<double> out_seq(m_size, 0.0);
@@ -53,16 +53,16 @@ TEST(nikolaev_r_simple_iteration_method_mpi, test_2x2_matrix) {
     ASSERT_TRUE(simpleIterationPar.post_processing());
   }
 
-  for (int i = 0; i < m_size; i++) {
+  for (size_t i = 0; i < m_size; i++) {
     ASSERT_NEAR(out_seq[i], out_par[i], 1e-6);
   }
 }
 
 TEST(nikolaev_r_simple_iteration_method_mpi, test_3x3_matrix) {
   boost::mpi::communicator world;
-  const int m_size = 3;
-  std::vector<int> in_seq(1, m_size);
-  std::vector<int> in_par(1, m_size);
+  const size_t m_size = 3;
+  std::vector<size_t> in_seq(1, m_size);
+  std::vector<size_t> in_par(1, m_size);
   std::vector<double> matr = {10.0, 2.0, 3.0, 5.0, 15.0, 7.0, 8.0, 1.0, 12.0};
   std::vector<double> vect = {2.0, -18.0, 1.0};
   std::vector<double> out_seq(m_size, 0.0);
@@ -104,16 +104,16 @@ TEST(nikolaev_r_simple_iteration_method_mpi, test_3x3_matrix) {
     ASSERT_TRUE(simpleIterationPar.post_processing());
   }
 
-  for (int i = 0; i < m_size; i++) {
+  for (size_t i = 0; i < m_size; i++) {
     ASSERT_NEAR(out_seq[i], out_par[i], 1e-6);
   }
 }
 
 TEST(nikolaev_r_simple_iteration_method_mpi, test_4x4_matrix) {
   boost::mpi::communicator world;
-  const int m_size = 4;
-  std::vector<int> in_seq(1, m_size);
-  std::vector<int> in_par(1, m_size);
+  const size_t m_size = 4;
+  std::vector<size_t> in_seq(1, m_size);
+  std::vector<size_t> in_par(1, m_size);
   std::vector<double> matr = {10.0, 2.0, 3.0, -4.0, 5.0, 17.0, 5.0, 2.0, 12.0, 4.0, 20.0, 2.0, 6.0, -2.0, 1.0, 14.0};
   std::vector<double> vect = {5.0, 8.0, -1.0, 3.0};
   std::vector<double> out_seq(m_size, 0.0);
@@ -155,16 +155,16 @@ TEST(nikolaev_r_simple_iteration_method_mpi, test_4x4_matrix) {
     ASSERT_TRUE(simpleIterationPar.post_processing());
   }
 
-  for (int i = 0; i < m_size; i++) {
+  for (size_t i = 0; i < m_size; i++) {
     ASSERT_NEAR(out_seq[i], out_par[i], 1e-6);
   }
 }
 
 TEST(nikolaev_r_simple_iteration_method_mpi, test_5x5_matrix) {
   boost::mpi::communicator world;
-  const int m_size = 5;
-  std::vector<int> in_seq(1, m_size);
-  std::vector<int> in_par(1, m_size);
+  const size_t m_size = 5;
+  std::vector<size_t> in_seq(1, m_size);
+  std::vector<size_t> in_par(1, m_size);
   std::vector<double> matr = {23.0,  2.0, 3.0,  -5.0, 5.0,  -2.0, 25.0, 7.0, -2.0, 1.0,  1.0,  -2.0, 36.0,
                               -12.0, 5.0, 14.0, 8.0,  12.0, 45.0, -9.0, 3.0, 5.0,  -4.0, 12.0, 56.0};
   std::vector<double> vect = {5.0, 18.0, -1.0, -34.0, 2.0};
@@ -207,16 +207,16 @@ TEST(nikolaev_r_simple_iteration_method_mpi, test_5x5_matrix) {
     ASSERT_TRUE(simpleIterationPar.post_processing());
   }
 
-  for (int i = 0; i < m_size; i++) {
+  for (size_t i = 0; i < m_size; i++) {
     ASSERT_NEAR(out_seq[i], out_par[i], 1e-6);
   }
 }
 
 TEST(nikolaev_r_simple_iteration_method_mpi, test_identity_matrix) {
   boost::mpi::communicator world;
-  const int m_size = 3;
-  std::vector<int> in_seq(1, m_size);
-  std::vector<int> in_par(1, m_size);
+  const size_t m_size = 3;
+  std::vector<size_t> in_seq(1, m_size);
+  std::vector<size_t> in_par(1, m_size);
   std::vector<double> matr = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
   std::vector<double> vect = {1.0, -1.0, 1.0};
   std::vector<double> out_seq(m_size, 0.0);
@@ -258,16 +258,16 @@ TEST(nikolaev_r_simple_iteration_method_mpi, test_identity_matrix) {
     ASSERT_TRUE(simpleIterationPar.post_processing());
   }
 
-  for (int i = 0; i < m_size; i++) {
+  for (size_t i = 0; i < m_size; i++) {
     ASSERT_NEAR(out_seq[i], out_par[i], 1e-6);
   }
 }
 
 TEST(nikolaev_r_simple_iteration_method_mpi, test_non_diagonally_dominant_matrix) {
   boost::mpi::communicator world;
-  const int m_size = 3;
-  std::vector<int> in_seq(1, m_size);
-  std::vector<int> in_par(1, m_size);
+  const size_t m_size = 3;
+  std::vector<size_t> in_seq(1, m_size);
+  std::vector<size_t> in_par(1, m_size);
   std::vector<double> matr = {4.0, 5.0, 1.0, 3.0, 7.0, -2.0, -2.0, 3.0, 8.0};
   std::vector<double> vect = {2.0, -18.0, 1.0};
   std::vector<double> out_seq(m_size, 0.0);
@@ -291,9 +291,9 @@ TEST(nikolaev_r_simple_iteration_method_mpi, test_non_diagonally_dominant_matrix
 
 TEST(nikolaev_r_simple_iteration_method_mpi, test_singular_matrix) {
   boost::mpi::communicator world;
-  const int m_size = 3;
-  std::vector<int> in_seq(1, m_size);
-  std::vector<int> in_par(1, m_size);
+  const size_t m_size = 3;
+  std::vector<size_t> in_seq(1, m_size);
+  std::vector<size_t> in_par(1, m_size);
   std::vector<double> matr = {2.0, 4.0, 6.0, 1.0, 2.0, 3.0, 3.0, 6.0, 9.0};
   std::vector<double> vect = {2.0, -18.0, 1.0};
   std::vector<double> out_seq(m_size, 0.0);
@@ -317,9 +317,9 @@ TEST(nikolaev_r_simple_iteration_method_mpi, test_singular_matrix) {
 
 TEST(nikolaev_r_simple_iteration_method_mpi, test_incorrect_matrix_size) {
   boost::mpi::communicator world;
-  const int m_size = 0;
-  std::vector<int> in_seq(1, m_size);
-  std::vector<int> in_par(1, m_size);
+  const size_t m_size = 0;
+  std::vector<size_t> in_seq(1, m_size);
+  std::vector<size_t> in_par(1, m_size);
   std::vector<double> matr = {2.0, 4.0, 6.0, 1.0, 2.0, 3.0, 3.0, 6.0, 9.0};
   std::vector<double> vect = {2.0, -18.0, 1.0};
   std::vector<double> out_seq(m_size, 0.0);
@@ -343,9 +343,9 @@ TEST(nikolaev_r_simple_iteration_method_mpi, test_incorrect_matrix_size) {
 
 TEST(nikolaev_r_simple_iteration_method_mpi, test_incorrect_input_data_matr) {
   boost::mpi::communicator world;
-  const int m_size = 3;
-  std::vector<int> in_seq(1, m_size);
-  std::vector<int> in_par(1, m_size);
+  const size_t m_size = 3;
+  std::vector<size_t> in_seq(1, m_size);
+  std::vector<size_t> in_par(1, m_size);
   std::vector<double> matr = {2.0, 4.0, 6.0, 1.0, 2.0, 3.0, 3.0, 6.0, 9.0};
   std::vector<double> vect = {2.0, -18.0, 1.0};
   std::vector<double> out_seq(m_size, 0.0);
@@ -367,9 +367,9 @@ TEST(nikolaev_r_simple_iteration_method_mpi, test_incorrect_input_data_matr) {
 
 TEST(nikolaev_r_simple_iteration_method_mpi, test_incorrect_input_data_vect) {
   boost::mpi::communicator world;
-  const int m_size = 3;
-  std::vector<int> in_seq(1, m_size);
-  std::vector<int> in_par(1, m_size);
+  const size_t m_size = 3;
+  std::vector<size_t> in_seq(1, m_size);
+  std::vector<size_t> in_par(1, m_size);
   std::vector<double> matr = {2.0, 4.0, 6.0, 1.0, 2.0, 3.0, 3.0, 6.0, 9.0};
   std::vector<double> vect = {2.0, -18.0, 1.0};
   std::vector<double> out_seq(m_size, 0.0);
@@ -391,9 +391,9 @@ TEST(nikolaev_r_simple_iteration_method_mpi, test_incorrect_input_data_vect) {
 
 TEST(nikolaev_r_simple_iteration_method_mpi, test_incorrect_output_data) {
   boost::mpi::communicator world;
-  const int m_size = 3;
-  std::vector<int> in_seq(1, m_size);
-  std::vector<int> in_par(1, m_size);
+  const size_t m_size = 3;
+  std::vector<size_t> in_seq(1, m_size);
+  std::vector<size_t> in_par(1, m_size);
   std::vector<double> matr = {2.0, 4.0, 6.0, 1.0, 2.0, 3.0, 3.0, 6.0, 9.0};
   std::vector<double> vect = {2.0, -18.0, 1.0};
   std::vector<double> out_seq(m_size, 0.0);

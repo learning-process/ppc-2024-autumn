@@ -5,8 +5,8 @@
 #include "seq/nikolaev_r_simple_iteration_method/include/ops_seq.hpp"
 
 TEST(nikolaev_r_simple_iteration_method_seq, test_2x2_matrix) {
-  const int m_size = 2;
-  std::vector<int> in(1, m_size);
+  const size_t m_size = 2;
+  std::vector<size_t> in(1, m_size);
   std::vector<double> matr = {5.0, 3.0, 4.0, 6.0};
   std::vector<double> vect = {2.0, 6.0};
   std::vector<double> expected_solution = {-0.333, 1.222};
@@ -28,14 +28,14 @@ TEST(nikolaev_r_simple_iteration_method_seq, test_2x2_matrix) {
   ASSERT_TRUE(testTaskSequential.run());
   ASSERT_TRUE(testTaskSequential.post_processing());
 
-  for (int i = 0; i < m_size; i++) {
+  for (size_t i = 0; i < m_size; i++) {
     ASSERT_NEAR(out[i], expected_solution[i], 1e-3);
   }
 }
 
 TEST(nikolaev_r_simple_iteration_method_seq, test_3x3_matrix) {
-  const int m_size = 3;
-  std::vector<int> in(1, m_size);
+  const size_t m_size = 3;
+  std::vector<size_t> in(1, m_size);
   std::vector<double> matr = {4.0, 2.0, 1.0, 3.0, 7.0, -2.0, -2.0, 3.0, 8.0};
   std::vector<double> vect = {-2.0, 5.0, 1.0};
   std::vector<double> expected_solution = {-0.866, 0.957, -0.450};
@@ -57,14 +57,14 @@ TEST(nikolaev_r_simple_iteration_method_seq, test_3x3_matrix) {
   ASSERT_TRUE(testTaskSequential.run());
   ASSERT_TRUE(testTaskSequential.post_processing());
 
-  for (int i = 0; i < m_size; i++) {
+  for (size_t i = 0; i < m_size; i++) {
     ASSERT_NEAR(out[i], expected_solution[i], 1e-3);
   }
 }
 
 TEST(nikolaev_r_simple_iteration_method_seq, test_4x4_matrix) {
-  const int m_size = 4;
-  std::vector<int> in(1, m_size);
+  const size_t m_size = 4;
+  std::vector<size_t> in(1, m_size);
   std::vector<double> matr = {5.0, -2.0, 1.0, 1.0, -2.0, 7.0, 3.0, 1.0, -1.0, 1.0, 9.0, 6.0, 1.0, 5.0, -3.0, 14.0};
   std::vector<double> vect = {4.0, -5.0, 1.0, 2.0};
   std::vector<double> expected_solution = {0.479, -0.629, 0.010, 0.336};
@@ -86,14 +86,14 @@ TEST(nikolaev_r_simple_iteration_method_seq, test_4x4_matrix) {
   ASSERT_TRUE(testTaskSequential.run());
   ASSERT_TRUE(testTaskSequential.post_processing());
 
-  for (int i = 0; i < m_size; i++) {
+  for (size_t i = 0; i < m_size; i++) {
     ASSERT_NEAR(out[i], expected_solution[i], 1e-3);
   }
 }
 
 TEST(nikolaev_r_simple_iteration_method_seq, test_5x5_matrix) {
-  const int m_size = 5;
-  std::vector<int> in(1, m_size);
+  const size_t m_size = 5;
+  std::vector<size_t> in(1, m_size);
   std::vector<double> matr = {9.0, -2.0, 1.0, 1.0, 3.0,  -2.0, 16.0, 3.0, 1.0,  -5.0, -1.0, 1.0, 19.0,
                               6.0, 1.0,  1.0, 5.0, -3.0, 14.0, 2.0,  6.0, -1.0, -5.0, 1.0,  15.0};
   std::vector<double> vect = {-5.0, 6.0, 2.0, -4.0, 5.0};
@@ -116,14 +116,14 @@ TEST(nikolaev_r_simple_iteration_method_seq, test_5x5_matrix) {
   ASSERT_TRUE(testTaskSequential.run());
   ASSERT_TRUE(testTaskSequential.post_processing());
 
-  for (int i = 0; i < m_size; i++) {
+  for (size_t i = 0; i < m_size; i++) {
     ASSERT_NEAR(out[i], expected_solution[i], 1e-3);
   }
 }
 
 TEST(nikolaev_r_simple_iteration_method_seq, test_identity_matrix) {
-  const int m_size = 3;
-  std::vector<int> in(1, m_size);
+  const size_t m_size = 3;
+  std::vector<size_t> in(1, m_size);
   std::vector<double> matr = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
   std::vector<double> vect = {1.0, -1.0, 1.0};
   std::vector<double> expected_solution = {1.0, -1.0, 1.0};
@@ -145,14 +145,14 @@ TEST(nikolaev_r_simple_iteration_method_seq, test_identity_matrix) {
   ASSERT_TRUE(testTaskSequential.run());
   ASSERT_TRUE(testTaskSequential.post_processing());
 
-  for (int i = 0; i < m_size; i++) {
+  for (size_t i = 0; i < m_size; i++) {
     ASSERT_NEAR(out[i], expected_solution[i], 1e-3);
   }
 }
 
 TEST(nikolaev_r_simple_iteration_method_seq, test_non_diagonally_dominant_matrix) {
-  const int m_size = 3;
-  std::vector<int> in(1, m_size);
+  const size_t m_size = 3;
+  std::vector<size_t> in(1, m_size);
   std::vector<double> matr = {4.0, 5.0, 1.0, 3.0, 7.0, -2.0, -2.0, 3.0, 8.0};
   std::vector<double> vect = {-2.0, 5.0, 1.0};
   std::vector<double> out(m_size, 0.0);
@@ -172,8 +172,8 @@ TEST(nikolaev_r_simple_iteration_method_seq, test_non_diagonally_dominant_matrix
 }
 
 TEST(nikolaev_r_simple_iteration_method_seq, test_singular_matrix) {
-  const int m_size = 3;
-  std::vector<int> in(1, m_size);
+  const size_t m_size = 3;
+  std::vector<size_t> in(1, m_size);
   std::vector<double> matr = {2.0, 4.0, 6.0, 1.0, 2.0, 3.0, 3.0, 6.0, 9.0};
   std::vector<double> vect = {-2.0, 5.0, 1.0};
   std::vector<double> out(m_size, 0.0);
@@ -193,8 +193,8 @@ TEST(nikolaev_r_simple_iteration_method_seq, test_singular_matrix) {
 }
 
 TEST(nikolaev_r_simple_iteration_method_seq, test_incorrect_matrix_size) {
-  const int m_size = 0;
-  std::vector<int> in(1, m_size);
+  const size_t m_size = 0;
+  std::vector<size_t> in(1, m_size);
   std::vector<double> matr = {4.0, 2.0, 1.0, 3.0, 7.0, -2.0, -2.0, 3.0, 8.0};
   std::vector<double> vect = {-2.0, 5.0, 1.0};
   std::vector<double> expected_solution = {-0.866, 0.957, -0.450};
@@ -215,8 +215,8 @@ TEST(nikolaev_r_simple_iteration_method_seq, test_incorrect_matrix_size) {
 }
 
 TEST(nikolaev_r_simple_iteration_method_seq, test_incorrect_input_data) {
-  const int m_size = 3;
-  std::vector<int> in(1, m_size);
+  const size_t m_size = 3;
+  std::vector<size_t> in(1, m_size);
   std::vector<double> matr = {4.0, 2.0, 1.0, 3.0, 7.0, -2.0, -2.0, 3.0, 8.0};
   std::vector<double> vect = {-2.0, 5.0, 1.0};
   std::vector<double> expected_solution = {-0.866, 0.957, -0.450};
@@ -235,8 +235,8 @@ TEST(nikolaev_r_simple_iteration_method_seq, test_incorrect_input_data) {
 }
 
 TEST(nikolaev_r_simple_iteration_method_seq, test_incorrect_output_data) {
-  const int m_size = 3;
-  std::vector<int> in(1, m_size);
+  const size_t m_size = 3;
+  std::vector<size_t> in(1, m_size);
   std::vector<double> matr = {4.0, 2.0, 1.0, 3.0, 7.0, -2.0, -2.0, 3.0, 8.0};
   std::vector<double> vect = {-2.0, 5.0, 1.0};
   std::vector<double> expected_solution = {-0.866, 0.957, -0.450};

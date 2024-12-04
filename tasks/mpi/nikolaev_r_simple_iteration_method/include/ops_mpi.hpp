@@ -28,10 +28,10 @@ class SimpleIterationMethodSequential : public ppc::core::Task {
   std::vector<double> b_{};
   std::vector<double> x_{};
   double tolerance_ = 1e-6;
-  int max_iterations_ = 1500;
+  size_t max_iterations_ = 1500;
 
-  static bool is_singular(const std::vector<double>& A, int n);
-  static bool is_diagonally_dominant(const std::vector<double>& A, int n);
+  static bool is_singular(const std::vector<double>& A, size_t n);
+  static bool is_diagonally_dominant(const std::vector<double>& A, size_t n);
 };
 
 class SimpleIterationMethodParallel : public ppc::core::Task {
@@ -47,10 +47,10 @@ class SimpleIterationMethodParallel : public ppc::core::Task {
   std::vector<double> b_{};
   std::vector<double> x_{};
   double tolerance_ = 1e-6;
-  int max_iterations_ = 1500;
+  size_t max_iterations_ = 1500;
 
-  static bool is_singular(const std::vector<double>& A, int n);
-  static bool is_diagonally_dominant(const std::vector<double>& A, int n);
+  static bool is_singular(const std::vector<double>& A, size_t n);
+  static bool is_diagonally_dominant(const std::vector<double>& A, size_t n);
 
   boost::mpi::communicator world;
 };
