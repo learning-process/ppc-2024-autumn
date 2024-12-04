@@ -111,17 +111,17 @@ TEST(lopatin_i_strip_horizontal_scheme_mpi, test_validation_big_vector) {
   }
 }
 
-TEST(lopatin_i_strip_horizontal_scheme_mpi, test_1x11_matrix) {
+TEST(lopatin_i_strip_horizontal_scheme_mpi, test_5x11_matrix) {
   boost::mpi::communicator world;
-  std::vector<int> inputMatrix = generateMatrix(1, 11);
-  std::vector<int> inputVector = generateVector(1);
+  std::vector<int> inputMatrix = generateMatrix(5, 11);
+  std::vector<int> inputVector = generateVector(5);
   std::vector<int> resultVector(11, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
     taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputMatrix.data()));
-    taskDataParallel->inputs_count.emplace_back(1);
+    taskDataParallel->inputs_count.emplace_back(5);
     taskDataParallel->inputs_count.emplace_back(11);
     taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputVector.data()));
     taskDataParallel->inputs_count.emplace_back(inputVector.size());
@@ -140,7 +140,7 @@ TEST(lopatin_i_strip_horizontal_scheme_mpi, test_1x11_matrix) {
     std::shared_ptr<ppc::core::TaskData> taskDataSequential = std::make_shared<ppc::core::TaskData>();
 
     taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputMatrix.data()));
-    taskDataSequential->inputs_count.emplace_back(1);
+    taskDataSequential->inputs_count.emplace_back(5);
     taskDataSequential->inputs_count.emplace_back(11);
     taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputVector.data()));
     taskDataSequential->inputs_count.emplace_back(inputVector.size());
@@ -387,48 +387,48 @@ TEST(lopatin_i_strip_horizontal_scheme_mpi, test_2560x1440_matrix) {
   }
 }
 
-//TEST(lopatin_i_strip_horizontal_scheme_mpi, test_1x1_matrix) {
-//  boost::mpi::communicator world;
-//  std::vector<int> inputMatrix = generateMatrix(1, 2);
-//  std::vector<int> inputVector = generateVector(1);
-//  std::vector<int> resultVector(1, 0);
-//
-//  std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
-//
-//  if (world.rank() == 0) {
-//    taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputMatrix.data()));
-//    taskDataParallel->inputs_count.emplace_back(1);
-//    taskDataParallel->inputs_count.emplace_back(1);
-//    taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputVector.data()));
-//    taskDataParallel->inputs_count.emplace_back(inputVector.size());
-//    taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(resultVector.data()));
-//    taskDataParallel->outputs_count.emplace_back(resultVector.size());
-//  }
-//
-//  lopatin_i_strip_horizontal_scheme_mpi::TestMPITaskParallel testTaskParallel(taskDataParallel);
-//  ASSERT_TRUE(testTaskParallel.validation());
-//  testTaskParallel.pre_processing();
-//  testTaskParallel.run();
-//  testTaskParallel.post_processing();
-//
-//  if (world.rank() == 0) {
-//    std::vector<int> referenceResultVector(1, 0);
-//    std::shared_ptr<ppc::core::TaskData> taskDataSequential = std::make_shared<ppc::core::TaskData>();
-//
-//    taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputMatrix.data()));
-//    taskDataSequential->inputs_count.emplace_back(1);
-//    taskDataSequential->inputs_count.emplace_back(1);
-//    taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputVector.data()));
-//    taskDataSequential->inputs_count.emplace_back(inputVector.size());
-//    taskDataSequential->outputs.emplace_back(reinterpret_cast<uint8_t *>(referenceResultVector.data()));
-//    taskDataSequential->outputs_count.emplace_back(referenceResultVector.size());
-//
-//    lopatin_i_strip_horizontal_scheme_mpi::TestMPITaskSequential testTaskSequential(taskDataSequential);
-//    ASSERT_TRUE(testTaskSequential.validation());
-//    testTaskSequential.pre_processing();
-//    testTaskSequential.run();
-//    testTaskSequential.post_processing();
-//
-//    ASSERT_EQ(resultVector, referenceResultVector);
-//  }
-//}
+TEST(lopatin_i_strip_horizontal_scheme_mpi, test_1x1_matrix) {
+  boost::mpi::communicator world;
+  std::vector<int> inputMatrix = generateMatrix(1, 2);
+  std::vector<int> inputVector = generateVector(1);
+  std::vector<int> resultVector(1, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputMatrix.data()));
+    taskDataParallel->inputs_count.emplace_back(1);
+    taskDataParallel->inputs_count.emplace_back(1);
+    taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputVector.data()));
+    taskDataParallel->inputs_count.emplace_back(inputVector.size());
+    taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(resultVector.data()));
+    taskDataParallel->outputs_count.emplace_back(resultVector.size());
+  }
+
+  lopatin_i_strip_horizontal_scheme_mpi::TestMPITaskParallel testTaskParallel(taskDataParallel);
+  ASSERT_TRUE(testTaskParallel.validation());
+  testTaskParallel.pre_processing();
+  testTaskParallel.run();
+  testTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int> referenceResultVector(1, 0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSequential = std::make_shared<ppc::core::TaskData>();
+
+    taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputMatrix.data()));
+    taskDataSequential->inputs_count.emplace_back(1);
+    taskDataSequential->inputs_count.emplace_back(1);
+    taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputVector.data()));
+    taskDataSequential->inputs_count.emplace_back(inputVector.size());
+    taskDataSequential->outputs.emplace_back(reinterpret_cast<uint8_t *>(referenceResultVector.data()));
+    taskDataSequential->outputs_count.emplace_back(referenceResultVector.size());
+
+    lopatin_i_strip_horizontal_scheme_mpi::TestMPITaskSequential testTaskSequential(taskDataSequential);
+    ASSERT_TRUE(testTaskSequential.validation());
+    testTaskSequential.pre_processing();
+    testTaskSequential.run();
+    testTaskSequential.post_processing();
+
+    ASSERT_EQ(resultVector, referenceResultVector);
+  }
+}
