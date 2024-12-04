@@ -85,7 +85,7 @@ bool nikolaev_r_simple_iteration_method_seq::SimpleIterationMethodSequential::ru
 
 bool nikolaev_r_simple_iteration_method_seq::SimpleIterationMethodSequential::post_processing() {
   internal_order_test();
-  for (int i = 0; i < x_.size(); i++) {
+  for (size_t i = 0; i < x_.size(); i++) {
     reinterpret_cast<double*>(taskData->outputs[0])[i] = x_[i];
   }
   return true;
