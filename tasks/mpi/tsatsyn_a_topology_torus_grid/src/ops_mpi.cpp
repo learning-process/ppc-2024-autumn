@@ -433,7 +433,7 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
     int neighbor_rank = r * cols + c;
     return (neighbor_rank < world.size()) ? neighbor_rank : -1;
   };
-
+  //
   neighbors["down"] = (row_pos == rows - 1) ? toGetNeighbor(0, col_pos) : toGetNeighbor(row_pos + 1, col_pos);
   neighbors["left"] = (col_pos == 0) ? toGetNeighbor(row_pos, cols - 1) : toGetNeighbor(row_pos, col_pos - 1);
   neighbors["right"] = (col_pos == cols - 1) ? toGetNeighbor(row_pos, 0) : toGetNeighbor(row_pos, col_pos + 1);
