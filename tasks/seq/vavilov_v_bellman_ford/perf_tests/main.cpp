@@ -37,7 +37,7 @@ TEST(vavilov_v_bellman_ford_seq, test_task_run) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(distances.data()));
   taskDataSeq->outputs_count.emplace_back(distances.size());
 
-  auto testTaskSequential = std::make_shared<bellman_ford_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential = std::make_shared<vavilov_v_bellman_ford_seq::TestTaskSequential>(taskDataSeq);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -71,7 +71,7 @@ TEST(vavilov_v_bellman_ford_seq, test_pipeline_run) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(distances.data()));
   taskDataSeq->outputs_count.emplace_back(distances.size());
 
-  auto testTaskSequential = std::make_shared<bellman_ford_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential = std::make_shared<vavilov_v_bellman_ford_seq::TestTaskSequential>(taskDataSeq);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
