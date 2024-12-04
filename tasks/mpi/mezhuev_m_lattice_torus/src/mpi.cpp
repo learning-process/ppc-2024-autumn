@@ -98,10 +98,10 @@ bool GridTorusTopologyParallel::run() {
       world.recv(neighbor, 0, recv_buffer);
 
       combined_buffer.insert(combined_buffer.end(), recv_buffer.begin(), recv_buffer.end());
-      } catch (const boost::mpi::exception& ex) {
-        std::cerr << "MPI Error " << neighbor << ": " << ex.what() << std::endl;
-        return false;
-      }
+    } catch (const boost::mpi::exception& ex) {
+      std::cerr << "MPI Error " << neighbor << ": " << ex.what() << std::endl;
+      return false;
+    }
   }
 
   if (taskData->outputs_count[0] >= combined_buffer.size()) {
