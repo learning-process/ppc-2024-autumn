@@ -35,3 +35,8 @@ TEST(pikarychev_i_sleeping_barber_mpi_test, test_7) { test(7); }
 TEST(pikarychev_i_sleeping_barber_mpi_test, test_8) { test(8); }
 TEST(pikarychev_i_sleeping_barber_mpi_test, test_9) { test(9); }
 TEST(pikarychev_i_sleeping_barber_mpi_test, test_10) { test(10); }
+TEST(pikarychev_i_sleeping_barber_mpi_test, test_11) { test(11); }
+TEST(pikarychev_i_sleeping_barber_mpi_test, test_12) { test(12); }
+TEST(pikarychev_i_sleeping_barber_mpi_test, test_13) { test(13); }
+TEST(pikarychev_i_sleeping_barber_mpi_test, test_16) { test(16); }
+TEST(pikarychev_i_sleeping_barber_mpi_test, test_17) { test(17); }
