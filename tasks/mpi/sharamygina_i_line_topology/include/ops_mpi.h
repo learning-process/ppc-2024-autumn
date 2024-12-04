@@ -13,17 +13,17 @@
 
 namespace sharamygina_i_line_topology_mpi {
 
-	class line_topology_mpi : public ppc::core::Task {
-	public:
-		explicit line_topology_mpi(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-		bool pre_processing() override;
-		bool validation() override;
-		bool run() override;
-		bool post_processing() override;
+class line_topology_mpi : public ppc::core::Task {
+ public:
+  explicit line_topology_mpi(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  bool pre_processing() override;
+  bool validation() override;
+  bool run() override;
+  bool post_processing() override;
 
-	private:
-		std::vector<int> message;
-		boost::mpi::communicator world;
-	};
+ private:
+  std::vector<int> message;
+  boost::mpi::communicator world;
+};
 
 }  // namespace sharamygina_i_line_topology_mpi
