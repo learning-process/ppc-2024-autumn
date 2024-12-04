@@ -23,6 +23,10 @@ std::vector<int> vladimirova_j_gather_mpi::getRandomVector(int sz) {
 std::vector<int> vladimirova_j_gather_mpi::noDeadEnds(std::vector<int> way) {
   int i = 0;
   size_t j = 1;
+  std::cout << "WAY\n";
+  for (int value : way) {
+      std::cout << value << " ";
+  }
 
   while (j <= way.size()) {
     if ((way[i] * way[i] == 1) && (way[i] == way[j])) {
@@ -50,15 +54,17 @@ std::vector<int> vladimirova_j_gather_mpi::noDeadEnds(std::vector<int> way) {
   for (auto k : way)
     if (k != 0) ans.push_back(k);
   // way.erase(std::remove(way.begin(), way.end(), 0), way.end());
+  std::cout << "\n ans size " << ans.size() << std::endl;
   return ans;
 }
 
 std::vector<int> vladimirova_j_gather_mpi::noStrangeSteps(std::vector<int> way) {
+  /*
   std::cout << "NO STR STEPS\n";
   for (int value : way) {
     std::cout << value << " ";
   }
-
+  */
   for (size_t i = 1; i < way.size(); i++)
     if (way[i] == -way[i - 1]) {
       way[i] = 0;
@@ -82,11 +88,13 @@ std::vector<int> vladimirova_j_gather_mpi::noStrangeSteps(std::vector<int> way) 
   // way.erase(std::remove(way.begin(), way.end(), 0), way.end());
   for (auto i : way2)
     if (i != 0) ans.push_back(i);
+  /*
   std::cout << "NO STR STEPS\n";
   for (int value : ans) {
     std::cout << value << " ";
   }
   std::cout << std::endl;
+  */
   return ans;
 }
 
@@ -204,24 +212,25 @@ bool myGather(std::vector<T>& send_data, int send_count, boost::mpi::communicato
     world.send(parent, 0, size);
     world.send(parent, 0, recv_data.data(), recv_data.size());
   }
-
+  /*
   std::cout << "\nTHERE proc " << r << "\n";
   for (int value : recv_data) {
     std::cout << value << " ";
   }
 
   std::cout << std::endl;
-
+  */
   if (r == 0) {
     send_data.insert(send_data.end(), child0_data.begin(), child0_data.end());
     send_data.insert(send_data.end(), child1_data.begin(), child1_data.end());
-
+    /*
     std::cout << "\nTHERE end 1 " << r << std::endl;
     for (int value : send_data) {
       std::cout << value << " ";
     }
 
     std::cout << std::endl;
+    */
   }
   return true;
 }
@@ -241,17 +250,17 @@ bool vladimirova_j_gather_mpi::TestMPITaskParallel::run() {
     for (size_t i = 0; i < pr.size(); i++) {
       pr[i] = i;
     }
-
+    /*
     std::cout << "TREE" << std::endl;
     std::for_each(pr.begin(), pr.end(), [](int number) { std::cout << number << " "; });
     std::cout << std::endl;
-
+    */
     pr = convertToBinaryTreeOrder(pr);
-
+    /*
     std::cout << "TREE" << std::endl;
     std::for_each(pr.begin(), pr.end(), [](int number) { std::cout << number << " "; });
     std::cout << std::endl;
-
+    */
     for (int i = 1; i < world.size(); i++) {
       world.send(pr[i], 0, input_.data() + size * i, size);
     }
@@ -263,25 +272,25 @@ bool vladimirova_j_gather_mpi::TestMPITaskParallel::run() {
     local_input_ = std::vector<int>(size);
     world.recv(0, 0, local_input_.data(), size);
   }
-
+  /*
   std::cout << "TREE  " << r << "   \n";
   std::for_each(local_input_.begin(), local_input_.end(), [](int number) { std::cout << number << " "; });
   std::cout << std::endl;
-
+  */
   local_input_ = vladimirova_j_gather_mpi::noDeadEnds(local_input_);
 
   myGather(local_input_, local_input_.size(), world);
 
   if (r == 0) {
     local_input_.insert(local_input_.end(), input_.end() - input_.size() % world.size(), input_.end());
-    std::cout << "ANS  1" << r << "   \n";
-    std::for_each(local_input_.begin(), local_input_.end(), [](int number) { std::cout << number << " "; });
-    std::cout << std::endl;
+    //std::cout << "ANS  1" << r << "   \n";
+    //std::for_each(local_input_.begin(), local_input_.end(), [](int number) { std::cout << number << " "; });
+   // std::cout << std::endl;
     local_input_ = vladimirova_j_gather_mpi::noDeadEnds(local_input_);
     local_input_ = vladimirova_j_gather_mpi::noStrangeSteps(local_input_);
-    std::cout << "ANS  2" << r << "   \n";
-    std::for_each(local_input_.begin(), local_input_.end(), [](int number) { std::cout << number << " "; });
-    std::cout << std::endl;
+    //std::cout << "ANS  2" << r << "   \n";
+    //std::for_each(local_input_.begin(), local_input_.end(), [](int number) { std::cout << number << " "; });
+   // std::cout << std::endl;
   }
 
   return true;

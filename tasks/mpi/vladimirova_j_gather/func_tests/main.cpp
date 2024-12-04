@@ -36,13 +36,14 @@ TEST(Parallel_Operations_MPI, vladimirova_j_gather_1_test) {
   testMpiTaskParallel.post_processing();
 
   ASSERT_EQ((int)taskDataPar->outputs_count[0], 6);
+  /*
   std::cout << "!!!!!!!!!!!!!!!"
             << "\n";
   for (auto v : ans_buf_vec) {
     std::cout << v << " ";
   }
   std::cout << std::endl;
-
+  */
   ASSERT_EQ(ans_buf_vec, ans_vec);
 }
 
@@ -70,13 +71,14 @@ TEST(Parallel_Operations_MPI, vladimirova_j_gather_forward_backward_test) {
   testMpiTaskParallel.post_processing();
 
   ASSERT_EQ((size_t)taskDataPar->outputs_count[0], ans_vec.size());
+  /*
   std::cout << "!!!!!!!!!!!!!!!"
             << "\n";
   for (auto v : ans_buf_vec) {
     std::cout << v << " ";
   }
   std::cout << std::endl;
-
+  */
   ASSERT_EQ(ans_buf_vec, ans_vec);
 }
 
@@ -104,13 +106,14 @@ TEST(Parallel_Operations_MPI, vladimirova_j_gather_right_left_test) {
   testMpiTaskParallel.post_processing();
 
   ASSERT_EQ((size_t)taskDataPar->outputs_count[0], ans_vec.size());
+  /*
   std::cout << "!!!!!!!!!!!!!!!"
             << "\n";
   for (auto v : ans_buf_vec) {
     std::cout << v << " ";
   }
   std::cout << std::endl;
-
+  */
   ASSERT_EQ(ans_buf_vec, ans_vec);
 }
 TEST(Parallel_Operations_MPI, vladimirova_j_gather_more_dead_ends_test) {
@@ -139,13 +142,14 @@ TEST(Parallel_Operations_MPI, vladimirova_j_gather_more_dead_ends_test) {
   testMpiTaskParallel.post_processing();
 
   ASSERT_EQ((size_t)taskDataPar->outputs_count[0], ans_vec.size());
+  /*
   std::cout << "!!!!!!!!!!!!!!!"
             << "\n";
   for (auto v : ans_buf_vec) {
     std::cout << v << " ";
   }
   std::cout << std::endl;
-
+  */
   ASSERT_EQ(ans_buf_vec, ans_vec);
 }
 TEST(Parallel_Operations_MPI, vladimirova_j_random_test) {
@@ -189,16 +193,18 @@ TEST(Parallel_Operations_MPI, vladimirova_j_random_test) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-
+  /*
   std::cout << "!!!!!!!!!!!!!!!"
             << "\n";
   for (auto v : ans_buf_vec) {
     std::cout << v << " ";
   }
   std::cout << std::endl;
-
+  */
   ASSERT_EQ((int)taskDataPar->outputs_count[0] <= noDEnd, true);
 }
+
+
 
 TEST(Parallel_Operations_MPI, vladimirova_j_not_my_gather_1_test) {
   boost::mpi::communicator world;
@@ -225,13 +231,14 @@ TEST(Parallel_Operations_MPI, vladimirova_j_not_my_gather_1_test) {
   testMpiTaskParallel.post_processing();
 
   ASSERT_EQ((int)taskDataPar->outputs_count[0], 6);
+  /*
   std::cout << "!!!!!!!!!!!!!!!"
             << "\n";
   for (auto v : ans_buf_vec) {
     std::cout << v << " ";
   }
   std::cout << std::endl;
-
+  */
   ASSERT_EQ(ans_buf_vec, ans_vec);
 }
 
@@ -259,13 +266,14 @@ TEST(Parallel_Operations_MPI, vladimirova_j_not_my_gather_forward_backward_test)
   testMpiTaskParallel.post_processing();
 
   ASSERT_EQ((size_t)taskDataPar->outputs_count[0], ans_vec.size());
+  /*
   std::cout << "!!!!!!!!!!!!!!!"
             << "\n";
   for (auto v : ans_buf_vec) {
     std::cout << v << " ";
   }
   std::cout << std::endl;
-
+  */
   ASSERT_EQ(ans_buf_vec, ans_vec);
 }
 
@@ -293,13 +301,14 @@ TEST(Parallel_Operations_MPI, vladimirova_j_not_my_gather_right_left_test) {
   testMpiTaskParallel.post_processing();
 
   ASSERT_EQ((size_t)taskDataPar->outputs_count[0], ans_vec.size());
+  /*
   std::cout << "!!!!!!!!!!!!!!!"
             << "\n";
   for (auto v : ans_buf_vec) {
     std::cout << v << " ";
   }
   std::cout << std::endl;
-
+  */
   ASSERT_EQ(ans_buf_vec, ans_vec);
 }
 TEST(Parallel_Operations_MPI, vladimirova_j_not_my_gather_more_dead_ends_test) {
@@ -328,13 +337,14 @@ TEST(Parallel_Operations_MPI, vladimirova_j_not_my_gather_more_dead_ends_test) {
   testMpiTaskParallel.post_processing();
 
   ASSERT_EQ((size_t)taskDataPar->outputs_count[0], ans_vec.size());
+  /*
   std::cout << "!!!!!!!!!!!!!!!"
             << "\n";
   for (auto v : ans_buf_vec) {
     std::cout << v << " ";
   }
   std::cout << std::endl;
-
+  */
   ASSERT_EQ(ans_buf_vec, ans_vec);
 }
 TEST(Parallel_Operations_MPI, vladimirova_j_not_my_gather_random_test) {
@@ -378,14 +388,14 @@ TEST(Parallel_Operations_MPI, vladimirova_j_not_my_gather_random_test) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-
+  /*
   std::cout << "!!!!!!!!!!!!!!!"
             << "\n";
   for (auto v : ans_buf_vec) {
     std::cout << v << " ";
   }
   std::cout << std::endl;
-
+  */
   ASSERT_EQ((int)taskDataPar->outputs_count[0] <= noDEnd, true);
 }
 
@@ -411,13 +421,14 @@ TEST(Sequential_Operations_MPI, vladimirova_j_forward_backward_test) {
   testMpiTaskSequential.post_processing();
 
   ASSERT_EQ((size_t)taskDataPar->outputs_count[0], ans_vec.size());
+  /*
   std::cout << "!!!!!!!!!!!!!!!"
             << "\n";
   for (auto v : ans_buf_vec) {
     std::cout << v << " ";
   }
   std::cout << std::endl;
-
+  */
   ASSERT_EQ(ans_buf_vec, ans_vec);
 }
 
@@ -443,13 +454,14 @@ TEST(Sequential_Operations_MPI, vladimirova_j_gather_right_left_test) {
   testMpiTaskSequential.post_processing();
 
   ASSERT_EQ((size_t)taskDataPar->outputs_count[0], ans_vec.size());
+  /*
   std::cout << "!!!!!!!!!!!!!!!"
             << "\n";
   for (auto v : ans_buf_vec) {
     std::cout << v << " ";
   }
   std::cout << std::endl;
-
+  */
   ASSERT_EQ(ans_buf_vec, ans_vec);
 }
 TEST(Sequential_Operations_MPI, vladimirova_j_gather_more_dead_ends_test) {
@@ -476,13 +488,14 @@ TEST(Sequential_Operations_MPI, vladimirova_j_gather_more_dead_ends_test) {
   testMpiTaskSequential.post_processing();
 
   ASSERT_EQ((size_t)taskDataPar->outputs_count[0], ans_vec.size());
+  /*
   std::cout << "!!!!!!!!!!!!!!!"
             << "\n";
   for (auto v : ans_buf_vec) {
     std::cout << v << " ";
   }
   std::cout << std::endl;
-
+  */
   ASSERT_EQ(ans_buf_vec, ans_vec);
 }
 TEST(Sequential_Operations_MPI, vladimirova_j_random_test) {
@@ -524,14 +537,14 @@ TEST(Sequential_Operations_MPI, vladimirova_j_random_test) {
   testMpiTaskSequential.pre_processing();
   testMpiTaskSequential.run();
   testMpiTaskSequential.post_processing();
-
+  /*
   std::cout << "!!!!!!!!!!!!!!!"
             << "\n";
   for (auto v : ans_buf_vec) {
     std::cout << v << " ";
   }
   std::cout << std::endl;
-
+  */
   ASSERT_EQ((int)taskDataPar->outputs_count[0] <= noDEnd, true);
 }
 
@@ -557,12 +570,13 @@ TEST(Sequential_Operations_MPI, vladimirova_j_not_gather_1_test) {
   testMPITaskSequential.post_processing();
 
   ASSERT_EQ((size_t)taskDataSeq->outputs_count[0], ans_vec.size());
+  /*
   std::cout << "!!!!!!!!!!!!!!!"
             << "\n";
   for (auto v : ans_buf_vec) {
     std::cout << v << " ";
   }
   std::cout << std::endl;
-
+  */
   ASSERT_EQ(ans_buf_vec, ans_vec);
 }
