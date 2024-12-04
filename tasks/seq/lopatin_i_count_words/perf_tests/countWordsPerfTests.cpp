@@ -3,9 +3,9 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/lopatin_i_count_words/include/countWordsSeqHeader.hpp"
 
-std::vector<char> testData = lopatin_i_count_words_seq::generateLongString(1000);
+std::vector<char> testData = lopatin_i_count_words_seq::generateLongString(2000);
 
-TEST(word_count_seq, test_pipeline_run) {
+TEST(lopatin_i_count_words_seq, test_pipeline_run) {
   std::vector<char> input = testData;
   std::vector<int> word_count(1, 0);
 
@@ -32,10 +32,10 @@ TEST(word_count_seq, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  ASSERT_EQ(word_count[0], 15000);
+  ASSERT_EQ(word_count[0], 30000);
 }
 
-TEST(word_count_seq, test_task_run) {
+TEST(lopatin_i_count_words_seq, test_task_run) {
   std::vector<char> input = testData;
   std::vector<int> word_count(1, 0);
 
@@ -62,5 +62,5 @@ TEST(word_count_seq, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  ASSERT_EQ(word_count[0], 15000);
+  ASSERT_EQ(word_count[0], 30000);
 }

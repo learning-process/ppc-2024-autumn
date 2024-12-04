@@ -52,8 +52,10 @@ bool sorokin_a_check_lexicographic_order_of_strings_mpi::TestMPITaskSequential::
 bool sorokin_a_check_lexicographic_order_of_strings_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   unsigned int delta = 0;
+  unsigned int remainder = 0;
   if (world.rank() == 0) {
     delta = taskData->inputs_count[1] / world.size();
+    remainder = taskData->inputs_count[1] % world.size();
   }
   broadcast(world, delta, 0);
 
@@ -67,15 +69,15 @@ bool sorokin_a_check_lexicographic_order_of_strings_mpi::TestMPITaskParallel::pr
       }
     }
     for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_[0].data() + delta * proc, delta);
-      world.send(proc, 1, input_[1].data() + delta * proc, delta);
+      world.send(proc, 0, input_[0].data() + delta * proc + remainder, delta);
+      world.send(proc, 1, input_[1].data() + delta * proc + remainder, delta);
     }
   }
   local_input1_ = std::vector<char>(delta);
   local_input2_ = std::vector<char>(delta);
   if (world.rank() == 0) {
-    local_input1_ = std::vector<char>(input_[0].begin(), input_[0].begin() + delta);
-    local_input2_ = std::vector<char>(input_[1].begin(), input_[1].begin() + delta);
+    local_input1_ = std::vector<char>(input_[0].begin(), input_[0].begin() + delta + remainder);
+    local_input2_ = std::vector<char>(input_[1].begin(), input_[1].begin() + delta + remainder);
   } else {
     world.recv(0, 0, local_input1_.data(), delta);
     world.recv(0, 1, local_input2_.data(), delta);
