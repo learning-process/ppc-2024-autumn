@@ -22,7 +22,7 @@ TEST(vavilov_v_bellman_ford_seq, ValidInputWithMultiplePaths_1) {
   ASSERT_TRUE(testTaskSequential.run());
   ASSERT_TRUE(testTaskSequential.post_processing());
 
-  std::vector<int> expected_output = { 0, 8, 5, 9, 7 };
+  std::vector<int> expected_output = {0, 8, 5, 9, 7};
   EXPECT_EQ(output, expected_output);
 }
 
