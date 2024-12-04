@@ -49,7 +49,7 @@ class TestMPITaskSequential : public ppc::core::Task {
   size_t n_colls;
   static bool CheckDiagPred(float matrix[], size_t num_rows, size_t num_colls);
   static bool IsQuadro(size_t num_rows, size_t num_colls);
-  int rank(float matrix[], size_t n, size_t m);
+  int rank(std::vector<float> matrix, size_t n, size_t m);
   void iteration_perfomance();
   void SetDefault();
   float d();
@@ -93,7 +93,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   float global_x;
   static bool CheckDiagPred(float matrix[], size_t num_rows, size_t num_colls);
   static bool IsQuadro(size_t num_rows, size_t num_colls);
-  int rank(float matrix[], size_t n, size_t m);
+  int rank(std::vector<float> matrix, size_t n, size_t m);
   static std::vector<float> gen_vector(size_t sz);
   void to_upper_diag_matrix();
   void to_lower_diag_matrix();

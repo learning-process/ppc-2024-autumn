@@ -41,7 +41,7 @@ class TestTaskSequential : public ppc::core::Task {
   static bool IsQuadro(size_t num_rows, size_t num_colls);
   void iteration_perfomance();
   float d();
-  int rank(float matrix[], size_t n, size_t m);
+  int rank(std::vector<float> matrix, size_t n, size_t m);
   void AllocateBuffers();
   void method_Seidel();
 };

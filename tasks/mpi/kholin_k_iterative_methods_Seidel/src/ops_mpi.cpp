@@ -62,9 +62,8 @@ void kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::SetDefault() 
   X0 = std::vector<float>(n_rows);
 }
 
-int kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::rank(float matrix[], size_t n, size_t m) {
-  float* local_matrix = new float[n * m];
-  std::memcpy(local_matrix, matrix, sizeof(float) * n * m);
+int kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::rank(std::vector<float> matrix, size_t n, size_t m) {
+  std::vector<float> local_matrix(matrix);
   int rank = 0;
 
   for (size_t i = 0; i < std::min(n, m); ++i) {
@@ -88,7 +87,6 @@ int kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::rank(float mat
     }
     rank++;
   }
-  delete[] local_matrix;
   return rank;
 }
 
@@ -98,10 +96,6 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::pre_processin
   n_colls = taskData->inputs_count[1];
 
   SetDefault();
-
-  A = std::vector<float>(n_rows * n_colls, 0.0f);
-  auto* ptr_vector = reinterpret_cast<float*>(taskData->inputs[0]);
-  std::memcpy(A.data(), ptr_vector, sizeof(float) * (n_rows * n_colls));
 
   auto* ptr = reinterpret_cast<float*>(taskData->inputs[1]);
   epsilon = *ptr;
@@ -123,25 +117,22 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::validation() 
 
   size_t num_rows = taskData->inputs_count[0];
   size_t num_colls = taskData->inputs_count[1];
+  A = std::vector<float>(n_rows * n_colls, 0.0f);
+  A.assign(matrix, matrix + (num_rows * num_colls));
 
-  float* matrix_ = new float[num_rows * num_colls];
-  std::memcpy(matrix_, matrix, sizeof(float) * (num_rows * num_colls));
-
-  float* matrix_extended = new float[num_rows * num_colls + 1];
+  std::vector<float> matrix_extended(num_rows * num_colls + 1);
   size_t k = 0;
   for (size_t i = 0; i < num_rows; i++) {
     for (size_t j = 0; j < num_colls; j++) {
-      matrix_extended[num_colls + 1 * i + j] = matrix_[num_colls * i + j];
+      matrix_extended[num_colls + 1 * i + j] = A[num_colls * i + j];
       if (j + 1 == num_colls) {
         k = j + 1;
       }
     }
     matrix_extended[num_colls + 1 * i + k] = B_[i];
   }
-  int rank_A = rank(matrix_, num_rows, num_colls);
+  int rank_A = rank(A, num_rows, num_colls);
   int rank_A_ = rank(matrix_extended, num_rows, num_colls);
-  delete[] matrix_extended;
-  delete[] matrix_;
   bool IsSingleDecision = rank_A == rank_A_;
 
   return CheckDiagPred(matrix, taskData->inputs_count[0], taskData->inputs_count[1]) &&
@@ -278,9 +269,6 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::pre_processing(
     SetDefault();
   }
   if (ProcRank == 0) {
-    A = std::vector<float>(n_rows * n_colls, 0.0f);
-    auto* ptr_vector = reinterpret_cast<float*>(taskData->inputs[0]);
-    std::memcpy(A.data(), ptr_vector, sizeof(float) * (n_rows * n_colls));
 
     auto* ptr = reinterpret_cast<float*>(taskData->inputs[1]);
     epsilon = *ptr;
@@ -296,9 +284,8 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::pre_processing(
   return true;
 }
 
-int kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::rank(float matrix[], size_t n, size_t m) {
-  float* local_matrix = new float[n * m];
-  std::memcpy(local_matrix, matrix, sizeof(float) * n * m);
+int kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::rank(std::vector<float> matrix, size_t n, size_t m) {
+  std::vector<float> local_matrix(matrix);
   int rank = 0;
 
   for (size_t i = 0; i < std::min(n, m); ++i) {
@@ -322,7 +309,6 @@ int kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::rank(float matri
     }
     rank++;
   }
-  delete[] local_matrix;
   return rank;
 }
 
@@ -337,25 +323,22 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::validation() {
 
     size_t num_rows = taskData->inputs_count[0];
     size_t num_colls = taskData->inputs_count[1];
+    A = std::vector<float>(n_rows * n_colls, 0.0f);
+    A.assign(matrix, matrix + (num_rows * num_colls));
 
-    float* matrix_ = new float[num_rows * num_colls];
-    std::memcpy(matrix_, matrix, sizeof(float) * (num_rows * num_colls));
-
-    float* matrix_extended = new float[num_rows * num_colls + 1];
+    std::vector<float> matrix_extended(num_rows * num_colls + 1);
     size_t k = 0;
     for (size_t i = 0; i < num_rows; i++) {
       for (size_t j = 0; j < num_colls; j++) {
-        matrix_extended[num_colls + 1 * i + j] = matrix_[num_colls * i + j];
+        matrix_extended[num_colls + 1 * i + j] = A[num_colls * i + j];
         if (j + 1 == num_colls) {
           k = j + 1;
         }
       }
       matrix_extended[num_colls + 1 * i + k] = B_[i];
     }
-    int rank_A = rank(matrix_, num_rows, num_colls);
+    int rank_A = rank(A, num_rows, num_colls);
     int rank_A_ = rank(matrix_extended, num_rows, num_colls);
-    delete[] matrix_extended;
-    delete[] matrix_;
     bool IsSingleDecision = rank_A == rank_A_;
 
     return CheckDiagPred(matrix, taskData->inputs_count[0], taskData->inputs_count[1]) &&

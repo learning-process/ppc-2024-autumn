@@ -230,11 +230,11 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, test_post_processing) {
   }
 }
 
-TEST(kholin_k_iterative_methods_Seidel_mpi, matrix10_10) {
+TEST(kholin_k_iterative_methods_Seidel_mpi, matrix18_18) {
   int ProcRank = 0;
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
-  const size_t count_rows = 10;
-  const size_t count_colls = 10;
+  const size_t count_rows = 18;
+  const size_t count_colls = 18;
   float epsilon = 0.0001f;
   list_ops::ops_ op = list_ops::METHOD_SEIDEL;
   std::vector<float> in;
