@@ -5,7 +5,7 @@
 #include <mpi/kholin_k_iterative_methods_Seidel/src/ops_mpi.cpp>
 
 #include "mpi/kholin_k_iterative_methods_Seidel/include/ops_mpi.hpp"
-
+//
 TEST(kholin_k_iterative_methods_Seidel_mpi, validation_true_when_matrix_with_diag_pred) {
   int ProcRank = 0;
   const size_t count_rows = 25;
