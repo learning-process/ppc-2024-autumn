@@ -137,7 +137,7 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::validation() 
   int rank_A_ = rank(matrix_extended, num_rows, num_colls);
   bool IsSingleDecision = rank_A == rank_A_;
   if (!IsSingleDecision) {
-    return false;
+    return IsSingleDecision;
   }
   return true;
 }
