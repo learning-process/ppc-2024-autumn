@@ -41,9 +41,9 @@ TEST(laganina_e_readers_writers_mpi, test_vector_10) {
     for (int i = 0; i < count_size_vector; i++) {
       exp_parallel[i] += num_writers;
     }
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_vec.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec.data()));
     taskDataPar->outputs_count.emplace_back(out_vec.size());
   }
 
@@ -80,9 +80,49 @@ TEST(laganina_e_readers_writers_mpi, test_vector_20) {
     for (int i = 0; i < count_size_vector; i++) {
       exp_parallel[i] += num_writers;
     }
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_vec.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec.data()));
+    taskDataPar->outputs_count.emplace_back(out_vec.size());
+  }
+
+  laganina_e_readers_writers_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+  if (world.rank() == 0) {
+    ASSERT_EQ(exp_parallel, out_vec);
+  }
+}
+
+TEST(laganina_e_readers_writers_mpi, test_vector_32) {
+  boost::mpi::communicator world;
+
+  if (world.size() < 2) {
+    GTEST_SKIP();
+  }
+
+  const int count_size_vector = 32;
+
+  std::vector<int> global_vec = laganina_e_readers_writers_mpi::getRandomVector(count_size_vector);
+  std::vector<int> out_vec(count_size_vector, 0);
+  std::vector<int> exp_parallel = global_vec;
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    int num_writers = 0;
+    for (int rank = 1; rank < world.size(); rank++) {
+      if (rank % 2 == 1) num_writers++;
+    }
+    for (int i = 0; i < count_size_vector; i++) {
+      exp_parallel[i] += num_writers;
+    }
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec.data()));
     taskDataPar->outputs_count.emplace_back(out_vec.size());
   }
 
@@ -120,9 +160,9 @@ TEST(laganina_e_readers_writers_mpi, test_vector_128) {
     for (int i = 0; i < count_size_vector; i++) {
       exp_parallel[i] += num_writers;
     }
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_vec.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec.data()));
     taskDataPar->outputs_count.emplace_back(out_vec.size());
   }
 
@@ -160,9 +200,9 @@ TEST(laganina_e_readers_writers_mpi, test_vector_100) {
     for (int i = 0; i < count_size_vector; i++) {
       exp_parallel[i] += num_writers;
     }
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_vec.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec.data()));
     taskDataPar->outputs_count.emplace_back(out_vec.size());
   }
 
@@ -200,9 +240,9 @@ TEST(laganina_e_readers_writers_mpi, test_vector_500) {
     for (int i = 0; i < count_size_vector; i++) {
       exp_parallel[i] += num_writers;
     }
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_vec.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec.data()));
     taskDataPar->outputs_count.emplace_back(out_vec.size());
   }
 
@@ -240,9 +280,9 @@ TEST(laganina_e_readers_writers_mpi, test_vector_999) {
     for (int i = 0; i < count_size_vector; i++) {
       exp_parallel[i] += num_writers;
     }
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_vec.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec.data()));
     taskDataPar->outputs_count.emplace_back(out_vec.size());
   }
 
@@ -253,5 +293,41 @@ TEST(laganina_e_readers_writers_mpi, test_vector_999) {
   testMpiTaskParallel.post_processing();
   if (world.rank() == 0) {
     ASSERT_EQ(exp_parallel, out_vec);
+  }
+}
+
+TEST(readers_writers_MPI, test_vector_ieffictive) {
+  boost::mpi::communicator world;
+
+  if (world.size() < 2) {
+    GTEST_SKIP();
+  }
+
+  const int count_size_vector = 64;
+
+  std::vector<int> global_vec = laganina_e_readers_writers_mpi::getRandomVector(count_size_vector);
+  std::vector<int> out_vec(count_size_vector, 0);
+  std::vector<int> exp_parallel = global_vec;
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    for (int i = 0; i < count_size_vector; i++) {
+      exp_parallel[i] += 10;
+    }
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec.data()));
+    taskDataPar->outputs_count.emplace_back(out_vec.size());
+  }
+
+  laganina_e_readers_writers_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+  if (world.rank() == 0) {
+    ASSERT_NE(exp_parallel, out_vec);
   }
 }
