@@ -89,12 +89,10 @@ bool TestMPITaskParallel::run() {
 
   if (world.size() > sizeY) {
     if (world.rank() == 0) {
-      // Процесс 0 обрабатывает все данные
       localVector = vector_;
       localMatrix.resize(sizeX * sizeY);
       std::copy(matrix_.begin(), matrix_.end(), localMatrix.begin());
 
-      // Вычисление результата
       resultVector_.resize(sizeY, 0);
       for (int i = 0; i < sizeY; i++) {
         for (int j = 0; j < sizeX; j++) {
@@ -102,7 +100,6 @@ bool TestMPITaskParallel::run() {
         }
       }
     } else {
-      // Остальные процессы получают нулевые векторы и матрицы
       localVector.resize(sizeX, 0);
       localMatrix.resize(sizeX, 0);
     }
