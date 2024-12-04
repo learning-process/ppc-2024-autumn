@@ -16,6 +16,9 @@ filatev_v_metod_zedela_seq::MetodZedela::MetodZedela(std::shared_ptr<ppc::core::
 bool filatev_v_metod_zedela_seq::MetodZedela::validation() {
   internal_order_test();
 
+  if (taskData->inputs_count[0] != taskData->outputs_count[0]) {
+    return false;
+  }
   int rank = rankMatrix(matrix, size);
   if (rank == 0 || rank != rankRMatrix()) {
     return false;

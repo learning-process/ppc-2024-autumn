@@ -200,6 +200,22 @@ TEST(filatev_v_metod_zedela_seq, test_error_diagonal) {
   ASSERT_EQ(metodZedela.validation(), false);
 }
 
+TEST(filatev_v_metod_zedela_seq, test_error_different_size) {
+  int size = 3;
+  std::vector<int> matrix(size * size);
+  std::vector<int> vecB(size);
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
+  taskData->inputs_count.emplace_back(size);
+  taskData->outputs_count.emplace_back(size + 1);
+
+  filatev_v_metod_zedela_seq::MetodZedela metodZedela(taskData);
+
+  ASSERT_EQ(metodZedela.validation(), false);
+}
+
 TEST(filatev_v_metod_zedela_seq, test_maxi_rz) {
   int size = 500;
   double alfa = 0.0001;
