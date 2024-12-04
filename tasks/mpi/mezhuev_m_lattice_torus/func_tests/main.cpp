@@ -71,7 +71,7 @@ TEST(mezhuev_m_lattice_torus, InvalidTopologySize) {
   bool validation_result = task.validation();
 
   bool final_result;
-  boost::mpi::all_reduce(world, validation_result, final_result, std::logical_and<bool>());
+  boost::mpi::all_reduce(world, validation_result, final_result, std::logical_and<>());
 
   if (grid_dimension * grid_dimension != total_size) {
     ASSERT_FALSE(final_result);
@@ -167,7 +167,7 @@ TEST(mezhuev_m_lattice_torus, TestUnmatchedInputOutputSizesWithLargeData) {
   bool validation_result = task.validation();
 
   bool final_result;
-  boost::mpi::all_reduce(world, validation_result, final_result, std::logical_and<bool>());
+  boost::mpi::all_reduce(world, validation_result, final_result, std::logical_and<>());
 
   ASSERT_FALSE(final_result);
 }
