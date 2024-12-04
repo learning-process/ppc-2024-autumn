@@ -13,7 +13,8 @@ std::vector<int> vershinina_a_image_smoothing::getRandomVector(int rows, int col
   std::mt19937 gen(dev());
   std::uniform_int_distribution<> distr(0, 255);
   std::vector<int> vec(rows * cols);
-  for (int i = 0; i < vec.size(); i++) {
+  int vec_size = vec.size();
+  for (int i = 0; i < vec_size; i++) {
     vec[i] = distr(gen);
   }
   return vec;
