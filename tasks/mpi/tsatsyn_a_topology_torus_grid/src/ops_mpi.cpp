@@ -3,11 +3,13 @@
 
 #include <algorithm>
 #include <chrono>
+#include <ctime>
 #include <functional>
 #include <random>
 #include <string>
 #include <thread>
 #include <vector>
+
 using namespace std::chrono_literals;
 
 std::vector<int> tsatsyn_a_topology_torus_grid_mpi::getRandomVector(int sz) {
@@ -407,25 +409,19 @@ std::vector<int> hasDivisors(int k) {
   }
   return mas;
 }
+bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::validation() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    return taskData->outputs_count[0] == 1;
+  }
+  return true;
+}
 bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-
   if (world.rank() == 0) {
     input_data.resize(taskData->inputs_count[0]);
     auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[0]);
     std::copy(tempPtr, tempPtr + taskData->inputs_count[0], input_data.begin());
-  }
-
-  // if (world.rank() == 0) {
-  //   // std::cout << "RES2= " << res << std::endl;
-  // }
-  return true;
-}
-bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::validation() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    // Check count elements of output
-    return taskData->outputs_count[0] == 1;
   }
   return true;
 }
@@ -442,9 +438,8 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
       rows = 1;
     } else {
       std::vector<int> mas_copy = hasDivisors(world.size());
-      std::random_device dev;
-      std::mt19937 gen(dev());
-      int randIndex = gen() % (mas_copy.size()) + 1;
+      srand(time(nullptr));
+      int randIndex = rand() % (mas_copy.size()) + 1;
       rows = mas_copy[randIndex - 1];
       cols = world.size() / rows;
     }
@@ -476,12 +471,11 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
     res = input_data.size();
   }
   mySend(world, world.size() - 1, 0, cols, rows, neighbors, res);
-  mySend(world, 0, world.size() - 1, cols, rows, neighbors, res);
-  mySend(world, world.size() - 1, 0, cols, rows, neighbors, res);
+  // mySend(world, 0, world.size() - 1, cols, rows, neighbors, res);
+  // mySend(world, world.size() - 1, 0, cols, rows, neighbors, res);
 
   return true;
 }
-
 bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
