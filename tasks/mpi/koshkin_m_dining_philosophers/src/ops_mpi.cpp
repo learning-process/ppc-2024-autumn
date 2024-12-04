@@ -38,7 +38,7 @@ bool koshkin_m_dining_philosophers::testMpiTaskParallel::run() {
     eat();
     release_forks();
     if (check_deadlock()) {
-      resolve_deadlock();
+      return false;
     }
     is_terminated = check_for_termination();
   }
@@ -71,25 +71,6 @@ bool koshkin_m_dining_philosophers::testMpiTaskParallel::check_deadlock() noexce
   return deadlock;
 }
 
-void koshkin_m_dining_philosophers::testMpiTaskParallel::resolve_deadlock() {
-  if (world.rank() == 0) {
-    int philosopher_to_release = std::rand() % world.size();
-    world.send(philosopher_to_release, 1, 1);
-  }
-  bool resolved = false;
-  while (!resolved) {
-    if (world.iprobe(0, 1)) {
-      int release_signal;
-      world.recv(0, 1, release_signal);
-      if (release_signal == 1) {
-        status = 1;
-        resolved = true;
-      }
-    }
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
-  }
-}
-
 bool koshkin_m_dining_philosophers::testMpiTaskParallel::check_for_termination() {
   std::vector<int> all_statuss(world.size());
   boost::mpi::all_gather(world, status, all_statuss);
@@ -103,15 +84,15 @@ void koshkin_m_dining_philosophers::testMpiTaskParallel::think() {
 
 void koshkin_m_dining_philosophers::testMpiTaskParallel::eat() {
   status = 3;
-  std::this_thread::sleep_for(std::chrono::milliseconds(200));
+  std::this_thread::sleep_for(std::chrono::milliseconds(60));
 }
 
 void koshkin_m_dining_philosophers::testMpiTaskParallel::request_forks() {
   status = 2;
   world.send(left_philisopher, 0, 2);
   world.send(right_philisopher, 0, 2);
-  int left_response;
-  int right_response;
+  int left_response = 1;
+  int right_response = 2;
   world.recv(left_philisopher, 0, left_response);
   world.recv(right_philisopher, 0, right_response);
 }

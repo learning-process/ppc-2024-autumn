@@ -29,6 +29,8 @@ class testMpiTaskParallel : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
   bool check_deadlock() noexcept;
+  int getStatus() const { return status; }
+  void setStatus(int new_status) { status = new_status; }
 
  private:
   boost::mpi::communicator world;
@@ -39,7 +41,6 @@ class testMpiTaskParallel : public ppc::core::Task {
   void request_forks();
   void release_forks();
 
-  void resolve_deadlock();
   bool check_for_termination();
 
   void update_neighbors();
