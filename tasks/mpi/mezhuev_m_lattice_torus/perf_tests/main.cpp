@@ -15,8 +15,9 @@ TEST(mezhuev_m_lattice_torus, perf_test_pipeline_run) {
     return;
   }
 
-  std::vector<uint8_t> input_data(2020, 1);
-  std::vector<uint8_t> output_data(2020);
+  const int count = 2020;
+  std::vector<uint8_t> input_data(count, 1);
+  std::vector<uint8_t> output_data(count);
 
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
   taskDataPar->inputs.emplace_back(input_data.data());
@@ -58,8 +59,9 @@ TEST(mezhuev_m_lattice_torus, perf_test_task_run) {
     return;
   }
 
-  std::vector<uint8_t> input_data(2020, 1);
-  std::vector<uint8_t> output_data(2020);
+  const int count = 2020;
+  std::vector<uint8_t> input_data(count, 1);
+  std::vector<uint8_t> output_data(count);
 
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
   taskDataPar->inputs.emplace_back(input_data.data());
