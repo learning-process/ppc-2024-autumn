@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
 #include <chrono>
-#include <vector>
 #include <memory>
+#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/vavilov_v_bellman_ford/include/ops_seq.hpp"
@@ -10,7 +10,7 @@
 std::vector<std::tuple<int, int, int>> generate_linear_graph(int num_vertices) {
   std::vector<std::tuple<int, int, int>> edges;
   for (int i = 0; i < num_vertices - 1; ++i) {
-      edges.emplace_back(i, i + 1, i + 1);
+    edges.emplace_back(i, i + 1, i + 1);
   }
   return edges;
 }
@@ -18,7 +18,7 @@ std::vector<std::tuple<int, int, int>> generate_linear_graph(int num_vertices) {
 std::vector<int> compute_expected_distances(int num_vertices) {
   std::vector<int> distances(num_vertices, 0);
   for (int i = 1; i < num_vertices; ++i) {
-      distances[i] = distances[i - 1] + i;
+    distances[i] = distances[i - 1] + i;
   }
   return distances;
 }
@@ -77,9 +77,9 @@ TEST(vavilov_v_bellman_ford_seq, test_pipeline_run) {
   perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();
   perfAttr->current_timer = [&] {
-      auto current_time_point = std::chrono::high_resolution_clock::now();
-      auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
-      return static_cast<double>(duration) * 1e-9;
+    auto current_time_point = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
+    return static_cast<double>(duration) * 1e-9;
   };
 
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
