@@ -15,7 +15,7 @@ TEST(mpi_varfolomeev_g_transfer_from_one_to_all_scatter_perf_test, test_pipeline
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int count_size_vector;
   if (world.rank() == 0) {
-    count_size_vector = 120;
+    count_size_vector = 1500000;
     global_vec = std::vector<int>(count_size_vector, 1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -24,7 +24,7 @@ TEST(mpi_varfolomeev_g_transfer_from_one_to_all_scatter_perf_test, test_pipeline
   }
 
   auto testMpiTaskParallel =
-      std::make_shared<varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel>(taskDataPar);
+      std::make_shared<varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel>(taskDataPar, "+");
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -56,7 +56,7 @@ TEST(mpi_varfolomeev_g_transfer_from_one_to_all_scatter_perf_test, test_task_run
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int count_size_vector;
   if (world.rank() == 0) {
-    count_size_vector = 120;
+    count_size_vector = 1500000;
     global_vec = std::vector<int>(count_size_vector, 1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -65,7 +65,7 @@ TEST(mpi_varfolomeev_g_transfer_from_one_to_all_scatter_perf_test, test_task_run
   }
 
   auto testMpiTaskParallel =
-      std::make_shared<varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel>(taskDataPar);
+      std::make_shared<varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel>(taskDataPar, "+");
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
