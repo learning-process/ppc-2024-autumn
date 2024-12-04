@@ -28,7 +28,8 @@ bool vershinina_a_image_smoothing::TestMPITaskSequential::run() {
   internal_order_test();
   for (int i = 0; i < rows; ++i) {
     for (int j = 0; j < cols; ++j) {
-      int sum = 0, c = 0;
+      int sum = 0;
+      int c = 0;
       for (int row = std::max(0, i - 1); row <= std::min(i + 1, rows - 1); row++) {
         for (int col = std::max(0, j - 1); col <= std::min(j + 1, cols - 1); col++) {
           sum += input_[row * cols + col];
@@ -129,7 +130,8 @@ bool vershinina_a_image_smoothing::TestMPITaskParallel::run() {
 
   for (int i = offset_top; i < local_rows - offset_bottom; ++i) {
     for (int j = 0; j < cols; ++j) {
-      int sum = 0, c = 0;
+      int sum = 0;
+      int c = 0;
       for (int row = std::max(0, i - 1); row <= std::min(i + 1, local_rows - 1); row++) {
         for (int col = std::max(0, j - 1); col <= std::min(j + 1, cols - 1); col++) {
           sum += local_input_[row * cols + col];
