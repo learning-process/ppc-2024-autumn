@@ -74,7 +74,7 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, test_pre_processing) {
   if (ProcRank == 0) {
     float p1 = -(1000.0f * 1000.0f * 1000.0f);
     float p2 = -p1;
-    in = kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls,p1,p2);
+    in = kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls, p1, p2);
     out = std::vector<float>(count_rows);
     X0 = std::vector<float>(count_rows, 0.0f);
     B = kholin_k_iterative_methods_Seidel_mpi::gen_vector(count_rows);
@@ -129,7 +129,7 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, test_run) {
   if (ProcRank == 0) {
     float p1 = -(1000.0f * 1000.0f * 1000.0f);
     float p2 = -p1;
-    in = kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls,p1,p2);
+    in = kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls, p1, p2);
     out = std::vector<float>(count_rows);
     X0 = std::vector<float>(count_rows, 0.0f);
     B = kholin_k_iterative_methods_Seidel_mpi::gen_vector(count_rows);
@@ -187,7 +187,7 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, test_post_processing) {
   if (ProcRank == 0) {
     float p1 = -(1000.0f * 1000.0f * 1000.0f);
     float p2 = -p1;
-    in = kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls,p1,p2);
+    in = kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls, p1, p2);
     out = std::vector<float>(count_rows);
     X0 = std::vector<float>(count_rows, 0.0f);
     B = kholin_k_iterative_methods_Seidel_mpi::gen_vector(count_rows);
@@ -247,7 +247,7 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, matrix10_10) {
   if (ProcRank == 0) {
     float p1 = -(10.0f * 10.0f * 10.0f);
     float p2 = -p1;
-    in = kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls,p1,p2);
+    in = kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls, p1, p2);
     out = std::vector<float>(count_rows);
     X0 = std::vector<float>(count_rows, 0.0f);
     B = kholin_k_iterative_methods_Seidel_mpi::gen_vector(count_rows);
@@ -316,7 +316,7 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, matrix25_25) {
   if (ProcRank == 0) {
     float p1 = -(100.0f * 100.0f * 100.0f);
     float p2 = -p1;
-    in = kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls,p1,p2);
+    in = kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls, p1, p2);
     out = std::vector<float>(count_rows);
     X0 = std::vector<float>(count_rows, 0.0f);
     B = kholin_k_iterative_methods_Seidel_mpi::gen_vector(count_rows);
@@ -395,7 +395,7 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, matrix50_50) {
   if (ProcRank == 0) {
     float p1 = -(1000.0f * 1000.0f * 1000.0f);
     float p2 = -p1;
-    in = kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls,p1,p2);
+    in = kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls, p1, p2);
     out = std::vector<float>(count_rows);
     X0 = std::vector<float>(count_rows, 0.0f);
     B = kholin_k_iterative_methods_Seidel_mpi::gen_vector(count_rows);
@@ -464,7 +464,7 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, matrix100_100) {
   if (ProcRank == 0) {
     float p1 = -(1000.0f * 1000.0f * 1000.0f);
     float p2 = -p1;
-    in = kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls,p1,p2);
+    in = kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls, p1, p2);
     out = std::vector<float>(count_rows);
     X0 = std::vector<float>(count_rows, 0.0f);
     B = kholin_k_iterative_methods_Seidel_mpi::gen_vector(count_rows);

@@ -166,8 +166,3 @@ TEST(kholin_k_iterative_methods_Seidel_seq, validation_false_when_matrix_without
   kholin_k_iterative_methods_Seidel_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), IsValid);
 }
-
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}

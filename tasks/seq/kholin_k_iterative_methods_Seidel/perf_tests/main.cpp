@@ -86,8 +86,3 @@ TEST(kholin_k_iterative_methods_Seidel_seq, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 }
-
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}

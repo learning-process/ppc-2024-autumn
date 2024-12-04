@@ -80,7 +80,7 @@ TEST(sequential_example_perf_test, test_task_run) {
   ASSERT_EQ(count, out[0]);
 }
 
-//int main(int argc, char **argv) {
-//  testing::InitGoogleTest(&argc, argv);
-//  return RUN_ALL_TESTS();
-//}
+int main(int argc, char **argv) {
+  testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}
