@@ -233,24 +233,23 @@ TEST(komshina_d_grid_torus_topology_mpi, TestEmptyInputsCountOnly) {
   ASSERT_FALSE(task.validation()) << "Validation should fail with non-empty inputs but empty inputs_count";
 }
 
-TEST(komshina_d_grid_torus_topology_mpi, TestValidationSize3) {
+TEST(komshina_d_grid_torus_topology_mpi, TestRunWithNonSquareSize) {
   boost::mpi::communicator world;
 
-  if (world.size() != 3) return;
+  int size = world.size();
 
-  std::vector<uint8_t> input_data(4);
-  std::iota(input_data.begin(), input_data.end(), 9);
-  std::vector<uint8_t> output_data(4);
+  if (size == 3) {
+    std::vector<uint8_t> input_data(4);
+    std::vector<uint8_t> output_data(4);
 
-  auto task_data = std::make_shared<ppc::core::TaskData>();
-  task_data->inputs.emplace_back(input_data.data());
-  task_data->inputs_count.emplace_back(input_data.size());
-  task_data->outputs.emplace_back(output_data.data());
-  task_data->outputs_count.emplace_back(output_data.size());
+    auto task_data = std::make_shared<ppc::core::TaskData>();
+    task_data->inputs.emplace_back(input_data.data());
+    task_data->inputs_count.emplace_back(input_data.size());
+    task_data->outputs.emplace_back(output_data.data());
+    task_data->outputs_count.emplace_back(output_data.size());
 
-  komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel task(task_data);
+    komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel task(task_data);
 
-  ASSERT_FALSE(task.validation());
-
-  ASSERT_FALSE(task.run());
+    ASSERT_FALSE(task.run()) << "The run method should fail for non-square size (size = 3)";
+  }
 }

@@ -36,19 +36,14 @@ bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::validation()
 bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::run() {
   int rank = world.rank();
   int size = world.size();
-  double sqrt_size = std::sqrt(size);
 
+  double sqrt_size = std::sqrt(size);
   if (sqrt_size != static_cast<int>(sqrt_size)) {
     std::cerr << "Error: The size is not a complete square. (size = " << size << ")" << std::endl;
     return false;
   }
 
   int grid_size = static_cast<int>(sqrt_size);
-
-  if (grid_size * grid_size != size) {
-    std::cerr << "Error: The size is not a complete square. (size = " << size << ")" << std::endl;
-    return false;
-  }
 
   world.barrier();
 
