@@ -29,10 +29,9 @@ class MPIMatrixMultiplicationTask : public ppc::core::Task {
     delete[] result;
   }
 
-  double* result = nullptr;
-
  private:
   boost::mpi::communicator world;
+  double* result = nullptr;
   double* A = nullptr;
   double* B = nullptr;
   int rows_A;

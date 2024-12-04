@@ -2,14 +2,7 @@
 
 #include "mpi/golovkin_rowwise_matrix_partitioning/include/ops_mpi.hpp"
 
-#include <algorithm>
 #include <boost/mpi.hpp>
-#include <chrono>
-#include <functional>
-#include <numeric>
-#include <random>
-#include <string>
-#include <thread>
 
 bool golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::validation() {
   internal_order_test();
@@ -131,9 +124,7 @@ bool golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::run() {
 bool golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::post_processing() {
   internal_order_test();
   if (world.size() < 5 || world.rank() >= 4) {
-    for (int i = 0; i < rows_A * cols_B; i++) {
-      reinterpret_cast<double*>(taskData->outputs[0])[i] = result[i];
-    }
+    std::memcpy(reinterpret_cast<double*>(taskData->outputs[0]), result, rows_A * cols_B * sizeof(double));
   }
   return true;
 }
