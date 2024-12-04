@@ -52,10 +52,16 @@ TEST(nasedkin_e_seidels_iterate_methods_mpi, test_residual_norm_with_random_matr
 
   seidel_task.generate_diagonally_dominant_matrix(10);
 
+  ASSERT_TRUE(seidel_task.validation()) << "Validation failed for valid input";
+
   ASSERT_TRUE(seidel_task.pre_processing()) << "Pre-processing failed";
 
   ASSERT_TRUE(seidel_task.run()) << "Run failed";
 
+  ASSERT_TRUE(seidel_task.post_processing()) << "Post-processing failed";
+
   double residual_norm = seidel_task.calculate_residual_norm();
+  std::cout << "Residual norm: " << residual_norm << std::endl;
+
   ASSERT_LT(residual_norm, 1e-6) << "Residual norm is too large: " << residual_norm;
 }
