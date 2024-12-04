@@ -438,8 +438,9 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
       rows = 1;
     } else {
       std::vector<int> mas_copy = hasDivisors(world.size());
-      srand(time(nullptr));
-      int randIndex = rand() % (mas_copy.size()) + 1;
+      std::random_device dev;
+      std::mt19937 gen(dev());
+      int randIndex = gen() % (mas_copy.size()) + 1;
       rows = mas_copy[randIndex - 1];
       cols = world.size() / rows;
     }
@@ -450,10 +451,6 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
   } else {
     world.recv(0, 0, rows);
     world.recv(0, 1, cols);
-  }
-  if (world.rank() == 0) {
-    std::cout << "col: " << cols << std::endl;
-    std::cout << "row: " << rows << std::endl;
   }
   row_pos = world.rank() / cols;
   col_pos = world.rank() % cols;
