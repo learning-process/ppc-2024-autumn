@@ -294,8 +294,7 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, matrix10_10) {
     std::transform(out.begin(), out.end(), out_ref.begin(), results.begin(),
                    [eps](float a, float b) { return std::abs(a - b) <= eps; });
 
-    ASSERT_TRUE(std::all_of(results.begin(), results.end(), [](bool value) { return value; }))
-        << "Solutions not indentical";
+    ASSERT_EQ(std::all_of(results.begin(), results.end(), [](bool value) { return value; }), true);
   }
 }
 
@@ -373,8 +372,7 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, matrix25_25) {
     std::transform(out.begin(), out.end(), out_ref.begin(), results.begin(),
                    [eps](float a, float b) { return std::abs(a - b) <= eps; });
 
-    ASSERT_TRUE(std::all_of(results.begin(), results.end(), [](bool value) { return value; }))
-        << "Solutions not indentical";
+    ASSERT_EQ(std::all_of(results.begin(), results.end(), [](bool value) { return value; }), true);
   }
 }
 
@@ -442,8 +440,7 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, matrix50_50) {
     std::transform(out.begin(), out.end(), out_ref.begin(), results.begin(),
                    [eps](float a, float b) { return std::abs(a - b) <= eps; });
 
-    ASSERT_TRUE(std::all_of(results.begin(), results.end(), [](bool value) { return value; }))
-        << "Solutions not indentical";
+    ASSERT_EQ(std::all_of(results.begin(), results.end(), [](bool value) { return value; }), true);
   }
 }
 
@@ -511,7 +508,6 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, matrix100_100) {
     std::transform(out.begin(), out.end(), out_ref.begin(), results.begin(),
                    [eps](float a, float b) { return std::abs(a - b) <= eps; });
 
-    ASSERT_TRUE(std::all_of(results.begin(), results.end(), [](bool value) { return value; }))
-        << "Solutions not indentical";
+    ASSERT_EQ(std::all_of(results.begin(), results.end(), [](bool value) { return value; }), true);
   }
 }
