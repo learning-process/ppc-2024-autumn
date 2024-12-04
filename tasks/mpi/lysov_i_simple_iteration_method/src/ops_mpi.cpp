@@ -54,7 +54,7 @@ bool lysov_i_simple_iteration_method_mpi::SlaeIterationTask::pre_processing() {
   internal_order_test();
   input_size_ = taskData->inputs_count[0];
   A_.resize(input_size_, std::vector<double>(input_size_));
-  double* A_raw = reinterpret_cast<double*>(taskData->inputs[0]);
+  auto* A_raw = reinterpret_cast<double*>(taskData->inputs[0]);
 
   for (int i = 0; i < input_size_; ++i) {
     for (int j = 0; j < input_size_; ++j) {
@@ -62,13 +62,13 @@ bool lysov_i_simple_iteration_method_mpi::SlaeIterationTask::pre_processing() {
     }
   }
 
-  double* B_raw = reinterpret_cast<double*>(taskData->inputs[1]);
+  auto* B_raw = reinterpret_cast<double*>(taskData->inputs[1]);
   b_.resize(input_size_);
   for (int i = 0; i < input_size_; ++i) {
     b_[i] = B_raw[i];
   }
 
-  double* X_raw = reinterpret_cast<double*>(taskData->outputs[0]);
+  auto* X_raw = reinterpret_cast<double*>(taskData->outputs[0]);
   x_.resize(input_size_);
   for (int i = 0; i < input_size_; ++i) {
     x_[i] = X_raw[i];
@@ -175,8 +175,8 @@ bool lysov_i_simple_iteration_method_mpi::SlaeIterationTaskMPI::pre_processing()
     input_size_ = taskData->inputs_count[0];
     A_.resize(input_size_, std::vector<double>(input_size_));
     b_.resize(input_size_);
-    double* A_raw = reinterpret_cast<double*>(taskData->inputs[0]);
-    double* B_raw = reinterpret_cast<double*>(taskData->inputs[1]);
+    auto* A_raw = reinterpret_cast<double*>(taskData->inputs[0]);
+    auto* B_raw = reinterpret_cast<double*>(taskData->inputs[1]);
     for (int i = 0; i < input_size_; ++i) {
       for (int j = 0; j < input_size_; ++j) {
         A_[i][j] = A_raw[i * input_size_ + j];
