@@ -26,12 +26,10 @@ bool gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::validation() {
 
   if (world.rank() == 0) {
     if (taskData->inputs_count.empty() || taskData->inputs_count[0] <= 0) {
-      std::cerr << "[VALIDATION] Invalid number of chairs: " << taskData->inputs_count[0] << std::endl;
       return false;
     }
 
     if (world.size() < 3) {
-      std::cerr << "[VALIDATION] Not enough processes. Need at least 3." << std::endl;
       return false;
     }
   }
@@ -41,8 +39,6 @@ bool gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::validation() {
 
 bool gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-
-  std::cout << "start" << std::endl;
 
   if (world.rank() == 0) {
     barber_logic();
@@ -77,7 +73,6 @@ void gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::barber_logic() {
 
     if (client_id == -1) {
       result = 0;
-      std::cout << "[BARBER] All clients served. Stopping." << std::endl;
       return;
     }
 
@@ -100,12 +95,8 @@ void gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::dispatcher_logic() {
       if (static_cast<int>(waiting_clients.size()) < max_waiting_chairs) {
         waiting_clients.push(client_id);
         world.send(client_id, 1, true);
-        std::cout << "[DISPATCHER] Client " << client_id << " added to the queue. "
-                  << "Queue size: " << waiting_clients.size() << "/" << max_waiting_chairs << std::endl;
       } else {
         world.send(client_id, 1, false);
-        std::cout << "[DISPATCHER] Client " << client_id << " rejected. Queue is full. "
-                  << "Queue size: " << waiting_clients.size() << "/" << max_waiting_chairs << std::endl;
       }
     }
 
@@ -114,24 +105,20 @@ void gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::dispatcher_logic() {
       waiting_clients.pop();
       world.send(0, 0, next_client);
       barber_busy = true;
-      std::cout << "[DISPATCHER] Sent client " << next_client << " to barber." << std::endl;
     }
 
     if (world.iprobe(0, 4)) {
       int barber_signal;
       world.recv(0, 4, barber_signal);
       barber_busy = false;
-      std::cout << "[DISPATCHER] Barber is now free after serving client " << barber_signal << "." << std::endl;
     }
 
     if (waiting_clients.empty() && remaining_clients == 0 && !barber_busy) {
-      std::cout << "[DISPATCHER] All clients served. Sending stop signal to barber." << std::endl;
       world.send(0, 0, -1);
       break;
     }
 
     if (world.iprobe(boost::mpi::any_source, 3)) {
-      std::cout << "LAST: " << remaining_clients << std::endl;
       int done_signal;
       world.recv(boost::mpi::any_source, 3, done_signal);
       remaining_clients--;
@@ -150,17 +137,13 @@ void gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::client_logic() {
   if (accepted) {
     world.recv(0, 2, client_id);
     world.send(1, 3, client_id);
-    std::cout << "[CLIENT " << client_id << "] Finished." << std::endl;
   } else {
     world.send(1, 3, client_id);
-    std::cout << "[CLIENT " << client_id << "] Queue is full. Leaving." << std::endl;
   }
 }
 
 void gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::serve_next_client(int client_id) {
-  std::cout << "[BARBER] Serving client " << client_id << std::endl;
   std::this_thread::sleep_for(20ms);
   world.send(client_id, 2, client_id);
-  std::cout << "[BARBER] Finished client " << client_id << std::endl;
   world.send(1, 4, client_id);
 }

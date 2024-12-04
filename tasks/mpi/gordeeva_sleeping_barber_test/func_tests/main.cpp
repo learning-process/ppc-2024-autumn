@@ -73,11 +73,11 @@ TEST(gordeeva_t_sleeping_barber_mpi, Test_End_To_End1) {
     ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
     world.barrier();
-
-  if (world.rank() == 0) {
-      ASSERT_EQ(global_res, 0);
+    
+    if (world.rank() == 0) {
+        ASSERT_EQ(global_res, 0);
     }
-  }   
+  }
 }
 
 TEST(gordeeva_t_sleeping_barber_mpi, Test_End_To_End2) {
@@ -103,7 +103,7 @@ TEST(gordeeva_t_sleeping_barber_mpi, Test_End_To_End2) {
     ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
     world.barrier();
-
+    
     if (world.rank() == 0) {
       ASSERT_EQ(global_res, 0);
     }
