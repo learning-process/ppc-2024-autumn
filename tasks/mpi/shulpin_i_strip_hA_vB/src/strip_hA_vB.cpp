@@ -37,6 +37,7 @@ void shulpin_strip_scheme_A_B::calculate_mpi(int rows_a, int cols_a, int cols_b,
   }
 
   boost::mpi::broadcast(world, bufB, 0);
+
   std::fill(bufC.begin(), bufC.end(), 0);
 
   for (int i = 0; i < LocalRows; ++i) {
@@ -77,26 +78,17 @@ void shulpin_strip_scheme_A_B::calculate_seq(int rows_a, int cols_a, int cols_b,
 bool shulpin_strip_scheme_A_B::Matrix_hA_vB_par::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    int cols_A_tmp = *reinterpret_cast<int*>(taskData->inputs[2]);
-    int rows_A_tmp = *reinterpret_cast<int*>(taskData->inputs[3]);
-    mpi_cols_A = cols_A_tmp;
-    mpi_rows_A = rows_A_tmp;
-    int cols_B_tmp = *reinterpret_cast<int*>(taskData->inputs[4]);
-    int rows_B_tmp = *reinterpret_cast<int*>(taskData->inputs[5]);
-    mpi_cols_B = cols_B_tmp;
-    mpi_rows_B = rows_B_tmp;
-    std::vector<int> A_tmp{};
-    std::vector<int> B_tmp{};
-    int* A_tmp_data = reinterpret_cast<int*>(taskData->inputs[0]);
-    int A_tmp_size = taskData->inputs_count[0];
-    A_tmp.assign(A_tmp_data, A_tmp_data + A_tmp_size);
-    int* B_tmp_data = reinterpret_cast<int*>(taskData->inputs[1]);
-    int B_tmp_size = taskData->inputs_count[1];
-    B_tmp.assign(B_tmp_data, B_tmp_data + B_tmp_size);
-    mpi_A = A_tmp;
-    mpi_B = B_tmp;
-    int res_size = taskData->outputs_count[0];
-    mpi_result.resize(res_size, 0);
+    mpi_cols_A = *reinterpret_cast<int*>(taskData->inputs[2]);
+    mpi_rows_A = *reinterpret_cast<int*>(taskData->inputs[3]);
+    mpi_cols_B = *reinterpret_cast<int*>(taskData->inputs[4]);
+    mpi_rows_B = *reinterpret_cast<int*>(taskData->inputs[5]);
+
+    mpi_A.assign(reinterpret_cast<int*>(taskData->inputs[0]),
+                 reinterpret_cast<int*>(taskData->inputs[0]) + taskData->inputs_count[0]);
+    mpi_B.assign(reinterpret_cast<int*>(taskData->inputs[1]),
+                 reinterpret_cast<int*>(taskData->inputs[1]) + taskData->inputs_count[1]);
+
+    mpi_result.resize(taskData->outputs_count[0], 0);
   }
   return true;
 }
@@ -116,15 +108,20 @@ bool shulpin_strip_scheme_A_B::Matrix_hA_vB_par::validation() {
 
 bool shulpin_strip_scheme_A_B::Matrix_hA_vB_par::run() {
   internal_order_test();
-  boost::mpi::broadcast(world, mpi_cols_A, 0);
-  boost::mpi::broadcast(world, mpi_rows_A, 0);
-  boost::mpi::broadcast(world, mpi_cols_B, 0);
-  boost::mpi::broadcast(world, mpi_rows_B, 0);
-  boost::mpi::broadcast(world, mpi_A, 0);
-  boost::mpi::broadcast(world, mpi_B, 0);
 
-  std::vector<int> local_res(mpi_cols_B * mpi_rows_A, 0);
+  std::vector<int> meta_data = {mpi_cols_A, mpi_rows_A, mpi_cols_B, mpi_rows_B};
+  boost::mpi::broadcast(world, meta_data, 0);
+
+  if (world.rank() != 0) {
+    mpi_cols_A = meta_data[0];
+    mpi_rows_A = meta_data[1];
+    mpi_cols_B = meta_data[2];
+    mpi_rows_B = meta_data[3];
+  }
+
+  std::vector<int> local_res(mpi_rows_A * mpi_cols_B, 0);
   calculate_mpi(mpi_rows_A, mpi_cols_A, mpi_cols_B, mpi_A, mpi_B, local_res);
+
 
   boost::mpi::reduce(world, local_res, mpi_result, std::plus<>(), 0);
   return true;
