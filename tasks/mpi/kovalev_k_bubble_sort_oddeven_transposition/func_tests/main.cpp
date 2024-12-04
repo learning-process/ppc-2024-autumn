@@ -260,7 +260,6 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, Test_14009_double) {
   }
 }
 
-
 TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, Test_15000_double) {
   const size_t length = 15000;
   std::srand(std::time(nullptr));
