@@ -43,7 +43,6 @@ bool vladimirova_j_not_my_gather_mpi::TestMPITaskParallel::validation() {
 bool vladimirova_j_not_my_gather_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-
   int r = world.rank();
   int size;
   std::vector<std::vector<int>> root_vec;
@@ -68,7 +67,6 @@ bool vladimirova_j_not_my_gather_mpi::TestMPITaskParallel::run() {
     local_input_ = std::vector<int>(size);
     world.recv(0, 0, local_input_.data(), size);
   }
-
 
   gather(world, local_input_, root_vec, 0);
 
