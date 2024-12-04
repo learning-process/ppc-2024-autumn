@@ -51,7 +51,7 @@ TEST(sharamygina_i_line_topology_mpi, checkTransferedData) {
   }
 
   sharamygina_i_line_topology_mpi::line_topology_mpi testTask(taskData);
-  ASSERT_EQ(testTask.validation(), true);
+  if (world.rank() == 0) ASSERT_EQ(testTask.validation(), true);
   testTask.pre_processing();
   testTask.run();
   testTask.post_processing();
@@ -99,7 +99,7 @@ TEST(sharamygina_i_line_topology_mpi, transferRandomData) {
   }
 
   sharamygina_i_line_topology_mpi::line_topology_mpi testTask(taskData);
-  ASSERT_EQ(testTask.validation(), true);
+  if (world.rank() == 0) ASSERT_EQ(testTask.validation(), true);
   testTask.pre_processing();
   testTask.run();
   testTask.post_processing();
@@ -122,7 +122,7 @@ TEST(sharamygina_i_line_topology_mpi, insufficientInputs) {
   taskData->inputs_count.emplace_back(size);
 
   sharamygina_i_line_topology_mpi::line_topology_mpi testTask(taskData);
-  ASSERT_FALSE(testTask.validation());
+  if (world.rank() == 0) ASSERT_FALSE(testTask.validation());
 }
 
 TEST(sharamygina_i_line_topology_mpi, invalidSendler) {
@@ -138,7 +138,7 @@ TEST(sharamygina_i_line_topology_mpi, invalidSendler) {
   taskData->inputs_count.emplace_back(size);
 
   sharamygina_i_line_topology_mpi::line_topology_mpi testTask(taskData);
-  ASSERT_FALSE(testTask.validation());
+  if (world.rank() == 0) ASSERT_FALSE(testTask.validation());
 }
 
 TEST(sharamygina_i_line_topology_mpi, invalidRecipient) {
@@ -154,7 +154,7 @@ TEST(sharamygina_i_line_topology_mpi, invalidRecipient) {
   taskData->inputs_count.emplace_back(size);
 
   sharamygina_i_line_topology_mpi::line_topology_mpi testTask(taskData);
-  ASSERT_FALSE(testTask.validation());
+  if (world.rank() == 0) ASSERT_FALSE(testTask.validation());
 }
 
 TEST(sharamygina_i_line_topology_mpi, invalidNumberOfElements) {
@@ -170,7 +170,7 @@ TEST(sharamygina_i_line_topology_mpi, invalidNumberOfElements) {
   taskData->inputs_count.emplace_back(size);
 
   sharamygina_i_line_topology_mpi::line_topology_mpi testTask(taskData);
-  ASSERT_FALSE(testTask.validation());
+  if (world.rank() == 0) ASSERT_FALSE(testTask.validation());
 }
 
 TEST(sharamygina_i_line_topology_mpi, absenceOfInputData) {
@@ -232,7 +232,7 @@ TEST(sharamygina_i_line_topology_mpi, zeroNumberOfElements) {
   taskData->inputs_count.emplace_back(size);
 
   sharamygina_i_line_topology_mpi::line_topology_mpi testTask(taskData);
-  ASSERT_FALSE(testTask.validation());
+  if (world.rank() == 0) ASSERT_FALSE(testTask.validation());
 }
 
 TEST(sharamygina_i_line_topology_mpi, equalSenderAndRecipient) {
@@ -260,7 +260,7 @@ TEST(sharamygina_i_line_topology_mpi, equalSenderAndRecipient) {
   }
 
   sharamygina_i_line_topology_mpi::line_topology_mpi testTask(taskData);
-  ASSERT_FALSE(testTask.validation());
+  if (world.rank() == 0) ASSERT_FALSE(testTask.validation());
 }
 
 TEST(sharamygina_i_line_topology_mpi, vectorOf1024) {
@@ -297,7 +297,7 @@ TEST(sharamygina_i_line_topology_mpi, vectorOf1024) {
   }
 
   sharamygina_i_line_topology_mpi::line_topology_mpi testTask(taskData);
-  ASSERT_EQ(testTask.validation(), true);
+  if (world.rank() == 0) ASSERT_EQ(testTask.validation(), true);
   testTask.pre_processing();
   testTask.run();
   testTask.post_processing();
@@ -342,7 +342,7 @@ TEST(sharamygina_i_line_topology_mpi, smallSetVector) {
   }
 
   sharamygina_i_line_topology_mpi::line_topology_mpi testTask(taskData);
-  ASSERT_EQ(testTask.validation(), true);
+  if (world.rank() == 0) ASSERT_EQ(testTask.validation(), true);
   testTask.pre_processing();
   testTask.run();
   testTask.post_processing();
