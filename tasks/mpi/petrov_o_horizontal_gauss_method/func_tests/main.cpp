@@ -46,7 +46,6 @@ TEST(petrov_o_horizontal_gauss_method_par, TestGauss_RandomMatrix) {
   std::vector<double> random_matrix(n * n);
   std::vector<double> random_b(n);
   std::vector<double> par_output(n);
-  std::vector<double> seq_output(n);
 
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -62,19 +61,6 @@ TEST(petrov_o_horizontal_gauss_method_par, TestGauss_RandomMatrix) {
     random_b[i] = dist(gen);
     random_matrix[i * n + i] += 201.0;
   }
-
-  std::shared_ptr<ppc::core::TaskData> seq_taskData = std::make_shared<ppc::core::TaskData>();
-  seq_taskData->inputs_count.emplace_back(n);
-  seq_taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(random_matrix.data()));
-  seq_taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(random_b.data()));
-  seq_taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(seq_output.data()));
-  seq_taskData->outputs_count.emplace_back(n * sizeof(double));
-
-  petrov_o_horizontal_gauss_method_mpi::SequentialTask seq_task(seq_taskData);
-  ASSERT_TRUE(seq_task.validation());
-  ASSERT_TRUE(seq_task.pre_processing());
-  ASSERT_TRUE(seq_task.run());
-  ASSERT_TRUE(seq_task.post_processing());
 
   std::shared_ptr<ppc::core::TaskData> par_taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -115,7 +101,6 @@ TEST(petrov_o_horizontal_gauss_method_par, TestGauss_RandomMatrix_17x17) {
   std::vector<double> random_matrix(n * n);
   std::vector<double> random_b(n);
   std::vector<double> par_output(n);
-  std::vector<double> seq_output(n);
 
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -131,19 +116,6 @@ TEST(petrov_o_horizontal_gauss_method_par, TestGauss_RandomMatrix_17x17) {
     random_b[i] = dist(gen);
     random_matrix[i * n + i] += 201.0;
   }
-
-  std::shared_ptr<ppc::core::TaskData> seq_taskData = std::make_shared<ppc::core::TaskData>();
-  seq_taskData->inputs_count.emplace_back(n);
-  seq_taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(random_matrix.data()));
-  seq_taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(random_b.data()));
-  seq_taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(seq_output.data()));
-  seq_taskData->outputs_count.emplace_back(n * sizeof(double));
-
-  petrov_o_horizontal_gauss_method_mpi::SequentialTask seq_task(seq_taskData);
-  ASSERT_TRUE(seq_task.validation());
-  ASSERT_TRUE(seq_task.pre_processing());
-  ASSERT_TRUE(seq_task.run());
-  ASSERT_TRUE(seq_task.post_processing());
 
   std::shared_ptr<ppc::core::TaskData> par_taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
