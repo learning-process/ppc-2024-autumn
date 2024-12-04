@@ -3,8 +3,6 @@
 #include <memory.h>
 
 #include <algorithm>
-#include <boost/numeric/ublas/io.hpp>
-#include <boost/numeric/ublas/matrix.hpp>
 #include <cmath>
 #include <cstring>
 #include <iostream>
@@ -41,7 +39,6 @@ class TestTaskSequential : public ppc::core::Task {
   size_t n_colls;
   static bool CheckDiagPred(float matrix[], size_t num_rows, size_t num_colls);
   static bool IsQuadro(size_t num_rows, size_t num_colls);
-  bool IsSingleDecision(float matrix[], float B[], size_t num_rows, size_t num_colls);
   void iteration_perfomance();
   float d();
   int rank(float matrix[], size_t n, size_t m);

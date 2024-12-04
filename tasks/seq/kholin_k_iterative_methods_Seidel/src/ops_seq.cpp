@@ -49,24 +49,6 @@ int kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::rank(float matrix
   delete[] local_matrix;
   return rank;
 }
-bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::IsSingleDecision(float matrix[], float B_[],
-                                                                                 size_t num_rows, size_t num_colls) {
-  float* matrix_extended = new float[num_rows * num_colls + 1];
-  size_t k = 0;
-  for (size_t i = 0; i < num_rows; i++) {
-    for (size_t j = 0; j < num_colls; j++) {
-      matrix_extended[num_colls + 1 * i + j] = matrix[num_colls * i + j];
-      if (j + 1 == num_colls) {
-        k = j + 1;
-      }
-    }
-    matrix_extended[num_colls + 1 * i + k] = B_[i];
-  }
-  int rank_A = rank(matrix, num_rows, num_colls);
-  int rank_A_ = rank(matrix_extended, num_rows, num_colls);
-  delete[] matrix_extended;
-  return rank_A == rank_A_;
-}
 
 float kholin_k_iterative_methods_Seidel_seq::gen_float_value() {
   std::random_device dev;
@@ -136,9 +118,28 @@ bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::validation() {
   internal_order_test();
   auto* matrix = reinterpret_cast<float*>(taskData->inputs[0]);
   auto* B_ = reinterpret_cast<float*>(taskData->inputs[3]);
+
+  size_t num_rows = taskData->inputs_count[0];
+  size_t num_colls = taskData->inputs_count[1];
+
+  float* matrix_extended = new float[num_rows * num_colls + 1];
+  size_t k = 0;
+  for (size_t i = 0; i < num_rows; i++) {
+    for (size_t j = 0; j < num_colls; j++) {
+      matrix_extended[num_colls + 1 * i + j] = matrix[num_colls * i + j];
+      if (j + 1 == num_colls) {
+        k = j + 1;
+      }
+    }
+    matrix_extended[num_colls + 1 * i + k] = B_[i];
+  }
+  int rank_A = rank(matrix, num_rows, num_colls);
+  int rank_A_ = rank(matrix_extended, num_rows, num_colls);
+  delete[] matrix_extended;
+  bool IsSingleDecision = rank_A == rank_A_;
+
   return CheckDiagPred(matrix, taskData->inputs_count[0], taskData->inputs_count[1]) &&
-         IsQuadro(taskData->inputs_count[0], taskData->inputs_count[1]) &&
-         IsSingleDecision(matrix, B_, taskData->inputs_count[0], taskData->inputs_count[1]);
+         IsQuadro(taskData->inputs_count[0], taskData->inputs_count[1]) && IsSingleDecision;
 }
 
 bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::run() {

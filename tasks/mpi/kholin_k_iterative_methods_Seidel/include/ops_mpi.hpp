@@ -49,7 +49,6 @@ class TestMPITaskSequential : public ppc::core::Task {
   size_t n_colls;
   static bool CheckDiagPred(float matrix[], size_t num_rows, size_t num_colls);
   static bool IsQuadro(size_t num_rows, size_t num_colls);
-  bool IsSingleDecision(float matrix[], float B[], size_t num_rows, size_t num_colls);
   int rank(float matrix[], size_t n, size_t m);
   void iteration_perfomance();
   void SetDefault();
@@ -94,7 +93,6 @@ class TestMPITaskParallel : public ppc::core::Task {
   float global_x;
   static bool CheckDiagPred(float matrix[], size_t num_rows, size_t num_colls);
   static bool IsQuadro(size_t num_rows, size_t num_colls);
-  bool IsSingleDecision(float matrix[], float B[], size_t num_rows, size_t num_colls);
   int rank(float matrix[], size_t n, size_t m);
   static std::vector<float> gen_vector(size_t sz);
   void to_upper_diag_matrix();
