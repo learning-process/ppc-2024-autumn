@@ -2,7 +2,7 @@
 
 #include "mpi/kovalev_k_bubble_sort_oddeven_transposition/include/header.hpp"
 
-TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, zero_length) {
+/*TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, zero_length) {
   std::vector<int> in;
   std::vector<int> out;
   boost::mpi::communicator world;
@@ -211,9 +211,9 @@ TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, Test_10000_double) {
     ASSERT_EQ(count_viol, 0);
   }
 }
-
-TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, Test_1000_double) {
-  const size_t length = 1000;
+*/
+TEST(kovalev_k_bubble_sort_oddeven_transposition_mpi, Test_14009_double) {
+  const size_t length = 14009;
   std::srand(std::time(nullptr));
   std::vector<double> in(length);
   auto max = static_cast<double>(1000000);

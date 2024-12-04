@@ -81,6 +81,8 @@ bool kovalev_k_bubble_sort_oddeven_transposition_mpi::BubbleSortOddEvenTransposi
     remainder.resize(n - scratter_length * world.size());
     memcpy(remainder.data(), glob_v.data() + scratter_length * world.size(), sizeof(T) * remainder.size());
   }
+  std::cout << "endof data input" << std::endl;
+  fflush(stdout);
   loc_v.resize(scratter_length);
   boost::mpi::scatter(world, glob_v.data(), loc_v.data(), scratter_length, 0);
   bubble_sort_mpi();
@@ -98,13 +100,22 @@ bool kovalev_k_bubble_sort_oddeven_transposition_mpi::BubbleSortOddEvenTransposi
 
   gather(world, loc_v.data(), loc_v.size(), glob_v.data(), 0);
 
+  std::cout << "endof gather" << std::endl;
+  fflush(stdout);
+
   if (world.rank() == 0) {
     for (size_t i = 0; i < remainder.size(); i++) {
       size_t j = 0;
       while (j < glob_v.size() && remainder[i] > glob_v[j]) j++;
       glob_v.insert(glob_v.begin() + j, remainder[i]);
     }
+    remainder.clear();
+    std::cout << "endof last if" << std::endl;
+    fflush(stdout);
   }
+
+  std::cout << "endof run" << std::endl;
+  fflush(stdout);
 
   return true;
 }
@@ -115,6 +126,8 @@ bool kovalev_k_bubble_sort_oddeven_transposition_mpi::BubbleSortOddEvenTransposi
   if (world.rank() == 0) {
     memcpy(reinterpret_cast<T*>(taskData->outputs[0]), glob_v.data(), sizeof(T) * glob_v.size());
   }
+  std::cout << "endof pp" << std::endl;
+  fflush(stdout);
   return true;
 }
 
