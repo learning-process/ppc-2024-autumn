@@ -68,6 +68,7 @@ void run_quick_sort_test_for_vector_size(size_t vector_size) {
   }
 }
 
+TEST(korablev_v_quick_sort_mpi, test_empty_vector) { run_quick_sort_test_for_vector_size(0); }
 TEST(korablev_v_quick_sort_mpi, test_single_element) { run_quick_sort_test_for_vector_size(1); }
 TEST(korablev_v_quick_sort_mpi, test_vector_2) { run_quick_sort_test_for_vector_size(2); }
 TEST(korablev_v_quick_sort_mpi, test_vector_3) { run_quick_sort_test_for_vector_size(3); }
