@@ -29,7 +29,6 @@ class TestTaskSequential : public ppc::core::Task {
  private:
   std::vector<int> output_;
   int *input_{};
-  int ref{};
 };
 
 }  // namespace vershinina_a_image_smoothing
