@@ -2,27 +2,6 @@
 
 namespace lopatin_i_strip_horizontal_scheme_mpi {
 
-std::vector<int> generateVector(int size) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> outputVector(size);
-  for (int i = 0; i < size; i++) {
-    outputVector[i] = (gen() % 200) - 99;
-  }
-  return outputVector;
-}
-
-std::vector<int> generateMatrix(int sizeX, int sizeY) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  int matrixSize = sizeX * sizeY;
-  std::vector<int> outputMatrix(matrixSize);
-  for (int i = 0; i < matrixSize; i++) {
-    outputMatrix[i] = (gen() % 200) - 99;
-  }
-  return outputMatrix;
-}
-
 bool TestMPITaskSequential::validation() {
   internal_order_test();
 
@@ -109,11 +88,20 @@ bool TestMPITaskParallel::run() {
   boost::mpi::broadcast(world, sizeY, 0);
 
   int chunkSize = sizeY / world.size();
-  int startRow = world.rank() * chunkSize;
-  int actualChunkSize = (world.rank() == world.size() - 1) ? (sizeY - startRow) : chunkSize;
+  int remainder = sizeY % world.size();
 
-  localMatrix_.resize(sizeX * actualChunkSize);
-  std::vector<int> localVector(sizeX);
+  int startRow = world.rank() * chunkSize;
+  int actualChunkSize = chunkSize;
+
+  if (world.rank() < remainder) {
+    startRow += world.rank();
+    actualChunkSize++;
+  } else {
+    startRow += remainder;
+  }
+
+  localMatrix.resize(sizeX * actualChunkSize);
+  localVector.resize(sizeX);
 
   if (world.rank() == 0) {
     localVector = vector_;
@@ -127,22 +115,32 @@ bool TestMPITaskParallel::run() {
   if (world.rank() == 0) {
     for (int proc = 1; proc < world.size(); proc++) {
       int procStartRow = proc * chunkSize;
-      int procActualChunkSize = (proc == world.size() - 1) ? (sizeY - procStartRow) : chunkSize;
+      int procActualChunkSize = chunkSize;
+      if (proc < remainder) {
+        procStartRow += proc;
+        procActualChunkSize++;
+      } else {
+        procStartRow += remainder;
+      }
       if (procActualChunkSize > 0) {
         world.send(proc, 0, matrix_.data() + procStartRow * sizeX, procActualChunkSize * sizeX);
       }
     }
-    std::copy(matrix_.begin(), matrix_.begin() + actualChunkSize * sizeX, localMatrix_.begin());
+    std::copy(matrix_.begin() + startRow * sizeX, matrix_.begin() + (startRow + actualChunkSize) * sizeX,
+              localMatrix.begin());
   } else {
-    world.recv(0, 0, localMatrix_.data(), actualChunkSize * sizeX);
+    world.recv(0, 0, localMatrix.data(), actualChunkSize * sizeX);
   }
 
   std::vector<int> localResult(actualChunkSize, 0);
-  for (int i = 0; i < actualChunkSize; i++) {
-    for (int j = 0; j < sizeX; j++) {
-      localResult[i] += localMatrix_[i * sizeX + j] * localVector[j];
+  if (actualChunkSize > 0) {
+    for (int i = 0; i < actualChunkSize; i++) {
+      for (int j = 0; j < sizeX; j++) {
+        localResult[i] += localMatrix[i * sizeX + j] * localVector[j];
+      }
     }
   }
+
   boost::mpi::gather(world, localResult.data(), actualChunkSize, resultVector_.data(), 0);
 
   return true;

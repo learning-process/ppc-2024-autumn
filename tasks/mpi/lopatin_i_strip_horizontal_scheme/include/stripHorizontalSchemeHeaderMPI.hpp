@@ -9,9 +9,6 @@
 
 namespace lopatin_i_strip_horizontal_scheme_mpi {
 
-std::vector<int> generateVector(int size);
-std::vector<int> generateMatrix(int sizeX, int sizeY);
-
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -41,7 +38,8 @@ class TestMPITaskParallel : public ppc::core::Task {
   std::vector<int> vector_;
   std::vector<int> resultVector_;
 
-  std::vector<int> localMatrix_;
+  std::vector<int> localMatrix;
+  std::vector<int> localVector;
 
   int sizeX, sizeY;
 

@@ -5,8 +5,29 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/lopatin_i_strip_horizontal_scheme/include/stripHorizontalSchemeHeaderMPI.hpp"
 
-std::vector<int> testMatrix = lopatin_i_strip_horizontal_scheme_mpi::generateMatrix(2560, 1440);
-std::vector<int> testVector = lopatin_i_strip_horizontal_scheme_mpi::generateVector(2560);
+std::vector<int> generateVector(int size) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> outputVector(size);
+  for (int i = 0; i < size; i++) {
+    outputVector[i] = (gen() % 200) - 99;
+  }
+  return outputVector;
+}
+
+std::vector<int> generateMatrix(int sizeX, int sizeY) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  int matrixSize = sizeX * sizeY;
+  std::vector<int> outputMatrix(matrixSize);
+  for (int i = 0; i < matrixSize; i++) {
+    outputMatrix[i] = (gen() % 200) - 99;
+  }
+  return outputMatrix;
+}
+
+std::vector<int> testMatrix = generateMatrix(2560, 1440);
+std::vector<int> testVector = generateVector(2560);
 
 TEST(lopatin_i_strip_horizontal_scheme_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
