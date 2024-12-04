@@ -66,6 +66,7 @@ TEST(gordeeva_t_sleeping_barber_mpi, Test_End_To_End1) {
 
   if (world.size() < 3) {
     ASSERT_FALSE(testMpiTaskParallel.validation());
+    world.barrier();
   } else {
     ASSERT_TRUE(testMpiTaskParallel.validation());
     ASSERT_TRUE(testMpiTaskParallel.pre_processing());
@@ -96,6 +97,7 @@ TEST(gordeeva_t_sleeping_barber_mpi, Test_End_To_End2) {
 
   if (world.size() < 3) {
     ASSERT_FALSE(testMpiTaskParallel.validation());
+    world.barrier();
   } else {
     ASSERT_TRUE(testMpiTaskParallel.validation());
     ASSERT_TRUE(testMpiTaskParallel.pre_processing());
