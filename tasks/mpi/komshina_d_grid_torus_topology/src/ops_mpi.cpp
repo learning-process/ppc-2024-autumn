@@ -39,7 +39,6 @@ bool komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::run() {
 
   double sqrt_size = std::sqrt(size);
   if (sqrt_size != static_cast<int>(sqrt_size)) {
-    std::cerr << "Error: The size is not a complete square. (size = " << size << ")" << std::endl;
     return false;
   }
 
