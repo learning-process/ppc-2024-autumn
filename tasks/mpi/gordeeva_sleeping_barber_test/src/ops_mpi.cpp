@@ -42,6 +42,8 @@ bool gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::validation() {
 bool gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
+  std::cout << "start" << std::endl;
+
   if (world.rank() == 0) {
     barber_logic();
   } else if (world.rank() == 1) {
