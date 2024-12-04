@@ -62,8 +62,7 @@ void kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::SetDefault() 
   X0 = std::vector<float>(n_rows);
 }
 
-int kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::rank(std::vector<float> matrix, size_t n, size_t m) {
-  std::vector<float> local_matrix(matrix);
+int kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::rank(std::vector<float> local_matrix, size_t n, size_t m) {
   int rank = 0;
 
   for (size_t i = 0; i < std::min(n, m); ++i) {
@@ -283,8 +282,7 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::pre_processing(
   return true;
 }
 
-int kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::rank(std::vector<float> matrix, size_t n, size_t m) {
-  std::vector<float> local_matrix(matrix);
+int kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::rank(std::vector<float> local_matrix, size_t n, size_t m) {
   int rank = 0;
 
   for (size_t i = 0; i < std::min(n, m); ++i) {
@@ -345,7 +343,7 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::validation() {
     int rank_A_ = rank(matrix_extended, num_rows, num_colls);
     bool IsSingleDecision = rank_A == rank_A_;
     if (!IsSingleDecision) {
-      return false;
+      return IsSingleDecision;
     }
   }
   return true;
