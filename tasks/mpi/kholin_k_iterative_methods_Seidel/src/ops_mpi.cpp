@@ -317,7 +317,6 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::validation() {
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   sz_t = get_mpi_type();
   if (ProcRank == 0) {
-    internal_order_test();
     auto* matrix = reinterpret_cast<float*>(taskData->inputs[0]);
     auto* B_ = reinterpret_cast<float*>(taskData->inputs[3]);
 
