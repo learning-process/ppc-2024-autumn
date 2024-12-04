@@ -50,6 +50,7 @@ bool vershinina_a_image_smoothing::TestMPITaskSequential::post_processing() {
 
 bool vershinina_a_image_smoothing::TestMPITaskParallel::pre_processing() {
   internal_order_test();
+
   if (world.rank() == 0) {
     auto* pr = reinterpret_cast<int*>(taskData->inputs[0]);
     input_.resize(taskData->inputs_count[0] * taskData->inputs_count[1]);
