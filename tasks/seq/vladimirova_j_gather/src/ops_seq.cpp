@@ -44,9 +44,11 @@ std::vector<int> vladimirova_j_gather_seq::noDeadEnds(std::vector<int> way) {
     j++;
     i++;
   }
-
-  way.erase(std::remove(way.begin(), way.end(), 0), way.end());
-  return way;
+  std::vector<int> ans = std::vector<int>();
+  for (auto k : way)
+    if (k != 0) ans.push_back(k);
+  // way.erase(std::remove(way.begin(), way.end(), 0), way.end());
+  return ans;
 }
 
 std::vector<int> vladimirova_j_gather_seq::noStrangeSteps(std::vector<int> way) {
@@ -60,25 +62,30 @@ std::vector<int> vladimirova_j_gather_seq::noStrangeSteps(std::vector<int> way) 
       way[i] = 0;
       way[i - 1] = 0;
     }
-  way.erase(std::remove(way.begin(), way.end(), 0), way.end());
+  std::vector<int> way2 = std::vector<int>();
+  for (auto i : way)
+    if (i != 0) way2.push_back(i);
+  //.erase(std::remove(way.begin(), way.end(), 0), way.end());
 
-  for (size_t i = 3; i < way.size(); i++) {
-    if (((way[i] == -1) || (way[i] == 1)) && (way[i] == way[i - 1]) && (way[i] == way[i - 2]) &&
-        (way[i] == way[i - 3])) {
-      way[i] = 0;
-      way[i - 1] = 0;
-      way[i - 2] = 0;
-      way[i - 3] = 0;
+  for (size_t i = 3; i < way2.size(); i++) {
+    if (((way2[i] == -1) || (way2[i] == 1)) && (way2[i] == way2[i - 1]) && (way2[i] == way2[i - 2]) &&
+        (way2[i] == way2[i - 3])) {
+      way2[i] = 0;
+      way2[i - 1] = 0;
+      way2[i - 2] = 0;
+      way2[i - 3] = 0;
     }
   }
-
-  way.erase(std::remove(way.begin(), way.end(), 0), way.end());
+  std::vector<int> ans = std::vector<int>();
+  // way.erase(std::remove(way.begin(), way.end(), 0), way.end());
+  for (auto i : way2)
+    if (i != 0) ans.push_back(i);
   std::cout << "NO STR STEPS\n";
-  for (int value : way) {
+  for (int value : ans) {
     std::cout << value << " ";
   }
   std::cout << std::endl;
-  return way;
+  return ans;
 }
 
 bool vladimirova_j_gather_seq::TestTaskSequential::pre_processing() {

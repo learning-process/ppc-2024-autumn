@@ -63,7 +63,7 @@ bool vladimirova_j_not_my_gather_mpi::TestMPITaskParallel::run() {
 
   // Собираем данные в процессе с рангом 0
   gather(world, local_input_, root_vec.data(), 0);
-  
+
 
   std::cout << std::endl << "ppp end THERE " << rank << std::endl;
 
@@ -80,18 +80,17 @@ bool vladimirova_j_not_my_gather_mpi::TestMPITaskParallel::run() {
 
   return 0;
   */
-  
+
   int r = world.rank();
   int size;
   std::vector<std::vector<int>> root_vec;
 
   if (r == 0) {
-
     root_vec = std::vector<std::vector<int>>(world.size());
     size = input_.size() / world.size();
 
     for (int i = 1; i < world.size(); i++) {
-        root_vec[i] = std::vector<int>(size);
+      root_vec[i] = std::vector<int>(size);
     }
 
     for (int i = 1; i < world.size(); i++) {
@@ -107,30 +106,27 @@ bool vladimirova_j_not_my_gather_mpi::TestMPITaskParallel::run() {
     world.recv(0, 0, local_input_.data(), size);
   }
 
-  //local_input_ = vladimirova_j_gather_mpi::noDeadEnds(local_input_);
+  // local_input_ = vladimirova_j_gather_mpi::noDeadEnds(local_input_);
 
   gather(world, local_input_, root_vec, 0);
 
   if (r == 0) {
-     
-      for (int i = 1; i < world.size(); i++) {
-          local_input_.insert(local_input_.end(), root_vec[i].begin(), root_vec[i].end());
-      }
-      local_input_.insert(local_input_.end(), input_.end() - input_.size()%world.size(), input_.end());
+    for (int i = 1; i < world.size(); i++) {
+      local_input_.insert(local_input_.end(), root_vec[i].begin(), root_vec[i].end());
+    }
+    local_input_.insert(local_input_.end(), input_.end() - input_.size() % world.size(), input_.end());
 
-      std::cout << "ANS  1" << r << "   \n";
+    std::cout << "ANS  1" << r << "   \n";
 
-      std::for_each(local_input_.begin(), local_input_.end(), [](int number) { std::cout << number << " "; });
-      std::cout << std::endl;
-      local_input_ = vladimirova_j_gather_mpi::noDeadEnds(local_input_);
-      local_input_ = vladimirova_j_gather_mpi::noStrangeSteps(local_input_);
-      
-  
-        std::cout << "ANS  2 " << r << "   \n";
-        std::for_each(local_input_.begin(), local_input_.end(), [](int number) { std::cout << number << " "; });
-        std::cout << std::endl;
-}
+    std::for_each(local_input_.begin(), local_input_.end(), [](int number) { std::cout << number << " "; });
+    std::cout << std::endl;
+    local_input_ = vladimirova_j_gather_mpi::noDeadEnds(local_input_);
+    local_input_ = vladimirova_j_gather_mpi::noStrangeSteps(local_input_);
 
+    std::cout << "ANS  2 " << r << "   \n";
+    std::for_each(local_input_.begin(), local_input_.end(), [](int number) { std::cout << number << " "; });
+    std::cout << std::endl;
+  }
 
   return true;
 }
