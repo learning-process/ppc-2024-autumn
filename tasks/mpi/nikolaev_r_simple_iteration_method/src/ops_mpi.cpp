@@ -87,7 +87,7 @@ bool nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodSequential::ru
 
 bool nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodSequential::post_processing() {
   internal_order_test();
-  for (int i = 0; i < x_.size(); i++) {
+  for (size_t i = 0; i < x_.size(); i++) {
     reinterpret_cast<double*>(taskData->outputs[0])[i] = x_[i];
   }
   return true;
@@ -149,7 +149,7 @@ bool nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodParallel::run(
     int base_size = n / world.size();
     int remainder = n % world.size();
 
-    for (int i = 0; i < world.size(); ++i) {
+    for (size_t i = 0; i < world.size(); ++i) {
       sizes[i] = base_size + (i < remainder ? 1 : 0);
       if (i > 0) {
         displs[i] = displs[i - 1] + sizes[i - 1];
@@ -224,7 +224,7 @@ bool nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodParallel::run(
 bool nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    for (int i = 0; i < x_.size(); i++) {
+    for (size_t i = 0; i < x_.size(); i++) {
       reinterpret_cast<double*>(taskData->outputs[0])[i] = x_[i];
     }
   }
