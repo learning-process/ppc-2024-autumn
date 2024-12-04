@@ -103,9 +103,6 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::pre_processin
   auto* ptr_vector_X0 = reinterpret_cast<float*>(taskData->inputs[2]);
   std::memcpy(X0.data(), ptr_vector_X0, sizeof(float) * n_rows);
 
-  auto* ptr_vector_B = reinterpret_cast<float*>(taskData->inputs[3]);
-  std::memcpy(B.data(), ptr_vector_B, sizeof(float) * n_rows);
-
   iteration_perfomance();
   return true;
 }
@@ -120,12 +117,12 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::validation() 
   if (!IsQuadro(num_rows, num_colls)) {
     return false;
   }
-  A = std::vector<float>(n_rows * n_colls, 0.0f);
   A.assign(matrix, matrix + (num_rows * num_colls));
   if (!CheckDiagPred(matrix, num_rows, num_colls)) {
     return false;
   }
   std::vector<float> matrix_extended(num_rows * num_colls + 1);
+  B.assign(B_, B_ + num_rows);
   size_t k = 0;
   for (size_t i = 0; i < num_rows; i++) {
     for (size_t j = 0; j < num_colls; j++) {
@@ -134,7 +131,7 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskSequential::validation() 
         k = j + 1;
       }
     }
-    matrix_extended[num_colls + 1 * i + k] = B_[i];
+    matrix_extended[num_colls + 1 * i + k] = B[i];
   }
   int rank_A = rank(A, num_rows, num_colls);
   int rank_A_ = rank(matrix_extended, num_rows, num_colls);
@@ -281,9 +278,6 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::pre_processing(
     auto* ptr_vector_X0 = reinterpret_cast<float*>(taskData->inputs[2]);
     std::memcpy(X0.data(), ptr_vector_X0, sizeof(float) * n_rows);
 
-    auto* ptr_vector_B = reinterpret_cast<float*>(taskData->inputs[3]);
-    std::memcpy(B.data(), ptr_vector_B, sizeof(float) * n_rows);
-
     count = ((n_rows * n_colls) - n_rows) / 2;
   }
   return true;
@@ -332,12 +326,12 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::validation() {
     if (!IsQuadro(num_rows, num_colls)) {
       return false;
     }
-    A = std::vector<float>(n_rows * n_colls, 0.0f);
     A.assign(matrix, matrix + (num_rows * num_colls));
     if (!CheckDiagPred(matrix, num_rows, num_colls)) {
       return false;
     }
     std::vector<float> matrix_extended(num_rows * num_colls + 1);
+    B.assign(B_, B_ + num_rows);
     size_t k = 0;
     for (size_t i = 0; i < num_rows; i++) {
       for (size_t j = 0; j < num_colls; j++) {
@@ -346,7 +340,7 @@ bool kholin_k_iterative_methods_Seidel_mpi::TestMPITaskParallel::validation() {
           k = j + 1;
         }
       }
-      matrix_extended[num_colls + 1 * i + k] = B_[i];
+      matrix_extended[num_colls + 1 * i + k] = B[i];
     }
     int rank_A = rank(A, num_rows, num_colls);
     int rank_A_ = rank(matrix_extended, num_rows, num_colls);
