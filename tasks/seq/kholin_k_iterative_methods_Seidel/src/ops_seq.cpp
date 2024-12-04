@@ -118,9 +118,14 @@ bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::validation() {
 
   size_t num_rows = taskData->inputs_count[0];
   size_t num_colls = taskData->inputs_count[1];
+  if (!IsQuadro(num_rows, num_colls)) {
+    return false;
+  }
   A = std::vector<float>(n_rows * n_colls, 0.0f);
   A.assign(matrix, matrix + (num_rows * num_colls));
-
+  if (!CheckDiagPred(matrix, num_rows, num_colls)) {
+    return false;
+  }
   std::vector<float> matrix_extended(num_rows * num_colls + 1);
   size_t k = 0;
   for (size_t i = 0; i < num_rows; i++) {
@@ -135,9 +140,10 @@ bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::validation() {
   int rank_A = rank(A, num_rows, num_colls);
   int rank_A_ = rank(matrix_extended, num_rows, num_colls);
   bool IsSingleDecision = rank_A == rank_A_;
-
-  return CheckDiagPred(matrix, taskData->inputs_count[0], taskData->inputs_count[1]) &&
-         IsQuadro(taskData->inputs_count[0], taskData->inputs_count[1]) && IsSingleDecision;
+  if (!IsSingleDecision) {
+    return false;
+  }
+  return true;
 }
 
 bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::run() {
