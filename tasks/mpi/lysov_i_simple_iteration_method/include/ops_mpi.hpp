@@ -31,7 +31,6 @@ class SlaeIterationTask : public ppc::core::Task {
   std::vector<double> x_;
   std::vector<std::vector<double>> B_;
   std::vector<double> g_;
-  double epsilon_ = 0;
 
   bool isDiagonallyDominant();
   bool transformSystem();

@@ -63,7 +63,7 @@ TEST(lysov_i_simple_iteration_method_mpi, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    for (int i = 0; i < x.size(); i++) ASSERT_NEAR(x[i], expected_solution[i], 1e-4);
+    for (int i = 0; i < static_cast<int>(x.size()); i++) ASSERT_NEAR(x[i], expected_solution[i], 1e-4);
   }
 }
 
@@ -104,6 +104,6 @@ TEST(lysov_i_simple_iteration_method_mpi, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    for (int i = 0; i < x.size(); i++) ASSERT_NEAR(x[i], expected_solution[i], 1e-4);
+    for (int i = 0; i < static_cast<int>(x.size()); i++) ASSERT_NEAR(x[i], expected_solution[i], 1e-4);
   }
 }
