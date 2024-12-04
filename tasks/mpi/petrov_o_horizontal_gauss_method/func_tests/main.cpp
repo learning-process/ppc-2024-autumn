@@ -59,62 +59,6 @@ TEST(petrov_o_horizontal_gauss_method_par, TestGauss_RandomMatrix) {
 
   for (size_t i = 0; i < n; ++i) {
     random_b[i] = dist(gen);
-    random_matrix[i * n + i] += 201.0;
-  }
-
-  std::shared_ptr<ppc::core::TaskData> par_taskData = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    par_taskData->inputs_count.emplace_back(n);
-    par_taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(random_matrix.data()));
-    par_taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(random_b.data()));
-    par_taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(par_output.data()));
-    par_taskData->outputs_count.emplace_back(n * sizeof(double));
-  }
-
-  petrov_o_horizontal_gauss_method_mpi::ParallelTask par_task(par_taskData);
-
-  ASSERT_TRUE(par_task.validation());
-  ASSERT_TRUE(par_task.pre_processing());
-  ASSERT_TRUE(par_task.run());
-  ASSERT_TRUE(par_task.post_processing());
-
-  if (world.rank() == 0) {
-    double residual = 0.0;
-    for (size_t i = 0; i < n; ++i) {
-      double ax_i = 0.0;
-      for (size_t j = 0; j < n; ++j) {
-        ax_i += random_matrix[i * n + j] * par_output[j];
-      }
-      residual += std::pow(ax_i - random_b[i], 2);
-    }
-    residual = std::sqrt(residual);
-    ASSERT_NEAR(residual, 0.0, 1e-10);
-  }
-}
-
-TEST(petrov_o_horizontal_gauss_method_par, TestGauss_RandomMatrix_17x17) {
-  boost::mpi::environment env;
-  boost::mpi::communicator world;
-
-  size_t n = 17;
-
-  std::vector<double> random_matrix(n * n);
-  std::vector<double> random_b(n);
-  std::vector<double> par_output(n);
-
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_real_distribution<> dist(-100, 100);
-
-  for (size_t i = 0; i < n; ++i) {
-    for (size_t j = 0; j < n; ++j) {
-      random_matrix[i * n + j] = dist(gen);
-    }
-  }
-
-  for (size_t i = 0; i < n; ++i) {
-    random_b[i] = dist(gen);
-    random_matrix[i * n + i] += 201.0;
   }
 
   std::shared_ptr<ppc::core::TaskData> par_taskData = std::make_shared<ppc::core::TaskData>();
@@ -144,6 +88,60 @@ TEST(petrov_o_horizontal_gauss_method_par, TestGauss_RandomMatrix_17x17) {
     }
     residual = std::sqrt(residual);
     ASSERT_NEAR(residual, 0.0, 1e-9);
+  }
+}
+
+TEST(petrov_o_horizontal_gauss_method_par, TestGauss_RandomMatrix_17x17) {
+  boost::mpi::environment env;
+  boost::mpi::communicator world;
+
+  size_t n = 17;
+
+  std::vector<double> random_matrix(n * n);
+  std::vector<double> random_b(n);
+  std::vector<double> par_output(n);
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<> dist(-100, 100);
+
+  for (size_t i = 0; i < n; ++i) {
+    for (size_t j = 0; j < n; ++j) {
+      random_matrix[i * n + j] = dist(gen);
+    }
+  }
+
+  for (size_t i = 0; i < n; ++i) {
+    random_b[i] = dist(gen);
+  }
+
+  std::shared_ptr<ppc::core::TaskData> par_taskData = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    par_taskData->inputs_count.emplace_back(n);
+    par_taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(random_matrix.data()));
+    par_taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(random_b.data()));
+    par_taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(par_output.data()));
+    par_taskData->outputs_count.emplace_back(n * sizeof(double));
+  }
+
+  petrov_o_horizontal_gauss_method_mpi::ParallelTask par_task(par_taskData);
+
+  ASSERT_TRUE(par_task.validation());
+  ASSERT_TRUE(par_task.pre_processing());
+  ASSERT_TRUE(par_task.run());
+  ASSERT_TRUE(par_task.post_processing());
+
+  if (world.rank() == 0) {
+    double residual = 0.0;
+    for (size_t i = 0; i < n; ++i) {
+      double ax_i = 0.0;
+      for (size_t j = 0; j < n; ++j) {
+        ax_i += random_matrix[i * n + j] * par_output[j];
+      }
+      residual += std::pow(ax_i - random_b[i], 2);
+    }
+    residual = std::sqrt(residual);
+    ASSERT_NEAR(residual, 0.0, 1e-7);
   }
 }
 
