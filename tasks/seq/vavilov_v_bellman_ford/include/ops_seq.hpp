@@ -1,10 +1,10 @@
 #pragma once
 
 #include <algorithm>
+#include <limits>
 #include <memory>
 #include <string>
 #include <vector>
-#include <limits>
 
 #include "core/task/include/task.hpp"
 
@@ -21,7 +21,7 @@ class TestTaskSequential : public ppc::core::Task {
 
  private:
   struct Edge {
-	int src, dest, weight;
+    int src, dest, weight;
   };
 
   std::vector<Edge> edges_;
