@@ -253,3 +253,25 @@ TEST(komshina_d_grid_torus_topology_mpi, TestRunWithNonSquareSize) {
     ASSERT_FALSE(task.run()) << "The run method should fail for non-square size (size = 3)";
   }
 }
+
+TEST(komshina_d_grid_torus_topology_mpi, TestNonSquareProcessCount) {
+  boost::mpi::communicator world;
+
+  int size = world.size();
+  double sqrt_size = std::sqrt(size);
+
+  if (sqrt_size != static_cast<int>(sqrt_size)) {
+    std::vector<uint8_t> input_data(4);
+    std::vector<uint8_t> output_data(4);
+
+    auto task_data = std::make_shared<ppc::core::TaskData>();
+    task_data->inputs.emplace_back(input_data.data());
+    task_data->inputs_count.emplace_back(input_data.size());
+    task_data->outputs.emplace_back(output_data.data());
+    task_data->outputs_count.emplace_back(output_data.size());
+
+    komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel task(task_data);
+
+    ASSERT_FALSE(task.run()) << "The run method should fail because the number of processes is not a complete square";
+  }
+}
