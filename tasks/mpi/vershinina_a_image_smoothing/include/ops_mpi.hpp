@@ -30,7 +30,6 @@ class TestMPITaskSequential : public ppc::core::Task {
  private:
   std::vector<int> output_;
   int *input_{};
-  int reference_res{};
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
