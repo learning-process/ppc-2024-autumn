@@ -263,4 +263,3 @@ TEST(mezhuev_m_lattice_torus, TestPreProcessingSuccess) {
 
   ASSERT_TRUE(task.pre_processing());
 }
-

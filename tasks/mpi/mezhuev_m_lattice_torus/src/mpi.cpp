@@ -14,7 +14,7 @@ bool GridTorusTopologyParallel::validation() {
   bool is_valid = true;
 
   if (world.rank() == 0) {
-    if (!taskData || taskData->inputs.empty() || taskData->inputs_count.empty() || taskData->outputs.empty() || 
+    if (!taskData || taskData->inputs.empty() || taskData->inputs_count.empty() || taskData->outputs.empty() ||
         taskData->outputs_count.empty()) {
       is_valid = false;
     }
