@@ -15,6 +15,18 @@ namespace rezantseva_a_simple_iteration_method_mpi {
 std::pair<std::vector<double>, std::vector<double>> createRandomMatrix(size_t n);
 bool checkMatrixDominance(const double* matrix,
                           size_t n);  // check if matrix A diagonal dominant (|A11| > |A12| + |A13| + .. + |A1n|) etc
+bool checkSingleSolutionCriterion(
+    const double* matrix, const double* vec_b,
+    size_t n);  // check if r(A) = r(A*) = n A - basic matrix, A* - extended matrix,  n - number of unknowns
+
+// structure for storing matrix verification results
+struct MatrixProperties {
+  double max_diagonal_value;  // max value on diagonal
+  double non_diagonal_sum;    // sum all elements exept diagonal
+  double row_sum;
+};
+
+MatrixProperties analyzeDiagonalDominance(const double* matrix, size_t n, size_t row);
 
 class SimpleIterationSequential : public ppc::core::Task {
  public:

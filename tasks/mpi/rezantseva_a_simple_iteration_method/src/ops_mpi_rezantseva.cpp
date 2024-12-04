@@ -1,21 +1,70 @@
 // Copyright 2024 Nesterov Alexander
 #include "mpi/rezantseva_a_simple_iteration_method/include/ops_mpi_rezantseva.hpp"
 
+rezantseva_a_simple_iteration_method_mpi::MatrixProperties
+rezantseva_a_simple_iteration_method_mpi::analyzeDiagonalDominance(const double* matrix, size_t n, size_t row) {
+  MatrixProperties props;
+  props.max_diagonal_value = std::fabs(matrix[row * n + row]);
+  props.non_diagonal_sum = 0.0;
+  props.row_sum = props.max_diagonal_value;
+
+  for (size_t j = 0; j < n; ++j) {
+    if (j != row) {
+      double value = std::fabs(matrix[row * n + j]);
+      props.non_diagonal_sum += value;
+      props.row_sum += value;
+    }
+  }
+  return props;
+}
+
 bool rezantseva_a_simple_iteration_method_mpi::checkMatrixDominance(const double* matrix, size_t n) {
   for (size_t i = 0; i < n; ++i) {
-    double Aii = std::fabs(matrix[i * n + i]);
-    double sum = 0.0;
-
-    for (size_t j = 0; j < n; ++j) {
-      if (i != j) {
-        sum += std::fabs(matrix[i * n + j]);
-      }
-    }
-    if (Aii <= sum) {
+    MatrixProperties props = analyzeDiagonalDominance(matrix, n, i);
+    if (props.max_diagonal_value <= props.non_diagonal_sum) {
       return false;
     }
   }
   return true;
+}
+
+bool rezantseva_a_simple_iteration_method_mpi::checkSingleSolutionCriterion(const double* matrix, const double* vec_b,
+                                                                            size_t n) {
+  double norm_A = 0.0;
+  double min_diag_dominance = std::numeric_limits<double>::max();
+
+  for (size_t i = 0; i < n; ++i) {
+    MatrixProperties props = analyzeDiagonalDominance(matrix, n, i);
+    norm_A = std::max(norm_A, props.row_sum);
+    min_diag_dominance = std::min(min_diag_dominance, props.max_diagonal_value - props.non_diagonal_sum);
+  }
+
+  // Check diagonal dominance condition
+  const double eps = 1e-10;
+  if (min_diag_dominance <= eps) {
+    return false;
+  }
+  // Estimate condition number
+  double cond_number_estimate = norm_A / min_diag_dominance;
+
+  // Check if condition number is finite and not too large
+  const double max_condition_number = 1e15;
+  bool is_well_conditioned = std::isfinite(cond_number_estimate) && cond_number_estimate < max_condition_number;
+
+  // Check system consistency (Ax = b)
+  bool is_consistent = true;
+  if (vec_b != nullptr) {  // Check only if right-hand side vector is provided
+    double b_norm = 0.0;
+    for (size_t i = 0; i < n; ++i) {
+      b_norm = std::max(b_norm, std::fabs(vec_b[i]));
+    }
+    // If right-hand side is non-zero and matrix is poorly conditioned,
+    // the system might not have a stable solution
+    if (b_norm > eps && !is_well_conditioned) {
+      is_consistent = false;
+    }
+  }
+  return is_well_conditioned && is_consistent;
 }
 
 bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationSequential::isTimeToStop(
@@ -35,7 +84,9 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationSequential::valida
   internal_order_test();
   n_ = *reinterpret_cast<size_t*>(taskData->inputs[0]);
   return (taskData->inputs_count.size() == 3) && (taskData->outputs_count.size() == 1) && (n_ > 0) &&
-         checkMatrixDominance(reinterpret_cast<double*>(taskData->inputs[1]), n_);
+         checkMatrixDominance(reinterpret_cast<double*>(taskData->inputs[1]), n_) &&
+         checkSingleSolutionCriterion(reinterpret_cast<double*>(taskData->inputs[1]),
+                                      reinterpret_cast<double*>(taskData->inputs[2]), n_);
 }
 
 bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationSequential::pre_processing() {
@@ -119,7 +170,9 @@ bool rezantseva_a_simple_iteration_method_mpi::SimpleIterationMPI::validation() 
   if (world.rank() == 0) {
     n_ = *reinterpret_cast<size_t*>(taskData->inputs[0]);
     flag = (taskData->inputs_count.size() == 3) && (taskData->outputs_count.size() == 1) && (n_ > 0) &&
-           checkMatrixDominance(reinterpret_cast<double*>(taskData->inputs[1]), n_);
+           checkMatrixDominance(reinterpret_cast<double*>(taskData->inputs[1]), n_) &&
+           checkSingleSolutionCriterion(reinterpret_cast<double*>(taskData->inputs[1]),
+                                        reinterpret_cast<double*>(taskData->inputs[2]), n_);
   }
   return flag;
 }
