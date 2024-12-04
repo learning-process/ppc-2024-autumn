@@ -15,7 +15,7 @@
 
 namespace varfolomeev_g_transfer_from_one_to_all_scatter_mpi {
 
-std::vector<int> getRandomVector(int sz);
+std::vector<int> getRandomVector(int sz, int a, int b);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
@@ -34,7 +34,8 @@ class TestMPITaskSequential : public ppc::core::Task {
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
+      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -43,7 +44,7 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   std::vector<int> input_values, local_input_values;
   int res{};
+  std::string ops;
   boost::mpi::communicator world;
 };
-
-}  // namespace varfolomeev_g_transfer_from_one_to_all_scatter_mpi
+}
