@@ -92,8 +92,7 @@ bool lysov_i_simple_iteration_method_mpi::SlaeIterationTask::run() {
   if (!isDiagonallyDominant()) return false;
   std::vector<double> x_new(input_size_, 0.0);
   double max_diff = 0.0;
-  int iter = 0;
-
+  
   do {
     max_diff = 0.0;
 
@@ -113,7 +112,6 @@ bool lysov_i_simple_iteration_method_mpi::SlaeIterationTask::run() {
     }
 
     x_ = x_new;
-    ++iter;
 
   } while (max_diff > tolerance_);
 
