@@ -146,8 +146,8 @@ bool nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodParallel::run(
   std::vector<int> displs(world.size(), 0);
 
   if (world.rank() == 0) {
-    size_t base_size = n / world.size();
-    size_t remainder = n % world.size();
+    int base_size = n / world.size();
+    int remainder = n % world.size();
 
     for (int i = 0; i < world.size(); ++i) {
       sizes[i] = base_size + (i < remainder ? 1 : 0);
@@ -161,7 +161,7 @@ bool nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodParallel::run(
   boost::mpi::broadcast(world, displs, 0);
   boost::mpi::broadcast(world, n, 0);
 
-  size_t local_size = sizes[world.rank()];
+  int local_size = sizes[world.rank()];
   local_A.resize(local_size * n);
   local_b.resize(local_size);
   local_x.resize(local_size, 0.0);
@@ -169,13 +169,13 @@ bool nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodParallel::run(
   boost::mpi::scatterv(world, A_.data(), sizes, displs, local_A.data(), local_size * n, 0);
   boost::mpi::scatterv(world, b_.data(), sizes, displs, local_b.data(), local_size, 0);
 
-  for (size_t i = 0; i < n; ++i) {
+  for (int i = 0; i < n; ++i) {
     if (A_[i * n + i] == 0) {
       std::cerr << "Error: Zero diagonal element detected in matrix A." << std::endl;
       return false;
     }
 
-    for (size_t j = 0; j < n; ++j) {
+    for (int j = 0; j < n; ++j) {
       if (i == j) {
         B[i * n + j] = 0;
       } else {
@@ -191,11 +191,11 @@ bool nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodParallel::run(
 
     std::vector<double> local_x_new(local_size, 0.0);
 
-    for (size_t i = 0; i < local_size; ++i) {
-      size_t global_index = displs[world.rank()] + i;
+    for (int i = 0; i < local_size; ++i) {
+      int global_index = displs[world.rank()] + i;
       local_x_new[i] = g[global_index];
 
-      for (size_t j = 0; j < n; ++j) {
+      for (int j = 0; j < n; ++j) {
         local_x_new[i] += B[global_index * n + j] * x_prev[j];
       }
     }
@@ -205,7 +205,7 @@ bool nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodParallel::run(
     if (world.rank() == 0) {
       double max_diff = 0.0;
 
-      for (size_t i = 0; i < n; ++i) {
+      for (int i = 0; i < n; ++i) {
         max_diff = std::max(max_diff, fabs(x_[i] - x_prev[i]));
       }
 
