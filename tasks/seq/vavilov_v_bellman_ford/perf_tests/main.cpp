@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <chrono>
+#include <climits>
 #include <memory>
 #include <vector>
 
@@ -28,7 +29,7 @@ TEST(vavilov_v_bellman_ford_seq, test_task_run) {
   auto edges = generate_linear_graph(num_vertices);
   auto expected_distances = compute_expected_distances(num_vertices);
 
-  std::vector<int> distances(num_vertices, INF);
+  std::vector<int> distances(num_vertices, INT_MAX);
   distances[0] = 0;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -62,7 +63,7 @@ TEST(vavilov_v_bellman_ford_seq, test_pipeline_run) {
   auto edges = generate_linear_graph(num_vertices);
   auto expected_distances = compute_expected_distances(num_vertices);
 
-  std::vector<int> distances(num_vertices, INF);
+  std::vector<int> distances(num_vertices, INT_MAX);
   distances[0] = 0;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
