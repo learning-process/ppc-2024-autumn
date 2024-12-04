@@ -56,7 +56,7 @@ bool filatev_v_metod_zedela_seq::MetodZedela::run() {
   internal_order_test();
 
   std::vector<double> it1(size, 0);
-  std::vector<double> it2(size);  // prev
+  std::vector<double> it2(size);
   double sum1 = 0;
   double sum2 = 0;
   double sum;
