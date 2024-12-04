@@ -104,18 +104,21 @@ TEST(koshkin_m_dining_philosophers, test_random_num_philosophers_world) {
 
   koshkin_m_dining_philosophers::testMpiTaskParallel testMpiTaskParallel(taskData);
 
-  if (num_philosophers > 1) {
-    ASSERT_TRUE(testMpiTaskParallel.validation());
-    ASSERT_TRUE(testMpiTaskParallel.pre_processing());
-    ASSERT_TRUE(testMpiTaskParallel.run());
-    ASSERT_TRUE(testMpiTaskParallel.post_processing());
-
-    bool deadlock_detected = testMpiTaskParallel.check_deadlock();
-    if (world.rank() == 0) {
-      ASSERT_FALSE(deadlock_detected);
+  if (num_philosophers >= 2) {
+    if (world.size() >= 2) {
+      ASSERT_TRUE(testMpiTaskParallel.validation());
+      ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+      ASSERT_TRUE(testMpiTaskParallel.run());
+      ASSERT_TRUE(testMpiTaskParallel.post_processing());
+      bool deadlock_detected = testMpiTaskParallel.check_deadlock();
+      if (world.rank() == 0) {
+        ASSERT_FALSE(deadlock_detected);
+      }
+    } else {
+      ASSERT_FALSE(testMpiTaskParallel.validation());
     }
   } else {
-    ASSERT_FALSE(testMpiTaskParallel.validation());
+    GTEST_SKIP();
   }
 }
 
