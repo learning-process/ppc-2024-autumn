@@ -122,7 +122,6 @@ bool shulpin_strip_scheme_A_B::Matrix_hA_vB_par::run() {
   std::vector<int> local_res(mpi_rows_A * mpi_cols_B, 0);
   calculate_mpi(mpi_rows_A, mpi_cols_A, mpi_cols_B, mpi_A, mpi_B, local_res);
 
-
   boost::mpi::reduce(world, local_res, mpi_result, std::plus<>(), 0);
   return true;
 }
