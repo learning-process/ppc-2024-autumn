@@ -67,7 +67,7 @@ TEST(Sequential_Operations, vladimirova_j_right_left_test) {
   ASSERT_EQ(ans_buf_vec, ans_vec);
 }
 
-/*
+
 TEST(Sequential_Operations, vladimirova_j_more_dead_ends_test) {
   std::vector<int> global_vector = {1,  2, 2, 1, 2,  1,  -1, -1, -1, 2, 1, -2, 2, 2,  1,  2,  1, 2,
                                     -2, 1, 2, 1, -2, -1, -1, 2,  1,  2, 1, 1,  2, -1, -1, -2, 1, 2};
@@ -149,7 +149,6 @@ TEST(Sequential_Operations, vladimirova_j_random_test) {
 
   ASSERT_EQ((int)taskDataPar->outputs_count[0] <= noDEnd, true);
 }
-*/
 
 TEST(Sequential_Operations, vladimirova_j_1_test) {
   std::vector<int> global_vector = {2, 2, -1, 2, 2, 2, 2, 2, -1, 2, 2, 2, -1, 2, 2, 2, -1, -1, 2,
