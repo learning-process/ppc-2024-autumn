@@ -1,7 +1,7 @@
 #include "mpi/kapustin_i_bubble/include/avg_mpi.hpp"
 
 std::vector<int> kapustin_i_bubble_sort_mpi::BubbleSortMPI::merge(int partner, std::vector<int>& local_data) {
-  if (partner >= world.size()) return local_data;
+  if (partner < 0 || partner >= world.size()) return local_data;
 
   std::vector<int> tmp;
   size_t send_size = local_data.size();
