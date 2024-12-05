@@ -50,7 +50,6 @@ bool GaussSeidelSequential::run() {
 
   vector<double> x_new(n, 0.0);
   double norm;
-  int iter = 0;
 
   do {
     norm = 0.0;
@@ -70,7 +69,6 @@ bool GaussSeidelSequential::run() {
       x[i] = x_new[i];
     }
     norm = sqrt(norm);
-    iter++;
 
   } while (norm > epsilon);
 
