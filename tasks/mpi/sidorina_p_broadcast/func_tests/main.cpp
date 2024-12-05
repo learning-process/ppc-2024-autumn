@@ -226,8 +226,8 @@ TEST(sidorina_p_broadcast_mpi, Test_random_ref) {
     result.resize(array.size(), 0);
     reference.resize(array.size(), 0);
 
-    for (int i = 0; i < array.size(); i++) {
-      for (int j = 0; j < terms.size(); j++) {
+    for (unsigned long i = 0; i < array.size(); i++) {
+      for (unsigned long j = 0; j < terms.size(); j++) {
         int a = array[i] + terms[j];
         reference[i] += a;
       }
