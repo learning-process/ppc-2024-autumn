@@ -351,7 +351,6 @@ bool ConvexHullMPI::run() {
   return true;
 }
 
-
 bool ConvexHullMPI::post_processing() {
   internal_order_test();
 
