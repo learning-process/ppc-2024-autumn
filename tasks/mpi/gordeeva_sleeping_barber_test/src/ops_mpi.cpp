@@ -41,10 +41,13 @@ bool gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
   if (world.rank() == 0) {
+    std::cout << "1" << std::endl;
     barber_logic();
   } else if (world.rank() == 1) {
+    std::cout << "2" << std::endl;
     dispatcher_logic();
   } else {
+    std::cout << "3" << std::endl;
     client_logic();
   }
 
@@ -53,8 +56,10 @@ bool gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::run() {
 
 bool gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
+  
+  world.barrier();
+  std::cout << "4" < std::endl;
 
-world.barrier();
 
   if (world.rank() == 0) {
     if (!taskData->outputs.empty() && taskData->outputs_count[0] == sizeof(int)) {
@@ -74,6 +79,8 @@ void gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::barber_logic() {
     world.recv(1, 0, client_id);
 
     if (client_id == -1) {
+      std::cout << "br end" << std::endl;
+
       result = 0;
       return;
     }
@@ -121,6 +128,7 @@ void gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::dispatcher_logic() {
     }
 
     if (world.iprobe(boost::mpi::any_source, 3)) {
+      std::cout << "d end" << std::endl;
       int done_signal;
       world.recv(boost::mpi::any_source, 3, done_signal);
       remaining_clients--;
@@ -137,6 +145,8 @@ void gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::client_logic() {
   world.recv(1, 1, accepted);
 
   if (accepted) {
+    std::cout << "cl" << std::endl;
+
     world.recv(0, 2, client_id);
     world.send(1, 3, client_id);
   } else {
