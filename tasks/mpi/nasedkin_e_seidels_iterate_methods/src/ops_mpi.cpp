@@ -23,7 +23,7 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
             for (int j = 0; j < n; j++) {
                 if (i < 2) {
                     ed[j * n + i] = 0;
-                } else if (i == j && i >= 2) {
+                } else if (i == j) {
                     ed[j * n + i] = 1;
                 } else {
                     ed[j * n + i] = 0;
