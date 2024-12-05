@@ -22,7 +22,8 @@ std::vector<int> kapustin_i_bubble_sort_mpi::BubbleSortMPI::merge(int partner, s
   }
 
   std::vector<int> merged_result;
-  size_t i = 0, j = 0;
+  size_t i = 0;
+  size_t j = 0;
   while (i < local_data.size() && j < tmp.size()) {
     if (local_data[i] <= tmp[j]) {
       merged_result.push_back(local_data[i++]);
@@ -66,16 +67,19 @@ bool kapustin_i_bubble_sort_mpi::BubbleSortMPI::validation() {
 
 bool kapustin_i_bubble_sort_mpi::BubbleSortMPI::run() {
   internal_order_test();
-  int total_elements = 0;
+  int total_elements = size_;
 
-  if (world.rank() == 0) {
+  /*if (world.rank() == 0) {
     total_elements = size_;
-  }
+  }*/
   boost::mpi::broadcast(world, total_elements, 0);
 
   int base_size = total_elements / world.size();
   int remainder = total_elements % world.size();
-  int local_size = base_size + (world.rank() < remainder ? 1 : 0);
+  int local_size = base_size;
+  if (world.rank() < remainder) {
+    local_size += 1;
+  }
   std::vector<int> local_data(local_size);
 
   if (world.rank() == 0) {
@@ -105,9 +109,12 @@ bool kapustin_i_bubble_sort_mpi::BubbleSortMPI::run() {
   }
 
   for (int step = 0; step < world.size(); ++step) {
-    int partner = (step % 2 == 0) ? (world.rank() % 2 == 0 ? world.rank() + 1 : world.rank() - 1)
-                                  : (world.rank() % 2 == 1 ? world.rank() + 1 : world.rank() - 1);
-
+    int partner;
+    if (step % 2 == 0) {
+      partner = (world.rank() % 2 == 0) ? world.rank() + 1 : world.rank() - 1;
+    } else {
+      partner = (world.rank() % 2 == 1) ? world.rank() + 1 : world.rank() - 1;
+    }
     if (partner < 0 || partner >= world.size()) {
       world.barrier();
       continue;

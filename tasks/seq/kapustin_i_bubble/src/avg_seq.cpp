@@ -18,10 +18,6 @@ bool kapustin_i_bubble_sort_seq::BubbleSortSequential::validation() {
     return false;
   }
 
-  if (taskData->outputs.empty() || taskData->outputs_count.size() < 1) {
-    return false;
-  }
-
   return true;
 }
 
