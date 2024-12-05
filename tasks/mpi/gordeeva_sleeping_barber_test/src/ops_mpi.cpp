@@ -58,7 +58,7 @@ bool gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   
   world.barrier();
-  std::cout << "4" < std::endl;
+  std::cout << "4" << std::endl;
 
 
   if (world.rank() == 0) {
