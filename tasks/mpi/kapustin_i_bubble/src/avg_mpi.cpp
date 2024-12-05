@@ -4,8 +4,8 @@ std::vector<int> kapustin_i_bubble_sort_mpi::BubbleSortMPI::merge(int partner, s
   if (partner < 0 || partner >= world.size()) return local_data;
 
   std::vector<int> tmp;
-  int send_size = local_data.size();
-  int recv_size = 0;
+  size_t send_size = local_data.size();
+  size_t recv_size = 0;
 
   if (world.rank() < partner) {
     world.send(partner, 0, &send_size, 1);
@@ -22,7 +22,7 @@ std::vector<int> kapustin_i_bubble_sort_mpi::BubbleSortMPI::merge(int partner, s
   }
 
   std::vector<int> merged_result;
-  int i = 0, j = 0;
+  size_t i = 0, j = 0;
   while (i < local_data.size() && j < tmp.size()) {
     if (local_data[i] <= tmp[j]) {
       merged_result.push_back(local_data[i++]);
@@ -33,7 +33,7 @@ std::vector<int> kapustin_i_bubble_sort_mpi::BubbleSortMPI::merge(int partner, s
   while (i < local_data.size()) merged_result.push_back(local_data[i++]);
   while (j < tmp.size()) merged_result.push_back(tmp[j++]);
 
-  int mid = merged_result.size() / 2;
+  size_t mid = merged_result.size() / 2;
   if (world.rank() < partner) {
     local_data.assign(merged_result.begin(), merged_result.begin() + mid);
   } else {
@@ -93,9 +93,9 @@ bool kapustin_i_bubble_sort_mpi::BubbleSortMPI::run() {
     world.recv(0, 0, local_data.data(), local_size);
   }
 
-  for (int i = 0; i < local_data.size(); ++i) {
+  for (size_t i = 0; i < local_data.size(); ++i) {
     bool swapped = false;
-    for (int j = 0; j < local_data.size() - i - 1; ++j) {
+    for (size_t j = 0; j < local_data.size() - i - 1; ++j) {
       if (local_data[j] > local_data[j + 1]) {
         std::swap(local_data[j], local_data[j + 1]);
         swapped = true;
