@@ -54,6 +54,8 @@ bool gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::run() {
 bool gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
 
+  world.barrier();
+
   if (world.rank() == 0) {
     if (!taskData->outputs.empty() && taskData->outputs_count[0] == sizeof(int)) {
       *reinterpret_cast<int*>(taskData->outputs[0]) = result;
