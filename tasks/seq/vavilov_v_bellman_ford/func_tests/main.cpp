@@ -11,10 +11,13 @@ TEST(vavilov_v_bellman_ford_seq, ValidInputWithMultiplePaths_1) {
   unsigned int vertices = 5, edges_count = 8, source = 0;
 
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs_count = {vertices, edges_count, 1};
-  taskDataSeq->inputs = {reinterpret_cast<uint8_t*>(&source), reinterpret_cast<uint8_t*>(edges.data())};
+  taskDataSeq->inputs_count.emplace_back(vertices);
+  taskDataSeq->inputs_count.emplace_back(edges_count);
+  taskDataSeq->inputs_count.emplace_back(1);
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&source));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(edges.data()));
   taskDataSeq->outputs_count.emplace_back(output.size());
-  taskDataSeq->outputs = {reinterpret_cast<uint8_t*>(output.data())};
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
 
   vavilov_v_bellman_ford_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_TRUE(testTaskSequential.validation());
