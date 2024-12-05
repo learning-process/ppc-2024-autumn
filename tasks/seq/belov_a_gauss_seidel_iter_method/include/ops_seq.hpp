@@ -1,6 +1,7 @@
 #ifndef OPS_SEQ_HPP
 #define OPS_SEQ_HPP
 
+#include <cmath>
 #include <memory>
 #include <vector>
 

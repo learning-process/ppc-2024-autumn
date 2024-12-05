@@ -6,6 +6,7 @@
 #include <boost/mpi.hpp>
 #include <boost/mpi/collectives.hpp>
 #include <boost/serialization/vector.hpp>
+#include <cmath>
 #include <vector>
 
 #include "core/task/include/task.hpp"
