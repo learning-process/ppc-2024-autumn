@@ -1,4 +1,4 @@
-#include "mpi/zaitsev_a_scatter/include/ops_mpi.hpp"
+#include "mpi/zaitsev_a_scatter_handwritten/include/ops_mpi.hpp"
 
 int zaitsev_a_scatter::scatter(const void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount,
                                MPI_Datatype recvtype, int root, MPI_Comm comm) {

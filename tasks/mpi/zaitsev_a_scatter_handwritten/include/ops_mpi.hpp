@@ -14,9 +14,9 @@ int scatter(const void* sendbuf, int sendcount, MPI_Datatype sendtype, void* rec
 template <typename T, auto func>
   requires std::same_as<decltype(+func),
                         int (*)(const void*, int, MPI_Datatype, void*, int, MPI_Datatype, int, MPI_Comm)>
-class TestMPITaskParallel : public ppc::core::Task {
+class ScatterTask : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, int root_, MPI_Datatype dtype_)
+  explicit ScatterTask(std::shared_ptr<ppc::core::TaskData> taskData_, int root_, MPI_Datatype dtype_)
       : Task(std::move(taskData_)), root(root_), dtype(dtype_) {}
 
  private:
