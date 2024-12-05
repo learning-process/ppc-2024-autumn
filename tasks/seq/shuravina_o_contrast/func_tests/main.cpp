@@ -30,13 +30,14 @@ TEST(shuravina_o_contrast, Test_Contrast_Small) {
   contrastTaskSequential.run();
   contrastTaskSequential.post_processing();
 
-  uint8_t min_val = *std::min_element(in.begin(), in.end());
-  uint8_t max_val = *std::max_element(in.begin(), in.end());
+  auto min_val = *std::min_element(in.begin(), in.end());
+  auto max_val = *std::max_element(in.begin(), in.end());
   for (int i = 0; i < count; ++i) {
-    uint8_t expected = static_cast<uint8_t>((in[i] - min_val) * 255.0 / (max_val - min_val));
+    auto expected = static_cast<uint8_t>((in[i] - min_val) * 255.0 / (max_val - min_val));
     ASSERT_EQ(out[i], expected);
   }
 }
+
 TEST(shuravina_o_contrast, Test_Contrast_Medium) {
   const int count = 10000;
 
@@ -62,13 +63,14 @@ TEST(shuravina_o_contrast, Test_Contrast_Medium) {
   contrastTaskSequential.run();
   contrastTaskSequential.post_processing();
 
-  uint8_t min_val = *std::min_element(in.begin(), in.end());
-  uint8_t max_val = *std::max_element(in.begin(), in.end());
+  auto min_val = *std::min_element(in.begin(), in.end());
+  auto max_val = *std::max_element(in.begin(), in.end());
   for (int i = 0; i < count; ++i) {
-    uint8_t expected = static_cast<uint8_t>((in[i] - min_val) * 255.0 / (max_val - min_val));
+    auto expected = static_cast<uint8_t>((in[i] - min_val) * 255.0 / (max_val - min_val));
     ASSERT_EQ(out[i], expected);
   }
 }
+
 TEST(shuravina_o_contrast, Test_Contrast_Large) {
   const int count = 1000000;
 
@@ -94,10 +96,10 @@ TEST(shuravina_o_contrast, Test_Contrast_Large) {
   contrastTaskSequential.run();
   contrastTaskSequential.post_processing();
 
-  uint8_t min_val = *std::min_element(in.begin(), in.end());
-  uint8_t max_val = *std::max_element(in.begin(), in.end());
+  auto min_val = *std::min_element(in.begin(), in.end());
+  auto max_val = *std::max_element(in.begin(), in.end());
   for (int i = 0; i < count; ++i) {
-    uint8_t expected = static_cast<uint8_t>((in[i] - min_val) * 255.0 / (max_val - min_val));
+    auto expected = static_cast<uint8_t>((in[i] - min_val) * 255.0 / (max_val - min_val));
     ASSERT_EQ(out[i], expected);
   }
 }
