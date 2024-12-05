@@ -3,6 +3,7 @@
 #include <boost/serialization/array.hpp>
 #include <boost/serialization/vector.hpp>
 #include <cmath>
+#include <thread>
 
 bool kazunin_n_dining_philosophers_mpi::DiningPhilosophersParallelMPI::validation() {
   internal_order_test();
