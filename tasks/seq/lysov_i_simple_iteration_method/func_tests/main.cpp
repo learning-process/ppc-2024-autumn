@@ -51,7 +51,6 @@ TEST(lysov_i_simple_iteration_method_seq, SlaeIterationTask_ZeroMatrixTest) {
   lysov_i_simple_iteration_method_seq::SlaeIterationTask slaeIterationTask(taskDataSeq);
 
   ASSERT_FALSE(slaeIterationTask.validation());
-  slaeIterationTask.pre_processing();
 }
 
 TEST(lysov_i_simple_iteration_method_seq, SlaeIterationTask_InvalidDataTest) {
