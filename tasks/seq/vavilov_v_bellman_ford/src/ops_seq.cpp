@@ -5,9 +5,9 @@ bool vavilov_v_bellman_ford_seq::TestTaskSequential::pre_processing() {
 
   vertices_ = taskData->inputs_count[0];
   edges_count_ = taskData->inputs_count[1];
-  source_ = *reinterpret_cast<int*>(taskData->inputs[2]);
+  source_ = *reinterpret_cast<int*>(taskData->inputs[-2]);
 
-  int* edges_data = reinterpret_cast<int*>(taskData->inputs[3]);
+  int* edges_data = reinterpret_cast<int*>(taskData->inputs[-2]);
   for (int i = 0; i < edges_count_; ++i) {
     edges_.push_back({edges_data[i * 3], edges_data[i * 3 + 1], edges_data[i * 3 + 2]});
   }
