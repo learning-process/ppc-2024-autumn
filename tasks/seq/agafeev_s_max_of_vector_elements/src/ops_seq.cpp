@@ -1,7 +1,9 @@
 #include "seq/agafeev_s_max_of_vector_elements/include/ops_seq.hpp"
 
+namespace agafeev_s_max_of_vector_elements_sequental {
+
 template <typename T>
-std::vector<T> agafeev_s_max_of_vector_elements_sequental::create_RandomMatrix(int row_size, int column_size) {
+std::vector<T> create_RandomMatrix(int row_size, int column_size) {
   auto rand_gen = std::mt19937(1337);
   std::vector<T> matrix(row_size * column_size);
   for (uint i = 0; i < matrix.size(); i++) matrix[i] = rand_gen() % 100;
@@ -10,7 +12,7 @@ std::vector<T> agafeev_s_max_of_vector_elements_sequental::create_RandomMatrix(i
 }
 
 template <typename T>
-T agafeev_s_max_of_vector_elements_sequental::get_MaxValue(std::vector<T> matrix) {
+T get_MaxValue(std::vector<T> matrix) {
   T max_result = std::numeric_limits<T>::min();
   for (uint i = 0; i < matrix.size(); i++)
     if (max_result < matrix[i]) max_result = matrix[i];
@@ -19,7 +21,7 @@ T agafeev_s_max_of_vector_elements_sequental::get_MaxValue(std::vector<T> matrix
 }
 
 template <typename T>
-bool agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential<T>::pre_processing() {
+bool MaxMatrixSequential<T>::pre_processing() {
   internal_order_test();
 
   // Init value
@@ -30,14 +32,14 @@ bool agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential<T>::pre_pro
 }
 
 template <typename T>
-bool agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential<T>::validation() {
+bool MaxMatrixSequential<T>::validation() {
   internal_order_test();
 
   return taskData->outputs_count[0] == 1;
 }
 
 template <typename T>
-bool agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential<T>::run() {
+bool MaxMatrixSequential<T>::run() {
   internal_order_test();
 
   maxres_ = get_MaxValue(input_);
@@ -46,10 +48,14 @@ bool agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential<T>::run() {
 }
 
 template <typename T>
-bool agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential<T>::post_processing() {
+bool MaxMatrixSequential<T>::post_processing() {
   internal_order_test();
 
   reinterpret_cast<T*>(taskData->outputs[0])[0] = maxres_;
 
   return true;
 }
+
+template class MaxMatrixSequential<int>;
+
+}  // namespace agafeev_s_max_of_vector_elements_sequental

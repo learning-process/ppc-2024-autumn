@@ -1,6 +1,5 @@
 #include "mpi/agafeev_s_max_of_vector_elements/include/ops_mpi.hpp"
 
-#include "boost/mpi/communicator.hpp"
 #include "boost/mpi/operations.hpp"
 //#include "seq/agafeev_s_max_of_vector_elements/include/ops_seq.hpp"
 
