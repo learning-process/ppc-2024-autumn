@@ -52,6 +52,21 @@ bool lysov_i_simple_iteration_method_mpi::SlaeIterationTask::transformSystem() {
 
 bool lysov_i_simple_iteration_method_mpi::SlaeIterationTask::pre_processing() {
   internal_order_test();
+
+  auto* X_raw = reinterpret_cast<double*>(taskData->outputs[0]);
+  x_.resize(input_size_);
+  for (int i = 0; i < input_size_; ++i) {
+    x_[i] = X_raw[i];
+  }
+
+  tolerance_ = 1e-6;
+
+  return true;
+}
+
+bool lysov_i_simple_iteration_method_mpi::SlaeIterationTask::validation() {
+  internal_order_test();
+
   input_size_ = taskData->inputs_count[0];
   A_.resize(input_size_, std::vector<double>(input_size_));
   auto* A_raw = reinterpret_cast<double*>(taskData->inputs[0]);
@@ -68,19 +83,8 @@ bool lysov_i_simple_iteration_method_mpi::SlaeIterationTask::pre_processing() {
     b_[i] = B_raw[i];
   }
 
-  auto* X_raw = reinterpret_cast<double*>(taskData->outputs[0]);
-  x_.resize(input_size_);
-  for (int i = 0; i < input_size_; ++i) {
-    x_[i] = X_raw[i];
-  }
-
-  tolerance_ = 1e-6;
-
-  return true;
-}
-
-bool lysov_i_simple_iteration_method_mpi::SlaeIterationTask::validation() {
-  internal_order_test();
+  if (!isDiagonallyDominant()) return false;
+  if (!transformSystem()) return false;
   return taskData->inputs_count[0] == taskData->inputs_count[1] &&
          taskData->inputs_count[0] == taskData->outputs_count[0];
 }
@@ -88,8 +92,6 @@ bool lysov_i_simple_iteration_method_mpi::SlaeIterationTask::validation() {
 bool lysov_i_simple_iteration_method_mpi::SlaeIterationTask::run() {
   internal_order_test();
 
-  if (!transformSystem()) return false;
-  if (!isDiagonallyDominant()) return false;
   std::vector<double> x_new(input_size_, 0.0);
   double max_diff = 0.0;
 
@@ -172,6 +174,18 @@ bool lysov_i_simple_iteration_method_mpi::SlaeIterationTaskMPI::transformSystem(
 bool lysov_i_simple_iteration_method_mpi::SlaeIterationTaskMPI::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
+    auto* X_raw = reinterpret_cast<double*>(taskData->outputs[0]);
+    x_.resize(input_size_);
+    for (int i = 0; i < input_size_; ++i) {
+      x_[i] = X_raw[i];
+    }
+  }
+  return true;
+}
+
+bool lysov_i_simple_iteration_method_mpi::SlaeIterationTaskMPI::validation() {
+  internal_order_test();
+  if (world.rank() == 0) {
     input_size_ = taskData->inputs_count[0];
     A_.resize(input_size_, std::vector<double>(input_size_));
     b_.resize(input_size_);
@@ -183,14 +197,8 @@ bool lysov_i_simple_iteration_method_mpi::SlaeIterationTaskMPI::pre_processing()
       }
       b_[i] = B_raw[i];
     }
-  }
-
-  return true;
-}
-
-bool lysov_i_simple_iteration_method_mpi::SlaeIterationTaskMPI::validation() {
-  internal_order_test();
-  if (world.rank() == 0) {
+    if (!isDiagonallyDominant()) return false;
+    if (!transformSystem()) return false;
     return taskData->inputs_count[0] == taskData->inputs_count[1] &&
            taskData->inputs_count[0] == taskData->outputs_count[0];
   }
@@ -203,9 +211,6 @@ bool lysov_i_simple_iteration_method_mpi::SlaeIterationTaskMPI::run() {
   boost::mpi::broadcast(world, input_size_, 0);
   x_.resize(input_size_);
 
-  if (!isDiagonallyDominant()) return false;
-
-  if (!transformSystem()) return false;
   std::vector<int> local_matrix_elements(world.size());
   std::vector<int> offsets_matrix(world.size());
   std::vector<int> right_side_values(world.size());

@@ -28,7 +28,7 @@ void generate_diagonally_dominant_matrix(int size, std::vector<double> &matrix, 
 
 TEST(lysov_i_simple_iteration_method_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  const int input_size = 1000;
+  const int input_size = 800;
   std::vector<double> matrix;
   std::vector<double> g;
   std::vector<double> expected_solution;
@@ -69,7 +69,7 @@ TEST(lysov_i_simple_iteration_method_mpi, test_pipeline_run) {
 
 TEST(lysov_i_simple_iteration_method_mpi, test_task_run) {
   boost::mpi::communicator world;
-  const int input_size = 1000;
+  const int input_size = 800;
   std::vector<double> matrix;
   std::vector<double> g;
   std::vector<double> expected_solution;

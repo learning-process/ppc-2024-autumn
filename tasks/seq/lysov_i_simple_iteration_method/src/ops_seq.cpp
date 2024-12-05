@@ -45,6 +45,21 @@ bool lysov_i_simple_iteration_method_seq::SlaeIterationTask::transformSystem() {
 
 bool lysov_i_simple_iteration_method_seq::SlaeIterationTask::pre_processing() {
   internal_order_test();
+
+  auto* X_raw = reinterpret_cast<double*>(taskData->outputs[0]);
+  x_.resize(input_size_);
+  for (int i = 0; i < input_size_; ++i) {
+    x_[i] = X_raw[i];
+  }
+
+  tolerance_ = 1e-6;
+
+  return true;
+}
+
+bool lysov_i_simple_iteration_method_seq::SlaeIterationTask::validation() {
+  internal_order_test();
+
   input_size_ = taskData->inputs_count[0];
   A_.resize(input_size_, std::vector<double>(input_size_));
   auto* A_raw = reinterpret_cast<double*>(taskData->inputs[0]);
@@ -61,21 +76,8 @@ bool lysov_i_simple_iteration_method_seq::SlaeIterationTask::pre_processing() {
     b_[i] = B_raw[i];
   }
 
-  auto* X_raw = reinterpret_cast<double*>(taskData->outputs[0]);
-  x_.resize(input_size_);
-  for (int i = 0; i < input_size_; ++i) {
-    x_[i] = X_raw[i];
-  }
-
-  tolerance_ = 1e-6;
-  max_iter_ = 10000;
-  epsilon_ = 1e-6;
-
-  return true;
-}
-
-bool lysov_i_simple_iteration_method_seq::SlaeIterationTask::validation() {
-  internal_order_test();
+  if (!isDiagonallyDominant()) return false;
+  if (!transformSystem()) return false;
   return taskData->inputs_count[0] == taskData->inputs_count[1] &&
          taskData->inputs_count[0] == taskData->outputs_count[0];
 }
@@ -83,11 +85,8 @@ bool lysov_i_simple_iteration_method_seq::SlaeIterationTask::validation() {
 bool lysov_i_simple_iteration_method_seq::SlaeIterationTask::run() {
   internal_order_test();
 
-  if (!transformSystem()) return false;
-  if (!isDiagonallyDominant()) return false;
   std::vector<double> x_new(input_size_, 0.0);
   double max_diff = 0.0;
-  int iter = 0;
 
   do {
     max_diff = 0.0;
@@ -108,16 +107,15 @@ bool lysov_i_simple_iteration_method_seq::SlaeIterationTask::run() {
     }
 
     x_ = x_new;
-    ++iter;
 
-  } while (max_diff > tolerance_ && iter < max_iter_);
+  } while (max_diff > tolerance_);
 
   return true;
 }
 
 bool lysov_i_simple_iteration_method_seq::SlaeIterationTask::post_processing() {
   internal_order_test();
-  for (int i = 0; i < static_cast<int>(x_.size()); ++i) {
+  for (int i = 0; i < static_cast<int>(x_.size()); i++) {
     reinterpret_cast<double*>(taskData->outputs[0])[i] = x_[i];
   }
   return true;
