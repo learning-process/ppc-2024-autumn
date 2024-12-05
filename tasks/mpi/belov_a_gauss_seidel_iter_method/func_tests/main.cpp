@@ -209,10 +209,6 @@ TEST(belov_a_gauss_seidel_mpi, Test_Negative_Values_Only) {
     for (int i = 0; i < n; ++i) {
       ASSERT_NEAR(solutionMpi[i], solutionSeq[i], epsilon);
     }
-
-    for (int i = 0; i < n; ++i) {
-      ASSERT_NEAR(solutionMpi[i], solutionSeq[i], epsilon);
-    }
   }
 }
 
@@ -490,10 +486,10 @@ TEST(belov_a_gauss_seidel_mpi, Test_Invalid_Matrix_Size) {
     taskDataPar->inputs_count.emplace_back(freeMembers.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionMpi.data()));
     taskDataPar->outputs_count.emplace_back(solutionMpi.size());
-  }
 
-  GaussSeidelParallel testMpiTaskParallel(taskDataPar);
-  EXPECT_FALSE(testMpiTaskParallel.validation());
+    GaussSeidelParallel testMpiTaskParallel(taskDataPar);
+    EXPECT_FALSE(testMpiTaskParallel.validation());
+  }
 }
 
 TEST(belov_a_gauss_seidel_mpi, Test_Non_Square_Matrix) {
@@ -515,10 +511,10 @@ TEST(belov_a_gauss_seidel_mpi, Test_Non_Square_Matrix) {
     taskDataPar->inputs_count.emplace_back(freeMembers.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionMpi.data()));
     taskDataPar->outputs_count.emplace_back(solutionMpi.size());
-  }
 
-  GaussSeidelParallel testMpiTaskParallel(taskDataPar);
-  EXPECT_FALSE(testMpiTaskParallel.validation());
+    GaussSeidelParallel testMpiTaskParallel(taskDataPar);
+    EXPECT_FALSE(testMpiTaskParallel.validation());
+  }
 }
 
 TEST(belov_a_gauss_seidel_mpi, Test_No_Diagonal_Dominance) {
@@ -540,8 +536,8 @@ TEST(belov_a_gauss_seidel_mpi, Test_No_Diagonal_Dominance) {
     taskDataPar->inputs_count.emplace_back(freeMembers.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionMpi.data()));
     taskDataPar->outputs_count.emplace_back(solutionMpi.size());
-  }
 
-  GaussSeidelParallel testMpiTaskParallel(taskDataPar);
-  EXPECT_FALSE(testMpiTaskParallel.validation());
+    GaussSeidelParallel testMpiTaskParallel(taskDataPar);
+    EXPECT_FALSE(testMpiTaskParallel.validation());
+  }
 }
