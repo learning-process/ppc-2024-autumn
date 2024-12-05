@@ -8,26 +8,19 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> vladimirova_j_gather_seq::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = (gen() % 2 + 1) * (gen() % 2 - 1);
-  }
-  return vec;
-}
-
 std::vector<int> vladimirova_j_gather_seq::noDeadEnds(std::vector<int> way) {
   int i = 0;
   size_t j = 1;
-
   while (j <= way.size()) {
-    if ((way[i] * way[i] == 1) && (way[i] == way[j])) {
+    if ((way[i] == -1) && (way[i] == way[j])) {
       do {
         i -= 1;
         j += 1;
-        if (!(((size_t)i >= 0) && (j < way.size()))) break;
+        if (((size_t)i < 0) || (!(j < way.size()))) {
+          i = j - 1;
+          break;
+        };
+
         if (((way[i] * way[i] == 1) && (way[i] == (-1) * way[j])) ||
             (way[i] * way[j] == 4)) {  // if rl lr or uu dd   1-1 -11 or 22 -2-2
           way[i] = 0;
@@ -44,47 +37,26 @@ std::vector<int> vladimirova_j_gather_seq::noDeadEnds(std::vector<int> way) {
     j++;
     i++;
   }
+  /*
+  std::cout << "!!!!!!!!!!!!!!! way  2"
+      << "\n";
+  for (auto v : way) {
+      std::cout << v << " ";
+  }
+  std::cout << "\n";
+  */
   std::vector<int> ans = std::vector<int>();
   for (auto k : way)
     if (k != 0) ans.push_back(k);
   // way.erase(std::remove(way.begin(), way.end(), 0), way.end());
-  return ans;
-}
-
-std::vector<int> vladimirova_j_gather_seq::noStrangeSteps(std::vector<int> way) {
-  std::cout << "NO STR STEPS\n";
-  for (int value : way) {
-    std::cout << value << " ";
-  }
-
-  for (size_t i = 1; i < way.size(); i++)
-    if (way[i] == -way[i - 1]) {
-      way[i] = 0;
-      way[i - 1] = 0;
-    }
-  std::vector<int> way2 = std::vector<int>();
-  for (auto i : way)
-    if (i != 0) way2.push_back(i);
-  //.erase(std::remove(way.begin(), way.end(), 0), way.end());
-
-  for (size_t i = 3; i < way2.size(); i++) {
-    if (((way2[i] == -1) || (way2[i] == 1)) && (way2[i] == way2[i - 1]) && (way2[i] == way2[i - 2]) &&
-        (way2[i] == way2[i - 3])) {
-      way2[i] = 0;
-      way2[i - 1] = 0;
-      way2[i - 2] = 0;
-      way2[i - 3] = 0;
-    }
-  }
-  std::vector<int> ans = std::vector<int>();
-  // way.erase(std::remove(way.begin(), way.end(), 0), way.end());
-  for (auto i : way2)
-    if (i != 0) ans.push_back(i);
-  std::cout << "NO STR STEPS\n";
-  for (int value : ans) {
-    std::cout << value << " ";
+  /*
+  std::cout << "!!!!!!!!!!!!!!! ans"
+      << "\n";
+  for (auto v : ans) {
+      std::cout << v << " ";
   }
   std::cout << std::endl;
+  */
   return ans;
 }
 

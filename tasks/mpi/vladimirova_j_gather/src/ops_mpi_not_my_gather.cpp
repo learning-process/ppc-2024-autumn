@@ -75,17 +75,7 @@ bool vladimirova_j_not_my_gather_mpi::TestMPITaskParallel::run() {
       local_input_.insert(local_input_.end(), root_vec[i].begin(), root_vec[i].end());
     }
     local_input_.insert(local_input_.end(), input_.end() - input_.size() % world.size(), input_.end());
-
-    std::cout << "ANS  1" << r << "   \n";
-
-    std::for_each(local_input_.begin(), local_input_.end(), [](int number) { std::cout << number << " "; });
-    std::cout << std::endl;
     local_input_ = vladimirova_j_gather_mpi::noDeadEnds(local_input_);
-    local_input_ = vladimirova_j_gather_mpi::noStrangeSteps(local_input_);
-
-    std::cout << "ANS  2 " << r << "   \n";
-    std::for_each(local_input_.begin(), local_input_.end(), [](int number) { std::cout << number << " "; });
-    std::cout << std::endl;
   }
 
   return true;
@@ -95,6 +85,13 @@ bool vladimirova_j_not_my_gather_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     taskData->outputs_count[0] = local_input_.size();
+    /*std::cout << "SIZE:  " << local_input_.size();
+    std::cout << "!!!"
+        << "\n";
+    for (auto v : local_input_) {
+        std::cout << v << " ";
+    }
+    std::cout << std::endl;*/
     auto* output_data = reinterpret_cast<int*>(taskData->outputs[0]);
     std::copy(local_input_.begin(), local_input_.end(), output_data);
 

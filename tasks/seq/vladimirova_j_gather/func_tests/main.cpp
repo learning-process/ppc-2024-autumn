@@ -1,14 +1,31 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
+#include <random>
 #include <vector>
 
 #include "seq/vladimirova_j_gather/include/ops_seq.hpp"
 
+std::vector<int> getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  vec.push_back(2);
+  for (int i = 1; i < sz; i++) {
+    if ((i != 0) && (vec[i - 1] != 2)) {
+      vec[i] = 2;
+      continue;
+    }
+    vec[i] = (gen() % 3 - 1);
+    if (vec[i] == 0) vec[i] = 2;
+  }
+  return vec;
+}
+
 TEST(Sequential_Operations, vladimirova_j_forward_backward_test) {
-  std::vector<int> global_vector = {-2, 2, -2, 2, -2, 2, -2, 2, -2, 2, -2, 2, 2};
+  std::vector<int> global_vector = {2, 2, 2, 2, 2, 2, 2, -1, -1, 2, 2, 2, 2, 2, 2};
   //{0,1,2,3,4,5,6,7,8,9};
-  std::vector<int32_t> ans_vec = {2};
+  std::vector<int32_t> ans_vec = {2, -1, -1};
   std::vector<int32_t> ans_buf_vec(ans_vec.size());
 
   // Create TaskData
@@ -37,9 +54,9 @@ TEST(Sequential_Operations, vladimirova_j_forward_backward_test) {
 }
 
 TEST(Sequential_Operations, vladimirova_j_right_left_test) {
-  std::vector<int> global_vector = {-1, 1, -1, 1, -1, 1, -1, 1, 2};
+  std::vector<int> global_vector = {-1, 1, -1, 1, -1, -1, -1, 1, -1, 1, 2};
   //{0,1,2,3,4,5,6,7,8,9};
-  std::vector<int32_t> ans_vec = {2};
+  std::vector<int32_t> ans_vec = {-1, -1, 2};
   std::vector<int32_t> ans_buf_vec(ans_vec.size());
 
   // Create TaskData
@@ -67,12 +84,11 @@ TEST(Sequential_Operations, vladimirova_j_right_left_test) {
   ASSERT_EQ(ans_buf_vec, ans_vec);
 }
 
-
 TEST(Sequential_Operations, vladimirova_j_more_dead_ends_test) {
-  std::vector<int> global_vector = {1,  2, 2, 1, 2,  1,  -1, -1, -1, 2, 1, -2, 2, 2,  1,  2,  1, 2,
-                                    -2, 1, 2, 1, -2, -1, -1, 2,  1,  2, 1, 1,  2, -1, -1, -2, 1, 2};
-  // 1 2 2    1 -1 -1 1    -2   2 2 1 2 1 2 -2 1 2 1 -2 -1 -1 2 1 1 -1 -2 1 2
-  std::vector<int32_t> ans_vec = {1, 2, 2, 2, 1, 2, 1, 1, 2, 1, -2, -1, -1, 2, 1, -2, 1, 2};
+  std::vector<int> global_vector = {1, 2, 2, 1, 2, 1,  -1, -1, -1, 2, 1, 2, 2, 2,  1,  2, 1,  2,
+                                    2, 1, 2, 1, 2, -1, -1, 2,  -1, 2, 1, 1, 2, -1, -1, 2, -1, 2};
+  // 1 2 2    1 -1 -1 1    2   2 2 1 2 1 2 2 1 2 1 2 -1 -1 2 1 1 -1 2 1 2
+  std::vector<int32_t> ans_vec = {1, 2, 2, 1, -1, -1, 1, 2, 2, 2, 1, 2, 1, 2, 2, 1, -1, -1, 1, -1, -1, 2};
   std::vector<int32_t> ans_buf_vec(ans_vec.size());
 
   // Create TaskData
@@ -91,13 +107,6 @@ TEST(Sequential_Operations, vladimirova_j_more_dead_ends_test) {
   testTaskSequential.post_processing();
 
   ASSERT_EQ((size_t)taskDataPar->outputs_count[0], ans_vec.size());
-  std::cout << "!!!!!!!!!!!!!!!"
-            << "\n";
-  for (auto v : ans_buf_vec) {
-    std::cout << v << " ";
-  }
-  std::cout << std::endl;
-
   ASSERT_EQ(ans_buf_vec, ans_vec);
 }
 
@@ -111,17 +120,19 @@ TEST(Sequential_Operations, vladimirova_j_random_test) {
   int noDEnd = 0;
   for (int j = 0; j < 10; j++) {
     some_dead_end = vladimirova_j_gather_seq::getRandomVector(5);
-    tmp = vladimirova_j_gather_seq::getRandomVector(15);
+    tmp = getRandomVector(15);
     noDEnd += 15;
     global_vector.insert(global_vector.end(), tmp.begin(), tmp.end());
     global_vector.insert(global_vector.end(), some_dead_end.begin(), some_dead_end.end());
     global_vector.push_back(-1);
     global_vector.push_back(-1);
     noDEnd += 2;
-    for (int i : some_dead_end) {
-      if ((i != 2) && (i != -2)) i *= -1;
+    for (int i = some_dead_end.size() - 1; i >= 0; i--) {
+      if (some_dead_end[i] != 2)
+        global_vector.push_back(-1 * some_dead_end[i]);
+      else
+        global_vector.push_back(2);
     }
-    for (int i = some_dead_end.size() - 1; i >= 0; i--) global_vector.push_back(some_dead_end[i]);
   }
 
   std::vector<int32_t> ans_buf_vec(noDEnd);
@@ -139,13 +150,6 @@ TEST(Sequential_Operations, vladimirova_j_random_test) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-
-  std::cout << "!!!!!!!!!!!!!!!"
-            << "\n";
-  for (auto v : ans_buf_vec) {
-    std::cout << v << " ";
-  }
-  std::cout << std::endl;
 
   ASSERT_EQ((int)taskDataPar->outputs_count[0] <= noDEnd, true);
 }
@@ -171,12 +175,6 @@ TEST(Sequential_Operations, vladimirova_j_1_test) {
   testMPITaskSequential.post_processing();
 
   ASSERT_EQ((size_t)taskDataSeq->outputs_count[0], ans_vec.size());
-  std::cout << "!!!!!!!!!!!!!!!"
-            << "\n";
-  for (auto v : ans_buf_vec) {
-    std::cout << v << " ";
-  }
-  std::cout << std::endl;
 
   ASSERT_EQ(ans_buf_vec, ans_vec);
 }
