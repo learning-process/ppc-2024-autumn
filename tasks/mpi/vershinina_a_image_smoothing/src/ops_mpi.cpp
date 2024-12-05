@@ -60,6 +60,7 @@ bool vershinina_a_image_smoothing::TestMPITaskParallel::pre_processing() {
     rows = taskData->inputs_count[0];
     cols = taskData->inputs_count[1];
   }
+
   broadcast(world, rows, 0);
   broadcast(world, cols, 0);
   broadcast(world, local_rows, 0);
@@ -71,13 +72,23 @@ bool vershinina_a_image_smoothing::TestMPITaskParallel::pre_processing() {
 
   if (world.rank() == 0) {
     if (world.size() > 1) {
-      for (int i = 0; i < std::min(world.size(), rows); i++) {
-        if (i == world.size() - 1) {
-          local_input_sizes[i] = (rows_per_proc + 1 + remainder) * cols;
-        } else if (i == 0) {
-          local_input_sizes[i] = (rows_per_proc + 1) * cols;
-        } else {
-          local_input_sizes[i] = (rows_per_proc + 2) * cols;
+      if (rows >= world.size()) {
+        for (int i = 0; i < std::min(world.size(), rows); i++) {
+          if (i == world.size() - 1) {
+            local_input_sizes[i] = (rows_per_proc + 1 + remainder) * cols;
+          } else if (i == 0) {
+            local_input_sizes[i] = (rows_per_proc + 1) * cols;
+          } else {
+            local_input_sizes[i] = (rows_per_proc + 2) * cols;
+          }
+        }
+      } else {
+        for (int i = 0; i < std::min(world.size(), rows); i++) {
+          if ((i == 0) || (i == rows - 1)) {
+            local_input_sizes[i] = (rows_per_proc + 1) * cols;
+          } else {
+            local_input_sizes[i] = (rows_per_proc + 2) * cols;
+          }
         }
       }
     } else {
@@ -95,6 +106,7 @@ bool vershinina_a_image_smoothing::TestMPITaskParallel::pre_processing() {
       }
     }
   }
+
   broadcast(world, local_input_sizes.data(), local_input_sizes.size(), 0);
   local_input_.resize(local_input_sizes[world.rank()]);
   boost::mpi::scatterv(world, input_.data(), local_input_sizes, send, local_input_.data(),
