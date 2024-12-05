@@ -45,4 +45,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  
+}  // namespace ermilova_d_reduceMPI_mpi

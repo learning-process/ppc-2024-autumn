@@ -14,7 +14,8 @@
 
 namespace ermilova_d_custom_reduce_mpi {
 
-void CustomReduce(const void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op, int root, MPI_Comm comm);
+void CustomReduce(const void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op, int root,
+                  MPI_Comm comm);
 std::vector<int> getRandomVector(int size, int upper_border, int lower_border);
 std::vector<std::vector<int>> getRandomMatrix(int rows, int cols, int upper_border, int lower_border);
 
@@ -47,4 +48,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  
+}  // namespace ermilova_d_custom_reduce_mpi
