@@ -6,11 +6,6 @@
 
 #include "mpi/shuravina_o_contrast/include/ops_mpi.hpp"
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#include <gtest/gtest.h>
-#pragma GCC diagnostic pop
-
 TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Empty_Input) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
@@ -30,7 +25,6 @@ TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Empty_Input) {
     ASSERT_TRUE(contrastTaskParallel.validation());
   }
 }
-
 TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Single_Element_Input) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
