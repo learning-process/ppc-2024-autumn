@@ -66,8 +66,8 @@ bool vershinina_a_image_smoothing::TestMPITaskParallel::pre_processing() {
   rows_per_proc = rows / std::min(world.size(), rows);
 
   local_input_sizes.resize(world.size(), 0);
-  std::vector<int> send(std::min(world.size(), rows), 0);
-  remainder = rows % std::min(world.size(), rows);
+  std::vector<int> send(world.size(), 0);
+  remainder = rows % world.size();
 
   if (world.rank() == 0) {
     if (world.size() > 1) {
@@ -146,12 +146,13 @@ bool vershinina_a_image_smoothing::TestMPITaskParallel::run() {
   int* output_data = output_.data();
   int* local_output_data = local_output_.data();
   for (int i = 0; i < std::min(world.size(), rows); i++) {
-    if (i == std::min(world.size(), rows) - 1) {
+    if (i == world.size() - 1) {
       local_input_sizes[i] = (rows_per_proc + remainder) * cols;
     } else {
       local_input_sizes[i] = rows_per_proc * cols;
     }
   }
+
   boost::mpi::gatherv(world, local_output_data, local_output_.size(), output_data, local_input_sizes, 0);
   return true;
 }
