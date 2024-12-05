@@ -72,7 +72,7 @@ bool vershinina_a_image_smoothing::TestMPITaskParallel::pre_processing() {
   if (world.rank() == 0) {
     if (world.size() > 1) {
       for (int i = 0; i < std::min(world.size(), rows); i++) {
-        if (i == std::min(world.size(), rows) - 1) {
+        if (i == world.size() - 1) {
           local_input_sizes[i] = (rows_per_proc + 1 + remainder) * cols;
         } else if (i == 0) {
           local_input_sizes[i] = (rows_per_proc + 1) * cols;
@@ -142,6 +142,7 @@ bool vershinina_a_image_smoothing::TestMPITaskParallel::run() {
       local_output_[(i - offset_top) * cols + j] = sum / c;
     }
   }
+
   int* output_data = output_.data();
   int* local_output_data = local_output_.data();
   for (int i = 0; i < std::min(world.size(), rows); i++) {

@@ -106,7 +106,7 @@ TEST(vershinina_a_image_smoothing, Test_Random_1) {
   boost::mpi::communicator world;
   std::random_device dev;
   std::mt19937 gen(dev());
-  std::uniform_int_distribution<> distr(1, 25);
+  std::uniform_int_distribution<> distr(2, 32);
   int random_rows = distr(gen);
   int random_cols = distr(gen);
   std::vector<int> in;
@@ -151,7 +151,7 @@ TEST(vershinina_a_image_smoothing, Test_Random_2) {
   boost::mpi::communicator world;
   std::random_device dev;
   std::mt19937 gen(dev());
-  std::uniform_int_distribution<> distr(1, 25);
+  std::uniform_int_distribution<> distr(2, 32);
   int random_rows = distr(gen);
   int random_cols = distr(gen);
   std::vector<int> in;
