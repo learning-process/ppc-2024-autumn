@@ -22,14 +22,15 @@ class GaussSeidelSequential : public ppc::core::Task {
   bool isDiagonallyDominant() const;
 
  private:
-  int n = 0;
+  int n = 0;  // matrix size
   double epsilon{};
-  std::vector<double> A;
-  std::vector<double> b;
-  std::vector<double> x;
+  std::vector<double> A;  // square matrix of SLAE coeffs
+  std::vector<double> b;  // free members vector
+  std::vector<double> x;  // vector of initial guess for unknowns
 };
 
 std::vector<double> generateDiagonallyDominantMatrix(int n);
+std::vector<double> generateFreeMembers(int n);
 
 }  // namespace belov_a_gauss_seidel_seq
 

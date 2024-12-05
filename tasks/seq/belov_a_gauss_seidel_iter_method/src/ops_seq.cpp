@@ -33,18 +33,6 @@ bool GaussSeidelSequential::pre_processing() {
 
   x.assign(n, 0.0);  // initial approximations
 
-  cout << "Input matrix: { ";
-  for (const auto& item : A) {
-    cout << item << " ";
-  }
-  cout << "}" << endl;
-
-  cout << "Free members column: { ";
-  for (const auto& item : b) {
-    cout << item << " ";
-  }
-  cout << "}" << endl;
-
   return true;
 }
 
@@ -75,8 +63,6 @@ bool GaussSeidelSequential::run() {
         }
       }
       x_new[i] = (b[i] - sum) / A[i * n + i];
-
-      norm += pow(x_new[i] - x[i], 2);
     }
 
     for (int i = 0; i < n; ++i) {
@@ -94,11 +80,6 @@ bool GaussSeidelSequential::run() {
 bool GaussSeidelSequential::post_processing() {
   internal_order_test();
 
-  cout << "X-column: { ";
-  for (const auto& item : x) {
-    cout << item << " ";
-  }
-  cout << "}" << endl;
   copy(x.begin(), x.end(), reinterpret_cast<double*>(taskData->outputs[0]));
   return true;
 }
@@ -121,6 +102,19 @@ vector<double> generateDiagonallyDominantMatrix(int n) {
     A_local[i * n + i] = row_sum + abs(dis(gen)) + 1.0;
   }
   return A_local;
+}
+
+vector<double> generateFreeMembers(int n) {
+  vector<double> freeMembers(n, 0.0);
+
+  random_device rd;
+  mt19937 gen(rd());
+  uniform_real_distribution<> dis(-10.0, 10.0);
+
+  for (int i = 0; i < n; ++i) {
+    freeMembers[i] = dis(gen);
+  }
+  return freeMembers;
 }
 
 }  // namespace belov_a_gauss_seidel_seq
