@@ -130,7 +130,6 @@ bool GaussSeidelParallel::run() {
   }
 
   vector<double> x_new(n, 0.0);
-  int iter = 1;
 
   do {
     norm = 0.0;
@@ -163,7 +162,6 @@ bool GaussSeidelParallel::run() {
 
     norm = sqrt(norm);
     x = x_new;
-    ++iter;
 
   } while (norm > epsilon);
 

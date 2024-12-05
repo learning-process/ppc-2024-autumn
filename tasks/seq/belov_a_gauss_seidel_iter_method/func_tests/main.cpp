@@ -203,226 +203,25 @@ TEST(belov_a_gauss_seidel_seq, test_invalid_input_matrix_size) {
   ASSERT_FALSE(testTaskSequential.validation());
 }
 
-// TEST(belov_a_gauss_seidel_seq, Test_SmallSystem_NegativeIntegers) {
-//   const int n = 3;
-//   double epsilon = 1e-6;
-//
-//   std::vector<int> dimensions = {n};
-//   std::vector<double> matrix = {4, -1, -1, -1, 3, -1, -1, -1, 5};
-//   std::vector<double> b = {-7, -8, -10};
-//   std::vector<double> out(n, 0.0);
-//
-//   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-//   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(dimensions.data()));
-//   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
-//   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-//   taskDataSeq->outputs_count.emplace_back(out.size());
-//
-//   GaussSeidelSequential testTaskSequential(taskDataSeq);
-//   ASSERT_TRUE(testTaskSequential.validation());
-//   testTaskSequential.pre_processing();
-//   testTaskSequential.run();
-//   testTaskSequential.post_processing();
-//
-//   ASSERT_NEAR(out[0], -1.0, 0.01);
-//   ASSERT_NEAR(out[1], -2.0, 0.01);
-//   ASSERT_NEAR(out[2], -1.0, 0.01);
-// }
-//
-// TEST(belov_a_gauss_seidel_seq, Test_MediumSystem_MixedValues) {
-//   const int n = 4;
-//   double epsilon = 1e-6;
-//
-//   std::vector<int> dimensions = {n};
-//   std::vector<double> matrix = {10, -1, 2, 0, -1, 11, -1, 3, 2, -1, 10, -1, 0, 3, -1, 8};
-//   std::vector<double> b = {6, 25, -11, 15};
-//   std::vector<double> out(n, 0.0);
-//
-//   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-//   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(dimensions.data()));
-//   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
-//   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-//   taskDataSeq->outputs_count.emplace_back(out.size());
-//
-//   GaussSeidelSequential testTaskSequential(taskDataSeq);
-//   ASSERT_TRUE(testTaskSequential.validation());
-//   testTaskSequential.pre_processing();
-//   testTaskSequential.run();
-//   testTaskSequential.post_processing();
-//
-//   ASSERT_NEAR(out[0], 1.0, 0.01);
-//   ASSERT_NEAR(out[1], 2.0, 0.01);
-//   ASSERT_NEAR(out[2], -1.0, 0.01);
-//   ASSERT_NEAR(out[3], 1.0, 0.01);
-// }
-//
-// TEST(belov_a_gauss_seidel_seq, Test_Validation_Fails_NoDiagonalDominance) {
-//   const int n = 3;
-//   double epsilon = 1e-6;
-//
-//   std::vector<int> dimensions = {n};
-//   std::vector<double> matrix = {1, 1, 1, 1, 1, 1, 1, 1, 1};  // matrix without diagonal dominance
-//   std::vector<double> b = {3, 3, 3};
-//   std::vector<double> out(n, 0.0);
-//
-//   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-//   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(dimensions.data()));
-//   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
-//   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-//   taskDataSeq->outputs_count.emplace_back(out.size());
-//
-//   GaussSeidelSequential testTaskSequential(taskDataSeq);
-//   ASSERT_FALSE(testTaskSequential.validation());
-// }
-//
-// TEST(belov_a_gauss_seidel_seq, Test_SingleEquation) {
-//   const int n = 1;
-//   double epsilon = 1e-6;
-//
-//   std::vector<int> dimensions = {n};
-//   std::vector<double> matrix = {5};
-//   std::vector<double> b = {10};
-//   std::vector<double> out(n, 0.0);
-//
-//   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-//   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(dimensions.data()));
-//   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
-//   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-//   taskDataSeq->outputs_count.emplace_back(out.size());
-//
-//   GaussSeidelSequential testTaskSequential(taskDataSeq);
-//   ASSERT_TRUE(testTaskSequential.validation());
-//   testTaskSequential.pre_processing();
-//   testTaskSequential.run();
-//   testTaskSequential.post_processing();
-//
-//   ASSERT_NEAR(out[0], 2.0, 0.01);
-// }
-//
-// TEST(belov_a_gauss_seidel_seq, Test_LargeSystem_RandomValues) {
-//   const int n = 50;
-//   double epsilon = 1e-5;
-//
-//   std::vector<int> dimensions = {n};
-//   std::vector<double> matrix(n * n, 0.0);
-//   std::vector<double> b(n, 1.0);
-//   std::vector<double> out(n, 0.0);
-//
-//   for (int i = 0; i < n; ++i) {
-//     for (int j = 0; j < n; ++j) {
-//       if (i == j) {
-//         matrix[i * n + j] = 10.0;
-//       } else {
-//         matrix[i * n + j] = (i % 2 == 0) ? -1.0 : 1.0;
-//       }
-//     }
-//   }
-//
-//   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-//   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(dimensions.data()));
-//   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
-//   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-//   taskDataSeq->outputs_count.emplace_back(out.size());
-//
-//   GaussSeidelSequential testTaskSequential(taskDataSeq);
-//   ASSERT_TRUE(testTaskSequential.validation());
-//   testTaskSequential.pre_processing();
-//   testTaskSequential.run();
-//   testTaskSequential.post_processing();
-//
-//   for (const auto& val : out) {
-//     ASSERT_NEAR(val, 0.1, 0.05);
-//   }
-// }
-//
-// TEST(belov_a_gauss_seidel_seq, Test_Validation_Fails_InvalidMatrixSize) {
-//   const int n = 2;
-//   double epsilon = 1e-6;
-//
-//   std::vector<int> dimensions = {n};
-//   std::vector<double> matrix = {4, 1};  // wrong size of the matrix
-//   std::vector<double> b = {5, 6};
-//   std::vector<double> out(n, 0.0);
-//
-//   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-//   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(dimensions.data()));
-//   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
-//   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-//   taskDataSeq->outputs_count.emplace_back(out.size());
-//
-//   GaussSeidelSequential testTaskSequential(taskDataSeq);
-//   ASSERT_FALSE(testTaskSequential.validation());
-// }
-//
-// TEST(belov_a_gauss_seidel_seq, Test_SmallSystem_NonDiagonalDominant) {
-//   const int n = 3;
-//   double epsilon = 1e-6;
-//
-//   std::vector<int> dimensions = {n};
-//   std::vector<double> matrix = {1, 1, 1, 1, 1, 1, 1, 1, 1};  // matrix without diagonal dominance
-//   std::vector<double> b = {3, 3, 3};
-//   std::vector<double> out(n, 0.0);
-//
-//   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-//   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(dimensions.data()));
-//   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
-//   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-//   taskDataSeq->outputs_count.emplace_back(out.size());
-//
-//   GaussSeidelSequential testTaskSequential(taskDataSeq);
-//   ASSERT_FALSE(testTaskSequential.validation());
-// }
-//
-// TEST(belov_a_gauss_seidel_seq, Test_VeryLargeSystem_DiagonalMatrix) {
-//   const int n = 100;
-//   double epsilon = 1e-6;
-//
-//   std::vector<int> dimensions = {n};
-//   std::vector<double> matrix(n * n, 0.0);
-//   std::vector<double> b(n, 1.0);
-//   std::vector<double> out(n, 0.0);
-//
-//   for (int i = 0; i < n; ++i) {
-//     matrix[i * n + i] = 10.0;
-//   }
-//
-//   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-//   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(dimensions.data()));
-//   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
-//   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-//   taskDataSeq->outputs_count.emplace_back(out.size());
-//
-//   GaussSeidelSequential testTaskSequential(taskDataSeq);
-//   ASSERT_TRUE(testTaskSequential.validation());
-//   testTaskSequential.pre_processing();
-//   testTaskSequential.run();
-//   testTaskSequential.post_processing();
-//
-//   for (const auto& val : out) {
-//     ASSERT_NEAR(val, 0.1, 0.01);
-//   }
-// }
-//
-// TEST(belov_a_gauss_seidel_seq, Test_SingleEquation_SolutionCheck) {
-//   const int n = 1;
-//   double epsilon = 1e-6;
-//
-//   std::vector<int> dimensions = {n};
-//   std::vector<double> matrix = {7.0};  // matrix 1x1
-//   std::vector<double> b = {14.0};
-//   std::vector<double> out(n, 0.0);
-//
-//   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-//   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(dimensions.data()));
-//   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
-//   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-//   taskDataSeq->outputs_count.emplace_back(out.size());
-//
-//   GaussSeidelSequential testTaskSequential(taskDataSeq);
-//   ASSERT_TRUE(testTaskSequential.validation());
-//   testTaskSequential.pre_processing();
-//   testTaskSequential.run();
-//   testTaskSequential.post_processing();
-//
-//   ASSERT_NEAR(out[0], 2.0, 0.01);
-// }
+TEST(belov_a_gauss_seidel_seq, Test_SmallSystem_NonDiagonalDominant) {
+  const int n = 3;
+  double epsilon = 1e-6;
+
+  std::vector<double> input_matrix = {1, 1, 1, 1, 1, 1, 1, 1, 1};  // no diagonal dominance
+  std::vector<double> freeMembersVector = {3, 3, 3};
+  std::vector<double> solutionVector(n);
+
+  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(freeMembersVector.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
+  taskDataSeq->inputs_count.emplace_back(n);
+  taskDataSeq->inputs_count.emplace_back(input_matrix.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionVector.data()));
+
+  GaussSeidelSequential testTaskSequential(taskDataSeq);
+
+  testTaskSequential.validation();
+  testTaskSequential.pre_processing();
+  ASSERT_FALSE(testTaskSequential.run());
+}
