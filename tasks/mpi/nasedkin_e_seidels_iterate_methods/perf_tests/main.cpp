@@ -8,45 +8,6 @@
 #include "mpi/nasedkin_e_seidels_iterate_methods/include/ops_mpi.hpp"
 
 namespace nasedkin_e_seidels_iterate_methods_mpi {
-    std::vector<double> generateDenseMatrix(int n, int a) {
-        std::vector<double> dense;
-        std::vector<double> ed(n * n);
-        std::vector<double> res(n * n);
-        for (int i = 0; i < n; i++) {
-            for (int j = i; j < n + i; j++) {
-                dense.push_back(a + j);
-            }
-        }
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (i < 2) {
-                    ed[j * n + i] = 0;
-                } else if (i == j && i >= 2) {
-                    ed[j * n + i] = 1;
-                } else {
-                    ed[j * n + i] = 0;
-                }
-            }
-        }
-        for (int i = 0; i < n * n; i++) {
-            res[i] = (dense[i] + ed[i]);
-        }
-        return res;
-    }
-
-    std::vector<double> generateElementaryMatrix(int rows, int columns) {
-        std::vector<double> res;
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                if (i == j) {
-                    res.push_back(1);
-                } else {
-                    res.push_back(0);
-                }
-            }
-        }
-        return res;
-    }
     template <typename T>
     std::vector<T> getRandomVector(int sz) {
         std::random_device dev;
