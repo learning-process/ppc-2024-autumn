@@ -78,8 +78,7 @@ bool vladimirova_j_gather_seq::TestTaskSequential::validation() {
 
 bool vladimirova_j_gather_seq::TestTaskSequential::run() {
   internal_order_test();
-  input_ = vladimirova_j_gather_seq::noDeadEnds(input_);
-  res = vladimirova_j_gather_seq::noStrangeSteps(input_);
+  res = vladimirova_j_gather_seq::noDeadEnds(input_);
   return true;
 }
 

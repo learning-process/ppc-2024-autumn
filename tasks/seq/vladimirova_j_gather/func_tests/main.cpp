@@ -119,7 +119,7 @@ TEST(Sequential_Operations, vladimirova_j_random_test) {
 
   int noDEnd = 0;
   for (int j = 0; j < 10; j++) {
-    some_dead_end = vladimirova_j_gather_seq::getRandomVector(5);
+    some_dead_end = getRandomVector(5);
     tmp = getRandomVector(15);
     noDEnd += 15;
     global_vector.insert(global_vector.end(), tmp.begin(), tmp.end());
