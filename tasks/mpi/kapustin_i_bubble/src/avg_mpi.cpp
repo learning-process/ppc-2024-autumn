@@ -68,18 +68,11 @@ bool kapustin_i_bubble_sort_mpi::BubbleSortMPI::validation() {
 bool kapustin_i_bubble_sort_mpi::BubbleSortMPI::run() {
   internal_order_test();
   int total_elements = size_;
-
-  /*if (world.rank() == 0) {
-    total_elements = size_;
-  }*/
   boost::mpi::broadcast(world, total_elements, 0);
 
   int base_size = total_elements / world.size();
   int remainder = total_elements % world.size();
-  int local_size = base_size;
-  if (world.rank() < remainder) {
-    local_size += 1;
-  }
+  int local_size = base_size + (world.rank() < remainder ? 1 : 0);
   std::vector<int> local_data(local_size);
 
   if (world.rank() == 0) {

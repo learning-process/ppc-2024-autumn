@@ -10,10 +10,7 @@ bool kapustin_i_bubble_sort_seq::BubbleSortSequential::pre_processing() {
 
 bool kapustin_i_bubble_sort_seq::BubbleSortSequential::validation() {
   internal_order_test();
-  if (taskData->inputs.empty() || taskData->inputs_count.empty()) {
-    return false;
-  }
-  return true;
+  return !(taskData->inputs.empty() || taskData->inputs_count.empty());
 }
 
 bool kapustin_i_bubble_sort_seq::BubbleSortSequential::run() {
