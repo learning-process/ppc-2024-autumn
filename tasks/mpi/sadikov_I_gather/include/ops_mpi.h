@@ -12,7 +12,6 @@
 
 #include "core/task/include/task.hpp"
 
-
 namespace sadikov_I_gather_mpi {
 int DataLocation(int rank, int delta, int maxDelta);
 void Gather(const boost::mpi::communicator& world, std::map<int, int> id, std::vector<int>& inValues,
