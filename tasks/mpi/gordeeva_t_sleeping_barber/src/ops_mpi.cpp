@@ -1,4 +1,4 @@
-#include "mpi/gordeeva_t_sleeping_barbers/include/ops_mpi.hpp"
+#include "mpi/gordeeva_t_sleeping_barber/include/ops_mpi.hpp"
 
 #include <algorithm>
 #include <functional>
