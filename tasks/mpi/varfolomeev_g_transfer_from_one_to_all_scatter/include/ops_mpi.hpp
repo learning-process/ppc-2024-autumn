@@ -47,4 +47,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   std::string ops;
   boost::mpi::communicator world;
 };
-}
+}  // namespace varfolomeev_g_transfer_from_one_to_all_scatter_mpi
