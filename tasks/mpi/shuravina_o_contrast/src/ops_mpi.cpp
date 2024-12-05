@@ -8,91 +8,77 @@ namespace shuravina_o_contrast {
 
 bool ContrastTaskParallel::pre_processing() {
   internal_order_test();
+  unsigned int delta = 0;
   if (world.rank() == 0) {
-    // Init vectors
+    delta = taskData->inputs_count[0] / world.size();
+  }
+  broadcast(world, delta, 0);
+
+  if (world.rank() == 0) {
     input_ = std::vector<uint8_t>(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<uint8_t*>(taskData->inputs[0]);
     for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
       input_[i] = tmp_ptr[i];
     }
-    output_ = std::vector<uint8_t>(taskData->inputs_count[0]);
+    for (int proc = 1; proc < world.size(); proc++) {
+      world.send(proc, 0, input_.data() + proc * delta, delta);
+    }
   }
+  local_input_ = std::vector<uint8_t>(delta);
+  if (world.rank() == 0) {
+    local_input_ = std::vector<uint8_t>(input_.begin(), input_.begin() + delta);
+  } else {
+    world.recv(0, 0, local_input_.data(), delta);
+  }
+  output_ = std::vector<uint8_t>(delta);
+  min_val_ = *std::min_element(local_input_.begin(), local_input_.end());
+  max_val_ = *std::max_element(local_input_.begin(), local_input_.end());
+  uint8_t global_min, global_max;
+  reduce(world, min_val_, global_min, boost::mpi::minimum<uint8_t>(), 0);
+  reduce(world, max_val_, global_max, boost::mpi::maximum<uint8_t>(), 0);
+  min_val_ = global_min;
+  max_val_ = global_max;
   return true;
 }
 
 bool ContrastTaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    if (taskData->inputs_count[0] <= 0) {
-      return false;
-    }
+    return taskData->outputs_count[0] == taskData->inputs_count[0];
   }
   return true;
 }
 
 bool ContrastTaskParallel::run() {
   internal_order_test();
-  unsigned int num_processes = world.size();
-  std::vector<int> send_counts(num_processes, 0);
-  std::vector<int> displacements(num_processes, 0);
-  std::vector<int> output_displacements(num_processes, 0);
-  std::vector<int> output_counts(num_processes, 0);
-
-  if (world.rank() == 0) {
-    for (size_t i = 0; i < num_processes; i++) {
-      send_counts[i] = input_.size() / world.size();
-      if (i == (size_t)num_processes - 1) {
-        send_counts[i] = input_.size() - i * (input_.size() / world.size());
-      }
-      output_counts[i] = send_counts[i];
-    }
-
-    for (size_t i = 1; i < num_processes; i++) {
-      displacements[i] = displacements[i - 1] + send_counts[i - 1];
-      output_displacements[i] = displacements[i];
-    }
-  }
-
-  for (size_t i = 0; i < num_processes; i++) {
-    broadcast(world, send_counts[i], 0);
-    broadcast(world, displacements[i], 0);
-    broadcast(world, output_counts[i], 0);
-    broadcast(world, output_displacements[i], 0);
-  }
-
-  std::vector<uint8_t> local_input_(send_counts[world.rank()]);
-  boost::mpi::scatterv(world, input_.data(), send_counts, displacements, local_input_.data(), local_input_.size(), 0);
-
-  uint8_t local_min_val = *std::min_element(local_input_.begin(), local_input_.end());
-  uint8_t local_max_val = *std::max_element(local_input_.begin(), local_input_.end());
-
-  uint8_t global_min_val, global_max_val;
-  reduce(world, local_min_val, global_min_val, boost::mpi::minimum<uint8_t>(), 0);
-  reduce(world, local_max_val, global_max_val, boost::mpi::maximum<uint8_t>(), 0);
-
-  broadcast(world, global_min_val, 0);
-  broadcast(world, global_max_val, 0);
-
-  std::vector<uint8_t> local_output_(local_input_.size());
-  if (global_max_val == global_min_val) {
-    std::fill(local_output_.begin(), local_output_.end(), 128);
+  if (max_val_ == min_val_) {
+    std::fill(output_.begin(), output_.end(), 128);
   } else {
     for (size_t i = 0; i < local_input_.size(); ++i) {
-      local_output_[i] =
-          static_cast<uint8_t>((local_input_[i] - global_min_val) * 255.0 / (global_max_val - global_min_val));
+      output_[i] = static_cast<uint8_t>((local_input_[i] - min_val_) * 255.0 / (max_val_ - min_val_));
     }
   }
-
-  boost::mpi::gatherv(world, local_output_.data(), local_output_.size(), output_.data(), output_counts,
-                      output_displacements, 0);
-
   return true;
 }
 
 bool ContrastTaskParallel::post_processing() {
   internal_order_test();
+  unsigned int delta = 0;
   if (world.rank() == 0) {
-    *reinterpret_cast<std::vector<uint8_t>*>(taskData->outputs[0]) = output_;
+    delta = taskData->inputs_count[0] / world.size();
+  }
+  broadcast(world, delta, 0);
+
+  if (world.rank() == 0) {
+    auto* tmp_ptr = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
+    for (unsigned i = 0; i < delta; i++) {
+      tmp_ptr[i] = output_[i];
+    }
+    for (int proc = 1; proc < world.size(); proc++) {
+      world.recv(proc, 0, tmp_ptr + proc * delta, delta);
+    }
+  } else {
+    world.send(0, 0, output_.data(), delta);
   }
   return true;
 }
