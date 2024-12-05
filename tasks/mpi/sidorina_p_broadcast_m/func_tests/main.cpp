@@ -284,13 +284,6 @@ TEST(sidorina_p_broadcast_m_mpi, Test_negative_m) {
   }
 }
 
-std::vector<int> randomVector(size_t size) {
-  std::vector<int> v(size);
-  std::random_device r;
-  generate(v.begin(), v.end(), [&] { return r(); });
-  return v;
-}
-
 TEST(sidorina_p_broadcast_m_mpi, Test_random) {
   boost::mpi::communicator world;
 
@@ -305,13 +298,24 @@ TEST(sidorina_p_broadcast_m_mpi, Test_random) {
   if (world.rank() == 0) {
     array = std::vector<int>(0);
     array.resize(100, 0);
+
+    std::random_device device;
+    std::mt19937 generator(device());
+    std::uniform_real_distribution<float> distr(0, 100);
+
     for (unsigned long i = 0; i < array.size(); i++) {
-      array[i] = round(rand() % 100);
+      for (int n = 0; n < 15; ++n) {
+        array[i] = distr(generator);
+      }
     }
+
     terms = std::vector<int>(0);
     terms.resize(100, 0);
+
     for (unsigned long j = 0; j < terms.size(); j++) {
-      terms[j] = round(rand() % 100);
+      for (int n = 0; n < 15; ++n) {
+        terms[j] = distr(generator);
+      }
     }
 
     m_result.resize(array.size(), 0);
