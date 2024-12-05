@@ -8,7 +8,7 @@ bool kazunin_n_dining_philosophers_mpi::DiningPhilosophersParallelMPI::validatio
   internal_order_test();
 
   return *reinterpret_cast<double*>(taskData->inputs[0]) < 1 &&
-         *reinterpret_cast<double*>(taskData->inputs[1]) < *reinterpret_cast<double*>(taskData->inputs[0]);
+         *reinterpret_cast<int*>(taskData->inputs[1]) < (*reinterpret_cast<double*>(taskData->inputs[0]) * 1000);
 }
 
 bool kazunin_n_dining_philosophers_mpi::DiningPhilosophersParallelMPI::pre_processing() {
@@ -20,7 +20,7 @@ bool kazunin_n_dining_philosophers_mpi::DiningPhilosophersParallelMPI::pre_proce
   std::srand(std::time(nullptr) + rank);
 
   SIMULATION_TIME = *reinterpret_cast<double*>(taskData->inputs[0]);
-  SLEEP_TIME = *reinterpret_cast<double*>(taskData->inputs[1]);
+  SLEEP_TIME_MS = *reinterpret_cast<int*>(taskData->inputs[1]);
 
   leftNeighbor = (rank + size - 1) % size;
   rightNeighbor = (rank + 1) % size;
@@ -32,8 +32,8 @@ bool kazunin_n_dining_philosophers_mpi::DiningPhilosophersParallelMPI::pre_proce
   rightForkAvailable = rank > rightNeighbor;
 
   state = THINKING;
-  thinkTime = (rand() % 3 + 1) * SLEEP_TIME;
-  eatTime = (rand() % 3 + 1) * SLEEP_TIME;
+  thinkTime = rand() % 3 + 1;
+  eatTime = rand() % 3 + 1;
   timeCounter = 0;
 
   return true;
@@ -73,12 +73,12 @@ bool kazunin_n_dining_philosophers_mpi::DiningPhilosophersParallelMPI::run() {
 
     if (state == THINKING) {
       if (timeCounter < thinkTime) {
-        usleep(SLEEP_TIME * 1000000);
-        timeCounter += SLEEP_TIME;
+        std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME_MS));
+        timeCounter++;
       } else {
         state = HUNGRY;
         timeCounter = 0;
-        thinkTime = (rand() % 3 + 1) * SLEEP_TIME;
+        thinkTime = rand() % 3 + 1;
       }
     } else if (state == HUNGRY) {
       if (!hasLeftFork) {
@@ -91,13 +91,13 @@ bool kazunin_n_dining_philosophers_mpi::DiningPhilosophersParallelMPI::run() {
       }
       if (hasLeftFork && hasRightFork) {
         state = EATING;
-        eatTime = (rand() % 3 + 1) * SLEEP_TIME;
+        eatTime = rand() % 3 + 1;
         timeCounter = 0;
       }
     } else if (state == EATING) {
       if (timeCounter < eatTime) {
-        usleep(SLEEP_TIME * 1000000);
-        timeCounter += SLEEP_TIME;
+        std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_TIME_MS));
+        timeCounter++;
       } else {
         state = THINKING;
         timeCounter = 0;
@@ -111,7 +111,7 @@ bool kazunin_n_dining_philosophers_mpi::DiningPhilosophersParallelMPI::run() {
         MPI_Send(&message, 1, MPI_INT, leftNeighbor, FORK_AVAILABLE, MPI_COMM_WORLD);
         MPI_Send(&message, 1, MPI_INT, rightNeighbor, FORK_AVAILABLE, MPI_COMM_WORLD);
 
-        thinkTime = (rand() % 3 + 1) * SLEEP_TIME;
+        thinkTime = rand() % 3 + 1;
       }
     }
   }

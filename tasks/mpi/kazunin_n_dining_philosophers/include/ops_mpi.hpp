@@ -32,7 +32,7 @@ class DiningPhilosophersParallelMPI : public ppc::core::Task {
   bool leftForkAvailable;
   bool rightForkAvailable;
   double SIMULATION_TIME;
-  double SLEEP_TIME;
+  int SLEEP_TIME_MS;
   State state;
   MPI_Status status;
   int thinkTime;
