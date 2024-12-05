@@ -1,13 +1,23 @@
 #pragma once
 
 #include <gtest/gtest.h>
+
+#include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
-#include <boost/mpi/environment.hpp>
 #include <memory>
+#include <numeric>
+#include <string>
+#include <utility>
 #include <vector>
+
 #include "core/task/include/task.hpp"
 
 namespace nasedkin_e_seidels_iterate_methods_mpi {
+
+    std::vector<double> generateDenseMatrix(int n, int a);
+    std::vector<double> generateElementaryMatrix(int rows, int columns);
+    template <typename T>
+    std::vector<T> getRandomVector(int sz);
 
     class TestMPITaskSequential : public ppc::core::Task {
     public:
@@ -38,7 +48,7 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
         std::vector<double> _b;
         std::vector<double> _x;
         boost::mpi::communicator world;
-        std::vector<double> SeidelIterateMethod(const std::vector<double>& matrix, int rows, int cols, const std::vector<double>& vec);
+        std::vector<double> seidelMethod(const std::vector<double>& A, const std::vector<double>& b, int n, double eps);
     };
 
 }  // namespace nasedkin_e_seidels_iterate_methods_mpi

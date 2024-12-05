@@ -1,185 +1,239 @@
 #include <gtest/gtest.h>
-#include <boost/mpi/environment.hpp>
+
 #include <boost/mpi/communicator.hpp>
-#include <vector>
+#include <boost/mpi/environment.hpp>
 #include <random>
+#include <vector>
+
 #include "mpi/nasedkin_e_seidels_iterate_methods/include/ops_mpi.hpp"
 
 namespace nasedkin_e_seidels_iterate_methods_mpi {
-
-    std::vector<double> genRandomMatrix(int n, int m) {
-        std::random_device rd;
-        std::mt19937 gen(rd());
-        std::uniform_real_distribution<> dis(-1.0, 1.0);
-        std::vector<double> matrix(n * m);
-        for (int i = 0; i < n * m; i++) {
-            matrix[i] = dis(gen);
+    std::vector<double> generateDenseMatrix(int n, int a) {
+        std::vector<double> dense;
+        std::vector<double> ed(n * n);
+        std::vector<double> res(n * n);
+        for (int i = 0; i < n; i++) {
+            for (int j = i; j < n + i; j++) {
+                dense.push_back(a + j);
+            }
         }
-        return matrix;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i < 2) {
+                    ed[j * n + i] = 0;
+                } else if (i == j && i >= 2) {
+                    ed[j * n + i] = 1;
+                } else {
+                    ed[j * n + i] = 0;
+                }
+            }
+        }
+        for (int i = 0; i < n * n; i++) {
+            res[i] = (dense[i] + ed[i]);
+        }
+        return res;
     }
 
-    std::vector<double> genRandomVector(int n) {
-        std::random_device rd;
-        std::mt19937 gen(rd());
-        std::uniform_real_distribution<> dis(-1.0, 1.0);
-        std::vector<double> vec(n);
-        for (int i = 0; i < n; i++) {
-            vec[i] = dis(gen);
+    std::vector<double> generateElementaryMatrix(int rows, int columns) {
+        std::vector<double> res;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                if (i == j) {
+                    res.push_back(1);
+                } else {
+                    res.push_back(0);
+                }
+            }
+        }
+        return res;
+    }
+    template <typename T>
+    std::vector<T> getRandomVector(int sz) {
+        std::random_device dev;
+        std::mt19937 gen(dev());
+        std::vector<T> vec(sz);
+        vec[0] = gen() % 100;
+        for (int i = 1; i < sz; i++) {
+            vec[i] = (gen() % 100) - 49;
         }
         return vec;
     }
 
-    TEST(MPISeidel, TestRandomMatrix) {
-        boost::mpi::communicator world;
-        int rows = 10;
-        int columns = 10;
-        std::vector<double> matrix = genRandomMatrix(rows, columns);
-        std::vector<double> b = genRandomVector(rows);
-        std::vector<double> expres_par(rows);
+    template std::vector<int> nasedkin_e_seidels_iterate_methods_mpi::getRandomVector(int sz);
+    template std::vector<double> nasedkin_e_seidels_iterate_methods_mpi::getRandomVector(int sz);
+}  // namespace nasedkin_e_seidels_iterate_methods_mpi
 
-        std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-        if (world.rank() == 0) {
-            taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-            taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(b.data()));
-            taskDataPar->inputs_count.emplace_back(matrix.size());
-            taskDataPar->inputs_count.emplace_back(b.size());
-            taskDataPar->inputs_count.emplace_back(columns);
-            taskDataPar->inputs_count.emplace_back(rows);
-            taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(expres_par.data()));
-            taskDataPar->outputs_count.emplace_back(expres_par.size());
-        }
+TEST(MPISeidel, ZeroDiagonalTest) {
+    boost::mpi::communicator world;
+    int rows = 3;
+    int columns = 3;
+    std::vector<double> matrix = {0, 1, 1, 1, 0, 1, 1, 1, 0};
+    std::vector<double> b = {1, 1, 1};
+    std::vector<double> expres_par(rows);
 
-        TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-        ASSERT_EQ(testMpiTaskParallel.validation(), true);
-        testMpiTaskParallel.pre_processing();
-        testMpiTaskParallel.run();
-        testMpiTaskParallel.post_processing();
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-        if (world.rank() == 0) {
-            std::vector<double> expres_seq(rows);
-            std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-            taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-            taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(b.data()));
-            taskDataSeq->inputs_count.emplace_back(matrix.size());
-            taskDataSeq->inputs_count.emplace_back(b.size());
-            taskDataSeq->inputs_count.emplace_back(columns);
-            taskDataSeq->inputs_count.emplace_back(rows);
-            taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(expres_seq.data()));
-            taskDataSeq->outputs_count.emplace_back(expres_seq.size());
-
-            TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-            ASSERT_EQ(testMpiTaskSequential.validation(), true);
-            testMpiTaskSequential.pre_processing();
-            testMpiTaskSequential.run();
-            testMpiTaskSequential.post_processing();
-
-            ASSERT_EQ(expres_seq, expres_par);
-        }
+    if (world.rank() == 0) {
+        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(b.data()));
+        taskDataPar->inputs_count.emplace_back(matrix.size());
+        taskDataPar->inputs_count.emplace_back(b.size());
+        taskDataPar->inputs_count.emplace_back(columns);
+        taskDataPar->inputs_count.emplace_back(rows);
+        taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(expres_par.data()));
+        taskDataPar->outputs_count.emplace_back(expres_par.size());
     }
 
-    TEST(MPISeidel, TestZeroDiagonalMatrix) {
-        boost::mpi::communicator world;
-        int rows = 3;
-        int columns = 3;
-        std::vector<double> matrix = {0, 1, 1, 1, 0, 1, 1, 1, 0};
-        std::vector<double> b = {1, 1, 1};
-        std::vector<double> expres_par(rows);
+    nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+}
 
-        std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-        if (world.rank() == 0) {
-            taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-            taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(b.data()));
-            taskDataPar->inputs_count.emplace_back(matrix.size());
-            taskDataPar->inputs_count.emplace_back(b.size());
-            taskDataPar->inputs_count.emplace_back(columns);
-            taskDataPar->inputs_count.emplace_back(rows);
-            taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(expres_par.data()));
-            taskDataPar->outputs_count.emplace_back(expres_par.size());
-        }
+TEST(MPISeidel, RandomMatrixTest) {
+    boost::mpi::communicator world;
+    int rows = 10;
+    int columns = 10;
+    std::vector<double> matrix = nasedkin_e_seidels_iterate_methods_mpi::generateDenseMatrix(rows, 1);
+    std::vector<double> b = nasedkin_e_seidels_iterate_methods_mpi::getRandomVector<double>(rows);
+    std::vector<double> expres_par(rows);
 
-        TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-        ASSERT_EQ(testMpiTaskParallel.validation(), true);
-        testMpiTaskParallel.pre_processing();
-        testMpiTaskParallel.run();
-        testMpiTaskParallel.post_processing();
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-        if (world.rank() == 0) {
-            std::vector<double> expres_seq(rows);
-            std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-            taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-            taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(b.data()));
-            taskDataSeq->inputs_count.emplace_back(matrix.size());
-            taskDataSeq->inputs_count.emplace_back(b.size());
-            taskDataSeq->inputs_count.emplace_back(columns);
-            taskDataSeq->inputs_count.emplace_back(rows);
-            taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(expres_seq.data()));
-            taskDataSeq->outputs_count.emplace_back(expres_seq.size());
-
-            TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-            ASSERT_EQ(testMpiTaskSequential.validation(), true);
-            testMpiTaskSequential.pre_processing();
-            testMpiTaskSequential.run();
-            testMpiTaskSequential.post_processing();
-
-            ASSERT_EQ(expres_seq, expres_par);
-        }
+    if (world.rank() == 0) {
+        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(b.data()));
+        taskDataPar->inputs_count.emplace_back(matrix.size());
+        taskDataPar->inputs_count.emplace_back(b.size());
+        taskDataPar->inputs_count.emplace_back(columns);
+        taskDataPar->inputs_count.emplace_back(rows);
+        taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(expres_par.data()));
+        taskDataPar->outputs_count.emplace_back(expres_par.size());
     }
 
-    TEST(MPISeidel, TestRandomMatrixWithCheck) {
-        boost::mpi::communicator world;
-        int rows = 10;
-        int columns = 10;
-        std::vector<double> matrix = genRandomMatrix(rows, columns);
-        std::vector<double> b = genRandomVector(rows);
-        std::vector<double> expres_par(rows);
+    nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), true);
+    testMpiTaskParallel.pre_processing();
+    testMpiTaskParallel.run();
+    testMpiTaskParallel.post_processing();
 
-        std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-        if (world.rank() == 0) {
-            taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-            taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(b.data()));
-            taskDataPar->inputs_count.emplace_back(matrix.size());
-            taskDataPar->inputs_count.emplace_back(b.size());
-            taskDataPar->inputs_count.emplace_back(columns);
-            taskDataPar->inputs_count.emplace_back(rows);
-            taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(expres_par.data()));
-            taskDataPar->outputs_count.emplace_back(expres_par.size());
-        }
-
-        TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-        ASSERT_EQ(testMpiTaskParallel.validation(), true);
-        testMpiTaskParallel.pre_processing();
-        testMpiTaskParallel.run();
-        testMpiTaskParallel.post_processing();
-
-        if (world.rank() == 0) {
-            std::vector<double> expres_seq(rows);
-            std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-            taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-            taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(b.data()));
-            taskDataSeq->inputs_count.emplace_back(matrix.size());
-            taskDataSeq->inputs_count.emplace_back(b.size());
-            taskDataSeq->inputs_count.emplace_back(columns);
-            taskDataSeq->inputs_count.emplace_back(rows);
-            taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(expres_seq.data()));
-            taskDataSeq->outputs_count.emplace_back(expres_seq.size());
-
-            TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-            ASSERT_EQ(testMpiTaskSequential.validation(), true);
-            testMpiTaskSequential.pre_processing();
-            testMpiTaskSequential.run();
-            testMpiTaskSequential.post_processing();
-
-            ASSERT_EQ(expres_seq, expres_par);
-
-            double eps = 1e-9;
-            for (int i = 0; i < rows; i++) {
-                double sum = 0;
-                for (int j = 0; j < columns; j++) {
-                    sum += matrix[i * columns + j] * expres_par[j];
-                }
-                ASSERT_LT(std::abs(sum - b[i]), eps);
+    if (world.rank() == 0) {
+        std::vector<double> Ax(rows, 0.0);
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < columns; ++j) {
+                Ax[i] += matrix[i * columns + j] * expres_par[j];
             }
         }
+
+        double norm = 0.0;
+        for (int i = 0; i < rows; ++i) {
+            norm += std::abs(Ax[i] - b[i]);
+        }
+
+        ASSERT_LT(norm, 1e-6);
+    }
+}
+
+TEST(MPISeidel, IdentityMatrixTest) {
+    boost::mpi::communicator world;
+    int rows = 10;
+    int columns = 10;
+    std::vector<double> matrix = nasedkin_e_seidels_iterate_methods_mpi::generateElementaryMatrix(rows, columns);
+    std::vector<double> b(rows, 1);
+    std::vector<double> res_par(rows, 1);
+    std::vector<double> expres_par(rows);
+
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+    if (world.rank() == 0) {
+        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(b.data()));
+        taskDataPar->inputs_count.emplace_back(matrix.size());
+        taskDataPar->inputs_count.emplace_back(b.size());
+        taskDataPar->inputs_count.emplace_back(columns);
+        taskDataPar->inputs_count.emplace_back(rows);
+        taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(expres_par.data()));
+        taskDataPar->outputs_count.emplace_back(expres_par.size());
     }
 
-}  // namespace nasedkin_e_seidels_iterate_methods_mpi
+    nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), true);
+    testMpiTaskParallel.pre_processing();
+    testMpiTaskParallel.run();
+    testMpiTaskParallel.post_processing();
+
+    if (world.rank() == 0) {
+        ASSERT_EQ(expres_par, res_par);
+    }
+}
+
+TEST(MPISeidel, LargeMatrixTest) {
+    boost::mpi::communicator world;
+    int rows = 100;
+    int columns = 100;
+    std::vector<double> matrix = nasedkin_e_seidels_iterate_methods_mpi::generateDenseMatrix(rows, 1);
+    std::vector<double> b(rows, 1);
+    std::vector<double> res_par(rows, 0);
+    res_par[0] = -1;
+    res_par[1] = 1;
+    std::vector<double> expres_par(rows);
+
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+    if (world.rank() == 0) {
+        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(b.data()));
+        taskDataPar->inputs_count.emplace_back(matrix.size());
+        taskDataPar->inputs_count.emplace_back(b.size());
+        taskDataPar->inputs_count.emplace_back(columns);
+        taskDataPar->inputs_count.emplace_back(rows);
+        taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(expres_par.data()));
+        taskDataPar->outputs_count.emplace_back(expres_par.size());
+    }
+
+    nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), true);
+    testMpiTaskParallel.pre_processing();
+    testMpiTaskParallel.run();
+    testMpiTaskParallel.post_processing();
+
+    if (world.rank() == 0) {
+        ASSERT_EQ(expres_par, res_par);
+    }
+}
+
+TEST(MPISeidel, EmptyMatrixTest) {
+    boost::mpi::communicator world;
+    int rows = 0;
+    int columns = 0;
+    std::vector<double> matrix = {};
+    std::vector<double> b = {};
+    std::vector<double> expres_par(rows, 0);
+    std::vector<double> res_par = {};
+
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+    if (world.rank() == 0) {
+        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(b.data()));
+        taskDataPar->inputs_count.emplace_back(matrix.size());
+        taskDataPar->inputs_count.emplace_back(b.size());
+        taskDataPar->inputs_count.emplace_back(columns);
+        taskDataPar->inputs_count.emplace_back(rows);
+        taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(expres_par.data()));
+        taskDataPar->outputs_count.emplace_back(expres_par.size());
+    }
+
+    nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), true);
+    testMpiTaskParallel.pre_processing();
+    testMpiTaskParallel.run();
+    testMpiTaskParallel.post_processing();
+
+    if (world.rank() == 0) {
+        ASSERT_EQ(expres_par, res_par);
+    }
+}
