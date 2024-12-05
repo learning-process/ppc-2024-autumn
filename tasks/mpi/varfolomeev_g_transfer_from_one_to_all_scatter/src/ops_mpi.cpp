@@ -61,6 +61,9 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential::
 bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
+    if (taskData->inputs[0] == nullptr || taskData->outputs[0] == nullptr) {
+      return false;
+    }
     input_values.resize(taskData->inputs_count[0]);
     auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[0]);
     std::copy(tempPtr, tempPtr + taskData->inputs_count[0], input_values.begin());
@@ -136,5 +139,7 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel::po
   if (world.rank() == 0) {
     reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
   }
+  input_values.clear();
+  local_input_values.clear();
   return true;
 }
