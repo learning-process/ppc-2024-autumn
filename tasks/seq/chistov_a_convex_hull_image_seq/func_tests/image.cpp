@@ -2,6 +2,7 @@
 
 #include <gtest/gtest.h>
 
+#include <memory>
 #include <vector>
 
 TEST(chistov_a_convex_hull_image_seq, validation_test_empty_image) {
@@ -18,7 +19,7 @@ TEST(chistov_a_convex_hull_image_seq, validation_test_empty_image) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
   taskDataSeq->outputs_count.emplace_back(width * height);
 
-  chistov_a_convex_hull_image_seq::ConvexHull TestTaskSequential(taskDataSeq);
+  chistov_a_convex_hull_image_seq::ConvexHullSEQ TestTaskSequential(taskDataSeq);
   ASSERT_FALSE(TestTaskSequential.validation());
 }
 
@@ -36,7 +37,7 @@ TEST(chistov_a_convex_hull_image_seq, validation_test_zero_height_and_width) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
   taskDataSeq->outputs_count.emplace_back(width * height);
 
-  chistov_a_convex_hull_image_seq::ConvexHull TestTaskSequential(taskDataSeq);
+  chistov_a_convex_hull_image_seq::ConvexHullSEQ TestTaskSequential(taskDataSeq);
   ASSERT_FALSE(TestTaskSequential.validation());
 }
 
@@ -54,7 +55,7 @@ TEST(chistov_a_convex_hull_image_seq, validation_test_negative_size) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
   taskDataSeq->outputs_count.emplace_back(width * height);
 
-  chistov_a_convex_hull_image_seq::ConvexHull TestTaskSequential(taskDataSeq);
+  chistov_a_convex_hull_image_seq::ConvexHullSEQ TestTaskSequential(taskDataSeq);
   ASSERT_FALSE(TestTaskSequential.validation());
 }
 
@@ -71,7 +72,7 @@ TEST(chistov_a_convex_hull_image_seq, validation_test_empty_output) {
   taskDataSeq->inputs_count.emplace_back(height);
   taskDataSeq->outputs_count.emplace_back(width * height);
 
-  chistov_a_convex_hull_image_seq::ConvexHull TestTaskSequential(taskDataSeq);
+  chistov_a_convex_hull_image_seq::ConvexHullSEQ TestTaskSequential(taskDataSeq);
   ASSERT_FALSE(TestTaskSequential.validation());
 }
 
@@ -91,7 +92,7 @@ TEST(chistov_a_convex_hull_image_seq, validation_not_binary_image) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
   taskDataSeq->outputs_count.emplace_back(width * height);
 
-  chistov_a_convex_hull_image_seq::ConvexHull TestTaskSequential(taskDataSeq);
+  chistov_a_convex_hull_image_seq::ConvexHullSEQ TestTaskSequential(taskDataSeq);
   ASSERT_FALSE(TestTaskSequential.validation());
 }
 
@@ -104,13 +105,13 @@ TEST(chistov_a_convex_hull_image_seq, test_image_of_zeros) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
-  taskDataSeq->inputs_count.emplace_back(width*height);
+  taskDataSeq->inputs_count.emplace_back(width * height);
   taskDataSeq->inputs_count.emplace_back(width);
   taskDataSeq->inputs_count.emplace_back(height);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
   taskDataSeq->outputs_count.emplace_back(width * height);
 
-  chistov_a_convex_hull_image_seq::ConvexHull TestTaskSequential(taskDataSeq);
+  chistov_a_convex_hull_image_seq::ConvexHullSEQ TestTaskSequential(taskDataSeq);
 
   ASSERT_TRUE(TestTaskSequential.validation());
   TestTaskSequential.pre_processing();
@@ -136,7 +137,7 @@ TEST(chistov_a_convex_hull_image_seq, test_single_points_image) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
   taskDataSeq->outputs_count.emplace_back(width * height);
 
-  chistov_a_convex_hull_image_seq::ConvexHull TestTaskSequential(taskDataSeq);
+  chistov_a_convex_hull_image_seq::ConvexHullSEQ TestTaskSequential(taskDataSeq);
 
   ASSERT_TRUE(TestTaskSequential.validation());
   TestTaskSequential.pre_processing();
@@ -172,7 +173,7 @@ TEST(chistov_a_convex_hull_image_seq, test_non_adjacent_points) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
   taskDataSeq->outputs_count.emplace_back(width * height);
 
-  chistov_a_convex_hull_image_seq::ConvexHull TestTaskSequential(taskDataSeq);
+  chistov_a_convex_hull_image_seq::ConvexHullSEQ TestTaskSequential(taskDataSeq);
 
   ASSERT_TRUE(TestTaskSequential.validation());
   TestTaskSequential.pre_processing();
@@ -211,11 +212,11 @@ TEST(chistov_a_convex_hull_image_seq, test_one_component_image) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
   taskDataSeq->outputs_count.emplace_back(width * height);
 
-  chistov_a_convex_hull_image_seq::ConvexHull TestTaskSequential(taskDataSeq);
-    ASSERT_TRUE(TestTaskSequential.validation());
-    TestTaskSequential.pre_processing();
-    TestTaskSequential.run();
-    TestTaskSequential.post_processing();
+  chistov_a_convex_hull_image_seq::ConvexHullSEQ TestTaskSequential(taskDataSeq);
+  ASSERT_TRUE(TestTaskSequential.validation());
+  TestTaskSequential.pre_processing();
+  TestTaskSequential.run();
+  TestTaskSequential.post_processing();
 
   ASSERT_EQ(excepted_hull, hull);
 }
@@ -245,7 +246,7 @@ TEST(chistov_a_convex_hull_image_seq, test_two_components_image) {
   image[9 * width + 2] = 1;
   image[9 * width + 3] = 1;
 
-std::vector<int> excepted_hull = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0,
+  std::vector<int> expected_hull = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0,
                                     0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0,
                                     0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0,
                                     0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0};
@@ -260,12 +261,12 @@ std::vector<int> excepted_hull = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
   taskDataSeq->outputs_count.emplace_back(width * height);
 
-  chistov_a_convex_hull_image_seq::ConvexHull TestTaskSequential(taskDataSeq);
+  chistov_a_convex_hull_image_seq::ConvexHullSEQ TestTaskSequential(taskDataSeq);
   ASSERT_TRUE(TestTaskSequential.validation());
   TestTaskSequential.pre_processing();
   TestTaskSequential.run();
   TestTaskSequential.post_processing();
-  ASSERT_EQ(excepted_hull, hull);
+  ASSERT_EQ(expected_hull, hull);
 }
 
 TEST(chistov_a_convex_hull_image_seq, test_three_components_image) {
@@ -305,7 +306,7 @@ TEST(chistov_a_convex_hull_image_seq, test_three_components_image) {
 
   std::vector<int> hull(width * height, 0);
 
-std::vector<int> excepted_hull = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1,
+  std::vector<int> expected_hull = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1,
                                     1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1,
                                     0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0,
                                     0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1};
@@ -318,13 +319,13 @@ std::vector<int> excepted_hull = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
   taskDataSeq->outputs_count.emplace_back(width * height);
 
-  chistov_a_convex_hull_image_seq::ConvexHull TestTaskSequential(taskDataSeq);
+  chistov_a_convex_hull_image_seq::ConvexHullSEQ TestTaskSequential(taskDataSeq);
   ASSERT_TRUE(TestTaskSequential.validation());
   TestTaskSequential.pre_processing();
   TestTaskSequential.run();
   TestTaskSequential.post_processing();
 
-  ASSERT_EQ(excepted_hull, hull);
+  ASSERT_EQ(expected_hull, hull);
 }
 
 TEST(chistov_a_convex_hull_image_seq, test_four_corner_points) {
@@ -356,12 +357,12 @@ TEST(chistov_a_convex_hull_image_seq, test_four_corner_points) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
   taskDataSeq->outputs_count.emplace_back(width * height);
 
-  chistov_a_convex_hull_image_seq::ConvexHull TestTaskSequential(taskDataSeq);
+  chistov_a_convex_hull_image_seq::ConvexHullSEQ testTaskSequential(taskDataSeq);
 
-  ASSERT_TRUE(TestTaskSequential.validation());
-  TestTaskSequential.pre_processing();
-  TestTaskSequential.run();
-  TestTaskSequential.post_processing();
+  ASSERT_TRUE(testTaskSequential.validation());
+  testTaskSequential.pre_processing();
+  testTaskSequential.run();
+  testTaskSequential.post_processing();
 
   ASSERT_EQ(hull, expected_hull);
 }
@@ -390,12 +391,12 @@ TEST(chistov_a_convex_hull_image_seq, test_image_of_ones) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
   taskDataSeq->outputs_count.emplace_back(width * height);
 
-  chistov_a_convex_hull_image_seq::ConvexHull TestTaskSequential(taskDataSeq);
+  chistov_a_convex_hull_image_seq::ConvexHullSEQ testTaskSequential(taskDataSeq);
 
-  ASSERT_TRUE(TestTaskSequential.validation());
-  TestTaskSequential.pre_processing();
-  TestTaskSequential.run();
-  TestTaskSequential.post_processing();
+  ASSERT_TRUE(testTaskSequential.validation());
+  testTaskSequential.pre_processing();
+  testTaskSequential.run();
+  testTaskSequential.post_processing();
 
   ASSERT_EQ(hull, expected_hull);
 }

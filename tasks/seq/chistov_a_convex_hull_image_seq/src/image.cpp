@@ -83,7 +83,7 @@ int cross(const Point& p1, const Point& p2, const Point& p3) {
   return (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
 }
 
-void ConvexHull::labelingFirstPass(std::vector<int>& labeled_image) {
+void labelingFirstPass(std::vector<int>& labeled_image, const int width, const int height) {
   int mark = 2;
 
   for (int i = 0; i < height; ++i) {
@@ -103,7 +103,7 @@ void ConvexHull::labelingFirstPass(std::vector<int>& labeled_image) {
   }
 }
 
-void ConvexHull::labelingSecondPass(std::vector<int>& labeled_image) {
+void labelingSecondPass(std::vector<int>& labeled_image, const int width, const int height) {
   for (int i = height - 1; i >= 0; --i) {
     for (int j = width - 1; j >= 0; --j) {
       int current = labeled_image[i * width + j];
@@ -117,8 +117,10 @@ void ConvexHull::labelingSecondPass(std::vector<int>& labeled_image) {
   }
 }
 
-void ConvexHull::processLabeledImage(const std::vector<int>& labeled_image) {
+std::vector<std::vector<Point>> processLabeledImage(const std::vector<int>& labeled_image, const int width,
+                                                    const int height) {
   std::vector<int> component_indices;
+  std::vector<std::vector<Point>> components;
 
   for (int i = 0; i < height; i++) {
     for (int j = 0; j < width; j++) {
@@ -126,7 +128,7 @@ void ConvexHull::processLabeledImage(const std::vector<int>& labeled_image) {
 
       int component_label = labeled_image[i * width + j];
 
-      if (static_cast<size_t>(component_label) < component_indices.size() && component_indices[component_label] != -1) {
+      if (component_label < component_indices.size() && component_indices[component_label] != -1) {
         components[component_indices[component_label]].push_back(Point{j, i});
       } else {
         component_indices.resize(std::max(component_indices.size(), static_cast<size_t>(component_label + 1)), -1);
@@ -135,18 +137,19 @@ void ConvexHull::processLabeledImage(const std::vector<int>& labeled_image) {
       }
     }
   }
+  return components;
 }
 
-void ConvexHull::labeling() {
+std::vector<std::vector<Point>> labeling(const std::vector<int>& image, const int width, const int height) {
   std::vector<int> labeled_image(width * height);
 
   std::copy(image.begin(), image.end(), labeled_image.begin());
-  labelingFirstPass(labeled_image);
-  labelingSecondPass(labeled_image);
-  processLabeledImage(labeled_image);
+  labelingFirstPass(labeled_image, width, height);
+  labelingSecondPass(labeled_image, width, height);
+  return processLabeledImage(labeled_image, width, height);
 }
 
-std::vector<Point> ConvexHull::graham(std::vector<Point> points) {
+std::vector<Point> graham(std::vector<Point> points) {
   std::vector<Point> hull;
 
   if (points.empty()) {
@@ -175,52 +178,7 @@ std::vector<Point> ConvexHull::graham(std::vector<Point> points) {
   return hull;
 }
 
-void ConvexHull::find_hull() {
-  std::vector<Point> all_points;
-  for (const auto& component : components) {
-    auto hull = graham(component);
-    all_points.insert(all_points.end(), hull.begin(), hull.end());
-  }
-
-  std::sort(all_points.begin(), all_points.end(),
-            [](const Point& a, const Point& b) { return a.x < b.x || (a.x == b.x && a.y < b.y); });
-
-  convex_hull = computeConvexHull(all_points);
-}
-
-std::vector<Point> ConvexHull::computeConvexHull(const std::vector<Point>& points) {
-  if (points.empty()) {
-    return points;
-  }
-
-  std::vector<Point> lower, upper;
-  std::vector<Point> sorted_points = points;
-
-  std::sort(sorted_points.begin(), sorted_points.end(),
-            [](const Point& a, const Point& b) { return a.x < b.x || (a.x == b.x && a.y < b.y); });
-
-  for (const auto& p : sorted_points) {
-    while (lower.size() >= 2 && cross(lower[lower.size() - 2], lower.back(), p) <= 0) {
-      lower.pop_back();
-    }
-    lower.push_back(p);
-  }
-
-  for (auto it = sorted_points.rbegin(); it != sorted_points.rend(); ++it) {
-    while (upper.size() >= 2 && cross(upper[upper.size() - 2], upper.back(), *it) <= 0) {
-      upper.pop_back();
-    }
-    upper.push_back(*it);
-  }
-
-  lower.pop_back();
-  upper.pop_back();
-  lower.insert(lower.end(), upper.begin(), upper.end());
-
-  return lower;
-}
-
-bool ConvexHull::validation() {
+bool ConvexHullSEQ::validation() {
   internal_order_test();
 
   if (taskData->inputs_count.size() < 2 || taskData->outputs_count.empty() || taskData->inputs[0] == nullptr ||
@@ -239,32 +197,36 @@ bool ConvexHull::validation() {
   return true;
 }
 
-bool ConvexHull::pre_processing() {
+bool ConvexHullSEQ::pre_processing() {
   internal_order_test();
 
   size = static_cast<int>(taskData->inputs_count[0]);
   height = static_cast<int>(taskData->inputs_count[1]);
   width = static_cast<int>(taskData->inputs_count[2]);
+  components = labeling(image, width, height);
 
   return true;
 }
 
-bool ConvexHull::run() {
+bool ConvexHullSEQ::run() {
   internal_order_test();
 
-  labeling();
-  find_hull();
-  image = setPoints(convex_hull, width, height);
+  std::vector<Point> points;
+  for (const auto& component : components) {
+    auto hull = graham(component);
+    points.insert(points.end(), hull.begin(), hull.end());
+  }
+
+  image = setPoints(points, width, height);
 
   return true;
 }
 
-bool ConvexHull::post_processing() {
+bool ConvexHullSEQ::post_processing() {
   internal_order_test();
 
   std::memcpy(reinterpret_cast<int*>(taskData->outputs[0]), image.data(), image.size() * sizeof(int));
 
   return true;
 }
-
 }  // namespace chistov_a_convex_hull_image_seq

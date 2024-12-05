@@ -30,7 +30,7 @@ TEST(chistov_a_convex_hull_image_seq, test_pipeline_run) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
   taskDataSeq->outputs_count.emplace_back(width * height);
 
-  auto TestTaskSequential = std::make_shared<chistov_a_convex_hull_image_seq::ConvexHull>(taskDataSeq);
+  auto TestTaskSequential = std::make_shared<chistov_a_convex_hull_image_seq::ConvexHullSEQ>(taskDataSeq);
 
   ASSERT_TRUE(TestTaskSequential->validation());
   TestTaskSequential->pre_processing();
@@ -79,7 +79,7 @@ TEST(chistov_a_convex_hull_image_seq, test_task_run) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
   taskDataSeq->outputs_count.emplace_back(width * height);
 
-  auto TestTaskSequential = std::make_shared<chistov_a_convex_hull_image_seq::ConvexHull>(taskDataSeq);
+  auto TestTaskSequential = std::make_shared<chistov_a_convex_hull_image_seq::ConvexHullSEQ>(taskDataSeq);
 
   ASSERT_TRUE(TestTaskSequential->validation());
   TestTaskSequential->pre_processing();
