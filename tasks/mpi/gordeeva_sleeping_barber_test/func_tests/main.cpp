@@ -65,18 +65,18 @@ TEST(gordeeva_t_sleeping_barber_mpi, Test_End_To_End1) {
   gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
   if (world.size() < 3) {
-    EXPECT_FALSE(testMpiTaskParallel.validation());
+    ASSERT_FALSE(testMpiTaskParallel.validation());
   } else {
     ASSERT_TRUE(testMpiTaskParallel.validation());
     ASSERT_TRUE(testMpiTaskParallel.pre_processing());
     ASSERT_TRUE(testMpiTaskParallel.run());
     ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
+    world.barrier();
+
     if (world.rank() == 0) {
       ASSERT_EQ(global_res, 0);
     }
-    world.barrier();
-
   }
 }
 
@@ -95,17 +95,17 @@ TEST(gordeeva_t_sleeping_barber_mpi, Test_End_To_End2) {
   gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
   if (world.size() < 3) {
-    EXPECT_FALSE(testMpiTaskParallel.validation());
+    ASSERT_FALSE(testMpiTaskParallel.validation());
   } else {
     ASSERT_TRUE(testMpiTaskParallel.validation());
     ASSERT_TRUE(testMpiTaskParallel.pre_processing());
     ASSERT_TRUE(testMpiTaskParallel.run());
     ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
+    world.barrier();
+
     if (world.rank() == 0) {
       ASSERT_EQ(global_res, 0);
     }
-    world.barrier();
-
   }
 }

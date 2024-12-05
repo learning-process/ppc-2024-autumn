@@ -29,11 +29,10 @@ bool gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::validation() {
       std::cerr << "[VALIDATION] Invalid number of chairs: " << taskData->inputs_count[0] << std::endl;
       return false;
     }
-
-    if (world.size() < 3) {
-      std::cerr << "[VALIDATION] Not enough processes. Need at least 3." << std::endl;
-      return false;
-    }
+  }
+  if (world.size() < 3) {
+    std::cerr << "[VALIDATION] Not enough processes. Need at least 3." << std::endl;
+    return false;
   }
 
   return true;
