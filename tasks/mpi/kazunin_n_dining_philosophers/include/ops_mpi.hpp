@@ -6,6 +6,7 @@
 #include <boost/mpi/communicator.hpp>
 #include <chrono>
 // #include <iostream>
+#include <cstdint>
 #include <queue>
 #include <random>
 #include <thread>
@@ -14,7 +15,7 @@
 
 namespace kazunin_n_dining_philosophers_mpi {
 
-enum MessageTag { REQUEST_FORK = 1, RELEASE_FORK = 2, FORK_GRANTED = 3, TERMINATE_FORK = 4 };
+enum MessageTag : std::uint8_t { REQUEST_FORK = 1, RELEASE_FORK = 2, FORK_GRANTED = 3, TERMINATE_FORK = 4 };
 
 inline bool philosopher(int id, int N, boost::mpi::communicator& world, boost::mpi::communicator& philosophers_comm,
                         int eat_limit, int min_think_time, int max_think_time, int min_eat_time, int max_eat_time) {
@@ -95,7 +96,7 @@ inline bool fork_manager(int id, boost::mpi::communicator& world) {
   std::queue<int> waiting_queue;
 
   while (!terminate) {
-    boost::mpi::status s = world.probe(boost::mpi::any_source, boost::mpi::any_tag);
+    const auto s = world.probe(boost::mpi::any_source, boost::mpi::any_tag);
     int philosopher_id;
 
     if (s.tag() == REQUEST_FORK) {
