@@ -8,14 +8,17 @@
 #include <vector>
 
 #include "core/task/include/task.hpp"
-#include "seq/agafeev_s_max_of_vector_elements/include/ops_seq.hpp"
+//#include "seq/agafeev_s_max_of_vector_elements/include/ops_seq.hpp"
 
 namespace agafeev_s_max_of_vector_elements_mpi {
 
-/*std::vector<int> create_RandomMatrix(int row_size, int column_size);
+template <typename T>
+std::vector<T> create_RandomMatrix(int row_size, int column_size);
 
-int get_MaxValue(std::vector<int> matrix);
+template <typename T>
+T get_MaxValue(std::vector<T> matrix);
 
+/*
 class MaxMatrixSeq : public ppc::core::Task {
  public:
   explicit MaxMatrixSeq(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -28,6 +31,7 @@ class MaxMatrixSeq : public ppc::core::Task {
   std::vector<int> input_;
   int maxres_{};
 };*/
+
 template <typename T>
 class MaxMatrixMpi : public ppc::core::Task {
  public:

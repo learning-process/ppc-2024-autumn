@@ -10,7 +10,7 @@ std::vector<T> agafeev_s_max_of_vector_elements_sequental::create_RandomMatrix(i
 }
 
 template <typename T>
-T agafeev_s_max_of_vector_elements_sequental::get_MaxValue(std::vector<int> matrix) {
+T agafeev_s_max_of_vector_elements_sequental::get_MaxValue(std::vector<T> matrix) {
   T max_result = std::numeric_limits<T>::min();
   for (uint i = 0; i < matrix.size(); i++)
     if (max_result < matrix[i]) max_result = matrix[i];
@@ -23,7 +23,7 @@ bool agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential<T>::pre_pro
   internal_order_test();
 
   // Init value
-  auto* temp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+  auto* temp_ptr = reinterpret_cast<T*>(taskData->inputs[0]);
   input_.insert(input_.begin(), temp_ptr, temp_ptr + taskData->inputs_count[0]);
 
   return true;
@@ -49,7 +49,7 @@ template <typename T>
 bool agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential<T>::post_processing() {
   internal_order_test();
 
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = maxres_;
+  reinterpret_cast<T*>(taskData->outputs[0])[0] = maxres_;
 
   return true;
 }

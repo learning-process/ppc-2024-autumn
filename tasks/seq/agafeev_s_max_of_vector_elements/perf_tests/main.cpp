@@ -10,7 +10,7 @@ TEST(agafeev_s_max_of_vector_elements, test_pipeline_run) {
   const int m = 1000;
 
   // Credate Data
-  std::vector<int> in_matrix = agafeev_s_max_of_vector_elements_sequental::create_RandomMatrix(n, m);
+  std::vector<int> in_matrix = agafeev_s_max_of_vector_elements_sequental::create_RandomMatrix<int>(n, m);
   std::vector<int> out(1, 99);
 
   // Create TaskData
@@ -20,8 +20,9 @@ TEST(agafeev_s_max_of_vector_elements, test_pipeline_run) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskData->outputs_count.emplace_back(out.size());
 
-  agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential testTask(taskData);
-  auto testTaskSequential = std::make_shared<agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential>(taskData);
+  agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential<int> testTask(taskData);
+  auto testTaskSequential =
+      std::make_shared<agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential<int>>(taskData);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -50,7 +51,7 @@ TEST(agafeev_s_max_of_vector_elements, test_task_run) {
   const int m = 1000;
 
   // Credate Data
-  std::vector<int> in_matrix = agafeev_s_max_of_vector_elements_sequental::create_RandomMatrix(n, m);
+  std::vector<int> in_matrix = agafeev_s_max_of_vector_elements_sequental::create_RandomMatrix<int>(n, m);
   std::vector<int> out(1, 99);
 
   // Create TaskData
@@ -60,8 +61,9 @@ TEST(agafeev_s_max_of_vector_elements, test_task_run) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskData->outputs_count.emplace_back(out.size());
 
-  agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential testTask(taskData);
-  auto testTaskSequential = std::make_shared<agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential>(taskData);
+  agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential<int> testTask(taskData);
+  auto testTaskSequential =
+      std::make_shared<agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential<int>>(taskData);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();

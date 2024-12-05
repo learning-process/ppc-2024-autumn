@@ -13,7 +13,7 @@ template <typename T>
 std::vector<T> create_RandomMatrix(int row_size, int column_size);
 
 template <typename T>
-T get_MaxValue(std::vector<int> matrix);
+T get_MaxValue(std::vector<T> matrix);
 
 template <typename T>
 class MaxMatrixSequential : public ppc::core::Task {
