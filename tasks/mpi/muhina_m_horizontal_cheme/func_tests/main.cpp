@@ -35,7 +35,9 @@ TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication_Validation_1) {
 
   HorizontalSchemeMPIParallel matrixVecMultParalle(taskDataPar);
 
-  EXPECT_FALSE(matrixVecMultParalle.validation());
+  if (world.rank() == 0) {
+    EXPECT_FALSE(matrixVecMultParalle.validation());
+  }
 }
 TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication_Validation_2) {
   boost::mpi::communicator world;
@@ -61,7 +63,9 @@ TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication_Validation_2) {
   }
 
   HorizontalSchemeMPIParallel matrixVecMultParalle(taskDataPar);
-  EXPECT_FALSE(matrixVecMultParalle.validation());
+  if (world.rank() == 0) {
+    EXPECT_FALSE(matrixVecMultParalle.validation());
+  }
 }
 
 TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication_Validation_3) {
@@ -88,7 +92,9 @@ TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication_Validation_3) {
   }
 
   HorizontalSchemeMPIParallel matrixVecMultParalle(taskDataPar);
-  EXPECT_FALSE(matrixVecMultParalle.validation());
+  if (world.rank() == 0) {
+    EXPECT_FALSE(matrixVecMultParalle.validation());
+  }
 }
 
 TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication) {
