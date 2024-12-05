@@ -175,7 +175,6 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
                 for (unsigned int i = 0; i < taskData->inputs_count[1]; i++) {
                     tmp_b[i] = ptr3[i];
                 }
-                int r = taskData->inputs_count[3];
                 return (taskData->inputs_count[3] == taskData->inputs_count[2] &&
                         taskData->inputs_count[2] == taskData->outputs_count[0]) &&
                        taskData->inputs.size() == 2 && taskData->outputs.size() == 1;

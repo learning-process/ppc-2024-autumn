@@ -48,7 +48,7 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
         std::vector<double> _b;
         std::vector<double> _x;
         boost::mpi::communicator world;
-        std::vector<double> seidelMethod(const std::vector<double>& A, const std::vector<double>& b, int n, double eps);
+        static std::vector<double> seidelMethod(const std::vector<double>& A, const std::vector<double>& b, int n, double eps);
     };
 
 }  // namespace nasedkin_e_seidels_iterate_methods_mpi
