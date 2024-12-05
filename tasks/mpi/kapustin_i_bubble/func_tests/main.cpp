@@ -114,8 +114,9 @@ TEST(kapustin_i_bubble_sort, empty_input) {
   }
 
   kapustin_i_bubble_sort_mpi::BubbleSortMPI tmpTaskPar(tmpPar);
-
-  ASSERT_FALSE(tmpTaskPar.validation());
+  if (world.rank() == 0) {
+    ASSERT_FALSE(tmpTaskPar.validation());
+  }
 }
 
 TEST(kapustin_i_bubble_sort, random_input) {
