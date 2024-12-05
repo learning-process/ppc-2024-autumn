@@ -50,12 +50,24 @@ bool vershinina_a_image_smoothing::TestMPITaskSequential::post_processing() {
 
 bool vershinina_a_image_smoothing::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-
   if (world.rank() == 0) {
     auto* pr = reinterpret_cast<int*>(taskData->inputs[0]);
     input_.resize(taskData->inputs_count[0] * taskData->inputs_count[1]);
     std::copy(pr, pr + input_.size(), input_.begin());
   }
+  return true;
+}
+
+bool vershinina_a_image_smoothing::TestMPITaskParallel::validation() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    return taskData->inputs.size() == 1 && taskData->inputs_count.size() == 2 && taskData->outputs.size() == 1;
+  }
+  return true;
+}
+
+bool vershinina_a_image_smoothing::TestMPITaskParallel::run() {
+  internal_order_test();
   if (world.rank() == 0) {
     rows = taskData->inputs_count[0];
     cols = taskData->inputs_count[1];
@@ -116,22 +128,10 @@ bool vershinina_a_image_smoothing::TestMPITaskParallel::pre_processing() {
   if (world.rank() == 0) {
     output_.resize(rows * cols);
   }
-  return true;
-}
-
-bool vershinina_a_image_smoothing::TestMPITaskParallel::validation() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    return taskData->inputs.size() == 1 && taskData->inputs_count.size() == 2 && taskData->outputs.size() == 1;
-  }
-  return true;
-}
-
-bool vershinina_a_image_smoothing::TestMPITaskParallel::run() {
-  internal_order_test();
 
   int offset_top = (world.rank() == 0) ? 0 : 1;
   int offset_bottom = (world.rank() == std::min(world.size(), rows) - 1) ? 0 : 1;
+
   if (world.size() == 1) {
     offset_top = 0;
     offset_bottom = 0;
@@ -157,6 +157,7 @@ bool vershinina_a_image_smoothing::TestMPITaskParallel::run() {
 
   int* output_data = output_.data();
   int* local_output_data = local_output_.data();
+
   for (int i = 0; i < std::min(world.size(), rows); i++) {
     if (i == world.size() - 1) {
       local_input_sizes[i] = (rows_per_proc + remainder) * cols;
