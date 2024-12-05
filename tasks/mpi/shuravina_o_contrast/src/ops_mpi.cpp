@@ -28,8 +28,7 @@ bool ContrastTaskParallel::pre_processing() {
   if (world.rank() == 0) {
     local_input_ = std::vector<uint8_t>(input_.begin(), input_.begin() + delta);
   } else {
-    boost::mpi::status stat;
-    world.recv(0, 0, local_input_.data(), delta, boost::mpi::get_mpi_datatype<uint8_t>(), stat);
+    world.recv(0, 0, local_input_.data(), delta);
   }
   output_ = std::vector<uint8_t>(delta);
   min_val_ = *std::min_element(local_input_.begin(), local_input_.end());
@@ -76,8 +75,7 @@ bool ContrastTaskParallel::post_processing() {
       tmp_ptr[i] = output_[i];
     }
     for (int proc = 1; proc < world.size(); proc++) {
-      boost::mpi::status stat;
-      world.recv(proc, 0, tmp_ptr + proc * delta, delta, boost::mpi::get_mpi_datatype<uint8_t>(), stat);
+      world.recv(proc, 0, tmp_ptr + proc * delta, delta);
     }
   } else {
     world.send(0, 0, output_.data(), delta);
