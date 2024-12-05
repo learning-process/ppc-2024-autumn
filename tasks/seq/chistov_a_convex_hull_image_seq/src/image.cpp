@@ -128,7 +128,7 @@ std::vector<std::vector<Point>> processLabeledImage(const std::vector<int>& labe
 
       int component_label = labeled_image[i * width + j];
 
-      if (component_label < component_indices.size() && component_indices[component_label] != -1) {
+      if (static_cast<size_t>(component_label) < component_indices.size() && component_indices[component_label] != -1) {
         components[component_indices[component_label]].push_back(Point{j, i});
       } else {
         component_indices.resize(std::max(component_indices.size(), static_cast<size_t>(component_label + 1)), -1);
