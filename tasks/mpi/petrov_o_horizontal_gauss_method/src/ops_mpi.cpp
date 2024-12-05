@@ -144,9 +144,7 @@ bool ParallelTask::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     auto* output = reinterpret_cast<double*>(taskData->outputs[0]);
-    for (size_t i = 0; i < x.size(); ++i) {
-      output[i] = x[i];
-    }
+    std::copy(x.begin(), x.end(), output);
   }
   return true;
 }
@@ -262,9 +260,7 @@ bool SequentialTask::post_processing() {
   internal_order_test();
 
   auto* output = reinterpret_cast<double*>(taskData->outputs[0]);
-  for (size_t i = 0; i < x.size(); ++i) {
-    output[i] = x[i];
-  }
+  std::copy(x.begin(), x.end(), output);
   return true;
 }
 

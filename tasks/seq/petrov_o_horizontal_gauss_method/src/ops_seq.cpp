@@ -114,8 +114,6 @@ bool petrov_o_horizontal_gauss_method_seq::GaussHorizontalSequential::post_proce
   internal_order_test();
 
   auto* output = reinterpret_cast<double*>(taskData->outputs[0]);
-  for (size_t i = 0; i < x.size(); ++i) {
-    output[i] = x[i];
-  }
+  std::copy(x.begin(), x.end(), output);
   return true;
 }
