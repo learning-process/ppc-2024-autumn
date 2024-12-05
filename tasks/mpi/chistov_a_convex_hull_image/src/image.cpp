@@ -131,7 +131,7 @@ std::vector<std::vector<Point>> processLabeledImage(const std::vector<int>& labe
 
       int component_label = labeled_image[i * width + j];
 
-      if (component_label < component_indices.size() && component_indices[component_label] != -1) {
+      if (static_cast<size_t>(component_label) < component_indices.size() && component_indices[component_label] != -1) {
         components[component_indices[component_label]].push_back(Point{j, i});
       } else {
         component_indices.resize(std::max(component_indices.size(), static_cast<size_t>(component_label + 1)), -1);
@@ -236,30 +236,6 @@ bool ConvexHullSEQ::post_processing() {
 
 // Parallel version
 namespace chistov_a_convex_hull_image_mpi {
-
-std::vector<int> ConvexHullMPI::pointsToInts(const std::vector<Point>& points) {
-  std::vector<int> result;
-  result.reserve(points.size() * 2);
-
-  for (const auto& point : points) {
-    result.push_back(point.x);
-    result.push_back(point.y);
-  }
-
-  return result;
-}
-
-std::vector<Point> ConvexHullMPI::intsToPoints(const std::vector<int>& vec) {
-  std::vector<Point> points;
-  points.reserve(vec.size() / 2);
-
-  for (size_t i = 0; i < vec.size(); i += 2) {
-    points.push_back({vec[i], vec[i + 1]});
-  }
-
-  return points;
-}
-
 bool ConvexHullMPI::validation() {
   internal_order_test();
   if (world.rank() == 0) {
@@ -294,14 +270,28 @@ bool ConvexHullMPI::pre_processing() {
 bool ConvexHullMPI::run() {
   internal_order_test();
 
-  std::vector<int> sizes;
   std::vector<std::vector<Point>> local_components;
 
-  if (world.rank() == 0) {
-    for (const auto& comp : components) {
-      sizes.push_back(comp.size());
+  auto toVector = [](const std::vector<Point>& points) -> std::vector<int> {
+    std::vector<int> result;
+    result.reserve(points.size() * 2);
+    for (const auto& point : points) {
+      result.push_back(point.x);
+      result.push_back(point.y);
     }
+    return result;
+  };
 
+  auto toPoints = [](const std::vector<int>& vec) -> std::vector<Point> {
+    std::vector<Point> points;
+    points.reserve(vec.size() / 2);
+    for (size_t i = 0; i < vec.size(); i += 2) {
+      points.push_back({vec[i], vec[i + 1]});
+    }
+    return points;
+  };
+
+  if (world.rank() == 0) {
     int base_count = components.size() / world.size();
     int remainder = components.size() % world.size();
 
@@ -311,7 +301,7 @@ bool ConvexHullMPI::run() {
       world.send(proc, 0, &send_count, 1);
 
       for (int i = 0; i < send_count; ++i) {
-        std::vector<int> int_component = pointsToInts(components[offset + i]);
+        std::vector<int> int_component = toVector(components[offset + i]);
         world.send(proc, 1, int_component);
       }
 
@@ -322,6 +312,7 @@ bool ConvexHullMPI::run() {
     for (int i = 0; i < local_count; ++i) {
       local_components.push_back(components[offset + i]);
     }
+
   } else {
     int recv_count;
     world.recv(0, 0, &recv_count, 1);
@@ -329,7 +320,7 @@ bool ConvexHullMPI::run() {
     for (int i = 0; i < recv_count; ++i) {
       std::vector<int> int_component;
       world.recv(0, 1, int_component);
-      local_components.push_back(intsToPoints(int_component));
+      local_components.push_back(toPoints(int_component));
     }
   }
 
@@ -346,18 +337,20 @@ bool ConvexHullMPI::run() {
     for (int proc = 1; proc < world.size(); ++proc) {
       std::vector<int> hull_ints;
       world.recv(proc, 2, hull_ints);
-      auto hull = intsToPoints(hull_ints);
+      auto hull = toPoints(hull_ints);
       merged_hulls.insert(merged_hulls.end(), hull.begin(), hull.end());
     }
 
     image = setPoints(graham(merged_hulls), width, height);
+
   } else {
-    std::vector<int> local_hulls_ints = pointsToInts(local_hulls);
+    std::vector<int> local_hulls_ints = toVector(local_hulls);
     world.send(0, 2, local_hulls_ints);
   }
 
   return true;
 }
+
 
 bool ConvexHullMPI::post_processing() {
   internal_order_test();

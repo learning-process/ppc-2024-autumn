@@ -59,9 +59,6 @@ class ConvexHullMPI : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> pointsToInts(const std::vector<Point>& points);
-  std::vector<Point> intsToPoints(const std::vector<int>& vec);
-
   std::vector<int> image;
   std::vector<std::vector<Point>> components;
   int width{};

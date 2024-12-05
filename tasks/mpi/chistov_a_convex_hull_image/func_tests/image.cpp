@@ -1,30 +1,30 @@
+#include "mpi/chistov_a_convex_hull_image/include/image.hpp"
+
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <vector>
 
-#include "mpi/chistov_a_convex_hull_image/include/image.hpp"
-
 TEST(chistov_a_convex_hull_image_mpi, validation_test_empty_image) {
   boost::mpi::communicator world;
 
   if (world.rank() == 0) {
-  const int width = 3;
-  const int height = 4;
-  std::vector<int> image;
-  std::vector<int> hull;
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+    const int width = 3;
+    const int height = 4;
+    std::vector<int> image;
+    std::vector<int> hull;
+    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
-  taskDataPar->inputs_count.emplace_back(width * height);
-  taskDataPar->inputs_count.emplace_back(width);
-  taskDataPar->inputs_count.emplace_back(height);
-  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
-  taskDataPar->outputs_count.emplace_back(width * height);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
+    taskDataPar->inputs_count.emplace_back(width * height);
+    taskDataPar->inputs_count.emplace_back(width);
+    taskDataPar->inputs_count.emplace_back(height);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
+    taskDataPar->outputs_count.emplace_back(width * height);
 
-  chistov_a_convex_hull_image_mpi::ConvexHullMPI TestTaskMPI(taskDataPar);
-  ASSERT_FALSE(TestTaskMPI.validation());
+    chistov_a_convex_hull_image_mpi::ConvexHullMPI TestTaskMPI(taskDataPar);
+    ASSERT_FALSE(TestTaskMPI.validation());
   }
 }
 
@@ -460,7 +460,7 @@ TEST(chistov_a_convex_hull_image_mpi, test_random_image) {
   const int width = 11;
   const int height = 11;
 
-  std::vector<int> image = chistov_a_convex_hull_image_mpi_test::generateImage(width,height);
+  std::vector<int> image = chistov_a_convex_hull_image_mpi_test::generateImage(width, height);
   std::vector<int> hull(width * height);
 
   std::vector<int> expected_hull(width * height);
