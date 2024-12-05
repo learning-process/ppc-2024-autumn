@@ -19,9 +19,6 @@ void generateRandomMatrixAndB(size_t n, std::vector<double>& matrix, std::vector
   for (size_t i = 0; i < n; ++i) {
     b[i] = dis(gen);
   }
-  for (size_t i = 0; i < n; ++i) {
-    matrix[i * n + i] += 201.0;
-  }
 }
 
 template <typename TaskType>

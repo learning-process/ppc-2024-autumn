@@ -18,9 +18,6 @@ void generateRandomMatrixAndB(size_t n, std::vector<double>& matrix, std::vector
   for (size_t i = 0; i < n; ++i) {
     b[i] = dis(gen);
   }
-  for (size_t i = 0; i < n; ++i) {
-    matrix[i * n + i] += 200.0;
-  }
 }
 
 TEST(petrov_o_horizontal_gauss_method_seq, test_pipeline_run) {
