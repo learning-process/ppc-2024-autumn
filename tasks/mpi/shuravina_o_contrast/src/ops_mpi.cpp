@@ -33,7 +33,8 @@ bool ContrastTaskParallel::pre_processing() {
   output_ = std::vector<uint8_t>(delta);
   min_val_ = *std::min_element(local_input_.begin(), local_input_.end());
   max_val_ = *std::max_element(local_input_.begin(), local_input_.end());
-  uint8_t global_min, global_max;
+  uint8_t global_min;
+  uint8_t global_max;
   reduce(world, min_val_, global_min, boost::mpi::minimum<uint8_t>(), 0);
   reduce(world, max_val_, global_max, boost::mpi::maximum<uint8_t>(), 0);
   min_val_ = global_min;
