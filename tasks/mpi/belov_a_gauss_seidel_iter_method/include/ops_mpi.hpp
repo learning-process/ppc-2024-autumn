@@ -6,8 +6,6 @@
 #include <boost/mpi.hpp>
 #include <boost/mpi/collectives.hpp>
 #include <boost/serialization/vector.hpp>
-#include <iostream>
-#include <random>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -51,8 +49,6 @@ class GaussSeidelSequential : public ppc::core::Task {
   std::vector<double> x;  // vector of initial guess for unknowns
 };
 
-std::vector<double> generateDiagonallyDominantMatrix(int n);
-std::vector<double> generateFreeMembers(int n);
 bool isDiagonallyDominant(const std::vector<double>&, int n);
 
 }  // namespace belov_a_gauss_seidel_mpi

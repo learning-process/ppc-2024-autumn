@@ -1,8 +1,6 @@
 #ifndef OPS_SEQ_HPP
 #define OPS_SEQ_HPP
 
-#include <cmath>
-#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -28,9 +26,6 @@ class GaussSeidelSequential : public ppc::core::Task {
   std::vector<double> b;  // free members vector
   std::vector<double> x;  // vector of initial guess for unknowns
 };
-
-std::vector<double> generateDiagonallyDominantMatrix(int n);
-std::vector<double> generateFreeMembers(int n);
 
 }  // namespace belov_a_gauss_seidel_seq
 

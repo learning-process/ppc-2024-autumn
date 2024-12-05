@@ -260,37 +260,4 @@ bool GaussSeidelSequential::post_processing() {
   return true;
 }
 
-vector<double> generateDiagonallyDominantMatrix(int n) {
-  vector<double> A_local(n * n, 0.0);
-
-  random_device rd;
-  mt19937 gen(rd());
-  uniform_real_distribution<> dis(-10.0, 10.0);
-
-  for (int i = 0; i < n; ++i) {
-    double row_sum = 0.0;
-    for (int j = 0; j < n; ++j) {
-      if (i != j) {
-        A_local[i * n + j] = dis(gen);
-        row_sum += abs(A_local[i * n + j]);
-      }
-    }
-    A_local[i * n + i] = row_sum + abs(dis(gen)) + 1.0;
-  }
-  return A_local;
-}
-
-vector<double> generateFreeMembers(int n) {
-  vector<double> freeMembers(n, 0.0);
-
-  random_device rd;
-  mt19937 gen(rd());
-  uniform_real_distribution<> dis(-10.0, 10.0);
-
-  for (int i = 0; i < n; ++i) {
-    freeMembers[i] = dis(gen);
-  }
-  return freeMembers;
-}
-
 }  // namespace belov_a_gauss_seidel_mpi

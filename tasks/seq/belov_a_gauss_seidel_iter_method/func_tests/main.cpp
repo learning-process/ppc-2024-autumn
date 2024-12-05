@@ -7,6 +7,39 @@
 
 using namespace belov_a_gauss_seidel_seq;
 
+std::vector<double> generateDiagonallyDominantMatrix(int n) {
+  std::vector<double> A_local(n * n, 0.0);
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<> dis(-10.0, 10.0);
+
+  for (int i = 0; i < n; ++i) {
+    double row_sum = 0.0;
+    for (int j = 0; j < n; ++j) {
+      if (i != j) {
+        A_local[i * n + j] = dis(gen);
+        row_sum += abs(A_local[i * n + j]);
+      }
+    }
+    A_local[i * n + i] = row_sum + abs(dis(gen)) + 1.0;
+  }
+  return A_local;
+}
+
+std::vector<double> generateFreeMembers(int n) {
+  std::vector<double> freeMembers(n, 0.0);
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<> dis(-10.0, 10.0);
+
+  for (int i = 0; i < n; ++i) {
+    freeMembers[i] = dis(gen);
+  }
+  return freeMembers;
+}
+
 TEST(belov_a_gauss_seidel_seq, test_int_sample1_SLAE) {
   int n = 3;
   double epsilon = 0.05;
@@ -196,6 +229,27 @@ TEST(belov_a_gauss_seidel_seq, test_invalid_input_matrix_size) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
   taskDataSeq->inputs_count.emplace_back(n);
   taskDataSeq->inputs_count.emplace_back(input_matrix.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionVector.data()));
+
+  GaussSeidelSequential testTaskSequential(taskDataSeq);
+
+  ASSERT_FALSE(testTaskSequential.validation());
+}
+
+TEST(belov_a_gauss_seidel_seq, test_invalid_inputs_count) {
+  int n = 8;
+  double epsilon = 0.004;
+
+  std::vector<double> input_matrix = generateDiagonallyDominantMatrix(n);
+  std::vector<double> freeMembersVector = generateFreeMembers(n);
+  std::vector<double> solutionVector(n);
+
+  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(freeMembersVector.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
+  /*taskDataSeq->inputs_count.emplace_back(n); // "forgot" to fill inputs_count
+  taskDataSeq->inputs_count.emplace_back(input_matrix.size());*/
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionVector.data()));
 
   GaussSeidelSequential testTaskSequential(taskDataSeq);

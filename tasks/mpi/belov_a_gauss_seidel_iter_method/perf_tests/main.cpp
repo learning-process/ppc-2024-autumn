@@ -1,12 +1,46 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
+#include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/belov_a_gauss_seidel_iter_method/include/ops_mpi.hpp"
 
 using namespace belov_a_gauss_seidel_mpi;
+
+std::vector<double> generateDiagonallyDominantMatrix(int n) {
+  std::vector<double> A_local(n * n, 0.0);
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<> dis(-10.0, 10.0);
+
+  for (int i = 0; i < n; ++i) {
+    double row_sum = 0.0;
+    for (int j = 0; j < n; ++j) {
+      if (i != j) {
+        A_local[i * n + j] = dis(gen);
+        row_sum += abs(A_local[i * n + j]);
+      }
+    }
+    A_local[i * n + i] = row_sum + abs(dis(gen)) + 1.0;
+  }
+  return A_local;
+}
+
+std::vector<double> generateFreeMembers(int n) {
+  std::vector<double> freeMembers(n, 0.0);
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<> dis(-10.0, 10.0);
+
+  for (int i = 0; i < n; ++i) {
+    freeMembers[i] = dis(gen);
+  }
+  return freeMembers;
+}
 
 TEST(belov_a_gauss_seidel_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
