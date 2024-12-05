@@ -71,7 +71,7 @@ TEST(gordeeva_t_sleeping_barber_mpi, Test_End_To_End1) {
     ASSERT_TRUE(testMpiTaskParallel.pre_processing());
     ASSERT_TRUE(testMpiTaskParallel.run());
     ASSERT_TRUE(testMpiTaskParallel.post_processing());
-    
+
     world.barrier();
 
     if (world.rank() == 0) {
