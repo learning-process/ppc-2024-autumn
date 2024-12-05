@@ -30,7 +30,7 @@ TEST(kapustin_i_bubble_sort, simple_test) {
                                  24,  25,  29,  39,  45,  57,  70,  77,  88,   125,  150, 213, 278,
                                  306, 344, 345, 420, 500, 555, 888, 999, 1024, 1986, 6666};
 
-    for (int i = 0; i < out.size(); ++i) {
+    for (size_t i = 0; i < out.size(); ++i) {
       EXPECT_EQ(out[i], expected[i]);
     }
   }
@@ -61,7 +61,7 @@ TEST(kapustin_i_bubble_sort, pref_sort) {
   if (world.rank() == 0) {
     std::vector<int> expected = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
 
-    for (int i = 0; i < out.size(); ++i) {
+    for (size_t i = 0; i < out.size(); ++i) {
       EXPECT_EQ(out[i], expected[i]);
     }
   }
@@ -92,7 +92,7 @@ TEST(kapustin_i_bubble_sort, some_eq_val) {
   if (world.rank() == 0) {
     std::vector<int> expected = {1, 2, 3, 3, 5, 5, 5};
 
-    for (int i = 0; i < out.size(); ++i) {
+    for (size_t i = 0; i < out.size(); ++i) {
       EXPECT_EQ(out[i], expected[i]);
     }
   }
