@@ -1,24 +1,25 @@
 #include "mpi/kapustin_i_bubble/include/avg_mpi.hpp"
 
 std::vector<int> kapustin_i_bubble_sort_mpi::BubbleSortMPI::merge(int partner, std::vector<int>& local_data) {
-  if (partner < 0 || partner >= world.size()) return local_data;
+  if (partner >= world.size()) return local_data;
 
   std::vector<int> tmp;
   size_t send_size = local_data.size();
   size_t recv_size = 0;
-
+  const int TAG_SIZE = 1;
+  const int TAG_DATA = 2;
   if (world.rank() < partner) {
-    world.send(partner, 0, &send_size, 1);
-    world.recv(partner, 0, &recv_size, 1);
+    world.send(partner, TAG_SIZE, &send_size, 1);
+    world.recv(partner, TAG_SIZE, &recv_size, 1);
     tmp.resize(recv_size);
-    world.send(partner, 0, local_data.data(), send_size);
-    world.recv(partner, 0, tmp.data(), recv_size);
+    world.send(partner, TAG_DATA, local_data.data(), send_size);
+    world.recv(partner, TAG_DATA, tmp.data(), recv_size);
   } else {
-    world.recv(partner, 0, &recv_size, 1);
-    world.send(partner, 0, &send_size, 1);
+    world.recv(partner, TAG_SIZE, &recv_size, 1);
+    world.send(partner, TAG_SIZE, &send_size, 1);
     tmp.resize(recv_size);
-    world.recv(partner, 0, tmp.data(), recv_size);
-    world.send(partner, 0, local_data.data(), send_size);
+    world.recv(partner, TAG_DATA, tmp.data(), recv_size);
+    world.send(partner, TAG_DATA, local_data.data(), send_size);
   }
 
   std::vector<int> merged_result;
