@@ -23,106 +23,70 @@ void calculate_sizes_displs(int N, int num_proc, std::vector<int>& sizes, std::v
 bool kavtorev_d_iterative_jacobi_mpi::IterativeJacobiParallelMPI::validation() {
   internal_order_test();
 
-  bool result = true;
-
-  if (world.rank() == 0) {
-    if (!taskData) {
-      result = false;
-    } else if (taskData->inputs.size() < 5 || taskData->outputs.empty()) {
-      result = false;
-    } else if ((taskData->inputs[0] == nullptr) || (taskData->inputs[1] == nullptr) ||
-               (taskData->inputs[2] == nullptr) || (taskData->inputs[3] == nullptr) ||
-               (taskData->inputs[4] == nullptr)) {
-      result = false;
-    } else if (taskData->outputs[0] == nullptr) {
-      result = false;
-    } else {
-      int val_n = *reinterpret_cast<int*>(taskData->inputs[0]);
-
-      if (val_n <= 0) {
-        result = false;
-      } else {
-        double val_eps = *reinterpret_cast<double*>(taskData->inputs[1]);
-
-        if (val_eps <= 0.0) {
-          result = false;
-        } else {
-          int val_iterations = *reinterpret_cast<int*>(taskData->inputs[2]);
-
-          if (val_iterations <= 0) {
-            result = false;
-          } else {
-            auto* val_A_data = reinterpret_cast<double*>(taskData->inputs[3]);
-            int val_A_size = taskData->inputs_count[3];
-
-            auto* val_F_data = reinterpret_cast<double*>(taskData->inputs[4]);
-            int val_F_size = taskData->inputs_count[4];
-
-            auto* val_output = reinterpret_cast<double*>(taskData->outputs[0]);
-            int val_output_size = taskData->outputs_count[0];
-
-            if ((val_A_data == nullptr) || (val_F_data == nullptr) || (val_output == nullptr)) {
-              result = false;
-            } else if (val_A_size != val_n * val_n) {
-              result = false;
-            } else if (val_F_size != val_n) {
-              result = false;
-            } else if (val_output_size < val_n) {
-              result = false;
-            } else {
-              std::vector<double> val_A_flat(val_A_data, val_A_data + val_A_size);
-              std::vector<double> val_F(val_F_data, val_F_data + val_F_size);
-
-              for (size_t i = 0; i < val_A_flat.size(); ++i) {
-                if (std::isnan(val_A_flat[i]) || std::isinf(val_A_flat[i])) {
-                  result = false;
-                  break;
-                }
-              }
-
-              if (result) {
-                for (size_t i = 0; i < val_F.size(); ++i) {
-                  if (std::isnan(val_F[i]) || std::isinf(val_F[i])) {
-                    result = false;
-                    break;
-                  }
-                }
-              }
-
-              if (result) {
-                for (int i = 0; i < val_n; ++i) {
-                  double diagonal_element = val_A_flat[i * val_n + i];
-                  if (diagonal_element == 0.0) {
-                    result = false;
-                    break;
-                  }
-                }
-              }
-
-              if (result) {
-                for (int i = 0; i < val_n; ++i) {
-                  double sum = 0.0;
-                  for (int j = 0; j < val_n; ++j) {
-                    if (j != i) {
-                      sum += std::abs(val_A_flat[i * val_n + j]);
-                    }
-                  }
-                  double diagonal_element = std::abs(val_A_flat[i * val_n + i]);
-                  if (diagonal_element < sum) {
-                    result = false;
-                    break;
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+  if (world.rank() != 0) {
+    return true;
   }
-  boost::mpi::broadcast(world, result, 0);
 
-  return result;
+  if (!taskData) return false;
+
+  if (taskData->inputs.size() < 5 || taskData->outputs.empty()) return false;
+
+  if ((taskData->inputs[0] == nullptr) || (taskData->inputs[1] == nullptr) || (taskData->inputs[2] == nullptr) ||
+      (taskData->inputs[3] == nullptr) || (taskData->inputs[4] == nullptr))
+    return false;
+  if (taskData->outputs[0] == nullptr) return false;
+
+  int val_n = *reinterpret_cast<int*>(taskData->inputs[0]);
+  if (val_n <= 0) return false;
+
+  double val_eps = *reinterpret_cast<double*>(taskData->inputs[1]);
+  if (val_eps <= 0.0) return false;
+
+  int val_iterations = *reinterpret_cast<int*>(taskData->inputs[2]);
+  if (val_iterations <= 0) return false;
+
+  auto* val_A_data = reinterpret_cast<double*>(taskData->inputs[3]);
+  int val_A_size = taskData->inputs_count[3];
+
+  auto* val_F_data = reinterpret_cast<double*>(taskData->inputs[4]);
+  int val_F_size = taskData->inputs_count[4];
+
+  auto* val_output = reinterpret_cast<double*>(taskData->outputs[0]);
+  int val_output_size = taskData->outputs_count[0];
+
+  if ((val_A_data == nullptr) || (val_F_data == nullptr) || (val_output == nullptr)) return false;
+
+  if (val_A_size != val_n * val_n) return false;
+
+  if (val_F_size != val_n) return false;
+
+  if (val_output_size < val_n) return false;
+
+  std::vector<double> val_A_flat(val_A_data, val_A_data + val_A_size);
+  std::vector<double> val_F(val_F_data, val_F_data + val_F_size);
+
+  for (size_t i = 0; i < val_A_flat.size(); ++i)
+    if (std::isnan(val_A_flat[i]) || std::isinf(val_A_flat[i])) return false;
+
+  for (size_t i = 0; i < val_F.size(); ++i)
+    if (std::isnan(val_F[i]) || std::isinf(val_F[i])) return false;
+
+  for (int i = 0; i < val_n; ++i) {
+    double diagonal_element = val_A_flat[i * val_n + i];
+
+    if (diagonal_element == 0.0) return false;
+  }
+
+  for (int i = 0; i < val_n; ++i) {
+    double sum = 0.0;
+    for (int j = 0; j < val_n; ++j)
+      if (j != i) sum += std::abs(val_A_flat[i * val_n + j]);
+
+    double diagonal_element = std::abs(val_A_flat[i * val_n + i]);
+    if (diagonal_element < sum) return false;
+  }
+
+  return true;
 }
 
 bool kavtorev_d_iterative_jacobi_mpi::IterativeJacobiParallelMPI::pre_processing() {
