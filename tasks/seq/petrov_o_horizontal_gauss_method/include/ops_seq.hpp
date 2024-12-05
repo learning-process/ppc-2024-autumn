@@ -24,4 +24,4 @@ class GaussHorizontalSequential : public ppc::core::Task {
   std::vector<double> x;
 };
 
-}
+}  // namespace petrov_o_horizontal_gauss_method_seq
