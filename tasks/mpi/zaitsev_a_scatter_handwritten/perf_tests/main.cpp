@@ -15,7 +15,7 @@ TEST(zaitsev_a_scatter_handwritten, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int sz;
   if (world.rank() == root) {
-    sz = 120;
+    sz = 10e6;
     inp_vector = std::vector<int>(sz, 1);
     inp_vector[0] = extrema;
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(inp_vector.data()));
@@ -24,16 +24,16 @@ TEST(zaitsev_a_scatter_handwritten, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(inp_vector.size());
   }
 
-  auto testMpiTaskParallel =
+  auto task =
       std::make_shared<zaitsev_a_scatter::ScatterTask<int, zaitsev_a_scatter::scatter>>(taskDataPar, root, MPI_INT);
-  if (!testMpiTaskParallel->validation()) {
+  if (!task->validation()) {
     GTEST_SKIP();
     return;
   }
 
-  testMpiTaskParallel->pre_processing();
-  testMpiTaskParallel->run();
-  testMpiTaskParallel->post_processing();
+  task->pre_processing();
+  task->run();
+  task->post_processing();
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -42,7 +42,7 @@ TEST(zaitsev_a_scatter_handwritten, test_pipeline_run) {
 
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(task);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
@@ -59,7 +59,7 @@ TEST(zaitsev_a_scatter_handwritten, test_task_run) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == root) {
-    sz = 120;
+    sz = 10e6;
     inp_vector = std::vector<int>(sz, 1);
     inp_vector[sz / 3] = extrema;
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(inp_vector.data()));
@@ -68,12 +68,12 @@ TEST(zaitsev_a_scatter_handwritten, test_task_run) {
     taskDataPar->outputs_count.emplace_back(inp_vector.size());
   }
 
-  auto testMpiTaskParallel =
+  auto task =
       std::make_shared<zaitsev_a_scatter::ScatterTask<int, zaitsev_a_scatter::scatter>>(taskDataPar, root, MPI_INT);
-  ASSERT_EQ(testMpiTaskParallel->validation(), true);
-  testMpiTaskParallel->pre_processing();
-  testMpiTaskParallel->run();
-  testMpiTaskParallel->post_processing();
+  ASSERT_EQ(task->validation(), true);
+  task->pre_processing();
+  task->run();
+  task->post_processing();
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -82,7 +82,7 @@ TEST(zaitsev_a_scatter_handwritten, test_task_run) {
 
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(task);
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == root) {
     ppc::core::Perf::print_perf_statistic(perfResults);

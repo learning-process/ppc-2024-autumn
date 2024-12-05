@@ -26,6 +26,7 @@ int zaitsev_a_scatter::scatter(const void* sendbuf, int sendcount, MPI_Datatype 
       }
     };
     do_send(0, root);
+    p += sendcount * sendsize;
     do_send(root + 1, commsize);
     memcpy(recvbuf, sendbuf, recvcount * recvsize);
   } else {
