@@ -19,13 +19,11 @@ class SlaeIterationTask : public ppc::core::Task {
  private:
   int input_size_;
   double tolerance_;
-  int max_iter_;
   std::vector<std::vector<double>> A_;
   std::vector<double> b_;
   std::vector<double> x_;
   std::vector<std::vector<double>> B_;
   std::vector<double> g_;
-  double epsilon_;
 
   // Helper functions
   bool isDiagonallyDominant();
