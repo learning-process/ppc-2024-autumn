@@ -83,6 +83,7 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel::va
 bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   int world_size = world.size();
+  int local_res = INT32_MAX;
 
   // Spread the data
   if (world.rank() == 0) {
@@ -96,8 +97,6 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel::ru
   } else {
     world.recv(0, 0, local_input_values);
   }
-
-  int local_res = INT32_MAX;
 
   if (world.rank() != 0) {
     // Operation execution
@@ -142,7 +141,6 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel::ru
       world.send(0, 0, local_res);
     }
   }
-
   return true;
 }
 
@@ -151,5 +149,61 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel::po
   if (world.rank() == 0) {
     reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
   }
+
   return true;
 }
+
+///
+
+bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel::pre_processing() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    input_values.resize(taskData->inputs_count[0]);
+    auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[0]);
+    std::copy(tempPtr, tempPtr + taskData->inputs_count[0], input_values.begin());
+    res = 0;
+  }
+  return true;
+}
+bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel::validation() {
+  internal_order_test();
+  if (world.size() < 0 || world.rank() >= world.size() || (ops != "+" && ops != "-")) {
+    return false;
+  }
+  return true;
+}
+bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel::run() {
+  internal_order_test();
+  myScatter(world, input_values, &res, 0);
+  return true;
+}
+
+bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel::post_processing() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+  }
+  return true;
+}
+
+/*        myScatter(world, input_values, local_input_values.data(), 0);
+
+        // Perform operations based on 'ops'
+        if (world.rank() != 0) {
+            if (ops == "+") {
+                res = std::accumulate(local_input_values.begin(), local_input_values.end(), 0);
+            } else if (ops == "-") {
+                if (!local_input_values.empty()) {
+                    res = local_input_values[0];
+                    for (size_t i = 1; i < local_input_values.size(); ++i) {
+                        res -= local_input_values[i];
+                    }
+                } else {
+                    res = 0;
+                }
+            } else if (ops == "max") {
+                res = *std::max_element(local_input_values.begin(), local_input_values.end());
+            }
+            // Store result in res
+            std::cout << "Process " << world.rank() << " result: " << res << std::endl;
+        }*/
