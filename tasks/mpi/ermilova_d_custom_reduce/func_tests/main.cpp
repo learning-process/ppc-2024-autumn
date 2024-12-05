@@ -112,15 +112,14 @@ TEST(ermilova_d_custom_reduce_mpi, CustomReduce_float_sum) {
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-  float local_value = rank + 1.5f;
+  float local_value = static_cast<float>(rank) + 1.5f;
   float global_result = 0.0f;
 
   ermilova_d_custom_reduce_mpi::CustomReduce(&local_value, &global_result, 1, MPI_FLOAT, MPI_SUM, 0,
                                                   MPI_COMM_WORLD);
 
   if (rank == 0) {
-    float expected_sum = ((size * size + 1) / 2.0f) +
-                         0.5f * size;
+      float expected_sum = ((size * size + 1) / 2.0f) + 0.5f * size;
     ASSERT_FLOAT_EQ(global_result, expected_sum);
   }
 }
@@ -130,7 +129,7 @@ TEST(ermilova_d_custom_reduce_mpi, CustomReduce_float_max) {
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-  float local_value = rank + 1.5f;
+  float local_value = static_cast<float>(rank) + 1.5f;
   float global_result = std::numeric_limits<float>::min();
 
   ermilova_d_custom_reduce_mpi::CustomReduce(&local_value, &global_result, 1, MPI_FLOAT, MPI_MAX, 0, MPI_COMM_WORLD);
@@ -144,7 +143,7 @@ TEST(ermilova_d_custom_reduce_mpi, CustomReduce_float_min) {
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-  float local_value = rank + 1.5f;
+  float local_value = static_cast<float> (rank) + 1.5f;
   float global_result = std::numeric_limits<float>::max();
 
   ermilova_d_custom_reduce_mpi::CustomReduce(&local_value, &global_result, 1, MPI_FLOAT, MPI_MIN, 0, MPI_COMM_WORLD);
@@ -174,7 +173,7 @@ TEST(ermilova_d_custom_reduce_mpi, CustomReduce_double_min) {
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-  double local_value = rank + 1.5;
+  double local_value = static_cast<double>(rank) + 1.5;
   double global_result = std::numeric_limits<double>::max();
 
   ermilova_d_custom_reduce_mpi::CustomReduce(&local_value, &global_result, 1, MPI_DOUBLE, MPI_MIN, 0,
@@ -190,7 +189,7 @@ TEST(ermilova_d_custom_reduce_mpi, CustomReduce_double_max) {
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-  double local_value = rank + 1.5;
+  double local_value = static_cast<double>(rank) + 1.5;
   double global_result = std::numeric_limits<double>::min();
 
   ermilova_d_custom_reduce_mpi::CustomReduce(&local_value, &global_result, 1, MPI_DOUBLE, MPI_MAX, 0,
