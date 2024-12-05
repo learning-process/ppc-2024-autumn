@@ -67,7 +67,8 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel::pr
     // input_values.resize(taskData->inputs_count[0]);
     // auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[0]);
     // std::copy(tempPtr, tempPtr + taskData->inputs_count[0], input_values.begin());
-    input_values.assign(reinterpret_cast<int*>(taskData->inputs[0]), reinterpret_cast<int*>(taskData->inputs[0]) + taskData->inputs_count[0]);
+    input_values.assign(reinterpret_cast<int*>(taskData->inputs[0]),
+                        reinterpret_cast<int*>(taskData->inputs[0]) + taskData->inputs_count[0]);
   }
   res = 0;
   return true;
