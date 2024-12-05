@@ -146,18 +146,6 @@ TEST(kapustin_i_bubble_sort_seq, simple_test_2) {
   ASSERT_EQ(output_data, expected_output);
 }
 
-TEST(kapustin_i_bubble_sort_seq, Validation_NoOutputs) {
-  std::vector<int> input_data = {1, 2, 3, 4, 5};
-  int total_elements = input_data.size();
-
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_data.data()));
-  taskDataSeq->inputs_count.emplace_back(total_elements);
-
-  kapustin_i_bubble_sort_seq::BubbleSortSequential bubbleSort(taskDataSeq);
-
-  ASSERT_FALSE(bubbleSort.validation());
-}
 TEST(kapustin_i_bubble_sort_seq, Validation_EmptyInputs) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 

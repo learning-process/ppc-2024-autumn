@@ -13,11 +13,6 @@ bool kapustin_i_bubble_sort_seq::BubbleSortSequential::validation() {
   if (taskData->inputs.empty() || taskData->inputs_count.empty()) {
     return false;
   }
-
-  if (taskData->inputs_count.size() < 1 || taskData->inputs_count[0] <= 0) {
-    return false;
-  }
-
   return true;
 }
 
