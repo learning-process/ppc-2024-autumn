@@ -1,145 +1,119 @@
 #include "mpi/nasedkin_e_seidels_iterate_methods/include/ops_mpi.hpp"
-
+#include <boost/mpi/collectives.hpp>
+#include <boost/mpi/environment.hpp>
+#include <boost/mpi/communicator.hpp>
+#include <vector>
 #include <cmath>
-#include <iostream>
 
 namespace nasedkin_e_seidels_iterate_methods_mpi {
 
-bool SeidelIterateMethodsMPI::pre_processing() {
-  if (!validation()) {
-    return false;
-  }
-
-  epsilon = 1e-6;
-  max_iterations = 1000;
-
-  x.resize(n, 0.0);
-
-  return taskData->inputs_count.size() <= 1 || taskData->inputs_count[1] != 0;
-}
-
-bool SeidelIterateMethodsMPI::validation() {
-  if (taskData->inputs_count.empty()) {
-    return false;
-  }
-
-  n = taskData->inputs_count[0];
-  if (n <= 0) {
-    return false;
-  }
-
-  A.resize(n, std::vector<double>(n, 0.0));
-  b.resize(n, 0.0);
-
-  bool zero_diagonal_test = false;
-  if (taskData->inputs_count.size() > 1 && taskData->inputs_count[1] == 0) {
-    zero_diagonal_test = true;
-    for (int i = 0; i < n; ++i) {
-      for (int j = 0; j < n; ++j) {
-        A[i][j] = (i != j) ? 1.0 : 0.0;
-      }
-      b[i] = 1.0;
-    }
-  } else {
-    for (int i = 0; i < n; ++i) {
-      for (int j = 0; j < n; ++j) {
-        A[i][j] = (i == j) ? 2.0 : 1.0;
-      }
-      b[i] = n + 1;
-    }
-  }
-
-  for (int i = 0; i < n; ++i) {
-    if (A[i][i] == 0.0 && !zero_diagonal_test) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-bool SeidelIterateMethodsMPI::run() {
-  std::vector<double> x_new(n, 0.0);
-  int iteration = 0;
-
-  while (iteration < max_iterations) {
-    for (int i = 0; i < n; ++i) {
-      x_new[i] = b[i];
-      for (int j = 0; j < n; ++j) {
-        if (i != j) {
-          x_new[i] -= A[i][j] * x[j];
+    bool TestMPITaskSequential::pre_processing() {
+        internal_order_test();
+        coefs = std::vector<double>(taskData->inputs_count[0]);
+        auto* ptr = reinterpret_cast<double*>(taskData->inputs[0]);
+        for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
+            coefs[i] = ptr[i];
         }
-      }
+        b = std::vector<double>(taskData->inputs_count[1]);
+        auto* ptr1 = reinterpret_cast<double*>(taskData->inputs[1]);
+        for (unsigned int i = 0; i < taskData->inputs_count[1]; i++) {
+            b[i] = ptr1[i];
+        }
+        columns = taskData->inputs_count[2];
+        rows = taskData->inputs_count[3];
+        return true;
+    }
 
-      if (std::abs(A[i][i]) < epsilon) {
-        std::cerr << "Error: Division by zero detected in run()" << std::endl;
+    bool TestMPITaskSequential::validation() {
+        internal_order_test();
+        if (taskData->inputs.size() == 2 && taskData->outputs.size() == 1 && taskData->inputs_count.size() == 4 &&
+            taskData->outputs_count.size() == 1) {
+            return (taskData->inputs_count[3] == taskData->inputs_count[2] &&
+                    taskData->inputs_count[2] == taskData->outputs_count[0]) &&
+                   taskData->inputs.size() == 2 && taskData->outputs.size() == 1;
+        }
         return false;
-      }
-
-      x_new[i] /= A[i][i];
     }
 
-    if (converge(x_new)) {
-      x = x_new;
-      return true;
+    bool TestMPITaskSequential::run() {
+        internal_order_test();
+        x = SeidelIterateMethod(coefs, rows, columns, b);
+        return true;
     }
 
-    x = x_new;
-    ++iteration;
-  }
-
-  return iteration < max_iterations;
-}
-
-bool SeidelIterateMethodsMPI::post_processing() { return true; }
-
-bool SeidelIterateMethodsMPI::converge(const std::vector<double>& x_new) {
-  double norm = 0.0;
-  for (int i = 0; i < n; ++i) {
-    norm += (x_new[i] - x[i]) * (x_new[i] - x[i]);
-  }
-  return std::sqrt(norm) < epsilon;
-}
-
-void SeidelIterateMethodsMPI::generate_diagonally_dominant_matrix(int size) {
-  n = size;
-  A.resize(n, std::vector<double>(n));
-  b.resize(n);
-  x.resize(n, 0.0);
-
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_real_distribution<double> dist(1.0, 10.0);
-
-  for (int i = 0; i < n; ++i) {
-    double row_sum = 0.0;
-    for (int j = 0; j < n; ++j) {
-      if (i != j) {
-        A[i][j] = dist(gen);
-        row_sum += std::abs(A[i][j]);
-      }
+    bool TestMPITaskSequential::post_processing() {
+        internal_order_test();
+        for (int i = 0; i < columns; i++) {
+            reinterpret_cast<double*>(taskData->outputs[0])[i] = x[i];
+        }
+        return true;
     }
-    A[i][i] = row_sum + dist(gen);
-    b[i] = dist(gen);
-  }
-}
 
-double SeidelIterateMethodsMPI::calculate_residual_norm() {
-  std::vector<double> Ax_minus_b(n, 0.0);
+    std::vector<double> TestMPITaskParallel::SeidelIterateMethod(const std::vector<double>& matrix, int rows, int cols, const std::vector<double>& vec) {
+        std::vector<double> x(rows, 0);
+        std::vector<double> x_new(rows, 0);
+        double eps = 1e-9;
+        bool converged = false;
 
-  for (int i = 0; i < n; ++i) {
-    double Ax_i = 0.0;
-    for (int j = 0; j < n; ++j) {
-      Ax_i += A[i][j] * x[j];
+        while (!converged) {
+            converged = true;
+            for (int i = 0; i < rows; i++) {
+                double sum = 0;
+                for (int j = 0; j < cols; j++) {
+                    if (i != j) {
+                        sum += matrix[i * cols + j] * x[j];
+                    }
+                }
+                x_new[i] = (vec[i] - sum) / matrix[i * cols + i];
+                if (std::abs(x_new[i] - x[i]) > eps) {
+                    converged = false;
+                }
+            }
+            x = x_new;
+        }
+        return x;
     }
-    Ax_minus_b[i] = Ax_i - b[i];
-  }
 
-  double norm = 0.0;
-  for (double value : Ax_minus_b) {
-    norm += value * value;
-  }
-  return std::sqrt(norm);
-}
+    bool TestMPITaskParallel::pre_processing() {
+        internal_order_test();
+        _coefs = std::vector<double>(taskData->inputs_count[0]);
+        auto* ptr = reinterpret_cast<double*>(taskData->inputs[0]);
+        for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
+            _coefs[i] = ptr[i];
+        }
+        _b = std::vector<double>(taskData->inputs_count[1]);
+        auto* ptr1 = reinterpret_cast<double*>(taskData->inputs[1]);
+        for (unsigned int i = 0; i < taskData->inputs_count[1]; i++) {
+            _b[i] = ptr1[i];
+        }
+        _columns = taskData->inputs_count[2];
+        _rows = taskData->inputs_count[3];
+        return true;
+    }
+
+    bool TestMPITaskParallel::validation() {
+        internal_order_test();
+        if (taskData->inputs.size() == 2 && taskData->outputs.size() == 1 && taskData->inputs_count.size() == 4 &&
+            taskData->outputs_count.size() == 1) {
+            return (taskData->inputs_count[3] == taskData->inputs_count[2] &&
+                    taskData->inputs_count[2] == taskData->outputs_count[0]) &&
+                   taskData->inputs.size() == 2 && taskData->outputs.size() == 1;
+        }
+        return false;
+    }
+
+    bool TestMPITaskParallel::run() {
+        internal_order_test();
+        _x = SeidelIterateMethod(_coefs, _rows, _columns, _b);
+        return true;
+    }
+
+    bool TestMPITaskParallel::post_processing() {
+        internal_order_test();
+        for (int i = 0; i < _columns; i++) {
+            reinterpret_cast<double*>(taskData->outputs[0])[i] = _x[i];
+        }
+        return true;
+    }
 
 }  // namespace nasedkin_e_seidels_iterate_methods_mpi
