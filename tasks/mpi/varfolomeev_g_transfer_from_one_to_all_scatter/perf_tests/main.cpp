@@ -44,7 +44,7 @@ TEST(mpi_varfolomeev_g_transfer_from_one_to_all_scatter_perf_test, test_pipeline
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(1, 1);
+    ASSERT_EQ(count_size_vector, global_sum[0]);
   }
 }
 
@@ -85,6 +85,6 @@ TEST(mpi_varfolomeev_g_transfer_from_one_to_all_scatter_perf_test, test_task_run
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(1, 1);
+    ASSERT_EQ(count_size_vector, global_sum[0]);
   }
 }
