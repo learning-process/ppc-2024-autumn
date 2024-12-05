@@ -13,7 +13,6 @@
 
 #include "mpi/vladimirova_j_gather/include/ops_mpi.hpp"
 
-using namespace std::chrono_literals;
 using namespace vladimirova_j_gather_mpi;
 
 bool vladimirova_j_not_my_gather_mpi::TestMPITaskParallel::pre_processing() {

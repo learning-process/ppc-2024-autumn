@@ -11,7 +11,7 @@
 using namespace vladimirova_j_gather_mpi;
 using namespace vladimirova_j_not_my_gather_mpi;
 
-std::vector<int> getRandomVector(int sz) {
+std::vector<int> getRandomVal(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
@@ -164,8 +164,8 @@ TEST(Parallel_Operations_MPI, vladimirova_j_random_test) {
 
   int noDEnd = 0;
   for (int j = 0; j < 10; j++) {
-    some_dead_end = getRandomVector(5);
-    tmp = getRandomVector(15);
+    some_dead_end = getRandomVal(5);
+    tmp = getRandomVal(15);
     noDEnd += 15;
     global_vector.insert(global_vector.end(), tmp.begin(), tmp.end());
     global_vector.insert(global_vector.end(), some_dead_end.begin(), some_dead_end.end());
@@ -342,8 +342,8 @@ TEST(Parallel_Operations_MPI, vladimirova_j_not_my_gather_random_test) {
 
   int noDEnd = 0;
   for (int j = 0; j < 10; j++) {
-    some_dead_end = getRandomVector(5);
-    tmp = getRandomVector(15);
+    some_dead_end = getRandomVal(5);
+    tmp = getRandomVal(15);
     noDEnd += 15;
     global_vector.insert(global_vector.end(), tmp.begin(), tmp.end());
     global_vector.insert(global_vector.end(), some_dead_end.begin(), some_dead_end.end());
@@ -463,8 +463,8 @@ TEST(Sequential_Operations_MPI, vladimirova_j_random_test) {
 
   int noDEnd = 0;
   for (int j = 0; j < 10; j++) {
-    some_dead_end = getRandomVector(5);
-    tmp = getRandomVector(15);
+    some_dead_end = getRandomVal(5);
+    tmp = getRandomVal(15);
     noDEnd += 15;
     global_vector.insert(global_vector.end(), tmp.begin(), tmp.end());
     global_vector.insert(global_vector.end(), some_dead_end.begin(), some_dead_end.end());

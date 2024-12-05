@@ -8,7 +8,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
 
 std::vector<int> vladimirova_j_gather_mpi::noDeadEnds(std::vector<int> way) {
   int i = 0;
