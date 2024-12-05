@@ -7,8 +7,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
 std::vector<int> kalinin_d_matrix_mult_hor_a_vert_b_mpi::getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());

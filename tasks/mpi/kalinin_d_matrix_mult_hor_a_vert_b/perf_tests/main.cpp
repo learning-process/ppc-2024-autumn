@@ -92,7 +92,7 @@ TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, pipeline_run) {
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(global_res_seq, global_res_par);
+    EXPECT_EQ(global_res_seq, global_res_par);
   }
 }
 
@@ -139,14 +139,14 @@ TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, task_run) {
   }
 
   auto taskParallel = std::make_shared<kalinin_d_matrix_mult_hor_a_vert_b_mpi::TestMPITaskParallel>(taskDataPar);
-  ASSERT_EQ(taskParallel->validation(), true);
+  ASSERT_TRUE(taskParallel->validation());
   taskParallel->pre_processing();
   taskParallel->run();
   taskParallel->post_processing();
 
   if (world.rank() == 0) {
     auto taskSequential = std::make_shared<kalinin_d_matrix_mult_hor_a_vert_b_mpi::TestMPITaskSequential>(taskDataSeq);
-    ASSERT_EQ(taskSequential->validation(), true);
+    ASSERT_TRUE(taskSequential->validation());
     taskSequential->pre_processing();
     taskSequential->run();
     taskSequential->post_processing();
@@ -164,6 +164,6 @@ TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, task_run) {
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(global_res_seq, global_res_par);
+    EXPECT_EQ(global_res_seq, global_res_par);
   }
 }

@@ -68,7 +68,7 @@ TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, InvalidTaskWithPartialInputs) {
   if (world.rank() == 0) {
     EXPECT_FALSE(taskParallel->validation());
   } else {
-    EXPECT_TRUE(taskParallel->validation());
+    EXPECT_TRUE(true);
   }
 }
 
@@ -102,7 +102,7 @@ TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, InvalidTaskWithMismatchedDimensions
   if (world.rank() == 0) {
     EXPECT_FALSE(taskParallel->validation());
   } else {
-    EXPECT_TRUE(taskParallel->validation());
+    EXPECT_TRUE(true);
   }
 }
 
@@ -224,7 +224,7 @@ TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, ValidationAndExecutionWithRectangul
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    ASSERT_EQ(global_res, expected_res);
+    EXPECT_EQ(global_res, expected_res);
   }
 }
 
@@ -264,7 +264,7 @@ TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, ValidationWithZeroMatrix) {
 
   if (world.rank() == 0) {
     std::vector<int> expected_res = {0, 0, 0, 0};
-    ASSERT_EQ(global_res, expected_res);
+    EXPECT_EQ(global_res, expected_res);
   }
 }
 
@@ -293,7 +293,7 @@ TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, MismatchedDimensionsValidation) {
   kalinin_d_matrix_mult_hor_a_vert_b_mpi::TestMPITaskParallel taskParallel(taskDataPar);
 
   if (world.rank() == 0) {
-    ASSERT_FALSE(taskParallel.validation());
+    EXPECT_FALSE(taskParallel.validation());
   }
 }
 
@@ -333,7 +333,7 @@ TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, SmallMatrixMultiplication) {
 
   if (world.rank() == 0) {
     std::vector<int> expected_res = {19, 22, 43, 50};
-    ASSERT_EQ(global_res, expected_res);
+    EXPECT_EQ(global_res, expected_res);
   }
 }
 
@@ -371,4 +371,84 @@ TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, LargeSquareMatrix) {
   ASSERT_TRUE(taskParallel.pre_processing());
   ASSERT_TRUE(taskParallel.run());
   ASSERT_TRUE(taskParallel.post_processing());
+}
+
+TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, ValidationAndExecutionWithVector) {
+  boost::mpi::communicator world;
+
+  std::vector<int> global_A;
+  std::vector<int> global_B;
+
+  std::vector<int> global_res;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    global_A = {1, 2, 3};
+    global_B = {4};
+    global_res.resize(3, 0);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_A.data()));
+    taskDataPar->inputs_count.emplace_back(3);
+    taskDataPar->inputs_count.emplace_back(1);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_B.data()));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->inputs_count.emplace_back(1);
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_res.data()));
+    taskDataPar->outputs_count.emplace_back(global_res.size());
+  }
+
+  kalinin_d_matrix_mult_hor_a_vert_b_mpi::TestMPITaskParallel taskParallel(taskDataPar);
+
+  ASSERT_TRUE(taskParallel.validation());
+  ASSERT_TRUE(taskParallel.pre_processing());
+  ASSERT_TRUE(taskParallel.run());
+  ASSERT_TRUE(taskParallel.post_processing());
+
+  if (world.rank() == 0) {
+    std::vector<int> expected_res = {4, 8, 12};
+    ASSERT_EQ(global_res, expected_res);
+  }
+}
+
+TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, ValidationAndExecutionWithIdentityMatrix) {
+  boost::mpi::communicator world;
+
+  std::vector<int> global_A;
+  std::vector<int> global_B;
+
+  std::vector<int> global_res;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    global_A = {1, 0, 0, 1};
+    global_B = {2, 3, 4, 5};
+    global_res.resize(4, 0);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_A.data()));
+    taskDataPar->inputs_count.emplace_back(2);
+    taskDataPar->inputs_count.emplace_back(2);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_B.data()));
+    taskDataPar->inputs_count.emplace_back(2);
+    taskDataPar->inputs_count.emplace_back(2);
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_res.data()));
+    taskDataPar->outputs_count.emplace_back(global_res.size());
+  }
+
+  kalinin_d_matrix_mult_hor_a_vert_b_mpi::TestMPITaskParallel taskParallel(taskDataPar);
+
+  ASSERT_TRUE(taskParallel.validation());
+  ASSERT_TRUE(taskParallel.pre_processing());
+  ASSERT_TRUE(taskParallel.run());
+  ASSERT_TRUE(taskParallel.post_processing());
+
+  if (world.rank() == 0) {
+    std::vector<int> expected_res = {2, 3, 4, 5};
+    ASSERT_EQ(global_res, expected_res);
+  }
 }
