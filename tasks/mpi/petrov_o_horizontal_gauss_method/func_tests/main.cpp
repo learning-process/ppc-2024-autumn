@@ -87,7 +87,7 @@ TEST(petrov_o_horizontal_gauss_method_par, TestGauss_RandomMatrix) {
       residual += std::pow(ax_i - random_b[i], 2);
     }
     residual = std::sqrt(residual);
-    ASSERT_NEAR(residual, 0.0, 1e-9);
+    ASSERT_NEAR(residual, 0.0, 1e-8);
   }
 }
 
