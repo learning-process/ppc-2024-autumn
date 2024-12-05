@@ -8,7 +8,7 @@
 
 namespace chistov_a_convex_hull_image_seq_test {
 
-std::vector<int> generateImage(const int width, const int height) {
+std::vector<int> generateImage(int width, int height) {
   if (width <= 0 || height <= 0) {
     return {};
   }
@@ -27,7 +27,7 @@ std::vector<int> generateImage(const int width, const int height) {
   return image;
 }
 
-void printImage(const std::vector<int>& image, const int width, const int height) {
+void printImage(const std::vector<int>& image, int width, int height) {
   if (image.empty() || width <= 0 || height <= 0) return;
 
   for (int y = 0; y < height; ++y) {
@@ -42,7 +42,7 @@ void printImage(const std::vector<int>& image, const int width, const int height
 
 namespace chistov_a_convex_hull_image_seq {
 
-std::vector<int> setPoints(const std::vector<Point>& points, const int width, const int height) {
+std::vector<int> setPoints(const std::vector<Point>& points, int width, int height) {
   std::vector<int> image(width * height, 0);
   if (points.size() < 2) return image;
 
@@ -83,7 +83,7 @@ int cross(const Point& p1, const Point& p2, const Point& p3) {
   return (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
 }
 
-void labelingFirstPass(std::vector<int>& labeled_image, const int width, const int height) {
+void labelingFirstPass(std::vector<int>& labeled_image, int width, int height) {
   int mark = 2;
 
   for (int i = 0; i < height; ++i) {
@@ -103,7 +103,7 @@ void labelingFirstPass(std::vector<int>& labeled_image, const int width, const i
   }
 }
 
-void labelingSecondPass(std::vector<int>& labeled_image, const int width, const int height) {
+void labelingSecondPass(std::vector<int>& labeled_image, int width, int height) {
   for (int i = height - 1; i >= 0; --i) {
     for (int j = width - 1; j >= 0; --j) {
       int current = labeled_image[i * width + j];
@@ -117,8 +117,7 @@ void labelingSecondPass(std::vector<int>& labeled_image, const int width, const 
   }
 }
 
-std::vector<std::vector<Point>> processLabeledImage(const std::vector<int>& labeled_image, const int width,
-                                                    const int height) {
+std::vector<std::vector<Point>> processLabeledImage(const std::vector<int>& labeled_image, int width, int height) {
   std::vector<int> component_indices;
   std::vector<std::vector<Point>> components;
 
@@ -140,7 +139,7 @@ std::vector<std::vector<Point>> processLabeledImage(const std::vector<int>& labe
   return components;
 }
 
-std::vector<std::vector<Point>> labeling(const std::vector<int>& image, const int width, const int height) {
+std::vector<std::vector<Point>> labeling(const std::vector<int>& image, int width, int height) {
   std::vector<int> labeled_image(width * height);
 
   std::copy(image.begin(), image.end(), labeled_image.begin());
@@ -190,11 +189,8 @@ bool ConvexHullSEQ::validation() {
   image.resize(taskData->inputs_count[0]);
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
   std::memcpy(image.data(), tmp_ptr, taskData->inputs_count[0] * sizeof(int));
-  if (!std::all_of(image.begin(), image.end(), [](int pixel) { return pixel == 0 || pixel == 1; })) {
-    return false;
-  }
 
-  return true;
+  return std::all_of(image.begin(), image.end(), [](int pixel) { return pixel == 0 || pixel == 1; });
 }
 
 bool ConvexHullSEQ::pre_processing() {

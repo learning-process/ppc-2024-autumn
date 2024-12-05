@@ -13,8 +13,8 @@
 #include "core/task/include/task.hpp"
 
 namespace chistov_a_convex_hull_image_mpi_test {
-std::vector<int> generateImage(const int width, const int height);
-void printImage(const std::vector<int>& image, const int width, const int height);
+std::vector<int> generateImage(int width, int height);
+void printImage(const std::vector<int>& image, int width, int height);
 }  // namespace chistov_a_convex_hull_image_mpi_test
 
 namespace chistov_a_convex_hull_image_mpi {
@@ -22,15 +22,6 @@ namespace chistov_a_convex_hull_image_mpi {
 struct Point {
   int x, y;
 };
-
-void labelingFirstPass(std::vector<int>& labeled_image, const int width, const int height);
-void labelingSecondPass(std::vector<int>& labeled_image, const int width, const int height);
-std::vector<std::vector<Point>> processLabeledImage(const std::vector<int>& labeled_image, const int width,
-                                                    const int height);
-std::vector<Point> graham(const std::vector<Point> points, const int width, const int height);
-std::vector<std::vector<Point>> labeling(const std::vector<int>& image, const int width, const int height);
-int cross(const Point& p1, const Point& p2, const Point& p3);
-std::vector<int> setPoints(const std::vector<Point>& points, const int width, const int height);
 
 class ConvexHullSEQ : public ppc::core::Task {
  public:
