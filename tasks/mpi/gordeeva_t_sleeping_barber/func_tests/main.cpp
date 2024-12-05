@@ -5,7 +5,7 @@
 #include <boost/mpi/environment.hpp>
 #include <vector>
 
-#include "mpi/gordeeva_sleeping_barber_test/include/ops_mpi.hpp"
+#include "mpi/gordeeva_t_sleeping_barber/include/ops_mpi.hpp"
 
 TEST(gordeeva_t_sleeping_barber_mpi, Test_Validation1) {
   boost::mpi::communicator world;
