@@ -149,57 +149,48 @@ void ermilova_d_custom_reduce_mpi::CustomReduce(const void* sendbuf, void* recvb
         std::vector<char> buffer(count * type_size);
         MPI_Recv(buffer.data(), count, datatype, rank + step, 0, comm, MPI_STATUS_IGNORE);
         for (int i = 0; i < count; i++) {
-          switch (datatype) {
-            case MPI_INT: {
-              int* recv = reinterpret_cast<int*>(recvbuf);
-              int* buf = reinterpret_cast<int*>(buffer.data());
-              if (op == MPI_SUM) {
-                recv[i] += buf[i];
-              } else if (op == MPI_MIN) {
-                recv[i] = std::min(recv[i], buf[i]);
-              } else if (op == MPI_MAX) {
-                recv[i] = std::max(recv[i], buf[i]);
-              } else {
-                throw std::runtime_error("Unsupported MPI_Op in CustomReduce");
-              }
-              break;
+          if (datatype == MPI_INT) {
+            int* recv = reinterpret_cast<int*>(recvbuf);
+            int* buf = reinterpret_cast<int*>(buffer.data());
+            if (op == MPI_SUM) {
+              recv[i] += buf[i];
+            } else if (op == MPI_MIN) {
+              recv[i] = std::min(recv[i], buf[i]);
+            } else if (op == MPI_MAX) {
+              recv[i] = std::max(recv[i], buf[i]);
+            } else {
+              throw std::runtime_error("Unsupported MPI_Op in CustomReduce");
             }
-            case MPI_FLOAT: {
-              float* recv = reinterpret_cast<float*>(recvbuf);
-              float* buf = reinterpret_cast<float*>(buffer.data());
-              if (op == MPI_SUM) {
-                recv[i] += buf[i];
-              } else if (op == MPI_MIN) {
-                recv[i] = std::min(recv[i], buf[i]);
-              } else if (op == MPI_MAX) {
-                recv[i] = std::max(recv[i], buf[i]);
-              } else {
-                throw std::runtime_error("Unsupported MPI_Op in CustomReduce");
-              }
-              break;
+          } else if (datatype == MPI_FLOAT) {
+            float* recv = reinterpret_cast<float*>(recvbuf);
+            float* buf = reinterpret_cast<float*>(buffer.data());
+            if (op == MPI_SUM) {
+              recv[i] += buf[i];
+            } else if (op == MPI_MIN) {
+              recv[i] = std::min(recv[i], buf[i]);
+            } else if (op == MPI_MAX) {
+              recv[i] = std::max(recv[i], buf[i]);
+            } else {
+              throw std::runtime_error("Unsupported MPI_Op in CustomReduce");
             }
-            case MPI_DOUBLE: {
-              double* recv = reinterpret_cast<double*>(recvbuf);
-              double* buf = reinterpret_cast<double*>(buffer.data());
-              if (op == MPI_SUM) {
-                recv[i] += buf[i];
-              } else if (op == MPI_MIN) {
-                recv[i] = std::min(recv[i], buf[i]);
-              } else if (op == MPI_MAX) {
-                recv[i] = std::max(recv[i], buf[i]);
-              } else {
-                throw std::runtime_error("Unsupported MPI_Op in CustomReduce");
-              }
-              break;
+          } else if (datatype == MPI_DOUBLE) {
+            double* recv = reinterpret_cast<double*>(recvbuf);
+            double* buf = reinterpret_cast<double*>(buffer.data());
+            if (op == MPI_SUM) {
+              recv[i] += buf[i];
+            } else if (op == MPI_MIN) {
+              recv[i] = std::min(recv[i], buf[i]);
+            } else if (op == MPI_MAX) {
+              recv[i] = std::max(recv[i], buf[i]);
+            } else {
+              throw std::runtime_error("Unsupported MPI_Op in CustomReduce");
             }
-            default:
-              throw std::runtime_error("Unsupported MPI_Datatype in CustomReduce");
           }
         }
-      } else if (rank % step == 0) {
-        MPI_Send(recvbuf, count, datatype, rank - step, 0, comm);
       }
-      step *= 2;
+    } else if (rank % step == 0) {
+      MPI_Send(recvbuf, count, datatype, rank - step, 0, comm);
     }
+    step *= 2;
   }
 }

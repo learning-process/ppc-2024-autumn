@@ -138,7 +138,6 @@ TEST(ermilova_d_reduceMPI_mpi, Matrix_10x10) {
     taskDataPar->inputs_count.emplace_back(cols_test);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_min.data()));
     taskDataPar->outputs_count.emplace_back(global_min.size());
-
   }
 
   ermilova_d_reduceMPI_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
