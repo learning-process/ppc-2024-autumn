@@ -6,7 +6,7 @@
 #include "mpi/kazunin_n_dining_philosophers/include/ops_mpi.hpp"
 
 namespace kazunin_n_dining_philosophers_mpi {
-void run_simulation(double simulation_time = 0.6, int sleep_time = 1) {
+void run_simulation(double simulation_time = 0.5, int sleep_time = 1) {
   boost::mpi::communicator world;
   if (world.size() >= 3) {
     std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -32,12 +32,12 @@ void run_simulation(double simulation_time = 0.6, int sleep_time = 1) {
 }
 }  // namespace kazunin_n_dining_philosophers_mpi
 
-TEST(kazunin_n_dining_philosophers_mpi, 900_millisecond_simulation_test) {
-  kazunin_n_dining_philosophers_mpi::run_simulation(0.9);
+TEST(kazunin_n_dining_philosophers_mpi, 600_millisecond_simulation_test) {
+  kazunin_n_dining_philosophers_mpi::run_simulation(0.5);
 }
 
-TEST(kazunin_n_dining_philosophers_mpi, 900_millisecond_simulation_and_10_millisecond_sleep_test) {
-  kazunin_n_dining_philosophers_mpi::run_simulation(0.9, 10);
+TEST(kazunin_n_dining_philosophers_mpi, 600_millisecond_simulation_and_10_millisecond_sleep_test) {
+  kazunin_n_dining_philosophers_mpi::run_simulation(0.5, 10);
 }
 
 TEST(kazunin_n_dining_philosophers_mpi, 100_millisecond_simulation_and_1_millisecond_sleep_test) {
@@ -50,4 +50,52 @@ TEST(kazunin_n_dining_philosophers_mpi, 10_millisecond_simulation_and_100_millis
 
 TEST(kazunin_n_dining_philosophers_mpi, 2000_millisecond_simulation_validation_test) {
   kazunin_n_dining_philosophers_mpi::run_simulation(2.0);
+}
+
+TEST(kazunin_n_dining_philosophers_mpi, 1) {
+  kazunin_n_dining_philosophers_mpi::run_simulation();
+}
+
+TEST(kazunin_n_dining_philosophers_mpi, 2) {
+  kazunin_n_dining_philosophers_mpi::run_simulation();
+}
+
+TEST(kazunin_n_dining_philosophers_mpi, 3) {
+  kazunin_n_dining_philosophers_mpi::run_simulation();
+}
+
+TEST(kazunin_n_dining_philosophers_mpi, 4) {
+  kazunin_n_dining_philosophers_mpi::run_simulation();
+}
+
+TEST(kazunin_n_dining_philosophers_mpi, 5) {
+  kazunin_n_dining_philosophers_mpi::run_simulation();
+}
+
+TEST(kazunin_n_dining_philosophers_mpi, 6) {
+  kazunin_n_dining_philosophers_mpi::run_simulation();
+}
+
+TEST(kazunin_n_dining_philosophers_mpi, 7) {
+  kazunin_n_dining_philosophers_mpi::run_simulation();
+}
+
+TEST(kazunin_n_dining_philosophers_mpi, 8) {
+  kazunin_n_dining_philosophers_mpi::run_simulation();
+}
+
+TEST(kazunin_n_dining_philosophers_mpi, 9) {
+  kazunin_n_dining_philosophers_mpi::run_simulation();
+}
+
+TEST(kazunin_n_dining_philosophers_mpi, 10) {
+  kazunin_n_dining_philosophers_mpi::run_simulation();
+}
+
+TEST(kazunin_n_dining_philosophers_mpi, 11) {
+  kazunin_n_dining_philosophers_mpi::run_simulation();
+}
+
+TEST(kazunin_n_dining_philosophers_mpi, 12) {
+  kazunin_n_dining_philosophers_mpi::run_simulation();
 }

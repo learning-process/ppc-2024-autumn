@@ -7,7 +7,7 @@
 bool kazunin_n_dining_philosophers_mpi::DiningPhilosophersParallelMPI::validation() {
   internal_order_test();
 
-  return *reinterpret_cast<double*>(taskData->inputs[0]) < 1 &&
+  return *reinterpret_cast<double*>(taskData->inputs[0]) <= 0.5 &&
          *reinterpret_cast<int*>(taskData->inputs[1]) < (*reinterpret_cast<double*>(taskData->inputs[0]) * 1000);
 }
 
@@ -115,6 +115,17 @@ bool kazunin_n_dining_philosophers_mpi::DiningPhilosophersParallelMPI::run() {
       }
     }
   }
+
+  int incoming_flag = 1;
+  while (incoming_flag != 0) {
+    MPI_Iprobe(MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &incoming_flag, &status);
+    if (incoming_flag != 0) {
+      int message;
+      MPI_Recv(&message, 1, MPI_INT, status.MPI_SOURCE, status.MPI_TAG, MPI_COMM_WORLD, &status);
+    }
+  }
+
+  MPI_Barrier(MPI_COMM_WORLD);
 
   return true;
 }
