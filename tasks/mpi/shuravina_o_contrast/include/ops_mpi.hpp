@@ -17,7 +17,7 @@ class ContrastTaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<uint8_t> input_, local_input_, output_;
+  std::vector<uint8_t> input_, output_;
   uint8_t min_val_, max_val_;
   boost::mpi::communicator world;
 };
