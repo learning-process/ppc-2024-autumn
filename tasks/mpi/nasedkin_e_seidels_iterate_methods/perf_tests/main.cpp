@@ -36,7 +36,6 @@ TEST(MPISeidelPerf, test_pipeline_run) {
     res[1] = 1;
     std::vector<double> expres_par(rows);
 
-    // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
     if (world.rank() == 0) {
         taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
@@ -55,16 +54,13 @@ TEST(MPISeidelPerf, test_pipeline_run) {
     testMpiTaskParallel->run();
     testMpiTaskParallel->post_processing();
 
-    // Create Perf attributes
     auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
     perfAttr->num_running = 10;
     const boost::mpi::timer current_timer;
     perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-    // Create and init perf results
     auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-    // Create Perf analyzer
     auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
     perfAnalyzer->pipeline_run(perfAttr, perfResults);
     if (world.rank() == 0) {
@@ -85,7 +81,6 @@ TEST(MPISeidelPerf, test_task_run) {
     res[1] = 1;
     std::vector<double> expres_par(rows);
 
-    // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
     if (world.rank() == 0) {
         taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
@@ -104,16 +99,13 @@ TEST(MPISeidelPerf, test_task_run) {
     testMpiTaskParallel->run();
     testMpiTaskParallel->post_processing();
 
-    // Create Perf attributes
     auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
     perfAttr->num_running = 10;
     const boost::mpi::timer current_timer;
     perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-    // Create and init perf results
     auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-    // Create Perf analyzer
     auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
     perfAnalyzer->task_run(perfAttr, perfResults);
     if (world.rank() == 0) {

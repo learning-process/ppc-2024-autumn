@@ -116,7 +116,6 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
 
     bool nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskSequential::validation() {
         internal_order_test();
-        // Check count elements of output
         if (taskData->inputs.size() == 2 && taskData->outputs.size() == 1 && taskData->inputs_count.size() == 4 &&
             taskData->outputs_count.size() == 1) {
             return (taskData->inputs_count[3] == taskData->inputs_count[2] &&
@@ -147,9 +146,7 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
             _columns = taskData->inputs_count[2];
         }
 
-        // fbd nt ncssr dlt
         if (world.rank() == 0) {
-            // Init vectors
             _coefs = std::vector<double>(taskData->inputs_count[0]);
             auto* tmp_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
             for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {

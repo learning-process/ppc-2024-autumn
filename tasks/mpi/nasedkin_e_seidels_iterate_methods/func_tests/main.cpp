@@ -32,7 +32,6 @@ TEST(MPISeidel, ZeroDiagonalTest) {
     std::vector<double> b = {1, 1, 1};
     std::vector<double> expres_par(rows);
 
-    // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
     if (world.rank() == 0) {
@@ -58,7 +57,6 @@ TEST(MPISeidel, RandomMatrixTest) {
     std::vector<double> b = nasedkin_e_seidels_iterate_methods_mpi::getRandomVector<double>(rows);
     std::vector<double> expres_par(rows);
 
-    // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
     if (world.rank() == 0) {
@@ -104,7 +102,6 @@ TEST(MPISeidel, IdentityMatrixTest) {
     std::vector<double> res_par(rows, 1);
     std::vector<double> expres_par(rows);
 
-    // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
     if (world.rank() == 0) {
@@ -140,7 +137,6 @@ TEST(MPISeidel, LargeMatrixTest) {
     res_par[1] = 1;
     std::vector<double> expres_par(rows);
 
-    // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
     if (world.rank() == 0) {
@@ -174,7 +170,6 @@ TEST(MPISeidel, EmptyMatrixTest) {
     std::vector<double> expres_par(rows, 0);
     std::vector<double> res_par = {};
 
-    // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
     if (world.rank() == 0) {
