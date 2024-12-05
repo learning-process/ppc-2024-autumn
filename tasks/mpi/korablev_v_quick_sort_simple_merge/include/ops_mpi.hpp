@@ -12,7 +12,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace korablev_v_qucik_sort_simple_merge_mpi {
+namespace korablev_v_quick_sort_simple_merge_mpi {
 
 class QuickSortSimpleMergeSequential : public ppc::core::Task {
  public:
@@ -46,4 +46,4 @@ class QuickSortSimpleMergeParallel : public ppc::core::Task {
 inline std::vector<int> merge(const std::vector<int>& left, const std::vector<int>& right);
 inline std::vector<int> quick_sort_with_merge(const std::span<int>& arr);
 
-}  // namespace korablev_v_qucik_sort_simple_merge_mpi
+}  // namespace korablev_v_quick_sort_simple_merge_mpi

@@ -9,7 +9,7 @@
 
 #include "boost/mpi/collectives/broadcast.hpp"
 
-std::vector<int> korablev_v_qucik_sort_simple_merge_mpi::merge(const std::vector<int>& left,
+std::vector<int> korablev_v_quick_sort_simple_merge_mpi::merge(const std::vector<int>& left,
                                                                const std::vector<int>& right) {
   std::vector<int> result;
   result.reserve(left.size() + right.size());
@@ -31,7 +31,7 @@ std::vector<int> korablev_v_qucik_sort_simple_merge_mpi::merge(const std::vector
   return result;
 }
 
-std::vector<int> korablev_v_qucik_sort_simple_merge_mpi::quick_sort_with_merge(const std::span<int>& arr) {
+std::vector<int> korablev_v_quick_sort_simple_merge_mpi::quick_sort_with_merge(const std::span<int>& arr) {
   if (arr.size() <= 1) {
     std::vector<int> res;
     res.assign(arr.begin(), arr.end());
@@ -60,7 +60,7 @@ std::vector<int> korablev_v_qucik_sort_simple_merge_mpi::quick_sort_with_merge(c
   return merge(merged, sortedRight);
 }
 
-bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeParallel::pre_processing() {
+bool korablev_v_quick_sort_simple_merge_mpi::QuickSortSimpleMergeParallel::pre_processing() {
   internal_order_test();
 
   if (world.rank() == 0) {
@@ -73,7 +73,7 @@ bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeParallel::pre_p
   return true;
 }
 
-bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeParallel::validation() {
+bool korablev_v_quick_sort_simple_merge_mpi::QuickSortSimpleMergeParallel::validation() {
   internal_order_test();
 
   if (world.rank() == 0) {
@@ -94,7 +94,7 @@ bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeParallel::valid
   return true;
 }
 
-bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeParallel::run() {
+bool korablev_v_quick_sort_simple_merge_mpi::QuickSortSimpleMergeParallel::run() {
   internal_order_test();
 
   boost::mpi::broadcast(world, input_, 0);
@@ -136,7 +136,7 @@ bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeParallel::run()
   return true;
 }
 
-bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeParallel::post_processing() {
+bool korablev_v_quick_sort_simple_merge_mpi::QuickSortSimpleMergeParallel::post_processing() {
   internal_order_test();
 
   if (world.rank() == 0) {
@@ -148,7 +148,7 @@ bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeParallel::post_
   return true;
 }
 
-bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::pre_processing() {
+bool korablev_v_quick_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::pre_processing() {
   internal_order_test();
 
   size_t n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
@@ -159,13 +159,13 @@ bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::pre
   return true;
 }
 
-bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::validation() {
+bool korablev_v_quick_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::validation() {
   internal_order_test();
 
   return true;
 }
 
-bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::run() {
+bool korablev_v_quick_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::run() {
   internal_order_test();
 
   output_ = quick_sort_with_merge(input_);
@@ -173,7 +173,7 @@ bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::run
   return true;
 }
 
-bool korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::post_processing() {
+bool korablev_v_quick_sort_simple_merge_mpi::QuickSortSimpleMergeSequential::post_processing() {
   internal_order_test();
   for (size_t i = 0; i < output_.size(); ++i) {
     reinterpret_cast<int*>(taskData->outputs[0])[i] = output_[i];

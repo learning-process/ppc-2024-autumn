@@ -9,7 +9,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/korablev_v_quick_sort_simple_merge/include/ops_mpi.hpp"
 
-namespace korablev_v_qucik_sort_simple_merge_mpi {
+namespace korablev_v_quick_sort_simple_merge_mpi {
 std::vector<int> generate_random_vector(size_t n, int min_val = -1000, int max_val = 1000) {
   std::vector<int> vec(n);
   std::random_device rd;
@@ -21,13 +21,13 @@ std::vector<int> generate_random_vector(size_t n, int min_val = -1000, int max_v
   std::sort(vec.begin(), vec.end(), std::greater<>());
   return vec;
 }
-}  // namespace korablev_v_qucik_sort_simple_merge_mpi
+}  // namespace korablev_v_quick_sort_simple_merge_mpi
 
 TEST(korablev_v_quick_sort_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
 
   const size_t vector_size = 10000;
-  auto random_vector = korablev_v_qucik_sort_simple_merge_mpi::generate_random_vector(vector_size);
+  auto random_vector = korablev_v_quick_sort_simple_merge_mpi::generate_random_vector(vector_size);
 
   std::vector<size_t> in_size(1, vector_size);
   std::vector<int> out(vector_size, 0.0);
@@ -43,7 +43,7 @@ TEST(korablev_v_quick_sort_mpi, test_pipeline_run) {
   }
 
   auto parallelSort =
-      std::make_shared<korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeParallel>(taskDataPar);
+      std::make_shared<korablev_v_quick_sort_simple_merge_mpi::QuickSortSimpleMergeParallel>(taskDataPar);
   ASSERT_EQ(parallelSort->validation(), true);
   parallelSort->pre_processing();
   parallelSort->run();
@@ -68,7 +68,7 @@ TEST(korablev_v_quick_sort_mpi, test_task_run) {
   boost::mpi::communicator world;
 
   const size_t vector_size = 10000;
-  auto random_vector = korablev_v_qucik_sort_simple_merge_mpi::generate_random_vector(vector_size);
+  auto random_vector = korablev_v_quick_sort_simple_merge_mpi::generate_random_vector(vector_size);
 
   std::vector<size_t> in_size(1, vector_size);
   std::vector<int> out(vector_size, 0.0);
@@ -84,7 +84,7 @@ TEST(korablev_v_quick_sort_mpi, test_task_run) {
   }
 
   auto parallelSort =
-      std::make_shared<korablev_v_qucik_sort_simple_merge_mpi::QuickSortSimpleMergeParallel>(taskDataPar);
+      std::make_shared<korablev_v_quick_sort_simple_merge_mpi::QuickSortSimpleMergeParallel>(taskDataPar);
   ASSERT_EQ(parallelSort->validation(), true);
   parallelSort->pre_processing();
   parallelSort->run();
