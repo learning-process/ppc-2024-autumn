@@ -4,14 +4,15 @@
 
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <cstdint>
 
 #include "core/task/include/task.hpp"
 
 namespace kazunin_n_dining_philosophers_mpi {
 
-enum State { THINKING, HUNGRY, EATING };
+enum State : std::uint8_t { THINKING, HUNGRY, EATING };
 
-enum MessageTag { REQUEST_FORK, FORK_AVAILABLE };
+enum MessageTag : std::uint8_t { REQUEST_FORK, FORK_AVAILABLE };
 
 class DiningPhilosophersParallelMPI : public ppc::core::Task {
  public:
@@ -22,6 +23,21 @@ class DiningPhilosophersParallelMPI : public ppc::core::Task {
   bool post_processing() override;
 
  private:
+  int rank;
+  int size;
+  int leftNeighbor;
+  int rightNeighbor;
+  bool hasLeftFork;
+  bool hasRightFork;
+  bool leftForkAvailable;
+  bool rightForkAvailable;
+  double SIMULATION_TIME;
+  double SLEEP_TIME;
+  State state;
+  MPI_Status status;
+  int thinkTime;
+  int eatTime;
+  int timeCounter;
   boost::mpi::communicator world;
 };
 
