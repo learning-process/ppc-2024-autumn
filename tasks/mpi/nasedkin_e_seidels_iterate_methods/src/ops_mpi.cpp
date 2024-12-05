@@ -119,7 +119,7 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
 
     bool nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskSequential::run() {
         internal_order_test();
-        x = seidelMethod(coefs, b, rows, 1e-6);
+        x = nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskParallel::seidelMethod(coefs, b, rows, 1e-6);
         return true;
     }
 
@@ -188,7 +188,7 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
         internal_order_test();
         broadcast(world, _columns, 0);
         broadcast(world, _rows, 0);
-        _x = seidelMethod(_coefs, _b, _rows, 1e-6);
+        _x = nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskParallel::seidelMethod(_coefs, _b, _rows, 1e-6);
         return true;
     }
 
