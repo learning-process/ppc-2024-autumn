@@ -7,23 +7,6 @@
 
 #include "mpi/nasedkin_e_seidels_iterate_methods/include/ops_mpi.hpp"
 
-namespace nasedkin_e_seidels_iterate_methods_mpi {
-    template <typename T>
-    std::vector<T> getRandomVector(int sz) {
-        std::random_device dev;
-        std::mt19937 gen(dev());
-        std::vector<T> vec(sz);
-        vec[0] = gen() % 100;
-        for (int i = 1; i < sz; i++) {
-            vec[i] = (gen() % 100) - 49;
-        }
-        return vec;
-    }
-
-    template std::vector<int> nasedkin_e_seidels_iterate_methods_mpi::getRandomVector(int sz);
-    template std::vector<double> nasedkin_e_seidels_iterate_methods_mpi::getRandomVector(int sz);
-}  // namespace nasedkin_e_seidels_iterate_methods_mpi
-
 TEST(MPISeidel, ZeroDiagonalTest) {
     boost::mpi::communicator world;
     int rows = 3;

@@ -97,48 +97,6 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
         return false;
     }
 
-    bool nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskSequential::pre_processing() {
-        internal_order_test();
-        coefs = std::vector<double>(taskData->inputs_count[0]);
-        auto* ptr = reinterpret_cast<double*>(taskData->inputs[0]);
-        for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
-            coefs[i] = ptr[i];
-        }
-        b = std::vector<double>(taskData->inputs_count[1]);
-        auto* ptr1 = reinterpret_cast<double*>(taskData->inputs[1]);
-        for (unsigned int i = 0; i < taskData->inputs_count[1]; i++) {
-            b[i] = ptr1[i];
-        }
-        columns = taskData->inputs_count[2];
-        rows = taskData->inputs_count[3];
-        return true;
-    }
-
-    bool nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskSequential::validation() {
-        internal_order_test();
-        if (taskData->inputs.size() == 2 && taskData->outputs.size() == 1 && taskData->inputs_count.size() == 4 &&
-            taskData->outputs_count.size() == 1) {
-            return (taskData->inputs_count[3] == taskData->inputs_count[2] &&
-                    taskData->inputs_count[2] == taskData->outputs_count[0]) &&
-                   taskData->inputs.size() == 2 && taskData->outputs.size() == 1;
-        }
-        return false;
-    }
-
-    bool nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskSequential::run() {
-        internal_order_test();
-        x = nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskParallel::seidelMethod(coefs, b, rows, 1e-6);
-        return true;
-    }
-
-    bool nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskSequential::post_processing() {
-        internal_order_test();
-        for (int i = 0; i < columns; i++) {
-            reinterpret_cast<double*>(taskData->outputs[0])[i] = x[i];
-        }
-        return true;
-    }
-
     bool nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskParallel::pre_processing() {
         internal_order_test();
         if (world.rank() == 0) {

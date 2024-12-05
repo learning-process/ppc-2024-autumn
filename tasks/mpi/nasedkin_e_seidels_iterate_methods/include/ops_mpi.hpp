@@ -19,21 +19,6 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
     template <typename T>
     std::vector<T> getRandomVector(int sz);
 
-    class TestMPITaskSequential : public ppc::core::Task {
-    public:
-        explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-        bool pre_processing() override;
-        bool validation() override;
-        bool run() override;
-        bool post_processing() override;
-
-    private:
-        int rows{}, columns{};
-        std::vector<double> coefs;
-        std::vector<double> b;
-        std::vector<double> x;
-    };
-
     class TestMPITaskParallel : public ppc::core::Task {
     public:
         explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
