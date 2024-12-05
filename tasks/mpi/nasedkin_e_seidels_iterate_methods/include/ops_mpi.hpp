@@ -43,6 +43,7 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
         bool post_processing() override;
 
         static std::vector<double> seidelMethod(const std::vector<double>& A, const std::vector<double>& b, int n, double eps);
+        static bool hasZeroDiagonal(const std::vector<double>& matrix, int n);
 
     private:
         int _rows{}, _columns{};

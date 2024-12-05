@@ -88,6 +88,15 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
         return x;
     }
 
+    bool nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskParallel::hasZeroDiagonal(const std::vector<double>& matrix, int n) {
+        for (int i = 0; i < n; ++i) {
+            if (matrix[i * n + i] == 0.0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     bool nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskSequential::pre_processing() {
         internal_order_test();
         coefs = std::vector<double>(taskData->inputs_count[0]);
@@ -175,9 +184,11 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
                 for (unsigned int i = 0; i < taskData->inputs_count[1]; i++) {
                     tmp_b[i] = ptr3[i];
                 }
+                int r = taskData->inputs_count[3];
                 return (taskData->inputs_count[3] == taskData->inputs_count[2] &&
                         taskData->inputs_count[2] == taskData->outputs_count[0]) &&
-                       taskData->inputs.size() == 2 && taskData->outputs.size() == 1;
+                       taskData->inputs.size() == 2 && taskData->outputs.size() == 1 &&
+                       !hasZeroDiagonal(tmp_coefs, r);
             }
             return false;
         }
