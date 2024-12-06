@@ -69,6 +69,9 @@ bool lysov_i_simple_iteration_method_mpi::SlaeIterationTask::validation() {
   if (taskData->inputs_count[0] != taskData->inputs_count[1] || taskData->inputs_count[0] != taskData->outputs_count[0])
     return false;
   input_size_ = taskData->inputs_count[0];
+  if (input_size_ <= 0) {
+    return false;
+  }
   A_.resize(input_size_, std::vector<double>(input_size_));
   auto* A_raw = reinterpret_cast<double*>(taskData->inputs[0]);
 
