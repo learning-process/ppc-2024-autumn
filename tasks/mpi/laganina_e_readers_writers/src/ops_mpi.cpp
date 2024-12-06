@@ -22,7 +22,8 @@ bool laganina_e_readers_writers_mpi::TestMPITaskParallel::validation() {
   if (world.rank() == 0) {
     return ((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
             (!taskData->inputs_count.empty() && taskData->inputs_count[0] != 0) &&
-            (!taskData->outputs_count.empty() && taskData->outputs_count[0] != 0));
+            (!taskData->outputs_count.empty() && taskData->outputs_count[0] != 0)) &&
+           (taskData->outputs.size() > 1);
   }
   return true;
 }
@@ -32,8 +33,17 @@ bool laganina_e_readers_writers_mpi::TestMPITaskParallel::run() {
 
   int rank = world.rank();
 
-  // rank % 2 == 0 - reader
-  // rank % 2 == 1 - writer
+  count_of_writers = 0;
+
+  int role = 0;
+  if (rank != 0) {
+    std::random_device dev;
+    std::mt19937 gen(dev());
+    role = gen() % 2;
+  }
+
+  // role == 0 - reader
+  // role == 1 - writer
 
   int size = world.size();
 
@@ -47,7 +57,7 @@ bool laganina_e_readers_writers_mpi::TestMPITaskParallel::run() {
 
   if (rank == 0) {
     while (true) {
-      boost::mpi::status message;
+      boost::mpi::request req;
       int id_msg;
 
       // 0 - write
@@ -58,19 +68,25 @@ bool laganina_e_readers_writers_mpi::TestMPITaskParallel::run() {
       // 5 - done
       // 6 - terminate
 
-      message = world.recv(boost::mpi::any_source, 0, id_msg);
-      int id_proc = message.source();  // get the process id that sends the message to "0" process
+      req = world.irecv(boost::mpi::any_source, 0, id_msg);
+      boost::mpi::status message = req.wait();
+      int id_proc = message.source();  // get the process id that sends the message to 0 process
 
+      boost::mpi::request reqs;
       if (id_msg == 0) {
         if (db_w == 1) {
-          world.send(id_proc, 1, 4);
-          world.send(id_proc, 2, shared_data);
+          count_of_writers++;
+          reqs = world.isend(id_proc, 1, 4);
+          reqs = world.isend(id_proc, 2, shared_data);
+          reqs.wait();
           std::vector<int> new_data(shared_data.size());
-          world.recv(id_proc, 2, new_data);
+          reqs = world.irecv(id_proc, 2, new_data);
+          reqs.wait();  // waiting for getting data
           shared_data = new_data;
-          world.send(id_proc, 1, 5);
+          reqs = world.isend(id_proc, 1, 5);
         } else {
-          world.send(id_proc, 1, 3);
+          reqs = world.isend(id_proc, 1, 3);
+          reqs.wait();
           continue;
         }
       } else if (id_msg == 1) {
@@ -78,14 +94,15 @@ bool laganina_e_readers_writers_mpi::TestMPITaskParallel::run() {
         if (db_w == 1) {
           db_w = 0;  // block database for writers
         }
-        world.send(id_proc, 1, 4);
-        world.send(id_proc, 2, shared_data);
+        reqs = world.isend(id_proc, 1, 4);
+        reqs = world.isend(id_proc, 2, shared_data);
+        reqs.wait();
       } else if (id_msg == 2) {
         readers_count--;
         if (readers_count == 0) {
           db_w = 1;  // unlock database for writers
         }
-        world.send(id_proc, 1, 5);
+        reqs = world.isend(id_proc, 1, 5);
       } else if (id_msg == 6) {
         work_proc--;
         if (work_proc == 0) {
@@ -94,37 +111,49 @@ bool laganina_e_readers_writers_mpi::TestMPITaskParallel::run() {
       }
     }
     res_ = shared_data;
-  } else if (rank % 2 == 1) {
+  } else if ((rank != 0) && (role == 1)) {
+    boost::mpi::request reqs;
     int message = 0;
     while (message != 4) {
-      world.send(0, 0, 0);
-      world.recv(0, 1, message);
+      reqs = world.isend(0, 0, 0);
+      reqs.wait();
+      reqs = world.irecv(0, 1, message);
+      reqs.wait();
     }
 
-    world.recv(0, 2, shared_data);
+    reqs = world.irecv(0, 2, shared_data);
+    reqs.wait();
     for (auto& t : shared_data) {
       t++;  // adding 1 to each element
     }
 
-    world.send(0, 2, shared_data);
-    world.recv(0, 1, message);
+    reqs = world.isend(0, 2, shared_data);
+    reqs.wait();
+    reqs = world.irecv(0, 1, message);
+    reqs.wait();
     if (message == 5) {
-      world.send(0, 0, 6);
+      reqs = world.isend(0, 0, 6);
     }
-  } else if (rank % 2 == 0) {
+  } else if ((rank != 0) && (role == 0)) {
+    boost::mpi::request reqs;
     int message = 0;
-    world.send(0, 0, 1);
-    world.recv(0, 1, message);
+    reqs = world.isend(0, 0, 1);
+    reqs.wait();
+    reqs = world.irecv(0, 1, message);
+    reqs.wait();
     if (message == 4) {
-      world.recv(0, 2, shared_data);
+      reqs = world.irecv(0, 2, shared_data);
+      reqs.wait();
     }
     std::chrono::milliseconds timespan(3);  // simulate reading
     std::this_thread::sleep_for(timespan);
 
-    world.send(0, 0, 2);
-    world.recv(0, 1, message);
+    reqs = world.isend(0, 0, 2);
+    reqs.wait();
+    reqs = world.irecv(0, 1, message);
+    reqs.wait();
     if (message == 5) {
-      world.send(0, 0, 6);
+      reqs = world.isend(0, 0, 6);
     }
   }
   world.barrier();
@@ -136,6 +165,8 @@ bool laganina_e_readers_writers_mpi::TestMPITaskParallel::post_processing() {
   if (world.rank() == 0) {
     auto* out_data = reinterpret_cast<int*>(taskData->outputs[0]);
     std::copy(res_.begin(), res_.end(), out_data);
+    auto* count = reinterpret_cast<int*>(taskData->outputs[1]);
+    *count = count_of_writers;
   }
   return true;
 }
