@@ -30,7 +30,7 @@ TEST(chernova_n_topology_ring_mpi, Test_empty_string) {
   std::vector<int> out_process;
   std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    out_process = std::vector<int>(world.size()+1);
+    out_process = std::vector<int>(world.size() + 1);
     taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t *>(const_cast<char *>(in.data())));
     taskDataParallel->inputs_count.emplace_back(in.size());
     taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec.data()));
@@ -59,7 +59,7 @@ TEST(chernova_n_topology_ring_mpi, Test_ten_symbols) {
   std::vector<int> out_process;
   std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    out_process = std::vector<int>(world.size()+1);
+    out_process = std::vector<int>(world.size() + 1);
     taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t *>(const_cast<char *>(in.data())));
     taskDataParallel->inputs_count.emplace_back(in.size());
     taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec.data()));
@@ -89,7 +89,7 @@ TEST(chernova_n_topology_ring_mpi, Test_five_words) {
   std::vector<int> out_process;
   std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    out_process = std::vector<int>(world.size()+1);
+    out_process = std::vector<int>(world.size() + 1);
     taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t *>(const_cast<char *>(in.data())));
     taskDataParallel->inputs_count.emplace_back(in.size());
     taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec.data()));
@@ -119,7 +119,7 @@ TEST(chernova_n_topology_ring_mpi, Test_ten_words) {
   std::vector<int> out_process;
   std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    out_process = std::vector<int>(world.size()+1);
+    out_process = std::vector<int>(world.size() + 1);
     taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t *>(const_cast<char *>(in.data())));
     taskDataParallel->inputs_count.emplace_back(in.size());
     taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec.data()));
@@ -149,7 +149,7 @@ TEST(chernova_n_topology_ring_mpi, Test_twenty_words) {
   std::vector<int> out_process;
   std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    out_process = std::vector<int>(world.size()+1);
+    out_process = std::vector<int>(world.size() + 1);
     taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t *>(const_cast<char *>(in.data())));
     taskDataParallel->inputs_count.emplace_back(in.size());
     taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec.data()));
@@ -179,7 +179,7 @@ TEST(chernova_n_topology_ring_mpi, Test_thirty_words) {
   std::vector<int> out_process;
   std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    out_process = std::vector<int>(world.size()+1);
+    out_process = std::vector<int>(world.size() + 1);
     taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t *>(const_cast<char *>(in.data())));
     taskDataParallel->inputs_count.emplace_back(in.size());
     taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec.data()));
