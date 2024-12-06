@@ -1,6 +1,5 @@
 #include "mpi/nasedkin_e_seidels_iterate_methods/include/ops_mpi.hpp"
 
-#include <boost/mpi/collectives.hpp>
 #include <cmath>
 #include <iostream>
 
@@ -10,22 +9,13 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
         if (!validation()) {
             return false;
         }
-        if (A.empty() || b.empty() || A.size() != b.size()) {
-            std::cerr << "Matrix or vector is not properly initialized!" << std::endl;
-            return false;
-        }
-
 
         epsilon = 1e-6;
         max_iterations = 1000;
 
-        boost::mpi::broadcast(world, A, 0);
-        boost::mpi::broadcast(world, b, 0);
-        boost::mpi::broadcast(world, n, 0);
-
         x.resize(n, 0.0);
 
-        return true;
+        return taskData->inputs_count.size() <= 1 || taskData->inputs_count[1] != 0;
     }
 
     bool SeidelIterateMethodsMPI::validation() {
@@ -80,27 +70,10 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
                         x_new[i] -= A[i][j] * x[j];
                     }
                 }
-                if (A[i][i] == 0.0) {
-                    std::cerr << "Division by zero detected in matrix diagonal at index " << i << std::endl;
-                    return false;
-                }
-
                 x_new[i] /= A[i][i];
             }
 
-            double local_residual_norm = 0.0;
-            for (int i = 0; i < n; ++i) {
-                double Ax_i = 0.0;
-                for (int j = 0; j < n; ++j) {
-                    Ax_i += A[i][j] * x_new[j];
-                }
-                local_residual_norm += std::pow(Ax_i - b[i], 2);
-            }
-
-            double global_residual_norm = 0.0;
-            boost::mpi::all_reduce(world, local_residual_norm, global_residual_norm, std::plus<>());
-
-            if (std::sqrt(global_residual_norm) < epsilon) {
+            if (converge(x_new)) {
                 break;
             }
 
@@ -111,22 +84,18 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
         return true;
     }
 
-    bool SeidelIterateMethodsMPI::post_processing() {
+    bool SeidelIterateMethodsMPI::post_processing() { return true; }
 
-        std::vector<std::vector<double>> gathered_solutions;
-        boost::mpi::gather(world, x, gathered_solutions, 0);
-
-        if (world.rank() == 0) {
-            std::cout << "Gathered solutions from all processes:" << std::endl;
-            for (const auto& solution : gathered_solutions) {
-                for (double val : solution) {
-                    std::cout << val << " ";
-                }
-                std::cout << std::endl;
+    bool SeidelIterateMethodsMPI::converge(const std::vector<double>& x_new) {
+        double residual_norm = 0.0;
+        for (int i = 0; i < n; ++i) {
+            double Ax_i = 0.0;
+            for (int j = 0; j < n; ++j) {
+                Ax_i += A[i][j] * x_new[j];
             }
+            residual_norm += std::pow(Ax_i - b[i], 2);
         }
-
-        return true;
+        return std::sqrt(residual_norm) < epsilon;
     }
 
     void SeidelIterateMethodsMPI::set_matrix(const std::vector<std::vector<double>>& matrix,
