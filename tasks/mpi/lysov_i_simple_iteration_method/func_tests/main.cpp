@@ -26,7 +26,6 @@ void generate_diagonally_dominant_matrix(int size, std::vector<double> &matrix, 
   }
 }
 
-
 TEST(lysov_i_simple_iteration_method_mpi, SlaeIterationTaskMPI_IterationConvergence) {
   boost::mpi::communicator world;
   const int input_size = 3;
@@ -38,11 +37,11 @@ TEST(lysov_i_simple_iteration_method_mpi, SlaeIterationTaskMPI_IterationConverge
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskDataPar->inputs_count.push_back(input_size);
-    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(g.data()));
+    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t *>(g.data()));
     taskDataPar->inputs_count.push_back(input_size);
-    taskDataPar->outputs.push_back(reinterpret_cast<uint8_t*>(x.data()));
+    taskDataPar->outputs.push_back(reinterpret_cast<uint8_t *>(x.data()));
     taskDataPar->outputs_count.push_back(input_size);
   }
 
@@ -56,11 +55,11 @@ TEST(lysov_i_simple_iteration_method_mpi, SlaeIterationTaskMPI_IterationConverge
   if (world.rank() == 0) {
     std::vector<double> reference_result(input_size, 0.0);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskDataSeq->inputs_count.push_back(input_size);
-    taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t*>(g.data()));
+    taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t *>(g.data()));
     taskDataSeq->inputs_count.push_back(input_size);
-    taskDataSeq->outputs.push_back(reinterpret_cast<uint8_t*>(reference_result.data()));
+    taskDataSeq->outputs.push_back(reinterpret_cast<uint8_t *>(reference_result.data()));
     taskDataSeq->outputs_count.push_back(input_size);
     lysov_i_simple_iteration_method_mpi::SlaeIterationTask testMpiTaskSequential(taskDataSeq);
     ASSERT_TRUE(testMpiTaskSequential.validation());
@@ -84,11 +83,11 @@ TEST(lysov_i_simple_iteration_method_mpi, test_empty_matrix) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskDataPar->inputs_count.push_back(input_size);
-    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(g.data()));
+    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t *>(g.data()));
     taskDataPar->inputs_count.push_back(input_size);
-    taskDataPar->outputs.push_back(reinterpret_cast<uint8_t*>(x.data()));
+    taskDataPar->outputs.push_back(reinterpret_cast<uint8_t *>(x.data()));
     taskDataPar->outputs_count.push_back(input_size);
   }
   lysov_i_simple_iteration_method_mpi::SlaeIterationTaskMPI slaeIterationTaskMPI(taskDataPar);
@@ -101,11 +100,11 @@ TEST(lysov_i_simple_iteration_method_mpi, test_empty_matrix) {
   if (world.rank() == 0) {
     std::vector<double> reference_result(input_size, 0.0);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskDataSeq->inputs_count.push_back(input_size);
-    taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t*>(g.data()));
+    taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t *>(g.data()));
     taskDataSeq->inputs_count.push_back(input_size);
-    taskDataSeq->outputs.push_back(reinterpret_cast<uint8_t*>(reference_result.data()));
+    taskDataSeq->outputs.push_back(reinterpret_cast<uint8_t *>(reference_result.data()));
     taskDataSeq->outputs_count.push_back(input_size);
     lysov_i_simple_iteration_method_mpi::SlaeIterationTask testMpiTaskSequential(taskDataSeq);
     ASSERT_FALSE(testMpiTaskSequential.validation());
@@ -123,11 +122,11 @@ TEST(lysov_i_simple_iteration_method_mpi, test_zero_right) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskDataPar->inputs_count.push_back(input_size);
-    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(g.data()));
+    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t *>(g.data()));
     taskDataPar->inputs_count.push_back(input_size);
-    taskDataPar->outputs.push_back(reinterpret_cast<uint8_t*>(x.data()));
+    taskDataPar->outputs.push_back(reinterpret_cast<uint8_t *>(x.data()));
     taskDataPar->outputs_count.push_back(input_size);
   }
 
@@ -141,11 +140,11 @@ TEST(lysov_i_simple_iteration_method_mpi, test_zero_right) {
   if (world.rank() == 0) {
     std::vector<double> reference_result(input_size, 0.0);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskDataSeq->inputs_count.push_back(input_size);
-    taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t*>(g.data()));
+    taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t *>(g.data()));
     taskDataSeq->inputs_count.push_back(input_size);
-    taskDataSeq->outputs.push_back(reinterpret_cast<uint8_t*>(reference_result.data()));
+    taskDataSeq->outputs.push_back(reinterpret_cast<uint8_t *>(reference_result.data()));
     taskDataSeq->outputs_count.push_back(input_size);
     lysov_i_simple_iteration_method_mpi::SlaeIterationTask testMpiTaskSequential(taskDataSeq);
     ASSERT_TRUE(testMpiTaskSequential.validation());
@@ -169,11 +168,11 @@ TEST(lysov_i_simple_iteration_method_mpi, test_negative_right) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskDataPar->inputs_count.push_back(input_size);
-    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(g.data()));
+    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t *>(g.data()));
     taskDataPar->inputs_count.push_back(input_size);
-    taskDataPar->outputs.push_back(reinterpret_cast<uint8_t*>(x.data()));
+    taskDataPar->outputs.push_back(reinterpret_cast<uint8_t *>(x.data()));
     taskDataPar->outputs_count.push_back(input_size);
   }
 
@@ -186,11 +185,11 @@ TEST(lysov_i_simple_iteration_method_mpi, test_negative_right) {
   if (world.rank() == 0) {
     std::vector<double> reference_result(input_size, 0.0);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskDataSeq->inputs_count.push_back(input_size);
-    taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t*>(g.data()));
+    taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t *>(g.data()));
     taskDataSeq->inputs_count.push_back(input_size);
-    taskDataSeq->outputs.push_back(reinterpret_cast<uint8_t*>(reference_result.data()));
+    taskDataSeq->outputs.push_back(reinterpret_cast<uint8_t *>(reference_result.data()));
     taskDataSeq->outputs_count.push_back(input_size);
     lysov_i_simple_iteration_method_mpi::SlaeIterationTask testMpiTaskSequential(taskDataSeq);
     ASSERT_TRUE(testMpiTaskSequential.validation());
