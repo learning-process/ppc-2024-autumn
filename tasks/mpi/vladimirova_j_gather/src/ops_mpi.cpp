@@ -10,7 +10,7 @@
 
 std::vector<int> vladimirova_j_gather_mpi::noDeadEnds(std::vector<int> way) {
   int i = 0;
-  size_t j = 1;
+  size_t j = i + 1;
 
   while ((i >= 0) && (j < way.size())) {
     if ((way[i] == -1) && (way[i] == way[j])) {

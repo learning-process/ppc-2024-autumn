@@ -46,7 +46,6 @@ TEST(Parallel_Operations_MPI, vladimirova_j_gather_test_validation_zero) {
     vladimirova_j_gather_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
     ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
-
 }
 TEST(Parallel_Operations_MPI, vladimirova_j_gather_test_validation) {
   boost::mpi::communicator world;
@@ -67,7 +66,6 @@ TEST(Parallel_Operations_MPI, vladimirova_j_gather_test_validation) {
     vladimirova_j_gather_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
     ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
-
 }
 TEST(Parallel_Operations_MPI, vladimirova_j_gather_1_test) {
   boost::mpi::communicator world;
@@ -248,7 +246,6 @@ TEST(Parallel_Operations_MPI, vladimirova_j_not_my_gather_test_validation_zero) 
     vladimirova_j_not_my_gather_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
     ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
-
 }
 TEST(Parallel_Operations_MPI, vladimirova_j_not_my_gather_test_validation) {
   boost::mpi::communicator world;
@@ -269,7 +266,6 @@ TEST(Parallel_Operations_MPI, vladimirova_j_not_my_gather_test_validation) {
     vladimirova_j_not_my_gather_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
     ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
-
 }
 TEST(Parallel_Operations_MPI, vladimirova_j_not_my_gather_1_test) {
   boost::mpi::communicator world;
