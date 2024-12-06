@@ -7,7 +7,8 @@
 #include <thread>
 #include <vector>
 
-int gromov_a_gaussian_method_vertical_mpi::matrix_rank(std::vector<double>& matrix, int rows, int columns, int band_width) {
+int gromov_a_gaussian_method_vertical_mpi::matrix_rank(std::vector<double>& matrix, int rows, int columns, 
+                                                       int band_width) {
   
   int rank = 0;
 
@@ -160,16 +161,15 @@ bool gromov_a_gaussian_method_vertical_mpi::MPIGaussVerticalParallel::validation
                    reinterpret_cast<int*>(taskData->inputs[0]) + taskData->inputs_count[0], input_coeff_valid.begin(),
                    [](int coeff) { return static_cast<double>(coeff); });
 
-    std::vector<int> input_y_valid(taskData->inputs_count[1]);
+    std::vector<int> input_rhs_valid(taskData->inputs_count[1]);
     std::copy(reinterpret_cast<int*>(taskData->inputs[1]),
-              reinterpret_cast<int*>(taskData->inputs[1]) + taskData->inputs_count[1], input_y_valid.begin());
+              reinterpret_cast<int*>(taskData->inputs[1]) + taskData->inputs_count[1], input_rhs_valid.begin());
 
     for (int i = 0; i < equations_valid; ++i) {
       for (int j = 0; j < equations_valid; ++j) {
         validation_matrix[i * (equations_valid + 1) + j] = (input_coeff_valid[i * equations_valid + j]);
       }
-      validation_matrix[i * (equations_valid + 1) + equations_valid] =
-          static_cast<double>(input_y_valid[i]);
+      validation_matrix[i * (equations_valid + 1) + equations_valid] = static_cast<double>(input_rhs_valid[i]);
     }
 
     int rank_coeffs = matrix_rank(input_coeff_valid, equations_valid, equations_valid, band_width);

@@ -44,7 +44,8 @@ TEST(gromov_a_gaussian_method_vertical_mpi, Test_1) {
     taskDataPar->outputs_count.emplace_back(func_res.size());
   }
 
-  gromov_a_gaussian_method_vertical_mpi::MPIGaussVerticalParallel MPIGaussVerticalParallel(taskDataPar, band_width);
+  gromov_a_gaussian_method_vertical_mpi::MPIGaussVerticalParallel MPIGaussVerticalParallel(taskDataPar, 
+                                                                                           band_width);
   ASSERT_EQ(MPIGaussVerticalParallel.validation(), true);
   MPIGaussVerticalParallel.pre_processing();
   MPIGaussVerticalParallel.run();
@@ -61,7 +62,8 @@ TEST(gromov_a_gaussian_method_vertical_mpi, Test_1) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_res.data()));
     taskDataSeq->outputs_count.emplace_back(reference_res.size());
 
-    gromov_a_gaussian_method_vertical_mpi::MPIGaussVerticalSequential MPIGaussVerticalSequential(taskDataSeq, band_width);
+    gromov_a_gaussian_method_vertical_mpi::MPIGaussVerticalSequential MPIGaussVerticalSequential(taskDataSeq, 
+                                                                                                 band_width);
     ASSERT_EQ(MPIGaussVerticalSequential.validation(), true);
     MPIGaussVerticalSequential.pre_processing();
     MPIGaussVerticalSequential.run();
@@ -95,7 +97,8 @@ TEST(gromov_a_gaussian_method_vertical_mpi, Test_2) {
     taskDataPar->outputs_count.emplace_back(func_res.size());
   }
 
-  gromov_a_gaussian_method_vertical_mpi::MPIGaussVerticalParallel MPIGaussVerticalParallel(taskDataPar, band_width);
+  gromov_a_gaussian_method_vertical_mpi::MPIGaussVerticalParallel MPIGaussVerticalParallel(taskDataPar,
+                                                                                           band_width);
   ASSERT_EQ(MPIGaussVerticalParallel.validation(), true);
   MPIGaussVerticalParallel.pre_processing();
   MPIGaussVerticalParallel.run();
@@ -112,7 +115,8 @@ TEST(gromov_a_gaussian_method_vertical_mpi, Test_2) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_res.data()));
     taskDataSeq->outputs_count.emplace_back(reference_res.size());
 
-    gromov_a_gaussian_method_vertical_mpi::MPIGaussVerticalSequential MPIGaussVerticalSequential(taskDataSeq, band_width);
+    gromov_a_gaussian_method_vertical_mpi::MPIGaussVerticalSequential MPIGaussVerticalSequential(taskDataSeq, 
+                                                                                                 band_width);
 
     ASSERT_EQ(MPIGaussVerticalSequential.validation(), true);
     MPIGaussVerticalSequential.pre_processing();
@@ -147,7 +151,8 @@ TEST(gromov_a_gaussian_method_vertical_mpi, Test_3) {
     taskDataPar->outputs_count.emplace_back(func_res.size());
   }
 
-  gromov_a_gaussian_method_vertical_mpi::MPIGaussVerticalParallel MPIGaussVerticalParallel(taskDataPar, band_width);
+  gromov_a_gaussian_method_vertical_mpi::MPIGaussVerticalParallel MPIGaussVerticalParallel(taskDataPar, 
+                                                                                           band_width);
   ASSERT_EQ(MPIGaussVerticalParallel.validation(), true);
   MPIGaussVerticalParallel.pre_processing();
   MPIGaussVerticalParallel.run();
@@ -200,7 +205,8 @@ TEST(gromov_a_gaussian_method_vertical_mpi, Test_4) {
     taskDataPar->outputs_count.emplace_back(func_res.size());
   }
 
-  gromov_a_gaussian_method_vertical_mpi::MPIGaussVerticalParallel MPIGaussVerticalParallel(taskDataPar, band_width);
+  gromov_a_gaussian_method_vertical_mpi::MPIGaussVerticalParallel MPIGaussVerticalParallel(taskDataPar, 
+                                                                                           band_width);
   ASSERT_EQ(MPIGaussVerticalParallel.validation(), true);
   MPIGaussVerticalParallel.pre_processing();
   MPIGaussVerticalParallel.run();
@@ -217,7 +223,8 @@ TEST(gromov_a_gaussian_method_vertical_mpi, Test_4) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_res.data()));
     taskDataSeq->outputs_count.emplace_back(reference_res.size());
 
-    gromov_a_gaussian_method_vertical_mpi::MPIGaussVerticalSequential MPIGaussVerticalSequential(taskDataSeq,band_width);
+    gromov_a_gaussian_method_vertical_mpi::MPIGaussVerticalSequential MPIGaussVerticalSequential(taskDataSeq,
+                                                                                                 band_width);
 
     ASSERT_EQ(MPIGaussVerticalSequential.validation(), true);
     MPIGaussVerticalSequential.pre_processing();

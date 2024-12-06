@@ -54,7 +54,7 @@ TEST(gromov_a_gaussian_method_vertical_seq, Test_Negative_Positive_Coefficients)
   std::vector<int> input_coefficient = {-1, 2, 4, -5};
   std::vector<int> input_rhs = {3, -2};
   std::vector<double> func_res(input_rhs.size(), 0);
-  std::vector<double> ans = {11.0 /3.0, 10.0 / 3.0};
+  std::vector<double> ans = {11.0 / 3.0, 10.0 / 3.0};
   int band_width = 2;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
