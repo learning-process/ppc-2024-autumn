@@ -1,6 +1,8 @@
 // Copyright 2024 Nesterov Alexander
 #include <gtest/gtest.h>
 
+#include <vector>
+
 #include "seq/petrov_a_ribbon_vertical_scheme/include/ops_seq.hpp"
 
 TEST(petrov_a_ribbon_vertical_scheme_seq, Test_MatrixVector) {
