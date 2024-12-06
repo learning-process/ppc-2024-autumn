@@ -10,11 +10,6 @@
 
 #include "core/task/include/task.hpp"
 
-namespace chistov_a_convex_hull_image_seq_test {
-std::vector<int> generateImage(int width, int height);
-void printImage(const std::vector<int>& image, int width, int height);
-}  // namespace chistov_a_convex_hull_image_seq_test
-
 namespace chistov_a_convex_hull_image_seq {
 struct Point {
   int x, y;

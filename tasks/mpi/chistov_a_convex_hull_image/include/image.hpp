@@ -6,16 +6,12 @@
 #include <boost/mpi/communicator.hpp>
 #include <memory>
 #include <numeric>
+#include <random>
 #include <string>
 #include <utility>
 #include <vector>
 
 #include "core/task/include/task.hpp"
-
-namespace chistov_a_convex_hull_image_mpi_test {
-std::vector<int> generateImage(int width, int height);
-void printImage(const std::vector<int>& image, int width, int height);
-}  // namespace chistov_a_convex_hull_image_mpi_test
 
 namespace chistov_a_convex_hull_image_mpi {
 

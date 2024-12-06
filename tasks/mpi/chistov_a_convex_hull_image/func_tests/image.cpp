@@ -6,6 +6,27 @@
 #include <boost/mpi/environment.hpp>
 #include <vector>
 
+namespace chistov_a_convex_hull_image_mpi_test {
+std::vector<int> generateImage(int width, int height) {
+  if (width <= 0 || height <= 0) {
+    return {};
+  }
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<int> dist(0, 1);
+
+  std::vector<int> image(width * height);
+  for (int y = 0; y < height; ++y) {
+    for (int x = 0; x < width; ++x) {
+      image[y * width + x] = dist(gen);
+    }
+  }
+
+  return image;
+}
+}  // namespace chistov_a_convex_hull_image_mpi_test
+
 TEST(chistov_a_convex_hull_image_mpi, validation_test_empty_image) {
   boost::mpi::communicator world;
 
@@ -369,6 +390,99 @@ TEST(chistov_a_convex_hull_image_mpi, test_three_components_image) {
   TestTaskMPI.post_processing();
 
   if (world.rank() == 0) {
+    ASSERT_EQ(expected_hull, hull);
+  }
+}
+
+TEST(chistov_a_convex_hull_image_mpi, test_ten_components_image) {
+  boost::mpi::communicator world;
+  const int width = 20;
+  const int height = 20;
+
+  std::vector<int> image(width * height, 0);
+
+  image[2 * width + 2] = 1;
+  image[2 * width + 3] = 1;
+  image[3 * width + 2] = 1;
+  image[3 * width + 3] = 1;
+
+  image[6 * width + 6] = 1;
+  image[6 * width + 7] = 1;
+  image[7 * width + 6] = 1;
+  image[7 * width + 7] = 1;
+
+  image[10 * width + 10] = 1;
+  image[10 * width + 11] = 1;
+  image[11 * width + 10] = 1;
+  image[11 * width + 11] = 1;
+
+  image[14 * width + 14] = 1;
+  image[14 * width + 15] = 1;
+  image[15 * width + 14] = 1;
+  image[15 * width + 15] = 1;
+
+  image[5 * width + 15] = 1;
+  image[5 * width + 16] = 1;
+  image[6 * width + 15] = 1;
+  image[6 * width + 16] = 1;
+
+  image[15 * width + 5] = 1;
+  image[15 * width + 6] = 1;
+  image[16 * width + 5] = 1;
+  image[16 * width + 6] = 1;
+
+  image[10 * width + 5] = 1;
+  image[10 * width + 6] = 1;
+  image[11 * width + 5] = 1;
+  image[11 * width + 6] = 1;
+
+  image[5 * width + 10] = 1;
+  image[5 * width + 11] = 1;
+  image[6 * width + 10] = 1;
+  image[6 * width + 11] = 1;
+
+  image[18 * width + 2] = 1;
+  image[18 * width + 3] = 1;
+  image[19 * width + 2] = 1;
+  image[19 * width + 3] = 1;
+
+  image[2 * width + 18] = 1;
+  image[2 * width + 19] = 1;
+  image[3 * width + 18] = 1;
+  image[3 * width + 19] = 1;
+
+  std::vector<int> hull(width * height, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
+    taskDataPar->inputs_count.emplace_back(width * height);
+    taskDataPar->inputs_count.emplace_back(width);
+    taskDataPar->inputs_count.emplace_back(height);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
+    taskDataPar->outputs_count.emplace_back(width * height);
+  }
+
+  chistov_a_convex_hull_image_mpi::ConvexHullMPI TestTaskMPI(taskDataPar);
+  ASSERT_TRUE(TestTaskMPI.validation());
+  TestTaskMPI.pre_processing();
+  TestTaskMPI.run();
+  TestTaskMPI.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int> expected_hull = {
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+
     ASSERT_EQ(expected_hull, hull);
   }
 }

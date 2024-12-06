@@ -6,42 +6,7 @@
 #include <random>
 #include <vector>
 
-namespace chistov_a_convex_hull_image_seq_test {
-
-std::vector<int> generateImage(int width, int height) {
-  if (width <= 0 || height <= 0) {
-    return {};
-  }
-
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<int> dist(0, 1);
-
-  std::vector<int> image(width * height);
-  for (int y = 0; y < height; ++y) {
-    for (int x = 0; x < width; ++x) {
-      image[y * width + x] = dist(gen);
-    }
-  }
-
-  return image;
-}
-
-void printImage(const std::vector<int>& image, int width, int height) {
-  if (image.empty() || width <= 0 || height <= 0) return;
-
-  for (int y = 0; y < height; ++y) {
-    for (int x = 0; x < width; ++x) {
-      std::cout << image[y * width + x] << " ";
-    }
-    std::cout << '\n';
-  }
-}
-
-}  // namespace chistov_a_convex_hull_image_seq_test
-
 namespace chistov_a_convex_hull_image_seq {
-
 std::vector<int> setPoints(const std::vector<Point>& points, int width, int height) {
   std::vector<int> image(width * height, 0);
   if (points.size() < 2) return image;

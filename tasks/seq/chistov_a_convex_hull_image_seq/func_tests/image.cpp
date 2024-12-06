@@ -5,6 +5,27 @@
 #include <memory>
 #include <vector>
 
+namespace chistov_a_convex_hull_image_seq_test {
+std::vector<int> generateImage(int width, int height) {
+  if (width <= 0 || height <= 0) {
+    return {};
+  }
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<int> dist(0, 1);
+
+  std::vector<int> image(width * height);
+  for (int y = 0; y < height; ++y) {
+    for (int x = 0; x < width; ++x) {
+      image[y * width + x] = dist(gen);
+    }
+  }
+
+  return image;
+}
+}  // namespace chistov_a_convex_hull_image_seq_test
+
 TEST(chistov_a_convex_hull_image_seq, validation_test_empty_image) {
   const int width = 3;
   const int height = 4;
