@@ -9,13 +9,14 @@
 #include <string>
 #include <thread>
 #include <vector>
-std::vector<int> tsatsyn_a_topology_torus_grid_mpi::getRandomVector(int sz) {
+std::vector<int> tsatsyn_a_topology_torus_grid_mpi::getRandomVector(int sz, int a, int b) {
   std::random_device dev;
   std::mt19937 gen(dev());
 
   std::vector<int> vec(sz);
   for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
+    vec[i] = gen() % (b - a + 1) + a;
+    
   }
   return vec;
 }
