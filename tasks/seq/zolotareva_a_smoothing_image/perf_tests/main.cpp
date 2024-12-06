@@ -13,10 +13,10 @@ TEST(sequential_zolotareva_a_smoothing_image_perf_test, test_pipeline_run) {
   std::vector<uint8_t> output(width * height);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskDataSeq->inputs.emplace_back(input.data());
   taskDataSeq->inputs_count.emplace_back(height);
   taskDataSeq->inputs_count.emplace_back(width);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+  taskDataSeq->outputs.emplace_back(output.data());
   taskDataSeq->outputs_count.emplace_back(output.size());
 
   auto testTaskSequential = std::make_shared<zolotareva_a_smoothing_image_seq::TestTaskSequential>(taskDataSeq);
@@ -46,10 +46,10 @@ TEST(sequential_zolotareva_a_smoothing_image_perf_test, test_task_run) {
   std::vector<uint8_t> output(width * height);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskDataSeq->inputs.emplace_back(input.data());
   taskDataSeq->inputs_count.emplace_back(height);
   taskDataSeq->inputs_count.emplace_back(width);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+  taskDataSeq->outputs.emplace_back(output.data());
   taskDataSeq->outputs_count.emplace_back(output.size());
 
   auto testTaskSequential = std::make_shared<zolotareva_a_smoothing_image_seq::TestTaskSequential>(taskDataSeq);

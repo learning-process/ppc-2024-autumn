@@ -33,7 +33,7 @@ bool zolotareva_a_smoothing_image_seq::TestTaskSequential::run() {
   int radius = 1;
   float sigma = 1.0f;
   std::vector<float> horizontal_kernel = create_gaussian_kernel(radius, sigma);
-  std::vector<float> vertical_kernel = horizontal_kernel;
+  std::vector<float>& vertical_kernel = horizontal_kernel;
   std::vector<float> temp(height_ * width_, 0.0f);
 
   convolve_rows(input_, height_, width_, horizontal_kernel, temp);
@@ -43,7 +43,7 @@ bool zolotareva_a_smoothing_image_seq::TestTaskSequential::run() {
 
 bool zolotareva_a_smoothing_image_seq::TestTaskSequential::post_processing() {
   internal_order_test();
-  uint8_t* output_raw = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
+  auto output_raw = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
   for (int i = 0; i < height_; i++) {
     for (int j = 0; j < width_; j++) {
       output_raw[i * width_ + j] = result_[i * width_ + j];
@@ -91,7 +91,7 @@ void zolotareva_a_smoothing_image_seq::TestTaskSequential::convolve_columns(cons
         int pixel_y = std::clamp(y + k, 0, height - 1);
         sum += temp[pixel_y * width + x] * kernel[k + kernel_radius];
       }
-      output[y * width + x] = static_cast<uint8_t>(std::clamp(static_cast<int>(std::round(sum)), 0, 255));
+      output[y * width + x] = static_cast<uint8_t>(std::clamp(static_cast<int>(std::round(int(sum))), 0, 255));
     }
   }
 }
