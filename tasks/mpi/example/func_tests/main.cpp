@@ -3,6 +3,7 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <memory>
 #include <vector>
 
 #include "mpi/example/include/ops_mpi.hpp"
@@ -231,9 +232,36 @@ int main(int argc, char** argv) {
   boost::mpi::environment env(argc, argv);
   boost::mpi::communicator world;
   ::testing::InitGoogleTest(&argc, argv);
-  ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
-  if (world.rank() != 0) {
-    delete listeners.Release(listeners.default_result_printer());
+  if (world.rank() != 0 && (argc < 2 || argv[1] != std::string("--full-workers-log"))) {
+    class WorkersTestPrinter : public ::testing::EmptyTestEventListener {
+     public:
+      WorkersTestPrinter(std::unique_ptr<TestEventListener>&& base, int rank) : base_(std::move(base)), rank_(rank) {}
+
+      void OnTestEnd(const ::testing::TestInfo& test_info) override {
+        if (test_info.result()->Passed()) {
+          return;
+        }
+        print_process_rank();
+        base_->OnTestEnd(test_info);
+      }
+
+      void OnTestPartResult(const ::testing::TestPartResult& test_part_result) override {
+        print_process_rank();
+        base_->OnTestPartResult(test_part_result);
+      }
+
+     private:
+      void print_process_rank() const { printf(" [  PROCESS %d  ] ", rank_); }
+
+      std::unique_ptr<TestEventListener> base_;
+      int rank_;
+    };
+
+    ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
+    listeners.Append(new WorkersTestPrinter(
+        std::unique_ptr<::testing::TestEventListener>(listeners.Release(listeners.default_result_printer())),
+        world.rank()));
   }
+
   return RUN_ALL_TESTS();
 }
