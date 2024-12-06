@@ -1,10 +1,13 @@
 #include "mpi/nasedkin_e_seidels_iterate_methods/include/ops_mpi.hpp"
-#include <boost/serialization/vector.hpp>
-#include <boost/mpi/collectives.hpp>
-#include <boost/mpi/communicator.hpp>
+
 #include <algorithm>
 #include <cmath>
+#include <functional>
+#include <random>
+#include <string>
+#include <thread>
 #include <vector>
+#include <boost/serialization/vector.hpp>
 
 namespace nasedkin_e_seidels_iterate_methods_mpi {
 
