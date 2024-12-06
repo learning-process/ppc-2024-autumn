@@ -1,6 +1,8 @@
 // Copyright 2023 Nesterov Alexander
 #include "mpi/lavrentyev_a_line_topology/include/ops_mpi.hpp"
 
+#include <mpi.h>
+
 #include <algorithm>
 #include <vector>
 
@@ -70,18 +72,31 @@ bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::run() {
     return true;
   }
 
+  MPI_Request req_send_data, req_send_path, req_recv_data, req_recv_path;
+
   if (world.rank() == start_proc) {
-    world.send(world.rank() + 1, 0, data);
-    world.send(world.rank() + 1, 1, path);
+    MPI_Isend(data.data(), data.size(), MPI_INT, world.rank() + 1, 0, MPI_COMM_WORLD, &req_send_data);
+    MPI_Isend(path.data(), path.size(), MPI_INT, world.rank() + 1, 1, MPI_COMM_WORLD, &req_send_path);
   } else {
-    world.recv(world.rank() - 1, 0, data);
-    world.recv(world.rank() - 1, 1, path);
+    MPI_Irecv(data.data(), data.size(), MPI_INT, world.rank() - 1, 0, MPI_COMM_WORLD, &req_recv_data);
+    MPI_Irecv(path.data(), path.size(), MPI_INT, world.rank() - 1, 1, MPI_COMM_WORLD, &req_recv_path);
+
+    MPI_Wait(&req_recv_data, MPI_STATUS_IGNORE);
+    MPI_Wait(&req_recv_path, MPI_STATUS_IGNORE);
+
     path.push_back(world.rank());
+
     if (world.rank() < end_proc) {
-      world.send(world.rank() + 1, 0, data);
-      world.send(world.rank() + 1, 1, path);
+      MPI_Isend(data.data(), data.size(), MPI_INT, world.rank() + 1, 0, MPI_COMM_WORLD, &req_send_data);
+      MPI_Isend(path.data(), path.size(), MPI_INT, world.rank() + 1, 1, MPI_COMM_WORLD, &req_send_path);
     }
   }
+
+  if (world.rank() == start_proc || (world.rank() > start_proc && world.rank() <= end_proc)) {
+    MPI_Wait(&req_send_data, MPI_STATUS_IGNORE);
+    MPI_Wait(&req_send_path, MPI_STATUS_IGNORE);
+  }
+
   return true;
 }
 

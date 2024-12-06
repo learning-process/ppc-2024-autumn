@@ -13,7 +13,7 @@ std::vector<int> generate_random_vector(size_t size) {
   std::srand(static_cast<unsigned>(std::time(nullptr)));
   std::vector<int> vec(size);
   for (size_t i = 0; i < size; i++) {
-    vec[i] = std::rand() % 1000;
+    vec[i] = (std::rand() % 2000) - 1000;
   }
   return vec;
 }
@@ -33,12 +33,14 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer) {
   std::vector<int> output_data(num_elems, -1);
   std::vector<int> received_path(end_proc - start_proc + 1, -1);
 
+  MPI_Request send_request, recv_request;
+
   if (world.rank() == start_proc) {
     input_data = generate_random_vector(num_elems);
     task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
 
     if (start_proc != end_proc) {
-      world.send(end_proc, 0, input_data);
+      MPI_Isend(input_data.data(), num_elems, MPI_INT, end_proc, 0, MPI_COMM_WORLD, &send_request);
     }
   }
 
@@ -49,7 +51,15 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer) {
                                 static_cast<unsigned int>(received_path.size())};
 
     if (start_proc != end_proc) {
-      world.recv(start_proc, 0, input_data);
+      MPI_Irecv(input_data.data(), num_elems, MPI_INT, start_proc, 0, MPI_COMM_WORLD, &recv_request);
+    }
+  }
+
+  if (start_proc != end_proc) {
+    if (world.rank() == start_proc) {
+      MPI_Wait(&send_request, MPI_STATUS_IGNORE);
+    } else if (world.rank() == end_proc) {
+      MPI_Wait(&recv_request, MPI_STATUS_IGNORE);
     }
   }
 
@@ -187,12 +197,14 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_1024) {
   std::vector<int> output_data(num_elems, -1);
   std::vector<int> received_path(end_proc - start_proc + 1, -1);
 
+  MPI_Request send_request, recv_request;
+
   if (world.rank() == start_proc) {
     input_data = generate_random_vector(num_elems);
     task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
 
     if (start_proc != end_proc) {
-      world.send(end_proc, 0, input_data);
+      MPI_Isend(input_data.data(), num_elems, MPI_INT, end_proc, 0, MPI_COMM_WORLD, &send_request);
     }
   }
 
@@ -203,7 +215,15 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_1024) {
                                 static_cast<unsigned int>(received_path.size())};
 
     if (start_proc != end_proc) {
-      world.recv(start_proc, 0, input_data);
+      MPI_Irecv(input_data.data(), num_elems, MPI_INT, start_proc, 0, MPI_COMM_WORLD, &recv_request);
+    }
+  }
+
+  if (start_proc != end_proc) {
+    if (world.rank() == start_proc) {
+      MPI_Wait(&send_request, MPI_STATUS_IGNORE);
+    } else if (world.rank() == end_proc) {
+      MPI_Wait(&recv_request, MPI_STATUS_IGNORE);
     }
   }
 
@@ -237,12 +257,14 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_2048) {
   std::vector<int> output_data(num_elems, -1);
   std::vector<int> received_path(end_proc - start_proc + 1, -1);
 
+  MPI_Request send_request, recv_request;
+
   if (world.rank() == start_proc) {
     input_data = generate_random_vector(num_elems);
     task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
 
     if (start_proc != end_proc) {
-      world.send(end_proc, 0, input_data);
+      MPI_Isend(input_data.data(), num_elems, MPI_INT, end_proc, 0, MPI_COMM_WORLD, &send_request);
     }
   }
 
@@ -253,7 +275,15 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_2048) {
                                 static_cast<unsigned int>(received_path.size())};
 
     if (start_proc != end_proc) {
-      world.recv(start_proc, 0, input_data);
+      MPI_Irecv(input_data.data(), num_elems, MPI_INT, start_proc, 0, MPI_COMM_WORLD, &recv_request);
+    }
+  }
+
+  if (start_proc != end_proc) {
+    if (world.rank() == start_proc) {
+      MPI_Wait(&send_request, MPI_STATUS_IGNORE);
+    } else if (world.rank() == end_proc) {
+      MPI_Wait(&recv_request, MPI_STATUS_IGNORE);
     }
   }
 
@@ -287,12 +317,14 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_4096) {
   std::vector<int> output_data(num_elems, -1);
   std::vector<int> received_path(end_proc - start_proc + 1, -1);
 
+  MPI_Request send_request, recv_request;
+
   if (world.rank() == start_proc) {
     input_data = generate_random_vector(num_elems);
     task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
 
     if (start_proc != end_proc) {
-      world.send(end_proc, 0, input_data);
+      MPI_Isend(input_data.data(), num_elems, MPI_INT, end_proc, 0, MPI_COMM_WORLD, &send_request);
     }
   }
 
@@ -303,7 +335,15 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_4096) {
                                 static_cast<unsigned int>(received_path.size())};
 
     if (start_proc != end_proc) {
-      world.recv(start_proc, 0, input_data);
+      MPI_Irecv(input_data.data(), num_elems, MPI_INT, start_proc, 0, MPI_COMM_WORLD, &recv_request);
+    }
+  }
+
+  if (start_proc != end_proc) {
+    if (world.rank() == start_proc) {
+      MPI_Wait(&send_request, MPI_STATUS_IGNORE);
+    } else if (world.rank() == end_proc) {
+      MPI_Wait(&recv_request, MPI_STATUS_IGNORE);
     }
   }
 
@@ -337,12 +377,14 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_8192) {
   std::vector<int> output_data(num_elems, -1);
   std::vector<int> received_path(end_proc - start_proc + 1, -1);
 
+  MPI_Request send_request, recv_request;
+
   if (world.rank() == start_proc) {
     input_data = generate_random_vector(num_elems);
     task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
 
     if (start_proc != end_proc) {
-      world.send(end_proc, 0, input_data);
+      MPI_Isend(input_data.data(), num_elems, MPI_INT, end_proc, 0, MPI_COMM_WORLD, &send_request);
     }
   }
 
@@ -353,7 +395,15 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_8192) {
                                 static_cast<unsigned int>(received_path.size())};
 
     if (start_proc != end_proc) {
-      world.recv(start_proc, 0, input_data);
+      MPI_Irecv(input_data.data(), num_elems, MPI_INT, start_proc, 0, MPI_COMM_WORLD, &recv_request);
+    }
+  }
+
+  if (start_proc != end_proc) {
+    if (world.rank() == start_proc) {
+      MPI_Wait(&send_request, MPI_STATUS_IGNORE);
+    } else if (world.rank() == end_proc) {
+      MPI_Wait(&recv_request, MPI_STATUS_IGNORE);
     }
   }
 
@@ -387,12 +437,14 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_16384) {
   std::vector<int> output_data(num_elems, -1);
   std::vector<int> received_path(end_proc - start_proc + 1, -1);
 
+  MPI_Request send_request, recv_request;
+
   if (world.rank() == start_proc) {
     input_data = generate_random_vector(num_elems);
     task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
 
     if (start_proc != end_proc) {
-      world.send(end_proc, 0, input_data);
+      MPI_Isend(input_data.data(), num_elems, MPI_INT, end_proc, 0, MPI_COMM_WORLD, &send_request);
     }
   }
 
@@ -403,7 +455,15 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_16384) {
                                 static_cast<unsigned int>(received_path.size())};
 
     if (start_proc != end_proc) {
-      world.recv(start_proc, 0, input_data);
+      MPI_Irecv(input_data.data(), num_elems, MPI_INT, start_proc, 0, MPI_COMM_WORLD, &recv_request);
+    }
+  }
+
+  if (start_proc != end_proc) {
+    if (world.rank() == start_proc) {
+      MPI_Wait(&send_request, MPI_STATUS_IGNORE);
+    } else if (world.rank() == end_proc) {
+      MPI_Wait(&recv_request, MPI_STATUS_IGNORE);
     }
   }
 
@@ -437,12 +497,14 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_2187) {
   std::vector<int> output_data(num_elems, -1);
   std::vector<int> received_path(end_proc - start_proc + 1, -1);
 
+  MPI_Request send_request, recv_request;
+
   if (world.rank() == start_proc) {
     input_data = generate_random_vector(num_elems);
     task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
 
     if (start_proc != end_proc) {
-      world.send(end_proc, 0, input_data);
+      MPI_Isend(input_data.data(), num_elems, MPI_INT, end_proc, 0, MPI_COMM_WORLD, &send_request);
     }
   }
 
@@ -453,7 +515,15 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_2187) {
                                 static_cast<unsigned int>(received_path.size())};
 
     if (start_proc != end_proc) {
-      world.recv(start_proc, 0, input_data);
+      MPI_Irecv(input_data.data(), num_elems, MPI_INT, start_proc, 0, MPI_COMM_WORLD, &recv_request);
+    }
+  }
+
+  if (start_proc != end_proc) {
+    if (world.rank() == start_proc) {
+      MPI_Wait(&send_request, MPI_STATUS_IGNORE);
+    } else if (world.rank() == end_proc) {
+      MPI_Wait(&recv_request, MPI_STATUS_IGNORE);
     }
   }
 
@@ -487,12 +557,14 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_6561) {
   std::vector<int> output_data(num_elems, -1);
   std::vector<int> received_path(end_proc - start_proc + 1, -1);
 
+  MPI_Request send_request, recv_request;
+
   if (world.rank() == start_proc) {
     input_data = generate_random_vector(num_elems);
     task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
 
     if (start_proc != end_proc) {
-      world.send(end_proc, 0, input_data);
+      MPI_Isend(input_data.data(), num_elems, MPI_INT, end_proc, 0, MPI_COMM_WORLD, &send_request);
     }
   }
 
@@ -503,7 +575,15 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_6561) {
                                 static_cast<unsigned int>(received_path.size())};
 
     if (start_proc != end_proc) {
-      world.recv(start_proc, 0, input_data);
+      MPI_Irecv(input_data.data(), num_elems, MPI_INT, start_proc, 0, MPI_COMM_WORLD, &recv_request);
+    }
+  }
+
+  if (start_proc != end_proc) {
+    if (world.rank() == start_proc) {
+      MPI_Wait(&send_request, MPI_STATUS_IGNORE);
+    } else if (world.rank() == end_proc) {
+      MPI_Wait(&recv_request, MPI_STATUS_IGNORE);
     }
   }
 
@@ -537,12 +617,14 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_19638) {
   std::vector<int> output_data(num_elems, -1);
   std::vector<int> received_path(end_proc - start_proc + 1, -1);
 
+  MPI_Request send_request, recv_request;
+
   if (world.rank() == start_proc) {
     input_data = generate_random_vector(num_elems);
     task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
 
     if (start_proc != end_proc) {
-      world.send(end_proc, 0, input_data);
+      MPI_Isend(input_data.data(), num_elems, MPI_INT, end_proc, 0, MPI_COMM_WORLD, &send_request);
     }
   }
 
@@ -553,7 +635,195 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_19638) {
                                 static_cast<unsigned int>(received_path.size())};
 
     if (start_proc != end_proc) {
-      world.recv(start_proc, 0, input_data);
+      MPI_Irecv(input_data.data(), num_elems, MPI_INT, start_proc, 0, MPI_COMM_WORLD, &recv_request);
+    }
+  }
+
+  if (start_proc != end_proc) {
+    if (world.rank() == start_proc) {
+      MPI_Wait(&send_request, MPI_STATUS_IGNORE);
+    } else if (world.rank() == end_proc) {
+      MPI_Wait(&recv_request, MPI_STATUS_IGNORE);
+    }
+  }
+
+  lavrentyev_a_line_topology_mpi::TestMPITaskParallel task(task_data);
+  ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
+
+  if (world.rank() == end_proc) {
+    ASSERT_EQ(input_data, output_data);
+
+    for (size_t i = 0; i < received_path.size(); ++i) {
+      ASSERT_EQ(received_path[i], start_proc + static_cast<int>(i));
+    }
+  }
+}
+
+TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_2791) {
+  boost::mpi::communicator world;
+
+  const int start_proc = 0;
+  const int end_proc = world.size() - 1;
+  const size_t num_elems = 2791;
+
+  auto task_data = std::make_shared<ppc::core::TaskData>();
+  task_data->inputs_count = {static_cast<unsigned int>(start_proc), static_cast<unsigned int>(end_proc),
+                             static_cast<unsigned int>(num_elems)};
+
+  std::vector<int> input_data;
+  std::vector<int> output_data(num_elems, -1);
+  std::vector<int> received_path(end_proc - start_proc + 1, -1);
+
+  MPI_Request send_request, recv_request;
+
+  if (world.rank() == start_proc) {
+    input_data = generate_random_vector(num_elems);
+    task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
+
+    if (start_proc != end_proc) {
+      MPI_Isend(input_data.data(), num_elems, MPI_INT, end_proc, 0, MPI_COMM_WORLD, &send_request);
+    }
+  }
+
+  if (world.rank() == end_proc) {
+    task_data->outputs = {reinterpret_cast<uint8_t*>(output_data.data()),
+                          reinterpret_cast<uint8_t*>(received_path.data())};
+    task_data->outputs_count = {static_cast<unsigned int>(output_data.size()),
+                                static_cast<unsigned int>(received_path.size())};
+
+    if (start_proc != end_proc) {
+      MPI_Irecv(input_data.data(), num_elems, MPI_INT, start_proc, 0, MPI_COMM_WORLD, &recv_request);
+    }
+  }
+
+  if (start_proc != end_proc) {
+    if (world.rank() == start_proc) {
+      MPI_Wait(&send_request, MPI_STATUS_IGNORE);
+    } else if (world.rank() == end_proc) {
+      MPI_Wait(&recv_request, MPI_STATUS_IGNORE);
+    }
+  }
+
+  lavrentyev_a_line_topology_mpi::TestMPITaskParallel task(task_data);
+  ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
+
+  if (world.rank() == end_proc) {
+    ASSERT_EQ(input_data, output_data);
+
+    for (size_t i = 0; i < received_path.size(); ++i) {
+      ASSERT_EQ(received_path[i], start_proc + static_cast<int>(i));
+    }
+  }
+}
+
+TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_5021) {
+  boost::mpi::communicator world;
+
+  const int start_proc = 0;
+  const int end_proc = world.size() - 1;
+  const size_t num_elems = 5021;
+
+  auto task_data = std::make_shared<ppc::core::TaskData>();
+  task_data->inputs_count = {static_cast<unsigned int>(start_proc), static_cast<unsigned int>(end_proc),
+                             static_cast<unsigned int>(num_elems)};
+
+  std::vector<int> input_data;
+  std::vector<int> output_data(num_elems, -1);
+  std::vector<int> received_path(end_proc - start_proc + 1, -1);
+
+  MPI_Request send_request, recv_request;
+
+  if (world.rank() == start_proc) {
+    input_data = generate_random_vector(num_elems);
+    task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
+
+    if (start_proc != end_proc) {
+      MPI_Isend(input_data.data(), num_elems, MPI_INT, end_proc, 0, MPI_COMM_WORLD, &send_request);
+    }
+  }
+
+  if (world.rank() == end_proc) {
+    task_data->outputs = {reinterpret_cast<uint8_t*>(output_data.data()),
+                          reinterpret_cast<uint8_t*>(received_path.data())};
+    task_data->outputs_count = {static_cast<unsigned int>(output_data.size()),
+                                static_cast<unsigned int>(received_path.size())};
+
+    if (start_proc != end_proc) {
+      MPI_Irecv(input_data.data(), num_elems, MPI_INT, start_proc, 0, MPI_COMM_WORLD, &recv_request);
+    }
+  }
+
+  if (start_proc != end_proc) {
+    if (world.rank() == start_proc) {
+      MPI_Wait(&send_request, MPI_STATUS_IGNORE);
+    } else if (world.rank() == end_proc) {
+      MPI_Wait(&recv_request, MPI_STATUS_IGNORE);
+    }
+  }
+
+  lavrentyev_a_line_topology_mpi::TestMPITaskParallel task(task_data);
+  ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
+
+  if (world.rank() == end_proc) {
+    ASSERT_EQ(input_data, output_data);
+
+    for (size_t i = 0; i < received_path.size(); ++i) {
+      ASSERT_EQ(received_path[i], start_proc + static_cast<int>(i));
+    }
+  }
+}
+
+TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_7517) {
+  boost::mpi::communicator world;
+
+  const int start_proc = 0;
+  const int end_proc = world.size() - 1;
+  const size_t num_elems = 7517;
+
+  auto task_data = std::make_shared<ppc::core::TaskData>();
+  task_data->inputs_count = {static_cast<unsigned int>(start_proc), static_cast<unsigned int>(end_proc),
+                             static_cast<unsigned int>(num_elems)};
+
+  std::vector<int> input_data;
+  std::vector<int> output_data(num_elems, -1);
+  std::vector<int> received_path(end_proc - start_proc + 1, -1);
+
+  MPI_Request send_request, recv_request;
+
+  if (world.rank() == start_proc) {
+    input_data = generate_random_vector(num_elems);
+    task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
+
+    if (start_proc != end_proc) {
+      MPI_Isend(input_data.data(), num_elems, MPI_INT, end_proc, 0, MPI_COMM_WORLD, &send_request);
+    }
+  }
+
+  if (world.rank() == end_proc) {
+    task_data->outputs = {reinterpret_cast<uint8_t*>(output_data.data()),
+                          reinterpret_cast<uint8_t*>(received_path.data())};
+    task_data->outputs_count = {static_cast<unsigned int>(output_data.size()),
+                                static_cast<unsigned int>(received_path.size())};
+
+    if (start_proc != end_proc) {
+      MPI_Irecv(input_data.data(), num_elems, MPI_INT, start_proc, 0, MPI_COMM_WORLD, &recv_request);
+    }
+  }
+
+  if (start_proc != end_proc) {
+    if (world.rank() == start_proc) {
+      MPI_Wait(&send_request, MPI_STATUS_IGNORE);
+    } else if (world.rank() == end_proc) {
+      MPI_Wait(&recv_request, MPI_STATUS_IGNORE);
     }
   }
 
