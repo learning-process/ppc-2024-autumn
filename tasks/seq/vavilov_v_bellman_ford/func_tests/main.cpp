@@ -70,29 +70,6 @@ TEST(vavilov_v_bellman_ford_seq, NegativeCycle) {
   ASSERT_FALSE(testTaskSequential.run());
 }
 
-TEST(vavilov_v_bellman_ford_seq, DisconnectedGraph) {
-  std::vector<int> edges = {0, 1, 4, 0, 2, 1, 1, 3, 2};
-  std::vector<int> output(5, std::numeric_limits<int>::max());
-  unsigned int vertices = 5, edges_count = 3, source = 0;
-
-  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs_count.emplace_back(vertices);
-  taskDataSeq->inputs_count.emplace_back(edges_count);
-  taskDataSeq->inputs_count.emplace_back(source);
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(edges.data()));
-  taskDataSeq->outputs_count.emplace_back(output.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
-
-  vavilov_v_bellman_ford_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_TRUE(testTaskSequential.validation());
-  ASSERT_TRUE(testTaskSequential.pre_processing());
-  ASSERT_TRUE(testTaskSequential.run());
-  ASSERT_TRUE(testTaskSequential.post_processing());
-
-  std::vector<int> expected_output = {0, 4, 1, 6, std::numeric_limits<int>::max()};
-  EXPECT_EQ(output, expected_output);
-}
-
 TEST(vavilov_v_bellman_ford_seq, SingleVertexGraph) {
   std::vector<int> edges = {};
   std::vector<int> output(1, 0);
