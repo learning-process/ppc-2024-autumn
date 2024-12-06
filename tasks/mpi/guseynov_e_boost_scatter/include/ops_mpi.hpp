@@ -12,7 +12,7 @@
 
 namespace guseynov_e_boost_scatter_mpi {
 
-std::vector<int> getRandomVector(int sz);
+std::vector<int> getRandomVector(int sz, int minValue, int maxValue);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
