@@ -161,7 +161,7 @@ int ermilova_d_custom_reduce_mpi::CustomReduce(void *sendbuf, void *recvbuf, int
         } else if (datatype == MPI_FLOAT) {
           apply_operation<float>(recvbuf, sendbuf, count, datatype, op);
         } else if (datatype == MPI_DOUBLE) {
-          apply_operation<int>(recvbuf, sendbuf, count, datatype, op);
+          apply_operation<double>(recvbuf, sendbuf, count, datatype, op);
         } else {
           fprintf(stderr, "Unsupported datatype\n");
           MPI_Abort(MPI_COMM_WORLD, MPI_ERR_TYPE);
