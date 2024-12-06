@@ -14,15 +14,6 @@ std::vector<T> create_RandomMatrix(int row_size, int column_size) {
 */
 
 template <typename T>
-T get_MaxValue(std::vector<T> matrix) {
-  T max_result = std::numeric_limits<T>::min();
-  for (unsigned int i = 0; i < matrix.size(); i++)
-    if (max_result < matrix[i]) max_result = matrix[i];
-
-  return max_result;
-}
-
-template <typename T>
 bool MaxMatrixSequental<T>::pre_processing() {
   internal_order_test();
 
