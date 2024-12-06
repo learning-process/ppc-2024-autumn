@@ -47,7 +47,6 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, test_task) {
   delete[] sendcounts;
   delete[] displs;
 
-  auto start = std::chrono::high_resolution_clock::now();
   local_result.resize(end_row - start_row);
   for (int i = 0; i < end_row - start_row; ++i) {
     local_result[i] = 0;
@@ -117,7 +116,6 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, test_pipeline) {
     MPI_Abort(MPI_COMM_WORLD, scatter_rc);
   }
 
-  auto start = std::chrono::high_resolution_clock::now();
   local_result.resize(end_row - start_row);
   for (int i = 0; i < end_row - start_row; ++i) {
     local_result[i] = 0;
