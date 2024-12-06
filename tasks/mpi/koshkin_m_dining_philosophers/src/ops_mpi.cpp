@@ -6,10 +6,7 @@
 #include <condition_variable>
 #include <functional>
 #include <iostream>
-#include <thread>
-#include <vector>
-
-using namespace std::chrono_literals;
+#include <random>
 
 void koshkin_m_dining_philosophers::testMpiTaskParallel::update_neighbors() {
   left_philisopher = (world.rank() + world.size() - 1) % world.size();
@@ -17,10 +14,13 @@ void koshkin_m_dining_philosophers::testMpiTaskParallel::update_neighbors() {
 }
 
 bool koshkin_m_dining_philosophers::testMpiTaskParallel::pre_processing() {
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> distrib(1, 3);
   if (world.rank() % 2 == 0) {
-    status = 1;
+    status = distrib(gen);
   } else
-    status = 3;
+    status = distrib(gen);
   return true;
 }
 
@@ -89,24 +89,24 @@ void koshkin_m_dining_philosophers::testMpiTaskParallel::eat() {
 
 void koshkin_m_dining_philosophers::testMpiTaskParallel::request_forks() {
   status = 2;
-  world.send(left_philisopher, 0, 2);
-  world.send(right_philisopher, 0, 2);
+  world.isend(left_philisopher, 0, 2);
+  world.isend(right_philisopher, 0, 2);
   int left_response = 1;
   int right_response = 2;
-  world.recv(left_philisopher, 0, left_response);
-  world.recv(right_philisopher, 0, right_response);
+  world.irecv(left_philisopher, 0, left_response);
+  world.irecv(right_philisopher, 0, right_response);
 }
 
 void koshkin_m_dining_philosophers::testMpiTaskParallel::release_forks() {
   status = 1;
-  world.send(left_philisopher, 0, 1);
-  world.send(right_philisopher, 0, 1);
+  world.isend(left_philisopher, 0, 1);
+  world.isend(right_philisopher, 0, 1);
   while (world.iprobe(left_philisopher, 0)) {
     int ack;
-    world.recv(left_philisopher, 0, ack);
+    world.irecv(left_philisopher, 0, ack);
   }
   while (world.iprobe(right_philisopher, 0)) {
     int ack;
-    world.recv(right_philisopher, 0, ack);
+    world.irecv(right_philisopher, 0, ack);
   }
 }
