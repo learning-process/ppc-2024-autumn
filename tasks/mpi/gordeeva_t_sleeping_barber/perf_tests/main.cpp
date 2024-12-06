@@ -27,7 +27,7 @@ TEST(gordeeva_t_sleeping_barber_mpi, test_pipeline_run) {
   testMpiTaskParallel->pre_processing();
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = num_clients;  // The number of clients to run
+  perfAttr->num_running = num_clients;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
@@ -51,7 +51,6 @@ TEST(gordeeva_t_sleeping_barber_mpi, test_task_run) {
   std::vector<int> global_res(1, 0);
   bool barber_busy_ = false;
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int num_clients = 10;
   if (world.rank() == 0) {
