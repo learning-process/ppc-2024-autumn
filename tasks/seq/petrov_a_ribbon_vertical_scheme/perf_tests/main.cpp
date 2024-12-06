@@ -29,7 +29,6 @@ TEST(petrov_a_ribbon_vertical_scheme_seq, performance_test) {
     vector[i] = i % 10;
   }
 
-  // Создание TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
   taskDataSeq->inputs_count.emplace_back(rows);
