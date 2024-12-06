@@ -1,12 +1,9 @@
 #include "mpi/gordeeva_t_sleeping_barber/include/ops_mpi.hpp"
 
-#include <algorithm>
 #include <functional>
 #include <queue>
-#include <random>
 #include <string>
 #include <thread>
-#include <vector>
 
 using namespace std::chrono_literals;
 
@@ -129,7 +126,6 @@ void gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::dispatcher_logic() {
     }
 
     if (world.iprobe(boost::mpi::any_source, 3)) {
-      std::cout << "LAST: " << remaining_clients << std::endl;
       int done_signal;
       world.recv(boost::mpi::any_source, 3, done_signal);
       remaining_clients--;
