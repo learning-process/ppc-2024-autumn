@@ -13,7 +13,7 @@ std::vector<int> plekhanov_d_allreduce_mine_mpi::getRandomVector(int size) {
   for (int i = 0; i < size; i++) {
     int value = 0;
     do {
-      value = gen() % 1000-100;
+      value = gen() % 1000 - 100;
     } while (value <= 0);
     vec[i] = value;
   }
