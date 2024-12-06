@@ -52,26 +52,21 @@ bool pikarychev_i_sleeping_barber_mpi::TestMPITaskParallel::run() {
         switch (tag) {
           case JoinWaitingTag: {
             world.isend(src, tag, waiting);
-            printf("Coordinator: accept %d\n", src);
             if (waiting >= capacity) {
               ++i;
-              printf("Coordinator: drop %d\n", src);
               continue;
             }
             ++waiting;
-            printf("Coordinator: push %d\n", src);
             world.isend(RankBarber, IncomingCustomerTag, src);
             break;
           }
           case AcceptingCustomerTag: {
             ++i;
             --waiting;
-            printf("Coordinator: pop\n");
             break;
           }
         }
       }
-      printf("Coordinator: terminating barber\n");
       world.send(RankBarber, IncomingCustomerTag, BarberTerminationCustomerMagicId);
       break;
     }
@@ -79,14 +74,11 @@ bool pikarychev_i_sleeping_barber_mpi::TestMPITaskParallel::run() {
       while (true) {
         int customer;
         world.recv(RankCoordinator, IncomingCustomerTag, customer);
-        printf("Barber: accept %d\n", customer);
 
         if (customer == BarberTerminationCustomerMagicId) {
-          printf("Barber: terminating\n");
           break;
         }
 
-        printf("Barber: notify %d\n", customer);
         world.send(RankCoordinator, AcceptingCustomerTag);
 
         world.send(customer, AcceptingCustomerTag);
@@ -94,7 +86,6 @@ bool pikarychev_i_sleeping_barber_mpi::TestMPITaskParallel::run() {
         std::this_thread::sleep_for(std::chrono::milliseconds(5 + gen() % 5));
         world.send(customer, ReleasingBarberTag);
 
-        printf("Barber: done %d\n", customer);
       }
       break;
     }
@@ -102,11 +93,9 @@ bool pikarychev_i_sleeping_barber_mpi::TestMPITaskParallel::run() {
       std::this_thread::sleep_for(std::chrono::milliseconds(10 + gen() % 20));
 
       int waiting;
-      printf("Customer#%d: acquiring coordinator\n", rank);
       world.send(RankCoordinator, JoinWaitingTag);
       world.recv(RankCoordinator, JoinWaitingTag, waiting);
       if (waiting >= capacity) {
-        printf("Customer#%d: leave, queue is full\n", rank);
         break;
       }
 
@@ -114,7 +103,6 @@ bool pikarychev_i_sleeping_barber_mpi::TestMPITaskParallel::run() {
       std::this_thread::sleep_for(std::chrono::milliseconds(10 + gen() % 10));
       world.send(RankBarber, ReleasingBarberTag);
       world.recv(RankBarber, ReleasingBarberTag);
-      printf("Customer#%d: complete\n", rank);
 
       break;
     }
