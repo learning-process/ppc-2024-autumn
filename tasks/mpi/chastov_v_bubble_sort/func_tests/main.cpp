@@ -2,6 +2,26 @@
 
 #include "mpi/chastov_v_bubble_sort/include/ops_mpi.hpp"
 
+TEST(chastov_v_bubble_sort, zero_len) {
+  std::vector<int> input_data;
+  std::vector<int> output_data;
+  boost::mpi::communicator communicator;
+
+  auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (communicator.rank() == 0) {
+    taskDataPar->inputs_count.push_back(static_cast<int>(input_data.size()));
+    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t *>(input_data.data()));
+    taskDataPar->outputs.push_back(reinterpret_cast<uint8_t *>(output_data.data()));
+    taskDataPar->outputs_count.push_back(static_cast<int>(output_data.size()));
+  }
+
+  chastov_v_bubble_sort::TestMPITaskParallel<int> parallel_task(taskDataPar);
+
+  if (communicator.rank() == 0) {
+    EXPECT_EQ(false, parallel_task.validation());
+  }
+}
+
 TEST(chastov_v_bubble_sort, sorted_input) {
   std::vector<int> input_data = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
   std::vector<int> output_data(input_data.size(), 0);

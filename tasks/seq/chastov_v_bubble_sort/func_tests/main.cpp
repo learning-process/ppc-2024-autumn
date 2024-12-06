@@ -118,6 +118,66 @@ TEST(chastov_v_bubble_sort, test_int_rand_1200) {
   ASSERT_EQ(output_data, expected_data);
 }
 
+TEST(chastov_v_bubble_sort, test_double_rand_120) {
+  constexpr size_t mass_size = 120;
+  std::srand(static_cast<unsigned>(std::time(nullptr)));
+
+  std::vector<double> input_data(mass_size);
+  std::generate(input_data.begin(), input_data.end(), []() {
+    return static_cast<double>(std::rand()) / (std::rand() % 100 + 1) * (std::rand() % 2 == 0 ? 1.0 : -1.0);
+  });
+
+  std::vector<double> output_data(mass_size);
+
+  auto task_data = std::make_shared<ppc::core::TaskData>();
+  task_data->inputs_count.push_back(input_data.size());
+  task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
+  task_data->outputs.push_back(reinterpret_cast<uint8_t*>(output_data.data()));
+  task_data->outputs_count.push_back(output_data.size());
+
+  chastov_v_bubble_sort::TestTaskSequential<double> sort_task(task_data);
+  ASSERT_TRUE(sort_task.validation());
+
+  sort_task.pre_processing();
+  sort_task.run();
+  sort_task.post_processing();
+
+  std::vector<double> expected_data = input_data;
+  std::sort(expected_data.begin(), expected_data.end());
+
+  ASSERT_EQ(output_data, expected_data);
+}
+
+TEST(chastov_v_bubble_sort, test_double_rand_1200) {
+  constexpr size_t mass_size = 1200;
+  std::srand(static_cast<unsigned>(std::time(nullptr)));
+
+  std::vector<double> input_data(mass_size);
+  std::generate(input_data.begin(), input_data.end(), []() {
+    return static_cast<double>(std::rand()) / (std::rand() % 100 + 1) * (std::rand() % 2 == 0 ? 1.0 : -1.0);
+  });
+
+  std::vector<double> output_data(mass_size);
+
+  auto task_data = std::make_shared<ppc::core::TaskData>();
+  task_data->inputs_count.push_back(input_data.size());
+  task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
+  task_data->outputs.push_back(reinterpret_cast<uint8_t*>(output_data.data()));
+  task_data->outputs_count.push_back(output_data.size());
+
+  chastov_v_bubble_sort::TestTaskSequential<double> sort_task(task_data);
+  ASSERT_TRUE(sort_task.validation());
+
+  sort_task.pre_processing();
+  sort_task.run();
+  sort_task.post_processing();
+
+  std::vector<double> expected_data = input_data;
+  std::sort(expected_data.begin(), expected_data.end());
+
+  ASSERT_EQ(output_data, expected_data);
+}
+
 TEST(chastov_v_bubble_sort, test_mass_identical_values) {
   constexpr size_t mass_size = 10;
   std::srand(static_cast<unsigned>(std::time(nullptr)));
