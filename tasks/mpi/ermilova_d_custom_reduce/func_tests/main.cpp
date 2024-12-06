@@ -62,7 +62,8 @@ TEST(ermilova_d_custom_reduce_mpi, Cant_create_incorrect_size_matrix) {
 }
 
 TEST(ermilova_d_custom_reduce_mpi, CustomReduce_int_sum) {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
@@ -73,12 +74,14 @@ TEST(ermilova_d_custom_reduce_mpi, CustomReduce_int_sum) {
 
   if (rank == 0) {
     int expected_sum = size * (size + 1) / 2;
+
     ASSERT_EQ(global_result, expected_sum);
   }
 }
 
 TEST(ermilova_d_custom_reduce_mpi, CustomReduce_int_min) {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
@@ -93,7 +96,8 @@ TEST(ermilova_d_custom_reduce_mpi, CustomReduce_int_min) {
 }
 
 TEST(ermilova_d_custom_reduce_mpi, CustomReduce_int_max) {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
@@ -108,7 +112,8 @@ TEST(ermilova_d_custom_reduce_mpi, CustomReduce_int_max) {
 }
 
 TEST(ermilova_d_custom_reduce_mpi, CustomReduce_float_sum) {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
@@ -118,13 +123,14 @@ TEST(ermilova_d_custom_reduce_mpi, CustomReduce_float_sum) {
   ermilova_d_custom_reduce_mpi::CustomReduce(&local_value, &global_result, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
 
   if (rank == 0) {
-    float expected_sum = ((size * size + 1) / 2.0f) + 0.5f * size;
+    float expected_sum = (size * (size + 1) / 2.0f) + 0.5f * size;
     ASSERT_FLOAT_EQ(global_result, expected_sum);
   }
 }
 
 TEST(ermilova_d_custom_reduce_mpi, CustomReduce_float_max) {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
@@ -153,7 +159,8 @@ TEST(ermilova_d_custom_reduce_mpi, CustomReduce_float_min) {
 }
 
 TEST(ermilova_d_custom_reduce_mpi, CustomReduce_double_sum) {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
@@ -183,7 +190,8 @@ TEST(ermilova_d_custom_reduce_mpi, CustomReduce_double_min) {
 }
 
 TEST(ermilova_d_custom_reduce_mpi, CustomReduce_double_max) {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 

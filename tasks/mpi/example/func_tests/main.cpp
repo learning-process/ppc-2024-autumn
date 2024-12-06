@@ -235,5 +235,8 @@ int main(int argc, char** argv) {
   if (world.rank() != 0) {
     delete listeners.Release(listeners.default_result_printer());
   }
-  return RUN_ALL_TESTS();
+
+  int a = RUN_ALL_TESTS();
+  std::cin.ignore();
+  return a;
 }
