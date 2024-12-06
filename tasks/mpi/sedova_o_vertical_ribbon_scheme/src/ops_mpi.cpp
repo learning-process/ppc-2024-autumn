@@ -25,32 +25,16 @@ std::pair<std::vector<int>, std::vector<int>> calculateDistribution(int cols, in
 
 bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::validation() {
   internal_order_test();
-
-  if (world.rank() == 0) {
-    // Check for null TaskData
-    if (!taskData) {
-      return false;
-    }
-    // Check input counts
-    if (taskData->inputs_count[0] < 1 || taskData->inputs_count[1] < 1) {
-      return false;
-    }
-    // Check if the number of columns in the matrix is equal to the size of the vector.
-    int num_rows = taskData->inputs_count[0] / taskData->inputs_count[1];
-    if (taskData->inputs_count[0] % taskData->inputs_count[1] != 0 || num_rows < 1) {
-      return false;
-    }
-    // Check for null input pointers
-    if (taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr) {
-      return false;
-    }
-    // Check output
-    if (taskData->outputs[0] == nullptr) {
-      return false;
-    }
+  if (!taskData) {
+    return false;
   }
-  return true;
+  if (taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr) {
+    return false;
+  }
+  return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 &&
+         taskData->inputs_count[0] % taskData->inputs_count[1] == 0;
 }
+
 bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::pre_processing() {
   internal_order_test();
 
@@ -152,19 +136,26 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::post_processing() {
 
 bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::validation() {
   internal_order_test();
-  return taskData->inputs_count[0] >= 1 && taskData->inputs_count[1] >= 1 && !taskData &&
-         taskData->inputs_count[0] % taskData->inputs_count[1] == 0 && taskData->outputs[0] != nullptr;
+  if (!taskData) {
+    return false;
+  }
+  if (taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr) {
+    return false;
+  }
+  return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 &&
+         taskData->inputs_count[0] % taskData->inputs_count[1] == 0;
 }
 
 bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::pre_processing() {
   internal_order_test();
 
-  input_matrix_ = reinterpret_cast<int*>(taskData->inputs[0]);
-  input_vector_ = reinterpret_cast<int*>(taskData->inputs[1]);
-  int count = taskData->inputs_count[0];
-  rows_ = taskData->inputs_count[1];
-  cols_ = count / rows_;
-  result_vector_.assign(cols_, 0);
+  matrix_ = reinterpret_cast<int*>(taskData->inputs[0]);
+  count = taskData->inputs_count[0];
+  vector_ = reinterpret_cast<int*>(taskData->inputs[1]);
+  cols_ = taskData->inputs_count[1];
+  rows_ = count / cols_;
+  input_vector_.assign(vector_, vector_ + cols_);
+  result_vector_.assign(rows_, 0);
 
   return true;
 }
@@ -172,9 +163,9 @@ bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::pre_processing() {
 bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::run() {
   internal_order_test();
 
-  for (int j = 0; j < cols_; ++j) {  // Iterate through columns first
+  for (int j = 0; j < cols_; ++j) {
     for (int i = 0; i < rows_; ++i) {
-      result_vector_[i] += input_matrix_[i * cols_ + j] * input_vector_[j];
+      result_vector_[i] += matrix_[i + j * rows_] * input_vector_[j];
     }
   }
   return true;
@@ -185,5 +176,6 @@ bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::post_processing() {
 
   int* output_data = reinterpret_cast<int*>(taskData->outputs[0]);
   std::copy(result_vector_.begin(), result_vector_.end(), output_data);
+
   return true;
 }

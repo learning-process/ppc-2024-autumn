@@ -42,11 +42,15 @@ class SequentialMPI : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
+ 
  private:
-  int rows_{};
-  int cols_{};
-  int* input_matrix_;
-  int* input_vector_;
+  int* matrix_;
+  int* vector_;
+  std::vector<std::vector<int>> input_matrix_;
+  std::vector<int> input_vector_;
   std::vector<int> result_vector_;
+  int count;
+  int rows_;
+  int cols_;
 };
 }  // namespace sedova_o_vertical_ribbon_scheme_mpi

@@ -23,6 +23,23 @@ TEST(sedova_o_vertical_ribbon_scheme_seq, Test1) {
 }
 
 TEST(sedova_o_vertical_ribbon_scheme_seq, Test2) {
+  std::vector<int> matrix = {1, 2, 4, 5};
+  std::vector<int> vector = {};
+  std::vector<int> result(2, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(vector.data()));
+  taskDataSeq->inputs_count.emplace_back(vector.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
+  taskDataSeq->outputs_count.emplace_back(result.size());
+
+  sedova_o_vertical_ribbon_scheme_seq::Sequential TestSequential(taskDataSeq);
+  EXPECT_FALSE(TestSequential.validation());
+}
+
+TEST(sedova_o_vertical_ribbon_scheme_seq, Test3) {
   std::vector<int> matrix = {};
   std::vector<int> vector = {};
   std::vector<int> result;
@@ -129,4 +146,38 @@ TEST(sedova_o_vertical_ribbon_scheme_seq, 5x1) {
 
   std::vector<int> expected_result = {2, 6, 10, 8, 12};
   ASSERT_EQ(result, expected_result);
+}
+
+TEST(sedova_o_vertical_ribbon_scheme_seq, Test4) {
+  std::vector<int> matrix = {1, 2, 3, 4};
+  std::vector<int> vector = {1, 2, 3};
+  std::vector<int> result(3, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(vector.data()));
+  taskDataSeq->inputs_count.emplace_back(vector.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
+  taskDataSeq->outputs_count.emplace_back(result.size());
+
+  sedova_o_vertical_ribbon_scheme_seq::Sequential TestSequential(taskDataSeq);
+  EXPECT_FALSE(TestSequential.validation());
+}
+
+TEST(sedova_o_vertical_ribbon_scheme_seq, Test5) {
+  std::vector<int> matrix = {1, 2, 3};
+  std::vector<int> vector = {1, 2};
+  std::vector<int> result(3, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(vector.data()));
+  taskDataSeq->inputs_count.emplace_back(vector.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
+  taskDataSeq->outputs_count.emplace_back(result.size());
+
+  sedova_o_vertical_ribbon_scheme_seq::Sequential TestSequential(taskDataSeq);
+  EXPECT_FALSE(TestSequential.validation());
 }
