@@ -128,40 +128,17 @@ bool ermilova_d_custom_reduce_mpi::TestMPITaskParallel::post_processing() {
   return true;
 }
 
-void ermilova_d_custom_reduce_mpi::apply_operation(void *inbuf, void *inoutbuf, int count, MPI_Datatype datatype,
-                                                   MPI_Op op) {
+template <typename T>
+void apply_operation(void *inbuf, void *inoutbuf, int count, MPI_Datatype datatype, MPI_Op op) {
+  auto *in = reinterpet_cast<T *>(inbuf);
+  auto *inout = reinterpet_cast<T *>(inoutbuf);
   for (int i = 0; i < count; i++) {
-    if (datatype == MPI_INT) {
-      int *in = (int *)inbuf;
-      int *inout = (int *)inoutbuf;
-      if (op == MPI_SUM)
-        inout[i] += in[i];
-      else if (op == MPI_MAX)
-        inout[i] = (inout[i] > in[i]) ? inout[i] : in[i];
-      else if (op == MPI_MIN)
-        inout[i] = (inout[i] < in[i]) ? inout[i] : in[i];
-    } else if (datatype == MPI_FLOAT) {
-      float *in = (float *)inbuf;
-      float *inout = (float *)inoutbuf;
-      if (op == MPI_SUM)
-        inout[i] += in[i];
-      else if (op == MPI_MAX)
-        inout[i] = (inout[i] > in[i]) ? inout[i] : in[i];
-      else if (op == MPI_MIN)
-        inout[i] = (inout[i] < in[i]) ? inout[i] : in[i];
-    } else if (datatype == MPI_DOUBLE) {
-      double *in = (double *)inbuf;
-      double *inout = (double *)inoutbuf;
-      if (op == MPI_SUM)
-        inout[i] += in[i];
-      else if (op == MPI_MAX)
-        inout[i] = (inout[i] > in[i]) ? inout[i] : in[i];
-      else if (op == MPI_MIN)
-        inout[i] = (inout[i] < in[i]) ? inout[i] : in[i];
-    } else {
-      fprintf(stderr, "Unsupported datatype\n");
-      MPI_Abort(MPI_COMM_WORLD, MPI_ERR_TYPE);
-    }
+    if (op == MPI_SUM)
+      inout[i] += in[i];
+    else if (op == MPI_MAX)
+      inout[i] = (inout[i] > in[i]) ? inout[i] : in[i];
+    else if (op == MPI_MIN)
+      inout[i] = (inout[i] < in[i]) ? inout[i] : in[i];
   }
 }
 
@@ -179,7 +156,16 @@ int ermilova_d_custom_reduce_mpi::CustomReduce(void *sendbuf, void *recvbuf, int
     if (rank % (2 * step) == 0) {
       if (rank + step < size) {
         MPI_Recv(recvbuf, count, datatype, rank + step, 0, comm, MPI_STATUS_IGNORE);
-        ermilova_d_custom_reduce_mpi::apply_operation(recvbuf, sendbuf, count, datatype, op);
+        if (datatype == MPI_INT) {
+          apply_operation<int>(recvbuf, sendbuf, count, datatype, op);
+        } else if (datatype == MPI_FLOAT) {
+          apply_operation<float>(recvbuf, sendbuf, count, datatype, op);
+        } else if (datatype == MPI_DOUBLE) {
+          apply_operation<int>(recvbuf, sendbuf, count, datatype, op);
+        } else {
+          fprintf(stderr, "Unsupported datatype\n");
+          MPI_Abort(MPI_COMM_WORLD, MPI_ERR_TYPE);
+        }
         memcpy(recvbuf, sendbuf,
                count * (datatype == MPI_INT ? sizeof(int) : (datatype == MPI_FLOAT ? sizeof(float) : sizeof(double))));
       }

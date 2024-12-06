@@ -15,7 +15,6 @@
 namespace ermilova_d_custom_reduce_mpi {
 
 int CustomReduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op, int root, MPI_Comm comm);
-void apply_operation(void* inbuf, void* inoutbuf, int count, MPI_Datatype datatype, MPI_Op op);
 
 std::vector<int> getRandomVector(int size, int upper_border, int lower_border);
 std::vector<std::vector<int>> getRandomMatrix(int rows, int cols, int upper_border, int lower_border);
