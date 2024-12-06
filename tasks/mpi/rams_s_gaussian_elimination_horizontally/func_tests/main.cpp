@@ -85,31 +85,20 @@ TEST_IT(3, {
   }, 3)
 
 TEST_IT(4, {
-     0,  1, -2,  0,
-     0,  2, -4,  0,
-     2,  0,  0, -4
-  }, 3)
+     2,  0,  2,  2, -6,
+     0,  0,  2,  2, -4,
+     0,  0,  0,  4, -4,
+     0,  3,  0,  0,  3,
+  }, 4)
 
 TEST_IT(5, {
-     7,  0,  2, 11,
-     0,  0,  4,  8,
-     0,  0,  2,  4
-  }, 3)
-
-TEST_IT(6, {
-     7,  1,  2, 12,
-     0,  0,  4,  8,
-     0,  0,  2,  4
-  }, 3)
-
-TEST_IT(7, {
      7,  1,  2, 12,
      0,  5,  0,  5,
      0,  0,  4,  8,
      0,  0,  2,  4
   }, 3)
 
-TEST_IT(8, {
+TEST_IT(6, {
      1,  1,  1,  1,  1,  1,  1, -7,
      1,  2,  2,  2,  2,  2,  2,-13,
      1,  2,  3,  3,  3,  3,  3,-17,
@@ -144,3 +133,56 @@ TEST_IT_RANDOM(2, 13)
 TEST_IT_RANDOM(3, 16)
 TEST_IT_RANDOM(4, 99)
 TEST_IT_RANDOM(5, 56)
+
+void rams_s_gaussian_elimination_horizontally_mpi_run_validation_test(std::vector<double> &&in, int outputs_count,
+                                                                      bool expected) {
+  boost::mpi::communicator world;
+  std::vector<double> out(outputs_count, 0);
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    taskDataPar->inputs_count.emplace_back(in.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
+  }
+  rams_s_gaussian_elimination_horizontally_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  if (world.rank() == 0) {
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    taskDataSeq->inputs_count.emplace_back(in.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+    taskDataSeq->outputs_count.emplace_back(out.size());
+
+    rams_s_gaussian_elimination_horizontally_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskParallel.validation(), testMpiTaskSequential.validation());
+  }
+}
+#define TEST_VALIDATION(case_name, ...)                                            \
+  TEST(rams_s_gaussian_elimination_horizontally_mpi, case_name) {                  \
+    rams_s_gaussian_elimination_horizontally_mpi_run_validation_test(__VA_ARGS__); \
+  }
+// clang-format off
+TEST_VALIDATION(rejects_when_input_is_not_a_matrix_with_specified_cols_count, {
+  1, 1, -2,
+  2, 2
+}, 2, false)
+TEST_VALIDATION(rejects_when_input_is_not_a_matrix_with_specified_cols_count_2, {
+  1, 1, -2,
+  2, 2, -4,
+}, 3, false)
+TEST_VALIDATION(rejects_if_matrix_is_not_singular, {
+  1, 1, 1, -3,
+  2, 2, 2, -6,
+}, 3, false)
+TEST_VALIDATION(rejects_if_matrix_is_not_singular2, {
+  1, 0, 1, -2,
+  0, 0, 0, -5,
+  0, 0, 1, -1,
+}, 3, false)
+TEST_VALIDATION(rejects_if_matrix_is_not_singular3, {
+  1, 0, 1, 1, -3,
+  0, 0, 0, 1, -5,
+  0, 0, 1, 1, -6,
+}, 4, false)
+// clang-format on

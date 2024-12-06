@@ -22,9 +22,45 @@ bool rams_s_gaussian_elimination_horizontally_mpi::TestMPITaskSequential::pre_pr
 bool rams_s_gaussian_elimination_horizontally_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
 
-  return taskData->inputs_count[0] >= 0 && taskData->outputs_count[0] >= 0 &&
-         (taskData->inputs_count[0] % (taskData->outputs_count[0] + 1) == 0) &&
-         ((taskData->inputs_count[0] / (taskData->outputs_count[0] + 1)) >= taskData->outputs_count[0]);
+  if (taskData->inputs_count[0] < 0 || taskData->outputs_count[0] < 0 ||
+      (taskData->inputs_count[0] % (taskData->outputs_count[0] + 1) != 0) ||
+      ((taskData->inputs_count[0] / (taskData->outputs_count[0] + 1)) < taskData->outputs_count[0])) {
+    return false;
+  }
+
+  auto *input_data = reinterpret_cast<double *>(taskData->inputs[0]);
+  std::vector<double> local_matrix(input_data, input_data + taskData->inputs_count[0]);
+  int local_cols_count = taskData->outputs_count[0] + 1;
+  int local_rows_count = local_matrix.size() / local_cols_count;
+
+  std::vector<bool> used_rows(local_rows_count, false);
+  size_t rank = std::max(local_cols_count - 1, local_rows_count);
+  for (int col_idx = 0; col_idx < local_cols_count - 1; col_idx++) {
+    int row_idx = 0;
+    for (; row_idx < local_rows_count; row_idx++) {
+      if (!used_rows[row_idx] && local_matrix[row_idx * local_cols_count + col_idx] != 0) {
+        break;
+      }
+    }
+    if (row_idx == local_rows_count) {
+      rank--;
+      continue;
+    }
+    used_rows[row_idx] = true;
+    for (int c = 0; c < local_cols_count; c++) {
+      local_matrix[row_idx * local_cols_count + c] /= local_matrix[row_idx * local_cols_count + col_idx];
+    }
+    for (int r = 0; r < local_rows_count; r++) {
+      if (r != row_idx && local_matrix[r * local_cols_count + col_idx] != 0) {
+        for (int c = col_idx + 1; c < local_cols_count; c++) {
+          local_matrix[r * local_cols_count + c] -=
+              local_matrix[row_idx * local_cols_count + c] * local_matrix[r * local_cols_count + col_idx];
+        }
+      }
+    }
+  }
+
+  return rank >= taskData->outputs_count[0];
 }
 
 bool rams_s_gaussian_elimination_horizontally_mpi::TestMPITaskSequential::run() {
@@ -113,10 +149,48 @@ bool rams_s_gaussian_elimination_horizontally_mpi::TestMPITaskParallel::pre_proc
 bool rams_s_gaussian_elimination_horizontally_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
 
-  return world.rank() != 0 ||
-         (taskData->inputs_count[0] >= 0 && taskData->outputs_count[0] >= 0 &&
-          (taskData->inputs_count[0] % (taskData->outputs_count[0] + 1) == 0) &&
-          ((taskData->inputs_count[0] / (taskData->outputs_count[0] + 1)) >= taskData->outputs_count[0]));
+  if (world.rank() != 0) {
+    return true;
+  }
+  if (taskData->inputs_count[0] < 0 || taskData->outputs_count[0] < 0 ||
+      (taskData->inputs_count[0] % (taskData->outputs_count[0] + 1) != 0) ||
+      ((taskData->inputs_count[0] / (taskData->outputs_count[0] + 1)) < taskData->outputs_count[0])) {
+    return false;
+  }
+
+  auto *input_data = reinterpret_cast<double *>(taskData->inputs[0]);
+  std::vector<double> local_matrix(input_data, input_data + taskData->inputs_count[0]);
+  int local_cols_count = taskData->outputs_count[0] + 1;
+  int local_rows_count = local_matrix.size() / local_cols_count;
+
+  std::vector<bool> used_rows(local_rows_count, false);
+  size_t rank = std::max(local_cols_count - 1, local_rows_count);
+  for (int col_idx = 0; col_idx < local_cols_count - 1; col_idx++) {
+    int row_idx = 0;
+    for (; row_idx < local_rows_count; row_idx++) {
+      if (!used_rows[row_idx] && local_matrix[row_idx * local_cols_count + col_idx] != 0) {
+        break;
+      }
+    }
+    if (row_idx == local_rows_count) {
+      rank--;
+      continue;
+    }
+    used_rows[row_idx] = true;
+    for (int c = 0; c < local_cols_count; c++) {
+      local_matrix[row_idx * local_cols_count + c] /= local_matrix[row_idx * local_cols_count + col_idx];
+    }
+    for (int r = 0; r < local_rows_count; r++) {
+      if (r != row_idx && local_matrix[r * local_cols_count + col_idx] != 0) {
+        for (int c = col_idx + 1; c < local_cols_count; c++) {
+          local_matrix[r * local_cols_count + c] -=
+              local_matrix[row_idx * local_cols_count + c] * local_matrix[r * local_cols_count + col_idx];
+        }
+      }
+    }
+  }
+
+  return rank >= taskData->outputs_count[0];
 }
 
 bool rams_s_gaussian_elimination_horizontally_mpi::TestMPITaskParallel::run() {
