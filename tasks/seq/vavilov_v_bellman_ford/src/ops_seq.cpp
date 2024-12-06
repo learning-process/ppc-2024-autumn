@@ -30,7 +30,7 @@ bool vavilov_v_bellman_ford_seq::TestTaskSequential::validation() {
 bool vavilov_v_bellman_ford_seq::TestTaskSequential::run() {
   internal_order_test();
 
-  for (int i = 1; i < vertices_; ++i) {
+  for (int i = 0; i < vertices_ - 1; ++i) {
     bool updated = false;
     for (const auto& edge : edges_) {
       if (reachable_[edge.src] && distances_[edge.src] != INT_MAX &&
