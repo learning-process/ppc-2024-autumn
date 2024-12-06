@@ -104,7 +104,13 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
         if (world.rank() == 0) {
             _rows = taskData->inputs_count[3];
             _columns = taskData->inputs_count[2];
+            if (_rows <= 0 || _columns <= 0) {
+                return false;
+            }
         }
+
+        broadcast(world, _rows, 0);
+        broadcast(world, _columns, 0);
 
         if (world.rank() == 0) {
             _coefs = std::vector<double>(taskData->inputs_count[0]);
@@ -118,33 +124,36 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
                 _b[i] = ptr1[i];
             }
         } else {
-            _coefs = std::vector<double>(_columns * _rows);
-            _b = std::vector<double>(_rows);
+            _coefs.resize(_columns * _rows);
+            _b.resize(_rows);
         }
-        _x = std::vector<double>(_rows, 0);
 
+        _x = std::vector<double>(_rows, 0);
         return true;
     }
+
 
     bool nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskParallel::validation() {
         internal_order_test();
         if (world.rank() == 0) {
-            if (taskData->inputs.size() == 2 && taskData->outputs.size() == 1 &&
-                taskData->inputs_count.size() == 4 && taskData->outputs_count.size() == 1) {
-                std::vector<double> tmp_coefs(taskData->inputs_count[0]);
-                auto* tmp_ptr2 = reinterpret_cast<double*>(taskData->inputs[0]);
-                for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
-                    tmp_coefs[i] = tmp_ptr2[i];
-                }
-                int r = taskData->inputs_count[3];
-                return (taskData->inputs_count[3] == taskData->inputs_count[2] &&
-                        taskData->inputs_count[2] == taskData->outputs_count[0]) &&
-                       !hasZeroDiagonal(tmp_coefs, r);
+            if (taskData->inputs.size() != 2 || taskData->outputs.size() != 1 ||
+                taskData->inputs_count.size() != 4 || taskData->outputs_count.size() != 1) {
+                return false;
             }
-            return false;
+            if (taskData->inputs_count[2] <= 0 || taskData->inputs_count[3] <= 0) {
+                return false;
+            }
+            std::vector<double> tmp_coefs(taskData->inputs_count[0]);
+            auto* tmp_ptr2 = reinterpret_cast<double*>(taskData->inputs[0]);
+            for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
+                tmp_coefs[i] = tmp_ptr2[i];
+            }
+            int n = taskData->inputs_count[3];
+            return !hasZeroDiagonal(tmp_coefs, n);
         }
         return true;
     }
+
 
 
     bool nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskParallel::run() {
