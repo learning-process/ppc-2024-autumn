@@ -2,7 +2,7 @@
 
 #include "boost/mpi/communicator.hpp"
 #include "mpi/agafeev_s_max_of_vector_elements/include/ops_mpi.hpp"
-//#include "seq/agafeev_s_max_of_vector_elements/include/ops_seq.hpp"
+// #include "seq/agafeev_s_max_of_vector_elements/include/ops_seq.hpp"
 
 TEST(agafeev_s_max_of_vector_elements, test_find_in_100x100_matrix) {
   boost::mpi::communicator world;

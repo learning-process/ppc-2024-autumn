@@ -8,12 +8,18 @@
 #include <vector>
 
 #include "core/task/include/task.hpp"
-//#include "seq/agafeev_s_max_of_vector_elements/include/ops_seq.hpp"
+// #include "seq/agafeev_s_max_of_vector_elements/include/ops_seq.hpp"
 
 namespace agafeev_s_max_of_vector_elements_mpi {
 
 template <typename T>
-std::vector<T> create_RandomMatrix(int row_size, int column_size);
+std::vector<T> create_RandomMatrix(int row_size, int column_size) {
+  auto rand_gen = std::mt19937(1337);
+  std::vector<T> matrix(row_size * column_size);
+  for (unsigned int i = 0; i < matrix.size(); i++) matrix[i] = rand_gen() % 100;
+
+  return matrix;
+}
 
 template <typename T>
 T get_MaxValue(std::vector<T> matrix);
