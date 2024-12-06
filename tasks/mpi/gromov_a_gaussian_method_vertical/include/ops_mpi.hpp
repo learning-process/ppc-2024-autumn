@@ -19,7 +19,7 @@ int matrix_rank(std::vector<double>& matrix, int rows, int columns, int band_wid
 
 class MPIGaussVerticalSequential : public ppc::core::Task {
  public:
-  explicit MPIGaussVerticalSequential(std::shared_ptr<ppc::core::TaskData> taskData_, int band_width_) 
+  explicit MPIGaussVerticalSequential(std::shared_ptr<ppc::core::TaskData> taskData_, int band_width_)
 	  : Task(std::move(taskData_)), band_width(band_width_) {}
   bool pre_processing() override;
   bool validation() override;
@@ -36,7 +36,7 @@ class MPIGaussVerticalSequential : public ppc::core::Task {
 
 class MPIGaussVerticalParallel : public ppc::core::Task {
  public:
-  explicit MPIGaussVerticalParallel(std::shared_ptr<ppc::core::TaskData> taskData_, int band_width_) 
+  explicit MPIGaussVerticalParallel(std::shared_ptr<ppc::core::TaskData> taskData_, int band_width_)
 	  : Task(std::move(taskData_)), band_width(band_width_) {}
   bool pre_processing() override;
   bool validation() override;

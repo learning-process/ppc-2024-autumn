@@ -7,7 +7,7 @@
 #include <thread>
 #include <vector>
 
-int gromov_a_gaussian_method_vertical_mpi::matrix_rank(std::vector<double>& matrix, int rows, int columns, 
+int gromov_a_gaussian_method_vertical_mpi::matrix_rank(std::vector<double>& matrix, int rows, int columns,
                                                        int band_width) {
   
   int rank = 0;
