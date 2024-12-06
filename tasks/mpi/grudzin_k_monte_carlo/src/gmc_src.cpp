@@ -34,6 +34,7 @@ bool MonteCarloMpi<dimension>::run() {
   std::uniform_real_distribution<> dis(0.0, 1.0);
 
   double loc_res_ = 0.0;
+  result = 0.0;
   for (int i = 0; i < delta; ++i) {
     std::array<double, dimension> x;
     for (int j = 0; j < 2 * dimension; j += 2) {
