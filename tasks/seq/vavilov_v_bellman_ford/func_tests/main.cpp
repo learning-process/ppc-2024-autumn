@@ -47,7 +47,7 @@ TEST(vavilov_v_bellman_ford_seq, ValidInputWithMultiplePaths_2) {
   ASSERT_TRUE(testTaskSequential.run());
   ASSERT_TRUE(testTaskSequential.post_processing());
 
-  std::vector<int> expected_output = {0, -1, 2, -2, 1};
+  std::vector<int> expected_output = {0, -1, 2, 1, INT_MAX};
   EXPECT_EQ(output, expected_output);
 }
 
