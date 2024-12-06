@@ -96,7 +96,7 @@ bool zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::run() {
 
 bool zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
-  auto output_raw = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
+  auto* output_raw = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
   for (int i = 0; i < height_; i++) {
     for (int j = 0; j < width_; j++) {
       output_raw[i * width_ + j] = result_[i * width_ + j];
@@ -211,7 +211,7 @@ bool zolotareva_a_smoothing_image_mpi::TestMPITaskParallel::run() {
 bool zolotareva_a_smoothing_image_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    uint8_t* output_raw = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
+    auto* output_raw = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
     for (int i = 0; i < height_; i++) {
       for (int j = 0; j < width_; j++) {
         output_raw[i * width_ + j] = result_[i * width_ + j];
