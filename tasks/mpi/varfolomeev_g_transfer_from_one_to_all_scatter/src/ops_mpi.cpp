@@ -75,7 +75,6 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel::va
     return false;
   }
   return world.size() >= 0 && world.rank() < world.size() && (ops == "+" || ops == "-" || ops == "max");
-
 }
 
 bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel::run() {
@@ -167,7 +166,6 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskPar
     return false;
   }
   return world.size() >= 0 && world.rank() < world.size() && (ops == "+" || ops == "-" || ops == "max");
-
 }
 
 bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel::run() {
