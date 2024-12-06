@@ -20,7 +20,6 @@ bool petrov_a_ribbon_vertical_scheme_mpi::TestTaskMPI::pre_processing() {
   int cols;
 
   if (rank == 0) {
-
     int rows = taskData->inputs_count[0];
     cols = taskData->inputs_count[1];
     matrix_data = reinterpret_cast<int*>(taskData->inputs[0]);
@@ -38,7 +37,7 @@ bool petrov_a_ribbon_vertical_scheme_mpi::TestTaskMPI::pre_processing() {
   }
 
   MPI_Bcast(&cols, 1, MPI_INT, 0, MPI_COMM_WORLD);
- 
+
   return true;
 }
 
@@ -86,7 +85,9 @@ bool petrov_a_ribbon_vertical_scheme_mpi::TestTaskMPI::post_processing() {
   int rows_per_proc = rows / size;
 
   std::vector<double> global_result(rows * cols);
-  MPI_Gather(local_matrix.data(), rows_per_proc * cols, MPI_DOUBLE, global_result.data(), rows_per_proc * cols, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+  MPI_Gather(local_matrix.data(), rows_per_proc * cols, MPI_DOUBLE, global_result.data(), rows_per_proc * cols, 
+      MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
   return true;
 }

@@ -27,12 +27,10 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, HandlesSmallMatrix) {
   MPI_Bcast(&rows, 1, MPI_INT, 0, MPI_COMM_WORLD);
   MPI_Bcast(&cols, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
-
   if (rank != 0) {
     matrix.resize(rows * cols);
     vector.resize(cols);
   }
-
 
   MPI_Bcast(matrix.data(), matrix.size(), MPI_INT, 0, MPI_COMM_WORLD);
   MPI_Bcast(vector.data(), vector.size(), MPI_INT, 0, MPI_COMM_WORLD);
