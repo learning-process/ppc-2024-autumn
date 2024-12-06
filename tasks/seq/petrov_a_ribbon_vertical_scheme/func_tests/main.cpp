@@ -71,7 +71,7 @@ TEST(petrov_a_ribbon_vertical_scheme_seq, Test_negativ) {
   std::vector<int> expected_result = {(-1) * 1 + 2 * (-1) + (-3) * 2, 4 * 1 + (-5) * (-1) + 6 * 2,
                                       (-7) * 1 + 8 * (-1) + (-9) * 2};
 
-  // Создание TaskData
+  // РЎРѕР·РґР°РЅРёРµ TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
   taskDataSeq->inputs_count.emplace_back(rows);
@@ -81,7 +81,7 @@ TEST(petrov_a_ribbon_vertical_scheme_seq, Test_negativ) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
   taskDataSeq->outputs_count.emplace_back(rows);
 
-  // Создание Task
+  // РЎРѕР·РґР°РЅРёРµ Task
   auto testTaskSeq = std::make_shared<petrov_a_ribbon_vertical_scheme_seq::TestTaskSequential>(taskDataSeq);
 
   ASSERT_EQ(testTaskSeq->validation(), true);
@@ -90,7 +90,7 @@ TEST(petrov_a_ribbon_vertical_scheme_seq, Test_negativ) {
   testTaskSeq->post_processing();
 
   for (int i = 0; i < rows; ++i) {
-    ASSERT_EQ(result[i], expected_result[i]) << "Mismatch at row " << i;  // Проверка результата
+    ASSERT_EQ(result[i], expected_result[i]) << "Mismatch at row " << i;  // РџСЂРѕРІРµСЂРєР° СЂРµР·СѓР»СЊС‚Р°С‚Р°
   }
 
   ASSERT_FALSE(result.empty());
@@ -105,7 +105,7 @@ TEST(petrov_a_ribbon_vertical_scheme_seq, Test_zeros) {
 
   std::vector<int> expected_result(rows, 0);
 
-  // Создание TaskData
+  // РЎРѕР·РґР°РЅРёРµ TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
   taskDataSeq->inputs_count.emplace_back(rows);
@@ -115,7 +115,7 @@ TEST(petrov_a_ribbon_vertical_scheme_seq, Test_zeros) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
   taskDataSeq->outputs_count.emplace_back(rows);
 
-  // Создание Task
+  // РЎРѕР·РґР°РЅРёРµ Task
   auto testTaskSeq = std::make_shared<petrov_a_ribbon_vertical_scheme_seq::TestTaskSequential>(taskDataSeq);
 
   ASSERT_EQ(testTaskSeq->validation(), true);
