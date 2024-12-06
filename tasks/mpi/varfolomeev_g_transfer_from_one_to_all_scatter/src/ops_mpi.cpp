@@ -80,7 +80,7 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel::va
 bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   int world_size = world.size();
-  int local_res = INT32_MAX;
+  int local_res = 0;
 
   // Spread the data
   if (world.rank() == 0) {
@@ -99,7 +99,6 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel::ru
     // Operation execution
     if (ops == "+") {
       local_res = std::accumulate(local_input_values.begin(), local_input_values.end(), 0);
-
     } else if (ops == "-") {
       local_res = -std::accumulate(local_input_values.begin(), local_input_values.end(), 0);
     } else if (ops == "max") {
@@ -134,9 +133,7 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel::ru
       res = std::accumulate(results.begin(), results.end(), 0);
     }
   } else {  // Sending results (non-root)
-    if (local_res != INT32_MAX) {
-      world.send(0, 0, local_res);
-    }
+    world.send(0, 0, local_res);
   }
   return true;
 }
@@ -171,6 +168,7 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskPar
 bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel::run() {
   internal_order_test();
   int node_size = 0;
+  int local_res = 0;
   if (world.rank() == 0) {
     node_size = input_values.size() / world.size();
     local_input_values.resize(node_size + input_values.size() % world.size());
@@ -182,7 +180,6 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskPar
     local_input_values.resize(node_size);
   }
   myScatter(world, input_values, local_input_values.data(), node_size, 0);
-  int local_res{};
   if (world.rank() == 0) {
     std::copy(input_values.begin() + node_size * world.size(), input_values.end(),
               local_input_values.begin() + node_size);
