@@ -86,7 +86,7 @@ bool zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::run() {
   int radius = 1;
   float sigma = 1.0f;
   std::vector<float> horizontal_kernel = create_gaussian_kernel(radius, sigma);
-  std::vector<float> vertical_kernel = horizontal_kernel;
+  const std::vector<float>& vertical_kernel = horizontal_kernel;
   std::vector<float> temp(height_ * width_, 0.0f);
   convolve_rows(input_, height_, width_, horizontal_kernel, temp);
   convolve_columns(temp, height_, width_, vertical_kernel, result_);
@@ -96,7 +96,7 @@ bool zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::run() {
 
 bool zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
-  uint8_t* output_raw = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
+  auto output_raw = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
   for (int i = 0; i < height_; i++) {
     for (int j = 0; j < width_; j++) {
       output_raw[i * width_ + j] = result_[i * width_ + j];
@@ -128,10 +128,13 @@ bool zolotareva_a_smoothing_image_mpi::TestMPITaskParallel::pre_processing() {
         input_[i * width_ + j] = raw_data[i * width_ + j];
       }
     }
+    if (world_size == 1) {
+      return true;
+    }
   }
   boost::mpi::broadcast(world, height_, 0);
   boost::mpi::broadcast(world, width_, 0);
-
+  world.barrier();
   if (world.rank() == 0) {
     int base_height = height_ / world_size;
     int remainder = height_ % world_size;
@@ -167,13 +170,27 @@ bool zolotareva_a_smoothing_image_mpi::TestMPITaskParallel::run() {
   float sigma = 1.0f;
   std::vector<float> horizontal_kernel =
       zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::create_gaussian_kernel(radius, sigma);
-  std::vector<float> vertical_kernel = horizontal_kernel;
+
+  if (world.size() == 1) {
+    result_.clear();
+    std::vector<float>& vertical_kernel = horizontal_kernel;
+    std::vector<float> temp(height_ * width_, 0.0f);
+    zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::convolve_rows(input_, height_, width_, horizontal_kernel,
+                                                                           temp);
+
+    zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::convolve_columns(temp, height_, width_, vertical_kernel,
+                                                                              result_);
+    return true;
+  }
+
+  std::vector<float>& vertical_kernel = horizontal_kernel;
   std::vector<float> temp(local_height_ * width_, 0.0f);
   zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::convolve_rows(local_input_, local_height_, width_,
                                                                          horizontal_kernel, temp);
 
   zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::convolve_columns(temp, local_height_, width_,
                                                                             vertical_kernel, local_res);
+
   if (world.rank() == 0) {
     result_.clear();
     int base_height = height_ / world.size();

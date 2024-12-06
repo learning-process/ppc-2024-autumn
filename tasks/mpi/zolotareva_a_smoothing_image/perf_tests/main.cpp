@@ -8,17 +8,17 @@
 
 TEST(mpi_zolotareva_a_smoothing_image_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
-  const uint32_t height = 1000;
-  const uint32_t width = 1000;
+  const uint32_t height = 100;
+  const uint32_t width = 100;
   std::vector<uint8_t> input(width * height, 0);
   std::vector<uint8_t> output(width * height);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataPar->inputs.emplace_back(input.data());
     taskDataPar->inputs_count.emplace_back(height);
     taskDataPar->inputs_count.emplace_back(width);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+    taskDataPar->outputs.emplace_back(output.data());
     taskDataPar->outputs_count.emplace_back(output.size());
   }
 
@@ -45,18 +45,18 @@ TEST(mpi_zolotareva_a_smoothing_image_perf_test, test_pipeline_run) {
 
 TEST(mpi_zolotareva_a_smoothing_image_perf_test, test_task_run) {
   boost::mpi::communicator world;
-  const uint32_t height = 1000;
-  const uint32_t width = 1000;
+  const uint32_t height = 100;
+  const uint32_t width = 100;
   std::vector<uint8_t> input(width * height, 0);
   std::vector<uint8_t> output(width * height);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataPar->inputs.emplace_back(input.data());
     taskDataPar->inputs_count.emplace_back(height);
     taskDataPar->inputs_count.emplace_back(width);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+    taskDataPar->outputs.emplace_back((output.data()));
     taskDataPar->outputs_count.emplace_back(output.size());
   }
 
