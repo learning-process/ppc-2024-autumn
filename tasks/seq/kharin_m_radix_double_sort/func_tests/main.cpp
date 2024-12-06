@@ -34,7 +34,7 @@ TEST(RadixSort_MPI, SimpleData) {
   radixSortSeq.post_processing();
 
   auto* resultSeq = reinterpret_cast<double*>(taskDataSeq->outputs[0]);
-  // Сравнение со стандартной сортировкой 
+  // Сравнение со стандартной сортировкой
   std::sort(inputData.begin(), inputData.end());
 
   for (int i = 0; i < N; ++i) {
@@ -146,10 +146,10 @@ TEST(RadixSort_MPI, RandomDataLarge) {
 
 // Дополнительный тест: уже отсортированный массив
 TEST(RadixSort_MPI, AlreadySortedData) {
- std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   int N = 10;
-  std::vector<double> inputData =  {-5.4, -3.3, -1.0, 0.0, 0.1, 1.2, 2.3, 2.4, 3.5, 10.0};
+  std::vector<double> inputData = {-5.4, -3.3, -1.0, 0.0, 0.1, 1.2, 2.3, 2.4, 3.5, 10.0};
   std::vector<double> xSeq(N, 0.0);
 
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&N));
@@ -169,7 +169,7 @@ TEST(RadixSort_MPI, AlreadySortedData) {
   radixSortSeq.post_processing();
 
   auto* resultSeq = reinterpret_cast<double*>(taskDataSeq->outputs[0]);
-  // Сравнение со стандартной сортировкой 
+  // Сравнение со стандартной сортировкой
   std::sort(inputData.begin(), inputData.end());
 
   for (int i = 0; i < N; ++i) {
@@ -179,10 +179,10 @@ TEST(RadixSort_MPI, AlreadySortedData) {
 
 // Дополнительный тест: массив в обратном порядке
 TEST(RadixSort_MPI, ReverseSortedData) {
- std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   int N = 10;
-  std::vector<double> inputData =  {10.0, 3.5, 2.4, 2.3, 1.2, 0.1, 0.0, -1.0, -3.3, -5.4};
+  std::vector<double> inputData = {10.0, 3.5, 2.4, 2.3, 1.2, 0.1, 0.0, -1.0, -3.3, -5.4};
   std::vector<double> xSeq(N, 0.0);
 
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&N));
@@ -202,7 +202,7 @@ TEST(RadixSort_MPI, ReverseSortedData) {
   radixSortSeq.post_processing();
 
   auto* resultSeq = reinterpret_cast<double*>(taskDataSeq->outputs[0]);
-  // Сравнение со стандартной сортировкой 
+  // Сравнение со стандартной сортировкой
   std::sort(inputData.begin(), inputData.end());
 
   for (int i = 0; i < N; ++i) {

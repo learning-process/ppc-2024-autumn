@@ -1,10 +1,10 @@
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <chrono>
+#include <cmath>
 #include <random>
 #include <vector>
-#include <algorithm>
-#include <cmath>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/kharin_m_radix_double_sort/include/ops_seq.hpp"
@@ -29,7 +29,7 @@ TEST(RadixSort_Sequential_PerfTest, test_pipeline_run) {
 
   // Создаем TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>( &N ));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&N));
   taskDataSeq->inputs_count.emplace_back(1);
 
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(inputData.data()));
@@ -73,7 +73,7 @@ TEST(RadixSort_Sequential_PerfTest, test_pipeline_run) {
 
 TEST(RadixSort_Sequential_PerfTest, test_task_run) {
   // Аналогичный тест, но с task_run
-  int N = 1000000; 
+  int N = 1000000;
   std::vector<double> inputData(N);
   std::vector<double> outputData(N, 0.0);
 
@@ -103,7 +103,7 @@ TEST(RadixSort_Sequential_PerfTest, test_task_run) {
   radixSortSeq->post_processing();
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 5; 
+  perfAttr->num_running = 5;
   const auto t0 = std::chrono::high_resolution_clock::now();
   perfAttr->current_timer = [&] {
     auto current_time_point = std::chrono::high_resolution_clock::now();
