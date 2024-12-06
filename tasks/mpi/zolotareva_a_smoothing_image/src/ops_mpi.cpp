@@ -186,7 +186,6 @@ bool zolotareva_a_smoothing_image_mpi::TestMPITaskParallel::run() {
     for (int proc = 1; proc < world.size(); ++proc) {
       std::vector<uint8_t> buffer((base_height + (proc == (world.size() - 1) ? 1 : 2)) * width_);
       world.recv(proc, 1, buffer);
-      cout << "proc: " << proc << ", begin: " << index_begin << ", end: " << index_end << endl;
       std::copy(buffer.begin() + width_, buffer.end() - (proc == world.size() - 1 ? 0 : width_),
                 result_.begin() + send_start + (proc - 1) * base_height * width_);
     }
