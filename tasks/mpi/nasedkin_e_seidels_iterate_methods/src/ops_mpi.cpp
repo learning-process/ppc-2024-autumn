@@ -1,11 +1,9 @@
 #include "mpi/nasedkin_e_seidels_iterate_methods/include/ops_mpi.hpp"
-
+#include <boost/serialization/vector.hpp>
+#include <boost/mpi/collectives.hpp>
+#include <boost/mpi/communicator.hpp>
 #include <algorithm>
 #include <cmath>
-#include <functional>
-#include <random>
-#include <string>
-#include <thread>
 #include <vector>
 
 namespace nasedkin_e_seidels_iterate_methods_mpi {
@@ -106,7 +104,7 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
             _rows = taskData->inputs_count[3];
             _columns = taskData->inputs_count[2];
         }
-        
+
         broadcast(world, _rows, 0);
         broadcast(world, _columns, 0);
 
