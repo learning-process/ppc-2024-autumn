@@ -43,11 +43,10 @@ TEST(Parallel_Operations_MPI, vladimirova_j_gather_test_validation_zero) {
     taskDataPar->inputs_count.emplace_back(0);
     taskDataPar->outputs_count.emplace_back(1);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(ans_buf_vec.data()));
+    vladimirova_j_gather_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
 
-  vladimirova_j_gather_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
 }
 TEST(Parallel_Operations_MPI, vladimirova_j_gather_test_validation) {
   boost::mpi::communicator world;
@@ -65,11 +64,10 @@ TEST(Parallel_Operations_MPI, vladimirova_j_gather_test_validation) {
     taskDataPar->inputs_count.emplace_back(global_vector.size());
     taskDataPar->outputs_count.emplace_back(1);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(ans_buf_vec.data()));
+    vladimirova_j_gather_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
 
-  vladimirova_j_gather_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
 }
 TEST(Parallel_Operations_MPI, vladimirova_j_gather_1_test) {
   boost::mpi::communicator world;
@@ -247,11 +245,10 @@ TEST(Parallel_Operations_MPI, vladimirova_j_not_my_gather_test_validation_zero) 
     taskDataPar->inputs_count.emplace_back(0);
     taskDataPar->outputs_count.emplace_back(1);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(ans_buf_vec.data()));
+    vladimirova_j_not_my_gather_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
 
-  vladimirova_j_not_my_gather_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
 }
 TEST(Parallel_Operations_MPI, vladimirova_j_not_my_gather_test_validation) {
   boost::mpi::communicator world;
@@ -269,11 +266,10 @@ TEST(Parallel_Operations_MPI, vladimirova_j_not_my_gather_test_validation) {
     taskDataPar->inputs_count.emplace_back(global_vector.size());
     taskDataPar->outputs_count.emplace_back(1);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(ans_buf_vec.data()));
+    vladimirova_j_not_my_gather_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
 
-  vladimirova_j_not_my_gather_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
 }
 TEST(Parallel_Operations_MPI, vladimirova_j_not_my_gather_1_test) {
   boost::mpi::communicator world;
@@ -453,7 +449,6 @@ TEST(Sequential_Operations_MPI, vladimirova_j_test_validation_zero) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(ans_buf_vec.data()));
 
   vladimirova_j_gather_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-
   ASSERT_EQ(testMpiTaskSequential.validation(), false);
 }
 TEST(Sequential_Operations_MPI, vladimirova_j_test_validation) {
@@ -472,7 +467,6 @@ TEST(Sequential_Operations_MPI, vladimirova_j_test_validation) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(ans_buf_vec.data()));
 
   vladimirova_j_gather_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-
   ASSERT_EQ(testMpiTaskSequential.validation(), false);
 }
 TEST(Sequential_Operations_MPI, vladimirova_j_forward_backward_test) {
