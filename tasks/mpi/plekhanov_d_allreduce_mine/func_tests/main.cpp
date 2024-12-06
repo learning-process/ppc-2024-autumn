@@ -34,6 +34,57 @@ TEST(plekhanov_d_allreduce_mine_func_test, Test_Empty_Matrix_0x0) {
   }
 }
 
+TEST(plekhanov_d_allreduce_mine_func_test, Test_1x1_Matrix) {
+  boost::mpi::communicator world;
+
+  int cols = 1;
+  int rows = 1;
+
+  std::vector<int> matrix;
+  std::vector<int> res_par(cols, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    const int count_size_vector = cols * rows;
+    matrix = plekhanov_d_allreduce_mine_mpi::getRandomVector(count_size_vector);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataPar->inputs_count.emplace_back(matrix.size());
+    taskDataPar->inputs_count.emplace_back(cols);
+    taskDataPar->inputs_count.emplace_back(rows);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_par.data()));
+    taskDataPar->outputs_count.emplace_back(res_par.size());
+  }
+
+  plekhanov_d_allreduce_mine_mpi::TestMPITaskMyOwnParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int> res_seq(cols, 0);
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(matrix.size());
+    taskDataSeq->inputs_count.emplace_back(cols);
+    taskDataSeq->inputs_count.emplace_back(rows);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_seq.data()));
+    taskDataSeq->outputs_count.emplace_back(res_seq.size());
+
+    plekhanov_d_allreduce_mine_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(res_seq, res_par);
+  }
+}
+
 TEST(plekhanov_d_allreduce_mine_func_test, Test_Empty_Matrix_5x5) {
   boost::mpi::communicator world;
 
