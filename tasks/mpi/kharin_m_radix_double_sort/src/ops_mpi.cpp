@@ -1,7 +1,8 @@
 #include "mpi/kharin_m_radix_double_sort/include/ops_mpi.hpp"
+
 #include <boost/mpi.hpp>
-#include <queue>
 #include <cmath>
+#include <queue>
 
 namespace mpi = boost::mpi;
 using namespace kharin_m_radix_double_sort;
@@ -242,7 +243,8 @@ void RadixSortParallel::radix_sort_uint64(std::vector<uint64_t>& keys) {
   }
 }
 
-std::vector<double> RadixSortParallel::merge_sorted_subarrays(const std::vector<std::vector<double>>& sorted_subarrays) {
+std::vector<double> RadixSortParallel::merge_sorted_subarrays(
+    const std::vector<std::vector<double>>& sorted_subarrays) {
   typedef std::pair<double, std::pair<int, int>> HeapNode; 
   std::priority_queue<HeapNode, std::vector<HeapNode>, std::greater<>> min_heap;
 

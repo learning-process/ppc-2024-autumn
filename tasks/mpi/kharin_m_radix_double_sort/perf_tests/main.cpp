@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <boost/mpi.hpp>
 #include <boost/mpi/timer.hpp>
+#include <cmath>
 #include <random>
 #include <vector>
-#include <algorithm>
-#include <cmath>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/kharin_m_radix_double_sort/include/ops_mpi.hpp"
@@ -18,7 +18,7 @@ TEST(RadixSort_MPI_PerfTest, test_pipeline_run) {
   mpi::environment env;
   mpi::communicator world;
 
-  int N = 1000000;  
+  int N = 1000000;
 
   std::vector<double> inputData;
   if (world.rank() == 0) {
@@ -80,7 +80,7 @@ TEST(RadixSort_MPI_PerfTest, test_task_run) {
   mpi::communicator world;
 
   // Аналогично предыдущему тесту, генерируем большой массив
-  int N = 1000000; 
+  int N = 1000000;
   std::vector<double> inputData;
   if (world.rank() == 0) {
     inputData.resize(N);
@@ -116,7 +116,7 @@ TEST(RadixSort_MPI_PerfTest, test_task_run) {
 
   // Настраиваем параметры производительности
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 5; // Будем выполнять 5 запусков для усреднения
+  perfAttr->num_running = 5;  // Будем выполнять 5 запусков для усреднения
   const mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 

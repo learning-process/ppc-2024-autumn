@@ -160,7 +160,7 @@ TEST(RadixSort_MPI, RandomDataLarge) {
   mpi::communicator world;
 
   // Генерируем большой случайный массив double
-  int N = 100000; // большой массив для проверки производительности и корректности
+  int N = 100000;  // большой массив для проверки производительности и корректности
   std::vector<double> inputData;
   if (world.rank() == 0) {
     inputData.resize(N);
