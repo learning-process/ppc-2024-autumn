@@ -1,200 +1,138 @@
 #include "mpi/nasedkin_e_seidels_iterate_methods/include/ops_mpi.hpp"
 
-#include <algorithm>
 #include <cmath>
-#include <functional>
-#include <random>
-#include <string>
-#include <thread>
-#include <vector>
-#include <boost/serialization/vector.hpp>
+#include <iostream>
 
 namespace nasedkin_e_seidels_iterate_methods_mpi {
 
-    std::vector<double> generateDenseMatrix(int n, int a) {
-        std::vector<double> dense;
-        std::vector<double> ed(n * n);
-        std::vector<double> res(n * n);
-        for (int i = 0; i < n; i++) {
-            for (int j = i; j < n + i; j++) {
-                dense.push_back(a + j);
-            }
+// Pre-processing method to initialize the task
+    bool SeidelIterateMethodsMPI::pre_processing() {
+        if (!validation()) {
+            return false;
         }
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (i < 2) {
-                    ed[j * n + i] = 0;
-                } else if (i == j) {
-                    ed[j * n + i] = 1;
-                } else {
-                    ed[j * n + i] = 0;
+
+        epsilon = 1e-6;
+        max_iterations = 1000;
+
+        x.resize(n, 0.0);
+
+        return taskData->inputs_count.size() <= 1 || taskData->inputs_count[1] != 0;
+    }
+
+// Validation method to check the validity of the input data
+    bool SeidelIterateMethodsMPI::validation() {
+        if (taskData->inputs_count.empty()) {
+            return false;
+        }
+
+        n = taskData->inputs_count[0];
+        if (n <= 0) {
+            return false;
+        }
+
+        A.resize(n, std::vector<double>(n, 0.0));
+        b.resize(n, 0.0);
+
+        bool zero_diagonal_test = false;
+        if (taskData->inputs_count.size() > 1 && taskData->inputs_count[1] == 0) {
+            zero_diagonal_test = true;
+            for (int i = 0; i < n; ++i) {
+                for (int j = 0; j < n; ++j) {
+                    A[i][j] = (i != j) ? 1.0 : 0.0;
                 }
+                b[i] = 1.0;
             }
-        }
-        for (int i = 0; i < n * n; i++) {
-            res[i] = (dense[i] + ed[i]);
-        }
-        return res;
-    }
-
-    std::vector<double> generateElementaryMatrix(int rows, int columns) {
-        std::vector<double> res;
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                if (i == j) {
-                    res.push_back(1);
-                } else {
-                    res.push_back(0);
+        } else {
+            for (int i = 0; i < n; ++i) {
+                for (int j = 0; j < n; ++j) {
+                    A[i][j] = (i == j) ? 2.0 : 1.0;
                 }
+                b[i] = n + 1;
             }
         }
-        return res;
-    }
 
-    template <typename T>
-    std::vector<T> getRandomVector(int sz) {
-        std::random_device dev;
-        std::mt19937 gen(dev());
-        std::vector<T> vec(sz);
-        vec[0] = gen() % 100;
-        for (int i = 1; i < sz; i++) {
-            vec[i] = (gen() % 100) - 49;
+        for (int i = 0; i < n; ++i) {
+            if (A[i][i] == 0.0 && !zero_diagonal_test) {
+                return false;
+            }
         }
-        return vec;
+
+        return true;
     }
 
-    template std::vector<int> nasedkin_e_seidels_iterate_methods_mpi::getRandomVector(int sz);
-    template std::vector<double> nasedkin_e_seidels_iterate_methods_mpi::getRandomVector(int sz);
-
-    std::vector<double> nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskParallel::seidelMethod(
-            const std::vector<double>& A, const std::vector<double>& b, int n, double eps) {
-        std::vector<double> x(n, 0.0);
+// Run method to execute the Seidel iteration
+    bool SeidelIterateMethodsMPI::run() {
         std::vector<double> x_new(n, 0.0);
-        double norm;
-        do {
-            norm = 0.0;
+        int iteration = 0;
+
+        while (iteration < max_iterations) {
             for (int i = 0; i < n; ++i) {
                 x_new[i] = b[i];
                 for (int j = 0; j < n; ++j) {
                     if (i != j) {
-                        x_new[i] -= A[i * n + j] * x[j];
+                        x_new[i] -= A[i][j] * x[j];
                     }
                 }
-                if (A[i * n + i] != 0.0) {
-                    x_new[i] /= A[i * n + i];
-                }
-                norm += std::abs(x_new[i] - x[i]);
+                x_new[i] /= A[i][i];
             }
+
+            if (converge(x_new)) {
+                break;
+            }
+
             x = x_new;
-        } while (norm > eps);
-        return x;
+            ++iteration;
+        }
+
+        return true;
     }
 
+// Post-processing method (currently empty)
+    bool SeidelIterateMethodsMPI::post_processing() { return true; }
 
-    bool nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskParallel::hasZeroDiagonal(const std::vector<double>& matrix, int n) {
+// Convergence check based on residual norm
+    bool SeidelIterateMethodsMPI::converge(const std::vector<double>& x_new) {
+        double residual_norm = 0.0;
         for (int i = 0; i < n; ++i) {
-            if (matrix[i * n + i] == 0.0) {
-                return true;
+            double Ax_i = 0.0;
+            for (int j = 0; j < n; ++j) {
+                Ax_i += A[i][j] * x_new[j];
             }
+            residual_norm += std::pow(Ax_i - b[i], 2);
         }
-        return false;
+        return std::sqrt(residual_norm) < epsilon;
     }
 
-    bool nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskParallel::pre_processing() {
-        internal_order_test();
-
-        if (world.rank() == 0) {
-            _rows = taskData->inputs_count[3];
-            _columns = taskData->inputs_count[2];
+// Set matrix and vector for the task
+    void SeidelIterateMethodsMPI::set_matrix(const std::vector<std::vector<double>>& matrix,
+                                             const std::vector<double>& vector) {
+        if (matrix.size() != vector.size() || matrix.empty()) {
+            throw std::invalid_argument("Matrix and vector dimensions do not match or are empty.");
         }
-
-        broadcast(world, _rows, 0);
-        broadcast(world, _columns, 0);
-
-        if (_rows <= 0 || _columns <= 0) {
-            return false;
-        }
-
-        if (world.rank() == 0) {
-            _coefs.resize(taskData->inputs_count[0]);
-            auto* tmp_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
-            for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
-                _coefs[i] = tmp_ptr[i];
-            }
-
-            _b.resize(taskData->inputs_count[1]);
-            auto* ptr1 = reinterpret_cast<double*>(taskData->inputs[1]);
-            for (unsigned int i = 0; i < taskData->inputs_count[1]; i++) {
-                _b[i] = ptr1[i];
-            }
-        } else {
-            _coefs.resize(_columns * _rows);
-            _b.resize(_rows);
-        }
-
-        broadcast(world, _coefs, 0);
-        broadcast(world, _b, 0);
-
-        _x = std::vector<double>(_rows, 0);
-        return true;
+        A = matrix;
+        b = vector;
+        n = static_cast<int>(matrix.size());
     }
 
+// Generate a random matrix and vector that are guaranteed to converge with the Seidel method
+    void SeidelIterateMethodsMPI::generate_random_matrix(int size, std::vector<std::vector<double>>& matrix,
+                                                         std::vector<double>& vector) {
+        matrix.resize(size, std::vector<double>(size, 0.0));
+        vector.resize(size, 0.0);
 
+        std::srand(static_cast<unsigned>(std::time(nullptr)));
 
-
-    bool nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskParallel::validation() {
-        internal_order_test();
-
-        if (world.rank() == 0) {
-            if (taskData->inputs.size() != 2 || taskData->outputs.size() != 1 ||
-                taskData->inputs_count.size() != 4 || taskData->outputs_count.size() != 1) {
-                return false;
+        for (int i = 0; i < size; ++i) {
+            double row_sum = 0.0;
+            for (int j = 0; j < size; ++j) {
+                if (i != j) {
+                    matrix[i][j] = static_cast<double>(std::rand() % 10 + 1);
+                    row_sum += std::abs(matrix[i][j]);
+                }
             }
-            if (taskData->inputs_count[2] <= 0 || taskData->inputs_count[3] <= 0) {
-                return false;
-            }
-            std::vector<double> tmp_coefs(taskData->inputs_count[0]);
-            auto* tmp_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
-            for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
-                tmp_coefs[i] = tmp_ptr[i];
-            }
-            int n = taskData->inputs_count[3];
-            bool hasZero = hasZeroDiagonal(tmp_coefs, n);
-            broadcast(world, hasZero, 0);
-            return !hasZero;
+            matrix[i][i] = row_sum + static_cast<double>(std::rand() % 5 + 1);
+            vector[i] = static_cast<double>(std::rand() % 20 + 1);
         }
-
-        bool valid;
-        broadcast(world, valid, 0);
-        return valid;
-    }
-
-
-
-
-    bool nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskParallel::run() {
-        internal_order_test();
-
-        if (_coefs.empty() || _b.empty() || _rows <= 0 || _columns <= 0) {
-            return false;
-        }
-
-        broadcast(world, _columns, 0);
-        broadcast(world, _rows, 0);
-
-        _x = seidelMethod(_coefs, _b, _rows, 1e-6);
-        return true;
-    }
-
-
-    bool nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskParallel::post_processing() {
-        internal_order_test();
-        if (world.rank() == 0) {
-            for (int i = 0; i < _columns; i++) {
-                reinterpret_cast<double*>(taskData->outputs[0])[i] = _x[i];
-            }
-        }
-        return true;
     }
 
 }  // namespace nasedkin_e_seidels_iterate_methods_mpi

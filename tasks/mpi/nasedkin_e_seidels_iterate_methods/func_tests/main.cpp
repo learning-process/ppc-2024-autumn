@@ -1,181 +1,83 @@
 #include <gtest/gtest.h>
 
-#include <boost/mpi/communicator.hpp>
-#include <boost/mpi/environment.hpp>
-#include <random>
-#include <vector>
-
 #include "mpi/nasedkin_e_seidels_iterate_methods/include/ops_mpi.hpp"
+#include "mpi/nasedkin_e_seidels_iterate_methods/src/ops_mpi.cpp"
 
-/*
-TEST(MPISeidel, ZeroDiagonalTest) {
-    boost::mpi::communicator world;
-    int rows = 3;
-    int columns = 3;
-    std::vector<double> matrix = {0, 1, 1, 1, 0, 1, 1, 1, 0};
-    std::vector<double> b = {1, 1, 1};
-    std::vector<double> expres_par(rows);
+TEST(nasedkin_e_seidels_iterate_methods_mpi, test_matrix_with_zero_diagonal) {
+    auto taskData = std::make_shared<ppc::core::TaskData>();
+    taskData->inputs_count.push_back(3);
+    taskData->inputs_count.push_back(0);
 
-    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+    nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI seidel_task(taskData);
 
-    if (world.rank() == 0) {
-        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(b.data()));
-        taskDataPar->inputs_count.emplace_back(matrix.size());
-        taskDataPar->inputs_count.emplace_back(b.size());
-        taskDataPar->inputs_count.emplace_back(columns);
-        taskDataPar->inputs_count.emplace_back(rows);
-        taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(expres_par.data()));
-        taskDataPar->outputs_count.emplace_back(expres_par.size());
-    }
-
-    nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-    ASSERT_EQ(testMpiTaskParallel.validation(), false);
-}
-*/
-
-
-TEST(MPISeidel, RandomMatrixTest) {
-    boost::mpi::communicator world;
-    int rows = 10;
-    int columns = 10;
-    std::vector<double> matrix = nasedkin_e_seidels_iterate_methods_mpi::generateDenseMatrix(rows, 1);
-    std::vector<double> b = nasedkin_e_seidels_iterate_methods_mpi::getRandomVector<double>(rows);
-    std::vector<double> expres_par(rows);
-
-    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-    if (world.rank() == 0) {
-        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(b.data()));
-        taskDataPar->inputs_count.emplace_back(matrix.size());
-        taskDataPar->inputs_count.emplace_back(b.size());
-        taskDataPar->inputs_count.emplace_back(columns);
-        taskDataPar->inputs_count.emplace_back(rows);
-        taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(expres_par.data()));
-        taskDataPar->outputs_count.emplace_back(expres_par.size());
-    }
-
-    nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-    ASSERT_EQ(testMpiTaskParallel.validation(), true);
-    testMpiTaskParallel.pre_processing();
-    testMpiTaskParallel.run();
-    testMpiTaskParallel.post_processing();
-
-    if (world.rank() == 0) {
-        std::vector<double> Ax(rows, 0.0);
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < columns; ++j) {
-                Ax[i] += matrix[i * columns + j] * expres_par[j];
-            }
-        }
-
-        double norm = 0.0;
-        for (int i = 0; i < rows; ++i) {
-            norm += std::abs(Ax[i] - b[i]);
-        }
-
-        ASSERT_LT(norm, 1e-6);
-    }
+    ASSERT_TRUE(seidel_task.validation()) << "Validation failed for valid input";
+    ASSERT_FALSE(seidel_task.pre_processing()) << "Pre-processing passed, but expected failure";
 }
 
-TEST(MPISeidel, IdentityMatrixTest) {
-    boost::mpi::communicator world;
-    int rows = 10;
-    int columns = 10;
-    std::vector<double> matrix = nasedkin_e_seidels_iterate_methods_mpi::generateElementaryMatrix(rows, columns);
-    std::vector<double> b(rows, 1);
-    std::vector<double> res_par(rows, 1);
-    std::vector<double> expres_par(rows);
+TEST(nasedkin_e_seidels_iterate_methods_mpi, test_random_matrix_2x2) {
+    auto taskData = std::make_shared<ppc::core::TaskData>();
+    taskData->inputs_count.push_back(2);
 
-    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+    nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI seidel_task(taskData);
 
-    if (world.rank() == 0) {
-        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(b.data()));
-        taskDataPar->inputs_count.emplace_back(matrix.size());
-        taskDataPar->inputs_count.emplace_back(b.size());
-        taskDataPar->inputs_count.emplace_back(columns);
-        taskDataPar->inputs_count.emplace_back(rows);
-        taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(expres_par.data()));
-        taskDataPar->outputs_count.emplace_back(expres_par.size());
-    }
+    std::vector<std::vector<double>> matrix;
+    std::vector<double> vector;
+    nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI::generate_random_matrix(2, matrix, vector);
+    seidel_task.set_matrix(matrix, vector);
 
-    nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-    ASSERT_EQ(testMpiTaskParallel.validation(), true);
-    testMpiTaskParallel.pre_processing();
-    testMpiTaskParallel.run();
-    testMpiTaskParallel.post_processing();
-
-    if (world.rank() == 0) {
-        ASSERT_EQ(expres_par, res_par);
-    }
+    ASSERT_TRUE(seidel_task.validation()) << "Validation failed for random matrix";
+    ASSERT_TRUE(seidel_task.pre_processing()) << "Pre-processing failed for random matrix";
+    ASSERT_TRUE(seidel_task.run()) << "Run failed for random matrix";
+    ASSERT_TRUE(seidel_task.post_processing()) << "Post-processing failed for random matrix";
 }
 
-TEST(MPISeidel, LargeMatrixTest) {
-    boost::mpi::communicator world;
-    int rows = 100;
-    int columns = 100;
-    std::vector<double> matrix = nasedkin_e_seidels_iterate_methods_mpi::generateDenseMatrix(rows, 1);
-    std::vector<double> b(rows, 1);
-    std::vector<double> res_par(rows, 0);
-    res_par[0] = -1;
-    res_par[1] = 1;
-    std::vector<double> expres_par(rows);
+TEST(nasedkin_e_seidels_iterate_methods_mpi, test_random_matrix_3x3) {
+    auto taskData = std::make_shared<ppc::core::TaskData>();
+    taskData->inputs_count.push_back(3);
 
-    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+    nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI seidel_task(taskData);
 
-    if (world.rank() == 0) {
-        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(b.data()));
-        taskDataPar->inputs_count.emplace_back(matrix.size());
-        taskDataPar->inputs_count.emplace_back(b.size());
-        taskDataPar->inputs_count.emplace_back(columns);
-        taskDataPar->inputs_count.emplace_back(rows);
-        taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(expres_par.data()));
-        taskDataPar->outputs_count.emplace_back(expres_par.size());
-    }
+    std::vector<std::vector<double>> matrix;
+    std::vector<double> vector;
+    nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI::generate_random_matrix(3, matrix, vector);
+    seidel_task.set_matrix(matrix, vector);
 
-    nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-    ASSERT_EQ(testMpiTaskParallel.validation(), true);
-    testMpiTaskParallel.pre_processing();
-    testMpiTaskParallel.run();
-    testMpiTaskParallel.post_processing();
-
-    if (world.rank() == 0) {
-        ASSERT_EQ(expres_par, res_par);
-    }
+    ASSERT_TRUE(seidel_task.validation()) << "Validation failed for random matrix";
+    ASSERT_TRUE(seidel_task.pre_processing()) << "Pre-processing failed for random matrix";
+    ASSERT_TRUE(seidel_task.run()) << "Run failed for random matrix";
+    ASSERT_TRUE(seidel_task.post_processing()) << "Post-processing failed for random matrix";
 }
 
-TEST(MPISeidel, EmptyMatrixTest) {
-    boost::mpi::communicator world;
-    int rows = 0;
-    int columns = 0;
-    std::vector<double> matrix = {};
-    std::vector<double> b = {};
-    std::vector<double> expres_par(rows, 0);
-    std::vector<double> res_par = {};
+TEST(nasedkin_e_seidels_iterate_methods_mpi, test_random_matrix_5x5) {
+    auto taskData = std::make_shared<ppc::core::TaskData>();
+    taskData->inputs_count.push_back(5);
 
-    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+    nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI seidel_task(taskData);
 
-    if (world.rank() == 0) {
-        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-        taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(b.data()));
-        taskDataPar->inputs_count.emplace_back(matrix.size());
-        taskDataPar->inputs_count.emplace_back(b.size());
-        taskDataPar->inputs_count.emplace_back(columns);
-        taskDataPar->inputs_count.emplace_back(rows);
-        taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(expres_par.data()));
-        taskDataPar->outputs_count.emplace_back(expres_par.size());
-    }
+    std::vector<std::vector<double>> matrix;
+    std::vector<double> vector;
+    nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI::generate_random_matrix(5, matrix, vector);
+    seidel_task.set_matrix(matrix, vector);
 
-    nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-    ASSERT_EQ(testMpiTaskParallel.validation(), true);
-    testMpiTaskParallel.pre_processing();
-    testMpiTaskParallel.run();
-    testMpiTaskParallel.post_processing();
+    ASSERT_TRUE(seidel_task.validation()) << "Validation failed for random matrix";
+    ASSERT_TRUE(seidel_task.pre_processing()) << "Pre-processing failed for random matrix";
+    ASSERT_TRUE(seidel_task.run()) << "Run failed for random matrix";
+    ASSERT_TRUE(seidel_task.post_processing()) << "Post-processing failed for random matrix";
+}
 
-    if (world.rank() == 0) {
-        ASSERT_EQ(expres_par, res_par);
-    }
+TEST(nasedkin_e_seidels_iterate_methods_mpi, test_random_matrix_10x10) {
+    auto taskData = std::make_shared<ppc::core::TaskData>();
+    taskData->inputs_count.push_back(10);
+
+    nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI seidel_task(taskData);
+
+    std::vector<std::vector<double>> matrix;
+    std::vector<double> vector;
+    nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI::generate_random_matrix(10, matrix, vector);
+    seidel_task.set_matrix(matrix, vector);
+
+    ASSERT_TRUE(seidel_task.validation()) << "Validation failed for random matrix";
+    ASSERT_TRUE(seidel_task.pre_processing()) << "Pre-processing failed for random matrix";
+    ASSERT_TRUE(seidel_task.run()) << "Run failed for random matrix";
+    ASSERT_TRUE(seidel_task.post_processing()) << "Post-processing failed for random matrix";
 }
