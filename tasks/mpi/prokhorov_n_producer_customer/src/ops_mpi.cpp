@@ -19,9 +19,8 @@ std::vector<int> getRandomVector(int sz) {
   for (int &val : vec) val = dist(gen);
   return vec;
 }
-}  
 
-bool prokhorov_n_producer_customer_mpi::TestMPITaskParallel::pre_processing() {
+bool TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
   if (world.size() < 2) {
@@ -56,19 +55,16 @@ bool prokhorov_n_producer_customer_mpi::TestMPITaskParallel::pre_processing() {
     for (int rank = 1; rank < world.size(); ++rank) {
       unsigned int start = (rank - 1) * delta;
       unsigned int end = (rank == world.size() - 1) ? total_data_count : start + delta;
-
       world.send(rank, 0, producer_data.data() + start, end - start);
     }
   } else {
     world.recv(0, 0, local_input_.data(), range_end - range_start);
   }
 
-  res = 0;
-
   return true;
 }
 
-bool prokhorov_n_producer_customer_mpi::TestMPITaskParallel::validation() {
+bool TestMPITaskParallel::validation() {
   internal_order_test();
 
   if (world.rank() == 0) {
@@ -84,7 +80,7 @@ bool prokhorov_n_producer_customer_mpi::TestMPITaskParallel::validation() {
   return true;
 }
 
-bool prokhorov_n_producer_customer_mpi::TestMPITaskParallel::run() {
+bool TestMPITaskParallel::run() {
   internal_order_test();
 
   if (world.rank() == 0) {
@@ -101,12 +97,10 @@ bool prokhorov_n_producer_customer_mpi::TestMPITaskParallel::run() {
     if (delta <= 0) {
       return false;
     }
+
     for (int i = 0; i < world.size() - 1; ++i) {
       int start = i * delta;
       int end = (i == world.size() - 2) ? data_size : (i + 1) * delta;
-      if (start < 0 || end > data_size || start >= end) {
-        return false;
-      }
       world.send(i + 1, 0, producer_data.data() + start, end - start);
     }
   }
@@ -120,47 +114,6 @@ bool prokhorov_n_producer_customer_mpi::TestMPITaskParallel::run() {
 
     local_input_.resize(data_size);
     world.recv(0, 0, local_input_.data(), data_size);
-
-    if (local_input_.empty()) {
-      return false;
-    }
-
-    for (int i = 0; i < local_input_.size(); ++i) {
-      local_input_[i] *= 2;
-    }
-
-    world.send(0, 0, local_input_.data(), local_input_.size());
-  }
-
-  if (world.rank() == 0) {
-    int data_size;
-    broadcast(world, data_size, 0);
-    if (data_size <= 0) {
-      return false;
-    }
-
-    for (int i = 1; i < world.size(); ++i) {
-      world.recv(i, 0, local_input_.data(), data_size);
-
-      if (local_input_.empty()) {
-        return false;
-      }
-
-      res += std::accumulate(local_input_.begin(), local_input_.end(), 0);
-    }
-
-    for (int rank = 1; rank < world.size(); ++rank) {
-      int end_signal = -1;
-      world.send(rank, 0, end_signal);
-    }
-  }
-
-  if (world.rank() != 0) {
-    int received_signal;
-    world.recv(0, 0, received_signal);
-    if (received_signal == -1) {
-      return true;
-    }
   }
 
   return true;
