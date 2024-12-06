@@ -104,9 +104,7 @@ bool vershinina_a_image_smoothing::TestMPITaskParallel::run() {
         }
       }
     } else {
-      for (size_t i = 0; i < local_input_sizes.size(); i++) {
-        local_input_sizes[i] = rows * cols;
-      }
+      local_input_sizes[0] = rows * cols;
     }
     if (world.size() > 1) {
       for (int i = 0; i < std::min(world.size(), rows); i++) {
