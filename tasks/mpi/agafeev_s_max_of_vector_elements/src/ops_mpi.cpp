@@ -7,7 +7,7 @@ template <typename T>
 std::vector<T> agafeev_s_max_of_vector_elements_mpi::create_RandomMatrix(int row_size, int column_size) {
   auto rand_gen = std::mt19937(1337);
   std::vector<T> matrix(row_size * column_size);
-  for (uint i = 0; i < matrix.size(); i++) matrix[i] = rand_gen() % 100;
+  for (unsigned int i = 0; i < matrix.size(); i++) matrix[i] = rand_gen() % 100;
 
   return matrix;
 }
@@ -15,7 +15,7 @@ std::vector<T> agafeev_s_max_of_vector_elements_mpi::create_RandomMatrix(int row
 template <typename T>
 T agafeev_s_max_of_vector_elements_mpi::get_MaxValue(std::vector<T> matrix) {
   T max_result = std::numeric_limits<T>::min();
-  for (uint i = 0; i < matrix.size(); i++)
+  for (unsigned int i = 0; i < matrix.size(); i++)
     if (max_result < matrix[i]) max_result = matrix[i];
 
   return max_result;
@@ -59,9 +59,9 @@ template <typename T>
 bool agafeev_s_max_of_vector_elements_mpi::MaxMatrixMpi<T>::pre_processing() {
   internal_order_test();
 
-  uint world_rank = world.rank();
-  uint world_size = world.size();
-  uint data_size = 0;
+  unsigned int world_rank = world.rank();
+  unsigned int world_size = world.size();
+  unsigned int data_size = 0;
 
   if (world_rank == 0) {
     data_size = taskData->inputs_count[0];
@@ -71,14 +71,14 @@ bool agafeev_s_max_of_vector_elements_mpi::MaxMatrixMpi<T>::pre_processing() {
 
   boost::mpi::broadcast(world, data_size, 0);
 
-  uint task_size = data_size / world_size;
-  uint over_size = data_size % world_size;
+  unsigned int task_size = data_size / world_size;
+  unsigned int over_size = data_size % world_size;
 
   std::vector<int> sizes(world_size, task_size);
   std::vector<int> displs(world_size, 0);
   if (world_rank == 0) {
-    for (uint i = 0; i < over_size; i++) sizes[i]++;
-    for (uint i = 0; i < world_size; i++) displs[i] = displs[i - 1] + sizes[i - 1];
+    for (unsigned int i = 0; i < over_size; i++) sizes[i]++;
+    for (unsigned int i = 0; i < world_size; i++) displs[i] = displs[i - 1] + sizes[i - 1];
   }
 
   local_vector.reserve(sizes[world_size]);

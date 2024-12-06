@@ -20,9 +20,9 @@ TEST(agafeev_s_max_of_vector_elements, test_pipeline_run) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskData->outputs_count.emplace_back(out.size());
 
-  agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential<int> testTask(taskData);
-  auto testTaskSequential =
-      std::make_shared<agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential<int>>(taskData);
+  agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequental<int> testTask(taskData);
+  auto testTaskSequental =
+      std::make_shared<agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequental<int>>(taskData);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -38,7 +38,7 @@ TEST(agafeev_s_max_of_vector_elements, test_pipeline_run) {
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
   // Create Perf analyzer
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequental);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
   auto temp = agafeev_s_max_of_vector_elements_sequental::get_MaxValue(in_matrix);
@@ -61,9 +61,9 @@ TEST(agafeev_s_max_of_vector_elements, test_task_run) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskData->outputs_count.emplace_back(out.size());
 
-  agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential<int> testTask(taskData);
-  auto testTaskSequential =
-      std::make_shared<agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential<int>>(taskData);
+  agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequental<int> testTask(taskData);
+  auto testTaskSequental =
+      std::make_shared<agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequental<int>>(taskData);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -79,7 +79,7 @@ TEST(agafeev_s_max_of_vector_elements, test_task_run) {
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
   // Create Perf analyzer
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequental);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
   auto temp = agafeev_s_max_of_vector_elements_sequental::get_MaxValue(in_matrix);

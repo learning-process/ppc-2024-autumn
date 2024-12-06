@@ -21,7 +21,7 @@ T get_MaxValue(std::vector<T> matrix) {
 }
 
 template <typename T>
-bool MaxMatrixSequential<T>::pre_processing() {
+bool MaxMatrixSequental<T>::pre_processing() {
   internal_order_test();
 
   // Init value
@@ -32,14 +32,14 @@ bool MaxMatrixSequential<T>::pre_processing() {
 }
 
 template <typename T>
-bool MaxMatrixSequential<T>::validation() {
+bool MaxMatrixSequental<T>::validation() {
   internal_order_test();
 
   return taskData->outputs_count[0] == 1;
 }
 
 template <typename T>
-bool MaxMatrixSequential<T>::run() {
+bool MaxMatrixSequental<T>::run() {
   internal_order_test();
 
   maxres_ = get_MaxValue(input_);
@@ -48,7 +48,7 @@ bool MaxMatrixSequential<T>::run() {
 }
 
 template <typename T>
-bool MaxMatrixSequential<T>::post_processing() {
+bool MaxMatrixSequental<T>::post_processing() {
   internal_order_test();
 
   reinterpret_cast<T*>(taskData->outputs[0])[0] = maxres_;
@@ -56,6 +56,6 @@ bool MaxMatrixSequential<T>::post_processing() {
   return true;
 }
 
-template class MaxMatrixSequential<int>;
+template class MaxMatrixSequental<int>;
 
 }  // namespace agafeev_s_max_of_vector_elements_sequental

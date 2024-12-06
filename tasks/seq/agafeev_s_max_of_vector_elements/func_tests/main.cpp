@@ -25,7 +25,7 @@ TEST(agafeev_s_max_of_vector_elements_sequental, find_max_in_3x3_matrix) {
   taskData->outputs_count.emplace_back(out.size());
 
   // Create Task
-  agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential<int> testTask(taskData);
+  agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequental<int> testTask(taskData);
   bool isValid = testTask.validation();
   ASSERT_EQ(isValid, true);
   testTask.pre_processing();
@@ -55,7 +55,7 @@ TEST(agafeev_s_max_of_vector_elements_sequental, find_max_in_10x10_matrix) {
   taskData->outputs_count.emplace_back(out.size());
 
   // Create Task
-  agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential<int> testTask(taskData);
+  agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequental<int> testTask(taskData);
   bool isValid = testTask.validation();
   ASSERT_EQ(isValid, true);
   testTask.pre_processing();
@@ -77,7 +77,7 @@ TEST(agafeev_s_max_of_vector_elements_sequental, check_validate_func) {
   taskData->outputs_count.emplace_back(out.size());
 
   // Create Task
-  agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential<int> testTask(taskData);
+  agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequental<int> testTask(taskData);
   bool isValid = testTask.validation();
   ASSERT_EQ(isValid, false);
 }
@@ -95,7 +95,7 @@ TEST(task_tests, check_wrong_order) {
   taskData->outputs_count.emplace_back(out.size());
 
   // Create Task
-  agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequential<int> testTask(taskData);
+  agafeev_s_max_of_vector_elements_sequental::MaxMatrixSequental<int> testTask(taskData);
   bool isValid = testTask.validation();
   ASSERT_EQ(isValid, true);
   testTask.pre_processing();

@@ -16,9 +16,9 @@ template <typename T>
 T get_MaxValue(std::vector<T> matrix);
 
 template <typename T>
-class MaxMatrixSequential : public ppc::core::Task {
+class MaxMatrixSequental : public ppc::core::Task {
  public:
-  explicit MaxMatrixSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit MaxMatrixSequental(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
