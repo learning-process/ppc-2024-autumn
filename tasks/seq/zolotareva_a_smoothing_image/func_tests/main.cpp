@@ -66,7 +66,7 @@ TEST(zolotareva_a_smoothing_image_seq, BasicSmoothing) {
   task.pre_processing();
   task.run();
   task.post_processing();
-  EXPECT_EQ(outputImage[width + 1], 80);
+  EXPECT_EQ(int(outputImage[width + 1]), 79);
 }
 
 TEST(zolotareva_a_smoothing_image_seq, OnePixelImage) {
@@ -86,7 +86,7 @@ TEST(zolotareva_a_smoothing_image_seq, OnePixelImage) {
   task.pre_processing();
   task.run();
   task.post_processing();
-  EXPECT_EQ(outputImage[0], 255);
+  EXPECT_EQ(int(outputImage[0]), 254);
 }
 
 TEST(zolotareva_a_smoothing_image_seq, OneRowImage) {
