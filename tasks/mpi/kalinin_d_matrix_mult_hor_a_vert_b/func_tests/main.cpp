@@ -486,8 +486,10 @@ TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, LargeRectangularMatrix) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    size_t rows_A = 500, cols_A = 1000;
-    size_t rows_B = 1000, cols_B = 200;
+    size_t rows_A = 500;
+    size_t cols_A = 1000;
+    size_t rows_B = 1000;
+    size_t cols_B = 200;
 
     global_A.resize(rows_A * cols_A);
     global_B.resize(rows_B * cols_B);
