@@ -2,17 +2,6 @@
 
 namespace agafeev_s_max_of_vector_elements_seq {
 
-/*
-template <typename T>
-std::vector<T> create_RandomMatrix(int row_size, int column_size) {
-  auto rand_gen = std::mt19937(1337);
-  std::vector<T> matrix(row_size * column_size);
-  for (unsigned int i = 0; i < matrix.size(); i++) matrix[i] = rand_gen() % 100;
-
-  return matrix;
-}
-*/
-
 template <typename T>
 bool MaxMatrixSequental<T>::pre_processing() {
   internal_order_test();
