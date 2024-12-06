@@ -16,7 +16,6 @@ std::vector<int> tsatsyn_a_topology_torus_grid_mpi::getRandomVector(int sz, int 
   std::vector<int> vec(sz);
   for (int i = 0; i < sz; i++) {
     vec[i] = gen() % (b - a + 1) + a;
-    
   }
   return vec;
 }
