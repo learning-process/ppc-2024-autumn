@@ -8,6 +8,9 @@ bool vavilov_v_bellman_ford_seq::TestTaskSequential::pre_processing() {
   source_ = taskData->inputs_count[2];
   int* edges_data = reinterpret_cast<int*>(taskData->inputs[0]);
 
+  reachable_.resize(vertices_, false);
+  reachable_[source_] = true;
+
   for (int i = 0; i < edges_count_; ++i) {
     edges_.push_back({edges_data[i * 3], edges_data[i * 3 + 1], edges_data[i * 3 + 2]});
   }
