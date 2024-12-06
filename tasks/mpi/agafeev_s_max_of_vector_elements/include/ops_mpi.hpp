@@ -53,6 +53,7 @@ class MaxMatrixMpi : public ppc::core::Task {
   std::vector<T> input_;
   std::vector<T> local_vector;
   T maxres_{};
+  int lv_size;
 };
 
 }  // namespace agafeev_s_max_of_vector_elements_mpi

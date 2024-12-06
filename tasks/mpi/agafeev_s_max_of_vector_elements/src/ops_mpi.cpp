@@ -1,5 +1,7 @@
 #include "mpi/agafeev_s_max_of_vector_elements/include/ops_mpi.hpp"
 
+#include <limits>
+
 #include "boost/mpi/operations.hpp"
 // #include "seq/agafeev_s_max_of_vector_elements/include/ops_seq.hpp"
 /*
@@ -58,6 +60,23 @@ T get_MaxValue(std::vector<T> matrix) {
 template <typename T>
 bool MaxMatrixMpi<T>::pre_processing() {
   internal_order_test();
+  maxres_ = std::numeric_limits<T>::min();
+
+  return true;
+}
+
+template <typename T>
+bool MaxMatrixMpi<T>::validation() {
+  internal_order_test();
+
+  if (world.rank() == 0) return (taskData->outputs_count[0] == 1 && !(taskData->inputs.empty()));
+
+  return true;
+}
+
+template <typename T>
+bool MaxMatrixMpi<T>::run() {
+  internal_order_test();
 
   unsigned int world_rank = world.rank();
   unsigned int world_size = world.size();
@@ -76,34 +95,20 @@ bool MaxMatrixMpi<T>::pre_processing() {
 
   std::vector<int> sizes(world_size, task_size);
   std::vector<int> displs(world_size, 0);
+
   if (world_rank == 0) {
-    for (unsigned int i = 0; i < over_size; i++) sizes[i]++;
-    for (unsigned int i = 0; i < world_size; i++) displs[i] = displs[i - 1] + sizes[i - 1];
+    for (unsigned int i = 0; i < over_size; ++i) sizes[i]++;
+    for (unsigned int i = 1; i < world_size; ++i) displs[i] = displs[i - 1] + sizes[i - 1];
   }
 
-  local_vector.reserve(sizes[world_size]);
+  local_vector.resize(sizes[world_rank]);
+
   if (world_rank == 0)
-    boost::mpi::scatterv(world, input_.data(), sizes, displs, local_vector.data(), sizes[world_size], 0);
+    boost::mpi::scatterv(world, input_.data(), sizes, displs, local_vector.data(), sizes[world_rank], 0);
   else
     boost::mpi::scatterv(world, local_vector.data(), local_vector.size(), 0);
 
-  return true;
-}
-
-template <typename T>
-bool MaxMatrixMpi<T>::validation() {
-  internal_order_test();
-
-  if (world.rank() == 0) return (taskData->outputs_count[0] == 1 && !(taskData->inputs.empty()));
-
-  return true;
-}
-
-template <typename T>
-bool MaxMatrixMpi<T>::run() {
-  internal_order_test();
-
-  T res = agafeev_s_max_of_vector_elements_mpi::get_MaxValue<T>(input_);
+  T res = agafeev_s_max_of_vector_elements_mpi::get_MaxValue<T>(local_vector);
   boost::mpi::reduce(world, res, maxres_, boost::mpi::maximum<T>(), 0);
 
   return true;
