@@ -29,6 +29,7 @@ class ContrastScaleSeq : public ppc::core::Task {
 
  private:
   float correction;
+  int iab;
   std::vector<RGB> input_, output_;
 };
 

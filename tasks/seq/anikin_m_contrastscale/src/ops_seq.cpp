@@ -30,20 +30,19 @@ bool anikin_m_contrastscale_seq::ContrastScaleSeq::pre_processing() {
   correction = *reinterpret_cast<float *>(taskData->inputs[1]);
   input_.assign(input_ptr, input_ptr + taskData->inputs_count[0]);
   output_.clear();
+  iab = 0;
+  for (auto i : input_) {
+    iab += (int)(i.R * 0.299 + i.G * 0.587 + i.B * 0.114);
+  }
+  iab /= taskData->inputs_count[0];
   return true;
 }
 
 bool anikin_m_contrastscale_seq::ContrastScaleSeq::run() {
   internal_order_test();
-  // Middle bright
   output_.clear();
-  int iab = 0;
-  for (auto i : input_) {
-    iab += (int)(i.R * 0.299 + i.G * 0.587 + i.B * 0.114);
-  }
-  iab /= taskData->inputs_count[0];
   // Calculate new RGB
-  uint8_t newrgb[256];
+  uint8_t newrgb[256] = { { 0 } };
   for (int i = 0; i < 256; i++) {
     int delta = i - iab;
     int temp = (int)(iab + correction * delta);
