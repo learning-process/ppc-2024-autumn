@@ -81,7 +81,21 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel::ru
   internal_order_test();
   int world_size = world.size();
   int local_res = 0;
-
+  if (world.size() == 1) {
+    if (ops == "+") {
+      res = std::accumulate(input_values.begin(), input_values.end(), 0);
+    } else if (ops == "-") {
+      res = -std::accumulate(input_values.begin(), input_values.end(), 0);
+    } else if (ops == "max") {
+      res = input_values[0];
+      for (int value : input_values) {
+        if (value > res) {
+          res = value;
+        }
+      }
+    }
+    return true;
+  }
   // Spread the data
   if (world.rank() == 0) {
     for (int proc_num = 1; proc_num < world_size; proc_num++) {
@@ -157,6 +171,7 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskPar
   }
   return true;
 }
+
 bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0 && taskData->outputs_count[0] != 1) {
@@ -169,6 +184,22 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskPar
   internal_order_test();
   int node_size = 0;
   int local_res = 0;
+  if (world.size() == 1) {
+    if (ops == "+") {
+      res = std::accumulate(input_values.begin(), input_values.end(), 0);
+    } else if (ops == "-") {
+      res = -std::accumulate(input_values.begin(), input_values.end(), 0);
+    } else if (ops == "max") {
+      res = input_values[0];
+      for (int value : input_values) {
+        if (value > res) {
+          res = value;
+        }
+      }
+    }
+    return true;
+  }
+
   if (world.rank() == 0) {
     node_size = input_values.size() / world.size();
     local_input_values.resize(node_size + input_values.size() % world.size());

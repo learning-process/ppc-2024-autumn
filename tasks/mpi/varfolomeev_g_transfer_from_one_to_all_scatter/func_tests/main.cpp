@@ -22,9 +22,13 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_pipeline) {
   }
 
   varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "+");
+
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
+
   ASSERT_EQ(testMpiTaskParallel.pre_processing(), true);
+
   ASSERT_EQ(testMpiTaskParallel.run(), true);
+
   ASSERT_EQ(testMpiTaskParallel.post_processing(), true);
 }
 
