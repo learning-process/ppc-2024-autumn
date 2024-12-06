@@ -140,7 +140,7 @@ TEST(ermilova_d_custom_reduce_mpi, CustomReduce_float_max) {
   ermilova_d_custom_reduce_mpi::CustomReduce(&local_value, &global_result, 1, MPI_FLOAT, MPI_MAX, 0, MPI_COMM_WORLD);
 
   if (rank == 0) {
-    ASSERT_EQ(global_result, size + 0.5f);
+    ASSERT_FLOAT_EQ(global_result, size + 0.5f);
   }
 }
 
@@ -154,7 +154,7 @@ TEST(ermilova_d_custom_reduce_mpi, CustomReduce_float_min) {
   ermilova_d_custom_reduce_mpi::CustomReduce(&local_value, &global_result, 1, MPI_FLOAT, MPI_MIN, 0, MPI_COMM_WORLD);
 
   if (rank == 0) {
-    ASSERT_DOUBLE_EQ(global_result, 1.5f);
+    ASSERT_FLOAT_EQ(global_result, 1.5f);
   }
 }
 
@@ -170,8 +170,8 @@ TEST(ermilova_d_custom_reduce_mpi, CustomReduce_double_sum) {
   ermilova_d_custom_reduce_mpi::CustomReduce(&local_value, &global_result, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
   if (rank == 0) {
-    double expected_sum = size * 1.5 + (size * (size - 1)) / 2.0;
-    ASSERT_EQ(global_result, expected_sum);
+    double expected_sum = (size * (size + 1) / 2.0) + 0.5 * size;
+    ASSERT_DOUBLE_EQ(global_result, expected_sum);
   }
 }
 

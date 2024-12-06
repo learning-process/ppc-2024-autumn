@@ -130,8 +130,8 @@ bool ermilova_d_custom_reduce_mpi::TestMPITaskParallel::post_processing() {
 
 template <typename T>
 void apply_operation(void *inbuf, void *inoutbuf, int count, MPI_Datatype datatype, MPI_Op op) {
-  auto *in = reinterpet_cast<T *>(inbuf);
-  auto *inout = reinterpet_cast<T *>(inoutbuf);
+  auto *in = reinterpret_cast<T *>(inbuf);
+  auto *inout = reinterpret_cast<T *>(inoutbuf);
   for (int i = 0; i < count; i++) {
     if (op == MPI_SUM)
       inout[i] += in[i];
