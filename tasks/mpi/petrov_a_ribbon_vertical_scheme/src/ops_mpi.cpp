@@ -43,7 +43,7 @@ bool petrov_a_ribbon_vertical_scheme_mpi::TestTaskMPI::pre_processing() {
 
 bool petrov_a_ribbon_vertical_scheme_mpi::TestTaskMPI::validation() {
   internal_order_test();
-  bool isValid = true;
+  bool isValid = true; 
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
