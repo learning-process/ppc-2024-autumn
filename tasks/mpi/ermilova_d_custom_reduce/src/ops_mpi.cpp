@@ -144,7 +144,8 @@ void apply_operation(void *inbuf, void *inoutbuf, int count, MPI_Datatype dataty
 
 int ermilova_d_custom_reduce_mpi::CustomReduce(void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
                                                MPI_Op op, int root, MPI_Comm comm) {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(comm, &rank);
   MPI_Comm_size(comm, &size);
 
