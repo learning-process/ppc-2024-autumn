@@ -1,4 +1,4 @@
-// Golovkin Maksim
+// Golovkin Maksim Task#2
 
 #include "seq/golovkin_rowwise_matrix_partitioning/include/ops_seq.hpp"
 

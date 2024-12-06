@@ -1,4 +1,4 @@
-// Golovkin Maksim
+// Golovkin Maksim Task#1
 #pragma once
 
 #include <boost/mpi/collectives.hpp>

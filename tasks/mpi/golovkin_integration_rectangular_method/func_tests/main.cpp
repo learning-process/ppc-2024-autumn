@@ -1,4 +1,4 @@
-﻿// Golovkin Maksim
+﻿// Golovkin Maksim Task#1
 #define _USE_MATH_DEFINES
 #include <gtest/gtest.h>
 

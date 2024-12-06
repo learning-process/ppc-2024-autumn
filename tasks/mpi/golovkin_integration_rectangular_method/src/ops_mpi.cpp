@@ -1,4 +1,4 @@
-// Golovkin Maksims
+// Golovkin Maksim Task#1
 #include "mpi/golovkin_integration_rectangular_method/include/ops_mpi.hpp"
 
 #include <algorithm>

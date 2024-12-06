@@ -1,4 +1,4 @@
-// Golovkin Maksim
+// Golovkin Maksim Task#1
 
 #include "seq/golovkin_integration_rectangular_method/include/ops_seq.hpp"
 

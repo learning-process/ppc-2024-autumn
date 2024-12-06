@@ -1,4 +1,4 @@
-// Golovkin Maksim
+// Golovkin Maksim Task#2
 #include <gtest/gtest.h>
 
 #include <chrono>

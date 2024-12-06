@@ -1,4 +1,4 @@
-// Golovkin Maksims
+// Golovkin Maksim Task#2
 
 #pragma once
 
