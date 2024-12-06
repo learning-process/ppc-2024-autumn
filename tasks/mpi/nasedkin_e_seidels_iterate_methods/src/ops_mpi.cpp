@@ -101,14 +101,12 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
 
     bool nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskParallel::pre_processing() {
         internal_order_test();
+
         if (world.rank() == 0) {
             _rows = taskData->inputs_count[3];
             _columns = taskData->inputs_count[2];
-            if (_rows <= 0 || _columns <= 0) {
-                return false;
-            }
         }
-
+        
         broadcast(world, _rows, 0);
         broadcast(world, _columns, 0);
 
@@ -128,13 +126,18 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
             _b.resize(_rows);
         }
 
+        broadcast(world, _coefs, 0);
+        broadcast(world, _b, 0);
+
         _x = std::vector<double>(_rows, 0);
         return true;
     }
 
 
+
     bool nasedkin_e_seidels_iterate_methods_mpi::TestMPITaskParallel::validation() {
         internal_order_test();
+
         if (world.rank() == 0) {
             if (taskData->inputs.size() != 2 || taskData->outputs.size() != 1 ||
                 taskData->inputs_count.size() != 4 || taskData->outputs_count.size() != 1) {
@@ -144,15 +147,21 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
                 return false;
             }
             std::vector<double> tmp_coefs(taskData->inputs_count[0]);
-            auto* tmp_ptr2 = reinterpret_cast<double*>(taskData->inputs[0]);
+            auto* tmp_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
             for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
-                tmp_coefs[i] = tmp_ptr2[i];
+                tmp_coefs[i] = tmp_ptr[i];
             }
             int n = taskData->inputs_count[3];
-            return !hasZeroDiagonal(tmp_coefs, n);
+            bool hasZero = hasZeroDiagonal(tmp_coefs, n);
+            broadcast(world, hasZero, 0);
+            return !hasZero;
         }
-        return true;
+
+        bool valid;
+        broadcast(world, valid, 0);
+        return valid;
     }
+
 
 
 
