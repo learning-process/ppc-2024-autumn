@@ -95,11 +95,7 @@ bool MaxMatrixMpi<T>::run() {
 
   local_vector.resize(sizes[world_rank]);
 
-  if (world_rank == 0)
-    boost::mpi::scatterv(world, input_.data(), sizes, displs, local_vector.data(), sizes[world_rank], 0);
-  else
-    boost::mpi::scatterv(world, local_vector.data(), local_vector.size(), 0);
-
+  boost::mpi::scatterv(world, input_.data(), sizes, displs, local_vector.data(), sizes[world_rank], 0);
   T res = agafeev_s_max_of_vector_elements_mpi::get_MaxValue<T>(local_vector);
   boost::mpi::reduce(world, res, maxres_, boost::mpi::maximum<T>(), 0);
 
