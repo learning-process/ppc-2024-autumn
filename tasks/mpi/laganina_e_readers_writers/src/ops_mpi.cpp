@@ -80,12 +80,12 @@ bool laganina_e_readers_writers_mpi::TestMPITaskParallel::run() {
           reqs = world.isend(id_proc, 1, 4);
           reqs = world.isend(id_proc, 2, vec_size);
           reqs.wait();
-          reqs = world.isend(id_proc, 2, &shared_data[0], vec_size);
+          reqs = world.isend(id_proc, 2, shared_data.data(), vec_size);
           reqs.wait();
           std::vector<int> new_data(shared_data.size());
           reqs = world.irecv(id_proc, 2, vec_size);
           reqs.wait();  // waiting for getting size of data
-          reqs = world.irecv(id_proc, 2, &new_data[0], vec_size);
+          reqs = world.irecv(id_proc, 2, new_data.data(), vec_size);
           reqs.wait();  // waiting for getting data
           shared_data = new_data;
           reqs = world.isend(id_proc, 1, 5);
@@ -103,7 +103,7 @@ bool laganina_e_readers_writers_mpi::TestMPITaskParallel::run() {
         reqs = world.isend(id_proc, 1, 4);
         reqs = world.isend(id_proc, 2, vec_size);
         reqs.wait();
-        reqs = world.isend(id_proc, 2, &shared_data[0], vec_size);
+        reqs = world.isend(id_proc, 2, shared_data.data(), vec_size);
         reqs.wait();
       } else if (id_msg == 2) {
         readers_count--;
@@ -132,14 +132,14 @@ bool laganina_e_readers_writers_mpi::TestMPITaskParallel::run() {
     reqs = world.irecv(0, 2, vec_size);
     reqs.wait();
     shared_data.resize(vec_size);
-    reqs = world.irecv(0, 2, &shared_data[0], vec_size);
+    reqs = world.irecv(0, 2, shared_data.data(), vec_size);
     reqs.wait();
     for (auto& t : shared_data) {
       t++;  // adding 1 to each element
     }
     reqs = world.isend(0, 2, vec_size);
     reqs.wait();
-    reqs = world.isend(0, 2, &shared_data[0], vec_size);
+    reqs = world.isend(0, 2, shared_data.data(), vec_size);
     reqs.wait();
     reqs = world.irecv(0, 1, message);
     reqs.wait();
@@ -158,7 +158,7 @@ bool laganina_e_readers_writers_mpi::TestMPITaskParallel::run() {
       reqs = world.irecv(0, 2, vec_size);
       reqs.wait();
       shared_data.resize(vec_size);
-      reqs = world.irecv(0, 2, &shared_data[0], vec_size);
+      reqs = world.irecv(0, 2, shared_data.data(), vec_size);
       reqs.wait();
     }
     std::chrono::milliseconds timespan(3);  // simulate reading
