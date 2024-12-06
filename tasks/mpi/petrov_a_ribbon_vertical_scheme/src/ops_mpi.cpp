@@ -20,10 +20,6 @@ bool petrov_a_ribbon_vertical_scheme_mpi::TestTaskMPI::pre_processing() {
   if (rank == 0) {
     int rows = taskData->inputs_count[0];
     cols = taskData->inputs_count[1];
-    int* matrix_data;
-    matrix_data = reinterpret_cast<int*>(taskData->inputs[0]);
-    int* vector_data;
-    vector_data = reinterpret_cast<int*>(taskData->inputs[1]);
 
     int rows_per_process = rows / size;
     int extra_rows = rows % size;
