@@ -56,7 +56,7 @@ TEST(kavtorev_d_iterative_jacobi_mpi, pipeline_run) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
-  int n = 1000;
+  int n = 1001;
   double eps = 0.001;
   int iterations = 1000;
 
