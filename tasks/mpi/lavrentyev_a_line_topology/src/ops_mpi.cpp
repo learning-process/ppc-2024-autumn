@@ -72,34 +72,37 @@ bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::run() {
     return true;
   }
 
-  MPI_Request req_send_data, req_send_path, req_recv_data, req_recv_path;
+  MPI_Request req_send_data[2];
+  MPI_Request req_send_path[2];
+  MPI_Request req_recv_data[2];
+  MPI_Request req_recv_path[2];
 
   if (world.rank() == start_proc) {
-    MPI_Isend(data.data(), data.size(), MPI_INT, world.rank() + 1, 0, MPI_COMM_WORLD, &req_send_data);
-    MPI_Isend(path.data(), path.size(), MPI_INT, world.rank() + 1, 1, MPI_COMM_WORLD, &req_send_path);
-  } else {
-    MPI_Irecv(data.data(), data.size(), MPI_INT, world.rank() - 1, 0, MPI_COMM_WORLD, &req_recv_data);
-    MPI_Irecv(path.data(), path.size(), MPI_INT, world.rank() - 1, 1, MPI_COMM_WORLD, &req_recv_path);
+    MPI_Isend(data.data(), data.size(), MPI_INT, world.rank() + 1, 0, MPI_COMM_WORLD, &req_send_data[0]);
+    MPI_Isend(path.data(), path.size(), MPI_INT, world.rank() + 1, 1, MPI_COMM_WORLD, &req_send_path[0]);
 
-    MPI_Wait(&req_recv_data, MPI_STATUS_IGNORE);
-    MPI_Wait(&req_recv_path, MPI_STATUS_IGNORE);
+    MPI_Waitall(2, req_send_data, MPI_STATUS_IGNORE);
+    MPI_Waitall(2, req_send_path, MPI_STATUS_IGNORE);
+  } else {
+    MPI_Irecv(data.data(), data.size(), MPI_INT, world.rank() - 1, 0, MPI_COMM_WORLD, &req_recv_data[0]);
+    MPI_Irecv(path.data(), path.size(), MPI_INT, world.rank() - 1, 1, MPI_COMM_WORLD, &req_recv_path[0]);
+
+    MPI_Waitall(2, req_recv_data, MPI_STATUS_IGNORE);
+    MPI_Waitall(2, req_recv_path, MPI_STATUS_IGNORE);
 
     path.push_back(world.rank());
 
     if (world.rank() < end_proc) {
-      MPI_Isend(data.data(), data.size(), MPI_INT, world.rank() + 1, 0, MPI_COMM_WORLD, &req_send_data);
-      MPI_Isend(path.data(), path.size(), MPI_INT, world.rank() + 1, 1, MPI_COMM_WORLD, &req_send_path);
-    }
-  }
+      MPI_Isend(data.data(), data.size(), MPI_INT, world.rank() + 1, 0, MPI_COMM_WORLD, &req_send_data[1]);
+      MPI_Isend(path.data(), path.size(), MPI_INT, world.rank() + 1, 1, MPI_COMM_WORLD, &req_send_path[1]);
 
-  if (world.rank() == start_proc || (world.rank() > start_proc && world.rank() <= end_proc)) {
-    MPI_Wait(&req_send_data, MPI_STATUS_IGNORE);
-    MPI_Wait(&req_send_path, MPI_STATUS_IGNORE);
+      MPI_Waitall(2, req_send_data, MPI_STATUS_IGNORE);
+      MPI_Waitall(2, req_send_path, MPI_STATUS_IGNORE);
+    }
   }
 
   return true;
 }
-
 bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
 

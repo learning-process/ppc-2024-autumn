@@ -35,7 +35,8 @@ TEST(lavrentyev_a_line_topology_mpi, task_run) {
   std::vector<int> output_data(num_elems);
   std::vector<int> processing_sequence;
 
-  MPI_Request req_send, req_recv;
+  MPI_Request req_send;
+  MPI_Request req_recv;
 
   if (world.rank() == start_proc) {
     input_data = lavrentyev_a_line_topology_mpi::generate_random_data(num_elems);
@@ -43,6 +44,7 @@ TEST(lavrentyev_a_line_topology_mpi, task_run) {
 
     if (start_proc != end_proc) {
       MPI_Isend(input_data.data(), input_data.size(), MPI_INT, end_proc, 0, MPI_COMM_WORLD, &req_send);
+      MPI_Wait(&req_send, MPI_STATUS_IGNORE);
     }
   }
 
@@ -100,7 +102,8 @@ TEST(lavrentyev_a_line_topology_mpi, pipeline_run) {
   std::vector<int> result_values(total_elements);
   std::vector<int> trace_path;
 
-  MPI_Request req_send, req_recv;
+  MPI_Request req_send;
+  MPI_Request req_recv;
 
   if (world.rank() == start_rank) {
     input_values = lavrentyev_a_line_topology_mpi::generate_random_data(total_elements);
@@ -108,6 +111,7 @@ TEST(lavrentyev_a_line_topology_mpi, pipeline_run) {
 
     if (start_rank != end_rank) {
       MPI_Isend(input_values.data(), input_values.size(), MPI_INT, end_rank, 0, MPI_COMM_WORLD, &req_send);
+      MPI_Wait(&req_send, MPI_STATUS_IGNORE);
     }
   }
 
