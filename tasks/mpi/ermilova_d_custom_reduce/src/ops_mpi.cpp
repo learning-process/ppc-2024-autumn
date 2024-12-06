@@ -167,8 +167,9 @@ int ermilova_d_custom_reduce_mpi::CustomReduce(void *sendbuf, void *recvbuf, int
           fprintf(stderr, "Unsupported datatype\n");
           MPI_Abort(MPI_COMM_WORLD, MPI_ERR_TYPE);
         }
-        memcpy(recvbuf, sendbuf,
-               count * (datatype == MPI_INT ? sizeof(int) : (datatype == MPI_FLOAT ? sizeof(float) : sizeof(double))));
+        int typesize{};
+        MPI_Type_size(datatype, &typesize);
+        memcpy(recvbuf, sendbuf, count * typesize);
       }
     } else {
       int dest = rank - step;
