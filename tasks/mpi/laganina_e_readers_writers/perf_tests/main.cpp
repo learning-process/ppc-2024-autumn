@@ -33,7 +33,7 @@ TEST(laganina_e_readers_writers_mpi_perf_test, test_pipeline_run) {
   int count = 0;  // this variable is needed to find out how many writers there were
   std::vector<int> global_vec;
   ASSERT_NO_THROW(global_vec = laganina_e_readers_writers_mpi::getRandomVector(count_size_vector, -1000, 1000));
- 
+
   std::vector<int> out_vec(count_size_vector, 0);
   std::vector<int> exp_parallel = global_vec;
   // Create TaskData
@@ -85,7 +85,7 @@ TEST(laganina_e_readers_writers_mpi_perf_test, test_task_run) {
   int count = 0;  // this variable is needed to find out how many writers there were
   std::vector<int> global_vec;
   ASSERT_NO_THROW(global_vec = laganina_e_readers_writers_mpi::getRandomVector(count_size_vector, -1000, 1000));
-  
+
   std::vector<int> out_vec(count_size_vector, 0);
   std::vector<int> exp_parallel = global_vec;
   // Create TaskData
