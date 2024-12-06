@@ -174,10 +174,6 @@ bool zolotareva_a_smoothing_image_mpi::TestMPITaskParallel::run() {
 
   zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::convolve_columns(temp, local_height_, width_,
                                                                             vertical_kernel, local_res);
-  for (int i = 0; i < local_height_ * width_; ++i) {
-    cout << "Proc #" << world.rank() << ": local_res[" << i << "] = " << static_cast<int>(local_res[i]) << endl;
-  }
-  world.barrier();
   if (world.rank() == 0) {
     result_.clear();
     int base_height = height_ / world.size();
