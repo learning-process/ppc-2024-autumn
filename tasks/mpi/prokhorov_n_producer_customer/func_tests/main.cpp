@@ -14,7 +14,7 @@ TEST(prokhorov_n_producer_customer_mpi, Test_Sequence_Numbers_Processes) {
   size_t start = 2;
   size_t end = 6;
 
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  auto taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -59,7 +59,7 @@ TEST(prokhorov_n_producer_customer_mpi, Test_Doubled_Numbers_Processes) {
   size_t start = 2;
   size_t end = 6;
 
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  auto taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   std::random_device rd;
   std::mt19937 gen(rd());
