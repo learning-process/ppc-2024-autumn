@@ -55,8 +55,6 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, test_task) {
       local_result[i] += local_matrix[i * cols + j] * global_vector[j];
     }
   }
-  auto end = std::chrono::high_resolution_clock::now();
-  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
   if (rank == 0) {
     global_result.resize(rows);
@@ -127,8 +125,6 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, test_pipeline) {
       local_result[i] += local_matrix[i * cols + j] * global_vector[j];
     }
   }
-  auto end = std::chrono::high_resolution_clock::now();
-  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
   if (rank == 0) {
     global_result.resize(rows);
