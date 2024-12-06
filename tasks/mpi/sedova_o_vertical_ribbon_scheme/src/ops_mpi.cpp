@@ -16,7 +16,7 @@ std::pair<std::vector<int>, std::vector<int>> calculateDistribution(int cols, in
 
   int offset = 0;
   for (int i = 0; i < num_processes; ++i) {
-    distribution[i] = (cols_per_proc + (i < remainder)) * rows;
+    distribution[i] = (cols_per_proc + static_cast<int>(i < remainder)) * rows;
     displacement[i] = offset;
     offset += distribution[i];
   }
