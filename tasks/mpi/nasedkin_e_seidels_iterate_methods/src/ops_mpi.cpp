@@ -11,13 +11,6 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
             return false;
         }
 
-        if (!boost::mpi::initial_order_test(world)) {
-            if (world.rank() == 0) {
-                std::cerr << "MPI processes are not in the expected initial order." << std::endl;
-            }
-            return false;
-        }
-
         epsilon = 1e-6;
         max_iterations = 1000;
 
@@ -95,7 +88,7 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
             }
 
             double global_residual_norm = 0.0;
-            boost::mpi::all_reduce(world, local_residual_norm, global_residual_norm, std::plus<double>());
+            boost::mpi::all_reduce(world, local_residual_norm, global_residual_norm, std::plus<>());
 
             if (std::sqrt(global_residual_norm) < epsilon) {
                 break;

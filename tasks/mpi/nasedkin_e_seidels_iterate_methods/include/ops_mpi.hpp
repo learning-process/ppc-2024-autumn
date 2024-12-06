@@ -1,5 +1,6 @@
 #pragma once
 
+#include <boost/serialization/vector.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/collectives.hpp>
 #include <memory>
@@ -8,6 +9,16 @@
 #include <ctime>
 
 #include "core/task/include/task.hpp"
+
+namespace boost {
+    namespace serialization {
+        template<class Archive>
+        void serialize(Archive& ar, std::vector<std::vector<double>>& v, const unsigned int version) {
+            ar & boost::serialization::make_nvp("outer_vector", v);
+        }
+
+    } // namespace serialization
+} // namespace boost
 
 namespace nasedkin_e_seidels_iterate_methods_mpi {
 
