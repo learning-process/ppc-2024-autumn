@@ -165,10 +165,7 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskPar
 }
 bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel::validation() {
   internal_order_test();
-  if (world.size() < 0 || world.rank() >= world.size() || (ops != "+" && ops != "-" && ops != "max")) {
-    return false;
-  }
-  return true;
+  return !(world.size() < 0 || world.rank() >= world.size() || (ops != "+" && ops != "-" && ops != "max"));
 }
 
 bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel::run() {

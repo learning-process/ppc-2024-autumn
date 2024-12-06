@@ -200,7 +200,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Sum_Negative) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 550;
+    const int count_size_vector = 111;
     global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -200, -1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -240,7 +240,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Sum_Positive) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 550;
+    const int count_size_vector = 111;
     global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, 1, 200);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -280,7 +280,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Sum_Positive_Negat
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 550;
+    const int count_size_vector = 111;
     global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -320,7 +320,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Diff_Negative) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 550;
+    const int count_size_vector = 111;
     global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -200, -1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -360,7 +360,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Diff_Positive) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 550;
+    const int count_size_vector = 111;
     global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, 1, 200);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -400,7 +400,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Diff_Positive_Nega
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 550;
+    const int count_size_vector = 111;
     global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -480,7 +480,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Max_Positive) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 550;
+    const int count_size_vector = 111;
     global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, 1, 200);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -520,7 +520,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Max_Positive_Negat
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 550;
+    const int count_size_vector = 111;
     global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -566,7 +566,8 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_pipe
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
-  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(taskDataPar, "+");
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(
+      taskDataPar, "+");
   ASSERT_EQ(MyScatterTestMPITaskParallel.validation(), true);
   ASSERT_EQ(MyScatterTestMPITaskParallel.pre_processing(), true);
   ASSERT_EQ(MyScatterTestMPITaskParallel.run(), true);
@@ -585,7 +586,8 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_Empt
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
-  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(taskDataPar, "+");
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(
+      taskDataPar, "+");
   ASSERT_EQ(MyScatterTestMPITaskParallel.validation(), true);
   MyScatterTestMPITaskParallel.pre_processing();
   MyScatterTestMPITaskParallel.run();
@@ -621,7 +623,8 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_Sum_
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
 
-  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(taskDataPar, "+");
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(
+      taskDataPar, "+");
   ASSERT_EQ(MyScatterTestMPITaskParallel.validation(), true);
   MyScatterTestMPITaskParallel.pre_processing();
   MyScatterTestMPITaskParallel.run();
@@ -659,7 +662,8 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_Diff
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
 
-  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(taskDataPar, "-");
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(
+      taskDataPar, "-");
   ASSERT_EQ(MyScatterTestMPITaskParallel.validation(), true);
   MyScatterTestMPITaskParallel.pre_processing();
   MyScatterTestMPITaskParallel.run();
@@ -697,7 +701,8 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_Max_
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
 
-  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(taskDataPar, "max");
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(
+      taskDataPar, "max");
   ASSERT_EQ(MyScatterTestMPITaskParallel.validation(), true);
   MyScatterTestMPITaskParallel.pre_processing();
   MyScatterTestMPITaskParallel.run();
@@ -720,9 +725,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_Max_
   }
 }
 
-
 //////////////
-
 
 TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_Sum_Negative) {
   boost::mpi::communicator world;
@@ -732,7 +735,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_Sum_
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 550;
+    const int count_size_vector = 111;
     global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -200, -1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -740,7 +743,8 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_Sum_
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
 
-  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(taskDataPar, "+");
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(
+      taskDataPar, "+");
   ASSERT_EQ(MyScatterTestMPITaskParallel.validation(), true);
   MyScatterTestMPITaskParallel.pre_processing();
   MyScatterTestMPITaskParallel.run();
@@ -772,7 +776,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_Sum_
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 550;
+    const int count_size_vector = 111;
     global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, 1, 200);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -780,7 +784,8 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_Sum_
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
 
-  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(taskDataPar, "+");
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(
+      taskDataPar, "+");
   ASSERT_EQ(MyScatterTestMPITaskParallel.validation(), true);
   MyScatterTestMPITaskParallel.pre_processing();
   MyScatterTestMPITaskParallel.run();
@@ -812,7 +817,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Sum_CustomScatter_
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 550;
+    const int count_size_vector = 111;
     global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -820,7 +825,8 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Sum_CustomScatter_
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
 
-  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel MyScatterTestMPITaskParallel(taskDataPar, "+");
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel MyScatterTestMPITaskParallel(taskDataPar,
+                                                                                                       "+");
   ASSERT_EQ(MyScatterTestMPITaskParallel.validation(), true);
   MyScatterTestMPITaskParallel.pre_processing();
   MyScatterTestMPITaskParallel.run();
@@ -852,7 +858,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_Diff
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 550;
+    const int count_size_vector = 111;
     global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -200, -1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -860,7 +866,8 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_Diff
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
 
-  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(taskDataPar, "-");
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(
+      taskDataPar, "-");
   ASSERT_EQ(MyScatterTestMPITaskParallel.validation(), true);
   MyScatterTestMPITaskParallel.pre_processing();
   MyScatterTestMPITaskParallel.run();
@@ -892,7 +899,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_Diff
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 550;
+    const int count_size_vector = 111;
     global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, 1, 200);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -900,7 +907,8 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_Diff
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
 
-  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(taskDataPar, "-");
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(
+      taskDataPar, "-");
   ASSERT_EQ(MyScatterTestMPITaskParallel.validation(), true);
   MyScatterTestMPITaskParallel.pre_processing();
   MyScatterTestMPITaskParallel.run();
@@ -932,7 +940,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_Diff
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 550;
+    const int count_size_vector = 111;
     global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -940,7 +948,8 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_Diff
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
 
-  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(taskDataPar, "-");
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(
+      taskDataPar, "-");
   ASSERT_EQ(MyScatterTestMPITaskParallel.validation(), true);
   MyScatterTestMPITaskParallel.pre_processing();
   MyScatterTestMPITaskParallel.run();
@@ -980,7 +989,8 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_Max_
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
 
-  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(taskDataPar, "max");
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(
+      taskDataPar, "max");
   ASSERT_EQ(MyScatterTestMPITaskParallel.validation(), true);
   MyScatterTestMPITaskParallel.pre_processing();
   MyScatterTestMPITaskParallel.run();
@@ -1012,7 +1022,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_Max_
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 550;
+    const int count_size_vector = 111;
     global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, 1, 200);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -1020,7 +1030,8 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_Max_
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
 
-  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(taskDataPar, "max");
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(
+      taskDataPar, "max");
   ASSERT_EQ(MyScatterTestMPITaskParallel.validation(), true);
   MyScatterTestMPITaskParallel.pre_processing();
   MyScatterTestMPITaskParallel.run();
@@ -1052,7 +1063,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_Max_
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 550;
+    const int count_size_vector = 111;
     global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -1060,7 +1071,8 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_Max_
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
 
-  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(taskDataPar, "max");
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(
+      taskDataPar, "max");
   ASSERT_EQ(MyScatterTestMPITaskParallel.validation(), true);
   MyScatterTestMPITaskParallel.pre_processing();
   MyScatterTestMPITaskParallel.run();
