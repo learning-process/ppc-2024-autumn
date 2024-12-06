@@ -42,7 +42,7 @@ bool anikin_m_contrastscale_seq::ContrastScaleSeq::run() {
   internal_order_test();
   output_.clear();
   // Calculate new RGB
-  uint8_t newrgb[256] = { { 0 } };
+  uint8_t newrgb[256] = {{0}};
   for (int i = 0; i < 256; i++) {
     int delta = i - iab;
     int temp = (int)(iab + correction * delta);
