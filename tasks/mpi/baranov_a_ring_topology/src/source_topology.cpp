@@ -85,4 +85,6 @@ template class baranov_a_ring_topology_mpi::ring_topology<int>;
 template class baranov_a_ring_topology_mpi::ring_topology<double>;
 
 template class baranov_a_ring_topology_mpi::ring_topology<unsigned>;
+
+template class baranov_a_ring_topology_mpi::ring_topology<char>;
 }  // namespace baranov_a_ring_topology_mpi
