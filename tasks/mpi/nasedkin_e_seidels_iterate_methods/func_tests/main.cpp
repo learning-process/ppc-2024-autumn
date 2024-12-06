@@ -8,6 +8,10 @@ TEST(nasedkin_e_seidels_iterate_methods_mpi, test_matrix_with_zero_diagonal) {
     taskData->inputs_count.push_back(3);
     taskData->inputs_count.push_back(0);
 
+    ASSERT_EQ(taskData->inputs_count.size(), 2) << "Inputs count size should be exactly 2";
+    ASSERT_GT(taskData->inputs_count[0], 0) << "Matrix size should be greater than 0";
+
+
     nasedkin_e_seidels_iterate_methods_mpi::SeidelIterateMethodsMPI seidel_task(taskData);
 
     ASSERT_TRUE(seidel_task.validation()) << "Validation failed for valid input";

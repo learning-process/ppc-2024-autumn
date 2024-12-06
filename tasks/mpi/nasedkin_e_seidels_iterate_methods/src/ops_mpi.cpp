@@ -10,6 +10,11 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
         if (!validation()) {
             return false;
         }
+        if (A.empty() || b.empty() || A.size() != b.size()) {
+            std::cerr << "Matrix or vector is not properly initialized!" << std::endl;
+            return false;
+        }
+
 
         epsilon = 1e-6;
         max_iterations = 1000;
@@ -75,6 +80,11 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
                         x_new[i] -= A[i][j] * x[j];
                     }
                 }
+                if (A[i][i] == 0.0) {
+                    std::cerr << "Division by zero detected in matrix diagonal at index " << i << std::endl;
+                    return false;
+                }
+
                 x_new[i] /= A[i][i];
             }
 
