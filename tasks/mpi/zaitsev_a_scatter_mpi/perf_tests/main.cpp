@@ -25,11 +25,8 @@ TEST(zaitsev_a_scatter_mpi, test_pipeline_run) {
   }
 
   auto task = std::make_shared<zaitsev_a_scatter::ScatterTask<int, MPI_Scatter>>(taskDataPar, root, MPI_INT);
-  if (!task->validation()) {
-    GTEST_SKIP();
-    return;
-  }
 
+  EXPECT_TRUE(task->validation());
   task->pre_processing();
   task->run();
   task->post_processing();
@@ -68,7 +65,8 @@ TEST(zaitsev_a_scatter_mpi, test_task_run) {
   }
 
   auto task = std::make_shared<zaitsev_a_scatter::ScatterTask<int, MPI_Scatter>>(taskDataPar, root, MPI_INT);
-  ASSERT_EQ(task->validation(), true);
+
+  ASSERT_TRUE(task->validation());
   task->pre_processing();
   task->run();
   task->post_processing();

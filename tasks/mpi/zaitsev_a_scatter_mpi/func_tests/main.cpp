@@ -42,15 +42,15 @@ void test_int(int sz, int min = -10e2, int max = -10e2) {
   }
 
   zaitsev_a_scatter::ScatterTask<int, func> task(taskDataPar, 0, MPI_INT);
+
   if (sz == 0) {
-    EXPECT_ANY_THROW(task.validation());
-    return;
-  }
-  if (!task.validation()) {
-    GTEST_SKIP();
+    if (world.rank() == 0) {
+      ASSERT_FALSE(task.validation());
+    }
     return;
   }
 
+  EXPECT_TRUE(task.validation());
   task.pre_processing();
   task.run();
   task.post_processing();
@@ -80,15 +80,15 @@ void test_double(int sz, double min = -10e2, double max = 10e2) {
   }
 
   zaitsev_a_scatter::ScatterTask<double, func> task(taskDataPar, 0, MPI_DOUBLE);
+
   if (sz == 0) {
-    EXPECT_ANY_THROW(task.validation());
-    return;
-  }
-  if (!task.validation()) {
-    GTEST_SKIP();
+    if (world.rank() == 0) {
+      ASSERT_FALSE(task.validation());
+    }
     return;
   }
 
+  EXPECT_TRUE(task.validation());
   task.pre_processing();
   task.run();
   task.post_processing();
