@@ -8,7 +8,6 @@
 #include <thread>
 #include <vector>
 
-
 std::vector<int> vladimirova_j_gather_mpi::noDeadEnds(std::vector<int> way) {
   int i = 0;
   size_t j = 1;
@@ -44,14 +43,7 @@ std::vector<int> vladimirova_j_gather_mpi::noDeadEnds(std::vector<int> way) {
   for (auto k : way)
     if (k != 0) ans.push_back(k);
   // way.erase(std::remove(way.begin(), way.end(), 0), way.end());
-  /*
-  std::cout << "!!!!!!!!!!!!!!! ans"
-      << "\n";
-  for (auto v : ans) {
-      std::cout << v << " ";
-  }
-  std::cout << std::endl;
-  */
+
   return ans;
 }
 
@@ -104,15 +96,7 @@ bool vladimirova_j_gather_mpi::TestMPITaskSequential::run() {
 bool vladimirova_j_gather_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
   taskData->outputs_count[0] = res.size();
-  /*
-  std::cout << "SIZE:  " << res.size();
-  std::cout << "!!!"
-      << "\n";
-  for (auto v : res) {
-      std::cout << v << " ";
-  }
-  */
-  std::cout << std::endl;
+
   auto* output_data = reinterpret_cast<int*>(taskData->outputs[0]);
   std::copy(res.begin(), res.end(), output_data);
   // reinterpret_cast<int*>(taskData->outputs[0]) = res;
@@ -231,15 +215,7 @@ bool vladimirova_j_gather_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     taskData->outputs_count[0] = local_input_.size();
-    /*
-    std::cout << "SIZE:  " << local_input_.size();
-    std::cout << "!!!"
-        << "\n";
-    for (auto v : local_input_) {
-        std::cout << v << " ";
-    }
-    std::cout << std::endl;
-    */
+
     auto* output_data = reinterpret_cast<int*>(taskData->outputs[0]);
     std::copy(local_input_.begin(), local_input_.end(), output_data);
 

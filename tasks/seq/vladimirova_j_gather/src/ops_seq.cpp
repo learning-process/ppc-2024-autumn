@@ -6,7 +6,6 @@
 #include <thread>
 #include <vector>
 
-
 std::vector<int> vladimirova_j_gather_seq::noDeadEnds(std::vector<int> way) {
   int i = 0;
   size_t j = 1;
@@ -36,26 +35,12 @@ std::vector<int> vladimirova_j_gather_seq::noDeadEnds(std::vector<int> way) {
     j++;
     i++;
   }
-  /*
-  std::cout << "!!!!!!!!!!!!!!! way  2"
-      << "\n";
-  for (auto v : way) {
-      std::cout << v << " ";
-  }
-  std::cout << "\n";
-  */
+
   std::vector<int> ans = std::vector<int>();
   for (auto k : way)
     if (k != 0) ans.push_back(k);
   // way.erase(std::remove(way.begin(), way.end(), 0), way.end());
-  /*
-  std::cout << "!!!!!!!!!!!!!!! ans"
-      << "\n";
-  for (auto v : ans) {
-      std::cout << v << " ";
-  }
-  std::cout << std::endl;
-  */
+
   return ans;
 }
 

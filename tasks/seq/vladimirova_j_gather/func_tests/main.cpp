@@ -43,12 +43,6 @@ TEST(Sequential_Operations, vladimirova_j_forward_backward_test) {
   testTaskSequential.post_processing();
 
   ASSERT_EQ((size_t)taskDataPar->outputs_count[0], ans_vec.size());
-  std::cout << "!!!!!!!!!!!!!!!"
-            << "\n";
-  for (auto v : ans_buf_vec) {
-    std::cout << v << " ";
-  }
-  std::cout << std::endl;
 
   ASSERT_EQ(ans_buf_vec, ans_vec);
 }
@@ -74,12 +68,6 @@ TEST(Sequential_Operations, vladimirova_j_right_left_test) {
   testTaskSequential.post_processing();
 
   ASSERT_EQ((size_t)taskDataPar->outputs_count[0], ans_vec.size());
-  std::cout << "!!!!!!!!!!!!!!!"
-            << "\n";
-  for (auto v : ans_buf_vec) {
-    std::cout << v << " ";
-  }
-  std::cout << std::endl;
 
   ASSERT_EQ(ans_buf_vec, ans_vec);
 }

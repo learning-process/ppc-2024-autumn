@@ -84,13 +84,6 @@ bool vladimirova_j_not_my_gather_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     taskData->outputs_count[0] = local_input_.size();
-    /*std::cout << "SIZE:  " << local_input_.size();
-    std::cout << "!!!"
-        << "\n";
-    for (auto v : local_input_) {
-        std::cout << v << " ";
-    }
-    std::cout << std::endl;*/
     auto* output_data = reinterpret_cast<int*>(taskData->outputs[0]);
     std::copy(local_input_.begin(), local_input_.end(), output_data);
 
