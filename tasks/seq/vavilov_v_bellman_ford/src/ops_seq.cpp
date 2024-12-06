@@ -33,7 +33,7 @@ bool vavilov_v_bellman_ford_seq::TestTaskSequential::run() {
   for (int i = 1; i < vertices_; ++i) {
     bool updated = false;
     for (const auto& edge : edges_) {
-      if (distances_[edge.src] != INT_MAX && distances_[edge.src] + edge.weight < distances_[edge.dest]) {
+      if (reachable_[edge.src] && distances_[edge.src] != INT_MAX && distances_[edge.src] + edge.weight < distances_[edge.dest]) {
         distances_[edge.dest] = distances_[edge.src] + edge.weight;
         reachable_[edge.dest] = true;
         updated = true;
@@ -46,7 +46,7 @@ bool vavilov_v_bellman_ford_seq::TestTaskSequential::run() {
   }
 
   for (const auto& edge : edges_) {
-    if (distances_[edge.src] != INT_MAX && distances_[edge.src] + edge.weight < distances_[edge.dest]) {
+    if (reachable_[edge.src] && distances_[edge.src] != INT_MAX && distances_[edge.src] + edge.weight < distances_[edge.dest]) {
       return false;
     }
   }
