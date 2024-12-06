@@ -86,7 +86,7 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::run() {
   std::vector<int> displacements = displacement;  // Displacements for scatterv
 
   if (world.rank() == 0) {
-    boost::mpi::scatterv(world, input_matrix_1.data(), sendcounts, displacements, local_matrix.data(), local_elements, 
+    boost::mpi::scatterv(world, input_matrix_1.data(), sendcounts, displacements, local_matrix.data(), local_elements,
                          0);
   } else {
     boost::mpi::scatterv(world, local_matrix.data(), local_elements, 0);

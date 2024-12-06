@@ -42,7 +42,6 @@ class SequentialMPI : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
- 
  private:
   int* matrix_;
   int* vector_;

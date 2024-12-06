@@ -17,7 +17,6 @@ bool sedova_o_vertical_ribbon_scheme_seq::Sequential::validation() {
          taskData->inputs_count[0] % taskData->inputs_count[1] == 0;
 }
 
-
 bool sedova_o_vertical_ribbon_scheme_seq::Sequential::pre_processing() {
   internal_order_test();
 
@@ -37,7 +36,7 @@ bool sedova_o_vertical_ribbon_scheme_seq::Sequential::run() {
 
   for (int j = 0; j < cols_; ++j) {
     for (int i = 0; i < rows_; ++i) {
-      result_vector_[i] += matrix_[i + j * rows_ ] * input_vector_[j];
+      result_vector_[i] += matrix_[i + j * rows_] * input_vector_[j];
     }
   }
   return true;

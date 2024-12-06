@@ -54,7 +54,7 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, Test_1) {
     for (int i = 0; i < rows * cols; ++i) {
       global_matrix[i] = (rand() % 1000) - 500;
     }
-    for (int i = 0; i < rows; ++i) {
+    for (int i = 0; i < rows1; ++i) {
       global_vector[i] = (rand() % 1000) - 500;
     }
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
@@ -126,7 +126,7 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, Test_2) {
   }
 }
 
-TEST(sedova_o_vertical_ribbon_scheme_mpi, Test_3 ) {
+TEST(sedova_o_vertical_ribbon_scheme_mpi, Test_3) {
   boost::mpi::communicator world;
 
   std::vector<int> global_matrix;

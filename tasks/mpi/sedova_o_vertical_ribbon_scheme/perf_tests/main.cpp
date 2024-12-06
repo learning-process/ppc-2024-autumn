@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
+#include <random>
 
 #include "core/perf/include/perf.hpp"
-#include <random>
 #include "mpi/sedova_o_vertical_ribbon_scheme/include/ops_mpi.hpp"
 
 std::vector<int> generateVector(int count) {
