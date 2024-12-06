@@ -12,8 +12,9 @@ std::vector<int> getRandomVal3(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
-  vec.push_back(2);
-  for (int i = 1; i < sz; i++) {
+  vec[0] = 2;
+  vec[sz - 1] = 2;
+  for (int i = 1; i < sz - 1; i++) {
     if ((i != 0) && (vec[i - 1] != 2)) {
       vec[i] = 2;
       continue;
@@ -34,7 +35,7 @@ TEST(sequential_vladimirova_j_gather, test_pipeline_run) {
   for (int j = 0; j < d_end_count; j++) {
     std::vector<int> some_dead_end;
     std::vector<int> tmp;
-    some_dead_end = getRandomVal3(5);
+    some_dead_end = getRandomVal3(15);
     tmp = getRandomVal3(15);
     noDEnd += 15;
     global_vector.insert(global_vector.end(), tmp.begin(), tmp.end());
@@ -93,7 +94,7 @@ TEST(sequential_vladimirova_j_gather, test_task_run) {
   for (int j = 0; j < d_end_count; j++) {
     std::vector<int> some_dead_end;
     std::vector<int> tmp;
-    some_dead_end = getRandomVal3(5);
+    some_dead_end = getRandomVal3(15);
     tmp = getRandomVal3(15);
     noDEnd += 15;
     global_vector.insert(global_vector.end(), tmp.begin(), tmp.end());

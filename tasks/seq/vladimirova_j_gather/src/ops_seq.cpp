@@ -9,12 +9,12 @@
 std::vector<int> vladimirova_j_gather_seq::noDeadEnds(std::vector<int> way) {
   int i = 0;
   size_t j = 1;
-  while (j <= way.size()) {
+  while ((i >= 0) && (j < way.size())) {
     if ((way[i] == -1) && (way[i] == way[j])) {
       do {
         i -= 1;
         j += 1;
-        if (((size_t)i < 0) || (!(j < way.size()))) {
+        if ((i < 0) || (!(j < way.size()))) {
           i = j - 1;
           break;
         };
@@ -56,8 +56,19 @@ bool vladimirova_j_gather_seq::TestTaskSequential::pre_processing() {
 
 bool vladimirova_j_gather_seq::TestTaskSequential::validation() {
   internal_order_test();
-  // Check count elements of output
-  return taskData->outputs_count[0] == 1;
+  if (taskData->inputs_count[0] <= 0) return false;
+  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+  for (size_t i = 0; i < taskData->inputs_count[0]; i++) {
+    switch (tmp_ptr[i]) {
+      case 1:
+      case 2:
+      case -1:
+        break;
+      default:
+        return false;
+    }
+  }
+  return true;
 }
 
 bool vladimirova_j_gather_seq::TestTaskSequential::run() {

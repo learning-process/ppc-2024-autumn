@@ -12,13 +12,12 @@ std::vector<int> vladimirova_j_gather_mpi::noDeadEnds(std::vector<int> way) {
   int i = 0;
   size_t j = 1;
 
-  while (j <= way.size()) {
+  while ((i >= 0) && (j < way.size())) {
     if ((way[i] == -1) && (way[i] == way[j])) {
       do {
         i -= 1;
         j += 1;
-        if (((size_t)i < 0) || (!(j < way.size()))) {
-          i = j - 1;
+        if ((i < 0) || (!(j < way.size()))) {
           break;
         };
 
@@ -55,14 +54,14 @@ std::vector<int> vladimirova_j_gather_mpi::convertToBinaryTreeOrder(const std::v
   stack.push_back(0);
 
   while (!stack.empty()) {
-    int r = stack.back();
+    int rank = stack.back();
     stack.pop_back();
 
-    if ((size_t)r < arr.size()) {
-      result.push_back(arr[r]);
+    if ((size_t)rank < arr.size()) {
+      result.push_back(arr[rank]);
 
-      int child1 = 2 * r + 2;
-      int child0 = 2 * r + 1;
+      int child1 = 2 * rank + 2;
+      int child0 = 2 * rank + 1;
 
       if ((size_t)child1 < arr.size()) stack.push_back(child1);
       if ((size_t)child0 < arr.size()) stack.push_back(child0);
@@ -84,7 +83,22 @@ bool vladimirova_j_gather_mpi::TestMPITaskSequential::pre_processing() {
 
 bool vladimirova_j_gather_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  return taskData->outputs_count[0] == 1;
+  if (taskData->inputs_count[0] <= 0) return false;
+  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+  // for (size_t i = 0; i < taskData->inputs_count[0]; i++)  std::cout << tmp_ptr[i] << " ";
+  // std::cout<< std::endl;
+  for (size_t i = 0; i < taskData->inputs_count[0]; i++) {
+    switch (tmp_ptr[i]) {
+      case 1:
+      case 2:
+      case -1:
+        break;
+      default:
+        std::cout << (tmp_ptr[i]) << " ++ " << std::endl;
+        return false;
+    }
+  }
+  return true;
 }
 
 bool vladimirova_j_gather_mpi::TestMPITaskSequential::run() {
@@ -121,18 +135,28 @@ bool vladimirova_j_gather_mpi::TestMPITaskParallel::pre_processing() {
 bool vladimirova_j_gather_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    // Check count elements of output
-    return taskData->outputs_count[0] == 1;
+    if (taskData->inputs_count[0] <= 0) return false;
+    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+    for (size_t i = 0; i < taskData->inputs_count[0]; i++) {
+      switch (tmp_ptr[i]) {
+        case 1:
+        case 2:
+        case -1:
+          break;
+        default:
+          return false;
+      }
+    }
   }
   return true;
 }
 
 template <typename T>
 bool myGather(std::vector<T>& send_data, int send_count, boost::mpi::communicator world) {
-  int r = world.rank();
-  int parent = (r - 1) / 2;
-  int child0 = (2 * r) + 1;
-  int child1 = (2 * r) + 2;
+  int rank = world.rank();
+  int parent = (rank - 1) / 2;
+  int child0 = (2 * rank) + 1;
+  int child1 = (2 * rank) + 2;
   if (child0 >= world.size()) child0 = -1;
   if (child1 >= world.size()) child1 = -1;
   std::vector<T> recv_data;
@@ -153,7 +177,7 @@ bool myGather(std::vector<T>& send_data, int send_count, boost::mpi::communicato
   }
   recv_data = std::vector<T>(send_count + child0_data.size() + child1_data.size());
 
-  if (r != 0) {
+  if (rank != 0) {
     std::copy(send_data.begin(), send_data.end(), recv_data.begin());
     std::copy(child0_data.begin(), child0_data.end(), recv_data.begin() + send_count);
     std::copy(child1_data.begin(), child1_data.end(), recv_data.begin() + child0_data.size() + send_count);
@@ -162,7 +186,7 @@ bool myGather(std::vector<T>& send_data, int send_count, boost::mpi::communicato
     world.send(parent, 0, recv_data.data(), recv_data.size());
   }
 
-  if (r == 0) {
+  if (rank == 0) {
     send_data.insert(send_data.end(), child0_data.begin(), child0_data.end());
     send_data.insert(send_data.end(), child1_data.begin(), child1_data.end());
   }
@@ -171,10 +195,10 @@ bool myGather(std::vector<T>& send_data, int send_count, boost::mpi::communicato
 
 bool vladimirova_j_gather_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  int r = world.rank();
+  int rank = world.rank();
   int size;
 
-  if (r == 0) {
+  if (rank == 0) {
     size = input_.size() / world.size();
     for (int i = 1; i < world.size(); i++) {
       world.send(i, 0, size);
@@ -203,7 +227,7 @@ bool vladimirova_j_gather_mpi::TestMPITaskParallel::run() {
 
   myGather(local_input_, local_input_.size(), world);
 
-  if (r == 0) {
+  if (rank == 0) {
     local_input_.insert(local_input_.end(), input_.end() - input_.size() % world.size(), input_.end());
     local_input_ = vladimirova_j_gather_mpi::noDeadEnds(local_input_);
   }

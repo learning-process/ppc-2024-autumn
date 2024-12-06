@@ -10,8 +10,9 @@ std::vector<int> getRandomVal1(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
-  vec.push_back(2);
-  for (int i = 1; i < sz; i++) {
+  vec[0] = 2;
+  vec[sz - 1] = 2;
+  for (int i = 1; i < sz - 1; i++) {
     if ((i != 0) && (vec[i - 1] != 2)) {
       vec[i] = 2;
       continue;

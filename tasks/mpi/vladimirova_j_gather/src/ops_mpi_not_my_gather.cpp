@@ -33,8 +33,18 @@ bool vladimirova_j_not_my_gather_mpi::TestMPITaskParallel::pre_processing() {
 bool vladimirova_j_not_my_gather_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    // Check count elements of output
-    return taskData->outputs_count[0] == 1;
+    if (taskData->inputs_count[0] <= 0) return false;
+    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+    for (size_t i = 0; i < taskData->inputs_count[0]; i++) {
+      switch (tmp_ptr[i]) {
+        case 1:
+        case 2:
+        case -1:
+          break;
+        default:
+          return false;
+      }
+    }
   }
   return true;
 }
@@ -42,11 +52,11 @@ bool vladimirova_j_not_my_gather_mpi::TestMPITaskParallel::validation() {
 bool vladimirova_j_not_my_gather_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-  int r = world.rank();
+  int rank = world.rank();
   int size;
   std::vector<std::vector<int>> root_vec;
 
-  if (r == 0) {
+  if (rank == 0) {
     root_vec = std::vector<std::vector<int>>(world.size());
     size = input_.size() / world.size();
 
@@ -69,7 +79,7 @@ bool vladimirova_j_not_my_gather_mpi::TestMPITaskParallel::run() {
 
   gather(world, local_input_, root_vec, 0);
 
-  if (r == 0) {
+  if (rank == 0) {
     for (int i = 1; i < world.size(); i++) {
       local_input_.insert(local_input_.end(), root_vec[i].begin(), root_vec[i].end());
     }
