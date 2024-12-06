@@ -25,40 +25,27 @@ std::vector<uint8_t> generateRandomImage(int height, int width, uint8_t min_valu
 
 void form(int height, int width) {
   boost::mpi::communicator world;
-  std::vector<uint8_t> inputImage;  // generateRandomImage(height, width);
+  std::vector<uint8_t> inputImage;
   std::vector<uint8_t> mpi_outputImage(width * height);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     inputImage = generateRandomImage(height, width);
-    for (int i = 0; i < height; ++i) {
-      for (int j = 0; j < width; ++j) {
-        cout << "inputImage[" << i * width + j << "] = " << static_cast<int>(inputImage[i * width + j]) << ' ';
-      }
-      cout << endl;
-    }
     taskDataPar->inputs.emplace_back(inputImage.data());
-    taskDataPar->inputs_count.emplace_back(height);  // кол-во строк/высота
-    taskDataPar->inputs_count.emplace_back(width);   // кол-во столбцов/ширина
+    taskDataPar->inputs_count.emplace_back(height);
+    taskDataPar->inputs_count.emplace_back(width);
     taskDataPar->outputs.emplace_back(mpi_outputImage.data());
     taskDataPar->outputs_count.emplace_back(mpi_outputImage.size());
   }
 
   zolotareva_a_smoothing_image_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+
   world.barrier();
-  try {
-    ASSERT_EQ(testMpiTaskParallel.validation(), true);
-    world.barrier();
-    testMpiTaskParallel.pre_processing();
-    world.barrier();
-    testMpiTaskParallel.run();
-    world.barrier();
-    testMpiTaskParallel.post_processing();
-    world.barrier();
-    std::cerr << "completed on rank: " << world.rank() << std::endl;
-  } catch (std::exception& e) {
-    std::cerr << "Exception during scatterv on rank: " << world.rank() << " - " << e.what() << std::endl;
-  }
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+  world.barrier();
 
   if (world.rank() == 0) {
     std::vector<uint8_t> seq_mpi_outputImage(width * height);
@@ -78,36 +65,31 @@ void form(int height, int width) {
   }
 }
 
-TEST(zolotareva_a_smoothing_image_mpi, Test_image) {
+TEST(zolotareva_a_smoothing_image_mpi, Test_image_with_nulls) {
   boost::mpi::communicator world;
   int height = 5;
   int width = 3;
-  std::vector<uint8_t> inputImage(width * height, 0);  // generateRandomImage(height, width);
+  std::vector<uint8_t> inputImage(width * height, 0);
   std::vector<uint8_t> mpi_outputImage(width * height);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(inputImage.data());
-    taskDataPar->inputs_count.emplace_back(height);  // кол-во строк/высота
-    taskDataPar->inputs_count.emplace_back(width);   // кол-во столбцов/ширина
+    taskDataPar->inputs_count.emplace_back(height);
+    taskDataPar->inputs_count.emplace_back(width);
     taskDataPar->outputs.emplace_back(mpi_outputImage.data());
     taskDataPar->outputs_count.emplace_back(mpi_outputImage.size());
   }
 
   zolotareva_a_smoothing_image_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  try {
-    ASSERT_EQ(testMpiTaskParallel.validation(), true);
-    world.barrier();
-    testMpiTaskParallel.pre_processing();
-    world.barrier();
-    testMpiTaskParallel.run();
-    world.barrier();
-    testMpiTaskParallel.post_processing();
-    world.barrier();
-    std::cerr << "completed on rank: " << world.rank() << std::endl;
-  } catch (std::exception& e) {
-    std::cerr << "Exception during scatterv on rank: " << world.rank() << " - " << e.what() << std::endl;
-  }
+
+  world.barrier();
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+  world.barrier();
+
   if (world.rank() == 0) {
     std::vector<uint8_t> seq_mpi_outputImage(width * height);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -125,7 +107,7 @@ TEST(zolotareva_a_smoothing_image_mpi, Test_image) {
     ASSERT_EQ(seq_mpi_outputImage, mpi_outputImage);
   }
 }
-TEST(zolotareva_a_smoothing_image_mpi, Test_image_random) { form(4, 4); }
-TEST(zolotareva_a_smoothing_image_mpi, Test_image_random2) { form(5, 5); }
-TEST(zolotareva_a_smoothing_image_mpi, Test_image_random3) { form(5, 6); }
-TEST(zolotareva_a_smoothing_image_mpi, Test_image_random4) { form(6, 5); }
+TEST(zolotareva_a_smoothing_image_mpi, Test_image_random_4X4) { form(4, 4); }
+TEST(zolotareva_a_smoothing_image_mpi, Test_image_random_5X5) { form(5, 5); }
+TEST(zolotareva_a_smoothing_image_mpi, Test_image_random_5X6) { form(5, 6); }
+TEST(zolotareva_a_smoothing_image_mpi, Test_image_random_6X5) { form(6, 5); }
