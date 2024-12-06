@@ -1,6 +1,7 @@
 #pragma once
 
 #include <boost/mpi/communicator.hpp>
+#include <boost/mpi/collectives.hpp>
 #include <memory>
 #include <vector>
 #include <cstdlib>

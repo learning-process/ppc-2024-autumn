@@ -1,25 +1,35 @@
 #include "mpi/nasedkin_e_seidels_iterate_methods/include/ops_mpi.hpp"
 
+#include <boost/mpi/collectives.hpp>
 #include <cmath>
 #include <iostream>
 
 namespace nasedkin_e_seidels_iterate_methods_mpi {
 
-// Pre-processing method to initialize the task
     bool SeidelIterateMethodsMPI::pre_processing() {
         if (!validation()) {
+            return false;
+        }
+
+        if (!boost::mpi::initial_order_test(world)) {
+            if (world.rank() == 0) {
+                std::cerr << "MPI processes are not in the expected initial order." << std::endl;
+            }
             return false;
         }
 
         epsilon = 1e-6;
         max_iterations = 1000;
 
+        boost::mpi::broadcast(world, A, 0);
+        boost::mpi::broadcast(world, b, 0);
+        boost::mpi::broadcast(world, n, 0);
+
         x.resize(n, 0.0);
 
-        return taskData->inputs_count.size() <= 1 || taskData->inputs_count[1] != 0;
+        return true;
     }
 
-// Validation method to check the validity of the input data
     bool SeidelIterateMethodsMPI::validation() {
         if (taskData->inputs_count.empty()) {
             return false;
@@ -60,7 +70,6 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
         return true;
     }
 
-// Run method to execute the Seidel iteration
     bool SeidelIterateMethodsMPI::run() {
         std::vector<double> x_new(n, 0.0);
         int iteration = 0;
@@ -76,7 +85,19 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
                 x_new[i] /= A[i][i];
             }
 
-            if (converge(x_new)) {
+            double local_residual_norm = 0.0;
+            for (int i = 0; i < n; ++i) {
+                double Ax_i = 0.0;
+                for (int j = 0; j < n; ++j) {
+                    Ax_i += A[i][j] * x_new[j];
+                }
+                local_residual_norm += std::pow(Ax_i - b[i], 2);
+            }
+
+            double global_residual_norm = 0.0;
+            boost::mpi::all_reduce(world, local_residual_norm, global_residual_norm, std::plus<double>());
+
+            if (std::sqrt(global_residual_norm) < epsilon) {
                 break;
             }
 
@@ -87,23 +108,24 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
         return true;
     }
 
-// Post-processing method (currently empty)
-    bool SeidelIterateMethodsMPI::post_processing() { return true; }
+    bool SeidelIterateMethodsMPI::post_processing() {
 
-// Convergence check based on residual norm
-    bool SeidelIterateMethodsMPI::converge(const std::vector<double>& x_new) {
-        double residual_norm = 0.0;
-        for (int i = 0; i < n; ++i) {
-            double Ax_i = 0.0;
-            for (int j = 0; j < n; ++j) {
-                Ax_i += A[i][j] * x_new[j];
+        std::vector<std::vector<double>> gathered_solutions;
+        boost::mpi::gather(world, x, gathered_solutions, 0);
+
+        if (world.rank() == 0) {
+            std::cout << "Gathered solutions from all processes:" << std::endl;
+            for (const auto& solution : gathered_solutions) {
+                for (double val : solution) {
+                    std::cout << val << " ";
+                }
+                std::cout << std::endl;
             }
-            residual_norm += std::pow(Ax_i - b[i], 2);
         }
-        return std::sqrt(residual_norm) < epsilon;
+
+        return true;
     }
 
-// Set matrix and vector for the task
     void SeidelIterateMethodsMPI::set_matrix(const std::vector<std::vector<double>>& matrix,
                                              const std::vector<double>& vector) {
         if (matrix.size() != vector.size() || matrix.empty()) {
@@ -114,7 +136,6 @@ namespace nasedkin_e_seidels_iterate_methods_mpi {
         n = static_cast<int>(matrix.size());
     }
 
-// Generate a random matrix and vector that are guaranteed to converge with the Seidel method
     void SeidelIterateMethodsMPI::generate_random_matrix(int size, std::vector<std::vector<double>>& matrix,
                                                          std::vector<double>& vector) {
         matrix.resize(size, std::vector<double>(size, 0.0));
