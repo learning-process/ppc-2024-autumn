@@ -8,15 +8,38 @@
 #include "mpi/kalinin_d_matrix_mult_hor_a_vert_b/include/ops_mpi.hpp"
 
 namespace kalinin_d_matrix_mult_hor_a_vert_b_mpi {
-void get_random_matrix(std::vector<int> &mat) {
+void get_random_matrix(std::vector<int> &mat, int min_val, int max_val) {
   std::random_device dev;
   std::mt19937 gen(dev());
+  std::uniform_int_distribution<> dis(min_val, max_val);
 
   for (size_t i = 0; i < mat.size(); ++i) {
-    mat[i] = gen() % 10 - 5;
+    mat[i] = dis(gen);  // Generate random number in the specified range
   }
 }
 
+bool is_prime(int num) {
+  if (num <= 1) return false;
+  for (int i = 2; i <= std::sqrt(num); ++i) {
+    if (num % i == 0) return false;
+  }
+  return true;
+}
+
+void get_matrix_with_primes(std::vector<int> &mat, size_t rows, size_t cols, int min_val, int max_val) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::uniform_int_distribution<int> dist(min_val, max_val);
+
+  for (size_t i = 0; i < rows * cols; ++i) {
+    mat[i] = dist(gen);
+
+    // Ensure some of the values are prime numbers
+    if (i % 10 == 0) {  // Arbitrary condition to insert prime numbers
+      mat[i] = 11;      // Insert a prime number at every 10th position (for example)
+    }
+  }
+}
 }  // namespace kalinin_d_matrix_mult_hor_a_vert_b_mpi
 
 TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, InitializationWithEmptyInputs) {
@@ -119,8 +142,8 @@ TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, ValidationAndExecutionWithSquareMat
   if (world.rank() == 0) {
     global_A.resize(16);
     global_B.resize(16);
-    kalinin_d_matrix_mult_hor_a_vert_b_mpi::get_random_matrix(global_A);
-    kalinin_d_matrix_mult_hor_a_vert_b_mpi::get_random_matrix(global_B);
+    kalinin_d_matrix_mult_hor_a_vert_b_mpi::get_random_matrix(global_A, 5, 10);
+    kalinin_d_matrix_mult_hor_a_vert_b_mpi::get_random_matrix(global_B, 5, 10);
 
     global_res.resize(16, 0);
 
@@ -180,8 +203,8 @@ TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, ValidationAndExecutionWithRectangul
   if (world.rank() == 0) {
     global_A.resize(16);
     global_B.resize(8);
-    kalinin_d_matrix_mult_hor_a_vert_b_mpi::get_random_matrix(global_A);
-    kalinin_d_matrix_mult_hor_a_vert_b_mpi::get_random_matrix(global_B);
+    kalinin_d_matrix_mult_hor_a_vert_b_mpi::get_random_matrix(global_A, 5, 10);
+    kalinin_d_matrix_mult_hor_a_vert_b_mpi::get_random_matrix(global_B, 5, 10);
 
     global_res.resize(8, 0);
 
@@ -349,8 +372,8 @@ TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, LargeSquareMatrix) {
   if (world.rank() == 0) {
     global_A.resize(10000);
     global_B.resize(10000);
-    kalinin_d_matrix_mult_hor_a_vert_b_mpi::get_random_matrix(global_A);
-    kalinin_d_matrix_mult_hor_a_vert_b_mpi::get_random_matrix(global_B);
+    kalinin_d_matrix_mult_hor_a_vert_b_mpi::get_random_matrix(global_A, 5, 10);
+    kalinin_d_matrix_mult_hor_a_vert_b_mpi::get_random_matrix(global_B, 5, 10);
     global_res.resize(10000, 0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_A.data()));
@@ -451,4 +474,138 @@ TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, ValidationAndExecutionWithIdentityM
     std::vector<int> expected_res = {2, 3, 4, 5};
     ASSERT_EQ(global_res, expected_res);
   }
+}
+
+TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, LargeRectangularMatrix) {
+  boost::mpi::communicator world;
+
+  std::vector<int> global_A;
+  std::vector<int> global_B;
+  std::vector<int> global_res;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    size_t rows_A = 500, cols_A = 1000;
+    size_t rows_B = 1000, cols_B = 200;
+
+    global_A.resize(rows_A * cols_A);
+    global_B.resize(rows_B * cols_B);
+
+    kalinin_d_matrix_mult_hor_a_vert_b_mpi::get_random_matrix(global_A, -5, 5);
+    kalinin_d_matrix_mult_hor_a_vert_b_mpi::get_random_matrix(global_B, -5, 5);
+
+    global_res.resize(rows_A * cols_B, 0);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_A.data()));
+    taskDataPar->inputs_count.emplace_back(500);
+    taskDataPar->inputs_count.emplace_back(1000);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_B.data()));
+    taskDataPar->inputs_count.emplace_back(1000);
+    taskDataPar->inputs_count.emplace_back(200);
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_res.data()));
+    taskDataPar->outputs_count.emplace_back(global_res.size());
+  }
+
+  kalinin_d_matrix_mult_hor_a_vert_b_mpi::TestMPITaskParallel taskParallel(taskDataPar);
+
+  ASSERT_TRUE(taskParallel.validation());
+  ASSERT_TRUE(taskParallel.pre_processing());
+  ASSERT_TRUE(taskParallel.run());
+  ASSERT_TRUE(taskParallel.post_processing());
+}
+
+TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, LargeRectangularMatrixWithPrimes) {
+  boost::mpi::communicator world;
+
+  std::vector<int> global_A;
+  std::vector<int> global_B;
+  std::vector<int> global_res;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    size_t rows_A = 500, cols_A = 1000;
+    size_t rows_B = 1000, cols_B = 200;
+
+    global_A.resize(rows_A * cols_A);
+    global_B.resize(rows_B * cols_B);
+
+    kalinin_d_matrix_mult_hor_a_vert_b_mpi::get_matrix_with_primes(global_A, rows_A, cols_A, -5, 5);
+    kalinin_d_matrix_mult_hor_a_vert_b_mpi::get_matrix_with_primes(global_B, rows_B, cols_B, -5, 5);
+
+    global_res.resize(rows_A * cols_B, 0);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_A.data()));
+    taskDataPar->inputs_count.emplace_back(500);
+    taskDataPar->inputs_count.emplace_back(1000);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_B.data()));
+    taskDataPar->inputs_count.emplace_back(1000);
+    taskDataPar->inputs_count.emplace_back(200);
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_res.data()));
+    taskDataPar->outputs_count.emplace_back(global_res.size());
+  }
+
+  kalinin_d_matrix_mult_hor_a_vert_b_mpi::TestMPITaskParallel taskParallel(taskDataPar);
+
+  ASSERT_TRUE(taskParallel.validation());
+  ASSERT_TRUE(taskParallel.pre_processing());
+  ASSERT_TRUE(taskParallel.run());
+  ASSERT_TRUE(taskParallel.post_processing());
+
+  if (world.rank() == 0) {
+    bool found_prime = false;
+    for (size_t i = 0; i < global_res.size(); ++i) {
+      if (kalinin_d_matrix_mult_hor_a_vert_b_mpi::is_prime(global_res[i])) {
+        found_prime = true;
+        break;
+      }
+    }
+    ASSERT_TRUE(found_prime);
+  }
+}
+
+TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, LargeRectangularMatrixWithPrimeDimensions) {
+  boost::mpi::communicator world;
+
+  std::vector<int> global_A;
+  std::vector<int> global_B;
+  std::vector<int> global_res;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    size_t rows_A = 5, cols_A = 11;
+    size_t rows_B = 11, cols_B = 7;
+
+    global_A.resize(rows_A * cols_A);
+    global_B.resize(rows_B * cols_B);
+
+    kalinin_d_matrix_mult_hor_a_vert_b_mpi::get_random_matrix(global_A, -5, 5);
+    kalinin_d_matrix_mult_hor_a_vert_b_mpi::get_random_matrix(global_B, -5, 5);
+
+    global_res.resize(rows_A * cols_B, 0);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_A.data()));
+    taskDataPar->inputs_count.emplace_back(5);
+    taskDataPar->inputs_count.emplace_back(11);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_B.data()));
+    taskDataPar->inputs_count.emplace_back(11);
+    taskDataPar->inputs_count.emplace_back(7);
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_res.data()));
+    taskDataPar->outputs_count.emplace_back(global_res.size());
+  }
+
+  kalinin_d_matrix_mult_hor_a_vert_b_mpi::TestMPITaskParallel taskParallel(taskDataPar);
+
+  ASSERT_TRUE(taskParallel.validation());
+  ASSERT_TRUE(taskParallel.pre_processing());
+  ASSERT_TRUE(taskParallel.run());
+  ASSERT_TRUE(taskParallel.post_processing());
 }
