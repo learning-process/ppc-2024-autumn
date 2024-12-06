@@ -33,11 +33,14 @@ bool vavilov_v_bellman_ford_seq::TestTaskSequential::run() {
   for (int i = 0; i < vertices_ - 1; ++i) {
     bool updated = false;
     for (const auto& edge : edges_) {
-      if (reachable_[edge.src] && distances_[edge.src] != INT_MAX &&
-          distances_[edge.src] + edge.weight < distances_[edge.dest]) {
-        distances_[edge.dest] = distances_[edge.src] + edge.weight;
-        reachable_[edge.dest] = true;
-        updated = true;
+      if (reachable_[edge.src] && distances_[edge.src] != INT_MAX) {
+        if (distances_[edge.src] + edge.weight < distances_[edge.dest]) {
+          distances_[edge.dest] = distances_[edge.src] + edge.weight;
+          if (!reachable_[edge.dest]) {
+            reachable_[edge.dest] = true;
+            updated = true;
+          }
+        }
       }
     }
 
