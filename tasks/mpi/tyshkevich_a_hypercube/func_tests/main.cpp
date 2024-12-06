@@ -36,6 +36,7 @@ void run_test(boost::mpi::communicator& world, int sender, int target, int data_
   std::vector<int> input_vector;
   std::vector<int> output_result(data_size);
   std::vector<int> output_check(data_size);
+  bool short_answer;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&sender));
@@ -53,6 +54,8 @@ void run_test(boost::mpi::communicator& world, int sender, int target, int data_
     taskDataPar->outputs_count.emplace_back(output_result.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_check.data()));
     taskDataPar->outputs_count.emplace_back(output_check.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&short_answer));
+    taskDataPar->outputs_count.emplace_back(1);
   }
 
   auto taskParallel = std::make_shared<tyshkevich_a_hypercube_mpi::HypercubeParallelMPI>(taskDataPar);
@@ -62,6 +65,7 @@ void run_test(boost::mpi::communicator& world, int sender, int target, int data_
   taskParallel->post_processing();
 
   if (world.rank() == target) {
+    ASSERT_TRUE(short_answer);
     EXPECT_EQ(output_check, output_result);
   }
 }
@@ -81,7 +85,7 @@ TEST(tyshkevich_a_hypercube_mpi, 0_to_1_process_send) {
     if (sender < world.size() && target < world.size()) {
       tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
     } else {
-      std::cout << "Low count of processes\n";
+      GTEST_SKIP();
     }
   }
 }
@@ -94,7 +98,7 @@ TEST(tyshkevich_a_hypercube_mpi, 1_to_0_process_send) {
     if (sender < world.size() && target < world.size()) {
       tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
     } else {
-      std::cout << "Low count of processes\n";
+      GTEST_SKIP();
     }
   }
 }
@@ -107,7 +111,7 @@ TEST(tyshkevich_a_hypercube_mpi, 0_to_2_process_send) {
     if (sender < world.size() && target < world.size()) {
       tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
     } else {
-      std::cout << "Low count of processes\n";
+      GTEST_SKIP();
     }
   }
 }
@@ -120,7 +124,7 @@ TEST(tyshkevich_a_hypercube_mpi, 2_to_0_process_send) {
     if (sender < world.size() && target < world.size()) {
       tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
     } else {
-      std::cout << "Low count of processes\n";
+      GTEST_SKIP();
     }
   }
 }
@@ -133,7 +137,7 @@ TEST(tyshkevich_a_hypercube_mpi, 0_to_3_process_send) {
     if (sender < world.size() && target < world.size()) {
       tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
     } else {
-      std::cout << "Low count of processes\n";
+      GTEST_SKIP();
     }
   }
 }
@@ -146,7 +150,7 @@ TEST(tyshkevich_a_hypercube_mpi, 3_to_0_process_send) {
     if (sender < world.size() && target < world.size()) {
       tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
     } else {
-      std::cout << "Low count of processes\n";
+      GTEST_SKIP();
     }
   }
 }
@@ -159,7 +163,7 @@ TEST(tyshkevich_a_hypercube_mpi, 1_to_3_process_send) {
     if (sender < world.size() && target < world.size()) {
       tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
     } else {
-      std::cout << "Low count of processes\n";
+      GTEST_SKIP();
     }
   }
 }
@@ -172,7 +176,7 @@ TEST(tyshkevich_a_hypercube_mpi, 3_to_1_process_send) {
     if (sender < world.size() && target < world.size()) {
       tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
     } else {
-      std::cout << "Low count of processes\n";
+      GTEST_SKIP();
     }
   }
 }
@@ -185,7 +189,7 @@ TEST(tyshkevich_a_hypercube_mpi, 2_to_3_process_send) {
     if (sender < world.size() && target < world.size()) {
       tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
     } else {
-      std::cout << "Low count of processes\n";
+      GTEST_SKIP();
     }
   }
 }
@@ -198,7 +202,7 @@ TEST(tyshkevich_a_hypercube_mpi, 3_to_2_process_send) {
     if (sender < world.size() && target < world.size()) {
       tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
     } else {
-      std::cout << "Low count of processes\n";
+      GTEST_SKIP();
     }
   }
 }
@@ -217,7 +221,7 @@ TEST(tyshkevich_a_hypercube_mpi, random_send_between_0_and_max_small_data) {
 
       tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
     } else {
-      std::cout << "Low count of processes\n";
+      GTEST_SKIP();
     }
   }
 }
@@ -236,7 +240,7 @@ TEST(tyshkevich_a_hypercube_mpi, random_send_between_0_and_max_medium_data) {
 
       tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 100);
     } else {
-      std::cout << "Low count of processes\n";
+      GTEST_SKIP();
     }
   }
 }
@@ -255,7 +259,7 @@ TEST(tyshkevich_a_hypercube_mpi, random_send_between_0_and_max_large_data) {
 
       tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 1000);
     } else {
-      std::cout << "Low count of processes\n";
+      GTEST_SKIP();
     }
   }
 }

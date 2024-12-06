@@ -28,6 +28,7 @@ class HypercubeParallelMPI : public ppc::core::Task {
   bool post_processing() override;
 
  private:
+  std::vector<int> data_transfer_route;
   int dimension;
   int sender_id;
   int target_id;
