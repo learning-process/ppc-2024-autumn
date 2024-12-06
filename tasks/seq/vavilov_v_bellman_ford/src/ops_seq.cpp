@@ -12,7 +12,7 @@ bool vavilov_v_bellman_ford_seq::TestTaskSequential::pre_processing() {
     edges_.push_back({edges_data[i * 3], edges_data[i * 3 + 1], edges_data[i * 3 + 2]});
   }
 
-  distances_.resize(vertices_, INF);
+  distances_.resize(vertices_, INT_MAX);
   distances_[source_] = 0;
 
   return true;
@@ -28,15 +28,22 @@ bool vavilov_v_bellman_ford_seq::TestTaskSequential::run() {
   internal_order_test();
 
   for (int i = 1; i < vertices_; ++i) {
+    bool updated = false;
     for (const auto& edge : edges_) {
-      if (distances_[edge.src] != INF && distances_[edge.src] + edge.weight < distances_[edge.dest]) {
+      if (distances_[edge.src] != INT_MAX && distances_[edge.src] + edge.weight < distances_[edge.dest]) {
         distances_[edge.dest] = distances_[edge.src] + edge.weight;
+        reachable_[edge.dest] = true;
+        updated = true;
       }
+    }
+    
+    if (!updated) {
+      break;
     }
   }
 
   for (const auto& edge : edges_) {
-    if (distances_[edge.src] != INF && distances_[edge.src] + edge.weight < distances_[edge.dest]) {
+    if (distances_[edge.src] != INT_MAX && distances_[edge.src] + edge.weight < distances_[edge.dest]) {
       return false;  // Negative weight cycle detected
     }
   }
@@ -46,6 +53,11 @@ bool vavilov_v_bellman_ford_seq::TestTaskSequential::run() {
 
 bool vavilov_v_bellman_ford_seq::TestTaskSequential::post_processing() {
   internal_order_test();
+  for (size_t i = 0; i < distances_.size(); ++i) {
+    if (!reachable_[i]) {
+      distances_[i] = INT_MAX;
+    }
+  }
 
   std::copy(distances_.begin(), distances_.end(), reinterpret_cast<int*>(taskData->outputs[0]));
   return true;
