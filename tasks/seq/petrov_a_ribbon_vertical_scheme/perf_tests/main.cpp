@@ -7,16 +7,13 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/petrov_a_ribbon_vertical_scheme/include/ops_seq.hpp"
 
-TEST(petrov_a_ribbon_vertical_scheme_seq, performance_test) {
-
+TEST(petrov_a_ribbon_vertical_scheme_seq, PerformanceTest) {
   const int rows = 10;
   const int cols = 10;
-
 
   std::vector<int> matrix(rows * cols);
   std::vector<int> vector(cols);
   std::vector<int> result(rows, 0);
-
 
   for (int i = 0; i < rows; ++i) {
     for (int j = 0; j < cols; ++j) {
@@ -24,11 +21,11 @@ TEST(petrov_a_ribbon_vertical_scheme_seq, performance_test) {
     }
   }
 
-
   for (int i = 0; i < cols; ++i) {
     vector[i] = i % 10;
   }
 
+  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
   taskDataSeq->inputs_count.emplace_back(rows);
@@ -38,7 +35,7 @@ TEST(petrov_a_ribbon_vertical_scheme_seq, performance_test) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
   taskDataSeq->outputs_count.emplace_back(rows);
 
-  // Создание Task
+  // Create Task
   auto testTaskSeq = std::make_shared<petrov_a_ribbon_vertical_scheme_seq::TestTaskSequential>(taskDataSeq);
 
   ASSERT_EQ(testTaskSeq->validation(), true);
@@ -64,16 +61,14 @@ TEST(petrov_a_ribbon_vertical_scheme_seq, performance_test) {
 
   ASSERT_FALSE(result.empty());
 }
-TEST(petrov_a_ribbon_vertical_scheme_seq, additional_test) {
 
+TEST(petrov_a_ribbon_vertical_scheme_seq, AdditionalTest) {
   const int rows = 5;
   const int cols = 5;
-
 
   std::vector<int> matrix(rows * cols);
   std::vector<int> vector(cols);
   std::vector<int> result(rows, 0);
-
 
   for (int i = 0; i < rows; ++i) {
     for (int j = 0; j < cols; ++j) {
@@ -85,7 +80,7 @@ TEST(petrov_a_ribbon_vertical_scheme_seq, additional_test) {
     vector[i] = i + 1;
   }
 
-  // Создание TaskData
+  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
   taskDataSeq->inputs_count.emplace_back(rows);
@@ -95,7 +90,7 @@ TEST(petrov_a_ribbon_vertical_scheme_seq, additional_test) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
   taskDataSeq->outputs_count.emplace_back(rows);
 
-  // Создание Task
+  // Create Task
   auto testTaskSeq = std::make_shared<petrov_a_ribbon_vertical_scheme_seq::TestTaskSequential>(taskDataSeq);
 
   ASSERT_EQ(testTaskSeq->validation(), true);
