@@ -12,7 +12,7 @@ int matrix_rank(std::vector<double>& matrix, int rows, int columns, int band_wid
 class GaussVerticalSequential : public ppc::core::Task {
  public:
   explicit GaussVerticalSequential(std::shared_ptr<ppc::core::TaskData> taskData_, int band_width_)
-	  : Task(std::move(taskData_)), band_width(band_width_) {}
+      : Task(std::move(taskData_)), band_width(band_width_) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
