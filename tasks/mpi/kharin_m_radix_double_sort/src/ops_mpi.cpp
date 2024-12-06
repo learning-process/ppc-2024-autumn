@@ -52,7 +52,7 @@ bool RadixSortSequential::post_processing() {
 void RadixSortSequential::radix_sort_doubles(std::vector<double>& data_) {
   size_t n_ = data_.size();
   std::vector<uint64_t> keys(n_);
-  for (size_t i = 0; i < n; ++i) {
+  for (size_t i = 0; i < n_; ++i) {
     uint64_t u;
     std::memcpy(&u, &data_[i], sizeof(double));
     // Перевод для сохранения порядка
