@@ -139,3 +139,4 @@ bool prokhorov_n_producer_customer_mpi::TestMPITaskParallel::post_processing() {
 
   return true;
 }
+}  // namespace prokhorov_n_producer_customer_mpi

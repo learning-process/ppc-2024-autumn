@@ -79,4 +79,3 @@ TEST(prokhorov_n_producer_customer, test_task_run) {
   ppc::core::Perf::print_perf_statistic(perfResults);
   ASSERT_EQ(count, out[0]);
 }
-
