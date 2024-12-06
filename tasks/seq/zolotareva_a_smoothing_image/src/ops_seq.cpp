@@ -43,7 +43,7 @@ bool zolotareva_a_smoothing_image_seq::TestTaskSequential::run() {
 
 bool zolotareva_a_smoothing_image_seq::TestTaskSequential::post_processing() {
   internal_order_test();
-  auto output_raw = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
+  auto* output_raw = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
   for (int i = 0; i < height_; i++) {
     for (int j = 0; j < width_; j++) {
       output_raw[i * width_ + j] = result_[i * width_ + j];
