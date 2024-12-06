@@ -94,7 +94,6 @@ bool vladimirova_j_gather_mpi::TestMPITaskSequential::validation() {
       case -1:
         break;
       default:
-        std::cout << (tmp_ptr[i]) << " ++ " << std::endl;
         return false;
     }
   }

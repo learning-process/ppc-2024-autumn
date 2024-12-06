@@ -15,7 +15,6 @@ std::vector<int> vladimirova_j_gather_seq::noDeadEnds(std::vector<int> way) {
         i -= 1;
         j += 1;
         if ((i < 0) || (!(j < way.size()))) {
-          i = j - 1;
           break;
         };
 
