@@ -26,6 +26,7 @@ class TestTaskSequential : public ppc::core::Task {
 
   std::vector<Edge> edges_;
   std::vector<int> distances_;
+  std::vector<bool> reachable_;
   int vertices_{0}, edges_count_{0}, source_{0};
 };
 
