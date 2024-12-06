@@ -9,6 +9,7 @@
 #include <memory>
 #include <numbers>
 #include <numeric>
+#include <ostream>
 #include <string>
 #include <utility>
 #include <vector>
@@ -59,25 +60,35 @@ class MyScatterTestMPITaskParallel : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
   template <typename T>
-  static void myScatter(const boost::mpi::communicator& world, const std::vector<T>& input_values, T* output_values,
-                        int root) {
-    int rank = world.rank();
-    int world_size = world.size();
-    int parent = (rank - 1) / 2;
-    int left = (((rank * 2) + (1)) < (int)world_size) ? ((rank * 2) + (1)) : -1;
-    int right = (((rank * 2) + (2)) < (int)world_size) ? ((rank * 2) + (2)) : -1;
-    // int curr_floor = (int)std::floor(log(rank + 1) / std::numbers::ln2);
-    // int max_floor = (int)std::floor(log(world_size) / std::numbers::ln2);
-    int max_floor = static_cast<int>(std::floor(std::log2(world.size())));
-    int curr_floor = static_cast<int>(std::floor(std::log2(world.rank() + 1)));
 
-    if (max_floor - curr_floor != 0) {  // If we're already on max_level, we don't need to send data
-      int h = world_size - (std::pow(2, curr_floor + 1) - 1) - 1;
-      std::cout << "rank = " << rank << " h = " << h << std::endl;
+  static void myScatter(const boost::mpi::communicator& world, const std::vector<T>& input_values,
+                        T* local_input_values, int delta, int root) {
+    int left = 2 * world.rank() + 1;
+    int right = 2 * world.rank() + 2;
+    int level = static_cast<int>(std::floor(log(world.rank() + 1) / std::numbers::ln2));
+    int neighbours = static_cast<int>(pow(2, level));
+    if (world.rank() == root) {
+      std::copy(input_values.begin(), input_values.begin() + delta, local_input_values);
+      if (left < world.size()) {
+        world.send(left, 0, input_values.data() + delta, (world.size() - 1) * delta);
+      }
+      if (right < world.size()) {
+        world.send(right, 0, input_values.data() + delta, (world.size() - 1) * delta);
+      }
+    } else {
+      int minRank = neighbours - 1;
+      int receiveSize = (world.size() - minRank) * delta;
+      std::vector<T> recv_vec(receiveSize);
+      world.recv((world.rank() - 1) / 2, 0, recv_vec.data(), receiveSize);
+      std::copy(recv_vec.begin() + (world.rank() - minRank) * delta,
+                recv_vec.begin() + (world.rank() - minRank) * delta + delta, local_input_values);
+      if (left < world.size()) {
+        world.send(left, 0, recv_vec.data() + delta * neighbours, (world.size() - minRank * 2 - 1) * delta);
+      }
+      if (right < world.size()) {
+        world.send(right, 0, recv_vec.data() + delta * neighbours, (world.size() - minRank * 2 - 1) * delta);
+      }
     }
-
-    std::cout << "rank = " << rank << " parent = " << parent << " left = " << left << " right = " << right
-              << " curr_floor = " << curr_floor << " max_floor = " << max_floor << std::endl;
   }
 
  private:
