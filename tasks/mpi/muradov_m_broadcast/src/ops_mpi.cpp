@@ -12,12 +12,14 @@ bool muradov_m_broadcast_mpi::BroadcastParallelMPI::validation() {
 bool muradov_m_broadcast_mpi::BroadcastParallelMPI::pre_processing() {
   internal_order_test();
 
-  if (world.rank() == 0) {
-    auto* A_data = reinterpret_cast<int*>(taskData->inputs[0]);
-    int A_size = taskData->inputs_count[0];
+  source_worker = *taskData->inputs[0];
 
-    auto* B_data = reinterpret_cast<int*>(taskData->inputs[1]);
-    int B_size = taskData->inputs_count[1];
+  if (world.rank() == source_worker) {
+    auto* A_data = reinterpret_cast<int*>(taskData->inputs[1]);
+    int A_size = taskData->inputs_count[1];
+
+    auto* B_data = reinterpret_cast<int*>(taskData->inputs[2]);
+    int B_size = taskData->inputs_count[2];
 
     A.assign(A_data, A_data + A_size);
     B.assign(B_data, B_data + B_size);
@@ -29,8 +31,8 @@ bool muradov_m_broadcast_mpi::BroadcastParallelMPI::pre_processing() {
 bool muradov_m_broadcast_mpi::BroadcastParallelMPI::run() {
   internal_order_test();
 
-  muradov_m_broadcast_mpi::bcast(world, A, 0);
-  boost::mpi::broadcast(world, B, 0);
+  muradov_m_broadcast_mpi::bcast(world, A, source_worker);
+  boost::mpi::broadcast(world, B, source_worker);
 
   return true;
 }

@@ -22,8 +22,12 @@ std::vector<int> gen_rundom_vector(int n) {
   return vector;
 }
 
-void test_template_rundom(int n) {
+void test_template_rundom(int n, int source = 0) {
   boost::mpi::communicator world;
+
+  if (world.size() < source) {
+    GTEST_SKIP();
+  }
 
   std::vector<int> A;
   std::vector<int> A_res(n);
@@ -31,7 +35,10 @@ void test_template_rundom(int n) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataBroadcast = std::make_shared<ppc::core::TaskData>();
 
-  if (world.rank() == 0) {
+  taskDataBroadcast->inputs.emplace_back(reinterpret_cast<uint8_t*>(&source));
+  taskDataBroadcast->inputs_count.emplace_back(1);
+
+  if (world.rank() == source) {
     A = gen_rundom_vector(n);
 
     taskDataBroadcast->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
@@ -59,19 +66,39 @@ void test_template_rundom(int n) {
 }  // namespace muradov_m_broadcast_mpi
 
 TEST(muradov_m_broadcast_mpi, data_size_1) { muradov_m_broadcast_mpi::test_template_rundom(1); }
+
 TEST(muradov_m_broadcast_mpi, data_size_2) { muradov_m_broadcast_mpi::test_template_rundom(2); }
+
 TEST(muradov_m_broadcast_mpi, data_size_3) { muradov_m_broadcast_mpi::test_template_rundom(3); }
+
 TEST(muradov_m_broadcast_mpi, data_size_4) { muradov_m_broadcast_mpi::test_template_rundom(4); }
+
 TEST(muradov_m_broadcast_mpi, data_size_5) { muradov_m_broadcast_mpi::test_template_rundom(5); }
+
 TEST(muradov_m_broadcast_mpi, data_size_6) { muradov_m_broadcast_mpi::test_template_rundom(6); }
+
 TEST(muradov_m_broadcast_mpi, data_size_7) { muradov_m_broadcast_mpi::test_template_rundom(7); }
+
 TEST(muradov_m_broadcast_mpi, data_size_8) { muradov_m_broadcast_mpi::test_template_rundom(8); }
+
 TEST(muradov_m_broadcast_mpi, data_size_9) { muradov_m_broadcast_mpi::test_template_rundom(9); }
+
 TEST(muradov_m_broadcast_mpi, data_size_10) { muradov_m_broadcast_mpi::test_template_rundom(10); }
+
 TEST(muradov_m_broadcast_mpi, data_size_11) { muradov_m_broadcast_mpi::test_template_rundom(11); }
+
 TEST(muradov_m_broadcast_mpi, data_size_13) { muradov_m_broadcast_mpi::test_template_rundom(13); }
+
 TEST(muradov_m_broadcast_mpi, data_size_15) { muradov_m_broadcast_mpi::test_template_rundom(15); }
+
 TEST(muradov_m_broadcast_mpi, data_size_20) { muradov_m_broadcast_mpi::test_template_rundom(20); }
+
 TEST(muradov_m_broadcast_mpi, data_size_30) { muradov_m_broadcast_mpi::test_template_rundom(30); }
+
 TEST(muradov_m_broadcast_mpi, data_size_40) { muradov_m_broadcast_mpi::test_template_rundom(40); }
+
 TEST(muradov_m_broadcast_mpi, data_size_50) { muradov_m_broadcast_mpi::test_template_rundom(50); }
+
+TEST(muradov_m_broadcast_mpi, source_1_data_size_50) { muradov_m_broadcast_mpi::test_template_rundom(50, 1); }
+
+TEST(muradov_m_broadcast_mpi, source_2_data_size_10) { muradov_m_broadcast_mpi::test_template_rundom(50, 2); }

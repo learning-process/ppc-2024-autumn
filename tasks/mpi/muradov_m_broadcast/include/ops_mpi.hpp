@@ -43,6 +43,7 @@ class BroadcastParallelMPI : public ppc::core::Task {
   bool post_processing() override;
 
  private:
+  int source_worker;
   std::vector<int> A;
   std::vector<int> B;
   boost::mpi::communicator world;
