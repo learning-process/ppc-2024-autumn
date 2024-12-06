@@ -138,9 +138,8 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, test_pipeline) {
   std::vector<int> recvdispls(size);
   for (int i = 0; i < size; ++i) {
     recvcounts[i] = rows_per_proc + (i < remainder);
-    recvdispls[i] =
-        (rows_per_proc * i + std::min(i, remainder));
+    recvdispls[i] = (rows_per_proc * i + std::min(i, remainder));
   }
 
   for (int i = 0; i < size; ++i) recvdispls[i] *= cols;
-  }
+}

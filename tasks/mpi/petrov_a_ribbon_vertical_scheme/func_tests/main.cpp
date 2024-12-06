@@ -35,7 +35,6 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, HandlesSmallMatrix) {
   MPI_Bcast(matrix.data(), matrix.size(), MPI_INT, 0, MPI_COMM_WORLD);
   MPI_Bcast(vector.data(), vector.size(), MPI_INT, 0, MPI_COMM_WORLD);
 
-
   int rows_per_proc = rows / size;
   int remainder = rows % size;
   int start_row = rank * rows_per_proc + std::min(rank, remainder);
