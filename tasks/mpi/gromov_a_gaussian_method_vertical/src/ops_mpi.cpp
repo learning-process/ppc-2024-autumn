@@ -9,7 +9,6 @@
 
 int gromov_a_gaussian_method_vertical_mpi::matrix_rank(std::vector<double>& matrix, int rows, int columns,
                                                        int band_width) {
-  
   int rank = 0;
 
   for (int i = 0; i < rows; ++i) {
