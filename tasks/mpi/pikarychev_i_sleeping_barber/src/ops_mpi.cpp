@@ -85,7 +85,6 @@ bool pikarychev_i_sleeping_barber_mpi::TestMPITaskParallel::run() {
         world.recv(customer, ReleasingBarberTag);
         std::this_thread::sleep_for(std::chrono::milliseconds(5 + gen() % 5));
         world.send(customer, ReleasingBarberTag);
-
       }
       break;
     }
