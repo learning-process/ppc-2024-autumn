@@ -135,7 +135,6 @@ bool zolotareva_a_smoothing_image_mpi::TestMPITaskParallel::pre_processing() {
   if (world.rank() == 0) {
     int base_height = height_ / world_size;
     int remainder = height_ % world_size;
-    cout << "base_height: " << base_height << ", remainder: " << remainder << endl;
     int send_start = (base_height + remainder - 1) * width_;
     for (int proc = 1; proc < world_size - 1; proc++) {
       world.send(proc, 0, input_.data() + send_start, (base_height + 2) * width_);
@@ -156,11 +155,7 @@ bool zolotareva_a_smoothing_image_mpi::TestMPITaskParallel::pre_processing() {
     else
       local_height_ = height_ / world_size + 2;
     local_input_.resize(local_height_ * width_);
-    cout << world.rank() << ", local_height: " << local_height_ << endl;
     world.recv(0, 0, local_input_.data(), local_height_ * width_);
-    for (int i = 0; i < local_input_.size(); i++) {
-      cout << "proc[" << world.rank() << "] local_input_[" << i << "] = " << static_cast<int>(local_input_[i]) << endl;
-    }
   }
   return true;
 }
@@ -170,7 +165,6 @@ bool zolotareva_a_smoothing_image_mpi::TestMPITaskParallel::run() {
   std::vector<uint8_t> local_res(local_height_ * width_);
   int radius = 1;
   float sigma = 1.0f;
-  cout << "Proc #" << world.rank() << "loc_h, width: " << local_height_ << ' ' << width_ << endl;
   std::vector<float> horizontal_kernel =
       zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::create_gaussian_kernel(radius, sigma);
   std::vector<float> vertical_kernel = horizontal_kernel;
@@ -192,10 +186,6 @@ bool zolotareva_a_smoothing_image_mpi::TestMPITaskParallel::run() {
     for (int proc = 1; proc < world.size(); ++proc) {
       std::vector<uint8_t> buffer((base_height + (proc == (world.size() - 1) ? 1 : 2)) * width_);
       world.recv(proc, 1, buffer);
-      size_t res_end = std::distance(result_.begin(), result_.begin() + send_start + (proc - 1) * base_height * width_);
-      cout << "result_now_end: " << res_end << endl;
-      size_t index_begin = std::distance(buffer.begin(), buffer.begin() + width_);
-      size_t index_end = std::distance(buffer.begin(), buffer.end() - (proc == world.size() - 1 ? 0 : width_));
       cout << "proc: " << proc << ", begin: " << index_begin << ", end: " << index_end << endl;
       std::copy(buffer.begin() + width_, buffer.end() - (proc == world.size() - 1 ? 0 : width_),
                 result_.begin() + send_start + (proc - 1) * base_height * width_);
