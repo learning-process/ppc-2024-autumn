@@ -36,7 +36,7 @@ bool vavilov_v_bellman_ford_seq::TestTaskSequential::run() {
         updated = true;
       }
     }
-    
+
     if (!updated) {
       break;
     }
@@ -44,7 +44,7 @@ bool vavilov_v_bellman_ford_seq::TestTaskSequential::run() {
 
   for (const auto& edge : edges_) {
     if (distances_[edge.src] != INT_MAX && distances_[edge.src] + edge.weight < distances_[edge.dest]) {
-      return false;  // Negative weight cycle detected
+      return false;
     }
   }
 
