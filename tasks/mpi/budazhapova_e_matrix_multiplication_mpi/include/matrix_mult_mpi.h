@@ -14,42 +14,41 @@
 
 namespace budazhapova_e_matrix_mult_seq {
 
-	class MatrixMultSequential : public ppc::core::Task {
-	public:
-		explicit MatrixMultSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-		bool pre_processing() override;
-		bool validation() override;
-		bool run() override;
-		bool post_processing() override;
+class MatrixMultSequential : public ppc::core::Task {
+ public:
+  explicit MatrixMultSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  bool pre_processing() override;
+  bool validation() override;
+  bool run() override;
+  bool post_processing() override;
 
-	private:
-		int rows{};
-		int columns{};
+ private:
+  int rows{};
+  int columns{};
 
-		std::vector<int> A;
-		std::vector<int> b;
-		std::vector<int> res;
-	};
+  std::vector<int> A;
+  std::vector<int> b;
+  std::vector<int> res;
+};
 
+class MatrixMultParallel : public ppc::core::Task {
+ public:
+  explicit MatrixMultParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  bool pre_processing() override;
+  bool validation() override;
+  bool run() override;
+  bool post_processing() override;
 
-	class MatrixMultParallel : public ppc::core::Task {
-	public:
-		explicit MatrixMultParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-		bool pre_processing() override;
-		bool validation() override;
-		bool run() override;
-		bool post_processing() override;
+ private:
+  int rows{};
+  int columns{};
 
-	private:
-		int rows{};
-		int columns{};
+  std::vector<int> A;
+  std::vector<int> b;
+  std::vector<int> res;
+  std::vector<int> local_res;
 
-		std::vector<int> A;
-		std::vector<int> b;
-		std::vector<int> res;
-		std::vector<int> local_res;
+  boost::mpi::communicator world;
+};
 
-		boost::mpi::communicator world;
-	};
-
-}
+}  // namespace budazhapova_e_matrix_mult_seq
