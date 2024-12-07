@@ -109,4 +109,4 @@ TEST(zolotareva_a_smoothing_image_mpi, Test_image_random_100X100) { form(100, 10
 TEST(zolotareva_a_smoothing_image_mpi, Test_image_random_100X500) { form(100, 500); }
 TEST(zolotareva_a_smoothing_image_mpi, Test_image_random_500X230) { form(500, 230); }
 TEST(zolotareva_a_smoothing_image_mpi, Test_image_random_500X500) { form(500, 500); }
-TEST(zolotareva_a_smoothing_image_mpi, Test_image_random_1000X1000) { form(10001, 10000); }
+TEST(zolotareva_a_smoothing_image_mpi, Test_image_random_1000X1000) { form(1000, 1000); }
