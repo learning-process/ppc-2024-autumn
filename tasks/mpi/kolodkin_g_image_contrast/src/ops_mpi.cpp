@@ -134,8 +134,7 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskParallel::run() {
     int temp = static_cast<int>(av_br + k * delta_color);
     local_output_[i] = std::clamp(temp, 0, 255);
   }
-  boost::mpi::gatherv(world, local_output_.data(), local_output_.size(), output_.data(), send_counts,
-                      displacements, 0);
+  boost::mpi::gatherv(world, local_output_.data(), local_output_.size(), output_.data(), send_counts, displacements, 0);
   return true;
 }
 
