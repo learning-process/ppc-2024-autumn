@@ -12,7 +12,6 @@
 
 #include "core/task/include/task.hpp"
 
-
 namespace varfolomeev_g_transfer_from_one_to_all_scatter_mpi {
 
 std::vector<int> getRandomVector(int sz, int a, int b);
