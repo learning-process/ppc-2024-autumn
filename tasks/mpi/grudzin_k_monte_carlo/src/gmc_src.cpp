@@ -10,7 +10,7 @@ bool MonteCarloMpi<dimension>::pre_processing() {
 template <const int dimension>
 bool MonteCarloMpi<dimension>::run() {
   internal_order_test();
-  int N = 0;
+  int N;
   int delta;
   int rest;
   if (world.rank() == 0) {
@@ -23,6 +23,7 @@ bool MonteCarloMpi<dimension>::run() {
     delta = N / world.size();
     rest = N % world.size();
   }
+  boost::mpi::broadcast(world, N, 0);
   boost::mpi::broadcast(world, dim, 0);
   boost::mpi::broadcast(world, delta, 0);
   boost::mpi::broadcast(world, rest, 0);
@@ -42,15 +43,12 @@ bool MonteCarloMpi<dimension>::run() {
     }
     loc_res_ += f(x);
   }
-  boost::mpi::reduce(world, loc_res_, result, std::plus<double>(), 0);
-  if (world.rank() == 0) {
-    double mult = 1.0 / (static_cast<double>(N));
-    for (int j = 0; j < 2 * dimension; j += 2) {
-      mult *= (dim[j + 1] - dim[j]);
-    }
-
-    result *= mult;
+  double mult = 1.0 / (static_cast<double>(N));
+  for (int j = 0; j < 2 * dimension; j += 2) {
+    mult *= (dim[j + 1] - dim[j]);
   }
+  loc_res_ *= mult;
+  boost::mpi::reduce(world, loc_res_, result, std::plus<double>(), 0);
   return true;
 }
 
