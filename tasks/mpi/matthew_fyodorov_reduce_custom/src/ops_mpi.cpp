@@ -100,10 +100,6 @@ bool matthew_fyodorov_reduce_custom_mpi ::TestMPITaskParallel::run() {
     world.recv(0, 0, local_input_);
   }
 
-  for (int i = 0; i < local_input_.size(); i++) {
-    std::cout << local_input_[i] << " ";
-  }
-  std::cout << "\n";
   int local_sum = std::accumulate(local_input_.begin(), local_input_.end(), 0);
   int global_sum;
 
