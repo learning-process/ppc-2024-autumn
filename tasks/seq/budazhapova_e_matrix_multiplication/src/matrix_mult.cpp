@@ -17,7 +17,8 @@ bool budazhapova_e_matrix_mult_seq::MatrixMultSequential::pre_processing() {
 
 bool budazhapova_e_matrix_mult_seq::MatrixMultSequential::validation() {
   internal_order_test();
-  return taskData->inputs_count[0] % columns == 0 && taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0;
+  return taskData->inputs_count[0] % inputs_count[1] == 0 && taskData->inputs_count[0] > 0 &&
+         taskData->inputs_count[1] > 0;
 }
 
 bool budazhapova_e_matrix_mult_seq::MatrixMultSequential::run() {
