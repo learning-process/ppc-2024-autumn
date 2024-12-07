@@ -44,12 +44,10 @@ bool dormidontov_e_circle_topology_mpi::topology::run() {
       world.recv(from, 0, marks_);
       marks_.push_back(0);
     } else {
-
       int from = world.rank() - 1;
       world.recv(from, 0, input_);
       world.recv(from, 0, marks_);
       marks_.push_back(world.rank());
-
 
       int to = (world.rank() + 1) % world.size();
       world.send(to, 0, input_);

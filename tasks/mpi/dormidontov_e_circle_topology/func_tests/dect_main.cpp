@@ -23,7 +23,6 @@ inline std::vector<int> GenMarksAns(int size) {
 }
 }  // namespace dormidontov_e_circle_topology_mpi
 
-
 TEST(dormidontov_e_circle_topology_mpi, Test_1) {
   int size = 1;
   boost::mpi::communicator world;
@@ -254,7 +253,7 @@ TEST(dormidontov_e_circle_topology_mpi, Test_3_in_power) {
   }
 }
 
-TEST(dormidontov_e_circle_topology_mpi, Test_3_in_power) {
+TEST(dormidontov_e_circle_topology_mpi, Test_primes) {
   int size = 563;
   boost::mpi::communicator world;
   std::vector<int> mas;
