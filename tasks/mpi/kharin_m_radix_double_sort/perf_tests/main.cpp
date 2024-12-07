@@ -18,7 +18,7 @@ TEST(RadixSort_MPI_PerfTest, test_pipeline_run) {
   mpi::environment env;
   mpi::communicator world;
 
-  int N = 1000000;
+  int N = 10000000;
 
   std::vector<double> inputData;
   if (world.rank() == 0) {

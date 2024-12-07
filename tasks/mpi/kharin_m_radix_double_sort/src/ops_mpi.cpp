@@ -132,52 +132,89 @@ bool RadixSortParallel::validation() {
 bool RadixSortParallel::run() {
   internal_order_test();
 
-  // Распространяем данные
-  if (world.rank() != 0) {
-    data.resize(n);
-  }
-  mpi::broadcast(world, data.data(), n, 0);
-
-  // Делим данные между процессами
-  int size = world.size();
   int rank = world.rank();
-
+  int size = world.size();
+  
   int local_n = n / size;
   int remainder = n % size;
 
   std::vector<int> counts(size), displs(size);
-  for (int i = 0; i < size; ++i) {
-    counts[i] = local_n + (i < remainder ? 1 : 0);
-  }
-  displs[0] = 0;
-  for (int i = 1; i < size; ++i) {
-    displs[i] = displs[i - 1] + counts[i - 1];
+  if (rank == 0) {
+    for (int i = 0; i < size; ++i) {
+      counts[i] = local_n + (i < remainder ? 1 : 0);
+    }
+    displs[0] = 0;
+    for (int i = 1; i < size; ++i) {
+      displs[i] = displs[i - 1] + counts[i - 1];
+    }
   }
 
+  mpi::broadcast(world, counts, 0);
+  mpi::broadcast(world, displs, 0);
+
   std::vector<double> local_data(counts[rank]);
-  // Scatter данных
-  mpi::scatterv(world, data.data(), counts, displs, local_data.data(), counts[rank], 0);
+  mpi::scatterv(world, (rank == 0 ? data.data() : (double*)nullptr),
+                counts, displs, local_data.data(), counts[rank], 0);
 
   // Локальная поразрядная сортировка
   radix_sort_doubles(local_data);
 
-  // Сбор отсортированных данных
-  std::vector<double> gathered;
-  if (rank == 0) {
-    gathered.resize(n);
+  // Организуем дерево слияний.
+  // Общее число шагов = ceil(log2(size))
+  int steps = 0;
+  {
+    int tmp = size;
+    while (tmp > 1) {
+      tmp = (tmp + 1) / 2;
+      steps++;
+    }
   }
-  mpi::gatherv(world, local_data.data(), counts[rank], gathered.data(), counts, displs, 0);
 
-  // Слияние отсортированных подмассивов на процессе 0
-  if (rank == 0) {
-    // Разбиваем gathered по подмассивам
-    std::vector<std::vector<double>> subarrays(size);
-    for (int i = 0; i < size; ++i) {
-      subarrays[i].resize(counts[i]);
-      std::copy(gathered.begin() + displs[i], gathered.begin() + displs[i] + counts[i], subarrays[i].begin());
+  int group_size = 1;  // на шаге 0 объединяем пары, на шаге 1 объединяем пары по 2, и т.д.
+  for (int step = 0; step < steps; ++step) {
+    int partner_rank = rank + group_size;
+    // Определяем, участвует ли текущий процесс в слиянии
+    int group_step_size = group_size * 2; 
+    bool is_merger = (rank % group_step_size == 0);  // этот процесс будет принимать данные и сливать
+    bool has_partner = (partner_rank < size);  // есть ли партнер для слияния
+
+    if (is_merger && has_partner) {
+      // Процесс принимает данные от partner_rank
+      // Сначала получим размер массива партнёра
+      int partner_size;
+      world.recv(partner_rank, 0, partner_size);
+
+      std::vector<double> partner_data(partner_size);
+      world.recv(partner_rank, 1, partner_data.data(), partner_size);
+
+      // Сливаем local_data и partner_data
+      std::vector<double> merged;
+      merged.reserve(local_data.size() + partner_data.size());
+      std::merge(local_data.begin(), local_data.end(),
+                 partner_data.begin(), partner_data.end(),
+                 std::back_inserter(merged));
+      local_data.swap(merged);
+    } else if (!is_merger && (rank % group_step_size == group_size)) {
+      // Этот процесс отправляет данные тому, кто будет сливать
+      int receiver = rank - group_size;
+      int my_size = (int)local_data.size();
+      world.send(receiver, 0, my_size);
+      world.send(receiver, 1, local_data.data(), my_size);
+      // После отправки данные этому процессу уже не нужны, он может очистить
+      local_data.clear();
     }
 
-    data = merge_sorted_subarrays(subarrays);
+    // После каждого шага половина процессов исключается из дальнейшего слияния
+    // Удваиваем group_size
+    group_size *= 2;
+
+    // Все кроме тех, кто остался в текущем "дереве" слияния, могут закончить.
+    // Но для простоты просто идём дальше. Процессы, отправившие данные, могут быть пустыми.
+  }
+
+  // После всех шагов у процесса с rank=0 будет весь отсортированный массив
+  if (rank == 0) {
+    data.swap(local_data); 
   }
 
   return true;
