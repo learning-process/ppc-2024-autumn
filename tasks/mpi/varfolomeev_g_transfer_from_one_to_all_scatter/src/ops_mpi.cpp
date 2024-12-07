@@ -228,7 +228,7 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskPar
         }
       }
     } else {
-      return false; 
+      return false;
     }
   }
   std::vector<int> results(world.size());
