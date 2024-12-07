@@ -69,7 +69,7 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::pre_processing() {
   }
 
   if (world_size > rows) {
-    if (world_rank < rows) {
+    if (world_rank <= rows) {
       local_A.resize(columns);
       local_res.resize(1);
     } else {
@@ -87,8 +87,8 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::pre_processing() {
     local_A.resize((end_row - start_row) * columns);
     local_res.resize(end_row - start_row, 0);
 
-    for (int i = start_row; i < end_row; ++i) {
-      for (int j = 0; j < columns; ++j) {
+    for (int i = start_row; i < end_row; i++) {
+      for (int j = 0; j < columns; j++) {
         local_A[(i - start_row) * columns + j] = A[i * columns + j];
       }
     }
@@ -113,9 +113,6 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::run() {
     for (int j = 0; j < columns; j++) {
       local_res[i] += local_A[i * columns + j] * b[j];
     }
-  }
-  if (world.rank() == 0) {
-    res.resize(rows);
   }
   boost::mpi::gather(world, local_res.data(), local_res.size(), res.data(), 0);
   return true;
