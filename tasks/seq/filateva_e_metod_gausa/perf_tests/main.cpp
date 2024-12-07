@@ -7,6 +7,8 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/filateva_e_metod_gausa/include/ops_seq.hpp"
 
+#define alfa std::numeric_limits<double>::epsilon() * 10000
+
 std::vector<double> gereratorSLU(std::vector<double>& matrix, std::vector<double>& vecB) {
   int min_z = -100;
   int max_z = 100;
@@ -31,18 +33,8 @@ std::vector<double> gereratorSLU(std::vector<double>& matrix, std::vector<double
   return resh;
 }
 
-bool check(std::vector<double>& resh, std::vector<double>& tResh, double alfa) {
-  for (long unsigned int i = 0; i < tResh.size(); i++) {
-    if (abs(resh[i] - tResh[i]) > alfa) {
-      return false;
-    }
-  }
-  return true;
-}
-
 TEST(filateva_e_metod_gausa_seq, test_pipeline_run) {
   int size = 500;
-  double alfa = std::numeric_limits<double>::epsilon() * 10000;
   std::vector<double> matrix(size * size);
   std::vector<double> vecB(size);
   std::vector<double> answer;
@@ -58,7 +50,7 @@ TEST(filateva_e_metod_gausa_seq, test_pipeline_run) {
 
   auto metodGausa = std::make_shared<filateva_e_metod_gausa_seq::MetodGausa>(taskData);
 
-  ASSERT_EQ(metodGausa->validation(), true);
+  ASSERT_TRUE(metodGausa->validation());
   metodGausa->pre_processing();
   metodGausa->run();
   metodGausa->post_processing();
@@ -79,12 +71,14 @@ TEST(filateva_e_metod_gausa_seq, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(metodGausa);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(check(answer, tResh, alfa), true);
+  EXPECT_EQ(answer.size(), tResh.size());
+  for (int i = 0; i < size; i++) {
+    EXPECT_NEAR(tResh[i], answer[i], alfa);
+  }
 }
 
 TEST(filateva_e_metod_gausa_seq, test_task_run) {
   int size = 500;
-  double alfa = std::numeric_limits<double>::epsilon() * 10000;
   std::vector<double> matrix(size * size);
   std::vector<double> vecB(size);
   std::vector<double> answer;
@@ -100,7 +94,7 @@ TEST(filateva_e_metod_gausa_seq, test_task_run) {
 
   auto metodGausa = std::make_shared<filateva_e_metod_gausa_seq::MetodGausa>(taskData);
 
-  ASSERT_EQ(metodGausa->validation(), true);
+  ASSERT_TRUE(metodGausa->validation());
   metodGausa->pre_processing();
   metodGausa->run();
   metodGausa->post_processing();
@@ -121,5 +115,8 @@ TEST(filateva_e_metod_gausa_seq, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(metodGausa);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(check(answer, tResh, alfa), true);
+  EXPECT_EQ(answer.size(), tResh.size());
+  for (int i = 0; i < size; i++) {
+    EXPECT_NEAR(tResh[i], answer[i], alfa);
+  }
 }

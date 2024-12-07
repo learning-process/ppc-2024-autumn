@@ -6,6 +6,8 @@
 
 #include "seq/filateva_e_metod_gausa/include/ops_seq.hpp"
 
+#define alfa std::numeric_limits<double>::epsilon() * 10000
+
 std::vector<double> gereratorSLU(std::vector<double> &matrix, std::vector<double> &vecB) {
   int min_z = -100;
   int max_z = 100;
@@ -30,18 +32,8 @@ std::vector<double> gereratorSLU(std::vector<double> &matrix, std::vector<double
   return resh;
 }
 
-bool check(std::vector<double> &resh, std::vector<double> &tResh, double alfa) {
-  for (long unsigned int i = 0; i < tResh.size(); i++) {
-    if (abs(resh[i] - tResh[i]) > alfa) {
-      return false;
-    }
-  }
-  return true;
-}
-
 TEST(filateva_e_metod_gausa_seq, test_size_3) {
   int size = 2;
-  double alfa = std::numeric_limits<double>::epsilon() * 10000;
   std::vector<double> matrix(size * size);
   std::vector<double> vecB(size);
   std::vector<double> answer;
@@ -57,7 +49,7 @@ TEST(filateva_e_metod_gausa_seq, test_size_3) {
 
   filateva_e_metod_gausa_seq::MetodGausa metodGausa(taskData);
 
-  ASSERT_EQ(metodGausa.validation(), true);
+  ASSERT_TRUE(metodGausa.validation());
   metodGausa.pre_processing();
   metodGausa.run();
   metodGausa.post_processing();
@@ -65,12 +57,14 @@ TEST(filateva_e_metod_gausa_seq, test_size_3) {
   auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
   answer.insert(answer.end(), temp, temp + size);
 
-  ASSERT_EQ(check(answer, tResh, alfa), true);
+  EXPECT_EQ(answer.size(), tResh.size());
+  for (int i = 0; i < size; i++) {
+    EXPECT_NEAR(tResh[i], answer[i], alfa);
+  }
 }
 
 TEST(filateva_e_metod_gausa_seq, test_size_10) {
   int size = 10;
-  double alfa = std::numeric_limits<double>::epsilon() * 10000;
   std::vector<double> matrix(size * size);
   std::vector<double> vecB(size);
   std::vector<double> answer;
@@ -86,7 +80,7 @@ TEST(filateva_e_metod_gausa_seq, test_size_10) {
 
   filateva_e_metod_gausa_seq::MetodGausa metodGausa(taskData);
 
-  ASSERT_EQ(metodGausa.validation(), true);
+  ASSERT_TRUE(metodGausa.validation());
   metodGausa.pre_processing();
   metodGausa.run();
   metodGausa.post_processing();
@@ -94,12 +88,14 @@ TEST(filateva_e_metod_gausa_seq, test_size_10) {
   auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
   answer.insert(answer.end(), temp, temp + size);
 
-  ASSERT_EQ(check(answer, tResh, alfa), true);
+  EXPECT_EQ(answer.size(), tResh.size());
+  for (int i = 0; i < size; i++) {
+    EXPECT_NEAR(tResh[i], answer[i], alfa);
+  }
 }
 
 TEST(filateva_e_metod_gausa_seq, test_size_100) {
   int size = 100;
-  double alfa = std::numeric_limits<double>::epsilon() * 10000;
   std::vector<double> matrix(size * size);
   std::vector<double> vecB(size);
   std::vector<double> answer;
@@ -115,7 +111,7 @@ TEST(filateva_e_metod_gausa_seq, test_size_100) {
 
   filateva_e_metod_gausa_seq::MetodGausa metodGausa(taskData);
 
-  ASSERT_EQ(metodGausa.validation(), true);
+  ASSERT_TRUE(metodGausa.validation());
   metodGausa.pre_processing();
   metodGausa.run();
   metodGausa.post_processing();
@@ -123,12 +119,14 @@ TEST(filateva_e_metod_gausa_seq, test_size_100) {
   auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
   answer.insert(answer.end(), temp, temp + size);
 
-  ASSERT_EQ(check(answer, tResh, alfa), true);
+  EXPECT_EQ(answer.size(), tResh.size());
+  for (int i = 0; i < size; i++) {
+    EXPECT_NEAR(tResh[i], answer[i], alfa);
+  }
 }
 
 TEST(filateva_e_metod_gausa_seq, test_size_200) {
   int size = 200;
-  double alfa = std::numeric_limits<double>::epsilon() * 10000;
   std::vector<double> matrix(size * size);
   std::vector<double> vecB(size);
   std::vector<double> answer;
@@ -144,7 +142,7 @@ TEST(filateva_e_metod_gausa_seq, test_size_200) {
 
   filateva_e_metod_gausa_seq::MetodGausa metodGausa(taskData);
 
-  ASSERT_EQ(metodGausa.validation(), true);
+  ASSERT_TRUE(metodGausa.validation());
   metodGausa.pre_processing();
   metodGausa.run();
   metodGausa.post_processing();
@@ -152,7 +150,10 @@ TEST(filateva_e_metod_gausa_seq, test_size_200) {
   auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
   answer.insert(answer.end(), temp, temp + size);
 
-  ASSERT_EQ(check(answer, tResh, alfa), true);
+  EXPECT_EQ(answer.size(), tResh.size());
+  for (int i = 0; i < size; i++) {
+    EXPECT_NEAR(tResh[i], answer[i], alfa);
+  }
 }
 
 TEST(filateva_e_metod_gausa_seq, test_size_different) {
@@ -168,7 +169,7 @@ TEST(filateva_e_metod_gausa_seq, test_size_different) {
 
   filateva_e_metod_gausa_seq::MetodGausa metodGausa(taskData);
 
-  ASSERT_EQ(metodGausa.validation(), false);
+  ASSERT_FALSE(metodGausa.validation());
 }
 
 TEST(filateva_e_metod_gausa_seq, test_size_0) {
@@ -184,5 +185,5 @@ TEST(filateva_e_metod_gausa_seq, test_size_0) {
 
   filateva_e_metod_gausa_seq::MetodGausa metodGausa(taskData);
 
-  ASSERT_EQ(metodGausa.validation(), false);
+  ASSERT_FALSE(metodGausa.validation());
 }
