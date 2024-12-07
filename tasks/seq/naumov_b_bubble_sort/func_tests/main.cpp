@@ -36,8 +36,8 @@ TEST(naumov_b_bubble_sort_seq, sorted_input) {
 
   naumov_b_bubble_sort_seq::TestTaskSequential sort_task(task_data);
 
-  sort_task.pre_processing();
   ASSERT_TRUE(sort_task.validation());
+  sort_task.pre_processing();
   sort_task.run();
   sort_task.post_processing();
 
@@ -63,8 +63,8 @@ TEST(naumov_b_bubble_sort_seq, random_input_10) {
 
   naumov_b_bubble_sort_seq::TestTaskSequential sort_task(task_data);
 
-  sort_task.pre_processing();
   ASSERT_TRUE(sort_task.validation());
+  sort_task.pre_processing();
   sort_task.run();
   sort_task.post_processing();
 
