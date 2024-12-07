@@ -6,13 +6,21 @@
 #include "seq/sozonov_i_gaussian_method_horizontal_strip_scheme/include/ops_seq.hpp"
 
 TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_seq, test_for_empty_matrix) {
+  const int cols = 0;
+  const int rows = 0;
+
   // Create data
   std::vector<double> in;
+  std::vector<double> out;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
   taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->inputs_count.emplace_back(cols);
+  taskDataSeq->inputs_count.emplace_back(rows);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
   sozonov_i_gaussian_method_horizontal_strip_scheme_seq::TestTaskSequential testTaskSequential(taskDataSeq);
@@ -25,6 +33,7 @@ TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_seq, test_when_matrix_is_
 
   // Create data
   std::vector<double> in = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+  std::vector<double> out(cols - 1, 0);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -32,6 +41,8 @@ TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_seq, test_when_matrix_is_
   taskDataSeq->inputs_count.emplace_back(in.size());
   taskDataSeq->inputs_count.emplace_back(cols);
   taskDataSeq->inputs_count.emplace_back(rows);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
   sozonov_i_gaussian_method_horizontal_strip_scheme_seq::TestTaskSequential testTaskSequential(taskDataSeq);
@@ -44,6 +55,7 @@ TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_seq, test_when_determinan
 
   // Create data
   std::vector<double> in = {6, -1, 12, 3, -3, -5, -6, 9, 1, 4, 2, -1};
+  std::vector<double> out(cols - 1, 0);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -51,6 +63,8 @@ TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_seq, test_when_determinan
   taskDataSeq->inputs_count.emplace_back(in.size());
   taskDataSeq->inputs_count.emplace_back(cols);
   taskDataSeq->inputs_count.emplace_back(rows);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
   sozonov_i_gaussian_method_horizontal_strip_scheme_seq::TestTaskSequential testTaskSequential(taskDataSeq);
@@ -63,6 +77,7 @@ TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_seq, test_when_ranks_are_
 
   // Create data
   std::vector<double> in = {1, 2, 3, 7, 4, 5, 6, 2, 7, 8, 9, 8};
+  std::vector<double> out(cols - 1, 0);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -70,6 +85,8 @@ TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_seq, test_when_ranks_are_
   taskDataSeq->inputs_count.emplace_back(in.size());
   taskDataSeq->inputs_count.emplace_back(cols);
   taskDataSeq->inputs_count.emplace_back(rows);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
   sozonov_i_gaussian_method_horizontal_strip_scheme_seq::TestTaskSequential testTaskSequential(taskDataSeq);

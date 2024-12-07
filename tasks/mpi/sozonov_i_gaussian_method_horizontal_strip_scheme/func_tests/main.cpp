@@ -25,13 +25,21 @@ std::vector<double> getRandomMatrix(int sz) {
 TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_mpi, test_for_empty_matrix) {
   boost::mpi::communicator world;
 
+  const int cols = 0;
+  const int rows = 0;
+
   std::vector<double> global_mat;
+  std::vector<double> global_ans;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
     taskDataPar->inputs_count.emplace_back(global_mat.size());
+    taskDataPar->inputs_count.emplace_back(cols);
+    taskDataPar->inputs_count.emplace_back(rows);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_ans.data()));
+    taskDataPar->outputs_count.emplace_back(global_ans.size());
     sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
     ASSERT_FALSE(testMpiTaskParallel.validation());
   }
@@ -44,6 +52,7 @@ TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_mpi, test_when_matrix_is_
   const int rows = 2;
 
   std::vector<double> global_mat;
+  std::vector<double> global_ans(cols - 1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -53,6 +62,8 @@ TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_mpi, test_when_matrix_is_
     taskDataPar->inputs_count.emplace_back(global_mat.size());
     taskDataPar->inputs_count.emplace_back(cols);
     taskDataPar->inputs_count.emplace_back(rows);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_ans.data()));
+    taskDataPar->outputs_count.emplace_back(global_ans.size());
     sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
     ASSERT_FALSE(testMpiTaskParallel.validation());
   }
@@ -65,6 +76,7 @@ TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_mpi, test_when_determinan
   const int rows = 3;
 
   std::vector<double> global_mat;
+  std::vector<double> global_ans(cols - 1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -74,6 +86,8 @@ TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_mpi, test_when_determinan
     taskDataPar->inputs_count.emplace_back(global_mat.size());
     taskDataPar->inputs_count.emplace_back(cols);
     taskDataPar->inputs_count.emplace_back(rows);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_ans.data()));
+    taskDataPar->outputs_count.emplace_back(global_ans.size());
     sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
     ASSERT_FALSE(testMpiTaskParallel.validation());
   }
@@ -86,6 +100,7 @@ TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_mpi, test_when_ranks_are_
   const int rows = 3;
 
   std::vector<double> global_mat;
+  std::vector<double> global_ans(cols - 1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -95,6 +110,8 @@ TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_mpi, test_when_ranks_are_
     taskDataPar->inputs_count.emplace_back(global_mat.size());
     taskDataPar->inputs_count.emplace_back(cols);
     taskDataPar->inputs_count.emplace_back(rows);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_ans.data()));
+    taskDataPar->outputs_count.emplace_back(global_ans.size());
     sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
     ASSERT_FALSE(testMpiTaskParallel.validation());
   }
