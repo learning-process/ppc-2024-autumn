@@ -50,7 +50,7 @@ TEST(dormidontov_e_circle_topology_mpi, Test_1) {
 
   if (world.rank() == 0) {
     ASSERT_EQ(mas, ans);
-    ASSERT_EQ(marks, marks);
+    ASSERT_EQ(marks, marks_of_ans);
   }
 }
 
@@ -81,7 +81,7 @@ TEST(dormidontov_e_circle_topology_mpi, Test_10) {
 
   if (world.rank() == 0) {
     ASSERT_EQ(mas, ans);
-    ASSERT_EQ(marks, marks);
+    ASSERT_EQ(marks, marks_of_ans);
   }
 }
 
@@ -112,7 +112,7 @@ TEST(dormidontov_e_circle_topology_mpi, Test_100) {
 
   if (world.rank() == 0) {
     ASSERT_EQ(mas, ans);
-    ASSERT_EQ(marks, marks);
+    ASSERT_EQ(marks, marks_of_ans);
   }
 }
 
@@ -143,7 +143,7 @@ TEST(dormidontov_e_circle_topology_mpi, Test_1000) {
 
   if (world.rank() == 0) {
     ASSERT_EQ(mas, ans);
-    ASSERT_EQ(marks, marks);
+    ASSERT_EQ(marks, marks_of_ans);
   }
 }
 
@@ -218,7 +218,7 @@ TEST(dormidontov_e_circle_topology_mpi, Test_2_in_power) {
 
   if (world.rank() == 0) {
     ASSERT_EQ(mas, ans);
-    ASSERT_EQ(marks, marks);
+    ASSERT_EQ(marks, marks_of_ans);
   }
 }
 
@@ -249,7 +249,7 @@ TEST(dormidontov_e_circle_topology_mpi, Test_3_in_power) {
 
   if (world.rank() == 0) {
     ASSERT_EQ(mas, ans);
-    ASSERT_EQ(marks, marks);
+    ASSERT_EQ(marks, marks_of_ans);
   }
 }
 
@@ -280,6 +280,6 @@ TEST(dormidontov_e_circle_topology_mpi, Test_primes) {
 
   if (world.rank() == 0) {
     ASSERT_EQ(mas, ans);
-    ASSERT_EQ(marks, marks);
+    ASSERT_EQ(marks, marks_of_ans);
   }
 }
