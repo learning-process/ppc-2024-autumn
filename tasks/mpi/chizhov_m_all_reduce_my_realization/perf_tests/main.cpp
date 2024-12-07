@@ -8,8 +8,8 @@
 #include "mpi/chizhov_m_all_reduce_my_realization/include/ops_mpi.hpp"
 
 TEST(chizhov_m_all_reduce_my_realization_perf_test, test_pipeline_run) {
-  int rows = 1000;
-  int columns = 4000;
+  int rows = 1001;
+  int columns = 4001;
   boost::mpi::communicator world;
   std::vector<int> matrix;
   std::vector<int32_t> max_vec_mpi(columns, 0);
@@ -53,8 +53,8 @@ TEST(chizhov_m_all_reduce_my_realization_perf_test, test_pipeline_run) {
 }
 
 TEST(chizhov_m_all_reduce_my_realization_perf_test, test_task_run) {
-  int rows = 1000;
-  int columns = 4000;
+  int rows = 2000;
+  int columns = 6000;
   boost::mpi::communicator world;
   std::vector<int> matrix;
   std::vector<int32_t> max_vec_mpi(columns, 0);

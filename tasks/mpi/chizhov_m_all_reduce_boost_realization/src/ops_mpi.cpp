@@ -17,7 +17,7 @@ bool chizhov_m_all_reduce_boost_mpi::TestMPITaskSequential::pre_processing() {
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
   input_.assign(tmp_ptr, tmp_ptr + taskData->inputs_count[0]);
 
-  res_ = std::vector<int>(cols, 0);
+  res_ = std::vector<int>(cols, INT_MIN);
   sum = std::vector<int>(cols, 0);
 
   return true;
@@ -25,8 +25,8 @@ bool chizhov_m_all_reduce_boost_mpi::TestMPITaskSequential::pre_processing() {
 
 bool chizhov_m_all_reduce_boost_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  return (taskData->inputs_count[1] != 0 && taskData->inputs_count[2] != 0 && !taskData->inputs.empty() &&
-          taskData->inputs_count[0] > 0 && (taskData->inputs_count[1] == taskData->outputs_count[0]));
+  return (taskData->inputs_count[0] > 0 && taskData->inputs_count[2] != 0 && !taskData->inputs.empty() &&
+          taskData->inputs_count[1] != 0 && (taskData->inputs_count[1] == taskData->outputs_count[0]));
 }
 
 bool chizhov_m_all_reduce_boost_mpi::TestMPITaskSequential::run() {
@@ -82,8 +82,8 @@ bool chizhov_m_all_reduce_boost_mpi::TestMPITaskBoostParallel::pre_processing() 
 bool chizhov_m_all_reduce_boost_mpi::TestMPITaskBoostParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    return (taskData->inputs_count[1] != 0 && taskData->inputs_count[2] != 0 && !taskData->inputs.empty() &&
-            taskData->inputs_count[0] > 0 && (taskData->inputs_count[1] == taskData->outputs_count[0]));
+    return (taskData->inputs_count[0] > 0 && taskData->inputs_count[2] != 0 && !taskData->inputs.empty() &&
+            taskData->inputs_count[1] != 0 && (taskData->inputs_count[1] == taskData->outputs_count[0]));
   }
   return true;
 }
@@ -106,7 +106,7 @@ bool chizhov_m_all_reduce_boost_mpi::TestMPITaskBoostParallel::run() {
   }
   int startCol = delta * world.rank();
   int lastCol = std::min(cols, delta * (world.rank() + 1));
-  std::vector<int> localMax(cols, 0);
+  std::vector<int> localMax(cols, INT_MIN);
   for (int j = startCol; j < lastCol; j++) {
     int maxElem = input_[j];
     for (int i = 1; i < rows; i++) {
@@ -117,7 +117,7 @@ bool chizhov_m_all_reduce_boost_mpi::TestMPITaskBoostParallel::run() {
     }
     localMax[j] = maxElem;
   }
-  res_.resize(cols, 0);
+  res_.resize(cols, INT_MIN);
   boost::mpi::all_reduce(world, localMax.data(), cols, res_.data(), boost::mpi::maximum<int>());
 
   std::vector<int> local_cnt_(cols, 0);

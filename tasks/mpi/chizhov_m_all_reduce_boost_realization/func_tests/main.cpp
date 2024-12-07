@@ -9,7 +9,7 @@
 
 #include "mpi/chizhov_m_all_reduce_boost_realization/include/ops_mpi.hpp"
 
-std::vector<int> chizhov_m_all_reduce_boost_mpi::getRandomVector(int sz) {
+std::vector<int> createRandomVectorBoostRealization(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
@@ -36,7 +36,7 @@ TEST(chizhov_m_all_reduce_boost_realization_func_test, Test_Zero_Columns) {
 
   if (world.rank() == 0) {
     const int count_size_vector = cols * rows;
-    matrix = chizhov_m_all_reduce_boost_mpi::getRandomVector(count_size_vector);
+    matrix = createRandomVectorBoostRealization(count_size_vector);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
@@ -94,7 +94,7 @@ TEST(chizhov_m_all_reduce_boost_realization_func_test, Boost_Realization_Test_1)
 
   if (world.rank() == 0) {
     const int count_size_vector = cols * rows;
-    matrix = chizhov_m_all_reduce_boost_mpi::getRandomVector(count_size_vector);
+    matrix = createRandomVectorBoostRealization(count_size_vector);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
@@ -149,7 +149,7 @@ TEST(chizhov_m_all_reduce_boost_realization_func_test, Boost_Realization_Test_2)
 
   if (world.rank() == 0) {
     const int count_size_vector = cols * rows;
-    matrix = chizhov_m_all_reduce_boost_mpi::getRandomVector(count_size_vector);
+    matrix = createRandomVectorBoostRealization(count_size_vector);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
@@ -204,7 +204,7 @@ TEST(chizhov_m_all_reduce_boost_realization_func_test, Boost_Realization_Test_3)
 
   if (world.rank() == 0) {
     const int count_size_vector = cols * rows;
-    matrix = chizhov_m_all_reduce_boost_mpi::getRandomVector(count_size_vector);
+    matrix = createRandomVectorBoostRealization(count_size_vector);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
@@ -259,7 +259,7 @@ TEST(chizhov_m_all_reduce_boost_realization_func_test, Boost_Realization_Test_4)
 
   if (world.rank() == 0) {
     const int count_size_vector = cols * rows;
-    matrix = chizhov_m_all_reduce_boost_mpi::getRandomVector(count_size_vector);
+    matrix = createRandomVectorBoostRealization(count_size_vector);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
@@ -303,8 +303,8 @@ TEST(chizhov_m_all_reduce_boost_realization_func_test, Boost_Realization_Test_4)
 TEST(chizhov_m_all_reduce_boost_realization_func_test, Boost_Realization_Test_5) {
   boost::mpi::communicator world;
 
-  int cols = 1024;
-  int rows = 1024;
+  int cols = 100;
+  int rows = 23;
 
   std::vector<int> matrix;
   std::vector<int> res_par(cols, 0);
@@ -314,7 +314,7 @@ TEST(chizhov_m_all_reduce_boost_realization_func_test, Boost_Realization_Test_5)
 
   if (world.rank() == 0) {
     const int count_size_vector = cols * rows;
-    matrix = chizhov_m_all_reduce_boost_mpi::getRandomVector(count_size_vector);
+    matrix = createRandomVectorBoostRealization(count_size_vector);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
