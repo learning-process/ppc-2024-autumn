@@ -23,9 +23,9 @@ static std::vector<double> getRandomVector(int sz) {
 
 static std::vector<double> getAns(std::vector<double> &A, std::vector<double> &B, size_t N) {
   std::vector<double> C(N * N);
-  for (int i = 0; i < N; ++i) {
-    for (int j = 0; j < N; ++j) {
-      for (int k = 0; k < N; ++k) {
+  for (size_t i = 0; i < N; ++i) {
+    for (size_t j = 0; j < N; ++j) {
+      for (size_t k = 0; k < N; ++k) {
         C[i * N + j] += A[i * N + k] * B[k * N + j];
       }
     }
