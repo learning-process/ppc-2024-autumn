@@ -165,7 +165,7 @@ TEST(ermilova_d_custom_reduce_mpi, CustomReduce_double_sum) {
   ermilova_d_custom_reduce_mpi::CustomReduce(&local_value, &global_result, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
   if (rank == 0) {
-    float expected_sum = (size * (size + 1) / 2.0f) + 0.5f * size;
+    double expected_sum = (size * (size + 1) / 2.0f) + 0.5f * size;
     ASSERT_DOUBLE_EQ(global_result, expected_sum);
   }
 }
