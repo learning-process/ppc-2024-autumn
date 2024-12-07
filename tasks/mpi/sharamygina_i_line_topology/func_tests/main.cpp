@@ -144,7 +144,7 @@ TEST(sharamygina_i_line_topology_mpi, invalidSendler) {
   taskData->inputs_count.emplace_back(size);
 
   sharamygina_i_line_topology_mpi::line_topology_mpi testTask(taskData);
-  if (world.rank() == 0) {
+  if (world.rank() == sendler) {
     ASSERT_FALSE(testTask.validation());
   }
 }
