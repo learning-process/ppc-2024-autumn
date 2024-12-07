@@ -44,8 +44,8 @@ bool kolodkin_g_image_contrast_mpi::TestMPITaskSequential::run() {
   }
   av_br /= input_.size() / 3;
   double k = 1.5;
-  for (unsigned i = 0; i < 256; i++) {
-    unsigned long delta_color = i - av_br;
+  for (size_t i = 0; i < 256; i++) {
+    int delta_color = i - av_br;
     int temp = (int)(av_br + k * delta_color);
     palette_[i] = std::clamp(temp, 0, 255);
   }
