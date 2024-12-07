@@ -81,7 +81,7 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel::ru
   internal_order_test();
   int world_size = world.size();
   int local_res = 0;
-  if (world.size() == 1) {
+  if (world.size() == 1) {  // Solving sequentional if 1 process
     if (ops == "+") {
       res = std::accumulate(input_values.begin(), input_values.end(), 0);
     } else if (ops == "-") {
@@ -96,7 +96,7 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel::ru
     }
     return true;
   }
-  // Spread the data
+  // Spread the data (root)
   if (world.rank() == 0) {
     for (int proc_num = 1; proc_num < world_size; proc_num++) {
       std::vector<int> local_data;
@@ -184,7 +184,7 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskPar
   internal_order_test();
   int node_size = 0;
   int local_res = 0;
-  if (world.size() == 1) {
+  if (world.size() == 1) {  // Solving sequentional if 1 process
     if (ops == "+") {
       res = std::accumulate(input_values.begin(), input_values.end(), 0);
     } else if (ops == "-") {
@@ -199,14 +199,14 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskPar
     }
     return true;
   }
-
+  // Spread the data all over the processes. (including root)
   if (world.rank() == 0) {
     node_size = input_values.size() / world.size();
     local_input_values.resize(node_size + input_values.size() % world.size());
     for (int i = 1; i < world.size(); i++) {
-      world.send(i, 0, node_size);
+      world.send(i, 0, node_size);  // Sending node_size (root)
     }
-  } else {
+  } else {  // Catching node_size (non-root)
     world.recv(0, 0, node_size);
     local_input_values.resize(node_size);
   }
@@ -228,16 +228,16 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskPar
         }
       }
     } else {
-      return false;
+      return false; 
     }
   }
   std::vector<int> results(world.size());
   if (world.rank() == 0) {
     results[0] = local_res;
     for (int i = 1; i < world.size(); i++) {
-      world.recv(i, 0, results[i]);
+      world.recv(i, 0, results[i]);  // Sending results (root)
     }
-  } else {
+  } else {  // Sending results (non-root)
     world.send(0, 0, local_res);
   }
   if (world.rank() == 0) {
