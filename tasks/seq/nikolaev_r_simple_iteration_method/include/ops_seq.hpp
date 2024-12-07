@@ -18,9 +18,9 @@ class SimpleIterationMethodSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<double> A_{};
-  std::vector<double> b_{};
-  std::vector<double> x_{};
+  std::vector<double> A_;
+  std::vector<double> b_;
+  std::vector<double> x_;
   double tolerance_ = 1e-3;
   size_t max_iterations_ = 150;
 

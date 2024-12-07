@@ -138,7 +138,10 @@ bool nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodParallel::run(
   internal_order_test();
 
   size_t n = b_.size();
-  std::vector<double> local_A, local_b, local_x, x_prev(n, 0.0);
+  std::vector<double> local_A;
+  std::vector<double> local_b;
+  std::vector<double> local_x;
+  std::vector<double> x_prev(n, 0.0);
   std::vector<double> B(n * n, 0.0);
   std::vector<double> g(n, 0.0);
 
