@@ -29,8 +29,8 @@ class ParallelMPI : public ppc::core::Task {
   std::vector<int> input_matrix_1;
   std::vector<int> input_vector_1;
   std::vector<int> result_vector_;
-  std::vector<int> distribution;
-  std::vector<int> displacement;
+  std::vector<int> proc;
+  std::vector<int> off;
   boost::mpi::communicator world;
 };
 

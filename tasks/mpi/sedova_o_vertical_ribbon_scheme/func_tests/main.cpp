@@ -79,8 +79,8 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, Test_2) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
-    global_vector = {1, 1, 1};
+    global_matrix = {1, 2, 3, 4};
+    global_vector = {1, 1};
 
     global_result.resize(global_matrix.size() / global_vector.size());
 
@@ -136,7 +136,7 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, Test_3) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = {1, 2, 3, 4};
+    global_matrix = {1, 2, 3, 4, 5, 6};
     global_vector = {1, 2};
 
     global_result.resize(global_matrix.size() / global_vector.size());

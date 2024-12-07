@@ -7,22 +7,6 @@
 #include <thread>
 #include <vector>
 
-std::pair<std::vector<int>, std::vector<int>> calculateDistribution(int cols, int rows, int num_processes) {
-  std::vector<int> distribution(num_processes, 0);
-  std::vector<int> displacement(num_processes, 0);
-
-  int cols_per_proc = cols / num_processes;
-  int remainder = cols % num_processes;
-
-  int offset = 0;
-  for (int i = 0; i < num_processes; ++i) {
-    distribution[i] = (cols_per_proc + static_cast<int>(i < remainder)) * rows;
-    displacement[i] = offset;
-    offset += distribution[i];
-  }
-  return std::make_pair(distribution, displacement);
-}
-
 bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::validation() {
   internal_order_test();
   if (!taskData) {
@@ -36,91 +20,71 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::validation() {
 }
 
 bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::pre_processing() {
-  internal_order_test();
+  int* matrix = reinterpret_cast<int*>(taskData->inputs[0]);
+  int* vector = reinterpret_cast<int*>(taskData->inputs[1]);
 
-  if (world.rank() == 0) {
-    int* input_matrix_ = reinterpret_cast<int*>(taskData->inputs[0]);
-    int* input_vector_ = reinterpret_cast<int*>(taskData->inputs[1]);
+  int count = taskData->inputs_count[0];
+  rows_= taskData->inputs_count[1];
+  cols_ = count / rows_;
 
-    int count = taskData->inputs_count[0];
-    cols_ = taskData->inputs_count[1];
-    rows_ = count / cols_;
+  input_matrix_1.assign(matrix, matrix + count);
+  input_vector_1.assign(vector, vector + rows_);
+  result_vector_.resize(cols_, 0);
 
-    // Copy data from TaskData, handle potential errors
-    try {
-      input_matrix_1.assign(input_matrix_, input_matrix_ + count);
-      input_vector_1.assign(input_vector_, input_vector_ + cols_);
-      result_vector_.resize(rows_, 0);
-    } catch (const std::exception& e) {
-      std::cerr << "Error copying data: " << e.what() << std::endl;
-      return false;
+  proc.resize(world.size(), 0);
+  off.resize(world.size(), -1);
+
+  if (world.size() > rows_) {
+    for (int i = 0; i < rows_; ++i) {
+      off[i] = i * cols_;
+      proc[i] = cols_;
     }
-
-    // Calculate distribution and displacement
-    auto [distribution_result, displacement_result] = calculateDistribution(cols_, rows_, world.size());
-    distribution = distribution_result;
-    displacement = displacement_result;
-
+    for (int i = rows_; i < world.size(); ++i) {
+      off[i] = -1;
+      proc[i] = 0;
+    }
   } else {
-    // Other processes resize their local vectors to the correct size
-    input_matrix_1.resize(0);
-    input_vector_1.resize(0);
-    result_vector_.resize(0);
+    int count_proc = rows_ / world.size();
+    int surplus = rows_ % world.size();
+    int offset = 0;
+    for (int i = 0; i < world.size(); ++i) {
+      if (surplus > 0) {
+        proc[i] = (count_proc + 1) * cols_;
+        --surplus;
+      } else {
+        proc[i] = count_proc * cols_;
+      }
+      off[i] = offset;
+      offset += proc[i];
+    }
   }
-  return true;
+return true;
 }
 
 bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::run() {
   internal_order_test();
+  boost::mpi::broadcast(world, rows_, 0);
+  boost::mpi::broadcast(world, cols_, 0);
+  boost::mpi::broadcast(world, proc, 0);
+  boost::mpi::broadcast(world, off, 0);
+  boost::mpi::broadcast(world, input_matrix_1, 0);
+  boost::mpi::broadcast(world, input_vector_1, 0);
+  int proc_start = off[world.rank()] / cols_;
+  int matrix_start_ = proc[world.rank()] / cols_;
+  std::vector<int> proc_result(cols_, 0);
 
-  boost::mpi::broadcast(world, rows_, 0);           // Broadcast number of rows
-  boost::mpi::broadcast(world, input_vector_1, 0);  // Broadcast input vector
-  boost::mpi::broadcast(world, distribution, 0);    // Broadcast column distribution
-
-  int local_cols = distribution[world.rank()] / rows_;  // Number of columns per process
-  int local_elements = distribution[world.rank()];      // Number of elements per process
-  std::vector<int> local_matrix(local_elements);        // Local Matrix to receive data
-
-  // Distribute matrix columns using scatterv
-  std::vector<int> sendcounts = distribution;     // Send counts for scatterv
-  std::vector<int> displacements = displacement;  // Displacements for scatterv
-
-  if (world.rank() == 0) {
-    boost::mpi::scatterv(world, input_matrix_1.data(), sendcounts, displacements, local_matrix.data(), local_elements,
-                         0);
-  } else {
-    boost::mpi::scatterv(world, local_matrix.data(), local_elements, 0);
-  }
-
-  std::vector<int> local_result(rows_, 0);  // Initialize local result vector
-
-  // Local matrix-vector multiplication (vertical ribbon)
-  for (int j = 0; j < local_cols; ++j) {
-    for (int i = 0; i < rows_; ++i) {
-      local_result[i] += local_matrix[j * rows_ + i] * input_vector_1[displacement[world.rank()] / rows_ + j];
+  for (int i = 0; i < cols_; ++i) {
+    for (int j = 0; j < matrix_start_; ++j) {
+      int prog_start = proc_start + j;
+      if (prog_start < rows_) {
+        int matrix = input_matrix_1[i * rows_ + prog_start];
+        int vector = input_vector_1[prog_start];
+        proc_result[j] += matrix * vector;
+      }
     }
   }
 
-  // Gather results (similar to horizontal scheme's gatherv)
-  std::vector<int> gather_counts;
-  std::vector<int> gather_displacements;
-
-  if (world.rank() == 0) {
-    gather_counts.resize(world.size());
-    gather_displacements.resize(world.size());
-    gather_displacements[0] = 0;
-    for (int i = 0; i < world.size(); ++i) {
-      gather_counts[i] = rows_;
-      if (i > 0) gather_displacements[i] = gather_displacements[i - 1] + gather_counts[i - 1];
-    }
-  }
-
-  if (world.rank() == 0) {
-    boost::mpi::gatherv(world, local_result.data(), local_result.size(), result_vector_.data(), gather_counts,
-                        gather_displacements, 0);
-  } else {
-    boost::mpi::gatherv(world, local_result.data(), local_result.size(), 0);
-  }
+  boost::mpi::reduce(world, proc_result.data(), cols_, result_vector_.data(), std::plus<>(), 0);
 
   return true;
 }
