@@ -30,7 +30,7 @@ TEST(dormidontov_e_circle_topology_mpi, Test_1) {
   mas = dormidontov_e_circle_topology_mpi::GenVector(size);
   std::vector<int> ans(size);
   std::vector<int> marks(world.size() + 1);
-  std::vector<int> marks = dormidontov_e_circle_topology_mpi::GenMarksAns(world.size());
+  std::vector<int> marks_of_ans = dormidontov_e_circle_topology_mpi::GenMarksAns(world.size());
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -61,7 +61,7 @@ TEST(dormidontov_e_circle_topology_mpi, Test_10) {
   mas = dormidontov_e_circle_topology_mpi::GenVector(size);
   std::vector<int> ans(size);
   std::vector<int> marks(world.size() + 1);
-  std::vector<int> marks = dormidontov_e_circle_topology_mpi::GenMarksAns(world.size());
+  std::vector<int> marks_of_ans = dormidontov_e_circle_topology_mpi::GenMarksAns(world.size());
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -92,7 +92,7 @@ TEST(dormidontov_e_circle_topology_mpi, Test_100) {
   mas = dormidontov_e_circle_topology_mpi::GenVector(size);
   std::vector<int> ans(size);
   std::vector<int> marks(world.size() + 1);
-  std::vector<int> marks = dormidontov_e_circle_topology_mpi::GenMarksAns(world.size());
+  std::vector<int> marks_of_ans = dormidontov_e_circle_topology_mpi::GenMarksAns(world.size());
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -123,7 +123,7 @@ TEST(dormidontov_e_circle_topology_mpi, Test_1000) {
   mas = dormidontov_e_circle_topology_mpi::GenVector(size);
   std::vector<int> ans(size);
   std::vector<int> marks(world.size() + 1);
-  std::vector<int> marks = dormidontov_e_circle_topology_mpi::GenMarksAns(world.size());
+  std::vector<int> marks_of_ans = dormidontov_e_circle_topology_mpi::GenMarksAns(world.size());
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -154,7 +154,7 @@ TEST(dormidontov_e_circle_topology_mpi, Test_if_size_zero) {
   mas = dormidontov_e_circle_topology_mpi::GenVector(size);
   std::vector<int> ans(size);
   std::vector<int> marks(world.size() + 1);
-  std::vector<int> marks = dormidontov_e_circle_topology_mpi::GenMarksAns(world.size());
+  std::vector<int> marks_of_ans = dormidontov_e_circle_topology_mpi::GenMarksAns(world.size());
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -176,7 +176,7 @@ TEST(dormidontov_e_circle_topology_mpi, Test_if_ans_neq) {
   mas = dormidontov_e_circle_topology_mpi::GenVector(size);
   std::vector<int> ans(size + 1);
   std::vector<int> marks(world.size() + 1);
-  std::vector<int> marks = dormidontov_e_circle_topology_mpi::GenMarksAns(world.size());
+  std::vector<int> marks_of_ans = dormidontov_e_circle_topology_mpi::GenMarksAns(world.size());
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -198,7 +198,7 @@ TEST(dormidontov_e_circle_topology_mpi, Test_2_in_power) {
   mas = dormidontov_e_circle_topology_mpi::GenVector(size);
   std::vector<int> ans(size);
   std::vector<int> marks(world.size() + 1);
-  std::vector<int> marks = dormidontov_e_circle_topology_mpi::GenMarksAns(world.size());
+  std::vector<int> marks_of_ans = dormidontov_e_circle_topology_mpi::GenMarksAns(world.size());
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -229,7 +229,7 @@ TEST(dormidontov_e_circle_topology_mpi, Test_3_in_power) {
   mas = dormidontov_e_circle_topology_mpi::GenVector(size);
   std::vector<int> ans(size);
   std::vector<int> marks(world.size() + 1);
-  std::vector<int> marks = dormidontov_e_circle_topology_mpi::GenMarksAns(world.size());
+  std::vector<int> marks_of_ans = dormidontov_e_circle_topology_mpi::GenMarksAns(world.size());
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -260,7 +260,7 @@ TEST(dormidontov_e_circle_topology_mpi, Test_primes) {
   mas = dormidontov_e_circle_topology_mpi::GenVector(size);
   std::vector<int> ans(size);
   std::vector<int> marks(world.size() + 1);
-  std::vector<int> marks = dormidontov_e_circle_topology_mpi::GenMarksAns(world.size());
+  std::vector<int> marks_of_ans = dormidontov_e_circle_topology_mpi::GenMarksAns(world.size());
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
