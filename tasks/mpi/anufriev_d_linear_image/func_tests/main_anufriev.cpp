@@ -4,15 +4,10 @@
 #include <algorithm>
 #include <numeric>
 
-// Предположим, что SimpleIntMPI уже включён
 #include "mpi/anufriev_d_linear_image/include/ops_mpi_anufriev.hpp"
-#include "core/task/include/task_data.hpp"
+#include "core/task/include/task.hpp"
 
-// Последовательная реализация 3x3 Гауссовой свёртки для проверки корректности.
-// Применяем то же ядро:
-// [1 2 1
-//  2 4 2
-//  1 2 1] / 16
+// Последовательный фильтр для проверки
 static void gaussian_3x3_seq(const std::vector<int>& input, int width, int height, std::vector<int>* output) {
     const int kernel[3][3] = {
         {1, 2, 1},
@@ -36,27 +31,27 @@ static void gaussian_3x3_seq(const std::vector<int>& input, int width, int heigh
     }
 }
 
-TEST(anufriev_d_linear_image_func, SmallImageTest) {
+TEST(anufriev_d_linear_image_func_mpi, SmallImageTest) {
     boost::mpi::communicator world;
 
     int width = 5;
     int height = 4;
+
     std::vector<int> input(width * height);
-    // Заполним простой градиент для наглядности
     std::iota(input.begin(), input.end(), 0);
+    std::vector<int> output(width * height, 0);
 
     std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-
-    std::vector<int> output(width * height, 0);
     if (world.rank() == 0) {
-        // Устанавливаем входы
         taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
-        taskData->inputs_count.push_back(input.size());
-        // Доп. параметры: width и height - предположим, что сохраняем в inputs_count[1] и [2]
-        taskData->inputs_count.push_back(width);
-        taskData->inputs_count.push_back(height);
+        taskData->inputs_count.push_back(input.size()); // кол-во элементов изображения
 
-        // Устанавливаем выходы
+        taskData->inputs.push_back(reinterpret_cast<uint8_t*>(&width));
+        taskData->inputs_count.push_back(sizeof(int));
+
+        taskData->inputs.push_back(reinterpret_cast<uint8_t*>(&height));
+        taskData->inputs_count.push_back(sizeof(int));
+
         taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output.data()));
         taskData->outputs_count.push_back(output.size());
     }
@@ -68,7 +63,6 @@ TEST(anufriev_d_linear_image_func, SmallImageTest) {
     ASSERT_TRUE(task->post_processing());
 
     if (world.rank() == 0) {
-        // Сравним с последовательным результатом
         std::vector<int> expected;
         gaussian_3x3_seq(input, width, height, &expected);
         ASSERT_EQ(output.size(), expected.size());
@@ -78,27 +72,31 @@ TEST(anufriev_d_linear_image_func, SmallImageTest) {
     }
 }
 
-TEST(anufriev_d_linear_image_func, LargerImageRandomTest) {
+TEST(anufriev_d_linear_image_func_mpi, LargerImageRandomTest) {
     boost::mpi::communicator world;
 
     int width = 100;
     int height = 80;
 
-    std::vector<int> input(width * height);
-    // Заполним случайными данными
-    srand(123);
-    for (auto &val : input) {
-        val = rand() % 256;
+    std::vector<int> input;
+    std::vector<int> output;
+    if (world.rank() == 0) {
+        input.resize(width * height);
+        srand(123);
+        for (auto &val : input) val = rand() % 256;
+        output.resize(width * height, 0);
     }
 
-    std::vector<int> output(width * height, 0);
     std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
     if (world.rank() == 0) {
         taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
         taskData->inputs_count.push_back(input.size());
-        // Запишем ширину и высоту
-        taskData->inputs_count.push_back(width);
-        taskData->inputs_count.push_back(height);
+
+        taskData->inputs.push_back(reinterpret_cast<uint8_t*>(&width));
+        taskData->inputs_count.push_back(sizeof(int));
+
+        taskData->inputs.push_back(reinterpret_cast<uint8_t*>(&height));
+        taskData->inputs_count.push_back(sizeof(int));
 
         taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output.data()));
         taskData->outputs_count.push_back(output.size());
