@@ -17,7 +17,7 @@ TEST(petrov_a_ribbon_vertical_scheme_seq, PerformanceTest) {
   std::vector<int> vector(cols);
   std::vector<int> result(rows, 0);
 
-  srand(time(0));
+  srand(time(nullptr));
 
   for (int i = 0; i < rows; ++i) {
     for (int j = 0; j < cols; ++j) {
@@ -73,7 +73,7 @@ TEST(petrov_a_ribbon_vertical_scheme_seq, AdditionalTest) {
   std::vector<int> vector(cols);
   std::vector<int> result(rows, 0);
 
-  srand(time(0));
+  srand(time(nullptr));
 
   for (int i = 0; i < rows; ++i) {
     for (int j = 0; j < cols; ++j) {
