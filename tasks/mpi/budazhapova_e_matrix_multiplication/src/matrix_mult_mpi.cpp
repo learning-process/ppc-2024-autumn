@@ -108,7 +108,7 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::validation() {
 bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::run() {
   internal_order_test();
 
-  for (int i = 0; i < local_res.size(); i++) {
+  for (size_t i = 0; i < local_res.size(); i++) {
     local_res[i] = 0;
     for (int j = 0; j < columns; j++) {
       local_res[i] += local_A[i * columns + j] * b[j];
