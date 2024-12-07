@@ -19,8 +19,7 @@ static std::vector<int> getRandomVector(int size, int upper_border, int lower_bo
   return vec;
 }
 
-static std::vector<std::vector<int>> getRandomMatrix(int rows, int cols, int upper_border,
-                                                                        int lower_border) {
+static std::vector<std::vector<int>> getRandomMatrix(int rows, int cols, int upper_border, int lower_border) {
   if (rows <= 0 || cols <= 0) throw "Incorrect size";
   std::vector<std::vector<int>> vec(rows);
   for (int i = 0; i < rows; i++) {
