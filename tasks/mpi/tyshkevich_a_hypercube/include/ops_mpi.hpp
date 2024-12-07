@@ -4,6 +4,7 @@
 
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <vector>
 
 #include "core/task/include/task.hpp"
 
@@ -34,6 +35,7 @@ class HypercubeParallelMPI : public ppc::core::Task {
   int target_id;
   std::vector<int> message;
   std::vector<int> result;
+  std::vector<int> route;
   boost::mpi::communicator world;
 };
 
