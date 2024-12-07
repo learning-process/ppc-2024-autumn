@@ -1,6 +1,9 @@
 // Copyright 2024 Nesterov Alexander
 #include <gtest/gtest.h>
 
+#include <cstdlib>
+#include <ctime>
+
 #include <chrono>
 #include <vector>
 
@@ -15,16 +18,17 @@ TEST(petrov_a_ribbon_vertical_scheme_seq, PerformanceTest) {
   std::vector<int> vector(cols);
   std::vector<int> result(rows, 0);
 
+  srand(time(0));
+
   for (int i = 0; i < rows; ++i) {
     for (int j = 0; j < cols; ++j) {
-      matrix[i * cols + j] = (i + j) % 100;
+      matrix[i * cols + j] = rand() % 200 - 100;
     }
   }
 
   for (int i = 0; i < cols; ++i) {
-    vector[i] = i % 10;
+    vector[i] = rand() % 200 - 100;
   }
-
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
@@ -70,14 +74,16 @@ TEST(petrov_a_ribbon_vertical_scheme_seq, AdditionalTest) {
   std::vector<int> vector(cols);
   std::vector<int> result(rows, 0);
 
+  srand(time(0));
+
   for (int i = 0; i < rows; ++i) {
     for (int j = 0; j < cols; ++j) {
-      matrix[i * cols + j] = (i + 1) * (j + 1);
+      matrix[i * cols + j] = rand() % 200 - 100;
     }
   }
 
   for (int i = 0; i < cols; ++i) {
-    vector[i] = i + 1;
+    vector[i] = rand() % 200 - 100;
   }
 
   // Create TaskData
