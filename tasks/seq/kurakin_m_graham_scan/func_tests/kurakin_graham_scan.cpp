@@ -86,7 +86,7 @@ TEST(kurakin_m_graham_scan_seq, Test_shell_rhomb_with_inside_points) {
   // Create data
   count_point = 17;
   points = {0.3, -0.25, 1.0, 0.0,   2.0, 0.0,  0.3, 0.25, 0.0,  -2.0, 0.0, -1.0, 0.25, -0.3, -0.25, -0.3, 0.0,
-             1.0, 0.0,   2.0, -0.25, 0.3, 0.25, 0.3, -0.3, 0.25, -1.0, 0.0, -2.0, 0.0,  -0.3, -0.25, 0.1,  0.1};
+            1.0, 0.0,   2.0, -0.25, 0.3, 0.25, 0.3, -0.3, 0.25, -1.0, 0.0, -2.0, 0.0,  -0.3, -0.25, 0.1,  0.1};
 
   int scan_size;
   std::vector<double> scan_points(count_point * 2, 0);
@@ -125,7 +125,7 @@ TEST(kurakin_m_graham_scan_seq, Test_shell_square_with_inside_points) {
   // Create data
   count_point = 17;
   points = {-2.0, -2.0, -1.0, -1.0, -0.5, -1.0, -1.0, -0.5, 2.0, -2.0, 0.5, -1.0, 1.0, -1.0, 1.0, -0.5, 2.0,
-             2.0,  1.0,  1.0,  0.5,  1.0,  1.0,  0.5,  -2.0, 2.0, -0.5, 1.0, -1.0, 1.0, -1.0, 0.5, 0.1,  0.1};
+            2.0,  1.0,  1.0,  0.5,  1.0,  1.0,  0.5,  -2.0, 2.0, -0.5, 1.0, -1.0, 1.0, -1.0, 0.5, 0.1,  0.1};
 
   int scan_size;
   std::vector<double> scan_points(count_point * 2, 0);
@@ -259,10 +259,8 @@ TEST(kurakin_m_graham_scan_seq, Test_validation_inputs_count) {
 }
 
 TEST(kurakin_m_graham_scan_seq, Test_validation_outputs_count) {
-  int count_point;
   std::vector<double> points;
   // Create data
-  count_point = 4;
   points = {2.0, 0.0, 0.0, 2.0, -2.0, 0.0, 0.0, -2.0};
 
   int scan_size;

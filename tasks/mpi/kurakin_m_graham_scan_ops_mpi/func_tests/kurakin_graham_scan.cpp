@@ -45,7 +45,7 @@ void getRandomVectorForGrahamScan(std::vector<double> &res, int count_point, int
     double length = getRandomDouble(0.0, 5.0);
     res.push_back(start_x + length * cos(angle * acos(-1.0) / 180.0));
     res.push_back(start_y + length * sin(angle * acos(-1.0) / 180.0));
-    angle += delta_angle;   
+    angle += delta_angle;
   }
   getShuffle(res);
 }
@@ -490,7 +490,7 @@ TEST(kurakin_m_graham_scan_mpi, Test_shell_count_5) {
     testMpiTaskSequential.post_processing();
 
     int ans_size = 5;
-    std::vector<double> ans = {1.0, -1.0, 2.0, 0.0, 0.0, 2.0, -2.0, 0.0, -1.0, -1.0,};
+    std::vector<double> ans = {1.0, -1.0, 2.0, 0.0, 0.0, 2.0, -2.0, 0.0, -1.0, -1.0};
 
     ASSERT_EQ(scan_size_par, ans_size);
     for (int i = 0; i < ans_size * 2; i += 2) {
@@ -618,7 +618,7 @@ TEST(kurakin_m_graham_scan_mpi, Test_shell_random_count_17) {
 
   if (world.rank() == 0) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    
+
     int scan_size_seq;
     std::vector<double> scan_points_seq(count_point * 2);
 

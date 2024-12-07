@@ -66,7 +66,7 @@ bool kurakin_m_graham_scan_seq::TestTaskSequential::run() {
 
 bool kurakin_m_graham_scan_seq::TestTaskSequential::post_processing() {
   internal_order_test();
-  
+
   reinterpret_cast<int*>(taskData->outputs[0])[0] = count_point;
   for (int i = 0; i < count_point * 2; i += 2) {
     reinterpret_cast<double*>(taskData->outputs[1])[i] = input_[i / 2][1];
