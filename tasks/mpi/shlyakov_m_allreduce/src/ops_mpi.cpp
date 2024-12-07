@@ -9,45 +9,50 @@
 template <typename T>
 void shlyakov_m_all_reduce_mpi::MyTestMPITaskParallel::my_all_reduce(const boost::mpi::communicator& comm,
                                                                      const T& value, T& out_value) {
-  int rank = comm.rank();
-  int size = comm.size();
+  unsigned int rank = comm.rank();
+  unsigned int size = comm.size();
+  unsigned int id_child_1 = 2 * rank + 1;
+  unsigned int id_child_2 = 2 * rank + 2;
+  unsigned int id_parent = (rank - 1) >> 1;
 
   out_value = value;
 
-  for (int level = 0; (1 << level) < size; ++level) {
-    int parent = (rank >> (level + 1)) << (level + 1);  // Parent index
-    int left_child = parent + (1 << level);
-    int right_child = parent + (1 << level) + 1;
+  T child_1_value;
+  T child_2_value;
+  bool received_child_1 = false;
+  bool received_child_2 = false;
 
-    if (left_child < size) {
-      T child_value;
-      comm.recv(left_child, 0, &child_value, 1);
-      out_value = std::min(out_value, child_value);
-    }
-    if (right_child < size) {
-      T child_value;
-      comm.recv(right_child, 0, &child_value, 1);
-      out_value = std::min(out_value, child_value);
-    }
+  if (id_child_1 < size) {
+    comm.recv(id_child_1, 0, child_1_value);
+    received_child_1 = true;
+  }
+  if (id_child_2 < size) {
+    comm.recv(id_child_2, 0, child_2_value);
+    received_child_2 = true;
   }
 
-  for (int level = 0; (1 << level) < size; ++level) {
-    int parent = (rank >> (level + 1)) << (level + 1);
-    int left_child = parent + (1 << level);
-    int right_child = parent + (1 << level) + 1;
-    if (left_child < size) {
-      comm.send(left_child, 0, &out_value, 1);
-    }
-    if (right_child < size) {
-      comm.send(right_child, 0, &out_value, 1);
-    }
+  if (received_child_1) {
+    out_value = std::min(out_value, child_1_value);
+  }
+  if (received_child_2) {
+    out_value = std::min(out_value, child_2_value);
+  }
+
+  if (rank != 0) {
+    comm.send(id_parent, 0, out_value);
+    comm.recv(id_parent, 0, out_value);
+  }
+
+  if (id_child_1 < size) {
+    comm.send(id_child_1, 0, out_value);
+  }
+  if (id_child_2 < size) {
+    comm.send(id_child_2, 0, out_value);
   }
 }
 
 std::vector<int> shlyakov_m_all_reduce_mpi::TestMPITaskSequential::generate_matrix(int row, int col) {
   std::vector<int> tmp(row * col);
-  int min_val = std::min(col, row);
-  int max_val = std::max(col, row) + 7;
 
   std::random_device rd;
   std::mt19937 generate_matrix(rd());
@@ -113,7 +118,7 @@ bool shlyakov_m_all_reduce_mpi::TestMPITaskSequential::post_processing() {
 
 bool shlyakov_m_all_reduce_mpi::MyTestMPITaskParallel::pre_processing() {
   internal_order_test();
-  /* int res_ = 0;
+  /*
   int row = 0;
   int col = 0;
   int size = 0;
@@ -149,31 +154,44 @@ bool shlyakov_m_all_reduce_mpi::MyTestMPITaskParallel::run() {
     col = taskData->inputs_count[1];
     size = col * row;
     delta = (size + world.size() - 1) / world.size();
-    input_.resize(size, INT_MAX);
+    input_ = std::vector<int>(delta * world.size(), INT_MAX);
     std::copy(reinterpret_cast<int*>(taskData->inputs[0]), reinterpret_cast<int*>(taskData->inputs[0]) + size,
               input_.begin());
     res.resize(row, 0);
   }
 
-  boost::mpi::broadcast(world, row, 0);
-  boost::mpi::broadcast(world, col, 0);
-  boost::mpi::broadcast(world, delta, 0);
-  boost::mpi::broadcast(world, res_, 0);
+  broadcast(world, row, 0);
+  broadcast(world, col, 0);
+  broadcast(world, size, 0);
+  broadcast(world, delta, 0);
+  broadcast(world, res_, 0);
 
   local_input_.resize(delta);
   boost::mpi::scatter(world, input_.data(), local_input_.data(), delta, 0);
 
-  int l_res = *std::min_element(local_input_.begin(), local_input_.end());
+  int l_res = *std::min_element(local_input_.begin(), local_input_.begin() + delta);
   MyTestMPITaskParallel::my_all_reduce(world, l_res, res_);
 
   std::vector<int> ress(row, 0);
-  for (int i = 0; i < local_input_.size(); ++i) {
-    if (local_input_[i] == res_) {
-      ress[i / col]++;
+  int count = 0;
+  for (int id = 0; id < delta; ++id) {
+    int global_id = id + delta * world.rank();
+    if ((global_id % col == 0) && (world.rank() != 0 || id != 0)) {
+      ress[(global_id / col) - (global_id % col == 0)] += count;
+      count = 0;
+    }
+    if (global_id >= size) break;
+    if (local_input_[id] == res_) {
+      count++;
     }
   }
 
-  boost::mpi::reduce(world, ress.data(), ress.size(), res.data(), std::plus<int>(), 0);
+  if (count > 0) {
+    int row_index = (world.rank() * delta + delta - 1) / col;
+    ress[row_index] += count;
+  }
+
+  boost::mpi::reduce(world, ress.data(), row, res.data(), std::plus(), 0);
 
   return true;
 }
@@ -218,32 +236,46 @@ bool shlyakov_m_all_reduce_mpi::TestMPITaskParallel::run() {
     res_ = INT_MAX;
     row = taskData->inputs_count[0];
     col = taskData->inputs_count[1];
-    size = row * col;
+    size = col * row;
     delta = (size + world.size() - 1) / world.size();
-    input_.resize(size, INT_MAX);
+    input_ = std::vector<int>(delta * world.size(), INT_MAX);
     std::copy(reinterpret_cast<int*>(taskData->inputs[0]), reinterpret_cast<int*>(taskData->inputs[0]) + size,
               input_.begin());
     res.resize(row, 0);
   }
 
-  boost::mpi::broadcast(world, row, 0);
-  boost::mpi::broadcast(world, col, 0);
-  boost::mpi::broadcast(world, delta, 0);
+  broadcast(world, row, 0);
+  broadcast(world, col, 0);
+  broadcast(world, size, 0);
+  broadcast(world, delta, 0);
+  broadcast(world, res_, 0);
 
   local_input_.resize(delta);
   boost::mpi::scatter(world, input_.data(), local_input_.data(), delta, 0);
 
-  int l_res = local_input_.empty() ? INT_MAX : *std::min_element(local_input_.begin(), local_input_.end());
+  int l_res = *std::min_element(local_input_.begin(), local_input_.begin() + delta);
   boost::mpi::all_reduce(world, l_res, res_, boost::mpi::minimum<int>());
 
   std::vector<int> ress(row, 0);
-  for (size_t i = 0; i < local_input_.size(); ++i) {
-    if (local_input_[i] == res_) {
-      ress[i / col]++;
+  int count = 0;
+  for (int id = 0; id < delta; ++id) {
+    int global_id = id + delta * world.rank();
+    if ((global_id % col == 0) && (world.rank() != 0 || id != 0)) {
+      ress[(global_id / col) - (global_id % col == 0)] += count;
+      count = 0;
+    }
+    if (global_id >= size) break;
+    if (local_input_[id] == res_) {
+      count++;
     }
   }
 
-  boost::mpi::reduce(world, ress.data(), ress.size(), res.data(), std::plus<int>(), 0);
+  if (count > 0) {
+    int row_index = (world.rank() * delta + delta - 1) / col;
+    ress[row_index] += count;
+  }
+
+  boost::mpi::reduce(world, ress.data(), row, res.data(), std::plus(), 0);
 
   return true;
 }
