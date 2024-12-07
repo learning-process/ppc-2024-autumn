@@ -7,48 +7,48 @@
 
 namespace filatev_v_metod_zedela_seq {
 
-  int generatorVector(std::vector<int> &vec) {
+int generatorVector(std::vector<int> &vec) {
+  int sum = 0;
+  for (long unsigned int i = 0; i < vec.size(); ++i) {
+    vec[i] = rand() % 100 - 50;
+    sum += abs(vec[i]);
+  }
+  return sum;
+}
+
+void generatorMatrix(std::vector<int> &matrix, int size) {
+  for (int i = 0; i < size; ++i) {
     int sum = 0;
-    for (long unsigned int i = 0; i < vec.size(); ++i) {
-      vec[i] = rand() % 100 - 50;
-      sum += abs(vec[i]);
+    for (int j = 0; j < size; ++j) {
+      matrix[i * size + j] = rand() % 100 - 50;
+      sum += abs(matrix[i * size + j]);
     }
-    return sum;
+    matrix[i * size + i] = sum + rand() % 100;
   }
+}
 
-  void generatorMatrix(std::vector<int> &matrix, int size) {
-    for (int i = 0; i < size; ++i) {
-      int sum = 0;
-      for (int j = 0; j < size; ++j) {
-        matrix[i * size + j] = rand() % 100 - 50;
-        sum += abs(matrix[i * size + j]);
-      }
-      matrix[i * size + i] = sum + rand() % 100;
+std::vector<int> genetatirVectorB(std::vector<int> &matrix, std::vector<int> &vecB) {
+  int size = vecB.size();
+  std::vector<int> ans(size);
+  generatorVector(ans);
+  for (int i = 0; i < size; ++i) {
+    int sum = 0;
+    for (int j = 0; j < size; ++j) {
+      sum += matrix[j + i * size] * ans[j];
     }
+    vecB[i] = sum;
   }
+  return ans;
+}
 
-  std::vector<int> genetatirVectorB(std::vector<int> &matrix, std::vector<int> &vecB) {
-    int size = vecB.size();
-    std::vector<int> ans(size);
-    generatorVector(ans);
-    for (int i = 0; i < size; ++i) {
-      int sum = 0;
-      for (int j = 0; j < size; ++j) {
-        sum += matrix[j + i * size] * ans[j];
-      }
-      vecB[i] = sum;
-    }
-    return ans;
+bool rightAns(std::vector<double> &ans, std::vector<int> &resh, double alfa) {
+  double max_r = 0;
+  for (long unsigned int i = 0; i < ans.size(); ++i) {
+    double temp = abs(ans[i] - resh[i]);
+    max_r = std::max(max_r, temp);
   }
-
-  bool rightAns(std::vector<double> &ans, std::vector<int> &resh, double alfa) {
-    double max_r = 0;
-    for (long unsigned int i = 0; i < ans.size(); ++i) {
-      double temp = abs(ans[i] - resh[i]);
-      max_r = std::max(max_r, temp);
-    }
-    return max_r < alfa;
-  }
+  return max_r < alfa;
+}
   
 }  // namespace filatev_v_metod_zedela_seq
 
