@@ -2,11 +2,11 @@
 
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <memory>
 #include <string>
 #include <utility>
 #include <vector>
-#include <algorithm>
 
 #include "core/task/include/task.hpp"
 
@@ -28,12 +28,7 @@ class SimpleIntSEQ : public ppc::core::Task {
   int rows;
   int cols;
 
-  // Гауссово ядро 3x3 с нормализацией 1/16:
-  const int kernel_[3][3] = {
-    {1, 2, 1},
-    {2, 4, 2},
-    {1, 2, 1}
-  };
+  const int kernel_[3][3] = {{1, 2, 1}, {2, 4, 2}, {1, 2, 1}};
 };
 
 }  // namespace anufriev_d_linear_image

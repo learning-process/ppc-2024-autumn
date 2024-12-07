@@ -1,10 +1,12 @@
 #pragma once
 
-#include <boost/mpi.hpp>
-#include <vector>
-#include <algorithm>
-#include <cstring>
 #include <mpi.h>
+
+#include <algorithm>
+#include <boost/mpi.hpp>
+#include <cstring>
+#include <vector>
+
 #include "core/task/include/task.hpp"
 
 namespace anufriev_d_linear_image {
@@ -23,29 +25,27 @@ class SimpleIntMPI : public ppc::core::Task {
   void distributeData();
   void gatherData();
   void applyGaussianFilter();
-  void exchangeHalo(std::vector<int>& local_data, int local_width);
+  void exchangeHalo();
 
   boost::mpi::communicator world;
-
-  std::vector<int> original_data_;      // Данные на 0-м процессе в column-major порядке
-  std::vector<int> local_data_;         // Локальные данные на каждом процессе
-  std::vector<int> processed_data_;     // Сконкатенированные результаты на 0-м процессе
+  
+  std::vector<int> original_data_;
+  std::vector<int> local_data_;
+  std::vector<int> processed_data_;
 
   size_t total_size_ = 0;
   int width_ = 0;
   int height_ = 0;
 
-  // Индексы для распределения
   int start_col_ = 0;
   int local_width_ = 0;
+  int start_row_ = 0;
+  int local_height_ = 0;
+
 
   std::vector<int> data_path_;
 
-  const int kernel_[3][3] = {
-    {1, 2, 1},
-    {2, 4, 2},
-    {1, 2, 1}
-  };
+  const int kernel_[3][3] = {{1, 2, 1}, {2, 4, 2}, {1, 2, 1}};
 };
 
 }  // namespace anufriev_d_linear_image
