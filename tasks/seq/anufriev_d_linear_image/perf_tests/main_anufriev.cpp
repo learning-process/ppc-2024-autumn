@@ -46,7 +46,7 @@ std::vector<int> generate_random_image(int rows, int cols) {
     auto perf = std::make_shared<ppc::core::Perf>(task);                           \
     perf->pipeline_run(perfAttr, perfResults);                                     \
     ppc::core::Perf::print_perf_statistic(perfResults);                            \
-}
+  }
 
 
 PERF_TEST_SEQ(SmallImage, 100, 100, 10)

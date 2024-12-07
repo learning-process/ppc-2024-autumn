@@ -17,12 +17,12 @@ static void gaussian_3x3_seq(const std::vector<int>& input, int width, int heigh
       int sum = 0;
       for (int kr = -1; kr <= 1; kr++) {
         for (int kc = -1; kc <= 1; kc++) {
-          int rr = std::min(std::max(r+kr,0), height-1);
-          int cc = std::min(std::max(c+kc,0), width-1);
-          sum += input[rr*width + cc]*kernel[kr+1][kc+1];
+          int rr = std::min(std::max(r + kr,0), height - 1);
+          int cc = std::min(std::max(c + kc,0), width - 1);
+          sum += input[rr * width + cc]*kernel[kr + 1][kc + 1];
         }
       }
-      (*output)[r*width + c] = sum / 16;
+      (*output)[r * width + c] = sum / 16;
     }
   }
 }
