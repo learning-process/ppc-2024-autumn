@@ -1,12 +1,7 @@
 #include "mpi/varfolomeev_g_transfer_from_one_to_all_scatter/include/ops_mpi.hpp"
 
-#include <algorithm>
-#include <cstddef>
-#include <cstdint>
-#include <functional>
 #include <random>
 #include <string>
-#include <thread>
 #include <vector>
 
 using namespace std::chrono_literals;
@@ -241,11 +236,7 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskPar
     world.send(0, 0, local_res);
   }
   if (world.rank() == 0) {
-    if (ops == "+") {
-      res = std::accumulate(results.begin(), results.end(), 0);
-    } else if (ops == "-") {
-      res = std::accumulate(results.begin(), results.end(), 0);
-    } else if (ops == "max") {
+    if (ops == "max") {
       if (!results.empty()) {
         res = results[0];
         for (int value : results) {
@@ -256,6 +247,8 @@ bool varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskPar
       } else {
         return false;
       }
+    } else {
+      res = std::accumulate(results.begin(), results.end(), 0);
     }
   }
   return true;
