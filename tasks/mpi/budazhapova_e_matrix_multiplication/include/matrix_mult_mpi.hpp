@@ -12,7 +12,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace budazhapova_e_matrix_mult_seq {
+namespace budazhapova_e_matrix_mult_mpi {
 
 class MatrixMultSequential : public ppc::core::Task {
  public:
@@ -51,4 +51,4 @@ class MatrixMultParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  // namespace budazhapova_e_matrix_mult_seq
+}  // namespace budazhapova_e_matrix_mult_mpi
