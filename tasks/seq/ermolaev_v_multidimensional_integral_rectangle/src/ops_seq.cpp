@@ -50,8 +50,7 @@ bool ermolaev_v_multidimensional_integral_rectangle_seq::TestTaskSequential::pre
 
   auto* ptr = reinterpret_cast<std::pair<double, double>*>(taskData->inputs[0]);
   limits_.assign(ptr, ptr + taskData->inputs_count[0]);
-  function_ = *reinterpret_cast<function*>(taskData->inputs[1]);
-  eps_ = *reinterpret_cast<double*>(taskData->inputs[2]);
+  eps_ = *reinterpret_cast<double*>(taskData->inputs[1]);
 
   return true;
 }
@@ -59,7 +58,7 @@ bool ermolaev_v_multidimensional_integral_rectangle_seq::TestTaskSequential::pre
 bool ermolaev_v_multidimensional_integral_rectangle_seq::TestTaskSequential::validation() {
   internal_order_test();
 
-  return taskData->inputs_count[0] > 0 && taskData->inputs.size() == 3 && taskData->outputs_count[0] == 1 &&
+  return taskData->inputs_count[0] > 0 && taskData->inputs.size() == 2 && taskData->outputs_count[0] == 1 &&
          !taskData->outputs.empty();
 }
 

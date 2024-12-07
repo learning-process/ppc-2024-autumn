@@ -16,7 +16,6 @@ void testBody(std::vector<std::pair<double, double>> limits,
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(limits.data()));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&func));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&eps));
   taskDataSeq->inputs_count.emplace_back(limits.size());
 
@@ -25,7 +24,7 @@ void testBody(std::vector<std::pair<double, double>> limits,
 
   // Create Task
   auto testTaskSequential =
-      std::make_shared<ermolaev_v_multidimensional_integral_rectangle_seq::TestTaskSequential>(taskDataSeq);
+      std::make_shared<ermolaev_v_multidimensional_integral_rectangle_seq::TestTaskSequential>(taskDataSeq, func);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();

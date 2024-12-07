@@ -17,7 +17,6 @@ void testBody(std::vector<std::pair<double, double>> limits, double ref,
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(limits.data()));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&func));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&eps));
   taskDataSeq->inputs_count.emplace_back(limits.size());
 
@@ -25,7 +24,7 @@ void testBody(std::vector<std::pair<double, double>> limits, double ref,
   taskDataSeq->outputs_count.emplace_back(1);
 
   // Create Task
-  ermolaev_v_multidimensional_integral_rectangle_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  ermolaev_v_multidimensional_integral_rectangle_seq::TestTaskSequential testTaskSequential(taskDataSeq, func);
   ASSERT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
@@ -110,11 +109,11 @@ TEST(ermolaev_v_multidimensional_integral_rectangle_seq, advanced_triple_integra
 
 TEST(ermolaev_v_multidimensional_integral_rectangle_seq, validation) {
   const auto validate = [](std::shared_ptr<ppc::core::TaskData>& taskData) {
-    ermolaev_v_multidimensional_integral_rectangle_seq::TestTaskSequential task(taskData);
+    ermolaev_v_multidimensional_integral_rectangle_seq::function func = erm_integral_seq::simpleOneVar;
+    ermolaev_v_multidimensional_integral_rectangle_seq::TestTaskSequential task(taskData, func);
     return task.validation();
   };
 
-  ermolaev_v_multidimensional_integral_rectangle_seq::function func = erm_integral_seq::simpleOneVar;
   std::vector<std::pair<double, double>> limits{{0, 2}, {0, 2}};
   double eps = 1e-4;
   double out;
@@ -127,7 +126,6 @@ TEST(ermolaev_v_multidimensional_integral_rectangle_seq, validation) {
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(limits.data()));
   ASSERT_FALSE(validate(taskData));
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&eps));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&func));
   taskData->outputs_count.emplace_back(0);
   ASSERT_FALSE(validate(taskData));
   taskData->outputs_count.front() = 1;

@@ -17,7 +17,8 @@ double integrate(std::deque<std::pair<double, double>> limits, double eps, const
 
 class TestTaskSequential : public ppc::core::Task {
  public:
-  explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, function& func_)
+      : Task(std::move(taskData_)), function_(func_) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
