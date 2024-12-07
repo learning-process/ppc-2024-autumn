@@ -15,11 +15,11 @@ bool MonteCarloMpi<dimension>::run() {
   double mult;
   if (world.rank() == 0) {
     dim.resize(2 * dimension);
-    double* dim_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
+    auto* dim_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
     std::copy(dim_ptr, dim_ptr + 2 * dimension, dim.data());
 
     int N;
-    int* N_ptr = reinterpret_cast<int*>(taskData->inputs[1]);
+    auto* N_ptr = reinterpret_cast<int*>(taskData->inputs[1]);
     std::copy(N_ptr, N_ptr + 1, &N);
 
     mult = 1.0 / (static_cast<double>(N));
@@ -68,11 +68,8 @@ template <const int dimension>
 bool MonteCarloMpi<dimension>::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    if (taskData->outputs_count.size() > 0 && taskData->outputs_count[0] == 1 && taskData->inputs_count.size() == 2 &&
-        taskData->inputs_count[0] == dimension) {
-      return true;
-    }
-    return false;
+    return taskData->outputs_count.size() > 0 && taskData->outputs_count[0] == 1 &&
+           taskData->inputs_count.size() == 2 && taskData->inputs_count[0] == dimension;
   }
   return true;
 }
@@ -81,10 +78,10 @@ template <const int dimension>
 bool MonteCarloSeq<dimension>::pre_processing() {
   internal_order_test();
   dim.resize(2 * dimension);
-  double* dim_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
+  auto* dim_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
   std::copy(dim_ptr, dim_ptr + 2 * dimension, dim.data());
 
-  int* N_ptr = reinterpret_cast<int*>(taskData->inputs[1]);
+  auto* N_ptr = reinterpret_cast<int*>(taskData->inputs[1]);
   std::copy(N_ptr, N_ptr + 1, &N);
   return true;
 }
@@ -121,11 +118,8 @@ bool MonteCarloSeq<dimension>::post_processing() {
 template <const int dimension>
 bool MonteCarloSeq<dimension>::validation() {
   internal_order_test();
-  if (taskData->outputs_count.size() > 0 && taskData->outputs_count[0] == 1 && taskData->inputs_count.size() == 2 &&
-      taskData->inputs_count[0] == dimension) {
-    return true;
-  }
-  return false;
+  return taskData->outputs_count.size() > 0 && taskData->outputs_count[0] == 1 && taskData->inputs_count.size() == 2 &&
+         taskData->inputs_count[0] == dimension;
 }
 
 template class MonteCarloMpi<1>;
