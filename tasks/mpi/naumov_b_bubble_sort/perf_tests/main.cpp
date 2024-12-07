@@ -17,13 +17,11 @@ TEST(naumov_b_bubble_sort, test_pipeline_run) {
   std::vector<int> global_vec;
   std::vector<int> global_out;
 
- 
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
-  const size_t count_size_vector = 120; 
+  const size_t count_size_vector = 120;
   if (rank == 0) {
     global_vec.resize(count_size_vector);
     global_out.resize(count_size_vector);
-
 
     std::srand(static_cast<int>(std::time(nullptr)) + rank);
     std::generate(global_vec.begin(), global_vec.end(), []() { return std::rand() % 10000 - 5000; });
@@ -36,22 +34,17 @@ TEST(naumov_b_bubble_sort, test_pipeline_run) {
 
   auto testMpiParallel = std::make_shared<naumov_b_bubble_sort_mpi::TestMPITaskParallel>(taskDataPar);
 
-
   testMpiParallel->pre_processing();
   ASSERT_TRUE(testMpiParallel->validation());
   testMpiParallel->run();
   testMpiParallel->post_processing();
 
- 
   world.barrier();
 
-  
   if (rank == 0) {
-    
     std::vector<int> expected_vec = global_vec;
     std::sort(expected_vec.begin(), expected_vec.end());
 
-   
     ASSERT_TRUE(std::equal(expected_vec.begin(), expected_vec.end(), global_out.begin()))
         << "Sorted results do not match.";
   }
@@ -63,14 +56,12 @@ TEST(naumov_b_bubble_sort, test_task_run) {
   std::vector<int> global_vec;
   std::vector<int> global_out;
 
-  
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
-  const size_t count_size_vector = 2000;  
+  const size_t count_size_vector = 2000;
   if (rank == 0) {
     global_vec.resize(count_size_vector);
     global_out.resize(count_size_vector);
 
-   
     std::srand(static_cast<int>(std::time(nullptr)) + rank);
     std::generate(global_vec.begin(), global_vec.end(), []() { return std::rand() % 10000 - 5000; });
 
@@ -82,22 +73,17 @@ TEST(naumov_b_bubble_sort, test_task_run) {
 
   auto testMpiParallel = std::make_shared<naumov_b_bubble_sort_mpi::TestMPITaskParallel>(taskDataPar);
 
-  
   testMpiParallel->pre_processing();
   ASSERT_TRUE(testMpiParallel->validation());
   testMpiParallel->run();
   testMpiParallel->post_processing();
 
-  
   world.barrier();
 
- 
   if (rank == 0) {
-   
     std::vector<int> expected_vec = global_vec;
     std::sort(expected_vec.begin(), expected_vec.end());
 
-    
     ASSERT_TRUE(std::equal(expected_vec.begin(), expected_vec.end(), global_out.begin()))
         << "Sorted results do not match.";
   }

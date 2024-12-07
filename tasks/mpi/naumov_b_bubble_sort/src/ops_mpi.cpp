@@ -5,24 +5,74 @@
 #include <algorithm>
 #include <vector>
 
-namespace naumov_b_bubble_sort_mpi {
+bool naumov_b_bubble_sort_seq::TestTaskSequential::pre_processing() {
+  internal_order_test();
 
-std::vector<int> out;
+  auto* input_data = reinterpret_cast<int*>(taskData->inputs[0]);
+  int input_size = taskData->inputs_count[0];
+  input_.resize(input_size);
+  std::copy(input_data, input_data + input_size, input_.begin());
 
-bool TestMPITaskParallel::pre_processing() {
+  return true;
+}
+
+bool naumov_b_bubble_sort_seq::TestTaskSequential::validation() {
+  internal_order_test();
+
+  if (taskData->inputs.empty() || taskData->inputs_count.empty()) {
+    return false;
+  }
+  if (taskData->inputs_count[0] <= 0) {
+    return false;
+  }
+  if (taskData->outputs_count.empty() || taskData->outputs_count[0] != taskData->inputs_count[0]) {
+    return false;
+  }
+
+  return true;
+}
+
+bool naumov_b_bubble_sort_seq::TestTaskSequential::run() {
+  internal_order_test();
+
+  for (size_t i = 0; i < input_.size(); ++i) {
+    for (size_t j = 0; j < input_.size() - i - 1; ++j) {
+      if (input_[j] > input_[j + 1]) {
+        std::swap(input_[j], input_[j + 1]);
+      }
+    }
+  }
+
+  return true;
+}
+
+bool naumov_b_bubble_sort_seq::TestTaskSequential::post_processing() {
+  internal_order_test();
+
+  if (taskData->outputs.empty() || taskData->outputs_count[0] != input_.size()) {
+    return false;
+  }
+
+  auto* output_data = reinterpret_cast<int*>(taskData->outputs[0]);
+  std::copy(input_.begin(), input_.end(), output_data);
+
+  return true;
+}
+
+bool naumov_b_bubble_sort_mpi::TestMPITaskParallel::pre_processing() {
+  internal_order_test();
   int rank, size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
   if (rank == 0) {
-    auto* input_data = reinterpret_cast<int*>(taskData->inputs[0]);  
+    auto* input_data = reinterpret_cast<int*>(taskData->inputs[0]);
     int input_size = taskData->inputs_count[0];
 
     input_.resize(input_size);
     std::copy(input_data, input_data + input_size, input_.begin());
   }
 
- 
   if (rank == 0) {
     total_size_ = input_.size();
   }
@@ -34,7 +84,6 @@ bool TestMPITaskParallel::pre_processing() {
   int local_size = base_chunk + (rank < remainder ? 1 : 0);
   local_input_.resize(local_size);
 
-  // Рассылка данных через MPI_Send/MPI_Recv
   if (rank == 0) {
     for (int i = 1; i < size; ++i) {
       int start_idx = i * base_chunk + std::min(i, remainder);
@@ -52,7 +101,6 @@ bool TestMPITaskParallel::pre_processing() {
 bool naumov_b_bubble_sort_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
 
-  // Проверка только на процессе 0
   if (world.rank() == 0) {
     if (taskData->inputs.empty() || taskData->inputs_count.empty()) {
       return false;
@@ -65,17 +113,16 @@ bool naumov_b_bubble_sort_mpi::TestMPITaskParallel::validation() {
     }
   }
 
-  // Синхронизация между процессами
   MPI_Bcast(nullptr, 0, MPI_INT, 0, MPI_COMM_WORLD);
 
   return true;
 }
 
-bool TestMPITaskParallel::run() {
+bool naumov_b_bubble_sort_mpi::TestMPITaskParallel::run() {
+  internal_order_test();
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-  // Сортировка пузырьком (локальная)
   for (size_t i = 0; i < local_input_.size(); ++i) {
     for (size_t j = 0; j < local_input_.size() - i - 1; ++j) {
       if (local_input_[j] > local_input_[j + 1]) {
@@ -87,7 +134,8 @@ bool TestMPITaskParallel::run() {
   return true;
 }
 
-bool TestMPITaskParallel::post_processing() {
+bool naumov_b_bubble_sort_mpi::TestMPITaskParallel::post_processing() {
+  internal_order_test();
   int rank, size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -98,7 +146,6 @@ bool TestMPITaskParallel::post_processing() {
     gathered_data.resize(total_size_);
   }
 
-  // Сбор данных через MPI_Send/MPI_Recv
   if (rank == 0) {
     std::copy(local_input_.begin(), local_input_.end(), gathered_data.begin());
     for (int i = 1; i < size; ++i) {
@@ -107,7 +154,6 @@ bool TestMPITaskParallel::post_processing() {
       MPI_Recv(gathered_data.data() + start_idx, chunk_size, MPI_INT, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
     }
 
-    // Финальная сортировка пузырьком
     for (size_t i = 0; i < gathered_data.size(); ++i) {
       for (size_t j = 0; j < gathered_data.size() - i - 1; ++j) {
         if (gathered_data[j] > gathered_data[j + 1]) {
@@ -116,7 +162,6 @@ bool TestMPITaskParallel::post_processing() {
       }
     }
 
-    // Обновляем данные в TaskData.outputs
     auto* output_data = reinterpret_cast<int*>(taskData->outputs[0]);
     std::copy(gathered_data.begin(), gathered_data.end(), output_data);
   } else {
@@ -125,5 +170,3 @@ bool TestMPITaskParallel::post_processing() {
 
   return true;
 }
-
-}  // namespace naumov_b_bubble_sort_mpi
