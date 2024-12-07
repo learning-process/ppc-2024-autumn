@@ -243,9 +243,7 @@ bool nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodParallel::run(
 bool nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    for (size_t i = 0; i < x_.size(); i++) {
-      reinterpret_cast<double*>(taskData->outputs[0])[i] = x_[i];
-    }
+    std::copy(x_.begin(), x_.end(), reinterpret_cast<double*>(taskData->outputs[0]));
   }
   return true;
 }
