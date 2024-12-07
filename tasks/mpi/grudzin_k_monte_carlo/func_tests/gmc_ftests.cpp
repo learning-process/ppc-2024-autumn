@@ -227,7 +227,7 @@ TEST(grudzin_k_monte_carlo_mpi, Test_Poly) {
     MC2.pre_processing();
     MC2.run();
     MC2.post_processing();
-    if (result_seq > 0.0) EXPECT_LE(abs(result_par - result_seq) / result_seq, 1e-1);
+    EXPECT_LE(abs(result_par - result_seq) / result_seq, 1e-1);
   }
 }
 
