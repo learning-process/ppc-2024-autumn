@@ -6,15 +6,12 @@
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <cmath>
-#include <memory>
 #include <numbers>
-#include <numeric>
-#include <ostream>
 #include <string>
-#include <utility>
 #include <vector>
 
 #include "core/task/include/task.hpp"
+
 
 namespace varfolomeev_g_transfer_from_one_to_all_scatter_mpi {
 
