@@ -12,6 +12,7 @@ bool budazhapova_e_matrix_mult_seq::MatrixMultSequential::pre_processing() {
   columns = taskData->inputs_count[1];
   rows = taskData->inputs_count[0] / columns;
   res = std::vector<int>(rows);
+  return true;
 }
 
 bool budazhapova_e_matrix_mult_seq::MatrixMultSequential::validation() {
