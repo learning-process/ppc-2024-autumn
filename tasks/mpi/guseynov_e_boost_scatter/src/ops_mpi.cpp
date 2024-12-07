@@ -1,19 +1,7 @@
 #include "mpi/guseynov_e_boost_scatter/include/ops_mpi.hpp"
 
 #include <algorithm>
-#include <random>
 #include <vector>
-
-std::vector<int> guseynov_e_boost_scatter_mpi::getRandomVector(int sz, int minValue, int maxValue) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::uniform_int_distribution<int> dist(minValue, maxValue);
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = dist(gen);
-  }
-  return vec;
-}
 
 bool guseynov_e_boost_scatter_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
