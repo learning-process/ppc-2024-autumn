@@ -302,8 +302,8 @@ TEST(varfolomeev_g_transfer_from_one_to_all_custom_scatter_mpi, Test_Sum_CustomS
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
 
-  varfolomeev_g_transfer_from_one_to_all_custom_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(taskDataPar,
-                                                                                                       "+");
+  varfolomeev_g_transfer_from_one_to_all_custom_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(
+      taskDataPar, "+");
   ASSERT_EQ(MyScatterTestMPITaskParallel.validation(), true);
   MyScatterTestMPITaskParallel.pre_processing();
   MyScatterTestMPITaskParallel.run();
