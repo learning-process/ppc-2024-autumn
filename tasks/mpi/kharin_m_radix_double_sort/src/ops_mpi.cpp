@@ -134,7 +134,6 @@ bool RadixSortParallel::run() {
 
   int rank = world.rank();
   int size = world.size();
-  
   int local_n = n / size;
   int remainder = n % size;
 
@@ -153,8 +152,8 @@ bool RadixSortParallel::run() {
   mpi::broadcast(world, displs, 0);
 
   std::vector<double> local_data(counts[rank]);
-  mpi::scatterv(world, (rank == 0 ? data.data() : (double*)nullptr),
-                counts, displs, local_data.data(), counts[rank], 0);
+  mpi::scatterv(world, (rank == 0 ? data.data() : (double*)nullptr), counts, displs, local_data.data(), counts[rank],
+                0);
 
   // Локальная поразрядная сортировка
   radix_sort_doubles(local_data);
@@ -174,7 +173,7 @@ bool RadixSortParallel::run() {
   for (int step = 0; step < steps; ++step) {
     int partner_rank = rank + group_size;
     // Определяем, участвует ли текущий процесс в слиянии
-    int group_step_size = group_size * 2; 
+    int group_step_size = group_size * 2;
     bool is_merger = (rank % group_step_size == 0);  // этот процесс будет принимать данные и сливать
     bool has_partner = (partner_rank < size);  // есть ли партнер для слияния
 
@@ -190,8 +189,7 @@ bool RadixSortParallel::run() {
       // Сливаем local_data и partner_data
       std::vector<double> merged;
       merged.reserve(local_data.size() + partner_data.size());
-      std::merge(local_data.begin(), local_data.end(),
-                 partner_data.begin(), partner_data.end(),
+      std::merge(local_data.begin(), local_data.end(), partner_data.begin(), partner_data.end(),
                  std::back_inserter(merged));
       local_data.swap(merged);
     } else if (!is_merger && (rank % group_step_size == group_size)) {
@@ -214,7 +212,7 @@ bool RadixSortParallel::run() {
 
   // После всех шагов у процесса с rank=0 будет весь отсортированный массив
   if (rank == 0) {
-    data.swap(local_data); 
+    data.swap(local_data);
   }
 
   return true;
