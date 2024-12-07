@@ -21,8 +21,8 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultSequential::pre_processing() {
 
 bool budazhapova_e_matrix_mult_mpi::MatrixMultSequential::validation() {
   internal_order_test();
-  return double(taskData->inputs_count[0]) % columns == 0 && taskData->inputs_count[0] > 0 &&
-         taskData->inputs_count[1] > 0;
+  double help = static_cast<double>(taskData->inputs_count[0]);
+  return help % columns == 0 && taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0;
 }
 
 bool budazhapova_e_matrix_mult_mpi::MatrixMultSequential::run() {
@@ -59,14 +59,14 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::pre_processing() {
     columns = taskData->inputs_count[1];
     rows = taskData->inputs_count[0] / columns;
     res = std::vector<int>(rows);
-  }
 
-  boost::mpi::broadcast(world, A, 0);
-  boost::mpi::broadcast(world, b, 0);
+    boost::mpi::broadcast(world, A, 0);
+    boost::mpi::broadcast(world, b, 0);
+  }
 
   if (rows >= world_size) {
     int n_of_send_rows = rows / world_size;
-    int n_of_proc_with_extra_row = n % world_size;
+    int n_of_proc_with_extra_row = rows % world_size;
 
     int start_row = world_rank * n_of_send_rows + std::min(world_rank, n_of_proc_with_extra_row);
     int end_row = start_row + n_of_send_rows + (world_rank < n_of_proc_with_extra_row ? 1 : 0);
@@ -84,10 +84,11 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::pre_processing() {
 
 bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::validation() {
   internal_order_test();
+
   if (world.rank() == 0) {
-    return double(taskData->inputs_count[0]) % columns == 0 && taskData->inputs_count[0] > 0 &&
-           taskData->inputs_count[1] > 0 &&
-           taskData->outputs_count[0] == (taskData->inputs_count[0] / taskData->inputs_count[1]);
+    double help = static_cast<double>(taskData->inputs_count[0]);
+    return help % columns == 0 && taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 &&
+           taskData->outputs_count[0] == (taskData->inputs_count[0] / columns);
   }
   return true;
 }
@@ -101,7 +102,7 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::run() {
   int start_row = world.rank() * n_of_send_rows + std::min(world.rank(), n_of_proc_with_extra_row);
   int end_row = start_row + n_of_send_rows + (world.rank() < n_of_proc_with_extra_row ? 1 : 0);
 
-  for (size_t i = start_row; i < end_row; i++) {
+  for (int i = start_row; i < end_row; i++) {
     local_res[i - start_row] = 0;
     for (int j = 0; j < columns; j++) {
       local_res[i - start_row] += A[j + columns * i] * b[j];

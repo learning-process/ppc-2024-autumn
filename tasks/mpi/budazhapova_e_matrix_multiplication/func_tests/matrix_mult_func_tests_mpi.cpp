@@ -216,7 +216,6 @@ TEST(budazhapova_e_matrix_mult_mpi, validation_test_2) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_str = 240;
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A_matrix.data()));
     taskDataPar->inputs_count.emplace_back(A_matrix.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(b_vector.data()));
