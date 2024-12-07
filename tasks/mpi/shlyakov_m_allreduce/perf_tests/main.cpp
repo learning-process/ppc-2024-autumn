@@ -13,7 +13,6 @@ TEST(shlyakov_m_all_reduce_mpi, test_pipeline_run) {
   std::vector<int> global_matrix;
   std::vector<int32_t> m_vec(row);
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -31,16 +30,13 @@ TEST(shlyakov_m_all_reduce_mpi, test_pipeline_run) {
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
 
@@ -59,7 +55,6 @@ TEST(shlyakov_m_all_reduce_mpi, test_task_run) {
   std::vector<int> global_matrix;
   std::vector<int32_t> m_vec(row);
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -77,16 +72,13 @@ TEST(shlyakov_m_all_reduce_mpi, test_task_run) {
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
 
@@ -105,7 +97,6 @@ TEST(shlyakov_m_all_reduce_mpi, My_test_pipeline_run) {
   std::vector<int> global_matrix;
   std::vector<int32_t> m_vec(row);
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -123,16 +114,13 @@ TEST(shlyakov_m_all_reduce_mpi, My_test_pipeline_run) {
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
 
@@ -151,7 +139,6 @@ TEST(shlyakov_m_all_reduce_mpi, My_test_task_run) {
   std::vector<int> global_matrix;
   std::vector<int32_t> m_vec(row);
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -169,16 +156,13 @@ TEST(shlyakov_m_all_reduce_mpi, My_test_task_run) {
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
 

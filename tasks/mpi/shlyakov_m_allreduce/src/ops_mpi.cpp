@@ -55,7 +55,7 @@ std::vector<int> shlyakov_m_all_reduce_mpi::TestMPITaskSequential::generate_matr
 
   for (int i = 0; i < row; i++) {
     int col_index = dist(generate_matrix);
-    tmp[col_index + i * col] = INT_MIN;  // in 1 of col columns the value must be INT_MIN (needed to check answer)
+    tmp[col_index + i * col] = INT_MIN;
   }
 
   return tmp;
@@ -113,12 +113,6 @@ bool shlyakov_m_all_reduce_mpi::TestMPITaskSequential::post_processing() {
 
 bool shlyakov_m_all_reduce_mpi::MyTestMPITaskParallel::pre_processing() {
   internal_order_test();
-  /*
-  int row = 0;
-  int col = 0;
-  int size = 0;
-  int delta = 0;
-  */
   return true;
 }
 
