@@ -65,7 +65,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Generator) {
 
   ASSERT_LE(max, b);
   ASSERT_GE(min, a);
-  ASSERT_EQ(count_size_vector, global_vec.size());
+  ASSERT_EQ(count_size_vector, (int)global_vec.size());
 }
 
 TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Empty_vec) {
