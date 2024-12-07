@@ -114,7 +114,9 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::run() {
       local_res[i] += local_A[i * columns + j] * b[j];
     }
   }
-
+  if (world.rank() == 0) {
+    res.resize(rows);
+  }
   boost::mpi::gather(world, local_res.data(), local_res.size(), res.data(), 0);
   return true;
 }
