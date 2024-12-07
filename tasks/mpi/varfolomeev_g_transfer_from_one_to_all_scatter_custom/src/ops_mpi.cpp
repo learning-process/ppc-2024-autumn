@@ -6,7 +6,6 @@
 
 #include "mpi/varfolomeev_g_transfer_from_one_to_all_scatter_custom/include/ops_mpi.hpp"
 
-
 bool varfolomeev_g_transfer_from_one_to_all_custom_scatter_mpi::MyScatterTestMPITaskParallel::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
