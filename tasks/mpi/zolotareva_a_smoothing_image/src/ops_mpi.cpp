@@ -37,7 +37,7 @@ void zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::convolve_rows(cons
         int pixel_x = std::clamp(x + k, 0, width - 1);
         sum += input[y * width + pixel_x] * kernel[k + kernel_radius];
       }
-      temp[y * width + x] = int(sum);
+      temp[y * width + x] = sum;
     }
   }
 }
@@ -54,7 +54,7 @@ void zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::convolve_columns(c
         int pixel_y = std::clamp(y + k, 0, height - 1);
         sum += temp[pixel_y * width + x] * kernel[k + kernel_radius];
       }
-      output[y * width + x] = static_cast<uint8_t>(std::clamp(static_cast<int>(std::round(int(sum))), 0, 255));
+      output[y * width + x] = static_cast<uint8_t>(std::clamp(sum, 0.0f, 255.0f));
       ;
     }
   }
@@ -84,7 +84,7 @@ bool zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::pre_processing() {
 bool zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::run() {
   internal_order_test();
   int radius = 1;
-  float sigma = 1.0f;
+  float sigma = 1.5f;
   std::vector<float> horizontal_kernel = create_gaussian_kernel(radius, sigma);
   const std::vector<float>& vertical_kernel = horizontal_kernel;
   std::vector<float> temp(height_ * width_, 0.0f);
@@ -108,7 +108,7 @@ bool zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::post_processing() 
 bool zolotareva_a_smoothing_image_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0;
+    return taskData->inputs_count.size() == 2 && taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0;
   }
   return true;
 }
@@ -132,34 +132,36 @@ bool zolotareva_a_smoothing_image_mpi::TestMPITaskParallel::pre_processing() {
       return true;
     }
   }
+  std::vector<int> displs(world_size);
   boost::mpi::broadcast(world, height_, 0);
   boost::mpi::broadcast(world, width_, 0);
-  world.barrier();
+  input_.resize(height_ * width_);
+  if (world.rank() > 0) send_counts.resize(world_size);
+  displs.resize(world_size);
+
   if (world.rank() == 0) {
     int base_height = height_ / world_size;
     int remainder = height_ % world_size;
+
     int send_start = (base_height + remainder - 1) * width_;
-    for (int proc = 1; proc < world_size - 1; proc++) {
-      world.send(proc, 0, input_.data() + send_start, (base_height + 2) * width_);
+    send_counts.resize(world_size, (base_height + 2) * width_);
+    send_counts[0] = (base_height + remainder + 1) * width_;
+    send_counts[world_size - 1] = (base_height + 1) * width_;
+
+    displs[0] = 0;
+    for (int proc = 1; proc < (world_size - 1); ++proc) {
+      displs[proc] = send_start;
       send_start += base_height * width_;
     }
-    world.send(world_size - 1, 0, input_.data() + send_start, base_height * width_ + width_);
-
-    local_height_ = base_height + remainder + 1;
-    local_input_.resize(local_height_);
-    for (int i = 0; i < local_height_; ++i) {
-      for (int j = 0; j < width_; ++j) {
-        local_input_[i * width_ + j] = input_[i * width_ + j];
-      }
-    }
-  } else {
-    if (world.rank() == world_size - 1)
-      local_height_ = height_ / world_size + 1;
-    else
-      local_height_ = height_ / world_size + 2;
-    local_input_.resize(local_height_ * width_);
-    world.recv(0, 0, local_input_.data(), local_height_ * width_);
+    displs[world_size - 1] = send_start;
   }
+
+  boost::mpi::broadcast(world, send_counts.data(), send_counts.size(), 0);
+  boost::mpi::broadcast(world, displs.data(), displs.size(), 0);
+  boost::mpi::broadcast(world, input_.data(), input_.size(), 0);
+  local_input_.resize(send_counts[world.rank()]);
+  local_height_ = send_counts[world.rank()] / width_;
+  boost::mpi::scatterv(world, input_.data(), send_counts, displs, local_input_.data(), send_counts[world.rank()], 0);
   return true;
 }
 
@@ -167,7 +169,7 @@ bool zolotareva_a_smoothing_image_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   std::vector<uint8_t> local_res(local_height_ * width_);
   int radius = 1;
-  float sigma = 1.0f;
+  float sigma = 1.5f;
   std::vector<float> horizontal_kernel =
       zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::create_gaussian_kernel(radius, sigma);
 

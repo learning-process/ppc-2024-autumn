@@ -83,12 +83,10 @@ TEST(zolotareva_a_smoothing_image_mpi, Test_image_with_nulls) {
 
   zolotareva_a_smoothing_image_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
-  world.barrier();
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  world.barrier();
 
   if (world.rank() == 0) {
     std::vector<uint8_t> seq_mpi_outputImage(width * height);
@@ -107,7 +105,8 @@ TEST(zolotareva_a_smoothing_image_mpi, Test_image_with_nulls) {
     ASSERT_EQ(seq_mpi_outputImage, mpi_outputImage);
   }
 }
-TEST(zolotareva_a_smoothing_image_mpi, Test_image_random_4X4) { form(4, 4); }
-TEST(zolotareva_a_smoothing_image_mpi, Test_image_random_5X5) { form(5, 5); }
-TEST(zolotareva_a_smoothing_image_mpi, Test_image_random_5X6) { form(5, 6); }
-TEST(zolotareva_a_smoothing_image_mpi, Test_image_random_6X5) { form(6, 5); }
+TEST(zolotareva_a_smoothing_image_mpi, Test_image_random_100X100) { form(100, 100); }
+TEST(zolotareva_a_smoothing_image_mpi, Test_image_random_100X500) { form(100, 500); }
+TEST(zolotareva_a_smoothing_image_mpi, Test_image_random_500X230) { form(500, 230); }
+TEST(zolotareva_a_smoothing_image_mpi, Test_image_random_500X500) { form(500, 500); }
+TEST(zolotareva_a_smoothing_image_mpi, Test_image_random_1000X1000) { form(10001, 10000); }

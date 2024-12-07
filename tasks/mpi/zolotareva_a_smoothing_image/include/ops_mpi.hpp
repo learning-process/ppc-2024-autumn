@@ -46,6 +46,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   std::vector<uint8_t> input_;
   std::vector<uint8_t> result_;
   std::vector<uint8_t> local_input_;
+  std::vector<int> send_counts;
   int width_{0};
   int height_{0};
   int local_height_{0};
