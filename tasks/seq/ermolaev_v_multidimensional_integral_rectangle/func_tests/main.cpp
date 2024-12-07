@@ -107,3 +107,31 @@ TEST(ermolaev_v_multidimensional_integral_rectangle_seq, advanced_triple_integra
 TEST(ermolaev_v_multidimensional_integral_rectangle_seq, advanced_triple_integral_three_variables) {
   erm_integral_seq::testBody({{-0.5, 0.8}, {-2, 2}, {2.5, 2.6}}, -6.18355, erm_integral_seq::advancedThreeVar);
 }
+
+TEST(ermolaev_v_multidimensional_integral_rectangle_seq, validation) {
+  const auto validate = [](std::shared_ptr<ppc::core::TaskData>& taskData) {
+    ermolaev_v_multidimensional_integral_rectangle_seq::TestTaskSequential task(taskData);
+    return task.validation();
+  };
+
+  ermolaev_v_multidimensional_integral_rectangle_seq::function func = erm_integral_seq::simpleOneVar;
+  std::vector<std::pair<double, double>> limits{{0, 2}, {0, 2}};
+  double eps = 1e-4;
+  double out;
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.emplace_back(0);
+  ASSERT_FALSE(validate(taskData));
+  taskData->inputs_count.front() = limits.size();
+  ASSERT_FALSE(validate(taskData));
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(limits.data()));
+  ASSERT_FALSE(validate(taskData));
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&eps));
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&func));
+  taskData->outputs_count.emplace_back(0);
+  ASSERT_FALSE(validate(taskData));
+  taskData->outputs_count.front() = 1;
+  ASSERT_FALSE(validate(taskData));
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(&out));
+  ASSERT_TRUE(validate(taskData));
+}
