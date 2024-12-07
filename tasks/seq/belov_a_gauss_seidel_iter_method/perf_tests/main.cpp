@@ -56,6 +56,7 @@ TEST(belov_a_gauss_seidel_perf_test, test_pipeline_run) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(freeMembersVector.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
   taskDataSeq->inputs_count.emplace_back(n);
+  taskDataSeq->inputs_count.emplace_back(freeMembersVector.size());
   taskDataSeq->inputs_count.emplace_back(input_matrix.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(solutionVector.data()));
 
@@ -79,6 +80,8 @@ TEST(belov_a_gauss_seidel_perf_test, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
+
+  ASSERT_TRUE(testTaskSequential->validation());
 }
 
 TEST(belov_a_gauss_seidel_perf_test, test_task_run) {
@@ -95,6 +98,7 @@ TEST(belov_a_gauss_seidel_perf_test, test_task_run) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(freeMembersVector.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
   taskDataSeq->inputs_count.emplace_back(n);
+  taskDataSeq->inputs_count.emplace_back(freeMembersVector.size());
   taskDataSeq->inputs_count.emplace_back(input_matrix.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(solutionVector.data()));
 
@@ -118,4 +122,6 @@ TEST(belov_a_gauss_seidel_perf_test, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
+
+  ASSERT_TRUE(testTaskSequential->validation());
 }

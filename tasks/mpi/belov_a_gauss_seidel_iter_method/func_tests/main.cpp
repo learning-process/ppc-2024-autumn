@@ -78,6 +78,7 @@ TEST(belov_a_gauss_seidel_mpi, Test_3x3_Predefined_Matrix) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataSeq->inputs_count.emplace_back(n);
     taskDataSeq->inputs_count.emplace_back(freeMembers.size());
+    taskDataSeq->inputs_count.emplace_back(matrix.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionSeq.data()));
     taskDataSeq->outputs_count.emplace_back(solutionSeq.size());
 
@@ -129,6 +130,7 @@ TEST(belov_a_gauss_seidel_mpi, Test_4x4_Generated_Matrix) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataSeq->inputs_count.emplace_back(n);
     taskDataSeq->inputs_count.emplace_back(freeMembers.size());
+    taskDataSeq->inputs_count.emplace_back(matrix.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionSeq.data()));
     taskDataSeq->outputs_count.emplace_back(solutionSeq.size());
 
@@ -180,6 +182,7 @@ TEST(belov_a_gauss_seidel_mpi, Test_4x4_Diagonally_Dominant_Predef_Matrix) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataSeq->inputs_count.emplace_back(n);
     taskDataSeq->inputs_count.emplace_back(freeMembers.size());
+    taskDataSeq->inputs_count.emplace_back(matrix.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionSeq.data()));
     taskDataSeq->outputs_count.emplace_back(solutionSeq.size());
 
@@ -231,6 +234,7 @@ TEST(belov_a_gauss_seidel_mpi, Test_Negative_Values_Only) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataSeq->inputs_count.emplace_back(n);
     taskDataSeq->inputs_count.emplace_back(freeMembers.size());
+    taskDataSeq->inputs_count.emplace_back(matrix.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionSeq.data()));
     taskDataSeq->outputs_count.emplace_back(solutionSeq.size());
 
@@ -282,6 +286,7 @@ TEST(belov_a_gauss_seidel_mpi, Test_2x2_Double_Matrix) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataSeq->inputs_count.emplace_back(n);
     taskDataSeq->inputs_count.emplace_back(freeMembers.size());
+    taskDataSeq->inputs_count.emplace_back(matrix.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionSeq.data()));
     taskDataSeq->outputs_count.emplace_back(solutionSeq.size());
 
@@ -333,6 +338,7 @@ TEST(belov_a_gauss_seidel_mpi, Test_3x3_Matrix) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataSeq->inputs_count.emplace_back(n);
     taskDataSeq->inputs_count.emplace_back(freeMembers.size());
+    taskDataSeq->inputs_count.emplace_back(matrix.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionSeq.data()));
     taskDataSeq->outputs_count.emplace_back(solutionSeq.size());
 
@@ -384,6 +390,7 @@ TEST(belov_a_gauss_seidel_mpi, Test_Large_10x10_Generated_Matrix) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataSeq->inputs_count.emplace_back(n);
     taskDataSeq->inputs_count.emplace_back(freeMembers.size());
+    taskDataSeq->inputs_count.emplace_back(matrix.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionSeq.data()));
     taskDataSeq->outputs_count.emplace_back(solutionSeq.size());
 
@@ -435,6 +442,7 @@ TEST(belov_a_gauss_seidel_mpi, Test_Large_Epsilon) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataSeq->inputs_count.emplace_back(n);
     taskDataSeq->inputs_count.emplace_back(freeMembers.size());
+    taskDataSeq->inputs_count.emplace_back(matrix.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionSeq.data()));
     taskDataSeq->outputs_count.emplace_back(solutionSeq.size());
 
@@ -486,6 +494,7 @@ TEST(belov_a_gauss_seidel_mpi, Test_Small_Epsilon) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataSeq->inputs_count.emplace_back(n);
     taskDataSeq->inputs_count.emplace_back(freeMembers.size());
+    taskDataSeq->inputs_count.emplace_back(matrix.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionSeq.data()));
     taskDataSeq->outputs_count.emplace_back(solutionSeq.size());
 

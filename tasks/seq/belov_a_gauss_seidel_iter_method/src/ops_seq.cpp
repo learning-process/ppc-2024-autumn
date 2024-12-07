@@ -4,16 +4,19 @@ using namespace std;
 
 namespace belov_a_gauss_seidel_seq {
 
-bool GaussSeidelSequential::isDiagonallyDominant() const {
+bool isDiagonallyDominant(const vector<double>& A, int n) {
   for (int i = 0; i < n; ++i) {
     double row_sum = 0.0;
+
     for (int j = 0; j < n; ++j) {
       if (i != j) row_sum += abs(A[i * n + j]);
     }
+
     if (abs(A[i * n + i]) <= row_sum) {
       return false;
     }
   }
+
   return true;
 }
 
@@ -37,14 +40,19 @@ bool GaussSeidelSequential::pre_processing() {
 bool GaussSeidelSequential::validation() {
   internal_order_test();
 
-  return (taskData->inputs.size() == 3 && !taskData->inputs_count.empty() && !taskData->outputs.empty() &&
-          (taskData->inputs_count[0] * taskData->inputs_count[0] == taskData->inputs_count[1]));
+  if (taskData->inputs.size() != 3 || taskData->inputs_count.empty()) return false;
+
+  vector<double> mt;
+  auto* mt_data = reinterpret_cast<double*>(taskData->inputs[0]);
+  mt.assign(mt_data, mt_data + taskData->inputs_count[0] * taskData->inputs_count[0]);
+
+  return (!taskData->outputs.empty() && (taskData->inputs_count[0] == taskData->inputs_count[1]) &&
+          taskData->inputs_count[0] * taskData->inputs_count[0] == taskData->inputs_count[2] &&
+          isDiagonallyDominant(mt, taskData->inputs_count[0]));
 }
 
 bool GaussSeidelSequential::run() {
   internal_order_test();
-
-  if (!isDiagonallyDominant()) return false;
 
   vector<double> x_new(n, 0.0);
   double norm;

@@ -213,18 +213,22 @@ bool GaussSeidelSequential::pre_processing() {
 bool GaussSeidelSequential::validation() {
   internal_order_test();
 
-  return (taskData->inputs.size() == 3 && !taskData->inputs_count.empty() && !taskData->outputs.empty() &&
-          (taskData->inputs_count[0] == taskData->inputs_count[1]));
+  if (taskData->inputs.size() != 3 || taskData->inputs_count.empty()) return false;
+
+  vector<double> mt;
+  auto* mt_data = reinterpret_cast<double*>(taskData->inputs[0]);
+  mt.assign(mt_data, mt_data + taskData->inputs_count[0] * taskData->inputs_count[0]);
+
+  return (!taskData->outputs.empty() && (taskData->inputs_count[0] == taskData->inputs_count[1]) &&
+          taskData->inputs_count[0] * taskData->inputs_count[0] == taskData->inputs_count[2] &&
+          isDiagonallyDominant(mt, taskData->inputs_count[0]));
 }
 
 bool GaussSeidelSequential::run() {
   internal_order_test();
 
-  if (!isDiagonallyDominant(A, n)) return false;
-
   vector<double> x_new(n, 0.0);
   double norm;
-  int iter = 0;
 
   do {
     norm = 0.0;
@@ -237,8 +241,6 @@ bool GaussSeidelSequential::run() {
         }
       }
       x_new[i] = (b[i] - sum) / A[i * n + i];
-
-      norm += pow(x_new[i] - x[i], 2);
     }
 
     for (int i = 0; i < n; ++i) {
@@ -246,9 +248,8 @@ bool GaussSeidelSequential::run() {
       x[i] = x_new[i];
     }
     norm = sqrt(norm);
-    iter++;
 
-  } while (iter >= 0 && norm > epsilon);
+  } while (norm > epsilon);
 
   return true;
 }

@@ -53,6 +53,7 @@ TEST(belov_a_gauss_seidel_seq, test_int_sample1_SLAE) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(freeMembersVector.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
   taskDataSeq->inputs_count.emplace_back(n);
+  taskDataSeq->inputs_count.emplace_back(freeMembersVector.size());
   taskDataSeq->inputs_count.emplace_back(input_matrix.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionVector.data()));
 
@@ -84,6 +85,7 @@ TEST(belov_a_gauss_seidel_seq, test_non_square_matrix) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(freeMembersVector.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
   taskDataSeq->inputs_count.emplace_back(n);
+  taskDataSeq->inputs_count.emplace_back(freeMembersVector.size());
   taskDataSeq->inputs_count.emplace_back(input_matrix.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionVector.data()));
 
@@ -105,15 +107,13 @@ TEST(belov_a_gauss_seidel_seq, test_no_diagonal_dominance) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(freeMembersVector.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
   taskDataSeq->inputs_count.emplace_back(n);
+  taskDataSeq->inputs_count.emplace_back(freeMembersVector.size());
   taskDataSeq->inputs_count.emplace_back(input_matrix.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionVector.data()));
 
   GaussSeidelSequential testTaskSequential(taskDataSeq);
 
-  EXPECT_TRUE(testTaskSequential.validation());
-  EXPECT_TRUE(testTaskSequential.pre_processing());
-
-  ASSERT_FALSE(testTaskSequential.run());
+  ASSERT_FALSE(testTaskSequential.validation());
 }
 
 TEST(belov_a_gauss_seidel_seq, test_large_SLAE) {
@@ -132,6 +132,7 @@ TEST(belov_a_gauss_seidel_seq, test_large_SLAE) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(freeMembersVector.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
   taskDataSeq->inputs_count.emplace_back(n);
+  taskDataSeq->inputs_count.emplace_back(freeMembersVector.size());
   taskDataSeq->inputs_count.emplace_back(input_matrix.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionVector.data()));
 
@@ -157,6 +158,7 @@ TEST(belov_a_gauss_seidel_seq, test_double_sample2_SLAE) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(freeMembersVector.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
   taskDataSeq->inputs_count.emplace_back(n);
+  taskDataSeq->inputs_count.emplace_back(freeMembersVector.size());
   taskDataSeq->inputs_count.emplace_back(input_matrix.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionVector.data()));
 
@@ -189,6 +191,7 @@ TEST(belov_a_gauss_seidel_seq, test_double_sample3_SLAE_4x4) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(freeMembersVector.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
   taskDataSeq->inputs_count.emplace_back(n);
+  taskDataSeq->inputs_count.emplace_back(freeMembersVector.size());
   taskDataSeq->inputs_count.emplace_back(input_matrix.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionVector.data()));
 
@@ -228,6 +231,7 @@ TEST(belov_a_gauss_seidel_seq, test_invalid_input_matrix_size) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(freeMembersVector.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
   taskDataSeq->inputs_count.emplace_back(n);
+  taskDataSeq->inputs_count.emplace_back(freeMembersVector.size());
   taskDataSeq->inputs_count.emplace_back(input_matrix.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionVector.data()));
 
@@ -248,7 +252,8 @@ TEST(belov_a_gauss_seidel_seq, test_invalid_inputs_count) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(freeMembersVector.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
-  /*taskDataSeq->inputs_count.emplace_back(n); // "forgot" to fill inputs_count
+  /*taskDataSeq->inputs_count.emplace_back(n);
+  taskDataSeq->inputs_count.emplace_back(freeMembersVector.size()); // "forgot" to fill inputs_count
   taskDataSeq->inputs_count.emplace_back(input_matrix.size());*/
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionVector.data()));
 
@@ -270,12 +275,11 @@ TEST(belov_a_gauss_seidel_seq, Test_SmallSystem_NonDiagonalDominant) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(freeMembersVector.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
   taskDataSeq->inputs_count.emplace_back(n);
+  taskDataSeq->inputs_count.emplace_back(freeMembersVector.size());
   taskDataSeq->inputs_count.emplace_back(input_matrix.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionVector.data()));
 
   GaussSeidelSequential testTaskSequential(taskDataSeq);
 
-  testTaskSequential.validation();
-  testTaskSequential.pre_processing();
-  ASSERT_FALSE(testTaskSequential.run());
+  ASSERT_FALSE(testTaskSequential.validation());
 }

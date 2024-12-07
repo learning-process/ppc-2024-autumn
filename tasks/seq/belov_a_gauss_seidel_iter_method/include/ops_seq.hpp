@@ -18,8 +18,6 @@ class GaussSeidelSequential : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  bool isDiagonallyDominant() const;
-
  private:
   int n = 0;  // matrix size
   double epsilon{};
@@ -27,6 +25,8 @@ class GaussSeidelSequential : public ppc::core::Task {
   std::vector<double> b;  // free members vector
   std::vector<double> x;  // vector of initial guess for unknowns
 };
+
+bool isDiagonallyDominant(const std::vector<double>&, int n);
 
 }  // namespace belov_a_gauss_seidel_seq
 
