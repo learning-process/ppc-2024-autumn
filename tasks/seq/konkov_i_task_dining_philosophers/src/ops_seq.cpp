@@ -2,32 +2,36 @@
 
 #include <thread>
 
-using namespace std::chrono_literals;
+namespace konkov_i_task_dining_philosophers {
 
-bool konkov_i_task_dining_philosophers::TestTaskSequential::pre_processing() {
-  internal_order_test();
-  // Init value for input and output
-  input_ = reinterpret_cast<int*>(taskData->inputs[0])[0];
-  res = 0;
-  return true;
-}
+DiningPhilosophers::DiningPhilosophers(int philosophers, int meals)
+    : philosopher_count_(philosophers),
+      meals_per_philosopher_(meals),
+      meal_counts_(philosophers, 0),
+      forks_(philosophers) {}
 
-bool konkov_i_task_dining_philosophers::TestTaskSequential::validation() {
-  internal_order_test();
-  // Check count elements of output
-  return taskData->inputs_count[0] == 1 && taskData->outputs_count[0] == 1;
-}
+void DiningPhilosophers::philosopherTask(int id) {
+  for (int i = 0; i < meals_per_philosopher_; ++i) {
+    std::lock(forks_[id], forks_[(id + 1) % philosopher_count_]);
+    std::lock_guard<std::mutex> left_lock(forks_[id], std::adopt_lock);
+    std::lock_guard<std::mutex> right_lock(forks_[(id + 1) % philosopher_count_], std::adopt_lock);
 
-bool konkov_i_task_dining_philosophers::TestTaskSequential::run() {
-  internal_order_test();
-  for (int i = 0; i < input_; i++) {
-    res++;
+    meal_counts_[id]++;
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
-  return true;
 }
 
-bool konkov_i_task_dining_philosophers::TestTaskSequential::post_processing() {
-  internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
-  return true;
+void DiningPhilosophers::run() {
+  std::vector<std::thread> threads;
+
+  for (int i = 0; i < philosopher_count_; ++i) {
+    threads.emplace_back(&DiningPhilosophers::philosopherTask, this, i);
+  }
+
+  for (auto& t : threads) {
+    t.join();
+  }
 }
+
+void DiningPhilosophers::getResults(std::vector<int>& results) { results = meal_counts_; }
+}  // namespace konkov_i_task_dining_philosophers

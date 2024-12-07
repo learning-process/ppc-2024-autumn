@@ -1,22 +1,20 @@
 #pragma once
-
-#include <string>
+#include <mutex>
 #include <vector>
-
-#include "core/task/include/task.hpp"
 
 namespace konkov_i_task_dining_philosophers {
 
-class TestTaskSequential : public ppc::core::Task {
+class DiningPhilosophers {
  public:
-  explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-  bool pre_processing() override;
-  bool validation() override;
-  bool run() override;
-  bool post_processing() override;
+  DiningPhilosophers(int philosophers, int meals);
+  void run();
+  void getResults(std::vector<int>& results);
 
  private:
-  int input_{}, res{};
+  int philosopher_count_;
+  int meals_per_philosopher_;
+  std::vector<int> meal_counts_;
+  std::vector<std::mutex> forks_;
+  void philosopherTask(int id);
 };
-
 }  // namespace konkov_i_task_dining_philosophers

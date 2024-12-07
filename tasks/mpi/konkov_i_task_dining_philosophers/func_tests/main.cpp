@@ -2,28 +2,23 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <vector>
 
 #include "mpi/konkov_i_task_dining_philosophers/include/ops_mpi.hpp"
 
-TEST(konkov_i_Parallel_Operations_MPI, Test_Dining_Philosophers) {
+TEST(konkov_DiningPhilosophersMPI, BasicFunctionalityTest) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_result(1, 0);
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  int philosopher_count = 5;
+  int meals_per_philosopher = 3;
 
   if (world.rank() == 0) {
-    const int count_size_vector = 120;
-    global_vec = konkov_i_task_dining_philosophers::getRandomVector(count_size_vector);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
-    taskDataPar->outputs_count.emplace_back(global_result.size());
-  }
+    std::vector<int> result(philosopher_count, 0);
+    konkov_i_task_dining_philosophers::DiningPhilosophers mpi_task(philosopher_count, meals_per_philosopher);
+    mpi_task.run();
+    mpi_task.getResults(result);
 
-  konkov_i_task_dining_philosophers::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+    for (int meals : result) {
+      ASSERT_EQ(meals, meals_per_philosopher);
+    }
+  }
 }

@@ -1,28 +1,18 @@
 #include <gtest/gtest.h>
 
-#include <vector>
-
 #include "seq/konkov_i_task_dining_philosophers/include/ops_seq.hpp"
 
-TEST(konkov_i_Sequential, Test_Dining_Philosophers) {
-  const int count = 100;
+TEST(konkov_DiningPhilosophersSeq, BasicFunctionalityTest) {
+  int philosopher_count = 5;
+  int meals_per_philosopher = 3;
 
-  // Create data
-  std::vector<int> in(1, count);
-  std::vector<int> out(1, 0);
+  konkov_i_task_dining_philosophers::DiningPhilosophers seq_task(philosopher_count, meals_per_philosopher);
+  seq_task.run();
 
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  std::vector<int> results(philosopher_count, 0);
+  seq_task.getResults(results);
 
-  // Create Task
-  konkov_i_task_dining_philosophers::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
-  ASSERT_EQ(count, out[0]);
+  for (int meals : results) {
+    ASSERT_EQ(meals, meals_per_philosopher);
+  }
 }
