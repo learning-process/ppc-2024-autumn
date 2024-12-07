@@ -1,4 +1,3 @@
-#pragma once
 #include <gtest/gtest.h>
 
 #include "core/perf/include/perf.hpp"

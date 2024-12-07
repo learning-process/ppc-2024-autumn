@@ -142,7 +142,6 @@ TEST(budazhapova_e_matrix_mult_mpi, small_test_n_of_proc_bigger_than_rows) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_str = 240;
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A_matrix.data()));
     taskDataPar->inputs_count.emplace_back(A_matrix.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(b_vector.data()));
@@ -176,6 +175,7 @@ TEST(budazhapova_e_matrix_mult_mpi, small_test_n_of_proc_bigger_than_rows) {
 }
 
 TEST(budazhapova_e_matrix_mult_mpi, validation_test_1) {
+  boost::mpi::communicator world;
   std::vector<int> A_matrix(12, 1);
   std::vector<int> b_vector(5, 1);
   std::vector<int> out(1, 0);
@@ -183,7 +183,6 @@ TEST(budazhapova_e_matrix_mult_mpi, validation_test_1) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_str = 240;
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A_matrix.data()));
     taskDataPar->inputs_count.emplace_back(A_matrix.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(b_vector.data()));
@@ -209,6 +208,7 @@ TEST(budazhapova_e_matrix_mult_mpi, validation_test_1) {
 }
 
 TEST(budazhapova_e_matrix_mult_mpi, validation_test_2) {
+  boost::mpi::communicator world;
   std::vector<int> A_matrix(12, 1);
   std::vector<int> b_vector = {};
   std::vector<int> out(1, 0);
