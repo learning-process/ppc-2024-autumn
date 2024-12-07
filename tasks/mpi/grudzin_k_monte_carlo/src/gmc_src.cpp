@@ -68,8 +68,8 @@ template <const int dimension>
 bool MonteCarloMpi<dimension>::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    return taskData->outputs_count.size() > 0 && taskData->outputs_count[0] == 1 &&
-           taskData->inputs_count.size() == 2 && taskData->inputs_count[0] == dimension;
+    return !taskData->outputs_count.empty() && taskData->outputs_count[0] == 1 && taskData->inputs_count.size() == 2 &&
+           taskData->inputs_count[0] == dimension;
   }
   return true;
 }
@@ -118,7 +118,7 @@ bool MonteCarloSeq<dimension>::post_processing() {
 template <const int dimension>
 bool MonteCarloSeq<dimension>::validation() {
   internal_order_test();
-  return taskData->outputs_count.size() > 0 && taskData->outputs_count[0] == 1 && taskData->inputs_count.size() == 2 &&
+  return !taskData->outputs_count.empty() && taskData->outputs_count[0] == 1 && taskData->inputs_count.size() == 2 &&
          taskData->inputs_count[0] == dimension;
 }
 
