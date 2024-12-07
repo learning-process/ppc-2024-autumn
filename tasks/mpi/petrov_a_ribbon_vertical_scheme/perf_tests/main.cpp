@@ -7,7 +7,8 @@
 #include "mpi/petrov_a_ribbon_vertical_scheme/include/ops_mpi.hpp"
 
 TEST(petrov_a_ribbon_vertical_scheme_mpi, test_task) {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
@@ -31,7 +32,7 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, test_task) {
   int rows_per_proc = rows / size;
   int remainder = rows % size;
   int start_row = rank * rows_per_proc + std::min(rank, remainder);
-  int end_row = start_row + rows_per_proc + (rank < remainder);
+  int end_row = start_row + rows_per_proc + static_cast<int>(rank < remainder);
   end_row = std::min(end_row, rows);
 
   std::vector<int> local_matrix((end_row - start_row) * cols);
@@ -39,7 +40,7 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, test_task) {
   int* sendcounts = new int[size];
   int* displs = new int[size];
   for (int i = 0; i < size; ++i) {
-    sendcounts[i] = (rows_per_proc + (i < remainder)) * cols;
+    sendcounts[i] = (rows_per_proc + static_cast<int>(i < remainder)) * cols;
     displs[i] = (rows_per_proc * i + std::min(i, remainder)) * cols;
   }
   MPI_Scatterv(global_matrix.data(), sendcounts, displs, MPI_INT, local_matrix.data(), (end_row - start_row) * cols,
@@ -62,7 +63,7 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, test_task) {
   sendcounts = new int[size];
   displs = new int[size];
   for (int i = 0; i < size; ++i) {
-    sendcounts[i] = rows_per_proc + (i < remainder);
+    sendcounts[i] = rows_per_proc + static_cast<int>(i < remainder);
     displs[i] = rows_per_proc * i + std::min(i, remainder);
   }
   MPI_Gatherv(local_result.data(), local_result.size(), MPI_INT, global_result.data(), sendcounts, displs, MPI_INT, 0,
@@ -71,7 +72,8 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, test_task) {
   delete[] displs;
 }
 TEST(petrov_a_ribbon_vertical_scheme_mpi, test_pipeline) {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
@@ -98,7 +100,7 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, test_pipeline) {
   int rows_per_proc = rows / size;
   int remainder = rows % size;
   int start_row = rank * rows_per_proc + std::min(rank, remainder);
-  int end_row = start_row + rows_per_proc + (rank < remainder);
+  int end_row = start_row + rows_per_proc + static_cast<int>(rank < remainder);
   end_row = std::min(end_row, rows);
 
   std::vector<int> local_matrix((end_row - start_row) * cols);
@@ -106,7 +108,7 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, test_pipeline) {
   std::vector<int> sendcounts(size);
   std::vector<int> displs(size);
   for (int i = 0; i < size; ++i) {
-    sendcounts[i] = (rows_per_proc + (i < remainder)) * cols;
+    sendcounts[i] = (rows_per_proc + static_cast<int>(i < remainder)) * cols;
     displs[i] = (rows_per_proc * i + std::min(i, remainder)) * cols;
   }
 
@@ -131,7 +133,7 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, test_pipeline) {
   std::vector<int> recvcounts(size);
   std::vector<int> recvdispls(size);
   for (int i = 0; i < size; ++i) {
-    recvcounts[i] = rows_per_proc + (i < remainder);
+    recvcounts[i] = rows_per_proc + static_cast<int>(i < remainder);
     recvdispls[i] = (rows_per_proc * i + std::min(i, remainder));
   }
 

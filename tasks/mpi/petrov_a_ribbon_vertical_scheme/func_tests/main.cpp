@@ -23,7 +23,8 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, HandlesSmallMatrix) {
     vector = {1, 1, 1};
   }
 
-  int rows = 2, cols = 3;
+  int rows = 2;
+  int cols = 3;
   MPI_Bcast(&rows, 1, MPI_INT, 0, MPI_COMM_WORLD);
   MPI_Bcast(&cols, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
@@ -74,7 +75,8 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, HandlesSmallMatrix) {
 }
 
 TEST(petrov_a_ribbon_vertical_scheme_mpi, Handles3x2Matrix) {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
@@ -89,7 +91,8 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, Handles3x2Matrix) {
     result.resize(3);
   }
 
-  int rows = 3, cols = 2;
+  int rows = 3;
+  int cols = 2;
   MPI_Bcast(&rows, 1, MPI_INT, 0, MPI_COMM_WORLD);
   MPI_Bcast(&cols, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
@@ -139,7 +142,8 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, Handles3x2Matrix) {
 }
 
 TEST(petrov_a_ribbon_vertical_scheme_mpi, Handles4x4Matrix) {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
@@ -154,7 +158,8 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, Handles4x4Matrix) {
     result.resize(4);
   }
 
-  int rows = 4, cols = 4;
+  int rows = 4;
+  int cols = 4;
   MPI_Bcast(&rows, 1, MPI_INT, 0, MPI_COMM_WORLD);
   MPI_Bcast(&cols, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
@@ -203,7 +208,8 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, Handles4x4Matrix) {
   }
 }
 TEST(petrov_a_ribbon_vertical_scheme_mpi, Handles5x3Matrix) {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
@@ -218,7 +224,8 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, Handles5x3Matrix) {
     result.resize(5);
   }
 
-  int rows = 5, cols = 3;
+  int rows = 5;
+  int cols = 3;
   MPI_Bcast(&rows, 1, MPI_INT, 0, MPI_COMM_WORLD);
   MPI_Bcast(&cols, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
@@ -233,7 +240,7 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, Handles5x3Matrix) {
   int rows_per_proc = rows / size;
   int remainder = rows % size;
   int start_row = rank * rows_per_proc + std::min(rank, remainder);
-  int end_row = start_row + rows_per_proc + (rank < remainder);
+  int end_row = start_row + rows_per_proc + static_cast<int>(rank < remainder);
   end_row = std::min(end_row, rows);
 
   local_result.resize(end_row - start_row);
@@ -266,7 +273,8 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, Handles5x3Matrix) {
   }
 }
 TEST(petrov_a_ribbon_vertical_scheme_mpi, HandlesNonSquareMatrix) {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
@@ -281,7 +289,8 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, HandlesNonSquareMatrix) {
     result.resize(4);
   }
 
-  int rows = 4, cols = 2;
+  int rows = 4;
+  int cols = 2;
   MPI_Bcast(&rows, 1, MPI_INT, 0, MPI_COMM_WORLD);
   MPI_Bcast(&cols, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
@@ -296,7 +305,7 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, HandlesNonSquareMatrix) {
   int rows_per_proc = rows / size;
   int remainder = rows % size;
   int start_row = rank * rows_per_proc + std::min(rank, remainder);
-  int end_row = start_row + rows_per_proc + (rank < remainder);
+  int end_row = start_row + rows_per_proc + static_cast<int>(rank < remainder);
   end_row = std::min(end_row, rows);
 
   local_result.resize(end_row - start_row);

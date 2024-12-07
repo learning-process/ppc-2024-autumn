@@ -59,7 +59,6 @@ bool petrov_a_ribbon_vertical_scheme_mpi::TestTaskMPI::run() {
   int rows = taskData->inputs_count[0];
   int rows_per_proc = rows / size;
   if (rank == 0) {
-    rows = taskData->inputs_count[0];
     cols = taskData->inputs_count[1];
 
     for (int i = 0; i < rows_per_proc; ++i) {
