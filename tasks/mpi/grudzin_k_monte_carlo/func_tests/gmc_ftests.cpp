@@ -231,92 +231,93 @@ TEST(grudzin_k_monte_carlo_mpi, Test_Poly) {
   }
 }
 
-//TEST(grudzin_k_monte_carlo_mpi, Empty_Out) {
-//  boost::mpi::communicator world;
-//  const int dimensions = 3;
-//  int N = 10000;
-//  auto f = [](std::array<double, 3> &x) -> double { return std::pow(x[0], 3) + std::pow(x[1] + x[2], 2) + 2.0 * x[2]; };
-//  std::shared_ptr<ppc::core::TaskData> MC1_Data = std::make_shared<ppc::core::TaskData>();
-//  std::shared_ptr<ppc::core::TaskData> MC2_Data = std::make_shared<ppc::core::TaskData>();
-//  std::vector<double> dim = grudzin_k_montecarlo_mpi::GenDimDistr(dimensions);
-//
-//  if (world.rank() == 0) {
-//    MC1_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(dim.data()));
-//    MC1_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&N));
-//    MC1_Data->inputs_count.emplace_back(dimensions);
-//    MC1_Data->inputs_count.emplace_back(1);
-//
-//    MC2_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(dim.data()));
-//    MC2_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&N));
-//    MC2_Data->inputs_count.emplace_back(dimensions);
-//    MC2_Data->inputs_count.emplace_back(1);
-//  }
-//  grudzin_k_montecarlo_mpi::MonteCarloMpi<dimensions> MC1(MC1_Data, f);
-//  grudzin_k_montecarlo_mpi::MonteCarloSeq<dimensions> MC2(MC2_Data, f);
-//  ASSERT_EQ(MC1.validation(), false);
-//  ASSERT_EQ(MC2.validation(), false);
-//}
-//
-//TEST(grudzin_k_monte_carlo_mpi, Forget_One_Val) {
-//  boost::mpi::communicator world;
-//  const int dimensions = 3;
-//  // int N = 10000;
-//  auto f = [](std::array<double, 3> &x) -> double { return std::pow(x[0], 3) + std::pow(x[1] + x[2], 2) + 2.0 * x[2]; };
-//  std::shared_ptr<ppc::core::TaskData> MC1_Data = std::make_shared<ppc::core::TaskData>();
-//  std::shared_ptr<ppc::core::TaskData> MC2_Data = std::make_shared<ppc::core::TaskData>();
-//  std::vector<double> dim = grudzin_k_montecarlo_mpi::GenDimDistr(dimensions);
-//  double result_par = 0;
-//  double result_seq = 0;
-//
-//  if (world.rank() == 0) {
-//    MC1_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(dim.data()));
-//    // MC1_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&N));
-//    MC1_Data->inputs_count.emplace_back(dimensions);
-//    // MC1_Data->inputs_count.emplace_back(1);
-//    MC1_Data->outputs.emplace_back(reinterpret_cast<uint8_t *>(&result_par));
-//    MC1_Data->outputs_count.emplace_back(1);
-//
-//    MC2_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(dim.data()));
-//    // MC2_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&N));
-//    MC2_Data->inputs_count.emplace_back(dimensions);
-//    // MC2_Data->inputs_count.emplace_back(1);
-//    MC2_Data->outputs.emplace_back(reinterpret_cast<uint8_t *>(&result_seq));
-//    MC2_Data->outputs_count.emplace_back(1);
-//  }
-//  grudzin_k_montecarlo_mpi::MonteCarloMpi<dimensions> MC1(MC1_Data, f);
-//  grudzin_k_montecarlo_mpi::MonteCarloSeq<dimensions> MC2(MC2_Data, f);
-//  ASSERT_EQ(MC1.validation(), false);
-//  ASSERT_EQ(MC2.validation(), false);
-//}
-//
-//TEST(grudzin_k_monte_carlo_mpi, IC_NEQ_DIM) {
-//  boost::mpi::communicator world;
-//  const int dimensions = 3;
-//  int N = 10000;
-//  auto f = [](std::array<double, 3> &x) -> double { return std::pow(x[0], 3) + std::pow(x[1] + x[2], 2) + 2.0 * x[2]; };
-//  std::shared_ptr<ppc::core::TaskData> MC1_Data = std::make_shared<ppc::core::TaskData>();
-//  std::shared_ptr<ppc::core::TaskData> MC2_Data = std::make_shared<ppc::core::TaskData>();
-//  std::vector<double> dim = grudzin_k_montecarlo_mpi::GenDimDistr(dimensions - 1);
-//  double result_par = 0;
-//  double result_seq = 0;
-//
-//  if (world.rank() == 0) {
-//    MC1_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(dim.data()));
-//    MC1_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&N));
-//    MC1_Data->inputs_count.emplace_back(dimensions - 1);
-//    MC1_Data->inputs_count.emplace_back(1);
-//    MC1_Data->outputs.emplace_back(reinterpret_cast<uint8_t *>(&result_par));
-//    MC1_Data->outputs_count.emplace_back(1);
-//
-//    MC2_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(dim.data()));
-//    MC2_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&N));
-//    MC2_Data->inputs_count.emplace_back(dimensions - 1);
-//    MC2_Data->inputs_count.emplace_back(1);
-//    MC2_Data->outputs.emplace_back(reinterpret_cast<uint8_t *>(&result_seq));
-//    MC2_Data->outputs_count.emplace_back(1);
-//  }
-//  grudzin_k_montecarlo_mpi::MonteCarloMpi<dimensions> MC1(MC1_Data, f);
-//  grudzin_k_montecarlo_mpi::MonteCarloSeq<dimensions> MC2(MC2_Data, f);
-//  ASSERT_EQ(MC1.validation(), false);
-//  ASSERT_EQ(MC2.validation(), false);
-//}
+TEST(grudzin_k_monte_carlo_mpi, Empty_Out) {
+  boost::mpi::communicator world;
+  const int dimensions = 3;
+  int N = 10000;
+  auto f = [](std::array<double, 3> &x) -> double { return std::pow(x[0], 3) + std::pow(x[1] + x[2], 2) + 2.0 * x[2]; };
+  std::vector<double> dim = grudzin_k_montecarlo_mpi::GenDimDistr(dimensions);
+
+  if (world.rank() == 0) {
+    std::shared_ptr<ppc::core::TaskData> MC1_Data = std::make_shared<ppc::core::TaskData>();
+    std::shared_ptr<ppc::core::TaskData> MC2_Data = std::make_shared<ppc::core::TaskData>();
+    MC1_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(dim.data()));
+    MC1_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&N));
+    MC1_Data->inputs_count.emplace_back(dimensions);
+    MC1_Data->inputs_count.emplace_back(1);
+
+    MC2_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(dim.data()));
+    MC2_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&N));
+    MC2_Data->inputs_count.emplace_back(dimensions);
+    MC2_Data->inputs_count.emplace_back(1);
+    grudzin_k_montecarlo_mpi::MonteCarloMpi<dimensions> MC1(MC1_Data, f);
+    grudzin_k_montecarlo_mpi::MonteCarloSeq<dimensions> MC2(MC2_Data, f);
+    ASSERT_EQ(MC1.validation(), false);
+    ASSERT_EQ(MC2.validation(), false);
+  }
+}
+
+TEST(grudzin_k_monte_carlo_mpi, Forget_One_Val) {
+  boost::mpi::communicator world;
+  const int dimensions = 3;
+  // int N = 10000;
+  auto f = [](std::array<double, 3> &x) -> double { return std::pow(x[0], 3) + std::pow(x[1] + x[2], 2) + 2.0 * x[2]; };
+  std::vector<double> dim = grudzin_k_montecarlo_mpi::GenDimDistr(dimensions);
+  double result_par = 0;
+  double result_seq = 0;
+
+  if (world.rank() == 0) {
+    std::shared_ptr<ppc::core::TaskData> MC1_Data = std::make_shared<ppc::core::TaskData>();
+    std::shared_ptr<ppc::core::TaskData> MC2_Data = std::make_shared<ppc::core::TaskData>();
+    MC1_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(dim.data()));
+    // MC1_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&N));
+    MC1_Data->inputs_count.emplace_back(dimensions);
+    // MC1_Data->inputs_count.emplace_back(1);
+    MC1_Data->outputs.emplace_back(reinterpret_cast<uint8_t *>(&result_par));
+    MC1_Data->outputs_count.emplace_back(1);
+
+    MC2_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(dim.data()));
+    // MC2_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&N));
+    MC2_Data->inputs_count.emplace_back(dimensions);
+    // MC2_Data->inputs_count.emplace_back(1);
+    MC2_Data->outputs.emplace_back(reinterpret_cast<uint8_t *>(&result_seq));
+    MC2_Data->outputs_count.emplace_back(1);
+    grudzin_k_montecarlo_mpi::MonteCarloMpi<dimensions> MC1(MC1_Data, f);
+    grudzin_k_montecarlo_mpi::MonteCarloSeq<dimensions> MC2(MC2_Data, f);
+    ASSERT_EQ(MC1.validation(), false);
+    ASSERT_EQ(MC2.validation(), false);
+  }
+}
+
+TEST(grudzin_k_monte_carlo_mpi, IC_NEQ_DIM) {
+  boost::mpi::communicator world;
+  const int dimensions = 3;
+  int N = 10000;
+  auto f = [](std::array<double, 3> &x) -> double { return std::pow(x[0], 3) + std::pow(x[1] + x[2], 2) + 2.0 * x[2]; };
+  std::vector<double> dim = grudzin_k_montecarlo_mpi::GenDimDistr(dimensions - 1);
+  double result_par = 0;
+  double result_seq = 0;
+
+  if (world.rank() == 0) {
+    std::shared_ptr<ppc::core::TaskData> MC1_Data = std::make_shared<ppc::core::TaskData>();
+    std::shared_ptr<ppc::core::TaskData> MC2_Data = std::make_shared<ppc::core::TaskData>();
+    MC1_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(dim.data()));
+    MC1_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&N));
+    MC1_Data->inputs_count.emplace_back(dimensions - 1);
+    MC1_Data->inputs_count.emplace_back(1);
+    MC1_Data->outputs.emplace_back(reinterpret_cast<uint8_t *>(&result_par));
+    MC1_Data->outputs_count.emplace_back(1);
+
+    MC2_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(dim.data()));
+    MC2_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&N));
+    MC2_Data->inputs_count.emplace_back(dimensions - 1);
+    MC2_Data->inputs_count.emplace_back(1);
+    MC2_Data->outputs.emplace_back(reinterpret_cast<uint8_t *>(&result_seq));
+    MC2_Data->outputs_count.emplace_back(1);
+
+    grudzin_k_montecarlo_mpi::MonteCarloMpi<dimensions> MC1(MC1_Data, f);
+    grudzin_k_montecarlo_mpi::MonteCarloSeq<dimensions> MC2(MC2_Data, f);
+    ASSERT_EQ(MC1.validation(), false);
+    ASSERT_EQ(MC2.validation(), false);
+  }
+}
