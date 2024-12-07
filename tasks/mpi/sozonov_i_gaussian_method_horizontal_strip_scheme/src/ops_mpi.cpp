@@ -15,7 +15,7 @@ int sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::extended_matrix_rank(
   for (int i = 0; i < m; ++i) {
     int j;
     for (j = 0; j < n; ++j) {
-      if (abs(a[j * n + i]) > EPS) {
+      if (std::abs(a[j * n + i]) > EPS) {
         break;
       }
     }
@@ -40,11 +40,11 @@ int sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::determinant(int n, in
   for (int i = 0; i < m; ++i) {
     int idx = i;
     for (int k = i + 1; k < m; ++k) {
-      if (abs(a[k * n + i]) > abs(a[idx * n + i])) {
+      if (std::abs(a[k * n + i]) > std::abs(a[idx * n + i])) {
         idx = k;
       }
     }
-    if (abs(a[idx * n + i]) < EPS) {
+    if (std::abs(a[idx * n + i]) < EPS) {
       return 0;
     }
     if (idx != i) {
@@ -81,9 +81,6 @@ bool sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::TestMPITaskSequentia
 
 bool sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-
-  const double EPS = 1e-9;
-
   // Init matrix
   matrix = std::vector<double>(taskData->inputs_count[0]);
   auto *tmp_ptr = reinterpret_cast<double *>(taskData->inputs[0]);
@@ -142,8 +139,6 @@ bool sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::TestMPITaskParallel:
 bool sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    const double EPS = 1e-9;
-
     // Init matrix
     matrix = std::vector<double>(taskData->inputs_count[0]);
     auto *tmp_ptr = reinterpret_cast<double *>(taskData->inputs[0]);
