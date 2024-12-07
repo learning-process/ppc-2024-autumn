@@ -144,10 +144,8 @@ bool naumov_b_bubble_sort_mpi::TestMPITaskParallel::post_processing() {
 
   if (rank == 0) {
     gathered_data.resize(total_size_);
-  }
-
-  if (rank == 0) {
     std::copy(local_input_.begin(), local_input_.end(), gathered_data.begin());
+
     for (int i = 1; i < size; ++i) {
       int start_idx = i * (total_size_ / size) + std::min(i, total_size_ % size);
       int chunk_size = total_size_ / size + (i < total_size_ % size ? 1 : 0);

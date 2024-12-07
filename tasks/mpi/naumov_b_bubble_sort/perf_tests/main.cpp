@@ -34,8 +34,8 @@ TEST(naumov_b_bubble_sort, test_pipeline_run) {
 
   auto testMpiParallel = std::make_shared<naumov_b_bubble_sort_mpi::TestMPITaskParallel>(taskDataPar);
 
-  testMpiParallel->pre_processing();
   ASSERT_TRUE(testMpiParallel->validation());
+  testMpiParallel->pre_processing();
   testMpiParallel->run();
   testMpiParallel->post_processing();
 
@@ -73,8 +73,8 @@ TEST(naumov_b_bubble_sort, test_task_run) {
 
   auto testMpiParallel = std::make_shared<naumov_b_bubble_sort_mpi::TestMPITaskParallel>(taskDataPar);
 
-  testMpiParallel->pre_processing();
   ASSERT_TRUE(testMpiParallel->validation());
+  testMpiParallel->pre_processing();
   testMpiParallel->run();
   testMpiParallel->post_processing();
 
