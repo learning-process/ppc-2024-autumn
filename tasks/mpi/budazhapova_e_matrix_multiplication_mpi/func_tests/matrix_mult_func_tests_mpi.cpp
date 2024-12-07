@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 
-#include "mpi/budazhapova_e_matrix_multiplication/include/matrix_mult.hpp"
+#include "mpi/budazhapova_e_matrix_multiplication/include/matrix_mult_mpi.hpp"
 
 TEST(budazhapova_e_matrix_mult_mpi, ordinary_test_1) {
   boost::mpi::communicator world;
