@@ -16,7 +16,6 @@ TEST(budazhapova_e_matrix_mult_mpi, ordinary_test_1) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_str = 240;
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A_matrix.data()));
     taskDataPar->inputs_count.emplace_back(A_matrix.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(b_vector.data()));
@@ -59,7 +58,6 @@ TEST(budazhapova_e_matrix_mult_mpi, ordinary_test_2_for_three_proc_to_crash) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_str = 240;
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A_matrix.data()));
     taskDataPar->inputs_count.emplace_back(A_matrix.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(b_vector.data()));
@@ -102,7 +100,6 @@ TEST(budazhapova_e_matrix_mult_mpi, ordinary_test_3_for_two_or_four_proc_to_cras
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_str = 240;
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A_matrix.data()));
     taskDataPar->inputs_count.emplace_back(A_matrix.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(b_vector.data()));
