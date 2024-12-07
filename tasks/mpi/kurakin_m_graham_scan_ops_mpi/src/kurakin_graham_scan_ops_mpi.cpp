@@ -7,39 +7,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
-double kurakin_m_graham_scan_mpi::getRandomDouble(double start = 0.0, double end = 100.0) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  double res = (double)(gen() % ((int)(start * 100) - (int)(end * 100)) + (int)(start * 100)) / 100;
-  return res;
-}
-
-int kurakin_m_graham_scan_mpi::getRandomInt(int start = 0, int end = 100) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  int res = gen() % (end - start) + start;
-  return res;
-}
-
-void kurakin_m_graham_scan_mpi::getRandomVectorForGrahamScan(std::vector<double>& res_x, std::vector<double>& res_y,
-                                                             int count_point, int size) {
-  res_x = std::vector<double>();
-  res_y = std::vector<double>();
-  for (int i = 0; i < size; i++) {
-    int count = getCountPoint(count_point, size, i);
-    double start_x = getRandomDouble(-10.0, 10.0);
-    double start_y = getRandomDouble(-10.0, 10.0);
-    for (int j = 0; j < count; j++) {
-      double length = getRandomDouble(0.0, 10.0);
-      int angle = getRandomInt(0, 180);
-      res_x.push_back(start_x + length * cos(angle));
-      res_y.push_back(start_y + length * sin(angle));
-    }
-  }
-}
-
 bool kurakin_m_graham_scan_mpi::isLeftAngle(std::vector<double>& p1, std::vector<double>& p2, std::vector<double>& p3) {
   return ((p2[1] - p1[1]) * (p3[2] - p1[2]) - (p3[1] - p1[1]) * (p2[2] - p1[2])) < 0;
 }
@@ -83,30 +50,28 @@ int kurakin_m_graham_scan_mpi::getCountPoint(int count_point, int size, int rank
 
 bool kurakin_m_graham_scan_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
+
+  count_point = (int)taskData->inputs_count[0] / 2;
+  input_ = std::vector<std::vector<double>>(count_point, std::vector<double>(3, 0));
+  auto* tmp_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
+  for (int i = 0; i < count_point * 2; i += 2) {
+    input_[i / 2][1] = tmp_ptr[i];
+    input_[i / 2][2] = tmp_ptr[i + 1];
+  }
+
   return true;
 }
 
 bool kurakin_m_graham_scan_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-
-  return taskData->inputs.size() == 2 && taskData->inputs_count.size() == 2 && taskData->outputs.size() == 3 &&
-         taskData->outputs_count.size() == 3 && taskData->inputs_count[0] > 2 &&
-         taskData->inputs_count[0] == taskData->inputs_count[1] && taskData->outputs_count[0] == 1 &&
-         taskData->outputs_count[1] == taskData->outputs_count[2] &&
+  return taskData->inputs.size() == 1 && taskData->inputs_count.size() == 1 && taskData->outputs.size() == 2 &&
+         taskData->outputs_count.size() == 2 && taskData->inputs_count[0] % 2 == 0 &&
+         taskData->inputs_count[0] / 2 > 2 && taskData->outputs_count[0] == 1 &&
          taskData->inputs_count[0] == taskData->outputs_count[1];
 }
 
 bool kurakin_m_graham_scan_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-
-  count_point = (int)taskData->inputs_count[0];
-  input_ = std::vector<std::vector<double>>(count_point, std::vector<double>(3, 0));
-  auto* x_tmp_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
-  auto* y_tmp_ptr = reinterpret_cast<double*>(taskData->inputs[1]);
-  for (int i = 0; i < count_point; i++) {
-    input_[i][1] = x_tmp_ptr[i];
-    input_[i][2] = y_tmp_ptr[i];
-  }
 
   int ind_min_y = std::min_element(input_.begin(), input_.end(),
                                    [&](std::vector<double> a, std::vector<double> b) {
@@ -138,9 +103,9 @@ bool kurakin_m_graham_scan_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
 
   reinterpret_cast<int*>(taskData->outputs[0])[0] = count_point;
-  for (int i = 0; i < count_point; i++) {
-    reinterpret_cast<double*>(taskData->outputs[1])[i] = input_[i][1];
-    reinterpret_cast<double*>(taskData->outputs[2])[i] = input_[i][2];
+  for (int i = 0; i < count_point * 2; i += 2) {
+    reinterpret_cast<double*>(taskData->outputs[1])[i] = input_[i / 2][1];
+    reinterpret_cast<double*>(taskData->outputs[1])[i + 1] = input_[i / 2][2];
   }
 
   return true;
@@ -155,10 +120,9 @@ bool kurakin_m_graham_scan_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
 
   if (world.rank() == 0) {
-    return taskData->inputs.size() == 2 && taskData->inputs_count.size() == 2 && taskData->outputs.size() == 3 &&
-           taskData->outputs_count.size() == 3 && taskData->inputs_count[0] > 2 &&
-           taskData->inputs_count[0] == taskData->inputs_count[1] && taskData->outputs_count[0] == 1 &&
-           taskData->outputs_count[1] == taskData->outputs_count[2] &&
+    return taskData->inputs.size() == 1 && taskData->inputs_count.size() == 1 && taskData->outputs.size() == 2 &&
+           taskData->outputs_count.size() == 2 && taskData->inputs_count[0] % 2 == 0 &&
+           taskData->inputs_count[0] / 2 > 2 && taskData->outputs_count[0] == 1 &&
            taskData->inputs_count[0] == taskData->outputs_count[1];
   }
 
@@ -169,65 +133,57 @@ bool kurakin_m_graham_scan_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
   if (world.rank() == 0) {
-    count_point = (int)taskData->inputs_count[0];
-    input_x_ = std::vector<double>(count_point);
-    input_y_ = std::vector<double>(count_point);
-    auto* x_tmp_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
-    auto* y_tmp_ptr = reinterpret_cast<double*>(taskData->inputs[1]);
-    for (int i = 0; i < count_point; i++) {
-      input_x_[i] = x_tmp_ptr[i];
-      input_y_[i] = y_tmp_ptr[i];
+    count_point = (int)taskData->inputs_count[0] / 2;
+    input_ = std::vector<double>((int)taskData->inputs_count[0]);
+    auto* tmp_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
+    for (int i = 0; i < count_point * 2; i += 2) {
+      input_[i] = tmp_ptr[i];
+      input_[i + 1] = tmp_ptr[i + 1];
     }
   }
   broadcast(world, count_point, 0);
 
   if (world.rank() == 0) {
     local_count_point = getCountPoint(count_point, world.size(), world.rank());
-    local_input_x_ = std::vector<double>(input_x_.begin(), input_x_.begin() + local_count_point);
-    local_input_y_ = std::vector<double>(input_y_.begin(), input_y_.begin() + local_count_point);
+    local_input_ = std::vector<double>(input_.begin(), input_.begin() + local_count_point * 2);
 
     int sum_next_count_point = local_count_point;
     for (int i = 1; i < world.size(); i++) {
       int next_count_point = getCountPoint(count_point, world.size(), i);
       if (next_count_point != 0) {
-        world.send(i, 0, input_x_.data() + sum_next_count_point, next_count_point);
-        world.send(i, 0, input_y_.data() + sum_next_count_point, next_count_point);
+        world.send(i, 0, input_.data() + sum_next_count_point * 2, next_count_point * 2);
       }
       sum_next_count_point += next_count_point;
     }
   } else {
     local_count_point = getCountPoint(count_point, world.size(), world.rank());
     if (local_count_point != 0) {
-      local_input_x_ = std::vector<double>(local_count_point);
-      local_input_y_ = std::vector<double>(local_count_point);
-      world.recv(0, 0, local_input_x_.data(), local_count_point);
-      world.recv(0, 0, local_input_y_.data(), local_count_point);
+      local_input_ = std::vector<double>(local_count_point * 2);
+      world.recv(0, 0, local_input_.data(), local_count_point * 2);
     }
   }
 
   if (local_count_point != 0) {
-    local_input_ = std::vector<std::vector<double>>(local_count_point, std::vector<double>(3, 0));
-    for (int i = 0; i < local_count_point; i++) {
-      local_input_[i][1] = local_input_x_[i];
-      local_input_[i][2] = local_input_y_[i];
+    graham_input_ = std::vector<std::vector<double>>(local_count_point, std::vector<double>(3, 0));
+    for (int i = 0; i < local_count_point * 2; i += 2) {
+      graham_input_[i / 2][1] = local_input_[i];
+      graham_input_[i / 2][2] = local_input_[i + 1];
     }
-    local_count_point = grahamScan(local_input_);
-    for (int i = 0; i < local_count_point; i++) {
-      local_input_x_[i] = local_input_[i][1];
-      local_input_y_[i] = local_input_[i][2];
+    local_count_point = grahamScan(graham_input_);
+    for (int i = 0; i < local_count_point * 2; i += 2) {
+      local_input_[i] = graham_input_[i / 2][1];
+      local_input_[i + 1] = graham_input_[i / 2][2];
     }
   }
 
   if (world.rank() == 0) {
-    std::copy(local_input_x_.begin(), local_input_x_.begin() + local_count_point, input_x_.begin());
-    std::copy(local_input_y_.begin(), local_input_y_.begin() + local_count_point, input_y_.begin());
+    std::copy(local_input_.begin(), local_input_.begin() + local_count_point * 2, input_.begin());
     int sum_next_count_point = local_count_point;
     for (int i = 1; i < world.size(); i++) {
       int next_count_point;
       world.recv(i, 0, &next_count_point, 1);
       if (next_count_point != 0) {
-        world.recv(i, 0, input_x_.data() + sum_next_count_point, next_count_point);
-        world.recv(i, 0, input_y_.data() + sum_next_count_point, next_count_point);
+        world.recv(i, 0, input_.data() + sum_next_count_point * 2, next_count_point * 2);
       }
       sum_next_count_point += next_count_point;
     }
@@ -235,18 +191,17 @@ bool kurakin_m_graham_scan_mpi::TestMPITaskParallel::run() {
   } else {
     world.send(0, 0, &local_count_point, 1);
     if (local_count_point != 0) {
-      world.send(0, 0, local_input_x_.data(), local_count_point);
-      world.send(0, 0, local_input_y_.data(), local_count_point);
+      world.send(0, 0, local_input_.data(), local_count_point * 2);
     }
   }
 
   if (world.rank() == 0) {
-    local_input_ = std::vector<std::vector<double>>(local_count_point, std::vector<double>(3, 0));
-    for (int i = 0; i < local_count_point; i++) {
-      local_input_[i][1] = input_x_[i];
-      local_input_[i][2] = input_y_[i];
+    graham_input_ = std::vector<std::vector<double>>(local_count_point, std::vector<double>(3, 0));
+    for (int i = 0; i < local_count_point * 2; i += 2) {
+      graham_input_[i / 2][1] = input_[i];
+      graham_input_[i / 2][2] = input_[i + 1];
     }
-    count_point = grahamScan(local_input_);
+    count_point = grahamScan(graham_input_);
   }
 
   return true;
@@ -257,9 +212,9 @@ bool kurakin_m_graham_scan_mpi::TestMPITaskParallel::post_processing() {
 
   if (world.rank() == 0) {
     reinterpret_cast<int*>(taskData->outputs[0])[0] = count_point;
-    for (int i = 0; i < count_point; i++) {
-      reinterpret_cast<double*>(taskData->outputs[1])[i] = local_input_[i][1];
-      reinterpret_cast<double*>(taskData->outputs[2])[i] = local_input_[i][2];
+    for (int i = 0; i < count_point * 2; i += 2) {
+      reinterpret_cast<double*>(taskData->outputs[1])[i] = graham_input_[i / 2][1];
+      reinterpret_cast<double*>(taskData->outputs[1])[i + 1] = graham_input_[i / 2][2];
     }
   }
 

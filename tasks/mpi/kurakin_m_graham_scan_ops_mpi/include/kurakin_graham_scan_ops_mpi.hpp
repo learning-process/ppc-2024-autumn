@@ -23,7 +23,7 @@ int grahamScan(std::vector<std::vector<double>>& input_);
 
 int getCountPoint(int count_point, int size, int rank);
 
-void getRandomVectorForGrahamScan(std::vector<double>& res_x, std::vector<double>& res_y, int count_point, int size);
+void getRandomVectorForGrahamScan(std::vector<double>& res_x, int count_point, int size);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
@@ -36,8 +36,7 @@ class TestMPITaskSequential : public ppc::core::Task {
  private:
   int count_point{};
   std::vector<std::vector<double>> input_;
-  std::vector<double> x_res;
-  std::vector<double> y_res;
+  std::vector<double> res;
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -51,12 +50,10 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   boost::mpi::communicator world;
   int count_point{};
-  std::vector<double> input_x_;
-  std::vector<double> input_y_;
+  std::vector<double> input_;
   int local_count_point{};
-  std::vector<double> local_input_x_;
-  std::vector<double> local_input_y_;
-  std::vector<std::vector<double>> local_input_;
+  std::vector<double> local_input_;
+  std::vector<std::vector<double>> graham_input_;
 };
 
 }  // namespace kurakin_m_graham_scan_mpi

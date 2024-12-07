@@ -7,52 +7,44 @@
 
 TEST(kurakin_m_graham_scan_seq, test_pipeline_run) {
   int count_point;
-  std::vector<double> point_x;
-  std::vector<double> point_y;
+  std::vector<double> points;
 
   // Create data
   count_point = 1000;
-  point_x = std::vector<double>(count_point);
-  point_y = std::vector<double>(count_point);
+  points = std::vector<double>(count_point * 2);
 
-  point_x[0] = count_point / 2;
-  point_y[0] = (-1) * count_point / 2;
+  points[0] = count_point / 2;
+  points[1] = (-1) * count_point / 2;
 
-  for (int i = 1; i < count_point; i++) {
-    point_x[i] = count_point / 2 - i;
-    point_y[i] = count_point / 2 - i;
+  for (int i = 2; i < count_point * 2; i += 2) {
+    points[i] = count_point / 2 - i / 2;
+    points[i + 1] = count_point / 2 - i / 2;
   }
 
   int scan_size;
-  std::vector<double> scan_x(count_point, 0);
-  std::vector<double> scan_y(count_point, 0);
+  std::vector<double> scan_points(count_point * 2, 0);
 
   int ans_size = count_point;
-  std::vector<double> ans_x(ans_size);
-  std::vector<double> ans_y(ans_size);
+  std::vector<double> ans(ans_size * 2);
 
-  ans_x[0] = ans_size / 2;
-  ans_y[0] = (-1) * ans_size / 2;
+  ans[0] = count_point / 2;
+  ans[1] = (-1) * count_point / 2;
 
-  for (int i = 1; i < ans_size; i++) {
-    ans_x[i] = ans_size / 2 - i;
-    ans_y[i] = ans_size / 2 - i;
+  for (int i = 2; i < count_point * 2; i += 2) {
+    ans[i] = count_point / 2 - i / 2;
+    ans[i + 1] = count_point / 2 - i / 2;
   }
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(point_x.data()));
-  taskDataSeq->inputs_count.emplace_back(point_x.size());
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(point_y.data()));
-  taskDataSeq->inputs_count.emplace_back(point_y.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(points.data()));
+  taskDataSeq->inputs_count.emplace_back(points.size());
 
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(&scan_size));
   taskDataSeq->outputs_count.emplace_back((size_t)1);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(scan_x.data()));
-  taskDataSeq->outputs_count.emplace_back(scan_x.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(scan_y.data()));
-  taskDataSeq->outputs_count.emplace_back(scan_y.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(scan_points.data()));
+  taskDataSeq->outputs_count.emplace_back(scan_points.size());
 
   // Create Task
   auto testTaskSequential = std::make_shared<kurakin_m_graham_scan_seq::TestTaskSequential>(taskDataSeq);
@@ -76,60 +68,52 @@ TEST(kurakin_m_graham_scan_seq, test_pipeline_run) {
   ppc::core::Perf::print_perf_statistic(perfResults);
 
   EXPECT_EQ(ans_size, scan_size);
-  for (int i = 0; i < ans_size; i++) {
-    EXPECT_EQ(ans_x[i], scan_x[i]);
-    EXPECT_EQ(ans_y[i], scan_y[i]);
+  for (int i = 0; i < ans_size * 2; i += 2) {
+    EXPECT_EQ(ans[i], scan_points[i]);
+    EXPECT_EQ(ans[i + 1], scan_points[i + 1]);
   }
 }
 
 TEST(kurakin_m_graham_scan_seq, test_task_run) {
   int count_point;
-  std::vector<double> point_x;
-  std::vector<double> point_y;
+  std::vector<double> points;
 
   // Create data
   count_point = 1000;
-  point_x = std::vector<double>(count_point);
-  point_y = std::vector<double>(count_point);
+  points = std::vector<double>(count_point * 2);
 
-  point_x[0] = count_point / 2;
-  point_y[0] = (-1) * count_point / 2;
+  points[0] = count_point / 2;
+  points[1] = (-1) * count_point / 2;
 
-  for (int i = 1; i < count_point; i++) {
-    point_x[i] = count_point / 2 - i;
-    point_y[i] = count_point / 2 - i;
+  for (int i = 2; i < count_point; i += 2) {
+    points[i] = count_point / 2 - i / 2;
+    points[i + 1] = count_point / 2 - i / 2;
   }
 
   int scan_size;
-  std::vector<double> scan_x(count_point, 0);
-  std::vector<double> scan_y(count_point, 0);
+  std::vector<double> scan_points(count_point * 2, 0);
 
   int ans_size = count_point;
-  std::vector<double> ans_x(ans_size);
-  std::vector<double> ans_y(ans_size);
+  std::vector<double> ans(ans_size * 2);
 
-  ans_x[0] = ans_size / 2;
-  ans_y[0] = (-1) * ans_size / 2;
+  ans[0] = count_point / 2;
+  ans[1] = (-1) * count_point / 2;
 
-  for (int i = 1; i < ans_size; i++) {
-    ans_x[i] = ans_size / 2 - i;
-    ans_y[i] = ans_size / 2 - i;
+  for (int i = 2; i < count_point; i += 2) {
+    ans[i] = count_point / 2 - i / 2;
+    ans[i + 1] = count_point / 2 - i / 2;
   }
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(point_x.data()));
-  taskDataSeq->inputs_count.emplace_back(point_x.size());
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(point_y.data()));
-  taskDataSeq->inputs_count.emplace_back(point_y.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(points.data()));
+  taskDataSeq->inputs_count.emplace_back(points.size());
 
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(&scan_size));
   taskDataSeq->outputs_count.emplace_back((size_t)1);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(scan_x.data()));
-  taskDataSeq->outputs_count.emplace_back(scan_x.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(scan_y.data()));
-  taskDataSeq->outputs_count.emplace_back(scan_y.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(scan_points.data()));
+  taskDataSeq->outputs_count.emplace_back(scan_points.size());
 
   // Create Task
   auto testTaskSequential = std::make_shared<kurakin_m_graham_scan_seq::TestTaskSequential>(taskDataSeq);
@@ -153,8 +137,8 @@ TEST(kurakin_m_graham_scan_seq, test_task_run) {
   ppc::core::Perf::print_perf_statistic(perfResults);
 
   EXPECT_EQ(ans_size, scan_size);
-  for (int i = 0; i < ans_size; i++) {
-    EXPECT_EQ(ans_x[i], scan_x[i]);
-    EXPECT_EQ(ans_y[i], scan_y[i]);
+  for (int i = 0; i < ans_size * 2; i += 2) {
+    EXPECT_EQ(ans[i], scan_points[i]);
+    EXPECT_EQ(ans[i + 1], scan_points[i + 1]);
   }
 }
