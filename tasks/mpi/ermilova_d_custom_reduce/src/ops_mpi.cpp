@@ -6,8 +6,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
 bool ermilova_d_custom_reduce_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init vectors
@@ -139,6 +137,9 @@ void apply_operation(void *inbuf, void *inoutbuf, int count, MPI_Datatype dataty
       inout[i] = (inout[i] > in[i]) ? inout[i] : in[i];
     else if (op == MPI_MIN)
       inout[i] = (inout[i] < in[i]) ? inout[i] : in[i];
+    else {
+      throw "Unsupported operation\n";
+    }
   }
 }
 

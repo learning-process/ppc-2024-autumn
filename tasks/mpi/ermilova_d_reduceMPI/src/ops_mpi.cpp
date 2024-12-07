@@ -6,8 +6,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
 bool ermilova_d_reduceMPI_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init vectors
