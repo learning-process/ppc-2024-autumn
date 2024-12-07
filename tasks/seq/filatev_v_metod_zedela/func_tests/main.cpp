@@ -49,7 +49,7 @@ bool rightAns(std::vector<double> &ans, std::vector<int> &resh, double alfa) {
   }
   return max_r < alfa;
 }
-  
+
 }  // namespace filatev_v_metod_zedela_seq
 
 TEST(filatev_v_metod_zedela_seq, test_size_3) {
