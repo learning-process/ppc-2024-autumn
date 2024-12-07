@@ -7,7 +7,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/laganina_e_readers_writers/include/ops_mpi.hpp"
 
-namespace laganina_e_readers_writers {
+namespace laganina_e_readers_writers_perf_tests {
 
 std::vector<int> getRandomVector(int sz, int a, int b) {
   std::random_device dev;
@@ -23,7 +23,7 @@ std::vector<int> getRandomVector(int sz, int a, int b) {
   }
   return vec;
 }
-}  // namespace laganina_e_readers_writers
+}  // namespace laganina_e_readers_writers_perf_tests
 
 TEST(laganina_e_readers_writers_mpi_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
@@ -35,7 +35,7 @@ TEST(laganina_e_readers_writers_mpi_perf_test, test_pipeline_run) {
   const int count_size_vector = 500;
   int count = 0;  // this variable is needed to find out how many writers there were
   std::vector<int> global_vec;
-  ASSERT_NO_THROW(global_vec = laganina_e_readers_writers::getRandomVector(count_size_vector, -1000, 1000));
+  ASSERT_NO_THROW(global_vec = laganina_e_readers_writers_perf_tests::getRandomVector(count_size_vector, -1000, 1000));
 
   std::vector<int> out_vec(count_size_vector, 0);
   std::vector<int> exp_parallel = global_vec;
@@ -87,7 +87,7 @@ TEST(laganina_e_readers_writers_mpi_perf_test, test_task_run) {
   const int count_size_vector = 500;
   int count = 0;  // this variable is needed to find out how many writers there were
   std::vector<int> global_vec;
-  ASSERT_NO_THROW(global_vec = laganina_e_readers_writers::getRandomVector(count_size_vector, -1000, 1000));
+  ASSERT_NO_THROW(global_vec = laganina_e_readers_writers_perf_tests::getRandomVector(count_size_vector, -1000, 1000));
 
   std::vector<int> out_vec(count_size_vector, 0);
   std::vector<int> exp_parallel = global_vec;
