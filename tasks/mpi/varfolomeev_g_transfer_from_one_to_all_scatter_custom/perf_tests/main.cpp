@@ -24,7 +24,8 @@ TEST(mpi_varfolomeev_g_transfer_from_one_to_all_custom_scatter_perf_test, test_p
   }
 
   auto MyScatterTestMPITaskParallel =
-      std::make_shared<varfolomeev_g_transfer_from_one_to_all_custom_scatter_mpi::MyScatterTestMPITaskParallel>(taskDataPar, "max");
+      std::make_shared<varfolomeev_g_transfer_from_one_to_all_custom_scatter_mpi::MyScatterTestMPITaskParallel>(
+          taskDataPar, "max");
   ASSERT_EQ(MyScatterTestMPITaskParallel->validation(), true);
   MyScatterTestMPITaskParallel->pre_processing();
   MyScatterTestMPITaskParallel->run();
@@ -65,7 +66,8 @@ TEST(mpi_varfolomeev_g_transfer_from_one_to_all_custom_scatter_perf_test, test_t
   }
 
   auto MyScatterTestMPITaskParallel =
-      std::make_shared<varfolomeev_g_transfer_from_one_to_all_custom_scatter_mpi::MyScatterTestMPITaskParallel>(taskDataPar, "max");
+      std::make_shared<varfolomeev_g_transfer_from_one_to_all_custom_scatter_mpi::MyScatterTestMPITaskParallel>(
+          taskDataPar, "max");
   ASSERT_EQ(MyScatterTestMPITaskParallel->validation(), true);
   MyScatterTestMPITaskParallel->pre_processing();
   MyScatterTestMPITaskParallel->run();
