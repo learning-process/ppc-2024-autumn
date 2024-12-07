@@ -166,27 +166,36 @@ bool nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodParallel::run(
   local_b.resize(local_size);
   local_x.resize(local_size, 0.0);
 
-  boost::mpi::scatterv(world, A_.data(), sizes, displs, local_A.data(), local_size * n, 0);
+  auto n_sizes = sizes;
+  std::for_each(n_sizes.begin(), n_sizes.end(), [n](auto& e) { e *= n; });
+  boost::mpi::scatterv(world, A_.data(), n_sizes, displs, local_A.data(), local_size * n, 0);
   boost::mpi::scatterv(world, b_.data(), sizes, displs, local_b.data(), local_size, 0);
 
-  for (size_t i = 0; i < n; ++i) {
-    if (A_[i * n + i] == 0) {
-      std::cerr << "Error: Zero diagonal element detected in matrix A." << std::endl;
-      return false;
-    }
-
-    for (size_t j = 0; j < n; ++j) {
-      if (i == j) {
-        B[i * n + j] = 0;
-      } else {
-        B[i * n + j] = -A_[i * n + j] / A_[i * n + i];
+  if (world.rank() == 0) {
+    for (size_t i = 0; i < n; ++i) {
+      if (A_[i * n + i] == 0) {
+        std::cerr << "Error: Zero diagonal element detected in matrix A." << std::endl;
+        return false;
       }
-    }
 
-    g[i] = b_[i] / A_[i * n + i];
+      for (size_t j = 0; j < n; ++j) {
+        if (i == j) {
+          B[i * n + j] = 0;
+        } else {
+          B[i * n + j] = -A_[i * n + j] / A_[i * n + i];
+        }
+      }
+
+      g[i] = b_[i] / A_[i * n + i];
+    }
   }
 
-  for (size_t iter = 0; iter < max_iterations_; ++iter) {
+  boost::mpi::broadcast(world, B, 0);
+  boost::mpi::broadcast(world, g, 0);
+
+  size_t iter = 0;
+  const size_t iter_success = max_iterations_ + 1;
+  while (iter < max_iterations_) {
     boost::mpi::broadcast(world, x_prev, 0);
 
     std::vector<double> local_x_new(local_size, 0.0);
@@ -201,6 +210,7 @@ bool nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodParallel::run(
     }
 
     boost::mpi::gatherv(world, local_x_new.data(), local_size, x_.data(), sizes, displs, 0);
+    ++iter;
 
     if (world.rank() == 0) {
       double max_diff = 0.0;
@@ -210,11 +220,17 @@ bool nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodParallel::run(
       }
 
       if (max_diff < tolerance_) {
-        return true;
+        iter = iter_success;
       }
 
       x_prev = x_;
     }
+
+    boost::mpi::broadcast(world, iter, 0);
+  }
+
+  if (iter == iter_success) {
+    return true;
   }
 
   std::cerr << "Error: Method did not converge within the maximum number of iterations." << std::endl;
