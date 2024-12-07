@@ -5,50 +5,52 @@
 
 #include "seq/filatev_v_metod_zedela/include/ops_seq.hpp"
 
-using namespace filatev_v_metod_zedela_seq;
+namespace filatev_v_metod_zedela_seq {
 
-int generatorVector(std::vector<int> &vec) {
-  int sum = 0;
-  for (long unsigned int i = 0; i < vec.size(); ++i) {
-    vec[i] = rand() % 100 - 50;
-    sum += abs(vec[i]);
-  }
-  return sum;
-}
-
-void generatorMatrix(std::vector<int> &matrix, int size) {
-  for (int i = 0; i < size; ++i) {
+  int generatorVector(std::vector<int> &vec) {
     int sum = 0;
-    for (int j = 0; j < size; ++j) {
-      matrix[i * size + j] = rand() % 100 - 50;
-      sum += abs(matrix[i * size + j]);
+    for (long unsigned int i = 0; i < vec.size(); ++i) {
+      vec[i] = rand() % 100 - 50;
+      sum += abs(vec[i]);
     }
-    matrix[i * size + i] = sum + rand() % 100;
+    return sum;
   }
-}
 
-std::vector<int> genetatirVectorB(std::vector<int> &matrix, std::vector<int> &vecB) {
-  int size = vecB.size();
-  std::vector<int> ans(size);
-  generatorVector(ans);
-  for (int i = 0; i < size; ++i) {
-    int sum = 0;
-    for (int j = 0; j < size; ++j) {
-      sum += matrix[j + i * size] * ans[j];
+  void generatorMatrix(std::vector<int> &matrix, int size) {
+    for (int i = 0; i < size; ++i) {
+      int sum = 0;
+      for (int j = 0; j < size; ++j) {
+        matrix[i * size + j] = rand() % 100 - 50;
+        sum += abs(matrix[i * size + j]);
+      }
+      matrix[i * size + i] = sum + rand() % 100;
     }
-    vecB[i] = sum;
   }
-  return ans;
-}
 
-bool rightAns(std::vector<double> &ans, std::vector<int> &resh, double alfa) {
-  double max_r = 0;
-  for (long unsigned int i = 0; i < ans.size(); ++i) {
-    double temp = abs(ans[i] - resh[i]);
-    max_r = std::max(max_r, temp);
+  std::vector<int> genetatirVectorB(std::vector<int> &matrix, std::vector<int> &vecB) {
+    int size = vecB.size();
+    std::vector<int> ans(size);
+    generatorVector(ans);
+    for (int i = 0; i < size; ++i) {
+      int sum = 0;
+      for (int j = 0; j < size; ++j) {
+        sum += matrix[j + i * size] * ans[j];
+      }
+      vecB[i] = sum;
+    }
+    return ans;
   }
-  return max_r < alfa;
-}
+
+  bool rightAns(std::vector<double> &ans, std::vector<int> &resh, double alfa) {
+    double max_r = 0;
+    for (long unsigned int i = 0; i < ans.size(); ++i) {
+      double temp = abs(ans[i] - resh[i]);
+      max_r = std::max(max_r, temp);
+    }
+    return max_r < alfa;
+  }
+  
+}  // namespace filatev_v_metod_zedela_seq
 
 TEST(filatev_v_metod_zedela_seq, test_size_3) {
   int size = 3;
@@ -58,8 +60,8 @@ TEST(filatev_v_metod_zedela_seq, test_size_3) {
   std::vector<double> answer;
   std::vector<int> resh;
 
-  generatorMatrix(matrix, size);
-  resh = genetatirVectorB(matrix, vecB);
+  filatev_v_metod_zedela_seq::generatorMatrix(matrix, size);
+  resh = filatev_v_metod_zedela_seq::genetatirVectorB(matrix, vecB);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
@@ -78,7 +80,7 @@ TEST(filatev_v_metod_zedela_seq, test_size_3) {
   auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
   answer.insert(answer.end(), temp, temp + size);
 
-  ASSERT_EQ(rightAns(answer, resh, alfa), true);
+  ASSERT_EQ(filatev_v_metod_zedela_seq::rightAns(answer, resh, alfa), true);
 }
 
 TEST(filatev_v_metod_zedela_seq, test_size_5) {
@@ -89,8 +91,8 @@ TEST(filatev_v_metod_zedela_seq, test_size_5) {
   std::vector<double> answer;
   std::vector<int> resh;
 
-  generatorMatrix(matrix, size);
-  resh = genetatirVectorB(matrix, vecB);
+  filatev_v_metod_zedela_seq::generatorMatrix(matrix, size);
+  resh = filatev_v_metod_zedela_seq::genetatirVectorB(matrix, vecB);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
@@ -109,7 +111,7 @@ TEST(filatev_v_metod_zedela_seq, test_size_5) {
   auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
   answer.insert(answer.end(), temp, temp + size);
 
-  ASSERT_EQ(rightAns(answer, resh, alfa), true);
+  ASSERT_EQ(filatev_v_metod_zedela_seq::rightAns(answer, resh, alfa), true);
 }
 
 TEST(filatev_v_metod_zedela_seq, test_size_10) {
@@ -120,8 +122,8 @@ TEST(filatev_v_metod_zedela_seq, test_size_10) {
   std::vector<double> answer;
   std::vector<int> resh;
 
-  generatorMatrix(matrix, size);
-  resh = genetatirVectorB(matrix, vecB);
+  filatev_v_metod_zedela_seq::generatorMatrix(matrix, size);
+  resh = filatev_v_metod_zedela_seq::genetatirVectorB(matrix, vecB);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
@@ -140,7 +142,7 @@ TEST(filatev_v_metod_zedela_seq, test_size_10) {
   auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
   answer.insert(answer.end(), temp, temp + size);
 
-  ASSERT_EQ(rightAns(answer, resh, alfa), true);
+  ASSERT_EQ(filatev_v_metod_zedela_seq::rightAns(answer, resh, alfa), true);
 }
 
 TEST(filatev_v_metod_zedela_seq, test_error_rank) {
@@ -224,8 +226,8 @@ TEST(filatev_v_metod_zedela_seq, test_maxi_rz) {
   std::vector<double> answer;
   std::vector<int> resh;
 
-  generatorMatrix(matrix, size);
-  resh = genetatirVectorB(matrix, vecB);
+  filatev_v_metod_zedela_seq::generatorMatrix(matrix, size);
+  resh = filatev_v_metod_zedela_seq::genetatirVectorB(matrix, vecB);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
@@ -244,5 +246,5 @@ TEST(filatev_v_metod_zedela_seq, test_maxi_rz) {
   auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
   answer.insert(answer.end(), temp, temp + size);
 
-  ASSERT_EQ(rightAns(answer, resh, alfa), true);
+  ASSERT_EQ(filatev_v_metod_zedela_seq::rightAns(answer, resh, alfa), true);
 }

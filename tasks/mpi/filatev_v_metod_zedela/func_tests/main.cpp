@@ -7,6 +7,8 @@
 
 #include "mpi/filatev_v_metod_zedela/include/ops_mpi.hpp"
 
+namespace filatev_v_metod_zedela_mpi {
+
 int generatorVector(std::vector<int> &vec) {
   int sum = 0;
   for (long unsigned int i = 0; i < vec.size(); ++i) {
@@ -50,6 +52,8 @@ bool rightAns(std::vector<double> &ans, std::vector<int> &resh, double alfa) {
   return max_r < alfa;
 }
 
+}  // namespace filatev_v_metod_zedela_mpi
+
 TEST(filatev_v_metod_zedela_mpi, test_size_3) {
   boost::mpi::communicator world;
   int size = 3;
@@ -65,8 +69,8 @@ TEST(filatev_v_metod_zedela_mpi, test_size_3) {
     matrix.resize(size * size, 0);
     vecB.resize(size, 0);
 
-    generatorMatrix(matrix, size);
-    resh = genetatirVectorB(matrix, vecB);
+    filatev_v_metod_zedela_mpi::generatorMatrix(matrix, size);
+    resh = filatev_v_metod_zedela_mpi::genetatirVectorB(matrix, vecB);
 
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
@@ -86,7 +90,7 @@ TEST(filatev_v_metod_zedela_mpi, test_size_3) {
     auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
     answer.insert(answer.end(), temp, temp + size);
 
-    ASSERT_EQ(rightAns(answer, resh, alfa), true);
+    ASSERT_EQ(filatev_v_metod_zedela_mpi::rightAns(answer, resh, alfa), true);
   }
 }
 
@@ -105,8 +109,8 @@ TEST(filatev_v_metod_zedela_mpi, test_size_10) {
     matrix.resize(size * size, 0);
     vecB.resize(size, 0);
 
-    generatorMatrix(matrix, size);
-    resh = genetatirVectorB(matrix, vecB);
+    filatev_v_metod_zedela_mpi::generatorMatrix(matrix, size);
+    resh = filatev_v_metod_zedela_mpi::genetatirVectorB(matrix, vecB);
 
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
@@ -126,7 +130,7 @@ TEST(filatev_v_metod_zedela_mpi, test_size_10) {
     auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
     answer.insert(answer.end(), temp, temp + size);
 
-    ASSERT_EQ(rightAns(answer, resh, alfa), true);
+    ASSERT_EQ(filatev_v_metod_zedela_mpi::rightAns(answer, resh, alfa), true);
   }
 }
 
@@ -145,8 +149,8 @@ TEST(filatev_v_metod_zedela_mpi, test_size_100) {
     matrix.resize(size * size, 0);
     vecB.resize(size, 0);
 
-    generatorMatrix(matrix, size);
-    resh = genetatirVectorB(matrix, vecB);
+    filatev_v_metod_zedela_mpi::generatorMatrix(matrix, size);
+    resh = filatev_v_metod_zedela_mpi::genetatirVectorB(matrix, vecB);
 
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
@@ -166,7 +170,7 @@ TEST(filatev_v_metod_zedela_mpi, test_size_100) {
     auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
     answer.insert(answer.end(), temp, temp + size);
 
-    ASSERT_EQ(rightAns(answer, resh, alfa), true);
+    ASSERT_EQ(filatev_v_metod_zedela_mpi::rightAns(answer, resh, alfa), true);
   }
 }
 
@@ -185,8 +189,8 @@ TEST(filatev_v_metod_zedela_mpi, test_size_500) {
     matrix.resize(size * size, 0);
     vecB.resize(size, 0);
 
-    generatorMatrix(matrix, size);
-    resh = genetatirVectorB(matrix, vecB);
+    filatev_v_metod_zedela_mpi::generatorMatrix(matrix, size);
+    resh = filatev_v_metod_zedela_mpi::genetatirVectorB(matrix, vecB);
 
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
@@ -206,7 +210,7 @@ TEST(filatev_v_metod_zedela_mpi, test_size_500) {
     auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
     answer.insert(answer.end(), temp, temp + size);
 
-    ASSERT_EQ(rightAns(answer, resh, alfa), true);
+    ASSERT_EQ(filatev_v_metod_zedela_mpi::rightAns(answer, resh, alfa), true);
   }
 }
 

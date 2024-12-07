@@ -6,6 +6,8 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/filatev_v_metod_zedela/include/ops_seq.hpp"
 
+namespace filatev_v_metod_zedela_seq {
+
 int generatorVector(std::vector<int> &vec) {
   int sum = 0;
   for (long unsigned int i = 0; i < vec.size(); ++i) {
@@ -49,6 +51,8 @@ bool rightAns(std::vector<double> &ans, std::vector<int> &resh, double alfa) {
   return max_r < alfa;
 }
 
+}  // namespace filatev_v_metod_zedela_seq
+
 TEST(filatev_v_metod_zedela_seq, test_pipeline_run) {
   int size = 500;
   double alfa = 0.00001;
@@ -57,8 +61,8 @@ TEST(filatev_v_metod_zedela_seq, test_pipeline_run) {
   std::vector<double> answer;
   std::vector<int> resh;
 
-  generatorMatrix(matrix, size);
-  resh = genetatirVectorB(matrix, vecB);
+  filatev_v_metod_zedela_seq::generatorMatrix(matrix, size);
+  resh = filatev_v_metod_zedela_seq::genetatirVectorB(matrix, vecB);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
@@ -91,7 +95,7 @@ TEST(filatev_v_metod_zedela_seq, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  ASSERT_EQ(rightAns(answer, resh, alfa), true);
+  ASSERT_EQ(filatev_v_metod_zedela_seq::rightAns(answer, resh, alfa), true);
 }
 
 TEST(filatev_v_metod_zedela_seq, test_task_run) {
@@ -102,8 +106,8 @@ TEST(filatev_v_metod_zedela_seq, test_task_run) {
   std::vector<double> answer;
   std::vector<int> resh;
 
-  generatorMatrix(matrix, size);
-  resh = genetatirVectorB(matrix, vecB);
+  filatev_v_metod_zedela_seq::generatorMatrix(matrix, size);
+  resh = filatev_v_metod_zedela_seq::genetatirVectorB(matrix, vecB);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
@@ -136,5 +140,5 @@ TEST(filatev_v_metod_zedela_seq, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  ASSERT_EQ(rightAns(answer, resh, alfa), true);
+  ASSERT_EQ(filatev_v_metod_zedela_seq::rightAns(answer, resh, alfa), true);
 }

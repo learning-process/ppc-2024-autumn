@@ -7,6 +7,8 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/filatev_v_metod_zedela/include/ops_mpi.hpp"
 
+namespace filatev_v_metod_zedela_mpi {
+
 int generatorVector(std::vector<int> &vec) {
   int sum = 0;
   for (long unsigned int i = 0; i < vec.size(); ++i) {
@@ -50,6 +52,8 @@ bool rightAns(std::vector<double> &ans, std::vector<int> &resh, double alfa) {
   return max_r < alfa;
 }
 
+}  // namespace filatev_v_metod_zedela_mpi
+
 TEST(filatev_v_metod_zedela_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   int size = 500;
@@ -63,8 +67,8 @@ TEST(filatev_v_metod_zedela_mpi, test_pipeline_run) {
   if (world.rank() == 0) {
     matrix.resize(size * size);
     vecB.resize(size);
-    generatorMatrix(matrix, size);
-    resh = genetatirVectorB(matrix, vecB);
+    filatev_v_metod_zedela_mpi::generatorMatrix(matrix, size);
+    resh = filatev_v_metod_zedela_mpi::genetatirVectorB(matrix, vecB);
 
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
@@ -99,7 +103,7 @@ TEST(filatev_v_metod_zedela_mpi, test_pipeline_run) {
     auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
     answer.insert(answer.end(), temp, temp + size);
 
-    ASSERT_EQ(rightAns(answer, resh, alfa), true);
+    ASSERT_EQ(filatev_v_metod_zedela_mpi::rightAns(answer, resh, alfa), true);
   }
 }
 
@@ -116,8 +120,8 @@ TEST(filatev_v_metod_zedela_mpi, test_task_run) {
   if (world.rank() == 0) {
     matrix.resize(size * size);
     vecB.resize(size);
-    generatorMatrix(matrix, size);
-    resh = genetatirVectorB(matrix, vecB);
+    filatev_v_metod_zedela_mpi::generatorMatrix(matrix, size);
+    resh = filatev_v_metod_zedela_mpi::genetatirVectorB(matrix, vecB);
 
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
@@ -150,6 +154,6 @@ TEST(filatev_v_metod_zedela_mpi, test_task_run) {
     ppc::core::Perf::print_perf_statistic(perfResults);
     auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
     answer.insert(answer.end(), temp, temp + size);
-    ASSERT_EQ(rightAns(answer, resh, alfa), true);
+    ASSERT_EQ(filatev_v_metod_zedela_mpi::rightAns(answer, resh, alfa), true);
   }
 }
