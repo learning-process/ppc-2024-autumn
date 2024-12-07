@@ -14,10 +14,7 @@ std::vector<int> createRandomVectorBoostRealization(int sz) {
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
   for (int i = 0; i < sz; i++) {
-    int val = 0;
-    do {
-      val = gen() % 200 - 100;
-    } while (val <= 0);
+    int val = gen() % 200 - 100;
     vec[i] = val;
   }
   return vec;

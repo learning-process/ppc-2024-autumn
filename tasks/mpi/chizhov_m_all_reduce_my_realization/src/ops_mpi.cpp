@@ -92,8 +92,8 @@ template <typename T>
 void chizhov_m_all_reduce_my_mpi::TestMPITaskMyOwnParallel::my_all_reduce(const boost::mpi::communicator& world,
                                                                           const T* in_values, T* out_values, int n) {
   int root = world.rank();
-  std::vector<T> left_values(n);
-  std::vector<T> right_values(n);
+  std::vector<T> left_values(n, std::numeric_limits<T>::min());
+  std::vector<T> right_values(n, std::numeric_limits<T>::min());
 
   int left_child = 2 * root + 1;
   int right_child = 2 * root + 2;
@@ -103,12 +103,10 @@ void chizhov_m_all_reduce_my_mpi::TestMPITaskMyOwnParallel::my_all_reduce(const 
   }
 
   if (left_child < world.size()) {
-    left_values.resize(n);
     world.recv(left_child, 0, left_values.data(), n);
   }
 
   if (right_child < world.size()) {
-    right_values.resize(n);
     world.recv(right_child, 0, right_values.data(), n);
   }
 
@@ -160,7 +158,7 @@ bool chizhov_m_all_reduce_my_mpi::TestMPITaskMyOwnParallel::run() {
   std::vector<int> localMax(cols, INT_MIN);
   for (int j = startCol; j < lastCol; j++) {
     int maxElem = input_[j];
-    for (int i = 1; i < rows; i++) {
+    for (int i = 0; i < rows; i++) {
       int coor = i * cols + j;
       if (input_[coor] > maxElem) {
         maxElem = input_[coor];
