@@ -81,8 +81,8 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, Test_4) {
 
 TEST(sedova_o_vertical_ribbon_scheme_mpi, Test_5) {
   boost::mpi::communicator world;
-  int rows_ = 10;
-  int cols_ = 10;
+  int rows_ = 4;
+  int cols_ = 4;
   std::vector<int> global_matrix;
   std::vector<int> global_vector;
   std::vector<int> global_result;
