@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <vector>
@@ -24,12 +25,47 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_pipeline) {
   varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "+");
 
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
-
   ASSERT_EQ(testMpiTaskParallel.pre_processing(), true);
-
   ASSERT_EQ(testMpiTaskParallel.run(), true);
-
   ASSERT_EQ(testMpiTaskParallel.post_processing(), true);
+}
+
+TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Validation_Wrong_Operation) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;            // working vector
+  std::vector<int32_t> global_res(1, 0);  // result vector
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    const int count_size_vector = 0;
+    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -100, 100);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
+    taskDataPar->outputs_count.emplace_back(global_res.size());
+  }
+
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "min");
+
+  ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  ASSERT_EQ(testMpiTaskParallel.pre_processing(), true);
+  ASSERT_EQ(testMpiTaskParallel.run(), true);
+  ASSERT_EQ(testMpiTaskParallel.post_processing(), true);
+}
+
+TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Generator) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;  // working vector
+  int a = -100;
+  int b = 100;
+  const int count_size_vector = 500;
+  global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, a, b);
+  int max = *std::max_element(global_vec.begin(), global_vec.end());
+  int min = *std::min_element(global_vec.begin(), global_vec.end());
+
+  ASSERT_LE(max, b);
+  ASSERT_GE(min, a);
+  ASSERT_EQ(count_size_vector, global_vec.size());
 }
 
 TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Empty_vec) {
@@ -577,6 +613,31 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_pipe
   ASSERT_EQ(MyScatterTestMPITaskParallel.run(), true);
   ASSERT_EQ(MyScatterTestMPITaskParallel.post_processing(), true);
 }
+
+TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_Validation_Wrong_Operation) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;            // working vector
+  std::vector<int32_t> global_res(1, 0);  // result vector
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    const int count_size_vector = 0;
+    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -100, 100);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
+    taskDataPar->outputs_count.emplace_back(global_res.size());
+  }
+
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::MyScatterTestMPITaskParallel MyScatterTestMPITaskParallel(
+      taskDataPar, "min");
+
+  ASSERT_EQ(MyScatterTestMPITaskParallel.validation(), false);
+  ASSERT_EQ(MyScatterTestMPITaskParallel.pre_processing(), true);
+  ASSERT_EQ(MyScatterTestMPITaskParallel.run(), true);
+  ASSERT_EQ(MyScatterTestMPITaskParallel.post_processing(), true);
+}
+
 TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_Empty_vec) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;            // working vector
@@ -728,8 +789,6 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_Max_
     ASSERT_EQ(check_vec[0], global_res[0]);
   }
 }
-
-//////////////
 
 TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_CustomScatter_Sum_Negative) {
   boost::mpi::communicator world;
