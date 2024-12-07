@@ -7,6 +7,10 @@
 
 namespace sozonov_i_gaussian_method_horizontal_strip_scheme_seq {
 
+int extended_matrix_rank(int n, int m, std::vector<double> a);
+
+int determinant(int n, int m, std::vector<double> a);
+
 class TestTaskSequential : public ppc::core::Task {
  public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -17,7 +21,7 @@ class TestTaskSequential : public ppc::core::Task {
 
  private:
   std::vector<double> matrix, x;
-  int n{};
+  int rows{}, cols{};
 };
 
 }  // namespace sozonov_i_gaussian_method_horizontal_strip_scheme_seq
