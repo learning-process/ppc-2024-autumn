@@ -4,10 +4,10 @@
 #include <boost/serialization/array.hpp>
 #include <boost/serialization/vector.hpp>
 #include <functional>
-#include <thread>
-#include <vector>
 #include <random>
 #include <string>
+#include <thread>
+#include <vector>
 
 bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::validation() {
   internal_order_test();
@@ -133,7 +133,7 @@ bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::run() {
 
   for (int i = 0; i < rows_; ++i) {
     for (int j = 0; j < cols_; ++j) {
-        result_vector_[j] += matrix_[i * cols_ + j] * vector_[i];
+      result_vector_[j] += matrix_[i * cols_ + j] * vector_[i];
     }
   }
   return true;
