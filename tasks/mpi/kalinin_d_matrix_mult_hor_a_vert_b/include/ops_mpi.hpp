@@ -16,8 +16,6 @@
 
 namespace kalinin_d_matrix_mult_hor_a_vert_b_mpi {
 
-std::vector<int> getRandomVector(int sz);
-
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

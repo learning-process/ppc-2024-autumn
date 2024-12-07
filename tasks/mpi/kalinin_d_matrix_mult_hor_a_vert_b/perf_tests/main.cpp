@@ -11,10 +11,10 @@
 
 namespace kalinin_d_matrix_mult_hor_a_vert_b_mpi {
 
-std::vector<int> get_random_matrix(int rows, int cols) {
+std::vector<int> get_random_matrix(int rows, int cols, int min, int max) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  std::uniform_int_distribution<> dist(-1000, 1000);
+  std::uniform_int_distribution<> dist(min, max);
   std::vector<int> matrix(rows * cols);
   for (int i = 0; i < rows * cols; i++) {
     matrix[i] = dist(gen);
@@ -41,8 +41,8 @@ TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, pipeline_run) {
   int columns_B = 200;
 
   if (world.rank() == 0) {
-    global_A = kalinin_d_matrix_mult_hor_a_vert_b_mpi::get_random_matrix(rows_A, columns_A);
-    global_B = kalinin_d_matrix_mult_hor_a_vert_b_mpi::get_random_matrix(rows_B, columns_B);
+    global_A = kalinin_d_matrix_mult_hor_a_vert_b_mpi::get_random_matrix(rows_A, columns_A, -1000, 1000);
+    global_B = kalinin_d_matrix_mult_hor_a_vert_b_mpi::get_random_matrix(rows_B, columns_B, -1000, 1000);
 
     global_res_seq.resize(rows_A * columns_B, 0);
     global_res_par.resize(rows_A * columns_B, 0);
@@ -113,8 +113,8 @@ TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, task_run) {
   int columns_B = 200;
 
   if (world.rank() == 0) {
-    global_A = kalinin_d_matrix_mult_hor_a_vert_b_mpi::get_random_matrix(rows_A, columns_A);
-    global_B = kalinin_d_matrix_mult_hor_a_vert_b_mpi::get_random_matrix(rows_B, columns_B);
+    global_A = kalinin_d_matrix_mult_hor_a_vert_b_mpi::get_random_matrix(rows_A, columns_A, -1000, 1000);
+    global_B = kalinin_d_matrix_mult_hor_a_vert_b_mpi::get_random_matrix(rows_B, columns_B, -1000, 1000);
 
     global_res_seq.resize(rows_A * columns_B, 0);
     global_res_par.resize(rows_A * columns_B, 0);

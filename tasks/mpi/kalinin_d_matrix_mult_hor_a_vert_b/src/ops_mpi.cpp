@@ -7,16 +7,6 @@
 #include <thread>
 #include <vector>
 
-std::vector<int> kalinin_d_matrix_mult_hor_a_vert_b_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
-}
-
 bool kalinin_d_matrix_mult_hor_a_vert_b_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
 

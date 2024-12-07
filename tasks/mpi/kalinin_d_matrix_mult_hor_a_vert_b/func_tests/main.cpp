@@ -8,6 +8,7 @@
 #include "mpi/kalinin_d_matrix_mult_hor_a_vert_b/include/ops_mpi.hpp"
 
 namespace kalinin_d_matrix_mult_hor_a_vert_b_mpi {
+
 void get_random_matrix(std::vector<int> &mat, int min_val, int max_val) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -90,8 +91,6 @@ TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, InvalidTaskWithPartialInputs) {
   auto taskParallel = std::make_shared<kalinin_d_matrix_mult_hor_a_vert_b_mpi::TestMPITaskParallel>(taskDataPar);
   if (world.rank() == 0) {
     EXPECT_FALSE(taskParallel->validation());
-  } else {
-    EXPECT_TRUE(true);
   }
 }
 
@@ -124,8 +123,6 @@ TEST(kalinin_d_matrix_mult_hor_a_vert_b_mpi, InvalidTaskWithMismatchedDimensions
   auto taskParallel = std::make_shared<kalinin_d_matrix_mult_hor_a_vert_b_mpi::TestMPITaskParallel>(taskDataPar);
   if (world.rank() == 0) {
     EXPECT_FALSE(taskParallel->validation());
-  } else {
-    EXPECT_TRUE(true);
   }
 }
 
