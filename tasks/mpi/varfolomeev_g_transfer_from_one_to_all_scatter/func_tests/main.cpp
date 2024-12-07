@@ -58,7 +58,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Generator) {
   std::vector<int> global_vec;  // working vector
   int a = -100;
   int b = 100;
-  const int count_size_vector = 500;
+  int count_size_vector = 500;
   global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, a, b);
   int max = *std::max_element(global_vec.begin(), global_vec.end());
   int min = *std::min_element(global_vec.begin(), global_vec.end());
