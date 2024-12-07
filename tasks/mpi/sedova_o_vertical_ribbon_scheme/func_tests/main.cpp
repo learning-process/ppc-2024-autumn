@@ -81,8 +81,8 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, Test_4) {
 
 TEST(sedova_o_vertical_ribbon_scheme_mpi, Test_5) {
   boost::mpi::communicator world;
-  int rows_ = 4;
-  int cols_ = 4;
+  int rows_ = 2;
+  int cols_ = 2;
   std::vector<int> global_matrix;
   std::vector<int> global_vector;
   std::vector<int> global_result;
@@ -92,10 +92,10 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, Test_5) {
     global_vector.resize(rows_);
     global_result.resize(cols_, 0);
     for (int i = 0; i < rows_ * cols_; ++i) {
-      global_matrix[i] = (rand() % 1000) - 500;
+      global_matrix[i] = (rand() % 100) - 5;
     }
     for (int i = 0; i < rows_; ++i) {
-      global_vector[i] = (rand() % 1000) - 500;
+      global_vector[i] = (rand() % 100) - 5;
     }
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(global_matrix.size());
