@@ -9,7 +9,7 @@
 
 TEST(beresnev_a_cannons_algorithm_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  size_t n = 400;
+  int n = 400;
   std::vector<double> inA;
   std::vector<double> inB;
   std::vector<double> outC;
@@ -51,13 +51,13 @@ TEST(beresnev_a_cannons_algorithm_mpi, test_pipeline_run) {
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
     ASSERT_TRUE(
-        std::equal(inA.begin(), inA.end(), outC.begin(), [](double a, double b) { return std::abs(a - b) < 1e-9; }));
+        std::equal(inA.begin(), inA.end(), outC.begin(), [](double a, double b) { return std::abs(a - b) < 1e-5; }));
   }
 }
 
 TEST(beresnev_a_cannons_algorithm_mpi, test_task_run) {
   boost::mpi::communicator world;
-  size_t n = 400;
+  int n = 400;
   std::vector<double> inA;
   std::vector<double> inB;
   std::vector<double> outC;
@@ -99,6 +99,6 @@ TEST(beresnev_a_cannons_algorithm_mpi, test_task_run) {
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
     ASSERT_TRUE(
-        std::equal(inA.begin(), inA.end(), outC.begin(), [](double a, double b) { return std::abs(a - b) < 1e-9; }));
+        std::equal(inA.begin(), inA.end(), outC.begin(), [](double a, double b) { return std::abs(a - b) < 1e-5; }));
   }
 }

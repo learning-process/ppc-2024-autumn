@@ -28,9 +28,9 @@ bool beresnev_a_cannons_algorithm_seq::TestTaskSequential::validation() {
 
 bool beresnev_a_cannons_algorithm_seq::TestTaskSequential::run() {
   internal_order_test();
-  for (int i = 0; i < n_; ++i) {
-    for (int j = 0; j < n_; ++j) {
-      for (int k = 0; k < n_; ++k) {
+  for (size_t i = 0; i < n_; ++i) {
+    for (size_t j = 0; j < n_; ++j) {
+      for (size_t k = 0; k < n_; ++k) {
         res_[i * n_ + j] += inp_A[i * n_ + k] * inp_B[k * n_ + j];
       }
     }

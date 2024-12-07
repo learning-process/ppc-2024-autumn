@@ -66,7 +66,7 @@ TEST(beresnev_a_cannons_algorithm_seq, Test_Empty_Out) {
   taskDataSeq->inputs_count.emplace_back(inB.size());
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&n));
   taskDataSeq->inputs_count.emplace_back(1);
-  taskDataSeq->outputs.emplace_back(outC.data());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(&outC));
   taskDataSeq->outputs_count.emplace_back(outC.size());
 
   beresnev_a_cannons_algorithm_seq::TestTaskSequential testTaskSequential(taskDataSeq);

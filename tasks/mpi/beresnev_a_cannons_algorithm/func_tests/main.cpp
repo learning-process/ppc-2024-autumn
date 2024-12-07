@@ -26,7 +26,7 @@ static std::vector<double> getRandomVector(int sz) {
 
 TEST(beresnev_a_cannons_algorithm_mpi, Test_Empty_in) {
   boost::mpi::communicator world;
-  size_t n = 3;
+  int n = 3;
   std::vector<double> inA;
   std::vector<double> inB;
   std::vector<double> outC;
@@ -54,7 +54,7 @@ TEST(beresnev_a_cannons_algorithm_mpi, Test_Empty_in) {
 
 TEST(beresnev_a_cannons_algorithm_mpi, Test_Empty_out) {
   boost::mpi::communicator world;
-  size_t n = 3;
+  int n = 3;
   std::vector<double> inA;
   std::vector<double> inB;
   std::vector<double> outC;
@@ -82,7 +82,7 @@ TEST(beresnev_a_cannons_algorithm_mpi, Test_Empty_out) {
 
 TEST(beresnev_a_cannons_algorithm_mpi, Test_Wrong_Size) {
   boost::mpi::communicator world;
-  size_t n = 3;
+  int n = 3;
   std::vector<double> inA;
   std::vector<double> inB;
   std::vector<double> outC;
@@ -111,7 +111,7 @@ TEST(beresnev_a_cannons_algorithm_mpi, Test_Wrong_Size) {
 
 TEST(beresnev_a_cannons_algorithm_mpi, Test_Wrong_Size_1) {
   boost::mpi::communicator world;
-  size_t n = 3;
+  int n = 3;
   std::vector<double> inA;
   std::vector<double> inB;
   std::vector<double> outC;
@@ -140,7 +140,7 @@ TEST(beresnev_a_cannons_algorithm_mpi, Test_Wrong_Size_1) {
 
 TEST(beresnev_a_cannons_algorithm_mpi, Test_m1_1) {
   boost::mpi::communicator world;
-  size_t n = 1;
+  int n = 1;
   std::vector<double> inA;
   std::vector<double> inB;
   std::vector<double> outC;
@@ -193,7 +193,7 @@ TEST(beresnev_a_cannons_algorithm_mpi, Test_m1_1) {
 
 TEST(beresnev_a_cannons_algorithm_mpi, Test_Inverse) {
   boost::mpi::communicator world;
-  size_t n = 5;
+  int n = 5;
   std::vector<double> iden = {1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1};
   std::vector<double> inA = {-0.5, -0.5, 0,    0.5, 0,    0.5, 0,   -0.25, 0, -0.5, 1.5, 0.5, -0.25,
                              -0.5, 0,    -0.5, 0.5, 0.25, 0,   0.5, -0.5,  0, 0.25, 0,   0};
@@ -228,7 +228,7 @@ TEST(beresnev_a_cannons_algorithm_mpi, Test_Inverse) {
 
 TEST(beresnev_a_cannons_algorithm_mpi, Test_Iden) {
   boost::mpi::communicator world;
-  size_t n = 5;
+  int n = 5;
   std::vector<double> inA = {1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1};
   std::vector<double> inB;
   std::vector<double> outC;
@@ -262,7 +262,7 @@ TEST(beresnev_a_cannons_algorithm_mpi, Test_Iden) {
 
 TEST(beresnev_a_cannons_algorithm_mpi, Test_Iden_1) {
   boost::mpi::communicator world;
-  size_t n = 5;
+  int n = 5;
   std::vector<double> inA;
   std::vector<double> inB = {1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1};
   std::vector<double> outC;
@@ -296,7 +296,7 @@ TEST(beresnev_a_cannons_algorithm_mpi, Test_Iden_1) {
 
 TEST(beresnev_a_cannons_algorithm_mpi, Test_Random) {
   boost::mpi::communicator world;
-  size_t n = 7;
+  int n = 7;
   std::vector<double> inA;
   std::vector<double> inB;
   std::vector<double> outC;
@@ -355,7 +355,7 @@ TEST(beresnev_a_cannons_algorithm_mpi, Test_Random) {
 
 TEST(beresnev_a_cannons_algorithm_mpi, Test_Random_1) {
   boost::mpi::communicator world;
-  size_t n = 120;
+  int n = 120;
   std::vector<double> inA;
   std::vector<double> inB;
   std::vector<double> outC;
@@ -414,7 +414,7 @@ TEST(beresnev_a_cannons_algorithm_mpi, Test_Random_1) {
 
 TEST(beresnev_a_cannons_algorithm_mpi, Test_Random_2) {
   boost::mpi::communicator world;
-  size_t n = 349;
+  int n = 349;
   std::vector<double> inA;
   std::vector<double> inB;
   std::vector<double> outC;

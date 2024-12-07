@@ -79,12 +79,13 @@ bool beresnev_a_cannons_algorithm_mpi::TestMPITaskSequential::pre_processing() {
 bool beresnev_a_cannons_algorithm_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
   if (taskData->inputs[2] != nullptr) {
-    n_ = reinterpret_cast<size_t*>(taskData->inputs[2])[0];
+    n_ = reinterpret_cast<int*>(taskData->inputs[2])[0];
   }
   s_ = n_ * n_;
   return n_ > 0 && taskData->inputs_count[2] == 1 && taskData->inputs_count[0] == taskData->inputs_count[1] &&
-         taskData->inputs_count[1] == s_ && taskData->inputs[0] != nullptr && taskData->inputs[1] != nullptr &&
-         taskData->outputs[0] != nullptr && static_cast<size_t>(taskData->outputs_count[0]) == s_;
+         static_cast<int>(taskData->inputs_count[1]) == s_ && taskData->inputs[0] != nullptr &&
+         taskData->inputs[1] != nullptr && taskData->outputs[0] != nullptr &&
+         static_cast<int>(taskData->outputs_count[0]) == s_;
 }
 
 bool beresnev_a_cannons_algorithm_mpi::TestMPITaskSequential::run() {
@@ -121,13 +122,14 @@ bool beresnev_a_cannons_algorithm_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     if (taskData->inputs[2] != nullptr) {
-      n_ = reinterpret_cast<size_t*>(taskData->inputs[2])[0];
+      n_ = reinterpret_cast<int*>(taskData->inputs[2])[0];
     }
     s_ = n_ * n_;
     // std::cerr << n_ << std::endl;
     return n_ > 0 && taskData->inputs_count[2] == 1 && taskData->inputs_count[0] == taskData->inputs_count[1] &&
-           taskData->inputs_count[1] == s_ && taskData->inputs[0] != nullptr && taskData->inputs[1] != nullptr &&
-           taskData->outputs[0] != nullptr && static_cast<size_t>(taskData->outputs_count[0]) == s_;
+           static_cast<int>(taskData->inputs_count[1]) == s_ && taskData->inputs[0] != nullptr &&
+           taskData->inputs[1] != nullptr && taskData->outputs[0] != nullptr &&
+           static_cast<int>(taskData->outputs_count[0]) == s_;
   }
   // std::cerr << world.rank() << std::endl;
   return true;
