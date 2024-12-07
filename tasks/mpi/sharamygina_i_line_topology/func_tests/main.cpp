@@ -145,7 +145,7 @@ TEST(sharamygina_i_line_topology_mpi, invalidSendler) {
 
   sharamygina_i_line_topology_mpi::line_topology_mpi testTask(taskData);
   if (world.rank() == 0) {
-      ASSERT_FALSE(testTask.validation());
+    ASSERT_FALSE(testTask.validation());
   }
 }
 
@@ -163,7 +163,7 @@ TEST(sharamygina_i_line_topology_mpi, invalidRecipient) {
 
   sharamygina_i_line_topology_mpi::line_topology_mpi testTask(taskData);
   if (world.rank() == 0) {
-      ASSERT_FALSE(testTask.validation());
+    ASSERT_FALSE(testTask.validation());
   }
 }
 
@@ -181,7 +181,7 @@ TEST(sharamygina_i_line_topology_mpi, invalidNumberOfElements) {
 
   sharamygina_i_line_topology_mpi::line_topology_mpi testTask(taskData);
   if (world.rank() == 0) {
-      ASSERT_FALSE(testTask.validation());
+    ASSERT_FALSE(testTask.validation());
   }
 }
 
