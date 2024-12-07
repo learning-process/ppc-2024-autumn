@@ -1,9 +1,21 @@
 #include "mpi/tyshkevich_a_hypercube/include/ops_mpi.hpp"
 
 #include <boost/serialization/array.hpp>
+#include <boost/serialization/utility.hpp>
 #include <boost/serialization/vector.hpp>
 #include <cmath>
+#include <utility>
 #include <vector>
+
+void printPath(const std::vector<int>& path) {
+  for (size_t i = 0; i < path.size(); ++i) {
+    std::cout << path[i];
+    if (i != path.size() - 1) {
+      std::cout << " -> ";
+    }
+  }
+  std::cout << std::endl;
+}
 
 bool tyshkevich_a_hypercube_mpi::HypercubeParallelMPI::validation() {
   internal_order_test();
@@ -30,76 +42,55 @@ bool tyshkevich_a_hypercube_mpi::HypercubeParallelMPI::validation() {
 bool tyshkevich_a_hypercube_mpi::HypercubeParallelMPI::pre_processing() {
   internal_order_test();
 
-  sender_id = *reinterpret_cast<int*>(taskData->inputs[0]);
-  target_id = *reinterpret_cast<int*>(taskData->inputs[1]);
+  int sender = *reinterpret_cast<int*>(taskData->inputs[0]);
+  int target = *reinterpret_cast<int*>(taskData->inputs[1]);
+
+  sender_id = sender;
+  target_id = target;
 
   dimension = static_cast<int>(std::log2(world.size()));
 
   if (world.rank() == sender_id) {
     auto* data = reinterpret_cast<int*>(taskData->inputs[2]);
     int data_size = taskData->inputs_count[2];
-    message.assign(data, data + data_size);
-  } else if (world.rank() == target_id) {
-    int output_data_size = taskData->outputs_count[0];
-    result.resize(output_data_size);
+    std::vector<int> data_input(data_size);
+    data_input.assign(data, data + data_size);
+    message.resize(data_input.size());
+    std::copy(data_input.begin(), data_input.end(), message.begin());
   }
+
+  int current = sender_id;
+  do {
+    shortest_route.push_back(current);
+    current = tyshkevich_a_hypercube_mpi::getNextNode(current, target_id, dimension);
+  } while (current != target_id);
+
+  shortest_route.push_back(target_id);
+
   return true;
 }
 
 bool tyshkevich_a_hypercube_mpi::HypercubeParallelMPI::run() {
   internal_order_test();
 
-  int world_size = world.size();
   int world_rank = world.rank();
 
   if (world_rank == sender_id) {
-    int next_node = tyshkevich_a_hypercube_mpi::getNextNode(world_rank, target_id, dimension);
-    world.send(next_node, 0, message);
-
-    std::vector<int> route_transfer;
-    route_transfer.push_back(sender_id);
-    bool route_received = false;
-    while (!route_received) {
-      const auto statOpt0 = world.iprobe(boost::mpi::any_source, 2);
-      if (statOpt0.has_value()) {
-        world.recv(statOpt0->source(), 2);
-        world.send(statOpt0->source(), 4);
-        route_transfer.push_back(statOpt0->source());
-
-        if (statOpt0->source() == target_id) {
-          route_received = true;
-        }
-      }
-    }
-    world.send(target_id, 3, route_transfer);
+    int next_node = shortest_route[1];
+    auto send_pair = std::make_pair(message, 1);
+    world.send(next_node, 0, send_pair);
   } else {
-    bool message_received = false;
-    while (!message_received) {
-      const auto statOpt0 = world.iprobe(boost::mpi::any_source, 0);
-      if (statOpt0.has_value()) {
-        std::vector<int> received_data;
-        world.recv(boost::mpi::any_source, 0, received_data);
-        world.send(sender_id, 2);
-        world.recv(sender_id, 4);
+    if (std::find(shortest_route.begin(), shortest_route.end(), world_rank) != shortest_route.end()) {
+      std::pair<std::vector<int>, int> received_data;
+      world.recv(boost::mpi::any_source, 0, received_data);
 
-        if (world_rank != target_id) {
-          int next_node = tyshkevich_a_hypercube_mpi::getNextNode(world_rank, target_id, dimension);
-          world.send(next_node, 0, received_data);
-        } else {
-          std::copy(received_data.begin(), received_data.end(), result.begin());
-          for (int i = 0; i < world_size; ++i) {
-            if (i == target_id || i == sender_id) continue;
-            world.send(i, 1, true);
-          }
-          message_received = true;
-        }
-      }
-
-      const auto statOpt1 = world.iprobe(boost::mpi::any_source, 1);
-      if (statOpt1.has_value()) {
-        bool terminate;
-        world.recv(target_id, 1, terminate);
-        message_received = terminate;
+      if (world_rank != target_id) {
+        int next_node = shortest_route[++received_data.second];
+        world.send(next_node, 0, received_data);
+      } else {
+        result.resize(received_data.first.size());
+        std::copy(received_data.first.begin(), received_data.first.end(), result.begin());
+        route_iters = received_data.second + 1;
       }
     }
   }
@@ -110,19 +101,12 @@ bool tyshkevich_a_hypercube_mpi::HypercubeParallelMPI::run() {
 bool tyshkevich_a_hypercube_mpi::HypercubeParallelMPI::post_processing() {
   internal_order_test();
 
-  boost::mpi::broadcast(world, message, sender_id);
-
+  world.barrier();
   if (world.rank() == target_id) {
-    world.recv(sender_id, 3, route);
-
     auto* output_data = reinterpret_cast<int*>(taskData->outputs[0]);
     std::copy(result.begin(), result.end(), output_data);
 
-    auto* input_data = reinterpret_cast<int*>(taskData->outputs[1]);
-    std::copy(message.begin(), message.end(), input_data);
-
-    auto* route_data = reinterpret_cast<int*>(taskData->outputs[2]);
-    std::copy(route.begin(), route.end(), route_data);
+    *reinterpret_cast<int*>(taskData->outputs[1]) = route_iters;
   }
 
   return true;

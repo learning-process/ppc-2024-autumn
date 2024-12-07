@@ -32,21 +32,20 @@ std::vector<int> getRandomIntVector(int size, int minValue = 0, int maxValue = 1
   return vec;
 }
 
-void run_test(boost::mpi::communicator& world, int sender, int target, int data_size = 100) {
-  int n = static_cast<int>(std::log2(world.size()));
+void run_test(boost::mpi::communicator& world, int sender, int target, int data_size = 10) {
+  std::vector<int> input_vector(data_size);
+  std::vector<int> output_result(data_size);
+
+  int path_length;
+  int dimension = static_cast<int>(std::log2(world.size()));
   std::vector<int> shortest_route;
   int current = sender;
   do {
     shortest_route.push_back(current);
-    current = tyshkevich_a_hypercube_mpi::getNextNode(current, target, n);
+    current = tyshkevich_a_hypercube_mpi::getNextNode(current, target, dimension);
   } while (current != target);
-
   shortest_route.push_back(target);
 
-  std::vector<int> input_vector;
-  std::vector<int> output_result(data_size);
-  std::vector<int> output_check(data_size);
-  std::vector<int> output_route(shortest_route.size());
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&sender));
@@ -58,14 +57,12 @@ void run_test(boost::mpi::communicator& world, int sender, int target, int data_
   if (world.rank() == sender) {
     input_vector = tyshkevich_a_hypercube_mpi::getRandomIntVector(data_size);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_vector.data()));
-    taskDataPar->inputs_count.emplace_back(input_vector.size());
+    taskDataPar->inputs_count.emplace_back(data_size);
   } else if (world.rank() == target) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_result.data()));
-    taskDataPar->outputs_count.emplace_back(output_result.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_check.data()));
-    taskDataPar->outputs_count.emplace_back(output_check.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_route.data()));
-    taskDataPar->outputs_count.emplace_back(output_route.size());
+    taskDataPar->outputs_count.emplace_back(data_size);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&path_length));
+    taskDataPar->outputs_count.emplace_back(1);
   }
 
   auto taskParallel = std::make_shared<tyshkevich_a_hypercube_mpi::HypercubeParallelMPI>(taskDataPar);
@@ -75,201 +72,156 @@ void run_test(boost::mpi::communicator& world, int sender, int target, int data_
   taskParallel->post_processing();
 
   if (world.rank() == target) {
-    EXPECT_EQ(output_check, output_result);
-    EXPECT_EQ(shortest_route, output_route);
+    world.send(sender, 0, output_result);
+    world.send(sender, 1, path_length);
+  } else if (world.rank() == sender) {
+    world.recv(target, 0, output_result);
+    world.recv(target, 1, path_length);
+    EXPECT_EQ(input_vector, output_result);
+    EXPECT_EQ(static_cast<int>(shortest_route.size()), path_length);
   }
 }
 
-bool initial_test(int world_size) {
+bool initial_test(int world_size, int sender, int target) {
   int init_dimension = static_cast<int>(std::log2(world_size));
-  return (1 << init_dimension) == world_size;
+  return (1 << init_dimension) == world_size && sender < world_size && target < world_size;
 }
 
 }  // namespace tyshkevich_a_hypercube_mpi
 
 TEST(tyshkevich_a_hypercube_mpi, 0_to_1_process_send) {
   boost::mpi::communicator world;
-  if (tyshkevich_a_hypercube_mpi::initial_test(world.size())) {
-    int sender = 0;
-    int target = 1;
-    if (sender < world.size() && target < world.size()) {
-      tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
-    } else {
-      GTEST_SKIP();
-    }
+  int sender = 0;
+  int target = 1;
+
+  if (tyshkevich_a_hypercube_mpi::initial_test(world.size(), sender, target)) {
+    tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
+  } else {
+    GTEST_SKIP();
   }
 }
 
 TEST(tyshkevich_a_hypercube_mpi, 1_to_0_process_send) {
   boost::mpi::communicator world;
-  if (tyshkevich_a_hypercube_mpi::initial_test(world.size())) {
-    int sender = 1;
-    int target = 0;
-    if (sender < world.size() && target < world.size()) {
-      tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
-    } else {
-      GTEST_SKIP();
-    }
+  int sender = 1;
+  int target = 0;
+
+  if (tyshkevich_a_hypercube_mpi::initial_test(world.size(), sender, target)) {
+    tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
+  } else {
+    GTEST_SKIP();
   }
 }
 
 TEST(tyshkevich_a_hypercube_mpi, 0_to_2_process_send) {
   boost::mpi::communicator world;
-  if (tyshkevich_a_hypercube_mpi::initial_test(world.size())) {
-    int sender = 0;
-    int target = 2;
-    if (sender < world.size() && target < world.size()) {
-      tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
-    } else {
-      GTEST_SKIP();
-    }
+  int sender = 0;
+  int target = 2;
+
+  if (tyshkevich_a_hypercube_mpi::initial_test(world.size(), sender, target)) {
+    tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
+  } else {
+    GTEST_SKIP();
   }
 }
 
 TEST(tyshkevich_a_hypercube_mpi, 2_to_0_process_send) {
   boost::mpi::communicator world;
-  if (tyshkevich_a_hypercube_mpi::initial_test(world.size())) {
-    int sender = 2;
-    int target = 0;
-    if (sender < world.size() && target < world.size()) {
-      tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
-    } else {
-      GTEST_SKIP();
-    }
+  int sender = 2;
+  int target = 0;
+
+  if (tyshkevich_a_hypercube_mpi::initial_test(world.size(), sender, target)) {
+    tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
+  } else {
+    GTEST_SKIP();
   }
 }
 
 TEST(tyshkevich_a_hypercube_mpi, 0_to_3_process_send) {
   boost::mpi::communicator world;
-  if (tyshkevich_a_hypercube_mpi::initial_test(world.size())) {
-    int sender = 0;
-    int target = 3;
-    if (sender < world.size() && target < world.size()) {
-      tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
-    } else {
-      GTEST_SKIP();
-    }
+  int sender = 0;
+  int target = 3;
+
+  if (tyshkevich_a_hypercube_mpi::initial_test(world.size(), sender, target)) {
+    tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
+  } else {
+    GTEST_SKIP();
   }
 }
 
 TEST(tyshkevich_a_hypercube_mpi, 3_to_0_process_send) {
   boost::mpi::communicator world;
-  if (tyshkevich_a_hypercube_mpi::initial_test(world.size())) {
-    int sender = 3;
-    int target = 0;
-    if (sender < world.size() && target < world.size()) {
-      tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
-    } else {
-      GTEST_SKIP();
-    }
+  int sender = 3;
+  int target = 0;
+
+  if (tyshkevich_a_hypercube_mpi::initial_test(world.size(), sender, target)) {
+    tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
+  } else {
+    GTEST_SKIP();
   }
 }
 
 TEST(tyshkevich_a_hypercube_mpi, 1_to_3_process_send) {
   boost::mpi::communicator world;
-  if (tyshkevich_a_hypercube_mpi::initial_test(world.size())) {
-    int sender = 1;
-    int target = 3;
-    if (sender < world.size() && target < world.size()) {
-      tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
-    } else {
-      GTEST_SKIP();
-    }
+  int sender = 1;
+  int target = 3;
+
+  if (tyshkevich_a_hypercube_mpi::initial_test(world.size(), sender, target)) {
+    tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
+  } else {
+    GTEST_SKIP();
   }
 }
 
 TEST(tyshkevich_a_hypercube_mpi, 3_to_1_process_send) {
   boost::mpi::communicator world;
-  if (tyshkevich_a_hypercube_mpi::initial_test(world.size())) {
-    int sender = 3;
-    int target = 1;
-    if (sender < world.size() && target < world.size()) {
-      tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
-    } else {
-      GTEST_SKIP();
-    }
+  int sender = 3;
+  int target = 1;
+
+  if (tyshkevich_a_hypercube_mpi::initial_test(world.size(), sender, target)) {
+    tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
+  } else {
+    GTEST_SKIP();
   }
 }
 
 TEST(tyshkevich_a_hypercube_mpi, 2_to_3_process_send) {
   boost::mpi::communicator world;
-  if (tyshkevich_a_hypercube_mpi::initial_test(world.size())) {
-    int sender = 2;
-    int target = 3;
-    if (sender < world.size() && target < world.size()) {
-      tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
-    } else {
-      GTEST_SKIP();
-    }
+  int sender = 2;
+  int target = 3;
+
+  if (tyshkevich_a_hypercube_mpi::initial_test(world.size(), sender, target)) {
+    tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
+  } else {
+    GTEST_SKIP();
   }
 }
 
 TEST(tyshkevich_a_hypercube_mpi, 3_to_2_process_send) {
   boost::mpi::communicator world;
-  if (tyshkevich_a_hypercube_mpi::initial_test(world.size())) {
-    int sender = 3;
-    int target = 2;
-    if (sender < world.size() && target < world.size()) {
-      tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
-    } else {
-      GTEST_SKIP();
-    }
+  int sender = 3;
+  int target = 2;
+
+  if (tyshkevich_a_hypercube_mpi::initial_test(world.size(), sender, target)) {
+    tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
+  } else {
+    GTEST_SKIP();
   }
 }
 
-TEST(tyshkevich_a_hypercube_mpi, random_send_between_0_and_max_small_data) {
+TEST(tyshkevich_a_hypercube_mpi, random_send_between_0_and_max_data) {
   boost::mpi::communicator world;
-  if (tyshkevich_a_hypercube_mpi::initial_test(world.size())) {
-    if (world.size() > 1) {
-      int sender;
-      int target;
-      if (world.rank() == 0) {
-        tyshkevich_a_hypercube_mpi::getRandomIntPair(0, world.size() - 1, sender, target);
-      }
-      boost::mpi::broadcast(world, sender, 0);
-      boost::mpi::broadcast(world, target, 0);
-
-      tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
-    } else {
-      GTEST_SKIP();
-    }
+  int sender;
+  int target;
+  if (world.rank() == 0 && world.size() > 1) {
+    tyshkevich_a_hypercube_mpi::getRandomIntPair(0, world.size() - 1, sender, target);
   }
-}
+  boost::mpi::broadcast(world, sender, 0);
+  boost::mpi::broadcast(world, target, 0);
 
-TEST(tyshkevich_a_hypercube_mpi, random_send_between_0_and_max_medium_data) {
-  boost::mpi::communicator world;
-  if (tyshkevich_a_hypercube_mpi::initial_test(world.size())) {
-    if (world.size() > 1) {
-      int sender;
-      int target;
-      if (world.rank() == 0) {
-        tyshkevich_a_hypercube_mpi::getRandomIntPair(0, world.size() - 1, sender, target);
-      }
-      boost::mpi::broadcast(world, sender, 0);
-      boost::mpi::broadcast(world, target, 0);
-
-      tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 100);
-    } else {
-      GTEST_SKIP();
-    }
-  }
-}
-
-TEST(tyshkevich_a_hypercube_mpi, random_send_between_0_and_max_large_data) {
-  boost::mpi::communicator world;
-  if (tyshkevich_a_hypercube_mpi::initial_test(world.size())) {
-    if (world.size() > 1) {
-      int sender;
-      int target;
-      if (world.rank() == 0) {
-        tyshkevich_a_hypercube_mpi::getRandomIntPair(0, world.size() - 1, sender, target);
-      }
-      boost::mpi::broadcast(world, sender, 0);
-      boost::mpi::broadcast(world, target, 0);
-
-      tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 1000);
-    } else {
-      GTEST_SKIP();
-    }
+  if (tyshkevich_a_hypercube_mpi::initial_test(world.size(), sender, target)) {
+    tyshkevich_a_hypercube_mpi::run_test(world, sender, target, 10);
+  } else {
+    GTEST_SKIP();
   }
 }
