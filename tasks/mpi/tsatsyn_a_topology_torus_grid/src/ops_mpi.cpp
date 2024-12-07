@@ -386,6 +386,7 @@ std::vector<int> hasDivisors(int k) {
 }
 bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
+  world.barrier();
   if (world.rank() == 0) {
     return (taskData->outputs_count[0] == 1 && taskData->inputs_count[0] > 0);
   }
