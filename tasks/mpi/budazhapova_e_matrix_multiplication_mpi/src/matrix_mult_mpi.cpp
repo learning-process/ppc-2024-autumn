@@ -1,3 +1,5 @@
+#include "mpi/budazhapova_e_matrix_multiplication/include/matrix_mult_mpi.hpp"
+
 #include <algorithm>
 #include <functional>
 #include <iostream>
@@ -6,23 +8,21 @@
 #include <thread>
 #include <vector>
 
-#include "mpi/budazhapova_e_matrix_multiplication/include/matrix_mult.hpp"
-
 bool budazhapova_e_matrix_mult_mpi::MatrixMultSequential::pre_processing() {
   internal_order_test();
   A = std::vector<int>(reinterpret_cast<int*>(taskData->inputs[0]),
-                       reinterpret_cast<int*>(taskData->inputs[0]) + taskData->inputs_counts[0]);
+                       reinterpret_cast<int*>(taskData->inputs[0]) + taskData->inputs_count[0]);
   b = std::vector<int>(reinterpret_cast<int*>(taskData->inputs[1]),
-                       reinterpret_cast<int*>(taskData->inputs[1]) + taskData->inputs_counts[1]);
-  columns = taskData->inputs_counts[1];
-  rows = taskData->inputs_counts[0] / columns;
+                       reinterpret_cast<int*>(taskData->inputs[1]) + taskData->inputs_count[1]);
+  columns = taskData->inputs_count[1];
+  rows = taskData->inputs_count[0] / columns;
   res = std::vector<int>(rows);
 }
 
 bool budazhapova_e_matrix_mult_mpi::MatrixMultSequential::validation() {
   internal_order_test();
-  return double(taskData->inputs_count[0]) % columns == 0 && taskData->inputs_counts[0] > 0 &&
-         taskData->inputs_counts[1] > 0;
+  return double(taskData->inputs_count[0]) % columns == 0 && taskData->inputs_count[0] > 0 &&
+         taskData->inputs_count[1] > 0;
 }
 
 bool budazhapova_e_matrix_mult_mpi::MatrixMultSequential::run() {
@@ -53,11 +53,11 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::pre_processing() {
 
   if (world_rank == 0) {
     A = std::vector<int>(reinterpret_cast<int*>(taskData->inputs[0]),
-                         reinterpret_cast<int*>(taskData->inputs[0]) + taskData->inputs_counts[0]);
+                         reinterpret_cast<int*>(taskData->inputs[0]) + taskData->inputs_count[0]);
     b = std::vector<int>(reinterpret_cast<int*>(taskData->inputs[1]),
-                         reinterpret_cast<int*>(taskData->inputs[1]) + taskData->inputs_counts[1]);
-    columns = taskData->inputs_counts[1];
-    rows = taskData->inputs_counts[0] / columns;
+                         reinterpret_cast<int*>(taskData->inputs[1]) + taskData->inputs_count[1]);
+    columns = taskData->inputs_count[1];
+    rows = taskData->inputs_count[0] / columns;
     res = std::vector<int>(rows);
   }
 
@@ -85,9 +85,9 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::pre_processing() {
 bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    return double(taskData->inputs_count[0]) % columns == 0 && taskData->inputs_counts[0] > 0 &&
-           taskData->inputs_counts[1] > 0 &&
-           taskData->outputs_count[0] == (taskData->inputs_counts[0] / taskData->inputs_counts[1]);
+    return double(taskData->inputs_count[0]) % columns == 0 && taskData->inputs_count[0] > 0 &&
+           taskData->inputs_count[1] > 0 &&
+           taskData->outputs_count[0] == (taskData->inputs_count[0] / taskData->inputs_count[1]);
   }
   return true;
 }
