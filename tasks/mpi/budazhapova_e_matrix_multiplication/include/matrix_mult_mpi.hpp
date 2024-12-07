@@ -46,7 +46,9 @@ class MatrixMultParallel : public ppc::core::Task {
   std::vector<int> A;
   std::vector<int> b;
   std::vector<int> res;
+
   std::vector<int> local_res;
+  std::vector<int> local_A;
 
   boost::mpi::communicator world;
 };

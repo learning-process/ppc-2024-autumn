@@ -65,20 +65,31 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::pre_processing() {
 
     boost::mpi::broadcast(world, A, 0);
     boost::mpi::broadcast(world, b, 0);
-  }
+    boost::mpi::broadcast(world, columns, 0);
 
-  if (rows >= world_size) {
-    int n_of_send_rows = rows / world_size;
-    int n_of_proc_with_extra_row = rows % world_size;
+    if (world_size > rows) {
+      if (world_rank < rows) {
+        local_A.resize(columns);
+        local_res.resize(1);
+      } else {
+        local_A.clear();
+        local_res.clear();
+        return true;
+      }
+    } else {
+      int n_of_send_rows = rows / world_size;
+      int n_of_proc_with_extra_row = rows % world_size;
 
-    int start_row = world_rank * n_of_send_rows + std::min(world_rank, n_of_proc_with_extra_row);
-    int end_row = start_row + n_of_send_rows + (world_rank < n_of_proc_with_extra_row ? 1 : 0);
-    local_res.resize(end_row - start_row, 0);
-  } else {
-    for (int i = 0; i < rows; ++i) {
-      res[i] = 0;
-      for (int j = 0; j < columns; ++j) {
-        res[i] += A[i * columns + j] * b[j];
+      int start_row = world_rank * n_of_send_rows + std::min(world_rank, n_of_proc_with_extra_row);
+      int end_row = start_row + n_of_send_rows + (world_rank < n_of_proc_with_extra_row ? 1 : 0);
+
+      local_A.resize((end_row - start_row) * columns);
+      local_res.resize(end_row - start_row, 0);
+
+      for (int i = start_row; i < end_row; ++i) {
+        for (int j = 0; j < columns; ++j) {
+          local_A[(i - start_row) * columns + j] = A[i * columns + j];
+        }
       }
     }
   }
@@ -97,18 +108,13 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::validation() {
 bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::run() {
   internal_order_test();
 
-  int n_of_send_rows = rows / world.size();
-  int n_of_proc_with_extra_row = rows % world.size();
-
-  int start_row = world.rank() * n_of_send_rows + std::min(world.rank(), n_of_proc_with_extra_row);
-  int end_row = start_row + n_of_send_rows + (world.rank() < n_of_proc_with_extra_row ? 1 : 0);
-
-  for (int i = start_row; i < end_row; i++) {
-    local_res[i - start_row] = 0;
+  for (int i = 0; i < local_res.size(); i++) {
+    local_res[i] = 0;
     for (int j = 0; j < columns; j++) {
-      local_res[i - start_row] += A[j + columns * i] * b[j];
+      local_res[i] += local_A[i * columns + j] * b[j];
     }
   }
+
   boost::mpi::gather(world, local_res.data(), local_res.size(), res.data(), 0);
   return true;
 }
