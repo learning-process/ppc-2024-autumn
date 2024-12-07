@@ -1,5 +1,6 @@
 #include "seq/kalinin_d_matrix_mult_hor_a_vert_b/include/ops_seq.hpp"
 
+#include <algorithm>
 #include <thread>
 
 using namespace std::chrono_literals;
@@ -48,13 +49,9 @@ bool kalinin_d_matrix_mult_hor_a_vert_b_seq::MultHorAVertBTaskSequential::run() 
 bool kalinin_d_matrix_mult_hor_a_vert_b_seq::MultHorAVertBTaskSequential::post_processing() {
   internal_order_test();
 
-  size_t total_size = rows_A * columns_B;
-
   int* output_data = reinterpret_cast<int*>(taskData->outputs[0]);
 
-  for (size_t i = 0; i < total_size; ++i) {
-    output_data[i] = C[i];
-  }
+  std::copy(C.begin(), C.end(), output_data);
 
   return true;
 }
