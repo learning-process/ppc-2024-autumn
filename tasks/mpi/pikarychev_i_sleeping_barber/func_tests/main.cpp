@@ -42,7 +42,7 @@ TEST(pikarychev_i_sleeping_barber_mpi_test, test_16) { test(16); }
 TEST(pikarychev_i_sleeping_barber_mpi_test, test_17) { test(17); }
 TEST(pikarychev_i_sleeping_barber_mpi_test, fails_validation) {
   boost::mpi::communicator world;
-  int campacity = 1;
+  int capacity = 1;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
