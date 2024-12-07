@@ -24,7 +24,7 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultSequential::pre_processing() {
 
 bool budazhapova_e_matrix_mult_mpi::MatrixMultSequential::validation() {
   internal_order_test();
-  return taskData->inputs_count[0] % columns == 0 && taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0;
+  return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->inputs_count[0] % columns == 0;
 }
 
 bool budazhapova_e_matrix_mult_mpi::MatrixMultSequential::run() {
@@ -86,9 +86,8 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::pre_processing() {
 
 bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::validation() {
   internal_order_test();
-
   if (world.rank() == 0) {
-    return taskData->inputs_count[0] % columns == 0 && taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0;
+    return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->inputs_count[0] % columns == 0;
   }
   return true;
 }

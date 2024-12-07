@@ -47,7 +47,7 @@ TEST(budazhapova_e_matrix_mult_seq, validation_test_1) {
 
 TEST(budazhapova_e_matrix_mult_seq, validation_test_2) {
   std::vector<int> A_matrix(12, 1);
-  std::vector<int> b_vector;
+  std::vector<int> b_vector = {};
   std::vector<int> out(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
