@@ -1,10 +1,9 @@
 // Copyright 2024 Nesterov Alexander
 #include <gtest/gtest.h>
 
+#include <chrono>
 #include <cstdlib>
 #include <ctime>
-
-#include <chrono>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
