@@ -6,8 +6,6 @@
 #include <random>
 #include <thread>
 
-using namespace std::chrono_literals;
-
 bool kurakin_m_min_values_by_rows_matrix_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   input_ = std::vector<int>(taskData->inputs_count[0]);

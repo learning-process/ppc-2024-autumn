@@ -2,9 +2,24 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <random>
 #include <vector>
 
 #include "mpi/kurakin_m_min_values_by_rows_matrix/include/kurakin_min_rows_matrix_ops_mpi.hpp"
+
+namespace kurakin_m_min_values_by_rows_matrix_mpi {
+
+std::vector<int> getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = gen() % 100;
+  }
+  return vec;
+}
+
+}  // namespace kurakin_m_min_values_by_rows_matrix_mpi
 
 TEST(kurakin_m_min_values_by_rows_matrix_mpi, Test_MPI_and_Seq_1_1) {
   int count_rows = 1;
