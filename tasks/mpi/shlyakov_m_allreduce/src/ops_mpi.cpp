@@ -177,7 +177,7 @@ bool shlyakov_m_all_reduce_mpi::MyTestMPITaskParallel::run() {
   for (int id = 0; id < delta; ++id) {
     int global_id = id + delta * world.rank();
     if ((global_id % col == 0) && (world.rank() != 0 || id != 0)) {
-      ress[(global_id / col) - (global_id % col == 0)] += count;
+      ress[(global_id / col) - static_cast<int>(global_id % col == 0)] += count;
       count = 0;
     }
     if (global_id >= size) break;
@@ -261,7 +261,7 @@ bool shlyakov_m_all_reduce_mpi::TestMPITaskParallel::run() {
   for (int id = 0; id < delta; ++id) {
     int global_id = id + delta * world.rank();
     if ((global_id % col == 0) && (world.rank() != 0 || id != 0)) {
-      ress[(global_id / col) - (global_id % col == 0)] += count;
+      ress[(global_id / col) - static_cast<int>(global_id % col == 0)] += count;
       count = 0;
     }
     if (global_id >= size) break;
