@@ -2,7 +2,6 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
-#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/shlyakov_m_allreduce/include/ops_mpi.hpp"
