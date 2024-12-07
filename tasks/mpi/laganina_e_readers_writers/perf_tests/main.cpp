@@ -7,7 +7,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/laganina_e_readers_writers/include/ops_mpi.hpp"
 
-std::vector<int> laganina_e_readers_writers_mpi::getRandomVector(int sz, int a, int b) {
+std::vector<int> getRandomVector(int sz, int a, int b) {
   std::random_device dev;
   std::mt19937 gen(dev());
   if (a > b) {
@@ -32,7 +32,7 @@ TEST(laganina_e_readers_writers_mpi_perf_test, test_pipeline_run) {
   const int count_size_vector = 500;
   int count = 0;  // this variable is needed to find out how many writers there were
   std::vector<int> global_vec;
-  ASSERT_NO_THROW(global_vec = laganina_e_readers_writers_mpi::getRandomVector(count_size_vector, -1000, 1000));
+  ASSERT_NO_THROW(global_vec = getRandomVector(count_size_vector, -1000, 1000));
 
   std::vector<int> out_vec(count_size_vector, 0);
   std::vector<int> exp_parallel = global_vec;
@@ -84,7 +84,7 @@ TEST(laganina_e_readers_writers_mpi_perf_test, test_task_run) {
   const int count_size_vector = 500;
   int count = 0;  // this variable is needed to find out how many writers there were
   std::vector<int> global_vec;
-  ASSERT_NO_THROW(global_vec = laganina_e_readers_writers_mpi::getRandomVector(count_size_vector, -1000, 1000));
+  ASSERT_NO_THROW(global_vec = getRandomVector(count_size_vector, -1000, 1000));
 
   std::vector<int> out_vec(count_size_vector, 0);
   std::vector<int> exp_parallel = global_vec;

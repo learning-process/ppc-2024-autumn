@@ -11,8 +11,6 @@
 
 namespace laganina_e_readers_writers_mpi {
 
-std::vector<int> getRandomVector(int sz, int a, int b);
-
 class TestMPITaskParallel : public ppc::core::Task {
  public:
   explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
