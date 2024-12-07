@@ -13,8 +13,6 @@
 #include "core/task/include/task.hpp"
 
 namespace ermilova_d_reduceMPI_mpi {
-std::vector<int> getRandomVector(int size, int upper_border, int lower_border);
-std::vector<std::vector<int>> getRandomMatrix(int rows, int cols, int upper_border, int lower_border);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:

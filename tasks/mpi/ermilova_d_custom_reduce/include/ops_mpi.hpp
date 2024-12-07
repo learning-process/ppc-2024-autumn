@@ -16,9 +16,6 @@ namespace ermilova_d_custom_reduce_mpi {
 
 int CustomReduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op, int root, MPI_Comm comm);
 
-std::vector<int> getRandomVector(int size, int upper_border, int lower_border);
-std::vector<std::vector<int>> getRandomMatrix(int rows, int cols, int upper_border, int lower_border);
-
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

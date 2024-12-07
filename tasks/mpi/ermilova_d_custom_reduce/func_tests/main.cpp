@@ -8,7 +8,7 @@
 
 #include "mpi/ermilova_d_custom_reduce/include/ops_mpi.hpp"
 
-std::vector<int> ermilova_d_custom_reduce_mpi::getRandomVector(int size, int upper_border, int lower_border) {
+static std::vector<int> getRandomVector(int size, int upper_border, int lower_border) {
   std::random_device dev;
   std::mt19937 gen(dev());
   if (size <= 0) throw "Incorrect size";
@@ -19,12 +19,12 @@ std::vector<int> ermilova_d_custom_reduce_mpi::getRandomVector(int size, int upp
   return vec;
 }
 
-std::vector<std::vector<int>> ermilova_d_custom_reduce_mpi::getRandomMatrix(int rows, int cols, int upper_border,
+static std::vector<std::vector<int>> getRandomMatrix(int rows, int cols, int upper_border,
                                                                             int lower_border) {
   if (rows <= 0 || cols <= 0) throw "Incorrect size";
   std::vector<std::vector<int>> vec(rows);
   for (int i = 0; i < rows; i++) {
-    vec[i] = ermilova_d_custom_reduce_mpi::getRandomVector(cols, upper_border, lower_border);
+    vec[i] = getRandomVector(cols, upper_border, lower_border);
   }
   return vec;
 }
@@ -33,14 +33,14 @@ TEST(ermilova_d_custom_reduce_mpi, Can_create_vector) {
   const int size_test = 10;
   const int upper_border_test = 100;
   const int lower_border_test = -100;
-  EXPECT_NO_THROW(ermilova_d_custom_reduce_mpi::getRandomVector(size_test, upper_border_test, lower_border_test));
+  EXPECT_NO_THROW(getRandomVector(size_test, upper_border_test, lower_border_test));
 }
 
 TEST(ermilova_d_custom_reduce_mpi, Cant_create_incorrect_size_vector) {
   const int size_test = -10;
   const int upper_border_test = 100;
   const int lower_border_test = -100;
-  EXPECT_ANY_THROW(ermilova_d_custom_reduce_mpi::getRandomVector(size_test, upper_border_test, lower_border_test));
+  EXPECT_ANY_THROW(getRandomVector(size_test, upper_border_test, lower_border_test));
 }
 
 TEST(ermilova_d_custom_reduce_mpi, Can_create_matrix) {
@@ -49,7 +49,7 @@ TEST(ermilova_d_custom_reduce_mpi, Can_create_matrix) {
   const int upper_border_test = 100;
   const int lower_border_test = -100;
   EXPECT_NO_THROW(
-      ermilova_d_custom_reduce_mpi::getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test));
+      getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test));
 }
 
 TEST(ermilova_d_custom_reduce_mpi, Cant_create_incorrect_size_matrix) {
@@ -58,7 +58,7 @@ TEST(ermilova_d_custom_reduce_mpi, Cant_create_incorrect_size_matrix) {
   const int upper_border_test = 100;
   const int lower_border_test = -100;
   EXPECT_ANY_THROW(
-      ermilova_d_custom_reduce_mpi::getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test));
+      getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test));
 }
 
 TEST(ermilova_d_custom_reduce_mpi, CustomReduce_int_sum) {
@@ -163,14 +163,12 @@ TEST(ermilova_d_custom_reduce_mpi, CustomReduce_double_sum) {
   int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
-
   double local_value = static_cast<double>(rank) + 1.5;
   double global_result = 0.0;
-
   ermilova_d_custom_reduce_mpi::CustomReduce(&local_value, &global_result, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
   if (rank == 0) {
-    double expected_sum = (size * (size + 1) / 2.0) + 0.5 * size;
+    float expected_sum = (size * (size + 1) / 2.0f) + 0.5f * size;
     ASSERT_DOUBLE_EQ(global_result, expected_sum);
   }
 }
@@ -220,7 +218,7 @@ TEST(ermilova_d_custom_reduce_mpi, Matrix_1x1) {
 
   if (world.rank() == 0) {
     global_matrix =
-        ermilova_d_custom_reduce_mpi::getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
+        getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
     for (unsigned int i = 0; i < global_matrix.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     }
@@ -274,7 +272,7 @@ TEST(ermilova_d_custom_reduce_mpi, Matrix_10x10) {
 
   if (world.rank() == 0) {
     global_matrix =
-        ermilova_d_custom_reduce_mpi::getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
+        getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
     for (unsigned int i = 0; i < global_matrix.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     }
@@ -328,7 +326,7 @@ TEST(ermilova_d_custom_reduce_mpi, Matrix_100x100) {
 
   if (world.rank() == 0) {
     global_matrix =
-        ermilova_d_custom_reduce_mpi::getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
+        getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
     for (unsigned int i = 0; i < global_matrix.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     }
@@ -382,7 +380,7 @@ TEST(ermilova_d_custom_reduce_mpi, Matrix_100x50) {
 
   if (world.rank() == 0) {
     global_matrix =
-        ermilova_d_custom_reduce_mpi::getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
+        getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
     for (unsigned int i = 0; i < global_matrix.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     }
@@ -436,7 +434,7 @@ TEST(ermilova_d_custom_reduce_mpi, Matrix_50x100) {
 
   if (world.rank() == 0) {
     global_matrix =
-        ermilova_d_custom_reduce_mpi::getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
+        getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
     for (unsigned int i = 0; i < global_matrix.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     }
@@ -490,7 +488,7 @@ TEST(ermilova_d_custom_reduce_mpi, Matrix_500x500) {
 
   if (world.rank() == 0) {
     global_matrix =
-        ermilova_d_custom_reduce_mpi::getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
+        getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
     for (unsigned int i = 0; i < global_matrix.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     }
