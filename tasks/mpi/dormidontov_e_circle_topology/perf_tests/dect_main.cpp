@@ -8,11 +8,10 @@
 
 TEST(dormidontov_e_circle_topology_mpi, test_pipeline_run) {
   const int size = 10000000;
-  boost::mpi::communicator world;
   std::vector<int> mas(size, 1);
   std::vector<int> ans(size);
   std::vector<int> marks;
-
+  boost::mpi::communicator world;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -46,11 +45,10 @@ TEST(dormidontov_e_circle_topology_mpi, test_pipeline_run) {
 }
 TEST(dormidontov_e_circle_topology_mpi, test_task_run) {
   const int size = 10000000;
-  boost::mpi::communicator world;
   std::vector<int> mas(size, 1);
   std::vector<int> ans(size);
   std::vector<int> marks;
-
+  boost::mpi::communicator world;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {

@@ -11,6 +11,12 @@
 //----------------------------------------------------------------------------
 bool dormidontov_e_circle_topology_mpi::topology::pre_processing() {
   internal_order_test();
+  if (world.rank() == 0) {
+    size = taskData->inputs_count[0];
+    input_.resize(size);
+    std::copy(reinterpret_cast<int*>(taskData->inputs[0]), reinterpret_cast<int*>(taskData->inputs[0]) + size,
+              input_.begin());
+  }
   return true;
 }
 
@@ -25,12 +31,6 @@ bool dormidontov_e_circle_topology_mpi::topology::validation() {
 
 bool dormidontov_e_circle_topology_mpi::topology::run() {
   internal_order_test();
-  if (world.rank() == 0) {
-    size = taskData->inputs_count[0];
-    input_.resize(size);
-    std::copy(reinterpret_cast<int*>(taskData->inputs[0]), reinterpret_cast<int*>(taskData->inputs[0]) + size,
-              input_.begin());
-  }
   // if we have only one process, we dont' do anything
   if (world.size() > 1) {
     if (world.rank() == 0) {
@@ -44,10 +44,13 @@ bool dormidontov_e_circle_topology_mpi::topology::run() {
       world.recv(from, 0, marks_);
       marks_.push_back(0);
     } else {
+
       int from = world.rank() - 1;
       world.recv(from, 0, input_);
       world.recv(from, 0, marks_);
       marks_.push_back(world.rank());
+
+
       int to = (world.rank() + 1) % world.size();
       world.send(to, 0, input_);
       world.send(to, 0, marks_);
@@ -63,11 +66,13 @@ bool dormidontov_e_circle_topology_mpi::topology::run() {
 bool dormidontov_e_circle_topology_mpi::topology::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
+    int* pr_output = reinterpret_cast<int*>(taskData->outputs[0]);
+    int* pr_marks = reinterpret_cast<int*>(taskData->outputs[1]);
     for (int i = 0; i < size; i++) {
-      reinterpret_cast<int*>(taskData->outputs[0])[i] = output_[i];
+      pr_output[i] = output_[i];
     }
     for (int i = 0; i < world.size() + 1; i++) {
-      reinterpret_cast<int*>(taskData->outputs[1])[i] = marks_[i];
+      pr_marks[i] = marks_[i];
     }
   }
   return true;
