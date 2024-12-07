@@ -40,3 +40,18 @@ TEST(pikarychev_i_sleeping_barber_mpi_test, test_12) { test(12); }
 TEST(pikarychev_i_sleeping_barber_mpi_test, test_13) { test(13); }
 TEST(pikarychev_i_sleeping_barber_mpi_test, test_16) { test(16); }
 TEST(pikarychev_i_sleeping_barber_mpi_test, test_17) { test(17); }
+TEST(pikarychev_i_sleeping_barber_mpi_test, fails_validation) {
+  boost::mpi::communicator world;
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&capacity));
+    taskDataPar->inputs_count.emplace_back(1);
+  }
+
+  pikarychev_i_sleeping_barber_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+
+  if (world.size() < 2) {
+    EXPECT_FALSE(testMpiTaskParallel.validation());
+  }
+}
