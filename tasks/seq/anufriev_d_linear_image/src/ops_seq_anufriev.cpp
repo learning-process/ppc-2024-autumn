@@ -21,7 +21,6 @@ bool SimpleIntSEQ::validation() {
          taskData->outputs_count[0] == expected_matrix_size && taskData->inputs_count[0] == taskData->outputs_count[0];
 }
 
-
 bool SimpleIntSEQ::pre_processing() {
   internal_order_test();
   auto* matrix_data = reinterpret_cast<int*>(taskData->inputs[0]);
@@ -55,11 +54,11 @@ void SimpleIntSEQ::applyGaussianFilter() {
   for (int r = 1; r < rows - 1; ++r) {
     for (int c = 1; c < cols - 1; ++c) {
       int sum = 0;
-        for (int kr = -1; kr <= 1; ++kr) {
-          for (int kc = -1; kc <= 1; ++kc) {
-            sum += input_data_[(r + kr) * cols + (c + kc)] * kernel_[kr + 1][kc + 1];
-          }
+      for (int kr = -1; kr <= 1; ++kr) {
+        for (int kc = -1; kc <= 1; ++kc) {
+          sum += input_data_[(r + kr) * cols + (c + kc)] * kernel_[kr + 1][kc + 1];
         }
+      }
       processed_data_[r * cols + c] = sum / 16;
     }
   }

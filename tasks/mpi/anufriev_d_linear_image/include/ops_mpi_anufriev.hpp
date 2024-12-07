@@ -28,7 +28,7 @@ class SimpleIntMPI : public ppc::core::Task {
   void exchangeHalo();
 
   boost::mpi::communicator world;
-  
+
   std::vector<int> original_data_;
   std::vector<int> local_data_;
   std::vector<int> processed_data_;
@@ -41,7 +41,6 @@ class SimpleIntMPI : public ppc::core::Task {
   int local_width_ = 0;
   int start_row_ = 0;
   int local_height_ = 0;
-
 
   std::vector<int> data_path_;
 

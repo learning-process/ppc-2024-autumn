@@ -18,14 +18,13 @@ std::vector<int> generate_random_image(int rows, int cols) {
   return image;
 }
 
-
 #define PERF_TEST_SEQ(test_name, rows_const, cols_const, num_runs)                 \
   TEST(anufriev_d_linear_image_perf_seq, test_name) {                              \
     int rows = rows_const;                                                         \
     int cols = cols_const;                                                         \
     auto taskData = std::make_shared<ppc::core::TaskData>();                       \
     std::vector<int> input = generate_random_image(rows, cols);                    \
-    std::vector<int> output(rows * cols);                                          \
+    std::vector<int> output(rows* cols);                                           \
     taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));          \
     taskData->inputs_count.push_back(input.size());                                \
     taskData->inputs.push_back(reinterpret_cast<uint8_t*>(&rows));                 \
@@ -39,14 +38,14 @@ std::vector<int> generate_random_image(int rows, int cols) {
     perfAttr->num_running = num_runs;                                              \
     auto start = std::chrono::high_resolution_clock::now();                        \
     perfAttr->current_timer = [&]() {                                              \
-    auto end = std::chrono::high_resolution_clock::now();                          \
-    std::chrono::duration<double> elapsed = end - start;                           \
-    return elapsed.count();                                                        \
-};                                                                                 \
-auto perfResults = std::make_shared<ppc::core::PerfResults>();                     \
-auto perf = std::make_shared<ppc::core::Perf>(task);                               \
-perf->pipeline_run(perfAttr, perfResults);                                         \
-ppc::core::Perf::print_perf_statistic(perfResults);                                \
+      auto end = std::chrono::high_resolution_clock::now();                        \
+      std::chrono::duration<double> elapsed = end - start;                         \
+      return elapsed.count();                                                      \
+    };                                                                             \
+    auto perfResults = std::make_shared<ppc::core::PerfResults>();                 \
+    auto perf = std::make_shared<ppc::core::Perf>(task);                           \
+    perf->pipeline_run(perfAttr, perfResults);                                     \
+    ppc::core::Perf::print_perf_statistic(perfResults);                            \
 }
 
 

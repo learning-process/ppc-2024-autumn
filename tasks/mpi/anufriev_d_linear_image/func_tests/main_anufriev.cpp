@@ -9,26 +9,25 @@
 #include "mpi/anufriev_d_linear_image/include/ops_mpi_anufriev.hpp"
 
 static void gaussian_3x3_seq(const std::vector<int>& input, int width, int height, std::vector<int>* output) {
-    const int kernel[3][3] = {{1, 2, 1}, {2, 4, 2}, {1, 2, 1}};
-    output->resize(width * height);
+  const int kernel[3][3] = {{1, 2, 1}, {2, 4, 2}, {1, 2, 1}};
+  output->resize(width * height);
 
   for (int r = 0; r < height; r++) {
     for (int c = 0; c < width; c++) {
-        int sum = 0;
-        for (int kr = -1; kr <= 1; kr++) {
-          for (int kc = -1; kc <= 1; kc++) {
-            int rr = std::min(std::max(r+kr,0), height-1);
-            int cc = std::min(std::max(c+kc,0), width-1);
-            sum += input[rr*width + cc]*kernel[kr+1][kc+1];
-          }
+      int sum = 0;
+      for (int kr = -1; kr <= 1; kr++) {
+        for (int kc = -1; kc <= 1; kc++) {
+          int rr = std::min(std::max(r+kr,0), height-1);
+          int cc = std::min(std::max(c+kc,0), width-1);
+          sum += input[rr*width + cc]*kernel[kr+1][kc+1];
         }
-        (*output)[r*width + c] = sum / 16;
+      }
+      (*output)[r*width + c] = sum / 16;
     }
   }
 }
 
 TEST(anufriev_d_linear_image_func_mpi, SmallImageTest) {
-
   boost::mpi::communicator world;
 
   int width = 5;
@@ -70,7 +69,6 @@ TEST(anufriev_d_linear_image_func_mpi, SmallImageTest) {
 }
 
 TEST(anufriev_d_linear_image_func_mpi, LargerImageRandomTest) {
-
   boost::mpi::communicator world;
 
   int width = 100;
@@ -81,7 +79,7 @@ TEST(anufriev_d_linear_image_func_mpi, LargerImageRandomTest) {
   if (world.rank() == 0) {
     input.resize(width * height);
     srand(123);
-    for (auto &val : input) val = rand() % 256;
+    for (auto& val : input) val = rand() % 256;
     output.resize(width * height, 0);
   }
 

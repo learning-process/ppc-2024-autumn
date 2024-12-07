@@ -10,7 +10,7 @@
 
 static void gaussian_filter_seq(const std::vector<int>& input, int rows, int cols, std::vector<int>& output) {
   const int kernel[3][3] = {{1, 2, 1}, {2, 4, 2}, {1, 2, 1}};
-  output.assign(rows*cols, 0);
+  output.assign(rows * cols, 0);
 
   for (int r = 1; r < rows - 1; ++r) {
     for (int c = 1; c < cols - 1; ++c) {
@@ -31,11 +31,11 @@ static std::vector<int> generate_test_image(int rows, int cols) {
   return image;
 }
 
-static std::vector<int> generate_random_image(int rows, int cols, int seed=123) {
+static std::vector<int> generate_random_image(int rows, int cols, int seed = 123) {
   std::mt19937 gen(seed);
   std::uniform_int_distribution<int> dist(0, 255);
-  std::vector<int> image(rows*cols);
-  for (auto &val : image) val = dist(gen);
+  std::vector<int> image(rows * cols);
+  for (auto& val : image) val = dist(gen);
   return image;
 }
 
