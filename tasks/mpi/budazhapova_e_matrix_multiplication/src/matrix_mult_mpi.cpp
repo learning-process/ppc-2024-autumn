@@ -66,30 +66,30 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::pre_processing() {
     boost::mpi::broadcast(world, A, 0);
     boost::mpi::broadcast(world, b, 0);
     boost::mpi::broadcast(world, columns, 0);
+  }
 
-    if (world_size > rows) {
-      if (world_rank < rows) {
-        local_A.resize(columns);
-        local_res.resize(1);
-      } else {
-        local_A.clear();
-        local_res.clear();
-        return true;
-      }
+  if (world_size > rows) {
+    if (world_rank < rows) {
+      local_A.resize(columns);
+      local_res.resize(1);
     } else {
-      int n_of_send_rows = rows / world_size;
-      int n_of_proc_with_extra_row = rows % world_size;
+      local_A.clear();
+      local_res.clear();
+      return true;
+    }
+  } else {
+    int n_of_send_rows = rows / world_size;
+    int n_of_proc_with_extra_row = rows % world_size;
 
-      int start_row = world_rank * n_of_send_rows + std::min(world_rank, n_of_proc_with_extra_row);
-      int end_row = start_row + n_of_send_rows + (world_rank < n_of_proc_with_extra_row ? 1 : 0);
+    int start_row = world_rank * n_of_send_rows + std::min(world_rank, n_of_proc_with_extra_row);
+    int end_row = start_row + n_of_send_rows + (world_rank < n_of_proc_with_extra_row ? 1 : 0);
 
-      local_A.resize((end_row - start_row) * columns);
-      local_res.resize(end_row - start_row, 0);
+    local_A.resize((end_row - start_row) * columns);
+    local_res.resize(end_row - start_row, 0);
 
-      for (int i = start_row; i < end_row; ++i) {
-        for (int j = 0; j < columns; ++j) {
-          local_A[(i - start_row) * columns + j] = A[i * columns + j];
-        }
+    for (int i = start_row; i < end_row; ++i) {
+      for (int j = 0; j < columns; ++j) {
+        local_A[(i - start_row) * columns + j] = A[i * columns + j];
       }
     }
   }
