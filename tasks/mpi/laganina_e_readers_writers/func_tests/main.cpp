@@ -6,6 +6,8 @@
 
 #include "mpi/laganina_e_readers_writers/include/ops_mpi.hpp"
 
+namespace laganina_e_readers_writers {
+
 std::vector<int> getRandomVector(int sz, int a, int b) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -21,9 +23,11 @@ std::vector<int> getRandomVector(int sz, int a, int b) {
   return vec;
 }
 
+}  // namespace laganina_e_readers_writers
+
 TEST(laganina_e_readers_writers_mpi, test_getRandomVector) {
   std::vector<int> global_vec;
-  ASSERT_ANY_THROW(global_vec = getRandomVector(1, 1001, 1000));
+  ASSERT_ANY_THROW(global_vec = laganina_e_readers_writers::getRandomVector(1, 1001, 1000));
 }
 
 TEST(laganina_e_readers_writers_mpi, test_vector_10) {
@@ -36,7 +40,7 @@ TEST(laganina_e_readers_writers_mpi, test_vector_10) {
   const int count_size_vector = 10;
   int count = 0;  // this variable is needed to find out how many writers there were
   std::vector<int> global_vec;
-  ASSERT_NO_THROW(global_vec = getRandomVector(count_size_vector, -1000, 1000));
+  ASSERT_NO_THROW(global_vec = laganina_e_readers_writers::getRandomVector(count_size_vector, -1000, 1000));
   std::vector<int> out_vec(count_size_vector, 0);
   std::vector<int> exp_parallel = global_vec;
 
@@ -74,7 +78,7 @@ TEST(laganina_e_readers_writers_mpi, test_vector_20) {
   const int count_size_vector = 20;
   int count = 0;  // this variable is needed to find out how many writers there were
   std::vector<int> global_vec;
-  ASSERT_NO_THROW(global_vec = getRandomVector(count_size_vector, -1000, 1000));
+  ASSERT_NO_THROW(global_vec = laganina_e_readers_writers::getRandomVector(count_size_vector, -1000, 1000));
   std::vector<int> out_vec(count_size_vector, 0);
   std::vector<int> exp_parallel = global_vec;
 
@@ -112,7 +116,7 @@ TEST(laganina_e_readers_writers_mpi, test_vector_32) {
   const int count_size_vector = 32;
   int count = 0;  // this variable is needed to find out how many writers there were
   std::vector<int> global_vec;
-  ASSERT_NO_THROW(global_vec = getRandomVector(count_size_vector, -1000, 1000));
+  ASSERT_NO_THROW(global_vec = laganina_e_readers_writers::getRandomVector(count_size_vector, -1000, 1000));
   std::vector<int> out_vec(count_size_vector, 0);
   std::vector<int> exp_parallel = global_vec;
 
@@ -150,7 +154,7 @@ TEST(laganina_e_readers_writers_mpi, test_vector_128) {
   const int count_size_vector = 128;
   int count = 0;  // this variable is needed to find out how many writers there were
   std::vector<int> global_vec;
-  ASSERT_NO_THROW(global_vec = getRandomVector(count_size_vector, -1000, 1000));
+  ASSERT_NO_THROW(global_vec = laganina_e_readers_writers::getRandomVector(count_size_vector, -1000, 1000));
   std::vector<int> out_vec(count_size_vector, 0);
   std::vector<int> exp_parallel = global_vec;
 
@@ -188,7 +192,7 @@ TEST(laganina_e_readers_writers_mpi, test_vector_100) {
   const int count_size_vector = 100;
   int count = 0;  // this variable is needed to find out how many writers there were
   std::vector<int> global_vec;
-  ASSERT_NO_THROW(global_vec = getRandomVector(count_size_vector, -1000, 1000));
+  ASSERT_NO_THROW(global_vec = laganina_e_readers_writers::getRandomVector(count_size_vector, -1000, 1000));
   std::vector<int> out_vec(count_size_vector, 0);
   std::vector<int> exp_parallel = global_vec;
 
@@ -226,7 +230,7 @@ TEST(laganina_e_readers_writers_mpi, test_vector_500) {
   const int count_size_vector = 500;
   int count = 0;  // this variable is needed to find out how many writers there were
   std::vector<int> global_vec;
-  ASSERT_NO_THROW(global_vec = getRandomVector(count_size_vector, -1000, 1000));
+  ASSERT_NO_THROW(global_vec = laganina_e_readers_writers::getRandomVector(count_size_vector, -1000, 1000));
   std::vector<int> out_vec(count_size_vector, 0);
   std::vector<int> exp_parallel = global_vec;
 
@@ -264,7 +268,7 @@ TEST(laganina_e_readers_writers_mpi, test_vector_999) {
   const int count_size_vector = 999;
   int count = 0;  // this variable is needed to find out how many writers there were
   std::vector<int> global_vec;
-  ASSERT_NO_THROW(global_vec = getRandomVector(count_size_vector, -1000, 1000));
+  ASSERT_NO_THROW(global_vec = laganina_e_readers_writers::getRandomVector(count_size_vector, -1000, 1000));
   std::vector<int> out_vec(count_size_vector, 0);
   std::vector<int> exp_parallel = global_vec;
 
