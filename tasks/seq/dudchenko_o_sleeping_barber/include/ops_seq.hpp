@@ -13,9 +13,9 @@
 
 namespace dudchenko_o_sleeping_barber_seq {
 
-class TestMPISleepingBarber : public ppc::core::Task {
+class TestSleepingBarber : public ppc::core::Task {
  public:
-  explicit TestMPISleepingBarber(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit TestSleepingBarber(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
 
   bool pre_processing() override;
   bool validation() override;
