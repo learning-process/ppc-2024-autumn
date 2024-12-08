@@ -3,8 +3,8 @@
 
 #include <vector>
 
-filatev_v_metod_zedela_mpi::MetodZedela::MetodZedela(std::shared_ptr<ppc::core::TaskData> taskData_, boost::mpi::communicator world_)
-    : Task(std::move(taskData_)) {
+filatev_v_metod_zedela_mpi::MetodZedela::MetodZedela(std::shared_ptr<ppc::core::TaskData> taskData_,
+                                                     boost::mpi::communicator world_) : Task(std::move(taskData_)) {
   this->world = world_;
   if (world.rank() == 0) {
     this->size = taskData->inputs_count[0];
