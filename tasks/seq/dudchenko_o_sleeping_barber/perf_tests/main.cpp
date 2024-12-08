@@ -16,7 +16,7 @@ TEST(sleeping_barber_test, test_pipeline_run) {
   taskDataSeq->inputs_count.emplace_back(seats);
   taskDataSeq->outputs_count.emplace_back(1);
 
-  auto testTaskSequential = std::make_shared<dudchenko_o_sleeping_barber_sequential::TestSleepingBarber>(taskDataSeq);
+  auto testTaskSequential = std::make_shared<dudchenko_o_sleeping_barber_seq::TestSleepingBarber>(taskDataSeq);
 
   // Валидация
   ASSERT_TRUE(testTaskSequential->validation());
@@ -50,7 +50,7 @@ TEST(sleeping_barber_test, test_task_run) {
   taskDataSeq->inputs_count.emplace_back(seats);
   taskDataSeq->outputs_count.emplace_back(1);
 
-  auto testTaskSequential = std::make_shared<dudchenko_o_sleeping_barber_sequential::TestSleepingBarber>(taskDataSeq);
+  auto testTaskSequential = std::make_shared<dudchenko_o_sleeping_barber_seq::TestSleepingBarber>(taskDataSeq);
 
   // Валидация
   ASSERT_TRUE(testTaskSequential->validation());

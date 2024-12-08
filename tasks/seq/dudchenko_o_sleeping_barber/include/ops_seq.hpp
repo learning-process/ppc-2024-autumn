@@ -11,7 +11,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace dudchenko_o_sleeping_barber_mpi {
+namespace dudchenko_o_sleeping_barber_seq {
 
 class TestMPISleepingBarber : public ppc::core::Task {
  public:
@@ -28,4 +28,4 @@ class TestMPISleepingBarber : public ppc::core::Task {
 
   void next_client(int client);
 };
-}  // namespace dudchenko_o_sleeping_barber_mpi
+}  // namespace dudchenko_o_sleeping_barber_seq
