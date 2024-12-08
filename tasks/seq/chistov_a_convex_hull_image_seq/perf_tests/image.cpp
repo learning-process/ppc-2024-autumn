@@ -7,8 +7,8 @@
 #include "core/perf/include/perf.hpp"
 
 TEST(chistov_a_convex_hull_image_seq, test_pipeline_run) {
-  const int width = 1000;
-  const int height = 1000;
+  const int width = 2500;
+  const int height = 2500;
 
   std::vector<int> image(width * height, 1);
   std::vector<int> hull(width * height);
@@ -56,8 +56,8 @@ TEST(chistov_a_convex_hull_image_seq, test_pipeline_run) {
 }
 
 TEST(chistov_a_convex_hull_image_seq, test_task_run) {
-  const int width = 1000;
-  const int height = 1000;
+  const int width = 2500;
+  const int height = 2500;
 
   std::vector<int> image(width * height, 1);
   std::vector<int> hull(width * height);

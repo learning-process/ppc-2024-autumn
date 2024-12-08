@@ -142,58 +142,6 @@ std::vector<Point> graham(std::vector<Point> points) {
   return hull;
 }
 
-bool ConvexHullSEQ::validation() {
-  internal_order_test();
-
-  if (taskData->inputs_count.size() < 2 || taskData->outputs_count.empty() || taskData->inputs[0] == nullptr ||
-      taskData->outputs.empty() || taskData->inputs_count[1] <= 0 || taskData->inputs_count[2] <= 0 ||
-      taskData->outputs_count[0] <= 0) {
-    return false;
-  }
-
-  image.resize(taskData->inputs_count[0]);
-  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  std::memcpy(image.data(), tmp_ptr, taskData->inputs_count[0] * sizeof(int));
-
-  return std::all_of(image.begin(), image.end(), [](int pixel) { return pixel == 0 || pixel == 1; });
-}
-
-bool ConvexHullSEQ::pre_processing() {
-  internal_order_test();
-
-  size = static_cast<int>(taskData->inputs_count[0]);
-  height = static_cast<int>(taskData->inputs_count[1]);
-  width = static_cast<int>(taskData->inputs_count[2]);
-  components = labeling(image, width, height);
-
-  return true;
-}
-
-bool ConvexHullSEQ::run() {
-  internal_order_test();
-
-  std::vector<Point> points;
-  for (const auto& component : components) {
-    auto hull = graham(component);
-    points.insert(points.end(), hull.begin(), hull.end());
-  }
-
-  image = setPoints(points, width, height);
-
-  return true;
-}
-
-bool ConvexHullSEQ::post_processing() {
-  internal_order_test();
-
-  std::memcpy(reinterpret_cast<int*>(taskData->outputs[0]), image.data(), image.size() * sizeof(int));
-
-  return true;
-}
-}  // namespace chistov_a_convex_hull_image_mpi
-
-// Parallel version
-namespace chistov_a_convex_hull_image_mpi {
 bool ConvexHullMPI::validation() {
   internal_order_test();
   if (world.rank() == 0) {

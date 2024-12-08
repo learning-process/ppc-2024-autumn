@@ -26,7 +26,7 @@ std::vector<int> generateImage(int width, int height) {
 }
 }  // namespace chistov_a_convex_hull_image_seq_test
 
-TEST(chistov_a_convex_hull_image_seq, validation_test_empty_image) {
+TEST(chistov_a_convex_hull_image_seq, validation_test_empty_vector) {
   const int width = 3;
   const int height = 4;
   std::vector<int> image;
@@ -378,19 +378,56 @@ TEST(chistov_a_convex_hull_image_seq, test_four_corner_points) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
   taskDataSeq->outputs_count.emplace_back(width * height);
 
-  chistov_a_convex_hull_image_seq::ConvexHullSEQ testTaskSequential(taskDataSeq);
+  chistov_a_convex_hull_image_seq::ConvexHullSEQ testTaskMPI(taskDataSeq);
 
-  ASSERT_TRUE(testTaskSequential.validation());
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
+  ASSERT_TRUE(testTaskMPI.validation());
+  testTaskMPI.pre_processing();
+  testTaskMPI.run();
+  testTaskMPI.post_processing();
 
   ASSERT_EQ(hull, expected_hull);
 }
 
-TEST(chistov_a_convex_hull_image_seq, test_image_of_ones) {
-  const int width = 10;
-  const int height = 10;
+TEST(chistov_a_convex_hull_image_seq, test_different_width_and_height) {
+  const int width = 6;
+  const int height = 5;
+
+  std::vector<int> image(width * height, 0);
+  std::vector<int> hull(width * height, 0);
+
+  image[1 * width + 1] = 1;
+  image[1 * width + 1] = 1;
+  image[2 * width + 2] = 1;
+  image[2 * width + 2] = 1;
+  image[3 * width + 1] = 1;
+  image[3 * width + 1] = 1;
+  image[3 * width + 2] = 1;
+  image[3 * width + 2] = 1;
+
+  std::vector<int> expected_hull = {0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1,
+                                    1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0};
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
+  taskDataSeq->inputs_count.emplace_back(width * height);
+  taskDataSeq->inputs_count.emplace_back(width);
+  taskDataSeq->inputs_count.emplace_back(height);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
+  taskDataSeq->outputs_count.emplace_back(width * height);
+
+  chistov_a_convex_hull_image_seq::ConvexHullSEQ testTaskMPI(taskDataSeq);
+
+  ASSERT_TRUE(testTaskMPI.validation());
+  testTaskMPI.pre_processing();
+  testTaskMPI.run();
+  testTaskMPI.post_processing();
+
+  ASSERT_EQ(hull, expected_hull);
+}
+
+TEST(chistov_a_convex_hull_image_seq, test_power_of_two_size) {
+  const int width = 128;
+  const int height = 128;
 
   std::vector<int> image(width * height, 1);
   std::vector<int> hull(width * height);
@@ -412,12 +449,46 @@ TEST(chistov_a_convex_hull_image_seq, test_image_of_ones) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
   taskDataSeq->outputs_count.emplace_back(width * height);
 
-  chistov_a_convex_hull_image_seq::ConvexHullSEQ testTaskSequential(taskDataSeq);
+  chistov_a_convex_hull_image_seq::ConvexHullSEQ testTaskMPI(taskDataSeq);
 
-  ASSERT_TRUE(testTaskSequential.validation());
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
+  ASSERT_TRUE(testTaskMPI.validation());
+  testTaskMPI.pre_processing();
+  testTaskMPI.run();
+  testTaskMPI.post_processing();
+
+  ASSERT_EQ(hull, expected_hull);
+}
+
+TEST(chistov_a_convex_hull_image_seq, test_prime_numbers_size) {
+  const int width = 343;
+  const int height = 343;
+
+  std::vector<int> image(width * height, 1);
+  std::vector<int> hull(width * height);
+
+  std::vector<int> expected_hull(width * height, 0);
+  for (int y = 0; y < height; ++y) {
+    for (int x = 0; x < width; ++x) {
+      if (x == 0 || y == 0 || x == width - 1 || y == height - 1) {
+        expected_hull[y * width + x] = 1;
+      }
+    }
+  }
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
+  taskDataSeq->inputs_count.emplace_back(width * height);
+  taskDataSeq->inputs_count.emplace_back(width);
+  taskDataSeq->inputs_count.emplace_back(height);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
+  taskDataSeq->outputs_count.emplace_back(width * height);
+
+  chistov_a_convex_hull_image_seq::ConvexHullSEQ testTaskMPI(taskDataSeq);
+
+  ASSERT_TRUE(testTaskMPI.validation());
+  testTaskMPI.pre_processing();
+  testTaskMPI.run();
+  testTaskMPI.post_processing();
 
   ASSERT_EQ(hull, expected_hull);
 }

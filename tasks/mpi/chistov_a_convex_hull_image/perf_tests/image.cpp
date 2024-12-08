@@ -9,8 +9,8 @@
 
 TEST(chistov_a_convex_hull_image_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  const int width = 1000;
-  const int height = 1000;
+  const int width = 2500;
+  const int height = 2500;
 
   std::vector<int> image(width * height, 1);
   std::vector<int> hull(width * height);
@@ -63,8 +63,8 @@ TEST(chistov_a_convex_hull_image_mpi, test_pipeline_run) {
 
 TEST(chistov_a_convex_hull_image_mpi, test_task_run) {
   boost::mpi::communicator world;
-  const int width = 1000;
-  const int height = 1000;
+  const int width = 2500;
+  const int height = 2500;
 
   std::vector<int> image(width * height, 1);
   std::vector<int> hull(width * height);
