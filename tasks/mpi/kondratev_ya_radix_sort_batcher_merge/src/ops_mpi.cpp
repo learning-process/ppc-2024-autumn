@@ -1,0 +1,186 @@
+// Copyright 2023 Nesterov Alexander
+#include "mpi/kondratev_ya_radix_sort_batcher_merge/include/ops_mpi.hpp"
+
+void kondratev_ya_radix_sort_batcher_merge_mpi::radixSortDouble(std::vector<double>& arr, int32_t start, int32_t end) {
+  const int32_t byte_size = 8;
+  const int32_t double_bit_size = byte_size * sizeof(double);
+  const int32_t full_byte_bit_mask = 0xFF;
+  const int32_t byte_range = std::pow(2, byte_size);
+  const uint64_t sign_bit_mask = 1ULL << (double_bit_size - 1);
+
+  int32_t size = end - start + 1;
+  std::vector<double> temp(size);
+
+  // uint64_t because sizeof(uint64_t) == sizeof(double)
+  auto* bits = reinterpret_cast<uint64_t*>(arr.data() + start);
+
+  // Invert the sign bit for negative numbers
+  for (int32_t i = 0; i < size; i++) {
+    if ((bool)(bits[i] >> (double_bit_size - 1))) {
+      bits[i] = ~bits[i];
+    } else {
+      bits[i] |= sign_bit_mask;
+    }
+  }
+
+  // Sorting by bits
+  for (int32_t shift = 0; shift < double_bit_size; shift += byte_size) {
+    std::vector<int32_t> count(byte_range, 0);
+    for (int32_t i = 0; i < size; i++) {
+      count[(bits[i] >> shift) & full_byte_bit_mask]++;
+    }
+
+    for (int32_t i = 1; i < byte_range; i++) {
+      count[i] += count[i - 1];
+    }
+
+    for (int32_t i = size - 1; i >= 0; i--) {
+      int32_t bucket = (bits[i] >> shift) & full_byte_bit_mask;
+      temp[count[bucket] - 1] = arr[start + i];
+      count[bucket]--;
+    }
+    std::copy(temp.begin(), temp.end(), arr.begin() + start);
+  }
+
+  // Restore inverted signs
+  for (int32_t i = 0; i < size; i++) {
+    if (!(bool)(bits[i] & sign_bit_mask)) {
+      bits[i] = ~bits[i];
+    } else {
+      bits[i] &= ~sign_bit_mask;
+    }
+  }
+}
+
+bool kondratev_ya_radix_sort_batcher_merge_mpi::TestMPITaskSequential::pre_processing() {
+  internal_order_test();
+
+  auto* input = reinterpret_cast<double*>(taskData->inputs[0]);
+  data_.assign(input, input + taskData->inputs_count[0]);
+
+  return true;
+}
+
+bool kondratev_ya_radix_sort_batcher_merge_mpi::TestMPITaskSequential::validation() {
+  internal_order_test();
+
+  return !taskData->inputs_count.empty() && taskData->inputs_count[0] > 0 && !taskData->outputs_count.empty() &&
+         !taskData->outputs_count.empty() && taskData->outputs_count[0] == taskData->inputs_count[0] &&
+         !taskData->inputs.empty() && taskData->inputs[0] != nullptr && !taskData->outputs.empty() &&
+         taskData->outputs[0] != nullptr;
+}
+
+bool kondratev_ya_radix_sort_batcher_merge_mpi::TestMPITaskSequential::run() {
+  internal_order_test();
+
+  radixSortDouble(data_, 0, data_.size() - 1);
+
+  return true;
+}
+
+bool kondratev_ya_radix_sort_batcher_merge_mpi::TestMPITaskSequential::post_processing() {
+  internal_order_test();
+
+  auto* output = reinterpret_cast<double*>(taskData->outputs[0]);
+  std::copy(data_.begin(), data_.end(), output);
+
+  return true;
+}
+
+bool kondratev_ya_radix_sort_batcher_merge_mpi::TestMPITaskParallel::pre_processing() {
+  internal_order_test();
+
+  if (world.rank() == 0) {
+    auto* pointer = reinterpret_cast<double*>(taskData->inputs[0]);
+    size_ = taskData->inputs_count[0];
+    input_.assign(pointer, pointer + size_);
+    res_.resize(size_);
+  }
+
+  return true;
+}
+
+bool kondratev_ya_radix_sort_batcher_merge_mpi::TestMPITaskParallel::validation() {
+  internal_order_test();
+
+  return (world.rank() != 0) ||
+         (!taskData->inputs_count.empty() && taskData->inputs_count[0] > 0 && !taskData->outputs_count.empty() &&
+          !taskData->outputs_count.empty() && taskData->outputs_count[0] == taskData->inputs_count[0] &&
+          !taskData->inputs.empty() && taskData->inputs[0] != nullptr && !taskData->outputs.empty() &&
+          taskData->outputs[0] != nullptr);
+}
+bool kondratev_ya_radix_sort_batcher_merge_mpi::TestMPITaskParallel::run() {
+  internal_order_test();
+
+  broadcast(world, size_, 0);
+
+  int32_t step = size_ / world.size();
+  int32_t remain = size_ % world.size();
+
+  std::vector<int32_t> sizes;
+  int32_t recvSize;
+  for (int32_t i = 0; i < world.size(); i++) {
+    recvSize = step;
+    if (i < remain) recvSize++;
+    sizes.push_back(recvSize);
+  }
+
+  local_input_.resize(sizes[world.rank()]);
+  scatterv(world, input_, sizes, local_input_.data(), 0);
+
+  kondratev_ya_radix_sort_batcher_merge_mpi::radixSortDouble(local_input_, 0, local_input_.size() - 1);
+
+  for (int32_t step = 0; step < world.size(); ++step) {
+    if (step % 2 == 0) {
+      if (world.rank() % 2 == 0 && world.rank() + 1 < world.size()) {
+        exchange_and_merge(world.rank(), world.rank() + 1);
+      } else if (world.rank() % 2 != 0) {
+        exchange_and_merge(world.rank() - 1, world.rank());
+      }
+    } else {
+      if (world.rank() % 2 == 1 && world.rank() + 1 < world.size()) {
+        exchange_and_merge(world.rank(), world.rank() + 1);
+      } else if (world.rank() % 2 == 0 && world.rank() > 0) {
+        exchange_and_merge(world.rank() - 1, world.rank());
+      }
+    }
+  }
+
+  gatherv(world, local_input_.data(), local_input_.size(), res_.data(), sizes, 0);
+
+  return true;
+}
+
+void kondratev_ya_radix_sort_batcher_merge_mpi::TestMPITaskParallel::exchange_and_merge(int32_t rank1, int32_t rank2) {
+  std::vector<double> neighbor_data;
+  if (world.rank() == rank1) {
+    world.send(rank2, 0, local_input_);
+    world.recv(rank2, 0, neighbor_data);
+  } else if (world.rank() == rank2) {
+    world.recv(rank1, 0, neighbor_data);
+    world.send(rank1, 0, local_input_);
+  }
+
+  if (!neighbor_data.empty()) {
+    std::vector<double> merged_data(local_input_.size() + neighbor_data.size());
+    std::merge(local_input_.begin(), local_input_.end(), neighbor_data.begin(), neighbor_data.end(),
+               merged_data.begin());
+
+    if (world.rank() == rank1) {
+      local_input_.assign(merged_data.begin(), merged_data.begin() + local_input_.size());
+    } else {
+      local_input_.assign(merged_data.end() - local_input_.size(), merged_data.end());
+    }
+  }
+}
+
+bool kondratev_ya_radix_sort_batcher_merge_mpi::TestMPITaskParallel::post_processing() {
+  internal_order_test();
+
+  if (world.rank() == 0) {
+    auto* pointer = reinterpret_cast<double*>(taskData->outputs[0]);
+    std::copy(res_.begin(), res_.end(), pointer);
+  }
+
+  return true;
+}
