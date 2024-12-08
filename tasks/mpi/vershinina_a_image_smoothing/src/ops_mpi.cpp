@@ -111,12 +111,8 @@ bool vershinina_a_image_smoothing::TestMPITaskParallel::run() {
       local_input_sizes[0] = rows * cols;
     }
     if (world.size() > 1) {
-      for (int i = 0; i < std::min(world.size(), rows); i++) {
-        if (i == 0) {
-          send[i] = 0;
-        } else {
-          send[i] = i * rows_per_proc * cols - 1 * cols;
-        }
+      for (int i = 1; i < std::min(world.size(), rows); i++) {
+        send[i] = i * rows_per_proc * cols - 1 * cols;
       }
     }
   }

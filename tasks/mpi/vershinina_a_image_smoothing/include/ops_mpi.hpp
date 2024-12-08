@@ -15,8 +15,6 @@
 
 namespace vershinina_a_image_smoothing {
 
-std::vector<int> getRandomVector(int rows, int cols);
-
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

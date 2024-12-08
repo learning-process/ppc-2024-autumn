@@ -10,7 +10,7 @@
 
 #include "mpi/vershinina_a_image_smoothing/include/ops_mpi.hpp"
 
-std::vector<int> vershinina_a_image_smoothing::getRandomVector(int rows, int cols) {
+std::vector<int> getRandomVector(int rows, int cols) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::uniform_int_distribution<> distr(0, 255);
@@ -66,7 +66,7 @@ TEST(vershinina_a_image_smoothing, Test_10_max_10) {
   std::vector<int> in;
   std::vector<int> global_res(10 * 10);
 
-  in = vershinina_a_image_smoothing::getRandomVector(10, 10);
+  in = getRandomVector(10, 10);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -112,7 +112,7 @@ TEST(vershinina_a_image_smoothing, Test_Random_1) {
   std::vector<int> in;
   std::vector<int> global_res(random_rows * random_cols);
 
-  in = vershinina_a_image_smoothing::getRandomVector(random_rows, random_cols);
+  in = getRandomVector(random_rows, random_cols);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -157,7 +157,7 @@ TEST(vershinina_a_image_smoothing, Test_Random_2) {
   std::vector<int> in;
   std::vector<int> global_res(random_rows * random_cols);
 
-  in = vershinina_a_image_smoothing::getRandomVector(random_rows, random_cols);
+  in = getRandomVector(random_rows, random_cols);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 

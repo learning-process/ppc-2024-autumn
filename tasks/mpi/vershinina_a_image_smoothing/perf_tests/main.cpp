@@ -9,7 +9,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/vershinina_a_image_smoothing/include/ops_mpi.hpp"
 
-std::vector<int> vershinina_a_image_smoothing::getRandomVector(int rows, int cols) {
+std::vector<int> getRandomVector(int rows, int cols) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::uniform_int_distribution<> distr(0, 255);
@@ -24,16 +24,16 @@ std::vector<int> vershinina_a_image_smoothing::getRandomVector(int rows, int col
 TEST(vershinina_a_image_smoothing, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<int> in;
-  std::vector<int> global_res(100 * 99);
+  std::vector<int> global_res(500 * 499);
 
-  in = vershinina_a_image_smoothing::getRandomVector(100, 99);
+  in = getRandomVector(500, 499);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
-    taskDataPar->inputs_count.emplace_back(100);
-    taskDataPar->inputs_count.emplace_back(99);
+    taskDataPar->inputs_count.emplace_back(500);
+    taskDataPar->inputs_count.emplace_back(499);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
@@ -45,12 +45,12 @@ TEST(vershinina_a_image_smoothing, test_pipeline_run) {
   testMpiTaskParallel->post_processing();
 
   if (world.rank() == 0) {
-    std::vector<int> reference_res(100 * 99);
+    std::vector<int> reference_res(500 * 499);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
-    taskDataSeq->inputs_count.emplace_back(100);
-    taskDataSeq->inputs_count.emplace_back(99);
+    taskDataSeq->inputs_count.emplace_back(500);
+    taskDataSeq->inputs_count.emplace_back(499);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_res.data()));
     taskDataSeq->outputs_count.emplace_back(reference_res.size());
 
@@ -80,16 +80,16 @@ TEST(vershinina_a_image_smoothing, test_pipeline_run) {
 TEST(vershinina_a_image_smoothing, test_task_run) {
   boost::mpi::communicator world;
   std::vector<int> in;
-  std::vector<int> global_res(100 * 99);
+  std::vector<int> global_res(500 * 499);
 
-  in = vershinina_a_image_smoothing::getRandomVector(100, 99);
+  in = getRandomVector(500, 499);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
-    taskDataPar->inputs_count.emplace_back(100);
-    taskDataPar->inputs_count.emplace_back(99);
+    taskDataPar->inputs_count.emplace_back(500);
+    taskDataPar->inputs_count.emplace_back(499);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
@@ -101,12 +101,12 @@ TEST(vershinina_a_image_smoothing, test_task_run) {
   testMpiTaskParallel->post_processing();
 
   if (world.rank() == 0) {
-    std::vector<int> reference_res(100 * 99);
+    std::vector<int> reference_res(500 * 499);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
-    taskDataSeq->inputs_count.emplace_back(100);
-    taskDataSeq->inputs_count.emplace_back(99);
+    taskDataSeq->inputs_count.emplace_back(500);
+    taskDataSeq->inputs_count.emplace_back(499);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_res.data()));
     taskDataSeq->outputs_count.emplace_back(reference_res.size());
 
