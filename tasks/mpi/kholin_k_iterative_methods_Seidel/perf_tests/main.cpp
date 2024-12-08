@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
-#include <mpi/kholin_k_iterative_methods_Seidel/src/ops_mpi.cpp>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
