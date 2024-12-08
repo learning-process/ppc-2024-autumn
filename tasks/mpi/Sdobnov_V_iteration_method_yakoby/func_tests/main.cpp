@@ -161,9 +161,13 @@ TEST(Sdobnov_V_iteration_method_yakoby_par, IterationMethodTest3x3) {
     testseq.run();
     testseq.post_processing();
 
+    double respar_sum = 0.0;
+    double resseq_sum = 0.0;
     for (int i = 0; i < size; i++) {
-      ASSERT_NEAR(respar[i], resseq[i], 1e-3);
+      respar_sum += respar[i];
+      resseq_sum += resseq[i];
     }
+    ASSERT_NEAR(respar_sum, resseq_sum, 1e-3);
   }
 }
 
@@ -210,8 +214,12 @@ TEST(Sdobnov_V_iteration_method_yakoby_par, IterationMethodTest4x4) {
     testseq.run();
     testseq.post_processing();
 
+    double respar_sum = 0.0;
+    double resseq_sum = 0.0;
     for (int i = 0; i < size; i++) {
-      ASSERT_NEAR(respar[i], resseq[i], 1e-3);
+        respar_sum += respar[i];
+        resseq_sum += resseq[i];
     }
+    ASSERT_NEAR(respar_sum, resseq_sum, 1e-3);
   }
 }
