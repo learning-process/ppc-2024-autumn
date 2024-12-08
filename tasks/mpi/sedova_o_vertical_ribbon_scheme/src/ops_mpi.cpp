@@ -23,44 +23,44 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::validation() {
 
 bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::pre_processing() {
   internal_order_test();
-    int* matrix = reinterpret_cast<int*>(taskData->inputs[0]);
-    int* vector = reinterpret_cast<int*>(taskData->inputs[1]);
+  int* matrix = reinterpret_cast<int*>(taskData->inputs[0]);
+  int* vector = reinterpret_cast<int*>(taskData->inputs[1]);
 
-    int count = taskData->inputs_count[0];
-    rows_ = taskData->inputs_count[1];
-    cols_ = count / rows_;
+  int count = taskData->inputs_count[0];
+  rows_ = taskData->inputs_count[1];
+  cols_ = count / rows_;
 
-    input_matrix_1.assign(matrix, matrix + count);
-    input_vector_1.assign(vector, vector + rows_);
-    result_vector_.resize(cols_, 0);
+  input_matrix_1.assign(matrix, matrix + count);
+  input_vector_1.assign(vector, vector + rows_);
+  result_vector_.resize(cols_, 0);
 
-    proc.resize(world.size(), 0);
-    off.resize(world.size(), -1);
+  proc.resize(world.size(), 0);
+  off.resize(world.size(), -1);
 
-    if (world.size() > rows_) {
-      for (int i = 0; i < rows_; ++i) {
-        off[i] = i * cols_;
-        proc[i] = cols_;
-      }
-      for (int i = rows_; i < world.size(); ++i) {
-        off[i] = -1;
-        proc[i] = 0;
-      }
-    } else {
-      int count_proc = rows_ / world.size();
-      int surplus = rows_ % world.size();
-      int offset = 0;
-      for (int i = 0; i < world.size(); ++i) {
-        if (surplus > 0) {
-          proc[i] = (count_proc + 1) * cols_;
-          --surplus;
-        } else {
-          proc[i] = count_proc * cols_;
-        }
-        off[i] = offset;
-        offset += proc[i];
-      }
+  if (world.size() > rows_) {
+    for (int i = 0; i < rows_; ++i) {
+      off[i] = i * cols_;
+      proc[i] = cols_;
     }
+    for (int i = rows_; i < world.size(); ++i) {
+      off[i] = -1;
+      proc[i] = 0;
+    }
+  } else {
+    int count_proc = rows_ / world.size();
+    int surplus = rows_ % world.size();
+    int offset = 0;
+    for (int i = 0; i < world.size(); ++i) {
+      if (surplus > 0) {
+        proc[i] = (count_proc + 1) * cols_;
+        --surplus;
+      } else {
+        proc[i] = count_proc * cols_;
+      }
+    off[i] = offset;
+    offset += proc[i];
+    }
+  }
   return true;
 }
 
