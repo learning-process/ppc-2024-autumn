@@ -21,8 +21,6 @@ TEST(matthew_fyodorov_reduce_custom_mpi, test_pipeline_run) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  int reference_sum = 0;
-
   if (world.rank() == 0) {
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -34,7 +32,6 @@ TEST(matthew_fyodorov_reduce_custom_mpi, test_pipeline_run) {
     global_vector = matthew_fyodorov_reduce_custom_mpi ::getRandomVector(size);
 
     // Вычисляем ожидаемую сумму элементов вектора
-    reference_sum = std::accumulate(global_vector.begin(), global_vector.end(), 0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector.data()));
     taskDataPar->inputs_count.emplace_back(size);
@@ -77,7 +74,6 @@ TEST(matthew_fyodorov_reduce_custom_mpi, test_task_run) {
   const int vector_size = 100000;
   std::vector<int> global_vector;
   std::vector<int32_t> global_sum(1, 0);
-  int reference_sum = 0;
 
   if (rank == 0) {
     global_vector.resize(vector_size);
@@ -87,7 +83,6 @@ TEST(matthew_fyodorov_reduce_custom_mpi, test_task_run) {
     for (int i = 0; i < vector_size; ++i) {
       global_vector[i] = dist(gen);
     }
-    reference_sum = std::accumulate(global_vector.begin(), global_vector.end(), 0);
   }
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
