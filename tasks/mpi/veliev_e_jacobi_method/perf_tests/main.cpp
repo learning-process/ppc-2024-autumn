@@ -132,7 +132,7 @@ TEST(veliev_e_jacobi_method_mpi, test_task_run) {
   auto performanceAttributes = std::make_shared<ppc::core::PerfAttr>();
   performanceAttributes->num_running = 10;
   const boost::mpi::timer timer;
-  performanceAttributes->current_timer = [&] { return timer.elapsed(); };  
+  performanceAttributes->current_timer = [&] { return timer.elapsed(); };
   auto performanceResults = std::make_shared<ppc::core::PerfResults>();
   auto performanceAnalyzer = std::make_shared<ppc::core::Perf>(mpiTask);
   performanceAnalyzer->task_run(performanceAttributes, performanceResults);

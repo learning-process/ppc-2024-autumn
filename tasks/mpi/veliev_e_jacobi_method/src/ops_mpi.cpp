@@ -218,7 +218,7 @@ bool veliev_e_jacobi_method_mpi::MethodJacobiMPI::validation() {
     for (int i = 0; i < N; i++) {
       if (matrixA[i * N + i] == 0) {
         std::cerr << "Incorrect matrix: diagonal element matrixA[" << i + 1 << "][" << i + 1 << "] is zero."
-                   << std::endl;
+                  << std::endl;
         return false;
       }
     }
