@@ -181,7 +181,7 @@ TEST(gromov_a_gaussian_method_vertical_mpi, Test_3) {
 
 TEST(gromov_a_gaussian_method_vertical_mpi, Test_4) {
   boost::mpi::communicator world;
-  int equations = 10;
+  int equations = 9;
   int size_coef_mat = equations * equations;
   int band_width = 5;
   std::vector<int> input_coefficient(size_coef_mat, 0);
