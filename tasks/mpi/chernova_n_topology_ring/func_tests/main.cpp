@@ -38,7 +38,7 @@ TEST(chernova_n_topology_ring_mpi, Test_empty_string) {
     taskDataParallel->outputs_count.emplace_back(2);
   }
   chernova_n_topology_ring_mpi::TestMPITaskParallel testTaskParallel(taskDataParallel);
-  if(world.rank() == 0){
+  if (world.rank() == 0) {
     ASSERT_EQ(testTaskParallel.validation(), false);
   }
 }
