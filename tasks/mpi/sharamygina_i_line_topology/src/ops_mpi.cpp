@@ -18,7 +18,8 @@ bool sharamygina_i_line_topology_mpi::line_topology_mpi::pre_processing() {
     auto* inputBuffer = reinterpret_cast<int*>(taskData->inputs[0]);
     message.assign(inputBuffer, inputBuffer + msize);
   }
-
+  std::cout << world.rank();
+  fflush(stdout);
   return true;
 }
 
@@ -30,6 +31,8 @@ bool sharamygina_i_line_topology_mpi::line_topology_mpi::validation() {
   int sendler = taskData->inputs_count[0];
   int recipient = taskData->inputs_count[1];
   int msize = taskData->inputs_count[2];
+  std::cout << world.rank();
+  fflush(stdout);
 
   return (sendler >= 0 && sendler < world.size() && recipient >= 0 && recipient < world.size() && msize > 0) &&
          ((world.rank() != sendler) || ((!taskData->inputs.empty()) && (taskData->inputs[0] != nullptr))) &&
@@ -57,6 +60,8 @@ bool sharamygina_i_line_topology_mpi::line_topology_mpi::run() {
       world.send(world.rank() + 1, 0, message);
     }
   }
+  std::cout << world.rank();
+  fflush(stdout);
 
   return true;
 }
@@ -70,6 +75,8 @@ bool sharamygina_i_line_topology_mpi::line_topology_mpi::post_processing() {
     auto* mptr = reinterpret_cast<int*>(taskData->outputs[0]);
     std::copy(message.begin(), message.end(), mptr);
   }
+  std::cout << world.rank();
+  fflush(stdout);
 
   return true;
 }
