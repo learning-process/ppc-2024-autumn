@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include "mpi/matthew_fyodorov_reduce_custom/include/ops_mpi.hpp"
 
 #include <algorithm>
@@ -101,7 +100,7 @@ bool matthew_fyodorov_reduce_custom_mpi ::TestMPITaskParallel::run() {
   }
 
   int local_sum = std::accumulate(local_input_.begin(), local_input_.end(), 0);
-  int global_sum;
+  int global_sum = 0;
 
   my_reduce<int>(world, local_sum, global_sum);
   if (rank == 0) res = global_sum;

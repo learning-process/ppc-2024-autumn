@@ -1,8 +1,7 @@
-// Copyright 2023 Nesterov Alexander
 #include "mpi/matthew_fyodorov_reduce/include/ops_mpi.hpp"
 
 #include <algorithm>
-#include <boost/mpi.hpp>  // Для boost::mpi::communicator и boost::mpi::reduce
+#include <boost/mpi.hpp>
 #include <functional>
 #include <numeric>
 #include <random>
@@ -24,7 +23,7 @@ std::vector<int> matthew_fyodorov_reduce_mpi::getRandomVector(int sz) {
 
 bool matthew_fyodorov_reduce_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
-  // Init vectors
+
   input_ = std::vector<int>(taskData->inputs_count[0]);
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
   for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
@@ -74,7 +73,6 @@ bool matthew_fyodorov_reduce_mpi::TestMPITaskParallel::pre_processing() {
 bool matthew_fyodorov_reduce_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    // Check count elements of output
     return taskData->outputs_count[0] == 1;
   }
   return true;
@@ -104,9 +102,9 @@ bool matthew_fyodorov_reduce_mpi::TestMPITaskParallel::run() {
   // }
   // std::cout << "\n";
   int local_sum = std::accumulate(local_input_.begin(), local_input_.end(), 0);
-  int global_sum;
+  int global_sum = 0;
 
-  boost::mpi::reduce(world, local_sum, global_sum, std::plus<int>(), 0);
+  boost::mpi::reduce(world, local_sum, global_sum, std::plus<>(), 0);
   if (rank == 0) res = global_sum;
 
   return true;
