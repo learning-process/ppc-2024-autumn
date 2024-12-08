@@ -58,6 +58,19 @@ TEST(koshkin_m_dining_philosophers, test_num_philisophers_world) {
     ASSERT_FALSE(testMpiTaskParallel.validation());
 }
 
+TEST(koshkin_m_dining_philosophers, test_num_philosopher_neg) {
+  boost::mpi::communicator world;
+
+  int num_philosophers = -2;
+
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.push_back(num_philosophers);
+
+  koshkin_m_dining_philosophers::testMpiTaskParallel testMpiTaskParallel(taskData);
+
+  ASSERT_FALSE(testMpiTaskParallel.validation());
+}
+
 class DiningPhilosophersTest : public ::testing::TestWithParam<int> {
  protected:
   boost::mpi::communicator world;
