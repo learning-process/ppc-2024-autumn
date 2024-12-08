@@ -70,7 +70,7 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::pre_processing() {
   }
 
   if (world_size > rows) {
-    if (world_rank <= rows) {
+    if (world_rank < rows) {
       local_A.resize(columns);
       local_res.resize(1);
     } else {
@@ -117,6 +117,7 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::run() {
     }
   }
   // if (world.rank() == 0) {
+
   std::vector<int> recv_counts(world.size(), 0);
   std::vector<int> displacements(world.size(), 0);
 
