@@ -105,7 +105,7 @@ bool TestMPITaskParallel::run() {
       buffer_size--;
 
       consumer_results.push_back(data * 2);
-      if (consumer_results.size() == data_size) {
+      if (consumer_results.size() == static_cast<size_t>(data_size)) {
         break;
       }
     }
@@ -140,7 +140,3 @@ bool TestMPITaskParallel::post_processing() {
 }
 
 }  // namespace prokhorov_n_producer_customer_mpi
-
-
-
-

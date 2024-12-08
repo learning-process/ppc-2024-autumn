@@ -27,7 +27,6 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   std::vector<int> producer_data;
   std::vector<int> local_input_;
-  int res = 0;
   std::string ops;
   boost::mpi::communicator world;
 };
