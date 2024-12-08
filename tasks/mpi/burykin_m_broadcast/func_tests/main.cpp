@@ -4,6 +4,7 @@
 #include <boost/mpi/environment.hpp>
 #include <random>
 
+#include "boost/mpi/collectives/broadcast.hpp"
 #include "mpi/burykin_m_broadcast/include/ops_mpi.hpp"
 
 namespace burykin_m_broadcast_mpi {
@@ -19,9 +20,6 @@ void fillVector(std::vector<int>& vector, int min_val, int max_val) {
 
 void test_template(int data_size, int source_worker = 0, int min_val = -100, int max_val = 100) {
   boost::mpi::communicator world;
-  if (world.size() <= source_worker) {
-    GTEST_SKIP();
-  }
 
   std::vector<int> recv_vorker(data_size);
   std::vector<int> result_vector(data_size);
@@ -50,8 +48,6 @@ void test_template(int data_size, int source_worker = 0, int min_val = -100, int
     boost::mpi::broadcast(world, recv_vorker, source_worker);
 
     EXPECT_EQ(recv_vorker, result_vector);
-  } else {
-    EXPECT_TRUE(true);
   }
 }
 
@@ -82,3 +78,54 @@ TEST(burykin_m_broadcast_mpi, DataSize0_Source0) { burykin_m_broadcast_mpi::test
 TEST(burykin_m_broadcast_mpi, DataSize1_Source0_ZeroRange) { burykin_m_broadcast_mpi::test_template(1, 0, 0, 0); }
 
 TEST(burykin_m_broadcast_mpi, DataSize100_Source0) { burykin_m_broadcast_mpi::test_template(100, 0, -1, 1); }
+
+TEST(burykin_m_broadcast_mpi, DataSize10_Rundom_Source) {
+  boost::mpi::communicator world;
+  if (world.size() < 2) {
+    GTEST_SKIP();
+  }
+
+  int source_worker;
+  if (world.rank() == 0) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<int> dist(0, world.size() - 1);
+
+    source_worker = dist(gen);
+  }
+  boost::mpi::broadcast(world, source_worker, 0);
+  int data_size = 10;
+  int min_val = -10;
+  int max_val = 10;
+
+  std::vector<int> recv_vorker(data_size);
+  std::vector<int> result_vector(data_size);
+
+  std::shared_ptr<ppc::core::TaskData> task = std::make_shared<ppc::core::TaskData>();
+
+  task->inputs.emplace_back(reinterpret_cast<uint8_t*>(&source_worker));
+  task->inputs_count.emplace_back(1);
+
+  if (world.rank() == source_worker) {
+    burykin_m_broadcast_mpi::fillVector(recv_vorker, min_val, max_val);
+
+    task->inputs.emplace_back(reinterpret_cast<uint8_t*>(recv_vorker.data()));
+    task->inputs_count.emplace_back(recv_vorker.size());
+  }
+
+  task->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_vector.data()));
+  task->outputs_count.emplace_back(result_vector.size());
+
+  auto taskForProcessing = std::make_shared<burykin_m_broadcast_mpi::BroadcastMPI>(task);
+  if (taskForProcessing->validation()) {
+    taskForProcessing->pre_processing();
+    taskForProcessing->run();
+    taskForProcessing->post_processing();
+
+    boost::mpi::broadcast(world, recv_vorker, source_worker);
+
+    EXPECT_EQ(recv_vorker, result_vector);
+  } else {
+    EXPECT_TRUE(true);
+  }
+}

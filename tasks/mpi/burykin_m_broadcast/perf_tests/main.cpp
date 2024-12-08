@@ -19,6 +19,7 @@ void fillVector(std::vector<int>& vector, int min_val, int max_val) {
     vector[iter++] = dist(gen);
   }
 }
+
 }  // namespace burykin_m_broadcast_mpi
 
 TEST(burykin_m_broadcast_mpi, pipeline_run) {

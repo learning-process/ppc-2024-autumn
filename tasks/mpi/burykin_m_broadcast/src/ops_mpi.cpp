@@ -3,11 +3,12 @@
 bool burykin_m_broadcast_mpi::BroadcastMPI::validation() {
   internal_order_test();
 
-  if (taskData->inputs_count[0] != 1) {
-    return false;
-  }
+  if (taskData->inputs_count[0] != 1) return false;
 
   int val_source_worker = *taskData->inputs[0];
+
+  if (world.size() <= val_source_worker) return false;
+
   return val_source_worker >= 0 && val_source_worker < world.size();
 }
 
