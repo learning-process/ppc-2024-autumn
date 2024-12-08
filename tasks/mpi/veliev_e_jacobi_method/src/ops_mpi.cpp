@@ -2,21 +2,21 @@
 #include "mpi/veliev_e_jacobi_method/include/ops_mpi.hpp"
 
 #include <cmath>
+#include <iomanip>
 #include <string>
 #include <vector>
-#include <iomanip>
 
 bool veliev_e_jacobi_method_mpi::MethodJacobiSeq::pre_processing() {
   internal_order_test();
 
   auto* rhs = reinterpret_cast<double*>(taskData->inputs[1]);
   auto* initial_guess = reinterpret_cast<double*>(taskData->inputs[2]);
-  B.resize(N);
-  X.resize(N);
+  rshB.resize(N);
+  initialGuessX.resize(N);
 
   for (int i = 0; i < N; i++) {
-    B[i] = rhs[i];
-    X[i] = initial_guess[i];
+    rshB[i] = rhs[i];
+    initialGuessX[i] = initial_guess[i];
   }
 
   return true;
@@ -56,11 +56,11 @@ int veliev_e_jacobi_method_mpi::rankOfMatrix(std::vector<double>& matrix, int n)
   return rank;
 }
 
-bool veliev_e_jacobi_method_mpi::hasUniqueSolution(std::vector<double>& A, std::vector<double>& b, int n) {
-  std::vector<double> extended_matrix = A;
+bool veliev_e_jacobi_method_mpi::hasUniqueSolution(std::vector<double>& matrixA, std::vector<double>& b, int n) {
+  std::vector<double> extended_matrix = matrixA;
   extended_matrix.insert(extended_matrix.end(), b.begin(), b.end());
 
-  int rankA = rankOfMatrix(A, n);
+  int rankA = rankOfMatrix(matrixA, n);
 
   int extended_rank = rankOfMatrix(extended_matrix, n);
 
@@ -73,23 +73,23 @@ bool veliev_e_jacobi_method_mpi::MethodJacobiSeq::validation() {
   auto* matrix = reinterpret_cast<double*>(taskData->inputs[0]);
   N = static_cast<int>(taskData->inputs_count[0]);
   auto* rhs = reinterpret_cast<double*>(taskData->inputs[1]);
-  A.resize(N * N);
-  B.resize(N);
+  matrixA.resize(N * N);
+  rshB.resize(N);
   eps = *reinterpret_cast<double*>(taskData->inputs[3]);
   for (int i = 0; i < N; i++) {
     for (int j = 0; j < N; j++) {
-      A[i * N + j] = matrix[i * N + j];
+      matrixA[i * N + j] = matrix[i * N + j];
     }
-    B[i] = rhs[i];
+    rshB[i] = rhs[i];
   }
 
   for (int i = 0; i < N; i++) {
-    if (A[i * N + i] == 0) {
-      std::cerr << "Incorrect matrix: diagonal element A[" << i + 1 << "][" << i + 1 << "] is zero." << std::endl;
+    if (matrixA[i * N + i] == 0) {
+      std::cerr << "Incorrect matrix: diagonal element matrixA[" << i + 1 << "][" << i + 1 << "] is zero." << std::endl;
       return false;
     }
   }
-  if (!hasUniqueSolution(A, B, N)) {
+  if (!hasUniqueSolution(matrixA, rshB, N)) {
     std::cerr << "The matrix may not have a single solution" << std::endl;
     return false;
   }
@@ -100,19 +100,19 @@ bool veliev_e_jacobi_method_mpi::MethodJacobiSeq::validation() {
   return taskData->inputs_count[0] > 0;
 }
 
-void veliev_e_jacobi_method_mpi::MethodJacobiSeq::jacobi_iteration() {
+void veliev_e_jacobi_method_mpi::MethodJacobiSeq::iteration_J() {
   std::vector<double> TempX(N);
 
   for (int i = 0; i < N; i++) {
-    TempX[i] = B[i];
+    TempX[i] = rshB[i];
     for (int j = 0; j < N; j++) {
-      if (i != j) TempX[i] -= A[i * N + j] * X[j];
+      if (i != j) TempX[i] -= matrixA[i * N + j] * initialGuessX[j];
     }
-    TempX[i] /= A[i * N + i];
+    TempX[i] /= matrixA[i * N + i];
   }
 
   for (int h = 0; h < N; h++) {
-    X[h] = TempX[h];
+    initialGuessX[h] = TempX[h];
   }
 }
 
@@ -121,13 +121,13 @@ bool veliev_e_jacobi_method_mpi::MethodJacobiSeq::run() {
   double norm;
   std::vector<double> prev_X(N);
   do {
-    prev_X = X;
+    prev_X = initialGuessX;
 
-    jacobi_iteration();
+    iteration_J();
 
-    norm = fabs(X[0] - prev_X[0]);
+    norm = fabs(initialGuessX[0] - prev_X[0]);
     for (int i = 0; i < N; i++) {
-      if (fabs(X[i] - prev_X[i]) > norm) norm = fabs(X[i] - prev_X[i]);
+      if (fabs(initialGuessX[i] - prev_X[i]) > norm) norm = fabs(initialGuessX[i] - prev_X[i]);
     }
   } while (norm > eps);
   return true;
@@ -136,7 +136,7 @@ bool veliev_e_jacobi_method_mpi::MethodJacobiSeq::run() {
 bool veliev_e_jacobi_method_mpi::MethodJacobiSeq::post_processing() {
   internal_order_test();
   for (int i = 0; i < N; i++) {
-    reinterpret_cast<double*>(taskData->outputs[0])[i] = X[i];
+    reinterpret_cast<double*>(taskData->outputs[0])[i] = initialGuessX[i];
   }
   return true;
 }
@@ -146,18 +146,18 @@ bool veliev_e_jacobi_method_mpi::MethodJacobiMPI::pre_processing() {
   if (world.rank() == 0) {
     auto* rhs = reinterpret_cast<double*>(taskData->inputs[1]);
     auto* initial_guess = reinterpret_cast<double*>(taskData->inputs[2]);
-    B.resize(N);
-    X.resize(N);
+    rshB.resize(N);
+    initialGuessX.resize(N);
 
     for (int i = 0; i < N; i++) {
-      B[i] = rhs[i];
-      X[i] = initial_guess[i];
+      rshB[i] = rhs[i];
+      initialGuessX[i] = initial_guess[i];
     }
   }
   return true;
 }
 
-void veliev_e_jacobi_method_mpi::MethodJacobiMPI::jacobi_iteration() {
+void veliev_e_jacobi_method_mpi::MethodJacobiMPI::iteration_J() {
   std::vector<double> TempX(N, 0.0);
   int rank = world.rank();
   int size = world.size();
@@ -167,13 +167,13 @@ void veliev_e_jacobi_method_mpi::MethodJacobiMPI::jacobi_iteration() {
   int end_row = std::min((rank + 1) * rows_per_process, N);
 
   for (int i = start_row; i < end_row; i++) {
-    TempX[i] = B[i];
+    TempX[i] = rshB[i];
     for (int j = 0; j < N; j++) {
       if (i != j) {
-        TempX[i] -= A[i * N + j] * X[j];
+        TempX[i] -= matrixA[i * N + j] * initialGuessX[j];
       }
     }
-    TempX[i] /= A[i * N + i];
+    TempX[i] /= matrixA[i * N + i];
   }
 
   std::vector<int> sendcounts(size, rows_per_process);
@@ -194,10 +194,10 @@ void veliev_e_jacobi_method_mpi::MethodJacobiMPI::jacobi_iteration() {
 
   if (rank == 0) {
     all_X.resize(N);
-    X = all_X;
+    initialGuessX = all_X;
   }
 
-  boost::mpi::broadcast(world, X.data(), X.size(), 0);
+  boost::mpi::broadcast(world, initialGuessX.data(), initialGuessX.size(), 0);
 }
 
 bool veliev_e_jacobi_method_mpi::MethodJacobiMPI::validation() {
@@ -207,21 +207,21 @@ bool veliev_e_jacobi_method_mpi::MethodJacobiMPI::validation() {
     N = static_cast<int>(taskData->inputs_count[0]);
     eps = *reinterpret_cast<double*>(taskData->inputs[3]);
     auto* rhs = reinterpret_cast<double*>(taskData->inputs[1]);
-    A.resize(N * N);
-    B.resize(N);
+    matrixA.resize(N * N);
+    rshB.resize(N);
     for (int i = 0; i < N; i++) {
       for (int j = 0; j < N; j++) {
-        A[i * N + j] = matrix[i * N + j];
+        matrixA[i * N + j] = matrix[i * N + j];
       }
-      B[i] = rhs[i];
+      rshB[i] = rhs[i];
     }
     for (int i = 0; i < N; i++) {
-      if (A[i * N + i] == 0) {
-        std::cerr << "Incorrect matrix: diagonal element A[" << i + 1 << "][" << i + 1 << "] is zero." << std::endl;
+      if (matrixA[i * N + i] == 0) {
+        std::cerr << "Incorrect matrix: diagonal element matrixA[" << i + 1 << "][" << i + 1 << "] is zero." << std::endl;
         return false;
       }
     }
-    if (!hasUniqueSolution(A, B, N)) {
+    if (!hasUniqueSolution(matrixA, rshB, N)) {
       std::cerr << "The matrix may not have a single solution" << std::endl;
       return false;
     }
@@ -238,24 +238,24 @@ bool veliev_e_jacobi_method_mpi::MethodJacobiMPI::run() {
   internal_order_test();
 
   boost::mpi::broadcast(world, N, 0);
-  A.resize(N * N);
-  B.resize(N);
-  X.resize(N);
-  boost::mpi::broadcast(world, A.data(), A.size(), 0);
-  boost::mpi::broadcast(world, B.data(), B.size(), 0);
-  boost::mpi::broadcast(world, X.data(), X.size(), 0);
+  matrixA.resize(N * N);
+  rshB.resize(N);
+  initialGuessX.resize(N);
+  boost::mpi::broadcast(world, matrixA.data(), matrixA.size(), 0);
+  boost::mpi::broadcast(world, rshB.data(), rshB.size(), 0);
+  boost::mpi::broadcast(world, initialGuessX.data(), initialGuessX.size(), 0);
   boost::mpi::broadcast(world, eps, 0);
 
   double norm;
   std::vector<double> prev_X(N);
   do {
-    prev_X = X;
+    prev_X = initialGuessX;
 
-    jacobi_iteration();
+    iteration_J();
 
     norm = 0;
     for (int i = 0; i < N; i++) {
-      norm = std::max(norm, fabs(X[i] - prev_X[i]));
+      norm = std::max(norm, fabs(initialGuessX[i] - prev_X[i]));
     }
   } while (norm > eps);
 
@@ -266,7 +266,7 @@ bool veliev_e_jacobi_method_mpi::MethodJacobiMPI::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     for (int i = 0; i < N; i++) {
-      reinterpret_cast<double*>(taskData->outputs[0])[i] = X[i];
+      reinterpret_cast<double*>(taskData->outputs[0])[i] = initialGuessX[i];
     }
   }
   return true;

@@ -14,7 +14,7 @@ namespace veliev_e_jacobi_method_mpi {
 using boost::mpi::communicator;
 
 int rankOfMatrix(std::vector<double>& matrix, int n);
-bool hasUniqueSolution(std::vector<double>& A, std::vector<double>& b, int n);
+bool hasUniqueSolution(std::vector<double>& matrixA, std::vector<double>& b, int n);
 
 class MethodJacobiSeq : public ppc::core::Task {
  public:
@@ -24,14 +24,14 @@ class MethodJacobiSeq : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  void jacobi_iteration();
+  void iteration_J();
 
  private:
   int N{};
   double eps{};
-  std::vector<double> A;
-  std::vector<double> B;
-  std::vector<double> X;
+  std::vector<double> matrixA;
+  std::vector<double> rshB;
+  std::vector<double> initialGuessX;
 };
 
 class MethodJacobiMPI : public ppc::core::Task {
@@ -42,14 +42,14 @@ class MethodJacobiMPI : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  void jacobi_iteration();
+  void iteration_J();
 
  private:
   int N{};
   double eps{};
-  std::vector<double> A;
-  std::vector<double> B;
-  std::vector<double> X;
+  std::vector<double> matrixA;
+  std::vector<double> rshB;
+  std::vector<double> initialGuessX;
   communicator world;
 };
 

@@ -8,7 +8,7 @@
 #include "mpi/veliev_e_jacobi_method/include/ops_mpi.hpp"
 
 namespace veliev_e_generate_matrix {
-void create_diag_dominant_system(int N, std::vector<double> &A, std::vector<double> &B) {
+void create_diag_dominant_system(int N, std::vector<double> &matrixA, std::vector<double> &rshB) {
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_real_distribution<> dis(-1.0, 1.0);
@@ -18,15 +18,15 @@ void create_diag_dominant_system(int N, std::vector<double> &A, std::vector<doub
     double off_diagonal_sum = 0.0;
     for (int j = 0; j < N; ++j) {
       if (i != j) {
-        A[i * N + j] = dis(gen);
-        off_diagonal_sum += std::abs(A[i * N + j]);
+        matrixA[i * N + j] = dis(gen);
+        off_diagonal_sum += std::abs(matrixA[i * N + j]);
       }
     }
 
     diagonal_value = off_diagonal_sum * 10.0;
-    A[i * N + i] = diagonal_value;
+    matrixA[i * N + i] = diagonal_value;
 
-    B[i] = diagonal_value * dis(gen);
+    rshB[i] = diagonal_value * dis(gen);
   }
 }
 }  // namespace veliev_e_generate_matrix
@@ -90,7 +90,6 @@ TEST(veliev_e_jacobi_method_mpi, test_pipeline_run) {
     }
   }
 }
-
 
 TEST(veliev_e_jacobi_method_mpi, test_task_run) {
   boost::mpi::communicator world;

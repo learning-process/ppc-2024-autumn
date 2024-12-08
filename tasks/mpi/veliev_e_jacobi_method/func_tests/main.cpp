@@ -86,7 +86,6 @@ TEST(veliev_e_jacobi_method_mpi, Test_4x4_system) {
   }
 }
 
-
 TEST(veliev_e_jacobi_method_mpi, Test_incorrect_system_with_zero_diagonal) {
   boost::mpi::communicator world;
 
@@ -135,7 +134,6 @@ TEST(veliev_e_jacobi_method_mpi, Test_incorrect_system_with_zero_diagonal) {
   }
 }
 
-
 TEST(veliev_e_jacobi_method_mpi, Test_empty_system) {
   boost::mpi::communicator world;
 
@@ -183,7 +181,6 @@ TEST(veliev_e_jacobi_method_mpi, Test_empty_system) {
     ASSERT_EQ(seqTask.validation(), false);
   }
 }
-
 
 TEST(veliev_e_jacobi_method_mpi, Test_10x10_system) {
   boost::mpi::communicator world;
@@ -269,23 +266,22 @@ TEST(veliev_e_jacobi_method_mpi, Test_10x10_system) {
   }
 }
 
-
 TEST(veliev_e_jacobi_method_mpi, Test_negative_rhs) {
   boost::mpi::communicator world;
 
   int N = 4;
   std::vector<double> matrixA = {4, -1, 0, 0, -1, 4, -1, 0, 0, -1, 4, -1, 0, 0, -1, 3};
-  std::vector<double> rhsB = {-15, -10, -10, -10};  // "rshB" -> "rhsB"
+  std::vector<double> rhsB = {-15, -10, -10, -10};
   std::vector<double> initialGuessX = {0, 0, 0, 0};
   double epsilon = 1e-6;
   std::vector<double> resMPI(N, 0);
-  std::vector<double> expected_result = {-5, -5, -5, -5};  // Expected result clarified
+  std::vector<double> expected_result = {-5, -5, -5, -5};
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrixA.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(rhsB.data()));  // "rshB" -> "rhsB"
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(rhsB.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(initialGuessX.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
     taskDataPar->inputs_count.emplace_back(N);
@@ -308,7 +304,7 @@ TEST(veliev_e_jacobi_method_mpi, Test_negative_rhs) {
   }
   std::vector<double> res(N, 0.0);
   for (int i = 0; i < N; ++i) {
-    res[i] = abs(Ax[i] - rhsB[i]);  // "rshB" -> "rhsB"
+    res[i] = abs(Ax[i] - rhsB[i]);
   }
 
   if (world.rank() == 0) {
@@ -316,7 +312,7 @@ TEST(veliev_e_jacobi_method_mpi, Test_negative_rhs) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrixA.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(rhsB.data()));  // "rshB" -> "rhsB"
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(rhsB.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(initialGuessX.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
     taskDataSeq->inputs_count.emplace_back(N);
@@ -338,7 +334,7 @@ TEST(veliev_e_jacobi_method_mpi, Test_negative_rhs) {
     }
     std::vector<double> res2(N, 0.0);
     for (int i = 0; i < N; ++i) {
-      res2[i] = abs(AxSeq[i] - rhsB[i]);  // "rshB" -> "rhsB"
+      res2[i] = abs(AxSeq[i] - rhsB[i]);
     }
 
     for (int i = 0; i < N; i++) ASSERT_LT(res[i], 1.1e-6);
@@ -346,13 +342,12 @@ TEST(veliev_e_jacobi_method_mpi, Test_negative_rhs) {
   }
 }
 
-
 TEST(veliev_e_jacobi_method_mpi, Test_1x1_system) {
   boost::mpi::communicator world;
 
   int N = 1;
   std::vector<double> matrixA = {5};
-  std::vector<double> rhsB = {100};  // "rshB" -> "rhsB"
+  std::vector<double> rhsB = {100};
   std::vector<double> initialGuessX = {0};
   double epsilon = 1e-6;
   std::vector<double> resMPI(N, 0);
@@ -362,7 +357,7 @@ TEST(veliev_e_jacobi_method_mpi, Test_1x1_system) {
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrixA.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(rhsB.data()));  // "rshB" -> "rhsB"
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(rhsB.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(initialGuessX.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
     taskDataPar->inputs_count.emplace_back(N);
@@ -382,7 +377,7 @@ TEST(veliev_e_jacobi_method_mpi, Test_1x1_system) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrixA.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(rhsB.data()));  // "rshB" -> "rhsB"
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(rhsB.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(initialGuessX.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
     taskDataSeq->inputs_count.emplace_back(N);
@@ -401,13 +396,12 @@ TEST(veliev_e_jacobi_method_mpi, Test_1x1_system) {
   }
 }
 
-
 TEST(veliev_e_jacobi_method_mpi, Test_negative_epsilon) {
   boost::mpi::communicator world;
 
   int N = 1;
   std::vector<double> matrixA = {5};
-  std::vector<double> rhsB = {100};  // "rshB" -> "rhsB"
+  std::vector<double> rhsB = {100};
   std::vector<double> initialGuessX = {0};
   double epsilon = -1e-6;
 
@@ -415,7 +409,7 @@ TEST(veliev_e_jacobi_method_mpi, Test_negative_epsilon) {
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrixA.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(rhsB.data()));  // "rshB" -> "rhsB"
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(rhsB.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(initialGuessX.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
     taskDataPar->inputs_count.emplace_back(N);
@@ -434,7 +428,7 @@ TEST(veliev_e_jacobi_method_mpi, Test_negative_epsilon) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrixA.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(rhsB.data()));  // "rshB" -> "rhsB"
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(rhsB.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(initialGuessX.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
     taskDataSeq->inputs_count.emplace_back(N);
@@ -445,13 +439,12 @@ TEST(veliev_e_jacobi_method_mpi, Test_negative_epsilon) {
   }
 }
 
-
 TEST(veliev_e_jacobi_method_mpi, Test_not_single_solution) {
   boost::mpi::communicator world;
 
   int N = 4;
   std::vector<double> matrixA = {4, -1, 0, 0, 4, -1, 0, 0, -1, 4, -1, 0, 0, -1, 4, -1};
-  std::vector<double> rhsB = {0, 0, 0, 0};  // "rshB" -> "rhsB"
+  std::vector<double> rhsB = {0, 0, 0, 0};
   std::vector<double> initialGuessX = {0, 0, 0, 0};
   double epsilon = 1e-6;
   std::vector<double> resMPI(N, 0);
@@ -460,7 +453,7 @@ TEST(veliev_e_jacobi_method_mpi, Test_not_single_solution) {
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrixA.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(rhsB.data()));  // "rshB" -> "rhsB"
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(rhsB.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(initialGuessX.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
     taskDataPar->inputs_count.emplace_back(N);

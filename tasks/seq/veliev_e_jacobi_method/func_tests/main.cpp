@@ -64,7 +64,6 @@ TEST(veliev_e_jacobi_method, Test_3x3_System) {
   ASSERT_NEAR(solutionVector[2], 0.5, 1e-4);
 }
 
-
 TEST(veliev_e_jacobi_method, Test_Diagonal_Dominance) {
   const uint32_t matrixSize = 3;
 
@@ -120,7 +119,6 @@ TEST(veliev_e_jacobi_method, Test_empty_System) {
   ASSERT_EQ(jacobiProcessor.validation(), false);
 }
 
-
 TEST(veliev_e_jacobi_method, Test_zero_diagonal_element) {
   const uint32_t systemSize = 3;
 
@@ -171,7 +169,6 @@ TEST(veliev_e_jacobi_method, Test_1x1_System) {
   ASSERT_NEAR(solution[0], 5.0, 1e-6);
 }
 
-
 TEST(veliev_e_jacobi_method, Test_Zero_Right_Side) {
   const uint32_t systemSize = 3;
 
@@ -200,7 +197,6 @@ TEST(veliev_e_jacobi_method, Test_Zero_Right_Side) {
   ASSERT_EQ(solution[1], 0.0);
   ASSERT_EQ(solution[2], 0.0);
 }
-
 
 TEST(veliev_e_jacobi_method, Test_Diagonal_Dominance_Large_Error) {
   const uint32_t systemSize = 3;
