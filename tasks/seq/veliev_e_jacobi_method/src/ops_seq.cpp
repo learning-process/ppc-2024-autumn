@@ -1,7 +1,7 @@
 // Copyright 2024 Nesterov Alexander
-#include "seq/veliev_e_iterative_methods_jacobi/include/ops_seq.hpp"
+#include "seq/veliev_e_jacobi_method/include/ops_seq.hpp"
 
-bool veliev_e_iterative_methods_jacobi::MethodJacobi::pre_processing() {
+bool veliev_e_jacobi_method::MethodJacobi::pre_processing() {
   internal_order_test();
 
   auto* matrix = reinterpret_cast<double*>(taskData->inputs[0]);
@@ -9,7 +9,7 @@ bool veliev_e_iterative_methods_jacobi::MethodJacobi::pre_processing() {
   auto* initial_guess = reinterpret_cast<double*>(taskData->inputs[2]);
   N = static_cast<int>(taskData->inputs_count[0]);
   matrixA.resize(N * N);
-  rhsB.resize(N);
+  rshB.resize(N);
   initialGuessX.resize(N);
   eps = 1e-9;
 
@@ -17,7 +17,7 @@ bool veliev_e_iterative_methods_jacobi::MethodJacobi::pre_processing() {
     for (int j = 0; j < N; j++) {
       matrixA[i * N + j] = matrix[i * N + j];
     }
-    rhsB[i] = rhs[i];
+    rshB[i] = rhs[i];
     initialGuessX[i] = initial_guess[i];
   }
 
@@ -31,28 +31,28 @@ bool veliev_e_iterative_methods_jacobi::MethodJacobi::pre_processing() {
   return true;
 }
 
-bool veliev_e_iterative_methods_jacobi::MethodJacobi::validation() {
+bool veliev_e_jacobi_method::MethodJacobi::validation() {
   internal_order_test();
   return taskData->inputs_count[0] > 0;
 }
 
-void veliev_e_iterative_methods_jacobi::MethodJacobi::jacobi_iteration() {
-  std::vector<double> tempX(N);
+void veliev_e_jacobi_method::MethodJacobi::iteration_J() {
+  std::vector<double> TempX(N);
 
   for (int i = 0; i < N; i++) {
-    tempX[i] = rhsB[i];
+    TempX[i] = rshB[i];
     for (int j = 0; j < N; j++) {
-      if (i != j) tempX[i] -= matrixA[i * N + j] * initialGuessX[j];
+      if (i != j) TempX[i] -= matrixA[i * N + j] * initialGuessX[j];
     }
-    tempX[i] /= matrixA[i * N + i];
+    TempX[i] /= matrixA[i * N + i];
   }
 
   for (int h = 0; h < N; h++) {
-    initialGuessX[h] = tempX[h];
+    initialGuessX[h] = TempX[h];
   }
 }
 
-bool veliev_e_iterative_methods_jacobi::MethodJacobi::run() {
+bool veliev_e_jacobi_method::MethodJacobi::run() {
   internal_order_test();
   double norm;
   std::vector<double> prev_X(N);
@@ -61,7 +61,7 @@ bool veliev_e_iterative_methods_jacobi::MethodJacobi::run() {
   do {
     prev_X = initialGuessX;
 
-    jacobi_iteration();
+    iteration_J();
 
     norm = fabs(initialGuessX[0] - prev_X[0]);
     for (int i = 0; i < N; i++) {
@@ -72,7 +72,7 @@ bool veliev_e_iterative_methods_jacobi::MethodJacobi::run() {
   return true;
 }
 
-bool veliev_e_iterative_methods_jacobi::MethodJacobi::post_processing() {
+bool veliev_e_jacobi_method::MethodJacobi::post_processing() {
   internal_order_test();
   for (int i = 0; i < N; i++) {
     reinterpret_cast<double*>(taskData->outputs[0])[i] = initialGuessX[i];

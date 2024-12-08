@@ -7,7 +7,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace veliev_e_iterative_methods_jacobi {
+namespace veliev_e_jacobi_method {
 
 class MethodJacobi : public ppc::core::Task {
  public:
@@ -21,9 +21,9 @@ class MethodJacobi : public ppc::core::Task {
   int N{};
   double eps{};
   std::vector<double> matrixA;
-  std::vector<double> rhsB;
+  std::vector<double> rshB;
   std::vector<double> initialGuessX;
-  void jacobi_iteration();
+  void iteration_J();
 };
 
-}  // namespace veliev_e_iterative_methods_jacobi
+}  // namespace veliev_e_jacobi_method
