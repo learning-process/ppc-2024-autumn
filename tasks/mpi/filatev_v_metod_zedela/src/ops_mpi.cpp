@@ -3,7 +3,7 @@
 
 #include <vector>
 
- filatev_v_metod_zedela_mpi::MetodZedela::MetodZedela(std::shared_ptr<ppc::core::TaskData> taskData_,
+filatev_v_metod_zedela_mpi::MetodZedela::MetodZedela(std::shared_ptr<ppc::core::TaskData> taskData_,
                                                      boost::mpi::communicator world_)
     : Task(std::move(taskData_)), world(std::move(world_)) {
   if (world.rank() == 0) {
