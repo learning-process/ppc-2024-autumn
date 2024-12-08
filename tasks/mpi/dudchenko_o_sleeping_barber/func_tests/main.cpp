@@ -28,7 +28,7 @@ TEST(dudchenko_o_sleeping_barber_mpi, Test_Validation2) {
 
   if (world.rank() == 0) {
     if (world.size() < 3) {
-      taskDataPar->inputs_count = {1};  // Количество мест 1
+      taskDataPar->inputs_count = {1};                 // Количество мест 1
       EXPECT_FALSE(testMpiTaskParallel.validation());  // Ожидаем ошибку
     }
   }
@@ -43,10 +43,10 @@ TEST(dudchenko_o_sleeping_barber_mpi, Test_Validation3) {
 
   if (world.rank() == 0) {
     if (world.size() < 3) {
-      taskDataPar->inputs_count = {1};  // Количество мест 1
+      taskDataPar->inputs_count = {1};                 // Количество мест 1
       EXPECT_FALSE(testMpiTaskParallel.validation());  // Ожидаем ошибку
     } else {
-      taskDataPar->inputs_count = {1};  // Количество мест 1
+      taskDataPar->inputs_count = {1};                // Количество мест 1
       EXPECT_TRUE(testMpiTaskParallel.validation());  // Ожидаем успех
     }
   }
@@ -70,9 +70,9 @@ TEST(dudchenko_o_sleeping_barber_mpi, Test_End_To_End1) {
   if (world.size() < 3) {
     ASSERT_FALSE(testMpiTaskParallel.validation());  // Ожидаем ошибку из-за недостатка процессов
   } else {
-    ASSERT_TRUE(testMpiTaskParallel.validation());  // Ожидаем успех
-    ASSERT_TRUE(testMpiTaskParallel.pre_processing());  // Ожидаем успешную подготовку
-    ASSERT_TRUE(testMpiTaskParallel.run());  // Ожидаем успешный запуск
+    ASSERT_TRUE(testMpiTaskParallel.validation());       // Ожидаем успех
+    ASSERT_TRUE(testMpiTaskParallel.pre_processing());   // Ожидаем успешную подготовку
+    ASSERT_TRUE(testMpiTaskParallel.run());              // Ожидаем успешный запуск
     ASSERT_TRUE(testMpiTaskParallel.post_processing());  // Ожидаем успешную обработку
 
     world.barrier();  // Синхронизация всех процессов
@@ -101,9 +101,9 @@ TEST(dudchenko_o_sleeping_barber_mpi, Test_End_To_End2) {
   if (world.size() < 3) {
     ASSERT_FALSE(testMpiTaskParallel.validation());  // Ожидаем ошибку из-за недостатка процессов
   } else {
-    ASSERT_TRUE(testMpiTaskParallel.validation());  // Ожидаем успех
-    ASSERT_TRUE(testMpiTaskParallel.pre_processing());  // Ожидаем успешную подготовку
-    ASSERT_TRUE(testMpiTaskParallel.run());  // Ожидаем успешный запуск
+    ASSERT_TRUE(testMpiTaskParallel.validation());       // Ожидаем успех
+    ASSERT_TRUE(testMpiTaskParallel.pre_processing());   // Ожидаем успешную подготовку
+    ASSERT_TRUE(testMpiTaskParallel.run());              // Ожидаем успешный запуск
     ASSERT_TRUE(testMpiTaskParallel.post_processing());  // Ожидаем успешную обработку
 
     world.barrier();  // Синхронизация всех процессов
@@ -132,9 +132,9 @@ TEST(dudchenko_o_sleeping_barber_mpi, Test_End_To_End3) {
   if (world.size() < 3) {
     ASSERT_FALSE(testMpiTaskParallel.validation());  // Ожидаем ошибку из-за недостатка процессов
   } else {
-    ASSERT_TRUE(testMpiTaskParallel.validation());  // Ожидаем успех
-    ASSERT_TRUE(testMpiTaskParallel.pre_processing());  // Ожидаем успешную подготовку
-    ASSERT_TRUE(testMpiTaskParallel.run());  // Ожидаем успешный запуск
+    ASSERT_TRUE(testMpiTaskParallel.validation());       // Ожидаем успех
+    ASSERT_TRUE(testMpiTaskParallel.pre_processing());   // Ожидаем успешную подготовку
+    ASSERT_TRUE(testMpiTaskParallel.run());              // Ожидаем успешный запуск
     ASSERT_TRUE(testMpiTaskParallel.post_processing());  // Ожидаем успешную обработку
 
     world.barrier();  // Синхронизация всех процессов
@@ -163,9 +163,9 @@ TEST(dudchenko_o_sleeping_barber_mpi, Test_End_To_End4) {
   if (world.size() < 3) {
     ASSERT_FALSE(testMpiTaskParallel.validation());  // Ожидаем ошибку из-за недостатка процессов
   } else {
-    ASSERT_TRUE(testMpiTaskParallel.validation());  // Ожидаем успех
-    ASSERT_TRUE(testMpiTaskParallel.pre_processing());  // Ожидаем успешную подготовку
-    ASSERT_TRUE(testMpiTaskParallel.run());  // Ожидаем успешный запуск
+    ASSERT_TRUE(testMpiTaskParallel.validation());       // Ожидаем успех
+    ASSERT_TRUE(testMpiTaskParallel.pre_processing());   // Ожидаем успешную подготовку
+    ASSERT_TRUE(testMpiTaskParallel.run());              // Ожидаем успешный запуск
     ASSERT_TRUE(testMpiTaskParallel.post_processing());  // Ожидаем успешную обработку
 
     world.barrier();  // Синхронизация всех процессов
@@ -194,9 +194,9 @@ TEST(dudchenko_o_sleeping_barber_mpi, Test_End_To_End5) {
   if (world.size() < 3) {
     ASSERT_FALSE(testMpiTaskParallel.validation());  // Ожидаем ошибку из-за недостатка процессов
   } else {
-    ASSERT_TRUE(testMpiTaskParallel.validation());  // Ожидаем успех
-    ASSERT_TRUE(testMpiTaskParallel.pre_processing());  // Ожидаем успешную подготовку
-    ASSERT_TRUE(testMpiTaskParallel.run());  // Ожидаем успешный запуск
+    ASSERT_TRUE(testMpiTaskParallel.validation());       // Ожидаем успех
+    ASSERT_TRUE(testMpiTaskParallel.pre_processing());   // Ожидаем успешную подготовку
+    ASSERT_TRUE(testMpiTaskParallel.run());              // Ожидаем успешный запуск
     ASSERT_TRUE(testMpiTaskParallel.post_processing());  // Ожидаем успешную обработку
 
     world.barrier();  // Синхронизация всех процессов
