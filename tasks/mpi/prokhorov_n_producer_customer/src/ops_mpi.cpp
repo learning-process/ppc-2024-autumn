@@ -46,17 +46,9 @@ bool TestMPITaskParallel::pre_processing() {
 
 bool TestMPITaskParallel::validation() {
   internal_order_test();
-
   if (world.rank() == 0) {
-    if (producer_data.empty() || taskData->outputs_count[0] != 1) {
-      return false;
-    }
+    return world.size() > 1;
   }
-
-  if (local_input_.empty() && world.rank() != 0) {
-    return false;
-  }
-
   return true;
 }
 
