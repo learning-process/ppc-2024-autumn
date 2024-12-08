@@ -122,3 +122,59 @@ TEST(anufriev_d_linear_image_func_seq, TestGaussianFilterRandom) {
 
   ASSERT_EQ(expected_output, actual_output);
 }
+
+TEST(anufriev_d_linear_image_func_seq, TestGaussianFilterMinSize) {
+  int rows = 3;
+  int cols = 3;
+  std::vector<int> input = generate_test_image(rows, cols);
+  std::vector<int> expected_output;
+  std::vector<int> actual_output(rows * cols, 0);
+
+  gaussian_filter_seq(input, rows, cols, expected_output);
+
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
+  taskData->inputs_count.push_back(input.size());
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(&rows));
+  taskData->inputs_count.push_back(sizeof(int));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(&cols));
+  taskData->inputs_count.push_back(sizeof(int));
+  taskData->outputs.push_back(reinterpret_cast<uint8_t*>(actual_output.data()));
+  taskData->outputs_count.push_back(actual_output.size());
+
+  anufriev_d_linear_image::SimpleIntSEQ task(taskData);
+  ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
+
+  ASSERT_EQ(expected_output, actual_output);
+}
+
+TEST(anufriev_d_linear_image_func_seq, TestGaussianFilterOddDimensions) {
+  int rows = 7;
+  int cols = 5;
+  std::vector<int> input = generate_test_image(rows, cols);
+  std::vector<int> expected_output;
+  std::vector<int> actual_output(rows * cols, 0);
+
+  gaussian_filter_seq(input, rows, cols, expected_output);
+
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
+  taskData->inputs_count.push_back(input.size());
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(&rows));
+  taskData->inputs_count.push_back(sizeof(int));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(&cols));
+  taskData->inputs_count.push_back(sizeof(int));
+  taskData->outputs.push_back(reinterpret_cast<uint8_t*>(actual_output.data()));
+  taskData->outputs_count.push_back(actual_output.size());
+
+  anufriev_d_linear_image::SimpleIntSEQ task(taskData);
+  ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
+
+  ASSERT_EQ(expected_output, actual_output);
+}
