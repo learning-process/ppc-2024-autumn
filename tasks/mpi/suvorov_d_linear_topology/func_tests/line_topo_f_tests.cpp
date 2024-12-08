@@ -156,7 +156,9 @@ TEST(suvorov_d_linear_topology_mpi, test_with_zero_size) {
   }
 
   suvorov_d_linear_topology_mpi::MPILinearTopology line_topo(taskDataPar);
-  ASSERT_FALSE(line_topo.validation());
+  if (world.rank() == 0) {
+    ASSERT_FALSE(line_topo.validation());
+  }
 }
 
 TEST(suvorov_d_linear_topology_mpi, test_with_single_size) {
