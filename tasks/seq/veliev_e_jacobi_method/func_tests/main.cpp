@@ -54,6 +54,7 @@ TEST(veliev_e_jacobi_method, Test_3x3_System) {
   veliev_e_jacobi_method::MethodJacobi jacobiSolver(taskDataContainer);
 
   ASSERT_EQ(jacobiSolver.validation(), true);
+
   jacobiSolver.pre_processing();
   jacobiSolver.run();
   jacobiSolver.post_processing();
@@ -87,9 +88,9 @@ TEST(veliev_e_jacobi_method, Test_Diagonal_Dominance) {
 
   ASSERT_EQ(jacobiSolver.validation(), true);
 
-  jacobiMethod.pre_processing();
-  jacobiMethod.run();
-  jacobiMethod.post_processing();
+  jacobiSolver.pre_processing();
+  jacobiSolver.run();
+  jacobiSolver.post_processing();
 
   ASSERT_NEAR(solution[0], 0.1, 1e-6);
   ASSERT_NEAR(solution[1], 0.3, 1e-6);
