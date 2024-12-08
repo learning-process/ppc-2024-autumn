@@ -80,8 +80,6 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::pre_processing() {
   boost::mpi::broadcast(world, rows, 0);
   boost::mpi::broadcast(world, A, 0);
   boost::mpi::broadcast(world, b, 0);
-  boost::mpi::broadcast(world, recv_counts, 0);
-  boost::mpi::broadcast(world, displacements, 0);
 
   if (world_size > rows) {
     if (world_rank < rows) {
