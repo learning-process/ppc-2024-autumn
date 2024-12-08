@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
+
 #include <boost/mpi/timer.hpp>
 #include <random>
 #include <vector>
+
 #include "core/perf/include/perf.hpp"
 #include "mpi/tarakanov_d_ring_topology/include/ops_mpi.hpp"
 
@@ -21,9 +23,7 @@ std::vector<int> create_random_vector(int sz) {
 
 namespace {
 
-void initialize_data(boost::mpi::communicator& world,
-                     std::vector<int>& initial_data,
-                     std::vector<int>& final_data,
+void initialize_data(boost::mpi::communicator& world, std::vector<int>& initial_data, std::vector<int>& final_data,
                      std::shared_ptr<ppc::core::TaskData>& parallel_task_data) {
   if (world.rank() == 0) {
     const int vec_size = 2048;
@@ -38,8 +38,7 @@ void initialize_data(boost::mpi::communicator& world,
 
 void setup_performance_analysis(const std::shared_ptr<tarakanov_d_test_task_mpi::TestMPITaskParallel>& mpi_task,
                                 std::shared_ptr<ppc::core::PerfAttr>& perf_attributes,
-                                std::shared_ptr<ppc::core::PerfResults>& perf_res,
-                                boost::mpi::timer& elapsed_timer) {
+                                std::shared_ptr<ppc::core::PerfResults>& perf_res, boost::mpi::timer& elapsed_timer) {
   perf_attributes = std::make_shared<ppc::core::PerfAttr>();
   perf_attributes->num_running = 5;
   perf_attributes->current_timer = [&] { return elapsed_timer.elapsed(); };
@@ -47,8 +46,7 @@ void setup_performance_analysis(const std::shared_ptr<tarakanov_d_test_task_mpi:
   perf_res = std::make_shared<ppc::core::PerfResults>();
 }
 
-void validate_and_compare_results(const boost::mpi::communicator& world,
-                                  const std::vector<int>& initial_data,
+void validate_and_compare_results(const boost::mpi::communicator& world, const std::vector<int>& initial_data,
                                   const std::vector<int>& final_data,
                                   const std::shared_ptr<ppc::core::PerfResults>& perf_res) {
   if (world.rank() == 0) {
@@ -61,7 +59,8 @@ void validate_and_compare_results(const boost::mpi::communicator& world,
 
 TEST(tarakanov_d_ring_topology_mpi_perf_test, test_large_pipeline_run) {
   boost::mpi::communicator world;
-  std::vector<int> initial_data, final_data;
+  std::vector<int> initial_data;
+  std::vector<int> final_data;
   auto parallel_task_data = std::make_shared<ppc::core::TaskData>();
 
   initialize_data(world, initial_data, final_data, parallel_task_data);
@@ -86,7 +85,8 @@ TEST(tarakanov_d_ring_topology_mpi_perf_test, test_large_pipeline_run) {
 
 TEST(tarakanov_d_ring_topology_mpi_perf_test, test_small_task_run) {
   boost::mpi::communicator world;
-  std::vector<int> initial_data, final_data;
+  std::vector<int> initial_data;
+  std::vector<int> final_data;
   auto parallel_task_data = std::make_shared<ppc::core::TaskData>();
 
   const int small_vec_size = 128;

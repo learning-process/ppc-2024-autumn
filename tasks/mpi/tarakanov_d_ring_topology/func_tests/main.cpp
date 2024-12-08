@@ -1,8 +1,10 @@
 #include <gtest/gtest.h>
+
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <random>
 #include <vector>
+
 #include "mpi/tarakanov_d_ring_topology/include/ops_mpi.hpp"
 
 namespace tarakanov_d_ring_topology_mpi_test {
@@ -21,11 +23,8 @@ std::vector<int> generate_random_vector(int size) {
 
 namespace {
 
-void initialize_task_data(boost::mpi::communicator& world,
-                          std::shared_ptr<ppc::core::TaskData>& task_data,
-                          std::vector<int>& initial_data,
-                          std::vector<int>& final_data,
-                          int vector_length) {
+void initialize_task_data(boost::mpi::communicator& world, std::shared_ptr<ppc::core::TaskData>& task_data,
+                          std::vector<int>& initial_data, std::vector<int>& final_data, int vector_length) {
   if (world.rank() == 0) {
     initial_data = tarakanov_d_ring_topology_mpi_test::generate_random_vector(vector_length);
     final_data.resize(vector_length);
@@ -36,8 +35,7 @@ void initialize_task_data(boost::mpi::communicator& world,
   }
 }
 
-void execute_task_and_validate(boost::mpi::communicator& world,
-                               const std::vector<int>& initial_data,
+void execute_task_and_validate(boost::mpi::communicator& world, const std::vector<int>& initial_data,
                                const std::vector<int>& final_data,
                                const std::shared_ptr<ppc::core::TaskData>& task_data) {
   tarakanov_d_test_task_mpi::TestMPITaskParallel task_parallel(task_data);
@@ -63,34 +61,18 @@ void run_test_case(int vector_length) {
 
 }  // namespace
 
-TEST(tarakanov_d_ring_topology_mpi_test, test_size_50) {
-  run_test_case(50);
-}
+TEST(tarakanov_d_ring_topology_mpi_test, test_size_50) { run_test_case(50); }
 
-TEST(tarakanov_d_ring_topology_mpi_test, test_size_150) {
-  run_test_case(150);
-}
+TEST(tarakanov_d_ring_topology_mpi_test, test_size_150) { run_test_case(150); }
 
-TEST(tarakanov_d_ring_topology_mpi_test, test_size_300) {
-  run_test_case(300);
-}
+TEST(tarakanov_d_ring_topology_mpi_test, test_size_300) { run_test_case(300); }
 
-TEST(tarakanov_d_ring_topology_mpi_test, test_size_10) {
-  run_test_case(10);
-}
+TEST(tarakanov_d_ring_topology_mpi_test, test_size_10) { run_test_case(10); }
 
-TEST(tarakanov_d_ring_topology_mpi_test, test_size_255) {
-  run_test_case(255);
-}
+TEST(tarakanov_d_ring_topology_mpi_test, test_size_255) { run_test_case(255); }
 
-TEST(tarakanov_d_ring_topology_mpi_test, test_size_512) {
-  run_test_case(512);
-}
+TEST(tarakanov_d_ring_topology_mpi_test, test_size_512) { run_test_case(512); }
 
-TEST(tarakanov_d_ring_topology_mpi_test, test_size_64) {
-  run_test_case(64);
-}
+TEST(tarakanov_d_ring_topology_mpi_test, test_size_64) { run_test_case(64); }
 
-TEST(tarakanov_d_ring_topology_mpi_test, test_size_1023) {
-  run_test_case(1023);
-}
+TEST(tarakanov_d_ring_topology_mpi_test, test_size_1023) { run_test_case(1023); }
