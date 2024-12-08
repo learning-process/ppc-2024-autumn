@@ -321,7 +321,6 @@ TEST(filatev_v_metod_zedela_mpi, test_error_diagonal) {
   }
 }
 
-
 TEST(filatev_v_metod_zedela_mpi, test_codecov_1_procces) {
   boost::mpi::communicator world;
   int size = 3;
@@ -348,7 +347,6 @@ TEST(filatev_v_metod_zedela_mpi, test_codecov_1_procces) {
     taskData->inputs_count.emplace_back(size);
     taskData->outputs_count.emplace_back(size);
   }
-
 
   filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData, new_comm);
   metodZedela.setAlfa(alfa);
