@@ -125,5 +125,3 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::post_processing() {
   }
   return true;
 }
-
-

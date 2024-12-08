@@ -7,19 +7,6 @@
 
 #include "mpi/sedova_o_vertical_ribbon_scheme/include/ops_mpi.hpp"
 
-void get_random_matrix(std::vector<int> &matrix, int a, int b) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-
-  if (a >= b) {
-    throw std::invalid_argument("error");
-  }
-  std::uniform_int_distribution<> dis(a, b);
-  for (size_t i = 0; i < matrix.size(); ++i) {
-    matrix[i] = dis(gen);
-  }
-}
-
 TEST(sedova_o_vertical_ribbon_scheme_mpi, distribution1) {
   int rows_ = 5;
   int cols_ = 3;
@@ -170,28 +157,28 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, false_validation) {
   std::vector<int> result(3, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
   taskDataSeq->inputs_count.emplace_back(matrix.size());
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(vector.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
   taskDataSeq->inputs_count.emplace_back(vector.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
   taskDataSeq->outputs_count.emplace_back(result.size());
 
   sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI TestSequential(taskDataSeq);
   EXPECT_FALSE(TestSequential.validation());
 }
 
-TEST(sedova_o_vertical_ribbon_scheme_mpi, correct_matrix_and_vector) {
+TEST(sedova_o_vertical_ribbon_scheme_mpi, correct_matrix_and_vector_seq) {
   std::vector<int> matrix = {1, 2, 3, 4, 5, 6};
   std::vector<int> vector = {7, 8};
   std::vector<int> result(3, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
   taskDataSeq->inputs_count.emplace_back(matrix.size());
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(vector.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
   taskDataSeq->inputs_count.emplace_back(vector.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
   taskDataSeq->outputs_count.emplace_back(result.size());
 
   sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI TestSequential(taskDataSeq);
@@ -204,60 +191,29 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, correct_matrix_and_vector) {
   ASSERT_EQ(result, expected_result);
 }
 
-TEST(sedova_o_vertical_ribbon_scheme_mpi, mpi_and_seq) {
+TEST(sedova_o_vertical_ribbon_scheme_mpi, correct_matrix_and_vector_mpi) {
   boost::mpi::communicator world;
-
-  std::vector<int> matrix;
-  std::vector<int> vector;
-
-  std::vector<int> result;
+  std::vector<int> matrix = {1, 2, 3, 4, 5, 6};
+  std::vector<int> vector = {7, 8};
+  std::vector<int> result(3, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
   if (world.rank() == 0) {
-    matrix.resize(20);
-    vector.resize(2);
-    get_random_matrix(matrix, -100, 200);
-    get_random_matrix(vector, -20, 10);
-
-    result.resize(10, 0);
-
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
-
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataPar->inputs_count.emplace_back(vector.size());
-
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
     taskDataPar->outputs_count.emplace_back(result.size());
   }
-
   sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI taskParallel(taskDataPar);
+  ASSERT_EQ(taskParallel.validation(), true);
+  taskParallel.pre_processing();
+  taskParallel.run();
+  taskParallel.post_processing();
 
-  ASSERT_TRUE(taskParallel.validation());
-  ASSERT_TRUE(taskParallel.pre_processing());
-  ASSERT_TRUE(taskParallel.run());
-  ASSERT_TRUE(taskParallel.post_processing());
-
-  if (world.rank() == 0) {
-    std::vector<int> expected_result(10, 0);
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(matrix.size());
-
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
-    taskDataSeq->inputs_count.emplace_back(vector.size());
-
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(expected_result.data()));
-    taskDataSeq->outputs_count.emplace_back(expected_result.size());
-
-    // Create Task
-    sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI testSequential(taskDataSeq);
-    ASSERT_TRUE(testSequential.validation());
-    testSequential.pre_processing();
-    testSequential.run();
-    testSequential.post_processing();
-
-    ASSERT_EQ(result, expected_result);
-  }
+  std::vector<int> expected_result = {39, 54, 69};
+  ASSERT_EQ(result, expected_result);
 }
+
+
