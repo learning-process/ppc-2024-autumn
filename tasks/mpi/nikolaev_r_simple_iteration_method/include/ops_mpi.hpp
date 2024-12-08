@@ -13,8 +13,8 @@
 #include "core/task/include/task.hpp"
 
 namespace nikolaev_r_simple_iteration_method_mpi {
-static bool is_singular(const std::vector<double>& A, size_t n);
-static bool is_diagonally_dominant(const std::vector<double>& A, size_t n);
+bool is_singular(const std::vector<double>& A, size_t n);
+bool is_diagonally_dominant(const std::vector<double>& A, size_t n);
 
 class SimpleIterationMethodSequential : public ppc::core::Task {
  public:
