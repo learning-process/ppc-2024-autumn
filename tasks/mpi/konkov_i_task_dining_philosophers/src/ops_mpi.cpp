@@ -37,7 +37,7 @@ void DiningPhilosophers::run() {
 
   std::vector<int> global_meal_counts(philosopher_count_, 0);
 
-  boost::mpi::all_reduce(world_, meal_counts_.data(), philosopher_count_, global_meal_counts.data(), std::plus<int>());
+  boost::mpi::all_reduce(world_, meal_counts_.data(), philosopher_count_, global_meal_counts.data(), std::plus<>());
 
   meal_counts_ = global_meal_counts;
 
