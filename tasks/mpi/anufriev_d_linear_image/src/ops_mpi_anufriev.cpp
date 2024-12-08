@@ -152,7 +152,7 @@ void SimpleIntMPI::exchangeHalo() {
     MPI_Isend(send_right.data(), height_, MPI_INT, right, 1, comm, &reqs_right[req_count_right++]);
     MPI_Irecv(recv_right.data(), height_, MPI_INT, right, 0, comm, &reqs_right[req_count_right++]);
   } else {
-     std::copy(send_right.begin(), send_right.end(), recv_right.begin());
+    std::copy(send_right.begin(), send_right.end(), recv_right.begin());
   }
 
   if (req_count_left > 0) {
