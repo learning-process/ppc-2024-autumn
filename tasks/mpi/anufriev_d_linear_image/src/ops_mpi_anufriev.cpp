@@ -136,25 +136,35 @@ void SimpleIntMPI::exchangeHalo() {
     std::copy(&local_data_[(local_width_)*height_], &local_data_[(local_width_ + 1) * height_], send_right.begin());
   }
 
-  MPI_Request reqs[4];
-  int req_count = 0;
+  // MPI_Request reqs[4];
+  // int req_count = 0;
+  MPI_Request reqs_left[2];
+  MPI_Request reqs_right[2];
+  int req_count_left = 0;
+  int req_count_right = 0;
 
   if (left != MPI_PROC_NULL) {
-    MPI_Isend(send_left.data(), height_, MPI_INT, left, 0, comm, &reqs[req_count++]);
-    MPI_Irecv(recv_left.data(), height_, MPI_INT, left, 1, comm, &reqs[req_count++]);
+    MPI_Isend(send_left.data(), height_, MPI_INT, left, 0, comm, &reqs_left[req_count_left++]);
+    MPI_Irecv(recv_left.data(), height_, MPI_INT, left, 1, comm, &reqs_left[req_count_left++]);
   } else {
-    std::fill(recv_left.begin(), recv_left.end(), 0);
+    //std::fill(recv_left.begin(), recv_left.end(), 0);
+    std::copy(send_left.begin(), send_left.end(), recv_left.begin());
   }
 
   if (right != MPI_PROC_NULL) {
-    MPI_Isend(send_right.data(), height_, MPI_INT, right, 1, comm, &reqs[req_count++]);
-    MPI_Irecv(recv_right.data(), height_, MPI_INT, right, 0, comm, &reqs[req_count++]);
+    MPI_Isend(send_right.data(), height_, MPI_INT, right, 1, comm, &reqs_right[req_count_right++]);
+    MPI_Irecv(recv_right.data(), height_, MPI_INT, right, 0, comm, &reqs_right[req_count_right++]);
   } else {
-    std::fill(recv_right.begin(), recv_right.end(), 0);
+    //std::fill(recv_right.begin(), recv_right.end(), 0);
+     std::copy(send_right.begin(), send_right.end(), recv_right.begin());
   }
 
-  if (req_count > 0) {
-    MPI_Waitall(req_count, reqs, MPI_STATUSES_IGNORE);
+  if (req_count_left > 0) {
+    MPI_Waitall(req_count_left, reqs_left, MPI_STATUSES_IGNORE);
+  }
+
+  if (req_count_right > 0) {
+    MPI_Waitall(req_count_right, reqs_right, MPI_STATUSES_IGNORE);
   }
 
   if (left != MPI_PROC_NULL) {
