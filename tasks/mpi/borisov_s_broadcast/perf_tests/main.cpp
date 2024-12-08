@@ -7,7 +7,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/borisov_s_broadcast/include/ops_mpi.hpp"
 
-std::vector<double> getRandomMatrix(size_t rows, size_t cols) {
+static std::vector<double> getRandomMatrix(size_t rows, size_t cols) {
   std::vector<double> matrix(rows * cols);
   std::random_device rd;
   std::mt19937 gen(rd());
