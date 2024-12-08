@@ -113,11 +113,11 @@ bool MaxMatrixMpi<T>::run() {
   // std::cout << std::endl;
 
   T res = agafeev_s_max_of_vector_elements_mpi::get_MaxValue<T>(local_vector);
-  std::cout << "maxes: " << res << std::endl;
+  // std::cout<<"maxes: "<<res<<std::endl;
   boost::mpi::reduce(world, res, maxres_, boost::mpi::maximum<T>(), 0);
-  if (world_rank == 0) {
-    std::cout << "MSXRES_" << maxres_ << std::endl;
-  }
+  // if (world_rank ==0 ){
+  //   std::cout<<"MSXRES_"<<maxres_<<std::endl;
+  // }
   // std::cout<<world_rank;
   world.barrier();
 

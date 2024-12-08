@@ -2,6 +2,7 @@
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <ctime>
 #include <limits>
 #include <random>
 #include <string>
@@ -13,7 +14,7 @@ namespace agafeev_s_max_of_vector_elements_mpi {
 
 template <typename T>
 std::vector<T> create_RandomMatrix(int row_size, int column_size) {
-  auto rand_gen = std::mt19937(1337);
+  auto rand_gen = std::mt19937(std::time(nullptr));
   std::vector<T> matrix(row_size * column_size);
   for (unsigned int i = 0; i < matrix.size(); i++) matrix[i] = rand_gen() % 100;
 
