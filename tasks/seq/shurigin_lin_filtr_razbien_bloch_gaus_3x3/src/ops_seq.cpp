@@ -32,19 +32,18 @@ bool shurigin_lin_filtr_razbien_bloch_gaus_3x3::TaskSeq::validation() {
 
 bool shurigin_lin_filtr_razbien_bloch_gaus_3x3::TaskSeq::pre_processing() {
   internal_order_test();
-  
-  num_rows = *static_cast<int*>(taskData->inputs[1]);
-  num_cols = *static_cast<int*>(taskData->inputs[2]);
-  
 
-  const auto* source_pixels = static_cast<double*>(taskData->inputs[0]);
+  num_rows = *reinterpret_cast<const int*>(taskData->inputs[1]);
+  num_cols = *reinterpret_cast<const int*>(taskData->inputs[2]);
+
+  const auto* source_pixels = reinterpret_cast<const double*>(taskData->inputs[0]);
   const size_t total_pixels = taskData->inputs_count[0];
-  
+
   data_matrix = std::vector<double>(source_pixels, source_pixels + total_pixels);
-  
+
   output_vector = std::vector<double>(taskData->outputs_count[0]);
   std::fill(output_vector.begin(), output_vector.end(), 0.0);
-  
+
   return true;
 }
 
@@ -55,16 +54,16 @@ bool shurigin_lin_filtr_razbien_bloch_gaus_3x3::TaskSeq::run() {
     for (int c = 1; c < num_cols - 1; ++c) {
       const int pos = r * num_cols + c;
       double sum = 0.0;
-      
-      sum = sum+data_matrix[pos - num_cols - 1] * 0.0625;
-      sum = sum+data_matrix[pos - num_cols] * 0.125;
-      sum = sum+data_matrix[pos - num_cols + 1] * 0.0625;
-      sum = sum+data_matrix[pos - 1] * 0.125;
-      sum = sum+data_matrix[pos] * 0.25;
-      sum = sum+data_matrix[pos + 1] * 0.125;
-      sum =sum+ data_matrix[pos + num_cols - 1] * 0.0625;
-      sum = sum+data_matrix[pos + num_cols] * 0.125;
-      sum = sum+data_matrix[pos + num_cols + 1] * 0.0625;
+
+      sum = sum + data_matrix[pos - num_cols - 1] * 0.0625;
+      sum = sum + data_matrix[pos - num_cols] * 0.125;
+      sum = sum + data_matrix[pos - num_cols + 1] * 0.0625;
+      sum = sum + data_matrix[pos - 1] * 0.125;
+      sum = sum + data_matrix[pos] * 0.25;
+      sum = sum + data_matrix[pos + 1] * 0.125;
+      sum = sum + data_matrix[pos + num_cols - 1] * 0.0625;
+      sum = sum + data_matrix[pos + num_cols] * 0.125;
+      sum = sum + data_matrix[pos + num_cols + 1] * 0.0625;
 
       output_vector[pos] = sum;
     }
@@ -76,10 +75,10 @@ bool shurigin_lin_filtr_razbien_bloch_gaus_3x3::TaskSeq::run() {
 bool shurigin_lin_filtr_razbien_bloch_gaus_3x3::TaskSeq::post_processing() {
   internal_order_test();
 
-  auto* result_data = static_cast<double*>(taskData->outputs[0]);
+  auto* result_data = reinterpret_cast<double*>(taskData->outputs[0]);
   const size_t size = output_vector.size();
-  
-  for(size_t i = 0; i < size; ++i) {
+
+  for (size_t i = 0; i < size; ++i) {
     result_data[i] = output_vector[i];
   }
 
