@@ -38,7 +38,7 @@ fi
 #echo "NUM_PROC: " $NUM_PROC
 
 # separate tests for debug
-for test_item in $(./build/bin/mpi_func_tests --gtest_list_tests | awk '/\./{ SUITE=$1 }  /  / { print SUITE $1 }')
+for test_item in $(./build/bin/mpi_func_tests --gtest_list_tests | awk '/^[^ ].+\./{ SUITE=$1 }  /  / { print SUITE $1 }')
 do
   if [[ -z "$ASAN_RUN" ]]; then
     if [[ $OSTYPE == "linux-gnu" ]]; then
