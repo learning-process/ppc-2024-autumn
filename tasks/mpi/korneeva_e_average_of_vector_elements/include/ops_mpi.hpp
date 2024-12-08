@@ -157,8 +157,8 @@ bool vector_average_MPI_AllReduce<iotype>::validation() {
 template <class iotype>
 bool vector_average_MPI_AllReduce<iotype>::run() {
   internal_order_test();
-  int process_rank = mpi_comm.rank();
-  int total_processes = mpi_comm.size();
+  size_t process_rank = mpi_comm.rank();
+  size_t total_processes = mpi_comm.size();
 
   // Step 1: Broadcast the input vector size to all processes.
   boost::mpi::broadcast(mpi_comm, input_size, 0);
@@ -176,18 +176,16 @@ bool vector_average_MPI_AllReduce<iotype>::run() {
 
   // Step 3: Scatter the input data among processes.
   local_data.resize(local_size);
-  std::vector<int> send_counts(total_processes, 0);
-  std::vector<int> send_offsets(total_processes, 0);
+  std::vector<size_t> send_counts(total_processes, 0);
+  std::vector<size_t> send_offsets(total_processes, 0);
 
   // Only the root process calculates send_counts and send_offsets
   if (process_rank == 0) {
-    int remaining_elements = input_size;
     for (int i = 0; i < total_processes; ++i) {
       send_counts[i] = input_size / total_processes + (i < input_size % total_processes);
       if (i > 0) {
         send_offsets[i] = send_offsets[i - 1] + send_counts[i - 1];
       }
-      remaining_elements -= send_counts[i];
     }
   }
   boost::mpi::scatterv(mpi_comm, input_data, send_counts, send_offsets, local_data.data(), local_size, 0);
@@ -288,8 +286,8 @@ bool vector_average_my_AllReduce<iotype>::validation() {
 template <class iotype>
 bool vector_average_my_AllReduce<iotype>::run() {
   internal_order_test();
-  int process_rank = mpi_comm.rank();
-  int total_processes = mpi_comm.size();
+  size_t process_rank = mpi_comm.rank();
+  size_t total_processes = mpi_comm.size();
 
   boost::mpi::broadcast(mpi_comm, input_size, 0);
 
@@ -303,17 +301,15 @@ bool vector_average_my_AllReduce<iotype>::run() {
   local_size = input_size / total_processes + (process_rank < input_size % total_processes);
 
   local_data.resize(local_size);
-  std::vector<int> send_counts(total_processes, 0);
-  std::vector<int> send_offsets(total_processes, 0);
+  std::vector<size_t> send_counts(total_processes, 0);
+  std::vector<size_t> send_offsets(total_processes, 0);
 
   if (process_rank == 0) {
-    int remaining_elements = input_size;
     for (int i = 0; i < total_processes; ++i) {
       send_counts[i] = input_size / total_processes + (i < input_size % total_processes);
       if (i > 0) {
         send_offsets[i] = send_offsets[i - 1] + send_counts[i - 1];
       }
-      remaining_elements -= send_counts[i];
     }
   }
 
