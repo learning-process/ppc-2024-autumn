@@ -126,7 +126,6 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::run() {
 
       int start_row = i * n_of_send_rows + std::min(i, n_of_proc_with_extra_row);
       int end_row = start_row + n_of_send_rows + (i < n_of_proc_with_extra_row ? 1 : 0);
-
       recv_counts[i] = end_row - start_row;
       displacements[i] = (i == 0) ? 0 : displacements[i - 1] + recv_counts[i - 1];
     }
