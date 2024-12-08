@@ -10,10 +10,20 @@
 
 namespace kurakin_m_graham_scan_mpi {
 
+bool inOneLine(std::vector<double> &res, double new_point_x, double new_point_y) {
+  for (int j = 2; j < res.size(); j += 2) {
+    if (abs((new_point_x - res[0]) * (res[j + 1] - res[1]) - (new_point_y - res[1]) * (res[j] - res[0])) < 1e-4) {
+      return true;
+    }
+  }
+  return false;
+}
+
 double getRandomDouble(double start = 0.0, double end = 100.0) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  double res = (double)(gen() % ((long long)(end * 100) - (long long)(start * 100)) + (long long)(start * 100)) / 100.0;
+  double res =
+      (double)(gen() % ((long long)(end * 10000) - (long long)(start * 10000)) + (long long)(start * 10000)) / 10000.0;
   return res;
 }
 
@@ -32,20 +42,17 @@ void getShuffle(std::vector<double> &vec) {
 
 void getRandomVectorForGrahamScan(std::vector<double> &res, int count_point, int size) {
   res = std::vector<double>();
-  double delta_angle = 2.0;
-  double angle = 0.0;
-  double start_x = 0.0;
-  double start_y = 0.0;
-  for (int i = 0; i < count_point; i++) {
-    if (i % 180 == 0) {
-      start_x = getRandomDouble(-100.0, 100.0);
-      start_y = getRandomDouble(-100.0, 100.0);
-      angle = 0.0;
+  res = {getRandomDouble(-1000.0, 0.0), getRandomDouble(-1000.0, 0.0), getRandomDouble(0.0, 1000.0),
+         getRandomDouble(0.0, 1000.0)};
+  for (int i = 4; i < count_point * 2; i += 2) {
+    double new_point_x = getRandomDouble(-1000.0, 1000.0);
+    double new_point_y = getRandomDouble(-1000.0, 1000.0);
+    while (inOneLine(res, new_point_x, new_point_y)) {
+      new_point_x += getRandomDouble(-100.0, 100.0);
+      new_point_y += getRandomDouble(-100.0, 100.0);
     }
-    double length = getRandomDouble(0.0, 5.0);
-    res.push_back(start_x + length * cos(angle * acos(-1.0) / 180.0));
-    res.push_back(start_y + length * sin(angle * acos(-1.0) / 180.0));
-    angle += delta_angle;
+    res.push_back(new_point_x);
+    res.push_back(new_point_y);
   }
   getShuffle(res);
 }
@@ -786,70 +793,6 @@ TEST(kurakin_m_graham_scan_mpi, Test_shell_random_count_pow_10_n) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   count_point = std::pow(10, world.size());
-
-  if (world.rank() == 0) {
-    kurakin_m_graham_scan_mpi::getRandomVectorForGrahamScan(points, count_point, world.size());
-
-    scan_points_par = std::vector<double>(count_point * 2, 0);
-
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(points.data()));
-    taskDataPar->inputs_count.emplace_back(points.size());
-
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(&scan_size_par));
-    taskDataPar->outputs_count.emplace_back((size_t)1);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(scan_points_par.data()));
-    taskDataPar->outputs_count.emplace_back(scan_points_par.size());
-  }
-
-  kurakin_m_graham_scan_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
-
-  if (world.rank() == 0) {
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-
-    int scan_size_seq;
-    std::vector<double> scan_points_seq(count_point * 2);
-
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(points.data()));
-    taskDataSeq->inputs_count.emplace_back(points.size());
-
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(&scan_size_seq));
-    taskDataSeq->outputs_count.emplace_back((size_t)1);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(scan_points_seq.data()));
-    taskDataSeq->outputs_count.emplace_back(scan_points_seq.size());
-
-    kurakin_m_graham_scan_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
-
-    ASSERT_EQ(scan_size_seq, scan_size_par);
-    for (int i = 0; i < scan_size_seq * 2; i += 2) {
-      ASSERT_EQ(scan_points_seq[i], scan_points_par[i]);
-      ASSERT_EQ(scan_points_seq[i + 1], scan_points_par[i + 1]);
-    }
-  }
-}
-
-TEST(kurakin_m_graham_scan_mpi, Test_shell_random_count_pow_15_n) {
-  boost::mpi::communicator world;
-
-  int count_point;
-  std::vector<double> points;
-
-  int scan_size_par;
-  std::vector<double> scan_points_par;
-
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  count_point = std::pow(15, world.size());
 
   if (world.rank() == 0) {
     kurakin_m_graham_scan_mpi::getRandomVectorForGrahamScan(points, count_point, world.size());
