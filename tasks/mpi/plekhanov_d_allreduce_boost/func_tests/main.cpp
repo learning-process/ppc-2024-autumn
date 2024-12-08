@@ -136,7 +136,7 @@ TEST(plekhanov_d_allreduce_boost_func_test, Test_Negative_Matrix_5x5) {
   int cols = -5;
   int rows = -5;
 
-  if (cols < 0 || rows < 0) { //vector made an exception, cannot be initialized if the size is negative
+  if (cols < 0 || rows < 0) {
     return;
   }
 
@@ -332,7 +332,7 @@ TEST(plekhanov_d_allreduce_boost_func_test, Test_Negative_30x120_Matrix) {
   int cols = -30;
   int rows = -120;
 
-  if (cols < 0 || rows < 0) { //vector made an exception, cannot be initialized if the size is negative
+  if (cols < 0 || rows < 0) {
     return;
   }
 
