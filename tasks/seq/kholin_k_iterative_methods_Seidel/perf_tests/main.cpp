@@ -7,7 +7,7 @@ TEST(kholin_k_iterative_methods_Seidel_seq, test_pipeline_run) {
   const size_t count_rows = 1000;
   const size_t count_colls = 1000;
   float epsilon = 0.001f;
-
+  //
   std::vector<float> in = kholin_k_iterative_methods_Seidel_seq::gen_matrix_with_diag_pred(count_rows, count_colls);
   std::vector<float> out(count_rows);
   std::vector<float> X0(count_rows, 0.0f);
