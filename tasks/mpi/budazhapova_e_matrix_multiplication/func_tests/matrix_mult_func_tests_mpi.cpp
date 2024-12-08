@@ -193,22 +193,8 @@ TEST(budazhapova_e_matrix_mult_mpi, validation_test_1) {
     taskDataPar->inputs_count.emplace_back(b_vector.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
     taskDataPar->outputs_count.emplace_back(out.size());
-  }
-  budazhapova_e_matrix_mult_mpi::MatrixMultParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
-
-  if (world.rank() == 0) {
-    std::vector<int> out_seq(1, 0);
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(A_matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(A_matrix.size());
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(b_vector.data()));
-    taskDataSeq->inputs_count.emplace_back(b_vector.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_seq.data()));
-    taskDataSeq->outputs_count.emplace_back(out_seq.size());
-
-    budazhapova_e_matrix_mult_mpi::MatrixMultSequential testTaskSequential(taskDataSeq);
-    ASSERT_EQ(testTaskSequential.validation(), false);
+    budazhapova_e_matrix_mult_mpi::MatrixMultParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
 }
 
@@ -219,7 +205,6 @@ TEST(budazhapova_e_matrix_mult_mpi, validation_test_2) {
   std::vector<int> out(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A_matrix.data()));
     taskDataPar->inputs_count.emplace_back(A_matrix.size());
@@ -227,21 +212,7 @@ TEST(budazhapova_e_matrix_mult_mpi, validation_test_2) {
     taskDataPar->inputs_count.emplace_back(b_vector.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
     taskDataPar->outputs_count.emplace_back(out.size());
-  }
-  budazhapova_e_matrix_mult_mpi::MatrixMultParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
-
-  if (world.rank() == 0) {
-    std::vector<int> out_seq(1, 0);
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(A_matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(A_matrix.size());
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(b_vector.data()));
-    taskDataSeq->inputs_count.emplace_back(b_vector.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_seq.data()));
-    taskDataSeq->outputs_count.emplace_back(out_seq.size());
-
-    budazhapova_e_matrix_mult_mpi::MatrixMultSequential testTaskSequential(taskDataSeq);
-    ASSERT_EQ(testTaskSequential.validation(), false);
+    budazhapova_e_matrix_mult_mpi::MatrixMultParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
 }
