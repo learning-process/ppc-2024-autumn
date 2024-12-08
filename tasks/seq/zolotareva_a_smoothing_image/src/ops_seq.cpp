@@ -91,7 +91,7 @@ void zolotareva_a_smoothing_image_seq::TestTaskSequential::convolve_columns(cons
         int pixel_y = std::clamp(y + k, 0, height - 1);
         sum += temp[pixel_y * width + x] * kernel[k + kernel_radius];
       }
-      output[y * width + x] = static_cast<uint8_t>(std::clamp(static_cast<int>(std::round(int(sum))), 0, 255));
+      output[y * width + x] = static_cast<uint8_t>(std::clamp(static_cast<int>(std::round(sum)), 0, 255));
     }
   }
 }
