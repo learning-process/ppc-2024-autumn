@@ -52,7 +52,7 @@ bool MPIIntegralCalculator::pre_processing() {
 }
 
 bool MPIIntegralCalculator::run() {
-  internal_order_test();;
+  internal_order_test();
 
   double local_result{};
   local_result = integrate(function_, lower_bound, upper_bound, num_partitions);
@@ -82,7 +82,6 @@ double MPIIntegralCalculator::integrate(const std::function<double(double)>& f, 
   for (int i = current_process; i < splits; i += total_processes) {
     double x = a + i * step_size;
     local_sum += f(x) * step_size;
-
   }
   return local_sum;
 }
