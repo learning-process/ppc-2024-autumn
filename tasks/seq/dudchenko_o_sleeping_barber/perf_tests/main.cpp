@@ -8,7 +8,6 @@
 
 TEST(sleeping_barber_test, test_pipeline_run) {
   // Параметры задачи
-  const int clients = 10;
   const int seats = 3;
 
   // Создание TaskData
@@ -42,7 +41,6 @@ TEST(sleeping_barber_test, test_pipeline_run) {
 
 TEST(sleeping_barber_test, test_task_run) {
   // Параметры задачи
-  const int clients = 10;
   const int seats = 3;
 
   // Создание TaskData
