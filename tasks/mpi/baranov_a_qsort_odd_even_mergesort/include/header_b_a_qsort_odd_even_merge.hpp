@@ -6,9 +6,9 @@
 #include <climits>
 #include <cstring>
 #include <random>
+#include <stack>
 #include <string>
 #include <vector>
-#include <stack>
 
 #include "core/task/include/task.hpp"
 
@@ -22,6 +22,7 @@ class baranov_a_odd_even_merge_sort : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
   std::vector<iotype> q_sort_stack(std::vector<iotype>& vec_);
+
  private:
   std::vector<iotype> input_;
 

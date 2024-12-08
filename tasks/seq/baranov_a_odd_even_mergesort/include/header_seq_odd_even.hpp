@@ -1,9 +1,9 @@
 #pragma once
 #include <cstring>
 #include <random>
+#include <stack>
 #include <string>
 #include <vector>
-#include <stack>
 
 #include "core/task/include/task.hpp"
 namespace baranov_a_qsort_odd_even_merge_seq {
@@ -20,11 +20,8 @@ class odd_even_mergesort_seq : public ppc::core::Task {
 
   bool post_processing() override;
 
-
  private:
   std::vector<iotype> input_;
   std::vector<iotype> output_;
-
-
 };
 }  // namespace baranov_a_qsort_odd_even_merge_seq

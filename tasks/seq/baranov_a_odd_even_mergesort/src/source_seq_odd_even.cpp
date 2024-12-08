@@ -1,7 +1,6 @@
 #include "seq/baranov_a_odd_even_mergesort/include/header_seq_odd_even.hpp"
 namespace baranov_a_qsort_odd_even_merge_seq {
 
-
 template <typename iotype>
 std::vector<iotype> odd_even_mergesort_seq<iotype>::q_sort_stack(std::vector<iotype>& vec_) {
   if (vec_.empty()) {
@@ -56,7 +55,6 @@ std::vector<iotype> odd_even_mergesort_seq<iotype>::q_sort_stack(std::vector<iot
   return result;
 }
 
-
 template <class iotype>
 bool odd_even_mergesort_seq<iotype>::pre_processing() {
   internal_order_test();
@@ -85,7 +83,7 @@ template <class iotype>
 bool odd_even_mergesort_seq<iotype>::post_processing() {
   internal_order_test();
 
-  for (int i = 0,vec_size_ = input_.size(); i != vec_size_; ++i) {
+  for (int i = 0, vec_size_ = input_.size(); i != vec_size_; ++i) {
     reinterpret_cast<iotype*>(taskData->outputs[0])[i] = output_[i];
   }
   return true;
@@ -94,4 +92,4 @@ bool odd_even_mergesort_seq<iotype>::post_processing() {
 template class odd_even_mergesort_seq<int>;
 template class odd_even_mergesort_seq<double>;
 template class odd_even_mergesort_seq<unsigned>;
-}  // namespace baranov_a_num_of_orderly_violations_seq
+}  // namespace baranov_a_qsort_odd_even_merge_seq

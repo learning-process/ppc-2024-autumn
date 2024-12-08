@@ -54,7 +54,7 @@ bool baranov_a_odd_even_merge_sort<iotype>::run() {
   loc_vec_.resize(loc_vec_size);
 
   boost::mpi::scatter(world, input_, loc_vec_.data(), loc_vec_size, 0);
-  
+
   loc_vec_ = q_sort_stack(loc_vec_);
 
   bool sz_is_even = (sz % 2 == 0);
@@ -231,6 +231,5 @@ template class baranov_a_qsort_odd_even_merge_mpi::baranov_a_odd_even_merge_sort
 
 template class baranov_a_qsort_odd_even_merge_mpi::baranov_a_odd_even_merge_sort<double>;
 template class baranov_a_qsort_odd_even_merge_mpi::baranov_a_odd_even_merge_sort<unsigned int>;
-
 
 }  // namespace baranov_a_qsort_odd_even_merge_mpi
