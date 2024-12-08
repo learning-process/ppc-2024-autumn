@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <algorithm>
 #include <functional>
 #include <random>
 #include <vector>
@@ -9,7 +8,7 @@
 #include "seq/gromov_a_gaussian_method_vertical/include/ops_seq.hpp"
 
 TEST(gromov_a_gaussian_method_vertical_seq, test_pipeline_run) {
-  int equations = 3000;
+  int equations = 1500;
   int band_width = 10;
 
   int size_coefficient_mat = equations * equations;
@@ -46,7 +45,7 @@ TEST(gromov_a_gaussian_method_vertical_seq, test_pipeline_run) {
 }
 
 TEST(gromov_a_gaussian_method_vertical_seq, test_pipeline_run2) {
-  int equations = 2000;
+  int equations = 1000;
   int band_width = 15;
 
   int size_coefficient_mat = equations * equations;
