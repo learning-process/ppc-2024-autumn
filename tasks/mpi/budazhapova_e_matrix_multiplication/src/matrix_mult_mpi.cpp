@@ -83,13 +83,13 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::pre_processing() {
   boost::mpi::broadcast(world, recv_counts, 0);
   boost::mpi::broadcast(world, displacements, 0);
 
-  int n_of_send_rows = rows / world_size;
-  int n_of_proc_with_extra_row = rows % world_size;
-
-  int start_row = world_rank * n_of_send_rows + std::min(world_rank, n_of_proc_with_extra_row);
-  int end_row = start_row + n_of_send_rows + (world_rank < n_of_proc_with_extra_row ? 1 : 0);
   if (world_size > rows) {
     if (world_rank < rows) {
+      int n_of_send_rows = rows / world_size;
+      int n_of_proc_with_extra_row = rows % world_size;
+
+      int start_row = world_rank * n_of_send_rows + std::min(world_rank, n_of_proc_with_extra_row);
+      int end_row = start_row + n_of_send_rows + (world_rank < n_of_proc_with_extra_row ? 1 : 0);
       local_A.resize(columns);
       local_res.resize(1);
       for (int i = start_row; i < end_row; i++) {
