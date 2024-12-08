@@ -1,64 +1,44 @@
-// Copyright 2023 Nesterov Alexander
 #include "mpi/prokhorov_n_producer_customer/include/ops_mpi.hpp"
 
+#include <mpi.h>
+
 #include <algorithm>
-#include <functional>
-#include <random>
-#include <string>
-#include <thread>
+#include <iostream>
 #include <vector>
 
-using namespace std::chrono_literals;
-
 namespace prokhorov_n_producer_customer_mpi {
-std::vector<int> getRandomVector(int sz) {
-  std::vector<int> vec(sz);
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<> dist(1, 100);
-  for (int &val : vec) val = dist(gen);
+
+std::vector<int> buffer;
+int buffer_capacity = 20;
+int buffer_size = 0;
+
+std::vector<int> getPredefinedVector(int sz) {
+  std::vector<int> vec(sz, 1);
   return vec;
 }
 
 bool TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
-  if (world.size() < 2) {
+  if (world.size() < 3) {
     return false;
   }
 
   unsigned int total_data_count = 0;
-  unsigned int range_start = 0, range_end = 0;
 
   if (world.rank() == 0) {
     if (producer_data.empty()) {
-      producer_data = getRandomVector(100);
+      producer_data = getPredefinedVector(50);
     }
 
     total_data_count = producer_data.size();
     if (total_data_count == 0) {
       return false;
     }
-  }
 
-  broadcast(world, total_data_count, 0);
-
-  unsigned int delta = total_data_count / (world.size() - 1);
-  range_start = (world.rank() - 1) * delta;
-  range_end = (world.rank() == world.size() - 1) ? total_data_count : range_start + delta;
-
-  if (world.rank() != 0) {
-    local_input_.resize(range_end - range_start);
-  }
-
-  if (world.rank() == 0) {
-    for (int rank = 1; rank < world.size(); ++rank) {
-      unsigned int start = (rank - 1) * delta;
-      unsigned int end = (rank == world.size() - 1) ? total_data_count : start + delta;
-      world.send(rank, 0, producer_data.data() + start, end - start);
-    }
+    broadcast(world, total_data_count, 0);
   } else {
-    world.recv(0, 0, local_input_.data(), range_end - range_start);
+    broadcast(world, total_data_count, 0);
   }
 
   return true;
@@ -73,7 +53,7 @@ bool TestMPITaskParallel::validation() {
     }
   }
 
-  if (local_input_.empty()) {
+  if (local_input_.empty() && world.rank() != 0) {
     return false;
   }
 
@@ -83,43 +63,60 @@ bool TestMPITaskParallel::validation() {
 bool TestMPITaskParallel::run() {
   internal_order_test();
 
-  if (world.rank() == 0) {
-    if (producer_data.empty()) {
-      return false;
-    }
-    int data_size = producer_data.size();
-    if (data_size <= 0) {
-      return false;
-    }
-    broadcast(world, data_size, 0);
+  int data_size;
+  broadcast(world, data_size, 0);
 
-    int delta = data_size / (world.size() - 1);
-    if (delta <= 0) {
-      return false;
-    }
-
-    for (int i = 0; i < world.size() - 1; ++i) {
-      int start = i * delta;
-      int end = (i == world.size() - 2) ? data_size : (i + 1) * delta;
-      world.send(i + 1, 0, producer_data.data() + start, end - start);
-    }
+  if (data_size <= 0) {
+    return false;
   }
 
-  if (world.rank() != 0) {
-    int data_size;
-    broadcast(world, data_size, 0);
-    if (data_size <= 0) {
-      return false;
+  if (world.rank() == 0) {
+    int chunk_size = data_size / (world.size() - 2);
+    int offset = 0;
+
+    for (int i = 1; i < world.size() - 1; ++i) {
+      int current_chunk = (i == world.size() - 2) ? data_size - offset : chunk_size;
+      world.send(i, 0, producer_data.data() + offset, current_chunk);
+      offset += current_chunk;
+    }
+  } else if (world.rank() < world.size() - 1) {
+    int chunk_size = data_size / (world.size() - 2);
+    local_input_.resize(chunk_size);
+
+    world.recv(0, 0, local_input_.data(), chunk_size);
+
+    for (int val : local_input_) {
+      while (buffer_size >= buffer_capacity) {
+        MPI_Barrier(MPI_COMM_WORLD);
+      }
+      buffer.push_back(val);
+      buffer_size++;
+    }
+  } else {
+    std::vector<int> consumer_results;
+
+    while (true) {
+      while (buffer_size == 0) {
+        MPI_Barrier(MPI_COMM_WORLD);
+      }
+
+      int data = buffer.back();
+      buffer.pop_back();
+      buffer_size--;
+
+      consumer_results.push_back(data * 2);
+      if (consumer_results.size() == data_size) {
+        break;
+      }
     }
 
-    local_input_.resize(data_size);
-    world.recv(0, 0, local_input_.data(), data_size);
+    world.send(0, 0, consumer_results.data(), consumer_results.size());
   }
 
   return true;
 }
 
-bool prokhorov_n_producer_customer_mpi::TestMPITaskParallel::post_processing() {
+bool TestMPITaskParallel::post_processing() {
   internal_order_test();
 
   if (world.rank() == 0) {
@@ -127,16 +124,23 @@ bool prokhorov_n_producer_customer_mpi::TestMPITaskParallel::post_processing() {
       return false;
     }
 
-    int total_result = res;
+    int total_result = 0;
+
     for (int i = 1; i < world.size(); ++i) {
-      int local_result = 0;
-      world.recv(i, 0, &local_result, 1);
-      total_result += local_result;
+      std::vector<int> local_results(buffer_capacity, 0);
+      world.recv(i, 0, local_results.data(), buffer_capacity);
+      total_result += std::accumulate(local_results.begin(), local_results.end(), 0);
     }
 
     reinterpret_cast<int *>(taskData->outputs[0])[0] = total_result;
+    std::cout << "Total result: " << total_result << std::endl;
   }
 
   return true;
 }
+
 }  // namespace prokhorov_n_producer_customer_mpi
+
+
+
+

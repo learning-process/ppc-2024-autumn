@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #pragma once
 
 #include <boost/mpi/collectives.hpp>
@@ -6,7 +5,6 @@
 #include <boost/mpi/environment.hpp>
 #include <condition_variable>
 #include <memory>
-#include <mutex>
 #include <queue>
 #include <random>
 #include <string>
@@ -15,8 +13,6 @@
 #include "core/task/include/task.hpp"
 
 namespace prokhorov_n_producer_customer_mpi {
-
-std::vector<int> getRandomVector(int sz);
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
