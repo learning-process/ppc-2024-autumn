@@ -11,7 +11,7 @@
 namespace kurakin_m_graham_scan_mpi {
 
 bool inOneLine(std::vector<double> &res, double new_point_x, double new_point_y) {
-  for (int j = 2; j < res.size(); j += 2) {
+  for (int j = 2; j < (int)res.size(); j += 2) {
     if (abs((new_point_x - res[0]) * (res[j + 1] - res[1]) - (new_point_y - res[1]) * (res[j] - res[0])) < 1e-4) {
       return true;
     }
