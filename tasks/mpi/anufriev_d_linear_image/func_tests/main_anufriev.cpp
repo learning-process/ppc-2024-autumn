@@ -235,4 +235,3 @@ TEST(anufriev_d_linear_image_func_mpi, TestGaussianFilterUnevenDistribution) {
     }
   }
 }
-
