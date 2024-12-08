@@ -151,19 +151,17 @@ std::vector<int> padMatrixWithZeros(const std::vector<int>& core_values, int row
 }
 
 namespace {
-const double KERNEL[3][3] = {{0.0625, 0.125, 0.0625}, 
-                            {0.125, 0.25, 0.125}, 
-                            {0.0625, 0.125, 0.0625}};
+const double KERNEL[3][3] = {{0.0625, 0.125, 0.0625}, {0.125, 0.25, 0.125}, {0.0625, 0.125, 0.0625}};
 
 int applyFilter(const std::vector<int>& input, int rows, int cols, int x, int y) {
-    double result = 0.0;
-    for (int i = -1; i <= 1; ++i) {
-        for (int j = -1; j <= 1; ++j) {
-            int pos = (x + i) * cols + (y + j);
-            result += input[pos] * KERNEL[i + 1][j + 1];
-        }
+  double result = 0.0;
+  for (int i = -1; i <= 1; ++i) {
+    for (int j = -1; j <= 1; ++j) {
+      int pos = (x + i) * cols + (y + j);
+      result += input[pos] * KERNEL[i + 1][j + 1];
     }
-    return static_cast<int>(result);
+  }
+  return static_cast<int>(result);
 }
 }  // namespace
 
