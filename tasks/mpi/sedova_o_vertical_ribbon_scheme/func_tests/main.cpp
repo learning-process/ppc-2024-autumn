@@ -7,7 +7,20 @@
 
 #include "mpi/sedova_o_vertical_ribbon_scheme/include/ops_mpi.hpp"
 
-TEST(sedova_o_vertical_ribbon_scheme_mpi, Test_3) {
+void get_random_matrix(std::vector<int> &matrix, int a, int b) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+
+  if (a >= b) {
+    throw std::invalid_argument("error");
+  }
+  std::uniform_int_distribution<> dis(a, b);
+  for (size_t i = 0; i < matrix.size(); ++i) {
+    matrix[i] = dis(gen);
+  }
+}
+
+TEST(sedova_o_vertical_ribbon_scheme_mpi, distribution1) {
   int rows_ = 5;
   int cols_ = 3;
   int count_proc = 5;
@@ -43,7 +56,7 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, Test_3) {
   EXPECT_EQ(off, expected_off);
 }
 
-TEST(sedova_o_vertical_ribbon_scheme_mpi, Test_4) {
+TEST(sedova_o_vertical_ribbon_scheme_mpi, distribution2) {
   int rows_ = 5;
   int cols_ = 3;
   int count_proc = 3;
@@ -79,7 +92,7 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, Test_4) {
   EXPECT_EQ(off, expected_off);
 }
 
-TEST(sedova_o_vertical_ribbon_scheme_mpi, Test_5) {
+TEST(sedova_o_vertical_ribbon_scheme_mpi, distribution3) {
   int rows_ = 5;
   int cols_ = 4;
   int count_proc = 6;
@@ -115,7 +128,7 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, Test_5) {
   EXPECT_EQ(off, expected_off);
 }
 
-TEST(sedova_o_vertical_ribbon_scheme_mpi, Test_6) {
+TEST(sedova_o_vertical_ribbon_scheme_mpi, distribution4) {
   int rows_ = 10;
   int cols_ = 4;
   int count_proc = 8;
@@ -151,7 +164,7 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, Test_6) {
   EXPECT_EQ(off, expected_off);
 }
 
-TEST(sedova_o_vertical_ribbon_scheme_mpi, Test_7) {
+TEST(sedova_o_vertical_ribbon_scheme_mpi, false_validation) {
   std::vector<int> matrix = {1, 2, 3};
   std::vector<int> vector = {7, 8};
   std::vector<int> result(3, 0);
@@ -165,10 +178,10 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, Test_7) {
   taskDataSeq->outputs_count.emplace_back(result.size());
 
   sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI TestSequential(taskDataSeq);
-  ASSERT_EQ(TestSequential.validation(), false);
+  EXPECT_FALSE(TestSequential.validation());
 }
 
-TEST(sedova_o_vertical_ribbon_scheme_mpi, Test_8) {
+TEST(sedova_o_vertical_ribbon_scheme_mpi, correct_matrix_and_vector) {
   std::vector<int> matrix = {1, 2, 3, 4, 5, 6};
   std::vector<int> vector = {7, 8};
   std::vector<int> result(3, 0);
@@ -189,4 +202,62 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, Test_8) {
 
   std::vector<int> expected_result = {39, 54, 69};
   ASSERT_EQ(result, expected_result);
+}
+
+TEST(sedova_o_vertical_ribbon_scheme_mpi, mpi_and_seq) {
+  boost::mpi::communicator world;
+
+  std::vector<int> matrix;
+  std::vector<int> vector;
+
+  std::vector<int> result;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    matrix.resize(10);
+    vector.resize(2);
+    get_random_matrix(matrix, -10, 10);
+    get_random_matrix(vector, -20, 2);
+
+    result.resize(5, 0);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+    taskDataPar->inputs_count.emplace_back(matrix.size());
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
+    taskDataPar->inputs_count.emplace_back(vector.size());
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
+    taskDataPar->outputs_count.emplace_back(result.size());
+  }
+
+  sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI taskParallel(taskDataPar);
+
+  ASSERT_TRUE(taskParallel.validation());
+  ASSERT_TRUE(taskParallel.pre_processing());
+  ASSERT_TRUE(taskParallel.run());
+  ASSERT_TRUE(taskParallel.post_processing());
+
+  if (world.rank() == 0) {
+    std::vector<int> expected_result(5, 0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(matrix.size());
+
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
+    taskDataSeq->inputs_count.emplace_back(vector.size());
+
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(expected_result.data()));
+    taskDataSeq->outputs_count.emplace_back(expected_result.size());
+
+    // Create Task
+    sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI testSequential(taskDataSeq);
+    ASSERT_TRUE(testSequential.validation());
+    testSequential.pre_processing();
+    testSequential.run();
+    testSequential.post_processing();
+
+    ASSERT_EQ(result, expected_result);
+  }
 }

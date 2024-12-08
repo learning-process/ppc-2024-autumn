@@ -14,7 +14,8 @@ bool sedova_o_vertical_ribbon_scheme_seq::Sequential::validation() {
     return false;
   }
   return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 &&
-         taskData->inputs_count[0] % taskData->inputs_count[1] == 0;
+         taskData->inputs_count[0] % taskData->inputs_count[1] == 0 && 
+         taskData->outputs_count[0] == taskData->inputs_count[0] / taskData->inputs_count[1];
 }
 
 bool sedova_o_vertical_ribbon_scheme_seq::Sequential::pre_processing() {

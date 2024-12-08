@@ -5,7 +5,7 @@
 
 #include "seq/sedova_o_vertical_ribbon_scheme/include/ops_seq.hpp"
 
-TEST(sedova_o_vertical_ribbon_scheme_seq, Test1) {
+TEST(sedova_o_vertical_ribbon_scheme_seq, empty_matrix) {
   std::vector<int> matrix = {};
   std::vector<int> vector = {1, 2, 3};
   std::vector<int> result(3, 0);
@@ -22,7 +22,7 @@ TEST(sedova_o_vertical_ribbon_scheme_seq, Test1) {
   EXPECT_FALSE(TestSequential.validation());
 }
 
-TEST(sedova_o_vertical_ribbon_scheme_seq, Test2) {
+TEST(sedova_o_vertical_ribbon_scheme_seq, empty_vector) {
   std::vector<int> matrix = {1, 2, 4, 5};
   std::vector<int> vector = {};
   std::vector<int> result(2, 0);
@@ -39,7 +39,7 @@ TEST(sedova_o_vertical_ribbon_scheme_seq, Test2) {
   EXPECT_FALSE(TestSequential.validation());
 }
 
-TEST(sedova_o_vertical_ribbon_scheme_seq, Test3) {
+TEST(sedova_o_vertical_ribbon_scheme_seq, empty_matrix_and_vector) {
   std::vector<int> matrix = {};
   std::vector<int> vector = {};
   std::vector<int> result;
@@ -56,7 +56,7 @@ TEST(sedova_o_vertical_ribbon_scheme_seq, Test3) {
   EXPECT_FALSE(TestSequential.validation());
 }
 
-TEST(sedova_o_vertical_ribbon_scheme_seq, 3x2) {
+TEST(sedova_o_vertical_ribbon_scheme_seq, matrix_3x2) {
   std::vector<int> matrix = {1, 2, 3, 4, 5, 6};
   std::vector<int> vector = {7, 8};
   std::vector<int> result(3, 0);
@@ -70,7 +70,7 @@ TEST(sedova_o_vertical_ribbon_scheme_seq, 3x2) {
   taskDataSeq->outputs_count.emplace_back(result.size());
 
   sedova_o_vertical_ribbon_scheme_seq::Sequential TestSequential(taskDataSeq);
-  ASSERT_EQ(TestSequential.validation(), true);
+  ASSERT_TRUE(TestSequential.validation());
   TestSequential.pre_processing();
   TestSequential.run();
   TestSequential.post_processing();
@@ -79,7 +79,7 @@ TEST(sedova_o_vertical_ribbon_scheme_seq, 3x2) {
   ASSERT_EQ(result, expected_result);
 }
 
-TEST(sedova_o_vertical_ribbon_scheme_seq, 2x2) {
+TEST(sedova_o_vertical_ribbon_scheme_seq, matrix_2x2) {
   std::vector<int> matrix = {1, 2, 3, 4};
   std::vector<int> vector = {5, 6};
   std::vector<int> result(2, 0);
@@ -93,7 +93,7 @@ TEST(sedova_o_vertical_ribbon_scheme_seq, 2x2) {
   taskDataSeq->outputs_count.emplace_back(result.size());
 
   sedova_o_vertical_ribbon_scheme_seq::Sequential TestSequential(taskDataSeq);
-  ASSERT_EQ(TestSequential.validation(), true);
+  ASSERT_TRUE(TestSequential.validation());
   TestSequential.pre_processing();
   TestSequential.run();
   TestSequential.post_processing();
@@ -102,7 +102,7 @@ TEST(sedova_o_vertical_ribbon_scheme_seq, 2x2) {
   ASSERT_EQ(result, expected_result);
 }
 
-TEST(sedova_o_vertical_ribbon_scheme_seq, 5x2) {
+TEST(sedova_o_vertical_ribbon_scheme_seq, matrix_5x2) {
   std::vector<int> matrix = {1, 3, 5, 4, 6, 7, 8, 2, 9, 10};
   std::vector<int> vector = {2, 6};
   std::vector<int> result(5, 0);
@@ -116,7 +116,7 @@ TEST(sedova_o_vertical_ribbon_scheme_seq, 5x2) {
   taskDataSeq->outputs_count.emplace_back(result.size());
 
   sedova_o_vertical_ribbon_scheme_seq::Sequential TestSequential(taskDataSeq);
-  ASSERT_EQ(TestSequential.validation(), true);
+  ASSERT_TRUE(TestSequential.validation());
   TestSequential.pre_processing();
   TestSequential.run();
   TestSequential.post_processing();
@@ -125,7 +125,7 @@ TEST(sedova_o_vertical_ribbon_scheme_seq, 5x2) {
   ASSERT_EQ(result, expected_result);
 }
 
-TEST(sedova_o_vertical_ribbon_scheme_seq, 5x1) {
+TEST(sedova_o_vertical_ribbon_scheme_seq, matrix_5x1) {
   std::vector<int> matrix = {1, 3, 5, 4, 6};
   std::vector<int> vector = {2};
   std::vector<int> result(5, 0);
@@ -139,7 +139,7 @@ TEST(sedova_o_vertical_ribbon_scheme_seq, 5x1) {
   taskDataSeq->outputs_count.emplace_back(result.size());
 
   sedova_o_vertical_ribbon_scheme_seq::Sequential TestSequential(taskDataSeq);
-  ASSERT_EQ(TestSequential.validation(), true);
+  ASSERT_TRUE(TestSequential.validation());
   TestSequential.pre_processing();
   TestSequential.run();
   TestSequential.post_processing();
@@ -148,7 +148,7 @@ TEST(sedova_o_vertical_ribbon_scheme_seq, 5x1) {
   ASSERT_EQ(result, expected_result);
 }
 
-TEST(sedova_o_vertical_ribbon_scheme_seq, Test4) {
+TEST(sedova_o_vertical_ribbon_scheme_seq, false_validation1) {
   std::vector<int> matrix = {1, 2, 3, 4};
   std::vector<int> vector = {1, 2, 3};
   std::vector<int> result(3, 0);
@@ -165,7 +165,7 @@ TEST(sedova_o_vertical_ribbon_scheme_seq, Test4) {
   EXPECT_FALSE(TestSequential.validation());
 }
 
-TEST(sedova_o_vertical_ribbon_scheme_seq, Test5) {
+TEST(sedova_o_vertical_ribbon_scheme_seq, false_validation2) {
   std::vector<int> matrix = {1, 2, 3};
   std::vector<int> vector = {1, 2};
   std::vector<int> result(3, 0);

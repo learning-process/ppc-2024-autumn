@@ -18,7 +18,8 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::validation() {
     return false;
   }
   return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 &&
-         taskData->inputs_count[0] % taskData->inputs_count[1] == 0;
+         taskData->inputs_count[0] % taskData->inputs_count[1] == 0 &&
+         taskData->outputs_count[0] == taskData->inputs_count[0] / taskData->inputs_count[1];
 }
 
 bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::pre_processing() {
@@ -41,10 +42,6 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::pre_processing() {
     for (int i = 0; i < rows_; ++i) {
       off[i] = i * cols_;
       proc[i] = cols_;
-    }
-    for (int i = rows_; i < world.size(); ++i) {
-      off[i] = -1;
-      proc[i] = 0;
     }
   } else {
     int count_proc = rows_ / world.size();
@@ -76,14 +73,12 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::run() {
   int matrix_start_ = proc[world.rank()] / cols_;
   std::vector<int> proc_result(cols_, 0);
 
-  for (int i = 0; i < cols_; ++i) {
-    for (int j = 0; j < matrix_start_; ++j) {
-      int prog_start = proc_start + j;
-      if (prog_start < rows_) {
-        int matrix = input_matrix_1[i * rows_ + prog_start];
+  for (int i = 0; i < matrix_start_; ++i) {
+    for (int j = 0; j < cols_; ++j) {
+      int prog_start = proc_start + i;
+        int matrix = input_matrix_1[cols_ * prog_start + j];
         int vector = input_vector_1[prog_start];
         proc_result[j] += matrix * vector;
-      }
     }
   }
 
@@ -110,7 +105,8 @@ bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::validation() {
     return false;
   }
   return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 &&
-         taskData->inputs_count[0] % taskData->inputs_count[1] == 0;
+         taskData->inputs_count[0] % taskData->inputs_count[1] == 0 &&
+         taskData->outputs_count[0] == taskData->inputs_count[0] / taskData->inputs_count[1];
 }
 
 bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::pre_processing() {
@@ -118,7 +114,7 @@ bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::pre_processing() {
 
   matrix_ = reinterpret_cast<int*>(taskData->inputs[0]);
   vector_ = reinterpret_cast<int*>(taskData->inputs[1]);
-  count = taskData->inputs_count[0];
+  int count = taskData->inputs_count[0];
   rows_ = taskData->inputs_count[1];
   cols_ = count / rows_;
   result_vector_.assign(cols_, 0);

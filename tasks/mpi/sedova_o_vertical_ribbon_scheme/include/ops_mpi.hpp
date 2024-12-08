@@ -46,7 +46,6 @@ class SequentialMPI : public ppc::core::Task {
   int* matrix_;
   int* vector_;
   std::vector<int> result_vector_;
-  int count;
   int rows_;
   int cols_;
 };

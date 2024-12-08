@@ -64,9 +64,7 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, Performance_Pipeline_Run) {
     taskSequential->run();
     taskSequential->post_processing();
     ASSERT_EQ(global_result.size(), seq_result.size());
-    for (size_t i = 0; i < global_result.size(); ++i) {
-      ASSERT_EQ(global_result[i], seq_result[i]);
-    }
+    EXPECT_EQ(global_result, seq_result);
   }
 }
 TEST(sedova_o_vertical_ribbon_scheme_mpi, Performance_Task_Run) {
@@ -127,8 +125,6 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, Performance_Task_Run) {
     taskSequential->run();
     taskSequential->post_processing();
     ASSERT_EQ(global_result.size(), seq_result.size());
-    for (size_t i = 0; i < global_result.size(); ++i) {
-      ASSERT_EQ(global_result[i], seq_result[i]);
-    }
+    EXPECT_EQ(global_result, seq_result);
   }
 }
