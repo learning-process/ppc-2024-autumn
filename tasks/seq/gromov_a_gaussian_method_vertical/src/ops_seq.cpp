@@ -55,12 +55,8 @@ bool gromov_a_gaussian_method_vertical_seq::GaussVerticalSequential::validation(
   internal_order_test();
   std::vector<double> matrix_argument(equations * (equations + 1));
 
-  for (int i = 0; i < equations; ++i) {
-    for (int j = 0; j < equations; ++j) {
-      matrix_argument[i * (equations + 1) + j] = static_cast<double>(input_coefficient[i * equations + j]);
-    }
-    matrix_argument[i * (equations + 1) + equations] = static_cast<double>(input_rhs[i]);
-  }
+  std::copy(input_coefficient.begin(), input_coefficient.end(), matrix_argument.begin());
+  std::copy(input_rhs.begin(), input_rhs.end(), matrix_argument.begin() + equations * equations);
 
   int rank_coeffs = matrix_rank(matrix_argument, equations, equations, band_width);
   int rank_augmented = matrix_rank(matrix_argument, equations, equations + 1, band_width);
@@ -114,8 +110,6 @@ bool gromov_a_gaussian_method_vertical_seq::GaussVerticalSequential::run() {
 
 bool gromov_a_gaussian_method_vertical_seq::GaussVerticalSequential::post_processing() {
   internal_order_test();
-  for (int i = 0; i < equations; ++i) {
-    reinterpret_cast<double*>(taskData->outputs[0])[i] = res[i];
-  }
+  std::copy(res.begin(), res.end(), reinterpret_cast<double*>(taskData->outputs[0]));
   return true;
 }

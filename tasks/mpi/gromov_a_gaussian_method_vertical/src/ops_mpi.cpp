@@ -4,7 +4,6 @@
 #include <functional>
 #include <random>
 #include <string>
-#include <thread>
 #include <vector>
 
 int gromov_a_gaussian_method_vertical_mpi::matrix_rank(std::vector<double>& matrix, int rows, int columns,
