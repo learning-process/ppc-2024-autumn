@@ -1,22 +1,36 @@
 #pragma once
+
+#include <gtest/gtest.h>
+
+#include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <condition_variable>
+#include <memory>
 #include <mutex>
+#include <numeric>
+#include <string>
+#include <utility>
 #include <vector>
+
+#include "core/task/include/task.hpp"
 
 namespace konkov_i_task_dining_philosophers {
 
-class DiningPhilosophers {
+std::vector<int> getRandomVector(int sz);
+
+class DiningPhilosophersMPITaskParallel : public ppc::core::Task {
  public:
-  DiningPhilosophers(int philosophers, int meals);
-  void run();
-  void getResults(std::vector<int>& results);
+  explicit DiningPhilosophersMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
+      : Task(std::move(taskData_)) {}
+  bool pre_processing() override;
+  bool validation() override;
+  bool run() override;
+  bool post_processing() override;
 
  private:
-  int philosopher_count_;
-  int meals_per_philosopher_;
-  std::vector<int> meal_counts_;
-  std::vector<std::mutex> forks_;
-  boost::mpi::communicator world_;
-  void philosopherTask(int id);
+  boost::mpi::communicator world;
+  std::vector<int> input_, local_input_;
+  int res{};
 };
+
 }  // namespace konkov_i_task_dining_philosophers
