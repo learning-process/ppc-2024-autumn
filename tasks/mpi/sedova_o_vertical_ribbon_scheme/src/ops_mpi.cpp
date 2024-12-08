@@ -24,6 +24,7 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::validation() {
 
 bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::pre_processing() {
   internal_order_test();
+  if (world.rank() == 0) {
   int* matrix = reinterpret_cast<int*>(taskData->inputs[0]);
   int* vector = reinterpret_cast<int*>(taskData->inputs[1]);
 
@@ -57,6 +58,12 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::pre_processing() {
       off[i] = offset;
       offset += proc[i];
     }
+  }
+  }
+  if (world.rank() != 0) {
+    input_matrix_1.resize(cols_ * rows_, 0);
+    input_vector_1.resize(rows_, 0);
+    result_vector_.resize(cols_, 0);
   }
   return true;
 }
