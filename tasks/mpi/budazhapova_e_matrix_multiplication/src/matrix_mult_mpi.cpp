@@ -124,7 +124,7 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::validation() {
 bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::run() {
   internal_order_test();
   if (local_res.empty()) {
-    std::cerr << "Ошибка: Локальный результат пуст." << std::endl;
+    std::cerr << "err" << std::endl;
     return false;
   }
   for (size_t i = 0; i < local_res.size(); i++) {
