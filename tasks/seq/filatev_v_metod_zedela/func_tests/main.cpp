@@ -20,7 +20,7 @@ void generatorMatrix(std::vector<int> &matrix, int size) {
   for (int i = 0; i < size; ++i) {
     int sum = 0;
     for (int j = 0; j < size; ++j) {
-      matrix[i * size + j] = rand() % 100 - 50;
+      matrix[i * size + j] = rand() % 100 - 51;
       sum += abs(matrix[i * size + j]);
     }
     matrix[i * size + i] = sum + rand() % 100;
