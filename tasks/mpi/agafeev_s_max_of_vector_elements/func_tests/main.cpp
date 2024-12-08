@@ -1,10 +1,13 @@
 #include <gtest/gtest.h>
 
 #include <iostream>
+#include <vector>
 
 #include "boost/mpi/communicator.hpp"
 #include "mpi/agafeev_s_max_of_vector_elements/include/ops_mpi.hpp"
 // #include "seq/agafeev_s_max_of_vector_elements/include/ops_seq.hpp"
+template <typename T>
+void test_seq_and_mpi_versions(std::vector<T> &in_matrix, T right_answer) {}
 
 TEST(agafeev_s_max_of_vector_elements, test_find_in_100x100_matrix) {
   boost::mpi::communicator world;
