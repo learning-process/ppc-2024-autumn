@@ -138,11 +138,61 @@ TEST(somov_i_horizontal_scheme, validate_empty_matrix) {
 }
 
 TEST(somov_i_horizontal_scheme, validate_uniform_matrix) {
-  uint32_t rowCount = 5;
-  uint32_t colCount = 5;
+  uint32_t rowCount = 81;
+  uint32_t colCount = 17;
 
   std::vector<int32_t> uniform_matrix(rowCount * colCount, 42);
   std::vector<int32_t> uniform_vector(colCount, 42);
+  std::vector<int32_t> result(rowCount);
+
+  auto task_data = std::make_shared<ppc::core::TaskData>();
+  task_data->inputs.push_back(reinterpret_cast<uint8_t *>(uniform_matrix.data()));
+  task_data->inputs.push_back(reinterpret_cast<uint8_t *>(uniform_vector.data()));
+  task_data->inputs_count = {rowCount, colCount};
+  task_data->outputs.push_back(reinterpret_cast<uint8_t *>(result.data()));
+  task_data->outputs_count.push_back(rowCount);
+
+  auto seq_task = std::make_shared<somov_i_horizontal_scheme::MatrixVectorTask>(task_data);
+  seq_task->setRowCount(rowCount);
+  seq_task->setColCount(colCount);
+
+  ASSERT_TRUE(seq_task->validation());
+  seq_task->pre_processing();
+  seq_task->run();
+  seq_task->post_processing();
+}
+
+TEST(somov_i_horizontal_scheme, validate_uniform_matrix_two) {
+  uint32_t rowCount = 64;
+  uint32_t colCount = 100;
+
+  std::vector<int32_t> uniform_matrix(rowCount * colCount, 37);
+  std::vector<int32_t> uniform_vector(colCount, 37);
+  std::vector<int32_t> result(rowCount);
+
+  auto task_data = std::make_shared<ppc::core::TaskData>();
+  task_data->inputs.push_back(reinterpret_cast<uint8_t *>(uniform_matrix.data()));
+  task_data->inputs.push_back(reinterpret_cast<uint8_t *>(uniform_vector.data()));
+  task_data->inputs_count = {rowCount, colCount};
+  task_data->outputs.push_back(reinterpret_cast<uint8_t *>(result.data()));
+  task_data->outputs_count.push_back(rowCount);
+
+  auto seq_task = std::make_shared<somov_i_horizontal_scheme::MatrixVectorTask>(task_data);
+  seq_task->setRowCount(rowCount);
+  seq_task->setColCount(colCount);
+
+  ASSERT_TRUE(seq_task->validation());
+  seq_task->pre_processing();
+  seq_task->run();
+  seq_task->post_processing();
+}
+
+TEST(somov_i_horizontal_scheme, validate_uniform_matrix_three) {
+  uint32_t rowCount = 17;
+  uint32_t colCount = 32;
+
+  std::vector<int32_t> uniform_matrix(rowCount * colCount, 22);
+  std::vector<int32_t> uniform_vector(colCount, 22);
   std::vector<int32_t> result(rowCount);
 
   auto task_data = std::make_shared<ppc::core::TaskData>();

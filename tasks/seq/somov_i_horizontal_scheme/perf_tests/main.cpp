@@ -81,8 +81,8 @@ TEST(somov_i_horizontal_scheme, test_pipeline_run) {
 }
 
 TEST(somov_i_horizontal_scheme, test_task_run) {
-  uint32_t rowCount = 3500;
-  uint32_t colCount = 3500;
+  uint32_t rowCount = 3501;
+  uint32_t colCount = 3499;
 
   std::vector<int32_t> matrix;
   std::vector<int32_t> vec;
