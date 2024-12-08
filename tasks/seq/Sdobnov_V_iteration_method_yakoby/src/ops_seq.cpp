@@ -1,10 +1,10 @@
 // Copyright 2024 Sdobnov Vladimir
 #include "seq/Sdobnov_V_iteration_method_yakoby/include/ops_seq.hpp"
 
-#include <random>
-#include <iostream>
-#include <vector>
 #include <cmath>
+#include <iostream>
+#include <random>
+#include <vector>
 
 std::vector<double> Sdobnov_iteration_method_yakoby::iteration_method_yakoby(int n, const std::vector<double>& A,
                                                                              const std::vector<double>& b,
