@@ -25,7 +25,7 @@ void DiningPhilosophers::run() {
   std::vector<std::thread> threads;
 
   threads.reserve(philosopher_count_);
-  for(int i = 0; i < philosopher_count_; ++i) {
+  for (int i = 0; i < philosopher_count_; ++i) {
     threads.emplace_back(&DiningPhilosophers::philosopherTask, this, i);
   }
 
