@@ -91,8 +91,7 @@ bool nikolaev_r_simple_iteration_method_seq::SimpleIterationMethodSequential::po
   return true;
 }
 
-bool nikolaev_r_simple_iteration_method_seq::SimpleIterationMethodSequential::is_singular(const std::vector<double>& A,
-                                                                                          size_t n) {
+bool nikolaev_r_simple_iteration_method_seq::is_singular(const std::vector<double>& A, size_t n) {
   std::vector<std::vector<double>> mat(n, std::vector<double>(n));
   for (size_t i = 0; i < n; ++i) {
     for (size_t j = 0; j < n; ++j) {
@@ -126,8 +125,7 @@ bool nikolaev_r_simple_iteration_method_seq::SimpleIterationMethodSequential::is
   return det == 0;
 }
 
-bool nikolaev_r_simple_iteration_method_seq::SimpleIterationMethodSequential::is_diagonally_dominant(
-    const std::vector<double>& A, size_t n) {
+bool nikolaev_r_simple_iteration_method_seq::is_diagonally_dominant(const std::vector<double>& A, size_t n) {
   for (size_t i = 0; i < n; ++i) {
     double diagonal_element = fabs(A[i * n + i]);
     double sum = 0.0;

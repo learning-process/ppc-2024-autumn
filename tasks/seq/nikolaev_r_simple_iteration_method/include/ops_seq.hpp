@@ -7,6 +7,8 @@
 #include "core/task/include/task.hpp"
 
 namespace nikolaev_r_simple_iteration_method_seq {
+bool is_singular(const std::vector<double>& A, size_t n);
+bool is_diagonally_dominant(const std::vector<double>& A, size_t n);
 
 class SimpleIterationMethodSequential : public ppc::core::Task {
  public:
@@ -23,8 +25,5 @@ class SimpleIterationMethodSequential : public ppc::core::Task {
   std::vector<double> x_;
   double tolerance_ = 1e-3;
   size_t max_iterations_ = 150;
-
-  static bool is_singular(const std::vector<double>& A, size_t n);
-  static bool is_diagonally_dominant(const std::vector<double>& A, size_t n);
 };
 }  // namespace nikolaev_r_simple_iteration_method_seq

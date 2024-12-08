@@ -248,8 +248,7 @@ bool nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodParallel::post
   return true;
 }
 
-bool nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodSequential::is_singular(const std::vector<double>& A,
-                                                                                          size_t n) {
+bool nikolaev_r_simple_iteration_method_mpi::is_singular(const std::vector<double>& A, size_t n) {
   std::vector<std::vector<double>> mat(n, std::vector<double>(n));
   for (size_t i = 0; i < n; ++i) {
     for (size_t j = 0; j < n; ++j) {
@@ -283,62 +282,7 @@ bool nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodSequential::is
   return det == 0;
 }
 
-bool nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodSequential::is_diagonally_dominant(
-    const std::vector<double>& A, size_t n) {
-  for (size_t i = 0; i < n; ++i) {
-    double diagonal_element = fabs(A[i * n + i]);
-    double sum = 0.0;
-
-    for (size_t j = 0; j < n; ++j) {
-      if (j != i) {
-        sum += fabs(A[i * n + j]);
-      }
-    }
-
-    if (diagonal_element <= sum) {
-      return false;
-    }
-  }
-  return true;
-}
-
-bool nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodParallel::is_singular(const std::vector<double>& A,
-                                                                                        size_t n) {
-  std::vector<std::vector<double>> mat(n, std::vector<double>(n));
-  for (size_t i = 0; i < n; ++i) {
-    for (size_t j = 0; j < n; ++j) {
-      mat[i][j] = A[i * n + j];
-    }
-  }
-  double det = 1;
-  for (size_t i = 0; i < n; ++i) {
-    if (mat[i][i] == 0) {
-      bool found = false;
-      for (size_t k = i + 1; k < n; ++k) {
-        if (mat[k][i] != 0) {
-          swap(mat[i], mat[k]);
-          det *= -1;
-          found = true;
-          break;
-        }
-      }
-      if (!found) {
-        return true;
-      }
-    }
-    for (size_t j = i + 1; j < n; ++j) {
-      double ratio = mat[j][i] / mat[i][i];
-      for (size_t k = i; k < n; ++k) {
-        mat[j][k] -= ratio * mat[i][k];
-      }
-    }
-    det *= mat[i][i];
-  }
-  return det == 0;
-}
-
-bool nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodParallel::is_diagonally_dominant(
-    const std::vector<double>& A, size_t n) {
+bool nikolaev_r_simple_iteration_method_mpi::is_diagonally_dominant(const std::vector<double>& A, size_t n) {
   for (size_t i = 0; i < n; ++i) {
     double diagonal_element = fabs(A[i * n + i]);
     double sum = 0.0;
