@@ -2,7 +2,6 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <mpi/kholin_k_iterative_methods_Seidel/src/ops_mpi.cpp>
 
 #include "mpi/kholin_k_iterative_methods_Seidel/include/ops_mpi.hpp"
 //

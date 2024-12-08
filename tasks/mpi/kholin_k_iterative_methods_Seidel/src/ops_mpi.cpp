@@ -6,7 +6,7 @@
 #include <functional>
 #include <random>
 using namespace std::chrono_literals;
-
+//
 bool kholin_k_iterative_methods_Seidel_mpi::IsDiagPred(std::vector<float> row_coeffs, size_t num_colls,
                                                        size_t start_index, size_t index) {
   float diag_element = std::fabs(row_coeffs[index]);

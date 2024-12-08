@@ -1,7 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <seq/kholin_k_iterative_methods_Seidel/src/ops_seq.cpp>
-
 #include "seq/kholin_k_iterative_methods_Seidel/include/ops_seq.hpp"
 
 TEST(kholin_k_iterative_methods_Seidel_seq, validation_true_when_matrix_with_diag_pred_ver1) {
