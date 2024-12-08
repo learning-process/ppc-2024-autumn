@@ -15,7 +15,7 @@ std::vector<int> kolokolova_d_gaussian_method_horizontal_mpi::getRandomVector(in
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
-  std::uniform_int_distribution<int> dist(-100, 100);
+  std::uniform_int_distribution<int> dist(-500, 500);
   for (int i = 0; i < sz; i++) {
     vec[i] = gen() % 100;
   }
@@ -23,12 +23,12 @@ std::vector<int> kolokolova_d_gaussian_method_horizontal_mpi::getRandomVector(in
 }
 
 TEST(kolokolova_d_gaussian_method_horizontal_mpi, Test_Parallel_Gauss1) {
-  // For each proc 1 equations
+  // Test with nums
   boost::mpi::communicator world;
-  int count_equations = world.size();
+  int count_equations = 3;
   int size_coef_mat = count_equations * count_equations;
-  std::vector<int> input_coeff(size_coef_mat, 0);
-  std::vector<int> input_y(count_equations, 0);
+  std::vector<int> input_coeff = {3, 2, -5, 2, -1, 3, 1, 2, -1};
+  std::vector<int> input_y = {-1, 13, 9};
   std::vector<double> func_res(count_equations, 0);
 
   // Create TaskData
