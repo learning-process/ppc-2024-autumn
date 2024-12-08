@@ -163,7 +163,9 @@ bool zolotareva_a_smoothing_image_mpi::TestMPITaskParallel::run() {
   float sigma = 1.5f;
   int kernel_size = 2 * radius + 1;
   std::vector<float> horizontal_kernel(kernel_size);
-
+  if (world.rank() == 0) {
+    horizontal_kernel = zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::create_gaussian_kernel(radius, sigma);
+  }
   if (world.size() == 1) {
     result_.resize(height_ * width_);
     std::vector<float>& vertical_kernel = horizontal_kernel;
@@ -175,10 +177,6 @@ bool zolotareva_a_smoothing_image_mpi::TestMPITaskParallel::run() {
                                                                               result_);
     return true;
   }
-  if (world.rank() == 0) {
-    horizontal_kernel = zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::create_gaussian_kernel(radius, sigma);
-  }
-
   boost::mpi::broadcast(world, horizontal_kernel.data(), kernel_size, 0);
   std::vector<float>& vertical_kernel = horizontal_kernel;
   std::vector<float> temp(local_height_ * width_, 0.0f);
