@@ -64,13 +64,14 @@ bool konkov_i_task_dining_philosophers::DiningPhilosophersMPITaskParallel::run()
   internal_order_test();
   // Simulate dining philosophers in parallel
   std::vector<std::mutex> forks(local_input_.size());
-  for (int i = 0; i < local_input_.size(); ++i) {
+  for (int i = 0; i < static_cast<int>(local_input_.size()); ++i) {
     std::unique_lock<std::mutex> left_fork(forks[i]);
     std::unique_lock<std::mutex> right_fork(forks[(i + 1) % local_input_.size()]);
     // Philosopher is eating
     res += local_input_[i];
   }
 
+  // Создаем временный буфер для результата
   int local_res = res;
   reduce(world, local_res, res, std::plus(), 0);
 
