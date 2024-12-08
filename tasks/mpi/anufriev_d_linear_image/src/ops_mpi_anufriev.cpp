@@ -29,7 +29,7 @@ bool SimpleIntMPI::validation() {
     width_ = *reinterpret_cast<int*>(taskData->inputs[1]);
     height_ = *reinterpret_cast<int*>(taskData->inputs[2]);
 
-    size_t expected_size = static_cast<size_t>(width_ * height_ * sizeof(int));
+    auto expected_size = static_cast<size_t>(width_ * height_ * sizeof(int));
 
     if (width_ < 3 || height_ < 3) {
       std::cerr << "Validation failed: width или height меньше 3.\n";
