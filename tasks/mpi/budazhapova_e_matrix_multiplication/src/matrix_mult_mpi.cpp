@@ -116,30 +116,29 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::run() {
       local_res[i] += local_A[i * columns + j] * b[j];
     }
   }
-  if (world.rank() == 0) {
-    std::vector<int> recv_counts(world.size(), 0);
-    std::vector<int> displacements(world.size(), 0);
+  // if (world.rank() == 0) {
+  std::vector<int> recv_counts(world.size(), 0);
+  std::vector<int> displacements(world.size(), 0);
 
-    for (int i = 0; i < world.size(); ++i) {
-      int n_of_send_rows = rows / world.size();
-      int n_of_proc_with_extra_row = rows % world.size();
+  for (int i = 0; i < world.size(); i++) {
+    int n_of_send_rows = rows / world.size();
+    int n_of_proc_with_extra_row = rows % world.size();
 
-      int start_row = i * n_of_send_rows + std::min(i, n_of_proc_with_extra_row);
-      int end_row = start_row + n_of_send_rows + (i < n_of_proc_with_extra_row ? 1 : 0);
-      recv_counts[i] = end_row - start_row;
-      displacements[i] = (i == 0) ? 0 : displacements[i - 1] + recv_counts[i - 1];
-    }
-    res.resize(rows);
-
-    boost::mpi::gatherv(world, local_res.data(), local_res.size(), res.data(), recv_counts, displacements, 0);
-  } else {
-    std::vector<int> recv_counts(world.size(), 0);
-    std::vector<int> displacements(world.size(), 0);
-    boost::mpi::gatherv(world, local_res.data(), local_res.size(), nullptr, recv_counts, displacements, 0);
+    int start_row = i * n_of_send_rows + std::min(i, n_of_proc_with_extra_row);
+    int end_row = start_row + n_of_send_rows + (i < n_of_proc_with_extra_row ? 1 : 0);
+    recv_counts[i] = end_row - start_row;
+    displacements[i] = (i == 0) ? 0 : displacements[i - 1] + recv_counts[i - 1];
   }
-  if (world.rank() == 0) {
-    res.resize(rows);
-  }
+
+  res.resize(rows);
+
+  boost::mpi::gatherv(world, local_res.data(), local_res.size(), res.data(), recv_counts, displacements, 0);
+  /// } else {
+  //  std::vector<int> recv_counts(world.size(), 0);
+  // std::vector<int> displacements(world.size(), 0);
+  ///  boost::mpi::gatherv(world, local_res.data(), local_res.size(), nullptr, recv_counts, displacements, 0);
+  ///}
+
   return true;
 }
 
