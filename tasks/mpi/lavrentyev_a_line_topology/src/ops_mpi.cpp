@@ -1,10 +1,10 @@
 // Copyright 2023 Nesterov Alexander
-#include "mpi/lavrentyev_a_line_topology/include/ops_mpi.hpp"
-
 #include <mpi.h>
 
 #include <algorithm>
 #include <vector>
+
+#include "mpi/lavrentyev_a_line_topology/include/ops_mpi.hpp"
 
 bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
@@ -13,7 +13,16 @@ bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::pre_processing() {
   int end_proc = taskData->inputs_count[1];
   int num_of_elems = taskData->inputs_count[2];
 
+  if (start_proc < 0 || end_proc < 0 || num_of_elems <= 0) {
+    std::cerr << "Error: Invalid parameters in pre-processing." << std::endl;
+    return false;
+  }
+
   if (world.rank() == start_proc) {
+    if (taskData->inputs.empty() || taskData->inputs[0] == nullptr) {
+      std::cerr << "Error: No input data for the starting process." << std::endl;
+      return false;
+    }
     const auto* input_data = reinterpret_cast<int*>(taskData->inputs[0]);
     data.assign(input_data, input_data + num_of_elems);
     path.clear();
@@ -40,6 +49,7 @@ bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::validation() {
   int num_of_elems = taskData->inputs_count[2];
 
   if (start_proc < 0 || start_proc >= world.size() || end_proc < 0 || end_proc >= world.size() || num_of_elems <= 0) {
+    std::cerr << "Error: Invalid process or element count." << std::endl;
     return false;
   }
 
@@ -48,17 +58,20 @@ bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::validation() {
   }
 
   if (start_proc >= end_proc) {
+    std::cerr << "Error: start_proc >= end_proc." << std::endl;
     return false;
   }
 
   if (world.rank() == start_proc) {
     if (taskData->inputs.empty() || taskData->inputs[0] == nullptr) {
+      std::cerr << "Error: Missing input data for start process." << std::endl;
       return false;
     }
   }
 
   if (world.rank() == end_proc) {
-    if (taskData->outputs.empty() || taskData->outputs[0] == nullptr || taskData->outputs[1] == nullptr) {
+    if (taskData->outputs.size() < 2 || taskData->outputs[0] == nullptr || taskData->outputs[1] == nullptr) {
+      std::cerr << "Error: Missing output data for end process." << std::endl;
       return false;
     }
   }
@@ -79,27 +92,34 @@ bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::run() {
 
   MPI_Request requests[4] = {MPI_REQUEST_NULL, MPI_REQUEST_NULL, MPI_REQUEST_NULL, MPI_REQUEST_NULL};
 
-  if (world.rank() == start_proc) {
-    MPI_Isend(data.data(), num_of_elems, MPI_INT, world.rank() + 1, 0, MPI_COMM_WORLD, &requests[0]);
-    MPI_Isend(path.data(), path.size(), MPI_INT, world.rank() + 1, 1, MPI_COMM_WORLD, &requests[1]);
-  } else if (world.rank() == end_proc) {
-    MPI_Irecv(data.data(), num_of_elems, MPI_INT, world.rank() - 1, 0, MPI_COMM_WORLD, &requests[0]);
-    MPI_Irecv(path.data(), path.size(), MPI_INT, world.rank() - 1, 1, MPI_COMM_WORLD, &requests[1]);
-    MPI_Waitall(2, requests, MPI_STATUSES_IGNORE);
+  int num_requests = 0;
 
+  if (world.rank() == start_proc) {
+    if (world.rank() + 1 < world.size()) {
+      MPI_Isend(data.data(), num_of_elems, MPI_INT, world.rank() + 1, 0, MPI_COMM_WORLD, &requests[num_requests++]);
+      MPI_Isend(path.data(), path.size(), MPI_INT, world.rank() + 1, 1, MPI_COMM_WORLD, &requests[num_requests++]);
+    }
+  } else if (world.rank() == end_proc) {
+    if (world.rank() - 1 >= 0) {
+      MPI_Irecv(data.data(), num_of_elems, MPI_INT, world.rank() - 1, 0, MPI_COMM_WORLD, &requests[num_requests++]);
+      MPI_Irecv(path.data(), path.size(), MPI_INT, world.rank() - 1, 1, MPI_COMM_WORLD, &requests[num_requests++]);
+    }
+    MPI_Waitall(num_requests, requests, MPI_STATUSES_IGNORE);
     path[world.rank() - start_proc] = world.rank();
   } else {
-    MPI_Irecv(data.data(), num_of_elems, MPI_INT, world.rank() - 1, 0, MPI_COMM_WORLD, &requests[0]);
-    MPI_Irecv(path.data(), path.size(), MPI_INT, world.rank() - 1, 1, MPI_COMM_WORLD, &requests[1]);
-    MPI_Waitall(2, requests, MPI_STATUSES_IGNORE);
-
+    if (world.rank() - 1 >= 0) {
+      MPI_Irecv(data.data(), num_of_elems, MPI_INT, world.rank() - 1, 0, MPI_COMM_WORLD, &requests[num_requests++]);
+      MPI_Irecv(path.data(), path.size(), MPI_INT, world.rank() - 1, 1, MPI_COMM_WORLD, &requests[num_requests++]);
+    }
     path[world.rank() - start_proc] = world.rank();
 
-    MPI_Isend(data.data(), num_of_elems, MPI_INT, world.rank() + 1, 0, MPI_COMM_WORLD, &requests[2]);
-    MPI_Isend(path.data(), path.size(), MPI_INT, world.rank() + 1, 1, MPI_COMM_WORLD, &requests[3]);
+    if (world.rank() + 1 < world.size()) {
+      MPI_Isend(data.data(), num_of_elems, MPI_INT, world.rank() + 1, 0, MPI_COMM_WORLD, &requests[num_requests++]);
+      MPI_Isend(path.data(), path.size(), MPI_INT, world.rank() + 1, 1, MPI_COMM_WORLD, &requests[num_requests++]);
+    }
   }
 
-  MPI_Waitall(4, requests, MPI_STATUSES_IGNORE);
+  MPI_Waitall(num_requests, requests, MPI_STATUSES_IGNORE);
   return true;
 }
 
@@ -109,10 +129,16 @@ bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::post_processing() {
   int end_proc = taskData->inputs_count[1];
 
   if (world.rank() == end_proc) {
+    if (taskData->outputs.size() < 2) {
+      std::cerr << "Error: Insufficient output space." << std::endl;
+      return false;
+    }
+
     auto* data_ptr = reinterpret_cast<int*>(taskData->outputs[0]);
     if (data_ptr != nullptr) {
       std::copy(data.begin(), data.end(), data_ptr);
     }
+
     auto* path_ptr = reinterpret_cast<int*>(taskData->outputs[1]);
     if (path_ptr != nullptr) {
       std::copy(path.begin(), path.end(), path_ptr);

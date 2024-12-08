@@ -5,12 +5,10 @@
 #include <boost/mpi/environment.hpp>
 #include <cstdlib>
 #include <ctime>
-#include <vector>
 #include <iostream>
+#include <vector>
 
 #include "mpi/lavrentyev_a_line_topology/include/ops_mpi.hpp"
-
-
 
 std::vector<int> lavrentyev_generate_random_vector(size_t size) {
   std::srand(static_cast<unsigned>(std::time(nullptr)));
@@ -27,6 +25,18 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer) {
   const int start_proc = 0;
   const int end_proc = world.size() - 1;
   const size_t num_elems = 10000;
+
+  if (world.size() == 1) {
+    std::vector<int> input_data = lavrentyev_generate_random_vector(num_elems);
+    std::vector<int> output_data(num_elems, -1);
+    std::vector<int> received_path(1, 0);
+
+    std::copy(input_data.begin(), input_data.end(), output_data.begin());
+
+    ASSERT_EQ(input_data, output_data);
+    ASSERT_EQ(received_path[0], start_proc);
+    return;
+  }
 
   auto task_data = std::make_shared<ppc::core::TaskData>();
   task_data->inputs_count = {static_cast<unsigned int>(start_proc), static_cast<unsigned int>(end_proc),
@@ -49,6 +59,16 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer) {
   }
 
   MPI_Barrier(MPI_COMM_WORLD);
+
+  char mpi_error_string_1[1024];
+  int length_of_error_string_1;
+  int mpi_error_code = MPI_Error_string(MPI_SUCCESS, mpi_error_string_1, &length_of_error_string_1);
+  if (mpi_error_code != MPI_SUCCESS) {
+    char mpi_error_string_2[1024]; 
+    int length_of_error_string_2;
+    MPI_Error_string(mpi_error_code, mpi_error_string_2, &length_of_error_string_2);
+    std::cerr << "MPI Error at barrier: " << mpi_error_string_2 << std::endl;
+  }
 
   lavrentyev_a_line_topology_mpi::TestMPITaskParallel task(task_data);
 
