@@ -150,6 +150,23 @@ std::vector<int> padMatrixWithZeros(const std::vector<int>& core_values, int row
   return padded_matrix;
 }
 
+namespace {
+const double KERNEL[3][3] = {{0.0625, 0.125, 0.0625}, 
+                            {0.125, 0.25, 0.125}, 
+                            {0.0625, 0.125, 0.0625}};
+
+int applyFilter(const std::vector<int>& input, int rows, int cols, int x, int y) {
+    double result = 0.0;
+    for (int i = -1; i <= 1; ++i) {
+        for (int j = -1; j <= 1; ++j) {
+            int pos = (x + i) * cols + (y + j);
+            result += input[pos] * KERNEL[i + 1][j + 1];
+        }
+    }
+    return static_cast<int>(result);
+}
+}  // namespace
+
 bool TaskMpi::validation() {
   internal_order_test();
   if (comm.rank() != 0) {
@@ -227,7 +244,7 @@ bool TaskMpi::run() {
       }
     }
 
-    local_result[i] = applyFilter(neighborhood);
+    local_result[i] = applyFilter(neighborhood, 3, 3, 1, 1);
   }
 
   if (comm.rank() == 0) {
@@ -298,7 +315,7 @@ bool TaskSeq::run() {
           neighborhood[i * 3 + j] = input_data[(r + i - 1) * num_cols + (c + j - 1)];
         }
       }
-      output_data[r * num_cols + c] = applyFilter(neighborhood);
+      output_data[r * num_cols + c] = applyFilter(neighborhood, 3, 3, 1, 1);
     }
   }
 
@@ -313,7 +330,5 @@ bool TaskSeq::post_processing() {
 
   return true;
 }
-
-const double KERNEL[3][3] = {{0.0625, 0.125, 0.0625}, {0.125, 0.25, 0.125}, {0.0625, 0.125, 0.0625}};
 
 }  // namespace shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi
