@@ -86,10 +86,8 @@ bool vector_average_sequential<iotype>::pre_processing() {
   internal_order_test();
 
   size_t input_size = taskData->inputs_count[0];
-  input_data.resize(input_size);
-
   const auto* source_ptr = reinterpret_cast<const iotype*>(taskData->inputs[0]);
-  std::copy(source_ptr, source_ptr + input_size, input_data.begin());
+  input_data.assign(source_ptr, source_ptr + input_size);
 
   return true;
 }
@@ -137,10 +135,8 @@ bool vector_average_MPI_AllReduce<iotype>::pre_processing() {
 
   if (mpi_comm.rank() == 0) {
     input_size = taskData->inputs_count[0];
-    input_data.resize(input_size);
-
     const auto* source_ptr = reinterpret_cast<const iotype*>(taskData->inputs[0]);
-    std::copy(source_ptr, source_ptr + input_size, input_data.begin());
+    input_data.assign(source_ptr, source_ptr + input_size);
   }
   return true;
 }
@@ -255,7 +251,7 @@ void vector_average_my_AllReduce<iotype>::my_AllReduce(const boost::mpi::communi
 
   // Step 4: Perform the downward broadcast after the reduction is complete.
   for (int child = 2 * rank + 1; child <= 2 * rank + 2; ++child) {
-    if (child < size) {  // Если потомок существует
+    if (child < size) {
       comm.send(child, 0, local_values.data(), n);
     }
   }
@@ -270,9 +266,8 @@ bool vector_average_my_AllReduce<iotype>::pre_processing() {
 
   if (mpi_comm.rank() == 0) {
     input_size = taskData->inputs_count[0];
-    input_data.resize(input_size);
     const auto* source_ptr = reinterpret_cast<const iotype*>(taskData->inputs[0]);
-    std::copy(source_ptr, source_ptr + input_size, input_data.begin());
+    input_data.assign(source_ptr, source_ptr + input_size);
   }
   return true;
 }
