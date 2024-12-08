@@ -67,6 +67,7 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::pre_processing() {
     boost::mpi::broadcast(world, b, 0);
     boost::mpi::broadcast(world, columns, 0);
     boost::mpi::broadcast(world, rows, 0);
+
   }
 
   if (world_size > rows) {
@@ -121,8 +122,8 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::run() {
     std::vector<int> displacements(world.size(), 0);
 
     for (int i = 0; i < world.size(); ++i) {
-      int n_of_send_rows = rows / world_size;
-      int n_of_proc_with_extra_row = rows % world_size;
+      int n_of_send_rows = rows / world.size();
+      int n_of_proc_with_extra_row = rows % world.size();
 
       int start_row = i * n_of_send_rows + std::min(i, n_of_proc_with_extra_row);
       int end_row = start_row + n_of_send_rows + (i < n_of_proc_with_extra_row ? 1 : 0);
