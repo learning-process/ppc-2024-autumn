@@ -78,7 +78,7 @@ TEST(filatev_v_metod_zedela_mpi, test_size_3) {
     taskData->outputs_count.emplace_back(size);
   }
 
-  filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData);
+  filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData, world);
   metodZedela.setAlfa(alfa);
 
   ASSERT_EQ(metodZedela.validation(), true);
@@ -118,7 +118,7 @@ TEST(filatev_v_metod_zedela_mpi, test_size_10) {
     taskData->outputs_count.emplace_back(size);
   }
 
-  filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData);
+  filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData, world);
   metodZedela.setAlfa(alfa);
 
   ASSERT_EQ(metodZedela.validation(), true);
@@ -158,7 +158,7 @@ TEST(filatev_v_metod_zedela_mpi, test_size_100) {
     taskData->outputs_count.emplace_back(size);
   }
 
-  filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData);
+  filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData, world);
   metodZedela.setAlfa(alfa);
 
   ASSERT_EQ(metodZedela.validation(), true);
@@ -198,7 +198,7 @@ TEST(filatev_v_metod_zedela_mpi, test_size_500) {
     taskData->outputs_count.emplace_back(size);
   }
 
-  filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData);
+  filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData, world);
   metodZedela.setAlfa(alfa);
 
   ASSERT_EQ(metodZedela.validation(), true);
@@ -231,7 +231,7 @@ TEST(filatev_v_metod_zedela_mpi, test_error_rank) {
     taskData->outputs_count.emplace_back(size);
   }
 
-  filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData);
+  filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData, world);
 
   if (world.rank() == 0) {
     ASSERT_EQ(metodZedela.validation(), false);
@@ -258,7 +258,7 @@ TEST(filatev_v_metod_zedela_mpi, test_error_determenant) {
     taskData->outputs_count.emplace_back(size);
   }
 
-  filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData);
+  filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData, world);
 
   if (world.rank() == 0) {
     ASSERT_EQ(metodZedela.validation(), false);
@@ -285,7 +285,7 @@ TEST(filatev_v_metod_zedela_mpi, test_error_different_size) {
     taskData->outputs_count.emplace_back(size + 1);
   }
 
-  filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData);
+  filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData, world);
 
   if (world.rank() == 0) {
     ASSERT_EQ(metodZedela.validation(), false);
@@ -312,11 +312,56 @@ TEST(filatev_v_metod_zedela_mpi, test_error_diagonal) {
     taskData->outputs_count.emplace_back(size);
   }
 
-  filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData);
+  filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData, world);
 
   if (world.rank() == 0) {
     ASSERT_EQ(metodZedela.validation(), false);
   } else {
     ASSERT_EQ(metodZedela.validation(), true);
+  }
+}
+
+
+TEST(filatev_v_metod_zedela_mpi, test_codecov_1_procces) {
+  boost::mpi::communicator world;
+  int size = 3;
+  double alfa = 0.01;
+  std::vector<double> answer;
+  std::vector<int> resh;
+  std::vector<int> matrix;
+  std::vector<int> vecB;
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+
+  int color = static_cast<int>(world.rank() == 0);
+  boost::mpi::communicator new_comm = world.split(color);
+
+  if (new_comm.rank() == 0) {
+    matrix.resize(size * size, 0);
+    vecB.resize(size, 0);
+
+    filatev_v_metod_zedela_mpi::generatorMatrix(matrix, size);
+    resh = filatev_v_metod_zedela_mpi::genetatirVectorB(matrix, vecB);
+
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
+    taskData->inputs_count.emplace_back(size);
+    taskData->outputs_count.emplace_back(size);
+  }
+
+
+  filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData, new_comm);
+  metodZedela.setAlfa(alfa);
+
+  ASSERT_EQ(metodZedela.validation(), true);
+  metodZedela.pre_processing();
+  metodZedela.run();
+  metodZedela.post_processing();
+
+  if (new_comm.rank() == 0) {
+    auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
+    answer.insert(answer.end(), temp, temp + size);
+
+    ASSERT_EQ(filatev_v_metod_zedela_mpi::rightAns(answer, resh, alfa), true);
   }
 }

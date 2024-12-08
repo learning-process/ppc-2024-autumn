@@ -13,7 +13,7 @@ namespace filatev_v_metod_zedela_mpi {
 
 class MetodZedela : public ppc::core::Task {
  public:
-  explicit MetodZedela(std::shared_ptr<ppc::core::TaskData> taskData_);
+  explicit MetodZedela(std::shared_ptr<ppc::core::TaskData> taskData_, boost::mpi::communicator world_);
   bool pre_processing() override;
   bool validation() override;
   bool run() override;

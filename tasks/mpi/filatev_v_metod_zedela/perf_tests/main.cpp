@@ -76,7 +76,7 @@ TEST(filatev_v_metod_zedela_mpi, test_pipeline_run) {
     taskData->outputs_count.emplace_back(size);
   }
 
-  auto metodZedela = std::make_shared<filatev_v_metod_zedela_mpi::MetodZedela>(taskData);
+  auto metodZedela = std::make_shared<filatev_v_metod_zedela_mpi::MetodZedela>(taskData, world);
   metodZedela->setAlfa(alfa);
 
   ASSERT_EQ(metodZedela->validation(), true);
@@ -129,7 +129,7 @@ TEST(filatev_v_metod_zedela_mpi, test_task_run) {
     taskData->outputs_count.emplace_back(size);
   }
 
-  auto metodZedela = std::make_shared<filatev_v_metod_zedela_mpi::MetodZedela>(taskData);
+  auto metodZedela = std::make_shared<filatev_v_metod_zedela_mpi::MetodZedela>(taskData, world);
   metodZedela->setAlfa(alfa);
 
   ASSERT_EQ(metodZedela->validation(), true);
