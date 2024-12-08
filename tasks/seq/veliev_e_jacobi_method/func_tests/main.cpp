@@ -52,6 +52,7 @@ TEST(veliev_e_jacobi_method, Test_3x3_System) {
   taskDataContainer->outputs_count.push_back(solutionVector.size());
 
   veliev_e_jacobi_method::MethodJacobi jacobiSolver(taskDataContainer);
+
   ASSERT_EQ(jacobiSolver.validation(), true);
 
   jacobiSolver.pre_processing();
@@ -161,6 +162,7 @@ TEST(veliev_e_jacobi_method, Test_1x1_System) {
   veliev_e_jacobi_method::MethodJacobi jacobiSolver(taskDataContainer);
 
   ASSERT_EQ(jacobiSolver.validation(), true);
+
   jacobiSolver.pre_processing();
   jacobiSolver.run();
   jacobiSolver.post_processing();
