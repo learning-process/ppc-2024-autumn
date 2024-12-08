@@ -6,7 +6,6 @@
 #include <string>
 #include <vector>
 
-
 bool plekhanov_d_allreduce_mine_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
 
