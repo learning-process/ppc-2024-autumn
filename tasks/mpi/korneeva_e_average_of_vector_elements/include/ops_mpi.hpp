@@ -173,7 +173,7 @@ bool vector_average_MPI_AllReduce<iotype>::run() {
   }
 
   // Step 2: Calculate the local size of data for each process.
-  local_size = input_size / total_processes + (process_rank < input_size % total_processes);
+  local_size = input_size / total_processes + static_cast<int>(process_rank < input_size % total_processes);
 
   // Step 3: Scatter the input data among processes.
   local_data.resize(local_size);
@@ -183,7 +183,7 @@ bool vector_average_MPI_AllReduce<iotype>::run() {
   // Only the root process calculates send_counts and send_offsets
   if (process_rank == 0) {
     for (int i = 0; i < total_processes; ++i) {
-      send_counts[i] = input_size / total_processes + (i < input_size % total_processes);
+      send_counts[i] = input_size / total_processes + static_cast<int>(i < input_size % total_processes);
       if (i > 0) {
         send_offsets[i] = send_offsets[i - 1] + send_counts[i - 1];
       }
@@ -199,7 +199,7 @@ bool vector_average_MPI_AllReduce<iotype>::run() {
 
   // Step 5: Perform an allreduce operation to collect and sum up the local sums from all processes
   double total_sum = 0.0;
-  boost::mpi::all_reduce(mpi_comm, local_sum, total_sum, std::plus<double>());
+  boost::mpi::all_reduce(mpi_comm, local_sum, total_sum, std::plus<>());
 
   // Step 6: Compute the final average (only the root process needs this).
   if (process_rank == 0) {
@@ -299,7 +299,7 @@ bool vector_average_my_AllReduce<iotype>::run() {
     return true;
   }
 
-  local_size = input_size / total_processes + (process_rank < input_size % total_processes);
+  local_size = input_size / total_processes + static_cast<int>(process_rank < input_size % total_processes);
 
   local_data.resize(local_size);
   std::vector<int> send_counts(total_processes, 0);
@@ -307,7 +307,7 @@ bool vector_average_my_AllReduce<iotype>::run() {
 
   if (process_rank == 0) {
     for (int i = 0; i < total_processes; ++i) {
-      send_counts[i] = input_size / total_processes + (i < input_size % total_processes);
+      send_counts[i] = input_size / total_processes + static_cast<int>(i < input_size % total_processes);
       if (i > 0) {
         send_offsets[i] = send_offsets[i - 1] + send_counts[i - 1];
       }
@@ -322,7 +322,7 @@ bool vector_average_my_AllReduce<iotype>::run() {
   }
 
   double total_sum = 0.0;
-  my_AllReduce(mpi_comm, &local_sum, &total_sum, 1, std::plus<double>());
+  my_AllReduce(mpi_comm, &local_sum, &total_sum, 1, std::plus<>());
 
   if (process_rank == 0) {
     average_result = total_sum / static_cast<double>(input_size);
