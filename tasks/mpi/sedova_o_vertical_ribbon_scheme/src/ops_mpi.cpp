@@ -57,8 +57,8 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::pre_processing() {
       } else {
         proc[i] = count_proc * cols_;
       }
-    off[i] = offset;
-    offset += proc[i];
+      off[i] = offset;
+      offset += proc[i];
     }
   }
   return true;
