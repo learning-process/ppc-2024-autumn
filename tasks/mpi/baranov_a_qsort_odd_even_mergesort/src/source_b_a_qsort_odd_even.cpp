@@ -37,11 +37,10 @@ bool baranov_a_odd_even_merge_sort<iotype>::run() {
   int n;
 
   if (sz == 1) {
-    output_.assign(input_.begin(), input_.end());
-    std::sort(output_.begin(), output_.end());
+    output_ = input_;
+    output_ = q_sort_stack(output_);
     return true;
   }
-
   if (my_rank == 0) {
     int offset = (sz - (input_.size() % sz)) % sz;
     for (int i = 0; i != offset; ++i) {
@@ -55,7 +54,8 @@ bool baranov_a_odd_even_merge_sort<iotype>::run() {
   loc_vec_.resize(loc_vec_size);
 
   boost::mpi::scatter(world, input_, loc_vec_.data(), loc_vec_size, 0);
-  std::sort(loc_vec_.begin(), loc_vec_.end());
+  
+  loc_vec_ = q_sort_stack(loc_vec_);
 
   bool sz_is_even = (sz % 2 == 0);
 
@@ -152,7 +152,6 @@ bool baranov_a_odd_even_merge_sort<iotype>::run() {
 template <class iotype>
 bool baranov_a_odd_even_merge_sort<iotype>::post_processing() {
   internal_order_test();
-  world.barrier();
   if (world.rank() == 0) {
     for (int i = 0; i != vec_size_; ++i) {
       reinterpret_cast<iotype*>(taskData->outputs[0])[i] = output_[i];
@@ -174,9 +173,64 @@ bool baranov_a_odd_even_merge_sort<iotype>::validation() {
   return true;
 }
 
+template <typename iotype>
+std::vector<iotype> baranov_a_odd_even_merge_sort<iotype>::q_sort_stack(std::vector<iotype>& vec_) {
+  if (vec_.empty()) {
+    return vec_;
+  }
+
+  struct Range {
+    int low;
+    int high;
+  };
+
+  std::stack<Range> ranges;
+  ranges.push({0, static_cast<int>(vec_.size() - 1)});
+  std::vector<iotype> result = vec_;
+  while (!ranges.empty()) {
+    Range range = ranges.top();
+    ranges.pop();
+
+    int low = range.low;
+    int high = range.high;
+
+    if (high - low <= 10) {
+      std::sort(result.begin() + low, result.begin() + high + 1);
+      continue;
+    }
+
+    iotype pivot = result[high];
+    std::vector<iotype> left, right, equal;
+
+    for (int i = low; i <= high; ++i) {
+      if (result[i] < pivot) {
+        left.push_back(result[i]);
+      } else if (result[i] > pivot) {
+        right.push_back(result[i]);
+      } else {
+        equal.push_back(result[i]);
+      }
+    }
+
+    std::vector<iotype> merged_left;
+    std::merge(left.begin(), left.end(), equal.begin(), equal.end(), std::back_inserter(merged_left));
+    std::merge(merged_left.begin(), merged_left.end(), right.begin(), right.end(), result.begin() + low);
+
+    if (!left.empty()) {
+      ranges.push({low, low + static_cast<int>(left.size()) - 1});
+    }
+    if (!right.empty()) {
+      ranges.push({low + static_cast<int>(merged_left.size()), high});
+    }
+  }
+
+  return result;
+}
+
 template class baranov_a_qsort_odd_even_merge_mpi::baranov_a_odd_even_merge_sort<int>;
 
 template class baranov_a_qsort_odd_even_merge_mpi::baranov_a_odd_even_merge_sort<double>;
+template class baranov_a_qsort_odd_even_merge_mpi::baranov_a_odd_even_merge_sort<unsigned int>;
 
-template class baranov_a_qsort_odd_even_merge_mpi::baranov_a_odd_even_merge_sort<unsigned>;
+
 }  // namespace baranov_a_qsort_odd_even_merge_mpi

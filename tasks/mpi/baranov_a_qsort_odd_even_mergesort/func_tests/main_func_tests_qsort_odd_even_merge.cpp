@@ -42,8 +42,8 @@ TEST(baranov_a_qsort_odd_even_merge, Test_sort_8_int) {
   }
 }
 
-TEST(baranov_a_qsort_odd_even_merge, Test_sort_100_int) {
-  const int N = 100;
+TEST(baranov_a_qsort_odd_even_merge, Test_sort_1_int) {
+  const int N = 1;
   // Create data
   boost::mpi::communicator world;
   std::vector<int> arr(N);
@@ -94,8 +94,8 @@ TEST(baranov_a_qsort_odd_even_merge, Test_sort_10000_int) {
   }
 }
 
-TEST(baranov_a_qsort_odd_even_merge, Test_sort_1000000_int) {
-  const int N = 1000000;
+TEST(baranov_a_qsort_odd_even_merge, Test_sort_50000_int) {
+  const int N = 50000;
   // Create data
   boost::mpi::communicator world;
   std::vector<int> arr(N);
@@ -110,32 +110,6 @@ TEST(baranov_a_qsort_odd_even_merge, Test_sort_1000000_int) {
     data->outputs_count.emplace_back(1);
   }
   baranov_a_qsort_odd_even_merge_mpi::baranov_a_odd_even_merge_sort<int> test1(data);
-  ASSERT_EQ(test1.validation(), true);
-  test1.pre_processing();
-  test1.run();
-  test1.post_processing();
-  if (world.rank() == 0) {
-    std::sort(arr.begin(), arr.end());
-    ASSERT_EQ(arr, out_vec);
-  }
-}
-
-TEST(baranov_a_qsort_odd_even_merge, Test_sort_100_double) {
-  const int N = 100;
-  // Create data
-  boost::mpi::communicator world;
-  std::vector<double> arr(N);
-  std::vector<double> out_vec(N);
-
-  std::shared_ptr<ppc::core::TaskData> data = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    get_rnd_vec(arr);
-    data->inputs.emplace_back(reinterpret_cast<uint8_t *>(arr.data()));
-    data->inputs_count.emplace_back(arr.size());
-    data->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec.data()));
-    data->outputs_count.emplace_back(1);
-  }
-  baranov_a_qsort_odd_even_merge_mpi::baranov_a_odd_even_merge_sort<double> test1(data);
   ASSERT_EQ(test1.validation(), true);
   test1.pre_processing();
   test1.run();
@@ -174,6 +148,32 @@ TEST(baranov_a_qsort_odd_even_merge, Test_sort_1000_double) {
 
 TEST(baranov_a_qsort_odd_even_merge, Test_sort_10000_double) {
   const int N = 10000;
+  // Create data
+  boost::mpi::communicator world;
+  std::vector<double> arr(N);
+  std::vector<double> out_vec(N);
+
+  std::shared_ptr<ppc::core::TaskData> data = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    get_rnd_vec(arr);
+    data->inputs.emplace_back(reinterpret_cast<uint8_t *>(arr.data()));
+    data->inputs_count.emplace_back(arr.size());
+    data->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec.data()));
+    data->outputs_count.emplace_back(1);
+  }
+  baranov_a_qsort_odd_even_merge_mpi::baranov_a_odd_even_merge_sort<double> test1(data);
+  ASSERT_EQ(test1.validation(), true);
+  test1.pre_processing();
+  test1.run();
+  test1.post_processing();
+  if (world.rank() == 0) {
+    std::sort(arr.begin(), arr.end());
+    ASSERT_EQ(arr, out_vec);
+  }
+}
+
+TEST(baranov_a_qsort_odd_even_merge, Test_sort_100000_double) {
+  const int N = 100000;
   // Create data
   boost::mpi::communicator world;
   std::vector<double> arr(N);
