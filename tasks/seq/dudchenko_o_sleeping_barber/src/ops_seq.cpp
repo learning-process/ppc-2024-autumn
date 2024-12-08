@@ -41,9 +41,9 @@ bool TestSleepingBarber::run() {
     }
 
     if (!barber_busy && !waiting_clients.empty()) {
-      int next_client = waiting_clients.front();
+      int client = waiting_clients.front();
       waiting_clients.pop_front();
-      next_client(next_client);
+      next_client(client);
       barber_busy = true;
     }
 
@@ -55,9 +55,9 @@ bool TestSleepingBarber::run() {
 
   // Завершение обработки оставшихся клиентов
   while (!waiting_clients.empty()) {
-    int next_client = waiting_clients.front();
+    int client = waiting_clients.front();
     waiting_clients.pop_front();
-    next_client(next_client);
+    next_client(client);
   }
 
   result = 0;  // Успешное выполнение

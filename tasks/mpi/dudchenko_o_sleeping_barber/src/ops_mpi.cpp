@@ -101,7 +101,7 @@ bool TestMPISleepingBarber::run() {
       }
     }
   } else {
-    const int client = world.rank();
+    int client = world.rank();
     bool accepted = false;
 
     world.send(1, 0, client);

@@ -16,7 +16,7 @@ TEST(dudchenko_o_sleeping_barber_sequential, Test_Validation2) {
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
   dudchenko_o_sleeping_barber_seq::TestSleepingBarber testSleepingBarber(taskDataSeq);
 
-  taskDataSeq->inputs_count = {-1};
+  taskDataSeq->inputs_count = {1};
   EXPECT_FALSE(testSleepingBarber.validation());
 }
 
