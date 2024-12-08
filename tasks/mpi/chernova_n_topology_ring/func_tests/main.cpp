@@ -38,19 +38,9 @@ TEST(chernova_n_topology_ring_mpi, Test_empty_string) {
     taskDataParallel->outputs_count.emplace_back(2);
   }
   chernova_n_topology_ring_mpi::TestMPITaskParallel testTaskParallel(taskDataParallel);
-  ASSERT_EQ(testTaskParallel.validation(), true);
-  testTaskParallel.pre_processing();
-  testTaskParallel.run();
-  testTaskParallel.post_processing();
-  if (world.rank() == 0) {
-    if (world.size() != 1) {
-      for (int i = 0; i != world.size(); ++i) {
-        EXPECT_EQ(i, out_process[i]);
-      }
-    }
-    ASSERT_EQ(true, std::equal(in.begin(), in.end(), out_vec.begin(), out_vec.end()));
-  }
+  ASSERT_EQ(testTaskParallel.validation(), false);
 }
+
 TEST(chernova_n_topology_ring_mpi, Test_ten_symbols) {
   boost::mpi::communicator world;
   std::vector<char> in = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'};
@@ -64,7 +54,7 @@ TEST(chernova_n_topology_ring_mpi, Test_ten_symbols) {
     taskDataParallel->inputs_count.emplace_back(in.size());
     taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec.data()));
     taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_process.data()));
-    taskDataParallel->outputs_count.emplace_back(2);
+    taskDataParallel->outputs_count.reserve(2);
   }
   chernova_n_topology_ring_mpi::TestMPITaskParallel testTaskParallel(taskDataParallel);
   ASSERT_EQ(testTaskParallel.validation(), true);
@@ -94,7 +84,7 @@ TEST(chernova_n_topology_ring_mpi, Test_five_words) {
     taskDataParallel->inputs_count.emplace_back(in.size());
     taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec.data()));
     taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_process.data()));
-    taskDataParallel->outputs_count.emplace_back(2);
+    taskDataParallel->outputs_count.reserve(2);
   }
   chernova_n_topology_ring_mpi::TestMPITaskParallel testTaskParallel(taskDataParallel);
   ASSERT_EQ(testTaskParallel.validation(), true);
@@ -124,7 +114,7 @@ TEST(chernova_n_topology_ring_mpi, Test_ten_words) {
     taskDataParallel->inputs_count.emplace_back(in.size());
     taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec.data()));
     taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_process.data()));
-    taskDataParallel->outputs_count.emplace_back(2);
+    taskDataParallel->outputs_count.reserve(2);
   }
   chernova_n_topology_ring_mpi::TestMPITaskParallel testTaskParallel(taskDataParallel);
   ASSERT_EQ(testTaskParallel.validation(), true);
@@ -154,7 +144,7 @@ TEST(chernova_n_topology_ring_mpi, Test_twenty_words) {
     taskDataParallel->inputs_count.emplace_back(in.size());
     taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec.data()));
     taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_process.data()));
-    taskDataParallel->outputs_count.emplace_back(2);
+    taskDataParallel->outputs_count.reserve(2);
   }
   chernova_n_topology_ring_mpi::TestMPITaskParallel testTaskParallel(taskDataParallel);
   ASSERT_EQ(testTaskParallel.validation(), true);
@@ -184,7 +174,7 @@ TEST(chernova_n_topology_ring_mpi, Test_thirty_words) {
     taskDataParallel->inputs_count.emplace_back(in.size());
     taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec.data()));
     taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_process.data()));
-    taskDataParallel->outputs_count.emplace_back(2);
+    taskDataParallel->outputs_count.reserve(2);
   }
   chernova_n_topology_ring_mpi::TestMPITaskParallel testTaskParallel(taskDataParallel);
   ASSERT_EQ(testTaskParallel.validation(), true);

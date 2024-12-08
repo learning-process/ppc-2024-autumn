@@ -14,7 +14,7 @@ bool chernova_n_topology_ring_mpi::TestMPITaskParallel::pre_processing() {
     n = taskData->inputs_count[0];
     input_ = std::vector<char>(n);
     output_ = std::vector<char>(n);
-    memcpy(input_.data(), taskData->inputs[0], sizeof(char) * n);
+    std::copy(taskData->inputs[0], taskData->inputs[0] + n, input_.data());
     vector_size = n;
   }
   return true;
@@ -23,8 +23,11 @@ bool chernova_n_topology_ring_mpi::TestMPITaskParallel::pre_processing() {
 bool chernova_n_topology_ring_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    if (taskData->outputs_count[0] == 1 && taskData->inputs_count.size() == 1 && taskData->inputs_count[0] >= 0) {
+    if (taskData->outputs_count.capacity() == 2 && taskData->inputs_count.size() == 1 &&
+        taskData->inputs_count[0] > 0) {
       return true;
+    } else {
+      return false;
     }
   }
   return true;
@@ -60,7 +63,7 @@ bool chernova_n_topology_ring_mpi::TestMPITaskParallel::run() {
     }
   } else {
     process_.push_back(0);
-    memcpy(output_.data(), input_.data(), sizeof(char) * vector_size);
+    std::copy(input_.data(), input_.data() + vector_size, output_.data());
   }
   return true;
 }
