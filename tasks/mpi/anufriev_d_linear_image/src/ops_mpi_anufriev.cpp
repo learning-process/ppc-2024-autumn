@@ -2,10 +2,11 @@
 
 #include <gtest/gtest.h>
 #include <mpi.h>
+
 #include <algorithm>
 #include <boost/mpi.hpp>
-#include <numeric>
 #include <iostream>
+#include <numeric>
 
 namespace anufriev_d_linear_image {
 
@@ -132,7 +133,7 @@ void SimpleIntMPI::exchangeHalo() {
 
   if (local_width_ > 0) {
     std::copy(&local_data_[height_], &local_data_[2 * height_], send_left.begin());
-    std::copy(&local_data_[(local_width_) * height_], &local_data_[(local_width_ + 1) * height_], send_right.begin());
+    std::copy(&local_data_[(local_width_)*height_], &local_data_[(local_width_ + 1) * height_], send_right.begin());
   }
 
   MPI_Request reqs[4];
@@ -212,7 +213,8 @@ void SimpleIntMPI::gatherData() {
   }
 
   MPI_Gatherv(&local_data_[height_], local_width_ * height_, MPI_INT,
-              world.rank() == 0 ? gathered_transposed.data() : nullptr, recvcounts.data(), displs.data(), MPI_INT, 0, comm);
+              world.rank() == 0 ? gathered_transposed.data() : nullptr, recvcounts.data(), displs.data(), MPI_INT, 0,
+              comm);
 
   if (world.rank() == 0) {
     processed_data_.resize(width_ * height_);

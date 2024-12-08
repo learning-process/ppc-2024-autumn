@@ -1,6 +1,7 @@
 #pragma once
 
 #include <mpi.h>
+
 #include <algorithm>
 #include <boost/mpi.hpp>
 #include <cstring>
