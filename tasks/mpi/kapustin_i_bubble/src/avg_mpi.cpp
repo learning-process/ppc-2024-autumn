@@ -11,7 +11,7 @@ std::vector<int> kapustin_i_bubble_sort_mpi::BubbleSortMPI::merge(int partner, s
   if (world.rank() < partner) {
     world.send(partner, TAG_SIZE, &send_size, 1);
     world.recv(partner, TAG_SIZE, &recv_size, 1);
-    tmp.resize(recv_size);  
+    tmp.resize(recv_size);
     world.send(partner, TAG_DATA, local_data.data(), send_size);
     world.recv(partner, TAG_DATA, tmp.data(), recv_size);
   } else {
