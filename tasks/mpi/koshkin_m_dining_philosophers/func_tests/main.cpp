@@ -1,4 +1,4 @@
-// Copyright 2023 Nesterov Alexander
+// Copyright 2024 Koshkin Matvey
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>

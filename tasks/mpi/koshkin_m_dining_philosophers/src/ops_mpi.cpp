@@ -1,4 +1,4 @@
-// Copyright 2024 Lyolya Seledkina
+// Copyright 2024 Koshkin Matvey
 #include "mpi/koshkin_m_dining_philosophers/include/ops_mpi.hpp"
 
 #include <algorithm>
