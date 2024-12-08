@@ -1,13 +1,13 @@
-#include "seq/dudchenko_o_sleeping_barber/include/ops_seq.hpp"
-
+#include <chrono>
 #include <deque>
 #include <iostream>
 #include <thread>
-#include <chrono>
+
+#include "seq/dudchenko_o_sleeping_barber/include/ops_seq.hpp"
 
 using namespace std::chrono_literals;
 
-namespace dudchenko_o_sleeping_barber_sequential {
+namespace dudchenko_o_sleeping_barber_seq {
 
 bool TestSleepingBarber::pre_processing() {
   result = -1;
@@ -38,7 +38,7 @@ bool TestSleepingBarber::run() {
   for (int client = 0; client < total_clients; ++client) {
     if (static_cast<int>(waiting_clients.size()) < max_wait) {
       waiting_clients.push_back(client);
-    } 
+    }
 
     if (!barber_busy && !waiting_clients.empty()) {
       int next_client = waiting_clients.front();
