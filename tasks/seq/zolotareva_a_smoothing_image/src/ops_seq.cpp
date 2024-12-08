@@ -3,8 +3,6 @@
 
 #include <algorithm>
 #include <cmath>
-#include <iostream>
-#include <sstream>
 #include <vector>
 
 bool zolotareva_a_smoothing_image_seq::TestTaskSequential::validation() {
