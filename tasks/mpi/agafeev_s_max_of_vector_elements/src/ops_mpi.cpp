@@ -3,7 +3,7 @@
 #include <iostream>
 #include <limits>
 
-#include "boost/mpi/operations.hpp"
+// #include "boost/mpi/operations.hpp"
 
 namespace agafeev_s_max_of_vector_elements_mpi {
 
@@ -74,9 +74,9 @@ bool MaxMatrixMpi<T>::run() {
     data_size = taskData->inputs_count[0];
     auto* temp_ptr = reinterpret_cast<T*>(taskData->inputs[0]);
     input_.insert(input_.begin(), temp_ptr, temp_ptr + taskData->inputs_count[0]);
-    for (unsigned long i = 0; i < input_.size(); ++i) {
+    /*for (unsigned long i = 0; i < input_.size(); ++i) {
       std::cout << "obshaya: " << input_[i] << std::endl;
-    }
+    }*/
   }
 
   boost::mpi::broadcast(world, data_size, 0);
@@ -99,15 +99,27 @@ bool MaxMatrixMpi<T>::run() {
 
   local_vector.resize(lv_size);
 
-  boost::mpi::scatterv(world, input_.data(), sizes, displs, local_vector.data(), lv_size, 0);
-  std::cout << "my_rank" << world_rank << std::endl;
-  for (int i = 0; i < lv_size; ++i) {
-    std::cout << local_vector[i] << "   ";
+  // boost::mpi::scatterv(world, input_, sizes, displs, local_vector.data(), lv_size, 0);
+  if (world_rank == 0) {
+    boost::mpi::scatterv(world, input_, sizes, displs, local_vector.data(), lv_size, 0);
+  } else {
+    boost::mpi::scatterv(world, local_vector.data(), lv_size, 0);
   }
-  std::cout << std::endl;
+
+  // std::cout << "my_rank" << world_rank << std::endl;
+  // for (int i = 0; i < lv_size; ++i) {
+  //   std::cout << local_vector[i] << "   ";
+  // }
+  // std::cout << std::endl;
 
   T res = agafeev_s_max_of_vector_elements_mpi::get_MaxValue<T>(local_vector);
+  std::cout << "maxes: " << res << std::endl;
   boost::mpi::reduce(world, res, maxres_, boost::mpi::maximum<T>(), 0);
+  if (world_rank == 0) {
+    std::cout << "MSXRES_" << maxres_ << std::endl;
+  }
+  // std::cout<<world_rank;
+  world.barrier();
 
   return true;
 }

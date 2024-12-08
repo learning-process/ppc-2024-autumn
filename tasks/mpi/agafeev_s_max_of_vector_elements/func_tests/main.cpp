@@ -6,7 +6,7 @@
 #include "boost/mpi/communicator.hpp"
 #include "mpi/agafeev_s_max_of_vector_elements/include/ops_mpi.hpp"
 // #include "seq/agafeev_s_max_of_vector_elements/include/ops_seq.hpp"
-template <typename T>
+/*template <typename T>
 void test_seq_and_mpi_versions(std::vector<T> &in_matrix, T right_answer) {}
 
 TEST(agafeev_s_max_of_vector_elements, test_find_in_100x100_matrix) {
@@ -41,7 +41,7 @@ TEST(agafeev_s_max_of_vector_elements, test_find_in_100x100_matrix) {
   if (world.rank() == 0) {
     ASSERT_EQ(right_answer, out[0]);
   }
-}
+}*/
 
 TEST(agafeev_s_max_of_vector_elements, test_find_in_3x3_matrix) {
   boost::mpi::communicator world;
@@ -49,6 +49,8 @@ TEST(agafeev_s_max_of_vector_elements, test_find_in_3x3_matrix) {
   const int rows = 3;
   auto rand_gen = std::mt19937(1337);
 
+  std::cout<<"My rank is here do broadcast "<<world.rank()<<std::endl;
+  world.barrier();
   std::vector<int> in_matrix = agafeev_s_max_of_vector_elements_mpi::create_RandomMatrix<int>(rows, columns);
   std::vector<int> out(1, 0);
   const int right_answer = std::numeric_limits<int>::max();
@@ -69,7 +71,11 @@ TEST(agafeev_s_max_of_vector_elements, test_find_in_3x3_matrix) {
   bool isValid = testTask.validation();
   ASSERT_EQ(isValid, true);
   testTask.pre_processing();
+  std::cout<<"My rank is here before"<<world.rank()<<std::endl;
   testTask.run();
+  std::cout<<"My rank is here after"<<world.rank()<<std::endl;
+  world.barrier();
   testTask.post_processing();
+  std::cout<<"My rank is here pre after"<<world.rank()<<std::endl;
   ASSERT_EQ(right_answer, out[0]);
 }

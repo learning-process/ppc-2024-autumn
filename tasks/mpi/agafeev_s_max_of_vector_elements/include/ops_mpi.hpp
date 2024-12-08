@@ -58,7 +58,7 @@ class MaxMatrixSeq : public ppc::core::Task {
 
  private:
   std::vector<T> input_;
-  T maxres_{};
+  T maxres_;
 };
 
 }  // namespace agafeev_s_max_of_vector_elements_mpi
