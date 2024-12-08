@@ -20,7 +20,7 @@ class TestMPISleepingBarber : public ppc::core::Task {
   explicit TestMPISleepingBarber(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
 
   TestMPISleepingBarber(std::shared_ptr<ppc::core::TaskData> taskData_, int seats)
-        : Task(std::move(taskData_)), seats_(seats) {}
+      : Task(std::move(taskData_)), seats_(seats) {}
 
   bool pre_processing() override;
   bool validation() override;

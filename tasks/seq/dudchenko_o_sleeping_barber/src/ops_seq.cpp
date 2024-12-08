@@ -1,9 +1,9 @@
+#include "seq/dudchenko_o_sleeping_barber/include/ops_seq.hpp"
+
 #include <chrono>
 #include <deque>
 #include <iostream>
 #include <thread>
-
-#include "seq/dudchenko_o_sleeping_barber/include/ops_seq.hpp"
 
 using namespace std::chrono_literals;
 
