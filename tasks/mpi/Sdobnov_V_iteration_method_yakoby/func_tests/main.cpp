@@ -137,7 +137,7 @@ TEST(Sdobnov_V_iteration_method_yakoby_par, IterationMethodTest3x3) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(respar.data()));
   }
 
-  Sdobnov_iteration_method_yakoby::IterationMethodYakobySeq test(taskDataPar);
+  Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar test(taskDataPar);
 
   test.validation();
   test.pre_processing();
@@ -186,7 +186,7 @@ TEST(Sdobnov_V_iteration_method_yakoby_par, IterationMethodTest4x4) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(respar.data()));
   }
 
-  Sdobnov_iteration_method_yakoby::IterationMethodYakobySeq test(taskDataPar);
+  Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar test(taskDataPar);
 
   test.validation();
   test.pre_processing();
