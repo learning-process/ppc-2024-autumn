@@ -8,7 +8,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/Sdobnov_V_iteration_method_yakoby/include/ops_seq.hpp"
 
-std::pair<std::vector<double>, std::vector<double>> generate_diagonally_dominant_matrix(int n, double min_val = -10.0,
+std::pair<std::vector<double>, std::vector<double>> generate_correct_matrix(int n, double min_val = -10.0,
                                                                                         double max_val = 10.0) {
   std::vector<double> A(n * n);
   std::vector<double> b(n);
@@ -31,7 +31,7 @@ std::pair<std::vector<double>, std::vector<double>> generate_diagonally_dominant
 
 TEST(Sdobnov_V_iteration_method_yakoby_seq, test_pipeline_run) {
   const size_t size = 1000;
-  auto [matrix, free_members] = generate_diagonally_dominant_matrix(size);
+  auto [matrix, free_members] = generate_correct_matrix(size);
   std::vector<double> res(size, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -64,7 +64,7 @@ TEST(Sdobnov_V_iteration_method_yakoby_seq, test_pipeline_run) {
 
 TEST(Sdobnov_V_iteration_method_yakoby_seq, test_task_run) {
   const size_t size = 1000;
-  auto [matrix, free_members] = generate_diagonally_dominant_matrix(size);
+  auto [matrix, free_members] = generate_correct_matrix(size);
   std::vector<double> res(size, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
