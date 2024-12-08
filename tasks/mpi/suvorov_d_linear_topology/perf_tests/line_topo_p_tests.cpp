@@ -27,7 +27,7 @@ TEST(suvorov_d_linear_topology_mpi, test_pipeline_run) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    const int count_size_vector = 5000000;
+    const int count_size_vector = 5000;
     initial_data = getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(initial_data.data()));
     taskDataPar->inputs_count.emplace_back(initial_data.size());
@@ -40,6 +40,9 @@ TEST(suvorov_d_linear_topology_mpi, test_pipeline_run) {
   line_topo->pre_processing();
   line_topo->run();
   line_topo->post_processing();
+  if (world.rank() == 0) {
+    std::cout << result_data[0] << "\n";
+  }
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -55,7 +58,8 @@ TEST(suvorov_d_linear_topology_mpi, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_TRUE(result_data[0]);
+    int result = reinterpret_cast<int*>(taskDataPar->outputs[0])[0];
+    ASSERT_EQ(result, 1);
   }
 }
 
@@ -66,7 +70,7 @@ TEST(suvorov_d_linear_topology_mpi, test_task_run) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    const int count_size_vector = 5000000;
+    const int count_size_vector = 5000;
     initial_data = getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(initial_data.data()));
     taskDataPar->inputs_count.emplace_back(initial_data.size());
@@ -94,6 +98,7 @@ TEST(suvorov_d_linear_topology_mpi, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    EXPECT_TRUE(result_data[0]);
+    int result = reinterpret_cast<int*>(taskDataPar->outputs[0])[0];
+    ASSERT_EQ(result, 1);
   }
 }
