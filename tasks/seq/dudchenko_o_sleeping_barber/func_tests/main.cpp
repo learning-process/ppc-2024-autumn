@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+
 #include <memory>
 
 #include "seq/dudchenko_o_sleeping_barber/include/ops_seq.hpp"
