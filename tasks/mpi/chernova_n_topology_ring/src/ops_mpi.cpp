@@ -23,10 +23,8 @@ bool chernova_n_topology_ring_mpi::TestMPITaskParallel::pre_processing() {
 bool chernova_n_topology_ring_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    if (taskData->outputs_count.capacity() == 2 && taskData->inputs_count.size() == 1 &&
-        taskData->inputs_count[0] > 0) {
-      return true;
-    } else {
+    if (taskData->outputs_count.capacity() != 2 || taskData->inputs_count.size() != 1 ||
+        taskData->inputs_count[0] <= 0) {
       return false;
     }
   }
