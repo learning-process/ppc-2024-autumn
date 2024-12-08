@@ -215,12 +215,12 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, mpi_and_seq) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    matrix.resize(10);
+    matrix.resize(20);
     vector.resize(2);
-    get_random_matrix(matrix, -10, 10);
-    get_random_matrix(vector, -20, 2);
+    get_random_matrix(matrix, -100, 200);
+    get_random_matrix(vector, -20, 10);
 
-    result.resize(5, 0);
+    result.resize(10, 0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
@@ -240,7 +240,7 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, mpi_and_seq) {
   ASSERT_TRUE(taskParallel.post_processing());
 
   if (world.rank() == 0) {
-    std::vector<int> expected_result(5, 0);
+    std::vector<int> expected_result(10, 0);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskDataSeq->inputs_count.emplace_back(matrix.size());
