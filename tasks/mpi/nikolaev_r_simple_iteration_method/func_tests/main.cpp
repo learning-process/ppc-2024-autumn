@@ -354,9 +354,10 @@ TEST(nikolaev_r_simple_iteration_method_mpi, test_incorrect_input_data_matr) {
     taskDataPar->inputs_count.emplace_back(vect.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_par.data()));
     taskDataPar->outputs_count.emplace_back(out_par.size());
+
+    nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodParallel simpleIterationPar(taskDataPar);
+    ASSERT_FALSE(simpleIterationPar.validation());
   }
-  nikolaev_r_simple_iteration_method_mpi::SimpleIterationMethodParallel simpleIterationPar(taskDataPar);
-  ASSERT_FALSE(simpleIterationPar.validation());
 }
 
 TEST(nikolaev_r_simple_iteration_method_mpi, test_incorrect_input_data_vect) {
