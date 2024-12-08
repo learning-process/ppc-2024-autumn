@@ -3,18 +3,11 @@
 #include <limits>
 
 #include "boost/mpi/operations.hpp"
-// #include "seq/agafeev_s_max_of_vector_elements/include/ops_seq.hpp"
-/*
+
+namespace agafeev_s_max_of_vector_elements_mpi {
+
 template <typename T>
-std::vector<T> agafeev_s_max_of_vector_elements_mpi::create_RandomMatrix(int row_size, int column_size) {
-  auto rand_gen = std::mt19937(1337);
-  std::vector<T> matrix(row_size * column_size);
-  for (unsigned int i = 0; i < matrix.size(); i++) matrix[i] = rand_gen() % 100;
-
-  return matrix;
-}
-
-bool agafeev_s_max_of_vector_elements_mpi::MaxMatrixSeq::pre_processing() {
+bool MaxMatrixSeq<T>::pre_processing() {
   internal_order_test();
 
   // Init value
@@ -24,13 +17,15 @@ bool agafeev_s_max_of_vector_elements_mpi::MaxMatrixSeq::pre_processing() {
   return true;
 }
 
-bool agafeev_s_max_of_vector_elements_mpi::MaxMatrixSeq::validation() {
+template <typename T>
+bool MaxMatrixSeq<T>::validation() {
   internal_order_test();
 
   return taskData->outputs_count[0] == 1;
 }
 
-bool agafeev_s_max_of_vector_elements_mpi::MaxMatrixSeq::run() {
+template <typename T>
+bool MaxMatrixSeq<T>::run() {
   internal_order_test();
 
   maxres_ = get_MaxValue(input_);
@@ -38,16 +33,16 @@ bool agafeev_s_max_of_vector_elements_mpi::MaxMatrixSeq::run() {
   return true;
 }
 
-bool agafeev_s_max_of_vector_elements_mpi::MaxMatrixSeq::post_processing() {
+template <typename T>
+bool MaxMatrixSeq<T>::post_processing() {
   internal_order_test();
 
   reinterpret_cast<int*>(taskData->outputs[0])[0] = maxres_;
 
   return true;
 }
-*/
+
 // Parallel
-namespace agafeev_s_max_of_vector_elements_mpi {
 
 template <typename T>
 bool MaxMatrixMpi<T>::pre_processing() {
