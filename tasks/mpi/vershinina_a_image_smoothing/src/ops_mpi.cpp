@@ -71,10 +71,8 @@ bool vershinina_a_image_smoothing::TestMPITaskParallel::run() {
   if (world.rank() == 0) {
     rows = taskData->inputs_count[0];
     cols = taskData->inputs_count[1];
-    if (world.size() > 1) {
-      rows_per_proc = rows / std::min(world.size(), rows);
-      remainder = rows % world.size();
-    }
+    rows_per_proc = rows / std::min(world.size(), rows);
+    remainder = rows % world.size();
   }
 
   broadcast(world, rows, 0);
