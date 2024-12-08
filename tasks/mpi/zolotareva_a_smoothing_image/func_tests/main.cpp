@@ -3,15 +3,14 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <iostream>
 #include <random>
 
 #include "mpi/zolotareva_a_smoothing_image/include/ops_mpi.hpp"
-using namespace std;
-std::vector<uint8_t> generateRandomImage(int height, int width, uint8_t min_value = 0, uint8_t max_value = 255) {
+
+std::vector<uint8_t> generateRandomImage(int height, int width) {
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_int_distribution<> dis(min_value, max_value);
+  std::uniform_int_distribution<> dis(0, 255);
 
   int size = height * width;
   std::vector<uint8_t> image(size);
@@ -41,7 +40,7 @@ void form(int height, int width) {
   zolotareva_a_smoothing_image_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
   world.barrier();
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  ASSERT_TRUE(testMpiTaskParallel.validation());
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
@@ -57,11 +56,11 @@ void form(int height, int width) {
     taskDataSeq->outputs_count.emplace_back(seq_mpi_outputImage.size());
 
     zolotareva_a_smoothing_image_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    ASSERT_TRUE(testMpiTaskSequential.validation());
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
-    ASSERT_EQ(seq_mpi_outputImage, mpi_outputImage);
+    EXPECT_EQ(seq_mpi_outputImage, mpi_outputImage);
   }
 }
 
@@ -83,7 +82,7 @@ TEST(zolotareva_a_smoothing_image_mpi, Test_image_with_nulls) {
 
   zolotareva_a_smoothing_image_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  ASSERT_TRUE(testMpiTaskParallel.validation());
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
@@ -98,11 +97,11 @@ TEST(zolotareva_a_smoothing_image_mpi, Test_image_with_nulls) {
     taskDataSeq->outputs_count.emplace_back(seq_mpi_outputImage.size());
 
     zolotareva_a_smoothing_image_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    ASSERT_TRUE(testMpiTaskSequential.validation());
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
-    ASSERT_EQ(seq_mpi_outputImage, mpi_outputImage);
+    EXPECT_EQ(seq_mpi_outputImage, mpi_outputImage);
   }
 }
 TEST(zolotareva_a_smoothing_image_mpi, Test_image_random_100X100) { form(100, 100); }
