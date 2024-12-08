@@ -37,7 +37,7 @@ class MatrixVectorTask : public ppc::core::Task {
 };
 
 void distribute_matrix_rows(int32_t row, int32_t col, int32_t numProc, std::vector<int32_t>& matrix_sizes,
-                            std::vector<int32_t>& displacement_s);
+                            std::vector<int32_t>& peremeshcheniye_s);
 
 class MatrixVectorTaskMPI : public ppc::core::Task {
  public:
