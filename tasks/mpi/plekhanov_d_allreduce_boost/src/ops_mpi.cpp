@@ -7,20 +7,6 @@
 #include <string>
 #include <vector>
 
-std::vector<int> plekhanov_d_allreduce_boost_mpi::getRandomVector(int size) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(size);
-  for (int i = 0; i < size; i++) {
-    int value;
-    do {
-      value = gen() % 1000 - 100;
-    } while (value <= 0);
-    vec[i] = value;
-  }
-  return vec;
-}
-
 bool plekhanov_d_allreduce_boost_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   columnCount = taskData->inputs_count[1];

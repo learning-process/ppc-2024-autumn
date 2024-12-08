@@ -16,8 +16,6 @@
 
 namespace plekhanov_d_allreduce_boost_mpi {
 
-std::vector<int> getRandomVector(int size);
-
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
