@@ -6,7 +6,6 @@
 
 #include "mpi/prokhorov_n_producer_customer/include/ops_mpi.hpp"
 
-// ѕровер€ет последовательность чисел от 1 до 10.
 TEST(prokhorov_n_producer_customer_mpi, Test_Sequence_Numbers_Processes) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
@@ -46,7 +45,6 @@ TEST(prokhorov_n_producer_customer_mpi, Test_Sequence_Numbers_Processes) {
   }
 }
 
-// ѕровер€ет последовательность чисел, умноженных на 2.
 TEST(prokhorov_n_producer_customer_mpi, Test_Doubled_Numbers_Processes) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
@@ -86,7 +84,6 @@ TEST(prokhorov_n_producer_customer_mpi, Test_Doubled_Numbers_Processes) {
   }
 }
 
-// ѕровер€ет обратную последовательность чисел от 10 до 1.
 TEST(prokhorov_n_producer_customer_mpi, Test_Reverse_Sequence_Numbers_Processes) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
@@ -126,7 +123,6 @@ TEST(prokhorov_n_producer_customer_mpi, Test_Reverse_Sequence_Numbers_Processes)
   }
 }
 
-// ѕровер€ет последовательность чисел, кратных 5.
 TEST(prokhorov_n_producer_customer_mpi, Test_Multiples_Of_Five_Processes) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
@@ -166,7 +162,6 @@ TEST(prokhorov_n_producer_customer_mpi, Test_Multiples_Of_Five_Processes) {
   }
 }
 
-// ѕровер€ет последовательность квадратов чисел от 1 до 10.
 TEST(prokhorov_n_producer_customer_mpi, Test_Squares_Of_Numbers_Processes) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
@@ -206,7 +201,6 @@ TEST(prokhorov_n_producer_customer_mpi, Test_Squares_Of_Numbers_Processes) {
   }
 }
 
-// ѕровер€ет последовательность нечетных чисел от 1 до 19.
 TEST(prokhorov_n_producer_customer_mpi, Test_Odd_Numbers_Processes) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
@@ -246,7 +240,6 @@ TEST(prokhorov_n_producer_customer_mpi, Test_Odd_Numbers_Processes) {
   }
 }
 
-// ѕровер€ет последовательность отрицательных чисел от -1 до -10.
 TEST(prokhorov_n_producer_customer_mpi, Test_Negative_Numbers_Processes) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
@@ -286,7 +279,6 @@ TEST(prokhorov_n_producer_customer_mpi, Test_Negative_Numbers_Processes) {
   }
 }
 
-// ѕровер€ет последовательность четных чисел от 2 до 20
 TEST(prokhorov_n_producer_customer_mpi, Test_Even_Numbers_Processes) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
@@ -325,7 +317,6 @@ TEST(prokhorov_n_producer_customer_mpi, Test_Even_Numbers_Processes) {
     }
   }
 }
-// ѕровер€ет последовательность чисел в степени 3
 
 TEST(prokhorov_n_producer_customer_mpi, Test_Cubes_Of_Numbers_Processes) {
   boost::mpi::communicator world;
@@ -365,8 +356,6 @@ TEST(prokhorov_n_producer_customer_mpi, Test_Cubes_Of_Numbers_Processes) {
     }
   }
 }
-
-// ѕровер€ет последовательность чисел, дел€щихс€ на 3
 
 TEST(prokhorov_n_producer_customer_mpi, Test_Multiples_Of_Three_Processes) {
   boost::mpi::communicator world;
