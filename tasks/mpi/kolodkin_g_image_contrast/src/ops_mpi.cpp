@@ -2,9 +2,6 @@
 
 #include <algorithm>
 #include <functional>
-#include <random>
-#include <string>
-#include <thread>
 #include <vector>
 
 bool kolodkin_g_image_contrast_mpi::TestMPITaskSequential::pre_processing() {
