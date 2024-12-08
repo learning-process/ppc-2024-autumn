@@ -119,7 +119,7 @@ bool MaxMatrixMpi<T>::run() {
   //   std::cout<<"MSXRES_"<<maxres_<<std::endl;
   // }
   // std::cout<<world_rank;
-  world.barrier();
+  // world.barrier();
 
   return true;
 }
