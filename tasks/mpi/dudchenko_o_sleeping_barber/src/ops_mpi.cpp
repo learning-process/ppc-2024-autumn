@@ -25,12 +25,15 @@ bool TestMPISleepingBarber::validation() {
 
   if (world.rank() == 0) {
     if (taskData->inputs_count.empty() || taskData->inputs_count[0] <= 0) {
-      std::cerr << "[VALIDATION] Invalid number of chairs: " << taskData->inputs_count[0] << std::endl;
       return false;
     }
   }
+
+  if (world.rank() < 0 || world.rank() >= world.size()) {
+    throw std::runtime_error("Invalid rank.");
+  }
+
   if (world.size() < 3) {
-    std::cerr << "[VALIDATION] Not enough processes. Need at least 3." << std::endl;
     return false;
   }
 
@@ -98,7 +101,7 @@ bool TestMPISleepingBarber::run() {
       }
     }
   } else {
-    int client = world.rank();
+    const int client = world.rank();
     bool accepted = false;
 
     world.send(1, 0, client);
@@ -133,7 +136,7 @@ bool TestMPISleepingBarber::post_processing() {
 }
 
 void TestMPISleepingBarber::next_client(int client) {
-  std::this_thread::sleep_for(20ms);
+  std::this_thread::sleep_for(std::chrono::milliseconds(20));
   world.send(client, 2, client);
   world.send(1, 4, client);
 }
