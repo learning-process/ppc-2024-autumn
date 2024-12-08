@@ -9,7 +9,7 @@
 #include "seq/Sdobnov_V_iteration_method_yakoby/include/ops_seq.hpp"
 
 std::pair<std::vector<double>, std::vector<double>> generate_correct_matrix(int n, double min_val = -10.0,
-                                                                                        double max_val = 10.0) {
+                                                                            double max_val = 10.0) {
   std::vector<double> A(n * n);
   std::vector<double> b(n);
   std::random_device rd;
