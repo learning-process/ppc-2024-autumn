@@ -10,8 +10,7 @@ DiningPhilosophers::DiningPhilosophers(int philosophers, int meals)
     : philosopher_count_(philosophers),
       meals_per_philosopher_(meals),
       meal_counts_(philosophers, 0),
-      forks_(philosophers),
-      world_() {}
+      forks_(philosophers) {}
 
 void DiningPhilosophers::philosopherTask(int id) {
   for (int i = 0; i < meals_per_philosopher_; ++i) {
@@ -27,6 +26,7 @@ void DiningPhilosophers::philosopherTask(int id) {
 void DiningPhilosophers::run() {
   std::vector<std::thread> threads;
 
+  threads.reserve(philosopher_count_);
   for (int i = 0; i < philosopher_count_; ++i) {
     threads.emplace_back(&DiningPhilosophers::philosopherTask, this, i);
   }
