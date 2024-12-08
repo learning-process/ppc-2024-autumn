@@ -67,7 +67,6 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::pre_processing() {
     boost::mpi::broadcast(world, b, 0);
     boost::mpi::broadcast(world, columns, 0);
     boost::mpi::broadcast(world, rows, 0);
-
   }
 
   if (world_size > rows) {
@@ -140,7 +139,6 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::run() {
   if (world.rank() == 0) {
     res.resize(rows);
   }
-  boost::mpi::gatherv(local_res.data(), local_res.size(), res.data(), res.size(), 0);
   return true;
 }
 
