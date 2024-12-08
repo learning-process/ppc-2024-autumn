@@ -8,8 +8,8 @@
 
 using namespace std::chrono_literals;
 
-enum Ranks { RankCoordinator = 0, RankBarber = 1 };
-enum Tags { JoinWaitingTag, IncomingCustomerTag, AcceptingCustomerTag, ReleasingBarberTag };
+enum Ranks : uint8_t { RankCoordinator = 0, RankBarber = 1 };
+enum Tags : uint8_t { JoinWaitingTag, IncomingCustomerTag, AcceptingCustomerTag, ReleasingBarberTag };
 
 constexpr int BarberTerminationCustomerMagicId = -1;
 
