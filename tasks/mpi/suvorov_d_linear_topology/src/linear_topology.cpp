@@ -21,12 +21,6 @@ bool suvorov_d_linear_topology_mpi::MPILinearTopology::pre_processing() {
     local_data_.resize(data_size);
     std::copy(tmp_ptr, tmp_ptr + data_size, local_data_.begin());
   }
-  boost::mpi::broadcast(world, data_size, 0);
-  if (world.rank() == world.size() - 1) {
-    verific_data_.resize(data_size);
-  }
-
-  local_data_.resize(data_size);
 
   return true;
 }
@@ -42,6 +36,18 @@ bool suvorov_d_linear_topology_mpi::MPILinearTopology::validation() {
 
 bool suvorov_d_linear_topology_mpi::MPILinearTopology::run() {
   internal_order_test();
+
+  // Resizing all vectors
+  std::uint32_t data_size = 0;
+  std::vector<int> verific_data_;
+  if (world.rank() == 0) {
+    data_size = taskData->inputs_count[0];
+  }
+  boost::mpi::broadcast(world, data_size, 0);
+  if (world.rank() == world.size() - 1) {
+    verific_data_.resize(data_size);
+  }
+  local_data_.resize(data_size);
 
   if (world.size() == 1) return true;
 
@@ -66,21 +72,7 @@ bool suvorov_d_linear_topology_mpi::MPILinearTopology::run() {
     }
   }
 
-  return true;
-}
-
-bool suvorov_d_linear_topology_mpi::MPILinearTopology::post_processing() {
-  internal_order_test();
-
-  constexpr int SUCCESS = 1;
-  constexpr int FAILURE = 0;
-
-  if (world.size() == 1) {
-    int* output_data_ptr = reinterpret_cast<int*>(taskData->outputs[0]);
-    output_data_ptr[0] = SUCCESS;
-    return true;
-  }
-
+  // Checking result of sending
   if (world.rank() == world.size() - 1) {
     bool order_is_ok = true;
     for (size_t i = 0; i < rank_order_.size(); i++) {
@@ -92,16 +84,31 @@ bool suvorov_d_linear_topology_mpi::MPILinearTopology::post_processing() {
     order_is_ok = rank_order_.size() == static_cast<size_t>(world.size()) ? order_is_ok : false;
 
     if (local_data_ == verific_data_ && order_is_ok) {
-      world.send(0, 3, SUCCESS);
+      world.send(0, 3, true);
     } else {
-      world.send(0, 3, FAILURE);
+      world.send(0, 3, false);
     }
   }
   if (world.rank() == 0) {
-    int data_correct = -1;
-    world.recv(world.size() - 1, 3, data_correct);
-    int* output_data_ptr = reinterpret_cast<int*>(taskData->outputs[0]);
-    output_data_ptr[0] = data_correct;
+    world.recv(world.size() - 1, 3, result_);
   }
+
+  return true;
+}
+
+bool suvorov_d_linear_topology_mpi::MPILinearTopology::post_processing() {
+  internal_order_test();
+
+  if (world.size() == 1) {
+    bool* output_data_ptr = reinterpret_cast<bool*>(taskData->outputs[0]);
+    output_data_ptr[0] = true;
+    return true;
+  }
+
+  if (world.rank() == 0) {
+    bool* output_data_ptr = reinterpret_cast<bool*>(taskData->outputs[0]);
+    output_data_ptr[0] = result_;
+  }
+
   return true;
 }

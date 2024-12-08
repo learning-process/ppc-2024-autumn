@@ -23,7 +23,7 @@ std::vector<int> getRandomVector(int sz) {
 TEST(suvorov_d_linear_topology_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<int> initial_data;
-  std::vector<int> result_data(1, 0);
+  bool result_data = false;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -31,8 +31,8 @@ TEST(suvorov_d_linear_topology_mpi, test_pipeline_run) {
     initial_data = getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(initial_data.data()));
     taskDataPar->inputs_count.emplace_back(initial_data.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_data.data()));
-    taskDataPar->outputs_count.emplace_back(result_data.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&result_data));
+    taskDataPar->outputs_count.emplace_back(1);
   }
 
   auto line_topo = std::make_shared<suvorov_d_linear_topology_mpi::MPILinearTopology>(taskDataPar);
@@ -40,9 +40,6 @@ TEST(suvorov_d_linear_topology_mpi, test_pipeline_run) {
   line_topo->pre_processing();
   line_topo->run();
   line_topo->post_processing();
-  if (world.rank() == 0) {
-    std::cout << result_data[0] << "\n";
-  }
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -58,15 +55,14 @@ TEST(suvorov_d_linear_topology_mpi, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    int result = reinterpret_cast<int*>(taskDataPar->outputs[0])[0];
-    ASSERT_EQ(result, 1);
+    ASSERT_TRUE(result_data);
   }
 }
 
 TEST(suvorov_d_linear_topology_mpi, test_task_run) {
   boost::mpi::communicator world;
   std::vector<int> initial_data;
-  std::vector<int> result_data(1, 0);
+  bool result_data = false;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -74,8 +70,8 @@ TEST(suvorov_d_linear_topology_mpi, test_task_run) {
     initial_data = getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(initial_data.data()));
     taskDataPar->inputs_count.emplace_back(initial_data.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_data.data()));
-    taskDataPar->outputs_count.emplace_back(result_data.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&result_data));
+    taskDataPar->outputs_count.emplace_back(1);
   }
 
   auto line_topo = std::make_shared<suvorov_d_linear_topology_mpi::MPILinearTopology>(taskDataPar);
@@ -98,7 +94,6 @@ TEST(suvorov_d_linear_topology_mpi, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    int result = reinterpret_cast<int*>(taskDataPar->outputs[0])[0];
-    ASSERT_EQ(result, 1);
+    ASSERT_TRUE(result_data);
   }
 }
