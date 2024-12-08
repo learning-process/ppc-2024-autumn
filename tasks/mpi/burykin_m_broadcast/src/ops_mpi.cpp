@@ -29,7 +29,7 @@ bool burykin_m_broadcast_mpi::BroadcastMPI::pre_processing() {
 bool burykin_m_broadcast_mpi::BroadcastMPI::run() {
   internal_order_test();
 
-  boost::mpi::broadcast(world, input_vector, source_worker);
+  burykin_m_broadcast_mpi::broadcast(world, input_vector, source_worker);
 
   return true;
 }
