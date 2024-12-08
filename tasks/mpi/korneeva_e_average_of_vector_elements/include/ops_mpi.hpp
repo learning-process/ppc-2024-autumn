@@ -42,8 +42,8 @@ class vector_average_MPI_AllReduce : public ppc::core::Task {
  private:
   std::vector<iotype> input_data;     // Vector containing the input data (used only by the root process)
   std::vector<iotype> local_data;     // Vector holding the local data assigned to this process
-  size_t input_size;                  // Total number of elements in the input vector
-  size_t local_size;                  // Number of elements assigned to the local process
+  int input_size;                     // Total number of elements in the input vector
+  int local_size;                     // Number of elements assigned to the local process
   double average_result;              // Result of the average calculation
   boost::mpi::communicator mpi_comm;  // MPI communicator
 };
@@ -73,8 +73,8 @@ class vector_average_my_AllReduce : public ppc::core::Task {
  private:
   std::vector<iotype> input_data;
   std::vector<iotype> local_data;
-  size_t input_size;
-  size_t local_size;
+  int input_size;
+  int local_size;
   double average_result;
   boost::mpi::communicator mpi_comm;
 };
@@ -85,7 +85,7 @@ template <class iotype>
 bool vector_average_sequential<iotype>::pre_processing() {
   internal_order_test();
 
-  size_t input_size = taskData->inputs_count[0];
+  int input_size = taskData->inputs_count[0];
   const auto* source_ptr = reinterpret_cast<const iotype*>(taskData->inputs[0]);
   input_data.assign(source_ptr, source_ptr + input_size);
 
@@ -108,7 +108,8 @@ bool vector_average_sequential<iotype>::run() {
 
   // If the input vector is empty, set the result to 0.0 and return true.
   if (input_data.empty()) {
-    return 0.0;
+    average_result = 0.0;
+    return true;
   }
 
   double sum = 0.0;
@@ -157,8 +158,8 @@ bool vector_average_MPI_AllReduce<iotype>::validation() {
 template <class iotype>
 bool vector_average_MPI_AllReduce<iotype>::run() {
   internal_order_test();
-  size_t process_rank = mpi_comm.rank();
-  size_t total_processes = mpi_comm.size();
+  int process_rank = mpi_comm.rank();
+  int total_processes = mpi_comm.size();
 
   // Step 1: Broadcast the input vector size to all processes.
   boost::mpi::broadcast(mpi_comm, input_size, 0);
@@ -176,8 +177,8 @@ bool vector_average_MPI_AllReduce<iotype>::run() {
 
   // Step 3: Scatter the input data among processes.
   local_data.resize(local_size);
-  std::vector<size_t> send_counts(total_processes, 0);
-  std::vector<size_t> send_offsets(total_processes, 0);
+  std::vector<int> send_counts(total_processes, 0);
+  std::vector<int> send_offsets(total_processes, 0);
 
   // Only the root process calculates send_counts and send_offsets
   if (process_rank == 0) {
@@ -192,7 +193,7 @@ bool vector_average_MPI_AllReduce<iotype>::run() {
 
   // Step 4: Calculate the local sum of the data on each process
   double local_sum = 0.0;
-  for (size_t i = 0; i < local_size; ++i) {
+  for (int i = 0; i < local_size; ++i) {
     local_sum += static_cast<double>(local_data[i]);
   }
 
@@ -286,8 +287,8 @@ bool vector_average_my_AllReduce<iotype>::validation() {
 template <class iotype>
 bool vector_average_my_AllReduce<iotype>::run() {
   internal_order_test();
-  size_t process_rank = mpi_comm.rank();
-  size_t total_processes = mpi_comm.size();
+  int process_rank = mpi_comm.rank();
+  int total_processes = mpi_comm.size();
 
   boost::mpi::broadcast(mpi_comm, input_size, 0);
 
@@ -301,8 +302,8 @@ bool vector_average_my_AllReduce<iotype>::run() {
   local_size = input_size / total_processes + (process_rank < input_size % total_processes);
 
   local_data.resize(local_size);
-  std::vector<size_t> send_counts(total_processes, 0);
-  std::vector<size_t> send_offsets(total_processes, 0);
+  std::vector<int> send_counts(total_processes, 0);
+  std::vector<int> send_offsets(total_processes, 0);
 
   if (process_rank == 0) {
     for (int i = 0; i < total_processes; ++i) {
@@ -316,7 +317,7 @@ bool vector_average_my_AllReduce<iotype>::run() {
   boost::mpi::scatterv(mpi_comm, input_data, send_counts, send_offsets, local_data.data(), local_size, 0);
 
   double local_sum = 0.0;
-  for (size_t i = 0; i < local_size; ++i) {
+  for (int i = 0; i < local_size; ++i) {
     local_sum += static_cast<double>(local_data[i]);
   }
 
