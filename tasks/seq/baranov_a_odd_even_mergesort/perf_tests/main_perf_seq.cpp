@@ -21,7 +21,8 @@ TEST(seq_baranov_a_odd_even_sort, test_pipeline_run) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto testTaskSequential = std::make_shared<baranov_a_qsort_odd_even_merge_seq::odd_even_mergesort_seq<int>>(taskDataSeq);
+  auto testTaskSequential =
+      std::make_shared<baranov_a_qsort_odd_even_merge_seq::odd_even_mergesort_seq<int>>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -60,7 +61,8 @@ TEST(seq_baranov_a_odd_even_sort, test_task_run) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto testTaskSequential = std::make_shared<baranov_a_qsort_odd_even_merge_seq::odd_even_mergesort_seq<int>>(taskDataSeq);
+  auto testTaskSequential =
+      std::make_shared<baranov_a_qsort_odd_even_merge_seq::odd_even_mergesort_seq<int>>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();

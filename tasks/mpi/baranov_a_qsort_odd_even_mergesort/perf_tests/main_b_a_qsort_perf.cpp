@@ -24,7 +24,8 @@ TEST(mpi_baranov_a_odd_even_sort, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(out.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<baranov_a_qsort_odd_even_merge_mpi::baranov_a_odd_even_merge_sort<int>>(taskDataPar);
+  auto testMpiTaskParallel =
+      std::make_shared<baranov_a_qsort_odd_even_merge_mpi::baranov_a_odd_even_merge_sort<int>>(taskDataPar);
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -62,7 +63,8 @@ TEST(mpi_baranov_a_odd_even_sort, test_task_run) {
     taskDataPar->outputs_count.emplace_back(out.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<baranov_a_qsort_odd_even_merge_mpi::baranov_a_odd_even_merge_sort<int>>(taskDataPar);
+  auto testMpiTaskParallel =
+      std::make_shared<baranov_a_qsort_odd_even_merge_mpi::baranov_a_odd_even_merge_sort<int>>(taskDataPar);
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -79,6 +81,5 @@ TEST(mpi_baranov_a_odd_even_sort, test_task_run) {
     ppc::core::Perf::print_perf_statistic(perfResults);
     std::sort(global_vec.begin(), global_vec.end());
     ASSERT_EQ(global_vec, out);
-
   }
 }
