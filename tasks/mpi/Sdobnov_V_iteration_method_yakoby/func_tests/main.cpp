@@ -162,7 +162,6 @@ TEST(Sdobnov_V_iteration_method_yakoby_par, IterationMethodTest3x3) {
     testseq.post_processing();
 
     for (int i = 0; i < size; i++) {
-      std::cout << i << " " << respar[i] << " ";
       ASSERT_NEAR(respar[i], resseq[i], 1e-3);
     }
   }
