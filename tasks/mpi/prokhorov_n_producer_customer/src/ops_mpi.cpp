@@ -59,7 +59,6 @@ bool TestMPITaskParallel::run() {
   broadcast(world, data_size, 0);
 
   if (data_size <= 0) {
-    std::cerr << "Ошибка: некорректный размер данных: " << data_size << std::endl;
     return false;
   }
 
@@ -71,7 +70,6 @@ bool TestMPITaskParallel::run() {
     for (int i = 1; i < world.size() - 1; ++i) {
       int current_chunk = chunk_size + (i == world.size() - 2 ? remainder : 0);
       if (current_chunk <= 0) {
-        std::cerr << "Ошибка: неверный размер данных для отправки: " << current_chunk << std::endl;
         return false;
       }
       world.send(i, 0, producer_data.data() + offset, current_chunk);
@@ -128,7 +126,6 @@ bool TestMPITaskParallel::post_processing() {
     }
 
     reinterpret_cast<int *>(taskData->outputs[0])[0] = total_result;
-    std::cout << "Total result: " << total_result << std::endl;
   }
 
   return true;
