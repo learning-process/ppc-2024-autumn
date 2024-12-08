@@ -61,11 +61,12 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::pre_processing() {
                          reinterpret_cast<int*>(taskData->inputs[1]) + taskData->inputs_count[1]);
     columns = taskData->inputs_count[1];
     rows = taskData->inputs_count[0] / columns;
-    res = std::vector<int>(rows);
+    res = std::vector<int>(rows, 0);
 
     boost::mpi::broadcast(world, A, 0);
     boost::mpi::broadcast(world, b, 0);
     boost::mpi::broadcast(world, columns, 0);
+    boost::mpi::broadcast(world, rows, 0);
   }
 
   if (world_size > rows) {
@@ -102,6 +103,7 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::validation() {
     return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 &&
            taskData->inputs_count[0] % taskData->inputs_count[1] == 0;
   }
+
   return true;
 }
 
@@ -114,7 +116,30 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::run() {
       local_res[i] += local_A[i * columns + j] * b[j];
     }
   }
-  boost::mpi::gather(world, local_res.data(), local_res.size(), res.data(), 0);
+  if (world.rank() == 0) {
+    std::vector<int> recv_counts(world.size(), 0);
+    std::vector<int> displacements(world.size(), 0);
+
+    for (int i = 0; i < world.size(); ++i) {
+      int n_of_send_rows = rows / world_size;
+      int n_of_proc_with_extra_row = rows % world_size;
+
+      int start_row = i * n_of_send_rows + std::min(i, n_of_proc_with_extra_row);
+      int end_row = start_row + n_of_send_rows + (i < n_of_proc_with_extra_row ? 1 : 0);
+
+      recv_counts[i] = end_row - start_row;
+      displacements[i] = (i == 0) ? 0 : displacements[i - 1] + recv_counts[i - 1];
+    }
+    res.resize(rows);
+
+    boost::mpi::gatherv(local_res.data(), local_res.size(), res.data(), recv_counts.data(), displacements.data(), 0);
+  } else {
+    boost::mpi::gatherv(local_res.data(), local_res.size(), nullptr, nullptr, nullptr, 0);
+  }
+  if (world.rank() == 0) {
+    res.resize(rows);
+  }
+  boost::mpi::gatherv(local_res.data(), local_res.size(), res.data(), res.size(), 0);
   return true;
 }
 
