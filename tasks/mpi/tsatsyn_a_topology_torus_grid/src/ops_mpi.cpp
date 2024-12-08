@@ -9,19 +9,9 @@
 #include <string>
 #include <thread>
 #include <vector>
-std::vector<int> tsatsyn_a_topology_torus_grid_mpi::getRandomVector(int sz, int a, int b) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % (b - a + 1) + a;
-  }
-  return vec;
-}
-
+enum class Directions { up, left, down, right };
 void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int cols, int rows,
-            std::map<std::string, int> neighbors, int& inputs) {
+            std::map<Directions, int> neighbors, int& inputs) {
   int current_rank = world.rank();
   int source_row_pos;
   int current_row_pos;
@@ -109,23 +99,26 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
   if (current_rank == dest_rank) {         // where will the call for the last one come from
     if (source_col_pos == dest_col_pos) {  // if we are in the same column with the desired process immediately
       if (abs(dest_row_pos - source_row_pos) == 1) {
-        source_row_pos < dest_row_pos ? world.recv(neighbors["up"], 0, copy) : world.recv(neighbors["down"], 0, copy);
+        source_row_pos < dest_row_pos ? world.recv(neighbors[Directions::up], 0, copy)
+                                      : world.recv(neighbors[Directions::down], 0, copy);
       } else if (abs(dest_row_pos - source_row_pos) > (middle_row)) {  // bypassing
-        source_row_pos < dest_row_pos ? world.recv(neighbors["down"], 0, copy) : world.recv(neighbors["up"], 0, copy);
+        source_row_pos < dest_row_pos ? world.recv(neighbors[Directions::down], 0, copy)
+                                      : world.recv(neighbors[Directions::up], 0, copy);
       } else {  // straight ahead
-        source_row_pos < dest_row_pos ? world.recv(neighbors["up"], 0, copy) : world.recv(neighbors["down"], 0, copy);
+        source_row_pos < dest_row_pos ? world.recv(neighbors[Directions::up], 0, copy)
+                                      : world.recv(neighbors[Directions::down], 0, copy);
       }
     } else {  // if not in one column, the same thing but for columns
       if (abs(dest_col_pos - source_col_pos) == 1) {
-        source_col_pos < dest_col_pos ? world.recv(neighbors["left"], 0, copy)
-                                      : world.recv(neighbors["right"], 0, copy);
+        source_col_pos < dest_col_pos ? world.recv(neighbors[Directions::left], 0, copy)
+                                      : world.recv(neighbors[Directions::right], 0, copy);
       } else if (abs(dest_col_pos - source_col_pos) > (middle_col)) {  // bypassing
-        source_col_pos < dest_col_pos ? world.recv(neighbors["right"], 0, copy)
-                                      : world.recv(neighbors["left"], 0, copy);
+        source_col_pos < dest_col_pos ? world.recv(neighbors[Directions::right], 0, copy)
+                                      : world.recv(neighbors[Directions::left], 0, copy);
 
       } else {  // straight ahead
-        source_col_pos < dest_col_pos ? world.recv(neighbors["left"], 0, copy)
-                                      : world.recv(neighbors["right"], 0, copy);
+        source_col_pos < dest_col_pos ? world.recv(neighbors[Directions::left], 0, copy)
+                                      : world.recv(neighbors[Directions::right], 0, copy);
       }
     }
     inputs = copy;
@@ -133,37 +126,37 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
     if (delta_row != 0) {
       if (delta_row < 0) {
         if (abs(dest_row_pos - source_row_pos) == 1) {
-          world.send(neighbors["up"], 0, inputs);
+          world.send(neighbors[Directions::up], 0, inputs);
         } else if (abs(delta_row) <= middle_row) {
-          world.send(neighbors["up"], 0, inputs);
+          world.send(neighbors[Directions::up], 0, inputs);
         } else {
-          world.send(neighbors["down"], 0, inputs);
+          world.send(neighbors[Directions::down], 0, inputs);
         }
       } else {
         if (abs(dest_row_pos - source_row_pos) == 1) {
-          world.send(neighbors["down"], 0, inputs);
+          world.send(neighbors[Directions::down], 0, inputs);
         } else if (abs(delta_row) <= middle_row) {
-          world.send(neighbors["down"], 0, inputs);
+          world.send(neighbors[Directions::down], 0, inputs);
         } else {
-          world.send(neighbors["up"], 0, inputs);
+          world.send(neighbors[Directions::up], 0, inputs);
         }
       }
     } else {
       if (delta_col < 0) {
         if (abs(dest_col_pos - source_col_pos) == 1) {
-          world.send(neighbors["left"], 0, inputs);
+          world.send(neighbors[Directions::left], 0, inputs);
         } else if (abs(delta_col) <= middle_col) {
-          world.send(neighbors["left"], 0, inputs);
+          world.send(neighbors[Directions::left], 0, inputs);
         } else {
-          world.send(neighbors["right"], 0, inputs);
+          world.send(neighbors[Directions::right], 0, inputs);
         }
       } else {
         if (abs(dest_col_pos - source_col_pos) == 1) {
-          world.send(neighbors["right"], 0, inputs);
+          world.send(neighbors[Directions::right], 0, inputs);
         } else if (abs(delta_col) <= middle_col) {
-          world.send(neighbors["right"], 0, inputs);
+          world.send(neighbors[Directions::right], 0, inputs);
         } else {
-          world.send(neighbors["left"], 0, inputs);
+          world.send(neighbors[Directions::left], 0, inputs);
         }
       }
     }
@@ -171,19 +164,19 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
     if (delta_row != 0) {                    // first, get to the desired row
       if (delta_row < 0) {                   // the goal is higher than the current position
         if (abs(delta_row) <= middle_row) {  // straight ahead
-          world.recv(neighbors["down"], 0, copy);
-          world.send(neighbors["up"], 0, copy);
+          world.recv(neighbors[Directions::down], 0, copy);
+          world.send(neighbors[Directions::up], 0, copy);
         } else {  // bypassing
-          world.recv(neighbors["up"], 0, copy);
-          world.send(neighbors["down"], 0, copy);
+          world.recv(neighbors[Directions::up], 0, copy);
+          world.send(neighbors[Directions::down], 0, copy);
         }
       } else {                                 // the goal is below the current position
         if (abs(delta_row) <= (middle_row)) {  // straight ahead
-          world.recv(neighbors["up"], 0, copy);
-          world.send(neighbors["down"], 0, copy);
+          world.recv(neighbors[Directions::up], 0, copy);
+          world.send(neighbors[Directions::down], 0, copy);
         } else {  // bypassing
-          world.recv(neighbors["down"], 0, copy);
-          world.send(neighbors["up"], 0, copy);
+          world.recv(neighbors[Directions::down], 0, copy);
+          world.send(neighbors[Directions::up], 0, copy);
         }
       }
     } else if (delta_col != 0) {
@@ -192,34 +185,36 @@ void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int
       // we are dealing with where we accept from
       if (current_col_pos == source_col_pos) {
         if (dest_row_pos - source_row_pos < 0) {  // higher
-          abs(dest_row_pos - source_row_pos) <= middle_row ? world.recv(neighbors["down"], 0, copy)
-                                                           : world.recv(neighbors["up"], 0, copy);
+          abs(dest_row_pos - source_row_pos) <= middle_row ? world.recv(neighbors[Directions::down], 0, copy)
+                                                           : world.recv(neighbors[Directions::up], 0, copy);
 
         } else {  // lower
-          abs(dest_row_pos - source_row_pos) <= middle_row ? world.recv(neighbors["up"], 0, copy)
-                                                           : world.recv(neighbors["down"], 0, copy);
+          abs(dest_row_pos - source_row_pos) <= middle_row ? world.recv(neighbors[Directions::up], 0, copy)
+                                                           : world.recv(neighbors[Directions::down], 0, copy);
         }
       } else {
         if (delta_col < 0) {  // to the left
-          abs(delta_col) <= middle_col ? world.recv(neighbors["right"], 0, copy)
-                                       : world.recv(neighbors["left"], 0, copy);
+          abs(delta_col) <= middle_col ? world.recv(neighbors[Directions::right], 0, copy)
+                                       : world.recv(neighbors[Directions::left], 0, copy);
 
         } else {  // to the right
-          abs(delta_col) <= middle_col ? world.recv(neighbors["left"], 0, copy)
-                                       : world.recv(neighbors["right"], 0, copy);
+          abs(delta_col) <= middle_col ? world.recv(neighbors[Directions::left], 0, copy)
+                                       : world.recv(neighbors[Directions::right], 0, copy);
         }
       }
       // where are we sending it
       if (delta_col < 0) {  // to the left
-        abs(delta_col) <= middle_col ? world.send(neighbors["left"], 0, copy) : world.send(neighbors["right"], 0, copy);
+        abs(delta_col) <= middle_col ? world.send(neighbors[Directions::left], 0, copy)
+                                     : world.send(neighbors[Directions::right], 0, copy);
 
       } else {  // to the right
-        abs(delta_col) <= middle_col ? world.send(neighbors["right"], 0, copy) : world.send(neighbors["left"], 0, copy);
+        abs(delta_col) <= middle_col ? world.send(neighbors[Directions::right], 0, copy)
+                                     : world.send(neighbors[Directions::left], 0, copy);
       }
     }
   }
 }
-void myBroadcast(boost::mpi::communicator& world, std::map<std::string, int> neighbors, int rows, int cols, int col_pos,
+void myBroadcast(boost::mpi::communicator& world, std::map<Directions, int> neighbors, int rows, int cols, int col_pos,
                  int row_pos, std::vector<int>& inputs) {
   int delta;
   bool is_main_magistralle;
@@ -251,32 +246,32 @@ void myBroadcast(boost::mpi::communicator& world, std::map<std::string, int> nei
 
       // 2x2 square
       if ((rows == 2) && (cols == 2)) {
-        world.send(neighbors["right"], 0, local_input_data);
-        world.send(neighbors["down"], 0, local_input_data);
+        world.send(neighbors[Directions::right], 0, local_input_data);
+        world.send(neighbors[Directions::down], 0, local_input_data);
       }
       // 2 columns
       else if ((rows > 2) && (cols == 2)) {
-        world.send(neighbors["right"], 0, local_input_data);
-        world.send(neighbors["down"], 0, local_input_data);
-        world.send(neighbors["up"], 0, local_input_data);
+        world.send(neighbors[Directions::right], 0, local_input_data);
+        world.send(neighbors[Directions::down], 0, local_input_data);
+        world.send(neighbors[Directions::up], 0, local_input_data);
       }
       // a special case for 2x1
       else if ((rows == 1) && (cols == 2)) {
-        world.send(neighbors["right"], 0, local_input_data);
+        world.send(neighbors[Directions::right], 0, local_input_data);
       } else if ((cols > 2) && (rows > 2)) {
-        world.send(neighbors["left"], 0, local_input_data);
-        world.send(neighbors["right"], 0, local_input_data);
-        world.send(neighbors["down"], 0, local_input_data);
-        world.send(neighbors["up"], 0, local_input_data);
+        world.send(neighbors[Directions::left], 0, local_input_data);
+        world.send(neighbors[Directions::right], 0, local_input_data);
+        world.send(neighbors[Directions::down], 0, local_input_data);
+        world.send(neighbors[Directions::up], 0, local_input_data);
       }
       // rows 2
       else if ((cols > 2) && (rows == 2)) {
-        world.send(neighbors["right"], 0, local_input_data);
-        world.send(neighbors["down"], 0, local_input_data);
-        world.send(neighbors["left"], 0, local_input_data);
+        world.send(neighbors[Directions::right], 0, local_input_data);
+        world.send(neighbors[Directions::down], 0, local_input_data);
+        world.send(neighbors[Directions::left], 0, local_input_data);
       }  // template for 1x1,Nx1
       else {
-        for (const std::pair<std::string, int> proc : neighbors) {
+        for (const std::pair<Directions, int> proc : neighbors) {
           if (proc.second != world.rank()) {
             world.send(proc.second, 0, local_input_data);
           }
@@ -291,83 +286,83 @@ void myBroadcast(boost::mpi::communicator& world, std::map<std::string, int> nei
       if (is_main_magistralle) {
         if (rows % 2 == 0) {
           if (rows == 2) {
-            world.recv(neighbors["up"], 0, copy);
+            world.recv(neighbors[Directions::up], 0, copy);
             inputs.insert(inputs.end(), copy.begin(), copy.end());
-            if (neighbors["right"] != neighbors["left"]) {
-              world.send(neighbors["left"], 0, copy);
-              world.send(neighbors["right"], 0, copy);
+            if (neighbors[Directions::right] != neighbors[Directions::left]) {
+              world.send(neighbors[Directions::left], 0, copy);
+              world.send(neighbors[Directions::right], 0, copy);
             } else {
-              world.send(neighbors["left"], 0, copy);
+              world.send(neighbors[Directions::left], 0, copy);
             }
           } else {
             if (row_pos < (rows + 1) / 2) {  // what the left edge should reach (not inclusive)
-              world.recv(neighbors["up"], 0, copy);
-              world.send(neighbors["down"], 0, copy);
+              world.recv(neighbors[Directions::up], 0, copy);
+              world.send(neighbors[Directions::down], 0, copy);
             } else if (row_pos > ((rows + 1) / 2) + 1) {  // what the right edge should reach (not inclusive)
-              world.recv(neighbors["down"], 0, copy);
-              world.send(neighbors["up"], 0, copy);
+              world.recv(neighbors[Directions::down], 0, copy);
+              world.send(neighbors[Directions::up], 0, copy);
             } else if (row_pos == (rows + 1) / 2) {
-              world.recv(neighbors["up"], 0, copy);
+              world.recv(neighbors[Directions::up], 0, copy);
             } else if (row_pos == ((rows + 1) / 2) + 1) {
-              world.recv(neighbors["down"], 0, copy);
+              world.recv(neighbors[Directions::down], 0, copy);
             }
             inputs.insert(inputs.end(), copy.begin(), copy.end());
-            if (neighbors["right"] != neighbors["left"]) {
-              world.send(neighbors["left"], 0, copy);
-              world.send(neighbors["right"], 0, copy);
+            if (neighbors[Directions::right] != neighbors[Directions::left]) {
+              world.send(neighbors[Directions::left], 0, copy);
+              world.send(neighbors[Directions::right], 0, copy);
             } else {
-              world.send(neighbors["left"], 0, copy);
+              world.send(neighbors[Directions::left], 0, copy);
             }
           }
         } else {
           if (rows != 1) {
             if (row_pos < (rows - 1) / 2) {
-              world.recv(neighbors["up"], 0, copy);
-              world.send(neighbors["down"], 0, copy);
+              world.recv(neighbors[Directions::up], 0, copy);
+              world.send(neighbors[Directions::down], 0, copy);
             } else if (row_pos > ((rows - 1) / 2) + 1) {
-              world.recv(neighbors["down"], 0, copy);
-              world.send(neighbors["up"], 0, copy);
+              world.recv(neighbors[Directions::down], 0, copy);
+              world.send(neighbors[Directions::up], 0, copy);
             } else if (row_pos == (rows - 1) / 2) {
-              world.recv(neighbors["up"], 0, copy);
+              world.recv(neighbors[Directions::up], 0, copy);
             } else if (row_pos == ((rows - 1) / 2) + 1) {
-              world.recv(neighbors["down"], 0, copy);
+              world.recv(neighbors[Directions::down], 0, copy);
             }
             inputs.insert(inputs.end(), copy.begin(), copy.end());
           }
           if (cols != 1) {
-            if (neighbors["right"] != neighbors["left"]) {
-              world.send(neighbors["left"], 0, copy);
-              world.send(neighbors["right"], 0, copy);
+            if (neighbors[Directions::right] != neighbors[Directions::left]) {
+              world.send(neighbors[Directions::left], 0, copy);
+              world.send(neighbors[Directions::right], 0, copy);
             } else {
-              world.send(neighbors["left"], 0, copy);
+              world.send(neighbors[Directions::left], 0, copy);
             }
           }
         }
       } else {
         if (cols % 2 == 0) {
           if (col_pos < (cols + 1) / 2) {
-            world.recv(neighbors["left"], 0, copy);
-            world.send(neighbors["right"], 0, copy);
+            world.recv(neighbors[Directions::left], 0, copy);
+            world.send(neighbors[Directions::right], 0, copy);
           } else if (col_pos > ((cols + 1) / 2) + 1) {
-            world.recv(neighbors["right"], 0, copy);
-            world.send(neighbors["left"], 0, copy);
+            world.recv(neighbors[Directions::right], 0, copy);
+            world.send(neighbors[Directions::left], 0, copy);
           } else if (col_pos == (cols + 1) / 2) {
-            world.recv(neighbors["left"], 0, copy);
+            world.recv(neighbors[Directions::left], 0, copy);
           } else if (col_pos == (cols + 1) / 2 + 1) {
-            world.recv(neighbors["right"], 0, copy);
+            world.recv(neighbors[Directions::right], 0, copy);
           }
           inputs.insert(inputs.end(), copy.begin(), copy.end());
         } else {
           if (col_pos < (cols - 1) / 2) {
-            world.recv(neighbors["left"], 0, copy);
-            world.send(neighbors["right"], 0, copy);
+            world.recv(neighbors[Directions::left], 0, copy);
+            world.send(neighbors[Directions::right], 0, copy);
           } else if (col_pos > ((cols - 1) / 2) + 1) {
-            world.recv(neighbors["right"], 0, copy);
-            world.send(neighbors["left"], 0, copy);
+            world.recv(neighbors[Directions::right], 0, copy);
+            world.send(neighbors[Directions::left], 0, copy);
           } else if (col_pos == (cols - 1) / 2) {
-            world.recv(neighbors["left"], 0, copy);
+            world.recv(neighbors[Directions::left], 0, copy);
           } else if (col_pos == ((cols - 1) / 2) + 1) {
-            world.recv(neighbors["right"], 0, copy);
+            world.recv(neighbors[Directions::right], 0, copy);
           }
           inputs.insert(inputs.end(), copy.begin(), copy.end());
         }
@@ -402,7 +397,7 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::pre_processing() {
 }
 bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  std::map<std::string, int> neighbors;
+  std::map<Directions, int> neighbors;
   int rows;
   int cols;
   int row_pos;
@@ -434,10 +429,11 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
     return (neighbor_rank < world.size()) ? neighbor_rank : -1;
   };
   //
-  neighbors["down"] = (row_pos == rows - 1) ? toGetNeighbor(0, col_pos) : toGetNeighbor(row_pos + 1, col_pos);
-  neighbors["left"] = (col_pos == 0) ? toGetNeighbor(row_pos, cols - 1) : toGetNeighbor(row_pos, col_pos - 1);
-  neighbors["right"] = (col_pos == cols - 1) ? toGetNeighbor(row_pos, 0) : toGetNeighbor(row_pos, col_pos + 1);
-  neighbors["up"] = (row_pos == 0) ? toGetNeighbor(rows - 1, col_pos) : toGetNeighbor(row_pos - 1, col_pos);
+  neighbors[Directions::down] = (row_pos == rows - 1) ? toGetNeighbor(0, col_pos) : toGetNeighbor(row_pos + 1, col_pos);
+  neighbors[Directions::left] = (col_pos == 0) ? toGetNeighbor(row_pos, cols - 1) : toGetNeighbor(row_pos, col_pos - 1);
+  neighbors[Directions::right] =
+      (col_pos == cols - 1) ? toGetNeighbor(row_pos, 0) : toGetNeighbor(row_pos, col_pos + 1);
+  neighbors[Directions::up] = (row_pos == 0) ? toGetNeighbor(rows - 1, col_pos) : toGetNeighbor(row_pos - 1, col_pos);
   myBroadcast(world, neighbors, rows, cols, col_pos, row_pos, input_data);
   if (world.rank() == (world.size() - 1)) {
     res = input_data.size();

@@ -15,7 +15,6 @@
 
 namespace tsatsyn_a_topology_torus_grid_mpi {
 
-std::vector<int> getRandomVector(int sz, int a, int b);
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
