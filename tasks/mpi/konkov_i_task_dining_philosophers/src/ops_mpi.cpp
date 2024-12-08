@@ -71,7 +71,6 @@ bool konkov_i_task_dining_philosophers::DiningPhilosophersMPITaskParallel::run()
     res += local_input_[i];
   }
 
-  // Создаем временный буфер для результата
   int local_res = res;
   reduce(world, local_res, res, std::plus(), 0);
 
