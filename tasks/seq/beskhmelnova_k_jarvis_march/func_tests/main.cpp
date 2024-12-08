@@ -215,7 +215,7 @@ TEST(beskhmelnova_k_jarvis_march_seq, Test_square_with_20_random_points) {
   std::vector<double> x(num_points);
   std::vector<double> y(num_points);
 
-  std::srand(static_cast<unsigned int>(std::time(0)));
+  std::srand(static_cast<unsigned int>(std::time(nullptr)));
   for (int i = 4; i < num_points; i++) {
     x[i] = std::rand() % 1000;
     y[i] = std::rand() % 1000;
@@ -275,7 +275,7 @@ TEST(beskhmelnova_k_jarvis_march_seq, Test_square_with_100_random_points) {
   std::vector<double> x(num_points);
   std::vector<double> y(num_points);
 
-  std::srand(static_cast<unsigned int>(std::time(0)));
+  std::srand(static_cast<unsigned int>(std::time(nullptr)));
   for (int i = 4; i < num_points; i++) {
     x[i] = std::rand() % 1000;
     y[i] = std::rand() % 1000;

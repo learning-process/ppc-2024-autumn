@@ -22,7 +22,7 @@ TEST(mpi_beskhmelnova_k_jarvis_march_perf_test, test_pipeline_run) {
   if (world.rank() == 0) {
     x = std::vector<double>(num_points);
     y = std::vector<double>(num_points);
-    std::srand(static_cast<unsigned int>(std::time(0)));
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
     for (int i = 4; i < num_points; i++) {
       x[i] = std::rand() % 1000;
       y[i] = std::rand() % 1000;
@@ -102,7 +102,7 @@ TEST(mpi_beskhmelnova_k_jarvis_march_perf_test, test_task_run) {
   if (world.rank() == 0) {
     x = std::vector<double>(num_points);
     y = std::vector<double>(num_points);
-    std::srand(static_cast<unsigned int>(std::time(0)));
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
     for (int i = 4; i < num_points; i++) {
       x[i] = std::rand() % 1000;
       y[i] = std::rand() % 1000;

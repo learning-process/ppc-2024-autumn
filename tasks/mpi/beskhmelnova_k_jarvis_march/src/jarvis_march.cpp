@@ -154,7 +154,8 @@ bool beskhmelnova_k_jarvis_march_mpi::TestMPITaskParallel<DataType>::run() {
       local_input[i][1] = local_input_x[i];
       local_input[i][2] = local_input_y[i];
     }
-    std::vector<DataType> local_res_x, local_res_y;
+    std::vector<DataType> local_res_x;
+    std::vector<DataType> local_res_y;
     jarvisMarch(local_num_points, local_input, local_res_x, local_res_y);
     local_input_x = local_res_x;
     local_input_y = local_res_y;
@@ -186,7 +187,8 @@ bool beskhmelnova_k_jarvis_march_mpi::TestMPITaskParallel<DataType>::run() {
       local_input[i][1] = input_x[i];
       local_input[i][2] = input_y[i];
     }
-    std::vector<DataType> final_res_x, final_res_y;
+    std::vector<DataType> final_res_x;
+    std::vector<DataType> final_res_y;
     jarvisMarch(local_num_points, local_input, final_res_x, final_res_y);
     res_x = final_res_x;
     res_y = final_res_y;
@@ -199,11 +201,10 @@ bool beskhmelnova_k_jarvis_march_mpi::TestMPITaskParallel<DataType>::post_proces
   internal_order_test();
   if (world.rank() == 0) {
     reinterpret_cast<int*>(taskData->outputs[0])[0] = static_cast<int>(res_x.size());
-    for (int i = 0; i < res_x.size(); ++i) {
+    for (size_t i = 0; i < res_x.size(); i++) {
       reinterpret_cast<DataType*>(taskData->outputs[1])[i] = res_x[i];
       reinterpret_cast<DataType*>(taskData->outputs[2])[i] = res_y[i];
     }
   }
-  // world.barrier();
   return true;
 }
