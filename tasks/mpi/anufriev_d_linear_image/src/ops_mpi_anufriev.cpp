@@ -31,20 +31,20 @@ bool SimpleIntMPI::validation() {
     size_t expected_size = static_cast<size_t>(width_ * height_ * sizeof(int));
 
     if (width_ < 3 || height_ < 3) {
-        std::cerr << "Validation failed: width или height меньше 3.\n";
-        return false;
+      std::cerr << "Validation failed: width или height меньше 3.\n";
+      return false;
     }
 
     if (taskData->inputs_count[0] != expected_size) {
-        std::cerr << "Validation failed: inputs_count[0] != width * height * sizeof(int).\n";
-        std::cerr << "Expected: " << expected_size << ", Got: " << taskData->inputs_count[0] << "\n";
-        return false;
+      std::cerr << "Validation failed: inputs_count[0] != width * height * sizeof(int).\n";
+      std::cerr << "Expected: " << expected_size << ", Got: " << taskData->inputs_count[0] << "\n";
+      return false;
     }
 
     if (taskData->outputs_count[0] != expected_size) {
-        std::cerr << "Validation failed: outputs_count[0] != width * height * sizeof(int).\n";
-        std::cerr << "Expected: " << expected_size << ", Got: " << taskData->outputs_count[0] << "\n";
-        return false;
+      std::cerr << "Validation failed: outputs_count[0] != width * height * sizeof(int).\n";
+      std::cerr << "Expected: " << expected_size << ", Got: " << taskData->outputs_count[0] << "\n";
+      return false;
     }
 
     original_data_.resize(width_ * height_);
@@ -122,8 +122,7 @@ void SimpleIntMPI::exchangeHalo() {
 
   if (local_height_ > 0) {
     std::copy(&local_data_[width_], &local_data_[2 * width_], send_up.begin());
-    std::copy(&local_data_[(local_height_) * width_], &local_data_[(local_height_ + 1) * width_],
-              send_down.begin());
+    std::copy(&local_data_[(local_height_) * width_], &local_data_[(local_height_ + 1) * width_], send_down.begin());
   }
 
   MPI_Request reqs[4];

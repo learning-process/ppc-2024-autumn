@@ -37,8 +37,6 @@ class SimpleIntMPI : public ppc::core::Task {
   int width_ = 0;
   int height_ = 0;
 
-  int start_col_ = 0;
-  int local_width_ = 0;
   int start_row_ = 0;
   int local_height_ = 0;
 

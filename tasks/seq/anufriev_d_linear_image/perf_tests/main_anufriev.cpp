@@ -48,7 +48,6 @@ std::vector<int> generate_random_image(int rows, int cols) {
     ppc::core::Perf::print_perf_statistic(perfResults);                            \
   }
 
-
 PERF_TEST_SEQ(SmallImage, 100, 100, 10)
 PERF_TEST_SEQ(MediumImage, 500, 500, 5)
 PERF_TEST_SEQ(LargeImage, 1000, 1000, 1)

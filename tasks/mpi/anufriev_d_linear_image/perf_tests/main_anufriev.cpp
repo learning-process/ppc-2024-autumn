@@ -31,17 +31,17 @@ static std::vector<int> generate_random_image(int width, int height, int seed = 
     std::vector<int> output_data;                                                            \
     if (world.rank() == 0) {                                                                 \
       input_data = generate_random_image(width, height);                                     \
-      output_data.resize(width * height, 0);                                                 \
-      taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));             \
+      output_data.resize(width *height, 0);                                                  \
+      taskData->inputs.push_back(reinterpret_cast<uint8_t *>(input_data.data()));            \
       taskData->inputs_count.push_back(input_data.size() * sizeof(int));                     \
                                                                                              \
-      taskData->inputs.push_back(reinterpret_cast<uint8_t*>(&width));                        \
+      taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&width));                       \
       taskData->inputs_count.push_back(sizeof(int));                                         \
                                                                                              \
-      taskData->inputs.push_back(reinterpret_cast<uint8_t*>(&height));                       \
+      taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&height));                      \
       taskData->inputs_count.push_back(sizeof(int));                                         \
                                                                                              \
-      taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output_data.data()));           \
+      taskData->outputs.push_back(reinterpret_cast<uint8_t *>(output_data.data()));          \
       taskData->outputs_count.push_back(output_data.size() * sizeof(int));                   \
     }                                                                                        \
     auto task = std::make_shared<anufriev_d_linear_image::SimpleIntMPI>(taskData);           \
