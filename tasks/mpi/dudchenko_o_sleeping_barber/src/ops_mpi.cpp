@@ -1,7 +1,7 @@
 #include "mpi/dudchenko_o_sleeping_barber/include/ops_mpi.hpp"
 
-#include <functional>
 #include <deque>
+#include <functional>
 #include <string>
 #include <thread>
 
