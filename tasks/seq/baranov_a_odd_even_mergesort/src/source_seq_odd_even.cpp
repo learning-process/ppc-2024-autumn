@@ -28,7 +28,9 @@ std::vector<iotype> odd_even_mergesort_seq<iotype>::q_sort_stack(std::vector<iot
     }
 
     iotype pivot = result[high];
-    std::vector<iotype> left, right, equal;
+    std::vector<iotype> left;
+    std::vector<iotype> right;
+    std::vector<iotype> equal;
 
     for (int i = low; i <= high; ++i) {
       if (result[i] < pivot) {

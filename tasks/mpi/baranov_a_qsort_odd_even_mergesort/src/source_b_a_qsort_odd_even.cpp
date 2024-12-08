@@ -200,7 +200,9 @@ std::vector<iotype> baranov_a_odd_even_merge_sort<iotype>::q_sort_stack(std::vec
     }
 
     iotype pivot = result[high];
-    std::vector<iotype> left, right, equal;
+    std::vector<iotype> left;
+    std::vector<iotype> right;
+    std::vector<iotype> equal;
 
     for (int i = low; i <= high; ++i) {
       if (result[i] < pivot) {
