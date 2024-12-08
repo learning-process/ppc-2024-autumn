@@ -2,10 +2,10 @@
 
 #include <gtest/gtest.h>
 #include <mpi.h>
-
 #include <algorithm>
 #include <boost/mpi.hpp>
 #include <numeric>
+#include <iostream>
 
 namespace anufriev_d_linear_image {
 
@@ -84,27 +84,37 @@ void SimpleIntMPI::distributeData() {
   int nprocs = world.size();
   int rank = world.rank();
 
-  int base_rows = height_ / nprocs;
-  int remainder = height_ % nprocs;
+  int base_cols = width_ / nprocs;
+  int remainder = width_ % nprocs;
 
   std::vector<int> sendcounts(nprocs);
   std::vector<int> displs(nprocs);
 
   for (int i = 0; i < nprocs; ++i) {
-    sendcounts[i] = (base_rows + (i < remainder ? 1 : 0)) * width_;
-    displs[i] = (i < remainder) ? i * (base_rows + 1) * width_
-                                : remainder * (base_rows + 1) * width_ + (i - remainder) * base_rows * width_;
+    sendcounts[i] = (base_cols + (i < remainder ? 1 : 0)) * height_;
+    displs[i] = (i < remainder) ? i * (base_cols + 1) * height_
+                                : remainder * (base_cols + 1) * height_ + (i - remainder) * base_cols * height_;
   }
 
-  local_height_ = base_rows + (rank < remainder ? 1 : 0);
-  start_row_ =
-      (rank < remainder) ? rank * (base_rows + 1) : remainder * (base_rows + 1) + (rank - remainder) * base_rows;
+  local_width_ = base_cols + (rank < remainder ? 1 : 0);
+  start_col_ =
+      (rank < remainder) ? rank * (base_cols + 1) : remainder * (base_cols + 1) + (rank - remainder) * base_cols;
 
-  int halo_rows = 2;
-  local_data_.resize((local_height_ + halo_rows) * width_, 0);
+  int halo_cols = 2;
+  local_data_.resize((local_width_ + halo_cols) * height_, 0);
 
-  MPI_Scatterv(world.rank() == 0 ? original_data_.data() : nullptr, sendcounts.data(), displs.data(), MPI_INT,
-               &local_data_[width_], local_height_ * width_, MPI_INT, 0, comm);
+  std::vector<int> transposed_original;
+  if (rank == 0) {
+    transposed_original.resize(width_ * height_);
+    for (int r = 0; r < height_; ++r) {
+      for (int c = 0; c < width_; ++c) {
+        transposed_original[c * height_ + r] = original_data_[r * width_ + c];
+      }
+    }
+  }
+
+  MPI_Scatterv(world.rank() == 0 ? transposed_original.data() : nullptr, sendcounts.data(), displs.data(), MPI_INT,
+               &local_data_[height_], local_width_ * height_, MPI_INT, 0, comm);
 }
 
 void SimpleIntMPI::exchangeHalo() {
@@ -112,96 +122,106 @@ void SimpleIntMPI::exchangeHalo() {
   int rank = world.rank();
   int nprocs = world.size();
 
-  int up = (rank > 0) ? rank - 1 : MPI_PROC_NULL;
-  int down = (rank < nprocs - 1) ? rank + 1 : MPI_PROC_NULL;
+  int left = (rank > 0) ? rank - 1 : MPI_PROC_NULL;
+  int right = (rank < nprocs - 1) ? rank + 1 : MPI_PROC_NULL;
 
-  std::vector<int> send_up(width_);
-  std::vector<int> send_down(width_);
-  std::vector<int> recv_up(width_);
-  std::vector<int> recv_down(width_);
+  std::vector<int> send_left(height_);
+  std::vector<int> send_right(height_);
+  std::vector<int> recv_left(height_);
+  std::vector<int> recv_right(height_);
 
-  if (local_height_ > 0) {
-    std::copy(&local_data_[width_], &local_data_[2 * width_], send_up.begin());
-    std::copy(&local_data_[(local_height_)*width_], &local_data_[(local_height_ + 1) * width_], send_down.begin());
+  if (local_width_ > 0) {
+    std::copy(&local_data_[height_], &local_data_[2 * height_], send_left.begin());
+    std::copy(&local_data_[(local_width_) * height_], &local_data_[(local_width_ + 1) * height_], send_right.begin());
   }
 
   MPI_Request reqs[4];
   int req_count = 0;
 
-  if (up != MPI_PROC_NULL) {
-    MPI_Isend(send_up.data(), width_, MPI_INT, up, 0, comm, &reqs[req_count++]);
-    MPI_Irecv(recv_up.data(), width_, MPI_INT, up, 1, comm, &reqs[req_count++]);
+  if (left != MPI_PROC_NULL) {
+    MPI_Isend(send_left.data(), height_, MPI_INT, left, 0, comm, &reqs[req_count++]);
+    MPI_Irecv(recv_left.data(), height_, MPI_INT, left, 1, comm, &reqs[req_count++]);
   } else {
-    std::copy(send_up.begin(), send_up.end(), recv_up.begin());
+    std::fill(recv_left.begin(), recv_left.end(), 0);
   }
 
-  if (down != MPI_PROC_NULL) {
-    MPI_Isend(send_down.data(), width_, MPI_INT, down, 1, comm, &reqs[req_count++]);
-    MPI_Irecv(recv_down.data(), width_, MPI_INT, down, 0, comm, &reqs[req_count++]);
+  if (right != MPI_PROC_NULL) {
+    MPI_Isend(send_right.data(), height_, MPI_INT, right, 1, comm, &reqs[req_count++]);
+    MPI_Irecv(recv_right.data(), height_, MPI_INT, right, 0, comm, &reqs[req_count++]);
   } else {
-    std::copy(send_down.begin(), send_down.end(), recv_down.begin());
+    std::fill(recv_right.begin(), recv_right.end(), 0);
   }
 
   if (req_count > 0) {
     MPI_Waitall(req_count, reqs, MPI_STATUSES_IGNORE);
   }
 
-  if (up != MPI_PROC_NULL) {
-    std::copy(recv_up.begin(), recv_up.end(), local_data_.begin());
+  if (left != MPI_PROC_NULL) {
+    std::copy(recv_left.begin(), recv_left.end(), local_data_.begin());
   } else {
-    std::copy(send_up.begin(), send_up.end(), local_data_.begin());
+    std::copy(send_left.begin(), send_left.end(), local_data_.begin());
   }
 
-  if (down != MPI_PROC_NULL) {
-    std::copy(recv_down.begin(), recv_down.end(), &local_data_[(local_height_ + 1) * width_]);
+  if (right != MPI_PROC_NULL) {
+    std::copy(recv_right.begin(), recv_right.end(), &local_data_[(local_width_ + 1) * height_]);
   } else {
-    std::copy(send_down.begin(), send_down.end(), &local_data_[(local_height_ + 1) * width_]);
+    std::copy(send_right.begin(), send_right.end(), &local_data_[(local_width_ + 1) * height_]);
   }
 }
 
 void SimpleIntMPI::applyGaussianFilter() {
-  std::vector<int> result(local_height_ * width_, 0);
+  std::vector<int> result(local_width_ * height_, 0);
 
-  for (int r = 1; r <= local_height_; r++) {
-    for (int c = 0; c < width_; c++) {
+  for (int c = 1; c <= local_width_; c++) {
+    for (int r = 0; r < height_; r++) {
       int sum = 0;
-      for (int kr = -1; kr <= 1; kr++) {
-        for (int kc = -1; kc <= 1; kc++) {
-          int rr = r + kr;
-          int cc = std::min(std::max(c + kc, 0), width_ - 1);
+      for (int kc = -1; kc <= 1; kc++) {
+        for (int kr = -1; kr <= 1; kr++) {
+          int cc = c + kc;
+          int rr = std::min(std::max(r + kr, 0), height_ - 1);
 
-          sum += local_data_[rr * width_ + cc] * kernel_[kr + 1][kc + 1];
+          sum += local_data_[cc * height_ + rr] * kernel_[kr + 1][kc + 1];
         }
       }
-      result[(r - 1) * width_ + c] = sum / 16;
+      result[(c - 1) * height_ + r] = sum / 16;
     }
   }
 
-  std::copy(result.begin(), result.end(), &local_data_[width_]);
+  std::copy(result.begin(), result.end(), &local_data_[height_]);
 }
 
 void SimpleIntMPI::gatherData() {
   MPI_Comm comm = world;
   int nprocs = world.size();
 
-  int base_rows = height_ / nprocs;
-  int remainder = height_ % nprocs;
+  int base_cols = width_ / nprocs;
+  int remainder = width_ % nprocs;
 
   std::vector<int> recvcounts(nprocs);
   std::vector<int> displs(nprocs);
 
   for (int i = 0; i < nprocs; ++i) {
-    recvcounts[i] = (base_rows + (i < remainder ? 1 : 0)) * width_;
-    displs[i] = (i < remainder) ? i * (base_rows + 1) * width_
-                                : remainder * (base_rows + 1) * width_ + (i - remainder) * base_rows * width_;
+    recvcounts[i] = (base_cols + (i < remainder ? 1 : 0)) * height_;
+    displs[i] = (i < remainder) ? i * (base_cols + 1) * height_
+                                : remainder * (base_cols + 1) * height_ + (i - remainder) * base_cols * height_;
   }
+
+  std::vector<int> gathered_transposed;
+  if (world.rank() == 0) {
+    gathered_transposed.resize(width_ * height_);
+  }
+
+  MPI_Gatherv(&local_data_[height_], local_width_ * height_, MPI_INT,
+              world.rank() == 0 ? gathered_transposed.data() : nullptr, recvcounts.data(), displs.data(), MPI_INT, 0, comm);
 
   if (world.rank() == 0) {
     processed_data_.resize(width_ * height_);
+    for (int r = 0; r < height_; ++r) {
+      for (int c = 0; c < width_; ++c) {
+        processed_data_[r * width_ + c] = gathered_transposed[c * height_ + r];
+      }
+    }
   }
-
-  MPI_Gatherv(&local_data_[width_], local_height_ * width_, MPI_INT,
-              world.rank() == 0 ? processed_data_.data() : nullptr, recvcounts.data(), displs.data(), MPI_INT, 0, comm);
 }
 
 const std::vector<int>& SimpleIntMPI::getDataPath() const { return data_path_; }
