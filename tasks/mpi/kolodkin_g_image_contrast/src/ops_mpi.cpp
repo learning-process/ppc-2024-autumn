@@ -7,8 +7,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
 bool kolodkin_g_image_contrast_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   auto* input_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
