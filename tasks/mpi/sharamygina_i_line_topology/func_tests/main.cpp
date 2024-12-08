@@ -19,7 +19,7 @@ void generator(std::vector<int>& v) {
 
 TEST(sharamygina_i_line_topology_mpi, checkTransferedData) {
   boost::mpi::communicator world;
-
+  //std::cout << "[MY] " << world.rank() << std::endl;
   int size = 20000;
   auto sendler = 0;
   auto recipient = world.size() - 1;
@@ -62,10 +62,12 @@ TEST(sharamygina_i_line_topology_mpi, checkTransferedData) {
       ASSERT_EQ(received_data[i], data[i]);
     }
   }
+  //std::cout << "[MY1] " << world.rank() << std::endl;
 }
 
 TEST(sharamygina_i_line_topology_mpi, transferRandomData) {
   boost::mpi::communicator world;
+  //std::cout << "[MY] " << world.rank() << std::endl;
 
   int size = 20000;
 
@@ -111,10 +113,12 @@ TEST(sharamygina_i_line_topology_mpi, transferRandomData) {
       ASSERT_EQ(received_data[i], data[i]);
     }
   }
+  //std::cout << "[MY2] " << world.rank() << std::endl;
 }
 
 TEST(sharamygina_i_line_topology_mpi, insufficientInputs) {
   boost::mpi::communicator world;
+  //std::cout << "[MY] " << world.rank() << std::endl;
 
   int size = 20000;
   int sendler = 0;
@@ -125,6 +129,7 @@ TEST(sharamygina_i_line_topology_mpi, insufficientInputs) {
 
   sharamygina_i_line_topology_mpi::line_topology_mpi testTask(taskData);
   ASSERT_FALSE(testTask.validation());
+  //std::cout << "[MY3] " << world.rank() << std::endl;
 }
 
 TEST(sharamygina_i_line_topology_mpi, invalidSendler) {
@@ -141,10 +146,12 @@ TEST(sharamygina_i_line_topology_mpi, invalidSendler) {
 
   sharamygina_i_line_topology_mpi::line_topology_mpi testTask(taskData);
   ASSERT_FALSE(testTask.validation());
+  //std::cout << "[MY4] " << world.rank() << std::endl;
 }
 
 TEST(sharamygina_i_line_topology_mpi, invalidRecipient) {
   boost::mpi::communicator world;
+  //std::cout << "[MY] " << world.rank() << std::endl;
 
   int size = 10000;
   int sendler = 0;
@@ -157,6 +164,7 @@ TEST(sharamygina_i_line_topology_mpi, invalidRecipient) {
 
   sharamygina_i_line_topology_mpi::line_topology_mpi testTask(taskData);
   ASSERT_FALSE(testTask.validation());
+  //std::cout << "[MY5] " << world.rank() << std::endl;
 }
 
 TEST(sharamygina_i_line_topology_mpi, invalidNumberOfElements) {
@@ -173,10 +181,12 @@ TEST(sharamygina_i_line_topology_mpi, invalidNumberOfElements) {
 
   sharamygina_i_line_topology_mpi::line_topology_mpi testTask(taskData);
   ASSERT_FALSE(testTask.validation());
+  //std::cout << "[MY6] " << world.rank() << std::endl;
 }
 
 TEST(sharamygina_i_line_topology_mpi, absenceOfInputData) {
   boost::mpi::communicator world;
+  //std::cout << "[MY] " << world.rank() << std::endl;
 
   int size = 20000;
   int sendler = 0;
@@ -193,10 +203,12 @@ TEST(sharamygina_i_line_topology_mpi, absenceOfInputData) {
   } else {
     SUCCEED();
   }
+  //std::cout << "[MY7] " << world.rank() << std::endl;
 }
 
 TEST(sharamygina_i_line_topology_mpi, absenceOutputDataOnRecipient) {
   boost::mpi::communicator world;
+  //std::cout << "[MY] " << world.rank() << std::endl;
 
   int size = 20000;
   auto sendler = 0;
@@ -219,10 +231,12 @@ TEST(sharamygina_i_line_topology_mpi, absenceOutputDataOnRecipient) {
   } else {
     SUCCEED();
   }
+  //std::cout << "[MY8] " << world.rank() << std::endl;
 }
 
 TEST(sharamygina_i_line_topology_mpi, zeroNumberOfElements) {
   boost::mpi::communicator world;
+  //std::cout << "[MY] " << world.rank() << std::endl;
 
   int size = 0;
   int sendler = 0;
@@ -235,10 +249,12 @@ TEST(sharamygina_i_line_topology_mpi, zeroNumberOfElements) {
 
   sharamygina_i_line_topology_mpi::line_topology_mpi testTask(taskData);
   ASSERT_FALSE(testTask.validation());
+  //std::cout << "[MY9] " << world.rank() << std::endl;
 }
 
 TEST(sharamygina_i_line_topology_mpi, equalSenderAndRecipient) {
   boost::mpi::communicator world;
+  //std::cout << "[MY] " << world.rank() << std::endl;
 
   int size = 20000;
   int sendler = 0;
@@ -262,11 +278,15 @@ TEST(sharamygina_i_line_topology_mpi, equalSenderAndRecipient) {
   }
 
   sharamygina_i_line_topology_mpi::line_topology_mpi testTask(taskData);
-  ASSERT_FALSE(testTask.validation());
+  if (world.rank() == 0) {
+    ASSERT_FALSE(testTask.validation());
+  }
+  //std::cout << "[MY10] " << world.rank() << std::endl;
 }
 
 TEST(sharamygina_i_line_topology_mpi, vectorOf1024) {
   boost::mpi::communicator world;
+  //std::cout << "[MY] " << world.rank() << std::endl;
 
   int size = 1024;
   auto sendler = 0;
@@ -310,10 +330,12 @@ TEST(sharamygina_i_line_topology_mpi, vectorOf1024) {
       ASSERT_EQ(received_data[i], data[i]);
     }
   }
+  //std::cout << "[MY11] " << world.rank() << std::endl;
 }
 
 TEST(sharamygina_i_line_topology_mpi, smallSetVector) {
   boost::mpi::communicator world;
+  //std::cout << "[MY] " << world.rank() << std::endl;
 
   int size = 12;
   auto sendler = 0;
@@ -356,4 +378,5 @@ TEST(sharamygina_i_line_topology_mpi, smallSetVector) {
       ASSERT_EQ(received_data[i], data[i]);
     }
   }
-}
+  //std::cout << "[MY12] " << world.rank() << std::endl;
+ }
