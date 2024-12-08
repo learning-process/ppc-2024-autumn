@@ -1,5 +1,3 @@
-// Copyright 2024 Kalinin Dmitriy
-
 #pragma once
 
 #include <algorithm>
