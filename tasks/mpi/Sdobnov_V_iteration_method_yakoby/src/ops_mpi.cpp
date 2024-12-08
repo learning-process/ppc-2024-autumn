@@ -254,7 +254,7 @@ bool Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar::run() {
       boost::mpi::gatherv(world, l_res.data(), free_members_part_sizes[world.rank()], 0);
     }
 
-    bool stop_flag;
+    bool stop_flag = false;
 
     if (world.rank() == 0) {
       double max_diff = 0.0;
