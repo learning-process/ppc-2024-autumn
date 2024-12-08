@@ -123,6 +123,17 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::validation() {
 
 bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::run() {
   internal_order_test();
+  std::vector<int> recv_counts(world.size(), 0);
+  std::vector<int> displacements(world.size(), 0);
+  for (int i = 0; i < world.size(); i++) {
+    int n_of_send_rows = rows / world.size();
+    int n_of_proc_with_extra_row = rows % world.size();
+
+    int start_row = i * n_of_send_rows + std::min(i, n_of_proc_with_extra_row);
+    int end_row = start_row + n_of_send_rows + (i < n_of_proc_with_extra_row ? 1 : 0);
+    recv_counts[i] = end_row - start_row;
+    displacements[i] = (i == 0) ? 0 : displacements[i - 1] + recv_counts[i - 1];
+  }
   if (local_res.empty()) {
     return false;
   }
