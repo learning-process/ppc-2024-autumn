@@ -6,7 +6,7 @@
 
 #include "mpi/budazhapova_e_matrix_multiplication/include/matrix_mult_mpi.hpp"
 
-/* TEST(budazhapova_e_matrix_mult_mpi, ordinary_test_1) {
+TEST(budazhapova_e_matrix_mult_mpi, ordinary_test_1) {
   boost::mpi::communicator world;
   std::vector<int> A_matrix(12, 1);
   std::vector<int> b_vector(4, 1);
@@ -47,7 +47,7 @@
 
     ASSERT_EQ(out, out_seq);
   }
-}*/
+}
 
 TEST(budazhapova_e_matrix_mult_mpi, ordinary_test_2_for_three_proc_to_crash) {
   boost::mpi::communicator world;
