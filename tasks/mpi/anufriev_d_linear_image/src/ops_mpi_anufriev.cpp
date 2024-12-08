@@ -122,7 +122,7 @@ void SimpleIntMPI::exchangeHalo() {
 
   if (local_height_ > 0) {
     std::copy(&local_data_[width_], &local_data_[2 * width_], send_up.begin());
-    std::copy(&local_data_[(local_height_) * width_], &local_data_[(local_height_ + 1) * width_], send_down.begin());
+    std::copy(&local_data_[(local_height_)*width_], &local_data_[(local_height_ + 1) * width_], send_down.begin());
   }
 
   MPI_Request reqs[4];
