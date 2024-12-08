@@ -23,9 +23,10 @@ bool kholin_k_iterative_methods_Seidel_seq::IsDiagPred(std::vector<float> row_co
 int kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::rank(std::vector<float> local_matrix, size_t n,
                                                                     size_t m) {
   int rank = 0;
-
-  for (size_t i = 0; i < std::min(n, m); ++i) {
-    size_t max_row = i;
+  size_t max_row = 0;
+  size_t minimum = std::min(n, m);
+  for (size_t i = 0; i < minimum; ++i) {
+    max_row = i;
     for (size_t k = i + 1; k < n; ++k) {
       if (std::abs(local_matrix[k * m + i]) > std::abs(local_matrix[max_row * m + i])) {
         max_row = k;
@@ -136,11 +137,7 @@ bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::validation() {
   }
   int rank_A = rank(A, num_rows, num_colls);
   int rank_A_ = rank(matrix_extended, num_rows, num_colls);
-  bool IsSingleDecision = rank_A == rank_A_;
-  if (!IsSingleDecision) {
-    return IsSingleDecision;
-  }
-  return true;
+  return rank_A == rank_A_;
 }
 
 bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::run() {
