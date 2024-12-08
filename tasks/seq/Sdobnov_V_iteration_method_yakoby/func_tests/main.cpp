@@ -9,7 +9,6 @@
 #include "seq/Sdobnov_V_iteration_method_yakoby/include/ops_seq.hpp"
 
 TEST(Sdobnov_V_iteration_method_yakoby_seq, InvalidMatrixWithoutDiagonalDominance) {
-
   int size = 3;
   std::vector<double> matrix = {1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0};
   std::vector<double> free_members = {5.0, 5.0, 5.0};
@@ -129,8 +128,8 @@ TEST(Sdobnov_V_iteration_method_yakoby_seq, IterationMethodTest3x3) {
 TEST(Sdobnov_V_iteration_method_yakoby_seq, IterationMethodTest4x4) {
   int size = 4;
   std::vector<double> res(size, 0.0);
-  std::vector<double> input_matrix = {12.0, 4.0, -2.0, 0.0, 2.0,  9.0,  3.0,  -3.0,
-                                      -2.0, 1.0, 6.0, 2.0, 0.0, -1.0, -7.0, 10.0};
+  std::vector<double> input_matrix = {12.0, 4.0, -2.0, 0.0, 2.0, 9.0,  3.0,  -3.0,
+                                      -2.0, 1.0, 6.0,  2.0, 0.0, -1.0, -7.0, 10.0};
   std::vector<double> input_free_members = {10.0, 9.0, 8.0, 7.0};
   std::vector<double> expected_res = {0.637086, 1.036719, 0.895960, 1.430844};
 

@@ -1,13 +1,15 @@
 // Copyright 2024 Sdobnov Vladimir
+#include "mpi/Sdobnov_V_iteration_method_yakoby/include/ops_mpi.hpp"
+
 #include <mpi.h>
+
 #include <algorithm>
 #include <boost/mpi.hpp>
 #include <boost/serialization/vector.hpp>
 #include <cmath>
 #include <vector>
-#include "boost/mpi/collectives/broadcast.hpp"
 
-#include "mpi/Sdobnov_V_iteration_method_yakoby/include/ops_mpi.hpp"
+#include "boost/mpi/collectives/broadcast.hpp"
 
 std::vector<double> Sdobnov_iteration_method_yakoby::iteration_method_yakoby(int n, const std::vector<double>& A,
                                                                              const std::vector<double>& b,
@@ -207,7 +209,7 @@ bool Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar::validation() {
 
 bool Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar::run() {
   internal_order_test();
-  
+
   boost::mpi::broadcast(world, mat_part_sizes, 0);
   boost::mpi::broadcast(world, mat_part_offsets, 0);
   boost::mpi::broadcast(world, free_members_part_sizes, 0);
@@ -230,8 +232,7 @@ bool Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar::run() {
     boost::mpi::scatterv(world, l_free_members.data(), l_free_members_part_size, 0);
   }
 
-  for (size_t iter = 0; iter < maxIterations; iter++) {
-
+  for (int iter = 0; iter < maxIterations; iter++) {
     if (world.rank() == 0) {
       std::copy(res_.begin(), res_.end(), last_res.begin());
     }
@@ -256,7 +257,6 @@ bool Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar::run() {
     bool stop_flag;
 
     if (world.rank() == 0) {
-
       double max_diff = 0.0;
       for (int i = 0; i < size_; ++i) {
         max_diff = std::max(max_diff, fabs(res_[i] - last_res[i]));
@@ -276,7 +276,7 @@ bool Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar::run() {
 bool Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    for (size_t i = 0; i < size_; ++i) {
+    for (int i = 0; i < size_; ++i) {
       reinterpret_cast<double*>(taskData->outputs[0])[i] = res_[i];
     }
   }

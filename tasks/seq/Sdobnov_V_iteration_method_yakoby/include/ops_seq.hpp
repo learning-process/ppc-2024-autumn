@@ -8,8 +8,8 @@
 
 namespace Sdobnov_iteration_method_yakoby {
 
-std::vector<double> iteration_method_yakoby(int n, const std::vector<double>& A, const std::vector<double>& b, double tolerance = 1e-6,
-                                       int maxIterations = 1000);
+std::vector<double> iteration_method_yakoby(int n, const std::vector<double>& A, const std::vector<double>& b,
+                                            double tolerance = 1e-6, int maxIterations = 1000);
 
 class IterationMethodYakobySeq : public ppc::core::Task {
  public:

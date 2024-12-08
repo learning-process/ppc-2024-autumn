@@ -1,12 +1,14 @@
 // Copyright 2024 Sdobnov Vladimir
 #pragma once
 #include <gtest/gtest.h>
+
 #include <boost/mpi.hpp>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <memory>
 #include <utility>
 #include <vector>
+
 #include "core/task/include/task.hpp"
 
 namespace Sdobnov_iteration_method_yakoby {

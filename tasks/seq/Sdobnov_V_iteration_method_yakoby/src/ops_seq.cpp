@@ -2,17 +2,13 @@
 #include "seq/Sdobnov_V_iteration_method_yakoby/include/ops_seq.hpp"
 
 #include <random>
-#include <vector>
-
-
 #include <iostream>
 #include <vector>
 #include <cmath>
 
 std::vector<double> Sdobnov_iteration_method_yakoby::iteration_method_yakoby(int n, const std::vector<double>& A,
                                                                              const std::vector<double>& b,
-                                                                             double tolerance, int maxIterations)
-{
+                                                                             double tolerance, int maxIterations) {
   std::vector<double> x(n, 0.0);
   std::vector<double> x_new(n, 0.0);
 
@@ -43,7 +39,6 @@ std::vector<double> Sdobnov_iteration_method_yakoby::iteration_method_yakoby(int
 }
 
 bool isDiagonallyDominant(int n, const std::vector<double>& A) {
-
   for (int i = 0; i < n; ++i) {
     double sum = 0.0;
 
