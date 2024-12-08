@@ -106,7 +106,6 @@ TEST(somov_i_horizontal_scheme, test_pipeline_run) {
   }
 }
 
-
 TEST(somov_i_horizontal_scheme, test_task_run) {
   boost::mpi::environment env;
   boost::mpi::communicator world;

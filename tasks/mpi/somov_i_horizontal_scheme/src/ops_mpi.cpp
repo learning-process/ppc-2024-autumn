@@ -106,7 +106,8 @@ bool somov_i_horizontal_scheme::MatrixVectorTaskMPI::run() {
   std::vector<int32_t> localMatrix(localNumElements);
 
   if (world.rank() == 0) {
-    boost::mpi::scatterv(world, matrix_.data(), raspredeleniye, peremeshcheniye, localMatrix.data(), localNumElements, 0);
+    boost::mpi::scatterv(world, matrix_.data(), raspredeleniye, peremeshcheniye, localMatrix.data(), localNumElements,
+                         0);
   } else {
     boost::mpi::scatterv(world, localMatrix.data(), localNumElements, 0);
   }
