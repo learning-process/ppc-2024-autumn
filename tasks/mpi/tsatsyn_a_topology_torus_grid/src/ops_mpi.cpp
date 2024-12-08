@@ -9,7 +9,7 @@
 #include <string>
 #include <thread>
 #include <vector>
-enum class Directions { up, left, down, right };
+enum class Directions : std::uint8_t { up, left, down, right };
 void mySend(boost::mpi::communicator& world, int source_rank, int dest_rank, int cols, int rows,
             std::map<Directions, int> neighbors, int& inputs) {
   int current_rank = world.rank();
