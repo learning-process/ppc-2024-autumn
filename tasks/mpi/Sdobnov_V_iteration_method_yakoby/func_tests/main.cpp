@@ -31,94 +31,94 @@ TEST(Sdobnov_V_iteration_method_yakoby_par, InvalidMatrixWithoutDiagonalDominanc
     ASSERT_FALSE(test.validation());
   }
 }
-//
-//TEST(Sdobnov_V_iteration_method_yakoby_par, InvalidInputCount) {
-//  boost::mpi::communicator world;
-//  int size = 3;
-//  std::vector<double> matrix = {2.0, 1.0, 0.0, 0.0, 2.0, 1.0, 0.0, 0.0, 3.0};
-//  std::vector<double> free_members = {5.0, 5.0, 5.0};
-//  std::vector<double> res(size, 0.0);
-//
-//  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-//  if (world.rank() == 0) {
-//    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-//    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(free_members.data()));
-//    taskDataPar->outputs_count.emplace_back(size);
-//    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
-//  }
-//
-//  Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar test(taskDataPar);
-//
-//  if (world.rank() == 0) {
-//    ASSERT_FALSE(test.validation());
-//  }
-//}
-//
-//TEST(Sdobnov_V_iteration_method_yakoby_par, InvalidInput) {
-//  boost::mpi::communicator world;
-//  int size = 3;
-//  std::vector<double> matrix = {2.0, 1.0, 0.0, 0.0, 2.0, 1.0, 0.0, 0.0, 3.0};
-//  std::vector<double> free_members = {5.0, 5.0, 5.0};
-//  std::vector<double> res(size, 0.0);
-//
-//  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-//  if (world.rank() == 0) {
-//    taskDataPar->inputs_count.emplace_back(-size);
-//    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-//    taskDataPar->outputs_count.emplace_back(size);
-//    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
-//  }
-//
-//  Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar test(taskDataPar);
-//
-//  if (world.rank() == 0) {
-//    ASSERT_FALSE(test.validation());
-//  }
-//}
-//
-//TEST(Sdobnov_V_iteration_method_yakoby_par, InvalidOutputCount) {
-//  boost::mpi::communicator world;
-//  int size = 3;
-//  std::vector<double> matrix = {2.0, 1.0, 0.0, 0.0, 2.0, 1.0, 0.0, 0.0, 3.0};
-//  std::vector<double> free_members = {5.0, 5.0, 5.0};
-//  std::vector<double> res(size, 0.0);
-//
-//  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-//  if (world.rank() == 0) {
-//    taskDataPar->inputs_count.emplace_back(-size);
-//    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-//    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(free_members.data()));
-//    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
-//  }
-//
-//  Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar test(taskDataPar);
-//
-//  if (world.rank() == 0) {
-//    ASSERT_FALSE(test.validation());
-//  }
-//}
-//
-//TEST(Sdobnov_V_iteration_method_yakoby_par, InvalidOutput) {
-//  boost::mpi::communicator world;
-//  int size = 3;
-//  std::vector<double> matrix = {2.0, 1.0, 0.0, 0.0, 2.0, 1.0, 0.0, 0.0, 3.0};
-//  std::vector<double> free_members = {5.0, 5.0, 5.0};
-//  std::vector<double> res(size, 0.0);
-//
-//  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-//
-//  if (world.rank() == 0) {
-//    taskDataPar->inputs_count.emplace_back(-size);
-//    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-//    taskDataPar->outputs_count.emplace_back(size);
-//  }
-//  Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar test(taskDataPar);
-//
-//  if (world.rank() == 0) {
-//    ASSERT_FALSE(test.validation());
-//  }
-//}
-//
+
+TEST(Sdobnov_V_iteration_method_yakoby_par, InvalidInputCount) {
+  boost::mpi::communicator world;
+  int size = 3;
+  std::vector<double> matrix = {2.0, 1.0, 0.0, 0.0, 2.0, 1.0, 0.0, 0.0, 3.0};
+  std::vector<double> free_members = {5.0, 5.0, 5.0};
+  std::vector<double> res(size, 0.0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(free_members.data()));
+    taskDataPar->outputs_count.emplace_back(size);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
+  }
+
+  Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar test(taskDataPar);
+
+  if (world.rank() == 0) {
+    ASSERT_FALSE(test.validation());
+  }
+}
+
+TEST(Sdobnov_V_iteration_method_yakoby_par, InvalidInput) {
+  boost::mpi::communicator world;
+  int size = 3;
+  std::vector<double> matrix = {2.0, 1.0, 0.0, 0.0, 2.0, 1.0, 0.0, 0.0, 3.0};
+  std::vector<double> free_members = {5.0, 5.0, 5.0};
+  std::vector<double> res(size, 0.0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs_count.emplace_back(-size);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+    taskDataPar->outputs_count.emplace_back(size);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
+  }
+
+  Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar test(taskDataPar);
+
+  if (world.rank() == 0) {
+    ASSERT_FALSE(test.validation());
+  }
+}
+
+TEST(Sdobnov_V_iteration_method_yakoby_par, InvalidOutputCount) {
+  boost::mpi::communicator world;
+  int size = 3;
+  std::vector<double> matrix = {2.0, 1.0, 0.0, 0.0, 2.0, 1.0, 0.0, 0.0, 3.0};
+  std::vector<double> free_members = {5.0, 5.0, 5.0};
+  std::vector<double> res(size, 0.0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs_count.emplace_back(-size);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(free_members.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
+  }
+
+  Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar test(taskDataPar);
+
+  if (world.rank() == 0) {
+    ASSERT_FALSE(test.validation());
+  }
+}
+
+TEST(Sdobnov_V_iteration_method_yakoby_par, InvalidOutput) {
+  boost::mpi::communicator world;
+  int size = 3;
+  std::vector<double> matrix = {2.0, 1.0, 0.0, 0.0, 2.0, 1.0, 0.0, 0.0, 3.0};
+  std::vector<double> free_members = {5.0, 5.0, 5.0};
+  std::vector<double> res(size, 0.0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs_count.emplace_back(-size);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+    taskDataPar->outputs_count.emplace_back(size);
+  }
+  Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar test(taskDataPar);
+
+  if (world.rank() == 0) {
+    ASSERT_FALSE(test.validation());
+  }
+}
+
 //TEST(Sdobnov_V_iteration_method_yakoby_par, IterationMethodTest3x3) {
 //  boost::mpi::communicator world;
 //  int size = 3;
