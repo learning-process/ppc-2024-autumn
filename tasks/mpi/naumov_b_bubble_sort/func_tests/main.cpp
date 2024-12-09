@@ -15,10 +15,10 @@ TEST(naumov_b_bubble_sort_mpi, Test_SmallArray) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_data.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_data.data()));
     taskDataPar->inputs_count.emplace_back(input_data.size());
 
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_data.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_data.data()));
     taskDataPar->outputs_count.emplace_back(output_data.size());
   }
 
@@ -49,10 +49,10 @@ TEST(naumov_b_bubble_sort_mpi, Test_LargeArray) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_data.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_data.data()));
     taskDataPar->inputs_count.emplace_back(input_data.size());
 
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_data.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_data.data()));
     taskDataPar->outputs_count.emplace_back(output_data.size());
   }
 
@@ -85,4 +85,4 @@ TEST(naumov_b_bubble_sort_mpi, Test_empty_array) {
   if (world.rank() == 0) {
     ASSERT_FALSE(tmpTaskPar.validation());
   }
-  }
+}
