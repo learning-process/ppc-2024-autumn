@@ -68,7 +68,7 @@ TEST(sharamygina_i_line_topology_mpi, transferRandomData) {
 
   int size = 20000;
 
-  std::srand(static_cast<unsigned int>(std::time(NULL)));
+  std::srand(static_cast<unsigned int>(std::time(nullptr)));
   int sendler = std::rand() % (world.size());
   int recipient = sendler + std::rand() % (world.size() - sendler);
 
