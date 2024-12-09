@@ -4,6 +4,7 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <boost/serialization/serialization.hpp>
+#include <cstdint>
 #include <cstring>
 #include <random>
 #include <string>
@@ -12,7 +13,7 @@
 #include "core/task/include/task.hpp"
 
 namespace beskhmelnova_k_dining_philosophers {
-enum State { THINKING, HUNGRY, EATING };
+enum State : std::uint8_t { THINKING, HUNGRY, EATING };
 
 template <typename DataType>
 class DiningPhilosophersMPI : public ppc::core::Task {
