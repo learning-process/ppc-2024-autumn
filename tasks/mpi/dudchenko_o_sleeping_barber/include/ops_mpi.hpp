@@ -25,7 +25,6 @@ class TestMPISleepingBarber : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  int seats_;
   int max_wait{};
   int result{};
   boost::mpi::communicator world;
