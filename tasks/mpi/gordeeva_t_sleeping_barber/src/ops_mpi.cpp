@@ -73,7 +73,6 @@ void gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::barber_logic() {
     }
 
     if (client_id == -1) {
-      // end
       result = 0;
       return;
     }
