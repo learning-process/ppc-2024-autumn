@@ -1,10 +1,11 @@
-﻿﻿#include "mpi/sedova_o_vertical_ribbon_scheme/include/ops_mpi.hpp"
-#include <algorithm>
+﻿#include <algorithm>
 #include <boost/serialization/array.hpp>
 #include <boost/serialization/vector.hpp>
 #include <functional>
 #include <thread>
 #include <vector>
+#include "mpi/sedova_o_vertical_ribbon_scheme/include/ops_mpi.hpp"
+
 
 bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::validation() {
   internal_order_test();
