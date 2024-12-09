@@ -4,11 +4,7 @@
 #include <algorithm>
 #include <functional>
 #include <random>
-#include <string>
-#include <thread>
 #include <vector>
-
-using namespace std::chrono_literals;
 
 std::vector<int> grahamAlg(const std::vector<int>& input) {
   int n = input.size() / 2;
@@ -52,8 +48,8 @@ std::vector<int> grahamAlg(const std::vector<int>& input) {
 
   std::vector<int> stack;
 
-  stack.push_back(indices[0]);
-  stack.push_back(indices[1]);
+  stack.emplace_back(indices[0]);
+  stack.emplace_back(indices[1]);
 
   for (int i = 2; i < n; ++i) {
     while (stack.size() > 1) {
@@ -75,13 +71,13 @@ std::vector<int> grahamAlg(const std::vector<int>& input) {
         break;
       }
     }
-    stack.push_back(indices[i]);
+    stack.emplace_back(indices[i]);
   }
 
   std::vector<int> out;
   for (int index : stack) {
-    out.push_back(input[2 * index]);
-    out.push_back(input[2 * index + 1]);
+    out.emplace_back(input[2 * index]);
+    out.emplace_back(input[2 * index + 1]);
   }
   return out;
 }
@@ -96,7 +92,7 @@ bool sorokin_a_graham_algorithm_mpi::TestMPITaskSequential::pre_processing() {
 
 bool sorokin_a_graham_algorithm_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  return true;
+  return taskData->inputs_count[0] > 0 && taskData->inputs_count[0] % 2 == 0;
 }
 
 bool sorokin_a_graham_algorithm_mpi::TestMPITaskSequential::run() {
@@ -123,8 +119,7 @@ bool sorokin_a_graham_algorithm_mpi::TestMPITaskParallel::pre_processing() {
   broadcast(world, delta, 0);
 
   if (world.rank() == 0) {
-    // Init vectors
-    input_ = std::vector<int>(taskData->inputs_count[0]);
+    input_.reserve(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
     for (int proc = 1; proc < world.size(); proc++) {
@@ -142,6 +137,9 @@ bool sorokin_a_graham_algorithm_mpi::TestMPITaskParallel::pre_processing() {
 
 bool sorokin_a_graham_algorithm_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
+  if (world.rank() == 0) {
+    return taskData->inputs_count[0] > 0 && taskData->inputs_count[0] % 2 == 0;
+  }
   return true;
 }
 

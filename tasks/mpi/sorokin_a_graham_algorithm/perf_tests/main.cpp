@@ -21,7 +21,7 @@ std::vector<int> getrndvec(int n, int max, int min) {
   return tmp;
 }
 
-TEST(sorokin_a_graham_algorithm_perf_test, test1) {
+TEST(sorokin_a_graham_algorithm_perf_test, test_1000000_points) {
   boost::mpi::communicator world;
   std::vector<int> in = getrndvec(2000000, -100, 100);
   std::vector<int> out(in.size(), 0);
@@ -56,7 +56,7 @@ TEST(sorokin_a_graham_algorithm_perf_test, test1) {
     ppc::core::Perf::print_perf_statistic(perfResults);
   }
 }
-TEST(sorokin_a_graham_algorithm_perf_test, test2) {
+TEST(sorokin_a_graham_algorithm_perf_test, test_10000000_points) {
   boost::mpi::communicator world;
   std::vector<int> in = getrndvec(20000000, -100, 100);
   std::vector<int> out(in.size(), 0);

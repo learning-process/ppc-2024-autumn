@@ -21,7 +21,7 @@ std::vector<int> getrndvec(int n, int max, int min) {
   return tmp;
 }
 
-TEST(sorokin_a_graham_algorithm_MPI, Test_1) {
+TEST(sorokin_a_graham_algorithm_MPI, Test_20_points) {
   boost::mpi::communicator world;
   std::vector<int> in = {12, 5, 2, 3,  5, 2, 7, 1, 8,  6, 3, 8, 6, 5, 9, 3, 4, 7, 10, 10,
                          2,  9, 5, 12, 0, 0, 8, 0, 10, 7, 6, 9, 1, 5, 3, 2, 2, 8, 7,  10};
@@ -66,7 +66,7 @@ TEST(sorokin_a_graham_algorithm_MPI, Test_1) {
     }
   }
 }
-TEST(sorokin_a_graham_algorithm_MPI, Test_2) {
+TEST(sorokin_a_graham_algorithm_MPI, Test_10_points) {
   boost::mpi::communicator world;
   std::vector<int> in = {1, 4, 2, 8, 6, 4, 9, 3, 7, 6, 2, 2, 5, 1, 4, 9, 10, 10, 8, 2};
   std::vector<int> out(in.size(), 0);
@@ -110,7 +110,7 @@ TEST(sorokin_a_graham_algorithm_MPI, Test_2) {
     }
   }
 }
-TEST(sorokin_a_graham_algorithm_MPI, Test_3) {
+TEST(sorokin_a_graham_algorithm_MPI, Test_6_points) {
   boost::mpi::communicator world;
   std::vector<int> in = {-1, 0, 0, -1, -1, -1, -2, -1, -1, -2, -1, 0};
   std::vector<int> out(in.size(), 0);
@@ -154,7 +154,7 @@ TEST(sorokin_a_graham_algorithm_MPI, Test_3) {
     }
   }
 }
-TEST(sorokin_a_graham_algorithm_MPI, Test_rnd1) {
+TEST(sorokin_a_graham_algorithm_MPI, Test_rnd_100000_points) {
   boost::mpi::communicator world;
   std::vector<int> in = getrndvec(200000, -100, 100);
   std::vector<int> out(in.size(), 0);
@@ -196,7 +196,7 @@ TEST(sorokin_a_graham_algorithm_MPI, Test_rnd1) {
     }
   }
 }
-TEST(sorokin_a_graham_algorithm_MPI, Test_rnd2) {
+TEST(sorokin_a_graham_algorithm_MPI, Test_rnd_1000000_points) {
   boost::mpi::communicator world;
   std::vector<int> in = getrndvec(2000000, -100, 100);
   std::vector<int> out(in.size(), 0);
