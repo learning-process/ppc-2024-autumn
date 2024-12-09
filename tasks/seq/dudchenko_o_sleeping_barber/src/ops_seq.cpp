@@ -69,7 +69,7 @@ bool TestSleepingBarber::post_processing() {
   return true;
 }
 
-void TestSleepingBarber::next_client() {
+void TestSleepingBarber::next_client(int client) {
   (void)client;
   std::this_thread::sleep_for(20ms); 
 }
