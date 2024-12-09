@@ -215,5 +215,3 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, correct_matrix_and_vector_mpi) {
   std::vector<int> expected_result = {39, 54, 69};
   ASSERT_EQ(result, expected_result);
 }
-
-
