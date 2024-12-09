@@ -114,7 +114,7 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, 05x05_area) {
   tmpTaskSeq.pre_processing();
   tmpTaskSeq.run();
   tmpTaskSeq.post_processing();
-  ASSERT_NEAR(1.0, out[0], eps);
+  ASSERT_NEAR(0.25, out[0], eps);
 }
 
 TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, 05x05_xy) {
@@ -137,7 +137,7 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, 05x05_xy) {
   tmpTaskSeq.pre_processing();
   tmpTaskSeq.run();
   tmpTaskSeq.post_processing();
-  ASSERT_NEAR(0.25, out[0], eps);
+  ASSERT_NEAR(0.015625, out[0], eps);
 }
 
 TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, _0_07x0_07_tg_x_arctan_y) {
