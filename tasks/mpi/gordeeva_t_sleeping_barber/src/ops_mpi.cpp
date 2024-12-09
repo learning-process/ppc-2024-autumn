@@ -169,8 +169,8 @@ void gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::client_logic() {
     }
   }
   {
-      boost::mpi::request req = world.isend(1, 3, client_id);
-      req.wait();
+    boost::mpi::request req = world.isend(1, 3, client_id);
+    req.wait();
   }
 }
 
