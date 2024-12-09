@@ -25,9 +25,9 @@ bool veliev_e_jacobi_method_mpi::MethodJacobiSeq::pre_processing() {
 int veliev_e_jacobi_method_mpi::rankOfMatrix(std::vector<double>& matrix, int n) {
   int rank = n;
   std::vector<std::vector<double>> temp(n, std::vector<double>(n));
-
-  for (int i = 0; i < n; ++i)
-    for (int j = 0; j < n; ++j) temp[i][j] = matrix[i * n + j];
+  for (int i = 0; i < n; ++i) {
+    std::copy(matrix.begin() + i * n, matrix.begin() + (i + 1) * n, temp[i].begin());
+  }
 
   for (int row = 0; row < rank; ++row) {
     if (temp[row][row] == 0) {
@@ -158,7 +158,7 @@ bool veliev_e_jacobi_method_mpi::MethodJacobiMPI::pre_processing() {
 }
 
 void veliev_e_jacobi_method_mpi::MethodJacobiMPI::iteration_J() {
-  std::vector<double> TempX(N, 0.0);
+  std::vector<double> TempX(N);
   int rank = world.rank();
   int size = world.size();
 
