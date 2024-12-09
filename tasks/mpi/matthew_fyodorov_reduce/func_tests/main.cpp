@@ -6,7 +6,7 @@
 
 #include "mpi/matthew_fyodorov_reduce/include/ops_mpi.hpp"
 
-std::vector<int> matthew_fyodorov_reduce_custom_mpi ::getRandomVector(int sz) {
+std::vector<int> matthew_fyodorov_reduce_mpi ::getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::uniform_int_distribution<> dist(-100, 100);
