@@ -62,7 +62,8 @@ bool naumov_b_bubble_sort_seq::TestTaskSequential::post_processing() {
 
 bool naumov_b_bubble_sort_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
@@ -147,7 +148,8 @@ bool naumov_b_bubble_sort_mpi::TestMPITaskParallel::run() {
 
 bool naumov_b_bubble_sort_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
