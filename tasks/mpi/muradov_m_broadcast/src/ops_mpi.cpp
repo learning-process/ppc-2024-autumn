@@ -6,6 +6,13 @@
 bool muradov_m_broadcast_mpi::BroadcastParallelMPI::validation() {
   internal_order_test();
 
+  int val_source_worker = *taskData->inputs[0];
+
+  if (world.rank() == val_source_worker) {
+    int A_size = taskData->inputs_count[1];
+    return A_size > 0;
+  }
+
   return true;
 }
 

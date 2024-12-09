@@ -56,15 +56,17 @@ void test_template_rundom(int n, int source = 0) {
   taskDataBroadcast->outputs_count.emplace_back(n);
 
   auto taskBroadcast = std::make_shared<BroadcastParallelMPI>(taskDataBroadcast);
-  taskBroadcast->validation();
+  bool val_res = taskBroadcast->validation();
   taskBroadcast->pre_processing();
   taskBroadcast->run();
   taskBroadcast->post_processing();
 
-  EXPECT_EQ(A_res, B_res);
+  if (val_res) EXPECT_EQ(A_res, B_res);
 }
 
 }  // namespace muradov_m_broadcast_mpi
+
+TEST(muradov_m_broadcast_mpi, data_size_0) { muradov_m_broadcast_mpi::test_template_rundom(0); }
 
 TEST(muradov_m_broadcast_mpi, data_size_1) { muradov_m_broadcast_mpi::test_template_rundom(1); }
 

@@ -29,10 +29,6 @@ TEST(muradov_m_broadcast_mpi, pipeline_run) {
   boost::mpi::communicator world;
   int source = 0;
 
-  if (world.size() <= source) {
-    GTEST_SKIP();
-  }
-
   int n = 100000;
   std::vector<int> A;
   std::vector<int> A_res(n);
@@ -84,10 +80,6 @@ TEST(muradov_m_broadcast_mpi, task_run) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
   int source = 0;
-
-  if (world.size() <= source) {
-    GTEST_SKIP();
-  }
 
   int n = 100000;
   std::vector<int> A;
