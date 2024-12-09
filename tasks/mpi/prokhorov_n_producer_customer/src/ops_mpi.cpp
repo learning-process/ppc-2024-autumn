@@ -4,6 +4,8 @@
 
 #include <algorithm>
 #include <iostream>
+#include <mutex>
+#include <numeric>
 #include <vector>
 
 namespace prokhorov_n_producer_customer_mpi {
@@ -11,16 +13,17 @@ namespace prokhorov_n_producer_customer_mpi {
 std::vector<int> buffer;
 int buffer_capacity = 20;
 int buffer_size = 0;
+std::mutex buffer_mutex;
+bool processing_complete = false;
 
-std::vector<int> getPredefinedVector(int sz) {
-  std::vector<int> vec(sz, 1);
-  return vec;
-}
+std::vector<int> getPredefinedVector(int sz) { return std::vector<int>(sz, 1); }
 
 bool TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
   if (world.size() < 3) {
+    if (world.rank() == 0) {
+    }
     return false;
   }
 
@@ -35,11 +38,9 @@ bool TestMPITaskParallel::pre_processing() {
     if (total_data_count == 0) {
       return false;
     }
-
-    broadcast(world, total_data_count, 0);
-  } else {
-    broadcast(world, total_data_count, 0);
   }
+
+  broadcast(world, total_data_count, 0);
 
   return true;
 }
@@ -55,10 +56,13 @@ bool TestMPITaskParallel::validation() {
 bool TestMPITaskParallel::run() {
   internal_order_test();
 
-  int data_size;
+  int data_size = 0;
+
   broadcast(world, data_size, 0);
 
   if (data_size <= 0) {
+    if (world.rank() == 0) {
+    }
     return false;
   }
 
@@ -77,34 +81,57 @@ bool TestMPITaskParallel::run() {
     }
   } else if (world.rank() < world.size() - 1) {
     int chunk_size = data_size / (world.size() - 2);
+    if (world.rank() == world.size() - 2) {
+      chunk_size += data_size % (world.size() - 2);
+    }
     local_input_.resize(chunk_size);
 
     world.recv(0, 0, local_input_.data(), chunk_size);
 
     for (int val : local_input_) {
-      while (buffer_size >= buffer_capacity) {
-        MPI_Barrier(MPI_COMM_WORLD);
+      {
+        std::unique_lock<std::mutex> lock(buffer_mutex);
+        while (buffer_size >= buffer_capacity && !processing_complete) {
+          lock.unlock();
+          MPI_Barrier(MPI_COMM_WORLD);
+          lock.lock();
+        }
+        if (processing_complete) break;
+
+        buffer.push_back(val);
+        buffer_size++;
       }
-      buffer.push_back(val);
-      buffer_size++;
+      MPI_Barrier(MPI_COMM_WORLD);
     }
   } else {
     std::vector<int> consumer_results;
 
     while (consumer_results.size() < static_cast<size_t>(data_size)) {
-      while (buffer_size == 0) {
-        MPI_Barrier(MPI_COMM_WORLD);
+      {
+        std::unique_lock<std::mutex> lock(buffer_mutex);
+        while (buffer_size == 0 && !processing_complete) {
+          lock.unlock();
+          MPI_Barrier(MPI_COMM_WORLD);
+          lock.lock();
+        }
+        if (processing_complete) break;
+
+        int data = buffer.back();
+        buffer.pop_back();
+        buffer_size--;
+
+        consumer_results.push_back(data * 2);
       }
-
-      int data = buffer.back();
-      buffer.pop_back();
-      buffer_size--;
-
-      consumer_results.push_back(data * 2);
+      MPI_Barrier(MPI_COMM_WORLD);
     }
 
     world.send(0, 0, consumer_results.data(), consumer_results.size());
   }
+
+  if (world.rank() == 0) {
+    processing_complete = true;
+  }
+  MPI_Barrier(MPI_COMM_WORLD);
 
   return true;
 }
