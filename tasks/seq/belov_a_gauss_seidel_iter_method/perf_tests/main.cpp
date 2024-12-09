@@ -8,6 +8,7 @@
 
 using namespace belov_a_gauss_seidel_seq;
 
+namespace belov_a_gauss_seidel_seq {
 std::vector<double> generateDiagonallyDominantMatrix(int n) {
   std::vector<double> A_local(n * n, 0.0);
 
@@ -40,6 +41,7 @@ std::vector<double> generateFreeMembers(int n) {
   }
   return freeMembers;
 }
+}  // namespace belov_a_gauss_seidel_seq
 
 TEST(belov_a_gauss_seidel_perf_test, test_pipeline_run) {
   // Create data

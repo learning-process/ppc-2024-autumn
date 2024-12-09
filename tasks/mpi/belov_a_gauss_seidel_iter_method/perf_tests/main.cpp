@@ -9,6 +9,7 @@
 
 using namespace belov_a_gauss_seidel_mpi;
 
+namespace belov_a_gauss_seidel_mpi {
 std::vector<double> generateDiagonallyDominantMatrix(int n) {
   std::vector<double> A_local(n * n, 0.0);
 
@@ -41,6 +42,7 @@ std::vector<double> generateFreeMembers(int n) {
   }
   return freeMembers;
 }
+}  // namespace belov_a_gauss_seidel_mpi
 
 TEST(belov_a_gauss_seidel_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
