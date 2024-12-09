@@ -218,7 +218,7 @@ TEST(budazhapova_e_matrix_mult_mpi, random_test_1) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    std::vector<int> out_seq(3, 0);
+    std::vector<int> out_seq(20, 0);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(A_matrix.data()));
     taskDataSeq->inputs_count.emplace_back(A_matrix.size());
