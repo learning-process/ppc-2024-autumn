@@ -85,7 +85,7 @@ bool sozonov_i_gaussian_method_horizontal_strip_scheme_seq::TestTaskSequential::
   rows = taskData->inputs_count[2];
 
   // Check matrix for a single solution
-  return taskData->inputs_count[0] > 0 && rows == cols - 1 && determinant(cols, rows, matrix) != 0 &&
+  return taskData->inputs_count[0] > 1 && rows == cols - 1 && determinant(cols, rows, matrix) != 0 &&
          extended_matrix_rank(cols, rows, matrix) == rows;
 }
 
@@ -111,8 +111,7 @@ bool sozonov_i_gaussian_method_horizontal_strip_scheme_seq::TestTaskSequential::
 
 bool sozonov_i_gaussian_method_horizontal_strip_scheme_seq::TestTaskSequential::post_processing() {
   internal_order_test();
-  for (int i = 0; i < cols - 1; ++i) {
-    reinterpret_cast<double*>(taskData->outputs[0])[i] = x[i];
-  }
+  auto* out = reinterpret_cast<double*>(taskData->outputs[0]);
+  std::copy(x.begin(), x.end(), out);
   return true;
 }
