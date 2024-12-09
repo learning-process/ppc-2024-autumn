@@ -2,7 +2,7 @@
 #pragma once
 
 #include <gtest/gtest.h>
-#include <math.h>
+#include <cmath>
 
 #include <algorithm>
 #include <boost/mpi/collectives.hpp>
