@@ -7,7 +7,7 @@
 
 #include "mpi/matthew_fyodorov_reduce/include/ops_mpi.hpp"
 
-std::vector<int> getRandomVector(int sz) {
+std::vector<int> getRandomVectora(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::uniform_int_distribution<> dist(-100, 100);
@@ -170,7 +170,7 @@ TEST(matthew_fyodorov_reduce_mpi, TestMPITaskParallel_Sum_Random_Numbers) {
   int size = world.size();
 
   if (size > 1) {
-    std::vector<int> input = getRandomVector(5);
+    std::vector<int> input = getRandomVectora(5);
     std::vector<int> output(1);
     std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
 
