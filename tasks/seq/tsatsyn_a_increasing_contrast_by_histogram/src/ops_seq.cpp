@@ -1,5 +1,6 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/tsatsyn_a_increasing_contrast_by_histogram/include/ops_seq.hpp"
+
 #include <cmath>
 #include <thread>
 
