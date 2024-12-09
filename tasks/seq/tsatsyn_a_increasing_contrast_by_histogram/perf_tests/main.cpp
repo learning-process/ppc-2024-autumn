@@ -21,7 +21,8 @@ TEST(sequential_tsatsyn_a_increasing_contrast_by_histogram_perf_test, test_pipel
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto testTaskSequential = std::make_shared<tsatsyn_a_increasing_contrast_by_histogram_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential =
+      std::make_shared<tsatsyn_a_increasing_contrast_by_histogram_seq::TestTaskSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -58,7 +59,8 @@ TEST(sequential_tsatsyn_a_increasing_contrast_by_histogram_perf_test, test_task_
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto testTaskSequential = std::make_shared<tsatsyn_a_increasing_contrast_by_histogram_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential =
+      std::make_shared<tsatsyn_a_increasing_contrast_by_histogram_seq::TestTaskSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();

@@ -47,50 +47,50 @@ bool tsatsyn_a_increasing_contrast_by_histogram_mpi::TestMPITaskParallel::run() 
     for (int i = 0; i < input_data.size(); i += world.size()) {
       local_data.emplace_back(input_data[i]);
     }
-    //std::vector<double> localka(256, 0);
-    //for (int i = 0; i < input_data.size(); i++) {
-    //  localka[input_data[i]]++;
-    //}
-    //for (int i = 0; i < localka.size(); i++) {
-    //  std::cout << localka[i] << " ";
-    //}
-    //std::cout << std::endl;
-    //std::cout << std::endl;
-    //std::cout << std::endl;
-    //std::cout << std::endl;
-    //for (int i = 0; i < localka.size(); i++) {
-    //  localka[i] /= width;
-    //  std::cout << localka[i] << " ";
-    //}
-    //std::cout << std::endl;
-    //std::cout << std::endl;
-    //std::cout << std::endl;
-    //std::cout << std::endl;
-    //std::cout << localka[0] << " ";
-    //for (int i = 1; i < localka.size(); i++) {
-    //  localka[i] = (localka[i] + localka[i - 1]);
-    //  std::cout << localka[i] << " ";
-    //}
-    //std::cout << std::endl;
-    //std::cout << std::endl;
-    //std::cout << std::endl;
-    //std::cout << std::endl;
-    //for (int i = 0; i < localka.size(); i++) {
-    //  localka[i] *= 255;
-    //  std::cout << localka[i] << " ";
-    //}
-    //std::cout << std::endl;
-    //std::cout << std::endl;
-    //std::cout << std::endl;
-    //std::cout << std::endl;
-    //for (int i = 0; i < localka.size(); i++) {
-    //  localka[i] = round(localka[i]);
-    //  std::cout << localka[i] << " ";
-    //}
-    //std::cout << std::endl;
-    //std::cout << std::endl;
-    //std::cout << std::endl;
-    //std::cout << std::endl;
+    // std::vector<double> localka(256, 0);
+    // for (int i = 0; i < input_data.size(); i++) {
+    //   localka[input_data[i]]++;
+    // }
+    // for (int i = 0; i < localka.size(); i++) {
+    //   std::cout << localka[i] << " ";
+    // }
+    // std::cout << std::endl;
+    // std::cout << std::endl;
+    // std::cout << std::endl;
+    // std::cout << std::endl;
+    // for (int i = 0; i < localka.size(); i++) {
+    //   localka[i] /= width;
+    //   std::cout << localka[i] << " ";
+    // }
+    // std::cout << std::endl;
+    // std::cout << std::endl;
+    // std::cout << std::endl;
+    // std::cout << std::endl;
+    // std::cout << localka[0] << " ";
+    // for (int i = 1; i < localka.size(); i++) {
+    //   localka[i] = (localka[i] + localka[i - 1]);
+    //   std::cout << localka[i] << " ";
+    // }
+    // std::cout << std::endl;
+    // std::cout << std::endl;
+    // std::cout << std::endl;
+    // std::cout << std::endl;
+    // for (int i = 0; i < localka.size(); i++) {
+    //   localka[i] *= 255;
+    //   std::cout << localka[i] << " ";
+    // }
+    // std::cout << std::endl;
+    // std::cout << std::endl;
+    // std::cout << std::endl;
+    // std::cout << std::endl;
+    // for (int i = 0; i < localka.size(); i++) {
+    //   localka[i] = round(localka[i]);
+    //   std::cout << localka[i] << " ";
+    // }
+    // std::cout << std::endl;
+    // std::cout << std::endl;
+    // std::cout << std::endl;
+    // std::cout << std::endl;
   } else {
     world.recv(0, 0, local_data);
     std::vector<double> localka(256, 0);

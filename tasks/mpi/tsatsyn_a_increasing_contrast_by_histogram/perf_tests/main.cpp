@@ -24,7 +24,8 @@ TEST(mpi_tsatsyn_a_increasing_contrast_by_histogram_perf_test, test_pipeline_run
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<tsatsyn_a_increasing_contrast_by_histogram_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel =
+      std::make_shared<tsatsyn_a_increasing_contrast_by_histogram_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -64,7 +65,8 @@ TEST(mpi_tsatsyn_a_increasing_contrast_by_histogram_perf_test, test_task_run) {
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<tsatsyn_a_increasing_contrast_by_histogram_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel =
+      std::make_shared<tsatsyn_a_increasing_contrast_by_histogram_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
