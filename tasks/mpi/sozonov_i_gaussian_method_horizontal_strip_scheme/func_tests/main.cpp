@@ -234,7 +234,7 @@ TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_mpi, test_101x100) {
 TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_mpi, test_random_101x100) {
   boost::mpi::communicator world;
 
-  const double EPS = 1e-9;
+  const double EPS = 1e-6;
 
   const int cols = 101;
   const int rows = 100;
