@@ -10,7 +10,8 @@ TEST(mismatched_numbers_mpi, test_pipeline_run) {
   // create data
   boost::mpi::communicator world;
 
-  std::string str1, str2 = "";
+  std::string str1 = "";
+  std::string str2 = "";
   std::vector<std::string> v1;
   std::vector<int> out(1, 0);
 
@@ -59,7 +60,8 @@ TEST(mismatched_numbers_mpi, test_task_run) {
   // create data
   boost::mpi::communicator world;
 
-  std::string str1, str2 = "";
+  std::string str1 = "";
+  std::string str2 = "";
   std::vector<std::string> v1;
   std::vector<int> out(1, 0);
 
@@ -107,12 +109,14 @@ TEST(mismatched_numbers_mpi, test_task_run) {
 TEST(mismatched_numbers_seq, test_pipeline_run) {
   // create data
 
-  std::string str1, str2 = "";
+  std::string str1 = "";
+  std::string str2 = "";
   std::vector<std::string> v1;
 
   std::vector<int> out(1, 0);
 
-  std::string S = "qwerty", S1 = "qwertY";
+  std::string S = "qwerty";
+  std::string S1 = "qwertY";
 
   for (int i = 0; i < 100000; i++) {
     str1 += S;
@@ -156,12 +160,14 @@ TEST(mismatched_numbers_seq, test_pipeline_run) {
 TEST(mismatched_numbers_seq, test_task_run) {
   // create data
 
-  std::string str1, str2 = "";
+  std::string str1 = "";
+  std::string str2 = "";
   std::vector<std::string> v1;
 
   std::vector<int> out(1, 0);
 
-  std::string S = "qwerty", S1 = "qwertY";
+  std::string S = "qwerty";
+  std::string S1 = "qwertY";
 
   for (int i = 0; i < 100000; i++) {
     str1 += S;

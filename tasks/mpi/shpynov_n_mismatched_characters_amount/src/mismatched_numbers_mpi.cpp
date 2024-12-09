@@ -30,8 +30,8 @@ int unique_characters(std::vector<std::string> const &vec1) {  // count unique c
 
 bool shpynov_n_mismatched_numbers_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();  // recieving data
-  input_.push_back(std::string(reinterpret_cast<char *>(taskData->inputs[0])));
-  input_.push_back(std::string(reinterpret_cast<char *>(taskData->inputs[1])));
+  input_.emplace_back(std::string(reinterpret_cast<char *>(taskData->inputs[0])));
+  input_.emplace_back(std::string(reinterpret_cast<char *>(taskData->inputs[1])));
 
   res = 0;
 
@@ -61,8 +61,8 @@ bool shpynov_n_mismatched_numbers_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {  // root receiving input data
     res = 0;
-    input_.push_back(std::string(reinterpret_cast<char *>(taskData->inputs[0])));
-    input_.push_back(std::string(reinterpret_cast<char *>(taskData->inputs[1])));
+    input_.emplace_back(std::string(reinterpret_cast<char *>(taskData->inputs[0])));
+    input_.emplace_back(std::string(reinterpret_cast<char *>(taskData->inputs[1])));
   }
   return true;
 }
@@ -99,18 +99,19 @@ bool shpynov_n_mismatched_numbers_mpi::TestMPITaskParallel::run() {
     }
   }
   if (world.rank() == 0) {  // root receiving its data
-    local_input_.push_back(input_[0].substr(0, delta));
-    local_input_.push_back(input_[1].substr(0, delta));
+    local_input_.emplace_back(input_[0].substr(0, delta));
+    local_input_.emplace_back(input_[1].substr(0, delta));
   } else {  // processes receiving their data
-    std::string tmp1, tmp2;
+    std::string tmp1;
+    std::string tmp2;
     tmp1.resize(delta);
     tmp2.resize(delta);
 
     world.recv(0, 0, tmp1.data(), delta);
     world.recv(0, 0, tmp2.data(), delta);
 
-    local_input_.push_back(tmp1);
-    local_input_.push_back(tmp2);
+    local_input_.emplace_back(tmp1);
+    local_input_.emplace_back(tmp2);
   }
 
   int loc_res = unique_characters(local_input_);  // counting unique characters

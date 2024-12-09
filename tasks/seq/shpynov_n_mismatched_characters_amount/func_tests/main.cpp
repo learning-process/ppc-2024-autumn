@@ -8,7 +8,8 @@
 TEST(shpynov_n_amount_of_mismatched_numbers_seq, empty_strings) {
   // Create data
 
-  std::string str1, str2 = "";
+  std::string str1 = "";
+  std::string str2 = "";
   std::vector<std::string> v1{str1, str2};
 
   std::vector<int> out(1, 0);

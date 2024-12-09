@@ -10,7 +10,8 @@ TEST(Parallel_Operations_MPI, both_strings_empty) {
   // Create data
   boost::mpi::communicator world;
 
-  std::string str1, str2 = "";
+  std::string str1 = "";
+  std::string str2 = "";
   std::vector<std::string> v1{str1, str2};
 
   std::vector<int> out(1, 0);
@@ -38,7 +39,8 @@ TEST(Parallel_Operations_MPI, both_strings_empty) {
 TEST(Parallel_Operations_MPI, only_one_string_is_empty) {
   boost::mpi::communicator world;
 
-  std::string str1 = "abcd", str2 = "";
+  std::string str1 = "abcd";
+  std::string str2 = "";
   std::vector<std::string> v1{str1, str2};
 
   std::vector<int> out(1, 0);
@@ -66,7 +68,8 @@ TEST(Parallel_Operations_MPI, only_one_string_is_empty) {
 TEST(Parallel_Operations_MPI, same_strings) {
   boost::mpi::communicator world;
 
-  std::string str1 = "abcd", str2 = "abcd";
+  std::string str1 = "abcd";
+  std::string str2 = "abcd";
   std::vector<std::string> v1{str1, str2};
 
   std::vector<int> out(1, 0);
@@ -272,7 +275,8 @@ TEST(Parallel_Operations_MPI, parrallel_is_equal_to_sequential) {
   std::string str2 = "aedvfc@vnjgbj!e";
   std::vector<std::string> v1{str1, str2};
 
-  std::vector<int> out(1, 0), out_seq(1, 0);
+  std::vector<int> out(1, 0);
+  std::vector<int> out_seq(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {

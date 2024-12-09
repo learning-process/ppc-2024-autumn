@@ -8,12 +8,14 @@
 TEST(shpynov_n_amount_of_mismatched_numbers_seq_perf_test, test_pipeline_run) {
   // Create data
 
-  std::string str1, str2 = "";
+  std::string str1 = "";
+  std::string str2 = "";
   std::vector<std::string> v1;
 
   std::vector<int> out(1, 0);
 
-  std::string S = "qwerty", S1 = "qwertY";
+  std::string S = "qwerty";
+  std::string S1 = "qwertY";
 
   for (int i = 0; i < 100000; i++) {
     str1 += S;
@@ -58,7 +60,8 @@ TEST(shpynov_n_amount_of_mismatched_numbers_seq_perf_test, test_pipeline_run) {
 TEST(shpynov_n_amount_of_mismatched_numbers_seq_perf_test, test_task_run) {
   // Create data
 
-  std::string str1, str2 = "";
+  std::string str1 = "";
+  std::string str2 = "";
   std::vector<std::string> v1;
 
   std::vector<int> out(1, 0);
