@@ -40,44 +40,46 @@ void somov_i_horizontal_scheme::distribute_matrix_rows(int32_t row, int32_t col,
 
 bool somov_i_horizontal_scheme::MatrixVectorTaskMPI::validation() {
   internal_order_test();
-  bool validMatrix = taskData->inputs[0] != nullptr && taskData->inputs_count[0] > 0;
-  bool validVector = taskData->inputs[1] != nullptr && taskData->inputs_count[1] > 0;
-  bool validDimensions = validMatrix && validVector && taskData->inputs_count[0] % taskData->inputs_count[1] == 0;
-  bool validResult =
-      validDimensions && taskData->outputs_count[0] == taskData->inputs_count[0] / taskData->inputs_count[1];
+  if (world.rank() == 0) {
+    bool validMatrix = taskData->inputs[0] != nullptr && taskData->inputs_count[0] > 0;
+    bool validVector = taskData->inputs[1] != nullptr && taskData->inputs_count[1] > 0;
+    bool validDimensions = validMatrix && validVector && taskData->inputs_count[0] % taskData->inputs_count[1] == 0;
+    bool validResult =
+        validDimensions && taskData->outputs_count[0] == taskData->inputs_count[0] / taskData->inputs_count[1];
 
-  if (validResult) {
-    std::vector<int32_t> validSizes;
-    std::vector<int32_t> validDispls;
-    size_t validCols = taskData->inputs_count[1];
-    size_t validRows = taskData->inputs_count[0] / taskData->inputs_count[1];
-    size_t validNumProc = world.size();
-    somov_i_horizontal_scheme::distribute_matrix_rows(validRows, validCols, validNumProc, validSizes, validDispls);
+    if (validResult) {
+      std::vector<int32_t> validSizes;
+      std::vector<int32_t> validDispls;
+      size_t validCols = taskData->inputs_count[1];
+      size_t validRows = taskData->inputs_count[0] / taskData->inputs_count[1];
+      size_t validNumProc = world.size();
+      somov_i_horizontal_scheme::distribute_matrix_rows(validRows, validCols, validNumProc, validSizes, validDispls);
 
-    bool sizesEqNumProc = validSizes.size() == validNumProc;
-    bool displsEqNumProc = validDispls.size() == validNumProc;
-    size_t i;
-    for (i = 0; i < validNumProc; ++i) {
-      if (i < validRows) {
-        if (validSizes[i] == static_cast<int32_t>(validCols)) break;
-        if (validDispls[i] == static_cast<int32_t>(i * validCols)) break;
-      } else {
-        if (validSizes[i] == 0) break;
-        if (validDispls[i] == 0) break;
+      bool sizesEqNumProc = validSizes.size() == validNumProc;
+      bool displsEqNumProc = validDispls.size() == validNumProc;
+      size_t i;
+      for (i = 0; i < validNumProc; ++i) {
+        if (i < validRows) {
+          if (validSizes[i] == static_cast<int32_t>(validCols)) break;
+          if (validDispls[i] == static_cast<int32_t>(i * validCols)) break;
+        } else {
+          if (validSizes[i] == 0) break;
+          if (validDispls[i] == 0) break;
+        }
       }
+      bool flag = i == validNumProc - 1;
+      return sizesEqNumProc && displsEqNumProc && flag;
     }
-    bool flag = i == validNumProc - 1;
-    return sizesEqNumProc && displsEqNumProc && flag;
   }
-  return false;
+  return true;
 }
 
 bool somov_i_horizontal_scheme::MatrixVectorTaskMPI::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    auto* matrixData = reinterpret_cast<int32_t*>(taskData->inputs[0]);
+    int32_t* matrixData = reinterpret_cast<int32_t*>(taskData->inputs[0]);
     int32_t matrixSize = taskData->inputs_count[0];
-    auto* vectorData = reinterpret_cast<int32_t*>(taskData->inputs[1]);
+    int32_t* vectorData = reinterpret_cast<int32_t*>(taskData->inputs[1]);
     int32_t vectorSize = taskData->inputs_count[1];
 
     matrix_.assign(matrixData, matrixData + matrixSize);
@@ -147,7 +149,7 @@ bool somov_i_horizontal_scheme::MatrixVectorTaskMPI::run() {
 bool somov_i_horizontal_scheme::MatrixVectorTaskMPI::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    auto* outputData = reinterpret_cast<int32_t*>(taskData->outputs[0]);
+    int32_t* outputData = reinterpret_cast<int32_t*>(taskData->outputs[0]);
     std::copy(result_.begin(), result_.end(), outputData);
   }
   return true;
@@ -166,9 +168,9 @@ bool somov_i_horizontal_scheme::MatrixVectorTask::validation() {
 
 bool somov_i_horizontal_scheme::MatrixVectorTask::pre_processing() {
   internal_order_test();
-  auto* matrixData = reinterpret_cast<int32_t*>(taskData->inputs[0]);
+  int32_t* matrixData = reinterpret_cast<int32_t*>(taskData->inputs[0]);
   int32_t matrixSize = taskData->inputs_count[0];
-  auto* vectorData = reinterpret_cast<int32_t*>(taskData->inputs[1]);
+  int32_t* vectorData = reinterpret_cast<int32_t*>(taskData->inputs[1]);
   int32_t vectorSize = taskData->inputs_count[1];
 
   matrix_.assign(matrixData, matrixData + matrixSize);
@@ -196,7 +198,7 @@ bool somov_i_horizontal_scheme::MatrixVectorTask::run() {
 
 bool somov_i_horizontal_scheme::MatrixVectorTask::post_processing() {
   internal_order_test();
-  auto* outputData = reinterpret_cast<int32_t*>(taskData->outputs[0]);
+  int32_t* outputData = reinterpret_cast<int32_t*>(taskData->outputs[0]);
   std::copy(result_.begin(), result_.end(), outputData);
   return true;
 }

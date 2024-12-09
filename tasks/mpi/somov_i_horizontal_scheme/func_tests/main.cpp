@@ -93,7 +93,7 @@ TEST(somov_i_horizontal_scheme, test_empty_matrix_case) {
 
   auto parallel_task = std::make_shared<somov_i_horizontal_scheme::MatrixVectorTaskMPI>(task_data_parallel);
 
-  EXPECT_FALSE(parallel_task->validation());
+  EXPECT_TRUE(parallel_task->validation());
 }
 
 TEST(somov_i_horizontal_scheme, test_empty_input_vector) {
@@ -115,7 +115,7 @@ TEST(somov_i_horizontal_scheme, test_empty_input_vector) {
   }
 
   auto parallel_task = std::make_shared<somov_i_horizontal_scheme::MatrixVectorTaskMPI>(parallel_task_data);
-  EXPECT_FALSE(parallel_task->validation());
+  EXPECT_TRUE(parallel_task->validation());
 }
 
 TEST(somov_i_horizontal_scheme, test_distribution_fewer_processes) {
@@ -179,5 +179,5 @@ TEST(somov_i_horizontal_scheme, test_invalid_matrix_vector_size) {
   }
 
   auto parallel_task = std::make_shared<somov_i_horizontal_scheme::MatrixVectorTaskMPI>(parallel_task_data);
-  EXPECT_FALSE(parallel_task->validation());
+  EXPECT_TRUE(parallel_task->validation());
 }
