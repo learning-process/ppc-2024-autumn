@@ -99,15 +99,9 @@ bool suvorov_d_linear_topology_mpi::MPILinearTopology::run() {
 bool suvorov_d_linear_topology_mpi::MPILinearTopology::post_processing() {
   internal_order_test();
 
-  if (world.size() == 1) {
-    bool* output_data_ptr = reinterpret_cast<bool*>(taskData->outputs[0]);
-    output_data_ptr[0] = true;
-    return true;
-  }
-
   if (world.rank() == 0) {
     bool* output_data_ptr = reinterpret_cast<bool*>(taskData->outputs[0]);
-    output_data_ptr[0] = result_;
+    output_data_ptr[0] = world.size() == 1 ? true : result_;
   }
 
   return true;
