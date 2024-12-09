@@ -7,7 +7,7 @@
 
 #include "mpi/plekhanov_d_allreduce_boost/include/ops_mpi.hpp"
 
-std::vector<int> getRandomMatrix(int size) {
+static std::vector<int> getRandomMatrix(int size) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(size);
