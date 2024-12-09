@@ -226,8 +226,8 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, correct_matrix_and_vector_mpi) {
   sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI taskParallel(taskDataPar);
   ASSERT_TRUE(taskParallel.validation());
   ASSERT_TRUE(taskParallel.pre_processing());
-  /*taskParallel.run();
-  taskParallel.post_processing();*/
+  taskParallel.run();
+  taskParallel.post_processing();
 
   std::vector<int> expected_result = {39, 54, 69};
   ASSERT_EQ(result, expected_result);
