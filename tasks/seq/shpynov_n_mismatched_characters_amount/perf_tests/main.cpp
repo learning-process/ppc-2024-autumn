@@ -66,7 +66,8 @@ TEST(shpynov_n_amount_of_mismatched_numbers_seq_perf_test, test_task_run) {
 
   std::vector<int> out(1, 0);
 
-  std::string S = "qwerty", S1 = "qwertY";
+  std::string S = "qwerty";
+  std::string S1 = "qwertY";
 
   for (int i = 0; i < 100000; i++) {
     str1 += S;
