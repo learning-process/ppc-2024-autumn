@@ -68,8 +68,8 @@ bool Sdobnov_iteration_method_yakoby::IterationMethodYakobySeq::pre_processing()
   free_members_.assign(size_, 0.0);
   res_.assign(size_, 0.0);
 
-  auto pmatrix = reinterpret_cast<double*>(taskData->inputs[0]);
-  auto pfree_members = reinterpret_cast<double*>(taskData->inputs[1]);
+  auto* pmatrix = reinterpret_cast<double*>(taskData->inputs[0]);
+  auto* pfree_members = reinterpret_cast<double*>(taskData->inputs[1]);
 
   std::copy(pmatrix, pmatrix + size_ * size_, matrix_.begin());
   std::copy(pfree_members, pfree_members + size_, free_members_.begin());
@@ -87,7 +87,7 @@ bool Sdobnov_iteration_method_yakoby::IterationMethodYakobySeq::validation() {
 
   int size = taskData->inputs_count[0];
   std::vector<double> matrix(size * size, 0.0);
-  auto pmatrix = reinterpret_cast<double*>(taskData->inputs[0]);
+  auto* pmatrix = reinterpret_cast<double*>(taskData->inputs[0]);
   std::copy(pmatrix, pmatrix + size * size, matrix.begin());
 
   return isDiagonallyDominant(size, matrix);

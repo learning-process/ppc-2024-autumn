@@ -121,8 +121,8 @@ bool Sdobnov_iteration_method_yakoby::IterationMethodYakobySeq::pre_processing()
   free_members_.assign(size_, 0.0);
   res_.assign(size_, 0.0);
 
-  auto pmatrix = reinterpret_cast<double*>(taskData->inputs[0]);
-  auto pfree_members = reinterpret_cast<double*>(taskData->inputs[1]);
+  auto* pmatrix = reinterpret_cast<double*>(taskData->inputs[0]);
+  auto* pfree_members = reinterpret_cast<double*>(taskData->inputs[1]);
 
   std::copy(pmatrix, pmatrix + size_ * size_, matrix_.begin());
   std::copy(pfree_members, pfree_members + size_, free_members_.begin());
@@ -140,7 +140,7 @@ bool Sdobnov_iteration_method_yakoby::IterationMethodYakobySeq::validation() {
 
   int size = taskData->inputs_count[0];
   std::vector<double> matrix(size * size, 0.0);
-  auto pmatrix = reinterpret_cast<double*>(taskData->inputs[0]);
+  auto* pmatrix = reinterpret_cast<double*>(taskData->inputs[0]);
   std::copy(pmatrix, pmatrix + size * size, matrix.begin());
 
   return isDiagonallyDominant(size, matrix);
@@ -175,8 +175,8 @@ bool Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar::pre_processing()
     res_.assign(size_, 0.0);
     last_res.assign(size_, 0.0);
 
-    auto pmatrix = reinterpret_cast<double*>(taskData->inputs[0]);
-    auto pfree_members = reinterpret_cast<double*>(taskData->inputs[1]);
+    auto* pmatrix = reinterpret_cast<double*>(taskData->inputs[0]);
+    auto* pfree_members = reinterpret_cast<double*>(taskData->inputs[1]);
 
     std::copy(pmatrix, pmatrix + size_ * size_, matrix_.begin());
     std::copy(pfree_members, pfree_members + size_, free_members_.begin());
@@ -199,7 +199,7 @@ bool Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar::validation() {
 
     int size = taskData->inputs_count[0];
     std::vector<double> matrix(size * size, 0.0);
-    auto pmatrix = reinterpret_cast<double*>(taskData->inputs[0]);
+    auto* pmatrix = reinterpret_cast<double*>(taskData->inputs[0]);
     std::copy(pmatrix, pmatrix + size * size, matrix.begin());
     return isDiagonallyDominant(size, matrix);
   }
@@ -240,7 +240,7 @@ bool Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar::run() {
 
     for (int i = 0; i < free_members_part_sizes[world.rank()]; i++) {
       double sum = 0;
-      for (int j = 0; j < static_cast<int>(size_); j++) {
+      for (int j = 0; j < size_; j++) {
         if (j != (free_members_part_offsets[world.rank()] + i)) {
           sum += l_matrix[i * size_ + j] * last_res[j];
         }
