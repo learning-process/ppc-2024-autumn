@@ -55,7 +55,7 @@ TEST(veliev_e_jacobi_method_mpi, test_pipeline_run) {
 
   auto mpiTask = std::make_shared<veliev_e_jacobi_method_mpi::MethodJacobiMPI>(taskDataMPI);
 
-  ASSERT_EQ(mpiTask->validation(), true);
+  ASSERT_TRUE(mpiTask->validation());
   mpiTask->pre_processing();
   mpiTask->run();
   mpiTask->post_processing();
@@ -112,7 +112,7 @@ TEST(veliev_e_jacobi_method_mpi, test_task_run) {
 
   auto mpiTask = std::make_shared<veliev_e_jacobi_method_mpi::MethodJacobiMPI>(taskDataMPI);
 
-  ASSERT_EQ(mpiTask->validation(), true);
+  ASSERT_TRUE(mpiTask->validation());
   mpiTask->pre_processing();
   mpiTask->run();
   mpiTask->post_processing();

@@ -31,7 +31,7 @@ TEST(veliev_e_jacobi_method_mpi, Test_4x4_system) {
 
   veliev_e_jacobi_method_mpi::MethodJacobiMPI mpiTask(taskDataMPI);
 
-  ASSERT_EQ(mpiTask.validation(), true);
+  ASSERT_TRUE(mpiTask.validation());
   mpiTask.pre_processing();
   mpiTask.run();
   mpiTask.post_processing();
@@ -61,7 +61,7 @@ TEST(veliev_e_jacobi_method_mpi, Test_4x4_system) {
 
     veliev_e_jacobi_method_mpi::MethodJacobiSeq seqTask(taskDataSeq);
 
-    ASSERT_EQ(seqTask.validation(), true);
+    ASSERT_TRUE(seqTask.validation());
     seqTask.pre_processing();
     seqTask.run();
     seqTask.post_processing();
@@ -112,9 +112,9 @@ TEST(veliev_e_jacobi_method_mpi, Test_incorrect_system_with_zero_diagonal) {
   veliev_e_jacobi_method_mpi::MethodJacobiMPI mpiTask(taskDataMPI);
 
   if (world.rank() == 0)
-    ASSERT_EQ(mpiTask.validation(), false);
+    ASSERT_FALSE(mpiTask.validation());
   else
-    ASSERT_EQ(mpiTask.validation(), true);
+    ASSERT_TRUE(mpiTask.validation());
 
   if (world.rank() == 0) {
     std::vector<double> resultSeq(systemSize, 0.0);
@@ -130,7 +130,7 @@ TEST(veliev_e_jacobi_method_mpi, Test_incorrect_system_with_zero_diagonal) {
 
     veliev_e_jacobi_method_mpi::MethodJacobiSeq seqTask(taskDataSeq);
 
-    ASSERT_EQ(seqTask.validation(), false);
+    ASSERT_FALSE(seqTask.validation());
   }
 }
 
@@ -160,7 +160,7 @@ TEST(veliev_e_jacobi_method_mpi, Test_empty_system) {
   veliev_e_jacobi_method_mpi::MethodJacobiMPI mpiTask(taskDataMPI);
 
   if (world.rank() == 0)
-    ASSERT_EQ(mpiTask.validation(), false);
+    ASSERT_FALSE(mpiTask.validation());
   else
     ASSERT_EQ(true, true);
 
@@ -178,7 +178,7 @@ TEST(veliev_e_jacobi_method_mpi, Test_empty_system) {
 
     veliev_e_jacobi_method_mpi::MethodJacobiSeq seqTask(taskDataSeq);
 
-    ASSERT_EQ(seqTask.validation(), false);
+    ASSERT_FALSE(seqTask.validation());
   }
 }
 
@@ -211,7 +211,7 @@ TEST(veliev_e_jacobi_method_mpi, Test_10x10_system) {
 
   veliev_e_jacobi_method_mpi::MethodJacobiMPI mpiTask(taskDataMPI);
 
-  ASSERT_EQ(mpiTask.validation(), true);
+  ASSERT_TRUE(mpiTask.validation());
   mpiTask.pre_processing();
   mpiTask.run();
   mpiTask.post_processing();
@@ -241,7 +241,7 @@ TEST(veliev_e_jacobi_method_mpi, Test_10x10_system) {
 
     veliev_e_jacobi_method_mpi::MethodJacobiSeq seqTask(taskDataSeq);
 
-    ASSERT_EQ(seqTask.validation(), true);
+    ASSERT_TRUE(seqTask.validation());
     seqTask.pre_processing();
     seqTask.run();
     seqTask.post_processing();
@@ -291,7 +291,7 @@ TEST(veliev_e_jacobi_method_mpi, Test_negative_rhs) {
 
   veliev_e_jacobi_method_mpi::MethodJacobiMPI testMpiTaskParallel(taskDataPar);
 
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  ASSERT_TRUE(testMpiTaskParallel.validation());
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
@@ -321,7 +321,7 @@ TEST(veliev_e_jacobi_method_mpi, Test_negative_rhs) {
 
     veliev_e_jacobi_method_mpi::MethodJacobiSeq testMpiTaskSequential(taskDataSeq);
 
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    ASSERT_TRUE(testMpiTaskSequential.validation());
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
@@ -367,7 +367,7 @@ TEST(veliev_e_jacobi_method_mpi, Test_1x1_system) {
 
   veliev_e_jacobi_method_mpi::MethodJacobiMPI testMpiTaskParallel(taskDataPar);
 
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  ASSERT_TRUE(testMpiTaskParallel.validation());
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
@@ -418,9 +418,10 @@ TEST(veliev_e_jacobi_method_mpi, Test_negative_epsilon) {
   veliev_e_jacobi_method_mpi::MethodJacobiMPI testMpiTaskParallel(taskDataPar);
 
   if (world.rank() == 0) {
-    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+
   } else {
-    ASSERT_EQ(testMpiTaskParallel.validation(), true);
+    ASSERT_TRUE(testMpiTaskParallel.validation());
   }
 
   if (world.rank() == 0) {
@@ -435,7 +436,7 @@ TEST(veliev_e_jacobi_method_mpi, Test_negative_epsilon) {
 
     veliev_e_jacobi_method_mpi::MethodJacobiSeq testMpiTaskSequential(taskDataSeq);
 
-    ASSERT_EQ(testMpiTaskSequential.validation(), false);
+    ASSERT_FALSE(testMpiTaskSequential.validation());
   }
 }
 
@@ -463,7 +464,7 @@ TEST(veliev_e_jacobi_method_mpi, Test_not_single_solution) {
 
   veliev_e_jacobi_method_mpi::MethodJacobiMPI testMpiTaskParallel(taskDataPar);
   if (world.rank() == 0)
-    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+    ASSERT_FALSE(testMpiTaskParallel.validation());
   else
     ASSERT_EQ(true, true);
 
@@ -481,6 +482,7 @@ TEST(veliev_e_jacobi_method_mpi, Test_not_single_solution) {
 
     veliev_e_jacobi_method_mpi::MethodJacobiSeq testMpiTaskSequential(taskDataSeq);
 
-    ASSERT_EQ(testMpiTaskSequential.validation(), false);
+    ASSERT_FALSE(testMpiTaskSequential.validation());
+
   }
 }

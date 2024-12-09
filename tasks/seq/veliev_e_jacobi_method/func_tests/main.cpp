@@ -24,7 +24,7 @@ TEST(veliev_e_jacobi_method, Test_2x2_System) {
 
   veliev_e_jacobi_method::MethodJacobi jacobiSolver(taskDataContainer);
 
-  ASSERT_EQ(jacobiSolver.validation(), true);
+  ASSERT_TRUE(jacobiSolver.validation());
 
   jacobiSolver.pre_processing();
   jacobiSolver.run();
@@ -53,7 +53,7 @@ TEST(veliev_e_jacobi_method, Test_3x3_System) {
 
   veliev_e_jacobi_method::MethodJacobi jacobiSolver(taskDataContainer);
 
-  ASSERT_EQ(jacobiSolver.validation(), true);
+  ASSERT_TRUE(jacobiSolver.validation());
 
   jacobiSolver.pre_processing();
   jacobiSolver.run();
@@ -86,7 +86,7 @@ TEST(veliev_e_jacobi_method, Test_Diagonal_Dominance) {
 
   veliev_e_jacobi_method::MethodJacobi jacobiSolver(taskDataContainer);
 
-  ASSERT_EQ(jacobiSolver.validation(), true);
+  ASSERT_TRUE(jacobiSolver.validation());
 
   jacobiSolver.pre_processing();
   jacobiSolver.run();
@@ -116,7 +116,7 @@ TEST(veliev_e_jacobi_method, Test_empty_System) {
 
   veliev_e_jacobi_method::MethodJacobi jacobiProcessor(taskDataContainer);
 
-  ASSERT_EQ(jacobiProcessor.validation(), false);
+  ASSERT_FALSE(jacobiProcessor.validation());
 }
 
 TEST(veliev_e_jacobi_method, Test_zero_diagonal_element) {
@@ -138,8 +138,8 @@ TEST(veliev_e_jacobi_method, Test_zero_diagonal_element) {
 
   veliev_e_jacobi_method::MethodJacobi jacobiSolver(taskDataContainer);
 
-  ASSERT_EQ(jacobiSolver.validation(), true);
-  ASSERT_EQ(jacobiSolver.pre_processing(), false);
+  ASSERT_TRUE(jacobiSolver.validation());
+  ASSERT_FALSE(jacobiSolver.pre_processing());
 }
 
 TEST(veliev_e_jacobi_method, Test_1x1_System) {
@@ -161,7 +161,7 @@ TEST(veliev_e_jacobi_method, Test_1x1_System) {
 
   veliev_e_jacobi_method::MethodJacobi jacobiSolver(taskDataContainer);
 
-  ASSERT_EQ(jacobiSolver.validation(), true);
+  ASSERT_TRUE(jacobiSolver.validation());
 
   jacobiSolver.pre_processing();
   jacobiSolver.run();
@@ -189,7 +189,7 @@ TEST(veliev_e_jacobi_method, Test_Zero_Right_Side) {
 
   veliev_e_jacobi_method::MethodJacobi jacobiSolver(taskDataContainer);
 
-  ASSERT_EQ(jacobiSolver.validation(), true);
+  ASSERT_TRUE(jacobiSolver.validation());
   jacobiSolver.pre_processing();
   jacobiSolver.run();
   jacobiSolver.post_processing();
@@ -218,7 +218,7 @@ TEST(veliev_e_jacobi_method, Test_Diagonal_Dominance_Large_Error) {
 
   veliev_e_jacobi_method::MethodJacobi jacobiSolver(taskDataContainer);
 
-  ASSERT_EQ(jacobiSolver.validation(), true);
+  ASSERT_TRUE(jacobiSolver.validation());
   jacobiSolver.pre_processing();
   jacobiSolver.run();
   jacobiSolver.post_processing();
