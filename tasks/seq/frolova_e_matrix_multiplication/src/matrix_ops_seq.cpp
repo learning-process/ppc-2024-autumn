@@ -12,17 +12,17 @@ void frolova_e_matrix_multiplication_seq::randomNumVec(int N, std::vector<int>& 
   }
 }
 
-std::vector<int> frolova_e_matrix_multiplication_seq::Multiplication(int M, int N, int K, const std::vector<int>& A, const std::vector<int>& B) {
+std::vector<int> frolova_e_matrix_multiplication_seq::Multiplication(size_t M, size_t N, size_t K, const std::vector<int>& A, const std::vector<int>& B) {
 
   std::vector<int> C(M * N);
 
-  for (int i = 0; i < M; ++i) {
+  for (size_t i = 0; i < M; ++i) {
 
-    for (int j = 0; j < N; ++j) {
+    for (size_t j = 0; j < N; ++j) {
 
       C[i * N + j] = 0;
 
-      for (int k = 0; k < K; ++k) 
+      for (size_t k = 0; k < K; ++k) 
           C[i * N + j] += A[i * K + k] * B[k * N + j];
     }
   }
@@ -105,7 +105,7 @@ bool frolova_e_matrix_multiplication_seq::matrixMultiplication::run() {
 bool frolova_e_matrix_multiplication_seq::matrixMultiplication::post_processing() {
   internal_order_test();
   
-  for (int i = 0; i < lineA * columnB; i++) {
+  for (size_t i = 0; i < lineA * columnB; i++) {
   
       reinterpret_cast<int*>(taskData->outputs[0])[i] = matrixC[i];
 

@@ -22,7 +22,7 @@
 namespace frolova_e_matrix_multiplication_mpi {
 
     void randomNumVec(int N, std::vector<int>& vec);
-    std::vector<int> Multiplication(int M, int N, int K, const std::vector<int>& A, const std::vector<int>& B);
+    std::vector<int> Multiplication(size_t M, size_t N, size_t K, const std::vector<int>& A, const std::vector<int>& B);
 
 class matrixMultiplicationSequential : public ppc::core::Task {
  public:
@@ -75,7 +75,7 @@ struct lineStruc {
   {}
 
   lineStruc& operator=(const lineStruc& other) {
-    if (this != &other) {  // Проверка на самоприсваивание
+    if (this != &other) {  
       local_lines = other.local_lines;
       index_lines = other.index_lines;
       numberOfLines = other.numberOfLines;
@@ -111,7 +111,7 @@ struct columnStruc {
   {}
 
   columnStruc& operator=(const columnStruc& other) {
-    if (this != &other) {  // Проверка на самоприсваивание
+    if (this != &other) { 
       local_columns = other.local_columns;
       index_colums = other.index_colums;
       numberOfColumns = other.numberOfColumns;

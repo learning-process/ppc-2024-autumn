@@ -17,7 +17,7 @@ void frolova_e_matrix_multiplication_mpi::randomNumVec(int N, std::vector<int>& 
   }
 }
 
-std::vector<int> frolova_e_matrix_multiplication_mpi::Multiplication(int M, int N, int K, const std::vector<int>& A,
+std::vector<int> frolova_e_matrix_multiplication_mpi::Multiplication(size_t M, size_t N, size_t K, const std::vector<int>& A,
                                                                      const std::vector<int>& B) {
   std::vector<int> C(M * N);
 
@@ -105,7 +105,7 @@ bool frolova_e_matrix_multiplication_mpi::matrixMultiplicationSequential::run() 
 bool frolova_e_matrix_multiplication_mpi::matrixMultiplicationSequential::post_processing() {
   internal_order_test();
 
-  for (int i = 0; i < lineA * columnB; i++) {
+  for (size_t i = 0; i < lineA * columnB; i++) {
     reinterpret_cast<int*>(taskData->outputs[0])[i] = matrixC[i];
   }
 
@@ -275,8 +275,8 @@ bool frolova_e_matrix_multiplication_mpi::matrixMultiplicationParallel::run() {
        if (localColumnB.numberOfColumns > 0) {
             int start_column = start_column_index[0];
             localColumnB.local_columns.resize(localColumnB.numberOfColumns * lineB);
-            for (int col = 0; col < localColumnB.numberOfColumns; ++col) {
-              for (int row = 0; row < lineB; ++row) {
+            for (size_t col = 0; col < localColumnB.numberOfColumns; ++col) {
+              for (size_t row = 0; row < lineB; ++row) {
                 localColumnB.local_columns[col * lineB + row] = matrixB[row * columnB + start_column + col];
               }
             }
@@ -315,8 +315,8 @@ bool frolova_e_matrix_multiplication_mpi::matrixMultiplicationParallel::run() {
 
              int start_column = start_column_index[i];
              column_data.local_columns.resize(column_data.numberOfColumns * lineB);
-             for (int col = 0; col < column_data.numberOfColumns; ++col) {
-                for (int row = 0; row < lineB; ++row) {
+             for (size_t col = 0; col < column_data.numberOfColumns; ++col) {
+                for (size_t row = 0; row < lineB; ++row) {
                   column_data.local_columns[col * lineB + row] = matrixB[row * columnB + start_column + col];
                 }
              }
