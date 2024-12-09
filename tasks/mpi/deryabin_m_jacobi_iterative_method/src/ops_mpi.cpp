@@ -239,7 +239,7 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::
                  ///number_of_local_matrix_rows);
       ///world.send(proc, 0, displacements.data() + proc,
                  ///-number_of_local_matrix_rows);
-    }
+    //}
   }
   boost::mpi::broadcast(world, number_of_local_matrix_rows, 0);
   std::vector<int> sendcounts(world.size(), number_of_local_matrix_rows);
