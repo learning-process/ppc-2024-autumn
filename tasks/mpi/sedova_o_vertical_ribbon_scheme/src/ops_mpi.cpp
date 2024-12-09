@@ -53,16 +53,22 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::validation() {
 
 bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::pre_processing() {
   internal_order_test();
+
   if (world.rank() == 0) {
-    int* matrix = reinterpret_cast<int*>(taskData->inputs[0]);
-    int* vector = reinterpret_cast<int*>(taskData->inputs[1]);
+    if (!taskData || taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr ||
+        taskData->outputs[0] == nullptr) {
+      return false;
+    }
+
+    int* input_A = reinterpret_cast<int*>(taskData->inputs[0]);
+    int* input_B = reinterpret_cast<int*>(taskData->inputs[1]);
 
     int count = taskData->inputs_count[0];
     rows_ = taskData->inputs_count[1];
     cols_ = count / rows_;
 
-    input_matrix_1.assign(matrix, matrix + count);
-    input_vector_1.assign(vector, vector + rows_);
+    input_matrix_1.assign(input_A, input_A + count);
+    input_vector_1.assign(input_B, input_B + rows_);
     result_vector_.resize(cols_, 0);
 
     proc.resize(world.size(), 0);
@@ -70,12 +76,13 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::pre_processing() {
 
     if (world.size() > rows_) {
       for (int i = 0; i < rows_; ++i) {
-        off[i] = i * cols_;
         proc[i] = cols_;
+        off[i] = i * cols_;
       }
     } else {
       int count_proc = rows_ / world.size();
       int surplus = rows_ % world.size();
+
       int offset = 0;
       for (int i = 0; i < world.size(); ++i) {
         if (surplus > 0) {
@@ -89,11 +96,13 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::pre_processing() {
       }
     }
   }
+
   if (world.rank() != 0) {
     input_matrix_1.resize(cols_ * rows_, 0);
     input_vector_1.resize(rows_, 0);
     result_vector_.resize(cols_, 0);
   }
+
   return true;
 }
 
