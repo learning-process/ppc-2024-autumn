@@ -27,7 +27,7 @@ TEST(matthew_fyodorov_reduce_mpi, test_pipeline_run) {
       global_vector[i] = dist(gen);
     }
 
-    global_vector = matthew_fyodorov_reduce_mpi::getRandomVector(size);
+    // global_vector = matthew_fyodorov_reduce_mpi::getRandomVector(size);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector.data()));
     taskDataPar->inputs_count.emplace_back(size);

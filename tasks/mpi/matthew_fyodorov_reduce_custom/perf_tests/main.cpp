@@ -7,6 +7,17 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/matthew_fyodorov_reduce_custom/include/ops_mpi.hpp"
 
+std::vector<int> getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::uniform_int_distribution<> dist(-100, 100);
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = gen() % 100;
+  }
+  return vec;
+}
+
 TEST(matthew_fyodorov_reduce_custom_mpi, test_pipeline_run) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
@@ -27,7 +38,7 @@ TEST(matthew_fyodorov_reduce_custom_mpi, test_pipeline_run) {
       global_vector[i] = dist(gen);
     }
 
-    global_vector = matthew_fyodorov_reduce_custom_mpi ::getRandomVector(size);
+    // global_vector = matthew_fyodorov_reduce_custom_mpi ::getRandomVector(size);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector.data()));
     taskDataPar->inputs_count.emplace_back(size);

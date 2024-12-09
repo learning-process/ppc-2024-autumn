@@ -13,7 +13,7 @@
 
 namespace matthew_fyodorov_reduce_mpi {
 
-std::vector<int> getRandomVector(int sz);
+// std::vector<int> getRandomVector(int sz);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
