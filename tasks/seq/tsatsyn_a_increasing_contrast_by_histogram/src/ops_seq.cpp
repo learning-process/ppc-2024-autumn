@@ -1,6 +1,6 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/tsatsyn_a_increasing_contrast_by_histogram/include/ops_seq.hpp"
-
+#include <cmath>
 #include <thread>
 
 bool tsatsyn_a_increasing_contrast_by_histogram_seq::TestTaskSequential::validation() {
@@ -25,10 +25,10 @@ bool tsatsyn_a_increasing_contrast_by_histogram_seq::TestTaskSequential::run() {
   height = tempPtr[1];
   std::cout << height << width << std::endl;
   std::vector<double> localka(256, 0);
-  for (int i = 0; i < input_data.size(); i++) {
+  for (int i = 0; i < static_cast<int>(input_data.size()); i++) {
     localka[input_data[i]]++;
   }
-  for (int i = 0; i < localka.size(); i++) {
+  for (int i = 0; i < static_cast<int>(localka.size()); i++) {
     std::cout << localka[i] << " ";
   }
   std::cout << std::endl;
@@ -36,7 +36,7 @@ bool tsatsyn_a_increasing_contrast_by_histogram_seq::TestTaskSequential::run() {
   std::cout << std::endl;
   std::cout << std::endl;
 
-  for (int i = 0; i < localka.size(); i++) {
+  for (int i = 0; i < static_cast<int>(localka.size()); i++) {
     localka[i] /= width;
     std::cout << localka[i] << " ";
   }
@@ -46,7 +46,7 @@ bool tsatsyn_a_increasing_contrast_by_histogram_seq::TestTaskSequential::run() {
   std::cout << std::endl;
 
   std::cout << localka[0] << " ";
-  for (int i = 1; i < localka.size(); i++) {
+  for (int i = 1; i < static_cast<int>(localka.size()); i++) {
     localka[i] = (localka[i] + localka[i - 1]);
     std::cout << localka[i] << " ";
   }
@@ -55,7 +55,7 @@ bool tsatsyn_a_increasing_contrast_by_histogram_seq::TestTaskSequential::run() {
   std::cout << std::endl;
   std::cout << std::endl;
 
-  for (int i = 0; i < localka.size(); i++) {
+  for (int i = 0; i < static_cast<int>(localka.size()); i++) {
     localka[i] *= 255;
     std::cout << localka[i] << " ";
   }
@@ -65,7 +65,7 @@ bool tsatsyn_a_increasing_contrast_by_histogram_seq::TestTaskSequential::run() {
   std::cout << std::endl;
 
   for (int i = 0; i < localka.size(); i++) {
-    localka[i] = round(localka[i]);
+    localka[i] = std::round(localka[i]);
     std::cout << localka[i] << " ";
   }
   std::cout << std::endl;
