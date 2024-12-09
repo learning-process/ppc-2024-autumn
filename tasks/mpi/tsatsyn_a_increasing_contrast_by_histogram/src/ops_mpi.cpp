@@ -30,7 +30,8 @@ bool tsatsyn_a_increasing_contrast_by_histogram_mpi::TestMPITaskParallel::pre_pr
 bool tsatsyn_a_increasing_contrast_by_histogram_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   std::vector<double> local_data;
-  int width, height;
+  int width;
+  int height;
   if (world.rank() == 0) {
     auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[1]);
     width = tempPtr[0];

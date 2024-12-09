@@ -21,7 +21,8 @@ bool tsatsyn_a_increasing_contrast_by_histogram_seq::TestTaskSequential::pre_pro
 bool tsatsyn_a_increasing_contrast_by_histogram_seq::TestTaskSequential::run() {
   internal_order_test();
   auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[1]);
-  int width, height;
+  int width;
+  int height;
   width = tempPtr[0];
   height = tempPtr[1];
   std::cout << height << width << std::endl;
