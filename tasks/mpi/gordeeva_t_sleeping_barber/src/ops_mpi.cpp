@@ -2,7 +2,6 @@
 
 #include <functional>
 #include <queue>
-#include <string>
 #include <thread>
 
 using namespace std::chrono_literals;
@@ -169,16 +168,10 @@ void gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::client_logic() {
       boost::mpi::request req = world.irecv(0, 2, client_id);
       req.wait();
     }
-
-    {
+  }
+  {
       boost::mpi::request req = world.isend(1, 3, client_id);
       req.wait();
-    }
-  } else {
-    {
-      boost::mpi::request req = world.isend(1, 3, client_id);
-      req.wait();
-    }
   }
 }
 
