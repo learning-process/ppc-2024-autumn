@@ -9,18 +9,15 @@ using namespace std::chrono_literals;
 
 bool petrov_a_ribbon_vertical_scheme_mpi::TestTaskMPI::pre_processing() {
   internal_order_test();
-  int size;
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  MPI_Comm_size(MPI_COMM_WORLD, &size);
-  int cols;
 
   if (rank == 0) {
     int rows = taskData->inputs_count[0];
-    cols = taskData->inputs_count[1];
+    int cols = taskData->inputs_count[1];
 
-    int rows_per_process = rows / size;
-    int extra_rows = rows % size;
+    int rows_per_process = rows / MPI::COMM_WORLD.Get_size();
+    int extra_rows = rows % MPI::COMM_WORLD.Get_size();
 
     int start_row = rank * rows_per_process + std::min(rank, extra_rows);
     int end_row = start_row + rows_per_process + (rank < extra_rows ? 1 : 0);
@@ -29,8 +26,6 @@ bool petrov_a_ribbon_vertical_scheme_mpi::TestTaskMPI::pre_processing() {
     local_vector.resize(cols);
     local_result.resize(end_row - start_row);
   }
-
-  MPI_Bcast(&cols, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
   return true;
 }
@@ -53,16 +48,25 @@ bool petrov_a_ribbon_vertical_scheme_mpi::TestTaskMPI::run() {
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
+
   int cols;
+  MPI_Bcast(&cols, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
   int rows = taskData->inputs_count[0];
   int rows_per_proc = rows / size;
+
   if (rank == 0) {
     cols = taskData->inputs_count[1];
+  }
 
-    for (int i = 0; i < rows_per_proc; ++i) {
-      for (int j = 0; j < cols; ++j) {
-        local_matrix[i * cols + j] *= local_vector[j];
-      }
+  MPI_Scatter(taskData->inputs.data(), rows_per_proc * cols, MPI_DOUBLE, local_matrix.data(), rows_per_proc * cols,
+              MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+  MPI_Bcast(local_vector.data(), cols, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+  for (int i = 0; i < rows_per_proc; ++i) {
+    for (int j = 0; j < cols; ++j) {
+      local_matrix[i * cols + j] *= local_vector[j];
     }
   }
 
@@ -73,6 +77,7 @@ bool petrov_a_ribbon_vertical_scheme_mpi::TestTaskMPI::post_processing() {
   internal_order_test();
   int size;
   MPI_Comm_size(MPI_COMM_WORLD, &size);
+
   int rows = taskData->inputs_count[0];
   int cols = taskData->inputs_count[1];
   int rows_per_proc = rows / size;

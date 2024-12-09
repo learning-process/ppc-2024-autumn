@@ -12,8 +12,8 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, test_task) {
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-  int rows = 1000;
-  int cols = 100;
+  int rows = 5000;
+  int cols = 500;
 
   std::vector<int> global_matrix;
   std::vector<int> global_vector(cols, 1);
@@ -83,8 +83,8 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, test_pipeline) {
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-  const int rows = 1000;
-  const int cols = 100;
+  int rows = 5000;
+  int cols = 500;
 
   std::vector<int> global_matrix;
   std::vector<int> global_vector(cols, 1);
