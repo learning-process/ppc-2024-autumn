@@ -119,7 +119,7 @@ bool sorokin_a_graham_algorithm_mpi::TestMPITaskParallel::pre_processing() {
   broadcast(world, delta, 0);
 
   if (world.rank() == 0) {
-    input_.reserve(taskData->inputs_count[0]);
+    input_.resize(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
     for (int proc = 1; proc < world.size(); proc++) {

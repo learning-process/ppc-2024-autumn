@@ -79,7 +79,7 @@ std::vector<int> grahamAlg(const std::vector<int> &input) {
 
 bool sorokin_a_graham_algorithm_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
-  input_.reserve(taskData->inputs_count[0]);
+  input_.resize(taskData->inputs_count[0]);
   auto *tmp_ptr = reinterpret_cast<int *>(taskData->inputs[0]);
   std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
   return true;
