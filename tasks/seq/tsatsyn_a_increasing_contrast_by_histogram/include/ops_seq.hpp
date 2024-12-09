@@ -17,7 +17,8 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  int input_{}, res{};
+  std::vector<int> input_data;
+  int res{};
 };
 
 }  // namespace tsatsyn_a_increasing_contrast_by_histogram_seq
