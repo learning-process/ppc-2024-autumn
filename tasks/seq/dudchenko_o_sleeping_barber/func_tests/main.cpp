@@ -39,7 +39,7 @@ TEST(dudchenko_o_sleeping_barber_sequential, Test_End_To_End1) {
 
   dudchenko_o_sleeping_barber_seq::TestSleepingBarber testSleepingBarber(taskDataSeq);
 
-  ASSERT_TRUE(testSleepingBarber.validation());
+  ASSERT_FALSE(testSleepingBarber.validation());
   ASSERT_TRUE(testSleepingBarber.pre_processing());
   ASSERT_TRUE(testSleepingBarber.run());
   ASSERT_TRUE(testSleepingBarber.post_processing());

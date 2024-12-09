@@ -21,11 +21,7 @@ bool TestSleepingBarber::pre_processing() {
 }
 
 bool TestSleepingBarber::validation() {
-  if (!taskData || taskData->inputs_count.empty() || taskData->inputs_count[0] <= 1) {
-    return false;
-  }
-
-  return true;
+  return taskData && !taskData->inputs_count.empty() && taskData->inputs_count[0] > 1;
 }
 
 bool TestSleepingBarber::run() {
