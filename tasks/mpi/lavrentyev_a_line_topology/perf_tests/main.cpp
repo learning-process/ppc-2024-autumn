@@ -22,66 +22,52 @@ std::vector<int> generate_random_data(int count, int lower_bound = -1000, int up
 TEST(lavrentyev_a_line_topology_mpi, task_run) {
   boost::mpi::communicator world;
 
-  int num_elems = 1000000;
-  int start_proc = 0;
-  int end_proc = world.size() - 1;
+  size_t start_proc = 0;
+  size_t end_proc = world.size() - 1;
+  size_t num_elems = 1'000'000;
 
+  // Настраиваем TaskData для теста
   auto task_data = std::make_shared<ppc::core::TaskData>();
-  task_data->inputs_count.push_back(start_proc);
-  task_data->inputs_count.push_back(end_proc);
-  task_data->inputs_count.push_back(num_elems);
+  task_data->inputs_count = {static_cast<unsigned>(start_proc), static_cast<unsigned>(end_proc),
+                             static_cast<unsigned>(num_elems)};
 
   std::vector<int> input_data;
-  std::vector<int> output_data(num_elems);
-  std::vector<int> processing_sequence;
-
-  MPI_Request req_send;
-  MPI_Request req_recv;
+  std::vector<int> output_data(num_elems, -1);
+  std::vector<int> path(end_proc - start_proc + 1, -1);
 
   if (world.rank() == start_proc) {
     input_data = lavrentyev_a_line_topology_mpi::generate_random_data(num_elems);
     task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
-
-    if (start_proc != end_proc) {
-      MPI_Isend(input_data.data(), input_data.size(), MPI_INT, end_proc, 0, MPI_COMM_WORLD, &req_send);
-      MPI_Wait(&req_send, MPI_STATUS_IGNORE);
-    }
   }
 
   if (world.rank() == end_proc) {
-    if (start_proc != end_proc) {
-      input_data.resize(num_elems);
-      MPI_Irecv(input_data.data(), input_data.size(), MPI_INT, start_proc, 0, MPI_COMM_WORLD, &req_recv);
-      MPI_Wait(&req_recv, MPI_STATUS_IGNORE);
-    }
-
-    processing_sequence.resize(end_proc - start_proc + 1);
-    task_data->outputs.push_back(reinterpret_cast<uint8_t*>(output_data.data()));
-    task_data->outputs_count.push_back(output_data.size());
-    task_data->outputs.push_back(reinterpret_cast<uint8_t*>(processing_sequence.data()));
-    task_data->outputs_count.push_back(processing_sequence.size());
+    task_data->outputs = {reinterpret_cast<uint8_t*>(output_data.data()), reinterpret_cast<uint8_t*>(path.data())};
+    task_data->outputs_count = {static_cast<unsigned>(output_data.size()), static_cast<unsigned>(path.size())};
   }
 
-  auto mpi_task = std::make_shared<lavrentyev_a_line_topology_mpi::TestMPITaskParallel>(task_data);
+  // Создаем экземпляр задачи
+  auto task = std::make_shared<lavrentyev_a_line_topology_mpi::TestMPITaskParallel>(task_data);
 
-  auto performance_attr = std::make_shared<ppc::core::PerfAttr>();
-  performance_attr->num_running = 10;
-  boost::mpi::timer performance_timer;
-  performance_attr->current_timer = [&] { return performance_timer.elapsed(); };
+  // Настройка для измерения производительности
+  auto perf_attr = std::make_shared<ppc::core::PerfAttr>();
+  perf_attr->num_running = 10;
+  boost::mpi::timer perf_timer;
+  perf_attr->current_timer = [&] { return perf_timer.elapsed(); };
 
-  auto performance_results = std::make_shared<ppc::core::PerfResults>();
-  auto performance_analyzer = std::make_shared<ppc::core::Perf>(mpi_task);
+  auto perf_results = std::make_shared<ppc::core::PerfResults>();
+  auto perf_analyzer = std::make_shared<ppc::core::Perf>(task);
 
-  performance_analyzer->task_run(performance_attr, performance_results);
+  // Запуск теста с измерением производительности
+  perf_analyzer->task_run(perf_attr, perf_results);
 
   if (world.rank() == end_proc) {
-    ppc::core::Perf::print_perf_statistic(performance_results);
+    // Выводим статистику производительности
+    ppc::core::Perf::print_perf_statistic(perf_results);
 
-    for (int i = 0; i < num_elems; i++) {
-      ASSERT_EQ(output_data[i], input_data[i]);
-    }
-    for (size_t i = 0; i < processing_sequence.size(); ++i) {
-      ASSERT_EQ(processing_sequence[i], start_proc + static_cast<int>(i));
+    // Проверяем корректность результата
+    ASSERT_EQ(input_data, output_data);
+    for (size_t i = 0; i < path.size(); ++i) {
+      ASSERT_EQ(path[i], static_cast<int>(start_proc) + static_cast<int>(i));
     }
   }
 }
@@ -102,24 +88,18 @@ TEST(lavrentyev_a_line_topology_mpi, pipeline_run) {
   std::vector<int> result_values(total_elements);
   std::vector<int> trace_path;
 
-  MPI_Request req_send;
-  MPI_Request req_recv;
-
   if (world.rank() == start_rank) {
     input_values = lavrentyev_a_line_topology_mpi::generate_random_data(total_elements);
     data->inputs.push_back(reinterpret_cast<uint8_t*>(input_values.data()));
 
     if (start_rank != end_rank) {
-      MPI_Isend(input_values.data(), input_values.size(), MPI_INT, end_rank, 0, MPI_COMM_WORLD, &req_send);
-      MPI_Wait(&req_send, MPI_STATUS_IGNORE);
+      world.send(end_rank, 0, input_values);
     }
   }
 
   if (world.rank() == end_rank) {
     if (start_rank != end_rank) {
-      input_values.resize(total_elements);
-      MPI_Irecv(input_values.data(), input_values.size(), MPI_INT, start_rank, 0, MPI_COMM_WORLD, &req_recv);
-      MPI_Wait(&req_recv, MPI_STATUS_IGNORE);
+      world.recv(start_rank, 0, input_values);
     }
 
     trace_path.resize(end_rank - start_rank + 1);
