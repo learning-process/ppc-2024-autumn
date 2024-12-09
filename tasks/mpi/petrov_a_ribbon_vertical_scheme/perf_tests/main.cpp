@@ -1,7 +1,7 @@
 // Copyright 2024 Nesterov Alexander
 #include <gtest/gtest.h>
 #include <mpi.h>
-
+ 
 #include <vector>
 
 #include "mpi/petrov_a_ribbon_vertical_scheme/include/ops_mpi.hpp"
