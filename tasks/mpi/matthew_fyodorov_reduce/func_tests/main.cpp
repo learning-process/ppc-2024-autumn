@@ -81,7 +81,7 @@ TEST(matthew_fyodorov_reduce_mpi, TestMPITaskParallel_Sum_PositiveNumbers_equiua
     taskData->outputs_count.emplace_back(1);
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
 
-    matthew_fyodorov_reduce_custom_mpi ::TestMPITaskParallel task(taskData);
+    matthew_fyodorov_reduce_mpi ::TestMPITaskParallel task(taskData);
     ASSERT_TRUE(task.validation());
     ASSERT_TRUE(task.pre_processing());
     ASSERT_TRUE(task.run());
