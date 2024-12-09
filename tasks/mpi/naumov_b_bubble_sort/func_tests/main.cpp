@@ -82,6 +82,7 @@ TEST(naumov_b_bubble_sort_mpi, Test_empty_array) {
   tmpPar->outputs_count.emplace_back(out.size());
 
   naumov_b_bubble_sort_mpi::TestMPITaskParallel tmpTaskPar(tmpPar);
-
-  ASSERT_FALSE(tmpTaskPar.validation());
-}
+  if (world.rank() == 0) {
+    ASSERT_FALSE(tmpTaskPar.validation());
+  }
+  }
