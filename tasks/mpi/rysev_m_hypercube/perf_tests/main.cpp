@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/rysev_m_gypercube/include/ops_mpi.hpp"
+#include "mpi/rysev_m_hypercube/include/ops_mpi.hpp"
 
 TEST(rysev_m_gypercube, test_pipeline_run) {
   boost::mpi::communicator world;

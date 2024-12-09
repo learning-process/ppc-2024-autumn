@@ -5,7 +5,7 @@
 #include <boost/mpi/environment.hpp>
 #include <vector>
 
-#include "mpi/rysev_m_gypercube/include/ops_mpi.hpp"
+#include "mpi/rysev_m_hypercube/include/ops_mpi.hpp"
 
 TEST(rysev_m_gypercube, data_transfer_0_to_1) {
   boost::mpi::communicator world;

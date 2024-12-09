@@ -1,6 +1,6 @@
 // Copyright 2023 Nesterov Alexander
 
-#include "mpi/rysev_m_gypercube/include/ops_mpi.hpp"
+#include "mpi/rysev_m_hypercube/include/ops_mpi.hpp"
 
 #include <algorithm>
 #include <functional>
