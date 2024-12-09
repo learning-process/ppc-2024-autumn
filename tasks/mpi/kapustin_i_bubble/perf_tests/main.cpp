@@ -5,12 +5,12 @@
 TEST(kapustin_i_bubble_sort_mpi, pipeline) {
   boost::mpi::communicator world;
 
-  const int data_size = 30000;
+  const int data_size = 45000;
   std::vector<int> input_data(data_size);
   std::vector<int> output_data(data_size);
 
   std::mt19937 generator(std::random_device{}());
-  std::uniform_int_distribution<int> distribution(-1000000, 1000000);
+  std::uniform_int_distribution<int> distribution(-1000, 1000);
   for (int i = 0; i < data_size; ++i) {
     input_data[i] = distribution(generator);
   }
@@ -27,7 +27,7 @@ TEST(kapustin_i_bubble_sort_mpi, pipeline) {
   auto bubbleSortMPI = std::make_shared<kapustin_i_bubble_sort_mpi::BubbleSortMPI>(taskDataMPI);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;
+  perfAttr->num_running = 5;
   const auto t0 = std::chrono::high_resolution_clock::now();
   perfAttr->current_timer = [&] {
     auto current_time_point = std::chrono::high_resolution_clock::now();

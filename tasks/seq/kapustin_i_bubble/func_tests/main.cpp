@@ -2,7 +2,7 @@
 
 #include "seq/kapustin_i_bubble/include/avg_seq.hpp"
 
-std::vector<int> generate_random_data(int size, int min_val, int max_val) {
+static std::vector<int> generate_random_data(int size, int min_val, int max_val) {
   std::vector<int> data(size);
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -152,4 +152,66 @@ TEST(kapustin_i_bubble_sort_seq, Validation_EmptyInputs) {
   kapustin_i_bubble_sort_seq::BubbleSortSequential bubbleSort(taskDataSeq);
 
   ASSERT_FALSE(bubbleSort.validation());
+}
+TEST(kapustin_i_bubble_sort_seq, sorted_before) {
+  std::vector<int> input_data = {1,3,5,6,7,8,100,1000};
+  std::vector<int> expected_output = {1, 3, 5, 6, 7, 8, 100, 1000};
+  int total_elements = input_data.size();
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_data.data()));
+  taskDataSeq->inputs_count.emplace_back(total_elements);
+  std::vector<int> output_data(total_elements);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_data.data()));
+  taskDataSeq->outputs_count.emplace_back(total_elements);
+
+  kapustin_i_bubble_sort_seq::BubbleSortSequential bubbleSort(taskDataSeq);
+  ASSERT_TRUE(bubbleSort.validation());
+  bubbleSort.pre_processing();
+  bubbleSort.run();
+  bubbleSort.post_processing();
+
+  std::memcpy(output_data.data(), taskDataSeq->outputs[0], total_elements * sizeof(int));
+  ASSERT_EQ(output_data, expected_output);
+}
+
+TEST(kapustin_i_bubble_sort_seq, eq_val) {
+  std::vector<int> input_data = {5,5,5,5,5,5,5,5,5};
+  std::vector<int> expected_output = {5, 5, 5, 5, 5, 5, 5, 5, 5};
+  int total_elements = input_data.size();
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_data.data()));
+  taskDataSeq->inputs_count.emplace_back(total_elements);
+  std::vector<int> output_data(total_elements);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_data.data()));
+  taskDataSeq->outputs_count.emplace_back(total_elements);
+
+  kapustin_i_bubble_sort_seq::BubbleSortSequential bubbleSort(taskDataSeq);
+  ASSERT_TRUE(bubbleSort.validation());
+  bubbleSort.pre_processing();
+  bubbleSort.run();
+  bubbleSort.post_processing();
+
+  std::memcpy(output_data.data(), taskDataSeq->outputs[0], total_elements * sizeof(int));
+  ASSERT_EQ(output_data, expected_output);
+}
+
+TEST(kapustin_i_bubble_sort_seq, some_eq_val) {
+  std::vector<int> input_data = {1, 5, 5, 5, 3, 10, 2, 1, 5};
+  std::vector<int> expected_output = {1, 1, 2, 3, 5, 5, 5, 5, 10};
+  int total_elements = input_data.size();
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_data.data()));
+  taskDataSeq->inputs_count.emplace_back(total_elements);
+  std::vector<int> output_data(total_elements);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_data.data()));
+  taskDataSeq->outputs_count.emplace_back(total_elements);
+
+  kapustin_i_bubble_sort_seq::BubbleSortSequential bubbleSort(taskDataSeq);
+  ASSERT_TRUE(bubbleSort.validation());
+  bubbleSort.pre_processing();
+  bubbleSort.run();
+  bubbleSort.post_processing();
+
+  std::memcpy(output_data.data(), taskDataSeq->outputs[0], total_elements * sizeof(int));
+  ASSERT_EQ(output_data, expected_output);
 }

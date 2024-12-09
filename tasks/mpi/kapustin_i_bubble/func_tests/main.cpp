@@ -124,7 +124,7 @@ TEST(kapustin_i_bubble_sort, random_input) {
 
   const int data_size = 100;
   std::vector<int> in(data_size);
-  std::generate(in.begin(), in.end(), []() { return rand() % 1000; });
+  std::generate(in.begin(), in.end(), []() { return rand() % 2000 - 1000; });
   std::vector<int> out(in.size());
 
   std::shared_ptr<ppc::core::TaskData> tmpPar = std::make_shared<ppc::core::TaskData>();
