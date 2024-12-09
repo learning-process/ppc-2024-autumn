@@ -68,6 +68,64 @@ TEST(naumov_b_bubble_sort_mpi, Test_LargeArray) {
   }
 }
 
+TEST(naumov_b_bubble_sort_mpi, Test_SingleElement) {
+  boost::mpi::communicator world;
+
+  std::vector<int> input_data = {42};
+  std::vector<int> sorted_data = {42};
+
+  std::vector<int> output_data(input_data.size(), 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_data.data()));
+    taskDataPar->inputs_count.emplace_back(input_data.size());
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_data.data()));
+    taskDataPar->outputs_count.emplace_back(output_data.size());
+  }
+
+  naumov_b_bubble_sort_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(output_data, sorted_data);
+  }
+}
+
+TEST(naumov_b_bubble_sort_mpi, Test_RepeatedElements) {
+  boost::mpi::communicator world;
+
+  std::vector<int> input_data = {7, 3, 7, 1, 3, 1, 7};
+  std::vector<int> sorted_data = {1, 1, 3, 3, 7, 7, 7};
+
+  std::vector<int> output_data(input_data.size(), 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_data.data()));
+    taskDataPar->inputs_count.emplace_back(input_data.size());
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_data.data()));
+    taskDataPar->outputs_count.emplace_back(output_data.size());
+  }
+
+  naumov_b_bubble_sort_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(output_data, sorted_data);
+  }
+}
+
 TEST(naumov_b_bubble_sort_mpi, Test_empty_array) {
   const size_t length = 0;
   std::vector<int> in(length);
