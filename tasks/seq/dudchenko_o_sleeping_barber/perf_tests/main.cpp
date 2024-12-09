@@ -71,8 +71,3 @@ TEST(sleeping_barber_test, test_task_run) {
   // Проверка результатов
   ASSERT_TRUE(perfResults != nullptr);
 }
-
-int main(int argc, char** argv) {
-  ::testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}
