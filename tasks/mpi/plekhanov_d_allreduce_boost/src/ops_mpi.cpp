@@ -93,11 +93,11 @@ bool plekhanov_d_allreduce_boost_mpi::TestMPITaskBoostParallel::run() {
   broadcast(world, rowCount, 0);
   broadcast(world, columnCount, 0);
 
-  int segment = rowCount / world.size();
-  int over = rowCount % world.size();
+  int lambda_1 = rowCount / world.size();
+  int lambda_2 = rowCount % world.size();
 
-  std::vector<int> size(world.size(), (int)(segment * columnCount));
-  for (int i = 0; i < over; i++) size[world.size() - i - 1] += columnCount;
+  std::vector<int> size(world.size(), (lambda_1 * columnCount));
+  for (int i = 0; i < lambda_2; i++) size[world.size() - i - 1] += columnCount;
 
   localInputData_.resize(size[world.rank()]);
   scatterv(world, inputData_, size, localInputData_.data(), 0);
