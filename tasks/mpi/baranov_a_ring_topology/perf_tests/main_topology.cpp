@@ -20,6 +20,7 @@ void get_rnd_vec(std::vector<tp> &vec) {
     std::uniform_real_distribution<tp> dist(0.0, vec.size());
     std::generate(vec.begin(), vec.end(), [&dist, &reng] { return dist(reng); });
   }
+}
 }  // namespace baranov_a_ring_topology_temp
 std::vector<int> global_arr(10000000);
 
