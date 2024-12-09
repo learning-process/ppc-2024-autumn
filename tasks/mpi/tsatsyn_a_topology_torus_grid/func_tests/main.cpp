@@ -8,7 +8,7 @@
 #include <vector>
 
 #include "mpi/tsatsyn_a_topology_torus_grid/include/ops_mpi.hpp"
-std::vector<int> tsatsyn_a_topology_torus_grid_mpi::getRandomVector(int sz, int a, int b) {
+static std::vector<int> getRandomVector(int sz, int a, int b) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
@@ -26,7 +26,7 @@ TEST(tsatsyn_a_topology_torus_grid_mpi, Test_Negative_Validation) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   const int count_size_vector = 1;
   if (world.rank() == 0) {
-    global_vec = tsatsyn_a_topology_torus_grid_mpi::getRandomVector(count_size_vector, 0, 100);
+    global_vec = getRandomVector(count_size_vector, 0, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
@@ -37,7 +37,7 @@ TEST(tsatsyn_a_topology_torus_grid_mpi, Test_Negative_Validation) {
     ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
 }
-TEST(tsatsyn_a_topology_torus_grid_mpi, Test_Send_30050) {
+TEST(tsatsyn_a_topology_torus_grid_mpi, Test_Send_Non_Full_Limit) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_sum(1, 0);
@@ -45,7 +45,7 @@ TEST(tsatsyn_a_topology_torus_grid_mpi, Test_Send_30050) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   const int count_size_vector = 30050;
   if (world.rank() == 0) {
-    global_vec = tsatsyn_a_topology_torus_grid_mpi::getRandomVector(count_size_vector, 0, 100);
+    global_vec = getRandomVector(count_size_vector, 0, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
@@ -62,7 +62,7 @@ TEST(tsatsyn_a_topology_torus_grid_mpi, Test_Send_30050) {
     ASSERT_EQ(count_size_vector, global_sum[0]);
   }
 }
-TEST(tsatsyn_a_topology_torus_grid_mpi, Test_Send_30000) {
+TEST(tsatsyn_a_topology_torus_grid_mpi, Test_Send_Full_Limit) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_sum(1, 0);
@@ -70,7 +70,7 @@ TEST(tsatsyn_a_topology_torus_grid_mpi, Test_Send_30000) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   const int count_size_vector = 30000;
   if (world.rank() == 0) {
-    global_vec = tsatsyn_a_topology_torus_grid_mpi::getRandomVector(count_size_vector, 0, 100);
+    global_vec = getRandomVector(count_size_vector, 0, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
@@ -87,7 +87,7 @@ TEST(tsatsyn_a_topology_torus_grid_mpi, Test_Send_30000) {
     ASSERT_EQ(count_size_vector, global_sum[0]);
   }
 }
-TEST(tsatsyn_a_topology_torus_grid_mpi, Test_Send_1000) {
+TEST(tsatsyn_a_topology_torus_grid_mpi, Test_Send_Less_Limit) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_sum(1, 0);
@@ -95,7 +95,7 @@ TEST(tsatsyn_a_topology_torus_grid_mpi, Test_Send_1000) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   const int count_size_vector = 1000;
   if (world.rank() == 0) {
-    global_vec = tsatsyn_a_topology_torus_grid_mpi::getRandomVector(count_size_vector, 0, 100);
+    global_vec = getRandomVector(count_size_vector, 0, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
@@ -120,7 +120,7 @@ TEST(tsatsyn_a_topology_torus_grid_mpi, Test_Send_500000) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   const int count_size_vector = 500000;
   if (world.rank() == 0) {
-    global_vec = tsatsyn_a_topology_torus_grid_mpi::getRandomVector(count_size_vector, 0, 100);
+    global_vec = getRandomVector(count_size_vector, 0, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
@@ -137,7 +137,7 @@ TEST(tsatsyn_a_topology_torus_grid_mpi, Test_Send_500000) {
     ASSERT_EQ(count_size_vector, global_sum[0]);
   }
 }
-TEST(tsatsyn_a_topology_torus_grid_mpi, Test_Send_10001) {
+TEST(tsatsyn_a_topology_torus_grid_mpi, Test_Send_More_Limit) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_sum(1, 0);
@@ -146,7 +146,7 @@ TEST(tsatsyn_a_topology_torus_grid_mpi, Test_Send_10001) {
   const int count_size_vector = 10001;
 
   if (world.rank() == 0) {
-    global_vec = tsatsyn_a_topology_torus_grid_mpi::getRandomVector(count_size_vector, 0, 100);
+    global_vec = getRandomVector(count_size_vector, 0, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
