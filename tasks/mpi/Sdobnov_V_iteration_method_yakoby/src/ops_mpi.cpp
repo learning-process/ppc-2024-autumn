@@ -43,7 +43,7 @@ std::vector<double> Sdobnov_iteration_method_yakoby::iteration_method_yakoby(int
   return x_new;
 }
 
-void calculate_mat_part_param(int rows, int num_proc, std::vector<int>& sizes, std::vector<int>& offsets) {
+void static calculate_mat_part_param(int rows, int num_proc, std::vector<int>& sizes, std::vector<int>& offsets) {
   sizes.resize(num_proc, 0);
   offsets.resize(num_proc, -1);
   if (num_proc > rows) {
@@ -67,7 +67,8 @@ void calculate_mat_part_param(int rows, int num_proc, std::vector<int>& sizes, s
   }
 }
 
-void calculate_free_members_part_param(int len, int num_proc, std::vector<int>& sizes, std::vector<int>& offsets) {
+void static calculate_free_members_part_param(int len, int num_proc, std::vector<int>& sizes,
+                                              std::vector<int>& offsets) {
   sizes.resize(num_proc, 0);
   offsets.resize(num_proc, -1);
   if (num_proc > len) {
@@ -91,7 +92,7 @@ void calculate_free_members_part_param(int len, int num_proc, std::vector<int>& 
   }
 }
 
-bool isDiagonallyDominant(int n, const std::vector<double>& A) {
+bool static isDiagonallyDominant(int n, const std::vector<double>& A) {
   for (int i = 0; i < n; ++i) {
     double sum = 0.0;
 

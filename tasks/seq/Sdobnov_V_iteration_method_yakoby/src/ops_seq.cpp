@@ -38,7 +38,7 @@ std::vector<double> Sdobnov_iteration_method_yakoby::iteration_method_yakoby(int
   return x_new;
 }
 
-bool isDiagonallyDominant(int n, const std::vector<double>& A) {
+bool static isDiagonallyDominant(int n, const std::vector<double>& A) {
   for (int i = 0; i < n; ++i) {
     double sum = 0.0;
 
