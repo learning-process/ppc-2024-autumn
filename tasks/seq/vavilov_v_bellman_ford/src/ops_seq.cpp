@@ -8,9 +8,6 @@ bool vavilov_v_bellman_ford_seq::TestTaskSequential::pre_processing() {
   source_ = taskData->inputs_count[2];
   int* edges_data = reinterpret_cast<int*>(taskData->inputs[0]);
 
-  reachable_.resize(vertices_, false);
-  reachable_[source_] = true;
-
   for (int i = 0; i < edges_count_; ++i) {
     edges_.push_back({edges_data[i * 3], edges_data[i * 3 + 1], edges_data[i * 3 + 2]});
   }
@@ -30,29 +27,18 @@ bool vavilov_v_bellman_ford_seq::TestTaskSequential::validation() {
 bool vavilov_v_bellman_ford_seq::TestTaskSequential::run() {
   internal_order_test();
 
-  for (int i = 0; i < vertices_ - 1; ++i) {
-    bool updated = false;
+  for (int i = 1; i < vertices_; ++i) {
     for (const auto& edge : edges_) {
-      if (reachable_[edge.src] && distances_[edge.src] != INT_MAX) {
-        if (distances_[edge.src] + edge.weight < distances_[edge.dest]) {
-          distances_[edge.dest] = distances_[edge.src] + edge.weight;
-          if (!reachable_[edge.dest]) {
-            reachable_[edge.dest] = true;
-            updated = true;
-          }
-        }
+      if (distances_[edge.src] != INT_MAX && distances_[edge.src] + edge.weight < distances_[edge.dest]) {
+        distances_[edge.dest] = distances_[edge.src] + edge.weight;
       }
-    }
-
-    if (!updated) {
-      break;
     }
   }
 
   for (const auto& edge : edges_) {
     if (reachable_[edge.src] && distances_[edge.src] != INT_MAX &&
         distances_[edge.src] + edge.weight < distances_[edge.dest]) {
-      return false;
+      return false;  // Negative weight cycle detected
     }
   }
 
@@ -61,11 +47,6 @@ bool vavilov_v_bellman_ford_seq::TestTaskSequential::run() {
 
 bool vavilov_v_bellman_ford_seq::TestTaskSequential::post_processing() {
   internal_order_test();
-  for (size_t i = 0; i < distances_.size(); ++i) {
-    if (!reachable_[i]) {
-      distances_[i] = INT_MAX;
-    }
-  }
 
   std::copy(distances_.begin(), distances_.end(), reinterpret_cast<int*>(taskData->outputs[0]));
   return true;
