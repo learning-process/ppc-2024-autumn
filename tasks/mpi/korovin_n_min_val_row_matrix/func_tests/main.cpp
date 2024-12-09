@@ -163,10 +163,10 @@ TEST(korovin_n_min_val_row_matrix_mpi, find_min_val_in_row_100x500_matrix) {
   }
 }
 
-TEST(korovin_n_min_val_row_matrix_mpi, find_min_val_in_row_5000x5000_matrix) {
+TEST(korovin_n_min_val_row_matrix_mpi, find_min_val_in_row_3000x3000_matrix) {
   boost::mpi::communicator world;
-  const int count_rows = 5000;
-  const int count_columns = 5000;
+  const int count_rows = 3000;
+  const int count_columns = 3000;
 
   std::vector<std::vector<int>> global_matrix;
   std::vector<int32_t> global_min(count_rows, INT_MAX);

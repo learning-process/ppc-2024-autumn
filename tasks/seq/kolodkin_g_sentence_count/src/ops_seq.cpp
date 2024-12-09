@@ -3,8 +3,6 @@
 
 #include <thread>
 
-using namespace std::chrono_literals;
-
 bool kolodkin_g_sentence_count_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   input_ = *reinterpret_cast<std::string*>(taskData->inputs[0]);

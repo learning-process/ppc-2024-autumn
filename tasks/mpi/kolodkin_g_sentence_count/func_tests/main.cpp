@@ -7,7 +7,7 @@
 
 #include "mpi/kolodkin_g_sentence_count/include/ops_mpi.hpp"
 
-TEST(Parallel_Operations_MPI, Test_empty_string) {
+TEST(kolodkin_g_sentence_count, Test_empty_string) {
   boost::mpi::communicator world;
   std::vector<char> global_str;
 
@@ -53,7 +53,7 @@ TEST(Parallel_Operations_MPI, Test_empty_string) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_two_sentences) {
+TEST(kolodkin_g_sentence_count, Test_two_sentences) {
   boost::mpi::communicator world;
   std::vector<char> global_str;
 
@@ -103,7 +103,7 @@ TEST(Parallel_Operations_MPI, Test_two_sentences) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_sentences_with_special_symbols) {
+TEST(kolodkin_g_sentence_count, Test_sentences_with_special_symbols) {
   boost::mpi::communicator world;
   std::vector<char> global_str;
 
@@ -153,7 +153,7 @@ TEST(Parallel_Operations_MPI, Test_sentences_with_special_symbols) {
   }
 }
 
-TEST(Parallel_Operations_MPI, Test_sentences_with_special_symbols_in_end_of_sentence) {
+TEST(kolodkin_g_sentence_count, Test_sentences_with_special_symbols_in_end_of_sentence) {
   boost::mpi::communicator world;
   std::vector<char> global_str;
 
@@ -202,7 +202,7 @@ TEST(Parallel_Operations_MPI, Test_sentences_with_special_symbols_in_end_of_sent
     ASSERT_EQ(reference_out[0], 6);
   }
 }
-TEST(Parallel_Operations_MPI, Test_sentences_with_double_symbols) {
+TEST(kolodkin_g_sentence_count, Test_sentences_with_double_symbols) {
   boost::mpi::communicator world;
   std::vector<char> global_str;
 
@@ -252,7 +252,7 @@ TEST(Parallel_Operations_MPI, Test_sentences_with_double_symbols) {
     ASSERT_EQ(reference_out[0], 6);
   }
 }
-TEST(Parallel_Operations_MPI, Big_text) {
+TEST(kolodkin_g_sentence_count, Big_text) {
   boost::mpi::communicator world;
   std::vector<char> global_str;
 
