@@ -65,7 +65,7 @@ bool tsatsyn_a_increasing_contrast_by_histogram_seq::TestTaskSequential::run() {
   std::cout << std::endl;
   std::cout << std::endl;
 
-  for (int i = 0; i < localka.size(); i++) {
+  for (int i = 0; i < static_cast<int>(localka.size()); i++) {
     localka[i] = std::round(localka[i]);
     std::cout << localka[i] << " ";
   }
