@@ -110,7 +110,7 @@ TEST(suvorov_d_linear_topology_mpi, test_with_prime_vector_size) {
 TEST(suvorov_d_linear_topology_mpi, test_with_degree_of_two_vector_size) {
   boost::mpi::communicator world;
   std::vector<int> initial_data;
-  std::vector<int> result_data(1, 0);
+  bool result_data = false;
   int count_size_vector = 131072;
 
   // Create TaskData
@@ -121,8 +121,8 @@ TEST(suvorov_d_linear_topology_mpi, test_with_degree_of_two_vector_size) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(initial_data.data()));
     taskDataPar->inputs_count.emplace_back(initial_data.size());
 
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_data.data()));
-    taskDataPar->outputs_count.emplace_back(result_data.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&result_data));
+    taskDataPar->outputs_count.emplace_back(1);
   }
 
   suvorov_d_linear_topology_mpi::MPILinearTopology line_topo(taskDataPar);
@@ -140,7 +140,7 @@ TEST(suvorov_d_linear_topology_mpi, test_with_degree_of_two_vector_size) {
 TEST(suvorov_d_linear_topology_mpi, test_with_zero_size) {
   boost::mpi::communicator world;
   std::vector<int> initial_data;
-  std::vector<int> result_data(1, 0);
+  bool result_data = false;
   int count_size_vector = 0;
 
   // Create TaskData
@@ -151,8 +151,8 @@ TEST(suvorov_d_linear_topology_mpi, test_with_zero_size) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(initial_data.data()));
     taskDataPar->inputs_count.emplace_back(initial_data.size());
 
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_data.data()));
-    taskDataPar->outputs_count.emplace_back(result_data.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&result_data));
+    taskDataPar->outputs_count.emplace_back(1);
   }
 
   suvorov_d_linear_topology_mpi::MPILinearTopology line_topo(taskDataPar);
@@ -164,7 +164,7 @@ TEST(suvorov_d_linear_topology_mpi, test_with_zero_size) {
 TEST(suvorov_d_linear_topology_mpi, test_with_single_size) {
   boost::mpi::communicator world;
   std::vector<int> initial_data;
-  std::vector<int> result_data(1, 0);
+  bool result_data = false;
   int count_size_vector = 1;
 
   // Create TaskData
@@ -175,8 +175,8 @@ TEST(suvorov_d_linear_topology_mpi, test_with_single_size) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(initial_data.data()));
     taskDataPar->inputs_count.emplace_back(initial_data.size());
 
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_data.data()));
-    taskDataPar->outputs_count.emplace_back(result_data.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&result_data));
+    taskDataPar->outputs_count.emplace_back(1);
   }
 
   suvorov_d_linear_topology_mpi::MPILinearTopology line_topo(taskDataPar);
