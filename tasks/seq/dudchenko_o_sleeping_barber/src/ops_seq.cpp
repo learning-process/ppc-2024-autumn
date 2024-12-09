@@ -53,7 +53,7 @@ bool TestSleepingBarber::run() {
   while (!waiting_clients.empty()) {
     int client = waiting_clients.front();
     waiting_clients.pop_front();
-    next_client();
+    next_client(client);
   }
 
   result = 0;
@@ -69,6 +69,8 @@ bool TestSleepingBarber::post_processing() {
   return true;
 }
 
-void TestSleepingBarber::next_client() { std::this_thread::sleep_for(20ms); }
-
+void TestSleepingBarber::next_client() {
+  (void)client;
+  std::this_thread::sleep_for(20ms); 
+}
 }  // namespace dudchenko_o_sleeping_barber_seq
