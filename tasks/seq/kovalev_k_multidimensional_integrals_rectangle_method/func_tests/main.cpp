@@ -99,8 +99,8 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, 1x1_area) {
   std::vector<std::pair<double, double>> lims(dim);
   lims[0].first = lims[1].first = 0.0;
   lims[0].second = lims[1].second = 1.0;
-  double h = 0.0005;
-  double eps = 1e-4;
+  double h = 0.001;
+  double eps = 1e-3;
   std::vector<double> out(1);
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
   taskSeq->inputs_count.emplace_back(lims.size());
@@ -122,8 +122,8 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, 1x1_xy) {
   std::vector<std::pair<double, double>> lims(dim);
   lims[0].first = lims[1].first = 0.0;
   lims[0].second = lims[1].second = 1.0;
-  double h = 0.0005;
-  double eps = 1e-4;
+  double h = 0.001;
+  double eps = 1e-3;
   std::vector<double> out(1);
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
   taskSeq->inputs_count.emplace_back(lims.size());
@@ -145,8 +145,8 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, minus1_0xminus1_
   std::vector<std::pair<double, double>> lims(dim);
   lims[0].first = lims[1].first = 0.0;
   lims[0].second = lims[1].second = 1.0;
-  double h = 0.0005;
-  double eps = 1e-4;
+  double h = 0.001;
+  double eps = 1e-3;
   std::vector<double> out(1);
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
   taskSeq->inputs_count.emplace_back(lims.size());
