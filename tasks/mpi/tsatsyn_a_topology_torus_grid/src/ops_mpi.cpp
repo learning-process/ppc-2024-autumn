@@ -399,12 +399,12 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::pre_processing() {
 bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   if (world.rank() == 0) {
-     auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[1]);
-     int width,height;
-     width = tempPtr[0];
-     height=tempPtr[1];
-     std::cout << height << width << std::endl;
-    std::vector<double> localka(256,0);
+    auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[1]);
+    int width, height;
+    width = tempPtr[0];
+    height = tempPtr[1];
+    std::cout << height << width << std::endl;
+    std::vector<double> localka(256, 0);
     for (int i = 0; i < input_data.size(); i++) {
       localka[input_data[i]]++;
     }
@@ -417,7 +417,7 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
     std::cout << std::endl;
 
     for (int i = 0; i < localka.size(); i++) {
-      localka[i]/=width;
+      localka[i] /= width;
       std::cout << localka[i] << " ";
     }
     std::cout << std::endl;
@@ -427,17 +427,16 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
 
     std::cout << localka[0] << " ";
     for (int i = 1; i < localka.size(); i++) {
-      localka[i] = (localka[i]+localka[i-1]);
+      localka[i] = (localka[i] + localka[i - 1]);
       std::cout << localka[i] << " ";
     }
     std::cout << std::endl;
     std::cout << std::endl;
     std::cout << std::endl;
     std::cout << std::endl;
-
 
     for (int i = 0; i < localka.size(); i++) {
-      localka[i] *=255 ;
+      localka[i] *= 255;
       std::cout << localka[i] << " ";
     }
     std::cout << std::endl;
@@ -445,7 +444,14 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
     std::cout << std::endl;
     std::cout << std::endl;
 
-
+    for (int i = 0; i < localka.size(); i++) {
+      localka[i] = round(localka[i]);
+      std::cout << localka[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
   }
  /* std::map<Directions, int> neighbors;
   int rows;
