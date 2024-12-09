@@ -393,11 +393,61 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::pre_processing() {
     auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[0]);
     std::copy(tempPtr, tempPtr + taskData->inputs_count[0], input_data.begin());
   }
+
   return true;
 }
 bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  std::map<Directions, int> neighbors;
+  if (world.rank() == 0) {
+     auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[1]);
+     int width,height;
+     width = tempPtr[0];
+     height=tempPtr[1];
+     std::cout << height << width << std::endl;
+    std::vector<double> localka(256,0);
+    for (int i = 0; i < input_data.size(); i++) {
+      localka[input_data[i]]++;
+    }
+    for (int i = 0; i < localka.size(); i++) {
+      std::cout << localka[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+
+    for (int i = 0; i < localka.size(); i++) {
+      localka[i]/=width;
+      std::cout << localka[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+
+    std::cout << localka[0] << " ";
+    for (int i = 1; i < localka.size(); i++) {
+      localka[i] = (localka[i]+localka[i-1]);
+      std::cout << localka[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+
+
+    for (int i = 0; i < localka.size(); i++) {
+      localka[i] *=255 ;
+      std::cout << localka[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+
+
+  }
+ /* std::map<Directions, int> neighbors;
   int rows;
   int cols;
   int row_pos;
@@ -439,7 +489,7 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
   }
   mySend(world, world.size() - 1, 0, cols, rows, neighbors, res);
   mySend(world, 0, world.size() - 1, cols, rows, neighbors, res);
-  mySend(world, world.size() - 1, 0, cols, rows, neighbors, res);
+  mySend(world, world.size() - 1, 0, cols, rows, neighbors, res);*/
   return true;
 }
 bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::post_processing() {
