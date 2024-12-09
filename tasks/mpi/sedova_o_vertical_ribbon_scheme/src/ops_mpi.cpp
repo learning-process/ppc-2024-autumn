@@ -13,6 +13,7 @@ bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::validation() {
          taskData->inputs_count[0] % taskData->inputs_count[1] == 0 &&
          taskData->outputs_count[0] == taskData->inputs_count[0] / taskData->inputs_count[1];
 }
+
 bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::pre_processing() {
   internal_order_test();
   matrix_ = reinterpret_cast<int*>(taskData->inputs[0]);
@@ -23,6 +24,7 @@ bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::pre_processing() {
   result_vector_.assign(cols_, 0);
   return true;
 }
+
 bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::run() {
   internal_order_test();
   for (int i = 0; i < rows_; ++i) {
@@ -32,6 +34,7 @@ bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::run() {
   }
   return true;
 }
+
 bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::post_processing() {
   internal_order_test();
 
@@ -40,6 +43,7 @@ bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::post_processing() {
 
   return true;
 }
+
 bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::validation() {
   internal_order_test();
   return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 &&
@@ -92,6 +96,7 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::pre_processing() {
   }
   return true;
 }
+
 bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::run() {
   internal_order_test();
   boost::mpi::broadcast(world, rows_, 0);
@@ -117,6 +122,7 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::run() {
 
   return true;
 }
+
 bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
