@@ -24,6 +24,9 @@ class line_topology_mpi : public ppc::core::Task {
  private:
   std::vector<int> message;
   boost::mpi::communicator world;
+  int sendler;
+  int recipient;
+  int msize;
 };
 
 }  // namespace sharamygina_i_line_topology_mpi

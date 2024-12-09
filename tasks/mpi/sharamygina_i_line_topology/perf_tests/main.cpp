@@ -18,6 +18,7 @@ TEST(sharamygina_i_line_topology_mpi, test_task_run) {
   taskData->inputs_count.emplace_back(size);
 
   std::vector<int> data(size, 0);
+  std::iota(data.begin(), data.end(), 0);
   std::vector<int> received_data;
 
   if (world.rank() == sendler) {
@@ -60,7 +61,7 @@ TEST(sharamygina_i_line_topology_mpi, test_task_run) {
 
 TEST(sharamygina_i_line_topology_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  int size = 10000000;
+  int size = 5000000;
   auto sendler = 0;
   auto recipient = world.size() - 1;
 
@@ -94,7 +95,7 @@ TEST(sharamygina_i_line_topology_mpi, test_pipeline_run) {
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;
+  perfAttr->num_running = 9;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 

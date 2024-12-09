@@ -11,8 +11,9 @@
 bool sharamygina_i_line_topology_mpi::line_topology_mpi::pre_processing() {
   internal_order_test();
 
-  int sendler = taskData->inputs_count[0];
-  int msize = taskData->inputs_count[2];
+  sendler = taskData->inputs_count[0];
+  recipient = taskData->inputs_count[1];
+  msize = taskData->inputs_count[2];
 
   if (world.rank() == sendler) {
     auto* inputBuffer = reinterpret_cast<int*>(taskData->inputs[0]);
@@ -27,19 +28,17 @@ bool sharamygina_i_line_topology_mpi::line_topology_mpi::validation() {
 
   if (taskData->inputs_count.size() < 3) return false;
 
-  int sendler = taskData->inputs_count[0];
-  int recipient = taskData->inputs_count[1];
-  int msize = taskData->inputs_count[2];
+  int sendler_ = taskData->inputs_count[0];
+  int recipient_ = taskData->inputs_count[1];
+  int msize_ = taskData->inputs_count[2];
 
-  return (sendler >= 0 && sendler < world.size() && recipient >= 0 && recipient < world.size() && msize > 0) &&
-         ((world.rank() != sendler) || ((!taskData->inputs.empty()) && (taskData->inputs[0] != nullptr))) &&
-         ((world.rank() != recipient) || ((!taskData->outputs.empty()) && (taskData->outputs[0] != nullptr)));
+  return (sendler_ >= 0 && sendler_ < world.size() && recipient_ >= 0 && recipient_ < world.size() && msize_ > 0) &&
+         ((world.rank() != sendler_) || ((!taskData->inputs.empty()) && (taskData->inputs[0] != nullptr))) &&
+         ((world.rank() != recipient_) || ((!taskData->outputs.empty()) && (taskData->outputs[0] != nullptr)));
 }
 
 bool sharamygina_i_line_topology_mpi::line_topology_mpi::run() {
   internal_order_test();
-  int sendler = taskData->inputs_count[0];
-  int recipient = taskData->inputs_count[1];
 
   if (sendler == recipient) {
     return true;
@@ -61,8 +60,6 @@ bool sharamygina_i_line_topology_mpi::line_topology_mpi::run() {
 
 bool sharamygina_i_line_topology_mpi::line_topology_mpi::post_processing() {
   internal_order_test();
-
-  int recipient = taskData->inputs_count[1];
 
   if (world.rank() == recipient) {
     auto* mptr = reinterpret_cast<int*>(taskData->outputs[0]);

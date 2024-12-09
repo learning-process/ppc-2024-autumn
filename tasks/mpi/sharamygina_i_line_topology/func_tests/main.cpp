@@ -11,8 +11,9 @@ namespace sharamygina_i_line_topology_mpi {
 void generator(std::vector<int>& v) {
   std::random_device dev;
   std::mt19937 gen(dev());
+  std::uniform_int_distribution<int> dist(-1000, 1000);
   for (size_t i = 0; i < v.size(); ++i) {
-    v[i] = -1000 + gen() % 1000;
+    v[i] = dist(gen);
   }
 }
 }  // namespace sharamygina_i_line_topology_mpi
@@ -68,7 +69,7 @@ TEST(sharamygina_i_line_topology_mpi, transferRandomData) {
 
   int size = 20000;
 
-  std::srand(static_cast<unsigned int>(std::time(nullptr)));
+  std::srand(static_cast<unsigned int>(std::time(NULL)));
   int sendler = std::rand() % (world.size());
   int recipient = sendler + std::rand() % (world.size() - sendler);
 
