@@ -45,7 +45,9 @@ class BroadcastParallelMPI : public ppc::core::Task {
  private:
   int source_worker;
   std::vector<int> A;
+  int global_sum_A;
   std::vector<int> B;
+  int global_sum_B;
   boost::mpi::communicator world;
 };
 

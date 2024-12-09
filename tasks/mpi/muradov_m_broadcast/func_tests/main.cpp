@@ -33,6 +33,8 @@ void test_template_rundom(int n, int source = 0) {
   std::vector<int> A;
   std::vector<int> A_res(n);
   std::vector<int> B_res(n);
+  int my_global_sum_A;
+  int mpi_global_sum_B;
 
   std::shared_ptr<ppc::core::TaskData> taskDataBroadcast = std::make_shared<ppc::core::TaskData>();
 
@@ -55,13 +57,22 @@ void test_template_rundom(int n, int source = 0) {
   taskDataBroadcast->outputs.emplace_back(reinterpret_cast<uint8_t*>(B_res.data()));
   taskDataBroadcast->outputs_count.emplace_back(n);
 
+  taskDataBroadcast->outputs.emplace_back(reinterpret_cast<uint8_t*>(&my_global_sum_A));
+  taskDataBroadcast->outputs_count.emplace_back(1);
+
+  taskDataBroadcast->outputs.emplace_back(reinterpret_cast<uint8_t*>(&mpi_global_sum_B));
+  taskDataBroadcast->outputs_count.emplace_back(1);
+
   auto taskBroadcast = std::make_shared<BroadcastParallelMPI>(taskDataBroadcast);
   bool val_res = taskBroadcast->validation();
   taskBroadcast->pre_processing();
   taskBroadcast->run();
   taskBroadcast->post_processing();
 
-  if (val_res) EXPECT_EQ(A_res, B_res);
+  if (val_res) {
+    ASSERT_EQ(A_res, B_res);
+    EXPECT_EQ(my_global_sum_A, mpi_global_sum_B);
+  }
 }
 
 }  // namespace muradov_m_broadcast_mpi
@@ -127,6 +138,8 @@ TEST(muradov_m_broadcast_mpi, rundom_source_between_0_and_world_size_minus_1) {
   std::vector<int> A;
   std::vector<int> A_res(n);
   std::vector<int> B_res(n);
+  int my_global_sum_A;
+  int mpi_global_sum_B;
 
   std::shared_ptr<ppc::core::TaskData> taskDataBroadcast = std::make_shared<ppc::core::TaskData>();
 
@@ -149,11 +162,20 @@ TEST(muradov_m_broadcast_mpi, rundom_source_between_0_and_world_size_minus_1) {
   taskDataBroadcast->outputs.emplace_back(reinterpret_cast<uint8_t*>(B_res.data()));
   taskDataBroadcast->outputs_count.emplace_back(n);
 
+  taskDataBroadcast->outputs.emplace_back(reinterpret_cast<uint8_t*>(&my_global_sum_A));
+  taskDataBroadcast->outputs_count.emplace_back(1);
+
+  taskDataBroadcast->outputs.emplace_back(reinterpret_cast<uint8_t*>(&mpi_global_sum_B));
+  taskDataBroadcast->outputs_count.emplace_back(1);
+
   auto taskBroadcast = std::make_shared<muradov_m_broadcast_mpi::BroadcastParallelMPI>(taskDataBroadcast);
-  taskBroadcast->validation();
+  bool val_res = taskBroadcast->validation();
   taskBroadcast->pre_processing();
   taskBroadcast->run();
   taskBroadcast->post_processing();
 
-  EXPECT_EQ(A_res, B_res);
+  if (val_res) {
+    ASSERT_EQ(A_res, B_res);
+    EXPECT_EQ(my_global_sum_A, mpi_global_sum_B);
+  }
 }
