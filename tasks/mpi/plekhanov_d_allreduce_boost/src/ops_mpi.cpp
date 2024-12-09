@@ -108,7 +108,7 @@ bool plekhanov_d_allreduce_boost_mpi::TestMPITaskBoostParallel::run() {
   std::vector<int> local_count_greater(columnCount, 0);
 
   if (!localInputData_.empty()) {
-    for (int j = 0; j < localInputData_.size() / columnCount; j++) {
+    for (size_t j = 0; j < localInputData_.size() / columnCount; j++) {
       for (int i = 0; i < columnCount; i++) {
         int value = localInputData_[j * columnCount + i];
         if (value < local_min_by_cols[i]) local_min_by_cols[i] = value;
@@ -119,7 +119,7 @@ bool plekhanov_d_allreduce_boost_mpi::TestMPITaskBoostParallel::run() {
 
   if (!localInputData_.empty()) {
     for (size_t j = 0; j < localInputData_.size() / columnCount; j++) {
-      for (size_t i = 0; i < columnCount; i++) {
+      for (int i = 0; i < columnCount; i++) {
         if (localInputData_[j * columnCount + i] > min_by_cols[i]) {
           local_count_greater[i]++;
         }
