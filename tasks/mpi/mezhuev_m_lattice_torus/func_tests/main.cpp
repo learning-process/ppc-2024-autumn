@@ -140,7 +140,6 @@ TEST(mezhuev_m_lattice_torus, TestIterationOnMaxGridSize) {
   EXPECT_TRUE(task.post_processing());
 }
 
-
 TEST(mezhuev_m_lattice_torus, TestUnmatchedInputOutputSizesWithLargeData) {
   boost::mpi::communicator world;
 
