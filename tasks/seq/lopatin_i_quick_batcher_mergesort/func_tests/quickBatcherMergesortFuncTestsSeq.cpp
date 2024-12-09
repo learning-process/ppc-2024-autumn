@@ -84,9 +84,10 @@ TEST(lopatin_i_quick_batcher_mergesort_seq, test_3_int) {
 }
 
 TEST(lopatin_i_quick_batcher_mergesort_seq, test_10_int) {
-  std::vector<int> inputArray = {2, 1, 3, 4, 8, 6, 12, 9, 10, 5};
+  std::vector<int> inputArray = generateArray(10);
   std::vector<int> resultArray(10, 0);
-  std::vector<int> expectedResult = {1, 2, 3, 4, 5, 6, 8, 9, 10, 12};
+  std::vector<int> expectedResult = inputArray;
+  std::sort(expectedResult.begin(), expectedResult.end());
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputArray.data()));

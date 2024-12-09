@@ -13,11 +13,11 @@ std::vector<int> generateArray(int size) {
   return outputArray;
 }
 
-std::vector<int> testData = generateArray(10000);
+std::vector<int> testArray = generateArray(48000);
 
 TEST(lopatin_i_quick_batcher_mergesort_seq, test_pipeline_run) {
-  std::vector<int> inputArray = testData;
-  std::vector<int> resultArray(10000, 0);
+  std::vector<int> inputArray = testArray;
+  std::vector<int> resultArray(48000, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputArray.data()));
@@ -44,8 +44,8 @@ TEST(lopatin_i_quick_batcher_mergesort_seq, test_pipeline_run) {
 }
 
 TEST(lopatin_i_quick_batcher_mergesort_seq, test_task_run) {
-  std::vector<int> inputArray = testData;
-  std::vector<int> resultArray(10000, 0);
+  std::vector<int> inputArray = testArray;
+  std::vector<int> resultArray(48000, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputArray.data()));

@@ -25,21 +25,6 @@ int partition(std::vector<int>& arr, int low, int high) {
   return i + 1;
 }
 
-void oddEvenMerge(std::vector<int>& arr, int low, int high) {
-  if (high <= low) return;
-
-  int mid = (low + high) / 2;
-  oddEvenMerge(arr, low, mid);
-  oddEvenMerge(arr, mid + 1, high);
-
-  // Merge the two halves
-  for (int i = low; i <= mid; i++) {
-    if (arr[i] > arr[i + (mid - low + 1)]) {
-      std::swap(arr[i], arr[i + (mid - low + 1)]);
-    }
-  }
-}
-
 bool TestMPITaskSequential::validation() {
   internal_order_test();
 
@@ -116,6 +101,113 @@ bool TestMPITaskParallel::pre_processing() {
 
 bool TestMPITaskParallel::run() {
   internal_order_test();
+
+  boost::mpi::broadcast(world, sizeArray, 0);
+  
+  int chunkSize = sizeArray / world.size();
+  int remainder = sizeArray % world.size();
+  
+  int startPosition = world.rank() * chunkSize;
+  int actualChunkSize = chunkSize;
+
+  if (world.rank() < remainder) {
+    startPosition += world.rank();
+    actualChunkSize++;
+  } else {
+    startPosition += remainder;
+  }
+
+  localArray.resize(actualChunkSize);
+
+  if (world.rank() == 0) {
+    for (int proc = 1; proc < world.size(); proc++) {
+      int procStartPosition = proc * chunkSize;
+      int procActualChunkSize = chunkSize;
+      if (proc < remainder) {
+        procStartPosition += proc;
+        procActualChunkSize++;
+      } else {
+        procStartPosition += remainder;
+      }
+      if (procActualChunkSize > 0) {
+        world.send(proc, 0, inputArray_.data() + procStartPosition, procActualChunkSize);
+      }
+    }
+    std::copy(inputArray_.begin() + startPosition, inputArray_.begin() + startPosition + actualChunkSize,
+              localArray.begin());
+  } else {
+    if (actualChunkSize > 0) {
+      world.recv(0, 0, localArray.data(), actualChunkSize);
+    }
+  }
+
+  quicksort(localArray, 0, localArray.size() - 1);
+
+  //for (int i = 0; i < localArray.size(); i++) {
+  //  std::cout << "proc " << world.rank() << "i = " << i << ' ' << localArray[i] << std::endl;
+  //}
+  //std::cout << std::endl;
+
+  for (int oddEvenStep = 0; oddEvenStep < world.size(); oddEvenStep++) {
+    int highMergeBorder = world.size();
+    if (oddEvenStep % 2 == 0) { // odd
+      if (world.size() % 2 != 0) {
+        highMergeBorder -= 1;
+      }
+      if (world.rank() >= highMergeBorder) {
+        continue;
+      }
+
+      std::vector<int> recvArray(actualChunkSize);
+
+      if (world.rank() % 2 == 0) {
+        world.send(world.rank() + 1, 0, localArray);
+        world.recv(world.rank() + 1, 1, recvArray);
+        std::vector<int> mergedArrays(localArray.size() + recvArray.size());
+        std::merge(localArray.begin(), localArray.end(), recvArray.begin(), recvArray.end(), mergedArrays.begin());
+        localArray = mergedArrays;
+        localArray.resize(actualChunkSize);
+      } else {
+        world.recv(world.rank() - 1, 0, recvArray);
+        world.send(world.rank() - 1, 1, localArray);
+        std::vector<int> mergedArrays(localArray.size() + recvArray.size());
+        std::merge(localArray.begin(), localArray.end(), recvArray.begin(), recvArray.end(), mergedArrays.begin());
+        localArray = mergedArrays;
+        localArray.erase(localArray.begin(), localArray.begin() + localArray.size() / 2);
+      }
+    } else { // even
+      if (world.size() % 2 == 0) {
+        highMergeBorder -= 1;
+      }
+      if (world.rank() < 1 || world.rank() >= highMergeBorder) {
+        continue;
+      }
+
+      std::vector<int> recvArray(actualChunkSize);
+
+      if (world.rank() % 2 != 0) {
+        world.send(world.rank() + 1, 0, localArray);
+        world.recv(world.rank() + 1, 1, recvArray);
+        std::vector<int> mergedArrays(localArray.size() + recvArray.size());
+        std::merge(localArray.begin(), localArray.end(), recvArray.begin(), recvArray.end(), mergedArrays.begin());
+        localArray = mergedArrays;
+        localArray.resize(actualChunkSize);
+      } else {
+        world.recv(world.rank() - 1, 0, recvArray);
+        world.send(world.rank() - 1, 1, localArray);
+        std::vector<int> mergedArrays(localArray.size() + recvArray.size());
+        std::merge(localArray.begin(), localArray.end(), recvArray.begin(), recvArray.end(), mergedArrays.begin());
+        localArray = mergedArrays;
+        localArray.erase(localArray.begin(), localArray.begin() + localArray.size() / 2);
+      }
+    }
+  }
+
+  if (world.rank() == 0) {
+    boost::mpi::gather(world, localArray.data(), actualChunkSize, resultArray_, 0);
+  } else {
+    boost::mpi::gather(world, localArray.data(), actualChunkSize, 0);
+  }
 
   return true;
 }

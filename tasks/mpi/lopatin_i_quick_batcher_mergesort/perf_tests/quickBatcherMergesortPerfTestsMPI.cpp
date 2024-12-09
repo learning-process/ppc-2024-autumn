@@ -15,12 +15,12 @@ std::vector<int> generateArray(int size) {
   return outputArray;
 }
 
-std::vector<int> testData = generateArray(10000);
+std::vector<int> testArray = generateArray(48000);
 
 TEST(lopatin_i_quick_batcher_mergesort_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  std::vector<int> inputArray = testData;
-  std::vector<int> resultArray(10000, 0);
+  std::vector<int> inputArray = testArray;
+  std::vector<int> resultArray(48000, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
 
@@ -50,8 +50,8 @@ TEST(lopatin_i_quick_batcher_mergesort_mpi, test_pipeline_run) {
 
 TEST(lopatin_i_quick_batcher_mergesort_mpi, test_task_run) {
   boost::mpi::communicator world;
-  std::vector<int> inputArray = testData;
-  std::vector<int> resultArray(10000, 0);
+  std::vector<int> inputArray = testArray;
+  std::vector<int> resultArray(48000, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
 

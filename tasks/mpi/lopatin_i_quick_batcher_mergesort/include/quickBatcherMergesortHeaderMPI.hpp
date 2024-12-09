@@ -11,7 +11,6 @@ namespace lopatin_i_quick_batcher_mergesort_mpi {
 
 void quicksort(std::vector<int>& arr, int low, int high);
 int partition(std::vector<int>& arr, int low, int high);
-void oddEvenMerge(std::vector<int>& arr, int low, int high);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
