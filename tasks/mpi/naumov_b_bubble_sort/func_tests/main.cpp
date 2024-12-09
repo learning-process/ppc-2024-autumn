@@ -126,6 +126,122 @@ TEST(naumov_b_bubble_sort_mpi, Test_RepeatedElements) {
   }
 }
 
+TEST(naumov_b_bubble_sort_mpi, Test_NegativeNumbers) {
+  boost::mpi::communicator world;
+
+  std::vector<int> input_data = {-5, -1, -3, -4, -2};
+  std::vector<int> sorted_data = {-5, -4, -3, -2, -1};
+
+  std::vector<int> output_data(input_data.size(), 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_data.data()));
+    taskDataPar->inputs_count.emplace_back(input_data.size());
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_data.data()));
+    taskDataPar->outputs_count.emplace_back(output_data.size());
+  }
+
+  naumov_b_bubble_sort_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(output_data, sorted_data);
+  }
+}
+
+TEST(naumov_b_bubble_sort_mpi, Test_AlternatingHighLow) {
+  boost::mpi::communicator world;
+
+  std::vector<int> input_data = {100, -100, 50, -50, 0};
+  std::vector<int> sorted_data = {-100, -50, 0, 50, 100};
+
+  std::vector<int> output_data(input_data.size(), 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_data.data()));
+    taskDataPar->inputs_count.emplace_back(input_data.size());
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_data.data()));
+    taskDataPar->outputs_count.emplace_back(output_data.size());
+  }
+
+  naumov_b_bubble_sort_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(output_data, sorted_data);
+  }
+}
+
+TEST(naumov_b_bubble_sort_mpi, Test_IntLimits) {
+  boost::mpi::communicator world;
+
+  std::vector<int> input_data = {INT_MAX, 0, INT_MIN, -1, 1};
+  std::vector<int> sorted_data = {INT_MIN, -1, 0, 1, INT_MAX};
+
+  std::vector<int> output_data(input_data.size(), 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_data.data()));
+    taskDataPar->inputs_count.emplace_back(input_data.size());
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_data.data()));
+    taskDataPar->outputs_count.emplace_back(output_data.size());
+  }
+
+  naumov_b_bubble_sort_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(output_data, sorted_data);
+  }
+}
+
+TEST(naumov_b_bubble_sort_mpi, Test_ReverseOrder) {
+  boost::mpi::communicator world;
+
+  std::vector<int> input_data = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+  std::vector<int> sorted_data = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+  std::vector<int> output_data(input_data.size(), 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_data.data()));
+    taskDataPar->inputs_count.emplace_back(input_data.size());
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_data.data()));
+    taskDataPar->outputs_count.emplace_back(output_data.size());
+  }
+
+  naumov_b_bubble_sort_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(output_data, sorted_data);
+  }
+}
+
 TEST(naumov_b_bubble_sort_mpi, Test_empty_array) {
   const size_t length = 0;
   std::vector<int> in(length);

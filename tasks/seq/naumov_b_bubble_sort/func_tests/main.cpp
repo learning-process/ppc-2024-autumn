@@ -72,3 +72,44 @@ TEST(naumov_b_bubble_sort_seq, random_input_10) {
   std::sort(reference_data.begin(), reference_data.end());
   ASSERT_EQ(output_data, reference_data);
 }
+
+TEST(naumov_b_bubble_sort_seq, Test_RepeatedElements) {
+  std::vector<int> input_data = {7, 7, 7, 7, 7};
+  std::vector<int> output_data(input_data.size(), 0);
+
+  auto task_data = std::make_shared<ppc::core::TaskData>();
+  task_data->inputs_count.push_back(input_data.size());
+  task_data->inputs.push_back(reinterpret_cast<uint8_t *>(input_data.data()));
+  task_data->outputs.push_back(reinterpret_cast<uint8_t *>(output_data.data()));
+  task_data->outputs_count.push_back(output_data.size());
+
+  naumov_b_bubble_sort_seq::TestTaskSequential sort_task(task_data);
+
+  ASSERT_TRUE(sort_task.validation());
+  sort_task.pre_processing();
+  sort_task.run();
+  sort_task.post_processing();
+
+  ASSERT_EQ(output_data, input_data);
+}
+
+TEST(naumov_b_bubble_sort_seq, Test_ReverseOrder) {
+  std::vector<int> input_data = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+  std::vector<int> sorted_data = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+  std::vector<int> output_data(input_data.size(), 0);
+
+  auto task_data = std::make_shared<ppc::core::TaskData>();
+  task_data->inputs_count.push_back(input_data.size());
+  task_data->inputs.push_back(reinterpret_cast<uint8_t *>(input_data.data()));
+  task_data->outputs.push_back(reinterpret_cast<uint8_t *>(output_data.data()));
+  task_data->outputs_count.push_back(output_data.size());
+
+  naumov_b_bubble_sort_seq::TestTaskSequential sort_task(task_data);
+
+  ASSERT_TRUE(sort_task.validation());
+  sort_task.pre_processing();
+  sort_task.run();
+  sort_task.post_processing();
+
+  ASSERT_EQ(output_data, sorted_data);
+}

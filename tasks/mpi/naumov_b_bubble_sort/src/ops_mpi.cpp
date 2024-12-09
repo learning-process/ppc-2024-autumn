@@ -120,8 +120,6 @@ bool naumov_b_bubble_sort_mpi::TestMPITaskParallel::validation() {
     }
   }
 
-  MPI_Bcast(nullptr, 0, MPI_INT, 0, MPI_COMM_WORLD);
-
   return true;
 }
 
