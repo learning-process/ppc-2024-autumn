@@ -483,6 +483,5 @@ TEST(veliev_e_jacobi_method_mpi, Test_not_single_solution) {
     veliev_e_jacobi_method_mpi::MethodJacobiSeq testMpiTaskSequential(taskDataSeq);
 
     ASSERT_FALSE(testMpiTaskSequential.validation());
-
   }
 }
