@@ -11,7 +11,7 @@ bool laganina_e_readers_writers_mpi::TestMPITaskParallel::pre_processing() {
   if (world.rank() == 0) {
     int size_data = taskData->inputs_count[0];
     shared_data = std::vector<int>(size_data);
-    auto* in_data = reinterpret_cast<int*>(taskData->inputs[0]);
+    int* in_data = reinterpret_cast<int*>(taskData->inputs[0]);
     std::copy(in_data, in_data + size_data, shared_data.begin());
   }
   return true;
@@ -134,7 +134,7 @@ bool laganina_e_readers_writers_mpi::TestMPITaskParallel::run() {
     shared_data.resize(vec_size);
     reqs = world.irecv(0, 2, shared_data.data(), vec_size);
     reqs.wait();
-    for (auto& t : shared_data) {
+    for (int& t : shared_data) {
       t++;  // adding 1 to each element
     }
     reqs = world.isend(0, 2, vec_size);
@@ -179,9 +179,9 @@ bool laganina_e_readers_writers_mpi::TestMPITaskParallel::run() {
 bool laganina_e_readers_writers_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    auto* out_data = reinterpret_cast<int*>(taskData->outputs[0]);
+    int* out_data = reinterpret_cast<int*>(taskData->outputs[0]);
     std::copy(res_.begin(), res_.end(), out_data);
-    auto* count = reinterpret_cast<int*>(taskData->outputs[1]);
+    int* count = reinterpret_cast<int*>(taskData->outputs[1]);
     *count = count_of_writers;
   }
   return true;
