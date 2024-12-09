@@ -9,7 +9,7 @@ bool sozonov_i_nearest_neighbor_elements_seq::TestTaskSequential::pre_processing
   // Init vectors
   input_ = std::vector<int>(taskData->inputs_count[0]);
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+  for (unsigned i = 0; i < taskData->inputs_count[0]; ++i) {
     input_[i] = tmp_ptr[i];
   }
   // Init value for output
@@ -27,8 +27,8 @@ bool sozonov_i_nearest_neighbor_elements_seq::TestTaskSequential::run() {
   internal_order_test();
   int min = INT_MAX;
   for (size_t i = 0; i < input_.size() - 1; ++i) {
-    if (abs(input_[i + 1] - input_[i]) < min) {
-      min = abs(input_[i + 1] - input_[i]);
+    if (std::abs(input_[i + 1] - input_[i]) < min) {
+      min = std::abs(input_[i + 1] - input_[i]);
       res = i;
     }
   }

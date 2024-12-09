@@ -39,6 +39,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   std::vector<int> input_;
   std::vector<std::pair<int, int>> diff, local_input_;
   std::pair<int, int> res;
+  int n{};
   boost::mpi::communicator world;
 };
 

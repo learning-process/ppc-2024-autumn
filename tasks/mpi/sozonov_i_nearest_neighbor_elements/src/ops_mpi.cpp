@@ -30,9 +30,9 @@ bool sozonov_i_nearest_neighbor_elements_mpi::TestMPITaskSequential::validation(
 bool sozonov_i_nearest_neighbor_elements_mpi::TestMPITaskSequential::run() {
   internal_order_test();
   int min = INT_MAX;
-  for (size_t i = 0; i < input_.size() - 1; i++) {
-    if (abs(input_[i + 1] - input_[i]) < min) {
-      min = abs(input_[i + 1] - input_[i]);
+  for (size_t i = 0; i < input_.size() - 1; ++i) {
+    if (std::abs(input_[i + 1] - input_[i]) < min) {
+      min = std::abs(input_[i + 1] - input_[i]);
       res = i;
     }
   }
@@ -55,6 +55,7 @@ bool sozonov_i_nearest_neighbor_elements_mpi::TestMPITaskParallel::pre_processin
     for (unsigned i = 0; i < taskData->inputs_count[0]; ++i) {
       input_[i] = tmp_ptr[i];
     }
+    n = taskData->inputs_count[0] - 1;
   }
   // Init value for output
   res = {INT_MAX, -1};
@@ -72,26 +73,38 @@ bool sozonov_i_nearest_neighbor_elements_mpi::TestMPITaskParallel::validation() 
 
 bool sozonov_i_nearest_neighbor_elements_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  unsigned int delta = 0;
-  if (world.rank() == 0) {
-    delta = (taskData->inputs_count[0] - 1) / world.size();
+
+  broadcast(world, n, 0);
+
+  std::vector<int> cnt(world.size());
+
+  int delta = n / world.size();
+  if (n % world.size() != 0) {
+    delta++;
   }
-  broadcast(world, delta, 0);
+  if (world.rank() >= world.size() - world.size() * delta + n) {
+    delta--;
+  }
+
+  boost::mpi::gather(world, delta, cnt.data(), 0);
+
   if (world.rank() == 0) {
     diff = std::vector<std::pair<int, int>>(taskData->inputs_count[0] - 1);
     for (size_t i = 0; i < input_.size() - 1; ++i) {
-      diff[i] = {abs(input_[i + 1] - input_[i]), i};
+      diff[i] = {std::abs(input_[i + 1] - input_[i]), i};
     }
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, diff.data() + proc * delta, delta);
+    for (int proc = 1; proc < world.size(); ++proc) {
+      world.send(proc, 0, diff.data() + proc * cnt[proc - 1], cnt[proc]);
     }
   }
+
   local_input_ = std::vector<std::pair<int, int>>(delta);
   if (world.rank() == 0) {
     local_input_ = std::vector<std::pair<int, int>>(diff.begin(), diff.begin() + delta);
   } else {
     world.recv(0, 0, local_input_.data(), delta);
   }
+
   std::pair<int, int> local_res(INT_MAX, 0);
   local_res = *std::min_element(local_input_.begin(), local_input_.end());
   reduce(world, local_res, res, boost::mpi::minimum<std::pair<int, int>>(), 0);
