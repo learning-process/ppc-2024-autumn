@@ -6,7 +6,7 @@
 
 #include "mpi/dudchenko_o_sleeping_barber/include/ops_mpi.hpp"
 
-TEST(dudchenko_o_sleeping_barber_mpi, Test_Validation1) {
+TEST(dudchenko_o_sleeping_barber_mpi, validation_test_1) {
   boost::mpi::communicator world;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -18,7 +18,7 @@ TEST(dudchenko_o_sleeping_barber_mpi, Test_Validation1) {
   }
 }
 
-TEST(dudchenko_o_sleeping_barber_mpi, Test_Validation2) {
+TEST(dudchenko_o_sleeping_barber_mpi, validation_test_2) {
   boost::mpi::communicator world;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -32,7 +32,7 @@ TEST(dudchenko_o_sleeping_barber_mpi, Test_Validation2) {
   }
 }
 
-TEST(dudchenko_o_sleeping_barber_mpi, Test_Validation3) {
+TEST(dudchenko_o_sleeping_barber_mpi, validation_test_3) {
   boost::mpi::communicator world;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -49,7 +49,7 @@ TEST(dudchenko_o_sleeping_barber_mpi, Test_Validation3) {
   }
 }
 
-TEST(dudchenko_o_sleeping_barber_mpi, Test_End_To_End1) {
+TEST(dudchenko_o_sleeping_barber_mpi, functional_test_1) {
   boost::mpi::communicator world;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -79,7 +79,7 @@ TEST(dudchenko_o_sleeping_barber_mpi, Test_End_To_End1) {
   }
 }
 
-TEST(dudchenko_o_sleeping_barber_mpi, Test_End_To_End2) {
+TEST(dudchenko_o_sleeping_barber_mpi, functional_test_2) {
   boost::mpi::communicator world;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -109,7 +109,7 @@ TEST(dudchenko_o_sleeping_barber_mpi, Test_End_To_End2) {
   }
 }
 
-TEST(dudchenko_o_sleeping_barber_mpi, Test_End_To_End3) {
+TEST(dudchenko_o_sleeping_barber_mpi, functional_test_3) {
   boost::mpi::communicator world;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -139,7 +139,7 @@ TEST(dudchenko_o_sleeping_barber_mpi, Test_End_To_End3) {
   }
 }
 
-TEST(dudchenko_o_sleeping_barber_mpi, Test_End_To_End4) {
+TEST(dudchenko_o_sleeping_barber_mpi, functional_test_4) {
   boost::mpi::communicator world;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -168,7 +168,7 @@ TEST(dudchenko_o_sleeping_barber_mpi, Test_End_To_End4) {
   }
 }
 
-TEST(dudchenko_o_sleeping_barber_mpi, Test_End_To_End5) {
+TEST(dudchenko_o_sleeping_barber_mpi, functional_test_5) {
   boost::mpi::communicator world;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
