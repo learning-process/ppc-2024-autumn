@@ -164,8 +164,25 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, false_validation) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
   taskDataSeq->outputs_count.emplace_back(result.size());
 
-  sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI TestSequential(taskDataSeq);
-  EXPECT_FALSE(TestSequential.validation());
+  sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI taskParallel(taskDataPar);
+  EXPECT_FALSE(taskParallel.validation());
+}
+
+TEST(sedova_o_vertical_ribbon_scheme_mpi, false_validation1) {
+  std::vector<int> matrix = {1, 2, 3, 4};
+  std::vector<int> vector = {7, 8};
+  std::vector<int> result(2, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
+  taskDataSeq->inputs_count.emplace_back(vector.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
+  taskDataSeq->outputs_count.emplace_back(result.size());
+
+  sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI taskParallel(taskDataPar);
+  EXPECT_TRUE(taskParallel.validation());
 }
 
 TEST(sedova_o_vertical_ribbon_scheme_mpi, correct_matrix_and_vector_seq) {
