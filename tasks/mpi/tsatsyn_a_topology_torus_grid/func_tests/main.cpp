@@ -8,7 +8,7 @@
 #include <vector>
 
 #include "mpi/tsatsyn_a_topology_torus_grid/include/ops_mpi.hpp"
-std::vector<int> getRandomVector(int sz, int a, int b) {
+static std::vector<int> getRandomVector(int sz, int a, int b) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
