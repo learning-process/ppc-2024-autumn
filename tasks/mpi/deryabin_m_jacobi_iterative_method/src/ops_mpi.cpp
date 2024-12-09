@@ -236,7 +236,7 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::
       sendcounts[world.rank()] = number_of_local_matrix_rows + ostatochnoe_chislo_strock;
       displacements[world.rank()] = n - number_of_local_matrix_rows - ostatochnoe_chislo_strock;
   } else {
-      displacements[world.rank()] = number_of_local_matrix_rows * (world.rank() - 1) + number_of_local_matrix_rows;
+      displacements[world.rank()] = number_of_local_matrix_rows * (world.rank() - 1);
   }
   unsigned short Nmax = 10000, num_of_iterations = 0;
   double epsilon = pow(10, -6), max_delta_x_i = 0;
