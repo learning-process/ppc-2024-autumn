@@ -1,8 +1,5 @@
 #include "mpi/matthew_fyodorov_reduce/include/ops_mpi.hpp"
 
-#include <algorithm>
-#include <boost/mpi.hpp>
-#include <functional>
 #include <numeric>
 #include <random>
 #include <string>
@@ -14,6 +11,7 @@ using namespace std::chrono_literals;
 std::vector<int> matthew_fyodorov_reduce_mpi::getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
+  std::uniform_int_distribution<> dist(-100, 100);
   std::vector<int> vec(sz);
   for (int i = 0; i < sz; i++) {
     vec[i] = gen() % 100;
@@ -96,11 +94,6 @@ bool matthew_fyodorov_reduce_mpi::TestMPITaskParallel::run() {
   } else {
     world.recv(0, 0, local_input_);
   }
-
-  // for (int i = 0; i < local_input_.size(); i++) {
-  //   std::cout << local_input_[i] << " ";
-  // }
-  // std::cout << "\n";
   int local_sum = std::accumulate(local_input_.begin(), local_input_.end(), 0);
   int global_sum = 0;
 
