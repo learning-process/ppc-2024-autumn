@@ -40,8 +40,6 @@ void somov_i_horizontal_scheme::distribute_matrix_rows(int32_t row, int32_t col,
 
 bool somov_i_horizontal_scheme::MatrixVectorTaskMPI::validation() {
   internal_order_test();
-  if (world.rank() != 0) return false;
-
   bool validMatrix = taskData->inputs[0] != nullptr && taskData->inputs_count[0] > 0;
   bool validVector = taskData->inputs[1] != nullptr && taskData->inputs_count[1] > 0;
   bool validDimensions = validMatrix && validVector && taskData->inputs_count[0] % taskData->inputs_count[1] == 0;
@@ -157,7 +155,6 @@ bool somov_i_horizontal_scheme::MatrixVectorTaskMPI::post_processing() {
 
 bool somov_i_horizontal_scheme::MatrixVectorTask::validation() {
   internal_order_test();
-
   bool validMatrix = taskData->inputs_count[0] > 0;
   bool validVector = taskData->inputs_count[1] > 0;
   bool validDimensions = validMatrix && validVector && taskData->inputs_count[0] % taskData->inputs_count[1] == 0;

@@ -37,6 +37,7 @@ bool MatrixVectorTask::pre_processing() {
 
 bool MatrixVectorTask::validation() {
   internal_order_test();
+
   if (taskData->inputs.size() < 2) return false;
   if (taskData->inputs_count[0] != rowCount_ || taskData->inputs_count[1] != colCount_) return false;
   return taskData->outputs_count[0] == rowCount_;

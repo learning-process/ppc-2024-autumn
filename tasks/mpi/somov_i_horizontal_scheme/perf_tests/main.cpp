@@ -40,17 +40,16 @@ std::vector<int32_t> create_random_matrix(uint32_t rowCount, uint32_t colCount) 
 TEST(somov_i_horizontal_scheme, test_pipeline_run) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
+
   std::vector<int32_t> matrix_data;
   std::vector<int32_t> input_vector;
   std::vector<int32_t> result_vector;
   std::shared_ptr<ppc::core::TaskData> task_data = std::make_shared<ppc::core::TaskData>();
 
-  int num_rows;
-  int num_cols;
+  int num_rows = 2000;
+  int num_cols = 2000;
 
   if (world.rank() == 0) {
-    num_rows = 2000;
-    num_cols = 2000;
     matrix_data = somov_i_horizontal_scheme::create_random_matrix(num_rows, num_cols);
     input_vector = somov_i_horizontal_scheme::create_random_vector(num_cols);
     result_vector.resize(num_rows, 0);
@@ -62,6 +61,25 @@ TEST(somov_i_horizontal_scheme, test_pipeline_run) {
     task_data->outputs.push_back(reinterpret_cast<uint8_t *>(result_vector.data()));
     task_data->outputs_count.push_back(result_vector.size());
   }
+
+  MPI_Bcast(&num_rows, 1, MPI_INT, 0, world);
+  MPI_Bcast(&num_cols, 1, MPI_INT, 0, world);
+
+  if (world.rank() != 0) {
+    matrix_data.resize(num_rows * num_cols);
+    input_vector.resize(num_cols);
+    result_vector.resize(num_rows, 0);
+  }
+
+  MPI_Bcast(matrix_data.data(), num_rows * num_cols, MPI_INT, 0, world);
+  MPI_Bcast(input_vector.data(), num_cols, MPI_INT, 0, world);
+
+  task_data->inputs.push_back(reinterpret_cast<uint8_t *>(matrix_data.data()));
+  task_data->inputs_count.push_back(matrix_data.size());
+  task_data->inputs.push_back(reinterpret_cast<uint8_t *>(input_vector.data()));
+  task_data->inputs_count.push_back(input_vector.size());
+  task_data->outputs.push_back(reinterpret_cast<uint8_t *>(result_vector.data()));
+  task_data->outputs_count.push_back(result_vector.size());
 
   auto parallel_task = std::make_shared<somov_i_horizontal_scheme::MatrixVectorTaskMPI>(task_data);
 
@@ -109,17 +127,16 @@ TEST(somov_i_horizontal_scheme, test_pipeline_run) {
 TEST(somov_i_horizontal_scheme, test_task_run) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
+
   std::vector<int32_t> matrix_data;
   std::vector<int32_t> input_vector;
   std::vector<int32_t> result_vector;
   std::shared_ptr<ppc::core::TaskData> task_data = std::make_shared<ppc::core::TaskData>();
 
-  int num_rows;
-  int num_cols;
+  int num_rows = 2001;
+  int num_cols = 1999;
 
   if (world.rank() == 0) {
-    num_rows = 2000;
-    num_cols = 2000;
     matrix_data = somov_i_horizontal_scheme::create_random_matrix(num_rows, num_cols);
     input_vector = somov_i_horizontal_scheme::create_random_vector(num_cols);
     result_vector.resize(num_rows, 0);
@@ -131,6 +148,25 @@ TEST(somov_i_horizontal_scheme, test_task_run) {
     task_data->outputs.push_back(reinterpret_cast<uint8_t *>(result_vector.data()));
     task_data->outputs_count.push_back(result_vector.size());
   }
+
+  MPI_Bcast(&num_rows, 1, MPI_INT, 0, world);
+  MPI_Bcast(&num_cols, 1, MPI_INT, 0, world);
+
+  if (world.rank() != 0) {
+    matrix_data.resize(num_rows * num_cols);
+    input_vector.resize(num_cols);
+    result_vector.resize(num_rows, 0);
+  }
+
+  MPI_Bcast(matrix_data.data(), num_rows * num_cols, MPI_INT, 0, world);
+  MPI_Bcast(input_vector.data(), num_cols, MPI_INT, 0, world);
+
+  task_data->inputs.push_back(reinterpret_cast<uint8_t *>(matrix_data.data()));
+  task_data->inputs_count.push_back(matrix_data.size());
+  task_data->inputs.push_back(reinterpret_cast<uint8_t *>(input_vector.data()));
+  task_data->inputs_count.push_back(input_vector.size());
+  task_data->outputs.push_back(reinterpret_cast<uint8_t *>(result_vector.data()));
+  task_data->outputs_count.push_back(result_vector.size());
 
   auto parallel_task = std::make_shared<somov_i_horizontal_scheme::MatrixVectorTaskMPI>(task_data);
 
