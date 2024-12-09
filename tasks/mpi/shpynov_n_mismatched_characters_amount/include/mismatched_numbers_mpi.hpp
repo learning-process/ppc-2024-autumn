@@ -22,7 +22,7 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<std::string> input_{};  // two input strings
+  std::vector<std::string> input_;  // two input strings
   int res{};
 };
 
@@ -35,7 +35,8 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<std::string> input_{}, local_input_{};  // two input strings and two local strings
+  std::vector<std::string> input_;
+  std::vector<std::string> local_input_;  // two input strings and two local strings
   int res{};
   boost::mpi::communicator world;
 };

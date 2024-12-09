@@ -15,7 +15,7 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<std::string> input_{};  // two input strings
+  std::vector<std::string> input_;  // two input strings
   int result{};
 };
 }  // namespace shpynov_n_amount_of_mismatched_numbers_seq
