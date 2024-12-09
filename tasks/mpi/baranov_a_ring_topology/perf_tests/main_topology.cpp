@@ -7,23 +7,23 @@
 #include "mpi/baranov_a_ring_topology/include/header_topology.hpp"
 
 namespace baranov_a_ring_topology_temp {
-  template <typename tp>
-  typename std::enable_if<std::is_arithmetic<tp>::value>::type get_rnd_vec(std::vector<tp> & vec) {
-    std::random_device rd;
-    std::default_random_engine reng(rd());
+template <typename tp>
+typename std::enable_if<std::is_arithmetic<tp>::value>::type get_rnd_vec(std::vector<tp> &vec) {
+  std::random_device rd;
+  std::default_random_engine reng(rd());
 
-    if constexpr (std::is_integral<tp>::value) {
-      // Для целых чисел
-      std::uniform_int_distribution<tp> dist(0, vec.size());
-      std::generate(vec.begin(), vec.end(), [&dist, &reng] { return dist(reng); });
-    } else if constexpr (std::is_floating_point<tp>::value) {
-      // Для вещественных чисел
-      std::uniform_real_distribution<tp> dist(0.0, vec.size());
-      std::generate(vec.begin(), vec.end(), [&dist, &reng] { return dist(reng); });
-    }
+  if constexpr (std::is_integral<tp>::value) {
+    // Для целых чисел
+    std::uniform_int_distribution<tp> dist(0, vec.size());
+    std::generate(vec.begin(), vec.end(), [&dist, &reng] { return dist(reng); });
+  } else if constexpr (std::is_floating_point<tp>::value) {
+    // Для вещественных чисел
+    std::uniform_real_distribution<tp> dist(0.0, vec.size());
+    std::generate(vec.begin(), vec.end(), [&dist, &reng] { return dist(reng); });
   }
+}
 }  // namespace baranov_a_ring_topology_temp
-  std::vector<int> global_arr(10000000);
+std::vector<int> global_arr(10000000);
 
 TEST(mpi_baranov_a_ring_topology_perf_test, test_pipeline_run) {
   const int count_size_vector = 10000000;
@@ -35,7 +35,7 @@ TEST(mpi_baranov_a_ring_topology_perf_test, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     baranov_a_ring_topology_temp::get_rnd_vec(global_arr);
-    arr=global_arr;
+    arr = global_arr;
     out_poll = std::vector<int>(world.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(arr.data()));
     taskDataPar->inputs_count.emplace_back(arr.size());
