@@ -126,7 +126,7 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::
   output_x_vector_ = std::vector<double>(n);
   local_input_matrix_part_ = std::vector<double>(number_of_local_matrix_rows * n);
   local_input_right_vector_part_ = std::vector<double>(number_of_local_matrix_rows);
-  if (workd.rank() == 0) {
+  if (world.rank() == 0) {
       auto* tmp_ptr_matr = reinterpret_cast<double*>(taskData->inputs[0]);
       local_input_matrix_part_ = std::vector<double>((number_of_local_matrix_rows + ostatochnoe_chislo_strock) * n);
       auto* tmp_ptr_vec = reinterpret_cast<double*>(taskData->inputs[1]);
