@@ -4,7 +4,7 @@
 
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
-#include <iostream> 
+#include <iostream>
 #include <memory>
 #include <numeric>
 #include <utility>
