@@ -16,6 +16,7 @@ namespace kolokolova_d_gaussian_method_horizontal_mpi {
 
 std::vector<int> getRandomVector(int sz);
 int find_rank(std::vector<double>& matrix, int rows, int cols);
+std::vector<int> getRandomMatrix(int sz, std::vector<int> coeff);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:

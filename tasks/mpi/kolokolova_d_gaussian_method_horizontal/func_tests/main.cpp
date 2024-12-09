@@ -15,11 +15,22 @@ std::vector<int> kolokolova_d_gaussian_method_horizontal_mpi::getRandomVector(in
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
-  std::uniform_int_distribution<int> dist(-500, 500);
+  std::uniform_int_distribution<int> dist(-100, 100);
   for (int i = 0; i < sz; i++) {
     vec[i] = gen() % 100;
   }
   return vec;
+}
+
+std::vector<int> kolokolova_d_gaussian_method_horizontal_mpi::getRandomMatrix(int sz, std::vector<int> coeff) {
+  std::vector<int> free_terms(sz);
+  for (int i = 0; i < sz; ++i) {
+    free_terms[i] = 0;
+    for (int j = 0; j < sz; ++j) {
+      free_terms[i] += coeff[i * sz + j];
+    }
+  }
+  return free_terms;
 }
 
 TEST(kolokolova_d_gaussian_method_horizontal_mpi, Test_Parallel_Gauss1) {
@@ -78,9 +89,9 @@ TEST(kolokolova_d_gaussian_method_horizontal_mpi, Test_Parallel_Gauss1) {
 }
 
 TEST(kolokolova_d_gaussian_method_horizontal_mpi, Test_Parallel_Gauss2) {
-  // For each proc 4 equations
+  // For each proc 10 equations
   boost::mpi::communicator world;
-  int count_equations = world.size() * 4;
+  int count_equations = world.size() * 10;
   int size_coef_mat = count_equations * count_equations;
   std::vector<int> input_coeff(size_coef_mat, 0);
   std::vector<int> input_y(count_equations, 0);
@@ -90,8 +101,8 @@ TEST(kolokolova_d_gaussian_method_horizontal_mpi, Test_Parallel_Gauss2) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    input_y = kolokolova_d_gaussian_method_horizontal_mpi::getRandomVector(count_equations);
     input_coeff = kolokolova_d_gaussian_method_horizontal_mpi::getRandomVector(size_coef_mat);
+    input_y = kolokolova_d_gaussian_method_horizontal_mpi::getRandomMatrix(count_equations, input_coeff);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_coeff.data()));
     taskDataPar->inputs_count.emplace_back(input_coeff.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_y.data()));
@@ -133,9 +144,9 @@ TEST(kolokolova_d_gaussian_method_horizontal_mpi, Test_Parallel_Gauss2) {
 }
 
 TEST(kolokolova_d_gaussian_method_horizontal_mpi, Test_Parallel_Gauss3) {
-  // For each proc 10 equations
+  // For each proc 20 equations
   boost::mpi::communicator world;
-  int count_equations = world.size() * 10;
+  int count_equations = world.size() * 20;
   int size_coef_mat = count_equations * count_equations;
   std::vector<int> input_coeff(size_coef_mat, 0);
   std::vector<int> input_y(count_equations, 0);
@@ -145,8 +156,8 @@ TEST(kolokolova_d_gaussian_method_horizontal_mpi, Test_Parallel_Gauss3) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    input_y = kolokolova_d_gaussian_method_horizontal_mpi::getRandomVector(count_equations);
     input_coeff = kolokolova_d_gaussian_method_horizontal_mpi::getRandomVector(size_coef_mat);
+    input_y = kolokolova_d_gaussian_method_horizontal_mpi::getRandomMatrix(count_equations, input_coeff);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_coeff.data()));
     taskDataPar->inputs_count.emplace_back(input_coeff.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_y.data()));
@@ -200,8 +211,8 @@ TEST(kolokolova_d_gaussian_method_horizontal_mpi, Test_Parallel_Gauss4) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    input_y = kolokolova_d_gaussian_method_horizontal_mpi::getRandomVector(count_equations);
     input_coeff = kolokolova_d_gaussian_method_horizontal_mpi::getRandomVector(size_coef_mat);
+    input_y = kolokolova_d_gaussian_method_horizontal_mpi::getRandomMatrix(count_equations, input_coeff);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_coeff.data()));
     taskDataPar->inputs_count.emplace_back(input_coeff.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_y.data()));

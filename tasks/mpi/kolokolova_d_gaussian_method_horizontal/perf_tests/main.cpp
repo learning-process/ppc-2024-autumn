@@ -23,6 +23,17 @@ std::vector<int> kolokolova_d_gaussian_method_horizontal_mpi::getRandomVector(in
   return vec;
 }
 
+std::vector<int> kolokolova_d_gaussian_method_horizontal_mpi::getRandomMatrix(int sz, std::vector<int> coeff) {
+  std::vector<int> free_terms(sz);
+  for (int i = 0; i < sz; ++i) {
+    free_terms[i] = 0;
+    for (int j = 0; j < sz; ++j) {
+      free_terms[i] += coeff[i * sz + j];
+    }
+  }
+  return free_terms;
+}
+
 TEST(kolokolova_d_gaussian_method_horizontal_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   int count_equations = 240;
@@ -34,8 +45,8 @@ TEST(kolokolova_d_gaussian_method_horizontal_mpi, test_pipeline_run) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    input_y = kolokolova_d_gaussian_method_horizontal_mpi::getRandomVector(count_equations);
     input_coeff = kolokolova_d_gaussian_method_horizontal_mpi::getRandomVector(size_coef_mat);
+    input_y = kolokolova_d_gaussian_method_horizontal_mpi::getRandomMatrix(count_equations, input_coeff);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_coeff.data()));
     taskDataPar->inputs_count.emplace_back(input_coeff.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_y.data()));
@@ -80,8 +91,8 @@ TEST(kolokolova_d_gaussian_method_horizontal_mpi, test_task_run) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    input_y = kolokolova_d_gaussian_method_horizontal_mpi::getRandomVector(count_equations);
     input_coeff = kolokolova_d_gaussian_method_horizontal_mpi::getRandomVector(size_coef_mat);
+    input_y = kolokolova_d_gaussian_method_horizontal_mpi::getRandomMatrix(count_equations, input_coeff);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_coeff.data()));
     taskDataPar->inputs_count.emplace_back(input_coeff.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_y.data()));
