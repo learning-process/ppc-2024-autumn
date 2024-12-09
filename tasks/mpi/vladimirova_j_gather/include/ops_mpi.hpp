@@ -15,7 +15,6 @@
 #include "core/task/include/task.hpp"
 
 namespace vladimirova_j_gather_mpi {
-
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {};

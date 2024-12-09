@@ -6,7 +6,9 @@
 
 #include "seq/vladimirova_j_gather/include/ops_seq.hpp"
 
-std::vector<int> getRandomVal1(int sz) {
+namespace vladimirova_j_gather_seq {
+
+std::vector<int> getRandomVal(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
@@ -22,6 +24,7 @@ std::vector<int> getRandomVal1(int sz) {
   }
   return vec;
 }
+}  // namespace vladimirova_j_gather_seq
 
 TEST(Sequential_Operations, vladimirova_j_forward_backward_test) {
   std::vector<int> global_vector = {2, 2, 2, 2, 2, 2, 2, -1, -1, 2, 2, 2, 2, 2, 2};
@@ -108,8 +111,8 @@ TEST(Sequential_Operations, vladimirova_j_random_test) {
 
   int noDEnd = 0;
   for (int j = 0; j < 10; j++) {
-    some_dead_end = getRandomVal1(5);
-    tmp = getRandomVal1(15);
+    some_dead_end = vladimirova_j_gather_seq::getRandomVal(5);
+    tmp = vladimirova_j_gather_seq::getRandomVal(15);
     noDEnd += 15;
     global_vector.insert(global_vector.end(), tmp.begin(), tmp.end());
     global_vector.insert(global_vector.end(), some_dead_end.begin(), some_dead_end.end());

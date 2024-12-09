@@ -8,7 +8,8 @@
 #include "seq/vladimirova_j_gather/include/ops_seq.hpp"
 using namespace std::chrono_literals;
 
-std::vector<int> getRandomVal3(int sz) {
+namespace vladimirova_j_gather_seq {
+std::vector<int> getRandomVal(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
@@ -23,7 +24,8 @@ std::vector<int> getRandomVal3(int sz) {
     if (vec[i] == 0) vec[i] = 2;
   }
   return vec;
-}
+};
+}  // namespace vladimirova_j_gather_seq
 
 TEST(sequential_vladimirova_j_gather, test_pipeline_run) {
   // Create data
@@ -35,8 +37,8 @@ TEST(sequential_vladimirova_j_gather, test_pipeline_run) {
   for (int j = 0; j < d_end_count; j++) {
     std::vector<int> some_dead_end;
     std::vector<int> tmp;
-    some_dead_end = getRandomVal3(15);
-    tmp = getRandomVal3(15);
+    some_dead_end = vladimirova_j_gather_seq::getRandomVal(15);
+    tmp = vladimirova_j_gather_seq::getRandomVal(15);
     noDEnd += 15;
     global_vector.insert(global_vector.end(), tmp.begin(), tmp.end());
     global_vector.insert(global_vector.end(), some_dead_end.begin(), some_dead_end.end());
@@ -94,8 +96,8 @@ TEST(sequential_vladimirova_j_gather, test_task_run) {
   for (int j = 0; j < d_end_count; j++) {
     std::vector<int> some_dead_end;
     std::vector<int> tmp;
-    some_dead_end = getRandomVal3(15);
-    tmp = getRandomVal3(15);
+    some_dead_end = vladimirova_j_gather_seq::getRandomVal(15);
+    tmp = vladimirova_j_gather_seq::getRandomVal(15);
     noDEnd += 15;
     global_vector.insert(global_vector.end(), tmp.begin(), tmp.end());
     global_vector.insert(global_vector.end(), some_dead_end.begin(), some_dead_end.end());

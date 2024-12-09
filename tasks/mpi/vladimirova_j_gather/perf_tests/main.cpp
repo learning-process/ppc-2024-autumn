@@ -9,6 +9,8 @@
 #include "mpi/vladimirova_j_gather/include/ops_mpi_not_my_gather.hpp"
 using namespace std::chrono_literals;
 
+namespace vladimirova_j_gather_mpi {
+
 std::vector<int> getRandomVal(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -24,7 +26,8 @@ std::vector<int> getRandomVal(int sz) {
     if (vec[i] == 0) vec[i] = 2;
   }
   return vec;
-}
+};
+}  // namespace vladimirova_j_gather_mpi
 
 TEST(vladimirova_j_gather_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
@@ -38,8 +41,8 @@ TEST(vladimirova_j_gather_mpi, test_pipeline_run) {
     for (int j = 0; j < d_end_count; j++) {
       std::vector<int> some_dead_end;
       std::vector<int> tmp;
-      some_dead_end = getRandomVal(15);
-      tmp = getRandomVal(15);
+      some_dead_end = vladimirova_j_gather_mpi::getRandomVal(15);
+      tmp = vladimirova_j_gather_mpi::getRandomVal(15);
       noDEnd += 15;
       global_vector.insert(global_vector.end(), tmp.begin(), tmp.end());
       global_vector.insert(global_vector.end(), some_dead_end.begin(), some_dead_end.end());
@@ -100,8 +103,8 @@ TEST(vladimirova_j_gather_mpi, test_task_run) {
     for (int j = 0; j < d_end_count; j++) {
       std::vector<int> some_dead_end;
       std::vector<int> tmp;
-      some_dead_end = getRandomVal(15);
-      tmp = getRandomVal(15);
+      some_dead_end = vladimirova_j_gather_mpi::getRandomVal(15);
+      tmp = vladimirova_j_gather_mpi::getRandomVal(15);
       noDEnd += 15;
       global_vector.insert(global_vector.end(), tmp.begin(), tmp.end());
       global_vector.insert(global_vector.end(), some_dead_end.begin(), some_dead_end.end());
@@ -162,8 +165,8 @@ TEST(vladimirova_j_not_my_gather_mpi, test_pipeline_run_not_my_gather) {
     for (int j = 0; j < d_end_count; j++) {
       std::vector<int> some_dead_end;
       std::vector<int> tmp;
-      some_dead_end = getRandomVal(15);
-      tmp = getRandomVal(15);
+      some_dead_end = vladimirova_j_gather_mpi::getRandomVal(15);
+      tmp = vladimirova_j_gather_mpi::getRandomVal(15);
       noDEnd += 15;
       global_vector.insert(global_vector.end(), tmp.begin(), tmp.end());
       global_vector.insert(global_vector.end(), some_dead_end.begin(), some_dead_end.end());
@@ -224,8 +227,8 @@ TEST(vladimirova_j_not_my_gather_mpi, test_task_run_not_my_gather) {
     for (int j = 0; j < d_end_count; j++) {
       std::vector<int> some_dead_end;
       std::vector<int> tmp;
-      some_dead_end = getRandomVal(15);
-      tmp = getRandomVal(15);
+      some_dead_end = vladimirova_j_gather_mpi::getRandomVal(15);
+      tmp = vladimirova_j_gather_mpi::getRandomVal(15);
       noDEnd += 15;
       global_vector.insert(global_vector.end(), tmp.begin(), tmp.end());
       global_vector.insert(global_vector.end(), some_dead_end.begin(), some_dead_end.end());
