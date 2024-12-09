@@ -130,8 +130,8 @@ bool kondratev_ya_radix_sort_batcher_merge_mpi::TestMPITaskParallel::run() {
 
   kondratev_ya_radix_sort_batcher_merge_mpi::radixSortDouble(local_input_, 0, local_input_.size() - 1);
 
-  for (int32_t step = 0; step < world.size(); ++step) {
-    if (step % 2 == 0) {
+  for (int32_t merge_step = 0; merge_step < world.size(); ++merge_step) {
+    if (merge_step % 2 == 0) {
       if (world.rank() % 2 == 0 && world.rank() + 1 < world.size()) {
         exchange_and_merge(world.rank(), world.rank() + 1);
       } else if (world.rank() % 2 != 0) {
