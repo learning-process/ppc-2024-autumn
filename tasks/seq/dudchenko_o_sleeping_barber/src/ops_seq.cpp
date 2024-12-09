@@ -17,13 +17,11 @@ bool TestSleepingBarber::pre_processing() {
     return max_wait > 0;
   }
 
-  std::cerr << "[PRE_PROCESSING] Invalid task data or inputs_count." << std::endl;
   return false;
 }
 
 bool TestSleepingBarber::validation() {
-  if (!taskData || taskData->inputs_count.empty() || taskData->inputs_count[0] <= 0) {
-    std::cerr << "[VALIDATION] Invalid number of chairs: " << (taskData ? taskData->inputs_count[0] : -1) << std::endl;
+  if (!taskData || taskData->inputs_count.empty() || taskData->inputs_count[0] < 0) {
     return false;
   }
 
@@ -47,26 +45,24 @@ bool TestSleepingBarber::run() {
       barber_busy = true;
     }
 
-    // Симуляция завершения работы барбера
     if (barber_busy && waiting_clients.empty()) {
       barber_busy = false;
     }
   }
 
-  // Завершение обработки оставшихся клиентов
   while (!waiting_clients.empty()) {
     int client = waiting_clients.front();
     waiting_clients.pop_front();
     next_client(client);
   }
 
-  result = 0;  // Успешное выполнение
+  result = 0;
   return true;
 }
 
 bool TestSleepingBarber::post_processing() {
   if (!taskData || taskData->outputs.empty() || taskData->outputs_count[0] != sizeof(int)) {
-    std::cerr << "[POST_PROCESSING] Invalid task data or outputs.\n";
+
     return false;
   }
 
@@ -75,7 +71,7 @@ bool TestSleepingBarber::post_processing() {
 }
 
 void TestSleepingBarber::next_client(int client) {
-  std::this_thread::sleep_for(20ms);  // Симуляция времени обслуживания клиента
+  std::this_thread::sleep_for(20ms);
 }
 
 }  // namespace dudchenko_o_sleeping_barber_seq

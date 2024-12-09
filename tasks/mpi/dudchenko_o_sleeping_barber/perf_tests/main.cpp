@@ -6,7 +6,6 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/dudchenko_o_sleeping_barber/include/ops_mpi.hpp"
 
-// Тест для проверки выполнения с использованием пайплайна
 TEST(dudchenko_o_sleeping_barber_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   const int max_waiting_chairs = 3;
@@ -42,11 +41,10 @@ TEST(dudchenko_o_sleeping_barber_mpi, test_pipeline_run) {
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(1, global_res[0]);  // Проверка на корректный результат
+    ASSERT_EQ(1, global_res[0]);
   }
 }
 
-// Тест для проверки выполнения задачи
 TEST(dudchenko_o_sleeping_barber_mpi, test_task_run) {
   boost::mpi::communicator world;
   const int max_waiting_chairs = 3;
@@ -81,6 +79,6 @@ TEST(dudchenko_o_sleeping_barber_mpi, test_task_run) {
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(1, global_res[0]);  // Проверка на корректный результат
+    ASSERT_EQ(1, global_res[0]);
   }
 }
