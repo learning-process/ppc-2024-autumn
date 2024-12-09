@@ -9,15 +9,16 @@ using namespace std::chrono_literals;
 
 bool petrov_a_ribbon_vertical_scheme_mpi::TestTaskMPI::pre_processing() {
   internal_order_test();
-  int rank;
+  int rank, size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  MPI_Comm_size(MPI_COMM_WORLD, &size);  // Получение числа процессов
 
   if (rank == 0) {
     int rows = taskData->inputs_count[0];
     int cols = taskData->inputs_count[1];
 
-    int rows_per_process = rows / MPI::COMM_WORLD.Get_size();
-    int extra_rows = rows % MPI::COMM_WORLD.Get_size();
+    int rows_per_process = rows / size;
+    int extra_rows = rows % size;
 
     int start_row = rank * rows_per_process + std::min(rank, extra_rows);
     int end_row = start_row + rows_per_process + (rank < extra_rows ? 1 : 0);
@@ -29,6 +30,7 @@ bool petrov_a_ribbon_vertical_scheme_mpi::TestTaskMPI::pre_processing() {
 
   return true;
 }
+
 
 bool petrov_a_ribbon_vertical_scheme_mpi::TestTaskMPI::validation() {
   internal_order_test();
@@ -44,20 +46,21 @@ bool petrov_a_ribbon_vertical_scheme_mpi::TestTaskMPI::validation() {
 
 bool petrov_a_ribbon_vertical_scheme_mpi::TestTaskMPI::run() {
   internal_order_test();
-  int size;
-  int rank;
+  int size, rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-  int cols;
-  MPI_Bcast(&cols, 1, MPI_INT, 0, MPI_COMM_WORLD);
-
   int rows = taskData->inputs_count[0];
-  int rows_per_proc = rows / size;
+  int cols = 0;  // Инициализация переменной для количества колонок
 
   if (rank == 0) {
     cols = taskData->inputs_count[1];
   }
+
+  MPI_Bcast(&cols, 1, MPI_INT, 0, MPI_COMM_WORLD);  // Рассылка числа колонок всем процессам
+
+  int rows_per_proc = rows / size;
+  local_matrix.resize(rows_per_proc * cols);
 
   MPI_Scatter(taskData->inputs.data(), rows_per_proc * cols, MPI_DOUBLE, local_matrix.data(), rows_per_proc * cols,
               MPI_DOUBLE, 0, MPI_COMM_WORLD);
@@ -73,9 +76,11 @@ bool petrov_a_ribbon_vertical_scheme_mpi::TestTaskMPI::run() {
   return true;
 }
 
+
 bool petrov_a_ribbon_vertical_scheme_mpi::TestTaskMPI::post_processing() {
   internal_order_test();
-  int size;
+  int size, rank;
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
   int rows = taskData->inputs_count[0];
