@@ -35,9 +35,9 @@ bool TestSleepingBarber::run() {
     }
 
     if (!barber_busy && !waiting_clients.empty()) {
-      int client = waiting_clients.front();
+      int next_client_id = waiting_clients.front();
       waiting_clients.pop_front();
-      next_client(client);
+      next_client(next_client_id);
       barber_busy = true;
     }
 
@@ -47,9 +47,9 @@ bool TestSleepingBarber::run() {
   }
 
   while (!waiting_clients.empty()) {
-    int client = waiting_clients.front();
+    int next_client_id = waiting_clients.front();
     waiting_clients.pop_front();
-    next_client(client);
+    next_client(next_client_id);
   }
 
   result = 0;
@@ -67,6 +67,6 @@ bool TestSleepingBarber::post_processing() {
 
 void TestSleepingBarber::next_client(int client) {
   (void)client;
-  std::this_thread::sleep_for(20ms); 
+  std::this_thread::sleep_for(20ms);
 }
 }  // namespace dudchenko_o_sleeping_barber_seq
