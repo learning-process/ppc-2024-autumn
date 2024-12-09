@@ -96,6 +96,9 @@ bool plekhanov_d_allreduce_boost_mpi::TestMPITaskBoostParallel::run() {
   int lambda_1 = rowCount / world.size();
   int lambda_2 = rowCount % world.size();
 
+  broadcast(world, lambda_1, 0);
+  broadcast(world, lambda_2, 0);
+
   std::vector<int> size(world.size(), (lambda_1 * columnCount));
   for (int i = 0; i < lambda_2; i++) size[world.size() - i - 1] += columnCount;
 
