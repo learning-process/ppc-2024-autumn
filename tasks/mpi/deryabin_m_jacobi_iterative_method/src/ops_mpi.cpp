@@ -120,44 +120,32 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::
     n = (int)(sqrt(taskData->inputs_count[0]));
     number_of_local_matrix_rows = n / world.size();
     ostatochnoe_chislo_strock = n % world.size();
-    auto* tmp_ptr_matr = reinterpret_cast<double*>(taskData->inputs[0]);
-    local_input_matrix_part_ = std::vector<double>(
-        (number_of_local_matrix_rows + ostatochnoe_chislo_strock) * n);
-    auto* tmp_ptr_vec = reinterpret_cast<double*>(taskData->inputs[1]);
-    local_input_right_vector_part_ = std::vector<double>(
-        number_of_local_matrix_rows + ostatochnoe_chislo_strock);
-    for (unsigned i = 0;
-         i < (number_of_local_matrix_rows + ostatochnoe_chislo_strock) * n;
-         i++) {
-      local_input_matrix_part_[i] =
-          tmp_ptr_matr[n * (n - number_of_local_matrix_rows -
-                            ostatochnoe_chislo_strock) +
-                       i];
-      if (i < number_of_local_matrix_rows + ostatochnoe_chislo_strock) {
-        local_input_right_vector_part_[i] =
-            tmp_ptr_vec[n - number_of_local_matrix_rows -
-                        ostatochnoe_chislo_strock + i];
-      }
-    }
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0,
-                 tmp_ptr_matr + (proc - 1) * number_of_local_matrix_rows * n,
-                 number_of_local_matrix_rows * n);
-      world.send(proc, 0,
-                 tmp_ptr_vec + (proc - 1) * number_of_local_matrix_rows,
-                 number_of_local_matrix_rows);
-    }
   }
   boost::mpi::broadcast(world, number_of_local_matrix_rows, 0);
   boost::mpi::broadcast(world, n, 0);
   output_x_vector_ = std::vector<double>(n);
+  local_input_matrix_part_ = std::vector<double>(number_of_local_matrix_rows * n);
+  local_input_right_vector_part_ = std::vector<double>(number_of_local_matrix_rows);
+  if (workd.rank() == 0) {
+      auto* tmp_ptr_matr = reinterpret_cast<double*>(taskData->inputs[0]);
+      local_input_matrix_part_ = std::vector<double>((number_of_local_matrix_rows + ostatochnoe_chislo_strock) * n);
+      auto* tmp_ptr_vec = reinterpret_cast<double*>(taskData->inputs[1]);
+      local_input_right_vector_part_ = std::vector<double>(number_of_local_matrix_rows + ostatochnoe_chislo_strock);
+      for (unsigned i = 0; i < (number_of_local_matrix_rows + ostatochnoe_chislo_strock) * n; i++) {
+        local_input_matrix_part_[i] = tmp_ptr_matr[n * (n - number_of_local_matrix_rows - ostatochnoe_chislo_strock) + i];
+        if (i < number_of_local_matrix_rows + ostatochnoe_chislo_strock) {
+          local_input_right_vector_part_[i] = tmp_ptr_vec[n - number_of_local_matrix_rows - ostatochnoe_chislo_strock + i];
+        }
+      }
+      for (int proc = 1; proc < world.size(); proc++) {
+        world.send(proc, 0, tmp_ptr_matr + (proc - 1) * number_of_local_matrix_rows * n, number_of_local_matrix_rows * n);
+        world.send(proc, 0, tmp_ptr_vec + (proc - 1) * number_of_local_matrix_rows, number_of_local_matrix_rows);
+      }
+  }
+  
   if (world.rank() != 0) {
-    local_input_matrix_part_ =
-        std::vector<double>(number_of_local_matrix_rows * n);
     world.recv(0, 0, local_input_matrix_part_.data(),
                number_of_local_matrix_rows * n);
-    local_input_right_vector_part_ =
-        std::vector<double>(number_of_local_matrix_rows);
     world.recv(0, 0, local_input_right_vector_part_.data(),
                number_of_local_matrix_rows);
   }
