@@ -15,7 +15,7 @@ TEST(chastov_v_bubble_sort, test_pipeline_run) {
   std::vector<int> global_out;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  const size_t count_size_vector = 120;
+  const size_t count_size_vector = 500;
   if (rank == 0) {
     global_vec = std::vector<int>(count_size_vector, 1);
     global_out = std::vector<int>(count_size_vector);
@@ -60,7 +60,7 @@ TEST(chastov_v_bubble_sort, test_task_run) {
   std::vector<double> global_out;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  const size_t count_size_vector = 2000;
+  const size_t count_size_vector = 10000;
   if (rank == 0) {
     global_vec = std::vector<double>(count_size_vector);
     global_out = std::vector<double>(count_size_vector);
