@@ -221,15 +221,16 @@ TEST(sadikov_I_gather_mpi, check_square_matrix3) {
 
 TEST(sadikov_I_gather_mpi, check_square_matrix4) {
   boost::mpi::communicator world;
-  const int columns = 700;
-  const int rows = 700;
+  const int columns = 5;
+  const int rows = 5;
   const int root = 0;
   std::vector<int> in;
   std::vector<int> in_index{rows, columns};
   std::vector<int> out_par(rows, 0);
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    in = std::vector<int>(columns * rows, 1);
+    in = std::vector<int>{1,   23,     5,  -2, 55,  90,   -4,     7,  11, 90,  45,  -15,  -65,
+                          231, 244552, 15, 9,  -58, 2453, -65653, 29, 32, -25, -54, 2456, 455};
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskData->inputs_count.emplace_back(in_index[0]);
     taskData->inputs_count.emplace_back(in_index[1]);
@@ -381,15 +382,15 @@ TEST(sadikov_I_gather_mpi, check_rect_matrix4) {
 
 TEST(sadikov_I_gather_mpi, check_rect_matrix5) {
   boost::mpi::communicator world;
-  const int columns = 50;
-  const int rows = 60;
+  const int columns = 3;
+  const int rows = 4;
   const int root = 0;
   std::vector<int> in;
   std::vector<int> in_index{rows, columns};
   std::vector<int> out_par(rows, 0);
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    in = std::vector<int>(columns * rows, 2);
+    in = std::vector<int>{4123, 52, -56, 70, 14, 35345, -155, 6, 2900, 1424, -3, -435};
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskData->inputs_count.emplace_back(in_index[0]);
     taskData->inputs_count.emplace_back(in_index[1]);
@@ -421,15 +422,15 @@ TEST(sadikov_I_gather_mpi, check_rect_matrix5) {
 
 TEST(sadikov_I_gather_mpi, check_rect_matrix6) {
   boost::mpi::communicator world;
-  const int columns = 200;
-  const int rows = 500;
+  const int columns = 2;
+  const int rows = 5;
   const int root = 0;
   std::vector<int> in;
   std::vector<int> in_index{rows, columns};
   std::vector<int> out_par(rows, 0);
   auto taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    in = std::vector<int>(columns * rows, 10);
+    in = std::vector<int>{556, -1, 535, 67, 9000, 21, 8123, -645, 5224, 9091};
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskData->inputs_count.emplace_back(in_index[0]);
     taskData->inputs_count.emplace_back(in_index[1]);
