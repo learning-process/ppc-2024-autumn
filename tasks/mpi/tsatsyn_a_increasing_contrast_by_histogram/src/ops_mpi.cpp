@@ -1,5 +1,5 @@
 // Copyright 2023 Nesterov Alexander
-#include "mpi/tsatsyn_a_topology_torus_grid/include/ops_mpi.hpp"
+#include "mpi/tsatsyn_a_increasing_contrast_by_histogram/include/ops_mpi.hpp"
 
 #include <algorithm>
 #include <chrono>
@@ -379,14 +379,14 @@ std::vector<int> hasDivisors(int k) {
   }
   return mas;
 }
-bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::validation() {
+bool tsatsyn_a_increasing_contrast_by_histogram_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     return (taskData->outputs_count[0] == 1 && taskData->inputs_count[0] > 0);
   }
   return true;
 }
-bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::pre_processing() {
+bool tsatsyn_a_increasing_contrast_by_histogram_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     input_data.resize(taskData->inputs_count[0]);
@@ -396,7 +396,7 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::pre_processing() {
 
   return true;
 }
-bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
+bool tsatsyn_a_increasing_contrast_by_histogram_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   if (world.rank() == 0) {
     auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[1]);
@@ -498,7 +498,7 @@ bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::run() {
   mySend(world, world.size() - 1, 0, cols, rows, neighbors, res);*/
   return true;
 }
-bool tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel::post_processing() {
+bool tsatsyn_a_increasing_contrast_by_histogram_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     reinterpret_cast<int*>(taskData->outputs[0])[0] = res;

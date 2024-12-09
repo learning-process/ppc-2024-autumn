@@ -7,7 +7,7 @@
 #include <thread>
 #include <vector>
 
-#include "mpi/tsatsyn_a_topology_torus_grid/include/ops_mpi.hpp"
+#include "mpi/tsatsyn_a_increasing_contrast_by_histogram/include/ops_mpi.hpp"
 static std::vector<int> getRandomVector(int sz, int a, int b) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -19,7 +19,7 @@ static std::vector<int> getRandomVector(int sz, int a, int b) {
 }
 
 ////////////////////////////////////////////
-TEST(tsatsyn_a_topology_torus_grid_mpi, Test_Send_Non_Full_Limit) {
+TEST(tsatsyn_a_increasing_contrast_by_histogram_mpi, Test_Send_Non_Full_Limit) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_sum(1, 0);
@@ -38,7 +38,7 @@ TEST(tsatsyn_a_topology_torus_grid_mpi, Test_Send_Non_Full_Limit) {
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  tsatsyn_a_increasing_contrast_by_histogram_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();

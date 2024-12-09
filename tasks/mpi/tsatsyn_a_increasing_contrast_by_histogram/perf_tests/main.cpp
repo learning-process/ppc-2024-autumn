@@ -7,8 +7,8 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/tsatsyn_a_topology_torus_grid/include/ops_mpi.hpp"
-TEST(mpi_tsatsyn_a_topology_torus_grid_perf_test, test_pipeline_run) {
+#include "mpi/tsatsyn_a_increasing_contrast_by_histogram/include/ops_mpi.hpp"
+TEST(mpi_tsatsyn_a_increasing_contrast_by_histogram_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_sum(1, 0);
@@ -24,7 +24,7 @@ TEST(mpi_tsatsyn_a_topology_torus_grid_perf_test, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<tsatsyn_a_increasing_contrast_by_histogram_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -48,7 +48,7 @@ TEST(mpi_tsatsyn_a_topology_torus_grid_perf_test, test_pipeline_run) {
   }
 }
 
-TEST(mpi_tsatsyn_a_topology_torus_grid_perf_test, test_task_run) {
+TEST(mpi_tsatsyn_a_increasing_contrast_by_histogram_perf_test, test_task_run) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_sum(1, 0);
@@ -64,7 +64,7 @@ TEST(mpi_tsatsyn_a_topology_torus_grid_perf_test, test_task_run) {
     taskDataPar->outputs_count.emplace_back(global_sum.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<tsatsyn_a_topology_torus_grid_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<tsatsyn_a_increasing_contrast_by_histogram_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();

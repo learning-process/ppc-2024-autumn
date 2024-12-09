@@ -13,7 +13,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace tsatsyn_a_topology_torus_grid_mpi {
+namespace tsatsyn_a_increasing_contrast_by_histogram_mpi {
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
@@ -42,4 +42,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  // namespace tsatsyn_a_topology_torus_grid_mpi
+}  // namespace tsatsyn_a_increasing_contrast_by_histogram_mpi
