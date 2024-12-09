@@ -118,15 +118,15 @@ bool plekhanov_d_allreduce_boost_mpi::TestMPITaskBoostParallel::run() {
   boost::mpi::all_reduce(world, local_min_by_cols.data(), columnCount, min_by_cols.data(), boost::mpi::minimum<int>());
 
   if (!localInputData_.empty()) {
-    for (int j = 0; j < localInputData_.size() / columnCount; j++) {
-      for (int i = 0; i < columnCount; i++) {
+    for (size_t j = 0; j < localInputData_.size() / columnCount; j++) {
+      for (size_t i = 0; i < columnCount; i++) {
         if (localInputData_[j * columnCount + i] > min_by_cols[i]) {
           local_count_greater[i]++;
         }
       }
     }
   }
-  boost::mpi::all_reduce(world, local_count_greater.data(), columnCount, count_greater.data(), std::plus<int>());
+  boost::mpi::all_reduce(world, local_count_greater.data(), columnCount, count_greater.data(), std::plus<>());
 
   return true;
 }
