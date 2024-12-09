@@ -83,52 +83,48 @@ bool muhina_m_shell_sort_mpi::ShellSortMPIParallel::validation() {
   return true;
 }
 
+std::vector<int> muhina_m_shell_sort_mpi::merge(const std::vector<int>& left, const std::vector<int>& right) {
+  std::vector<int> result;
+  result.reserve(left.size() + right.size());
+  std::merge(left.begin(), left.end(), right.begin(), right.end(), std::back_inserter(result));
+
+  return result;
+}
+
 bool muhina_m_shell_sort_mpi::ShellSortMPIParallel::run() {
   internal_order_test();
 
   int rank = world_.rank();
   int size = world_.size();
-  int n = taskData->inputs_count[0];
+
+  int n = input_.size();
+  broadcast(world_, n, 0);
 
   int delta = n / size;
   int remainder = n % size;
 
-  std::vector<int> local_input(delta + (rank < remainder ? 1 : 0));
+  std::vector<int> sizes(world_.size(), delta);
+  for (int i = 0; i < remainder; ++i) {
+    sizes[i]++;
+  }
 
-  if (rank == 0) {
-    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    int offset = 0;
-    for (int i = 0; i < size; ++i) {
-      int count = delta + (i < remainder ? 1 : 0);
-      if (i == 0) {
-        std::copy(tmp_ptr, tmp_ptr + count, local_input.begin());
-      } else {
-        world_.send(i, 0, tmp_ptr + offset, count);
-      }
-      offset += count;
+  local_input_.resize(delta + (rank < remainder ? 1 : 0));
+  scatterv(world_, input_, sizes, local_input_.data(), 0);
+
+  local_res_ = shellSort(local_input_);
+
+  if (world_.rank() == 0) {
+    res_ = local_res_;
+    std::vector<int> temp;
+
+    for (int i = 1; i < world_.size(); ++i) {
+      world_.recv(i, 0, temp);
+      res_ = merge(res_, temp);
     }
   } else {
-    world_.recv(0, 0, local_input.data(), local_input.size());
+    world_.send(0, 0, local_res_);
   }
-  world_.barrier();
-  local_input = shellSort(local_input);
-  world_.barrier();
-  if (rank == 0) {
-    res_.resize(n);
-    std::copy(local_input.begin(), local_input.end(), res_.begin());
-    int offset = local_input.size();
-    for (int i = 1; i < size; ++i) {
-      int count = delta + (i < remainder ? 1 : 0);
-      std::vector<int> recv_data(count);
-      world_.recv(i, 1, recv_data.data(), count);
-      std::copy(recv_data.begin(), recv_data.end(), res_.begin() + offset);
-      offset += count;
-    }
 
-  } else {
-    world_.send(0, 1, local_input.data(), local_input.size());
-  }
-  world_.barrier();
   return true;
 }
 

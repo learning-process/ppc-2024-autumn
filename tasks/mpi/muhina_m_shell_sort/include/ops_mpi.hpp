@@ -16,6 +16,7 @@
 
 namespace muhina_m_shell_sort_mpi {
 std::vector<int> shellSort(const std::vector<int>& vect);
+std::vector<int> merge(const std::vector<int>& left, const std::vector<int>& right);
 
 class ShellSortMPISequential : public ppc::core::Task {
  public:
@@ -40,7 +41,7 @@ class ShellSortMPIParallel : public ppc::core::Task {
 
  private:
   std::vector<int> input_, local_input_;
-  std::vector<int> res_;
+  std::vector<int> res_, local_res_;
   boost::mpi::communicator world_;
 };
 
