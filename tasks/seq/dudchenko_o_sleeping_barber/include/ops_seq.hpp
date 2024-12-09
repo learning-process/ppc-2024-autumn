@@ -26,6 +26,6 @@ class TestSleepingBarber : public ppc::core::Task {
   int max_wait{};
   int result{};
 
-  static void next_client(int client);
+  static void next_client();
 };
 }  // namespace dudchenko_o_sleeping_barber_seq

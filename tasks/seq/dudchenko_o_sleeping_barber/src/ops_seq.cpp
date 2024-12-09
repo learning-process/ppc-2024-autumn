@@ -21,7 +21,7 @@ bool TestSleepingBarber::pre_processing() {
 }
 
 bool TestSleepingBarber::validation() {
-  if (!taskData || taskData->inputs_count.empty() || taskData->inputs_count[0] < 0) {
+  if (!taskData || taskData->inputs_count.empty() || taskData->inputs_count[0] <= 1) {
     return false;
   }
 
@@ -53,7 +53,7 @@ bool TestSleepingBarber::run() {
   while (!waiting_clients.empty()) {
     int client = waiting_clients.front();
     waiting_clients.pop_front();
-    next_client(client);
+    next_client();
   }
 
   result = 0;
@@ -62,7 +62,6 @@ bool TestSleepingBarber::run() {
 
 bool TestSleepingBarber::post_processing() {
   if (!taskData || taskData->outputs.empty() || taskData->outputs_count[0] != sizeof(int)) {
-
     return false;
   }
 
@@ -70,8 +69,6 @@ bool TestSleepingBarber::post_processing() {
   return true;
 }
 
-void TestSleepingBarber::next_client(int client) {
-  std::this_thread::sleep_for(20ms);
-}
+void TestSleepingBarber::next_client() { std::this_thread::sleep_for(20ms); }
 
 }  // namespace dudchenko_o_sleeping_barber_seq
