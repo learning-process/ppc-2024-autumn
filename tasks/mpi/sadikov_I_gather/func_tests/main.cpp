@@ -381,6 +381,7 @@ TEST(sadikov_I_gather_mpi, check_rect_matrix4) {
 }
 
 TEST(sadikov_I_gather_mpi, check_rect_matrix5) {
+  // for restart tests
   boost::mpi::communicator world;
   const int columns = 3;
   const int rows = 4;
