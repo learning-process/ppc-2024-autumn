@@ -18,7 +18,7 @@ bool processing_complete = false;
 
 std::vector<int> getPredefinedVector(int sz) { return std::vector<int>(sz, 1); }
 
-bool TestMPITaskParallel::pre_processing() {
+bool prokhorov_n_producer_customer_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
   if (world.size() < 3) {
@@ -45,7 +45,7 @@ bool TestMPITaskParallel::pre_processing() {
   return true;
 }
 
-bool TestMPITaskParallel::validation() {
+bool prokhorov_n_producer_customer_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     return world.size() > 1;
@@ -53,7 +53,7 @@ bool TestMPITaskParallel::validation() {
   return true;
 }
 
-bool TestMPITaskParallel::run() {
+bool prokhorov_n_producer_customer_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
   int data_size = 0;
@@ -136,7 +136,7 @@ bool TestMPITaskParallel::run() {
   return true;
 }
 
-bool TestMPITaskParallel::post_processing() {
+bool prokhorov_n_producer_customer_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
 
   if (world.rank() == 0) {
