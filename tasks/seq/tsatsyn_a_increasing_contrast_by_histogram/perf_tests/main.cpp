@@ -7,7 +7,6 @@
 #include "seq/tsatsyn_a_increasing_contrast_by_histogram/include/ops_seq.hpp"
 
 TEST(sequential_tsatsyn_a_increasing_contrast_by_histogram_perf_test, test_pipeline_run) {
-
   // Create data
   std::vector<int> in(1200, 1);
   std::vector<int> out(1, 0);
@@ -47,7 +46,6 @@ TEST(sequential_tsatsyn_a_increasing_contrast_by_histogram_perf_test, test_pipel
 }
 
 TEST(sequential_tsatsyn_a_increasing_contrast_by_histogram_perf_test, test_task_run) {
-
   // Create data
   std::vector<int> in(1200, 1);
   std::vector<int> out(1, 0);

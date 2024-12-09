@@ -77,7 +77,6 @@ bool tsatsyn_a_increasing_contrast_by_histogram_mpi::TestMPITaskParallel::run() 
     std::cout << std::endl;
     std::cout << std::endl;
 
-
     std::cout << numbers[0] << " ";
     for (int i = 1; i < numbers.size(); i++) {
       numbers[i] = (numbers[i] + numbers[i - 1]);
@@ -104,7 +103,6 @@ bool tsatsyn_a_increasing_contrast_by_histogram_mpi::TestMPITaskParallel::run() 
     std::cout << std::endl;
     std::cout << std::endl;
   }
-  //std::cout << localka.size();
   return true;
 }
 bool tsatsyn_a_increasing_contrast_by_histogram_mpi::TestMPITaskParallel::post_processing() {
