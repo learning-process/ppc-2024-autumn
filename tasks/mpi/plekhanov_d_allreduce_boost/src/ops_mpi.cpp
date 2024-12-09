@@ -4,7 +4,6 @@
 #include <functional>
 #include <limits>
 #include <random>
-#include <string>
 #include <vector>
 
 bool plekhanov_d_allreduce_boost_mpi::TestMPITaskSequential::pre_processing() {
