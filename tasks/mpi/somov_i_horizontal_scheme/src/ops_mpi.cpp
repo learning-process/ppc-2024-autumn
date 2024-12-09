@@ -77,9 +77,9 @@ bool somov_i_horizontal_scheme::MatrixVectorTaskMPI::validation() {
 bool somov_i_horizontal_scheme::MatrixVectorTaskMPI::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    int32_t* matrixData = reinterpret_cast<int32_t*>(taskData->inputs[0]);
+    auto* matrixData = reinterpret_cast<int32_t*>(taskData->inputs[0]);
     int32_t matrixSize = taskData->inputs_count[0];
-    int32_t* vectorData = reinterpret_cast<int32_t*>(taskData->inputs[1]);
+    auto* vectorData = reinterpret_cast<int32_t*>(taskData->inputs[1]);
     int32_t vectorSize = taskData->inputs_count[1];
 
     matrix_.assign(matrixData, matrixData + matrixSize);
@@ -149,7 +149,7 @@ bool somov_i_horizontal_scheme::MatrixVectorTaskMPI::run() {
 bool somov_i_horizontal_scheme::MatrixVectorTaskMPI::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    int32_t* outputData = reinterpret_cast<int32_t*>(taskData->outputs[0]);
+    auto* outputData = reinterpret_cast<int32_t*>(taskData->outputs[0]);
     std::copy(result_.begin(), result_.end(), outputData);
   }
   return true;
@@ -168,9 +168,9 @@ bool somov_i_horizontal_scheme::MatrixVectorTask::validation() {
 
 bool somov_i_horizontal_scheme::MatrixVectorTask::pre_processing() {
   internal_order_test();
-  int32_t* matrixData = reinterpret_cast<int32_t*>(taskData->inputs[0]);
+  auto* matrixData = reinterpret_cast<int32_t*>(taskData->inputs[0]);
   int32_t matrixSize = taskData->inputs_count[0];
-  int32_t* vectorData = reinterpret_cast<int32_t*>(taskData->inputs[1]);
+  auto* vectorData = reinterpret_cast<int32_t*>(taskData->inputs[1]);
   int32_t vectorSize = taskData->inputs_count[1];
 
   matrix_.assign(matrixData, matrixData + matrixSize);
@@ -198,7 +198,7 @@ bool somov_i_horizontal_scheme::MatrixVectorTask::run() {
 
 bool somov_i_horizontal_scheme::MatrixVectorTask::post_processing() {
   internal_order_test();
-  int32_t* outputData = reinterpret_cast<int32_t*>(taskData->outputs[0]);
+  auto* outputData = reinterpret_cast<int32_t*>(taskData->outputs[0]);
   std::copy(result_.begin(), result_.end(), outputData);
   return true;
 }
