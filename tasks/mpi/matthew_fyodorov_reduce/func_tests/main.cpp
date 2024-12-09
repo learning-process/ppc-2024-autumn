@@ -3,7 +3,7 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <vector>
-
+#include <random>
 #include "mpi/matthew_fyodorov_reduce/include/ops_mpi.hpp"
 
 std::vector<int> matthew_fyodorov_reduce_mpi ::getRandomVector(int sz) {
