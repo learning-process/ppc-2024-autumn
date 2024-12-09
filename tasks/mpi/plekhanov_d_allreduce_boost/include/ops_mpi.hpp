@@ -41,12 +41,16 @@ class TestMPITaskBoostParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
+
   std::vector<int> inputData_;
   std::vector<int> resultData_;
   std::vector<int> countAboveMin_;
+  std::vector<int> localInputData_;
+  std::vector<int> count_greater;
   int columnCount{};
   int rowCount{};
   boost::mpi::communicator world;
+
 };
 
 }  // namespace plekhanov_d_allreduce_boost_mpi
