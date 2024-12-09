@@ -164,8 +164,8 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, false_validation) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
   taskDataSeq->outputs_count.emplace_back(result.size());
 
-  sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI taskParallel(taskDataPar);
-  EXPECT_FALSE(taskParallel.validation());
+  sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI TestSequential(taskDataSeq);
+  EXPECT_FALSE(TestSequential.validation());
 }
 
 TEST(sedova_o_vertical_ribbon_scheme_mpi, true_validation) {
