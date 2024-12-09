@@ -65,8 +65,12 @@ bool plekhanov_d_allreduce_boost_mpi::TestMPITaskBoostParallel::pre_processing()
   if (world.rank() == 0) {
     columnCount = taskData->inputs_count[1];
     rowCount = taskData->inputs_count[2];
-    auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[0]);
-    inputData_.assign(tempPtr, tempPtr + taskData->inputs_count[0]);
+  }
+
+  if (world.rank() == 0) {
+    // init vectors
+    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+    inputData_.assign(tmp_ptr, tmp_ptr + taskData->inputs_count[0]);
   } else {
     inputData_ = std::vector<int>(columnCount * rowCount, 0);
   }
@@ -86,43 +90,43 @@ bool plekhanov_d_allreduce_boost_mpi::TestMPITaskBoostParallel::validation() {
 bool plekhanov_d_allreduce_boost_mpi::TestMPITaskBoostParallel::run() {
   internal_order_test();
 
-  broadcast(world, columnCount, 0);
   broadcast(world, rowCount, 0);
+  broadcast(world, columnCount, 0);
 
-  if (world.rank() != 0) {
-    inputData_ = std::vector<int>(columnCount * rowCount, 0);
-  }
-  broadcast(world, inputData_.data(), columnCount * rowCount, 0);
+  int segment = rowCount / world.size();
+  int over = rowCount % world.size();
 
-  int delta = columnCount / world.size();
-  int startColumn = delta * world.rank();
-  int lastColumn = (world.rank() == world.size() - 1) ? columnCount : startColumn + delta;
+  std::vector<int> size(world.size(), (int)(segment * columnCount));
+  for (int i = 0; i < over; i++) size[world.size() - i - 1] += columnCount;
 
-  std::vector<int> localMin(columnCount, std::numeric_limits<int>::max());
-  for (int column = startColumn; column < lastColumn; column++) {
-    for (int row = 0; row < rowCount; row++) {
-      int value = inputData_[row * columnCount + column];
-      if (value < localMin[column]) {
-        localMin[column] = value;
+  localInputData_.resize(size[world.rank()]);
+  scatterv(world, inputData_, size, localInputData_.data(), 0);
+
+  std::vector<int> min_by_cols(columnCount, std::numeric_limits<int>::max());
+  std::vector<int> local_min_by_cols(columnCount, std::numeric_limits<int>::max());
+  count_greater.resize(columnCount, 0);
+  std::vector<int> local_count_greater(columnCount, 0);
+
+  if (!localInputData_.empty()) {
+    for (int j = 0; j < localInputData_.size() / columnCount; j++) {
+      for (int i = 0; i < columnCount; i++) {
+        int value = localInputData_[j * columnCount + i];
+        if (value < local_min_by_cols[i]) local_min_by_cols[i] = value;
       }
     }
   }
+  boost::mpi::all_reduce(world, local_min_by_cols.data(), columnCount, min_by_cols.data(), boost::mpi::minimum<int>());
 
-  resultData_.resize(columnCount, 0);
-  boost::mpi::all_reduce(world, localMin.data(), columnCount, resultData_.data(), boost::mpi::minimum<int>());
-
-  std::vector<int> localCountAboveMin(columnCount, 0);
-  for (int column = startColumn; column < lastColumn; column++) {
-    for (int row = 0; row < rowCount; row++) {
-      int value = inputData_[row * columnCount + column];
-      if (value > resultData_[column]) {
-        localCountAboveMin[column]++;
+  if (!localInputData_.empty()) {
+    for (int j = 0; j < localInputData_.size() / columnCount; j++) {
+      for (int i = 0; i < columnCount; i++) {
+        if (localInputData_[j * columnCount + i] > min_by_cols[i]) {
+          local_count_greater[i]++;
+        }
       }
     }
   }
-
-  countAboveMin_.resize(columnCount, 0);
-  boost::mpi::reduce(world, localCountAboveMin.data(), columnCount, countAboveMin_.data(), std::plus<>(), 0);
+  boost::mpi::all_reduce(world, local_count_greater.data(), columnCount, count_greater.data(), std::plus<int>());
 
   return true;
 }
@@ -131,7 +135,7 @@ bool plekhanov_d_allreduce_boost_mpi::TestMPITaskBoostParallel::post_processing(
   internal_order_test();
   if (world.rank() == 0) {
     for (int i = 0; i < columnCount; i++) {
-      reinterpret_cast<int*>(taskData->outputs[0])[i] = countAboveMin_[i];
+      reinterpret_cast<int*>(taskData->outputs[0])[i] = count_greater[i];
     }
   }
   return true;
