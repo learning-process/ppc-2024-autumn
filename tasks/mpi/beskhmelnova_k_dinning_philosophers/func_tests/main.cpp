@@ -5,7 +5,7 @@
 #include "mpi/beskhmelnova_k_dinning_philosophers/include/dinning_philosophers.hpp"
 #include "mpi/beskhmelnova_k_dinning_philosophers/src/dinning_philosophers.cpp"
 
-TEST(DiningPhilosophersMPI, Test_with_world_size_philosophers) {
+TEST(beskhmelnova_k_dinning_philosophers_mpi, Test_with_world_size_philosophers) {
   boost::mpi::communicator world;
 
   int num_philosophers = world.size();
@@ -28,7 +28,7 @@ TEST(DiningPhilosophersMPI, Test_with_world_size_philosophers) {
     ASSERT_FALSE(dining_task.validation());
 }
 
-TEST(DiningPhilosophersMPI, Test_with_0_philosophers) {
+TEST(beskhmelnova_k_dinning_philosophers_mpi, Test_with_0_philosophers) {
   boost::mpi::communicator world;
 
   int num_philosophers = 0;
@@ -41,7 +41,7 @@ TEST(DiningPhilosophersMPI, Test_with_0_philosophers) {
   ASSERT_FALSE(dining_task.validation());
 }
 
-TEST(DiningPhilosophersMPI, Test_with_1_philosopher) {
+TEST(beskhmelnova_k_dinning_philosophers_mpi, Test_with_1_philosopher) {
   boost::mpi::communicator world;
 
   int num_philosophers = 1;
@@ -54,7 +54,7 @@ TEST(DiningPhilosophersMPI, Test_with_1_philosopher) {
   ASSERT_FALSE(dining_task.validation());
 }
 
-TEST(DiningPhilosophersMPI, Test_with_negative_size_philosophers) {
+TEST(beskhmelnova_k_dinning_philosophers_mpi, Test_with_negative_size_philosophers) {
   boost::mpi::communicator world;
 
   int num_philosophers = -3;
@@ -67,7 +67,7 @@ TEST(DiningPhilosophersMPI, Test_with_negative_size_philosophers) {
   ASSERT_FALSE(dining_task.validation());
 }
 
-TEST(DiningPhilosophersMPI, Test_with_2_philosophers) {
+TEST(beskhmelnova_k_dinning_philosophers_mpi, Test_with_2_philosophers) {
   boost::mpi::communicator world;
 
   int num_philosophers = 2;
@@ -90,7 +90,7 @@ TEST(DiningPhilosophersMPI, Test_with_2_philosophers) {
   }
 }
 
-TEST(DiningPhilosophersMPI, Test_with_3_philosophers) {
+TEST(beskhmelnova_k_dinning_philosophers_mpi, Test_with_3_philosophers) {
   boost::mpi::communicator world;
 
   int num_philosophers = 3;
@@ -113,7 +113,7 @@ TEST(DiningPhilosophersMPI, Test_with_3_philosophers) {
   }
 }
 
-TEST(DiningPhilosophersMPI, Test_with_4_philosophers) {
+TEST(beskhmelnova_k_dinning_philosophers_mpi, Test_with_4_philosophers) {
   boost::mpi::communicator world;
 
   int num_philosophers = 4;
@@ -136,7 +136,7 @@ TEST(DiningPhilosophersMPI, Test_with_4_philosophers) {
   }
 }
 
-TEST(DiningPhilosophersMPI, Test_with_8_philosophers) {
+TEST(beskhmelnova_k_dinning_philosophers_mpi, Test_with_8_philosophers) {
   boost::mpi::communicator world;
 
   int num_philosophers = 8;

@@ -21,13 +21,12 @@ bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::valida
 
 template <typename DataType>
 bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::run() {
-  while (true) {
+  while (!check_for_termination()) {
     think();
     request_forks();
     eat();
     release_forks();
     if (check_deadlock()) resolve_deadlock();
-    if (check_for_termination()) break;
   }
   return true;
 }
@@ -97,15 +96,13 @@ bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::check_
 template <typename DataType>
 void beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::think() {
   state = THINKING;
-  int think_time = distribution(generator);
-  std::this_thread::sleep_for(std::chrono::seconds(think_time));
+  std::this_thread::sleep_for(std::chrono::milliseconds(10));
 }
 
 template <typename DataType>
 void beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::eat() {
   state = EATING;
-  int eat_time = distribution(generator);
-  std::this_thread::sleep_for(std::chrono::seconds(eat_time));
+  std::this_thread::sleep_for(std::chrono::milliseconds(60));
 }
 
 template <typename DataType>
