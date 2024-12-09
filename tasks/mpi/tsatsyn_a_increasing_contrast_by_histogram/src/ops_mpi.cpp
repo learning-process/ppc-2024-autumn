@@ -30,12 +30,12 @@ bool tsatsyn_a_increasing_contrast_by_histogram_mpi::TestMPITaskParallel::pre_pr
 bool tsatsyn_a_increasing_contrast_by_histogram_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   std::vector<double> local_data;
+  int width, height;
   if (world.rank() == 0) {
     auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[1]);
-    int width, height;
     width = tempPtr[0];
     height = tempPtr[1];
-    std::cout << height << width << std::endl;
+
     for (int proc = 1; proc < world.size(); proc++) {
       local_data.clear();
       for (int i = proc; i < input_data.size(); i += world.size()) {
@@ -47,55 +47,64 @@ bool tsatsyn_a_increasing_contrast_by_histogram_mpi::TestMPITaskParallel::run() 
     for (int i = 0; i < input_data.size(); i += world.size()) {
       local_data.emplace_back(input_data[i]);
     }
-    // std::vector<double> localka(256, 0);
-    // for (int i = 0; i < input_data.size(); i++) {
-    //   localka[input_data[i]]++;
-    // }
-    // for (int i = 0; i < localka.size(); i++) {
-    //   std::cout << localka[i] << " ";
-    // }
-    // std::cout << std::endl;
-    // std::cout << std::endl;
-    // std::cout << std::endl;
-    // std::cout << std::endl;
-    // for (int i = 0; i < localka.size(); i++) {
-    //   localka[i] /= width;
-    //   std::cout << localka[i] << " ";
-    // }
-    // std::cout << std::endl;
-    // std::cout << std::endl;
-    // std::cout << std::endl;
-    // std::cout << std::endl;
-    // std::cout << localka[0] << " ";
-    // for (int i = 1; i < localka.size(); i++) {
-    //   localka[i] = (localka[i] + localka[i - 1]);
-    //   std::cout << localka[i] << " ";
-    // }
-    // std::cout << std::endl;
-    // std::cout << std::endl;
-    // std::cout << std::endl;
-    // std::cout << std::endl;
-    // for (int i = 0; i < localka.size(); i++) {
-    //   localka[i] *= 255;
-    //   std::cout << localka[i] << " ";
-    // }
-    // std::cout << std::endl;
-    // std::cout << std::endl;
-    // std::cout << std::endl;
-    // std::cout << std::endl;
-    // for (int i = 0; i < localka.size(); i++) {
-    //   localka[i] = round(localka[i]);
-    //   std::cout << localka[i] << " ";
-    // }
-    // std::cout << std::endl;
-    // std::cout << std::endl;
-    // std::cout << std::endl;
-    // std::cout << std::endl;
   } else {
     world.recv(0, 0, local_data);
-    std::vector<double> localka(256, 0);
   }
-  std::cout << local_data.size();
+  boost::mpi::broadcast(world, height, 0);
+  boost::mpi::broadcast(world, width, 0);
+  std::vector<double> numbers(256, 0);
+  for (int i = 0; i < local_data.size(); i++) {
+    numbers[local_data[i]]++;
+  }
+  if (world.rank() == 0) {
+    std::vector<double> received_numbers(256, 0);
+    for (int proc = 1; proc < world.size(); proc++) {
+      world.recv(proc, 0, received_numbers);
+      for (int i = 0; i < numbers.size(); i++) {
+        numbers[i] += received_numbers[i];
+      }
+    }
+  } else {
+    world.send(0, 0, numbers);
+  }
+  if (world.rank() == 0) {
+    for (int i = 0; i < numbers.size(); i++) {
+      numbers[i] /= width;
+      std::cout << numbers[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+
+
+    std::cout << numbers[0] << " ";
+    for (int i = 1; i < numbers.size(); i++) {
+      numbers[i] = (numbers[i] + numbers[i - 1]);
+      std::cout << numbers[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+    for (int i = 0; i < numbers.size(); i++) {
+      numbers[i] *= 255;
+      std::cout << numbers[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+    for (int i = 0; i < numbers.size(); i++) {
+      numbers[i] = round(numbers[i]);
+      std::cout << numbers[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+  }
+  //std::cout << localka.size();
   return true;
 }
 bool tsatsyn_a_increasing_contrast_by_histogram_mpi::TestMPITaskParallel::post_processing() {
