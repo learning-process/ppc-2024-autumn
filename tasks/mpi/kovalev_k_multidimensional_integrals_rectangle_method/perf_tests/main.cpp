@@ -9,7 +9,7 @@
 #include "mpi/kovalev_k_multidimensional_integrals_rectangle_method/include/header.hpp"
 
 namespace kovalev_k_multidimensional_integrals_rectangle_method_mpi {
-const double M_PI = 3.14159265358979323846;
+const double MY_PI = 3.14159265358979323846;
 
 double f1cos(std::vector<double> &arguments) { return std::cos(arguments.at(0)); }
 double f2advanced(std::vector<double> &arguments) { return std::tan(arguments.at(0)) * std::atan(arguments.at(1)); }
@@ -18,8 +18,8 @@ double f2advanced(std::vector<double> &arguments) { return std::tan(arguments.at
 TEST(kovalev_k_multidimensional_integrals_rectangle_method_mpi, test_pipeline_run) {
   const size_t dim = 1;
   std::vector<std::pair<double, double>> lims(dim);
-  lims[0].first = -0.5 * kovalev_k_multidimensional_integrals_rectangle_method_mpi::M_PI;
-  lims[0].second = 0.5 * kovalev_k_multidimensional_integrals_rectangle_method_mpi::M_PI;
+  lims[0].first = -0.5 * kovalev_k_multidimensional_integrals_rectangle_method_mpi::MY_PI;
+  lims[0].second = 0.5 * kovalev_k_multidimensional_integrals_rectangle_method_mpi::MY_PI;
   double h = 0.0005;
   double eps = 1e-4;
   std::vector<double> out(1);

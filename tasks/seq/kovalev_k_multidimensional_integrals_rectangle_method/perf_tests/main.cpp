@@ -11,13 +11,13 @@ double f3advanced(std::vector<double> &arguments) {
   return std::sin(arguments.at(0)) * std::tan(arguments.at(1)) * std::log(arguments.at(2));
 }
 
-const double M_PI = 3.14159265358979323846;
+const double MY_PI = 3.14159265358979323846;
 
 TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, test_pipeline_run) {
   const size_t dim = 1;
   std::vector<std::pair<double, double>> lims(dim);
   lims[0].first = 0;
-  lims[0].second = 0.5 * M_PI;
+  lims[0].second = 0.5 * MY_PI;
   double h = 0.0005;
   double eps = 1e-4;
   std::vector<double> out(1);
