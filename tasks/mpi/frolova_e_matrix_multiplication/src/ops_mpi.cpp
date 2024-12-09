@@ -414,7 +414,7 @@ bool frolova_e_matrix_multiplication_mpi::matrixMultiplicationParallel::run() {
 bool frolova_e_matrix_multiplication_mpi::matrixMultiplicationParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-       for (int i = 0; i < lineA * columnB; i++) {
+       for (size_t i = 0; i < lineA * columnB; i++) {
            reinterpret_cast<int*>(taskData->outputs[0])[i] = matrixC[i];
        }
   }
