@@ -19,8 +19,10 @@ int unique_characters(std::vector<std::string> const &vec1) {  // count unique c
 bool shpynov_n_amount_of_mismatched_numbers_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   // receiving input data
-  input_.emplace_back(std::string(reinterpret_cast<char *>(taskData->inputs[0])));
-  input_.emplace_back(std::string(reinterpret_cast<char *>(taskData->inputs[1])));
+  std::string St1(reinterpret_cast<char *>(taskData->inputs[0]));
+  std::string St2(reinterpret_cast<char *>(taskData->inputs[1]));
+  input_.emplace_back(St1);
+  input_.emplace_back(St2);
 
   result = 0;
 
