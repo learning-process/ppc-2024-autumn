@@ -3,7 +3,6 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <random>
 #include <vector>
 
 #include "mpi/zaytsev_topology_star/include/ops_mpi.hpp"
