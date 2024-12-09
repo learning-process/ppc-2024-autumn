@@ -1,6 +1,9 @@
+#include <gtest/gtest.h>
+
+#include <boost/mpi/timer.hpp>
 #include <random>
 #include <vector>
-а
+
 #include "core/perf/include/perf.hpp"
 #include "mpi/matthew_fyodorov_reduce_custom/include/ops_mpi.hpp"
 

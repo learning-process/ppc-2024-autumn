@@ -1,5 +1,6 @@
 #include "mpi/matthew_fyodorov_reduce/include/ops_mpi.hpp"
 
+#include <boost/mpi.hpp>
 #include <numeric>
 #include <random>
 #include <string>
