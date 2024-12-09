@@ -1,4 +1,4 @@
-﻿#include "mpi/sedova_o_vertical_ribbon_scheme/include/ops_mpi.hpp"
+﻿﻿#include "mpi/sedova_o_vertical_ribbon_scheme/include/ops_mpi.hpp"
 
 #include <algorithm>
 #include <boost/serialization/array.hpp>
@@ -107,9 +107,9 @@ bool sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI::run() {
   for (int i = 0; i < matrix_start_; ++i) {
     for (int j = 0; j < cols_; ++j) {
       int prog_start = proc_start + i;
-      int matrix = input_matrix_1[cols_ * prog_start + j];
-      int vector = input_vector_1[prog_start];
-      proc_result[j] += matrix * vector;
+      int matr = input_matrix_1[cols_ * prog_start + j];
+      int vec = input_vector_1[prog_start];
+      proc_result[j] += matr * vec;
     }
   }
 
