@@ -17,7 +17,7 @@ namespace prokhorov_n_producer_customer_mpi {
 class TestMPITaskParallel : public ppc::core::Task {
  public:
   explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)), ops("default_operation"), world() {}
+      : Task(std::move(taskData_)), ops("default_operation") {}
 
   bool pre_processing() override;
   bool validation() override;
