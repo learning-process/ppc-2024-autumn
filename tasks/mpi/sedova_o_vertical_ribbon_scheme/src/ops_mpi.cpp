@@ -6,7 +6,8 @@
 #include <thread>
 #include <vector>
 
-bool sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::validation() {
+    bool 
+    sedova_o_vertical_ribbon_scheme_mpi::SequentialMPI::validation() {
   internal_order_test();
   return taskData->inputs_count[0] > 1 && taskData->inputs_count[1] > 0 &&
          taskData->inputs_count[0] % taskData->inputs_count[1] == 0 &&
