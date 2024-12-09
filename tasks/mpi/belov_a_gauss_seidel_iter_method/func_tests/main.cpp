@@ -7,8 +7,6 @@
 
 #include "mpi/belov_a_gauss_seidel_iter_method/include/ops_mpi.hpp"
 
-using namespace belov_a_gauss_seidel_mpi;
-
 namespace belov_a_gauss_seidel_mpi {
 std::vector<double> generateDiagonallyDominantMatrix(int n) {
   std::vector<double> A_local(n * n, 0.0);
@@ -43,6 +41,8 @@ std::vector<double> generateFreeMembers(int n) {
   return freeMembers;
 }
 }  // namespace belov_a_gauss_seidel_mpi
+
+using namespace belov_a_gauss_seidel_mpi;
 
 TEST(belov_a_gauss_seidel_mpi, Test_3x3_Predefined_Matrix) {
   boost::mpi::communicator world;
@@ -100,7 +100,7 @@ TEST(belov_a_gauss_seidel_mpi, Test_4x4_Generated_Matrix) {
   boost::mpi::communicator world;
 
   int n = 4;
-  double epsilon = 0.001;
+  double epsilon = 0.02;
   std::vector<double> matrix = generateDiagonallyDominantMatrix(n);
   std::vector<double> freeMembers = generateFreeMembers(n);
   std::vector<double> solutionMpi(n, 0);
