@@ -10,8 +10,8 @@ TEST(Parallel_Operations_MPI, both_strings_empty) {
   // Create data
   boost::mpi::communicator world;
 
-  std::string str1 = "";
-  std::string str2 = "";
+  std::string str1;
+  std::string str2;
   std::vector<std::string> v1{str1, str2};
 
   std::vector<int> out(1, 0);
@@ -40,7 +40,7 @@ TEST(Parallel_Operations_MPI, only_one_string_is_empty) {
   boost::mpi::communicator world;
 
   std::string str1 = "abcd";
-  std::string str2 = "";
+  std::string str2;
   std::vector<std::string> v1{str1, str2};
 
   std::vector<int> out(1, 0);

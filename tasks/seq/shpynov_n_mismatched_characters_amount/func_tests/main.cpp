@@ -8,8 +8,8 @@
 TEST(shpynov_n_amount_of_mismatched_numbers_seq, empty_strings) {
   // Create data
 
-  std::string str1 = "";
-  std::string str2 = "";
+  std::string str1;
+  std::string str2;
   std::vector<std::string> v1{str1, str2};
 
   std::vector<int> out(1, 0);
@@ -32,7 +32,7 @@ TEST(shpynov_n_amount_of_mismatched_numbers_seq, empty_strings) {
 }
 
 TEST(shpynov_n_amount_of_mismatched_numbers_seq, only_one_string_is_empty) {
-  std::string str1 = "";
+  std::string str1;
   std::string str2 = "abcd";
   std::vector<std::string> v1{str1, str2};
 
@@ -56,7 +56,7 @@ TEST(shpynov_n_amount_of_mismatched_numbers_seq, only_one_string_is_empty) {
 }
 
 TEST(shpynov_n_amount_of_mismatched_numbers_seq, throw_on_different_amount_of_strings) {
-  std::string str1 = "";
+  std::string str1;
   std::vector<std::string> v1{str1};
 
   std::vector<int> out(1, 0);
