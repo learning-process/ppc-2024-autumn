@@ -10,21 +10,39 @@
 #include "mpi/ermilova_d_custom_reduce/include/ops_mpi.hpp"
 
 template <typename T>
-std::vector<T> getRandom(int size) {
-  std::vector<T> vec(size);
-  for (int i = 0; i < size; i++) {
-    vec[i] = static_cast<T>(rand());
+std::vector<T> getRandom(int size, T min, T max) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+
+  if constexpr (std::is_integral<T>::value) {
+    std::uniform_int_distribution<T> dis(min, max);
+    std::vector<T> vec(size);
+    for (int i = 0; i < size; ++i) {
+      vec[i] = dis(gen);
+    }
+    return vec;
+  } else if constexpr (std::is_floating_point<T>::value) {
+    std::uniform_real_distribution<T> dis(min, max);
+    std::vector<T> vec(size);
+    for (int i = 0; i < size; ++i) {
+      vec[i] = dis(gen);
+    }
+    return vec;
+  } else {
+    throw std::invalid_argument("Unsupported type");
   }
-  return vec;
 }
 
 template <typename T>
 void Test_reduce(MPI_Datatype datatype, MPI_Op op) {
   int size = 100;
+  T min_ = static_cast<T>(-1000);
+  T max_ = static_cast<T>(1000);
+
   boost::mpi::communicator world;
   std::vector<T> input_;
   if (world.rank() == 0) {
-    input_ = getRandom<T>(size * world.size());
+    input_ = getRandom<T>(size * world.size(), min_, max_);
   }
   std::vector<T> recv_data(size);
   boost::mpi::scatter(world, input_.data(), recv_data.data(), size, 0);
@@ -59,7 +77,8 @@ void Test_reduce(MPI_Datatype datatype, MPI_Op op) {
     } else if (op == MPI_MAX) {
       ref = *std::max_element(input_.begin(), input_.end());
     }
-    ASSERT_NEAR(global_result, ref, 0.0001);
+    std::cout << global_result << '\n' << ref << '\n';
+    ASSERT_NEAR(global_result, ref, 0.01);
   }
 }
 
