@@ -106,7 +106,6 @@ bool frolova_e_matrix_multiplication_seq::matrixMultiplication::post_processing(
   internal_order_test();
   
   for (size_t i = 0; i < lineA * columnB; i++) {
-  
       reinterpret_cast<int*>(taskData->outputs[0])[i] = matrixC[i];
 
   }
