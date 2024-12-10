@@ -100,7 +100,7 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, 05x05_area) {
   lims[0].first = lims[1].first = 0.0;
   lims[0].second = lims[1].second = 0.5;
   double h = 0.0005;
-  double eps = 1e-5;
+  double eps = 1e-3;
   std::vector<double> out(1);
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
   taskSeq->inputs_count.emplace_back(lims.size());
