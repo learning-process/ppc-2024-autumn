@@ -54,10 +54,27 @@ bool MPIIntegralCalculator::pre_processing() {
 bool MPIIntegralCalculator::run() {
   internal_order_test();
 
-  double local_result{};
-  local_result = integrate(function_, lower_bound, upper_bound, num_partitions);
+  if (world.size() < 5 || world.rank() >= 4) {
+    auto* start_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
+    auto* end_ptr = reinterpret_cast<double*>(taskData->inputs[1]);
+    auto* split_ptr = reinterpret_cast<int*>(taskData->inputs[2]);
+
+    lower_bound = *start_ptr;
+    upper_bound = *end_ptr;
+    num_partitions = *split_ptr;
+  }
+
+  broadcast(world, lower_bound, 0);
+  broadcast(world, upper_bound, 0);
+  broadcast(world, num_partitions, 0);
+
+  double local_result = integrate(function_, lower_bound, upper_bound, num_partitions);
 
   reduce(world, local_result, global_result, std::plus<>(), 0);
+
+  if (world.size() < 5 || world.rank() >= 4) {
+    *reinterpret_cast<double*>(taskData->outputs[0]) = global_result;
+  }
 
   return true;
 }
