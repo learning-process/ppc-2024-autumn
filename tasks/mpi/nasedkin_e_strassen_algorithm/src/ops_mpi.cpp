@@ -8,10 +8,11 @@
 namespace nasedkin_e_strassen_algorithm {
 
     TestMPITaskParallel::TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData)
-            : taskData(taskData) {}
+            : taskData(std::move(taskData)) {}
 
     bool TestMPITaskParallel::pre_processing() {
-        size_t total_rows, total_cols;
+        size_t total_rows;
+        size_t total_cols;
         if (world.rank() == 0) {
             total_rows = taskData->inputs_count[0];
             total_cols = taskData->inputs_count[1];
@@ -58,11 +59,11 @@ namespace nasedkin_e_strassen_algorithm {
     bool TestMPITaskParallel::post_processing() {
         size_t total_size = rows_per_proc * cols_per_proc * world.size();
         std::vector<double> global_matrix_c(total_size, 0);
-        
+
         boost::mpi::gather(world, local_matrix_c.data(), local_matrix_c.size(), global_matrix_c.data(), 0);
 
         if (world.rank() == 0) {
-            double* output = reinterpret_cast<double*>(taskData->outputs[0]);
+            auto output = reinterpret_cast<double*>(taskData->outputs[0]);
             std::copy(global_matrix_c.begin(), global_matrix_c.end(), output);
         }
         return true;
@@ -83,8 +84,16 @@ namespace nasedkin_e_strassen_algorithm {
         }
 
         size_t half = n / 2;
-        std::vector<double> a11(half * half), a12(half * half), a21(half * half), a22(half * half);
-        std::vector<double> b11(half * half), b12(half * half), b21(half * half), b22(half * half);
+        std::vector<double> a11(half * half);
+        std::vector<double> a12(half * half);
+        std::vector<double> a21(half * half);
+        std::vector<double> a22(half * half);
+
+        std::vector<double> b11(half * half);
+        std::vector<double> b12(half * half);
+        std::vector<double> b21(half * half);
+        std::vector<double> b22(half * half);
+
 
         split_matrix(A, n, a11, a12, a21, a22);
         split_matrix(B, n, b11, b12, b21, b22);
