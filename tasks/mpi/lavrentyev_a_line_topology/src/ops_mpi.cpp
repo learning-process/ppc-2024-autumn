@@ -65,27 +65,29 @@ bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::run() {
     return true;
   }
 
-  boost::mpi::request send_data_req, send_path_req;
-  boost::mpi::request recv_data_req, recv_path_req;
+  boost::mpi::request send_data_req;
+  boost::mpi::request send_path_req;
+  boost::mpi::request recv_data_req;
+  boost::mpi::request recv_path_req;
   std::vector<boost::mpi::request> requests;
 
   if (world.rank() == start_proc) {
-    send_data_req = world.isend(world.rank() + 1, 0, &data[0], data.size());
+    send_data_req = world.isend(world.rank() + 1, 0, data.data(), data.size());
     requests.push_back(send_data_req);
-    send_path_req = world.isend(world.rank() + 1, 1, &path[0], path.size());
+    send_path_req = world.isend(world.rank() + 1, 1, path.data(), path.size());
     requests.push_back(send_path_req);
   } else {
-    recv_data_req = world.irecv(world.rank() - 1, 0, &data[0], data.size());
+    recv_data_req = world.irecv(world.rank() - 1, 0, data.data(), data.size());
     requests.push_back(recv_data_req);
-    recv_path_req = world.irecv(world.rank() - 1, 1, &path[0], path.size());
+    recv_path_req = world.irecv(world.rank() - 1, 1, path.data(), path.size());
     requests.push_back(recv_path_req);
 
     path.push_back(world.rank());
 
     if (world.rank() < end_proc) {
-      send_data_req = world.isend(world.rank() + 1, 0, &data[0], data.size());
+      send_data_req = world.isend(world.rank() + 1, 0, data.data(), data.size());
       requests.push_back(send_data_req);
-      send_path_req = world.isend(world.rank() + 1, 1, &path[0], path.size());
+      send_path_req = world.isend(world.rank() + 1, 1, path.data(), path.size());
       requests.push_back(send_path_req);
     }
   }
@@ -94,7 +96,6 @@ bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::run() {
 
   return true;
 }
-
 bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
 

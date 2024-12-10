@@ -66,7 +66,6 @@ TEST(lavrentyev_a_line_topology_mpi, task_run) {
   }
 }
 
-
 TEST(lavrentyev_a_line_topology_mpi, pipeline_run) {
   boost::mpi::communicator world;
 
