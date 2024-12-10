@@ -43,9 +43,9 @@ bool deryabin_m_jacobi_iterative_method_seq::JacobiIterativeTaskSequential::vali
 
 bool deryabin_m_jacobi_iterative_method_seq::JacobiIterativeTaskSequential::run() {
   internal_order_test();
-  unsigned short Nmax = 1000;
+  unsigned short Nmax = 10000;
   unsigned short num_of_iterations = 0;
-  double epsilon = pow(10, -3);
+  double epsilon = pow(10, -6);
   double max_delta_x_i = 0;
   std::vector<double> x_old;
   auto n = (unsigned short)(input_right_vector_.size());
