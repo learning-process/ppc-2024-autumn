@@ -6,7 +6,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/sedova_o_vertical_ribbon_scheme/include/ops_mpi.hpp"
 
-TEST(sedova_o_vertical_ribbon_scheme_mpi, Performance_Pipeline_Run) {
+TEST(sedova_o_vertical_ribbon_scheme_mpi, test_pipeline_run) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
@@ -67,7 +67,7 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, Performance_Pipeline_Run) {
     EXPECT_EQ(global_result, seq_result);
   }
 }
-TEST(sedova_o_vertical_ribbon_scheme_mpi, Performance_Task_Run) {
+TEST(sedova_o_vertical_ribbon_scheme_mpi, test_task_run) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
   std::vector<int> global_matrix;

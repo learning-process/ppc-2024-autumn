@@ -6,7 +6,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/sedova_o_vertical_ribbon_scheme/include/ops_seq.hpp"
 
-TEST(sedova_o_vertical_ribbon_scheme_seq, Perf_Pipeline_Run) {
+TEST(sedova_o_vertical_ribbon_scheme_seq, test_pipeline_run) {
   int rows_ = 2000;
   int cols_ = 2000;
   std::vector<int> input_matrix_(rows_ * cols_);
@@ -66,7 +66,7 @@ TEST(sedova_o_vertical_ribbon_scheme_seq, Perf_Pipeline_Run) {
   ASSERT_EQ(result_vector_, expected_result);
 }
 
-TEST(sedova_o_vertical_ribbon_scheme_seq, Perf_Task_Run) {
+TEST(sedova_o_vertical_ribbon_scheme_seq, test_task_run) {
   int rows_ = 2000;
   int cols_ = 2000;
   std::vector<int> input_matrix_(rows_ * cols_);
