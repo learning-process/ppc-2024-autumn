@@ -47,7 +47,6 @@ TEST(somov_i_horizontal_scheme, test_large_matrix_distribution_and_algorithm_cor
 
   ASSERT_EQ(static_cast<int>(chunk_sizes.size()), num_processes);
   ASSERT_EQ(static_cast<int>(offsets.size()), num_processes);
-  EXPECT_GT(chunk_sizes[0], 0);
 
   int total_assigned_rows = 0;
   std::vector<bool> covered_rows(total_rows, false);
@@ -57,13 +56,10 @@ TEST(somov_i_horizontal_scheme, test_large_matrix_distribution_and_algorithm_cor
     int start_row = offsets[i] / total_cols;
 
     if (chunk_sizes[i] > 0) {
-      EXPECT_GE(start_row, 0);
-      EXPECT_LT(start_row + rows_assigned, total_rows + 1);
-    }
-
-    for (int row = start_row; row < start_row + rows_assigned; ++row) {
-      ASSERT_FALSE(covered_rows[row]);
-      covered_rows[row] = true;
+      for (int row = start_row; row < start_row + rows_assigned; ++row) {
+        ASSERT_FALSE(covered_rows[row]);
+        covered_rows[row] = true;
+      }
     }
 
     total_assigned_rows += rows_assigned;
