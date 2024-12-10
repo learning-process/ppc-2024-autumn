@@ -59,7 +59,7 @@ void zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::convolve_columns(c
 
 bool zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  return taskData->inputs_count.size() == 2 && taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0;
+  return taskData->inputs_count.size() == 2 && taskData->inputs_count[0] > 1 && taskData->inputs_count[1] > 0;
 }
 
 bool zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::pre_processing() {
@@ -105,68 +105,73 @@ bool zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::post_processing() 
 bool zolotareva_a_smoothing_image_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    return taskData->inputs_count.size() == 2 && taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0;
+    return taskData->inputs_count.size() == 2 && taskData->inputs_count[0] > 1 &&
+           taskData->inputs_count[0] >= size_t(world.size()) && taskData->inputs_count[1] > 0;
   }
   return true;
 }
 
 bool zolotareva_a_smoothing_image_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  int world_size = world.size();
   if (world.rank() == 0) {
     height_ = taskData->inputs_count[0];
     width_ = taskData->inputs_count[1];
-    input_.resize(height_ * width_);
+    size_ = height_ * width_;
+    input_.resize(size_);
     const uint8_t* raw_data = taskData->inputs[0];
-    std::copy(raw_data, raw_data + input_.size(), input_.begin());
-    if (world_size == 1) {
+    std::copy(raw_data, raw_data + size_, input_.begin());
+    if (world.size() == 1) {
       return true;
     }
   }
-  std::vector<int> displs(world_size);
-  boost::mpi::broadcast(world, height_, 0);
-  boost::mpi::broadcast(world, width_, 0);
-  input_.resize(height_ * width_);
-  if (world.rank() > 0) send_counts.resize(world_size);
-  displs.resize(world_size);
 
-  if (world.rank() == 0) {
-    int base_height = height_ / world_size;
-    int remainder = height_ % world_size;
-
-    int send_start = (base_height + remainder - 1) * width_;
-    send_counts.resize(world_size, (base_height + 2) * width_);
-    send_counts[0] = (base_height + remainder + 1) * width_;
-    send_counts[world_size - 1] = (base_height + 1) * width_;
-
-    displs[0] = 0;
-    for (int proc = 1; proc < (world_size - 1); ++proc) {
-      displs[proc] = send_start;
-      send_start += base_height * width_;
-    }
-    displs[world_size - 1] = send_start;
-  }
-
-  boost::mpi::broadcast(world, send_counts.data(), send_counts.size(), 0);
-  boost::mpi::broadcast(world, displs.data(), displs.size(), 0);
-  boost::mpi::broadcast(world, input_.data(), input_.size(), 0);
-  local_input_.resize(send_counts[world.rank()]);
-  local_height_ = send_counts[world.rank()] / width_;
-  boost::mpi::scatterv(world, input_.data(), send_counts, displs, local_input_.data(), send_counts[world.rank()], 0);
   return true;
 }
 
 bool zolotareva_a_smoothing_image_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  std::vector<uint8_t> local_res(local_height_ * width_);
-  int radius = 1;
-  float sigma = 1.5f;
-  int kernel_size = 2 * radius + 1;
-  std::vector<float> horizontal_kernel(kernel_size);
-  if (world.rank() == 0) {
-    horizontal_kernel = zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::create_gaussian_kernel(radius, sigma);
+  int world_size = world.size();
+  int base_height = height_ / world_size;
+  if (world_size > 1) {
+    std::vector<int> displs(world_size);
+    boost::mpi::broadcast(world, size_, 0);
+    boost::mpi::broadcast(world, width_, 0);
+
+    if (world.rank() > 0) send_counts.resize(world_size);
+    {
+      input_.resize(size_);
+      displs.resize(world_size);
+    }
+
+    if (world.rank() == 0) {
+      int remainder = height_ % world_size;
+      int send_start = (base_height + remainder - 1) * width_;
+      send_counts.resize(world_size, (base_height + 2) * width_);
+      send_counts[0] = (base_height + remainder + 1) * width_;
+      send_counts[world_size - 1] = (base_height + 1) * width_;
+
+      displs[0] = 0;
+      for (int proc = 1; proc < (world_size - 1); ++proc) {
+        displs[proc] = send_start;
+        send_start += base_height * width_;
+      }
+      displs[world_size - 1] = send_start;
+    }
+
+    boost::mpi::broadcast(world, send_counts.data(), send_counts.size(), 0);
+    boost::mpi::broadcast(world, displs.data(), displs.size(), 0);
+    boost::mpi::broadcast(world, input_.data(), input_.size(), 0);
+    local_input_.resize(send_counts[world.rank()]);
+    local_height_ = send_counts[world.rank()] / width_;
+    boost::mpi::scatterv(world, input_.data(), send_counts, displs, local_input_.data(), send_counts[world.rank()], 0);
   }
-  if (world.size() == 1) {
+  std::vector<uint8_t> local_res(local_height_ * width_);
+
+  std::vector<float> horizontal_kernel(3);
+  if (world.rank() == 0) {
+    horizontal_kernel = zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::create_gaussian_kernel(1, 1.5f);
+  }
+  if (world_size == 1) {
     result_.resize(height_ * width_);
     std::vector<float>& vertical_kernel = horizontal_kernel;
     std::vector<float> temp(height_ * width_, 0.0f);
@@ -177,7 +182,7 @@ bool zolotareva_a_smoothing_image_mpi::TestMPITaskParallel::run() {
                                                                               result_);
     return true;
   }
-  boost::mpi::broadcast(world, horizontal_kernel.data(), kernel_size, 0);
+  boost::mpi::broadcast(world, horizontal_kernel.data(), 3, 0);
   std::vector<float>& vertical_kernel = horizontal_kernel;
   std::vector<float> temp(local_height_ * width_, 0.0f);
   zolotareva_a_smoothing_image_mpi::TestMPITaskSequential::convolve_rows(local_input_, local_height_, width_,
@@ -187,9 +192,8 @@ bool zolotareva_a_smoothing_image_mpi::TestMPITaskParallel::run() {
                                                                             vertical_kernel, local_res);
 
   if (world.rank() == 0) {
-    result_.resize(height_ * width_);
-    int base_height = height_ / world.size();
-    int send_start = (base_height + (height_ % world.size())) * width_;
+    result_.resize(size_);
+    int send_start = (base_height + (height_ % world_size)) * width_;
     std::copy(local_res.begin(), local_res.end() - width_, result_.begin());
     for (int proc = 1; proc < world.size(); ++proc) {
       std::vector<uint8_t> buffer((base_height + (proc == (world.size() - 1) ? 1 : 2)) * width_);
