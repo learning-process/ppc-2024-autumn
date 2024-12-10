@@ -5,7 +5,7 @@
 namespace kovalev_k_multidimensional_integrals_rectangle_method_seq {
 const double MY_PI = 3.14159265358979323846;
 
-double area(std::vector<double> &arguments) { return 1.0; }
+double area(std::vector<double> &arguments) { return 1.0 + arguments.at(0)*0.0; }
 
 double f1(std::vector<double> &arguments) { return arguments.at(0); }
 double f1cos(std::vector<double> &arguments) { return std::cos(arguments.at(0)); }
