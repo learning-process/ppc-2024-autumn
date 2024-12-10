@@ -6,6 +6,7 @@
 
 #include "mpi/chernova_n_topology_ring/include/ops_mpi.hpp"
 
+namespace chernova_n_topology_ring_mpi {
 std::vector<char> generateData(int k) {
   const std::string words[] = {"one", "two", "three"};
 
@@ -21,6 +22,7 @@ std::vector<char> generateData(int k) {
 
   return std::vector<char>(result.begin(), result.end());
 }
+}  // namespace chernova_n_topology_ring_mpi
 
 TEST(chernova_n_topology_ring_mpi, Test_empty_string) {
   boost::mpi::communicator world;
@@ -75,7 +77,7 @@ TEST(chernova_n_topology_ring_mpi, Test_ten_symbols) {
 
 TEST(chernova_n_topology_ring_mpi, Test_five_words) {
   boost::mpi::communicator world;
-  std::vector<char> in = generateData(5);
+  std::vector<char> in = chernova_n_topology_ring_mpi::generateData(5);
   const int N = in.size();
   std::vector<char> out_vec(N);
   std::vector<int> out_process;
@@ -105,7 +107,7 @@ TEST(chernova_n_topology_ring_mpi, Test_five_words) {
 
 TEST(chernova_n_topology_ring_mpi, Test_ten_words) {
   boost::mpi::communicator world;
-  std::vector<char> in = generateData(10);
+  std::vector<char> in = chernova_n_topology_ring_mpi::generateData(10);
   const int N = in.size();
   std::vector<char> out_vec(N);
   std::vector<int> out_process;
@@ -135,7 +137,7 @@ TEST(chernova_n_topology_ring_mpi, Test_ten_words) {
 
 TEST(chernova_n_topology_ring_mpi, Test_twenty_words) {
   boost::mpi::communicator world;
-  std::vector<char> in = generateData(20);
+  std::vector<char> in = chernova_n_topology_ring_mpi::generateData(20);
   const int N = in.size();
   std::vector<char> out_vec(N);
   std::vector<int> out_process;
@@ -165,7 +167,7 @@ TEST(chernova_n_topology_ring_mpi, Test_twenty_words) {
 
 TEST(chernova_n_topology_ring_mpi, Test_thirty_words) {
   boost::mpi::communicator world;
-  std::vector<char> in = generateData(30);
+  std::vector<char> in = chernova_n_topology_ring_mpi::generateData(30);
   const int N = in.size();
   std::vector<char> out_vec(N);
   std::vector<int> out_process;

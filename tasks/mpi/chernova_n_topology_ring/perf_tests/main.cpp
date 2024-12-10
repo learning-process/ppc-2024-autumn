@@ -6,6 +6,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/chernova_n_topology_ring/include/ops_mpi.hpp"
 
+namespace chernova_n_topology_ring_mpi {
 std::vector<char> generateDataPerf(int k) {
   const std::string words[] = {"one", "two", "three"};
   const int wordArraySize = sizeof(words) / sizeof(words[0]);
@@ -21,11 +22,12 @@ std::vector<char> generateDataPerf(int k) {
 
   return std::vector<char>(result.begin(), result.end());
 }
+}  // namespace chernova_n_topology_ring_mpi
 
 TEST(chernova_n_topology_ring_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   const int k = 100000;
-  std::vector<char> testDataParallel = generateDataPerf(k);
+  std::vector<char> testDataParallel = chernova_n_topology_ring_mpi::generateDataPerf(k);
   std::vector<char> in = testDataParallel;
   const int N = in.size();
   std::vector<char> out_vec(N);
@@ -66,7 +68,7 @@ TEST(chernova_n_topology_ring_mpi, test_pipeline_run) {
 TEST(chernova_n_topology_ring_mpi, test_task_run) {
   boost::mpi::communicator world;
   const int k = 100000;
-  std::vector<char> testDataParallel = generateDataPerf(k);
+  std::vector<char> testDataParallel = chernova_n_topology_ring_mpi::generateDataPerf(k);
   std::vector<char> in = testDataParallel;
   const int N = in.size();
   std::vector<char> out_vec(N);
