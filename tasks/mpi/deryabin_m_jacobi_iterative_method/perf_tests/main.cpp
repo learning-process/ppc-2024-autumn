@@ -26,7 +26,6 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_pipeline_run) {
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(
         reinterpret_cast<uint8_t*>(input_matrix_.data()));
-    taskDataPar->inputs_count.emplace_back(input_matrix_.size());
     taskDataPar->inputs.emplace_back(
         reinterpret_cast<uint8_t*>(input_right_vector_.data()));
     taskDataPar->inputs_count.emplace_back(input_right_vector_.size());
@@ -79,7 +78,6 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_task_run) {
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(
         reinterpret_cast<uint8_t*>(input_matrix_.data()));
-    taskDataPar->inputs_count.emplace_back(input_matrix_.size());
     taskDataPar->inputs.emplace_back(
         reinterpret_cast<uint8_t*>(input_right_vector_.data()));
     taskDataPar->inputs_count.emplace_back(input_right_vector_.size());
