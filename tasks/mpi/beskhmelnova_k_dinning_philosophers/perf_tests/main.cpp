@@ -5,7 +5,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/beskhmelnova_k_dinning_philosophers/include/dinning_philosophers.hpp"
 
-TEST(dining_philosophers_perf_test, test_pipeline_run) {
+TEST(beskhmelnova_k_dinning_philosophers_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
 
   int num_philosophers = world.size();
@@ -38,7 +38,7 @@ TEST(dining_philosophers_perf_test, test_pipeline_run) {
     ASSERT_FALSE(diningTask->validation());
 }
 
-TEST(dining_philosophers_perf_test, test_task_run) {
+TEST(beskhmelnova_k_dinning_philosophers_mpi, test_task_run) {
   boost::mpi::communicator world;
 
   int num_philosophers = world.size();
