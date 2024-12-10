@@ -9,7 +9,6 @@
 
 namespace gnitienko_k_func_mpi {
 
-const int INF = 1000000000;
 const int MIN_WEIGHT = -1;
 const int MAX_WEIGHT = 10;
 std::vector<int> generateGraph(const int V) {
