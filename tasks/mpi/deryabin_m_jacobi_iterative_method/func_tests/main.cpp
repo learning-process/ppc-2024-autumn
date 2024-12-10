@@ -233,11 +233,11 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, invalid_matrix_zeros_on_diagonal) {
 }
 
 TEST(deryabin_m_jacobi_iterative_method_mpi,
-     invalid_matrix_non_strict_diaganol_predominance) {
+     invalid_matrix_non_diaganol_predominance) {
   boost::mpi::communicator world;
   std::vector<double> input_matrix_{
-      15, 1,  2,  3,  4,  5,  6,  40, 7,  8,  9,   10, 11, 12, 65, 13, 14, 15,
-      16, 17, 18, 90, 19, 20, 21, 22, 23, 24, 115, 25, 26, 27, 28, 29, 30, 140};
+      1, 1,  2,  3,  4,  5,  6,  1, 7,  8,  9,   10, 11, 12, 1, 13, 14, 15,
+      16, 17, 18, 1, 19, 20, 21, 22, 23, 24, 1, 25, 26, 27, 28, 29, 30, 1};
   std::vector<double> input_right_vector_{85, 244, 442, 679, 955, 1270};
   std::vector<double> output_x_vector_ = std::vector<double>(6, 0);
   std::vector<std::vector<double>> out_x_vec(1, output_x_vector_);
