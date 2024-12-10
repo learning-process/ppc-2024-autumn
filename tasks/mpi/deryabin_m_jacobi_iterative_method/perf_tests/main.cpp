@@ -31,8 +31,7 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_pipeline_run) {
   }
 
   auto testMpiTaskParallel = std::make_shared<
-    deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel>(
-    taskDataPar);
+    deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -79,8 +78,7 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_task_run) {
   }
 
   auto testMpiTaskParallel = std::make_shared<
-    deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel>(
-    taskDataPar);
+    deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
