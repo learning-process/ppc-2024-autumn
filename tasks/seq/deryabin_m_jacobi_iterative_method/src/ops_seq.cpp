@@ -13,7 +13,7 @@ bool deryabin_m_jacobi_iterative_method_seq::JacobiIterativeTaskSequential::vali
   internal_order_test();
   input_matrix_ = reinterpret_cast<std::vector<double> *>(taskData->inputs[0])[0];
   unsigned short i = 0;
-  unsigned short n = (unsigned short)(sqrt(input_matrix_.size()));
+  auto n = (unsigned short)(sqrt(input_matrix_.size()));
   auto lambda = [&](double first, double second) { return (std::abs(first) + std::abs(second)); };
   while (i != n) {
     if (i == 0) {
@@ -44,13 +44,16 @@ bool deryabin_m_jacobi_iterative_method_seq::JacobiIterativeTaskSequential::vali
 
 bool deryabin_m_jacobi_iterative_method_seq::JacobiIterativeTaskSequential::run() {
   internal_order_test();
-  unsigned short Nmax = 10000, num_of_iterations = 0;
-  double epsilon = pow(10, -6), max_delta_x_i = 0;
+  unsigned short Nmax = 10000;
+  unsigned short num_of_iterations = 0;
+  double epsilon = pow(10, -6);
+  double max_delta_x_i = 0;
   std::vector<double> x_old;
-  unsigned short n = (unsigned short)(input_right_vector_.size());
+  auto n = (unsigned short)(input_right_vector_.size());
   do {
     x_old = output_x_vector_;
-    unsigned short i = 0, j;
+    unsigned short i = 0;
+    unsigned short j;
     double sum;
     while (i != n) {
       j = 0;
