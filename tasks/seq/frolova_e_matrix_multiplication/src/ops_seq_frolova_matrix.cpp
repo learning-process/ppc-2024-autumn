@@ -19,12 +19,13 @@ std::vector<int> frolova_e_matrix_multiplication_seq::Multiplication(size_t M, s
   for (size_t i = 0; i < M; ++i) {
     for (size_t j = 0; j < N; ++j) {
       C[i * N + j] = 0;
-      for (size_t k = 0; k < K; ++k) C[i * N + j] += A[i * K + k] * B[k * N + j];      
+      for (size_t k = 0; k < K; ++k) {
+        C[i * N + j] += A[i * K + k] * B[k * N + j];
+      }
     }
   }
   return C;
 }
-
 
 bool frolova_e_matrix_multiplication_seq::matrixMultiplication::pre_processing() {
   internal_order_test();
@@ -56,33 +57,39 @@ bool frolova_e_matrix_multiplication_seq::matrixMultiplication::validation() {
   if (taskData->inputs_count[0] != 2) {
     return false;
   }
+
   size_t line1 = static_cast<size_t>(value_1[0]);
-  size_t column1 = static_cast<size_t>(value_1[1]);  
+  size_t column1 = static_cast<size_t>(value_1[1]);
+
   int* value_2 = reinterpret_cast<int*>(taskData->inputs[1]);
   if (taskData->inputs_count[1] != 2) {
     return false;
   }
+
   size_t line2 = static_cast<size_t>(value_2[0]);
   size_t column2 = static_cast<size_t>(value_2[1]);
+
   if (value_1[1] != value_2[0]) {
     return false;
   }
+
   if (taskData->inputs_count[2] != line1 * column1) {
     return false;
   }
+
   if (taskData->inputs_count[3] != line2 * column2) {
     return false;
   }
+
   if (taskData->outputs_count[0] != line1 * column2) {
     return false;
   }
 
-  return true;           
+  return true;
 }
 
 bool frolova_e_matrix_multiplication_seq::matrixMultiplication::run() {
-  internal_order_test();  
-
+  internal_order_test();
   matrixC = Multiplication(lineA, columnB, columnA, matrixA, matrixB);
 
   return true;

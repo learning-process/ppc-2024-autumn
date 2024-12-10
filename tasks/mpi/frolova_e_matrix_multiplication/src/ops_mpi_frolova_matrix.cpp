@@ -134,9 +134,8 @@ bool frolova_e_matrix_multiplication_mpi::matrixMultiplicationParallel::pre_proc
 
 bool frolova_e_matrix_multiplication_mpi::matrixMultiplicationParallel::validation() {
   internal_order_test();
-  // Check count elements of output
 
-  if (world.rank() == 0) {  
+  if (world.rank() == 0) {
     int* value_1 = reinterpret_cast<int*>(taskData->inputs[0]);
     if (taskData->inputs_count[0] != 2) {
       return false;
@@ -164,28 +163,25 @@ bool frolova_e_matrix_multiplication_mpi::matrixMultiplicationParallel::validati
       return false;
     }
   }
-
   return true;
 }
 
 void frolova_e_matrix_multiplication_mpi::multiplyAndPlace(lineStruc& line, const columnStruc& column) {
-  if (line.res_lines.size() != static_cast<size_t>(line.numberOfLines * line.outgoingLineLength)) {    
+  if (line.res_lines.size() != static_cast<size_t>(line.numberOfLines * line.outgoingLineLength)) {
     line.res_lines.resize(line.numberOfLines * line.outgoingLineLength, 0);
   }
-
   for (size_t i = 0; i < line.numberOfLines; ++i) {
     for (size_t j = 0; j < column.numberOfColumns; ++j) {
       int sum = 0;
 
       for (size_t k = 0; k < line.enterLineslenght; ++k) {
         size_t lineIndex = i * line.enterLineslenght + k;
-
         size_t columnIndex = j * line.enterLineslenght + k;
 
         sum += line.local_lines[lineIndex] * column.local_columns[columnIndex];
       }
-      size_t globalCol = column.index_colums[j];
 
+      size_t globalCol = column.index_colums[j];
       size_t localPos = i * line.outgoingLineLength + globalCol;
 
       line.res_lines[localPos] = sum;

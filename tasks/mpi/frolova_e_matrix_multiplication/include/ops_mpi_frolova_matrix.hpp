@@ -60,8 +60,8 @@ struct lineStruc {
     ar & outgoingLineLength;
   }
 
- lineStruc()
-     : local_lines{}, index_lines{}, numberOfLines{0}, enterLineslenght{0}, res_lines{}, outgoingLineLength{0} {}
+  lineStruc()
+      : local_lines{}, index_lines{}, numberOfLines{0}, enterLineslenght{0}, res_lines{}, outgoingLineLength{0} {}
 
   lineStruc& operator=(const lineStruc& other) {
     if (this != &other) {

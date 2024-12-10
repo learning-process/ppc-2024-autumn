@@ -9,7 +9,6 @@
 
 TEST(frolova_e_matrix_multiplication_mpi, test_pipeline_run) {
   // creare data
-
   boost::mpi::communicator world;
   std::vector<int> values_1 = {100, 100};
   std::vector<int> values_2 = {100, 100};
