@@ -15,8 +15,7 @@ TEST(shuravina_o_contrast_perf, Test_Contrast_Enhancement_Large_Image) {
   if (world.rank() == 0) {
     auto taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-    // Generate large random input
-    const int input_size = 1000000;  // Large image size
+    const int input_size = 1000000;
     std::vector<uint8_t> input(input_size);
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -35,7 +34,6 @@ TEST(shuravina_o_contrast_perf, Test_Contrast_Enhancement_Large_Image) {
     shuravina_o_contrast::ContrastTaskParallel contrastTaskParallel(taskDataPar);
     ASSERT_TRUE(contrastTaskParallel.validation());
 
-    // Measure performance
     const auto t0 = std::chrono::high_resolution_clock::now();
     contrastTaskParallel.pre_processing();
     contrastTaskParallel.run();

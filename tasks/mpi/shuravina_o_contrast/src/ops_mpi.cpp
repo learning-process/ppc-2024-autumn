@@ -9,14 +9,12 @@ namespace shuravina_o_contrast {
 bool ContrastTaskParallel::pre_processing() {
   internal_order_test();
 
-  // Calculate delta only on rank 0
   unsigned int delta = 0;
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
   }
-  broadcast(world, delta, 0);  // Broadcast delta to all processes
+  broadcast(world, delta, 0);
 
-  // Distribute input data
   if (world.rank() == 0) {
     input_ = std::vector<uint8_t>(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<uint8_t*>(taskData->inputs[0]);
@@ -55,14 +53,12 @@ bool ContrastTaskParallel::validation() {
 bool ContrastTaskParallel::run() {
   internal_order_test();
 
-  // Calculate delta only on rank 0
   unsigned int delta = 0;
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
   }
-  broadcast(world, delta, 0);  // Broadcast delta to all processes
+  broadcast(world, delta, 0);
 
-  // Perform contrast enhancement
   if (max_val_ == min_val_) {
     std::fill(output_.begin(), output_.end(), 128);
   } else {
@@ -71,7 +67,6 @@ bool ContrastTaskParallel::run() {
     }
   }
 
-  // Gather output data
   if (world.rank() == 0) {
     auto* tmp_ptr = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
     std::copy(output_.begin(), output_.begin() + delta, tmp_ptr);

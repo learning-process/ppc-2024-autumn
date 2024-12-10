@@ -5,15 +5,25 @@
 #include <vector>
 
 #include "mpi/shuravina_o_contrast/include/ops_mpi.hpp"
+#include <random>
 
-TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Empty_Input) {
+TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Random_Image) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
   if (world.rank() == 0) {
     auto taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-    std::vector<uint8_t> input = {};
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distrib(0, 255);
+
+    const size_t image_size = 1000;
+    std::vector<uint8_t> input(image_size);
+    for (size_t i = 0; i < image_size; ++i) {
+      input[i] = static_cast<uint8_t>(distrib(gen));
+    }
+
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
     taskDataPar->inputs_count.emplace_back(input.size());
 
@@ -23,6 +33,16 @@ TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Empty_Input) {
 
     shuravina_o_contrast::ContrastTaskParallel contrastTaskParallel(taskDataPar);
     ASSERT_TRUE(contrastTaskParallel.validation());
+
+    contrastTaskParallel.run();
+
+    auto* output_ptr = reinterpret_cast<uint8_t*>(taskDataPar->outputs[0]);
+    for (size_t i = 0; i < image_size; ++i) {
+      uint8_t expected_value = static_cast<uint8_t>(
+          (input[i] - *std::min_element(input.begin(), input.end())) * 255.0 /
+          (*std::max_element(input.begin(), input.end()) - *std::min_element(input.begin(), input.end())));
+      ASSERT_EQ(output_ptr[i], expected_value);
+    }
   }
 }
 
