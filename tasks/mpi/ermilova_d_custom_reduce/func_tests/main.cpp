@@ -13,16 +13,17 @@ template <typename T>
 std::vector<T> getRandom(int size) {
   std::random_device dev;
   std::mt19937 gen(dev());
+  std::uniform_int_distribution<> distrib(-100, 100);
   std::vector<T> vec(size);
   for (int i = 0; i < size; i++) {
-    vec[i] = static_cast<T>(gen());
+    vec[i] = static_cast<T>(distrib(gen));
   }
   return vec;
 }
 
 template <typename T>
 void Test_reduce(MPI_Datatype datatype, MPI_Op op) {
-  int size = 2;
+  int size = 100;
   boost::mpi::communicator world;
   std::vector<T> input_;
   if (world.rank() == 0) {
@@ -33,9 +34,7 @@ void Test_reduce(MPI_Datatype datatype, MPI_Op op) {
 
   T local_result = T{};
   if (op == MPI_SUM) {
-    for (auto el : recv_data) {
-      local_result += el;
-    }
+    local_result = std::accumulate(recv_data.begin(), recv_data.end(), T{});
   } else if (op == MPI_MIN) {
     local_result = *std::min_element(recv_data.begin(), recv_data.end());
   } else if (op == MPI_MAX) {
@@ -55,66 +54,48 @@ void Test_reduce(MPI_Datatype datatype, MPI_Op op) {
   if (world.rank() == 0) {
     T ref = T{};
     if (op == MPI_SUM) {
-      for (auto el : input_) {
-        ref += el;
-      }
+      ref = std::accumulate(input_.begin(), input_.end(), T{});
     } else if (op == MPI_MIN) {
       ref = *std::min_element(input_.begin(), input_.end());
     } else if (op == MPI_MAX) {
       ref = *std::max_element(input_.begin(), input_.end());
     }
-    ASSERT_NEAR(global_result, ref, 0.0001);
+    ASSERT_EQ(static_cast<double>(global_result), static_cast<double>(ref));
   }
 }
 
-static std::vector<int> getRandomVector(int size, int upper_border, int lower_border) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  if (size <= 0) throw "Incorrect size";
-  std::vector<int> vec(size);
-  for (int i = 0; i < size; i++) {
-    vec[i] = lower_border + gen() % (upper_border - lower_border + 1);
-  }
-  return vec;
-}
-
-static std::vector<std::vector<int>> getRandomMatrix(int rows, int cols, int upper_border, int lower_border) {
+static std::vector<std::vector<int>> getRandomMatrix(int rows, int cols) {
   if (rows <= 0 || cols <= 0) throw "Incorrect size";
   std::vector<std::vector<int>> vec(rows);
   for (int i = 0; i < rows; i++) {
-    vec[i] = getRandomVector(cols, upper_border, lower_border);
+    vec[i] = getRandom<int>(cols);
   }
   return vec;
 }
 
 TEST(ermilova_d_custom_reduce_mpi, Can_create_vector) {
   const int size_test = 10;
-  const int upper_border_test = 100;
-  const int lower_border_test = -100;
-  EXPECT_NO_THROW(getRandomVector(size_test, upper_border_test, lower_border_test));
+
+  EXPECT_NO_THROW(getRandom<int>(size_test));
 }
 
 TEST(ermilova_d_custom_reduce_mpi, Cant_create_incorrect_size_vector) {
   const int size_test = -10;
-  const int upper_border_test = 100;
-  const int lower_border_test = -100;
-  EXPECT_ANY_THROW(getRandomVector(size_test, upper_border_test, lower_border_test));
+
+  EXPECT_ANY_THROW(getRandom<int>(size_test));
 }
 
 TEST(ermilova_d_custom_reduce_mpi, Can_create_matrix) {
   const int rows_test = 10;
   const int cols_test = 10;
-  const int upper_border_test = 100;
-  const int lower_border_test = -100;
-  EXPECT_NO_THROW(getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test));
+  EXPECT_NO_THROW(getRandomMatrix(rows_test, cols_test));
 }
 
 TEST(ermilova_d_custom_reduce_mpi, Cant_create_incorrect_size_matrix) {
   const int rows_test = -10;
   const int cols_test = 0;
-  const int upper_border_test = 100;
-  const int lower_border_test = -100;
-  EXPECT_ANY_THROW(getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test));
+
+  EXPECT_ANY_THROW(getRandomMatrix(rows_test, cols_test));
 }
 
 TEST(ermilova_d_custom_reduce_mpi, CustomReduce_int_sum) { Test_reduce<int>(MPI_INT, MPI_SUM); }
@@ -142,14 +123,12 @@ TEST(ermilova_d_custom_reduce_mpi, Matrix_1x1) {
 
   const int rows_test = 1;
   const int cols_test = 1;
-  const int upper_border_test = 100;
-  const int lower_border_test = -100;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
+    global_matrix = getRandomMatrix(rows_test, cols_test);
     for (unsigned int i = 0; i < global_matrix.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     }
@@ -182,13 +161,12 @@ TEST(ermilova_d_custom_reduce_mpi, Matrix_10x10) {
   std::vector<int32_t> global_min(1, INT_MAX);
   const int rows_test = 10;
   const int cols_test = 10;
-  const int upper_border_test = 100;
-  const int lower_border_test = -100;
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
+    global_matrix = getRandomMatrix(rows_test, cols_test);
     for (unsigned int i = 0; i < global_matrix.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     }
@@ -221,13 +199,12 @@ TEST(ermilova_d_custom_reduce_mpi, Matrix_100x100) {
   std::vector<int32_t> global_min(1, INT_MAX);
   const int rows_test = 100;
   const int cols_test = 100;
-  const int upper_border_test = 500;
-  const int lower_border_test = -500;
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
+    global_matrix = getRandomMatrix(rows_test, cols_test);
     for (unsigned int i = 0; i < global_matrix.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     }
@@ -260,13 +237,12 @@ TEST(ermilova_d_custom_reduce_mpi, Matrix_100x50) {
   std::vector<int32_t> global_min(1, INT_MAX);
   const int rows_test = 100;
   const int cols_test = 50;
-  const int upper_border_test = 1000;
-  const int lower_border_test = -1000;
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
+    global_matrix = getRandomMatrix(rows_test, cols_test);
     for (unsigned int i = 0; i < global_matrix.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     }
@@ -299,13 +275,12 @@ TEST(ermilova_d_custom_reduce_mpi, Matrix_50x100) {
   std::vector<int32_t> global_min(1, INT_MAX);
   const int rows_test = 50;
   const int cols_test = 100;
-  const int upper_border_test = 500;
-  const int lower_border_test = -500;
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
+    global_matrix = getRandomMatrix(rows_test, cols_test);
     for (unsigned int i = 0; i < global_matrix.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     }
@@ -338,13 +313,12 @@ TEST(ermilova_d_custom_reduce_mpi, Matrix_500x500) {
   std::vector<int32_t> global_min(1, INT_MAX);
   const int rows_test = 500;
   const int cols_test = 500;
-  const int upper_border_test = 500;
-  const int lower_border_test = -500;
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
+    global_matrix = getRandomMatrix(rows_test, cols_test);
     for (unsigned int i = 0; i < global_matrix.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     }
