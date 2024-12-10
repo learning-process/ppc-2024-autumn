@@ -25,7 +25,7 @@ bool deryabin_m_jacobi_iterative_method_seq::JacobiIterativeTaskSequential::vali
     if (i > 0 && i < n - 1) {
       if (std::abs(input_matrix_[i * (n + 1)]) <=
           std::accumulate(input_matrix_.begin() + i * n, input_matrix_.begin() + i * (n + 1) - 1, 0, lambda) +
-            std::accumulate(input_matrix_.begin() + i * (n + 1) + 1, input_matrix_.begin() + (i + 1) * n - 1, 0, 
+             std::accumulate(input_matrix_.begin() + i * (n + 1) + 1, input_matrix_.begin() + (i + 1) * n - 1, 0, 
                               lambda)) {
         return false;
       }
