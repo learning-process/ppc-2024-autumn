@@ -92,14 +92,14 @@ bool kovalchuk_a_horizontal_tape_scheme::TestMPITaskParallel::pre_processing() {
 
   std::vector<int> flattened_matrix;
   if (rank == 0) {
-    // Flatten the matrix 
+    // Flatten the matrix
     flattened_matrix.reserve(rows * columns);
     for (const auto& row : matrix_) {
       flattened_matrix.insert(flattened_matrix.end(), row.begin(), row.end());
     }
   }
 
-  // Allocate space 
+  // Allocate space
   std::vector<int> local_matrix(sendcounts[rank]);
 
   // Scatter the matrix data

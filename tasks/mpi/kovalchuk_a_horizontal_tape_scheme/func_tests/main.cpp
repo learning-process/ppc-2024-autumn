@@ -9,8 +9,6 @@
 
 using namespace kovalchuk_a_horizontal_tape_scheme;
 
-boost::mpi::environment env;
-
 std::vector<int> getRandomVectora(int sz, int min = -999, int max = 999);
 std::vector<std::vector<int>> getRandomMatrixa(int rows, int columns, int min = -999, int max = 999);
 

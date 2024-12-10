@@ -40,7 +40,7 @@ bool kovalchuk_a_max_of_vector_elements_seq::TestSequentialTask::run() {
       } else {
         local_res[i] = INT_MIN;
       }
-       }
+    }
     res_ = *std::max_element(local_res.begin(), local_res.end());
   } else {
     res_ = INT_MIN;

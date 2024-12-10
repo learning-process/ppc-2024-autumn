@@ -1,9 +1,9 @@
 #pragma once
 #include <gtest/gtest.h>
 
-#include <boost/serialization/vector.hpp>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <boost/serialization/vector.hpp>
 #include <memory>
 #include <numeric>
 #include <string>
@@ -47,4 +47,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  // namespace kovalchuk_a_matrix_vector_mult
+}  // namespace kovalchuk_a_horizontal_tape_scheme
