@@ -30,9 +30,7 @@ void kondratev_ya_radix_sort_batcher_merge_mpi::radixSortDouble(std::vector<doub
       count[(bits[i] >> shift) & full_byte_bit_mask]++;
     }
 
-    for (int32_t i = 1; i < byte_range; i++) {
-      count[i] += count[i - 1];
-    }
+    std::partial_sum(count.begin(), count.end(), count.begin());
 
     for (int32_t i = size - 1; i >= 0; i--) {
       int32_t bucket = (bits[i] >> shift) & full_byte_bit_mask;
@@ -117,13 +115,8 @@ bool kondratev_ya_radix_sort_batcher_merge_mpi::TestMPITaskParallel::run() {
   int32_t step = size_ / world.size();
   int32_t remain = size_ % world.size();
 
-  std::vector<int32_t> sizes;
-  int32_t recvSize;
-  for (int32_t i = 0; i < world.size(); i++) {
-    recvSize = step;
-    if (i < remain) recvSize++;
-    sizes.push_back(recvSize);
-  }
+  std::vector<int32_t> sizes(world.size(), step);
+  for (int32_t i = 0; i < remain; i++) sizes[i]++;
 
   local_input_.resize(sizes[world.rank()]);
   scatterv(world, input_, sizes, local_input_.data(), 0);

@@ -30,9 +30,7 @@ void kondratev_ya_radix_sort_batcher_merge_seq::radixSortDouble(std::vector<doub
       count[(bits[i] >> shift) & full_byte_bit_mask]++;
     }
 
-    for (int i = 1; i < byte_range; i++) {
-      count[i] += count[i - 1];
-    }
+    std::partial_sum(count.begin(), count.end(), count.begin());
 
     for (int i = size - 1; i >= 0; i--) {
       int bucket = (bits[i] >> shift) & full_byte_bit_mask;

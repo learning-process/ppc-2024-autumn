@@ -5,6 +5,7 @@
 #include <cmath>
 #include <cstdint>
 #include <iostream>
+#include <numeric>
 #include <vector>
 
 #include "core/task/include/task.hpp"
