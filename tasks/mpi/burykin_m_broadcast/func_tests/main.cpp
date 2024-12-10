@@ -79,9 +79,7 @@ TEST(burykin_m_broadcast_mpi, DataSize15_Source2) { burykin_m_broadcast_mpi::tes
 
 TEST(burykin_m_broadcast_mpi, DataSize20_Source0) { burykin_m_broadcast_mpi::test_template(20, 0, -500, 500); }
 
-TEST(burykin_m_broadcast_mpi, DataSize30_Source0) {
-  burykin_m_broadcast_mpi::test_template(30, 0, -1000, 1000);
-}
+TEST(burykin_m_broadcast_mpi, DataSize30_Source0) { burykin_m_broadcast_mpi::test_template(30, 0, -1000, 1000); }
 
 TEST(burykin_m_broadcast_mpi, DataSize40_Source1) { burykin_m_broadcast_mpi::test_template(40, 1, -100, 100); }
 
@@ -89,9 +87,7 @@ TEST(burykin_m_broadcast_mpi, DataSize50_Source2) { burykin_m_broadcast_mpi::tes
 
 TEST(burykin_m_broadcast_mpi, DataSize0_Source0) { burykin_m_broadcast_mpi::test_template(0, 0, -10, 10); }
 
-TEST(burykin_m_broadcast_mpi, DataSize1_Source0_ZeroRange) {
-  burykin_m_broadcast_mpi::test_template(1, 0, 0, 0);
-}
+TEST(burykin_m_broadcast_mpi, DataSize1_Source0_ZeroRange) { burykin_m_broadcast_mpi::test_template(1, 0, 0, 0); }
 
 TEST(burykin_m_broadcast_mpi, DataSize100_Source0) { burykin_m_broadcast_mpi::test_template(100, 0, -1, 1); }
 
