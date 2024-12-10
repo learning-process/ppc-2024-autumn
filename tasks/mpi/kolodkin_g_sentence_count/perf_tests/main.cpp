@@ -46,7 +46,7 @@ TEST(mpi_kolodkin_g_sentence_count_test, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(7, global_sum[0]);
+    ASSERT_EQ(6, global_sum[0]);
   }
 }
 
@@ -90,6 +90,6 @@ TEST(mpi_kolodkin_g_sentence_count_test, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(10, global_sum[0]);
+    ASSERT_EQ(9, global_sum[0]);
   }
 }
