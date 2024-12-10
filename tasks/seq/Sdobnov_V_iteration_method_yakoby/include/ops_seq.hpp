@@ -6,7 +6,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace Sdobnov_iteration_method_yakoby {
+namespace Sdobnov_iteration_method_yakoby_seq {
 
 std::vector<double> iteration_method_yakoby(int n, const std::vector<double>& A, const std::vector<double>& b,
                                             double tolerance = 1e-6, int maxIterations = 1000);
@@ -27,4 +27,4 @@ class IterationMethodYakobySeq : public ppc::core::Task {
   double tolerance = 1e-6;
   int maxIterations = 100;
 };
-}  // namespace Sdobnov_iteration_method_yakoby
+}  // namespace Sdobnov_iteration_method_yakoby_seq
