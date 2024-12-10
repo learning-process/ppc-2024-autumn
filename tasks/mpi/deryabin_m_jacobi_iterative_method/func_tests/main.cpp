@@ -5,13 +5,18 @@
 
 #include "mpi/deryabin_m_jacobi_iterative_method/include/ops_mpi.hpp"
 
-TEST(deryabin_m_jacobi_iterative_method_mpi, test_simple_matrix) {
+TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_valid_matrix) {
   boost::mpi::communicator world;
-  std::vector<double> input_matrix_{1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
-                                    0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0,
-                                    0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1};
-  std::vector<double> input_right_vector_{1, 2, 3, 4, 5, 6};
-  std::vector<double> output_x_vector_ = std::vector<double>(6, 0);
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<> distrib(1, 10);
+  std::uniform_real_distribution<> distribut(91, 100);
+  std::vector<double> input_matrix_(100, distrib(gen));
+  std::vector<double> input_right_vector_(10, distrib(gen));
+  fot (unsigned short i = 0; i < 10; i++) {
+    input_matrix_[i * 11] = distribut(gen);
+  }
+  std::vector<double> output_x_vector_ = std::vector<double>(10, 0);
   std::vector<std::vector<double>> out_x_vec(1, output_x_vector_);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar =
@@ -60,13 +65,24 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_simple_matrix) {
   }
 }
 
-TEST(deryabin_m_jacobi_iterative_method_mpi, test_triangular_matrix) {
+TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_3X_diagonal_matrix) {
   boost::mpi::communicator world;
-  std::vector<double> input_matrix_{
-      16, 1, 2, 3,  4,  5,  0, 31, 6, 7, 8,  9,  0, 0, 34, 10, 11, 12,
-      0,  0, 0, 28, 13, 14, 0, 0,  0, 0, 16, 15, 0, 0, 0,  0,  0,  17};
-  std::vector<double> input_right_vector_{86, 202, 269, 261, 170, 102};
-  std::vector<double> output_x_vector_ = std::vector<double>(6, 0);
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<> distrib(1, 10);
+  std::uniform_real_distribution<> distribut(91, 100);
+  std::vector<double> input_matrix_(100, 0);
+  std::vector<double> input_right_vector_(10, distrib(gen));
+  fot (unsigned short i = 0; i < 10; i++) {
+    input_matrix_[i * 11] = distribut(gen);
+    if (i != 0) {
+      input_matrix_[i * 11 - 1] = distrib(gen);
+    }
+    if (i != 9) {
+      input_matrix_[i * 11 + 1] = distrib(gen);
+    }
+  }
+  std::vector<double> output_x_vector_ = std::vector<double>(10, 0);
   std::vector<std::vector<double>> out_x_vec(1, output_x_vector_);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar =
@@ -115,15 +131,17 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_triangular_matrix) {
   }
 }
 
-TEST(deryabin_m_jacobi_iterative_method_mpi,
-     test_diagonal_elements_are_much_larger_than_non_diagonal) {
+TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_1X_diagonal_matrix) {
   boost::mpi::communicator world;
-  std::vector<double> input_matrix_{999, 1,   2,  3,   4,  5,   6,  999, 7,
-                                    8,   9,   10, 11,  12, 999, 13, 14,  15,
-                                    16,  17,  18, 999, 19, 20,  21, 22,  23,
-                                    24,  999, 25, 26,  27, 28,  29, 30,  999};
-  std::vector<double> input_right_vector_{1069, 2162, 3244, 4315, 5375, 6424};
-  std::vector<double> output_x_vector_ = std::vector<double>(6, 0);
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<> distribut(1, 100);
+  std::vector<double> input_matrix_(100, 0);
+  std::vector<double> input_right_vector_(10, distribut(gen));
+  fot (unsigned short i = 0; i < 10; i++) {
+    input_matrix_[i * 11] = distribut(gen);
+  }
+  std::vector<double> output_x_vector_ = std::vector<double>(10, 0);
   std::vector<std::vector<double>> out_x_vec(1, output_x_vector_);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar =
@@ -172,14 +190,19 @@ TEST(deryabin_m_jacobi_iterative_method_mpi,
   }
 }
 
-TEST(deryabin_m_jacobi_iterative_method_mpi, invalid_matrix_zeros_on_diagonal) {
+TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_diagonal_elements_are_much_larger_than_non_diagonal) {
   boost::mpi::communicator world;
-  std::vector<double> input_matrix_{
-      0,  1,  2,  3, 4,  5,  6,  0,  7,  8,  9, 10, 11, 12, 0,  13, 14, 15,
-      16, 17, 18, 0, 19, 20, 21, 22, 23, 24, 0, 25, 26, 27, 28, 29, 30, 0};
-  std::vector<double> input_right_vector_{70, 164, 247, 319, 380, 430};
-  std::vector<double> output_x_vector_ = std::vector<double>(6, 0);
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<> distrib(1, 10);
+  std::vector<double> input_matrix_(100, distrib(gen));
+  std::vector<double> input_right_vector_(10, distrib(gen));
+  fot (unsigned short i = 0; i < 10; i++) {
+    input_matrix_[i * 11] = 100 * distrib(gen);
+  }
+  std::vector<double> output_x_vector_ = std::vector<double>(10, 0);
   std::vector<std::vector<double>> out_x_vec(1, output_x_vector_);
+
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar =
       std::make_shared<ppc::core::TaskData>();
@@ -227,14 +250,17 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, invalid_matrix_zeros_on_diagonal) {
   }
 }
 
-TEST(deryabin_m_jacobi_iterative_method_mpi,
-     invalid_matrix_non_diaganol_predominance) {
+TEST(deryabin_m_jacobi_iterative_method_mpi, random_invalid_matrix_zeros_on_diagonal) {
   boost::mpi::communicator world;
-  std::vector<double> input_matrix_{
-      1, 1,  2,  3,  4,  5,  6,  1, 7,  8,  9,   10, 11, 12, 1, 13, 14, 15,
-      16, 17, 18, 1, 19, 20, 21, 22, 23, 24, 1, 25, 26, 27, 28, 29, 30, 1};
-  std::vector<double> input_right_vector_{85, 244, 442, 679, 955, 1270};
-  std::vector<double> output_x_vector_ = std::vector<double>(6, 0);
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<> distrib(1, 10);
+  std::vector<double> input_matrix_(100, distrib(gen));
+  std::vector<double> input_right_vector_(10, distrib(gen));
+  fot (unsigned short i = 0; i < 10; i++) {
+    input_matrix_[i * 11] = 0;
+  }
+  std::vector<double> output_x_vector_ = std::vector<double>(10, 0);
   std::vector<std::vector<double>> out_x_vec(1, output_x_vector_);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar =
