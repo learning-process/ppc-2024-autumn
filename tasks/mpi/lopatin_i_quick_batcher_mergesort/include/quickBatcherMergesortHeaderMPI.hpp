@@ -38,7 +38,7 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   std::vector<int> inputArray_;
   std::vector<int> resultArray_;
-  
+ 
   std::vector<int> localArray;
 
   int sizeArray;

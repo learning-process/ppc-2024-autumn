@@ -103,10 +103,10 @@ bool TestMPITaskParallel::run() {
   internal_order_test();
 
   boost::mpi::broadcast(world, sizeArray, 0);
-  
+
   int chunkSize = sizeArray / world.size();
   int remainder = sizeArray % world.size();
-  
+
   int startPosition = world.rank() * chunkSize;
   int actualChunkSize = chunkSize;
 
@@ -145,7 +145,7 @@ bool TestMPITaskParallel::run() {
 
   for (int oddEvenStep = 0; oddEvenStep < world.size(); oddEvenStep++) {
     int border = world.size();
-    if (oddEvenStep % 2 == 0) { // odd
+    if (oddEvenStep % 2 == 0) {  // odd
       if (world.size() % 2 != 0) {
         border -= 1;
       }
@@ -170,7 +170,7 @@ bool TestMPITaskParallel::run() {
         localArray = mergedArrays;
         localArray.erase(localArray.begin(), localArray.begin() + localArray.size() / 2);
       }
-    } else { // even
+    } else {  // even
       if (world.size() % 2 == 0) {
         border -= 1;
       }
