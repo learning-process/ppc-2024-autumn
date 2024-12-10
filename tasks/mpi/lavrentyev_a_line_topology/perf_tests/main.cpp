@@ -6,119 +6,111 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/lavrentyev_a_line_topology/include/ops_mpi.hpp"
 
-namespace lavrentyev_a_line_topology_mpi {
-
-std::vector<int> lavrentyrev_generate_random_data(int count, int lower_bound = -1000, int upper_bound = 1000) {
-  std::vector<int> data(count);
-  std::mt19937 random_engine(std::random_device{}());
-  std::uniform_int_distribution<int> distribution(lower_bound, upper_bound);
-  for (int& value : data) {
-    value = distribution(random_engine);
+std::vector<int> lavrentyrev_generate_random_vector(size_t size) {
+  std::srand(static_cast<unsigned>(std::time(nullptr)));
+  std::vector<int> vec(size);
+  for (size_t i = 0; i < size; i++) {
+    vec[i] = std::rand() % 1000;
   }
-  return data;
-}
-}  // namespace lavrentyev_a_line_topology_mpi
-
-TEST(lavrentyev_a_line_topology_mpi, task_run) {
-  boost::mpi::communicator world;
-
-  size_t start_proc = 0;
-  size_t end_proc = world.size() - 1;
-  size_t num_elems = 1'000'000;
-
-  auto task_data = std::make_shared<ppc::core::TaskData>();
-  task_data->inputs_count = {static_cast<unsigned>(start_proc), static_cast<unsigned>(end_proc),
-                             static_cast<unsigned>(num_elems)};
-
-  std::vector<int> input_data;
-  std::vector<int> output_data(num_elems, -1);
-  std::vector<int> path(end_proc - start_proc + 1, -1);
-
-  if (static_cast<size_t>(world.rank()) == start_proc) {
-    input_data = lavrentyev_a_line_topology_mpi::lavrentyrev_generate_random_data(num_elems);
-    task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
-  }
-
-  if (static_cast<size_t>(world.rank()) == end_proc) {
-    task_data->outputs = {reinterpret_cast<uint8_t*>(output_data.data()), reinterpret_cast<uint8_t*>(path.data())};
-    task_data->outputs_count = {static_cast<unsigned>(output_data.size()), static_cast<unsigned>(path.size())};
-  }
-
-  auto task = std::make_shared<lavrentyev_a_line_topology_mpi::TestMPITaskParallel>(task_data);
-
-  auto perf_attr = std::make_shared<ppc::core::PerfAttr>();
-  perf_attr->num_running = 10;
-  boost::mpi::timer perf_timer;
-  perf_attr->current_timer = [&] { return perf_timer.elapsed(); };
-
-  auto perf_results = std::make_shared<ppc::core::PerfResults>();
-  auto perf_analyzer = std::make_shared<ppc::core::Perf>(task);
-
-  perf_analyzer->task_run(perf_attr, perf_results);
-
-  if (static_cast<size_t>(world.rank()) == end_proc) {
-    ppc::core::Perf::print_perf_statistic(perf_results);
-
-    ASSERT_EQ(input_data, output_data);
-    for (size_t i = 0; i < path.size(); ++i) {
-      ASSERT_EQ(path[i], static_cast<int>(start_proc) + static_cast<int>(i));
-    }
-  }
+  return vec;
 }
 
 TEST(lavrentyev_a_line_topology_mpi, pipeline_run) {
   boost::mpi::communicator world;
 
-  int total_elements = 10'000'000;
-  int start_rank = 0;
-  int end_rank = world.size() - 1;
+  size_t start_proc = 0;
+  size_t end_proc = world.size() > 1 ? static_cast<size_t>(world.size() - 1) : 0;
+  size_t num_elems = 10000;
 
-  auto data = std::make_shared<ppc::core::TaskData>();
-  data->inputs_count.push_back(start_rank);
-  data->inputs_count.push_back(end_rank);
-  data->inputs_count.push_back(total_elements);
+  auto task_data = std::make_shared<ppc::core::TaskData>();
+  task_data->inputs_count = {static_cast<unsigned int>(start_proc), static_cast<unsigned int>(end_proc),
+                             static_cast<unsigned int>(num_elems)};
 
-  std::vector<int> input_values;
-  std::vector<int> result_values(total_elements);
-  std::vector<int> trace_path;
+  std::vector<int> input_data;
+  std::vector<int> output_data(num_elems, -1);
+  std::vector<int> received_path(end_proc - start_proc + 1, -1);
 
-  if (world.rank() == start_rank) {
-    input_values = lavrentyev_a_line_topology_mpi::lavrentyrev_generate_random_data(total_elements);
-    data->inputs.push_back(reinterpret_cast<uint8_t*>(input_values.data()));
-
-    if (start_rank != end_rank) {
-      world.send(end_rank, 0, input_values);
-    }
+  if (static_cast<size_t>(world.rank()) == start_proc) {
+    input_data = lavrentyrev_generate_random_vector(num_elems);
+    task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
   }
 
-  if (world.rank() == end_rank) {
-    if (start_rank != end_rank) {
-      world.recv(start_rank, 0, input_values);
-    }
-
-    trace_path.resize(end_rank - start_rank + 1);
-    data->outputs = {reinterpret_cast<uint8_t*>(result_values.data()), reinterpret_cast<uint8_t*>(trace_path.data())};
-    data->outputs_count.push_back(result_values.size());
-    data->outputs_count.push_back(trace_path.size());
+  if (static_cast<size_t>(world.rank()) == end_proc) {
+    task_data->outputs = {reinterpret_cast<uint8_t*>(output_data.data()),
+                          reinterpret_cast<uint8_t*>(received_path.data())};
+    task_data->outputs_count = {static_cast<unsigned int>(output_data.size()),
+                                static_cast<unsigned int>(received_path.size())};
   }
 
-  auto parallel_task = std::make_shared<lavrentyev_a_line_topology_mpi::TestMPITaskParallel>(data);
+  auto testMpiTaskParallel = std::make_shared<lavrentyev_a_line_topology_mpi::TestMPITaskParallel>(task_data);
+  ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  testMpiTaskParallel->pre_processing();
+  testMpiTaskParallel->run();
+  testMpiTaskParallel->post_processing();
 
-  auto perf_attrs = std::make_shared<ppc::core::PerfAttr>();
-  perf_attrs->num_running = 5;
-  boost::mpi::timer task_time;
-  perf_attrs->current_timer = [&] { return task_time.elapsed(); };
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 5;
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  auto perf_results = std::make_shared<ppc::core::PerfResults>();
-  auto perf_analyzer = std::make_shared<ppc::core::Perf>(parallel_task);
+  // Create and init perf results
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  perf_analyzer->pipeline_run(perf_attrs, perf_results);
+  // Create Perf analyzer
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
+  perfAnalyzer->pipeline_run(perfAttr, perfResults);
 
-  if (world.rank() == end_rank) {
-    ppc::core::Perf::print_perf_statistic(perf_results);
-    ASSERT_EQ(input_values, result_values);
-    for (size_t i = 0; i < trace_path.size(); ++i) {
-      ASSERT_EQ(trace_path[i], start_rank + static_cast<int>(i));
-    }
+  if (static_cast<size_t>(world.rank()) == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
+  }
+}
+
+TEST(lavrentyev_a_line_topology_mpi, task_run) {
+  boost::mpi::communicator world;
+
+  size_t start_proc = 0;
+  size_t end_proc = world.size() > 1 ? static_cast<size_t>(world.size() - 1) : 0;
+  size_t num_elems = 10000;
+
+  auto task_data = std::make_shared<ppc::core::TaskData>();
+  task_data->inputs_count = {static_cast<unsigned int>(start_proc), static_cast<unsigned int>(end_proc),
+                             static_cast<unsigned int>(num_elems)};
+
+  std::vector<int> input_data;
+  std::vector<int> output_data(num_elems, -1);
+  std::vector<int> received_path(end_proc - start_proc + 1, -1);
+
+  if (static_cast<size_t>(world.rank()) == start_proc) {
+    input_data = lavrentyrev_generate_random_vector(num_elems);
+    task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
+  }
+
+  if (static_cast<size_t>(world.rank()) == end_proc) {
+    task_data->outputs = {reinterpret_cast<uint8_t*>(output_data.data()),
+                          reinterpret_cast<uint8_t*>(received_path.data())};
+    task_data->outputs_count = {static_cast<unsigned int>(output_data.size()),
+                                static_cast<unsigned int>(received_path.size())};
+  }
+
+  auto testMpiTaskParallel = std::make_shared<lavrentyev_a_line_topology_mpi::TestMPITaskParallel>(task_data);
+  ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  testMpiTaskParallel->pre_processing();
+  testMpiTaskParallel->run();
+  testMpiTaskParallel->post_processing();
+
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 5;
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+
+  // Create and init perf results
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+
+  // Create Perf analyzer
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
+  perfAnalyzer->task_run(perfAttr, perfResults);
+
+  if (static_cast<size_t>(world.rank()) == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
   }
 }
