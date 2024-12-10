@@ -19,7 +19,6 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_simple_matrix) {
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(
         reinterpret_cast<uint8_t*>(input_matrix_.data()));
-    taskDataPar->inputs_count.emplace_back(input_matrix_.size());
     taskDataPar->inputs.emplace_back(
         reinterpret_cast<uint8_t*>(input_right_vector_.data()));
     taskDataPar->inputs_count.emplace_back(input_right_vector_.size());
@@ -75,7 +74,6 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_triangular_matrix) {
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(
         reinterpret_cast<uint8_t*>(input_matrix_.data()));
-    taskDataPar->inputs_count.emplace_back(input_matrix_.size());
     taskDataPar->inputs.emplace_back(
         reinterpret_cast<uint8_t*>(input_right_vector_.data()));
     taskDataPar->inputs_count.emplace_back(input_right_vector_.size());
@@ -133,7 +131,6 @@ TEST(deryabin_m_jacobi_iterative_method_mpi,
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(
         reinterpret_cast<uint8_t*>(input_matrix_.data()));
-    taskDataPar->inputs_count.emplace_back(input_matrix_.size());
     taskDataPar->inputs.emplace_back(
         reinterpret_cast<uint8_t*>(input_right_vector_.data()));
     taskDataPar->inputs_count.emplace_back(input_right_vector_.size());
@@ -189,7 +186,6 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, invalid_matrix_zeros_on_diagonal) {
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(
         reinterpret_cast<uint8_t*>(input_matrix_.data()));
-    taskDataPar->inputs_count.emplace_back(input_matrix_.size());
     taskDataPar->inputs.emplace_back(
         reinterpret_cast<uint8_t*>(input_right_vector_.data()));
     taskDataPar->inputs_count.emplace_back(input_right_vector_.size());
@@ -246,7 +242,6 @@ TEST(deryabin_m_jacobi_iterative_method_mpi,
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(
         reinterpret_cast<uint8_t*>(input_matrix_.data()));
-    taskDataPar->inputs_count.emplace_back(input_matrix_.size());
     taskDataPar->inputs.emplace_back(
         reinterpret_cast<uint8_t*>(input_right_vector_.data()));
     taskDataPar->inputs_count.emplace_back(input_right_vector_.size());
