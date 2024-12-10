@@ -181,7 +181,7 @@ TEST(gnitienko_k_bellman_ford_algorithm, test_random_graph) {
   }
 
   for (int i = 0; i < V; i++)
-    if (expected_res[i] == INT_MAX - 1000) expected_res[i] = NULL;
+    if (expected_res[i] == INT_MAX - 1000) expected_res[i] = 0;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(graph.data()));

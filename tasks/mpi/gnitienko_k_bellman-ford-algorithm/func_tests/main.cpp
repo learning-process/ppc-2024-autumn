@@ -245,7 +245,7 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_random_graph) {
   }
 
   for (int i = 0; i < V; i++)
-    if (expected_res[i] == INT_MAX - 1000) expected_res[i] = NULL;
+    if (expected_res[i] == INT_MAX - 1000) expected_res[i] = 0;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
