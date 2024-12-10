@@ -3,7 +3,6 @@
 #include <boost/mpi/communicator.hpp>
 
 #include "mpi/beskhmelnova_k_dinning_philosophers/include/dinning_philosophers.hpp"
-#include "mpi/beskhmelnova_k_dinning_philosophers/src/dinning_philosophers.cpp"
 
 TEST(beskhmelnova_k_dinning_philosophers_mpi, Test_with_world_size_philosophers) {
   boost::mpi::communicator world;
@@ -57,7 +56,7 @@ TEST(beskhmelnova_k_dinning_philosophers_mpi, Test_with_1_philosopher) {
 TEST(beskhmelnova_k_dinning_philosophers_mpi, Test_with_negative_size_philosophers) {
   boost::mpi::communicator world;
 
-  int num_philosophers = -3;
+  int num_philosophers = -1;
 
   auto taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs_count.push_back(num_philosophers);

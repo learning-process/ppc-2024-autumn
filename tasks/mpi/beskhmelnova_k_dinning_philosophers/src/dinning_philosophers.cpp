@@ -16,7 +16,7 @@ bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::pre_pr
 template <typename DataType>
 bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::validation() {
   int num_philosophers = taskData->inputs_count[0];
-  return world.size() >= 2 && num_philosophers >= 2 && num_philosophers > 0;
+  return world.size() >= 2 && num_philosophers >= 2;
 }
 
 template <typename DataType>
@@ -44,12 +44,15 @@ bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::post_p
 template <typename DataType>
 bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::check_deadlock() noexcept {
   int local_state = (state == HUNGRY) ? 1 : 0;
-  std::vector<int> all_states(world.size(), 0);
-  boost::mpi::gather(world, local_state, all_states, 0);
+  std::vector<State> all_states(world.size(), THINKING);
+  std::vector<int> gathered_states(world.size(), 0);
+  boost::mpi::gather(world, local_state, gathered_states, 0);
+  if (world.rank() == 0)
+    for (std::size_t i = 0; i < gathered_states.size(); ++i) all_states[i] = static_cast<State>(gathered_states[i]);
   bool deadlock = true;
   if (world.rank() == 0) {
     for (std::size_t i = 0; i < all_states.size(); ++i) {
-      if (all_states[i] == 0) {
+      if (all_states[i] == THINKING) {
         deadlock = false;
         break;
       }
@@ -130,3 +133,5 @@ void beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::releas
     world.recv(right_neighbor, 0, ack);
   }
 }
+
+template class beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<int>;

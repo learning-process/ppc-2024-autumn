@@ -4,7 +4,6 @@
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/beskhmelnova_k_dinning_philosophers/include/dinning_philosophers.hpp"
-#include "mpi/beskhmelnova_k_dinning_philosophers/src/dinning_philosophers.cpp"
 
 TEST(dining_philosophers_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
