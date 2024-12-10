@@ -29,29 +29,29 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskSequential::
   };
   while (i != n) {
     if (i == 0) {
-      if (std::abs(matrix_[0]) <=
-          std::accumulate(matrix_.begin() + 1,
-                          matrix_.begin() + n - 1, 0,
+      if (std::abs(input_matrix_[0]) <=
+          std::accumulate(input_matrix_.begin() + 1,
+                          input_matrix_.begin() + n - 1, 0,
                           lambda)) {
         return false;
       }
     }
-    if (i > 0 && i < sqrt(matrix_.size()) - 1) {
-      if (std::abs(matrix_[i * (n + 1)]) <=
-          std::accumulate(matrix_.begin() + i * n,
-                          matrix_.begin() + i * (n + 1) - 1,
+    if (i > 0 && i < sqrt(input_matrix_.size()) - 1) {
+      if (std::abs(input_matrix_[i * (n + 1)]) <=
+          std::accumulate(input_matrix_.begin() + i * n,
+                          input_matrix_.begin() + i * (n + 1) - 1,
                           0, lambda) +
               std::accumulate(
-                  matrix_.begin() + i * (n + 1) + 1,
-                  matrix_.begin() + (i + 1) * n - 1, 0,
+                  input_matrix_.begin() + i * (n + 1) + 1,
+                  input_matrix_.begin() + (i + 1) * n - 1, 0,
                   lambda)) {
         return false;
       }
     }
     if (i == n - 1) {
-      if (std::abs(matrix_[i * (n + 1)]) <=
-          std::accumulate(matrix_.begin() + i * n,
-                          matrix_.end() - 1, 0, lambda)) {
+      if (std::abs(input_matrix_[i * (n + 1)]) <=
+          std::accumulate(input_matrix_.begin() + i * n,
+                          input_matrix_.end() - 1, 0, lambda)) {
         return false;
       }
     }
