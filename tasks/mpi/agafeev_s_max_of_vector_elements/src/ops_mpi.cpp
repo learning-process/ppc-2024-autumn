@@ -3,15 +3,6 @@
 namespace agafeev_s_max_of_vector_elements_mpi {
 
 template <typename T>
-T get_MaxValue(std::vector<T> matrix) {
-  T max_result = std::numeric_limits<T>::min();
-  for (unsigned int i = 0; i < matrix.size(); ++i)
-    if (max_result < matrix[i]) max_result = matrix[i];
-
-  return max_result;
-}
-
-template <typename T>
 bool MaxMatrixSeq<T>::pre_processing() {
   internal_order_test();
 
@@ -106,7 +97,7 @@ bool MaxMatrixMpi<T>::run() {
     boost::mpi::scatterv(world, local_vector.data(), lv_size, 0);
   }
 
-  T res = agafeev_s_max_of_vector_elements_mpi::get_MaxValue<T>(local_vector);
+  T res = get_MaxValue<T>(local_vector);
   boost::mpi::reduce(world, res, maxres_, boost::mpi::maximum<T>(), 0);
 
   return true;
