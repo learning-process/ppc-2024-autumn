@@ -1,30 +1,37 @@
 #include <gtest/gtest.h>
 
-#include <vector>
-
 #include "boost/mpi/communicator.hpp"
 #include "boost/mpi/timer.hpp"
 #include "core/perf/include/perf.hpp"
 #include "mpi/agafeev_s_max_of_vector_elements/include/ops_mpi.hpp"
+
+template <typename T>
+std::vector<T> create_RandomMatrix(int row_size, int column_size) {
+  auto rand_gen = std::mt19937(std::time(nullptr));
+  std::vector<T> matrix(row_size * column_size);
+  for (unsigned int i = 0; i < matrix.size(); ++i) matrix[i] = rand_gen() % 100;
+
+  return matrix;
+}
 
 TEST(agafeev_s_max_of_vector_elements, test_pipeline_run) {
   const int n = 1000;
   const int m = 1000;
   boost::mpi::communicator world;
   // Credate Data
-  std::vector<int> in_matrix = agafeev_s_max_of_vector_elements_mpi::create_RandomMatrix<int>(n, m);
+  std::vector<int> in_matrix(n * m);
   std::vector<int> out(1, 99);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
+    in_matrix = create_RandomMatrix<int>(n, m);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_matrix.data()));
     taskData->inputs_count.emplace_back(in_matrix.size());
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     taskData->outputs_count.emplace_back(out.size());
   }
 
-  agafeev_s_max_of_vector_elements_mpi::MaxMatrixMpi<int> testTask(taskData);
   auto testTaskMpi = std::make_shared<agafeev_s_max_of_vector_elements_mpi::MaxMatrixMpi<int>>(taskData);
 
   // Create Perf attributes
@@ -51,19 +58,19 @@ TEST(agafeev_s_max_of_vector_elements, test_task_run) {
   const int m = 1000;
   boost::mpi::communicator world;
   // Credate Data
-  std::vector<int> in_matrix = agafeev_s_max_of_vector_elements_mpi::create_RandomMatrix<int>(n, m);
+  std::vector<int> in_matrix(n * m);
   std::vector<int> out(1, 99);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
+    in_matrix = create_RandomMatrix<int>(n, m);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_matrix.data()));
     taskData->inputs_count.emplace_back(in_matrix.size());
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     taskData->outputs_count.emplace_back(out.size());
   }
 
-  agafeev_s_max_of_vector_elements_mpi::MaxMatrixMpi<int> testTask(taskData);
   auto testTaskMpi = std::make_shared<agafeev_s_max_of_vector_elements_mpi::MaxMatrixMpi<int>>(taskData);
 
   // Create Perf attributes

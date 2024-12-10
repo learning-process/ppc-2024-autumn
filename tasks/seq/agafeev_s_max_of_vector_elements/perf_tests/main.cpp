@@ -1,16 +1,23 @@
 #include <gtest/gtest.h>
 
-#include <vector>
-
 #include "core/perf/include/perf.hpp"
 #include "seq/agafeev_s_max_of_vector_elements/include/ops_seq.hpp"
+
+template <typename T>
+std::vector<T> create_RandomMatrix(int row_size, int column_size) {
+  auto rand_gen = std::mt19937(1337);
+  std::vector<T> matrix(row_size * column_size);
+  for (unsigned int i = 0; i < matrix.size(); i++) matrix[i] = rand_gen() % 100;
+
+  return matrix;
+}
 
 TEST(agafeev_s_max_of_vector_elements, test_pipeline_run) {
   const int n = 1000;
   const int m = 1000;
 
   // Credate Data
-  std::vector<int> in_matrix = agafeev_s_max_of_vector_elements_seq::create_RandomMatrix<int>(n, m);
+  std::vector<int> in_matrix = create_RandomMatrix<int>(n, m);
   std::vector<int> out(1, 99);
 
   // Create TaskData
@@ -20,7 +27,6 @@ TEST(agafeev_s_max_of_vector_elements, test_pipeline_run) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskData->outputs_count.emplace_back(out.size());
 
-  agafeev_s_max_of_vector_elements_seq::MaxMatrixSequental<int> testTask(taskData);
   auto testTaskSequental = std::make_shared<agafeev_s_max_of_vector_elements_seq::MaxMatrixSequental<int>>(taskData);
 
   // Create Perf attributes
@@ -50,7 +56,7 @@ TEST(agafeev_s_max_of_vector_elements, test_task_run) {
   const int m = 1000;
 
   // Credate Data
-  std::vector<int> in_matrix = agafeev_s_max_of_vector_elements_seq::create_RandomMatrix<int>(n, m);
+  std::vector<int> in_matrix = create_RandomMatrix<int>(n, m);
   std::vector<int> out(1, 99);
 
   // Create TaskData
@@ -60,7 +66,6 @@ TEST(agafeev_s_max_of_vector_elements, test_task_run) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskData->outputs_count.emplace_back(out.size());
 
-  agafeev_s_max_of_vector_elements_seq::MaxMatrixSequental<int> testTask(taskData);
   auto testTaskSequental = std::make_shared<agafeev_s_max_of_vector_elements_seq::MaxMatrixSequental<int>>(taskData);
 
   // Create Perf attributes

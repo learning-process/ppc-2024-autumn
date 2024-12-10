@@ -1,9 +1,7 @@
 #include <gtest/gtest.h>
 
-// #include "core/task/func_tests/test_task.hpp"
-// #include "core/task/include/task.hpp"
 #include "seq/agafeev_s_max_of_vector_elements/include/ops_seq.hpp"
-/*
+
 template <typename T>
 std::vector<T> create_RandomMatrix(int row_size, int column_size) {
   auto rand_gen = std::mt19937(1337);
@@ -12,7 +10,6 @@ std::vector<T> create_RandomMatrix(int row_size, int column_size) {
 
   return matrix;
 }
-*/
 
 TEST(agafeev_s_max_of_vector_elements_seq, find_max_in_3x3_matrix) {
   const int rows = 3;
@@ -21,7 +18,7 @@ TEST(agafeev_s_max_of_vector_elements_seq, find_max_in_3x3_matrix) {
 
   // Create data
 
-  std::vector<int> in_matrix = agafeev_s_max_of_vector_elements_seq::create_RandomMatrix<int>(rows, columns);
+  std::vector<int> in_matrix = create_RandomMatrix<int>(rows, columns);
   std::vector<int> out(1, 0);
   const int right_answer = std::numeric_limits<int>::max();
   int index = rand_gen() % (rows * columns);
@@ -51,7 +48,7 @@ TEST(agafeev_s_max_of_vector_elements_seq, find_max_in_10x10_matrix) {
 
   // Create data
 
-  std::vector<int> in_matrix = agafeev_s_max_of_vector_elements_seq::create_RandomMatrix<int>(rows, columns);
+  std::vector<int> in_matrix = create_RandomMatrix<int>(rows, columns);
   std::vector<int> out(1, 0);
   const int right_answer = std::numeric_limits<int>::max();
   int index = rand_gen() % (rows * columns);

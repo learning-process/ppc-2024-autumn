@@ -7,28 +7,24 @@
 #include <random>
 #include <string>
 #include <vector>
+// Will delete
+#include <iostream>
 
 #include "core/task/include/task.hpp"
 
 namespace agafeev_s_max_of_vector_elements_mpi {
 
-template <typename T>
-std::vector<T> create_RandomMatrix(int row_size, int column_size) {
-  auto rand_gen = std::mt19937(std::time(nullptr));
-  std::vector<T> matrix(row_size * column_size);
-  for (unsigned int i = 0; i < matrix.size(); i++) matrix[i] = rand_gen() % 100;
-
-  return matrix;
-}
-
-template <typename T>
+/*template <typename T>
 T get_MaxValue(std::vector<T> matrix) {
   T max_result = std::numeric_limits<T>::min();
-  for (unsigned int i = 0; i < matrix.size(); i++)
+  for (unsigned int i = 0; i < matrix.size(); ++i)
     if (max_result < matrix[i]) max_result = matrix[i];
 
   return max_result;
-}
+}*/
+
+template <typename T>
+T get_MaxValue(std::vector<T> matrix);
 
 template <typename T>
 class MaxMatrixMpi : public ppc::core::Task {
@@ -45,7 +41,7 @@ class MaxMatrixMpi : public ppc::core::Task {
   std::vector<T> input_;
   std::vector<T> local_vector;
   T maxres_{};
-  int lv_size;
+  int lv_size{};
 };
 
 template <typename T>
@@ -59,7 +55,7 @@ class MaxMatrixSeq : public ppc::core::Task {
 
  private:
   std::vector<T> input_;
-  T maxres_;
+  T maxres_{};
 };
 
 }  // namespace agafeev_s_max_of_vector_elements_mpi
