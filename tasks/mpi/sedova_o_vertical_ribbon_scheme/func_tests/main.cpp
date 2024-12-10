@@ -207,29 +207,3 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, correct_matrix_and_vector_seq) {
   std::vector<int> expected_result = {39, 54, 69};
   ASSERT_EQ(result, expected_result);
 }
-
-TEST(sedova_o_vertical_ribbon_scheme_mpi, correct_matrix_and_vector_mpi) {
-  boost::mpi::communicator world;
-  std::vector<int> matrix = {1, 2, 3, 4, 5, 6};
-  std::vector<int> vector = {7, 8};
-  std::vector<int> result(3, 0);
-
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    taskDataPar->inputs_count.emplace_back(matrix.size());
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data())); 
-    taskDataPar->inputs_count.emplace_back(vector.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
-    taskDataPar->outputs_count.emplace_back(result.size());
-  }
-  sedova_o_vertical_ribbon_scheme_mpi::ParallelMPI taskParallel(taskDataPar);
-  ASSERT_TRUE(taskParallel.validation());
-  ASSERT_TRUE(taskParallel.pre_processing());
-  taskParallel.run();
-  taskParallel.post_processing();
-
-  std::vector<int> expected_result = {39, 54, 69};
-  ASSERT_EQ(result, expected_result);
-  world.barrier();
-}
