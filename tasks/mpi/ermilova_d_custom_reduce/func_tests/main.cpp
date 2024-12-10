@@ -10,49 +10,35 @@
 #include "mpi/ermilova_d_custom_reduce/include/ops_mpi.hpp"
 
 template <typename T>
-std::vector<T> getRandom(int size, T min, T max) {
+std::vector<T> getRandom(int size) {
   std::random_device dev;
   std::mt19937 gen(dev());
-
-  constexpr bool is__integral = std::is_integral<T>::value;
-  constexpr bool is__floating_point = std::is_floating_point<T>::value;
-
-  if constexpr (is__integral) {
-    std::uniform_int_distribution<T> dis(min, max);
-    std::vector<T> vec(size);
-    for (int i = 0; i < size; ++i) {
-      vec[i] = dis(gen);
-    }
-    return vec;
-  } else if constexpr (is__floating_point) {
-    std::uniform_real_distribution<T> dis(min, max);
-    std::vector<T> vec(size);
-    for (int i = 0; i < size; ++i) {
-      vec[i] = dis(gen);
-    }
-    return vec;
-  } else {
-    throw std::invalid_argument("Unsupported type");
+  std::vector<T> vec(size);
+  for (int i = 0; i < size; i++) {
+    vec[i] = static_cast<T>(gen());
   }
+  return vec;
 }
 
 template <typename T>
 void Test_reduce(MPI_Datatype datatype, MPI_Op op) {
-  int size = 100;
-  T min_ = static_cast<T>(-1000);
-  T max_ = static_cast<T>(1000);
-
+  int size = 50;
   boost::mpi::communicator world;
   std::vector<T> input_;
   if (world.rank() == 0) {
-    input_ = getRandom<T>(size * world.size(), min_, max_);
+    input_ = getRandom<T>(size * world.size());
+    for (int i = 0; i < input_.size(); i++) {
+      std::cout << input_[i] << '\n';
+    }
   }
   std::vector<T> recv_data(size);
   boost::mpi::scatter(world, input_.data(), recv_data.data(), size, 0);
 
   T local_result = T{};
   if (op == MPI_SUM) {
-    local_result = std::accumulate(recv_data.begin(), recv_data.end(), T{});
+    for (auto el : recv_data) {
+      local_result += el;
+    }
   } else if (op == MPI_MIN) {
     local_result = *std::min_element(recv_data.begin(), recv_data.end());
   } else if (op == MPI_MAX) {
@@ -63,10 +49,8 @@ void Test_reduce(MPI_Datatype datatype, MPI_Op op) {
     global_result = T(0);
   } else if (op == MPI_MIN) {
     global_result = std::numeric_limits<T>::max();
-  } else if (op == MPI_MAX) {
-    global_result = std::numeric_limits<T>::min();
   } else {
-    throw "Unsupported operation\n";
+    global_result = std::numeric_limits<T>::min();
   }
 
   ermilova_d_custom_reduce_mpi::CustomReduce(&local_result, &global_result, 1, datatype, op, 0, MPI_COMM_WORLD);
@@ -74,13 +58,15 @@ void Test_reduce(MPI_Datatype datatype, MPI_Op op) {
   if (world.rank() == 0) {
     T ref = T{};
     if (op == MPI_SUM) {
-      ref = std::accumulate(input_.begin(), input_.end(), T{});
+      for (auto el : input_) {
+        ref += el;
+      }
     } else if (op == MPI_MIN) {
       ref = *std::min_element(input_.begin(), input_.end());
     } else if (op == MPI_MAX) {
       ref = *std::max_element(input_.begin(), input_.end());
     }
-    ASSERT_NEAR(global_result, ref, 0.01);
+    ASSERT_NEAR(global_result, ref, 0.0001);
   }
 }
 
