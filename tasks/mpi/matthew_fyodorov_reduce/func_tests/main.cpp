@@ -188,6 +188,20 @@ TEST(matthew_fyodorov_reduce_mpi, TestMPITaskParallel_Sum_Random_Numbers) {
 
     if (rank == 0) {
       int expected_sum = std::accumulate(input.begin(), input.end(), 0);
+
+      std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
+      taskDataSeq->inputs_count.emplace_back(input.size());
+      taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+      taskDataSeq->outputs_count.emplace_back(output.size());
+
+      // Create Task
+      matthew_fyodorov_reduce_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "+");
+      ASSERT_EQ(testMpiTaskSequential.validation(), true);
+      testMpiTaskSequential.pre_processing();
+      testMpiTaskSequential.run();
+      testMpiTaskSequential.post_processing();
+
       ASSERT_EQ(output[0], expected_sum);
     }
   }

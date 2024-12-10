@@ -17,7 +17,8 @@ namespace matthew_fyodorov_reduce_custom_mpi {
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
+      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;

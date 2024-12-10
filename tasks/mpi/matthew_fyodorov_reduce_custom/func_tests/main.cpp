@@ -163,14 +163,14 @@ TEST(matthew_fyodorov_reduce_custom_mpi, TestMPITaskParallel_Sum_Zero_Numbers) {
   }
 }
 
-TEST(matthew_fyodorov_reduce_custom_mpi, TestMPITaskParallel_Sum_Random_Numbers) {
+TEST(matthew_fyodorov_reduce_mpi, TestMPITaskParallel_Sum_Random_Numbers) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
   int rank = world.rank();
   int size = world.size();
 
   if (size > 1) {
-    std::vector<int> input = getRandomVectors(5);
+    std::vector<int> input = getRandomVectora(5);
     std::vector<int> output(1);
     std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
 
@@ -180,7 +180,7 @@ TEST(matthew_fyodorov_reduce_custom_mpi, TestMPITaskParallel_Sum_Random_Numbers)
     taskData->outputs_count.emplace_back(1);
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
 
-    matthew_fyodorov_reduce_custom_mpi ::TestMPITaskParallel task(taskData);
+    matthew_fyodorov_reduce_mpi::TestMPITaskParallel task(taskData);
     ASSERT_TRUE(task.validation());
     ASSERT_TRUE(task.pre_processing());
     ASSERT_TRUE(task.run());
@@ -188,6 +188,20 @@ TEST(matthew_fyodorov_reduce_custom_mpi, TestMPITaskParallel_Sum_Random_Numbers)
 
     if (rank == 0) {
       int expected_sum = std::accumulate(input.begin(), input.end(), 0);
+
+      std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
+      taskDataSeq->inputs_count.emplace_back(input.size());
+      taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+      taskDataSeq->outputs_count.emplace_back(output.size());
+
+      // Create Task
+      matthew_fyodorov_reduce_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "+");
+      ASSERT_EQ(testMpiTaskSequential.validation(), true);
+      testMpiTaskSequential.pre_processing();
+      testMpiTaskSequential.run();
+      testMpiTaskSequential.post_processing();
+
       ASSERT_EQ(output[0], expected_sum);
     }
   }
