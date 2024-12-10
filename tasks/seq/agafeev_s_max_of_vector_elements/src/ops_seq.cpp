@@ -17,7 +17,7 @@ template <typename T>
 bool MaxMatrixSequental<T>::validation() {
   internal_order_test();
 
-  return taskData->outputs_count[0] == 1;
+  return (taskData->outputs_count[0] == 1 && (taskData->inputs_count[0] > 0));
 }
 
 template <typename T>

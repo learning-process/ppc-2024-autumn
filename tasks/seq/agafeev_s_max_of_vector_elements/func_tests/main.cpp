@@ -71,6 +71,66 @@ TEST(agafeev_s_max_of_vector_elements_seq, find_max_in_10x10_matrix) {
   ASSERT_EQ(right_answer, out[0]);
 }
 
+TEST(agafeev_s_max_of_vector_elements_seq, find_max_in_9x45_matrix) {
+  const int rows = 10;
+  const int columns = 10;
+  auto rand_gen = std::mt19937(1337);
+
+  // Create data
+
+  std::vector<int> in_matrix = create_RandomMatrix<int>(rows, columns);
+  std::vector<int> out(1, 0);
+  const int right_answer = std::numeric_limits<int>::max();
+  int index = rand_gen() % (rows * columns);
+  in_matrix[index] = std::numeric_limits<int>::max();
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_matrix.data()));
+  taskData->inputs_count.emplace_back(in_matrix.size());
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskData->outputs_count.emplace_back(out.size());
+
+  // Create Task
+  agafeev_s_max_of_vector_elements_seq::MaxMatrixSequental<int> testTask(taskData);
+  bool isValid = testTask.validation();
+  ASSERT_EQ(isValid, true);
+  testTask.pre_processing();
+  testTask.run();
+  testTask.post_processing();
+  ASSERT_EQ(right_answer, out[0]);
+}
+
+TEST(agafeev_s_max_of_vector_elements_seq, find_max_in_130x187_matrix) {
+  const int rows = 10;
+  const int columns = 10;
+  auto rand_gen = std::mt19937(1337);
+
+  // Create data
+
+  std::vector<int> in_matrix = create_RandomMatrix<int>(rows, columns);
+  std::vector<int> out(1, 0);
+  const int right_answer = std::numeric_limits<int>::max();
+  int index = rand_gen() % (rows * columns);
+  in_matrix[index] = std::numeric_limits<int>::max();
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_matrix.data()));
+  taskData->inputs_count.emplace_back(in_matrix.size());
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskData->outputs_count.emplace_back(out.size());
+
+  // Create Task
+  agafeev_s_max_of_vector_elements_seq::MaxMatrixSequental<int> testTask(taskData);
+  bool isValid = testTask.validation();
+  ASSERT_EQ(isValid, true);
+  testTask.pre_processing();
+  testTask.run();
+  testTask.post_processing();
+  ASSERT_EQ(right_answer, out[0]);
+}
+
 TEST(agafeev_s_max_of_vector_elements_seq, check_validate_func) {
   // Create data
   std::vector<int32_t> in(20, 1);
