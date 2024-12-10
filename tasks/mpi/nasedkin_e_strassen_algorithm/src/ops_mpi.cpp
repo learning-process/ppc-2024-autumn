@@ -57,7 +57,7 @@ namespace nasedkin_e_strassen_algorithm {
             local_matrix_c = strassen(local_matrix_a, local_matrix_b, rows_per_proc);
         }
 
-        boost::mpi::barrier(this->world);
+        this->world.barrier();
         return true;
     }
 
@@ -77,7 +77,7 @@ namespace nasedkin_e_strassen_algorithm {
             std::copy(global_matrix_c.begin(), global_matrix_c.end(), output);
         }
 
-        boost::mpi::barrier(this->world);
+        this->world.barrier();
         return true;
     }
 
