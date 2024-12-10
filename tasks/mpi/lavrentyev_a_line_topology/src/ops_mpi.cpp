@@ -54,42 +54,39 @@ bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::validation() {
 bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-  int start_proc = static_cast<int>(taskData->inputs_count[0]);
-  int end_proc = static_cast<int>(taskData->inputs_count[1]);
+  int start_proc = taskData->inputs_count[0];
+  int end_proc = taskData->inputs_count[1];
 
   if (start_proc == end_proc) {
     return true;
   }
 
-  int rank = world.rank();
-  if (rank < start_proc || rank > end_proc) {
+  if (world.rank() < start_proc || world.rank() > end_proc) {
     return true;
   }
 
+  boost::mpi::request send_data_req, send_path_req;
+  boost::mpi::request recv_data_req, recv_path_req;
   std::vector<boost::mpi::request> requests;
 
-  if (rank == start_proc) {
-    requests.push_back(world.isend(rank + 1, 0, reinterpret_cast<uint8_t*>(data.data()),
-                                   data.size() * sizeof(int)));
-
-    requests.push_back(world.isend(rank + 1, 1, reinterpret_cast<uint8_t*>(path.data()),
-                                   path.size() * sizeof(int)));
+  if (world.rank() == start_proc) {
+    send_data_req = world.isend(world.rank() + 1, 0, &data[0], data.size());
+    requests.push_back(send_data_req);
+    send_path_req = world.isend(world.rank() + 1, 1, &path[0], path.size());
+    requests.push_back(send_path_req);
   } else {
-    boost::mpi::request recv_data_req = world.irecv(rank - 1, 0, reinterpret_cast<uint8_t*>(data.data()),
-                                                    data.size() * sizeof(int));
-    boost::mpi::request recv_path_req = world.irecv(rank - 1, 1, reinterpret_cast<uint8_t*>(path.data()),
-                                                    path.size() * sizeof(int));
+    recv_data_req = world.irecv(world.rank() - 1, 0, &data[0], data.size());
+    requests.push_back(recv_data_req);
+    recv_path_req = world.irecv(world.rank() - 1, 1, &path[0], path.size());
+    requests.push_back(recv_path_req);
 
-    recv_data_req.wait();
-    recv_path_req.wait();
+    path.push_back(world.rank());
 
-    path.push_back(rank);
-
-    if (rank < end_proc) {
-      requests.push_back(world.isend(rank + 1, 0, reinterpret_cast<uint8_t*>(data.data()),
-                                     data.size() * sizeof(int)));
-      requests.push_back(world.isend(rank + 1, 1, reinterpret_cast<uint8_t*>(path.data()),
-                                     path.size() * sizeof(int)));
+    if (world.rank() < end_proc) {
+      send_data_req = world.isend(world.rank() + 1, 0, &data[0], data.size());
+      requests.push_back(send_data_req);
+      send_path_req = world.isend(world.rank() + 1, 1, &path[0], path.size());
+      requests.push_back(send_path_req);
     }
   }
 
