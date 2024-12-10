@@ -187,9 +187,10 @@ bool somov_i_horizontal_scheme::MatrixVectorTask::pre_processing() {
 bool somov_i_horizontal_scheme::MatrixVectorTask::run() {
   internal_order_test();
   for (int32_t i = 0; i < rowCount_; i++) {
+    int32_t rowOff = i * colCount_;
     int32_t sum = 0;
     for (int32_t j = 0; j < colCount_; j++) {
-      sum += matrix_[i * colCount_ + j] * vector_[j];
+      sum += matrix_[rowOff + j] * vector_[j];
     }
     result_[i] = sum;
   }
