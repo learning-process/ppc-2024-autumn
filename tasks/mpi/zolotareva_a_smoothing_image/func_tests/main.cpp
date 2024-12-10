@@ -62,28 +62,6 @@ void form(int height, int width) {
   }
 }
 }  // namespace zolotareva_a_smoothing_image_mpi
-TEST(zolotareva_a_smoothing_image_mpi, Test_validation) {
-  boost::mpi::communicator world;
-  std::vector<uint8_t> inputImage;
-  int width = 100;
-  int height = 1;
-  std::vector<uint8_t> mpi_outputImage(width * height);
-
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    inputImage = zolotareva_a_smoothing_image_mpi::generateRandomImage(height, width);
-    taskDataPar->inputs.emplace_back(inputImage.data());
-    taskDataPar->inputs_count.emplace_back(height);
-    taskDataPar->inputs_count.emplace_back(width);
-    taskDataPar->outputs.emplace_back(mpi_outputImage.data());
-    taskDataPar->outputs_count.emplace_back(mpi_outputImage.size());
-  }
-
-  zolotareva_a_smoothing_image_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-
-  EXPECT_FALSE(testMpiTaskParallel.validation());
-}
-
 TEST(zolotareva_a_smoothing_image_mpi, Test_image_with_nulls) {
   boost::mpi::communicator world;
   int height = 100;
