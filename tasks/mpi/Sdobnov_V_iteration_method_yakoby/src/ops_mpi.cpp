@@ -224,14 +224,9 @@ bool Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar::run() {
   l_free_members.resize(l_free_members_part_size);
   l_res.resize(l_free_members_part_size);
 
-  if (world.rank() == 0) {
-    boost::mpi::scatterv(world, matrix_.data(), mat_part_sizes, mat_part_offsets, l_matrix.data(), l_mat_part_size, 0);
-    boost::mpi::scatterv(world, free_members_.data(), free_members_part_sizes, free_members_part_offsets,
-                         l_free_members.data(), l_free_members_part_size, 0);
-  } else {
-    boost::mpi::scatterv(world, l_matrix.data(), l_mat_part_size, 0);
-    boost::mpi::scatterv(world, l_free_members.data(), l_free_members_part_size, 0);
-  }
+  boost::mpi::scatterv(world, matrix_.data(), mat_part_sizes, mat_part_offsets, l_matrix.data(), l_mat_part_size, 0);
+  boost::mpi::scatterv(world, free_members_.data(), free_members_part_sizes, free_members_part_offsets,
+                       l_free_members.data(), l_free_members_part_size, 0);
 
   for (int iter = 0; iter < maxIterations; iter++) {
     if (world.rank() == 0) {
@@ -248,12 +243,10 @@ bool Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar::run() {
       }
       l_res[i] = (l_free_members[i] - sum) / l_matrix[i * size_ + free_members_part_offsets[world.rank()] + i];
     }
-    if (world.rank() == 0) {
-      boost::mpi::gatherv(world, l_res.data(), free_members_part_sizes[world.rank()], res_.data(),
-                          free_members_part_sizes, free_members_part_offsets, 0);
-    } else {
-      boost::mpi::gatherv(world, l_res.data(), free_members_part_sizes[world.rank()], 0);
-    }
+
+    boost::mpi::gatherv(world, l_res.data(), free_members_part_sizes[world.rank()], res_.data(),
+                        free_members_part_sizes, free_members_part_offsets, 0);
+    
 
     bool stop_flag = false;
 
