@@ -23,9 +23,7 @@ TEST(deryabin_m_jacobi_iterative_method_seq, test_pipeline_run) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in_matrix.data()));
-  taskDataSeq->inputs_count.emplace_back(in_matrix.size());
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in_right_part.data()));
-  taskDataSeq->inputs_count.emplace_back(in_right_part.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_x_vec.data()));
   taskDataSeq->outputs_count.emplace_back(out_x_vec.size());
 
@@ -69,9 +67,7 @@ TEST(deryabin_m_jacobi_iterative_method_seq, test_task_run) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in_matrix.data()));
-  taskDataSeq->inputs_count.emplace_back(in_matrix.size());
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in_right_part.data()));
-  taskDataSeq->inputs_count.emplace_back(in_right_part.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_x_vec.data()));
   taskDataSeq->outputs_count.emplace_back(out_x_vec.size());
 
