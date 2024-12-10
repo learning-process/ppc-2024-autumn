@@ -21,6 +21,8 @@ void fillVector(std::vector<int>& vector, int min_val, int max_val) {
 void test_template(int data_size, int source_worker = 0, int min_val = -100, int max_val = 100) {
   boost::mpi::communicator world;
 
+  if (world.size() <= source_worker) GTEST_SKIP();
+
   std::vector<int> recv_vorker(data_size);
   std::vector<int> result_vector(data_size);
   int global_max;
