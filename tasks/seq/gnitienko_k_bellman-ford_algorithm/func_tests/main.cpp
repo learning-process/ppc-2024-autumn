@@ -8,8 +8,8 @@
 
 namespace gnitienko_k_generate_func {
 std::vector<int> generateGraph(int V, int E) {
-  static std::random_device dev;
-  static std::mt19937 gen(dev());
+  std::random_device dev;
+  std::mt19937 gen(dev());
   std::vector<int> graph(V * V, 0);
   std::set<std::pair<int, int>> edges;
 
