@@ -10,7 +10,13 @@
 namespace agafeev_s_max_of_vector_elements_seq {
 
 template <typename T>
-T get_MaxValue(std::vector<T> matrix);
+T get_MaxValue(std::vector<T> matrix) {
+  T max_result = std::numeric_limits<T>::min();
+  for (unsigned int i = 0; i < matrix.size(); ++i)
+    if (max_result < matrix[i]) max_result = matrix[i];
+
+  return max_result;
+}
 
 template <typename T>
 class MaxMatrixSequental : public ppc::core::Task {
