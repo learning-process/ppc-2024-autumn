@@ -69,4 +69,4 @@ bool TestTaskSequential::post_processing() {
   return true;
 }
 
-}  // namespace lopatin_i_quick_batcher_mergesort
+}  // namespace lopatin_i_quick_batcher_mergesort_seq

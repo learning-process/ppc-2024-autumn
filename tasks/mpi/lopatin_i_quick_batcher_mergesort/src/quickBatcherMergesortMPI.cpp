@@ -143,18 +143,13 @@ bool TestMPITaskParallel::run() {
 
   quicksort(localArray, 0, localArray.size() - 1);
 
-  //for (int i = 0; i < localArray.size(); i++) {
-  //  std::cout << "proc " << world.rank() << "i = " << i << ' ' << localArray[i] << std::endl;
-  //}
-  //std::cout << std::endl;
-
   for (int oddEvenStep = 0; oddEvenStep < world.size(); oddEvenStep++) {
-    int highMergeBorder = world.size();
+    int border = world.size();
     if (oddEvenStep % 2 == 0) { // odd
       if (world.size() % 2 != 0) {
-        highMergeBorder -= 1;
+        border -= 1;
       }
-      if (world.rank() >= highMergeBorder) {
+      if (world.rank() >= border) {
         continue;
       }
 
@@ -177,9 +172,9 @@ bool TestMPITaskParallel::run() {
       }
     } else { // even
       if (world.size() % 2 == 0) {
-        highMergeBorder -= 1;
+        border -= 1;
       }
-      if (world.rank() < 1 || world.rank() >= highMergeBorder) {
+      if (world.rank() < 1 || world.rank() >= border) {
         continue;
       }
 
