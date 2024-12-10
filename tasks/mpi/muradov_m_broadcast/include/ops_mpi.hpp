@@ -4,6 +4,8 @@
 
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <boost/serialization/array.hpp>
+#include <boost/serialization/vector.hpp>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -12,6 +14,7 @@ namespace muradov_m_broadcast_mpi {
 
 template <typename T>
 void bcast(const boost::mpi::communicator &comm, T &value, int root) {
+  comm.barrier();
   int rank = comm.rank();
   int size = comm.size();
 
@@ -34,9 +37,9 @@ void bcast(const boost::mpi::communicator &comm, T &value, int root) {
   }
 }
 
-class BroadcastParallelMPI : public ppc::core::Task {
+class MyBroadcastParallelMPI : public ppc::core::Task {
  public:
-  explicit BroadcastParallelMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit MyBroadcastParallelMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -46,8 +49,21 @@ class BroadcastParallelMPI : public ppc::core::Task {
   int source_worker;
   std::vector<int> A;
   int global_sum_A;
-  std::vector<int> B;
-  int global_sum_B;
+  boost::mpi::communicator world;
+};
+
+class MpiBroadcastParallelMPI : public ppc::core::Task {
+ public:
+  explicit MpiBroadcastParallelMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  bool pre_processing() override;
+  bool validation() override;
+  bool run() override;
+  bool post_processing() override;
+
+ private:
+  int source_worker;
+  std::vector<int> A;
+  int global_sum_A;
   boost::mpi::communicator world;
 };
 
