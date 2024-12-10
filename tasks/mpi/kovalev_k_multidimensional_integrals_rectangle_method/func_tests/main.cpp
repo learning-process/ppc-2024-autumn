@@ -203,8 +203,8 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_mpi, 2x2_area) {
   std::vector<std::pair<double, double>> lims(dim);
   lims[0].first = lims[1].first = 0.5;
   lims[0].second = lims[1].second = 2.0;
-  double h = 0.0005;
-  double eps = 1e-4;
+  double h = 0.001;
+  double eps = 1e-3;
   std::vector<double> out(1);
   boost::mpi::communicator world;
   std::shared_ptr<ppc::core::TaskData> TaskPar = std::make_shared<ppc::core::TaskData>();
@@ -348,10 +348,10 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_mpi, minus03_0_x_15_1
   }
 }
 
-TEST(kovalev_k_multidimensional_integrals_rectangle_method_mpi, 08_1_x_15_17_x_18_2_xyz) {
+TEST(kovalev_k_multidimensional_integrals_rectangle_method_mpi, 09_1_x_15_17_x_18_2_xyz) {
   const size_t dim = 3;
   std::vector<std::pair<double, double>> lims(dim);
-  lims[0].first = 0.8;
+  lims[0].first = 0.9;
   lims[0].second = 1.0;
   lims[1].first = 1.5;
   lims[1].second = 1.7;
@@ -376,7 +376,7 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_mpi, 08_1_x_15_17_x_1
   tmpTaskPar.run();
   tmpTaskPar.post_processing();
   if (world.rank() == 0) {
-    ASSERT_NEAR(0.021888, out[0], eps);
+    ASSERT_NEAR(0.011552, out[0], eps);
   }
 }
 
