@@ -41,7 +41,7 @@ TEST(Sdobnov_V_iteration_method_yakoby_seq, test_pipeline_run) {
   taskDataPar->outputs_count.emplace_back(size);
   taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
 
-  auto test = std::make_shared<Sdobnov_iteration_method_yakoby::IterationMethodYakobySeq>(taskDataPar);
+  auto test = std::make_shared<Sdobnov_iteration_method_yakoby_seq::IterationMethodYakobySeq>(taskDataPar);
   ASSERT_EQ(test->validation(), true);
   test->pre_processing();
   test->run();
@@ -74,7 +74,7 @@ TEST(Sdobnov_V_iteration_method_yakoby_seq, test_task_run) {
   taskDataPar->outputs_count.emplace_back(size);
   taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
 
-  auto test = std::make_shared<Sdobnov_iteration_method_yakoby::IterationMethodYakobySeq>(taskDataPar);
+  auto test = std::make_shared<Sdobnov_iteration_method_yakoby_seq::IterationMethodYakobySeq>(taskDataPar);
   ASSERT_EQ(test->validation(), true);
   test->pre_processing();
   test->run();

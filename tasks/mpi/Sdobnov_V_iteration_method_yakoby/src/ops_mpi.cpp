@@ -11,9 +11,9 @@
 
 #include "boost/mpi/collectives/broadcast.hpp"
 
-std::vector<double> Sdobnov_iteration_method_yakoby::iteration_method_yakoby(int n, const std::vector<double>& A,
-                                                                             const std::vector<double>& b,
-                                                                             double tolerance, int maxIterations) {
+std::vector<double> Sdobnov_iteration_method_yakoby_par::iteration_method_yakoby(int n, const std::vector<double>& A,
+                                                                                 const std::vector<double>& b,
+                                                                                 double tolerance, int maxIterations) {
   std::vector<double> x(n, 0.0);
   std::vector<double> x_new(n, 0.0);
 
@@ -43,7 +43,7 @@ std::vector<double> Sdobnov_iteration_method_yakoby::iteration_method_yakoby(int
   return x_new;
 }
 
-void static calculate_mat_part_param(int rows, int num_proc, std::vector<int>& sizes, std::vector<int>& offsets) {
+static void calculate_mat_part_param(int rows, int num_proc, std::vector<int>& sizes, std::vector<int>& offsets) {
   sizes.resize(num_proc, 0);
   offsets.resize(num_proc, -1);
   if (num_proc > rows) {
@@ -67,7 +67,7 @@ void static calculate_mat_part_param(int rows, int num_proc, std::vector<int>& s
   }
 }
 
-void static calculate_free_members_part_param(int len, int num_proc, std::vector<int>& sizes,
+static void calculate_free_members_part_param(int len, int num_proc, std::vector<int>& sizes,
                                               std::vector<int>& offsets) {
   sizes.resize(num_proc, 0);
   offsets.resize(num_proc, -1);
@@ -92,7 +92,7 @@ void static calculate_free_members_part_param(int len, int num_proc, std::vector
   }
 }
 
-bool static isDiagonallyDominant(int n, const std::vector<double>& A) {
+static bool isDiagonallyDominant(int n, const std::vector<double>& A) {
   for (int i = 0; i < n; ++i) {
     double sum = 0.0;
 
@@ -114,7 +114,7 @@ bool static isDiagonallyDominant(int n, const std::vector<double>& A) {
   return true;
 }
 
-bool Sdobnov_iteration_method_yakoby::IterationMethodYakobySeq::pre_processing() {
+bool Sdobnov_iteration_method_yakoby_par::IterationMethodYakobySeq::pre_processing() {
   internal_order_test();
 
   size_ = taskData->inputs_count[0];
@@ -131,7 +131,7 @@ bool Sdobnov_iteration_method_yakoby::IterationMethodYakobySeq::pre_processing()
   return true;
 }
 
-bool Sdobnov_iteration_method_yakoby::IterationMethodYakobySeq::validation() {
+bool Sdobnov_iteration_method_yakoby_par::IterationMethodYakobySeq::validation() {
   internal_order_test();
 
   bool correct_count = taskData->inputs_count.size() == 1 && taskData->inputs_count[0] >= 0 &&
@@ -147,13 +147,13 @@ bool Sdobnov_iteration_method_yakoby::IterationMethodYakobySeq::validation() {
   return isDiagonallyDominant(size, matrix);
 }
 
-bool Sdobnov_iteration_method_yakoby::IterationMethodYakobySeq::run() {
+bool Sdobnov_iteration_method_yakoby_par::IterationMethodYakobySeq::run() {
   internal_order_test();
   res_ = iteration_method_yakoby(size_, matrix_, free_members_, tolerance, maxIterations);
   return true;
 }
 
-bool Sdobnov_iteration_method_yakoby::IterationMethodYakobySeq::post_processing() {
+bool Sdobnov_iteration_method_yakoby_par::IterationMethodYakobySeq::post_processing() {
   internal_order_test();
   for (int i = 0; i < size_; i++) {
     reinterpret_cast<double*>(taskData->outputs[0])[i] = res_[i];
@@ -161,7 +161,7 @@ bool Sdobnov_iteration_method_yakoby::IterationMethodYakobySeq::post_processing(
   return true;
 }
 
-bool Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar::pre_processing() {
+bool Sdobnov_iteration_method_yakoby_par::IterationMethodYakobyPar::pre_processing() {
   internal_order_test();
 
   mat_part_sizes.resize(world.size());
@@ -189,7 +189,7 @@ bool Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar::pre_processing()
   return true;
 }
 
-bool Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar::validation() {
+bool Sdobnov_iteration_method_yakoby_par::IterationMethodYakobyPar::validation() {
   internal_order_test();
 
   if (world.rank() == 0) {
@@ -208,7 +208,7 @@ bool Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar::validation() {
   return true;
 }
 
-bool Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar::run() {
+bool Sdobnov_iteration_method_yakoby_par::IterationMethodYakobyPar::run() {
   internal_order_test();
 
   boost::mpi::broadcast(world, mat_part_sizes, 0);
@@ -224,14 +224,9 @@ bool Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar::run() {
   l_free_members.resize(l_free_members_part_size);
   l_res.resize(l_free_members_part_size);
 
-  if (world.rank() == 0) {
-    boost::mpi::scatterv(world, matrix_.data(), mat_part_sizes, mat_part_offsets, l_matrix.data(), l_mat_part_size, 0);
-    boost::mpi::scatterv(world, free_members_.data(), free_members_part_sizes, free_members_part_offsets,
-                         l_free_members.data(), l_free_members_part_size, 0);
-  } else {
-    boost::mpi::scatterv(world, l_matrix.data(), l_mat_part_size, 0);
-    boost::mpi::scatterv(world, l_free_members.data(), l_free_members_part_size, 0);
-  }
+  boost::mpi::scatterv(world, matrix_.data(), mat_part_sizes, mat_part_offsets, l_matrix.data(), l_mat_part_size, 0);
+  boost::mpi::scatterv(world, free_members_.data(), free_members_part_sizes, free_members_part_offsets,
+                       l_free_members.data(), l_free_members_part_size, 0);
 
   for (int iter = 0; iter < maxIterations; iter++) {
     if (world.rank() == 0) {
@@ -248,12 +243,9 @@ bool Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar::run() {
       }
       l_res[i] = (l_free_members[i] - sum) / l_matrix[i * size_ + free_members_part_offsets[world.rank()] + i];
     }
-    if (world.rank() == 0) {
-      boost::mpi::gatherv(world, l_res.data(), free_members_part_sizes[world.rank()], res_.data(),
-                          free_members_part_sizes, free_members_part_offsets, 0);
-    } else {
-      boost::mpi::gatherv(world, l_res.data(), free_members_part_sizes[world.rank()], 0);
-    }
+
+    boost::mpi::gatherv(world, l_res.data(), free_members_part_sizes[world.rank()], res_.data(),
+                        free_members_part_sizes, free_members_part_offsets, 0);
 
     bool stop_flag = false;
 
@@ -274,7 +266,7 @@ bool Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar::run() {
   return true;
 }
 
-bool Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar::post_processing() {
+bool Sdobnov_iteration_method_yakoby_par::IterationMethodYakobyPar::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     for (int i = 0; i < size_; ++i) {

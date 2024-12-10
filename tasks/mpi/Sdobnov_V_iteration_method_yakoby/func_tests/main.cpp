@@ -25,7 +25,7 @@ TEST(Sdobnov_V_iteration_method_yakoby_par, InvalidMatrixWithoutDiagonalDominanc
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
   }
 
-  Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar test(taskDataPar);
+  Sdobnov_iteration_method_yakoby_par::IterationMethodYakobyPar test(taskDataPar);
 
   if (world.rank() == 0) {
     ASSERT_FALSE(test.validation());
@@ -47,7 +47,7 @@ TEST(Sdobnov_V_iteration_method_yakoby_par, InvalidInputCount) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
   }
 
-  Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar test(taskDataPar);
+  Sdobnov_iteration_method_yakoby_par::IterationMethodYakobyPar test(taskDataPar);
 
   if (world.rank() == 0) {
     ASSERT_FALSE(test.validation());
@@ -69,7 +69,7 @@ TEST(Sdobnov_V_iteration_method_yakoby_par, InvalidInput) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
   }
 
-  Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar test(taskDataPar);
+  Sdobnov_iteration_method_yakoby_par::IterationMethodYakobyPar test(taskDataPar);
 
   if (world.rank() == 0) {
     ASSERT_FALSE(test.validation());
@@ -91,7 +91,7 @@ TEST(Sdobnov_V_iteration_method_yakoby_par, InvalidOutputCount) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
   }
 
-  Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar test(taskDataPar);
+  Sdobnov_iteration_method_yakoby_par::IterationMethodYakobyPar test(taskDataPar);
 
   if (world.rank() == 0) {
     ASSERT_FALSE(test.validation());
@@ -112,7 +112,7 @@ TEST(Sdobnov_V_iteration_method_yakoby_par, InvalidOutput) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskDataPar->outputs_count.emplace_back(size);
   }
-  Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar test(taskDataPar);
+  Sdobnov_iteration_method_yakoby_par::IterationMethodYakobyPar test(taskDataPar);
 
   if (world.rank() == 0) {
     ASSERT_FALSE(test.validation());
@@ -137,7 +137,7 @@ TEST(Sdobnov_V_iteration_method_yakoby_par, IterationMethodTest3x3) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(respar.data()));
   }
 
-  Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar test(taskDataPar);
+  Sdobnov_iteration_method_yakoby_par::IterationMethodYakobyPar test(taskDataPar);
 
   test.validation();
   test.pre_processing();
@@ -154,7 +154,7 @@ TEST(Sdobnov_V_iteration_method_yakoby_par, IterationMethodTest3x3) {
     taskDataSeq->outputs_count.emplace_back(size);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(resseq.data()));
 
-    Sdobnov_iteration_method_yakoby::IterationMethodYakobySeq testseq(taskDataSeq);
+    Sdobnov_iteration_method_yakoby_par::IterationMethodYakobySeq testseq(taskDataSeq);
 
     testseq.validation();
     testseq.pre_processing();
@@ -186,7 +186,7 @@ TEST(Sdobnov_V_iteration_method_yakoby_par, IterationMethodTest4x4) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(respar.data()));
   }
 
-  Sdobnov_iteration_method_yakoby::IterationMethodYakobyPar test(taskDataPar);
+  Sdobnov_iteration_method_yakoby_par::IterationMethodYakobyPar test(taskDataPar);
 
   test.validation();
   test.pre_processing();
@@ -203,7 +203,7 @@ TEST(Sdobnov_V_iteration_method_yakoby_par, IterationMethodTest4x4) {
     taskDataSeq->outputs_count.emplace_back(size);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(resseq.data()));
 
-    Sdobnov_iteration_method_yakoby::IterationMethodYakobySeq testseq(taskDataSeq);
+    Sdobnov_iteration_method_yakoby_par::IterationMethodYakobySeq testseq(taskDataSeq);
 
     testseq.validation();
     testseq.pre_processing();

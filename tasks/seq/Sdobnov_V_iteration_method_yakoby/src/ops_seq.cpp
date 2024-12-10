@@ -6,9 +6,9 @@
 #include <random>
 #include <vector>
 
-std::vector<double> Sdobnov_iteration_method_yakoby::iteration_method_yakoby(int n, const std::vector<double>& A,
-                                                                             const std::vector<double>& b,
-                                                                             double tolerance, int maxIterations) {
+std::vector<double> Sdobnov_iteration_method_yakoby_seq::iteration_method_yakoby(int n, const std::vector<double>& A,
+                                                                                 const std::vector<double>& b,
+                                                                                 double tolerance, int maxIterations) {
   std::vector<double> x(n, 0.0);
   std::vector<double> x_new(n, 0.0);
 
@@ -38,7 +38,7 @@ std::vector<double> Sdobnov_iteration_method_yakoby::iteration_method_yakoby(int
   return x_new;
 }
 
-bool static isDiagonallyDominant(int n, const std::vector<double>& A) {
+static bool isDiagonallyDominant(int n, const std::vector<double>& A) {
   for (int i = 0; i < n; ++i) {
     double sum = 0.0;
 
@@ -60,7 +60,7 @@ bool static isDiagonallyDominant(int n, const std::vector<double>& A) {
   return true;
 }
 
-bool Sdobnov_iteration_method_yakoby::IterationMethodYakobySeq::pre_processing() {
+bool Sdobnov_iteration_method_yakoby_seq::IterationMethodYakobySeq::pre_processing() {
   internal_order_test();
 
   size_ = taskData->inputs_count[0];
@@ -77,7 +77,7 @@ bool Sdobnov_iteration_method_yakoby::IterationMethodYakobySeq::pre_processing()
   return true;
 }
 
-bool Sdobnov_iteration_method_yakoby::IterationMethodYakobySeq::validation() {
+bool Sdobnov_iteration_method_yakoby_seq::IterationMethodYakobySeq::validation() {
   internal_order_test();
 
   bool correct_count = taskData->inputs_count.size() == 1 && taskData->inputs_count[0] >= 0 &&
@@ -93,13 +93,13 @@ bool Sdobnov_iteration_method_yakoby::IterationMethodYakobySeq::validation() {
   return isDiagonallyDominant(size, matrix);
 }
 
-bool Sdobnov_iteration_method_yakoby::IterationMethodYakobySeq::run() {
+bool Sdobnov_iteration_method_yakoby_seq::IterationMethodYakobySeq::run() {
   internal_order_test();
   res_ = iteration_method_yakoby(size_, matrix_, free_members_, tolerance, maxIterations);
   return true;
 }
 
-bool Sdobnov_iteration_method_yakoby::IterationMethodYakobySeq::post_processing() {
+bool Sdobnov_iteration_method_yakoby_seq::IterationMethodYakobySeq::post_processing() {
   internal_order_test();
   for (int i = 0; i < size_; i++) {
     reinterpret_cast<double*>(taskData->outputs[0])[i] = res_[i];
