@@ -14,14 +14,17 @@ std::vector<T> getRandom(int size, T min, T max) {
   std::random_device dev;
   std::mt19937 gen(dev());
 
-  if constexpr (std::is_integral<T>::value) {
+  constexpr bool is__integral = std::is_integral<T>::value;
+  constexpr bool is__floating_point = std::is_floating_point<T>::value;
+
+  if constexpr (is__integral) {
     std::uniform_int_distribution<T> dis(min, max);
     std::vector<T> vec(size);
     for (int i = 0; i < size; ++i) {
       vec[i] = dis(gen);
     }
     return vec;
-  } else if constexpr (std::is_floating_point<T>::value) {
+  } else if constexpr (is__floating_point) {
     std::uniform_real_distribution<T> dis(min, max);
     std::vector<T> vec(size);
     for (int i = 0; i < size; ++i) {
@@ -77,7 +80,6 @@ void Test_reduce(MPI_Datatype datatype, MPI_Op op) {
     } else if (op == MPI_MAX) {
       ref = *std::max_element(input_.begin(), input_.end());
     }
-    std::cout << global_result << '\n' << ref << '\n';
     ASSERT_NEAR(global_result, ref, 0.01);
   }
 }
