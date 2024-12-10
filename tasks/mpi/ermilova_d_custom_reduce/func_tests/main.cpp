@@ -22,14 +22,11 @@ std::vector<T> getRandom(int size) {
 
 template <typename T>
 void Test_reduce(MPI_Datatype datatype, MPI_Op op) {
-  int size = 50;
+  int size = 2;
   boost::mpi::communicator world;
   std::vector<T> input_;
   if (world.rank() == 0) {
     input_ = getRandom<T>(size * world.size());
-    for (int i = 0; i < input_.size(); i++) {
-      std::cout << input_[i] << '\n';
-    }
   }
   std::vector<T> recv_data(size);
   boost::mpi::scatter(world, input_.data(), recv_data.data(), size, 0);
@@ -60,6 +57,7 @@ void Test_reduce(MPI_Datatype datatype, MPI_Op op) {
     if (op == MPI_SUM) {
       for (auto el : input_) {
         ref += el;
+        std::cout << el << '\n';
       }
     } else if (op == MPI_MIN) {
       ref = *std::min_element(input_.begin(), input_.end());
