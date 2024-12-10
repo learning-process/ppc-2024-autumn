@@ -51,9 +51,9 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskSequential::v
 
 bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskSequential::run() {
   internal_order_test();
-  unsigned short Nmax = 10000;
+  unsigned short Nmax = 1000;
   unsigned short num_of_iterations = 0;
-  double epsilon = pow(10, -6);
+  double epsilon = pow(10, -3);
   double max_delta_x_i = 0;
   std::vector<double> x_old;
   unsigned short n;
@@ -201,9 +201,9 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::run
     sendcounts[world.rank()] = number_of_local_matrix_rows + ostatochnoe_chislo_strock;
     displacements[world.rank()] = n - number_of_local_matrix_rows - ostatochnoe_chislo_strock;
   }
-  unsigned short Nmax = 10000;
+  unsigned short Nmax = 1000;
   unsigned short num_of_iterations = 0;
-  double epsilon = pow(10, -6);
+  double epsilon = pow(10, -3);
   double max_delta_x_i = 0;
   std::vector<double> x_old;
   do {
