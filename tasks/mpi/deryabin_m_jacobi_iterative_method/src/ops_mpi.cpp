@@ -114,7 +114,7 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::val
     local_input_matrix_part_ = std::vector<double>((number_of_local_matrix_rows + ostatochnoe_chislo_strock) * n);
     auto* tmp_ptr_vec = reinterpret_cast<double*>(taskData->inputs[1]);
     local_input_right_vector_part_ = std::vector<double>(number_of_local_matrix_rows + ostatochnoe_chislo_strock);
-    for (unsigned i = 0; i < (number_of_local_matrix_rows + ostatochnoe_chislo_strock) * n; i++) {
+    for (unsigned short i = 0; i < (number_of_local_matrix_rows + ostatochnoe_chislo_strock) * n; i++) {
       local_input_matrix_part_[i] = tmp_ptr_matr[n * (n - number_of_local_matrix_rows - ostatochnoe_chislo_strock) + i];
       if (i < number_of_local_matrix_rows + ostatochnoe_chislo_strock) {
         local_input_right_vector_part_[i] =
