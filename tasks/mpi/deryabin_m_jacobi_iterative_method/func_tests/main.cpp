@@ -7,15 +7,10 @@
 
 TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_valid_matrix) {
   boost::mpi::communicator world;
-  // std::random_device rd;
-  std::default_random_engine gen(rand());
-  // std::mt19937 gen(rd());
-  std::uniform_real_distribution<> distrib(1, 10);
-  std::uniform_real_distribution<> distribut(91, 100);
-  std::vector<double> input_matrix_(100, distrib(gen));
-  std::vector<double> input_right_vector_(10, distrib(gen));
+  std::vector<double> input_matrix_(100, 1);
+  std::vector<double> input_right_vector_(10, 1);
   for (unsigned short i = 0; i < 10; i++) {
-    input_matrix_[i * 11] = distribut(gen);
+    input_matrix_[i * 11] = 15;
   }
   std::vector<double> output_x_vector_ = std::vector<double>(10, 0);
   std::vector<std::vector<double>> out_x_vec(1, output_x_vector_);
@@ -58,20 +53,15 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_valid_matrix) {
 
 TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_3X_diagonal_matrix) {
   boost::mpi::communicator world;
-  // std::random_device rd;
-  std::default_random_engine gen(rand());
-  // std::mt19937 gen(rd());
-  std::uniform_real_distribution<> distrib(1, 10);
-  std::uniform_real_distribution<> distribut(91, 100);
   std::vector<double> input_matrix_(100, 0);
-  std::vector<double> input_right_vector_(10, distrib(gen));
+  std::vector<double> input_right_vector_(10, 1);
   for (unsigned short i = 0; i < 10; i++) {
-    input_matrix_[i * 11] = distribut(gen);
+    input_matrix_[i * 11] = 1;
     if (i != 0) {
-      input_matrix_[i * 11 - 1] = distrib(gen);
+      input_matrix_[i * 11 - 1] = 1;
     }
     if (i != 9) {
-      input_matrix_[i * 11 + 1] = distrib(gen);
+      input_matrix_[i * 11 + 1] = 1;
     }
   }
   std::vector<double> output_x_vector_ = std::vector<double>(10, 0);
@@ -115,14 +105,10 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_3X_diagonal_matrix) {
 
 TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_1X_diagonal_matrix) {
   boost::mpi::communicator world;
-  // std::random_device rd;
-  std::default_random_engine gen(rand());
-  // std::mt19937 gen(rd());
-  std::uniform_real_distribution<> distribut(1, 100);
   std::vector<double> input_matrix_(100, 0);
-  std::vector<double> input_right_vector_(10, distribut(gen));
+  std::vector<double> input_right_vector_(10, 1);
   for (unsigned short i = 0; i < 10; i++) {
-    input_matrix_[i * 11] = distribut(gen);
+    input_matrix_[i * 11] = 1;
   }
   std::vector<double> output_x_vector_ = std::vector<double>(10, 0);
   std::vector<std::vector<double>> out_x_vec(1, output_x_vector_);
@@ -165,14 +151,10 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_1X_diagonal_matrix) {
 
 TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_diagonal_elements_are_much_larger_than_non_diagonal) {
   boost::mpi::communicator world;
-  // std::random_device rd;
-  std::default_random_engine gen(rand());
-  // std::mt19937 gen(rd());
-  std::uniform_real_distribution<> distrib(1, 10);
-  std::vector<double> input_matrix_(100, distrib(gen));
-  std::vector<double> input_right_vector_(10, distrib(gen));
+  std::vector<double> input_matrix_(100, 1);
+  std::vector<double> input_right_vector_(10, 1);
   for (unsigned short i = 0; i < 10; i++) {
-    input_matrix_[i * 11] = 100 * distrib(gen);
+    input_matrix_[i * 11] = 100;
   }
   std::vector<double> output_x_vector_ = std::vector<double>(10, 0);
   std::vector<std::vector<double>> out_x_vec(1, output_x_vector_);
@@ -215,12 +197,8 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_diagonal_elements_are_m
 
 TEST(deryabin_m_jacobi_iterative_method_mpi, random_invalid_matrix_zeros_on_diagonal) {
   boost::mpi::communicator world;
-  // std::random_device rd;
-  std::default_random_engine gen(rand());
-  // std::mt19937 gen(rd());
-  std::uniform_real_distribution<> distrib(1, 10);
-  std::vector<double> input_matrix_(100, distrib(gen));
-  std::vector<double> input_right_vector_(10, distrib(gen));
+  std::vector<double> input_matrix_(100, 1);
+  std::vector<double> input_right_vector_(10, 1);
   for (unsigned short i = 0; i < 10; i++) {
     input_matrix_[i * 11] = 0;
   }
