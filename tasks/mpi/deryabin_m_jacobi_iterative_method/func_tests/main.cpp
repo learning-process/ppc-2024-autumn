@@ -7,8 +7,8 @@
 
 TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_valid_matrix) {
   boost::mpi::communicator world;
-  std::random_device rd;
-  std::default_random_engine gen(rd());
+  // std::random_device rd;
+  std::default_random_engine gen(rand());
   // std::mt19937 gen(rd());
   std::uniform_real_distribution<> distrib(1, 10);
   std::uniform_real_distribution<> distribut(91, 100);
@@ -58,8 +58,8 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_valid_matrix) {
 
 TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_3X_diagonal_matrix) {
   boost::mpi::communicator world;
-  std::random_device rd;
-  std::default_random_engine gen(rd());
+  // std::random_device rd;
+  std::default_random_engine gen(rand());
   // std::mt19937 gen(rd());
   std::uniform_real_distribution<> distrib(1, 10);
   std::uniform_real_distribution<> distribut(91, 100);
@@ -115,8 +115,8 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_3X_diagonal_matrix) {
 
 TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_1X_diagonal_matrix) {
   boost::mpi::communicator world;
-  std::random_device rd;
-  std::default_random_engine gen(rd());
+  // std::random_device rd;
+  std::default_random_engine gen(rand());
   // std::mt19937 gen(rd());
   std::uniform_real_distribution<> distribut(1, 100);
   std::vector<double> input_matrix_(100, 0);
@@ -165,8 +165,8 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_1X_diagonal_matrix) {
 
 TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_diagonal_elements_are_much_larger_than_non_diagonal) {
   boost::mpi::communicator world;
-  std::random_device rd;
-  std::default_random_engine gen(rd());
+  // std::random_device rd;
+  std::default_random_engine gen(rand());
   // std::mt19937 gen(rd());
   std::uniform_real_distribution<> distrib(1, 10);
   std::vector<double> input_matrix_(100, distrib(gen));
@@ -215,8 +215,8 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_diagonal_elements_are_m
 
 TEST(deryabin_m_jacobi_iterative_method_mpi, random_invalid_matrix_zeros_on_diagonal) {
   boost::mpi::communicator world;
-  std::random_device rd;
-  std::default_random_engine gen(rd());
+  // std::random_device rd;
+  std::default_random_engine gen(rand());
   // std::mt19937 gen(rd());
   std::uniform_real_distribution<> distrib(1, 10);
   std::vector<double> input_matrix_(100, distrib(gen));
