@@ -2,10 +2,21 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
+#include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/varfolomeev_g_transfer_from_one_to_all_scatter_custom/include/ops_mpi.hpp"
+
+std::vector<int> getRandomVector_Custom(int sz, int a, int b) {  // [a, b]
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = gen() % (b - a + 1) + a;
+  }
+  return vec;
+}
 
 TEST(mpi_varfolomeev_g_transfer_from_one_to_all_custom_scatter_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
@@ -13,10 +24,9 @@ TEST(mpi_varfolomeev_g_transfer_from_one_to_all_custom_scatter_perf_test, test_p
   std::vector<int32_t> global_max(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int count_size_vector;
   if (world.rank() == 0) {
-    count_size_vector = 5000000;
-    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, 0, 5);
+    int count_size_vector = 10000000;
+    global_vec = getRandomVector_Custom(count_size_vector, 0, 5);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
@@ -57,8 +67,8 @@ TEST(mpi_varfolomeev_g_transfer_from_one_to_all_custom_scatter_perf_test, test_t
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int count_size_vector;
   if (world.rank() == 0) {
-    count_size_vector = 5000000;
-    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, 0, 5);
+    count_size_vector = 10000000;
+    global_vec = getRandomVector_Custom(count_size_vector, 0, 5);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));

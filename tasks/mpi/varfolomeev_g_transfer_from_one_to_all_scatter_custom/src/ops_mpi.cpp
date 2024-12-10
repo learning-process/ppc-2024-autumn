@@ -1,6 +1,5 @@
 #include "mpi/varfolomeev_g_transfer_from_one_to_all_scatter/include/ops_mpi.hpp"
 
-#include <random>
 #include <string>
 #include <vector>
 
@@ -29,21 +28,7 @@ bool varfolomeev_g_transfer_from_one_to_all_custom_scatter_mpi::MyScatterTestMPI
   internal_order_test();
   int node_size = 0;
   int local_res = 0;
-  if (world.size() == 1) {  // Solving sequentional if 1 process
-    if (ops == "+") {
-      res = std::accumulate(input_values.begin(), input_values.end(), 0);
-    } else if (ops == "-") {
-      res = -std::accumulate(input_values.begin(), input_values.end(), 0);
-    } else if (ops == "max") {
-      res = input_values[0];
-      for (int value : input_values) {
-        if (value > res) {
-          res = value;
-        }
-      }
-    }
-    return true;
-  }
+
   // Spread the data all over the processes. (including root)
   if (world.rank() == 0) {
     node_size = input_values.size() / world.size();

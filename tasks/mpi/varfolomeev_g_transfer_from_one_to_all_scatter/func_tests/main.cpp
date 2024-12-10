@@ -1,11 +1,22 @@
 #include <gtest/gtest.h>
 
-#include <algorithm>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <random>
 #include <vector>
 
 #include "mpi/varfolomeev_g_transfer_from_one_to_all_scatter/include/ops_mpi.hpp"
+
+
+std::vector<int> getRandomVector_(int sz, int a, int b) {  // [a, b]
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = gen() % (b - a + 1) + a;
+  }
+  return vec;
+}
 
 TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_pipeline) {
   boost::mpi::communicator world;
@@ -15,7 +26,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_pipeline) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 0;
-    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -100, 100);
+    global_vec = getRandomVector_(count_size_vector, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -38,7 +49,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Validation_Wrong_O
 
   if (world.rank() == 0) {
     const int count_size_vector = 0;
-    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -100, 100);
+    global_vec = getRandomVector_(count_size_vector, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -62,7 +73,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Operation_Plus) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 150;
-    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -100, 100);
+    global_vec = getRandomVector_(count_size_vector, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -100,7 +111,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Operation_Minus) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 150;
-    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -100, 100);
+    global_vec = getRandomVector_(count_size_vector, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -138,7 +149,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Operation_Max) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 150;
-    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -100, 100);
+    global_vec = getRandomVector_(count_size_vector, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -174,7 +185,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Uniform_vec) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     const int count_size_vector = 150;
-    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, 555, 555);
+    global_vec = getRandomVector_(count_size_vector, 555, 555);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -207,7 +218,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Generator) {
   int a = -100;
   int b = 100;
   int count_size_vector = 500;
-  global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, a, b);
+  global_vec = getRandomVector_(count_size_vector, a, b);
   int max = *std::max_element(global_vec.begin(), global_vec.end());
   int min = *std::min_element(global_vec.begin(), global_vec.end());
 
@@ -224,7 +235,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Empty_vec) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 0;
-    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -100, 100);
+    global_vec = getRandomVector_(count_size_vector, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -262,7 +273,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Single_Element_vec
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     const int count_size_vector = 1;
-    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -100, 100);
+    global_vec = getRandomVector_(count_size_vector, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -289,6 +300,129 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Single_Element_vec
   }
 }
 
+TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Sum_Manual_vec) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec = {1, -12, 45, 33, 133, -100, 75, 221};  // working vector
+  std::vector<int32_t> global_res(1, 0);                               // result vector
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    const int count_size_vector = 130;
+    global_vec = getRandomVector_(count_size_vector, 0, 0);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
+    taskDataPar->outputs_count.emplace_back(global_res.size());
+  }
+
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "+");
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int32_t> check_vec(1, 0);  // vector to check algorithm by seq. realisation
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(check_vec.data()));
+    taskDataSeq->outputs_count.emplace_back(check_vec.size());
+
+    varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "+");
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(check_vec[0], global_res[0]);
+  }
+}
+
+TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Diff_Manual_vec) {
+  for (int i = 0; i < 10; i++) {
+    boost::mpi::communicator world;
+    std::vector<int> global_vec = {1, -12, 45, 33, 133, -100, 75, 221};  // working vector
+    std::vector<int32_t> global_res(1, 0);                               // result vector
+
+    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+    if (world.rank() == 0) {
+      const int count_size_vector = 130;
+      global_vec = getRandomVector_(count_size_vector, 0, 0);
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+      taskDataPar->inputs_count.emplace_back(global_vec.size());
+      taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
+      taskDataPar->outputs_count.emplace_back(global_res.size());
+    }
+
+    varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "-");
+    ASSERT_EQ(testMpiTaskParallel.validation(), true);
+    testMpiTaskParallel.pre_processing();
+    testMpiTaskParallel.run();
+    testMpiTaskParallel.post_processing();
+
+    if (world.rank() == 0) {
+      std::vector<int32_t> check_vec(1, 0);  // vector to check algorithm by seq. realisation
+
+      std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+      taskDataSeq->inputs_count.emplace_back(global_vec.size());
+      taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(check_vec.data()));
+      taskDataSeq->outputs_count.emplace_back(check_vec.size());
+
+      varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "-");
+      ASSERT_EQ(testMpiTaskSequential.validation(), true);
+      testMpiTaskSequential.pre_processing();
+      testMpiTaskSequential.run();
+      testMpiTaskSequential.post_processing();
+
+      ASSERT_EQ(check_vec[0], global_res[0]);
+    }
+  }
+}
+
+TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Max_Manual_vec) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec = {1, -12, 45, 33, 133, -100, 75, 221};  // working vector
+  std::vector<int32_t> global_res(1, 0);                               // result vector
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
+    taskDataPar->outputs_count.emplace_back(global_res.size());
+  }
+
+  varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, "max");
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int32_t> check_vec(1, 0);  // vector to check algorithm by seq. realisation
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(check_vec.data()));
+    taskDataSeq->outputs_count.emplace_back(check_vec.size());
+
+    varfolomeev_g_transfer_from_one_to_all_scatter_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "max");
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(check_vec[0], global_res[0]);
+  }
+}
+
 TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Sum_Zero_vec) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;            // working vector
@@ -298,7 +432,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Sum_Zero_vec) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 130;
-    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, 0, 0);
+    global_vec = getRandomVector_(count_size_vector, 0, 0);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -340,7 +474,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Diff_Zero_vec) {
 
     if (world.rank() == 0) {
       const int count_size_vector = 130;
-      global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, 0, 0);
+      global_vec = getRandomVector_(count_size_vector, 0, 0);
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
       taskDataPar->inputs_count.emplace_back(global_vec.size());
       taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -382,7 +516,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Max_Zero_vec) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 130;
-    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, 0, 0);
+    global_vec = getRandomVector_(count_size_vector, 0, 0);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -423,7 +557,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Sum_Negative) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 111;
-    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -200, -1);
+    global_vec = getRandomVector_(count_size_vector, -200, -1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -463,7 +597,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Sum_Positive) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 111;
-    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, 1, 200);
+    global_vec = getRandomVector_(count_size_vector, 1, 200);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -503,7 +637,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Sum_Positive_Negat
 
   if (world.rank() == 0) {
     const int count_size_vector = 111;
-    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -100, 100);
+    global_vec = getRandomVector_(count_size_vector, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -543,7 +677,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Diff_Negative) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 111;
-    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -200, -1);
+    global_vec = getRandomVector_(count_size_vector, -200, -1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -583,7 +717,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Diff_Positive) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 111;
-    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, 1, 200);
+    global_vec = getRandomVector_(count_size_vector, 1, 200);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -623,7 +757,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Diff_Positive_Nega
 
   if (world.rank() == 0) {
     const int count_size_vector = 111;
-    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -100, 100);
+    global_vec = getRandomVector_(count_size_vector, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -663,7 +797,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Max_Negative) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 130;
-    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -200, -1);
+    global_vec = getRandomVector_(count_size_vector, -200, -1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -703,7 +837,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Max_Positive) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 111;
-    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, 1, 200);
+    global_vec = getRandomVector_(count_size_vector, 1, 200);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -743,7 +877,7 @@ TEST(varfolomeev_g_transfer_from_one_to_all_scatter_mpi, Test_Max_Positive_Negat
 
   if (world.rank() == 0) {
     const int count_size_vector = 111;
-    global_vec = varfolomeev_g_transfer_from_one_to_all_scatter_mpi::getRandomVector(count_size_vector, -100, 100);
+    global_vec = getRandomVector_(count_size_vector, -100, 100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
