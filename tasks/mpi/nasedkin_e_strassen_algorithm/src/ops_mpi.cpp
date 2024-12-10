@@ -56,11 +56,10 @@ namespace nasedkin_e_strassen_algorithm {
     }
 
     bool TestMPITaskParallel::post_processing() {
-        std::vector<double> global_matrix_c;
-        if (world.rank() == 0) {
-            global_matrix_c.resize(taskData->outputs_count[0] * taskData->outputs_count[1]);
-        }
-        boost::mpi::gather(world, local_matrix_c, global_matrix_c, 0);
+        size_t total_size = rows_per_proc * cols_per_proc * world.size();
+        std::vector<double> global_matrix_c(total_size, 0);
+        
+        boost::mpi::gather(world, local_matrix_c.data(), local_matrix_c.size(), global_matrix_c.data(), 0);
 
         if (world.rank() == 0) {
             double* output = reinterpret_cast<double*>(taskData->outputs[0]);
@@ -68,6 +67,7 @@ namespace nasedkin_e_strassen_algorithm {
         }
         return true;
     }
+
 
     std::vector<double> TestMPITaskParallel::strassen(const std::vector<double>& A, const std::vector<double>& B, size_t n) {
         if (n <= 2) {
