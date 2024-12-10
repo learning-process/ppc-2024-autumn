@@ -1,7 +1,6 @@
 // Copyright 2024 Nesterov Alexander
-#include "seq/frolova_e_matrix_multiplication/include/ops_seq.hpp"
-
 #include <thread>
+#include "seq/frolova_e_matrix_multiplication/include/ops_seq_frolova_matrix.hpp"
 
 using namespace std::chrono_literals;
 
@@ -12,23 +11,23 @@ void frolova_e_matrix_multiplication_seq::randomNumVec(int N, std::vector<int>& 
   }
 }
 
-std::vector<int> frolova_e_matrix_multiplication_seq::Multiplication(size_t M, size_t N, size_t K, const std::vector<int>& A, const std::vector<int>& B) {
-
+std::vector<int> frolova_e_matrix_multiplication_seq::Multiplication(size_t M, size_t N, size_t K,
+                                                                     const std::vector<int>& A,
+                                                                     const std::vector<int>& B) {
   std::vector<int> C(M * N);
 
   for (size_t i = 0; i < M; ++i) {
-
     for (size_t j = 0; j < N; ++j) {
-
       C[i * N + j] = 0;
 
-      for (size_t k = 0; k < K; ++k) 
-          C[i * N + j] += A[i * K + k] * B[k * N + j];
+      for (size_t k = 0; k < K; ++k) C[i * N + j] += A[i * K + k] * B[k * N + j];
+      
     }
   }
 
   return C;
 }
+
 
 bool frolova_e_matrix_multiplication_seq::matrixMultiplication::pre_processing() {
   internal_order_test();
@@ -55,11 +54,9 @@ bool frolova_e_matrix_multiplication_seq::matrixMultiplication::pre_processing()
 
 bool frolova_e_matrix_multiplication_seq::matrixMultiplication::validation() {
   internal_order_test();
-  // Check count elements of output
 
   int* value_1 = reinterpret_cast<int*>(taskData->inputs[0]);
   if (taskData->inputs_count[0] != 2) {
-//    std::cout << "taskData->inputs_count[0] != 2" << std::endl;
     return false;
   }
   size_t line1 = static_cast<size_t>(value_1[0]);
@@ -67,36 +64,28 @@ bool frolova_e_matrix_multiplication_seq::matrixMultiplication::validation() {
   
   int* value_2 = reinterpret_cast<int*>(taskData->inputs[1]);
   if (taskData->inputs_count[1] != 2) {
-//    std::cout << "taskData->inputs_count[1] != 2" << std::endl;
     return false;
   }
   size_t line2 = static_cast<size_t>(value_2[0]);
   size_t column2 = static_cast<size_t>(value_2[1]);
 
   if (value_1[1] != value_2[0]) {
-//    std::cout << "value_1[1] != value_2[0]" << std::endl;
     return false;
   }
   if (taskData->inputs_count[2] != line1 * column1) {
-//    std::cout << "taskData->inputs_count[2] != line1 * column1" << std::endl;
     return false;
   }
   if (taskData->inputs_count[3] != line2 * column2) {
-//    std::cout << "taskData->inputs_count[3] != line2 * column2" << std::endl;
     return false;
   }
   if (taskData->outputs_count[0] != line1 * column2) {
-//    std::cout << "taskData->outputs_count[0] != line1 * column2" << std::endl;
     return false;
   }
-
-  return true;
-           
+  return true;           
 }
 
 bool frolova_e_matrix_multiplication_seq::matrixMultiplication::run() {
-  internal_order_test();
-  
+  internal_order_test();  
   matrixC = Multiplication(lineA, columnB, columnA, matrixA, matrixB);
 
   return true;
@@ -104,10 +93,9 @@ bool frolova_e_matrix_multiplication_seq::matrixMultiplication::run() {
 
 bool frolova_e_matrix_multiplication_seq::matrixMultiplication::post_processing() {
   internal_order_test();
-  
-  for (size_t i = 0; i < lineA * columnB; i++) {
-      reinterpret_cast<int*>(taskData->outputs[0])[i] = matrixC[i];
 
+  for (size_t i = 0; i < lineA * columnB; i++) {
+    reinterpret_cast<int*>(taskData->outputs[0])[i] = matrixC[i];
   }
 
   return true;

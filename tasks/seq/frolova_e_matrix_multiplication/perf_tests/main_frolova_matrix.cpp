@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "seq/frolova_e_matrix_multiplication/include/ops_seq.hpp"
+#include "seq/frolova_e_matrix_multiplication/include/ops_seq_frolova_matrix.hpp"
 
 TEST(frolova_e_matrix_multiplication_seq, test_pipeline_run) {
 

@@ -5,26 +5,22 @@
 #include <boost/mpi/environment.hpp>
 #include <vector>
 
-#include "mpi/frolova_e_matrix_multiplication/include/ops_mpi.hpp"
+#include "mpi/frolova_e_matrix_multiplication/include/ops_mpi_frolova_matrix.hpp"
 
 TEST(frolova_e_matrix_multiplication_mpi, multiplication_of_square_matrices) {
 
-    //creare data
-
-    boost::mpi::communicator world;
-    std::vector<int> values_1 = {4, 4};
-    std::vector<int> values_2 = {4, 4};
-    std::vector<int> matrixA_;
-
-    std::vector<int> matrixB_;
-
-    std::vector<int32_t> res(16);
+    // Create data
+  boost::mpi::communicator world;
+  std::vector<int> values_1 = {4, 4};
+  std::vector<int> values_2 = {4, 4};
+  std::vector<int> matrixA_;
+  std::vector<int> matrixB_;
+  std::vector<int32_t> res(16);
 
   // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
- 
-  if (world.rank() == 0) {
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
+  if (world.rank() == 0) {
     frolova_e_matrix_multiplication_mpi::randomNumVec(16, matrixA_);
     frolova_e_matrix_multiplication_mpi::randomNumVec(16, matrixB_);
 
@@ -42,7 +38,6 @@ TEST(frolova_e_matrix_multiplication_mpi, multiplication_of_square_matrices) {
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size());
-
   }
 
   frolova_e_matrix_multiplication_mpi::matrixMultiplicationParallel testMpiTaskParallel(taskDataPar);
@@ -57,7 +52,6 @@ TEST(frolova_e_matrix_multiplication_mpi, multiplication_of_square_matrices) {
     std::vector<int32_t> reference_matrix(16);
 
     // Create TaskData
-
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
@@ -130,7 +124,6 @@ TEST(frolova_e_matrix_multiplication_mpi, multiplication_of_large_matrices) {
 
   if (world.rank() == 0) {
     // Create data
-    //    std::vector<int32_t> reference_sum(1, 0);
     std::vector<int32_t> reference_matrix(400);
 
     // Create TaskData
@@ -206,7 +199,6 @@ TEST(frolova_e_matrix_multiplication_mpi, matrices_multiplication_with_wound_of_
 
   if (world.rank() == 0) {
     // Create data
-    //    std::vector<int32_t> reference_sum(1, 0);
     std::vector<int32_t> reference_matrix(6);
 
     // Create TaskData
@@ -282,7 +274,6 @@ TEST(frolova_e_matrix_multiplication_mpi, multiplying_vector_by_a_matrix) {
 
   if (world.rank() == 0) {
     // Create data
-    //    std::vector<int32_t> reference_sum(1, 0);
     std::vector<int32_t> reference_matrix(4);
 
     // Create TaskData
@@ -358,7 +349,6 @@ TEST(frolova_e_matrix_multiplication_mpi, multiplying_matrix_by_a_vector) {
 
   if (world.rank() == 0) {
     // Create data
-    //    std::vector<int32_t> reference_sum(1, 0);
     std::vector<int32_t> reference_matrix(4);
 
     // Create TaskData
@@ -397,7 +387,7 @@ TEST(frolova_e_matrix_multiplication_mpi, value1_dont_have_two_elements) {
   // creare data
 
   boost::mpi::communicator world;
-  std::vector<int> values_1 = { 4};
+  std::vector<int> values_1 = {4};
   std::vector<int> values_2 = {4, 1};
   std::vector<int> matrixA_;
 
@@ -436,7 +426,7 @@ TEST(frolova_e_matrix_multiplication_mpi, value2_dont_have_two_elements) {
   // creare data
 
   boost::mpi::communicator world;
-  std::vector<int> values_1 = {4,4};
+  std::vector<int> values_1 = {4, 4};
   std::vector<int> values_2 = {4};
   std::vector<int> matrixA_;
 
@@ -545,6 +535,3 @@ TEST(frolova_e_matrix_multiplication_mpi, mismatch_in_the_size_of_the_resulting_
     ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
 }
-
-
-

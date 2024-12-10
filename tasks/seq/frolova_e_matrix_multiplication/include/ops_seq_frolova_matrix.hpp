@@ -29,7 +29,5 @@ class matrixMultiplication : public ppc::core::Task {
 
   size_t lineB{};
   size_t columnB{};
-
 };
-
 }  // namespace frolova_e_matrix_multiplication_seq
