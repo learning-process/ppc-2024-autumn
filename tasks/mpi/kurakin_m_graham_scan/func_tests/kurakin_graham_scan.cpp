@@ -6,7 +6,7 @@
 #include <random>
 #include <vector>
 
-#include "mpi/kurakin_m_graham_scan_ops_mpi/include/kurakin_graham_scan_ops_mpi.hpp"
+#include "mpi/kurakin_m_graham_scan/include/kurakin_graham_scan_ops_mpi.hpp"
 
 namespace kurakin_m_graham_scan_mpi {
 
