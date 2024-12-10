@@ -34,6 +34,10 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer) {
   if (static_cast<size_t>(world.rank()) == start_proc) {
     input_data = lavrentyrev_generate_random_vector(num_elems);
     task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
+
+    if (start_proc != end_proc) {
+      world.send(end_proc, 0, input_data);
+    }
   }
 
   if (static_cast<size_t>(world.rank()) == end_proc) {
@@ -41,6 +45,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer) {
                           reinterpret_cast<uint8_t*>(received_path.data())};
     task_data->outputs_count = {static_cast<unsigned int>(output_data.size()),
                                 static_cast<unsigned int>(received_path.size())};
+    if (start_proc != end_proc) {
+      world.recv(start_proc, 0, input_data);
+    }
   }
 
   lavrentyev_a_line_topology_mpi::TestMPITaskParallel task(task_data);
@@ -177,6 +184,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_1024) {
     input_data = lavrentyrev_generate_random_vector(num_elems);
     task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
     task_data->inputs_count.push_back(static_cast<unsigned int>(input_data.size()));
+    if (start_proc != end_proc) {
+      world.send(end_proc, 0, input_data);
+    }
   }
 
   if (world.rank() == end_proc) {
@@ -184,6 +194,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_1024) {
                           reinterpret_cast<uint8_t*>(received_path.data())};
     task_data->outputs_count = {static_cast<unsigned int>(output_data.size()),
                                 static_cast<unsigned int>(received_path.size())};
+    if (start_proc != end_proc) {
+      world.recv(start_proc, 0, input_data);
+    }
   }
 
   lavrentyev_a_line_topology_mpi::TestMPITaskParallel task(task_data);
@@ -220,6 +233,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_2048) {
     input_data = lavrentyrev_generate_random_vector(num_elems);
     task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
     task_data->inputs_count.push_back(static_cast<unsigned int>(input_data.size()));
+    if (start_proc != end_proc) {
+      world.send(end_proc, 0, input_data);
+    }
   }
 
   if (world.rank() == end_proc) {
@@ -227,6 +243,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_2048) {
                           reinterpret_cast<uint8_t*>(received_path.data())};
     task_data->outputs_count = {static_cast<unsigned int>(output_data.size()),
                                 static_cast<unsigned int>(received_path.size())};
+    if (start_proc != end_proc) {
+      world.recv(start_proc, 0, input_data);
+    }
   }
 
   lavrentyev_a_line_topology_mpi::TestMPITaskParallel task(task_data);
@@ -263,6 +282,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_4096) {
     input_data = lavrentyrev_generate_random_vector(num_elems);
     task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
     task_data->inputs_count.push_back(static_cast<unsigned int>(input_data.size()));
+    if (start_proc != end_proc) {
+      world.send(end_proc, 0, input_data);
+    }
   }
 
   if (world.rank() == end_proc) {
@@ -270,6 +292,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_4096) {
                           reinterpret_cast<uint8_t*>(received_path.data())};
     task_data->outputs_count = {static_cast<unsigned int>(output_data.size()),
                                 static_cast<unsigned int>(received_path.size())};
+    if (start_proc != end_proc) {
+      world.recv(start_proc, 0, input_data);
+    }
   }
 
   lavrentyev_a_line_topology_mpi::TestMPITaskParallel task(task_data);
@@ -306,6 +331,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_8192) {
     input_data = lavrentyrev_generate_random_vector(num_elems);
     task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
     task_data->inputs_count.push_back(static_cast<unsigned int>(input_data.size()));
+    if (start_proc != end_proc) {
+      world.send(end_proc, 0, input_data);
+    }
   }
 
   if (world.rank() == end_proc) {
@@ -313,6 +341,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_8192) {
                           reinterpret_cast<uint8_t*>(received_path.data())};
     task_data->outputs_count = {static_cast<unsigned int>(output_data.size()),
                                 static_cast<unsigned int>(received_path.size())};
+    if (start_proc != end_proc) {
+      world.recv(start_proc, 0, input_data);
+    }
   }
 
   lavrentyev_a_line_topology_mpi::TestMPITaskParallel task(task_data);
@@ -349,6 +380,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_16384) {
     input_data = lavrentyrev_generate_random_vector(num_elems);
     task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
     task_data->inputs_count.push_back(static_cast<unsigned int>(input_data.size()));
+    if (start_proc != end_proc) {
+      world.send(end_proc, 0, input_data);
+    }
   }
 
   if (world.rank() == end_proc) {
@@ -356,6 +390,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_16384) {
                           reinterpret_cast<uint8_t*>(received_path.data())};
     task_data->outputs_count = {static_cast<unsigned int>(output_data.size()),
                                 static_cast<unsigned int>(received_path.size())};
+    if (start_proc != end_proc) {
+      world.recv(start_proc, 0, input_data);
+    }
   }
 
   lavrentyev_a_line_topology_mpi::TestMPITaskParallel task(task_data);
@@ -392,6 +429,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_2187) {
     input_data = lavrentyrev_generate_random_vector(num_elems);
     task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
     task_data->inputs_count.push_back(static_cast<unsigned int>(input_data.size()));
+    if (start_proc != end_proc) {
+      world.send(end_proc, 0, input_data);
+    }
   }
 
   if (world.rank() == end_proc) {
@@ -399,6 +439,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_2187) {
                           reinterpret_cast<uint8_t*>(received_path.data())};
     task_data->outputs_count = {static_cast<unsigned int>(output_data.size()),
                                 static_cast<unsigned int>(received_path.size())};
+    if (start_proc != end_proc) {
+      world.recv(start_proc, 0, input_data);
+    }
   }
 
   lavrentyev_a_line_topology_mpi::TestMPITaskParallel task(task_data);
@@ -435,6 +478,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_6561) {
     input_data = lavrentyrev_generate_random_vector(num_elems);
     task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
     task_data->inputs_count.push_back(static_cast<unsigned int>(input_data.size()));
+    if (start_proc != end_proc) {
+      world.send(end_proc, 0, input_data);
+    }
   }
 
   if (world.rank() == end_proc) {
@@ -442,6 +488,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_6561) {
                           reinterpret_cast<uint8_t*>(received_path.data())};
     task_data->outputs_count = {static_cast<unsigned int>(output_data.size()),
                                 static_cast<unsigned int>(received_path.size())};
+    if (start_proc != end_proc) {
+      world.recv(start_proc, 0, input_data);
+    }
   }
 
   lavrentyev_a_line_topology_mpi::TestMPITaskParallel task(task_data);
@@ -478,6 +527,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_19638) {
     input_data = lavrentyrev_generate_random_vector(num_elems);
     task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
     task_data->inputs_count.push_back(static_cast<unsigned int>(input_data.size()));
+    if (start_proc != end_proc) {
+      world.send(end_proc, 0, input_data);
+    }
   }
 
   if (world.rank() == end_proc) {
@@ -485,6 +537,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_19638) {
                           reinterpret_cast<uint8_t*>(received_path.data())};
     task_data->outputs_count = {static_cast<unsigned int>(output_data.size()),
                                 static_cast<unsigned int>(received_path.size())};
+    if (start_proc != end_proc) {
+      world.recv(start_proc, 0, input_data);
+    }
   }
 
   lavrentyev_a_line_topology_mpi::TestMPITaskParallel task(task_data);
@@ -521,6 +576,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_2791) {
     input_data = lavrentyrev_generate_random_vector(num_elems);
     task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
     task_data->inputs_count.push_back(static_cast<unsigned int>(input_data.size()));
+    if (start_proc != end_proc) {
+      world.send(end_proc, 0, input_data);
+    }
   }
 
   if (world.rank() == end_proc) {
@@ -528,6 +586,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_2791) {
                           reinterpret_cast<uint8_t*>(received_path.data())};
     task_data->outputs_count = {static_cast<unsigned int>(output_data.size()),
                                 static_cast<unsigned int>(received_path.size())};
+    if (start_proc != end_proc) {
+      world.recv(start_proc, 0, input_data);
+    }
   }
 
   lavrentyev_a_line_topology_mpi::TestMPITaskParallel task(task_data);
@@ -564,6 +625,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_5021) {
     input_data = lavrentyrev_generate_random_vector(num_elems);
     task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
     task_data->inputs_count.push_back(static_cast<unsigned int>(input_data.size()));
+    if (start_proc != end_proc) {
+      world.send(end_proc, 0, input_data);
+    }
   }
 
   if (world.rank() == end_proc) {
@@ -571,6 +635,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_5021) {
                           reinterpret_cast<uint8_t*>(received_path.data())};
     task_data->outputs_count = {static_cast<unsigned int>(output_data.size()),
                                 static_cast<unsigned int>(received_path.size())};
+    if (start_proc != end_proc) {
+      world.recv(start_proc, 0, input_data);
+    }
   }
 
   lavrentyev_a_line_topology_mpi::TestMPITaskParallel task(task_data);
@@ -607,6 +674,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_7517) {
     input_data = lavrentyrev_generate_random_vector(num_elems);
     task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
     task_data->inputs_count.push_back(static_cast<unsigned int>(input_data.size()));
+    if (start_proc != end_proc) {
+      world.send(end_proc, 0, input_data);
+    }
   }
 
   if (world.rank() == end_proc) {
@@ -614,6 +684,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_7517) {
                           reinterpret_cast<uint8_t*>(received_path.data())};
     task_data->outputs_count = {static_cast<unsigned int>(output_data.size()),
                                 static_cast<unsigned int>(received_path.size())};
+    if (start_proc != end_proc) {
+      world.recv(start_proc, 0, input_data);
+    }
   }
 
   lavrentyev_a_line_topology_mpi::TestMPITaskParallel task(task_data);
