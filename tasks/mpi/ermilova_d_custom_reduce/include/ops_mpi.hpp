@@ -16,20 +16,6 @@ namespace ermilova_d_custom_reduce_mpi {
 
 int CustomReduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op, int root, MPI_Comm comm);
 
-class TestMPITaskSequential : public ppc::core::Task {
- public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-  bool pre_processing() override;
-  bool validation() override;
-  bool run() override;
-  bool post_processing() override;
-
- private:
-  std::vector<std::vector<int>> input_;
-  int res{};
-  int cols, rows;
-};
-
 class TestMPITaskParallel : public ppc::core::Task {
  public:
   explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

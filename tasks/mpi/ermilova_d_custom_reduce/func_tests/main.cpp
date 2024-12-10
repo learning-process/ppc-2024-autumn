@@ -3,10 +3,57 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <boost/serialization/vector.hpp>
 #include <random>
 #include <vector>
 
 #include "mpi/ermilova_d_custom_reduce/include/ops_mpi.hpp"
+
+template <typename T>
+std::vector<T> getRandom(int size) {
+  std::vector<T> vec(size);
+  for (int i = 0; i < size; i++) {
+    vec[i] = static_cast<T>(rand());
+  }
+  return vec;
+}
+
+template <typename T>
+void Test_reduce(MPI_Datatype datatype, MPI_Op op) {
+  int size = 100;
+  boost::mpi::communicator world;
+  std::vector<T> input_;
+  if (world.rank() == 0) {
+    input_ = getRandom<T>(size * world.size());
+  }
+  std::vector<T> recv_data(size);
+  boost::mpi::scatter(world, input_.data(), recv_data.data(), size, 0);
+
+  T local_result;
+  if (op == MPI_SUM) {
+    local_result = std::accumulate(recv_data.begin(), recv_data.end(), T{});
+  } else if (op == MPI_MIN) {
+    local_result = *std::min_element(recv_data.begin(), recv_data.end());
+  } else if (op == MPI_MAX) {
+    local_result = *std::max_element(recv_data.begin(), recv_data.end());
+  }
+  T global_result =
+      (op == MPI_SUM) ? T(0) : (op == MPI_MIN ? std::numeric_limits<T>::max() : std::numeric_limits<T>::min());
+
+  ermilova_d_custom_reduce_mpi::CustomReduce(&local_result, &global_result, 1, datatype, op, 0, MPI_COMM_WORLD);
+
+  if (world.rank() == 0) {
+    T ref;
+    if (op == MPI_SUM) {
+      ref = std::accumulate(input_.begin(), input_.end(), T{});
+    } else if (op == MPI_MIN) {
+      ref = *std::min_element(input_.begin(), input_.end());
+    } else if (op == MPI_MAX) {
+      ref = *std::max_element(input_.begin(), input_.end());
+    }
+    ASSERT_EQ(global_result, ref);
+  }
+}
 
 static std::vector<int> getRandomVector(int size, int upper_border, int lower_border) {
   std::random_device dev;
@@ -58,147 +105,23 @@ TEST(ermilova_d_custom_reduce_mpi, Cant_create_incorrect_size_matrix) {
   EXPECT_ANY_THROW(getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test));
 }
 
-TEST(ermilova_d_custom_reduce_mpi, CustomReduce_int_sum) {
-  int rank;
-  int size;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  MPI_Comm_size(MPI_COMM_WORLD, &size);
+TEST(ermilova_d_custom_reduce_mpi, CustomReduce_int_sum) { Test_reduce<int>(MPI_INT, MPI_SUM); }
 
-  int local_value = rank + 1;
-  int global_result = 0;
+TEST(ermilova_d_custom_reduce_mpi, CustomReduce_int_min) { Test_reduce<int>(MPI_INT, MPI_MIN); }
 
-  ermilova_d_custom_reduce_mpi::CustomReduce(&local_value, &global_result, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+TEST(ermilova_d_custom_reduce_mpi, CustomReduce_int_max) { Test_reduce<int>(MPI_INT, MPI_MAX); }
 
-  if (rank == 0) {
-    int expected_sum = size * (size + 1) / 2;
+TEST(ermilova_d_custom_reduce_mpi, CustomReduce_float_sum) { Test_reduce<float>(MPI_FLOAT, MPI_SUM); }
 
-    ASSERT_EQ(global_result, expected_sum);
-  }
-}
+TEST(ermilova_d_custom_reduce_mpi, CustomReduce_float_min) { Test_reduce<float>(MPI_FLOAT, MPI_MIN); }
 
-TEST(ermilova_d_custom_reduce_mpi, CustomReduce_int_min) {
-  int rank;
-  int size;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  MPI_Comm_size(MPI_COMM_WORLD, &size);
+TEST(ermilova_d_custom_reduce_mpi, CustomReduce_float_max) { Test_reduce<float>(MPI_FLOAT, MPI_MAX); }
 
-  int local_value = rank + 1;
-  int global_result = std::numeric_limits<int>::max();
+TEST(ermilova_d_custom_reduce_mpi, CustomReduce_double_sum) { Test_reduce<double>(MPI_DOUBLE, MPI_SUM); }
 
-  ermilova_d_custom_reduce_mpi::CustomReduce(&local_value, &global_result, 1, MPI_INT, MPI_MIN, 0, MPI_COMM_WORLD);
+TEST(ermilova_d_custom_reduce_mpi, CustomReduce_double_min) { Test_reduce<double>(MPI_DOUBLE, MPI_MIN); }
 
-  if (rank == 0) {
-    ASSERT_EQ(global_result, 1);
-  }
-}
-
-TEST(ermilova_d_custom_reduce_mpi, CustomReduce_int_max) {
-  int rank;
-  int size;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  MPI_Comm_size(MPI_COMM_WORLD, &size);
-
-  int local_value = rank + 1;
-  int global_result = std::numeric_limits<int>::min();
-
-  ermilova_d_custom_reduce_mpi::CustomReduce(&local_value, &global_result, 1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
-
-  if (rank == 0) {
-    ASSERT_EQ(global_result, size);
-  }
-}
-
-TEST(ermilova_d_custom_reduce_mpi, CustomReduce_float_sum) {
-  int rank;
-  int size;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  MPI_Comm_size(MPI_COMM_WORLD, &size);
-
-  float local_value = static_cast<float>(rank) + 1.5f;
-  float global_result = 0.0f;
-
-  ermilova_d_custom_reduce_mpi::CustomReduce(&local_value, &global_result, 1, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
-
-  if (rank == 0) {
-    float expected_sum = (size * (size + 1) / 2.0f) + 0.5f * size;
-    ASSERT_FLOAT_EQ(global_result, expected_sum);
-  }
-}
-
-TEST(ermilova_d_custom_reduce_mpi, CustomReduce_float_max) {
-  int rank;
-  int size;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  MPI_Comm_size(MPI_COMM_WORLD, &size);
-
-  float local_value = static_cast<float>(rank) + 1.5f;
-  float global_result = std::numeric_limits<float>::min();
-
-  ermilova_d_custom_reduce_mpi::CustomReduce(&local_value, &global_result, 1, MPI_FLOAT, MPI_MAX, 0, MPI_COMM_WORLD);
-
-  if (rank == 0) {
-    ASSERT_FLOAT_EQ(global_result, size + 0.5f);
-  }
-}
-
-TEST(ermilova_d_custom_reduce_mpi, CustomReduce_float_min) {
-  int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
-  float local_value = static_cast<float>(rank) + 1.5f;
-  float global_result = std::numeric_limits<float>::max();
-
-  ermilova_d_custom_reduce_mpi::CustomReduce(&local_value, &global_result, 1, MPI_FLOAT, MPI_MIN, 0, MPI_COMM_WORLD);
-
-  if (rank == 0) {
-    ASSERT_FLOAT_EQ(global_result, 1.5f);
-  }
-}
-
-TEST(ermilova_d_custom_reduce_mpi, CustomReduce_double_sum) {
-  int rank;
-  int size;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  MPI_Comm_size(MPI_COMM_WORLD, &size);
-  double local_value = static_cast<double>(rank) + 1.5;
-  double global_result = 0.0;
-  ermilova_d_custom_reduce_mpi::CustomReduce(&local_value, &global_result, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-
-  if (rank == 0) {
-    double expected_sum = (size * (size + 1) / 2.0f) + 0.5f * size;
-    ASSERT_DOUBLE_EQ(global_result, expected_sum);
-  }
-}
-
-TEST(ermilova_d_custom_reduce_mpi, CustomReduce_double_min) {
-  int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
-  double local_value = static_cast<double>(rank) + 1.5;
-  double global_result = std::numeric_limits<double>::max();
-
-  ermilova_d_custom_reduce_mpi::CustomReduce(&local_value, &global_result, 1, MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
-
-  if (rank == 0) {
-    ASSERT_DOUBLE_EQ(global_result, 1.5);
-  }
-}
-
-TEST(ermilova_d_custom_reduce_mpi, CustomReduce_double_max) {
-  int rank;
-  int size;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  MPI_Comm_size(MPI_COMM_WORLD, &size);
-
-  double local_value = static_cast<double>(rank) + 1.5;
-  double global_result = std::numeric_limits<double>::min();
-
-  ermilova_d_custom_reduce_mpi::CustomReduce(&local_value, &global_result, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-
-  if (rank == 0) {
-    ASSERT_DOUBLE_EQ(global_result, size + 0.5);
-  }
-}
+TEST(ermilova_d_custom_reduce_mpi, CustomReduce_double_max) { Test_reduce<double>(MPI_DOUBLE, MPI_MAX); }
 
 TEST(ermilova_d_custom_reduce_mpi, Matrix_1x1) {
   boost::mpi::communicator world;
@@ -231,27 +154,13 @@ TEST(ermilova_d_custom_reduce_mpi, Matrix_1x1) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Create data
-    std::vector<int32_t> reference_min(1, INT_MAX);
-
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    for (unsigned int i = 0; i < global_matrix.size(); i++) {
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+    int reference_min = INT_MAX;
+    for (auto& row : global_matrix) {
+      int row_min = *std::min_element(row.begin(), row.end());
+      reference_min = std::min(reference_min, row_min);
     }
-    taskDataSeq->inputs_count.emplace_back(rows_test);
-    taskDataSeq->inputs_count.emplace_back(cols_test);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
-    // Create Task
-    ermilova_d_custom_reduce_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
-
-    ASSERT_EQ(reference_min[0], global_min[0]);
+    ASSERT_EQ(reference_min, global_min[0]);
   }
 }
 
@@ -284,27 +193,13 @@ TEST(ermilova_d_custom_reduce_mpi, Matrix_10x10) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Create data
-    std::vector<int32_t> reference_min(1, INT_MAX);
-
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    for (unsigned int i = 0; i < global_matrix.size(); i++) {
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+    int reference_min = INT_MAX;
+    for (auto& row : global_matrix) {
+      int row_min = *std::min_element(row.begin(), row.end());
+      reference_min = std::min(reference_min, row_min);
     }
-    taskDataSeq->inputs_count.emplace_back(rows_test);
-    taskDataSeq->inputs_count.emplace_back(cols_test);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
-    // Create Task
-    ermilova_d_custom_reduce_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
-
-    ASSERT_EQ(reference_min[0], global_min[0]);
+    ASSERT_EQ(reference_min, global_min[0]);
   }
 }
 
@@ -337,27 +232,13 @@ TEST(ermilova_d_custom_reduce_mpi, Matrix_100x100) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Create data
-    std::vector<int32_t> reference_min(1, INT_MAX);
-
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    for (unsigned int i = 0; i < global_matrix.size(); i++) {
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+    int reference_min = INT_MAX;
+    for (auto& row : global_matrix) {
+      int row_min = *std::min_element(row.begin(), row.end());
+      reference_min = std::min(reference_min, row_min);
     }
-    taskDataSeq->inputs_count.emplace_back(rows_test);
-    taskDataSeq->inputs_count.emplace_back(cols_test);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
-    // Create Task
-    ermilova_d_custom_reduce_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
-
-    ASSERT_EQ(reference_min[0], global_min[0]);
+    ASSERT_EQ(reference_min, global_min[0]);
   }
 }
 
@@ -390,27 +271,13 @@ TEST(ermilova_d_custom_reduce_mpi, Matrix_100x50) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Create data
-    std::vector<int32_t> reference_min(1, INT_MAX);
-
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    for (unsigned int i = 0; i < global_matrix.size(); i++) {
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+    int reference_min = INT_MAX;
+    for (auto& row : global_matrix) {
+      int row_min = *std::min_element(row.begin(), row.end());
+      reference_min = std::min(reference_min, row_min);
     }
-    taskDataSeq->inputs_count.emplace_back(rows_test);
-    taskDataSeq->inputs_count.emplace_back(cols_test);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
-    // Create Task
-    ermilova_d_custom_reduce_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
-
-    ASSERT_EQ(reference_min[0], global_min[0]);
+    ASSERT_EQ(reference_min, global_min[0]);
   }
 }
 
@@ -443,27 +310,13 @@ TEST(ermilova_d_custom_reduce_mpi, Matrix_50x100) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Create data
-    std::vector<int32_t> reference_min(1, INT_MAX);
-
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    for (unsigned int i = 0; i < global_matrix.size(); i++) {
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+    int reference_min = INT_MAX;
+    for (auto& row : global_matrix) {
+      int row_min = *std::min_element(row.begin(), row.end());
+      reference_min = std::min(reference_min, row_min);
     }
-    taskDataSeq->inputs_count.emplace_back(rows_test);
-    taskDataSeq->inputs_count.emplace_back(cols_test);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
-    // Create Task
-    ermilova_d_custom_reduce_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
-
-    ASSERT_EQ(reference_min[0], global_min[0]);
+    ASSERT_EQ(reference_min, global_min[0]);
   }
 }
 
@@ -496,26 +349,12 @@ TEST(ermilova_d_custom_reduce_mpi, Matrix_500x500) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Create data
-    std::vector<int32_t> reference_min(1, INT_MAX);
-
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    for (unsigned int i = 0; i < global_matrix.size(); i++) {
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+    int reference_min = INT_MAX;
+    for (auto& row : global_matrix) {
+      int row_min = *std::min_element(row.begin(), row.end());
+      reference_min = std::min(reference_min, row_min);
     }
-    taskDataSeq->inputs_count.emplace_back(rows_test);
-    taskDataSeq->inputs_count.emplace_back(cols_test);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
-    // Create Task
-    ermilova_d_custom_reduce_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
-
-    ASSERT_EQ(reference_min[0], global_min[0]);
+    ASSERT_EQ(reference_min, global_min[0]);
   }
 }

@@ -89,27 +89,13 @@ TEST(ermilova_d_reduceMPI_mpi, Matrix_1x1) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Create data
-    std::vector<int32_t> reference_min(1, INT_MAX);
-
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    for (unsigned int i = 0; i < global_matrix.size(); i++) {
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+    int reference_min = INT_MAX;
+    for (auto& row : global_matrix) {
+      int row_min = *std::min_element(row.begin(), row.end());
+      reference_min = std::min(reference_min, row_min);
     }
-    taskDataSeq->inputs_count.emplace_back(rows_test);
-    taskDataSeq->inputs_count.emplace_back(cols_test);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
-    // Create Task
-    ermilova_d_reduceMPI_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
-
-    ASSERT_EQ(reference_min[0], global_min[0]);
+    ASSERT_EQ(reference_min, global_min[0]);
   }
 }
 
@@ -142,27 +128,13 @@ TEST(ermilova_d_reduceMPI_mpi, Matrix_10x10) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Create data
-    std::vector<int32_t> reference_min(1, INT_MAX);
-
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    for (unsigned int i = 0; i < global_matrix.size(); i++) {
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+    int reference_min = INT_MAX;
+    for (auto& row : global_matrix) {
+      int row_min = *std::min_element(row.begin(), row.end());
+      reference_min = std::min(reference_min, row_min);
     }
-    taskDataSeq->inputs_count.emplace_back(rows_test);
-    taskDataSeq->inputs_count.emplace_back(cols_test);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
-    // Create Task
-    ermilova_d_reduceMPI_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
-
-    ASSERT_EQ(reference_min[0], global_min[0]);
+    ASSERT_EQ(reference_min, global_min[0]);
   }
 }
 
@@ -195,27 +167,13 @@ TEST(ermilova_d_reduceMPI_mpi, Matrix_100x100) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Create data
-    std::vector<int32_t> reference_min(1, INT_MAX);
-
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    for (unsigned int i = 0; i < global_matrix.size(); i++) {
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+    int reference_min = INT_MAX;
+    for (auto& row : global_matrix) {
+      int row_min = *std::min_element(row.begin(), row.end());
+      reference_min = std::min(reference_min, row_min);
     }
-    taskDataSeq->inputs_count.emplace_back(rows_test);
-    taskDataSeq->inputs_count.emplace_back(cols_test);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
-    // Create Task
-    ermilova_d_reduceMPI_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
-
-    ASSERT_EQ(reference_min[0], global_min[0]);
+    ASSERT_EQ(reference_min, global_min[0]);
   }
 }
 
@@ -248,27 +206,13 @@ TEST(ermilova_d_reduceMPI_mpi, Matrix_100x50) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Create data
-    std::vector<int32_t> reference_min(1, INT_MAX);
-
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    for (unsigned int i = 0; i < global_matrix.size(); i++) {
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+    int reference_min = INT_MAX;
+    for (auto& row : global_matrix) {
+      int row_min = *std::min_element(row.begin(), row.end());
+      reference_min = std::min(reference_min, row_min);
     }
-    taskDataSeq->inputs_count.emplace_back(rows_test);
-    taskDataSeq->inputs_count.emplace_back(cols_test);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
-    // Create Task
-    ermilova_d_reduceMPI_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
-
-    ASSERT_EQ(reference_min[0], global_min[0]);
+    ASSERT_EQ(reference_min, global_min[0]);
   }
 }
 
@@ -301,27 +245,13 @@ TEST(ermilova_d_reduceMPI_mpi, Matrix_50x100) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Create data
-    std::vector<int32_t> reference_min(1, INT_MAX);
-
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    for (unsigned int i = 0; i < global_matrix.size(); i++) {
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+    int reference_min = INT_MAX;
+    for (auto& row : global_matrix) {
+      int row_min = *std::min_element(row.begin(), row.end());
+      reference_min = std::min(reference_min, row_min);
     }
-    taskDataSeq->inputs_count.emplace_back(rows_test);
-    taskDataSeq->inputs_count.emplace_back(cols_test);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
-    // Create Task
-    ermilova_d_reduceMPI_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
-
-    ASSERT_EQ(reference_min[0], global_min[0]);
+    ASSERT_EQ(reference_min, global_min[0]);
   }
 }
 
@@ -354,26 +284,12 @@ TEST(ermilova_d_reduceMPI_mpi, Matrix_500x500) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Create data
-    std::vector<int32_t> reference_min(1, INT_MAX);
-
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    for (unsigned int i = 0; i < global_matrix.size(); i++) {
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
+    int reference_min = INT_MAX;
+    for (auto& row : global_matrix) {
+      int row_min = *std::min_element(row.begin(), row.end());
+      reference_min = std::min(reference_min, row_min);
     }
-    taskDataSeq->inputs_count.emplace_back(rows_test);
-    taskDataSeq->inputs_count.emplace_back(cols_test);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_min.size());
 
-    // Create Task
-    ermilova_d_reduceMPI_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
-
-    ASSERT_EQ(reference_min[0], global_min[0]);
+    ASSERT_EQ(reference_min, global_min[0]);
   }
 }
