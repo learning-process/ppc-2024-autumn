@@ -13,6 +13,7 @@ namespace nasedkin_e_strassen_algorithm {
     bool TestMPITaskParallel::pre_processing() {
         size_t total_rows;
         size_t total_cols;
+
         if (world.rank() == 0) {
             total_rows = taskData->inputs_count[0];
             total_cols = taskData->inputs_count[1];
@@ -63,12 +64,11 @@ namespace nasedkin_e_strassen_algorithm {
         boost::mpi::gather(world, local_matrix_c.data(), local_matrix_c.size(), global_matrix_c.data(), 0);
 
         if (world.rank() == 0) {
-            auto output = reinterpret_cast<double*>(taskData->outputs[0]);
+            auto* output = reinterpret_cast<double*>(taskData->outputs[0]);
             std::copy(global_matrix_c.begin(), global_matrix_c.end(), output);
         }
         return true;
     }
-
 
     std::vector<double> TestMPITaskParallel::strassen(const std::vector<double>& A, const std::vector<double>& B, size_t n) {
         if (n <= 2) {
@@ -94,38 +94,29 @@ namespace nasedkin_e_strassen_algorithm {
         std::vector<double> b21(half * half);
         std::vector<double> b22(half * half);
 
-
         split_matrix(A, n, a11, a12, a21, a22);
         split_matrix(B, n, b11, b12, b21, b22);
 
-        // 7 рекурсивных умножений по алгоритму Штрассена
-        auto m1 = strassen(a11, b11, half);  // M1 = (A11 + A22)(B11 + B22)
-        auto m2 = strassen(a21, b11, half);  // M2 = (A21 + A22)B11
-        auto m3 = strassen(a11, b12, half);  // M3 = A11(B12 - B22)
-        auto m4 = strassen(a22, b21, half);  // M4 = A22(B21 - B11)
-        auto m5 = strassen(a11, b22, half);  // M5 = (A11 + A12)B22
-        auto m6 = strassen(a21, b22, half);  // M6 = (A21 - A11)(B11 + B12)
-        auto m7 = strassen(a12, b21, half);  // M7 = (A12 - A22)(B21 + B22)
+        auto m1 = strassen(a11, b11, half);
+        auto m2 = strassen(a21, b11, half);
+        auto m3 = strassen(a11, b12, half);
+        auto m4 = strassen(a22, b21, half);
+        auto m5 = strassen(a11, b22, half);
+        auto m6 = strassen(a21, b22, half);
+        auto m7 = strassen(a12, b21, half);
 
-        // Собираем результаты
-        std::vector<double> c11 = combine_matrix(m1, m4, m5, m7, half);
-        std::vector<double> c12 = combine_matrix(m3, m5, m7, m6, half);
-        std::vector<double> c21 = combine_matrix(m2, m4, m6, m7, half);
-        std::vector<double> c22 = combine_matrix(m1, m3, m2, m6, half);
+        auto c11 = combine_matrix(m1, m4, m5, m7, half);
+        auto c12 = combine_matrix(m3, m5, m7, m6, half);
+        auto c21 = combine_matrix(m2, m4, m6, m7, half);
+        auto c22 = combine_matrix(m1, m3, m2, m6, half);
 
         return combine_matrix(c11, c12, c21, c22, n);
     }
 
-
     void TestMPITaskParallel::split_matrix(const std::vector<double>& matrix, size_t n,
-                                           std::vector<double>& a11, std::vector<double>& a12,
-                                           std::vector<double>& a21, std::vector<double>& a22) {
+                                                  std::vector<double>& a11, std::vector<double>& a12,
+                                                  std::vector<double>& a21, std::vector<double>& a22) {
         size_t half = n / 2;
-        a11.resize(half * half);
-        a12.resize(half * half);
-        a21.resize(half * half);
-        a22.resize(half * half);
-
         for (size_t i = 0; i < half; ++i) {
             for (size_t j = 0; j < half; ++j) {
                 a11[i * half + j] = matrix[i * n + j];
@@ -137,7 +128,7 @@ namespace nasedkin_e_strassen_algorithm {
     }
 
     std::vector<double> TestMPITaskParallel::combine_matrix(const std::vector<double>& c11, const std::vector<double>& c12,
-                                                            const std::vector<double>& c21, const std::vector<double>& c22, size_t n) {
+                                                                   const std::vector<double>& c21, const std::vector<double>& c22, size_t n) {
         std::vector<double> matrix(n * n);
         size_t half = n / 2;
 
