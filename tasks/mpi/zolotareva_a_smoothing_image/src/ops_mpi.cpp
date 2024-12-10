@@ -120,9 +120,6 @@ bool zolotareva_a_smoothing_image_mpi::TestMPITaskParallel::pre_processing() {
     input_.resize(size_);
     const uint8_t* raw_data = taskData->inputs[0];
     std::copy(raw_data, raw_data + size_, input_.begin());
-    if (world.size() == 1) {
-      return true;
-    }
   }
 
   return true;
