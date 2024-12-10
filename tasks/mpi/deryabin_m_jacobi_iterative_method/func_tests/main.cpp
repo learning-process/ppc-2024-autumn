@@ -13,7 +13,7 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_valid_matrix) {
   std::uniform_real_distribution<> distribut(91, 100);
   std::vector<double> input_matrix_(100, distrib(gen));
   std::vector<double> input_right_vector_(10, distrib(gen));
-  fot (unsigned short i = 0; i < 10; i++) {
+  for (unsigned short i = 0; i < 10; i++) {
     input_matrix_[i * 11] = distribut(gen);
   }
   std::vector<double> output_x_vector_ = std::vector<double>(10, 0);
@@ -73,7 +73,7 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_3X_diagonal_matrix) {
   std::uniform_real_distribution<> distribut(91, 100);
   std::vector<double> input_matrix_(100, 0);
   std::vector<double> input_right_vector_(10, distrib(gen));
-  fot (unsigned short i = 0; i < 10; i++) {
+  for (unsigned short i = 0; i < 10; i++) {
     input_matrix_[i * 11] = distribut(gen);
     if (i != 0) {
       input_matrix_[i * 11 - 1] = distrib(gen);
@@ -138,7 +138,7 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_1X_diagonal_matrix) {
   std::uniform_real_distribution<> distribut(1, 100);
   std::vector<double> input_matrix_(100, 0);
   std::vector<double> input_right_vector_(10, distribut(gen));
-  fot (unsigned short i = 0; i < 10; i++) {
+  for (unsigned short i = 0; i < 10; i++) {
     input_matrix_[i * 11] = distribut(gen);
   }
   std::vector<double> output_x_vector_ = std::vector<double>(10, 0);
@@ -197,7 +197,7 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_diagonal_elements_are_m
   std::uniform_real_distribution<> distrib(1, 10);
   std::vector<double> input_matrix_(100, distrib(gen));
   std::vector<double> input_right_vector_(10, distrib(gen));
-  fot (unsigned short i = 0; i < 10; i++) {
+  for (unsigned short i = 0; i < 10; i++) {
     input_matrix_[i * 11] = 100 * distrib(gen);
   }
   std::vector<double> output_x_vector_ = std::vector<double>(10, 0);
@@ -257,7 +257,7 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, random_invalid_matrix_zeros_on_diag
   std::uniform_real_distribution<> distrib(1, 10);
   std::vector<double> input_matrix_(100, distrib(gen));
   std::vector<double> input_right_vector_(10, distrib(gen));
-  fot (unsigned short i = 0; i < 10; i++) {
+  for (unsigned short i = 0; i < 10; i++) {
     input_matrix_[i * 11] = 0;
   }
   std::vector<double> output_x_vector_ = std::vector<double>(10, 0);
