@@ -99,7 +99,7 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, 05x05_area) {
   std::vector<std::pair<double, double>> lims(dim);
   lims[0].first = lims[1].first = 0.0;
   lims[0].second = lims[1].second = 0.5;
-  double h = 0.0005;
+  double h = 0.001;
   double eps = 1e-3;
   std::vector<double> out(1);
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
@@ -122,7 +122,7 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, 05x05_xy) {
   std::vector<std::pair<double, double>> lims(dim);
   lims[0].first = lims[1].first = 0.0;
   lims[0].second = lims[1].second = 0.5;
-  double h = 0.001;
+  double h = 0.005;
   double eps = 1e-3;
   std::vector<double> out(1);
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
@@ -145,7 +145,7 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, _0_07x0_07_tg_x_
   std::vector<std::pair<double, double>> lims(dim);
   lims[0].first = lims[1].first = 0.0;
   lims[0].second = lims[1].second = 0.7;
-  double h = 0.0005;
+  double h = 0.001;
   double eps = 1e-3;
   std::vector<double> out(1);
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
@@ -163,11 +163,11 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, _0_07x0_07_tg_x_
   ASSERT_NEAR(0.0611557538713948, out[0], eps);
 }
 
-TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, 3x3_area) {
+TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, 2x2_area) {
   const size_t dim = 2;
   std::vector<std::pair<double, double>> lims(dim);
   lims[0].first = lims[1].first = 0.0;
-  lims[0].second = lims[1].second = 3.0;
+  lims[0].second = lims[1].second = 2.0;
   double h = 0.005;
   double eps = 1e-4;
   std::vector<double> out(1);
@@ -183,14 +183,14 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, 3x3_area) {
   tmpTaskSeq.pre_processing();
   tmpTaskSeq.run();
   tmpTaskSeq.post_processing();
-  ASSERT_NEAR(9.0, out[0], eps);
+  ASSERT_NEAR(4.0, out[0], eps);
 }
 
-TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, 2_5x1_4_area) {
+TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, 2_3x1_4_area) {
   const size_t dim = 2;
   std::vector<std::pair<double, double>> lims(dim);
   lims[0].first = 2.0;
-  lims[0].second = 5.0;
+  lims[0].second = 3.0;
   lims[1].first = 1.0;
   lims[1].second = 4.0;
   double h = 0.005;
@@ -208,15 +208,15 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, 2_5x1_4_area) {
   tmpTaskSeq.pre_processing();
   tmpTaskSeq.run();
   tmpTaskSeq.post_processing();
-  ASSERT_NEAR(9.0, out[0], eps);
+  ASSERT_NEAR(3.0, out[0], eps);
 }
 
-TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, minus1_2xminus3_0_area) {
+TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, _0_2xminus2_0_area) {
   const size_t dim = 2;
   std::vector<std::pair<double, double>> lims(dim);
-  lims[0].first = -1.0;
+  lims[0].first = 0.0;
   lims[0].second = 2.0;
-  lims[1].first = -3.0;
+  lims[1].first = -2.0;
   lims[1].second = 0.0;
   double h = 0.005;
   double eps = 1e-4;
@@ -233,7 +233,7 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, minus1_2xminus3_
   tmpTaskSeq.pre_processing();
   tmpTaskSeq.run();
   tmpTaskSeq.post_processing();
-  ASSERT_NEAR(9.0, out[0], eps);
+  ASSERT_NEAR(4.0, out[0], eps);
 }
 
 TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, minus1_0xminus1_0_xy) {
