@@ -5,7 +5,7 @@
 
 #include "seq/kolodkin_g_sentence_count/include/ops_seq.hpp"
 
-TEST(Sequential, Test_two_sentences) {
+TEST(kolodkin_g_sentence_count, Test_two_sentences) {
   // Create data
   std::string str = "Hello! My name is Grisha!";
   std::vector<std::string> in(1, str);
@@ -26,7 +26,7 @@ TEST(Sequential, Test_two_sentences) {
   testTaskSequential.post_processing();
   ASSERT_EQ(out[0], 2);
 }
-TEST(Sequential, Test_sentences_with_special_symbols) {
+TEST(kolodkin_g_sentence_count, Test_sentences_with_special_symbols) {
   // Create data
   std::string str = "Hello!My name is Grisha! I have two pets: cat,dog,parrot.";
   std::vector<int> out(1, 0);
@@ -46,7 +46,7 @@ TEST(Sequential, Test_sentences_with_special_symbols) {
   testTaskSequential.post_processing();
   ASSERT_EQ(out[0], 3);
 }
-TEST(Sequential, Test_sentences_with_special_symbols_in_end_of_sentence) {
+TEST(kolodkin_g_sentence_count, Test_sentences_with_special_symbols_in_end_of_sentence) {
   // Create data
   std::string str =
       "Hello!My name is Grisha! I have two pets: cat,dog,parrot. What is your name?! How are you!? Well...";
@@ -68,7 +68,7 @@ TEST(Sequential, Test_sentences_with_special_symbols_in_end_of_sentence) {
   testTaskSequential.post_processing();
   ASSERT_EQ(out[0], 6);
 }
-TEST(Sequential, Test_sentences_with_double_symbols) {
+TEST(kolodkin_g_sentence_count, Test_sentences_with_double_symbols) {
   // Create data
   std::string str =
       "Hello!! My name is Grisha!! I have two pets: cat,dog,parrot. What is your name?! How are you!? Well...";
@@ -90,7 +90,7 @@ TEST(Sequential, Test_sentences_with_double_symbols) {
   testTaskSequential.post_processing();
   ASSERT_EQ(out[0], 6);
 }
-TEST(Sequential, Big_text) {
+TEST(kolodkin_g_sentence_count, Big_text) {
   // Create data
   std::string str =
       "Otche nash, ize esi na nebeseh! Da svytitsa imya tvoe, da priidet tsarstvo tvoe! Da budet volya tvoya, ako na "
