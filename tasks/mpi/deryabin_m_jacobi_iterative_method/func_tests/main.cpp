@@ -19,21 +19,16 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_valid_matrix) {
   std::vector<double> output_x_vector_ = std::vector<double>(10, 0);
   std::vector<std::vector<double>> out_x_vec(1, output_x_vector_);
 
-  std::shared_ptr<ppc::core::TaskData> taskDataPar =
-      std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(
-        reinterpret_cast<uint8_t*>(input_matrix_.data()));
-    taskDataPar->inputs.emplace_back(
-        reinterpret_cast<uint8_t*>(input_right_vector_.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix_.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_right_vector_.data()));
     taskDataPar->inputs_count.emplace_back(input_right_vector_.size());
-    taskDataPar->outputs.emplace_back(
-        reinterpret_cast<uint8_t*>(out_x_vec.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_x_vec.data()));
     taskDataPar->outputs_count.emplace_back(out_x_vec.size());
   }
 
-  deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel
-      testMpiTaskParallel(taskDataPar);
+  deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -42,20 +37,15 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_valid_matrix) {
   if (world.rank() == 0) {
     std::vector<std::vector<double>> reference_out_x_vec(1, output_x_vector_);
 
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq =
-        std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(
-        reinterpret_cast<uint8_t*>(input_matrix_.data()));
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix_.data()));
     taskDataSeq->inputs_count.emplace_back(input_matrix_.size());
-    taskDataSeq->inputs.emplace_back(
-        reinterpret_cast<uint8_t*>(input_right_vector_.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_right_vector_.data()));
     taskDataSeq->inputs_count.emplace_back(input_right_vector_.size());
-    taskDataSeq->outputs.emplace_back(
-        reinterpret_cast<uint8_t*>(reference_out_x_vec.data()));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_out_x_vec.data()));
     taskDataSeq->outputs_count.emplace_back(reference_out_x_vec.size());
 
-    deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskSequential
-        testMpiTaskSequential(taskDataSeq);
+    deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -85,21 +75,16 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_3X_diagonal_matrix) {
   std::vector<double> output_x_vector_ = std::vector<double>(10, 0);
   std::vector<std::vector<double>> out_x_vec(1, output_x_vector_);
 
-  std::shared_ptr<ppc::core::TaskData> taskDataPar =
-      std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(
-        reinterpret_cast<uint8_t*>(input_matrix_.data()));
-    taskDataPar->inputs.emplace_back(
-        reinterpret_cast<uint8_t*>(input_right_vector_.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix_.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_right_vector_.data()));
     taskDataPar->inputs_count.emplace_back(input_right_vector_.size());
-    taskDataPar->outputs.emplace_back(
-        reinterpret_cast<uint8_t*>(out_x_vec.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_x_vec.data()));
     taskDataPar->outputs_count.emplace_back(out_x_vec.size());
   }
 
-  deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel
-      testMpiTaskParallel(taskDataPar);
+  deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -108,20 +93,15 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_3X_diagonal_matrix) {
   if (world.rank() == 0) {
     std::vector<std::vector<double>> reference_out_x_vec(1, output_x_vector_);
 
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq =
-        std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(
-        reinterpret_cast<uint8_t*>(input_matrix_.data()));
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix_.data()));
     taskDataSeq->inputs_count.emplace_back(input_matrix_.size());
-    taskDataSeq->inputs.emplace_back(
-        reinterpret_cast<uint8_t*>(input_right_vector_.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_right_vector_.data()));
     taskDataSeq->inputs_count.emplace_back(input_right_vector_.size());
-    taskDataSeq->outputs.emplace_back(
-        reinterpret_cast<uint8_t*>(reference_out_x_vec.data()));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_out_x_vec.data()));
     taskDataSeq->outputs_count.emplace_back(reference_out_x_vec.size());
 
-    deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskSequential
-        testMpiTaskSequential(taskDataSeq);
+    deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -144,21 +124,16 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_1X_diagonal_matrix) {
   std::vector<double> output_x_vector_ = std::vector<double>(10, 0);
   std::vector<std::vector<double>> out_x_vec(1, output_x_vector_);
 
-  std::shared_ptr<ppc::core::TaskData> taskDataPar =
-      std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(
-        reinterpret_cast<uint8_t*>(input_matrix_.data()));
-    taskDataPar->inputs.emplace_back(
-        reinterpret_cast<uint8_t*>(input_right_vector_.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix_.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_right_vector_.data()));
     taskDataPar->inputs_count.emplace_back(input_right_vector_.size());
-    taskDataPar->outputs.emplace_back(
-        reinterpret_cast<uint8_t*>(out_x_vec.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_x_vec.data()));
     taskDataPar->outputs_count.emplace_back(out_x_vec.size());
   }
 
-  deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel
-      testMpiTaskParallel(taskDataPar);
+  deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -167,20 +142,15 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_1X_diagonal_matrix) {
   if (world.rank() == 0) {
     std::vector<std::vector<double>> reference_out_x_vec(1, output_x_vector_);
 
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq =
-        std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(
-        reinterpret_cast<uint8_t*>(input_matrix_.data()));
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix_.data()));
     taskDataSeq->inputs_count.emplace_back(input_matrix_.size());
-    taskDataSeq->inputs.emplace_back(
-        reinterpret_cast<uint8_t*>(input_right_vector_.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_right_vector_.data()));
     taskDataSeq->inputs_count.emplace_back(input_right_vector_.size());
-    taskDataSeq->outputs.emplace_back(
-        reinterpret_cast<uint8_t*>(reference_out_x_vec.data()));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_out_x_vec.data()));
     taskDataSeq->outputs_count.emplace_back(reference_out_x_vec.size());
 
-    deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskSequential
-        testMpiTaskSequential(taskDataSeq);
+    deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -203,22 +173,16 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_diagonal_elements_are_m
   std::vector<double> output_x_vector_ = std::vector<double>(10, 0);
   std::vector<std::vector<double>> out_x_vec(1, output_x_vector_);
 
-
-  std::shared_ptr<ppc::core::TaskData> taskDataPar =
-      std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(
-        reinterpret_cast<uint8_t*>(input_matrix_.data()));
-    taskDataPar->inputs.emplace_back(
-        reinterpret_cast<uint8_t*>(input_right_vector_.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix_.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_right_vector_.data()));
     taskDataPar->inputs_count.emplace_back(input_right_vector_.size());
-    taskDataPar->outputs.emplace_back(
-        reinterpret_cast<uint8_t*>(out_x_vec.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_x_vec.data()));
     taskDataPar->outputs_count.emplace_back(out_x_vec.size());
   }
 
-  deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel
-      testMpiTaskParallel(taskDataPar);
+  deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -227,20 +191,15 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_diagonal_elements_are_m
   if (world.rank() == 0) {
     std::vector<std::vector<double>> reference_out_x_vec(1, output_x_vector_);
 
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq =
-        std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(
-        reinterpret_cast<uint8_t*>(input_matrix_.data()));
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix_.data()));
     taskDataSeq->inputs_count.emplace_back(input_matrix_.size());
-    taskDataSeq->inputs.emplace_back(
-        reinterpret_cast<uint8_t*>(input_right_vector_.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_right_vector_.data()));
     taskDataSeq->inputs_count.emplace_back(input_right_vector_.size());
-    taskDataSeq->outputs.emplace_back(
-        reinterpret_cast<uint8_t*>(reference_out_x_vec.data()));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_out_x_vec.data()));
     taskDataSeq->outputs_count.emplace_back(reference_out_x_vec.size());
 
-    deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskSequential
-        testMpiTaskSequential(taskDataSeq);
+    deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -263,21 +222,16 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, random_invalid_matrix_zeros_on_diag
   std::vector<double> output_x_vector_ = std::vector<double>(10, 0);
   std::vector<std::vector<double>> out_x_vec(1, output_x_vector_);
 
-  std::shared_ptr<ppc::core::TaskData> taskDataPar =
-      std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(
-        reinterpret_cast<uint8_t*>(input_matrix_.data()));
-    taskDataPar->inputs.emplace_back(
-        reinterpret_cast<uint8_t*>(input_right_vector_.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix_.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_right_vector_.data()));
     taskDataPar->inputs_count.emplace_back(input_right_vector_.size());
-    taskDataPar->outputs.emplace_back(
-        reinterpret_cast<uint8_t*>(out_x_vec.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_x_vec.data()));
     taskDataPar->outputs_count.emplace_back(out_x_vec.size());
   }
 
-  deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel
-      testMpiTaskParallel(taskDataPar);
+  deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), false);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -286,20 +240,15 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, random_invalid_matrix_zeros_on_diag
   if (world.rank() == 0) {
     std::vector<std::vector<double>> reference_out_x_vec(1, output_x_vector_);
 
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq =
-        std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(
-        reinterpret_cast<uint8_t*>(input_matrix_.data()));
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix_.data()));
     taskDataSeq->inputs_count.emplace_back(input_matrix_.size());
-    taskDataSeq->inputs.emplace_back(
-        reinterpret_cast<uint8_t*>(input_right_vector_.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_right_vector_.data()));
     taskDataSeq->inputs_count.emplace_back(input_right_vector_.size());
-    taskDataSeq->outputs.emplace_back(
-        reinterpret_cast<uint8_t*>(reference_out_x_vec.data()));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_out_x_vec.data()));
     taskDataSeq->outputs_count.emplace_back(reference_out_x_vec.size());
 
-    deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskSequential
-        testMpiTaskSequential(taskDataSeq);
+    deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), false);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
