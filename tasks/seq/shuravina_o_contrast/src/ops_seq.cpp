@@ -2,23 +2,23 @@
 
 #include <algorithm>
 
-bool shuravina_o_contrast::ContrastTaskSequential::pre_processing() {
+namespace shuravina_o_contrast {
+
+bool ContrastTaskSequential::pre_processing() {
   internal_order_test();
   input_ = std::vector<uint8_t>(taskData->inputs_count[0]);
   auto* tmp_ptr = reinterpret_cast<uint8_t*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    input_[i] = tmp_ptr[i];
-  }
+  std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
   output_ = std::vector<uint8_t>(taskData->inputs_count[0]);
   return true;
 }
 
-bool shuravina_o_contrast::ContrastTaskSequential::validation() {
+bool ContrastTaskSequential::validation() {
   internal_order_test();
   return taskData->outputs_count[0] == taskData->inputs_count[0];
 }
 
-bool shuravina_o_contrast::ContrastTaskSequential::run() {
+bool ContrastTaskSequential::run() {
   internal_order_test();
   uint8_t min_val = *std::min_element(input_.begin(), input_.end());
   uint8_t max_val = *std::max_element(input_.begin(), input_.end());
@@ -29,11 +29,11 @@ bool shuravina_o_contrast::ContrastTaskSequential::run() {
   return true;
 }
 
-bool shuravina_o_contrast::ContrastTaskSequential::post_processing() {
+bool ContrastTaskSequential::post_processing() {
   internal_order_test();
   auto* tmp_ptr = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
-  for (unsigned i = 0; i < taskData->outputs_count[0]; i++) {
-    tmp_ptr[i] = output_[i];
-  }
+  std::copy(output_.begin(), output_.end(), tmp_ptr);
   return true;
 }
+
+}  // namespace shuravina_o_contrast
