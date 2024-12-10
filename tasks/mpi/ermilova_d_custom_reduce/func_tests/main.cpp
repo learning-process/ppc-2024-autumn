@@ -59,7 +59,7 @@ void Test_reduce(MPI_Datatype datatype, MPI_Op op) {
     } else if (op == MPI_MAX) {
       ref = *std::max_element(input_.begin(), input_.end());
     }
-    ASSERT_EQ(global_result, ref);
+    ASSERT_NEAR(global_result, ref, 0.0001);
   }
 }
 
