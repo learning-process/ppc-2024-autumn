@@ -57,7 +57,6 @@ void Test_reduce(MPI_Datatype datatype, MPI_Op op) {
     if (op == MPI_SUM) {
       for (auto el : input_) {
         ref += el;
-        std::cout << el << '\n';
       }
     } else if (op == MPI_MIN) {
       ref = *std::min_element(input_.begin(), input_.end());
