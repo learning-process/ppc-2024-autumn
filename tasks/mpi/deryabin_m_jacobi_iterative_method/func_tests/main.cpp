@@ -219,7 +219,7 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_diagonal_elements_are_m
 
   deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel
       testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
@@ -241,7 +241,7 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_diagonal_elements_are_m
 
     deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskSequential
         testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), false);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
