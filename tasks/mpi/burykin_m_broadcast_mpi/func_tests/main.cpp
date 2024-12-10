@@ -5,9 +5,9 @@
 #include <random>
 
 #include "boost/mpi/collectives/broadcast.hpp"
-#include "mpi/burykin_m_broadcast/include/ops_mpi.hpp"
+#include "mpi/burykin_m_broadcast_mpi/include/ops_mpi.hpp"
 
-namespace burykin_m_broadcast_mpi {
+namespace burykin_m_broadcast_mpi_mpi {
 
 void fillVector(std::vector<int>& vector, int min_val, int max_val) {
   std::random_device dev;
@@ -31,7 +31,7 @@ void test_template(int data_size, int source_worker = 0, int min_val = -100, int
   task->inputs_count.emplace_back(1);
 
   if (world.rank() == source_worker) {
-    burykin_m_broadcast_mpi::fillVector(recv_vorker, min_val, max_val);
+    burykin_m_broadcast_mpi_mpi::fillVector(recv_vorker, min_val, max_val);
 
     task->inputs.emplace_back(reinterpret_cast<uint8_t*>(recv_vorker.data()));
     task->inputs_count.emplace_back(recv_vorker.size());
@@ -45,7 +45,7 @@ void test_template(int data_size, int source_worker = 0, int min_val = -100, int
     task->outputs_count.emplace_back(1);
   }
 
-  auto taskForProcessing = std::make_shared<MyBroadcastMPI>(task);
+  auto taskForProcessing = std::make_shared<StdBroadcastMPI>(task);
   bool val_res = taskForProcessing->validation();
   boost::mpi::broadcast(world, val_res, source_worker);
   if (val_res) {
@@ -63,39 +63,39 @@ void test_template(int data_size, int source_worker = 0, int min_val = -100, int
   }
 }
 
-}  // namespace burykin_m_broadcast_mpi
+}  // namespace burykin_m_broadcast_mpi_mpi
 
-TEST(burykin_m_broadcast_mpi, DataSize1_Source0) { burykin_m_broadcast_mpi::test_template(1, 0, -10, 10); }
+TEST(burykin_m_broadcast_mpi_mpi, DataSize1_Source0) { burykin_m_broadcast_mpi_mpi::test_template(1, 0, -10, 10); }
 
-TEST(burykin_m_broadcast_mpi, DataSize2_Source0) { burykin_m_broadcast_mpi::test_template(2, 0, 0, 100); }
+TEST(burykin_m_broadcast_mpi_mpi, DataSize2_Source0) { burykin_m_broadcast_mpi_mpi::test_template(2, 0, 0, 100); }
 
-TEST(burykin_m_broadcast_mpi, DataSize3_Source0) { burykin_m_broadcast_mpi::test_template(3, 0, -100, 0); }
+TEST(burykin_m_broadcast_mpi_mpi, DataSize3_Source0) { burykin_m_broadcast_mpi_mpi::test_template(3, 0, -100, 0); }
 
-TEST(burykin_m_broadcast_mpi, DataSize4_Source0) { burykin_m_broadcast_mpi::test_template(4, 0, -50, 50); }
+TEST(burykin_m_broadcast_mpi_mpi, DataSize4_Source0) { burykin_m_broadcast_mpi_mpi::test_template(4, 0, -50, 50); }
 
-TEST(burykin_m_broadcast_mpi, DataSize10_Source1) { burykin_m_broadcast_mpi::test_template(10, 1, -100, 100); }
+TEST(burykin_m_broadcast_mpi_mpi, DataSize10_Source1) { burykin_m_broadcast_mpi_mpi::test_template(10, 1, -100, 100); }
 
-TEST(burykin_m_broadcast_mpi, DataSize15_Source2) { burykin_m_broadcast_mpi::test_template(15, 2, -200, 200); }
+TEST(burykin_m_broadcast_mpi_mpi, DataSize15_Source2) { burykin_m_broadcast_mpi_mpi::test_template(15, 2, -200, 200); }
 
-TEST(burykin_m_broadcast_mpi, DataSize20_Source0) { burykin_m_broadcast_mpi::test_template(20, 0, -500, 500); }
+TEST(burykin_m_broadcast_mpi_mpi, DataSize20_Source0) { burykin_m_broadcast_mpi_mpi::test_template(20, 0, -500, 500); }
 
-TEST(burykin_m_broadcast_mpi, DataSize30_Source0) {
-  burykin_m_broadcast_mpi::test_template(30, 0, -1000, 1000);
+TEST(burykin_m_broadcast_mpi_mpi, DataSize30_Source0) {
+  burykin_m_broadcast_mpi_mpi::test_template(30, 0, -1000, 1000);
 }
 
-TEST(burykin_m_broadcast_mpi, DataSize40_Source1) { burykin_m_broadcast_mpi::test_template(40, 1, -100, 100); }
+TEST(burykin_m_broadcast_mpi_mpi, DataSize40_Source1) { burykin_m_broadcast_mpi_mpi::test_template(40, 1, -100, 100); }
 
-TEST(burykin_m_broadcast_mpi, DataSize50_Source2) { burykin_m_broadcast_mpi::test_template(50, 2, -500, 0); }
+TEST(burykin_m_broadcast_mpi_mpi, DataSize50_Source2) { burykin_m_broadcast_mpi_mpi::test_template(50, 2, -500, 0); }
 
-TEST(burykin_m_broadcast_mpi, DataSize0_Source0) { burykin_m_broadcast_mpi::test_template(0, 0, -10, 10); }
+TEST(burykin_m_broadcast_mpi_mpi, DataSize0_Source0) { burykin_m_broadcast_mpi_mpi::test_template(0, 0, -10, 10); }
 
-TEST(burykin_m_broadcast_mpi, DataSize1_Source0_ZeroRange) {
-  burykin_m_broadcast_mpi::test_template(1, 0, 0, 0);
+TEST(burykin_m_broadcast_mpi_mpi, DataSize1_Source0_ZeroRange) {
+  burykin_m_broadcast_mpi_mpi::test_template(1, 0, 0, 0);
 }
 
-TEST(burykin_m_broadcast_mpi, DataSize100_Source0) { burykin_m_broadcast_mpi::test_template(100, 0, -1, 1); }
+TEST(burykin_m_broadcast_mpi_mpi, DataSize100_Source0) { burykin_m_broadcast_mpi_mpi::test_template(100, 0, -1, 1); }
 
-TEST(burykin_m_broadcast_mpi, DataSize10_Rundom_Source) {
+TEST(burykin_m_broadcast_mpi_mpi, DataSize10_Rundom_Source) {
   boost::mpi::communicator world;
   if (world.size() < 2) {
     GTEST_SKIP();
@@ -124,7 +124,7 @@ TEST(burykin_m_broadcast_mpi, DataSize10_Rundom_Source) {
   task->inputs_count.emplace_back(1);
 
   if (world.rank() == source_worker) {
-    burykin_m_broadcast_mpi::fillVector(recv_vorker, min_val, max_val);
+    burykin_m_broadcast_mpi_mpi::fillVector(recv_vorker, min_val, max_val);
 
     task->inputs.emplace_back(reinterpret_cast<uint8_t*>(recv_vorker.data()));
     task->inputs_count.emplace_back(recv_vorker.size());
@@ -138,7 +138,7 @@ TEST(burykin_m_broadcast_mpi, DataSize10_Rundom_Source) {
     task->outputs_count.emplace_back(1);
   }
 
-  auto taskForProcessing = std::make_shared<burykin_m_broadcast_mpi::MyBroadcastMPI>(task);
+  auto taskForProcessing = std::make_shared<burykin_m_broadcast_mpi_mpi::StdBroadcastMPI>(task);
   bool val_res = taskForProcessing->validation();
   boost::mpi::broadcast(world, val_res, source_worker);
   if (val_res) {

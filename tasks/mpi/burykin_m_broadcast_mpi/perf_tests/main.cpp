@@ -2,12 +2,14 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <boost/mpi/timer.hpp>
 #include <random>
+#include <vector>
 
-#include "boost/mpi/collectives/broadcast.hpp"
-#include "mpi/burykin_m_broadcast/include/ops_mpi.hpp"
+#include "core/perf/include/perf.hpp"
+#include "mpi/burykin_m_broadcast_mpi/include/ops_mpi.hpp"
 
-namespace burykin_m_broadcast_mpi {
+namespace burykin_m_broadcast_mpi_mpi {
 
 void fillVector(std::vector<int>& vector, int min_val, int max_val) {
   std::random_device dev;
@@ -18,8 +20,16 @@ void fillVector(std::vector<int>& vector, int min_val, int max_val) {
   }
 }
 
-void test_template(int data_size, int source_worker = 0, int min_val = -100, int max_val = 100) {
+}  // namespace burykin_m_broadcast_mpi_mpi
+
+TEST(burykin_m_broadcast_mpi_mpi, pipeline_run) {
+  boost::mpi::environment env;
   boost::mpi::communicator world;
+
+  int source_worker = 0;
+  int data_size = 1000000;
+  int min_val = -1000;
+  int max_val = 1000;
 
   std::vector<int> recv_vorker(data_size);
   std::vector<int> result_vector(data_size);
@@ -31,7 +41,7 @@ void test_template(int data_size, int source_worker = 0, int min_val = -100, int
   task->inputs_count.emplace_back(1);
 
   if (world.rank() == source_worker) {
-    burykin_m_broadcast_mpi::fillVector(recv_vorker, min_val, max_val);
+    burykin_m_broadcast_mpi_mpi::fillVector(recv_vorker, min_val, max_val);
 
     task->inputs.emplace_back(reinterpret_cast<uint8_t*>(recv_vorker.data()));
     task->inputs_count.emplace_back(recv_vorker.size());
@@ -45,13 +55,24 @@ void test_template(int data_size, int source_worker = 0, int min_val = -100, int
     task->outputs_count.emplace_back(1);
   }
 
-  auto taskForProcessing = std::make_shared<MyBroadcastMPI>(task);
+  auto taskForProcessing = std::make_shared<burykin_m_broadcast_mpi_mpi::StdBroadcastMPI>(task);
   bool val_res = taskForProcessing->validation();
   boost::mpi::broadcast(world, val_res, source_worker);
   if (val_res) {
     taskForProcessing->pre_processing();
     taskForProcessing->run();
     taskForProcessing->post_processing();
+
+    auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+    perfAttr->num_running = 10;
+    const boost::mpi::timer current_timer;
+    perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+    auto perfResults = std::make_shared<ppc::core::PerfResults>();
+    auto perfAnalyzer = std::make_shared<ppc::core::Perf>(taskForProcessing);
+    perfAnalyzer->pipeline_run(perfAttr, perfResults);
+    if (world.rank() == 0) {
+      ppc::core::Perf::print_perf_statistic(perfResults);
+    }
 
     boost::mpi::broadcast(world, recv_vorker, source_worker);
 
@@ -63,56 +84,14 @@ void test_template(int data_size, int source_worker = 0, int min_val = -100, int
   }
 }
 
-}  // namespace burykin_m_broadcast_mpi
-
-TEST(burykin_m_broadcast_mpi, DataSize1_Source0) { burykin_m_broadcast_mpi::test_template(1, 0, -10, 10); }
-
-TEST(burykin_m_broadcast_mpi, DataSize2_Source0) { burykin_m_broadcast_mpi::test_template(2, 0, 0, 100); }
-
-TEST(burykin_m_broadcast_mpi, DataSize3_Source0) { burykin_m_broadcast_mpi::test_template(3, 0, -100, 0); }
-
-TEST(burykin_m_broadcast_mpi, DataSize4_Source0) { burykin_m_broadcast_mpi::test_template(4, 0, -50, 50); }
-
-TEST(burykin_m_broadcast_mpi, DataSize10_Source1) { burykin_m_broadcast_mpi::test_template(10, 1, -100, 100); }
-
-TEST(burykin_m_broadcast_mpi, DataSize15_Source2) { burykin_m_broadcast_mpi::test_template(15, 2, -200, 200); }
-
-TEST(burykin_m_broadcast_mpi, DataSize20_Source0) { burykin_m_broadcast_mpi::test_template(20, 0, -500, 500); }
-
-TEST(burykin_m_broadcast_mpi, DataSize30_Source0) {
-  burykin_m_broadcast_mpi::test_template(30, 0, -1000, 1000);
-}
-
-TEST(burykin_m_broadcast_mpi, DataSize40_Source1) { burykin_m_broadcast_mpi::test_template(40, 1, -100, 100); }
-
-TEST(burykin_m_broadcast_mpi, DataSize50_Source2) { burykin_m_broadcast_mpi::test_template(50, 2, -500, 0); }
-
-TEST(burykin_m_broadcast_mpi, DataSize0_Source0) { burykin_m_broadcast_mpi::test_template(0, 0, -10, 10); }
-
-TEST(burykin_m_broadcast_mpi, DataSize1_Source0_ZeroRange) {
-  burykin_m_broadcast_mpi::test_template(1, 0, 0, 0);
-}
-
-TEST(burykin_m_broadcast_mpi, DataSize100_Source0) { burykin_m_broadcast_mpi::test_template(100, 0, -1, 1); }
-
-TEST(burykin_m_broadcast_mpi, DataSize10_Rundom_Source) {
+TEST(burykin_m_broadcast_mpi_mpi, task_run) {
+  boost::mpi::environment env;
   boost::mpi::communicator world;
-  if (world.size() < 2) {
-    GTEST_SKIP();
-  }
 
-  int source_worker;
-  if (world.rank() == 0) {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<int> dist(0, world.size() - 1);
-
-    source_worker = dist(gen);
-  }
-  boost::mpi::broadcast(world, source_worker, 0);
-  int data_size = 10;
-  int min_val = -10;
-  int max_val = 10;
+  int source_worker = 0;
+  int data_size = 1000000;
+  int min_val = -1000;
+  int max_val = 1000;
 
   std::vector<int> recv_vorker(data_size);
   std::vector<int> result_vector(data_size);
@@ -124,7 +103,7 @@ TEST(burykin_m_broadcast_mpi, DataSize10_Rundom_Source) {
   task->inputs_count.emplace_back(1);
 
   if (world.rank() == source_worker) {
-    burykin_m_broadcast_mpi::fillVector(recv_vorker, min_val, max_val);
+    burykin_m_broadcast_mpi_mpi::fillVector(recv_vorker, min_val, max_val);
 
     task->inputs.emplace_back(reinterpret_cast<uint8_t*>(recv_vorker.data()));
     task->inputs_count.emplace_back(recv_vorker.size());
@@ -138,13 +117,24 @@ TEST(burykin_m_broadcast_mpi, DataSize10_Rundom_Source) {
     task->outputs_count.emplace_back(1);
   }
 
-  auto taskForProcessing = std::make_shared<burykin_m_broadcast_mpi::MyBroadcastMPI>(task);
+  auto taskForProcessing = std::make_shared<burykin_m_broadcast_mpi_mpi::StdBroadcastMPI>(task);
   bool val_res = taskForProcessing->validation();
   boost::mpi::broadcast(world, val_res, source_worker);
   if (val_res) {
     taskForProcessing->pre_processing();
     taskForProcessing->run();
     taskForProcessing->post_processing();
+
+    auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+    perfAttr->num_running = 10;
+    const boost::mpi::timer current_timer;
+    perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+    auto perfResults = std::make_shared<ppc::core::PerfResults>();
+    auto perfAnalyzer = std::make_shared<ppc::core::Perf>(taskForProcessing);
+    perfAnalyzer->task_run(perfAttr, perfResults);
+    if (world.rank() == 0) {
+      ppc::core::Perf::print_perf_statistic(perfResults);
+    }
 
     boost::mpi::broadcast(world, recv_vorker, source_worker);
 

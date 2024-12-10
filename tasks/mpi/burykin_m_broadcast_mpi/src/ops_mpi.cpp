@@ -1,6 +1,6 @@
-#include "mpi/burykin_m_broadcast/include/ops_mpi.hpp"
+#include "mpi/burykin_m_broadcast_mpi/include/ops_mpi.hpp"
 
-bool burykin_m_broadcast_mpi::MyBroadcastMPI::validation() {
+bool burykin_m_broadcast_mpi_mpi::StdBroadcastMPI::validation() {
   internal_order_test();
 
   if (taskData->inputs_count[0] != 1) return false;
@@ -23,7 +23,7 @@ bool burykin_m_broadcast_mpi::MyBroadcastMPI::validation() {
   return true;
 }
 
-bool burykin_m_broadcast_mpi::MyBroadcastMPI::pre_processing() {
+bool burykin_m_broadcast_mpi_mpi::StdBroadcastMPI::pre_processing() {
   internal_order_test();
 
   source_worker = *taskData->inputs[0];
@@ -38,10 +38,10 @@ bool burykin_m_broadcast_mpi::MyBroadcastMPI::pre_processing() {
   return true;
 }
 
-bool burykin_m_broadcast_mpi::MyBroadcastMPI::run() {
+bool burykin_m_broadcast_mpi_mpi::StdBroadcastMPI::run() {
   internal_order_test();
 
-  burykin_m_broadcast_mpi::broadcast(world, input_vector, source_worker);
+  boost::mpi::broadcast(world, input_vector, source_worker);
 
   int rank = world.rank();
   int size = world.size();
@@ -63,7 +63,7 @@ bool burykin_m_broadcast_mpi::MyBroadcastMPI::run() {
   return true;
 }
 
-bool burykin_m_broadcast_mpi::MyBroadcastMPI::post_processing() {
+bool burykin_m_broadcast_mpi_mpi::StdBroadcastMPI::post_processing() {
   internal_order_test();
 
   auto* output_vector_data = reinterpret_cast<int*>(taskData->outputs[0]);

@@ -57,9 +57,9 @@ void broadcast(const boost::mpi::communicator &comm, T &value, int root) {
   }
 }
 
-class BroadcastMPI : public ppc::core::Task {
+class MyBroadcastMPI : public ppc::core::Task {
  public:
-  explicit BroadcastMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit MyBroadcastMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -67,6 +67,7 @@ class BroadcastMPI : public ppc::core::Task {
 
  private:
   std::vector<int> input_vector;
+  int global_max;
   int source_worker;
   boost::mpi::communicator world;
 };

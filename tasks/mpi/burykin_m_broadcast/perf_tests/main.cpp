@@ -27,16 +27,13 @@ TEST(burykin_m_broadcast_mpi, pipeline_run) {
   boost::mpi::communicator world;
 
   int source_worker = 0;
-  int data_size = 10000;
+  int data_size = 1000000;
   int min_val = -1000;
   int max_val = 1000;
 
-  if (world.size() <= source_worker) {
-    GTEST_SKIP();
-  }
-
   std::vector<int> recv_vorker(data_size);
   std::vector<int> result_vector(data_size);
+  int global_max;
 
   std::shared_ptr<ppc::core::TaskData> task = std::make_shared<ppc::core::TaskData>();
 
@@ -53,8 +50,15 @@ TEST(burykin_m_broadcast_mpi, pipeline_run) {
   task->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_vector.data()));
   task->outputs_count.emplace_back(result_vector.size());
 
-  auto taskForProcessing = std::make_shared<burykin_m_broadcast_mpi::BroadcastMPI>(task);
-  if (taskForProcessing->validation()) {
+  if (world.rank() == source_worker) {
+    task->outputs.emplace_back(reinterpret_cast<uint8_t*>(&global_max));
+    task->outputs_count.emplace_back(1);
+  }
+
+  auto taskForProcessing = std::make_shared<burykin_m_broadcast_mpi::MyBroadcastMPI>(task);
+  bool val_res = taskForProcessing->validation();
+  boost::mpi::broadcast(world, val_res, source_worker);
+  if (val_res) {
     taskForProcessing->pre_processing();
     taskForProcessing->run();
     taskForProcessing->post_processing();
@@ -73,8 +77,10 @@ TEST(burykin_m_broadcast_mpi, pipeline_run) {
     boost::mpi::broadcast(world, recv_vorker, source_worker);
 
     EXPECT_EQ(recv_vorker, result_vector);
-  } else {
-    GTEST_SKIP();
+    if (world.size() == source_worker) {
+      int result_max = *std::max_element(recv_vorker.begin(), recv_vorker.end());
+      EXPECT_EQ(global_max, result_max);
+    }
   }
 }
 
@@ -83,16 +89,13 @@ TEST(burykin_m_broadcast_mpi, task_run) {
   boost::mpi::communicator world;
 
   int source_worker = 0;
-  int data_size = 10000;
+  int data_size = 1000000;
   int min_val = -1000;
   int max_val = 1000;
 
-  if (world.size() <= source_worker) {
-    GTEST_SKIP();
-  }
-
   std::vector<int> recv_vorker(data_size);
   std::vector<int> result_vector(data_size);
+  int global_max;
 
   std::shared_ptr<ppc::core::TaskData> task = std::make_shared<ppc::core::TaskData>();
 
@@ -109,8 +112,15 @@ TEST(burykin_m_broadcast_mpi, task_run) {
   task->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_vector.data()));
   task->outputs_count.emplace_back(result_vector.size());
 
-  auto taskForProcessing = std::make_shared<burykin_m_broadcast_mpi::BroadcastMPI>(task);
-  if (taskForProcessing->validation()) {
+  if (world.rank() == source_worker) {
+    task->outputs.emplace_back(reinterpret_cast<uint8_t*>(&global_max));
+    task->outputs_count.emplace_back(1);
+  }
+
+  auto taskForProcessing = std::make_shared<burykin_m_broadcast_mpi::MyBroadcastMPI>(task);
+  bool val_res = taskForProcessing->validation();
+  boost::mpi::broadcast(world, val_res, source_worker);
+  if (val_res) {
     taskForProcessing->pre_processing();
     taskForProcessing->run();
     taskForProcessing->post_processing();
@@ -129,7 +139,9 @@ TEST(burykin_m_broadcast_mpi, task_run) {
     boost::mpi::broadcast(world, recv_vorker, source_worker);
 
     EXPECT_EQ(recv_vorker, result_vector);
-  } else {
-    GTEST_SKIP();
+    if (world.size() == source_worker) {
+      int result_max = *std::max_element(recv_vorker.begin(), recv_vorker.end());
+      EXPECT_EQ(global_max, result_max);
+    }
   }
 }
