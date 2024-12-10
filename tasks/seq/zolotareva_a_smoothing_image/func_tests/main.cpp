@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "seq/zolotareva_a_smoothing_image/include/ops_seq.hpp"
-
+namespace zolotareva_a_smoothing_image_seq {
 std::vector<uint8_t> generateRandomImage(int height, int width) {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -40,11 +40,12 @@ void form(int h, int w) {
   task.post_processing();
   EXPECT_EQ(height, taskDataSeq->inputs_count[0]);
 }
-TEST(zolotareva_a_smoothing_image_seq, Test_Image_random_1_1) { form(1, 1); };
-TEST(zolotareva_a_smoothing_image_seq, Test_Image_random_3_3) { form(3, 3); };
-TEST(zolotareva_a_smoothing_image_seq, Test_Image_random_59_26) { form(59, 26); };
-TEST(zolotareva_a_smoothing_image_seq, Test_Image_random_25_50) { form(25, 59); };
-TEST(zolotareva_a_smoothing_image_seq, Test_Image_random_100_100) { form(100, 100); };
+}  // namespace zolotareva_a_smoothing_image_seq
+TEST(zolotareva_a_smoothing_image_seq, Test_Image_random_1_1) { zolotareva_a_smoothing_image_seq::form(1, 1); };
+TEST(zolotareva_a_smoothing_image_seq, Test_Image_random_3_3) { zolotareva_a_smoothing_image_seq::form(3, 3); };
+TEST(zolotareva_a_smoothing_image_seq, Test_Image_random_59_26) { zolotareva_a_smoothing_image_seq::form(59, 26); };
+TEST(zolotareva_a_smoothing_image_seq, Test_Image_random_25_50) { zolotareva_a_smoothing_image_seq::form(25, 59); };
+TEST(zolotareva_a_smoothing_image_seq, Test_Image_random_100_100) { zolotareva_a_smoothing_image_seq::form(100, 100); };
 TEST(zolotareva_a_smoothing_image_seq, BasicSmoothing) {
   unsigned short int width = 3;
   unsigned short int height = 3;
