@@ -218,7 +218,7 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, correct_matrix_and_vector_mpi) {
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data())); 
     taskDataPar->inputs_count.emplace_back(vector.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
     taskDataPar->outputs_count.emplace_back(result.size());
@@ -231,4 +231,5 @@ TEST(sedova_o_vertical_ribbon_scheme_mpi, correct_matrix_and_vector_mpi) {
 
   std::vector<int> expected_result = {39, 54, 69};
   ASSERT_EQ(result, expected_result);
+  world.barrier();
 }
