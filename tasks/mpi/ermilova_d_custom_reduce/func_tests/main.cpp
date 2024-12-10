@@ -29,7 +29,7 @@ void Test_reduce(MPI_Datatype datatype, MPI_Op op) {
   std::vector<T> recv_data(size);
   boost::mpi::scatter(world, input_.data(), recv_data.data(), size, 0);
 
-  T local_result;
+  T local_result = T{};
   if (op == MPI_SUM) {
     local_result = std::accumulate(recv_data.begin(), recv_data.end(), T{});
   } else if (op == MPI_MIN) {
@@ -37,19 +37,21 @@ void Test_reduce(MPI_Datatype datatype, MPI_Op op) {
   } else if (op == MPI_MAX) {
     local_result = *std::max_element(recv_data.begin(), recv_data.end());
   }
-  T global_result;
+  T global_result = T{};
   if (op == MPI_SUM) {
-    T global_result = T(0);
+    global_result = T(0);
   } else if (op == MPI_MIN) {
-    T global_result = std::numeric_limits<T>::max();
+    global_result = std::numeric_limits<T>::max();
+  } else if (op == MPI_MAX) {
+    global_result = std::numeric_limits<T>::min();
   } else {
-    T global_result = std::numeric_limits<T>::min();
+    throw "Unsupported operation\n";
   }
 
   ermilova_d_custom_reduce_mpi::CustomReduce(&local_result, &global_result, 1, datatype, op, 0, MPI_COMM_WORLD);
 
   if (world.rank() == 0) {
-    T ref;
+    T ref = T{};
     if (op == MPI_SUM) {
       ref = std::accumulate(input_.begin(), input_.end(), T{});
     } else if (op == MPI_MIN) {
