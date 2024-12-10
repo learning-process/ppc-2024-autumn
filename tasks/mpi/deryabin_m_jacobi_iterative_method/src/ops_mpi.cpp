@@ -115,7 +115,7 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::
   unsigned short ostatochnoe_chislo_strock = 0;
   unsigned short n = 0;
   if (world.rank() == 0) {
-    n = (unsigned short)(taskData->inputs_count[0]);
+    n = taskData->inputs_count[0];
     number_of_local_matrix_rows = n / world.size();
     ostatochnoe_chislo_strock = n % world.size();
   }
@@ -223,7 +223,7 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::
   unsigned short n = 0;
   std::vector<int> displacements(world.size());
   if (world.rank() == 0) {
-    n = (unsigned short)(taskData->inputs_count[0]);
+    n = taskData->inputs_count[0];
     number_of_local_matrix_rows = n / world.size();
     ostatochnoe_chislo_strock = n % world.size();
     for (int proc = 1; proc < world.size(); proc++) {
