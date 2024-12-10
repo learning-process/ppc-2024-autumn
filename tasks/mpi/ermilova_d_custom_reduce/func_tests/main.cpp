@@ -37,8 +37,14 @@ void Test_reduce(MPI_Datatype datatype, MPI_Op op) {
   } else if (op == MPI_MAX) {
     local_result = *std::max_element(recv_data.begin(), recv_data.end());
   }
-  T global_result =
-      (op == MPI_SUM) ? T(0) : (op == MPI_MIN ? std::numeric_limits<T>::max() : std::numeric_limits<T>::min());
+  T global_result;
+  if (op == MPI_SUM) {
+    T global_result = T(0);
+  } else if (op == MPI_MIN) {
+    T global_result = std::numeric_limits<T>::max();
+  } else {
+    T global_result = std::numeric_limits<T>::min();
+  }
 
   ermilova_d_custom_reduce_mpi::CustomReduce(&local_result, &global_result, 1, datatype, op, 0, MPI_COMM_WORLD);
 
