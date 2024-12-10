@@ -1,6 +1,7 @@
 #pragma once
 #include <gtest/gtest.h>
 
+#include <boost/serialization/vector.hpp>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <memory>
@@ -11,7 +12,10 @@
 
 #include "core/task/include/task.hpp"
 
-namespace kovalchuk_a_horizontal_tape_scheme_mpi {
+namespace kovalchuk_a_horizontal_tape_scheme {
+
+const int MINIMALGEN = -999;
+const int MAXIMUMGEN = 999;
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
@@ -37,10 +41,10 @@ class TestMPITaskParallel : public ppc::core::Task {
 
  private:
   std::vector<std::vector<int>> matrix_;
-  std::vector<int> local_matrix_rows_;
   std::vector<int> vector_;
   std::vector<int> local_result_;
+  std::vector<int> result_;
   boost::mpi::communicator world;
 };
 
-}  // namespace kovalchuk_a_horizontal_tape_scheme_mpi
+}  // namespace kovalchuk_a_matrix_vector_mult

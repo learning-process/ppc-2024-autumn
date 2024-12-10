@@ -1,6 +1,7 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
+#include <boost/serialization/vector.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <random>
@@ -249,6 +250,7 @@ TEST(kovalchuk_a_max_of_vector_elements, Test_Max_Empty_Matrix) {
     ASSERT_EQ(reference_max[0], global_max[0]);
   }
 }
+
 TEST(kovalchuk_a_max_of_vector_elements, Test_Max_4_4) {
   const int count_rows = 4;
   const int count_columns = 4;
@@ -291,6 +293,7 @@ TEST(kovalchuk_a_max_of_vector_elements, Test_Max_4_4) {
     ASSERT_EQ(reference_max[0], global_max[0]);
   }
 }
+
 TEST(kovalchuk_a_max_of_vector_elements, Test_Max_Negative_Values) {
   const int count_rows = 10;
   const int count_columns = 10;
@@ -334,6 +337,7 @@ TEST(kovalchuk_a_max_of_vector_elements, Test_Max_Negative_Values) {
     ASSERT_EQ(reference_max[0], global_max[0]);
   }
 }
+
 TEST(kovalchuk_a_max_of_vector_elements, Test_Max_Same_Values) {
   const int count_rows = 10;
   const int count_columns = 10;

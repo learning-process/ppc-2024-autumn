@@ -1,6 +1,7 @@
 // Copyright 2023 Nesterov Alexander
 #include "mpi/kovalchuk_a_max_of_vector_elements/include/ops_mpi.hpp"
 
+#include <boost/serialization/vector.hpp>
 #include <algorithm>
 #include <functional>
 #include <random>

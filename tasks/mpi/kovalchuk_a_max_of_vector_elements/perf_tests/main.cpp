@@ -10,6 +10,8 @@
 
 using namespace kovalchuk_a_max_of_vector_elements;
 
+namespace kovalchuk_a_max_of_vector_elements {
+
 std::vector<int> getRandomVector(int sz, int min = MINIMALGEN, int max = MAXIMUMGEN);
 std::vector<std::vector<int>> getRandomMatrix(int rows, int columns, int min = MINIMALGEN, int max = MAXIMUMGEN);
 
@@ -30,6 +32,7 @@ std::vector<std::vector<int>> getRandomMatrix(int rows, int columns, int min, in
   }
   return vec;
 }
+}  // namespace kovalchuk_a_max_of_vector_elements
 
 TEST(kovalchuk_a_max_of_vector_elements, test_pipeline_run) {
   boost::mpi::communicator world;
@@ -43,7 +46,7 @@ TEST(kovalchuk_a_max_of_vector_elements, test_pipeline_run) {
     std::mt19937 gen(dev());
     int count_rows = 1000;
     int count_columns = 1000;
-    global_matrix = getRandomMatrix(count_rows, count_columns);
+    global_matrix = kovalchuk_a_max_of_vector_elements::getRandomMatrix(count_rows, count_columns);
     size_t index = gen() % (static_cast<size_t>(count_rows) * count_columns);
     global_matrix[index / count_columns][index % count_columns] = ref;
     for (unsigned int i = 0; i < global_matrix.size(); i++)
@@ -86,7 +89,7 @@ TEST(kovalchuk_a_max_of_vector_elements, test_task_run) {
     std::mt19937 gen(dev());
     int count_rows = 3;
     int count_columns = 3;
-    global_matrix = getRandomMatrix(count_rows, count_columns);
+    global_matrix = kovalchuk_a_max_of_vector_elements::getRandomMatrix(count_rows, count_columns);
     int index = gen() % (count_rows * count_columns);
     global_matrix[index / count_columns][index / count_rows] = ref;
     for (unsigned int i = 0; i < global_matrix.size(); i++)

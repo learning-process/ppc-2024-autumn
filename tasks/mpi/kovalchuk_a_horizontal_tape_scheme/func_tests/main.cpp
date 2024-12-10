@@ -7,6 +7,10 @@
 
 #include "mpi/kovalchuk_a_horizontal_tape_scheme/include/ops_mpi.hpp"
 
+using namespace kovalchuk_a_horizontal_tape_scheme;
+
+boost::mpi::environment env;
+
 std::vector<int> getRandomVectora(int sz, int min = -999, int max = 999);
 std::vector<std::vector<int>> getRandomMatrixa(int rows, int columns, int min = -999, int max = 999);
 
@@ -28,7 +32,7 @@ std::vector<std::vector<int>> getRandomMatrixa(int rows, int columns, int min, i
   return vec;
 }
 
-TEST(kovalchuk_a_horizontal_tape_scheme_mpi, Test_Matrix_10_10) {
+TEST(kovalchuk_a_horizontal_tape_scheme, Test_Matrix_10_10) {
   const int count_rows = 10;
   const int count_columns = 10;
   boost::mpi::communicator world;
@@ -51,7 +55,7 @@ TEST(kovalchuk_a_horizontal_tape_scheme_mpi, Test_Matrix_10_10) {
     taskDataPar->outputs_count.emplace_back(global_result.size());
   }
 
-  kovalchuk_a_horizontal_tape_scheme_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  kovalchuk_a_horizontal_tape_scheme::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_TRUE(testMpiTaskParallel.validation());
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -70,7 +74,7 @@ TEST(kovalchuk_a_horizontal_tape_scheme_mpi, Test_Matrix_10_10) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
     taskDataSeq->outputs_count.emplace_back(reference_result.size());
 
-    kovalchuk_a_horizontal_tape_scheme_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    kovalchuk_a_horizontal_tape_scheme::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_TRUE(testMpiTaskSequential.validation());
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
