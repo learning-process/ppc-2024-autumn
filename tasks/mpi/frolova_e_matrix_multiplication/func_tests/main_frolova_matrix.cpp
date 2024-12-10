@@ -8,8 +8,6 @@
 #include "mpi/frolova_e_matrix_multiplication/include/ops_mpi_frolova_matrix.hpp"
 
 TEST(frolova_e_matrix_multiplication_mpi, multiplication_of_square_matrices) {
-
-    // Create data
   boost::mpi::communicator world;
   std::vector<int> values_1 = {4, 4};
   std::vector<int> values_2 = {4, 4};
@@ -47,12 +45,9 @@ TEST(frolova_e_matrix_multiplication_mpi, multiplication_of_square_matrices) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Create data
-//    std::vector<int32_t> reference_sum(1, 0);
     std::vector<int32_t> reference_matrix(16);
 
     // Create TaskData
-
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(values_1.data()));
@@ -419,7 +414,6 @@ TEST(frolova_e_matrix_multiplication_mpi, value1_dont_have_two_elements) {
     frolova_e_matrix_multiplication_mpi::matrixMultiplicationParallel testMpiTaskParallel(taskDataPar);
     ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
-
 }
 
 TEST(frolova_e_matrix_multiplication_mpi, value2_dont_have_two_elements) {

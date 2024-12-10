@@ -5,8 +5,8 @@
 #include <boost/mpi.hpp>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
-#include <boost/serialization/vector.hpp>
 #include <boost/serialization/access.hpp>
+#include <boost/serialization/vector.hpp>
 #include <memory>
 #include <numeric>
 #include <string>
@@ -60,7 +60,8 @@ struct lineStruc {
     ar & outgoingLineLength;
   }
 
- lineStruc() : local_lines{}, index_lines{}, numberOfLines{0}, enterLineslenght{0}, res_lines{}, outgoingLineLength{0} {}
+ lineStruc()
+     : local_lines{}, index_lines{}, numberOfLines{0}, enterLineslenght{0}, res_lines{}, outgoingLineLength{0} {}
 
   lineStruc& operator=(const lineStruc& other) {
     if (this != &other) {
@@ -73,7 +74,6 @@ struct lineStruc {
     }
     return *this;
   }
-
 };
 
 struct columnStruc {
@@ -101,7 +101,6 @@ struct columnStruc {
     }
     return *this;
   }
-
 };
 
 void multiplyAndPlace(lineStruc& line, const columnStruc& column);

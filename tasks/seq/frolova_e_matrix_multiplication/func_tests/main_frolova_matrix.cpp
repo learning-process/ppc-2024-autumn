@@ -40,8 +40,8 @@ TEST(frolova_e_matrix_multiplication_seq, singleElementMatrices) {
 TEST(frolova_e_matrix_multiplication_seq, theSquareMatricesOfTheSameSize_1) {
   std::vector<int> values_1 = {2, 2};
   std::vector<int> values_2 = {2, 2};
-  std::vector<int> matrixA_ = {1,1,1,1};
-  std::vector<int> matrixB_ = {1,1,1,1};
+  std::vector<int> matrixA_ = {1, 1, 1, 1};
+  std::vector<int> matrixB_ = {1, 1, 1, 1};
   std::vector<int> resMatrix = {2, 2, 2, 2};
   std::vector<int> out(4);
 
@@ -71,7 +71,6 @@ TEST(frolova_e_matrix_multiplication_seq, theSquareMatricesOfTheSameSize_1) {
 }
 
 TEST(frolova_e_matrix_multiplication_seq, theSquareMatricesOfTheSameSize_2) {
-
   std::vector<int> values_1 = {3, 3};
   std::vector<int> values_2 = {3, 3};
   std::vector<int> matrixA_ = {1, 1, 1, 1, 1, 1, 1, 1, 1};
@@ -205,12 +204,11 @@ TEST(frolova_e_matrix_multiplication_seq, multiplicationOfTwoVectors) {
 }
 
 TEST(frolova_e_matrix_multiplication_seq, theNumberOfColumnsDoesNotMatchTheNumberOfRows) {
-
   std::vector<int> values_1 = {2, 3};
   std::vector<int> values_2 = {2, 1};
-  std::vector<int> matrixA_ = {1, 1, 1, 1, 1, 1};  
-  std::vector<int> matrixB_ = {1, 1}; 
-  std::vector<int> resMatrix = {3};     
+  std::vector<int> matrixA_ = {1, 1, 1, 1, 1, 1};
+  std::vector<int> matrixB_ = {1, 1};
+  std::vector<int> resMatrix = {3};
   std::vector<int> out(1);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -231,16 +229,15 @@ TEST(frolova_e_matrix_multiplication_seq, theNumberOfColumnsDoesNotMatchTheNumbe
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   frolova_e_matrix_multiplication_seq::matrixMultiplication testTaskSequential(taskDataSeq);
-  ASSERT_EQ(testTaskSequential.validation(), false); 
+  ASSERT_EQ(testTaskSequential.validation(), false);
 }
 
 TEST(frolova_e_matrix_multiplication_seq, transmittingIncorrectValues_1) {
-
   std::vector<int> values_1 = {0, 3};
   std::vector<int> values_2 = {2, 1};
-  std::vector<int> matrixA_ = {1, 1, 1, 1, 1, 1};  
-  std::vector<int> matrixB_ = {1, 1};              
-  std::vector<int> resMatrix = {3};               
+  std::vector<int> matrixA_ = {1, 1, 1, 1, 1, 1};
+  std::vector<int> matrixB_ = {1, 1};
+  std::vector<int> resMatrix = {3};
   std::vector<int> out(1);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -265,12 +262,11 @@ TEST(frolova_e_matrix_multiplication_seq, transmittingIncorrectValues_1) {
 }
 
 TEST(frolova_e_matrix_multiplication_seq, transmittingIncorrectValues_2) {
-
   std::vector<int> values_1 = {1, 3};
   std::vector<int> values_2 = {2, 1};
-  std::vector<int> matrixA_ = {1, 1, 1, 1, 1, 1};  
-  std::vector<int> matrixB_ = {1, 1};              
-  std::vector<int> resMatrix = {3};                
+  std::vector<int> matrixA_ = {1, 1, 1, 1, 1, 1};
+  std::vector<int> matrixB_ = {1, 1};
+  std::vector<int> resMatrix = {3};
   std::vector<int> out(1);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();

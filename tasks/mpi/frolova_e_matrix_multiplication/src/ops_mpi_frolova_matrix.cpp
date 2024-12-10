@@ -110,9 +110,8 @@ bool frolova_e_matrix_multiplication_mpi::matrixMultiplicationSequential::post_p
 
 bool frolova_e_matrix_multiplication_mpi::matrixMultiplicationParallel::pre_processing() {
   internal_order_test();
-  
-  if (world.rank() == 0) {
 
+  if (world.rank() == 0) {
     int* value_1 = reinterpret_cast<int*>(taskData->inputs[0]);
     lineA = static_cast<size_t>(value_1[0]);
     columnA = static_cast<size_t>(value_1[1]);
@@ -137,8 +136,7 @@ bool frolova_e_matrix_multiplication_mpi::matrixMultiplicationParallel::validati
   internal_order_test();
   // Check count elements of output
 
-  if (world.rank() == 0) {
-  
+  if (world.rank() == 0) {  
     int* value_1 = reinterpret_cast<int*>(taskData->inputs[0]);
     if (taskData->inputs_count[0] != 2) {
       return false;
@@ -165,16 +163,13 @@ bool frolova_e_matrix_multiplication_mpi::matrixMultiplicationParallel::validati
     if (taskData->outputs_count[0] != line1 * column2) {
       return false;
     }
-
   }
 
   return true;
 }
 
 void frolova_e_matrix_multiplication_mpi::multiplyAndPlace(lineStruc& line, const columnStruc& column) {
-
-  if (line.res_lines.size() != static_cast<size_t>(line.numberOfLines * line.outgoingLineLength)) {
-    
+  if (line.res_lines.size() != static_cast<size_t>(line.numberOfLines * line.outgoingLineLength)) {    
     line.res_lines.resize(line.numberOfLines * line.outgoingLineLength, 0);
   }
 

@@ -8,7 +8,6 @@
 
 TEST(frolova_e_matrix_multiplication_seq, test_pipeline_run) {
 
-    // Create data
   std::vector<int> values_1 = {100, 100};
   std::vector<int> values_2 = {100, 100};
   std::vector<int> matrixA_;
