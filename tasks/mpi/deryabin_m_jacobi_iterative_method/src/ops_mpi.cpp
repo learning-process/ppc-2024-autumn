@@ -229,16 +229,16 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::
     ostatochnoe_chislo_strock = n % world.size();
   }
   boost::mpi::broadcast(world, number_of_local_matrix_rows, 0);
-  std::vector<int> sendcounts(world.size());
-  std::vector<int> displacements(world.size());
+  std::vector<int> sendcounts(world.size(), number_of_local_matrix_rows);
+  std::vector<int> displacements(world.size(), number_of_local_matrix_rows * (world.rank() - 1));
   boost::mpi::broadcast(world, n, 0);
   if (world.rank() == 0) {
       sendcounts[world.rank()] = number_of_local_matrix_rows + ostatochnoe_chislo_strock;
       displacements[world.rank()] = n - number_of_local_matrix_rows - ostatochnoe_chislo_strock;
-  } else {
-      sendcounts[world.rank()] = number_of_local_matrix_rows;
-      displacements[world.rank()] = number_of_local_matrix_rows * (world.rank() - 1);
-  }
+  } //else {
+      //sendcounts[world.rank()] = number_of_local_matrix_rows;
+      //displacements[world.rank()] = number_of_local_matrix_rows * (world.rank() - 1);
+  //}
   unsigned short Nmax = 10000, num_of_iterations = 0;
   double epsilon = pow(10, -6), max_delta_x_i = 0;
   std::vector<double> x_old;
