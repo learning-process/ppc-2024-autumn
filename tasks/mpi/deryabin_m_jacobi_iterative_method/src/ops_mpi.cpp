@@ -71,7 +71,8 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskSequential::
   unsigned short n;
   do {
     x_old = output_x_vector_;
-    unsigned short i = 0, j;
+    unsigned short i = 0;
+    unsigned short j;
     n = taskData->inputs_count[1];
     double sum;
     while (i != n) {
@@ -247,7 +248,8 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::
   std::vector<double> x_old;
   do {
     x_old = output_x_vector_;
-    unsigned short i = 0, j;
+    unsigned short i = 0;
+    unsigned short j;
     double sum;
     while (i != local_output_x_vector_part_.size()) {
       j = 0;
