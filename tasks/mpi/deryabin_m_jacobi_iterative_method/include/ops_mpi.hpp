@@ -7,7 +7,6 @@
 #include <cmath>
 #include <memory>
 #include <numeric>
-#include <utility>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -25,9 +24,9 @@ class JacobiIterativeMPITaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<double> input_matrix_{};
-  std::vector<double> input_right_vector_{};
-  std::vector<double> output_x_vector_{};
+  std::vector<double> input_matrix_;
+  std::vector<double> input_right_vector_;
+  std::vector<double> output_x_vector_;
 };
 class JacobiIterativeMPITaskParallel : public ppc::core::Task {
  public:
