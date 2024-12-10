@@ -163,14 +163,14 @@ TEST(matthew_fyodorov_reduce_custom_mpi, TestMPITaskParallel_Sum_Zero_Numbers) {
   }
 }
 
-TEST(matthew_fyodorov_reduce_mpi, TestMPITaskParallel_Sum_Random_Numbers) {
+TEST(matthew_fyodorov_reduce_custom_mpi, TestMPITaskParallel_Sum_Random_Numbers) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
   int rank = world.rank();
   int size = world.size();
 
   if (size > 1) {
-    std::vector<int> input = getRandomVectora(5);
+    std::vector<int> input = getRandomVectors(5);
     std::vector<int> output(1);
     std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
 
@@ -180,7 +180,7 @@ TEST(matthew_fyodorov_reduce_mpi, TestMPITaskParallel_Sum_Random_Numbers) {
     taskData->outputs_count.emplace_back(1);
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
 
-    matthew_fyodorov_reduce_mpi::TestMPITaskParallel task(taskData);
+    matthew_fyodorov_reduce_custom_mpi::TestMPITaskParallel task(taskData);
     ASSERT_TRUE(task.validation());
     ASSERT_TRUE(task.pre_processing());
     ASSERT_TRUE(task.run());
@@ -196,7 +196,7 @@ TEST(matthew_fyodorov_reduce_mpi, TestMPITaskParallel_Sum_Random_Numbers) {
       taskDataSeq->outputs_count.emplace_back(output.size());
 
       // Create Task
-      matthew_fyodorov_reduce_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "+");
+      matthew_fyodorov_reduce_custom_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "+");
       ASSERT_EQ(testMpiTaskSequential.validation(), true);
       testMpiTaskSequential.pre_processing();
       testMpiTaskSequential.run();
