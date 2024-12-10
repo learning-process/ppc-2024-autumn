@@ -7,8 +7,8 @@
 
 TEST(deryabin_m_jacobi_iterative_method_mpi, test_lower_triangular_matrix) {
   boost::mpi::communicator world;
-  std::vector<double> input_matrix_{1, 0, 0, 0,  0,  0,  2, 3, 0, 0, 0,  0,  4, 5, 10, 0, 0, 0,
-                                    6,  7, 8, 22, 0, 0, 9, 10,  11, 12, 43, 0, 13, 14, 15,  16,  17,  76};
+  std::vector<double> input_matrix_{1, 0, 0, 0,  0, 0, 2, 3,  0,  0,  0,  0, 4,  5,  10, 0,  0,  0,
+                                    6, 7, 8, 22, 0, 0, 9, 10, 11, 12, 43, 0, 13, 14, 15, 16, 17, 76};
   std::vector<double> input_right_vector_(6, 1);
   std::vector<double> output_x_vector_ = std::vector<double>(6, 0);
   std::vector<std::vector<double>> out_x_vec(1, output_x_vector_);
