@@ -88,7 +88,7 @@ TEST(deryabin_m_jacobi_iterative_method_seq, test_diagonal_elements_are_much_lar
   ASSERT_EQ(true_solution, out_x_vec[0]);
 }
 
-TEST(deryabin_m_jacobi_iterative_method_seq, invalid_matrix_zeros_on_diagonal) {
+TEST(deryabin_m_jacobi_iterative_method_seq, test_invalid_matrix_zeros_on_diagonal) {
   // Create data
   std::vector<double> input_matrix_{0,  1,  2,  3, 4,  5,  6,  0,  7,  8,  9, 10, 11, 12, 0,  13, 14, 15,
                                     16, 17, 18, 0, 19, 20, 21, 22, 23, 24, 0, 25, 26, 27, 28, 29, 30, 0};
@@ -112,7 +112,7 @@ TEST(deryabin_m_jacobi_iterative_method_seq, invalid_matrix_zeros_on_diagonal) {
   ASSERT_EQ(jacobi_iterative_method_TaskSequential.validation(), false);
 }
 
-TEST(deryabin_m_jacobi_iterative_method_seq, invalid_matrix_non_strict_diaganol_predominance) {
+TEST(deryabin_m_jacobi_iterative_method_seq, test_invalid_matrix_non_strict_diaganol_predominance) {
   // Create data
   std::vector<double> input_matrix_{15, 1,  2,  3,  4,  5,  6,  40, 7,  8,  9,   10, 11, 12, 65, 13, 14, 15,
                                     16, 17, 18, 90, 19, 20, 21, 22, 23, 24, 115, 25, 26, 27, 28, 29, 30, 140};
