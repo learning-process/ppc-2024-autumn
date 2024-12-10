@@ -15,9 +15,8 @@ namespace deryabin_m_jacobi_iterative_method_mpi {
 
 class JacobiIterativeMPITaskSequential : public ppc::core::Task {
  public:
-  explicit JacobiIterativeMPITaskSequential(
-      std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit JacobiIterativeMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
+        : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -30,8 +29,7 @@ class JacobiIterativeMPITaskSequential : public ppc::core::Task {
 };
 class JacobiIterativeMPITaskParallel : public ppc::core::Task {
  public:
-  explicit JacobiIterativeMPITaskParallel(
-      std::shared_ptr<ppc::core::TaskData> taskData_)
+  explicit JacobiIterativeMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
       : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
