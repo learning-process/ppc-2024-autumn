@@ -8,7 +8,7 @@
 
 namespace lavrentyev_a_line_topology_mpi {
 
-std::vector<int> generate_random_data(int count, int lower_bound = -1000, int upper_bound = 1000) {
+std::vector<int> lavrentyrev_generate_random_data(int count, int lower_bound = -1000, int upper_bound = 1000) {
   std::vector<int> data(count);
   std::mt19937 random_engine(std::random_device{}());
   std::uniform_int_distribution<int> distribution(lower_bound, upper_bound);
@@ -26,7 +26,6 @@ TEST(lavrentyev_a_line_topology_mpi, task_run) {
   size_t end_proc = world.size() - 1;
   size_t num_elems = 1'000'000;
 
-  // Настраиваем TaskData для теста
   auto task_data = std::make_shared<ppc::core::TaskData>();
   task_data->inputs_count = {static_cast<unsigned>(start_proc), static_cast<unsigned>(end_proc),
                              static_cast<unsigned>(num_elems)};
@@ -35,20 +34,18 @@ TEST(lavrentyev_a_line_topology_mpi, task_run) {
   std::vector<int> output_data(num_elems, -1);
   std::vector<int> path(end_proc - start_proc + 1, -1);
 
-  if (world.rank() == start_proc) {
-    input_data = lavrentyev_a_line_topology_mpi::generate_random_data(num_elems);
+  if (static_cast<size_t>(world.rank()) == start_proc) {
+    input_data = lavrentyev_a_line_topology_mpi::lavrentyrev_generate_random_data(num_elems);
     task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
   }
 
-  if (world.rank() == end_proc) {
+  if (static_cast<size_t>(world.rank()) == end_proc) {
     task_data->outputs = {reinterpret_cast<uint8_t*>(output_data.data()), reinterpret_cast<uint8_t*>(path.data())};
     task_data->outputs_count = {static_cast<unsigned>(output_data.size()), static_cast<unsigned>(path.size())};
   }
 
-  // Создаем экземпляр задачи
   auto task = std::make_shared<lavrentyev_a_line_topology_mpi::TestMPITaskParallel>(task_data);
 
-  // Настройка для измерения производительности
   auto perf_attr = std::make_shared<ppc::core::PerfAttr>();
   perf_attr->num_running = 10;
   boost::mpi::timer perf_timer;
@@ -57,20 +54,18 @@ TEST(lavrentyev_a_line_topology_mpi, task_run) {
   auto perf_results = std::make_shared<ppc::core::PerfResults>();
   auto perf_analyzer = std::make_shared<ppc::core::Perf>(task);
 
-  // Запуск теста с измерением производительности
   perf_analyzer->task_run(perf_attr, perf_results);
 
-  if (world.rank() == end_proc) {
-    // Выводим статистику производительности
+  if (static_cast<size_t>(world.rank()) == end_proc) {
     ppc::core::Perf::print_perf_statistic(perf_results);
 
-    // Проверяем корректность результата
     ASSERT_EQ(input_data, output_data);
     for (size_t i = 0; i < path.size(); ++i) {
       ASSERT_EQ(path[i], static_cast<int>(start_proc) + static_cast<int>(i));
     }
   }
 }
+
 
 TEST(lavrentyev_a_line_topology_mpi, pipeline_run) {
   boost::mpi::communicator world;
@@ -89,7 +84,7 @@ TEST(lavrentyev_a_line_topology_mpi, pipeline_run) {
   std::vector<int> trace_path;
 
   if (world.rank() == start_rank) {
-    input_values = lavrentyev_a_line_topology_mpi::generate_random_data(total_elements);
+    input_values = lavrentyev_a_line_topology_mpi::lavrentyrev_generate_random_data(total_elements);
     data->inputs.push_back(reinterpret_cast<uint8_t*>(input_values.data()));
 
     if (start_rank != end_rank) {

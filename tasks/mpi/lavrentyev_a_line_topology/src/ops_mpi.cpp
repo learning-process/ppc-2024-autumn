@@ -1,4 +1,4 @@
-#include "mpi/lavrentyev_a_line_topology/include/ops_mpi.hpp"
+п»ї#include "mpi/lavrentyev_a_line_topology/include/ops_mpi.hpp"
 
 #include <algorithm>
 #include <boost/mpi.hpp>
@@ -54,17 +54,14 @@ bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::validation() {
 bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-  // Приводим start_proc и end_proc к типу int, так как world.rank() возвращает int
   int start_proc = static_cast<int>(taskData->inputs_count[0]);
   int end_proc = static_cast<int>(taskData->inputs_count[1]);
 
-  // Если start_proc и end_proc совпадают, возвращаем true
   if (start_proc == end_proc) {
     return true;
   }
 
-  int rank = world.rank();  // Получаем rank как int для удобства
-  // Проверяем, находится ли rank внутри допустимого диапазона
+  int rank = world.rank();
   if (rank < start_proc || rank > end_proc) {
     return true;
   }
@@ -72,37 +69,30 @@ bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::run() {
   std::vector<boost::mpi::request> requests;
 
   if (rank == start_proc) {
-    // Отправляем данные и путь, если rank == start_proc
     requests.push_back(world.isend(rank + 1, 0, reinterpret_cast<uint8_t*>(data.data()),
-                                   data.size() * sizeof(int)));  // Отправляем данные как uint8_t* (байтовый массив)
+                                   data.size() * sizeof(int)));
 
-    // Преобразуем path в uint8_t* и передаем
     requests.push_back(world.isend(rank + 1, 1, reinterpret_cast<uint8_t*>(path.data()),
-                                   path.size() * sizeof(int)));  // Отправляем path как uint8_t* (байтовый массив)
+                                   path.size() * sizeof(int)));
   } else {
-    // Принимаем данные и путь, если rank > start_proc
     boost::mpi::request recv_data_req = world.irecv(rank - 1, 0, reinterpret_cast<uint8_t*>(data.data()),
-                                                    data.size() * sizeof(int));  // Принимаем данные как uint8_t*
+                                                    data.size() * sizeof(int));
     boost::mpi::request recv_path_req = world.irecv(rank - 1, 1, reinterpret_cast<uint8_t*>(path.data()),
-                                                    path.size() * sizeof(int));  // Принимаем путь как uint8_t*
+                                                    path.size() * sizeof(int));
 
-    // Ожидаем завершения получения данных
     recv_data_req.wait();
     recv_path_req.wait();
 
-    // Добавляем текущий rank в путь
     path.push_back(rank);
 
-    // Отправляем данные и путь следующему процессу, если rank меньше end_proc
     if (rank < end_proc) {
       requests.push_back(world.isend(rank + 1, 0, reinterpret_cast<uint8_t*>(data.data()),
-                                     data.size() * sizeof(int)));  // Отправляем данные как uint8_t*
+                                     data.size() * sizeof(int)));
       requests.push_back(world.isend(rank + 1, 1, reinterpret_cast<uint8_t*>(path.data()),
-                                     path.size() * sizeof(int)));  // Отправляем путь как uint8_t*
+                                     path.size() * sizeof(int)));
     }
   }
 
-  // Ожидаем завершения всех запросов
   boost::mpi::wait_all(requests.begin(), requests.end());
 
   return true;
