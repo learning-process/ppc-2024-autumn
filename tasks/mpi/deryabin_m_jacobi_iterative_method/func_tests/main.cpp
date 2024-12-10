@@ -9,8 +9,8 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_lower_triangular_matrix) {
   boost::mpi::communicator world;
   std::vector<double> input_matrix_(100, 0);
   std::vector<double> input_right_vector_(10, 1);
-  for(unsigned short i = 9; i >= 0; i--) {
-    for(unsigned short j = i; j >= 0; j--) {
+  for (unsigned short i = 9; i >= 0; i--) {
+    for (unsigned short j = i; j >= 0; j--) {
       if (i != j) {
         input_matrix_[i * 10 + j] = 1;
       } else {
