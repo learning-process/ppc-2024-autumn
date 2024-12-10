@@ -65,7 +65,6 @@ TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Max_Values_Input) {
     ASSERT_TRUE(contrastTaskParallel.validation());
   }
 }
-
 TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Min_Values_Input) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
