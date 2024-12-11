@@ -1,10 +1,10 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>
-#include <boost/serialization/vector.hpp>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <boost/serialization/vector.hpp>
 #include <random>
 #include <vector>
 
