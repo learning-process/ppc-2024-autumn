@@ -100,6 +100,17 @@ bool beskhmelnova_k_jarvis_march_mpi::TestMPITaskSequential<DataType>::post_proc
 template <typename DataType>
 bool beskhmelnova_k_jarvis_march_mpi::TestMPITaskParallel<DataType>::pre_processing() {
   internal_order_test();
+  if (world.rank() == 0) {
+    num_points = (int)taskData->inputs_count[0];
+    input_x = std::vector<DataType>(num_points);
+    input_y = std::vector<DataType>(num_points);
+    auto* ptr_x = reinterpret_cast<DataType*>(taskData->inputs[0]);
+    auto* ptr_y = reinterpret_cast<DataType*>(taskData->inputs[1]);
+    for (int i = 0; i < num_points; i++) {
+      input_x[i] = ptr_x[i];
+      input_y[i] = ptr_y[i];
+    }
+  }
   return true;
 }
 
@@ -113,17 +124,6 @@ bool beskhmelnova_k_jarvis_march_mpi::TestMPITaskParallel<DataType>::validation(
 template <typename DataType>
 bool beskhmelnova_k_jarvis_march_mpi::TestMPITaskParallel<DataType>::run() {
   internal_order_test();
-  if (world.rank() == 0) {
-    num_points = (int)taskData->inputs_count[0];
-    input_x = std::vector<DataType>(num_points);
-    input_y = std::vector<DataType>(num_points);
-    auto* ptr_x = reinterpret_cast<DataType*>(taskData->inputs[0]);
-    auto* ptr_y = reinterpret_cast<DataType*>(taskData->inputs[1]);
-    for (int i = 0; i < num_points; i++) {
-      input_x[i] = ptr_x[i];
-      input_y[i] = ptr_y[i];
-    }
-  }
   broadcast(world, num_points, 0);
   if (world.rank() == 0) {
     local_num_points = localNumPoints(num_points, world.size(), world.rank());
@@ -161,8 +161,8 @@ bool beskhmelnova_k_jarvis_march_mpi::TestMPITaskParallel<DataType>::run() {
     local_input_y = local_res_y;
   }
   if (world.rank() == 0) {
-    std::copy(local_input_x.begin(), local_input_x.end(), input_x.begin());
-    std::copy(local_input_y.begin(), local_input_y.end(), input_y.begin());
+    input_x.assign(local_input_x.begin(), local_input_x.end());
+    input_y.assign(local_input_y.begin(), local_input_y.end());
     int sum_next_num_points = local_num_points;
     for (int i = 1; i < world.size(); i++) {
       int next_num_points;
@@ -211,3 +211,6 @@ bool beskhmelnova_k_jarvis_march_mpi::TestMPITaskParallel<DataType>::post_proces
 
 template class beskhmelnova_k_jarvis_march_mpi::TestMPITaskSequential<double>;
 template class beskhmelnova_k_jarvis_march_mpi::TestMPITaskParallel<double>;
+
+template class beskhmelnova_k_jarvis_march_mpi::TestMPITaskSequential<int>;
+template class beskhmelnova_k_jarvis_march_mpi::TestMPITaskParallel<int>;
