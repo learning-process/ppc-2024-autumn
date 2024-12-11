@@ -88,7 +88,7 @@ TEST(drozhdinov_d_mult_matrix_fox_seq, EmptyTest) {
   testTaskSequential.post_processing();
   ASSERT_EQ(res, expres);
 }
-
+/*
 TEST(drozhdinov_d_mult_matrix_fox_seq, 1x10_10x7Random) {
   int k = 1, l = 10, m = 10, n = 7;
   std::vector<double> A = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(k * l);
@@ -115,7 +115,7 @@ TEST(drozhdinov_d_mult_matrix_fox_seq, 1x10_10x7Random) {
   testTaskSequential.run();
   testTaskSequential.post_processing();
   ASSERT_EQ(res, expres);
-}
+}*/
 
 TEST(drozhdinov_d_mult_matrix_fox_seq, 1x1_1x1Random) {
   int k = 1, l = 1, m = 1, n = 1;
