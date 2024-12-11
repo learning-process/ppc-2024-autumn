@@ -1,8 +1,6 @@
 #include <gtest/gtest.h>
 
 #include <numbers>
-#include <cmath>
-#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/kovalev_k_multidimensional_integrals_rectangle_method/include/header.hpp"

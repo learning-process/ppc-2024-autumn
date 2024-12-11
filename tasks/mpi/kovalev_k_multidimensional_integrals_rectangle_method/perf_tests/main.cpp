@@ -1,10 +1,8 @@
 #include <gtest/gtest.h>
 
-#include <numbers>
 #include <boost/mpi/timer.hpp>
-#include <cmath>
 #include <ctime>
-#include <vector>
+#include <numbers>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/kovalev_k_multidimensional_integrals_rectangle_method/include/header.hpp"
