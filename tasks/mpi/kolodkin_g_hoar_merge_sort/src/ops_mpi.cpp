@@ -119,12 +119,6 @@ bool kolodkin_g_hoar_merge_sort_mpi::TestMPITaskParallel::run() {
     std::vector<int> final_result;
     std::vector<int> current_indices(num_processes, 0);
     std::vector<bool> done(num_processes, false);
-    int num_segments = 0;
-    for (size_t i = 0; i < num_processes; i++) {
-      if (send_counts[i] > 0) {
-        num_segments++;
-      }
-    }
     while (final_result.size() < input_.size()) {
       int min_index = -1;
       int min_value = std::numeric_limits<int>::max();
