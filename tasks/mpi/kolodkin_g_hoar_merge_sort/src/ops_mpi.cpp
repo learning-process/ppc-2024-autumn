@@ -8,7 +8,7 @@ int partition(std::vector<int>& arr, int low, int high) {
   int pivot = arr[high];
   int i = (low - 1);
 
-  for (size_t j = low; j < high; j++) {
+  for (int j = low; j < high; j++) {
     if (arr[j] <= pivot) {
       i++;
       std::swap(arr[i], arr[j]);
