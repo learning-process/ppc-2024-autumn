@@ -54,9 +54,9 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential::post_processing() {
 bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    int vertices = taskData->inputs_count[0];
-    int edges_count = taskData->inputs_count[1];
-    int source = taskData->inputs_count[2];
+    vertices_ = taskData->inputs_count[0];
+    edges_count_ = taskData->inputs_count[1];
+    source_ = taskData->inputs_count[2];
 
     int* edges_data = reinterpret_cast<int*>(taskData->inputs[0]);
     for (int i = 0; i < edges_count; ++i) {
