@@ -1,8 +1,8 @@
 #include "mpi/kovalev_k_multidimensional_integrals_rectangle_method/include/header.hpp"
 
-const double
+double
 kovalev_k_multidimensional_integrals_rectangle_method_mpi::MultidimensionalIntegralsRectangleMethodPar::customRound(
-    double value) {
+    double value) const {
   int tmp = static_cast<int>(1 / h);
   int decimalPlaces = 0;
   while (tmp > 0 && tmp % 10 == 0) {
@@ -17,7 +17,7 @@ kovalev_k_multidimensional_integrals_rectangle_method_mpi::MultidimensionalInteg
 bool kovalev_k_multidimensional_integrals_rectangle_method_mpi::MultidimensionalIntegralsRectangleMethodPar::
     count_multidimensional_integrals_rectangle_method_mpi() {
   std::stack<std::vector<double>> stack;
-  stack.emplace(std::vector<double>());
+  stack.emplace();
 
   while (!stack.empty()) {
     std::vector<double> point = stack.top();

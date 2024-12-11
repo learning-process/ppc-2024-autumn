@@ -20,7 +20,7 @@ class MultidimensionalIntegralsRectangleMethod : public ppc::core::Task {
   double res;
 
  public:
-  explicit MultidimensionalIntegralsRectangleMethod(std::shared_ptr<ppc::core::TaskData> taskData_,
+  explicit MultidimensionalIntegralsRectangleMethod(const std::shared_ptr<ppc::core::TaskData>& taskData_,
                                                     std::function<double(std::vector<double>& args)> func_)
       : Task(taskData_), n(taskData_->inputs_count[0]), func(std::move(func_)) {}
   bool count_multidimensional_integrals_rectangle_method_seq();

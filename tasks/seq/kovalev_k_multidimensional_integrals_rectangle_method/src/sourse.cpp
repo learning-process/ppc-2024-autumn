@@ -3,7 +3,7 @@
 bool kovalev_k_multidimensional_integrals_rectangle_method_seq::MultidimensionalIntegralsRectangleMethod::
     count_multidimensional_integrals_rectangle_method_seq() {
   std::stack<std::vector<double>> stack;
-  stack.emplace(std::vector<double>());
+  stack.emplace();
 
   while (!stack.empty()) {
     std::vector<double> point = stack.top();
