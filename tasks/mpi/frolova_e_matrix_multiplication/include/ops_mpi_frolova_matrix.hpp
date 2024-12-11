@@ -60,8 +60,6 @@ struct lineStruc {
     ar & outgoingLineLength;
   }
 
-  lineStruc() : numberOfLines{0}, enterLineslenght{0}, outgoingLineLength{0} {}
-
   lineStruc& operator=(const lineStruc& other) {
     if (this != &other) {
       local_lines = other.local_lines;
@@ -89,8 +87,6 @@ struct columnStruc {
     ar & enterColumnLenght;
   }
 
-  columnStruc() : numberOfColumns{0}, enterColumnLenght{0} {}
-
   columnStruc& operator=(const columnStruc& other) {
     if (this != &other) {
       local_columns = other.local_columns;
@@ -117,8 +113,8 @@ class matrixMultiplicationParallel : public ppc::core::Task {
   std::vector<int> matrixB;
   std::vector<int> matrixC;
 
-  lineStruc localLinesA{};
-  columnStruc localColumnB{};
+  lineStruc localLinesA;
+  columnStruc localColumnB;
 
   size_t lineA{};
   size_t columnA{};

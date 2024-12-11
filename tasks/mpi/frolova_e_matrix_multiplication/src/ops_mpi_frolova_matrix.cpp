@@ -167,7 +167,7 @@ bool frolova_e_matrix_multiplication_mpi::matrixMultiplicationParallel::validati
 }
 
 void frolova_e_matrix_multiplication_mpi::multiplyAndPlace(lineStruc& line, const columnStruc& column) {
-  if (line.res_lines.size() != static_cast<size_t>(line.numberOfLines * line.outgoingLineLength)) {
+  if (line.res_lines.size() != line.numberOfLines * line.outgoingLineLength) {
     line.res_lines.resize(line.numberOfLines * line.outgoingLineLength, 0);
   }
   for (size_t i = 0; i < line.numberOfLines; ++i) {
@@ -200,7 +200,7 @@ bool frolova_e_matrix_multiplication_mpi::matrixMultiplicationParallel::run() {
   unsigned int active_processes = 0;
 
   if (world.rank() == 0) {
-    active_processes = std::min(static_cast<int>(world.size()), static_cast<int>(std::max(lineA, columnB)));
+    active_processes = std::min(world.size(), static_cast<int>(std::max(lineA, columnB)));
   }
   broadcast(world, active_processes, 0);
 
