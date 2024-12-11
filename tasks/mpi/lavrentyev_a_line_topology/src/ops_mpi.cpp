@@ -68,11 +68,11 @@ bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::run() {
 
   int* d = new int[s];
   int* p = new int[c];
-  if (world.size() != 0) {
-    for (size_t i = 0; i < static_cast<size_t>(c); ++i) {
-      p[i] = -1;
-    }
+
+  for (size_t i = 0; i < static_cast<size_t>(c); ++i) {
+    p[i] = -1;
   }
+
   if (start_proc == end_proc) {
     return true;
   }
