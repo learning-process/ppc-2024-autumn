@@ -176,6 +176,7 @@ std::vector<double> drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel::Paral
     GRID_COMM.recv(0, 0, block_A);
     GRID_COMM.recv(0, 1, block_B);
   }
+  MPI_Status stat;
   for (int i = 0; i < grid_size; i++) {
     std::vector<double> tmpblockA(block_size * block_size);
     int pivot = (grid_coords[0] + i) % grid_size;
@@ -188,7 +189,7 @@ std::vector<double> drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel::Paral
     if (grid_coords[0] == grid_size - 1) nextPr = 0;
     int prevPr = grid_coords[0] - 1;
     if (grid_coords[0] == 0) prevPr = grid_size - 1;
-    sendrecv_replace(COL_COMM, block_B, prevPr, 0, nextPr, 0);  // should be good, but need check this
+    MPI_Sendrecv_replace(block_B.data(), block_size * block_size, MPI_DOUBLE, prevPr, 0, nextPr, 0, COL_COMM, &stat);
   }
   std::vector<double> resultM(size * size);
   if (world.rank() == 0) {
