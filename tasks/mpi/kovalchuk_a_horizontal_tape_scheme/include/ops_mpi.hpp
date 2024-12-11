@@ -14,9 +14,6 @@
 
 namespace kovalchuk_a_horizontal_tape_scheme {
 
-const int MINIMALGEN = -999;
-const int MAXIMUMGEN = 999;
-
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
