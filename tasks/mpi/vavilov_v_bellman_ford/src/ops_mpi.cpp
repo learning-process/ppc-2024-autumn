@@ -88,7 +88,7 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::run() {
   bool changed = true;
 
   int local_start = world.rank() * (edges_count_ / world.size()) + std::min(world.rank(), edges_count_ % world.size());
-  int local_end = local_start + (edges_count_ / world.size()) + (world.rank() < edges_count_ % world.size() ? 1 : 0) ? 1 : 0);
+  int local_end = local_start + (edges_count_ / world.size()) + (world.rank() < edges_count_ % world.size() ? 1 : 0); ? 1 : 0);
 
   for (int i = 1; i < vertices_; ++i) {
     if (!changed && i != vertices_) {
