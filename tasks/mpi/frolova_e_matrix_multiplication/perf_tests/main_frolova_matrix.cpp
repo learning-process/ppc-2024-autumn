@@ -7,6 +7,13 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/frolova_e_matrix_multiplication/include/ops_mpi_frolova_matrix.hpp"
 
+void randomNumVec(int N, std::vector<int>& vec) {
+  for (int i = 0; i < N; i++) {
+    int num = rand() % 100 + 1;
+    vec.push_back(num);
+  }
+}
+
 TEST(frolova_e_matrix_multiplication_mpi, test_pipeline_run) {
   // creare data
   boost::mpi::communicator world;
@@ -22,8 +29,8 @@ TEST(frolova_e_matrix_multiplication_mpi, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    frolova_e_matrix_multiplication_mpi::randomNumVec(10000, matrixA_);
-    frolova_e_matrix_multiplication_mpi::randomNumVec(10000, matrixB_);
+    randomNumVec(10000, matrixA_);
+    randomNumVec(10000, matrixB_);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(values_1.data()));
     taskDataPar->inputs_count.emplace_back(values_1.size());
@@ -110,8 +117,8 @@ TEST(frolova_e_matrix_multiplication_mpi, test_task_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    frolova_e_matrix_multiplication_mpi::randomNumVec(10000, matrixA_);
-    frolova_e_matrix_multiplication_mpi::randomNumVec(10000, matrixB_);
+    randomNumVec(10000, matrixA_);
+    randomNumVec(10000, matrixB_);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(values_1.data()));
     taskDataPar->inputs_count.emplace_back(values_1.size());

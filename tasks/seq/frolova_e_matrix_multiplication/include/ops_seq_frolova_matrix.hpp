@@ -8,7 +8,6 @@
 
 namespace frolova_e_matrix_multiplication_seq {
 
-void randomNumVec(int N, std::vector<int>& vec);
 std::vector<int> Multiplication(size_t M, size_t N, size_t K, const std::vector<int>& A, const std::vector<int>& B);
 
 class matrixMultiplication : public ppc::core::Task {

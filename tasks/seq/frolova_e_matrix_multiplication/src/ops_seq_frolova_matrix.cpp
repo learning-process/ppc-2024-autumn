@@ -5,13 +5,6 @@
 
 using namespace std::chrono_literals;
 
-void frolova_e_matrix_multiplication_seq::randomNumVec(int N, std::vector<int>& vec) {
-  for (int i = 0; i < N; i++) {
-    int num = rand() % 100 + 1;
-    vec.push_back(num);
-  }
-}
-
 std::vector<int> frolova_e_matrix_multiplication_seq::Multiplication(size_t M, size_t N, size_t K,
                                                                      const std::vector<int>& A,
                                                                      const std::vector<int>& B) {

@@ -6,13 +6,20 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/frolova_e_matrix_multiplication/include/ops_seq_frolova_matrix.hpp"
 
+void randomNumVec(int N, std::vector<int> &vec) {
+  for (int i = 0; i < N; i++) {
+    int num = rand() % 100 + 1;
+    vec.push_back(num);
+  }
+}
+
 TEST(frolova_e_matrix_multiplication_seq, test_pipeline_run) {
   std::vector<int> values_1 = {100, 100};
   std::vector<int> values_2 = {100, 100};
   std::vector<int> matrixA_;
-  frolova_e_matrix_multiplication_seq::randomNumVec(10000, matrixA_);
+  randomNumVec(10000, matrixA_);
   std::vector<int> matrixB_;
-  frolova_e_matrix_multiplication_seq::randomNumVec(10000, matrixB_);
+  randomNumVec(10000, matrixB_);
   std::vector<int> out(10000);
 
   // Create TaskData
@@ -64,9 +71,9 @@ TEST(frolova_e_matrix_multiplication_seq, test_task_run) {
   std::vector<int> values_1 = {100, 100};
   std::vector<int> values_2 = {100, 100};
   std::vector<int> matrixA_;
-  frolova_e_matrix_multiplication_seq::randomNumVec(10000, matrixA_);
+  randomNumVec(10000, matrixA_);
   std::vector<int> matrixB_;
-  frolova_e_matrix_multiplication_seq::randomNumVec(10000, matrixB_);
+  randomNumVec(10000, matrixB_);
   std::vector<int> out(10000);
 
   // Create TaskData
