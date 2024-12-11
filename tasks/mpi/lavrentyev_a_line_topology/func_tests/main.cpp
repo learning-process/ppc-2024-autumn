@@ -57,6 +57,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer) {
   ASSERT_TRUE(task.post_processing());
 
   if (static_cast<size_t>(world.rank()) == end_proc) {
+    for (size_t i = 0; i < output_data.size(); i++) {
+      ASSERT_EQ(input_data[i], output_data[i]);
+    }
     for (size_t i = 0; i < received_path.size(); ++i) {
       ASSERT_EQ(received_path[i], static_cast<int>(start_proc) + static_cast<int>(i));
     }
@@ -166,8 +169,8 @@ TEST(lavrentyev_a_line_topology_mpi, ValidationInsufficientInputsCount) {
 TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_1024) {
   boost::mpi::communicator world;
 
-  const int start_proc = 0;
-  const int end_proc = world.size() - 1;
+  const size_t start_proc = 0;
+  const size_t end_proc = world.size() > 1 ? static_cast<size_t>(world.size() - 1) : 0;
   const size_t num_elems = 1024;
 
   auto task_data = std::make_shared<ppc::core::TaskData>();
@@ -176,18 +179,18 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_1024) {
 
   std::vector<int> input_data;
   std::vector<int> output_data(num_elems, -1);
-  std::vector<int> received_path(static_cast<size_t>(end_proc - start_proc + 1), -1);
+  std::vector<int> received_path(end_proc - start_proc + 1, -1);
 
-  if (world.rank() == start_proc) {
+  if (static_cast<size_t>(world.rank()) == start_proc) {
     input_data = lavrentyrev_generate_random_vector(num_elems);
     task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
-    task_data->inputs_count.push_back(static_cast<unsigned int>(input_data.size()));
+
     if (start_proc != end_proc) {
       world.send(end_proc, 0, input_data);
     }
   }
 
-  if (world.rank() == end_proc) {
+  if (static_cast<size_t>(world.rank()) == end_proc) {
     task_data->outputs = {reinterpret_cast<uint8_t*>(output_data.data()),
                           reinterpret_cast<uint8_t*>(received_path.data())};
     task_data->outputs_count = {static_cast<unsigned int>(output_data.size()),
@@ -203,9 +206,12 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_1024) {
   ASSERT_TRUE(task.run());
   ASSERT_TRUE(task.post_processing());
 
-  if (world.rank() == end_proc) {
+  if (static_cast<size_t>(world.rank()) == end_proc) {
+    for (size_t i = 0; i < output_data.size(); i++) {
+      ASSERT_EQ(input_data[i], output_data[i]);
+    }
     for (size_t i = 0; i < received_path.size(); ++i) {
-      ASSERT_EQ(received_path[i], start_proc + static_cast<int>(i));
+      ASSERT_EQ(received_path[i], static_cast<int>(start_proc) + static_cast<int>(i));
     }
   }
 }
@@ -251,6 +257,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_2048) {
   ASSERT_TRUE(task.post_processing());
 
   if (world.rank() == end_proc) {
+    for (size_t i = 0; i < output_data.size(); i++) {
+      ASSERT_EQ(input_data[i], output_data[i]);
+    }
     for (size_t i = 0; i < received_path.size(); ++i) {
       ASSERT_EQ(received_path[i], start_proc + static_cast<int>(i));
     }
@@ -298,6 +307,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_4096) {
   ASSERT_TRUE(task.post_processing());
 
   if (world.rank() == end_proc) {
+    for (size_t i = 0; i < output_data.size(); i++) {
+      ASSERT_EQ(input_data[i], output_data[i]);
+    }
     for (size_t i = 0; i < received_path.size(); ++i) {
       ASSERT_EQ(received_path[i], start_proc + static_cast<int>(i));
     }
@@ -345,6 +357,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_8192) {
   ASSERT_TRUE(task.post_processing());
 
   if (world.rank() == end_proc) {
+    for (size_t i = 0; i < output_data.size(); i++) {
+      ASSERT_EQ(input_data[i], output_data[i]);
+    }
     for (size_t i = 0; i < received_path.size(); ++i) {
       ASSERT_EQ(received_path[i], start_proc + static_cast<int>(i));
     }
@@ -392,6 +407,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_16384) {
   ASSERT_TRUE(task.post_processing());
 
   if (world.rank() == end_proc) {
+    for (size_t i = 0; i < output_data.size(); i++) {
+      ASSERT_EQ(input_data[i], output_data[i]);
+    }
     for (size_t i = 0; i < received_path.size(); ++i) {
       ASSERT_EQ(received_path[i], start_proc + static_cast<int>(i));
     }
@@ -439,6 +457,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_2187) {
   ASSERT_TRUE(task.post_processing());
 
   if (world.rank() == end_proc) {
+    for (size_t i = 0; i < output_data.size(); i++) {
+      ASSERT_EQ(input_data[i], output_data[i]);
+    }
     for (size_t i = 0; i < received_path.size(); ++i) {
       ASSERT_EQ(received_path[i], start_proc + static_cast<int>(i));
     }
@@ -486,6 +507,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_6561) {
   ASSERT_TRUE(task.post_processing());
 
   if (world.rank() == end_proc) {
+    for (size_t i = 0; i < output_data.size(); i++) {
+      ASSERT_EQ(input_data[i], output_data[i]);
+    }
     for (size_t i = 0; i < received_path.size(); ++i) {
       ASSERT_EQ(received_path[i], start_proc + static_cast<int>(i));
     }
@@ -533,6 +557,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_19638) {
   ASSERT_TRUE(task.post_processing());
 
   if (world.rank() == end_proc) {
+    for (size_t i = 0; i < output_data.size(); i++) {
+      ASSERT_EQ(input_data[i], output_data[i]);
+    }
     for (size_t i = 0; i < received_path.size(); ++i) {
       ASSERT_EQ(received_path[i], start_proc + static_cast<int>(i));
     }
@@ -580,6 +607,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_2791) {
   ASSERT_TRUE(task.post_processing());
 
   if (world.rank() == end_proc) {
+    for (size_t i = 0; i < output_data.size(); i++) {
+      ASSERT_EQ(input_data[i], output_data[i]);
+    }
     for (size_t i = 0; i < received_path.size(); ++i) {
       ASSERT_EQ(received_path[i], start_proc + static_cast<int>(i));
     }
@@ -627,6 +657,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_5021) {
   ASSERT_TRUE(task.post_processing());
 
   if (world.rank() == end_proc) {
+    for (size_t i = 0; i < output_data.size(); i++) {
+      ASSERT_EQ(input_data[i], output_data[i]);
+    }
     for (size_t i = 0; i < received_path.size(); ++i) {
       ASSERT_EQ(received_path[i], start_proc + static_cast<int>(i));
     }
@@ -674,6 +707,9 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_7517) {
   ASSERT_TRUE(task.post_processing());
 
   if (world.rank() == end_proc) {
+    for (size_t i = 0; i < output_data.size(); i++) {
+      ASSERT_EQ(input_data[i], output_data[i]);
+    }
     for (size_t i = 0; i < received_path.size(); ++i) {
       ASSERT_EQ(received_path[i], start_proc + static_cast<int>(i));
     }
