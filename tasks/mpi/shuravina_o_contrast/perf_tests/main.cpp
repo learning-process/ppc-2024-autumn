@@ -1,78 +1,88 @@
 #include <gtest/gtest.h>
 
-#include <boost/mpi/communicator.hpp>
-#include <boost/mpi/environment.hpp>
-#include <chrono>
+#include <boost/mpi/timer.hpp>
 #include <random>
 #include <vector>
 
+#include "core/perf/include/perf.hpp"
 #include "mpi/shuravina_o_contrast/include/ops_mpi.hpp"
 
-TEST(shuravina_o_contrast_perf, Test_Contrast_Enhancement_MPI_Performance) {
-  boost::mpi::environment env;
+namespace shuravina_o_contrast {
+std::vector<uint8_t> genRandomData(uint32_t size) {
+  std::vector<uint8_t> buff(size);
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  for (uint32_t i = 0; i < size; i++) {
+    buff[i] = gen() % 256;
+  }
+  return buff;
+}
+}  // namespace shuravina_o_contrast
+
+TEST(shuravina_o_contrast_perf, test_pipeline_run_small_input) {
   boost::mpi::communicator world;
+  std::vector<uint8_t> input;
+  std::vector<uint8_t> res;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+    int size = 1000;
+    input = shuravina_o_contrast::genRandomData(size);
+    res.resize(input.size());
 
-    const int input_size = 100000;
-    std::vector<uint8_t> input(input_size);
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dis(0, 255);
-    for (int i = 0; i < input_size; ++i) {
-      input[i] = dis(gen);
-    }
-
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
     taskDataPar->inputs_count.emplace_back(input.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
+    taskDataPar->outputs_count.emplace_back(res.size());
+  }
 
-    std::vector<uint8_t> output(input.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
-    taskDataPar->outputs_count.emplace_back(output.size());
+  auto contrastTaskParallel = std::make_shared<shuravina_o_contrast::ContrastTaskParallel>(taskDataPar);
 
-    shuravina_o_contrast::ContrastTaskParallel contrastTaskParallel(taskDataPar);
-    ASSERT_TRUE(contrastTaskParallel.validation());
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 10;
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-    const auto t0 = std::chrono::high_resolution_clock::now();
-    contrastTaskParallel.pre_processing();
-    contrastTaskParallel.run();
-    contrastTaskParallel.post_processing();
-    const auto t1 = std::chrono::high_resolution_clock::now();
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(contrastTaskParallel);
+  perfAnalyzer->pipeline_run(perfAttr, perfResults);
 
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
-    std::cout << "Performance Test (MPI, Large Image): " << duration << " ms" << std::endl;
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
   }
 }
 
-TEST(shuravina_o_contrast_perf, Test_Contrast_Enhancement_Sequential_Performance) {
-  const int input_size = 100000;
-  std::vector<uint8_t> input(input_size);
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<> dis(0, 255);
+TEST(shuravina_o_contrast_perf, test_pipeline_run_large_input) {
+  boost::mpi::communicator world;
+  std::vector<uint8_t> input;
+  std::vector<uint8_t> res;
 
-  for (int i = 0; i < input_size; ++i) {
-    input[i] = dis(gen);
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    int size = 1000000;
+    input = shuravina_o_contrast::genRandomData(size);
+    res.resize(input.size());
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataPar->inputs_count.emplace_back(input.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
+    taskDataPar->outputs_count.emplace_back(res.size());
   }
 
-  std::vector<uint8_t> output(input.size());
+  auto contrastTaskParallel = std::make_shared<shuravina_o_contrast::ContrastTaskParallel>(taskDataPar);
 
-  const auto t0 = std::chrono::high_resolution_clock::now();
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 10;
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  uint8_t min_val = *std::min_element(input.begin(), input.end());
-  uint8_t max_val = *std::max_element(input.begin(), input.end());
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(contrastTaskParallel);
+  perfAnalyzer->pipeline_run(perfAttr, perfResults);
 
-  if (max_val == min_val) {
-    std::fill(output.begin(), output.end(), 128);
-  } else {
-    for (size_t i = 0; i < input.size(); ++i) {
-      output[i] = static_cast<uint8_t>((input[i] - min_val) * 255.0 / (max_val - min_val));
-    }
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
   }
-
-  const auto t1 = std::chrono::high_resolution_clock::now();
-
-  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
-  std::cout << "Performance Test (Sequential, Large Image): " << duration << " ms" << std::endl;
 }
