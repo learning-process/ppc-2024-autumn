@@ -48,7 +48,7 @@ TEST(seq_kolodkin_g_hoar_merge_sort_test, test_pipeline_run) {
   }
 }
 
-TEST(seq_kolodkin_g_image_contrast_test, test_task_run) {
+TEST(seq_kolodkin_g_hoar_merge_sort_test, test_task_run) {
   // Create data
   std::vector<int> vec;
   std::vector<int> out(10000);
