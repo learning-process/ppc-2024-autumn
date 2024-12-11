@@ -6,7 +6,7 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskSequential::p
   internal_order_test();
   input_right_vector_ = std::vector<double>(taskData->inputs_count[1]);
   auto* tmp_ptr_vec = reinterpret_cast<double*>(taskData->inputs[1]);
-  for (unsigned i = 0; i < taskData->inputs_count[1]; i++) {
+  for (unsigned short i = 0; i < taskData->inputs_count[1]; i++) {
     input_right_vector_[i] = tmp_ptr_vec[i];
   }
   output_x_vector_ = std::vector<double>(input_right_vector_.size());
@@ -17,7 +17,7 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskSequential::v
   internal_order_test();
   input_matrix_ = std::vector<double>(taskData->inputs_count[0]);
   auto* tmp_ptr_matr = reinterpret_cast<double*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+  for (unsigned short i = 0; i < taskData->inputs_count[0]; i++) {
     input_matrix_[i] = tmp_ptr_matr[i];
   }
   unsigned short i = 0;
@@ -94,7 +94,7 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::pre
   if (world.size() == 1) {
     input_right_vector_ = std::vector<double>(taskData->inputs_count[1]);
     auto* tmp_ptr_vec = reinterpret_cast<double*>(taskData->inputs[1]);
-    for (unsigned i = 0; i < taskData->inputs_count[1]; i++) {
+    for (unsigned short i = 0; i < taskData->inputs_count[1]; i++) {
       input_right_vector_[i] = tmp_ptr_vec[i];
     }
     output_x_vector_ = std::vector<double>(input_right_vector_.size());
@@ -107,7 +107,7 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::val
   if (world.size() == 1) {
     input_matrix_ = std::vector<double>(taskData->inputs_count[0]);
     auto* tmp_ptr_matr = reinterpret_cast<double*>(taskData->inputs[0]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+    for (unsigned short i = 0; i < taskData->inputs_count[0]; i++) {
       input_matrix_[i] = tmp_ptr_matr[i];
     }
     unsigned short i = 0;
