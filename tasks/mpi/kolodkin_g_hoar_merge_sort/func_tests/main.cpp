@@ -17,7 +17,7 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_one_elems) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
   auto global_ptr = std::make_shared<std::vector<int>>(global_out);
-  std::cout<< "OK1!" << std::endl;
+  std::cout<< world.rank() << "OK1!" << std::endl;
 
   if (world.rank() == 0) {
     vector = {50};
@@ -30,7 +30,7 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_one_elems) {
     taskDataMpi->inputs_count.emplace_back(vector.size());
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
   }
-    std::cout<< "OK2!" << std::endl;
+    std::cout<< world.rank() << "OK2!" << std::endl;
 
   kolodkin_g_hoar_merge_sort_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
 
@@ -38,7 +38,7 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_one_elems) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  std::cout<< "OK3!" << std::endl;
+  std::cout<< world.rank() << "OK3!" << std::endl;
 
   if (world.rank() == 0) {
     std::vector<int> reference_out(1, 0);
@@ -48,21 +48,21 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_one_elems) {
     taskDataSeq->inputs_count.emplace_back(vector.size());
     auto reference_ptr = std::make_shared<std::vector<int>>(reference_out);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_ptr.get()));
-    std::cout<< "OK4!" << std::endl;
+    std::cout<< world.rank() << "OK4!" << std::endl;
     kolodkin_g_hoar_merge_sort_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
 
     ASSERT_EQ(testTaskSequential.validation(), true);
     testTaskSequential.pre_processing();
     testTaskSequential.run();
     testTaskSequential.post_processing();
-    std::cout<< "OK5!" << std::endl;
+    std::cout<< world.rank() << "OK5!" << std::endl;
     global_out = *reinterpret_cast<std::vector<int> *>(taskDataMpi->outputs[0]);
     reference_out = *reinterpret_cast<std::vector<int> *>(taskDataSeq->outputs[0]);
-    std::cout<< "OK6!" << std::endl;
+    std::cout<< world.rank() << "OK6!" << std::endl;
     for (unsigned i = 0; i < global_out.size(); i++) {
       ASSERT_EQ(global_out[i], reference_out[i]);
     }
-    std::cout<< "OK7!" << std::endl;
+    std::cout<< world.rank() << "OK7!" << std::endl;
   }
 }
 
