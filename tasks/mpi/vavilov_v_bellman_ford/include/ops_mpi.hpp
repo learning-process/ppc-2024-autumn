@@ -26,7 +26,7 @@ class TestMPITaskSequential : public ppc::core::Task {
  private:
   struct Edge {
     int src, dest, weight;
-    };
+  };
 
   std::vector<Edge> edges_;
   std::vector<int> distances_;
@@ -51,5 +51,5 @@ class TestMPITaskParallel : public ppc::core::Task {
   std::vector<int> distances_;
   int vertices_{0}, edges_count_{0}, source_{0};
   boost::mpi::communicator world;
- };
+};
 }  // namespace vavilov_v_bellman_ford_mpi
