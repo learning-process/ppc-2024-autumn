@@ -37,7 +37,7 @@ std::vector<double> gereratorSLU(std::vector<double> &matrix, std::vector<double
 
 TEST(filateva_e_metod_gausa_mpi, test_size_3) {
   boost::mpi::communicator world;
-  int size = 3;
+  int size = 4;
   std::vector<double> matrix;
   std::vector<double> vecB;
   std::vector<double> answer;
@@ -48,10 +48,12 @@ TEST(filateva_e_metod_gausa_mpi, test_size_3) {
   if (world.rank() == 0) {
     matrix.resize(size * size);
     vecB.resize(size);
+    answer.resize(size);
     tResh = gereratorSLU(matrix, vecB);
 
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(answer.data()));
     taskData->inputs_count.emplace_back(size);
     taskData->outputs_count.emplace_back(size);
   }
@@ -64,9 +66,6 @@ TEST(filateva_e_metod_gausa_mpi, test_size_3) {
   metodGausa.post_processing();
 
   if (world.rank() == 0) {
-    auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
-    answer.insert(answer.end(), temp, temp + size);
-
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
       EXPECT_NEAR(tResh[i], answer[i], alfa);
@@ -87,10 +86,12 @@ TEST(filateva_e_metod_gausa_mpi, test_size_10) {
   if (world.rank() == 0) {
     matrix.resize(size * size);
     vecB.resize(size);
+    answer.resize(size);
     tResh = gereratorSLU(matrix, vecB);
 
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(answer.data()));
     taskData->inputs_count.emplace_back(size);
     taskData->outputs_count.emplace_back(size);
   }
@@ -103,9 +104,6 @@ TEST(filateva_e_metod_gausa_mpi, test_size_10) {
   metodGausa.post_processing();
 
   if (world.rank() == 0) {
-    auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
-    answer.insert(answer.end(), temp, temp + size);
-
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
       EXPECT_NEAR(tResh[i], answer[i], alfa);
@@ -126,10 +124,12 @@ TEST(filateva_e_metod_gausa_mpi, test_size_30) {
   if (world.rank() == 0) {
     matrix.resize(size * size);
     vecB.resize(size);
+    answer.resize(size);
     tResh = gereratorSLU(matrix, vecB);
 
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(answer.data()));
     taskData->inputs_count.emplace_back(size);
     taskData->outputs_count.emplace_back(size);
   }
@@ -142,9 +142,6 @@ TEST(filateva_e_metod_gausa_mpi, test_size_30) {
   metodGausa.post_processing();
 
   if (world.rank() == 0) {
-    auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
-    answer.insert(answer.end(), temp, temp + size);
-
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
       EXPECT_NEAR(tResh[i], answer[i], alfa);
@@ -165,10 +162,12 @@ TEST(filateva_e_metod_gausa_mpi, test_size_100) {
   if (world.rank() == 0) {
     matrix.resize(size * size);
     vecB.resize(size);
+    answer.resize(size);
     tResh = gereratorSLU(matrix, vecB);
 
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(answer.data()));
     taskData->inputs_count.emplace_back(size);
     taskData->outputs_count.emplace_back(size);
   }
@@ -181,9 +180,6 @@ TEST(filateva_e_metod_gausa_mpi, test_size_100) {
   metodGausa.post_processing();
 
   if (world.rank() == 0) {
-    auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
-    answer.insert(answer.end(), temp, temp + size);
-
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
       EXPECT_NEAR(tResh[i], answer[i], alfa);
@@ -204,10 +200,12 @@ TEST(filateva_e_metod_gausa_mpi, test_size_200) {
   if (world.rank() == 0) {
     matrix.resize(size * size);
     vecB.resize(size);
+    answer.resize(size);
     tResh = gereratorSLU(matrix, vecB);
 
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(answer.data()));
     taskData->inputs_count.emplace_back(size);
     taskData->outputs_count.emplace_back(size);
   }
@@ -220,9 +218,6 @@ TEST(filateva_e_metod_gausa_mpi, test_size_200) {
   metodGausa.post_processing();
 
   if (world.rank() == 0) {
-    auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
-    answer.insert(answer.end(), temp, temp + size);
-
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
       EXPECT_NEAR(tResh[i], answer[i], alfa);
@@ -251,7 +246,7 @@ TEST(filateva_e_metod_gausa_mpi, test_size_different) {
   filateva_e_metod_gausa_mpi::MetodGausa metodGausa(taskData);
 
   if (world.rank() == 0) {
-    ASSERT_FALSE(metodGausa.validation());
+    EXPECT_FALSE(metodGausa.validation());
   }
 }
 
@@ -276,6 +271,45 @@ TEST(filateva_e_metod_gausa_mpi, test_size_0) {
   filateva_e_metod_gausa_mpi::MetodGausa metodGausa(taskData);
 
   if (world.rank() == 0) {
-    ASSERT_FALSE(metodGausa.validation());
+    EXPECT_FALSE(metodGausa.validation());
+  }
+}
+
+
+TEST(filateva_e_metod_gausa_mpi, test_size_800) {
+  boost::mpi::communicator world;
+  int size = 800;
+  std::vector<double> matrix;
+  std::vector<double> vecB;
+  std::vector<double> answer;
+  std::vector<double> tResh;
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    matrix.resize(size * size);
+    vecB.resize(size);
+    answer.resize(size);
+    tResh = gereratorSLU(matrix, vecB);
+
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(answer.data()));
+    taskData->inputs_count.emplace_back(size);
+    taskData->outputs_count.emplace_back(size);
+  }
+
+  filateva_e_metod_gausa_mpi::MetodGausa metodGausa(taskData);
+
+  ASSERT_TRUE(metodGausa.validation());
+  metodGausa.pre_processing();
+  metodGausa.run();
+  metodGausa.post_processing();
+
+  if (world.rank() == 0) {
+    EXPECT_EQ(answer.size(), tResh.size());
+    for (int i = 0; i < size; i++) {
+      EXPECT_NEAR(tResh[i], answer[i], alfa);
+    }
   }
 }

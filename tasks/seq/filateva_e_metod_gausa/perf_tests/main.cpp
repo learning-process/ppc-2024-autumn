@@ -37,7 +37,7 @@ TEST(filateva_e_metod_gausa_seq, test_pipeline_run) {
   int size = 500;
   std::vector<double> matrix(size * size);
   std::vector<double> vecB(size);
-  std::vector<double> answer;
+  std::vector<double> answer(size);
   std::vector<double> tResh;
 
   tResh = gereratorSLU(matrix, vecB);
@@ -45,6 +45,7 @@ TEST(filateva_e_metod_gausa_seq, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(vecB.data()));
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(answer.data()));
   taskData->inputs_count.emplace_back(size);
   taskData->outputs_count.emplace_back(size);
 
@@ -54,8 +55,6 @@ TEST(filateva_e_metod_gausa_seq, test_pipeline_run) {
   metodGausa->pre_processing();
   metodGausa->run();
   metodGausa->post_processing();
-  auto* temp = reinterpret_cast<double*>(taskData->outputs[0]);
-  answer.insert(answer.end(), temp, temp + size);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -81,7 +80,7 @@ TEST(filateva_e_metod_gausa_seq, test_task_run) {
   int size = 500;
   std::vector<double> matrix(size * size);
   std::vector<double> vecB(size);
-  std::vector<double> answer;
+  std::vector<double> answer(size);
   std::vector<double> tResh;
 
   tResh = gereratorSLU(matrix, vecB);
@@ -89,6 +88,7 @@ TEST(filateva_e_metod_gausa_seq, test_task_run) {
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(vecB.data()));
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(answer.data()));
   taskData->inputs_count.emplace_back(size);
   taskData->outputs_count.emplace_back(size);
 
@@ -98,8 +98,6 @@ TEST(filateva_e_metod_gausa_seq, test_task_run) {
   metodGausa->pre_processing();
   metodGausa->run();
   metodGausa->post_processing();
-  auto* temp = reinterpret_cast<double*>(taskData->outputs[0]);
-  answer.insert(answer.end(), temp, temp + size);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;

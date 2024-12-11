@@ -33,10 +33,10 @@ std::vector<double> gereratorSLU(std::vector<double> &matrix, std::vector<double
 }
 
 TEST(filateva_e_metod_gausa_seq, test_size_3) {
-  int size = 2;
+  int size = 3;
   std::vector<double> matrix(size * size);
   std::vector<double> vecB(size);
-  std::vector<double> answer;
+  std::vector<double> answer(size);
   std::vector<double> tResh;
 
   tResh = gereratorSLU(matrix, vecB);
@@ -44,6 +44,7 @@ TEST(filateva_e_metod_gausa_seq, test_size_3) {
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(answer.data()));
   taskData->inputs_count.emplace_back(size);
   taskData->outputs_count.emplace_back(size);
 
@@ -53,9 +54,6 @@ TEST(filateva_e_metod_gausa_seq, test_size_3) {
   metodGausa.pre_processing();
   metodGausa.run();
   metodGausa.post_processing();
-
-  auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
-  answer.insert(answer.end(), temp, temp + size);
 
   EXPECT_EQ(answer.size(), tResh.size());
   for (int i = 0; i < size; i++) {
@@ -67,7 +65,7 @@ TEST(filateva_e_metod_gausa_seq, test_size_10) {
   int size = 10;
   std::vector<double> matrix(size * size);
   std::vector<double> vecB(size);
-  std::vector<double> answer;
+  std::vector<double> answer(size);
   std::vector<double> tResh;
 
   tResh = gereratorSLU(matrix, vecB);
@@ -75,6 +73,7 @@ TEST(filateva_e_metod_gausa_seq, test_size_10) {
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(answer.data()));
   taskData->inputs_count.emplace_back(size);
   taskData->outputs_count.emplace_back(size);
 
@@ -84,9 +83,6 @@ TEST(filateva_e_metod_gausa_seq, test_size_10) {
   metodGausa.pre_processing();
   metodGausa.run();
   metodGausa.post_processing();
-
-  auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
-  answer.insert(answer.end(), temp, temp + size);
 
   EXPECT_EQ(answer.size(), tResh.size());
   for (int i = 0; i < size; i++) {
@@ -98,7 +94,7 @@ TEST(filateva_e_metod_gausa_seq, test_size_100) {
   int size = 100;
   std::vector<double> matrix(size * size);
   std::vector<double> vecB(size);
-  std::vector<double> answer;
+  std::vector<double> answer(size);
   std::vector<double> tResh;
 
   tResh = gereratorSLU(matrix, vecB);
@@ -106,6 +102,7 @@ TEST(filateva_e_metod_gausa_seq, test_size_100) {
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(answer.data()));
   taskData->inputs_count.emplace_back(size);
   taskData->outputs_count.emplace_back(size);
 
@@ -115,9 +112,6 @@ TEST(filateva_e_metod_gausa_seq, test_size_100) {
   metodGausa.pre_processing();
   metodGausa.run();
   metodGausa.post_processing();
-
-  auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
-  answer.insert(answer.end(), temp, temp + size);
 
   EXPECT_EQ(answer.size(), tResh.size());
   for (int i = 0; i < size; i++) {
@@ -129,7 +123,7 @@ TEST(filateva_e_metod_gausa_seq, test_size_200) {
   int size = 200;
   std::vector<double> matrix(size * size);
   std::vector<double> vecB(size);
-  std::vector<double> answer;
+  std::vector<double> answer(size);
   std::vector<double> tResh;
 
   tResh = gereratorSLU(matrix, vecB);
@@ -137,6 +131,7 @@ TEST(filateva_e_metod_gausa_seq, test_size_200) {
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(answer.data()));
   taskData->inputs_count.emplace_back(size);
   taskData->outputs_count.emplace_back(size);
 
@@ -146,9 +141,6 @@ TEST(filateva_e_metod_gausa_seq, test_size_200) {
   metodGausa.pre_processing();
   metodGausa.run();
   metodGausa.post_processing();
-
-  auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
-  answer.insert(answer.end(), temp, temp + size);
 
   EXPECT_EQ(answer.size(), tResh.size());
   for (int i = 0; i < size; i++) {
@@ -169,7 +161,7 @@ TEST(filateva_e_metod_gausa_seq, test_size_different) {
 
   filateva_e_metod_gausa_seq::MetodGausa metodGausa(taskData);
 
-  ASSERT_FALSE(metodGausa.validation());
+  EXPECT_FALSE(metodGausa.validation());
 }
 
 TEST(filateva_e_metod_gausa_seq, test_size_0) {
@@ -185,5 +177,35 @@ TEST(filateva_e_metod_gausa_seq, test_size_0) {
 
   filateva_e_metod_gausa_seq::MetodGausa metodGausa(taskData);
 
-  ASSERT_FALSE(metodGausa.validation());
+  EXPECT_FALSE(metodGausa.validation());
+}
+
+
+TEST(filateva_e_metod_gausa_seq, test_size_800) {
+  int size = 800;
+  std::vector<double> matrix(size * size);
+  std::vector<double> vecB(size);
+  std::vector<double> answer(size);
+  std::vector<double> tResh;
+
+  tResh = gereratorSLU(matrix, vecB);
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(answer.data()));
+  taskData->inputs_count.emplace_back(size);
+  taskData->outputs_count.emplace_back(size);
+
+  filateva_e_metod_gausa_seq::MetodGausa metodGausa(taskData);
+
+  ASSERT_TRUE(metodGausa.validation());
+  metodGausa.pre_processing();
+  metodGausa.run();
+  metodGausa.post_processing();
+
+  EXPECT_EQ(answer.size(), tResh.size());
+  for (int i = 0; i < size; i++) {
+    EXPECT_NEAR(tResh[i], answer[i], alfa);
+  }
 }

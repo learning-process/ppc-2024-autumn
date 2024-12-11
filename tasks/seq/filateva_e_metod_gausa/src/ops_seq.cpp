@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <limits>
+#include <string>
 
 bool filateva_e_metod_gausa_seq::MetodGausa::pre_processing() {
   internal_order_test();
@@ -82,49 +83,35 @@ bool filateva_e_metod_gausa_seq::MetodGausa::validation() {
 
 bool filateva_e_metod_gausa_seq::MetodGausa::run() {
   internal_order_test();
-  std::vector<double> L(size * size, 0.0);
-  std::vector<double> U(size * size, 0.0);
-
+  std::vector<double> temp_matrix(size * (size + 1));
   for (int i = 0; i < size; i++) {
-    for (int j = i; j < size; j++) {
-      U[i * size + j] = matrix[i * size + j];
-      for (int k = 0; k < i; k++) {
-        U[i * size + j] -= L[i * size + k] * U[k * size + j];
-      }
-    }
-
-    for (int j = i + 1; j < size; j++) {
-      L[j * size + i] = matrix[j * size + i];
-      for (int k = 0; k < i; k++) {
-        L[j * size + i] -= L[j * size + k] * U[k * size + i];
-      }
-      L[j * size + i] /= U[i * size + i];
-    }
-
-    L[i * size + i] = 1;
+    std::copy(matrix.begin() + i * size, matrix.begin() + (i + 1) * size, temp_matrix.begin() + i * (size + 1));
+    temp_matrix[i * (size + 1) + size] = b_vector[i];
   }
 
-  std::vector<double> y(size);
-  for (int i = 0; i < size; i++) {
-    y[i] = b_vector[i];
-    for (int j = 0; j < i; j++) {
-      y[i] -= L[i * size + j] * y[j];
+  for (int r = 0; r < size; r++) {
+    for (int j = r + 1; j < size; j++) {
+      double factor = temp_matrix[j * (size + 1) + r] / temp_matrix[r * (size + 1) + r];
+      for (int k = r; k < size + 1; k++) {
+        temp_matrix[j * (size + 1) + k] -= factor * temp_matrix[r * (size + 1) + k];
+      }
     }
   }
 
   for (int i = size - 1; i >= 0; i--) {
-    resh[i] = y[i];
+     resh[i] = temp_matrix[(i + 1) * (size + 1) - 1];
     for (int j = i + 1; j < size; j++) {
-      resh[i] -= U[i * size + j] * resh[j];
+      resh[i] -= temp_matrix[i * (size + 1) + j] * resh[j];
     }
-    resh[i] /= U[i * size + i];
-  }
+    resh[i] /= temp_matrix[i * (size + 1) + i];
+  } 
 
   return true;
 }
 
 bool filateva_e_metod_gausa_seq::MetodGausa::post_processing() {
   internal_order_test();
-  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(resh.data()));
+  double* output_data = reinterpret_cast<double*>(taskData->outputs[0]);
+  std::copy(resh.begin(), resh.end(), output_data);
   return true;
 }

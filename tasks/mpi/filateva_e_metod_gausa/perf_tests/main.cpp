@@ -47,10 +47,12 @@ TEST(filateva_e_metod_gausa_mpi, test_pipeline_run) {
   if (world.rank() == 0) {
     matrix.resize(size * size);
     vecB.resize(size);
+    answer.resize(size);
     tResh = gereratorSLU(matrix, vecB);
 
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(answer.data()));
     taskData->inputs_count.emplace_back(size);
     taskData->outputs_count.emplace_back(size);
   }
@@ -72,8 +74,6 @@ TEST(filateva_e_metod_gausa_mpi, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
-    answer.insert(answer.end(), temp, temp + size);
 
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
@@ -95,10 +95,12 @@ TEST(filateva_e_metod_gausa_mpi, test_task_run) {
   if (world.rank() == 0) {
     matrix.resize(size * size);
     vecB.resize(size);
+    answer.resize(size);
     tResh = gereratorSLU(matrix, vecB);
 
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(answer.data()));
     taskData->inputs_count.emplace_back(size);
     taskData->outputs_count.emplace_back(size);
   }
@@ -120,8 +122,6 @@ TEST(filateva_e_metod_gausa_mpi, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    auto *temp = reinterpret_cast<double *>(taskData->outputs[0]);
-    answer.insert(answer.end(), temp, temp + size);
 
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
