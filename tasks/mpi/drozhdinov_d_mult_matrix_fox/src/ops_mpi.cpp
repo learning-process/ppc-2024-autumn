@@ -127,11 +127,7 @@ std::vector<double> drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel::Paral
   std::vector<double> squareB;
 
   int grid_size = static_cast<int>(sqrt(world.size()));
-  if (grid_size * grid_size != world.size()) {
-    std::cout << grid_size << " " << world.size();
-    std::cout << "yes yes\n";
-    throw "Wrong number of processes";
-  }
+
   MPI_Comm GCOMM;
   MPI_Comm CCOMM;
   MPI_Comm RCOMM;

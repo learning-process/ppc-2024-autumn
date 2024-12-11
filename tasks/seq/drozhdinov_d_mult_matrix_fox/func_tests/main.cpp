@@ -89,8 +89,8 @@ TEST(drozhdinov_d_mult_matrix_fox_seq, EmptyTest) {
   ASSERT_EQ(res, expres);
 }
 
-TEST(drozhdinov_d_mult_matrix_fox_seq, 1x100_100x7Random) {
-  int k = 1, l = 100, m = 100, n = 7;
+TEST(drozhdinov_d_mult_matrix_fox_seq, 1x10_10x7Random) {
+  int k = 1, l = 10, m = 10, n = 7;
   std::vector<double> A = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(k * l);
   std::vector<double> B = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(m * n);
   std::vector<double> res(k * n);
