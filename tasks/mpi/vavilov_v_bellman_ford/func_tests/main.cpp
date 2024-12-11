@@ -22,10 +22,10 @@ TEST(vavilov_v_bellman_ford_mpi, ValidInputWithMultiplePaths_1) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
 
     vavilov_v_bellman_ford_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-    ASSERT_TRUE(testTaskParallel.validation());
-    ASSERT_TRUE(testTaskParallel.pre_processing());
-    ASSERT_TRUE(testTaskParallel.run());
-    ASSERT_TRUE(testTaskParallel.post_processing());
+    ASSERT_TRUE(testMpiTaskParallel.validation());
+    ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+    ASSERT_TRUE(testMpiTaskParallel.run());
+    ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
     std::vector<int> expected_output = {0, 8, 5, 9, 7};
     EXPECT_EQ(output, expected_output);
@@ -49,17 +49,17 @@ TEST(vavilov_v_bellman_ford_mpi, ValidInputWithMultiplePaths_2) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
 
     vavilov_v_bellman_ford_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-    ASSERT_TRUE(testTaskParallel.validation());
-    ASSERT_TRUE(testTaskParallel.pre_processing());
-    ASSERT_TRUE(testTaskParallel.run());
-    ASSERT_TRUE(testTaskParallel.post_processing());
+    ASSERT_TRUE(testMpiTaskParallel.validation());
+    ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+    ASSERT_TRUE(testMpiTaskParallel.run());
+    ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
     std::vector<int> expected_output = {0, -1, 2, 1, -2};
     EXPECT_EQ(output, expected_output);
   }
 }
 
-TEST(vavilov_v_bellman_ford_seq, DisconnectedGraph) {
+TEST(vavilov_v_bellman_ford_mpi, DisconnectedGraph) {
   mpi::communicator world;
 
   if (world.rank() == 0) {
@@ -76,17 +76,17 @@ TEST(vavilov_v_bellman_ford_seq, DisconnectedGraph) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
 
     vavilov_v_bellman_ford_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-    ASSERT_TRUE(testTaskParallel.validation());
-    ASSERT_TRUE(testTaskParallel.pre_processing());
-    ASSERT_TRUE(testTaskParallel.run());
-    ASSERT_TRUE(testTaskParallel.post_processing());
+    ASSERT_TRUE(testMpiTaskParallel.validation());
+    ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+    ASSERT_TRUE(testMpiTaskParallel.run());
+    ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
     std::vector<int> expected_output = {0, 4, 1, 6, INT_MAX};
     EXPECT_EQ(output, expected_output);
   }
 }
 
-TEST(vavilov_v_bellman_ford_seq, NegativeCycle) {
+TEST(vavilov_v_bellman_ford_mpi, NegativeCycle) {
   mpi::communicator world;
 
   if (world.rank() == 0) {
@@ -103,13 +103,13 @@ TEST(vavilov_v_bellman_ford_seq, NegativeCycle) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
 
     vavilov_v_bellman_ford_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-    ASSERT_TRUE(testTaskParallel.validation());
-    ASSERT_TRUE(testTaskParallel.pre_processing());
-    ASSERT_FALSE(testTaskParallel.run());
+    ASSERT_TRUE(testMpiTaskParallel.validation());
+    ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+    ASSERT_FALSE(testMpiTaskParallel.run());
   }
 }
 
-TEST(vavilov_v_bellman_ford_seq, SingleVertexGraph) {
+TEST(vavilov_v_bellman_ford_mpi, SingleVertexGraph) {
   mpi::communicator world;
 
   if (world.rank() == 0) {
@@ -126,10 +126,10 @@ TEST(vavilov_v_bellman_ford_seq, SingleVertexGraph) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
 
     vavilov_v_bellman_ford_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-    ASSERT_TRUE(testTaskSequential.validation());
-    ASSERT_TRUE(testTaskSequential.pre_processing());
-    ASSERT_TRUE(testTaskSequential.run());
-    ASSERT_TRUE(testTaskSequential.post_processing());
+    ASSERT_TRUE(testMpiTaskParallel.validation());
+    ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+    ASSERT_TRUE(testMpiTaskParallel.run());
+    ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
     std::vector<int> expected_output = {0};
     EXPECT_EQ(output, expected_output);
