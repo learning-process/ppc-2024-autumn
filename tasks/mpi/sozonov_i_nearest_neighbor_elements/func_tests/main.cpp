@@ -1,9 +1,7 @@
 #include <gtest/gtest.h>
 
-#include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <random>
-#include <vector>
 
 #include "mpi/sozonov_i_nearest_neighbor_elements/include/ops_mpi.hpp"
 
@@ -12,9 +10,10 @@ namespace sozonov_i_nearest_neighbor_elements_mpi {
 std::vector<int> getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
+  std::uniform_real_distribution<double> dis(-1000, 1000);
   std::vector<int> vec(sz);
   for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
+    vec[i] = dis(gen);
   }
   return vec;
 }

@@ -1,8 +1,5 @@
 #pragma once
 
-#include <string>
-#include <vector>
-
 #include "core/task/include/task.hpp"
 
 namespace sozonov_i_nearest_neighbor_elements_seq {

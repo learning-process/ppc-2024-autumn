@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
 #include <numeric>
-#include <vector>
 
 #include "seq/sozonov_i_nearest_neighbor_elements/include/ops_seq.hpp"
 
