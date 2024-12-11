@@ -16,7 +16,8 @@ TEST(kolodkin_g_hoar_merge_sort_seq, Test_vector_with_one_elems) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
   taskDataSeq->inputs_count.emplace_back(vector.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(reference_out)));
+  auto vec_ptr = std::make_shared<std::vector<int>>(reference_out);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(vec_ptr.get()));
 
   kolodkin_g_hoar_merge_sort_seq::TestTaskSequential testTaskSequential(taskDataSeq);
 
@@ -38,7 +39,8 @@ TEST(kolodkin_g_hoar_merge_sort_seq, Test_vector_with_two_elems) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
   taskDataSeq->inputs_count.emplace_back(vector.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(reference_out)));
+  auto vec_ptr = std::make_shared<std::vector<int>>(reference_out);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(vec_ptr.get()));
 
   kolodkin_g_hoar_merge_sort_seq::TestTaskSequential testTaskSequential(taskDataSeq);
 
@@ -63,7 +65,8 @@ TEST(kolodkin_g_hoar_merge_sort_seq, Test_vector_with_three_elems) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
   taskDataSeq->inputs_count.emplace_back(vector.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(reference_out)));
+  auto vec_ptr = std::make_shared<std::vector<int>>(reference_out);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(vec_ptr.get()));
 
   kolodkin_g_hoar_merge_sort_seq::TestTaskSequential testTaskSequential(taskDataSeq);
 
@@ -88,7 +91,8 @@ TEST(kolodkin_g_hoar_merge_sort_seq, Test_vector_with_negative_elems) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
   taskDataSeq->inputs_count.emplace_back(vector.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(reference_out)));
+  auto vec_ptr = std::make_shared<std::vector<int>>(reference_out);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(vec_ptr.get()));
 
   kolodkin_g_hoar_merge_sort_seq::TestTaskSequential testTaskSequential(taskDataSeq);
 
@@ -115,7 +119,8 @@ TEST(kolodkin_g_hoar_merge_sort_seq, Test_big_vector) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
   taskDataSeq->inputs_count.emplace_back(vector.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(reference_out)));
+  auto vec_ptr = std::make_shared<std::vector<int>>(reference_out);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(vec_ptr.get()));
 
   kolodkin_g_hoar_merge_sort_seq::TestTaskSequential testTaskSequential(taskDataSeq);
 
