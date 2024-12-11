@@ -199,8 +199,8 @@ TEST(budazhapova_e_matrix_mult_mpi, random_test_1) {
   size_v = 5;
   minn = 1;
   maxx = 12;
-  std::vector<int> A_matrix = generate_random_vector_or_matrix(size_m, minn, maxx);
-  std::vector<int> b_vector = generate_random_vector_or_matrix(size_v, minn, maxx);
+  std::vector<int> A_matrix = budazhapova_e_matrix_mult_mpi::generate_random_vector_or_matrix(size_m, minn, maxx);
+  std::vector<int> b_vector = budazhapova_e_matrix_mult_mpi::generate_random_vector_or_matrix(size_v, minn, maxx);
   std::vector<int> out(20, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
