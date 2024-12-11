@@ -98,11 +98,12 @@ bool kolodkin_g_hoar_merge_sort_mpi::TestMPITaskParallel::run() {
     for (size_t i = 1; i < num_processes; i++) {
       displacements[i] = displacements[i - 1] + send_counts[i - 1];
     }
-    for (size_t i = 0; i < num_processes; i++) {
-      boost::mpi::broadcast(world, send_counts[i], 0);
-      boost::mpi::broadcast(world, displacements[i], 0);
-    }
   }
+  for (size_t i = 0; i < num_processes; i++) {
+    boost::mpi::broadcast(world, send_counts[i], 0);
+    boost::mpi::broadcast(world, displacements[i], 0);
+  }
+  world.barrier();
   std::vector<int> local_input_(send_counts[world.rank()]);
   boost::mpi::scatterv(world, input_.data(), send_counts, displacements, local_input_.data(), local_input_.size(), 0);
 
