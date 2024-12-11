@@ -19,7 +19,6 @@ std::vector<uint8_t> generateRandomImage(size_t size) {
   }
   return input;
 }
-
 TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Single_Element_Input) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
@@ -41,11 +40,9 @@ TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Single_Element_Input) {
     contrastTaskParallel.run();
     contrastTaskParallel.post_processing();
 
-    // Validate the output
-    ASSERT_EQ(output[0], 0);  // For a single element, the output should be 0 or 255
+    ASSERT_EQ(output[0], 0);
   }
 }
-
 
 TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Single_Element_Input) {
   boost::mpi::environment env;
