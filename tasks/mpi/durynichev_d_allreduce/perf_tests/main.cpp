@@ -47,7 +47,9 @@ TEST(durynichev_d_allreduce_mpi, pipeline_run) {
   taskDataBroadcast->outputs_count.emplace_back(1);
 
   auto taskBroadcast = std::make_shared<durynichev_d_allreduce_mpi::MpiAllreduceMPI>(taskDataBroadcast);
-  if (taskBroadcast->validation()) {
+  bool val = taskBroadcast->validation();
+  boost::mpi::broadcast(world, val, 0);
+  if (val) {
     taskBroadcast->pre_processing();
     taskBroadcast->run();
     taskBroadcast->post_processing();
@@ -93,7 +95,9 @@ TEST(durynichev_d_allreduce_mpi, task_run) {
   taskDataBroadcast->outputs_count.emplace_back(1);
 
   auto taskBroadcast = std::make_shared<durynichev_d_allreduce_mpi::MpiAllreduceMPI>(taskDataBroadcast);
-  if (taskBroadcast->validation()) {
+  bool val = taskBroadcast->validation();
+  boost::mpi::broadcast(world, val, 0);
+  if (val) {
     taskBroadcast->pre_processing();
     taskBroadcast->run();
     taskBroadcast->post_processing();

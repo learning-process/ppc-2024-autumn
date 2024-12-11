@@ -5,7 +5,7 @@
 
 bool durynichev_d_custom_allreduce_mpi::MyAllreduceMPI::validation() {
   internal_order_test();
-  if (world.rank() == 0) return taskData->inputs_count[1] > 0;
+  if (world.rank() == 0) return taskData->inputs_count[0] > 0;
   return true;
 }
 

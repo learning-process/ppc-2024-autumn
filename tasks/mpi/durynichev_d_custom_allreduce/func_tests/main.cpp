@@ -44,7 +44,9 @@ void run_and_validation_test_template(int n) {
   taskDataBroadcast->outputs_count.emplace_back(1);
 
   auto taskBroadcast = std::make_shared<MyAllreduceMPI>(taskDataBroadcast);
-  if (taskBroadcast->validation()) {
+  bool val = taskBroadcast->validation();
+  boost::mpi::broadcast(world, val, 0);
+  if (val) {
     taskBroadcast->pre_processing();
     taskBroadcast->run();
     taskBroadcast->post_processing();
