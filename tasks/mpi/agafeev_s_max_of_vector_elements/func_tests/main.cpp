@@ -6,10 +6,10 @@
 #include "mpi/agafeev_s_max_of_vector_elements/include/ops_mpi.hpp"
 
 template <typename T>
-std::vector<T> create_RandomMatrix(int row_size, int column_size) {
+static std::vector<T> create_RandomMatrix(int row_size, int column_size) {
   auto rand_gen = std::mt19937(std::time(nullptr));
   std::vector<T> matrix(row_size * column_size);
-  for (unsigned int i = 0; i < matrix.size(); ++i) matrix[i] = rand_gen() % 100;
+  for (unsigned int i = 0; i < matrix.size(); ++i) matrix[i] = rand_gen() % 200 - 100;
 
   return matrix;
 }
@@ -312,6 +312,52 @@ TEST(agafeev_s_max_of_vector_elements, test_find_in_300x200_matrix_double) {
   std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     in_matrix = create_RandomMatrix<double>(9, 45);
+    taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_matrix.data()));
+    taskDataMpi->inputs_count.emplace_back(in_matrix.size());
+    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+    taskDataMpi->outputs_count.emplace_back(out.size());
+  }
+
+  auto testTask = std::make_shared<agafeev_s_max_of_vector_elements_mpi::MaxMatrixMpi<double>>(taskDataMpi);
+  bool isValid = testTask->validation();
+  ASSERT_EQ(isValid, true);
+  testTask->pre_processing();
+  testTask->run();
+  testTask->post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<double> seq_out(1, 0);
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_matrix.data()));
+    taskDataSeq->inputs_count.emplace_back(in_matrix.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seq_out.data()));
+    taskDataSeq->outputs_count.emplace_back(seq_out.size());
+
+    auto testTaskSeq = std::make_shared<agafeev_s_max_of_vector_elements_mpi::MaxMatrixSeq<double>>(taskDataSeq);
+    ASSERT_EQ(testTaskSeq->validation(), true);
+    testTaskSeq->pre_processing();
+    testTaskSeq->run();
+    testTaskSeq->post_processing();
+
+    double right_answer = std::numeric_limits<double>::min();
+    for (auto &&t : in_matrix)
+      if (right_answer < t) right_answer = t;
+
+    ASSERT_EQ(right_answer, out[0]);
+    ASSERT_EQ(right_answer, seq_out[0]);
+  }
+}
+
+TEST(agafeev_s_max_of_vector_elements, negative_numbers_test) {
+  boost::mpi::communicator world;
+
+  std::vector<double> in_matrix(3 * 10);
+  std::vector<double> out(1, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    in_matrix = {-20, -93, -93, -31, -56, -58, -16, -41, -88, -87, -35, -24, -4, -83, -54,
+                 -93, -16, -44, -95, -87, -37, -15, -42, -82, -88, -18, -22, -2, -88, -94};
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_matrix.data()));
     taskDataMpi->inputs_count.emplace_back(in_matrix.size());
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));

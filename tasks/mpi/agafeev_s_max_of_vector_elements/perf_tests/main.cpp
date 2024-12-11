@@ -6,17 +6,17 @@
 #include "mpi/agafeev_s_max_of_vector_elements/include/ops_mpi.hpp"
 
 template <typename T>
-std::vector<T> create_RandomMatrix(int row_size, int column_size) {
+static std::vector<T> create_RandomMatrix(int row_size, int column_size) {
   auto rand_gen = std::mt19937(std::time(nullptr));
   std::vector<T> matrix(row_size * column_size);
-  for (unsigned int i = 0; i < matrix.size(); ++i) matrix[i] = rand_gen() % 100;
+  for (unsigned int i = 0; i < matrix.size(); ++i) matrix[i] = rand_gen() % 200 - 100;
 
   return matrix;
 }
 
 TEST(agafeev_s_max_of_vector_elements, test_pipeline_run) {
-  const int n = 1000;
-  const int m = 1000;
+  const int n = 4000;
+  const int m = 4000;
   boost::mpi::communicator world;
   // Credate Data
   std::vector<int> in_matrix(n * m);
@@ -54,8 +54,8 @@ TEST(agafeev_s_max_of_vector_elements, test_pipeline_run) {
 }
 
 TEST(agafeev_s_max_of_vector_elements, test_task_run) {
-  const int n = 1000;
-  const int m = 1000;
+  const int n = 4000;
+  const int m = 4000;
   boost::mpi::communicator world;
   // Credate Data
   std::vector<int> in_matrix(n * m);
