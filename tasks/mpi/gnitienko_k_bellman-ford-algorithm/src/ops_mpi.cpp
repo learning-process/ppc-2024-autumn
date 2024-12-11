@@ -84,11 +84,7 @@ bool gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgSeq::run() {
     if (shortest_paths[i] == INF) shortest_paths[i] = 0;
   }
 
-  if (check_negative_cycle()) {
-    return false;
-  }
-
-  return true;
+  return !check_negative_cycle();
 }
 
 bool gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgSeq::post_processing() {
@@ -230,9 +226,7 @@ bool gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgMPI::run() {
   }
 
   if (world.rank() == 0) {
-    if (check_negative_cycle()) {
-      return false;
-    }
+    return !check_negative_cycle();
   }
 
   return true;

@@ -245,7 +245,7 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_random_graph) {
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   bool skip_test = false;
-  if (testMpiTaskParallel.run() == false) {
+  if (!testMpiTaskParallel.run()) {
     skip_test = true;
   }
   boost::mpi::broadcast(world, skip_test, 0);

@@ -25,10 +25,10 @@ class BellmanFordAlgSeq : public ppc::core::Task {
  private:
   size_t V{};
   size_t E{};
-  std::vector<int> values{};
-  std::vector<int> columns{};
-  std::vector<int> row_ptr{};
-  std::vector<int> shortest_paths{};
+  std::vector<int> values;
+  std::vector<int> columns;
+  std::vector<int> row_ptr;
+  std::vector<int> shortest_paths;
   const int INF = 1000000000;
 
   bool Iteration(std::vector<int>& paths);
@@ -50,10 +50,10 @@ class BellmanFordAlgMPI : public ppc::core::Task {
   size_t values_size{};
   size_t columns_size{};
   size_t row_ptr_size{};
-  std::vector<int> values{};
-  std::vector<int> columns{};
-  std::vector<int> row_ptr{};
-  std::vector<int> shortest_paths{};
+  std::vector<int> values;
+  std::vector<int> columns;
+  std::vector<int> row_ptr;
+  std::vector<int> shortest_paths;
   boost::mpi::communicator world;
   const int INF = 1000000000;
 
