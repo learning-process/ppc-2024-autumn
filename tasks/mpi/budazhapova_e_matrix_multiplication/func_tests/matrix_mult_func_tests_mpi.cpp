@@ -7,6 +7,7 @@
 
 #include "mpi/budazhapova_e_matrix_multiplication/include/matrix_mult_mpi.hpp"
 
+namespace budazhapova_e_matrix_mult_mpi {
 std::vector<int> generate_random_vector_or_matrix(int size, int minValue, int maxValue) {
   std::vector<int> randomVector(size);
   std::random_device rd;
@@ -18,6 +19,7 @@ std::vector<int> generate_random_vector_or_matrix(int size, int minValue, int ma
 
   return randomVector;
 }
+}  // namespace budazhapova_e_matrix_mult_mpi
 
 TEST(budazhapova_e_matrix_mult_mpi, ordinary_test_1) {
   boost::mpi::communicator world;
