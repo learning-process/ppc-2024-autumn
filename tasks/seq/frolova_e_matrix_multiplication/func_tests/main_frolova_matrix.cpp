@@ -139,9 +139,9 @@ TEST(frolova_e_matrix_multiplication_seq, rectangularMatriceAndtheSquareMatrice)
 TEST(frolova_e_matrix_multiplication_seq, twoRectangularMultiplicationMatrices) {
   std::vector<int> values_1 = {2, 3};
   std::vector<int> values_2 = {3, 4};
-  std::vector<int> matrixA_ = {1, 1, 1, 1, 1, 1};        
-  std::vector<int> matrixB_ = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}; 
-  std::vector<int> resMatrix = {3, 3, 3, 3, 3, 3, 3, 3};             
+  std::vector<int> matrixA_ = {1, 1, 1, 1, 1, 1};
+  std::vector<int> matrixB_ = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+  std::vector<int> resMatrix = {3, 3, 3, 3, 3, 3, 3, 3};
   std::vector<int> out(8);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -173,9 +173,9 @@ TEST(frolova_e_matrix_multiplication_seq, multiplicationOfTwoVectors) {
   std::vector<int> values_1 = {1, 3};
   std::vector<int> values_2 = {3, 1};
   
-  std::vector<int> matrixA_ = {1, 1, 1};  
-  std::vector<int> matrixB_ = {1, 1, 1};  
-  std::vector<int> resMatrix = {3}; 
+  std::vector<int> matrixA_ = {1, 1, 1};
+  std::vector<int> matrixB_ = {1, 1, 1};
+  std::vector<int> resMatrix = {3};
   std::vector<int> out(1);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();

@@ -1,5 +1,6 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/frolova_e_matrix_multiplication/include/ops_seq_frolova_matrix.hpp"
+
 #include <thread>
 
 using namespace std::chrono_literals;
