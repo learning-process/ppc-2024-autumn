@@ -85,13 +85,19 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::validation() {
 bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
+  bool changed = true;
   for (int i = 1; i < vertices_; ++i) {
+    if (!changed) {
+      break;
+    }
+    changed = false;
     std::vector<int> local_distances = distances_;
 
     for (int j = world.rank(); j < edges_count_; j += world.size()) {
       const auto& edge = edges_[j];
       if (distances_[edge.src] != INT_MAX && distances_[edge.src] + edge.weight < local_distances[edge.dest]) {
         local_distances[edge.dest] = distances_[edge.src] + edge.weight;
+        changed = true;
       }
     }
 
