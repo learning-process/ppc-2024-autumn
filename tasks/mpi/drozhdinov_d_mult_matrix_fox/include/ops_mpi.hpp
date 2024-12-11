@@ -6,6 +6,7 @@
 #include <boost/mpi/cartesian_communicator.hpp>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <boost/serialization/array.hpp>
 #include <boost/serialization/vector.hpp>
 #include <memory>
 #include <numeric>
