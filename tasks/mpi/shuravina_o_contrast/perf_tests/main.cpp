@@ -4,10 +4,10 @@
 #include <boost/mpi/environment.hpp>
 #include <chrono>
 #include <random>
+#include <seq/shuravina_o_contrast/include/ops_seq.hpp>
 #include <vector>
 
 #include "mpi/shuravina_o_contrast/include/ops_mpi.hpp"
-#include <seq/shuravina_o_contrast/include/ops_seq.hpp>
 
 TEST(shuravina_o_contrast_perf, Test_Contrast_Enhancement_MPI_Performance) {
   boost::mpi::environment env;
