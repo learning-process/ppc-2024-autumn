@@ -80,8 +80,8 @@ TEST(kovalchuk_a_horizontal_tape_scheme, Test_Matrix_10_10) {
 
     ASSERT_EQ(reference_result, global_result);
   }
-
 }
+
 TEST(kovalchuk_a_horizontal_tape_scheme, Test_Matrix_1_1) {
   const int count_rows = 1;
   const int count_columns = 1;
