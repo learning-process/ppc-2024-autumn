@@ -10,6 +10,8 @@
 
 #include "mpi/shuravina_o_contrast/include/ops_mpi.hpp"
 
+namespace shuravina_o_contrast {
+
 std::vector<uint8_t> generateRandomImage(size_t size) {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -20,6 +22,8 @@ std::vector<uint8_t> generateRandomImage(size_t size) {
     input[i] = static_cast<uint8_t>(dis(gen));
   }
   return input;
+}
+
 }
 
 TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Single_Element_Input) {
@@ -39,6 +43,11 @@ TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Single_Element_Input) {
 
     shuravina_o_contrast::ContrastTaskParallel contrastTaskParallel(taskDataPar);
     ASSERT_TRUE(contrastTaskParallel.validation());
+    contrastTaskParallel.pre_processing();
+    contrastTaskParallel.run();
+    contrastTaskParallel.post_processing();
+
+    ASSERT_EQ(output[0], 0);
   }
 }
 
@@ -59,6 +68,13 @@ TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Max_Values_Input) {
 
     shuravina_o_contrast::ContrastTaskParallel contrastTaskParallel(taskDataPar);
     ASSERT_TRUE(contrastTaskParallel.validation());
+    contrastTaskParallel.pre_processing();
+    contrastTaskParallel.run();
+    contrastTaskParallel.post_processing();
+
+    for (size_t i = 0; i < output.size(); ++i) {
+      ASSERT_EQ(output[i], 255);
+    }
   }
 }
 
@@ -79,5 +95,12 @@ TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Min_Values_Input) {
 
     shuravina_o_contrast::ContrastTaskParallel contrastTaskParallel(taskDataPar);
     ASSERT_TRUE(contrastTaskParallel.validation());
+    contrastTaskParallel.pre_processing();
+    contrastTaskParallel.run();
+    contrastTaskParallel.post_processing();
+
+    for (size_t i = 0; i < output.size(); ++i) {
+      ASSERT_EQ(output[i], 0);
+    }
   }
 }
