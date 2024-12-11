@@ -7,7 +7,7 @@
 
 bool sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
-  auto input_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
+  auto* input_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
   input_data_.assign(input_ptr, input_ptr + taskData->inputs_count[0]);
   return true;
 }
@@ -29,7 +29,7 @@ bool sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq::TestT
 
 bool sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq::TestTaskSequential::post_processing() {
   internal_order_test();
-  auto output_ptr = reinterpret_cast<double*>(taskData->outputs[0]);
+  auto* output_ptr = reinterpret_cast<double*>(taskData->outputs[0]);
   std::copy(sorted_data_.begin(), sorted_data_.end(), output_ptr);
   return true;
 }

@@ -17,7 +17,7 @@ sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestMPITas
 
 bool sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
-  auto input_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
+  auto* input_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
   input_data_.assign(input_ptr, input_ptr + taskData->inputs_count[0]);
   return true;
 }
@@ -41,7 +41,7 @@ bool sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestM
 
 bool sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
-  auto output_ptr = reinterpret_cast<double*>(taskData->outputs[0]);
+  auto* output_ptr = reinterpret_cast<double*>(taskData->outputs[0]);
   if (sorted_data_.empty()) {
     return false;
   }
@@ -117,7 +117,7 @@ bool sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestM
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
   if (rank == 0) {
-    auto input_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
+    auto* input_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
     input_data_.assign(input_ptr, input_ptr + taskData->inputs_count[0]);
   }
   return true;
@@ -159,7 +159,7 @@ bool sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestM
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
   if (rank == 0) {
-    auto output_ptr = reinterpret_cast<double*>(taskData->outputs[0]);
+    auto* output_ptr = reinterpret_cast<double*>(taskData->outputs[0]);
     std::copy(sorted_data_.begin(), sorted_data_.end(), output_ptr);
   }
 
@@ -219,7 +219,8 @@ void sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestM
 }
 
 void sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestMPITaskParallel::parallelSort() {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
