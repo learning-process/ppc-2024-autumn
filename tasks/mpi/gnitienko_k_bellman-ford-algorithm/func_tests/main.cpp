@@ -8,6 +8,7 @@
 #include "mpi/gnitienko_k_bellman-ford-algorithm/include/ops_mpi.hpp"
 
 namespace gnitienko_k_generate_func_mpi {
+
 const int MIN_WEIGHT = -10;
 const int MAX_WEIGHT = 10;
 std::vector<int> generateGraph(const int V) {

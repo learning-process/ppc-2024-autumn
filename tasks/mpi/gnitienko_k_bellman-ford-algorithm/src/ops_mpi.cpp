@@ -42,8 +42,8 @@ bool gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgSeq::validation() {
 
 bool gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgSeq::Iteration(std::vector<int>& paths) {
   bool changed = false;
-  for (size_t i = 0; i < V; ++i) {
-    for (int j = row_ptr[i]; j < row_ptr[i + 1]; ++j) {
+  for (size_t i = 0; i < V; i++) {
+    for (int j = row_ptr[i]; j < row_ptr[i + 1]; j++) {
       int v = columns[j];
       int weight = values[j];
       if (paths[i] != INF && paths[i] + weight < paths[v]) {
@@ -62,6 +62,7 @@ bool gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgSeq::check_negative_c
       int v = columns[j];
       int weight = values[j];
       if (shortest_paths[i] != INF && shortest_paths[i] + weight < shortest_paths[v]) {
+        Iteration(shortest_paths);
         std::cerr << "Negative cycle detected in seq!" << std::endl;
         return true;
       }
@@ -112,6 +113,7 @@ void gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgMPI::toCRS(const int*
     }
     row_ptr.push_back(values.size());
   }
+
   values_size = values.size();
   columns_size = columns.size();
   row_ptr_size = row_ptr.size();
@@ -142,8 +144,8 @@ bool gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgMPI::Iteration(std::v
   int start = rank * local_size + std::min(rank, remainder);
   int end = start + local_size + (rank < remainder ? 1 : 0);
 
-  for (int i = start; i < end; ++i) {
-    for (int j = row_ptr[i]; j < row_ptr[i + 1]; ++j) {
+  for (int i = start; i < end; i++) {
+    for (int j = row_ptr[i]; j < row_ptr[i + 1]; j++) {
       int v = columns[j];
       int weight = values[j];
       if (start_paths[i] != INF && start_paths[i] + weight < start_paths[v]) {

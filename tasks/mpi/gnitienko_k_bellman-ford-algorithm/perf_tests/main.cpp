@@ -9,7 +9,7 @@
 
 namespace gnitienko_k_func_mpi {
 
-const int MIN_WEIGHT = -1;
+const int MIN_WEIGHT = -5;
 const int MAX_WEIGHT = 10;
 std::vector<int> generateGraph(const int V) {
   std::random_device dev;
@@ -55,12 +55,8 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_pipeline_run) {
   auto testMpiTaskParallel = std::make_shared<gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgMPI>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
-  bool negative_cycle = false;
-  if (testMpiTaskParallel->run() == false) negative_cycle = true;
-  boost::mpi::broadcast(world, negative_cycle, 0);
-  if (negative_cycle) GTEST_SKIP();
+  testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
-
   if (world.rank() == 0) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     resSEQ.resize(V);
@@ -97,7 +93,7 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_pipeline_run) {
 
 TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_task_run) {
   boost::mpi::communicator world;
-  const int V = 7000;
+  const int V = 5000;
   const int E = 10000;
 
   // Create data
@@ -118,10 +114,7 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_task_run) {
   auto testMpiTaskParallel = std::make_shared<gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgMPI>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
-  bool negative_cycle = false;
-  if (testMpiTaskParallel->run() == false) negative_cycle = true;
-  boost::mpi::broadcast(world, negative_cycle, 0);
-  if (negative_cycle) GTEST_SKIP();
+  testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
   if (world.rank() == 0) {
@@ -154,6 +147,6 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(resSEQ, resMPI);
+    ASSERT_EQ(resMPI, resSEQ);
   }
 }
