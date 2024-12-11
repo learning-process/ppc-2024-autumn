@@ -1,51 +1,53 @@
 // Copyright 2023 Nesterov Alexander
 #pragma once
-
+// not example
 #include <gtest/gtest.h>
 
+#include <boost/mpi/cartesian_communicator.hpp>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <boost/serialization/vector.hpp>
 #include <memory>
 #include <numeric>
+#include <random>
 #include <string>
 #include <utility>
 #include <vector>
 
 #include "core/task/include/task.hpp"
 
-namespace nesterov_a_test_task_mpi {
-
-std::vector<int> getRandomVector(int sz);
+namespace drozhdinov_d_mult_matrix_fox_mpi {
+std::vector<double> SequentialFox(const std::vector<double>& A, const std::vector<double>& B, int k, int l, int n);
+void SimpleMult(const std::vector<double>& A, const std::vector<double>& B, std::vector<double>& C, int block);
+std::vector<double> paddingMatrix(const std::vector<double>& mat, int rows, int cols, int padding);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
  private:
-  std::vector<int> input_;
-  int res{};
-  std::string ops;
+  int k{}, l{}, m{}, n{};
+  std::vector<double> A, B, C;
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
+  // void createGridCommunicators(int gridSize, int procRank, std::vector<int>& gridCoords);
+  std::vector<double> ParallelFox(const std::vector<double>& A, const std::vector<double>& B, int k, int l, int n);
 
  private:
-  std::vector<int> input_, local_input_;
-  int res{};
-  std::string ops;
+  int k{}, l{}, m{}, n{};
+  std::vector<double> A, B, C;
   boost::mpi::communicator world;
 };
 
-}  // namespace nesterov_a_test_task_mpi
+}  // namespace drozhdinov_d_mult_matrix_fox_mpi

@@ -74,7 +74,6 @@ std::vector<double> drozhdinov_d_mult_matrix_fox_seq::SequentialFox(const std::v
     }
   }
 
-  // Извлечение результирующей матрицы
   std::vector<double> C(C_rows * C_cols);
   for (int i = 0; i < C_rows; ++i) {
     for (int j = 0; j < C_cols; ++j) {

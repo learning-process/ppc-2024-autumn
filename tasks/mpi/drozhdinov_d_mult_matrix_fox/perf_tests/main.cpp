@@ -5,25 +5,57 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/example/include/ops_mpi.hpp"
+#include "mpi/drozhdinov_d_mult_matrix_fox/include/ops_mpi.hpp"
+using namespace drozhdinov_d_mult_matrix_fox_mpi;
+namespace drozhdinov_d_mult_matrix_fox_mpi {
+std::vector<double> MatrixMult(const std::vector<double> &A, const std::vector<double> &B, int k, int l, int n) {
+  std::vector<double> result(k * n, 0.0);
 
-TEST(mpi_example_perf_test, test_pipeline_run) {
-  boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_sum(1, 0);
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int count_size_vector;
-  if (world.rank() == 0) {
-    count_size_vector = 120;
-    global_vec = std::vector<int>(count_size_vector, 1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());
+  for (int i = 0; i < k; i++) {
+    for (int j = 0; j < n; j++) {
+      for (int p = 0; p < l; p++) {
+        result[i * n + j] += A[i * l + p] * B[p * n + j];
+      }
+    }
   }
 
-  auto testMpiTaskParallel = std::make_shared<nesterov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar, "+");
+  return result;
+}
+
+std::vector<double> getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<double> vec(sz);
+  vec[0] = gen() % 100;
+  for (int i = 1; i < sz; i++) {
+    vec[i] = (gen() % 100) - 49;
+  }
+  return vec;
+}
+}  // namespace drozhdinov_d_mult_matrix_fox_mpi
+
+TEST(drozhdinov_d_mult_matrix_fox_perf_test, test_pipeline_run) {
+  boost::mpi::communicator world;
+  int k = 1, l = 7, m = 7, n = 2;
+  std::vector<double> A = getRandomVector(k * l);
+  std::vector<double> B = getRandomVector(m * n);
+  std::vector<double> expres_par(k * n);
+  std::vector<double> expres = MatrixMult(A, B, k, l, n);
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
+    taskDataPar->inputs_count.emplace_back(k);
+    taskDataPar->inputs_count.emplace_back(l);
+    taskDataPar->inputs_count.emplace_back(m);
+    taskDataPar->inputs_count.emplace_back(n);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres_par.data()));
+    taskDataPar->outputs_count.emplace_back(k);
+    taskDataPar->outputs_count.emplace_back(n);
+  }
+
+  auto testMpiTaskParallel = std::make_shared<drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -31,7 +63,7 @@ TEST(mpi_example_perf_test, test_pipeline_run) {
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;
+  perfAttr->num_running = 10000;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
@@ -43,27 +75,32 @@ TEST(mpi_example_perf_test, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(count_size_vector, global_sum[0]);
+    ASSERT_EQ(expres, expres_par);
   }
 }
 
-TEST(mpi_example_perf_test, test_task_run) {
+TEST(drozhdinov_d_mult_matrix_fox_perf_test, test_task_run) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_sum(1, 0);
+  int k = 1, l = 7, m = 7, n = 2;
+  std::vector<double> A = getRandomVector(k * l);
+  std::vector<double> B = getRandomVector(m * n);
+  std::vector<double> expres_par(k * n);
+  std::vector<double> expres = MatrixMult(A, B, k, l, n);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int count_size_vector;
   if (world.rank() == 0) {
-    count_size_vector = 120;
-    global_vec = std::vector<int>(count_size_vector, 1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
+    taskDataPar->inputs_count.emplace_back(k);
+    taskDataPar->inputs_count.emplace_back(l);
+    taskDataPar->inputs_count.emplace_back(m);
+    taskDataPar->inputs_count.emplace_back(n);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres_par.data()));
+    taskDataPar->outputs_count.emplace_back(k);
+    taskDataPar->outputs_count.emplace_back(n);
   }
 
-  auto testMpiTaskParallel = std::make_shared<nesterov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar, "+");
+  auto testMpiTaskParallel = std::make_shared<drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -71,7 +108,7 @@ TEST(mpi_example_perf_test, test_task_run) {
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;
+  perfAttr->num_running = 10000;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
@@ -83,17 +120,6 @@ TEST(mpi_example_perf_test, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(count_size_vector, global_sum[0]);
+    ASSERT_EQ(expres, expres_par);
   }
-}
-
-int main(int argc, char** argv) {
-  boost::mpi::environment env(argc, argv);
-  boost::mpi::communicator world;
-  ::testing::InitGoogleTest(&argc, argv);
-  ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
-  if (world.rank() != 0) {
-    delete listeners.Release(listeners.default_result_printer());
-  }
-  return RUN_ALL_TESTS();
 }
