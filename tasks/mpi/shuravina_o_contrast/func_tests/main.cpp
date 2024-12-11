@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "mpi/shuravina_o_contrast/include/ops_mpi.hpp"
+#include <boost/mpi/collectives.hpp>
 
 std::vector<uint8_t> generateRandomImage(size_t size) {
   std::random_device rd;
@@ -24,24 +25,39 @@ TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Single_Element_Input) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
+  std::vector<uint8_t> input;
   if (world.rank() == 0) {
-    auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+    input = {50};
+  }
 
-    std::vector<uint8_t> input = {50};
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
-    taskDataPar->inputs_count.emplace_back(input.size());
+  boost::mpi::broadcast(world, input, 0);
 
-    std::vector<uint8_t> output(input.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
-    taskDataPar->outputs_count.emplace_back(output.size());
+  auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
+  taskDataPar->inputs_count.emplace_back(input.size());
 
-    shuravina_o_contrast::ContrastTaskParallel contrastTaskParallel(taskDataPar);
-    ASSERT_TRUE(contrastTaskParallel.validation());
-    contrastTaskParallel.pre_processing();
-    contrastTaskParallel.run();
-    contrastTaskParallel.post_processing();
+  std::vector<uint8_t> output(input.size());
+  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+  taskDataPar->outputs_count.emplace_back(output.size());
 
-    ASSERT_EQ(output[0], 0);
+  shuravina_o_contrast::ContrastTaskParallel contrastTaskParallel(taskDataPar);
+  ASSERT_TRUE(contrastTaskParallel.validation());
+  contrastTaskParallel.pre_processing();
+  contrastTaskParallel.run();
+  contrastTaskParallel.post_processing();
+
+  std::vector<uint8_t> gatheredOutput;
+  if (world.rank() == 0) {
+    gatheredOutput.resize(input.size() * world.size());
+  }
+  boost::mpi::gather(world, output.data(), output.size(), gatheredOutput.data(), 0);
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(gatheredOutput[0], 0);
+
+    for (size_t i = 1; i < gatheredOutput.size(); ++i) {
+      ASSERT_EQ(gatheredOutput[i], 0);
+    }
   }
 }
 
