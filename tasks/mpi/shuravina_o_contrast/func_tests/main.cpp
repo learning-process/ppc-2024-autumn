@@ -1,13 +1,13 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>
+#include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <random>
 #include <vector>
 
 #include "mpi/shuravina_o_contrast/include/ops_mpi.hpp"
-#include <boost/mpi/collectives.hpp>
 
 std::vector<uint8_t> generateRandomImage(size_t size) {
   std::random_device rd;
