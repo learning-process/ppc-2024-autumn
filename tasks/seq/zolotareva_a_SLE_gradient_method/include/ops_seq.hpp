@@ -19,7 +19,7 @@ class TestTaskSequential : public ppc::core::Task {
   static double dot_product(const std::vector<double>& vec1, const std::vector<double>& vec2, int n);
   static std::vector<double> matrix_vector_mult(const std::vector<double>& matrix, const std::vector<double>& vector,
                                                 int n);
-  static bool is_positive_definite(const std::vector<double>& A, int n);
+  // static bool is_positive_definite(const std::vector<double>& A, int n);
 
  private:
   std::vector<double> A_;  // Матрица системы

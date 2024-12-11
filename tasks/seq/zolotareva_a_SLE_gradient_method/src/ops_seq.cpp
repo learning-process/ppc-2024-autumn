@@ -9,7 +9,7 @@ using namespace std;
 bool zolotareva_a_SLE_gradient_method_seq::TestTaskSequential::validation() {
   internal_order_test();
   n_ = static_cast<int>(taskData->inputs_count[1]);
-  if (taskData->inputs_count.size() < 2 || taskData->inputs.size() < 2 || taskData->outputs.size() < 1) {
+  if (taskData->inputs_count.size() < 2 || taskData->inputs.size() < 2 || taskData->outputs.empty()) {
     return false;
   }
   if (int(taskData->inputs_count[0]) != n_ * n_ || int(taskData->inputs_count[1]) != n_) {
@@ -35,8 +35,8 @@ bool zolotareva_a_SLE_gradient_method_seq::TestTaskSequential::pre_processing() 
   A_.resize(n_ * n_);
   b_.resize(n_);
   x_.resize(n_, 0.0);
-  const double* input_matrix = reinterpret_cast<const double*>(taskData->inputs[0]);
-  const double* input_vector = reinterpret_cast<const double*>(taskData->inputs[1]);
+  auto input_matrix = reinterpret_cast<const double*>(taskData->inputs[0]);
+  auto input_vector = reinterpret_cast<const double*>(taskData->inputs[1]);
 
   for (int i = 0; i < n_; ++i) {
     b_[i] = input_vector[i];
