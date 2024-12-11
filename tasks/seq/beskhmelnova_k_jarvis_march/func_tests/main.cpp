@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "seq/beskhmelnova_k_jarvis_march/src/jarvis_march.cpp"
+#include "seq/beskhmelnova_k_jarvis_march/src/jarvis_march.hpp"
 
 TEST(beskhmelnova_k_jarvis_march_seq, Test_with_2_points) {
   // Create data

@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "seq/beskhmelnova_k_jarvis_march/src/jarvis_march.cpp"
+#include "seq/beskhmelnova_k_jarvis_march/src/jarvis_march.hpp"
 
 TEST(beskhmelnova_k_jarvis_march_seq, test_pipeline_run) {
   int num_points = 1000;

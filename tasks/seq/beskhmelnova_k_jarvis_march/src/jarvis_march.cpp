@@ -53,6 +53,14 @@ void beskhmelnova_k_jarvis_march_seq::jarvisMarch(int& num_points, std::vector<s
 template <typename DataType>
 bool beskhmelnova_k_jarvis_march_seq::TestTaskSequential<DataType>::pre_processing() {
   internal_order_test();
+  num_points = (int)taskData->inputs_count[0];
+  input = std::vector<std::vector<DataType>>(num_points, std::vector<DataType>(3, 0));
+  auto* ptr_x = reinterpret_cast<DataType*>(taskData->inputs[0]);
+  auto* ptr_y = reinterpret_cast<DataType*>(taskData->inputs[1]);
+  for (int i = 0; i < num_points; i++) {
+    input[i][1] = ptr_x[i];
+    input[i][2] = ptr_y[i];
+  }
   return true;
 }
 
@@ -65,14 +73,6 @@ bool beskhmelnova_k_jarvis_march_seq::TestTaskSequential<DataType>::validation()
 template <typename DataType>
 bool beskhmelnova_k_jarvis_march_seq::TestTaskSequential<DataType>::run() {
   internal_order_test();
-  num_points = (int)taskData->inputs_count[0];
-  input = std::vector<std::vector<DataType>>(num_points, std::vector<DataType>(3, 0));
-  auto* ptr_x = reinterpret_cast<DataType*>(taskData->inputs[0]);
-  auto* ptr_y = reinterpret_cast<DataType*>(taskData->inputs[1]);
-  for (int i = 0; i < num_points; i++) {
-    input[i][1] = ptr_x[i];
-    input[i][2] = ptr_y[i];
-  }
   jarvisMarch(num_points, input, res_x, res_y);
   return true;
 }
@@ -87,3 +87,5 @@ bool beskhmelnova_k_jarvis_march_seq::TestTaskSequential<DataType>::post_process
   }
   return true;
 }
+
+template class beskhmelnova_k_jarvis_march_seq::TestTaskSequential<double>;

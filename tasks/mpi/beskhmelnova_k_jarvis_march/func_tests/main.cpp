@@ -2,7 +2,7 @@
 
 #include <boost/mpi/communicator.hpp>
 
-#include "mpi/beskhmelnova_k_jarvis_march/src/jarvis_march.cpp"
+#include "mpi/beskhmelnova_k_jarvis_march/src/jarvis_march.hpp"
 
 TEST(beskhmelnova_k_jarvis_march_mpi, Test_empty_triangle) {
   boost::mpi::communicator world;
