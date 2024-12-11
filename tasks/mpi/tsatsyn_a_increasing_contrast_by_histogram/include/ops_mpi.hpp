@@ -24,7 +24,7 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> input_;
+  std::vector<int> input_data;
   int res{};
 };
 

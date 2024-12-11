@@ -18,7 +18,7 @@ class TestTaskSequential : public ppc::core::Task {
 
  private:
   std::vector<int> input_data;
-  int res{};
+  std::vector<int> res;
 };
 
 }  // namespace tsatsyn_a_increasing_contrast_by_histogram_seq

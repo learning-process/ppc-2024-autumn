@@ -18,16 +18,15 @@ static std::vector<int> getRandomVector(int sz, int a, int b) {
   return vec;
 }
 
-////////////////////////////////////////////
 TEST(tsatsyn_a_increasing_contrast_by_histogram_mpi, Test_Send_Non_Full_Limit) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_sum(1, 0);
-  std::vector<int> sizes = {1200, 720};
+  std::vector<int> sizes = {10, 1};
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  const int count_size_vector = 1200 * 1;
+  const int count_size_vector = sizes[0] * sizes[1];
   if (world.rank() == 0) {
     global_vec = getRandomVector(count_size_vector, 0, 255);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));

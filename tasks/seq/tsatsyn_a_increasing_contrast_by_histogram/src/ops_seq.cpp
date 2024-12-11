@@ -6,9 +6,7 @@
 
 bool tsatsyn_a_increasing_contrast_by_histogram_seq::TestTaskSequential::validation() {
   internal_order_test();
-  return (taskData->outputs_count[0] == 1 && taskData->inputs_count[0] > 0);
-
-  return true;
+  return (taskData->outputs_count[0] > 0 && taskData->inputs_count[0] > 0);
 }
 bool tsatsyn_a_increasing_contrast_by_histogram_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
@@ -20,65 +18,20 @@ bool tsatsyn_a_increasing_contrast_by_histogram_seq::TestTaskSequential::pre_pro
 }
 bool tsatsyn_a_increasing_contrast_by_histogram_seq::TestTaskSequential::run() {
   internal_order_test();
-  auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[1]);
-  int width;
-  int height;
-  width = tempPtr[0];
-  height = tempPtr[1];
-  std::cout << height << width << std::endl;
-  std::vector<double> localka(256, 0);
-  for (int i = 0; i < static_cast<int>(input_data.size()); i++) {
-    localka[input_data[i]]++;
+  int min_val = *std::min_element(input_data.begin(), input_data.end());
+  int max_val = *std::max_element(input_data.begin(), input_data.end());
+  res.resize(input_data.size());
+  int input_sz = static_cast<int>(input_data.size());
+  for (int i = 0; i < input_sz; i++) {
+    res[i] = (input_data[i] - min_val) * (255 - 0) / (max_val - min_val) + 0;
   }
-  for (int i = 0; i < static_cast<int>(localka.size()); i++) {
-    std::cout << localka[i] << " ";
-  }
-  std::cout << std::endl;
-  std::cout << std::endl;
-  std::cout << std::endl;
-  std::cout << std::endl;
-
-  for (int i = 0; i < static_cast<int>(localka.size()); i++) {
-    localka[i] /= width;
-    std::cout << localka[i] << " ";
-  }
-  std::cout << std::endl;
-  std::cout << std::endl;
-  std::cout << std::endl;
-  std::cout << std::endl;
-
-  std::cout << localka[0] << " ";
-  for (int i = 1; i < static_cast<int>(localka.size()); i++) {
-    localka[i] = (localka[i] + localka[i - 1]);
-    std::cout << localka[i] << " ";
-  }
-  std::cout << std::endl;
-  std::cout << std::endl;
-  std::cout << std::endl;
-  std::cout << std::endl;
-
-  for (int i = 0; i < static_cast<int>(localka.size()); i++) {
-    localka[i] *= 255;
-    std::cout << localka[i] << " ";
-  }
-  std::cout << std::endl;
-  std::cout << std::endl;
-  std::cout << std::endl;
-  std::cout << std::endl;
-
-  for (int i = 0; i < static_cast<int>(localka.size()); i++) {
-    localka[i] = std::round(localka[i]);
-    std::cout << localka[i] << " ";
-  }
-  std::cout << std::endl;
-  std::cout << std::endl;
-  std::cout << std::endl;
-  std::cout << std::endl;
-
   return true;
 }
 bool tsatsyn_a_increasing_contrast_by_histogram_seq::TestTaskSequential::post_processing() {
   internal_order_test();
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+
+  auto* outputPtr = reinterpret_cast<int*>(taskData->outputs[0]);
+  std::copy(res.begin(), res.end(), outputPtr);
+
   return true;
 }
