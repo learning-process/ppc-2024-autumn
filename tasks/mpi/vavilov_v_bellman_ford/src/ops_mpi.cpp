@@ -53,6 +53,22 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential::post_processing() {
 
 bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
+  if (world.rank() == 0) {
+    int vertices = taskData->inputs_count[0];
+    int edges_count = taskData->inputs_count[1];
+    int source = taskData->inputs_count[2];
+
+    int* edges_data = reinterpret_cast<int*>(taskData->inputs[0]);
+    for (int i = 0; i < edges_count; ++i) {
+      edges_.push_back({edges_data[i * 3], edges_data[i * 3 + 1], edges_data[i * 3 + 2]});;
+    }
+    distances_.resize(vertices_, INT_MAX);
+    distances_[source_] = 0;
+  }
+
+  boost::mpi::broadcast(world, vertices_, 0);
+  boost::mpi::broadcast(world, edges_, 0);
+  boost::mpi::broadcast(world, distances_, 0);
 
   return true;
 }
@@ -68,27 +84,6 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::validation() {
 
 bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-
-  int vertices = taskData->inputs_count[0];
-  int edges_count = taskData->inputs_count[1];
-  int source = taskData->inputs_count[2];
-
-  if (world.rank() == 0) {
-    edges_.resize(edges_count);
-    int* edges_data = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (int i = 0; i < edges_count; ++i) {
-      edges_[i] = {edges_data[i * 3], edges_data[i * 3 + 1], edges_data[i * 3 + 2]};
-    }
-  }
-
-  boost::mpi::broadcast(world, edges_, 0);
-
-  distances_.resize(vertices, INT_MAX);
-  if (world.rank() == 0) {
-    distances_[source] = 0;
-  }
-
-  boost::mpi::broadcast(world, distances_, 0);
 
   for (int i = 1; i < vertices; ++i) {
     std::vector<int> local_distances = distances_;
