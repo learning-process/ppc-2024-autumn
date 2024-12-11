@@ -210,7 +210,6 @@ std::vector<double> drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel::Paral
     if (grid_coords[0] == 0) prevPr = grid_size - 1;
     std::cout << ROW_COMM.rank();
     MPI_Sendrecv_replace(block_b.data(), block_size * block_size, MPI_DOUBLE, prevPr, 0, nextPr, 0, COL_COMM, &stat);
-    // sendrecv_replace(COL_COMM, block_b, prevPr, 0, nextPr, 0);  // should be good, but need check this
   }
   std::vector<double> resultM(size * size);
   if (world.rank() == 0) {
