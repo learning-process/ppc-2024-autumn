@@ -59,7 +59,7 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::pre_processing() {
     source_ = taskData->inputs_count[2];
 
     int* edges_data = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (int i = 0; i < edges_count; ++i) {
+    for (int i = 0; i < edges_count_; ++i) {
       edges_.push_back({edges_data[i * 3], edges_data[i * 3 + 1], edges_data[i * 3 + 2]});
     }
     distances_.resize(vertices_, INT_MAX);
@@ -85,10 +85,10 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::validation() {
 bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-  for (int i = 1; i < vertices; ++i) {
+  for (int i = 1; i < vertices_; ++i) {
     std::vector<int> local_distances = distances_;
 
-    for (int j = world.rank(); j < edges_count; j += world.size()) {
+    for (int j = world.rank(); j < edges_count_; j += world.size()) {
       const auto& edge = edges_[j];
       if (distances_[edge.src] != INT_MAX && distances_[edge.src] + edge.weight < local_distances[edge.dest]) {
         local_distances[edge.dest] = distances_[edge.src] + edge.weight;
@@ -99,7 +99,7 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::run() {
   }
 
   bool has_negative_cycle = false;
-  for (int j = world.rank(); j < edges_count; j += world.size()) {
+  for (int j = world.rank(); j < edges_count_; j += world.size()) {
     const auto& edge = edges_[j];
     if (distances_[edge.src] != INT_MAX && distances_[edge.src] + edge.weight < distances_[edge.dest]) {
       has_negative_cycle = true;
