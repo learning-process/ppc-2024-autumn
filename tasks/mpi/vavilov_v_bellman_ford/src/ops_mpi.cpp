@@ -100,7 +100,7 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::run() {
       }
     }
 
-    boost::mpi::all_reduce(world, local_distances.data(), distances_.data(), vertices, boost::mpi::minimum<int>());
+    boost::mpi::all_reduce(world, local_distances.data(), vertices, distances_.data(), boost::mpi::minimum<int>());
   }
 
   bool has_negative_cycle = false;
