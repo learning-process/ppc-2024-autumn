@@ -30,9 +30,9 @@ class matrixMultiplicationSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> matrixA{};
-  std::vector<int> matrixB{};
-  std::vector<int> matrixC{};
+  std::vector<int> matrixA;
+  std::vector<int> matrixB;
+  std::vector<int> matrixC;
 
   size_t lineA{};
   size_t columnA{};
@@ -42,12 +42,12 @@ class matrixMultiplicationSequential : public ppc::core::Task {
 };
 
 struct lineStruc {
-  std::vector<int> local_lines{};
-  std::vector<int> index_lines{};
+  std::vector<int> local_lines;
+  std::vector<int> index_lines;
   size_t numberOfLines{};
   size_t enterLineslenght{};
 
-  std::vector<int> res_lines{};
+  std::vector<int> res_lines;
   size_t outgoingLineLength{};
 
   template <class Archive>
@@ -60,8 +60,7 @@ struct lineStruc {
     ar & outgoingLineLength;
   }
 
-  lineStruc()
-      : local_lines{}, index_lines{}, numberOfLines{0}, enterLineslenght{0}, res_lines{}, outgoingLineLength{0} {}
+  lineStruc() : numberOfLines{0}, enterLineslenght{0}, outgoingLineLength{0} {}
 
   lineStruc& operator=(const lineStruc& other) {
     if (this != &other) {
@@ -77,8 +76,8 @@ struct lineStruc {
 };
 
 struct columnStruc {
-  std::vector<int> local_columns{};
-  std::vector<int> index_colums{};
+  std::vector<int> local_columns;
+  std::vector<int> index_colums;
   size_t numberOfColumns{};
   size_t enterColumnLenght{};
 
@@ -90,7 +89,7 @@ struct columnStruc {
     ar & enterColumnLenght;
   }
 
-  columnStruc() : local_columns{}, index_colums{}, numberOfColumns{0}, enterColumnLenght{0} {}
+  columnStruc() : numberOfColumns{0}, enterColumnLenght{0} {}
 
   columnStruc& operator=(const columnStruc& other) {
     if (this != &other) {
@@ -114,9 +113,9 @@ class matrixMultiplicationParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> matrixA{};
-  std::vector<int> matrixB{};
-  std::vector<int> matrixC{};
+  std::vector<int> matrixA;
+  std::vector<int> matrixB;
+  std::vector<int> matrixC;
 
   lineStruc localLinesA{};
   columnStruc localColumnB{};

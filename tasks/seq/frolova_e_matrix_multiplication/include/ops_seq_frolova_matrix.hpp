@@ -20,9 +20,9 @@ class matrixMultiplication : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> matrixA{};
-  std::vector<int> matrixB{};
-  std::vector<int> matrixC{};
+  std::vector<int> matrixA;
+  std::vector<int> matrixB;
+  std::vector<int> matrixC;
 
   size_t lineA{};
   size_t columnA{};

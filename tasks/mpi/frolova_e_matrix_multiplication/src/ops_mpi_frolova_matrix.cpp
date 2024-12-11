@@ -65,15 +65,15 @@ bool frolova_e_matrix_multiplication_mpi::matrixMultiplicationSequential::valida
   if (taskData->inputs_count[0] != 2) {
     return false;
   }
-  size_t line1 = static_cast<size_t>(value_1[0]);
-  size_t column1 = static_cast<size_t>(value_1[1]);
+  auto line1 = static_cast<size_t>(value_1[0]);
+  auto column1 = static_cast<size_t>(value_1[1]);
 
   int* value_2 = reinterpret_cast<int*>(taskData->inputs[1]);
   if (taskData->inputs_count[1] != 2) {
     return false;
   }
-  size_t line2 = static_cast<size_t>(value_2[0]);
-  size_t column2 = static_cast<size_t>(value_2[1]);
+  auto line2 = static_cast<size_t>(value_2[0]);
+  auto column2 = static_cast<size_t>(value_2[1]);
 
   if (value_1[1] != value_2[0]) {
     return false;
@@ -140,15 +140,15 @@ bool frolova_e_matrix_multiplication_mpi::matrixMultiplicationParallel::validati
     if (taskData->inputs_count[0] != 2) {
       return false;
     }
-    size_t line1 = static_cast<size_t>(value_1[0]);
-    size_t column1 = static_cast<size_t>(value_1[1]);
+    auto line1 = static_cast<size_t>(value_1[0]);
+    auto column1 = static_cast<size_t>(value_1[1]);
 
     int* value_2 = reinterpret_cast<int*>(taskData->inputs[1]);
     if (taskData->inputs_count[1] != 2) {
       return false;
     }
-    size_t line2 = static_cast<size_t>(value_2[0]);
-    size_t column2 = static_cast<size_t>(value_2[1]);
+    auto line2 = static_cast<size_t>(value_2[0]);
+    auto column2 = static_cast<size_t>(value_2[1]);
 
     if (value_1[1] != value_2[0]) {
       return false;
