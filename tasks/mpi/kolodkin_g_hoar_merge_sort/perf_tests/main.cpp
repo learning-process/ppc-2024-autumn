@@ -7,7 +7,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/kolodkin_g_hoar_merge_sort/include/ops_mpi.hpp"
 
-TEST(mpi_kolodkin_g_hoar_merge_sort_test, test_pipeline_run) {
+TEST(mpi_kolodkin_g_image_contrast_test, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_out(999, 0);
@@ -45,7 +45,7 @@ TEST(mpi_kolodkin_g_hoar_merge_sort_test, test_pipeline_run) {
   }
 }
 
-TEST(mpi_kolodkin_g_hoar_merge_sort_test, test_task_run) {
+TEST(mpi_kolodkin_g_image_contrast_test, test_task_run) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_out(9999, 0);

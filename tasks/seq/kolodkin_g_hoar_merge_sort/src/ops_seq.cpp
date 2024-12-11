@@ -2,7 +2,6 @@
 #include "seq/kolodkin_g_hoar_merge_sort/include/ops_seq.hpp"
 
 #include <algorithm>
-#include <vector>
 #include <thread>
 
 int partition(std::vector<int>& arr, int low, int high) {

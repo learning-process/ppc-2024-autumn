@@ -8,7 +8,7 @@ int partition(std::vector<int>& arr, int low, int high) {
   int pivot = arr[high];
   int i = (low - 1);
 
-  for (int j = low; j < high; j++) {
+  for (size_t j = low; j < high; j++) {
     if (arr[j] <= pivot) {
       i++;
       std::swap(arr[i], arr[j]);
@@ -72,7 +72,10 @@ bool kolodkin_g_hoar_merge_sort_mpi::TestMPITaskParallel::pre_processing() {
 
 bool kolodkin_g_hoar_merge_sort_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
-  return taskData->inputs_count[0] > 0;
+  if (world.rank() == 0) {
+    return taskData->inputs_count[0] > 0;
+  }
+  return true;
 }
 
 bool kolodkin_g_hoar_merge_sort_mpi::TestMPITaskParallel::run() {
@@ -96,12 +99,14 @@ bool kolodkin_g_hoar_merge_sort_mpi::TestMPITaskParallel::run() {
       displacements[i] = displacements[i - 1] + send_counts[i - 1];
     }
   }
-  boost::mpi::broadcast(world, send_counts, 0);
-  boost::mpi::broadcast(world, displacements, 0);
+  for (size_t i = 0; i < num_processes; i++) {
+    boost::mpi::broadcast(world, send_counts[i], 0);
+    boost::mpi::broadcast(world, displacements[i], 0);
+  }
   std::vector<int> local_input_(send_counts[world.rank()]);
   boost::mpi::scatterv(world, input_.data(), send_counts, displacements, local_input_.data(), local_input_.size(), 0);
 
-  std::sort(local_input_.begin(), local_input_.end());
+  quickSort(local_input_, 0, local_input_.size() - 1);
 
   std::vector<int> sorted_data;
   if (world.rank() == 0) {
@@ -114,6 +119,12 @@ bool kolodkin_g_hoar_merge_sort_mpi::TestMPITaskParallel::run() {
     std::vector<int> final_result;
     std::vector<int> current_indices(num_processes, 0);
     std::vector<bool> done(num_processes, false);
+    int num_segments = 0;
+    for (size_t i = 0; i < num_processes; i++) {
+      if (send_counts[i] > 0) {
+        num_segments++;
+      }
+    }
     while (final_result.size() < input_.size()) {
       int min_index = -1;
       int min_value = std::numeric_limits<int>::max();

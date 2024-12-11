@@ -6,7 +6,7 @@
 
 #include "seq/kolodkin_g_hoar_merge_sort/include/ops_seq.hpp"
 
-TEST(kolodkin_g_hoar_merge_sort_seq, Test_vector_with_one_elems) {
+TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_one_elems) {
   // Create data
   std::vector<int> vector;
   std::vector<int> reference_out(1, 0);
@@ -28,7 +28,7 @@ TEST(kolodkin_g_hoar_merge_sort_seq, Test_vector_with_one_elems) {
   ASSERT_EQ(50, reference_out[0]);
 }
 
-TEST(kolodkin_g_hoar_merge_sort_seq, Test_vector_with_two_elems) {
+TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_two_elems) {
   // Create data
   std::vector<int> vector;
   std::vector<int> reference_out(2, 0);
@@ -48,12 +48,12 @@ TEST(kolodkin_g_hoar_merge_sort_seq, Test_vector_with_two_elems) {
   testTaskSequential.post_processing();
   reference_out = *reinterpret_cast<std::vector<int> *>(taskDataSeq->outputs[0]);
   std::sort(vector.begin(), vector.end());
-  for (int i = 0; i < (int)vector.size(); i++) {
+  for (unsigned i = 0; i < vector.size(); i++) {
     ASSERT_EQ(reference_out[i], vector[i]);
   }
 }
 
-TEST(kolodkin_g_hoar_merge_sort_seq, Test_vector_with_three_elems) {
+TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_three_elems) {
   // Create data
   std::vector<int> vector;
   std::vector<int> reference_out(3, 0);
@@ -73,12 +73,12 @@ TEST(kolodkin_g_hoar_merge_sort_seq, Test_vector_with_three_elems) {
   testTaskSequential.post_processing();
   reference_out = *reinterpret_cast<std::vector<int> *>(taskDataSeq->outputs[0]);
   std::sort(vector.begin(), vector.end());
-  for (int i = 0; i < (int)vector.size(); i++) {
+  for (unsigned i = 0; i < vector.size(); i++) {
     ASSERT_EQ(reference_out[i], vector[i]);
   }
 }
 
-TEST(kolodkin_g_hoar_merge_sort_seq, Test_vector_with_negative_elems) {
+TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_negative_elems) {
   // Create data
   std::vector<int> vector;
   std::vector<int> reference_out(4, 0);
@@ -98,18 +98,18 @@ TEST(kolodkin_g_hoar_merge_sort_seq, Test_vector_with_negative_elems) {
   testTaskSequential.post_processing();
   reference_out = *reinterpret_cast<std::vector<int> *>(taskDataSeq->outputs[0]);
   std::sort(vector.begin(), vector.end());
-  for (int i = 0; i < (int)vector.size(); i++) {
+  for (unsigned i = 0; i < vector.size(); i++) {
     ASSERT_EQ(reference_out[i], vector[i]);
   }
 }
 
-TEST(kolodkin_g_hoar_merge_sort_seq, Test_big_vector) {
+TEST(kolodkin_g_hoar_merge_sort_MPI, Test_big_vector) {
   // Create data
   std::vector<int> vector;
   std::vector<int> reference_out(1000, 0);
 
   // Create TaskData
-  for (int i = 0; i < 1000; i++) {
+  for (unsigned i = 0; i < 1000; i++) {
     vector.push_back(-1000 + rand() % 1000);
   }
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -125,7 +125,7 @@ TEST(kolodkin_g_hoar_merge_sort_seq, Test_big_vector) {
   testTaskSequential.post_processing();
   reference_out = *reinterpret_cast<std::vector<int> *>(taskDataSeq->outputs[0]);
   std::sort(vector.begin(), vector.end());
-  for (int i = 0; i < (int)vector.size(); i++) {
+  for (unsigned i = 0; i < vector.size(); i++) {
     ASSERT_EQ(reference_out[i], vector[i]);
   }
 }

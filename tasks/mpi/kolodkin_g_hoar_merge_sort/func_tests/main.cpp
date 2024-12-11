@@ -230,7 +230,7 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_big_vector) {
   std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    for (int i = 0; i < 1000; i++) {
+    for (unsigned i = 0; i < 1000; i++) {
       vector.push_back(-100 + rand() % 100000);
     }
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
