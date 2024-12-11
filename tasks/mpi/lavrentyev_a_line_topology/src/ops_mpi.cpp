@@ -68,10 +68,9 @@ bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::run() {
 
   int* d = new int[s];
   int* p = new int[c];
-  for (size_t i = 0; i < c; ++i) {
+  for (size_t i = 0; i < static_cast<size_t>(c); ++i) {
     p[i] = -1;
   }
-
   if (start_proc == end_proc) {
     return true;
   }
@@ -94,10 +93,10 @@ bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::run() {
     recv_req1.wait();
     p[world.rank()] = world.rank();
     if (world.rank() == end_proc) {
-      for (size_t i = 0; i < s; ++i) {
+      for (size_t i = 0; i < static_cast<size_t>(s); ++i) {
         data[i] = d[i];
       }
-      for (size_t i = 0; i < c; ++i) {
+      for (size_t i = 0; i < static_cast<size_t>(c); ++i) {
         path[i] = p[i];
       }
     }
@@ -109,7 +108,6 @@ bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::run() {
   boost::mpi::wait_all(req.begin(), req.end());
   return true;
 }
-
 bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
 
