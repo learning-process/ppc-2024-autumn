@@ -86,14 +86,19 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
   bool changed = true;
+
+  int local_start = world.rank() * (edges_count_ / world.size());
+  int local_end = local_start + (edges_count_ / world.size()) + (world.rank() < (edges_count_ % world.size()) ? 1 : 0);
+
   for (int i = 1; i < vertices_; ++i) {
     if (!changed) {
       break;
     }
+
     changed = false;
     std::vector<int> local_distances = distances_;
 
-    for (int j = world.rank(); j < edges_count_; j += world.size()) {
+    for (int j = local_start; j < local_end; ++j) {
       const auto& edge = edges_[j];
       if (distances_[edge.src] != INT_MAX && distances_[edge.src] + edge.weight < local_distances[edge.dest]) {
         local_distances[edge.dest] = distances_[edge.src] + edge.weight;
@@ -101,11 +106,13 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::run() {
       }
     }
 
-    boost::mpi::all_reduce(world, local_distances.data(), vertices_, distances_.data(), boost::mpi::minimum<int>());
+    boost::mpi::all_reduce(world, local_distances.begin(), local_distances.end(), distances_.begin(),
+                           [](int a, int b) { return std::min(a, b); });
+    boost::mpi::all_reduce(world, changed, std::logical_or<bool>());
   }
 
   bool has_negative_cycle = false;
-  for (int j = world.rank(); j < edges_count_; j += world.size()) {
+  for (int j = local_start; j < local_end; ++j) {
     const auto& edge = edges_[j];
     if (distances_[edge.src] != INT_MAX && distances_[edge.src] + edge.weight < distances_[edge.dest]) {
       has_negative_cycle = true;
@@ -114,11 +121,7 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::run() {
   }
 
   has_negative_cycle = boost::mpi::all_reduce(world, has_negative_cycle, std::logical_or<bool>());
-  if (has_negative_cycle) {
-    return false;
-  }
-
-  return true;
+  return !has_negative_cycle;
 }
 
 bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::post_processing() {
