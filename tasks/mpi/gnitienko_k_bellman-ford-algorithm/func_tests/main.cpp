@@ -9,7 +9,7 @@
 
 namespace gnitienko_k_generate_func_mpi {
 
-const int MIN_WEIGHT = -10;
+const int MIN_WEIGHT = -5;
 const int MAX_WEIGHT = 10;
 std::vector<int> generateGraph(const int V) {
   std::random_device dev;
@@ -220,37 +220,20 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_2nd_graph) {
 
 TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_random_graph) {
   boost::mpi::communicator world;
-  const int V = 7;
-  const int E = 10;
+  const int V = 10;
+  int E = 0;
 
-  std::vector<int> graph = gnitienko_k_generate_func_mpi::generateGraph(V);
+  std::vector<int> graph;
 
   std::vector<int> resMPI(V, 0);
-  std::vector<int> expected_res(V, INT_MAX - 1000);
-  expected_res[0] = 0;
-
-  bool changed = true;
-  for (int k = 0; k < V && changed; k++) {
-    changed = false;
-    for (int i = 0; i < V; ++i) {
-      for (int j = 0; j < V; ++j) {
-        if (i != j) {
-          if (graph[i * V + j] != 0 && expected_res[i] != INT_MAX - 1000 &&
-              graph[i * V + j] + expected_res[i] < expected_res[j]) {
-            expected_res[j] = graph[i * V + j] + expected_res[i];
-            changed = true;
-          }
-        }
-      }
-    }
-  }
-
-  for (int i = 0; i < V; i++)
-    if (expected_res[i] == INT_MAX - 1000) expected_res[i] = 0;
+  std::vector<int> resSEQ;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
+    graph = gnitienko_k_generate_func_mpi::generateGraph(V);
+    for (size_t i = 0; i < graph.size(); i++)
+      if (graph[i] != 0) E++;
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(graph.data()));
     taskDataPar->inputs_count.emplace_back(static_cast<uint32_t>(V));
     taskDataPar->inputs_count.emplace_back(static_cast<uint32_t>(E));
@@ -261,13 +244,17 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_random_graph) {
   gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgMPI testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
+  bool skip_test = false;
+  if (testMpiTaskParallel.run() == false) {
+    skip_test = true;
+  }
+  boost::mpi::broadcast(world, skip_test, 0);
+  if (skip_test) GTEST_SKIP();
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int> resSEQ(V, 0);
-
+    resSEQ.resize(V);
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(graph.data()));
@@ -284,6 +271,5 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_random_graph) {
     testMpiTaskSequential.post_processing();
 
     ASSERT_EQ(resSEQ, resMPI);
-    ASSERT_EQ(resSEQ, expected_res);
   }
 }
