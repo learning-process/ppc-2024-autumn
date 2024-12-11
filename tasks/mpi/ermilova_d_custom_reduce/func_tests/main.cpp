@@ -10,7 +10,7 @@
 #include "mpi/ermilova_d_custom_reduce/include/ops_mpi.hpp"
 
 template <typename T>
-std::vector<T> getRandom(int size) {
+static std::vector<T> getRandom(int size) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::uniform_int_distribution<> distrib(-100, 100);
@@ -22,7 +22,7 @@ std::vector<T> getRandom(int size) {
 }
 
 template <typename T>
-void Test_reduce(MPI_Datatype datatype, MPI_Op op) {
+static void Test_reduce(MPI_Datatype datatype, MPI_Op op) {
   int size = 100;
   boost::mpi::communicator world;
   std::vector<T> input_;
