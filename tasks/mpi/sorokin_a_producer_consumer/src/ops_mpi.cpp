@@ -51,6 +51,7 @@ bool sorokin_a_producer_consumer_mpi::TestMPITaskParallel::validation() {
 bool sorokin_a_producer_consumer_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   if (count_p_ == 0) return true;
+
   const int producer_tag = 1;
   const int consumer_tag = 2;
   const int exit_tag = 0;
@@ -59,15 +60,18 @@ bool sorokin_a_producer_consumer_mpi::TestMPITaskParallel::run() {
     std::uniform_real_distribution<double> unif(lower_bound_, upper_bound_);
     std::random_device rand_dev;
     std::mt19937 rand_engine(rand_dev());
-    std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(unif(rand_engine))));
+
     int buffer = -1;
     int rank_data = -1;
     bool has_data = false;
     int remaining_consumers = static_cast<int>(count_p_);
+    std::vector<boost::mpi::request> active_requests;
 
     while (true) {
       int message[2];
-      world.recv(boost::mpi::any_source, 3, message, 2);
+      boost::mpi::request recv_req = world.irecv(boost::mpi::any_source, 3, message, 2);
+      recv_req.wait();
+
       int rank = message[0];
       int type = message[1];
 
@@ -77,78 +81,100 @@ bool sorokin_a_producer_consumer_mpi::TestMPITaskParallel::run() {
         }
       } else if (type == producer_tag && !has_data) {
         int response[2] = {0, 0};
-        world.send(rank, producer_tag, response, 2);
+        active_requests.push_back(world.isend(rank, producer_tag, response, 2));
+
         int data;
-        world.recv(rank, producer_tag, &data, 1);
+        boost::mpi::request data_recv_req = world.irecv(rank, producer_tag, &data, 1);
+        data_recv_req.wait();
+
         buffer = data;
         rank_data = rank;
         has_data = true;
       } else if (type == consumer_tag && has_data && rank_data == rank - static_cast<int>(count_p_)) {
         int response[2] = {buffer, 0};
-        world.send(rank, consumer_tag, response, 2);
+        active_requests.push_back(world.isend(rank, consumer_tag, response, 2));
         has_data = false;
       } else if (type == consumer_tag) {
         int response[2] = {buffer, 111};
-        world.send(rank, consumer_tag, response, 2);
+        active_requests.push_back(world.isend(rank, consumer_tag, response, 2));
       } else if (type == producer_tag) {
         int response[2] = {buffer, 111};
-        world.send(rank, producer_tag, response, 2);
+        active_requests.push_back(world.isend(rank, producer_tag, response, 2));
       }
+
       if (remaining_consumers == 0) {
         break;
       }
     }
+
     for (unsigned int rank = count_p_ + 1; rank <= count_p_ * 2; ++rank) {
       int result[2];
-      world.recv(rank, 4, result, 2);
+      boost::mpi::request result_recv_req = world.irecv(rank, 4, result, 2);
+      result_recv_req.wait();
+
       int consumer_index = result[0] - (count_p_ + 1);
       res_[consumer_index] = result[1];
     }
+
+    boost::mpi::wait_all(active_requests.begin(), active_requests.end());
   }
 
   if (static_cast<unsigned int>(world.rank()) <= count_p_ && world.rank() > 0) {
     int val_s = local_input_[0];
     while (true) {
       int message[2] = {world.rank(), producer_tag};
-      world.send(0, 3, message, 2);
+      boost::mpi::request send_req = world.isend(0, 3, message, 2);
+      send_req.wait();
+
       int response[2];
-      world.recv(0, producer_tag, response, 2);
-      if (response[1] == 0) {
-        break;
-      }
+      boost::mpi::request recv_req = world.irecv(0, producer_tag, response, 2);
+      recv_req.wait();
+
+      if (response[1] == 0) break;
+
       std::uniform_real_distribution<double> unif(lower_bound_, upper_bound_);
       std::random_device rand_dev;
       std::mt19937 rand_engine(rand_dev());
       std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(unif(rand_engine))));
     }
 
-    world.send(0, producer_tag, &val_s, 1);
+    boost::mpi::request send_data_req = world.isend(0, producer_tag, &val_s, 1);
+    send_data_req.wait();
 
     int exit_message[2] = {world.rank(), exit_tag};
-    world.send(0, 3, exit_message, 2);
+    boost::mpi::request send_exit_req = world.isend(0, 3, exit_message, 2);
+    send_exit_req.wait();
   }
 
   if (static_cast<unsigned int>(world.rank()) > count_p_ && static_cast<unsigned int>(world.rank()) <= count_p_ * 2) {
     int val_b = 0;
     while (true) {
       int message[2] = {world.rank(), consumer_tag};
-      world.send(0, 3, message, 2);
+      boost::mpi::request send_req = world.isend(0, 3, message, 2);
+      send_req.wait();
+
       int response[2];
-      world.recv(0, consumer_tag, response, 2);
+      boost::mpi::request recv_req = world.irecv(0, consumer_tag, response, 2);
+      recv_req.wait();
+
       if (response[1] == 0) {
         val_b = response[0];
         break;
       }
+
       std::uniform_real_distribution<double> unif(lower_bound_, upper_bound_);
       std::random_device rand_dev;
       std::mt19937 rand_engine(rand_dev());
       std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(unif(rand_engine))));
     }
+
     int exit_message[2] = {world.rank(), exit_tag};
-    world.send(0, 3, exit_message, 2);
+    boost::mpi::request send_exit_req = world.isend(0, 3, exit_message, 2);
+    send_exit_req.wait();
 
     int result[2] = {world.rank(), val_b};
-    world.send(0, 4, result, 2);
+    boost::mpi::request send_result_req = world.isend(0, 4, result, 2);
+    send_result_req.wait();
   }
 
   return true;
