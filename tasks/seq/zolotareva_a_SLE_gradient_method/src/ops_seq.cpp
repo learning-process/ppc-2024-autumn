@@ -118,9 +118,9 @@ std::vector<double> zolotareva_a_SLE_gradient_method_seq::TestTaskSequential::ma
   return result;
 }
 
-bool zolotareva_a_SLE_gradient_method_seq::TestTaskSequential::is_positive_definite(const std::vector<double>& A,
+/*bool zolotareva_a_SLE_gradient_method_seq::TestTaskSequential::is_positive_definite(const std::vector<double>& A,
                                                                                     int n) {
   std::vector<float> diag(n, 0.0f);
 
   return true;
-}
+}*/

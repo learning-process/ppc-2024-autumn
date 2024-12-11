@@ -112,7 +112,7 @@ TEST(zolotareva_a_SLE_gradient_method_seq, singular_matrix) {
   task.post_processing();
 
   // Ожидаем, что метод не сходится или возвращает корректное решение, если оно существует
-  for (size_t i = 0; i < n; ++i) {
+  for (int i = 0; i < n; ++i) {
     EXPECT_NEAR(x[i], 1.0, 1e-7);  // Пример ожидаемого решения
   }
 }
@@ -137,7 +137,7 @@ TEST(zolotareva_a_SLE_gradient_method_seq, zero_vector_solution) {
   task.run();
   task.post_processing();
 
-  for (size_t i = 0; i < n; ++i) {
+  for (int i = 0; i < n; ++i) {
     EXPECT_NEAR(x[i], 0.0, 1e-2);  // Ожидаем нулевой вектор решения
   }
 }
@@ -199,7 +199,7 @@ TEST(zolotareva_a_SLE_gradient_method_seq, test_correct_answer1) {
   task.pre_processing();
   task.run();
   task.post_processing();
-  for (size_t i = 0; i < n; ++i) {
+  for (int i = 0; i < n; ++i) {
     EXPECT_NEAR(x[i], ref_x[i], 1e-7);
   }
 }
@@ -224,7 +224,7 @@ TEST(zolotareva_a_SLE_gradient_method_seq, test_correct_answer2) {
   task.run();
   task.post_processing();
 
-  for (size_t i = 0; i < n; ++i) {
+  for (int i = 0; i < n; ++i) {
     EXPECT_NEAR(x[i], ref_x[i], 1e-7);
   }
 }
