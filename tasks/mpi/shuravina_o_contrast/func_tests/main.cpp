@@ -19,6 +19,7 @@ std::vector<uint8_t> generateRandomImage(size_t size) {
   }
   return input;
 }
+
 TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Single_Element_Input) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
@@ -44,14 +45,14 @@ TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Single_Element_Input) {
   }
 }
 
-TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Single_Element_Input) {
+TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Random_Small_Image) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
   if (world.rank() == 0) {
     auto taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-    std::vector<uint8_t> input = {50};
+    std::vector<uint8_t> input = generateRandomImage(100);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
     taskDataPar->inputs_count.emplace_back(input.size());
 
@@ -61,17 +62,27 @@ TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Single_Element_Input) {
 
     shuravina_o_contrast::ContrastTaskParallel contrastTaskParallel(taskDataPar);
     ASSERT_TRUE(contrastTaskParallel.validation());
+    contrastTaskParallel.pre_processing();
+    contrastTaskParallel.run();
+    contrastTaskParallel.post_processing();
+
+    auto min_val = *std::min_element(input.begin(), input.end());
+    auto max_val = *std::max_element(input.begin(), input.end());
+    for (size_t i = 0; i < input.size(); ++i) {
+      auto expected = static_cast<uint8_t>((input[i] - min_val) * 255.0 / (max_val - min_val));
+      ASSERT_EQ(output[i], expected);
+    }
   }
 }
 
-TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Max_Values_Input) {
+TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Random_Medium_Image) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
   if (world.rank() == 0) {
     auto taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-    std::vector<uint8_t> input = {255, 255, 255, 255, 255};
+    std::vector<uint8_t> input = generateRandomImage(1000);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
     taskDataPar->inputs_count.emplace_back(input.size());
 
@@ -81,16 +92,27 @@ TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Max_Values_Input) {
 
     shuravina_o_contrast::ContrastTaskParallel contrastTaskParallel(taskDataPar);
     ASSERT_TRUE(contrastTaskParallel.validation());
+    contrastTaskParallel.pre_processing();
+    contrastTaskParallel.run();
+    contrastTaskParallel.post_processing();
+
+    auto min_val = *std::min_element(input.begin(), input.end());
+    auto max_val = *std::max_element(input.begin(), input.end());
+    for (size_t i = 0; i < input.size(); ++i) {
+      auto expected = static_cast<uint8_t>((input[i] - min_val) * 255.0 / (max_val - min_val));
+      ASSERT_EQ(output[i], expected);
+    }
   }
 }
-TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Min_Values_Input) {
+
+TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Random_Large_Image) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
   if (world.rank() == 0) {
     auto taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-    std::vector<uint8_t> input = {0, 0, 0, 0, 0};
+    std::vector<uint8_t> input = generateRandomImage(10000);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
     taskDataPar->inputs_count.emplace_back(input.size());
 
@@ -100,5 +122,15 @@ TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Min_Values_Input) {
 
     shuravina_o_contrast::ContrastTaskParallel contrastTaskParallel(taskDataPar);
     ASSERT_TRUE(contrastTaskParallel.validation());
+    contrastTaskParallel.pre_processing();
+    contrastTaskParallel.run();
+    contrastTaskParallel.post_processing();
+
+    auto min_val = *std::min_element(input.begin(), input.end());
+    auto max_val = *std::max_element(input.begin(), input.end());
+    for (size_t i = 0; i < input.size(); ++i) {
+      auto expected = static_cast<uint8_t>((input[i] - min_val) * 255.0 / (max_val - min_val));
+      ASSERT_EQ(output[i], expected);
+    }
   }
 }
