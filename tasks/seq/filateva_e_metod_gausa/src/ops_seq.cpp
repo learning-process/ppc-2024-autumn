@@ -111,7 +111,7 @@ bool filateva_e_metod_gausa_seq::MetodGausa::run() {
 
 bool filateva_e_metod_gausa_seq::MetodGausa::post_processing() {
   internal_order_test();
-  auto output_data = reinterpret_cast<double*>(taskData->outputs[0]);
+  auto* output_data = reinterpret_cast<double*>(taskData->outputs[0]);
   std::copy(resh.begin(), resh.end(), output_data);
   return true;
 }
