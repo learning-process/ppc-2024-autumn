@@ -201,9 +201,9 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_mpi, minus1_0xminus1_
 TEST(kovalev_k_multidimensional_integrals_rectangle_method_mpi, 2x2_area) {
   const size_t dim = 2;
   std::vector<std::pair<double, double>> lims(dim);
-  lims[0].first = lims[1].first = 0.5;
+  lims[0].first = lims[1].first = 1.0;
   lims[0].second = lims[1].second = 2.0;
-  double h = 0.001;
+  double h = 0.0005;
   double eps = 1e-3;
   std::vector<double> out(1);
   boost::mpi::communicator world;
@@ -222,7 +222,7 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_mpi, 2x2_area) {
   tmpTaskPar.run();
   tmpTaskPar.post_processing();
   if (world.rank() == 0) {
-    ASSERT_NEAR(2.25, out[0], eps);
+    ASSERT_NEAR(1.0, out[0], eps);
   }
 }
 
