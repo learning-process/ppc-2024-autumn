@@ -7,7 +7,6 @@
 
 #include "mpi/matyunina_a_dining_philosophers/include/ops_mpi.hpp"
 
-
 TEST(matyunina_a_dining_philosophers_mpi, they_eat_twice) {
   boost::mpi::communicator world;
   std::vector<int> global_vec(1, 2);
