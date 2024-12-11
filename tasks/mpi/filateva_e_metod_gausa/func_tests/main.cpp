@@ -274,3 +274,53 @@ TEST(filateva_e_metod_gausa_mpi, test_size_0) {
     EXPECT_FALSE(metodGausa.validation());
   }
 }
+
+TEST(filateva_e_metod_gausa_mpi, test_error_rank) {
+  boost::mpi::communicator world;
+  int size = 3;
+  std::vector<double> matrix;
+  std::vector<double> vecB;
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    matrix = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    vecB = {20, 11, 16};
+
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
+    taskData->inputs_count.emplace_back(size);
+    taskData->outputs_count.emplace_back(size);
+  }
+
+  filateva_e_metod_gausa_mpi::MetodGausa metodGausa(taskData);
+
+  if (world.rank() == 0) {
+    EXPECT_FALSE(metodGausa.validation());
+  }
+}
+
+TEST(filateva_e_metod_gausa_mpi, test_error_determenant) {
+  boost::mpi::communicator world;
+  int size = 2;
+  std::vector<double> matrix;
+  std::vector<double> vecB;
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    matrix = {1, 2, 2, 4};
+    vecB = {3, 6};
+
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
+    taskData->inputs_count.emplace_back(size);
+    taskData->outputs_count.emplace_back(size);
+  }
+
+  filateva_e_metod_gausa_mpi::MetodGausa metodGausa(taskData);
+
+  if (world.rank() == 0) {
+    EXPECT_FALSE(metodGausa.validation());
+  }
+}

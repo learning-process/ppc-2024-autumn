@@ -17,7 +17,7 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::pre_processing() {
 bool filateva_e_metod_gausa_mpi::MetodGausa::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    if (taskData->inputs_count[0] != taskData->outputs_count[0] || taskData->inputs_count[0] == 0) {
+    if (taskData->inputs_count[0] <= 0 || taskData->inputs_count[0] != taskData->outputs_count[0]) {
       return false;
     }
     size = taskData->inputs_count[0];
