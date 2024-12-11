@@ -4,8 +4,6 @@
 #include <algorithm>
 #include <functional>
 #include <random>
-#include <string>
-#include <thread>
 #include <vector>
 
 using namespace std::chrono_literals;
@@ -45,9 +43,11 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
   if (world.rank() == 0) {
     std::vector<bool> fork(world.size() - 1, true);
     int exit = nom * (world.size() - 1);
+    std::vector<boost::mpi::request> a_requests;
     while (true) {
       int m[4];
-      world.recv(boost::mpi::any_source, 3, m, 4);
+      boost::mpi::request recv_req = world.irecv(boost::mpi::any_source, 3, m, 4);
+      recv_req.wait();
       int rank = m[0];
       int wish = m[1];
       int l = m[2];
@@ -61,21 +61,21 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
           if (r == 1) {
             fork[rank - 1] = true;
             int answer = 2;
-            world.send(rank, 2, &answer, 1);
+            a_requests.push_back(world.isend(rank, 2, &answer, 1));
           } else {
             fork[0] = true;
             int answer = 1;
-            world.send(rank, 2, &answer, 1);
+            a_requests.push_back(world.isend(rank, 2, &answer, 1));
           }
         } else {
           if (r == 1) {
             fork[rank - 1] = true;
             int answer = 2;
-            world.send(rank, 2, &answer, 1);
+            a_requests.push_back(world.isend(rank, 2, &answer, 1));
           } else {
             fork[rank] = true;
             int answer = 1;
-            world.send(rank, 2, &answer, 1);
+            a_requests.push_back(world.isend(rank, 2, &answer, 1));
           }
         }
       } else if (wish == 1) {
@@ -83,20 +83,20 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
           if (r == 1) {
             if (!fork[0]) {
               int answer = 0;
-              world.send(rank, 1, &answer, 1);
+              a_requests.push_back(world.isend(rank, 1, &answer, 1));
             } else {
               int answer = 1;
-              world.send(rank, 1, &answer, 1);
+              a_requests.push_back(world.isend(rank, 1, &answer, 1));
               fork[0] = false;
             }
           }
           if (l == 1) {
             if (!fork[rank - 1]) {
               int answer = 0;
-              world.send(rank, 1, &answer, 1);
+              a_requests.push_back(world.isend(rank, 1, &answer, 1));
             } else {
               int answer = 2;
-              world.send(rank, 1, &answer, 1);
+              a_requests.push_back(world.isend(rank, 1, &answer, 1));
               fork[rank - 1] = false;
             }
           }
@@ -105,20 +105,20 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
             if (rank % 2 == 0) {
               if (fork[rank - 1]) {
                 int answer = 2;
-                world.send(rank, 1, &answer, 1);
+                a_requests.push_back(world.isend(rank, 1, &answer, 1));
                 fork[rank - 1] = false;
               } else {
                 int answer = 0;
-                world.send(rank, 1, &answer, 1);
+                a_requests.push_back(world.isend(rank, 1, &answer, 1));
               }
             } else {
               if (fork[0]) {
                 int answer = 1;
-                world.send(rank, 1, &answer, 1);
+                a_requests.push_back(world.isend(rank, 1, &answer, 1));
                 fork[0] = false;
               } else {
                 int answer = 0;
-                world.send(rank, 1, &answer, 1);
+                a_requests.push_back(world.isend(rank, 1, &answer, 1));
               }
             }
           }
@@ -127,20 +127,20 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
           if (r == 1) {
             if (!fork[rank]) {
               int answer = 0;
-              world.send(rank, 1, &answer, 1);
+              a_requests.push_back(world.isend(rank, 1, &answer, 1));
             } else {
               int answer = 1;
-              world.send(rank, 1, &answer, 1);
+              a_requests.push_back(world.isend(rank, 1, &answer, 1));
               fork[rank] = false;
             }
           }
           if (l == 1) {
             if (!fork[rank - 1]) {
               int answer = 0;
-              world.send(rank, 1, &answer, 1);
+              a_requests.push_back(world.isend(rank, 1, &answer, 1));
             } else {
               int answer = 2;
-              world.send(rank, 1, &answer, 1);
+              a_requests.push_back(world.isend(rank, 1, &answer, 1));
               fork[rank - 1] = false;
             }
           }
@@ -148,20 +148,20 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
             if (rank % 2 == 0) {
               if (fork[rank - 1]) {
                 int answer = 2;
-                world.send(rank, 1, &answer, 1);
+                a_requests.push_back(world.isend(rank, 1, &answer, 1));
                 fork[rank - 1] = false;
               } else {
                 int answer = 0;
-                world.send(rank, 1, &answer, 1);
+                a_requests.push_back(world.isend(rank, 1, &answer, 1));
               }
             } else {
               if (fork[rank]) {
                 int answer = 1;
-                world.send(rank, 1, &answer, 1);
+                a_requests.push_back(world.isend(rank, 1, &answer, 1));
                 fork[rank] = false;
               } else {
                 int answer = 0;
-                world.send(rank, 1, &answer, 1);
+                a_requests.push_back(world.isend(rank, 1, &answer, 1));
               }
             }
           }
@@ -171,6 +171,7 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
         break;
       }
     }
+    boost::mpi::wait_all(a_requests.begin(), a_requests.end());
   }
 
   if (world.rank() > 0) {
@@ -179,18 +180,20 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
     int l = 0;
     int r = 0;
     while (c < nom) {
-      const double s = 2;
-      const double e = 3;
-      std::uniform_real_distribution<double> unif(s, e);
+      const double start = 2;
+      const double end = 3;
+      std::uniform_real_distribution<double> unif(start, end);
       std::random_device rand_dev;
       std::mt19937 rand_engine(rand_dev());
       std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(unif(rand_engine))));
       while (true) {
         if (eat == 0) {
           int m[4] = {world.rank(), 1, l, r};
-          world.send(0, 3, m, 4);
+          boost::mpi::request send_req = world.isend(0, 3, m, 4);
+          send_req.wait();
           int a;
-          world.recv(0, 1, &a, 1);
+          boost::mpi::request recv_req = world.irecv(0, 1, &a, 1);
+          recv_req.wait();
           if (a == 1) {
             l = 1;
           }
@@ -202,9 +205,11 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
           }
         } else {
           int m[4] = {world.rank(), 2, l, r};
-          world.send(0, 3, m, 4);
+          boost::mpi::request send_req = world.isend(0, 3, m, 4);
+          send_req.wait();
           int a;
-          world.recv(0, 2, &a, 1);
+          boost::mpi::request recv_req = world.irecv(0, 2, &a, 1);
+          recv_req.wait();
           if (a == 1) {
             l = 0;
           }
@@ -219,7 +224,8 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
       }
       c++;
       int exit_m[4] = {world.rank(), 3, c, c};
-      world.send(0, 3, exit_m, 4);
+      boost::mpi::request send_req = world.isend(0, 3, exit_m, 4);
+      send_req.wait();
     }
   }
   return true;
