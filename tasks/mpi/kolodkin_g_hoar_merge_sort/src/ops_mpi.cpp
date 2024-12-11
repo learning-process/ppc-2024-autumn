@@ -9,7 +9,7 @@ int partition(std::vector<int>& arr, int low, int high) {
   int pivot = arr[high];
   int i = (low - 1);
 
-  for (size_t j = low; j < high; j++) {
+  for (int j = low; j < high; j++) {
     if (arr[j] <= pivot) {
       i++;
       std::swap(arr[i], arr[j]);
@@ -115,12 +115,6 @@ bool kolodkin_g_hoar_merge_sort_mpi::TestMPITaskParallel::run() {
     std::vector<int> final_result;
     std::vector<int> current_indices(num_processes, 0);
     std::vector<bool> done(num_processes, false);
-    int num_segments = 0;
-    for (size_t i = 0; i < num_processes; i++) {
-      if (send_counts[i] > 0) {
-        num_segments++;
-      }
-    }
     while (final_result.size() < input_.size()) {
       int min_index = -1;
       int min_value = std::numeric_limits<int>::max();
