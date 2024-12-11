@@ -111,9 +111,8 @@ TEST(zolotareva_a_SLE_gradient_method_seq, singular_matrix) {
   task.run();
   task.post_processing();
 
-  // Ожидаем, что метод не сходится или возвращает корректное решение, если оно существует
   for (int i = 0; i < n; ++i) {
-    EXPECT_NEAR(x[i], 1.0, 1e-7);  // Пример ожидаемого решения
+    EXPECT_NEAR(x[i], 1.0, 1e-7);  
   }
 }
 
@@ -138,7 +137,7 @@ TEST(zolotareva_a_SLE_gradient_method_seq, zero_vector_solution) {
   task.post_processing();
 
   for (int i = 0; i < n; ++i) {
-    EXPECT_NEAR(x[i], 0.0, 1e-2);  // Ожидаем нулевой вектор решения
+    EXPECT_NEAR(x[i], 0.0, 1e-2);
   }
 }
 
@@ -162,7 +161,7 @@ TEST(zolotareva_a_SLE_gradient_method_seq, n_equals_one) {
   task.run();
   task.post_processing();
 
-  EXPECT_NEAR(x[0], 2.0, 1e-1);  // Ожидаемое решение x = 2
+  EXPECT_NEAR(x[0], 2.0, 1e-1);  
 }
 
 TEST(zolotareva_a_SLE_gradient_method_seq, test_correct_answer1) {
@@ -172,19 +171,6 @@ TEST(zolotareva_a_SLE_gradient_method_seq, test_correct_answer1) {
   std::vector<double> x;
   x.resize(n);
   std::vector<double> ref_x = {1, 1, -2};
-  std::cout << "Matrix A:" << std::endl;
-  for (int i = 0; i < n; ++i) {
-    for (int j = 0; j < n; ++j) {
-      std::cout << A[i * n + j] << " ";
-    }
-    std::cout << std::endl;
-  }
-
-  std::cout << "\nVector b:" << std::endl;
-  for (double value : b) {
-    std::cout << value << " ";
-  }
-  std::cout << std::endl;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t*>(A.data()));
