@@ -32,11 +32,7 @@ std::vector<double> drozhdinov_d_mult_matrix_fox_mpi::paddingMatrix(const std::v
   return padded;
 }
 
-MPI_Comm GCOMM;
-MPI_Comm CCOMM;
-MPI_Comm RCOMM;
-
-void createGridCommunicators(int gridSize, int procRank, int* gridCoords) {
+/*void createGridCommunicators(int gridSize, int procRank, int* gridCoords) {
   std::vector<int> dim_size(2, gridSize);
   std::vector<int> periodic(2, 0);
   std::vector<int> subdims(2);
@@ -48,6 +44,17 @@ void createGridCommunicators(int gridSize, int procRank, int* gridCoords) {
   subdims[0] = 1;
   subdims[1] = 0;
   MPI_Cart_sub(GCOMM, subdims.data(), &CCOMM);
+}*/
+
+void checkCommunicator(const MPI_Comm& comm, const std::string& name) {
+  int result;
+  MPI_Comm_compare(comm, MPI_COMM_NULL, &result);
+  if (result == MPI_IDENT || result == MPI_CONGRUENT) {
+    std::cerr << "Communicator " << name << " is valid.\n";
+  } else {
+    std::cerr << "Communicator " << name << " is NULL or invalid.\n";
+    MPI_Abort(MPI_COMM_WORLD, 1);
+  }
 }
 
 /*
@@ -120,8 +127,29 @@ std::vector<double> drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel::Paral
   std::vector<double> squareB;
 
   int grid_size = static_cast<int>(sqrt(world.size()));
+  if (grid_size * grid_size != world.size()) {
+    std::cout << "yes yes\n";
+    throw "Wrong number of processes";
+  }
+  MPI_Comm GCOMM;
+  MPI_Comm CCOMM;
+  MPI_Comm RCOMM;
   std::vector<int> grid_coords(2);
-  createGridCommunicators(grid_size, world.rank(), grid_coords.data());
+  std::vector<int> dim_size(2, grid_size);
+  std::vector<int> periodic(2, 0);
+  std::vector<int> subdims(2);
+  MPI_Cart_create(MPI_COMM_WORLD, 2, dim_size.data(), periodic.data(), 0, &GCOMM);
+  MPI_Cart_coords(GCOMM, world.rank(), 2, grid_coords.data());
+  subdims[0] = 0;
+  subdims[1] = 1;
+  MPI_Cart_sub(GCOMM, subdims.data(), &RCOMM);
+  subdims[0] = 1;
+  subdims[1] = 0;
+  MPI_Cart_sub(GCOMM, subdims.data(), &CCOMM);
+
+  // checkCommunicator(GCOMM, "GCOMM");
+  // checkCommunicator(RCOMM, "RCOMM");
+  // checkCommunicator(CCOMM, "CCOMM");
   boost::mpi::communicator GRID_COMM(GCOMM, boost::mpi::comm_take_ownership);
   boost::mpi::communicator ROW_COMM(RCOMM, boost::mpi::comm_take_ownership);
   boost::mpi::communicator COL_COMM(CCOMM, boost::mpi::comm_take_ownership);
@@ -150,7 +178,7 @@ std::vector<double> drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel::Paral
       }
     }
   }
-  if (world.rank() == 0) {
+  if (GRID_COMM.rank() == 0) {
     for (int p = 1; p < world.size(); p++) {
       int row = p / grid_size;
       int col = p % grid_size;
@@ -183,6 +211,7 @@ std::vector<double> drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel::Paral
     if (grid_coords[0] == grid_size - 1) nextPr = 0;
     int prevPr = grid_coords[0] - 1;
     if (grid_coords[0] == 0) prevPr = grid_size - 1;
+    std::cout << ROW_COMM.rank();
     MPI_Sendrecv_replace(block_b.data(), block_size * block_size, MPI_DOUBLE, prevPr, 0, nextPr, 0, COL_COMM, &stat);
     // sendrecv_replace(COL_COMM, block_b, prevPr, 0, nextPr, 0);  // should be good, but need check this
   }
