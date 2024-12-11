@@ -7,19 +7,19 @@
 #include "mpi/vavilov_v_bellman_ford/include/ops_mpi.hpp"
 
 std::vector<std::tuple<int, int, int>> generate_linear_graph(int num_vertices) {
-    std::vector<std::tuple<int, int, int>> edges;
-    for (int i = 0; i < num_vertices - 1; ++i) {
-        edges.emplace_back(i, i + 1, i + 1);
-    }
-    return edges;
+  std::vector<std::tuple<int, int, int>> edges;
+  for (int i = 0; i < num_vertices - 1; ++i) {
+    edges.emplace_back(i, i + 1, i + 1);
+  }
+  return edges;
 }
 
 std::vector<int> compute_expected_distances(int num_vertices) {
-    std::vector<int> distances(num_vertices, 0);
-    for (int i = 1; i < num_vertices; ++i) {
-        distances[i] = distances[i - 1] + i;
-    }
-    return distances;
+  std::vector<int> distances(num_vertices, 0);
+  for (int i = 1; i < num_vertices; ++i) {
+    distances[i] = distances[i - 1] + i;
+  }
+  return distances;
 }
 
 TEST(vavilov_v_bellman_ford_mpi, test_task_run) {
@@ -50,7 +50,7 @@ TEST(vavilov_v_bellman_ford_mpi, test_task_run) {
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
-  perfAttr->current_timer = [&] {return current_timer.elapsed();};
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
@@ -90,7 +90,7 @@ TEST(vavilov_v_bellman_ford_mpi, test_pipeline_run) {
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
-  perfAttr->current_timer = [&] {return current_timer.elapsed();};
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
