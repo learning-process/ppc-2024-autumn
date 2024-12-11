@@ -3,7 +3,7 @@
 bool kovalev_k_multidimensional_integrals_rectangle_method_seq::MultidimensionalIntegralsRectangleMethod::
     count_multidimensional_integrals_rectangle_method_seq() {
   std::stack<std::vector<double>> stack;
-  stack.push(std::vector<double>());
+  stack.emplace(std::vector<double>());
 
   while (!stack.empty()) {
     std::vector<double> point = stack.top();
@@ -18,7 +18,7 @@ bool kovalev_k_multidimensional_integrals_rectangle_method_seq::Multidimensional
 
     for (double x = limits[dim].first; x + h <= limits[dim].second; x += h) {
       point.push_back(x + h / 2);
-      stack.push(point);
+      stack.emplace(point);
       point.pop_back();
     }
   }

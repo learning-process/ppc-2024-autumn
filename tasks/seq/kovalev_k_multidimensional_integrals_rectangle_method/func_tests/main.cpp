@@ -1,10 +1,10 @@
 #include <gtest/gtest.h>
 
+#include <numbers>
+
 #include "seq/kovalev_k_multidimensional_integrals_rectangle_method/include/header.hpp"
 
 namespace kovalev_k_multidimensional_integrals_rectangle_method_seq {
-const double MY_PI = 3.14159265358979323846;
-
 double area(std::vector<double> &arguments) { return 1.0 + arguments.at(0) * 0.0; }
 
 double f1(std::vector<double> &arguments) { return arguments.at(0); }
@@ -51,8 +51,8 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, incorrect_output
 TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, minus_05pi_05pi_cos) {
   const size_t dim = 1;
   std::vector<std::pair<double, double>> lims(dim);
-  lims[0].first = -0.5 * kovalev_k_multidimensional_integrals_rectangle_method_seq::MY_PI;
-  lims[0].second = 0.5 * kovalev_k_multidimensional_integrals_rectangle_method_seq::MY_PI;
+  lims[0].first = -0.5 * std::numbers::pi;
+  lims[0].second = 0.5 * std::numbers::pi;
   double h = 0.0005;
   double eps = 1e-4;
   std::vector<double> out(1);
@@ -75,7 +75,7 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, Eulers_integral)
   const size_t dim = 1;
   std::vector<std::pair<double, double>> lims(dim);
   lims[0].first = 0;
-  lims[0].second = 0.5 * kovalev_k_multidimensional_integrals_rectangle_method_seq::MY_PI;
+  lims[0].second = 0.5 * std::numbers::pi;
   double h = 0.0005;
   double eps = 1e-4;
   std::vector<double> out(1);

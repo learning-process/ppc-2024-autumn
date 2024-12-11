@@ -26,9 +26,9 @@ class MultidimensionalIntegralsRectangleMethodPar : public ppc::core::Task {
  public:
   explicit MultidimensionalIntegralsRectangleMethodPar(std::shared_ptr<ppc::core::TaskData> taskData_,
                                                        std::function<double(std::vector<double>& args)> func_)
-      : Task(taskData_), func(func_) {}
+      : Task(std::move(taskData_)), func(std::move(func_)) {}
   bool count_multidimensional_integrals_rectangle_method_mpi();
-  double customRound(double value);
+  const double customRound(double value);
   bool pre_processing() override;
   bool validation() override;
   bool run() override;

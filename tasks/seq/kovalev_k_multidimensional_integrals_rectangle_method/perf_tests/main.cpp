@@ -1,23 +1,24 @@
 #include <gtest/gtest.h>
 
+#include <numbers>
 #include <cmath>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/kovalev_k_multidimensional_integrals_rectangle_method/include/header.hpp"
 
+namespace kovalev_k_multidimensional_integrals_rectangle_method_seq {
 double f1Euler(std::vector<double> &arguments) { return 2 * std::cos(arguments.at(0)) * std::sin(arguments.at(0)); }
 double f3advanced(std::vector<double> &arguments) {
   return std::sin(arguments.at(0)) * std::tan(arguments.at(1)) * std::log(arguments.at(2));
 }
-
-const double MY_PI = 3.14159265358979323846;
+}  // namespace kovalev_k_multidimensional_integrals_rectangle_method_seq
 
 TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, test_pipeline_run) {
   const size_t dim = 1;
   std::vector<std::pair<double, double>> lims(dim);
   lims[0].first = 0;
-  lims[0].second = 0.5 * MY_PI;
+  lims[0].second = 0.5 * std::numbers::pi;
   double h = 0.0005;
   double eps = 1e-4;
   std::vector<double> out(1);
@@ -28,8 +29,8 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, test_pipeline_ru
   taskSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskSeq->outputs_count.emplace_back(out.size());
   auto testTaskSequential = std::make_shared<
-      kovalev_k_multidimensional_integrals_rectangle_method_seq::MultidimensionalIntegralsRectangleMethod>(taskSeq,
-                                                                                                           f1Euler);
+      kovalev_k_multidimensional_integrals_rectangle_method_seq::MultidimensionalIntegralsRectangleMethod>(
+      taskSeq, kovalev_k_multidimensional_integrals_rectangle_method_seq::f1Euler);
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();
@@ -64,8 +65,8 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, test_task_run) {
   taskSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskSeq->outputs_count.emplace_back(out.size());
   auto testTaskSequential = std::make_shared<
-      kovalev_k_multidimensional_integrals_rectangle_method_seq::MultidimensionalIntegralsRectangleMethod>(taskSeq,
-                                                                                                           f3advanced);
+      kovalev_k_multidimensional_integrals_rectangle_method_seq::MultidimensionalIntegralsRectangleMethod>(
+      taskSeq, kovalev_k_multidimensional_integrals_rectangle_method_seq::f3advanced);
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();

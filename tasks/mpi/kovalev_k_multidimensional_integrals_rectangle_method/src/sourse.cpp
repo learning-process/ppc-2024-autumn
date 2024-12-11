@@ -1,6 +1,6 @@
 #include "mpi/kovalev_k_multidimensional_integrals_rectangle_method/include/header.hpp"
 
-double
+const double
 kovalev_k_multidimensional_integrals_rectangle_method_mpi::MultidimensionalIntegralsRectangleMethodPar::customRound(
     double value) {
   int tmp = static_cast<int>(1 / h);
@@ -17,7 +17,7 @@ kovalev_k_multidimensional_integrals_rectangle_method_mpi::MultidimensionalInteg
 bool kovalev_k_multidimensional_integrals_rectangle_method_mpi::MultidimensionalIntegralsRectangleMethodPar::
     count_multidimensional_integrals_rectangle_method_mpi() {
   std::stack<std::vector<double>> stack;
-  stack.push(std::vector<double>());
+  stack.emplace(std::vector<double>());
 
   while (!stack.empty()) {
     std::vector<double> point = stack.top();
@@ -32,7 +32,7 @@ bool kovalev_k_multidimensional_integrals_rectangle_method_mpi::Multidimensional
 
     for (double x = limits[dim].first; x + h <= limits[dim].second; x += h) {
       point.push_back(x + h / 2);
-      stack.push(point);
+      stack.emplace(point);
       point.pop_back();
     }
   }
@@ -84,15 +84,10 @@ bool kovalev_k_multidimensional_integrals_rectangle_method_mpi::Multidimensional
 
   limits[0].first = customRound(limits[0].first + delta * world.rank());
   limits[0].second = customRound(limits[0].second - delta * (world.size() - world.rank() - 1));
-  /*
-  std::cout << "after :\n";
-  std::cout << std::fixed << std::setprecision(8) << world.rank() << ' ' << limits[0].first << ' '
-            << limits[0].second << "\n";
-  fflush(stdout);*/
 
   count_multidimensional_integrals_rectangle_method_mpi();
 
-  boost::mpi::reduce(world, l_res, g_res, std::plus<double>(), 0);
+  boost::mpi::reduce(world, l_res, g_res, std::plus<>(), 0);
 
   return true;
 }
