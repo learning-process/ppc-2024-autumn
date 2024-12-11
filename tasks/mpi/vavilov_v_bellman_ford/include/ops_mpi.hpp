@@ -45,6 +45,10 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   struct Edge {
     int src, dest, weight;
+    template <class Archive>
+    void serialize(Archive& ar, unsigned version) {
+      ar & src & dest & weight;
+    }
   };
 
   std::vector<Edge> edges_;
