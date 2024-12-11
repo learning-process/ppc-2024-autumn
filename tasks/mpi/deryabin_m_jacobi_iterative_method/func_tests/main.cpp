@@ -16,7 +16,7 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_valid_matrix) {
   for (unsigned short i = 0; i < 10; i++) {
     input_matrix_[i * 11] = distribut(gen);
   }
-  std::vector<double> output_x_vector_ = std::vector<double>(10, 0);
+  std::vector<double> output_x_vector_(10, 0);
   std::vector<std::vector<double>> out_x_vec(1, output_x_vector_);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -72,7 +72,7 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_3X_diagonal_matrix) {
       input_matrix_[i * 11 + 1] = distrib(gen);
     }
   }
-  std::vector<double> output_x_vector_ = std::vector<double>(10, 0);
+  std::vector<double> output_x_vector_(10, 0);
   std::vector<std::vector<double>> out_x_vec(1, output_x_vector_);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -121,7 +121,7 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_1X_diagonal_matrix) {
   for (unsigned short i = 0; i < 10; i++) {
     input_matrix_[i * 11] = distribut(gen);
   }
-  std::vector<double> output_x_vector_ = std::vector<double>(10, 0);
+  std::vector<double> output_x_vector_(10, 0);
   std::vector<std::vector<double>> out_x_vec(1, output_x_vector_);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -170,7 +170,7 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_diagonal_elements_are_m
   for (unsigned short i = 0; i < 10; i++) {
     input_matrix_[i * 11] = 100 * distrib(gen);
   }
-  std::vector<double> output_x_vector_ = std::vector<double>(10, 0);
+  std::vector<double> output_x_vector_(10, 0);
   std::vector<std::vector<double>> out_x_vec(1, output_x_vector_);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -219,7 +219,7 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_invalid_matrix_zeros_on
   for (unsigned short i = 0; i < 10; i++) {
     input_matrix_[i * 11] = 0;
   }
-  std::vector<double> output_x_vector_ = std::vector<double>(10, 0);
+  std::vector<double> output_x_vector_(10, 0);
   std::vector<std::vector<double>> out_x_vec(1, output_x_vector_);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
