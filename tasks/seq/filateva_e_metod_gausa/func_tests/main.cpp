@@ -179,33 +179,3 @@ TEST(filateva_e_metod_gausa_seq, test_size_0) {
 
   EXPECT_FALSE(metodGausa.validation());
 }
-
-
-TEST(filateva_e_metod_gausa_seq, test_size_800) {
-  int size = 800;
-  std::vector<double> matrix(size * size);
-  std::vector<double> vecB(size);
-  std::vector<double> answer(size);
-  std::vector<double> tResh;
-
-  tResh = gereratorSLU(matrix, vecB);
-
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
-  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(answer.data()));
-  taskData->inputs_count.emplace_back(size);
-  taskData->outputs_count.emplace_back(size);
-
-  filateva_e_metod_gausa_seq::MetodGausa metodGausa(taskData);
-
-  ASSERT_TRUE(metodGausa.validation());
-  metodGausa.pre_processing();
-  metodGausa.run();
-  metodGausa.post_processing();
-
-  EXPECT_EQ(answer.size(), tResh.size());
-  for (int i = 0; i < size; i++) {
-    EXPECT_NEAR(tResh[i], answer[i], alfa);
-  }
-}

@@ -1,11 +1,10 @@
 // Filateva Elizaveta Metod Gausa
 #include "mpi/filateva_e_metod_gausa/include/ops_mpi.hpp"
 
-#include <limits>
 #include <algorithm>
-#include <vector>
-#include <string>
 #include <boost/serialization/vector.hpp>
+#include <limits>
+#include <vector>
 
 bool filateva_e_metod_gausa_mpi::MetodGausa::pre_processing() {
   internal_order_test();
@@ -97,7 +96,7 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::run() {
     }
   }
   
-  if (world.size() == 1){
+  if (world.size() == 1) {
     for (int r = 0; r < size; r++) {
       for (int j = r + 1; j < size; j++) {
         double factor = temp_matrix[j * (size + 1) + r] / temp_matrix[r * (size + 1) + r];
@@ -112,7 +111,7 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::run() {
         resh[i] -= temp_matrix[i * (size + 1) + j] * resh[j];
       }
       resh[i] /= temp_matrix[i * (size + 1) + i];
-    } 
+    }
     return true;
   }
 
@@ -132,13 +131,13 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::run() {
     distribution.assign(world.size(), delta * size_n);
     distribution[0] = ost * size_n;
     int n = -2;
-    std::generate(displacement.begin(), displacement.end(), [&]() { n++; return (n * delta + ost) * size_n;});
+    std::generate(displacement.begin(), displacement.end(), [&]() {return (++n * delta + ost) * size_n;});
     displacement[0] = 0;
 
-    size_m = world.rank()?delta:ost;
+    size_m = world.rank() != 0 ? delta : ost;
 
-    boost::mpi::scatterv(world, temp_matrix.data() + i * size_n, distribution, displacement,
-                          local_matrix.data(), size_m * size_n, 0);
+    boost::mpi::scatterv(world, temp_matrix.data() + i * size_n, distribution, displacement, local_matrix.data(),
+                         size_m * size_n, 0);
 
     if (world.rank() == 0) {
       std::copy(temp_matrix.begin() + (i - 1) * size_n, temp_matrix.begin() + i * size_n, t_strock.begin());
@@ -153,7 +152,8 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::run() {
       }
     }
 
-    boost::mpi::gatherv(world, local_matrix.data(), size_m * size_n, temp_matrix.data() + i * size_n, distribution, displacement, 0);
+    boost::mpi::gatherv(world, local_matrix.data(), size_m * size_n, temp_matrix.data() + i * size_n, distribution,
+                        displacement, 0);
   }
 
   if (world.rank() == 0) {
@@ -163,7 +163,7 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::run() {
         resh[i] -= temp_matrix[i * (size + 1) + j] * resh[j];
       }
       resh[i] /= temp_matrix[i * (size + 1) + i];
-    } 
+    }
   }
 
   return true;
@@ -172,7 +172,7 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::run() {
 bool filateva_e_metod_gausa_mpi::MetodGausa::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    double* output_data = reinterpret_cast<double*>(taskData->outputs[0]);
+    auto output_data = reinterpret_cast<double*>(taskData->outputs[0]);
     std::copy(resh.begin(), resh.end(), output_data);
   }
   return true;

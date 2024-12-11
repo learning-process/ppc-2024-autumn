@@ -99,19 +99,19 @@ bool filateva_e_metod_gausa_seq::MetodGausa::run() {
   }
 
   for (int i = size - 1; i >= 0; i--) {
-     resh[i] = temp_matrix[(i + 1) * (size + 1) - 1];
+    resh[i] = temp_matrix[(i + 1) * (size + 1) - 1];
     for (int j = i + 1; j < size; j++) {
       resh[i] -= temp_matrix[i * (size + 1) + j] * resh[j];
     }
     resh[i] /= temp_matrix[i * (size + 1) + i];
-  } 
+  }
 
   return true;
 }
 
 bool filateva_e_metod_gausa_seq::MetodGausa::post_processing() {
   internal_order_test();
-  double* output_data = reinterpret_cast<double*>(taskData->outputs[0]);
+  auto output_data = reinterpret_cast<double*>(taskData->outputs[0]);
   std::copy(resh.begin(), resh.end(), output_data);
   return true;
 }
