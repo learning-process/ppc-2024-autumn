@@ -95,7 +95,7 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::run() {
       temp_matrix[i * (size + 1) + size] = b_vector[i];
     }
   }
-  
+
   if (world.size() == 1) {
     for (int r = 0; r < size; r++) {
       for (int j = r + 1; j < size; j++) {
@@ -131,7 +131,7 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::run() {
     distribution.assign(world.size(), delta * size_n);
     distribution[0] = ost * size_n;
     int n = -2;
-    std::generate(displacement.begin(), displacement.end(), [&]() {return (++n * delta + ost) * size_n;});
+    std::generate(displacement.begin(), displacement.end(), [&]() { return (++n * delta + ost) * size_n; });
     displacement[0] = 0;
 
     size_m = world.rank() != 0 ? delta : ost;
