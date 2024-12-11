@@ -52,14 +52,11 @@ bool kovalchuk_a_horizontal_tape_scheme::TestMPITaskSequential::post_processing(
 
 bool kovalchuk_a_horizontal_tape_scheme::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  int rank = world.rank();
-  int size = world.size();
-
-  int rows = taskData->inputs_count[0];
-  int columns = taskData->inputs_count[1];
-
   // Init matrix and vector to root
-  if (rank == 0) {
+  if (world.rank() == 0) {
+    int rows = taskData->inputs_count[0];
+    int columns = taskData->inputs_count[1];
+
     if (rows > 0 && columns > 0) {
       matrix_ = std::vector<std::vector<int>>(rows, std::vector<int>(columns));
       for (int i = 0; i < rows; i++) {
@@ -75,6 +72,33 @@ bool kovalchuk_a_horizontal_tape_scheme::TestMPITaskParallel::pre_processing() {
     }
   }
 
+  return true;
+}
+
+bool kovalchuk_a_horizontal_tape_scheme::TestMPITaskParallel::validation() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    // Check count elements of output
+    return taskData->outputs_count[0] == taskData->inputs_count[0];
+  }
+  return true;
+}
+
+bool kovalchuk_a_horizontal_tape_scheme::TestMPITaskParallel::run() {
+  internal_order_test();
+
+  int rank = world.rank();
+  int size = world.size();
+
+  int rows;
+  int columns;
+  if (world.rank() == 0) {
+    rows = taskData->inputs_count[0];
+    columns = taskData->inputs_count[1];
+  }
+
+  boost::mpi::broadcast(world, columns, 0);
+  boost::mpi::broadcast(world, rows, 0);
   boost::mpi::broadcast(world, vector_, 0);
 
   int local_rows = rows / size;
@@ -103,8 +127,7 @@ bool kovalchuk_a_horizontal_tape_scheme::TestMPITaskParallel::pre_processing() {
   std::vector<int> local_matrix(sendcounts[rank]);
 
   // Scatter the matrix data
-  boost::mpi::scatterv(world, rank == 0 ? flattened_matrix.data() : nullptr, sendcounts, displs, local_matrix.data(),
-                       sendcounts[rank], 0);
+  boost::mpi::scatterv(world, flattened_matrix.data(), sendcounts, displs, local_matrix.data(), sendcounts[rank], 0);
 
   // Reshape local matrix
   int actual_local_rows = local_rows + (rank < extra_rows ? 1 : 0);
@@ -117,20 +140,6 @@ bool kovalchuk_a_horizontal_tape_scheme::TestMPITaskParallel::pre_processing() {
   local_result_ = std::vector<int>(matrix_.size(), 0);
   result_ = std::vector<int>(rows, 0);
 
-  return true;
-}
-
-bool kovalchuk_a_horizontal_tape_scheme::TestMPITaskParallel::validation() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    // Check count elements of output
-    return taskData->outputs_count[0] == taskData->inputs_count[0];
-  }
-  return true;
-}
-
-bool kovalchuk_a_horizontal_tape_scheme::TestMPITaskParallel::run() {
-  internal_order_test();
   if (!matrix_.empty() && !vector_.empty()) {
     for (unsigned int i = 0; i < matrix_.size(); i++) {
       local_result_[i] = std::inner_product(matrix_[i].begin(), matrix_[i].end(), vector_.begin(), 0);
@@ -138,20 +147,17 @@ bool kovalchuk_a_horizontal_tape_scheme::TestMPITaskParallel::run() {
   }
 
   // Gather results
-  int rows = taskData->inputs_count[0];
-  int local_rows = local_result_.size();
-  int extra_rows = rows % world.size();
   std::vector<int> recvcounts(world.size(), rows / world.size());
   for (int i = 0; i < extra_rows; ++i) {
     recvcounts[i] += 1;
   }
 
-  std::vector<int> displs(world.size(), 0);
+  std::vector<int> recvdispls(world.size(), 0);
   for (int i = 1; i < world.size(); ++i) {
-    displs[i] = displs[i - 1] + recvcounts[i - 1];
+    recvdispls[i] = recvdispls[i - 1] + recvcounts[i - 1];
   }
 
-  boost::mpi::gatherv(world, local_result_.data(), local_rows, result_.data(), recvcounts, displs, 0);
+  boost::mpi::gatherv(world, local_result_.data(), local_result_.size(), result_.data(), recvcounts, recvdispls, 0);
   return true;
 }
 
