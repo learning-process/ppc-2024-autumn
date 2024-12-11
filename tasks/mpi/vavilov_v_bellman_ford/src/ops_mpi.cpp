@@ -9,7 +9,7 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential::pre_processing() {
   int* edges_data = reinterpret_cast<int*>(taskData->inputs[0]);
 
   for (int i = 0; i < edges_count_; ++i) {
-    edges_.push_back({ edges_data[i * 3], edges_data[i * 3 + 1], edges_data[i * 3 + 2] });
+    edges_.push_back({edges_data[i * 3], edges_data[i * 3 + 1], edges_data[i * 3 + 2]});
   }
 
   distances_.resize(vertices_, INT_MAX);
@@ -18,19 +18,19 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential::pre_processing() {
   return true;
 }
 
-bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential:validation() {
+bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
 
   return (!taskData->inputs.empty());
 }
 
-bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential:run() {
+bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential::run() {
   internal_order_test();
 
   for (int i = 1; i < vertices_; ++i) {
     for (const auto& edge : edges_) {
       if (distances_[edge.src] != INT_MAX && distances_[edge.src] + edge.weight < distances_[edge.dest]) {
-          distances_[edge.dest] = distances_[edge.src] + edge.weight;
+        distances_[edge.dest] = distances_[edge.src] + edge.weight;
       }
     }
   }
@@ -44,7 +44,7 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential:run() {
   return true;
 }
 
-bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential:post_processing() {
+bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
 
   std::copy(distances_.begin(), distances_.end(), reinterpret_cast<int*>(taskData->outputs[0]));
@@ -61,7 +61,7 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
 
   if (world.rank() == 0) {
-      return (!taskData->inputs.empty());
+    return (!taskData->inputs.empty());
   }
   return true;
 }
@@ -77,7 +77,7 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::run() {
     edges_.resize(edges_count);
     int* edges_data = reinterpret_cast<int*>(taskData->inputs[0]);
     for (int i = 0; i < edges_count; ++i) {
-      edges_[i] = { edges_data[i * 3], edges_data[i * 3 + 1], edges_data[i * 3 + 2] };
+      edges_[i] = {edges_data[i * 3], edges_data[i * 3 + 1], edges_data[i * 3 + 2]};
     }
   }
 
@@ -95,9 +95,9 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::run() {
 
     for (int j = world.rank(); j < edges_count; j += world.size()) {
       const auto& edge = edges_[j];
-        if (distances_[edge.src] != INT_MAX && distances_[edge.src] + edge.weight < local_distances[edge.dest]) {
-          local_distances[edge.dest] = distances_[edge.src] + edge.weight;
-        }
+      if (distances_[edge.src] != INT_MAX && distances_[edge.src] + edge.weight < local_distances[edge.dest]) {
+        local_distances[edge.dest] = distances_[edge.src] + edge.weight;
+      }
     }
 
     boost::mpi::all_reduce(world, local_distances.data(), distances_.data(), vertices, boost::mpi::minimum<int>());
@@ -108,7 +108,7 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::run() {
     const auto& edge = edges_[j];
     if (distances_[edge.src] != INT_MAX && distances_[edge.src] + edge.weight < distances_[edge.dest]) {
       has_negative_cycle = true;
-        break;
+      break;
     }
   }
 
