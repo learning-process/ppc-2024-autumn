@@ -172,7 +172,6 @@ TEST(frolova_e_matrix_multiplication_seq, twoRectangularMultiplicationMatrices) 
 TEST(frolova_e_matrix_multiplication_seq, multiplicationOfTwoVectors) {
   std::vector<int> values_1 = {1, 3};
   std::vector<int> values_2 = {3, 1};
-  
   std::vector<int> matrixA_ = {1, 1, 1};
   std::vector<int> matrixB_ = {1, 1, 1};
   std::vector<int> resMatrix = {3};
