@@ -1,7 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <random>
-
 #include "seq/deryabin_m_jacobi_iterative_method/include/ops_seq.hpp"
 
 TEST(deryabin_m_jacobi_iterative_method_seq, test_simple_matrix) {
@@ -140,16 +138,13 @@ TEST(deryabin_m_jacobi_iterative_method_seq, test_invalid_matrix_non_strict_diag
 
 TEST(deryabin_m_jacobi_iterative_method_seq, test_matrix_more_10_dimensions) {
   // Create data
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_real_distribution<> distrib(1, 10);
   std::vector<double> input_matrix_(225, 0);
-  std::vector<double> input_right_vector_(15, distrib(gen));
+  std::vector<double> input_right_vector_(15, 1);
   for (unsigned short i = 0; i < 15; i++) {
     input_matrix_[i * 16] = 1;
   }
   std::vector<double> output_x_vector_(15, 0);
-  std::vector<double> true_solution = input_right_vector_;
+  std::vector<double> true_solution(15, 1);
 
   std::vector<std::vector<double>> in_matrix(1, input_matrix_);
   std::vector<std::vector<double>> in_right_part(1, input_right_vector_);
