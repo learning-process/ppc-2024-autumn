@@ -66,48 +66,48 @@ bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::run() {
     return true;
   }
 
-  int s = static_cast<int>(taskData->inputs_count[2]);
-  int c = world.size();
+  int data_size = static_cast<int>(taskData->inputs_count[2]);
+  int path_size = world.size();
 
-  int* d = new int[s];
-  int* p = new int[c];
+  int* data_arr = new int[data_size];
+  int* path_arr = new int[path_size];
 
   for (size_t i = 0; i < static_cast<size_t>(world.size()); ++i) {
-    p[i] = -1;
+    path_arr[i] = -1;
   }
 
   if (world.rank() == start_proc) {
     for (size_t i = 0; i < data.size(); ++i) {
-      d[i] = data[i];
+      data_arr[i] = data[i];
     }
-    p[0] = world.rank();
-    boost::mpi::request send_req = world.isend(world.rank() + 1, 0, d, s);
+    path_arr[0] = world.rank();
+    boost::mpi::request send_req = world.isend(world.rank() + 1, 0, data_arr, data_size);
     send_req.wait();
-    boost::mpi::request send_req1 = world.isend(world.rank() + 1, 1, p, c);
+    boost::mpi::request send_req1 = world.isend(world.rank() + 1, 1, path_arr, path_size);
     send_req1.wait();
   } else {
-    boost::mpi::request recv_req = world.irecv(world.rank() - 1, 0, d, s);
+    boost::mpi::request recv_req = world.irecv(world.rank() - 1, 0, data_arr, data_size);
     recv_req.wait();
-    boost::mpi::request recv_req1 = world.irecv(world.rank() - 1, 1, p, c);
+    boost::mpi::request recv_req1 = world.irecv(world.rank() - 1, 1, path_arr, path_size);
     recv_req1.wait();
-    p[world.rank()] = world.rank();
+    path_arr[world.rank()] = world.rank();
     if (world.rank() == end_proc) {
-      for (size_t i = 0; i < static_cast<size_t>(s); ++i) {
-        data[i] = d[i];
+      for (size_t i = 0; i < static_cast<size_t>(data_size); ++i) {
+        data[i] = data_arr[i];
       }
-      for (size_t i = 0; i < static_cast<size_t>(c); ++i) {
-        path[i] = p[i];
+      for (size_t i = 0; i < static_cast<size_t>(path_size); ++i) {
+        path[i] = path_arr[i];
       }
     }
     if (world.rank() < end_proc) {
-      boost::mpi::request send_req = world.isend(world.rank() + 1, 0, d, s);
+      boost::mpi::request send_req = world.isend(world.rank() + 1, 0, data_arr, data_size);
       send_req.wait();
-      boost::mpi::request send_req1 = world.isend(world.rank() + 1, 1, p, c);
+      boost::mpi::request send_req1 = world.isend(world.rank() + 1, 1, path_arr, path_size);
       send_req1.wait();
     }
   }
-  delete[] d;
-  delete[] p;
+  delete[] data_arr;
+  delete[] path_arr;
   return true;
 }
 bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::post_processing() {

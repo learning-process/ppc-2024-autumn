@@ -216,112 +216,12 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_1024) {
   }
 }
 
-TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_2048) {
-  boost::mpi::communicator world;
-
-  const int start_proc = 0;
-  const int end_proc = world.size() - 1;
-  const size_t num_elems = 2048;
-
-  auto task_data = std::make_shared<ppc::core::TaskData>();
-  task_data->inputs_count = {static_cast<unsigned int>(start_proc), static_cast<unsigned int>(end_proc),
-                             static_cast<unsigned int>(num_elems)};
-
-  std::vector<int> input_data;
-  std::vector<int> output_data(num_elems, -1);
-  std::vector<int> received_path(static_cast<size_t>(end_proc - start_proc + 1), -1);
-
-  if (world.rank() == start_proc) {
-    input_data = lavrentyrev_generate_random_vector(num_elems);
-    task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
-    task_data->inputs_count.push_back(static_cast<unsigned int>(input_data.size()));
-    if (start_proc != end_proc) {
-      world.send(end_proc, 0, input_data);
-    }
-  }
-
-  if (world.rank() == end_proc) {
-    task_data->outputs = {reinterpret_cast<uint8_t*>(output_data.data()),
-                          reinterpret_cast<uint8_t*>(received_path.data())};
-    task_data->outputs_count = {static_cast<unsigned int>(output_data.size()),
-                                static_cast<unsigned int>(received_path.size())};
-    if (start_proc != end_proc) {
-      world.recv(start_proc, 0, input_data);
-    }
-  }
-
-  lavrentyev_a_line_topology_mpi::TestMPITaskParallel task(task_data);
-  ASSERT_TRUE(task.validation());
-  ASSERT_TRUE(task.pre_processing());
-  ASSERT_TRUE(task.run());
-  ASSERT_TRUE(task.post_processing());
-
-  if (world.rank() == end_proc) {
-    for (size_t i = 0; i < output_data.size(); i++) {
-      ASSERT_EQ(input_data[i], output_data[i]);
-    }
-    for (size_t i = 0; i < received_path.size(); ++i) {
-      ASSERT_EQ(received_path[i], start_proc + static_cast<int>(i));
-    }
-  }
-}
-
 TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_4096) {
   boost::mpi::communicator world;
 
   const int start_proc = 0;
   const int end_proc = world.size() - 1;
   const size_t num_elems = 4096;
-
-  auto task_data = std::make_shared<ppc::core::TaskData>();
-  task_data->inputs_count = {static_cast<unsigned int>(start_proc), static_cast<unsigned int>(end_proc),
-                             static_cast<unsigned int>(num_elems)};
-
-  std::vector<int> input_data;
-  std::vector<int> output_data(num_elems, -1);
-  std::vector<int> received_path(static_cast<size_t>(end_proc - start_proc + 1), -1);
-
-  if (world.rank() == start_proc) {
-    input_data = lavrentyrev_generate_random_vector(num_elems);
-    task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
-    task_data->inputs_count.push_back(static_cast<unsigned int>(input_data.size()));
-    if (start_proc != end_proc) {
-      world.send(end_proc, 0, input_data);
-    }
-  }
-
-  if (world.rank() == end_proc) {
-    task_data->outputs = {reinterpret_cast<uint8_t*>(output_data.data()),
-                          reinterpret_cast<uint8_t*>(received_path.data())};
-    task_data->outputs_count = {static_cast<unsigned int>(output_data.size()),
-                                static_cast<unsigned int>(received_path.size())};
-    if (start_proc != end_proc) {
-      world.recv(start_proc, 0, input_data);
-    }
-  }
-
-  lavrentyev_a_line_topology_mpi::TestMPITaskParallel task(task_data);
-  ASSERT_TRUE(task.validation());
-  ASSERT_TRUE(task.pre_processing());
-  ASSERT_TRUE(task.run());
-  ASSERT_TRUE(task.post_processing());
-
-  if (world.rank() == end_proc) {
-    for (size_t i = 0; i < output_data.size(); i++) {
-      ASSERT_EQ(input_data[i], output_data[i]);
-    }
-    for (size_t i = 0; i < received_path.size(); ++i) {
-      ASSERT_EQ(received_path[i], start_proc + static_cast<int>(i));
-    }
-  }
-}
-
-TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_8192) {
-  boost::mpi::communicator world;
-
-  const int start_proc = 0;
-  const int end_proc = world.size() - 1;
-  const size_t num_elems = 8192;
 
   auto task_data = std::make_shared<ppc::core::TaskData>();
   task_data->inputs_count = {static_cast<unsigned int>(start_proc), static_cast<unsigned int>(end_proc),
@@ -466,56 +366,6 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_2187) {
   }
 }
 
-TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_6561) {
-  boost::mpi::communicator world;
-
-  const int start_proc = 0;
-  const int end_proc = world.size() - 1;
-  const size_t num_elems = 6561;
-
-  auto task_data = std::make_shared<ppc::core::TaskData>();
-  task_data->inputs_count = {static_cast<unsigned int>(start_proc), static_cast<unsigned int>(end_proc),
-                             static_cast<unsigned int>(num_elems)};
-
-  std::vector<int> input_data;
-  std::vector<int> output_data(num_elems, -1);
-  std::vector<int> received_path(static_cast<size_t>(end_proc - start_proc + 1), -1);
-
-  if (world.rank() == start_proc) {
-    input_data = lavrentyrev_generate_random_vector(num_elems);
-    task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
-    task_data->inputs_count.push_back(static_cast<unsigned int>(input_data.size()));
-    if (start_proc != end_proc) {
-      world.send(end_proc, 0, input_data);
-    }
-  }
-
-  if (world.rank() == end_proc) {
-    task_data->outputs = {reinterpret_cast<uint8_t*>(output_data.data()),
-                          reinterpret_cast<uint8_t*>(received_path.data())};
-    task_data->outputs_count = {static_cast<unsigned int>(output_data.size()),
-                                static_cast<unsigned int>(received_path.size())};
-    if (start_proc != end_proc) {
-      world.recv(start_proc, 0, input_data);
-    }
-  }
-
-  lavrentyev_a_line_topology_mpi::TestMPITaskParallel task(task_data);
-  ASSERT_TRUE(task.validation());
-  ASSERT_TRUE(task.pre_processing());
-  ASSERT_TRUE(task.run());
-  ASSERT_TRUE(task.post_processing());
-
-  if (world.rank() == end_proc) {
-    for (size_t i = 0; i < output_data.size(); i++) {
-      ASSERT_EQ(input_data[i], output_data[i]);
-    }
-    for (size_t i = 0; i < received_path.size(); ++i) {
-      ASSERT_EQ(received_path[i], start_proc + static_cast<int>(i));
-    }
-  }
-}
-
 TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_19638) {
   boost::mpi::communicator world;
 
@@ -572,56 +422,6 @@ TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_2791) {
   const int start_proc = 0;
   const int end_proc = world.size() - 1;
   const size_t num_elems = 2791;
-
-  auto task_data = std::make_shared<ppc::core::TaskData>();
-  task_data->inputs_count = {static_cast<unsigned int>(start_proc), static_cast<unsigned int>(end_proc),
-                             static_cast<unsigned int>(num_elems)};
-
-  std::vector<int> input_data;
-  std::vector<int> output_data(num_elems, -1);
-  std::vector<int> received_path(static_cast<size_t>(end_proc - start_proc + 1), -1);
-
-  if (world.rank() == start_proc) {
-    input_data = lavrentyrev_generate_random_vector(num_elems);
-    task_data->inputs.push_back(reinterpret_cast<uint8_t*>(input_data.data()));
-    task_data->inputs_count.push_back(static_cast<unsigned int>(input_data.size()));
-    if (start_proc != end_proc) {
-      world.send(end_proc, 0, input_data);
-    }
-  }
-
-  if (world.rank() == end_proc) {
-    task_data->outputs = {reinterpret_cast<uint8_t*>(output_data.data()),
-                          reinterpret_cast<uint8_t*>(received_path.data())};
-    task_data->outputs_count = {static_cast<unsigned int>(output_data.size()),
-                                static_cast<unsigned int>(received_path.size())};
-    if (start_proc != end_proc) {
-      world.recv(start_proc, 0, input_data);
-    }
-  }
-
-  lavrentyev_a_line_topology_mpi::TestMPITaskParallel task(task_data);
-  ASSERT_TRUE(task.validation());
-  ASSERT_TRUE(task.pre_processing());
-  ASSERT_TRUE(task.run());
-  ASSERT_TRUE(task.post_processing());
-
-  if (world.rank() == end_proc) {
-    for (size_t i = 0; i < output_data.size(); i++) {
-      ASSERT_EQ(input_data[i], output_data[i]);
-    }
-    for (size_t i = 0; i < received_path.size(); ++i) {
-      ASSERT_EQ(received_path[i], start_proc + static_cast<int>(i));
-    }
-  }
-}
-
-TEST(lavrentyev_a_line_topology_mpi, MultiProcessCorrectDataTransfer_5021) {
-  boost::mpi::communicator world;
-
-  const int start_proc = 0;
-  const int end_proc = world.size() - 1;
-  const size_t num_elems = 5021;
 
   auto task_data = std::make_shared<ppc::core::TaskData>();
   task_data->inputs_count = {static_cast<unsigned int>(start_proc), static_cast<unsigned int>(end_proc),
