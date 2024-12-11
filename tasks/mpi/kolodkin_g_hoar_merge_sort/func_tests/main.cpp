@@ -16,18 +16,17 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_one_elems) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
+  auto global_ptr = std::make_shared<std::vector<int>>(global_out);
 
   if (world.rank() == 0) {
     vector = {50};
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
-    auto global_ptr = std::make_shared<std::vector<int>>(global_out);
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
   } else {
     vector.resize(1, 0);
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
-    auto global_ptr = std::make_shared<std::vector<int>>(global_out);
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
   }
 
@@ -70,18 +69,17 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_two_elems) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
+  auto global_ptr = std::make_shared<std::vector<int>>(global_out);
 
   if (world.rank() == 0) {
     vector = {50, 14};
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
-    auto global_ptr = std::make_shared<std::vector<int>>(global_out);
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
   } else {
     vector.resize(2, 0);
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
-    auto global_ptr = std::make_shared<std::vector<int>>(global_out);
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
   }
 
@@ -126,18 +124,17 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_three_elems) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
+  auto global_ptr = std::make_shared<std::vector<int>>(global_out);
 
   if (world.rank() == 0) {
     vector = {50, 14, 5};
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
-    auto global_ptr = std::make_shared<std::vector<int>>(global_out);
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
   } else {
     vector.resize(3, 0);
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
-    auto global_ptr = std::make_shared<std::vector<int>>(global_out);
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
   }
 
@@ -183,18 +180,17 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_negative_elems) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
+  auto global_ptr = std::make_shared<std::vector<int>>(global_out);
 
   if (world.rank() == 0) {
     vector = {-50, -147, -5};
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
-    auto global_ptr = std::make_shared<std::vector<int>>(global_out);
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
   } else {
     vector.resize(3, 0);
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
-    auto global_ptr = std::make_shared<std::vector<int>>(global_out);
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
   }
 
@@ -240,6 +236,7 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_big_vector) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
+  auto global_ptr = std::make_shared<std::vector<int>>(global_out);
 
   if (world.rank() == 0) {
     for (unsigned i = 0; i < 1000; i++) {
@@ -247,13 +244,11 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_big_vector) {
     }
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
-    auto global_ptr = std::make_shared<std::vector<int>>(global_out);
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
   } else {
     vector.resize(1000, 0);
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
-    auto global_ptr = std::make_shared<std::vector<int>>(global_out);
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
   }
 
