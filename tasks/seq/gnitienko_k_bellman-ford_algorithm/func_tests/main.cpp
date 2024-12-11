@@ -56,7 +56,7 @@ TEST(gnitienko_k_bellman_ford_algorithm, test_1st_graph) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(res, expected_res);
+  ASSERT_EQ(expected_res, res);
 }
 
 TEST(gnitienko_k_bellman_ford_algorithm, test_negative_cycle) {
@@ -123,7 +123,7 @@ TEST(gnitienko_k_bellman_ford_algorithm, test_graph_2) {
   testTaskSequential.pre_processing();
   ASSERT_TRUE(testTaskSequential.run());
   testTaskSequential.post_processing();
-  ASSERT_EQ(res, expected_res);
+  ASSERT_EQ(expected_res, res);
 }
 
 TEST(gnitienko_k_bellman_ford_algorithm, test_graph_10_12) {
@@ -151,7 +151,7 @@ TEST(gnitienko_k_bellman_ford_algorithm, test_graph_10_12) {
   testTaskSequential.pre_processing();
   ASSERT_TRUE(testTaskSequential.run());
   testTaskSequential.post_processing();
-  ASSERT_EQ(res, expected_res);
+  ASSERT_EQ(expected_res, res);
 }
 
 TEST(gnitienko_k_bellman_ford_algorithm, test_random_graph) {
@@ -196,5 +196,5 @@ TEST(gnitienko_k_bellman_ford_algorithm, test_random_graph) {
   testTaskSequential.pre_processing();
   ASSERT_TRUE(testTaskSequential.run());
   testTaskSequential.post_processing();
-  ASSERT_EQ(res, expected_res);
+  ASSERT_EQ(expected_res, res);
 }
