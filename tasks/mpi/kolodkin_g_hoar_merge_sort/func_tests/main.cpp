@@ -21,12 +21,14 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_one_elems) {
     vector = {50};
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
-    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));
+    auto global_ptr = std::make_shared<std::vector<int>>(global_out);
+    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
   } else {
     vector.resize(1, 0);
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
-    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));
+    auto global_ptr = std::make_shared<std::vector<int>>(global_out);
+    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
   }
 
   kolodkin_g_hoar_merge_sort_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
@@ -42,7 +44,8 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_one_elems) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataSeq->inputs_count.emplace_back(vector.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(reference_out)));
+    auto reference_ptr = std::make_shared<std::vector<int>>(reference_out);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_ptr.get()));
 
     kolodkin_g_hoar_merge_sort_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
 
@@ -72,12 +75,14 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_two_elems) {
     vector = {50, 14};
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
-    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));
+    auto global_ptr = std::make_shared<std::vector<int>>(global_out);
+    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
   } else {
     vector.resize(2, 0);
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
-    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));
+    auto global_ptr = std::make_shared<std::vector<int>>(global_out);
+    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
   }
 
   kolodkin_g_hoar_merge_sort_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
@@ -93,7 +98,8 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_two_elems) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataSeq->inputs_count.emplace_back(vector.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(reference_out)));
+    auto reference_ptr = std::make_shared<std::vector<int>>(reference_out);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_ptr.get()));
 
     kolodkin_g_hoar_merge_sort_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
 
@@ -125,12 +131,14 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_three_elems) {
     vector = {50, 14, 5};
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
-    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));
+    auto global_ptr = std::make_shared<std::vector<int>>(global_out);
+    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
   } else {
     vector.resize(3, 0);
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
-    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));
+    auto global_ptr = std::make_shared<std::vector<int>>(global_out);
+    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
   }
 
   kolodkin_g_hoar_merge_sort_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
@@ -146,7 +154,8 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_three_elems) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataSeq->inputs_count.emplace_back(vector.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(reference_out)));
+    auto reference_ptr = std::make_shared<std::vector<int>>(reference_out);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_ptr.get()));
 
     kolodkin_g_hoar_merge_sort_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
 
@@ -179,12 +188,14 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_negative_elems) {
     vector = {-50, -147, -5};
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
-    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));
+    auto global_ptr = std::make_shared<std::vector<int>>(global_out);
+    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
   } else {
     vector.resize(3, 0);
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
-    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));
+    auto global_ptr = std::make_shared<std::vector<int>>(global_out);
+    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
   }
 
   kolodkin_g_hoar_merge_sort_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
@@ -200,7 +211,8 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_negative_elems) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataSeq->inputs_count.emplace_back(vector.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(reference_out)));
+    auto reference_ptr = std::make_shared<std::vector<int>>(reference_out);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_ptr.get()));
 
     kolodkin_g_hoar_merge_sort_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
 
@@ -235,12 +247,14 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_big_vector) {
     }
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
-    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));
+    auto global_ptr = std::make_shared<std::vector<int>>(global_out);
+    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
   } else {
     vector.resize(1000, 0);
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
-    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(global_out)));
+    auto global_ptr = std::make_shared<std::vector<int>>(global_out);
+    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
   }
 
   kolodkin_g_hoar_merge_sort_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
@@ -256,7 +270,8 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_big_vector) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataSeq->inputs_count.emplace_back(vector.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(new std::vector<int>(reference_out)));
+    auto reference_ptr = std::make_shared<std::vector<int>>(reference_out);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_ptr.get()));
 
     kolodkin_g_hoar_merge_sort_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
 
