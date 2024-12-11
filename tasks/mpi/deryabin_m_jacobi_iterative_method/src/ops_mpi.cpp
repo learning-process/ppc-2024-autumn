@@ -104,8 +104,10 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::val
     number_of_local_matrix_rows = n / world.size();
     ostatochnoe_chislo_strock = n % world.size();
   }
-  boost::mpi::broadcast(world, number_of_local_matrix_rows, 0);
-  boost::mpi::broadcast(world, n, 0);
+  if (world.size() != 1) {
+    boost::mpi::broadcast(world, number_of_local_matrix_rows, 0);
+    boost::mpi::broadcast(world, n, 0);
+  }
   output_x_vector_ = std::vector<double>(n);
   local_input_matrix_part_ = std::vector<double>(number_of_local_matrix_rows * n);
   local_input_right_vector_part_ = std::vector<double>(number_of_local_matrix_rows);
@@ -195,10 +197,12 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::run
       }
     }
   }
-  boost::mpi::broadcast(world, number_of_local_matrix_rows, 0);
+  if (world.size() != 1) {
+    boost::mpi::broadcast(world, number_of_local_matrix_rows, 0);
+    boost::mpi::broadcast(world, displacements.data(), displacements.size(), 0);
+    boost::mpi::broadcast(world, n, 0);
+  }
   std::vector<int> sendcounts(world.size(), number_of_local_matrix_rows);
-  boost::mpi::broadcast(world, displacements.data(), displacements.size(), 0);
-  boost::mpi::broadcast(world, n, 0);
   if (world.rank() == 0) {
     sendcounts[world.rank()] = number_of_local_matrix_rows + ostatochnoe_chislo_strock;
     displacements[world.rank()] = n - number_of_local_matrix_rows - ostatochnoe_chislo_strock;
@@ -250,9 +254,11 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::run
       }
       i++;
     }
-    boost::mpi::gatherv(world, local_output_x_vector_part_.data(), (int)(local_output_x_vector_part_.size()),
+    if (world.size() != 1) {
+      boost::mpi::gatherv(world, local_output_x_vector_part_.data(), (int)(local_output_x_vector_part_.size()),
                         output_x_vector_.data(), sendcounts, displacements, 0);
-    boost::mpi::broadcast(world, output_x_vector_.data(), output_x_vector_.size(), 0);
+      boost::mpi::broadcast(world, output_x_vector_.data(), output_x_vector_.size(), 0);
+    }
     num_of_iterations++;
   } while (num_of_iterations < Nmax && max_delta_x_i > epsilon);
   return true;
