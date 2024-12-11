@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "seq/tsatsyn_a_increasing_contrast_by_histogram/include/ops_seq.hpp"
+
 TEST(tsatsyn_a_increasing_contrast_by_histogram_mpi, Test_Sum_1) {
   // Create data
   std::vector<int> sizes = {10, 1};

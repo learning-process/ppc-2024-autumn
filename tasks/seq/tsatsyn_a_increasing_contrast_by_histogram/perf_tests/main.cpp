@@ -8,16 +8,15 @@
 
 TEST(sequential_tsatsyn_a_increasing_contrast_by_histogram_perf_test, test_pipeline_run) {
   // Create data
-  std::vector<int> in(1200, 1);
-  std::vector<int> out(1, 0);
-  std::vector<int> sizes = {1200, 720};
+  std::vector<int> sizes = {12000000, 1};
+  const int count_size_vector = sizes[0] * sizes[1];
 
+  std::vector<int> in(count_size_vector, 1);
+  std::vector<int> out(count_size_vector);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
   taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(sizes.data()));
-  taskDataSeq->inputs_count.emplace_back(sizes.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
@@ -42,21 +41,19 @@ TEST(sequential_tsatsyn_a_increasing_contrast_by_histogram_perf_test, test_pipel
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(1, 1);
+  ASSERT_EQ(0, out[0]);
 }
 
 TEST(sequential_tsatsyn_a_increasing_contrast_by_histogram_perf_test, test_task_run) {
   // Create data
-  std::vector<int> in(1200, 1);
-  std::vector<int> out(1, 0);
-  std::vector<int> sizes = {1200, 720};
+  std::vector<int> sizes = {12000000, 1};
+  std::vector<int> in(sizes[0] * sizes[1], 1);
+  std::vector<int> out(sizes[0] * sizes[1]);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
   taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(sizes.data()));
-  taskDataSeq->inputs_count.emplace_back(sizes.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
@@ -81,5 +78,5 @@ TEST(sequential_tsatsyn_a_increasing_contrast_by_histogram_perf_test, test_task_
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(1, 1);
+  ASSERT_EQ(0, out[0]);
 }
