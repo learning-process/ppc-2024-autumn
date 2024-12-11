@@ -3,6 +3,7 @@
 // not example
 #include <gtest/gtest.h>
 
+#include <boost/archive/basic_archive.hpp>
 #include <boost/mpi/cartesian_communicator.hpp>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>

@@ -50,12 +50,13 @@ void createGridCommunicators(int gridSize, int procRank, int* gridCoords) {
   MPI_Cart_sub(GCOMM, subdims.data(), &CCOMM);
 }
 
+/*
 void sendrecv_replace(boost::mpi::communicator& comm, std::vector<double>& buffer, int dest, int send_tag, int source,
                       int recv_tag) {
   std::vector<double> temp(buffer.size());
   comm.sendrecv(dest, send_tag, buffer, source, recv_tag, temp);
   std::copy(temp.begin(), temp.end(), buffer.begin());
-}
+}*/
 
 std::vector<double> drozhdinov_d_mult_matrix_fox_mpi::SequentialFox(const std::vector<double>& A,
                                                                     const std::vector<double>& B, int k, int l, int n) {
@@ -169,6 +170,7 @@ std::vector<double> drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel::Paral
     GRID_COMM.recv(0, 0, block_a);
     GRID_COMM.recv(0, 1, block_b);
   }
+  MPI_Status stat;
   for (int i = 0; i < grid_size; i++) {
     std::vector<double> tmpblockA(block_size * block_size);
     int pivot = (grid_coords[0] + i) % grid_size;
@@ -181,7 +183,8 @@ std::vector<double> drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel::Paral
     if (grid_coords[0] == grid_size - 1) nextPr = 0;
     int prevPr = grid_coords[0] - 1;
     if (grid_coords[0] == 0) prevPr = grid_size - 1;
-    sendrecv_replace(COL_COMM, block_b, prevPr, 0, nextPr, 0);  // should be good, but need check this
+    MPI_Sendrecv_replace(block_b.data(), block_size * block_size, MPI_DOUBLE, prevPr, 0, nextPr, 0, COL_COMM, &stat);
+    // sendrecv_replace(COL_COMM, block_b, prevPr, 0, nextPr, 0);  // should be good, but need check this
   }
   std::vector<double> resultM(size * size);
   if (world.rank() == 0) {

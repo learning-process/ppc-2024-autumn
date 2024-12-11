@@ -1,6 +1,8 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 // not example
+#include <boost/mpi/communicator.hpp>
+#include <boost/mpi/environment.hpp>
 #include <boost/mpi/timer.hpp>
 #include <vector>
 
