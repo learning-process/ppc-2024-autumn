@@ -106,7 +106,7 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::run() {
       }
     }
 
-    boost::mpi::all_reduce(world, local_distances.begin(), local_distances.end(), distances_.begin(),
+    boost::mpi::all_reduce(world, local_distances.data(), vertices_, distances_.data(),
                            [](int a, int b) { return std::min(a, b); });
     boost::mpi::all_reduce(world, changed, std::logical_or<bool>());
   }
