@@ -61,6 +61,11 @@ bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::run() {
 
   int start_proc = taskData->inputs_count[0];
   int end_proc = taskData->inputs_count[1];
+
+  if (start_proc == end_proc || world.rank() < start_proc || world.rank() > end_proc) {
+    return true;
+  }
+
   int s = static_cast<int>(taskData->inputs_count[2]);
   int c = world.size();
 
@@ -69,14 +74,6 @@ bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::run() {
 
   for (size_t i = 0; i < static_cast<size_t>(world.size()); ++i) {
     p[i] = -1;
-  }
-
-  if (start_proc == end_proc) {
-    return true;
-  }
-
-  if (world.rank() < start_proc || world.rank() > end_proc) {
-    return true;
   }
 
   if (world.rank() == start_proc) {
@@ -113,7 +110,6 @@ bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::run() {
   delete[] p;
   return true;
 }
-
 bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
 
