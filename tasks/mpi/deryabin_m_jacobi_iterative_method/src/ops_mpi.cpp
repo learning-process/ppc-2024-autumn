@@ -189,8 +189,10 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::run
     n = taskData->inputs_count[0];
     number_of_local_matrix_rows = n / world.size();
     ostatochnoe_chislo_strock = n % world.size();
-    for (int proc = 1; proc < world.size(); proc++) {
-      displacements[proc] = number_of_local_matrix_rows * (proc - 1);
+    if (world.size() != 1) {
+      for (int proc = 1; proc < world.size(); proc++) {
+        displacements[proc] = number_of_local_matrix_rows * (proc - 1);
+      }
     }
   }
   boost::mpi::broadcast(world, number_of_local_matrix_rows, 0);
