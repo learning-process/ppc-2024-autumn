@@ -32,20 +32,6 @@ std::vector<double> drozhdinov_d_mult_matrix_fox_mpi::paddingMatrix(const std::v
   return padded;
 }
 
-/*void createGridCommunicators(int gridSize, int procRank, int* gridCoords) {
-  std::vector<int> dim_size(2, gridSize);
-  std::vector<int> periodic(2, 0);
-  std::vector<int> subdims(2);
-  MPI_Cart_create(MPI_COMM_WORLD, 2, dim_size.data(), periodic.data(), 0, &GCOMM);
-  MPI_Cart_coords(GCOMM, procRank, 2, gridCoords);
-  subdims[0] = 0;
-  subdims[1] = 1;
-  MPI_Cart_sub(GCOMM, subdims.data(), &RCOMM);
-  subdims[0] = 1;
-  subdims[1] = 0;
-  MPI_Cart_sub(GCOMM, subdims.data(), &CCOMM);
-}*/
-
 void checkCommunicator(const MPI_Comm& comm, const std::string& name) {
   int result;
   MPI_Comm_compare(comm, MPI_COMM_NULL, &result);
@@ -57,13 +43,12 @@ void checkCommunicator(const MPI_Comm& comm, const std::string& name) {
   }
 }
 
-/*
 void sendrecv_replace(boost::mpi::communicator& comm, std::vector<double>& buffer, int dest, int send_tag, int source,
                       int recv_tag) {
   std::vector<double> temp(buffer.size());
   comm.sendrecv(dest, send_tag, buffer, source, recv_tag, temp);
   std::copy(temp.begin(), temp.end(), buffer.begin());
-}*/
+}
 
 std::vector<double> drozhdinov_d_mult_matrix_fox_mpi::SequentialFox(const std::vector<double>& A,
                                                                     const std::vector<double>& B, int k, int l, int n) {
@@ -143,10 +128,6 @@ std::vector<double> drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel::Paral
   subdims[0] = 1;
   subdims[1] = 0;
   MPI_Cart_sub(GCOMM, subdims.data(), &CCOMM);
-
-  // checkCommunicator(GCOMM, "GCOMM");
-  // checkCommunicator(RCOMM, "RCOMM");
-  // checkCommunicator(CCOMM, "CCOMM");
   boost::mpi::communicator GRID_COMM(GCOMM, boost::mpi::comm_take_ownership);
   boost::mpi::communicator ROW_COMM(RCOMM, boost::mpi::comm_take_ownership);
   boost::mpi::communicator COL_COMM(CCOMM, boost::mpi::comm_take_ownership);
@@ -164,14 +145,14 @@ std::vector<double> drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel::Paral
     std::vector<double> squareC(padding * padding, 0.0);
   }
   broadcast(world, block_size, 0);
-  std::vector<double> block_a(block_size * block_size);
-  std::vector<double> block_b(block_size * block_size);
-  std::vector<double> block_ab(block_size * block_size, 0);
+  std::vector<double> block_A(block_size * block_size);
+  std::vector<double> block_B(block_size * block_size);
+  std::vector<double> block_AB(block_size * block_size, 0);
   if (world.rank() == 0) {
     for (int i = 0; i < block_size; i++) {
       for (int j = 0; j < block_size; j++) {
-        block_a[i * block_size + j] = squareA[i * size + j];
-        block_b[i * block_size + j] = squareB[i * size + j];
+        block_A[i * block_size + j] = squareA[i * size + j];
+        block_B[i * block_size + j] = squareB[i * size + j];
       }
     }
   }
@@ -179,31 +160,31 @@ std::vector<double> drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel::Paral
     for (int p = 1; p < world.size(); p++) {
       int row = p / grid_size;
       int col = p % grid_size;
-      std::vector<double> block_a_to_send(block_size * block_size);
-      std::vector<double> block_b_to_send(block_size * block_size);
+      std::vector<double> block_A_to_send(block_size * block_size);
+      std::vector<double> block_B_to_send(block_size * block_size);
 
       for (int i = 0; i < block_size; i++) {
         for (int j = 0; j < block_size; j++) {
-          block_a_to_send[i * block_size + j] = squareA[(row * block_size + i) * size + col * block_size + j];
-          block_b_to_send[i * block_size + j] = squareB[(row * block_size + i) * size + col * block_size + j];
+          block_A_to_send[i * block_size + j] = squareA[(row * block_size + i) * size + col * block_size + j];
+          block_B_to_send[i * block_size + j] = squareB[(row * block_size + i) * size + col * block_size + j];
         }
       }
-      GRID_COMM.send(p, 0, block_a_to_send);
-      GRID_COMM.send(p, 1, block_b_to_send);
+      GRID_COMM.send(p, 0, block_A_to_send);
+      GRID_COMM.send(p, 1, block_B_to_send);
     }
   } else {
-    GRID_COMM.recv(0, 0, block_a);
-    GRID_COMM.recv(0, 1, block_b);
+    GRID_COMM.recv(0, 0, block_A);
+    GRID_COMM.recv(0, 1, block_B);
   }
   MPI_Status stat;
   for (int i = 0; i < grid_size; i++) {
     std::vector<double> tmpblockA(block_size * block_size);
     int pivot = (grid_coords[0] + i) % grid_size;
     if (grid_coords[1] == pivot) {
-      tmpblockA = block_a;
+      tmpblockA = block_A;
     }
     broadcast(ROW_COMM, tmpblockA.data(), block_size * block_size, pivot);
-    SimpleMult(tmpblockA, block_b, block_ab, block_size);
+    SimpleMult(tmpblockA, block_B, block_AB, block_size);
     int nextPr = grid_coords[0] + 1;
     if (grid_coords[0] == grid_size - 1) nextPr = 0;
     int prevPr = grid_coords[0] - 1;
@@ -215,7 +196,7 @@ std::vector<double> drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel::Paral
   if (world.rank() == 0) {
     for (int i = 0; i < block_size; i++) {
       for (int j = 0; j < block_size; j++) {
-        resultM[i * size + j] = block_ab[i * block_size + j];
+        resultM[i * size + j] = block_AB[i * block_size + j];
       }
     }
 
@@ -233,7 +214,7 @@ std::vector<double> drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel::Paral
       }
     }
   } else {
-    world.send(0, 3, block_ab);
+    world.send(0, 3, block_AB);
   }
   std::vector<double> final(K * N);
   if (world.rank() == 0) {
