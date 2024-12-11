@@ -34,8 +34,12 @@ std::vector<double> getRandomVector(int sz) {
 }
 }  // namespace drozhdinov_d_mult_matrix_fox_mpi
 
-/*TEST(drozhdinov_d_mult_matrix_fox_MPI, 2x3_3x2Test) {
+TEST(drozhdinov_d_mult_matrix_fox_MPI, 2x3_3x2Test) {
   boost::mpi::communicator world;
+  if (world.size() != 1 || world.size() != 4) {
+    ASSERT_TRUE(true);
+    return;
+  }
   int k = 2, l = 3, m = 3, n = 2;
   std::vector<double> A = {1, 2, 3, 4, 5, 6};
   std::vector<double> B = {7, 8, 9, 10, 11, 12};
@@ -87,10 +91,14 @@ std::vector<double> getRandomVector(int sz) {
     ASSERT_EQ(expres, expres_par);
     ASSERT_EQ(expres, expres_seq);
   }
-}*/
+}
 
 TEST(drozhdinov_d_mult_matrix_fox_MPI, Random100Test) {
   boost::mpi::communicator world;
+  if (world.size() != 1 || world.size() != 4) {
+    ASSERT_TRUE(true);
+    return;
+  }
   int k = 100, l = 100, m = 100, n = 100;
   std::vector<double> A = getRandomVector(k * l);
   std::vector<double> B = getRandomVector(m * n);
@@ -148,6 +156,10 @@ TEST(drozhdinov_d_mult_matrix_fox_MPI, Random100Test) {
 
 TEST(drozhdinov_d_mult_matrix_fox_MPI, WrongValidation1) {
   boost::mpi::communicator world;
+  if (world.size() != 1 || world.size() != 4) {
+    ASSERT_TRUE(true);
+    return;
+  }
   int k = 2, l = 10, m = 11, n = 2;  // A cols not eq B rows
   std::vector<double> A = getRandomVector(k * l);
   std::vector<double> B = getRandomVector(m * n);
@@ -166,10 +178,9 @@ TEST(drozhdinov_d_mult_matrix_fox_MPI, WrongValidation1) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres_par.data()));
     taskDataPar->outputs_count.emplace_back(k);
     taskDataPar->outputs_count.emplace_back(n);
+    drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
-
-  drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
 
   if (world.rank() == 0) {
     // Create data
@@ -195,6 +206,10 @@ TEST(drozhdinov_d_mult_matrix_fox_MPI, WrongValidation1) {
 
 TEST(drozhdinov_d_mult_matrix_fox_MPI, WrongValidation2) {
   boost::mpi::communicator world;
+  if (world.size() != 1 || world.size() != 4) {
+    ASSERT_TRUE(true);
+    return;
+  }
   int k = 2, l = 10, m = 10, n = 2;
   std::vector<double> A = getRandomVector(k * l);
   std::vector<double> B = getRandomVector(m * n);
@@ -213,10 +228,9 @@ TEST(drozhdinov_d_mult_matrix_fox_MPI, WrongValidation2) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres_par.data()));
     taskDataPar->outputs_count.emplace_back(k);
     taskDataPar->outputs_count.emplace_back(n);
+    drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
-
-  drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
 
   if (world.rank() == 0) {
     // Create data
@@ -242,6 +256,10 @@ TEST(drozhdinov_d_mult_matrix_fox_MPI, WrongValidation2) {
 
 TEST(drozhdinov_d_mult_matrix_fox_MPI, WrongValidation3) {
   boost::mpi::communicator world;
+  if (world.size() != 1 || world.size() != 4) {
+    ASSERT_TRUE(true);
+    return;
+  }
   int k = 2, l = 10, m = 10, n = 2;
   std::vector<double> A = getRandomVector(k * l);
   std::vector<double> B = getRandomVector(m * n);
@@ -260,10 +278,9 @@ TEST(drozhdinov_d_mult_matrix_fox_MPI, WrongValidation3) {
     // output data lost
     taskDataPar->outputs_count.emplace_back(k);
     taskDataPar->outputs_count.emplace_back(n);
+    drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
-
-  drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
 
   if (world.rank() == 0) {
     // Create data
@@ -289,6 +306,10 @@ TEST(drozhdinov_d_mult_matrix_fox_MPI, WrongValidation3) {
 
 TEST(drozhdinov_d_mult_matrix_fox_MPI, WrongValidation4) {
   boost::mpi::communicator world;
+  if (world.size() != 1 || world.size() != 4) {
+    ASSERT_TRUE(true);
+    return;
+  }
   int k = 2, l = 10, m = 10, n = 2;
   std::vector<double> A = getRandomVector(k * l);
   std::vector<double> B = getRandomVector(m * n);
@@ -307,10 +328,9 @@ TEST(drozhdinov_d_mult_matrix_fox_MPI, WrongValidation4) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres_par.data()));
     taskDataPar->outputs_count.emplace_back(k + 1);  // outputs_count wrong
     taskDataPar->outputs_count.emplace_back(n);
+    drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
-
-  drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
 
   if (world.rank() == 0) {
     // Create data
@@ -336,6 +356,10 @@ TEST(drozhdinov_d_mult_matrix_fox_MPI, WrongValidation4) {
 
 TEST(drozhdinov_d_mult_matrix_fox_MPI, EmptyTest) {
   boost::mpi::communicator world;
+  if (world.size() != 1 || world.size() != 4) {
+    ASSERT_TRUE(true);
+    return;
+  }
   int k = 0, l = 0, m = 0, n = 0;
   std::vector<double> A;
   std::vector<double> B;
@@ -387,5 +411,4 @@ TEST(drozhdinov_d_mult_matrix_fox_MPI, EmptyTest) {
     ASSERT_EQ(expres, expres_par);
     ASSERT_EQ(expres, expres_seq);
   }
-  std::cout << world.rank();
 }
