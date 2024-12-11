@@ -13,8 +13,7 @@ std::vector<int> muhina_m_shell_sort_mpi::shellSort(const std::vector<int>& vect
   std::vector<int> sortedVec = vect;
   int n = sortedVec.size();
   int gap;
-  for (gap = 1; gap < n / 3; gap = gap * 3 + 1)
-    ;
+  for (gap = 1; gap < n / 3; gap = gap * 3 + 1);
   for (; gap > 0; gap = (gap - 1) / 3) {
     for (int i = gap; i < n; i++) {
       int temp = sortedVec[i];
