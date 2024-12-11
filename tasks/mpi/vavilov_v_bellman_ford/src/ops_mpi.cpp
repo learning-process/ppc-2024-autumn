@@ -118,8 +118,7 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::run() {
     bool has_negative_cycle = false;
     for (int j = local_start; j < local_end; ++j) {
       const auto& edge = edges_[j];
-      if (distances_[edge.src] != INT_MAX &&
-          distances_[edge.src] + edge.weight < distances_[edge.dest]) {
+      if (distances_[edge.src] != INT_MAX && distances_[edge.src] + edge.weight < distances_[edge.dest]) {
         has_negative_cycle = true;
         break;
       }
@@ -130,7 +129,7 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::run() {
       return !has_negative_cycle;
     }
   }
-}   
+}
 
 bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
