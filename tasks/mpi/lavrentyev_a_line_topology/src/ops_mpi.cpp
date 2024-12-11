@@ -108,6 +108,8 @@ bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::run() {
     }
   }
   boost::mpi::wait_all(req.begin(), req.end());
+  delete[] d;
+  delete[] p;
   return true;
 }
 bool lavrentyev_a_line_topology_mpi::TestMPITaskParallel::post_processing() {
