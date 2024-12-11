@@ -24,7 +24,7 @@ std::vector<uint8_t> generateRandomImage(size_t size) {
   return input;
 }
 
-} // namespace shuravina_o_contrast
+}  // namespace shuravina_o_contrast
 
 TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Single_Element_Input) {
   boost::mpi::environment env;
