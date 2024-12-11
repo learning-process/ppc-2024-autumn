@@ -81,7 +81,7 @@ TEST(vavilov_v_bellman_ford_mpi, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(distances.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<vavilov_v_bellman_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<vavilov_v_bellman_ford_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
