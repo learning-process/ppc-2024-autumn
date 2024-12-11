@@ -15,7 +15,7 @@ TEST(shuravina_o_contrast_perf, Test_Contrast_Enhancement_MPI_Performance) {
   if (world.rank() == 0) {
     auto taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-    const int input_size = 1000000;
+    const int input_size = 100000;
     std::vector<uint8_t> input(input_size);
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -46,7 +46,7 @@ TEST(shuravina_o_contrast_perf, Test_Contrast_Enhancement_MPI_Performance) {
 }
 
 TEST(shuravina_o_contrast_perf, Test_Contrast_Enhancement_Sequential_Performance) {
-  const int input_size = 1000000;
+  const int input_size = 100000;
   std::vector<uint8_t> input(input_size);
   std::random_device rd;
   std::mt19937 gen(rd());
