@@ -42,13 +42,13 @@ void checkCommunicator(const MPI_Comm& comm, const std::string& name) {
     MPI_Abort(MPI_COMM_WORLD, 1);
   }
 }
-
+/*
 void sendrecv_replace(boost::mpi::communicator& comm, std::vector<double>& buffer, int dest, int send_tag, int source,
                       int recv_tag) {
   std::vector<double> temp(buffer.size());
   comm.sendrecv(dest, send_tag, buffer, source, recv_tag, temp);
   std::copy(temp.begin(), temp.end(), buffer.begin());
-}
+}*/
 
 std::vector<double> drozhdinov_d_mult_matrix_fox_mpi::SequentialFox(const std::vector<double>& A,
                                                                     const std::vector<double>& B, int k, int l, int n) {
