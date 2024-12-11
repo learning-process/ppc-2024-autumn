@@ -100,7 +100,6 @@ std::vector<double> drozhdinov_d_mult_matrix_fox_mpi::SequentialFox(const std::v
       C[i * C_cols + j] = squareC[i * padding + j];
     }
   }
-
   return C;
 }
 
@@ -190,7 +189,7 @@ std::vector<double> drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel::Paral
     int prevPr = grid_coords[0] - 1;
     if (grid_coords[0] == 0) prevPr = grid_size - 1;
     std::cout << ROW_COMM.rank();
-    MPI_Sendrecv_replace(block_b.data(), block_size * block_size, MPI_DOUBLE, prevPr, 0, nextPr, 0, COL_COMM, &stat);
+    MPI_Sendrecv_replace(block_B.data(), block_size * block_size, MPI_DOUBLE, prevPr, 0, nextPr, 0, COL_COMM, &stat);
   }
   std::vector<double> resultM(size * size);
   if (world.rank() == 0) {
