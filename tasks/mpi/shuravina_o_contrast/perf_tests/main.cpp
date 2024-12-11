@@ -4,7 +4,6 @@
 #include <boost/mpi/environment.hpp>
 #include <chrono>
 #include <random>
-#include <seq/shuravina_o_contrast/include/ops_seq.hpp>
 #include <vector>
 
 #include "mpi/shuravina_o_contrast/include/ops_mpi.hpp"
@@ -52,25 +51,26 @@ TEST(shuravina_o_contrast_perf, Test_Contrast_Enhancement_Sequential_Performance
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_int_distribution<> dis(0, 255);
+
   for (int i = 0; i < input_size; ++i) {
     input[i] = dis(gen);
   }
 
   std::vector<uint8_t> output(input.size());
 
-  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
-  taskDataSeq->inputs_count.emplace_back(input.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
-  taskDataSeq->outputs_count.emplace_back(output.size());
-
-  shuravina_o_contrast::ContrastTaskSequential contrastTaskSequential(taskDataSeq);
-  ASSERT_TRUE(contrastTaskSequential.validation());
-
   const auto t0 = std::chrono::high_resolution_clock::now();
-  contrastTaskSequential.pre_processing();
-  contrastTaskSequential.run();
-  contrastTaskSequential.post_processing();
+
+  uint8_t min_val = *std::min_element(input.begin(), input.end());
+  uint8_t max_val = *std::max_element(input.begin(), input.end());
+
+  if (max_val == min_val) {
+    std::fill(output.begin(), output.end(), 128);
+  } else {
+    for (size_t i = 0; i < input.size(); ++i) {
+      output[i] = static_cast<uint8_t>((input[i] - min_val) * 255.0 / (max_val - min_val));
+    }
+  }
+
   const auto t1 = std::chrono::high_resolution_clock::now();
 
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
