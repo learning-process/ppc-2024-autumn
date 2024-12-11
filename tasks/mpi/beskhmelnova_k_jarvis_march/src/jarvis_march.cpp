@@ -40,7 +40,7 @@ void beskhmelnova_k_jarvis_march_mpi::jarvisMarch(int& num_points, std::vector<s
     hull.push_back(input[current]);
     int next = (current + 1) % num_points;
     for (int i = 0; i < num_points; ++i) {
-      DataType cross_product =
+      auto cross_product =
           beskhmelnova_k_jarvis_march_mpi::crossProduct<DataType>(input[current], input[next], input[i]);
       if (cross_product < 0 || (cross_product == 0 &&
                                 std::hypot(input[i][1] - input[current][1], input[i][2] - input[current][2]) >

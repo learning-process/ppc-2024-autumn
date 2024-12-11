@@ -3,7 +3,7 @@
 #include <boost/mpi/timer.hpp>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/beskhmelnova_k_jarvis_march/src/jarvis_march.hpp"
+#include "mpi/beskhmelnova_k_jarvis_march/include/jarvis_march.hpp"
 
 TEST(mpi_beskhmelnova_k_jarvis_march_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
