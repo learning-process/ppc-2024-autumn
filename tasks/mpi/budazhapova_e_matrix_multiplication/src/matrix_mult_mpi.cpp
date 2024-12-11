@@ -52,8 +52,6 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultSequential::post_processing() {
 bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::pre_processing() {
   internal_order_test();
 
-  int world_rank = world.rank();
-  int world_size = world.size();
   std::vector<int> recv_counts(world.size(), 0);
   std::vector<int> displacements(world.size(), 0);
 
