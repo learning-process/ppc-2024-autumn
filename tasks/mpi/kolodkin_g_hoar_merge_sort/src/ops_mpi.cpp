@@ -1,7 +1,6 @@
 #include "mpi/kolodkin_g_hoar_merge_sort/include/ops_mpi.hpp"
 
 #include <algorithm>
-#include <boost/serialization/vector.hpp>
 #include <functional>
 #include <vector>
 
