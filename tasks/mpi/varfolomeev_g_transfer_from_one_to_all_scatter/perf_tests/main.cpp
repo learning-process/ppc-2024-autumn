@@ -8,7 +8,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/varfolomeev_g_transfer_from_one_to_all_scatter/include/ops_mpi.hpp"
 
-std::vector<int> getRandomVector_Perf(int sz, int a, int b) {  // [a, b]
+static std::vector<int> getRandomVector_Perf(int sz, int a, int b) {  // [a, b]
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
