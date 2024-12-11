@@ -92,9 +92,9 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskSequential::p
 bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::pre_processing() {
   internal_order_test();
   if (world.size() == 1) {
-    input_right_vector_ = std::vector<double>(taskData->inputs_count[1]);
+    input_right_vector_ = std::vector<double>(taskData->inputs_count[0]);
     auto* tmp_ptr_vec = reinterpret_cast<double*>(taskData->inputs[1]);
-    for (unsigned short i = 0; i < taskData->inputs_count[1]; i++) {
+    for (unsigned short i = 0; i < taskData->inputs_count[0]; i++) {
       input_right_vector_[i] = tmp_ptr_vec[i];
     }
     output_x_vector_ = std::vector<double>(input_right_vector_.size());
@@ -105,13 +105,13 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::pre
 bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::validation() {
   internal_order_test();
   if (world.size() == 1) {
-    input_matrix_ = std::vector<double>(taskData->inputs_count[0]);
+    unsigned short n = taskData->inputs_count[0];
+    input_matrix_ = std::vector<double>(n * n);
     auto* tmp_ptr_matr = reinterpret_cast<double*>(taskData->inputs[0]);
-    for (unsigned short i = 0; i < taskData->inputs_count[0]; i++) {
+    for (unsigned short i = 0; i < n * n; i++) {
       input_matrix_[i] = tmp_ptr_matr[i];
     }
     unsigned short i = 0;
-    unsigned short n = taskData->inputs_count[1];
     auto lambda = [&](double first, double second) { return (std::abs(first) + std::abs(second)); };
     while (i != n) {
       if (i == 0) {
@@ -234,7 +234,7 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::run
       x_old = output_x_vector_;
       unsigned short i = 0;
       unsigned short j;
-      n = taskData->inputs_count[1];
+      n = taskData->inputs_count[0];
       double sum;
       while (i != n) {
         j = 0;
