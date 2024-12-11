@@ -55,7 +55,7 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::pre_processing() {
   std::vector<int> recv_counts(world.size(), 0);
   std::vector<int> displacements(world.size(), 0);
 
-  if (world_rank == 0) {
+  if (world.rank() == 0) {
     A = std::vector<int>(reinterpret_cast<int*>(taskData->inputs[0]),
                          reinterpret_cast<int*>(taskData->inputs[0]) + taskData->inputs_count[0]);
     b = std::vector<int>(reinterpret_cast<int*>(taskData->inputs[1]),
