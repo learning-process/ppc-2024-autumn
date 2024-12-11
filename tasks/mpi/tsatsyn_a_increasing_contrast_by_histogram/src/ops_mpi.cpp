@@ -91,13 +91,12 @@ bool tsatsyn_a_increasing_contrast_by_histogram_mpi::TestMPITaskParallel::run() 
     std::vector<int> expected(1, 0);
     expected.resize(taskData->inputs_count[0]);
     for (int i = 0; i < static_cast<int>(local_data.size()); i++) {
-      expected[i * (int)world.size()] = local_data[i];
+      expected[i * world.size()] = local_data[i];
     }
     for (int proc = 1; proc < world.size(); proc++) {
       world.recv(proc, 0, local_data);
       for (int i = 0; i < static_cast<int>(local_data.size()); i++) {
-        int j = i * world.size() + proc;
-        expected[j] = local_data[i];
+        expected[i * world.size() + proc] = local_data[i];
       }
     }
     res = expected;
