@@ -6,7 +6,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B/include/ops_seq_korobeinikov.hpp"
 
-TEST(sequential_korobeinikov_perf_test, test_pipeline_run) {
+TEST(sequential_korobeinikov_perf_test_lab_02, test_pipeline_run) {
   // Create data
   std::vector<int> A(53361, 1);
   std::vector<int> B(53361, 1);
@@ -72,7 +72,7 @@ TEST(sequential_korobeinikov_perf_test, test_pipeline_run) {
   ASSERT_EQ(count_cols_out, count_cols_RA);
 }
 
-TEST(sequential_korobeinikov_perf_test, test_task_run) {
+TEST(sequential_korobeinikov_perf_test_lab_02, test_task_run) {
   // Create data
   std::vector<int> A(53361, 1);
   std::vector<int> B(53361, 1);

@@ -9,7 +9,7 @@
 
 // mpiexec -n 4 mpi_perf_tests
 
-TEST(mpi_korobeinikov_perf_test, test_pipeline_run) {
+TEST(mpi_korobeinikov_perf_test_lab_02, test_pipeline_run) {
   boost::mpi::communicator world;
 
   // Create data
@@ -82,7 +82,7 @@ TEST(mpi_korobeinikov_perf_test, test_pipeline_run) {
   }
 }
 
-TEST(mpi_korobeinikov_perf_test, test_task_run) {
+TEST(mpi_korobeinikov_perf_test_lab_02, test_task_run) {
   boost::mpi::communicator world;
 
   // Create data
