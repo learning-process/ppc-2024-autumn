@@ -53,8 +53,6 @@ void run_and_validation_test_template(int n) {
 
     boost::mpi::broadcast(world, check, 0);
     EXPECT_EQ(global_sum, check);
-  } else {
-    GTEST_SKIP();
   }
 }
 

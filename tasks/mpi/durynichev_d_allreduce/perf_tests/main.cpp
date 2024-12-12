@@ -25,7 +25,6 @@ std::vector<int> genRundomVector(int n) {
 }  // namespace durynichev_d_allreduce_mpi
 
 TEST(durynichev_d_allreduce_mpi, pipeline_run) {
-  boost::mpi::environment env;
   boost::mpi::communicator world;
 
   std::vector<int> data;
@@ -47,30 +46,25 @@ TEST(durynichev_d_allreduce_mpi, pipeline_run) {
   taskDataBroadcast->outputs_count.emplace_back(1);
 
   auto taskBroadcast = std::make_shared<durynichev_d_allreduce_mpi::MpiAllreduceMPI>(taskDataBroadcast);
-  bool val = taskBroadcast->validation();
-  boost::mpi::broadcast(world, val, 0);
-  if (val) {
-    taskBroadcast->pre_processing();
-    taskBroadcast->run();
-    taskBroadcast->post_processing();
+  ASSERT_TRUE(taskBroadcast->validation());
+  taskBroadcast->pre_processing();
+  taskBroadcast->run();
+  taskBroadcast->post_processing();
 
-    auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-    perfAttr->num_running = 10;
-    const boost::mpi::timer current_timer;
-    perfAttr->current_timer = [&] { return current_timer.elapsed(); };
-    auto perfResults = std::make_shared<ppc::core::PerfResults>();
-    auto perfAnalyzer = std::make_shared<ppc::core::Perf>(taskBroadcast);
-    perfAnalyzer->pipeline_run(perfAttr, perfResults);
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 10;
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(taskBroadcast);
+  perfAnalyzer->pipeline_run(perfAttr, perfResults);
 
-    if (world.rank() == 0) {
-      ppc::core::Perf::print_perf_statistic(perfResults);
-    }
-
-    boost::mpi::broadcast(world, check, 0);
-    EXPECT_EQ(global_sum, check);
-  } else {
-    GTEST_SKIP();
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
   }
+
+  boost::mpi::broadcast(world, check, 0);
+  EXPECT_EQ(global_sum, check);
 }
 
 TEST(durynichev_d_allreduce_mpi, task_run) {
@@ -95,28 +89,24 @@ TEST(durynichev_d_allreduce_mpi, task_run) {
   taskDataBroadcast->outputs_count.emplace_back(1);
 
   auto taskBroadcast = std::make_shared<durynichev_d_allreduce_mpi::MpiAllreduceMPI>(taskDataBroadcast);
-  bool val = taskBroadcast->validation();
-  boost::mpi::broadcast(world, val, 0);
-  if (val) {
-    taskBroadcast->pre_processing();
-    taskBroadcast->run();
-    taskBroadcast->post_processing();
+  ASSERT_TRUE(taskBroadcast->validation());
 
-    auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-    perfAttr->num_running = 10;
-    const boost::mpi::timer current_timer;
-    perfAttr->current_timer = [&] { return current_timer.elapsed(); };
-    auto perfResults = std::make_shared<ppc::core::PerfResults>();
-    auto perfAnalyzer = std::make_shared<ppc::core::Perf>(taskBroadcast);
-    perfAnalyzer->task_run(perfAttr, perfResults);
+  taskBroadcast->pre_processing();
+  taskBroadcast->run();
+  taskBroadcast->post_processing();
 
-    if (world.rank() == 0) {
-      ppc::core::Perf::print_perf_statistic(perfResults);
-    }
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 10;
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(taskBroadcast);
+  perfAnalyzer->task_run(perfAttr, perfResults);
 
-    boost::mpi::broadcast(world, check, 0);
-    EXPECT_EQ(global_sum, check);
-  } else {
-    GTEST_SKIP();
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
   }
+
+  boost::mpi::broadcast(world, check, 0);
+  EXPECT_EQ(global_sum, check);
 }
