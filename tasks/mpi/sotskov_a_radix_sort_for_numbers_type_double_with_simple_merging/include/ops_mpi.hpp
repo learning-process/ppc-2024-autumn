@@ -27,7 +27,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   std::vector<double> input_data_;
   std::vector<double> sorted_data_;
   void radixSortWithSignHandling(std::vector<double>& data);
-  static void radixSort(std::vector<double>& data, int num_bits, int radix);
+  void radixSort(std::vector<double>& data, int num_bits, int radix);
   void parallelSort();
   boost::mpi::communicator world;
 };
@@ -46,7 +46,7 @@ class TestMPITaskSequential : public ppc::core::Task {
   std::vector<double> input_data_;
   std::vector<double> sorted_data_;
   void radixSortWithSignHandling(std::vector<double>& data);
-  static void radixSort(std::vector<double>& data, int num_bits, int radix);
+  void radixSort(std::vector<double>& data, int num_bits, int radix);
   void sequentialSort();
 };
 

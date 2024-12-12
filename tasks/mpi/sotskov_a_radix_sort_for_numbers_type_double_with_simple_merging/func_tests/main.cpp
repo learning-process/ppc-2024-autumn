@@ -4,9 +4,7 @@
 #include <random>
 
 #include "core/task/include/task.hpp"
-#include "mpi/sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging/include/ops_mpi.hpp"  // Task classes
-
-namespace sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi {
+#include "mpi/sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging/include/ops_mpi.hpp"
 
 std::vector<double> generateRandomData(int size, double minValue, double maxValue) {
   std::random_device rd;
@@ -43,14 +41,16 @@ void runSortingTest(const std::vector<double>& testData) {
     sequentialTaskData->outputs_count.emplace_back(dataSize);
   }
 
-  TestMPITaskParallel parallelRadixSort(parallelTaskData);
+  sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestMPITaskParallel parallelRadixSort(
+      parallelTaskData);
   ASSERT_TRUE(parallelRadixSort.validation());
   parallelRadixSort.pre_processing();
   parallelRadixSort.run();
   parallelRadixSort.post_processing();
 
   if (world.rank() == 0) {
-    TestMPITaskSequential sequentialRadixSort(sequentialTaskData);
+    sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestMPITaskSequential sequentialRadixSort(
+        sequentialTaskData);
     ASSERT_TRUE(sequentialRadixSort.validation());
     sequentialRadixSort.pre_processing();
     sequentialRadixSort.run();
@@ -107,5 +107,3 @@ TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi, Verif
   std::vector<double> testData = {1000000.0, 0.0001, 50.0, 999.99, 1.0, 1000000000.0};
   runSortingTest(testData);
 }
-
-}  // namespace sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi
