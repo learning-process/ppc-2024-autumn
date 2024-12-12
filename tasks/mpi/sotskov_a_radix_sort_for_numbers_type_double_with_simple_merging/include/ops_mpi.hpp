@@ -26,8 +26,6 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   std::vector<double> input_data_;
   std::vector<double> sorted_data_;
-  void radixSortWithSignHandling(std::vector<double>& data);
-  void radixSort(std::vector<double>& data, int num_bits, int radix);
   void parallelSort();
   boost::mpi::communicator world;
 };
@@ -45,9 +43,10 @@ class TestMPITaskSequential : public ppc::core::Task {
  private:
   std::vector<double> input_data_;
   std::vector<double> sorted_data_;
-  void radixSortWithSignHandling(std::vector<double>& data);
-  void radixSort(std::vector<double>& data, int num_bits, int radix);
   void sequentialSort();
 };
+
+void radixSortWithSignHandling(std::vector<double>& data);
+void radixSort(std::vector<double>& data, int num_bits, int radix);
 
 }  // namespace sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi

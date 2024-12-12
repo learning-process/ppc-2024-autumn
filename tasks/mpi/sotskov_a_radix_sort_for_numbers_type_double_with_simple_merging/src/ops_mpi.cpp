@@ -50,58 +50,6 @@ bool sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestM
   return true;
 }
 
-void sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestMPITaskSequential::
-    radixSortWithSignHandling(std::vector<double>& data) {
-  const int num_bits = sizeof(double) * 8;
-  const int radix = 2;
-
-  std::vector<double> positives;
-  std::vector<double> negatives;
-
-  for (double num : data) {
-    if (num < 0) {
-      negatives.push_back(-num);
-    } else {
-      positives.push_back(num);
-    }
-  }
-
-  radixSort(positives, num_bits, radix);
-  radixSort(negatives, num_bits, radix);
-
-  for (double& num : negatives) {
-    num = -num;
-  }
-
-  data.clear();
-  data.insert(data.end(), negatives.rbegin(), negatives.rend());
-  data.insert(data.end(), positives.begin(), positives.end());
-}
-
-void sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestMPITaskSequential::radixSort(
-    std::vector<double>& data, int num_bits, int radix) {
-  std::vector<std::vector<double>> buckets(radix);
-  std::vector<double> output(data.size());
-
-  for (int exp = 0; exp < num_bits; ++exp) {
-    for (auto& num : data) {
-      uint64_t bits = *reinterpret_cast<uint64_t*>(&num);
-      int digit = (bits >> exp) & 1;
-      buckets[digit].push_back(num);
-    }
-
-    int index = 0;
-    for (int i = 0; i < radix; ++i) {
-      for (auto& num : buckets[i]) {
-        output[index++] = num;
-      }
-      buckets[i].clear();
-    }
-
-    data = output;
-  }
-}
-
 void sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestMPITaskSequential::sequentialSort() {
   sorted_data_ = input_data_;
   std::sort(sorted_data_.begin(), sorted_data_.end());
@@ -166,8 +114,8 @@ bool sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestM
   return true;
 }
 
-void sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestMPITaskParallel::
-    radixSortWithSignHandling(std::vector<double>& data) {
+void sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::radixSortWithSignHandling(
+    std::vector<double>& data) {
   const int num_bits = sizeof(double) * 8;
   const int radix = 2;
 
@@ -194,8 +142,8 @@ void sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestM
   data.insert(data.end(), positives.begin(), positives.end());
 }
 
-void sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestMPITaskParallel::radixSort(
-    std::vector<double>& data, int num_bits, int radix) {
+void sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::radixSort(std::vector<double>& data,
+                                                                                     int num_bits, int radix) {
   std::vector<std::vector<double>> buckets(radix);
   std::vector<double> output(data.size());
 
