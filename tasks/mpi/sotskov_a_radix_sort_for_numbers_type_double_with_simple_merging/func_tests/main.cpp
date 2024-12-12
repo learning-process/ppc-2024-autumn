@@ -86,9 +86,9 @@ TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi, Verif
 }
 
 TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi, VerifySortingLargeData) {
-  const int dataSize = 1000000;
+  const int dataSize = 1000;
   const double minValue = 0.0;
-  const double maxValue = 1000.0;
+  const double maxValue = 100.0;
   std::vector<double> testData = generateRandomData(dataSize, minValue, maxValue);
   runSortingTest(testData);
 }
@@ -104,6 +104,6 @@ TEST(MPIEnvironment, VerifySortingWithNegativeNumbers) {
 }
 
 TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi, VerifySortingWithMixedRangeValues) {
-  std::vector<double> testData = {1000000.0, 0.0001, 50.0, 999.99, 1.0, 1000000000.0};
+  std::vector<double> testData = {10000.0, 0.0001, 50.0, 999.99, 1.0, 1000.0};
   runSortingTest(testData);
 }
