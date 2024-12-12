@@ -3,6 +3,23 @@
 
 #include "core/perf/include/perf.hpp"
 #include "seq/baranov_a_odd_even_mergesort/include/header_seq_odd_even.hpp"
+namespace baranov_a_temp_ns_seq {
+template <typename tp>
+  requires std::is_arithmetic_v<tp>
+void get_rnd_vec(std::vector<tp> &vec) {
+  std::random_device rd;
+  std::default_random_engine reng(rd());
+
+  if constexpr (std::is_integral_v<tp>) {
+    std::uniform_int_distribution<tp> dist(0, vec.size());
+    std::generate(vec.begin(), vec.end(), [&dist, &reng] { return dist(reng); });
+  } else if constexpr (std::is_floating_point_v<tp>) {
+    std::uniform_real_distribution<tp> dist(0.0, vec.size());
+    std::generate(vec.begin(), vec.end(), [&dist, &reng] { return dist(reng); });
+  }
+}
+}  // namespace baranov_a_temp_ns_seq
+std::vector<int> global_arr(100000);
 
 TEST(seq_baranov_a_odd_even_sort, test_pipeline_run) {
   int number = 100000;
@@ -10,10 +27,8 @@ TEST(seq_baranov_a_odd_even_sort, test_pipeline_run) {
   std::vector<int> out(number);
 
   // Create TaskData
-  std::random_device rd;
-  std::default_random_engine reng(rd());
-  std::uniform_int_distribution<int> dist(0, global_vec.size());
-  std::generate(global_vec.begin(), global_vec.end(), [&dist, &reng] { return dist(reng); });
+  baranov_a_temp_ns_seq::get_rnd_vec(global_arr);
+  global_vec = global_arr;
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
   taskDataSeq->inputs_count.emplace_back(global_vec.size());
@@ -50,10 +65,7 @@ TEST(seq_baranov_a_odd_even_sort, test_task_run) {
   std::vector<int> global_vec(number);
   std::vector<int> out(number);
   // Create TaskData
-  std::random_device rd;
-  std::default_random_engine reng(rd());
-  std::uniform_int_distribution<int> dist(0, global_vec.size());
-  std::generate(global_vec.begin(), global_vec.end(), [&dist, &reng] { return dist(reng); });
+  global_vec = global_arr;
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
   taskDataSeq->inputs_count.emplace_back(global_vec.size());

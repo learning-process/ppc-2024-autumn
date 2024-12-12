@@ -15,15 +15,13 @@ bool baranov_a_odd_even_merge_sort<iotype>::pre_processing() {
   internal_order_test();
   int myid = world.rank();
 
-  int n;
   if (myid == 0) {
-    n = taskData->inputs_count[0];
-    input_ = std::vector<iotype>(n);
-    output_ = std::vector<iotype>(n);
+    vec_size_ = taskData->inputs_count[0];
+    input_ = std::vector<iotype>(vec_size_);
+    output_ = std::vector<iotype>(vec_size_);
     void* ptr_r = taskData->inputs[0];
     void* ptr_d = input_.data();
-    memcpy(ptr_d, ptr_r, sizeof(iotype) * n);
-    vec_size_ = n;
+    memcpy(ptr_d, ptr_r, sizeof(iotype) * vec_size_);
   }
   return true;
 }
@@ -166,7 +164,7 @@ bool baranov_a_odd_even_merge_sort<iotype>::validation() {
   internal_order_test();
   // check count elements of output
   if (world.rank() == 0) {
-    if (taskData->outputs_count[0] == 1 && taskData->inputs_count.size() == 1 && taskData->inputs_count[0] >= 0) {
+    if (taskData->inputs_count.size() == 1 && taskData->inputs_count[0] >= 2) {
       return true;
     }
   }

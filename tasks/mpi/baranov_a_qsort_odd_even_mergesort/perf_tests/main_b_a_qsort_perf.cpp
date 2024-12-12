@@ -6,21 +6,38 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/baranov_a_qsort_odd_even_mergesort/include/header_b_a_qsort_odd_even_merge.hpp"
 
+namespace baranov_a_temp_ns {
+template <typename tp>
+  requires std::is_arithmetic_v<tp>
+void get_rnd_vec(std::vector<tp> &vec) {
+  std::random_device rd;
+  std::default_random_engine reng(rd());
+
+  if constexpr (std::is_integral_v<tp>) {
+    std::uniform_int_distribution<tp> dist(0, vec.size());
+    std::generate(vec.begin(), vec.end(), [&dist, &reng] { return dist(reng); });
+  } else if constexpr (std::is_floating_point_v<tp>) {
+    std::uniform_real_distribution<tp> dist(0.0, vec.size());
+    std::generate(vec.begin(), vec.end(), [&dist, &reng] { return dist(reng); });
+  }
+}
+}  // namespace baranov_a_temp_ns
+std::vector<int> global_arr(100000);
+
 TEST(mpi_baranov_a_odd_even_sort, test_pipeline_run) {
   int number = 100000;
   boost::mpi::communicator world;
-  std::vector<int> global_vec(number);
-  std::vector<int> out(number);
+  std::vector<int> global_vec;
+  std::vector<int> out;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    std::random_device rd;
-    std::default_random_engine reng(rd());
-    std::uniform_int_distribution<int> dist(0, global_vec.size());
-    std::generate(global_vec.begin(), global_vec.end(), [&dist, &reng] { return dist(reng); });
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    baranov_a_temp_ns::get_rnd_vec(global_arr);
+    global_vec = global_arr;
+    out.resize(number);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     taskDataPar->outputs_count.emplace_back(out.size());
   }
 
@@ -48,18 +65,16 @@ TEST(mpi_baranov_a_odd_even_sort, test_pipeline_run) {
 TEST(mpi_baranov_a_odd_even_sort, test_task_run) {
   int number = 100000;
   boost::mpi::communicator world;
-  std::vector<int> global_vec(number);
-  std::vector<int> out(number);
+  std::vector<int> global_vec;
+  std::vector<int> out;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    std::random_device rd;
-    std::default_random_engine reng(rd());
-    std::uniform_int_distribution<int> dist(0, global_vec.size());
-    std::generate(global_vec.begin(), global_vec.end(), [&dist, &reng] { return dist(reng); });
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    global_vec = global_arr;
+    out.resize(number);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     taskDataPar->outputs_count.emplace_back(out.size());
   }
 
