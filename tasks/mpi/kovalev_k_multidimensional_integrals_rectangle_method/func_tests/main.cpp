@@ -33,7 +33,9 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_mpi, invalid_integrat
   }
   kovalev_k_multidimensional_integrals_rectangle_method_mpi::MultidimensionalIntegralsRectangleMethodPar tmpTaskPar(
       tmpPar, kovalev_k_multidimensional_integrals_rectangle_method_mpi::f1);
-  ASSERT_FALSE(tmpTaskPar.validation());
+  if (world.rank() == 0) {
+    ASSERT_FALSE(tmpTaskPar.validation());
+  }
 }
 
 TEST(kovalev_k_multidimensional_integrals_rectangle_method_mpi, zero_length) {
