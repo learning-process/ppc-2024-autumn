@@ -31,7 +31,7 @@ TEST(nikolaev_r_strassen_matrix_multiplication_method_seq, test_2x2_matrices) {
   ASSERT_TRUE(testTaskSequential->run());
   ASSERT_TRUE(testTaskSequential->post_processing());
 
-  for (int i = 0; i < expected.size(); i++) {
+  for (size_t i = 0; i < expected.size(); i++) {
     EXPECT_EQ(expected[i], out[i]);
   }
 }
@@ -62,7 +62,7 @@ TEST(nikolaev_r_strassen_matrix_multiplication_method_seq, test_3x3_matrices) {
   ASSERT_TRUE(testTaskSequential->run());
   ASSERT_TRUE(testTaskSequential->post_processing());
 
-  for (int i = 0; i < expected.size(); i++) {
+  for (size_t i = 0; i < expected.size(); i++) {
     EXPECT_EQ(expected[i], out[i]);
   }
 }
@@ -94,7 +94,7 @@ TEST(nikolaev_r_strassen_matrix_multiplication_method_seq, test_4x4_matrices) {
   ASSERT_TRUE(testTaskSequential->run());
   ASSERT_TRUE(testTaskSequential->post_processing());
 
-  for (int i = 0; i < expected.size(); i++) {
+  for (size_t i = 0; i < expected.size(); i++) {
     EXPECT_EQ(expected[i], out[i]);
   }
 }
@@ -129,7 +129,7 @@ TEST(nikolaev_r_strassen_matrix_multiplication_method_seq, test_5x5_matrices) {
   ASSERT_TRUE(testTaskSequential->run());
   ASSERT_TRUE(testTaskSequential->post_processing());
 
-  for (int i = 0; i < expected.size(); i++) {
+  for (size_t i = 0; i < expected.size(); i++) {
     EXPECT_EQ(expected[i], out[i]);
   }
 }
