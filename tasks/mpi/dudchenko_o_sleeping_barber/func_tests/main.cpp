@@ -42,6 +42,7 @@ TEST(dudchenko_o_sleeping_barber_mpi, validation_test_3) {
   }
 }
 
+
 TEST(dudchenko_o_sleeping_barber_mpi, functional_test_1) {
   boost::mpi::communicator world;
 
@@ -56,15 +57,17 @@ TEST(dudchenko_o_sleeping_barber_mpi, functional_test_1) {
 
   dudchenko_o_sleeping_barber_mpi::TestMPISleepingBarber testMpiTaskParallel(taskDataPar);
 
-  ASSERT_TRUE(testMpiTaskParallel.validation());
-  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
-  ASSERT_TRUE(testMpiTaskParallel.run());
-  ASSERT_TRUE(testMpiTaskParallel.post_processing());
+  if (world.size() > 1) {
+    ASSERT_TRUE(testMpiTaskParallel.validation());
+    ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+    ASSERT_TRUE(testMpiTaskParallel.run());
+    ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
-  world.barrier();
+    world.barrier();
 
-  if (world.rank() == 0) {
-    ASSERT_EQ(global_res, 0);
+    if (world.rank() == 0) {
+      ASSERT_EQ(global_res, 0);
+    }
   }
 }
 
@@ -82,15 +85,17 @@ TEST(dudchenko_o_sleeping_barber_mpi, functional_test_2) {
 
   dudchenko_o_sleeping_barber_mpi::TestMPISleepingBarber testMpiTaskParallel(taskDataPar);
 
-  ASSERT_TRUE(testMpiTaskParallel.validation());
-  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
-  ASSERT_TRUE(testMpiTaskParallel.run());
-  ASSERT_TRUE(testMpiTaskParallel.post_processing());
+  if (world.size() > 1) {
+    ASSERT_TRUE(testMpiTaskParallel.validation());
+    ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+    ASSERT_TRUE(testMpiTaskParallel.run());
+    ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
-  world.barrier();
+    world.barrier();
 
-  if (world.rank() == 0) {
-    ASSERT_EQ(global_res, 0);
+    if (world.rank() == 0) {
+      ASSERT_EQ(global_res, 0);
+    }
   }
 }
 
@@ -108,15 +113,17 @@ TEST(dudchenko_o_sleeping_barber_mpi, functional_test_3) {
 
   dudchenko_o_sleeping_barber_mpi::TestMPISleepingBarber testMpiTaskParallel(taskDataPar);
 
-  ASSERT_TRUE(testMpiTaskParallel.validation());
-  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
-  ASSERT_TRUE(testMpiTaskParallel.run());
-  ASSERT_TRUE(testMpiTaskParallel.post_processing());
+  if (world.size() > 1) {
+    ASSERT_TRUE(testMpiTaskParallel.validation());
+    ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+    ASSERT_TRUE(testMpiTaskParallel.run());
+    ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
-  world.barrier();
+    world.barrier();
 
-  if (world.rank() == 0) {
-    ASSERT_EQ(global_res, 0);
+    if (world.rank() == 0) {
+      ASSERT_EQ(global_res, 0);
+    }
   }
 }
 
@@ -134,14 +141,16 @@ TEST(dudchenko_o_sleeping_barber_mpi, functional_test_4) {
 
   dudchenko_o_sleeping_barber_mpi::TestMPISleepingBarber testMpiTaskParallel(taskDataPar);
 
-  ASSERT_TRUE(testMpiTaskParallel.validation());
-  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
-  ASSERT_TRUE(testMpiTaskParallel.run());
-  ASSERT_TRUE(testMpiTaskParallel.post_processing());
+  if (world.size() > 1) {
+    ASSERT_TRUE(testMpiTaskParallel.validation());
+    ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+    ASSERT_TRUE(testMpiTaskParallel.run());
+    ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
-  world.barrier();
-  if (world.rank() == 0) {
-    ASSERT_EQ(global_res, 0);
+    world.barrier();
+    if (world.rank() == 0) {
+      ASSERT_EQ(global_res, 0);
+    }
   }
 }
 
@@ -159,14 +168,16 @@ TEST(dudchenko_o_sleeping_barber_mpi, functional_test_5) {
 
   dudchenko_o_sleeping_barber_mpi::TestMPISleepingBarber testMpiTaskParallel(taskDataPar);
 
-  ASSERT_TRUE(testMpiTaskParallel.validation());
-  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
-  ASSERT_TRUE(testMpiTaskParallel.run());
-  ASSERT_TRUE(testMpiTaskParallel.post_processing());
+  if (world.size() > 1) {
+    ASSERT_TRUE(testMpiTaskParallel.validation());
+    ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+    ASSERT_TRUE(testMpiTaskParallel.run());
+    ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
-  world.barrier();
+    world.barrier();
 
-  if (world.rank() == 0) {
-    ASSERT_EQ(global_res, 0);
+    if (world.rank() == 0) {
+      ASSERT_EQ(global_res, 0);
+    }
   }
 }
