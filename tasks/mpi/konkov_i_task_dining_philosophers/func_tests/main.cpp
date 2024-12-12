@@ -7,11 +7,10 @@
 
 #include "mpi/konkov_i_task_dining_philosophers/include/ops_mpi.hpp"
 
-// Функция генерации случайного вектора для тестов
 inline std::vector<int> getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  std::uniform_int_distribution<int> dist(-100, 100);  // Диапазон с отрицательными значениями
+  std::uniform_int_distribution<int> dist(-100, 100);
   std::vector<int> vec(sz);
   for (int i = 0; i < sz; i++) {
     vec[i] = dist(gen);

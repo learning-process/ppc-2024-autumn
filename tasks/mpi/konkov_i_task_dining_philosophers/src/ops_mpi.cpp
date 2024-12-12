@@ -27,7 +27,6 @@ bool konkov_i_task_dining_philosophers::DiningPhilosophersMPITaskParallel::run()
 
   unsigned int delta = 0;
 
-  // Передача данных
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
     input_ = std::vector<int>(taskData->inputs_count[0]);
@@ -48,7 +47,6 @@ bool konkov_i_task_dining_philosophers::DiningPhilosophersMPITaskParallel::run()
     world.recv(0, 0, local_input_.data(), delta);
   }
 
-  // Логика философов
   res = std::accumulate(local_input_.begin(), local_input_.end(), 0);
 
   int local_res = res;
