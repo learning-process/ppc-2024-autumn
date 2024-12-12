@@ -208,7 +208,10 @@ TEST(drozhdinov_d_mult_matrix_fox_seq, WrongValidation2) {
 }
 
 TEST(drozhdinov_d_mult_matrix_fox_seq, WrongValidation3) {
-  int k = 1, l = 1, m = 1, n = 1;
+  int k = 1;
+  int l = 1;
+  int m = 1;
+  int n = 1;
   std::vector<double> A = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(k * l);
   std::vector<double> B = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(m * n);
   std::vector<double> res(k * n);
