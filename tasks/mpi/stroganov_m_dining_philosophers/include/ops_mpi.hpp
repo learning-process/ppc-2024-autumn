@@ -5,9 +5,11 @@
 
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <boost/mpi/environment.hpp>
+#include <boost/serialization/serialization.hpp>
 #include <condition_variable>
-#include <memory>
-#include <mutex>
+#include <cstring>
+#include <string>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -21,20 +23,21 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  bool distribution_forks(int philosopher_id);
-  void release_forks(int philosopher_id);
-  bool can_eat(int philosopher_id);
-  void eat(int philosopher_id);
-  void think(int philosopher_id);
-  const std::vector<bool>& get_forks() const;
+
+  void eat();
+  void think();
+  bool distribution_forks();
+  void release_forks();
+  bool check_deadlock();
+  void resolve_deadlock();
+  bool check_all_think();
 
  private:
-  int count_philosophers;
-  std::vector<bool> forks;
-  std::mutex mutex;
-  std::condition_variable status;
-  int dining_philosophers;
   boost::mpi::communicator world;
+  int status;
+  int l_philosopher;
+  int r_philosopher;
+  int count_philosophers;
 };
 
 }  // namespace stroganov_m_dining_philosophers
