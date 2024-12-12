@@ -3,7 +3,6 @@
 
 #include <algorithm>
 #include <functional>
-#include <string>
 #include <thread>
 #include <vector>
 
@@ -96,6 +95,9 @@ void apply_operation(void *inbuf, void *inoutbuf, int count, MPI_Datatype dataty
       inout[i] = (inout[i] > in[i]) ? inout[i] : in[i];
     else if (op == MPI_MIN)
       inout[i] = (inout[i] < in[i]) ? inout[i] : in[i];
+    else {
+      throw "Unsupported operation\n";
+    }
   }
 }
 
