@@ -134,14 +134,12 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::run() {
       }
     }
   }
+
   for (size_t i = 0; i < local_res.size(); i++) {
     local_res[i] = 0;
     for (int j = 0; j < columns; j++) {
       local_res[i] += local_A[i * columns + j] * b[j];
     }
-  }
-  for (int i = 0; i++; i < local_res.size()) {
-    std ::cout << local_res[i];
   }
   res.resize(rows);
   boost::mpi::gatherv(world, local_res.data(), local_res.size(), res.data(), recv_counts, displacements, 0);
