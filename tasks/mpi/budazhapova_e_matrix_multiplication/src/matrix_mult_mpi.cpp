@@ -128,7 +128,6 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::run() {
   }
   res.resize(rows);
   boost::mpi::gatherv(world, local_res.data(), local_res.size(), res.data(), recv_counts, displacements, 0);
-  
   return true;
 }
 
