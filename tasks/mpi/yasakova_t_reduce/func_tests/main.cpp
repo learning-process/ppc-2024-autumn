@@ -19,7 +19,8 @@ std::vector<int> yasakova_t_reduce::getRandomVector(int size, int upper_border, 
   return vec;
 }
 
-std::vector<std::vector<int>> yasakova_t_reduce::getRandomMatrix(int rows, int columns, int upper_border, int lower_border) {
+std::vector<std::vector<int>> yasakova_t_reduce::getRandomMatrix(int rows, int columns, int upper_border,
+                                                                 int lower_border) {
   if (rows <= 0 || columns <= 0) throw "Incorrect size";
   std::vector<std::vector<int>> vec(rows);
   for (int i = 0; i < rows; i++) {
