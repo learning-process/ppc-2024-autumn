@@ -46,7 +46,7 @@ TEST(sequential_korobeinikov_perf_test_lab_02, test_pipeline_run) {
   taskDataSeq->outputs_count.emplace_back(1);
 
   // Create Task
-  auto testTaskSequential = std::make_shared<korobeinikov_a_test_task_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential = std::make_shared<korobeinikov_a_test_task_seq_lab_02::TestTaskSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -112,7 +112,7 @@ TEST(sequential_korobeinikov_perf_test_lab_02, test_task_run) {
   taskDataSeq->outputs_count.emplace_back(1);
 
   // Create Task
-  auto testTaskSequential = std::make_shared<korobeinikov_a_test_task_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential = std::make_shared<korobeinikov_a_test_task_seq_lab_02::TestTaskSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();

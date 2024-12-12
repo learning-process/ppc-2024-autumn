@@ -10,7 +10,7 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> korobeinikov_a_test_task_mpi::getRandomVector(int sz) {
+std::vector<int> korobeinikov_a_test_task_mpi_lab_02::getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
@@ -20,7 +20,7 @@ std::vector<int> korobeinikov_a_test_task_mpi::getRandomVector(int sz) {
   return vec;
 }
 
-bool korobeinikov_a_test_task_mpi::TestMPITaskSequential::pre_processing() {
+bool korobeinikov_a_test_task_mpi_lab_02::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init value for input and output
   A.data.reserve(taskData->inputs_count[0]);
@@ -39,17 +39,14 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskSequential::pre_processing() {
   return true;
 }
 
-bool korobeinikov_a_test_task_mpi::TestMPITaskSequential::validation() {
+bool korobeinikov_a_test_task_mpi_lab_02::TestMPITaskSequential::validation() {
   internal_order_test();
-
-  return (*reinterpret_cast<int *>(taskData->inputs[2]) == *reinterpret_cast<int *>(taskData->inputs[4])) &&
-         ((*reinterpret_cast<int *>(taskData->inputs[1])) * (*reinterpret_cast<int *>(taskData->inputs[2])) ==
-          (int)taskData->inputs_count[0]) &&
-         ((*reinterpret_cast<int *>(taskData->inputs[4])) * (*reinterpret_cast<int *>(taskData->inputs[5])) ==
-          (int)taskData->inputs_count[3]);
+  return (*taskData->inputs[2] == *taskData->inputs[4]) &&
+         ((*taskData->inputs[1]) * (*taskData->inputs[2]) == (int)taskData->inputs_count[0]) &&
+         ((*taskData->inputs[4]) * (*taskData->inputs[5]) == (int)taskData->inputs_count[3]);
 }
 
-bool korobeinikov_a_test_task_mpi::TestMPITaskSequential::run() {
+bool korobeinikov_a_test_task_mpi_lab_02::TestMPITaskSequential::run() {
   internal_order_test();
 
   for (int i = 0; i < A.count_rows; i++) {
@@ -65,7 +62,7 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskSequential::run() {
   return true;
 }
 
-bool korobeinikov_a_test_task_mpi::TestMPITaskSequential::post_processing() {
+bool korobeinikov_a_test_task_mpi_lab_02::TestMPITaskSequential::post_processing() {
   internal_order_test();
 
   std::copy(res.data.begin(), res.data.end(), reinterpret_cast<int *>(taskData->outputs[0]));
@@ -74,28 +71,26 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskSequential::post_processing() {
   return true;
 }
 
-bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::pre_processing() {
+bool korobeinikov_a_test_task_mpi_lab_02::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
   return true;
 }
 
-bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::validation() {
+bool korobeinikov_a_test_task_mpi_lab_02::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     if (taskData->inputs_count[0] == 0 || taskData->inputs_count[3] == 0) {
       return true;
     }
-    return (*reinterpret_cast<int *>(taskData->inputs[2]) == *reinterpret_cast<int *>(taskData->inputs[4])) &&
-           ((*reinterpret_cast<int *>(taskData->inputs[1])) * (*reinterpret_cast<int *>(taskData->inputs[2])) ==
-            (int)taskData->inputs_count[0]) &&
-           ((*reinterpret_cast<int *>(taskData->inputs[4])) * (*reinterpret_cast<int *>(taskData->inputs[5])) ==
-            (int)taskData->inputs_count[3]);
+    return (*taskData->inputs[2] == *taskData->inputs[4]) &&
+           ((*taskData->inputs[1]) * (*taskData->inputs[2]) == (int)taskData->inputs_count[0]) &&
+           ((*taskData->inputs[4]) * (*taskData->inputs[5]) == (int)taskData->inputs_count[3]);
   }
   return true;
 }
 
-bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::run() {
+bool korobeinikov_a_test_task_mpi_lab_02::TestMPITaskParallel::run() {
   internal_order_test();
   int num_use_proc;
   int count_rows_on_proc;
@@ -330,7 +325,7 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::run() {
   return true;
 }
 
-bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::post_processing() {
+bool korobeinikov_a_test_task_mpi_lab_02::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     std::copy(res.data.begin(), res.data.end(), reinterpret_cast<int *>(taskData->outputs[0]));

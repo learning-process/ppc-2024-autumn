@@ -52,7 +52,7 @@ TEST(korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B,
     taskDataPar->outputs_count.emplace_back(1);
   }
 
-  korobeinikov_a_test_task_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  korobeinikov_a_test_task_mpi_lab_02::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -88,7 +88,7 @@ TEST(korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B,
     taskDataSeq->outputs_count.emplace_back(1);
 
     // Create Task
-    korobeinikov_a_test_task_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    korobeinikov_a_test_task_mpi_lab_02::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -152,7 +152,7 @@ TEST(korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B,
     taskDataPar->outputs_count.emplace_back(1);
   }
 
-  korobeinikov_a_test_task_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  korobeinikov_a_test_task_mpi_lab_02::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -188,7 +188,7 @@ TEST(korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B,
     taskDataSeq->outputs_count.emplace_back(1);
 
     // Create Task
-    korobeinikov_a_test_task_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    korobeinikov_a_test_task_mpi_lab_02::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -250,7 +250,7 @@ TEST(korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B,
     taskDataPar->outputs_count.emplace_back(1);
   }
 
-  korobeinikov_a_test_task_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  korobeinikov_a_test_task_mpi_lab_02::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -289,7 +289,7 @@ TEST(korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B,
     taskDataSeq->outputs_count.emplace_back(1);
 
     // Create Task
-    korobeinikov_a_test_task_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    korobeinikov_a_test_task_mpi_lab_02::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -327,8 +327,8 @@ TEST(korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, T
 
   if (world.rank() == 0) {
     // Create TaskData
-    A = korobeinikov_a_test_task_mpi::getRandomVector(9);
-    B = korobeinikov_a_test_task_mpi::getRandomVector(9);
+    A = korobeinikov_a_test_task_mpi_lab_02::getRandomVector(9);
+    B = korobeinikov_a_test_task_mpi_lab_02::getRandomVector(9);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
     taskDataPar->inputs_count.emplace_back(A.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows_A));
@@ -351,7 +351,7 @@ TEST(korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, T
     taskDataPar->outputs_count.emplace_back(1);
   }
 
-  korobeinikov_a_test_task_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  korobeinikov_a_test_task_mpi_lab_02::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -387,7 +387,7 @@ TEST(korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, T
     taskDataSeq->outputs_count.emplace_back(1);
 
     // Create Task
-    korobeinikov_a_test_task_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    korobeinikov_a_test_task_mpi_lab_02::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -441,7 +441,7 @@ TEST(korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, T
     taskDataPar->outputs_count.emplace_back(1);
   }
 
-  korobeinikov_a_test_task_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  korobeinikov_a_test_task_mpi_lab_02::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -477,7 +477,7 @@ TEST(korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, T
     taskDataSeq->outputs_count.emplace_back(1);
 
     // Create Task
-    korobeinikov_a_test_task_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    korobeinikov_a_test_task_mpi_lab_02::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -531,7 +531,7 @@ TEST(korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, T
     taskDataPar->outputs_count.emplace_back(1);
   }
 
-  korobeinikov_a_test_task_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  korobeinikov_a_test_task_mpi_lab_02::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   if (world.rank() == 0) {
     ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
@@ -577,7 +577,7 @@ TEST(korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, T
     taskDataPar->outputs_count.emplace_back(1);
   }
 
-  korobeinikov_a_test_task_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  korobeinikov_a_test_task_mpi_lab_02::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   if (world.rank() == 0) {
     ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }

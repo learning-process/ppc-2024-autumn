@@ -5,7 +5,7 @@
 
 using namespace std::chrono_literals;
 
-bool korobeinikov_a_test_task_seq::TestTaskSequential::pre_processing() {
+bool korobeinikov_a_test_task_seq_lab_02::TestTaskSequential::pre_processing() {
   internal_order_test();
   // Init value for input and output
   A.data.reserve(taskData->inputs_count[0]);
@@ -24,17 +24,14 @@ bool korobeinikov_a_test_task_seq::TestTaskSequential::pre_processing() {
   return true;
 }
 
-bool korobeinikov_a_test_task_seq::TestTaskSequential::validation() {
+bool korobeinikov_a_test_task_seq_lab_02::TestTaskSequential::validation() {
   internal_order_test();
-  // return (*reinterpret_cast<int *>(taskData->inputs[2]) == *reinterpret_cast<int *>(taskData->inputs[4])) &&
-  //       ((*reinterpret_cast<int *>(taskData->inputs[1])) * (*reinterpret_cast<int *>(taskData->inputs[2])) ==
-  //        (int)taskData->inputs_count[0]) &&
-  //       ((*reinterpret_cast<int *>(taskData->inputs[4])) * (*reinterpret_cast<int *>(taskData->inputs[5])) ==
-  //         (int)taskData->inputs_count[3]);
-  return true;
+  return (*taskData->inputs[2] == *taskData->inputs[4]) &&
+         ((*taskData->inputs[1]) * (*taskData->inputs[2]) == (int)taskData->inputs_count[0]) &&
+         ((*taskData->inputs[4]) * (*taskData->inputs[5]) == (int)taskData->inputs_count[3]);
 }
 
-bool korobeinikov_a_test_task_seq::TestTaskSequential::run() {
+bool korobeinikov_a_test_task_seq_lab_02::TestTaskSequential::run() {
   internal_order_test();
 
   for (int i = 0; i < A.count_rows; i++) {
@@ -51,7 +48,7 @@ bool korobeinikov_a_test_task_seq::TestTaskSequential::run() {
   return true;
 }
 
-bool korobeinikov_a_test_task_seq::TestTaskSequential::post_processing() {
+bool korobeinikov_a_test_task_seq_lab_02::TestTaskSequential::post_processing() {
   internal_order_test();
 
   std::copy(res.data.begin(), res.data.end(), reinterpret_cast<int *>(taskData->outputs[0]));

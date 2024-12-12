@@ -54,7 +54,7 @@ TEST(mpi_korobeinikov_perf_test_lab_02, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(1);
   }
 
-  auto testMpiTaskParallel = std::make_shared<korobeinikov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<korobeinikov_a_test_task_mpi_lab_02::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -127,7 +127,7 @@ TEST(mpi_korobeinikov_perf_test_lab_02, test_task_run) {
     taskDataPar->outputs_count.emplace_back(1);
   }
 
-  auto testMpiTaskParallel = std::make_shared<korobeinikov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<korobeinikov_a_test_task_mpi_lab_02::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();

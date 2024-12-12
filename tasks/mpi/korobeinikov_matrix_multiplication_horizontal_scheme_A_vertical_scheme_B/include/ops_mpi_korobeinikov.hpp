@@ -13,7 +13,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace korobeinikov_a_test_task_mpi {
+namespace korobeinikov_a_test_task_mpi_lab_02 {
 
 std::vector<int> getRandomVector(int sz);
 
@@ -81,4 +81,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  // namespace korobeinikov_a_test_task_mpi
+}  // namespace korobeinikov_a_test_task_mpi_lab_02

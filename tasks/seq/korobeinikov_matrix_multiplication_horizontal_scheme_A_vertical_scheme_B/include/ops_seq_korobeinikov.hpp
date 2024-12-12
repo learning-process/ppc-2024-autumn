@@ -7,7 +7,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace korobeinikov_a_test_task_seq {
+namespace korobeinikov_a_test_task_seq_lab_02 {
 
 struct Matrix {
   std::vector<int> data;
@@ -53,4 +53,4 @@ class TestTaskSequential : public ppc::core::Task {
   Matrix res;
 };
 
-}  // namespace korobeinikov_a_test_task_seq
+}  // namespace korobeinikov_a_test_task_seq_lab_02
