@@ -43,8 +43,8 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
 
   return (taskData->inputs[2][0] == taskData->inputs[4][0]) &&
-         (taskData->inputs[1][0] * taskData->inputs[2][0] == (int)taskData->inputs_count[0]) &&
-         (taskData->inputs[4][0] * taskData->inputs[5][0] == (int)taskData->inputs_count[3]);
+         ((int)*taskData->inputs[1] * (int)*taskData->inputs[2] == (int)taskData->inputs_count[0]) &&
+         ((int)*taskData->inputs[4] * (int)*taskData->inputs[5] == (int)taskData->inputs_count[3]);
 }
 
 bool korobeinikov_a_test_task_mpi::TestMPITaskSequential::run() {
@@ -84,7 +84,7 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::validation() {
     if (taskData->inputs_count[0] == 0 || taskData->inputs_count[3] == 0) {
       return true;
     }
-    return (taskData->inputs[2][0] == taskData->inputs[4][0]) &&
+    return ((int)*taskData->inputs[2] == (int)*taskData->inputs[4]) &&
            ((int)*taskData->inputs[1] * (int)*taskData->inputs[2] == (int)taskData->inputs_count[0]) &&
            ((int)*taskData->inputs[4] * (int)*taskData->inputs[5] == (int)taskData->inputs_count[3]);
   }
