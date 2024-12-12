@@ -22,6 +22,7 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_mpi, invalid_integrat
   std::vector<std::pair<double, double>> lims;
   double h = 111.0;
   std::vector<double> out;
+  boost::mpi::communicator world;
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     taskSeq->inputs_count.emplace_back(lims.size());
@@ -32,7 +33,7 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_mpi, invalid_integrat
   }
   kovalev_k_multidimensional_integrals_rectangle_method_mpi::MultidimensionalIntegralsRectangleMethodPar tmpTaskPar(
       tmpPar, kovalev_k_multidimensional_integrals_rectangle_method_mpi::f1);
-  ASSERT_FALSE(tmpTaskSeq.validation());
+  ASSERT_FALSE(tmpTaskPar.validation());
 }
 
 TEST(kovalev_k_multidimensional_integrals_rectangle_method_mpi, zero_length) {
