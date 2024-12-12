@@ -12,7 +12,7 @@ std::vector<double> getRandomVector(uint32_t size) {
   std::srand(std::time(nullptr));
   std::vector<double> vec(size);
 
-  double lower_bound = 0;
+  double lower_bound = -10000;
   double upper_bound = 10000;
   for (uint32_t i = 0; i < size; i++) {
     vec[i] = lower_bound + std::rand() / (double)RAND_MAX * (upper_bound - lower_bound);

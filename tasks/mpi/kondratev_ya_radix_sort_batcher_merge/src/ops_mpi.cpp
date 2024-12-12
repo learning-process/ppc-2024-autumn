@@ -156,14 +156,38 @@ void kondratev_ya_radix_sort_batcher_merge_mpi::TestMPITaskParallel::exchange_an
 
   if (!neighbor_data.empty()) {
     std::vector<double> merged_data(local_input_.size() + neighbor_data.size());
-    std::merge(local_input_.begin(), local_input_.end(), neighbor_data.begin(), neighbor_data.end(),
-               merged_data.begin());
+    merge(local_input_, neighbor_data, merged_data);
 
     if (world.rank() == rank1) {
       local_input_.assign(merged_data.begin(), merged_data.begin() + local_input_.size());
     } else {
       local_input_.assign(merged_data.end() - local_input_.size(), merged_data.end());
     }
+  }
+}
+
+void kondratev_ya_radix_sort_batcher_merge_mpi::TestMPITaskParallel::merge(const std::vector<double>& first,
+                                                                           const std::vector<double>& second,
+                                                                           std::vector<double>& result) {
+  auto it1 = first.begin();
+  auto last1 = first.end();
+  auto it2 = second.begin();
+  auto last2 = second.end();
+  auto out = result.begin();
+
+  while (it1 != last1 && it2 != last2) {
+    if (*it1 <= *it2)
+      *out++ = *it1++;
+    else
+      *out++ = *it2++;
+  }
+
+  while (it1 != last1) {
+    *out++ = *it1++;
+  }
+
+  while (it2 != last2) {
+    *out++ = *it2++;
   }
 }
 
