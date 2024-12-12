@@ -308,7 +308,7 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_valid_matrix_negative_e
   }
 }
 
-TEST(deryabin_m_jacobi_iterative_method_mpi, 
++TEST(deryabin_m_jacobi_iterative_method_mpi,
      test_random_invalid_matrix_zeros_on_diagonal_and_negative_elements_on_non_diagonal) {
   boost::mpi::communicator world;
   std::random_device rd;
