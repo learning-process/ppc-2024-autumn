@@ -7,7 +7,7 @@
 
 #include "mpi/korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B/include/ops_mpi_korobeinikov.hpp"
 
-TEST(matrix_multiplication_horizontal_scheme_A_vertical_scheme_B,
+TEST(korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B,
      Test_1_determinate_matrix_3_x_1_and_1_x_3_to_prove_correctness_seq_and_mpi) {
   boost::mpi::communicator world;
   // Create data
@@ -107,7 +107,7 @@ TEST(matrix_multiplication_horizontal_scheme_A_vertical_scheme_B,
   }
 }
 
-TEST(matrix_multiplication_horizontal_scheme_A_vertical_scheme_B,
+TEST(korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B,
      Test_2_determinate_matrix_3_x_3_and_3_x_2_to_prove_correctness_seq_and_mpi) {
   boost::mpi::communicator world;
   // Create data
@@ -207,7 +207,7 @@ TEST(matrix_multiplication_horizontal_scheme_A_vertical_scheme_B,
   }
 }
 
-TEST(matrix_multiplication_horizontal_scheme_A_vertical_scheme_B,
+TEST(korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B,
      Test_3_determinate_matrix_4_x_4_and_4_x_4_to_prove_correctness_seq_and_mpi) {
   boost::mpi::communicator world;
 
@@ -308,7 +308,7 @@ TEST(matrix_multiplication_horizontal_scheme_A_vertical_scheme_B,
   }
 }
 
-TEST(matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_4_random_matrixes) {
+TEST(korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_4_random_matrixes) {
   boost::mpi::communicator world;
   // Create data
   std::vector<int> A(9);
@@ -401,7 +401,7 @@ TEST(matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_4_random_
   }
 }
 
-TEST(matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_5_empty_matrixes) {
+TEST(korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_5_empty_matrixes) {
   boost::mpi::communicator world;
   // Create data
   std::vector<int> A;
@@ -491,7 +491,7 @@ TEST(matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_5_empty_m
   }
 }
 
-TEST(matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_6_validation_false_1) {
+TEST(korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_6_validation_false_1) {
   boost::mpi::communicator world;
   // Create data
   std::vector<int> A(10);
@@ -537,7 +537,7 @@ TEST(matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_6_validat
   }
 }
 
-TEST(matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_7_validation_false_2) {
+TEST(korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_7_validation_false_2) {
   boost::mpi::communicator world;
   // Create data
   std::vector<int> A(10);

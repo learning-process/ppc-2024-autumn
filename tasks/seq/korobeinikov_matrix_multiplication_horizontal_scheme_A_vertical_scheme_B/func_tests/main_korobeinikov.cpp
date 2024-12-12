@@ -3,7 +3,7 @@
 
 #include "seq/korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B/include/ops_seq_korobeinikov.hpp"
 
-TEST(matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_1_without_negative_elemets) {
+TEST(korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_1_without_negative_elemets) {
   // Create data
   std::vector<int> A = {3, 2, 1};
   std::vector<int> B = {1, 2, 3};
@@ -55,7 +55,7 @@ TEST(matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_1_without
   ASSERT_EQ(count_cols_out, count_cols_RA);
 }
 
-TEST(matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_2_with_negative_elemets) {
+TEST(korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_2_with_negative_elemets) {
   // Create data
   std::vector<int> A = {-3, 2, -1};
   std::vector<int> B = {1, 2, 3};
@@ -107,7 +107,7 @@ TEST(matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_2_with_ne
   ASSERT_EQ(count_cols_out, count_cols_RA);
 }
 
-TEST(matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_3_only_zero) {
+TEST(korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_3_only_zero) {
   // Create data
   std::vector<int> A = {0, 0, 0};
   std::vector<int> B = {0, 0, 0};
@@ -159,7 +159,7 @@ TEST(matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_3_only_ze
   ASSERT_EQ(count_cols_out, count_cols_RA);
 }
 
-TEST(matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_4_validation_false_1) {
+TEST(korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_4_validation_false_1) {
   // Create data
   std::vector<int> A = {0, 0, 0};
   std::vector<int> B = {0, 0, 0};
@@ -200,7 +200,7 @@ TEST(matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_4_validat
   ASSERT_EQ(testTaskSequential.validation(), false);
 }
 
-TEST(matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_5_validation_false_2) {
+TEST(korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_5_validation_false_2) {
   // Create data
   std::vector<int> A = {0, 0, 0};
   std::vector<int> B = {0, 0, 0};

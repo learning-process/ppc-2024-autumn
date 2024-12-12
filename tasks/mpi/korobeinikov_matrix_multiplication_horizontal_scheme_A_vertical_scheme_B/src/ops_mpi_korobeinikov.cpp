@@ -42,9 +42,11 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskSequential::pre_processing() {
 bool korobeinikov_a_test_task_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
 
-  return (taskData->inputs[2][0] == taskData->inputs[4][0]) &&
-         ((int)*taskData->inputs[1] * (int)*taskData->inputs[2] == (int)taskData->inputs_count[0]) &&
-         ((int)*taskData->inputs[4] * (int)*taskData->inputs[5] == (int)taskData->inputs_count[3]);
+return (*reinterpret_cast<int *>(taskData->inputs[2]) == *reinterpret_cast<int *>(taskData->inputs[4])) &&
+         ((*reinterpret_cast<int *>(taskData->inputs[1])) * (*reinterpret_cast<int *>(taskData->inputs[2])) ==
+          (int)taskData->inputs_count[0]) &&
+         ((*reinterpret_cast<int *>(taskData->inputs[4])) * (*reinterpret_cast<int *>(taskData->inputs[5])) ==
+          (int)taskData->inputs_count[3]);
 }
 
 bool korobeinikov_a_test_task_mpi::TestMPITaskSequential::run() {
@@ -84,9 +86,11 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::validation() {
     if (taskData->inputs_count[0] == 0 || taskData->inputs_count[3] == 0) {
       return true;
     }
-    return ((int)*taskData->inputs[2] == (int)*taskData->inputs[4]) &&
-           ((int)*taskData->inputs[1] * (int)*taskData->inputs[2] == (int)taskData->inputs_count[0]) &&
-           ((int)*taskData->inputs[4] * (int)*taskData->inputs[5] == (int)taskData->inputs_count[3]);
+    return (*reinterpret_cast<int *>(taskData->inputs[2]) == *reinterpret_cast<int *>(taskData->inputs[4])) &&
+           ((*reinterpret_cast<int *>(taskData->inputs[1])) * (*reinterpret_cast<int *>(taskData->inputs[2])) ==
+            (int)taskData->inputs_count[0]) &&
+           ((*reinterpret_cast<int *>(taskData->inputs[4])) * (*reinterpret_cast<int *>(taskData->inputs[5])) ==
+            (int)taskData->inputs_count[3]);
   }
   return true;
 }
@@ -144,32 +148,37 @@ bool korobeinikov_a_test_task_mpi::TestMPITaskParallel::run() {
   if (num_use_proc == 0) {
     return true;
   }
-
-  // Send A rows by scatterv
   std::vector<int> displs;
   std::vector<int> scounts;
 
-  for (int i = 0; i < num_use_proc - 1; i++) {
-    scounts.push_back(count_rows_on_proc * A_cols);
-    displs.push_back(count_rows_on_proc * A_cols * i);
-    if (world.rank() == i) {
-      local_A_rows = std::vector<int>(scounts[i]);
+  // Send A rows by scatterv
+  if (world.rank() == 0) {
+    for (int i = 0; i < num_use_proc - 1; i++) {
+      scounts.push_back(count_rows_on_proc * A_cols);
+      displs.push_back(count_rows_on_proc * A_cols * i);
+    }
+    scounts.push_back(count_rows_on_proc * A_cols + (A_rows % num_use_proc) * A_cols);
+    displs.push_back(count_rows_on_proc * A_cols * (num_use_proc - 1));
+    for (int i = num_use_proc; i < world.size(); i++) {
+      scounts.push_back(0);
+      displs.push_back(scounts[num_use_proc - 1] + count_rows_on_proc * A_cols + (A_rows % num_use_proc) * A_cols);
     }
   }
 
-  scounts.push_back(count_rows_on_proc * A_cols + (A_rows % num_use_proc) * A_cols);
-  displs.push_back(count_rows_on_proc * A_cols * (num_use_proc - 1));
-  if (world.rank() == num_use_proc - 1) {
-    local_A_rows = std::vector<int>(scounts[num_use_proc - 1]);
+  for (int i = 0; i < num_use_proc - 1; i++) {
+    if (world.rank() == i) {
+      local_A_rows = std::vector<int>(count_rows_on_proc * A_cols);
+    }
   }
-
+  if (world.rank() == num_use_proc - 1) {
+    local_A_rows = std::vector<int>(count_rows_on_proc * A_cols + (A_rows % num_use_proc) * A_cols);
+  }
   for (int i = num_use_proc; i < world.size(); i++) {
-    scounts.push_back(0);
-    displs.push_back(scounts[num_use_proc - 1] + count_rows_on_proc * A_cols + (A_rows % num_use_proc) * A_cols);
     if (world.rank() == i) {
       local_A_rows = std::vector<int>(1);
     }
   }
+
 
   if (world.rank() == 0) {
     scatterv(world, A.data.data(), scounts, displs, local_A_rows.data(), local_A_rows.size(), 0);

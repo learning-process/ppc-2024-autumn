@@ -26,10 +26,9 @@ bool korobeinikov_a_test_task_seq::TestTaskSequential::pre_processing() {
 
 bool korobeinikov_a_test_task_seq::TestTaskSequential::validation() {
   internal_order_test();
-
-  return ((int)*taskData->inputs[2] == (int)*taskData->inputs[4]) &&
-         ((int)*taskData->inputs[1] * (int)*taskData->inputs[2] == (int)taskData->inputs_count[0]) &&
-         ((int)*taskData->inputs[4] * (int)*taskData->inputs[5] == (int)taskData->inputs_count[3]);
+  return (*reinterpret_cast<int *>(taskData->inputs[2]) == *reinterpret_cast<int *>(taskData->inputs[4])) &&
+         ((*reinterpret_cast<int *>(taskData->inputs[1])) * (*reinterpret_cast<int *>(taskData->inputs[2])) == (int)taskData->inputs_count[0]) &&
+         ((*reinterpret_cast<int *>(taskData->inputs[4])) * (*reinterpret_cast<int *>(taskData->inputs[5])) == (int)taskData->inputs_count[3]);
 }
 
 bool korobeinikov_a_test_task_seq::TestTaskSequential::run() {
