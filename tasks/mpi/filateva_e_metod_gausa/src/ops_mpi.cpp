@@ -28,6 +28,26 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::validation() {
     temp = reinterpret_cast<double*>(taskData->inputs[1]);
     this->b_vector.insert(b_vector.end(), temp, temp + size);
 
+    std::vector<double> temp_line(size);
+    for (int i = 0; i < size; i++) {
+      if (matrix[i * size + i] == 0) {
+        bool found = false;
+        for (int j = 0; j < size; j++) {
+          if (j != i && matrix[j * size + i] != 0) {
+            std::copy(matrix.begin() + i * size, matrix.begin() + (i + 1) * size, temp_line.begin());
+            std::copy(matrix.begin() + j * size, matrix.begin() + (j + 1) * size, matrix.begin() + i * size);
+            std::copy(temp_line.begin(), temp_line.end(), matrix.begin() + j * size);
+            std::swap(b_vector[i], b_vector[j]);
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          return false;
+        }
+      }
+    }
+
     std::vector<double> temp_matrix(size * (size + 1));
     for (int i = 0; i < size; i++) {
       std::copy(matrix.begin() + i * size, matrix.begin() + (i + 1) * size, temp_matrix.begin() + i * (size + 1));

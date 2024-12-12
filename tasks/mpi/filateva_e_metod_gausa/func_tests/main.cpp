@@ -324,3 +324,41 @@ TEST(filateva_e_metod_gausa_mpi, test_error_determenant) {
     EXPECT_FALSE(metodGausa.validation());
   }
 }
+
+TEST(filateva_e_metod_gausa_mpi, test_diagonal_0) {
+  boost::mpi::communicator world;
+  int size = 3;
+  std::vector<double> matrix;
+  std::vector<double> vecB;
+  std::vector<double> answer;
+  std::vector<double> tResh;
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    matrix = {0, 1, 1, 1, 0, 1, 1, 1, 0};
+    vecB = {8, 8, 8};
+    tResh = {4, 4, 4};
+    answer.resize(size);
+
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vecB.data()));
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(answer.data()));
+    taskData->inputs_count.emplace_back(size);
+    taskData->outputs_count.emplace_back(size);
+  }
+
+  filateva_e_metod_gausa_mpi::MetodGausa metodGausa(taskData);
+
+  ASSERT_TRUE(metodGausa.validation());
+  metodGausa.pre_processing();
+  metodGausa.run();
+  metodGausa.post_processing();
+
+  if (world.rank() == 0) {
+    EXPECT_EQ(answer.size(), tResh.size());
+    for (int i = 0; i < size; i++) {
+      EXPECT_NEAR(tResh[i], answer[i], alfa);
+    }
+  }
+}
