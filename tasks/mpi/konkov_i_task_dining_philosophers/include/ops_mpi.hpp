@@ -1,7 +1,5 @@
 #pragma once
 
-#include <gtest/gtest.h>
-
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <condition_variable>
@@ -16,8 +14,6 @@
 
 namespace konkov_i_task_dining_philosophers {
 
-std::vector<int> getRandomVector(int sz);
-
 class DiningPhilosophersMPITaskParallel : public ppc::core::Task {
  public:
   explicit DiningPhilosophersMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
@@ -27,10 +23,12 @@ class DiningPhilosophersMPITaskParallel : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
+
  private:
   boost::mpi::communicator world;
   std::vector<int> input_, local_input_;
   int res{};
+  std::vector<int> getRandomVector(int sz);
 };
 
 }  // namespace konkov_i_task_dining_philosophers
