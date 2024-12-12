@@ -1,4 +1,4 @@
-#include "mpi/kolokolova_d_max_of_row_matrix/include/ops_mpi.hpp"
+#include "mpi/kolokolova_d_radix_integer_merge_sort/include/ops_mpi.hpp"
 
 #include <algorithm>
 #include <functional>

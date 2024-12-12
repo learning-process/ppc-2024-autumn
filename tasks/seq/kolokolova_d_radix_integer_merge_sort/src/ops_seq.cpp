@@ -1,4 +1,4 @@
-#include "seq/kolokolova_d_max_of_row_matrix/include/ops_seq.hpp"
+#include "seq/kolokolova_d_radix_integer_merge_sort/include/ops_seq.hpp"
 
 #include <thread>
 

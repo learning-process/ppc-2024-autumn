@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/kolokolova_d_max_of_row_matrix/include/ops_mpi.hpp"
+#include "mpi/kolokolova_d_radix_integer_merge_sort/include/ops_mpi.hpp"
 
 TEST(kolokolova_d_max_of_row_matrix_mpi, test_pipeline_run) {
   boost::mpi::communicator world;

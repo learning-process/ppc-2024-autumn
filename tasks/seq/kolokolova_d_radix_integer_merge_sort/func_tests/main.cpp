@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "seq/kolokolova_d_max_of_row_matrix/include/ops_seq.hpp"
+#include "seq/kolokolova_d_radix_integer_merge_sort/include/ops_seq.hpp"
 
 TEST(kolokolova_d_max_of_row_matrix_seq, Test_Max_For_Rows1) {
   int count_rows = 3;
