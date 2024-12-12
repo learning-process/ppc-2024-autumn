@@ -25,10 +25,8 @@ TEST(dudchenko_o_sleeping_barber_mpi, validation_test_2) {
   dudchenko_o_sleeping_barber_mpi::TestMPISleepingBarber testMpiTaskParallel(taskDataPar);
 
   if (world.rank() == 0) {
-    if (world.size() < 3) {
-      taskDataPar->inputs_count = {1};
-      EXPECT_FALSE(testMpiTaskParallel.validation());
-    }
+    taskDataPar->inputs_count = {1};
+    EXPECT_TRUE(testMpiTaskParallel.validation());
   }
 }
 
@@ -39,13 +37,8 @@ TEST(dudchenko_o_sleeping_barber_mpi, validation_test_3) {
   dudchenko_o_sleeping_barber_mpi::TestMPISleepingBarber testMpiTaskParallel(taskDataPar);
 
   if (world.rank() == 0) {
-    if (world.size() < 3) {
-      taskDataPar->inputs_count = {1};
-      EXPECT_FALSE(testMpiTaskParallel.validation());
-    } else {
-      taskDataPar->inputs_count = {1};
-      EXPECT_TRUE(testMpiTaskParallel.validation());
-    }
+    taskDataPar->inputs_count = {1};
+    EXPECT_TRUE(testMpiTaskParallel.validation());
   }
 }
 
@@ -63,19 +56,15 @@ TEST(dudchenko_o_sleeping_barber_mpi, functional_test_1) {
 
   dudchenko_o_sleeping_barber_mpi::TestMPISleepingBarber testMpiTaskParallel(taskDataPar);
 
-  if (world.size() < 3) {
-    ASSERT_FALSE(testMpiTaskParallel.validation());
-  } else {
-    ASSERT_TRUE(testMpiTaskParallel.validation());
-    ASSERT_TRUE(testMpiTaskParallel.pre_processing());
-    ASSERT_TRUE(testMpiTaskParallel.run());
-    ASSERT_TRUE(testMpiTaskParallel.post_processing());
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+  ASSERT_TRUE(testMpiTaskParallel.run());
+  ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
-    world.barrier();
+  world.barrier();
 
-    if (world.rank() == 0) {
-      ASSERT_EQ(global_res, 0);
-    }
+  if (world.rank() == 0) {
+    ASSERT_EQ(global_res, 0);
   }
 }
 
@@ -93,19 +82,15 @@ TEST(dudchenko_o_sleeping_barber_mpi, functional_test_2) {
 
   dudchenko_o_sleeping_barber_mpi::TestMPISleepingBarber testMpiTaskParallel(taskDataPar);
 
-  if (world.size() < 3) {
-    ASSERT_FALSE(testMpiTaskParallel.validation());
-  } else {
-    ASSERT_TRUE(testMpiTaskParallel.validation());
-    ASSERT_TRUE(testMpiTaskParallel.pre_processing());
-    ASSERT_TRUE(testMpiTaskParallel.run());
-    ASSERT_TRUE(testMpiTaskParallel.post_processing());
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+  ASSERT_TRUE(testMpiTaskParallel.run());
+  ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
-    world.barrier();
+  world.barrier();
 
-    if (world.rank() == 0) {
-      ASSERT_EQ(global_res, 0);
-    }
+  if (world.rank() == 0) {
+    ASSERT_EQ(global_res, 0);
   }
 }
 
@@ -123,19 +108,15 @@ TEST(dudchenko_o_sleeping_barber_mpi, functional_test_3) {
 
   dudchenko_o_sleeping_barber_mpi::TestMPISleepingBarber testMpiTaskParallel(taskDataPar);
 
-  if (world.size() < 3) {
-    ASSERT_FALSE(testMpiTaskParallel.validation());
-  } else {
-    ASSERT_TRUE(testMpiTaskParallel.validation());
-    ASSERT_TRUE(testMpiTaskParallel.pre_processing());
-    ASSERT_TRUE(testMpiTaskParallel.run());
-    ASSERT_TRUE(testMpiTaskParallel.post_processing());
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+  ASSERT_TRUE(testMpiTaskParallel.run());
+  ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
-    world.barrier();
+  world.barrier();
 
-    if (world.rank() == 0) {
-      ASSERT_EQ(global_res, 0);
-    }
+  if (world.rank() == 0) {
+    ASSERT_EQ(global_res, 0);
   }
 }
 
@@ -153,18 +134,14 @@ TEST(dudchenko_o_sleeping_barber_mpi, functional_test_4) {
 
   dudchenko_o_sleeping_barber_mpi::TestMPISleepingBarber testMpiTaskParallel(taskDataPar);
 
-  if (world.size() < 3) {
-    ASSERT_FALSE(testMpiTaskParallel.validation());
-  } else {
-    ASSERT_TRUE(testMpiTaskParallel.validation());
-    ASSERT_TRUE(testMpiTaskParallel.pre_processing());
-    ASSERT_TRUE(testMpiTaskParallel.run());
-    ASSERT_TRUE(testMpiTaskParallel.post_processing());
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+  ASSERT_TRUE(testMpiTaskParallel.run());
+  ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
-    world.barrier();
-    if (world.rank() == 0) {
-      ASSERT_EQ(global_res, 0);
-    }
+  world.barrier();
+  if (world.rank() == 0) {
+    ASSERT_EQ(global_res, 0);
   }
 }
 
@@ -182,18 +159,14 @@ TEST(dudchenko_o_sleeping_barber_mpi, functional_test_5) {
 
   dudchenko_o_sleeping_barber_mpi::TestMPISleepingBarber testMpiTaskParallel(taskDataPar);
 
-  if (world.size() < 3) {
-    ASSERT_FALSE(testMpiTaskParallel.validation());
-  } else {
-    ASSERT_TRUE(testMpiTaskParallel.validation());
-    ASSERT_TRUE(testMpiTaskParallel.pre_processing());
-    ASSERT_TRUE(testMpiTaskParallel.run());
-    ASSERT_TRUE(testMpiTaskParallel.post_processing());
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+  ASSERT_TRUE(testMpiTaskParallel.run());
+  ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
-    world.barrier();
+  world.barrier();
 
-    if (world.rank() == 0) {
-      ASSERT_EQ(global_res, 0);
-    }
+  if (world.rank() == 0) {
+    ASSERT_EQ(global_res, 0);
   }
 }

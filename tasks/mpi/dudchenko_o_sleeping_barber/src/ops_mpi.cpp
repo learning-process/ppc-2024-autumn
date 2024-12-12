@@ -33,10 +33,6 @@ bool TestMPISleepingBarber::validation() {
     throw std::runtime_error("Invalid rank.");
   }
 
-  if (world.size() < 3) {
-    return false;
-  }
-
   return true;
 }
 
