@@ -74,7 +74,7 @@ TEST(mpi_korobeinikov_perf_test, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    for (int i = 0; i < out.size(); i++) {
+    for (size_t i = 0; i < out.size(); i++) {
       ASSERT_EQ(150, out[i]);
     }
     ASSERT_EQ(count_rows_out, count_rows_RA);
@@ -147,7 +147,7 @@ TEST(mpi_korobeinikov_perf_test, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    for (int i = 0; i < out.size(); i++) {
+    for (size_t i = 0; i < out.size(); i++) {
       ASSERT_EQ(150, out[i]);
     }
     ASSERT_EQ(count_rows_out, count_rows_RA);

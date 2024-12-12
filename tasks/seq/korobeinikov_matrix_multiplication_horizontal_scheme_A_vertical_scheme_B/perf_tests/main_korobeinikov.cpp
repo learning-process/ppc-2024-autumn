@@ -65,7 +65,7 @@ TEST(sequential_korobeinikov_perf_test, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  for (int i = 0; i < right_answer.size(); i++) {
+  for (size_t i = 0; i < right_answer.size(); i++) {
     ASSERT_EQ(right_answer[i], out[i]);
   }
   ASSERT_EQ(count_rows_out, count_rows_RA);
@@ -131,7 +131,7 @@ TEST(sequential_korobeinikov_perf_test, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  for (int i = 0; i < right_answer.size(); i++) {
+  for (size_t i = 0; i < right_answer.size(); i++) {
     ASSERT_EQ(right_answer[i], out[i]);
   }
   ASSERT_EQ(count_rows_out, count_rows_RA);
