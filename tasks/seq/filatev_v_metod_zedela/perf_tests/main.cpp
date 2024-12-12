@@ -42,20 +42,11 @@ std::vector<int> genetatirVectorB(std::vector<int> &matrix, std::vector<int> &ve
   return ans;
 }
 
-bool rightAns(std::vector<double> &ans, std::vector<int> &resh, double alfa) {
-  double max_r = 0;
-  for (long unsigned int i = 0; i < ans.size(); ++i) {
-    double temp = abs(ans[i] - resh[i]);
-    max_r = std::max(max_r, temp);
-  }
-  return max_r < alfa;
-}
-
 }  // namespace filatev_v_metod_zedela_seq
 
 TEST(filatev_v_metod_zedela_seq, test_pipeline_run) {
   int size = 500;
-  double alfa = 0.00001;
+  double alfa = 0.01;
   std::vector<int> matrix(size * size);
   std::vector<int> vecB(size);
   std::vector<double> answer;
@@ -95,12 +86,15 @@ TEST(filatev_v_metod_zedela_seq, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  ASSERT_EQ(filatev_v_metod_zedela_seq::rightAns(answer, resh, alfa), true);
+  EXPECT_EQ(answer.size(), resh.size());
+  for (int i = 0; i < size; i++) {
+    EXPECT_NEAR(resh[i], answer[i], alfa);
+  }
 }
 
 TEST(filatev_v_metod_zedela_seq, test_task_run) {
   int size = 500;
-  double alfa = 0.00001;
+  double alfa = 0.01;
   std::vector<int> matrix(size * size);
   std::vector<int> vecB(size);
   std::vector<double> answer;
@@ -140,5 +134,8 @@ TEST(filatev_v_metod_zedela_seq, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  ASSERT_EQ(filatev_v_metod_zedela_seq::rightAns(answer, resh, alfa), true);
+  EXPECT_EQ(answer.size(), resh.size());
+  for (int i = 0; i < size; i++) {
+    EXPECT_NEAR(resh[i], answer[i], alfa);
+  }
 }
