@@ -146,7 +146,6 @@ TEST(budazhapova_e_matrix_mult_mpi, ordinary_test_3_for_two_or_four_proc_to_cras
     ASSERT_EQ(out, out_seq);
   }
 }
-
 TEST(budazhapova_e_matrix_mult_mpi, random_test_1) {
   boost::mpi::communicator world;
   int size_m;
