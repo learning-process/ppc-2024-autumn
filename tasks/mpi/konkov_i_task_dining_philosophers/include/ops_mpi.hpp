@@ -23,7 +23,6 @@ class DiningPhilosophersMPITaskParallel : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-
  private:
   boost::mpi::communicator world;
   std::vector<int> input_, local_input_;

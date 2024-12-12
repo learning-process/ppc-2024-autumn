@@ -55,7 +55,6 @@ bool konkov_i_task_dining_philosophers::DiningPhilosophersMPITaskParallel::run()
   return true;
 }
 
-
 bool konkov_i_task_dining_philosophers::DiningPhilosophersMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
