@@ -128,6 +128,7 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::run() {
       }
     }
   }
+  return true;
 }
 
 bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::post_processing() {
