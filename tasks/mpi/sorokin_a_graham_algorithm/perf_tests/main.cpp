@@ -21,9 +21,9 @@ std::vector<int> getrndvec(int n, int max, int min) {
   return tmp;
 }
 
-TEST(sorokin_a_graham_algorithm_perf_test, test_1000000_points) {
+TEST(sorokin_a_graham_algorithm_perf_test, test_10000000_points_tack) {
   boost::mpi::communicator world;
-  std::vector<int> in = getrndvec(2000000, -100, 100);
+  std::vector<int> in = getrndvec(20000000, -100, 100);
   std::vector<int> out(in.size(), 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -51,7 +51,7 @@ TEST(sorokin_a_graham_algorithm_perf_test, test_1000000_points) {
 
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
-  perfAnalyzer->pipeline_run(perfAttr, perfResults);
+  perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
   }
