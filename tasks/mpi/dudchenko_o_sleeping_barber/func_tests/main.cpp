@@ -42,7 +42,6 @@ TEST(dudchenko_o_sleeping_barber_mpi, validation_test_3) {
   }
 }
 
-
 TEST(dudchenko_o_sleeping_barber_mpi, functional_test_1) {
   boost::mpi::communicator world;
 
