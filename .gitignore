@@ -13,3 +13,5 @@ sln/
 CMakeSettings.json
 .DS_Store
 .cache
+3rdparty/
+.gitignore/
