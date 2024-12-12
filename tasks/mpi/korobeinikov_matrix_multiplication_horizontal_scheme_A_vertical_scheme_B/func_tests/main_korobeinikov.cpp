@@ -194,10 +194,10 @@ TEST(matrix_multiplication_horizontal_scheme_A_vertical_scheme_B,
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    for (int i = 0; i < right_answer.size(); i++) {
+    for (size_t i = 0; i < right_answer.size(); i++) {
       ASSERT_EQ(right_answer[i], out_seq[i]);
     }
-    for (int i = 0; i < right_answer.size(); i++) {
+    for (size_t i = 0; i < right_answer.size(); i++) {
       ASSERT_EQ(right_answer[i], out_mpi[i]);
     }
     ASSERT_EQ(count_rows_out_seq, count_rows_RA);
@@ -393,7 +393,7 @@ TEST(matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_4_random_
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    for (int i = 0; i < out_seq.size(); i++) {
+    for (size_t i = 0; i < out_seq.size(); i++) {
       ASSERT_EQ(out_mpi[i], out_seq[i]);
     }
     ASSERT_EQ(count_rows_out_seq, count_rows_out_mpi);
@@ -483,7 +483,7 @@ TEST(matrix_multiplication_horizontal_scheme_A_vertical_scheme_B, Test_5_empty_m
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    for (int i = 0; i < out_seq.size(); i++) {
+    for (size_t i = 0; i < out_seq.size(); i++) {
       ASSERT_EQ(out_mpi[i], out_seq[i]);
     }
     ASSERT_EQ(count_rows_out_seq, count_rows_out_mpi);
