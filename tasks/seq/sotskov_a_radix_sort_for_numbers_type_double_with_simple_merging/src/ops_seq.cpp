@@ -34,8 +34,8 @@ bool sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq::TestT
   return true;
 }
 
-void sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq::TestTaskSequential::
-    radixSortWithSignHandling(std::vector<double>& data) {
+void sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq::radixSortWithSignHandling(
+    std::vector<double>& data) {
   const int num_bits = sizeof(double) * 8;
   const int radix = 2;
 
@@ -62,8 +62,8 @@ void sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq::TestT
   data.insert(data.end(), positives.begin(), positives.end());
 }
 
-void sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq::TestTaskSequential::radixSort(
-    std::vector<double>& data, int num_bits, int radix) {
+void sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq::radixSort(std::vector<double>& data,
+                                                                                     int num_bits, int radix) {
   std::vector<std::vector<double>> buckets(radix);
   std::vector<double> output(data.size());
 
