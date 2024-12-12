@@ -18,6 +18,21 @@ double f3advanced(std::vector<double> &arguments) {
 }
 }  // namespace kovalev_k_multidimensional_integrals_rectangle_method_seq
 
+TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, invalid_integration_step) {
+  std::vector<std::pair<double, double>> lims;
+  double h = 11.0;
+  std::vector<double> out;
+  std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
+  taskSeq->inputs_count.emplace_back(lims.size());
+  taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(lims.data()));
+  taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&h));
+  taskSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskSeq->outputs_count.emplace_back(out.size());
+  kovalev_k_multidimensional_integrals_rectangle_method_seq::MultidimensionalIntegralsRectangleMethod tmpTaskSeq(
+      taskSeq, kovalev_k_multidimensional_integrals_rectangle_method_seq::f1);
+  ASSERT_FALSE(tmpTaskSeq.validation());
+}
+
 TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, zero_length) {
   std::vector<std::pair<double, double>> lims;
   double h = 0.001;

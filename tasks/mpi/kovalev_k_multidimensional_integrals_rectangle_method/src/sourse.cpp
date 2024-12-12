@@ -62,7 +62,7 @@ bool kovalev_k_multidimensional_integrals_rectangle_method_mpi::Multidimensional
   internal_order_test();
   if (world.rank() == 0) {
     if (taskData->inputs.empty() || taskData->outputs.empty() || taskData->inputs_count[0] <= 0 ||
-        taskData->outputs_count[0] != 1) {
+        taskData->outputs_count[0] != 1 || reinterpret_cast<double*>(taskData->inputs[1])[0] > 0.01) {
       return false;
     }
   }

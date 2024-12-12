@@ -41,7 +41,8 @@ bool kovalev_k_multidimensional_integrals_rectangle_method_seq::Multidimensional
 
 bool kovalev_k_multidimensional_integrals_rectangle_method_seq::MultidimensionalIntegralsRectangleMethod::validation() {
   internal_order_test();
-  return (taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1 && taskData->inputs_count[0] == n);
+  return (taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == 1 && taskData->inputs_count[0] == n &&
+          reinterpret_cast<double*>(taskData->inputs[1])[0] <= 0.01);
 }
 
 bool kovalev_k_multidimensional_integrals_rectangle_method_seq::MultidimensionalIntegralsRectangleMethod::run() {
