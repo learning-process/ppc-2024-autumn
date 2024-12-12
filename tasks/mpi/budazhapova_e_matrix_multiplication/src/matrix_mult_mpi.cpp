@@ -91,6 +91,8 @@ bool budazhapova_e_matrix_mult_mpi::MatrixMultParallel::run() {
   int n_of_proc_with_extra_row;
   int start_row;
   int end_row;
+  int world_size = world.size();
+  int world_rank = world.rank();
 
   for (int i = 0; i < world_size; i++) {
     n_of_send_rows = rows / world_size;
