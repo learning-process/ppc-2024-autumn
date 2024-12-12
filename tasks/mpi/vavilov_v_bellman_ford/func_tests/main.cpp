@@ -8,25 +8,23 @@ namespace mpi = boost::mpi;
 
 TEST(vavilov_v_bellman_ford_mpi, ValidInputWithMultiplePaths_1) {
   mpi::communicator world;
+  auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::vector<int> edges = {0, 1, 10, 0, 2, 5, 1, 2, 2, 1, 3, 1, 2, 1, 3, 2, 3, 9, 2, 4, 2, 3, 4, 4};
+  std::vector<int> output(5);
+  int vertices = 5, edges_count = 8, source = 0;
+  taskDataPar->inputs_count.emplace_back(vertices);
+  taskDataPar->inputs_count.emplace_back(edges_count);
+  taskDataPar->inputs_count.emplace_back(source);
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(edges.data()));
+  taskDataPar->outputs_count.emplace_back(output.size());
+  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
 
+  vavilov_v_bellman_ford_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+  ASSERT_TRUE(testMpiTaskParallel.run());
+  ASSERT_TRUE(testMpiTaskParallel.post_processing());
   if (world.rank() == 0) {
-    auto taskDataPar = std::make_shared<ppc::core::TaskData>();
-    std::vector<int> edges = {0, 1, 10, 0, 2, 5, 1, 2, 2, 1, 3, 1, 2, 1, 3, 2, 3, 9, 2, 4, 2, 3, 4, 4};
-    std::vector<int> output(5);
-    int vertices = 5, edges_count = 8, source = 0;
-    taskDataPar->inputs_count.emplace_back(vertices);
-    taskDataPar->inputs_count.emplace_back(edges_count);
-    taskDataPar->inputs_count.emplace_back(source);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(edges.data()));
-    taskDataPar->outputs_count.emplace_back(output.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
-
-    vavilov_v_bellman_ford_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-    ASSERT_TRUE(testMpiTaskParallel.validation());
-    ASSERT_TRUE(testMpiTaskParallel.pre_processing());
-    ASSERT_TRUE(testMpiTaskParallel.run());
-    ASSERT_TRUE(testMpiTaskParallel.post_processing());
-
     std::vector<int> expected_output = {0, 8, 5, 9, 7};
     EXPECT_EQ(output, expected_output);
   }
