@@ -1,29 +1,60 @@
-// Copyright 2023 Nesterov Alexander
+// Copyright 2024 Korobeinikov Arseny
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "mpi/example/include/ops_mpi.hpp"
+#include "mpi/korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B/include/ops_mpi_korobeinikov.hpp"
 
-TEST(mpi_example_perf_test, test_pipeline_run) {
+// mpiexec -n 4 mpi_perf_tests
+
+TEST(mpi_korobeinikov_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_sum(1, 0);
+
+  // Create data
+  std::vector<int> A;
+  std::vector<int> B;
+  int count_rows_A = 150;
+  int count_cols_A = 150;
+  int count_rows_B = 150;
+  int count_cols_B = 150;
+
+  std::vector<int> out;
+  int count_rows_out = 0;
+  int count_cols_out = 0;
+  int count_rows_RA = 150;
+  int count_cols_RA = 150;
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int count_size_vector;
   if (world.rank() == 0) {
-    count_size_vector = 120;
-    global_vec = std::vector<int>(count_size_vector, 1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());
+    A = std::vector<int>(22500, 1);
+    B = std::vector<int>(22500, 1);
+    out = std::vector<int>(22500, 0);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
+    taskDataPar->inputs_count.emplace_back(A.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows_A));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_cols_A));
+    taskDataPar->inputs_count.emplace_back(1);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
+    taskDataPar->inputs_count.emplace_back(B.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows_B));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_cols_B));
+    taskDataPar->inputs_count.emplace_back(1);
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows_out));
+    taskDataPar->outputs_count.emplace_back(1);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(&count_cols_out));
+    taskDataPar->outputs_count.emplace_back(1);
   }
 
-  auto testMpiTaskParallel = std::make_shared<nesterov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar, "+");
+  auto testMpiTaskParallel = std::make_shared<korobeinikov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -43,27 +74,60 @@ TEST(mpi_example_perf_test, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(count_size_vector, global_sum[0]);
+    for (int i = 0; i < out.size(); i++) {
+      ASSERT_EQ(150, out[i]);
+    }
+    ASSERT_EQ(count_rows_out, count_rows_RA);
+    ASSERT_EQ(count_cols_out, count_cols_RA);
   }
 }
 
-TEST(mpi_example_perf_test, test_task_run) {
+TEST(mpi_korobeinikov_perf_test, test_task_run) {
   boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_sum(1, 0);
+
+  // Create data
+  std::vector<int> A;
+  std::vector<int> B;
+  int count_rows_A = 150;
+  int count_cols_A = 150;
+  int count_rows_B = 150;
+  int count_cols_B = 150;
+
+  std::vector<int> out;
+  int count_rows_out = 0;
+  int count_cols_out = 0;
+  int count_rows_RA = 150;
+  int count_cols_RA = 150;
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int count_size_vector;
   if (world.rank() == 0) {
-    count_size_vector = 120;
-    global_vec = std::vector<int>(count_size_vector, 1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sum.data()));
-    taskDataPar->outputs_count.emplace_back(global_sum.size());
+    A = std::vector<int>(22500, 1);
+    B = std::vector<int>(22500, 1);
+    out = std::vector<int>(22500, 0);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
+    taskDataPar->inputs_count.emplace_back(A.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows_A));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_cols_A));
+    taskDataPar->inputs_count.emplace_back(1);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
+    taskDataPar->inputs_count.emplace_back(B.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows_B));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&count_cols_B));
+    taskDataPar->inputs_count.emplace_back(1);
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(&count_rows_out));
+    taskDataPar->outputs_count.emplace_back(1);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(&count_cols_out));
+    taskDataPar->outputs_count.emplace_back(1);
   }
 
-  auto testMpiTaskParallel = std::make_shared<nesterov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar, "+");
+  auto testMpiTaskParallel = std::make_shared<korobeinikov_a_test_task_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -83,17 +147,10 @@ TEST(mpi_example_perf_test, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(count_size_vector, global_sum[0]);
+    for (int i = 0; i < out.size(); i++) {
+      ASSERT_EQ(150, out[i]);
+    }
+    ASSERT_EQ(count_rows_out, count_rows_RA);
+    ASSERT_EQ(count_cols_out, count_cols_RA);
   }
-}
-
-int main(int argc, char** argv) {
-  boost::mpi::environment env(argc, argv);
-  boost::mpi::communicator world;
-  ::testing::InitGoogleTest(&argc, argv);
-  ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
-  if (world.rank() != 0) {
-    delete listeners.Release(listeners.default_result_printer());
-  }
-  return RUN_ALL_TESTS();
 }
