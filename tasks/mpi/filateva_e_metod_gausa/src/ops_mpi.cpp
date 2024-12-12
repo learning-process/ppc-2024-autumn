@@ -86,6 +86,7 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::run() {
   internal_order_test();
 
   std::vector<double> temp_matrix;
+  boost::mpi::broadcast(world, size, 0);
   int size_n = size + 1;
 
   if (world.rank() == 0) {
@@ -117,8 +118,7 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::run() {
 
   int delta = size / (world.size() - 1);
   int ost = size % (world.size() - 1);
-  boost::mpi::broadcast(world, size, 0);
-  std::vector<double> local_matrix((delta + world.size()) * size_n, 0);
+  std::vector<double> local_matrix(size * size_n, 0);
   std::vector<double> t_strock(size_n, 0);
   std::vector<int> distribution(world.size(), 0);
   std::vector<int> displacement(world.size(), 0);
