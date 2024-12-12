@@ -269,7 +269,6 @@ int filatev_v_metod_zedela_mpi::MetodZedela::rankMatrix(std::vector<int>& matrix
   std::transform(matrixT.begin(), matrixT.end(), _matrix.begin(), [](int val) { return static_cast<double>(val); });
   if (n == 0) return 0;
   int m = size;
-
   int rank = 0;
 
   for (int col = 0; col < n; col++) {
