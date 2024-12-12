@@ -34,7 +34,10 @@ std::vector<double> getRandomVector(int sz) {
 }
 }  // namespace drozhdinov_d_mult_matrix_fox_seq
 TEST(drozhdinov_d_mult_matrix_fox_seq_perf_test, test_pipeline_run) {
-  int k = 1, l = 100, m = 100, n = 7;
+  int k = 1;
+  int l = 100;
+  int m = 100;
+  int n = 7;
   std::vector<double> A = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(k * l);
   std::vector<double> B = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(m * n);
   std::vector<double> res(k * n);
@@ -72,11 +75,14 @@ TEST(drozhdinov_d_mult_matrix_fox_seq_perf_test, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(res, expres);
+  ASSERT_EQ(expres, res);
 }
 
 TEST(drozhdinov_d_mult_matrix_fox_seq_perf_test, test_task_run) {
-  int k = 1, l = 100, m = 100, n = 7;
+  int k = 1;
+  int l = 100;
+  int m = 100;
+  int n = 7;
   std::vector<double> A = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(k * l);
   std::vector<double> B = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(m * n);
   std::vector<double> res(k * n);
@@ -114,5 +120,5 @@ TEST(drozhdinov_d_mult_matrix_fox_seq_perf_test, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(res, expres);
+  ASSERT_EQ(expres, res);
 }

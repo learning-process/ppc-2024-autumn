@@ -34,7 +34,10 @@ std::vector<double> getRandomVector(int sz) {
 }  // namespace drozhdinov_d_mult_matrix_fox_seq
 
 TEST(drozhdinov_d_mult_matrix_fox_seq, 2x3_3x2size) {
-  int k = 2, l = 3, m = 3, n = 2;
+  int k = 2;
+  int l = 3;
+  int m = 3;
+  int n = 2;
   std::vector<double> A = {1, 2, 3, 4, 5, 6};
   std::vector<double> B = {7, 8, 9, 10, 11, 12};
   std::vector<double> res(4);
@@ -58,11 +61,14 @@ TEST(drozhdinov_d_mult_matrix_fox_seq, 2x3_3x2size) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(res, expres);
+  ASSERT_EQ(expres, res);
 }
 
 TEST(drozhdinov_d_mult_matrix_fox_seq, EmptyTest) {
-  int k = 0, l = 0, m = 0, n = 0;
+  int k = 0;
+  int l = 0;
+  int m = 0;
+  int n = 0;
   std::vector<double> A = {};
   std::vector<double> B = {};
   std::vector<double> res;
@@ -86,7 +92,7 @@ TEST(drozhdinov_d_mult_matrix_fox_seq, EmptyTest) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(res, expres);
+  ASSERT_EQ(expres, res);
 }
 /*
 TEST(drozhdinov_d_mult_matrix_fox_seq, 1x10_10x7Random) {
@@ -118,7 +124,10 @@ TEST(drozhdinov_d_mult_matrix_fox_seq, 1x10_10x7Random) {
 }*/
 
 TEST(drozhdinov_d_mult_matrix_fox_seq, 1x1_1x1Random) {
-  int k = 1, l = 1, m = 1, n = 1;
+  int k = 1;
+  int l = 1;
+  int m = 1;
+  int n = 1;
   std::vector<double> A = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(k * l);
   std::vector<double> B = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(m * n);
   std::vector<double> res(k * n);
@@ -142,11 +151,14 @@ TEST(drozhdinov_d_mult_matrix_fox_seq, 1x1_1x1Random) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(res, expres);
+  ASSERT_EQ(expres, res);
 }
 
 TEST(drozhdinov_d_mult_matrix_fox_seq, WrongValidation1) {
-  int k = 1, l = 1, m = 2, n = 1;  // A cols not equal B rows
+  int k = 1;
+  int l = 1;
+  int m = 2;
+  int n = 1;  // A cols not equal B rows
   std::vector<double> A = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(k * l);
   std::vector<double> B = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(m * n);
   std::vector<double> res(k * n);
@@ -170,7 +182,10 @@ TEST(drozhdinov_d_mult_matrix_fox_seq, WrongValidation1) {
 }
 
 TEST(drozhdinov_d_mult_matrix_fox_seq, WrongValidation2) {
-  int k = 1, l = 1, m = 1, n = 1;
+  int k = 1;
+  int l = 1;
+  int m = 1;
+  int n = 1;
   std::vector<double> A = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(k * l);
   std::vector<double> B = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(m * n);
   std::vector<double> res(k * n);
@@ -216,7 +231,10 @@ TEST(drozhdinov_d_mult_matrix_fox_seq, WrongValidation3) {
 }
 
 TEST(drozhdinov_d_mult_matrix_fox_seq, WrongValidation4) {
-  int k = 1, l = 1, m = 1, n = 1;
+  int k = 1;
+  int l = 1;
+  int m = 1;
+  int n = 1;
   std::vector<double> A = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(k * l);
   std::vector<double> B = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(m * n);
   std::vector<double> res(k * n);

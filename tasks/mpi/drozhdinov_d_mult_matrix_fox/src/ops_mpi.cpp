@@ -2,6 +2,7 @@
 #include "mpi/drozhdinov_d_mult_matrix_fox/include/ops_mpi.hpp"
 // not example
 #include <algorithm>
+#include <cmath>
 #include <functional>
 #include <random>
 #include <string>
@@ -132,7 +133,8 @@ std::vector<double> drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel::Paral
   boost::mpi::communicator COL_COMM(CCOMM, boost::mpi::comm_take_ownership);
   int block_size;
   if (world.rank() == 0) {
-    int c = 1, padding = 1;
+    int c = 1;
+    int padding = 1;
     while (padding < std::max({K, L, N}) || padding % grid_size != 0) {
       padding *= c;
       c++;
@@ -292,16 +294,23 @@ bool drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel::pre_processing() {
 bool drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
+    // int sq = static_cast<int>(std::sqrt(world.size()));
+    // std::cout << sq << " " << world.size() << std::endl;
     // Check count elements of output
     return taskData->inputs_count[1] == taskData->inputs_count[2] && taskData->inputs.size() == 2 &&
            taskData->outputs.size() == 1 && taskData->outputs_count[0] == taskData->inputs_count[0] &&
-           taskData->outputs_count[1] == taskData->inputs_count[3];
+           taskData->outputs_count[1] == taskData->inputs_count[3];  // &&(sq * sq == world.size())
   }
   return true;
 }
 
 bool drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+  double sq = std::sqrt(world.size());
+  if (sq != static_cast<int>(sq)) {
+    C = drozhdinov_d_mult_matrix_fox_mpi::SequentialFox(A, B, k, l, n);
+    return true;
+  }
   C = drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel::ParallelFox(A, B, k, l, n);
   return true;
 }
