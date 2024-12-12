@@ -63,7 +63,6 @@ bool matthew_fyodorov_reduce_custom_mpi ::TestMPITaskParallel::pre_processing() 
 bool matthew_fyodorov_reduce_custom_mpi ::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    // Check count elements of output
     return taskData->outputs_count[0] == 1;
   }
   return true;
@@ -74,7 +73,6 @@ bool matthew_fyodorov_reduce_custom_mpi ::TestMPITaskParallel::run() {
   int rank = world.rank();
 
   if (rank == 0) {
-    // int offset = 0;
     for (int i = 0; i < (int)input_.size(); i += world.size()) {
       local_input_.push_back(input_[i]);
     }

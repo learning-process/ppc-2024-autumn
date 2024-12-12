@@ -7,7 +7,7 @@
 
 #include "mpi/matthew_fyodorov_reduce_custom/include/ops_mpi.hpp"
 
-std::vector<int> getRandomVectors(int sz) {
+static std::vector<int> getRandomVectors(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::uniform_int_distribution<> dist(-100, 100);
@@ -195,7 +195,6 @@ TEST(matthew_fyodorov_reduce_custom_mpi, TestMPITaskParallel_Sum_Random_Numbers)
       taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
       taskDataSeq->outputs_count.emplace_back(output.size());
 
-      // Create Task
       matthew_fyodorov_reduce_custom_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, "+");
       ASSERT_EQ(testMpiTaskSequential.validation(), true);
       testMpiTaskSequential.pre_processing();

@@ -2,7 +2,6 @@
 
 #include <boost/mpi.hpp>
 #include <numeric>
-// #include <random>
 #include <string>
 #include <thread>
 #include <vector>

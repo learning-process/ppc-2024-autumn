@@ -10,13 +10,12 @@
 TEST(matthew_fyodorov_reduce_custom_mpi, test_pipeline_run) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
-  // int rank = world.rank();
+
   int size = world.size();
   const int vector_size = 10000000;
   std::vector<int> global_vector(vector_size, 0);
   std::vector<int32_t> global_sum(1, 0);
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -26,8 +25,6 @@ TEST(matthew_fyodorov_reduce_custom_mpi, test_pipeline_run) {
     for (int i = 0; i < vector_size; i++) {
       global_vector[i] = dist(gen);
     }
-
-    // global_vector = matthew_fyodorov_reduce_custom_mpi ::getRandomVector(size);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector.data()));
     taskDataPar->inputs_count.emplace_back(size);
