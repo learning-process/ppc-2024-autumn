@@ -10,7 +10,7 @@
 #include "mpi/yasakova_t_reduce_custom/include/ops_mpi.hpp"
 
 template <typename T>
-std::vector<T> getRandom(int size) {
+static std::vector<T> getRandom(int size) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::uniform_int_distribution<> distrib(-100, 100);
@@ -22,7 +22,7 @@ std::vector<T> getRandom(int size) {
 }
 
 template <typename T>
-void Test_reduce(MPI_Datatype datatype, MPI_Op op) {
+static void Test_reduce(MPI_Datatype datatype, MPI_Op op) {
   int size = 100;
   boost::mpi::communicator world;
   std::vector<T> input_;
@@ -64,7 +64,7 @@ void Test_reduce(MPI_Datatype datatype, MPI_Op op) {
   }
 }
 
-static std::vector<std::vector<int>> getRandomMatrix(int rows, int cols) {
+std::vector<std::vector<int>> yasakova_t_reduce_custom_mpi::getRandomMatrix(int rows, int cols) {
   if (rows <= 0 || cols <= 0) throw "Incorrect size";
   std::vector<std::vector<int>> vec(rows);
   for (int i = 0; i < rows; i++) {
@@ -88,14 +88,14 @@ TEST(yasakova_t_reduce_custom_mpi, Cant_create_incorrect_size_vector) {
 TEST(yasakova_t_reduce_custom_mpi, Can_create_matrix) {
   const int rows_test = 10;
   const int cols_test = 10;
-  EXPECT_NO_THROW(getRandomMatrix(rows_test, cols_test));
+  EXPECT_NO_THROW(yasakova_t_reduce_custom_mpi::getRandomMatrix(rows_test, cols_test));
 }
 
 TEST(yasakova_t_reduce_custom_mpi, Cant_create_incorrect_size_matrix) {
   const int rows_test = -10;
   const int cols_test = 0;
 
-  EXPECT_ANY_THROW(getRandomMatrix(rows_test, cols_test));
+  EXPECT_ANY_THROW(yasakova_t_reduce_custom_mpi::getRandomMatrix(rows_test, cols_test));
 }
 
 TEST(yasakova_t_reduce_custom_mpi, CustomReduce_int_sum) { Test_reduce<int>(MPI_INT, MPI_SUM); }
@@ -128,7 +128,7 @@ TEST(yasakova_t_reduce_custom_mpi, Matrix_1x1) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = getRandomMatrix(rows_test, cols_test);
+    global_matrix = yasakova_t_reduce_custom_mpi::getRandomMatrix(rows_test, cols_test);
     for (unsigned int i = 0; i < global_matrix.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     }
@@ -166,7 +166,7 @@ TEST(yasakova_t_reduce_custom_mpi, Matrix_10x10) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = getRandomMatrix(rows_test, cols_test);
+    global_matrix = yasakova_t_reduce_custom_mpi::getRandomMatrix(rows_test, cols_test);
     for (unsigned int i = 0; i < global_matrix.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     }
@@ -204,7 +204,7 @@ TEST(yasakova_t_reduce_custom_mpi, Matrix_100x100) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = getRandomMatrix(rows_test, cols_test);
+    global_matrix = yasakova_t_reduce_custom_mpi::getRandomMatrix(rows_test, cols_test);
     for (unsigned int i = 0; i < global_matrix.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     }
@@ -242,7 +242,7 @@ TEST(yasakova_t_reduce_custom_mpi, Matrix_100x50) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = getRandomMatrix(rows_test, cols_test);
+    global_matrix = yasakova_t_reduce_custom_mpi::getRandomMatrix(rows_test, cols_test);
     for (unsigned int i = 0; i < global_matrix.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     }
@@ -280,7 +280,7 @@ TEST(yasakova_t_reduce_custom_mpi, Matrix_50x100) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = getRandomMatrix(rows_test, cols_test);
+    global_matrix = yasakova_t_reduce_custom_mpi::getRandomMatrix(rows_test, cols_test);
     for (unsigned int i = 0; i < global_matrix.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     }
@@ -318,7 +318,7 @@ TEST(yasakova_t_reduce_custom_mpi, Matrix_500x500) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = getRandomMatrix(rows_test, cols_test);
+    global_matrix = yasakova_t_reduce_custom_mpi::getRandomMatrix(rows_test, cols_test);
     for (unsigned int i = 0; i < global_matrix.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     }

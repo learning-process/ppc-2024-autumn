@@ -13,7 +13,7 @@
 #include "core/task/include/task.hpp"
 
 namespace yasakova_t_reduce_custom_mpi {
-
+std::vector<std::vector<int>> getRandomMatrix(int rows, int cols);
 int CustomReduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op, int root, MPI_Comm comm);
 
 class TestMPITaskParallel : public ppc::core::Task {

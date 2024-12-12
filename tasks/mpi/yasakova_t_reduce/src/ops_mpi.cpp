@@ -6,8 +6,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
 bool yasakova_t_reduce::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 

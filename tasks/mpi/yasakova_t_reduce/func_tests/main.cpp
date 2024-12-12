@@ -8,7 +8,7 @@
 
 #include "mpi/yasakova_t_reduce/include/ops_mpi.hpp"
 
-std::vector<int> getRandomVector(int size, int upper_border, int lower_border) {
+std::vector<int> yasakova_t_reduce::getRandomVector(int size, int upper_border, int lower_border) {
   std::random_device dev;
   std::mt19937 gen(dev());
   if (size <= 0) throw "Incorrect size";
@@ -19,11 +19,11 @@ std::vector<int> getRandomVector(int size, int upper_border, int lower_border) {
   return vec;
 }
 
-std::vector<std::vector<int>> getRandomMatrix(int rows, int columns, int upper_border, int lower_border) {
+std::vector<std::vector<int>> yasakova_t_reduce::getRandomMatrix(int rows, int columns, int upper_border, int lower_border) {
   if (rows <= 0 || columns <= 0) throw "Incorrect size";
   std::vector<std::vector<int>> vec(rows);
   for (int i = 0; i < rows; i++) {
-    vec[i] = getRandomVector(columns, upper_border, lower_border);
+    vec[i] = yasakova_t_reduce::getRandomVector(columns, upper_border, lower_border);
   }
   return vec;
 }
@@ -32,14 +32,14 @@ TEST(yasakova_t_reduce, Can_create_valid_vector) {
   const int size_test = 10;
   const int upper_border_test = 100;
   const int lower_border_test = -100;
-  EXPECT_NO_THROW(getRandomVector(size_test, upper_border_test, lower_border_test));
+  EXPECT_NO_THROW(yasakova_t_reduce::getRandomVector(size_test, upper_border_test, lower_border_test));
 }
 
 TEST(yasakova_t_reduce, Cant_create_vector_with_invalid_size) {
   const int size_test = -10;
   const int upper_border_test = 100;
   const int lower_border_test = -100;
-  EXPECT_ANY_THROW(getRandomVector(size_test, upper_border_test, lower_border_test));
+  EXPECT_ANY_THROW(yasakova_t_reduce::getRandomVector(size_test, upper_border_test, lower_border_test));
 }
 
 TEST(yasakova_t_reduce, Can_create_valid_matrix) {
@@ -47,7 +47,7 @@ TEST(yasakova_t_reduce, Can_create_valid_matrix) {
   const int cols_test = 10;
   const int upper_border_test = 100;
   const int lower_border_test = -100;
-  EXPECT_NO_THROW(getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test));
+  EXPECT_NO_THROW(yasakova_t_reduce::getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test));
 }
 
 TEST(yasakova_t_reduce, Cant_create_matrix_with_invalid_size) {
@@ -55,7 +55,7 @@ TEST(yasakova_t_reduce, Cant_create_matrix_with_invalid_size) {
   const int cols_test = 0;
   const int upper_border_test = 100;
   const int lower_border_test = -100;
-  EXPECT_ANY_THROW(getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test));
+  EXPECT_ANY_THROW(yasakova_t_reduce::getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test));
 }
 
 TEST(yasakova_t_reduce, Can_create_valid_1x1_matrix) {
@@ -72,7 +72,7 @@ TEST(yasakova_t_reduce, Can_create_valid_1x1_matrix) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
+    global_matrix = yasakova_t_reduce::getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
     for (unsigned int i = 0; i < global_matrix.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     }
@@ -111,7 +111,7 @@ TEST(yasakova_t_reduce, Can_create_valid_10x10_matrix) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
+    global_matrix = yasakova_t_reduce::getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
     for (unsigned int i = 0; i < global_matrix.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     }
@@ -150,7 +150,7 @@ TEST(yasakova_t_reduce, Can_create_valid_100x100_matrix) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
+    global_matrix = yasakova_t_reduce::getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
     for (unsigned int i = 0; i < global_matrix.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     }
@@ -189,7 +189,7 @@ TEST(yasakova_t_reduce, Can_create_valid_100x50_matrix) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
+    global_matrix = yasakova_t_reduce::getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
     for (unsigned int i = 0; i < global_matrix.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     }
@@ -228,7 +228,7 @@ TEST(yasakova_t_reduce, Can_create_valid_50x100_matrix) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
+    global_matrix = yasakova_t_reduce::getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
     for (unsigned int i = 0; i < global_matrix.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     }
@@ -267,7 +267,7 @@ TEST(yasakova_t_reduce, Can_create_valid_500x500_matrix) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    global_matrix = getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
+    global_matrix = yasakova_t_reduce::getRandomMatrix(rows_test, cols_test, upper_border_test, lower_border_test);
     for (unsigned int i = 0; i < global_matrix.size(); i++) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix[i].data()));
     }
