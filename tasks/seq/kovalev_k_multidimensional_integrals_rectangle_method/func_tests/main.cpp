@@ -20,7 +20,7 @@ double f3advanced(std::vector<double> &arguments) {
 
 TEST(kovalev_k_multidimensional_integrals_rectangle_method_seq, invalid_integration_step) {
   std::vector<std::pair<double, double>> lims;
-  double h = 11.0;
+  double h = 11.1;
   std::vector<double> out;
   std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
   taskSeq->inputs_count.emplace_back(lims.size());

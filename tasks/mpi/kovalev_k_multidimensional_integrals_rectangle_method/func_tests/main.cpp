@@ -20,16 +20,16 @@ double f3advanced(std::vector<double> &arguments) {
 
 TEST(kovalev_k_multidimensional_integrals_rectangle_method_mpi, invalid_integration_step) {
   std::vector<std::pair<double, double>> lims;
-  double h = 111.0;
+  double h = 111.1;
   std::vector<double> out;
   boost::mpi::communicator world;
-  std::shared_ptr<ppc::core::TaskData> taskSeq = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> tmpPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskSeq->inputs_count.emplace_back(lims.size());
-    taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(lims.data()));
-    taskSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&h));
-    taskSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-    taskSeq->outputs_count.emplace_back(out.size());
+    tmpPar->inputs_count.emplace_back(lims.size());
+    tmpPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(lims.data()));
+    tmpPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&h));
+    tmpPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+    tmpPar->outputs_count.emplace_back(out.size());
   }
   kovalev_k_multidimensional_integrals_rectangle_method_mpi::MultidimensionalIntegralsRectangleMethodPar tmpTaskPar(
       tmpPar, kovalev_k_multidimensional_integrals_rectangle_method_mpi::f1);
