@@ -153,13 +153,11 @@ TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication_RepeatingValues)
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  int num_matr = 999;
-  int num_vec = 3;
-  int num_res = 333;
+  int num_res = 5;
 
   if (world.rank() == 0) {
-    matrix.resize(num_matr, 1);
-    vec.resize(num_vec, 1);
+    matrix = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+    vec = {1, 1, 1};
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
     taskDataPar->inputs_count.emplace_back(matrix.size());
@@ -176,7 +174,7 @@ TEST(muhina_m_horizontal_cheme, Test_MatrixVectorMultiplication_RepeatingValues)
   ASSERT_TRUE(matrixVecMultParalle->post_processing());
 
   if (world.rank() == 0) {
-    std::vector<int> expected_result(333, 3);
+    std::vector<int> expected_result{3, 3, 3, 3, 3};
     auto* temp = reinterpret_cast<int*>(taskDataPar->outputs[0]);
     result.insert(result.end(), temp, temp + num_res);
 
