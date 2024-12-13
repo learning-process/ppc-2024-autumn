@@ -9,6 +9,8 @@ bool leontev_n_mat_vec_seq::MatVecSequential<InOutType>::pre_processing() {
   if (taskData->inputs.size() >= 2) {
     vec_ptr1 = reinterpret_cast<InOutType*>(taskData->inputs[0]);
     vec_ptr2 = reinterpret_cast<InOutType*>(taskData->inputs[1]);
+  } else {
+    return false;
   }
   mat_ = std::vector<InOutType>(taskData->inputs_count[0]);
   vec_ = std::vector<InOutType>(taskData->inputs_count[1]);
@@ -33,6 +35,10 @@ bool leontev_n_mat_vec_seq::MatVecSequential<InOutType>::validation() {
   if (taskData->inputs_count[0] != taskData->inputs_count[1] * taskData->inputs_count[1]) {
     return false;
   }
+  if (taskData->inputs_count[0] == 0) {
+    return false;
+  }
+  return true;
 }
 
 template <class InOutType>
@@ -40,7 +46,7 @@ bool leontev_n_mat_vec_seq::MatVecSequential<InOutType>::run() {
   internal_order_test();
   for (size_t i = 0; i < res.size(); i++) {
     for (size_t j = 0; j < res.size(); j++) {
-      res[i] += mat_[i * res.size() + j] * vec[j];
+      res[i] += mat_[i * res.size() + j] * vec_[j];
     }
   }
   return true;
@@ -49,7 +55,9 @@ bool leontev_n_mat_vec_seq::MatVecSequential<InOutType>::run() {
 template <class InOutType>
 bool leontev_n_mat_vec_seq::MatVecSequential<InOutType>::post_processing() {
   internal_order_test();
-  reinterpret_cast<InOutType*>(taskData->outputs[0]) = res.data();
+  for (size_t i = 0; i < res.size(); i++) {
+    reinterpret_cast<InOutType*>(taskData->outputs[0])[i] = res[i];
+  }
   return true;
 }
 

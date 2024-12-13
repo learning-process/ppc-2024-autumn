@@ -8,10 +8,10 @@
 template <class InOutType>
 void taskEmplacement(std::shared_ptr<ppc::core::TaskData> &taskDataPar, std::vector<InOutType> &global_vec,
                      std::vector<InOutType> &global_mat, std::vector<InOutType> &global_res) {
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
-  taskDataPar->inputs_count.emplace_back(global_vec.size());
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_mat.data()));
   taskDataPar->inputs_count.emplace_back(global_mat.size());
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
+  taskDataPar->inputs_count.emplace_back(global_vec.size());
   taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_res.data()));
   taskDataPar->outputs_count.emplace_back(global_res.size());
 }
@@ -26,7 +26,6 @@ TEST(leontev_n_mat_vec_seq, 5x5_mat_vec) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskEmplacement<int32_t>(taskDataSeq, invec, inmat, out);
-
   // Create Task
   leontev_n_mat_vec_seq::MatVecSequential<int32_t> matVecSequential(taskDataSeq);
   ASSERT_TRUE(matVecSequential.validation());
@@ -38,9 +37,9 @@ TEST(leontev_n_mat_vec_seq, 5x5_mat_vec) {
 
 TEST(leontev_n_mat_vec_seq, double_mat_vec) {
   // Create data
-  std::vector<double> invec = {-10.0, 10.0, -10.0, 10.0, -10.0, 10.0, -10.0, 10.0, -10.0, 10.0, -10.0};
+  std::vector<double> invec = {-10.0, 10.0, -10.0, 10.0, -10.0, 10.0, -10.0, 10.0, -10.0, 10.0};
   std::vector<double> inmat(100, 10.0);
-  const std::vector<double> expected_vec(10, -100.0);
+  const std::vector<double> expected_vec(10, 0.0);
   std::vector<double> out(10, 0.0);
 
   // Create TaskData
@@ -60,9 +59,9 @@ TEST(leontev_n_mat_vec_seq, double_mat_vec) {
 
 TEST(leontev_n_mat_vec_seq, float_mat_vec) {
   // Create data
-  std::vector<float> invec = {-10.0F, 10.0F, -10.0F, 10.0F, -10.0F, 10.0F, -10.0F, 10.0F, -10.0F, 10.0F, -10.0F};
+  std::vector<float> invec = {-10.0F, 10.0F, -10.0F, 10.0F, -10.0F, 10.0F, -10.0F, 10.0F, -10.0F, 10.0F};
   std::vector<float> inmat(100, 10.0F);
-  const std::vector<float> expected_vec(10, -100.0F);
+  const std::vector<float> expected_vec(10, 0.0F);
   std::vector<float> out(10, 0.0F);
 
   // Create TaskData
@@ -133,9 +132,5 @@ TEST(leontev_n_mat_vec_seq, empty_array_vector_sum) {
 
   // Create Task
   leontev_n_mat_vec_seq::MatVecSequential<int32_t> matVecSequential(taskDataSeq);
-  ASSERT_TRUE(matVecSequential.validation());
-  matVecSequential.pre_processing();
-  matVecSequential.run();
-  matVecSequential.post_processing();
-  ASSERT_EQ(expected_vec, out);
+  ASSERT_FALSE(matVecSequential.validation());
 }

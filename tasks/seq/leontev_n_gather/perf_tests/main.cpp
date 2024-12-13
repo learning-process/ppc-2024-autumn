@@ -15,10 +15,10 @@ TEST(leontev_n_mat_vec_seq, test_pipeline_run) {
   const std::vector<int> expected_vec(count, count);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(invec.data()));
-  taskDataSeq->inputs_count.emplace_back(invec.size());
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(inmat.data()));
   taskDataSeq->inputs_count.emplace_back(inmat.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(invec.data()));
+  taskDataSeq->inputs_count.emplace_back(invec.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
   // Create Task
@@ -50,10 +50,10 @@ TEST(leontev_n_mat_vec_seq, test_task_run) {
   const std::vector<int> expected_vec(count, count);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(invec.data()));
-  taskDataSeq->inputs_count.emplace_back(invec.size());
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(inmat.data()));
   taskDataSeq->inputs_count.emplace_back(inmat.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(invec.data()));
+  taskDataSeq->inputs_count.emplace_back(invec.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
   // Create Task
