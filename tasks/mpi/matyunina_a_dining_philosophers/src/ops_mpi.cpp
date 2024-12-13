@@ -1,50 +1,10 @@
 // Copyright 2023 Nesterov Alexander
-#include "mpi/matyunina_a_dining_philosophers/include/ops_mpi.hpp"
-
-#include <algorithm>
-#include <functional>
-#include <random>
-#include <thread>
-#include <vector>
-
-using namespace std::chrono_literals;
-
-bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::pre_processing() {
-  internal_order_test();
-  unsigned int tmp = 0;
-  if (world.rank() == 0) {
-    input_ = std::vector<int>(taskData->inputs_count[0]);
-    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
-    tmp = input_[0];
-    for (int rank = 1; rank <= world.size() - 1; ++rank) {
-      world.send(rank, 5, &tmp, 1);
-    }
-    nom = tmp;
-  }
-  if (world.rank() > 0) {
-    int a = 0;
-    world.recv(0, 5, &a, 1);
-    nom = a;
-  }
-  res_ = 0;
-  return true;
-}
-
-bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::validation() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    return taskData->outputs_count[0] == 1 && taskData->outputs_count[0] == 1 && world.size() > 2;
-  }
-  return true;
-}
-
 bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   if (world.rank() == 0) {
     std::vector<bool> fork(world.size() - 1, true);
     int exit = nom * (world.size() - 1);
-    std::vector<boost::mpi::request> a_requests;
+
     while (true) {
       int m[4];
       boost::mpi::request recv_req = world.irecv(boost::mpi::any_source, 3, m, 4);
@@ -62,21 +22,25 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
           if (r == 1) {
             fork[rank - 1] = true;
             int answer = 2;
-            a_requests.push_back(world.isend(rank, 2, &answer, 1));
+            boost::mpi::request send_req1 = world.isend(rank, 2, &answer, 1);
+            send_req1.wait();
           } else {
             fork[0] = true;
             int answer = 1;
-            a_requests.push_back(world.isend(rank, 2, &answer, 1));
+            boost::mpi::request send_req2 = world.isend(rank, 2, &answer, 1);
+            send_req2.wait();
           }
         } else {
           if (r == 1) {
             fork[rank - 1] = true;
             int answer = 2;
-            a_requests.push_back(world.isend(rank, 2, &answer, 1));
+            boost::mpi::request send_req3 = world.isend(rank, 2, &answer, 1);
+            send_req3.wait();
           } else {
             fork[rank] = true;
             int answer = 1;
-            a_requests.push_back(world.isend(rank, 2, &answer, 1));
+            boost::mpi::request send_req4 = world.isend(rank, 2, &answer, 1);
+            send_req4.wait();
           }
         }
       } else if (wish == 1) {
@@ -84,20 +48,24 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
           if (r == 1) {
             if (!fork[0]) {
               int answer = 0;
-              a_requests.push_back(world.isend(rank, 1, &answer, 1));
+              boost::mpi::request send_req5 = world.isend(rank, 1, &answer, 1);
+              send_req5.wait();
             } else {
               int answer = 1;
-              a_requests.push_back(world.isend(rank, 1, &answer, 1));
+              boost::mpi::request send_req6 = world.isend(rank, 1, &answer, 1);
+              send_req6.wait();
               fork[0] = false;
             }
           }
           if (l == 1) {
             if (!fork[rank - 1]) {
               int answer = 0;
-              a_requests.push_back(world.isend(rank, 1, &answer, 1));
+              boost::mpi::request send_req7 = world.isend(rank, 1, &answer, 1);
+              send_req7.wait();
             } else {
               int answer = 2;
-              a_requests.push_back(world.isend(rank, 1, &answer, 1));
+              boost::mpi::request send_req8 = world.isend(rank, 1, &answer, 1);
+              send_req8.wait();
               fork[rank - 1] = false;
             }
           }
@@ -106,20 +74,24 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
             if (rank % 2 == 0) {
               if (fork[rank - 1]) {
                 int answer = 2;
-                a_requests.push_back(world.isend(rank, 1, &answer, 1));
+                boost::mpi::request send_req9 = world.isend(rank, 1, &answer, 1);
+                send_req9.wait();
                 fork[rank - 1] = false;
               } else {
                 int answer = 0;
-                a_requests.push_back(world.isend(rank, 1, &answer, 1));
+                boost::mpi::request send_req10 = world.isend(rank, 1, &answer, 1);
+                send_req10.wait();
               }
             } else {
               if (fork[0]) {
                 int answer = 1;
-                a_requests.push_back(world.isend(rank, 1, &answer, 1));
+                boost::mpi::request send_req11 = world.isend(rank, 1, &answer, 1);
+                send_req11.wait();
                 fork[0] = false;
               } else {
                 int answer = 0;
-                a_requests.push_back(world.isend(rank, 1, &answer, 1));
+                boost::mpi::request send_req12 = world.isend(rank, 1, &answer, 1);
+                send_req12.wait();
               }
             }
           }
@@ -128,20 +100,24 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
           if (r == 1) {
             if (!fork[rank]) {
               int answer = 0;
-              a_requests.push_back(world.isend(rank, 1, &answer, 1));
+              boost::mpi::request send_req13 = world.isend(rank, 1, &answer, 1);
+              send_req13.wait();
             } else {
               int answer = 1;
-              a_requests.push_back(world.isend(rank, 1, &answer, 1));
+              boost::mpi::request send_req14 = world.isend(rank, 1, &answer, 1);
+              send_req14.wait();
               fork[rank] = false;
             }
           }
           if (l == 1) {
             if (!fork[rank - 1]) {
               int answer = 0;
-              a_requests.push_back(world.isend(rank, 1, &answer, 1));
+              boost::mpi::request send_req15 = world.isend(rank, 1, &answer, 1);
+              send_req15.wait();
             } else {
               int answer = 2;
-              a_requests.push_back(world.isend(rank, 1, &answer, 1));
+              boost::mpi::request send_req16 = world.isend(rank, 1, &answer, 1);
+              send_req16.wait();
               fork[rank - 1] = false;
             }
           }
@@ -149,20 +125,24 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
             if (rank % 2 == 0) {
               if (fork[rank - 1]) {
                 int answer = 2;
-                a_requests.push_back(world.isend(rank, 1, &answer, 1));
+                boost::mpi::request send_req17 = world.isend(rank, 1, &answer, 1);
+                send_req17.wait();
                 fork[rank - 1] = false;
               } else {
                 int answer = 0;
-                a_requests.push_back(world.isend(rank, 1, &answer, 1));
+                boost::mpi::request send_req18 = world.isend(rank, 1, &answer, 1);
+                send_req18.wait();
               }
             } else {
               if (fork[rank]) {
                 int answer = 1;
-                a_requests.push_back(world.isend(rank, 1, &answer, 1));
+                boost::mpi::request send_req19 = world.isend(rank, 1, &answer, 1);
+                send_req19.wait();
                 fork[rank] = false;
               } else {
                 int answer = 0;
-                a_requests.push_back(world.isend(rank, 1, &answer, 1));
+                boost::mpi::request send_req20 = world.isend(rank, 1, &answer, 1);
+                send_req20.wait();
               }
             }
           }
@@ -172,7 +152,6 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
         break;
       }
     }
-    boost::mpi::wait_all(a_requests.begin(), a_requests.end());
   }
 
   if (world.rank() > 0) {
@@ -190,7 +169,9 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
       while (true) {
         if (eat == 0) {
           int m[4] = {world.rank(), 1, l, r};
-          boost::mpi::request send_req = world.isend(0, 3, m, 4);
+          16 : 54
+
+              boost::mpi::request send_req = world.isend(0, 3, m, 4);
           send_req.wait();
           int a;
           boost::mpi::request recv_req = world.irecv(0, 1, &a, 1);
@@ -228,14 +209,6 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
       boost::mpi::request send_req = world.isend(0, 3, exit_m, 4);
       send_req.wait();
     }
-  }
-  return true;
-}
-
-bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::post_processing() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = res_;
   }
   return true;
 }
