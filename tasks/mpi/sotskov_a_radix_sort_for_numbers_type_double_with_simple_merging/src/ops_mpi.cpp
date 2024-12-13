@@ -1,15 +1,4 @@
-#include <mpi.h>
-
-#include <algorithm>
-#include <boost/mpi.hpp>
-#include <boost/serialization/array.hpp>
-#include <boost/serialization/map.hpp>
-#include <boost/serialization/vector.hpp>
-#include <memory>
 #include <mpi/sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging/include/ops_mpi.hpp>
-#include <vector>
-
-using namespace std::chrono_literals;
 
 bool sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
@@ -28,8 +17,6 @@ bool sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestM
 
 bool sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-
-  radixSortWithSignHandling(input_data_);
   sequentialSort();
 
   return true;

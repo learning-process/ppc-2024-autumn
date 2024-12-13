@@ -1,10 +1,5 @@
 #include "seq/sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging/include/ops_seq.hpp"
 
-#include <algorithm>
-#include <cmath>
-#include <functional>
-#include <thread>
-
 bool sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   auto* input_ptr = reinterpret_cast<double*>(taskData->inputs[0]);

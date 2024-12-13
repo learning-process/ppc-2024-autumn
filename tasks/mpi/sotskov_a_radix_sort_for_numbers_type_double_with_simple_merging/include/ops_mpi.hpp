@@ -1,10 +1,6 @@
 #include <mpi.h>
 
 #include <algorithm>
-#include <boost/mpi.hpp>
-#include <boost/serialization/array.hpp>
-#include <boost/serialization/map.hpp>
-#include <boost/serialization/vector.hpp>
 #include <memory>
 #include <vector>
 
@@ -30,7 +26,6 @@ class TestMPITaskParallel : public ppc::core::Task {
   std::vector<double> input_data_;
   std::vector<double> sorted_data_;
   void parallelSort();
-  boost::mpi::communicator world;
 
   int rank;
   int size;

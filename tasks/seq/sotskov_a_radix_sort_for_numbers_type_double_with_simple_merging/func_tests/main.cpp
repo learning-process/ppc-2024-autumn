@@ -20,15 +20,12 @@ std::vector<double> generate_random_input_with_same_integer_part(size_t size, in
   std::sort(input.rbegin(), input.rend());
   return input;
 }
-}  // namespace sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi
 
-TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq, RandomSortedSameIntegerPart) {
-  std::vector<double> input = sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::
-      generate_random_input_with_same_integer_part(5, 1, 0.0, 0.99);
+std::vector<double> run_sort(const std::vector<double> &input) {
   std::vector<double> output(input.size(), 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(const_cast<double *>(input.data())));
   taskDataSeq->inputs_count.emplace_back(input.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
   taskDataSeq->outputs_count.emplace_back(output.size());
@@ -36,10 +33,19 @@ TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq, Rando
   sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq::TestTaskSequential testTaskSequential(
       taskDataSeq);
 
-  ASSERT_EQ(testTaskSequential.validation(), true);
+  EXPECT_TRUE(testTaskSequential.validation());
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
+
+  return output;
+}
+}  // namespace sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi
+
+TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq, RandomSortedSameIntegerPart) {
+  auto input = sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::
+      generate_random_input_with_same_integer_part(5, 1, 0.0, 0.99);
+  auto output = sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::run_sort(input);
 
   std::vector<double> expected = input;
   std::sort(expected.begin(), expected.end());
@@ -48,84 +54,25 @@ TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq, Rando
 
 TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq, EmptyArray) {
   std::vector<double> input = {};
-  std::vector<double> output(input.size(), 0);
-
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
-  taskDataSeq->inputs_count.emplace_back(input.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
-  taskDataSeq->outputs_count.emplace_back(output.size());
-
-  sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq::TestTaskSequential testTaskSequential(
-      taskDataSeq);
-
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
-
+  auto output = sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::run_sort(input);
   ASSERT_EQ(output, input);
 }
 
 TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq, SingleElement) {
   std::vector<double> input = {42.42};
-  std::vector<double> output(input.size(), 0);
-
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
-  taskDataSeq->inputs_count.emplace_back(input.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
-  taskDataSeq->outputs_count.emplace_back(output.size());
-
-  sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq::TestTaskSequential testTaskSequential(
-      taskDataSeq);
-
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
-
+  auto output = sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::run_sort(input);
   ASSERT_EQ(output, input);
 }
 
 TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq, AlreadySorted) {
   std::vector<double> input = {1.1, 2.2, 3.3, 4.4, 5.5};
-  std::vector<double> output(input.size(), 0);
-
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
-  taskDataSeq->inputs_count.emplace_back(input.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
-  taskDataSeq->outputs_count.emplace_back(output.size());
-
-  sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq::TestTaskSequential testTaskSequential(
-      taskDataSeq);
-
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
-
+  auto output = sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::run_sort(input);
   ASSERT_EQ(output, input);
 }
 
 TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq, ReverseSorted) {
   std::vector<double> input = {5.5, 4.4, 3.3, 2.2, 1.1};
-  std::vector<double> output(input.size(), 0);
-
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
-  taskDataSeq->inputs_count.emplace_back(input.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
-  taskDataSeq->outputs_count.emplace_back(output.size());
-
-  sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq::TestTaskSequential testTaskSequential(
-      taskDataSeq);
-
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
+  auto output = sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::run_sort(input);
 
   std::vector<double> expected = input;
   std::sort(expected.begin(), expected.end());
@@ -134,23 +81,9 @@ TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq, Rever
 
 TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq, LargeArray) {
   size_t size = 100000;
-  std::vector<double> input = sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::
+  auto input = sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::
       generate_random_input_with_same_integer_part(size, 1, 0.0, 0.99);
-  std::vector<double> output(input.size(), 0);
-
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
-  taskDataSeq->inputs_count.emplace_back(input.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
-  taskDataSeq->outputs_count.emplace_back(output.size());
-
-  sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq::TestTaskSequential testTaskSequential(
-      taskDataSeq);
-
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
+  auto output = sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::run_sort(input);
 
   std::vector<double> expected = input;
   std::sort(expected.begin(), expected.end());
@@ -159,21 +92,7 @@ TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq, Large
 
 TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq, NegativeNumbers) {
   std::vector<double> input = {-1.1, -3.3, -2.2, -4.4, -5.5};
-  std::vector<double> output(input.size(), 0);
-
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
-  taskDataSeq->inputs_count.emplace_back(input.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
-  taskDataSeq->outputs_count.emplace_back(output.size());
-
-  sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq::TestTaskSequential testTaskSequential(
-      taskDataSeq);
-
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
+  auto output = sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::run_sort(input);
 
   std::vector<double> expected = input;
   std::sort(expected.begin(), expected.end());
@@ -182,21 +101,7 @@ TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq, Negat
 
 TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq, MixedNegativePositive) {
   std::vector<double> input = {1.1, -2.2, 3.3, -4.4, 5.5};
-  std::vector<double> output(input.size(), 0);
-
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
-  taskDataSeq->inputs_count.emplace_back(input.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
-  taskDataSeq->outputs_count.emplace_back(output.size());
-
-  sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq::TestTaskSequential testTaskSequential(
-      taskDataSeq);
-
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
+  auto output = sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::run_sort(input);
 
   std::vector<double> expected = input;
   std::sort(expected.begin(), expected.end());
