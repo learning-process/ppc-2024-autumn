@@ -9,7 +9,7 @@
 #include "core/task/include/task.hpp"
 
 namespace golovkin_linear_image_filtering_with_block_partitioning {
-	
+
 class SimpleIntSEQ : public ppc::core::Task {
  public:
   explicit SimpleIntSEQ(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -31,4 +31,4 @@ class SimpleIntSEQ : public ppc::core::Task {
   const int block_size_ = 16;
 };
 
-} // namespace golovkin_linear_image_filtering_with_block_partitioning
+}  //  namespace golovkin_linear_image_filtering_with_block_partitioning

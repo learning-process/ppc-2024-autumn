@@ -144,8 +144,7 @@ void SimpleBlockMPI::applyGaussianFilter() {
 
           if (rr >= 0 && rr < extended_local_height_ && cc >= 0 && cc < width_) {
             sum += local_data_[rr * width_ + cc] * kernel_[kr + 1][kc + 1];
-
-          } 
+          }
         }
       }
 
