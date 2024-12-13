@@ -225,3 +225,179 @@ TEST(somov_i_horizontal_scheme, test_empty_input_vector) {
   auto parallel_task = std::make_shared<somov_i_horizontal_scheme::MatrixVectorTaskMPI>(parallel_task_data);
   EXPECT_TRUE(parallel_task->validation());
 }
+
+TEST(somov_i_horizontal_scheme, matrix_vector_test) {
+  boost::mpi::communicator world;
+
+  std::vector<int32_t> matrix_data;
+  std::vector<int32_t> input_vector;
+  std::vector<int32_t> result_vector;
+
+  std::shared_ptr<ppc::core::TaskData> task_data_parallel = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    matrix_data = {1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16, 17, 18,
+                   19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36};
+
+    input_vector = {1, 2, 3, 4, 5, 6};
+
+    result_vector.resize(matrix_data.size() / input_vector.size());
+
+    task_data_parallel->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_data.data()));
+    task_data_parallel->inputs_count.emplace_back(matrix_data.size());
+
+    task_data_parallel->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_vector.data()));
+    task_data_parallel->inputs_count.emplace_back(input_vector.size());
+
+    task_data_parallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(result_vector.data()));
+    task_data_parallel->outputs_count.emplace_back(result_vector.size());
+  }
+
+  auto task_parallel = std::make_shared<somov_i_horizontal_scheme::MatrixVectorTaskMPI>(task_data_parallel);
+  task_parallel->validation();
+  task_parallel->pre_processing();
+  task_parallel->run();
+  task_parallel->post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int32_t> seq_result(result_vector.size());
+
+    auto task_data_sequential = std::make_shared<ppc::core::TaskData>();
+    task_data_sequential->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_data.data()));
+    task_data_sequential->inputs_count.emplace_back(matrix_data.size());
+
+    task_data_sequential->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_vector.data()));
+    task_data_sequential->inputs_count.emplace_back(input_vector.size());
+
+    task_data_sequential->outputs.emplace_back(reinterpret_cast<uint8_t *>(seq_result.data()));
+    task_data_sequential->outputs_count.emplace_back(seq_result.size());
+
+    auto task_sequential = std::make_shared<somov_i_horizontal_scheme::MatrixVectorTask>(task_data_sequential);
+    task_sequential->validation();
+    task_sequential->pre_processing();
+    task_sequential->run();
+    task_sequential->post_processing();
+
+    ASSERT_EQ(result_vector.size(), seq_result.size());
+    for (size_t i = 0; i < result_vector.size(); ++i) {
+      EXPECT_EQ(result_vector[i], seq_result[i]);
+    }
+  }
+}
+
+TEST(somov_i_horizontal_scheme, negative_matrix_vector_test) {
+  boost::mpi::communicator world;
+
+  std::vector<int32_t> matrix_data;
+  std::vector<int32_t> input_vector;
+  std::vector<int32_t> result_vector;
+
+  std::shared_ptr<ppc::core::TaskData> task_data_parallel = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    matrix_data = {-10, 12, 5, -6, 8, -2, 0, 7, 14, -1, -9, 3};
+
+    input_vector = {-1, 2, -3};
+
+    result_vector.resize(matrix_data.size() / input_vector.size());
+
+    task_data_parallel->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_data.data()));
+    task_data_parallel->inputs_count.emplace_back(matrix_data.size());
+
+    task_data_parallel->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_vector.data()));
+    task_data_parallel->inputs_count.emplace_back(input_vector.size());
+
+    task_data_parallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(result_vector.data()));
+    task_data_parallel->outputs_count.emplace_back(result_vector.size());
+  }
+
+  auto task_parallel = std::make_shared<somov_i_horizontal_scheme::MatrixVectorTaskMPI>(task_data_parallel);
+  task_parallel->validation();
+  task_parallel->pre_processing();
+  task_parallel->run();
+  task_parallel->post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int32_t> seq_result(result_vector.size());
+
+    auto task_data_sequential = std::make_shared<ppc::core::TaskData>();
+    task_data_sequential->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_data.data()));
+    task_data_sequential->inputs_count.emplace_back(matrix_data.size());
+
+    task_data_sequential->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_vector.data()));
+    task_data_sequential->inputs_count.emplace_back(input_vector.size());
+
+    task_data_sequential->outputs.emplace_back(reinterpret_cast<uint8_t *>(seq_result.data()));
+    task_data_sequential->outputs_count.emplace_back(seq_result.size());
+
+    auto task_sequential = std::make_shared<somov_i_horizontal_scheme::MatrixVectorTask>(task_data_sequential);
+    task_sequential->validation();
+    task_sequential->pre_processing();
+    task_sequential->run();
+    task_sequential->post_processing();
+
+    ASSERT_EQ(result_vector.size(), seq_result.size());
+    for (size_t i = 0; i < result_vector.size(); ++i) {
+      EXPECT_EQ(result_vector[i], seq_result[i]);
+    }
+  }
+}
+
+TEST(somov_i_horizontal_scheme, zero_matrix_vector_test) {
+  boost::mpi::communicator world;
+
+  std::vector<int32_t> matrix_data;
+  std::vector<int32_t> input_vector;
+  std::vector<int32_t> result_vector;
+
+  std::shared_ptr<ppc::core::TaskData> task_data_parallel = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    matrix_data = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+    input_vector = {0, 0, 0, 0, 0, 0};
+
+    result_vector.resize(matrix_data.size() / input_vector.size());
+
+    task_data_parallel->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_data.data()));
+    task_data_parallel->inputs_count.emplace_back(matrix_data.size());
+
+    task_data_parallel->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_vector.data()));
+    task_data_parallel->inputs_count.emplace_back(input_vector.size());
+
+    task_data_parallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(result_vector.data()));
+    task_data_parallel->outputs_count.emplace_back(result_vector.size());
+  }
+
+  auto task_parallel = std::make_shared<somov_i_horizontal_scheme::MatrixVectorTaskMPI>(task_data_parallel);
+  task_parallel->validation();
+  task_parallel->pre_processing();
+  task_parallel->run();
+  task_parallel->post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int32_t> seq_result(result_vector.size());
+
+    auto task_data_sequential = std::make_shared<ppc::core::TaskData>();
+    task_data_sequential->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_data.data()));
+    task_data_sequential->inputs_count.emplace_back(matrix_data.size());
+
+    task_data_sequential->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_vector.data()));
+    task_data_sequential->inputs_count.emplace_back(input_vector.size());
+
+    task_data_sequential->outputs.emplace_back(reinterpret_cast<uint8_t *>(seq_result.data()));
+    task_data_sequential->outputs_count.emplace_back(seq_result.size());
+
+    auto task_sequential = std::make_shared<somov_i_horizontal_scheme::MatrixVectorTask>(task_data_sequential);
+    task_sequential->validation();
+    task_sequential->pre_processing();
+    task_sequential->run();
+    task_sequential->post_processing();
+
+    ASSERT_EQ(result_vector.size(), seq_result.size());
+    for (size_t i = 0; i < result_vector.size(); ++i) {
+      EXPECT_EQ(result_vector[i], seq_result[i]);
+    }
+  }
+}
