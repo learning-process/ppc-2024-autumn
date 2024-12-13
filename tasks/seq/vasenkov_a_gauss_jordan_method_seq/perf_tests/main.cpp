@@ -7,8 +7,6 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/vasenkov_a_gauss_jordan_method_seq/include/ops_seq.hpp"
 
-
-
 std::vector<double> generate_invertible_matrix(int size) {
   std::vector<double> matrix(size * (size + 1));
   std::random_device rd;
@@ -31,7 +29,6 @@ std::vector<double> generate_invertible_matrix(int size) {
 
   return matrix;
 }
-
 
 TEST(vasenkov_a_gauss_jordan_method_seq, pipeline_run) {
   int n = 50;
