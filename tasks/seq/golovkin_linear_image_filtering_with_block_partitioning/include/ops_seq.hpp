@@ -1,8 +1,5 @@
 // Golovkin Maksim Task#3
 
-#ifndef IMAGE_FILTERING_OPS_SEQ_HPP
-#define IMAGE_FILTERING_OPS_SEQ_HPP
-
 #include <algorithm>
 #include <memory>
 #include <string>
@@ -13,7 +10,7 @@
 
 namespace golovkin_linear_image_filtering_with_block_partitioning {
 
-    class SimpleIntSEQ : public ppc::core::Task {
+class SimpleIntSEQ : public ppc::core::Task {
  public:
   explicit SimpleIntSEQ(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
@@ -31,9 +28,7 @@ namespace golovkin_linear_image_filtering_with_block_partitioning {
   int cols;
 
   const int kernel_[3][3] = {{1, 2, 1}, {2, 4, 2}, {1, 2, 1}};
-  const int block_size_ = 16;  // Размер блока для обработки
+  const int block_size_ = 16;
 };
 
-} // namespace golovkin_linear_image_filtering_with_block_partitioning
-
-#endif // IMAGE_FILTERING_OPS_SEQ_HPP
+}  // namespace golovkin_linear_image_filtering_with_block_partitioning
