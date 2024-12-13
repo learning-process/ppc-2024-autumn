@@ -6,7 +6,8 @@
 
 TEST(Strassen_Algorithm_MPI, Test_Matrix_2x2) {
     boost::mpi::communicator world;
-    std::vector<int> A, B;
+    std::vector<int> A;
+    std::vector<int> B;
     std::vector<int> C(2 * 2, 0);
     std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
 
@@ -35,7 +36,8 @@ TEST(Strassen_Algorithm_MPI, Test_Matrix_2x2) {
 
 TEST(Strassen_Algorithm_MPI, Test_Matrix_4x4) {
     boost::mpi::communicator world;
-    std::vector<int> A, B;
+    std::vector<int> A;
+    std::vector<int> B;
     std::vector<int> C(4 * 4, 0);
     std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
 
@@ -64,7 +66,8 @@ TEST(Strassen_Algorithm_MPI, Test_Matrix_4x4) {
 
 TEST(Strassen_Algorithm_MPI, Test_Matrix_8x8) {
     boost::mpi::communicator world;
-    std::vector<int> A, B;
+    std::vector<int> A;
+    std::vector<int> B;
     std::vector<int> C(8 * 8, 0);
     std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
 
