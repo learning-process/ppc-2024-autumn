@@ -1,4 +1,4 @@
-
+// Golovkin Maksim Task#3
 #include <gtest/gtest.h>
 
 #include <algorithm>
