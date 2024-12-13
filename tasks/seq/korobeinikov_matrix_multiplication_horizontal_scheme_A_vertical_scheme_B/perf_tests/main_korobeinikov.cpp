@@ -1,8 +1,6 @@
 // Copyright 2024 Korobeinikov Arseny
 #include <gtest/gtest.h>
 
-#include <vector>
-
 #include "core/perf/include/perf.hpp"
 #include "seq/korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B/include/ops_seq_korobeinikov.hpp"
 

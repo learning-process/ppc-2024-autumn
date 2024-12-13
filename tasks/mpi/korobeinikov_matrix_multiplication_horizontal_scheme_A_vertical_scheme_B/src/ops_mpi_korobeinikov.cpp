@@ -3,22 +3,6 @@
 
 #include <algorithm>
 #include <functional>
-#include <random>
-#include <string>
-#include <thread>
-#include <vector>
-
-using namespace std::chrono_literals;
-
-std::vector<int> korobeinikov_a_test_task_mpi_lab_02::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
-}
 
 bool korobeinikov_a_test_task_mpi_lab_02::TestMPITaskSequential::pre_processing() {
   internal_order_test();
@@ -41,7 +25,8 @@ bool korobeinikov_a_test_task_mpi_lab_02::TestMPITaskSequential::pre_processing(
 
 bool korobeinikov_a_test_task_mpi_lab_02::TestMPITaskSequential::validation() {
   internal_order_test();
-  return (*taskData->inputs[2] == *taskData->inputs[4]) &&
+  return taskData->inputs.size() == 6 && taskData->inputs_count.size() == 6 && taskData->outputs.size() == 3 &&
+         taskData->outputs_count.size() == 3 && (*taskData->inputs[2] == *taskData->inputs[4]) &&
          ((*taskData->inputs[1]) * (*taskData->inputs[2]) == (int)taskData->inputs_count[0]) &&
          ((*taskData->inputs[4]) * (*taskData->inputs[5]) == (int)taskData->inputs_count[3]);
 }
@@ -83,7 +68,8 @@ bool korobeinikov_a_test_task_mpi_lab_02::TestMPITaskParallel::validation() {
     if (taskData->inputs_count[0] == 0 || taskData->inputs_count[3] == 0) {
       return true;
     }
-    return (*taskData->inputs[2] == *taskData->inputs[4]) &&
+    return taskData->inputs.size() == 6 && taskData->inputs_count.size() == 6 && taskData->outputs.size() == 3 &&
+           taskData->outputs_count.size() == 3 && (*taskData->inputs[2] == *taskData->inputs[4]) &&
            ((*taskData->inputs[1]) * (*taskData->inputs[2]) == (int)taskData->inputs_count[0]) &&
            ((*taskData->inputs[4]) * (*taskData->inputs[5]) == (int)taskData->inputs_count[3]);
   }

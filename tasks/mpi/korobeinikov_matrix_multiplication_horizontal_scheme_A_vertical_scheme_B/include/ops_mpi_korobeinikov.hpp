@@ -15,8 +15,6 @@
 
 namespace korobeinikov_a_test_task_mpi_lab_02 {
 
-std::vector<int> getRandomVector(int sz);
-
 struct Matrix {
   std::vector<int> data;
   int count_rows;

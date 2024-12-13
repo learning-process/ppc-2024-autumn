@@ -1,8 +1,6 @@
 // Copyright 2024 Korobeinikov Brseny
 #include "seq/korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B/include/ops_seq_korobeinikov.hpp"
 
-#include <thread>
-
 using namespace std::chrono_literals;
 
 bool korobeinikov_a_test_task_seq_lab_02::TestTaskSequential::pre_processing() {
@@ -26,7 +24,8 @@ bool korobeinikov_a_test_task_seq_lab_02::TestTaskSequential::pre_processing() {
 
 bool korobeinikov_a_test_task_seq_lab_02::TestTaskSequential::validation() {
   internal_order_test();
-  return (*taskData->inputs[2] == *taskData->inputs[4]) &&
+  return taskData->inputs.size() == 6 && taskData->inputs_count.size() == 6 && taskData->outputs.size() == 3 &&
+         taskData->outputs_count.size() == 3 && (*taskData->inputs[2] == *taskData->inputs[4]) &&
          ((*taskData->inputs[1]) * (*taskData->inputs[2]) == (int)taskData->inputs_count[0]) &&
          ((*taskData->inputs[4]) * (*taskData->inputs[5]) == (int)taskData->inputs_count[3]);
 }
