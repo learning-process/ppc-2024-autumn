@@ -7,6 +7,7 @@
 #include <functional>
 #include <limits>
 #include <random>
+#include <utility>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -37,7 +38,7 @@ class TestTaskSequential : public ppc::core::Task {
  public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, target_t traget,
                               std::vector<constraint_t> constraints)
-      : Task(std::move(taskData_)), traget_function_(traget), constraints_(std::move(constraints)) {}
+      : Task(std::move(taskData_)), traget_function_(std::move(traget)), constraints_(std::move(constraints)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;

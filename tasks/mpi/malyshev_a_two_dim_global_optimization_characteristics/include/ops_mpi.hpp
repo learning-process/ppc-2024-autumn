@@ -13,6 +13,7 @@
 #include <functional>
 #include <limits>
 #include <random>
+#include <utility>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -101,7 +102,7 @@ class TestTaskParallel : public TestTaskSequential {
   bool run() override;
   bool post_processing() override;
 
-  ~TestTaskParallel() { cleanup_shared_arrays(); }
+  ~TestTaskParallel() override { cleanup_shared_arrays(); }
 
  private:
   int start_constraint_index_;

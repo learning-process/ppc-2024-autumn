@@ -110,7 +110,10 @@ malyshev_a_two_dim_global_optimization_characteristics_mpi::TestTaskSequential::
     double new_y;
     double new_value;
     bool found_better = false;
-    for (double step = learning_rate; step > data_.eps; step *= 0.5) {
+
+    int max_steps = static_cast<int>(std::ceil(std::log2(learning_rate / data_.eps)));
+    double step = learning_rate;
+    for (int i = 0; i < max_steps; i++) {
       new_x = x - step * dx;
       new_y = y - step * dy;
 
@@ -131,6 +134,7 @@ malyshev_a_two_dim_global_optimization_characteristics_mpi::TestTaskSequential::
         learning_rate = step * 1.1;
         break;
       }
+      step *= 0.5;
     }
 
     if (!found_better) {
