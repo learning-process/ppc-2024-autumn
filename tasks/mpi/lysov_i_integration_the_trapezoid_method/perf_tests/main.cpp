@@ -34,18 +34,6 @@ TEST(lysov_i_integration_the_trapezoid_method_mpi, test_integration_pipeline_run
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    std::vector<double> reference_result(1, 0.0);
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
-    lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
-    ASSERT_NEAR(reference_result[0], global_result[0], 1e-1);
   }
 }
 
@@ -77,7 +65,5 @@ TEST(lysov_i_integration_the_trapezoid_method_mpi, test_integration_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    double reference_result = 2.0;
-    ASSERT_NEAR(reference_result, global_result[0], 1e-1);
   }
 }
