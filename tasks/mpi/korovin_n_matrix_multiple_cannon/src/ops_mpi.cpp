@@ -152,7 +152,10 @@ bool korovin_n_matrix_multiple_cannon_mpi::TestMPITaskParallel::run() {
   int row = coords[0];
   int col = coords[1];
 
-  int left_rank, right_rank, up_rank, down_rank;
+  int left_rank;
+  int right_rank;
+  int up_rank;
+  int down_rank;
   MPI_Cart_shift(cart_comm, 1, 1, &left_rank, &right_rank);
   MPI_Cart_shift(cart_comm, 0, 1, &up_rank, &down_rank);
 
