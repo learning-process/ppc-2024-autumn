@@ -105,27 +105,34 @@ bool chizhov_m_max_values_by_columns_matrix_mpi::TestMPITaskParallel::validation
 
 bool chizhov_m_max_values_by_columns_matrix_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+  int delta;
+  int extra;
 
-  broadcast(world, cols, 0);
-  broadcast(world, rows, 0);
-
-  if (world.rank() != 0) {
-    input_ = std::vector<int>(cols * rows, 0);
+  if (world.rank() == 0) {
+    delta = cols / world.size();
+    extra = cols % world.size();
   }
-  broadcast(world, input_.data(), cols * rows, 0);
+  broadcast(world, rows, 0);
+  broadcast(world, delta, 0);
+  broadcast(world, extra, 0);
 
-  int delta = cols / world.size();
-  int extra = cols % world.size();
+  int columns = delta * world.size() + extra;
+  if (world.rank() != 0) {
+    input_ = std::vector<int>(columns * rows, 0);
+  }
+  broadcast(world, input_.data(), columns * rows, 0);
+
   if (extra != 0) {
     delta += 1;
   }
+
   int startCol = delta * world.rank();
-  int lastCol = std::min(cols, delta * (world.rank() + 1));
+  int lastCol = std::min(columns, delta * (world.rank() + 1));
   std::vector<int> localMax;
   for (int j = startCol; j < lastCol; j++) {
     int maxElem = input_[j];
     for (int i = 1; i < rows; i++) {
-      int coor = i * cols + j;
+      int coor = i * columns + j;
       if (input_[coor] > maxElem) {
         maxElem = input_[coor];
       }
@@ -134,7 +141,7 @@ bool chizhov_m_max_values_by_columns_matrix_mpi::TestMPITaskParallel::run() {
   }
   localMax.resize(delta);
   if (world.rank() == 0) {
-    std::vector<int> globalRes(cols + delta * world.size());
+    std::vector<int> globalRes(columns + delta * world.size());
     std::vector<int> sizes(world.size(), delta);
     boost::mpi::gatherv(world, localMax.data(), localMax.size(), globalRes.data(), sizes, 0);
     globalRes.resize(cols);

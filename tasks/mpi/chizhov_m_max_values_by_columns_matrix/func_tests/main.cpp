@@ -14,10 +14,11 @@ std::vector<int> chizhov_m_max_values_by_columns_matrix_mpi::getRandomVector(int
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
   for (int i = 0; i < sz; i++) {
-    int val = gen() % 200 - 100;
-    if (val >= 0) {
-      vec[i] = val;
-    }
+    int val = 0;
+    do {
+      val = gen() % 200 - 100;
+    } while (val <= 0);
+    vec[i] = val;
   }
   return vec;
 }
