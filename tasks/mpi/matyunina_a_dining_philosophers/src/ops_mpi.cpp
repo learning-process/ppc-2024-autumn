@@ -189,6 +189,7 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
         }
       }
       if (exit == 0) {
+        world.barrier();
         break;
       }
     }
@@ -247,6 +248,7 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
       boost::mpi::request send_req = world.isend(0, 3, exit_m, 4);
       send_req.wait();
     }
+    world.barrier();
   }
   return true;
 }
