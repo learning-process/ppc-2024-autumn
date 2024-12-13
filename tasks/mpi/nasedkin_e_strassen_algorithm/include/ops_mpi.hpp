@@ -1,35 +1,30 @@
 #pragma once
 
+#include <gtest/gtest.h>
+#include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
-#include <boost/mpi/environment.hpp>
-#include <vector>
 #include <memory>
-
+#include <vector>
 #include "core/task/include/task.hpp"
 
 namespace nasedkin_e_strassen_algorithm {
 
-    class TestMPITaskParallel {
+    std::vector<int> getRandomMatrix(int size);
+    std::vector<int> matrixMultiply(const std::vector<int>& A, const std::vector<int>& B, int size);
+
+    class StrassenMPITaskParallel : public ppc::core::Task {
     public:
-        explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData);
-        bool pre_processing();
-        bool validation();
-        bool run();
-        bool post_processing();
+        explicit StrassenMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
+                : Task(std::move(taskData_)) {}
+        bool pre_processing() override;
+        bool validation() override;
+        bool run() override;
+        bool post_processing() override;
 
     private:
+        std::vector<int> A, B, C;
+        int size;
         boost::mpi::communicator world;
-        std::shared_ptr<ppc::core::TaskData> taskData;
-
-        std::vector<double> local_matrix_a, local_matrix_b, local_matrix_c;
-        size_t rows_per_proc, cols_per_proc;
-
-        std::vector<double> strassen(const std::vector<double>& A, const std::vector<double>& B, size_t n);
-        static void split_matrix(const std::vector<double>& matrix, size_t n,
-                          std::vector<double>& a11, std::vector<double>& a12,
-                          std::vector<double>& a21, std::vector<double>& a22);
-        static std::vector<double> combine_matrix(const std::vector<double>& c11, const std::vector<double>& c12,
-                                           const std::vector<double>& c21, const std::vector<double>& c22, size_t n);
     };
 
 }  // namespace nasedkin_e_strassen_algorithm
