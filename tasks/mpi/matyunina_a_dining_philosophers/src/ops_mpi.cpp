@@ -1,4 +1,44 @@
 // Copyright 2023 Nesterov Alexander
+#include "mpi/matyunina_a_dining_philosophers/include/ops_mpi.hpp"
+
+#include <algorithm>
+#include <functional>
+#include <random>
+#include <thread>
+#include <vector>
+
+using namespace std::chrono_literals;
+
+bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::pre_processing() {
+  internal_order_test();
+  unsigned int tmp = 0;
+  if (world.rank() == 0) {
+    input_ = std::vector<int>(taskData->inputs_count[0]);
+    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+    std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
+    tmp = input_[0];
+    for (int rank = 1; rank <= world.size() - 1; ++rank) {
+      world.send(rank, 5, &tmp, 1);
+    }
+    nom = tmp;
+  }
+  if (world.rank() > 0) {
+    int a = 0;
+    world.recv(0, 5, &a, 1);
+    nom = a;
+  }
+  res_ = 0;
+  return true;
+}
+
+bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::validation() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    return taskData->outputs_count[0] == 1 && taskData->outputs_count[0] == 1 && world.size() > 2;
+  }
+  return true;
+}
+
 bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   if (world.rank() == 0) {
@@ -168,10 +208,9 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
       std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(unif(rand_engine))));
       while (true) {
         if (eat == 0) {
-          int m[4] = {world.rank(), 1, l, r};
-          16 : 54
+          int m[4] = {world.rank(), 1, l, r};       
 
-              boost::mpi::request send_req = world.isend(0, 3, m, 4);
+          boost::mpi::request send_req = world.isend(0, 3, m, 4);
           send_req.wait();
           int a;
           boost::mpi::request recv_req = world.irecv(0, 1, &a, 1);
@@ -209,6 +248,14 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
       boost::mpi::request send_req = world.isend(0, 3, exit_m, 4);
       send_req.wait();
     }
+  }
+  return true;
+}
+
+bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::post_processing() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    reinterpret_cast<int*>(taskData->outputs[0])[0] = res_;
   }
   return true;
 }
