@@ -6,13 +6,10 @@
 bool korovin_n_matrix_multiple_cannon_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
 
-  m = taskData->inputs_count[0];
-  n = taskData->inputs_count[1];
-  k = taskData->inputs_count[2];
   auto* a_data = reinterpret_cast<double*>(taskData->inputs[0]);
-  A_.assign(a_data, a_data + (m * n));
+  A_.assign(a_data, a_data + (numRowsA_ * numColsA_RowsB_));
   auto* b_data = reinterpret_cast<double*>(taskData->inputs[1]);
-  B_.assign(b_data, b_data + (n * k));
+  B_.assign(b_data, b_data + (numColsA_RowsB_ * numColsB_));
 
   return true;
 }
@@ -22,11 +19,11 @@ bool korovin_n_matrix_multiple_cannon_seq::TestTaskSequential::validation() {
 
   if (taskData->inputs_count.size() < 3) return false;
 
-  m = taskData->inputs_count[0];
-  n = taskData->inputs_count[1];
-  k = taskData->inputs_count[2];
+  numRowsA_ = taskData->inputs_count[0];
+  numColsA_RowsB_ = taskData->inputs_count[1];
+  numColsB_ = taskData->inputs_count[2];
 
-  return (m > 0 && n > 0 && k > 0) &&
+  return (numRowsA_ > 0 && numColsA_RowsB_ > 0 && numColsB_ > 0) &&
          (taskData->inputs.size() >= 2 && taskData->inputs[0] != nullptr && taskData->inputs[1] != nullptr) &&
          (!taskData->outputs.empty() && taskData->outputs[0] != nullptr);
 }
@@ -34,11 +31,11 @@ bool korovin_n_matrix_multiple_cannon_seq::TestTaskSequential::validation() {
 bool korovin_n_matrix_multiple_cannon_seq::TestTaskSequential::run() {
   internal_order_test();
 
-  C_.resize(m * k, 0.0);
-  for (int i = 0; i < m; i++) {
-    for (int j = 0; j < k; j++) {
-      for (int p = 0; p < n; p++) {
-        C_[i * k + j] += A_[i * n + p] * B_[p * k + j];
+  C_.resize(numRowsA_ * numColsB_, 0.0);
+  for (int i = 0; i < numRowsA_; i++) {
+    for (int j = 0; j < numColsB_; j++) {
+      for (int p = 0; p < numColsA_RowsB_; p++) {
+        C_[i * numColsB_ + j] += A_[i * numColsA_RowsB_ + p] * B_[p * numColsB_ + j];
       }
     }
   }

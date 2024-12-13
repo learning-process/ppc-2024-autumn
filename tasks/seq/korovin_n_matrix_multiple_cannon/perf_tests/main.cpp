@@ -7,30 +7,30 @@
 #include "seq/korovin_n_matrix_multiple_cannon/include/ops_seq.hpp"
 
 TEST(korovin_n_matrix_multiple_cannon_seq, test_task_run) {
-  int m = 512;
-  int n = 512;
-  int k = 512;
+  int numRowsA = 512;
+  int numColsA_RowsB = 512;
+  int numColsB = 512;
 
-  std::vector<double> A(m * n, 0.0);
-  for (int i = 0; i < m * n; i++) {
+  std::vector<double> A(numRowsA * numColsA_RowsB, 0.0);
+  for (int i = 0; i < numRowsA * numColsA_RowsB; i++) {
     A[i] = i % 100 + 1;
   }
 
-  std::vector<double> B(n * k, 0.0);
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < k; j++) {
-      B[i * k + j] = (i + j) % 50 + 1;
+  std::vector<double> B(numColsA_RowsB * numColsB, 0.0);
+  for (int i = 0; i < numColsA_RowsB; i++) {
+    for (int j = 0; j < numColsB; j++) {
+      B[i * numColsB + j] = (i + j) % 50 + 1;
     }
   }
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs_count.emplace_back(m);
-  taskData->inputs_count.emplace_back(n);
-  taskData->inputs_count.emplace_back(k);
+  taskData->inputs_count.emplace_back(numRowsA);
+  taskData->inputs_count.emplace_back(numColsA_RowsB);
+  taskData->inputs_count.emplace_back(numColsB);
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
 
-  std::vector<double> C(m * k, 0.0);
+  std::vector<double> C(numRowsA * numColsB, 0.0);
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(C.data()));
   taskData->outputs_count.emplace_back(C.size());
 
@@ -56,30 +56,30 @@ TEST(korovin_n_matrix_multiple_cannon_seq, test_task_run) {
 }
 
 TEST(korovin_n_matrix_multiple_cannon_seq, test_pipeline_run) {
-  int m = 512;
-  int n = 512;
-  int k = 512;
+  int numRowsA = 512;
+  int numColsA_RowsB = 512;
+  int numColsB = 512;
 
-  std::vector<double> A(m * n, 0.0);
-  for (int i = 0; i < m * n; i++) {
+  std::vector<double> A(numRowsA * numColsA_RowsB, 0.0);
+  for (int i = 0; i < numRowsA * numColsA_RowsB; i++) {
     A[i] = i % 100 + 1;
   }
 
-  std::vector<double> B(n * k, 0.0);
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < k; j++) {
-      B[i * k + j] = (i + j) % 50 + 1;
+  std::vector<double> B(numColsA_RowsB * numColsB, 0.0);
+  for (int i = 0; i < numColsA_RowsB; i++) {
+    for (int j = 0; j < numColsB; j++) {
+      B[i * numColsB + j] = (i + j) % 50 + 1;
     }
   }
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs_count.emplace_back(m);
-  taskData->inputs_count.emplace_back(n);
-  taskData->inputs_count.emplace_back(k);
+  taskData->inputs_count.emplace_back(numRowsA);
+  taskData->inputs_count.emplace_back(numColsA_RowsB);
+  taskData->inputs_count.emplace_back(numColsB);
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
 
-  std::vector<double> C(m * k, 0.0);
+  std::vector<double> C(numRowsA * numColsB, 0.0);
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(C.data()));
   taskData->outputs_count.emplace_back(C.size());
 

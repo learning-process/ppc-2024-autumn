@@ -22,9 +22,9 @@ class TestTaskSequential : public ppc::core::Task {
   std::vector<double> A_;
   std::vector<double> B_;
   std::vector<double> C_;
-  int m;
-  int n;
-  int k;
+  int numRowsA_;
+  int numColsA_RowsB_;
+  int numColsB_;
 };
 
 }  // namespace korovin_n_matrix_multiple_cannon_seq

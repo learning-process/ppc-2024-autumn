@@ -11,13 +11,10 @@
 bool korovin_n_matrix_multiple_cannon_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
 
-  m = taskData->inputs_count[0];
-  n = taskData->inputs_count[1];
-  k = taskData->inputs_count[2];
   auto* a_data = reinterpret_cast<double*>(taskData->inputs[0]);
-  A_.assign(a_data, a_data + (m * n));
+  A_.assign(a_data, a_data + (numRowsA_ * numColsA_RowsB_));
   auto* b_data = reinterpret_cast<double*>(taskData->inputs[1]);
-  B_.assign(b_data, b_data + (n * k));
+  B_.assign(b_data, b_data + (numColsA_RowsB_ * numColsB_));
 
   return true;
 }
@@ -26,11 +23,11 @@ bool korovin_n_matrix_multiple_cannon_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
   if (taskData->inputs_count.size() < 3) return false;
 
-  m = taskData->inputs_count[0];
-  n = taskData->inputs_count[1];
-  k = taskData->inputs_count[2];
+  numRowsA_ = taskData->inputs_count[0];
+  numColsA_RowsB_ = taskData->inputs_count[1];
+  numColsB_ = taskData->inputs_count[2];
 
-  return (m > 0 && n > 0 && k > 0) &&
+  return (numRowsA_ > 0 && numColsA_RowsB_ > 0 && numColsB_ > 0) &&
          (taskData->inputs.size() >= 2 && taskData->inputs[0] != nullptr && taskData->inputs[1] != nullptr) &&
          (!taskData->outputs.empty() && taskData->outputs[0] != nullptr);
 }
@@ -38,11 +35,11 @@ bool korovin_n_matrix_multiple_cannon_mpi::TestMPITaskSequential::validation() {
 bool korovin_n_matrix_multiple_cannon_mpi::TestMPITaskSequential::run() {
   internal_order_test();
 
-  C_.resize(m * k, 0.0);
-  for (int i = 0; i < m; i++) {
-    for (int j = 0; j < k; j++) {
-      for (int p = 0; p < n; p++) {
-        C_[i * k + j] += A_[i * n + p] * B_[p * k + j];
+  C_.resize(numRowsA_ * numColsB_, 0.0);
+  for (int i = 0; i < numRowsA_; i++) {
+    for (int j = 0; j < numColsB_; j++) {
+      for (int p = 0; p < numColsA_RowsB_; p++) {
+        C_[i * numColsB_ + j] += A_[i * numColsA_RowsB_ + p] * B_[p * numColsB_ + j];
       }
     }
   }
@@ -65,13 +62,10 @@ bool korovin_n_matrix_multiple_cannon_mpi::TestMPITaskParallel::pre_processing()
   int rank;
   MPI_Comm_rank(world, &rank);
   if (rank == 0) {
-    m = taskData->inputs_count[0];
-    n = taskData->inputs_count[1];
-    k = taskData->inputs_count[2];
     auto* a_data = reinterpret_cast<double*>(taskData->inputs[0]);
-    A_.assign(a_data, a_data + (m * n));
+    A_.assign(a_data, a_data + (numRowsA_ * numColsA_RowsB_));
     auto* b_data = reinterpret_cast<double*>(taskData->inputs[1]);
-    B_.assign(b_data, b_data + (n * k));
+    B_.assign(b_data, b_data + (numColsA_RowsB_ * numColsB_));
   }
 
   return true;
@@ -85,11 +79,11 @@ bool korovin_n_matrix_multiple_cannon_mpi::TestMPITaskParallel::validation() {
   if (rank != 0) return true;
   if (taskData->inputs_count.size() < 3) return false;
 
-  m = taskData->inputs_count[0];
-  n = taskData->inputs_count[1];
-  k = taskData->inputs_count[2];
+  numRowsA_ = taskData->inputs_count[0];
+  numColsA_RowsB_ = taskData->inputs_count[1];
+  numColsB_ = taskData->inputs_count[2];
 
-  return (m > 0 && n > 0 && k > 0) &&
+  return (numRowsA_ > 0 && numColsA_RowsB_ > 0 && numColsB_ > 0) &&
          (taskData->inputs.size() >= 2 && taskData->inputs[0] != nullptr && taskData->inputs[1] != nullptr) &&
          (!taskData->outputs.empty() && taskData->outputs[0] != nullptr);
 }
@@ -102,16 +96,16 @@ bool korovin_n_matrix_multiple_cannon_mpi::TestMPITaskParallel::run() {
   MPI_Comm_size(world, &size);
   MPI_Comm_rank(world, &rank);
 
-  MPI_Bcast(&m, 1, MPI_INT, 0, world);
-  MPI_Bcast(&n, 1, MPI_INT, 0, world);
-  MPI_Bcast(&k, 1, MPI_INT, 0, world);
+  MPI_Bcast(&numRowsA_, 1, MPI_INT, 0, world);
+  MPI_Bcast(&numColsA_RowsB_, 1, MPI_INT, 0, world);
+  MPI_Bcast(&numColsB_, 1, MPI_INT, 0, world);
 
   int q = static_cast<int>(std::floor(std::sqrt(size)));
   int active_procs = q * q;
 
-  int padded_m = q * ((m + q - 1) / q);
-  int padded_n = q * ((n + q - 1) / q);
-  int padded_k = q * ((k + q - 1) / q);
+  int padded_m = q * ((numRowsA_ + q - 1) / q);
+  int padded_n = q * ((numColsA_RowsB_ + q - 1) / q);
+  int padded_k = q * ((numColsB_ + q - 1) / q);
 
   int block_m = padded_m / q;
   int block_n = padded_n / q;
@@ -119,12 +113,13 @@ bool korovin_n_matrix_multiple_cannon_mpi::TestMPITaskParallel::run() {
 
   if (rank == 0) {
     std::vector<double> A_padded(padded_m * padded_n, 0.0);
-    for (int i = 0; i < m; i++) {
-      std::copy(A_.begin() + i * n, A_.begin() + (i + 1) * n, A_padded.begin() + i * padded_n);
+    for (int i = 0; i < numRowsA_; i++) {
+      std::copy(A_.begin() + i * numColsA_RowsB_, A_.begin() + (i + 1) * numColsA_RowsB_,
+                A_padded.begin() + i * padded_n);
     }
     std::vector<double> B_padded(padded_n * padded_k, 0.0);
-    for (int i = 0; i < n; i++) {
-      std::copy(B_.begin() + i * k, B_.begin() + (i + 1) * k, B_padded.begin() + i * padded_k);
+    for (int i = 0; i < numColsA_RowsB_; i++) {
+      std::copy(B_.begin() + i * numColsB_, B_.begin() + (i + 1) * numColsB_, B_padded.begin() + i * padded_k);
     }
     A_ = std::move(A_padded);
     B_ = std::move(B_padded);
@@ -247,9 +242,9 @@ bool korovin_n_matrix_multiple_cannon_mpi::TestMPITaskParallel::run() {
       }
     }
 
-    std::vector<double> C_final(m * k, 0.0);
-    for (int i = 0; i < m; i++) {
-      std::copy(C_.begin() + i * padded_k, C_.begin() + i * padded_k + k, C_final.begin() + i * k);
+    std::vector<double> C_final(numRowsA_ * numColsB_, 0.0);
+    for (int i = 0; i < numRowsA_; i++) {
+      std::copy(C_.begin() + i * padded_k, C_.begin() + i * padded_k + numColsB_, C_final.begin() + i * numColsB_);
     }
     C_ = std::move(C_final);
   }
