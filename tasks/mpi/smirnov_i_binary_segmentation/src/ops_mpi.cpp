@@ -1,6 +1,6 @@
-#include <thread> //мб убрать
-
 #include "mpi/smirnov_i_binary_segmentation/include/ops_mpi.hpp"
+
+#include <thread>
 
 using namespace std::chrono_literals;
 
@@ -141,7 +141,7 @@ bool smirnov_i_binary_segmentation::TestMPITaskSequential::run() {
     }
   }
   mask = del_border(bord_img, cols, rows);
-  //rename marks
+  // rename marks
   for (int i = 1; i < cols * rows; i++) {
     if (mask[i - 1] != mask[i] && mask[i - 1] != 1 && mask[i] != 1 && i % cols != 0) {
       merge_equivalence(eq_table, mask[i - 1], mask[i]);
@@ -198,7 +198,6 @@ bool smirnov_i_binary_segmentation::TestMPITaskSequential::run() {
       mask[i] = label_mapping[mask[i]];
     }
   }
-  
   return true;
 }
 
@@ -208,10 +207,6 @@ bool smirnov_i_binary_segmentation::TestMPITaskSequential::post_processing() {
   std::copy(mask.data(), mask.data() + cols * rows, tmp_ptr);
   return true;
 }
-
-
-
-
 
 bool smirnov_i_binary_segmentation::TestMPITaskParallel::pre_processing() {
   internal_order_test();
@@ -227,7 +222,7 @@ bool smirnov_i_binary_segmentation::TestMPITaskParallel::validation() {
   bool is_valid = true;
   if (world.rank() == 0) {
     if (taskData->inputs_count.size() != 2) is_valid = false;
-    if(is_valid){
+    if (is_valid){
       rows = taskData->inputs_count[0];
       cols = taskData->inputs_count[1];
       if (rows < 0 || cols < 0) is_valid = false;
@@ -239,7 +234,7 @@ bool smirnov_i_binary_segmentation::TestMPITaskParallel::validation() {
         }
         for (size_t i = 0; i < img.size(); i++) {
           if (img[i] != 0 && img[i] != 1) {
-            is_valid =false;
+            is_valid = false;
             break;
           }
         }
@@ -400,7 +395,7 @@ bool smirnov_i_binary_segmentation::TestMPITaskParallel::run() {
   int px_B;
   int px_C;
   int px_D;
-  int mark = 2 + rank * (sendcounts[0]+5);
+  int mark = 2 + rank * (sendcounts[0] + 5);
   // D B
   // C A
 
@@ -430,10 +425,8 @@ bool smirnov_i_binary_segmentation::TestMPITaskParallel::run() {
     }
   }
 
-
   for (auto& pair : local_eq_table) {
     std::set<int>& values = pair.second;
-
     for (int v : values) {
       local_eq_table[v].insert(values.begin(), values.end());
     }
@@ -453,11 +446,14 @@ bool smirnov_i_binary_segmentation::TestMPITaskParallel::run() {
 
   std::vector<int> local_mask;
   local_mask = del_border(bord_img, cols, sendcounts[rank] / cols);
-  if (rank == 0) {
-    std::vector<int> mask(cols * rows, 1);
-  } else {
-    std::vector<int> mask;
+  if(rank != 0) {
+    mask = std::vector<int>();
   }
+  // if (rank == 0) {
+  //   mask = std::vector<int>(cols * rows, 1);
+  // } else {
+  //   mask = std::vector<int>();
+  // }
   int* recvcounts = new int[size]();
   int* recvdispls = new int[size]();
   offset = 0;
@@ -471,7 +467,6 @@ bool smirnov_i_binary_segmentation::TestMPITaskParallel::run() {
     recvdispls[i] = offset;
     offset += recvcounts[i];
   };
-
 
   MPI_Gatherv(local_mask.data(), sendcounts[rank], MPI_INT, mask.data(), recvcounts, recvdispls, MPI_INT, 0,
               MPI_COMM_WORLD);
@@ -490,7 +485,7 @@ bool smirnov_i_binary_segmentation::TestMPITaskParallel::run() {
               0, MPI_COMM_WORLD);
   // double start_time, end_time;
   // MPI_Barrier(MPI_COMM_WORLD);
-  // start_time = MPI_Wtime();            
+  // start_time = MPI_Wtime();
   if (rank == 0) {
     for (int i = 0; i < size; ++i) {
       std::map<int, std::set<int>> temp_eq_table = deserialize_eq_table(std::string(&recv_buf[offsets[i]], lengths[i]));

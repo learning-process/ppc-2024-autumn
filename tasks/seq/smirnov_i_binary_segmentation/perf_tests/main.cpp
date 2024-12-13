@@ -10,7 +10,6 @@ TEST(smirnov_i_binary_segmentation_seq, test_pipeline_run) {
   int rows = 1024;
   std::vector<int> img;
   img = std::vector<int>(cols * rows, 0);
-  
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(img.data()));
   taskDataSeq->inputs_count.emplace_back(rows);

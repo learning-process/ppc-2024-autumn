@@ -33,8 +33,8 @@ std::vector<int> smirnov_i_binary_segmentation::TestMPITaskSequential::make_bord
   std::vector<int> new_img((cols_ + 2) * (rows_ + 2), 1);
 
   for (int row = 0; row < rows_; row++) {
-    int src_start = row * cols_;  
-    int dst_start = (row + 1) * (cols_ + 2) + 1; 
+    int src_start = row * cols_;
+    int dst_start = (row + 1) * (cols_ + 2) + 1;
     std::copy(&img_[src_start], &img_[src_start + cols_], &new_img[dst_start]);
   }
 
@@ -43,13 +43,13 @@ std::vector<int> smirnov_i_binary_segmentation::TestMPITaskSequential::make_bord
 
 std::vector<int> smirnov_i_binary_segmentation::TestMPITaskSequential::del_border(const std::vector<int>& img_,
                                                                                   int cols_, int rows_) {
-  int bordered_cols = cols_ + 2;  
+  int bordered_cols = cols_ + 2;
 
-  std::vector<int> result(cols_ * rows_);  
+  std::vector<int> result(cols_ * rows_);
 
   for (int row = 0; row < rows_; row++) {
-    int src_start = (row + 1) * bordered_cols + 1;  
-    int dst_start = row * cols_;  
+    int src_start = (row + 1) * bordered_cols + 1;
+    int dst_start = row * cols_;
 
     std::copy(&img_[src_start], &img_[src_start + cols_], &result[dst_start]);
   }
@@ -93,7 +93,6 @@ bool smirnov_i_binary_segmentation::TestMPITaskSequential::run() {
   // D B
   // C A
 
-
   for (size_t i = bord_cols + 1; i < bord_img.size() - bord_cols; i++) {
     if (i % bord_cols == 0 || static_cast<int>(i) % bord_cols == bord_cols - 1) {
       continue;
@@ -132,7 +131,6 @@ bool smirnov_i_binary_segmentation::TestMPITaskSequential::run() {
     }
   }
 
-
   for (size_t i = bord_cols + 1; i < (bord_img.size() - bord_cols); i++) {
     if (i % bord_cols == 0 || static_cast<int>(i) % bord_cols == bord_cols - 1) {
       continue;
@@ -145,7 +143,7 @@ bool smirnov_i_binary_segmentation::TestMPITaskSequential::run() {
     }
   }
   mask = del_border(bord_img, cols, rows);
-  //rename marks
+  // rename marks
   for (int i = 1; i < cols * rows; i++) {
     if (mask[i - 1] != mask[i] && mask[i - 1] != 1 && mask[i] != 1 && i % cols != 0) {
       merge_equivalence(eq_table, mask[i - 1], mask[i]);
@@ -202,7 +200,6 @@ bool smirnov_i_binary_segmentation::TestMPITaskSequential::run() {
       mask[i] = label_mapping[mask[i]];
     }
   }
-  
   return true;
 }
 
