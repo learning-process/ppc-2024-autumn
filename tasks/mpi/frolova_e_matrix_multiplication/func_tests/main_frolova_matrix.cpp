@@ -4,15 +4,26 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <vector>
+#include <random>
 
 #include "mpi/frolova_e_matrix_multiplication/include/ops_mpi_frolova_matrix.hpp"
 
-void randomNumVec(int N, std::vector<int>& vec) {
-  for (int i = 0; i < N; i++) {
-    int num = rand() % 100 + 1;
-    vec.push_back(num);
+namespace frolova_e_matrix_multiplication_mpi_test {
+std::vector<int> getRandomVector(int size_) {
+  if (size_ < 0) {
+    return std::vector<int>();
   }
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<int> dist(-100, 100);
+
+  std::vector<int> randomVector(size_);
+  std::generate(randomVector.begin(), randomVector.end(), [&]() { return static_cast<int>(dist(gen)); });
+
+  return randomVector;
 }
+}  // namespace frolova_e_matrix_multiplication_mpi_test
 
 TEST(frolova_e_matrix_multiplication_mpi, multiplication_of_square_matrices) {
   boost::mpi::communicator world;
@@ -26,8 +37,8 @@ TEST(frolova_e_matrix_multiplication_mpi, multiplication_of_square_matrices) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    randomNumVec(16, matrixA_);
-    randomNumVec(16, matrixB_);
+    matrixA_ = frolova_e_matrix_multiplication_mpi_test::getRandomVector(16);
+    matrixB_ = frolova_e_matrix_multiplication_mpi_test::getRandomVector(16);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(values_1.data()));
     taskDataPar->inputs_count.emplace_back(values_1.size());
@@ -95,8 +106,8 @@ TEST(frolova_e_matrix_multiplication_mpi, multiplication_of_two_vectors) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    randomNumVec(4, matrixA_);
-    randomNumVec(4, matrixB_);
+    matrixA_ = frolova_e_matrix_multiplication_mpi_test::getRandomVector(4);
+    matrixB_ = frolova_e_matrix_multiplication_mpi_test::getRandomVector(4);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(values_1.data()));
     taskDataPar->inputs_count.emplace_back(values_1.size());
@@ -164,8 +175,8 @@ TEST(frolova_e_matrix_multiplication_mpi, values_are_prime_numbers) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    randomNumVec(3721, matrixA_);
-    randomNumVec(3721, matrixB_);
+    matrixA_ = frolova_e_matrix_multiplication_mpi_test::getRandomVector(3721);
+    matrixB_ = frolova_e_matrix_multiplication_mpi_test::getRandomVector(3721);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(values_1.data()));
     taskDataPar->inputs_count.emplace_back(values_1.size());
@@ -233,8 +244,8 @@ TEST(frolova_e_matrix_multiplication_mpi, matrix_with_single_element) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    randomNumVec(1, matrixA_);
-    randomNumVec(1, matrixB_);
+    matrixA_ = frolova_e_matrix_multiplication_mpi_test::getRandomVector(1);
+    matrixB_ = frolova_e_matrix_multiplication_mpi_test::getRandomVector(1);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(values_1.data()));
     taskDataPar->inputs_count.emplace_back(values_1.size());
@@ -306,8 +317,8 @@ TEST(frolova_e_matrix_multiplication_mpi, multiplication_of_large_matrices) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    randomNumVec(400, matrixA_);
-    randomNumVec(400, matrixB_);
+    matrixA_ = frolova_e_matrix_multiplication_mpi_test::getRandomVector(400);
+    matrixB_ = frolova_e_matrix_multiplication_mpi_test::getRandomVector(400);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(values_1.data()));
     taskDataPar->inputs_count.emplace_back(values_1.size());
@@ -381,8 +392,8 @@ TEST(frolova_e_matrix_multiplication_mpi, matrix_of_size_of_power_of_two) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    randomNumVec(4096, matrixA_);
-    randomNumVec(4096, matrixB_);
+    matrixA_ = frolova_e_matrix_multiplication_mpi_test::getRandomVector(4096);
+    matrixB_ = frolova_e_matrix_multiplication_mpi_test::getRandomVector(4096);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(values_1.data()));
     taskDataPar->inputs_count.emplace_back(values_1.size());
@@ -456,8 +467,8 @@ TEST(frolova_e_matrix_multiplication_mpi, matrices_multiplication_with_wound_of_
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    randomNumVec(8, matrixA_);
-    randomNumVec(12, matrixB_);
+    matrixA_ = frolova_e_matrix_multiplication_mpi_test::getRandomVector(8);
+    matrixB_ = frolova_e_matrix_multiplication_mpi_test::getRandomVector(12);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(values_1.data()));
     taskDataPar->inputs_count.emplace_back(values_1.size());
@@ -531,8 +542,8 @@ TEST(frolova_e_matrix_multiplication_mpi, multiplying_vector_by_a_matrix) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    randomNumVec(4, matrixA_);
-    randomNumVec(16, matrixB_);
+    matrixA_ = frolova_e_matrix_multiplication_mpi_test::getRandomVector(4);
+    matrixB_ = frolova_e_matrix_multiplication_mpi_test::getRandomVector(16);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(values_1.data()));
     taskDataPar->inputs_count.emplace_back(values_1.size());
@@ -606,8 +617,8 @@ TEST(frolova_e_matrix_multiplication_mpi, multiplying_matrix_by_a_vector) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    randomNumVec(16, matrixA_);
-    randomNumVec(4, matrixB_);
+    matrixA_ = frolova_e_matrix_multiplication_mpi_test::getRandomVector(16);
+    matrixB_ = frolova_e_matrix_multiplication_mpi_test::getRandomVector(4);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(values_1.data()));
     taskDataPar->inputs_count.emplace_back(values_1.size());
@@ -683,8 +694,8 @@ TEST(frolova_e_matrix_multiplication_mpi, value1_dont_have_two_elements) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    randomNumVec(16, matrixA_);
-    randomNumVec(4, matrixB_);
+    matrixA_ = frolova_e_matrix_multiplication_mpi_test::getRandomVector(4);
+    matrixB_ = frolova_e_matrix_multiplication_mpi_test::getRandomVector(4);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(values_1.data()));
     taskDataPar->inputs_count.emplace_back(values_1.size());
@@ -721,8 +732,8 @@ TEST(frolova_e_matrix_multiplication_mpi, value2_dont_have_two_elements) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    randomNumVec(16, matrixA_);
-    randomNumVec(4, matrixB_);
+    matrixA_ = frolova_e_matrix_multiplication_mpi_test::getRandomVector(16);
+    matrixB_ = frolova_e_matrix_multiplication_mpi_test::getRandomVector(4);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(values_1.data()));
     taskDataPar->inputs_count.emplace_back(values_1.size());
@@ -759,8 +770,8 @@ TEST(frolova_e_matrix_multiplication_mpi, rows_number_is_not_equal_to_the_column
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    randomNumVec(16, matrixA_);
-    randomNumVec(4, matrixB_);
+    matrixA_ = frolova_e_matrix_multiplication_mpi_test::getRandomVector(4);
+    matrixB_ = frolova_e_matrix_multiplication_mpi_test::getRandomVector(4);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(values_1.data()));
     taskDataPar->inputs_count.emplace_back(values_1.size());
@@ -797,8 +808,8 @@ TEST(frolova_e_matrix_multiplication_mpi, mismatch_in_the_size_of_the_resulting_
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    randomNumVec(16, matrixA_);
-    randomNumVec(4, matrixB_);
+    matrixA_ = frolova_e_matrix_multiplication_mpi_test::getRandomVector(4);
+    matrixB_ = frolova_e_matrix_multiplication_mpi_test::getRandomVector(16);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(values_1.data()));
     taskDataPar->inputs_count.emplace_back(values_1.size());

@@ -6,21 +6,31 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/frolova_e_matrix_multiplication/include/ops_seq_frolova_matrix.hpp"
 
-void randomNumVec(int N, std::vector<int> &vec) {
-  for (int i = 0; i < N; i++) {
-    int num = rand() % 100 + 1;
-    vec.push_back(num);
+namespace frolova_e_matrix_multiplication_seq_test {
+std::vector<int> getRandomVector(int size_) {
+  if (size_ < 0) {
+    return std::vector<int>();
   }
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<int> dist(-100, 100);
+
+  std::vector<int> randomVector(size_);
+  std::generate(randomVector.begin(), randomVector.end(), [&]() { return static_cast<int>(dist(gen)); });
+
+  return randomVector;
 }
+}  // namespace frolova_e_matrix_multiplication_seq_test
 
 TEST(frolova_e_matrix_multiplication_seq, test_pipeline_run) {
-  std::vector<int> values_1 = {100, 100};
-  std::vector<int> values_2 = {100, 100};
+  std::vector<int> values_1 = {500, 500};
+  std::vector<int> values_2 = {500, 500};
   std::vector<int> matrixA_;
-  randomNumVec(10000, matrixA_);
+  matrixA_ = frolova_e_matrix_multiplication_seq_test::getRandomVector(250000);
   std::vector<int> matrixB_;
-  randomNumVec(10000, matrixB_);
-  std::vector<int> out(10000);
+  matrixB_ = frolova_e_matrix_multiplication_seq_test::getRandomVector(250000);
+  std::vector<int> out(250000);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -61,20 +71,20 @@ TEST(frolova_e_matrix_multiplication_seq, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  std::vector<int> count = frolova_e_matrix_multiplication_seq::Multiplication(100, 100, 100, matrixA_, matrixB_);
+  std::vector<int> count = frolova_e_matrix_multiplication_seq::Multiplication(500, 500, 500, matrixA_, matrixB_);
 
   ASSERT_EQ(count, out);
 }
 
 TEST(frolova_e_matrix_multiplication_seq, test_task_run) {
   // Create data
-  std::vector<int> values_1 = {100, 100};
-  std::vector<int> values_2 = {100, 100};
+  std::vector<int> values_1 = {500, 500};
+  std::vector<int> values_2 = {500, 500};
   std::vector<int> matrixA_;
-  randomNumVec(10000, matrixA_);
+  matrixA_ = frolova_e_matrix_multiplication_seq_test::getRandomVector(250000);
   std::vector<int> matrixB_;
-  randomNumVec(10000, matrixB_);
-  std::vector<int> out(10000);
+  matrixB_ = frolova_e_matrix_multiplication_seq_test::getRandomVector(250000);
+  std::vector<int> out(250000);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -114,6 +124,6 @@ TEST(frolova_e_matrix_multiplication_seq, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  std::vector<int> count = frolova_e_matrix_multiplication_seq::Multiplication(100, 100, 100, matrixA_, matrixB_);
+  std::vector<int> count = frolova_e_matrix_multiplication_seq::Multiplication(500, 500, 500, matrixA_, matrixB_);
   ASSERT_EQ(count, out);
 }
