@@ -35,6 +35,7 @@ bool matthew_fyodorov_reduce_custom_mpi ::TestMPITaskSequential::run() {
   if (ops == "+") {
     res = std::accumulate(input_.begin(), input_.end(), 0);
   }
+  return true;
 }
 
 bool matthew_fyodorov_reduce_custom_mpi ::TestMPITaskSequential::post_processing() {
