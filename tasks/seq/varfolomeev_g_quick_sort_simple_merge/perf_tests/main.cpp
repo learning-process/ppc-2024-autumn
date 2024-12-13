@@ -1,24 +1,36 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
+#include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/varfolomeev_g_quick_sort_simple_merge/include/ops_seq.hpp"
 
+namespace varfolomeev_g_quick_sort_simple_merge_seq {
+
+std::vector<int> getAntisorted_seq(int sz, int a) {  // [a + sz, a)
+  std::vector<int> vec(sz);
+  for (int i = a + sz, j = 0; i > a && j < sz; i--, j++) {
+    vec[j] = i;
+  }
+  return vec;
+}
+}  // namespace varfolomeev_g_quick_sort_simple_merge_seq
+
 TEST(sequential_varfolomeev_g_quick_sort_simple_merge_perf_test, test_pipeline_run) {
-  const int count = 100;
+  int count_size_vector = 524288 * 4;
 
   // Create data
-  std::vector<int> in(1, count);
-  std::vector<int> out(1, 0);
+  std::vector<int> global_vec = varfolomeev_g_quick_sort_simple_merge_seq::getAntisorted_seq(count_size_vector, 0);
+  std::vector<int> global_res(count_size_vector);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
+  taskDataSeq->inputs_count.emplace_back(global_vec.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_res.data()));
+  taskDataSeq->outputs_count.emplace_back(global_res.size());
 
   // Create Task
   auto testTaskSequential =
@@ -41,23 +53,23 @@ TEST(sequential_varfolomeev_g_quick_sort_simple_merge_perf_test, test_pipeline_r
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  // ASSERT_EQ(count, out[0]);
-  ASSERT_EQ(0, 0);
+  bool isSorted = std::is_sorted(global_res.begin(), global_res.end());
+  ASSERT_TRUE(isSorted);
 }
 
 TEST(sequential_varfolomeev_g_quick_sort_simple_merge_perf_test, test_task_run) {
-  const int count = 100;
+  int count_size_vector = 524288 * 4;
 
   // Create data
-  std::vector<int> in(1, count);
-  std::vector<int> out(1, 0);
+  std::vector<int> global_vec = varfolomeev_g_quick_sort_simple_merge_seq::getAntisorted_seq(count_size_vector, 0);
+  std::vector<int> global_res(count_size_vector);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
+  taskDataSeq->inputs_count.emplace_back(global_vec.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_res.data()));
+  taskDataSeq->outputs_count.emplace_back(global_res.size());
 
   // Create Task
   auto testTaskSequential =
@@ -80,6 +92,6 @@ TEST(sequential_varfolomeev_g_quick_sort_simple_merge_perf_test, test_task_run) 
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  // ASSERT_EQ(count, out[0]);
-  ASSERT_EQ(0, 0);
+  bool isSorted = std::is_sorted(global_res.begin(), global_res.end());
+  ASSERT_TRUE(isSorted);
 }
