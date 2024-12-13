@@ -31,11 +31,7 @@ bool TestMPITaskSequential::validation() {
   sizeArray = taskData->inputs_count[0];
   int sizeResultArray = taskData->outputs_count[0];
 
-  if (sizeArray < 2 || sizeArray != sizeResultArray) {
-    return false;
-  }
-
-  return true;
+  return (sizeArray > 1 && sizeArray == sizeResultArray);
 }
 
 bool TestMPITaskSequential::pre_processing() {
@@ -76,9 +72,7 @@ bool TestMPITaskParallel::validation() {
     sizeArray = taskData->inputs_count[0];
     int sizeResultArray = taskData->outputs_count[0];
 
-    if (sizeArray < 2 || sizeArray != sizeResultArray) {
-      return false;
-    }
+    return (sizeArray > 1 && sizeArray == sizeResultArray);
   }
 
   return true;
