@@ -208,7 +208,7 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
       std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(unif(rand_engine))));
       while (true) {
         if (eat == 0) {
-          int m[4] = {world.rank(), 1, l, r};       
+          int m[4] = {world.rank(), 1, l, r};
           boost::mpi::request send_req = world.isend(0, 3, m, 4);
           send_req.wait();
           int a;
