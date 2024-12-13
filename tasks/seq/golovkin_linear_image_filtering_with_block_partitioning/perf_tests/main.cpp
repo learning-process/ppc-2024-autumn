@@ -11,7 +11,7 @@
 #include "core/task/include/task.hpp"
 #include "seq/golovkin_linear_image_filtering_with_block_partitioning/include/ops_seq.hpp"
 
-// Генерация случайного изображения
+// Р“РµРЅРµСЂР°С†РёСЏ СЃР»СѓС‡Р°Р№РЅРѕРіРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ
 std::vector<int> generate_random_image(int rows, int cols) {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -21,7 +21,7 @@ std::vector<int> generate_random_image(int rows, int cols) {
   return image;
 }
 
-// Тесты с использованием разных размеров блоков для фильтрации с блочным разбиением
+// РўРµСЃС‚С‹ СЃ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµРј СЂР°Р·РЅС‹С… СЂР°Р·РјРµСЂРѕРІ Р±Р»РѕРєРѕРІ РґР»СЏ С„РёР»СЊС‚СЂР°С†РёРё СЃ Р±Р»РѕС‡РЅС‹Рј СЂР°Р·Р±РёРµРЅРёРµРј
 #define PERF_TEST_SEQ_BLOCK(test_name, rows_const, cols_const, block_size, num_runs)                               \
   TEST(golovkin_linear_image_filtering_with_block_partitioning, test_name) {                                       \
     int rows = rows_const;                                                                                         \
@@ -52,10 +52,10 @@ std::vector<int> generate_random_image(int rows, int cols) {
     ppc::core::Perf::print_perf_statistic(perfResults);                                                            \
   }
 
-// Тесты с блоками 16x16, 32x32 и 64x64
-PERF_TEST_SEQ_BLOCK(Block16x16, 500, 500, 16, 5)  // 500x500 изображение, блоки 16x16, 5 запусков
-PERF_TEST_SEQ_BLOCK(Block32x32, 500, 500, 32, 5)  // 500x500 изображение, блоки 32x32, 5 запусков
-PERF_TEST_SEQ_BLOCK(Block64x64, 500, 500, 64, 5)  // 500x500 изображение, блоки 64x64, 5 запусков
+// РўРµСЃС‚С‹ СЃ Р±Р»РѕРєР°РјРё 16x16, 32x32 Рё 64x64
+PERF_TEST_SEQ_BLOCK(Block16x16, 500, 500, 16, 5)  // 500x500 РёР·РѕР±СЂР°Р¶РµРЅРёРµ, Р±Р»РѕРєРё 16x16, 5 Р·Р°РїСѓСЃРєРѕРІ
+PERF_TEST_SEQ_BLOCK(Block32x32, 500, 500, 32, 5)  // 500x500 РёР·РѕР±СЂР°Р¶РµРЅРёРµ, Р±Р»РѕРєРё 32x32, 5 Р·Р°РїСѓСЃРєРѕРІ
+PERF_TEST_SEQ_BLOCK(Block64x64, 500, 500, 64, 5)  // 500x500 РёР·РѕР±СЂР°Р¶РµРЅРёРµ, Р±Р»РѕРєРё 64x64, 5 Р·Р°РїСѓСЃРєРѕРІ
 
 #undef PERF_TEST_SEQ
 #undef PERF_TEST_SEQ_BLOCK

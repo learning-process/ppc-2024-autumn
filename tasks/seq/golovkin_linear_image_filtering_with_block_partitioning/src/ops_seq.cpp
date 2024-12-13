@@ -58,19 +58,19 @@ void SimpleIntSEQ::applyGaussianFilterToBlock(int blockRowStart, int blockColSta
       int sum = 0;
       for (int kr = -1; kr <= 1; ++kr) {
         for (int kc = -1; kc <= 1; ++kc) {
-          // Ó÷èòûâàåì ãðàíèöû
+          // â€Ñ‡Ð¸Ñ‚Ñ‹Ð²Ð°ÐµÐ¼ Ð³Ñ€Ð°Ð½Ð¸Ñ†Ñ‹
           if (r + kr >= 0 && r + kr < rows && c + kc >= 0 && c + kc < cols) {
             sum += input_data_[(r + kr) * cols + (c + kc)] * kernel_[kr + 1][kc + 1];
           }
         }
       }
-      processed_data_[r * cols + c] = sum / 16;  // ßäðî Ãàóññà ñóììèðóåòñÿ è íîðìàëèçóåòñÿ
+      processed_data_[r * cols + c] = sum / 16;  // ÑÐ´Ñ€Ð¾ âˆšÐ°ÑƒÑÑÐ° ÑÑƒÐ¼Ð¼Ð¸Ñ€ÑƒÐµÑ‚ÑÂ¤ Ð¸ Ð½Ð¾Ñ€Ð¼Ð°Ð»Ð¸Ð·ÑƒÐµÑ‚ÑÂ¤
     }
   }
 }
 
 void SimpleIntSEQ::applyGaussianFilter() {
-  // Ðàçáèâàåì èçîáðàæåíèå íà áëîêè
+  // â€“Ð°Ð·Ð±Ð¸Ð²Ð°ÐµÐ¼ Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ðµ Ð½Ð° Ð±Ð»Ð¾ÐºÐ¸
   for (int r = 0; r < rows; r += block_size_) {
     for (int c = 0; c < cols; c += block_size_) {
       applyGaussianFilterToBlock(r, c, block_size_);
