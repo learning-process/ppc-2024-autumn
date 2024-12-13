@@ -93,9 +93,8 @@ class TestTaskParallel : public TestTaskSequential {
   explicit TestTaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, target_t traget,
                             std::vector<constraint_t> constraints)
       : TestTaskSequential(std::move(taskData_), std::move(traget), std::move(constraints)) {
-  init_shared_bool_array();
-
-      }
+    init_shared_bool_array();
+  }
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
