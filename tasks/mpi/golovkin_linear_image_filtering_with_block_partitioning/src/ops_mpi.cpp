@@ -115,12 +115,12 @@ void SimpleBlockMPI::exchangeHalo() {
     MPI_Waitall(req_count, reqs, MPI_STATUSES_IGNORE);
   }
 
-  if (up != MPI_PROC_NULL) {
+  if (up != MPI_PROC_NULL && local_height_ > 0) {
     local_data_.insert(local_data_.begin(), recv_up.begin(), recv_up.end());
     extended_local_height_++;
   }
 
-  if (down != MPI_PROC_NULL) {
+  if (down != MPI_PROC_NULL && local_height_ > 0) {
     local_data_.insert(local_data_.end(), recv_down.begin(), recv_down.end());
     extended_local_height_++;
   }
