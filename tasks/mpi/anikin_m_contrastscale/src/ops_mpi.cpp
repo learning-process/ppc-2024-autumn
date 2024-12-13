@@ -16,8 +16,12 @@ anikin_m_contrastscale_mpi::RGB anikin_m_contrastscale_mpi::getrandomRGB() {
 }
 
 double anikin_m_contrastscale_mpi::getcontrast(std::vector<anikin_m_contrastscale_mpi::RGB> &in) {
-  auto [min, max] = std::minmax_element(in.begin(), in.end(), [](auto a, auto b) { return a.R < b.R; });
-  return (double)(max->R - min->R) / (max->R + min->R);
+  auto [min, max] = std::minmax_element(in.begin(), in.end(), [](auto a, auto b) {
+    return std::min({a.R, a.G, a.B}) < std::min({b.R, b.G, b.B});
+  });
+  double minVal = std::min({min->R, min->G, min->B});
+  double maxVal = std::max({max->R, max->G, max->B});
+  return (maxVal - minVal) / (maxVal + minVal);
 }
 
 bool anikin_m_contrastscale_mpi::ContrastScaleSeq::validation() {
