@@ -22,7 +22,9 @@ TEST(matyunina_a_dining_philosophers_mpi, they_eat_thrice) {
 
   matyunina_a_dining_philosophers_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   if (world.size() < 3) {
-    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+    if (world.rank() == 0) {
+      ASSERT_EQ(testMpiTaskParallel.validation(), false);
+    }
   } else {
     ASSERT_EQ(testMpiTaskParallel.validation(), true);
     testMpiTaskParallel.pre_processing();
@@ -49,7 +51,9 @@ TEST(matyunina_a_dining_philosophers_mpi, they_eat_twice) {
 
   matyunina_a_dining_philosophers_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   if (world.size() < 3) {
-    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+    if (world.rank() == 0) {
+      ASSERT_EQ(testMpiTaskParallel.validation(), false);
+    }
   } else {
     ASSERT_EQ(testMpiTaskParallel.validation(), true);
     testMpiTaskParallel.pre_processing();
@@ -76,7 +80,9 @@ TEST(matyunina_a_dining_philosophers_mpi, they_eat_once) {
 
   matyunina_a_dining_philosophers_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   if (world.size() < 3) {
-    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+    if (world.rank() == 0) {
+      ASSERT_EQ(testMpiTaskParallel.validation(), false);
+    }
   } else {
     ASSERT_EQ(testMpiTaskParallel.validation(), true);
     testMpiTaskParallel.pre_processing();
