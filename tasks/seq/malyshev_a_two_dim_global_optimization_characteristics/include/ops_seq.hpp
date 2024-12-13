@@ -1,5 +1,6 @@
 // Copyright 2023 Nesterov Alexander
 #pragma once
+#define _USE_MATH_DEFINES
 
 #include <algorithm>
 #include <cmath>
