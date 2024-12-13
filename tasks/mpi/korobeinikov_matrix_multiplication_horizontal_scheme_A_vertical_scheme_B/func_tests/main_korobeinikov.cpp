@@ -8,7 +8,8 @@
 #include "mpi/korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B/include/ops_mpi_korobeinikov.hpp"
 
 namespace korobeinikov_a_test_task_mpi_lab_02 {
-std::vector<int> korobeinikov_a_test_task_mpi_lab_02::getRandomVector(int sz) {
+
+std::vector<int> getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
@@ -17,6 +18,7 @@ std::vector<int> korobeinikov_a_test_task_mpi_lab_02::getRandomVector(int sz) {
   }
   return vec;
 }
+
 }  // namespace korobeinikov_a_test_task_mpi_lab_02
 
 TEST(korobeinikov_matrix_multiplication_horizontal_scheme_A_vertical_scheme_B,
