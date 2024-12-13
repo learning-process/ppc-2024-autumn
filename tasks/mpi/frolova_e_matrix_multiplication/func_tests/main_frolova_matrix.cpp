@@ -4,7 +4,6 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <vector>
-#include <random>
 
 #include "mpi/frolova_e_matrix_multiplication/include/ops_mpi_frolova_matrix.hpp"
 
