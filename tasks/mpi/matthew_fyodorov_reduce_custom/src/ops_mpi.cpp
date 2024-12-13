@@ -34,8 +34,6 @@ bool matthew_fyodorov_reduce_custom_mpi ::TestMPITaskSequential::run() {
   internal_order_test();
   if (ops == "+") {
     res = std::accumulate(input_.begin(), input_.end(), 0);
-
-    return true;
   }
 }
 
