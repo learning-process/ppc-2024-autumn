@@ -35,12 +35,10 @@ bool korobeinikov_a_test_task_mpi_lab_02::TestMPITaskSequential::run() {
   internal_order_test();
 
   for (int i = 0; i < A.count_rows; i++) {
-    for (int j = 0; j < B.count_cols; j++) {
-      // res.data[i * res.count_cols + j] = 0;
+    for (int j = 0; j < B.count_cols; j++) {    
       res.get_el(i, j) = 0;
       for (int k = 0; k < A.count_cols; k++) {
         res.get_el(i, j) += A.get_el(i, k) * B.get_el(k, j);
-        // res.data[i * res.count_cols + j] += A.data[i*A.count_cols + k] * B.data[k * B.count_cols + j];
       }
     }
   }
