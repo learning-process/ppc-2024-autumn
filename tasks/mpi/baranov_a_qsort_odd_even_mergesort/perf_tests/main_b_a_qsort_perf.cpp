@@ -21,8 +21,8 @@ void get_rnd_vec(std::vector<tp> &vec) {
     std::generate(vec.begin(), vec.end(), [&dist, &reng] { return dist(reng); });
   }
 }
-}  // namespace baranov_a_temp_ns
 std::vector<int> global_arr(100000);
+}  // namespace baranov_a_temp_ns
 
 TEST(mpi_baranov_a_odd_even_sort, test_pipeline_run) {
   int number = 100000;
@@ -32,8 +32,8 @@ TEST(mpi_baranov_a_odd_even_sort, test_pipeline_run) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    baranov_a_temp_ns::get_rnd_vec(global_arr);
-    global_vec = global_arr;
+    baranov_a_temp_ns::get_rnd_vec(baranov_a_temp_ns::global_arr);
+    global_vec = baranov_a_temp_ns::global_arr;
     out.resize(number);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -70,7 +70,7 @@ TEST(mpi_baranov_a_odd_even_sort, test_task_run) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    global_vec = global_arr;
+    global_vec = baranov_a_temp_ns::global_arr;
     out.resize(number);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
