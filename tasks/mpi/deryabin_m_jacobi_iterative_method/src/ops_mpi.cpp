@@ -6,9 +6,7 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskSequential::p
   internal_order_test();
   input_right_vector_ = std::vector<double>(taskData->inputs_count[1]);
   auto* tmp_ptr_vec = reinterpret_cast<double*>(taskData->inputs[1]);
-  for (unsigned short i = 0; i < taskData->inputs_count[1]; i++) {
-    input_right_vector_[i] = tmp_ptr_vec[i];
-  }
+  std::copy(tmp_ptr_vec, tmp_ptr_vec + taskData->inputs_count[1], input_right_vector_.begin());
   output_x_vector_ = std::vector<double>(input_right_vector_.size());
   return true;
 }
@@ -17,9 +15,7 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskSequential::v
   internal_order_test();
   input_matrix_ = std::vector<double>(taskData->inputs_count[0]);
   auto* tmp_ptr_matr = reinterpret_cast<double*>(taskData->inputs[0]);
-  for (unsigned short i = 0; i < taskData->inputs_count[0]; i++) {
-    input_matrix_[i] = tmp_ptr_matr[i];
-  }
+  std::copy(tmp_ptr_matr, tmp_ptr_matr + taskData->inputs_count[0], input_matrix_.begin());
   unsigned short i = 0;
   unsigned short n = taskData->inputs_count[1];
   auto lambda = [&](double first, double second) { return (std::abs(first) + std::abs(second)); };
@@ -94,9 +90,7 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::pre
   if (world.size() == 1) {
     input_right_vector_ = std::vector<double>(taskData->inputs_count[0]);
     auto* tmp_ptr_vec = reinterpret_cast<double*>(taskData->inputs[1]);
-    for (unsigned short i = 0; i < taskData->inputs_count[0]; i++) {
-      input_right_vector_[i] = tmp_ptr_vec[i];
-    }
+    std::copy(tmp_ptr_vec, tmp_ptr_vec + taskData->inputs_count[0], input_right_vector_.begin());
     output_x_vector_ = std::vector<double>(input_right_vector_.size());
   }
   return true;
@@ -108,9 +102,7 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::val
     unsigned short n = taskData->inputs_count[0];
     input_matrix_ = std::vector<double>(n * n);
     auto* tmp_ptr_matr = reinterpret_cast<double*>(taskData->inputs[0]);
-    for (unsigned short i = 0; i < n * n; i++) {
-      input_matrix_[i] = tmp_ptr_matr[i];
-    }
+    std::copy(tmp_ptr_matr, tmp_ptr_matr + n * n, input_matrix_.begin());
     unsigned short i = 0;
     auto lambda = [&](double first, double second) { return (std::abs(first) + std::abs(second)); };
     while (i != n) {
@@ -154,15 +146,10 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::val
   if (world.rank() == 0) {
     auto* tmp_ptr_matr = reinterpret_cast<double*>(taskData->inputs[0]);
     local_input_matrix_part_ = std::vector<double>((number_of_local_matrix_rows + ostatochnoe_chislo_strock) * n);
+    std::copy(tmp_ptr_matr + n * (n - number_of_local_matrix_rows - ostatochnoe_chislo_strock), tmp_ptr_matr + n * n, local_input_matrix_part_.begin());
     auto* tmp_ptr_vec = reinterpret_cast<double*>(taskData->inputs[1]);
     local_input_right_vector_part_ = std::vector<double>(number_of_local_matrix_rows + ostatochnoe_chislo_strock);
-    for (unsigned short i = 0; i < (number_of_local_matrix_rows + ostatochnoe_chislo_strock) * n; i++) {
-      local_input_matrix_part_[i] = tmp_ptr_matr[n * (n - number_of_local_matrix_rows - ostatochnoe_chislo_strock) + i];
-      if (i < number_of_local_matrix_rows + ostatochnoe_chislo_strock) {
-        local_input_right_vector_part_[i] =
-            tmp_ptr_vec[n - number_of_local_matrix_rows - ostatochnoe_chislo_strock + i];
-      }
-    }
+    std::copy(tmp_ptr_vec + n - number_of_local_matrix_rows - ostatochnoe_chislo_strock, tmp_ptr_vec + n, local_input_right_vector_part_.begin());
     for (int proc = 1; proc < world.size(); proc++) {
       world.send(proc, 0, tmp_ptr_matr + (proc - 1) * number_of_local_matrix_rows * n, number_of_local_matrix_rows * n);
       world.send(proc, 0, tmp_ptr_vec + (proc - 1) * number_of_local_matrix_rows, number_of_local_matrix_rows);
