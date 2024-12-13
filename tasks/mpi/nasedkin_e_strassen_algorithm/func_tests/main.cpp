@@ -2,7 +2,8 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <vector>
-#include "../include/ops_mpi.hpp"
+#include "mpi/nasedkin_e_strassen_algorithm/include/ops_mpi.hpp"
+#include "mpi/nasedkin_e_strassen_algorithm/src/ops_mpi.cpp"
 
 TEST(Strassen_Algorithm_MPI, Test_Matrix_2x2) {
     boost::mpi::communicator world;

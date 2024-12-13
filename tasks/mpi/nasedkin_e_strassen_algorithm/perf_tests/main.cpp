@@ -2,11 +2,13 @@
 #include <boost/mpi/timer.hpp>
 #include <vector>
 #include "core/perf/include/perf.hpp"
-#include "../include/ops_mpi.hpp"
+#include "mpi/nasedkin_e_strassen_algorithm/include/ops_mpi.hpp"
+#include "mpi/nasedkin_e_strassen_algorithm/src/ops_mpi.cpp"
 
 TEST(mpi_strassen_perf_test, test_pipeline_run) {
     boost::mpi::communicator world;
-    std::vector<int> A, B;
+    std::vector<int> A;
+    std::vector<int> B;
     std::vector<int> C(128 * 128, 0);
     std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
 
@@ -30,7 +32,7 @@ TEST(mpi_strassen_perf_test, test_pipeline_run) {
     auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
     perfAttr->num_running = 10;
     const boost::mpi::timer current_timer;
-    perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+    perfAttr->current_timer = [&current_timer] { return current_timer.elapsed(); };
 
     auto perfResults = std::make_shared<ppc::core::PerfResults>();
     auto perfAnalyzer = std::make_shared<ppc::core::Perf>(strassenTask);
@@ -43,7 +45,8 @@ TEST(mpi_strassen_perf_test, test_pipeline_run) {
 
 TEST(mpi_strassen_perf_test, test_task_run) {
     boost::mpi::communicator world;
-    std::vector<int> A, B;
+    std::vector<int> A;
+    std::vector<int> B;
     std::vector<int> C(128 * 128, 0);
     std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
 
@@ -67,7 +70,7 @@ TEST(mpi_strassen_perf_test, test_task_run) {
     auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
     perfAttr->num_running = 10;
     const boost::mpi::timer current_timer;
-    perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+    perfAttr->current_timer = [&current_timer] { return current_timer.elapsed(); };
 
     auto perfResults = std::make_shared<ppc::core::PerfResults>();
     auto perfAnalyzer = std::make_shared<ppc::core::Perf>(strassenTask);

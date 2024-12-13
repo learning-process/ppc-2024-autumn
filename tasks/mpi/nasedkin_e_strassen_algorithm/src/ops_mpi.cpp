@@ -1,4 +1,4 @@
-#include "../include/ops_mpi.hpp"
+#include "mpi/nasedkin_e_strassen_algorithm/include/ops_mpi.hpp"
 #include <algorithm>
 #include <random>
 #include <vector>
@@ -44,16 +44,17 @@ namespace nasedkin_e_strassen_algorithm {
 
     bool StrassenMPITaskParallel::validation() {
         if (world.rank() == 0) {
-            return taskData->inputs_count[0] == taskData->inputs_count[1] &&
-                   taskData->inputs_count[0] == size * size &&
-                   taskData->outputs_count[0] == size * size;
+            return taskData->inputs_count[0] == static_cast<unsigned int>(size * size) &&
+                   taskData->outputs_count[0] == static_cast<unsigned int>(size * size);
         }
         return true;
     }
 
     bool StrassenMPITaskParallel::run() {
         int local_size = size / world.size();
-        std::vector<int> local_A(local_size * size), local_B(local_size * size), local_C(local_size * size, 0);
+        std::vector<int> local_A(local_size * size);
+        std::vector<int> local_B(local_size * size);
+        std::vector<int> local_C(local_size * size, 0);
 
         if (world.rank() == 0) {
             for (int proc = 0; proc < world.size(); proc++) {
@@ -73,7 +74,7 @@ namespace nasedkin_e_strassen_algorithm {
             }
         }
 
-        boost::mpi::reduce(world, local_C.data(), local_size * size, C.data(), std::plus<int>(), 0);
+        boost::mpi::reduce(world, local_C.data(), local_size * size, C.data(), std::plus<>(), 0);
         return true;
     }
 
