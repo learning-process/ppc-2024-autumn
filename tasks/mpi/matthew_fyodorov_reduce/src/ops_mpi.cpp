@@ -34,6 +34,7 @@ bool matthew_fyodorov_reduce_mpi::TestMPITaskSequential::run() {
 
     return true;
   }
+}
 
   bool matthew_fyodorov_reduce_mpi::TestMPITaskSequential::post_processing() {
     internal_order_test();
