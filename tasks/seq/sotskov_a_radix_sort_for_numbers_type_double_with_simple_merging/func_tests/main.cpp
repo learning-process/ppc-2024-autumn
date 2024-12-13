@@ -6,6 +6,7 @@
 
 #include "seq/sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging/include/ops_seq.hpp"
 
+namespace sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi {
 std::vector<double> generate_random_input_with_same_integer_part(size_t size, int integer_part = 1,
                                                                  double min_fraction = 0.0, double max_fraction = 1.0) {
   std::vector<double> input(size);
@@ -16,11 +17,14 @@ std::vector<double> generate_random_input_with_same_integer_part(size_t size, in
   for (size_t i = 0; i < size; ++i) {
     input[i] = integer_part + dis(gen);
   }
+  std::sort(input.begin(), input.end(), std::greater<double>());
   return input;
 }
+}  // namespace sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi
 
 TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq, RandomSortedSameIntegerPart) {
-  std::vector<double> input = generate_random_input_with_same_integer_part(5, 1, 0.0, 0.99);
+  std::vector<double> input = sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::
+      generate_random_input_with_same_integer_part(5, 1, 0.0, 0.99);
   std::vector<double> output(input.size(), 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -130,7 +134,8 @@ TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq, Rever
 
 TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq, LargeArray) {
   size_t size = 100000;
-  std::vector<double> input = generate_random_input_with_same_integer_part(size, 1, 0.0, 0.99);
+  std::vector<double> input = sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::
+      generate_random_input_with_same_integer_part(size, 1, 0.0, 0.99);
   std::vector<double> output(input.size(), 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();

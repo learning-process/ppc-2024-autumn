@@ -11,6 +11,19 @@
 #include "mpi/sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging/include/ops_mpi.hpp"
 
 namespace mpi = boost::mpi;
+namespace sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi {
+void generate_random_data(std::vector<double>& data, int N, double min = -1e9, double max = 1e9) {
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<double> dist(min, max);
+
+  data.resize(N);
+  for (int i = 0; i < N; ++i) {
+    data[i] = dist(gen);
+  }
+  std::sort(data.rbegin(), data.rend());
+}
+}  // namespace sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi
 
 TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi, test_pipeline_run) {
   mpi::environment env;
@@ -21,13 +34,7 @@ TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi, test_
   std::vector<double> xPar(N, 0.0);
 
   if (world.rank() == 0) {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<double> dist(-1e9, 1e9);
-
-    for (int i = 0; i < N; ++i) {
-      inputData[i] = dist(gen);
-    }
+    sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::generate_random_data(inputData, N);
   }
 
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -71,15 +78,7 @@ TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi, test_
   std::vector<double> xPar(N, 0.0);
 
   if (world.rank() == 0) {
-    inputData.resize(N);
-
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<double> dist(-1e9, 1e9);
-
-    for (int i = 0; i < N; ++i) {
-      inputData[i] = dist(gen);
-    }
+    sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::generate_random_data(inputData, N);
   }
 
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();

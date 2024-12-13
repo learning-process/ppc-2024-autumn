@@ -11,10 +11,6 @@
 
 using namespace std::chrono_literals;
 
-sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestMPITaskSequential::TestMPITaskSequential(
-    std::shared_ptr<ppc::core::TaskData> taskData_)
-    : Task(std::move(taskData_)) {}
-
 bool sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   auto* input_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
@@ -45,24 +41,17 @@ bool sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestM
   if (sorted_data_.empty()) {
     return false;
   }
-
   std::copy(sorted_data_.begin(), sorted_data_.end(), output_ptr);
   return true;
 }
 
 void sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestMPITaskSequential::sequentialSort() {
   sorted_data_ = input_data_;
-  std::sort(sorted_data_.begin(), sorted_data_.end());
+  radixSortWithSignHandling(sorted_data_);
 }
-
-sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestMPITaskParallel::TestMPITaskParallel(
-    std::shared_ptr<ppc::core::TaskData> taskData_)
-    : Task(std::move(taskData_)) {}
 
 bool sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
   if (rank == 0) {
     auto* input_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
@@ -73,25 +62,19 @@ bool sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestM
 
 bool sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
-  int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
   if (rank == 0) {
     if (taskData->inputs_count.size() != taskData->outputs_count.size()) {
-      std::cerr << "Mismatch in the number of input and output entries!" << std::endl;
       return false;
     }
 
     for (size_t i = 0; i < taskData->inputs_count.size(); ++i) {
       if (taskData->inputs_count[i] != taskData->outputs_count[i]) {
-        std::cerr << "Mismatch between input and output count at index " << i << "!" << std::endl;
         return false;
       }
     }
-
     return true;
   }
-
   return true;
 }
 
@@ -103,8 +86,6 @@ bool sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestM
 
 bool sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
-  int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
   if (rank == 0) {
     auto* output_ptr = reinterpret_cast<double*>(taskData->outputs[0]);
@@ -167,11 +148,6 @@ void sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::radix
 }
 
 void sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestMPITaskParallel::parallelSort() {
-  int rank;
-  int size;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  MPI_Comm_size(MPI_COMM_WORLD, &size);
-
   int total_size;
   if (rank == 0) total_size = input_data_.size();
   MPI_Bcast(&total_size, 1, MPI_INT, 0, MPI_COMM_WORLD);

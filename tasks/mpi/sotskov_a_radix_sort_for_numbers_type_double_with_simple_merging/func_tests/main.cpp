@@ -6,6 +6,7 @@
 #include "core/task/include/task.hpp"
 #include "mpi/sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging/include/ops_mpi.hpp"
 
+namespace sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi {
 std::vector<double> generateRandomData(int size, double minValue, double maxValue) {
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -15,6 +16,7 @@ std::vector<double> generateRandomData(int size, double minValue, double maxValu
   for (int i = 0; i < size; ++i) {
     data[i] = dis(gen);
   }
+  std::sort(data.rbegin(), data.rend());
   return data;
 }
 
@@ -61,49 +63,54 @@ void runSortingTest(const std::vector<double>& testData) {
     }
   }
 }
+}  // namespace sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi
 
 TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi, VerifySorting) {
   const int dataSize = 100;
   const double minValue = 0.0;
   const double maxValue = 100.0;
-  std::vector<double> testData = generateRandomData(dataSize, minValue, maxValue);
-  runSortingTest(testData);
+  std::vector<double> testData =
+      sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::generateRandomData(dataSize, minValue,
+                                                                                               maxValue);
+  sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::runSortingTest(testData);
 }
 
 TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi, VerifySortingWithPreGeneratedData) {
   std::vector<double> testData = {10.5, 2.3, 4.7, 8.0, 1.2, 3.5, 7.8, 6.1, 5.0};
-  runSortingTest(testData);
+  sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::runSortingTest(testData);
 }
 
 TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi, VerifySortingEmptyData) {
   std::vector<double> testData = {};
-  runSortingTest(testData);
+  sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::runSortingTest(testData);
 }
 
 TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi, VerifySortingSingleElement) {
   std::vector<double> testData = {42.0};
-  runSortingTest(testData);
+  sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::runSortingTest(testData);
 }
 
 TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi, VerifySortingLargeData) {
   const int dataSize = 1000;
   const double minValue = 0.0;
   const double maxValue = 100.0;
-  std::vector<double> testData = generateRandomData(dataSize, minValue, maxValue);
-  runSortingTest(testData);
+  std::vector<double> testData =
+      sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::generateRandomData(dataSize, minValue,
+                                                                                               maxValue);
+  sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::runSortingTest(testData);
 }
 
 TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi, VerifySortingAlreadySortedData) {
   std::vector<double> testData = {1.0, 2.0, 3.0, 4.0, 5.0};
-  runSortingTest(testData);
+  sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::runSortingTest(testData);
 }
 
 TEST(MPIEnvironment, VerifySortingWithNegativeNumbers) {
   std::vector<double> testData = {-10.5, -2.3, -4.7, -8.0, -1.2, -3.5, -7.8, -6.1, -5.0};
-  runSortingTest(testData);
+  sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::runSortingTest(testData);
 }
 
 TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi, VerifySortingWithMixedRangeValues) {
   std::vector<double> testData = {10000.0, 0.0001, 50.0, 999.99, 1.0, 1000.0};
-  runSortingTest(testData);
+  sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::runSortingTest(testData);
 }

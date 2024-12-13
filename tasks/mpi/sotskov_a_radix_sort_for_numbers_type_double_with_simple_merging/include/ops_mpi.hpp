@@ -14,7 +14,10 @@ namespace sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi {
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_);
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+  };
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -28,11 +31,14 @@ class TestMPITaskParallel : public ppc::core::Task {
   std::vector<double> sorted_data_;
   void parallelSort();
   boost::mpi::communicator world;
+
+  int rank;
+  int size;
 };
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_);
+  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)){};
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
