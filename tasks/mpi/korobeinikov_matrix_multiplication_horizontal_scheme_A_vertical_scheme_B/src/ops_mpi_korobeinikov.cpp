@@ -24,13 +24,13 @@ bool korobeinikov_a_test_task_mpi_lab_02::TestMPITaskSequential::pre_processing(
   internal_order_test();
   // Init value for input and output
   A.data.reserve(taskData->inputs_count[0]);
-  auto* tmp_ptr_1 = reinterpret_cast<int *>(taskData->inputs[0]);
+  auto *tmp_ptr_1 = reinterpret_cast<int *>(taskData->inputs[0]);
   std::copy(tmp_ptr_1, tmp_ptr_1 + taskData->inputs_count[0], A.data.begin());
   A.count_rows = (int)*taskData->inputs[1];
   A.count_cols = (int)*taskData->inputs[2];
 
   B.data.reserve(taskData->inputs_count[3]);
-  auto* tmp_ptr_2 = reinterpret_cast<int *>(taskData->inputs[3]);
+  auto *tmp_ptr_2 = reinterpret_cast<int *>(taskData->inputs[3]);
   std::copy(tmp_ptr_2, tmp_ptr_2 + taskData->inputs_count[3], B.data.begin());
   B.count_rows = (int)*taskData->inputs[4];
   B.count_cols = (int)*taskData->inputs[5];
@@ -103,7 +103,7 @@ bool korobeinikov_a_test_task_mpi_lab_02::TestMPITaskParallel::run() {
   // Getting data by a null process
   if (world.rank() == 0) {
     A.data.reserve(taskData->inputs_count[0]);
-    auto* tmp_ptr_1 = reinterpret_cast<int*>(taskData->inputs[0]);
+    auto *tmp_ptr_1 = reinterpret_cast<int*>(taskData->inputs[0]);
     std::copy(tmp_ptr_1, tmp_ptr_1 + taskData->inputs_count[0], std::back_inserter(A.data));
     A.count_rows = (int)*taskData->inputs[1];
     A.count_cols = (int)*taskData->inputs[2];
@@ -112,7 +112,7 @@ bool korobeinikov_a_test_task_mpi_lab_02::TestMPITaskParallel::run() {
     A_cols = A.count_cols;
 
     B.data.reserve(taskData->inputs_count[3]);
-    auto* tmp_ptr_2 = reinterpret_cast<int*>(taskData->inputs[3]);
+    auto *tmp_ptr_2 = reinterpret_cast<int*>(taskData->inputs[3]);
     std::copy(tmp_ptr_2, tmp_ptr_2 + taskData->inputs_count[3], std::back_inserter(B.data));
     B.count_rows = (int)*taskData->inputs[4];
     B.count_cols = (int)*taskData->inputs[5];
