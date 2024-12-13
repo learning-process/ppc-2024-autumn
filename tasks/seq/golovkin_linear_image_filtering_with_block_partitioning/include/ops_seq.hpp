@@ -1,8 +1,5 @@
 // Golovkin Maksim Task#3
 
-#ifndef IMAGE_FILTERING_OPS_SEQ_HPP
-#define IMAGE_FILTERING_OPS_SEQ_HPP
-
 #include <algorithm>
 #include <memory>
 #include <string>
@@ -31,9 +28,9 @@ namespace golovkin_linear_image_filtering_with_block_partitioning {
   int cols;
 
   const int kernel_[3][3] = {{1, 2, 1}, {2, 4, 2}, {1, 2, 1}};
-  const int block_size_ = 16;  // Размер блока для обработки
+  const int block_size_ = 16;  // Р Р°Р·РјРµСЂ Р±Р»РѕРєР° РґР»СЏ РѕР±СЂР°Р±РѕС‚РєРё
 };
 
 } // namespace golovkin_linear_image_filtering_with_block_partitioning
 
-#endif // IMAGE_FILTERING_OPS_SEQ_HPP
+

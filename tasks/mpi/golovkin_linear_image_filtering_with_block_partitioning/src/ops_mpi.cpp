@@ -15,7 +15,6 @@ bool SimpleBlockMPI::pre_processing() { return true; }
 bool SimpleBlockMPI::validation() {
   if (world.rank() == 0) {
     if (!taskData || taskData->inputs.size() < 3 || taskData->outputs.empty()) {
-      std::cerr << "Validation failed: Недостаточно входных или выходных данных.\n";
       return false;
     }
 
@@ -23,7 +22,6 @@ bool SimpleBlockMPI::validation() {
     height_ = *reinterpret_cast<int*>(taskData->inputs[2]);
 
     if (width_ < 3 || height_ < 3) {
-      std::cerr << "Validation failed: width или height меньше 3.\n";
       return false;
     }
 

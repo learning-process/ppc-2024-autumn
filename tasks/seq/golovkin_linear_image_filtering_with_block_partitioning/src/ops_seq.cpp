@@ -58,19 +58,17 @@ void SimpleIntSEQ::applyGaussianFilterToBlock(int blockRowStart, int blockColSta
       int sum = 0;
       for (int kr = -1; kr <= 1; ++kr) {
         for (int kc = -1; kc <= 1; ++kc) {
-          // Учитываем границы
           if (r + kr >= 0 && r + kr < rows && c + kc >= 0 && c + kc < cols) {
             sum += input_data_[(r + kr) * cols + (c + kc)] * kernel_[kr + 1][kc + 1];
           }
         }
       }
-      processed_data_[r * cols + c] = sum / 16;  // Ядро Гаусса суммируется и нормализуется
+      processed_data_[r * cols + c] = sum / 16;
     }
   }
 }
 
 void SimpleIntSEQ::applyGaussianFilter() {
-  // Разбиваем изображение на блоки
   for (int r = 0; r < rows; r += block_size_) {
     for (int c = 0; c < cols; c += block_size_) {
       applyGaussianFilterToBlock(r, c, block_size_);

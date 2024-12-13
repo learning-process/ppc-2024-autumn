@@ -55,7 +55,7 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilter
   std::vector<int> expected_output;
   std::vector<int> actual_output(rows * cols, 0);
 
-  gaussian_filter_seq_block(input, rows, cols, expected_output, 2);  // Используем блоки размером 2x2
+  gaussian_filter_seq_block(input, rows, cols, expected_output, 2);
 
   auto taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
@@ -83,7 +83,7 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilter
   std::vector<int> expected_output;
   std::vector<int> actual_output(rows * cols, 0);
 
-  gaussian_filter_seq_block(input, rows, cols, expected_output, 4);  // Используем блоки размером 4x4
+  gaussian_filter_seq_block(input, rows, cols, expected_output, 4);
 
   auto taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
@@ -107,11 +107,11 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilter
 TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilterSmallImage) {
   int rows = 3;
   int cols = 3;
-  std::vector<int> input = generate_test_image(rows, cols);        // 3x3 тестовое изображение
-  std::vector<int> expected_output = {1, 2, 3, 2, 4, 6, 3, 6, 9};  // Ожидаемый результат
+  std::vector<int> input = generate_test_image(rows, cols);
+  std::vector<int> expected_output = {1, 2, 3, 2, 4, 6, 3, 6, 9};
   std::vector<int> actual_output(rows * cols, 0);
 
-  gaussian_filter_seq_block(input, rows, cols, expected_output, 3);  // Применяем фильтр
+  gaussian_filter_seq_block(input, rows, cols, expected_output, 3);
 
   auto taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
@@ -135,11 +135,11 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilter
 TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilterMaxPixelValues) {
   int rows = 5;
   int cols = 5;
-  std::vector<int> input(rows * cols, 255);            // Все пиксели равны 255
-  std::vector<int> expected_output(rows * cols, 255);  // Ожидаем, что результат останется 255
+  std::vector<int> input(rows * cols, 255);
+  std::vector<int> expected_output(rows * cols, 255);
   std::vector<int> actual_output(rows * cols, 0);
 
-  gaussian_filter_seq_block(input, rows, cols, expected_output, 3);  // Применяем фильтр
+  gaussian_filter_seq_block(input, rows, cols, expected_output, 3);
 
   auto taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
@@ -163,11 +163,11 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilter
 TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilterMinPixelValues) {
   int rows = 5;
   int cols = 5;
-  std::vector<int> input(rows * cols, 0);            // Все пиксели равны 0
-  std::vector<int> expected_output(rows * cols, 0);  // Ожидаем, что результат останется 0
+  std::vector<int> input(rows * cols, 0);
+  std::vector<int> expected_output(rows * cols, 0);
   std::vector<int> actual_output(rows * cols, 0);
 
-  gaussian_filter_seq_block(input, rows, cols, expected_output, 3);  // Применяем фильтр
+  gaussian_filter_seq_block(input, rows, cols, expected_output, 3);
 
   auto taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
@@ -192,13 +192,13 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilter
   int rows = 5;
   int cols = 5;
   std::vector<int> input = {0,   0,   0,   255, 255, 0, 0, 0,   255, 255, 0, 0, 0,
-                            255, 255, 255, 255, 255, 0, 0, 255, 255, 255, 0, 0};  // Резкие переходы между 0 и 255
+                            255, 255, 255, 255, 255, 0, 0, 255, 255, 255, 0, 0};
   std::vector<int> expected_output = {
       1,   1,   2,   128, 128, 1, 2, 3,   128, 128, 2, 3, 4,
-      128, 128, 128, 128, 128, 2, 2, 128, 128, 128, 3, 3};  // Ожидаемый результат после применения фильтра
+      128, 128, 128, 128, 128, 2, 2, 128, 128, 128, 3, 3};
   std::vector<int> actual_output(rows * cols, 0);
 
-  gaussian_filter_seq_block(input, rows, cols, expected_output, 3);  // Применяем фильтр
+  gaussian_filter_seq_block(input, rows, cols, expected_output, 3);
 
   auto taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
@@ -222,11 +222,11 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilter
 TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilterRandomImage) {
   int rows = 10;
   int cols = 10;
-  std::vector<int> input = generate_random_image(rows, cols);  // Генерация случайного изображения
-  std::vector<int> expected_output(rows * cols, 0);  // Ожидаемый результат, нужно посчитать вручную или программно
+  std::vector<int> input = generate_random_image(rows, cols);
+  std::vector<int> expected_output(rows * cols, 0);
   std::vector<int> actual_output(rows * cols, 0);
 
-  gaussian_filter_seq_block(input, rows, cols, expected_output, 3);  // Применяем фильтр
+  gaussian_filter_seq_block(input, rows, cols, expected_output, 3);
 
   auto taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
