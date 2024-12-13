@@ -144,6 +144,7 @@ void SimpleBlockMPI::applyGaussianFilter() {
 
           if (rr >= 0 && rr < extended_local_height_ && cc >= 0 && cc < width_) {
             sum += local_data_[rr * width_ + cc] * kernel_[kr + 1][kc + 1];
+
           } 
         }
       }
@@ -189,7 +190,6 @@ void SimpleBlockMPI::gatherData() {
 
   MPI_Gatherv(send_buffer.data(), local_height_ * width_, MPI_INT, rank == 0 ? processed_data_.data() : nullptr,
               recvcounts.data(), displs.data(), MPI_INT, 0, world);
-
 }
 
 const std::vector<int>& SimpleBlockMPI::getDataPath() const { return data_path_; }

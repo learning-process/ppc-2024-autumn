@@ -183,7 +183,7 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, MinimalImageBlockT
     taskData->outputs_count.push_back(output.size() * sizeof(int));
   }
 
-  auto task = std::make_shared < golovkin_linear_image_filtering_with_block_partitioning::SimpleBlockMPI > (taskData);
+  auto task = std::make_shared<golovkin_linear_image_filtering_with_block_partitioning::SimpleBlockMPI>(taskData);
   ASSERT_TRUE(task->validation());
   ASSERT_TRUE(task->pre_processing());
   ASSERT_TRUE(task->run());
