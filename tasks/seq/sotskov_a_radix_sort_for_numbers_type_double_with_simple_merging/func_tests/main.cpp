@@ -17,7 +17,7 @@ std::vector<double> generate_random_input_with_same_integer_part(size_t size, in
   for (size_t i = 0; i < size; ++i) {
     input[i] = integer_part + dis(gen);
   }
-  std::sort(input.begin(), input.end(), std::greater<double>());
+  std::sort(input.rbegin(), input.rend());
   return input;
 }
 }  // namespace sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi
