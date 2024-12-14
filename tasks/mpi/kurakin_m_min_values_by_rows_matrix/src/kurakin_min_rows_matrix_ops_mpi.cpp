@@ -74,7 +74,7 @@ bool kurakin_m_min_values_by_rows_matrix_mpi::TestMPITaskParallel::run() {
     input_ = std::vector<int>(delta_input * world.size(), INT_MAX);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
-    }
+  }
 
   broadcast(world, count_rows, 0);
   broadcast(world, size_rows, 0);
