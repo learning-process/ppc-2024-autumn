@@ -11,7 +11,8 @@ TEST(shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi, validation_zero_zero) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int> global_result;
-  int num_rows = 0, num_cols = 0;
+  int num_rows = 0;
+  int num_cols = 0;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -44,7 +45,8 @@ TEST(shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi, validation_one_one) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int> global_result;
-  int num_rows = 1, num_cols = 1;
+  int num_rows = 1;
+  int num_cols = 1;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -77,7 +79,8 @@ TEST(shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi, validation_three_two) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int> global_result;
-  int num_rows = 3, num_cols = 2;
+  int num_rows = 3;
+  int num_cols = 2;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -110,7 +113,8 @@ TEST(shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi, three_three) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int> global_result;
-  int num_rows = 3, num_cols = 3;
+  int num_rows = 3;
+  int num_cols = 3;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -175,7 +179,8 @@ TEST(shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi, five_five) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int> global_result;
-  int num_rows = 5, num_cols = 5;
+  int num_rows = 5;
+  int num_cols = 5;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -240,7 +245,8 @@ TEST(shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi, three_six) {
   boost::mpi::communicator world;
   std::vector<int> global_matrix;
   std::vector<int> global_result;
-  int num_rows = 3, num_cols = 6;
+  int num_rows = 3;
+  int num_cols = 6;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
