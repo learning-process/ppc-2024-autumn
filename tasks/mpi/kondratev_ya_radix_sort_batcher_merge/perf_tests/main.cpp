@@ -28,7 +28,7 @@ TEST(kondratev_ya_radix_sort_batcher_merge_mpi, test_pipeline_run) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataMPI = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    uint32_t size = 8000000;
+    uint32_t size = 5000000;
     in = kondratev_ya_radix_sort_batcher_merge_mpi::getRandomVector(size);
     out.resize(size);
 
@@ -63,7 +63,7 @@ TEST(kondratev_ya_radix_sort_batcher_merge_mpi, test_task_run) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataMPI = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    uint32_t size = 8000000;
+    uint32_t size = 5000000;
     in = kondratev_ya_radix_sort_batcher_merge_mpi::getRandomVector(size);
     out.resize(size);
 

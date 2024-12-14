@@ -2,11 +2,11 @@
 #include "mpi/kondratev_ya_radix_sort_batcher_merge/include/ops_mpi.hpp"
 
 void kondratev_ya_radix_sort_batcher_merge_mpi::radixSortDouble(std::vector<double>& arr, int32_t start, int32_t end) {
-  const int32_t byte_size = 8;
-  const int32_t double_bit_size = byte_size * sizeof(double);
-  const int32_t full_byte_bit_mask = 0xFF;
-  const int32_t byte_range = std::pow(2, byte_size);
-  const uint64_t sign_bit_mask = 1ULL << (double_bit_size - 1);
+  static constexpr int32_t byte_size = 8;
+  static constexpr int32_t double_bit_size = byte_size * sizeof(double);
+  static constexpr int32_t full_byte_bit_mask = 0xFF;
+  static constexpr int32_t byte_range = std::pow(2, byte_size);
+  static constexpr uint64_t sign_bit_mask = 1ULL << (double_bit_size - 1);
 
   int32_t size = end - start + 1;
   std::vector<double> temp(size);
@@ -146,13 +146,19 @@ bool kondratev_ya_radix_sort_batcher_merge_mpi::TestMPITaskParallel::run() {
 
 void kondratev_ya_radix_sort_batcher_merge_mpi::TestMPITaskParallel::exchange_and_merge(int32_t rank1, int32_t rank2) {
   std::vector<double> neighbor_data;
+  neighbor_data.reserve(local_input_.size() + 1);
+
+  boost::mpi::request reqs[2];
   if (world.rank() == rank1) {
-    world.send(rank2, 0, local_input_);
-    world.recv(rank2, 0, neighbor_data);
+    reqs[0] = world.isend(rank2, 0, local_input_);
+    reqs[1] = world.irecv(rank2, 0, neighbor_data);
   } else if (world.rank() == rank2) {
-    world.recv(rank1, 0, neighbor_data);
-    world.send(rank1, 0, local_input_);
+    reqs[0] = world.irecv(rank1, 0, neighbor_data);
+    reqs[1] = world.isend(rank1, 0, local_input_);
   }
+
+  reqs[0].wait();
+  reqs[1].wait();
 
   if (!neighbor_data.empty()) {
     std::vector<double> merged_data(local_input_.size() + neighbor_data.size());
