@@ -18,9 +18,7 @@ bool smirnov_i_binary_segmentation::TestMPITaskSequential::validation() {
   if (rows < 0 || cols < 0) return false;
   img = std::vector<int>(cols * rows, 1);
   auto* tmp_ptr_img = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (int i = 0; i < cols * rows; i++) {
-    img[i] = tmp_ptr_img[i];
-  }
+  std::copy(tmp_ptr_img, tmp_ptr_img + (cols * rows), img.begin());
 
   // check is binary
   for (size_t i = 0; i < img.size(); i++) {
@@ -229,9 +227,7 @@ bool smirnov_i_binary_segmentation::TestMPITaskParallel::validation() {
       if (is_valid) {
         img = std::vector<int>(cols * rows, 1);
         auto* tmp_ptr_img = reinterpret_cast<int*>(taskData->inputs[0]);
-        for (int i = 0; i < cols * rows; i++) {
-          img[i] = tmp_ptr_img[i];
-        }
+        std::copy(tmp_ptr_img, tmp_ptr_img + (cols * rows), img.begin());
         for (size_t i = 0; i < img.size(); i++) {
           if (img[i] != 0 && img[i] != 1) {
             is_valid = false;
@@ -478,9 +474,6 @@ bool smirnov_i_binary_segmentation::TestMPITaskParallel::run() {
   std::partial_sum(lengths.begin(), lengths.end() - 1, offsets.begin() + 1);
   MPI_Gatherv(local_eq_table_str.data(), str_len, MPI_CHAR, recv_buf.data(), lengths.data(), offsets.data(), MPI_CHAR,
               0, MPI_COMM_WORLD);
-  // double start_time, end_time;
-  // MPI_Barrier(MPI_COMM_WORLD);
-  // start_time = MPI_Wtime();
   if (rank == 0) {
     for (int i = 0; i < size; ++i) {
       std::map<int, std::set<int>> temp_eq_table = deserialize_eq_table(std::string(&recv_buf[offsets[i]], lengths[i]));

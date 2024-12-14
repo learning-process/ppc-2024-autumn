@@ -16,9 +16,7 @@ bool smirnov_i_binary_segmentation::TestMPITaskSequential::validation() {
   if (rows < 0 || cols < 0) return false;
   img = std::vector<int>(cols * rows, 1);
   auto* tmp_ptr_img = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (int i = 0; i < cols * rows; i++) {
-    img[i] = tmp_ptr_img[i];
-  }
+  std::copy(tmp_ptr_img, tmp_ptr_img + (cols * rows), img.begin());
 
   // check is binary
   for (size_t i = 0; i < img.size(); i++) {

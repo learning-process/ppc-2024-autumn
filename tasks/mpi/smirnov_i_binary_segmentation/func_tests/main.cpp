@@ -190,7 +190,7 @@ TEST(smirnov_i_binary_segmentation_mpi, get_mask_prime_size) {
 TEST(smirnov_i_binary_segmentation_mpi, get_mask_sizes_10_pow_and_2_pow) {
   boost::mpi::communicator world;
   int cols = 100;
-  int rows = 64;
+  int rows = 16;
   std::vector<int> img;
   std::vector<int> mask;
 
