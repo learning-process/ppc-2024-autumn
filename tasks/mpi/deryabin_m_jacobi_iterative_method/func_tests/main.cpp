@@ -246,12 +246,12 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_valid_matrix_negative_e
   boost::mpi::communicator world;
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_real_distribution<> distrib(-10, -1);
-  std::uniform_real_distribution<> distribut(-100, -91);
-  std::vector<double> input_matrix_(100, distrib(gen));
-  std::vector<double> input_right_vector_(10, distrib(gen));
+  std::uniform_real_distribution<> distrib(1, 10);
+  std::uniform_real_distribution<> distribut(91, 100);
+  std::vector<double> input_matrix_(100, -distrib(gen));
+  std::vector<double> input_right_vector_(10, -distrib(gen));
   for (unsigned short i = 0; i < 10; i++) {
-    input_matrix_[i * 11] = distribut(gen);
+    input_matrix_[i * 11] = -distribut(gen);
   }
   std::vector<double> output_x_vector_(10, 0);
   std::vector<std::vector<double>> out_x_vec(1, output_x_vector_);
@@ -352,9 +352,9 @@ TEST(deryabin_m_jacobi_iterative_method_mpi,
   boost::mpi::communicator world;
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_real_distribution<> distrib(-10, -1);
-  std::vector<double> input_matrix_(100, distrib(gen));
-  std::vector<double> input_right_vector_(10, distrib(gen));
+  std::uniform_real_distribution<> distrib(1, 10);
+  std::vector<double> input_matrix_(100, -distrib(gen));
+  std::vector<double> input_right_vector_(10, -distrib(gen));
   for (unsigned short i = 0; i < 10; i++) {
     input_matrix_[i * 11] = 0;
   }
