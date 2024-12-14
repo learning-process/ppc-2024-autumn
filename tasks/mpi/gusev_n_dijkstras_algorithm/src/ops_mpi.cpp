@@ -30,17 +30,16 @@ bool DijkstrasAlgorithmParallel::validation() {
 
   if (taskData->inputs.size() != taskData->inputs_count.size()) return false;
 
-  SparseGraphCRS* graph = reinterpret_cast<SparseGraphCRS*>(taskData->inputs[0]);
+  auto graph = reinterpret_cast<SparseGraphCRS*>(taskData->inputs[0]);
 
   if (taskData->inputs_count[0] != sizeof(SparseGraphCRS)) return false;
 
-  if (graph->num_vertices == 0) return false;
+  if (graph->num_vertices == 0 || graph->num_vertices > 10000) return false;
 
   if (taskData->outputs.empty() || taskData->outputs[0] == nullptr) return false;
 
   if (taskData->outputs.size() != taskData->outputs_count.size()) return false;
 
-  /*graph->print_graph_ascii();*/
   return true;
 }
 
@@ -60,7 +59,7 @@ struct MinVertex {
 };
 
 bool DijkstrasAlgorithmParallel::run() {
-  SparseGraphCRS* graph = reinterpret_cast<SparseGraphCRS*>(taskData->inputs[0]);
+  auto graph = reinterpret_cast<SparseGraphCRS*>(taskData->inputs[0]);
   int source_vertex = 0;
   int num_vertices = graph->num_vertices;
   int rank = world.rank();
@@ -93,18 +92,16 @@ bool DijkstrasAlgorithmParallel::run() {
     boost::mpi::all_reduce(world, local_min, global_min,
                            [](const MinVertex& a, const MinVertex& b) { return a.distance < b.distance ? a : b; });
 
-    int min_vertex = global_min.vertex;
+    if (global_min.vertex == -1) break;
 
-    if (min_vertex == -1) break;
+    local_visited[global_min.vertex] = true;
 
-    local_visited[min_vertex] = true;
-
-    for (int j = graph->row_ptr[min_vertex]; j < graph->row_ptr[min_vertex + 1]; ++j) {
+    for (int j = graph->row_ptr[global_min.vertex]; j < graph->row_ptr[global_min.vertex + 1]; ++j) {
       int neighbor = graph->col_indices[j];
       double weight = graph->values[j];
 
       if (neighbor >= start_vertex && neighbor < end_vertex && !local_visited[neighbor]) {
-        double new_distance = local_distances[min_vertex] + weight;
+        double new_distance = local_distances[global_min.vertex] + weight;
         if (new_distance < local_distances[neighbor]) {
           local_distances[neighbor] = new_distance;
         }
@@ -119,7 +116,7 @@ bool DijkstrasAlgorithmParallel::run() {
   }
 
   if (rank == 0) {
-    double* output = reinterpret_cast<double*>(taskData->outputs[0]);
+    auto output = reinterpret_cast<double*>(taskData->outputs[0]);
     std::copy(local_distances.begin(), local_distances.end(), output);
   }
 
