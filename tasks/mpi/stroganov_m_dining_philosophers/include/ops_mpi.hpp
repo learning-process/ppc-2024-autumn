@@ -8,9 +8,6 @@
 #include <boost/mpi/environment.hpp>
 #include <boost/serialization/serialization.hpp>
 #include <condition_variable>
-#include <cstring>
-#include <string>
-#include <vector>
 
 #include "core/task/include/task.hpp"
 

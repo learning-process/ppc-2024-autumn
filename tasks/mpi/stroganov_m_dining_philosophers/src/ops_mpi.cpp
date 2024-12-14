@@ -15,10 +15,6 @@ using namespace std::chrono_literals;
 bool stroganov_m_dining_philosophers::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
-  if (count_philosophers == 0) {
-    return false;
-  }
-
   l_philosopher = (world.rank() + world.size() - 1) % world.size();
   r_philosopher = (world.rank() + 1) % world.size();
   std::random_device rd;
@@ -63,10 +59,6 @@ void stroganov_m_dining_philosophers::TestMPITaskParallel::release_forks() {
 }
 
 bool stroganov_m_dining_philosophers::TestMPITaskParallel::distribution_forks() {
-  if (count_philosophers == 0) {
-    return false;
-  }
-
   status = 2;
   int l_status = -1;
   int r_status = -1;

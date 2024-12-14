@@ -4,7 +4,6 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <memory>
 #include <thread>
 #include <vector>
 
