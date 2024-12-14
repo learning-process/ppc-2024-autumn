@@ -209,7 +209,7 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::run() {
 
   int row = 0;
   for (int i = 0; i < size - 1;) {
-    if (row < rows.size() && i == rows[row]) {
+    if (row < (int)rows.size() && i == rows[row]) {
       for (int j = 0; j < size_n; j++) {
         temp[j] = local_matrix[row * size_n + j];
       }
