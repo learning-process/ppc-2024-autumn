@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <boost/mpi/environment.hpp>
 #include <random>
 
 #include "mpi/deryabin_m_symbol_frequency/include/ops_mpi.hpp"
