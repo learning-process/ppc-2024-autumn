@@ -17,27 +17,40 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskSequential::v
   auto* tmp_ptr_matr = reinterpret_cast<double*>(taskData->inputs[0]);
   std::copy(tmp_ptr_matr, tmp_ptr_matr + taskData->inputs_count[0], input_matrix_.begin());
   unsigned short i = 0;
+  unsigned short j;
   unsigned short n = taskData->inputs_count[1];
-  auto lambda = [&](double first, double second) { return (std::abs(first) + std::abs(second)); };
   while (i != n) {
     if (i == 0) {
-      if (std::abs(input_matrix_[0]) <=
-          std::accumulate(input_matrix_.begin() + 1, input_matrix_.begin() + n - 1, 0, lambda)) {
+      j = 0;
+      while (j != n) {
+        if (input_matrix_[j] < 0) {
+          return false;
+        }
+        j++;
+      }
+      if (input_matrix_[0] <=
+          std::accumulate(input_matrix_.begin() + 1, input_matrix_.begin() + n - 1, 0) {
         return false;
       }
-    }
-    if (i > 0 && i < sqrt(input_matrix_.size()) - 1) {
-      if (std::abs(input_matrix_[i * (n + 1)]) <=
-          std::accumulate(input_matrix_.begin() + i * n, input_matrix_.begin() + i * (n + 1) - 1, 0, lambda) +
-              std::accumulate(input_matrix_.begin() + i * (n + 1) + 1, input_matrix_.begin() + (i + 1) * n - 1, 0,
-                              lambda)) {
-        return false;
+    } else {
+      j = 0;
+      while (j != n) {
+        if (input_matrix_[i * n + j] < 0) {
+          return false;
+        }
+        j++;
       }
-    }
-    if (i == n - 1) {
-      if (std::abs(input_matrix_[i * (n + 1)]) <=
-          std::accumulate(input_matrix_.begin() + i * n, input_matrix_.end() - 1, 0, lambda)) {
-        return false;
+      if (i > 0 && i < n - 1) {
+        if (input_matrix_[i * (n + 1)] <=
+            std::accumulate(input_matrix_.begin() + i * n, input_matrix_.begin() + i * (n + 1) - 1, 0) +
+                std::accumulate(input_matrix_.begin() + i * (n + 1) + 1, input_matrix_.begin() + (i + 1) * n - 1, 0)) {
+          return false;
+        }
+      }
+      if (i == n - 1) {
+        if (input_matrix_[i * (n + 1)] <= std::accumulate(input_matrix_.begin() + i * n, input_matrix_.end() - 1, 0)) {
+          return false;
+        }
       }
     }
     i++;
@@ -103,26 +116,39 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::val
     auto* tmp_ptr_matr = reinterpret_cast<double*>(taskData->inputs[0]);
     std::copy(tmp_ptr_matr, tmp_ptr_matr + n * n, input_matrix_.begin());
     unsigned short i = 0;
-    auto lambda = [&](double first, double second) { return (std::abs(first) + std::abs(second)); };
+    unsigned short j;
     while (i != n) {
       if (i == 0) {
-        if (std::abs(input_matrix_[0]) <=
-            std::accumulate(input_matrix_.begin() + 1, input_matrix_.begin() + n - 1, 0, lambda)) {
+        j = 0;
+        while (j != n) {
+          if (input_matrix_[j] < 0) {
+            return false;
+          }
+          j++;
+        }
+        if (input_matrix_[0] <=
+          std::accumulate(input_matrix_.begin() + 1, input_matrix_.begin() + n - 1, 0) {
           return false;
         }
-      }
-      if (i > 0 && i < sqrt(input_matrix_.size()) - 1) {
-        if (std::abs(input_matrix_[i * (n + 1)]) <=
-            std::accumulate(input_matrix_.begin() + i * n, input_matrix_.begin() + i * (n + 1) - 1, 0, lambda) +
-                std::accumulate(input_matrix_.begin() + i * (n + 1) + 1, input_matrix_.begin() + (i + 1) * n - 1, 0,
-                                lambda)) {
-          return false;
+      } else {
+        j = 0;
+        while (j != n) {
+          if (input_matrix_[i * n + j] < 0) {
+            return false;
+          }
+          j++;
         }
-      }
-      if (i == n - 1) {
-        if (std::abs(input_matrix_[i * (n + 1)]) <=
-            std::accumulate(input_matrix_.begin() + i * n, input_matrix_.end() - 1, 0, lambda)) {
-          return false;
+        if (i > 0 && i < n - 1) {
+          if (input_matrix_[i * (n + 1)] <=
+            std::accumulate(input_matrix_.begin() + i * n, input_matrix_.begin() + i * (n + 1) - 1, 0) +
+            std::accumulate(input_matrix_.begin() + i * (n + 1) + 1, input_matrix_.begin() + (i + 1) * n - 1, 0)) {
+            return false;
+          }
+        }
+        if (i == n - 1) {
+          if (input_matrix_[i * (n + 1)] <= std::accumulate(input_matrix_.begin() + i * n, input_matrix_.end() - 1, 0)) {
+            return false;
+          }
         }
       }
       i++;
