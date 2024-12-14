@@ -125,8 +125,7 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::val
           }
           j++;
         }
-        if (input_matrix_[0] <=
-          std::accumulate(input_matrix_.begin() + 1, input_matrix_.begin() + n - 1, 0)) {
+        if (input_matrix_[0] <= std::accumulate(input_matrix_.begin() + 1, input_matrix_.begin() + n - 1, 0)) {
           return false;
         }
       } else {
