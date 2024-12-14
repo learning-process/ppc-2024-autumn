@@ -114,7 +114,7 @@ std::vector<std::pair<int, int>> vasenkov_a_gauss_jordan_method_mpi::getIndicies
   return indicies;
 }
 
-bool vasenkov_a_gauss_jordan_method_mpi::GaussJordanMethodParallelMPI::validation() {
+bool vasenkov_a_gauss_jordan_method_mpi::GaussJordanParallel::validation() {
   internal_order_test();
   if (world.rank() != 0) {
     return true;
@@ -131,7 +131,7 @@ bool vasenkov_a_gauss_jordan_method_mpi::GaussJordanMethodParallelMPI::validatio
   return false;
 }
 
-bool vasenkov_a_gauss_jordan_method_mpi::GaussJordanMethodParallelMPI::pre_processing() {
+bool vasenkov_a_gauss_jordan_method_mpi::GaussJordanParallel::pre_processing() {
   internal_order_test();
 
   if (world.rank() == 0) {
@@ -146,7 +146,7 @@ bool vasenkov_a_gauss_jordan_method_mpi::GaussJordanMethodParallelMPI::pre_proce
   return true;
 }
 
-bool vasenkov_a_gauss_jordan_method_mpi::GaussJordanMethodParallelMPI::run() {
+bool vasenkov_a_gauss_jordan_method_mpi::GaussJordanParallel::run() {
   internal_order_test();
 
   boost::mpi::broadcast(world, n, 0);
@@ -216,7 +216,7 @@ bool vasenkov_a_gauss_jordan_method_mpi::GaussJordanMethodParallelMPI::run() {
   return true;
 }
 
-bool vasenkov_a_gauss_jordan_method_mpi::GaussJordanMethodParallelMPI::post_processing() {
+bool vasenkov_a_gauss_jordan_method_mpi::GaussJordanParallel::post_processing() {
   internal_order_test();
   if (!solve) {
     return false;

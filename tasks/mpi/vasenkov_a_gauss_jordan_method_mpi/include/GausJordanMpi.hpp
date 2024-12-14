@@ -18,9 +18,9 @@ void calcSizesDispls(int n, int k, int world_size, std::vector<int>& sizes, std:
 std::vector<std::pair<int, int>> getIndicies(int rows, int cols);
 void updateMatrix(int n, int k, std::vector<double>& matrix, const std::vector<double>& iter_result);
 
-class GaussJordanMethodParallelMPI : public ppc::core::Task {
+class GaussJordanParallel : public ppc::core::Task {
  public:
-  explicit GaussJordanMethodParallelMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit GaussJordanParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
