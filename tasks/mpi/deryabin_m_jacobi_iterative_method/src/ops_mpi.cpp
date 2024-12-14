@@ -180,7 +180,7 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::run
   boost::mpi::broadcast(world, number_of_local_matrix_rows, 0);
   boost::mpi::broadcast(world, displacements.data(), displacements.size(), 0);
   boost::mpi::broadcast(world, n, 0);
-  output_x_vector_ = std::vector<double>(n);
+  //output_x_vector_ = std::vector<double>(n);
   local_input_matrix_part_ = std::vector<double>(number_of_local_matrix_rows * n);
   local_input_right_vector_part_ = std::vector<double>(number_of_local_matrix_rows);
   std::vector<int> sendcounts(world.size(), number_of_local_matrix_rows);
