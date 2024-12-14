@@ -232,7 +232,6 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::run() {
         continue;
       }
 
-      
       row++;
     } else {
       boost::mpi::broadcast(world, temp, i % world.size());
@@ -259,7 +258,7 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::run() {
     resh[i] = local_matrix[row * size_n + size];
     row++;
   }
-  
+
   row = size_m - 1;
   for (int i = size - 1; i > 0; i--) {
     if (row >= 0) {
