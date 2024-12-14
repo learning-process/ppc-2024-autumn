@@ -59,10 +59,12 @@ void malyshev_a_two_dim_global_optimization_characteristics_mpi::TestTaskSequent
   double y_step = (data_.y_max - data_.y_min) / Constants::grid_initial_size;
   Point best_point(0, 0, std::numeric_limits<double>::max());
 
+  double x;
+  double y;
   for (int i = 0; i <= Constants::grid_initial_size; i++) {
     for (int j = 0; j <= Constants::grid_initial_size; j++) {
-      double x = data_.x_min + i * x_step;
-      double y = data_.y_min + j * y_step;
+      x = data_.x_min + i * x_step;
+      y = data_.y_min + j * y_step;
 
       Point local_min = local_search(x, y);
 
@@ -98,16 +100,14 @@ malyshev_a_two_dim_global_optimization_characteristics_mpi::TestTaskSequential::
   double dx = (traget_function_(x0 + Constants::h, y0) - traget_function_(x0 - Constants::h, y0)) / (2 * Constants::h);
   double dy = (traget_function_(x0, y0 + Constants::h) - traget_function_(x0, y0 - Constants::h)) / (2 * Constants::h);
 
+  double new_x;
+  double new_y;
   for (int i = 0; i < Constants::max_iterations; i++) {
-    double new_x = current.x - learning_rate * dx;
-    double new_y = current.y - learning_rate * dy;
+    new_x = current.x - learning_rate * dx;
+    new_y = current.y - learning_rate * dy;
 
-    if (new_x < data_.x_min || new_x > data_.x_max || new_y < data_.y_min || new_y > data_.y_max) {
-      learning_rate *= learning_rate_decay;
-      continue;
-    }
-
-    if (!check_constraints(new_x, new_y)) {
+    if (new_x < data_.x_min || new_x > data_.x_max || new_y < data_.y_min || new_y > data_.y_max ||
+        !check_constraints(new_x, new_y)) {
       learning_rate *= learning_rate_decay;
       continue;
     }
@@ -145,12 +145,16 @@ malyshev_a_two_dim_global_optimization_characteristics_mpi::TestTaskSequential::
   double radius = std::min(data_.x_max - data_.x_min, data_.y_max - data_.y_min) * Constants::tunnel_rate;
   Point best_point = current_min;
 
-  for (int i = 0; i < 20; i++) {
-    double angle = 2 * M_PI * dis(gen);
-    double r = radius * std::sqrt(std::abs(dis(gen)));
+  double angle;
+  double r;
+  double new_x;
+  double new_y;
+  for (int i = 0; i < Constants::num_tunnels; i++) {
+    angle = 2 * M_PI * dis(gen);
+    r = radius * std::sqrt(std::abs(dis(gen)));
 
-    double new_x = current_min.x + r * std::cos(angle);
-    double new_y = current_min.y + r * std::sin(angle);
+    new_x = current_min.x + r * std::cos(angle);
+    new_y = current_min.y + r * std::sin(angle);
 
     if (new_x >= data_.x_min && new_x <= data_.x_max && new_y >= data_.y_min && new_y <= data_.y_max) {
       Point new_point = local_search(new_x, new_y);
@@ -269,12 +273,8 @@ void malyshev_a_two_dim_global_optimization_characteristics_mpi::TestTaskParalle
 
   local_constraint_count_ = local_constraint_sizes[world.rank()];
   is_active_ = local_constraint_count_ != 0;
-  if (world.rank() > 0) {
-    start_constraint_index_ =
-        std::accumulate(local_constraint_sizes.begin(), local_constraint_sizes.begin() + world.rank(), 0);
-  } else {
-    start_constraint_index_ = 0;
-  }
+  start_constraint_index_ =
+      std::accumulate(local_constraint_sizes.begin(), local_constraint_sizes.begin() + world.rank(), 0);
 }
 
 void malyshev_a_two_dim_global_optimization_characteristics_mpi::TestTaskParallel::init_shared_bool_array() {
@@ -288,9 +288,7 @@ void malyshev_a_two_dim_global_optimization_characteristics_mpi::TestTaskParalle
     int win_disp;
 
     MPI_Win_shared_query(bool_win, 0, &win_size, &win_disp, reinterpret_cast<void**>(&shared_results));
-  }
-
-  if (world.rank() == 0) {
+  } else {
     std::fill_n(shared_results, world.size(), false);
   }
 
@@ -304,6 +302,14 @@ void malyshev_a_two_dim_global_optimization_characteristics_mpi::TestTaskParalle
 
 malyshev_a_two_dim_global_optimization_characteristics_mpi::Point
 malyshev_a_two_dim_global_optimization_characteristics_mpi::TestTaskParallel::local_search(double x0, double y0) {
+  const auto diff_x = [this](double x, double y) {
+    return (traget_function_(x + Constants::h, y) - traget_function_(x - Constants::h, y)) / (2 * Constants::h);
+  };
+
+  const auto diff_y = [this](double x, double y) {
+    return (traget_function_(x, y + Constants::h) - traget_function_(x, y - Constants::h)) / (2 * Constants::h);
+  };
+
   Point current(x0, y0);
   current.value = traget_function_(x0, y0);
 
@@ -313,24 +319,21 @@ malyshev_a_two_dim_global_optimization_characteristics_mpi::TestTaskParallel::lo
   const double learning_rate_decay = 0.95;
   const double min_learning_rate = 1e-8;
 
-  double dx = (traget_function_(x0 + Constants::h, y0) - traget_function_(x0 - Constants::h, y0)) / (2 * Constants::h);
-  double dy = (traget_function_(x0, y0 + Constants::h) - traget_function_(x0, y0 - Constants::h)) / (2 * Constants::h);
+  double dx = diff_x(x0, y0);
+  double dy = diff_y(x0, y0);
 
+  double new_x;
+  double new_y;
   for (int i = 0; i < Constants::max_iterations / 2; i++) {
     if (iterations_without_improvement >= max_without_improvement || learning_rate < min_learning_rate) {
       break;
     }
 
-    double new_x = current.x - learning_rate * dx;
-    double new_y = current.y - learning_rate * dy;
+    new_x = current.x - learning_rate * dx;
+    new_y = current.y - learning_rate * dy;
 
-    if (new_x < data_.x_min || new_x > data_.x_max || new_y < data_.y_min || new_y > data_.y_max) {
-      learning_rate *= learning_rate_decay;
-      iterations_without_improvement++;
-      continue;
-    }
-
-    if (!check_constraints(new_x, new_y)) {
+    if (new_x < data_.x_min || new_x > data_.x_max || new_y < data_.y_min || new_y > data_.y_max ||
+        !check_constraints(new_x, new_y)) {
       learning_rate *= learning_rate_decay;
       iterations_without_improvement++;
       continue;
@@ -343,10 +346,8 @@ malyshev_a_two_dim_global_optimization_characteristics_mpi::TestTaskParallel::lo
       current.y = new_y;
       current.value = new_value;
 
-      dx = (traget_function_(new_x + Constants::h, new_y) - traget_function_(new_x - Constants::h, new_y)) /
-           (2 * Constants::h);
-      dy = (traget_function_(new_x, new_y + Constants::h) - traget_function_(new_x, new_y - Constants::h)) /
-           (2 * Constants::h);
+      dx = diff_x(new_x, new_y);
+      dy = diff_y(new_x, new_y);
 
       iterations_without_improvement = 0;
     } else {
