@@ -140,13 +140,14 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::run
   double max_delta_x_i = 0;
   std::vector<double> x_old;
   unsigned short n;
+  unsigned short i;
+  unsigned short j;
+  double sum;
   if (world.size() == 1) {
     do {
       x_old = output_x_vector_;
-      unsigned short i = 0;
-      unsigned short j;
+      i = 0;
       n = taskData->inputs_count[0];
-      double sum;
       while (i != n) {
         j = 0;
         sum = 0;
@@ -207,9 +208,7 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::run
   local_output_x_vector_part_ = std::vector<double>(local_input_right_vector_part_.size());
   do {
     x_old = output_x_vector_;
-    unsigned short i = 0;
-    unsigned short j;
-    double sum;
+    i = 0;
     while (i != local_output_x_vector_part_.size()) {
       j = 0;
       sum = 0;
