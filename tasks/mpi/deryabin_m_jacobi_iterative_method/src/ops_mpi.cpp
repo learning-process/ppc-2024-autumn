@@ -91,10 +91,8 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::pre
     input_right_vector_ = std::vector<double>(taskData->inputs_count[0]);
     auto* tmp_ptr_vec = reinterpret_cast<double*>(taskData->inputs[1]);
     std::copy(tmp_ptr_vec, tmp_ptr_vec + taskData->inputs_count[0], input_right_vector_.begin());
-    output_x_vector_ = std::vector<double>(input_right_vector_.size());
   }
-  boost::mpi::broadcast(world, input_right_vector_.data(), input_right_vector_.size(), 0);
-  boost::mpi::broadcast(world, output_x_vector_.data(), output_x_vector_.size(), 0);
+  // boost::mpi::broadcast(world, input_right_vector_.data(), input_right_vector_.size(), 0);
   
   return true;
 }
@@ -133,7 +131,7 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::val
     }
     return taskData->outputs_count[0] == 1;
   }
-  boost::mpi::broadcast(world, input_matrix_.data(), input_matrix_.size(), 0);
+  // boost::mpi::broadcast(world, input_matrix_.data(), input_matrix_.size(), 0);
   return true;
 }
 
@@ -186,30 +184,36 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::run
   boost::mpi::broadcast(world, number_of_local_matrix_rows, 0);
   boost::mpi::broadcast(world, displacements.data(), displacements.size(), 0);
   boost::mpi::broadcast(world, n, 0);
+  output_x_vector_ = std::vector<double>(n);
   // boost::mpi::broadcast(world, input_matrix_.data(), input_matrix_.size(), 0);
   // boost::mpi::broadcast(world, input_right_vector_.data(), input_right_vector_.size(), 0);
-  // boost::mpi::broadcast(world, output_x_vector_.data(), output_x_vector_.size(), 0);
   local_input_matrix_part_ = std::vector<double>(number_of_local_matrix_rows * n);
   local_input_right_vector_part_ = std::vector<double>(number_of_local_matrix_rows);
   std::vector<int> sendcounts(world.size(), number_of_local_matrix_rows);
   if (world.rank() == 0) {
     sendcounts[world.rank()] = number_of_local_matrix_rows + ostatochnoe_chislo_strock;
     displacements[world.rank()] = n - number_of_local_matrix_rows - ostatochnoe_chislo_strock;
-    // auto* tmp_ptr_matr = reinterpret_cast<double*>(taskData->inputs[0]);
     local_input_matrix_part_ = std::vector<double>((number_of_local_matrix_rows + ostatochnoe_chislo_strock) * n);
     std::copy(input_matrix_.begin() + n * (n - number_of_local_matrix_rows - ostatochnoe_chislo_strock), input_matrix_.begin() + n * n,
               local_input_matrix_part_.begin());
-    // auto* tmp_ptr_vec = reinterpret_cast<double*>(taskData->inputs[1]);
     local_input_right_vector_part_ = std::vector<double>(number_of_local_matrix_rows + ostatochnoe_chislo_strock);
     std::copy(input_right_vector_.begin() + n - number_of_local_matrix_rows - ostatochnoe_chislo_strock, input_right_vector_.begin() + n,
               local_input_right_vector_part_.begin());
+    for (int proc = 1; proc < world.size(); proc++) {
+      world.send(proc, 0, input_matrix_.begin() + (proc - 1) * number_of_local_matrix_rows * n, number_of_local_matrix_rows * n);
+      world.send(proc, 0, input_right_vector_.begin() + (proc - 1) * number_of_local_matrix_rows, number_of_local_matrix_rows);
+    }
   } else {
-     std::copy(input_matrix_.begin() + (world.rank() - 1) * number_of_local_matrix_rows * n,
-               input_matrix_.begin() + world.rank() * number_of_local_matrix_rows * n, local_input_matrix_part_.begin());
-     std::copy(input_right_vector_.begin() + (world.rank() - 1) * number_of_local_matrix_rows,
-               input_right_vector_.begin() + world.rank() * number_of_local_matrix_rows,
-               local_input_right_vector_part_.begin());
+    world.recv(0, 0, local_input_matrix_part_.data(), number_of_local_matrix_rows * n);
+    world.recv(0, 0, local_input_right_vector_part_.data(), number_of_local_matrix_rows);
   }
+  //} else {
+     //std::copy(input_matrix_.begin() + (world.rank() - 1) * number_of_local_matrix_rows * n,
+               //input_matrix_.begin() + world.rank() * number_of_local_matrix_rows * n, local_input_matrix_part_.begin());
+     //std::copy(input_right_vector_.begin() + (world.rank() - 1) * number_of_local_matrix_rows,
+               //input_right_vector_.begin() + world.rank() * number_of_local_matrix_rows,
+               //local_input_right_vector_part_.begin());
+  //}
   local_output_x_vector_part_ = std::vector<double>(local_input_right_vector_part_.size());
   unsigned short Nmax = 10000;
   unsigned short num_of_iterations = 0;
