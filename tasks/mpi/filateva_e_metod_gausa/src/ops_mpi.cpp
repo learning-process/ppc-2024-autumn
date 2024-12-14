@@ -232,7 +232,7 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::run() {
       }
       row++;
     } else {
-      boost::mpi::broadcast(world, temp.data(), size_n, i % world.size()); 
+      boost::mpi::broadcast(world, temp.data(), size_n, i % world.size());
       if (temp[i] == 0) {
         boost::mpi::gatherv(world, local_matrix.data(), size_m * size_n, tem_matrix.data(), distribution, displacement,
                             i % world.size());
