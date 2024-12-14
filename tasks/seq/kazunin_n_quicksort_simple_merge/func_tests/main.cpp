@@ -1,21 +1,10 @@
 #include <gtest/gtest.h>
 
-#include <random>
 #include <vector>
 
 #include "seq/kazunin_n_quicksort_simple_merge/include/ops_seq.hpp"
 
 namespace kazunin_n_quicksort_simple_merge_seq {
-
-std::vector<int> generate_random_vector(int n, int min_val = -100, int max_val = 100,
-                                        unsigned seed = std::random_device{}()) {
-  static std::mt19937 gen(seed);
-  std::uniform_int_distribution<int> dist(min_val, max_val);
-
-  std::vector<int> vec(n);
-  std::generate(vec.begin(), vec.end(), [&]() { return dist(gen); });
-  return vec;
-}
 
 void template_test(const std::vector<int>& input_data) {
   std::vector<int> data = input_data;

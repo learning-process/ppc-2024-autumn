@@ -176,3 +176,15 @@ TEST(kazunin_n_quicksort_simple_merge_mpi, test_quick_sort_19) {
 TEST(kazunin_n_quicksort_simple_merge_mpi, test_quick_sort_20) {
   kazunin_n_quicksort_simple_merge_mpi::template_test({8, 4, 2, 6, 1, 9, 5, 3, 7, 0});
 }
+
+TEST(kazunin_n_quicksort_simple_merge_mpi, test_quick_sort_21) {
+  kazunin_n_quicksort_simple_merge_mpi::template_test(10);
+}
+
+TEST(kazunin_n_quicksort_simple_merge_mpi, test_quick_sort_22) {
+  kazunin_n_quicksort_simple_merge_mpi::template_test(20);
+}
+
+TEST(kazunin_n_quicksort_simple_merge_mpi, test_quick_sort_23) {
+  kazunin_n_quicksort_simple_merge_mpi::template_test(23);
+}
