@@ -13,17 +13,11 @@
 
 namespace kurakin_m_graham_scan_mpi {
 
-double getRandomDouble(double start, double end);
-
-int getRandomInt(int start, int end);
-
 bool isLeftAngle(std::vector<double>& p1, std::vector<double>& p2, std::vector<double>& p3);
 
 int grahamScan(std::vector<std::vector<double>>& input_);
 
 int getCountPoint(int count_point, int size, int rank);
-
-void getRandomVectorForGrahamScan(std::vector<double>& res_x, int count_point, int size);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:

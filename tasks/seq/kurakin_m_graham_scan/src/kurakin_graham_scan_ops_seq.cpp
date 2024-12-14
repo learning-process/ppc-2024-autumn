@@ -7,8 +7,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
 bool kurakin_m_graham_scan_seq::isLeftAngle(std::vector<double>& p1, std::vector<double>& p2, std::vector<double>& p3) {
   return ((p2[0] - p1[0]) * (p3[1] - p1[1]) - (p3[0] - p1[0]) * (p2[1] - p1[1])) < 0;
 }
