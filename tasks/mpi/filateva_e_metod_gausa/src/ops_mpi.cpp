@@ -203,14 +203,18 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::run() {
   for (int i = 1; i < world.size(); i++) {
     displacement[i] = displacement[i - 1] + ((i <= ost) ? (delta + 1) : delta) * size_n;
   }
-
   boost::mpi::scatterv(world, tem_matrix.data(), distribution, displacement, local_matrix.data(), size_m * size_n, 0);
+
+  double epsilon = std::numeric_limits<double>::epsilon();
 
   int row = 0;
   for (int i = 0; i < size - 1;) {
-    if (!rows.empty() && i == rows[row]) {
-      boost::mpi::broadcast(world, local_matrix.data() + row * size_n, size_n, world.rank());
-      if (local_matrix[row * size_n + i] == 0) {
+    if (row < rows.size() && i == rows[row]) {
+      for (int j = 0; j < size_n; j++) {
+        temp[j] = local_matrix[row * size_n + j];
+      }
+      boost::mpi::broadcast(world, temp, world.rank());
+      if (std::abs(local_matrix[row * size_n + i]) < epsilon) {
         tem_matrix.resize(size * size_n);
         boost::mpi::gatherv(world, local_matrix.data(), size_m * size_n, tem_matrix.data(), distribution, displacement,
                             world.rank());
@@ -227,13 +231,12 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::run() {
                              world.rank());
         continue;
       }
-      for (int j = 0; j <= size; j++) {
-        temp[j] = local_matrix[row * size_n + j];
-      }
+
+      
       row++;
     } else {
-      boost::mpi::broadcast(world, temp.data(), size_n, i % world.size());
-      if (temp[i] == 0) {
+      boost::mpi::broadcast(world, temp, i % world.size());
+      if (std::abs(temp[i]) < epsilon) {
         boost::mpi::gatherv(world, local_matrix.data(), size_m * size_n, tem_matrix.data(), distribution, displacement,
                             i % world.size());
         boost::mpi::scatterv(world, tem_matrix.data(), distribution, displacement, local_matrix.data(), size_m * size_n,
@@ -256,7 +259,7 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::run() {
     resh[i] = local_matrix[row * size_n + size];
     row++;
   }
-
+  
   row = size_m - 1;
   for (int i = size - 1; i > 0; i--) {
     if (row >= 0) {
