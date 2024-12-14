@@ -14,16 +14,6 @@
 
 namespace fomin_v_generalized_scatter {
 
-// Declaration of TaskData struct
-struct TaskData {
-  void* inputs[1];
-  int inputs_count[1];
-  void* outputs[1];
-  int outputs_count[1];
-  MPI_Datatype datatype;
-  std::string ops;
-};
-
 // Declaration of getRandomVector function
 std::vector<int> getRandomVector(int sz);
 // Declaration of generalized_scatter function
@@ -33,12 +23,18 @@ int generalized_scatter(const void* sendbuf, int sendcount, MPI_Datatype sendtyp
 // Declaration of GeneralizedScatterTestParallel class
 class GeneralizedScatterTestParallel : public ppc::core::Task {
  public:
-  bool pre_processing(TaskData* taskData) override;
-  bool validation(TaskData* taskData) override;
-  bool run(TaskData* taskData) override;
-  bool post_processing(TaskData* taskData) override;
+  explicit GeneralizedScatterTestParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
+      : Task(std::move(taskData_)) {}
+  bool pre_processing() override;
+  bool validation() override;
+  bool run() override;
+  bool post_processing() override;
 
  private:
+  std::string input_{};
+  std::string local_input_{};
+  int res{};
+  boost::mpi::communicator world;
 };
 
 }  // namespace fomin_v_generalized_scatter
