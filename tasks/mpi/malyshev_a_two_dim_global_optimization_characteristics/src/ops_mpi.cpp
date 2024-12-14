@@ -113,7 +113,7 @@ malyshev_a_two_dim_global_optimization_characteristics_mpi::TestTaskSequential::
 
     int max_steps = static_cast<int>(std::ceil(std::log2(learning_rate / data_.eps)));
     double step = learning_rate;
-    for (int i = 0; i < max_steps; i++) {
+    for (int j = 0; j < max_steps; j++) {
       new_x = x - step * dx;
       new_y = y - step * dy;
 
