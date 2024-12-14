@@ -11,8 +11,8 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential::pre_processing() {
   col_indices_.resize(edges_count_);
   weights_.resize(edges_count_);
   int* row_offsets_ = reinterpret_cast<int*>(taskData->inputs[0]);
-  int* row_offsets_ = reinterpret_cast<int*>(taskData->inputs[1]);
-  int* row_offsets_ = reinterpret_cast<int*>(taskData->inputs[2]);
+  int* col_indices_ = reinterpret_cast<int*>(taskData->inputs[1]);
+  int* weights_ = reinterpret_cast<int*>(taskData->inputs[2]);
 
   distances_.resize(vertices_, INT_MAX);
   distances_[source_] = 0;
@@ -72,8 +72,8 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::pre_processing() {
   weights_.resize(edges_count_);
 
   int* row_offsets_ = reinterpret_cast<int*>(taskData->inputs[0]);
-  int* row_offsets_ = reinterpret_cast<int*>(taskData->inputs[1]);
-  int* row_offsets_ = reinterpret_cast<int*>(taskData->inputs[2]);
+  int* col_indices_ = reinterpret_cast<int*>(taskData->inputs[1]);
+  int* weights_= reinterpret_cast<int*>(taskData->inputs[2]);
 
   boost::mpi::broadcast(world, row_offsets_, 0);
   boost::mpi::broadcast(world, col_indices_, 0);
