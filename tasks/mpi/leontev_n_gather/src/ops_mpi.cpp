@@ -170,9 +170,7 @@ bool leontev_n_mat_vec_mpi::MPIMatVecParallel::run() {
   std::vector<int> local_tmp(divres.quot + divres.rem, 0);
   std::vector<int> sizes(world.size(), divres.quot * res.size());
   sizes[0] += divres.rem * res.size();
-  if (world.rank() == 0) {
-    boost::mpi::scatterv(world, mat_, sizes, local_input.data(), 0);
-  }
+  boost::mpi::scatterv(world, mat_, sizes, local_input.data(), 0);
   if (world.rank() == 0) {
     for (int i = 0; i < divres.quot + divres.rem; i++) {
       for (size_t j = 0; j < res.size(); j++) {
