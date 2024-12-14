@@ -58,7 +58,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   static std::string serialize_eq_table(const std::map<int, std::set<int>>& eq_table);
   static std::map<int, std::set<int>> deserialize_eq_table(const std::string& str);
   static void merge_global_eq_table(std::map<int, std::set<int>>& global_eq_table,
-                             const std::map<int, std::set<int>>& local_eq_table);
+                                    const std::map<int, std::set<int>>& local_eq_table);
   boost::mpi::communicator world;
 };
 
