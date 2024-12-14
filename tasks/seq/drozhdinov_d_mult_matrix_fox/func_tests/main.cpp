@@ -163,10 +163,7 @@ TEST(drozhdinov_d_mult_matrix_fox_seq, EmptyTest) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  for (int i = 0; i < k * n; i++) {
-    EXPECT_DOUBLE_EQ(res[i], expres[i]);
-    EXPECT_DOUBLE_EQ(res[i], expres[i]);
-  }
+  ASSERT_EQ(res, expres);
 }
 
 TEST(drozhdinov_d_mult_matrix_fox_seq, 1x10_10x7Random) {
