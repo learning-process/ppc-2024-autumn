@@ -1,8 +1,13 @@
 #pragma once
 
+#include <gtest/gtest.h>
+
+#include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <memory>
+#include <numeric>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -28,10 +33,10 @@ int generalized_scatter(const void* sendbuf, int sendcount, MPI_Datatype sendtyp
 // Declaration of GeneralizedScatterTestParallel class
 class GeneralizedScatterTestParallel : public ppc::core::Task {
  public:
-  bool pre_processing(TaskData* taskData);
-  bool validation(TaskData* taskData);
-  bool run(TaskData* taskData);
-  bool post_processing(TaskData* taskData);
+  bool pre_processing(TaskData* taskData) override;
+  bool validation(TaskData* taskData) override;
+  bool run(TaskData* taskData) override;
+  bool post_processing(TaskData* taskData) override;
 
  private:
 };

@@ -6,79 +6,93 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/fomin_v_generalized_scatter/include/ops_mpi.hpp"
 
-
-TEST(fomin_v_generalized_scatter_mpi, test_pipeline_run_2000) {
-  const int count = 2000;
+TEST(fomin_v_generalized_scatter, test_task_run) {
   boost::mpi::communicator world;
-  std::vector<int> out;
-  std::vector<int> in;
+  std::vector<int> global_input;
+  std::vector<int> local_output(10, 0);  // Adjust size as needed
 
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-
+  // Create TaskData
+  std::shared_ptr<TaskData> taskData = std::make_shared<TaskData>();
+  int count_size;
   if (world.rank() == 0) {
-    in = fomin_v_generalized_scatter::getRandomVector(count);
-    out = std::vector<int>(count / world.size(), 0);
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
-    taskData->inputs_count.emplace_back(count);
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-    taskData->outputs_count.emplace_back(count / world.size());
+    count_size = 100;  // Adjust size as needed
+    global_input = getRandomVector(count_size);
+    taskData->inputs[0] = global_input.data();
+    taskData->inputs_count[0] = global_input.size();
+    taskData->outputs[0] = local_output.data();
+    taskData->outputs_count[0] = local_output.size();
+    taskData->datatype = MPI_INT;
+    taskData->ops = "scatter";  // Example operation
   }
 
-  auto scatterParallel = std::make_shared<fomin_v_generalized_scatter::GeneralizedScatterTestParallel>(taskData, world);
-  ASSERT_EQ(scatterParallel->validation(), true);
-  scatterParallel->pre_processing();
-  scatterParallel->run();
-  scatterParallel->post_processing();
+  auto testParallel = std::make_shared<GeneralizedScatterTestParallel>();
+  ASSERT_EQ(testParallel->validation(taskData.get()), true);
+  testParallel->pre_processing(taskData.get());
+  testParallel->run(taskData.get());
+  testParallel->post_processing(taskData.get());
 
+  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;
+  perfAttr->num_running = 10;  // Number of runs for performance measurement
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
+  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(scatterParallel);
-  perfAnalyzer->pipeline_run(perfAttr, perfResults);
-
-  if (world.rank() == 0) {
-    ppc::core::Perf::print_perf_statistic(perfResults);
-  }
-}
-
-TEST(fomin_v_generalized_scatter_mpi, test_task_run_2000) {
-  const int count = 2000;
-  boost::mpi::communicator world;
-  std::vector<int> out;
-  std::vector<int> in;
-
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    in = fomin_v_generalized_scatter::getRandomVector(count);
-    out = std::vector<int>(count / world.size(), 0);
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
-    taskData->inputs_count.emplace_back(count);
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-    taskData->outputs_count.emplace_back(count / world.size());
-  }
-
-  auto scatterParallel = std::make_shared<fomin_v_generalized_scatter::GeneralizedScatterTestParallel>(taskData, world);
-  ASSERT_EQ(scatterParallel->validation(), true);
-  scatterParallel->pre_processing();
-  scatterParallel->run();
-  scatterParallel->post_processing();
-
-  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 30;
-  const boost::mpi::timer current_timer;
-  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
-
-  auto perfResults = std::make_shared<ppc::core::PerfResults>();
-
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(scatterParallel);
+  // Create Perf analyzer
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
+    // Add assertions if needed to validate the output
   }
 }
+
+// Test for running the pipeline
+TEST(fomin_v_generalized_scatter, test_pipeline_run) {
+  boost::mpi::communicator world;
+  std::vector<int> global_input;
+  std::vector<int> local_output(10, 0);  // Adjust size as needed
+
+  // Create TaskData
+  std::shared_ptr<TaskData> taskData = std::make_shared<TaskData>();
+  int count_size;
+  if (world.rank() == 0) {
+    count_size = 100;  // Adjust size as needed
+    global_input = getRandomVector(count_size);
+    taskData->inputs[0] = global_input.data();
+    taskData->inputs_count[0] = global_input.size();
+    taskData->outputs[0] = local_output.data();
+    taskData->outputs_count[0] = local_output.size();
+    taskData->datatype = MPI_INT;
+    taskData->ops = "scatter";  // Example operation
+  }
+
+  auto testParallel = std::make_shared<GeneralizedScatterTestParallel>();
+  ASSERT_EQ(testParallel->validation(taskData.get()), true);
+  testParallel->pre_processing(taskData.get());
+  testParallel->run(taskData.get());
+  testParallel->post_processing(taskData.get());
+
+  // Create Perf attributes
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 10;  // Number of runs for performance measurement
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+
+  // Create and init perf results
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+
+  // Create Perf analyzer
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testParallel);
+  perfAnalyzer->pipeline_run(perfAttr, perfResults);
+
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
+    // Add assertions if needed to validate the output
+  }
+}
+
+// namespace fomin_v_generalized_scatter

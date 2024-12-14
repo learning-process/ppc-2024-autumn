@@ -7,7 +7,6 @@
 #include <string>
 #include <vector>
 
-
 struct TaskData {
   void* inputs[1];
   int inputs_count[1];
