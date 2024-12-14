@@ -18,7 +18,7 @@ TEST(naumov_b_bubble_sort, test_pipeline_run) {
   std::vector<int> global_out;
 
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
-  const size_t count_size_vector = 120;
+  const size_t count_size_vector = 1200;
   if (rank == 0) {
     global_vec.resize(count_size_vector);
     global_out.resize(count_size_vector);

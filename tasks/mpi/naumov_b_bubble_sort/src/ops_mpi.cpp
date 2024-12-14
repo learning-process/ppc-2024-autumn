@@ -75,28 +75,6 @@ bool naumov_b_bubble_sort_mpi::TestMPITaskParallel::pre_processing() {
     std::copy(input_data, input_data + input_size, input_.begin());
   }
 
-  if (rank == 0) {
-    total_size_ = input_.size();
-  }
-  MPI_Bcast(&total_size_, 1, MPI_INT, 0, MPI_COMM_WORLD);
-
-  int base_chunk = total_size_ / size;
-  int remainder = total_size_ % size;
-
-  int local_size = base_chunk + (rank < remainder ? 1 : 0);
-  local_input_.resize(local_size);
-
-  if (rank == 0) {
-    for (int i = 1; i < size; ++i) {
-      int start_idx = i * base_chunk + std::min(i, remainder);
-      int chunk_size = base_chunk + (i < remainder ? 1 : 0);
-      MPI_Send(input_.data() + start_idx, chunk_size, MPI_INT, i, 0, MPI_COMM_WORLD);
-    }
-    local_input_ = std::vector<int>(input_.begin(), input_.begin() + local_size);
-  } else {
-    MPI_Recv(local_input_.data(), local_size, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-  }
-
   return true;
 }
 
@@ -121,7 +99,31 @@ bool naumov_b_bubble_sort_mpi::TestMPITaskParallel::validation() {
 bool naumov_b_bubble_sort_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  MPI_Comm_size(MPI_COMM_WORLD, &size);
+
+  if (rank == 0) {
+    total_size_ = input_.size();
+  }
+  MPI_Bcast(&total_size_, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+  int base_chunk = total_size_ / size;
+  int remainder = total_size_ % size;
+
+  int local_size = base_chunk + (rank < remainder ? 1 : 0);
+  local_input_.resize(local_size);
+
+  if (rank == 0) {
+    for (int i = 1; i < size; ++i) {
+      int start_idx = i * base_chunk + std::min(i, remainder);
+      int chunk_size = base_chunk + (i < remainder ? 1 : 0);
+      MPI_Send(input_.data() + start_idx, chunk_size, MPI_INT, i, 0, MPI_COMM_WORLD);
+    }
+    local_input_ = std::vector<int>(input_.begin(), input_.begin() + local_size);
+  } else {
+    MPI_Recv(local_input_.data(), local_size, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+  }
 
   for (size_t i = 0; i < local_input_.size(); ++i) {
     for (size_t j = 0; j < local_input_.size() - i - 1; ++j) {

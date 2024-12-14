@@ -6,6 +6,7 @@
 
 #include "mpi/naumov_b_bubble_sort/include/ops_mpi.hpp"
 
+namespace naumov_b_bubble_sort_mpi {
 std::vector<int> getRandomVec(int size) {
   std::vector<int> vec(size);
   for (int &element : vec) {
@@ -13,6 +14,7 @@ std::vector<int> getRandomVec(int size) {
   }
   return vec;
 }
+}  // namespace naumov_b_bubble_sort_mpi
 
 TEST(naumov_b_bubble_sort_mpi, Test_SmallArray) {
   boost::mpi::communicator world;
@@ -46,7 +48,7 @@ TEST(naumov_b_bubble_sort_mpi, Test_SmallArray) {
 TEST(naumov_b_bubble_sort_mpi, Test_LargeArray) {
   boost::mpi::communicator world;
 
-  std::vector<int> input_data = getRandomVec(1000);
+  std::vector<int> input_data = naumov_b_bubble_sort_mpi::getRandomVec(1000);
 
   std::vector<int> sorted_data = input_data;
   std::sort(sorted_data.begin(), sorted_data.end());
