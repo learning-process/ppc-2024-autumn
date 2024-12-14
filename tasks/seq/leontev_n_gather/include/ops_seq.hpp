@@ -22,4 +22,4 @@ class MatVecSequential : public ppc::core::Task {
   std::vector<InOutType> res;
 };
 
-}  // namespace leontev_n_vector_sum_seq
+}  // namespace leontev_n_mat_vec_seq

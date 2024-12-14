@@ -21,8 +21,7 @@ std::vector<int> getRandomVector(int sz) {
 }  // namespace leontev_n_mat_vec_mpi
 
 inline void taskEmplacement(std::shared_ptr<ppc::core::TaskData>& taskDataPar, std::vector<int>& global_vec,
-                            std::vector<int>& global_mat,
-                            std::vector<int32_t>& global_res) {
+                            std::vector<int>& global_mat, std::vector<int32_t>& global_res) {
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_mat.data()));
   taskDataPar->inputs_count.emplace_back(global_mat.size());
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
@@ -61,7 +60,7 @@ TEST(leontev_n_mat_vec_mpi, mul_mpi_50elem) {
     MPIMatVecSequential.pre_processing();
     MPIMatVecSequential.run();
     MPIMatVecSequential.post_processing();
-    for (size_t i = 0; i < vector_size; i++) {
+    for (int i = 0; i < vector_size; i++) {
       ASSERT_EQ(reference_vec[i], global_res[i]);
     }
   }
@@ -111,7 +110,7 @@ TEST(leontev_n_mat_vec_mpi, mul_mpi_1000elem) {
     MPIMatVecSequential.pre_processing();
     MPIMatVecSequential.run();
     MPIMatVecSequential.post_processing();
-    for (size_t i = 0; i < vector_size; i++) {
+    for (int i = 0; i < vector_size; i++) {
       ASSERT_EQ(reference_vec[i], global_res[i]);
     }
   }
@@ -147,7 +146,7 @@ TEST(leontev_n_mat_vec_mpi, mul_mpi_5000elem) {
     MPIMatVecSequential.pre_processing();
     MPIMatVecSequential.run();
     MPIMatVecSequential.post_processing();
-    for (size_t i = 0; i < vector_size; i++) {
+    for (int i = 0; i < vector_size; i++) {
       ASSERT_EQ(reference_vec[i], global_res[i]);
     }
   }
@@ -183,8 +182,6 @@ TEST(leontev_n_mat_vec_mpi, mul_mpi_1elem) {
     MPIMatVecSequential.pre_processing();
     MPIMatVecSequential.run();
     MPIMatVecSequential.post_processing();
-    for (size_t i = 0; i < vector_size; i++) {
-      ASSERT_EQ(reference_vec[i], global_res[i]);
-    }
+    ASSERT_EQ(reference_vec[0], global_res[0]);
   }
 }

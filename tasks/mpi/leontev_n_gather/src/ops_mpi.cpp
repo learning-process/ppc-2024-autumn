@@ -168,19 +168,18 @@ bool leontev_n_mat_vec_mpi::MPIMatVecParallel::run() {
     boost::mpi::scatterv(world, mat_, sizes, local_input.data(), 0);
   }
   if (world.rank() == 0) {
-    for (size_t i = 0; i < divres.quot + divres.rem; i++) {
-      for (size_t j = 0; j < res.size(); j++) {
+    for (int i = 0; i < divres.quot + divres.rem; i++) {
+      for (int j = 0; j < res.size(); j++) {
         local_tmp[i] += local_input[i * res.size() + j] * vec_[j];
       }
     }
   } else {
-    for (size_t i = 0; i < divres.quot; i++) {
-      for (size_t j = 0; j < res.size(); j++) {
+    for (int i = 0; i < divres.quot; i++) {
+      for (int j = 0; j < res.size(); j++) {
         local_tmp[i] += local_input[i * res.size() + j] * vec_[j];
       }
     }
   }
-  //boost::mpi::gatherv(world, local_tmp, res.data(), sizes, 0);
   my_gather(world, local_tmp, res.data(), sizes, 0);
   return true;
 }

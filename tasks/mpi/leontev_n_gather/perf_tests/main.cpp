@@ -45,7 +45,7 @@ TEST(leontev_n_mat_vec_mpi, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    for (size_t i = 0; i < count_size_vector; i++) {
+    for (int i = 0; i < count_size_vector; i++) {
       ASSERT_EQ(count_size_vector, global_res[i]);
     }
   }
@@ -80,7 +80,7 @@ TEST(leontev_n_mat_vec_mpi, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    for (size_t i = 0; i < count_size_vector; i++) {
+    for (int i = 0; i < count_size_vector; i++) {
       ASSERT_EQ(count_size_vector, global_res[i]);
     }
   }
