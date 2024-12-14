@@ -91,7 +91,9 @@ void leontev_n_mat_vec_mpi::MPIMatVecParallel::my_gather(const boost::mpi::commu
     std::vector<InOutType> leftChild(leftNodeSize);
     wrld.recv(leftNode, 0, leftChild.data(), leftChild.size());
     local_container.insert(local_container.end(), leftChild.begin(), leftChild.begin() + sizes[leftNode]);
-    childTemp.insert(childTemp.end(), leftChild.begin() + sizes[leftNode], leftChild.end());
+    if (leftChild.size() > sizes[leftNode]) {
+      childTemp.insert(childTemp.end(), leftChild.begin() + sizes[leftNode], leftChild.end());
+    }
   }
   if (rightNode != -1) {
     size_t rightNodeSize;
@@ -99,7 +101,9 @@ void leontev_n_mat_vec_mpi::MPIMatVecParallel::my_gather(const boost::mpi::commu
     std::vector<InOutType> rightChild(rightNodeSize);
     wrld.recv(rightNode, 0, rightChild.data(), rightChild.size());
     local_container.insert(local_container.end(), rightChild.begin(), rightChild.begin() + sizes[rightNode]);
-    childTemp.insert(childTemp.end(), rightChild.begin() + sizes[rightNode], rightChild.end());
+    if (rightChild.size() > sizes[rightNode]) {
+      childTemp.insert(childTemp.end(), rightChild.begin() + sizes[rightNode], rightChild.end());
+    }
   }
   local_container.insert(local_container.end(), childTemp.begin(), childTemp.end());
   if (rank != root) {
