@@ -30,7 +30,7 @@ bool DijkstrasAlgorithmParallel::validation() {
 
   if (taskData->inputs.size() != taskData->inputs_count.size()) return false;
 
-  auto graph = reinterpret_cast<SparseGraphCRS*>(taskData->inputs[0]);
+  auto* graph = reinterpret_cast<SparseGraphCRS*>(taskData->inputs[0]);
 
   if (taskData->inputs_count[0] != sizeof(SparseGraphCRS)) return false;
 
@@ -59,7 +59,7 @@ struct MinVertex {
 };
 
 bool DijkstrasAlgorithmParallel::run() {
-  auto graph = reinterpret_cast<SparseGraphCRS*>(taskData->inputs[0]);
+  auto* graph = reinterpret_cast<SparseGraphCRS*>(taskData->inputs[0]);
   int source_vertex = 0;
   int num_vertices = graph->num_vertices;
   int rank = world.rank();
@@ -88,11 +88,11 @@ bool DijkstrasAlgorithmParallel::run() {
       }
     }
 
-    MinVertex global_min;
+    MinVertex global_min{std::numeric_limits<double>::infinity(), -1};
     boost::mpi::all_reduce(world, local_min, global_min,
                            [](const MinVertex& a, const MinVertex& b) { return a.distance < b.distance ? a : b; });
 
-    if (global_min.vertex == -1) break;
+    if (global_min.vertex == -1 || global_min.distance == std::numeric_limits<double>::infinity()) break;
 
     local_visited[global_min.vertex] = true;
 
@@ -116,7 +116,7 @@ bool DijkstrasAlgorithmParallel::run() {
   }
 
   if (rank == 0) {
-    auto output = reinterpret_cast<double*>(taskData->outputs[0]);
+    auto* output = reinterpret_cast<double*>(taskData->outputs[0]);
     std::copy(local_distances.begin(), local_distances.end(), output);
   }
 
