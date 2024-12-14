@@ -6,7 +6,7 @@
 
 #include "mpi/fomin_v_generalized_scatter/include/ops_mpi.hpp"
 
-TEST(GeneralizedScatterTest, ScatterIntegers) {
+TEST(fomin_v_generalized_scatter, ScatterIntegers) {
   int rank, size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -39,7 +39,7 @@ TEST(GeneralizedScatterTest, ScatterIntegers) {
   delete[] recvbuf;
 }
 
-TEST(GeneralizedScatterTest, ScatterFloats) {
+TEST(fomin_v_generalized_scatter, ScatterFloats) {
   int rank, size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -72,7 +72,7 @@ TEST(GeneralizedScatterTest, ScatterFloats) {
   delete[] recvbuf;
 }
 
-TEST(GeneralizedScatterTest, ScatterDoubles) {
+TEST(fomin_v_generalized_scatter, ScatterDoubles) {
   int rank, size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -105,7 +105,7 @@ TEST(GeneralizedScatterTest, ScatterDoubles) {
   delete[] recvbuf;
 }
 
-TEST(GeneralizedScatterTest, SingleProcessScatter) {
+TEST(fomin_v_generalized_scatter, SingleProcessScatter) {
   int rank, size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -130,7 +130,7 @@ TEST(GeneralizedScatterTest, SingleProcessScatter) {
   delete[] recvbuf;
 }
 
-TEST(GeneralizedScatterTest, NonPowerOfTwoProcesses) {
+TEST(fomin_v_generalized_scatter, NonPowerOfTwoProcesses) {
   int rank, size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -163,7 +163,7 @@ TEST(GeneralizedScatterTest, NonPowerOfTwoProcesses) {
   delete[] recvbuf;
 }
 
-TEST(GeneralizedScatterTest, ZeroElementsScatter) {
+TEST(fomin_v_generalized_scatter, ZeroElementsScatter) {
   int rank, size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -172,7 +172,9 @@ TEST(GeneralizedScatterTest, ZeroElementsScatter) {
   const int data_size = 0;
   int* sendbuf = nullptr;
   int* recvbuf = nullptr;
+  int result = fomin_v_generalized_scatter::generalized_scatter(sendbuf, data_size, MPI_INT, recvbuf, 0, MPI_INT, root,
+                                                                MPI_COMM_WORLD);
 
-  fomin_v_generalized_scatter::generalized_scatter(sendbuf, data_size, MPI_INT, recvbuf, 0, MPI_INT, root,
-                                                   MPI_COMM_WORLD);
+  // Check that the function returns MPI_SUCCESS
+  EXPECT_EQ(result, MPI_SUCCESS);
 }

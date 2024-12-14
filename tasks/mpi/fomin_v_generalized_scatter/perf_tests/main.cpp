@@ -28,7 +28,7 @@ TEST(fomin_v_generalized_scatter, test_task_run) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(local_output.data()));
   taskData->outputs_count.emplace_back(local_output.size());
 
-  auto testParallel = std::make_shared<fomin_v_generalized_scatter::GeneralizedScatterTestParallel>();
+  auto testParallel = std::make_shared<fomin_v_generalized_scatter::GeneralizedScatterTestParallel>(taskData);
   ASSERT_EQ(testParallel->validation(), true);
   testParallel->pre_processing();
   testParallel->run();

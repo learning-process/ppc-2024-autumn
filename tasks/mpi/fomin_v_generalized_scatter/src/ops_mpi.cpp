@@ -36,7 +36,7 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
     if (left_child < size) {
       int err = MPI_Send(send_ptr + (left_child * recvcount * datatype_size), recvcount, sendtype, left_child, 0, comm);
       if (err != MPI_SUCCESS) {
-        std::cerr << "Error in MPI_Send to process " << left_child << std::endl;
+        //std::cerr << "Error in MPI_Send to process " << left_child << std::endl;
         return err;
       }
     }
@@ -44,14 +44,14 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
       int err =
           MPI_Send(send_ptr + (right_child * recvcount * datatype_size), recvcount, sendtype, right_child, 0, comm);
       if (err != MPI_SUCCESS) {
-        std::cerr << "Error in MPI_Send to process " << right_child << std::endl;
+        //std::cerr << "Error in MPI_Send to process " << right_child << std::endl;
         return err;
       }
     }
   } else {
     int err = MPI_Recv(recvbuf, recvcount, recvtype, MPI_ANY_SOURCE, 0, comm, MPI_STATUS_IGNORE);
     if (err != MPI_SUCCESS) {
-      std::cerr << "Error in MPI_Recv on process " << rank << std::endl;
+      //std::cerr << "Error in MPI_Recv on process " << rank << std::endl;
       return err;
     }
   }
@@ -91,13 +91,13 @@ bool fomin_v_generalized_scatter::GeneralizedScatterTestParallel::run() {
     int err = generalized_scatter(taskData->inputs[0], sendcount, MPI_INT, taskData->outputs[0], recvcount, MPI_INT,
                                   root, MPI_COMM_WORLD);
     if (err != MPI_SUCCESS) {
-      std::cerr << "Error in generalized_scatter on root process." << std::endl;
+      //std::cerr << "Error in generalized_scatter on root process." << std::endl;
       return false;
     }
   } else {
     int err = generalized_scatter(nullptr, 0, MPI_INT, taskData->outputs[0], recvcount, MPI_INT, root, MPI_COMM_WORLD);
     if (err != MPI_SUCCESS) {
-      std::cerr << "Error in generalized_scatter on process " << rank << std::endl;
+      //std::cerr << "Error in generalized_scatter on process " << rank << std::endl;
       return false;
     }
   }
@@ -107,7 +107,6 @@ bool fomin_v_generalized_scatter::GeneralizedScatterTestParallel::run() {
 
 bool fomin_v_generalized_scatter::GeneralizedScatterTestParallel::post_processing() {
   internal_order_test();
-
-  std::cout << "Parallel post-processing completed." << std::endl;
+  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
   return true;
 }
