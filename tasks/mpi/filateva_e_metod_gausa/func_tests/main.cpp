@@ -414,7 +414,7 @@ TEST(filateva_e_metod_gausa_mpi, test_size_3_diagonal_0) {
   if (world.rank() == 0) {
     matrix = {1, 3, 2, 2, 6, 1, 7, 0, 9};
     vecB = {10, 12, 11};
-    tResh = {(double)-13/7, (double)137/63, (double)8/3};
+    tResh = {(double)-13 / 7, (double)137 / 63, (double)8 / 3};
     answer.resize(size);
 
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));

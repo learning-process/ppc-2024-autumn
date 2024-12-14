@@ -289,7 +289,7 @@ TEST(filateva_e_metod_gausa_seq, test_size_3_diagonal_0) {
 
   matrix = {1, 3, 2, 2, 6, 1, 7, 0, 9};
   vecB = {10, 12, 11};
-  tResh = {(double)-13/7, (double)137/63, (double)8/3};
+  tResh = {(double)-13 / 7, (double)137 / 63, (double)8 / 3};
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));

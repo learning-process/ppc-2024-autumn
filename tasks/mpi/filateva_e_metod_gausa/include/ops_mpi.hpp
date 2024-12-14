@@ -24,7 +24,7 @@ class MetodGausa : public ppc::core::Task {
     double* pLine;
     double b;
   };
-  
+
   int size;
   std::vector<double> matrix;
   std::vector<double> vecB;

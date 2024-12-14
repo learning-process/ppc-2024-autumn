@@ -15,7 +15,6 @@ class MetodGausa : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-
   struct Matrix {
     double* pLine;
     double b;
