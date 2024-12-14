@@ -71,6 +71,10 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::pre_processing() {
   edges_count_ = taskData->inputs_count[1];
   source_ = taskData->inputs_count[2];
 
+  row_offsets_.resize(vertices_ + 1);
+  col_indices_.resize(edges_count_);
+  weights_.resize(edges_count_);
+
   std::copy(reinterpret_cast<int*>(taskData->inputs[0]),
             reinterpret_cast<int*>(taskData->inputs[0]) + row_offsets_.size(), row_offsets_.begin());
   std::copy(reinterpret_cast<int*>(taskData->inputs[1]),
