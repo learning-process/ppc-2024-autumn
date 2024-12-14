@@ -20,9 +20,14 @@ class MetodGausa : public ppc::core::Task {
   bool post_processing() override;
 
  private:
+  struct Matrix {
+    double* pLine;
+    double b;
+  };
+  
   int size;
   std::vector<double> matrix;
-  std::vector<double> b_vector;
+  std::vector<double> vecB;
   std::vector<double> resh;
   boost::mpi::communicator world;
   boost::mpi::status status;

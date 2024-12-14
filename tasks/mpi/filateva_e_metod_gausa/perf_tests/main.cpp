@@ -8,8 +8,6 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/filateva_e_metod_gausa/include/ops_mpi.hpp"
 
-#define alfa std::numeric_limits<double>::epsilon() * 10000
-
 std::vector<double> gereratorSLU(std::vector<double> &matrix, std::vector<double> &vecB) {
   int min_z = -100;
   int max_z = 100;
@@ -36,7 +34,7 @@ std::vector<double> gereratorSLU(std::vector<double> &matrix, std::vector<double
 
 TEST(filateva_e_metod_gausa_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  int size = 500;
+  int size = 800;
   std::vector<double> matrix;
   std::vector<double> vecB;
   std::vector<double> answer;
@@ -77,14 +75,14 @@ TEST(filateva_e_metod_gausa_mpi, test_pipeline_run) {
 
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_NEAR(tResh[i], answer[i], alfa);
+      EXPECT_EQ(tResh[i], std::round(answer[i]));
     }
   }
 }
 
 TEST(filateva_e_metod_gausa_mpi, test_task_run) {
   boost::mpi::communicator world;
-  int size = 500;
+  int size = 800;
   std::vector<double> matrix;
   std::vector<double> vecB;
   std::vector<double> answer;
@@ -125,7 +123,7 @@ TEST(filateva_e_metod_gausa_mpi, test_task_run) {
 
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_NEAR(tResh[i], answer[i], alfa);
+      EXPECT_EQ(tResh[i], std::round(answer[i]));
     }
   }
 }
