@@ -2,7 +2,9 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <cmath>
 #include <iostream>
+#include <limits>
 #include <vector>
 
 #include "mpi/gusev_n_dijkstras_algorithm/include/ops_mpi.hpp"
