@@ -7,9 +7,6 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential::pre_processing() {
   edges_count_ = taskData->inputs_count[1];
   source_ = taskData->inputs_count[2];
 
-  row_offsets_.resize(vertices_ + 1);
-  col_indices_.resize(edges_count_);
-  weights_.resize(edges_count_);
   int* row_offsets_ = reinterpret_cast<int*>(taskData->inputs[0]);
   int* col_indices_ = reinterpret_cast<int*>(taskData->inputs[1]);
   int* weights_ = reinterpret_cast<int*>(taskData->inputs[2]);
@@ -66,10 +63,6 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::pre_processing() {
   vertices_ = taskData->inputs_count[0];
   edges_count_ = taskData->inputs_count[1];
   source_ = taskData->inputs_count[2];
-
-  row_offsets_.resize(vertices_ + 1);
-  col_indices_.resize(edges_count_);
-  weights_.resize(edges_count_);
 
   int* row_offsets_ = reinterpret_cast<int*>(taskData->inputs[0]);
   int* col_indices_ = reinterpret_cast<int*>(taskData->inputs[1]);
