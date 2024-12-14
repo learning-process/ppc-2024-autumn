@@ -14,11 +14,8 @@ bool varfolomeev_g_quick_sort_simple_merge_seq::TestTaskSequential::pre_processi
 
 bool varfolomeev_g_quick_sort_simple_merge_seq::TestTaskSequential::validation() {
   internal_order_test();
-  if (taskData->outputs_count.size() != 1 || taskData->inputs_count.size() != 1 || taskData->inputs_count[0] <= 0 ||
-      taskData->inputs_count[0] != taskData->outputs_count[0]) {
-    return false;
-  }
-  return true;
+  return (taskData->outputs_count.size() == 1 && taskData->inputs_count.size() == 1 && taskData->inputs_count[0] > 0 &&
+          taskData->inputs_count[0] == taskData->outputs_count[0]);
 }
 
 bool varfolomeev_g_quick_sort_simple_merge_seq::TestTaskSequential::run() {

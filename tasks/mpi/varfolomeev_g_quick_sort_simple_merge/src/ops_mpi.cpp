@@ -17,9 +17,7 @@ bool varfolomeev_g_quick_sort_simple_merge_mpi::TestTaskSequential::pre_processi
 
 bool varfolomeev_g_quick_sort_simple_merge_mpi::TestTaskSequential::validation() {
   internal_order_test();
-  if (taskData->outputs_count.size() != 1 || taskData->inputs_count.size() != 1) {
-    return false;
-  }
+  return !(taskData->outputs_count.size() != 1 || taskData->inputs_count.size() != 1);
   return true;
 }
 
@@ -75,7 +73,7 @@ bool varfolomeev_g_quick_sort_simple_merge_mpi::TestMPITaskParallel::run() {
 
   std::vector<int> begins(world.size());
   begins[0] = 0;
-  for (int i = 1; i < (int)world.size(); ++i) {
+  for (int i = 1; i < world.size(); ++i) {
     begins[i] = begins[i - 1] + distribution[i - 1];
   }
 
@@ -91,7 +89,7 @@ bool varfolomeev_g_quick_sort_simple_merge_mpi::TestMPITaskParallel::run() {
   boost::mpi::gatherv(world, local_input_.data(), distribution[world.rank()], allData.data(), distribution, begins, 0);
   if (world.rank() == 0) {
     res.assign(allData.begin(), allData.begin() + distribution[0]);
-    for (int i = 1; i < (int)world.size(); ++i) {
+    for (int i = 1; i < world.size(); ++i) {
       std::vector<int> right(allData.begin() + begins[i], allData.begin() + begins[i] + distribution[i]);
       res = merge(res, right);
     }
