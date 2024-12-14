@@ -25,11 +25,7 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  struct Edge {
-    int src, dest, weight;
-  };
-
-  std::vector<Edge> edges_;
+  std::vector<int> row_offsets_, col_indices_, weights_;
   std::vector<int> distances_;
   int vertices_{0}, edges_count_{0}, source_{0};
 };
@@ -38,22 +34,13 @@ class TestMPITaskParallel : public ppc::core::Task {
  public:
   explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
 
-  struct Edge {
-    int src, dest, weight;
-
-    template <class Archive>
-    void serialize(Archive& ar, unsigned version) {
-      ar & src & dest & weight;
-    }
-  };
-
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
  private:
-  std::vector<Edge> edges_;
+  std::vector<int> row_offsets_, col_indices_, weights_;
   std::vector<int> distances_;
   int vertices_{0}, edges_count_{0}, source_{0};
   boost::mpi::communicator world;
