@@ -126,15 +126,15 @@ bool kondratev_ya_radix_sort_batcher_merge_mpi::TestMPITaskParallel::run() {
   for (int32_t merge_step = 0; merge_step < world.size(); ++merge_step) {
     if (merge_step % 2 == 0) {
       if (world.rank() % 2 == 0 && world.rank() + 1 < world.size()) {
-        exchange_and_merge(world.rank(), world.rank() + 1);
+        exchange_and_merge(world.rank(), sizes[world.rank()], world.rank() + 1, sizes[world.rank() + 1]);
       } else if (world.rank() % 2 != 0) {
-        exchange_and_merge(world.rank() - 1, world.rank());
+        exchange_and_merge(world.rank() - 1, sizes[world.rank() - 1], world.rank(), sizes[world.rank()]);
       }
     } else {
       if (world.rank() % 2 == 1 && world.rank() + 1 < world.size()) {
-        exchange_and_merge(world.rank(), world.rank() + 1);
+        exchange_and_merge(world.rank(), sizes[world.rank()], world.rank() + 1, sizes[world.rank() + 1]);
       } else if (world.rank() % 2 == 0 && world.rank() > 0) {
-        exchange_and_merge(world.rank() - 1, world.rank());
+        exchange_and_merge(world.rank() - 1, sizes[world.rank() - 1], world.rank(), sizes[world.rank()]);
       }
     }
   }
@@ -144,17 +144,20 @@ bool kondratev_ya_radix_sort_batcher_merge_mpi::TestMPITaskParallel::run() {
   return true;
 }
 
-void kondratev_ya_radix_sort_batcher_merge_mpi::TestMPITaskParallel::exchange_and_merge(int32_t rank1, int32_t rank2) {
+void kondratev_ya_radix_sort_batcher_merge_mpi::TestMPITaskParallel::exchange_and_merge(int32_t rank1, int32_t size1,
+                                                                                        int32_t rank2, int32_t size2) {
+  if (size1 <= 0 || size2 <= 0) return;
   std::vector<double> neighbor_data;
-  neighbor_data.reserve(local_input_.size() + 1);
 
   boost::mpi::request reqs[2];
   if (world.rank() == rank1) {
-    reqs[0] = world.isend(rank2, 0, local_input_);
-    reqs[1] = world.irecv(rank2, 0, neighbor_data);
+    neighbor_data.resize(size2);
+    reqs[0] = world.isend(rank2, 0, local_input_.data(), size1);
+    reqs[1] = world.irecv(rank2, 0, neighbor_data.data(), size2);
   } else if (world.rank() == rank2) {
-    reqs[0] = world.irecv(rank1, 0, neighbor_data);
-    reqs[1] = world.isend(rank1, 0, local_input_);
+    neighbor_data.resize(size1);
+    reqs[0] = world.irecv(rank1, 0, neighbor_data.data(), size1);
+    reqs[1] = world.isend(rank1, 0, local_input_.data(), size2);
   }
 
   reqs[0].wait();

@@ -35,7 +35,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
   std::vector<double> distribute_data(const std::vector<double>& input, int32_t size, int32_t rank);
-  void exchange_and_merge(int32_t rank1, int32_t rank2);
+  void exchange_and_merge(int32_t rank1, int32_t size1, int32_t rank2, int32_t size2);
   static void merge(const std::vector<double>& first, const std::vector<double>& second, std::vector<double>& result);
 
  private:
