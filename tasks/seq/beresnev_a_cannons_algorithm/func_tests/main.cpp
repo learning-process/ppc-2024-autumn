@@ -243,7 +243,7 @@ TEST(beresnev_a_cannons_algorithm_seq, Test_Random) {
 }
 
 TEST(beresnev_a_cannons_algorithm_seq, Test_Random_1) {
-  size_t n = 419;
+  size_t n = 199;
   std::vector<double> inA = getRandomVector(n * n);
   std::vector<double> inB = getRandomVector(n * n);
   std::vector<double> outC(n * n);

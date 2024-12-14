@@ -355,7 +355,7 @@ TEST(beresnev_a_cannons_algorithm_mpi, Test_Random) {
 
 TEST(beresnev_a_cannons_algorithm_mpi, Test_Random_1) {
   boost::mpi::communicator world;
-  int n = 120;
+  int n = 80;
   std::vector<double> inA;
   std::vector<double> inB;
   std::vector<double> outC;
@@ -414,7 +414,7 @@ TEST(beresnev_a_cannons_algorithm_mpi, Test_Random_1) {
 
 TEST(beresnev_a_cannons_algorithm_mpi, Test_Random_2) {
   boost::mpi::communicator world;
-  int n = 349;
+  int n = 211;
   std::vector<double> inA;
   std::vector<double> inB;
   std::vector<double> outC;

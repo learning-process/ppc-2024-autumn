@@ -188,13 +188,33 @@ bool beresnev_a_cannons_algorithm_mpi::TestMPITaskParallel::run() {
   int row = rank / q;
   int col = rank % q;
   my_world.barrier();
+
+  int send_rank_A = row * q + (col + q - 1) % q;
+  int recv_rank_A = row * q + (col + 1) % q;
+
+  if (send_rank_A >= size || recv_rank_A >= size) {
+    std::cerr << "Invalid rank for send or receive: send_rank=" << send_rank_A << ", recv_rank=" << recv_rank_A
+              << std::endl;
+    return false;
+  }
+
+  int send_rank_B = col + q * ((row + q - 1) % q);
+  int recv_rank_B = col + q * ((row + 1) % q);
+
+  // Проверка допустимости индексов
+  if (send_rank_B >= size || recv_rank_B >= size) {
+    std::cerr << "Invalid rank for send or receive: send_rank=" << send_rank_B << ", recv_rank=" << recv_rank_B
+              << std::endl;
+    return false;
+  }
+
   for (int i = 0; i < row; ++i) {
     boost::mpi::request send_request;
     boost::mpi::request recv_request;
 
     std::vector<double> temp(local_A.size());
-    send_request = my_world.isend(row * q + (col + q - 1) % q, 0, local_A.data(), local_A.size());
-    recv_request = my_world.irecv(row * q + (col + 1) % q, 0, temp.data(), temp.size());
+    send_request = my_world.isend(send_rank_A, 0, local_A.data(), local_A.size());
+    recv_request = my_world.irecv(recv_rank_A, 0, temp.data(), temp.size());
 
     send_request.wait();
     recv_request.wait();
@@ -208,8 +228,8 @@ bool beresnev_a_cannons_algorithm_mpi::TestMPITaskParallel::run() {
     boost::mpi::request recv_request1;
 
     std::vector<double> temp_B(local_B.size());
-    send_request1 = my_world.isend(col + q * ((row + q - 1) % q), 1, local_B.data(), local_B.size());
-    recv_request1 = my_world.irecv(col + q * ((row + 1) % q), 1, temp_B.data(), temp_B.size());
+    send_request1 = my_world.isend(send_rank_B, 1, local_B.data(), local_B.size());
+    recv_request1 = my_world.irecv(recv_rank_B, 1, temp_B.data(), temp_B.size());
 
     send_request1.wait();
     recv_request1.wait();
@@ -227,12 +247,12 @@ bool beresnev_a_cannons_algorithm_mpi::TestMPITaskParallel::run() {
     boost::mpi::request recv_request3;
 
     std::vector<double> temp_A(local_A.size());
-    send_request2 = my_world.isend(row * q + (col + q - 1) % q, 0, local_A.data(), local_A.size());
-    recv_request2 = my_world.irecv(row * q + (col + 1) % q, 0, temp_A.data(), temp_A.size());
+    send_request2 = my_world.isend(send_rank_A, 0, local_A.data(), local_A.size());
+    recv_request2 = my_world.irecv(recv_rank_A, 0, temp_A.data(), temp_A.size());
 
     std::vector<double> temp_B(local_B.size());
-    send_request3 = my_world.isend(col + q * ((row + q - 1) % q), 1, local_B.data(), local_B.size());
-    recv_request3 = my_world.irecv(col + q * ((row + 1) % q), 1, temp_B.data(), temp_B.size());
+    send_request3 = my_world.isend(send_rank_B, 1, local_B.data(), local_B.size());
+    recv_request3 = my_world.irecv(recv_rank_B, 1, temp_B.data(), temp_B.size());
 
     send_request2.wait();
     recv_request2.wait();
