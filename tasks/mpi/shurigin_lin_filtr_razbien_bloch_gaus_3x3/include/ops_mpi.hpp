@@ -26,16 +26,6 @@ std::vector<std::vector<std::pair<int, int>>> distributeWorkload(const std::vect
 void computeBlockDistribution(const std::vector<std::vector<std::pair<int, int>>>& data, int cols,
                               std::vector<int>& sizes, std::vector<int>& offsets);
 
-inline int applyFilter(const std::vector<int>& pixel_block) {
-  const double weights[9] = {0.0625, 0.125, 0.0625, 0.125, 0.25, 0.125, 0.0625, 0.125, 0.0625};
-  double weighted_sum = 0.0;
-  for (int i = 0; i < 9; ++i) {
-    weighted_sum += pixel_block[i] * weights[i];
-  }
-  int result = static_cast<int>(std::round(weighted_sum));
-  return std::clamp(result, 0, 255);
-}
-
 class TaskMpi : public ppc::core::Task {
  public:
   explicit TaskMpi(std::shared_ptr<ppc::core::TaskData> data_) : Task(std::move(data_)) {}
