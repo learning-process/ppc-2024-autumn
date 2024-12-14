@@ -14,7 +14,8 @@ TEST(malyshev_a_two_dim_global_optimization_characteristics_mpi, SimpleTest) {
 
   std::vector<malyshev_a_two_dim_global_optimization_characteristics_mpi::constraint_t> constraints{
       [](double x, double y) -> bool { return x + y >= 4; }, [](double x, double y) -> bool { return x - y <= 1; },
-      [](double x, double y) -> bool { return x >= 0; }, [](double x, double y) -> bool { return y >= 0; }};
+      [](double x, double y) -> bool { return x >= 0 && y == y; },
+      [](double x, double y) -> bool { return y >= 0 && x == x; }};
 
   std::shared_ptr<ppc::core::TaskData> taskDataMPI = std::make_shared<ppc::core::TaskData>();
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -67,7 +68,7 @@ TEST(malyshev_a_two_dim_global_optimization_characteristics_mpi, RastrigrinTest)
 
   std::vector<malyshev_a_two_dim_global_optimization_characteristics_mpi::constraint_t> constraints{
       [](double x, double y) { return x + y >= -1; }, [](double x, double y) { return x - y <= 2; },
-      [](double x, double y) { return x >= 0; }, [](double x, double y) { return y >= 0; }};
+      [](double x, double y) { return x >= 0 && y == y; }, [](double x, double y) { return y >= 0 && x == x; }};
 
   std::shared_ptr<ppc::core::TaskData> taskDataMPI = std::make_shared<ppc::core::TaskData>();
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -117,8 +118,8 @@ TEST(malyshev_a_two_dim_global_optimization_characteristics_mpi, HimmelblauTest)
   auto target = [](double x, double y) -> double { return pow(x * x + y - 11, 2) + pow(x + y * y - 7, 2); };
 
   std::vector<malyshev_a_two_dim_global_optimization_characteristics_mpi::constraint_t> constraints{
-      [](double x, double y) { return x * x + y * y <= 16; }, [](double x, double y) { return x >= -4; },
-      [](double x, double y) { return y >= -4; }};
+      [](double x, double y) { return x * x + y * y <= 100; }, [](double x, double y) { return x >= -10 && y == y; },
+      [](double x, double y) { return y >= -10 && x == x; }};
 
   std::shared_ptr<ppc::core::TaskData> taskDataMPI = std::make_shared<ppc::core::TaskData>();
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -129,7 +130,7 @@ TEST(malyshev_a_two_dim_global_optimization_characteristics_mpi, HimmelblauTest)
 
   malyshev_a_two_dim_global_optimization_characteristics_mpi::Point resSeq;
   malyshev_a_two_dim_global_optimization_characteristics_mpi::Point resMPI;
-  std::pair<double, double> bounds[2]{{-4.0, 4.0}, {-4.0, 4.0}};
+  std::pair<double, double> bounds[2]{{-10.0, 10.0}, {-10.0, 10.0}};
   double eps = 1e-4;
 
   if (world.rank() == 0) {
@@ -171,8 +172,7 @@ TEST(malyshev_a_two_dim_global_optimization_characteristics_mpi, AckleyTest) {
   };
 
   std::vector<malyshev_a_two_dim_global_optimization_characteristics_mpi::constraint_t> constraints{
-      [](double x, double y) { return x * x + y * y <= 25; }, [](double x, double y) { return x >= -5; },
-      [](double x, double y) { return y >= -5; }};
+      [](double x, double y) { return x + y >= -5; }, [](double x, double y) { return x - y <= 5; }};
 
   std::shared_ptr<ppc::core::TaskData> taskDataMPI = std::make_shared<ppc::core::TaskData>();
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -222,8 +222,7 @@ TEST(malyshev_a_two_dim_global_optimization_characteristics_mpi, MatyasTest) {
   auto target = [](double x, double y) -> double { return 0.26 * (x * x + y * y) - 0.48 * x * y; };
 
   std::vector<malyshev_a_two_dim_global_optimization_characteristics_mpi::constraint_t> constraints{
-      [](double x, double y) { return x * x + y * y <= 16; }, [](double x, double y) { return x >= -4; },
-      [](double x, double y) { return y >= -4; }};
+      [](double x, double y) { return x >= -10 && y == y; }, [](double x, double y) { return y >= -10 && x == x; }};
 
   std::shared_ptr<ppc::core::TaskData> taskDataMPI = std::make_shared<ppc::core::TaskData>();
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -234,7 +233,7 @@ TEST(malyshev_a_two_dim_global_optimization_characteristics_mpi, MatyasTest) {
 
   malyshev_a_two_dim_global_optimization_characteristics_mpi::Point resSeq;
   malyshev_a_two_dim_global_optimization_characteristics_mpi::Point resMPI;
-  std::pair<double, double> bounds[2]{{-4.0, 4.0}, {-4.0, 4.0}};
+  std::pair<double, double> bounds[2]{{-10.0, 10.0}, {-10.0, 10.0}};
   double eps = 1e-4;
 
   if (world.rank() == 0) {
@@ -276,8 +275,8 @@ TEST(malyshev_a_two_dim_global_optimization_characteristics_mpi, GoldsteinPriceT
   };
 
   std::vector<malyshev_a_two_dim_global_optimization_characteristics_mpi::constraint_t> constraints{
-      [](double x, double y) { return x * x + y * y <= 4; }, [](double x, double y) { return x >= -2; },
-      [](double x, double y) { return y >= -2; }};
+      [](double x, double y) { return x * x + y * y <= 4; }, [](double x, double y) { return x >= -2 && y == y; },
+      [](double x, double y) { return y >= -2 && x == x; }};
 
   std::shared_ptr<ppc::core::TaskData> taskDataMPI = std::make_shared<ppc::core::TaskData>();
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -327,7 +326,7 @@ TEST(malyshev_a_two_dim_global_optimization_characteristics_mpi, BoothTest) {
   auto target = [](double x, double y) -> double { return pow(x + 2 * y - 7, 2) + pow(2 * x + y - 5, 2); };
 
   std::vector<malyshev_a_two_dim_global_optimization_characteristics_mpi::constraint_t> constraints{
-      [](double x, double y) { return x >= -10; }, [](double x, double y) { return y >= -10; },
+      [](double x, double y) { return x >= -10 && y == y; }, [](double x, double y) { return y >= -10 && x == x; },
       [](double x, double y) { return x * x + y * y <= 100; }};
 
   std::shared_ptr<ppc::core::TaskData> taskDataMPI = std::make_shared<ppc::core::TaskData>();
