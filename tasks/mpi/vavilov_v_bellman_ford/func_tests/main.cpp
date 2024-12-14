@@ -9,13 +9,18 @@ namespace mpi = boost::mpi;
 TEST(vavilov_v_bellman_ford_mpi, ValidInputWithMultiplePaths_1) {
   mpi::communicator world;
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
-  std::vector<int> edges = {0, 1, 10, 0, 2, 5, 1, 2, 2, 1, 3, 1, 2, 1, 3, 2, 3, 9, 2, 4, 2, 3, 4, 4};
+
+  std::vector<int> row_offsets = {0, 2, 5, 7, 8, 8};
+  std::vector<int> col_indices = {1, 2, 2, 3, 3, 4, 1, 2};
+  std::vector<int> weights = {10, 5, 2, 1, 9, 2, 1, 4};
   std::vector<int> output(5);
   int vertices = 5, edges_count = 8, source = 0;
   taskDataPar->inputs_count.emplace_back(vertices);
   taskDataPar->inputs_count.emplace_back(edges_count);
   taskDataPar->inputs_count.emplace_back(source);
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(edges.data()));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(row_offsets.data()));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(col_indices.data()));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(weights.data()));
   taskDataPar->outputs_count.emplace_back(output.size());
   taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
 
@@ -34,14 +39,18 @@ TEST(vavilov_v_bellman_ford_mpi, ValidInputWithMultiplePaths_2) {
   mpi::communicator world;
 
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
-  std::vector<int> edges = {0, 1, -1, 0, 2, 4, 1, 2, 3, 1, 3, 2, 2, 3, 5, 3, 4, -3};
+  std::vector<int> row_offsets = {0, 2, 4, 5, 7, 8};
+  std::vector<int> col_indices = {1, 2, 2, 3, 3, 4, 1, 2};
+  std::vector<int> weights = {-1, 4, 3, 2, 5, -3, 2, -1};
   std::vector<int> output(5);
   int vertices = 5, edges_count = 6, source = 0;
 
   taskDataPar->inputs_count.emplace_back(vertices);
   taskDataPar->inputs_count.emplace_back(edges_count);
   taskDataPar->inputs_count.emplace_back(source);
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(edges.data()));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(row_offsets.data()));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(col_indices.data()));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(weights.data()));
   taskDataPar->outputs_count.emplace_back(output.size());
   taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
 
@@ -61,14 +70,18 @@ TEST(vavilov_v_bellman_ford_mpi, DisconnectedGraph) {
   mpi::communicator world;
 
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
-  std::vector<int> edges = {0, 1, 4, 0, 2, 1, 1, 3, 2};
+  std::vector<int> row_offsets = {0, 2, 3, 3, 4, 4};
+  std::vector<int> col_indices = {1, 2, 3};
+  std::vector<int> weights = {4, 1, 2};
   std::vector<int> output(5);
   int vertices = 5, edges_count = 3, source = 0;
 
   taskDataPar->inputs_count.emplace_back(vertices);
   taskDataPar->inputs_count.emplace_back(edges_count);
   taskDataPar->inputs_count.emplace_back(source);
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(edges.data()));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(row_offsets.data()));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(col_indices.data()));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(weights.data()));
   taskDataPar->outputs_count.emplace_back(output.size());
   taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
 
@@ -87,14 +100,18 @@ TEST(vavilov_v_bellman_ford_mpi, NegativeCycle) {
   mpi::communicator world;
 
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
-  std::vector<int> edges = {0, 1, 1, 1, 2, -1, 2, 0, -1};
+  std::vector<int> row_offsets = {0, 1, 2, 3};
+  std::vector<int> col_indices = {1, 2, 0};
+  std::vector<int> weights = {1, -1, -1};
   std::vector<int> output(3);
   int vertices = 3, edges_count = 3, source = 0;
 
   taskDataPar->inputs_count.emplace_back(vertices);
   taskDataPar->inputs_count.emplace_back(edges_count);
   taskDataPar->inputs_count.emplace_back(source);
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(edges.data()));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(row_offsets.data()));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(col_indices.data()));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(weights.data()));
   taskDataPar->outputs_count.emplace_back(output.size());
   taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
 
@@ -108,14 +125,18 @@ TEST(vavilov_v_bellman_ford_mpi, SingleVertexGraph) {
   mpi::communicator world;
 
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
-  std::vector<int> edges = {};
+  std::vector<int> row_offsets = {0};
+  std::vector<int> col_indices = {};
+  std::vector<int> weights = {};
   std::vector<int> output(1, 0);
   int vertices = 1, edges_count = 0, source = 0;
 
   taskDataPar->inputs_count.emplace_back(vertices);
   taskDataPar->inputs_count.emplace_back(edges_count);
   taskDataPar->inputs_count.emplace_back(source);
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(edges.data()));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(row_offsets.data()));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(col_indices.data()));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(weights.data()));
   taskDataPar->outputs_count.emplace_back(output.size());
   taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
 
