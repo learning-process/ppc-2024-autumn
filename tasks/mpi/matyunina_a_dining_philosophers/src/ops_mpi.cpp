@@ -243,7 +243,7 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
           }
         }
       }
-      c++;
+      quantity_food++;
       int exit_m[4] = {world.rank(), 3, quantity_food, quantity_food};
       boost::mpi::request send_req = world.isend(0, 3, exit_m, 4);
       send_req.wait();
