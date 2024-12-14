@@ -107,17 +107,17 @@ void SimpleBlockMPI::exchangeHalo() {
 
   if (up != MPI_PROC_NULL) {
     MPI_Isend(send_up.data(), width_, MPI_INT, up, 0, world, &send_up_req);
-    MPI_Irecv(recv_up.data(), width_, MPI_INT, up, 1, world, &recv_up_req);
-
     requests.push_back(send_up_req);
+
+    MPI_Irecv(recv_up.data(), width_, MPI_INT, up, 1, world, &recv_up_req);
     requests.push_back(recv_up_req);
   }
 
   if (down != MPI_PROC_NULL) {
     MPI_Isend(send_down.data(), width_, MPI_INT, down, 1, world, &send_down_req);
-    MPI_Irecv(recv_down.data(), width_, MPI_INT, down, 0, world, &recv_down_req);
-
     requests.push_back(send_down_req);
+
+    MPI_Irecv(recv_down.data(), width_, MPI_INT, down, 0, world, &recv_down_req);
     requests.push_back(recv_down_req);
   }
 
