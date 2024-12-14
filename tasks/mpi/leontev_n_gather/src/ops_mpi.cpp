@@ -186,7 +186,8 @@ bool leontev_n_mat_vec_mpi::MPIMatVecParallel::run() {
       }
     }
   }
-  my_gather(world, local_tmp, res.data(), sizes, 0);
+  // my_gather(world, local_tmp, res.data(), sizes, 0);
+  boost::mpi::gatherv(world, local_tmp, res.data(), sizes, 0);
   return true;
 }
 
