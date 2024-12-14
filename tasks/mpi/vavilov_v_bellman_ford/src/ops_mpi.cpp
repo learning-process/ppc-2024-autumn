@@ -73,7 +73,7 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::pre_processing() {
 
   int* row_offsets_ = reinterpret_cast<int*>(taskData->inputs[0]);
   int* col_indices_ = reinterpret_cast<int*>(taskData->inputs[1]);
-  int* weights_= reinterpret_cast<int*>(taskData->inputs[2]);
+  int* weights_ = reinterpret_cast<int*>(taskData->inputs[2]);
 
   boost::mpi::broadcast(world, row_offsets_, 0);
   boost::mpi::broadcast(world, col_indices_, 0);
