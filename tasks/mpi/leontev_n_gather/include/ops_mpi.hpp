@@ -35,6 +35,9 @@ class MPIMatVecParallel : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
+  template <class InOutType>
+  void my_gather(const boost::mpi::communicator& wrld, const std::vector<InOutType>& input, InOutType* output,
+                 const std::vector<int>& sizes, int root);
 
  private:
   std::vector<int> vec_;

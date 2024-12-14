@@ -62,7 +62,7 @@ TEST(leontev_n_mat_vec_mpi, mul_mpi_50elem) {
     MPIMatVecSequential.run();
     MPIMatVecSequential.post_processing();
     for (size_t i = 0; i < vector_size; i++) {
-      ASSERT_EQ(reference_vec[i], global_vec[i]);
+      ASSERT_EQ(reference_vec[i], global_res[i]);
     }
   }
 }
@@ -112,7 +112,7 @@ TEST(leontev_n_mat_vec_mpi, mul_mpi_1000elem) {
     MPIMatVecSequential.run();
     MPIMatVecSequential.post_processing();
     for (size_t i = 0; i < vector_size; i++) {
-      ASSERT_EQ(reference_vec[i], global_vec[i]);
+      ASSERT_EQ(reference_vec[i], global_res[i]);
     }
   }
 }
@@ -148,7 +148,7 @@ TEST(leontev_n_mat_vec_mpi, mul_mpi_5000elem) {
     MPIMatVecSequential.run();
     MPIMatVecSequential.post_processing();
     for (size_t i = 0; i < vector_size; i++) {
-      ASSERT_EQ(reference_vec[i], global_vec[i]);
+      ASSERT_EQ(reference_vec[i], global_res[i]);
     }
   }
 }
@@ -184,7 +184,7 @@ TEST(leontev_n_mat_vec_mpi, mul_mpi_1elem) {
     MPIMatVecSequential.run();
     MPIMatVecSequential.post_processing();
     for (size_t i = 0; i < vector_size; i++) {
-      ASSERT_EQ(reference_vec[i], global_vec[i]);
+      ASSERT_EQ(reference_vec[i], global_res[i]);
     }
   }
 }

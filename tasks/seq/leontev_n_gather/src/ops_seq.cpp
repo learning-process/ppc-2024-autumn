@@ -55,9 +55,7 @@ bool leontev_n_mat_vec_seq::MatVecSequential<InOutType>::run() {
 template <class InOutType>
 bool leontev_n_mat_vec_seq::MatVecSequential<InOutType>::post_processing() {
   internal_order_test();
-  for (size_t i = 0; i < res.size(); i++) {
-    reinterpret_cast<InOutType*>(taskData->outputs[0])[i] = res[i];
-  }
+  std::copy(res.begin(), res.end(), reinterpret_cast<int*>(taskData->outputs[0]));
   return true;
 }
 
