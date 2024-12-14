@@ -199,11 +199,9 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::run
     local_input_right_vector_part_ = std::vector<double>(number_of_local_matrix_rows + ostatochnoe_chislo_strock);
     std::copy(input_right_vector_.begin() + n - number_of_local_matrix_rows - ostatochnoe_chislo_strock, input_right_vector_.begin() + n,
               local_input_right_vector_part_.begin());
-    auto* tmp_ptr_matr = reinterpret_cast<double*>(input_matrix_.begin());
-    auto* tmp_ptr_vec = reinterpret_cast<double*>(input_right_vector_.begin());
     for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, tmp_ptr_matr + (proc - 1) * number_of_local_matrix_rows * n, number_of_local_matrix_rows * n);
-      world.send(proc, 0, tmp_ptr_vec + (proc - 1) * number_of_local_matrix_rows, number_of_local_matrix_rows);
+      world.send(proc, 0, input_matrix_.data() + (proc - 1) * number_of_local_matrix_rows * n, number_of_local_matrix_rows * n);
+      world.send(proc, 0, input_right_vector_.data() + (proc - 1) * number_of_local_matrix_rows, number_of_local_matrix_rows);
     }
   } else {
     world.recv(0, 0, local_input_matrix_part_.data(), number_of_local_matrix_rows * n);
