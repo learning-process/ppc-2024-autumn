@@ -6,12 +6,29 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/vavilov_v_bellman_ford/include/ops_mpi.hpp"
 
-std::vector<std::tuple<int, int, int>> generate_linear_graph(int num_vertices) {
-  std::vector<std::tuple<int, int, int>> edges;
-  for (int i = 0; i < num_vertices - 1; ++i) {
-    edges.emplace_back(i, i + 1, i + 1);
+std::vector<int> generate_row_offsets(int num_vertices) {
+  std::vector<int> row_offsets(num_vertices + 1);
+  for (int i = 0; i < num_vertices; ++i) {
+    row_offsets[i] = i;
   }
-  return edges;
+  row_offsets[num_vertices] = num_vertices - 1;
+  return row_offsets;
+}
+
+std::vector<int> generate_col_indices(int num_vertices) {
+  std::vector<int> col_indices(num_vertices - 1);
+  for (int i = 0; i < num_vertices - 1; ++i) {
+    col_indices[i] = i + 1;
+  }
+  return col_indices;
+}
+
+std::vector<int> generate_weights(int num_vertices) {
+  std::vector<int> weights(num_vertices - 1);
+  for (int i = 0; i < num_vertices - 1; ++i) {
+    weights[i] = i + 1;
+  }
+  return weights;
 }
 
 std::vector<int> compute_expected_distances(int num_vertices) {
@@ -26,7 +43,9 @@ TEST(vavilov_v_bellman_ford_mpi, test_task_run) {
   boost::mpi::communicator world;
 
   const int num_vertices = 1000;
-  auto edges = generate_linear_graph(num_vertices);
+  auto row_offsets = generate_row_offsets(num_vertices);
+  auto col_indices = generate_col_indices(num_vertices);
+  auto weights = generate_weights(num_vertices);
   auto expected_distances = compute_expected_distances(num_vertices);
 
   std::vector<int> distances(num_vertices, INT_MAX);
@@ -35,8 +54,10 @@ TEST(vavilov_v_bellman_ford_mpi, test_task_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(edges.data()));
-    taskDataPar->inputs_count.emplace_back(edges.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(row_offsets.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(col_indices.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(weights.data()));
+    taskDataPar->inputs_count.emplace_back(row_offsets.size() - 1);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(distances.data()));
     taskDataPar->outputs_count.emplace_back(distances.size());
   }
@@ -66,7 +87,9 @@ TEST(vavilov_v_bellman_ford_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
 
   const int num_vertices = 1000;
-  auto edges = generate_linear_graph(num_vertices);
+  auto row_offsets = generate_row_offsets(num_vertices);
+  auto col_indices = generate_col_indices(num_vertices);
+  auto weights = generate_weights(num_vertices);
   auto expected_distances = compute_expected_distances(num_vertices);
 
   std::vector<int> distances(num_vertices, INT_MAX);
@@ -75,8 +98,10 @@ TEST(vavilov_v_bellman_ford_mpi, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(edges.data()));
-    taskDataPar->inputs_count.emplace_back(edges.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(row_offsets.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(col_indices.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(weights.data()));
+    taskDataPar->inputs_count.emplace_back(row_offsets.size() - 1);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(distances.data()));
     taskDataPar->outputs_count.emplace_back(distances.size());
   }
