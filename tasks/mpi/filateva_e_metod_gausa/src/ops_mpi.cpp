@@ -25,18 +25,18 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::validation() {
     if (taskData->inputs_count[0] != taskData->outputs_count[0] || taskData->inputs_count[0] == 0) {
       return false;
     }
+    size = taskData->inputs_count[0];
     std::vector<double> local_matrix;
     std::vector<double> local_vecB;
-    std::vector<Matrix> rMatrix;
+    std::vector<Matrix> rMatrix(size);
 
-    size = taskData->inputs_count[0];
     auto* temp = reinterpret_cast<double*>(taskData->inputs[0]);
     local_matrix.assign(temp, temp + size * size);
     temp = reinterpret_cast<double*>(taskData->inputs[1]);
     local_vecB.assign(temp, temp + size);
 
     for (int i = 0; i < size; ++i) {
-      rMatrix.push_back({&local_matrix[i * size], local_vecB[i]});
+      rMatrix[i] = {&local_matrix[i * size], local_vecB[i]};
     }
 
     for (int i = 0; i < size; i++) {
@@ -215,7 +215,7 @@ bool filateva_e_metod_gausa_mpi::MetodGausa::run() {
         boost::mpi::gatherv(world, local_matrix.data(), size_m * size_n, tem_matrix.data(), distribution, displacement,
                             world.rank());
         for (int j = i + 1; j < size; j++) {
-          if (local_matrix[j * size_n + i] != 0) {
+          if (tem_matrix[j * size_n + i] != 0) {
             std::copy(tem_matrix.data() + i * size_n, tem_matrix.data() + (i + 1) * size_n, temp.data());
             std::copy(tem_matrix.data() + j * size_n, tem_matrix.data() + (j + 1) * size_n,
                       tem_matrix.data() + i * size_n);

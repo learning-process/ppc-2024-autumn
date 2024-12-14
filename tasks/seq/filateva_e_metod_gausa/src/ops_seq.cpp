@@ -23,18 +23,18 @@ bool filateva_e_metod_gausa_seq::MetodGausa::validation() {
   if (taskData->inputs_count[0] != taskData->outputs_count[0] || taskData->inputs_count[0] == 0) {
     return false;
   }
+  size = taskData->inputs_count[0];
   std::vector<double> local_matrix;
   std::vector<double> local_vecB;
-  std::vector<Matrix> rMatrix;
+  std::vector<Matrix> rMatrix(size);
 
-  size = taskData->inputs_count[0];
   auto* temp = reinterpret_cast<double*>(taskData->inputs[0]);
   local_matrix.assign(temp, temp + size * size);
   temp = reinterpret_cast<double*>(taskData->inputs[1]);
   local_vecB.assign(temp, temp + size);
 
   for (int i = 0; i < size; ++i) {
-    rMatrix.push_back({&local_matrix[i * size], local_vecB[i]});
+    rMatrix[i]= {&local_matrix[i * size], local_vecB[i]};
   }
 
   for (int i = 0; i < size; i++) {
@@ -115,10 +115,10 @@ bool filateva_e_metod_gausa_seq::MetodGausa::validation() {
 
 bool filateva_e_metod_gausa_seq::MetodGausa::run() {
   internal_order_test();
-  std::vector<Matrix> rMatrix;
+  std::vector<Matrix> rMatrix(size);
 
   for (int i = 0; i < size; ++i) {
-    rMatrix.push_back({&matrix[i * size], vecB[i]});
+    rMatrix[i] = {&matrix[i * size], vecB[i]};
   }
 
   for (int i = 0; i < size; i++) {
