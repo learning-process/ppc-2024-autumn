@@ -1,12 +1,10 @@
 // Copyright 2023 Nesterov Alexander
 #include "mpi/drozhdinov_d_mult_matrix_fox/include/ops_mpi.hpp"
-// not example
+
 #include <algorithm>
 #include <cmath>
 #include <functional>
 #include <random>
-#include <string>
-#include <thread>
 #include <vector>
 
 using namespace std::chrono_literals;
@@ -32,24 +30,6 @@ std::vector<double> drozhdinov_d_mult_matrix_fox_mpi::paddingMatrix(const std::v
   }
   return padded;
 }
-
-void checkCommunicator(const MPI_Comm& comm, const std::string& name) {
-  int result;
-  MPI_Comm_compare(comm, MPI_COMM_NULL, &result);
-  if (result == MPI_IDENT || result == MPI_CONGRUENT) {
-    std::cerr << "Communicator " << name << " is valid.\n";
-  } else {
-    std::cerr << "Communicator " << name << " is NULL or invalid.\n";
-    MPI_Abort(MPI_COMM_WORLD, 1);
-  }
-}
-/*
-void sendrecv_replace(boost::mpi::communicator& comm, std::vector<double>& buffer, int dest, int send_tag, int source,
-                      int recv_tag) {
-  std::vector<double> temp(buffer.size());
-  comm.sendrecv(dest, send_tag, buffer, source, recv_tag, temp);
-  std::copy(temp.begin(), temp.end(), buffer.begin());
-}*/
 
 std::vector<double> drozhdinov_d_mult_matrix_fox_mpi::SequentialFox(const std::vector<double>& A,
                                                                     const std::vector<double>& B, int k, int l, int n) {

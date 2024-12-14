@@ -1,6 +1,6 @@
 // Copyright 2023 Nesterov Alexander
 #pragma once
-// not example
+
 #include <gtest/gtest.h>
 
 #include <boost/archive/basic_archive.hpp>
@@ -10,9 +10,7 @@
 #include <boost/serialization/array.hpp>
 #include <boost/serialization/vector.hpp>
 #include <memory>
-#include <numeric>
 #include <random>
-#include <string>
 #include <utility>
 #include <vector>
 
@@ -43,7 +41,6 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  // void createGridCommunicators(int gridSize, int procRank, std::vector<int>& gridCoords);
   std::vector<double> ParallelFox(const std::vector<double>& A, const std::vector<double>& B, int k, int l, int n);
 
  private:

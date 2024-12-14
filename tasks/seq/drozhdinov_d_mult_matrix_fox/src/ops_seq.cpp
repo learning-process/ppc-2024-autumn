@@ -1,7 +1,5 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/drozhdinov_d_mult_matrix_fox/include/ops_seq.hpp"
-// not example
-#include <thread>
 
 using namespace std::chrono_literals;
 
