@@ -75,7 +75,7 @@ TEST(filateva_e_metod_gausa_mpi, test_pipeline_run) {
 
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_EQ(tResh[i], std::round(answer[i]));
+      EXPECT_EQ(tResh[i], std::chrono::round(answer[i]));
     }
   }
 }
@@ -123,7 +123,7 @@ TEST(filateva_e_metod_gausa_mpi, test_task_run) {
 
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_EQ(tResh[i], std::round(answer[i]));
+      EXPECT_EQ(tResh[i], std::chrono::round(answer[i]));
     }
   }
 }
