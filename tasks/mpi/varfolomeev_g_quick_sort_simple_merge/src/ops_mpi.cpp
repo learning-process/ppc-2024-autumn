@@ -41,7 +41,6 @@ bool varfolomeev_g_quick_sort_simple_merge_mpi::TestMPITaskParallel::pre_process
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     input_.assign(tmp_ptr, tmp_ptr + taskData->inputs_count[0]);
   }
-
   return true;
 }
 
@@ -51,6 +50,7 @@ bool varfolomeev_g_quick_sort_simple_merge_mpi::TestMPITaskParallel::validation(
     return (taskData->outputs_count.size() == 1 && taskData->inputs_count.size() == 1 && world.size() > 0 &&
             world.rank() < world.size());
   }
+  return true;
 }
 
 bool varfolomeev_g_quick_sort_simple_merge_mpi::TestMPITaskParallel::run() {
