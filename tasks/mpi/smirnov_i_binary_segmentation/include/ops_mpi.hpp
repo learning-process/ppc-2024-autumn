@@ -34,9 +34,9 @@ class TestMPITaskSequential : public ppc::core::Task {
   int rows;
   std::vector<int> img;
   std::vector<int> mask;
-  void merge_equivalence(std::map<int, std::set<int>>& eq_table, int a, int b);
-  std::vector<int> make_border(const std::vector<int>& img_, int cols_, int rows_);
-  std::vector<int> del_border(const std::vector<int>& img_, int cols_, int rows_);
+  static void merge_equivalence(std::map<int, std::set<int>>& eq_table, int a, int b);
+  static std::vector<int> make_border(const std::vector<int>& img_, int cols_, int rows_);
+  static std::vector<int> del_border(const std::vector<int>& img_, int cols_, int rows_);
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -52,12 +52,12 @@ class TestMPITaskParallel : public ppc::core::Task {
   int rows;
   std::vector<int> img;
   std::vector<int> mask;
-  void merge_equivalence(std::map<int, std::set<int>>& eq_table, int a, int b);
-  std::vector<int> make_border(const std::vector<int>& img_, int cols_, int rows_);
-  std::vector<int> del_border(const std::vector<int>& img_, int cols_, int rows_);
-  std::string serialize_eq_table(const std::map<int, std::set<int>>& eq_table);
-  std::map<int, std::set<int>> deserialize_eq_table(const std::string& str);
-  void merge_global_eq_table(std::map<int, std::set<int>>& global_eq_table,
+  static void merge_equivalence(std::map<int, std::set<int>>& eq_table, int a, int b);
+  static std::vector<int> make_border(const std::vector<int>& img_, int cols_, int rows_);
+  static std::vector<int> del_border(const std::vector<int>& img_, int cols_, int rows_);
+  static std::string serialize_eq_table(const std::map<int, std::set<int>>& eq_table);
+  static std::map<int, std::set<int>> deserialize_eq_table(const std::string& str);
+  static void merge_global_eq_table(std::map<int, std::set<int>>& global_eq_table,
                              const std::map<int, std::set<int>>& local_eq_table);
   boost::mpi::communicator world;
 };

@@ -31,8 +31,8 @@ class TestMPITaskSequential : public ppc::core::Task {
   int rows;
   std::vector<int> img;
   std::vector<int> mask;
-  void merge_equivalence(std::map<int, std::set<int>>& eq_table, int a, int b);
-  std::vector<int> make_border(const std::vector<int>& img_, int cols_, int rows_);
-  std::vector<int> del_border(const std::vector<int>& img_, int cols_, int rows_);
+  static void merge_equivalence(std::map<int, std::set<int>>& eq_table, int a, int b);
+  static std::vector<int> make_border(const std::vector<int>& img_, int cols_, int rows_);
+  static std::vector<int> del_border(const std::vector<int>& img_, int cols_, int rows_);
 };
 }  // namespace smirnov_i_binary_segmentation
