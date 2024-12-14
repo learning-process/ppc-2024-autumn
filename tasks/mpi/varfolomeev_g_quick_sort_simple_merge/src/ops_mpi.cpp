@@ -75,7 +75,7 @@ bool varfolomeev_g_quick_sort_simple_merge_mpi::TestMPITaskParallel::run() {
 
   std::vector<int> begins(world.size());
   begins[0] = 0;
-  for (int i = 1; i < world.size(); ++i) {
+  for (int i = 1; i < (int)world.size(); ++i) {
     begins[i] = begins[i - 1] + distribution[i - 1];
   }
 
@@ -91,7 +91,7 @@ bool varfolomeev_g_quick_sort_simple_merge_mpi::TestMPITaskParallel::run() {
   boost::mpi::gatherv(world, local_input_.data(), distribution[world.rank()], allData.data(), distribution, begins, 0);
   if (world.rank() == 0) {
     res.assign(allData.begin(), allData.begin() + distribution[0]);
-    for (int i = 1; i < world.size(); ++i) {
+    for (int i = 1; i < (int)world.size(); ++i) {
       std::vector<int> right(allData.begin() + begins[i], allData.begin() + begins[i] + distribution[i]);
       res = merge(res, right);
     }
@@ -102,7 +102,7 @@ bool varfolomeev_g_quick_sort_simple_merge_mpi::TestMPITaskParallel::run() {
 bool varfolomeev_g_quick_sort_simple_merge_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    for (size_t i = 0; i < res.size(); ++i) {
+    for (size_t i = 0; i < (int)res.size(); ++i) {
       reinterpret_cast<int*>(taskData->outputs[0])[i] = res[i];
     }
   }
