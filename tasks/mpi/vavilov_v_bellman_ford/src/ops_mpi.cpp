@@ -100,8 +100,8 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::validation() {
 bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-  int local_start = world.rank() * (vertices_ / world.size());
-  int local_end = (world.rank() == world.size() - 1) ? vertices_ : local_start + (vertices_ / world.size());
+  int local_start = world.rank() * (edges_count_ / world.size()) + std::min(world.rank(), edges_count_ % world.size());
+  int local_end = local_start + (edges_count_ / world.size()) + (world.rank() < edges_count_ % world.size() ? 1 : 0);
 
   for (int i = 0; i < vertices_ - 1; ++i) {
     std::vector<int> local_distances = distances_;
