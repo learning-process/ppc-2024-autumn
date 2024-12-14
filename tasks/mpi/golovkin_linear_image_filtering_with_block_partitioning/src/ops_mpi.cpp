@@ -79,15 +79,16 @@ void SimpleBlockMPI::distributeData() {
                local_height_ * width_, MPI_INT, 0, world);
 
   extended_local_height_ = local_height_;
-
 }
 
 void SimpleBlockMPI::exchangeHalo() {
   int nprocs = world.size();
   int rank = world.rank();
 
-  int up = (rank != 0) ? rank - 1 : MPI_PROC_NULL;
-  int down = (rank != nprocs - 1) ? rank + 1 : MPI_PROC_NULL;
+  assert(rank >= 0 && rank < nprocs);
+
+  int up = (rank > 0) ? rank - 1 : MPI_PROC_NULL;
+  int down = (rank < nprocs - 1) ? rank + 1 : MPI_PROC_NULL;
 
   std::vector<int> send_up(width_, 0);
   std::vector<int> send_down(width_, 0);
@@ -99,34 +100,28 @@ void SimpleBlockMPI::exchangeHalo() {
     std::copy(local_data_.end() - width_, local_data_.end(), send_down.begin());
   }
 
-  std::vector<MPI_Request> reqs;
+  MPI_Request send_up_req = MPI_REQUEST_NULL, recv_up_req = MPI_REQUEST_NULL;
+  MPI_Request send_down_req = MPI_REQUEST_NULL, recv_down_req = MPI_REQUEST_NULL;
 
   if (up != MPI_PROC_NULL) {
-    MPI_Request send_up_req, recv_up_req;
     MPI_Isend(send_up.data(), width_, MPI_INT, up, 0, world, &send_up_req);
-    reqs.push_back(send_up_req);
     MPI_Irecv(recv_up.data(), width_, MPI_INT, up, 1, world, &recv_up_req);
-    reqs.push_back(recv_up_req);
   }
 
   if (down != MPI_PROC_NULL) {
-    MPI_Request send_down_req, recv_down_req;
     MPI_Isend(send_down.data(), width_, MPI_INT, down, 1, world, &send_down_req);
-    reqs.push_back(send_down_req);
     MPI_Irecv(recv_down.data(), width_, MPI_INT, down, 0, world, &recv_down_req);
-    reqs.push_back(recv_down_req);
   }
 
-  if (!reqs.empty()) {
-    MPI_Waitall(reqs.size(), reqs.data(), MPI_STATUSES_IGNORE);
-  }
+  MPI_Request requests[4] = {send_up_req, recv_up_req, send_down_req, recv_down_req};
+  MPI_Waitall(4, requests, MPI_STATUSES_IGNORE);
 
-  if (up != MPI_PROC_NULL) {
+  if (up != MPI_PROC_NULL && local_height_ > 0) {
     local_data_.insert(local_data_.begin(), recv_up.begin(), recv_up.end());
     extended_local_height_++;
   }
 
-  if (down != MPI_PROC_NULL) {
+  if (down != MPI_PROC_NULL && local_height_ > 0) {
     local_data_.insert(local_data_.end(), recv_down.begin(), recv_down.end());
     extended_local_height_++;
   }
