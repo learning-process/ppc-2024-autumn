@@ -17,8 +17,7 @@ bool varfolomeev_g_quick_sort_simple_merge_mpi::TestTaskSequential::pre_processi
 
 bool varfolomeev_g_quick_sort_simple_merge_mpi::TestTaskSequential::validation() {
   internal_order_test();
-  return !(taskData->outputs_count.size() != 1 || taskData->inputs_count.size() != 1);
-  return true;
+  return taskData->outputs_count.size() == 1 && taskData->inputs_count.size() == 1;
 }
 
 bool varfolomeev_g_quick_sort_simple_merge_mpi::TestTaskSequential::run() {
@@ -49,15 +48,9 @@ bool varfolomeev_g_quick_sort_simple_merge_mpi::TestMPITaskParallel::pre_process
 bool varfolomeev_g_quick_sort_simple_merge_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    if (taskData->outputs_count.size() != 1 || taskData->inputs_count.size() != 1 || taskData->inputs_count[0] <= 0 ||
-        taskData->inputs_count[0] != taskData->outputs_count[0]) {
-      return false;
-    }
-    if (world.size() <= 0 || world.rank() >= world.size()) {
-      return false;
-    }
+    return (taskData->outputs_count.size() == 1 && taskData->inputs_count.size() == 1 && world.size() > 0 &&
+            world.rank() < world.size());
   }
-  return true;
 }
 
 bool varfolomeev_g_quick_sort_simple_merge_mpi::TestMPITaskParallel::run() {
