@@ -8,6 +8,8 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/filateva_e_metod_gausa/include/ops_mpi.hpp"
 
+#define alfa std::numeric_limits<double>::epsilon() * 1000000000
+
 std::vector<double> gereratorSLU(std::vector<double> &matrix, std::vector<double> &vecB) {
   int min_z = -100;
   int max_z = 100;
@@ -75,7 +77,7 @@ TEST(filateva_e_metod_gausa_mpi, test_pipeline_run) {
 
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_EQ(tResh[i], std::chrono::round(answer[i]));
+      EXPECT_NEAR(tResh[i], answer[i], alfa);
     }
   }
 }
@@ -123,7 +125,7 @@ TEST(filateva_e_metod_gausa_mpi, test_task_run) {
 
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_EQ(tResh[i], std::chrono::round(answer[i]));
+      EXPECT_NEAR(tResh[i], answer[i], alfa);
     }
   }
 }

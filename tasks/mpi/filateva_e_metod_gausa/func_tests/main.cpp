@@ -9,7 +9,7 @@
 
 #include "mpi/filateva_e_metod_gausa/include/ops_mpi.hpp"
 
-#define alfa std::numeric_limits<double>::epsilon() * 10000
+#define alfa std::numeric_limits<double>::epsilon() * 1000000000
 
 std::vector<double> gereratorSLU(std::vector<double> &matrix, std::vector<double> &vecB) {
   int min_z = -100;
@@ -68,7 +68,7 @@ TEST(filateva_e_metod_gausa_mpi, test_size_3) {
   if (world.rank() == 0) {
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_EQ(tResh[i], std::chrono::round(answer[i]));
+      EXPECT_NEAR(tResh[i], answer[i], alfa);
     }
   }
 }
@@ -106,7 +106,7 @@ TEST(filateva_e_metod_gausa_mpi, test_size_10) {
   if (world.rank() == 0) {
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_EQ(tResh[i], std::chrono::round(answer[i]));
+      EXPECT_NEAR(tResh[i], answer[i], alfa);
     }
   }
 }
@@ -144,7 +144,7 @@ TEST(filateva_e_metod_gausa_mpi, test_size_30) {
   if (world.rank() == 0) {
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_EQ(tResh[i], std::chrono::round(answer[i]));
+      EXPECT_NEAR(tResh[i], answer[i], alfa);
     }
   }
 }
@@ -182,7 +182,7 @@ TEST(filateva_e_metod_gausa_mpi, test_size_100) {
   if (world.rank() == 0) {
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_EQ(tResh[i], std::chrono::round(answer[i]));
+      EXPECT_NEAR(tResh[i], answer[i], alfa);
     }
   }
 }
@@ -220,7 +220,7 @@ TEST(filateva_e_metod_gausa_mpi, test_size_200) {
   if (world.rank() == 0) {
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_EQ(tResh[i], std::chrono::round(answer[i]));
+      EXPECT_NEAR(tResh[i], answer[i], alfa);
     }
   }
 }
@@ -358,7 +358,7 @@ TEST(filateva_e_metod_gausa_mpi, test_diagonal_0) {
   if (world.rank() == 0) {
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_EQ(tResh[i], std::chrono::round(answer[i]));
+      EXPECT_NEAR(tResh[i], answer[i], alfa);
     }
   }
 }
@@ -396,7 +396,7 @@ TEST(filateva_e_metod_gausa_mpi, test_diagonal_0_2) {
   if (world.rank() == 0) {
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_EQ(tResh[i], std::chrono::round(answer[i]));
+      EXPECT_NEAR(tResh[i], answer[i], alfa);
     }
   }
 }
