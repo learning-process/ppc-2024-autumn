@@ -241,5 +241,3 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_invalid_matrix_zeros_on
     ASSERT_EQ(testMpiTaskSequential.validation(), false);
   }
 }
-
-
