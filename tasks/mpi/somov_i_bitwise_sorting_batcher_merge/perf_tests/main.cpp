@@ -35,21 +35,19 @@ TEST(somov_i_bitwise_sorting_batcher_merge_perf_test, test10000000) {
     taskDataPar->outputs_count.emplace_back(out.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<somov_i_bitwise_sorting_batcher_merge_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel =
+      std::make_shared<somov_i_bitwise_sorting_batcher_merge_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
-
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 5;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-
 
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
@@ -57,6 +55,7 @@ TEST(somov_i_bitwise_sorting_batcher_merge_perf_test, test10000000) {
     ppc::core::Perf::print_perf_statistic(perfResults);
   }
 }
+
 TEST(somov_i_bitwise_sorting_batcher_merge_perf_test, test10000000two) {
   boost::mpi::communicator world;
   std::vector<double> in = create_random_vector(10000000);
@@ -70,21 +69,19 @@ TEST(somov_i_bitwise_sorting_batcher_merge_perf_test, test10000000two) {
     taskDataPar->outputs_count.emplace_back(out.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<somov_i_bitwise_sorting_batcher_merge_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel =
+      std::make_shared<somov_i_bitwise_sorting_batcher_merge_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
-
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 5;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-
 
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);

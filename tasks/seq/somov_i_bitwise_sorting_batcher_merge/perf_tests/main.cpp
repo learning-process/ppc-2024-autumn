@@ -22,10 +22,8 @@ std::vector<double> create_random_vector(int size, double mean = 5.0, double std
 }
 
 TEST(somov_i_bitwise_sorting_batcher_merge_seq, pipeline) {
-
   std::vector<double> in = create_random_vector(3000000);
   std::vector<double> out(in.size(), 0);
-
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
@@ -33,8 +31,8 @@ TEST(somov_i_bitwise_sorting_batcher_merge_seq, pipeline) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
-  auto testTaskSequential = std::make_shared<somov_i_bitwise_sorting_batcher_merge_seq::TestTaskSequential>(taskDataSeq);
-
+  auto testTaskSequential =
+      std::make_shared<somov_i_bitwise_sorting_batcher_merge_seq::TestTaskSequential>(taskDataSeq);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -45,19 +43,16 @@ TEST(somov_i_bitwise_sorting_batcher_merge_seq, pipeline) {
     return static_cast<double>(duration) * 1e-9;
   };
 
-
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-
 
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 }
-TEST(somov_i_bitwise_sorting_batcher_merge_seq, task) {
 
+TEST(somov_i_bitwise_sorting_batcher_merge_seq, task) {
   std::vector<double> in = create_random_vector(3000000);
   std::vector<double> out(in.size(), 0);
-
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
@@ -65,8 +60,8 @@ TEST(somov_i_bitwise_sorting_batcher_merge_seq, task) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
-  auto testTaskSequential = std::make_shared<somov_i_bitwise_sorting_batcher_merge_seq::TestTaskSequential>(taskDataSeq);
-
+  auto testTaskSequential =
+      std::make_shared<somov_i_bitwise_sorting_batcher_merge_seq::TestTaskSequential>(taskDataSeq);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -77,9 +72,7 @@ TEST(somov_i_bitwise_sorting_batcher_merge_seq, task) {
     return static_cast<double>(duration) * 1e-9;
   };
 
-
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-
 
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);

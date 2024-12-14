@@ -43,16 +43,13 @@ TEST(somov_i_bitwise_sorting_batcher_merge_MPI, test_20) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-
     std::vector<double> out1(in.size(), 0);
-
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskDataSeq->inputs_count.emplace_back(in.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out1.data()));
     taskDataSeq->outputs_count.emplace_back(out1.size());
-
 
     somov_i_bitwise_sorting_batcher_merge_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
@@ -87,16 +84,13 @@ TEST(somov_i_bitwise_sorting_batcher_merge_MPI, test_1000) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-
     std::vector<double> out1(in.size(), 0);
-
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskDataSeq->inputs_count.emplace_back(in.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out1.data()));
     taskDataSeq->outputs_count.emplace_back(out1.size());
-
 
     somov_i_bitwise_sorting_batcher_merge_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
@@ -131,16 +125,13 @@ TEST(somov_i_bitwise_sorting_batcher_merge_MPI, test_10000) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-
     std::vector<double> out1(in.size(), 0);
-
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskDataSeq->inputs_count.emplace_back(in.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out1.data()));
     taskDataSeq->outputs_count.emplace_back(out1.size());
-
 
     somov_i_bitwise_sorting_batcher_merge_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
@@ -175,16 +166,13 @@ TEST(somov_i_bitwise_sorting_batcher_merge_MPI, test_1001) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-
     std::vector<double> out1(in.size(), 0);
-
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskDataSeq->inputs_count.emplace_back(in.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out1.data()));
     taskDataSeq->outputs_count.emplace_back(out1.size());
-
 
     somov_i_bitwise_sorting_batcher_merge_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
@@ -219,16 +207,13 @@ TEST(somov_i_bitwise_sorting_batcher_merge_MPI, test_1) {
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-
     std::vector<double> out1(in.size(), 0);
-
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
     taskDataSeq->inputs_count.emplace_back(in.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out1.data()));
     taskDataSeq->outputs_count.emplace_back(out1.size());
-
 
     somov_i_bitwise_sorting_batcher_merge_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);

@@ -30,7 +30,8 @@ void radix_sort_double(std::vector<double> &arr) {
   size_t n = arr.size();
   if (n == 0) return;
 
-  std::vector<double> positive, negative;
+  std::vector<double> positive;
+  std::vector<double> negative;
   for (size_t i = 0; i < n; ++i) {
     if (arr[i] < 0) {
       negative.push_back(arr[i]);
