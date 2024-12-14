@@ -2,11 +2,11 @@
 #include "mpi/kondratev_ya_radix_sort_batcher_merge/include/ops_mpi.hpp"
 
 void kondratev_ya_radix_sort_batcher_merge_mpi::radixSortDouble(std::vector<double>& arr, int32_t start, int32_t end) {
-  static constexpr int32_t byte_size = 8;
-  static constexpr int32_t double_bit_size = byte_size * sizeof(double);
-  static constexpr int32_t full_byte_bit_mask = 0xFF;
-  static constexpr int32_t byte_range = std::pow(2, byte_size);
-  static constexpr uint64_t sign_bit_mask = 1ULL << (double_bit_size - 1);
+  constexpr int32_t byte_size = 8;
+  constexpr int32_t double_bit_size = byte_size * sizeof(double);
+  constexpr int32_t full_byte_bit_mask = 0xFF;
+  constexpr uint64_t sign_bit_mask = 1ULL << (double_bit_size - 1);
+  int32_t byte_range = std::pow(2, byte_size);
 
   int32_t size = end - start + 1;
   std::vector<double> temp(size);
