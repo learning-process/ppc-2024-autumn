@@ -15,7 +15,6 @@ bool SimpleBlockMPI::pre_processing() { return true; }
 bool SimpleBlockMPI::validation() {
   if (world.rank() == 0) {
     if (!taskData || taskData->inputs.size() < 3 || taskData->outputs.empty()) {
-      std::cerr << "Validation failed: Недостаточно входных или выходных данных.\n";
       return false;
     }
 
@@ -23,7 +22,6 @@ bool SimpleBlockMPI::validation() {
     height_ = *reinterpret_cast<int*>(taskData->inputs[2]);
 
     if (width_ < 3 || height_ < 3) {
-      std::cerr << "Validation failed: width или height меньше 3.\n";
       return false;
     }
 
@@ -77,33 +75,19 @@ void SimpleBlockMPI::distributeData() {
     displs[i] = i * base_rows * width_ + std::min(i, remainder) * width_;
   }
 
-  if (world.rank() == 0) {
-    std::cout << "Original data before distribution: ";
-    for (int val : original_data_) {
-      std::cout << val << " ";
-    }
-    std::cout << std::endl;
-  }
-
   MPI_Scatterv(original_data_.data(), sendcounts.data(), displs.data(), MPI_INT, local_data_.data(),
                local_height_ * width_, MPI_INT, 0, world);
 
   extended_local_height_ = local_height_;
 
-  // Отладочный вывод
-  std::cout << "Rank " << rank << " local data after distribution: ";
-  for (int val : local_data_) {
-    std::cout << val << " ";
-  }
-  std::cout << std::endl;
 }
 
 void SimpleBlockMPI::exchangeHalo() {
   int nprocs = world.size();
   int rank = world.rank();
 
-  int up = (rank > 0) ? rank - 1 : MPI_PROC_NULL;
-  int down = (rank < nprocs - 1) ? rank + 1 : MPI_PROC_NULL;
+  int up = (rank != 0) ? rank - 1 : MPI_PROC_NULL;
+  int down = (rank != nprocs - 1) ? rank + 1 : MPI_PROC_NULL;
 
   std::vector<int> send_up(width_, 0);
   std::vector<int> send_down(width_, 0);
@@ -115,7 +99,6 @@ void SimpleBlockMPI::exchangeHalo() {
     std::copy(local_data_.end() - width_, local_data_.end(), send_down.begin());
   }
 
-  // Используем std::vector для хранения активных запросов
   std::vector<MPI_Request> reqs;
 
   if (up != MPI_PROC_NULL) {
@@ -134,28 +117,19 @@ void SimpleBlockMPI::exchangeHalo() {
     reqs.push_back(recv_down_req);
   }
 
-  // Ожидаем завершения всех активных запросов
   if (!reqs.empty()) {
     MPI_Waitall(reqs.size(), reqs.data(), MPI_STATUSES_IGNORE);
   }
 
-  // Добавляем полученные строки халлоу без изменения local_height_
-  if (up != MPI_PROC_NULL && local_height_ > 0) {
+  if (up != MPI_PROC_NULL) {
     local_data_.insert(local_data_.begin(), recv_up.begin(), recv_up.end());
     extended_local_height_++;
   }
 
-  if (down != MPI_PROC_NULL && local_height_ > 0) {
+  if (down != MPI_PROC_NULL) {
     local_data_.insert(local_data_.end(), recv_down.begin(), recv_down.end());
     extended_local_height_++;
   }
-
-  // Отладочный вывод
-  std::cout << "Rank " << rank << " local data after halo exchange: ";
-  for (int val : local_data_) {
-    std::cout << val << " ";
-  }
-  std::cout << std::endl;
 }
 
 void SimpleBlockMPI::applyGaussianFilter() {
@@ -188,15 +162,6 @@ void SimpleBlockMPI::applyGaussianFilter() {
     std::copy(result.begin() + r * width_, result.begin() + (r + 1) * width_,
               local_data_.begin() + (r + halo_up) * width_);
   }
-
-  // Отладочный вывод
-  std::cout << "Rank " << world.rank() << " local data after filtering: ";
-  for (int r = halo_up; r < halo_up + local_height_; r++) {
-    for (int c = 0; c < width_; c++) {
-      std::cout << local_data_[r * width_ + c] << " ";
-    }
-  }
-  std::cout << std::endl;
 }
 
 void SimpleBlockMPI::gatherData() {
@@ -230,15 +195,6 @@ void SimpleBlockMPI::gatherData() {
 
   MPI_Gatherv(send_buffer.data(), local_height_ * width_, MPI_INT, rank == 0 ? processed_data_.data() : nullptr,
               recvcounts.data(), displs.data(), MPI_INT, 0, world);
-
-  if (rank == 0) {
-    // Отладочный вывод
-    std::cout << "Processed data gathered at root: ";
-    for (int val : processed_data_) {
-      std::cout << val << " ";
-    }
-    std::cout << std::endl;
-  }
 }
 
 const std::vector<int>& SimpleBlockMPI::getDataPath() const { return data_path_; }
