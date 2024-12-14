@@ -85,8 +85,6 @@ void SimpleBlockMPI::exchangeHalo() {
   int nprocs = world.size();
   int rank = world.rank();
 
-  assert(rank >= 0 && rank < nprocs);
-
   int up = (rank > 0) ? rank - 1 : MPI_PROC_NULL;
   int down = (rank < nprocs - 1) ? rank + 1 : MPI_PROC_NULL;
 
@@ -105,18 +103,27 @@ void SimpleBlockMPI::exchangeHalo() {
   MPI_Request send_down_req = MPI_REQUEST_NULL;
   MPI_Request recv_down_req = MPI_REQUEST_NULL;
 
+  std::vector<MPI_Request> requests;
+
   if (up != MPI_PROC_NULL) {
     MPI_Isend(send_up.data(), width_, MPI_INT, up, 0, world, &send_up_req);
     MPI_Irecv(recv_up.data(), width_, MPI_INT, up, 1, world, &recv_up_req);
+
+    requests.push_back(send_up_req);
+    requests.push_back(recv_up_req);
   }
 
   if (down != MPI_PROC_NULL) {
     MPI_Isend(send_down.data(), width_, MPI_INT, down, 1, world, &send_down_req);
     MPI_Irecv(recv_down.data(), width_, MPI_INT, down, 0, world, &recv_down_req);
+
+    requests.push_back(send_down_req);
+    requests.push_back(recv_down_req);
   }
 
-  MPI_Request requests[4] = {send_up_req, recv_up_req, send_down_req, recv_down_req};
-  MPI_Waitall(4, requests, MPI_STATUSES_IGNORE);
+  if (!requests.empty()) {
+    MPI_Waitall(requests.size(), requests.data(), MPI_STATUSES_IGNORE);
+  }
 
   if (up != MPI_PROC_NULL && local_height_ > 0) {
     local_data_.insert(local_data_.begin(), recv_up.begin(), recv_up.end());
