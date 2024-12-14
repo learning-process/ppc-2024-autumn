@@ -284,8 +284,7 @@ bool TaskSeq::validation() {
   }
 
   auto expected_size = static_cast<size_t>(num_rows * num_cols);
-  return taskData->inputs_count[0] == expected_size && 
-         taskData->outputs_count[0] == expected_size &&
+  return taskData->inputs_count[0] == expected_size && taskData->outputs_count[0] == expected_size &&
          taskData->inputs_count[0] == taskData->outputs_count[0];
 }
 
