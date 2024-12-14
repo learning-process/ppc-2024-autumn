@@ -87,12 +87,10 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskSequential::p
 
 bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::pre_processing() {
   internal_order_test();
-  if (world.size() == 1) {
-    input_right_vector_ = std::vector<double>(taskData->inputs_count[0]);
-    auto* tmp_ptr_vec = reinterpret_cast<double*>(taskData->inputs[1]);
-    std::copy(tmp_ptr_vec, tmp_ptr_vec + taskData->inputs_count[0], input_right_vector_.begin());
-    output_x_vector_ = std::vector<double>(input_right_vector_.size());
-  }
+  input_right_vector_ = std::vector<double>(taskData->inputs_count[0]);
+  auto* tmp_ptr_vec = reinterpret_cast<double*>(taskData->inputs[1]);
+  std::copy(tmp_ptr_vec, tmp_ptr_vec + taskData->inputs_count[0], input_right_vector_.begin());
+  output_x_vector_ = std::vector<double>(input_right_vector_.size());
   return true;
 }
 
@@ -197,13 +195,16 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::run
     local_input_right_vector_part_ = std::vector<double>(number_of_local_matrix_rows + ostatochnoe_chislo_strock);
     std::copy(tmp_ptr_vec + n - number_of_local_matrix_rows - ostatochnoe_chislo_strock, tmp_ptr_vec + n,
               local_input_right_vector_part_.begin());
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, tmp_ptr_matr + (proc - 1) * number_of_local_matrix_rows * n, number_of_local_matrix_rows * n);
-      world.send(proc, 0, tmp_ptr_vec + (proc - 1) * number_of_local_matrix_rows, number_of_local_matrix_rows);
-    }
+    //for (int proc = 1; proc < world.size(); proc++) {
+      //world.send(proc, 0, tmp_ptr_matr + (proc - 1) * number_of_local_matrix_rows * n, number_of_local_matrix_rows * n);
+      //world.send(proc, 0, tmp_ptr_vec + (proc - 1) * number_of_local_matrix_rows, number_of_local_matrix_rows);
+    //}
   } else {
-    world.recv(0, 0, local_input_matrix_part_.data(), number_of_local_matrix_rows * n);
-    world.recv(0, 0, local_input_right_vector_part_.data(), number_of_local_matrix_rows);
+    //world.recv(0, 0, local_input_matrix_part_.data(), number_of_local_matrix_rows * n);
+    //world.recv(0, 0, local_input_right_vector_part_.data(), number_of_local_matrix_rows);
+    std::copy(input_matrix_.begin(), input_matrix_.begin() + number_of_local_matrix_rows * n, local_input_matrix_part_.begin());
+    std::copy(input_right_vector_.begin(), input_right_vector_.begin() + number_of_local_matrix_rows, local_input_right_vector_part_.begin());
+    
   }
   local_output_x_vector_part_ = std::vector<double>(local_input_right_vector_part_.size());
   unsigned short Nmax = 10000;
