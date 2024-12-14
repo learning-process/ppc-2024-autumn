@@ -35,12 +35,12 @@ class DijkstrasAlgorithmParallel : public ppc::core::Task {
       values.push_back(weight);
       col_indices.push_back(v);
 
-      for (int i = u + 1; i < row_ptr.size(); ++i) {
+      for (size_t i = u + 1; i < row_ptr.size(); ++i) {
         row_ptr[i]++;
       }
     }
 
-    void print_graph() const {
+    /*void print_graph() const {
       std::cout << "Values: ";
       for (const auto& value : values) {
         std::cout << value << " ";
@@ -65,7 +65,7 @@ class DijkstrasAlgorithmParallel : public ppc::core::Task {
         }
         std::cout << std::endl;
       }
-    }
+    }*/
   };
 
  private:
