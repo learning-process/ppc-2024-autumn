@@ -16,8 +16,6 @@ TEST(smirnov_i_binary_segmentation_mpi, not_binary_img) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     img = std::vector<int>(cols * rows, 3);
-
-    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(img.data()));
     taskDataPar->inputs_count.emplace_back(rows);
     taskDataPar->inputs_count.emplace_back(cols);

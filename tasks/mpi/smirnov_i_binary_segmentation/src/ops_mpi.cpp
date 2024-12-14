@@ -222,7 +222,7 @@ bool smirnov_i_binary_segmentation::TestMPITaskParallel::validation() {
   bool is_valid = true;
   if (world.rank() == 0) {
     if (taskData->inputs_count.size() != 2) is_valid = false;
-    if (is_valid){
+    if (is_valid) {
       rows = taskData->inputs_count[0];
       cols = taskData->inputs_count[1];
       if (rows < 0 || cols < 0) is_valid = false;
@@ -446,14 +446,9 @@ bool smirnov_i_binary_segmentation::TestMPITaskParallel::run() {
 
   std::vector<int> local_mask;
   local_mask = del_border(bord_img, cols, sendcounts[rank] / cols);
-  if(rank != 0) {
+  if (rank != 0) {
     mask = std::vector<int>();
   }
-  // if (rank == 0) {
-  //   mask = std::vector<int>(cols * rows, 1);
-  // } else {
-  //   mask = std::vector<int>();
-  // }
   int* recvcounts = new int[size]();
   int* recvdispls = new int[size]();
   offset = 0;
