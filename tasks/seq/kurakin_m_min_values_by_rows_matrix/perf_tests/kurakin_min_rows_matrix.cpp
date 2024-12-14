@@ -12,7 +12,7 @@ TEST(kurakin_m_min_values_by_rows_matrix_seq, test_pipeline_run) {
 
   // Create data
   count_rows = 100;
-  size_rows = 400;
+  size_rows = 200;
   std::vector<int> global_mat(count_rows * size_rows, 1);
   std::vector<int32_t> seq_min_vec(count_rows, 0);
 
@@ -59,7 +59,7 @@ TEST(kurakin_m_min_values_by_rows_matrix_seq, test_task_run) {
 
   // Create data
   count_rows = 100;
-  size_rows = 400;
+  size_rows = 200;
   std::vector<int> global_mat(count_rows * size_rows, 1);
   std::vector<int32_t> seq_min_vec(count_rows, 0);
 

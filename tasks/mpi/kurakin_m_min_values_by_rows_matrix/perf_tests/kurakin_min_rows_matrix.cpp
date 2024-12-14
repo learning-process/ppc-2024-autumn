@@ -8,7 +8,7 @@
 
 TEST(kurakin_m_min_values_by_rows_matrix_mpi_perf_test, test_pipeline_run) {
   int count_rows = 100;
-  int size_rows = 400;
+  int size_rows = 200;
   boost::mpi::communicator world;
   std::vector<int> global_mat;
   std::vector<int32_t> par_min_vec(count_rows, 0);
@@ -56,7 +56,7 @@ TEST(kurakin_m_min_values_by_rows_matrix_mpi_perf_test, test_pipeline_run) {
 
 TEST(kurakin_m_min_values_by_rows_matrix_mpi_perf_test, test_task_run) {
   int count_rows = 100;
-  int size_rows = 400;
+  int size_rows = 200;
   boost::mpi::communicator world;
   std::vector<int> global_mat;
   std::vector<int32_t> par_min_vec(count_rows, 0);

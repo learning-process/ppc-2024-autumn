@@ -8,11 +8,6 @@
 
 bool kurakin_m_min_values_by_rows_matrix_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
-  input_ = std::vector<int>(taskData->inputs_count[0]);
-  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    input_[i] = tmp_ptr[i];
-  }
   return true;
 }
 
@@ -27,6 +22,9 @@ bool kurakin_m_min_values_by_rows_matrix_seq::TestTaskSequential::run() {
   // Init value for output
   count_rows = (int)*taskData->inputs[1];
   size_rows = (int)*taskData->inputs[2];
+  input_ = std::vector<int>(taskData->inputs_count[0]);
+  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+  std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
   res = std::vector<int>(count_rows, 0);
 
   for (int i = 0; i < count_rows; i++) {
