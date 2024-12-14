@@ -8,8 +8,8 @@ using namespace khasanyanov_k_fox_algorithm;
 
 TEST(khasanyanov_k_fox_algorithm_tests, test_pipeline_run) {
   boost::mpi::communicator world;
-  const int m = 32;
-  const int n = 32;
+  const int m = 256;
+  const int n = 256;
 
   matrix<int> A = MatrixOperations::generate_random_matrix<int>(m, n, -1000, 1000);
   matrix<int> B = MatrixOperations::generate_random_matrix<int>(m, n, -1000, 1000);
@@ -37,8 +37,8 @@ TEST(khasanyanov_k_fox_algorithm_tests, test_pipeline_run) {
 
 TEST(khasanyanov_k_fox_algorithm_tests, test_task_run) {
   boost::mpi::communicator world;
-  const int m = 32;
-  const int n = 32;
+  const int m = 256;
+  const int n = 256;
 
   matrix<int> A = MatrixOperations::generate_random_matrix<int>(m, n, -1000, 1000);
   matrix<int> B = MatrixOperations::generate_random_matrix<int>(m, n, -1000, 1000);
