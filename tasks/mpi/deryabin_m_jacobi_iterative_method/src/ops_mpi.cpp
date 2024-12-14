@@ -208,7 +208,7 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::run
     //world.irecv(0, 0, local_input_right_vector_part_.data(), number_of_local_matrix_rows);
     std::copy(input_matrix_.begin() + (world.rank() - 1) * number_of_local_matrix_rows * n,
                input_matrix_.begin() + world.rank() * number_of_local_matrix_rows * n, local_input_matrix_part_.begin());
-     std::copy(input_right_vector_.begin() + (world.rank() - 1) * number_of_local_matrix_rows,
+    std::copy(input_right_vector_.begin() + (world.rank() - 1) * number_of_local_matrix_rows,
                input_right_vector_.begin() + world.rank() * number_of_local_matrix_rows,
                local_input_right_vector_part_.begin());
   }
