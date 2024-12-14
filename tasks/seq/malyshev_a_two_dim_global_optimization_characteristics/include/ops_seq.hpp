@@ -24,13 +24,6 @@ struct Point {
 
   Point(double x = 0, double y = 0) : x(x), y(y) { value = std::numeric_limits<double>::max(); }
   Point(double x, double y, double value) : x(x), y(y), value(value) {}
-
-  template <typename Archive>
-  void serialize(Archive& ar, const unsigned int version) {
-    ar & x;
-    ar & y;
-    ar & value;
-  }
 };
 
 class TestTaskSequential : public ppc::core::Task {
@@ -59,15 +52,6 @@ class TestTaskSequential : public ppc::core::Task {
     double y_min;
     double y_max;
     double eps;
-
-    template <typename Archive>
-    void serialize(Archive& ar, const unsigned int version) {
-      ar & x_min;
-      ar & x_max;
-      ar & y_min;
-      ar & y_max;
-      ar & eps;
-    }
   } data_;
 
   target_t traget_function_;
