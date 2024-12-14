@@ -34,7 +34,7 @@ bool filateva_e_metod_gausa_seq::MetodGausa::validation() {
   local_vecB.assign(temp, temp + size);
 
   for (int i = 0; i < size; ++i) {
-    rMatrix[i]= {&local_matrix[i * size], local_vecB[i]};
+    rMatrix[i] = {&local_matrix[i * size], local_vecB[i]};
   }
 
   for (int i = 0; i < size; i++) {

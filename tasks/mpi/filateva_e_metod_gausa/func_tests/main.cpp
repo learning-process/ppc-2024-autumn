@@ -68,7 +68,7 @@ TEST(filateva_e_metod_gausa_mpi, test_size_3) {
   if (world.rank() == 0) {
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_EQ(tResh[i], std::round(answer[i]));
+      EXPECT_EQ(tResh[i], round(answer[i]));
     }
   }
 }
@@ -106,7 +106,7 @@ TEST(filateva_e_metod_gausa_mpi, test_size_10) {
   if (world.rank() == 0) {
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_EQ(tResh[i], std::round(answer[i]));
+      EXPECT_EQ(tResh[i], round(answer[i]));
     }
   }
 }
@@ -144,7 +144,7 @@ TEST(filateva_e_metod_gausa_mpi, test_size_30) {
   if (world.rank() == 0) {
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_EQ(tResh[i], std::round(answer[i]));
+      EXPECT_EQ(tResh[i], round(answer[i]));
     }
   }
 }
@@ -182,7 +182,7 @@ TEST(filateva_e_metod_gausa_mpi, test_size_100) {
   if (world.rank() == 0) {
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_EQ(tResh[i], std::round(answer[i]));
+      EXPECT_EQ(tResh[i], round(answer[i]));
     }
   }
 }
@@ -220,7 +220,7 @@ TEST(filateva_e_metod_gausa_mpi, test_size_200) {
   if (world.rank() == 0) {
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_EQ(tResh[i], std::round(answer[i]));
+      EXPECT_EQ(tResh[i], round(answer[i]));
     }
   }
 }
@@ -358,7 +358,7 @@ TEST(filateva_e_metod_gausa_mpi, test_diagonal_0) {
   if (world.rank() == 0) {
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_EQ(tResh[i], std::round(answer[i]));
+      EXPECT_EQ(tResh[i], round(answer[i]));
     }
   }
 }
@@ -396,7 +396,7 @@ TEST(filateva_e_metod_gausa_mpi, test_diagonal_0_2) {
   if (world.rank() == 0) {
     EXPECT_EQ(answer.size(), tResh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_EQ(tResh[i], std::round(answer[i]));
+      EXPECT_EQ(tResh[i], round(answer[i]));
     }
   }
 }
