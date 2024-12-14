@@ -81,7 +81,7 @@ class TestTaskSequential : public ppc::core::Task {
   void readTaskData();
   void writeTaskData();
   bool validateTaskData();
-  virtual void optimize();  
+  virtual void optimize();
 };
 
 }  // namespace malyshev_a_two_dim_global_optimization_characteristics_seq
