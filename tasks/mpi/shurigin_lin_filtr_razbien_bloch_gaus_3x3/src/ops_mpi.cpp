@@ -15,8 +15,10 @@ std::vector<std::pair<int, int>> computeProcessingIndices(int rows, int cols) {
   std::vector<std::pair<int, int>> indices;
   indices.reserve((rows - 2) * (cols - 2));
 
-  int top = 1, bottom = rows - 2;
-  int left = 1, right = cols - 2;
+  int top = 1;
+  int bottom = rows - 2;
+  int left = 1;
+  int right = cols - 2;
 
   while (top <= bottom && left <= right) {
     // Top row
@@ -282,18 +284,15 @@ bool TaskSeq::validation() {
   }
 
   auto expected_size = static_cast<size_t>(num_rows * num_cols);
-  if (taskData->inputs_count[0] != expected_size || taskData->outputs_count[0] != expected_size ||
-      taskData->inputs_count[0] != taskData->outputs_count[0]) {
-    return false;
-  }
-
-  return true;
+  return taskData->inputs_count[0] == expected_size && 
+         taskData->outputs_count[0] == expected_size &&
+         taskData->inputs_count[0] == taskData->outputs_count[0];
 }
 
 bool TaskSeq::pre_processing() {
   internal_order_test();
 
-  auto* source_pixels = reinterpret_cast<const int*>(taskData->inputs[0]);
+  const auto* source_pixels = reinterpret_cast<const int*>(taskData->inputs[0]);
   const size_t total_pixels = taskData->inputs_count[0];
 
   input_data = std::vector<int>(source_pixels, source_pixels + total_pixels);
