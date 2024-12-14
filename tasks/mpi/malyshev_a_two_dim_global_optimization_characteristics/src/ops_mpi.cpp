@@ -89,67 +89,50 @@ void malyshev_a_two_dim_global_optimization_characteristics_mpi::TestTaskSequent
 
 malyshev_a_two_dim_global_optimization_characteristics_mpi::Point
 malyshev_a_two_dim_global_optimization_characteristics_mpi::TestTaskSequential::local_search(double x0, double y0) {
-  double x = x0;
-  double y = y0;
+  Point current(x0, y0);
+  current.value = traget_function_(x0, y0);
+
   double learning_rate = Constants::start_learning_rate;
-  double prev_value = traget_function_(x0, y0);
+  const double learning_rate_decay = 0.95;
+
+  double dx = (traget_function_(x0 + Constants::h, y0) - traget_function_(x0 - Constants::h, y0)) / (2 * Constants::h);
+  double dy = (traget_function_(x0, y0 + Constants::h) - traget_function_(x0, y0 - Constants::h)) / (2 * Constants::h);
 
   for (int i = 0; i < Constants::max_iterations; i++) {
-    double dx = (traget_function_(x + Constants::h, y) - traget_function_(x - Constants::h, y)) / (2 * Constants::h);
-    double dy = (traget_function_(x, y + Constants::h) - traget_function_(x, y - Constants::h)) / (2 * Constants::h);
-    double grad_norm = std::sqrt(dx * dx + dy * dy);
+    double new_x = current.x - learning_rate * dx;
+    double new_y = current.y - learning_rate * dy;
 
+    if (new_x < data_.x_min || new_x > data_.x_max || new_y < data_.y_min || new_y > data_.y_max) {
+      learning_rate *= learning_rate_decay;
+      continue;
+    }
+
+    if (!check_constraints(new_x, new_y)) {
+      learning_rate *= learning_rate_decay;
+      continue;
+    }
+
+    double new_value = traget_function_(new_x, new_y);
+
+    if (new_value < current.value) {
+      current.x = new_x;
+      current.y = new_y;
+      current.value = new_value;
+    } else {
+      learning_rate *= learning_rate_decay;
+    }
+
+    double grad_norm = std::sqrt(dx * dx + dy * dy);
     if (grad_norm < data_.eps) {
       break;
     }
-
-    dx /= grad_norm;
-    dy /= grad_norm;
-
-    double new_x;
-    double new_y;
-    double new_value;
-    bool found_better = false;
-
-    int max_steps = static_cast<int>(std::ceil(std::log2(learning_rate / data_.eps)));
-    double step = learning_rate;
-    for (int j = 0; j < max_steps; j++) {
-      new_x = x - step * dx;
-      new_y = y - step * dy;
-
-      new_x = std::clamp(new_x, data_.x_min, data_.x_max);
-      new_y = std::clamp(new_y, data_.y_min, data_.y_max);
-
-      if (!check_constraints(new_x, new_y)) {
-        continue;
-      }
-
-      new_value = traget_function_(new_x, new_y);
-
-      if (new_value < prev_value) {
-        found_better = true;
-        x = new_x;
-        y = new_y;
-        prev_value = new_value;
-        learning_rate = step * 1.1;
-        break;
-      }
-      step *= 0.5;
-    }
-
-    if (!found_better) {
-      learning_rate *= 0.5;
-      if (learning_rate < data_.eps) {
-        break;
-      }
-    }
   }
 
-  if (!check_constraints(x, y)) {
-    return Point(x, y, std::numeric_limits<double>::max());
+  if (!check_constraints(current.x, current.y)) {
+    return Point(current.x, current.y, std::numeric_limits<double>::max());
   }
 
-  return Point(x, y, traget_function_(x, y));
+  return current;
 }
 
 malyshev_a_two_dim_global_optimization_characteristics_mpi::Point

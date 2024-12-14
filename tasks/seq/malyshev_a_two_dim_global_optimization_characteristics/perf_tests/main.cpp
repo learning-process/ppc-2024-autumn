@@ -13,7 +13,7 @@ namespace malyshev_a_two_dim_global_optimization_characteristics_seq {
 double target(double x, double y) { return x * x + y * y + 10 * sin(x) * cos(y); }
 
 bool constraint1(double x, double y) {
-  const int max_iter = 1000;
+  const int max_iter = 500;
   double zx = x;
   double zy = y;
   for (int i = 0; i < max_iter; i++) {

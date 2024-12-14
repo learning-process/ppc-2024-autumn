@@ -24,14 +24,13 @@ struct Point {
 
   Point(double x = 0, double y = 0) : x(x), y(y) { value = std::numeric_limits<double>::max(); }
   Point(double x, double y, double value) : x(x), y(y), value(value) {}
-};
 
-struct Constants {
-  static constexpr double h = 1e-7;
-  static constexpr int max_iterations = 100;
-  static constexpr int grid_initial_size = 20;
-  static constexpr double tunnel_rate = 0.1;
-  static constexpr double start_learning_rate = 0.01;
+  template <typename Archive>
+  void serialize(Archive& ar, const unsigned int version) {
+    ar & x;
+    ar & y;
+    ar & value;
+  }
 };
 
 class TestTaskSequential : public ppc::core::Task {
@@ -44,25 +43,45 @@ class TestTaskSequential : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
- private:
-  double x_min_;
-  double x_max_;
-  double y_min_;
-  double y_max_;
-  double eps_;
+ protected:
+  struct Constants {
+    static constexpr double h = 1e-7;
+    static constexpr int max_iterations = 100;
+    static constexpr int grid_initial_size = 20;
+    static constexpr double tunnel_rate = 0.1;
+    static constexpr double start_learning_rate = 0.01;
+    static constexpr int num_tunnels = 20;
+  };
+
+  struct Data {
+    double x_min;
+    double x_max;
+    double y_min;
+    double y_max;
+    double eps;
+
+    template <typename Archive>
+    void serialize(Archive& ar, const unsigned int version) {
+      ar & x_min;
+      ar & x_max;
+      ar & y_min;
+      ar & y_max;
+      ar & eps;
+    }
+  } data_;
 
   target_t traget_function_;
   std::vector<constraint_t> constraints_;
   Point res_;
 
-  Point local_search(double x0, double y0);
-  Point tunnel_search(const Point& current_min);
-  bool check_constraints(double x, double y);
+  virtual Point local_search(double x0, double y0);
+  virtual Point tunnel_search(const Point& current_min);
+  virtual bool check_constraints(double x, double y);
 
   void readTaskData();
   void writeTaskData();
   bool validateTaskData();
-  void optimize();
+  virtual void optimize();  
 };
 
 }  // namespace malyshev_a_two_dim_global_optimization_characteristics_seq
