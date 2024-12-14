@@ -191,13 +191,13 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::run
   if (world.rank() == 0) {
     sendcounts[world.rank()] = number_of_local_matrix_rows + ostatochnoe_chislo_strock;
     displacements[world.rank()] = n - number_of_local_matrix_rows - ostatochnoe_chislo_strock;
-    auto* tmp_ptr_matr = reinterpret_cast<double*>(taskData->inputs[0]);
+    // auto* tmp_ptr_matr = reinterpret_cast<double*>(taskData->inputs[0]);
     local_input_matrix_part_ = std::vector<double>((number_of_local_matrix_rows + ostatochnoe_chislo_strock) * n);
-    std::copy(tmp_ptr_matr + n * (n - number_of_local_matrix_rows - ostatochnoe_chislo_strock), tmp_ptr_matr + n * n,
+    std::copy(input_matrix_.begin() + n * (n - number_of_local_matrix_rows - ostatochnoe_chislo_strock), input_matrix_.begin() + n * n,
               local_input_matrix_part_.begin());
-    auto* tmp_ptr_vec = reinterpret_cast<double*>(taskData->inputs[1]);
+    // auto* tmp_ptr_vec = reinterpret_cast<double*>(taskData->inputs[1]);
     local_input_right_vector_part_ = std::vector<double>(number_of_local_matrix_rows + ostatochnoe_chislo_strock);
-    std::copy(tmp_ptr_vec + n - number_of_local_matrix_rows - ostatochnoe_chislo_strock, tmp_ptr_vec + n,
+    std::copy(input_right_vector_.begin() + n - number_of_local_matrix_rows - ostatochnoe_chislo_strock, input_right_vector_.begin() + n,
               local_input_right_vector_part_.begin());
   } else {
     std::copy(input_matrix_.begin() + (world.rank() - 1) * number_of_local_matrix_rows * n,
