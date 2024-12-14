@@ -201,7 +201,7 @@ bool beresnev_a_cannons_algorithm_mpi::TestMPITaskParallel::run() {
   int send_rank_B = col + q * ((row + q - 1) % q);
   int recv_rank_B = col + q * ((row + 1) % q);
 
-  // Проверка допустимости индексов
+  // РџСЂРѕРІРµСЂРєР° РґРѕРїСѓСЃС‚РёРјРѕСЃС‚Рё РёРЅРґРµРєСЃРѕРІ
   if (send_rank_B >= size || recv_rank_B >= size) {
     std::cerr << "Invalid rank for send or receive: send_rank=" << send_rank_B << ", recv_rank=" << recv_rank_B
               << std::endl;
@@ -216,8 +216,12 @@ bool beresnev_a_cannons_algorithm_mpi::TestMPITaskParallel::run() {
     send_request = my_world.isend(send_rank_A, 0, local_A.data(), local_A.size());
     recv_request = my_world.irecv(recv_rank_A, 0, temp.data(), temp.size());
 
-    send_request.wait();
-    recv_request.wait();
+    if (send_request.active() && recv_request.active()) {
+      send_request.wait();
+      recv_request.wait();
+    } else {
+      return false;
+    }
 
     local_A = temp;
   }
@@ -231,8 +235,12 @@ bool beresnev_a_cannons_algorithm_mpi::TestMPITaskParallel::run() {
     send_request1 = my_world.isend(send_rank_B, 1, local_B.data(), local_B.size());
     recv_request1 = my_world.irecv(recv_rank_B, 1, temp_B.data(), temp_B.size());
 
-    send_request1.wait();
-    recv_request1.wait();
+    if (send_request1.active() && recv_request1.active()) {
+      send_request1.wait();
+      recv_request1.wait();
+    } else {
+      return false;
+    }
 
     local_B = temp_B;
   }
@@ -254,10 +262,14 @@ bool beresnev_a_cannons_algorithm_mpi::TestMPITaskParallel::run() {
     send_request3 = my_world.isend(send_rank_B, 1, local_B.data(), local_B.size());
     recv_request3 = my_world.irecv(recv_rank_B, 1, temp_B.data(), temp_B.size());
 
-    send_request2.wait();
-    recv_request2.wait();
-    send_request3.wait();
-    recv_request3.wait();
+    if (send_request2.active() && recv_request2.active() && send_request3.active() && recv_request3.active()) {
+      send_request2.wait();
+      recv_request2.wait();
+      send_request3.wait();
+      recv_request3.wait();
+    } else {
+      return false;
+    }
 
     local_A = temp_A;
     local_B = temp_B;
