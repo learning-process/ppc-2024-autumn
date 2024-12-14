@@ -169,13 +169,13 @@ bool leontev_n_mat_vec_mpi::MPIMatVecParallel::run() {
   }
   if (world.rank() == 0) {
     for (int i = 0; i < divres.quot + divres.rem; i++) {
-      for (int j = 0; j < res.size(); j++) {
+      for (size_t j = 0; j < res.size(); j++) {
         local_tmp[i] += local_input[i * res.size() + j] * vec_[j];
       }
     }
   } else {
     for (int i = 0; i < divres.quot; i++) {
-      for (int j = 0; j < res.size(); j++) {
+      for (size_t j = 0; j < res.size(); j++) {
         local_tmp[i] += local_input[i * res.size() + j] * vec_[j];
       }
     }

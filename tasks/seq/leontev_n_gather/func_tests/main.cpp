@@ -79,7 +79,7 @@ TEST(leontev_n_mat_vec_seq, float_mat_vec) {
   }
 }
 
-TEST(leontev_n_mat_vec_seq, int32_vector_sum) {
+TEST(leontev_n_mat_vec_seq, int32_mat_vec) {
   // Create data
   std::vector<int32_t> invec(1000, 5);
   std::vector<int32_t> inmat(1000000, 5);
@@ -99,7 +99,7 @@ TEST(leontev_n_mat_vec_seq, int32_vector_sum) {
   ASSERT_EQ(out, expected_vec);
 }
 
-TEST(leontev_n_mat_vec_seq, uint32_vector_sum) {
+TEST(leontev_n_mat_vec_seq, uint32_mat_vec) {
   // Create data
   std::vector<uint32_t> invec(256, 2);
   std::vector<uint32_t> inmat(65536, 2);
@@ -119,7 +119,7 @@ TEST(leontev_n_mat_vec_seq, uint32_vector_sum) {
   ASSERT_EQ(out, expected_vec);
 }
 
-TEST(leontev_n_mat_vec_seq, empty_array_vector_sum) {
+TEST(leontev_n_mat_vec_seq, empty_array_mat_vec) {
   // Create data
   std::vector<int32_t> invec;
   std::vector<int32_t> inmat;
