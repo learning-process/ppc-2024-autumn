@@ -1,6 +1,6 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
-// not example
+
 #include <random>
 #include <vector>
 
@@ -34,10 +34,10 @@ std::vector<double> getRandomVector(int sz) {
 }
 }  // namespace drozhdinov_d_mult_matrix_fox_seq
 TEST(drozhdinov_d_mult_matrix_fox_seq_perf_test, test_pipeline_run) {
-  int k = 1;
-  int l = 100;
-  int m = 100;
-  int n = 7;
+  int k = 500;
+  int l = 500;
+  int m = 500;
+  int n = 500;
   std::vector<double> A = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(k * l);
   std::vector<double> B = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(m * n);
   std::vector<double> res(k * n);
@@ -60,7 +60,7 @@ TEST(drozhdinov_d_mult_matrix_fox_seq_perf_test, test_pipeline_run) {
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 1000;
+  perfAttr->num_running = 50;
   const auto t0 = std::chrono::high_resolution_clock::now();
   perfAttr->current_timer = [&] {
     auto current_time_point = std::chrono::high_resolution_clock::now();
@@ -75,14 +75,17 @@ TEST(drozhdinov_d_mult_matrix_fox_seq_perf_test, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(expres, res);
+  for (int i = 0; i < k * n; i++) {
+    EXPECT_DOUBLE_EQ(res[i], expres[i]);
+    EXPECT_DOUBLE_EQ(res[i], expres[i]);
+  }
 }
 
 TEST(drozhdinov_d_mult_matrix_fox_seq_perf_test, test_task_run) {
-  int k = 1;
-  int l = 100;
-  int m = 100;
-  int n = 7;
+  int k = 500;
+  int l = 500;
+  int m = 500;
+  int n = 500;
   std::vector<double> A = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(k * l);
   std::vector<double> B = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(m * n);
   std::vector<double> res(k * n);
@@ -105,7 +108,7 @@ TEST(drozhdinov_d_mult_matrix_fox_seq_perf_test, test_task_run) {
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 1000;
+  perfAttr->num_running = 50;
   const auto t0 = std::chrono::high_resolution_clock::now();
   perfAttr->current_timer = [&] {
     auto current_time_point = std::chrono::high_resolution_clock::now();
@@ -120,5 +123,8 @@ TEST(drozhdinov_d_mult_matrix_fox_seq_perf_test, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(expres, res);
+  for (int i = 0; i < k * n; i++) {
+    EXPECT_DOUBLE_EQ(res[i], expres[i]);
+    EXPECT_DOUBLE_EQ(res[i], expres[i]);
+  }
 }

@@ -1,6 +1,6 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
-// not example
+
 #include <random>
 #include <vector>
 
@@ -61,7 +61,78 @@ TEST(drozhdinov_d_mult_matrix_fox_seq, 2x3_3x2size) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(expres, res);
+  for (int i = 0; i < k * n; i++) {
+    EXPECT_DOUBLE_EQ(res[i], expres[i]);
+    EXPECT_DOUBLE_EQ(res[i], expres[i]);
+  }
+}
+
+TEST(drozhdinov_d_mult_matrix_fox_seq, Random100x500_500x100Test) {
+  int k = 100;
+  int l = 500;
+  int m = 500;
+  int n = 100;
+  std::vector<double> A = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(k * l);
+  std::vector<double> B = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(k * l);
+  std::vector<double> res(k * n);
+  std::vector<double> expres = MatrixMult(A, B, k, l, n);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
+  taskDataSeq->inputs_count.emplace_back(k);
+  taskDataSeq->inputs_count.emplace_back(l);
+  taskDataSeq->inputs_count.emplace_back(m);
+  taskDataSeq->inputs_count.emplace_back(n);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
+  taskDataSeq->outputs_count.emplace_back(k);
+  taskDataSeq->outputs_count.emplace_back(n);
+
+  // Create Task
+  drozhdinov_d_mult_matrix_fox_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_EQ(testTaskSequential.validation(), true);
+  testTaskSequential.pre_processing();
+  testTaskSequential.run();
+  testTaskSequential.post_processing();
+  for (int i = 0; i < k * n; i++) {
+    EXPECT_DOUBLE_EQ(res[i], expres[i]);
+    EXPECT_DOUBLE_EQ(res[i], expres[i]);
+  }
+}
+
+TEST(drozhdinov_d_mult_matrix_fox_seq, Random200x200Test) {
+  int k = 200;
+  int l = 200;
+  int m = 200;
+  int n = 200;
+  std::vector<double> A = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(k * l);
+  std::vector<double> B = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(k * l);
+  std::vector<double> res(k * n);
+  std::vector<double> expres = MatrixMult(A, B, k, l, n);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
+  taskDataSeq->inputs_count.emplace_back(k);
+  taskDataSeq->inputs_count.emplace_back(l);
+  taskDataSeq->inputs_count.emplace_back(m);
+  taskDataSeq->inputs_count.emplace_back(n);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
+  taskDataSeq->outputs_count.emplace_back(k);
+  taskDataSeq->outputs_count.emplace_back(n);
+
+  // Create Task
+  drozhdinov_d_mult_matrix_fox_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_EQ(testTaskSequential.validation(), true);
+  testTaskSequential.pre_processing();
+  testTaskSequential.run();
+  testTaskSequential.post_processing();
+  for (int i = 0; i < k * n; i++) {
+    EXPECT_DOUBLE_EQ(res[i], expres[i]);
+    EXPECT_DOUBLE_EQ(res[i], expres[i]);
+  }
 }
 
 TEST(drozhdinov_d_mult_matrix_fox_seq, EmptyTest) {
@@ -92,9 +163,12 @@ TEST(drozhdinov_d_mult_matrix_fox_seq, EmptyTest) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(expres, res);
+  for (int i = 0; i < k * n; i++) {
+    EXPECT_DOUBLE_EQ(res[i], expres[i]);
+    EXPECT_DOUBLE_EQ(res[i], expres[i]);
+  }
 }
-/*
+
 TEST(drozhdinov_d_mult_matrix_fox_seq, 1x10_10x7Random) {
   int k = 1, l = 10, m = 10, n = 7;
   std::vector<double> A = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(k * l);
@@ -120,8 +194,11 @@ TEST(drozhdinov_d_mult_matrix_fox_seq, 1x10_10x7Random) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(res, expres);
-}*/
+  for (int i = 0; i < k * n; i++) {
+    EXPECT_DOUBLE_EQ(res[i], expres[i]);
+    EXPECT_DOUBLE_EQ(res[i], expres[i]);
+  }
+}
 
 TEST(drozhdinov_d_mult_matrix_fox_seq, 1x1_1x1Random) {
   int k = 1;
@@ -151,7 +228,10 @@ TEST(drozhdinov_d_mult_matrix_fox_seq, 1x1_1x1Random) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(expres, res);
+  for (int i = 0; i < k * n; i++) {
+    EXPECT_DOUBLE_EQ(res[i], expres[i]);
+    EXPECT_DOUBLE_EQ(res[i], expres[i]);
+  }
 }
 
 TEST(drozhdinov_d_mult_matrix_fox_seq, WrongValidation1) {

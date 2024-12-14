@@ -1,6 +1,6 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
-// not example
+
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <vector>
@@ -36,7 +36,7 @@ std::vector<double> getRandomVector(int sz) {
 
 TEST(drozhdinov_d_mult_matrix_fox_MPI, 2x3_3x2Test) {
   boost::mpi::communicator world;
-  if (world.size() != 1 || world.size() != 4) {
+  if (world.size() != 1 && world.size() != 4) {
     ASSERT_TRUE(true);
     return;
   }
@@ -91,14 +91,16 @@ TEST(drozhdinov_d_mult_matrix_fox_MPI, 2x3_3x2Test) {
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
-    ASSERT_EQ(expres, expres_par);
-    ASSERT_EQ(expres, expres_seq);
+    for (int i = 0; i < k * n; i++) {
+      EXPECT_DOUBLE_EQ(expres[i], expres_par[i]);
+      EXPECT_DOUBLE_EQ(expres[i], expres_seq[i]);
+    }
   }
 }
 
 TEST(drozhdinov_d_mult_matrix_fox_MPI, Random100Test) {
   boost::mpi::communicator world;
-  if (world.size() != 1 || world.size() != 4) {
+  if (world.size() != 1 && world.size() != 4) {
     ASSERT_TRUE(true);
     return;
   }
@@ -153,7 +155,135 @@ TEST(drozhdinov_d_mult_matrix_fox_MPI, Random100Test) {
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
-    for (int i = 0; i < k; i++) {
+    for (int i = 0; i < k * n; i++) {
+      EXPECT_DOUBLE_EQ(expres[i], expres_par[i]);
+      EXPECT_DOUBLE_EQ(expres[i], expres_seq[i]);
+    }
+  }
+}
+
+TEST(drozhdinov_d_mult_matrix_fox_MPI, Random500Test) {
+  boost::mpi::communicator world;
+  if (world.size() != 1 && world.size() != 4) {
+    ASSERT_TRUE(true);
+    return;
+  }
+  int k = 500;
+  int l = 500;
+  int m = 500;
+  int n = 500;
+  std::vector<double> A = getRandomVector(k * l);
+  std::vector<double> B = getRandomVector(m * n);
+  std::vector<double> expres_par(k * n);
+  std::vector<double> expres = MatrixMult(A, B, k, l, n);
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
+    taskDataPar->inputs_count.emplace_back(k);
+    taskDataPar->inputs_count.emplace_back(l);
+    taskDataPar->inputs_count.emplace_back(m);
+    taskDataPar->inputs_count.emplace_back(n);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres_par.data()));
+    taskDataPar->outputs_count.emplace_back(k);
+    taskDataPar->outputs_count.emplace_back(n);
+  }
+
+  drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    // Create data
+    std::vector<double> expres_seq(k * n);
+
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
+    taskDataSeq->inputs_count.emplace_back(k);
+    taskDataSeq->inputs_count.emplace_back(l);
+    taskDataSeq->inputs_count.emplace_back(m);
+    taskDataSeq->inputs_count.emplace_back(n);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres_seq.data()));
+    taskDataSeq->outputs_count.emplace_back(k);
+    taskDataSeq->outputs_count.emplace_back(n);
+
+    // Create Task
+    drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+    for (int i = 0; i < k * n; i++) {
+      EXPECT_DOUBLE_EQ(expres[i], expres_par[i]);
+      EXPECT_DOUBLE_EQ(expres[i], expres_seq[i]);
+    }
+  }
+}
+
+TEST(drozhdinov_d_mult_matrix_fox_MPI, Random100_400x400_100Test) {
+  boost::mpi::communicator world;
+  if (world.size() != 1 && world.size() != 4) {
+    ASSERT_TRUE(true);
+    return;
+  }
+  int k = 100;
+  int l = 400;
+  int m = 400;
+  int n = 100;
+  std::vector<double> A = getRandomVector(k * l);
+  std::vector<double> B = getRandomVector(m * n);
+  std::vector<double> expres_par(k * n);
+  std::vector<double> expres = MatrixMult(A, B, k, l, n);
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
+    taskDataPar->inputs_count.emplace_back(k);
+    taskDataPar->inputs_count.emplace_back(l);
+    taskDataPar->inputs_count.emplace_back(m);
+    taskDataPar->inputs_count.emplace_back(n);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres_par.data()));
+    taskDataPar->outputs_count.emplace_back(k);
+    taskDataPar->outputs_count.emplace_back(n);
+  }
+
+  drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    // Create data
+    std::vector<double> expres_seq(k * n);
+
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
+    taskDataSeq->inputs_count.emplace_back(k);
+    taskDataSeq->inputs_count.emplace_back(l);
+    taskDataSeq->inputs_count.emplace_back(m);
+    taskDataSeq->inputs_count.emplace_back(n);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(expres_seq.data()));
+    taskDataSeq->outputs_count.emplace_back(k);
+    taskDataSeq->outputs_count.emplace_back(n);
+
+    // Create Task
+    drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+    for (int i = 0; i < k * n; i++) {
       EXPECT_DOUBLE_EQ(expres[i], expres_par[i]);
       EXPECT_DOUBLE_EQ(expres[i], expres_seq[i]);
     }
@@ -162,7 +292,7 @@ TEST(drozhdinov_d_mult_matrix_fox_MPI, Random100Test) {
 
 TEST(drozhdinov_d_mult_matrix_fox_MPI, WrongValidation1) {
   boost::mpi::communicator world;
-  if (world.size() != 1 || world.size() != 4) {
+  if (world.size() != 1 && world.size() != 4) {
     ASSERT_TRUE(true);
     return;
   }
@@ -215,7 +345,7 @@ TEST(drozhdinov_d_mult_matrix_fox_MPI, WrongValidation1) {
 
 TEST(drozhdinov_d_mult_matrix_fox_MPI, WrongValidation2) {
   boost::mpi::communicator world;
-  if (world.size() != 1 || world.size() != 4) {
+  if (world.size() != 1 && world.size() != 4) {
     ASSERT_TRUE(true);
     return;
   }
@@ -368,10 +498,6 @@ TEST(drozhdinov_d_mult_matrix_fox_MPI, NotSquareProcesses) {
 
 TEST(drozhdinov_d_mult_matrix_fox_MPI, WrongValidation3) {
   boost::mpi::communicator world;
-  /*if (world.size() != 1 || world.size() != 4) {
-    ASSERT_TRUE(true);
-    return;
-  }*/
   int k = 2;
   int l = 10;
   int m = 10;
@@ -421,7 +547,7 @@ TEST(drozhdinov_d_mult_matrix_fox_MPI, WrongValidation3) {
 
 TEST(drozhdinov_d_mult_matrix_fox_MPI, WrongValidation4) {
   boost::mpi::communicator world;
-  if (world.size() != 1 || world.size() != 4) {
+  if (world.size() != 1 && world.size() != 4) {
     ASSERT_TRUE(true);
     return;
   }
@@ -474,7 +600,7 @@ TEST(drozhdinov_d_mult_matrix_fox_MPI, WrongValidation4) {
 
 TEST(drozhdinov_d_mult_matrix_fox_MPI, EmptyTest) {
   boost::mpi::communicator world;
-  if (world.size() != 1 || world.size() != 4) {
+  if (world.size() != 1 && world.size() != 4) {
     ASSERT_TRUE(true);
     return;
   }

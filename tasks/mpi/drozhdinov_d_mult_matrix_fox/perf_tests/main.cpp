@@ -38,10 +38,10 @@ std::vector<double> getRandomVector(int sz) {
 
 TEST(drozhdinov_d_mult_matrix_fox_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
-  int k = 1;
-  int l = 7;
-  int m = 7;
-  int n = 2;
+  int k = 500;
+  int l = 500;
+  int m = 500;
+  int n = 500;
   std::vector<double> A = getRandomVector(k * l);
   std::vector<double> B = getRandomVector(m * n);
   std::vector<double> expres_par(k * n);
@@ -68,7 +68,7 @@ TEST(drozhdinov_d_mult_matrix_fox_perf_test, test_pipeline_run) {
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10000;
+  perfAttr->num_running = 50;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
@@ -80,16 +80,19 @@ TEST(drozhdinov_d_mult_matrix_fox_perf_test, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(expres, expres_par);
+    for (int i = 0; i < k * n; i++) {
+      EXPECT_DOUBLE_EQ(expres_par[i], expres[i]);
+      EXPECT_DOUBLE_EQ(expres_par[i], expres[i]);
+    }
   }
 }
 
 TEST(drozhdinov_d_mult_matrix_fox_perf_test, test_task_run) {
   boost::mpi::communicator world;
-  int k = 1;
-  int l = 7;
-  int m = 7;
-  int n = 2;
+  int k = 500;
+  int l = 500;
+  int m = 500;
+  int n = 500;
   std::vector<double> A = getRandomVector(k * l);
   std::vector<double> B = getRandomVector(m * n);
   std::vector<double> expres_par(k * n);
@@ -116,7 +119,7 @@ TEST(drozhdinov_d_mult_matrix_fox_perf_test, test_task_run) {
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10000;
+  perfAttr->num_running = 50;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
@@ -128,6 +131,9 @@ TEST(drozhdinov_d_mult_matrix_fox_perf_test, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(expres, expres_par);
+    for (int i = 0; i < k * n; i++) {
+      EXPECT_DOUBLE_EQ(expres_par[i], expres[i]);
+      EXPECT_DOUBLE_EQ(expres_par[i], expres[i]);
+    }
   }
 }

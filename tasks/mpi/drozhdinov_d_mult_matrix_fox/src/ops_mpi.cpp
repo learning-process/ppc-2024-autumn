@@ -113,11 +113,12 @@ std::vector<double> drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel::Paral
   boost::mpi::communicator COL_COMM(CCOMM, boost::mpi::comm_take_ownership);
   int block_size;
   if (world.rank() == 0) {
-    int c = 1;
     int padding = 1;
-    while (padding < std::max({K, L, N}) || padding % grid_size != 0) {
-      padding *= c;
-      c++;
+    while (padding < std::max({K, L, N})) {
+      padding *= 2;
+    }
+    if (padding % grid_size != 0) {
+      padding *= grid_size;
     }
     size = padding;
     block_size = padding / grid_size;
@@ -170,7 +171,6 @@ std::vector<double> drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel::Paral
     if (grid_coords[0] == grid_size - 1) nextPr = 0;
     int prevPr = grid_coords[0] - 1;
     if (grid_coords[0] == 0) prevPr = grid_size - 1;
-    std::cout << ROW_COMM.rank();
     MPI_Sendrecv_replace(block_B.data(), block_size * block_size, MPI_DOUBLE, prevPr, 0, nextPr, 0, COL_COMM, &stat);
   }
   std::vector<double> resultM(size * size);
@@ -287,7 +287,7 @@ bool drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel::validation() {
 bool drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   double sq = std::sqrt(world.size());
-  if (sq != static_cast<int>(sq)) {
+  if (sq != static_cast<int>(sq) || world.size() == 1) {
     C = drozhdinov_d_mult_matrix_fox_mpi::SequentialFox(A, B, k, l, n);
     return true;
   }
