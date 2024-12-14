@@ -134,13 +134,13 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::val
 
 bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::run() {
   internal_order_test();
+  unsigned short Nmax = 10000;
+  unsigned short num_of_iterations = 0;
+  double epsilon = pow(10, -6);
+  double max_delta_x_i = 0;
+  std::vector<double> x_old;
+  unsigned short n;
   if (world.size() == 1) {
-    unsigned short Nmax = 10000;
-    unsigned short num_of_iterations = 0;
-    double epsilon = pow(10, -6);
-    double max_delta_x_i = 0;
-    std::vector<double> x_old;
-    unsigned short n;
     do {
       x_old = output_x_vector_;
       unsigned short i = 0;
@@ -168,7 +168,7 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::run
   }
   unsigned short number_of_local_matrix_rows = 0;
   unsigned short ostatochnoe_chislo_strock = 0;
-  unsigned short n = 0;
+  n = 0;
   std::vector<int> displacements(world.size());
   if (world.rank() == 0) {
     n = taskData->inputs_count[0];
@@ -182,8 +182,6 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::run
   boost::mpi::broadcast(world, displacements.data(), displacements.size(), 0);
   boost::mpi::broadcast(world, n, 0);
   output_x_vector_ = std::vector<double>(n);
-  // boost::mpi::broadcast(world, input_matrix_.data(), input_matrix_.size(), 0);
-  // boost::mpi::broadcast(world, input_right_vector_.data(), input_right_vector_.size(), 0);
   local_input_matrix_part_ = std::vector<double>(number_of_local_matrix_rows * n);
   local_input_right_vector_part_ = std::vector<double>(number_of_local_matrix_rows);
   std::vector<int> sendcounts(world.size(), number_of_local_matrix_rows);
@@ -191,26 +189,22 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::run
     sendcounts[world.rank()] = number_of_local_matrix_rows + ostatochnoe_chislo_strock;
     displacements[world.rank()] = n - number_of_local_matrix_rows - ostatochnoe_chislo_strock;
     local_input_matrix_part_ = std::vector<double>((number_of_local_matrix_rows + ostatochnoe_chislo_strock) * n);
-    std::copy(input_matrix_.begin() + n * (n - number_of_local_matrix_rows - ostatochnoe_chislo_strock), input_matrix_.begin() + n * n,
-              local_input_matrix_part_.begin());
+    std::copy(input_matrix_.begin() + n * (n - number_of_local_matrix_rows - ostatochnoe_chislo_strock),
+              input_matrix_.begin() + n * n, local_input_matrix_part_.begin());
     local_input_right_vector_part_ = std::vector<double>(number_of_local_matrix_rows + ostatochnoe_chislo_strock);
-    std::copy(input_right_vector_.begin() + n - number_of_local_matrix_rows - ostatochnoe_chislo_strock, input_right_vector_.begin() + n,
-              local_input_right_vector_part_.begin());
+    std::copy(input_right_vector_.begin() + n - number_of_local_matrix_rows - ostatochnoe_chislo_strock,
+              input_right_vector_.begin() + n, local_input_right_vector_part_.begin());
     for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_matrix_.data() + (proc - 1) * number_of_local_matrix_rows * n, number_of_local_matrix_rows * n);
-      world.send(proc, 0, input_right_vector_.data() + (proc - 1) * number_of_local_matrix_rows, number_of_local_matrix_rows);
+      world.send(proc, 0, input_matrix_.data() + (proc - 1) * number_of_local_matrix_rows * n,
+                 number_of_local_matrix_rows * n);
+      world.send(proc, 0, input_right_vector_.data() + (proc - 1) * number_of_local_matrix_rows,
+                 number_of_local_matrix_rows);
     }
   } else {
     world.recv(0, 0, local_input_matrix_part_.data(), number_of_local_matrix_rows * n);
     world.recv(0, 0, local_input_right_vector_part_.data(), number_of_local_matrix_rows);
   }
-
   local_output_x_vector_part_ = std::vector<double>(local_input_right_vector_part_.size());
-  unsigned short Nmax = 10000;
-  unsigned short num_of_iterations = 0;
-  double epsilon = pow(10, -6);
-  double max_delta_x_i = 0;
-  std::vector<double> x_old;
   do {
     x_old = output_x_vector_;
     unsigned short i = 0;
