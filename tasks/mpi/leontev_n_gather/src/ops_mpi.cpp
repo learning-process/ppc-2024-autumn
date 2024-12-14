@@ -105,7 +105,9 @@ void leontev_n_mat_vec_mpi::MPIMatVecParallel::my_gather(const boost::mpi::commu
       childTemp.insert(childTemp.end(), rightChild.begin() + sizes[rightNode], rightChild.end());
     }
   }
-  local_container.insert(local_container.end(), childTemp.begin(), childTemp.end());
+  if (!childTemp.empty()) {
+    local_container.insert(local_container.end(), childTemp.begin(), childTemp.end());
+  }
   if (rank != root) {
     size_t localContainerSize = local_container.size();
     wrld.send(parentNode, 0, &localContainerSize, 1);
