@@ -100,8 +100,10 @@ void SimpleBlockMPI::exchangeHalo() {
     std::copy(local_data_.end() - width_, local_data_.end(), send_down.begin());
   }
 
-  MPI_Request send_up_req = MPI_REQUEST_NULL, recv_up_req = MPI_REQUEST_NULL;
-  MPI_Request send_down_req = MPI_REQUEST_NULL, recv_down_req = MPI_REQUEST_NULL;
+  MPI_Request send_up_req = MPI_REQUEST_NULL;
+  MPI_Request recv_up_req = MPI_REQUEST_NULL;
+  MPI_Request send_down_req = MPI_REQUEST_NULL;
+  MPI_Request recv_down_req = MPI_REQUEST_NULL;
 
   if (up != MPI_PROC_NULL) {
     MPI_Isend(send_up.data(), width_, MPI_INT, up, 0, world, &send_up_req);
