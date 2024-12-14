@@ -196,11 +196,11 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
   }
 
   if (world.rank() > 0) {
-    int c = 0;
-    int eat = 0;
-    int l = 0;
-    int r = 0;
-    while (c < nom) {
+    int quantity_food = 0;
+    int wish_eat = 0;
+    int left_hand = 0;
+    int right_hand = 0;
+    while (quantity_food < nom) {
       const double start = 2;
       const double end = 3;
       std::uniform_real_distribution<double> unif(start, end);
@@ -208,43 +208,43 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
       std::mt19937 rand_engine(rand_dev());
       std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(unif(rand_engine))));
       while (true) {
-        if (eat == 0) {
-          int m[4] = {world.rank(), 1, l, r};
+        if (wish_eat == 0) {
+          int m[4] = {world.rank(), 1, left_hand, right_hand};
           boost::mpi::request send_req = world.isend(0, 3, m, 4);
           send_req.wait();
           int a;
           boost::mpi::request recv_req = world.irecv(0, 1, &a, 1);
           recv_req.wait();
           if (a == 1) {
-            l = 1;
+            left_hand = 1;
           }
           if (a == 2) {
-            r = 1;
+            right_hand = 1;
           }
-          if (l + r == 2) {
-            eat = 1;
+          if (left_hand + right_hand == 2) {
+            wish_eat = 1;
           }
         } else {
-          int m[4] = {world.rank(), 2, l, r};
+          int m[4] = {world.rank(), 2, left_hand, right_hand};
           boost::mpi::request send_req = world.isend(0, 3, m, 4);
           send_req.wait();
           int a;
           boost::mpi::request recv_req = world.irecv(0, 2, &a, 1);
           recv_req.wait();
           if (a == 1) {
-            l = 0;
+            left_hand = 0;
           }
           if (a == 2) {
-            r = 0;
+            right_hand = 0;
           }
-          if (l + r == 0) {
-            eat = 0;
+          if (left_hand + right_hand == 0) {
+            wish_eat = 0;
             break;
           }
         }
       }
       c++;
-      int exit_m[4] = {world.rank(), 3, c, c};
+      int exit_m[4] = {world.rank(), 3, quantity_food, quantity_food};
       boost::mpi::request send_req = world.isend(0, 3, exit_m, 4);
       send_req.wait();
     }
