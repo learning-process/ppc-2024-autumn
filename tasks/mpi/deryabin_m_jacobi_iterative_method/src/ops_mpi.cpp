@@ -87,10 +87,12 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskSequential::p
 
 bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::pre_processing() {
   internal_order_test();
-  input_right_vector_ = std::vector<double>(taskData->inputs_count[0]);
-  auto* tmp_ptr_vec = reinterpret_cast<double*>(taskData->inputs[1]);
-  std::copy(tmp_ptr_vec, tmp_ptr_vec + taskData->inputs_count[0], input_right_vector_.begin());
-  output_x_vector_ = std::vector<double>(input_right_vector_.size());
+  if (world.rank() == 0) {
+    input_right_vector_ = std::vector<double>(taskData->inputs_count[0]);
+    auto* tmp_ptr_vec = reinterpret_cast<double*>(taskData->inputs[1]);
+    std::copy(tmp_ptr_vec, tmp_ptr_vec + taskData->inputs_count[0], input_right_vector_.begin());
+    output_x_vector_ = std::vector<double>(input_right_vector_.size());
+  }
   return true;
 }
 
@@ -180,6 +182,9 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::run
   boost::mpi::broadcast(world, number_of_local_matrix_rows, 0);
   boost::mpi::broadcast(world, displacements.data(), displacements.size(), 0);
   boost::mpi::broadcast(world, n, 0);
+  boost::mpi::broadcast(world, input_matrix_.data(), input_matrix_.size(), 0);
+  boost::mpi::broadcast(world, input_right_vector_.data(), input_right_vector_.size(), 0);
+  boost::mpi::broadcast(world, output_x_vector_.data(), output_x_vector_.size(), 0);
   local_input_matrix_part_ = std::vector<double>(number_of_local_matrix_rows * n);
   local_input_right_vector_part_ = std::vector<double>(number_of_local_matrix_rows);
   std::vector<int> sendcounts(world.size(), number_of_local_matrix_rows);
