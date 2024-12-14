@@ -7,9 +7,20 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential::pre_processing() {
   edges_count_ = taskData->inputs_count[1];
   source_ = taskData->inputs_count[2];
 
-  int* row_offsets_ = reinterpret_cast<int*>(taskData->inputs[0]);
-  int* col_indices_ = reinterpret_cast<int*>(taskData->inputs[1]);
-  int* weights_ = reinterpret_cast<int*>(taskData->inputs[2]);
+  int* row_offsets_data = reinterpret_cast<int*>(taskData->inputs[0]);
+  for (int i = 0; i < vertices_ + 1; ++i) {
+    row_offsets_.push_back(row_offsets_data[i]);
+  }
+
+  int* col_indices_data = reinterpret_cast<int*>(taskData->inputs[1]);
+  for (int i = 0; i < edges_count_; ++i) {
+    col_indices_.push_back(col_indices_data[i]);
+  }
+
+  int* weights_data = reinterpret_cast<int*>(taskData->inputs[2]);
+  for (int i = 0; i < edges_count_; ++i) {
+    weights_.push_back(weights_data[i]);
+  }
 
   distances_.resize(vertices_, INT_MAX);
   distances_[source_] = 0;
@@ -64,9 +75,20 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::pre_processing() {
   edges_count_ = taskData->inputs_count[1];
   source_ = taskData->inputs_count[2];
 
-  int* row_offsets_ = reinterpret_cast<int*>(taskData->inputs[0]);
-  int* col_indices_ = reinterpret_cast<int*>(taskData->inputs[1]);
-  int* weights_ = reinterpret_cast<int*>(taskData->inputs[2]);
+  int* row_offsets_data = reinterpret_cast<int*>(taskData->inputs[0]);
+  for (int i = 0; i < vertices_ + 1; ++i) {
+    row_offsets_.push_back(row_offsets_data[i]);
+  }
+
+  int* col_indices_data = reinterpret_cast<int*>(taskData->inputs[1]);
+  for (int i = 0; i < edges_count_; ++i) {
+    col_indices_.push_back(col_indices_data[i]);
+  }
+
+  int* weights_data = reinterpret_cast<int*>(taskData->inputs[2]);
+  for (int i = 0; i < edges_count_; ++i) {
+    weights_.push_back(weights_data[i]);
+  }
 
   boost::mpi::broadcast(world, row_offsets_, 0);
   boost::mpi::broadcast(world, col_indices_, 0);
