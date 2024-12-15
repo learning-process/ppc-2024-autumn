@@ -66,7 +66,7 @@ bool volochaev_s_shell_sort_with_simple_merge_16_mpi::Lab3_16_mpi::pre_processin
   internal_order_test();
 
   if (world.rank() == 0) {
-    int* tmp = reinterpret_cast<int*>(taskData->inputs[0]);
+    int* x = reinterpret_cast<int*>(taskData->inputs[0]);
     size_ = taskData->inputs_count[0];
 
     mas.resize(size_);
