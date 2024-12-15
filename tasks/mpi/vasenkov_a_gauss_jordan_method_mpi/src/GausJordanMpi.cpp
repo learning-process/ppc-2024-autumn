@@ -121,6 +121,26 @@ std::vector<std::pair<int, int>> getIndex(int rowCount, int colCount) {
 
   return indexPairs;
 }
+
+void processMatrixForPivot(int pivot, std::vector<double>& matrix, int n, bool& solve) {
+  if (matrix[pivot * (n + 1) + pivot] == 0) {
+    int rowToSwap;
+
+    for (rowToSwap = pivot + 1; rowToSwap < n; ++rowToSwap) {
+      if (matrix[rowToSwap * (n + 1) + pivot] != 0) {
+        for (int column = 0; column < (n + 1); ++column) {
+          std::swap(matrix[pivot * (n + 1) + column], matrix[rowToSwap * (n + 1) + column]);
+        }
+        break;
+      }
+    }
+
+    if (rowToSwap == n) {
+      solve = false;
+    }
+  }
+}
+
 bool vasenkov_a_gauss_jordan_method_mpi::GaussJordanParallel::run() {
   internal_order_test();
 
@@ -128,21 +148,7 @@ bool vasenkov_a_gauss_jordan_method_mpi::GaussJordanParallel::run() {
 
   for (int pivot = 0; pivot < n; ++pivot) {
     if (world.rank() == 0) {
-      if (matrix[pivot * (n + 1) + pivot] == 0) {
-        int rowToSwap;
-
-        for (rowToSwap = pivot + 1; rowToSwap < n; ++rowToSwap) {
-          if (matrix[rowToSwap * (n + 1) + pivot] != 0) {
-            for (int column = 0; column < (n + 1); ++column) {
-              std::swap(matrix[pivot * (n + 1) + column], matrix[rowToSwap * (n + 1) + column]);
-            }
-            break;
-          }
-        }
-        if (rowToSwap == n) {
-          solve = false;
-        }
-      }
+      processMatrixForPivot(pivot, matrix, n, solve);
 
       if (solve) {
         iteration_matrix = vasenkov_a_gauss_jordan_method_mpi::processMatrix(n, pivot, matrix);
@@ -175,7 +181,6 @@ bool vasenkov_a_gauss_jordan_method_mpi::GaussJordanParallel::run() {
         }
 
         current_index = getIndex(n, n - pivot + 1);
-
         result.resize((n - 1) * (n - pivot));
       }
     }
@@ -188,7 +193,6 @@ bool vasenkov_a_gauss_jordan_method_mpi::GaussJordanParallel::run() {
     boost::mpi::broadcast(world, iteration_matrix, 0);
 
     int localCount = sizes[world.rank()];
-
     std::vector<std::pair<int, int>> localIndices(localCount);
 
     if (world.rank() == 0) {
@@ -203,13 +207,12 @@ bool vasenkov_a_gauss_jordan_method_mpi::GaussJordanParallel::run() {
       auto [rowIndex, colIndex] = localIndices[index];
 
       double referenceValue = iteration_matrix[0];
-
       double currentValue = iteration_matrix[rowIndex * (n - pivot + 1) + colIndex];
 
-      double currentIndex1 = iteration_matrix[colIndex];
-      double currentIndex2 = iteration_matrix[rowIndex * (n - pivot + 1)];
+      double factor1 = iteration_matrix[colIndex];
+      double factor2 = iteration_matrix[rowIndex * (n - pivot + 1)];
 
-      localResults[index] = currentValue - (currentIndex1 * currentIndex2) / referenceValue;
+      localResults[index] = currentValue - (factor1 * factor2) / referenceValue;
     }
 
     if (world.rank() == 0) {

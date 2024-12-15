@@ -5,65 +5,66 @@
 #include <limits>
 #include <thread>
 
-std::vector<double> vasenkov_a_gauss_jordan_method_seq::processMatrix(int numRows, int numCols,
-                                                                      const std::vector<double>& inputMatrix) {
-  if (numRows <= 0 || numCols < 0 || numCols >= numRows) {
-    throw std::invalid_argument("Invalid matrix dimensions.");
+std::vector<double> vasenkov_a_gauss_jordan_method_seq::processMatrix(int rows, int cols,
+                                                                      const std::vector<double>& srcMatrix) {
+  if (rows <= 0 || cols < 0 || cols >= rows) {
+    throw std::invalid_argument("Неверные размеры матрицы.");
   }
 
-  std::vector<double> resultVector(numRows * (numRows - numCols + 1));
+  std::vector<double> outputVector(rows * (rows - cols + 1));
 
-  for (int i = 0; i < (numRows - numCols + 1); i++) {
-    resultVector[i] = inputMatrix[(numRows + 1) * numCols + numCols + i];
+  for (int i = 0; i < (rows - cols + 1); i++) {
+    outputVector[i] = srcMatrix[(rows + 1) * cols + cols + i];
   }
 
-  for (int row = 0; row < numCols; row++) {
-    for (int col = 0; col < (numRows - numCols + 1); col++) {
-      resultVector[(numRows - numCols + 1) * (row + 1) + col] = inputMatrix[row * (numRows + 1) + numCols + col];
+  for (int r = 0; r < cols; r++) {
+    for (int c = 0; c < (rows - cols + 1); c++) {
+      outputVector[(rows - cols + 1) * (r + 1) + c] = srcMatrix[r * (rows + 1) + cols + c];
     }
   }
 
-  for (int row = numCols + 1; row < numRows; row++) {
-    for (int col = 0; col < (numRows - numCols + 1); col++) {
-      resultVector[(numRows - numCols + 1) * row + col] = inputMatrix[row * (numRows + 1) + numCols + col];
+  for (int r = cols + 1; r < rows; r++) {
+    for (int c = 0; c < (rows - cols + 1); c++) {
+      outputVector[(rows - cols + 1) * r + c] = srcMatrix[r * (rows + 1) + cols + c];
     }
   }
 
-  return resultVector;
+  return outputVector;
 }
 
-void vasenkov_a_gauss_jordan_method_seq::updateMatrix(int numRows, int numCols, std::vector<double>& matrix,
-                                                      const std::vector<double>& iterationResults) {
-  if (numRows <= 0 || numCols < 0 || numCols >= numRows) {
-    throw std::invalid_argument("Invalid matrix dimensions.");
+void vasenkov_a_gauss_jordan_method_seq::updateMatrix(int rows, int cols, std::vector<double>& mat,
+                                                      const std::vector<double>& results) {
+  if (rows <= 0 || cols < 0 || cols >= rows) {
+    throw std::invalid_argument("Неверные размеры матрицы.");
   }
 
-  for (int row = 0; row < numCols; row++) {
-    for (int col = 0; col < (numRows - numCols); col++) {
-      matrix[row * (numRows + 1) + numCols + 1 + col] = iterationResults[row * (numRows - numCols) + col];
+  for (int r = 0; r < cols; r++) {
+    for (int c = 0; c < (rows - cols); c++) {
+      mat[r * (rows + 1) + cols + 1 + c] = results[r * (rows - cols) + c];
     }
   }
 
-  for (int row = numCols + 1; row < numRows; row++) {
-    for (int col = 0; col < (numRows - numCols); col++) {
-      matrix[row * (numRows + 1) + numCols + 1 + col] = iterationResults[(row - 1) * (numRows - numCols) + col];
+  for (int r = cols + 1; r < rows; r++) {
+    for (int c = 0; c < (rows - cols); c++) {
+      mat[r * (rows + 1) + cols + 1 + c] = results[(r - 1) * (rows - cols) + c];
     }
   }
 
-  double diagonalElement = matrix[numCols * (numRows + 1) + numCols];
-  if (diagonalElement == 0.0) {
-    throw std::runtime_error("Division by zero during normalization.");
+  double diagElem = mat[cols * (rows + 1) + cols];
+
+  if (diagElem == 0.0) {
+    throw std::runtime_error("Деление на ноль во время нормализации.");
   }
 
-  for (int i = numCols + 1; i < numRows + 1; i++) {
-    matrix[numCols * (numRows + 1) + i] /= diagonalElement;
+  for (int i = cols + 1; i < rows + 1; i++) {
+    mat[cols * (rows + 1) + i] /= diagElem;
   }
 
-  for (int i = 0; i < numRows; i++) {
-    matrix[i * (numRows + 1) + numCols] = 0;
+  for (int i = 0; i < rows; i++) {
+    mat[i * (rows + 1) + cols] = 0;
   }
 
-  matrix[numCols * (numRows + 1) + numCols] = 1;
+  mat[cols * (rows + 1) + cols] = 1;
 }
 
 bool vasenkov_a_gauss_jordan_method_seq::GaussJordanSequential::validation() {

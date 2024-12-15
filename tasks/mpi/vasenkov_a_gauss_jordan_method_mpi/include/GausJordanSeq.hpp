@@ -11,8 +11,8 @@
 
 namespace vasenkov_a_gauss_jordan_method_seq {
 
-std::vector<double> processMatrix(int n, int k, const std::vector<double>& matrix);
-void updateMatrix(int n, int k, std::vector<double>& matrix, const std::vector<double>& iter_result);
+std::vector<double> processMatrix(int rows, int cols, const std::vector<double>& srcMatrix);
+void updateMatrix(int rows, int cols, std::vector<double>& mat, const std::vector<double>& results);
 
 class GaussJordanSequential : public ppc::core::Task {
  public:
