@@ -36,4 +36,5 @@ class GaussJordanParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  // namespace vasenkov_a_gauss_jordan_method_mpi
+}
+// namespace vasenkov_a_gauss_jordan_method_mpi
