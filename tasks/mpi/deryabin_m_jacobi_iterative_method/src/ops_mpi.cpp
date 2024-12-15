@@ -170,10 +170,11 @@ bool deryabin_m_jacobi_iterative_method_mpi::JacobiIterativeMPITaskParallel::run
   unsigned short j;
   double sum;
   if (world.size() == 1) {
+    n = taskData->inputs_count[0];
+    output_x_vector_ = std::vector<double>(n);
     do {
       x_old = output_x_vector_;
       i = 0;
-      n = taskData->inputs_count[0];
       while (i != n) {
         j = 0;
         sum = 0;
