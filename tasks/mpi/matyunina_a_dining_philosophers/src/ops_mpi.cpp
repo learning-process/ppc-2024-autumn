@@ -11,7 +11,6 @@ using namespace std::chrono_literals;
 
 bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-  unsigned int tmp = 0;
   res_ = 0;
   return true;
 }
@@ -26,7 +25,7 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::validation() {
 
 bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-
+  unsigned int tmp = 0;
   if (world.rank() == 0) {
     input_ = std::vector<int>(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
