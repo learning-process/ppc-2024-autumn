@@ -1,7 +1,7 @@
 #include "mpi/vavilov_v_bellman_ford/include/ops_mpi.hpp"
 
 
-void vavilov_v_bellman_ford_mpi::TestMPITaskSequential::CRS(const int* matrix){
+void vavilov_v_bellman_ford_mpi::TestMPITaskSequential::CRS(const int* matrix) {
   row_ptr.push_back(0);
   for (int i = 0; i < vertices_; ++i) {
     for (int j = 0; j < vertices_; ++j) {
@@ -11,7 +11,7 @@ void vavilov_v_bellman_ford_mpi::TestMPITaskSequential::CRS(const int* matrix){
       }
     }
     row_offsets_.push_back(values.size());
-  } 
+  }
 };
 
 bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential::pre_processing() {
@@ -24,7 +24,7 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential::pre_processing() {
   auto* matrix = reinterpret_cast<int*>(taskData->inputs[0]);
 
   CRS(matrix);
-  
+
   distances_.resize(vertices_, INT_MAX);
   distances_[source_] = 0;
 
@@ -69,7 +69,7 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential::post_processing() {
   return true;
 }
 
-void vavilov_v_bellman_ford_mpi::TestMPITaskParallel::CRS(const int* matrix){
+void vavilov_v_bellman_ford_mpi::TestMPITaskParallel::CRS(const int* matrix) {
   row_ptr.push_back(0);
   for (int i = 0; i < vertices_; ++i) {
     for (int j = 0; j < vertices_; ++j) {
@@ -79,7 +79,7 @@ void vavilov_v_bellman_ford_mpi::TestMPITaskParallel::CRS(const int* matrix){
       }
     }
     row_offsets_.push_back(values.size());
-  } 
+  }
 };
 
 bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::pre_processing() {
@@ -87,7 +87,6 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::pre_processing() {
   vertices_ = taskData->inputs_count[0];
   edges_count_ = taskData->inputs_count[1];
   source_ = taskData->inputs_count[2];
-
 
   auto* matrix = reinterpret_cast<int*>(taskData->inputs[0]);
 
