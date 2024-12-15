@@ -124,6 +124,8 @@ TEST(fomin_v_generalized_scatter, SingleProcessScatter) {
   fomin_v_generalized_scatter::generalized_scatter(sendbuf, data_size, MPI_INT, recvbuf, data_size, MPI_INT, root,
                                                    MPI_COMM_WORLD);
 
+  MPI_Barrier(MPI_COMM_WORLD);
+
   for (int i = 0; i < data_size; ++i) {
     EXPECT_EQ(recvbuf[i], sendbuf[i]);
   }
