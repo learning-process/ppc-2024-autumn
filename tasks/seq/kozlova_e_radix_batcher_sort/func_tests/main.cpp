@@ -71,7 +71,7 @@ TEST(kozlova_e_radix_batcher_sort_seq, test_empty_mas) {
   testTaskSequential.run();
   testTaskSequential.post_processing();
 
-  ASSERT_EQ(res.size(), 0);
+  ASSERT_TRUE(res.empty());
 }
 
 TEST(kozlova_e_radix_batcher_sort_seq, test_single_element) {

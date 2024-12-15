@@ -71,7 +71,7 @@ void kozlova_e_radix_batcher_sort_mpi::RadixBatcherSortSequential::radixSort(std
     } else {
       bits = ~bits;
     }
-    a[i] = *reinterpret_cast<double*>(&bits);
+    std::memcpy(&a[i], &bits, sizeof(double));
   }
 }
 
@@ -145,7 +145,7 @@ void kozlova_e_radix_batcher_sort_mpi::RadixBatcherSortMPI::radixSort(std::vecto
     } else {
       bits = ~bits;
     }
-    a[i] = *reinterpret_cast<double*>(&bits);
+    std::memcpy(&a[i], &bits, sizeof(double));
   }
 }
 
