@@ -5,11 +5,11 @@ void vavilov_v_bellman_ford_mpi::TestMPITaskSequential::CRS(const int* matrix) {
   for (int i = 0; i < vertices_; ++i) {
     for (int j = 0; j < vertices_; ++j) {
       if (matrix[i * vertices_ + j] != 0) {
-        weights_.push_back(input_matrix[i * V + j]);
+        weights_.push_back(input_matrix[i * vertices_ + j]);
         col_indices_.push_back(j);
       }
     }
-    row_offsets_.push_back(values.size());
+    row_offsets_.push_back(weights_.size());
   }
 };
 
@@ -68,16 +68,16 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential::post_processing() {
   return true;
 }
 
-void vavilov_v_bellman_ford_mpi::TestMPITaskParallel::CRS(const int* matrix) {
+void vavilov_v_bellman_ford_mpi::TestMPITaskSequential::CRS(const int* matrix) {
   row_ptr.push_back(0);
   for (int i = 0; i < vertices_; ++i) {
     for (int j = 0; j < vertices_; ++j) {
       if (matrix[i * vertices_ + j] != 0) {
-        weights_.push_back(input_matrix[i * V + j]);
+        weights_.push_back(input_matrix[i * vertices_ + j]);
         col_indices_.push_back(j);
       }
     }
-    row_offsets_.push_back(values.size());
+    row_offsets_.push_back(weights_.size());
   }
 };
 
