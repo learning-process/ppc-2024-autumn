@@ -7,7 +7,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/ermilova_d_Shell_sort_simple_merge/include/ops_seq.hpp"
 
-std::vector<int> getRandomVector(int size, int upper_border, int lower_border) {
+static std::vector<int> getRandomVector(int size, int upper_border, int lower_border) {
   std::random_device dev;
   std::mt19937 gen(dev());
   if (size <= 0) throw "Incorrect size";
