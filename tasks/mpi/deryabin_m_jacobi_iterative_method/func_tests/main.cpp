@@ -55,7 +55,6 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_valid_matrix) {
   }
 }
 
-
 TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_3X_diagonal_matrix) {
   boost::mpi::communicator world;
   std::random_device rd;
