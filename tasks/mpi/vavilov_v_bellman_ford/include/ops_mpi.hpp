@@ -28,6 +28,7 @@ class TestMPITaskSequential : public ppc::core::Task {
   std::vector<int> row_offsets_, col_indices_, weights_;
   std::vector<int> distances_;
   int vertices_{0}, edges_count_{0}, source_{0};
+  void CRS(const int* matrix);
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -43,6 +44,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   std::vector<int> row_offsets_, col_indices_, weights_;
   std::vector<int> distances_;
   int vertices_{0}, edges_count_{0}, source_{0};
+  void CRS(const int* matrix);
   boost::mpi::communicator world;
 };
 }  // namespace vavilov_v_bellman_ford_mpi
