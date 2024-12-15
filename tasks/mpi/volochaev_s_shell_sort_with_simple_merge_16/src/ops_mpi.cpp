@@ -20,9 +20,7 @@ bool volochaev_s_shell_sort_with_simple_merge_16_mpi::Lab3_16_seq::pre_processin
 
   mas = new int[size_];
 
-  for (int i = 0; i < size_; ++i) {
-    mas[i] = x[i];
-  }
+  std::copy(x, x + size_, mas);
 
   return true;
 }
@@ -73,9 +71,7 @@ bool volochaev_s_shell_sort_with_simple_merge_16_mpi::Lab3_16_mpi::pre_processin
 
     mas.resize(size_);
 
-    for (int i = 0; i < size_; ++i) {
-      mas[i] = tmp[i];
-    }
+    std::copy(x, x + size_, mas.begin());
   }
 
   return true;
