@@ -6,6 +6,8 @@
 
 #include "seq/muhina_m_shell_sort/include/ops_seq.hpp"
 
+namespace muhina_m_shell_sort_mpi {
+
 std::vector<int> Get_Random_Vector(int sz, int min_value, int max_value) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -15,6 +17,7 @@ std::vector<int> Get_Random_Vector(int sz, int min_value, int max_value) {
   }
   return vec;
 }
+}  // namespace muhina_m_shell_sort_mpi
 
 TEST(muhina_m_shell_sort_seq, Test_Sort_Small) {
   std::vector<int> in = {5, 2, 9, 1, 5, 6};
@@ -33,6 +36,20 @@ TEST(muhina_m_shell_sort_seq, Test_Sort_Small) {
   ShellSortSequential.run();
   ShellSortSequential.post_processing();
   ASSERT_EQ(out, expected_result);
+}
+
+TEST(muhina_m_shell_sort_seq, Test_EmptyVec) {
+  std::vector<int> in = {};
+  std::vector<int> out(in.size());
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
+
+  muhina_m_shell_sort_seq::ShellSortSequential ShellSortSequential(taskDataSeq);
+  EXPECT_FALSE(ShellSortSequential.validation());
 }
 
 TEST(muhina_m_shell_sort_seq, Test_Sort_RepeatingValues) {
@@ -77,7 +94,7 @@ TEST(muhina_m_shell_sort_seq, Test_Sort_RandomValues) {
   const int count = 10;
   const int min_val = 0;
   const int max_val = 100;
-  std::vector<int> in = Get_Random_Vector(count, min_val, max_val);
+  std::vector<int> in = muhina_m_shell_sort_mpi::Get_Random_Vector(count, min_val, max_val);
   std::vector<int> out(in.size(), 0);
 
   std::vector<int> expected_result = in;

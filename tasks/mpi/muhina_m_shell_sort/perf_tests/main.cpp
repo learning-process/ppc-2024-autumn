@@ -8,6 +8,8 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/muhina_m_shell_sort/include/ops_mpi.hpp"
 
+namespace muhina_m_shell_sort_mpi {
+
 std::vector<int> Get_Random_Vector(int sz, int min_value, int max_value) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -17,6 +19,7 @@ std::vector<int> Get_Random_Vector(int sz, int min_value, int max_value) {
   }
   return vec;
 }
+}  // namespace muhina_m_shell_sort_mpi
 
 TEST(muhina_m_shell_sort_mpi, run_pipeline) {
   boost::mpi::communicator world;
@@ -29,7 +32,7 @@ TEST(muhina_m_shell_sort_mpi, run_pipeline) {
     count_size_vector = 10000;
     const int min_val = 0;
     const int max_val = 100;
-    global_vec = Get_Random_Vector(count_size_vector, min_val, max_val);
+    global_vec = muhina_m_shell_sort_mpi::Get_Random_Vector(count_size_vector, min_val, max_val);
     global_res.resize(global_vec.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
@@ -74,7 +77,7 @@ TEST(muhina_m_shell_sort_mpi, run_task) {
     count_size_vector = 1000;
     const int min_val = 0;
     const int max_val = 100;
-    global_vec = Get_Random_Vector(count_size_vector, min_val, max_val);
+    global_vec = muhina_m_shell_sort_mpi::Get_Random_Vector(count_size_vector, min_val, max_val);
     global_res.resize(global_vec.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());

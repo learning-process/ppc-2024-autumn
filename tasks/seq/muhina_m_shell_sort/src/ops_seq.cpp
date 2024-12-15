@@ -4,8 +4,6 @@
 #include <random>
 #include <thread>
 
-using namespace std::chrono_literals;
-
 std::vector<int> muhina_m_shell_sort_seq::shellSort(const std::vector<int>& vect) {
   std::vector<int> sortedVec = vect;
   int n = sortedVec.size();
@@ -38,10 +36,10 @@ bool muhina_m_shell_sort_seq::ShellSortSequential::pre_processing() {
 
 bool muhina_m_shell_sort_seq::ShellSortSequential::validation() {
   internal_order_test();
-  if (taskData->inputs_count[0] == 0) {
-    return taskData->outputs_count[0] == 0;
-  }
-  return taskData->outputs_count[0] != 0;
+  int sizeVec = taskData->inputs_count[0];
+  int sizeResultVec = taskData->outputs_count[0];
+
+  return (sizeVec > 0 && sizeVec == sizeResultVec);
 }
 
 bool muhina_m_shell_sort_seq::ShellSortSequential::run() {

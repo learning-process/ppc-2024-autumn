@@ -3,11 +3,8 @@
 
 #include <algorithm>
 #include <functional>
-#include <string>
 #include <thread>
 #include <vector>
-
-using namespace std::chrono_literals;
 
 std::vector<int> muhina_m_shell_sort_mpi::shellSort(const std::vector<int>& vect) {
   std::vector<int> sortedVec = vect;
@@ -38,10 +35,10 @@ bool muhina_m_shell_sort_mpi::ShellSortMPISequential::pre_processing() {
 
 bool muhina_m_shell_sort_mpi::ShellSortMPISequential::validation() {
   internal_order_test();
-  if (taskData->inputs_count[0] == 0) {
-    return taskData->outputs_count[0] == 0;
-  }
-  return taskData->outputs_count[0] != 0;
+  int sizeVec = taskData->inputs_count[0];
+  int sizeResultVec = taskData->outputs_count[0];
+
+  return (sizeVec > 0 && sizeVec == sizeResultVec);
 }
 
 bool muhina_m_shell_sort_mpi::ShellSortMPISequential::run() {
@@ -73,10 +70,10 @@ bool muhina_m_shell_sort_mpi::ShellSortMPIParallel::pre_processing() {
 bool muhina_m_shell_sort_mpi::ShellSortMPIParallel::validation() {
   internal_order_test();
   if (world_.rank() == 0) {
-    if (taskData->inputs_count[0] == 0) {
-      return taskData->outputs_count[0] == 0;
-    }
-    return taskData->outputs_count[0] != 0;
+    int sizeVec = taskData->inputs_count[0];
+    int sizeResultVec = taskData->outputs_count[0];
+
+    return (sizeVec > 0 && sizeVec == sizeResultVec);
   }
   return true;
 }
