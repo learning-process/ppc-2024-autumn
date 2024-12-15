@@ -1,4 +1,4 @@
-#include "mpi/agafeev_s_linear_lopology/include/lintop_mpi.hpp"
+#include "mpi/agafeev_s_linear_topology/include/lintop_mpi.hpp"
 
 namespace agafeev_s_linear_topology {
 
@@ -37,6 +37,8 @@ bool LinearTopology<T>::run() {
   }
 
   boost::mpi::broadcast(world, data_size, 0);
+
+  return true;
 }
 
 template <typename T>
@@ -44,6 +46,7 @@ bool LinearTopology<T>::post_processing() {
   internal_order_test();
 
   if (world.rank() == 0) {
+    reinterpret_cast<bool*>(taskData->outputs[0])[0] = result_;
   }
 
   return true;

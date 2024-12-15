@@ -22,6 +22,7 @@ class LinearTopology : public ppc::core::Task {
  private:
   boost::mpi::communicator world;
   std::vector<T> data_;
+  bool result_ = false;
 };
 
 }  // namespace agafeev_s_linear_topology
