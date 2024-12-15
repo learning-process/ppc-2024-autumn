@@ -170,11 +170,20 @@ bool leontev_n_mat_vec_mpi::MPIMatVecParallel::run() {
   std::vector<int> local_tmp(divres.quot + divres.rem, 0);
   std::vector<int> sizes(world.size(), divres.quot * res.size());
   sizes[0] += divres.rem * res.size();
-  boost::mpi::scatterv(world, mat_, sizes, local_input.data(), 0);
+  if (world.rank() == 0) {
+    for (int proc = 1; proc < world.size(); proc++) {
+      int curpos = std::accumulate(sizes.begin(), sizes.begin() + proc, 0);
+      world.send(proc, 0, mat_.data() + curpos, divres.quot);
+    }
+  }
+  if (world.rank() != 0) {
+    world.recv(0, 0, local_input.data(), divres.quot);
+  }
+  // boost::mpi::scatterv(world, mat_, sizes, local_input.data(), 0);
   if (world.rank() == 0) {
     for (int i = 0; i < divres.quot + divres.rem; i++) {
       for (size_t j = 0; j < res.size(); j++) {
-        local_tmp[i] += local_input[i * res.size() + j] * vec_[j];
+        local_tmp[i] += mat_[i * res.size() + j] * vec_[j];
       }
     }
   } else {
@@ -186,6 +195,11 @@ bool leontev_n_mat_vec_mpi::MPIMatVecParallel::run() {
   }
   // my_gather(world, local_tmp, res.data(), sizes, 0);
   boost::mpi::gatherv(world, local_tmp, res.data(), sizes, 0);
+  for (size_t i = 0; i < res.size(); i++) {
+    std::cerr << res[i] << ' ';
+  }
+  std::cerr << std::endl;
+  // debug
   return true;
 }
 
