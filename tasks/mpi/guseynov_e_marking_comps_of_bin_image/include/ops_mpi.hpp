@@ -8,14 +8,13 @@
 
 #include "core/task/include/task.hpp"
 
-namespace mpi/guseynov_e_marking_comps_of_bin_image_mpi {
+namespace guseynov_e_marking_comps_of_bin_image_mpi {
 
 std::vector<int> getRandomBinImage(int rows, int cols);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -23,23 +22,22 @@ class TestMPITaskSequential : public ppc::core::Task {
 
  private:
   std::vector<int> image_;
-  std::vector<int labeled_image;
+  std::vector < int labeled_image;
   int rows, columns;
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-
  private:
   std::vector<int> image_, local_image_;
   std::vector<int> labeled_image;
+  int rows, columns;
   boost::mpi::communicator world;
 };
 
-}  // namespace nesterov_a_test_task_mpi
+}  // namespace guseynov_e_marking_comps_of_bin_image_mpi
