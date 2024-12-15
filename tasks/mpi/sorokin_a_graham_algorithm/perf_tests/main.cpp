@@ -10,6 +10,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/sorokin_a_graham_algorithm/include/ops_mpi.hpp"
 
+namespace sorokin_a_graham_algorithm_mpi1 {
 std::vector<int> getrndvec(int n, int max, int min) {
   std::uniform_real_distribution<double> unif(static_cast<double>(min), static_cast<double>(max));
   std::random_device rand_dev;
@@ -20,10 +21,11 @@ std::vector<int> getrndvec(int n, int max, int min) {
   }
   return tmp;
 }
+}  // namespace sorokin_a_graham_algorithm_mpi1
 
 TEST(sorokin_a_graham_algorithm_perf_test, test_10000000_points_tack) {
   boost::mpi::communicator world;
-  std::vector<int> in = getrndvec(20000000, -100, 100);
+  std::vector<int> in = sorokin_a_graham_algorithm_mpi1::getrndvec(20000000, -100, 100);
   std::vector<int> out(in.size(), 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -58,7 +60,7 @@ TEST(sorokin_a_graham_algorithm_perf_test, test_10000000_points_tack) {
 }
 TEST(sorokin_a_graham_algorithm_perf_test, test_10000000_points) {
   boost::mpi::communicator world;
-  std::vector<int> in = getrndvec(20000000, -100, 100);
+  std::vector<int> in = sorokin_a_graham_algorithm_mpi1::getrndvec(20000000, -100, 100);
   std::vector<int> out(in.size(), 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
