@@ -17,7 +17,7 @@ namespace borisov_s_crs_mul_mpi {
 
 class CrsMatrixMulTaskMPI : public ppc::core::Task {
  public:
-  explicit CrsMatrixMulTaskMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)), world() {}
+  explicit CrsMatrixMulTaskMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
 
   bool pre_processing() override;
   bool validation() override;
