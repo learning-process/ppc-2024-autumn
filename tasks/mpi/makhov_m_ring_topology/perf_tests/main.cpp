@@ -11,9 +11,9 @@
 TEST(mpi_makhov_m_ring_topology_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
   size_t size = 10000000;
-  std::vector<int> input_vector(size, 1);
-  std::vector<int> output_vector(size);
-  std::vector<int> sequence(world.size() + 1);
+  std::vector<int32_t> input_vector(size, 1);
+  std::vector<int32_t> output_vector(size);
+  std::vector<int32_t> sequence(world.size() + 1);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -52,9 +52,9 @@ TEST(mpi_makhov_m_ring_topology_perf_test, test_pipeline_run) {
 TEST(mpi_makhov_m_ring_topology_perf_test, test_task_run) {
   boost::mpi::communicator world;
   size_t size = 10000000;
-  std::vector<int> input_vector(size, 1);
-  std::vector<int> output_vector(size);
-  std::vector<int> sequence(world.size() + 1);
+  std::vector<int32_t> input_vector(size, 1);
+  std::vector<int32_t> output_vector(size);
+  std::vector<int32_t> sequence(world.size() + 1);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();

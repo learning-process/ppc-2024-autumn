@@ -12,15 +12,15 @@ TEST(makhov_m_ring_topology, RandVectorZeroSize) {
   std::random_device dev;
   std::mt19937 gen(dev());
   size_t size = 0;
-  std::vector<int> input_vector(size);
-  std::vector<int> output_vector(size);
-  std::vector<int> sequence(world.size() + 1);
-  std::vector<int> reference_sequence(world.size() + 1);
-  int min = 0;
-  int max = 9;
+  std::vector<int32_t> input_vector(size);
+  std::vector<int32_t> output_vector(size);
+  std::vector<int32_t> sequence(world.size() + 1);
+  std::vector<int32_t> reference_sequence(world.size() + 1);
+  int32_t min = 0;
+  int32_t max = 9;
 
   for (size_t i = 0; i < size; i++) {
-    input_vector[i] = (int)(min + gen() % (max - min + 1));
+    input_vector[i] = (int32_t)(min + gen() % (max - min + 1));
   }
 
   for (size_t i = 0; i < (size_t)world.size(); i++) {
@@ -49,15 +49,15 @@ TEST(makhov_m_ring_topology, RandVectorSize1) {
   std::random_device dev;
   std::mt19937 gen(dev());
   size_t size = 1;
-  std::vector<int> input_vector(size);
-  std::vector<int> output_vector(size);
-  std::vector<int> sequence(world.size() + 1);
-  std::vector<int> reference_sequence(world.size() + 1);
-  int min = 0;
-  int max = 9;
+  std::vector<int32_t> input_vector(size);
+  std::vector<int32_t> output_vector(size);
+  std::vector<int32_t> sequence(world.size() + 1);
+  std::vector<int32_t> reference_sequence(world.size() + 1);
+  int32_t min = 0;
+  int32_t max = 9;
 
   for (size_t i = 0; i < size; i++) {
-    input_vector[i] = (int)(min + gen() % (max - min + 1));
+    input_vector[i] = (int32_t)(min + gen() % (max - min + 1));
   }
 
   for (size_t i = 0; i < (size_t)world.size(); i++) {
@@ -94,15 +94,15 @@ TEST(makhov_m_ring_topology, RandVectorSize10) {
   std::random_device dev;
   std::mt19937 gen(dev());
   size_t size = 10;
-  std::vector<int> input_vector(size);
-  std::vector<int> output_vector(size);
-  std::vector<int> sequence(world.size() + 1);
-  std::vector<int> reference_sequence(world.size() + 1);
-  int min = 0;
-  int max = 9;
+  std::vector<int32_t> input_vector(size);
+  std::vector<int32_t> output_vector(size);
+  std::vector<int32_t> sequence(world.size() + 1);
+  std::vector<int32_t> reference_sequence(world.size() + 1);
+  int32_t min = 0;
+  int32_t max = 9;
 
   for (size_t i = 0; i < size; i++) {
-    input_vector[i] = (int)(min + gen() % (max - min + 1));
+    input_vector[i] = (int32_t)(min + gen() % (max - min + 1));
   }
 
   for (size_t i = 0; i < (size_t)world.size(); i++) {
@@ -139,15 +139,15 @@ TEST(makhov_m_ring_topology, RandVectorSize1000) {
   std::random_device dev;
   std::mt19937 gen(dev());
   size_t size = 1000;
-  std::vector<int> input_vector(size);
-  std::vector<int> output_vector(size);
-  std::vector<int> sequence(world.size() + 1);
-  std::vector<int> reference_sequence(world.size() + 1);
-  int min = 0;
-  int max = 9;
+  std::vector<int32_t> input_vector(size);
+  std::vector<int32_t> output_vector(size);
+  std::vector<int32_t> sequence(world.size() + 1);
+  std::vector<int32_t> reference_sequence(world.size() + 1);
+  int32_t min = 0;
+  int32_t max = 9;
 
   for (size_t i = 0; i < size; i++) {
-    input_vector[i] = (int)(min + gen() % (max - min + 1));
+    input_vector[i] = (int32_t)(min + gen() % (max - min + 1));
   }
 
   for (size_t i = 0; i < (size_t)world.size(); i++) {
