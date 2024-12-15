@@ -1,7 +1,6 @@
 #ifndef _FOX_ALGORITHM_H_
 #define _FOX_ALGORITHM_H_
 
-#include <barrier>
 #include <cmath>
 #include <numeric>
 #include <stdexcept>
@@ -81,9 +80,6 @@ bool FoxAlgorithm<DataType>::pre_processing() {
     input_b.rows = taskData->inputs_count[3];
     input_b.columns = taskData->inputs_count[4];
     C = matrix<DataType>(input_a.rows, input_b.columns);
-    // std::cout << "A:\n" << input_a << std::endl;
-    // std::cout << "B:\n" << input_b << std::endl;
-    // std::cout << "С:\n" << C << std::endl;
   }
   return true;
 }
@@ -105,7 +101,6 @@ bool FoxAlgorithm<DataType>::run() {
   }
 
   boost::mpi::communicator comm = world.split(Color::Used);
-  // std::cout << "group size " << comm.size() << " from total " << world.size() << std::endl;
   const auto rank = comm.rank();
   const auto size = comm.size();
   //  init step l = 0
@@ -116,21 +111,14 @@ bool FoxAlgorithm<DataType>::run() {
     block_a = blocks_a[0];
     block_b = blocks_b[0];
     block_c = matrix<DataType>{block_a.rows};
-    // std::cout << "block size " << block_size << " count blocks " << blocks_a.size() << std::endl;
     for (size_t i = 1; i < blocks_a.size(); ++i) {
-      // std::cout << "Pa[" << i << "]" << blocks_a[i] << std::endl;
       comm.send(i, Tag::BlockA, blocks_a[i]);
       comm.send(i, Tag::BlockB, blocks_b[i]);
     }
   } else {
     comm.recv(0, Tag::BlockA, block_a);
     comm.recv(0, Tag::BlockB, block_b);
-    // std::cout << "recv blockB to proc " << rank << '\n' << block_b << std::endl;
     block_c = matrix<DataType>{block_a.rows};
-    // std::cout << "Proc# " << comm.rank() << std::endl;
-    // std::cout << "recvA:\n" << block_a << std::endl;
-    // std::cout << "recvB:\n" << block_b << std::endl;
-    // std::cout << "recvC:\n" << block_c << std::endl;
   }
   int p = sqrt(num_processors);
   B = block_b;
@@ -143,16 +131,13 @@ bool FoxAlgorithm<DataType>::run() {
     }
     // multiply block A & block B
     block_c += MatrixOperations::multiply(A, B);
-    // std::cout << "multiply A * B on step " << l << "for proc " << rank << std::endl << block_c;
 
     // share B blocks
     if (l != p - 1) {
       int recv_id = rank - p;
       int share_id = (rank + p) % size;
       if (recv_id < 0) recv_id = size - abs(recv_id);
-      // std::cout << "send B from " << rank << " to " << recv_id << std::endl;
       auto request = comm.isend(recv_id, Tag::BlockB, B);
-      // std::cout << "recv B to " << rank << " from " << share_id << std::endl;
       comm.recv(share_id, Tag::BlockB, B);
       boost::mpi::wait_some(&request, &request + 1);
     }
@@ -163,11 +148,7 @@ bool FoxAlgorithm<DataType>::run() {
   boost::mpi::gather(comm, block_c, res_grid, 0);
 
   if (rank == 0) {
-    // for (size_t i = 0; i < res_grid.size(); ++i) {
-    //   std::cout << "grid[" << i << "]:\n" << res_grid[i] << std::endl;
-    // }
     convert_to_matrix(res_grid, p, C);
-    // std::cout << "RESULT:\n" << C << std::endl;
   }
 
   return true;
@@ -205,7 +186,6 @@ void FoxAlgorithm<DataType>::share_for_row(boost::mpi::communicator &comm, int s
   if (comm.rank() == share_id) {
     for (int recv_id = i * p; recv_id < i * p + p; ++recv_id) {
       if (recv_id != share_id) {
-        // std::cout << "share from " << share_id << " to " << recv_id << std::endl;
         comm.send(recv_id, Tag::BlockA, block);
       }
     }
@@ -225,13 +205,10 @@ BlockGrid<DataType> FoxAlgorithm<DataType>::get_block_grid(size_t block_size, in
       size_t start_row = std::min(i * block_size, data.rows);
       size_t end_column = std::min(j * block_size + block_size, data.columns);
       size_t end_row = std::min(i * block_size + block_size, data.rows);
-      // std::cout << start_row << " " << start_column << " " << end_row << " " << end_column << std::endl;
       if (start_row >= data.rows || start_column >= data.columns) continue;
       for (size_t k = start_row, id = 0; k < end_row; ++k, id += block_size) {
         std::copy(&data[k * data.columns + start_column], &data[k * data.columns + end_column], &(res[i * p + j][id]));
       }
-
-      // std::cout << "P[" << i << "][" << j << "]:\n" << res[i * p + j] << std::endl;
     }
   }
 

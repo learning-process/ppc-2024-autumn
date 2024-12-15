@@ -52,7 +52,7 @@ TEST(khasanyanov_k_fox_algorithm_tests, test_distribution) {
   BlockGrid<int> expected = {{2, 2, {1, 2, 6, 7}},     {2, 2, {3, 4, 8, 9}},     {2, 2, {5, 0, 10, 0}},
                              {2, 2, {11, 12, 16, 17}}, {2, 2, {13, 14, 18, 19}}, {2, 2, {15, 0, 20, 0}},
                              {2, 2, {0, 0, 0, 0}},     {2, 2, {0, 0, 0, 0}},     {2, 2, {0, 0, 0, 0}}};
-  ASSERT_EQ(expected, res);
+  EXPECT_EQ(expected, res);
 }
 
 TEST(khasanyanov_k_fox_algorithm_tests, test_convertion_grid_to_matrix) {
@@ -65,7 +65,7 @@ TEST(khasanyanov_k_fox_algorithm_tests, test_convertion_grid_to_matrix) {
   matrix<int> c(3, 3);
   FoxAlgorithm<int>::convert_to_matrix(grid, 2, c);
   matrix<int> expected{3, 3, {1, 2, 3, 4, 5, 6, 7, 8, 9}};
-  ASSERT_EQ(expected, c);
+  EXPECT_EQ(expected, c);
 }
 
 TEST(khasanyanov_k_fox_algorithm_tests, test_int) {
@@ -81,7 +81,7 @@ TEST(khasanyanov_k_fox_algorithm_tests, test_int) {
   RUN_TASK(test);
   if (world.rank() == 0) {
     auto expected = MatrixOperations::multiply(A, B);
-    ASSERT_EQ(expected, C);
+    EXPECT_EQ(expected, C);
   }
 }
 
@@ -97,7 +97,7 @@ TEST(khasanyanov_k_fox_algorithm_tests, test_validation) {
   }
   FoxAlgorithm<int> test(taskData);
   if (world.rank() == 0) {
-    ASSERT_FALSE(test.validation());
+    EXPECT_FALSE(test.validation());
   }
 }
 

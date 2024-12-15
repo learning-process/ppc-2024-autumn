@@ -29,16 +29,6 @@ struct matrix {
   auto* operator*() { return data.data(); };
 
   friend bool operator==(const matrix<T>& lhs, const matrix<T>& rhs) { return lhs.data == rhs.data; }
-  // friend std::ostream& operator<<(std::ostream& os, const matrix<T>& mt) {
-  //   std::cout << "matrix[" << mt.rows << 'x' << mt.columns << "]\n";
-  //   for (size_t i = 0ull; i < mt.rows; ++i) {
-  //     for (size_t j = 0ull; j < mt.columns; ++j) {
-  //       os << std::left << std::setw(5) << mt[i * mt.columns + j] << ' ';
-  //     }
-  //     os << std::endl;
-  //   }
-  //   return os;
-  // }
 
   template <class Archive>
   void serialize(Archive& ar, unsigned int) {
