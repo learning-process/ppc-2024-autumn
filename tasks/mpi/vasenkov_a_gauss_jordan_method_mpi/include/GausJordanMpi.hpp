@@ -14,8 +14,6 @@
 namespace vasenkov_a_gauss_jordan_method_mpi {
 
 std::vector<double> processMatrix(int n, int k, const std::vector<double>& matrix);
-void calcSizesDispls(int n, int k, int world_size, std::vector<int>& sizes, std::vector<int>& displs);
-std::vector<std::pair<int, int>> getIndicies(int rows, int cols);
 void updateMatrix(int n, int k, std::vector<double>& matrix, const std::vector<double>& iter_result);
 
 class GaussJordanParallel : public ppc::core::Task {
@@ -31,10 +29,10 @@ class GaussJordanParallel : public ppc::core::Task {
   bool solve = true;
   int n;
   std::vector<int> sizes;
-  std::vector<int> displs;
-  std::vector<double> iter_matrix;
-  std::vector<double> iter_result;
-  std::vector<std::pair<int, int>> indicies;
+  std::vector<int> displaces;
+  std::vector<double> iteration_matrix;
+  std::vector<double> result;
+  std::vector<std::pair<int, int>> current_index;
   boost::mpi::communicator world;
 };
 

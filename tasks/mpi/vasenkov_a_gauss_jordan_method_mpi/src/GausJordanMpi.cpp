@@ -12,115 +12,78 @@
 
 #define EPSILON 1e-9
 
-std::vector<double> vasenkov_a_gauss_jordan_method_mpi::processMatrix(int numRows, int numCols,
-                                                                      const std::vector<double>& inputMatrix) {
-  if (numRows <= 0 || numCols < 0 || numCols >= numRows) {
-    throw std::invalid_argument("Invalid matrix dimensions.");
+std::vector<double> vasenkov_a_gauss_jordan_method_mpi::processMatrix(int rows, int cols,
+                                                                      const std::vector<double>& srcMatrix) {
+  if (rows <= 0 || cols < 0 || cols >= rows) {
+    throw std::invalid_argument("Неверные размеры матрицы.");
   }
 
-  std::vector<double> resultVector(numRows * (numRows - numCols + 1));
+  std::vector<double> outputVector(rows * (rows - cols + 1));
 
-  for (int i = 0; i < (numRows - numCols + 1); i++) {
-    resultVector[i] = inputMatrix[(numRows + 1) * numCols + numCols + i];
+  for (int i = 0; i < (rows - cols + 1); i++) {
+    outputVector[i] = srcMatrix[(rows + 1) * cols + cols + i];
   }
 
-  for (int row = 0; row < numCols; row++) {
-    for (int col = 0; col < (numRows - numCols + 1); col++) {
-      resultVector[(numRows - numCols + 1) * (row + 1) + col] = inputMatrix[row * (numRows + 1) + numCols + col];
+  for (int r = 0; r < cols; r++) {
+    for (int c = 0; c < (rows - cols + 1); c++) {
+      outputVector[(rows - cols + 1) * (r + 1) + c] = srcMatrix[r * (rows + 1) + cols + c];
     }
   }
 
-  for (int row = numCols + 1; row < numRows; row++) {
-    for (int col = 0; col < (numRows - numCols + 1); col++) {
-      resultVector[(numRows - numCols + 1) * row + col] = inputMatrix[row * (numRows + 1) + numCols + col];
+  for (int r = cols + 1; r < rows; r++) {
+    for (int c = 0; c < (rows - cols + 1); c++) {
+      outputVector[(rows - cols + 1) * r + c] = srcMatrix[r * (rows + 1) + cols + c];
     }
   }
 
-  return resultVector;
+  return outputVector;
 }
 
-void vasenkov_a_gauss_jordan_method_mpi::updateMatrix(int numRows, int numCols, std::vector<double>& matrix,
-                                                      const std::vector<double>& iterationResults) {
-  if (numRows <= 0 || numCols < 0 || numCols >= numRows) {
-    throw std::invalid_argument("Invalid matrix dimensions.");
+void vasenkov_a_gauss_jordan_method_mpi::updateMatrix(int rows, int cols, std::vector<double>& mat,
+                                                      const std::vector<double>& results) {
+  if (rows <= 0 || cols < 0 || cols >= rows) {
+    throw std::invalid_argument("Неверные размеры матрицы.");
   }
 
-  for (int row = 0; row < numCols; row++) {
-    for (int col = 0; col < (numRows - numCols); col++) {
-      matrix[row * (numRows + 1) + numCols + 1 + col] = iterationResults[row * (numRows - numCols) + col];
+  for (int r = 0; r < cols; r++) {
+    for (int c = 0; c < (rows - cols); c++) {
+      mat[r * (rows + 1) + cols + 1 + c] = results[r * (rows - cols) + c];
     }
   }
 
-  for (int row = numCols + 1; row < numRows; row++) {
-    for (int col = 0; col < (numRows - numCols); col++) {
-      matrix[row * (numRows + 1) + numCols + 1 + col] = iterationResults[(row - 1) * (numRows - numCols) + col];
+  for (int r = cols + 1; r < rows; r++) {
+    for (int c = 0; c < (rows - cols); c++) {
+      mat[r * (rows + 1) + cols + 1 + c] = results[(r - 1) * (rows - cols) + c];
     }
   }
 
-  double diagonalElement = matrix[numCols * (numRows + 1) + numCols];
-  if (diagonalElement == 0.0) {
-    throw std::runtime_error("Division by zero during normalization.");
+  double diagElem = mat[cols * (rows + 1) + cols];
+
+  if (diagElem == 0.0) {
+    throw std::runtime_error("Деление на ноль во время нормализации.");
   }
 
-  for (int i = numCols + 1; i < numRows + 1; i++) {
-    matrix[numCols * (numRows + 1) + i] /= diagonalElement;
+  for (int i = cols + 1; i < rows + 1; i++) {
+    mat[cols * (rows + 1) + i] /= diagElem;
   }
 
-  for (int i = 0; i < numRows; i++) {
-    matrix[i * (numRows + 1) + numCols] = 0;
+  for (int i = 0; i < rows; i++) {
+    mat[i * (rows + 1) + cols] = 0;
   }
 
-  matrix[numCols * (numRows + 1) + numCols] = 1;
-}
-
-void vasenkov_a_gauss_jordan_method_mpi::calcSizesDispls(int n, int k, int world_size, std::vector<int>& sizes,
-                                                         std::vector<int>& displs) {
-  int r = n - 1;
-  int c = n - k;
-  sizes.resize(world_size, 0);
-  displs.resize(world_size, 0);
-
-  if (world_size > r) {
-    for (int i = 0; i < r; ++i) {
-      sizes[i] = c;
-      displs[i] = i * c;
-    }
-  } else {
-    int a = r / world_size;
-    int b = r % world_size;
-
-    int offset = 0;
-    for (int i = 0; i < world_size; ++i) {
-      if (b-- > 0) {
-        sizes[i] = (a + 1) * c;
-      } else {
-        sizes[i] = a * c;
-      }
-      displs[i] = offset;
-      offset += sizes[i];
-    }
-  }
-}
-
-std::vector<std::pair<int, int>> vasenkov_a_gauss_jordan_method_mpi::getIndicies(int rows, int cols) {
-  std::vector<std::pair<int, int>> indicies;
-  indicies.reserve(rows * cols);
-
-  for (int i = 1; i < rows; ++i) {
-    for (int j = 1; j < cols; ++j) {
-      indicies.emplace_back(i, j);
-    }
-  }
-  return indicies;
+  mat[cols * (rows + 1) + cols] = 1;
 }
 
 bool vasenkov_a_gauss_jordan_method_mpi::GaussJordanParallel::validation() {
   internal_order_test();
+
   if (world.rank() != 0) {
     return true;
   }
+
   int n_val = *reinterpret_cast<int*>(taskData->inputs[1]);
   int matrix_size = taskData->inputs_count[0];
+
   auto* matrix_data = reinterpret_cast<double*>(taskData->inputs[0]);
 
   if (n_val * (n_val + 1) == matrix_size) {
@@ -128,6 +91,7 @@ bool vasenkov_a_gauss_jordan_method_mpi::GaussJordanParallel::validation() {
     temp_matrix.assign(matrix_data, matrix_data + matrix_size);
     return true;
   }
+
   return false;
 }
 
@@ -145,82 +109,129 @@ bool vasenkov_a_gauss_jordan_method_mpi::GaussJordanParallel::pre_processing() {
 
   return true;
 }
+std::vector<std::pair<int, int>> getIndex(int rowCount, int colCount) {
+  std::vector<std::pair<int, int>> indexPairs;
+  indexPairs.reserve(rowCount * colCount);
 
+  for (int i = 1; i < rowCount; ++i) {
+    for (int j = 1; j < colCount; ++j) {
+      indexPairs.emplace_back(i, j);
+    }
+  }
+
+  return indexPairs;
+}
 bool vasenkov_a_gauss_jordan_method_mpi::GaussJordanParallel::run() {
   internal_order_test();
 
   boost::mpi::broadcast(world, n, 0);
 
-  for (int k = 0; k < n; k++) {
+  for (int pivot = 0; pivot < n; ++pivot) {
     if (world.rank() == 0) {
-      if (matrix[k * (n + 1) + k] == 0) {
-        int change;
-        for (change = k + 1; change < n; change++) {
-          if (matrix[change * (n + 1) + k] != 0) {
-            for (int col = 0; col < (n + 1); col++) {
-              std::swap(matrix[k * (n + 1) + col], matrix[change * (n + 1) + col]);
+      if (matrix[pivot * (n + 1) + pivot] == 0) {
+        int rowToSwap;
+
+        for (rowToSwap = pivot + 1; rowToSwap < n; ++rowToSwap) {
+          if (matrix[rowToSwap * (n + 1) + pivot] != 0) {
+            for (int column = 0; column < (n + 1); ++column) {
+              std::swap(matrix[pivot * (n + 1) + column], matrix[rowToSwap * (n + 1) + column]);
             }
             break;
           }
         }
-        if (change == n) {
+        if (rowToSwap == n) {
           solve = false;
         }
       }
 
       if (solve) {
-        iter_matrix = vasenkov_a_gauss_jordan_method_mpi::processMatrix(n, k, matrix);
+        iteration_matrix = vasenkov_a_gauss_jordan_method_mpi::processMatrix(n, pivot, matrix);
 
-        vasenkov_a_gauss_jordan_method_mpi::calcSizesDispls(n, k, world.size(), sizes, displs);
-        indicies = vasenkov_a_gauss_jordan_method_mpi::getIndicies(n, n - k + 1);
+        int remainingRows = n - 1;
+        int remainingCols = n - pivot;
 
-        iter_result.resize((n - 1) * (n - k));
+        sizes.resize(world.size(), 0);
+        displaces.resize(world.size(), 0);
+
+        if (world.size() > remainingRows) {
+          for (int i = 0; i < remainingRows; ++i) {
+            sizes[i] = remainingCols;
+            displaces[i] = i * remainingCols;
+          }
+        } else {
+          int baseSize = remainingRows / world.size();
+          int extraRows = remainingRows % world.size();
+
+          int currentOffset = 0;
+          for (int i = 0; i < world.size(); ++i) {
+            if (extraRows-- > 0) {
+              sizes[i] = (baseSize + 1) * remainingCols;
+            } else {
+              sizes[i] = baseSize * remainingCols;
+            }
+            displaces[i] = currentOffset;
+            currentOffset += sizes[i];
+          }
+        }
+
+        current_index = getIndex(n, n - pivot + 1);
+
+        result.resize((n - 1) * (n - pivot));
       }
     }
+
     boost::mpi::broadcast(world, solve, 0);
+
     if (!solve) return false;
+
     boost::mpi::broadcast(world, sizes, 0);
-    boost::mpi::broadcast(world, iter_matrix, 0);
+    boost::mpi::broadcast(world, iteration_matrix, 0);
 
-    int local_size = sizes[world.rank()];
-    std::vector<std::pair<int, int>> local_indicies(local_size);
+    int localCount = sizes[world.rank()];
+
+    std::vector<std::pair<int, int>> localIndices(localCount);
+
     if (world.rank() == 0) {
-      boost::mpi::scatterv(world, indicies.data(), sizes, displs, local_indicies.data(), local_size, 0);
+      boost::mpi::scatterv(world, current_index.data(), sizes, displaces, localIndices.data(), localCount, 0);
     } else {
-      boost::mpi::scatterv(world, local_indicies.data(), local_size, 0);
+      boost::mpi::scatterv(world, localIndices.data(), localCount, 0);
     }
 
-    std::vector<double> local_result;
-    local_result.reserve(local_size);
-    for (int ind = 0; ind < local_size; ind++) {
-      auto [i, j] = local_indicies[ind];
-      double rel = iter_matrix[0];
-      double nel = iter_matrix[i * (n - k + 1) + j];
-      double a = iter_matrix[j];
-      double b = iter_matrix[i * (n - k + 1)];
-      double res = nel - (a * b) / rel;
-      local_result[ind] = res;
+    std::vector<double> localResults(localCount);
+
+    for (int index = 0; index < localCount; ++index) {
+      auto [rowIndex, colIndex] = localIndices[index];
+
+      double referenceValue = iteration_matrix[0];
+
+      double currentValue = iteration_matrix[rowIndex * (n - pivot + 1) + colIndex];
+
+      double currentIndex1 = iteration_matrix[colIndex];
+      double currentIndex2 = iteration_matrix[rowIndex * (n - pivot + 1)];
+
+      localResults[index] = currentValue - (currentIndex1 * currentIndex2) / referenceValue;
     }
 
     if (world.rank() == 0) {
-      boost::mpi::gatherv(world, local_result.data(), local_size, iter_result.data(), sizes, displs, 0);
+      boost::mpi::gatherv(world, localResults.data(), localCount, result.data(), sizes, displaces, 0);
     } else {
-      boost::mpi::gatherv(world, local_result.data(), local_size, 0);
+      boost::mpi::gatherv(world, localResults.data(), localCount, 0);
     }
 
     if (world.rank() == 0) {
-      vasenkov_a_gauss_jordan_method_mpi::updateMatrix(n, k, matrix, iter_result);
+      vasenkov_a_gauss_jordan_method_mpi::updateMatrix(n, pivot, matrix, result);
     }
   }
-
   return true;
 }
 
 bool vasenkov_a_gauss_jordan_method_mpi::GaussJordanParallel::post_processing() {
   internal_order_test();
+
   if (!solve) {
     return false;
   }
+
   if (world.rank() == 0) {
     auto* output_data = reinterpret_cast<double*>(taskData->outputs[0]);
     std::copy(matrix.begin(), matrix.end(), output_data);
