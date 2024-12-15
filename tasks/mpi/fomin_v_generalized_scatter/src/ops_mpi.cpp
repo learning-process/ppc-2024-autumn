@@ -26,7 +26,8 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
 
   int parent = (rank == root) ? MPI_PROC_NULL : (rank - 1) / 2;
 
-  int datatype_size = sizeof(int);
+  int datatype_size;
+  MPI_Type_size(sendtype, &datatype_size);
 
   if (sendcount != size * recvcount) {
     return MPI_ERR_COUNT;
@@ -34,9 +35,7 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
 
   if (size == 1) {
     // Single process, copy sendbuf to recvbuf directly
-    const int* send = static_cast<const int*>(sendbuf);
-    int* recv = static_cast<int*>(recvbuf);
-    std::copy(send, send + recvcount, recv);
+    memcpy(recvbuf, sendbuf, recvcount * datatype_size);
   } else {
     if (rank == root) {
       const char* send_ptr = static_cast<const char*>(sendbuf);
