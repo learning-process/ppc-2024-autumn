@@ -22,8 +22,8 @@ bool makhov_m_ring_topology::TestMPITaskParallel::pre_processing() {
 bool makhov_m_ring_topology::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    return taskData->inputs_count.size() == 1 && taskData->inputs_count[0] > 0 && taskData->outputs_count.size() == 2 &&
-           taskData->outputs_count[0] == taskData->inputs_count[0];
+    return taskData->inputs_count.size() == 1 && taskData->inputs_count[0] > 0 &&
+           taskData->outputs_count.size() == 2 && taskData->outputs_count[0] == taskData->inputs_count[0];
   }
   return true;
 }
