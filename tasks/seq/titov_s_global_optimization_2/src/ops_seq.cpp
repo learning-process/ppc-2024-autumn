@@ -27,7 +27,7 @@ bool titov_s_global_optimization_2_seq::GlobalOpt2Sequential::pre_processing() {
 
 bool titov_s_global_optimization_2_seq::GlobalOpt2Sequential::validation() {
   internal_order_test();
-  if (!taskData->inputs[0] || !taskData->inputs[1]) {
+  if (taskData->inputs[0] == nullptr || taskData->inputs[1] ==nullptr) {
     throw std::runtime_error("Invalid inputs provided to the task.");
   }
 

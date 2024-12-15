@@ -37,7 +37,7 @@ class GlobalOpt2Sequential : public ppc::core::Task {
   double GoldenSelection(double a, double b, double eps, const Point& grad, const Point& xj);
   double MakeSimplefx(double lambda, const Point& grad, const Point& xj);
   Point find_next_point(const Point& x_new);
-  Point project_on_constraint(const Point& point, const std::function<double(const Point&)>& constraint_func);
+  static Point project_on_constraint(const Point& point, const std::function<double(const Point&)>& constraint_func);
   static double compute_distance(const Point& p1, const Point& p2);
   static Point compute_constraint_gradient(const std::function<double(const Point&)>& constraint_func, const Point& point);
   static double evaluate_constraint(const std::function<double(const Point&)>& constraint_func, const Point& point);

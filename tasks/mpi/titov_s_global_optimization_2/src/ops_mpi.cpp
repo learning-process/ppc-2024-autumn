@@ -347,8 +347,9 @@ bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::run() {
   }
   return true;
 }
+
 void titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::split_search_area(int num_processes) {
-  std::vector<std::vector<double>> all_bounds(num_processes, std::vector<double>(4));
+  std::vector<double> all_bounds_flat(num_processes * 4);
 
   if (world.rank() == 0) {
     for (int rank = 0; rank < num_processes; ++rank) {
@@ -359,12 +360,22 @@ void titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::split_search_area
 
       double process_lower_bound_x = lower_bound_x_;
       double process_upper_bound_x = upper_bound_x_;
-      all_bounds[rank] = {process_lower_bound_x, process_upper_bound_x, process_lower_bound_y, process_upper_bound_y};
+
+      all_bounds_flat[rank * 4] = process_lower_bound_x;
+      all_bounds_flat[rank * 4 + 1] = process_upper_bound_x;
+      all_bounds_flat[rank * 4 + 2] = process_lower_bound_y;
+      all_bounds_flat[rank * 4 + 3] = process_upper_bound_y;
     }
   }
 
+  std::vector<int> send_counts(num_processes, 4);
+  std::vector<int> displacements(num_processes, 0);
+  for (int i = 1; i < num_processes; ++i) {
+    displacements[i] = displacements[i - 1] + send_counts[i - 1];
+  }
+
   std::vector<double> bounds(4);
-  boost::mpi::scatter(world, all_bounds, bounds, 0);  // Используем эту перегрузку для работы с std::vector
+  boost::mpi::scatterv(world, all_bounds_flat.data(), send_counts, displacements, bounds.data(), 4, 0);
 
   process_lower_bound_x_ = bounds[0];
   process_upper_bound_x_ = bounds[1];
