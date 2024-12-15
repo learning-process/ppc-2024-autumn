@@ -2,6 +2,8 @@
 
 #include "seq/lopatin_i_quick_batcher_mergesort/include/quickBatcherMergesortHeaderSeq.hpp"
 
+namespace lopatin_i_quick_bathcer_sort_seq {
+
 std::vector<int> generateArray(int size) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -11,6 +13,8 @@ std::vector<int> generateArray(int size) {
   }
   return outputArray;
 }
+
+}  // namespace lopatin_i_quick_bathcer_sort_seq
 
 TEST(lopatin_i_quick_batcher_mergesort_seq, test_validation_empty_array) {
   std::vector<int> inputArray = {};
@@ -84,7 +88,7 @@ TEST(lopatin_i_quick_batcher_mergesort_seq, test_3_int) {
 }
 
 TEST(lopatin_i_quick_batcher_mergesort_seq, test_10_int) {
-  std::vector<int> inputArray = generateArray(10);
+  std::vector<int> inputArray = lopatin_i_quick_bathcer_sort_seq::generateArray(10);
   std::vector<int> resultArray(10, 0);
   std::vector<int> expectedResult = inputArray;
   std::sort(expectedResult.begin(), expectedResult.end());
@@ -145,7 +149,7 @@ TEST(lopatin_i_quick_batcher_mergesort_seq, test_sorted_10_int) {
 }
 
 TEST(lopatin_i_quick_batcher_mergesort_seq, test_100_int) {
-  std::vector<int> inputArray = generateArray(100);
+  std::vector<int> inputArray = lopatin_i_quick_bathcer_sort_seq::generateArray(100);
   std::vector<int> resultArray(100, 0);
   std::vector<int> expectedResult = inputArray;
   std::sort(expectedResult.begin(), expectedResult.end());
@@ -166,7 +170,7 @@ TEST(lopatin_i_quick_batcher_mergesort_seq, test_100_int) {
 }
 
 TEST(lopatin_i_quick_batcher_mergesort_seq, test_1000_int) {
-  std::vector<int> inputArray = generateArray(1000);
+  std::vector<int> inputArray = lopatin_i_quick_bathcer_sort_seq::generateArray(1000);
   std::vector<int> resultArray(1000, 0);
   std::vector<int> expectedResult = inputArray;
   std::sort(expectedResult.begin(), expectedResult.end());

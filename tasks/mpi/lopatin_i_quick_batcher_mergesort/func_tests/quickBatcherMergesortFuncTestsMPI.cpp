@@ -2,6 +2,8 @@
 
 #include "mpi/lopatin_i_quick_batcher_mergesort/include/quickBatcherMergesortHeaderMPI.hpp"
 
+namespace lopatin_i_quick_bathcer_sort_mpi {
+
 std::vector<int> generateArray(int size) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -11,6 +13,8 @@ std::vector<int> generateArray(int size) {
   }
   return outputArray;
 }
+
+}  // namespace lopatin_i_quick_bathcer_sort_mpi
 
 TEST(lopatin_i_quick_batcher_mergesort_mpi, test_validation_empty_array) {
   boost::mpi::communicator world;
@@ -50,7 +54,7 @@ TEST(lopatin_i_quick_batcher_mergesort_mpi, test_validation_1_int) {
 
 TEST(lopatin_i_quick_batcher_mergesort_mpi, test_12_int) {
   boost::mpi::communicator world;
-  std::vector<int> inputArray = generateArray(12);
+  std::vector<int> inputArray = lopatin_i_quick_bathcer_sort_mpi::generateArray(12);
   std::vector<int> resultArray(12, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
@@ -167,7 +171,7 @@ TEST(lopatin_i_quick_batcher_mergesort_mpi, test_reverse_12_int) {
 
 TEST(lopatin_i_quick_batcher_mergesort_mpi, test_120_int) {
   boost::mpi::communicator world;
-  std::vector<int> inputArray = generateArray(120);
+  std::vector<int> inputArray = lopatin_i_quick_bathcer_sort_mpi::generateArray(120);
   std::vector<int> resultArray(120, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
@@ -206,7 +210,7 @@ TEST(lopatin_i_quick_batcher_mergesort_mpi, test_120_int) {
 
 TEST(lopatin_i_quick_batcher_mergesort_mpi, test_3600_int) {
   boost::mpi::communicator world;
-  std::vector<int> inputArray = generateArray(3600);
+  std::vector<int> inputArray = lopatin_i_quick_bathcer_sort_mpi::generateArray(3600);
   std::vector<int> resultArray(3600, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();

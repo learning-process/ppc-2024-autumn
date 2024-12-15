@@ -3,6 +3,8 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/lopatin_i_quick_batcher_mergesort/include/quickBatcherMergesortHeaderSeq.hpp"
 
+namespace lopatin_i_quick_bathcer_sort_seq {
+
 std::vector<int> generateArray(int size) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -13,7 +15,9 @@ std::vector<int> generateArray(int size) {
   return outputArray;
 }
 
-std::vector<int> testArray = generateArray(48000);
+}  // namespace lopatin_i_quick_bathcer_sort_seq
+
+std::vector<int> testArray = lopatin_i_quick_bathcer_sort_seq::generateArray(48000);
 
 TEST(lopatin_i_quick_batcher_mergesort_seq, test_pipeline_run) {
   std::vector<int> inputArray = testArray;

@@ -5,6 +5,8 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/lopatin_i_quick_batcher_mergesort/include/quickBatcherMergesortHeaderMPI.hpp"
 
+namespace lopatin_i_quick_bathcer_sort_mpi {
+
 std::vector<int> generateArray(int size) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -15,7 +17,9 @@ std::vector<int> generateArray(int size) {
   return outputArray;
 }
 
-std::vector<int> testArray = generateArray(48000);
+}  // namespace lopatin_i_quick_bathcer_sort_mpi
+
+std::vector<int> testArray = lopatin_i_quick_bathcer_sort_mpi::generateArray(48000);
 
 TEST(lopatin_i_quick_batcher_mergesort_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
