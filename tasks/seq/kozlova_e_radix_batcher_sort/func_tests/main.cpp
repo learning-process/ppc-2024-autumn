@@ -6,6 +6,20 @@
 
 #include "seq/kozlova_e_radix_batcher_sort/include/ops_seq.hpp"
 
+namespace kozlova_e_utility_functions {
+std::vector<double> generate_random_double_vector(size_t size) {
+  std::vector<double> result(size);
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<double> dist(-100.0, 100.0);
+
+  for (auto &value : result) {
+    value = dist(gen);
+  }
+  return result;
+}
+}  // namespace kozlova_e_utility_functions
+
 TEST(kozlova_e_radix_batcher_sort_seq, test_simple_mas) {
   const int count = 10;
 
@@ -122,8 +136,7 @@ TEST(kozlova_e_radix_batcher_sort_seq, test_negative_numbers) {
 TEST(kozlova_e_radix_batcher_sort_seq, Test_LargeDataSet) {
   const int count = 1000;
 
-  std::vector<double> mas(count);
-  std::generate(mas.begin(), mas.end(), []() { return (rand() % 1000) / 1000.0; });
+  std::vector<double> mas = kozlova_e_utility_functions::generate_random_double_vector(count);
   std::vector<double> res(count, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();

@@ -3,9 +3,24 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <random>
 #include <vector>
 
 #include "mpi/kozlova_e_radix_batcher_sort/include/ops_mpi.hpp"
+
+namespace kozlova_e_utility_functions {
+std::vector<double> generate_random_double_vector(size_t size) {
+  std::vector<double> result(size);
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<double> dist(-100.0, 100.0);
+
+  for (auto& value : result) {
+    value = dist(gen);
+  }
+  return result;
+}
+}  // namespace kozlova_e_utility_functions
 
 TEST(kozlova_e_radix_batcher_sort_mpi, test_simple_mas) {
   boost::mpi::communicator world;
@@ -123,8 +138,7 @@ TEST(kozlova_e_radix_batcher_sort_mpi, test_large_mas) {
   std::vector<double> mas(size);
   std::vector<double> resMPI(size);
 
-  std::generate(mas.begin(), mas.end(), []() { return static_cast<double>(rand()) / RAND_MAX; });
-
+  mas = kozlova_e_utility_functions::generate_random_double_vector(size);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
