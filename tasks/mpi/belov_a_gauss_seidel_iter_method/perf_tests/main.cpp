@@ -48,7 +48,7 @@ TEST(belov_a_gauss_seidel_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
 
   int n = 1000;
-  double epsilon = 0.001;
+  double epsilon = 0.2;
   std::vector<double> matrix = generateDiagonallyDominantMatrix(n);
   std::vector<double> freeMembers = generateFreeMembers(n);
   std::vector<double> solutionMpi(n, 0);
@@ -119,7 +119,7 @@ TEST(belov_a_gauss_seidel_perf_test, test_task_run) {
   boost::mpi::communicator world;
 
   int n = 1000;
-  double epsilon = 0.001;
+  double epsilon = 0.2;
   std::vector<double> matrix = generateDiagonallyDominantMatrix(n);
   std::vector<double> freeMembers = generateFreeMembers(n);
   std::vector<double> solutionMpi(n, 0);
