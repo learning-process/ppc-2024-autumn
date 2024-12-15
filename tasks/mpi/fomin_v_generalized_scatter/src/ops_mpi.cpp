@@ -17,47 +17,6 @@ std::vector<int> fomin_v_generalized_scatter::getRandomVector(int sz) {
   return vec;
 }
 
-/*int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int sendcount, MPI_Datatype sendtype,
-                                                     void* recvbuf, int recvcount, MPI_Datatype recvtype, int root,
-                                                     MPI_Comm comm) {
-  int rank, size;
-  MPI_Comm_rank(comm, &rank);
-  MPI_Comm_size(comm, &size);
-
-  int left_child = 2 * rank + 1;
-  int right_child = 2 * rank + 2;
-
-  if (rank == root) {
-    int datatype_size;
-    MPI_Type_size(recvtype, &datatype_size);
-
-    const char* send_ptr = reinterpret_cast<const char*>(sendbuf);
-
-    if (left_child < size) {
-      int err = MPI_Send(send_ptr + (left_child * recvcount * datatype_size), recvcount, sendtype, left_child, 0, comm);
-      if (err != MPI_SUCCESS) {
-        //std::cerr << "Error in MPI_Send to process " << left_child << std::endl;
-        return err;
-      }
-    }
-    if (right_child < size) {
-      int err =
-          MPI_Send(send_ptr + (right_child * recvcount * datatype_size), recvcount, sendtype, right_child, 0, comm);
-      if (err != MPI_SUCCESS) {
-        //std::cerr << "Error in MPI_Send to process " << right_child << std::endl;
-        return err;
-      }
-    }
-  } else {
-    int err = MPI_Recv(recvbuf, recvcount, recvtype, MPI_ANY_SOURCE, 0, comm, MPI_STATUS_IGNORE);
-    if (err != MPI_SUCCESS) {
-      //std::cerr << "Error in MPI_Recv on process " << rank << std::endl;
-      return err;
-    }
-  }
-
-  return MPI_SUCCESS;
-}*/
 int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int sendcount, MPI_Datatype sendtype,
                                                      void* recvbuf, int recvcount, MPI_Datatype recvtype, int root,
                                                      MPI_Comm comm) {
@@ -86,6 +45,7 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
         int offset = dest * recvcount * datatype_size;
         MPI_Send(send_ptr + offset, recvcount, sendtype, dest, 0, comm);
       }
+      // Copy data for root itself
       int root_offset = root * recvcount * datatype_size;
       memcpy(recvbuf, send_ptr + root_offset, recvcount * datatype_size);
     } else {
