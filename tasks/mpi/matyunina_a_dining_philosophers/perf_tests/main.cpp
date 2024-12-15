@@ -23,13 +23,13 @@ TEST(matyunina_a_dining_philosophers_mpi, test_1) {
   auto testMpiTaskParallel = std::make_shared<matyunina_a_dining_philosophers_mpi::TestMPITaskParallel>(taskDataPar);
   if (world.size() < 3) {
     if (world.rank() == 0) {
-      ASSERT_EQ(testMpiTaskParallel.validation(), false);
+      ASSERT_EQ(testMpiTaskParallel->validation(), false);
     }
   } else {
-    ASSERT_EQ(testMpiTaskParallel.validation(), true);
-    testMpiTaskParallel.pre_processing();
-    testMpiTaskParallel.run();
-    testMpiTaskParallel.post_processing();
+    ASSERT_EQ(testMpiTaskParallel->validation(), true);
+    testMpiTaskParallel->pre_processing();
+    testMpiTaskParallel->run();
+    testMpiTaskParallel->post_processing();
     if (world.rank() == 0) {
       ASSERT_EQ(global_vec[0] * (world.size() - 1), average_value[0]);
     }
@@ -68,13 +68,13 @@ TEST(matyunina_a_dining_philosophers_mpi, test_2) {
   auto testMpiTaskParallel = std::make_shared<matyunina_a_dining_philosophers_mpi::TestMPITaskParallel>(taskDataPar);
   if (world.size() < 3) {
     if (world.rank() == 0) {
-      ASSERT_EQ(testMpiTaskParallel.validation(), false);
+      ASSERT_EQ(testMpiTaskParallel->validation(), false);
     }
   } else {
-    ASSERT_EQ(testMpiTaskParallel.validation(), true);
-    testMpiTaskParallel.pre_processing();
-    testMpiTaskParallel.run();
-    testMpiTaskParallel.post_processing();
+    ASSERT_EQ(testMpiTaskParallel->validation(), true);
+    testMpiTaskParallel->pre_processing();
+    testMpiTaskParallel->run();
+    testMpiTaskParallel->post_processing();
     if (world.rank() == 0) {
       ASSERT_EQ(global_vec[0] * (world.size() - 1), average_value[0]);
     }
