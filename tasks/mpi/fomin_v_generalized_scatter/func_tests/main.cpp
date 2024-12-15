@@ -119,6 +119,8 @@ TEST(fomin_v_generalized_scatter, SingleProcessScatter) {
     sendbuf[i] = i;
   }
 
+  std::fill(recvbuf, recvbuf + data_size, 0);
+
   fomin_v_generalized_scatter::generalized_scatter(sendbuf, data_size, MPI_INT, recvbuf, data_size, MPI_INT, root,
                                                    MPI_COMM_WORLD);
 
