@@ -13,8 +13,7 @@
 #include "core/task/include/task.hpp"
 
 namespace yasakova_t_reduce {
-std::vector<int> getRandomVector(int size, int upper_border, int lower_border);
-std::vector<std::vector<int>> getRandomMatrix(int rows, int columns, int upper_border, int lower_border);
+  
 class TestMPITaskParallel : public ppc::core::Task {
  public:
   explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

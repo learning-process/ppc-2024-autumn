@@ -67,6 +67,7 @@ bool yasakova_t_reduce_custom_mpi::TestMPITaskParallel::run() {
     local_min = *std::min_element(local_input_.begin(), local_input_.end());
   }
   yasakova_t_reduce_custom_mpi::CustomReduce(&local_min, &res, 1, MPI_INT, MPI_MIN, 0, MPI_COMM_WORLD);
+  MPI_Bcast(&res, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
   return true;
 }
@@ -76,8 +77,6 @@ bool yasakova_t_reduce_custom_mpi::TestMPITaskParallel::post_processing() {
   if (world.rank() == 0) {
     reinterpret_cast<int *>(taskData->outputs[0])[0] = res;
   }
-
-  MPI_Bcast(&res, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
   return true;
 }
