@@ -29,25 +29,22 @@ bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Sequential::pre_processing(
 }
 bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Sequential::validation() {
   internal_order_test();
-  if(taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr) {
-    throw std::runtime_error("Invalid inputs provided to the task.");
+  if (taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr) {
+    return false;
   }
 
   if (taskData->inputs.empty() || taskData->inputs.size() < 2) {
-    throw std::runtime_error("Validation failed: No inputs provided.");
     return false;
   }
 
   auto* func_ptr = reinterpret_cast<std::function<double(const Point&)>*>(taskData->inputs[0]);
   auto* constraints_ptr = reinterpret_cast<std::vector<std::function<bool(const Point&)>>*>(taskData->inputs[1]);
   if (func_ptr == nullptr || constraints_ptr == nullptr) {
-    throw std::runtime_error("Validation failed: Optimization function is not provided or invalid.");
     return false;
   }
 
-  if (taskData->outputs.empty() || taskData->outputs.size() != 1 || !taskData->outputs[0]) {
+  if (taskData->outputs.empty() || taskData->outputs.size() != 1) {
     return false;
-    throw std::runtime_error("Validation failed: No outputs provided.");
   }
   return true;
 }
@@ -291,25 +288,21 @@ bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     if (taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr) {
-      throw std::runtime_error("Invalid inputs provided to the task.");
       return false;
     }
 
     if (taskData->inputs.empty() || taskData->inputs.size() < 2) {
-      throw std::runtime_error("Validation failed: No inputs provided.");
       return false;
     }
 
     auto* func_ptr = reinterpret_cast<std::function<double(const Point&)>*>(taskData->inputs[0]);
     auto* constraints_ptr = reinterpret_cast<std::vector<std::function<bool(const Point&)>>*>(taskData->inputs[1]);
     if (func_ptr == nullptr || constraints_ptr == nullptr) {
-      throw std::runtime_error("Validation failed: Optimization function is not provided or invalid.");
       return false;
     }
 
-    if (taskData->outputs.empty() || taskData->outputs.size() != 1 || !taskData->outputs[0]) {
+    if (taskData->outputs.empty() || taskData->outputs.size() != 1) {
       return false;
-      throw std::runtime_error("Validation failed: No outputs provided.");
     }
     return true;
   }
@@ -354,7 +347,6 @@ bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::run() {
   }
   return true;
 }
-
 void titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::split_search_area(int num_processes) {
   std::vector<std::vector<double>> all_bounds(num_processes, std::vector<double>(4));
 
@@ -372,8 +364,7 @@ void titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::split_search_area
   }
 
   std::vector<double> bounds(4);
-
-  boost::mpi::scatter(world, all_bounds, bounds, 0);
+  boost::mpi::scatter(world, all_bounds, bounds, 0);  // Используем эту перегрузку для работы с std::vector
 
   process_lower_bound_x_ = bounds[0];
   process_upper_bound_x_ = bounds[1];

@@ -8,8 +8,8 @@
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/vector.hpp>
 #include <memory>
-#include <numeric>
 #include <numbers>
+#include <numeric>
 #include <ranges>
 #include <string>
 #include <utility>
@@ -37,13 +37,13 @@ class MPIGlobalOpt2Sequential : public ppc::core::Task {
   bool all_constraints_satisfied(const Point& point);
   void calculate_initial_search_area();
   Point compute_gradient(const Point& point);
-  Point Calculate(const Point& x, const Point& grad, double lambda);
+  static Point Calculate(const Point& x, const Point& grad, double lambda);
   double GoldenSelection(double a, double b, double eps, const Point& grad, const Point& xj);
   double MakeSimplefx(double lambda, const Point& grad, const Point& xj);
   Point find_next_point(const Point& x_new);
   Point project_on_constraint(const Point& point, const std::function<double(const Point&)>& constraint_func);
   static double compute_distance(const Point& p1, const Point& p2);
-  Point compute_constraint_gradient(const std::function<double(const Point&)>& constraint_func, const Point& point);
+  static Point compute_constraint_gradient(const std::function<double(const Point&)>& constraint_func, const Point& point);
   static double evaluate_constraint(const std::function<double(const Point&)>& constraint_func, const Point& point);
 
   std::function<double(const Point&)> func_to_optimize_;
@@ -74,13 +74,13 @@ class MPIGlobalOpt2Parallel : public ppc::core::Task {
   bool all_constraints_satisfied(const Point& point);
   void calculate_initial_search_area();
   Point compute_gradient(const Point& point);
-  Point Calculate(const Point& x, const Point& grad, double lambda);
+  static Point Calculate(const Point& x, const Point& grad, double lambda);
   double GoldenSelection(double a, double b, double eps, const Point& grad, const Point& xj);
   double MakeSimplefx(double lambda, const Point& grad, const Point& xj);
   Point find_next_point(const Point& x_new);
   Point project_on_constraint(const Point& point, const std::function<double(const Point&)>& constraint_func);
   static double compute_distance(const Point& p1, const Point& p2);
-  Point compute_constraint_gradient(const std::function<double(const Point&)>& constraint_func, const Point& point);
+  static Point compute_constraint_gradient(const std::function<double(const Point&)>& constraint_func, const Point& point);
   static double evaluate_constraint(const std::function<double(const Point&)>& constraint_func, const Point& point);
 
   void split_search_area(int num_processes);

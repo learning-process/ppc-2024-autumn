@@ -43,7 +43,7 @@ bool titov_s_global_optimization_2_seq::GlobalOpt2Sequential::validation() {
     return false;
   }
 
-  if (taskData->outputs.empty() || taskData->outputs.size() != 1 || !taskData->outputs[0]) {
+  if (taskData->outputs.empty() || taskData->outputs.size() != 1) {
     return false;
     throw std::runtime_error("Validation failed: No outputs provided.");
   }
