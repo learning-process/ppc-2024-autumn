@@ -13,9 +13,7 @@ bool volochaev_s_shell_sort_with_simple_merge_16_seq::Lab3_16::pre_processing() 
 
   mas = new int[size_];
 
-  for (int i = 0; i < size_; ++i) {
-    mas[i] = x[i];
-  }
+  std::copy(x, x + size_, mas);
 
   return true;
 }
