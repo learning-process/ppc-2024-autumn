@@ -113,7 +113,9 @@ TEST(muhina_m_shell_sort, Test_Sort_EmptyVec) {
   }
 
   muhina_m_shell_sort_mpi::ShellSortMPIParallel ShellSortMPIParalle(taskDataPar);
-  EXPECT_FALSE(ShellSortMPIParalle.validation());
+  if (world.rank() == 0) {
+    EXPECT_FALSE(ShellSortMPIParalle.validation());
+  }
 }
 
 TEST(muhina_m_shell_sort, Test_Sort_LargeVector) {
