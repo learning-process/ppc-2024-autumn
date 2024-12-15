@@ -22,6 +22,17 @@ std::vector<int> kolokolova_d_gaussian_method_horizontal_seq::getRandomVector(in
   return vec;
 }
 
+std::vector<int> kolokolova_d_gaussian_method_horizontal_seq::getRandomMatrix(int sz, std::vector<int> coeff) {
+  std::vector<int> free_terms(sz);
+  for (int i = 0; i < sz; ++i) {
+    free_terms[i] = 0;
+    for (int j = 0; j < sz; ++j) {
+      free_terms[i] += coeff[i * sz + j];
+    }
+  }
+  return free_terms;
+}
+
 TEST(kolokolova_d_gaussian_method_horizontal_seq, test_pipeline_run) {
   int count_equations = 250;
 
@@ -30,8 +41,8 @@ TEST(kolokolova_d_gaussian_method_horizontal_seq, test_pipeline_run) {
   std::vector<int> input_y(count_equations, 0);
   std::vector<double> func_res(count_equations, 0);
 
-  input_y = kolokolova_d_gaussian_method_horizontal_seq::getRandomVector(count_equations);
   input_coeff = kolokolova_d_gaussian_method_horizontal_seq::getRandomVector(size_coef_mat);
+  input_y = kolokolova_d_gaussian_method_horizontal_seq::getRandomMatrix(count_equations, input_coeff);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_coeff.data()));
@@ -70,8 +81,8 @@ TEST(kolokolova_d_gaussian_method_horizontal_seq, test_task_run) {
   std::vector<int> input_y(count_equations, 0);
   std::vector<double> func_res(count_equations, 0);
 
-  input_y = kolokolova_d_gaussian_method_horizontal_seq::getRandomVector(count_equations);
   input_coeff = kolokolova_d_gaussian_method_horizontal_seq::getRandomVector(size_coef_mat);
+  input_y = kolokolova_d_gaussian_method_horizontal_seq::getRandomMatrix(count_equations, input_coeff);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_coeff.data()));
