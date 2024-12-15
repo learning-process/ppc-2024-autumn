@@ -9,7 +9,7 @@
 #include "mpi/borisov_s_crs_mul/include/ops_mpi.hpp"
 
 static void prepareCRSMatrix(const std::vector<std::vector<double>>& dense_matrix, std::vector<double>& values,
-                      std::vector<int>& col_index, std::vector<int>& row_ptr) {
+                             std::vector<int>& col_index, std::vector<int>& row_ptr) {
   int nrows = static_cast<int>(dense_matrix.size());
   int ncols = dense_matrix.empty() ? 0 : static_cast<int>(dense_matrix[0].size());
 

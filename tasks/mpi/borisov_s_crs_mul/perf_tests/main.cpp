@@ -9,7 +9,7 @@
 #include "mpi/borisov_s_crs_mul/include/ops_mpi.hpp"
 
 static void generateRandomCRSMatrix(int rows, int cols, double sparsity, std::vector<double>& values,
-                             std::vector<int>& col_index, std::vector<int>& row_ptr) {
+                                    std::vector<int>& col_index, std::vector<int>& row_ptr) {
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_real_distribution<> dis_value(-10.0, 10.0);
