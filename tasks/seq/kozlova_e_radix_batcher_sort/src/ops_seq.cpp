@@ -63,6 +63,6 @@ void kozlova_e_radix_batcher_sort_seq::RadixSortSequential::radixSort(std::vecto
     } else {
       bits = ~bits;
     }
-    std::memcpy(&a[i], &bits, sizeof(double));
+    memcpy(&a[i], &bits, sizeof(double));
   }
 }
