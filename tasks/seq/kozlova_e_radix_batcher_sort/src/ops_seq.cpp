@@ -1,5 +1,7 @@
 #include "seq/kozlova_e_radix_batcher_sort/include/ops_seq.hpp"
 
+#include <cstring>
+
 bool kozlova_e_radix_batcher_sort_seq::RadixSortSequential::pre_processing() {
   internal_order_test();
   input_size = taskData->inputs_count[0];

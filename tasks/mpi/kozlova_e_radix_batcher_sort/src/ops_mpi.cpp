@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <boost/serialization/vector.hpp>
+#include <cstring>
 #include <functional>
 #include <random>
 #include <string>
