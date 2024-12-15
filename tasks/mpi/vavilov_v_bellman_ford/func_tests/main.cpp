@@ -35,9 +35,7 @@ TEST(vavilov_v_bellman_ford_mpi, ValidInputWithMultiplePaths_2) {
   mpi::communicator world;
 
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
-  std::vector<int> row_offsets = {0, 2, 4, 5, 7, 8};
-  std::vector<int> col_indices = {1, 2, 2, 3, 3, 4, 1, 2};
-  std::vector<int> weights = {-1, 4, 3, 2, 5, -3, 2, -1};
+  std::vector<int> matrix = {0, -1, 4, 0, 0, 0, 0, 3, 2, 0, 0, 0, 0, 5, -3, 2, 0, -1, 0, 0, 0, 0, 0, 0, 0};
   std::vector<int> output(5);
   int vertices = 5, edges_count = 6, source = 0;
 
@@ -66,9 +64,7 @@ TEST(vavilov_v_bellman_ford_mpi, DisconnectedGraph) {
   mpi::communicator world;
 
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
-  std::vector<int> row_offsets = {0, 2, 3, 3, 4, 4};
-  std::vector<int> col_indices = {1, 2, 3};
-  std::vector<int> weights = {4, 1, 2};
+  std::vector<int> matrix = {0, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   std::vector<int> output(5);
   int vertices = 5, edges_count = 3, source = 0;
 
@@ -96,9 +92,7 @@ TEST(vavilov_v_bellman_ford_mpi, NegativeCycle) {
   mpi::communicator world;
 
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
-  std::vector<int> row_offsets = {0, 1, 2, 3};
-  std::vector<int> col_indices = {1, 2, 0};
-  std::vector<int> weights = {1, -1, -1};
+  std::vector<int> matrix = {0, 1, 0, 0, 0, -1, -1, 0, 0};
   std::vector<int> output(3);
   int vertices = 3, edges_count = 3, source = 0;
 
@@ -121,9 +115,7 @@ TEST(vavilov_v_bellman_ford_mpi, SingleVertexGraph) {
   mpi::communicator world;
 
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
-  std::vector<int> row_offsets = {0};
-  std::vector<int> col_indices = {};
-  std::vector<int> weights = {};
+  std::vector<int> matrix = {0};
   std::vector<int> output(1, 0);
   int vertices = 1, edges_count = 0, source = 0;
 
