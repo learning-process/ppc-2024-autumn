@@ -1,6 +1,5 @@
 #include "mpi/vavilov_v_bellman_ford/include/ops_mpi.hpp"
 
-
 void vavilov_v_bellman_ford_mpi::TestMPITaskSequential::CRS(const int* matrix) {
   row_ptr.push_back(0);
   for (int i = 0; i < vertices_; ++i) {
