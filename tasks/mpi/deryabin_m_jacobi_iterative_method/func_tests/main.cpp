@@ -282,7 +282,6 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_invalid_matrix_zeros_on
     taskDataPar->inputs_count.emplace_back(input_right_vector_.size());
     ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
-
   if (world.rank() == 0) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix_.data()));
@@ -314,7 +313,6 @@ TEST(deryabin_m_jacobi_iterative_method_mpi, test_random_invalid_matrix_negative
     taskDataPar->inputs_count.emplace_back(input_right_vector_.size());
     ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
-  
   if (world.rank() == 0) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix_.data()));
@@ -347,7 +345,6 @@ TEST(deryabin_m_jacobi_iterative_method_mpi,
     taskDataPar->inputs_count.emplace_back(input_right_vector_.size());
     ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
-  
   if (world.rank() == 0) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix_.data()));
