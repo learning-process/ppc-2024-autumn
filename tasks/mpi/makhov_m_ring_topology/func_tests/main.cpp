@@ -7,10 +7,8 @@
 #include <vector>
 
 #include "mpi/makhov_m_ring_topology/include/ops_mpi.hpp"
-TEST(makhov_m_ring_topology, RandVectorZeroSize) {
+TEST(makhov_m_ring_topology, VectorZeroSize) {
   boost::mpi::communicator world;
-  std::random_device dev;
-  std::mt19937 gen(dev());
   size_t size = 0;
   std::vector<int32_t> input_vector(size);
   std::vector<int32_t> output_vector(size);
@@ -35,7 +33,15 @@ TEST(makhov_m_ring_topology, RandVectorZeroSize) {
 
   // Create Task
   makhov_m_ring_topology::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(input_vector, output_vector);
+    ASSERT_EQ(sequence, reference_sequence);
+  }
 }
 
 TEST(makhov_m_ring_topology, RandVectorSize1) {
