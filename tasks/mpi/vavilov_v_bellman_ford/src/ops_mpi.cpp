@@ -1,11 +1,11 @@
 #include "mpi/vavilov_v_bellman_ford/include/ops_mpi.hpp"
 
 void vavilov_v_bellman_ford_mpi::TestMPITaskSequential::CRS(const int* matrix) {
-  row_ptr.push_back(0);
+  row_offsets_.push_back(0);
   for (int i = 0; i < vertices_; ++i) {
     for (int j = 0; j < vertices_; ++j) {
       if (matrix[i * vertices_ + j] != 0) {
-        weights_.push_back(input_matrix[i * vertices_ + j]);
+        weights_.push_back(matrix[i * vertices_ + j]);
         col_indices_.push_back(j);
       }
     }
@@ -69,11 +69,11 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential::post_processing() {
 }
 
 void vavilov_v_bellman_ford_mpi::TestMPITaskSequential::CRS(const int* matrix) {
-  row_ptr.push_back(0);
+  row_offsets_.push_back(0);
   for (int i = 0; i < vertices_; ++i) {
     for (int j = 0; j < vertices_; ++j) {
       if (matrix[i * vertices_ + j] != 0) {
-        weights_.push_back(input_matrix[i * vertices_ + j]);
+        weights_.push_back(matrix[i * vertices_ + j]);
         col_indices_.push_back(j);
       }
     }
