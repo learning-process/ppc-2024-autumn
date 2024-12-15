@@ -7,7 +7,7 @@
 
 #include "mpi/titov_s_global_optimization_2/include/ops_mpi.hpp"
 
-TEST(titov_s_global_optimization_2_mpi, Test_1) {
+TEST(titov_s_global_optimization_2_mpi, Test_rectangle) {
   boost::mpi::communicator world;
   std::function<double(const titov_s_global_optimization_2_mpi::Point&)> func =
       [](const titov_s_global_optimization_2_mpi::Point& p) { return p.x * p.x + p.y * p.y; };
@@ -70,7 +70,7 @@ TEST(titov_s_global_optimization_2_mpi, Test_1) {
   }
 }
 
-TEST(titov_s_global_optimization_2_mpi, Test_2) {
+TEST(titov_s_global_optimization_2_mpi, Test_triangle) {
   boost::mpi::communicator world;
   std::function<double(const titov_s_global_optimization_2_mpi::Point&)> func =
       [](const titov_s_global_optimization_2_mpi::Point& p) {
@@ -134,7 +134,7 @@ TEST(titov_s_global_optimization_2_mpi, Test_2) {
   }
 }
 
-TEST(titov_s_global_optimization_2_mpi, Test_3) {
+TEST(titov_s_global_optimization_2_mpi, Test_triangle_2) {
   boost::mpi::communicator world;
   std::function<double(const titov_s_global_optimization_2_mpi::Point&)> func =
       [](const titov_s_global_optimization_2_mpi::Point& p) { return p.x * p.x - 12.0 * p.x + p.y * p.y - 4.0 * p.y; };
@@ -200,7 +200,7 @@ TEST(titov_s_global_optimization_2_mpi, Test_4) {
       [](const titov_s_global_optimization_2_mpi::Point& p) { return p.x * p.x - 20.0 * p.x + p.y * p.y - 6.0 * p.y; };
 
   auto constraint1 = [](const titov_s_global_optimization_2_mpi::Point& p) { return 3.0 + p.x + 2.0 * p.y; };
-  auto constraint2 = [](const titov_s_global_optimization_2_mpi::Point& p) { return +4.0 - p.x + p.y; };
+  auto constraint2 = [](const titov_s_global_optimization_2_mpi::Point& p) { return 4.0 - p.x + p.y; };
   auto constraint3 = [](const titov_s_global_optimization_2_mpi::Point& p) { return 3.0 - p.y; };
 
   auto constraints_ptr =
