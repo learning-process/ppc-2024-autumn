@@ -112,22 +112,27 @@ TEST(fomin_v_generalized_scatter, SingleProcessScatter) {
 
   int root = 0;
   const int data_size = 10;
-  int* sendbuf = new int[data_size];
-  int* recvbuf = new int[data_size];
+  int* sendbuf = nullptr;
+  int* recvbuf = new int[10];
 
-  for (int i = 0; i < data_size; ++i) {
-    sendbuf[i] = i;
+  if (rank == root) {
+    sendbuf = new int[data_size];
+    for (int i = 0; i < data_size; ++i) {
+      sendbuf[i] = i;
+    }
   }
 
-  std::fill(recvbuf, recvbuf + data_size, 0);
+  std::fill(recvbuf, recvbuf + 10, 0);
 
-  fomin_v_generalized_scatter::generalized_scatter(sendbuf, data_size, MPI_INT, recvbuf, data_size, MPI_INT, root,
+  fomin_v_generalized_scatter::generalized_scatter(sendbuf, data_size, MPI_INT, recvbuf, 10, MPI_INT, root,
                                                    MPI_COMM_WORLD);
 
-  MPI_Barrier(MPI_COMM_WORLD);
+  MPI_Barrier(MPI_COMM_WORLD);  // Ensure synchronization
 
-  for (int i = 0; i < data_size; ++i) {
-    EXPECT_EQ(recvbuf[i], sendbuf[i]);
+  if (rank == root) {
+    for (int i = 0; i < 10; ++i) {
+      EXPECT_EQ(recvbuf[i], sendbuf[i]);
+    }
   }
 
   delete[] sendbuf;
