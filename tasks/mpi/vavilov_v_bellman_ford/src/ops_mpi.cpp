@@ -155,6 +155,7 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::run() {
   return !has_negative_cycle;
 }
 
+
 bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
 
