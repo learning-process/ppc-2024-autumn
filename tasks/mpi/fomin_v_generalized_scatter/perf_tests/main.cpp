@@ -58,7 +58,7 @@ TEST(fomin_v_generalized_scatter, test_task_run) {
     // Verify the received data matches the input data
     for (int i = 0; i < size; ++i) {
       int* start = &received_data[i * local_output.size()];
-      for (int j = 0; j < local_output.size(); ++j) {
+      for (size_t j = 0; j < local_output.size(); ++j) {
         int expected_value = global_input[i * local_output.size() + j];
         EXPECT_EQ(start[j], expected_value);
       }
@@ -121,7 +121,7 @@ TEST(fomin_v_generalized_scatter, test_pipeline_run) {
     // Verify the received data matches the input data
     for (int i = 0; i < size; ++i) {
       int* start = &received_data[i * local_output.size()];
-      for (int j = 0; j < local_output.size(); ++j) {
+      for (size_t j = 0; j < local_output.size(); ++j) {
         int expected_value = global_input[i * local_output.size() + j];
         EXPECT_EQ(start[j], expected_value);
       }
