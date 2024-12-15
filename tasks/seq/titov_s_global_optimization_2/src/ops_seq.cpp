@@ -9,11 +9,11 @@
 bool titov_s_global_optimization_2_seq::GlobalOpt2Sequential::pre_processing() {
   internal_order_test();
 
-  auto func_ptr = reinterpret_cast<std::function<double(const Point&)>*>(taskData->inputs[0]);
+  auto* func_ptr = reinterpret_cast<std::function<double(const Point&)>*>(taskData->inputs[0]);
 
   func_to_optimize_ = *func_ptr;
 
-  auto constraints_ptr = reinterpret_cast<std::vector<std::function<double(const Point&)>>*>(taskData->inputs[1]);
+  auto* constraints_ptr = reinterpret_cast<std::vector<std::function<double(const Point&)>>*>(taskData->inputs[1]);
 
   constraints_funcs_ = *constraints_ptr;
 
@@ -31,30 +31,15 @@ bool titov_s_global_optimization_2_seq::GlobalOpt2Sequential::validation() {
     throw std::runtime_error("Invalid inputs provided to the task.");
   }
 
-  if (taskData->inputs.empty()) {
+  if (taskData->inputs.empty() || taskData->inputs.size() < 2) {
     throw std::runtime_error("Validation failed: No inputs provided.");
     return false;
   }
 
-  if (taskData->inputs.size() < 2) {
-    throw std::runtime_error(
-        "Validation failed: Insufficient number of inputs. Expected 2 inputs (function and constraints).");
-    return false;
-  }
-
   auto* func_ptr = reinterpret_cast<std::function<double(const Point&)>*>(taskData->inputs[0]);
-  if (!func_ptr || !*func_ptr) {
-    throw std::runtime_error("Validation failed: Optimization function is not provided or invalid.");
-    return false;
-  }
-
   auto* constraints_ptr = reinterpret_cast<std::vector<std::function<bool(const Point&)>>*>(taskData->inputs[1]);
-  if (!constraints_ptr) {
-    throw std::runtime_error("Validation failed: Constraints vector is not provided.");
-    return false;
-  }
-  if (constraints_ptr->empty()) {
-    throw std::runtime_error("Validation failed: No constraint functions provided.");
+  if (func_ptr == nullptr || constraints_ptr == nullptr) {
+    throw std::runtime_error("Validation failed: Optimization function is not provided or invalid.");
     return false;
   }
 
@@ -76,8 +61,12 @@ void titov_s_global_optimization_2_seq::GlobalOpt2Sequential::calculate_initial_
 
   Point initial_point{std::numeric_limits<double>::infinity(), std::numeric_limits<double>::infinity()};
 
-  for (double x = -test_range; x <= test_range; x += step) {
-    for (double y = -test_range; y <= test_range; y += step) {
+  int num_steps = static_cast<int>(2 * test_range / step) + 1;
+
+  for (int i = 0; i < num_steps; ++i) {
+    double x = -test_range + i * step;
+    for (int j = 0; j < num_steps; ++j) {
+      double y = -test_range + j * step;
       Point test_point{x, y};
       bool satisfies_all_constraints = true;
       for (const auto& constraint : constraints_funcs_) {
@@ -163,9 +152,11 @@ titov_s_global_optimization_2_seq::Point titov_s_global_optimization_2_seq::Glob
 
 double titov_s_global_optimization_2_seq::GlobalOpt2Sequential::GoldenSelection(double a, double b, double eps,
                                                                                 const Point& grad, const Point& xj) {
-  const double phi = 1.6180339887;
-  double x1, x2;
-  double y1, y2;
+  const double phi = std::numbers::phi;
+  double x1;
+  double x2;
+  double y1;
+  double y2;
 
   x1 = b - (b - a) / phi;
   x2 = a + (b - a) / phi;
@@ -287,10 +278,5 @@ double titov_s_global_optimization_2_seq::GlobalOpt2Sequential::evaluate_functio
 }
 
 bool titov_s_global_optimization_2_seq::GlobalOpt2Sequential::all_constraints_satisfied(const Point& point) {
-  for (const auto& constraint : constraints_funcs_) {
-    if (constraint(point) <= 0) {
-      return false;
-    }
-  }
-  return true;
+  return std::ranges::all_of(constraints_funcs_, [&](const auto& constraint) { return constraint(point) > 0; });
 }

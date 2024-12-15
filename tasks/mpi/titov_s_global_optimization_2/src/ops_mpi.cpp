@@ -13,10 +13,10 @@
 bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Sequential::pre_processing() {
   internal_order_test();
 
-  auto func_ptr = reinterpret_cast<std::function<double(const Point&)>*>(taskData->inputs[0]);
+  auto* func_ptr = reinterpret_cast<std::function<double(const Point&)>*>(taskData->inputs[0]);
   func_to_optimize_ = *func_ptr;
 
-  auto constraints_ptr = reinterpret_cast<std::vector<std::function<double(const Point&)>>*>(taskData->inputs[1]);
+  auto* constraints_ptr = reinterpret_cast<std::vector<std::function<double(const Point&)>>*>(taskData->inputs[1]);
 
   constraints_funcs_ = *constraints_ptr;
 
@@ -29,34 +29,19 @@ bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Sequential::pre_processing(
 }
 bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Sequential::validation() {
   internal_order_test();
-  if (!taskData->inputs[0] || !taskData->inputs[1]) {
+  if(taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr) {
     throw std::runtime_error("Invalid inputs provided to the task.");
   }
 
-  if (taskData->inputs.empty()) {
+  if (taskData->inputs.empty() || taskData->inputs.size() < 2) {
     throw std::runtime_error("Validation failed: No inputs provided.");
     return false;
   }
 
-  if (taskData->inputs.size() < 2) {
-    throw std::runtime_error(
-        "Validation failed: Insufficient number of inputs. Expected 2 inputs (function and constraints).");
-    return false;
-  }
-
   auto* func_ptr = reinterpret_cast<std::function<double(const Point&)>*>(taskData->inputs[0]);
-  if (!func_ptr || !*func_ptr) {
-    throw std::runtime_error("Validation failed: Optimization function is not provided or invalid.");
-    return false;
-  }
-
   auto* constraints_ptr = reinterpret_cast<std::vector<std::function<bool(const Point&)>>*>(taskData->inputs[1]);
-  if (!constraints_ptr) {
-    throw std::runtime_error("Validation failed: Constraints vector is not provided.");
-    return false;
-  }
-  if (constraints_ptr->empty()) {
-    throw std::runtime_error("Validation failed: No constraint functions provided.");
+  if (func_ptr == nullptr || constraints_ptr == nullptr) {
+    throw std::runtime_error("Validation failed: Optimization function is not provided or invalid.");
     return false;
   }
 
@@ -76,9 +61,13 @@ void titov_s_global_optimization_2_mpi::MPIGlobalOpt2Sequential::calculate_initi
   upper_bound_y_ = -std::numeric_limits<double>::infinity();
 
   Point initial_point{std::numeric_limits<double>::infinity(), std::numeric_limits<double>::infinity()};
+  int num_steps = static_cast<int>(2 * test_range / step) + 1;
 
-  for (double x = -test_range; x <= test_range; x += step) {
-    for (double y = -test_range; y <= test_range; y += step) {
+  for (int i = 0; i < num_steps; ++i) {
+    double x = -test_range + i * step;
+    for (int j = 0; j < num_steps; ++j) {
+      double y = -test_range + j * step;
+
       Point test_point{x, y};
       bool satisfies_all_constraints = true;
       for (const auto& constraint : constraints_funcs_) {
@@ -118,6 +107,7 @@ void titov_s_global_optimization_2_mpi::MPIGlobalOpt2Sequential::calculate_initi
     throw std::runtime_error("Constraints do not define a valid search area.");
   }
 }
+
 bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Sequential::run() {
   internal_order_test();
 
@@ -160,9 +150,11 @@ titov_s_global_optimization_2_mpi::Point titov_s_global_optimization_2_mpi::MPIG
 }
 double titov_s_global_optimization_2_mpi::MPIGlobalOpt2Sequential::GoldenSelection(double a, double b, double eps,
                                                                                    const Point& grad, const Point& xj) {
-  const double phi = 1.6180339887;
-  double x1, x2;
-  double y1, y2;
+  const double phi = std::numbers::phi;
+  double x1;
+  double x2;
+  double y1;
+  double y2;
 
   x1 = b - (b - a) / phi;
   x2 = a + (b - a) / phi;
@@ -276,19 +268,14 @@ double titov_s_global_optimization_2_mpi::MPIGlobalOpt2Sequential::evaluate_func
   return func_to_optimize_(point);
 }
 bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Sequential::all_constraints_satisfied(const Point& point) {
-  for (const auto& constraint : constraints_funcs_) {
-    if (constraint(point) <= 0) {
-      return false;
-    }
-  }
-  return true;
+  return std::ranges::all_of(constraints_funcs_, [&](const auto& constraint) { return constraint(point) > 0; });
 }
 
 bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::pre_processing() {
   internal_order_test();
-  auto func_ptr = reinterpret_cast<std::function<double(const Point&)>*>(taskData->inputs[0]);
+  auto* func_ptr = reinterpret_cast<std::function<double(const Point&)>*>(taskData->inputs[0]);
   func_to_optimize_ = *func_ptr;
-  auto constraints_ptr = reinterpret_cast<std::vector<std::function<double(const Point&)>>*>(taskData->inputs[1]);
+  auto* constraints_ptr = reinterpret_cast<std::vector<std::function<double(const Point&)>>*>(taskData->inputs[1]);
   constraints_funcs_ = *constraints_ptr;
   if (world.rank() == 0) {
     calculate_initial_search_area();
@@ -303,35 +290,20 @@ bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::pre_processing() 
 bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    if (!taskData->inputs[0] || !taskData->inputs[1]) {
+    if (taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr) {
       throw std::runtime_error("Invalid inputs provided to the task.");
       return false;
     }
 
-    if (taskData->inputs.empty()) {
+    if (taskData->inputs.empty() || taskData->inputs.size() < 2) {
       throw std::runtime_error("Validation failed: No inputs provided.");
       return false;
     }
 
-    if (taskData->inputs.size() < 2) {
-      throw std::runtime_error(
-          "Validation failed: Insufficient number of inputs. Expected 2 inputs (function and constraints).");
-      return false;
-    }
-
     auto* func_ptr = reinterpret_cast<std::function<double(const Point&)>*>(taskData->inputs[0]);
-    if (!func_ptr || !*func_ptr) {
-      throw std::runtime_error("Validation failed: Optimization function is not provided or invalid.");
-      return false;
-    }
-
     auto* constraints_ptr = reinterpret_cast<std::vector<std::function<bool(const Point&)>>*>(taskData->inputs[1]);
-    if (!constraints_ptr) {
-      throw std::runtime_error("Validation failed: Constraints vector is not provided.");
-      return false;
-    }
-    if (constraints_ptr->empty()) {
-      throw std::runtime_error("Validation failed: No constraint functions provided.");
+    if (func_ptr == nullptr || constraints_ptr == nullptr) {
+      throw std::runtime_error("Validation failed: Optimization function is not provided or invalid.");
       return false;
     }
 
@@ -456,8 +428,12 @@ void titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::calculate_initial
 
   Point initial_point{std::numeric_limits<double>::infinity(), std::numeric_limits<double>::infinity()};
 
-  for (double x = -test_range; x <= test_range; x += step) {
-    for (double y = -test_range; y <= test_range; y += step) {
+  int num_steps = static_cast<int>(2 * test_range / step) + 1;
+
+  for (int i = 0; i < num_steps; ++i) {
+    double x = -test_range + i * step;
+    for (int j = 0; j < num_steps; ++j) {
+      double y = -test_range + j * step;
       Point test_point{x, y};
       bool satisfies_all_constraints = true;
       for (const auto& constraint : constraints_funcs_) {
@@ -514,9 +490,11 @@ titov_s_global_optimization_2_mpi::Point titov_s_global_optimization_2_mpi::MPIG
 
 double titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::GoldenSelection(double a, double b, double eps,
                                                                                  const Point& grad, const Point& xj) {
-  const double phi = 1.6180339887;
-  double x1, x2;
-  double y1, y2;
+  const double phi = std::numbers::phi;
+  double x1;
+  double x2;
+  double y1;
+  double y2;
 
   x1 = b - (b - a) / phi;
   x2 = a + (b - a) / phi;
@@ -556,10 +534,10 @@ titov_s_global_optimization_2_mpi::Point titov_s_global_optimization_2_mpi::MPIG
   size_t max_iterations = 100;
 
   auto local_constraints = constraints_funcs_;
-  local_constraints.push_back([this](const Point& p) { return process_upper_bound_x_ - p.x; });
-  local_constraints.push_back([this](const Point& p) { return p.x - process_lower_bound_x_; });
-  local_constraints.push_back([this](const Point& p) { return process_upper_bound_y_ - p.y; });
-  local_constraints.push_back([this](const Point& p) { return p.y - process_lower_bound_y_; });
+  local_constraints.emplace_back([this](const Point& p) { return process_upper_bound_x_ - p.x; });
+  local_constraints.emplace_back([this](const Point& p) { return p.x - process_lower_bound_x_; });
+  local_constraints.emplace_back([this](const Point& p) { return process_upper_bound_y_ - p.y; });
+  local_constraints.emplace_back([this](const Point& p) { return p.y - process_lower_bound_y_; });
 
   for (size_t iteration = 0; iteration < max_iterations; ++iteration) {
     Point correction(0, 0);
@@ -640,10 +618,5 @@ double titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::evaluate_functi
 }
 
 bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::all_constraints_satisfied(const Point& point) {
-  for (const auto& constraint : constraints_funcs_) {
-    if (constraint(point) < 0) {
-      return false;
-    }
-  }
-  return true;
+  return std::ranges::all_of(constraints_funcs_, [&](const auto& constraint) { return constraint(point) > 0; });
 }

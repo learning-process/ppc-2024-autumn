@@ -4,6 +4,8 @@
 #include <cmath>
 #include <functional>
 #include <limits>
+#include <numbers>
+#include <ranges>
 #include <memory>
 #include <vector>
 
@@ -36,9 +38,9 @@ class GlobalOpt2Sequential : public ppc::core::Task {
   double MakeSimplefx(double lambda, const Point& grad, const Point& xj);
   Point find_next_point(const Point& x_new);
   Point project_on_constraint(const Point& point, const std::function<double(const Point&)>& constraint_func);
-  double compute_distance(const Point& p1, const Point& p2);
+  static double compute_distance(const Point& p1, const Point& p2);
   Point compute_constraint_gradient(const std::function<double(const Point&)>& constraint_func, const Point& point);
-  double evaluate_constraint(const std::function<double(const Point&)>& constraint_func, const Point& point);
+  static double evaluate_constraint(const std::function<double(const Point&)>& constraint_func, const Point& point);
 
   std::function<double(const Point&)> func_to_optimize_;
   std::vector<std::function<double(const Point&)>> constraints_funcs_;
