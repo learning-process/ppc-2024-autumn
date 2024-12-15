@@ -1,9 +1,5 @@
 #include "seq/kolokolova_d_gaussian_method_horizontal/include/ops_seq.hpp"
 
-#include <thread>
-
-using namespace std::chrono_literals;
-
 int kolokolova_d_gaussian_method_horizontal_seq::find_rank(std::vector<double>& matrix, int rows, int cols) {
   std::vector<std::vector<double>> mat(rows, std::vector<double>(cols));
 
@@ -22,6 +18,9 @@ int kolokolova_d_gaussian_method_horizontal_seq::find_rank(std::vector<double>& 
       ++pivotRow;
     }
     if (pivotRow < rows) {
+      if (pivotRow != rank) {
+        swap(mat[pivotRow], mat[rank]);
+      }
       for (int r = rank + 1; r < rows; ++r) {
         double factor = mat[r][col] / mat[rank][col];
         for (int j = col; j < cols; ++j) {
