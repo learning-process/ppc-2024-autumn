@@ -42,9 +42,7 @@ TEST(vavilov_v_bellman_ford_mpi, ValidInputWithMultiplePaths_2) {
   taskDataPar->inputs_count.emplace_back(vertices);
   taskDataPar->inputs_count.emplace_back(edges_count);
   taskDataPar->inputs_count.emplace_back(source);
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(row_offsets.data()));
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(col_indices.data()));
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(weights.data()));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
   taskDataPar->outputs_count.emplace_back(output.size());
   taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
 
@@ -71,9 +69,7 @@ TEST(vavilov_v_bellman_ford_mpi, DisconnectedGraph) {
   taskDataPar->inputs_count.emplace_back(vertices);
   taskDataPar->inputs_count.emplace_back(edges_count);
   taskDataPar->inputs_count.emplace_back(source);
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(row_offsets.data()));
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(col_indices.data()));
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(weights.data()));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
   taskDataPar->outputs_count.emplace_back(output.size());
   taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
 
@@ -99,9 +95,7 @@ TEST(vavilov_v_bellman_ford_mpi, NegativeCycle) {
   taskDataPar->inputs_count.emplace_back(vertices);
   taskDataPar->inputs_count.emplace_back(edges_count);
   taskDataPar->inputs_count.emplace_back(source);
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(row_offsets.data()));
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(col_indices.data()));
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(weights.data()));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
   taskDataPar->outputs_count.emplace_back(output.size());
   taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
 
@@ -122,9 +116,7 @@ TEST(vavilov_v_bellman_ford_mpi, SingleVertexGraph) {
   taskDataPar->inputs_count.emplace_back(vertices);
   taskDataPar->inputs_count.emplace_back(edges_count);
   taskDataPar->inputs_count.emplace_back(source);
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(row_offsets.data()));
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(col_indices.data()));
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(weights.data()));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
   taskDataPar->outputs_count.emplace_back(output.size());
   taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
 
