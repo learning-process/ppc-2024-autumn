@@ -34,7 +34,7 @@ TEST(titov_s_global_optimization_2_mpi, test_pipeline_run) {
   }
 
   auto MPIOptimizationParallel =
-      std::make_shared<titov_s_global_optimization_2_mpi::MPIOptimizationParallel>(taskDataPar);
+      std::make_shared<titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel>(taskDataPar);
   ASSERT_EQ(MPIOptimizationParallel->validation(), true);
   MPIOptimizationParallel->pre_processing();
   MPIOptimizationParallel->run();
@@ -85,7 +85,7 @@ TEST(titov_s_global_optimization_2_mpi, test_task_run) {
   }
 
   auto MPIOptimizationParallel =
-      std::make_shared<titov_s_global_optimization_2_mpi::MPIOptimizationParallel>(taskDataPar);
+      std::make_shared<titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel>(taskDataPar);
   ASSERT_EQ(MPIOptimizationParallel->validation(), true);
   MPIOptimizationParallel->pre_processing();
   MPIOptimizationParallel->run();
