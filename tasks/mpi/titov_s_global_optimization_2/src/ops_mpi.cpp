@@ -189,7 +189,9 @@ titov_s_global_optimization_2_mpi::Point titov_s_global_optimization_2_mpi::MPIG
   size_t max_iterations = 100;
 
   for (size_t iteration = 0; iteration < max_iterations; ++iteration) {
-    Point correction(0, 0);
+    Point correction;
+    correction.x = 0;
+    correction.y = 0;
     bool constraints_violated = false;
 
     for (size_t i = 0; i < constraints_funcs_.size(); ++i) {
@@ -542,7 +544,9 @@ titov_s_global_optimization_2_mpi::Point titov_s_global_optimization_2_mpi::MPIG
   local_constraints.emplace_back([this](const Point& p) { return p.y - process_lower_bound_y_; });
 
   for (size_t iteration = 0; iteration < max_iterations; ++iteration) {
-    Point correction(0, 0);
+    Point correction;
+    correction.x = 0;
+    correction.y = 0;
     bool constraints_violated = false;
 
     for (size_t i = 0; i < local_constraints.size(); ++i) {

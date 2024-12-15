@@ -27,7 +27,7 @@ bool titov_s_global_optimization_2_seq::GlobalOpt2Sequential::pre_processing() {
 
 bool titov_s_global_optimization_2_seq::GlobalOpt2Sequential::validation() {
   internal_order_test();
-  if (taskData->inputs[0] == nullptr || taskData->inputs[1] ==nullptr) {
+  if (taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr) {
     throw std::runtime_error("Invalid inputs provided to the task.");
   }
 
@@ -196,7 +196,9 @@ titov_s_global_optimization_2_seq::Point titov_s_global_optimization_2_seq::Glob
   size_t max_iterations = 100;
 
   for (size_t iteration = 0; iteration < max_iterations; ++iteration) {
-    Point correction(0, 0);
+    Point correction;
+    correction.x = 0;
+    correction.y = 0;
     bool constraints_violated = false;
 
     for (size_t i = 0; i < constraints_funcs_.size(); ++i) {

@@ -4,9 +4,9 @@
 #include <cmath>
 #include <functional>
 #include <limits>
+#include <memory>
 #include <numbers>
 #include <ranges>
-#include <memory>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -39,7 +39,8 @@ class GlobalOpt2Sequential : public ppc::core::Task {
   Point find_next_point(const Point& x_new);
   static Point project_on_constraint(const Point& point, const std::function<double(const Point&)>& constraint_func);
   static double compute_distance(const Point& p1, const Point& p2);
-  static Point compute_constraint_gradient(const std::function<double(const Point&)>& constraint_func, const Point& point);
+  static Point compute_constraint_gradient(const std::function<double(const Point&)>& constraint_func,
+                                           const Point& point);
   static double evaluate_constraint(const std::function<double(const Point&)>& constraint_func, const Point& point);
 
   std::function<double(const Point&)> func_to_optimize_;
