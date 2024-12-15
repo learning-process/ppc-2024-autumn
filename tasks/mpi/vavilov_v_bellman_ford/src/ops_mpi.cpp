@@ -36,15 +36,12 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential::validation() {
 
 bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-
-  for (int i = 1; i < vertices_; ++i) {
-    for (int u = 0; u < vertices_; ++u) {
-      for (int j = row_offsets_[u]; j < row_offsets_[u + 1]; ++j) {
-        int v = col_indices_[j];
-        int weight = weights_[j];
-        if (distances_[u] != INT_MAX && distances_[u] + weight < distances_[v]) {
-          distances_[v] = distances_[u] + weight;
-        }
+  for (int u = 0; u < vertices_; ++u) {
+    for (int j = row_offsets_[u]; j < row_offsets_[u + 1]; ++j) {
+      int v = col_indices_[j];
+      int weight = weights_[j];
+      if (distances_[u] != INT_MAX && distances_[u] + weight < distances_[v]) {
+        distances_[v] = distances_[u] + weight;
       }
     }
   }
@@ -138,7 +135,19 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::run() {
     if (!global_changed) break;
   }
 
-  return true;
+  bool has_negative_cycle = false;
+  for (int u = local_start; u < local_end; ++u) {
+    for (int j = row_offsets_[u]; j < row_offsets_[u + 1]; ++j) {
+      int v = col_indices_[j];
+      int weight = weights_[j];
+      if (distances_[u] != INT_MAX && distances_[u] + weight < distances_[v]) {
+        has_negative_cycle = true;
+        break;
+      }
+    }
+
+  has_negative_cycle = boost::mpi::all_reduce(world, has_negative_cycle, std::logical_or<bool>());
+  return !has_negative_cycle;
 }
 
 bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::post_processing() {
