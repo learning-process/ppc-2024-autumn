@@ -11,14 +11,14 @@ bool gusev_n_dijkstras_algorithm_seq::DijkstrasAlgorithmSequential::pre_processi
 bool gusev_n_dijkstras_algorithm_seq::DijkstrasAlgorithmSequential::validation() {
   internal_order_test();
 
+  // Проверка входных и выходных данных
   if (taskData->inputs.empty() || taskData->inputs[0] == nullptr) return false;
   if (taskData->outputs.empty() || taskData->outputs[0] == nullptr) return false;
 
   auto* graph = reinterpret_cast<SparseGraphCRS*>(taskData->inputs[0]);
 
-  if (graph->num_vertices == 0 || graph->num_vertices > 10000) return false;
-
-  return true;
+  // Упрощенное условие проверки графа
+  return graph->num_vertices > 0 && graph->num_vertices <= 10000;
 }
 
 bool gusev_n_dijkstras_algorithm_seq::DijkstrasAlgorithmSequential::run() {
