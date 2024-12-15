@@ -101,6 +101,23 @@ TEST(khasanyanov_k_fox_algorithm_tests, test_validation) {
   }
 }
 
+TEST(khasanyanov_k_fox_algorithm_tests, test_mult_zero_matrix) {
+  boost::mpi::communicator world;
+  matrix<int> A{3, 4, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
+  matrix<int> B{4, 3, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+  matrix<int> C{3, 3};
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskData = create_task_data(A, B, C);
+  }
+  FoxAlgorithm<int> test(taskData);
+  RUN_TASK(test);
+  if (world.rank() == 0) {
+    auto expected = matrix<int>{3, 3, {0, 0, 0, 0, 0, 0, 0, 0, 0}};
+    ASSERT_EQ(expected, C);
+  }
+}
+
 class khasanyanov_k_fox_algorithm_tests : public ::testing::TestWithParam<std::tuple<size_t, size_t, size_t, size_t>> {
  protected:
   boost::mpi::communicator world;
