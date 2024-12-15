@@ -26,7 +26,6 @@ TEST(fomin_v_generalized_scatter, ScatterIntegers) {
   fomin_v_generalized_scatter::generalized_scatter(sendbuf, data_size, MPI_INT, recvbuf, 10, MPI_INT, root,
                                                    MPI_COMM_WORLD);
 
-  // Expected data for each process is a sequence of 10 integers starting from rank * 10
   int expected[10];
   for (int i = 0; i < 10; ++i) {
     expected[i] = rank * 10 + i;
@@ -35,6 +34,7 @@ TEST(fomin_v_generalized_scatter, ScatterIntegers) {
   for (int i = 0; i < 10; ++i) {
     EXPECT_EQ(recvbuf[i], expected[i]);
   }
+
   delete[] sendbuf;
   delete[] recvbuf;
 }

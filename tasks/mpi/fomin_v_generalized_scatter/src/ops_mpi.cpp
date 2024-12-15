@@ -17,7 +17,7 @@ std::vector<int> fomin_v_generalized_scatter::getRandomVector(int sz) {
   return vec;
 }
 
-int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int sendcount, MPI_Datatype sendtype,
+/*int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int sendcount, MPI_Datatype sendtype,
                                                      void* recvbuf, int recvcount, MPI_Datatype recvtype, int root,
                                                      MPI_Comm comm) {
   int rank, size;
@@ -57,6 +57,37 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
   }
 
   return MPI_SUCCESS;
+}*/
+int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int sendcount, MPI_Datatype sendtype,
+                                                     void* recvbuf, int recvcount, MPI_Datatype recvtype, int root,
+                                                     MPI_Comm comm) {
+  int rank, size;
+  MPI_Comm_rank(comm, &rank);
+  MPI_Comm_size(comm, &size);
+
+  int parent = (rank == root) ? MPI_PROC_NULL : (rank - 1) / 2;
+
+  int datatype_size;
+  MPI_Type_size(sendtype, &datatype_size);
+
+  if (sendcount != size * recvcount) {
+    return MPI_ERR_COUNT;
+  }
+
+  if (rank == root) {
+    char* send_ptr = const_cast<char*>(static_cast<const char*>(sendbuf));
+    for (int dest = 0; dest < size; ++dest) {
+      if (dest == root) continue;
+      int offset = dest * recvcount * datatype_size;
+      MPI_Send(send_ptr + offset, recvcount, sendtype, dest, 0, comm);
+    }
+    int root_offset = root * recvcount * datatype_size;
+    memcpy(recvbuf, send_ptr + root_offset, recvcount * datatype_size);
+  } else {
+    MPI_Recv(recvbuf, recvcount, recvtype, parent, 0, comm, MPI_STATUS_IGNORE);
+  }
+
+  return MPI_SUCCESS;
 }
 
 bool fomin_v_generalized_scatter::GeneralizedScatterTestParallel::pre_processing() {
@@ -91,13 +122,13 @@ bool fomin_v_generalized_scatter::GeneralizedScatterTestParallel::run() {
     int err = generalized_scatter(taskData->inputs[0], sendcount, MPI_INT, taskData->outputs[0], recvcount, MPI_INT,
                                   root, MPI_COMM_WORLD);
     if (err != MPI_SUCCESS) {
-      //std::cerr << "Error in generalized_scatter on root process." << std::endl;
+      // std::cerr << "Error in generalized_scatter on root process." << std::endl;
       return false;
     }
   } else {
     int err = generalized_scatter(nullptr, 0, MPI_INT, taskData->outputs[0], recvcount, MPI_INT, root, MPI_COMM_WORLD);
     if (err != MPI_SUCCESS) {
-      //std::cerr << "Error in generalized_scatter on process " << rank << std::endl;
+      // std::cerr << "Error in generalized_scatter on process " << rank << std::endl;
       return false;
     }
   }
