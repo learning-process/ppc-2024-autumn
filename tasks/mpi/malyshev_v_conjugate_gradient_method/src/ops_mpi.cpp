@@ -3,8 +3,8 @@
 #include <algorithm>
 #include <boost/serialization/vector.hpp>
 #include <cmath>
-#include <vector>
 #include <stdexcept>
+#include <vector>
 
 bool malyshev_v_conjugate_gradient_method_mpi::TestTaskSequential::pre_processing() {
   internal_order_test();
