@@ -60,7 +60,7 @@ bool volochaev_s_shell_sort_with_simple_merge_16_mpi::Lab3_16_seq::post_processi
 
   int* ans = reinterpret_cast<int*>(taskData->outputs[0]);
   std::copy(mas, mas + size_, ans);
-
+  delete[] mas;
   return true;
 }
 
