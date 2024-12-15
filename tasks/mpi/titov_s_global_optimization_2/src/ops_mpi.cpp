@@ -439,15 +439,8 @@ void titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::calculate_initial
     for (int j = 0; j < num_steps; ++j) {
       double y = -test_range + j * step;
       Point test_point{x, y};
-      bool satisfies_all_constraints = true;
-      for (const auto& constraint : constraints_funcs_) {
-        if (constraint(test_point) <= 0) {
-          satisfies_all_constraints = false;
-          break;
-        }
-      }
 
-      if (satisfies_all_constraints) {
+      if (all_constraints_satisfied(test_point)) {
         lower_bound_x_ = std::min(lower_bound_x_, test_point.x);
         upper_bound_x_ = std::max(upper_bound_x_, test_point.x);
         lower_bound_y_ = std::min(lower_bound_y_, test_point.y);
@@ -533,7 +526,7 @@ double titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::MakeSimplefx(do
 titov_s_global_optimization_2_mpi::Point titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::find_next_point(
     const Point& x_new) {
   Point current_point = x_new;
-  double step_size = 0.5;
+  double step_size = 0.2;
   double tolerance = 0.0001;
   size_t max_iterations = 100;
 
