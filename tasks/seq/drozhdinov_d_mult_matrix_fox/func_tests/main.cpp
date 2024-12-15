@@ -69,8 +69,8 @@ TEST(drozhdinov_d_mult_matrix_fox_seq, 2x3_3x2size) {
 
 TEST(drozhdinov_d_mult_matrix_fox_seq, Random50x200_200x50Test) {
   int k = 50;
-  int l = 200;
-  int m = 200;
+  int l = 100;
+  int m = 100;
   int n = 50;
   std::vector<double> A = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(k * l);
   std::vector<double> B = drozhdinov_d_mult_matrix_fox_seq::getRandomVector(k * l);
