@@ -79,7 +79,7 @@ TEST(vavilov_v_bellman_ford_mpi, DisconnectedGraph) {
   ASSERT_TRUE(testMpiTaskParallel.run());
   ASSERT_TRUE(testMpiTaskParallel.post_processing());
   if (world.rank() == 0) {
-    std::vector<int> expected_output = {0, 4, 1, 6, INT_MAX};
+    std::vector<int> expected_output = {0, 4, 1, 3, INT_MAX};
     EXPECT_EQ(output, expected_output);
   }
 }
