@@ -7,6 +7,25 @@
 
 #include "mpi/smirnov_i_binary_segmentation/include/ops_mpi.hpp"
 
+TEST(smirnov_i_binary_segmentation_mpi, negative_sizes_img) {
+  boost::mpi::communicator world;
+  int cols = -1;
+  int rows = 1;
+  std::vector<int> img;
+  std::vector<int> mask;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    img = std::vector<int>(1, 0);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(img.data()));
+    taskDataPar->inputs_count.emplace_back(rows);
+    taskDataPar->inputs_count.emplace_back(cols);
+  }
+
+  smirnov_i_binary_segmentation::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), false);
+}
 TEST(smirnov_i_binary_segmentation_mpi, not_binary_img) {
   boost::mpi::communicator world;
   int cols = 1;

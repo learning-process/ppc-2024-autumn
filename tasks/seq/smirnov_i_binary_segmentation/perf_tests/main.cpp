@@ -6,8 +6,8 @@
 #include "seq/smirnov_i_binary_segmentation/include/ops_seq.hpp"
 
 TEST(smirnov_i_binary_segmentation_seq, test_pipeline_run) {
-  int cols = 1000;
-  int rows = 1024;
+  int cols = 2011;
+  int rows = 1193;
   std::vector<int> img;
   img = std::vector<int>(cols * rows, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -47,8 +47,8 @@ TEST(smirnov_i_binary_segmentation_seq, test_pipeline_run) {
 }
 
 TEST(smirnov_i_binary_segmentation_seq, test_task_run) {
-  int cols = 1000;
-  int rows = 1024;
+  int cols = 2011;
+  int rows = 1193;
   std::vector<int> img;
   img = std::vector<int>(cols * rows, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();

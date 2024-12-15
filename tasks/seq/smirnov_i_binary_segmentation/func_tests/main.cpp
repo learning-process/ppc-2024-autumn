@@ -5,6 +5,18 @@
 
 #include "seq/smirnov_i_binary_segmentation/include/ops_seq.hpp"
 
+TEST(smirnov_i_binary_segmentation_seq, negative_sizes_img) {
+  int cols = 1;
+  int rows = -1;
+  std::vector<int> img = {0};
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(img.data()));
+  taskDataSeq->inputs_count.emplace_back(rows);
+  taskDataSeq->inputs_count.emplace_back(cols);
+  auto TestTaskSequential = std::make_shared<smirnov_i_binary_segmentation::TestMPITaskSequential>(taskDataSeq);
+
+  ASSERT_EQ(TestTaskSequential->validation(), false);
+}
 TEST(smirnov_i_binary_segmentation_seq, not_enough_sizes_img) {
   int cols = 1;
   std::vector<int> img = {0};

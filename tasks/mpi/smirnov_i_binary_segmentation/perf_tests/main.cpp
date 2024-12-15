@@ -8,8 +8,8 @@
 
 TEST(smirnov_i_binary_segmentation_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  int cols = 1000;
-  int rows = 1024;
+  int cols = 2011;
+  int rows = 1193;
   std::vector<int> img;
   std::vector<int> mask;
 
@@ -56,8 +56,8 @@ TEST(smirnov_i_binary_segmentation_mpi, test_pipeline_run) {
 
 TEST(smirnov_i_binary_segmentation_mpi, test_task_run) {
   boost::mpi::communicator world;
-  int cols = 1000;
-  int rows = 1024;
+  int cols = 2011;
+  int rows = 1193;
   std::vector<int> img;
   std::vector<int> mask;
 
