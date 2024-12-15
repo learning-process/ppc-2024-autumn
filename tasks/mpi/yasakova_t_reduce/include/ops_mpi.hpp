@@ -13,7 +13,7 @@
 #include "core/task/include/task.hpp"
 
 namespace yasakova_t_reduce {
-  
+
 class TestMPITaskParallel : public ppc::core::Task {
  public:
   explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
