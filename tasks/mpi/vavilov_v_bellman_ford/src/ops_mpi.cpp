@@ -68,7 +68,7 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential::post_processing() {
   return true;
 }
 
-void vavilov_v_bellman_ford_mpi::TestMPITaskSequential::CRS(const int* matrix) {
+void vavilov_v_bellman_ford_mpi::TestMPITaskParallel::CRS(const int* matrix) {
   row_offsets_.push_back(0);
   for (int i = 0; i < vertices_; ++i) {
     for (int j = 0; j < vertices_; ++j) {
