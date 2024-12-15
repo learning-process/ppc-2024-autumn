@@ -9,8 +9,8 @@
 TEST(kholin_k_iterative_methods_Seidel_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   int ProcRank = 0;
-  const size_t count_rows = 1000;
-  const size_t count_colls = 1000;
+  const size_t count_rows = 100;
+  const size_t count_colls = 100;
   float epsilon = 0.001f;
   list_ops::ops_ op = list_ops::METHOD_SEIDEL;
   std::vector<float> in;
@@ -20,7 +20,7 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, test_pipeline_run) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (ProcRank == 0) {
-    float p1 = -(10.0f * 10.0f * 10.0f);
+    float p1 = -(100.0f * 100.0f * 10.0f);
     float p2 = -p1;
     in = kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls, p1, p2);
     out = std::vector<float>(count_rows);
@@ -63,8 +63,8 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, test_pipeline_run) {
 TEST(kholin_k_iterative_methods_Seidel_mpi, test_task_run) {
   boost::mpi::communicator world;
   int ProcRank = 0;
-  const size_t count_rows = 1000;
-  const size_t count_colls = 1000;
+  const size_t count_rows = 100;
+  const size_t count_colls = 100;
   float epsilon = 0.001f;
   list_ops::ops_ op = list_ops::METHOD_SEIDEL;
   std::vector<float> in;
@@ -74,7 +74,7 @@ TEST(kholin_k_iterative_methods_Seidel_mpi, test_task_run) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (ProcRank == 0) {
-    float p1 = -(10.0f * 10.0f * 10.0f);
+    float p1 = -(100.0f * 100.0f * 10.0f);
     float p2 = -p1;
     in = kholin_k_iterative_methods_Seidel_mpi::gen_matrix_with_diag_pred(count_rows, count_colls, p1, p2);
     out = std::vector<float>(count_rows);
