@@ -1,5 +1,7 @@
 #include "seq/sarafanov_m_quick_sort_batcher_merge/include/ops_seq.hpp"
 
+#include <algorithm>
+
 namespace sarafanov_m_quick_sort_batcher_merge_seq {
 
 void batcher_merge(std::vector<int>& arr, int left, int mid, int right) {
