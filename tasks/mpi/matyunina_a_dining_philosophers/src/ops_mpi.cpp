@@ -12,6 +12,21 @@ using namespace std::chrono_literals;
 bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   unsigned int tmp = 0;
+  res_ = 0;
+  return true;
+}
+
+bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::validation() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    return taskData->outputs_count[0] == 1 && taskData->outputs_count[0] == 1 && world.size() > 2;
+  }
+  return true;
+}
+
+bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
+  internal_order_test();
+
   if (world.rank() == 0) {
     input_ = std::vector<int>(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
@@ -27,20 +42,7 @@ bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::pre_processing() 
     world.recv(0, 5, &a, 1);
     nom = a;
   }
-  res_ = 0;
-  return true;
-}
 
-bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::validation() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    return taskData->outputs_count[0] == 1 && taskData->outputs_count[0] == 1 && world.size() > 2;
-  }
-  return true;
-}
-
-bool matyunina_a_dining_philosophers_mpi::TestMPITaskParallel::run() {
-  internal_order_test();
   if (world.rank() == 0) {
     std::vector<bool> fork(world.size() - 1, true);
     int exit = nom * (world.size() - 1);
