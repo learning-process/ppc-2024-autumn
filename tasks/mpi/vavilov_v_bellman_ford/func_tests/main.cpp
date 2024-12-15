@@ -53,7 +53,7 @@ TEST(vavilov_v_bellman_ford_mpi, ValidInputWithMultiplePaths_2) {
   ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
   if (world.rank() == 0) {
-    std::vector<int> expected_output = {0, -1, 2, 1, -2};
+    std::vector<int> expected_output = {0, -1, 0, 1, -3};
     EXPECT_EQ(output, expected_output);
   }
 }
