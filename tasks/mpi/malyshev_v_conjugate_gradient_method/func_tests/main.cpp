@@ -11,11 +11,12 @@ namespace malyshev_v_conjugate_gradient_method_test_function {
 std::vector<std::vector<double>> getRandomMatrix(uint32_t size) {
   std::random_device dev;
   std::mt19937 gen(dev());
+  std::uniform_real_distribution<double> dist(-1.0, 1.0);
   std::vector<std::vector<double>> matrix(size, std::vector<double>(size));
 
   for (auto &row : matrix) {
     for (auto &el : row) {
-      el = -1.0 + gen() % (1.0 + 1.0 + 1.0);
+      el = dist(gen);
     }
   }
 
@@ -25,10 +26,11 @@ std::vector<std::vector<double>> getRandomMatrix(uint32_t size) {
 std::vector<double> getRandomVector(uint32_t size) {
   std::random_device dev;
   std::mt19937 gen(dev());
+  std::uniform_real_distribution<double> dist(-1.0, 1.0);
   std::vector<double> vector(size);
 
   for (auto &el : vector) {
-    el = -1.0 + gen() % (1.0 + 1.0 + 1.0);
+    el = dist(gen);
   }
 
   return vector;
