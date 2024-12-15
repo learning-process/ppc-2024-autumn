@@ -11,8 +11,6 @@ namespace borisov_s_crs_mul {
 bool CrsMatrixMulTask::validation() {
   internal_order_test();
 
-  std::cout << "TEST0" << std::endl;
-
   if (taskData->inputs.size() != 6 || taskData->outputs.size() != 3) {
     return false;
   }
@@ -29,8 +27,6 @@ bool CrsMatrixMulTask::validation() {
 
 bool CrsMatrixMulTask::pre_processing() {
   internal_order_test();
-
-  std::cout << "TEST2" << std::endl;
 
   A_nnz_ = static_cast<int>(taskData->inputs_count[0]);
   A_values_.assign(reinterpret_cast<const double*>(taskData->inputs[0]),
@@ -63,8 +59,6 @@ bool CrsMatrixMulTask::pre_processing() {
 
 bool CrsMatrixMulTask::run() {
   internal_order_test();
-
-  std::cout << "TEST" << std::endl;
 
   std::vector<double> temp(C_ncols_, 0.0);
 

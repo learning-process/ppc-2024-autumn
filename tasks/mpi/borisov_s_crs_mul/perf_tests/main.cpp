@@ -8,7 +8,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/borisov_s_crs_mul/include/ops_mpi.hpp"
 
-void generateRandomCRSMatrix(int rows, int cols, double sparsity, std::vector<double>& values,
+static void generateRandomCRSMatrix(int rows, int cols, double sparsity, std::vector<double>& values,
                              std::vector<int>& col_index, std::vector<int>& row_ptr) {
   std::random_device rd;
   std::mt19937 gen(rd());

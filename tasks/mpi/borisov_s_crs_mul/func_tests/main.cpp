@@ -8,7 +8,7 @@
 
 #include "mpi/borisov_s_crs_mul/include/ops_mpi.hpp"
 
-void prepareCRSMatrix(const std::vector<std::vector<double>>& dense_matrix, std::vector<double>& values,
+static void prepareCRSMatrix(const std::vector<std::vector<double>>& dense_matrix, std::vector<double>& values,
                       std::vector<int>& col_index, std::vector<int>& row_ptr) {
   int nrows = static_cast<int>(dense_matrix.size());
   int ncols = dense_matrix.empty() ? 0 : static_cast<int>(dense_matrix[0].size());
@@ -28,7 +28,7 @@ void prepareCRSMatrix(const std::vector<std::vector<double>>& dense_matrix, std:
   }
 }
 
-std::vector<std::vector<double>> generateRandomDenseMatrix(int rows, int cols, double density = 0.1) {
+static std::vector<std::vector<double>> generateRandomDenseMatrix(int rows, int cols, double density = 0.1) {
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_real_distribution<> value_dist(-10.0, 10.0);
@@ -216,8 +216,4 @@ TEST(MPI_CRS_Matrix_Multiplication, Large_Random_Matrices) {
   mpiTask.pre_processing();
   mpiTask.run();
   mpiTask.post_processing();
-
-  if (world.rank() == 0) {
-    std::cout << "Result size: " << taskDataPar->outputs_count[0] << " non-zero values.\n";
-  }
 }
