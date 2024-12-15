@@ -10,35 +10,22 @@
 #include <vector>
 
 namespace gusev_n_dijkstras_algorithm_mpi {
-struct MinVertexComparator {
-  std::vector<double> distances;
-
-  MinVertexComparator() = default;
-
-  MinVertexComparator(const std::vector<double>& dist) : distances(dist) {}
-
-  int operator()(int a, int b) const {
-    if (a == -1) return b;
-    if (b == -1) return a;
-
-    return (distances[a] < distances[b]) ? a : b;
-  }
-};
-
 bool DijkstrasAlgorithmParallel::validation() {
-  if (taskData->inputs.empty() || taskData->inputs[0] == nullptr) return false;
-
-  if (taskData->inputs.size() != taskData->inputs_count.size()) return false;
+  if (taskData->inputs.empty() || taskData->inputs[0] == nullptr ||
+      taskData->inputs.size() != taskData->inputs_count.size() || taskData->inputs_count[0] != sizeof(SparseGraphCRS)) {
+    return false;
+  }
 
   auto* graph = reinterpret_cast<SparseGraphCRS*>(taskData->inputs[0]);
 
-  if (taskData->inputs_count[0] != sizeof(SparseGraphCRS)) return false;
+  if (graph->num_vertices == 0 || graph->num_vertices > 10000) {
+    return false;
+  }
 
-  if (graph->num_vertices == 0 || graph->num_vertices > 10000) return false;
-
-  if (taskData->outputs.empty() || taskData->outputs[0] == nullptr) return false;
-
-  if (taskData->outputs.size() != taskData->outputs_count.size()) return false;
+  if (taskData->outputs.empty() || taskData->outputs[0] == nullptr ||
+      taskData->outputs.size() != taskData->outputs_count.size()) {
+    return false;
+  }
 
   return true;
 }
@@ -69,7 +56,7 @@ bool DijkstrasAlgorithmParallel::run() {
   int start_vertex = rank * vertices_per_proc;
   int end_vertex = (rank == num_procs - 1) ? num_vertices : start_vertex + vertices_per_proc;
 
-  std::vector<double> local_distances(num_vertices, std::numeric_limits<double>::infinity());
+  local_distances.resize(num_vertices, std::numeric_limits<double>::infinity());
   std::vector<bool> local_visited(num_vertices, false);
 
   if (rank == 0) {
@@ -115,6 +102,13 @@ bool DijkstrasAlgorithmParallel::run() {
     local_distances = global_distances;
   }
 
+  return true;
+}
+
+bool DijkstrasAlgorithmParallel::post_processing() {
+  int rank = world.rank();
+  int num_vertices = local_distances.size();
+
   if (rank == 0) {
     auto* output = reinterpret_cast<double*>(taskData->outputs[0]);
     std::copy(local_distances.begin(), local_distances.end(), output);
@@ -124,6 +118,4 @@ bool DijkstrasAlgorithmParallel::run() {
 
   return true;
 }
-
-bool DijkstrasAlgorithmParallel::post_processing() { return true; }
 }  // namespace gusev_n_dijkstras_algorithm_mpi

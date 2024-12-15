@@ -70,6 +70,7 @@ class DijkstrasAlgorithmParallel : public ppc::core::Task {
 
  private:
   boost::mpi::communicator world;
+  std::vector<double> local_distances;
 };
 
 }  // namespace gusev_n_dijkstras_algorithm_mpi
