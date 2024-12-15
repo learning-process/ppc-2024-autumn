@@ -76,10 +76,11 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
 
   if (size == 1) {
     // Single process, copy sendbuf to recvbuf directly
-    memcpy(recvbuf, sendbuf, recvcount * datatype_size);
+    const char* send_ptr = static_cast<const char*>(sendbuf);
+    memcpy(recvbuf, send_ptr, recvcount * datatype_size);
   } else {
     if (rank == root) {
-      char* send_ptr = const_cast<char*>(static_cast<const char*>(sendbuf));
+      const char* send_ptr = static_cast<const char*>(sendbuf);
       for (int dest = 0; dest < size; ++dest) {
         if (dest == root) continue;
         int offset = dest * recvcount * datatype_size;
