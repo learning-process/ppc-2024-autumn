@@ -23,7 +23,7 @@ TEST(makhov_m_ring_topology, RandVectorZeroSize) {
     input_vector[i] = (int)(min + gen() % (max - min + 1));
   }
 
-  for (size_t i = 0; i < world.size(); i++) {
+  for (size_t i = 0; i < (size_t)world.size(); i++) {
     reference_sequence[i] = i;
   }
 
@@ -60,7 +60,7 @@ TEST(makhov_m_ring_topology, RandVectorSize1) {
     input_vector[i] = (int)(min + gen() % (max - min + 1));
   }
 
-  for (size_t i = 0; i < world.size(); i++) {
+  for (size_t i = 0; i < (size_t)world.size(); i++) {
     reference_sequence[i] = i;
   }
 
@@ -105,7 +105,7 @@ TEST(makhov_m_ring_topology, RandVectorSize10) {
     input_vector[i] = (int)(min + gen() % (max - min + 1));
   }
 
-  for (size_t i = 0; i < world.size(); i++) {
+  for (size_t i = 0; i < (size_t)world.size(); i++) {
     reference_sequence[i] = i;
   }
 
@@ -150,7 +150,7 @@ TEST(makhov_m_ring_topology, RandVectorSize1000) {
     input_vector[i] = (int)(min + gen() % (max - min + 1));
   }
 
-  for (size_t i = 0; i < world.size(); i++) {
+  for (size_t i = 0; i < (size_t)world.size(); i++) {
     reference_sequence[i] = i;
   }
 
