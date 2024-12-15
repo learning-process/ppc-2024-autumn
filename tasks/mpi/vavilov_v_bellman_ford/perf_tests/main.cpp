@@ -8,10 +8,10 @@
 
 std::vector<int> generate_linear_graph(int num_vertices) {
   std::vector<int> matrix(num_vertices * num_vertices, 0);
-    for (int i = 0; i < num_vertices - 1; ++i) {
-      matrix[i * num_vertices + i + 1] = 1;
-    }
-    return matrix;
+  for (int i = 0; i < num_vertices - 1; ++i) {
+    matrix[i * num_vertices + i + 1] = 1;
+  }
+  return matrix;
 }
 
 std::vector<int> compute_expected_distances(int num_vertices) {
