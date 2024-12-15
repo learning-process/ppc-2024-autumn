@@ -11,7 +11,7 @@ namespace sarafanov_m_quick_sort_batcher_merge_seq {
 
 const int THRESHOLD = 16;
 
-void batcher_merge(std::vector<int>& arr, int left, int mid, int right);
+void batcher_merge(std::vector<int>& arr, int left, int right);
 void quick_sort(std::vector<int>& arr, int left, int right);
 void quick_sort_with_batcher_merge(std::vector<int>& arr);
 

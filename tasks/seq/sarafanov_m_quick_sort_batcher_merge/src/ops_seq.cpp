@@ -4,7 +4,7 @@
 
 namespace sarafanov_m_quick_sort_batcher_merge_seq {
 
-void batcher_merge(std::vector<int>& arr, int left, int mid, int right) {
+void batcher_merge(std::vector<int>& arr, int left, int right) {
   int n = right - left + 1;
   int step = 1;
 
@@ -50,7 +50,7 @@ void quick_sort_with_batcher_merge(std::vector<int>& arr) {
   int size = arr.size();
   quick_sort(arr, 0, size - 1);
 
-  batcher_merge(arr, 0, size / 2 - 1, size - 1);
+  batcher_merge(arr, 0, size - 1);
 }
 
 bool QuicksortBatcherMerge::validation() {
