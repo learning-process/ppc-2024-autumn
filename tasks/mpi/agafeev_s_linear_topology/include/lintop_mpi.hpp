@@ -22,6 +22,7 @@ class LinearTopology : public ppc::core::Task {
  private:
   boost::mpi::communicator world;
   std::vector<T> data_;
+  std::vector<size_t> ranks_vec_;
   bool result_ = false;
 };
 
