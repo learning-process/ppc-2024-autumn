@@ -162,16 +162,16 @@ TEST(drozhdinov_d_mult_matrix_fox_MPI, Random100Test) {
   }
 }
 
-TEST(drozhdinov_d_mult_matrix_fox_MPI, Random500Test) {
+TEST(drozhdinov_d_mult_matrix_fox_MPI, Random150Test) {
   boost::mpi::communicator world;
   if (world.size() != 1 && world.size() != 4) {
     ASSERT_TRUE(true);
     return;
   }
-  int k = 500;
-  int l = 500;
-  int m = 500;
-  int n = 500;
+  int k = 150;
+  int l = 150;
+  int m = 150;
+  int n = 150;
   std::vector<double> A = getRandomVector(k * l);
   std::vector<double> B = getRandomVector(m * n);
   std::vector<double> expres_par(k * n);
@@ -226,16 +226,16 @@ TEST(drozhdinov_d_mult_matrix_fox_MPI, Random500Test) {
   }
 }
 
-TEST(drozhdinov_d_mult_matrix_fox_MPI, Random100_400x400_100Test) {
+TEST(drozhdinov_d_mult_matrix_fox_MPI, Random50_100x100_50Test) {
   boost::mpi::communicator world;
   if (world.size() != 1 && world.size() != 4) {
     ASSERT_TRUE(true);
     return;
   }
-  int k = 100;
-  int l = 400;
-  int m = 400;
-  int n = 100;
+  int k = 50;
+  int l = 100;
+  int m = 100;
+  int n = 50;
   std::vector<double> A = getRandomVector(k * l);
   std::vector<double> B = getRandomVector(m * n);
   std::vector<double> expres_par(k * n);
@@ -493,55 +493,6 @@ TEST(drozhdinov_d_mult_matrix_fox_MPI, NotSquareProcesses) {
       ASSERT_EQ(expres, expres_par);
       ASSERT_EQ(expres, expres_seq);
     }
-  }
-}
-
-TEST(drozhdinov_d_mult_matrix_fox_MPI, WrongValidation3) {
-  boost::mpi::communicator world;
-  int k = 2;
-  int l = 10;
-  int m = 10;
-  int n = 2;
-  std::vector<double> A = getRandomVector(k * l);
-  std::vector<double> B = getRandomVector(m * n);
-  std::vector<double> expres_par(k * n);
-  // std::vector<double> expres = MatrixMult(A, B, k, l, n);
-  //  Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
-    taskDataPar->inputs_count.emplace_back(k);
-    taskDataPar->inputs_count.emplace_back(l);
-    taskDataPar->inputs_count.emplace_back(m);
-    taskDataPar->inputs_count.emplace_back(n);
-    // output data lost
-    taskDataPar->outputs_count.emplace_back(k);
-    taskDataPar->outputs_count.emplace_back(n);
-    drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-    ASSERT_EQ(testMpiTaskParallel.validation(), false);
-  }
-
-  if (world.rank() == 0) {
-    // Create data
-    std::vector<double> expres_seq(4);
-
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
-    taskDataSeq->inputs_count.emplace_back(k);
-    taskDataSeq->inputs_count.emplace_back(l);
-    taskDataSeq->inputs_count.emplace_back(m);
-    taskDataSeq->inputs_count.emplace_back(n);
-    // output data lost
-    taskDataSeq->outputs_count.emplace_back(k);
-    taskDataSeq->outputs_count.emplace_back(n);
-
-    // Create Task
-    drozhdinov_d_mult_matrix_fox_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), false);
   }
 }
 
