@@ -1,10 +1,10 @@
 // Copyright 2024 Nesterov Alexander
+#include "seq/titov_s_global_optimization_2/include/ops_seq.hpp"
+
 #include <algorithm>
 #include <cmath>
 #include <limits>
 #include <random>
-
-#include "seq/titov_s_global_optimization_2/include/ops_seq.hpp"
 
 bool titov_s_global_optimization_2_seq::GlobalOpt2Sequential::pre_processing() {
   internal_order_test();
