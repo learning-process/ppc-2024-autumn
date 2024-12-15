@@ -34,9 +34,6 @@ class Lab3_16_mpi : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  void sort(std::vector<int>& v);
-  std::vector<int> merge(const std::vector<int>& left, const std::vector<int>& right);
-
  private:
   int size_{};
 

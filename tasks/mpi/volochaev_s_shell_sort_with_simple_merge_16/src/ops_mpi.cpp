@@ -7,6 +7,11 @@
 #include <thread>
 #include <vector>
 
+namespace volochaev_s_shell_sort_with_simple_merge_16_mpi {
+void sort(std::vector<int>& v);
+std::vector<int> merge(const std::vector<int>& left, const std::vector<int>& right);
+}  // namespace volochaev_s_shell_sort_with_simple_merge_16_mpi
+
 bool volochaev_s_shell_sort_with_simple_merge_16_mpi::Lab3_16_seq::pre_processing() {
   internal_order_test();
 
@@ -85,7 +90,7 @@ bool volochaev_s_shell_sort_with_simple_merge_16_mpi::Lab3_16_mpi::validation() 
   return true;
 }
 
-void volochaev_s_shell_sort_with_simple_merge_16_mpi::Lab3_16_mpi::sort(std::vector<int>& v) {
+void volochaev_s_shell_sort_with_simple_merge_16_mpi::sort(std::vector<int>& v) {
   int n = v.size();
   int gap = n / 2;
 
@@ -103,8 +108,8 @@ void volochaev_s_shell_sort_with_simple_merge_16_mpi::Lab3_16_mpi::sort(std::vec
   }
 }
 
-std::vector<int> volochaev_s_shell_sort_with_simple_merge_16_mpi::Lab3_16_mpi::merge(const std::vector<int>& left,
-                                                                                     const std::vector<int>& right) {
+std::vector<int> volochaev_s_shell_sort_with_simple_merge_16_mpi::merge(const std::vector<int>& left,
+                                                                        const std::vector<int>& right) {
   std::vector<int> res;
   res.reserve(left.size() + right.size());
   std::merge(left.begin(), left.end(), right.begin(), right.end(), std::back_inserter(res));
