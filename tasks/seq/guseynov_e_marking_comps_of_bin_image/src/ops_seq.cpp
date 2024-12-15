@@ -22,7 +22,7 @@ bool guseynov_e_marking_comps_of_bin_image_seq::TestTaskSequential::pre_processi
   internal_order_test();
 
   rows = taskData->inputs_count[0];
-  columns = taskData->inputs_count[0];
+  columns = taskData->inputs_count[1];
   int pixels_count = rows * columns;
   image_ = std::vector<int>(pixels_count);
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
@@ -93,7 +93,7 @@ bool guseynov_e_marking_comps_of_bin_image_seq::TestTaskSequential::run() {
 
   for (int x = 0; x < rows; x++) {
     for (int y = 0; y < columns; y++) {
-      int position = x * rows + y;
+      int position = x * columns + y;
       if (labeled_image[position] > 1) {
         labeled_image[position] = find(parent, labeled_image[position]);
       }
