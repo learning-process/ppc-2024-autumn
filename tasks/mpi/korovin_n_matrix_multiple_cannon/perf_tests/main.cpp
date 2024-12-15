@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
@@ -25,17 +24,15 @@ TEST(korovin_n_matrix_multiple_cannon_mpi, test_task_run) {
   }
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  std::vector<double> C(numRowsA * numColsB);
   if (world.rank() == 0) {
     taskData->inputs_count.emplace_back(numRowsA);
     taskData->inputs_count.emplace_back(numColsA_RowsB);
     taskData->inputs_count.emplace_back(numColsB);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
-  }
-  std::vector<double> C(numRowsA * numColsB, 0.0);
-  if (world.rank() == 0) {
+
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(C.data()));
-    taskData->outputs_count.emplace_back(C.size());
   }
   auto testTask = std::make_shared<korovin_n_matrix_multiple_cannon_mpi::TestMPITaskParallel>(taskData);
 
@@ -76,17 +73,15 @@ TEST(korovin_n_matrix_multiple_cannon_mpi, test_pipeline_run) {
   }
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  std::vector<double> C(numRowsA * numColsB);
   if (world.rank() == 0) {
     taskData->inputs_count.emplace_back(numRowsA);
     taskData->inputs_count.emplace_back(numColsA_RowsB);
     taskData->inputs_count.emplace_back(numColsB);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
-  }
-  std::vector<double> C(numRowsA * numColsB, 0.0);
-  if (world.rank() == 0) {
+
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(C.data()));
-    taskData->outputs_count.emplace_back(C.size());
   }
 
   auto testTask = std::make_shared<korovin_n_matrix_multiple_cannon_mpi::TestMPITaskParallel>(taskData);

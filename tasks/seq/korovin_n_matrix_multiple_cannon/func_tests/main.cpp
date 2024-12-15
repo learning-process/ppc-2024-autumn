@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <vector>
@@ -25,12 +24,12 @@ TEST(korovin_n_matrix_multiple_cannon_seq, matrix_1x1) {
 
   korovin_n_matrix_multiple_cannon_seq::TestTaskSequential testTask(taskData);
 
-  ASSERT_EQ(testTask.validation(), true);
+  ASSERT_TRUE(testTask.validation());
   testTask.pre_processing();
   testTask.run();
   testTask.post_processing();
   for (int i = 0; i < (int)C.size(); i++) {
-    ASSERT_DOUBLE_EQ(C[i], expected_C[i]);
+    EXPECT_DOUBLE_EQ(C[i], expected_C[i]);
   }
 }
 
@@ -55,12 +54,12 @@ TEST(korovin_n_matrix_multiple_cannon_seq, matrix_2x2) {
 
   korovin_n_matrix_multiple_cannon_seq::TestTaskSequential testTask(taskData);
 
-  ASSERT_EQ(testTask.validation(), true);
+  ASSERT_TRUE(testTask.validation());
   testTask.pre_processing();
   testTask.run();
   testTask.post_processing();
   for (int i = 0; i < (int)C.size(); i++) {
-    ASSERT_DOUBLE_EQ(C[i], expected_C[i]);
+    EXPECT_DOUBLE_EQ(C[i], expected_C[i]);
   }
 }
 
@@ -85,12 +84,12 @@ TEST(korovin_n_matrix_multiple_cannon_seq, matrix_3x3) {
 
   korovin_n_matrix_multiple_cannon_seq::TestTaskSequential testTask(taskData);
 
-  ASSERT_EQ(testTask.validation(), true);
+  ASSERT_TRUE(testTask.validation());
   testTask.pre_processing();
   testTask.run();
   testTask.post_processing();
   for (int i = 0; i < (int)C.size(); i++) {
-    ASSERT_DOUBLE_EQ(C[i], expected_C[i]);
+    EXPECT_DOUBLE_EQ(C[i], expected_C[i]);
   }
 }
 
@@ -115,12 +114,12 @@ TEST(korovin_n_matrix_multiple_cannon_seq, matrix_2x3_3x2) {
 
   korovin_n_matrix_multiple_cannon_seq::TestTaskSequential testTask(taskData);
 
-  ASSERT_EQ(testTask.validation(), true);
+  ASSERT_TRUE(testTask.validation());
   testTask.pre_processing();
   testTask.run();
   testTask.post_processing();
   for (int i = 0; i < (int)C.size(); i++) {
-    ASSERT_DOUBLE_EQ(C[i], expected_C[i]);
+    EXPECT_DOUBLE_EQ(C[i], expected_C[i]);
   }
 }
 
@@ -146,12 +145,12 @@ TEST(korovin_n_matrix_multiple_cannon_seq, matrix_6x4_4x5) {
 
   korovin_n_matrix_multiple_cannon_seq::TestTaskSequential testTask(taskData);
 
-  ASSERT_EQ(testTask.validation(), true);
+  ASSERT_TRUE(testTask.validation());
   testTask.pre_processing();
   testTask.run();
   testTask.post_processing();
   for (int i = 0; i < (int)C.size(); i++) {
-    ASSERT_DOUBLE_EQ(C[i], expected_C[i]);
+    EXPECT_DOUBLE_EQ(C[i], expected_C[i]);
   }
 }
 
@@ -177,12 +176,12 @@ TEST(korovin_n_matrix_multiple_cannon_seq, matrix_4x4) {
 
   korovin_n_matrix_multiple_cannon_seq::TestTaskSequential testTask(taskData);
 
-  ASSERT_EQ(testTask.validation(), true);
+  ASSERT_TRUE(testTask.validation());
   testTask.pre_processing();
   testTask.run();
   testTask.post_processing();
   for (int i = 0; i < (int)C.size(); i++) {
-    ASSERT_DOUBLE_EQ(C[i], expected_C[i]);
+    EXPECT_DOUBLE_EQ(C[i], expected_C[i]);
   }
 }
 
@@ -207,12 +206,12 @@ TEST(korovin_n_matrix_multiple_cannon_seq, matrix_2x3_3x2_negative) {
 
   korovin_n_matrix_multiple_cannon_seq::TestTaskSequential testTask(taskData);
 
-  ASSERT_EQ(testTask.validation(), true);
+  ASSERT_TRUE(testTask.validation());
   testTask.pre_processing();
   testTask.run();
   testTask.post_processing();
   for (int i = 0; i < (int)C.size(); i++) {
-    ASSERT_DOUBLE_EQ(C[i], expected_C[i]);
+    EXPECT_DOUBLE_EQ(C[i], expected_C[i]);
   }
 }
 
@@ -237,12 +236,12 @@ TEST(korovin_n_matrix_multiple_cannon_seq, matrix_zeros) {
 
   korovin_n_matrix_multiple_cannon_seq::TestTaskSequential testTask(taskData);
 
-  ASSERT_EQ(testTask.validation(), true);
+  ASSERT_TRUE(testTask.validation());
   testTask.pre_processing();
   testTask.run();
   testTask.post_processing();
   for (int i = 0; i < (int)C.size(); i++) {
-    ASSERT_DOUBLE_EQ(C[i], expected_C[i]);
+    EXPECT_DOUBLE_EQ(C[i], expected_C[i]);
   }
 }
 
@@ -299,12 +298,12 @@ TEST(korovin_n_matrix_multiple_cannon_seq, matrix_3x3_inversion) {
 
   korovin_n_matrix_multiple_cannon_seq::TestTaskSequential testTask(taskData);
 
-  ASSERT_EQ(testTask.validation(), true);
+  ASSERT_TRUE(testTask.validation());
   testTask.pre_processing();
   testTask.run();
   testTask.post_processing();
 
   for (int i = 0; i < (int)C.size(); i++) {
-    ASSERT_DOUBLE_EQ(C[i], expected_C[i]);
+    EXPECT_DOUBLE_EQ(C[i], expected_C[i]);
   }
 }

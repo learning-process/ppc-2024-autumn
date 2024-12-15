@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include "mpi/korovin_n_matrix_multiple_cannon/include/ops_mpi.hpp"
 
 #include <algorithm>
@@ -11,6 +10,10 @@
 bool korovin_n_matrix_multiple_cannon_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
 
+  numRowsA_ = taskData->inputs_count[0];
+  numColsA_RowsB_ = taskData->inputs_count[1];
+  numColsB_ = taskData->inputs_count[2];
+
   auto* a_data = reinterpret_cast<double*>(taskData->inputs[0]);
   A_.assign(a_data, a_data + (numRowsA_ * numColsA_RowsB_));
   auto* b_data = reinterpret_cast<double*>(taskData->inputs[1]);
@@ -21,13 +24,14 @@ bool korovin_n_matrix_multiple_cannon_mpi::TestMPITaskSequential::pre_processing
 
 bool korovin_n_matrix_multiple_cannon_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
+
   if (taskData->inputs_count.size() < 3) return false;
 
-  numRowsA_ = taskData->inputs_count[0];
-  numColsA_RowsB_ = taskData->inputs_count[1];
-  numColsB_ = taskData->inputs_count[2];
+  int temp_numRowsA = taskData->inputs_count[0];
+  int temp_numColsA_RowsB = taskData->inputs_count[1];
+  int temp_numColsB = taskData->inputs_count[2];
 
-  return (numRowsA_ > 0 && numColsA_RowsB_ > 0 && numColsB_ > 0) &&
+  return (temp_numRowsA > 0 && temp_numColsA_RowsB > 0 && temp_numColsB > 0) &&
          (taskData->inputs.size() >= 2 && taskData->inputs[0] != nullptr && taskData->inputs[1] != nullptr) &&
          (!taskData->outputs.empty() && taskData->outputs[0] != nullptr);
 }
@@ -35,7 +39,7 @@ bool korovin_n_matrix_multiple_cannon_mpi::TestMPITaskSequential::validation() {
 bool korovin_n_matrix_multiple_cannon_mpi::TestMPITaskSequential::run() {
   internal_order_test();
 
-  C_.resize(numRowsA_ * numColsB_, 0.0);
+  C_.resize(numRowsA_ * numColsB_);
   for (int i = 0; i < numRowsA_; i++) {
     for (int j = 0; j < numColsB_; j++) {
       for (int p = 0; p < numColsA_RowsB_; p++) {
@@ -62,6 +66,9 @@ bool korovin_n_matrix_multiple_cannon_mpi::TestMPITaskParallel::pre_processing()
   int rank;
   MPI_Comm_rank(world, &rank);
   if (rank == 0) {
+    numRowsA_ = taskData->inputs_count[0];
+    numColsA_RowsB_ = taskData->inputs_count[1];
+    numColsB_ = taskData->inputs_count[2];
     auto* a_data = reinterpret_cast<double*>(taskData->inputs[0]);
     A_.assign(a_data, a_data + (numRowsA_ * numColsA_RowsB_));
     auto* b_data = reinterpret_cast<double*>(taskData->inputs[1]);
@@ -79,11 +86,11 @@ bool korovin_n_matrix_multiple_cannon_mpi::TestMPITaskParallel::validation() {
   if (rank != 0) return true;
   if (taskData->inputs_count.size() < 3) return false;
 
-  numRowsA_ = taskData->inputs_count[0];
-  numColsA_RowsB_ = taskData->inputs_count[1];
-  numColsB_ = taskData->inputs_count[2];
+  int temp_numRowsA = taskData->inputs_count[0];
+  int temp_numColsA_RowsB = taskData->inputs_count[1];
+  int temp_numColsB = taskData->inputs_count[2];
 
-  return (numRowsA_ > 0 && numColsA_RowsB_ > 0 && numColsB_ > 0) &&
+  return (temp_numRowsA > 0 && temp_numColsA_RowsB > 0 && temp_numColsB > 0) &&
          (taskData->inputs.size() >= 2 && taskData->inputs[0] != nullptr && taskData->inputs[1] != nullptr) &&
          (!taskData->outputs.empty() && taskData->outputs[0] != nullptr);
 }

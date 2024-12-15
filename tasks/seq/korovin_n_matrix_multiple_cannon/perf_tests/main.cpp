@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <vector>
@@ -30,9 +29,8 @@ TEST(korovin_n_matrix_multiple_cannon_seq, test_task_run) {
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
 
-  std::vector<double> C(numRowsA * numColsB, 0.0);
+  std::vector<double> C(numRowsA * numColsB);
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(C.data()));
-  taskData->outputs_count.emplace_back(C.size());
 
   auto testTask = std::make_shared<korovin_n_matrix_multiple_cannon_seq::TestTaskSequential>(taskData);
 
@@ -79,9 +77,8 @@ TEST(korovin_n_matrix_multiple_cannon_seq, test_pipeline_run) {
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
 
-  std::vector<double> C(numRowsA * numColsB, 0.0);
+  std::vector<double> C(numRowsA * numColsB);
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(C.data()));
-  taskData->outputs_count.emplace_back(C.size());
 
   auto testTask = std::make_shared<korovin_n_matrix_multiple_cannon_seq::TestTaskSequential>(taskData);
 

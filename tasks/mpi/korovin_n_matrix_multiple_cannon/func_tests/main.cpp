@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
@@ -29,7 +28,7 @@ TEST(korovin_n_matrix_multiple_cannon_mpi, matrix_1x1) {
   }
 
   korovin_n_matrix_multiple_cannon_mpi::TestMPITaskParallel testTask(taskData);
-  ASSERT_EQ(testTask.validation(), true);
+  ASSERT_TRUE(testTask.validation());
   testTask.pre_processing();
   testTask.run();
   testTask.post_processing();
@@ -44,14 +43,14 @@ TEST(korovin_n_matrix_multiple_cannon_mpi, matrix_1x1) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(C_seq.data()));
 
     korovin_n_matrix_multiple_cannon_mpi::TestMPITaskSequential testTaskSeq(taskDataSeq);
-    ASSERT_EQ(testTaskSeq.validation(), true);
+    ASSERT_TRUE(testTaskSeq.validation());
     testTaskSeq.pre_processing();
     testTaskSeq.run();
     testTaskSeq.post_processing();
 
     for (int i = 0; i < (int)C_mpi.size(); i++) {
-      ASSERT_DOUBLE_EQ(C_mpi[i], expected_C[i]);
-      ASSERT_DOUBLE_EQ(C_mpi[i], C_seq[i]);
+      EXPECT_DOUBLE_EQ(C_mpi[i], expected_C[i]);
+      EXPECT_DOUBLE_EQ(C_mpi[i], C_seq[i]);
     }
   }
 }
@@ -78,7 +77,7 @@ TEST(korovin_n_matrix_multiple_cannon_mpi, matrix_2x2) {
   }
 
   korovin_n_matrix_multiple_cannon_mpi::TestMPITaskParallel testTask(taskData);
-  ASSERT_EQ(testTask.validation(), true);
+  ASSERT_TRUE(testTask.validation());
   testTask.pre_processing();
   testTask.run();
   testTask.post_processing();
@@ -93,14 +92,14 @@ TEST(korovin_n_matrix_multiple_cannon_mpi, matrix_2x2) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(C_seq.data()));
 
     korovin_n_matrix_multiple_cannon_mpi::TestMPITaskSequential testTaskSeq(taskDataSeq);
-    ASSERT_EQ(testTaskSeq.validation(), true);
+    ASSERT_TRUE(testTaskSeq.validation());
     testTaskSeq.pre_processing();
     testTaskSeq.run();
     testTaskSeq.post_processing();
 
     for (int i = 0; i < (int)C_mpi.size(); i++) {
-      ASSERT_DOUBLE_EQ(C_mpi[i], expected_C[i]);
-      ASSERT_DOUBLE_EQ(C_mpi[i], C_seq[i]);
+      EXPECT_DOUBLE_EQ(C_mpi[i], expected_C[i]);
+      EXPECT_DOUBLE_EQ(C_mpi[i], C_seq[i]);
     }
   }
 }
@@ -127,7 +126,7 @@ TEST(korovin_n_matrix_multiple_cannon_mpi, matrix_3x3) {
   }
 
   korovin_n_matrix_multiple_cannon_mpi::TestMPITaskParallel testTask(taskData);
-  ASSERT_EQ(testTask.validation(), true);
+  ASSERT_TRUE(testTask.validation());
   testTask.pre_processing();
   testTask.run();
   testTask.post_processing();
@@ -142,14 +141,14 @@ TEST(korovin_n_matrix_multiple_cannon_mpi, matrix_3x3) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(C_seq.data()));
 
     korovin_n_matrix_multiple_cannon_mpi::TestMPITaskSequential testTaskSeq(taskDataSeq);
-    ASSERT_EQ(testTaskSeq.validation(), true);
+    ASSERT_TRUE(testTaskSeq.validation());
     testTaskSeq.pre_processing();
     testTaskSeq.run();
     testTaskSeq.post_processing();
 
     for (int i = 0; i < (int)C_mpi.size(); i++) {
-      ASSERT_DOUBLE_EQ(C_mpi[i], expected_C[i]);
-      ASSERT_DOUBLE_EQ(C_mpi[i], C_seq[i]);
+      EXPECT_DOUBLE_EQ(C_mpi[i], expected_C[i]);
+      EXPECT_DOUBLE_EQ(C_mpi[i], C_seq[i]);
     }
   }
 }
@@ -176,7 +175,7 @@ TEST(korovin_n_matrix_multiple_cannon_mpi, matrix_2x3_3x2) {
   }
 
   korovin_n_matrix_multiple_cannon_mpi::TestMPITaskParallel testTask(taskData);
-  ASSERT_EQ(testTask.validation(), true);
+  ASSERT_TRUE(testTask.validation());
   testTask.pre_processing();
   testTask.run();
   testTask.post_processing();
@@ -191,14 +190,14 @@ TEST(korovin_n_matrix_multiple_cannon_mpi, matrix_2x3_3x2) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(C_seq.data()));
 
     korovin_n_matrix_multiple_cannon_mpi::TestMPITaskSequential testTaskSeq(taskDataSeq);
-    ASSERT_EQ(testTaskSeq.validation(), true);
+    ASSERT_TRUE(testTaskSeq.validation());
     testTaskSeq.pre_processing();
     testTaskSeq.run();
     testTaskSeq.post_processing();
 
     for (int i = 0; i < (int)C_mpi.size(); i++) {
-      ASSERT_DOUBLE_EQ(C_mpi[i], expected_C[i]);
-      ASSERT_DOUBLE_EQ(C_mpi[i], C_seq[i]);
+      EXPECT_DOUBLE_EQ(C_mpi[i], expected_C[i]);
+      EXPECT_DOUBLE_EQ(C_mpi[i], C_seq[i]);
     }
   }
 }
@@ -226,7 +225,7 @@ TEST(korovin_n_matrix_multiple_cannon_mpi, matrix_6x4_4x5) {
   }
 
   korovin_n_matrix_multiple_cannon_mpi::TestMPITaskParallel testTask(taskData);
-  ASSERT_EQ(testTask.validation(), true);
+  ASSERT_TRUE(testTask.validation());
   testTask.pre_processing();
   testTask.run();
   testTask.post_processing();
@@ -241,14 +240,14 @@ TEST(korovin_n_matrix_multiple_cannon_mpi, matrix_6x4_4x5) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(C_seq.data()));
 
     korovin_n_matrix_multiple_cannon_mpi::TestMPITaskSequential testTaskSeq(taskDataSeq);
-    ASSERT_EQ(testTaskSeq.validation(), true);
+    ASSERT_TRUE(testTaskSeq.validation());
     testTaskSeq.pre_processing();
     testTaskSeq.run();
     testTaskSeq.post_processing();
 
     for (int i = 0; i < (int)C_mpi.size(); i++) {
-      ASSERT_DOUBLE_EQ(C_mpi[i], expected_C[i]);
-      ASSERT_DOUBLE_EQ(C_mpi[i], C_seq[i]);
+      EXPECT_DOUBLE_EQ(C_mpi[i], expected_C[i]);
+      EXPECT_DOUBLE_EQ(C_mpi[i], C_seq[i]);
     }
   }
 }
@@ -276,7 +275,7 @@ TEST(korovin_n_matrix_multiple_cannon_mpi, matrix_4x4) {
   }
 
   korovin_n_matrix_multiple_cannon_mpi::TestMPITaskParallel testTask(taskData);
-  ASSERT_EQ(testTask.validation(), true);
+  ASSERT_TRUE(testTask.validation());
   testTask.pre_processing();
   testTask.run();
   testTask.post_processing();
@@ -291,14 +290,14 @@ TEST(korovin_n_matrix_multiple_cannon_mpi, matrix_4x4) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(C_seq.data()));
 
     korovin_n_matrix_multiple_cannon_mpi::TestMPITaskSequential testTaskSeq(taskDataSeq);
-    ASSERT_EQ(testTaskSeq.validation(), true);
+    ASSERT_TRUE(testTaskSeq.validation());
     testTaskSeq.pre_processing();
     testTaskSeq.run();
     testTaskSeq.post_processing();
 
     for (int i = 0; i < (int)C_mpi.size(); i++) {
-      ASSERT_DOUBLE_EQ(C_mpi[i], expected_C[i]);
-      ASSERT_DOUBLE_EQ(C_mpi[i], C_seq[i]);
+      EXPECT_DOUBLE_EQ(C_mpi[i], expected_C[i]);
+      EXPECT_DOUBLE_EQ(C_mpi[i], C_seq[i]);
     }
   }
 }
@@ -325,7 +324,7 @@ TEST(korovin_n_matrix_multiple_cannon_mpi, matrix_2x3_3x2_negative) {
   }
 
   korovin_n_matrix_multiple_cannon_mpi::TestMPITaskParallel testTask(taskData);
-  ASSERT_EQ(testTask.validation(), true);
+  ASSERT_TRUE(testTask.validation());
   testTask.pre_processing();
   testTask.run();
   testTask.post_processing();
@@ -340,14 +339,14 @@ TEST(korovin_n_matrix_multiple_cannon_mpi, matrix_2x3_3x2_negative) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(C_seq.data()));
 
     korovin_n_matrix_multiple_cannon_mpi::TestMPITaskSequential testTaskSeq(taskDataSeq);
-    ASSERT_EQ(testTaskSeq.validation(), true);
+    ASSERT_TRUE(testTaskSeq.validation());
     testTaskSeq.pre_processing();
     testTaskSeq.run();
     testTaskSeq.post_processing();
 
     for (int i = 0; i < (int)C_mpi.size(); i++) {
-      ASSERT_DOUBLE_EQ(C_mpi[i], expected_C[i]);
-      ASSERT_DOUBLE_EQ(C_mpi[i], C_seq[i]);
+      EXPECT_DOUBLE_EQ(C_mpi[i], expected_C[i]);
+      EXPECT_DOUBLE_EQ(C_mpi[i], C_seq[i]);
     }
   }
 }
@@ -374,7 +373,7 @@ TEST(korovin_n_matrix_multiple_cannon_mpi, matrix_zeros) {
   }
 
   korovin_n_matrix_multiple_cannon_mpi::TestMPITaskParallel testTask(taskData);
-  ASSERT_EQ(testTask.validation(), true);
+  ASSERT_TRUE(testTask.validation());
   testTask.pre_processing();
   testTask.run();
   testTask.post_processing();
@@ -389,14 +388,14 @@ TEST(korovin_n_matrix_multiple_cannon_mpi, matrix_zeros) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(C_seq.data()));
 
     korovin_n_matrix_multiple_cannon_mpi::TestMPITaskSequential testTaskSeq(taskDataSeq);
-    ASSERT_EQ(testTaskSeq.validation(), true);
+    ASSERT_TRUE(testTaskSeq.validation());
     testTaskSeq.pre_processing();
     testTaskSeq.run();
     testTaskSeq.post_processing();
 
     for (int i = 0; i < (int)C_mpi.size(); i++) {
-      ASSERT_DOUBLE_EQ(C_mpi[i], expected_C[i]);
-      ASSERT_DOUBLE_EQ(C_mpi[i], C_seq[i]);
+      EXPECT_DOUBLE_EQ(C_mpi[i], expected_C[i]);
+      EXPECT_DOUBLE_EQ(C_mpi[i], C_seq[i]);
     }
   }
 }
@@ -468,7 +467,7 @@ TEST(korovin_n_matrix_multiple_cannon_mpi, matrix_3x3_inversion) {
   }
 
   korovin_n_matrix_multiple_cannon_mpi::TestMPITaskParallel testTask(taskData);
-  ASSERT_EQ(testTask.validation(), true);
+  ASSERT_TRUE(testTask.validation());
   testTask.pre_processing();
   testTask.run();
   testTask.post_processing();
@@ -483,14 +482,14 @@ TEST(korovin_n_matrix_multiple_cannon_mpi, matrix_3x3_inversion) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(C_seq.data()));
 
     korovin_n_matrix_multiple_cannon_mpi::TestMPITaskSequential testTaskSeq(taskDataSeq);
-    ASSERT_EQ(testTaskSeq.validation(), true);
+    ASSERT_TRUE(testTaskSeq.validation());
     testTaskSeq.pre_processing();
     testTaskSeq.run();
     testTaskSeq.post_processing();
 
     for (int i = 0; i < (int)C_mpi.size(); i++) {
-      ASSERT_DOUBLE_EQ(C_mpi[i], expected_C[i]);
-      ASSERT_DOUBLE_EQ(C_mpi[i], C_seq[i]);
+      EXPECT_DOUBLE_EQ(C_mpi[i], expected_C[i]);
+      EXPECT_DOUBLE_EQ(C_mpi[i], C_seq[i]);
     }
   }
 }
