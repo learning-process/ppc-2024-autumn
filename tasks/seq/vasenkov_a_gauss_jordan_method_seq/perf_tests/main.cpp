@@ -7,7 +7,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/vasenkov_a_gauss_jordan_method_seq/include/ops_seq.hpp"
 
-std::vector<double> generate_invertible_matrix(int size) {
+std::vector<double> RandomMatrix(int size) {
   std::vector<double> matrix(size * (size + 1));
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -32,7 +32,7 @@ std::vector<double> generate_invertible_matrix(int size) {
 
 TEST(vasenkov_a_gauss_jordan_method_seq, pipeline_run) {
   int n = 50;
-  std::vector<double> global_matrix = generate_invertible_matrix(n);
+  std::vector<double> global_matrix = RandomMatrix(n);
   std::vector<double> global_result(n * (n + 1));
 
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -70,7 +70,7 @@ TEST(vasenkov_a_gauss_jordan_method_seq, pipeline_run) {
 
 TEST(vasenkov_a_gauss_jordan_method_seq, task_run) {
   int n = 50;
-  std::vector<double> global_matrix = generate_invertible_matrix(n);
+  std::vector<double> global_matrix = RandomMatrix(n);
   std::vector<double> global_result(n * (n + 1));
 
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();

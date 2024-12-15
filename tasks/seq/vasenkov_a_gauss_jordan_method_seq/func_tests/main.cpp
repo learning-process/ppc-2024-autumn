@@ -3,6 +3,57 @@
 #include <vector>
 
 #include "seq/vasenkov_a_gauss_jordan_method_seq/include/ops_seq.hpp"
+TEST(vasenkov_a_gauss_jordan_method_seq, matrix_2x2) {
+  std::vector<double> input_matrix = {1, 0, 10, 0, 1, 5};
+  int n = 2;
+  std::vector<double> output_result(n * (n + 1));
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<double*>(input_matrix.data())));
+  taskDataSeq->inputs_count.emplace_back(input_matrix.size());
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
+  taskDataSeq->inputs_count.emplace_back(1);
+
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_result.data()));
+  taskDataSeq->outputs_count.emplace_back(output_result.size());
+
+  vasenkov_a_gauss_jordan_method_seq::GaussJordanSequential taskSequential(taskDataSeq);
+  ASSERT_TRUE(taskSequential.validation());
+  ASSERT_TRUE(taskSequential.pre_processing());
+  ASSERT_TRUE(taskSequential.run());
+  ASSERT_TRUE(taskSequential.post_processing());
+
+  std::vector<double> expected_result = {1, 0, 10, 0, 1, 5};
+  ASSERT_EQ(output_result, expected_result);
+}
+
+TEST(vasenkov_a_gauss_jordan_method_seq, matrix_4x4) {
+  std::vector<double> input_matrix = {1, 0, 2, 2, 0, 3, 1, 3, 3, 0, 3, 3, 1, 1, 0, 0, 0, 0, 1, 10};
+  int n = 4;
+  std::vector<double> output_result(n * (n + 1));
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<double*>(input_matrix.data())));
+  taskDataSeq->inputs_count.emplace_back(input_matrix.size());
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
+  taskDataSeq->inputs_count.emplace_back(1);
+
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_result.data()));
+  taskDataSeq->outputs_count.emplace_back(output_result.size());
+
+  vasenkov_a_gauss_jordan_method_seq::GaussJordanSequential taskSequential(taskDataSeq);
+  ASSERT_TRUE(taskSequential.validation());
+  ASSERT_TRUE(taskSequential.pre_processing());
+  ASSERT_TRUE(taskSequential.run());
+  ASSERT_TRUE(taskSequential.post_processing());
+
+  std::vector<double> expected_result = {1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, -10, 0, 0, 0, 1, 10};
+  ASSERT_EQ(output_result, expected_result);
+}
 
 TEST(vasenkov_a_gauss_jordan_method_seq, matrix_3x3) {
   std::vector<double> input_matrix = {1, 2, 1, 10, 4, 8, 3, 20, 2, 5, 9, 30};
