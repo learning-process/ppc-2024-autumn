@@ -4,6 +4,7 @@
 #include <boost/serialization/vector.hpp>
 #include <cmath>
 #include <vector>
+#include <stdexcept>
 
 bool malyshev_v_conjugate_gradient_method_mpi::TestTaskSequential::pre_processing() {
   internal_order_test();
@@ -152,8 +153,8 @@ bool malyshev_v_conjugate_gradient_method_mpi::TestTaskParallel::run() {
     local_rsold += local_r[i] * local_r[i];
   }
 
-  double global_rsold;
-  reduce(world, local_rsold, global_rsold, std::plus<double>(), 0);
+  double global_rsold = 0.0;
+  reduce(world, local_rsold, global_rsold, std::plus<>(), 0);
 
   for (uint32_t iter = 0; iter < global_size; iter++) {
     std::vector<double> local_Ap(local_size, 0.0);
@@ -175,8 +176,8 @@ bool malyshev_v_conjugate_gradient_method_mpi::TestTaskParallel::run() {
       local_rsnew += local_r[i] * local_r[i];
     }
 
-    double global_rsnew;
-    reduce(world, local_rsnew, global_rsnew, std::plus<double>(), 0);
+    double global_rsnew = 0.0;
+    reduce(world, local_rsnew, global_rsnew, std::plus<>(), 0);
 
     if (std::sqrt(global_rsnew) < 1e-10) {
       break;
