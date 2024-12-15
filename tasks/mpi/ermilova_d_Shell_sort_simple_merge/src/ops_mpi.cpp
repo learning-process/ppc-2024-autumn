@@ -106,7 +106,7 @@ bool ermilova_d_Shell_sort_simple_merge_mpi::TestMPITaskParallel::run() {
 
     std::priority_queue<std::pair<int, size_t>, std::vector<std::pair<int, size_t>>, std::greater<>> pq;
 
-    for (size_t i = 0; i < world.size(); i++) {
+    for (int i = 0; i < world.size(); i++) {
       if (!temp_vec.empty()) {
         pq.push({temp_vec[i * delta], i});
       }
