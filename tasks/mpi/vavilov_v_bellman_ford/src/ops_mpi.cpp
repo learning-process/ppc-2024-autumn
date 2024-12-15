@@ -1,5 +1,19 @@
 #include "mpi/vavilov_v_bellman_ford/include/ops_mpi.hpp"
 
+
+void vavilov_v_bellman_ford_mpi::TestMPITaskSequential::CRS(const int* matrix){
+  row_ptr.push_back(0);
+  for (int i = 0; i < vertices_; ++i) {
+    for (int j = 0; j < vertices_; ++j) {
+      if (matrix[i * vertices_ + j] != 0) {
+        weights_.push_back(input_matrix[i * V + j]);
+        col_indices_.push_back(j);
+      }
+    }
+    row_offsets_.push_back(values.size());
+  } 
+};
+
 bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
 
@@ -7,21 +21,10 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential::pre_processing() {
   edges_count_ = taskData->inputs_count[1];
   source_ = taskData->inputs_count[2];
 
-  int* row_offsets_data = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (int i = 0; i < vertices_ + 1; ++i) {
-    row_offsets_.push_back(row_offsets_data[i]);
-  }
+  auto* matrix = reinterpret_cast<int*>(taskData->inputs[0]);
 
-  int* col_indices_data = reinterpret_cast<int*>(taskData->inputs[1]);
-  for (int i = 0; i < edges_count_; ++i) {
-    col_indices_.push_back(col_indices_data[i]);
-  }
-
-  int* weights_data = reinterpret_cast<int*>(taskData->inputs[2]);
-  for (int i = 0; i < edges_count_; ++i) {
-    weights_.push_back(weights_data[i]);
-  }
-
+  CRS(matrix);
+  
   distances_.resize(vertices_, INT_MAX);
   distances_[source_] = 0;
 
@@ -66,26 +69,29 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential::post_processing() {
   return true;
 }
 
+void vavilov_v_bellman_ford_mpi::TestMPITaskParallel::CRS(const int* matrix){
+  row_ptr.push_back(0);
+  for (int i = 0; i < vertices_; ++i) {
+    for (int j = 0; j < vertices_; ++j) {
+      if (matrix[i * vertices_ + j] != 0) {
+        weights_.push_back(input_matrix[i * V + j]);
+        col_indices_.push_back(j);
+      }
+    }
+    row_offsets_.push_back(values.size());
+  } 
+};
+
 bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   vertices_ = taskData->inputs_count[0];
   edges_count_ = taskData->inputs_count[1];
   source_ = taskData->inputs_count[2];
 
-  int* row_offsets_data = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (int i = 0; i < vertices_ + 1; ++i) {
-    row_offsets_.push_back(row_offsets_data[i]);
-  }
 
-  int* col_indices_data = reinterpret_cast<int*>(taskData->inputs[1]);
-  for (int i = 0; i < edges_count_; ++i) {
-    col_indices_.push_back(col_indices_data[i]);
-  }
+  auto* matrix = reinterpret_cast<int*>(taskData->inputs[0]);
 
-  int* weights_data = reinterpret_cast<int*>(taskData->inputs[2]);
-  for (int i = 0; i < edges_count_; ++i) {
-    weights_.push_back(weights_data[i]);
-  }
+  CRS(matrix);
 
   boost::mpi::broadcast(world, row_offsets_, 0);
   boost::mpi::broadcast(world, col_indices_, 0);
