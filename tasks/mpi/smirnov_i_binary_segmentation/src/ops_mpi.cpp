@@ -394,7 +394,7 @@ bool smirnov_i_binary_segmentation::TestMPITaskParallel::run() {
   int mark = 2 + rank * (sendcounts[0] + 5);
   // D B
   // C A
-  //direct local pass
+  // direct local pass
   for (size_t i = bord_cols + 1; i < bord_img.size() - bord_cols; i++) {
     if (i % bord_cols == 0 || static_cast<int>(i) % bord_cols == bord_cols - 1) {
       continue;
@@ -473,7 +473,7 @@ bool smirnov_i_binary_segmentation::TestMPITaskParallel::run() {
   std::partial_sum(lengths.begin(), lengths.end() - 1, offsets.begin() + 1);
   MPI_Gatherv(local_eq_table_str.data(), str_len, MPI_CHAR, recv_buf.data(), lengths.data(), offsets.data(), MPI_CHAR,
               0, MPI_COMM_WORLD);
-  //resolving border conflicts and renaming marks
+  // resolving border conflicts and renaming marks
   if (rank == 0) {
     for (int i = 0; i < size; ++i) {
       std::map<int, std::set<int>> temp_eq_table = deserialize_eq_table(std::string(&recv_buf[offsets[i]], lengths[i]));
