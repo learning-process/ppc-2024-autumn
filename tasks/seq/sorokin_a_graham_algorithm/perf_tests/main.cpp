@@ -20,7 +20,7 @@ std::vector<int> getrndvec(int n, int max, int min) {
   }
   return tmp;
 }
-}  // namespace sorokin_a_graham_algorithm_mpi1
+}  // namespace sorokin_a_graham_algorithm_seq
 
 TEST(sorokin_a_graham_algorithm_seq, Elem1000000) {
   // Create data
