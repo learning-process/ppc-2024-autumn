@@ -6,7 +6,10 @@
 
 #include "core/task/include/task.hpp"
 
-namespace kolokolova_d_max_of_row_matrix_seq {
+namespace kolokolova_d_radix_integer_merge_sort_seq {
+
+std::vector<int> radix_sort(std::vector<int>& array);
+void counting_sort_radix(std::vector<int>& array, int exp);
 
 class TestTaskSequential : public ppc::core::Task {
  public:
@@ -17,8 +20,8 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<std::vector<int>> input_;
+  std::vector<int> input_vector;
   std::vector<int> res;
 };
 
-}  // namespace kolokolova_d_max_of_row_matrix_seq
+}  // namespace kolokolova_d_radix_integer_merge_sort_seq
