@@ -63,7 +63,7 @@ template std::vector<int> drozhdinov_d_gauss_vertical_scheme_seq::getRandomVecto
 template std::vector<double> drozhdinov_d_gauss_vertical_scheme_seq::getRandomVector(int sz);
 }  // namespace drozhdinov_d_gauss_vertical_scheme_seq
 
-TEST(drozhdinov_d_perf_test, test_pipeline_run) {
+TEST(drozhdinov_d_gauss_vertical_scheme_seq_perf_test, test_pipeline_run) {
   int rows = 1000;
   int columns = 1000;
   std::vector<int> a = drozhdinov_d_gauss_vertical_scheme_seq::getRandomVector<int>(1);
@@ -108,7 +108,7 @@ TEST(drozhdinov_d_perf_test, test_pipeline_run) {
   ASSERT_EQ(expres, res);
 }
 
-TEST(drozhdinov_d_perf_test, test_task_run) {
+TEST(drozhdinov_d_gauss_vertical_scheme_seq_perf_test, test_task_run) {
   int rows = 1000;
   int columns = 1000;
   std::vector<int> a = drozhdinov_d_gauss_vertical_scheme_seq::getRandomVector<int>(1);

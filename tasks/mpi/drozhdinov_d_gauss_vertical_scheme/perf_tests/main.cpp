@@ -64,7 +64,7 @@ template std::vector<int> drozhdinov_d_gauss_vertical_scheme_mpi::getRandomVecto
 template std::vector<double> drozhdinov_d_gauss_vertical_scheme_mpi::getRandomVector(int sz);
 }  // namespace drozhdinov_d_gauss_vertical_scheme_mpi
 
-TEST(MPIGAUSSPERF, test_pipeline_run) {
+TEST(drozhdinov_d_gauss_vertical_scheme_mpi_perf, test_pipeline_run) {
   boost::mpi::communicator world;
   int rows = 500;
   int columns = 500;
@@ -112,7 +112,7 @@ TEST(MPIGAUSSPERF, test_pipeline_run) {
   }
 }
 
-TEST(MPIGAUSSPERF, test_task_run) {
+TEST(drozhdinov_d_gauss_vertical_scheme_mpi_perf, test_task_run) {
   boost::mpi::communicator world;
   int rows = 500;
   int columns = 500;
