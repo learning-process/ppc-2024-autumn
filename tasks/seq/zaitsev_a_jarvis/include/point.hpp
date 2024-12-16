@@ -30,8 +30,8 @@ struct Point {
 
   template <typename Archive>
   void serialize(Archive& ar, const unsigned int version) {
-    ar& x;
-    ar& y;
+    ar & x;
+    ar & y;
   }
 };
 
