@@ -1,14 +1,11 @@
-// Copyright 2024 Nesterov Alexander
 #pragma once
 
-#include <mpi.h>
-
-#include <string>
+#include <memory>
 #include <vector>
 
 #include "core/task/include/task.hpp"
 
-namespace petrov_a_ribbon_vertical_scheme_mpi {
+namespace petrov_a_Shell_sort_mpi {
 
 class TestTaskMPI : public ppc::core::Task {
  public:
@@ -19,9 +16,9 @@ class TestTaskMPI : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> local_matrix;
-  std::vector<int> local_vector;
-  std::vector<int> local_result;
+  std::vector<int> data_;
+
+  void compareAndSwap(int i, int j);
 };
 
-}  // namespace petrov_a_ribbon_vertical_scheme_mpi
+}  // namespace petrov_a_Shell_sort_mpi

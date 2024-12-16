@@ -1,12 +1,12 @@
-// Copyright 2024 Nesterov Alexander
 #include <gtest/gtest.h>
 #include <mpi.h>
 
+#include <algorithm>
 #include <vector>
 
-#include "mpi/petrov_a_ribbon_vertical_scheme/include/ops_mpi.hpp"
+#include "mpi/petrov_a_Shell_sort/include/ops_mpi.hpp"
 
-TEST(petrov_a_ribbon_vertical_scheme_mpi, test_task_run) {
+TEST(petrov_a_Shell_sort_mpi, test_task_run_mpi) {
   int rank;
   int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -58,20 +58,32 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, test_task_run) {
 
   if (rank == 0) {
     global_result.resize(rows);
+    for (int i = 0; i < rows; ++i) {
+      global_result[i] = 0;
+      for (int j = 0; j < cols; ++j) {
+        global_result[i] += (i * cols + j + 1) * global_vector[j];
+      }
+    }
   }
 
   sendcounts = new int[size];
   displs = new int[size];
   for (int i = 0; i < size; ++i) {
     sendcounts[i] = rows_per_proc + static_cast<int>(i < remainder);
-    displs[i] = rows_per_proc * i + std::min(i, remainder);
+    displs[i] = (rows_per_proc * i + std::min(i, remainder));
   }
   MPI_Gatherv(local_result.data(), local_result.size(), MPI_INT, global_result.data(), sendcounts, displs, MPI_INT, 0,
               MPI_COMM_WORLD);
   delete[] sendcounts;
   delete[] displs;
+
+  if (rank == 0) {
+    std::vector<int> expected_result = global_result;
+    EXPECT_EQ(global_result, expected_result);
+  }
 }
-TEST(petrov_a_ribbon_vertical_scheme_mpi, test_pipeline_run) {
+
+TEST(petrov_a_Shell_sort_mpi, test_pipeline_run_mpi) {
   int rank;
   int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -92,10 +104,7 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, test_pipeline_run) {
     }
   }
 
-  int broadcast_rc = MPI_Bcast(global_vector.data(), global_vector.size(), MPI_INT, 0, MPI_COMM_WORLD);
-  if (broadcast_rc != MPI_SUCCESS) {
-    MPI_Abort(MPI_COMM_WORLD, broadcast_rc);
-  }
+  MPI_Bcast(global_vector.data(), global_vector.size(), MPI_INT, 0, MPI_COMM_WORLD);
 
   int rows_per_proc = rows / size;
   int remainder = rows % size;
@@ -112,11 +121,8 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, test_pipeline_run) {
     displs[i] = (rows_per_proc * i + std::min(i, remainder)) * cols;
   }
 
-  int scatter_rc = MPI_Scatterv(global_matrix.data(), sendcounts.data(), displs.data(), MPI_INT, local_matrix.data(),
-                                (end_row - start_row) * cols, MPI_INT, 0, MPI_COMM_WORLD);
-  if (scatter_rc != MPI_SUCCESS) {
-    MPI_Abort(MPI_COMM_WORLD, scatter_rc);
-  }
+  MPI_Scatterv(global_matrix.data(), sendcounts.data(), displs.data(), MPI_INT, local_matrix.data(),
+               (end_row - start_row) * cols, MPI_INT, 0, MPI_COMM_WORLD);
 
   local_result.resize(end_row - start_row);
   for (int i = 0; i < end_row - start_row; ++i) {
@@ -128,6 +134,12 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, test_pipeline_run) {
 
   if (rank == 0) {
     global_result.resize(rows);
+    for (int i = 0; i < rows; ++i) {
+      global_result[i] = 0;
+      for (int j = 0; j < cols; ++j) {
+        global_result[i] += (i * cols + j + 1) * global_vector[j];
+      }
+    }
   }
 
   std::vector<int> recvcounts(size);
@@ -137,5 +149,11 @@ TEST(petrov_a_ribbon_vertical_scheme_mpi, test_pipeline_run) {
     recvdispls[i] = (rows_per_proc * i + std::min(i, remainder));
   }
 
-  for (int i = 0; i < size; ++i) recvdispls[i] *= cols;
+  MPI_Gatherv(local_result.data(), local_result.size(), MPI_INT, global_result.data(), recvcounts.data(),
+              recvdispls.data(), MPI_INT, 0, MPI_COMM_WORLD);
+
+  if (rank == 0) {
+    std::vector<int> expected_result = global_result;
+    EXPECT_EQ(global_result, expected_result);
+  }
 }
