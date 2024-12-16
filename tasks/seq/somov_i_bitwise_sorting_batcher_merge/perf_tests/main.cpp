@@ -21,7 +21,7 @@ std::vector<double> create_random_vector(int size, double mean = 5.0, double std
   return tmp;
 }
 
-TEST(somov_i_bitwise_sorting_batcher_merge_seq, pipeline) {
+TEST(somov_i_bitwise_sorting_batcher_merge_seq, test_pipeline_3000000_el) {
   std::vector<double> in = create_random_vector(3000000);
   std::vector<double> out(in.size(), 0);
 
@@ -50,7 +50,7 @@ TEST(somov_i_bitwise_sorting_batcher_merge_seq, pipeline) {
   ppc::core::Perf::print_perf_statistic(perfResults);
 }
 
-TEST(somov_i_bitwise_sorting_batcher_merge_seq, task) {
+TEST(somov_i_bitwise_sorting_batcher_merge_seq, test_task_3000000_el) {
   std::vector<double> in = create_random_vector(3000000);
   std::vector<double> out(in.size(), 0);
 

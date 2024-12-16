@@ -32,28 +32,31 @@ void radix_sort_double(std::vector<double> &arr) {
 
   std::vector<double> positive;
   std::vector<double> negative;
+  positive.reserve(n / 2);
+  negative.reserve(n / 2);
+
   for (size_t i = 0; i < n; ++i) {
     if (arr[i] < 0) {
-      negative.push_back(arr[i]);
+      negative.emplace_back(arr[i]);
     } else {
-      positive.push_back(arr[i]);
+      positive.emplace_back(arr[i]);
     }
   }
 
   std::vector<uint64_t> posData(positive.size());
   for (size_t i = 0; i < positive.size(); ++i) {
-    std::memcpy(&posData[i], &positive[i], sizeof(double));
+    posData[i] = *reinterpret_cast<uint64_t *>(&positive[i]);
   }
 
   radixSort(posData);
 
   for (size_t i = 0; i < positive.size(); ++i) {
-    std::memcpy(&positive[i], &posData[i], sizeof(double));
+    positive[i] = *reinterpret_cast<double *>(&posData[i]);
   }
 
   std::vector<uint64_t> negData(negative.size());
   for (size_t i = 0; i < negative.size(); ++i) {
-    std::memcpy(&negData[i], &negative[i], sizeof(double));
+    negData[i] = *reinterpret_cast<uint64_t *>(&negative[i]);
     negData[i] = ~negData[i];
   }
 
@@ -61,7 +64,7 @@ void radix_sort_double(std::vector<double> &arr) {
 
   for (size_t i = 0; i < negative.size(); ++i) {
     negData[i] = ~negData[i];
-    std::memcpy(&negative[i], &negData[i], sizeof(double));
+    negative[i] = *reinterpret_cast<double *>(&negData[i]);
   }
 
   arr.clear();

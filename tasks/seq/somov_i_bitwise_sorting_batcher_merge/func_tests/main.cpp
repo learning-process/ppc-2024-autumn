@@ -21,7 +21,7 @@ std::vector<double> create_random_vector(int size, double mean = 5.0, double std
   return tmp;
 }
 
-TEST(somov_i_bitwise_sorting_batcher_merge_seq, teststart) {
+TEST(somov_i_bitwise_sorting_batcher_merge_seq, test_basic_sorting) {
   std::vector<double> in = {3.14, -2.71, 1.41, 0.0, -3.14, 2.71};
   std::vector<double> out(in.size(), 0);
 
@@ -39,7 +39,7 @@ TEST(somov_i_bitwise_sorting_batcher_merge_seq, teststart) {
   for (size_t i = 1; i < out.size(); i++) ASSERT_TRUE(out[i - 1] <= out[i]);
 }
 
-TEST(somov_i_bitwise_sorting_batcher_merge_seq, test10) {
+TEST(somov_i_bitwise_sorting_batcher_merge_seq, test_sorting_10_elements) {
   std::vector<double> in = create_random_vector(10);
   std::vector<double> out(in.size(), 0);
 
@@ -57,7 +57,7 @@ TEST(somov_i_bitwise_sorting_batcher_merge_seq, test10) {
   for (size_t i = 1; i < out.size(); i++) ASSERT_TRUE(out[i - 1] <= out[i]);
 }
 
-TEST(somov_i_bitwise_sorting_batcher_merge_seq, test101) {
+TEST(somov_i_bitwise_sorting_batcher_merge_seq, test_sorting_101_elements) {
   std::vector<double> in = create_random_vector(101);
   std::vector<double> out(in.size(), 0);
 
@@ -75,7 +75,7 @@ TEST(somov_i_bitwise_sorting_batcher_merge_seq, test101) {
   for (size_t i = 1; i < out.size(); i++) ASSERT_TRUE(out[i - 1] <= out[i]);
 }
 
-TEST(somov_i_bitwise_sorting_batcher_merge_seq, test1007) {
+TEST(somov_i_bitwise_sorting_batcher_merge_seq, test_sorting_1007_elements) {
   std::vector<double> in = create_random_vector(1007);
   std::vector<double> out(in.size(), 0);
 

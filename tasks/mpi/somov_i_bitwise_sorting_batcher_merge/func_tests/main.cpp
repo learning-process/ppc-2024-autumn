@@ -22,7 +22,7 @@ std::vector<double> create_random_vector(int size, double mean = 5.0, double std
   return tmp;
 }
 
-TEST(somov_i_bitwise_sorting_batcher_merge_MPI, test_20) {
+TEST(somov_i_bitwise_sorting_batcher_merge_MPI, test_sorting_parallel_and_sequential_20_elements) {
   boost::mpi::communicator world;
   std::vector<double> in = create_random_vector(20);
   std::vector<double> out(in.size(), 0);
@@ -63,7 +63,7 @@ TEST(somov_i_bitwise_sorting_batcher_merge_MPI, test_20) {
   }
 }
 
-TEST(somov_i_bitwise_sorting_batcher_merge_MPI, test_1000) {
+TEST(somov_i_bitwise_sorting_batcher_merge_MPI, test_sorting_parallel_and_sequential_1000_elements) {
   boost::mpi::communicator world;
   std::vector<double> in = create_random_vector(1000);
   std::vector<double> out(in.size(), 0);
@@ -104,7 +104,7 @@ TEST(somov_i_bitwise_sorting_batcher_merge_MPI, test_1000) {
   }
 }
 
-TEST(somov_i_bitwise_sorting_batcher_merge_MPI, test_10000) {
+TEST(somov_i_bitwise_sorting_batcher_merge_MPI, test_sorting_parallel_and_sequential_10000_elements) {
   boost::mpi::communicator world;
   std::vector<double> in = create_random_vector(10000);
   std::vector<double> out(in.size(), 0);
@@ -145,7 +145,7 @@ TEST(somov_i_bitwise_sorting_batcher_merge_MPI, test_10000) {
   }
 }
 
-TEST(somov_i_bitwise_sorting_batcher_merge_MPI, test_1001) {
+TEST(somov_i_bitwise_sorting_batcher_merge_MPI, test_sorting_parallel_and_sequential_1001_elements) {
   boost::mpi::communicator world;
   std::vector<double> in = create_random_vector(1001);
   std::vector<double> out(in.size(), 0);
@@ -186,7 +186,7 @@ TEST(somov_i_bitwise_sorting_batcher_merge_MPI, test_1001) {
   }
 }
 
-TEST(somov_i_bitwise_sorting_batcher_merge_MPI, test_1) {
+TEST(somov_i_bitwise_sorting_batcher_merge_MPI, test_sorting_parallel_and_sequential_1_element) {
   boost::mpi::communicator world;
   std::vector<double> in = create_random_vector(1);
   std::vector<double> out(in.size(), 0);

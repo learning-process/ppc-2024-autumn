@@ -22,7 +22,7 @@ std::vector<double> create_random_vector(int size, double mean = 5.0, double std
   return tmp;
 }
 
-TEST(somov_i_bitwise_sorting_batcher_merge_perf_test, test10000000) {
+TEST(somov_i_bitwise_sorting_batcher_merge_perf_test, test_pipeline_run_10000000_elements) {
   boost::mpi::communicator world;
   std::vector<double> in = create_random_vector(10000000);
   std::vector<double> out(in.size(), 0);
@@ -56,7 +56,7 @@ TEST(somov_i_bitwise_sorting_batcher_merge_perf_test, test10000000) {
   }
 }
 
-TEST(somov_i_bitwise_sorting_batcher_merge_perf_test, test10000000two) {
+TEST(somov_i_bitwise_sorting_batcher_merge_perf_test, test_task_run_10000000_elements) {
   boost::mpi::communicator world;
   std::vector<double> in = create_random_vector(10000000);
   std::vector<double> out(in.size(), 0);
