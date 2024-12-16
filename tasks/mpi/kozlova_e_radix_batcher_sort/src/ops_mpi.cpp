@@ -40,7 +40,7 @@ void kozlova_e_radix_batcher_sort_mpi::RadixBatcherSortSequential::radixSort(std
 
   for (size_t i = 0; i < a.size(); ++i) {
     uint64_t bits = *reinterpret_cast<uint64_t*>(&a[i]);
-    if (bits >> 63) {
+    if ((bits >> 63) != 0u) {
       bit_representation[i] = ~bits;
     } else {
       bit_representation[i] = bits | 0x8000000000000000;
@@ -67,7 +67,7 @@ void kozlova_e_radix_batcher_sort_mpi::RadixBatcherSortSequential::radixSort(std
 
   for (size_t i = 0; i < a.size(); ++i) {
     uint64_t bits = bit_representation[i];
-    if (bits & 0x8000000000000000) {
+    if ((bits & 0x8000000000000000) != 0u) {
       bits &= ~0x8000000000000000;
     } else {
       bits = ~bits;
@@ -114,7 +114,7 @@ void kozlova_e_radix_batcher_sort_mpi::RadixBatcherSortMPI::radixSort(std::vecto
 
   for (size_t i = 0; i < a.size(); ++i) {
     uint64_t bits = *reinterpret_cast<uint64_t*>(&a[i]);
-    if (bits >> 63) {
+    if ((bits >> 63) != 0u) {
       bit_representation[i] = ~bits;
     } else {
       bit_representation[i] = bits | 0x8000000000000000;
@@ -141,7 +141,7 @@ void kozlova_e_radix_batcher_sort_mpi::RadixBatcherSortMPI::radixSort(std::vecto
 
   for (size_t i = 0; i < a.size(); ++i) {
     uint64_t bits = bit_representation[i];
-    if (bits & 0x8000000000000000) {
+    if ((bits & 0x8000000000000000) != 0u) {
       bits &= ~0x8000000000000000;
     } else {
       bits = ~bits;

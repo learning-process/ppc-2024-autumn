@@ -19,7 +19,7 @@ class RadixSortSequential : public ppc::core::Task {
   int input_size{};
   std::vector<double> data;
 
-  void radixSort(std::vector<double>& a);
+  static void radixSort(std::vector<double>& a);
 };
 
 }  // namespace kozlova_e_radix_batcher_sort_seq

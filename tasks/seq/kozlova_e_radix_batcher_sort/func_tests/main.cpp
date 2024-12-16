@@ -46,7 +46,7 @@ TEST(kozlova_e_radix_batcher_sort_seq, test_simple_mas) {
 TEST(kozlova_e_radix_batcher_sort_seq, test_remainder_vector) {
   const int count = 10;
 
-  std::vector<double> mas = {3.175, 3.141, 3.256, 3.879, 3.334, 3.667, 3.987, 3.432, 3.254, 3.876};
+  std::vector<double> mas = {3.175, 3.1234, 3.256, 3.879, 3.334, 3.667, 3.987, 3.432, 3.254, 3.876};
   std::vector<double> res(count, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -91,7 +91,7 @@ TEST(kozlova_e_radix_batcher_sort_seq, test_empty_mas) {
 TEST(kozlova_e_radix_batcher_sort_seq, test_single_element) {
   const int count = 1;
 
-  std::vector<double> mas = {3.1415};
+  std::vector<double> mas = {3.5234};
   std::vector<double> res(count, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -107,7 +107,7 @@ TEST(kozlova_e_radix_batcher_sort_seq, test_single_element) {
   testTaskSequential.run();
   testTaskSequential.post_processing();
 
-  ASSERT_EQ(res[0], 3.1415);
+  ASSERT_EQ(res[0], 3.5234);
 }
 
 TEST(kozlova_e_radix_batcher_sort_seq, test_negative_numbers) {
@@ -175,5 +175,5 @@ TEST(kozlova_e_radix_batcher_sort_seq, test_remaind) {
   testTaskSequential.run();
   testTaskSequential.post_processing();
 
-  ASSERT_EQ(res, expect);
+  ASSERT_EQ(expect, res);
 }

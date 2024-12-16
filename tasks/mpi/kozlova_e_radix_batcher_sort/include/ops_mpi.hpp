@@ -27,7 +27,7 @@ class RadixBatcherSortSequential : public ppc::core::Task {
   int input_size{};
   std::vector<double> data;
 
-  void radixSort(std::vector<double>& a);
+  static void radixSort(std::vector<double>& a);
 };
 
 class RadixBatcherSortMPI : public ppc::core::Task {
@@ -41,10 +41,9 @@ class RadixBatcherSortMPI : public ppc::core::Task {
  private:
   std::vector<double> input_;
   int input_size{};
-  std::string ops;
   boost::mpi::communicator world;
 
-  void radixSort(std::vector<double>& a);
+  static void radixSort(std::vector<double>& a);
   void RadixSortWithOddEvenMerge(std::vector<double>& a);
 };
 
