@@ -23,7 +23,7 @@ TEST(petrov_a_Shell_sort_seq, pipeline_run) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_data.data()));
   taskData->outputs_count.emplace_back(result_data.size());
 
-  auto taskSequential = std::make_shared<TestTaskSequential>(taskData);
+  auto taskSequential = std::make_shared<petrov_a_Shell_sort_seq::TestTaskSequential>(taskData);
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   auto start_time = std::chrono::high_resolution_clock::now();
@@ -54,7 +54,7 @@ TEST(petrov_a_Shell_sort_seq, pipeline_run_random_data) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_data.data()));
   taskData->outputs_count.emplace_back(result_data.size());
 
-  auto taskSequential = std::make_shared<TestTaskSequential>(taskData);
+  auto taskSequential = std::make_shared<petrov_a_Shell_sort_seq::TestTaskSequential>(taskData);
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   auto start_time = std::chrono::high_resolution_clock::now();

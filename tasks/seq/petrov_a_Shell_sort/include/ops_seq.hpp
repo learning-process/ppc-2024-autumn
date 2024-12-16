@@ -9,7 +9,7 @@
 
 namespace petrov_a_Shell_sort_seq {
 
-class TestTaskSequential : public ppc::core::Task {
+class petrov_a_Shell_sort_seq::TestTaskSequential : public ppc::core::Task {
  public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;

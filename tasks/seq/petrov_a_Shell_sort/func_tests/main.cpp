@@ -50,22 +50,22 @@ void template_test(const std::vector<int>& input_data) {
 }  // namespace petrov_a_Shell_sort_seq
 
 TEST(petrov_a_Shell_sort_seq, test_sorted_ascending) {
-  petrov_a_Shell_sort_mpi::template_test({1, 2, 3, 4, 5, 6, 7, 8});
+  petrov_a_Shell_sort_seq::template_test({1, 2, 3, 4, 5, 6, 7, 8});
 }
 
 TEST(petrov_a_Shell_sort_seq, test_almost_sorted_random) {
-  petrov_a_Shell_sort_mpi::template_test({9, 7, 5, 3, 1, 2, 4, 6});
+  petrov_a_Shell_sort_seq::template_test({9, 7, 5, 3, 1, 2, 4, 6});
 }
 
 TEST(petrov_a_Shell_sort_seq, test_sorted_descending) {
-  petrov_a_Shell_sort_mpi::template_test({8, 7, 6, 5, 4, 3, 2, 1});
+  petrov_a_Shell_sort_seq::template_test({8, 7, 6, 5, 4, 3, 2, 1});
 }
 
 TEST(petrov_a_Shell_sort_seq, test_all_equal_elements) {
-  petrov_a_Shell_sort_mpi::template_test({5, 5, 5, 5, 5, 5, 5, 5});
+  petrov_a_Shell_sort_seq::template_test({5, 5, 5, 5, 5, 5, 5, 5});
 }
 
 TEST(petrov_a_Shell_sort_seq, test_random_vector) {
   auto random_vec = generate_random_vector(1000, -1000, 1000);
-  petrov_a_Shell_sort_mpi::template_test(random_vec);
+  petrov_a_Shell_sort_seq::template_test(random_vec);
 }
