@@ -38,7 +38,6 @@ TEST(konkov_i_DiningPhilosophersTest, DeadlockFreeExecution) {
   ASSERT_FALSE(global_deadlock) << "Deadlock detected!";
 }
 
-
 TEST(konkov_i_DiningPhilosophersTest, SmallNumberOfPhilosophers) {
   int num_philosophers = 3;
   konkov_i_dining_philosophers::DiningPhilosophers dp(num_philosophers);
