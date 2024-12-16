@@ -69,4 +69,3 @@ TEST(petrov_a_Shell_sort_mpi, test_random_vector_mpi) {
   auto random_vec = generate_random_vector(1000, -1000, 1000);
   petrov_a_Shell_sort_mpi::template_test(random_vec);
 }
-
