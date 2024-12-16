@@ -25,8 +25,8 @@ bool gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::pre_processing(
 bool gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::validation() {
   internal_order_test();
 
-  if ((taskData->inputs.empty() || taskData->outputs.empty())
-    || (taskData->inputs_count[0] <= 0 || taskData->inputs_count[1] <= 0) || (taskData->outputs_count.size() != 1) ||
+  if ((taskData->inputs.empty() || taskData->outputs.empty()) ||
+      (taskData->inputs_count[0] <= 0 || taskData->inputs_count[1] <= 0) || (taskData->outputs_count.size() != 1) ||
         (taskData->inputs_count.size() < 2) || (taskData->outputs_count[0] != taskData->inputs_count[1])) return false;
 
   return true;
