@@ -3,7 +3,7 @@
 
 #include <algorithm>
 #include <cmath>
-#include <vector>
+#include <numeric>
 using namespace std;
 
 bool zolotareva_a_SLE_gradient_method_seq::TestTaskSequential::validation() {
@@ -18,16 +18,10 @@ bool zolotareva_a_SLE_gradient_method_seq::TestTaskSequential::validation() {
   if (int(taskData->outputs_count[0]) != n_) {
     return false;
   }
-  // проверка симметрии
-  const double* A = reinterpret_cast<double*>(taskData->inputs[0]);
-  for (int i = 0; i < n_; ++i) {
-    for (int j = i + 1; j < n_; ++j) {
-      if (A[i * n_ + j] != A[j * n_ + i]) {
-        return false;
-      }
-    }
-  }
-  return true;
+  // проверка симметрии и положительной определённости
+  auto A = reinterpret_cast<const double*>(taskData->inputs[0]);
+
+  return is_positive_and_simm(A, n_);
 }
 
 bool zolotareva_a_SLE_gradient_method_seq::TestTaskSequential::pre_processing() {
@@ -35,8 +29,8 @@ bool zolotareva_a_SLE_gradient_method_seq::TestTaskSequential::pre_processing() 
   A_.resize(n_ * n_);
   b_.resize(n_);
   x_.resize(n_, 0.0);
-  const auto* input_matrix = reinterpret_cast<const double*>(taskData->inputs[0]);
-  const auto* input_vector = reinterpret_cast<const double*>(taskData->inputs[1]);
+  auto input_matrix = reinterpret_cast<const double*>(taskData->inputs[0]);
+  auto input_vector = reinterpret_cast<const double*>(taskData->inputs[1]);
 
   for (int i = 0; i < n_; ++i) {
     b_[i] = input_vector[i];
@@ -63,20 +57,19 @@ bool zolotareva_a_SLE_gradient_method_seq::TestTaskSequential::post_processing()
 
 std::vector<double> zolotareva_a_SLE_gradient_method_seq::TestTaskSequential::conjugate_gradient(
     const std::vector<double>& A, const std::vector<double>& b, std::vector<double>& x, int N) {
-  double threshold = sqrt(dot_product(b, b, N));
-  threshold = threshold * 1e-12;
-  if (threshold == 0) {
-    threshold = 1e-12;
-  }
-  std::vector<double> r = b;  // Начальный вектор невязки r = b - A*x0, x0 = 0
-  std::vector<double> p = r;  // Начальное направление поиска p = r
+  double initial_res_norm = std::sqrt(dot_product(b, b, N));
+  double threshold = initial_res_norm == 0.0 ? 1e-12 : (1e-12 * initial_res_norm);
+
+  std::vector<double> r = b;  // начальный вектор невязки r = b - A*x0, x0 = 0
+  std::vector<double> p = r;  // начальное направление поиска p = r
   double rs_old = dot_product(r, r, N);
 
   for (int s = 0; s <= N; ++s) {
     std::vector<double> Ap = matrix_vector_mult(A, p, N);
-    if (dot_product(p, Ap, N) == 0) break;
+    double pAp = dot_product(p, Ap, N);
+    if (pAp == 0.0) break;
 
-    double alpha = rs_old / dot_product(p, Ap, N);
+    double alpha = rs_old / pAp;
 
     for (int i = 0; i < N; ++i) {
       x[i] += alpha * p[i];
@@ -118,9 +111,37 @@ std::vector<double> zolotareva_a_SLE_gradient_method_seq::TestTaskSequential::ma
   return result;
 }
 
-/*bool zolotareva_a_SLE_gradient_method_seq::TestTaskSequential::is_positive_definite(const std::vector<double>& A,
-                                                                                    int n) {
-  std::vector<float> diag(n, 0.0f);
+bool zolotareva_a_SLE_gradient_method_seq::TestTaskSequential::is_positive_and_simm(const double* A, int n) {
+  std::vector<double> M(n * n);
+  // копируем и проверяем симметричность
+  for (int i = 0; i < n; ++i) {
+    for (int j = 0; j < n; ++j) {
+      double val = A[i * n + j];
+      M[i * n + j] = val;
+      if (j > i) {
+        if (val != A[j * n + i]) {
+          return false;
+        }
+      }
+    }
+  }
+  // проверяем позитивную определенность
+  for (int i = 0; i < n; ++i) {
+    for (int j = 0; j <= i; ++j) {
+      double sum = M[i * n + j];
+      for (int k = 0; k < j; k++) {
+        sum -= M[i * n + k] * M[j * n + k];
+      }
 
+      if (i == j) {
+        if (sum <= 1e-15) {
+          return false;
+        }
+        M[i * n + j] = std::sqrt(sum);
+      } else {
+        M[i * n + j] = sum / M[j * n + j];
+      }
+    }
+  }
   return true;
-}*/
+}
