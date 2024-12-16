@@ -19,7 +19,7 @@ bool zolotareva_a_SLE_gradient_method_seq::TestTaskSequential::validation() {
     return false;
   }
   // проверка симметрии и положительной определённости
-  auto A = reinterpret_cast<const double*>(taskData->inputs[0]);
+  const auto* A = reinterpret_cast<const double*>(taskData->inputs[0]);
 
   return is_positive_and_simm(A, n_);
 }
@@ -29,8 +29,8 @@ bool zolotareva_a_SLE_gradient_method_seq::TestTaskSequential::pre_processing() 
   A_.resize(n_ * n_);
   b_.resize(n_);
   x_.resize(n_, 0.0);
-  auto input_matrix = reinterpret_cast<const double*>(taskData->inputs[0]);
-  auto input_vector = reinterpret_cast<const double*>(taskData->inputs[1]);
+  const auto* input_matrix = reinterpret_cast<const double*>(taskData->inputs[0]);
+  const auto* input_vector = reinterpret_cast<const double*>(taskData->inputs[1]);
 
   for (int i = 0; i < n_; ++i) {
     b_[i] = input_vector[i];
