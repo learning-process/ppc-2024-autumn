@@ -181,6 +181,10 @@ TEST(Parallel_Operations_MPI, Test_Max) {
 
     ASSERT_EQ(reference_max[0], global_max[0]);
   }
+
+  if (world.size() > 1 && world.rank() != 0) {
+    world.send(world.rank() - 1, 42);
+  }
 }
 
 TEST(Parallel_Operations_MPI, Test_Max_2) {
