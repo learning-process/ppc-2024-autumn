@@ -95,5 +95,23 @@ int main(int argc, char** argv) {
   if (world.rank() != 0) {
     delete listeners.Release(listeners.default_result_printer());
   }
+  class BufferGarbageDetector : public ::testing::EmptyTestEventListener {
+   public:
+    void OnTestStart(const ::testing::TestInfo& test_info) override { inspect(test_info); }
+    void OnTestEnd(const ::testing::TestInfo& test_info) override { inspect(test_info); }
+
+   private:
+    void inspect(const ::testing::TestInfo& test_info, const char* routine = __builtin_FUNCTION()) {
+      world.barrier();
+      if (const auto status = world.iprobe(boost::mpi::any_source, boost::mpi::any_tag)) {
+        fprintf(stderr, "[  PROCESS %d  ] %s(%s): MPI buffer is cluttered, unread message tag is %d\n", world.rank(),
+                routine, test_info.name(), status->tag());
+        exit(2);
+      }
+      world.barrier();
+    }
+    boost::mpi::communicator world;
+  };
+  listeners.Append(new BufferGarbageDetector);
   return RUN_ALL_TESTS();
 }
