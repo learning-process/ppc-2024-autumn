@@ -244,8 +244,8 @@ int main(int argc, char** argv) {
     void inspect(const ::testing::TestInfo& test_info, const char* routine = __builtin_FUNCTION()) {
       world.barrier();
       if (const auto status = world.iprobe(boost::mpi::any_source, boost::mpi::any_tag)) {
-        fprintf(stderr, "[  PROCESS %d  ] %s(%s): MPI buffer is cluttered, unread message tag is %d\n", world.rank(),
-                routine, test_info.name(), status->tag());
+        fprintf(stderr, "[  PROCESS %d  ] %s(%s.%s): MPI buffer is cluttered, unread message tag is %d\n", world.rank(),
+                routine, test_info.test_suite_name(), test_info.name(), status->tag());
         exit(2);
       }
       world.barrier();
