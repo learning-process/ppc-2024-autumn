@@ -11,7 +11,7 @@ struct Point {
   T x;
   T y;
 
-  Point<T> operator-(const Point<T>& other) { return Point<T>(x - other.x, y - other.y); }
+  Point<T> operator-(const Point<T>& other) { return {x - other.x, y - other.y}; }
 
   // Vector product
   T operator*(const Point<T>& other) { return x * other.y - other.x * y; }
@@ -30,8 +30,8 @@ struct Point {
 
   template <typename Archive>
   void serialize(Archive& ar, const unsigned int version) {
-    ar & x;
-    ar & y;
+    ar& x;
+    ar& y;
   }
 };
 
