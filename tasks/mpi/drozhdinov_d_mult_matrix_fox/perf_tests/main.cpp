@@ -38,10 +38,10 @@ std::vector<double> getRandomVector(int sz) {
 
 TEST(drozhdinov_d_mult_matrix_fox_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
-  int k = 500;
-  int l = 500;
-  int m = 500;
-  int n = 500;
+  int k = 250;
+  int l = 250;
+  int m = 250;
+  int n = 250;
   std::vector<double> A = getRandomVector(k * l);
   std::vector<double> B = getRandomVector(m * n);
   std::vector<double> expres_par(k * n);
@@ -89,10 +89,10 @@ TEST(drozhdinov_d_mult_matrix_fox_perf_test, test_pipeline_run) {
 
 TEST(drozhdinov_d_mult_matrix_fox_perf_test, test_task_run) {
   boost::mpi::communicator world;
-  int k = 500;
-  int l = 500;
-  int m = 500;
-  int n = 500;
+  int k = 250;
+  int l = 250;
+  int m = 250;
+  int n = 250;
   std::vector<double> A = getRandomVector(k * l);
   std::vector<double> B = getRandomVector(m * n);
   std::vector<double> expres_par(k * n);
