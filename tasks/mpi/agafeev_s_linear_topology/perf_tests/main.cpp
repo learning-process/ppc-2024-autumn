@@ -14,7 +14,7 @@ static std::vector<T> create_RandomVector(int size) {
   return vec;
 }
 
-TEST(agafeev_s_max_of_vector_elements, test_pipeline_run) {
+TEST(agafeev_s_linear_topology, test_pipeline_run) {
   const int n = 5000 * 4000;
   boost::mpi::communicator world;
   // Credate Data
@@ -51,7 +51,7 @@ TEST(agafeev_s_max_of_vector_elements, test_pipeline_run) {
   }
 }
 
-TEST(agafeev_s_max_of_vector_elements, test_task_run) {
+TEST(agafeev_s_linear_topology, test_task_run) {
   const int n = 5000 * 4000;
   boost::mpi::communicator world;
   // Credate Data
