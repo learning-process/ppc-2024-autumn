@@ -42,7 +42,7 @@ double shulpin_simpson_method::seq_simpson(double a, double b, double c, double 
   double seq_sum = 0.0;
 
   for (int i = 0; i <= N; ++i) {
-    seq_sum += calculate_row_sum(i, N ,dx, dy, a, c, func_seq);
+    seq_sum += calculate_row_sum(i, N, dx, dy, a, c, func_seq);
   }
 
   return (dx * dy / 9.0) * seq_sum;

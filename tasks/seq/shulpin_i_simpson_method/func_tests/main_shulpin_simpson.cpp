@@ -306,7 +306,7 @@ TEST(shulpin_simpson_method, miss_of_data) {
   double global_integral = 0.0;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  
+
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
   taskDataSeq->inputs_count.emplace_back(1);
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
@@ -333,7 +333,7 @@ TEST(shulpin_simpson_method, invalid_data_1) {
   double global_integral = 0.0;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  
+
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
   taskDataSeq->inputs_count.emplace_back(1);
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
@@ -362,7 +362,7 @@ TEST(shulpin_simpson_method, invalid_data_2) {
   double global_integral = 0.0;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  
+
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
   taskDataSeq->inputs_count.emplace_back(1);
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
