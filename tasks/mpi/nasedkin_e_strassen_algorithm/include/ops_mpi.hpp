@@ -20,6 +20,7 @@ namespace nasedkin_e_strassen_algorithm_mpi {
         bool post_processing() override;
 
         void set_matrices(const std::vector<std::vector<double>>& matrixA, const std::vector<std::vector<double>>& matrixB);
+        void set_matrices(const std::vector<double>& flatA, const std::vector<double>& flatB, int size);
         static void generate_random_matrix(int size, std::vector<std::vector<double>>& matrix);
         const std::vector<std::vector<double>>& get_result() const { return C; }
 
@@ -35,6 +36,9 @@ namespace nasedkin_e_strassen_algorithm_mpi {
         static void subtract_matrices(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C, int size);
         static void split_matrix(const std::vector<std::vector<double>>& matrix, std::vector<std::vector<double>>& top_left, std::vector<std::vector<double>>& top_right, std::vector<std::vector<double>>& bottom_left, std::vector<std::vector<double>>& bottom_right, int size);
         static void combine_matrices(std::vector<std::vector<double>>& matrix, const std::vector<std::vector<double>>& top_left, const std::vector<std::vector<double>>& top_right, const std::vector<std::vector<double>>& bottom_left, const std::vector<std::vector<double>>& bottom_right, int size);
+
+        static void flatten_matrix(const std::vector<std::vector<double>>& matrix, std::vector<double>& flat);
+        static void unflatten_matrix(const std::vector<double>& flat, std::vector<std::vector<double>>& matrix, int n);
     };
 
 }  // namespace nasedkin_e_strassen_algorithm_mpi
