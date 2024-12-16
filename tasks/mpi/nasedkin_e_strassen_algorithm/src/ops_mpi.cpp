@@ -13,7 +13,6 @@ namespace nasedkin_e_strassen_algorithm_mpi {
             return false;
         }
 
-        // Initialize result matrix
         C.resize(n, std::vector<double>(n, 0.0));
 
         return true;
@@ -39,24 +38,35 @@ namespace nasedkin_e_strassen_algorithm_mpi {
         int rank = world.rank();
         int size = world.size();
 
-        std::vector<std::vector<double>> local_A(n / size, std::vector<double>(n));
-        boost::mpi::scatter(world, A, local_A, 0);
+        std::vector<std::vector<double>> local_A;
+        if (rank == 0) {
+            for (int i = 0; i < n; ++i) {
+                if (i % size == rank) {
+                    local_A.push_back(A[i]);
+                }
+            }
+        }
+        boost::mpi::broadcast(world, local_A, 0);
 
-        std::vector<std::vector<double>> local_B(n / size, std::vector<double>(n));
-        boost::mpi::scatter(world, B, local_B, 0);
+        std::vector<std::vector<double>> local_B;
+        if (rank == 0) {
+            for (int i = 0; i < n; ++i) {
+                if (i % size == rank) {
+                    local_B.push_back(B[i]);
+                }
+            }
+        }
+        boost::mpi::broadcast(world, local_B, 0);
 
         std::vector<std::vector<double>> local_C(n / size, std::vector<double>(n, 0.0));
         strassen_recursive(local_A, local_B, local_C, n / size);
 
-        boost::mpi::gather(world, local_C, C, 0);
+        boost::mpi::all_reduce(world, local_C, C, std::plus<>());
 
         return true;
     }
 
-    bool StrassenAlgorithmMPI::post_processing() {
-        boost::mpi::all_reduce(world, boost::mpi::inplace(C), std::plus<>());
-        return true;
-    }
+    bool StrassenAlgorithmMPI::post_processing() { return true; }
 
     void StrassenAlgorithmMPI::set_matrices(const std::vector<std::vector<double>>& matrixA, const std::vector<std::vector<double>>& matrixB) {
         A = matrixA;
@@ -77,7 +87,6 @@ namespace nasedkin_e_strassen_algorithm_mpi {
 
     void StrassenAlgorithmMPI::strassen_recursive(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C, int size) {
         if (size <= 64) {
-            // Base case: use standard matrix multiplication
             for (int i = 0; i < size; ++i) {
                 for (int j = 0; j < size; ++j) {
                     for (int k = 0; k < size; ++k) {

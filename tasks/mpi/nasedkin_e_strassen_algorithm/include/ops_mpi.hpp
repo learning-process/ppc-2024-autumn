@@ -31,10 +31,10 @@ namespace nasedkin_e_strassen_algorithm_mpi {
         int n;
 
         void strassen_recursive(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C, int size);
-        void add_matrices(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C, int size);
-        void subtract_matrices(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C, int size);
-        void split_matrix(const std::vector<std::vector<double>>& matrix, std::vector<std::vector<double>>& top_left, std::vector<std::vector<double>>& top_right, std::vector<std::vector<double>>& bottom_left, std::vector<std::vector<double>>& bottom_right, int size);
-        void combine_matrices(std::vector<std::vector<double>>& matrix, const std::vector<std::vector<double>>& top_left, const std::vector<std::vector<double>>& top_right, const std::vector<std::vector<double>>& bottom_left, const std::vector<std::vector<double>>& bottom_right, int size);
+        static void add_matrices(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C, int size);
+        static void subtract_matrices(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C, int size);
+        static void split_matrix(const std::vector<std::vector<double>>& matrix, std::vector<std::vector<double>>& top_left, std::vector<std::vector<double>>& top_right, std::vector<std::vector<double>>& bottom_left, std::vector<std::vector<double>>& bottom_right, int size);
+        static void combine_matrices(std::vector<std::vector<double>>& matrix, const std::vector<std::vector<double>>& top_left, const std::vector<std::vector<double>>& top_right, const std::vector<std::vector<double>>& bottom_left, const std::vector<std::vector<double>>& bottom_right, int size);
     };
 
 }  // namespace nasedkin_e_strassen_algorithm_mpi
