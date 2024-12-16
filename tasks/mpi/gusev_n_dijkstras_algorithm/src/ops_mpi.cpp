@@ -1,16 +1,8 @@
 #include "mpi/gusev_n_dijkstras_algorithm/include/ops_mpi.hpp"
 
-#include <algorithm>
-#include <boost/mpi.hpp>
-#include <boost/serialization/access.hpp>
-#include <functional>
-#include <iostream>
-#include <limits>
-#include <numeric>
-#include <vector>
-
 namespace gusev_n_dijkstras_algorithm_mpi {
 bool DijkstrasAlgorithmParallel::validation() {
+  internal_order_test();
   if (taskData->inputs.empty() || taskData->inputs[0] == nullptr ||
       taskData->inputs.size() != taskData->inputs_count.size() || taskData->inputs_count[0] != sizeof(SparseGraphCRS)) {
     return false;
@@ -30,22 +22,13 @@ bool DijkstrasAlgorithmParallel::validation() {
   return true;
 }
 
-bool DijkstrasAlgorithmParallel::pre_processing() { return true; }
-
-struct MinVertex {
-  double distance;
-  int vertex;
-
-  template <class Archive>
-  void serialize(Archive& ar, const unsigned int version) {
-    ar & distance;
-    ar & vertex;
-  }
-
-  bool operator<(const MinVertex& other) const { return distance < other.distance; }
-};
+bool DijkstrasAlgorithmParallel::pre_processing() {
+  internal_order_test();
+  return true;
+}
 
 bool DijkstrasAlgorithmParallel::run() {
+  internal_order_test();
   auto* graph = reinterpret_cast<SparseGraphCRS*>(taskData->inputs[0]);
   int source_vertex = 0;
   int num_vertices = graph->num_vertices;
@@ -106,15 +89,13 @@ bool DijkstrasAlgorithmParallel::run() {
 }
 
 bool DijkstrasAlgorithmParallel::post_processing() {
+  internal_order_test();
   int rank = world.rank();
-  int num_vertices = local_distances.size();
 
   if (rank == 0) {
     auto* output = reinterpret_cast<double*>(taskData->outputs[0]);
     std::copy(local_distances.begin(), local_distances.end(), output);
   }
-
-  boost::mpi::broadcast(world, reinterpret_cast<double*>(taskData->outputs[0]), num_vertices, 0);
 
   return true;
 }

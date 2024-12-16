@@ -2,10 +2,15 @@
 
 #include <gtest/gtest.h>
 
+#include <algorithm>
+#include <boost/mpi.hpp>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <boost/serialization/access.hpp>
 #include <boost/serialization/vector.hpp>
 #include <functional>
+#include <iostream>
+#include <limits>
 #include <memory>
 #include <numeric>
 #include <string>
@@ -39,33 +44,18 @@ class DijkstrasAlgorithmParallel : public ppc::core::Task {
         row_ptr[i]++;
       }
     }
+  };
+  struct MinVertex {
+    double distance;
+    int vertex;
 
-    /*void print_graph() const {
-      std::cout << "Values: ";
-      for (const auto& value : values) {
-        std::cout << value << " ";
-      }
-      std::cout << "\nColumn Indices: ";
-      for (const auto& index : col_indices) {
-        std::cout << index << " ";
-      }
-      std::cout << "\nRow Pointers: ";
-      for (const auto& ptr : row_ptr) {
-        std::cout << ptr << " ";
-      }
-      std::cout << std::endl;
+    template <class Archive>
+    void serialize(Archive& ar, const unsigned int version) {
+      ar & distance;
+      ar & vertex;
     }
 
-    void print_graph_ascii() const {
-      std::cout << "Graph:\n";
-      for (int i = 0; i < num_vertices; ++i) {
-        std::cout << "Vershina " << i << ": ";
-        for (int j = row_ptr[i]; j < row_ptr[i + 1]; ++j) {
-          std::cout << " -> " << col_indices[j] << " (Ves: " << values[j] << ")";
-        }
-        std::cout << std::endl;
-      }
-    }*/
+    bool operator<(const MinVertex& other) const { return distance < other.distance; }
   };
 
  private:

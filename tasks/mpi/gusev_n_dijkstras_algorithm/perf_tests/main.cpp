@@ -37,20 +37,23 @@ TEST(gusev_n_dijkstras_algorithm_mpi, run_pipeline) {
   task_data->outputs_count.push_back(output_data.size() * sizeof(double));
 
   gusev_n_dijkstras_algorithm_mpi::DijkstrasAlgorithmParallel task(task_data);
-  ASSERT_TRUE(task.validation());
+  ASSERT_EQ(task.validation(), true);
+  task.pre_processing();
+  task.run();
+  task.post_processing();
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 10;
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-  perfAttr->num_running = 5;
 
   ppc::core::Perf perfAnalyzer(
       std::make_shared<gusev_n_dijkstras_algorithm_mpi::DijkstrasAlgorithmParallel>(task_data));
+  perfAnalyzer.pipeline_run(perfAttr, perfResults);
 
-  for (uint64_t i = 0; i < perfAttr->num_running; ++i) {
-    perfAnalyzer.pipeline_run(perfAttr, perfResults);
-  }
-
-  ppc::core::Perf::print_perf_statistic(perfResults);
+  if (world.rank() == 0) ppc::core::Perf::print_perf_statistic(perfResults);
 }
 
 TEST(gusev_n_dijkstras_algorithm_mpi, run_task) {
@@ -82,18 +85,21 @@ TEST(gusev_n_dijkstras_algorithm_mpi, run_task) {
   task_data->outputs_count.push_back(output_data.size() * sizeof(double));
 
   gusev_n_dijkstras_algorithm_mpi::DijkstrasAlgorithmParallel task(task_data);
-  ASSERT_TRUE(task.validation());
+  ASSERT_EQ(task.validation(), true);
+  task.pre_processing();
+  task.run();
+  task.post_processing();
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 10;
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-  perfAttr->num_running = 5;
 
   ppc::core::Perf perfAnalyzer(
       std::make_shared<gusev_n_dijkstras_algorithm_mpi::DijkstrasAlgorithmParallel>(task_data));
+  perfAnalyzer.task_run(perfAttr, perfResults);
 
-  for (uint64_t i = 0; i < perfAttr->num_running; ++i) {
-    perfAnalyzer.task_run(perfAttr, perfResults);
-  }
-
-  ppc::core::Perf::print_perf_statistic(perfResults);
+  if (world.rank() == 0) ppc::core::Perf::print_perf_statistic(perfResults);
 }

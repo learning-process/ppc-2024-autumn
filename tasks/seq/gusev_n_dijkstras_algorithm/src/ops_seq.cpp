@@ -1,8 +1,5 @@
 #include "seq/gusev_n_dijkstras_algorithm/include/ops_seq.hpp"
 
-#include <functional>
-#include <string>
-
 bool gusev_n_dijkstras_algorithm_seq::DijkstrasAlgorithmSequential::pre_processing() {
   internal_order_test();
   return true;
