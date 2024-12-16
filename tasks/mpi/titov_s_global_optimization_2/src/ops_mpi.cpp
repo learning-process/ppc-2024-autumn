@@ -526,7 +526,7 @@ double titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::MakeSimplefx(do
 titov_s_global_optimization_2_mpi::Point titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::find_next_point(
     const Point& x_new) {
   Point current_point = x_new;
-  double step_size = 0.2;
+  double step_size = 0.05;
   double tolerance = 0.0001;
   size_t max_iterations = 100;
 

@@ -255,7 +255,7 @@ TEST(titov_s_global_optimization_2_mpi, Test_4) {
   }
 }
 
-TEST(titov_s_global_optimization_2_mpi, Test_constraits_non_linear) {
+TEST(titov_s_global_optimization_2_mpi, Test_5_constraits_non_linear) {
   boost::mpi::communicator world;
   std::function<double(const titov_s_global_optimization_2_mpi::Point&)> func =
       [](const titov_s_global_optimization_2_mpi::Point& p) {
@@ -263,16 +263,16 @@ TEST(titov_s_global_optimization_2_mpi, Test_constraits_non_linear) {
       };
 
   auto constraint1 = [](const titov_s_global_optimization_2_mpi::Point& p) { return 5.0 - p.x - p.y; };
-  auto constraint2 = [](const titov_s_global_optimization_2_mpi::Point& p) {
-    return 4.0 - p.x - (p.y - 2) * (p.y - 2);
+  auto constraint2 = [](const titov_s_global_optimization_2_mpi::Point& p) { return p.y * p.y * p.y - p.x;
   };
   auto constraint3 = [](const titov_s_global_optimization_2_mpi::Point& p) { return p.x; };
   auto constraint4 = [](const titov_s_global_optimization_2_mpi::Point& p) { return p.y; };
+  auto constraint5 = [](const titov_s_global_optimization_2_mpi::Point& p) { return p.x * p.x * p.x - p.y; };
 
   auto constraints_ptr =
       std::make_shared<std::vector<std::function<double(const titov_s_global_optimization_2_mpi::Point&)>>>(
           std::vector<std::function<double(const titov_s_global_optimization_2_mpi::Point&)>>{
-              constraint1, constraint2, constraint3, constraint4});
+              constraint1, constraint2, constraint3, constraint4, constraint5});
 
   std::vector<titov_s_global_optimization_2_mpi::Point> outPar(1, {0.0, 0.0});
   std::vector<titov_s_global_optimization_2_mpi::Point> outSeq;
