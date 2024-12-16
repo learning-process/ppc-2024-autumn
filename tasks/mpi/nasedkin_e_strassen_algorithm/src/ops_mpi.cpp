@@ -200,14 +200,14 @@ namespace nasedkin_e_strassen_algorithm {
         unflatten_matrix(flat_result, result, n, n);
     }
 
-    void flatten_matrix(const std::vector<std::vector<double>>& matrix, std::vector<double>& flat_matrix) {
+    void StrassenAlgorithmMPI::flatten_matrix(const std::vector<std::vector<double>>& matrix, std::vector<double>& flat_matrix) {
         flat_matrix.clear();
         for (const auto& row : matrix) {
             flat_matrix.insert(flat_matrix.end(), row.begin(), row.end());
         }
     }
 
-    void unflatten_matrix(const std::vector<double>& flat_matrix, std::vector<std::vector<double>>& matrix, int rows, int cols) {
+    void StrassenAlgorithmMPI::unflatten_matrix(const std::vector<double>& flat_matrix, std::vector<std::vector<double>>& matrix, int rows, int cols) {
         matrix.clear();
         matrix.resize(rows, std::vector<double>(cols, 0.0));
         for (int i = 0; i < rows; ++i) {
