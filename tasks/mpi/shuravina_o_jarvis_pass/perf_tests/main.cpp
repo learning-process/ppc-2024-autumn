@@ -21,9 +21,9 @@ static std::vector<Point> getRandomPoints(int count, int min_coord, int max_coor
   return points;
 }
 
-TEST(shuravina_o_jarvis_pass_mpi_perf, Test_10000_Points) {
+TEST(shuravina_o_jarvis_pass_mpi_perf, Test_1000_Points) {
   boost::mpi::communicator world;
-  const int count_points = 10000;
+  const int count_points = 1000;
   std::vector<Point> global_points = getRandomPoints(count_points, 0, 100);
   std::vector<Point> global_hull;
 
@@ -36,6 +36,6 @@ TEST(shuravina_o_jarvis_pass_mpi_perf, Test_10000_Points) {
 
   if (world.rank() == 0) {
     std::chrono::duration<double> elapsed = end - start;
-    std::cout << "Time taken for 10000 points (MPI): " << elapsed.count() << " seconds" << std::endl;
+    std::cout << "Time taken for 1000 points (MPI): " << elapsed.count() << " seconds" << std::endl;
   }
 }

@@ -20,11 +20,6 @@ static std::vector<Point> getRandomPoints(int count, int min_coord, int max_coor
   }
   return points;
 }
-
-namespace shuravina_o_jarvis_pass {
-bool operator==(const Point& lhs, const Point& rhs) { return lhs.x == rhs.x && lhs.y == rhs.y; }
-}  // namespace shuravina_o_jarvis_pass
-
 TEST(shuravina_o_jarvis_pass, Test_10_Points) {
   boost::mpi::communicator world;
   const int count_points = 10;
