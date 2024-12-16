@@ -8,16 +8,29 @@
 
 namespace malyshev_v_conjugate_gradient_method_test_function {
 
-std::vector<std::vector<double>> getRandomMatrix(uint32_t size) {
+std::vector<std::vector<double>> getRandomSPDMatrix(uint32_t size) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::uniform_real_distribution<double> dist(-1.0, 1.0);
   std::vector<std::vector<double>> matrix(size, std::vector<double>(size));
 
-  for (auto &row : matrix) {
-    for (auto &el : row) {
-      el = dist(gen);
+  // Генерируем нижнюю треугольную матрицу
+  for (uint32_t i = 0; i < size; i++) {
+    for (uint32_t j = 0; j <= i; j++) {
+      matrix[i][j] = dist(gen);
     }
+  }
+
+  // Копируем нижнюю треугольную матрицу в верхнюю
+  for (uint32_t i = 0; i < size; i++) {
+    for (uint32_t j = i + 1; j < size; j++) {
+      matrix[i][j] = matrix[j][i];
+    }
+  }
+
+  // Делаем матрицу положительно определённой, добавляя к диагонали
+  for (uint32_t i = 0; i < size; i++) {
+    matrix[i][i] += size; // Добавляем размер матрицы к диагональным элементам
   }
 
   return matrix;
@@ -50,7 +63,7 @@ TEST(malyshev_v_conjugate_gradient_method_mpi, small_matrix_3x3) {
   malyshev_v_conjugate_gradient_method_mpi::TestTaskParallel taskMPI(taskDataPar);
 
   if (world.rank() == 0) {
-    randomMatrix = malyshev_v_conjugate_gradient_method_test_function::getRandomMatrix(size);
+    randomMatrix = malyshev_v_conjugate_gradient_method_test_function::getRandomSPDMatrix(size);
     randomVector = malyshev_v_conjugate_gradient_method_test_function::getRandomVector(size);
     mpiSolution.resize(size);
 
@@ -101,7 +114,7 @@ TEST(malyshev_v_conjugate_gradient_method_mpi, medium_matrix_100x100) {
   malyshev_v_conjugate_gradient_method_mpi::TestTaskParallel taskMPI(taskDataPar);
 
   if (world.rank() == 0) {
-    randomMatrix = malyshev_v_conjugate_gradient_method_test_function::getRandomMatrix(size);
+    randomMatrix = malyshev_v_conjugate_gradient_method_test_function::getRandomSPDMatrix(size);
     randomVector = malyshev_v_conjugate_gradient_method_test_function::getRandomVector(size);
     mpiSolution.resize(size);
 
@@ -152,7 +165,7 @@ TEST(malyshev_v_conjugate_gradient_method_mpi, large_matrix_1000x1000) {
   malyshev_v_conjugate_gradient_method_mpi::TestTaskParallel taskMPI(taskDataPar);
 
   if (world.rank() == 0) {
-    randomMatrix = malyshev_v_conjugate_gradient_method_test_function::getRandomMatrix(size);
+    randomMatrix = malyshev_v_conjugate_gradient_method_test_function::getRandomSPDMatrix(size);
     randomVector = malyshev_v_conjugate_gradient_method_test_function::getRandomVector(size);
     mpiSolution.resize(size);
 
@@ -203,7 +216,7 @@ TEST(malyshev_v_conjugate_gradient_method_mpi, test_validation) {
   malyshev_v_conjugate_gradient_method_mpi::TestTaskParallel taskMPI(taskDataPar);
 
   if (world.rank() == 0) {
-    randomMatrix = malyshev_v_conjugate_gradient_method_test_function::getRandomMatrix(size);
+    randomMatrix = malyshev_v_conjugate_gradient_method_test_function::getRandomSPDMatrix(size);
     randomVector = malyshev_v_conjugate_gradient_method_test_function::getRandomVector(size);
     mpiSolution.resize(size);
 
